@@ -63,6 +63,7 @@ try {
     "scala-surfaces.test.js",
     "scala-boundaries.test.js",
     "scala-dependencies.test.js",
+    "scala-feature-phases.test.js",
     "helpers.js",
   ])
     await cp(

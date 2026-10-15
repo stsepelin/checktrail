@@ -1,4 +1,9 @@
 import { createHash, randomUUID } from "node:crypto";
+import {
+  ModelAttemptOutputCapture,
+  parseModelAttemptOutput,
+  type ModelAttemptOutput,
+} from "./model-attempt-output.js";
 import { isDeepStrictEqual } from "node:util";
 import { constants } from "node:fs";
 import { open } from "node:fs/promises";
@@ -137,6 +142,7 @@ function totals(attempts: Attempt[]): ReviewProviderRun["usage"] {
 function parseEnvelope(
   input: unknown,
   config: ReviewProviderConfig,
+  inspectOutput?: (value: unknown) => boolean,
 ): {
   status: ReviewAttemptStatus;
   output?: ReviewModelOutput;
@@ -202,14 +208,85 @@ function parseEnvelope(
   if (!observedModel || texts.length !== 1 || !texts[0]?.trim())
     return { ...result, status: "malformed" };
   try {
+    const modelOutput: unknown = JSON.parse(texts[0]);
+    if (inspectOutput && !inspectOutput(modelOutput))
+      return {
+        status: "malformed",
+        observedModel: null,
+        usage: unknownUsage(),
+      };
     return {
       ...result,
       status: "completed",
-      output: reviewModelOutputSchema.parse(JSON.parse(texts[0])),
+      output: reviewModelOutputSchema.parse(modelOutput),
     };
   } catch {
     return { ...result, status: "malformed" };
   }
+}
+
+function httpAttemptStatus(status: number): ReviewAttemptStatus {
+  return status === 429
+    ? "rate-limited"
+    : status === 529 || status === 503
+      ? "capacity"
+      : status === 401 || status === 403
+        ? "authentication"
+        : status >= 500
+          ? "unavailable"
+          : "transport-error";
+}
+function replayProviderResponse(
+  run: ReviewProviderRun,
+  attempt: Attempt,
+  captured: ModelAttemptOutput,
+) {
+  if (captured.bodyState !== "complete") return;
+  let value: unknown;
+  try {
+    value = JSON.parse(
+      new TextDecoder("utf-8", { fatal: true }).decode(
+        Buffer.from(captured.bodyBase64!, "base64"),
+      ),
+    );
+  } catch {
+    throw new Error("Provider response archive body cannot replay JSON");
+  }
+  const config: ReviewProviderConfig = {
+    schemaVersion: 1,
+    kind: run.provider,
+    model: run.requestedModel,
+    credentialEnv: "IMPORTED_ARCHIVE_REPLAY",
+    limits: run.limits,
+    pricing: null,
+  };
+  const observation =
+    captured.httpStatus === 200
+      ? parseEnvelope(value, config)
+      : {
+          status: httpAttemptStatus(captured.httpStatus!),
+          observedModel: null,
+          usage: object(value)
+            ? usage(object(value)!, run.provider, config)
+            : unknownUsage(),
+        };
+  if (
+    observation.usage.outputTokens !== null &&
+    observation.usage.outputTokens > run.limits.maxOutputTokens
+  )
+    observation.status = "output-limit";
+  // A parsed envelope may still fail source/citation receipt validation.
+  const postReceiptFailure =
+    observation.status === "completed" && attempt.status === "malformed";
+  if (
+    (observation.status !== attempt.status && !postReceiptFailure) ||
+    observation.observedModel !== attempt.observedModel ||
+    observation.usage.inputTokens !== attempt.usage.inputTokens ||
+    observation.usage.outputTokens !== attempt.usage.outputTokens
+  )
+    throw new Error(
+      "Provider response archive replay disagrees with attempt observation",
+    );
 }
 
 class ResponseReadError extends Error {
@@ -226,6 +303,7 @@ async function readResponse(
   response: Response,
   maximum: number,
   signal: AbortSignal,
+  capture: ModelAttemptOutputCapture,
 ): Promise<{ text: string; bytes: number }> {
   const length = response.headers.get("content-length");
   if (length !== null && /^\d+$/.test(length) && Number(length) > maximum) {
@@ -244,13 +322,17 @@ async function readResponse(
     for (;;) {
       signal.throwIfAborted();
       const chunk = await reader.read();
-      if (!chunk.done) bytes += chunk.value.byteLength;
+      if (!chunk.done) {
+        bytes += chunk.value.byteLength;
+        capture.observe(chunk.value);
+      }
       // A delivered chunk is consumed even if cancellation wins before decoding.
       signal.throwIfAborted();
       if (chunk.done) break;
       if (bytes > maximum) throw new ResponseLimit(bytes);
       chunks.push(chunk.value);
     }
+    capture.complete();
     return {
       text: new TextDecoder("utf-8", { fatal: true }).decode(
         Buffer.concat(chunks),
@@ -476,6 +558,7 @@ async function runProviderAssignment(
     ? AbortSignal.any([options.signal, controller.signal])
     : controller.signal;
   const attempts: Attempt[] = [];
+  const responseArchive: ModelAttemptOutput[] = [];
   const aggregateSession = assignmentProviderBudget(options, config);
   const priorAttempts = structuredClone(aggregateSession?.attempts ?? []);
   const requestBytes = Buffer.byteLength(request);
@@ -564,6 +647,12 @@ async function runProviderAssignment(
             observedModel: null,
             usage: unknownUsage(),
           };
+          const capturedResponse = new ModelAttemptOutputCapture(
+            attempt.id,
+            hash(request),
+            config.limits.maxResponseBytes,
+            [key, config.credentialEnv],
+          );
           attempts.push(attempt);
           aggregateSession?.attempts.push(attempt);
           let output: ReviewModelOutput | undefined;
@@ -590,26 +679,22 @@ async function runProviderAssignment(
                 body: request,
               },
             );
+            capturedResponse.status(response.status);
             if (response.status !== 200) {
-              attempt.status =
-                response.status === 429
-                  ? "rate-limited"
-                  : response.status === 529 || response.status === 503
-                    ? "capacity"
-                    : response.status === 401 || response.status === 403
-                      ? "authentication"
-                      : response.status >= 500
-                        ? "unavailable"
-                        : "transport-error";
+              attempt.status = httpAttemptStatus(response.status);
               if (response.body) {
                 const raw = await readResponse(
                   response,
                   config.limits.maxResponseBytes,
                   signal,
+                  capturedResponse,
                 );
                 attempt.responseBytes = raw.bytes;
-                // Error bodies are never retained. Extract only bounded numerical usage.
-                if (!raw.text.includes(key)) {
+                // Response bodies stay in the credential-checked private archive; usage remains separately reported.
+                if (
+                  capturedResponse.snapshot().bodyState !==
+                  "withheld-credential"
+                ) {
                   try {
                     const value = object(JSON.parse(raw.text));
                     if (value)
@@ -629,17 +714,23 @@ async function runProviderAssignment(
                 response,
                 config.limits.maxResponseBytes,
                 signal,
+                capturedResponse,
               );
               attempt.responseBytes = raw.bytes;
               let parsed: unknown;
               try {
-                if (raw.text.includes(key)) throw new Error("Credential echo");
+                if (capturedResponse.snapshot().bodyState !== "complete")
+                  throw new Error(
+                    "Provider response could not be credential-inspected",
+                  );
                 parsed = JSON.parse(raw.text);
               } catch {
                 attempt.status = "malformed";
               }
               if (parsed !== undefined) {
-                const envelope = parseEnvelope(parsed, config);
+                const envelope = parseEnvelope(parsed, config, (value) =>
+                  capturedResponse.inspectDecodedJson(value),
+                );
                 Object.assign(attempt, {
                   status: envelope.status,
                   observedModel: envelope.observedModel,
@@ -659,6 +750,7 @@ async function runProviderAssignment(
                 ? "output-limit"
                 : "transport-error";
           } finally {
+            responseArchive.push(capturedResponse.snapshot());
             attempt.durationMs = Math.max(
               0,
               Math.round(performance.now() - attemptStart),
@@ -764,6 +856,7 @@ async function runProviderAssignment(
         : {}),
       ...(aggregateSession ? { aggregateBudget: aggregate() } : {}),
       attempts,
+      responseArchive,
       usage: totals(attempts),
       independence: {
         profile: "stateless-inline-api-v1",
@@ -795,6 +888,7 @@ export function projectProviderReview(
   const run = parseProviderReview(input);
   if (detailed && allowReviewSource) return run;
   const { candidates, receipt, ...common } = run;
+  delete common.responseArchive;
   return reviewProviderSummarySchema.parse({
     ...common,
     candidates: candidates.length,
@@ -901,6 +995,33 @@ export function parseProviderReview(input: unknown): ReviewProviderRun {
     )
       throw new Error(
         "Provider candidates and source receipt do not reconcile",
+      );
+  }
+  if (run.responseArchive !== undefined) {
+    if (
+      new Set(run.responseArchive.map((value) => value.requestSha256)).size > 1
+    )
+      throw new Error(
+        "Provider response archive request identities disagree across retries",
+      );
+    if (run.responseArchive.length !== run.attempts.length)
+      throw new Error("Provider response archive omits reached attempts");
+    for (const [index, observation] of run.responseArchive.entries()) {
+      const captured = parseModelAttemptOutput(observation);
+      const attempt = run.attempts[index]!;
+      if (
+        captured.attemptId !== attempt.id ||
+        captured.observedBodyBytes !== attempt.responseBytes ||
+        captured.retainedBodyBytes > run.limits.maxResponseBytes
+      )
+        throw new Error(
+          "Provider response archive identities and bytes disagree",
+        );
+      replayProviderResponse(run, attempt, captured);
+    }
+    if (run.receipt && run.responseArchive.at(-1)?.bodyState !== "complete")
+      throw new Error(
+        "Uninspected provider response archive cannot supply a review receipt",
       );
   }
   return run;

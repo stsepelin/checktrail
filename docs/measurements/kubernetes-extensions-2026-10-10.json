@@ -1,0 +1,1519 @@
+{
+  "schemaVersion": 1,
+  "scope": "Synthetic explicit thirteen-kind Kubernetes schema extension acceptance; no API-server admission, cluster state or reviewer quality acceptance.",
+  "sourceBaseCommit": "1a5385f1b966a3d6d89d2caed54c1fe4965bd08d",
+  "changedFileBindings": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "bytes": 84700,
+      "sha256": "2d710d67cc52391ab8caadd5512e3c6d8dabc69cb2e9752733871e8c66c95c15"
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "bytes": 31228,
+      "sha256": "c0dede821c395636fb32e222be863a98dbd2b16d85c2f8d12705123a35a62c47"
+    },
+    {
+      "file": "docs/KUBECONFORM.md",
+      "bytes": 6812,
+      "sha256": "88a00da02451807feaab6e62b01402d57c9aaa99bf56cc1d9fe476a82905a07c"
+    },
+    {
+      "file": "docs/KUBERNETES-EXTENSIONS.md",
+      "bytes": 5636,
+      "sha256": "a9d444c48c3d8172cbba24ac39ab45a11b589182fc782ee67e05ee300a9de6b6"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "bytes": 44976,
+      "sha256": "34d47c7b1a6806751f75f500c1d27f19f0999c4cb89cbedeac68f0632ee9517b"
+    },
+    {
+      "file": "docs/NATIVE-CI.md",
+      "bytes": 30216,
+      "sha256": "ce3b7e3f1b432b2b35dccc795092543efab95f64c017c464bf6a371b1b9d628e"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "bytes": 65459,
+      "sha256": "712edbce71bec599bcfadf2f08ead92fda2bf03183c3abcbbbd0e48c6f1cc17b"
+    },
+    {
+      "file": "docs/gate-a-profiles.v1.json",
+      "bytes": 146192,
+      "sha256": "2e691921d89acd0aa8b883060f234e7c9ef988d0d84f1c0da462aa1cfb29f598"
+    },
+    {
+      "file": "schemas/kubeconform-config.schema.json",
+      "bytes": 1060,
+      "sha256": "5afbe16f6afca812b4aee8b7a33a0da45430e44a63c31c81719a404ae95710ed"
+    },
+    {
+      "file": "scripts/cleanup-kubernetes-extensions-runtime.mjs",
+      "bytes": 1586,
+      "sha256": "46234828306c7ba333da47353c4554b9ba7c112cdb1396838cefa009183af24a"
+    },
+    {
+      "file": "scripts/kubernetes-extension-schemas.json",
+      "bytes": 3384,
+      "sha256": "ce2bf0ea63537b94c4272b2a186e20c94757d51db24d177949d62769196b5eb3"
+    },
+    {
+      "file": "scripts/prepare-kubernetes-extensions-runtime.mjs",
+      "bytes": 5782,
+      "sha256": "c92aa748ae14abcf0b91dc231c67044907eb07cbd3c7542991c943d707a65f0f"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "bytes": 177247,
+      "sha256": "6203c89b035c3bfa61f87fa4e2858b3144f74ed34717c21b69d8e8459b318a6b"
+    },
+    {
+      "file": "scripts/verify-import-context-package.mjs",
+      "bytes": 23928,
+      "sha256": "4f56b82d82f4463991f68ec11088aaf0daa080c9362d514159a0835102f4470a"
+    },
+    {
+      "file": "scripts/verify-kubernetes-extensions-container.mjs",
+      "bytes": 7092,
+      "sha256": "251872ad2f941d271e728afc36e8381dfd611fb49d5e676803b473dcb1b16ff8"
+    },
+    {
+      "file": "scripts/verify-kubernetes-extensions-guards.mjs",
+      "bytes": 6888,
+      "sha256": "9521da6351f10ed278a9c0a23779fa5967c17f2a3d2ae13f860542af942c26a6"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "bytes": 4022,
+      "sha256": "1032b23c6320b4858f485d39f037d66bf75e8b315cc4f466bcdf35c634c2d655"
+    },
+    {
+      "file": "src/kubeconform-evidence.ts",
+      "bytes": 9738,
+      "sha256": "2cc2ddc0dd4d39dc238e8ede888780440b1e8f0b1a621a8a7f32bcce47c905b6"
+    },
+    {
+      "file": "src/kubeconform-runner.ts",
+      "bytes": 7484,
+      "sha256": "cb382cdb189f04165a894c5898c87fa4934ca6e919058c1a1c7f0a56c79cba45"
+    },
+    {
+      "file": "src/kubeconform.ts",
+      "bytes": 10300,
+      "sha256": "42225da8ba3320795a435aaeea74448931142db539b73b5759a8e0a152a41aa6"
+    },
+    {
+      "file": "src/kubernetes-extensions.ts",
+      "bytes": 5091,
+      "sha256": "8208a9cd09b05362e1cdd55a59d48932ce265fd271b1f7e68bb4150ebef4f494"
+    },
+    {
+      "file": "test/gate-kubernetes-extensions.test.ts",
+      "bytes": 17346,
+      "sha256": "06209ffbd7d13928c2031dcddc76507411a41cdb91b7832025ba1b7a4d942f1b"
+    },
+    {
+      "file": "test/kubernetes-evidence-controls.test.ts",
+      "bytes": 4707,
+      "sha256": "539176b46285f656dd9836049015f2f15fbc55092c1c2c47b0eb84932980f37d"
+    },
+    {
+      "file": "test/kubernetes-extensions-fixture.ts",
+      "bytes": 6260,
+      "sha256": "87617064e67dda20adcb2645de557756d46937a999f7bc07c57e9b670ffa5ff5"
+    },
+    {
+      "file": "test/kubernetes-extensions.test.ts",
+      "bytes": 5632,
+      "sha256": "d95a71aa139207fc8946dc4c90c2d748181101ea55604d2d65ba7bba9f5d5a49"
+    }
+  ],
+  "frozenScopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+  "preparedRuntime": {
+    "schemaVersion": 1,
+    "task": "checktrail-gatea-kubernetes-ext-1010",
+    "image": "sha256:81d24b7f722d666b1455b40fddaef12eb2462a9de2096316a063b5b4ec02d60b",
+    "tag": "checktrail-checktrail-gatea-kubernetes-ext-1010-kubernetes:public",
+    "baseImage": "sha256:0ff6806d161f5c41e023d84e7fa5a36594275b341c7176c49a3b72d0cf18d43d",
+    "schemaRevision": "8df8a883b68a24a104b4a9e43c1288090ae60b3b",
+    "schemas": [
+      {
+        "file": "deployment-apps-v1.json",
+        "bytes": 691967,
+        "sha256": "3725782fb01e3f27d8be2da565e2d653d7b78bf6debe5440804cea993c87b8f9"
+      },
+      {
+        "file": "configmap-v1.json",
+        "bytes": 17083,
+        "sha256": "e0eaddebd677c08aa092b2da2264d86ac4fc34eed112b9fac2945b3f00c1e9b1"
+      },
+      {
+        "file": "service-v1.json",
+        "bytes": 43682,
+        "sha256": "8bf019854daed511e7c174896a898173fa65d88ec5937c687a37303d4cc9351b"
+      },
+      {
+        "file": "statefulset-apps-v1.json",
+        "bytes": 739077,
+        "sha256": "cfa6579916fc2a1be0deb6372a3c67c3747a212131d0cb7b342d645f65639987"
+      },
+      {
+        "file": "daemonset-apps-v1.json",
+        "bytes": 690841,
+        "sha256": "1cee9fe50cbcbb91df4fa0eadbef134916c865037a0eba7675d4ae4c8e45a1b9"
+      },
+      {
+        "file": "job-batch-v1.json",
+        "bytes": 709299,
+        "sha256": "f49fee30367890a492146d63c3c433a7853e9088ebfe9e25cc792ec4b1400f18"
+      },
+      {
+        "file": "cronjob-batch-v1.json",
+        "bytes": 814829,
+        "sha256": "adc506e976a783ff7ff9c12d1633a11d40a4ff6fef64e576e6fc423668f0b7c5"
+      },
+      {
+        "file": "ingress-networking-v1.json",
+        "bytes": 35503,
+        "sha256": "4e0f63ad84c2bf22565e489d1f4b885ddaa9f6bf7cff1ddd562553760afe4d79"
+      },
+      {
+        "file": "secret-v1.json",
+        "bytes": 17311,
+        "sha256": "de761ccb06bd1d2c641fb57397f61b68e7ff53a384f0817ce40e5ded8cee86f3"
+      },
+      {
+        "file": "namespace-v1.json",
+        "bytes": 18892,
+        "sha256": "324fae677b98d1a6d54340db0c334d053e8ffbafceb3f73326e41de2610d5843"
+      },
+      {
+        "file": "role-rbac-v1.json",
+        "bytes": 18914,
+        "sha256": "dfe8fb03b1642f985b57b12edd1727b6867c13ed4b6761ef81bdd51b1d236711"
+      },
+      {
+        "file": "rolebinding-rbac-v1.json",
+        "bytes": 18581,
+        "sha256": "b12ea4163fc37df2e02192b4291b1b7c28836e3e7665d989dd538bfcffa10076"
+      },
+      {
+        "file": "persistentvolumeclaim-v1.json",
+        "bytes": 36227,
+        "sha256": "6136871ac0337f11a48da5231a2807407c7386967e3432f344141b902f6a538c"
+      }
+    ],
+    "buildNetwork": "none",
+    "publisherSignaturesVerified": false
+  },
+  "schemaAcquisition": {
+    "immutableRevision": "8df8a883b68a24a104b4a9e43c1288090ae60b3b",
+    "addedFiles": 10,
+    "completeUpstreamTreeInspected": true,
+    "upstreamTreeTruncated": false,
+    "rawBytesVerifiedAgainstGitBlobSha1AndPinnedSha256": true,
+    "measuredPreparationUsesAlreadyAcquiredArtifacts": true,
+    "defaultNetworkAcquisitionAcceptance": false
+  },
+  "observedRegression": {
+    "kind": "coherent saved extension receipt accepted after current physical source changed",
+    "beforeRepair": "passed",
+    "requiredOutcome": "inconclusive",
+    "afterRepair": "inconclusive",
+    "restoredSourceOutcome": "passed"
+  },
+  "native": {
+    "schemaVersion": 1,
+    "runtime": {
+      "node": {
+        "version": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "kubeconform": {
+        "version": "v0.8.0",
+        "bytes": 12953083,
+        "sha256": "7e77b104b3ae696389f91971c60fd58c72f1f3dc218f139df67a1b070959c012",
+        "byteVerified": true
+      },
+      "schemas": [
+        {
+          "file": "deployment-apps-v1.json",
+          "bytes": 691967,
+          "sha256": "3725782fb01e3f27d8be2da565e2d653d7b78bf6debe5440804cea993c87b8f9",
+          "byteVerified": true
+        },
+        {
+          "file": "configmap-v1.json",
+          "bytes": 17083,
+          "sha256": "e0eaddebd677c08aa092b2da2264d86ac4fc34eed112b9fac2945b3f00c1e9b1",
+          "byteVerified": true
+        },
+        {
+          "file": "service-v1.json",
+          "bytes": 43682,
+          "sha256": "8bf019854daed511e7c174896a898173fa65d88ec5937c687a37303d4cc9351b",
+          "byteVerified": true
+        },
+        {
+          "file": "statefulset-apps-v1.json",
+          "bytes": 739077,
+          "sha256": "cfa6579916fc2a1be0deb6372a3c67c3747a212131d0cb7b342d645f65639987",
+          "byteVerified": true
+        },
+        {
+          "file": "daemonset-apps-v1.json",
+          "bytes": 690841,
+          "sha256": "1cee9fe50cbcbb91df4fa0eadbef134916c865037a0eba7675d4ae4c8e45a1b9",
+          "byteVerified": true
+        },
+        {
+          "file": "job-batch-v1.json",
+          "bytes": 709299,
+          "sha256": "f49fee30367890a492146d63c3c433a7853e9088ebfe9e25cc792ec4b1400f18",
+          "byteVerified": true
+        },
+        {
+          "file": "cronjob-batch-v1.json",
+          "bytes": 814829,
+          "sha256": "adc506e976a783ff7ff9c12d1633a11d40a4ff6fef64e576e6fc423668f0b7c5",
+          "byteVerified": true
+        },
+        {
+          "file": "ingress-networking-v1.json",
+          "bytes": 35503,
+          "sha256": "4e0f63ad84c2bf22565e489d1f4b885ddaa9f6bf7cff1ddd562553760afe4d79",
+          "byteVerified": true
+        },
+        {
+          "file": "secret-v1.json",
+          "bytes": 17311,
+          "sha256": "de761ccb06bd1d2c641fb57397f61b68e7ff53a384f0817ce40e5ded8cee86f3",
+          "byteVerified": true
+        },
+        {
+          "file": "namespace-v1.json",
+          "bytes": 18892,
+          "sha256": "324fae677b98d1a6d54340db0c334d053e8ffbafceb3f73326e41de2610d5843",
+          "byteVerified": true
+        },
+        {
+          "file": "role-rbac-v1.json",
+          "bytes": 18914,
+          "sha256": "dfe8fb03b1642f985b57b12edd1727b6867c13ed4b6761ef81bdd51b1d236711",
+          "byteVerified": true
+        },
+        {
+          "file": "rolebinding-rbac-v1.json",
+          "bytes": 18581,
+          "sha256": "b12ea4163fc37df2e02192b4291b1b7c28836e3e7665d989dd538bfcffa10076",
+          "byteVerified": true
+        },
+        {
+          "file": "persistentvolumeclaim-v1.json",
+          "bytes": 36227,
+          "sha256": "6136871ac0337f11a48da5231a2807407c7386967e3432f344141b902f6a538c",
+          "byteVerified": true
+        }
+      ],
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "environment": {
+      "image": "sha256:81d24b7f722d666b1455b40fddaef12eb2462a9de2096316a063b5b4ec02d60b",
+      "network": "none",
+      "init": true,
+      "rootFilesystemReadonly": true,
+      "sourceMountReadonly": true,
+      "preparedCacheReadonly": true,
+      "user": "1000:1000",
+      "cpus": 2,
+      "memoryMiB": 4096,
+      "pids": 256,
+      "temporaryFilesystemMiB": 2048,
+      "temporaryFilesystemExecutable": true
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "baseline": {
+      "timeoutMs": 120000,
+      "profiles": [
+        {
+          "profile": "kubeconform",
+          "required": 10
+        },
+        {
+          "profile": "kustomize",
+          "required": 14
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 29,
+      "required": 24,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 29,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "c521b953f3973b80e22ff6265e6afa307fa307ce685f06931b3b8b39a13e761e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "c521b953f3973b80e22ff6265e6afa307fa307ce685f06931b3b8b39a13e761e"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "0322bd137a74fb4c788e45c6098f0cee8f2384d5070c48cf5a817573831ad570"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "0322bd137a74fb4c788e45c6098f0cee8f2384d5070c48cf5a817573831ad570"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "3646be7f586cf577b89dad01f38d869ea696b409c8fb208e3d4285ec2d37a641"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3646be7f586cf577b89dad01f38d869ea696b409c8fb208e3d4285ec2d37a641"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "88330db55864602a26b660183754332aa8c6d0d168758ac5c180e896b32f532c"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "88330db55864602a26b660183754332aa8c6d0d168758ac5c180e896b32f532c"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "2f285ee99fb274ede39f0da3c66fb1c95452e13438c66238710cbc3695a2e763"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2f285ee99fb274ede39f0da3c66fb1c95452e13438c66238710cbc3695a2e763"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-6",
+            "before": {
+              "state": "present",
+              "sha256": "8b8915ca89d225c90a8f83eb22f24e2a382f68c2a5ddecb7041209d63be56e88"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "8b8915ca89d225c90a8f83eb22f24e2a382f68c2a5ddecb7041209d63be56e88"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-7",
+            "before": {
+              "state": "present",
+              "sha256": "e70de9892161ed084afa40e63f5cadd14bf99cbf439b8ba859b256095ae0af58"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "e70de9892161ed084afa40e63f5cadd14bf99cbf439b8ba859b256095ae0af58"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-8",
+            "before": {
+              "state": "present",
+              "sha256": "e1431fa9362add293bcfeec47c592efe6caa0dd4e488267cb34125d64e060a67"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "e1431fa9362add293bcfeec47c592efe6caa0dd4e488267cb34125d64e060a67"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-9",
+            "before": {
+              "state": "present",
+              "sha256": "ce3bd40a322d5e70bb6e8cb2dd6b29bff318ecfc510e4af6d2d69f8335692bbb"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "ce3bd40a322d5e70bb6e8cb2dd6b29bff318ecfc510e4af6d2d69f8335692bbb"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Kubernetes document binding accounts for every raw document and rejects empty aliases duplicate keys foreign kinds and stale text",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8.624307,
+            "required": false
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Kubernetes physical source pointers preserve UTF8 and decode JSON pointer escapes once",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.816506,
+            "required": false
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native kubeconform validates all documents with source-bound defects repair and valid zero-replica near misses",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 910.011477,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native kubeconform evidence rejects changed source documents schemas tools commands skips errors and inconsistent resource counters",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 179.575396,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native kubeconform planning rejects empty duplicate-key omitted and corrupted-schema inputs with no executable command",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 23.072986,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native Kubernetes CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2308.602603,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-3",
+            "name": "native Kubernetes concurrent validations use distinct owned document and schema copies and remove them all",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 176.067415,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-3",
+            "name": "native Kubernetes missing tools remain unavailable and operator environment cannot replace protected execution settings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 111.784073,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-3",
+            "name": "native Kubernetes frozen collection rejects source and schema bytes changed after planning",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 169.585205,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-4",
+            "name": "native Kubernetes cancellation observes the real validator body and removes its process and owned outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 225.283198,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-4",
+            "name": "native Kubernetes source changed after the real validator starts invalidates the execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 191.869936,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-4",
+            "name": "native Kubernetes copied document changed after the real validator starts invalidates unchanged original source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 183.337255,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-5",
+            "name": "Kustomize passive assembly distinguishes raw source addresses from explicit overlay overrides",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 14.42422,
+            "required": false
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-5",
+            "name": "Kustomize passive assembly rejects remote cyclic omitted duplicate plugin generator and ambiguous selectors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7.237214,
+            "required": false
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-5",
+            "name": "Kustomize source ownership rejects empty claimed origins and native scratch collisions while preserving unrelated annotations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3.27023,
+            "required": false
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-5",
+            "name": "native Kustomize output reconciles passive multi-file origins prefix and replica overrides including zero",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 33.648847,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-5",
+            "name": "native Kustomize collector reconciles rendered schema defects original source addresses repair and cleanup",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 505.874971,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-6",
+            "name": "native Kustomize engine validates nested complete assembly with source-bound defects repair and overridden near misses",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2676.835872,
+            "required": true
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-6",
+            "name": "native Kustomize evidence rejects changed assembly rendered sources schemas tools commands counters skips and malformed native verdicts",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 482.78336,
+            "required": true
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-6",
+            "name": "native Kustomize planning rejects undeclared nested inputs remote resources plugins duplicate keys and corrupted schemas without executable commands",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 60.14994,
+            "required": true
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-7",
+            "name": "native Kustomize concurrent validations use distinct owned document and schema copies and remove them all",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 542.542838,
+            "required": true
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-7",
+            "name": "native Kustomize missing tools remain unavailable and operator environment cannot replace protected execution settings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 278.093047,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-7",
+            "name": "native Kustomize frozen collection rejects source and schema bytes changed after planning",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 218.239193,
+            "required": true
+          },
+          {
+            "sequence": 24,
+            "fileId": "file-8",
+            "name": "native Kustomize build cancellation observes the actual pinned body and removes its process and owned outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 652.931402,
+            "required": true
+          },
+          {
+            "sequence": 25,
+            "fileId": "file-8",
+            "name": "native Kustomize source changed after the actual build starts invalidates the execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 686.053912,
+            "required": true
+          },
+          {
+            "sequence": 26,
+            "fileId": "file-8",
+            "name": "native Kustomize copied assembly changed after the actual build starts invalidates unchanged original source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 676.344556,
+            "required": true
+          },
+          {
+            "sequence": 27,
+            "fileId": "file-8",
+            "name": "native Kustomize validator cancellation observes the actual pinned body and removes its process and owned outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 646.456401,
+            "required": true
+          },
+          {
+            "sequence": 28,
+            "fileId": "file-8",
+            "name": "native Kustomize rendered document changed after the actual validator starts invalidates unchanged original source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 699.10654,
+            "required": true
+          },
+          {
+            "sequence": 29,
+            "fileId": "file-9",
+            "name": "native Kustomize CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3396.722925,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "native kubeconform validates all documents with source-bound defects repair and valid zero-replica near misses",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native kubeconform evidence rejects changed source documents schemas tools commands skips errors and inconsistent resource counters",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native kubeconform planning rejects empty duplicate-key omitted and corrupted-schema inputs with no executable command",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Kubernetes CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kubernetes concurrent validations use distinct owned document and schema copies and remove them all",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kubernetes missing tools remain unavailable and operator environment cannot replace protected execution settings",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kubernetes frozen collection rejects source and schema bytes changed after planning",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Kubernetes cancellation observes the real validator body and removes its process and owned outputs",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Kubernetes source changed after the real validator starts invalidates the execution",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Kubernetes copied document changed after the real validator starts invalidates unchanged original source",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Kustomize output reconciles passive multi-file origins prefix and replica overrides including zero",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Kustomize collector reconciles rendered schema defects original source addresses repair and cleanup",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Kustomize engine validates nested complete assembly with source-bound defects repair and overridden near misses",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Kustomize evidence rejects changed assembly rendered sources schemas tools commands counters skips and malformed native verdicts",
+            "outcome": "passed",
+            "terminalSequences": [19]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Kustomize planning rejects undeclared nested inputs remote resources plugins duplicate keys and corrupted schemas without executable commands",
+            "outcome": "passed",
+            "terminalSequences": [20]
+          },
+          {
+            "fileId": "file-7",
+            "name": "native Kustomize concurrent validations use distinct owned document and schema copies and remove them all",
+            "outcome": "passed",
+            "terminalSequences": [21]
+          },
+          {
+            "fileId": "file-7",
+            "name": "native Kustomize missing tools remain unavailable and operator environment cannot replace protected execution settings",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-7",
+            "name": "native Kustomize frozen collection rejects source and schema bytes changed after planning",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Kustomize build cancellation observes the actual pinned body and removes its process and owned outputs",
+            "outcome": "passed",
+            "terminalSequences": [24]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Kustomize source changed after the actual build starts invalidates the execution",
+            "outcome": "passed",
+            "terminalSequences": [25]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Kustomize copied assembly changed after the actual build starts invalidates unchanged original source",
+            "outcome": "passed",
+            "terminalSequences": [26]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Kustomize validator cancellation observes the actual pinned body and removes its process and owned outputs",
+            "outcome": "passed",
+            "terminalSequences": [27]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Kustomize rendered document changed after the actual validator starts invalidates unchanged original source",
+            "outcome": "passed",
+            "terminalSequences": [28]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native Kustomize CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust",
+            "outcome": "passed",
+            "terminalSequences": [29]
+          }
+        ]
+      }
+    },
+    "source": {
+      "timeoutMs": 300000,
+      "profile": "kubernetes-extensions",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "3caaaab91da73e51d252a2b3604816307bd77cd52df1234f9846e95bd694faf4"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3caaaab91da73e51d252a2b3604816307bd77cd52df1234f9846e95bd694faf4"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "kubernetes-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 313.641325,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "kubernetes-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 553.141658,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "kubernetes-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 364.951748,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "kubernetes-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 466.919297,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "kubernetes-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 557.618938,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "kubernetes-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 331.091231,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "kubernetes-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3314.158837,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "kubernetes-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15682.26706,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "kubernetes-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 28875.550116,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "kubernetes-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kubernetes-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kubernetes-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kubernetes-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kubernetes-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kubernetes-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kubernetes-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kubernetes-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kubernetes-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "53afdb90d122be324ac2259a9c538399d22bca710d1d9bac264665b13ddc90b9",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 300000,
+        "profile": "kubernetes-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "3caaaab91da73e51d252a2b3604816307bd77cd52df1234f9846e95bd694faf4"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "3caaaab91da73e51d252a2b3604816307bd77cd52df1234f9846e95bd694faf4"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "kubernetes-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 352.456707,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "kubernetes-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 631.894263,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "kubernetes-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 450.142103,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "kubernetes-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 504.627296,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "kubernetes-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 612.183632,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "kubernetes-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 372.444088,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "kubernetes-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3521.122831,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "kubernetes-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15714.28148,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "kubernetes-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.495711,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "kubernetes-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kubernetes-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kubernetes-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kubernetes-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kubernetes-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kubernetes-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kubernetes-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kubernetes-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kubernetes-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "guards": {
+      "schemaVersion": 1,
+      "profile": "kubernetes-extensions",
+      "controls": [
+        {
+          "name": "Kubernetes guard checks current physical source bytes",
+          "source": "kubernetes-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "9d24338205159166f291dac6c896f24d6268f7b74d48a1ff4dc2d13590e3f287",
+          "mutantSha256": "362b6f9612a39814bb6e10500c40190b040a3e16fde336823f41ff5cf202fec8"
+        },
+        {
+          "name": "Kubernetes guard checks current physical policy bytes",
+          "source": "kubernetes-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "9d24338205159166f291dac6c896f24d6268f7b74d48a1ff4dc2d13590e3f287",
+          "mutantSha256": "362b6f9612a39814bb6e10500c40190b040a3e16fde336823f41ff5cf202fec8"
+        },
+        {
+          "name": "Kubernetes guard checks current physical schema bytes",
+          "source": "kubernetes-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "9d24338205159166f291dac6c896f24d6268f7b74d48a1ff4dc2d13590e3f287",
+          "mutantSha256": "362b6f9612a39814bb6e10500c40190b040a3e16fde336823f41ff5cf202fec8"
+        },
+        {
+          "name": "Kubernetes guard checks current physical tool bytes",
+          "source": "kubernetes-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "9d24338205159166f291dac6c896f24d6268f7b74d48a1ff4dc2d13590e3f287",
+          "mutantSha256": "362b6f9612a39814bb6e10500c40190b040a3e16fde336823f41ff5cf202fec8"
+        },
+        {
+          "name": "Kubernetes guard checks native schema inventory",
+          "source": "kubeconform-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "cb9047746e5718cd90067156061dcdb4bc69032eed78c8f1eb99e2a7e1863451",
+          "mutantSha256": "9c0100fea9ae952b991c7320757980b6c10bd26a7c92cc34f37716d410cc8bfd"
+        },
+        {
+          "name": "Kubernetes guard checks native schema pre-hash",
+          "source": "kubeconform-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "cb9047746e5718cd90067156061dcdb4bc69032eed78c8f1eb99e2a7e1863451",
+          "mutantSha256": "9c0100fea9ae952b991c7320757980b6c10bd26a7c92cc34f37716d410cc8bfd"
+        },
+        {
+          "name": "Kubernetes guard checks native schema post-hash",
+          "source": "kubeconform-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "cb9047746e5718cd90067156061dcdb4bc69032eed78c8f1eb99e2a7e1863451",
+          "mutantSha256": "9c0100fea9ae952b991c7320757980b6c10bd26a7c92cc34f37716d410cc8bfd"
+        },
+        {
+          "name": "Kubernetes guard checks native stdout hash",
+          "source": "kubeconform-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "cb9047746e5718cd90067156061dcdb4bc69032eed78c8f1eb99e2a7e1863451",
+          "mutantSha256": "b2381b8d278bca3a9c22a5ecd3fec22b850e9416c5326cced7e6a86469fd81af"
+        },
+        {
+          "name": "Kubernetes guard checks native stderr hash",
+          "source": "kubeconform-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "cb9047746e5718cd90067156061dcdb4bc69032eed78c8f1eb99e2a7e1863451",
+          "mutantSha256": "99eee6793427fdc5b42feafb0834af637d013637d8712c0f7223f8c6f1bb45cf"
+        },
+        {
+          "name": "Kubernetes guard checks native command arguments",
+          "source": "kubeconform-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "cb9047746e5718cd90067156061dcdb4bc69032eed78c8f1eb99e2a7e1863451",
+          "mutantSha256": "a2f43182ca09a0e999008aa7a3d06c16623f42eeaba873f7e8406a1df15fd92d"
+        },
+        {
+          "name": "Kubernetes guard checks native resource participation",
+          "source": "kubeconform-evidence.js",
+          "guardsRemovedTogether": 2,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "cb9047746e5718cd90067156061dcdb4bc69032eed78c8f1eb99e2a7e1863451",
+          "mutantSha256": "b1239ef47836b654bfb67ea958c313f8f73b8a150eaaaea6e305adad879c207e"
+        },
+        {
+          "name": "Kubernetes guard checks native skipped resources",
+          "source": "kubeconform-evidence.js",
+          "guardsRemovedTogether": 2,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "cb9047746e5718cd90067156061dcdb4bc69032eed78c8f1eb99e2a7e1863451",
+          "mutantSha256": "d5a2dfec30c1e264e062797e01545c8537bcbae3c1cc07c78d530eee09f219ed"
+        },
+        {
+          "name": "Kubernetes guard checks whole kind identifiers",
+          "source": "kubeconform.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "48d1d8f18b231683ee51592fa831f070d0aa380648e9785e285e49003101887c",
+          "mutantSha256": "4c3bbdfc1314698af9adbef834f85f5118a261f22511264772609d1a448177d3"
+        },
+        {
+          "name": "Kubernetes guard checks whole API identifiers",
+          "source": "kubeconform.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "48d1d8f18b231683ee51592fa831f070d0aa380648e9785e285e49003101887c",
+          "mutantSha256": "987eec79dd58dacb47814df1f971ea8b1f77027480e5708ed7f93a9f8a6fd03a"
+        }
+      ],
+      "callbacks": [
+        {
+          "file": "kubernetes-evidence-controls.test.js",
+          "sha256": "05c0c559fdb6664d2deebc1d3f1e25141e058e083571679bc15b240ab5676274"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "allComplete": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "regressions": {
+      "files": ["kubernetes-extensions.test.js"],
+      "tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "outputSha256": "b73046a8fea8feb4b6cd1ee844ffde01b46fb988a9e1d8da5a6fa267c074d8b6"
+    },
+    "durationMs": 84854,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "projectCheck": {
+    "command": "npm run check",
+    "tests": 1536,
+    "passed": 917,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 619,
+    "todo": 0,
+    "durationMs": 235403.258667,
+    "optionalSkipsCreditedAsPassing": false,
+    "behaviorAndTestInputsMatch": true,
+    "inventoryPromotionAndMeasurementAddedAfterCheck": true
+  },
+  "gateInventory": {
+    "implementedProfiles": 32,
+    "pendingProfiles": 19,
+    "unresolvedFreezeDecisions": 3,
+    "scopeChanged": false
+  },
+  "limitations": [
+    "Measured Linux ARM64 Node 22 runtime only.",
+    "Two compiling controls remove coupled resource accounting guards together.",
+    "Schematics do not establish cluster admission, authorization, operational impact or severity.",
+    "Whole publisher signature, artifact and license closure remains incomplete.",
+    "Current byte checks do not establish an atomic or hostile-filesystem snapshot."
+  ],
+  "profileAcceptanceComplete": true,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

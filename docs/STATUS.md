@@ -15,6 +15,48 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+[Review provenance](REVIEW-PROVENANCE.md) now joins current source/citation
+checks, exact host claims, imported native receipt accounting and bound
+descriptive scores through library, CLI and MCP. Evidence tiers and complete
+candidate/trial counts retain unknown confidence, unsupported, abstained,
+unreviewed and stale states. Confidence, labels, claim truth, native import
+attestation and session independence remain unverified. Source disclosure stays
+operator-controlled. Synthetic source/installed and compiling guard acceptance
+are recorded in the [local measurement](measurements/confidence-provenance-2026-10-10.json).
+The wider runtime matrix, authoritative judgments and Gate A remain open; no
+inference or field evaluation is invoked.
+
+Opt-in [Kubernetes extensions](KUBERNETES-EXTENSIONS.md) add ten strict pinned
+kinds to the original three-kind contract. Current physical source, policy,
+schema and tool bytes, whole kind/API identifiers and complete native document
+accounting bind source-addressed type defects through the shared engine. The
+[local record](measurements/kubernetes-extensions-2026-10-10.json) records preserved
+callbacks, source and fresh installed acceptance, native regressions, compiling
+controls and the project check. Cluster admission, wider kinds/platforms and whole
+artifact provenance remain open. Gate A remains open; no inference or field
+evaluation is invoked.
+
+Opt-in [JVM analyzer extensions](JVM-ANALYZER-EXTENSIONS.md) compile explicit fresh
+Java application/library cohorts, nested and generated classes and conventional
+JPMS descriptors, with native SpotBugs plugin and rule provenance. Full detekt
+analysis binds typed source participation, SDK roots, resolved annotations and
+source-bound compiler diagnostics. The [local record](measurements/jvm-analyzer-extensions-2026-10-10.json)
+records preserved callbacks, source and fresh installed acceptance, compiling
+controls and the project check. Wider JVM layouts, platforms and whole artifact
+provenance remain open. Gate A remains open; no inference or field evaluation is
+invoked.
+
+Opt-in [Kotlin extensions](KOTLIN-EXTENSIONS.md) compile declared mixed Java/Kotlin,
+fresh generated primary Kotlin classes and application scripts. Native Java body
+compilation supplements Kotlin symbol resolution; scripts remain compile-only.
+Source roles, generated/class origins, current artifacts, raw native streams and
+reached process cleanup are reconciled through the shared engine. The
+[local record](measurements/kotlin-extensions-2026-10-10.json) records source and
+fresh offline installed acceptance, preserved compilation, compiling controls,
+native regressions and the project check. Wider Kotlin/Gradle semantics, full
+provenance, final platforms and Gate A remain open. No inference or field
+evaluation is invoked.
+
 Opt-in [JVM wrapper extensions](JVM-WRAPPERS.md) select exact offline Maven/Gradle
 artifacts, native Java generators and conventional JPMS producer/consumer builds.
 Selected JDK and unpacked distribution bytes, generated source and primary class
@@ -102,15 +144,20 @@ with pinned native output and offline Kubernetes validation. Original controls
 cover source-bound defects/repair, supported overlay near misses, CLI/MCP trust and
 privacy, forged evidence, concurrent cleanup and observed native build/validator
 cancellation and source changes. Its [local record](measurements/kustomize-native-2026-10-06.json)
-binds source and fresh offline installed-package acceptance. Wider transforms and
-Gate A remain open.
+binds source and fresh offline installed-package acceptance. The explicit
+[local transform extension](KUSTOMIZE-EXTENSIONS.md) adds selected strategic/JSON
+patches, namespace/name/image/replica transforms, literal generator hashes and
+references, with physical addresses retained through array edits. Its
+[local record](measurements/kustomize-extensions-2026-10-10.json) binds preserved,
+source, installed, regression and compiling controls. Unselected semantics,
+wider platforms and Gate A remain open.
 
 The bounded [Terraform profile](TERRAFORM.md) validates complete provider-free
 JSON modules with pinned native Terraform. It binds source ranges/snippets,
 module/config/tool bytes, native counters and exact commands, with original
 defect/repair, CLI/MCP and reached lifecycle controls in the
 [local record](measurements/terraform-native-2026-10-06.json). Wider Terraform
-providers/modules, wider Helm charts and Kustomize transforms and Gate A remain open.
+providers/modules, wider Helm charts, unselected Kustomize semantics and Gate A remain open.
 
 The bounded [kubeconform profile](KUBECONFORM.md) validates every declared
 Deployment, Service and ConfigMap document against pinned local Kubernetes 1.36.0
@@ -119,7 +166,7 @@ JSON-pointer addresses must reconcile; empty, skipped, missing-schema and stale
 collections cannot pass. The [local record](measurements/kubeconform-native-2026-10-06.json)
 binds native source/offline installed CLI/MCP controls and compiling guard proofs.
 The explicit runtime preparer also pins Terraform, Helm and Kustomize binaries;
-Wider Helm charts, Kustomize transforms and Terraform profiles remain pending.
+Wider Helm charts, unselected Kustomize semantics and Terraform profiles remain pending.
 E16 and Gate A remain open.
 
 The bounded [C/C++ native tools profile](CPP-TOOLS.md) now builds declared C17/C++20
@@ -943,3 +990,15 @@ source, compiling-control and fresh offline installed acceptance recorded in
 Version 1 keeps its route inventory. Full artifact/license closure, broader
 framework semantics, final platforms and Gate A remain open; no inference or field
 evaluation is invoked.
+
+The separate [F# default formatter](FSHARP-FORMAT.md) now uses pinned native APIs for declared implementations, signatures and scripts, preserving current source and all returned formatter diagnostics without rewriting files. The selected source controls exercise default options, unsupported prerequisites, stale receipts, privacy and native lifecycle cleanup. [Measured native acceptance](measurements/fsharp-format-2026-10-10.json) passed every frozen source and fresh installed-package callback, preserved the selected .NET baselines and confirmed paired compiling controls; wider E12, artifact/platform closure and Gate A remain open.
+
+The opt-in [Swift local-package and SDK extension](SWIFT-EXTENSIONS.md) passed preserved native baselines, source and fresh offline installed acceptance, fifteen paired controls and reached cancellation/timeout/output cleanup. [The measurement](measurements/swift-extensions-2026-10-10.json) binds the selected Swift 6.2.3/Linux ARM64 runtime and distinguishes subsequent schema maintenance. Wider platform/artifact/license and Gate A acceptance remain open; no inference or field evaluation was invoked.
+
+The opt-in [C/C++ local CMake and SDK extensions](CPP-EXTENSIONS.md) passed preserved required source/installed baselines, extension source/fresh offline installed acceptance, paired evidence guards and reached cancellation. [The measurement](measurements/cpp-extensions-2026-10-10.json) binds the unchanged runtime inputs, distinguishes required callbacks from the preserved passive case, and records diagnostic-count/range and pre-CMake SDK prerequisite controls. Wider toolchains, complete artifact/license closure, the runtime matrix and Gate A remain open; no inference or field evaluation was invoked.
+
+The opt-in [Terraform local-module and pinned-provider extension](TERRAFORM-EXTENSIONS.md) passed the preserved provider-free source/installed baseline, extension source/fresh offline installed callbacks and paired evidence controls. [The measurement](measurements/terraform-extensions-2026-10-11.json) records exact frozen inputs, source-bound duplicate-instance diagnostics, native provider lifecycle witnesses and the mandatory project check. Complete artifact/license closure, the runtime matrix, AI host independence and Gate A remain open; no inference or field evaluation was invoked.
+
+The opt-in [Helm application/subchart extension](HELM-EXTENSIONS.md) passed preserved root-chart source/installed acceptance, extension source/fresh offline installed callbacks and paired guards. [The measurement](measurements/helm-extensions-2026-10-11.json) binds frozen inputs, complete physical/aliased chart participation, native diagnostics and reached Helm lifecycle cleanup. Full artifact/license closure, the runtime matrix, AI host independence and Gate A remain open; no inference or field evaluation was invoked.
+
+The [dated main recovery audit](PR-RECOVERY-2026-10-12.md) records which closed or feature-branch-merged PRs had not reached main and the recovery/98/99 merge order. It preserves all existing branches and leaves later feature work and Gate A acceptance pending.

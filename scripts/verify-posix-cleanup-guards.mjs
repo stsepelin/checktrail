@@ -65,6 +65,42 @@ const guards = [
       ],
     ],
   },
+  {
+    id: "family-quiescence",
+    name: "POSIX cleanup quiesces parents before children, signals children first, and waits for all identities to disappear without touching siblings",
+    source: "process-tree.js",
+    replacements: [
+      ['if (state !== "stopped" && state !== "exited") {', "if (false) {"],
+    ],
+  },
+  {
+    id: "late-child-resnapshot",
+    name: "POSIX cleanup captures a child forked before its parent's stop acknowledgement and never accepts an unacknowledged stop",
+    source: "process-tree.js",
+    replacements: [
+      [
+        "const selected = ownedDescendants(rows, root);",
+        "const selected = observed.size ? [] : ownedDescendants(rows, root);",
+      ],
+    ],
+  },
+  {
+    id: "exact-stop-state",
+    name: "Darwin process status parser retains unknown status without inventing quiescence and canonicalises physical start identities",
+    source: "process-tree.js",
+    replacements: [['match[4].startsWith("T")', 'match[4].includes("T")']],
+  },
+  {
+    id: "final-family-reaping",
+    name: "POSIX cleanup quiesces parents before children, signals children first, and waits for all identities to disappear without touching siblings",
+    source: "process-tree.js",
+    replacements: [
+      [
+        "if (![...observed.values()].some(",
+        "if (true || ![...observed.values()].some(",
+      ],
+    ],
+  },
 ];
 const environment = { ...process.env };
 delete environment.NODE_TEST_CONTEXT;

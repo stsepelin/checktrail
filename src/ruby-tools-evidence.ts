@@ -5,7 +5,17 @@ import {
   rubyToolsRepositorySchema,
   rubyToolsSame,
 } from "./ruby-tools.js";
-import { rubyToolsNativeSource } from "./ruby-tools-native.js";
+import {
+  rubyToolsNativeSource,
+  rubyExtensionsRestoreNativeSource,
+} from "./ruby-tools-native.js";
+import {
+  rubyExtensionsRuntimeWitnessSchema,
+  rubyExtensionsManifestWitnessSchema,
+} from "./ruby-extensions-contract.js";
+import { rubyExtensionsUnavailableSchema } from "./ruby-extensions-prerequisite.js";
+import { rubyExtensionsFreshness } from "./ruby-extensions-freshness.js";
+import { isDeepStrictEqual } from "node:util";
 import { mavenHash } from "./maven.js";
 import { externalPathSchema } from "./external-schema.js";
 import type {
@@ -61,6 +71,12 @@ export const rubyToolsPacketSchema = z.strictObject({
     sha256: digest,
   }),
   metadata: z.string().max(1024 * 1024),
+  restoreWitness: z
+    .string()
+    .max(1024 * 1024)
+    .optional(),
+  restoreWitnessSha256: digest.optional(),
+  restoreObserverSha256: digest.optional(),
   data: z.string().max(2 * 1024 * 1024),
   dataSha256: digest,
   metadataSha256: digest,
@@ -100,6 +116,7 @@ const metadataSchema = z.strictObject({
   toolVersion: file,
   toolFile: file,
   toolFileSha256: digest,
+  extensions: rubyExtensionsRuntimeWitnessSchema.optional(),
 });
 const rowSchema = z.strictObject({
   id: file,
@@ -171,6 +188,7 @@ function requireEvidence(value: unknown, message: string): asserts value {
 export function rubyToolsEvidence(
   check: Check,
   processes: ProcessResult[],
+  root?: string,
 ): Pick<CheckResult, "status" | "reason" | "findings" | "tests"> {
   try {
     requireEvidence(
@@ -192,9 +210,27 @@ export function rubyToolsEvidence(
         JSON.parse(check.commands[0]!.args[2]!),
       ),
       config = invocation.config;
-    const packet = rubyToolsPacketSchema.parse(JSON.parse(process.stdout));
+    const value: unknown = JSON.parse(process.stdout);
+    const unavailable = rubyExtensionsUnavailableSchema.safeParse(value);
+    if (unavailable.success) {
+      requireEvidence(
+        config.schemaVersion === 2 &&
+          check.id === `ruby.${unavailable.data.mode}-extensions` &&
+          check.commands[0]!.args[3] === unavailable.data.mode &&
+          unavailable.data.inputSha256 ===
+            mavenHash(JSON.stringify(invocation.inputs)),
+        "Ruby prerequisite input/check identity differs",
+      );
+      rubyExtensionsFreshness(check, root);
+      return {
+        status: "unavailable",
+        reason: "Pinned Ruby interpreter or Bundler is absent or incompatible.",
+      };
+    }
+    const packet = rubyToolsPacketSchema.parse(value);
     requireEvidence(
-      check.id === `ruby.${packet.mode}` &&
+      check.id ===
+        `ruby.${packet.mode}${config.schemaVersion === 2 ? "-extensions" : ""}` &&
         check.commands[0]!.args[3] === packet.mode,
       "Ruby check and native mode differ",
     );
@@ -251,6 +287,15 @@ export function rubyToolsEvidence(
       "Ruby installed artifact identity differs",
     );
     const metadata = metadataSchema.parse(JSON.parse(packet.metadata));
+    if (config.schemaVersion === 2) rubyExtensionsFreshness(check, root);
+    else
+      requireEvidence(
+        !metadata.extensions &&
+          packet.restoreWitness === undefined &&
+          packet.restoreWitnessSha256 === undefined &&
+          packet.restoreObserverSha256 === undefined,
+        "Legacy Ruby cannot admit extension witnesses",
+      );
     requireEvidence(
       path.isAbsolute(packet.workspace) &&
         path.isAbsolute(packet.install) &&
@@ -331,6 +376,105 @@ export function rubyToolsEvidence(
         compiled.has("Gemfile"),
       "Ruby native compiled source differs",
     );
+    const extension = metadata.extensions;
+    if (config.schemaVersion === 2) {
+      requireEvidence(
+        extension &&
+          packet.restoreWitness &&
+          packet.restoreWitnessSha256 === mavenHash(packet.restoreWitness) &&
+          packet.restoreObserverSha256 ===
+            mavenHash(rubyExtensionsRestoreNativeSource),
+        "Ruby restore witness is incomplete",
+      );
+      const restored = z
+        .strictObject({
+          manifest: rubyExtensionsManifestWitnessSchema,
+          compiled: z
+            .array(z.strictObject({ file, sha256: digest }))
+            .min(1)
+            .max(2048),
+        })
+        .parse(JSON.parse(packet.restoreWitness));
+      const manifestOrder = (m: typeof extension.manifest) => ({
+        sources: [...m.sources].sort(),
+        manifests: [...m.manifests].sort((a, b) =>
+          a.file.localeCompare(b.file),
+        ),
+        dependencies: [...m.dependencies].sort((a, b) =>
+          a.name.localeCompare(b.name),
+        ),
+      });
+      requireEvidence(
+        isDeepStrictEqual(
+          manifestOrder(restored.manifest),
+          manifestOrder(extension.manifest),
+        ),
+        "Restore and validation evaluated different Ruby manifests",
+      );
+      requireEvidence(
+        isDeepStrictEqual(extension.manifest.sources, [
+          "https://rubygems.org/",
+        ]),
+        "Evaluated Ruby source inventory differs",
+      );
+      const expected = config.extensions.dependencies
+        .map((d) => ({
+          name: d.name,
+          requirement: "= " + d.version,
+          groups: [...d.groups].sort(),
+          platforms: [...d.platforms].sort(),
+          included: d.included,
+          platformMatches: d.platformMatches,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      const observed = extension.manifest.dependencies
+        .map((d) => {
+          requireEvidence(
+            d.source === "https://rubygems.org/",
+            "Ruby dependency changed public source",
+          );
+          const { source, ...row } = d;
+          void source;
+          return row;
+        })
+        .sort((a, b) => a.name.localeCompare(b.name));
+      requireEvidence(
+        isDeepStrictEqual(expected, observed),
+        "Evaluated Ruby groups platforms conditions or dependency requirements differ",
+      );
+      requireEvidence(
+        rubyToolsSame(
+          config.extensions.manifests,
+          extension.manifest.manifests.map((m) => m.file),
+        ) &&
+          extension.manifest.manifests.every(
+            (m) =>
+              compiled.get(m.file)?.sha256 === m.sha256 &&
+              invocation.inputs.find((i) => i.path === m.file)?.sha256 ===
+                m.sha256 &&
+              restored.compiled.find((c) => c.file === m.file)?.sha256 ===
+                m.sha256,
+          ),
+        "An evaluated Ruby manifest has no native byte witness",
+      );
+      requireEvidence(
+        new Set(restored.compiled.map((c) => c.file)).size ===
+          restored.compiled.length &&
+          restored.compiled.every(
+            (c) =>
+              invocation.inputs.find((i) => i.path === c.file)?.sha256 ===
+              c.sha256,
+          ),
+        "Ruby restore compiled undeclared source",
+      );
+      if (packet.mode === "rubocop")
+        requireEvidence(
+          !extension.cases.length &&
+            !extension.hooks.length &&
+            !extension.registeredHooks.length,
+          "RuboCop received runtime test witnesses",
+        );
+    }
     const restore = packet.receipts[0]!,
       native = packet.receipts[1]!;
     requireEvidence(
@@ -420,9 +564,134 @@ export function rubyToolsEvidence(
       "Ruby registered, started and result cases differ",
     );
     requireEvidence(
-      suite.files.every((file) => data.rows.some((row) => row.file === file)),
+      suite.files.every((file) =>
+        config.schemaVersion === 2
+          ? extension!.cases.some((row) => row.receiverFile === file)
+          : data.rows.some((row) => row.file === file),
+      ),
       "A selected Ruby test file registered no test",
     );
+    if (config.schemaVersion === 2) {
+      requireEvidence(
+        extension &&
+          rubyToolsSame(
+            extension.cases.map((c) => c.id),
+            data.rows.map((r) => r.id),
+          ),
+        "Ruby native method witness cohort differs",
+      );
+      for (const c of extension.cases) {
+        const row = registered.get(c.id)!;
+        requireEvidence(
+          suite.files.includes(c.receiverFile) &&
+            compiled.has(c.receiverFile) &&
+            [...suite.files, ...suite.support].includes(c.source.file) &&
+            compiled.has(c.source.file) &&
+            c.source.file === row.file &&
+            c.source.line === row.line,
+          "Ruby shared or inherited source and receiver differ",
+        );
+        requireEvidence(
+          c.shared.every(
+            (f) =>
+              [...suite.files, ...suite.support].includes(f.inclusion.file) &&
+              compiled.has(f.inclusion.file),
+          ),
+          "Ruby shared-example inclusion escaped declared source",
+        );
+        if (packet.mode === "minitest")
+          requireEvidence(
+            c.ancestors[0] === c.receiver &&
+              c.ancestors.includes(c.declaring) &&
+              c.id === c.receiver + "#" + c.method &&
+              c.method === row.name &&
+              c.shared.length === 0,
+            "Minitest declaring owner and receiver ancestry differ",
+          );
+        else
+          requireEvidence(
+            c.receiver === c.ancestors[0] &&
+              c.declaring === c.receiver &&
+              c.method === row.name &&
+              c.id.startsWith("./" + c.receiverFile + "[") &&
+              c.id.endsWith("]") &&
+              new Set(c.ancestors).size === c.ancestors.length &&
+              c.ancestors.some((a) =>
+                a.startsWith("group:" + c.receiverFile + "["),
+              ) &&
+              c.ancestors.every((a) => {
+                const group = /^group:(.+)\[([0-9]+(?::[0-9]+)*)\]$/.exec(a);
+                return (
+                  group &&
+                  compiled.has(group[1]!) &&
+                  [...suite.files, ...suite.support].includes(group[1]!)
+                );
+              }),
+            "RSpec group ancestry differs",
+          );
+      }
+      if (packet.mode === "rspec") {
+        requireEvidence(
+          new Set(
+            extension.hooks.map((h) =>
+              JSON.stringify([h.caseId, h.kind, h.source]),
+            ),
+          ).size === extension.hooks.length &&
+            config.extensions.rspecHooks.every(
+              (h) =>
+                extension.hooks.filter(
+                  (e) =>
+                    e.kind === h.kind &&
+                    e.source.file === h.file &&
+                    e.source.line === h.line,
+                ).length === h.invocations,
+            ),
+          "RSpec per-case hook execution cohort differs",
+        );
+        const expected = config.extensions.rspecHooks.flatMap((h) =>
+          Array.from({ length: h.registrations }, () => ({
+            kind: h.kind,
+            scope: h.scope,
+            source: { file: h.file, line: h.line },
+          })),
+        );
+        const order = (values: unknown[]) =>
+          values.map((v) => JSON.stringify(v)).sort();
+        requireEvidence(
+          isDeepStrictEqual(order(expected), order(extension.registeredHooks)),
+          "Declared RSpec hook registrations differ",
+        );
+        requireEvidence(
+          extension.registeredHooks.every((h) =>
+            extension.hooks.some(
+              (e) => e.kind === h.kind && isDeepStrictEqual(e.source, h.source),
+            ),
+          ) &&
+            extension.hooks.every(
+              (h) =>
+                h.entered &&
+                [...suite.files, ...suite.support].includes(h.source.file) &&
+                compiled.has(h.source.file) &&
+                extension.registeredHooks.some(
+                  (r) =>
+                    r.kind === h.kind && isDeepStrictEqual(r.source, h.source),
+                ) &&
+                (extension.cases.some((c) => c.id === h.caseId) ||
+                  extension.cases.some((c) => c.ancestors.includes(h.caseId))),
+            ),
+          "RSpec hook invocation is missing or has no native case/group source",
+        );
+        if (data.results.every((r) => r.outcome === "passed"))
+          requireEvidence(
+            extension.hooks.every((h) => h.returned),
+            "A passing RSpec cohort has an unfinished hook",
+          );
+      } else
+        requireEvidence(
+          !extension.hooks.length && !extension.registeredHooks.length,
+          "Minitest received RSpec hooks",
+        );
+    }
     const counts: TestEvidence = {
       total: data.results.length,
       passed: 0,
@@ -439,7 +708,9 @@ export function rubyToolsEvidence(
           file: result.file,
           line: result.line,
         }) === JSON.stringify(row) &&
-          suite.files.includes(row.file) &&
+          (config.schemaVersion === 2
+            ? [...suite.files, ...suite.support].includes(row.file)
+            : suite.files.includes(row.file)) &&
           compiled.has(row.file),
         "Ruby result source or method identity differs",
       );

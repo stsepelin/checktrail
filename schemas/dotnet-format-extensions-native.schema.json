@@ -1,0 +1,600 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "processId": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "runtime": { "type": "string", "const": "10.0.12" },
+    "helperSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "formatterAssembly": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8192
+    },
+    "formatterSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "constructorParameters": {
+      "minItems": 15,
+      "maxItems": 15,
+      "type": "array",
+      "items": { "type": "string", "maxLength": 64 }
+    },
+    "workspaceFailures": {
+      "maxItems": 1024,
+      "type": "array",
+      "items": { "type": "string", "maxLength": 65536 }
+    },
+    "allDocuments": { "type": "integer", "minimum": 1, "maximum": 4096 },
+    "loaded": {
+      "minItems": 1,
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "version": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "file": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        },
+        "required": ["name", "version", "file", "sha256"],
+        "additionalProperties": false
+      }
+    },
+    "phases": {
+      "minItems": 3,
+      "maxItems": 3,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["Whitespace", "CodeStyle", "Analyzers"]
+          },
+          "nativeFormattingInvoked": { "type": "boolean", "const": true },
+          "nativeDiagnosticsInvoked": { "type": "boolean" },
+          "catalog": {
+            "maxItems": 64,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "project": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "projectId": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                },
+                "language": {
+                  "type": "string",
+                  "enum": ["C#", "Visual Basic"]
+                },
+                "supported": {
+                  "maxItems": 2048,
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1, "maxLength": 64 }
+                },
+                "selectedAnalyzers": {
+                  "maxItems": 1024,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1024
+                      },
+                      "assembly": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 8192
+                      }
+                    },
+                    "required": ["name", "assembly"],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "project",
+                "projectId",
+                "language",
+                "supported",
+                "selectedAnalyzers"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "diagnostics": {
+            "maxItems": 4096,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "minLength": 1, "maxLength": 64 },
+                "severity": {
+                  "type": "string",
+                  "enum": ["Info", "Warning", "Error"]
+                },
+                "message": { "type": "string", "maxLength": 65536 },
+                "project": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "projectId": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                },
+                "file": {
+                  "anyOf": [
+                    { "type": "string", "minLength": 1, "maxLength": 8192 },
+                    { "type": "null" }
+                  ]
+                },
+                "documentId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "locationKind": {
+                  "type": "string",
+                  "enum": ["SourceFile", "None"]
+                },
+                "start": { "type": "integer", "minimum": 0, "maximum": 65536 },
+                "length": { "type": "integer", "minimum": 0, "maximum": 65536 },
+                "physical": {
+                  "type": "object",
+                  "properties": {
+                    "file": { "type": "string", "maxLength": 8192 },
+                    "startLine": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "startColumn": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "endLine": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "endColumn": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "file",
+                    "startLine",
+                    "startColumn",
+                    "endLine",
+                    "endColumn"
+                  ],
+                  "additionalProperties": false
+                },
+                "mapped": {
+                  "type": "object",
+                  "properties": {
+                    "file": { "type": "string", "maxLength": 8192 },
+                    "startLine": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "startColumn": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "endLine": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "endColumn": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "file",
+                    "startLine",
+                    "startColumn",
+                    "endLine",
+                    "endColumn"
+                  ],
+                  "additionalProperties": false
+                },
+                "sourceTextSha256": {
+                  "anyOf": [
+                    { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "severity",
+                "message",
+                "project",
+                "projectId",
+                "file",
+                "documentId",
+                "locationKind",
+                "start",
+                "length",
+                "physical",
+                "mapped",
+                "sourceTextSha256"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "analyzerExceptions": {
+            "maxItems": 1024,
+            "type": "array",
+            "items": { "type": "string", "maxLength": 65536 }
+          },
+          "documents": {
+            "minItems": 1,
+            "maxItems": 4096,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "project": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "projectId": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                },
+                "language": {
+                  "type": "string",
+                  "enum": ["C#", "Visual Basic"]
+                },
+                "file": { "type": "string", "minLength": 1, "maxLength": 8192 },
+                "documentId": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                },
+                "selected": { "type": "boolean" },
+                "sourceGenerated": { "type": "boolean" },
+                "route": {
+                  "type": "string",
+                  "enum": [
+                    "sdk-pipeline",
+                    "native-generated-whitespace",
+                    "native-generated-diagnostics"
+                  ]
+                },
+                "sourceBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 65536
+                },
+                "sourceSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "utf8Bom": { "type": "boolean" },
+                "lineMappings": {
+                  "maxItems": 4096,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "span": {
+                        "type": "object",
+                        "properties": {
+                          "startLine": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "startColumn": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "endLine": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "endColumn": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          }
+                        },
+                        "required": [
+                          "startLine",
+                          "startColumn",
+                          "endLine",
+                          "endColumn"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "characterOffset": {
+                        "anyOf": [
+                          { "type": "integer", "minimum": 0, "maximum": 65536 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "mapped": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "file": { "type": "string", "maxLength": 8192 },
+                              "startLine": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "startColumn": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "endLine": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "endColumn": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991
+                              }
+                            },
+                            "required": [
+                              "file",
+                              "startLine",
+                              "startColumn",
+                              "endLine",
+                              "endColumn"
+                            ],
+                            "additionalProperties": false
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "mappedValid": { "type": "boolean" },
+                      "hasMappedPath": { "type": "boolean" },
+                      "pdbFile": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8192
+                          },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "span",
+                      "characterOffset",
+                      "mapped",
+                      "mappedValid",
+                      "hasMappedPath",
+                      "pdbFile"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "before": { "type": "string", "maxLength": 65536 },
+                "after": { "type": "string", "maxLength": 131072 },
+                "beforeSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "afterSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "changed": { "type": "boolean" },
+                "changes": {
+                  "maxItems": 4096,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 65536
+                      },
+                      "length": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 65536
+                      },
+                      "newText": { "type": "string", "maxLength": 131072 },
+                      "line": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "column": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "start",
+                      "length",
+                      "newText",
+                      "line",
+                      "column"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "project",
+                "projectId",
+                "language",
+                "file",
+                "documentId",
+                "selected",
+                "sourceGenerated",
+                "route",
+                "sourceBytes",
+                "sourceSha256",
+                "utf8Bom",
+                "lineMappings",
+                "before",
+                "after",
+                "beforeSha256",
+                "afterSha256",
+                "changed",
+                "changes"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "sdkReport": {
+            "maxItems": 4096,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "DocumentId": {
+                  "type": "object",
+                  "properties": {
+                    "ProjectId": {
+                      "type": "object",
+                      "properties": {
+                        "Id": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                        }
+                      },
+                      "required": ["Id"],
+                      "additionalProperties": false
+                    },
+                    "Id": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                    }
+                  },
+                  "required": ["ProjectId", "Id"],
+                  "additionalProperties": false
+                },
+                "FileName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "FilePath": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "FileChanges": {
+                  "minItems": 1,
+                  "maxItems": 4096,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "LineNumber": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "CharNumber": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "DiagnosticId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64
+                      },
+                      "FormatDescription": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 65536
+                      }
+                    },
+                    "required": [
+                      "LineNumber",
+                      "CharNumber",
+                      "DiagnosticId",
+                      "FormatDescription"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["DocumentId", "FileName", "FilePath", "FileChanges"],
+              "additionalProperties": false
+            }
+          },
+          "sdkReportScope": {
+            "type": "string",
+            "const": "ordinary-selected-diagnostics-and-document-whitespace-summaries"
+          },
+          "generatedSemanticFixesSupported": {
+            "type": "boolean",
+            "const": false
+          }
+        },
+        "required": [
+          "mode",
+          "nativeFormattingInvoked",
+          "nativeDiagnosticsInvoked",
+          "catalog",
+          "diagnostics",
+          "analyzerExceptions",
+          "documents",
+          "sdkReport",
+          "sdkReportScope",
+          "generatedSemanticFixesSupported"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "complete": { "type": "boolean", "const": true }
+  },
+  "required": [
+    "processId",
+    "runtime",
+    "helperSha256",
+    "formatterAssembly",
+    "formatterSha256",
+    "constructorParameters",
+    "workspaceFailures",
+    "allDocuments",
+    "loaded",
+    "phases",
+    "complete"
+  ],
+  "additionalProperties": false
+}

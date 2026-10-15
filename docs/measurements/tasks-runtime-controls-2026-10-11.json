@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "profile": "tasks-runtime-controls-2026-10-11",
+  "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+  "runtimeArtifactsSha256": "66454afbb4b1ff25c9e8cdc761e0d5b94b012167364e61c62d73f2a8b36fa4df",
+  "harnessSha256": "32740d43edc79f4851ccaec831870a01acd06083fb899b9286a1cd7bca8b6ebe",
+  "inputSources": [
+    [
+      "dist/test/mcp-validation-tasks.test.js",
+      "eef0e1e70a96c1c757970fe770130ddb4ce5cdbf977aeb9f7aa31b3c886495b6"
+    ],
+    [
+      "dist/test/gate-tasks-matrix.test.js",
+      "2235f3fc380f7925e204505e19e91e4a4fe44bbc11ea6bf8239afbf8627cccf9"
+    ],
+    [
+      "dist/test/tasks-sdk-fallback.test.js",
+      "577f3eb7bf2f51b8500430fb97fc0d5f4a57f2f69a699c8654ce3aa6c84fe485"
+    ],
+    [
+      "dist/test/windows-task-access.test.js",
+      "630082ff39196f9372db10bbd950532f518fed201075540a3f0ddca1e04c3b1c"
+    ],
+    [
+      "dist/test/helpers.js",
+      "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+    ],
+    [
+      "package.json",
+      "448a5eceddf86ea9bf50912a044b50aecbd27fee9d564c93a2900a82add0a38e"
+    ],
+    [
+      "docs/gate-a-profiles.v1.json",
+      "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+    ],
+    [
+      "scripts/verify-tasks-runtime.mjs",
+      "a14686bb41b79ae4ca39fed13c99b2a58c1c26a1905fb3f1dffec975d279727c"
+    ],
+    [
+      "dist/test/tasks-wire-fixture.js",
+      "f81e98f5c0d34fc54d9ea7581b3e9cbf9d3175e82160419b44dc4455da136d1d"
+    ],
+    [
+      "scripts/required-test-evidence.mjs",
+      "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+    ],
+    [
+      "scripts/required-native-tests.json",
+      "890e6dc623a8cec33a7a31ac4f06762b8e8c2ff5ea24067e7af000e7cc1b8c58"
+    ],
+    [
+      "scripts/tasks-runtime-evidence.mjs",
+      "cecd2de422d392dc120a9b9617ec4d1a27ff2e4637752b4322af98ec9ee5ecd3"
+    ]
+  ],
+  "nativeControls": [
+    {
+      "name": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store",
+      "outcome": "passed"
+    },
+    {
+      "name": "MCP Tasks durably create, retrieve and reopen passed failed and empty native outcomes",
+      "outcome": "passed"
+    },
+    {
+      "name": "MCP Tasks reject tool trust injection timeout changes and unknown handles without leaking paths",
+      "outcome": "passed"
+    },
+    {
+      "name": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants",
+      "outcome": "passed"
+    },
+    {
+      "name": "MCP Tasks foreground shutdown waits for native cleanup and retains cancellation on restart",
+      "outcome": "passed"
+    },
+    {
+      "name": "MCP Tasks preserve oversized detail as a completed tool error while summary retains the same native result",
+      "outcome": "passed"
+    },
+    {
+      "name": "MCP Tasks owner rejects overlap during planning and closes an initialized worker before returning",
+      "outcome": "passed"
+    },
+    {
+      "name": "MCP Tasks reject expired handles and preserve crash interruption without resuming execution",
+      "outcome": "passed"
+    },
+    {
+      "name": "MCP Tasks admission shares the ordinary native execution slot in both directions",
+      "outcome": "passed"
+    },
+    {
+      "name": "MCP Tasks require capabilities for every control request and acknowledge only declared updates",
+      "outcome": "passed"
+    },
+    {
+      "name": "tasks-matrix broken acceptance",
+      "outcome": "passed"
+    },
+    {
+      "name": "tasks-matrix fixed acceptance",
+      "outcome": "passed"
+    },
+    {
+      "name": "tasks-matrix near-miss acceptance",
+      "outcome": "passed"
+    },
+    {
+      "name": "tasks-matrix prerequisite acceptance",
+      "outcome": "passed"
+    },
+    {
+      "name": "tasks-matrix stale acceptance",
+      "outcome": "passed"
+    },
+    {
+      "name": "tasks-matrix empty acceptance",
+      "outcome": "passed"
+    },
+    {
+      "name": "tasks-matrix privacy acceptance",
+      "outcome": "passed"
+    },
+    {
+      "name": "tasks-matrix lifecycle acceptance",
+      "outcome": "passed"
+    },
+    {
+      "name": "tasks-matrix installed acceptance",
+      "outcome": "passed"
+    },
+    {
+      "name": "Tasks-enabled servers retain ordinary native validation with pinned SDK modern and legacy clients",
+      "outcome": "passed"
+    },
+    {
+      "name": "Windows task ACL validation admits only the exact caller rule and actual caller or token owner",
+      "outcome": "passed"
+    },
+    {
+      "name": "Windows task ACL validation refuses each private-access boundary independently",
+      "outcome": "passed"
+    }
+  ],
+  "runtimePairs": [
+    {
+      "runtime": {
+        "slot": "ci-macos-node26",
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+        "systemPowerShellSha256": null,
+        "sqliteVersion": "3.53.4",
+        "osRelease": "27.0.0",
+        "osVersion": "Darwin Kernel Version 27.0.0: Tue Aug 11 21:06:40 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T6050",
+        "imageVersion": null,
+        "imageOS": null,
+        "hostedImageMetadataAttested": false
+      },
+      "source": {
+        "startedAt": "2026-10-11T04:12:57.815Z",
+        "finishedAt": "2026-10-11T04:14:36.148Z",
+        "required": 22,
+        "passed": 22,
+        "complete": true
+      },
+      "installed": {
+        "startedAt": "2026-10-11T04:14:43.253Z",
+        "finishedAt": "2026-10-11T04:15:28.798Z",
+        "required": 22,
+        "passed": 22,
+        "complete": true,
+        "tarballSha256": "83dd5ea2e7d93daf085a49dfbef08125d2b101940879eb0231cc817c369d388e",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "productionDependencyLockSha256": "14f4722469fea6df229a58445c8ee5b3d0270ba93e8a66eb36472eb9241d6cc8",
+        "harnessOutsideInstalledPackage": true,
+        "pinnedExternalSdkClient": "2.3.0"
+      }
+    },
+    {
+      "runtime": {
+        "slot": "native-linux-arm64-node22",
+        "node": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+        "systemPowerShellSha256": null,
+        "sqliteVersion": "3.51.3",
+        "osRelease": "7.0.14-orbstack-00380-ga7e0a2dc9535",
+        "osVersion": "#1 SMP PREEMPT Fri Aug  7 03:48:40 UTC 2026",
+        "imageVersion": null,
+        "imageOS": null,
+        "hostedImageMetadataAttested": false
+      },
+      "source": {
+        "startedAt": "2026-10-11T04:12:19.899Z",
+        "finishedAt": "2026-10-11T04:14:09.534Z",
+        "required": 22,
+        "passed": 22,
+        "complete": true
+      },
+      "installed": {
+        "startedAt": "2026-10-11T04:14:16.833Z",
+        "finishedAt": "2026-10-11T04:15:06.311Z",
+        "required": 22,
+        "passed": 22,
+        "complete": true,
+        "tarballSha256": "a561f1039cf2167cdf253892f2045c95afb8d1afbdd9458054df4bd282115b68",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "productionDependencyLockSha256": "a990ded416a02a5ba3db2e61f775e9bf3198c29e5a303b5adb60565dbb9eca3b",
+        "harnessOutsideInstalledPackage": true,
+        "pinnedExternalSdkClient": "2.3.0"
+      },
+      "imageReference": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "imageId": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "network": "none",
+      "sourceReadOnly": true
+    }
+  ],
+  "windowsAclGuardControls": {
+    "schemaVersion": 1,
+    "profile": "windows-task-acl-paired-controls",
+    "baseline": {
+      "exit": 0,
+      "assertionRefuted": false
+    },
+    "controls": [
+      {
+        "guard": "canonical",
+        "removed": {
+          "exit": 1,
+          "assertionRefuted": true
+        },
+        "restored": {
+          "exit": 0,
+          "assertionRefuted": false
+        }
+      },
+      {
+        "guard": "protected-directory",
+        "removed": {
+          "exit": 1,
+          "assertionRefuted": true
+        },
+        "restored": {
+          "exit": 0,
+          "assertionRefuted": false
+        }
+      },
+      {
+        "guard": "token-owner-group",
+        "removed": {
+          "exit": 1,
+          "assertionRefuted": true
+        },
+        "restored": {
+          "exit": 0,
+          "assertionRefuted": false
+        }
+      },
+      {
+        "guard": "object-owner",
+        "removed": {
+          "exit": 1,
+          "assertionRefuted": true
+        },
+        "restored": {
+          "exit": 0,
+          "assertionRefuted": false
+        }
+      },
+      {
+        "guard": "caller",
+        "removed": {
+          "exit": 1,
+          "assertionRefuted": true
+        },
+        "restored": {
+          "exit": 0,
+          "assertionRefuted": false
+        }
+      },
+      {
+        "guard": "allow",
+        "removed": {
+          "exit": 1,
+          "assertionRefuted": true
+        },
+        "restored": {
+          "exit": 0,
+          "assertionRefuted": false
+        }
+      },
+      {
+        "guard": "exact-rights",
+        "removed": {
+          "exit": 1,
+          "assertionRefuted": true
+        },
+        "restored": {
+          "exit": 0,
+          "assertionRefuted": false
+        }
+      },
+      {
+        "guard": "inheritance",
+        "removed": {
+          "exit": 1,
+          "assertionRefuted": true
+        },
+        "restored": {
+          "exit": 0,
+          "assertionRefuted": false
+        }
+      },
+      {
+        "guard": "propagation",
+        "removed": {
+          "exit": 1,
+          "assertionRefuted": true
+        },
+        "restored": {
+          "exit": 0,
+          "assertionRefuted": false
+        }
+      },
+      {
+        "guard": "single-rule",
+        "removed": {
+          "exit": 1,
+          "assertionRefuted": true
+        },
+        "restored": {
+          "exit": 0,
+          "assertionRefuted": false
+        }
+      }
+    ],
+    "sourceSha256": "72a1f2c915fcf5e5327ec6ce09458fb1e1c1e300ed40a2838c1e74359d55e05c",
+    "harnessSha256": "630082ff39196f9372db10bbd950532f518fed201075540a3f0ddca1e04c3b1c",
+    "originalInputsUnchanged": true,
+    "nativeWindowsExecuted": false,
+    "inferenceInvoked": false
+  },
+  "nativeWindowsAcceptance": "pending",
+  "completeSelectedRuntimeMatrix": false,
+  "gateATasksMatrixComplete": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "packageReceiptsPrecedeThisMeasurementDocument": true
+}

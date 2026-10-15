@@ -1,9 +1,16 @@
 import { createHash } from "node:crypto";
 import { inflateRawSync } from "node:zlib";
 import { scalaArtifacts } from "./scala-artifacts.js";
+import { scalaStagingLibrary } from "./scala-extension-artifacts.js";
 export const scalaHash = (bytes: Buffer | string) =>
   createHash("sha256").update(bytes).digest("hex");
-export function scalaLibraries(archive: Buffer): Map<string, Buffer> {
+export function scalaLibraries(
+  archive: Buffer,
+  includeStaging = false,
+): Map<string, Buffer> {
+  const selected = includeStaging
+    ? [...scalaArtifacts.runtimeLibraries, scalaStagingLibrary]
+    : scalaArtifacts.runtimeLibraries;
   if (
     archive.length !== scalaArtifacts.archiveBytes ||
     scalaHash(archive) !== scalaArtifacts.archiveSha256
@@ -44,7 +51,7 @@ export function scalaLibraries(archive: Buffer): Map<string, Buffer> {
       next = cursor + 46 + nameSize + extra + comment;
     if (next > end) throw Error("Scala archive entry bounds disagree");
     const name = archive.subarray(cursor + 46, cursor + 46 + nameSize);
-    const library = scalaArtifacts.runtimeLibraries.find((item) =>
+    const library = selected.find((item) =>
       name.equals(Buffer.from("scala3-3.9.0/" + item.path)),
     );
     if (library) {
@@ -84,7 +91,7 @@ export function scalaLibraries(archive: Buffer): Map<string, Buffer> {
     }
     cursor = next;
   }
-  if (cursor !== end || result.size !== scalaArtifacts.runtimeLibraries.length)
+  if (cursor !== end || result.size !== selected.length)
     throw Error("Scala runtime library inventory is incomplete");
   return result;
 }

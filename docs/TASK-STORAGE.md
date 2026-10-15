@@ -1,7 +1,8 @@
 # Local validation task storage
 
 `openTaskStore` is an optional library component for retaining validation results
-on one local macOS or Linux machine. It is not connected to the CLI or MCP server.
+on one local machine. The shared CLI/MCP Tasks worker uses this store when the
+operator supplies `--task-store`.
 The store itself does not advertise the MCP Tasks extension, execute jobs,
 resume jobs, stop workers or act as a validation cache. The separate library
 [validation worker](VALIDATION-TASKS.md) now connects it to native execution. See [MCP compatibility](MCP-COMPATIBILITY.md)
@@ -9,16 +10,74 @@ for the remaining wire and executor integration gates.
 
 The implementation uses Node's built-in SQLite module, imported only when the
 store is opened. Native tests cover Node 26.8.1 on macOS and Node 22.23.2 on Linux;
-the latter reports SQLite as experimental. Earlier Node releases, Windows and
-network filesystems are not verified storage profiles. Core imports do not load
+the latter reports SQLite as experimental. Earlier Node releases, the new Windows backend and
+network filesystems remain unverified storage profiles. Core imports do not load
 SQLite, and no new npm runtime dependency is required.
+
+## Windows storage acceptance
+
+The experimental Windows backend checks a caller-only filesystem DACL using fixed
+shipped OS inspection. Newly created empty directories/files receive a protected
+ACL before data is written; existing objects are inspected and rejected rather
+than having their permissions changed. The sole access rule must grant the exact
+caller SID full control with the required inheritance/propagation flags. Directory
+ACLs are protected; file ACLs may inherit only that caller rule. Owner identity must
+match the caller SID or the actual default token owner SID for built-in
+Administrators (`S-1-5-32-544`). Other default owner groups are rejected before
+SQLite writes because [ownership confers control over the DACL](https://learn.microsoft.com/en-us/windows/win32/secauthz/owner-of-a-new-object). Windows
+can apply its default token owner to native SQLite journals. This uses
+[Windows token owner semantics](https://learn.microsoft.com/en-us/dotnet/api/system.security.principal.windowsidentity.owner?view=netframework-4.8.1)
+and [filesystem ACL operations](https://learn.microsoft.com/en-us/dotnet/api/system.io.directoryinfo.setaccesscontrol?view=netframework-4.8.1).
+
+Canonical local-drive paths, regular singly linked bounded files and the existing
+SQLite ownership/root/disclosure guards remain required. Inspection runs the fixed
+system PowerShell executable with no profile, path interpolation or project
+commands. ACL inspection has a bounded timeout/output; absent or invalid inspection
+fails startup. The inspector uses the fixed shipped .NET Framework JSON serializer
+and typed filesystem ACL methods. It does not resolve PowerShell JSON, item or ACL
+cmdlets through an ambient module path. The serializer has no type resolver and
+retains explicit length/depth bounds. This is an account permission check, not isolation from an
+administrator or trusted project execution.
+
+The [recorded original controls](measurements/tasks-runtime-controls-2026-10-11.json)
+passed on the measured macOS and pinned Linux ARM64 runtimes, against source and
+fresh offline production installations. Native Windows source and
+installed-package controls are pending. The new Tasks
+runtime jobs select the recorded Linux/macOS Node slots, Windows Node slot and
+pinned Linux ARM64 runtime; successful job receipts are still required. They retain
+observed image metadata, which is not a signed OS-image attestation. The whole
+Gate A Tasks profile and final acceptance bindings remain pending.
+
+The frozen Tasks callbacks retain a two-case native identifier-boundary regression,
+its repair and valid adjacent control; current-source completion binding;
+empty/all-skipped refusal; startup trust/disclosure boundaries; witnessed native
+cancellation, deadline and output termination; reopening; and offline production
+installation. The preserved wire checks additionally cover capability negotiation,
+admission conflicts, crash interruption, expiry and bounded retained output. A
+terminal `completed` task can carry failed or incomplete validation; the controls
+check the underlying outcome separately.
+
+Repeat the complete runtime controls after building:
+
+```sh
+node scripts/verify-tasks-runtime.mjs
+node scripts/verify-tasks-runtime-package.mjs
+```
+
+CI passes the exact frozen slot identifier. Receipts bind the Node executable,
+compiled runtime and unchanged harness/declaration inputs before/after the run.
+On Windows they additionally hash the selected system PowerShell executable.
+These bindings record observed bytes; they do not attest host isolation or OS-image
+provenance. Native Windows results and the complete selected runtime matrix are
+required before the Tasks profile can be marked accepted.
 
 ## Use from the library
 
 Choose a dedicated storage directory with an existing canonical parent, outside
-the project's inventoried source. An existing store directory must belong to the
-current user with mode `0700`; database files must be singly linked regular files
-with mode `0600`. New directories and files use these modes. Symbolic links,
+the project's inventoried source. On POSIX, an existing store directory must belong
+to the current user with mode `0700`; database files must be singly linked regular
+files with mode `0600`. New POSIX directories and files use these modes. Windows
+requires the caller-only ACL profile described above. Symbolic links,
 unexpected directory entries and unrelated nonempty databases are rejected.
 
 ```js

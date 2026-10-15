@@ -54,9 +54,16 @@ variable. The example model is a placeholder, not a supported model claim.
 `kind` can instead be `anthropic-messages`. Canonical HTTPS API endpoints are
 fixed; redirects are rejected. An exact returned model identity is required;
 resolved aliases and automatic fallback are not accepted by this profile.
-No credential values, credential variable names, HTTP error bodies, raw provider
-responses or transport error prose enter a report. The config digest binds the
-selected non-secret configuration; retain that operator file for reproduction.
+Detailed source-granted reports can include `responseArchive`: one bounded
+physical response observation per reached API attempt, including JSON HTTP error
+bodies. Complete JSON bodies are retained only after checking both raw bytes and
+decoded JSON keys/values for the credential and its environment-variable name.
+Credential echoes, partial reads, overflows and uninspectable bodies retain only
+observation metadata. Summaries omit the archive. Authentication headers, operator
+credential configuration and transport exception prose are not recorded. The
+config digest binds the selected non-secret configuration; retain that operator
+file for reproduction. These observations do not authenticate imported evidence
+or verify model claims or provider-reported usage.
 
 Two grants are required: `--allow-inference` authorizes optional provider calls,
 and `--allow-provider-source` authorizes sending the assigned packet to that

@@ -82,6 +82,7 @@ export const scalaArtifacts = {
     "sbt-deps",
     "extractSemanticDBExtractSemanticInfo",
     "posttyper",
+    "checktrail-original-features",
     "unrollDefs",
     "prepjsinterop",
     "SetRootTree",

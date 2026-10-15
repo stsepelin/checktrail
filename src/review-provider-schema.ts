@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { modelAttemptOutputSchema } from "./model-attempt-output.js";
 import { reviewFamilySchema } from "./review-hypotheses.js";
 import { reviewReceiptSchema } from "./review.js";
 
@@ -237,6 +238,7 @@ const common = {
 };
 export const reviewProviderRunSchema = z.strictObject({
   ...common,
+  responseArchive: z.array(modelAttemptOutputSchema).max(3).optional(),
   candidates: z.array(reviewCandidateSchema).max(32),
   receipt: reviewReceiptSchema.nullable(),
 });

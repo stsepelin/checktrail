@@ -1,41 +1,194 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schemaVersion": { "type": "number", "const": 1 },
-    "archive": { "type": "string", "minLength": 1, "maxLength": 4096 },
-    "sha256": {
-      "type": "string",
-      "const": "2ec08ce51e400090058ad075fff0be764c7e16fb827d299c1be0d053d425770c"
-    },
-    "profile": {
-      "type": "string",
-      "const": "jvm-source-typed-backend-output-v1"
-    },
-    "jvmTarget": { "type": "string", "enum": ["17", "21", "25"] },
-    "warningsAsErrors": { "type": "boolean" },
-    "classPath": {
-      "maxItems": 128,
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
-          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  "anyOf": [
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "archive": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "sha256": {
+          "type": "string",
+          "const": "2ec08ce51e400090058ad075fff0be764c7e16fb827d299c1be0d053d425770c"
         },
-        "required": ["path", "sha256"],
-        "additionalProperties": false
-      }
+        "profile": {
+          "type": "string",
+          "const": "jvm-source-typed-backend-output-v1"
+        },
+        "jvmTarget": { "type": "string", "enum": ["17", "21", "25"] },
+        "warningsAsErrors": { "type": "boolean" },
+        "classPath": {
+          "maxItems": 128,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            },
+            "required": ["path", "sha256"],
+            "additionalProperties": false
+          }
+        },
+        "extensions": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "const": "linux-arm64-scala3-mixed-generated-script-v1"
+            },
+            "javaSources": {
+              "maxItems": 1000,
+              "type": "array",
+              "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+            },
+            "scripts": {
+              "maxItems": 500,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "className": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                  }
+                },
+                "required": ["file", "className"],
+                "additionalProperties": false
+              }
+            },
+            "generators": {
+              "maxItems": 8,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "className": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                  },
+                  "outputs": {
+                    "minItems": 1,
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "file": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 4096
+                        },
+                        "className": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                        }
+                      },
+                      "required": ["file", "className"],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": ["source", "className", "outputs"],
+                "additionalProperties": false
+              }
+            },
+            "stages": {
+              "minItems": 1,
+              "maxItems": 8,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "sources": {
+                    "minItems": 1,
+                    "maxItems": 2000,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    }
+                  }
+                },
+                "required": ["id", "sources"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "profile",
+            "javaSources",
+            "scripts",
+            "generators",
+            "stages"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "archive",
+        "sha256",
+        "profile",
+        "jvmTarget",
+        "warningsAsErrors",
+        "classPath"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "archive": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "sha256": {
+          "type": "string",
+          "const": "9c90562f29b0a316e269474d6752bc8ec45b1cabf61d5401d7ca50407b3a9d2b"
+        },
+        "profile": {
+          "type": "string",
+          "const": "linux-arm64-scala2-typed-class-v1"
+        },
+        "jvmTarget": { "type": "string", "enum": ["17", "21", "25"] },
+        "warningsAsErrors": { "type": "boolean" },
+        "classPath": {
+          "maxItems": 128,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            },
+            "required": ["path", "sha256"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "archive",
+        "sha256",
+        "profile",
+        "jvmTarget",
+        "warningsAsErrors",
+        "classPath"
+      ],
+      "additionalProperties": false
     }
-  },
-  "required": [
-    "schemaVersion",
-    "archive",
-    "sha256",
-    "profile",
-    "jvmTarget",
-    "warningsAsErrors",
-    "classPath"
-  ],
-  "additionalProperties": false
+  ]
 }

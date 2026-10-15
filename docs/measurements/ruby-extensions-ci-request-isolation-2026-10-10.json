@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "profile": "ruby-extensions-ci-request-isolation",
+  "date": "2026-10-10",
+  "problem": {
+    "hostedJobs": ["ruby-extensions (guards-1)", "ruby-extensions (guards-3)"],
+    "requiredCallback": "ruby-extensions broken acceptance",
+    "observedResult": "Minitest was inconclusive because the three-check validation request exhausted the shared 120-second engine budget.",
+    "hostedRun": 38069625118
+  },
+  "change": {
+    "independentNativeRequests": ["broken", "fixed", "near-miss"],
+    "perEngineRequestTimeoutMs": 120000,
+    "callbackTimeoutMs": 1200000,
+    "guardProcessTimeoutMs": 1170000,
+    "productionEngineLimitsChanged": false,
+    "requiredCallbackInventoryChanged": false,
+    "requiredControlInventoryChanged": false,
+    "lifecycleDeadlinesChanged": false
+  },
+  "inputs": [
+    {
+      "file": "test/gate-ruby-extensions.test.ts",
+      "bytes": 29478,
+      "sha256": "44550e2157ce7b9b89bdbe457fc0954ead16b36537331d001582972da7a65229"
+    },
+    {
+      "file": "scripts/verify-ruby-extensions-guards.mjs",
+      "bytes": 9091,
+      "sha256": "9875f439e08f153997fefee587d6f62c8e914c4050a5fed3a7e3bbe34230197c"
+    },
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "bytes": 27770,
+      "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+    }
+  ],
+  "localValidation": {
+    "command": "npm run check",
+    "tests": 1639,
+    "passed": 942,
+    "failed": 0,
+    "skippedOptionalNative": 697,
+    "cancelled": 0,
+    "todo": 0,
+    "durationMs": 243141.464125,
+    "nativeRepairCase": {
+      "name": "ruby-extensions broken acceptance",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 63412.867226,
+      "tools": ["RuboCop 1.91.0", "RSpec Core 3.13.6", "Minitest 6.0.6"],
+      "outcomes": ["passed", "failed", "failed"],
+      "freshOriginalFixturePerTool": true
+    }
+  },
+  "fullNativeProfileRerunForRepair": false,
+  "hostedRepairAcceptancePending": true,
+  "priorCompleteNativeProfileReceipt": "ruby-extensions-2026-10-10.json",
+  "priorReceiptBindingsRemainHistorical": true,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

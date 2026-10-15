@@ -14,6 +14,18 @@ const file = path.join(repository, "dist/test/scala.test.js");
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const guards = [
   {
+    id: "native-feature-phase",
+    name: "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+    source: "scala-evidence.js",
+    replacements: [["native.featureStages !== 1 ||", "false ||"]],
+  },
+  {
+    id: "native-feature-source",
+    name: "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+    source: "scala-evidence.js",
+    replacements: [["s.featureVisits !== 1 ||", "false ||"]],
+  },
+  {
     id: "original-native-observer",
     name: "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
     source: "scala-evidence.js",
@@ -35,7 +47,9 @@ const guards = [
     id: "native-source-identity",
     name: "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
     source: "scala-evidence.js",
-    replacements: [["scalaHash(physical) !== before.nativeSha256", "false"]],
+    replacements: [
+      ["scalaHash(compiledBytes) !== before.nativeSha256", "false"],
+    ],
   },
   {
     id: "resolved-suppression-accounting",

@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "minItems": 1,
+          "maxItems": 64,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 8192 }
+        },
+        "manifests": {
+          "minItems": 1,
+          "maxItems": 64,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            },
+            "required": ["file", "sha256"],
+            "additionalProperties": false
+          }
+        },
+        "dependencies": {
+          "minItems": 1,
+          "maxItems": 512,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_]+(?:-[A-Za-z0-9_]+)*$"
+              },
+              "requirement": { "type": "string", "maxLength": 256 },
+              "groups": {
+                "minItems": 1,
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                }
+              },
+              "platforms": {
+                "maxItems": 16,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                }
+              },
+              "included": { "type": "boolean" },
+              "platformMatches": { "type": "boolean" },
+              "source": {
+                "anyOf": [
+                  { "type": "string", "maxLength": 8192 },
+                  { "type": "null" }
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "requirement",
+              "groups",
+              "platforms",
+              "included",
+              "platformMatches",
+              "source"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["sources", "manifests", "dependencies"],
+      "additionalProperties": false
+    },
+    "cases": {
+      "maxItems": 20000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "receiverFile": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "receiver": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "declaring": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "method": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "source": {
+            "type": "object",
+            "properties": {
+              "file": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "line": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 1000000
+              }
+            },
+            "required": ["file", "line"],
+            "additionalProperties": false
+          },
+          "ancestors": {
+            "minItems": 1,
+            "maxItems": 64,
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 8192 }
+          },
+          "shared": {
+            "maxItems": 64,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string", "minLength": 1, "maxLength": 8192 },
+                "inclusion": {
+                  "type": "object",
+                  "properties": {
+                    "file": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    },
+                    "line": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 1000000
+                    }
+                  },
+                  "required": ["file", "line"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["name", "inclusion"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "receiverFile",
+          "receiver",
+          "declaring",
+          "method",
+          "source",
+          "ancestors",
+          "shared"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "registeredHooks": {
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": { "type": "string", "enum": ["before", "after", "around"] },
+          "scope": { "type": "string", "enum": ["example", "context"] },
+          "source": {
+            "type": "object",
+            "properties": {
+              "file": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "line": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 1000000
+              }
+            },
+            "required": ["file", "line"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["kind", "scope", "source"],
+        "additionalProperties": false
+      }
+    },
+    "hooks": {
+      "maxItems": 100000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "caseId": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "kind": { "type": "string", "enum": ["before", "after", "around"] },
+          "source": {
+            "type": "object",
+            "properties": {
+              "file": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "line": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 1000000
+              }
+            },
+            "required": ["file", "line"],
+            "additionalProperties": false
+          },
+          "entered": { "type": "boolean" },
+          "returned": { "type": "boolean" }
+        },
+        "required": ["caseId", "kind", "source", "entered", "returned"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["manifest", "cases", "registeredHooks", "hooks"],
+  "additionalProperties": false
+}

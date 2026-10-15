@@ -27,6 +27,17 @@ import {
   DotnetGeneratedScopeError,
 } from "./dotnet-generated-collect.js";
 import { mavenHash, mavenLocal, verifyMavenTree } from "./maven.js";
+import { collectDotnetFormattingExtensions } from "./dotnet-format-extensions-collect.js";
+import {
+  dotnetFormatExtensionsConfigSchema,
+  selectedDotnetFormatterSdk,
+} from "./dotnet-format-extensions.js";
+import { collectDotnetGeneratorIdentities } from "./dotnet-generator-extensions-collect.js";
+import {
+  dotnetGeneratorExtensionsConfigSchema,
+  selectedDotnetGeneratorSdk,
+} from "./dotnet-generator-extensions.js";
+let invokeExecutable = "dotnet";
 
 const receipts: {
   phase: string;
@@ -54,7 +65,7 @@ Object.assign(env, {
 function invoke(phase: string, args: string[], cwd: string) {
   if (receipts.length >= 80) throw Error("Native call bound");
   const started = performance.now(),
-    result = spawnSync("dotnet", args, {
+    result = spawnSync(invokeExecutable, args, {
       cwd,
       env,
       encoding: "utf8",
@@ -117,7 +128,44 @@ async function main() {
     env.DOTNET_CLI_HOME = home;
     env.NUGET_HTTP_CACHE_PATH = path.join(home, "http");
     let sdk: string;
+    const generatorFlag = process.argv[4] === "--generator-extensions";
+    const generatorConfig = generatorFlag
+      ? dotnetGeneratorExtensionsConfigSchema.parse(
+          JSON.parse(process.argv[5]!),
+        )
+      : undefined;
+    const extensionFlag = process.argv[4] === "--format-extensions";
+    const extensionConfig = extensionFlag
+      ? dotnetFormatExtensionsConfigSchema.parse(JSON.parse(process.argv[5]!))
+      : undefined;
     try {
+      if (extensionFlag) {
+        if (
+          process.argv.length !== 6 &&
+          !(process.argv.length === 7 && process.argv[6] === "--version")
+        )
+          throw Error("Exact formatting extension arguments required");
+        const selected = await selectedDotnetFormatterSdk();
+        invokeExecutable = selected.executable;
+        env.DOTNET_ROOT = selected.root;
+        env.DOTNET_MULTILEVEL_LOOKUP = "0";
+        env.DOTNET_ROLL_FORWARD = "Disable";
+        env.DOTNET_CLI_UI_LANGUAGE = "en-US";
+      }
+      if (generatorFlag) {
+        if (
+          process.argv.length !== 6 &&
+          !(process.argv.length === 7 && process.argv[6] === "--version")
+        )
+          throw Error("Exact generator extension arguments required");
+        const selected = await selectedDotnetGeneratorSdk();
+        invokeExecutable = selected.executable;
+        env.DOTNET_ROOT = selected.root;
+        env.DOTNET_MULTILEVEL_LOOKUP = "0";
+        // The selected tree contains only 10.0.12; net10.0 testhosts request 10.0.0.
+        env.DOTNET_ROLL_FORWARD = "LatestPatch";
+        env.DOTNET_CLI_UI_LANGUAGE = "en-US";
+      }
       const listed = invoke("sdk", ["--list-sdks"], temporary),
         matches = listed.stdout
           .split(/\r?\n/)
@@ -458,7 +506,8 @@ async function main() {
     }
     const buildReceipts = [...receipts];
     const testData =
-      process.argv.slice(4).includes("--test") && build.status === 0
+      (generatorFlag || process.argv.slice(4).includes("--test")) &&
+      build.status === 0
         ? await collectDotnetTests({
             sdk,
             workspace,
@@ -477,6 +526,38 @@ async function main() {
       process.argv.slice(4).includes("--format-whitespace") &&
       build.status === 0
         ? await collectDotnetFormatting({
+            sdk,
+            workspace,
+            repository,
+            observer,
+            references: builtins,
+            invocation,
+            ownedPins,
+            invoke,
+            observe,
+            regular,
+          })
+        : undefined;
+    const extensionData =
+      extensionConfig && build.status === 0
+        ? await collectDotnetFormattingExtensions({
+            sdk,
+            workspace,
+            repository,
+            observer,
+            references: builtins,
+            invocation,
+            config: extensionConfig,
+            env,
+            compiledSources,
+            ownedPins,
+            observe,
+            regular,
+          })
+        : undefined;
+    const generatorIdentity =
+      generatorConfig && build.status === 0
+        ? await collectDotnetGeneratorIdentities({
             sdk,
             workspace,
             repository,
@@ -534,8 +615,11 @@ async function main() {
     };
     process.stdout.write(
       JSON.stringify(
-        process.argv.slice(4).includes("--test")
+        generatorFlag || process.argv.slice(4).includes("--test")
           ? {
+              ...(generatorFlag
+                ? { generatorIdentity: generatorIdentity ?? null }
+                : {}),
               version: 1,
               build: packet,
               testObserverSha256: testData?.observerSha256 ?? "0".repeat(64),
@@ -551,7 +635,9 @@ async function main() {
                 format: formatData ?? null,
                 nativeReceipts: receipts,
               }
-            : packet,
+            : extensionFlag
+              ? { version: 1, build: packet, extensions: extensionData ?? null }
+              : packet,
       ),
     );
   } finally {

@@ -115,16 +115,9 @@ assert.ok(
   ),
 );
 stage("supplemental");
-const supplemental = run([
-  "node",
-  "--test",
-  "--test-reporter=tap",
-  "dist/test/review-laravel-assembly-guards.test.js",
-  "dist/test/process-tree.test.js",
-]);
-assert.match(supplemental, /# pass 16\n/);
-assert.match(supplemental, /# fail 0\n/);
-assert.match(supplemental, /# skipped 0\n/);
+const supplemental = JSON.parse(
+  run(["node", "scripts/verify-laravel-supplemental.mjs"]),
+);
 stage("installed");
 const installed = JSON.parse(
   execFileSync(
@@ -154,7 +147,7 @@ process.stdout.write(
     preparedCache,
     source,
     guards,
-    supplemental: { passed: 16, failed: 0, skipped: 0 },
+    supplemental,
     installed,
     environment: {
       network: "none",

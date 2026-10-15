@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "schemaRevision": "8df8a883b68a24a104b4a9e43c1288090ae60b3b",
+  "schemas": [
+    {
+      "file": "statefulset-apps-v1.json",
+      "asset": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/8df8a883b68a24a104b4a9e43c1288090ae60b3b/v1.36.0-standalone-strict/statefulset-apps-v1.json",
+      "bytes": 739077,
+      "sha256": "cfa6579916fc2a1be0deb6372a3c67c3747a212131d0cb7b342d645f65639987"
+    },
+    {
+      "file": "daemonset-apps-v1.json",
+      "asset": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/8df8a883b68a24a104b4a9e43c1288090ae60b3b/v1.36.0-standalone-strict/daemonset-apps-v1.json",
+      "bytes": 690841,
+      "sha256": "1cee9fe50cbcbb91df4fa0eadbef134916c865037a0eba7675d4ae4c8e45a1b9"
+    },
+    {
+      "file": "job-batch-v1.json",
+      "asset": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/8df8a883b68a24a104b4a9e43c1288090ae60b3b/v1.36.0-standalone-strict/job-batch-v1.json",
+      "bytes": 709299,
+      "sha256": "f49fee30367890a492146d63c3c433a7853e9088ebfe9e25cc792ec4b1400f18"
+    },
+    {
+      "file": "cronjob-batch-v1.json",
+      "asset": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/8df8a883b68a24a104b4a9e43c1288090ae60b3b/v1.36.0-standalone-strict/cronjob-batch-v1.json",
+      "bytes": 814829,
+      "sha256": "adc506e976a783ff7ff9c12d1633a11d40a4ff6fef64e576e6fc423668f0b7c5"
+    },
+    {
+      "file": "ingress-networking-v1.json",
+      "asset": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/8df8a883b68a24a104b4a9e43c1288090ae60b3b/v1.36.0-standalone-strict/ingress-networking-v1.json",
+      "bytes": 35503,
+      "sha256": "4e0f63ad84c2bf22565e489d1f4b885ddaa9f6bf7cff1ddd562553760afe4d79"
+    },
+    {
+      "file": "secret-v1.json",
+      "asset": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/8df8a883b68a24a104b4a9e43c1288090ae60b3b/v1.36.0-standalone-strict/secret-v1.json",
+      "bytes": 17311,
+      "sha256": "de761ccb06bd1d2c641fb57397f61b68e7ff53a384f0817ce40e5ded8cee86f3"
+    },
+    {
+      "file": "namespace-v1.json",
+      "asset": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/8df8a883b68a24a104b4a9e43c1288090ae60b3b/v1.36.0-standalone-strict/namespace-v1.json",
+      "bytes": 18892,
+      "sha256": "324fae677b98d1a6d54340db0c334d053e8ffbafceb3f73326e41de2610d5843"
+    },
+    {
+      "file": "role-rbac-v1.json",
+      "asset": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/8df8a883b68a24a104b4a9e43c1288090ae60b3b/v1.36.0-standalone-strict/role-rbac-v1.json",
+      "bytes": 18914,
+      "sha256": "dfe8fb03b1642f985b57b12edd1727b6867c13ed4b6761ef81bdd51b1d236711"
+    },
+    {
+      "file": "rolebinding-rbac-v1.json",
+      "asset": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/8df8a883b68a24a104b4a9e43c1288090ae60b3b/v1.36.0-standalone-strict/rolebinding-rbac-v1.json",
+      "bytes": 18581,
+      "sha256": "b12ea4163fc37df2e02192b4291b1b7c28836e3e7665d989dd538bfcffa10076"
+    },
+    {
+      "file": "persistentvolumeclaim-v1.json",
+      "asset": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/8df8a883b68a24a104b4a9e43c1288090ae60b3b/v1.36.0-standalone-strict/persistentvolumeclaim-v1.json",
+      "bytes": 36227,
+      "sha256": "6136871ac0337f11a48da5231a2807407c7386967e3432f344141b902f6a538c"
+    }
+  ]
+}
