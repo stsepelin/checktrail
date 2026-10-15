@@ -432,6 +432,9 @@ require `--detailed --allow-review-source`; claims and declared usage remain adv
 Core validation does not call a model or upload code. Optional
 [provider review](docs/REVIEW-PROVIDERS.md) requires separate operator inference
 and source-disclosure grants; normal output hides source and candidate prose.
+[Bounded attempt outputs](docs/ATTEMPT-OUTPUTS.md) retain physical shared-engine
+command output and credential-checked API bodies under the same output grants;
+complete all-attempt and host-usage acceptance remains pending.
 
 [Native review probes](docs/REVIEW-PROBES.md) bind operator-pinned controls to
 selected source and measured function/guard execution. Native execution requires

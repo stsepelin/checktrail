@@ -224,6 +224,7 @@ export async function validate(
       timeoutMs: remaining,
       environment: activeEnvironment,
       maxOutputBytes: Math.min(outputBudget, maximum),
+      captureRawOutput: true,
       ...(options.signal ? { signal: options.signal } : {}),
     });
     outputBudget -=

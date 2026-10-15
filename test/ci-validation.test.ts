@@ -106,7 +106,7 @@ test("CI lanes preserve every original matrix command and keep distinct package 
   validatePhases(validationPhases);
   assert.deepEqual(keys(validationPhases), frozen);
   assert.equal(validationPhases.mutations.length, 14);
-  assert.equal(validationPhases.packages.length, 29);
+  assert.equal(validationPhases.packages.length, 31);
   const missing = structuredClone(validationPhases);
   missing.packages.pop();
   assert.notDeepEqual(keys(missing), frozen);
@@ -151,6 +151,41 @@ test("CI lanes preserve every original matrix command and keep distinct package 
       s.run?.includes("--full-suite gate-inventory"),
     ),
   );
+});
+test("attempt output acceptance runs once in the package lane on every existing host variant", async () => {
+  const workflow = parse(
+    await readFile(
+      new URL("../../.github/workflows/ci.yml", import.meta.url),
+      "utf8",
+    ),
+  );
+  const controllers = [
+    "scripts/verify-attempt-outputs.mjs",
+    "scripts/verify-attempt-outputs-package.mjs",
+  ];
+  for (const script of controllers) {
+    assert.deepEqual(
+      validationPhases.packages.filter(
+        (command: { script: string }) => command.script === script,
+      ),
+      [task(script)],
+      "Source and fresh installed acceptance must each run exactly once",
+    );
+    assert.equal(
+      validationPhases.mutations.filter(
+        (command: { script: string }) => command.script === script,
+      ).length,
+      0,
+    );
+    for (const id of ["checks", "host-validation"])
+      assert.equal(
+        workflow.jobs[id].steps.some((step: { run?: string }) =>
+          step.run?.includes(script),
+        ),
+        false,
+        "Controllers must use the shared lane rather than duplicate direct steps",
+      );
+  }
 });
 test("CI mutation and package lanes overlap in separate source and temporary namespaces and restore every byte", async (t) => {
   const { root, outer } = await repository(t, {
