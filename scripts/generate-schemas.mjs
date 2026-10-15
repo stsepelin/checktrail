@@ -1,4 +1,9 @@
 import {
+  reviewProvenanceInputSchema,
+  reviewProvenanceReportSchema,
+  reviewProvenanceSummarySchema,
+} from "../dist/src/review-provenance.js";
+import {
   reviewHostLeaseSummarySchema,
   reviewHostLeaseOptionsSchema,
 } from "../dist/src/review-host-lease.js";
@@ -8,6 +13,19 @@ import {
   reviewMultiReportSchema,
   reviewMultiSummarySchema,
 } from "../dist/src/review-multi-scoring.js";
+import { fsharpFormatConfigSchema } from "../dist/src/fsharp-format.js";
+import { dotnetFormatExtensionsConfigSchema } from "../dist/src/dotnet-format-extensions.js";
+import { dotnetGeneratorExtensionsConfigSchema } from "../dist/src/dotnet-generator-extensions.js";
+import { dotnetGeneratorIdentityNativeSchema } from "../dist/src/dotnet-generator-extensions-contract.js";
+import { dotnetGeneratorExtensionsPacketSchema } from "../dist/src/dotnet-generator-extensions-evidence.js";
+import {
+  dotnetFormatExtensionsNativeSchema,
+  dotnetFormatExtensionsPacketSchema,
+} from "../dist/src/dotnet-format-extensions-contract.js";
+import {
+  fsharpNativeSchema,
+  fsharpPacketSchema,
+} from "../dist/src/fsharp-format-contract.js";
 import { capturedProcessOutputSchema } from "../dist/src/process-output.js";
 import { windowsExecutionSchema } from "../dist/src/windows-execution.js";
 import {
@@ -16,15 +34,24 @@ import {
   importContextSummarySchema,
 } from "../dist/src/import-context.js";
 import { cppToolsConfigSchema } from "../dist/src/cpp-tools.js";
+import { cppExtensionsConfigSchema } from "../dist/src/cpp-extensions-contract.js";
 import { terraformConfigSchema } from "../dist/src/terraform.js";
+import { terraformExtensionsConfigSchema } from "../dist/src/terraform-extensions-contract.js";
 import { kubeconformConfigSchema } from "../dist/src/kubeconform.js";
 import { kustomizeConfigSchema } from "../dist/src/kustomize.js";
 import { helmConfigSchema } from "../dist/src/helm.js";
+import { helmExtensionsConfigSchema } from "../dist/src/helm-extensions-contract.js";
 import { swiftToolsConfigSchema } from "../dist/src/swift-tools.js";
+import { swiftExtensionsConfigSchema } from "../dist/src/swift-extensions-contract.js";
 import {
   rubyToolsConfigSchema,
   rubyToolsRepositorySchema,
 } from "../dist/src/ruby-tools.js";
+import {
+  rubyExtensionsPolicySchema,
+  rubyExtensionsManifestWitnessSchema,
+  rubyExtensionsRuntimeWitnessSchema,
+} from "../dist/src/ruby-extensions-contract.js";
 import { mkdir, writeFile } from "node:fs/promises";
 import { URL } from "node:url";
 import { z } from "zod";
@@ -176,13 +203,29 @@ for (const [name, schema] of Object.entries({
   "go-build-policy": goBuildPolicySchema,
   "rust-build-policy": rustBuildPolicySchema,
   "dotnet-config": dotnetConfigSchema,
+  "fsharp-format-config": fsharpFormatConfigSchema,
+  "dotnet-generator-extensions-config": dotnetGeneratorExtensionsConfigSchema,
+  "dotnet-generator-extensions-native": dotnetGeneratorIdentityNativeSchema,
+  "dotnet-generator-extensions-packet": dotnetGeneratorExtensionsPacketSchema,
+  "dotnet-format-extensions-config": dotnetFormatExtensionsConfigSchema,
+  "dotnet-format-extensions-native": dotnetFormatExtensionsNativeSchema,
+  "dotnet-format-extensions-packet": dotnetFormatExtensionsPacketSchema,
+  "fsharp-format-native": fsharpNativeSchema,
+  "fsharp-format-packet": fsharpPacketSchema,
   "cpp-tools-config": cppToolsConfigSchema,
+  "cpp-extensions-config": cppExtensionsConfigSchema,
   "kubeconform-config": kubeconformConfigSchema,
   "kustomize-config": kustomizeConfigSchema,
   "helm-config": helmConfigSchema,
+  "helm-extensions-config": helmExtensionsConfigSchema,
   "terraform-config": terraformConfigSchema,
+  "terraform-extensions-config": terraformExtensionsConfigSchema,
   "swift-tools-config": swiftToolsConfigSchema,
+  "swift-extensions-config": swiftExtensionsConfigSchema,
   "ruby-tools-config": rubyToolsConfigSchema,
+  "ruby-extensions-policy": rubyExtensionsPolicySchema,
+  "ruby-extensions-manifest": rubyExtensionsManifestWitnessSchema,
+  "ruby-extensions-native": rubyExtensionsRuntimeWitnessSchema,
   "ruby-tools-repository": rubyToolsRepositorySchema,
   "dotnet-build-config": dotnetBuildConfigSchema,
   "dotnet-build-repository": dotnetBuildRepositorySchema,
@@ -270,6 +313,9 @@ for (const [name, schema] of Object.entries({
   "review-probe-summary": reviewProbeSummarySchema,
   "review-provider-config": reviewProviderConfigSchema,
   "review-candidate": reviewCandidateSchema,
+  "review-provenance-input": reviewProvenanceInputSchema,
+  "review-provenance-report": reviewProvenanceReportSchema,
+  "review-provenance-summary": reviewProvenanceSummarySchema,
   "review-claim-probability": reviewClaimProbabilitySchema,
   "review-model-output": reviewModelOutputSchema,
   "review-provider-run": reviewProviderRunSchema,

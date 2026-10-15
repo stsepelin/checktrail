@@ -1,0 +1,1522 @@
+{
+  "schemaVersion": 1,
+  "profile": "swift-extensions",
+  "recordedDate": "2026-10-10",
+  "scope": "Original synthetic selected Linux local package products/build-tool plugin/generated Swift sources and Foundation/Glibc/XCTest/Swift Testing SDK participation. No inference, held-out scoring or field evaluation.",
+  "inventoryScopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+  "sourceBaseCommit": "f4c06c0d6f1083dabae5a4bb9291ca0bed24ad32",
+  "testedImplementationFileBindings": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "bytes": 93267,
+      "sha256": "51d682cea5519f3fd0b12f81760030a5abbe0ea2c6f38a1e093e8c93584cd250"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "bytes": 16026,
+      "sha256": "3fa8080298c1860b91624812515744b7671fb410fed734ab0fa892f6193fc6a2"
+    },
+    {
+      "file": "schemas/swift-extensions-config.schema.json",
+      "bytes": 9126,
+      "sha256": "cf6e977bbc67c87a033049314507444d45900bdf1c8864994013d95d03d099ca"
+    },
+    {
+      "file": "scripts/cleanup-swift-extensions-runtime.mjs",
+      "bytes": 1545,
+      "sha256": "bc50e17959e1f57d884be27349593ce91526893c36ecae7a5f24ff63e2824333"
+    },
+    {
+      "file": "scripts/collect-swift-extensions-sdk.mjs",
+      "bytes": 3431,
+      "sha256": "d565442a2ac48f0f3b8f07328fd56d3ae60b99666357e6b24135c929a773b50d"
+    },
+    {
+      "file": "scripts/prepare-swift-extensions-runtime.mjs",
+      "bytes": 7255,
+      "sha256": "1de53d4b889e7e7391992b115f6af8a3f95dfcc22715d50bbdafa27c39015573"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "bytes": 185746,
+      "sha256": "dd35adb61b1042e106ba8a1f7d212ea2d417678518eaa23967e6c837caf14815"
+    },
+    {
+      "file": "scripts/swift-extensions-tools.Dockerfile",
+      "bytes": 678,
+      "sha256": "454043eec71ca1999031bbeb8d580fdecad7fc774dcded0894543f529b9a5528"
+    },
+    {
+      "file": "scripts/verify-import-context-package.mjs",
+      "bytes": 26803,
+      "sha256": "b37e34e779bf7ad0e450475166de9af7b8cac2797e9c7c09ff95e57b4c15f6d5"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "bytes": 4585,
+      "sha256": "c1d3ded3290b94d917b1c7042c33f9d2ad3a9d82f59d515705530c39fa69bc21"
+    },
+    {
+      "file": "scripts/verify-swift-extensions-container.mjs",
+      "bytes": 9438,
+      "sha256": "834d92941bb6d453cd0e1ee4bf7d098219baab12f426bea0628df26bb47e414f"
+    },
+    {
+      "file": "scripts/verify-swift-extensions-guards.mjs",
+      "bytes": 10417,
+      "sha256": "7386cfd555073c7127141e12c7b836f4de7fb2b5a07e5bfbc4f1c895a47c4872"
+    },
+    {
+      "file": "src/adapters.ts",
+      "bytes": 23454,
+      "sha256": "cebe338c10cd969325b7dab29cdcdf406342030343baf84834f600695a7a1854"
+    },
+    {
+      "file": "src/engine.ts",
+      "bytes": 11241,
+      "sha256": "103d31324eecbb0baf396f4d8d0b18a7eb5ed0bfc51079c878dc046107ca1620"
+    },
+    {
+      "file": "src/evidence.ts",
+      "bytes": 21799,
+      "sha256": "d44c8085ef134e5560146e155d24d697682e724411876cdc1240cd6b89f1beb8"
+    },
+    {
+      "file": "src/index.ts",
+      "bytes": 9010,
+      "sha256": "8e6be3f2c71936a9d85e6b249c769df29c600da7d477495deda04aff48cb60eb"
+    },
+    {
+      "file": "src/swift-extensions-contract.ts",
+      "bytes": 10687,
+      "sha256": "468b04394e3ccd432521994ff8fa011d1c6cd22b0732be8ffdf32bb910427233"
+    },
+    {
+      "file": "src/swift-extensions-evidence.ts",
+      "bytes": 17917,
+      "sha256": "49895d190933d17a0836f6040238e96278393533beb966e5936cb47770c4d5be"
+    },
+    {
+      "file": "src/swift-extensions-freshness.ts",
+      "bytes": 3628,
+      "sha256": "fc8e340b0e0ca0439962ddfd11b878c7e6894bdcf6a38103760803e8a6685ebb"
+    },
+    {
+      "file": "src/swift-extensions-graph.ts",
+      "bytes": 8659,
+      "sha256": "8fb2ea9e8b319da1a1166f9f5592bb6423ec39ee0047b6a8536ca47bd75a8d21"
+    },
+    {
+      "file": "src/swift-extensions-native.ts",
+      "bytes": 6057,
+      "sha256": "feb2ea01cfae383f6450f1ce6df58a8b2973f7da13a888acc578a48d4a254767"
+    },
+    {
+      "file": "src/swift-extensions-physical.ts",
+      "bytes": 3661,
+      "sha256": "3d37955e744a43af60a7bde43a6ca64dead81327e9bcf71e501a8ea1d0390805"
+    },
+    {
+      "file": "src/swift-extensions-runner.ts",
+      "bytes": 14706,
+      "sha256": "c237d45b710bb274d47bca40f43797c93fa1b444da4cbd315a3bfeff1044ffc9"
+    },
+    {
+      "file": "src/swift-extensions-sdk.ts",
+      "bytes": 11118,
+      "sha256": "ae758e7dac7ddb462a1895c9f34dbd250924b164262dfa0c32064800811c365d"
+    },
+    {
+      "file": "src/swift-extensions.ts",
+      "bytes": 3117,
+      "sha256": "926d09c148351a6f012e252b37fe89d8bab49ce9a0106e4ac29d3bca9eaf7503"
+    },
+    {
+      "file": "src/swift-native.ts",
+      "bytes": 9599,
+      "sha256": "9968ae0d59fc34dd16440b9ab1d1bb9fcd75cbc35a50781ea66d9966dff95748"
+    },
+    {
+      "file": "src/swift-testing.ts",
+      "bytes": 13968,
+      "sha256": "1a450bf1d7f29fc8e68ba0e4ac3ea7b599acb97c00085a3b098d2dee38357341"
+    },
+    {
+      "file": "src/swift-tools-evidence.ts",
+      "bytes": 16307,
+      "sha256": "e45b0ac4c8a30e5aa9391278909715c68e67499ba229eb98ead4d9b0b47ce62a"
+    },
+    {
+      "file": "src/swift-version-runner.ts",
+      "bytes": 1289,
+      "sha256": "30e33dd5d5a58737460bf6d2ccb54a5d1fd76b02bc568b9f80c1f0c8ce17fce9"
+    },
+    {
+      "file": "src/swift-xctest.ts",
+      "bytes": 5916,
+      "sha256": "8fde2a2b7b88cbd5134d8f7cb3ff8e2e637271317f0a75f80dd8f9d861491ec5"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "bytes": 27569,
+      "sha256": "2181936b5781b4d5393b82bb1cba861c112f6343d508d3f73dd6d0905defae28"
+    },
+    {
+      "file": "src/types.ts",
+      "bytes": 5729,
+      "sha256": "0ff165616692dbf6cfbb2f06d3e775f3cc5f705e1cad781ada886231bffca88e"
+    },
+    {
+      "file": "test/gate-swift-extensions.test.ts",
+      "bytes": 23556,
+      "sha256": "690b1c810b2182333f4d6b405dca5542f3b513eab36f027f635d4f309b536a39"
+    },
+    {
+      "file": "test/swift-extensions-config.test.ts",
+      "bytes": 6091,
+      "sha256": "fc15a9034e05a1df7c7d88b2e6ac8ca2aa9e22b3c45dbcee6eaba3ce4223d7a6"
+    },
+    {
+      "file": "test/swift-extensions-fixture.ts",
+      "bytes": 15306,
+      "sha256": "b13e5d4b0a2253ed844db1b54afb51b2f9e179982817ebc6ed96c2dad54405bc"
+    },
+    {
+      "file": "test/swift-extensions-planning.test.ts",
+      "bytes": 4333,
+      "sha256": "d5e702fc71e4d27d86c28893127fc4eb3acb78671075f41c7154731459459056"
+    },
+    {
+      "file": "test/swift-extensions-sdk.test.ts",
+      "bytes": 9171,
+      "sha256": "80000ce3a8d78c22237a52e8914145f899b185bfa0b11f326d77a4762c00fba0"
+    }
+  ],
+  "testedEmittedFileBindings": [
+    {
+      "file": "dist/src/adapters.d.ts",
+      "bytes": 3469,
+      "sha256": "bf65b1e41e81d5ebed5d8f8f4117565b1582cdac07c2c260e6e4ad77a1b81494"
+    },
+    {
+      "file": "dist/src/adapters.js",
+      "bytes": 26137,
+      "sha256": "14a847c6703a9bc7471e6abb1d2527a048bc822f829f1eb8e9a5a94d8db7b98f"
+    },
+    {
+      "file": "dist/src/engine.d.ts",
+      "bytes": 746,
+      "sha256": "19c13e8c1926138610674e0a9e440492cb05c8b42832c60812c99b4e7c59b0d6"
+    },
+    {
+      "file": "dist/src/engine.js",
+      "bytes": 11409,
+      "sha256": "6c45bcc312f6f53487813f72d98826862c588224c3e124ec73f27b64580b5454"
+    },
+    {
+      "file": "dist/src/evidence.d.ts",
+      "bytes": 173,
+      "sha256": "5a41b7be9b1c1b21687d3c5e286ada4cc3157e51dd7aa488d2d7d3876a646de4"
+    },
+    {
+      "file": "dist/src/evidence.js",
+      "bytes": 22322,
+      "sha256": "68f1ef7c97ec805f2fb90fddb73e35ce40116b2546aebbf6f2e5164c8937ea36"
+    },
+    {
+      "file": "dist/src/index.d.ts",
+      "bytes": 8663,
+      "sha256": "8681d9ba61c48f630bb29eec6807af324f2a83bc1ce900d0da2d08fd9cff0f11"
+    },
+    {
+      "file": "dist/src/index.js",
+      "bytes": 5249,
+      "sha256": "3c0f9bd6e52e116b17ea1b81014bac5f0c49ffe0a7b2b4f5c654fb1a35583dcc"
+    },
+    {
+      "file": "dist/src/swift-extensions-contract.d.ts",
+      "bytes": 4233,
+      "sha256": "7b90a3ba9f999503a662596d5fb2a4b1ced979da7211bf4a6581187046b1f51e"
+    },
+    {
+      "file": "dist/src/swift-extensions-contract.js",
+      "bytes": 10230,
+      "sha256": "8781f287af7b12dbe09aa66eb830f0b5d924c542786ef6d731017fb66fa75993"
+    },
+    {
+      "file": "dist/src/swift-extensions-evidence.d.ts",
+      "bytes": 238,
+      "sha256": "302ee915e1b8c72f2fcac9d18ee2211da59b0c0589096c17fc17d2b0a591195f"
+    },
+    {
+      "file": "dist/src/swift-extensions-evidence.js",
+      "bytes": 17615,
+      "sha256": "bc727c7edd90dcf352c37ed4e38e57f1254453ccadefd27124b598a9c82cc159"
+    },
+    {
+      "file": "dist/src/swift-extensions-freshness.d.ts",
+      "bytes": 2055,
+      "sha256": "2f612584505d15adad5436e45253abe5ac9feadadd799dd6ff80cc0c9cde2dc9"
+    },
+    {
+      "file": "dist/src/swift-extensions-freshness.js",
+      "bytes": 3426,
+      "sha256": "236022461c446eeded79eecfd387cf1c87a0a320d0d0766e732d4cb9a2a7b9be"
+    },
+    {
+      "file": "dist/src/swift-extensions-graph.d.ts",
+      "bytes": 359,
+      "sha256": "efff21e5029b42376533aa2c084d3cb1eb565eb06d97f8512db3c13d858653ca"
+    },
+    {
+      "file": "dist/src/swift-extensions-graph.js",
+      "bytes": 8356,
+      "sha256": "2b3078a5b39c1b4d8434fe1e28308fe399587b1db968dcc606d62fedf09d814e"
+    },
+    {
+      "file": "dist/src/swift-extensions-native.d.ts",
+      "bytes": 5738,
+      "sha256": "db07248b99279b81da5279706e7c06cfe1af05e88d5b50c6314f9a307fcc18e6"
+    },
+    {
+      "file": "dist/src/swift-extensions-native.js",
+      "bytes": 5893,
+      "sha256": "8890eef1c76acad235242c56250d9eb16fde7955f65c40a680f39664558c2017"
+    },
+    {
+      "file": "dist/src/swift-extensions-physical.d.ts",
+      "bytes": 719,
+      "sha256": "4bd209c1a0a97f9b60064113cc19c9be6628e329836276df8572690b0946ef01"
+    },
+    {
+      "file": "dist/src/swift-extensions-physical.js",
+      "bytes": 3522,
+      "sha256": "df764810885427e10e52dc8af12dd08bbbe4cf99b76cdfa9f1561a9b76d2e145"
+    },
+    {
+      "file": "dist/src/swift-extensions-runner.d.ts",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "dist/src/swift-extensions-runner.js",
+      "bytes": 14849,
+      "sha256": "b7c547fa774adb2706dddc146d0d9b2a82d72f7eaa8a0c99870d4db1c7dd2f9d"
+    },
+    {
+      "file": "dist/src/swift-extensions-sdk.d.ts",
+      "bytes": 803,
+      "sha256": "c32af4a2e8043fdd1c7a400ac7ffe53120ee8943d4ab9c5fc78e6c748ace9060"
+    },
+    {
+      "file": "dist/src/swift-extensions-sdk.js",
+      "bytes": 10854,
+      "sha256": "f3ea5a2f157556c34c3a61d00016250b8650c0b6183466f9e9e6b243515e5874"
+    },
+    {
+      "file": "dist/src/swift-extensions.d.ts",
+      "bytes": 2394,
+      "sha256": "e70bf2a02b5071107fb03e44a3c5af2e8f5ad208748d4d40997d98bc3be8c6fc"
+    },
+    {
+      "file": "dist/src/swift-extensions.js",
+      "bytes": 2981,
+      "sha256": "9f8ed9ab9392cf56d77b17e361cbe3b1d681a14ec2617c7e1b460114197dcc10"
+    },
+    {
+      "file": "dist/src/swift-native.d.ts",
+      "bytes": 1803,
+      "sha256": "fe11db6328a818ac69cacab37452a0f4eb67355bb3e25f4c95a142b396d575d1"
+    },
+    {
+      "file": "dist/src/swift-native.js",
+      "bytes": 9272,
+      "sha256": "b9a5cce97af720577e3c6e86eadc450fc9c2f948c452a751b9e3f47ae4051599"
+    },
+    {
+      "file": "dist/src/swift-testing.d.ts",
+      "bytes": 512,
+      "sha256": "63f4626a4cd533890c5761f4e7eede03961cf11efc7008f8203dc7577969878a"
+    },
+    {
+      "file": "dist/src/swift-testing.js",
+      "bytes": 13642,
+      "sha256": "5fb32b842a89470e3d9562b8bc499be3e3ee0396947fdd6edd594566832864a6"
+    },
+    {
+      "file": "dist/src/swift-tools-evidence.d.ts",
+      "bytes": 1445,
+      "sha256": "2644c1fbcaee4977b93a26e6a39d9c728ed34cf17732052e4dd3e2b7dcf66cd5"
+    },
+    {
+      "file": "dist/src/swift-tools-evidence.js",
+      "bytes": 15819,
+      "sha256": "8e1b1dbd2a4cd6aabce2b28c0e61dcd6bad26d060851443d724ba86edc67b94b"
+    },
+    {
+      "file": "dist/src/swift-version-runner.d.ts",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "dist/src/swift-version-runner.js",
+      "bytes": 1322,
+      "sha256": "35058c5632a371d5b8a18c4dca5c039049a8fc03727de1e2ec8bcd54c06c6ce7"
+    },
+    {
+      "file": "dist/src/swift-xctest.d.ts",
+      "bytes": 558,
+      "sha256": "b3eba5853422ab62bfc94f87624426a373a65cce80a07f93a90adc6c62e9cd3c"
+    },
+    {
+      "file": "dist/src/swift-xctest.js",
+      "bytes": 5607,
+      "sha256": "ae02f0b7350733713e60ca7906b694658d733a6878415aad4be6b802b17e3aff"
+    },
+    {
+      "file": "dist/src/tool-versions.d.ts",
+      "bytes": 330,
+      "sha256": "3e5778e623146694d4a6e67f01ed2cf54da69d3634f2ac8084496fbb0cc87052"
+    },
+    {
+      "file": "dist/src/tool-versions.js",
+      "bytes": 29596,
+      "sha256": "fd0d8e315a1e559c959f5e5986bba2f7b5223bce082d00b7c0abd0e9af5cb09b"
+    },
+    {
+      "file": "dist/src/types.d.ts",
+      "bytes": 5921,
+      "sha256": "b11de4a44ef1b96d75a0c987814bf07ce67351a7378ee74873a4499eead3975d"
+    },
+    {
+      "file": "dist/src/types.js",
+      "bytes": 1430,
+      "sha256": "5898f74dc296fa75b8b6c28f1016e64b1819e488bcf7781b452da99e0bd5422c"
+    },
+    {
+      "file": "dist/test/engine.test.d.ts",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "dist/test/engine.test.js",
+      "bytes": 6298,
+      "sha256": "d6fd8d8f41da35d9eed38252d2a9572afa46281621d8a2db18410f82fdaef022"
+    },
+    {
+      "file": "dist/test/evidence.test.d.ts",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "dist/test/evidence.test.js",
+      "bytes": 8737,
+      "sha256": "d14bb9b746b0e02c1d7fa4973e6723e6e7f480e055dc560b11e2041ba7d00727"
+    },
+    {
+      "file": "dist/test/swift-extensions-fixture.d.ts",
+      "bytes": 3775,
+      "sha256": "6ef88fa8a3518ea6ff21cbc0cbbecf0c6918a78d7a1ba30b2da0d34a1564b244"
+    },
+    {
+      "file": "dist/test/swift-extensions-fixture.js",
+      "bytes": 16029,
+      "sha256": "be876e848711afe7a501eb860277ab055cdd985a47d5476261e6a108144bd762"
+    },
+    {
+      "file": "dist/test/swift-extensions-sdk.test.d.ts",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "dist/test/swift-extensions-sdk.test.js",
+      "bytes": 9871,
+      "sha256": "48a0184e47939829daa8ace8ab4f2a2a84367871aa18faabe463d35f03e7b88c"
+    },
+    {
+      "file": "dist/test/swift-native.test.d.ts",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "dist/test/swift-native.test.js",
+      "bytes": 2842,
+      "sha256": "ad8e479f3b5b97a39fb6b7b3e0de21e66733968b98db9a0ac57426b2bb71249b"
+    },
+    {
+      "file": "dist/test/swift-testing.test.d.ts",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "dist/test/swift-testing.test.js",
+      "bytes": 5506,
+      "sha256": "dc4200e3792c6c351dc1c9988845b68fc0aafcb236c7825e60416421123a783d"
+    },
+    {
+      "file": "dist/test/tool-versions.test.d.ts",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "dist/test/tool-versions.test.js",
+      "bytes": 10713,
+      "sha256": "77dbc4d7014f26b2129afb08706082af222bcebf712bf7130011a51ab0cabd33"
+    }
+  ],
+  "frozenAcceptanceInputs": {
+    "files": 3201,
+    "manifestSha256": "e4ea5521c33bfad9fa1a0cfe15577f974014360f5f1d18c4e7248ec8cb7b4940",
+    "unchangedAtAcceptanceCompletion": true,
+    "scope": "All source/test/script/schema/example files, emitted dist/src and dist/test files, package and lock, TypeScript/lint configuration and workflow. Full manifest retained privately."
+  },
+  "nativeImage": "sha256:26e6d37c49f6ee544cec7ababf79cf63897bb3141e6a17a282cced864ad009a9",
+  "sdk": {
+    "pins": 2883,
+    "bytes": 93011176,
+    "manifestSha256": "e70e780df8db4d72c99bb408bff6ae1d56d76c52165528a842f163bcca09af6d",
+    "selectedPhysicalClosure": true,
+    "wholeOsPublisherLicenseClosure": false
+  },
+  "acceptance": {
+    "runtime": {
+      "node": {
+        "version": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "bytes": 122159120,
+        "sha256": "1a638b0fe2b68da0489276aca95526c5122fc61ba54d6a2d0d00c1c92ab7b876"
+      },
+      "swift": "Swift version 6.2.3 (swift-6.2.3-RELEASE)\nTarget: aarch64-unknown-linux-gnu",
+      "swiftpm": "Swift Package Manager - Swift 6.2.3",
+      "swiftlint": "0.65.1",
+      "npm": "10.9.8",
+      "tools": [
+        {
+          "name": "swift",
+          "bytes": 37101824,
+          "sha256": "0131dbd9806bb8f9fcf53dae1cb0803cfcb3798c00018119a29007be0d265409"
+        },
+        {
+          "name": "swiftc",
+          "bytes": 37101824,
+          "sha256": "0131dbd9806bb8f9fcf53dae1cb0803cfcb3798c00018119a29007be0d265409"
+        },
+        {
+          "name": "swift-frontend",
+          "bytes": 201312208,
+          "sha256": "b0e96035475c7d21919955e649df9157ffdd62ae0453d539b9dd16f1c1aee860"
+        },
+        {
+          "name": "swiftlint",
+          "bytes": 91877032,
+          "sha256": "4c02101342ad8e82ac57e702cbc50ff626268bd08f66735e0ce5cec0c0a29a57"
+        }
+      ],
+      "os": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n"
+    },
+    "environment": {
+      "network": "none",
+      "readOnlyRoot": true,
+      "user": "1000:1000",
+      "cpuLimit": 2,
+      "memoryBytes": 3221225472,
+      "pidLimit": 256,
+      "tmpfsBytes": 2147483648
+    },
+    "concurrency": {
+      "maxNativeContainers": 2,
+      "aggregateCpuLimit": 4,
+      "aggregateMemoryBytes": 6442450944,
+      "sharedWritableFixtures": false
+    },
+    "baselineProfiles": ["swift", "swift-tools"],
+    "baseline": {
+      "timeoutMs": 300000,
+      "profiles": [
+        {
+          "profile": "swift",
+          "required": 1
+        },
+        {
+          "profile": "swift-tools",
+          "required": 9
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 11,
+      "required": 10,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 11,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "ec754164b08d7acd94e219edb3ea8b50eab20a242f1e911ebcfa0b2f42a04d5e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "ec754164b08d7acd94e219edb3ea8b50eab20a242f1e911ebcfa0b2f42a04d5e"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "9611e8c7d5580299fa115cf795b5325b539b92bd0f744e2bed0c6a29ce02d040"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "9611e8c7d5580299fa115cf795b5325b539b92bd0f744e2bed0c6a29ce02d040"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "9cc76bab96de1f9b8cbbb23bfdf9db4a76b5daf03e8ab2d9e927828fe666e358"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "9cc76bab96de1f9b8cbbb23bfdf9db4a76b5daf03e8ab2d9e927828fe666e358"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "dc4200e3792c6c351dc1c9988845b68fc0aafcb236c7825e60416421123a783d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "dc4200e3792c6c351dc1c9988845b68fc0aafcb236c7825e60416421123a783d"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "2e59de839002355536d6cb452ac2f8aab69b5306e232998e7386abcbefbd5659"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2e59de839002355536d6cb452ac2f8aab69b5306e232998e7386abcbefbd5659"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-6",
+            "before": {
+              "state": "present",
+              "sha256": "6a035c21ff8c6d00f8954bb503fc5b9d405505b913a788a04f81cf88c438e66e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "6a035c21ff8c6d00f8954bb503fc5b9d405505b913a788a04f81cf88c438e66e"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Swift planning covers exact Swift sources and never evaluates a package manifest",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 21.264893,
+            "required": false
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native Swift syntax checks the public package without manifest execution, catches broken grammar and distinguishes parsing from type checking",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 267.897424,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-2",
+            "name": "native Swift build and XCTest bind complete compiler scope and two callbacks across support files with regression and repair",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 39368.071439,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-2",
+            "name": "native SwiftLint explicit rules reconcile every source and expose forced unwrap diagnostics with literal near miss and repair",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3218.348358,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6197.328525,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-3",
+            "name": "native Swift XCTest empty skipped setup and teardown cases preserve complete lifecycle accounting",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 30272.767041,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-3",
+            "name": "native Swift protects startup filters and refuses stale copied source omitted manifest scope and unaudited inline suppression",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13633.235991,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-4",
+            "name": "native Swift Testing binds macro source methods and parameter cases with regression repair disabled and empty-case accounting",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 32009.817204,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-4",
+            "name": "native Swift Testing event source IDs case lifecycles XML methods and issues cannot be forged into passing evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5130.696572,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-5",
+            "name": "native Swift CLI and negotiated MCP preserve source failures summary privacy and operator-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25453.35627,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-6",
+            "name": "native Swift cancellation reaches an XCTest body and reaps compiled helpers descendants and owned outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5873.142515,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "native Swift syntax checks the public package without manifest execution, catches broken grammar and distinguishes parsing from type checking",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Swift build and XCTest bind complete compiler scope and two callbacks across support files with regression and repair",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native SwiftLint explicit rules reconcile every source and expose forced unwrap diagnostics with literal near miss and repair",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Swift XCTest empty skipped setup and teardown cases preserve complete lifecycle accounting",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Swift protects startup filters and refuses stale copied source omitted manifest scope and unaudited inline suppression",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Swift Testing binds macro source methods and parameter cases with regression repair disabled and empty-case accounting",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Swift Testing event source IDs case lifecycles XML methods and issues cannot be forged into passing evidence",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Swift CLI and negotiated MCP preserve source failures summary privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Swift cancellation reaches an XCTest body and reaps compiled helpers descendants and owned outputs",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          }
+        ]
+      }
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "source": {
+      "timeoutMs": 1200000,
+      "profile": "swift-extensions",
+      "fileWorkerLimit": 1,
+      "requiredCaseWorkerLimit": 1,
+      "timeoutScope": "one fresh process per required named case",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "2c3ebb33afb71815fcfeb1f131606370906b212d6373f905c7e5bbc601fa145d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2c3ebb33afb71815fcfeb1f131606370906b212d6373f905c7e5bbc601fa145d"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "swift-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 19456.675758,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "swift-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 40420.362968,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "swift-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 32754.169497,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "swift-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 589.882502,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "swift-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8788.353755,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "swift-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 27037.993406,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "swift-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 46038.506099,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "swift-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 44122.268025,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "swift-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 253035.108152,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "swift-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "swift-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "swift-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "swift-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "swift-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "swift-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "swift-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "swift-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "swift-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "cbae9aef5b9428822861b1ad5fe4f666466bbbbd7fa419043865ea11b43ca75a",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 1200000,
+        "profile": "swift-extensions",
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2c3ebb33afb71815fcfeb1f131606370906b212d6373f905c7e5bbc601fa145d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2c3ebb33afb71815fcfeb1f131606370906b212d6373f905c7e5bbc601fa145d"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "swift-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 21881.146248,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "swift-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 43570.571084,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "swift-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 40207.505927,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "swift-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 671.753759,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "swift-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 11255.230715,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "swift-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 30989.907101,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "swift-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 52883.706077,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "swift-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 43138.246518,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "swift-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.51926,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "swift-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "swift-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "swift-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "swift-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "swift-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "swift-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "swift-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "swift-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "swift-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "guards": {
+      "schemaVersion": 1,
+      "profile": "swift-extensions",
+      "shard": "all",
+      "fullControlInventory": [
+        "cancelled-retained-packet",
+        "current-physical-input-bytes",
+        "complete-current-input-tree",
+        "physical-compiler-role-cohort",
+        "native-header-mapping-denominator",
+        "native-testing-macro-cohort",
+        "complete-declared-implicit-products",
+        "xctest-discovery-denominator",
+        "native-tool-after-bytes",
+        "native-sdk-after-bytes",
+        "complete-generated-after-tree",
+        "pinned-sdk-before-project-dsl",
+        "native-xctest-selection",
+        "native-testing-selection",
+        "native-compiler-declaration-mode"
+      ],
+      "controls": [
+        {
+          "id": "cancelled-retained-packet",
+          "callback": "swift-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "bc727c7edd90dcf352c37ed4e38e57f1254453ccadefd27124b598a9c82cc159",
+          "mutantSha256": "94e8c90b3e0c744e2d60e1a767f92c9be69ae556cbea1bc674a90b967b8cb574"
+        },
+        {
+          "id": "current-physical-input-bytes",
+          "callback": "swift-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "236022461c446eeded79eecfd387cf1c87a0a320d0d0766e732d4cb9a2a7b9be",
+          "mutantSha256": "cd927651d5fbce83fead597e8aaa6c02495f6516898db557967977f9fbc7cb8f"
+        },
+        {
+          "id": "complete-current-input-tree",
+          "callback": "swift-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "236022461c446eeded79eecfd387cf1c87a0a320d0d0766e732d4cb9a2a7b9be",
+          "mutantSha256": "6c569bcdda2aa6d4d2a396b7d81bf099c33ff1e3451c2d31565803e5c26cb557"
+        },
+        {
+          "id": "physical-compiler-role-cohort",
+          "callback": "swift-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8890eef1c76acad235242c56250d9eb16fde7955f65c40a680f39664558c2017",
+          "mutantSha256": "32f79a54bfbfcb398f5f2c9d878b9381fea891c3754eda2ba37d13c330d67181"
+        },
+        {
+          "id": "native-header-mapping-denominator",
+          "callback": "swift-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "f3ea5a2f157556c34c3a61d00016250b8650c0b6183466f9e9e6b243515e5874",
+          "mutantSha256": "2584b921277a81dca87d3d0c9a72790c8eed8aa12bfa9f74b5b8a3305ffeef77"
+        },
+        {
+          "id": "native-testing-macro-cohort",
+          "callback": "swift-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "f3ea5a2f157556c34c3a61d00016250b8650c0b6183466f9e9e6b243515e5874",
+          "mutantSha256": "a30696e3e46aa069fe6fbca109e773f6cda29d422380f5b8356cc7fa35466b19"
+        },
+        {
+          "id": "complete-declared-implicit-products",
+          "callback": "swift-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "2b3078a5b39c1b4d8434fe1e28308fe399587b1db968dcc606d62fedf09d814e",
+          "mutantSha256": "d6ad4b6b60a475a06ccc2b84cf0c4e886bcfb9c1d6cd6bbf1facf9ce28f552be"
+        },
+        {
+          "id": "xctest-discovery-denominator",
+          "callback": "swift-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "ae02f0b7350733713e60ca7906b694658d733a6878415aad4be6b802b17e3aff",
+          "mutantSha256": "316d830358e692cbb85d6f7e17541ea6ecb45d4147de2edc20d27aac7254453b"
+        },
+        {
+          "id": "native-tool-after-bytes",
+          "callback": "swift-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "bc727c7edd90dcf352c37ed4e38e57f1254453ccadefd27124b598a9c82cc159",
+          "mutantSha256": "807c261d588224045af5093f2ce9d1732c240a1cff4a4931cbea9eea653deee4"
+        },
+        {
+          "id": "native-sdk-after-bytes",
+          "callback": "swift-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "bc727c7edd90dcf352c37ed4e38e57f1254453ccadefd27124b598a9c82cc159",
+          "mutantSha256": "096eea37e6f7c75cddc12a0972d05a895639c9bbf8d44712162b0793c5a160f1"
+        },
+        {
+          "id": "complete-generated-after-tree",
+          "callback": "swift-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "bc727c7edd90dcf352c37ed4e38e57f1254453ccadefd27124b598a9c82cc159",
+          "mutantSha256": "6b279970e5be34f125ae8c7c733f510274eb1e6cb0e7a4bd75135cf8a00d79c3"
+        },
+        {
+          "id": "pinned-sdk-before-project-dsl",
+          "callback": "swift-extensions prerequisite acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "df764810885427e10e52dc8af12dd08bbbe4cf99b76cdfa9f1561a9b76d2e145",
+          "mutantSha256": "74dc45b3f43f96a5c93db56de4f6223c7801683a3ae069382f0b4b547402b899"
+        },
+        {
+          "id": "native-xctest-selection",
+          "callback": "swift-extensions near-miss acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutatedNativeInvocationCompilerCohortReached": true,
+          "nativeTestBodiesReachedUnderMutatedInvocation": true,
+          "expectedExecutedBodies": 2,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "b7c547fa774adb2706dddc146d0d9b2a82d72f7eaa8a0c99870d4db1c7dd2f9d",
+          "mutantSha256": "43bfa53cd821f7ab422045b7ccb6fdeae260a58aef20d497827f03fb3e8976de"
+        },
+        {
+          "id": "native-testing-selection",
+          "callback": "swift-extensions near-miss acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutatedNativeInvocationCompilerCohortReached": true,
+          "nativeTestBodiesReachedUnderMutatedInvocation": true,
+          "expectedExecutedBodies": 2,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "b7c547fa774adb2706dddc146d0d9b2a82d72f7eaa8a0c99870d4db1c7dd2f9d",
+          "mutantSha256": "a850d34b4d3bc1abac687bd9de8fe61dd463ef090cf3f41ec92a9c9312b6c6bc"
+        },
+        {
+          "id": "native-compiler-declaration-mode",
+          "callback": "swift-extensions near-miss acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutatedNativeInvocationCompilerCohortReached": true,
+          "nativeTestBodiesReachedUnderMutatedInvocation": true,
+          "expectedExecutedBodies": 3,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "b9a5cce97af720577e3c6e86eadc450fc9c2f948c452a751b9e3f47ae4051599",
+          "mutantSha256": "f940da8e4ea92daaa20d237ab2c3ceca155cca67f9d7ab29c59579e53cb348f2"
+        }
+      ],
+      "distinctOriginalBaselineCallbacks": [
+        "empty",
+        "stale",
+        "prerequisite",
+        "near-miss"
+      ],
+      "mutantAndRestoredProcessesPerControl": 2,
+      "callbacks": [
+        {
+          "file": "gate-swift-extensions.test.js",
+          "sha256": "2c3ebb33afb71815fcfeb1f131606370906b212d6373f905c7e5bbc601fa145d"
+        }
+      ],
+      "fixtures": [
+        {
+          "file": "swift-extensions-fixture.js",
+          "sha256": "be876e848711afe7a501eb860277ab055cdd985a47d5476261e6a108144bd762"
+        }
+      ],
+      "fixturesUnchanged": true,
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "allComplete": true,
+      "nativeSwiftExecutionReached": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "stageDurationMs": {
+      "preserved-swift-tools-baseline": 163236,
+      "source-and-fresh-offline-production-installation": 474339,
+      "paired-guards-all": 662630
+    },
+    "durationMs": 663367,
+    "complete": true
+  },
+  "projectCheck": {
+    "command": "npm run check",
+    "tests": 1661,
+    "pass": 955,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 706,
+    "todo": 0,
+    "durationMs": 247467.909541,
+    "logSha256": "590ff6f2d124f9a6dff9fbffb8bcdca7b1f73244b84ef82990e1b8fded28b36a",
+    "runtime": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "os": "Darwin 27.0.0"
+    },
+    "preparedGoToolsSelected": true,
+    "optionalNativeSkipsAreAcceptance": false,
+    "frozenMatrixAcceptance": false,
+    "finalSchemaAndLedgerChangesIncluded": true
+  },
+  "postAcceptanceSchemaMaintenance": {
+    "scope": "Register configuration in generation and strict JSON-schema parity checks; only the Swift schema whitespace changed. Native runtime source, required callbacks and fixture bytes remain identical to acceptance.",
+    "bindings": [
+      {
+        "file": "dist/test/schemas.test.js",
+        "bytes": 18504,
+        "sha256": "fa065b3973bb87f6789a9a94ae4e4f0a3e88749a906fddc6c8575320f13932ed"
+      },
+      {
+        "file": "schemas/swift-extensions-config.schema.json",
+        "bytes": 8114,
+        "sha256": "bca80d9efdd9458296edafa0d9b4c15c95ce1d5c93b63353498f5b7fdc9b3dc5"
+      },
+      {
+        "file": "scripts/generate-schemas.mjs",
+        "bytes": 15498,
+        "sha256": "ea1812515a9adcbdfa9d0c49f57e13ece49a79c6ffaf3aac62187209372f52bf"
+      },
+      {
+        "file": "test/schemas.test.ts",
+        "bytes": 17981,
+        "sha256": "9ddfd0570b0e0b502c872ac549ab78c4e37d1095f8fabaab62553a4e0f982840"
+      }
+    ],
+    "publishedSchemaJsonUnchanged": true,
+    "otherPublishedSchemaBytesUnchanged": true,
+    "strictSchemaTests": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "88305d90ad8c5619ba74a77c587e37a17d9b5d1ef8bb2f1ba393e91d45c3b99b"
+    },
+    "typecheckAndScopedLintPassed": true
+  },
+  "limits": {
+    "fullRuntimeOsPublisherAndLicenseClosureVerified": false,
+    "nativeReceiptCryptographicallyAttested": false,
+    "importedReceiptCoherenceIsExecutionAttestation": false,
+    "broaderSwiftPlatformsSupported": false,
+    "hostedAcceptanceMeasured": false,
+    "packagePublication": "The tested offline tarball precedes schema whitespace maintenance, this measurement and profile-state/documentation metadata. Its digest identifies the tested installation, not a final release artifact."
+  },
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "cleanup": {
+    "ownedUnusedImageTagRemoved": true,
+    "codeAndPreparationArtifactsPreserved": true,
+    "managedTaskStopped": true
+  }
+}

@@ -36,6 +36,16 @@
       "type": "string",
       "maxLength": 256,
       "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+    },
+    "assemblyProfile": { "type": "string", "const": "local-transforms-v1" },
+    "patches": {
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 256,
+        "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+      }
     }
   },
   "required": [

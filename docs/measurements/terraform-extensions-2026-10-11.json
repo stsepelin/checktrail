@@ -1,0 +1,1700 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "profile": "terraform-extensions",
+  "sourceBasis": {
+    "parentCommit": "ab11e50a44e9be414deb3761b6a22c53334ee774",
+    "featureChangesWereUncommittedAtAcceptance": true
+  },
+  "frozenInputs": {
+    "scope": "Source, tests, scripts, schemas, emitted source/test, workflow, assets, examples, packs and top-level build/dependency manifests. Documentation, installed dependencies and whole operating-system closure are excluded.",
+    "files": 3370,
+    "sha256": "0d40eb2f2ed9fa5eb61c1d7c93601822ac0894cf6fc79ec054ee1b9a7e0fa611",
+    "digestFormat": "Compact UTF-8 JSON array of lexically sorted [relativePath, sha256] pairs.",
+    "beforeAndAfterMatched": true
+  },
+  "runtime": {
+    "node": {
+      "version": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+    },
+    "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n",
+    "image": "sha256:13ee97f1cdc7cc7e11cc6da63c73c7fc1fd2ee649f548e9289c384be6150a9be",
+    "base": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+  },
+  "acceptance": {
+    "schemaVersion": 1,
+    "profile": "terraform-extensions",
+    "phase": "all",
+    "preserved": {
+      "cache": {
+        "lockedRegistryTarballs": 21,
+        "bytes": 9396410,
+        "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+        "registryMetadataCopied": false,
+        "historicalLocalPackageTarballsCopied": false
+      },
+      "source": {
+        "timeoutMs": 120000,
+        "profile": "terraform",
+        "fileWorkerLimit": 1,
+        "passed": 12,
+        "required": 11,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 12,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "717cc7c2c83795b510d57e1fb51d472cb823e4e229ac0225e71963b9f586c6cc"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "717cc7c2c83795b510d57e1fb51d472cb823e4e229ac0225e71963b9f586c6cc"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "3482bf812e48bbb003a5e8d714a0295bb9c2d8d38f9e70bcbfe7755848ee9a84"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "3482bf812e48bbb003a5e8d714a0295bb9c2d8d38f9e70bcbfe7755848ee9a84"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "373830f1db824616b02c0615bfb83c268a2fecb23742e76818a5d411eb229b6b"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "373830f1db824616b02c0615bfb83c268a2fecb23742e76818a5d411eb229b6b"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-4",
+              "before": {
+                "state": "present",
+                "sha256": "9435733aeca2f8356fc3b62907669c0ea01306797b8a0d68b569e99e595e1b92"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "9435733aeca2f8356fc3b62907669c0ea01306797b8a0d68b569e99e595e1b92"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native Terraform concurrent validations use distinct owned source and module copies and remove them all",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 611.14584,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native Terraform missing tools remain unavailable and operator environment cannot replace protected execution settings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 202.296035,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native Terraform frozen collection rejects source and declaration bytes changed after planning",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 454.245116,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-2",
+              "name": "native Terraform cancellation observes the real validator body and removes its process and owned outputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 510.676743,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-2",
+              "name": "native Terraform source changed after the real validator starts invalidates the execution",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 489.728743,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native Terraform copied module changed after the real validator starts invalidates unchanged original source",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 529.06306,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native Terraform cancellation during version collection observes the actual native process and removes fresh outputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 183.753175,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-3",
+              "name": "native Terraform CLI and negotiated MCP retain source errors repair summary privacy and startup-only trust",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4602.392179,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-4",
+              "name": "Terraform planning reads all JSON module files without executing native tools and rejects empty provider module function duplicate and omitted scope",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 48.905915,
+              "required": false
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-4",
+              "name": "native Terraform validates complete multi-file modules with reference and typed-default defects repair conversion and unused-local controls",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4426.492926,
+              "required": true
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-4",
+              "name": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1166.737058,
+              "required": true
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-4",
+              "name": "native Terraform binds UTF-8 byte highlights and grapheme columns in single-line diagnostics with repair",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1998.5815,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native Terraform concurrent validations use distinct owned source and module copies and remove them all",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Terraform missing tools remain unavailable and operator environment cannot replace protected execution settings",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Terraform frozen collection rejects source and declaration bytes changed after planning",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Terraform cancellation observes the real validator body and removes its process and owned outputs",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Terraform source changed after the real validator starts invalidates the execution",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Terraform copied module changed after the real validator starts invalidates unchanged original source",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Terraform CLI and negotiated MCP retain source errors repair summary privacy and startup-only trust",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native Terraform validates complete multi-file modules with reference and typed-default defects repair conversion and unused-local controls",
+              "outcome": "passed",
+              "terminalSequences": [10]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+              "outcome": "passed",
+              "terminalSequences": [11]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Terraform cancellation during version collection observes the actual native process and removes fresh outputs",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native Terraform binds UTF-8 byte highlights and grapheme columns in single-line diagnostics with repair",
+              "outcome": "passed",
+              "terminalSequences": [12]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "80fb2a22d6571ef5ed6ab32c568967170093b1a5b51e00f5c648a1faca5068d0",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientVersion": "2.3.0",
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "acceptanceClientCopiedOutsideInstalledPackage": true,
+        "profile": {
+          "timeoutMs": 120000,
+          "profile": "terraform",
+          "fileWorkerLimit": 1,
+          "passed": 12,
+          "required": 11,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 12,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "717cc7c2c83795b510d57e1fb51d472cb823e4e229ac0225e71963b9f586c6cc"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "717cc7c2c83795b510d57e1fb51d472cb823e4e229ac0225e71963b9f586c6cc"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-2",
+                "before": {
+                  "state": "present",
+                  "sha256": "3482bf812e48bbb003a5e8d714a0295bb9c2d8d38f9e70bcbfe7755848ee9a84"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "3482bf812e48bbb003a5e8d714a0295bb9c2d8d38f9e70bcbfe7755848ee9a84"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-3",
+                "before": {
+                  "state": "present",
+                  "sha256": "373830f1db824616b02c0615bfb83c268a2fecb23742e76818a5d411eb229b6b"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "373830f1db824616b02c0615bfb83c268a2fecb23742e76818a5d411eb229b6b"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-4",
+                "before": {
+                  "state": "present",
+                  "sha256": "9435733aeca2f8356fc3b62907669c0ea01306797b8a0d68b569e99e595e1b92"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "9435733aeca2f8356fc3b62907669c0ea01306797b8a0d68b569e99e595e1b92"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "native Terraform concurrent validations use distinct owned source and module copies and remove them all",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 506.267881,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "native Terraform missing tools remain unavailable and operator environment cannot replace protected execution settings",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 154.07829,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "native Terraform frozen collection rejects source and declaration bytes changed after planning",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 372.479712,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-2",
+                "name": "native Terraform cancellation observes the real validator body and removes its process and owned outputs",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 428.151626,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-2",
+                "name": "native Terraform source changed after the real validator starts invalidates the execution",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 420.087245,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-2",
+                "name": "native Terraform copied module changed after the real validator starts invalidates unchanged original source",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 413.575289,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-2",
+                "name": "native Terraform cancellation during version collection observes the actual native process and removes fresh outputs",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 185.00964,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-3",
+                "name": "native Terraform CLI and negotiated MCP retain source errors repair summary privacy and startup-only trust",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3408.816201,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-4",
+                "name": "Terraform planning reads all JSON module files without executing native tools and rejects empty provider module function duplicate and omitted scope",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 29.586259,
+                "required": false
+              },
+              {
+                "sequence": 10,
+                "fileId": "file-4",
+                "name": "native Terraform validates complete multi-file modules with reference and typed-default defects repair conversion and unused-local controls",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3361.990465,
+                "required": true
+              },
+              {
+                "sequence": 11,
+                "fileId": "file-4",
+                "name": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 848.396288,
+                "required": true
+              },
+              {
+                "sequence": 12,
+                "fileId": "file-4",
+                "name": "native Terraform binds UTF-8 byte highlights and grapheme columns in single-line diagnostics with repair",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1689.016738,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "native Terraform concurrent validations use distinct owned source and module copies and remove them all",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native Terraform missing tools remain unavailable and operator environment cannot replace protected execution settings",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native Terraform frozen collection rejects source and declaration bytes changed after planning",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native Terraform cancellation observes the real validator body and removes its process and owned outputs",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native Terraform source changed after the real validator starts invalidates the execution",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native Terraform copied module changed after the real validator starts invalidates unchanged original source",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native Terraform CLI and negotiated MCP retain source errors repair summary privacy and startup-only trust",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native Terraform validates complete multi-file modules with reference and typed-default defects repair conversion and unused-local controls",
+                "outcome": "passed",
+                "terminalSequences": [10]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+                "outcome": "passed",
+                "terminalSequences": [11]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native Terraform cancellation during version collection observes the actual native process and removes fresh outputs",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native Terraform binds UTF-8 byte highlights and grapheme columns in single-line diagnostics with repair",
+                "outcome": "passed",
+                "terminalSequences": [12]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v22.23.2",
+          "platform": "linux",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "windowsVerified": false
+      }
+    },
+    "acceptance": {
+      "cache": {
+        "lockedRegistryTarballs": 21,
+        "bytes": 9396410,
+        "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+        "registryMetadataCopied": false,
+        "historicalLocalPackageTarballsCopied": false
+      },
+      "source": {
+        "timeoutMs": 300000,
+        "profile": "terraform-extensions",
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 10,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "aab33ab2c6d580530cd527f2c0f797e64e29b5109baa38f1b637313224d2f15e"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "aab33ab2c6d580530cd527f2c0f797e64e29b5109baa38f1b637313224d2f15e"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "0317ed9479bba549caa9ca4d4c9569a5900792fa81df5c99df8d67470630f0b6"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "0317ed9479bba549caa9ca4d4c9569a5900792fa81df5c99df8d67470630f0b6"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "35a13d7b60b63ac390f7ddfd3177bfadd5991851fb957709f2d5ae9dcd38a622"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "35a13d7b60b63ac390f7ddfd3177bfadd5991851fb957709f2d5ae9dcd38a622"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "terraform-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3660.067193,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "terraform-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1829.815575,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "terraform-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1807.01173,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "terraform-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1582.944192,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "terraform-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1056.474315,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "terraform-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2075.100156,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "terraform-extensions diagnostic acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1602.86181,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "terraform-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 40411.49256,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-2",
+              "name": "terraform-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5531.139096,
+              "required": true
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-3",
+              "name": "terraform-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13594.507562,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "terraform-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "terraform-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "terraform-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "terraform-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "terraform-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "terraform-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "terraform-extensions diagnostic acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "terraform-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-2",
+              "name": "terraform-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            },
+            {
+              "fileId": "file-3",
+              "name": "terraform-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [10]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "80fb2a22d6571ef5ed6ab32c568967170093b1a5b51e00f5c648a1faca5068d0",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "timeoutMs": 300000,
+          "profile": "terraform-extensions",
+          "fileWorkerLimit": 1,
+          "requiredCaseWorkerLimit": 1,
+          "timeoutScope": "one fresh process per required named case",
+          "passed": 10,
+          "required": 10,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 10,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "aab33ab2c6d580530cd527f2c0f797e64e29b5109baa38f1b637313224d2f15e"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "aab33ab2c6d580530cd527f2c0f797e64e29b5109baa38f1b637313224d2f15e"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-2",
+                "before": {
+                  "state": "present",
+                  "sha256": "0317ed9479bba549caa9ca4d4c9569a5900792fa81df5c99df8d67470630f0b6"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "0317ed9479bba549caa9ca4d4c9569a5900792fa81df5c99df8d67470630f0b6"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-3",
+                "before": {
+                  "state": "present",
+                  "sha256": "35a13d7b60b63ac390f7ddfd3177bfadd5991851fb957709f2d5ae9dcd38a622"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "35a13d7b60b63ac390f7ddfd3177bfadd5991851fb957709f2d5ae9dcd38a622"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "terraform-extensions broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3584.660286,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "terraform-extensions fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1814.044023,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "terraform-extensions near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1794.312822,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "terraform-extensions prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1594.350092,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "terraform-extensions stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1062.233058,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "terraform-extensions empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2087.705273,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "terraform-extensions diagnostic acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1570.845078,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "terraform-extensions installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1.360717,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-2",
+                "name": "terraform-extensions privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 5293.912729,
+                "required": true
+              },
+              {
+                "sequence": 10,
+                "fileId": "file-3",
+                "name": "terraform-extensions lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 13510.586564,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "terraform-extensions broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "terraform-extensions fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "terraform-extensions near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "terraform-extensions prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "terraform-extensions stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "terraform-extensions empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "terraform-extensions diagnostic acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "terraform-extensions installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-2",
+                "name": "terraform-extensions privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              },
+              {
+                "fileId": "file-3",
+                "name": "terraform-extensions lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [10]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v22.23.2",
+          "platform": "linux",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      },
+      "sourceLifecycle": {
+        "witnesses": [
+          {
+            "mode": "cancel",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "3927501"
+          },
+          {
+            "mode": "timeout",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "811917"
+          },
+          {
+            "mode": "output",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "2030334"
+          },
+          {
+            "mode": "source",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "4379375"
+          },
+          {
+            "mode": "copied-source",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "285541"
+          },
+          {
+            "mode": "module-metadata",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "5694209"
+          },
+          {
+            "mode": "provider-member",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "480500"
+          },
+          {
+            "mode": "mirror",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "620208"
+          },
+          {
+            "mode": "cli-config",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "550874"
+          },
+          {
+            "mode": "concurrent-cancel",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "2405375"
+          }
+        ],
+        "providerSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+        "allProcessesGone": true,
+        "ownedDirectoriesRemoved": true
+      },
+      "installedLifecycle": {
+        "witnesses": [
+          {
+            "mode": "cancel",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "2866625"
+          },
+          {
+            "mode": "timeout",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "5047915"
+          },
+          {
+            "mode": "output",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "5594542"
+          },
+          {
+            "mode": "source",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "3098708"
+          },
+          {
+            "mode": "copied-source",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "2764875"
+          },
+          {
+            "mode": "module-metadata",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "5315251"
+          },
+          {
+            "mode": "provider-member",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "1418125"
+          },
+          {
+            "mode": "mirror",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "3929041"
+          },
+          {
+            "mode": "cli-config",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "1669542"
+          },
+          {
+            "mode": "concurrent-cancel",
+            "phase": "provider-schema",
+            "cpuNanoseconds": "2401375"
+          }
+        ],
+        "providerSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+        "allProcessesGone": true,
+        "ownedDirectoriesRemoved": true
+      }
+    },
+    "guards-1": {
+      "schemaVersion": 1,
+      "profile": "terraform-extensions",
+      "shard": "1",
+      "fullControlInventory": [
+        "executed-collector-command",
+        "invocation-digest",
+        "frozen-input-cohort",
+        "native-source-cohort",
+        "native-data-cohort",
+        "tool-after-bytes",
+        "installed-provider-member",
+        "owned-provider-archive",
+        "local-only-cli-configuration",
+        "native-lock-bytes",
+        "installed-module-cohort",
+        "fixed-native-arguments",
+        "initialization-version-role",
+        "initialization-stage-messages",
+        "complete-provider-schema",
+        "native-error-cohort",
+        "native-validity",
+        "native-validation-exit",
+        "physical-diagnostic-position",
+        "native-diagnostic-snippet",
+        "native-highlight-start",
+        "native-highlight-end",
+        "current-physical-inputs",
+        "retained-cancelled",
+        "retained-timedOut",
+        "retained-truncated",
+        "native-input-flag-selection",
+        "native-temporary-owned-target",
+        "native-temporary-after-target"
+      ],
+      "controls": [
+        {
+          "id": "executed-collector-command",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "438874ac026fcf45c08fed055532bb92174372222dbf9abdfa04624d5663fe10"
+        },
+        {
+          "id": "frozen-input-cohort",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "3801306a23574261bb49e5ab79e7efd8d9ef7b224ee2e56ef2863b8020a1841d"
+        },
+        {
+          "id": "native-data-cohort",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "5fe7205886ab5d9e48968db49e6b6c1b7aec909f9e3edde2aa41117b1bb856f3"
+        },
+        {
+          "id": "installed-provider-member",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "0d7090a367382a9ebb9492684cd70f0d5630dbc71e28a437d8cb3df634f74903"
+        },
+        {
+          "id": "local-only-cli-configuration",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "6c5e7ade033e4e17b7c9b9548d7fc08169e3f660a011a649be03bb99cd072e50"
+        },
+        {
+          "id": "installed-module-cohort",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "a1d0b2e1f43029a43ee2732de53632defcf50becd51d7298e7a1310f0edc8955"
+        },
+        {
+          "id": "initialization-version-role",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "2d635cb7ffd4d030d6441003c00b6c50c592354772f9a40b1f209d7aff6c2435"
+        },
+        {
+          "id": "complete-provider-schema",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "195e9d143cc2f307fcbf0c06104f5066a73292b174b0b3e8d140b293528549f4"
+        },
+        {
+          "id": "native-validity",
+          "callback": "terraform-extensions diagnostic acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "8c565d14aff3757002bfa0923adead17c5ed310b16b97a577d016dbf2aabac2b"
+        },
+        {
+          "id": "physical-diagnostic-position",
+          "callback": "terraform-extensions diagnostic acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "7765c8dd966aa626330a9e2eaa7cd1d8366acda07634efaafbb49613fe831946"
+        },
+        {
+          "id": "native-highlight-start",
+          "callback": "terraform-extensions diagnostic acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "8ad511284238fbfda60370716e3e3cfd994d4116f2bb5b772a9662533ad06742"
+        },
+        {
+          "id": "current-physical-inputs",
+          "callback": "terraform-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "3c13a99eb270545d3a4b2a9c79c6ec254eb7a408f113dfeafa9673e48b3badef",
+          "mutantSha256": "e6ba655426eac614ba88af6a6a320a0bb4416736444859e0fc83b3fadf44c48c"
+        },
+        {
+          "id": "retained-timedOut",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "32dea21cadc231fd5d2e4ba3890b4b11ddfbd9df7b1470ebe0b757707f427a58"
+        },
+        {
+          "id": "native-input-flag-selection",
+          "callback": "terraform-extensions fixed acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "193251620fbc121c9d0f284e177ded5b3e2dd4b4b3f6196ef9603a6d9a7d47ec",
+          "mutantSha256": "1849af5f9a35eec42f6ea0fc6dd6bc34627296882c5ac929981a30e1b0cc720a",
+          "mutatedNativeInitializationReached": true,
+          "completePinnedProviderSchemaReached": true,
+          "nativeValidationCompleted": true,
+          "declaredModuleInstances": 5
+        },
+        {
+          "id": "native-temporary-after-target",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "a160d9345bbce49f86c36f579133c531886a03bf0940910c8bdc7e135bb88a0a"
+        }
+      ],
+      "distinctOriginalBaselineCallbacks": [
+        "empty",
+        "diagnostic",
+        "stale",
+        "fixed"
+      ],
+      "mutantAndRestoredProcessesPerControl": 2,
+      "callbacks": [
+        {
+          "file": "gate-terraform-extensions.test.js",
+          "sha256": "aab33ab2c6d580530cd527f2c0f797e64e29b5109baa38f1b637313224d2f15e"
+        }
+      ],
+      "fixtures": [
+        {
+          "file": "terraform-extensions-fixture.js",
+          "sha256": "9914545464c4588e9bbea9c28830e6c28c6fe6e3dd5962131e73ace69229ce99"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "fixturesUnchanged": true,
+      "allComplete": true,
+      "nativeTerraformExecutionReached": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "guards-2": {
+      "schemaVersion": 1,
+      "profile": "terraform-extensions",
+      "shard": "2",
+      "fullControlInventory": [
+        "executed-collector-command",
+        "invocation-digest",
+        "frozen-input-cohort",
+        "native-source-cohort",
+        "native-data-cohort",
+        "tool-after-bytes",
+        "installed-provider-member",
+        "owned-provider-archive",
+        "local-only-cli-configuration",
+        "native-lock-bytes",
+        "installed-module-cohort",
+        "fixed-native-arguments",
+        "initialization-version-role",
+        "initialization-stage-messages",
+        "complete-provider-schema",
+        "native-error-cohort",
+        "native-validity",
+        "native-validation-exit",
+        "physical-diagnostic-position",
+        "native-diagnostic-snippet",
+        "native-highlight-start",
+        "native-highlight-end",
+        "current-physical-inputs",
+        "retained-cancelled",
+        "retained-timedOut",
+        "retained-truncated",
+        "native-input-flag-selection",
+        "native-temporary-owned-target",
+        "native-temporary-after-target"
+      ],
+      "controls": [
+        {
+          "id": "invocation-digest",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "63b7a8c79dd57a4482309c7fe15ad303db712c9f6ea6c96f9f81b7fbb7603e5f"
+        },
+        {
+          "id": "native-source-cohort",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "124121ae5cff46fe59df5e3de28c10a0358f0b34f66b7c734da6e6633a340986"
+        },
+        {
+          "id": "tool-after-bytes",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "af369491f686b410c8c47f9d5885342fe989622a65b41ab6df6474aa6c00b9f5"
+        },
+        {
+          "id": "owned-provider-archive",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "bbf7fd6955a50a098f2b57dce807a7d09bb2c9e1e195d47ae996df221f1808be"
+        },
+        {
+          "id": "native-lock-bytes",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "a995bef113dfe3e4633659a6a1c919c62d43a4c03226dc0a6e2fc666892709d6"
+        },
+        {
+          "id": "fixed-native-arguments",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "0975b04afbfa6add8d1851770c4e921134b8815301256fd1267f51cf0b164b2c"
+        },
+        {
+          "id": "initialization-stage-messages",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "041012c04fbd411d8e5a6981558a6503626c86860e2548568ed48580f1f8351d"
+        },
+        {
+          "id": "native-error-cohort",
+          "callback": "terraform-extensions diagnostic acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "9a075a7b4bbe75bdf895b535ae8c583311ce6a00b173ecce7aebede8da4b7635"
+        },
+        {
+          "id": "native-validation-exit",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "f531e8885921f85a08b16fd52978a2d50c9f1a20f58d618c57c3a65991b1e1a6"
+        },
+        {
+          "id": "native-diagnostic-snippet",
+          "callback": "terraform-extensions diagnostic acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "f979d17e925a77b19792550b08e369b8431a0161a9ee3167999da6941eb7c2bd"
+        },
+        {
+          "id": "native-highlight-end",
+          "callback": "terraform-extensions diagnostic acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "dcc9b96ac9b16652c7eeccb45954d016f4503923f5140fc0979771d285af60e0"
+        },
+        {
+          "id": "retained-cancelled",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "31131eac5a9a85ce462817b001831e456524d61d244318123cd18ac369e809d8"
+        },
+        {
+          "id": "retained-truncated",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "9e8ad7ed2693434b5858748f63ff396a2baad80f224fa6af8546c9e8040443b9"
+        },
+        {
+          "id": "native-temporary-owned-target",
+          "callback": "terraform-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "384cbc48617bb6fc36518d593b16f1334196fa43850b0ffe784bdd972b7961e5",
+          "mutantSha256": "968a7b1b3dbb043841b5014f6cadfa03b231d03d312654587e66a1ddf72572b3"
+        }
+      ],
+      "distinctOriginalBaselineCallbacks": ["empty", "diagnostic"],
+      "mutantAndRestoredProcessesPerControl": 2,
+      "callbacks": [
+        {
+          "file": "gate-terraform-extensions.test.js",
+          "sha256": "aab33ab2c6d580530cd527f2c0f797e64e29b5109baa38f1b637313224d2f15e"
+        }
+      ],
+      "fixtures": [
+        {
+          "file": "terraform-extensions-fixture.js",
+          "sha256": "9914545464c4588e9bbea9c28830e6c28c6fe6e3dd5962131e73ace69229ce99"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "fixturesUnchanged": true,
+      "allComplete": true,
+      "nativeTerraformExecutionReached": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "timings": {
+      "preserved-native-source-and-installation": 35687,
+      "source-and-fresh-production-installation": 75178,
+      "paired-guards-1": 63734,
+      "paired-guards-2": 59153
+    },
+    "durationMs": 233756,
+    "resourceBounds": {
+      "maximumConcurrentContainers": 1,
+      "aggregateCpuQuota": 2,
+      "aggregateMemoryGiB": 3,
+      "stageDeadlineMs": 1200000,
+      "engineInvocationDeadlineMs": 120000
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullProjectCheck": {
+    "command": "npm run check",
+    "tests": 1701,
+    "passed": 975,
+    "failed": 0,
+    "cancelled": 0,
+    "optionalCallbacksNotSelected": 726,
+    "todo": 0,
+    "durationMs": 258244.875791,
+    "sourceFilesCopiedAndVerified": 1996,
+    "productionSourceAndBuildInputsUnchangedAtNativeAcceptance": true,
+    "subsequentFixtureMaintenance": "The native diagnostic end-highlight alteration was moved inside the existing range bound before the final complete paired-control run. Type/lint and native acceptance were rerun.",
+    "hostCheckCertifiesAllOptionalNativeProfiles": false
+  },
+  "publishingBoundary": {
+    "packageAcceptedBeforeThisMeasurementAndDocumentationWereAdded": true,
+    "laterPackageMetadataRequiresFreshAcceptance": true,
+    "remoteCiForThisRevisionVerified": false,
+    "packagesPublished": false,
+    "tagsCreated": false
+  },
+  "limits": [
+    "Selected finite local HCL/JSON module and hashicorp/random provider profile only; native validate does not establish plan/apply values or min/max runtime semantics.",
+    "Release signature and complete publisher/license/container closure remain unverified. Artifact hashes and observed members are separate evidence.",
+    "Receipt coherence and current source are not hostile-project attestation or AI host session independence.",
+    "Resource bounds apply to this controller, excluding the host wrapper and concurrent host project checks; representative CPU/RSS/archive measurements remain pending.",
+    "Final runtime matrix, attempt archives and Gate A remain open."
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "independentAiHostSessionsEstablished": false,
+  "gateAComplete": false,
+  "qualityAssessed": false
+}

@@ -1,18 +1,83 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schemaVersion": { "type": "number", "const": 1 },
-    "jar": { "type": "string", "minLength": 1, "maxLength": 4096 },
-    "sha256": {
-      "type": "string",
-      "const": "d46ca62ea4d62769b5d5c3ba94d49fa9b80ba11c7dba74ddb6df7fcc2c19c5fd"
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "jar": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "sha256": {
+          "type": "string",
+          "const": "d46ca62ea4d62769b5d5c3ba94d49fa9b80ba11c7dba74ddb6df7fcc2c19c5fd"
+        },
+        "profile": {
+          "type": "string",
+          "const": "core-default-light-all-selected-v1"
+        }
+      },
+      "required": ["schemaVersion", "jar", "sha256", "profile"],
+      "additionalProperties": false
     },
-    "profile": {
-      "type": "string",
-      "const": "core-default-light-all-selected-v1"
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "jar": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "sha256": {
+          "type": "string",
+          "const": "d46ca62ea4d62769b5d5c3ba94d49fa9b80ba11c7dba74ddb6df7fcc2c19c5fd"
+        },
+        "profile": {
+          "type": "string",
+          "const": "core-default-full-all-selected-v1"
+        },
+        "types": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "const": "linux-arm64-full-types-v1"
+            },
+            "kotlinArchive": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "kotlinSha256": {
+              "type": "string",
+              "const": "473dd66c7a3ef4b182065b3da670466c1bf2773a9dbb0ed8b33a39fe9d4f876d"
+            },
+            "jvmTarget": { "type": "string", "enum": ["17", "21", "25"] },
+            "classPath": {
+              "maxItems": 128,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+                },
+                "required": ["path", "sha256"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "profile",
+            "kotlinArchive",
+            "kotlinSha256",
+            "jvmTarget",
+            "classPath"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": ["schemaVersion", "jar", "sha256", "profile", "types"],
+      "additionalProperties": false
     }
-  },
-  "required": ["schemaVersion", "jar", "sha256", "profile"],
-  "additionalProperties": false
+  ]
 }

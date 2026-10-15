@@ -1,3 +1,4 @@
+import { frameworkReportSemantics } from "./framework-report-semantics.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { access, readFile, writeFile, rm, realpath } from "node:fs/promises";
@@ -370,29 +371,7 @@ test("assembly-laravel privacy acceptance", { skip }, async (t) => {
   const root = await project(t),
     cli = fileURLToPath(new URL("../src/cli.js", import.meta.url)),
     library = await validate(root, { trusted: true });
-  const semantic = (input: unknown): unknown => {
-    if (Array.isArray(input)) return input.map(semantic);
-    if (input !== null && typeof input === "object")
-      return Object.fromEntries(
-        Object.entries(input)
-          .filter(([key]) => key !== "durationMs" && key !== "capturedAt")
-          .map(([key, value]) => {
-            if (
-              key === "stdout" &&
-              typeof value === "string" &&
-              value.startsWith("{")
-            ) {
-              try {
-                return [key, JSON.stringify(semantic(JSON.parse(value)))];
-              } catch {
-                /* Plain tool output remains unchanged. */
-              }
-            }
-            return [key, semantic(value)];
-          }),
-      );
-    return input;
-  };
+  const semantic = (input: unknown): unknown => frameworkReportSemantics(input);
   for (const detailed of [false, true]) {
     const args = [
         cli,

@@ -1,0 +1,1201 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "profile": "ruby-extensions-ci-acceptance-shards",
+  "problem": {
+    "run": 38077957554,
+    "job": 114288878282,
+    "sourceDirectPassed": 8,
+    "sourceDirectDurationMs": 1158020.827135,
+    "installedAggregateDeadlineMs": 1170000,
+    "installedFailure": "spawnSync ETIMEDOUT",
+    "fullAcceptanceStageDurationMs": 2332901
+  },
+  "change": {
+    "ciAcceptanceShards": 3,
+    "sourceDirectInventory": 8,
+    "installedInventory": 9,
+    "partition": "Original inventory index modulo three. Source omits only the recursive installed-launch wrapper; each fresh production installation executes its selected original native callbacks and the installed engine identity callback is retained exactly once across the matrix.",
+    "everyMatrixMemberRequired": true,
+    "perCaseFreshProcess": true,
+    "perShardNativeContainers": 1,
+    "nativeEngineTimeoutMs": 120000,
+    "perCallbackDeadlineMs": 1200000,
+    "requiredManifestChanged": false,
+    "fixtureAssertionsChanged": false,
+    "guardInventoryChanged": false,
+    "baselineInventoryChanged": false
+  },
+  "validation": {
+    "native": {
+      "complete": true,
+      "sourcePassed": 8,
+      "sourceRequired": 8,
+      "installedPassed": 9,
+      "installedRequired": 9,
+      "frozenInputFiles": 3192,
+      "frozenInputsSha256": "2a2932b7cb8f0ca1edaa9a6491cc672d25c42aca1ff7ed4601950992787b05ac",
+      "frozenScope": "Source, tests, scripts, schemas, assets, examples, workflow, emitted source/tests and top-level build/dependency manifests; documentation and installed dependency bytes excluded.",
+      "inputsUnchanged": true,
+      "localMaxConcurrentContainers": 2,
+      "localAggregateCpuLimit": 4,
+      "localAggregateMemoryBytes": 6442450944,
+      "image": "sha256:63ce3465a6f0e1a32238fb4723bf4c78fa2c00e827c4e7db386592960fa5c719",
+      "tarballSha256": "3e5c40efde837c04b717126b80bbf370ea02231fd90bc9e2e58fae10bd34a192",
+      "shards": [
+        {
+          "phase": "acceptance-1",
+          "runtime": {
+            "node": {
+              "version": "v22.23.2",
+              "platform": "linux",
+              "arch": "arm64",
+              "bytes": 126241888,
+              "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+            },
+            "ruby": {
+              "version": "ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [aarch64-linux-musl]",
+              "bytes": 225760,
+              "sha256": "4b68e010781f7701e1e7c16daf406acfbe1eecb97b464b3f01a99559597eabd4"
+            },
+            "bundler": "4.0.20",
+            "npm": "10.9.8",
+            "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.2\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+          },
+          "source": {
+            "profile": "ruby-extensions",
+            "acceptanceMode": "source",
+            "acceptanceShard": "1",
+            "fullRequiredInventory": [
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions broken acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions fixed acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions near-miss acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions prerequisite acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions stale acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions empty acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions privacy acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions lifecycle acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions installed acceptance"
+              }
+            ],
+            "fullSelectedInventory": [
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions broken acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions fixed acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions near-miss acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions prerequisite acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions stale acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions empty acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions privacy acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions lifecycle acceptance"
+              }
+            ],
+            "timeoutMs": 1200000,
+            "fileWorkerLimit": 1,
+            "requiredCaseWorkerLimit": 1,
+            "timeoutScope": "one fresh process per required named case",
+            "passed": 3,
+            "required": 3,
+            "problems": [],
+            "complete": true,
+            "ledger": {
+              "schemaVersion": 1,
+              "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+              "maxTerminalEvents": 4096,
+              "terminalEventCount": 3,
+              "truncated": false,
+              "files": [
+                {
+                  "id": "file-1",
+                  "before": {
+                    "state": "present",
+                    "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                  },
+                  "after": {
+                    "state": "present",
+                    "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                  },
+                  "stable": true
+                }
+              ],
+              "events": [
+                {
+                  "sequence": 1,
+                  "fileId": "file-1",
+                  "name": "ruby-extensions broken acceptance",
+                  "nameTruncated": false,
+                  "kind": "test",
+                  "outcome": "passed",
+                  "durationMs": 77388.487995,
+                  "required": true
+                },
+                {
+                  "sequence": 2,
+                  "fileId": "file-1",
+                  "name": "ruby-extensions prerequisite acceptance",
+                  "nameTruncated": false,
+                  "kind": "test",
+                  "outcome": "passed",
+                  "durationMs": 1062.460127,
+                  "required": true
+                },
+                {
+                  "sequence": 3,
+                  "fileId": "file-1",
+                  "name": "ruby-extensions privacy acceptance",
+                  "nameTruncated": false,
+                  "kind": "test",
+                  "outcome": "passed",
+                  "durationMs": 129079.039458,
+                  "required": true
+                }
+              ],
+              "cases": [
+                {
+                  "fileId": "file-1",
+                  "name": "ruby-extensions broken acceptance",
+                  "outcome": "passed",
+                  "terminalSequences": [1]
+                },
+                {
+                  "fileId": "file-1",
+                  "name": "ruby-extensions prerequisite acceptance",
+                  "outcome": "passed",
+                  "terminalSequences": [2]
+                },
+                {
+                  "fileId": "file-1",
+                  "name": "ruby-extensions privacy acceptance",
+                  "outcome": "passed",
+                  "terminalSequences": [3]
+                }
+              ]
+            }
+          },
+          "installed": {
+            "tarballSha256": "3e5c40efde837c04b717126b80bbf370ea02231fd90bc9e2e58fae10bd34a192",
+            "offlineProductionInstall": true,
+            "lifecycleScriptsExecuted": false,
+            "installedCliEvaluated": true,
+            "installedRuntimeEvaluated": true,
+            "harnessOutsideInstalledPackage": true,
+            "acceptanceClientDependencies": {
+              "@modelcontextprotocol/client": "2.3.0",
+              "cross-spawn": "7.0.6",
+              "path-key": "3.1.1",
+              "shebang-command": "2.0.0",
+              "shebang-regex": "3.0.0",
+              "which": "2.0.2",
+              "isexe": "2.0.0",
+              "eventsource": "3.0.7",
+              "eventsource-parser": "3.1.1",
+              "jose": "6.2.12",
+              "pkce-challenge": "5.0.1"
+            },
+            "profile": {
+              "profile": "ruby-extensions",
+              "acceptanceMode": "installed",
+              "acceptanceShard": "1",
+              "fullRequiredInventory": [
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions broken acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions fixed acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions near-miss acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions prerequisite acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions stale acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions empty acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions privacy acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions lifecycle acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions installed acceptance"
+                }
+              ],
+              "fullSelectedInventory": [
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions broken acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions fixed acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions near-miss acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions prerequisite acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions stale acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions empty acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions privacy acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions lifecycle acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions installed acceptance"
+                }
+              ],
+              "timeoutMs": 1200000,
+              "fileWorkerLimit": 1,
+              "requiredCaseWorkerLimit": 1,
+              "timeoutScope": "one fresh process per required named case",
+              "passed": 3,
+              "required": 3,
+              "problems": [],
+              "complete": true,
+              "ledger": {
+                "schemaVersion": 1,
+                "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+                "maxTerminalEvents": 4096,
+                "terminalEventCount": 3,
+                "truncated": false,
+                "files": [
+                  {
+                    "id": "file-1",
+                    "before": {
+                      "state": "present",
+                      "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                    },
+                    "after": {
+                      "state": "present",
+                      "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                    },
+                    "stable": true
+                  }
+                ],
+                "events": [
+                  {
+                    "sequence": 1,
+                    "fileId": "file-1",
+                    "name": "ruby-extensions broken acceptance",
+                    "nameTruncated": false,
+                    "kind": "test",
+                    "outcome": "passed",
+                    "durationMs": 73423.964497,
+                    "required": true
+                  },
+                  {
+                    "sequence": 2,
+                    "fileId": "file-1",
+                    "name": "ruby-extensions prerequisite acceptance",
+                    "nameTruncated": false,
+                    "kind": "test",
+                    "outcome": "passed",
+                    "durationMs": 950.732267,
+                    "required": true
+                  },
+                  {
+                    "sequence": 3,
+                    "fileId": "file-1",
+                    "name": "ruby-extensions privacy acceptance",
+                    "nameTruncated": false,
+                    "kind": "test",
+                    "outcome": "passed",
+                    "durationMs": 110447.285756,
+                    "required": true
+                  }
+                ],
+                "cases": [
+                  {
+                    "fileId": "file-1",
+                    "name": "ruby-extensions broken acceptance",
+                    "outcome": "passed",
+                    "terminalSequences": [1]
+                  },
+                  {
+                    "fileId": "file-1",
+                    "name": "ruby-extensions prerequisite acceptance",
+                    "outcome": "passed",
+                    "terminalSequences": [2]
+                  },
+                  {
+                    "fileId": "file-1",
+                    "name": "ruby-extensions privacy acceptance",
+                    "outcome": "passed",
+                    "terminalSequences": [3]
+                  }
+                ]
+              }
+            },
+            "environment": {
+              "node": "v22.23.2",
+              "platform": "linux",
+              "arch": "arm64"
+            },
+            "inferenceInvoked": false,
+            "fieldEvaluationExecuted": false,
+            "qualityGate": "not-assessed"
+          },
+          "stageDurationMs": {
+            "source-and-fresh-offline-production-installation-1": 401152
+          },
+          "durationMs": 401624,
+          "environment": {
+            "network": "none",
+            "readOnlyRoot": true,
+            "user": "1000:1000",
+            "cpuLimit": 2,
+            "memoryBytes": 3221225472,
+            "pidLimit": 256,
+            "tmpfsBytes": 2147483648
+          }
+        },
+        {
+          "phase": "acceptance-2",
+          "runtime": {
+            "node": {
+              "version": "v22.23.2",
+              "platform": "linux",
+              "arch": "arm64",
+              "bytes": 126241888,
+              "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+            },
+            "ruby": {
+              "version": "ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [aarch64-linux-musl]",
+              "bytes": 225760,
+              "sha256": "4b68e010781f7701e1e7c16daf406acfbe1eecb97b464b3f01a99559597eabd4"
+            },
+            "bundler": "4.0.20",
+            "npm": "10.9.8",
+            "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.2\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+          },
+          "source": {
+            "profile": "ruby-extensions",
+            "acceptanceMode": "source",
+            "acceptanceShard": "2",
+            "fullRequiredInventory": [
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions broken acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions fixed acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions near-miss acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions prerequisite acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions stale acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions empty acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions privacy acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions lifecycle acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions installed acceptance"
+              }
+            ],
+            "fullSelectedInventory": [
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions broken acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions fixed acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions near-miss acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions prerequisite acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions stale acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions empty acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions privacy acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions lifecycle acceptance"
+              }
+            ],
+            "timeoutMs": 1200000,
+            "fileWorkerLimit": 1,
+            "requiredCaseWorkerLimit": 1,
+            "timeoutScope": "one fresh process per required named case",
+            "passed": 3,
+            "required": 3,
+            "problems": [],
+            "complete": true,
+            "ledger": {
+              "schemaVersion": 1,
+              "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+              "maxTerminalEvents": 4096,
+              "terminalEventCount": 3,
+              "truncated": false,
+              "files": [
+                {
+                  "id": "file-1",
+                  "before": {
+                    "state": "present",
+                    "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                  },
+                  "after": {
+                    "state": "present",
+                    "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                  },
+                  "stable": true
+                }
+              ],
+              "events": [
+                {
+                  "sequence": 1,
+                  "fileId": "file-1",
+                  "name": "ruby-extensions fixed acceptance",
+                  "nameTruncated": false,
+                  "kind": "test",
+                  "outcome": "passed",
+                  "durationMs": 103121.382699,
+                  "required": true
+                },
+                {
+                  "sequence": 2,
+                  "fileId": "file-1",
+                  "name": "ruby-extensions stale acceptance",
+                  "nameTruncated": false,
+                  "kind": "test",
+                  "outcome": "passed",
+                  "durationMs": 25959.248056,
+                  "required": true
+                },
+                {
+                  "sequence": 3,
+                  "fileId": "file-1",
+                  "name": "ruby-extensions lifecycle acceptance",
+                  "nameTruncated": false,
+                  "kind": "test",
+                  "outcome": "passed",
+                  "durationMs": 141980.770227,
+                  "required": true
+                }
+              ],
+              "cases": [
+                {
+                  "fileId": "file-1",
+                  "name": "ruby-extensions fixed acceptance",
+                  "outcome": "passed",
+                  "terminalSequences": [1]
+                },
+                {
+                  "fileId": "file-1",
+                  "name": "ruby-extensions stale acceptance",
+                  "outcome": "passed",
+                  "terminalSequences": [2]
+                },
+                {
+                  "fileId": "file-1",
+                  "name": "ruby-extensions lifecycle acceptance",
+                  "outcome": "passed",
+                  "terminalSequences": [3]
+                }
+              ]
+            }
+          },
+          "installed": {
+            "tarballSha256": "3e5c40efde837c04b717126b80bbf370ea02231fd90bc9e2e58fae10bd34a192",
+            "offlineProductionInstall": true,
+            "lifecycleScriptsExecuted": false,
+            "installedCliEvaluated": true,
+            "installedRuntimeEvaluated": true,
+            "harnessOutsideInstalledPackage": true,
+            "acceptanceClientDependencies": {
+              "@modelcontextprotocol/client": "2.3.0",
+              "cross-spawn": "7.0.6",
+              "path-key": "3.1.1",
+              "shebang-command": "2.0.0",
+              "shebang-regex": "3.0.0",
+              "which": "2.0.2",
+              "isexe": "2.0.0",
+              "eventsource": "3.0.7",
+              "eventsource-parser": "3.1.1",
+              "jose": "6.2.12",
+              "pkce-challenge": "5.0.1"
+            },
+            "profile": {
+              "profile": "ruby-extensions",
+              "acceptanceMode": "installed",
+              "acceptanceShard": "2",
+              "fullRequiredInventory": [
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions broken acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions fixed acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions near-miss acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions prerequisite acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions stale acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions empty acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions privacy acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions lifecycle acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions installed acceptance"
+                }
+              ],
+              "fullSelectedInventory": [
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions broken acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions fixed acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions near-miss acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions prerequisite acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions stale acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions empty acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions privacy acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions lifecycle acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions installed acceptance"
+                }
+              ],
+              "timeoutMs": 1200000,
+              "fileWorkerLimit": 1,
+              "requiredCaseWorkerLimit": 1,
+              "timeoutScope": "one fresh process per required named case",
+              "passed": 3,
+              "required": 3,
+              "problems": [],
+              "complete": true,
+              "ledger": {
+                "schemaVersion": 1,
+                "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+                "maxTerminalEvents": 4096,
+                "terminalEventCount": 3,
+                "truncated": false,
+                "files": [
+                  {
+                    "id": "file-1",
+                    "before": {
+                      "state": "present",
+                      "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                    },
+                    "after": {
+                      "state": "present",
+                      "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                    },
+                    "stable": true
+                  }
+                ],
+                "events": [
+                  {
+                    "sequence": 1,
+                    "fileId": "file-1",
+                    "name": "ruby-extensions fixed acceptance",
+                    "nameTruncated": false,
+                    "kind": "test",
+                    "outcome": "passed",
+                    "durationMs": 87515.316234,
+                    "required": true
+                  },
+                  {
+                    "sequence": 2,
+                    "fileId": "file-1",
+                    "name": "ruby-extensions stale acceptance",
+                    "nameTruncated": false,
+                    "kind": "test",
+                    "outcome": "passed",
+                    "durationMs": 22052.312505,
+                    "required": true
+                  },
+                  {
+                    "sequence": 3,
+                    "fileId": "file-1",
+                    "name": "ruby-extensions lifecycle acceptance",
+                    "nameTruncated": false,
+                    "kind": "test",
+                    "outcome": "passed",
+                    "durationMs": 135344.012795,
+                    "required": true
+                  }
+                ],
+                "cases": [
+                  {
+                    "fileId": "file-1",
+                    "name": "ruby-extensions fixed acceptance",
+                    "outcome": "passed",
+                    "terminalSequences": [1]
+                  },
+                  {
+                    "fileId": "file-1",
+                    "name": "ruby-extensions stale acceptance",
+                    "outcome": "passed",
+                    "terminalSequences": [2]
+                  },
+                  {
+                    "fileId": "file-1",
+                    "name": "ruby-extensions lifecycle acceptance",
+                    "outcome": "passed",
+                    "terminalSequences": [3]
+                  }
+                ]
+              }
+            },
+            "environment": {
+              "node": "v22.23.2",
+              "platform": "linux",
+              "arch": "arm64"
+            },
+            "inferenceInvoked": false,
+            "fieldEvaluationExecuted": false,
+            "qualityGate": "not-assessed"
+          },
+          "stageDurationMs": {
+            "source-and-fresh-offline-production-installation-2": 524567
+          },
+          "durationMs": 525063,
+          "environment": {
+            "network": "none",
+            "readOnlyRoot": true,
+            "user": "1000:1000",
+            "cpuLimit": 2,
+            "memoryBytes": 3221225472,
+            "pidLimit": 256,
+            "tmpfsBytes": 2147483648
+          }
+        },
+        {
+          "phase": "acceptance-3",
+          "runtime": {
+            "node": {
+              "version": "v22.23.2",
+              "platform": "linux",
+              "arch": "arm64",
+              "bytes": 126241888,
+              "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+            },
+            "ruby": {
+              "version": "ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [aarch64-linux-musl]",
+              "bytes": 225760,
+              "sha256": "4b68e010781f7701e1e7c16daf406acfbe1eecb97b464b3f01a99559597eabd4"
+            },
+            "bundler": "4.0.20",
+            "npm": "10.9.8",
+            "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.2\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+          },
+          "source": {
+            "profile": "ruby-extensions",
+            "acceptanceMode": "source",
+            "acceptanceShard": "3",
+            "fullRequiredInventory": [
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions broken acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions fixed acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions near-miss acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions prerequisite acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions stale acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions empty acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions privacy acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions lifecycle acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions installed acceptance"
+              }
+            ],
+            "fullSelectedInventory": [
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions broken acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions fixed acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions near-miss acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions prerequisite acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions stale acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions empty acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions privacy acceptance"
+              },
+              {
+                "file": "dist/test/gate-ruby-extensions.test.js",
+                "name": "ruby-extensions lifecycle acceptance"
+              }
+            ],
+            "timeoutMs": 1200000,
+            "fileWorkerLimit": 1,
+            "requiredCaseWorkerLimit": 1,
+            "timeoutScope": "one fresh process per required named case",
+            "passed": 2,
+            "required": 2,
+            "problems": [],
+            "complete": true,
+            "ledger": {
+              "schemaVersion": 1,
+              "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+              "maxTerminalEvents": 4096,
+              "terminalEventCount": 2,
+              "truncated": false,
+              "files": [
+                {
+                  "id": "file-1",
+                  "before": {
+                    "state": "present",
+                    "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                  },
+                  "after": {
+                    "state": "present",
+                    "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                  },
+                  "stable": true
+                }
+              ],
+              "events": [
+                {
+                  "sequence": 1,
+                  "fileId": "file-1",
+                  "name": "ruby-extensions near-miss acceptance",
+                  "nameTruncated": false,
+                  "kind": "test",
+                  "outcome": "passed",
+                  "durationMs": 86236.883054,
+                  "required": true
+                },
+                {
+                  "sequence": 2,
+                  "fileId": "file-1",
+                  "name": "ruby-extensions empty acceptance",
+                  "nameTruncated": false,
+                  "kind": "test",
+                  "outcome": "passed",
+                  "durationMs": 42829.215866,
+                  "required": true
+                }
+              ],
+              "cases": [
+                {
+                  "fileId": "file-1",
+                  "name": "ruby-extensions near-miss acceptance",
+                  "outcome": "passed",
+                  "terminalSequences": [1]
+                },
+                {
+                  "fileId": "file-1",
+                  "name": "ruby-extensions empty acceptance",
+                  "outcome": "passed",
+                  "terminalSequences": [2]
+                }
+              ]
+            }
+          },
+          "installed": {
+            "tarballSha256": "3e5c40efde837c04b717126b80bbf370ea02231fd90bc9e2e58fae10bd34a192",
+            "offlineProductionInstall": true,
+            "lifecycleScriptsExecuted": false,
+            "installedCliEvaluated": true,
+            "installedRuntimeEvaluated": true,
+            "harnessOutsideInstalledPackage": true,
+            "acceptanceClientDependencies": {
+              "@modelcontextprotocol/client": "2.3.0",
+              "cross-spawn": "7.0.6",
+              "path-key": "3.1.1",
+              "shebang-command": "2.0.0",
+              "shebang-regex": "3.0.0",
+              "which": "2.0.2",
+              "isexe": "2.0.0",
+              "eventsource": "3.0.7",
+              "eventsource-parser": "3.1.1",
+              "jose": "6.2.12",
+              "pkce-challenge": "5.0.1"
+            },
+            "profile": {
+              "profile": "ruby-extensions",
+              "acceptanceMode": "installed",
+              "acceptanceShard": "3",
+              "fullRequiredInventory": [
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions broken acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions fixed acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions near-miss acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions prerequisite acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions stale acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions empty acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions privacy acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions lifecycle acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions installed acceptance"
+                }
+              ],
+              "fullSelectedInventory": [
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions broken acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions fixed acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions near-miss acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions prerequisite acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions stale acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions empty acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions privacy acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions lifecycle acceptance"
+                },
+                {
+                  "file": "dist/test/gate-ruby-extensions.test.js",
+                  "name": "ruby-extensions installed acceptance"
+                }
+              ],
+              "timeoutMs": 1200000,
+              "fileWorkerLimit": 1,
+              "requiredCaseWorkerLimit": 1,
+              "timeoutScope": "one fresh process per required named case",
+              "passed": 3,
+              "required": 3,
+              "problems": [],
+              "complete": true,
+              "ledger": {
+                "schemaVersion": 1,
+                "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+                "maxTerminalEvents": 4096,
+                "terminalEventCount": 3,
+                "truncated": false,
+                "files": [
+                  {
+                    "id": "file-1",
+                    "before": {
+                      "state": "present",
+                      "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                    },
+                    "after": {
+                      "state": "present",
+                      "sha256": "862e59ca8edc7d341de1946b6f6293215391d3b6448b27af5daec53667c165b9"
+                    },
+                    "stable": true
+                  }
+                ],
+                "events": [
+                  {
+                    "sequence": 1,
+                    "fileId": "file-1",
+                    "name": "ruby-extensions near-miss acceptance",
+                    "nameTruncated": false,
+                    "kind": "test",
+                    "outcome": "passed",
+                    "durationMs": 82375.680415,
+                    "required": true
+                  },
+                  {
+                    "sequence": 2,
+                    "fileId": "file-1",
+                    "name": "ruby-extensions empty acceptance",
+                    "nameTruncated": false,
+                    "kind": "test",
+                    "outcome": "passed",
+                    "durationMs": 41381.722944,
+                    "required": true
+                  },
+                  {
+                    "sequence": 3,
+                    "fileId": "file-1",
+                    "name": "ruby-extensions installed acceptance",
+                    "nameTruncated": false,
+                    "kind": "test",
+                    "outcome": "passed",
+                    "durationMs": 1.52418,
+                    "required": true
+                  }
+                ],
+                "cases": [
+                  {
+                    "fileId": "file-1",
+                    "name": "ruby-extensions near-miss acceptance",
+                    "outcome": "passed",
+                    "terminalSequences": [1]
+                  },
+                  {
+                    "fileId": "file-1",
+                    "name": "ruby-extensions empty acceptance",
+                    "outcome": "passed",
+                    "terminalSequences": [2]
+                  },
+                  {
+                    "fileId": "file-1",
+                    "name": "ruby-extensions installed acceptance",
+                    "outcome": "passed",
+                    "terminalSequences": [3]
+                  }
+                ]
+              }
+            },
+            "environment": {
+              "node": "v22.23.2",
+              "platform": "linux",
+              "arch": "arm64"
+            },
+            "inferenceInvoked": false,
+            "fieldEvaluationExecuted": false,
+            "qualityGate": "not-assessed"
+          },
+          "stageDurationMs": {
+            "source-and-fresh-offline-production-installation-3": 260694
+          },
+          "durationMs": 261066,
+          "environment": {
+            "network": "none",
+            "readOnlyRoot": true,
+            "user": "1000:1000",
+            "cpuLimit": 2,
+            "memoryBytes": 3221225472,
+            "pidLimit": 256,
+            "tmpfsBytes": 2147483648
+          }
+        }
+      ]
+    },
+    "projectCheck": {
+      "command": "npm run check",
+      "tests": 1640,
+      "passed": 943,
+      "optionalNativeSkipped": 697,
+      "failed": 0,
+      "cancelled": 0,
+      "todo": 0,
+      "durationMs": 268908.996958
+    },
+    "partitionControl": "Exact inventory union and per-shard names; rejection of missing, duplicate, reordered, foreign-file and invalid selector inputs.",
+    "workflowValidation": "actionlint 1.7.12; ShellCheck/Pyflakes disabled."
+  },
+  "publicationBoundary": "Native tarballs precede this measurement/document publication. The native/runtime proof concerns the recorded source/test/script inputs and tested archive; complete final distribution acceptance remains a separate Gate A obligation.",
+  "limits": [
+    "Native synthetic acceptance only; hosted current-head CI remains pending.",
+    "Existing Ruby paired controls are preserved and were not re-executed for this orchestration-only repair.",
+    "No independent AI sessions, inference, held-out scoring or real-project field evaluation."
+  ],
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

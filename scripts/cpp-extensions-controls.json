@@ -1,0 +1,130 @@
+[
+  {
+    "id": "cancelled-retained-packet",
+    "name": "empty",
+    "file": "cpp-extensions-evidence.js",
+    "to": "false",
+    "from": "process.cancelled"
+  },
+  {
+    "id": "current-physical-input-bytes",
+    "name": "stale",
+    "file": "cpp-extensions-freshness.js",
+    "to": "true",
+    "from": "mavenHash(bytes) === pin.sha256 && cppMd5(bytes) === pin.md5"
+  },
+  {
+    "id": "complete-current-input-tree",
+    "name": "stale",
+    "file": "cpp-extensions-freshness.js",
+    "to": "true",
+    "from": "cppSame(files, invocation.inputs.map((p) => p.path))"
+  },
+  {
+    "id": "native-tool-after-bytes",
+    "name": "empty",
+    "file": "cpp-extensions-evidence.js",
+    "to": "true",
+    "from": "t.sha256 === t.afterSha256"
+  },
+  {
+    "id": "complete-sdk-after-bytes",
+    "name": "empty",
+    "file": "cpp-extensions-evidence.js",
+    "to": "true",
+    "from": "packet.sdkBeforeSha256 === packet.sdkAfterSha256"
+  },
+  {
+    "id": "complete-generated-after-tree",
+    "name": "empty",
+    "file": "cpp-extensions-evidence.js",
+    "to": "true",
+    "from": "equal(packet.generatedAfter, tree)"
+  },
+  {
+    "id": "physical-sdk-alias",
+    "name": "empty",
+    "file": "cpp-extensions-physical.js",
+    "to": "true",
+    "from": "pin.resolved === p.resolved"
+  },
+  {
+    "id": "complete-linker-phony-cohort",
+    "name": "empty",
+    "file": "cpp-extensions-physical.js",
+    "to": "true",
+    "from": "equal(dep.phony, dep.files)"
+  },
+  {
+    "id": "complete-linker-runtime-groups",
+    "name": "empty",
+    "file": "cpp-extensions-physical.js",
+    "to": "true",
+    "from": "equal(dep.files, [\n            ...nativeRuntime.prefix,\n            ...objects,\n            ...libraries,\n            ...nativeRuntime.suffix,\n        ])"
+  },
+  {
+    "id": "complete-used-sdk-cohort",
+    "name": "empty",
+    "file": "cpp-extensions-physical.js",
+    "to": "true",
+    "from": "cppSame([...usedSdk], packet.sdkObserved.map((p) => p.path))"
+  },
+  {
+    "id": "linked-binary-after-bytes",
+    "name": "empty",
+    "file": "cpp-extensions-physical.js",
+    "to": "true",
+    "from": "b.sha256 === b.afterSha256"
+  },
+  {
+    "id": "archived-object-byte-identity",
+    "name": "empty",
+    "file": "cpp-extensions-physical.js",
+    "to": "true",
+    "from": "own.every((u) => members\n                    .get(path.basename(u.object))\n                    .equals(Buffer.from(artifact(u.object, \"base64\"), \"base64\")))"
+  },
+  {
+    "id": "native-assembler-selection",
+    "name": "fixed",
+    "file": "cpp-extensions-native.js",
+    "to": "\"-fintegrated-as\"",
+    "nativeInvocation": true,
+    "from": "\"-fno-integrated-as\""
+  },
+  {
+    "id": "native-test-discovery-filter",
+    "name": "fixed",
+    "file": "cpp-extensions-runner.js",
+    "to": "\"--show-only=json-v1\", \"-R\", \"^original_boundary$\",",
+    "nativeInvocation": true,
+    "from": "\"--show-only=json-v1\","
+  },
+  {
+    "id": "complete-analyzer-console-cohort",
+    "name": "compiler formatter analyzer",
+    "file": "cpp-extensions-tidy.js",
+    "from": "JSON.stringify(observed) === JSON.stringify(expected)",
+    "to": "true"
+  },
+  {
+    "id": "native-analyzer-diagnostic-counters",
+    "name": "compiler formatter analyzer",
+    "file": "cpp-extensions-tidy.js",
+    "from": "stderr ===\n        `${count} ${noun} generated.\\n${count} ${noun} treated as error${count === 1 ? \"\" : \"s\"}\\n`",
+    "to": "true"
+  },
+  {
+    "id": "physical-analyzer-range-boundaries",
+    "name": "compiler formatter analyzer",
+    "file": "cpp-extensions-tidy.js",
+    "from": "offset < bytes.length || (allowEnd && offset === bytes.length)",
+    "to": "true"
+  },
+  {
+    "id": "physical-sdk-before-cmake",
+    "name": "prerequisite",
+    "file": "cpp-extensions-sdk.js",
+    "from": "bytes.length === pin.bytes && mavenHash(bytes) === pin.sha256",
+    "to": "true"
+  }
+]

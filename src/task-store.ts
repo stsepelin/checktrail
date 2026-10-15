@@ -12,6 +12,7 @@ import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import { z } from "zod";
 import { projectReport } from "./output.js";
+import { ensureWindowsTaskAccess } from "./windows-task-access.js";
 import { reportSchema, reportSummarySchema } from "./schemas.js";
 import type { Report } from "./types.js";
 
@@ -61,6 +62,7 @@ export interface TaskStoreOptions {
 }
 
 function privateFile(filename: string, maximum: number): void {
+  let created = false;
   let stat;
   try {
     stat = lstatSync(filename);
@@ -74,6 +76,7 @@ function privateFile(filename: string, maximum: number): void {
         constants.O_NOFOLLOW,
       0o600,
     );
+    created = true;
     closeSync(fd);
     stat = lstatSync(filename);
   }
@@ -81,13 +84,15 @@ function privateFile(filename: string, maximum: number): void {
   if (
     !stat.isFile() ||
     stat.nlink !== 1 ||
-    stat.uid !== process.getuid!() ||
-    (stat.mode & 0o777) !== 0o600 ||
+    (process.platform !== "win32" &&
+      (stat.uid !== process.getuid!() || (stat.mode & 0o777) !== 0o600)) ||
     stat.size > maximum
   )
     throw new Error(
       "Task store requires bounded, private, singly linked regular files",
     );
+  if (process.platform === "win32")
+    ensureWindowsTaskAccess(filename, "file", created);
 }
 
 function applicationId(db: DatabaseSync): number {
@@ -303,16 +308,18 @@ export class ValidationTaskStore {
 export async function openTaskStore(
   options: TaskStoreOptions,
 ): Promise<ValidationTaskStore> {
-  if (!["darwin", "linux"].includes(process.platform))
-    throw new Error("Task storage is supported only on macOS and Linux");
+  if (!["darwin", "linux", "win32"].includes(process.platform))
+    throw new Error("Task storage platform unavailable");
   const root = realpathSync(options.root);
   if (!lstatSync(root).isDirectory())
     throw new Error("Task root must be a directory");
   const directory = path.resolve(options.directory);
   if (realpathSync(path.dirname(directory)) !== path.dirname(directory))
     throw new Error("Task store parent must be canonical");
+  let created = false;
   try {
     mkdirSync(directory, { mode: 0o700 });
+    created = true;
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
   }
@@ -320,12 +327,14 @@ export async function openTaskStore(
   if (
     !stat.isDirectory() ||
     stat.isSymbolicLink() ||
-    stat.uid !== process.getuid!() ||
-    (stat.mode & 0o777) !== 0o700
+    (process.platform !== "win32" &&
+      (stat.uid !== process.getuid!() || (stat.mode & 0o777) !== 0o700))
   )
     throw new Error(
       "Task store directory must be private and owned by this user",
     );
+  if (process.platform === "win32")
+    ensureWindowsTaskAccess(directory, "directory", created);
   const limits: Record<string, number> = {
     "owner.sqlite": 4096,
     "owner.sqlite-journal": 16384,
