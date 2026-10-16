@@ -53,13 +53,10 @@ cancelled by a newer push. Native profiles, matrix entries and assertions are un
 Superseded results are cancelled, not credited as successful acceptance. Check
 the current head and latest merge-candidate run before claiming hosted success.
 
-The macOS matrix uses the commit-pinned `setup-php` 2.40.0-beta build-cache path
-for PHP 8.5. The previous pinned action failed before tests on both current main
-and the replacement PR run, leaving no PHP executable. The upstream cache path
-tries prebuilt packages before Homebrew and fails if it cannot establish the
-requested PHP version. Linux retains its existing action pin. This is a beta
-setup dependency; current hosted acceptance must verify it. It does not replace
-test execution or supply cached test results.
+The Linux and macOS matrices use commit-pinned `setup-php` 2.40.0 for PHP 8.5.
+The macOS implementation uses the upstream prebuilt-package path; current hosted
+acceptance must verify that setup establishes the requested PHP runtime before
+tests execute. Runtime setup does not supply cached test results.
 
 Pinned public image setup also retries the exact Docker daemon public ECR
 `/v2/` connection/header timeout observed before the Rust context tests started.
@@ -146,6 +143,22 @@ The first CI-improvement PR changes workflow/CI inputs and must run the complete
 matrix. There is no hosted speed claim before measuring that run. A source-code
 change still runs all native stacks: narrowing production-source changes needs
 separately reviewed ownership/dependency contracts, not filename prefixes.
+
+## Native mutation target preflight
+
+The shared local suite checks every compiled JVM wrapper and Rust extension
+mutation target before native execution is selected. These commands also run the
+same read-only target and mutant-syntax checks directly:
+
+```sh
+node scripts/verify-jvm-wrappers-guards.mjs --preflight
+node scripts/verify-rust-extensions-guards.mjs --preflight
+```
+
+Preflight leaves compiled targets unchanged. It does not execute native callbacks
+or count as native mutation acceptance; the native jobs still require the
+original control to pass, the mutant to fail its assertion, and the restored
+control to pass again.
 
 ## Acceptance time budgets
 
