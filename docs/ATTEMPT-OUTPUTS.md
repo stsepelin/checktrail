@@ -56,7 +56,9 @@ removals using unchanged assertions on isolated copies.
 A [native journal codec and private storage foundation](NATIVE-ATTEMPT-JOURNALS.md)
 adds ordered admissions, actual process acknowledgements, bounded physical chunks
 and strict replay. Source and offline installed controls are measured; the shared
-engine and wrappers do not use this foundation yet.
+engine does not collect these journals yet. Shared JVM and Rust workspace calls
+now use the streamed invocation boundary; the JVM helper can receive one explicit
+journal shared by its calls. The remaining synchronous wrappers are still pending.
 
 The frozen `attempt-archives` profile remains pending. Complete individually
 addressed artifacts for every inner compiler/framework/bootstrap attempt,

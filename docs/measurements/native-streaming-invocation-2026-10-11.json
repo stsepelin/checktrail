@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "scope": "Shared streaming invocation and explicit journal foundations; complete engine collection and native tool family acceptance remain pending.",
+  "compiledCodeSha256": "0ebea5425b45f8669dda1a9d7231baa9c76aab8d7460d70b4e7934be5f6131f6",
+  "nativeReceipts": [
+    {
+      "profile": "native-attempt-journal-streaming-foundation",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "compiledCodeSha256": "0ebea5425b45f8669dda1a9d7231baa9c76aab8d7460d70b4e7934be5f6131f6",
+      "harnessSha256": "01935403a4669be2a2ae7b67860d70a7a861e54dec935542c30eaae4b4962f4b",
+      "sourceOrInstalled": "source",
+      "required": 18,
+      "passed": 18,
+      "complete": true
+    },
+    {
+      "profile": "native-attempt-journal-streaming-foundation",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "compiledCodeSha256": "0ebea5425b45f8669dda1a9d7231baa9c76aab8d7460d70b4e7934be5f6131f6",
+      "harnessSha256": "4c47b0fa41ef72330e5428b15e18bac09a5ab235192e83496b7b69dae66af531",
+      "tarballSha256": "ec6459d814fa88de95f60a8aa3a364eb4d5e9ee853480413160652e2ee67594d",
+      "productionDependencyLockSha256": "4dd16837dd22d42ee85b180e6c4b1cc2b99495140ac0ff77e5666c127912289f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "sourceOrInstalled": "installed",
+      "required": 18,
+      "passed": 18,
+      "complete": true
+    },
+    {
+      "profile": "native-attempt-journal-streaming-foundation",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "compiledCodeSha256": "0ebea5425b45f8669dda1a9d7231baa9c76aab8d7460d70b4e7934be5f6131f6",
+      "harnessSha256": "01935403a4669be2a2ae7b67860d70a7a861e54dec935542c30eaae4b4962f4b",
+      "sourceOrInstalled": "source",
+      "required": 18,
+      "passed": 18,
+      "complete": true
+    },
+    {
+      "profile": "native-attempt-journal-streaming-foundation",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "compiledCodeSha256": "0ebea5425b45f8669dda1a9d7231baa9c76aab8d7460d70b4e7934be5f6131f6",
+      "harnessSha256": "4c47b0fa41ef72330e5428b15e18bac09a5ab235192e83496b7b69dae66af531",
+      "tarballSha256": "ec6459d814fa88de95f60a8aa3a364eb4d5e9ee853480413160652e2ee67594d",
+      "productionDependencyLockSha256": "eec524c9d40c13d3f0f5dcc90c6d5c9c10c2f1997c07f5779bf4cf13b8d40fc4",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "sourceOrInstalled": "installed",
+      "required": 18,
+      "passed": 18,
+      "complete": true
+    },
+    {
+      "profile": "native-attempt-journal-streaming-foundation",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "compiledCodeSha256": "0ebea5425b45f8669dda1a9d7231baa9c76aab8d7460d70b4e7934be5f6131f6",
+      "harnessSha256": "01935403a4669be2a2ae7b67860d70a7a861e54dec935542c30eaae4b4962f4b",
+      "sourceOrInstalled": "source",
+      "required": 18,
+      "passed": 18,
+      "complete": true
+    },
+    {
+      "profile": "native-attempt-journal-streaming-foundation",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "compiledCodeSha256": "0ebea5425b45f8669dda1a9d7231baa9c76aab8d7460d70b4e7934be5f6131f6",
+      "harnessSha256": "4c47b0fa41ef72330e5428b15e18bac09a5ab235192e83496b7b69dae66af531",
+      "tarballSha256": "1ce1644088f0a0a248b382469e1e75804b0089a27c32e566eb87020d01b6a54a",
+      "productionDependencyLockSha256": "fd159ef8a3e75665db560deb708a8093f58748289f7266b8dd6fb80ed3a6cf7f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "sourceOrInstalled": "installed",
+      "required": 18,
+      "passed": 18,
+      "complete": true
+    }
+  ],
+  "packageReceiptsPrecedeThisMeasurementDocument": true,
+  "linuxRuntime": {
+    "image": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "borrowedPinnedImage": true,
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+    },
+    "network": "none",
+    "memoryMiB": 2048,
+    "cpus": 2,
+    "pids": 256,
+    "tmpMiB": 512
+  },
+  "guardControls": {
+    "sourceSha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27",
+    "callbackSha256": "05b32df26898af6d56a5095f6f32990fb5403c65cc132126ec207d5040638974",
+    "controls": [
+      {
+        "id": "identity",
+        "callback": "native invocation retains binary bytes and real process identities for successful and failed children in one ordered journal",
+        "baseline": {
+          "exitCode": 0,
+          "sha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27"
+        },
+        "removed": {
+          "exitCode": 1,
+          "sha256": "a84e49b8ad9650753b5e945fa922926788602306900db12cc66919b8b7dfc522"
+        },
+        "restored": {
+          "exitCode": 0,
+          "sha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27"
+        }
+      },
+      {
+        "id": "admission",
+        "callback": "native invocation preserves failed spawn evidence without manufacturing a PID and refuses exhausted admission before starting project code",
+        "baseline": {
+          "exitCode": 0,
+          "sha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27"
+        },
+        "removed": {
+          "exitCode": 1,
+          "sha256": "1bddd45a0f23ef68cf93384ab6f03831b0de096699483c6439826bf5e7e042a7"
+        },
+        "restored": {
+          "exitCode": 0,
+          "sha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27"
+        }
+      },
+      {
+        "id": "prefix",
+        "callback": "native invocation distinguishes journal exhaustion from a smaller caller output cap and keeps each observed prefix on failure",
+        "baseline": {
+          "exitCode": 0,
+          "sha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27"
+        },
+        "removed": {
+          "exitCode": 1,
+          "sha256": "f544aabf0619fc510a01eff74cec11a099cfe749aca3d7ebd63b859be631427e"
+        },
+        "restored": {
+          "exitCode": 0,
+          "sha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27"
+        }
+      },
+      {
+        "id": "physical",
+        "callback": "native invocation journal retains the reached physical prefix after its actual wrapper is killed before any final response",
+        "baseline": {
+          "exitCode": 0,
+          "sha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27"
+        },
+        "removed": {
+          "exitCode": 1,
+          "sha256": "00323af9f0580219c444d4103c86378228438cd5e5cba8d31043e9fcf9316a53"
+        },
+        "restored": {
+          "exitCode": 0,
+          "sha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27"
+        }
+      },
+      {
+        "id": "backpressure",
+        "callback": "native invocation respects mirror backpressure without dropping physical chunks and deadlines release a stalled drain",
+        "baseline": {
+          "exitCode": 0,
+          "sha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27"
+        },
+        "removed": {
+          "exitCode": 1,
+          "sha256": "f43fa8b3fb0fcb90f1cc7db0bcfb45da708bf8c6054eab3ffb9e8f9f1d9a13ab"
+        },
+        "restored": {
+          "exitCode": 0,
+          "sha256": "c8c65a982583428ae118aba8a4aa6c6dcc3d9435d43430b28ef978935dde1e27"
+        }
+      }
+    ],
+    "callbacksUnchanged": true,
+    "sourceUnchanged": true
+  },
+  "wholeSuite": {
+    "total": 1825,
+    "passed": 1073,
+    "failed": 0,
+    "cancelled": 0,
+    "optionalSkipped": 752,
+    "todo": 0,
+    "durationMs": 292311.056792
+  },
+  "engineJournalIntegrationComplete": false,
+  "wholeNativeCallFamilyMigrated": false,
+  "wholeNativeLanguageSemanticAcceptanceComplete": false,
+  "windowsAcceptanceMeasured": false,
+  "durableReplayComplete": false,
+  "hostModelUsageMeasured": false,
+  "attemptArchivesGateAcceptanceComplete": false,
+  "gateAComplete": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false,
+  "reviewQualityAssessed": false
+}
