@@ -24,6 +24,7 @@ const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const testFiles = [
   ["native-attempt-frames.test.js", 5],
   ["native-attempt-storage.test.js", 4],
+  ["native-invoke.test.js", 10],
 ];
 const inputFiles = [
   ...testFiles.map(([f]) => "dist/test/" + f),
@@ -43,10 +44,17 @@ for (const [file, total] of testFiles) {
   const names = [...text.matchAll(/\btest\(\s*"([^"\n]+)"/g)].map((m) => m[1]);
   assert.equal(names.length, total, file);
   assert.equal(new Set(names).size, total, file);
-  for (const name of names)
+  for (const name of names) {
+    if (
+      process.platform === "win32" &&
+      name ===
+        "native invocation closes ordinary descendants retaining output pipes after root exit without inventing a successful timeout"
+    )
+      continue;
     requirements.push({ file: "dist/test/" + file, name });
+  }
 }
-assert.equal(requirements.length, 9);
+assert.equal(requirements.length, process.platform === "win32" ? 18 : 19);
 const harnessSha256 = hash(
   JSON.stringify(inputs.map((x) => [x.file, hash(x.bytes)])),
 );
@@ -122,7 +130,7 @@ try {
   process.stdout.write(
     JSON.stringify({
       schemaVersion: 1,
-      profile: "native-attempt-journal-foundation",
+      profile: "native-attempt-journal-streaming-foundation",
       node: process.versions.node,
       platform: process.platform,
       architecture: process.arch,

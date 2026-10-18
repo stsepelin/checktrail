@@ -44,9 +44,9 @@ assert.equal(
   "Source native journal foundation controls failed: " +
     JSON.stringify(profile.problems),
 );
-assert.equal(profile.required, 9);
+assert.equal(profile.required, requirements.length);
 assert.equal(profile.ledger.truncated, false);
-assert.equal(profile.ledger.cases.length, 9);
+assert.equal(profile.ledger.cases.length, requirements.length);
 assert.ok(profile.ledger.cases.every((x) => x.outcome === "passed"));
 assert.equal(code, await attemptOutputCodeIdentity(repository));
 assert.equal(harness, await identity());
@@ -54,7 +54,7 @@ assert.equal(executable, hash(await readFile(process.execPath)));
 process.stdout.write(
   JSON.stringify({
     schemaVersion: 1,
-    profile: "native-attempt-journal-foundation",
+    profile: "native-attempt-journal-streaming-foundation",
     node: process.versions.node,
     platform: process.platform,
     architecture: process.arch,

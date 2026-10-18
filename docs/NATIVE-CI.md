@@ -144,6 +144,22 @@ matrix. There is no hosted speed claim before measuring that run. A source-code
 change still runs all native stacks: narrowing production-source changes needs
 separately reviewed ownership/dependency contracts, not filename prefixes.
 
+## Native mutation target preflight
+
+The shared local suite checks every compiled JVM wrapper and Rust extension
+mutation target before native execution is selected. These commands also run the
+same read-only target and mutant-syntax checks directly:
+
+```sh
+node scripts/verify-jvm-wrappers-guards.mjs --preflight
+node scripts/verify-rust-extensions-guards.mjs --preflight
+```
+
+Preflight leaves compiled targets unchanged. It does not execute native callbacks
+or count as native mutation acceptance; the native jobs still require the
+original control to pass, the mutant to fail its assertion, and the restored
+control to pass again.
+
 ## Acceptance time budgets
 
 The shared suite and package/mutation OS/Node matrices each retain a 75-minute

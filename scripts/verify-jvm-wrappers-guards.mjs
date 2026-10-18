@@ -58,7 +58,8 @@ controls.push(
   },
   {
     id: "live-native-output",
-    before: "process.stderr.write(chunk)",
+    before: "mirror ? { mirror: process.stderr } : {}",
+    after: "{}",
     file: "jvm-invoke.js",
     test: nativeFile,
     name: "actual JVM invoker mirrors live output before a native child terminates",
@@ -93,7 +94,10 @@ for (const kind of ["maven", "gradle"]) {
 }
 const compact = (text) => text.replace(/\s+/g, "");
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
-const selected = new Set(process.argv.slice(2));
+const preflightOnly = process.argv.includes("--preflight");
+const selected = new Set(
+  process.argv.slice(2).filter((arg) => arg !== "--preflight"),
+);
 assert.ok(
   [...selected].every((id) => controls.some((c) => c.id === id)),
   "Unknown JVM guard control",
@@ -164,12 +168,14 @@ for (const control of controls.filter(
   }
   assert.equal(targets.length, 1, "Exact guard address: " + control.id);
   const target = targets[0],
-    replacement = control.lastCall
-      ? "undefined"
-      : control.before?.includes("hash.digest") ||
-          control.before?.includes("mavenHash")
-        ? "false"
-        : "true";
+    replacement =
+      control.after ??
+      (control.lastCall
+        ? "undefined"
+        : control.before?.includes("hash.digest") ||
+            control.before?.includes("mavenHash")
+          ? "false"
+          : "true");
   const mutant =
     original.slice(0, target.getStart(source)) +
     replacement +
@@ -185,6 +191,37 @@ for (const control of controls.filter(
     0,
   );
   prepared.push({ ...control, file, original, mutant });
+}
+if (preflightOnly) {
+  for (const control of prepared) {
+    const syntax = spawnSync(
+      process.execPath,
+      ["--input-type=module", "--check"],
+      {
+        input: control.mutant,
+        encoding: "utf8",
+        timeout: 5000,
+      },
+    );
+    assert.equal(
+      syntax.status,
+      0,
+      "Mutation syntax: " + control.id + " " + syntax.stderr,
+    );
+  }
+  console.log(
+    JSON.stringify({
+      nativeExecuted: false,
+      controls: prepared.map((control) => ({
+        id: control.id,
+        file: control.file.pathname.split("/").at(-1),
+        originalSha256: digest(control.original),
+        mutantSha256: digest(control.mutant),
+        mutantSyntaxValid: true,
+      })),
+    }),
+  );
+  process.exit(0);
 }
 const environment = { ...process.env };
 delete environment.NODE_TEST_CONTEXT;

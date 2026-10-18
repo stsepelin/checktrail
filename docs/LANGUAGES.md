@@ -480,6 +480,10 @@ The opt-in [Helm application/subchart extension](HELM-EXTENSIONS.md) validates a
 Journal codec/private storage foundation controls retain actual binary native child
 observations in separate bounded files with interrupted-call replay. This is a
 foundation for language wrappers, with source and fresh offline installed macOS
-Node evidence; validation does not create or consume these journals yet. Complete
-inner invocation capture and the remaining native matrix stay pending.
+Node evidence. Shared JVM and Rust workspace calls now use a streamed invocation
+boundary, with an explicit shared journal available to the JVM helper. Mirror
+errors and writes still pending after native exit remain incomplete within the
+invocation deadline. Validation
+does not create or consume these journals yet. Engine collection, synchronous
+wrapper migration and the remaining native matrix stay pending.
 See [NATIVE-ATTEMPT-JOURNALS.md](NATIVE-ATTEMPT-JOURNALS.md).
