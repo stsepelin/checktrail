@@ -9,6 +9,7 @@ import { McpValidationTasks } from "../src/mcp-validation-tasks.js";
 import { passingTest } from "./helpers.js";
 import {
   extension,
+  registerTaskCleanup,
   setup,
   wire,
   acknowledge,
@@ -317,7 +318,7 @@ test("MCP Tasks owner rejects overlap during planning and closes an initialized 
     allowExecution: true,
     timeoutMs: 5000,
   });
-  t.after(() => owner.close());
+  registerTaskCleanup(t, () => owner.close());
   const first = assert.rejects(
     owner.start(new AbortController().signal),
     /cancelled/,
@@ -457,4 +458,41 @@ test("MCP Tasks require capabilities for every control request and acknowledge o
     (await connection.request("tasks/get", { taskId: id })).result,
     task,
   );
+});
+
+test("Tasks fixture teardown closes every live SQLite server before removing its directories", async (t) => {
+  const options = [await setup(t), await setup(t)];
+  const connections: Awaited<ReturnType<typeof wire>>[] = [];
+  registerTaskCleanup(t, async () => {
+    try {
+      assert.equal(connections.length, 2);
+      for (const opt of options) {
+        assert.ok(
+          (await stat(path.join(opt.directory, "owner.sqlite"))).size > 0,
+        );
+      }
+      assert.deepEqual(
+        await Promise.all(
+          connections.map((connection) => alive(connection.pid)),
+        ),
+        [false, false],
+        "Both servers must exit before fixture cleanup reaches this probe",
+      );
+    } finally {
+      await Promise.all(connections.map((connection) => connection.close()));
+    }
+  });
+  for (const opt of options) {
+    const connection = await wire(t, opt);
+    connections.push(connection);
+    const id = taskId(
+      await connection.request("tools/call", {
+        name: "validation_run",
+        arguments: {},
+      }),
+    );
+    assert.equal(report(await terminal(connection, id)).outcome, "passed");
+    assert.equal(await alive(connection.pid), true);
+    assert.ok((await stat(path.join(opt.directory, "owner.sqlite"))).size > 0);
+  }
 });

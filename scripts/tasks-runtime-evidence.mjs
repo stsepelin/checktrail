@@ -19,6 +19,22 @@ export async function tasksRuntimeRequirements() {
   assert.equal(profiles["mcp-tasks"].length, 10);
   return [
     ...profiles["mcp-tasks"],
+    {
+      file: "dist/test/tasks-runtime-harness.test.js",
+      name: "Tasks installed wrapper selects a bounded Windows aggregate allowance while preserving POSIX deadlines and failed child status",
+    },
+    ...(process.platform === "win32"
+      ? [
+          {
+            file: "dist/test/tasks-runtime-harness.test.js",
+            name: "Windows isolated harness namespace cleanup waits for native cwd release and reports exhausted locks",
+          },
+        ]
+      : []),
+    {
+      file: "dist/test/mcp-validation-tasks.test.js",
+      name: "Tasks fixture teardown closes every live SQLite server before removing its directories",
+    },
     ...[
       "broken",
       "fixed",
@@ -125,7 +141,14 @@ export async function verifyTasksRuntime({
   const startedAt = new Date().toISOString();
   const profile = await runRequiredTests(
     requirements.map((p) => ({ ...p, file: path.join(root, p.file) })),
-    { timeoutMs: 600000, isolatedCaseWorkers: 1 },
+    {
+      timeoutMs: 600000,
+      isolatedCaseWorkers: 1,
+      onCaseProgress: (event) =>
+        process.stderr.write(
+          JSON.stringify({ profile: "tasks-runtime", ...event }) + "\n",
+        ),
+    },
   );
   assert.equal(profile.complete, true, JSON.stringify(profile.problems));
   assert.equal(profile.required, requirements.length);
