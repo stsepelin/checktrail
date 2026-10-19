@@ -763,3 +763,8 @@ completion observer as the Tasks wire controls. A real native command lasting
 4.7 seconds exposed the earlier four-second polling loop before archive
 completion. The observer keeps late or missing terminal replies as failures and
 does not change worker execution, cancellation, retention or output limits.
+
+Archive quota controls reopen a consistent store exactly at its shared byte
+limit, then require refusal at one byte over it. The over-limit fixture preserves
+all per-report, chunk, source and whole-report bindings, so another integrity
+failure cannot stand in for the aggregate reopening check.

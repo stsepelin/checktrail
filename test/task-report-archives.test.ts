@@ -244,6 +244,80 @@ test("task archive report and shared quotas admit exact byte boundaries and refu
     (await stat(path.join(opt.directory, "tasks.sqlite"))).size <=
       taskArchiveLimits.databaseBytes,
   );
+  // Reopening must accept the exact shared limit before rejecting one extra byte.
+  store.close();
+  const reopened = await openTaskStore(opt);
+  let changed: TaskArchiveChunk;
+  try {
+    const firstChunk = reopened.readArchive(second.taskId, 0);
+    const previous = reconstruct(firstChunk, (index) =>
+      reopened.readArchive(second.taskId, index),
+    );
+    const next = Buffer.from(
+      JSON.stringify(sizedReport(taskArchiveLimits.reportBytes - 262144)),
+    );
+    assert.equal(next.length, previous.length + 1);
+    const last = reopened.readArchive(
+      second.taskId,
+      firstChunk.archive.chunks - 1,
+    );
+    const offset = last.index * last.archive.chunkBytes;
+    assert.ok(previous.subarray(0, offset).equals(next.subarray(0, offset)));
+    const tail = next.subarray(offset);
+    changed = taskArchiveChunkSchema.parse({
+      ...last,
+      archive: {
+        ...last.archive,
+        bytes: next.length,
+        reportSha256: hash(next),
+      },
+      bytes: tail.length,
+      sha256: hash(tail),
+      bodyBase64: tail.toString("base64"),
+    });
+  } finally {
+    reopened.close();
+  }
+  // Keep every per-report, chunk and whole-report binding valid while changing only
+  // the aggregate quota condition; an incidental digest failure cannot satisfy this.
+  const altered = database(opt);
+  try {
+    altered.exec("BEGIN IMMEDIATE");
+    try {
+      altered
+        .prepare("UPDATE task_archives SET manifest=?, bytes=? WHERE id=?")
+        .run(
+          JSON.stringify(changed.archive),
+          changed.archive.bytes,
+          second.taskId,
+        );
+      altered
+        .prepare(
+          "UPDATE task_archive_chunks SET body=?, sha256=? WHERE id=? AND ordinal=?",
+        )
+        .run(
+          Buffer.from(changed.bodyBase64, "base64"),
+          changed.sha256,
+          second.taskId,
+          changed.index,
+        );
+      assert.equal(
+        altered.prepare("SELECT sum(bytes) AS bytes FROM task_archives").get()!
+          .bytes,
+        taskArchiveLimits.retainedBytes + 1,
+      );
+      altered.exec("COMMIT");
+    } catch (error) {
+      altered.exec("ROLLBACK");
+      throw error;
+    }
+  } finally {
+    altered.close();
+  }
+  await assert.rejects(
+    openTaskStore(opt),
+    /Task archive capacity or ownership differs/,
+  );
 });
 
 test("task archive completion rolls back every chunk and terminal transition on a real mid-insert SQLite refusal", async (t) => {
