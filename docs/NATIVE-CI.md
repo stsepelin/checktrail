@@ -749,3 +749,11 @@ remaining observation time, late replies cannot become acceptance, and timeout
 diagnostics retain the poll count and last observed status. Command execution
 limits, cancellation/descendant assertions and terminal outcome expectations
 remain required.
+
+The Swift extension privacy fixture bounds CLI observation at 16 MiB to retain
+the detailed report with native journals. It checks spawn errors, signals and
+exit status, and requires CLI stdout to parse as JSON with the failed outcome.
+The detailed SDK test client has an explicit 32 MiB receive bound for the MCP
+reply's text and structured copies; summary uses its default transport bound.
+The existing root/canary disclosure assertions still run through both CLI and
+MCP. Validator process-output and execution limits are unchanged.
