@@ -25,6 +25,7 @@ const files = [
   "package.json",
   "docs/gate-a-profiles.v1.json",
   "dist/test/mcp-validation-tasks.test.js",
+  "dist/test/tasks-runtime-harness.test.js",
   "dist/test/tasks-wire-fixture.js",
   "dist/test/gate-tasks-matrix.test.js",
   "dist/test/windows-task-access.test.js",

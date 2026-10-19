@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
-import { access, mkdir, writeFile } from "node:fs/promises";
+import { access, mkdir, writeFile, realpath } from "node:fs/promises";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
 
@@ -784,7 +784,7 @@ test("native acceptance accepts cumulative callbacks within file budgets and rej
         problem.name === "original-bound" && problem.reason === "failed",
     ),
   );
-  const ceiling = execute(requirements, { timeoutMs: 1200000 });
+  const ceiling = execute(requirements, { timeoutMs: 600000 });
   assert.equal(ceiling.complete, true, JSON.stringify(ceiling));
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT;
@@ -794,7 +794,7 @@ test("native acceptance accepts cumulative callbacks within file budgets and rej
       path.join(root, "ledger-runner.mjs"),
       new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href,
       JSON.stringify(requirements),
-      JSON.stringify({ timeoutMs: 1200001 }),
+      JSON.stringify({ timeoutMs: 600001 }),
     ],
     { encoding: "utf8", timeout: 10000, env },
   );
@@ -877,6 +877,212 @@ test("required full-suite files run in parallel within the shared worker ceiling
   if (availableParallelism() >= 2)
     assert.ok(counts.maximum >= 2, "Full-suite files were serialized");
   else assert.equal(counts.maximum, 1);
+});
+
+test("full-suite gives the exact JavaScript native file an exclusive process while preserving adjacent files and unlisted callbacks", async (t) => {
+  const { readFile, cp } = await import("node:fs/promises"),
+    { availableParallelism, tmpdir } = await import("node:os");
+  const worker = (name: string) =>
+    `import {test} from 'node:test';import {appendFileSync,writeFileSync} from 'node:fs';import {tmpdir} from 'node:os';import {setTimeout as delay} from 'node:timers/promises';test(${JSON.stringify(name)},async()=>{appendFileSync(process.env.ORIGINAL_EXCLUSIVE_LOG,'start ${name}\\n');await delay(250);appendFileSync(process.env.ORIGINAL_EXCLUSIVE_LOG,'end ${name}\\n');${name === "adjacent" ? "writeFileSync(process.env.ORIGINAL_ADJACENT_NAMESPACE,tmpdir());" : ""}});`;
+  const root = await fixture(t, {
+    ...Object.fromEntries(
+      Array.from({ length: 6 }, (_, i) => [
+        `dist/test/worker${i}.mjs`,
+        worker("worker" + i),
+      ]),
+    ),
+    "dist/test/gate-javascript-extensions-extra.test.js": worker("adjacent"),
+    "dist/test/gate-javascript-extensions.test.js": `import {test} from 'node:test';import assert from 'node:assert/strict';import {readFileSync,appendFileSync,writeFileSync} from 'node:fs';import {tmpdir} from 'node:os';test('original-exclusive',()=>{const log=readFileSync(process.env.ORIGINAL_EXCLUSIVE_LOG,'utf8').trim().split('\\n');assert.equal(log.filter(l=>l.startsWith('end ')).length,7,'Every shared file must finish before native admission');assert.equal(log.filter(l=>l.startsWith('start ')).length,7);writeFileSync(process.env.ORIGINAL_EXCLUSIVE_NAMESPACE,tmpdir());appendFileSync(process.env.ORIGINAL_EXCLUSIVE_LOG,'exclusive\\n');});test('original-unlisted',()=>appendFileSync(process.env.ORIGINAL_EXCLUSIVE_LOG,'unlisted\\n'));`,
+    "runner.mjs":
+      "const {runRequiredTests}=await import('./scripts/required-test-evidence.mjs');console.log(JSON.stringify(await runRequiredTests(JSON.parse(process.argv[2]),{timeoutMs:20000,additionalFiles:JSON.parse(process.argv[3])})));",
+    "events.log": "",
+    "package.json": '{"type":"module"}',
+  });
+  await mkdir(path.join(root, "scripts"));
+  await cp(
+    new URL("../../scripts/required-test-evidence.mjs", import.meta.url),
+    path.join(root, "scripts/required-test-evidence.mjs"),
+  );
+  const env: NodeJS.ProcessEnv = {
+    ...process.env,
+    ORIGINAL_EXCLUSIVE_LOG: path.join(root, "events.log"),
+    ORIGINAL_EXCLUSIVE_NAMESPACE: path.join(root, "exclusive.namespace"),
+    ORIGINAL_ADJACENT_NAMESPACE: path.join(root, "adjacent.namespace"),
+  };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "runner.mjs"),
+      JSON.stringify([
+        { file: path.join(root, "dist/test/worker0.mjs"), name: "worker0" },
+        {
+          file: path.join(root, "dist/test/gate-javascript-extensions.test.js"),
+          name: "original-exclusive",
+        },
+      ]),
+      JSON.stringify([
+        ...Array.from({ length: 5 }, (_, i) =>
+          path.join(root, `dist/test/worker${i + 1}.mjs`),
+        ),
+        path.join(root, "dist/test/gate-javascript-extensions-extra.test.js"),
+      ]),
+    ],
+    { env, encoding: "utf8", timeout: 30000 },
+  );
+  assert.equal(
+    result.error,
+    undefined,
+    result.error?.message ?? "Exclusive fixture failed",
+  );
+  assert.equal(result.signal, null);
+  assert.equal(result.status, 0, result.stderr);
+  const receipt = JSON.parse(result.stdout);
+  assert.equal(receipt.complete, true, JSON.stringify(receipt.problems));
+  assert.equal(receipt.exclusiveFullSuiteFileCount, 1);
+  assert.equal(receipt.passed, 9);
+  assert.equal(receipt.required, 2);
+  assert.equal(receipt.optionalSkipped, 0);
+  assert.equal(receipt.files, 8);
+  assert.equal(receipt.ledger.terminalEventCount, 9);
+  assert.equal(receipt.ledger.files.length, 8);
+  assert.ok(
+    receipt.ledger.files.every((file: { stable: boolean }) => file.stable),
+  );
+  assert.ok(
+    receipt.ledger.cases.every(
+      (entry: { outcome: string }) => entry.outcome === "passed",
+    ),
+  );
+  const events = (await readFile(path.join(root, "events.log"), "utf8"))
+    .trim()
+    .split("\n");
+  assert.deepEqual(events.slice(-2), ["exclusive", "unlisted"]);
+  let active = 0,
+    maximum = 0;
+  for (const event of events.slice(0, -2)) {
+    active += event.startsWith("start ") ? 1 : -1;
+    assert.ok(active >= 0);
+    maximum = Math.max(maximum, active);
+  }
+  assert.equal(active, 0);
+  assert.ok(maximum <= Math.min(4, availableParallelism()));
+  if (availableParallelism() >= 2)
+    assert.ok(maximum >= 2, "Shared files must keep parallel execution");
+  assert.equal(
+    await readFile(path.join(root, "adjacent.namespace"), "utf8"),
+    tmpdir(),
+    "An adjacent filename must stay in the shared wave",
+  );
+  const exclusiveTemporary = await readFile(
+    path.join(root, "exclusive.namespace"),
+    "utf8",
+  );
+  assert.notEqual(exclusiveTemporary, tmpdir());
+  await assert.rejects(access(exclusiveTemporary), { code: "ENOENT" });
+});
+
+test("full-suite gives the exact Tasks matrix file an exclusive process while preserving adjacent files and unlisted callbacks", async (t) => {
+  const { readFile, cp } = await import("node:fs/promises"),
+    { availableParallelism, tmpdir } = await import("node:os");
+  const worker = (name: string) =>
+    `import {test} from 'node:test';import {appendFileSync,writeFileSync} from 'node:fs';import {tmpdir} from 'node:os';import {setTimeout as delay} from 'node:timers/promises';test(${JSON.stringify(name)},async()=>{appendFileSync(process.env.ORIGINAL_EXCLUSIVE_LOG,'start ${name}\\n');await delay(250);appendFileSync(process.env.ORIGINAL_EXCLUSIVE_LOG,'end ${name}\\n');${name === "adjacent" ? "writeFileSync(process.env.ORIGINAL_ADJACENT_NAMESPACE,tmpdir());" : ""}});`;
+  const root = await fixture(t, {
+    ...Object.fromEntries(
+      Array.from({ length: 6 }, (_, i) => [
+        `dist/test/worker${i}.mjs`,
+        worker("worker" + i),
+      ]),
+    ),
+    "dist/test/gate-tasks-matrix-extra.test.js": worker("adjacent"),
+    "dist/test/gate-tasks-matrix.test.js": `import {test} from 'node:test';import assert from 'node:assert/strict';import {readFileSync,appendFileSync,writeFileSync} from 'node:fs';import {tmpdir} from 'node:os';test('original-exclusive',()=>{const log=readFileSync(process.env.ORIGINAL_EXCLUSIVE_LOG,'utf8').trim().split('\\n');assert.equal(log.filter(l=>l.startsWith('end ')).length,7,'Every shared file must finish before native admission');assert.equal(log.filter(l=>l.startsWith('start ')).length,7);writeFileSync(process.env.ORIGINAL_EXCLUSIVE_NAMESPACE,tmpdir());appendFileSync(process.env.ORIGINAL_EXCLUSIVE_LOG,'exclusive\\n');});test('original-unlisted',()=>appendFileSync(process.env.ORIGINAL_EXCLUSIVE_LOG,'unlisted\\n'));`,
+    "runner.mjs":
+      "const {runRequiredTests}=await import('./scripts/required-test-evidence.mjs');console.log(JSON.stringify(await runRequiredTests(JSON.parse(process.argv[2]),{timeoutMs:20000,additionalFiles:JSON.parse(process.argv[3])})));",
+    "events.log": "",
+    "package.json": '{"type":"module"}',
+  });
+  await mkdir(path.join(root, "scripts"));
+  await cp(
+    new URL("../../scripts/required-test-evidence.mjs", import.meta.url),
+    path.join(root, "scripts/required-test-evidence.mjs"),
+  );
+  const env: NodeJS.ProcessEnv = {
+    ...process.env,
+    ORIGINAL_EXCLUSIVE_LOG: path.join(root, "events.log"),
+    ORIGINAL_EXCLUSIVE_NAMESPACE: path.join(root, "exclusive.namespace"),
+    ORIGINAL_ADJACENT_NAMESPACE: path.join(root, "adjacent.namespace"),
+  };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "runner.mjs"),
+      JSON.stringify([
+        { file: path.join(root, "dist/test/worker0.mjs"), name: "worker0" },
+        {
+          file: path.join(root, "dist/test/gate-tasks-matrix.test.js"),
+          name: "original-exclusive",
+        },
+      ]),
+      JSON.stringify([
+        ...Array.from({ length: 5 }, (_, i) =>
+          path.join(root, `dist/test/worker${i + 1}.mjs`),
+        ),
+        path.join(root, "dist/test/gate-tasks-matrix-extra.test.js"),
+      ]),
+    ],
+    { env, encoding: "utf8", timeout: 30000 },
+  );
+  assert.equal(
+    result.error,
+    undefined,
+    result.error?.message ?? "Exclusive fixture failed",
+  );
+  assert.equal(result.signal, null);
+  assert.equal(result.status, 0, result.stderr);
+  const receipt = JSON.parse(result.stdout);
+  assert.equal(receipt.complete, true, JSON.stringify(receipt.problems));
+  assert.equal(receipt.exclusiveFullSuiteFileCount, 1);
+  assert.equal(receipt.passed, 9);
+  assert.equal(receipt.required, 2);
+  assert.equal(receipt.optionalSkipped, 0);
+  assert.equal(receipt.files, 8);
+  assert.equal(receipt.ledger.terminalEventCount, 9);
+  assert.equal(receipt.ledger.files.length, 8);
+  assert.ok(
+    receipt.ledger.files.every((file: { stable: boolean }) => file.stable),
+  );
+  assert.ok(
+    receipt.ledger.cases.every(
+      (entry: { outcome: string }) => entry.outcome === "passed",
+    ),
+  );
+  const events = (await readFile(path.join(root, "events.log"), "utf8"))
+    .trim()
+    .split("\n");
+  assert.deepEqual(events.slice(-2), ["exclusive", "unlisted"]);
+  let active = 0,
+    maximum = 0;
+  for (const event of events.slice(0, -2)) {
+    active += event.startsWith("start ") ? 1 : -1;
+    assert.ok(active >= 0);
+    maximum = Math.max(maximum, active);
+  }
+  assert.equal(active, 0);
+  assert.ok(maximum <= Math.min(4, availableParallelism()));
+  if (availableParallelism() >= 2)
+    assert.ok(maximum >= 2, "Shared files must keep parallel execution");
+  assert.equal(
+    await readFile(path.join(root, "adjacent.namespace"), "utf8"),
+    tmpdir(),
+    "An adjacent filename must stay in the shared wave",
+  );
+  const exclusiveTemporary = await readFile(
+    path.join(root, "exclusive.namespace"),
+    "utf8",
+  );
+  assert.notEqual(exclusiveTemporary, tmpdir());
+  await assert.rejects(access(exclusiveTemporary), { code: "ENOENT" });
 });
 
 test("named native acceptance gives each exact callback a fresh bounded process budget", async (t) => {
@@ -1076,3 +1282,232 @@ test("formatting acceptance CLI isolates exact callbacks without admitting an ad
     3,
   );
 });
+
+test("required native runner grants the installation budget only to exact isolated generator Ruby Swift and mutation installed callbacks", async (t) => {
+  const root = await realpath(await fixture(t, {}));
+  const helper = path.join(root, "scripts/required-test-evidence.mjs");
+  await mkdir(path.dirname(helper), { recursive: true });
+  await writeFile(
+    helper,
+    await (
+      await import("node:fs/promises")
+    ).readFile(
+      new URL("../../scripts/required-test-evidence.mjs", import.meta.url),
+    ),
+  );
+  const profiles = [
+    "dotnet-generator-extensions",
+    "ruby-extensions",
+    "swift-extensions",
+    "mutation-runners",
+  ];
+  const requirements = profiles.flatMap((profile) => {
+    const exact = path.join(root, "dist/test", `gate-${profile}.test.js`);
+    const adjacent = path.join(root, "other", `gate-${profile}.test.js`);
+    const installed = `${profile} installed acceptance`;
+    return [
+      { file: exact, name: installed },
+      { file: exact, name: `${profile} broken acceptance` },
+      { file: exact, name: installed + "-extra" },
+      { file: adjacent, name: installed },
+    ];
+  });
+  for (const file of new Set(requirements.map((item) => item.file))) {
+    await mkdir(path.dirname(file), { recursive: true });
+    await writeFile(
+      file,
+      "// Synthetic timer-admission fixture; no native acceptance.\n",
+    );
+  }
+  const runner = path.join(root, "timer-admission.mjs");
+  // Observe options at the actual node:test boundary without waiting twenty minutes.
+  // Synthetic terminal events exercise harness accounting, not native acceptance.
+  await writeFile(
+    runner,
+    `
+import{registerHooks}from'node:module';import{pathToFileURL}from'node:url';
+const helper=pathToFileURL(process.argv[2]).href,expected=JSON.parse(process.argv[3]),options=JSON.parse(process.argv[4]);
+globalThis.originalTimerCalls=[];globalThis.originalTimerExpected=expected;
+const stub="export async function* run(options){globalThis.originalTimerCalls.push({files:options.files,timeout:options.timeout,patterns:options.testNamePatterns?.map(String)});for(const item of globalThis.originalTimerExpected){if(options.files.includes(item.file)&&(!options.testNamePatterns||options.testNamePatterns.some(p=>p.test(item.name))))yield{type:'test:pass',data:{file:item.file,name:item.name,details:{type:'test',duration_ms:0}}}}}";
+registerHooks({resolve(specifier,context,next){return specifier==='node:test'&&context.parentURL===helper?{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true}:next(specifier,context)}});
+const{runRequiredTests}=await import(helper);const report=await runRequiredTests(expected,options);console.log(JSON.stringify({report,calls:globalThis.originalTimerCalls}));
+`,
+  );
+  const invoke = (
+    requirements: { file: string; name: string }[],
+    timeoutMs = 600000,
+    isolatedCaseWorkers = 1,
+  ) => {
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    const result = spawnSync(
+      process.execPath,
+      [
+        runner,
+        helper,
+        JSON.stringify(requirements),
+        JSON.stringify({ timeoutMs, isolatedCaseWorkers }),
+      ],
+      { env, encoding: "utf8", timeout: 10000 },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    return JSON.parse(result.stdout) as {
+      report: TerminalReceipt;
+      calls: { files: string[]; timeout: number; patterns?: string[] }[];
+    };
+  };
+  const admitted = invoke(requirements);
+  assert.equal(admitted.report.complete, true, JSON.stringify(admitted));
+  assert.equal(admitted.report.required, requirements.length);
+  assert.equal(admitted.report.passed, requirements.length);
+  assert.deepEqual(
+    admitted.calls.map((call) => call.timeout),
+    profiles.flatMap(() => [1200000, 600000, 600000, 600000]),
+  );
+  assert.deepEqual(
+    admitted.calls.map((call) => call.files),
+    requirements.map((item) => [item.file]),
+  );
+  assert.ok(admitted.calls.every((call) => call.patterns?.length === 1));
+  for (const budget of [1000, 599999]) {
+    const custom = invoke(
+      [requirements[0]!, requirements[4]!, requirements[8]!, requirements[12]!],
+      budget,
+    );
+    assert.deepEqual(
+      custom.calls.map((call) => call.timeout),
+      [budget, budget, budget, budget],
+    );
+  }
+  const batch = invoke(requirements, 600000, 0);
+  assert.equal(batch.calls.length, 1);
+  assert.equal(batch.calls[0]!.timeout, 600000);
+});
+
+test("named required case progress identifies starts and terminal failures without crediting absent or skipped cases", async (t) => {
+  const root = await fixture(t, {
+    "controls.mjs": `import {test} from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';test('passed',()=>assert.match(readFileSync(new URL('progress.jsonl',import.meta.url),'utf8'),/"phase":"start","name":"passed"/));test('failed',()=>{throw Error('original synthetic failure')});test('skipped',{skip:'original unavailable'},()=>{});`,
+    "runner.mjs": `import {appendFileSync} from 'node:fs';import {fileURLToPath} from 'node:url';const {runRequiredTests}=await import(process.argv[2]);const progress=[];const evidence=await runRequiredTests(['passed','failed','skipped','absent'].map(name=>({file:fileURLToPath(new URL('controls.mjs',import.meta.url)),name})),{timeoutMs:5000,isolatedCaseWorkers:1,onCaseProgress:event=>{progress.push(event);appendFileSync(new URL('progress.jsonl',import.meta.url),JSON.stringify(event)+'\\n');}});console.log(JSON.stringify({evidence,progress}));`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "runner.mjs"),
+      new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href,
+    ],
+    { env, encoding: "utf8", timeout: 15000 },
+  );
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stderr);
+  const { evidence, progress } = JSON.parse(result.stdout) as {
+    evidence: TerminalReceipt;
+    progress: Array<{
+      phase: string;
+      name: string;
+      outcome?: string;
+      message?: string;
+    }>;
+  };
+  assert.equal(evidence.complete, false);
+  assert.equal(evidence.required, 4);
+  assert.deepEqual(
+    evidence.ledger.cases.map(({ name, outcome }) => ({ name, outcome })),
+    [
+      { name: "passed", outcome: "passed" },
+      { name: "failed", outcome: "failed" },
+      { name: "skipped", outcome: "skipped" },
+      { name: "absent", outcome: "not-observed" },
+    ],
+  );
+  assert.deepEqual(
+    progress
+      .filter((event) => event.phase === "start")
+      .map((event) => event.name),
+    ["passed", "failed", "skipped", "absent"],
+  );
+  assert.deepEqual(
+    progress
+      .filter((event) => event.phase === "finished")
+      .map((event) => event.name),
+    ["passed", "failed", "skipped", "absent"],
+  );
+  assert.deepEqual(
+    progress
+      .filter((event) => event.phase === "terminal")
+      .map(({ name, outcome }) => ({ name, outcome })),
+    [
+      { name: "passed", outcome: "passed" },
+      { name: "failed", outcome: "failed" },
+      { name: "skipped", outcome: "skipped" },
+    ],
+  );
+  assert.equal(
+    progress.find(
+      (event) => event.phase === "terminal" && event.name === "failed",
+    )?.message,
+    "original synthetic failure",
+  );
+  assert.ok(
+    evidence.problems.some(
+      (problem) =>
+        problem.name === "absent" &&
+        problem.reason === "required-test-not-passed",
+    ),
+  );
+  assert.ok(
+    evidence.problems.some(
+      (problem) =>
+        problem.name === "skipped" && problem.reason === "skipped-or-todo",
+    ),
+  );
+});
+
+test(
+  "packaged review failure preserves its complete bounded ledger before reporting a nonzero exit",
+  { skip: process.platform === "win32" },
+  async (t) => {
+    const { chmod } = await import("node:fs/promises");
+    const { fileURLToPath } = await import("node:url");
+    const ledger = {
+      complete: false,
+      ledger: {
+        padding: "x".repeat(16000),
+        terminal: "original-final-ledger-witness",
+      },
+    };
+    const root = await fixture(t, {
+      docker: `#!${process.execPath}
+const args=process.argv.slice(2);
+if(args[0]==='image')console.log('sha256:'+'a'.repeat(64));
+else if(args.includes('--version'))console.log(args.includes('git')?'git version 2.47.3':'v22.23.2');
+else {console.log(${JSON.stringify(JSON.stringify(ledger))});process.exitCode=7;}
+`,
+    });
+    await chmod(path.join(root, "docker"), 0o755);
+    const environment: NodeJS.ProcessEnv = {
+      ...process.env,
+      PATH: root + path.delimiter + process.env.PATH,
+    };
+    delete environment.NODE_TEST_CONTEXT;
+    const result = spawnSync(
+      process.execPath,
+      [
+        fileURLToPath(
+          new URL("../../scripts/verify-review-container.mjs", import.meta.url),
+        ),
+      ],
+      {
+        env: environment,
+        encoding: "utf8",
+        timeout: 15000,
+        maxBuffer: 1024 * 1024,
+      },
+    );
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Required review source cohort failed/);
+    assert.deepEqual(JSON.parse(result.stdout), ledger);
+  },
+);

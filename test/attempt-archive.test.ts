@@ -9,6 +9,7 @@ import {
   projectProviderReview,
 } from "../src/review-provider.js";
 import type { ReviewProviderConfig } from "../src/review-provider-schema.js";
+import { ModelAttemptOutputCapture } from "../src/model-attempt-output.js";
 import { fixture, nodeManifest, passingTest } from "./helpers.js";
 const digest = (b: Uint8Array | string) =>
   createHash("sha256").update(b).digest("hex");
@@ -183,6 +184,27 @@ test("offline API attempts retain each bounded JSON error and response with exac
     assert.equal(summary.includes("bodyBase64"), false);
     assert.equal(summary.includes("original error body canary"), false);
     assert.equal(summary.includes("original response canary"), false);
+    for (const state of [
+      "withheld-uninspectable",
+      "withheld-credential",
+      "withheld-incomplete",
+    ] as const) {
+      const contradictory = structuredClone(run);
+      Object.assign(contradictory.responseArchive![1]!, {
+        bodyState: state,
+        bodyBase64: null,
+        bodySha256: null,
+        retainedBodyBytes: 0,
+      });
+      assert.throws(
+        () => projectProviderReview(contradictory, true, true),
+        /Uninspected provider response archive/,
+      );
+      assert.throws(
+        () => projectProviderReview(contradictory, false, false),
+        /Uninspected provider response archive/,
+      );
+    }
     const changed = structuredClone(run);
     const archived = changed.responseArchive![1]!;
     const value = JSON.parse(
@@ -224,6 +246,10 @@ test("offline API response archives refuse literal and JSON-escaped credentials 
     },
     {
       body: JSON.stringify({ [key]: "original" }),
+      state: "withheld-credential",
+    },
+    {
+      body: '{"' + escaped + '":"original"}',
       state: "withheld-credential",
     },
     {
@@ -270,6 +296,297 @@ test("offline API response archives refuse literal and JSON-escaped credentials 
       );
     assert.equal(JSON.stringify(run).includes(key), false);
   }
+  for (const kind of ["openai-responses", "anthropic-messages"] as const) {
+    for (const item of [
+      { padding: Array(100001).fill(0), allowed: false },
+      { padding: [Array(50001).fill(0), Array(50001).fill(0)], allowed: false },
+      { padding: Array(99900).fill(0), allowed: true },
+    ]) {
+      const note = item.allowed ? key.slice(0, -1) + "b" : key;
+      const text = JSON.stringify({
+        files: [{ path: "subject.mjs", disposition: "reviewed", note }],
+        candidates: [],
+      });
+      const body = JSON.stringify({
+        model: config.model,
+        usage: { input_tokens: 11, output_tokens: 3 },
+        ...(kind === "openai-responses"
+          ? {
+              status: "completed",
+              output: [
+                {
+                  type: "message",
+                  role: "assistant",
+                  status: "completed",
+                  content: [{ type: "output_text", text }],
+                },
+              ],
+            }
+          : {
+              type: "message",
+              role: "assistant",
+              stop_reason: "end_turn",
+              content: [{ type: "text", text }],
+            }),
+        padding: item.padding,
+      }).replaceAll(key, escaped);
+      assert.ok(Buffer.byteLength(body) < 1048576);
+      assert.equal(body.includes(key), false);
+      let calls = 0;
+      const run = await runProviderReview(root, context, {
+        allowInference: true,
+        allowSourceDisclosure: true,
+        environment: { ORIGINAL_ARCHIVE_KEY: key },
+        config: {
+          ...config,
+          kind,
+          limits: {
+            ...config.limits,
+            maxAttempts: 1,
+            maxResponseBytes: 1048576,
+          },
+        },
+        fetch: async () => {
+          calls++;
+          return new Response(body);
+        },
+      });
+      assert.equal(calls, 1);
+      assert.equal(run.attempts.length, 1);
+      const archived = run.responseArchive![0]!;
+      assert.equal(
+        archived.bodyState,
+        item.allowed ? "complete" : "withheld-uninspectable",
+      );
+      assert.equal(archived.observedBodyBytes, Buffer.byteLength(body));
+      assert.equal(
+        JSON.stringify(run).includes(key),
+        false,
+        "An uninspected success body must not disclose decoded credentials through review prose",
+      );
+      assert.equal(
+        run.attempts[0]!.status,
+        item.allowed ? "completed" : "malformed",
+      );
+      if (item.allowed) {
+        assert.ok(run.receipt);
+        assert.equal(run.receipt.assessment.files[0]!.note, note);
+        assert.equal(
+          Buffer.from(archived.bodyBase64!, "base64").toString(),
+          body,
+        );
+      } else {
+        assert.equal(run.receipt, null);
+        assert.deepEqual(run.candidates, []);
+        assert.equal(run.attempts[0]!.observedModel, null);
+        assert.equal(run.attempts[0]!.usage.inputTokens, null);
+        assert.equal(run.attempts[0]!.usage.outputTokens, null);
+        assert.equal(archived.bodyBase64, null);
+        assert.equal(archived.bodySha256, null);
+        assert.equal(archived.retainedBodyBytes, 0);
+      }
+      assert.deepEqual(projectProviderReview(run, true, true), run);
+    }
+    for (const item of [
+      { value: key, secret: true, valid: true, keyed: false, padding: null },
+      {
+        value: config.credentialEnv,
+        secret: true,
+        valid: true,
+        keyed: false,
+        padding: null,
+      },
+      { value: key, secret: true, valid: false, keyed: false, padding: null },
+      { value: key, secret: true, valid: false, keyed: true, padding: null },
+      {
+        value: key,
+        secret: true,
+        valid: false,
+        keyed: false,
+        padding: Array(100001).fill(0),
+      },
+      {
+        value: key,
+        secret: true,
+        valid: false,
+        keyed: false,
+        padding: [Array(50001).fill(0), Array(50001).fill(0)],
+      },
+      {
+        value: key.slice(0, -1) + "b",
+        secret: false,
+        valid: true,
+        keyed: false,
+        padding: null,
+      },
+    ]) {
+      const escapedValue = item.value
+        .split("")
+        .map((c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"))
+        .join("");
+      const model = item.valid
+        ? {
+            files: [
+              {
+                path: "subject.mjs",
+                disposition: "reviewed",
+                note: item.value,
+              },
+            ],
+            candidates: [],
+          }
+        : item.keyed
+          ? { [item.value]: "original" }
+          : {
+              unexpected: item.value,
+              ...(item.padding ? { padding: item.padding } : {}),
+            };
+      const text = JSON.stringify(model).replaceAll(item.value, escapedValue);
+      assert.equal(text.includes(item.value), false);
+      const body = JSON.stringify({
+        model: config.model,
+        usage: { input_tokens: 11, output_tokens: 3 },
+        ...(kind === "openai-responses"
+          ? {
+              status: "completed",
+              output: [
+                {
+                  type: "message",
+                  role: "assistant",
+                  status: "completed",
+                  content: [{ type: "output_text", text }],
+                },
+              ],
+            }
+          : {
+              type: "message",
+              role: "assistant",
+              stop_reason: "end_turn",
+              content: [{ type: "text", text }],
+            }),
+      });
+      assert.equal(body.includes(item.value), false);
+      let calls = 0;
+      const run = await runProviderReview(root, context, {
+        allowInference: true,
+        allowSourceDisclosure: true,
+        environment: { ORIGINAL_ARCHIVE_KEY: key },
+        config: {
+          ...config,
+          kind,
+          limits: {
+            ...config.limits,
+            maxAttempts: 1,
+            maxResponseBytes: 1048576,
+          },
+        },
+        fetch: async () => {
+          calls++;
+          return new Response(body);
+        },
+      });
+      assert.equal(calls, 1);
+      assert.equal(
+        JSON.stringify(run).includes(key),
+        false,
+        "Credential inspection must cover the decoded structured model JSON",
+      );
+      assert.equal(JSON.stringify(run).includes(config.credentialEnv), false);
+      const archived = run.responseArchive![0]!;
+      assert.equal(
+        archived.bodyState,
+        item.padding
+          ? "withheld-uninspectable"
+          : item.secret
+            ? "withheld-credential"
+            : "complete",
+      );
+      assert.equal(
+        run.attempts[0]!.status,
+        item.secret ? "malformed" : "completed",
+      );
+      if (item.secret) {
+        assert.equal(run.receipt, null);
+        assert.deepEqual(run.candidates, []);
+        assert.equal(run.attempts[0]!.observedModel, null);
+        assert.equal(run.attempts[0]!.usage.inputTokens, null);
+        assert.equal(archived.bodyBase64, null);
+        assert.equal(archived.retainedBodyBytes, 0);
+      } else {
+        assert.ok(run.receipt);
+        assert.equal(run.receipt.assessment.files[0]!.note, item.value);
+        assert.equal(
+          Buffer.from(archived.bodyBase64!, "base64").toString(),
+          body,
+        );
+      }
+      assert.deepEqual(projectProviderReview(run, true, true), run);
+    }
+    // Non-success responses interpret only safe numeric usage and HTTP status.
+    const body = JSON.stringify({
+      error: { message: key },
+      usage: { input_tokens: 11, output_tokens: 3 },
+      padding: Array(100001).fill(0),
+    }).replaceAll(key, escaped);
+    let calls = 0;
+    const run = await runProviderReview(root, context, {
+      allowInference: true,
+      allowSourceDisclosure: true,
+      environment: { ORIGINAL_ARCHIVE_KEY: key },
+      config: {
+        ...config,
+        kind,
+        limits: { ...config.limits, maxAttempts: 1, maxResponseBytes: 1048576 },
+      },
+      fetch: async () => {
+        calls++;
+        return new Response(body, { status: 503 });
+      },
+    });
+    assert.equal(calls, 1);
+    assert.equal(run.responseArchive![0]!.bodyState, "withheld-uninspectable");
+    assert.equal(run.attempts[0]!.status, "capacity");
+    assert.equal(run.attempts[0]!.usage.inputTokens, 11);
+    assert.equal(run.attempts[0]!.usage.outputTokens, 3);
+    assert.equal(run.attempts[0]!.observedModel, null);
+    assert.equal(run.receipt, null);
+    assert.deepEqual(run.candidates, []);
+    assert.equal(JSON.stringify(run).includes(key), false);
+    assert.deepEqual(projectProviderReview(run, true, true), run);
+  }
+  const oversized = Array(100001).fill(null);
+  let oversizedIterations = 0;
+  Object.defineProperty(oversized, Symbol.iterator, {
+    value() {
+      oversizedIterations++;
+      return Array.prototype.values.call(oversized);
+    },
+  });
+  const capture = new ModelAttemptOutputCapture(
+    "00000000-0000-4000-8000-000000000000",
+    "0".repeat(64),
+    1048576,
+    [key, config.credentialEnv],
+  );
+  capture.status(200);
+  capture.observe(
+    Buffer.from(JSON.stringify({ text: JSON.stringify(oversized) })),
+  );
+  capture.complete();
+  assert.equal(capture.snapshot().bodyState, "complete");
+  assert.equal(capture.inspectDecodedJson(oversized), false);
+  assert.equal(
+    oversizedIterations,
+    0,
+    "The pending-value budget must refuse an oversized array before enumerating it",
+  );
+  assert.equal(capture.snapshot().bodyState, "withheld-uninspectable");
+  assert.equal(capture.inspectDecodedJson({ safe: "original" }), false);
+  assert.equal(capture.snapshot().bodyState, "withheld-uninspectable");
+  assert.equal(capture.inspectDecodedJson({ secret: key }), false);
+  assert.equal(capture.snapshot().bodyState, "withheld-credential");
+  assert.equal(capture.inspectDecodedJson({ safe: "original" }), false);
+  assert.equal(capture.snapshot().bodyState, "withheld-credential");
 });
 test("offline API partial overflow aborted and unavailable attempts account for observed bytes without retaining an unchecked body", async (t) => {
   const root = await fixture(t, {

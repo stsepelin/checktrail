@@ -70,6 +70,18 @@ test("native journal private storage preserves two distinct records and canonica
         errorCode: null,
       });
     }
+    const beforeRejectedAdmission = await readFile(
+      path.join(storage.context.directory, "frames.jsonl"),
+    );
+    assert.throws(
+      () => writer!.admit(hash("unadmitted-third-command")),
+      /call allowance/,
+    );
+    assert.deepEqual(
+      await readFile(path.join(storage.context.directory, "frames.jsonl")),
+      beforeRejectedAdmission,
+      "Rejecting an excessive call must not append a frame",
+    );
     assert.equal(
       storage.read().completeForRecordedCalls,
       false,
@@ -115,6 +127,8 @@ test("native journal physical file/header changes hard links and a foreign conte
     "empty-frame",
     "append",
     "hardlink",
+    "header-replacement",
+    "log-replacement",
     "foreign",
   ] as const) {
     const storage = createNativeAttemptStorage(header());
@@ -153,6 +167,27 @@ test("native journal physical file/header changes hard links and a foreign conte
           /singly linked/,
         );
         assert.throws(() => storage.read(), /singly linked/);
+      } else if (kind === "header-replacement" || kind === "log-replacement") {
+        const target =
+          kind === "header-replacement"
+            ? path.join(storage.context.directory, "header.json")
+            : log;
+        const original = target + ".original";
+        const bytes = await readFile(target);
+        await rename(target, original);
+        try {
+          await writeFile(target, bytes, { flag: "wx", mode: 0o600 });
+          assert.throws(() => storage.read(), /singly linked/);
+          assert.deepEqual(await readFile(target), bytes);
+        } finally {
+          await rm(target, { force: true });
+          await rename(original, target);
+        }
+        assert.equal(
+          storage.read().completeForRecordedCalls,
+          false,
+          "Restoring the original file identity permits the unchanged empty journal",
+        );
       } else {
         writer = new NativeAttemptWriter(storage.context);
         await appendFile(log, "\n");

@@ -119,8 +119,8 @@ const controls = [
     file: "rust-workspace-runner.js",
     test: "gate-rust-extensions.test.js",
     name: "rust-extensions lifecycle acceptance",
-    after: "true",
-    before: "process.stderr.write(chunk)",
+    after: "...{}",
+    before: "mirror: process.stderr",
   },
   {
     id: "rust-owned-build-directory",
@@ -149,7 +149,10 @@ const pins = new Map(
     }),
   ),
 );
-const selected = new Set(process.argv.slice(2));
+const preflightOnly = process.argv.includes("--preflight");
+const selected = new Set(
+  process.argv.slice(2).filter((arg) => arg !== "--preflight"),
+);
 assert.ok(
   [...selected].every((id) => controls.some((c) => c.id === id)),
   "Unknown control",
@@ -241,6 +244,21 @@ for (const control of controls.filter(
     "Mutation preflight: " + control.id,
   );
   prepared.push({ ...control, file, original, mutant });
+}
+if (preflightOnly) {
+  process.stdout.write(
+    JSON.stringify({
+      nativeExecuted: false,
+      controls: prepared.map((control) => ({
+        id: control.id,
+        file: control.file.pathname.split("/").at(-1),
+        originalSha256: digest(control.original),
+        mutantSha256: digest(control.mutant),
+        mutantSyntaxValid: true,
+      })),
+    }) + "\n",
+  );
+  process.exit(0);
 }
 const environment = { ...process.env };
 delete environment.NODE_TEST_CONTEXT;

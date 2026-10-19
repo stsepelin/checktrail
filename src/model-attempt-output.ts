@@ -24,6 +24,31 @@ export const modelAttemptOutputSchema = z.strictObject({
 export type ModelAttemptOutput = z.infer<typeof modelAttemptOutputSchema>;
 const hash = (bytes: Uint8Array | string) =>
   createHash("sha256").update(bytes).digest("hex");
+type ModelJsonInspection =
+  "complete" | "withheld-credential" | "withheld-uninspectable";
+function inspectModelJson(
+  parsed: unknown,
+  credentials: readonly string[],
+): ModelJsonInspection {
+  const pending: unknown[] = [parsed];
+  let inspected = 0;
+  while (pending.length) {
+    if (++inspected > 100000) return "withheld-uninspectable";
+    const item = pending.pop();
+    if (
+      typeof item === "string" &&
+      credentials.some((value) => item.includes(value))
+    )
+      return "withheld-credential";
+    if (Array.isArray(item)) {
+      if (item.length + pending.length > 100000)
+        return "withheld-uninspectable";
+      for (const value of item) pending.push(value);
+    } else if (item !== null && typeof item === "object")
+      for (const [key, value] of Object.entries(item)) pending.push(key, value);
+  }
+  return "complete";
+}
 export class ModelAttemptOutputCapture {
   #chunks: Buffer[] = [];
   #retained = 0;
@@ -31,6 +56,7 @@ export class ModelAttemptOutputCapture {
   #complete = false;
   #status: number | null = null;
   #credentials: readonly string[];
+  #decodedBodyState: Exclude<ModelJsonInspection, "complete"> | null = null;
   constructor(
     readonly attemptId: string,
     readonly requestSha256: string,
@@ -42,6 +68,15 @@ export class ModelAttemptOutputCapture {
     if (!credentials.length || credentials.some((value) => !value.length))
       throw new Error("Model response capture requires nonempty credentials");
     this.#credentials = [...credentials];
+  }
+  inspectDecodedJson(value: unknown): boolean {
+    const state = inspectModelJson(value, this.#credentials);
+    if (
+      state !== "complete" &&
+      (this.#decodedBodyState === null || state === "withheld-credential")
+    )
+      this.#decodedBodyState = state;
+    return this.#decodedBodyState === null;
   }
   status(value: number) {
     this.#status = value >= 100 && value <= 599 ? value : null;
@@ -83,6 +118,11 @@ export class ModelAttemptOutputCapture {
         ...base,
         bodyState: "withheld-credential",
       });
+    if (this.#decodedBodyState !== null)
+      return modelAttemptOutputSchema.parse({
+        ...base,
+        bodyState: this.#decodedBodyState,
+      });
     let parsed: unknown;
     try {
       parsed = JSON.parse(
@@ -94,35 +134,9 @@ export class ModelAttemptOutputCapture {
         bodyState: "withheld-uninspectable",
       });
     }
-    const pending: unknown[] = [parsed];
-    let inspected = 0;
-    while (pending.length) {
-      if (++inspected > 100000)
-        return modelAttemptOutputSchema.parse({
-          ...base,
-          bodyState: "withheld-uninspectable",
-        });
-      const item = pending.pop();
-      if (
-        typeof item === "string" &&
-        this.#credentials.some((value) => item.includes(value))
-      )
-        return modelAttemptOutputSchema.parse({
-          ...base,
-          bodyState: "withheld-credential",
-        });
-      if (Array.isArray(item)) {
-        if (item.length + pending.length > 100000)
-          return modelAttemptOutputSchema.parse({
-            ...base,
-            bodyState: "withheld-uninspectable",
-          });
-        for (const value of item) pending.push(value);
-      } else if (item !== null && typeof item === "object")
-        for (const [key, value] of Object.entries(item)) {
-          pending.push(key, value);
-        }
-    }
+    const state = inspectModelJson(parsed, this.#credentials);
+    if (state !== "complete")
+      return modelAttemptOutputSchema.parse({ ...base, bodyState: state });
     return modelAttemptOutputSchema.parse({
       ...base,
       bodyState: "complete",

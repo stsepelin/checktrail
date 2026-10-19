@@ -2,10 +2,11 @@ import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import path from "node:path";
+import process from "node:process";
 import { open, realpath, mkdtemp, writeFile, rm } from "node:fs/promises";
 import { constants } from "node:fs";
 import { availableParallelism, tmpdir } from "node:os";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL, fileURLToPath, URL } from "node:url";
 import { run } from "node:test";
 
 export const testFileWorkerLimit = () =>
@@ -61,10 +62,11 @@ async function executeRequiredTests(
     maxTerminalEvents = MAX_EVENTS,
     additionalFiles = [],
     isolatedCaseWorkers = 0,
+    onCaseProgress,
   } = {},
 ) {
   assert.ok(
-    Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 1200000,
+    Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 600000,
     "Required test harness timeout must be bounded",
   );
   assert.ok(
@@ -84,6 +86,11 @@ async function executeRequiredTests(
     isolatedCaseWorkers === 0 || additionalFiles.length === 0,
     "Named case isolation cannot replace a full-suite run",
   );
+  assert.ok(
+    onCaseProgress === undefined ||
+      (typeof onCaseProgress === "function" && isolatedCaseWorkers > 0),
+    "Required case progress needs named isolation",
+  );
   const requiredCaseWorkerLimit =
     isolatedCaseWorkers === 0
       ? 0
@@ -100,6 +107,23 @@ async function executeRequiredTests(
   const fileIds = new Map(
     files.map((file, index) => [file, "file-" + (index + 1)]),
   );
+  // These native files repeat loader/build or Tasks fresh-install controls. Give
+  // each complete file an exclusive slot after the shared full-suite wave; named
+  // selection would omit unlisted callbacks. All existing deadlines still apply.
+  const exclusiveFiles =
+    additionalFiles.length > 0
+      ? files.filter((file) =>
+          ["javascript-extensions", "tasks-matrix"].some(
+            (profile) =>
+              file ===
+              path.join(
+                fileURLToPath(new URL("../dist/test/", import.meta.url)),
+                `gate-${profile}.test.js`,
+              ),
+          ),
+        )
+      : [];
+  const exclusiveSet = new Set(exclusiveFiles);
   const before = await Promise.all(files.map(fingerprint));
   const observed = new Map(expected.map((item) => [key(item), []]));
   const terminalEvents = [];
@@ -107,11 +131,12 @@ async function executeRequiredTests(
   let passed = 0;
   let optionalSkipped = 0;
   let terminalEventCount = 0;
-  const collect = async (selection) => {
+  const collect = async (selection, batch = files, exclusive = false) => {
     let temporary;
     let execArgv = [];
     try {
-      if (selection) {
+      if (selection) onCaseProgress?.({ phase: "start", name: selection.name });
+      if (selection || exclusive) {
         temporary = await mkdtemp(
           path.join(tmpdir(), "checktrail-native-case-"),
         );
@@ -123,10 +148,29 @@ async function executeRequiredTests(
         );
         execArgv = ["--import", pathToFileURL(preload).href];
       }
+      // Only this exact isolated wrapper needs time to repeat the native cases
+      // through a fresh installation. Other callbacks and file budgets stay bounded.
+      const caseTimeoutMs =
+        timeoutMs === 600000 &&
+        [
+          "dotnet-generator-extensions",
+          "ruby-extensions",
+          "swift-extensions",
+          "mutation-runners",
+        ].some(
+          (profile) =>
+            selection?.file ===
+              path.join(
+                fileURLToPath(new URL("../dist/test/", import.meta.url)),
+                `gate-${profile}.test.js`,
+              ) && selection.name === `${profile} installed acceptance`,
+        )
+          ? 1200000
+          : timeoutMs;
       for await (const { type, data } of run({
-        files: selection ? [selection.file] : files,
-        concurrency: selection ? 1 : fileWorkerLimit,
-        timeout: timeoutMs,
+        files: selection ? [selection.file] : batch,
+        concurrency: selection || exclusive ? 1 : fileWorkerLimit,
+        timeout: caseTimeoutMs,
         execArgv,
         ...(selection
           ? {
@@ -174,6 +218,31 @@ async function executeRequiredTests(
           };
           terminalEvents.push(event);
           if (!suite && observed.has(id)) observed.get(id).push(event.sequence);
+          if (selection && !suite && id === key(selection))
+            onCaseProgress?.({
+              phase: "terminal",
+              name: selection.name,
+              outcome,
+              durationMs: event.durationMs,
+              ...(type === "test:fail"
+                ? {
+                    ...(typeof data.details?.error?.failureType === "string"
+                      ? {
+                          failureType: data.details.error.failureType.slice(
+                            0,
+                            128,
+                          ),
+                        }
+                      : {}),
+                    ...(typeof data.details?.error?.code === "string"
+                      ? { code: data.details.error.code.slice(0, 128) }
+                      : {}),
+                    ...(typeof data.details?.error?.message === "string"
+                      ? { message: data.details.error.message.slice(0, 1000) }
+                      : {}),
+                  }
+                : {}),
+            });
           if (event.nameTruncated)
             problems.push({
               name: event.name,
@@ -215,7 +284,17 @@ async function executeRequiredTests(
         if (type === "test:pass" && !suite) passed++;
       }
     } finally {
-      if (temporary) await rm(temporary, { recursive: true, force: true });
+      if (temporary)
+        await rm(temporary, {
+          recursive: true,
+          force: true,
+          // Native Windows supervisors can still be completing EOF cleanup
+          // when their test worker exits. Persistent locks remain failures.
+          maxRetries: process.platform === "win32" ? 10 : 0,
+          retryDelay: 100,
+        });
+      if (selection)
+        onCaseProgress?.({ phase: "finished", name: selection.name });
     }
   };
   if (before.every((item) => item.state === "present")) {
@@ -232,7 +311,11 @@ async function executeRequiredTests(
         (outcome) => outcome.status === "rejected",
       );
       if (rejected) throw rejected.reason;
-    } else await collect(null);
+    } else {
+      const sharedFiles = files.filter((file) => !exclusiveSet.has(file));
+      if (sharedFiles.length) await collect(null, sharedFiles);
+      for (const file of exclusiveFiles) await collect(null, [file], true);
+    }
   }
   const truncated = terminalEventCount > terminalEvents.length;
   if (truncated)
@@ -280,6 +363,9 @@ async function executeRequiredTests(
   });
   return {
     fileWorkerLimit,
+    ...(exclusiveFiles.length > 0
+      ? { exclusiveFullSuiteFileCount: exclusiveFiles.length }
+      : {}),
     ...(requiredCaseWorkerLimit > 0
       ? {
           requiredCaseWorkerLimit,

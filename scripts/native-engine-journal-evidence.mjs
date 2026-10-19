@@ -11,6 +11,6 @@ export async function nativeEngineJournalRequirements(root) {
   assert.equal(names.length, 12);
   assert.equal(new Set(names).size, 12);
   const requirements = [...original, ...names.map((name) => ({ file, name }))];
-  assert.equal(requirements.length, process.platform === "win32" ? 33 : 34);
+  assert.equal(requirements.length, process.platform === "win32" ? 34 : 35);
   return requirements;
 }

@@ -97,3 +97,68 @@ test("Pinned artifact mirrors retain bounded retry admission exact filenames and
  assert.equal(reached,3);assert.deepEqual(waits2,[1000,3000]);
 `,
   ));
+
+const wrapperControlImports = `
+ const {createHash}=await import('node:crypto');
+ const {requestJvmWrapperArtifact}=await import(${JSON.stringify(new URL("../../scripts/request-jvm-wrapper-artifact.mjs", import.meta.url).href)});
+ const original=Uint8Array.from([0,255,7]);
+ const pin={url:'https://downloads.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip',bytes:3,sha256:createHash('sha256').update(original).digest('hex')};
+`;
+
+test("JVM wrapper setup retries transient deliveries through exact Apache mirrors and keeps Central artifact URLs unchanged", async (t) =>
+  control(
+    t,
+    wrapperControlImports +
+      `
+ const apachePaths=['/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip','/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip.asc','/maven/KEYS'];
+ const centralPaths=['/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.4/maven-wrapper-3.3.4.jar','/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.4/maven-wrapper-3.3.4.jar.asc','/maven2/org/apache/maven/wrapper/maven-wrapper-distribution/3.3.4/maven-wrapper-distribution-3.3.4-bin.zip','/maven2/org/apache/maven/wrapper/maven-wrapper-distribution/3.3.4/maven-wrapper-distribution-3.3.4-bin.zip.asc'];
+ for(const [url,expected] of [
+  ...apachePaths.map(p=>['https://downloads.apache.org'+p,['https://downloads.apache.org'+p,'https://dlcdn.apache.org'+p,'https://archive.apache.org/dist'+p]]),
+  ...centralPaths.map(p=>['https://repo.maven.apache.org'+p,Array(3).fill('https://repo.maven.apache.org'+p)]),
+ ]){
+  const signal=AbortSignal.timeout(5000),calls=[],waits=[];
+  const timeout=Object.assign(new AggregateError([],'synthetic connect timeout'),{code:'ETIMEDOUT'});
+  const bytes=await requestJvmWrapperArtifact({...pin,url},{signal,fetchImpl:async(asset,request)=>{calls.push([asset,request.redirect,request.signal===signal]);if(calls.length===1)throw new TypeError('fetch failed',{cause:timeout});if(calls.length===2)return new Response('temporary',{status:503});return new Response(original);},delayImpl:async ms=>waits.push(ms)});
+  assert.deepEqual(calls,expected.map(asset=>[asset,'error',true]));assert.deepEqual(waits,[1000,3000]);assert.deepEqual([...bytes],[0,255,7]);
+ }
+ let reached=0;const bytes=await requestJvmWrapperArtifact(pin,{fetchImpl:async(asset,request)=>{assert.equal(asset,pin.url);assert.equal(request.redirect,'error');reached++;return new Response(original);},delayImpl:async()=>assert.fail('Valid primary must not retry')});assert.equal(reached,1);assert.deepEqual([...bytes],[0,255,7]);
+ `,
+  ));
+
+test("JVM wrapper setup rejects redirects permanent responses malformed bodies and incorrect digests without retry", async (t) =>
+  control(
+    t,
+    wrapperControlImports +
+      `
+ for(const response of [()=>new Response('no',{status:404}),()=>new Response('no',{status:401}),()=>new Response('go',{status:302}),()=>new Response('x'),()=>new Response('long'),()=>new Response(),()=>new Response(Uint8Array.from([0,255,8]))]){
+  let calls=0;await assert.rejects(requestJvmWrapperArtifact(pin,{fetchImpl:async()=>{calls++;return response();},delayImpl:async()=>assert.fail('Integrity or permanent failures must not retry')}));assert.equal(calls,1);
+ }
+ for(const failure of [new TypeError('redirect blocked'),Object.assign(new Error('bad certificate'),{code:'CERT_HAS_EXPIRED'})]){let calls=0;await assert.rejects(requestJvmWrapperArtifact(pin,{fetchImpl:async()=>{calls++;throw failure;},delayImpl:async()=>assert.fail('Must not retry')}),e=>e===failure);assert.equal(calls,1);}
+ `,
+  ));
+
+test("JVM wrapper setup bounds exhausted retries and preserves cancellation before fetch and between attempts", async (t) =>
+  control(
+    t,
+    wrapperControlImports +
+      `
+ const failure=Object.assign(new Error('connect timeout'),{code:'ETIMEDOUT'}),waits=[],calls=[],retries=[];
+ await assert.rejects(requestJvmWrapperArtifact(pin,{fetchImpl:async url=>{calls.push(url);throw failure},delayImpl:async ms=>waits.push(ms),onRetry:event=>retries.push(event)}),e=>e===failure);
+ assert.deepEqual(calls,[pin.url,pin.url.replace('downloads.apache.org','dlcdn.apache.org'),pin.url.replace('https://downloads.apache.org/','https://archive.apache.org/dist/')]);assert.deepEqual(waits,[1000,3000]);assert.deepEqual(retries,[{attempt:1,waitMs:1000},{attempt:2,waitMs:3000}]);
+ const abort=new Error('original cancellation');let before=0;await assert.rejects(requestJvmWrapperArtifact(pin,{signal:AbortSignal.abort(abort),fetchImpl:async()=>{before++;return new Response(original)}}),e=>e===abort);assert.equal(before,0);
+ const controller=new AbortController();let during=0;
+ await assert.rejects(requestJvmWrapperArtifact(pin,{signal:controller.signal,fetchImpl:async()=>{during++;throw failure},delayImpl:async()=>controller.abort(abort)}),e=>e===abort);assert.equal(during,1);
+ `,
+  ));
+
+test("JVM wrapper setup discards interrupted body bytes and rejects URLs outside its exact artifact inventory", async (t) =>
+  control(
+    t,
+    wrapperControlImports +
+      `
+ let calls=0;const waits=[];
+ const bytes=await requestJvmWrapperArtifact(pin,{fetchImpl:async()=>{if(++calls===1)return new Response(new ReadableStream({start(c){c.enqueue(Uint8Array.from([99,99]));},pull(c){c.error(Object.assign(new Error('body interrupted'),{code:'ECONNRESET'}));}}));return new Response(original);},delayImpl:async ms=>waits.push(ms)});
+ assert.equal(calls,2);assert.deepEqual(waits,[1000]);assert.deepEqual([...bytes],[0,255,7]);
+ for(const url of [pin.url.replace('https:','http:'),pin.url.replace('downloads.apache.org','downloads.apache.org.evil.invalid'),pin.url+'?changed=1',pin.url+'#fragment',pin.url.replace('3.10.0','3.10.1'),pin.url.replace('https://','https://user:secret@')]){let reached=0;await assert.rejects(requestJvmWrapperArtifact({...pin,url},{fetchImpl:async()=>{reached++;return new Response(original)}}));assert.equal(reached,0);}
+ `,
+  ));

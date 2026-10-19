@@ -116,7 +116,8 @@ export async function invokeNative(
     let error: NodeJS.ErrnoException | undefined,
       cut = false,
       journalCut = false,
-      stopping = false;
+      stopping = false,
+      finished = false;
     let termination: Promise<void> | undefined;
     const child = spawn(executable, args, {
       ...(options.cwd ? { cwd: options.cwd } : {}),
@@ -125,7 +126,9 @@ export async function invokeNative(
       detached: process.platform !== "win32",
       stdio: ["ignore", "pipe", "pipe"],
     });
-    let waitingForDrain = false;
+    let waitingForDrain = false,
+      pendingMirrorWrites = 0;
+    let mirrorSettled: (() => void) | undefined;
     const resume = () => {
       options.mirror?.removeListener("drain", resume);
       waitingForDrain = false;
@@ -133,7 +136,10 @@ export async function invokeNative(
       child.stderr.resume();
     };
     const terminate = () => {
-      if (error) resume();
+      if (error) {
+        resume();
+        mirrorSettled?.();
+      }
       if (stopping || !child.pid) return;
       stopping = true;
       termination = (async () => {
@@ -163,6 +169,11 @@ export async function invokeNative(
         }
       })();
     };
+    const mirrorFailed = (cause: unknown) => {
+      error ??= failure(errorCode(cause));
+      terminate();
+    };
+    options.mirror?.on("error", mirrorFailed);
     child.once("spawn", () => {
       pid = child.pid ?? null;
       try {
@@ -190,16 +201,31 @@ export async function invokeNative(
           cut = true;
         }
         options.observe?.(chunk, stream);
-        if (
-          options.mirror &&
-          !error &&
-          !options.mirror.write(chunk) &&
-          !waitingForDrain
-        ) {
-          waitingForDrain = true;
-          child.stdout.pause();
-          child.stderr.pause();
-          options.mirror.once("drain", resume);
+        if (options.mirror && !error) {
+          pendingMirrorWrites++;
+          const writable = options.mirror.write(
+            chunk,
+            (cause?: Error | null) => {
+              pendingMirrorWrites--;
+              if (cause) {
+                if (finished) {
+                  // A timed-out write may fail later. Handle the error event owned
+                  // by that callback without retaining a listener on a stalled sink.
+                  const lateError = () => {};
+                  options.mirror!.once("error", lateError);
+                  setImmediate(() =>
+                    options.mirror?.removeListener("error", lateError),
+                  );
+                } else mirrorFailed(cause);
+              } else if (pendingMirrorWrites === 0) mirrorSettled?.();
+            },
+          );
+          if (!writable && !waitingForDrain) {
+            waitingForDrain = true;
+            child.stdout.pause();
+            child.stderr.pause();
+            options.mirror.once("drain", resume);
+          }
         }
       } catch (cause) {
         error = failure(errorCode(cause));
@@ -228,10 +254,22 @@ export async function invokeNative(
     options.signal?.addEventListener("abort", cancel, { once: true });
     if (options.signal?.aborted) cancel();
     child.once("close", async (status, signal) => {
+      await termination;
+      // Native exit can precede an asynchronous mirror write failure. Keep the
+      // deadline and our error listener until accepted writes settle; a stalled
+      // sink must still return incomplete within the invocation deadline.
+      if (!error && pendingMirrorWrites > 0)
+        await new Promise<void>((settled) => {
+          mirrorSettled = settled;
+        });
+      // Writable emits its error event after the failed write callback.
+      if (options.mirror)
+        await new Promise<void>((settled) => setImmediate(settled));
+      finished = true;
       clearTimeout(timer);
       options.signal?.removeEventListener("abort", cancel);
       options.mirror?.removeListener("drain", resume);
-      await termination;
+      options.mirror?.removeListener("error", mirrorFailed);
       const out = Buffer.concat(stdout),
         err = Buffer.concat(stderr);
       try {
