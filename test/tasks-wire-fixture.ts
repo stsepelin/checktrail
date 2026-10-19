@@ -190,18 +190,47 @@ export function taskId(response: Response): string {
   return String(response.result.taskId);
 }
 export async function terminal(
-  connection: Awaited<ReturnType<typeof wire>>,
+  connection: Pick<Awaited<ReturnType<typeof wire>>, "request">,
   id: string,
-  timeoutMs = 4000,
+  timeoutMs = 15000,
 ) {
-  for (let attempt = 0; attempt < Math.ceil(timeoutMs / 25); attempt++) {
-    const response = await connection.request("tasks/get", { taskId: id });
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1)
+    throw new Error("Invalid task observation deadline");
+  // Fixture commands may execute for five seconds, followed by result persistence.
+  // This observes completion; it never extends the server's execution deadline.
+  const started = performance.now(),
+    deadline = started + timeoutMs;
+  let polls = 0,
+    lastStatus: unknown;
+  const expired = () =>
+    new Error(
+      `Task did not finish within ${timeoutMs}ms (${polls} polls, last status: ${String(lastStatus)})`,
+    );
+  while (performance.now() < deadline) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let response: Response;
+    try {
+      response = await Promise.race([
+        connection.request("tasks/get", { taskId: id }),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(
+            () => reject(expired()),
+            Math.max(1, Math.ceil(deadline - performance.now())),
+          );
+        }),
+      ]);
+    } finally {
+      clearTimeout(timer);
+    }
+    polls++;
+    if (performance.now() >= deadline) throw expired();
     assert.equal(response.error, undefined);
     assert.equal(response.result?.resultType, "complete");
-    if (response.result.status !== "working") return response.result;
-    await delay(25);
+    lastStatus = response.result.status;
+    if (lastStatus !== "working") return response.result;
+    await delay(Math.min(25, Math.max(0, deadline - performance.now())));
   }
-  throw new Error("Task did not finish");
+  throw expired();
 }
 export function report(task: Record<string, unknown>) {
   return (task.result as { structuredContent?: Record<string, unknown> })

@@ -741,3 +741,11 @@ image build still verifies Alpine signatures. This changes toolchain bytes,
 including the LLVM shared library; the tool version requirement remains 22.1.3.
 Dated r0 measurements retain their original archive identities and do not qualify
 the replacement runtime.
+
+Tasks fixture completion observation uses a bounded 15-second monotonic deadline.
+The previous four-second observation allowance could reject a valid task before
+its five-second command allowance ended. Each status read is bounded by the
+remaining observation time, late replies cannot become acceptance, and timeout
+diagnostics retain the poll count and last observed status. Command execution
+limits, cancellation/descendant assertions and terminal outcome expectations
+remain required.
