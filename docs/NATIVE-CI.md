@@ -732,3 +732,12 @@ A native Windows control holds a real child process's working directory open;
 release permits removal, while a persistent lock exhausts the retries and remains
 an error. POSIX removal keeps its existing immediate behavior. Namespace cleanup
 and terminal acceptance remain separate obligations.
+
+The hashed C++ preparation manifest selects the three LLVM 22.1.3 revision-r1
+archives together (`llvm22`, `llvm22-libs` and `llvm22-linker-tools`). These
+replace the original r0 archive pins after public r0 delivery returned HTTP 404.
+Each replacement has its own measured byte count and SHA-256, and the offline
+image build still verifies Alpine signatures. This changes toolchain bytes,
+including the LLVM shared library; the tool version requirement remains 22.1.3.
+Dated r0 measurements retain their original archive identities and do not qualify
+the replacement runtime.
