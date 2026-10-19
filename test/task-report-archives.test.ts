@@ -5,7 +5,10 @@ import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { test, type TestContext } from "node:test";
 import { openTaskStore } from "../src/task-store.js";
-import { openValidationTasks } from "../src/validation-tasks.js";
+import {
+  openValidationTasks,
+  type ValidationTasks,
+} from "../src/validation-tasks.js";
 import { reportSchema } from "../src/schemas.js";
 import { captureNativeJournal } from "../src/native-journal-capture.js";
 import {
@@ -16,6 +19,18 @@ import {
 import type { Report } from "../src/types.js";
 import { fixture, passingTest } from "./helpers.js";
 import { setup, wire, taskId, terminal } from "./tasks-wire-fixture.js";
+
+// Share the bounded wall-clock observer with the wire controls while reading real library tasks.
+async function completed(tasks: ValidationTasks, id: string): Promise<void> {
+  await terminal(
+    {
+      request: async () => ({
+        result: { resultType: "complete", ...(await tasks.get(id)) },
+      }),
+    },
+    id,
+  );
+}
 
 const fingerprint = "a".repeat(64);
 const hash = (bytes: Uint8Array) =>
@@ -464,11 +479,7 @@ test("native validation worker retains oversized original reports and supports b
   let saved: TaskArchiveChunk | undefined;
   try {
     id = (await tasks.start()).taskId;
-    for (let attempt = 0; attempt < 160; attempt++) {
-      const task = await tasks.get(id);
-      if (task.status !== "working") break;
-      await new Promise((resolve) => setTimeout(resolve, 25));
-    }
+    await completed(tasks, id);
     assert.equal((await tasks.get(id)).status, "completed");
     assert.equal((await tasks.get(id)).result!.isError, true);
     saved = await tasks.readArchive(id, 0);
@@ -636,10 +647,7 @@ test("durable Tasks retain oversized physical inner-wrapper journals with their 
   let first: TaskArchiveChunk;
   try {
     id = (await tasks.start()).taskId;
-    for (let attempt = 0; attempt < 160; attempt++) {
-      if ((await tasks.get(id)).status !== "working") break;
-      await new Promise((resolve) => setTimeout(resolve, 25));
-    }
+    await completed(tasks, id);
     assert.equal((await tasks.get(id)).status, "completed");
     assert.equal((await tasks.get(id)).result!.isError, true);
     first = await tasks.readArchive(id, 0);

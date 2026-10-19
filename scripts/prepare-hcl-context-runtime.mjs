@@ -135,7 +135,7 @@ try {
     nodeBase:
       "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
     gitBase:
-      "public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+      "docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
     archive: { file: spec.archive, bytes: bytes.length, sha256: hash(bytes) },
     members: spec.members,
     nativeVersion: JSON.parse(version),

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "recordedDate": "2026-10-13",
+  "profile": "swift-extensions",
+  "scope": "Official registry delivery of the existing pinned Swift and Debian Node OCI indexes",
+  "verifiedIndexes": [
+    {
+      "reference": "docker.io/library/swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+      "indexBytes": 2617,
+      "sha256": "6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+      "arm64Present": true,
+      "registryReturnedSelectedDigest": true,
+      "publisherSignaturesVerified": false
+    },
+    {
+      "reference": "docker.io/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+      "indexBytes": 5218,
+      "sha256": "48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+      "arm64Present": true,
+      "registryReturnedSelectedDigest": true,
+      "publisherSignaturesVerified": false
+    }
+  ],
+  "versionsAndDigestsChanged": false,
+  "nativeAcceptanceEstablishedByThisRecord": false,
+  "wholeArtifactOrLicenseClosureVerified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}

@@ -7,7 +7,7 @@ export async function nativeJournalRequirements(root) {
   for (const [file, total] of [
     ["native-attempt-frames.test.js", 5],
     ["native-attempt-storage.test.js", 4],
-    ["native-invoke.test.js", 13],
+    ["native-invoke.test.js", 14],
   ]) {
     const target = path.join(root, "dist/test", file);
     const text = await readFile(target, "utf8");
@@ -26,6 +26,6 @@ export async function nativeJournalRequirements(root) {
       requirements.push({ file: target, name });
     }
   }
-  assert.equal(requirements.length, process.platform === "win32" ? 21 : 22);
+  assert.equal(requirements.length, process.platform === "win32" ? 22 : 23);
   return requirements;
 }

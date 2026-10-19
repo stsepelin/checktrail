@@ -6,7 +6,7 @@ const helper = await import(
   new URL("../../scripts/windows-task-access-diagnostics.mjs", import.meta.url)
     .href
 );
-test("Windows ACL diagnostic separates completed stdin from JSON conversion without changing the shipped request or ACL decisions", async () => {
+test("Windows ACL diagnostic separates completed stdin from framework JSON parsing without changing the shipped request or ACL decisions", async () => {
   const source = ts.createSourceFile(
     "windows-task-access.js",
     await readFile(
@@ -32,7 +32,8 @@ test("Windows ACL diagnostic separates completed stdin from JSON conversion with
   const diagnostic = helper.buildWindowsTaskAccessDiagnostic(
     original,
   ) as string;
-  const request = "  $request = [Console]::In.ReadToEnd() | ConvertFrom-Json";
+  const request =
+    "  $request = $serializer.DeserializeObject([Console]::In.ReadToEnd())";
   const strip = (s: string) =>
     s
       .split("\n")
@@ -42,7 +43,7 @@ test("Windows ACL diagnostic separates completed stdin from JSON conversion with
       .join("\n");
   assert.equal(
     strip(diagnostic).replace(
-      "  $requestText = [Console]::In.ReadToEnd()\n  $request = $requestText | ConvertFrom-Json",
+      "  $requestText = [Console]::In.ReadToEnd()\n  $request = $serializer.DeserializeObject($requestText)",
       request,
     ),
     original,
@@ -52,12 +53,12 @@ test("Windows ACL diagnostic separates completed stdin from JSON conversion with
     ),
     finishedAt = diagnostic.indexOf("CT_ACL_STAGE|stdin-finished|"),
     convertAt = diagnostic.indexOf(
-      "$request = $requestText | ConvertFrom-Json",
+      "$request = $serializer.DeserializeObject($requestText)",
     );
   assert.ok(inputAt >= 0 && inputAt < finishedAt && finishedAt < convertAt);
   for (const anchor of [
     request,
-    "  $acl = Get-Acl -LiteralPath $request.path",
+    "  $acl = $item.GetAccessControl()",
     "  [Console]::Error.WriteLine('Windows task ACL inspection unavailable')",
   ]) {
     assert.throws(

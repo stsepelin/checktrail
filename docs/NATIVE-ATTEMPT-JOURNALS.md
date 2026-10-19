@@ -89,6 +89,10 @@ ordinary POSIX process-group control is separate from Windows Job Object cleanup
 The JVM invoker accepts one explicit journal shared by quiet and observed calls;
 JVM and Rust workspace invocations use the shared streamed process boundary and
 retain their existing native parsers, output limits and mirroring backpressure.
+Asynchronous mirror errors retain the delivered prefix and make the invocation
+incomplete. Pending mirror writes remain bounded by the invocation deadline,
+including when the native child exits before the mirror callback. Caller-owned
+stream listeners remain installed.
 Physical journal completion does not validate decoded semantics: bytes rejected
 by strict UTF-8 decoding remain recorded as actual observed bytes.
 Source and fresh offline installed controls on native macOS ARM64 Node 24/26 and

@@ -28,6 +28,15 @@ from an already verified public artifact cache without downloading again.
 Cryptographic signature verification does not establish key-owner trust or a
 complete publisher/license audit. Gradle signature verification is not claimed.
 
+Maven artifact setup admits at most three delivery attempts within one 60-second
+request deadline. Apache ZIP, signature and key requests can use the exact
+`dlcdn.apache.org` and `archive.apache.org/dist` paths after transient connection
+or HTTP 5xx failures. Central wrapper requests retain their exact Central URLs.
+Redirects, missing assets, incorrect byte counts and digest mismatches fail
+without retries. Alternate delivery leaves every archive, detached signature,
+public key and native wrapper byte pin unchanged; signature verification still
+runs before template generation or cache publication.
+
 Add `extensions` to the existing Maven or Gradle configuration. For example,
 the Maven producer module can declare:
 

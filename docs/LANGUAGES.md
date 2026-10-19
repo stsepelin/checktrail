@@ -488,12 +488,13 @@ Journal codec/private storage foundation controls retain actual binary native ch
 observations in separate bounded files with interrupted-call replay. This is a
 foundation for language wrappers, with source and fresh offline installed macOS
 Node evidence. Shared JVM and Rust workspace calls now use a streamed invocation
-boundary, with an explicit shared journal available to the JVM helper. Validation
-now creates and collects journals for the exact selected Node wrapper catalog,
-with physical replay, source/command bindings and incomplete-capture guards.
-Metadata-only identity paths keep outer capture. Complete language/VM call-family
-acceptance, durable large-journal retention and the remaining native matrix stay
-pending.
+boundary, with an explicit shared journal available to the JVM helper. Mirror
+errors and writes still pending after native exit remain incomplete within the
+invocation deadline. Validation now creates and collects journals for the exact
+selected Node wrapper catalog, with physical replay, source/command bindings and
+incomplete-capture guards. Metadata-only identity paths keep outer capture.
+Complete language/VM call-family acceptance, durable large-journal retention and
+the remaining native matrix stay pending.
 See [NATIVE-ATTEMPT-JOURNALS.md](NATIVE-ATTEMPT-JOURNALS.md).
 
 The shared native wrapper output adapter now replaces the selected synchronous
@@ -501,4 +502,4 @@ TypeScript wrapper calls and awaits downstream .NET collectors. It retains raw
 bytes before Buffer/UTF-8 parser conversion, uses a combined stream byte bound,
 and refuses successful parser status on incomplete capture. Source and installed
 wiring controls remain distinct from native acceptance for each language;
-engine journal collection, wider runtime acceptance and Gate A remain open.
+complete engine journal acceptance, wider runtime acceptance and Gate A remain open.

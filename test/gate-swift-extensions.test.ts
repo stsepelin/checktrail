@@ -37,6 +37,8 @@ const summary = (report: Awaited<ReturnType<typeof run>>) =>
       reason: c.reason,
       processes: c.processes.map((p) => ({
         exit: p.exitCode,
+        signal: p.signal,
+        errorCode: p.errorCode,
         stderr: p.stderr.slice(-1000),
         timedOut: p.timedOut,
         truncated: p.truncated,
@@ -118,7 +120,8 @@ test("swift-extensions fixed acceptance", native, async (t) => {
     const { root } = await swiftExtensionsFixture(t, mode),
       { file, original } = await breakProducer(root);
     try {
-      assert.equal((await run(root)).outcome, "failed");
+      const broken = await run(root);
+      assert.equal(broken.outcome, "failed", `${mode}: ${summary(broken)}`);
     } finally {
       await writeFile(file, original);
     }
@@ -483,9 +486,15 @@ test("swift-extensions privacy acceptance", native, async (t) => {
         "120000",
         ...(detailed ? ["--detailed"] : []),
       ],
-      { encoding: "utf8", timeout: 150000, maxBuffer: 4 * 1048576 },
+      { encoding: "utf8", timeout: 150000, maxBuffer: 16 * 1048576 },
     );
+    assert.equal(r.error, undefined, r.error?.message ?? r.stderr);
+    assert.equal(r.signal, null);
     assert.equal(r.status, 1, r.stderr);
+    assert.equal(
+      (JSON.parse(r.stdout) as { outcome: string }).outcome,
+      "failed",
+    );
     assert.equal(r.stdout.includes(root), detailed);
     assert.equal(r.stdout.includes(canary), detailed);
   }
@@ -507,6 +516,7 @@ test("swift-extensions privacy acceptance", native, async (t) => {
             ...(detailed ? ["--detailed"] : []),
           ],
           stderr: "pipe",
+          ...(detailed ? { maxBufferSize: 32 * 1048576 } : {}),
         }),
       );
       assert.equal(
@@ -637,6 +647,7 @@ test("swift-extensions installed acceptance", native, async () => {
     { env, encoding: "utf8", timeout: 1170000, maxBuffer: 4 * 1048576 },
   );
   assert.equal(r.error, undefined, r.error?.message ?? "");
+  assert.equal(r.signal, null);
   assert.equal(
     r.status,
     0,

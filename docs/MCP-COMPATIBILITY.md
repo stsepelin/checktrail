@@ -41,6 +41,17 @@ summary projections omit raw evidence, and startup source/execution/inference
 grants keep their existing independent meanings. Full inner-attempt archives and
 external host usage remain pending. See [the foundation contract](ATTEMPT-OUTPUTS.md).
 
+Detailed reports can exceed a client's transport receive bound because an MCP
+reply contains both text and structured content. The pinned SDK 2.3.0 stdio client
+defaults to 10 MiB. The Swift journal privacy acceptance profile explicitly sets
+`StdioClientTransport.maxBufferSize` to 32 MiB for detailed replies and retains the
+default for summaries. This qualifies that configured client profile; unconfigured
+clients are not qualified for these large detailed replies. Use summary output or
+an operator-configured client receive bound. Startup-enabled detailed Tasks also
+support bounded report retention and `validation_archive_read`; see
+[TASK-STORAGE.md](TASK-STORAGE.md). Complete large-journal and wider host-client
+acceptance remain pending.
+
 ## Standard Tasks polling profile
 
 The Tasks runtime foundation now includes strict source/installed checks for the

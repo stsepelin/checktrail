@@ -24,7 +24,7 @@ const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const testFiles = [
   ["native-attempt-frames.test.js", 5],
   ["native-attempt-storage.test.js", 4],
-  ["native-invoke.test.js", 13],
+  ["native-invoke.test.js", 14],
   ["native-journal-engine.test.js", 12],
 ];
 const inputFiles = [
@@ -56,7 +56,7 @@ for (const [file, total] of testFiles) {
     requirements.push({ file: "dist/test/" + file, name });
   }
 }
-assert.equal(requirements.length, process.platform === "win32" ? 33 : 34);
+assert.equal(requirements.length, process.platform === "win32" ? 34 : 35);
 const harnessSha256 = hash(
   JSON.stringify(inputs.map((x) => [x.file, hash(x.bytes)])),
 );
