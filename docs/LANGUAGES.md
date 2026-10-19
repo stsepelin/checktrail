@@ -487,3 +487,10 @@ invocation deadline. Validation
 does not create or consume these journals yet. Engine collection, synchronous
 wrapper migration and the remaining native matrix stay pending.
 See [NATIVE-ATTEMPT-JOURNALS.md](NATIVE-ATTEMPT-JOURNALS.md).
+
+The shared native wrapper output adapter now replaces the selected synchronous
+TypeScript wrapper calls and awaits downstream .NET collectors. It retains raw
+bytes before Buffer/UTF-8 parser conversion, uses a combined stream byte bound,
+and refuses successful parser status on incomplete capture. Source and installed
+wiring controls remain distinct from native acceptance for each language;
+engine journal collection, wider runtime acceptance and Gate A remain open.

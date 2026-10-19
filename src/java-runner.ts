@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { mkdtemp, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -14,15 +14,15 @@ for (const name of [
   "CLASSPATH",
 ])
   delete env[name];
-function invoke(args: string[]) {
-  return spawnSync("java", args, {
+async function invoke(args: string[]) {
+  return await invokeNativeOutput("java", args, {
     env,
     encoding: "utf8",
     maxBuffer: 1024 * 1024,
   });
 }
 async function main() {
-  const version = invoke(["--version"]);
+  const version = await invoke(["--version"]);
   if (process.argv[2] === "--version") {
     process.stdout.write(version.stdout ?? "");
     process.stderr.write(version.stderr ?? "");
@@ -63,7 +63,7 @@ async function main() {
         ),
       ].join("\n"),
     );
-    const result = invoke([
+    const result = await invoke([
       "-Xmx256m",
       "-Dfile.encoding=UTF-8",
       "-Duser.language=en",

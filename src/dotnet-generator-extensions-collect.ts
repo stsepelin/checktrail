@@ -1,6 +1,6 @@
 import path from "node:path";
 import { copyFile, writeFile } from "node:fs/promises";
-import type { SpawnSyncReturns } from "node:child_process";
+import type { NativeTextResult } from "./native-invoke-output.js";
 import type { z } from "zod";
 import type { dotnetBuildInvocationSchema } from "./dotnet-build.js";
 import { mavenHash } from "./maven.js";
@@ -21,7 +21,7 @@ interface Context {
     phase: string,
     args: string[],
     cwd: string,
-  ) => SpawnSyncReturns<string>;
+  ) => Promise<NativeTextResult>;
   observe: (file: string) => Promise<{ bytes: number; sha256: string }>;
   regular: (file: string, bound: number) => Promise<Buffer>;
 }
@@ -54,7 +54,7 @@ export async function collectDotnetGeneratorIdentities(context: Context) {
   await writeFile(source, dotnetGeneratorExtensionsNativeSource, {
     flag: "wx",
   });
-  const compiled = invoke(
+  const compiled = await invoke(
     "generator-identity-observer-compile",
     [
       "exec",
@@ -114,7 +114,7 @@ export async function collectDotnetGeneratorIdentities(context: Context) {
         pdb = path.join(base, project.assemblyName + ".pdb");
       await observe(assembly);
       await observe(pdb);
-      const native = invoke(
+      const native = await invoke(
         `generator-identity-${mode}:${project.file}`,
         ["exec", helper, mode, assembly, pdb],
         workspace,

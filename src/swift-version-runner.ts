@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { swiftToolsProtectedEnvironment } from "./swift-tools.js";
 const probes = {
   swift: { executable: "swiftc", args: ["--version"] },
@@ -18,7 +18,7 @@ if (!name || !Object.hasOwn(probes, name) || process.argv.length !== 3) {
     )
       delete env[key];
   const probe = probes[name as keyof typeof probes],
-    result = spawnSync(probe.executable, probe.args, {
+    result = await invokeNativeOutput(probe.executable, probe.args, {
       env,
       encoding: "utf8",
       maxBuffer: 8192,

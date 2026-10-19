@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { createHash } from "node:crypto";
 import { mkdtemp, readFile, writeFile, rm, realpath } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -31,8 +31,8 @@ const metadataSchema = z.object({
 const hash = (bytes: Buffer | string) =>
   createHash("sha256").update(bytes).digest("hex");
 let remaining = 1024 * 1024;
-function invoke(executable: string, args: string[]) {
-  const value = spawnSync(executable, args, {
+async function invoke(executable: string, args: string[]) {
+  const value = await invokeNativeOutput(executable, args, {
     encoding: "utf8",
     maxBuffer: Math.max(1, remaining),
   });
@@ -56,7 +56,7 @@ async function main() {
     ["cargo", /^cargo 1\.98\.1 \([a-f0-9]+ [0-9-]+\)$/],
     ["rustfmt", /^rustfmt 1\.9\.0-stable \([a-f0-9]+ [0-9-]+\)$/],
   ] as const) {
-    const value = invoke(tool, ["--version"]);
+    const value = await invoke(tool, ["--version"]);
     if (
       value.exitCode !== 0 ||
       value.stderr.trim() ||
@@ -64,7 +64,7 @@ async function main() {
     )
       throw new Error("unsupported-version");
   }
-  const meta = invoke("cargo", [
+  const meta = await invoke("cargo", [
     "metadata",
     "--offline",
     "--locked",
@@ -127,7 +127,7 @@ async function main() {
         )
         .sort((a, b) => b.manifest_path.length - a.manifest_path.length)[0];
       if (!owner) throw new Error("source-outside-selected-workspace");
-      const configResult = invoke("rustfmt", [
+      const configResult = await invoke("rustfmt", [
         "--edition",
         owner.edition,
         "--config-path",
@@ -151,7 +151,7 @@ async function main() {
       const formatted =
         disabled || skipped || !source.trim()
           ? null
-          : invoke("rustfmt", [
+          : await invoke("rustfmt", [
               "--edition",
               owner.edition,
               "--config-path",
@@ -173,7 +173,7 @@ async function main() {
         process: formatted,
       });
     }
-    const cargo = invoke("cargo", [
+    const cargo = await invoke("cargo", [
       "fmt",
       "--all",
       "--check",

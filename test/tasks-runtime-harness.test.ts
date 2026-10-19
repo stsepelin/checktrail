@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
+import { terminal } from "./tasks-wire-fixture.js";
 
 test("Tasks installed wrapper selects a bounded Windows aggregate allowance while preserving POSIX deadlines and failed child status", async (t) => {
   const root = await fixture(t, {
@@ -179,3 +180,148 @@ test(
     }
   },
 );
+
+test("Tasks terminal observation admits valid completion beyond four seconds and preserves failures while rejecting expired results", async (t) => {
+  let elapsed = 0,
+    calls = 0;
+  const clock = t.mock.method(performance, "now", () => elapsed);
+  const working = { resultType: "complete", status: "working" };
+  const completed = {
+    resultType: "complete",
+    status: "completed",
+    result: { structuredContent: { outcome: "passed" } },
+  };
+  const failed = {
+    ...completed,
+    result: { structuredContent: { outcome: "failed" } },
+  };
+  const connection = {
+    request: async (method: string, params: Record<string, unknown> = {}) => {
+      assert.equal(method, "tasks/get");
+      assert.deepEqual(params, { taskId: "synthetic-task" });
+      calls++;
+      elapsed += 1000;
+      return { result: elapsed < 5000 ? working : completed };
+    },
+  };
+  try {
+    let observed;
+    await assert.doesNotReject(async () => {
+      observed = await terminal(connection, "synthetic-task");
+    }, "A valid task can complete after four seconds within the fixture execution allowance");
+    assert.equal(observed, completed);
+    assert.equal(calls, 5);
+    elapsed = 0;
+    calls = 0;
+    await assert.rejects(
+      terminal(connection, "synthetic-task", 4000),
+      /Task did not finish within 4000ms/,
+    );
+    assert.equal(calls, 4);
+    elapsed = 0;
+    assert.equal(
+      await terminal(
+        { request: async () => ({ result: failed }) },
+        "synthetic-task",
+      ),
+      failed,
+    );
+    elapsed = 0;
+    await assert.rejects(
+      terminal(
+        {
+          request: async () => ({
+            error: { code: -1, message: "synthetic protocol refusal" },
+          }),
+        },
+        "synthetic-task",
+      ),
+      { code: "ERR_ASSERTION" },
+    );
+    elapsed = 0;
+    await assert.rejects(
+      terminal(
+        {
+          request: async () => {
+            elapsed = 16000;
+            return { result: completed };
+          },
+        },
+        "synthetic-task",
+      ),
+      /Task did not finish within 15000ms/,
+    );
+    elapsed = 0;
+    calls = 0;
+    await assert.rejects(
+      terminal(
+        {
+          request: async () => {
+            calls++;
+            elapsed += 600;
+            return { result: working };
+          },
+        },
+        "synthetic-task",
+        1000,
+      ),
+      /Task did not finish within 1000ms/,
+    );
+    assert.equal(calls, 2);
+  } finally {
+    clock.mock.restore();
+  }
+});
+
+test("Tasks terminal observation bounds a stalled read and refuses invalid deadlines without polling", async () => {
+  let completed = false,
+    timer: ReturnType<typeof setTimeout> | undefined;
+  let release:
+    ((value: { result: Record<string, unknown> }) => void) | undefined;
+  try {
+    await assert.rejects(
+      terminal(
+        {
+          request: () =>
+            new Promise((resolve) => {
+              release = resolve;
+              timer = setTimeout(() => {
+                completed = true;
+                resolve({
+                  result: { resultType: "complete", status: "completed" },
+                });
+              }, 200);
+            }),
+        },
+        "synthetic-task",
+        20,
+      ),
+      /Task did not finish within 20ms/,
+    );
+    assert.equal(
+      completed,
+      false,
+      "A slow read must not consume a later deadline",
+    );
+  } finally {
+    clearTimeout(timer);
+    release?.({ result: { resultType: "complete", status: "completed" } });
+  }
+  let calls = 0;
+  for (const deadline of [0, -1, NaN, Infinity, 0.5]) {
+    await assert.rejects(
+      terminal(
+        {
+          request: async () => {
+            calls++;
+            return {};
+          },
+        },
+        "synthetic-task",
+        deadline,
+      ),
+      /Invalid task observation deadline/,
+    );
+  }
+  assert.equal(calls, 0);
+});

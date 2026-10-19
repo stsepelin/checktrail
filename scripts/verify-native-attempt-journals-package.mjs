@@ -24,7 +24,7 @@ const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const testFiles = [
   ["native-attempt-frames.test.js", 5],
   ["native-attempt-storage.test.js", 4],
-  ["native-invoke.test.js", 10],
+  ["native-invoke.test.js", 14],
 ];
 const inputFiles = [
   ...testFiles.map(([f]) => "dist/test/" + f),
@@ -54,7 +54,7 @@ for (const [file, total] of testFiles) {
     requirements.push({ file: "dist/test/" + file, name });
   }
 }
-assert.equal(requirements.length, process.platform === "win32" ? 18 : 19);
+assert.equal(requirements.length, process.platform === "win32" ? 22 : 23);
 const harnessSha256 = hash(
   JSON.stringify(inputs.map((x) => [x.file, hash(x.bytes)])),
 );
@@ -143,6 +143,7 @@ try {
       attemptArchivesGateAcceptanceComplete: false,
       engineJournalIntegrationComplete: false,
       wholeNativeCallFamilyMigrated: false,
+      selectedNativeWrapperCallsitesMigrated: true,
       inferenceExecuted: false,
       fieldEvaluationExecuted: false,
       profileEvidence: profile,

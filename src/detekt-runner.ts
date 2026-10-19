@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import {
   mkdir,
   mkdtemp,
@@ -27,11 +27,16 @@ for (const key of [
   "CLASSPATH",
 ])
   delete env[key];
-const invoke = (
+const invoke = async (
   executable: string,
   args: string[],
   maxBuffer = 4 * 1024 * 1024,
-) => spawnSync(executable, args, { env, maxBuffer, timeout: 110000 });
+) =>
+  await invokeNativeOutput(executable, args, {
+    env,
+    maxBuffer,
+    timeout: 110000,
+  });
 async function boundedRead(file: string, maximum: number): Promise<Buffer> {
   const handle = await open(
     file,
@@ -55,7 +60,7 @@ async function main() {
   const root = await realpath(process.argv[2]!),
     project = path.relative(root, await realpath(process.cwd())) || ".",
     invocation = detektInvocationSchema.parse(JSON.parse(process.argv[3]!)),
-    version = invoke("java", ["--version"]);
+    version = await invoke("java", ["--version"]);
   if (
     version.error ||
     version.signal ||
@@ -73,7 +78,7 @@ async function main() {
   }
   const inputs = await detektInputs(root, project, invocation.config);
   if (process.argv[4] === "--version") {
-    const result = invoke("java", ["-jar", inputs.jar, "--version"]);
+    const result = await invoke("java", ["-jar", inputs.jar, "--version"]);
     process.stdout.write(result.stdout ?? "");
     process.stderr.write(result.stderr ?? "");
     process.exitCode = result.status ?? 2;
@@ -133,7 +138,7 @@ async function main() {
     });
     await writeFile(helper, detektNativeSource, { flag: "wx", mode: 0o600 });
     await mkdir(classes);
-    const compiled = invoke("javac", [
+    const compiled = await invoke("javac", [
       "-encoding",
       "UTF-8",
       "-proc:none",
@@ -162,7 +167,7 @@ async function main() {
       path.join(services, "dev.detekt.api.FileProcessListener"),
       "VerifierDetekt\n",
     );
-    const packed = invoke("jar", [
+    const packed = await invoke("jar", [
       "--create",
       "--file",
       plugin,
@@ -179,7 +184,7 @@ async function main() {
       packed.stderr.length
     )
       throw Error("Original detekt listener packaging did not complete");
-    const result = invoke("java", [
+    const result = await invoke("java", [
       "-Xmx512m",
       "-Dfile.encoding=UTF-8",
       "-Duser.language=en",

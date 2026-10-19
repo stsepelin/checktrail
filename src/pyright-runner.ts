@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { parse as parseToml } from "smol-toml";
@@ -132,7 +132,7 @@ async function main(): Promise<void> {
   }
   const configPath = path.resolve(cwd, config);
   await inspectConfig(configPath);
-  const commentResult = spawnSync(
+  const commentResult = await invokeNativeOutput(
     "python3",
     ["-I", "-S", "-c", comments, ...sources],
     { encoding: "utf8", timeout: 60_000, maxBuffer: 1024 * 1024 },
@@ -154,8 +154,8 @@ async function main(): Promise<void> {
   )
     throw new Error("Invalid Python comment-token evidence");
   policyProblems.push(...(suppressed as string[]));
-  const native = (args: string[]) => {
-    const result = spawnSync(
+  const native = async (args: string[]) => {
+    const result = await invokeNativeOutput(
       process.execPath,
       [tool, "--project", configPath, "--warnings", ...args, ...sources],
       {
@@ -175,8 +175,8 @@ async function main(): Promise<void> {
       stderr: result.stderr,
     };
   };
-  const selection = native(["--dependencies", "--verbose"]);
-  const diagnostics = native(["--outputjson"]);
+  const selection = await native(["--dependencies", "--verbose"]);
+  const diagnostics = await native(["--outputjson"]);
   process.stdout.write(
     JSON.stringify({
       format,

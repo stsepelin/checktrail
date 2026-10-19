@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { createHash } from "node:crypto";
 import {
   copyFile,
@@ -30,8 +30,8 @@ const env: NodeJS.ProcessEnv = {
   DOTNET_GCHeapHardLimit: "10000000",
 };
 let nativeBytes = 0;
-function invoke(args: string[], cwd: string) {
-  const result = spawnSync("dotnet", args, {
+async function invoke(args: string[], cwd: string) {
+  const result = await invokeNativeOutput("dotnet", args, {
     cwd,
     env,
     encoding: "utf8",
@@ -80,14 +80,14 @@ async function main() {
   try {
     let sdk: string;
     try {
-      const list = invoke(["--list-sdks"], temporary);
+      const list = await invoke(["--list-sdks"], temporary);
       const matches = list.stdout
         .split(/\r?\n/)
         .flatMap((line) => /^10\.0\.401 \[([^\r\n]+)\]$/.exec(line)?.[1] ?? []);
       if (list.status !== 0 || list.stderr || matches.length !== 1)
         throw new Error("Missing verified SDK");
       sdk = await realpath(path.join(matches[0]!, sdkVersion));
-      const version = invoke(
+      const version = await invoke(
         ["exec", path.join(sdk, "Roslyn/bincore/csc.dll"), "-version"],
         temporary,
       );
@@ -148,7 +148,7 @@ async function main() {
     const helper = path.join(temporary, "VerifierCompiler.cs");
     const output = path.join(temporary, "VerifierCompiler.dll");
     await writeFile(helper, dotnetCompilerSource);
-    const bootstrap = invoke(
+    const bootstrap = await invoke(
       [
         "exec",
         path.join(compiler, "csc.dll"),
@@ -188,7 +188,7 @@ async function main() {
         references: [...builtins, ...references],
       }),
     );
-    const result = invoke(["exec", output, input], temporary);
+    const result = await invoke(["exec", output, input], temporary);
     if (result.status !== 0 || result.stderr.trim())
       throw new Error(".NET compiler did not complete evidence collection");
     await dotnetReferences(root, project, invocation.config);

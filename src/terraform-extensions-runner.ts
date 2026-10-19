@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { constants } from "node:fs";
 import {
   access,
@@ -222,8 +222,8 @@ async function main() {
       CHECKPOINT_DISABLE: "1",
     };
     let outputBytes = 0;
-    const invoke = (phase: string, args: string[]) => {
-      const result = spawnSync(tool.entry, args, {
+    const invoke = async (phase: string, args: string[]) => {
+      const result = await invokeNativeOutput(tool.entry, args, {
         cwd: workspace,
         env,
         encoding: "utf8",
@@ -248,7 +248,7 @@ async function main() {
         stderrSha256: mavenHash(result.stderr),
       };
     };
-    const version = invoke("version", ["version", "-json"]);
+    const version = await invoke("version", ["version", "-json"]);
     const versionIdentity = json(version.stdout);
     if (
       version.exitCode !== 0 ||
@@ -272,7 +272,7 @@ async function main() {
       process.stdout.write("Terraform v1.16.5\n");
       return;
     }
-    const initialization = invoke("init", [
+    const initialization = await invoke("init", [
       "init",
       "-json",
       "-no-color",
@@ -326,15 +326,26 @@ async function main() {
         ),
       "Installed native local module cohort differs",
     );
-    const selectedVersion = invoke("selected-version", ["version", "-json"]),
-      schema = invoke("provider-schema", ["providers", "schema", "-json"]);
+    const selectedVersion = await invoke("selected-version", [
+        "version",
+        "-json",
+      ]),
+      schema = await invoke("provider-schema", [
+        "providers",
+        "schema",
+        "-json",
+      ]);
     terraformRequire(
       schema.exitCode === 0 &&
         !schema.stderr &&
         mavenHash(schema.stdout) === provider.schemaSha256,
       "Full pinned native schema cohort differs",
     );
-    const validation = invoke("validate", ["validate", "-json", "-no-color"]);
+    const validation = await invoke("validate", [
+      "validate",
+      "-json",
+      "-no-color",
+    ]);
     terraformExtensionsVerify(directory, invocation);
     for (const input of invocation.inputs)
       terraformRequire(

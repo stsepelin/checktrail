@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "scope": "Selected TypeScript native wrapper streaming and parser wiring; separate from complete language semantics and Gate A acceptance.",
+  "migratedNativeCalls": 33,
+  "migratedNativeCallFiles": 29,
+  "downstreamCollectors": 3,
+  "outputByteLimitScope": "combined stdout and stderr physical prefix",
+  "defaultNativeTimeoutMs": 110000,
+  "receipts": [
+    {
+      "name": "source-macos24",
+      "runtime": {
+        "node": "24.20.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a"
+      },
+      "compiledCodeSha256": "69dae31ace6ce92fde1f1fef7fcd1bf79fab2de0c046111c48bace2540e6d04e",
+      "harnessSha256": "510688c3d3c442b9df32af01d53834cce9bf2a2aee73d06981c3a8b691e5a198",
+      "passed": 22,
+      "required": 22,
+      "terminalLedgerTruncated": false
+    },
+    {
+      "name": "installed-macos24",
+      "runtime": {
+        "node": "24.20.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a"
+      },
+      "compiledCodeSha256": "69dae31ace6ce92fde1f1fef7fcd1bf79fab2de0c046111c48bace2540e6d04e",
+      "harnessSha256": "1de6eaa9d89254968ffe05ea11172d509cc2eae2186a2f6d1e7496722bdee5c2",
+      "passed": 22,
+      "required": 22,
+      "terminalLedgerTruncated": false,
+      "tarballSha256": "75d94aa073b88f4005fa40bc50bf7bf410587cac79bad603e50df53b9faf239f",
+      "offlineProductionInstall": true,
+      "harnessOutsideInstalledPackage": true
+    },
+    {
+      "name": "source-macos26",
+      "runtime": {
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a"
+      },
+      "compiledCodeSha256": "69dae31ace6ce92fde1f1fef7fcd1bf79fab2de0c046111c48bace2540e6d04e",
+      "harnessSha256": "510688c3d3c442b9df32af01d53834cce9bf2a2aee73d06981c3a8b691e5a198",
+      "passed": 22,
+      "required": 22,
+      "terminalLedgerTruncated": false
+    },
+    {
+      "name": "installed-macos26",
+      "runtime": {
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a"
+      },
+      "compiledCodeSha256": "69dae31ace6ce92fde1f1fef7fcd1bf79fab2de0c046111c48bace2540e6d04e",
+      "harnessSha256": "1de6eaa9d89254968ffe05ea11172d509cc2eae2186a2f6d1e7496722bdee5c2",
+      "passed": 22,
+      "required": 22,
+      "terminalLedgerTruncated": false,
+      "tarballSha256": "75d94aa073b88f4005fa40bc50bf7bf410587cac79bad603e50df53b9faf239f",
+      "offlineProductionInstall": true,
+      "harnessOutsideInstalledPackage": true
+    },
+    {
+      "name": "source-linux22",
+      "runtime": {
+        "node": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "compiledCodeSha256": "69dae31ace6ce92fde1f1fef7fcd1bf79fab2de0c046111c48bace2540e6d04e",
+      "harnessSha256": "510688c3d3c442b9df32af01d53834cce9bf2a2aee73d06981c3a8b691e5a198",
+      "passed": 22,
+      "required": 22,
+      "terminalLedgerTruncated": false
+    },
+    {
+      "name": "installed-linux22",
+      "runtime": {
+        "node": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "compiledCodeSha256": "69dae31ace6ce92fde1f1fef7fcd1bf79fab2de0c046111c48bace2540e6d04e",
+      "harnessSha256": "1de6eaa9d89254968ffe05ea11172d509cc2eae2186a2f6d1e7496722bdee5c2",
+      "passed": 22,
+      "required": 22,
+      "terminalLedgerTruncated": false,
+      "tarballSha256": "4252d5e9181dd5c561f711c898ba5f275557f6fb0225269b4fdaf235f8ca0be0",
+      "offlineProductionInstall": true,
+      "harnessOutsideInstalledPackage": true
+    }
+  ],
+  "guards": [
+    {
+      "id": "ruby-prerequisite-await",
+      "callback": "shipped native wrapper inventory awaits every migrated invocation and downstream collector without asynchronous predicate shortcuts",
+      "callbackSha256": "f2690aa32661f1d28fa56140921fb8cb2ceaae267c08d32a9e3fcfee90c778e0",
+      "sourceSha256": "79b0f32364b3bd1383314edc49a378625baf42824e3aa7ee531d246240143ab9",
+      "mutantSha256": "24ae678adaf459c95e0c8907cee234e9b4566422b55a4f55af41704765587e6b",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "restoredExitCode": 0,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true
+    },
+    {
+      "id": "downstream-dotnet-await",
+      "callback": "shipped native wrapper inventory awaits every migrated invocation and downstream collector without asynchronous predicate shortcuts",
+      "callbackSha256": "f2690aa32661f1d28fa56140921fb8cb2ceaae267c08d32a9e3fcfee90c778e0",
+      "sourceSha256": "61c6105639f5047c5947293002916e4bb15f0580e1323e3c2349bbe981a1bfe9",
+      "mutantSha256": "1777db71ff95a90805bf34142eefb3f51e15783cc8b4f1e1e994cf2efab14112",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "restoredExitCode": 0,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true
+    },
+    {
+      "id": "shared-caller-prefix-bound",
+      "callback": "native wrapper output adapter rejects invalid modes before admission and keeps reached prefixes on bounded failure",
+      "callbackSha256": "f2690aa32661f1d28fa56140921fb8cb2ceaae267c08d32a9e3fcfee90c778e0",
+      "sourceSha256": "f555c47ed500788718dac28207b2607ee0fb67009a0b6079169debb999ff1f9e",
+      "mutantSha256": "16d09a0e700ef078415a4a2368f7349a144aafbf57e53e12fcedacf14ea92441",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "restoredExitCode": 0,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true
+    },
+    {
+      "id": "utf8-parser-decoding",
+      "callback": "native wrapper output adapter keeps binary evidence before parser decoding and preserves failed exit receipts",
+      "callbackSha256": "f2690aa32661f1d28fa56140921fb8cb2ceaae267c08d32a9e3fcfee90c778e0",
+      "sourceSha256": "f555c47ed500788718dac28207b2607ee0fb67009a0b6079169debb999ff1f9e",
+      "mutantSha256": "5c148f11dac9dd4091a340d85680cb704833349ce884aa05aae9eee090d37740",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "restoredExitCode": 0,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true
+    },
+    {
+      "id": "incomplete-parser-status",
+      "callback": "native output receipt keeps physical exit codes separate from parser completion for zero nonzero and absent exits",
+      "callbackSha256": "f2690aa32661f1d28fa56140921fb8cb2ceaae267c08d32a9e3fcfee90c778e0",
+      "sourceSha256": "f555c47ed500788718dac28207b2607ee0fb67009a0b6079169debb999ff1f9e",
+      "mutantSha256": "562890ac2db776f087a85c2ebfff32bc54f26d1e7e4918626c043ad981bd3f6c",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "restoredExitCode": 0,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true
+    },
+    {
+      "id": "swift-asynchronous-predicate",
+      "callback": "shipped native wrapper inventory awaits every migrated invocation and downstream collector without asynchronous predicate shortcuts",
+      "callbackSha256": "f2690aa32661f1d28fa56140921fb8cb2ceaae267c08d32a9e3fcfee90c778e0",
+      "sourceSha256": "1c44b90bfdabe8db20d1b8ff9cfee4052455f582f7847ccf23af7d7e0523efe5",
+      "mutantSha256": "f95d67ccd87ead2609b40b22ba072b540af6259cef014ae5c5aa3079b4cd0a37",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "restoredExitCode": 0,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true
+    }
+  ],
+  "fullLocalCheck": {
+    "tests": 1831,
+    "pass": 1079,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 752,
+    "todo": 0
+  },
+  "optionalSkippedNativeChecksAreNotPassing": true,
+  "packageReceiptsPrecedeThisMeasurementDocument": true,
+  "engineJournalIntegrationComplete": false,
+  "wholeNativeLanguageSemanticsAcceptanceComplete": false,
+  "embeddedLanguageNativeCallsCaptured": false,
+  "windowsAcceptanceMeasured": false,
+  "durableAllOutputsComplete": false,
+  "attemptArchivesGateAcceptanceComplete": false,
+  "gateAAcceptanceComplete": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false,
+  "reviewQualityMeasured": false
+}

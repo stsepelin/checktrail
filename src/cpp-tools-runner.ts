@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { constants } from "node:fs";
 import {
   access,
@@ -156,9 +156,9 @@ async function main() {
     }
     await verify(temporary, "project");
     const tools = await Promise.all(cppToolNames.map(tool));
-    const invoke = (phase: string, name: string, args: string[]) => {
+    const invoke = async (phase: string, name: string, args: string[]) => {
       const executable = tools.find((t) => t.name === name)!.entry;
-      const result = spawnSync(executable, args, {
+      const result = await invokeNativeOutput(executable, args, {
         cwd: build,
         env,
         encoding: "utf8",
@@ -208,7 +208,7 @@ async function main() {
       });
     };
     for (const name of cppToolNames) {
-      const version = invoke(
+      const version = await invoke(
         `version:${name}`,
         name,
         name === "clang" || name === "clang++"
@@ -226,7 +226,7 @@ async function main() {
       for (const pin of invocation.inputs.filter((p) =>
         /\.(?:c|cpp|h|hpp)$/.test(p.path),
       ))
-        invoke(`format:${pin.path}`, "clang-format", [
+        await invoke(`format:${pin.path}`, "clang-format", [
           `--style=${cppFormatStyle}`,
           "--output-replacements-xml",
           path.join(workspace, pin.path),
@@ -236,7 +236,7 @@ async function main() {
       await mkdir(query, { recursive: true });
       for (const kind of ["codemodel-v2", "cmakeFiles-v1"])
         await writeFile(path.join(query, kind), "");
-      const configure = invoke(
+      const configure = await invoke(
         "configure",
         "cmake",
         cppConfigure(workspace, build, tools),
@@ -259,7 +259,7 @@ async function main() {
           );
           await artifact(g.path);
         }
-        const compiled = invoke("build", "cmake", [
+        const compiled = await invoke("build", "cmake", [
           "--build",
           build,
           "--verbose",
@@ -269,7 +269,7 @@ async function main() {
         if (compiled.exitCode === 0) {
           for (const unit of cppUnits(config)) {
             await artifact(unit.object, "base64");
-            invoke(`dwarf:${unit.object}`, "llvm-dwarfdump", [
+            await invoke(`dwarf:${unit.object}`, "llvm-dwarfdump", [
               "--debug-line",
               path.join(build, unit.object),
             ]);
@@ -280,24 +280,24 @@ async function main() {
             await artifact(binary, "base64");
             await artifact(`CMakeFiles/${target.name}.dir/link.txt`);
             if (target.type === "static")
-              invoke(`archive:${target.name}`, "llvm-ar", [
+              await invoke(`archive:${target.name}`, "llvm-ar", [
                 "t",
                 path.join(build, binary),
               ]);
             else
-              invoke(`dwarf:${target.name}`, "llvm-dwarfdump", [
+              await invoke(`dwarf:${target.name}`, "llvm-dwarfdump", [
                 "--debug-line",
                 path.join(build, binary),
               ]);
           }
           if (mode === "ctest") {
-            const listed = invoke("list", "ctest", [
+            const listed = await invoke("list", "ctest", [
               "--test-dir",
               build,
               "--show-only=json-v1",
             ]);
             if (listed.exitCode === 0) {
-              invoke("test", "ctest", [
+              await invoke("test", "ctest", [
                 "--test-dir",
                 build,
                 "--output-on-failure",
@@ -309,14 +309,14 @@ async function main() {
               await artifact("results.xml");
             }
           } else if (mode === "clang-tidy") {
-            invoke("tidy-rules", "clang-tidy", [
+            await invoke("tidy-rules", "clang-tidy", [
               "--config={InheritParentConfig: false}",
               `--checks=-*,${config.tidyRules.join(",")}`,
               "--list-checks",
             ]);
             for (const unit of cppUnits(config)) {
               const fixes = `fixes-${unit.target}-${path.basename(unit.file)}.yaml`;
-              invoke(`tidy:${unit.file}`, "clang-tidy", [
+              await invoke(`tidy:${unit.file}`, "clang-tidy", [
                 "-p",
                 build,
                 "--config={InheritParentConfig: false}",

@@ -604,3 +604,282 @@ test("native invocation journal retains the reached physical prefix after its ac
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test("native wrapper output adapter keeps binary evidence before parser decoding and preserves failed exit receipts", async () => {
+  const { invokeNativeOutput } = await import("../src/native-invoke-output.js");
+  const { store, writer } = storage();
+  try {
+    const script =
+      "process.stdout.write(Buffer.from([0,255,195,169]));process.stderr.write(Buffer.from([255,0]));process.exitCode=1";
+    const raw = await invokeNativeOutput(process.execPath, ["-e", script], {
+      journal: writer,
+      maxBuffer: 64,
+      timeout: 10000,
+    });
+    const text = await invokeNativeOutput(process.execPath, ["-e", script], {
+      journal: writer,
+      maxBuffer: 64,
+      timeout: 10000,
+      encoding: "utf8",
+    });
+    assert.equal(raw.error, undefined);
+    assert.equal(text.error, undefined);
+    assert.equal(raw.status, 1);
+    assert.equal(text.status, 1);
+    assert.equal(raw.nativeExitCode, 1);
+    assert.equal(text.nativeExitCode, 1);
+    assert.deepEqual(raw.stdout, Buffer.from([0, 255, 195, 169]));
+    assert.deepEqual(raw.stderr, Buffer.from([255, 0]));
+    assert.equal(text.stdout, raw.stdout.toString("utf8"));
+    assert.equal(text.stderr, raw.stderr.toString("utf8"));
+    assert.deepEqual(text.capturedOutput, raw.capturedOutput);
+    writer.close();
+    const journal = store.read();
+    assert.equal(journal.completeForRecordedCalls, true);
+    assert.equal(journal.attempts.length, 2);
+    assert.deepEqual(
+      journal.attempts.map((a) => a.pid),
+      [raw.pid, text.pid],
+    );
+    assert.deepEqual(
+      journal.attempts.map((a) => a.capturedOutput),
+      [raw.capturedOutput, text.capturedOutput],
+    );
+    assert.equal(new Set([raw.pid, text.pid]).size, 2);
+  } finally {
+    writer.close();
+    store.destroy();
+  }
+});
+
+test("native wrapper output adapter rejects invalid modes before admission and keeps reached prefixes on bounded failure", async () => {
+  const { invokeNativeOutput } = await import("../src/native-invoke-output.js");
+  const { store, writer } = storage();
+  try {
+    for (const mode of [
+      { encoding: "base64" },
+      { stdio: ["inherit", "pipe", "pipe"] },
+    ]) {
+      await assert.rejects(
+        invokeNativeOutput(
+          process.execPath,
+          ["-e", "throw Error('must remain unreached')"],
+          {
+            journal: writer,
+            maxBuffer: 64,
+            timeout: 10000,
+            ...mode,
+          } as unknown as Parameters<typeof invokeNativeOutput>[2],
+        ),
+        /Invalid native output mode/,
+      );
+    }
+    assert.equal(store.read().attempts.length, 0);
+    for (const [kind, bound, timeout] of [
+      ["output", 3, 10000],
+      ["deadline", 64, 200],
+    ] as const) {
+      const value = await invokeNativeOutput(
+        process.execPath,
+        [
+          "-e",
+          kind === "output"
+            ? "process.stdout.write(Buffer.from([0,255,1,2,3,4]));setInterval(()=>{},1000)"
+            : "process.stdout.write(Buffer.from([0,255,1]));setInterval(()=>{},1000)",
+        ],
+        {
+          journal: writer,
+          maxBuffer: bound,
+          timeout,
+          encoding: "utf8",
+        },
+      );
+      assert.equal(
+        value.error?.code,
+        kind === "output" ? "NATIVE_OUTPUT_LIMIT" : "NATIVE_TIMEOUT",
+      );
+      assert.equal(
+        value.status,
+        null,
+        "Incomplete capture cannot authorize a parser successful exit",
+      );
+      assert.equal(value.pid! > 0, true);
+      assert.deepEqual(
+        Buffer.from(value.capturedOutput.stdout.base64, "base64"),
+        Buffer.from([0, 255, 1]),
+      );
+      assert.equal(value.stdout, Buffer.from([0, 255, 1]).toString("utf8"));
+      assert.equal(value.capturedOutput.completeForObservedStreams, false);
+      assert.throws(() => process.kill(value.pid!, 0), { code: "ESRCH" });
+    }
+    writer.close();
+    const journal = store.read();
+    assert.equal(journal.attempts.length, 2);
+    assert.deepEqual(
+      journal.attempts.map((a) => a.state),
+      ["transport-error", "transport-error"],
+    );
+    assert.equal(journal.completeForRecordedCalls, false);
+    assert.deepEqual(
+      Buffer.from(journal.attempts[0]!.capturedOutput.stdout.base64, "base64"),
+      Buffer.from([0, 255, 1, 2, 3, 4]),
+    );
+  } finally {
+    writer.close();
+    store.destroy();
+  }
+});
+
+test("shipped native wrapper inventory awaits every migrated invocation and downstream collector without asynchronous predicate shortcuts", async () => {
+  const { createRequire } = await import("node:module");
+  const { realpath } = await import("node:fs/promises");
+  const ts = createRequire(
+    await realpath(new URL("../src/native-invoke-output.js", import.meta.url)),
+  )("typescript") as typeof import("typescript");
+  const inventory: Record<string, number> = {
+    "actionlint-runner": 1,
+    "checkstyle-runner": 1,
+    "clang-runner": 1,
+    "cpp-extensions-runner": 1,
+    "cpp-tools-runner": 1,
+    "detekt-runner": 1,
+    "dotnet-build-runner": 1,
+    "dotnet-runner": 1,
+    "external-runner": 1,
+    "go-build-runner": 2,
+    "golangci-runner": 2,
+    "helm-extensions-runner": 1,
+    "helm-runner": 1,
+    "java-runner": 1,
+    "kotlin-runner": 1,
+    "kubeconform-runner": 1,
+    "kustomize-runner": 1,
+    "pyright-runner": 2,
+    "ruby-extensions-prerequisite": 1,
+    "ruby-tools-runner": 1,
+    "rust-runner": 1,
+    "rustfmt-runner": 1,
+    "scala-runner": 1,
+    "spotbugs-runner": 1,
+    "swift-extensions-runner": 2,
+    "swift-tools-runner": 1,
+    "swift-version-runner": 1,
+    "terraform-extensions-runner": 1,
+    "terraform-runner": 1,
+    "dotnet-test-collect": 0,
+    "dotnet-format-collect": 0,
+    "dotnet-generator-extensions-collect": 0,
+  };
+  let total = 0;
+  for (const [file, expected] of Object.entries(inventory)) {
+    const text = await readFile(
+      new URL("../src/" + file + ".js", import.meta.url),
+      "utf8",
+    );
+    const source = ts.createSourceFile(
+      file,
+      text,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.JS,
+    );
+    assert.equal(
+      (
+        source as typeof source & {
+          parseDiagnostics: readonly import("typescript").Diagnostic[];
+        }
+      ).parseDiagnostics.length,
+      0,
+      file,
+    );
+    let calls = 0;
+    const scan = (node: import("typescript").Node) => {
+      if (ts.isCallExpression(node)) {
+        if (ts.isIdentifier(node.expression)) {
+          const name = node.expression.text;
+          assert.notEqual(name, "spawnSync", file);
+          if (
+            [
+              "invokeNativeOutput",
+              "invoke",
+              "native",
+              "java",
+              "rubyExtensionsPrerequisite",
+            ].includes(name)
+          ) {
+            assert.equal(
+              ts.isAwaitExpression(node.parent),
+              true,
+              file + " must await " + name,
+            );
+            if (name === "invokeNativeOutput") calls++;
+          }
+        }
+        if (
+          ts.isPropertyAccessExpression(node.expression) &&
+          ["every", "some", "filter", "find"].includes(
+            node.expression.name.text,
+          )
+        ) {
+          for (const arg of node.arguments)
+            if (ts.isArrowFunction(arg) || ts.isFunctionExpression(arg))
+              assert.equal(
+                arg.modifiers?.some(
+                  (m) => m.kind === ts.SyntaxKind.AsyncKeyword,
+                ) ?? false,
+                false,
+                file + " has an asynchronous predicate",
+              );
+        }
+      }
+      ts.forEachChild(node, scan);
+    };
+    scan(source);
+    assert.equal(calls, expected, file);
+    total += calls;
+  }
+  assert.equal(Object.values(inventory).filter((n) => n > 0).length, 29);
+  assert.equal(Object.values(inventory).filter((n) => n === 0).length, 3);
+  assert.equal(total, 33);
+});
+
+test("native output receipt keeps physical exit codes separate from parser completion for zero nonzero and absent exits", async () => {
+  const { nativeOutputReceipt } =
+    await import("../src/native-invoke-output.js");
+  const { captureProcessOutput } = await import("../src/process-output.js");
+  const stdout = Buffer.from([0, 255, 1]),
+    stderr = Buffer.from([255, 0]);
+  // Synthetic transport receipts exercise parser policy; they do not claim a native observation.
+  for (const status of [0, 1, null])
+    for (const incomplete of [false, true]) {
+      const input = {
+        pid: 1234,
+        status,
+        signal: null,
+        stdout,
+        stderr,
+        observedBytes: 5,
+        capturedOutput: captureProcessOutput(stdout, stderr, 5, !incomplete),
+        ...(incomplete
+          ? {
+              error: Object.assign(
+                new Error("original synthetic output limit"),
+                { code: "NATIVE_OUTPUT_LIMIT" },
+              ),
+            }
+          : {}),
+      };
+      const result = nativeOutputReceipt(input);
+      assert.equal(result.nativeExitCode, status);
+      assert.equal(result.status, incomplete ? null : status);
+      assert.equal(result.error, input.error);
+      assert.deepEqual(result.stdout, stdout);
+      assert.deepEqual(result.stderr, stderr);
+      assert.deepEqual(result.capturedOutput, input.capturedOutput);
+      assert.equal(
+        input.status,
+        status,
+        "Rendering must not rewrite physical evidence",
+      );
+    }
+});

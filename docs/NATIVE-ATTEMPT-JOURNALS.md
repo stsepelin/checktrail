@@ -100,8 +100,21 @@ Linux ARM64 Node 22, with independent guard removals, are recorded in the
 [streaming invocation measurement](measurements/native-streaming-invocation-2026-10-11.json).
 These Node process controls do not qualify every native language/tool migration.
 
-The engine does not create or consume these journals yet. The remaining synchronous
-wrapper calls, complete native call migration, required Windows/Linux acceptance, durable replay
+The selected TypeScript wrapper family now routes 33 formerly synchronous calls
+in 29 files through the shared async boundary, with three downstream .NET
+collectors awaiting their results. Ruby prerequisite checks await their boolean
+result; Swift version probes stay sequential and stop at the first mismatch.
+The adapter preserves Buffer or UTF-8 replacement parser input while retaining
+raw byte capture separately. Output limits apply to the combined streams, and
+calls without a shorter explicit timeout receive a 110-second native deadline.
+An incomplete capture gives parsers a null status while retaining the physical
+exit code separately. No frozen language assertion or tool pin is weakened.
+These wiring controls do not establish every language native acceptance.
+The [wrapper streaming measurement](measurements/native-wrapper-streaming-2026-10-11.json)
+records scoped source/installed receipts and paired guard removals.
+
+The engine does not create or consume these journals yet. Complete native call
+migration acceptance, required Windows/Linux acceptance, durable replay
 and host-model usage remain open. The frozen attempt-archives profile remains
 pending. No Gate A closure, model inference or real-project field evaluation is
 claimed.

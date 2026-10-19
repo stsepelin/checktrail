@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { createHash } from "node:crypto";
 import {
   cp,
@@ -62,10 +62,10 @@ Object.assign(env, {
   DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "0",
   DOTNET_EnableDiagnostics: "0",
 });
-function invoke(phase: string, args: string[], cwd: string) {
+async function invoke(phase: string, args: string[], cwd: string) {
   if (receipts.length >= 80) throw Error("Native call bound");
   const started = performance.now(),
-    result = spawnSync(invokeExecutable, args, {
+    result = await invokeNativeOutput(invokeExecutable, args, {
       cwd,
       env,
       encoding: "utf8",
@@ -166,7 +166,7 @@ async function main() {
         env.DOTNET_ROLL_FORWARD = "LatestPatch";
         env.DOTNET_CLI_UI_LANGUAGE = "en-US";
       }
-      const listed = invoke("sdk", ["--list-sdks"], temporary),
+      const listed = await invoke("sdk", ["--list-sdks"], temporary),
         matches = listed.stdout
           .split(/\r?\n/)
           .flatMap(
@@ -175,7 +175,7 @@ async function main() {
       if (listed.status !== 0 || listed.stderr || matches.length !== 1)
         throw Error("Pinned SDK missing");
       sdk = await realpath(path.join(matches[0]!, "10.0.401"));
-      const compiler = invoke(
+      const compiler = await invoke(
         "compiler-version",
         ["exec", path.join(sdk, "Roslyn/bincore/csc.dll"), "-version"],
         temporary,
@@ -281,7 +281,7 @@ async function main() {
     const source = path.join(observer, "ChecktrailBuild.cs"),
       helper = path.join(observer, "ChecktrailBuild.dll");
     await writeFile(source, dotnetBuildNativeSource);
-    const bootstrap = invoke(
+    const bootstrap = await invoke(
       "observer-compile",
       [
         "exec",
@@ -363,7 +363,7 @@ async function main() {
         : []),
     ];
     const restoreFile = path.join(temporary, "restore.jsonl"),
-      restore = invoke(
+      restore = await invoke(
         "restore",
         [
           ...common,
@@ -386,7 +386,7 @@ async function main() {
       return;
     }
     const buildFile = path.join(temporary, "build.jsonl"),
-      build = invoke(
+      build = await invoke(
         "build",
         [
           ...common,
@@ -411,7 +411,7 @@ async function main() {
       try {
         await regular(assembly, 32 * 1024 * 1024);
         await regular(pdb, 8 * 1024 * 1024);
-        const inspection = invoke(
+        const inspection = await invoke(
           "metadata:" + item.file,
           ["exec", helper, assembly, pdb],
           observer,
