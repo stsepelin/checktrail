@@ -1,4 +1,5 @@
 import type { CapturedProcessOutput } from "./process-output.js";
+import type { EngineNativeJournal } from "./native-journal-engine.js";
 import type { WindowsExecution } from "./windows-execution.js";
 import type { RustBuildSelection } from "./rust-build.js";
 import type { GoTargetEvidence, GoBuildSelection } from "./go-build.js";
@@ -175,6 +176,7 @@ export interface Plan {
 }
 
 export interface ProcessResult {
+  nativeJournal?: EngineNativeJournal;
   capturedOutput?: CapturedProcessOutput;
   windowsExecution?: WindowsExecution;
   command: Command;

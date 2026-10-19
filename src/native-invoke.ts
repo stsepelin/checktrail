@@ -1,6 +1,10 @@
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
 import { stopDescendants } from "./process-tree.js";
+import {
+  currentNativeJournalWriter,
+  withoutNativeJournalContext,
+} from "./native-journal-channel.js";
 import { captureProcessOutput } from "./process-output.js";
 import type { NativeAttemptWriter } from "./native-attempt-storage.js";
 
@@ -76,6 +80,17 @@ export async function invokeNative(
   });
   // A preaborted request does not claim that a native call was admitted or reached.
   if (options.signal?.aborted) return empty();
+  const configuredJournal = currentNativeJournalWriter();
+  if (
+    configuredJournal &&
+    options.journal &&
+    configuredJournal !== options.journal
+  )
+    throw Error("Native journal context conflicts with a caller writer");
+  const journal = configuredJournal ?? options.journal;
+  const childEnvironment = withoutNativeJournalContext(
+    options.env ?? process.env,
+  );
   const commandSha256 = digest(
     JSON.stringify({
       executable,
@@ -83,7 +98,7 @@ export async function invokeNative(
       cwd: options.cwd ?? process.cwd(),
       environmentSha256: digest(
         JSON.stringify(
-          Object.entries(options.env ?? process.env)
+          Object.entries(childEnvironment)
             .filter((entry) => entry[1] !== undefined)
             .sort(([a], [b]) => a.localeCompare(b, "en")),
         ),
@@ -91,7 +106,7 @@ export async function invokeNative(
     }),
   );
   // Admission writes must succeed before project-controlled code can start.
-  const attemptId = options.journal?.admit(commandSha256);
+  const attemptId = journal?.admit(commandSha256);
   return await new Promise((resolve) => {
     const stdout: Buffer[] = [],
       stderr: Buffer[] = [];
@@ -106,7 +121,7 @@ export async function invokeNative(
     let termination: Promise<void> | undefined;
     const child = spawn(executable, args, {
       ...(options.cwd ? { cwd: options.cwd } : {}),
-      ...(options.env ? { env: options.env } : {}),
+      env: childEnvironment,
       shell: false,
       detached: process.platform !== "win32",
       stdio: ["ignore", "pipe", "pipe"],
@@ -163,7 +178,7 @@ export async function invokeNative(
       pid = child.pid ?? null;
       try {
         if (!pid) throw failure("NATIVE_IDENTITY_UNAVAILABLE");
-        if (attemptId) options.journal!.started(attemptId, pid);
+        if (attemptId) journal!.started(attemptId, pid);
       } catch (cause) {
         error = failure(errorCode(cause));
         terminate();
@@ -181,7 +196,7 @@ export async function invokeNative(
       retainedBytes += keep;
       cut ||= keep !== chunk.length;
       try {
-        if (attemptId && options.journal!.output(attemptId, stream, chunk)) {
+        if (attemptId && journal!.output(attemptId, stream, chunk)) {
           journalCut = true;
           cut = true;
         }
@@ -259,7 +274,7 @@ export async function invokeNative(
         err = Buffer.concat(stderr);
       try {
         if (attemptId)
-          options.journal!.terminal({
+          journal!.terminal({
             type: "terminal",
             attemptId,
             state:

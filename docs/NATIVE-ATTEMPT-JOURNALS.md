@@ -1,6 +1,6 @@
 # ADR: Retain interrupted inner native attempts
 
-**Status:** Codec, private storage and streamed invocation implemented; engine collection and complete wrapper migration pending
+**Status:** Codec, private storage, streaming and selected engine-wrapper collection implemented; complete native call-family acceptance and durable retention pending
 **Date:** 2026-10-11
 **Deciders:** Implementation owner, within the authorized Gate A scope
 
@@ -113,8 +113,48 @@ These wiring controls do not establish every language native acceptance.
 The [wrapper streaming measurement](measurements/native-wrapper-streaming-2026-10-11.json)
 records scoped source/installed receipts and paired guard removals.
 
-The engine does not create or consume these journals yet. Complete native call
-migration acceptance, required Windows/Linux acceptance, durable replay
-and host-model usage remain open. The frozen attempt-archives profile remains
-pending. No Gate A closure, model inference or real-project field evaluation is
-claimed.
+The engine now prepares and collects journals after operator trust for an exact
+catalog of shipped Node wrapper entrypoints. Source discovery and planning still
+create no journal and execute no project code. The external-adapter version path
+and F# formatter version path only validate metadata, so their exact identity
+commands retain outer capture without claiming a native call. Other execution
+paths cannot pass with an empty, invalid or interrupted journal. Existing failed,
+unavailable and error outcomes are preserved.
+
+An internal environment channel opens one held writer per wrapper process. The
+exact reserved name and its case aliases are rejected as operator environment
+permissions and stripped from native-child environments; prefix/suffix near misses
+remain distinct. A malformed or foreign context stays failed across later calls,
+and a conflicting explicit writer cannot silently replace the engine writer.
+The channel supplies evidence capture, never execution authority.
+
+Collection revalidates held file and directory identities and reads physical
+header/frame buffers once. Their lengths, canonical base64 and SHA-256 accompany
+the report even when the header changed or a final frame is partial or malformed.
+Only a complete newline-terminated prefix is replayed. Runtime report validation
+recomputes replay and binds every body/tool journal to its recorded outer command
+and the report source fingerprint. Public JSON Schema describes the structure;
+physical hash/replay reconciliation requires the runtime validator. A changed
+producer entrypoint or failed cleanup prevents parser pass while preserving
+successfully collected data. Entrypoint hashes do not establish the entire
+producer dependency or tool/license closure.
+
+These controls include original two-file native adapter success/failure,
+actual child PID witnesses, raw binary output, cancellation after a reached output
+frame, repeated initialization failure, exact catalog near misses, false replay
+claims and an exit-zero wrapper that reaches no native call. The CLI and stateless
+MCP use the shared engine; detailed reports retain native journals and summaries
+omit them. Cleanup-error injection is a synthetic policy control, separate from
+physical producer-change observations.
+
+The [selected engine journal measurement](measurements/native-engine-journals-2026-10-11.json)
+records source and fresh offline installed native macOS ARM64 Node 24/26 and
+Linux ARM64 Node 22 receipts, alongside unchanged-callback paired guard removals.
+These scoped controls preserve the earlier journal/streaming controls; they do
+not qualify every language toolchain or Windows engine execution.
+
+Complete native call migration acceptance, embedded language/VM subprocesses,
+required Windows/runtime acceptance, durable large-report replay and host-model
+usage remain open. The existing detailed Tasks storage limit does not yet accept
+all retained large journals. The frozen attempt-archives profile remains pending.
+No Gate A closure, model inference or real-project field evaluation is claimed.

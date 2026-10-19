@@ -486,9 +486,15 @@ test("swift-extensions privacy acceptance", native, async (t) => {
         "120000",
         ...(detailed ? ["--detailed"] : []),
       ],
-      { encoding: "utf8", timeout: 150000, maxBuffer: 4 * 1048576 },
+      { encoding: "utf8", timeout: 150000, maxBuffer: 16 * 1048576 },
     );
+    assert.equal(r.error, undefined, r.error?.message ?? r.stderr);
+    assert.equal(r.signal, null);
     assert.equal(r.status, 1, r.stderr);
+    assert.equal(
+      (JSON.parse(r.stdout) as { outcome: string }).outcome,
+      "failed",
+    );
     assert.equal(r.stdout.includes(root), detailed);
     assert.equal(r.stdout.includes(canary), detailed);
   }
@@ -510,6 +516,7 @@ test("swift-extensions privacy acceptance", native, async (t) => {
             ...(detailed ? ["--detailed"] : []),
           ],
           stderr: "pipe",
+          ...(detailed ? { maxBufferSize: 32 * 1048576 } : {}),
         }),
       );
       assert.equal(

@@ -1,4 +1,10 @@
 import { capturedProcessOutputSchema } from "./process-output.js";
+import { engineNativeJournalSchema } from "./native-journal-schema.js";
+import {
+  nativeOuterCommandSha256,
+  nativeJournalAllowsParserPass,
+  type EngineNativeJournal,
+} from "./native-journal-engine.js";
 import { windowsExecutionSchema } from "./windows-execution.js";
 import { rustBuildSelectionSchema } from "./rust-build.js";
 export { rustBuildPolicySchema } from "./rust-build.js";
@@ -116,21 +122,35 @@ const toolSpec = z.discriminatedUnion("source", [
     command,
   }),
 ]);
-const processResult = z.strictObject({
-  capturedOutput: capturedProcessOutputSchema.optional(),
-  windowsExecution: windowsExecutionSchema.optional(),
-  command,
-  exitCode: z.number().int().nullable(),
-  signal: z.string().nullable(),
-  stdout: z.string(),
-  stderr: z.string(),
-  durationMs: count,
-  timedOut: z.boolean(),
-  cancelled: z.boolean(),
-  truncated: z.boolean(),
-  outputBytes: count.optional(),
-  errorCode: z.string().optional(),
-});
+const processResult = z
+  .strictObject({
+    nativeJournal: engineNativeJournalSchema.optional(),
+    capturedOutput: capturedProcessOutputSchema.optional(),
+    windowsExecution: windowsExecutionSchema.optional(),
+    command,
+    exitCode: z.number().int().nullable(),
+    signal: z.string().nullable(),
+    stdout: z.string(),
+    stderr: z.string(),
+    durationMs: count,
+    timedOut: z.boolean(),
+    cancelled: z.boolean(),
+    truncated: z.boolean(),
+    outputBytes: count.optional(),
+    errorCode: z.string().optional(),
+  })
+  .superRefine((value, ctx) => {
+    if (
+      value.nativeJournal &&
+      value.nativeJournal.expectedHeader.outerCommandSha256 !==
+        nativeOuterCommandSha256(value.command)
+    )
+      ctx.addIssue({
+        code: "custom",
+        path: ["nativeJournal", "expectedHeader", "outerCommandSha256"],
+        message: "Native journal differs from the recorded outer command",
+      });
+  });
 const selection = z.strictObject({
   mode: z.enum(["full", "affected"]),
   reason: z.string(),
@@ -162,79 +182,131 @@ const reportMetadata = {
   sourceError: z.boolean(),
 };
 
-export const reportSchema = z.strictObject({
-  ...reportMetadata,
-  requiredExecutionIds: z.array(executionIdSchema).optional(),
-  selection: selection.optional(),
-  startedAt: z.iso.datetime(),
-  sourceFingerprint: z.string(),
-  finalSourceFingerprint: z.string().nullable(),
-  policyFingerprint: z.string(),
-  excluded: strings,
-  checks: z.array(
-    z.strictObject({
-      external: externalIdentitySchema
-        .extend({
-          tools: z
-            .array(
-              z.strictObject({
-                name: z.string(),
-                version: z.string(),
-                source: z.literal("adapter-reported"),
-              }),
-            )
-            .optional(),
-        })
-        .optional(),
-      id: z.string(),
-      adapter: z.string(),
-      project: z.string(),
-      scope: strings,
-      goScope: goScopePolicySchema.optional(),
-      goWorkspace: goWorkspaceSchema.optional(),
-      goBuild: goBuildSelectionSchema.optional(),
-      rustBuild: rustBuildSelectionSchema.optional(),
-      executionId: executionIdSchema.optional(),
-      goTarget: goTargetEvidenceSchema.optional(),
-      status,
-      reason: z.string(),
-      processes: z.array(processResult),
-      tests: tests.optional(),
-      findingsComplete: z.boolean().optional(),
-      runtime: runtimeInventorySchema.optional(),
-      findings: z
-        .array(
-          z.strictObject({
-            ruleId: z.string().min(1),
-            level: z.enum(["error", "warning", "note"]),
-            message: z.string(),
-            file: z.string().min(1).optional(),
-            line: z.number().int().positive().optional(),
-          }),
+export const reportSchema = z
+  .strictObject({
+    ...reportMetadata,
+    requiredExecutionIds: z.array(executionIdSchema).optional(),
+    selection: selection.optional(),
+    startedAt: z.iso.datetime(),
+    sourceFingerprint: z.string(),
+    finalSourceFingerprint: z.string().nullable(),
+    policyFingerprint: z.string(),
+    excluded: strings,
+    checks: z.array(
+      z.strictObject({
+        external: externalIdentitySchema
+          .extend({
+            tools: z
+              .array(
+                z.strictObject({
+                  name: z.string(),
+                  version: z.string(),
+                  source: z.literal("adapter-reported"),
+                }),
+              )
+              .optional(),
+          })
+          .optional(),
+        id: z.string(),
+        adapter: z.string(),
+        project: z.string(),
+        scope: strings,
+        goScope: goScopePolicySchema.optional(),
+        goWorkspace: goWorkspaceSchema.optional(),
+        goBuild: goBuildSelectionSchema.optional(),
+        rustBuild: rustBuildSelectionSchema.optional(),
+        executionId: executionIdSchema.optional(),
+        goTarget: goTargetEvidenceSchema.optional(),
+        status,
+        reason: z.string(),
+        processes: z.array(processResult),
+        tests: tests.optional(),
+        findingsComplete: z.boolean().optional(),
+        runtime: runtimeInventorySchema.optional(),
+        findings: z
+          .array(
+            z.strictObject({
+              ruleId: z.string().min(1),
+              level: z.enum(["error", "warning", "note"]),
+              message: z.string(),
+              file: z.string().min(1).optional(),
+              line: z.number().int().positive().optional(),
+            }),
+          )
+          .optional(),
+        environment: z
+          .strictObject({ names: strings, fingerprint: z.string() })
+          .optional(),
+        tools: z
+          .array(
+            z.strictObject({
+              name: z.string(),
+              source: z.enum([
+                "engine-runtime",
+                "package-metadata",
+                "version-command",
+              ]),
+              version: z.string().nullable(),
+              status: z.enum(["identified", "unavailable", "inconclusive"]),
+              process: processResult.optional(),
+              path: z.string().optional(),
+            }),
+          )
+          .optional(),
+      }),
+    ),
+  })
+  .superRefine((value, ctx) => {
+    for (const [i, check] of value.checks.entries()) {
+      const reached = [
+        ...check.processes.map((process, j) => ({
+          process,
+          path: ["checks", i, "processes", j],
+        })),
+        ...(check.tools ?? []).flatMap((tool, j) =>
+          tool.process
+            ? [
+                {
+                  process: tool.process,
+                  path: ["checks", i, "tools", j, "process"],
+                },
+              ]
+            : [],
+        ),
+      ];
+      for (const { process, path } of reached) {
+        if (
+          process.nativeJournal?.expectedHeader.sourceFingerprint !==
+            undefined &&
+          process.nativeJournal.expectedHeader.sourceFingerprint !==
+            value.sourceFingerprint
         )
-        .optional(),
-      environment: z
-        .strictObject({ names: strings, fingerprint: z.string() })
-        .optional(),
-      tools: z
-        .array(
-          z.strictObject({
-            name: z.string(),
-            source: z.enum([
-              "engine-runtime",
-              "package-metadata",
-              "version-command",
-            ]),
-            version: z.string().nullable(),
-            status: z.enum(["identified", "unavailable", "inconclusive"]),
-            process: processResult.optional(),
-            path: z.string().optional(),
-          }),
+          ctx.addIssue({
+            code: "custom",
+            path: [
+              ...path,
+              "nativeJournal",
+              "expectedHeader",
+              "sourceFingerprint",
+            ],
+            message: "Native journal differs from the report source snapshot",
+          });
+        if (
+          check.status === "passed" &&
+          process.nativeJournal &&
+          !nativeJournalAllowsParserPass(
+            process.nativeJournal as EngineNativeJournal,
+          )
         )
-        .optional(),
-    }),
-  ),
-});
+          ctx.addIssue({
+            code: "custom",
+            path: [...path, "nativeJournal"],
+            message:
+              "A passed check requires a complete current nonempty native journal",
+          });
+      }
+    }
+  });
 
 export const reportSummarySchema = z.strictObject({
   ...reportMetadata,

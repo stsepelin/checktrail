@@ -102,11 +102,17 @@ test("CI lanes preserve every original matrix command and keep distinct package 
   );
   const keys = (phases: Record<string, unknown[]>) =>
     Object.values(phases).flat().map(commandKey).sort();
-  const frozen = baseline.map(commandKey).sort();
+  const frozen = [
+    ...baseline,
+    task("scripts/verify-native-engine-journals.mjs"),
+    task("scripts/verify-native-engine-journals-package.mjs"),
+  ]
+    .map(commandKey)
+    .sort();
   validatePhases(validationPhases);
   assert.deepEqual(keys(validationPhases), frozen);
   assert.equal(validationPhases.mutations.length, 14);
-  assert.equal(validationPhases.packages.length, 33);
+  assert.equal(validationPhases.packages.length, 35);
   const missing = structuredClone(validationPhases);
   missing.packages.pop();
   assert.notDeepEqual(keys(missing), frozen);
@@ -164,6 +170,8 @@ test("attempt output and native journal acceptance run once in the package lane 
     "scripts/verify-attempt-outputs-package.mjs",
     "scripts/verify-native-attempt-journals.mjs",
     "scripts/verify-native-attempt-journals-package.mjs",
+    "scripts/verify-native-engine-journals.mjs",
+    "scripts/verify-native-engine-journals-package.mjs",
   ];
   for (const script of controllers) {
     assert.deepEqual(
