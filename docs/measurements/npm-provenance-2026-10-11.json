@@ -1,0 +1,427 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "scope": "Operator dependency setup audit: exact installed npm production and development locations on macOS ARM64",
+  "baseSourceCommit": "96fc10e3328242e6aeaaeefa041a7bfb407b935e",
+  "sourceInputs": [
+    {
+      "file": "scripts/audit-dependencies.mjs",
+      "sha256": "3889e6cb48004a48bdd9b98d3ea1bd21fd95cff3edf299f2161b7555ac2f43e2"
+    },
+    {
+      "file": "scripts/license-sources.json",
+      "sha256": "4aaad880a575b2f4ccf11b7b106b838427e5134b5413ba7f744468667fd8ac2e"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+    },
+    {
+      "file": "test/dependency-audit.test.ts",
+      "sha256": "3fb428ec4d21082e2ec7637f21379e7e2c328547ad4fe9e43fd9ebe4d59eaec9"
+    },
+    {
+      "file": "test/development-dependency-audit.test.ts",
+      "sha256": "9da17acb9bad0ef49868e82354e9a320ac99696a123f065ae879375acc02bc42"
+    }
+  ],
+  "nativeSourceControls": [
+    {
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "required": 12,
+      "passed": 12,
+      "complete": true,
+      "terminalEventCount": 12,
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "dependency audit reconciles installed metadata, reports missing notices and rejects drift",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit preserves production scope and reconciles actual alias identities at every location without loading code",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit counts duplicate nested package locations and excludes those files from their parent content",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit reconciles installed foreign-platform and unresolved optional absences without counting them as inspected",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit leaves empty and missing development notice cohorts non-passing while retaining present notices",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit refuses dev manifest license drift and stale upstream fallback entries",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit refuses regular-file symlink substitution without inspecting the external file",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit admits the exact individual file byte limit and refuses the next byte before returning evidence",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit validates the exact CLI selector and retains manifest and notice byte hashes",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit excludes an absent dependency only when every declared path crosses a foreign platform ancestor",
+          "outcome": "passed",
+          "terminalSequences": [10]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit follows exact npm platform selector boundaries including mixed any and negative-only lists",
+          "outcome": "passed",
+          "terminalSequences": [11]
+        },
+        {
+          "fileId": "file-2",
+          "name": "dependency audit refuses backup notice filenames in both scopes and retains exact recognized license variants",
+          "outcome": "passed",
+          "terminalSequences": [12]
+        }
+      ],
+      "inputs": [
+        {
+          "file": "scripts/audit-dependencies.mjs",
+          "sha256": "3889e6cb48004a48bdd9b98d3ea1bd21fd95cff3edf299f2161b7555ac2f43e2"
+        },
+        {
+          "file": "scripts/license-sources.json",
+          "sha256": "4aaad880a575b2f4ccf11b7b106b838427e5134b5413ba7f744468667fd8ac2e"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        },
+        {
+          "file": "dist/test/dependency-audit.test.js",
+          "sha256": "76d4e85e3582c38281a72355cad4e24e6dd6ebb6ab9fdc788f03bc4e289034df"
+        },
+        {
+          "file": "dist/test/development-dependency-audit.test.js",
+          "sha256": "4e5933056c055461cf2b5fa4516255f45d910a5512d224c504e0c416ffb58372"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        }
+      ],
+      "sourceHarnessOnly": true
+    },
+    {
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "required": 12,
+      "passed": 12,
+      "complete": true,
+      "terminalEventCount": 12,
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "dependency audit reconciles installed metadata, reports missing notices and rejects drift",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit preserves production scope and reconciles actual alias identities at every location without loading code",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit counts duplicate nested package locations and excludes those files from their parent content",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit reconciles installed foreign-platform and unresolved optional absences without counting them as inspected",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit leaves empty and missing development notice cohorts non-passing while retaining present notices",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit refuses dev manifest license drift and stale upstream fallback entries",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit refuses regular-file symlink substitution without inspecting the external file",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit admits the exact individual file byte limit and refuses the next byte before returning evidence",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit validates the exact CLI selector and retains manifest and notice byte hashes",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit excludes an absent dependency only when every declared path crosses a foreign platform ancestor",
+          "outcome": "passed",
+          "terminalSequences": [10]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit follows exact npm platform selector boundaries including mixed any and negative-only lists",
+          "outcome": "passed",
+          "terminalSequences": [11]
+        },
+        {
+          "fileId": "file-2",
+          "name": "dependency audit refuses backup notice filenames in both scopes and retains exact recognized license variants",
+          "outcome": "passed",
+          "terminalSequences": [12]
+        }
+      ],
+      "inputs": [
+        {
+          "file": "scripts/audit-dependencies.mjs",
+          "sha256": "3889e6cb48004a48bdd9b98d3ea1bd21fd95cff3edf299f2161b7555ac2f43e2"
+        },
+        {
+          "file": "scripts/license-sources.json",
+          "sha256": "4aaad880a575b2f4ccf11b7b106b838427e5134b5413ba7f744468667fd8ac2e"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        },
+        {
+          "file": "dist/test/dependency-audit.test.js",
+          "sha256": "76d4e85e3582c38281a72355cad4e24e6dd6ebb6ab9fdc788f03bc4e289034df"
+        },
+        {
+          "file": "dist/test/development-dependency-audit.test.js",
+          "sha256": "4e5933056c055461cf2b5fa4516255f45d910a5512d224c504e0c416ffb58372"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        }
+      ],
+      "sourceHarnessOnly": true
+    }
+  ],
+  "pairedGuardControls": [
+    {
+      "id": "development-scope",
+      "callback": "development audit preserves production scope and reconciles actual alias identities at every location without loading code",
+      "callbackFileSha256": "4e5933056c055461cf2b5fa4516255f45d910a5512d224c504e0c416ffb58372",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "content-hash",
+      "callback": "development audit counts duplicate nested package locations and excludes those files from their parent content",
+      "callbackFileSha256": "4e5933056c055461cf2b5fa4516255f45d910a5512d224c504e0c416ffb58372",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "file-limit",
+      "callback": "development audit admits the exact individual file byte limit and refuses the next byte before returning evidence",
+      "callbackFileSha256": "4e5933056c055461cf2b5fa4516255f45d910a5512d224c504e0c416ffb58372",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "notice-accounting",
+      "callback": "development audit leaves empty and missing development notice cohorts non-passing while retaining present notices",
+      "callbackFileSha256": "4e5933056c055461cf2b5fa4516255f45d910a5512d224c504e0c416ffb58372",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "shared-optional-path",
+      "callback": "development audit excludes an absent dependency only when every declared path crosses a foreign platform ancestor",
+      "callbackFileSha256": "4e5933056c055461cf2b5fa4516255f45d910a5512d224c504e0c416ffb58372",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "inherited-optional-path",
+      "callback": "development audit excludes an absent dependency only when every declared path crosses a foreign platform ancestor",
+      "callbackFileSha256": "4e5933056c055461cf2b5fa4516255f45d910a5512d224c504e0c416ffb58372",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "exact-notice-name",
+      "callback": "dependency audit refuses backup notice filenames in both scopes and retains exact recognized license variants",
+      "callbackFileSha256": "4e5933056c055461cf2b5fa4516255f45d910a5512d224c504e0c416ffb58372",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    }
+  ],
+  "observedAudits": {
+    "production": {
+      "reportSha256": "6c2fdee494337ae657beadcd1158eaca1fa36f1d75c8f087656afa014c9917bc",
+      "exitCode": 0,
+      "complete": true,
+      "lockfileSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "installedPackageCount": 21,
+      "gaps": []
+    },
+    "all": {
+      "reportSha256": "0b5fc5b333d7628643cbe986c03f2e7daa8b2b81cb9c9f979cafff8c010bbbf3",
+      "exitCode": 2,
+      "complete": false,
+      "lockfileSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "installedPackageCount": 437,
+      "gaps": [
+        {
+          "package": "@humanfs/types@0.15.0",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "@pkgr/core@0.3.6",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "@rolldown/binding-darwin-arm64@1.2.9",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "@rolldown/binding-linux-arm64-musl@1.2.9",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "@unrs/resolver-binding-darwin-arm64@1.12.2",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "bser@2.1.1",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "eastasianwidth@0.2.0",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "esrecurse@4.3.0",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "fb-watchman@2.0.2",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "imurmurhash@0.1.4",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "natural-compare@1.4.0",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "stackback@0.0.2",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "unrs-resolver@1.12.2",
+          "reason": "No notice file was located"
+        }
+      ],
+      "lockedPackageCount": 497,
+      "platformInapplicableCount": 60,
+      "optionalAbsentCount": 0,
+      "runtime": {
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64"
+      },
+      "installedContentAggregateSha256": "7b5c47d91950d6442cf81ab24f80ee338620cdd2fe6926e567950c86f3ca83ca"
+    }
+  },
+  "fullCheck": {
+    "tests": 1865,
+    "pass": 1113,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 752,
+    "todo": 0
+  },
+  "completeNativeArtifactClosure": false,
+  "archiveIntegrityVerified": false,
+  "legalComplianceEstablished": false,
+  "nativeWindowsAcceptance": false,
+  "productionInstallationAcceptance": false,
+  "gateAClosed": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false,
+  "limitations": [
+    "The development audit intentionally exits 2 while bundled notices are missing.",
+    "Installed content digests bind observed files and do not recompute npm archive integrity or authenticate publishers.",
+    "The source controls do not certify a fresh production installation, other operating systems or complete native/compiler/container closure.",
+    "Package notices and license declarations do not establish legal compliance."
+  ]
+}
