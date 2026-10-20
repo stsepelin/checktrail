@@ -117,13 +117,28 @@ Timeouts retain native incomplete evidence when it fits the configured result
 projection. Invalid, missing and expired IDs fail without exposing filesystem
 paths or raw exceptions.
 
-If validation throws, source identity no longer matches the task, or the selected
-result projection exceeds the store limit, the task retains an explicit
-`isError: true` interruption result with no structured validation report. A large
-detailed report can exceed the limit even when its summary fits. A persistence
-failure that also prevents recording interruption shuts down the worker; it is
-not converted into a passing result. Historical results are not revalidated or
-used as a cache on retrieval.
+If validation throws, source identity no longer matches the task, or retention
+cannot fit its bounded quota, the task retains an explicit `isError: true`
+interruption result with no structured validation report. A persistence failure
+that also prevents recording interruption shuts down the worker.
+
+With startup `--detailed`, oversized reports that fit the archive quota are
+retained transactionally in the private store. `tasks/get` still returns a bounded
+completed tool error, now directing the client to `validation_archive_read` with
+`{ "taskId": "ORIGINAL_UUID", "index": 0 }`. That ordinary read-only tool is
+advertised only with both startup `--task-store` and `--detailed`; it requires no
+project execution permission. Each response contains at most one 64 KiB decoded
+chunk, canonical base64, its hash and the report manifest. Read successive indexes
+through `archive.chunks - 1`, verify every chunk, then recompute the full report's
+length and SHA-256 before parsing. The library exposes the same operation as
+`readArchive(id, index)`. Reading retained data is also available after restarting
+without `--allow-execution`. Tool arguments cannot grant detail, trust or an
+alternative storage path. Summary mode stores only the projected summary.
+
+Retained reports preserve their native validation outcome and incomplete captures.
+Historical results are not revalidated or used as a cache on retrieval. Full
+platform/resource acceptance remains pending; see the archive bounds and store
+upgrade behavior in [task storage](TASK-STORAGE.md).
 
 ## Ownership and parent loss
 

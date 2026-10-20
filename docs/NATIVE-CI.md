@@ -757,3 +757,21 @@ The detailed SDK test client has an explicit 32 MiB receive bound for the MCP
 reply's text and structured copies; summary uses its default transport bound.
 The existing root/canary disclosure assertions still run through both CLI and
 MCP. Validator process-output and execution limits are unchanged.
+
+The detailed Tasks archive library controls use the same bounded wall-clock
+completion observer as the Tasks wire controls. A real native command lasting
+4.7 seconds exposed the earlier four-second polling loop before archive
+completion. The observer keeps late or missing terminal replies as failures and
+does not change worker execution, cancellation, retention or output limits.
+
+Archive quota controls reopen a consistent store exactly at its shared byte
+limit, then require refusal at one byte over it. The over-limit fixture preserves
+all per-report, chunk, source and whole-report bindings, so another integrity
+failure cannot stand in for the aggregate reopening check.
+
+The C++ acquisition fallback also retains the original signed libexpat archive
+at its existing manifest identity. Terminal HTTP 404 responses may select only
+the two explicitly pinned repository copies, after the bounded official mirror
+attempts. Byte counts, SHA-256 and offline APK signature checks remain required;
+redirects, permanent failures, corrupt bodies and cancellation cannot select the
+fallback. The toolchain versions and bytes do not change.

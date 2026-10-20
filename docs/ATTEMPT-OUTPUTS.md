@@ -60,6 +60,10 @@ engine does not collect these journals yet. Shared JVM and Rust workspace calls
 now use the streamed invocation boundary; the JVM helper can receive one explicit
 journal shared by its calls. The remaining synchronous wrappers are still pending.
 
+Detailed Tasks can retain oversized captured reports through the bounded hashed
+chunks described in [task storage](TASK-STORAGE.md). This retains existing report
+bytes and incomplete flags; it supplies no missing producer or host-model output.
+
 The frozen `attempt-archives` profile remains pending. Complete individually
 addressed artifacts for every inner compiler/framework/bootstrap attempt,
 interrupted-attempt journals, durable replay, the remaining native matrix and

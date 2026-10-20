@@ -5,6 +5,7 @@ import {
   type ValidationTasksOptions,
 } from "./validation-tasks.js";
 import type { StoredValidationTask } from "./task-store.js";
+import type { TaskArchiveChunk } from "./task-report-archives.js";
 
 /** One foreground server owns one lazy worker across SDK discovery instances. */
 export class McpValidationTasks {
@@ -78,6 +79,11 @@ export class McpValidationTasks {
     if (this.activeId === id && task.status !== "working")
       this.activeId = undefined;
     return task;
+  }
+  async readArchive(id: string, index: number): Promise<TaskArchiveChunk> {
+    if (!this.options.detailed)
+      throw new Error("Task archives require startup detail permission");
+    return (await this.open()).readArchive(id, index);
   }
   async cancel(id: string): Promise<void> {
     const task = await (await this.open()).cancel(id);

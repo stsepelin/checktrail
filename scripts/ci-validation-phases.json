@@ -252,6 +252,16 @@
       "script": "scripts/verify-go-workspace-package.mjs",
       "args": [],
       "env": {}
+    },
+    {
+      "script": "scripts/verify-task-archives.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-task-archives-package.mjs",
+      "args": [],
+      "env": {}
     }
   ]
 }

@@ -47,8 +47,10 @@ defaults to 10 MiB. The Swift journal privacy acceptance profile explicitly sets
 `StdioClientTransport.maxBufferSize` to 32 MiB for detailed replies and retains the
 default for summaries. This qualifies that configured client profile; unconfigured
 clients are not qualified for these large detailed replies. Use summary output or
-an operator-configured client receive bound. Durable large-journal retention and
-wider host-client acceptance remain pending.
+an operator-configured client receive bound. Startup-enabled detailed Tasks also
+support bounded report retention and `validation_archive_read`; see
+[TASK-STORAGE.md](TASK-STORAGE.md). Complete large-journal and wider host-client
+acceptance remain pending.
 
 ## Standard Tasks polling profile
 

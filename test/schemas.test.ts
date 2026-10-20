@@ -1,4 +1,8 @@
 import {
+  taskArchiveManifestSchema,
+  taskArchiveChunkSchema,
+} from "../src/task-report-archives.js";
+import {
   reviewMultiProtocolSchema,
   reviewMultiInputSchema,
   reviewMultiReportSchema,
@@ -241,6 +245,8 @@ test("published schemas match runtime definitions and compile in a strict standa
     "plan-summary": planSummarySchema,
     report: reportSchema,
     "report-summary": reportSummarySchema,
+    "task-archive-manifest": taskArchiveManifestSchema,
+    "task-archive-chunk": taskArchiveChunkSchema,
   })) {
     const disk = JSON.parse(
       await readFile(

@@ -1,4 +1,8 @@
 import { z } from "zod";
+import {
+  taskArchiveChunkSchema,
+  taskArchiveLimits,
+} from "./task-report-archives.js";
 import { externalReferencesSchema } from "./external-adapter.js";
 import { operatorEnvironment } from "./environment.js";
 
@@ -36,6 +40,16 @@ export const validationTaskRequestSchema = z.discriminatedUnion("method", [
   }),
   z.strictObject({
     id: z.number().int().positive(),
+    method: z.literal("read-archive"),
+    taskId: z.string().uuid(),
+    index: z
+      .number()
+      .int()
+      .min(0)
+      .max(taskArchiveLimits.reportBytes / taskArchiveLimits.chunkBytes - 1),
+  }),
+  z.strictObject({
+    id: z.number().int().positive(),
     method: z.literal("close"),
   }),
 ]);
@@ -51,7 +65,9 @@ export const validationTaskResponseSchema = z.discriminatedUnion("ok", [
   z.strictObject({
     id: z.number().int().nonnegative(),
     ok: z.literal(true),
-    value: storedValidationTaskSchema.nullable(),
+    value: z
+      .union([storedValidationTaskSchema, taskArchiveChunkSchema])
+      .nullable(),
   }),
   z.strictObject({
     id: z.number().int().nonnegative(),

@@ -1,6 +1,6 @@
 {
-  "assets/context-grammars/tree-sitter-c_sharp.wasm": ["csharp-context-arm64"],
   "assets/context-grammars/tree-sitter-c.wasm": ["c-context-arm64"],
+  "assets/context-grammars/tree-sitter-c_sharp.wasm": ["csharp-context-arm64"],
   "assets/context-grammars/tree-sitter-cpp.wasm": ["cpp-context-arm64"],
   "assets/context-grammars/tree-sitter-fsharp.wasm": ["fsharp-context-arm64"],
   "assets/context-grammars/tree-sitter-go.wasm": ["go-workspaces-arm64"],
@@ -64,6 +64,10 @@
   "scripts/cleanup-yaml-context-runtime.mjs": ["yaml-context-arm64"],
   "scripts/collect-cpp-extensions-sdk.mjs": ["cpp-extensions-arm64"],
   "scripts/collect-swift-extensions-sdk.mjs": ["swift-extensions-arm64"],
+  "scripts/cpp-archive-fallbacks/libexpat-2.8.5-r0.apk": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
   "scripts/cpp-archive-fallbacks/zlib-1.3.2-r0.apk": [
     "cpp-extensions-arm64",
     "cpp-tools"

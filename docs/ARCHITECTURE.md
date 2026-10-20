@@ -119,6 +119,12 @@ exclusively owned SQLite databases. Its [worker](VALIDATION-TASKS.md) executes
 through the shared engine and cancels on parent disconnection. A startup-pinned
 `--task-store` enables standard MCP Tasks polling for `validation_run`; capability
 negotiation is per request, and ordinary clients retain completed-call behavior.
+Oversized detailed Tasks reports can be retained as bounded, hashed chunks in
+the same private SQLite completion transaction. Their inline terminal result is
+an explicit tool error; startup-enabled detailed clients retrieve chunks through
+`validation_archive_read`, and the library uses the same `readArchive` engine.
+Summary disclosure does not retain those bytes. See [task storage](TASK-STORAGE.md).
+
 The foreground server owns one lazy worker across SDK discovery instances,
 shares native admission, and awaits cleanup on shutdown. Retained results are
 historical evidence; retrieval does not revalidate source or resume work.
