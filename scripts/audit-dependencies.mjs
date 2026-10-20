@@ -108,8 +108,24 @@ async function packageContents(directory) {
 
 const lockBytes = await readFile(path.join(root, "package-lock.json"));
 const lock = JSON.parse(lockBytes);
-const sources = JSON.parse(
+const allSources = JSON.parse(
   await readFile(new URL("./license-sources.json", import.meta.url), "utf8"),
+);
+assert.ok(
+  allSources && typeof allSources === "object" && !Array.isArray(allSources),
+  "Invalid notice source index",
+);
+for (const source of Object.values(allSources))
+  assert.ok(
+    source &&
+      typeof source === "object" &&
+      (source.scope === undefined || source.scope === "development"),
+    "Invalid notice source scope",
+  );
+const sources = Object.fromEntries(
+  Object.entries(allSources).filter(
+    ([, source]) => includeDev || source.scope !== "development",
+  ),
 );
 const tree = JSON.parse(
   execFileSync(
@@ -266,7 +282,12 @@ for (const [location, entry] of Object.entries(lock.packages).sort(([a], [b]) =>
             )
             .sort()
         : [];
-      const id = location.split("node_modules/").at(-1) + "@" + entry.version;
+      const packageName = entry.name ?? location.split("node_modules/").at(-1);
+      assert.ok(
+        typeof packageName === "string" && packageName.length > 0,
+        "Absent dependency has no package identity",
+      );
+      const id = packageName + "@" + entry.version;
       absentPackages.push({
         location,
         package: id,
@@ -295,6 +316,11 @@ for (const [location, entry] of Object.entries(lock.packages).sort(([a], [b]) =>
   const manifest = JSON.parse(manifestBytes.toString("utf8"));
   const id = `${manifest.name}@${manifest.version}`;
   if (includeDev) {
+    assert.equal(
+      manifest.name,
+      entry.name ?? location.split("node_modules/").at(-1),
+      "Installed dependency name differs from lock for " + location,
+    );
     assert.equal(
       treeLocations.get(location),
       id,
@@ -361,18 +387,109 @@ for (const [location, entry] of Object.entries(lock.packages).sort(([a], [b]) =>
       source.files,
       `Pinned upstream notice source files changed for ${id}`,
     );
-    assert.match(source.notice, /^docs\/licenses\/[^/]+\.txt$/);
-    const bytes = await readFile(path.join(root, source.notice));
+    assert.match(
+      source.notice,
+      /^docs\/licenses\/[^/\\]+\.txt$/,
+      "Pinned notice must use a canonical docs/licenses path",
+    );
+    const noticePath = path.join(root, source.notice);
+    const noticeStat = await lstat(noticePath);
+    assert.ok(
+      noticeStat.isFile() &&
+        !noticeStat.isSymbolicLink() &&
+        noticeStat.size > 0 &&
+        noticeStat.size <= 1024 * 1024,
+      "Pinned notice must be a bounded regular file",
+    );
+    assert.equal(
+      await realpath(noticePath),
+      noticePath,
+      "Pinned notice must not resolve through a symlink",
+    );
+    const bytes = await readFile(noticePath);
+    const noticeAfter = await lstat(noticePath);
+    assert.ok(
+      noticeStat.dev === noticeAfter.dev &&
+        noticeStat.ino === noticeAfter.ino &&
+        noticeStat.size === noticeAfter.size &&
+        noticeStat.mtimeMs === noticeAfter.mtimeMs &&
+        noticeStat.ctimeMs === noticeAfter.ctimeMs &&
+        bytes.length === noticeStat.size,
+      "Pinned notice changed during capture",
+    );
     assert.equal(
       hash(bytes),
       source.sha256,
       `Pinned upstream notice changed for ${id}`,
     );
+    if (source.section !== undefined) {
+      const section = source.section;
+      assert.ok(
+        section &&
+          typeof section === "object" &&
+          typeof section.file === "string" &&
+          !path.posix.isAbsolute(section.file) &&
+          !section.file
+            .split("/")
+            .some((part) => !part || part === "." || part === "..") &&
+          !section.file.includes("\\") &&
+          Number.isSafeInteger(section.startByte) &&
+          Number.isSafeInteger(section.endByte) &&
+          section.startByte >= 0 &&
+          section.endByte > section.startByte,
+        "Invalid installed notice section",
+      );
+      assert.ok(
+        Object.hasOwn(actualFiles, section.file),
+        "Installed notice section is not a captured package file",
+      );
+      const sectionPath = path.join(directory, section.file);
+      assert.equal(
+        await realpath(sectionPath),
+        sectionPath,
+        "Installed notice section must not resolve through a symlink",
+      );
+      const sectionBytes = await readFile(sectionPath);
+      assert.equal(
+        hash(sectionBytes),
+        actualFiles[section.file],
+        "Installed notice section changed during capture",
+      );
+      assert.ok(
+        section.endByte <= sectionBytes.length &&
+          section.endByte - section.startByte <= 1024 * 1024,
+        "Installed notice section exceeds bounds",
+      );
+      assert.deepEqual(
+        sectionBytes.subarray(section.startByte, section.endByte),
+        bytes,
+        "Installed notice section differs from pinned notice bytes",
+      );
+    }
+    if (source.license !== undefined) {
+      assert.ok(
+        typeof source.license === "string" && source.license.length > 0,
+        "Invalid notice source license declaration",
+      );
+      if (source.license !== manifest.license)
+        gaps.push({
+          package: id,
+          reason: "Installed and notice source license declarations differ",
+          installedLicense: manifest.license,
+          noticeSourceLicense: source.license,
+        });
+    }
     notices.push({
       file: source.notice,
-      provenance: "pinned-upstream-notice",
+      provenance: source.section
+        ? "installed-text-section"
+        : "pinned-upstream-notice",
       source: source.source,
       upstreamManifestVersion: source.upstreamManifestVersion,
+      ...(source.section ? { sourceByteRange: source.section } : {}),
+      ...(source.license !== undefined
+        ? { noticeSourceLicense: source.license }
+        : {}),
       sha256: hash(bytes),
       bytes: bytes.length,
     });
@@ -427,8 +544,26 @@ assert.deepEqual(
   treeIdentities,
   "Production lock and installed tree identities differ",
 );
+const uninspectedNoticeSources = includeDev
+  ? Object.keys(sources)
+      .filter(
+        (id) =>
+          !usedSources.has(id) &&
+          absentPackages.some(
+            (p) => p.package === id && p.state === "platform-inapplicable",
+          ),
+      )
+      .map((id) => ({
+        package: id,
+        state: "platform-inapplicable",
+        noticeInspected: false,
+      }))
+  : [];
 assert.deepEqual(
-  usedSources,
+  new Set([
+    ...usedSources,
+    ...uninspectedNoticeSources.map((source) => source.package),
+  ]),
   new Set(Object.keys(sources)),
   "An upstream notice fallback no longer describes an installed production package",
 );
@@ -473,6 +608,7 @@ process.stdout.write(
               (p) => p.state === "not-installed-optional",
             ).length,
             absentPackages,
+            uninspectedNoticeSources,
             installedContentIntegrityIsArchiveIntegrity: false,
             completeNativeArtifactClosure: false,
           }
