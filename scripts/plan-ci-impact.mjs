@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import { readFile, appendFile } from "node:fs/promises";
 import process from "node:process";
 import { Buffer } from "node:buffer";
+import { isDeepStrictEqual } from "node:util";
 const { fetch, AbortSignal } = globalThis;
 import { parse } from "yaml";
 import {
@@ -36,7 +37,7 @@ try {
     files,
     readText: (file) => readFile(file, "utf8"),
   });
-  contractCurrent = JSON.stringify(current) === JSON.stringify(inputs);
+  contractCurrent = isDeepStrictEqual(current, inputs);
   if (process.env.GITHUB_EVENT_NAME === "pull_request" && contractCurrent) {
     const event = JSON.parse(
       await readFile(process.env.GITHUB_EVENT_PATH, "utf8"),
