@@ -510,3 +510,5 @@ bytes before Buffer/UTF-8 parser conversion, uses a combined stream byte bound,
 and refuses successful parser status on incomplete capture. Source and installed
 wiring controls remain distinct from native acceptance for each language;
 complete engine journal acceptance, wider runtime acceptance and Gate A remain open.
+
+The repository-owned [native resource observer](NATIVE-RESOURCE-ACCOUNTING.md) has a dated record of its original POSIX source/fresh installed runner controls on macOS Node 24/26 and Linux Node 22. Current source regressions additionally cover namespace-init observer PID 1, separate CPU fields, wall bounds and numeric boundaries. Its kernel peak RSS is not a summed process-tree measurement; descendant coverage, Windows, representative workloads, compiler/SDK provenance and final resource/release acceptance remain pending.
