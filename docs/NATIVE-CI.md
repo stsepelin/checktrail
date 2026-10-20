@@ -768,3 +768,10 @@ Archive quota controls reopen a consistent store exactly at its shared byte
 limit, then require refusal at one byte over it. The over-limit fixture preserves
 all per-report, chunk, source and whole-report bindings, so another integrity
 failure cannot stand in for the aggregate reopening check.
+
+The C++ acquisition fallback also retains the original signed libexpat archive
+at its existing manifest identity. Terminal HTTP 404 responses may select only
+the two explicitly pinned repository copies, after the bounded official mirror
+attempts. Byte counts, SHA-256 and offline APK signature checks remain required;
+redirects, permanent failures, corrupt bodies and cancellation cannot select the
+fallback. The toolchain versions and bytes do not change.

@@ -11,6 +11,27 @@ const repositories = [
   "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/aarch64/",
   "https://dl-cdn.alpinelinux.org/alpine/v3.24/community/aarch64/",
 ];
+const retainedArchives = [
+  {
+    path: "zlib-1.3.2-r0.apk",
+    url: new URL(
+      "../scripts/cpp-archive-fallbacks/zlib-1.3.2-r0.apk",
+      import.meta.url,
+    ),
+    bytes: 54312,
+    sha256: "a535991af7c9e8369ebbf33c1e388c1bc63c87ead5142eddaee71f65836c33e3",
+  },
+  {
+    path: "libexpat-2.8.5-r0.apk",
+    url: new URL(
+      "../scripts/cpp-archive-fallbacks/libexpat-2.8.5-r0.apk",
+      import.meta.url,
+    ),
+    bytes: 60926,
+    sha256: "568a12a4889a00711d1c80c197a5540ee1cdec26c1c59da38f8342ad69e7eff9",
+  },
+];
+
 // Operator acquisition only. The offline image build still verifies APK signatures.
 export async function requestCppToolArchive(
   pin,
@@ -106,18 +127,19 @@ export async function requestCppToolArchive(
     return { bytes, asset };
   } catch (error) {
     signal.throwIfAborted();
+    const retained = retainedArchives.find(
+      (candidate) =>
+        pin.path === candidate.path &&
+        pin.bytes === candidate.bytes &&
+        pin.sha256 === candidate.sha256,
+    );
     if (
       error instanceof PinnedArtifactHttpError &&
       error.status === 404 &&
-      pin.path === "zlib-1.3.2-r0.apk" &&
-      pin.bytes === 54312 &&
-      pin.sha256 ===
-        "a535991af7c9e8369ebbf33c1e388c1bc63c87ead5142eddaee71f65836c33e3"
+      retained
     ) {
-      // scripts/cpp-archive-fallbacks/zlib-1.3.2-r0.apk preserves the retired pin.
-      const bytes = await readFallbackImpl(
-        new URL("./cpp-archive-fallbacks/zlib-1.3.2-r0.apk", import.meta.url),
-      );
+      // Only these exact signed archives can survive terminal mirror misses.
+      const bytes = await readFallbackImpl(retained.url);
       signal.throwIfAborted();
       assert.equal(
         bytes.length,
