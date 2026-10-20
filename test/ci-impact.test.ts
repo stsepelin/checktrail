@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import { execFileSync } from "node:child_process";
+import { readFile, writeFile } from "node:fs/promises";
+import { execFileSync, spawnSync } from "node:child_process";
 import { test } from "node:test";
 import { parse } from "yaml";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { fixture } from "./helpers.js";
 const {
   buildNativeInputs,
   acceptFullBaseline,
@@ -607,4 +610,132 @@ test("CI passive mutation guard receipt labels do not select native cohorts whil
   });
   assert.deepEqual(actual["test/passive-cohort.test.ts"], ["passive"]);
   assert.deepEqual(actual["test/native-cohort.test.ts"], ["native"]);
+});
+
+test("CI planner accepts reordered ownership objects and still rejects changed ownership", async (t) => {
+  const reversed = Object.fromEntries(Object.entries(inputs).reverse());
+  assert.deepEqual(reversed, inputs);
+  assert.notEqual(JSON.stringify(reversed), JSON.stringify(inputs));
+  const altered = structuredClone(inputs) as Record<string, string[]>;
+  const changed = Object.keys(altered).find(
+    (file) => altered[file]!.length < jobs.length,
+  )!;
+  const extra = jobs.find((id: string) => !altered[changed]!.includes(id))!;
+  altered[changed] = [...altered[changed]!, extra].sort();
+  const base = "a".repeat(40);
+  const run = {
+    id: 17,
+    run_attempt: 1,
+    head_sha: base,
+    head_branch: "main",
+    event: "push",
+    status: "completed",
+    conclusion: "success",
+    html_url: "https://github.com/example/project/actions/runs/17",
+  };
+  const names = workflowJobNames(workflow);
+  const baselineJobs = names.map((name: string, index: number) => ({
+    id: index + 1,
+    run_id: run.id,
+    name,
+    status: "completed",
+    conclusion: "success",
+  }));
+  const directory = await fixture(t, {
+    "event.json": JSON.stringify({
+      pull_request: { base: { sha: base }, head: { sha: "b".repeat(40) } },
+    }),
+    output: "",
+    summary: "",
+  });
+  for (const [variant, contract, expectedMode] of [
+    ["reordered", reversed, "affected"],
+    ["changed", altered, "full"],
+  ] as const) {
+    const loader = path.join(directory, variant + ".mjs");
+    const marker = path.join(directory, variant + ".json");
+    await writeFile(
+      loader,
+      `
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import child from "node:child_process";
+import { syncBuiltinESMExports } from "node:module";
+const contract = ${JSON.stringify(contract)};
+const run = ${JSON.stringify(run)};
+const jobs = ${JSON.stringify(baselineJobs)};
+const counts = {contractReads:0,diffCalls:0,apiCalls:0};
+const originalRead = fs.promises.readFile;
+fs.promises.readFile = async (...args) => {
+  if(args[0] === "scripts/ci-native-inputs.json") { counts.contractReads++;return JSON.stringify(contract); }
+  return originalRead(...args);
+};
+const originalExec = child.execFileSync;
+child.execFileSync = (executable,args,...options) => {
+  if(executable === "git" && args[0] === "diff") { counts.diffCalls++;return "docs/README.md"+String.fromCharCode(0); }
+  return originalExec(executable,args,...options);
+};
+syncBuiltinESMExports();
+globalThis.fetch = async (address, options) => {
+  counts.apiCalls++;
+  assert.equal(options.headers.Authorization,"Bearer synthetic-token");
+  const url = new URL(address);
+  assert.equal(url.origin,"https://api.github.com");
+  let body;
+  if(url.pathname === "/repos/example/project/actions/workflows/ci.yml/runs") {
+    assert.equal(url.searchParams.get("head_sha"),run.head_sha);
+    body={workflow_runs:[run]};
+  } else {
+    assert.equal(url.pathname,"/repos/example/project/actions/runs/17/attempts/1/jobs");
+    assert.equal(url.searchParams.get("per_page"),"100");
+    const page=Number(url.searchParams.get("page"));assert.ok(page>=1 && page<=Math.ceil(jobs.length/100));
+    body={total_count:jobs.length,jobs:jobs.slice((page-1)*100,page*100)};
+  }
+  return new Response(JSON.stringify(body),{status:200});
+};
+process.on("exit",()=>fs.writeFileSync(${JSON.stringify(marker)},JSON.stringify(counts)));
+`,
+    );
+    const env: NodeJS.ProcessEnv = {
+      ...process.env,
+      GITHUB_EVENT_NAME: "pull_request",
+      GITHUB_REPOSITORY: "example/project",
+      GITHUB_TOKEN: "synthetic-token",
+      GITHUB_EVENT_PATH: path.join(directory, "event.json"),
+      GITHUB_OUTPUT: path.join(directory, "output"),
+      GITHUB_STEP_SUMMARY: path.join(directory, "summary"),
+    };
+    delete env.NODE_TEST_CONTEXT;
+    const result = spawnSync(
+      process.execPath,
+      [
+        "--import",
+        pathToFileURL(loader).href,
+        fileURLToPath(new URL("scripts/plan-ci-impact.mjs", root)),
+      ],
+      {
+        cwd: root,
+        env,
+        encoding: "utf8",
+        timeout: 30000,
+        maxBuffer: 1024 * 1024,
+      },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    const actual = JSON.parse(result.stdout);
+    assert.equal(actual.mode, expectedMode, variant + ": " + actual.reason);
+    const observed = JSON.parse(await readFile(marker, "utf8"));
+    assert.equal(observed.contractReads, 1);
+    if (variant === "reordered") {
+      assert.deepEqual(selected(actual), []);
+      assert.equal(actual.baseline.commit, base);
+      assert.equal(observed.diffCalls, 1);
+      assert.equal(observed.apiCalls, 1 + Math.ceil(names.length / 100));
+    } else {
+      assert.deepEqual(selected(actual), jobs);
+      assert.match(actual.reason, /contract changed or is stale/);
+      assert.equal(observed.diffCalls, 0);
+      assert.equal(observed.apiCalls, 0);
+    }
+  }
 });

@@ -6,7 +6,9 @@ extend the execution capabilities or native evidence listed below.
 
 The [operator npm provenance audit](NPM-PROVENANCE.md) reconciles production and
 development dependency locations, optional platform exclusions and installed
-content. Its current development notice gaps remain incomplete; complete native
+content. Pinned and embedded development notices retain exact file and byte
+bindings, canonical notice addresses and explicit declaration conflicts. Its
+current development notice gaps remain incomplete; complete native
 artifact/license closure and the final runtime matrix remain pending.
 
 Capability levels are discovery, planning, execution, structured evidence,
