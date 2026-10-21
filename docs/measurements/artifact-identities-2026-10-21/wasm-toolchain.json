@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "scope": "wasm-toolchain",
+  "observedAt": "2026-10-21T17:22:24.781217+00:00",
+  "repositoryCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+  "repositoryInputs": [
+    {
+      "file": "assets/context-grammars/manifest.json",
+      "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+    },
+    {
+      "file": "docs/measurements/context-grammar-build-2026-10-08.json",
+      "sha256": "639e582c29cce571010f5fb1d46e8b381c3c369d4fac771502683a4532a2bb85"
+    }
+  ],
+  "observations": {
+    "archives": [
+      {
+        "url": "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-34/wasi-sdk-34.0-arm64-macos.tar.gz",
+        "bytes": 180322002,
+        "sha256": "9c59398106b417f8f14913380fdf0097a8cc0ff4af9eb3ce0065a859e88d49e9"
+      },
+      {
+        "url": "https://github.com/WebAssembly/binaryen/releases/download/version_132/binaryen-version_132-arm64-macos.tar.gz",
+        "bytes": 7640117,
+        "sha256": "98aad827847af7ef990ed7098d885725c8e5b5aae75073403635617ae4e259aa"
+      },
+      {
+        "url": "https://github.com/tree-sitter/tree-sitter/releases/download/v0.27.0/tree-sitter-macos-arm64.gz",
+        "bytes": 7275255,
+        "sha256": "70f7573b2b2e5371a5b58cc5227d2ad981fd5374596b9874e770af486060774e",
+        "decompressed": {
+          "bytes": 21581328,
+          "sha256": "f0e7b6b81e4faad74cd935c3536ea061d61b402f0ccaf3829300c70c8fe9fcb6"
+        }
+      },
+      {
+        "url": "https://github.com/tree-sitter/tree-sitter/releases/download/v0.27.0/web-tree-sitter.tar.gz",
+        "bytes": 1179166,
+        "sha256": "161512bfa27cc54f1e916264ee43f9056e467c4f7924b778a40038d2e76d8a94"
+      }
+    ],
+    "runtimeMembers": [
+      {
+        "file": "web-tree-sitter.js",
+        "bytes": 156132,
+        "sha256": "7c49e3c1d87e24e0bb4c2def909d17154dfde281f5f8280225450090bb4b8110"
+      },
+      {
+        "file": "web-tree-sitter.wasm",
+        "bytes": 209613,
+        "sha256": "c03bccdc3b448a32848f5ae327e209c982bbb0840d43eec8bc2d5759544a1ed3"
+      }
+    ],
+    "retainedNoticeInputs": [
+      {
+        "file": "tree-sitter-LICENSE.txt",
+        "bytes": 1080,
+        "sha256": "c5cfb43042b6b72045f4ba997834d0a7786d2793d91680868b5815b39f14fc78",
+        "source": "https://github.com/tree-sitter/tree-sitter/blob/6070dbfefd326bd735e5683eb128cc1b57dad0c0/LICENSE",
+        "sourceMember": "LICENSE"
+      },
+      {
+        "file": "tree-sitter-Unicode-LICENSE.txt",
+        "bytes": 21001,
+        "sha256": "6a18c5fac70d7860b57f5b72b4e2c9a1ba6b3d2741eef7ff9767c5379364f10d",
+        "source": "https://github.com/tree-sitter/tree-sitter/blob/6070dbfefd326bd735e5683eb128cc1b57dad0c0/lib/src/unicode/LICENSE",
+        "sourceMember": "lib/src/unicode/LICENSE"
+      },
+      {
+        "file": "tree-sitter-conditional-musl-LICENSE.txt",
+        "bytes": 6204,
+        "sha256": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af",
+        "source": "https://github.com/tree-sitter/tree-sitter/blob/6070dbfefd326bd735e5683eb128cc1b57dad0c0/lib/src/wasm-stdlib/libc/LICENSE",
+        "sourceMember": "lib/src/wasm-stdlib/libc/LICENSE"
+      }
+    ],
+    "conditionalMuslOutputMembershipVerified": false,
+    "attestationResponse": {
+      "url": "https://api.github.com/repos/tree-sitter/tree-sitter/attestations/sha256:70f7573b2b2e5371a5b58cc5227d2ad981fd5374596b9874e770af486060774e",
+      "bytes": 14856,
+      "sha256": "3f5d96c69f1fce4678d90b7b75ca75bd19c3f7a9d7a88e8005068d17bcd02b98"
+    },
+    "attestationSignatureIdentityAndTransparencyVerified": true,
+    "attestationVerification": {
+      "observedAt": "2026-10-21T17:27:54.561446+00:00",
+      "tool": {
+        "version": "gh version 2.102.1 (2026-10-20)",
+        "binarySha256": "78bbe86c4c9b33886fee8c6d88cef983afd20c1f9741f181ca1fbe388c04f643"
+      },
+      "policy": {
+        "repository": "tree-sitter/tree-sitter",
+        "signerWorkflow": "tree-sitter/tree-sitter/.github/workflows/release.yml",
+        "certificateIdentity": "https://github.com/tree-sitter/tree-sitter/.github/workflows/release.yml@refs/heads/master",
+        "sourceDigest": "6070dbfefd326bd735e5683eb128cc1b57dad0c0",
+        "sourceRef": "refs/heads/master",
+        "oidcIssuer": "https://token.actions.githubusercontent.com",
+        "predicateType": "https://slsa.dev/provenance/v1",
+        "selfHostedRunnersDenied": true
+      },
+      "selectedArtifactDigests": [
+        "70f7573b2b2e5371a5b58cc5227d2ad981fd5374596b9874e770af486060774e",
+        "161512bfa27cc54f1e916264ee43f9056e467c4f7924b778a40038d2e76d8a94"
+      ],
+      "bundleSha256": "92d47908620daebe5f6657c123701957cc174a3530219cd4b1c6fb19252ed6ba",
+      "trustedRootSha256": "65ca537f6ed8a47fd0e560c421baa1f6c1efb8b25fc200d8c5c02c0e92eb2b9c",
+      "retainedInputs": [
+        {
+          "file": "tree-sitter-attestation-bundle.json",
+          "bytes": 14947,
+          "sha256": "92d47908620daebe5f6657c123701957cc174a3530219cd4b1c6fb19252ed6ba",
+          "source": "https://api.github.com/repos/tree-sitter/tree-sitter/attestations/sha256:70f7573b2b2e5371a5b58cc5227d2ad981fd5374596b9874e770af486060774e",
+          "generation": "Retained public bundle or explicit local CLI verification output; see policy and tool identity."
+        },
+        {
+          "file": "sigstore-trusted-root.jsonl",
+          "bytes": 34634,
+          "sha256": "65ca537f6ed8a47fd0e560c421baa1f6c1efb8b25fc200d8c5c02c0e92eb2b9c",
+          "source": "https://cli.github.com/manual/gh_attestation_trusted-root",
+          "generation": "Retained public bundle or explicit local CLI verification output; see policy and tool identity."
+        },
+        {
+          "file": "tree-sitter-attestation-verified.json",
+          "bytes": 23578,
+          "sha256": "6024ccac1b6512bca7b60ae757037d4b1cac9e4a85765c0c722e2ddd1acc5d76",
+          "source": "https://cli.github.com/manual/gh_attestation_verify",
+          "generation": "Retained public bundle or explicit local CLI verification output; see policy and tool identity."
+        },
+        {
+          "file": "tree-sitter-attestation-controls.json",
+          "bytes": 2062,
+          "sha256": "5c1ac21ca080f784ddd8e27353a568e56c21b0065c43c18401c55a59df987c23",
+          "source": "https://cli.github.com/manual/gh_attestation_verify",
+          "generation": "Retained public bundle or explicit local CLI verification output; see policy and tool identity."
+        }
+      ],
+      "offlineControls": [
+        {
+          "case": "builder.gz-offline",
+          "expectedSuccess": true,
+          "exitCode": 0,
+          "stdoutSha256": "1452e0e390a12e59244a40dcbbd80cd6267fb7c14ab0be44b1153a6681b043b2",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "case": "web-tree-sitter.tar.gz-offline",
+          "expectedSuccess": true,
+          "exitCode": 0,
+          "stdoutSha256": "1452e0e390a12e59244a40dcbbd80cd6267fb7c14ab0be44b1153a6681b043b2",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "case": "wrong-workflow",
+          "expectedSuccess": false,
+          "exitCode": 1,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "486941643d59bcaec905305a9ad2843539956d60f735745f77a05db562cfda19"
+        },
+        {
+          "case": "wrong-source",
+          "expectedSuccess": false,
+          "exitCode": 1,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "ac01b5057ad478767fc56d336eb3c10bdf2a313af73d8265dd7bfd8df3f2b91f"
+        },
+        {
+          "case": "tampered-artifact",
+          "expectedSuccess": false,
+          "exitCode": 1,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "486941643d59bcaec905305a9ad2843539956d60f735745f77a05db562cfda19"
+        },
+        {
+          "case": "tampered-signature",
+          "expectedSuccess": false,
+          "exitCode": 1,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "486941643d59bcaec905305a9ad2843539956d60f735745f77a05db562cfda19"
+        }
+      ],
+      "networkControl": "denied by enclosing macOS sandbox profile",
+      "scope": "Two selected archive digests only. Verified certificate/timestamps and signed workflow claims do not independently reproduce build composition or transitive notices.",
+      "controlInputs": {
+        "bundleSha256": "92d47908620daebe5f6657c123701957cc174a3530219cd4b1c6fb19252ed6ba",
+        "trustedRootSha256": "65ca537f6ed8a47fd0e560c421baa1f6c1efb8b25fc200d8c5c02c0e92eb2b9c",
+        "network": "denied by enclosing macOS sandbox profile"
+      },
+      "originalCliOutputSha256": "1452e0e390a12e59244a40dcbbd80cd6267fb7c14ab0be44b1153a6681b043b2",
+      "jsonEnvelopeFormatting": "Retained bundle and verification result JSON are formatted; signed payload/signature/certificate values are unchanged. Formatted bundle reverified offline."
+    }
+  },
+  "remainingInputs": [
+    "Reconcile WASI/Binaryen host tools/libraries and dedicated/inline notices against pinned build composition.",
+    "Map actual generated grammar/runtime material separately from SDK archive-only and conditional target libraries; -nostdlib does not supply a complete output license inventory."
+  ],
+  "preparationAndReceiptIntegrationVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "observationsUpdatedAt": "2026-10-21T17:31:47.406774+00:00"
+}

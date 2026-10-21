@@ -34,6 +34,12 @@ protocol preparation may proceed independently. Running held-out reviews or the
 prior-workflow comparison additionally requires Gate A and the concrete Gate B
 authorizations; the historical results below do not authorize a new trial.
 
+The [selected artifact evidence](measurements/artifact-identities-2026-10-21/README.md)
+retains exact public archive/member identities, original notice inputs, selected
+detached-signature results and the SDK distribution near miss for the four named
+artifact gaps. These static observations leave complete source/build/notice
+closure, preparation/receipt integration and Gate A unresolved.
+
 [Public adoption measurements](PUBLIC-ADOPTION.md) now cover five pinned
 JavaScript, TypeScript, Python, Go and PHP libraries. They expose an older
 TypeScript compiler-option incompatibility and workflow/documentation/platform
