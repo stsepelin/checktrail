@@ -7,9 +7,18 @@ export async function copyInstalledPackages(
   root: string,
   packages: string[],
   selectedModules?: string,
+  validate?: (entry: {
+    source: string;
+    relative: string;
+    version: string | undefined;
+  }) => void | Promise<void>,
 ): Promise<void> {
   const copied = new Set<string>();
-  const planned: { source: string; relative: string }[] = [];
+  const planned: {
+    source: string;
+    relative: string;
+    version: string | undefined;
+  }[] = [];
   const sourceModules =
     selectedModules ??
     fileURLToPath(new URL("../../node_modules/", import.meta.url));
@@ -31,6 +40,7 @@ export async function copyInstalledPackages(
       )
         continue;
       let metadata: {
+        version?: string;
         dependencies?: Record<string, string>;
         optionalDependencies?: Record<string, string>;
       };
@@ -50,7 +60,7 @@ export async function copyInstalledPackages(
         path.isAbsolute(relative)
       )
         throw new Error("Test dependency is outside the local install");
-      planned.push({ source, relative });
+      planned.push({ source, relative, version: metadata.version });
       for (const dependency of Object.keys(metadata.dependencies ?? {}))
         await copy(
           dependency,
@@ -70,6 +80,8 @@ export async function copyInstalledPackages(
         ? path.join(path.dirname(sourceModules), "package.json")
         : import.meta.filename,
     );
+  // Validate the entire resolved graph before copying any package.
+  for (const item of planned) await validate?.(item);
   for (const item of planned)
     await cp(item.source, path.join(root, "node_modules", item.relative), {
       recursive: true,
