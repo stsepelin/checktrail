@@ -318,6 +318,16 @@ test("CI completion requires selected jobs to pass and reports omitted jobs as u
     /outcome disagrees/,
   );
 });
+test("CI managed pull-request branch prefixes avoid duplicate push workflows while tags retain verification", () => {
+  assert.deepEqual(workflow.on.push["branches-ignore"], [
+    "pr/**",
+    "dependabot/**",
+    "fix/**",
+  ]);
+  assert.deepEqual(workflow.on.push.tags, ["**"]);
+  assert.ok(Object.hasOwn(workflow.on, "pull_request"));
+});
+
 test("CI initial wave stays within the free runner ceiling and selected jobs survive admission failure or skip", () => {
   const variants = (job: {
     strategy?: { matrix?: Record<string, unknown[]> };

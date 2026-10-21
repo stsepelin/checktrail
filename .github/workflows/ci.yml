@@ -5,6 +5,7 @@ on:
     branches-ignore:
       - "pr/**"
       - "dependabot/**"
+      - "fix/**"
     tags:
       - "**"
   pull_request:
