@@ -25,7 +25,7 @@
       "repositorySignature": {
         "bytes": 13016,
         "sha256": "0262c60529e3fbc90f58ad05e01373686983c1cebd0bd2ba582ad50326f7ad67",
-        "cryptographicallyVerified": false
+        "cryptographicallyVerified": true
       }
     },
     "formatterMembers": [
@@ -308,16 +308,99 @@
         "sourceMember": "dotnet-fsharp-5e9647f/setup/resources/ThirdPartyNotices.txt"
       }
     ],
-    "noticeToSelectedComponentMappingComplete": false
+    "noticeToSelectedComponentMappingComplete": false,
+    "repositorySignatureVerification": {
+      "observedAt": "2026-10-21T17:46:00.528490+00:00",
+      "scope": "Selected Fantomas 8.0.7 NuGet delivery repository signature and timestamp validation in the recorded SDK profile; no author signature or source/build reproduction claim.",
+      "status": "verified-in-recorded-profile",
+      "image": "mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256",
+      "platform": "linux/arm64",
+      "packageSha256": "cbf317a4583d7547666195fcada160fff695a1a6f4a7062701b01ee75d5d8971",
+      "signerCertificateSha256": "1f4b311d9acc115c8dc8018b5a49e00fce6da8e2855f9f014ca6f34570bc482d",
+      "configuredRevocationMode": "online",
+      "configSha256": "88948d94b3ced17400f5cfe7dc7bf2cad9b9a8cf98670b3fc3a6d956f8519c7c",
+      "nativeExitCode": 0,
+      "nativeNugetWarnings": 0,
+      "nativeNugetErrors": 0,
+      "sdkStartupMessage": "An issue was encountered verifying workloads. For more information, run \"dotnet workload update\".",
+      "sdkStartupMessageScope": "Retained SDK startup output; no workload update, compiler, formatter or project entrypoint was invoked.",
+      "verifierAndTrustRootFiles": {
+        "sdk/10.0.401/NuGet.CommandLine.XPlat.dll": {
+          "bytes": 1392976,
+          "sha256": "612c4c8ee573d61e8a4f7a7b157262597fa4cd5bfbee29ef1ed28f9bd5c1bdc7"
+        },
+        "sdk/10.0.401/trustedroots/timestampctl.pem": {
+          "bytes": 552370,
+          "sha256": "5ccb03367b52f047099f07e1653160e8578a83711cb18560c979febb65f8cb5d"
+        },
+        "sdk/10.0.401/trustedroots/codesignctl.pem": {
+          "bytes": 512074,
+          "sha256": "aab671f52e5229906b2100727370007ef4b6d2e360b23f2cf12a6d87773be611"
+        }
+      },
+      "retainedInputs": [
+        {
+          "file": "nuget-package-verification.txt",
+          "bytes": 4072,
+          "sha256": "76dee44d6156c457cdad7c3ab12908340590482429a322e47aeb0fa9c3f627ec",
+          "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-verify",
+          "generation": "Unmodified output from the pinned SDK verification profile; generic paths refer only to the disposable container."
+        },
+        {
+          "file": "nuget-wrong-certificate.txt",
+          "bytes": 4197,
+          "sha256": "3a6fe88de20ddae6844c736256746905107ff86a39612654abfc6d70f45adf81",
+          "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-verify",
+          "generation": "Unmodified output from the pinned SDK verification profile; generic paths refer only to the disposable container."
+        },
+        {
+          "file": "nuget-unsigned-github-delivery.txt",
+          "bytes": 657,
+          "sha256": "a008249d68133a4ba2f7dd7f7113be033d9722a16a3ce8e07ba6b04cee023368",
+          "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-verify",
+          "generation": "Unmodified output from the pinned SDK verification profile; generic paths refer only to the disposable container."
+        },
+        {
+          "file": "nuget-integrity-tamper.txt",
+          "bytes": 4785,
+          "sha256": "8d6efcb03dc0fff0e9bef5e6d9b2bd67c1d1de33dbfb2c87298c9d5e8cd310bd",
+          "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-verify",
+          "generation": "Unmodified output from the pinned SDK verification profile; generic paths refer only to the disposable container."
+        },
+        {
+          "file": "nuget-verification.config",
+          "bytes": 414,
+          "sha256": "88948d94b3ced17400f5cfe7dc7bf2cad9b9a8cf98670b3fc3a6d956f8519c7c",
+          "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-verify",
+          "generation": "Exact temporary policy: required signatures, cleared sources, pinned NuGet repository certificate, untrusted roots refused."
+        },
+        {
+          "file": "nuget-repository-certificates.txt",
+          "bytes": 2007,
+          "sha256": "5f45cbf2d7f8a4b57fea6e43bb603d29a0682058a71eb61d900db74860d210b0",
+          "source": "https://api.nuget.org/v3-index/repository-signatures/5.0.0/index.json",
+          "generation": "Exact JSON response bytes; retained as text to preserve the measured response digest."
+        },
+        {
+          "file": "nuget-signature-controls.json",
+          "bytes": 4233,
+          "sha256": "d29c86bf504fb51947267faffb93f91320b5324ad45bc192d5288e39e005deba",
+          "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-verify",
+          "generation": "Paired native verification receipts and exact SDK verifier/trust-root file matches to the pinned musl archive."
+        }
+      ],
+      "completeTransitiveNoticeClosureVerified": false
+    }
   },
   "remainingInputs": [
-    "Validate NuGet package signature, timestamps and chain separately from parsed signing attributes.",
     "Map vendored/generated FCS and independent FSharp.Core source identities.",
-    "Reconcile selected SDK native requirements, component notices and pinned image layers/OS; aggregate notice text is incomplete coverage."
+    "Reconcile selected SDK native requirements, component notices and pinned image layers/OS; aggregate notice text is incomplete coverage.",
+    "Integrate exact signature policy and witness bindings coherently with preparation and receipt admission; this observation changes no runtime verification flag."
   ],
   "preparationAndReceiptIntegrationVerified": false,
   "completeArtifactAndNoticeClosureVerified": false,
   "gateAComplete": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "observationsUpdatedAt": "2026-10-21T17:49:04.698072+00:00"
 }
