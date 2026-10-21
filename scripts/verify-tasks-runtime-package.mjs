@@ -23,6 +23,8 @@ const root = fileURLToPath(new URL("../", import.meta.url)),
 assert.ok(process.argv.length === 2 || process.argv.length === 3);
 const files = [
   "package.json",
+  "package-lock.json",
+  "dist/test/tool-fixture.js",
   "docs/gate-a-profiles.v1.json",
   "dist/test/mcp-validation-tasks.test.js",
   "dist/test/tasks-runtime-harness.test.js",
@@ -76,10 +78,23 @@ try {
     await mkdir(path.dirname(path.join(harness, file)), { recursive: true });
     await writeFile(path.join(harness, file), bytes, { flag: "wx" });
   }
+  const sourceLock = JSON.parse(
+    await readFile(path.join(root, "package-lock.json"), "utf8"),
+  );
+  const externalSdkClientDependencies = {};
   await copyInstalledPackages(
     harness,
     ["@modelcontextprotocol/client"],
     path.join(root, "node_modules"),
+    ({ relative, version }) => {
+      const location = relative.split(path.sep).join("/");
+      assert.equal(typeof version, "string");
+      assert.equal(
+        version,
+        sourceLock.packages["node_modules/" + location].version,
+      );
+      externalSdkClientDependencies[location] = version;
+    },
   );
   // The AST wiring control uses the pinned production TypeScript dependency.
   await copyInstalledPackages(
@@ -103,7 +118,7 @@ try {
           "utf8",
         ),
       ).version,
-      "2.3.0",
+      name === "client" ? "2.3.1" : "2.3.0",
     );
   const env = { ...process.env };
   env.CHECKTRAIL_TASKS_MATRIX_INSTALLED = "1";
@@ -142,7 +157,8 @@ try {
       harnessSha256,
       ...installation,
       harnessOutsideInstalledPackage: true,
-      pinnedExternalSdkClient: "2.3.0",
+      pinnedExternalSdkClient: "2.3.1",
+      externalSdkClientDependencies,
       evidence,
       gateATasksMatrixComplete: false,
     }) + "\n",
