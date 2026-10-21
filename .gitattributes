@@ -8,3 +8,4 @@ docs/measurements/artifact-identities-2026-10-21/scala-component-notices/*.txt -
 docs/measurements/artifact-identities-2026-10-21/fantomas-pdb-checksum-rejected.txt -text
 docs/measurements/artifact-identities-2026-10-21/fantomas-pdb-checksum-restored.txt -text
 docs/measurements/tasks-runtime-matrix-2026-10-21/receipts/*.json -text
+docs/measurements/artifact-identities-2026-10-21/wasm-tool-notices/*.txt -text

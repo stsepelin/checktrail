@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 118,
+  "retainedReferences": 134,
   "files": [
     {
       "file": "README.md",
-      "bytes": 12469,
-      "sha256": "4980f42a4bfe987c2fb91323a2fa5d3cc842dd9a1ec2e8185d5cff9d41cf9c5a"
+      "bytes": 14499,
+      "sha256": "da401d0bc76f2a7d1332fe035be32e46c748f815ddcd1187ddb13b67f532e5c2"
     },
     {
       "file": "dotnet-sdk-LICENSE.txt",
@@ -514,9 +514,89 @@
       "sha256": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af"
     },
     {
+      "file": "wasm-compiler-inputs.json",
+      "bytes": 201134,
+      "sha256": "4e77a0c0725cb94ec94756f3203a2d851a76d34193765f584383b2b1418c000b"
+    },
+    {
+      "file": "wasm-host-components.json",
+      "bytes": 32398,
+      "sha256": "a30601c548783133a8505ec9e63d41b91b79d2dbba4ff1b256329e1d0fb021e1"
+    },
+    {
+      "file": "wasm-independent-rebuild.json",
+      "bytes": 25931,
+      "sha256": "3ab57affecc8e84dcbdf2d745d0700ffb1550bbfce128ab6e9422aae5453cdb1"
+    },
+    {
+      "file": "wasm-notice-observations.json",
+      "bytes": 9062,
+      "sha256": "741cb7894b3ffa92b54384b6dcf0692d9f346c346f030ec033ce184a60c2cbbf"
+    },
+    {
+      "file": "wasm-rebuild-controls.json",
+      "bytes": 2748,
+      "sha256": "b009c86a8deecb77646bee2bf696778859c2abbfd534c00593dea06666a4c338"
+    },
+    {
+      "file": "wasm-tool-notices/binaryen-FP16-LICENSE.txt",
+      "bytes": 1157,
+      "sha256": "17e4f539024be2749ee729d1e2f01d24cef12ece8c9bf18e91a4349be29c80bf"
+    },
+    {
+      "file": "wasm-tool-notices/binaryen-LICENSE.txt",
+      "bytes": 11535,
+      "sha256": "64c0d02491e16eced74826440ecd2bcf7722d37fa586faf457b2494293afbffe"
+    },
+    {
+      "file": "wasm-tool-notices/binaryen-LLVM-LICENSE.txt",
+      "bytes": 15141,
+      "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee"
+    },
+    {
+      "file": "wasm-tool-notices/binaryen-LLVM-Support-LICENSE.txt",
+      "bytes": 284,
+      "sha256": "a012d664e4e01df52a65b2eeafdfb8aeb856fec0e6c372265d01b0109c3f5e2a"
+    },
+    {
+      "file": "wasm-tool-notices/libedit-COPYING.txt",
+      "bytes": 1615,
+      "sha256": "9da6c9c74987a36c84302982799d17d2f748ba1c1c0c471425716173c1d07649"
+    },
+    {
+      "file": "wasm-tool-notices/llvm-LICENSE.txt",
+      "bytes": 15141,
+      "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee"
+    },
+    {
+      "file": "wasm-tool-notices/wasi-headers-LICENSE.txt",
+      "bytes": 12243,
+      "sha256": "268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5"
+    },
+    {
+      "file": "wasm-tool-notices/wasi-libc-LICENSE.txt",
+      "bytes": 910,
+      "sha256": "2711a8b5a5cdfef0e639f96c1aca12ae23d7d64a02d0507f1bdf14d2b27bbc3a"
+    },
+    {
+      "file": "wasm-tool-notices/wasi-libc-cloudlibc-LICENSE.txt",
+      "bytes": 1292,
+      "sha256": "c8b789cf5a746611e6300a0cc7750dbf92b61912a709d04e639245f7290656d0"
+    },
+    {
+      "file": "wasm-tool-notices/wasi-libc-musl-COPYRIGHT.txt",
+      "bytes": 6196,
+      "sha256": "b870108ec5e7790e9f9919064f1b9421d62d5f9b0e6c230c6adf7ea2da62e97b"
+    },
+    {
+      "file": "wasm-tool-notices/wasi-sdk-LICENSE.txt",
+      "bytes": 12243,
+      "sha256": "268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5"
+    },
+    {
       "file": "wasm-toolchain.json",
-      "bytes": 9779,
-      "sha256": "bd1524f0e489a40d836f5f5701e3f816747385a82187adca90f51bc03eaf72f7"
+      "bytes": 11118,
+      "sha256": "7712ceb198f91d37ef0a4b7a610af2ec012c535a93dce3c21907afa349a253a5"
     }
   ],
   "repositoryInputs": [

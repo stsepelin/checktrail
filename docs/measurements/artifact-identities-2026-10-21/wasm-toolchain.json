@@ -187,16 +187,49 @@
       },
       "originalCliOutputSha256": "1452e0e390a12e59244a40dcbbd80cd6267fb7c14ab0be44b1153a6681b043b2",
       "jsonEnvelopeFormatting": "Retained bundle and verification result JSON are formatted; signed payload/signature/certificate values are unchanged. Formatted bundle reverified offline."
+    },
+    "independentRebuild": {
+      "all16SelectedGrammarOutputsByteExact": true,
+      "actualHostMacosVersion": "27.0",
+      "qualifiesSelectedMacos26": false,
+      "retainedInputs": [
+        {
+          "file": "wasm-compiler-inputs.json",
+          "bytes": 201134,
+          "sha256": "4e77a0c0725cb94ec94756f3203a2d851a76d34193765f584383b2b1418c000b"
+        },
+        {
+          "file": "wasm-host-components.json",
+          "bytes": 32398,
+          "sha256": "a30601c548783133a8505ec9e63d41b91b79d2dbba4ff1b256329e1d0fb021e1"
+        },
+        {
+          "file": "wasm-independent-rebuild.json",
+          "bytes": 25931,
+          "sha256": "3ab57affecc8e84dcbdf2d745d0700ffb1550bbfce128ab6e9422aae5453cdb1"
+        },
+        {
+          "file": "wasm-notice-observations.json",
+          "bytes": 9062,
+          "sha256": "741cb7894b3ffa92b54384b6dcf0692d9f346c346f030ec033ce184a60c2cbbf"
+        },
+        {
+          "file": "wasm-rebuild-controls.json",
+          "bytes": 2748,
+          "sha256": "b009c86a8deecb77646bee2bf696778859c2abbfd534c00593dea06666a4c338"
+        }
+      ]
     }
   },
   "remainingInputs": [
-    "Reconcile WASI/Binaryen host tools/libraries and dedicated/inline notices against pinned build composition.",
-    "Map actual generated grammar/runtime material separately from SDK archive-only and conditional target libraries; -nostdlib does not supply a complete output license inventory."
+    "Complete compiler/optimizer and copied/generated/transitive notice coverage; the selected static library/header observations and root notices do not establish this.",
+    "Bind individual SDK header origins and actual grammar/runtime output contributions, including conditional target material and web runtime source/build identity.",
+    "Integrate scoped artifact verification coherently through preparation, cache publication and native receipt admission without promoting these observations to complete closure."
   ],
   "preparationAndReceiptIntegrationVerified": false,
   "completeArtifactAndNoticeClosureVerified": false,
   "gateAComplete": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "observationsUpdatedAt": "2026-10-21T17:31:47.406774+00:00"
+  "observationsUpdatedAt": "2026-10-21T21:45:40.462903+00:00"
 }
