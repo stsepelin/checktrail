@@ -785,3 +785,15 @@ the two explicitly pinned repository copies, after the bounded official mirror
 attempts. Byte counts, SHA-256 and offline APK signature checks remain required;
 redirects, permanent failures, corrupt bodies and cancellation cannot select the
 fallback. The toolchain versions and bytes do not change.
+
+The Tasks wire fixtures select a 20-second execution budget on Windows for normal
+native outcomes, with a separate 35-second completion-observation allowance.
+The fixed two-test case in [job 119518084084](https://github.com/stsepelin/checktrail/actions/runs/39685173985/job/119518084084)
+exhausted its previous five-second fixture limit and correctly returned
+incomplete. POSIX fixtures retain their five-second execution and fifteen-second
+observation defaults. Lifecycle cancellation, timeout and output controls select
+an explicit five-second execution limit and retain their existing observation
+bounds. Native outcomes must still finish with the exact original assertions;
+incomplete results cannot satisfy a passing fixture. These are test startup
+budgets; production defaults and the outer source/installed cohort deadlines
+are unchanged.

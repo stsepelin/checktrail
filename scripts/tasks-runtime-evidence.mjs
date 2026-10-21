@@ -23,6 +23,10 @@ export async function tasksRuntimeRequirements() {
       file: "dist/test/tasks-runtime-harness.test.js",
       name: "Tasks installed wrapper selects a bounded Windows aggregate allowance while preserving POSIX deadlines and failed child status",
     },
+    {
+      file: "dist/test/tasks-runtime-harness.test.js",
+      name: "Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits",
+    },
     ...(process.platform === "win32"
       ? [
           {
