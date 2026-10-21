@@ -210,20 +210,25 @@
         },
         {
           "file": "wasm-notice-observations.json",
-          "bytes": 9062,
-          "sha256": "741cb7894b3ffa92b54384b6dcf0692d9f346c346f030ec033ce184a60c2cbbf"
+          "bytes": 9073,
+          "sha256": "8057c92893959f29d2483a3cc5e703941f0b13cb3259d297cf4e264c778f9e3b"
         },
         {
           "file": "wasm-rebuild-controls.json",
           "bytes": 2748,
           "sha256": "b009c86a8deecb77646bee2bf696778859c2abbfd534c00593dea06666a4c338"
+        },
+        {
+          "file": "wasm-sdk-header-sources.json",
+          "bytes": 15756,
+          "sha256": "37438cca4cd55cf11bdf631edc7f7d1edcfd8ca89f5b4ece8241eb057e4c0e29"
         }
       ]
     }
   },
   "remainingInputs": [
     "Complete compiler/optimizer and copied/generated/transitive notice coverage; the selected static library/header observations and root notices do not establish this.",
-    "Bind individual SDK header origins and actual grammar/runtime output contributions, including conditional target material and web runtime source/build identity.",
+    "Verify remaining generated/compiler/runtime origins beyond the selected header byte mappings and actual output contributions, including conditional target material and web runtime source/build identity.",
     "Integrate scoped artifact verification coherently through preparation, cache publication and native receipt admission without promoting these observations to complete closure."
   ],
   "preparationAndReceiptIntegrationVerified": false,

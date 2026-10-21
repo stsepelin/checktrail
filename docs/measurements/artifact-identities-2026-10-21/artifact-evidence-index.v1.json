@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 134,
+  "retainedReferences": 135,
   "files": [
     {
       "file": "README.md",
-      "bytes": 14499,
-      "sha256": "da401d0bc76f2a7d1332fe035be32e46c748f815ddcd1187ddb13b67f532e5c2"
+      "bytes": 15248,
+      "sha256": "332ba1dee85bd81afe1c6e189d216106f7b455bb55b0fc2494d8694b96928150"
     },
     {
       "file": "dotnet-sdk-LICENSE.txt",
@@ -530,13 +530,18 @@
     },
     {
       "file": "wasm-notice-observations.json",
-      "bytes": 9062,
-      "sha256": "741cb7894b3ffa92b54384b6dcf0692d9f346c346f030ec033ce184a60c2cbbf"
+      "bytes": 9073,
+      "sha256": "8057c92893959f29d2483a3cc5e703941f0b13cb3259d297cf4e264c778f9e3b"
     },
     {
       "file": "wasm-rebuild-controls.json",
       "bytes": 2748,
       "sha256": "b009c86a8deecb77646bee2bf696778859c2abbfd534c00593dea06666a4c338"
+    },
+    {
+      "file": "wasm-sdk-header-sources.json",
+      "bytes": 15756,
+      "sha256": "37438cca4cd55cf11bdf631edc7f7d1edcfd8ca89f5b4ece8241eb057e4c0e29"
     },
     {
       "file": "wasm-tool-notices/binaryen-FP16-LICENSE.txt",
@@ -595,8 +600,8 @@
     },
     {
       "file": "wasm-toolchain.json",
-      "bytes": 11118,
-      "sha256": "7712ceb198f91d37ef0a4b7a610af2ec012c535a93dce3c21907afa349a253a5"
+      "bytes": 11344,
+      "sha256": "4ff9a7d0b85832e1fda3f758065039b4ab034994688f10a8375caccec927613b"
     }
   ],
   "repositoryInputs": [

@@ -153,7 +153,7 @@
     "The selected SDK release archive supplies no named license, notice or copyright files; notices here come from separately pinned public sources.",
     "Source root notices do not identify every copied/generated component, host OS dependency or emitted grammar/runtime contribution.",
     "Test-only source notice files and unrelated cached notice versions are excluded from the selected-component claims.",
-    "Individual SDK header source transformations, host system bytes and web runtime source/build binding remain open."
+    "Actual producer configuration for generated SDK headers, host system bytes and web runtime source/build binding remain open."
   ],
   "completeArtifactAndNoticeClosureVerified": false,
   "gateAComplete": false,
