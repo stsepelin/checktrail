@@ -93,16 +93,34 @@
       "https://www.hashicorp.com/.well-known/pgp-key.txt",
       "https://discuss.hashicorp.com/t/hcsec-2026-03-hashicorp-gpg-key-72d7468f-update/77237"
     ],
-    "sourceToReleaseBuildBindingVerified": false
+    "sourceToReleaseBuildBindingVerified": false,
+    "publisherBuildArtifactLinkObserved": {
+      "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+      "ownerRepository": "hashicorp/terraform-provider-random",
+      "workflowRunIds": [34599749034, 34615171553],
+      "primaryAndVerificationArtifactCount": 4,
+      "releaseArchiveAndExecutableByteMatch": true,
+      "retainedInputs": [
+        {
+          "file": "provider-build-observations.json",
+          "bytes": 17186,
+          "sha256": "dbab8058789659bbac02bbd3c0e5cd85e2740156f8395192975f23b9c8d2160b",
+          "source": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/runs/34599749034/artifacts?per_page=100",
+          "generation": "Curated owner-repository metadata and independently matched delivered artifact bytes; excludes upstream environment and absolute path fields."
+        }
+      ],
+      "independentSourceRebuildPerformed": false
+    }
   },
   "remainingInputs": [
     "Reconcile exact linked module, copied/generated and Go runtime/standard-library notices.",
-    "Obtain executable-digest-to-source/build binding; dependency sums and signed ZIP checksum do not establish it.",
+    "Complete selected source/build-tool provenance beyond the observed owner-workflow artifact link, including enforcement semantics and frozen external action/tool inputs or an independently retained rebuild.",
     "Integrate scoped signature evidence into preparation and physical receipt admission before changing runtime flags."
   ],
   "preparationAndReceiptIntegrationVerified": false,
   "completeArtifactAndNoticeClosureVerified": false,
   "gateAComplete": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "observationsUpdatedAt": "2026-10-21T18:13:02.425610+00:00"
 }
