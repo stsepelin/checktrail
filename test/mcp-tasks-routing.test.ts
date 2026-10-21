@@ -19,12 +19,22 @@ test("published official SDK routes standard Tasks get cancel and update without
         "utf8",
       ),
     );
-    assert.equal(installed.version, "2.3.0");
+    assert.equal(installed.version, name === "client" ? "2.3.1" : "2.3.0");
     assert.equal(
       lock.packages[`node_modules/@modelcontextprotocol/${name}`].version,
       installed.version,
     );
   }
+  const clientCoreLocation =
+    "node_modules/@modelcontextprotocol/client/node_modules/@modelcontextprotocol/core";
+  const clientCore = JSON.parse(
+    await readFile(
+      new URL("../../" + clientCoreLocation + "/package.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  assert.equal(clientCore.version, "2.3.1");
+  assert.equal(lock.packages[clientCoreLocation].version, clientCore.version);
   const probe = spawnSync(
     process.execPath,
     [

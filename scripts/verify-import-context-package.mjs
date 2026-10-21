@@ -1,3 +1,4 @@
+import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 import { selectJavaScriptToolsLock } from "./prepare-javascript-tools.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -424,49 +425,6 @@ try {
           () => path.join(repository, "node_modules"),
         )
       : path.join(repository, "node_modules");
-  async function copyClientDependency(name, optional = false) {
-    if (Object.hasOwn(dependencies, name)) return;
-    let manifest;
-    try {
-      manifest = JSON.parse(
-        await readFile(
-          path.join(dependencySource, name, "package.json"),
-          "utf8",
-        ),
-      );
-    } catch (error) {
-      if (optional && error.code === "ENOENT") return;
-      throw error;
-    }
-    const entry = lock.packages["node_modules/" + name];
-    assert.equal(manifest.version, entry.version);
-    const destination = path.join(consumer, "node_modules", name);
-    const existing = await readFile(
-      path.join(destination, "package.json"),
-      "utf8",
-    )
-      .then(JSON.parse)
-      .catch((error) => {
-        if (error.code !== "ENOENT") throw error;
-        return null;
-      });
-    if (existing) {
-      assert.equal(existing.version, manifest.version);
-      return;
-    }
-    dependencies[name] = manifest.version;
-    await mkdir(path.dirname(destination), { recursive: true });
-    await cp(path.join(dependencySource, name), destination, {
-      recursive: true,
-    });
-    for (const dependency of Object.keys(manifest.dependencies ?? {}))
-      await copyClientDependency(
-        dependency,
-        Object.hasOwn(manifest.optionalDependencies ?? {}, dependency),
-      );
-    for (const dependency of Object.keys(manifest.optionalDependencies ?? {}))
-      await copyClientDependency(dependency, true);
-  }
   if (profile === "javascript-extensions") {
     const selected = selectJavaScriptToolsLock(
       JSON.parse(await readFile(path.join(repository, "package.json"), "utf8")),
@@ -513,7 +471,32 @@ try {
       await cp(copy.source, copy.target, { recursive: true });
       dependencies[copy.key] = copy.version;
     }
-  } else await copyClientDependency("@modelcontextprotocol/client");
+  } else {
+    await copyInstalledPackages(
+      consumer,
+      ["@modelcontextprotocol/client"],
+      dependencySource,
+      async ({ relative, version }) => {
+        const location = relative.split(path.sep).join("/");
+        assert.equal(typeof version, "string");
+        assert.equal(
+          version,
+          lock.packages["node_modules/" + location].version,
+        );
+        const existing = await readFile(
+          path.join(consumer, "node_modules", relative, "package.json"),
+          "utf8",
+        )
+          .then(JSON.parse)
+          .catch((error) => {
+            if (error.code !== "ENOENT") throw error;
+            return null;
+          });
+        if (existing) assert.equal(existing.version, version);
+        dependencies[location] = version;
+      },
+    );
+  }
   await mkdir(path.join(consumer, "scripts"), { recursive: true });
   for (const file of [
     "verify-required-native-tests.mjs",
