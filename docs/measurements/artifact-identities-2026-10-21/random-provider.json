@@ -140,8 +140,8 @@
       "retainedInputs": [
         {
           "file": "provider-notice-inventory.json",
-          "bytes": 171432,
-          "sha256": "d79a7e832ad52a4eecc1bb95e2fde16a227e6b2d3ecae883f047e7d6ed486bfa",
+          "bytes": 171536,
+          "sha256": "d32ca2e770c671238e9d5c29115091d86c2d12a89912725e368d0806effb3b91",
           "generation": "Reconciled native package metadata and exact public source/module/SDK notice bytes; stronger closure remains unverified."
         }
       ],

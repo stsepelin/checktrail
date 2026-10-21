@@ -180,16 +180,55 @@
         }
       }
     ],
-    "distributionSignatureVerified": false
+    "distributionSignatureVerified": false,
+    "selectedComponentInventoryObserved": {
+      "retainedInputs": [
+        {
+          "file": "scala-component-inventory.json",
+          "bytes": 331299,
+          "sha256": "44bb4285c5476188c9049679cb79ffc6f7f041612915638d3a916cf71b6d4e86",
+          "generation": "Static comparison of exact public delivery/source bytes, embedded class identities, SourceFile attributes and font metadata; no compiler or native payload execution."
+        }
+      ],
+      "compilerClassCategories": {
+        "scalaNamespaceExcludingEmbeddedAsm": 3367,
+        "embeddedAsm": 117,
+        "embeddedDiffUtils": 42
+      },
+      "standaloneDiffUtilsDeliveryMatchesDistribution": true,
+      "allJlineNativeMembersMatchPinnedSourceArchive": true,
+      "jlinePomProperties": 13,
+      "jlineBundleIdentityRecords": 1,
+      "jlineComponentMetadataRecords": 12,
+      "allJlineClassSourceFileAttributesHaveOneSourceMatch": true,
+      "completeArtifactAndNoticeClosureVerified": false
+    },
+    "selectedJarSignatureControls": {
+      "retainedInputs": [
+        {
+          "file": "scala-jar-signature-controls.json",
+          "bytes": 3361,
+          "sha256": "083a08a7937b16a31f3328f62e85084389d4110ad0c630b5de39698ddf559ada",
+          "generation": "Actual native OpenPGP verification with fresh public-only keyring, no automatic key retrieval and altered/restored compiler controls."
+        }
+      ],
+      "originalJarCount": 3,
+      "alteredCompilerRejected": true,
+      "restoredCompilerAccepted": true,
+      "operatorTrustAsserted": false,
+      "distributionSignatureVerified": false
+    }
   },
   "remainingInputs": [
-    "Map embedded ASM and diff-utils class/resources to exact source/notices.",
-    "Map every selected JLine bundle/native member and actual external requirements.",
-    "Complete source/build and selected runtime notice coverage; three signed JARs do not qualify the distribution."
+    "Complete ASM fork source/build and component notice admission beyond the retained exact class comparisons.",
+    "Reconcile compiler documentation font/resource attribution and generated resources; bundled resource bytes remain in scope even when a compiler-only invocation does not use them.",
+    "Complete JLine native build/C-header and external-provider dependency attribution; byte matches and embedded POM metadata do not prove runtime use.",
+    "Complete selected source/build and runtime notice coverage plus preparation/receipt integration before changing stronger closure flags."
   ],
   "preparationAndReceiptIntegrationVerified": false,
   "completeArtifactAndNoticeClosureVerified": false,
   "gateAComplete": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "observationsUpdatedAt": "2026-10-21T19:00:15.754298+00:00"
 }
