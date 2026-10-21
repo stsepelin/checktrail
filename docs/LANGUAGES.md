@@ -49,6 +49,12 @@ all-Node-test plan. Other runners/languages, unresolved inputs and missing graph
 edges retain full validation. Native per-language consumer acceptance and the
 Gate A profile remain pending.
 
+The [selected Tasks foundation observations](measurements/tasks-runtime-matrix-2026-10-21/README.md)
+record source and fresh-install cases on all eight selected runtime slots at
+main commit `fcf1344ad43b586e9504ade1587f33d3d24575df`, including native Windows
+ACL/SQLite controls. This scoped Tasks evidence does not qualify every native
+adapter, later source changes or the complete Gate A runtime matrix.
+
 ## Windows execution profile
 
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md) describes the experimental bounded
