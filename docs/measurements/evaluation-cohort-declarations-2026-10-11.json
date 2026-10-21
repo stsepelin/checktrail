@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "profile": "evaluation-cohort-declaration-v1",
+  "scope": "Original synthetic development metadata and repository setup-script controls. Source and fresh offline installed main library exports on the measured runtimes; no case acquisition, source or label inspection, agent trial or quality result.",
+  "implementationInputs": [
+    {
+      "file": "src/review-cohort.ts",
+      "sha256": "bb0d5172191b0594e19e2e4da34bb1889c8e2d0f9de4f86a4f172474e73e61d4"
+    },
+    {
+      "file": "src/index.ts",
+      "sha256": "2d0d1c5c499038ef6705d70cea4ad1cff681698e5a0e24ead72a42740a4b1757"
+    },
+    {
+      "file": "test/review-cohort.test.ts",
+      "sha256": "f395f0027de684b738b2c36fa001e4bdc84a2e46be86f4729aff47c63a40ed07"
+    },
+    {
+      "file": "scripts/check-evaluation-cohort.mjs",
+      "sha256": "9d6b54f2bb0563d005dac96b76a7d4e57c47699c321c6ad1ce047531bc22e531"
+    },
+    {
+      "file": "dist/src/review-cohort.js",
+      "sha256": "422a70f52565bd95675884b6c697c052f453b586ea1821060ff9f5385750c8cb"
+    },
+    {
+      "file": "dist/src/index.js",
+      "sha256": "68fe0ff1be95bf549d8bca1a3551ac236732ff4a935b67d58b64464e3ce04f52"
+    },
+    {
+      "file": "dist/test/review-cohort.test.js",
+      "sha256": "76fc081d941b0ae6efe44822cc86edc357f3d6433e4e94ebf00b888c115d82ce"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+    },
+    {
+      "file": "scripts/install-acceptance-package.mjs",
+      "sha256": "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+    },
+    {
+      "file": "package.json",
+      "sha256": "448a5eceddf86ea9bf50912a044b50aecbd27fee9d564c93a2900a82add0a38e"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+    }
+  ],
+  "fullCheck": {
+    "command": "npm run check",
+    "typecheckPassed": true,
+    "lintPassed": true,
+    "tests": 1904,
+    "pass": 1152,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 752,
+    "duration_ms": 334735.127875,
+    "optionalUnavailableChecksCountedAsPassed": false
+  },
+  "runtimeControls": [
+    {
+      "platform": "darwin",
+      "architecture": "arm64",
+      "node": "24.20.0",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "surface": "source-library",
+      "requiredControls": 10,
+      "passedControls": 10,
+      "skippedControls": 0,
+      "complete": true,
+      "compiledEngineSha256": "471cbb708a9ea4b722820cf2ea0af676f440bd8a799e8b8cda131fa4769e0827",
+      "offlineProductionInstall": false,
+      "installedMainExportsExercised": false,
+      "repositorySetupScriptCopiedIntoPrivateHarness": false,
+      "setupScriptShipped": false
+    },
+    {
+      "platform": "darwin",
+      "architecture": "arm64",
+      "node": "24.20.0",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "surface": "installed-library",
+      "requiredControls": 10,
+      "passedControls": 10,
+      "skippedControls": 0,
+      "complete": true,
+      "compiledEngineSha256": "471cbb708a9ea4b722820cf2ea0af676f440bd8a799e8b8cda131fa4769e0827",
+      "offlineProductionInstall": true,
+      "installedMainExportsExercised": true,
+      "repositorySetupScriptCopiedIntoPrivateHarness": true,
+      "setupScriptShipped": false
+    },
+    {
+      "platform": "darwin",
+      "architecture": "arm64",
+      "node": "26.9.0",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "surface": "source-library",
+      "requiredControls": 10,
+      "passedControls": 10,
+      "skippedControls": 0,
+      "complete": true,
+      "compiledEngineSha256": "471cbb708a9ea4b722820cf2ea0af676f440bd8a799e8b8cda131fa4769e0827",
+      "offlineProductionInstall": false,
+      "installedMainExportsExercised": false,
+      "repositorySetupScriptCopiedIntoPrivateHarness": false,
+      "setupScriptShipped": false
+    },
+    {
+      "platform": "darwin",
+      "architecture": "arm64",
+      "node": "26.9.0",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "surface": "installed-library",
+      "requiredControls": 10,
+      "passedControls": 10,
+      "skippedControls": 0,
+      "complete": true,
+      "compiledEngineSha256": "471cbb708a9ea4b722820cf2ea0af676f440bd8a799e8b8cda131fa4769e0827",
+      "offlineProductionInstall": true,
+      "installedMainExportsExercised": true,
+      "repositorySetupScriptCopiedIntoPrivateHarness": true,
+      "setupScriptShipped": false
+    },
+    {
+      "platform": "linux",
+      "architecture": "arm64",
+      "node": "22.23.2",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "surface": "source-library",
+      "requiredControls": 10,
+      "passedControls": 10,
+      "skippedControls": 0,
+      "complete": true,
+      "compiledEngineSha256": "471cbb708a9ea4b722820cf2ea0af676f440bd8a799e8b8cda131fa4769e0827",
+      "offlineProductionInstall": false,
+      "installedMainExportsExercised": false,
+      "repositorySetupScriptCopiedIntoPrivateHarness": false,
+      "setupScriptShipped": false,
+      "imageId": "sha256:b5aab26fadf49295a4b4c80bf67beb60e67a972daa26c92bcd0939ac64d126d1",
+      "ownedContainerCleanupConfirmed": true
+    },
+    {
+      "platform": "linux",
+      "architecture": "arm64",
+      "node": "22.23.2",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "surface": "installed-library",
+      "requiredControls": 10,
+      "passedControls": 10,
+      "skippedControls": 0,
+      "complete": true,
+      "compiledEngineSha256": "471cbb708a9ea4b722820cf2ea0af676f440bd8a799e8b8cda131fa4769e0827",
+      "offlineProductionInstall": true,
+      "installedMainExportsExercised": true,
+      "repositorySetupScriptCopiedIntoPrivateHarness": true,
+      "setupScriptShipped": false,
+      "imageId": "sha256:b5aab26fadf49295a4b4c80bf67beb60e67a972daa26c92bcd0939ac64d126d1",
+      "ownedContainerCleanupConfirmed": true
+    }
+  ],
+  "pairedGuards": [
+    {
+      "name": "excluded-link",
+      "testName": "cohort declarations detect a transitive contamination chain without dropping an excluded variant",
+      "originalExit": 0,
+      "mutantExit": 1,
+      "restoredExit": 0,
+      "assertion": "ERR_ASSERTION"
+    },
+    {
+      "name": "content-link",
+      "testName": "cohort declarations detect a transitive contamination chain without dropping an excluded variant",
+      "originalExit": 0,
+      "mutantExit": 1,
+      "restoredExit": 0,
+      "assertion": "ERR_ASSERTION"
+    },
+    {
+      "name": "lineage-link",
+      "testName": "cohort declarations detect a transitive contamination chain without dropping an excluded variant",
+      "originalExit": 0,
+      "mutantExit": 1,
+      "restoredExit": 0,
+      "assertion": "ERR_ASSERTION"
+    },
+    {
+      "name": "stale-exclusion",
+      "testName": "cohort declarations reconcile exclusion reasons and refuse selected private restricted unknown or retired cases",
+      "originalExit": 0,
+      "mutantExit": 1,
+      "restoredExit": 0,
+      "assertion": "ERR_ASSERTION"
+    },
+    {
+      "name": "empty-selection",
+      "testName": "cohort declaration bounds the selection and cannot report an all-excluded catalog as a complete review declaration",
+      "originalExit": 0,
+      "mutantExit": 1,
+      "restoredExit": 0,
+      "assertion": "ERR_ASSERTION"
+    },
+    {
+      "name": "expected-digest",
+      "testName": "cohort declaration refuses a changed expected identity and retains the original parsed input",
+      "originalExit": 0,
+      "mutantExit": 1,
+      "restoredExit": 0,
+      "assertion": "ERR_ASSERTION"
+    },
+    {
+      "name": "reserved-exposure",
+      "testName": "cohort declaration cannot admit unknown or inspected reserved exposure or selected missing notice metadata",
+      "originalExit": 0,
+      "mutantExit": 1,
+      "restoredExit": 0,
+      "assertion": "ERR_ASSERTION"
+    },
+    {
+      "name": "summary-identities",
+      "testName": "cohort declaration summary omits all case source reference workflow and family identities while preserving denominators and issue meaning",
+      "originalExit": 0,
+      "mutantExit": 1,
+      "restoredExit": 0,
+      "assertion": "ERR_ASSERTION"
+    },
+    {
+      "name": "setup-error-privacy",
+      "testName": "cohort setup checker bounds stdin and returns only declaration summaries while retaining invalid incomplete and stale outcomes",
+      "originalExit": 0,
+      "mutantExit": 1,
+      "restoredExit": 0,
+      "assertion": "ERR_ASSERTION"
+    }
+  ],
+  "limits": [
+    "Metadata and opaque/hash identities are declared rather than independently authenticated.",
+    "No proof of actual licensing, unseen cases, prior workflow freeze, append-only chronology or independent reviewer sessions.",
+    "A complete declaration can contain only development cases and is not a ready held-out experiment.",
+    "Repository setup script is unshipped; installed controls copy its harness and invoke the installed main library exports.",
+    "Tested package engine bytes are bound; these measurements do not establish final whole-package, native artifact or release closure.",
+    "Windows and unmeasured Node/OS slots are not claimed.",
+    "An earlier guard attempt failed by missing-issue dereference; the final test assertions were corrected and all recorded guards fail for the named assertion."
+  ],
+  "sourceContentInspected": false,
+  "labelsInspected": false,
+  "licenseGrantVerified": false,
+  "sessionIndependenceVerified": false,
+  "acceptanceClaim": false,
+  "gateAClosed": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false,
+  "integrationFullCheck": {
+    "scope": "Cohort implementation with the separately validated lifecycle, C++ acquisition and Windows diagnostic test repairs inherited from the current base. Engine/control input identities above remain unchanged. Final whole-package release closure is not claimed.",
+    "command": "npm run check",
+    "typecheckPassed": true,
+    "lintPassed": true,
+    "tests": 1912,
+    "pass": 1160,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 752,
+    "duration_ms": 309294.507125,
+    "optionalUnavailableChecksCountedAsPassed": false
+  }
+}
