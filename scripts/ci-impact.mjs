@@ -390,3 +390,117 @@ export function acceptFullBaseline(run, result, { base, expectedNames }) {
     jobs: result.jobs.length,
   };
 }
+
+// Checks are an alternate observation of one successful Actions run, never a
+// substitute for missing, failed or skipped jobs returned by the jobs API.
+export async function requestFullBaselineChecks(
+  request,
+  endpoint,
+  expectedCount,
+) {
+  assert.ok(
+    Number.isSafeInteger(expectedCount) &&
+      expectedCount > 0 &&
+      expectedCount <= 1000,
+    "Baseline check inventory exceeds the bounded pagination contract",
+  );
+  const checks = [];
+  for (let page = 1; page <= Math.ceil(expectedCount / 100); page++) {
+    const result = await request(
+      endpoint + "?filter=latest&per_page=100&page=" + page,
+    );
+    assert.equal(
+      result.total_count,
+      expectedCount,
+      "Baseline check inventory changed",
+    );
+    assert.ok(
+      Array.isArray(result.check_runs),
+      "Baseline check page is malformed",
+    );
+    assert.equal(
+      result.check_runs.length,
+      Math.min(100, expectedCount - checks.length),
+      "Baseline check page is incomplete",
+    );
+    checks.push(...result.check_runs);
+  }
+  assert.equal(
+    new Set(checks.map((check) => check.id)).size,
+    expectedCount,
+    "Duplicate baseline check",
+  );
+  return { total_count: expectedCount, check_runs: checks };
+}
+
+export function acceptFullBaselineChecks(
+  run,
+  result,
+  { base, expectedNames, repository, observedRun },
+) {
+  const fields = [
+    "id",
+    "run_attempt",
+    "check_suite_id",
+    "head_sha",
+    "head_branch",
+    "event",
+    "status",
+    "conclusion",
+    "html_url",
+  ];
+  if (
+    !run ||
+    !observedRun ||
+    fields.some((field) => run[field] !== observedRun[field]) ||
+    !Number.isSafeInteger(run.run_attempt) ||
+    run.run_attempt <= 0 ||
+    !Number.isSafeInteger(run.check_suite_id) ||
+    run.check_suite_id <= 0 ||
+    typeof repository !== "string" ||
+    !/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(repository) ||
+    run.html_url !==
+      "https://github.com/" + repository + "/actions/runs/" + run.id ||
+    !result ||
+    !Array.isArray(result.check_runs)
+  )
+    return null;
+  const jobIds = new Set();
+  for (const check of result.check_runs) {
+    if (
+      !check ||
+      typeof check !== "object" ||
+      !Number.isSafeInteger(check.id) ||
+      check.id <= 0 ||
+      check.check_suite?.id !== run.check_suite_id ||
+      check.head_sha !== base ||
+      check.app?.id !== 15368 ||
+      check.app?.slug !== "github-actions" ||
+      typeof check.details_url !== "string" ||
+      !check.details_url.startsWith(run.html_url + "/job/")
+    )
+      return null;
+    const suffix = check.details_url.slice((run.html_url + "/job/").length);
+    if (
+      !/^[1-9][0-9]*$/.test(suffix) ||
+      !Number.isSafeInteger(Number(suffix)) ||
+      jobIds.has(suffix)
+    )
+      return null;
+    jobIds.add(suffix);
+  }
+  return acceptFullBaseline(
+    run,
+    {
+      total_count: result.total_count,
+      jobs: result.check_runs.map((check) => ({
+        id: check.id,
+        run_id: run.id,
+        name: check.name,
+        status: check.status,
+        conclusion: check.conclusion,
+      })),
+    },
+    { base, expectedNames },
+  );
+}

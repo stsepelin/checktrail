@@ -10,6 +10,8 @@ const {
   buildNativeInputs,
   acceptFullBaseline,
   requestFullBaselineJobs,
+  requestFullBaselineChecks,
+  acceptFullBaselineChecks,
   workflowJobNames,
   nativeJobIds,
   planNativeJobs,
@@ -738,4 +740,309 @@ process.on("exit",()=>fs.writeFileSync(${JSON.stringify(marker)},JSON.stringify(
       assert.equal(observed.apiCalls, 0);
     }
   }
+});
+
+test("CI Checks fallback requires the complete exact Actions suite and an unchanged successful run", () => {
+  const expectedNames = workflowJobNames(workflow);
+  const run = {
+    id: 17,
+    run_attempt: 2,
+    check_suite_id: 27,
+    head_sha: baseline.commit,
+    head_branch: "main",
+    event: "push",
+    status: "completed",
+    conclusion: "success",
+    html_url: "https://github.com/example/project/actions/runs/17",
+  };
+  const checks = expectedNames.map((name: string, index: number) => ({
+    id: index + 1,
+    head_sha: baseline.commit,
+    check_suite: { id: 27 },
+    app: { id: 15368, slug: "github-actions" },
+    details_url: run.html_url + "/job/" + (index + 1001),
+    name,
+    status: "completed",
+    conclusion: "success",
+  }));
+  const result = { total_count: checks.length, check_runs: checks };
+  const options = {
+    base: baseline.commit,
+    expectedNames,
+    repository: "example/project",
+    observedRun: { ...run },
+  };
+  assert.deepEqual(acceptFullBaselineChecks(run, result, options), {
+    ...baseline,
+    run: run.html_url,
+    jobs: checks.length,
+  });
+  for (const patch of [
+    { head_sha: "b".repeat(40) },
+    { head_branch: "elsewhere" },
+    { event: "pull_request" },
+    { status: "in_progress" },
+    { conclusion: "failure" },
+    { run_attempt: 3 },
+    { check_suite_id: 28 },
+    { html_url: "https://github.com/foreign/project/actions/runs/17" },
+  ]) {
+    assert.equal(
+      acceptFullBaselineChecks(run, result, {
+        ...options,
+        observedRun: { ...run, ...patch },
+      }),
+      null,
+    );
+    assert.equal(
+      acceptFullBaselineChecks({ ...run, ...patch }, result, options),
+      null,
+    );
+  }
+  for (const patch of [
+    { head_sha: "b".repeat(40) },
+    { check_suite: { id: 28 } },
+    { app: { id: 1, slug: "github-actions" } },
+    { app: { id: 15368, slug: "foreign-app" } },
+    { details_url: run.html_url + "/job/0" },
+    { details_url: run.html_url + "/job/01" },
+    { details_url: run.html_url + "/job/9007199254740992" },
+    { details_url: run.html_url + "/job/123?other=1" },
+    { details_url: run.html_url + "/job/123/extra" },
+    {
+      details_url: "https://github.com/foreign/project/actions/runs/17/job/123",
+    },
+    { details_url: run.html_url.replace("/17", "/18") + "/job/123" },
+    { id: 0 },
+    { id: 1.5 },
+    { name: expectedNames[1] },
+    { status: "in_progress" },
+    { conclusion: "skipped" },
+    { conclusion: "cancelled" },
+    { conclusion: "failure" },
+  ]) {
+    const changed = structuredClone(result);
+    Object.assign(changed.check_runs[0]!, patch);
+    assert.equal(
+      acceptFullBaselineChecks(run, changed, options),
+      null,
+      JSON.stringify(patch),
+    );
+  }
+  const duplicateJob = structuredClone(result);
+  duplicateJob.check_runs[1]!.details_url =
+    duplicateJob.check_runs[0]!.details_url;
+  assert.equal(acceptFullBaselineChecks(run, duplicateJob, options), null);
+  const duplicateCheck = structuredClone(result);
+  duplicateCheck.check_runs[1]!.id = duplicateCheck.check_runs[0]!.id;
+  assert.equal(acceptFullBaselineChecks(run, duplicateCheck, options), null);
+  assert.equal(
+    acceptFullBaselineChecks(
+      run,
+      { ...result, check_runs: checks.slice(1) },
+      options,
+    ),
+    null,
+  );
+  assert.equal(
+    acceptFullBaselineChecks(
+      run,
+      { ...result, total_count: checks.length + 1 },
+      options,
+    ),
+    null,
+  );
+  assert.equal(
+    acceptFullBaselineChecks(run, { total_count: 0, check_runs: [] }, options),
+    null,
+  );
+  assert.equal(
+    acceptFullBaselineChecks(run, result, {
+      ...options,
+      observedRun: undefined,
+    }),
+    null,
+  );
+});
+
+test("CI Checks pagination keeps every page bounded and rejects missing changed or duplicate inventories", async () => {
+  for (const count of [1, 100, 101, 205]) {
+    const all = Array.from({ length: count }, (_, i) => ({ id: i + 1 }));
+    const calls: string[] = [];
+    const result = await requestFullBaselineChecks(
+      async (url: string) => {
+        calls.push(url);
+        return {
+          total_count: count,
+          check_runs: all.slice((calls.length - 1) * 100, calls.length * 100),
+        };
+      },
+      "suite-checks",
+      count,
+    );
+    assert.deepEqual(result, { total_count: count, check_runs: all });
+    assert.deepEqual(
+      calls,
+      Array.from(
+        { length: Math.ceil(count / 100) },
+        (_, i) => "suite-checks?filter=latest&per_page=100&page=" + (i + 1),
+      ),
+    );
+  }
+  const all = Array.from({ length: 101 }, (_, i) => ({ id: i + 1 }));
+  for (const bad of [
+    { total_count: 101, check_runs: [] },
+    { total_count: 102, check_runs: all.slice(100) },
+    { total_count: 101, check_runs: all.slice(0, 1) },
+    { total_count: 101, check_runs: null },
+  ]) {
+    let calls = 0;
+    await assert.rejects(
+      requestFullBaselineChecks(
+        async () =>
+          ++calls === 1
+            ? { total_count: 101, check_runs: all.slice(0, 100) }
+            : bad,
+        "suite-checks",
+        101,
+      ),
+      /Baseline check|Duplicate baseline/,
+    );
+    assert.equal(calls, 2);
+  }
+  for (const count of [0, 1.5, 1001]) {
+    let calls = 0;
+    await assert.rejects(
+      requestFullBaselineChecks(
+        async () => {
+          calls++;
+        },
+        "suite-checks",
+        count,
+      ),
+      /bounded pagination/,
+    );
+    assert.equal(calls, 0);
+  }
+});
+
+test("CI planner uses Checks only for unavailable jobs and never hides observed failures or concurrent retries", async (t) => {
+  const base = "a".repeat(40),
+    names = workflowJobNames(workflow);
+  const run = {
+    id: 17,
+    run_attempt: 2,
+    check_suite_id: 27,
+    head_sha: base,
+    head_branch: "main",
+    event: "push",
+    status: "completed",
+    conclusion: "success",
+    html_url: "https://github.com/example/project/actions/runs/17",
+  };
+  const baselineJobs = names.map((name: string, index: number) => ({
+    id: index + 1,
+    run_id: 17,
+    name,
+    status: "completed",
+    conclusion: "success",
+  }));
+  const checks = names.map((name: string, index: number) => ({
+    id: index + 1,
+    check_suite: { id: 27 },
+    head_sha: base,
+    app: { id: 15368, slug: "github-actions" },
+    details_url: run.html_url + "/job/" + (index + 1001),
+    name,
+    status: "completed",
+    conclusion: "success",
+  }));
+  const directory = await fixture(t, {
+    "event.json": JSON.stringify({
+      pull_request: { base: { sha: base }, head: { sha: "b".repeat(40) } },
+    }),
+    output: "",
+    summary: "",
+  });
+  for (const [variant, expectedMode] of [
+    ["unavailable", "affected"],
+    ["later-unavailable", "affected"],
+    ["observed-failure", "full"],
+    ["denied", "full"],
+    ["malformed", "full"],
+    ["foreign-check", "full"],
+    ["changed-run", "full"],
+  ] as const) {
+    const loader = path.join(directory, variant + ".mjs"),
+      marker = path.join(directory, variant + ".json");
+    await writeFile(
+      loader,
+      `
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import child from "node:child_process";
+import {syncBuiltinESMExports} from "node:module";
+const variant=${JSON.stringify(variant)},run=${JSON.stringify(run)},jobs=${JSON.stringify(baselineJobs)},checks=${JSON.stringify(checks)};
+const counts={jobs:0,checks:0,runReads:0};
+const originalExec=child.execFileSync;
+child.execFileSync=(executable,args,...options)=>executable==="git"&&args[0]==="diff"?"docs/README.md"+String.fromCharCode(0):originalExec(executable,args,...options);
+syncBuiltinESMExports();
+globalThis.fetch=async(address,options)=>{
+ assert.equal(options.headers.Authorization,"Bearer synthetic-token");
+ const url=new URL(address);assert.equal(url.origin,"https://api.github.com");let body;
+ if(url.pathname==="/repos/example/project/actions/workflows/ci.yml/runs") body={workflow_runs:[run]};
+ else if(url.pathname==="/repos/example/project/actions/runs/17/attempts/2/jobs") {
+  counts.jobs++;
+  if(variant==="denied")return new Response("{}",{status:403});
+  if(variant==="malformed")return new Response(JSON.stringify({total_count:jobs.length,jobs:null}));
+  if((variant==="later-unavailable"||variant==="observed-failure")&&counts.jobs===1){
+   body={total_count:jobs.length,jobs:jobs.slice(0,100)};
+   if(variant==="observed-failure")body.jobs[0]={...body.jobs[0],conclusion:"failure"};
+  }else return new Response("{}",{status:502});
+ }else if(url.pathname==="/repos/example/project/check-suites/27/check-runs"){
+  counts.checks++;assert.equal(url.searchParams.get("filter"),"latest");assert.equal(url.searchParams.get("per_page"),"100");
+  const page=Number(url.searchParams.get("page"));assert.ok(page>=1&&page<=Math.ceil(checks.length/100));
+  body={total_count:checks.length,check_runs:checks.slice((page-1)*100,page*100)};
+  if(variant==="foreign-check"&&page===1)body.check_runs[0]={...body.check_runs[0],check_suite:{id:28}};
+ }else if(url.pathname==="/repos/example/project/actions/runs/17"){
+  counts.runReads++;body=variant==="changed-run"?{...run,run_attempt:3}:run;
+ }else throw new Error("Unexpected request path "+url.pathname);
+ return new Response(JSON.stringify(body),{status:200});
+};
+process.on("exit",()=>fs.writeFileSync(${JSON.stringify(marker)},JSON.stringify(counts)));
+`,
+    );
+    const env: NodeJS.ProcessEnv = {
+      ...process.env,
+      GITHUB_EVENT_NAME: "pull_request",
+      GITHUB_REPOSITORY: "example/project",
+      GITHUB_TOKEN: "synthetic-token",
+      GITHUB_EVENT_PATH: path.join(directory, "event.json"),
+      GITHUB_OUTPUT: path.join(directory, "output"),
+      GITHUB_STEP_SUMMARY: path.join(directory, "summary"),
+    };
+    delete env.NODE_TEST_CONTEXT;
+    const result = spawnSync(
+      process.execPath,
+      [
+        "--import",
+        pathToFileURL(loader).href,
+        fileURLToPath(new URL("scripts/plan-ci-impact.mjs", root)),
+      ],
+      { cwd: root, env, encoding: "utf8", timeout: 30000, maxBuffer: 1048576 },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    const actual = JSON.parse(result.stdout);
+    assert.equal(actual.mode, expectedMode, variant + ": " + actual.reason);
+    const counts = JSON.parse(await readFile(marker, "utf8"));
+    if (["observed-failure", "denied", "malformed"].includes(variant))
+      assert.deepEqual(counts, { jobs: 1, checks: 0, runReads: 0 });
+    else {
+      assert.equal(counts.jobs, variant === "later-unavailable" ? 2 : 1);
+      assert.equal(counts.checks, Math.ceil(names.length / 100));
+      assert.equal(counts.runReads, 1);
+    }
+    assert.deepEqual(selected(actual), expectedMode === "affected" ? [] : jobs);
+  }
+  assert.equal(workflow.jobs["ci-plan"].permissions.checks, "read");
 });

@@ -118,10 +118,20 @@ the shared suite, formatting, audits and fresh package/mutation verification.
 
 Selective routing additionally requires a successful full `main` push run of
 the exact PR base commit, with a complete job inventory and no skipped,
-cancelled or failed jobs. Missing history, an unavailable API, a pending/failed
+cancelled or failed jobs. Missing history, unavailable evidence APIs, a pending/failed
 base or a stale input contract falls back to all jobs. Pushes, tags, manual runs
 and the weekly scheduled run always verify every native job. API access is
 read-only and confined to `ci-plan`; PRs do not receive write permissions.
+
+If the jobs endpoint is unavailable because of a transport failure, rate limit or
+selected server error, the planner can read that same run's latest check suite.
+Every expected job name must occur exactly once, completed successfully, under
+the exact source commit, suite, GitHub Actions app and repository/run job URL.
+The run identity and successful attempt must remain unchanged after all bounded
+pages are read. A failed, skipped, duplicate, foreign or malformed job already
+observed on any jobs page prevents this fallback. Denied API access and malformed
+responses also keep the full plan. This alternative supplies baseline evidence
+only; it does not reuse results as acceptance of the PR revision.
 
 The initial full-verification wave admits the shared matrices, long .NET/JVM
 jobs and actionlint within the [Free plan's concurrent-job ceiling](https://docs.github.com/en/actions/reference/limits). Shorter

@@ -28,6 +28,7 @@ jobs:
     permissions:
       contents: read
       actions: read
+      checks: read
     outputs:
       plan: ${{ steps.impact.outputs.plan }}
     steps:
