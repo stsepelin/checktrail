@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 112,
+  "retainedReferences": 118,
   "files": [
     {
       "file": "README.md",
-      "bytes": 10653,
-      "sha256": "6b3e3f063a43689bb55299ad59df133684a5cc55ab839f915dfff226a21099eb"
+      "bytes": 12469,
+      "sha256": "4980f42a4bfe987c2fb91323a2fa5d3cc842dd9a1ec2e8185d5cff9d41cf9c5a"
     },
     {
       "file": "dotnet-sdk-LICENSE.txt",
@@ -34,9 +34,34 @@
       "sha256": "998d2cc11dbab57ff42f11fe0a5a2eab3262c8341310f21b3e83033a21ff5255"
     },
     {
+      "file": "fantomas-pdb-checksum-controls.json",
+      "bytes": 3092,
+      "sha256": "2f05d5fa600282014e47fa9b711d7f9bf6015168412e0de3d9ca8ff890b20b2b"
+    },
+    {
+      "file": "fantomas-pdb-checksum-rejected.txt",
+      "bytes": 156,
+      "sha256": "6f18828c3fd45fd08d3e5335b2bd8cbb318ad1ad88c42cd81bdb0dc2cbf36239"
+    },
+    {
+      "file": "fantomas-pdb-checksum-restored.txt",
+      "bytes": 105,
+      "sha256": "3a0b88f63ab978b393f0ee38f15ca30197deafaaf5953bc399eb096dac1f9bbe"
+    },
+    {
+      "file": "fantomas-pdb-inspector.cs",
+      "bytes": 7099,
+      "sha256": "d2c5f208b01a8c848386b716963b5686f3f1c6f5dfe81d7a7b6e3f146409ee22"
+    },
+    {
+      "file": "fantomas-source-observations.json",
+      "bytes": 149573,
+      "sha256": "93666a1eeaf6fcdd47e497247599d62d968559b76e96eea7565fd35f1fe5b92f"
+    },
+    {
       "file": "fantomas.json",
-      "bytes": 25511,
-      "sha256": "11de79ed3cc147c672f8d9e6491b1c5036863f1efcadff5d2faf656ef3b864ae"
+      "bytes": 25922,
+      "sha256": "43092e73e9486643f3d6eae420d39488aeeb84403f8db12ee5709363101c215e"
     },
     {
       "file": "nuget-integrity-tamper.txt",

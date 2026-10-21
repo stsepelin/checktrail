@@ -390,10 +390,19 @@
         }
       ],
       "completeTransitiveNoticeClosureVerified": false
+    },
+    "debugSourceMetadata": {
+      "retainedInput": {
+        "file": "fantomas-source-observations.json",
+        "bytes": 149573,
+        "sha256": "93666a1eeaf6fcdd47e497247599d62d968559b76e96eea7565fd35f1fe5b92f"
+      },
+      "sourceBuildVerified": false,
+      "compilationInputInventoryComplete": false
     }
   },
   "remainingInputs": [
-    "Map vendored/generated FCS and independent FSharp.Core source identities.",
+    "Resolve three nonembedded SDK-generated debug documents and reconcile evaluated compiler/generated/resource/task inputs separately from the observed source checksums.",
     "Reconcile selected SDK native requirements, component notices and pinned image layers/OS; aggregate notice text is incomplete coverage.",
     "Integrate exact signature policy and witness bindings coherently with preparation and receipt admission; this observation changes no runtime verification flag."
   ],
@@ -402,5 +411,5 @@
   "gateAComplete": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "observationsUpdatedAt": "2026-10-21T17:49:04.698072+00:00"
+  "observationsUpdatedAt": "2026-10-21T20:36:37.924849+00:00"
 }

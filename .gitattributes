@@ -5,3 +5,5 @@
 docs/measurements/artifact-identities-2026-10-21/nuget-repository-certificates.txt -text
 docs/measurements/artifact-identities-2026-10-21/provider-notices/*.txt -text
 docs/measurements/artifact-identities-2026-10-21/scala-component-notices/*.txt -text
+docs/measurements/artifact-identities-2026-10-21/fantomas-pdb-checksum-rejected.txt -text
+docs/measurements/artifact-identities-2026-10-21/fantomas-pdb-checksum-restored.txt -text
