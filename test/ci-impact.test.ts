@@ -334,13 +334,18 @@ test("CI initial wave stays within the free runner ceiling and selected jobs sur
       id !== "ci-complete" &&
       !(job as { needs?: string[] }).needs?.includes("actionlint"),
   );
-  assert.equal(
-    initial.reduce(
-      (n, [, job]) => n + variants(job as Parameters<typeof variants>[0]),
-      0,
-    ),
-    20,
+  const initialJobs = initial.reduce(
+    (n, [, job]) => n + variants(job as Parameters<typeof variants>[0]),
+    0,
   );
+  assert.ok(
+    initialJobs > 0 && initialJobs <= 20,
+    "Initial CI wave exceeds the free runner ceiling",
+  );
+  assert.deepEqual(workflow.jobs["jvm-wrappers-arm64"].needs, [
+    "ci-plan",
+    "actionlint",
+  ]);
   for (const id of jobs) {
     const job = workflow.jobs[id];
     assert.ok(job.needs.includes("ci-plan"));
@@ -440,6 +445,47 @@ test("CI exact-base evidence rejects incomplete failed skipped duplicate wrong-c
       { base: baseline.commit, expectedNames },
     ),
     null,
+  );
+});
+
+test("CI a successful pre-split JVM baseline cannot qualify the expanded phase inventory", () => {
+  const previous = structuredClone(workflow);
+  delete previous.jobs["jvm-wrappers-arm64"].strategy;
+  const priorNames = workflowJobNames(previous);
+  const expectedNames = workflowJobNames(workflow);
+  assert.equal(expectedNames.length, priorNames.length + 2);
+  assert.ok(priorNames.includes("jvm-wrappers-arm64"));
+  for (const phase of ["baseline", "acceptance", "guards-regressions"])
+    assert.ok(expectedNames.includes("jvm-wrappers-arm64 (" + phase + ")"));
+  const run = {
+    id: 1,
+    head_sha: baseline.commit,
+    head_branch: "main",
+    event: "push",
+    status: "completed",
+    conclusion: "success",
+    html_url: baseline.run,
+  };
+  const result = {
+    total_count: priorNames.length,
+    jobs: priorNames.map((name: string, index: number) => ({
+      id: index + 1,
+      run_id: 1,
+      name,
+      status: "completed",
+      conclusion: "success",
+    })),
+  };
+  assert.equal(
+    acceptFullBaseline(run, result, { base: baseline.commit, expectedNames }),
+    null,
+  );
+  assert.deepEqual(selected(plan(["test/jvm-wrapper-phases.test.ts"])), [
+    "jvm-wrappers-arm64",
+  ]);
+  assert.deepEqual(
+    selected(plan(["scripts/jvm-wrapper-phase-evidence.mjs"])),
+    jobs,
   );
 });
 
