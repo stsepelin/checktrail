@@ -3,3 +3,4 @@
 
 # Preserve this retained response byte-for-byte, including its original CRLF.
 docs/measurements/artifact-identities-2026-10-21/nuget-repository-certificates.txt -text
+docs/measurements/artifact-identities-2026-10-21/provider-notices/*.txt -text

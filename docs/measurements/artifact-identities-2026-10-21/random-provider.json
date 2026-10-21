@@ -135,6 +135,21 @@
           "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
         }
       ]
+    },
+    "selectedNoticeInventoryObserved": {
+      "retainedInputs": [
+        {
+          "file": "provider-notice-inventory.json",
+          "bytes": 171432,
+          "sha256": "d79a7e832ad52a4eecc1bb95e2fde16a227e6b2d3ecae883f047e7d6ed486bfa",
+          "generation": "Reconciled native package metadata and exact public source/module/SDK notice bytes; stronger closure remains unverified."
+        }
+      ],
+      "nativeSelectedPackages": 452,
+      "nativeSelectedFiles": 2973,
+      "linkedModuleMetadataCount": 27,
+      "selectedGoSdkVendorModules": 3,
+      "completeTransitiveNoticeClosureVerified": false
     }
   },
   "remainingInputs": [

@@ -1,0 +1,4112 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-21T18:50:11.906812+00:00",
+  "scope": "Notice acquisition and native selected-package inventory for one independently rebuilt executable; not complete attribution or final linked-symbol inclusion.",
+  "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+  "expectedExecutableSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+  "packageCounts": {
+    "standardLibrary": 217,
+    "externalModule": 227,
+    "mainModule": 8
+  },
+  "selectedPackages": [
+    {
+      "importPath": "internal/goarch",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "98db1d102330009817c0d1439d0c0bb8c7d2ddac071e308444f63fe8ed488bc4"
+    },
+    {
+      "importPath": "unsafe",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "fe0c4a4fdcf57db249fd4bfa3ca9e22c03c9374dee8761ed28c15658b645b894"
+    },
+    {
+      "importPath": "internal/abi",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 16,
+      "selectedFilesSha256": "c7b8941b925fca00505308c07794a6fdb5087b3fde22f6bc72a5843182586703"
+    },
+    {
+      "importPath": "internal/unsafeheader",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "267d841dc21d2b610061590baf6456a17ced826533bf1c99fd784fa4f0f62006"
+    },
+    {
+      "importPath": "internal/cpu",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 8,
+      "selectedFilesSha256": "bcaf44b75f25c183e36f243a19379fb5086fe88d94385775e34e7fd467fd333b"
+    },
+    {
+      "importPath": "internal/bytealg",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 14,
+      "selectedFilesSha256": "1ea5cff926c4afed655bea825a3e1f7de728ac889f7a1b70c965fdf791edc957"
+    },
+    {
+      "importPath": "internal/byteorder",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "3740e97d7eb3a4ff390752f129fad75e46c623964a9a5d861d0e07ea9cf99f54"
+    },
+    {
+      "importPath": "internal/chacha8rand",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "42e55414abd13e6ab499037ea6bf09c52198377379d1fc2289ea01b3d3850c56"
+    },
+    {
+      "importPath": "internal/coverage/rtcov",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "1d312fc296171baddf570131f0b4a44919a5deaaa7fc6bdd126026cd7b7f2458"
+    },
+    {
+      "importPath": "internal/godebugs",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "46d70cec3ca094ecf7da1235c09e8720f9b8d935c02d50d3dd8e27edf83a108e"
+    },
+    {
+      "importPath": "internal/goexperiment",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 21,
+      "selectedFilesSha256": "f2342cfcb9f7dc78c679b7f381a11c10eaa98dc28d86ecc83403ee512dc1fc56"
+    },
+    {
+      "importPath": "internal/goos",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "90561d12765cefcf6f422a99477cbc938fcc6775697ae48cfedb32cc0c98d7a6"
+    },
+    {
+      "importPath": "internal/profilerecord",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "9375a5ad1e55b160e660e2ee5e567fca2337100f7aa7221689c5de2d225c6ef7"
+    },
+    {
+      "importPath": "internal/runtime/atomic",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 8,
+      "selectedFilesSha256": "5ad6cd24ae47531d63ec7d0410d61b94a05e397ca977ad5bdf950512a671acbe"
+    },
+    {
+      "importPath": "internal/runtime/syscall/linux",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "be7a2fdbc048929e2043e93a286c1f13e646d23a1146de371dd4fd5cb53065fc"
+    },
+    {
+      "importPath": "math/bits",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "c7ae01a45cc51fcfb65ebfe4574f501b8b2d818c260634f73c23a431c8ff01ee"
+    },
+    {
+      "importPath": "internal/strconv",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 14,
+      "selectedFilesSha256": "6b91c8fe5e9497daff23bf838d0655d12ec1d09e77920c6bb3d880cb18f2b51e"
+    },
+    {
+      "importPath": "internal/runtime/cgroup",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "e4a95aa4b1d29a9271373d32da71211b4b829f3e29dd71273d0ad69fd1277a7a"
+    },
+    {
+      "importPath": "internal/runtime/exithook",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "d2360a49f55ec083fd165699ec90e45094b3030a823e1d8990ac70c2a2dc0fbc"
+    },
+    {
+      "importPath": "internal/runtime/gc",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "24225e45c36174568b65e5d57bc2f933e7ec73864a156e742160392bb5afeb06"
+    },
+    {
+      "importPath": "internal/runtime/sys",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "997b2ad6c22fd9bc93c46f622c8032ff54c2ebc73c4db3cb990b9046d24bfd67"
+    },
+    {
+      "importPath": "internal/runtime/gc/scan",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "7568493028954b685f4c1d1e0dce8046320a167151c8ac17f4ee63d700d7a0cb"
+    },
+    {
+      "importPath": "internal/asan",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "10f518b391b507e36ee0cb6d4b5e145f1387717e01f57cb450714b2c898dc6a1"
+    },
+    {
+      "importPath": "internal/msan",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "4f1b866cd31f4157eeae4f959f8f2eac0cd9b393ed28d3a6f3802d1248da73cf"
+    },
+    {
+      "importPath": "internal/race",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "28017a6cb52cb803601dd9e2af1100d0a281a8f03cc5ed4b96281c823134ae69"
+    },
+    {
+      "importPath": "internal/runtime/math",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "645ce174ad249269e745e7cdb492ff7e355bbfe25c9dc252b0ffc3d77ccf937e"
+    },
+    {
+      "importPath": "internal/runtime/maps",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 8,
+      "selectedFilesSha256": "500c77588aa4af1a8292c54f99d2ec50e1de980c156444b7a6d17688522c4675"
+    },
+    {
+      "importPath": "internal/runtime/pprof/label",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "28387a832e6be7712a57579850e65531d29f3f030b94e4feb696a79b67309c42"
+    },
+    {
+      "importPath": "internal/stringslite",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "0484526518a10d5dd440a7d2277ace6394d808ab192242a9270e938f0a96f96c"
+    },
+    {
+      "importPath": "internal/trace/tracev2",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "ed68fbbb3c796da8d54e6af45757818520f67f7ff3ac437616bcdd37411c4dfa"
+    },
+    {
+      "importPath": "runtime",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 203,
+      "selectedFilesSha256": "84ce2e87b62abfa69b817937aed0d48b2d648696e88a4a112fa4a70048c5a2bb"
+    },
+    {
+      "importPath": "internal/reflectlite",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "f757870e2697f1d615437f4f8fbb0df8674c04404accfc26c891f99f280f72cc"
+    },
+    {
+      "importPath": "errors",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "8899315962466699432b4a8aa9ee84c68f2d46627735198061bf0ee5ef84d552"
+    },
+    {
+      "importPath": "sync/atomic",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "24060c2ee75eab7b5ef61761f105da9cfd17a22ee72371f501c3a205449a9feb"
+    },
+    {
+      "importPath": "internal/sync",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "12a626c89c60c307879989b3f357d1bf11b80af87d8bb893403e813ae03b2f54"
+    },
+    {
+      "importPath": "internal/synctest",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "8aee62998f52e78997c5715f076f320cbc6081650756a9a4292e35f79d9d0f95"
+    },
+    {
+      "importPath": "sync",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 11,
+      "selectedFilesSha256": "499a663bc05ae96c36cd861f5de3650291eb0f3ad807b169f0f9b914c43371e9"
+    },
+    {
+      "importPath": "internal/bisect",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "da49f4c3bb45b4a4a90948306ca3787ba3c7149f76236c2e1a519f41c7ec1f59"
+    },
+    {
+      "importPath": "internal/godebug",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "7506c33ef18f113c2449352a61f1e81b7ac2c20b441ccf3e7753f574af2c77bd"
+    },
+    {
+      "importPath": "internal/oserror",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "1664eacd24d03ffd17874bc75f058aa9094b95cf14369856b2be46c44c3ef342"
+    },
+    {
+      "importPath": "cmp",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "5758534e74a39659e4ecdb7086c956e5ff820960ebb7bfb1e2430e37adc63a76"
+    },
+    {
+      "importPath": "iter",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "adad07b30ffe2b3574a2c68fa17f4e519f7d9fb1d62f9982d218fe90be0f52ab"
+    },
+    {
+      "importPath": "slices",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "e3c03c7e732abb9ac9a6b41b81810be333f66098b0348476bb5554466542ed64"
+    },
+    {
+      "importPath": "syscall",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 28,
+      "selectedFilesSha256": "0273365185a85df729b2bcaa9d246818db508bd3280c52258cf7e1e439ca0b05"
+    },
+    {
+      "importPath": "time",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 10,
+      "selectedFilesSha256": "195898b297f3dc50f43434265f5a8816cf1c373df41f5bd25535fe1be7dd512b"
+    },
+    {
+      "importPath": "context",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "69d23dab305852c9f909750caf0aa51c1e514d3b75c47cb4e9ff2267f1057d21"
+    },
+    {
+      "importPath": "encoding",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "c210a5c221ac3c348eecd84e3464febef454bb14a8cbc99ec57d863bf5c1087c"
+    },
+    {
+      "importPath": "math",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 55,
+      "selectedFilesSha256": "49f14e51fd40a4ee189b53860dcab90d4e8c0e5f30ce06ed8225dcc79a3f786f"
+    },
+    {
+      "importPath": "unicode/utf8",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "e69b523dcfa1d617f55dbb2b251ccf69890e598c96c388e00509581a57a12b2f"
+    },
+    {
+      "importPath": "strconv",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "27af607edffe2ad4f361c4a34111cf29c2da87aac9338f6c49a84dc660d238ae"
+    },
+    {
+      "importPath": "unicode",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "623b40a8405f13ad5accb7b09837334d044695c2c93bcdcf2e39d7448be123ed"
+    },
+    {
+      "importPath": "reflect",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 12,
+      "selectedFilesSha256": "0e5752876538905e310a95c2990a455b6d7a24bfe1e7bf5bbabcd6f7abd8a660"
+    },
+    {
+      "importPath": "internal/fmtsort",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "548ca0433ec325388b7b9969dbfcbe10d34cff37a7ce0fd858f9006df581b67f"
+    },
+    {
+      "importPath": "io",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "6097c553816b7d6e98dbecb803a9cb93ba9ff4860f65cbcbfc7198dad00f160a"
+    },
+    {
+      "importPath": "path",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "3b0f7a8ce975a41e4124d2567930f05296f237c9ff44b179024688dd641a10fd"
+    },
+    {
+      "importPath": "io/fs",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "b8062a51329e139a73be8bdcdce5de847268c6592b4d87010ee872978f030a82"
+    },
+    {
+      "importPath": "internal/filepathlite",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "604654dd36b76790b1339bb5a19021c68d3f9eb183d87018f1f7f44d4294159d"
+    },
+    {
+      "importPath": "internal/syscall/unix",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 26,
+      "selectedFilesSha256": "09dfa898facdee6a7040af3eeba12cfcda953651603117b1e9282582fb66cc9a"
+    },
+    {
+      "importPath": "internal/poll",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 24,
+      "selectedFilesSha256": "465e92ff2e6ebeee25c40489b277f4c8d9c5f7abc1df351dd4c697efd8a0019a"
+    },
+    {
+      "importPath": "internal/syscall/execenv",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "c085473c5cf3d4445ef01b53b1371f696cf4e038a0227884044141013c664bd8"
+    },
+    {
+      "importPath": "internal/testlog",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "9bdf3bd3b4394b8253cc4ff7b36d78068468f20466697d5d54e37b57e0db1cde"
+    },
+    {
+      "importPath": "os",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 45,
+      "selectedFilesSha256": "3809b6468b3476266b8aadc916f7bacd037717c9299c2ad49eb43e9d45c8a765"
+    },
+    {
+      "importPath": "fmt",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "b4fbcfcec07ecc1e98f369fdf0e813e489a13061ca2b558b94766a8579f153ed"
+    },
+    {
+      "importPath": "strings",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 8,
+      "selectedFilesSha256": "514f183f8fca8350ef571438de7121644ff51b7dbbee39807dec35c959e46089"
+    },
+    {
+      "importPath": "flag",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "003826443b3bbea2b42b8224dc9757dc976c708dd832ddb0609ee52b7c8d4ab4"
+    },
+    {
+      "importPath": "bytes",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "3dfc5eb7d6814c56e1e61679cbaa20a0bfc02550f5947b00614b9bff1ef8e253"
+    },
+    {
+      "importPath": "encoding/base64",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "e259eae910bee38571e9697e0b7184a0277a091131ff8add93d7caba2e6a0671"
+    },
+    {
+      "importPath": "unicode/utf16",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "0bc36bea5ee063e789ce3b27398a3c64a49310c37d9500cb5c8d6b5f7f6f021f"
+    },
+    {
+      "importPath": "encoding/json",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 8,
+      "selectedFilesSha256": "f6603aace572856f416e97061e4a27d897b2a9a1d816222253850cf41c7e8e9f"
+    },
+    {
+      "importPath": "bufio",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "54e4ef3bc1d3fa7326b9f8ddeeadbe7fc299c6885f963d6570a3c65b447dab18"
+    },
+    {
+      "importPath": "encoding/binary",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "df6bf4930e7d4b76e22b87a8f04ad41878ca734d084dab4c27c6d4d61377400c"
+    },
+    {
+      "importPath": "github.com/vmihailenco/msgpack/v5/msgpcode",
+      "category": "externalModule",
+      "scope": "github.com/vmihailenco/msgpack/v5@v5.4.1",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "b20ffe17dc820afc0f2c2482809f12f76fc02115667f081eb838922ef3d16795"
+    },
+    {
+      "importPath": "github.com/vmihailenco/tagparser/v2/internal",
+      "category": "externalModule",
+      "scope": "github.com/vmihailenco/tagparser/v2@v2.0.0",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "19911b0d3da35add738d112aa3ebf600e021765332c6e2475796341112dcb595"
+    },
+    {
+      "importPath": "github.com/vmihailenco/tagparser/v2/internal/parser",
+      "category": "externalModule",
+      "scope": "github.com/vmihailenco/tagparser/v2@v2.0.0",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "42fb0de629759e0e29197e0580b5825683a746642659a548d3937ced10079d5b"
+    },
+    {
+      "importPath": "github.com/vmihailenco/tagparser/v2",
+      "category": "externalModule",
+      "scope": "github.com/vmihailenco/tagparser/v2@v2.0.0",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "810bd8ad0e7cece2409050e9cf05568af7b7ad4c22dc8d4e468ae454f56b2c5b"
+    },
+    {
+      "importPath": "log/internal",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "b58469ab9418b35e48be60b4f5aa89aff63c5e19700223e358a1c2fe0198fc76"
+    },
+    {
+      "importPath": "log",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "bf9e8a7ce3f1303e998417f5caac45cdb982f13190fdd44a7418e4e06ad6816c"
+    },
+    {
+      "importPath": "sort",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "30619c6ebe1ebd77f13d18969d6cb0a8ce56bb52a6249ada1848d3417bc6a26d"
+    },
+    {
+      "importPath": "github.com/vmihailenco/msgpack/v5",
+      "category": "externalModule",
+      "scope": "github.com/vmihailenco/msgpack/v5@v5.4.1",
+      "selectedFiles": 20,
+      "selectedFilesSha256": "80ba81f26aaf9441ef4f20eb8f007ee56af6160421125870f8c773a86e8f2b6e"
+    },
+    {
+      "importPath": "math/rand",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "fa91fba22d4ba678f7cdfb8e448fdac56e5035f3299c9fb9aa4afedf0d989964"
+    },
+    {
+      "importPath": "math/big",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 23,
+      "selectedFilesSha256": "92f9186b51d63fd512ed18b8b9f9f0c2fc69b3d1545bfc2108edcc6bd123ce03"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tftypes",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 18,
+      "selectedFilesSha256": "1d2c03a12674724f4830ebe4ab30911246cd3b51080056864a2c19f56c3b9c46"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/attr",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "5c203a1cfb036c22be0469f786f1229312f1141ba3e2d0d1e50503712bd0351c"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/path",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 21,
+      "selectedFilesSha256": "c87549e5177239aa98d2d13454800cbd2b840166c53f59ee935b632c3b6171d2"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/diag",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "919341e281cbbe46eb1d939c51ad3b4416a085f2502324791fcd57c291b0980e"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/totftypes",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "e3c62eb436c9e9487b9584633f267c7371c2e04f46b4c623369e4a7cdc00aefd"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/attr/xattr",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "ddbe6c7a210424c81a822b3aacb6c6736bc487bb2b80f8b8172aa35fd1d37611"
+    },
+    {
+      "importPath": "golang.org/x/sys/unix",
+      "category": "externalModule",
+      "scope": "golang.org/x/sys@v0.47.0",
+      "selectedFiles": 42,
+      "selectedFilesSha256": "39006b8a065a7f62c0e1641702956469a7ba185ce74ddd95e7655f357632eb58"
+    },
+    {
+      "importPath": "github.com/mattn/go-isatty",
+      "category": "externalModule",
+      "scope": "github.com/mattn/go-isatty@v0.0.20",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "f1e707dc1292019a49a67935f903e778118cca9732a65244ee026f98d229d244"
+    },
+    {
+      "importPath": "github.com/mattn/go-colorable",
+      "category": "externalModule",
+      "scope": "github.com/mattn/go-colorable@v0.1.14",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "4612a00d96d860cc8b5400be95e677905ed5503a57a38264031a91f66aa731bd"
+    },
+    {
+      "importPath": "github.com/fatih/color",
+      "category": "externalModule",
+      "scope": "github.com/fatih/color@v1.18.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "fe7d2a5b726cf7bfe5d317824c69feac87013a8b271cfa758279c3602d3ce271"
+    },
+    {
+      "importPath": "io/ioutil",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "c410b1580c71a37bcd6cfc1358f29323b634c704315df0228ac8cfa3b35ba638"
+    },
+    {
+      "importPath": "regexp/syntax",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 8,
+      "selectedFilesSha256": "8d67563271afae255c08a041ad7ba6a64fb0c18851909e55a082a45fee7d69a0"
+    },
+    {
+      "importPath": "regexp",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "78a283c8cfe8ccc5f7c1d83632ae7b91ecacf216d417fb14e5d801cec98b93ab"
+    },
+    {
+      "importPath": "github.com/hashicorp/go-hclog",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/go-hclog@v1.6.3",
+      "selectedFiles": 11,
+      "selectedFilesSha256": "0c61825b26985c9a12db588096116393f2b01296b966438e9f1730de466408fd"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-log/internal/fieldutils",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-log@v0.10.0",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "8bc53f3f4778030801a6cd081ad1017d05beb1c801a66fcf418f53becf3fd0f3"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-log/internal/hclogutils",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-log@v0.10.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "f814cb2847b28c8f094c545af13fc4bbc7578090483873aa0b4dd25bc0e0d3ef"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-log/internal/logging",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-log@v0.10.0",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "accf00723b041be46d75b10c370b6791b29ce2d6a78cecc54ead40ae9e4b7bec"
+    },
+    {
+      "importPath": "github.com/mitchellh/go-testing-interface",
+      "category": "externalModule",
+      "scope": "github.com/mitchellh/go-testing-interface@v1.14.1",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "fee3ab06927edf3fceee9883552addffcebbe4bd51242f52f6190204568c9375"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-log/tfsdklog",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-log@v0.10.0",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "a43daa5b83e35082f031a43b9ac583b7f242f19efae7b7d3f503094e5baeb023"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/logging",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "8e9bca3de1550d42e5bb32940e8380b049736579460a265ba23e49bb69693268"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/reflect",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 14,
+      "selectedFilesSha256": "5cee65abb68c9a915e9a968a7ea45059a2bf7abdf095ef57bfec32da3f0b00fc"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/types/basetypes",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 31,
+      "selectedFilesSha256": "71115db39e31f9e1a25fc0b0e4a3ba449efbe4baf772506757f5fb9a03c3375c"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/types",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 27,
+      "selectedFilesSha256": "0ada36cf5d9c4a9e1728505bdddea6ffa77a8c2e346ff829c30386121b2be630"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema/defaults",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 14,
+      "selectedFilesSha256": "860d68ff4960683ba2fa6d98f6be44c9f807f31e3c7795154e59024593fe25a1"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/fwschema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 18,
+      "selectedFilesSha256": "f37cc3e8b44896a98c5326cbf1050df62097e11037ede63d730218b273670da1"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-log/tflog",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-log@v0.10.0",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "52f31541b67373b9e497d14151b41f7e39c316126873ca29174bb2e2e81839d3"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/privatestate",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "6a58d0a3329965eb689c761aa5b4296b60f06688cb3ff803a156c2198cd03a6e"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/fromtftypes",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "4c206062da83a4ee535a96fb2fb433980347a45157cdaaaca2fe10edcfcb6a64"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/fwschemadata",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 29,
+      "selectedFilesSha256": "28e310567a53f0d77e379a080e9ee44983a435a02fdd5727be162c120b3dba55"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/tfsdk",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 10,
+      "selectedFilesSha256": "244f78a88a240b95e16ae9073ff667c8a964864cadfc2f480e7dba869a6e1f1a"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 14,
+      "selectedFilesSha256": "8f8c31f904075f29adc17c3cf40e1ed71a9588d3154cae631497e8ccc6fcac1f"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/schema/validator",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 15,
+      "selectedFilesSha256": "0895da8d30305444902c0c2759aea4e89558e6c3db9c352efef30fe69708d8b3"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/fwschema/fwxschema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "3b846e9e2443a3c50e1562d08f1ecfe6957cdae72bd3ac5a71f38a06f1e25810"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/fwtype",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "33f9cdc255fed5c11ec16a38b5e43f18150eec2f1e98cbe367c411057f423d55"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/action/schema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 26,
+      "selectedFilesSha256": "cc1feb8095fd873d49182b0940c73c12d9be4cc9e63b8b1bee986460452c294f"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/action",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 10,
+      "selectedFilesSha256": "8066fa77b2e1bc7241da0eed9ff35349b26a58b5f6ae10f5c7ec63e83ccf762f"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/datasource/schema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 26,
+      "selectedFilesSha256": "2b4572fc8e18a1a62c8167188f103dabc15427d02cafd2afdd5512f700534977"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/datasource",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "5d095b8288db9960a5e333e50c40da487f9bc68ef341bf850d29c5b232a0cc2c"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/ephemeral/schema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 26,
+      "selectedFilesSha256": "e0ceee56dcdb4d404e7afdaec260e6ba5443418ea9cfbf4ace3b9435fd090a55"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/ephemeral",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 11,
+      "selectedFilesSha256": "41c7e7c235fddbdff64ea74f3a36375ff54b4f470ae4076e725b12fc2df8aa3e"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/fwfunction",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "0b65be23aa1598167ee34addfda1f8eceeb9be2ae203bc479df1e90fbaaab91a"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/function",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 47,
+      "selectedFilesSha256": "23bc607159168d75088fc83e58e7bea4c6c3e0e31dd061acc756f9dccf6204d9"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/list/schema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 23,
+      "selectedFilesSha256": "07724c459d1470690eb2807069584b9124b5b1ac5a3e815360760c34191dae26"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/identityschema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 11,
+      "selectedFilesSha256": "56cde999e03b0b42a465a305018cfce2f3d2fc073a38ea53766ff6b268b0df8f"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 26,
+      "selectedFilesSha256": "2276349ba10b06cd0aa21d9e81db77d5e796d39792353205de4c9c8c0008142d"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov6",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 22,
+      "selectedFilesSha256": "294298158c39a4580bc93cd9c8c83cdd36658a56f7988d15160bf939139799e4"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 21,
+      "selectedFilesSha256": "6d042153ca120aaa1460e56837b6908d2780ade034882afa2336aec557384a2a"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov5",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 21,
+      "selectedFilesSha256": "a6f2f63c8c0a31068f306ec2ffb59aa5cb5abbde79cdde93b25953ae986a2623"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/list",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "31d71275a4b5707b9cd3f79d5794b5114ba883aabb570f9116caec143e6b3277"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/provider/metaschema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 18,
+      "selectedFilesSha256": "507b8d4982d47ba478d6d52f23ccf307c0ca3d57047355b02b3fa898f5cb935c"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/provider/schema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 26,
+      "selectedFilesSha256": "5f1beae111032d32b5dd426bf35a0a798b183547eec3560bba57564dff59b3b2"
+    },
+    {
+      "importPath": "hash",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "1adb9ad99dd6c1e087e422cbcf3b76a014a5699a67f751df47559f45dec95d7f"
+    },
+    {
+      "importPath": "crypto",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "d6fdc8b90c5daa56cce355d3a31d0930569887a0bff78f64d7d5792b3d1215f1"
+    },
+    {
+      "importPath": "crypto/internal/fips140deps/godebug",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "18f0c74e255becf059eb71f7078a59f08936ecd64fd62af720a98dbfebab5ac3"
+    },
+    {
+      "importPath": "crypto/internal/fips140",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "87d86a04a4f8d12b4e2619e739cadd06cf45a71d9195cb16bd03ebd4dc9f6ad7"
+    },
+    {
+      "importPath": "crypto/internal/fips140/alias",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "3678810408982800d30de9ea007dcbba2678578b7b6752b0886d459a262e50f1"
+    },
+    {
+      "importPath": "crypto/internal/fips140deps/byteorder",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "327dc84d0ba20f3eb2c7b00c33b82f5d182d7284372dd07f067e29b9bb0215d0"
+    },
+    {
+      "importPath": "crypto/internal/fips140deps/cpu",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "142390f23299f150242342858b74faaa1d43128376c6b3f37304c1d222c20f9a"
+    },
+    {
+      "importPath": "crypto/internal/impl",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "473741de37e832e4bf1f414b413af2c5a72bf78b59053afc46ba08b8e010f5e7"
+    },
+    {
+      "importPath": "crypto/internal/fips140/sha256",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "5ff29de027fe487fdf94d9f62fe0244ad41473b5e2d6dd586be4a4ecbda2066d"
+    },
+    {
+      "importPath": "crypto/internal/constanttime",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "8fa6a675c6e08617a1f3191fa7deb6135f825f88b5cb28505941efcfa85bcca1"
+    },
+    {
+      "importPath": "crypto/internal/fips140/subtle",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "3b728a7249f6dc1b872971a98a5e3c50d62ad3044a37bb9016a6a76107007c79"
+    },
+    {
+      "importPath": "crypto/internal/fips140/sha3",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "277c97bc1220b43047d4812c913d15276b4e4a90d047f0376ec2b6ea98221bd8"
+    },
+    {
+      "importPath": "crypto/internal/fips140/sha512",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "c66ebb5cba05d83923a931b3dc1474a24404c695272433366e6252283acf9927"
+    },
+    {
+      "importPath": "crypto/internal/fips140/hmac",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "1c0326e12d98a7a34a81be30cb65cd03d5430092b2590eef98730e3b6abf4c66"
+    },
+    {
+      "importPath": "crypto/internal/fips140/check",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "64c5201a272c948ffd7da1e9efed780a3ec8209ff5b133b0922f0d4d2cc9c696"
+    },
+    {
+      "importPath": "crypto/internal/fips140/aes",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 11,
+      "selectedFilesSha256": "7afef8ed10dd1b3328423b161ad127866206d019b18e19257ef9da637200dfd0"
+    },
+    {
+      "importPath": "crypto/internal/fips140deps/time",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "51106bcf4bfdc026f741ab9705a38524746a38650241e0a0238e715a28befe30"
+    },
+    {
+      "importPath": "crypto/internal/entropy/v1.0.0",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "d5cddb5426ae8cde8e5f0f873ed29db1172832efdb5baa7bbbe1cabfb44ae4b9"
+    },
+    {
+      "importPath": "crypto/internal/sysrand",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "a7c1624e2873841f5c27d6d704ccd088de35cd805ac609065bc48cfd3c4aef1d"
+    },
+    {
+      "importPath": "crypto/internal/fips140/drbg",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "762cc1c9074dd7de544e52de91b8e11df5c28f2af5d6494fbc0ebf52625533b9"
+    },
+    {
+      "importPath": "crypto/internal/fips140/aes/gcm",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "7f11de81a0abd3bcbc56fc310bd2113ac1f6a6b3f1f8a511bbe2770a1e6435b3"
+    },
+    {
+      "importPath": "crypto/fips140",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "9b758cec590d1d061e7be79c19c27366814f2dcf9a04a5d80ac98f870745fc05"
+    },
+    {
+      "importPath": "crypto/internal/fips140only",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "dad6c7a7cc9992e2c91974187ea6d260b71bad3ed1ad8bc5b22145dc9874b0dc"
+    },
+    {
+      "importPath": "crypto/subtle",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "391c01223983537e2791860f3948fd52d3fbb3bad736926f87cde2aef04e9bbf"
+    },
+    {
+      "importPath": "crypto/cipher",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "8d774dcc89f24c73edaec1edea7fabe7629869027de98ccafb2b800ccdd85bdd"
+    },
+    {
+      "importPath": "crypto/internal/boring/sig",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "db23afdfed5265983ff19e642571552e891cb49ca1f57c0dc2f136335787a874"
+    },
+    {
+      "importPath": "crypto/internal/boring",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "845c7ca80904e4c6c23d4aee4ed8dd79056107afdacb76c61e0d674fc84d06eb"
+    },
+    {
+      "importPath": "math/rand/v2",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "dd16f9900d7be001cefe38f8e6bb4ab82aaeb582be367e79611e47b6284c76b1"
+    },
+    {
+      "importPath": "crypto/internal/randutil",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "a815815e9d15b6e6191557f58affed496be1ea8c8c3e96c7fb8d0c2fc6b76fd4"
+    },
+    {
+      "importPath": "crypto/internal/rand",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "6e061d14e6df510030d20c98d3c53278dbd71c093f4dc015073f86925bc9fabd"
+    },
+    {
+      "importPath": "crypto/rand",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "d013f0a9e663f13b036a64c4cbf6eba9642033d80f2cad6e89f68819f1b25051"
+    },
+    {
+      "importPath": "encoding/hex",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "f98481e50161bdcf13d5a8416b950bf19d5c60bc451c5b2a51b59767e4e8377d"
+    },
+    {
+      "importPath": "github.com/hashicorp/go-uuid",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/go-uuid@v1.0.3",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "18a5cbd68d1690cf16358f917047dc517de0c6f927c24d1c29d4192446523ca7"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/statestore/schema",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 21,
+      "selectedFilesSha256": "6613ed6d871126182ec4dcef6640477ccfa7bd70c7d22775e7ce2388db73e154"
+    },
+    {
+      "importPath": "os/user",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "fd2ca4e37c9861336a3cf169732883a141fcfa32259174a5260dca46c42c9946"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/statestore",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 14,
+      "selectedFilesSha256": "cab5c4d8127602dcf9b7c922d208be2879892f39869bb24355122ee9bce983df"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/provider",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "73e632e8d0faac1ce808ef22013d6f1e59ff57c4324a56c341209b00690bf9c4"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/fwserver",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 57,
+      "selectedFilesSha256": "34bf5dfa57e78e8bcb250441500ca1d29ff69d8ab34e1bdd7c2b1090151f36f2"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/fromproto5",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 38,
+      "selectedFilesSha256": "510dbaf4d35dee1aca3412b258399afe7e502d99bc3f578789f2ee148c1b82e0"
+    },
+    {
+      "importPath": "maps",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "4d851a790fb74dab139771105d5f4d3003c06b5c57d11309de12c0f85abb351e"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/toproto5",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 51,
+      "selectedFilesSha256": "d85f5466dd5eef40447b685da49fc36f7a599ff06e59937bec2f7cb6cc594964"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/proto5server",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 29,
+      "selectedFilesSha256": "29a9ef71001da4780f6ddb2b4edbbdad1fbedd5eee776efce13995005f292a38"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/fromproto6",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 42,
+      "selectedFilesSha256": "eaa3b88b04e63b6a0282ab83d9615c00c03f607147c864347f5eee6770b84377"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/toproto6",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 59,
+      "selectedFilesSha256": "ff44de3918877b8d5c04f7b6d1fde02ae9c3a66cdc3923471c94f49585dde439"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/internal/proto6server",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 37,
+      "selectedFilesSha256": "b338afec078e8409cbf7c3f39afe9890e22a04ecaec685b51b70bb226773d222"
+    },
+    {
+      "importPath": "crypto/internal/fips140/nistec/fiat",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 13,
+      "selectedFilesSha256": "56d9248d3e0189cc5839bcd336de9aca467fd5ff8a0e3d47f7790c8a98608838"
+    },
+    {
+      "importPath": "crypto/internal/fips140/nistec",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "3d069f1b75c92538a66400ff5bf9a19817bf45a7027159f64c527eb381648b7e"
+    },
+    {
+      "importPath": "crypto/internal/fips140/ecdh",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "bec362182788a2d779ed4a05fda763a0bdab28a33dec050e089bcf895b10ceea"
+    },
+    {
+      "importPath": "crypto/internal/fips140/edwards25519/field",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "d80cc41ca397b59f0a1a617d86ce53ebc51acd6882e861ca73c10befe98e6bf7"
+    },
+    {
+      "importPath": "crypto/ecdh",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "5206ca8ff9b729ccc0f31f71328f111fa86e6004860e5dd024c37443fd2a4fb3"
+    },
+    {
+      "importPath": "crypto/elliptic",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "5e655a35101d97fbe673e033c2579ef065255a0093f174df052a2e135936fd00"
+    },
+    {
+      "importPath": "crypto/internal/boring/bbig",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "e764288303c6d1987031506d59e8b49219d974ea1656be86cab18e449a388f17"
+    },
+    {
+      "importPath": "crypto/internal/fips140/bigmod",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "e9601b357a50c65e4fba6e9125ac55a5f3774e1c9532a0179fdbfead9caa7a4e"
+    },
+    {
+      "importPath": "crypto/internal/fips140/ecdsa",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "7ebdd2cd8c39bbcfcd66a34a8a1ffadf8b392863e7afa5c65f67cbe79e79cc4f"
+    },
+    {
+      "importPath": "weak",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "6b52f6b047c1ce83d5d2e3df5b6bb7112d416a07cc3affc8937f96e0f173bee6"
+    },
+    {
+      "importPath": "crypto/internal/fips140cache",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "abac4753ee2a18633fbabd6ade2883215bb41cede53025a08496ada678b84f95"
+    },
+    {
+      "importPath": "crypto/sha3",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "5d116e8abcb49221fbeb343bacaf1d44aa0482dac5db29929201474f021cf0e1"
+    },
+    {
+      "importPath": "crypto/internal/fips140hash",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "fb4f8f24a32ddf18fb4e4107356f83eaedd5cdecd7a06ffcc01036c80095df80"
+    },
+    {
+      "importPath": "crypto/sha512",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "b9bf80c492eab50847d22a7efbfa6002258d758170f28fbb2bcb78a6c2c9e379"
+    },
+    {
+      "importPath": "internal/saferio",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "22cba412ae2aaf26f9718be704b1ea6769fb6cb07acdd3b9d1ef04e7bf8a3f6d"
+    },
+    {
+      "importPath": "encoding/asn1",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "0d80b6a0bccb625185a8d80d0c221544e0b5b9bf914d81949fb396308b6ce4d0"
+    },
+    {
+      "importPath": "vendor/golang.org/x/crypto/cryptobyte/asn1",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "e542a3b3c2354fa94b0f5547a792d9abe75c5833371421d0789a9625762eb286"
+    },
+    {
+      "importPath": "vendor/golang.org/x/crypto/cryptobyte",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "7b72ddf6853efdf1cee20cdcb2f28cba5d9ba03d0c18f44bbf2355e861f54737"
+    },
+    {
+      "importPath": "crypto/ecdsa",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "2bfa474cdf7027f68cb0ea74138124ebf848050ce0dbe5769b148a6ad1eb763a"
+    },
+    {
+      "importPath": "container/list",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "48967eb7e6f912ce12d3ab0d2cd6243dfa55d67d54a3a21f5398a912c48614a8"
+    },
+    {
+      "importPath": "crypto/aes",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "972f8e5333dda74fabea47509c1c68f7572c7fe92234a97a3a4172675e804e3d"
+    },
+    {
+      "importPath": "crypto/des",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "6765ee885344d32e2d7cff0ab68e427f3bbc0184975035436968c2ecf050cc4d"
+    },
+    {
+      "importPath": "crypto/internal/fips140/edwards25519",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "987865884532397b9038ee9ffefae0db77618ffbcbd4c0a912e465f919ced05d"
+    },
+    {
+      "importPath": "crypto/internal/fips140/ed25519",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "716fad0b1c068ec27028f98a7507d3552c0948543b2f79eb396b6ae680b7dfc5"
+    },
+    {
+      "importPath": "crypto/ed25519",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "0659d08ec9c53e96986b41839e4160ad7f443e2a514b51ceb3b7ab02121fbb4d"
+    },
+    {
+      "importPath": "crypto/internal/fips140/hkdf",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "786189e65f6f245972240ccd14562237e13af0ea91ec9645bb9cf7e3bdb280c7"
+    },
+    {
+      "importPath": "crypto/hkdf",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "2f11a0315fa4ceb22ffc623c6170cf4a4e6d94a9c2ef1b6353760421172ab3ed"
+    },
+    {
+      "importPath": "crypto/hmac",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "5dd4233a640a730a5343839d570915fb8e7087f2a1460fd1ee92bfb946d4cd95"
+    },
+    {
+      "importPath": "crypto/internal/fips140/mlkem",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "b44833de57580d4fe117d9c61962fd6297ed0b826bf54eb7831dc8412f2e8ed3"
+    },
+    {
+      "importPath": "crypto/mlkem",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "922d82bbe779c5f23c94b42c0a5c37b1fe3a12a87a1597230869f9d5885f5a9e"
+    },
+    {
+      "importPath": "crypto/sha256",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "07b9859f008f3829900a0917c6c9a51dbe1497d0f4a8e0cc59470e349221c1d5"
+    },
+    {
+      "importPath": "vendor/golang.org/x/crypto/internal/alias",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "69654641d1e0472916e6d24e8fb2305989bc04866b82b4d7e04f6669ed6b6e8f"
+    },
+    {
+      "importPath": "vendor/golang.org/x/crypto/chacha20",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "12a958a01da3feda7818c57e442126dd927c3cfb4024142e3757a7ad536459b5"
+    },
+    {
+      "importPath": "vendor/golang.org/x/crypto/internal/poly1305",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "62804e6ed25c323418a2a84ff8b31c84d49ae33cb4af92884a5561c9731209c5"
+    },
+    {
+      "importPath": "vendor/golang.org/x/crypto/chacha20poly1305",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "1cc5485831c315354cc38ae62b42579c9978e1aad10f2cbb0253ea3ccabf2301"
+    },
+    {
+      "importPath": "crypto/hpke",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "753ce1adcc00b5ef02706e58b0bfec81376a3bb2ea3ccba87356074bf4b34c0c"
+    },
+    {
+      "importPath": "crypto/internal/fips140/tls12",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "2fa81e70597c5660bea67572a4380467067c3ed2bf42fc76ecf1a6ce98692a62"
+    },
+    {
+      "importPath": "crypto/internal/fips140/tls13",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "b596ad3525d1e7d50d1a057fbd83771b4f55ac7616b237c006fe023e6494e2c0"
+    },
+    {
+      "importPath": "crypto/md5",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "12fcfba04d8662d9f5b4e09b75df2fc5f3a123a821a2b42800ce4228344fd06c"
+    },
+    {
+      "importPath": "crypto/rc4",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "341d003b025eee7ba94240b383278199156bde6565a719702bb5eeba73edb108"
+    },
+    {
+      "importPath": "crypto/internal/fips140/rsa",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "caf076d3a44719b540150c058853c4258ba50420789dfbbbc6c0d7acd37d832f"
+    },
+    {
+      "importPath": "crypto/rsa",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "40dd071bff28fcb1647ce4610d57db37f82d43c5717ea587f7eb04d1887f95ce"
+    },
+    {
+      "importPath": "crypto/sha1",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "02533f9d0ef189d7c2c3f30b2cac1b5c593552889e913f74514791e28018f011"
+    },
+    {
+      "importPath": "crypto/tls/internal/fips140tls",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "47e9b6bac73ccfd84ff38310c68420ba4010cfd00a96d3fb3e0c8539c860e7d9"
+    },
+    {
+      "importPath": "crypto/dsa",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "0f561b491780f662b5f331793b408459ff7ea13556f30d8ff6cf94e90086d709"
+    },
+    {
+      "importPath": "crypto/x509/pkix",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "8d52a459013c37b793db00ed8341018cf978d125e368b040f31b1ba35944d441"
+    },
+    {
+      "importPath": "encoding/pem",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "c89cf6f4aba1e06955249add1f64974f8c7581c2cde5cb2cd836748066f9d687"
+    },
+    {
+      "importPath": "vendor/golang.org/x/net/dns/dnsmessage",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "68dbdf151e35d3a7e067f6f51bebdf5cbd03bac8d35a50603740104ff20353bf"
+    },
+    {
+      "importPath": "internal/nettrace",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "58e0ce781244684d91f8f5928c9117bb41222ac79013f0089084113b31fdb673"
+    },
+    {
+      "importPath": "internal/singleflight",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "a300c65928346d9b0b601cf436681eac58eb2c4f06c0d6a57fe8fc6320b04893"
+    },
+    {
+      "importPath": "unique",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "ade611cf41c113236e35d52ae06461fd22c869ef1130605663bbab15aa6c064a"
+    },
+    {
+      "importPath": "net/netip",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "f8e2f55b997f5ea847188cf9de7127c3c662b934605a9293de91aae3793431e9"
+    },
+    {
+      "importPath": "net",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 61,
+      "selectedFilesSha256": "8d2a0f19c5afa863b136139eef2ff02096ade274d957dbc3b1284ac7d062c973"
+    },
+    {
+      "importPath": "net/url",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "4958cdab0934e6a82ee6b0579db92b55c17b8930d22983d0e41e69d242a43707"
+    },
+    {
+      "importPath": "path/filepath",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "42ba386f3aee40bf372686c61ad5e620e7cf3792ca544067772a86d5601a1032"
+    },
+    {
+      "importPath": "crypto/x509",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 14,
+      "selectedFilesSha256": "5e206c5deb3e645778086d72d8ccebfd8df201221372c74202c3676c4f6463b5"
+    },
+    {
+      "importPath": "crypto/tls",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 21,
+      "selectedFilesSha256": "27d690ead7b1ce503cc032f0c4cc0d50ecd8135946836118c73ce3a24ae7a647"
+    },
+    {
+      "importPath": "hash/fnv",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "56fef6df7a2bc18eae843f5261a0b195fb226bc93acf835270fc992f17d1e3ee"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/detrand",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "878fcd2dfccd9213f391731ff357a148737eeeff890b3241376908d44c9953ec"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/errors",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "2215b8aaeb6fcf1cf2cac9b4c637ee72c0d7bba6670391a64c24451ac5e9d0e6"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/encoding/protowire",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "a7c7bd14c0f792eca9677dd934371e1326a83d4e346aaeca114ba87a92c7fb03"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/pragma",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "5a8b3f575b0881b1ec6d8770a9a12adda3cd673f5e3014394f9d78e869b2e6b3"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/reflect/protoreflect",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "cd3a8fed06d51c44875a6860e6898dea284074561d033f491f4321f667889cf8"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/descfmt",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "ba7286ae110747f13f40e5714f3702838e87290f8e772e020117c31b9dbcaef1"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/descopts",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "4170d6d7841ab9bd0968f1951373b2afef2fc0e6f136e202c48192abee7e3b86"
+    },
+    {
+      "importPath": "embed",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "322ced9e0acf6581d1e3e7a90c9e3c69e6a5fa225e2875b9d52164fa80341b19"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/editiondefaults",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "a4bc63af8b0a34428ededbb0f98c2b23074be73b24c9cc87712a16b5f7c32507"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/flags",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "e165aae3924fed9d724a30a8536d3e8780565340105bf0494ef36a6c4f50946e"
+    },
+    {
+      "importPath": "go/token",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "ca21fbefe13137d526bc0d075f752bf302909dbe19ee1507a0712d5ad80cda3b"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/strs",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "6123738491a11a967914a070a0685597648067da8408fb588192d14e04e2102d"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/encoding/text",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "78707e26679a4d484daae224c5b00fdb5171d22c68f0ba85f5d67e6b31a8ebae"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/encoding/defval",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "0933b11e726304b670e2d29cb2fe8e6cc3314b8012f0e15014a3aa9ca5d1ef2c"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/encoding/messageset",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "1da71456449fba60ebc771f4dd63688fe92256aa5b96208e9c0e8ebe4be508d1"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/genid",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 17,
+      "selectedFilesSha256": "70528b9bb492f19eea91c9fc2b20c235149a021229fc3e16b8a43983a957b5fc"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/order",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "747d0824fb543ab7ab26d2306f280b918bc3839625359ae468e2315b76b4ff79"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/reflect/protoregistry",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "2ecfd1aa60ffebb46dd40993f2816032906adfc32eeb5487aa4a221fded919b1"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/runtime/protoiface",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "ff48c50fb8db80b0dd29b2ad94259eb51a9ca4096f11c50d4cf73efc7b2273d9"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/proto",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 17,
+      "selectedFilesSha256": "be6e81027cface44d20b7c013d5df3bd2ce59af10d68cb3bb31cc10e4eba571f"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/filedesc",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "0dbd3727731eec1ccd909394509cd69680db5b59f900150c1ca1715e7a078c18"
+    },
+    {
+      "importPath": "compress/flate",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "0df40efac8c9b2f710054555c0e43ac663256a2e1306c866394a71c9d73c202a"
+    },
+    {
+      "importPath": "hash/crc32",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "a95c3cccd54e010d94c0bc6bc9c4a9facd98cae9640b1494599651aff5955125"
+    },
+    {
+      "importPath": "compress/gzip",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "b17972cd233db4b79f443102852964daa2057c19fa3bb9a443301533568e324e"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/set",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "2a7960d5063b4b3b9de056094365ae8170d48d79f96701ecfc5658abca69a1e9"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/encoding/prototext",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "d3d101771961abe535db17e975144024e5e667f14dba6c4e1613c94e1cbdaa93"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/encoding/tag",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "a77fea087b1a4a03719293f08c6d3c0b42292adc857ce28a876e0f7e784285fe"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/protolazy",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "b1bbedea10f1ffcace5606df955f6c495bdafd32c23408e31114f82102358d35"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/impl",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 41,
+      "selectedFilesSha256": "c79383ef385898c23d17b5901c10b1f3d1d69e2eb7f46bab631e9c18e74a3d18"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/filetype",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "663c634982cf20785ec05fdae1d7c64b77a450a78d788512843e055676e2b11f"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/version",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "b57b34b1733e4b602a9fca4f8cb75f454e9be05b5d36da9f2dbffeb61f045f1f"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/runtime/protoimpl",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "a1af9d931570d3fe94807e1c6a6582870bf782dc4b17f2cbdcf023a51150a341"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/types/known/emptypb",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "b5a5bb55b66b4986f9976a7ed080c1dca947ae19b8d0350c57625edb202a9c49"
+    },
+    {
+      "importPath": "github.com/golang/protobuf/ptypes/empty",
+      "category": "externalModule",
+      "scope": "github.com/golang/protobuf@v1.5.4",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "12f1a7e1b6ef4bc4c72ddcc3159f1b9351f206aec545f6eeff59f7c7249d2d82"
+    },
+    {
+      "importPath": "hash/adler32",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "667a306069edaaa6b7c92c1f921a42e65e0475982306a315dd848d32d96a1800"
+    },
+    {
+      "importPath": "compress/zlib",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "5179514334f751066e95b62a8994b9bcb486fb36904e5a9b79d4009a515c3357"
+    },
+    {
+      "importPath": "debug/dwarf",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 11,
+      "selectedFilesSha256": "032e9c8963cfaa215135b82c7c776587bf8c2188eaaff9b264ba0ef73211ed90"
+    },
+    {
+      "importPath": "internal/zstd",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 8,
+      "selectedFilesSha256": "e8b40261851ae0710f5675014a13125b10147d0fe0618c89e12ddc47cf821d0c"
+    },
+    {
+      "importPath": "debug/elf",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "e28cc1e859b74081ebd79765cb3335be7316e1cc0e241d1366c676fe1c88087f"
+    },
+    {
+      "importPath": "debug/macho",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "db310c60443f8d9d5ecde2e907155fba9794a1095232ffaef17ea7b46df6476c"
+    },
+    {
+      "importPath": "debug/pe",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "42dff8b2868bc8123c481db7e4086ee0843e7f44037af896d113cc97166714e3"
+    },
+    {
+      "importPath": "github.com/hashicorp/go-plugin/runner",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/go-plugin@v1.7.0",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "e6c18059dba568fcc270f197bf8b5f8c67d4e6c3ee31cd3002cb47362294e8d3"
+    },
+    {
+      "importPath": "os/exec",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "472059644ca707af160dc761d981a51789603c2c1228f4cf958f70382edc5e76"
+    },
+    {
+      "importPath": "github.com/hashicorp/go-plugin/internal/cmdrunner",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/go-plugin@v1.7.0",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "1d150b34160123389da643bed3b7ca232270d548abf2272bcc131032985025df"
+    },
+    {
+      "importPath": "github.com/hashicorp/yamux",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/yamux@v0.1.2",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "1c5a0a04d1c53cc1584c5b35a3a414ca5954e0084600335e1f2b12d672da3dc4"
+    },
+    {
+      "importPath": "github.com/hashicorp/go-plugin/internal/grpcmux",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/go-plugin@v1.7.0",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "c7b6b7f774cc1856261809a701ebf8f73acd1b175e9ce5425c697e4319c05b3c"
+    },
+    {
+      "importPath": "golang.org/x/net/internal/timeseries",
+      "category": "externalModule",
+      "scope": "golang.org/x/net@v0.58.0",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "16c118d346f06df5b3a142bf42b4f9ec00c7f5467eb8e7f99d34efd6bcb2ffd3"
+    },
+    {
+      "importPath": "html",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "b0a145662582de4ae2dc1d67f4ac15d98fcc480d8787c54a5b5ba03bfe0cde9f"
+    },
+    {
+      "importPath": "text/template/parse",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "b759d4d384474b56ff3243ad3d23bf1dd98252b5861520855dd68b43e7a0f334"
+    },
+    {
+      "importPath": "text/template",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "beec85215879fa79fc3565d675ab3d65e441c9a44c14309cb160ebd8387b066b"
+    },
+    {
+      "importPath": "html/template",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 18,
+      "selectedFilesSha256": "c2b7103b2b74d007e408d45e307ab456f1b58f83f8d7ae10d49cbb8b2598bee4"
+    },
+    {
+      "importPath": "vendor/golang.org/x/text/transform",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "963637d53ff70ef43b79bba1b0021356f85a7afa0d4611f8740a389eb6245e5c"
+    },
+    {
+      "importPath": "vendor/golang.org/x/text/unicode/bidi",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "ae420168252fa647322902132d7902e42bcf80e8cf8e4d88e2d0901ee9bd9aa3"
+    },
+    {
+      "importPath": "vendor/golang.org/x/text/secure/bidirule",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "0cefbd5d309b01730bdd32490bc7fdeb5078df2f4d9486e230c0589d5123344e"
+    },
+    {
+      "importPath": "vendor/golang.org/x/text/unicode/norm",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "2586df7ce87233bc1bac90c62010f6d56a8243a0cddf873758493a96bbbe9036"
+    },
+    {
+      "importPath": "vendor/golang.org/x/net/idna",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "ce7a94f52ebccce6029b10a58a8ea08910e56944b01f1bbc869cd9e0e01c2f80"
+    },
+    {
+      "importPath": "net/textproto",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "127681f50572553a97d09a51789df95d1a004477db5151ead4d6a4631c610a5c"
+    },
+    {
+      "importPath": "vendor/golang.org/x/net/http/httpguts",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "fc5054da9c65c601c4bdde296a4dae242ebf198619a09a4e3e3c5b0c379ad1f3"
+    },
+    {
+      "importPath": "vendor/golang.org/x/net/http/httpproxy",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "14fad386270fe23216bc1e58575ee868a9af8bda87bad0d7e04dcbd224e000bd"
+    },
+    {
+      "importPath": "vendor/golang.org/x/net/http2/hpack",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "da71e19721670cf2611cee294f198912f0bd7281844592129c195d66e055915f"
+    },
+    {
+      "importPath": "mime",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "89e09af71381ce7764e7fceac36ea8d8f3e5b9242a07bdb6ff7b180f9f2de38f"
+    },
+    {
+      "importPath": "mime/quotedprintable",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "d2153737c1cf04f435dd823a1b776bbe03d56fc0fb2b52e1f6e8b636a1022bc4"
+    },
+    {
+      "importPath": "mime/multipart",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "fe1407bd945f0b589ad096993f476ace4a4678df7a59fb121744825d9fdd5ee1"
+    },
+    {
+      "importPath": "net/http/httptrace",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "5bb93a7eac34ad60c43822b31c49634c185ea09645260f11164eaacde86e10d6"
+    },
+    {
+      "importPath": "net/http/internal",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "0733c8e8258448a3c494ba24ddff06307d596a5413fcf354db735e550ba93d5d"
+    },
+    {
+      "importPath": "net/http/internal/ascii",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "3de2f7c03b8ef03bceb05c9772234cab52f76363b071149c574710d07d5f43c3"
+    },
+    {
+      "importPath": "net/http/internal/httpcommon",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "a165bbd5a3ecdca9e37e0cda15dfd6330a0a6473b364ec1066079579523c59da"
+    },
+    {
+      "importPath": "net/http",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 30,
+      "selectedFilesSha256": "7a2d6936f1f0c17b9170ea40a43e1489b4313a3674b17fc0eeab412a7a028570"
+    },
+    {
+      "importPath": "text/tabwriter",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "0f76eb221aebfc2ac4dbeb4a4016f988654b018c1ef9713df886aa828202c4ec"
+    },
+    {
+      "importPath": "golang.org/x/net/trace",
+      "category": "externalModule",
+      "scope": "golang.org/x/net@v0.58.0",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "98b275b1f4a1a88cd804c4db37aaabb17b973ae2643d62abcb69ff562b8fa6ef"
+    },
+    {
+      "importPath": "google.golang.org/grpc/backoff",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "23af4d1285fe77f13d85717478baa5bee1af3fb6c855f1092eff7943fb2a7760"
+    },
+    {
+      "importPath": "google.golang.org/grpc/grpclog/internal",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "1ee0ad31c2d59dcf51ca61f722d28c1146cc982211811936b7ce7d233bddeabd"
+    },
+    {
+      "importPath": "google.golang.org/grpc/grpclog",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "70592fa27e8333edc3933230a7c9e12331e84304d8c4c38b5790f91df93590fd"
+    },
+    {
+      "importPath": "google.golang.org/grpc/connectivity",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "314f3b6bf0828ff807b3c6c6a1651398f5793c293774d02e384fb5c47f9cedcf"
+    },
+    {
+      "importPath": "google.golang.org/grpc/attributes",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "8a9dd13b709b80ed697774e688f5f1ddf329dbc1340a0e1959ccfd3c16d0a6de"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/credentials",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "8a7b9ad2e639fe0841ea0fb20b3117c4650d266ab8217d74239709675836b93e"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/envconfig",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "cc7235f5780ac72eb717a5fefb9b27239f7d7cea3f630417d50880f9b4cb4f7e"
+    },
+    {
+      "importPath": "google.golang.org/grpc/credentials",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "4caa6520a14a3e2083f45ddbcacaceb88859ab5032261375236773486b92dfb3"
+    },
+    {
+      "importPath": "google.golang.org/grpc/serviceconfig",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "bf7524e6b532f11b90c2cb3b868918b5cb328fddc7afaf95e53bfa702e19bc69"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "a83394e9b703097c4e0003a445084dd6815370f98f4233f904e67b9ce16416d1"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/channelz",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "9fdb02a68cb49a1eb73802f0d2709aa8f5bdd5dbe374705d1f3d39261a15ed25"
+    },
+    {
+      "importPath": "google.golang.org/grpc/channelz",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "d659c4a18a35d84f1cf42a38dd72cfdc177036341b9a12f3b22bc0fd55d109a5"
+    },
+    {
+      "importPath": "google.golang.org/grpc/metadata",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "45ad84e8334cb72bbb72cfcb5c938daf9323fe2853074070039af68d48a0f808"
+    },
+    {
+      "importPath": "google.golang.org/grpc/stats",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "6023b03d91af046fcc337bbba0e21819234ccc41850f35603369f7e6ab113b6f"
+    },
+    {
+      "importPath": "google.golang.org/grpc/experimental/stats",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "ca3f1a7c2dc2efecfb0f728715da25e7b5a55e8f2946022485d3080a5456fbbf"
+    },
+    {
+      "importPath": "google.golang.org/grpc/resolver",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "82afeb799824e4c75d9f83f71f5919a5c929aabb375640ec7ed3982622c0b8f1"
+    },
+    {
+      "importPath": "google.golang.org/grpc/balancer",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "77903292f7a92842a86a58bff3c87d02dd977e8ffba0991b709829736a62e956"
+    },
+    {
+      "importPath": "google.golang.org/grpc/balancer/base",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "dd69b855256f588e9151d41d5b97e96de787e18a2374c356d53c3baa96374f2c"
+    },
+    {
+      "importPath": "google.golang.org/grpc/balancer/pickfirst/internal",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "f82c9871f74eff66a94d361f27b26d9a0e8022de8fe4f7b41e5ba3c60eeb7f17"
+    },
+    {
+      "importPath": "google.golang.org/grpc/experimental/balancer/weight",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "26e43f8e93456bb3b4a7c055dfb0b1ee8b1c193bd8033ef128523e2993efd0c9"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/grpclog",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "01985ac215c78b2e70b9025205b3b664d1420031781619dca3e575109940a1be"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/encoding/json",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "9ed04c2f1416806527f58ffa1bffad51008fb07b7be87c320bb3461fdd62aef7"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/encoding/protojson",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "7bfc394fc26a5fa059e72e72b7530e63bc6e6af1e397290f6319d341b38458ec"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/protoadapt",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "2545a9e0d3017dcd62ca2cba4eb1603ef47627614b0daf67be5ddd7e228f43ea"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/pretty",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "407b4d876e4c21b80c6a93072e68bd0790b5b1c7b2407ff491fc95043699ec1f"
+    },
+    {
+      "importPath": "google.golang.org/grpc/balancer/pickfirst",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "db521a896ca35103919faff5f4d2787e2533162159bc99fd8fe5178e4070cea5"
+    },
+    {
+      "importPath": "google.golang.org/grpc/balancer/endpointsharding",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "7e4f851e073f0a0d20d09173e32ddd4d39c1d46617c3836783d53338623fad80"
+    },
+    {
+      "importPath": "google.golang.org/grpc/balancer/roundrobin",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "1722e19fb4ae24e7514d59d60f92ab8259946ce5b9419795cb7fc5009c0a09aa"
+    },
+    {
+      "importPath": "google.golang.org/grpc/codes",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "85ab287a0c2c64f34fff45720c6d4e5d36950cd8fca051a170c4db7ff79aef91"
+    },
+    {
+      "importPath": "google.golang.org/grpc/credentials/insecure",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "9f1ca453c5b116e498dc2039ad2c474eb87708527147a8a9f6ef6a544d40e084"
+    },
+    {
+      "importPath": "google.golang.org/grpc/encoding/internal",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "f06bd641737fe2a05ded33b8b3a48a6c87ab2ba78e9f4094a6352fddd04a6fb4"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/grpcutil",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "7251242c5c65effdbb5f66bd3926afb0c092c70c95964a374ede9c49db6b1aea"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/mem",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "eb94dad0662ad6fe76e6e9572f77be5187f6947cc86262162f12fc82c7802e07"
+    },
+    {
+      "importPath": "google.golang.org/grpc/mem",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "a0e5fdbe57bd152d60da1b91c71c2aec3c1a9e7187d209bc435d1f16ba8c6894"
+    },
+    {
+      "importPath": "google.golang.org/grpc/encoding",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "318154996fb4be8dbd7ea7d816759c9f0efaa1a2936beaba4ef938b6881bc888"
+    },
+    {
+      "importPath": "google.golang.org/grpc/encoding/proto",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "d34a48dd959f77fdf3edfd9c604bf664be6350e790a9fd6cd01c6f45334eb3ff"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/backoff",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "b3ca27bd7add60ba4720c12a0950d884b6440e6df092059b9207bd395df960fd"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/balancer/gracefulswitch",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "646fb6ebfc2d37392755b1cb0fbf8faa6e7c02dfd3c81e012a843eeebc30d993"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/balancerload",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "38b9d9b8483526343b89c8d8ff9b8f4e9aafd36e9918ab6cd79dbcd8cd99af9e"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/types/known/durationpb",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "046b6fb93278df87384150d2371b2c66b09bf52fedefe3c3d8718ea774da850a"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/types/known/timestamppb",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "e7344e4f0180db9a93889b3dd9b3e4f0dc4af104058fc59ff55baf9ac5886693"
+    },
+    {
+      "importPath": "google.golang.org/grpc/binarylog/grpc_binarylog_v1",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "3197290c140bb24124a4b3c891e486e46a9581183a22fa0bf4adb83770d415e6"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/types/known/anypb",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "b9a4bea3059fa3520b627f1fa75f2c328db132dcb1d9df1641681704fa99a097"
+    },
+    {
+      "importPath": "google.golang.org/genproto/googleapis/rpc/status",
+      "category": "externalModule",
+      "scope": "google.golang.org/genproto/googleapis/rpc@v0.0.0-20260526163538-3dc84a4a5aaa",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "91ddd383544bc98e86f4b7ea73a56c730155f4c017791d7b715c5731b4e59666"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/status",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "758a713dd73f211d2ddf5e9d31474a4e98e2a4b1129f9ee3e26acdc55485fffd"
+    },
+    {
+      "importPath": "google.golang.org/grpc/status",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "a5e989166262aecf869a184bc046efe372cd4b318d7a7a8c5522afa83988b08b"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/binarylog",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "8d99099eb3d36e4323ffc1b8eb0d41fe2ecafd14e0ce5ff28397fb5747954fae"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/buffer",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "ed2f24e6697fd95bdfb56308e221e540f03555b97658de7e1bbb3749610085cc"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/grpcsync",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "75682b679a4839d710bcb2403707efcb9fbd4339811b330ed11c9fd1e4673b5b"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/idle",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "704db1ac01bdc6ad78e1668c2048dc3e39bb6057bd81e7d121208f72f2308777"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/metadata",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "2a4efd603ba9bc436fdb1e36eb1aa342710081300c3d7e2fb2386ac0dc343b92"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/serviceconfig",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "80a72d242f3c573547f679ea1a4b38d12ee7c17d1e90df4cbc3072860d2f0e70"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/resolver",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "76ad51a29305fbf90e0d860bcca2aac82e18e387c93422eac46497b59a23cb00"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/proxyattributes",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "731bd996b67f43e4a560af5dd718208284fd29ec33bdbf160ce91703a2da4a7a"
+    },
+    {
+      "importPath": "golang.org/x/text/transform",
+      "category": "externalModule",
+      "scope": "golang.org/x/text@v0.41.0",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "f66b7be773cae4a68f4c311290ecbc5a0743b28185060d81cb3839b2cb040354"
+    },
+    {
+      "importPath": "golang.org/x/text/unicode/bidi",
+      "category": "externalModule",
+      "scope": "golang.org/x/text@v0.41.0",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "09823ae086fc6227ca00b1ad0e203e8f63e61f2ada27622152948ee4cc3c3ddc"
+    },
+    {
+      "importPath": "golang.org/x/text/secure/bidirule",
+      "category": "externalModule",
+      "scope": "golang.org/x/text@v0.41.0",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "58489b3a885faa9fb34c3bb7c469bd315eab62db1d4f6d944a3d28f3abc40c01"
+    },
+    {
+      "importPath": "golang.org/x/text/unicode/norm",
+      "category": "externalModule",
+      "scope": "golang.org/x/text@v0.41.0",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "5edf6caad670083f07b65fdd44a628176916e154100163b0c4ef191c319f28b5"
+    },
+    {
+      "importPath": "golang.org/x/net/idna",
+      "category": "externalModule",
+      "scope": "golang.org/x/net@v0.58.0",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "7d677ce62312bad4f6bdfe04ffd96dd0044facc778001d100bfcbfa64ed1c8ec"
+    },
+    {
+      "importPath": "golang.org/x/net/http/httpguts",
+      "category": "externalModule",
+      "scope": "golang.org/x/net@v0.58.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "31864732bf34f261e487bc355d36e6a975b98a717a7dc4b4ca24fbb0d6b4b34c"
+    },
+    {
+      "importPath": "golang.org/x/net/http2/hpack",
+      "category": "externalModule",
+      "scope": "golang.org/x/net@v0.58.0",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "9620c96eb9a213a6d396e736f479ecb8e1adf3c10174d2244346face22d5f5d9"
+    },
+    {
+      "importPath": "golang.org/x/net/internal/httpcommon",
+      "category": "externalModule",
+      "scope": "golang.org/x/net@v0.58.0",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "ef85de9c979893f58583d5cea065f82ae458a04ec4f6047a6544cb01a533b4e6"
+    },
+    {
+      "importPath": "golang.org/x/net/internal/httpsfv",
+      "category": "externalModule",
+      "scope": "golang.org/x/net@v0.58.0",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "ae69e3d352c1086182caa21607fa59368ddc9973efc631d3f488af597f12f7c4"
+    },
+    {
+      "importPath": "golang.org/x/net/http2",
+      "category": "externalModule",
+      "scope": "golang.org/x/net@v0.58.0",
+      "selectedFiles": 26,
+      "selectedFilesSha256": "c53bd4c014408af532a148a4155d9b4933d5a93c533ec6b69e61b592ceef1081"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/stats",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "ebc5e6e7c76f1b919eff5320967092cd362d8b2e897d5a87e7af1d2930c58c59"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/syscall",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "fbc67e005709c98be57f157826172a9f6d9bb8b0089d640d9186803f30329ab6"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/transport/internal",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "1fe6b138c7e9a2b810f544b15462c4471669cd3501b85c72178441c72d516e5a"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/transport/networktype",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "ee493198dc1837ed79a99f84032301f3038fa96f899ae021da0f07310ac6de43"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/transport/readyreader",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "7fe5ba95781e853d790f3cb6cf98bd7ef20b3ef2b06c00dba97825383d43276c"
+    },
+    {
+      "importPath": "google.golang.org/grpc/keepalive",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "da6292b16fb79b61d5bf738905a157e87d5cacb1651383db71ca1ba8648c367b"
+    },
+    {
+      "importPath": "google.golang.org/grpc/peer",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "3d23e1bc1916d611685314357604d47d8fd3147d30286875eaf4b39ba0693f92"
+    },
+    {
+      "importPath": "google.golang.org/grpc/tap",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "53de7e497288afe47d415529eff2b95a38e5d8a05cfdde3448599ed183c78216"
+    },
+    {
+      "importPath": "net/http/httputil",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "d9a1869cbe31356d534109b53244b96594289fef2e024acffb5f2abf3815053f"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/transport",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 13,
+      "selectedFilesSha256": "e51d69bc7d15dc748670a761864484cd87969e378033572fcf1c32b2a69f8b75"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/resolver/delegatingresolver",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "fc2998c87d40f1450197be7ca0a1f78ae9eee0d15d8c2c64523ca780c0908312"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/resolver/passthrough",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "ba6953a5e15c1d96fd1c74f865a5b6f5d8732a48515cfaff4e309cd02c0eb4e1"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/resolver/unix",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "f83226019673a623bbe3518484f83e9d9ea13c0273e39d3e411c14bbfb7bef38"
+    },
+    {
+      "importPath": "google.golang.org/grpc/balancer/grpclb/state",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "1eaafa1c0aee17624f8ad3c7303474861f05b48021b0d3b93c3d6c801da305fc"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/resolver/dns/internal",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "827847d8c28fc5f2752ef2f6985d908be868cb6a835a498db0c947d7e10f4048"
+    },
+    {
+      "importPath": "google.golang.org/grpc/internal/resolver/dns",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "6bb37d66ba2beb361cb468354b79a20b33ff54487286b4db26cab4b2df4e64b5"
+    },
+    {
+      "importPath": "google.golang.org/grpc/resolver/dns",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "1f2dd83594af8822cc40ad2647968a7337277bc3353712f3bbf09eb8fbdfd74e"
+    },
+    {
+      "importPath": "runtime/pprof",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 11,
+      "selectedFilesSha256": "049bee77feb4d56b867791efdb25cf9085fd1697ae81435bfa1ec59c7638c078"
+    },
+    {
+      "importPath": "google.golang.org/grpc",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 20,
+      "selectedFilesSha256": "5a398cedb1017cda942e5141ce6093d8b4a1a2b15d1f1201d4cf7e510c2bea08"
+    },
+    {
+      "importPath": "github.com/hashicorp/go-plugin/internal/plugin",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/go-plugin@v1.7.0",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "c812cdd6f3b29c6c341516fbcedb15d03edffbf130dea3679c0d6ca6cbfd21e5"
+    },
+    {
+      "importPath": "os/signal",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "0a79395b76fec8c18dd9f5750f5580b9456391648c4711c491d079b2ab27a41f"
+    },
+    {
+      "importPath": "github.com/oklog/run",
+      "category": "externalModule",
+      "scope": "github.com/oklog/run@v1.2.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "74c7c461c458c63531e99e05ec239797bb506828cef2554e14e557385e6e5b27"
+    },
+    {
+      "importPath": "google.golang.org/grpc/health/grpc_health_v1",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "446837baf71af60f2b3b825c1fddcd8902453705fb1f522d8acdd1e300d55930"
+    },
+    {
+      "importPath": "google.golang.org/grpc/health",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 4,
+      "selectedFilesSha256": "6c075691f39d867bd566de7a799fc41c4f9b47cfe26727db9a48eb17dd75b1d2"
+    },
+    {
+      "importPath": "google.golang.org/grpc/reflection/grpc_reflection_v1",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "534a14457a66e627893381455af1735a3336b43e9ebb7038385112130994e028"
+    },
+    {
+      "importPath": "google.golang.org/grpc/reflection/grpc_reflection_v1alpha",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "f3130dd93a4921482294adf167ff529051e63ebe116b6dcd9fbdb5dca878945a"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/types/descriptorpb",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "deb980d591d6a5d1456dd77032b1a1094afe6f406ea28de19c990324741e14d4"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/internal/editionssupport",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "d76f420c2c0d90fba75c9b9a4857b1ddcb720716a162847898896056b0287514"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/types/gofeaturespb",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "a8b5e8b2f3b341f99af56a89eca37e355a82e7f346f5df2953550a3ab7377f37"
+    },
+    {
+      "importPath": "google.golang.org/protobuf/reflect/protodesc",
+      "category": "externalModule",
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "63141e1ad160acbbce27355b72f889277ed648918f56afa06bf5a889ae9f205f"
+    },
+    {
+      "importPath": "google.golang.org/grpc/reflection/internal",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "b6ddd4662dee2040d9b11118311f8df0d9994c72c23d4baf7c2a5b5a28c4900a"
+    },
+    {
+      "importPath": "google.golang.org/grpc/reflection",
+      "category": "externalModule",
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "b63ae1c7a338b6d9b2bde70c1a2511210c5df6e827bf721bf629070b86906c11"
+    },
+    {
+      "importPath": "encoding/gob",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 9,
+      "selectedFilesSha256": "5cc3252897ab7d162b2406190346d41a817203c5727bb13b498bbadb309f9232"
+    },
+    {
+      "importPath": "net/rpc",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "edbdf2a130fb2e05a15fdb4b64796cc2a8a5c567f3797bc8fe49dc3f6c8ed8f5"
+    },
+    {
+      "importPath": "internal/sysinfo",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "30881374cfb0f840110abd3dab3b27a58f061831f9c872c306902ad8a76d79d0"
+    },
+    {
+      "importPath": "runtime/debug",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 5,
+      "selectedFilesSha256": "dcea99a083e59657170eeb8ecdc297d30fd7c9f2d0af285018128bd88d05e1b4"
+    },
+    {
+      "importPath": "runtime/trace",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "9a5f4c63ddf1ebaea87d7d5eb72f5e99d3ef3e7ce7dad82227441c14de8939d7"
+    },
+    {
+      "importPath": "testing",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 10,
+      "selectedFilesSha256": "564e2e8015c8fe59bb1aa447f7c70f0cd5c0fc95488964518fd810b15fd32781"
+    },
+    {
+      "importPath": "github.com/hashicorp/go-plugin",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/go-plugin@v1.7.0",
+      "selectedFiles": 21,
+      "selectedFilesSha256": "9e1b312b3c98f66a5397b76addac4f814c91cef5ee12cca0256c94fd5406c37a"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-svchost",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-svchost@v0.2.1",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "e3a874776da77134c46be45f1b70cd312564b235670fe664eb80e07237d39081"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-registry-address",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-registry-address@v0.4.0",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "91428600db9a897e62f2e76fe11f3b6d7700adc0bda29efaf7a929bc72c7fdb6"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/internal/logging",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "2d8f3e7dbb00f03446b48c7e3e6f545a95b0f0470fa64fea4d758e47f9d0288b"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/diag",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "66116f702a44698e221714d4c0de62e669c9604ea124208323b8fc1c935811ea"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/tfplugin5",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "c867df484b309eddb9ececf36522817bbd4ac6114c2256898703a319b256644c"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/fromproto",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 13,
+      "selectedFilesSha256": "40b196d92b393729be36ae2e0f58ac94e618ca05f49aa4ee5a5b9c8da7374d2a"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/funcerr",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "ba8d3a12bf4b1b93e73d95263b701dc262bdb08faad0355a5d7ef7a36166b585"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/tf5serverlogging",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "44474cab03432f9a40b7ac16c9144a08976ba8cd5e29cec73ee5c8e09de0e860"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/toproto",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 21,
+      "selectedFilesSha256": "b92af4556198f0ffe0e8aacf0e3b558143b701d3edc09639519777286f4012b7"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov5/tf5server",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "4150a99cbacfee94913cc8ebb4784486523bce3e8c63389f6ddd33665a1eb84f"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov6/internal/diag",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "288e53555335fb116194a76b5964f685ad9f44ac8a2faafd168b7a9a0b288b38"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov6/internal/tfplugin6",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "68af688c498546ae2ecef73fe4de6a6319fb4d4ceac7316c5e910f508748b7e4"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov6/internal/fromproto",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 14,
+      "selectedFilesSha256": "efaf4f271c69f7e3ac8a71139a74d15ff318cff2548bd959d2e651293ae76515"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov6/internal/funcerr",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "921e02a1b4a48395fe156202b0400059c670293fa9d4cdf92bbe8c0f6f96ddf9"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov6/internal/tf6serverlogging",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "7125a311e798dbc97784335fc9a5e169bb228cb3b84cc7fcf51fa6ee6f329983"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov6/internal/toproto",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 22,
+      "selectedFilesSha256": "c587e26a0181d97cdc0b7ee917f1ade3fc6f532b1fa1adbfde5735ecd24680b0"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-go/tfprotov6/tf6server",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "964d7160c96bffe4b5d6c1cfaddaf3c3e147d9fac5137070d4d04b4ea8452375"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/providerserver",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "31b7d209057c0355000b6702f819e661c06c20bae8ab7833f1a972a820305364"
+    },
+    {
+      "importPath": "github.com/dustinkirkland/golang-petname",
+      "category": "externalModule",
+      "scope": "github.com/dustinkirkland/golang-petname@v0.0.0-20240428194347-eebcea082ee0",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "a213716bdd96549cd3712844c242e99ed4182b9ed75e728ec097c3ae57007308"
+    },
+    {
+      "importPath": "database/sql/driver",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "a551311e0ea106e191c586d76a9dc8f7665ec9fb48d16c1e6abef7fa19919d15"
+    },
+    {
+      "importPath": "github.com/google/uuid",
+      "category": "externalModule",
+      "scope": "github.com/google/uuid@v1.6.0",
+      "selectedFiles": 15,
+      "selectedFilesSha256": "9a295d25b680b5c09984d46d92efd6b1bfe1f971be8556d17c372cf5b4547867"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework-validators@v0.19.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "71a005c03f210b7e0134671d7af3708aa53db6da185590d0220bec4bed0a5834"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatorfuncerr",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework-validators@v0.19.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "cbdba2e06883dbcf02b7a1dea1b4882ab8c74729593d5bd07aa0feedc3481fea"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework-validators/internal/schemavalidator",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework-validators@v0.19.0",
+      "selectedFiles": 6,
+      "selectedFilesSha256": "a3df39f03ef23f1adc05157090c618b06e53575e79cdd55210713ad19ec6a058"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework-validators/int64validator",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework-validators@v0.19.0",
+      "selectedFiles": 18,
+      "selectedFilesSha256": "53622218df9873d35803d6c0b97b677426df38f3dfdecddedf502005bb05ff07"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "855de8009def150ed16edee83e9b057d71d3e0fe7835d537a1115adff2ef3bfe"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "91db7ba29f7665e490378e929f71a105147db9025386d2dedde7e26f1b64159c"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "692f977eff43af0d24d3b9b74397a0e2f7df31eaa85bd9361f634c75300f237b"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "adefbdb29de70e292adcb9659f052ca5aa00e8ef35e26c24be2d9bffda65f95a"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "baca697b107fd0a18283237eee0e49028bbc956aaba5f6393ba3be5f4998175f"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "7f64812355e13ec32956bda22dd917d43e96953fdc48e8fd038ace9ce17d6823"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "168ec9116b44b69340c9a175f5fb041b78a04ceb649c7aac11677b3681c67ece"
+    },
+    {
+      "importPath": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier",
+      "category": "externalModule",
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "selectedFiles": 7,
+      "selectedFilesSha256": "22401712e81de840a34317b708631762e9343462dd16a477a967bbea2f0946e0"
+    },
+    {
+      "importPath": "github.com/terraform-providers/terraform-provider-random/internal/diagnostics",
+      "category": "mainModule",
+      "scope": "provider-source",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "2e0aa392d634bc4c3aff1834dce877845167bcc75cc5918756f8ba240a582056"
+    },
+    {
+      "importPath": "github.com/terraform-providers/terraform-provider-random/internal/planmodifiers/bool",
+      "category": "mainModule",
+      "scope": "provider-source",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "c3c3cb3268624a49fe0288c10342b3a3f3eed611f38c1ddad0e8303ff50e329d"
+    },
+    {
+      "importPath": "github.com/terraform-providers/terraform-provider-random/internal/planmodifiers/map",
+      "category": "mainModule",
+      "scope": "provider-source",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "ee5dc3061d0c85cd48d5d408179ab2a6ff5c2052217115a86feb95d923bac76f"
+    },
+    {
+      "importPath": "github.com/terraform-providers/terraform-provider-random/internal/planmodifiers/string",
+      "category": "mainModule",
+      "scope": "provider-source",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "70808cf33850ee07e9c79a6c1eaf05108de20dc779def51f50453cd6fc2eb57a"
+    },
+    {
+      "importPath": "hash/crc64",
+      "category": "standardLibrary",
+      "scope": "go1.26.8",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "a2282aacd3c3ba1f40bd47f94e7730919f1b93e08c26c9a4f7865f0095521cdb"
+    },
+    {
+      "importPath": "github.com/terraform-providers/terraform-provider-random/internal/random",
+      "category": "mainModule",
+      "scope": "provider-source",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "aefe7200045cfe7c15a8b32c0fadd6512e7dc9485c89230b81d570d0c856e229"
+    },
+    {
+      "importPath": "github.com/terraform-providers/terraform-provider-random/internal/validators",
+      "category": "mainModule",
+      "scope": "provider-source",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "20a6690044371ad341b29a1ce34315e8cd091af95adabb5ba53a0c6e7a841e5c"
+    },
+    {
+      "importPath": "golang.org/x/crypto/blowfish",
+      "category": "externalModule",
+      "scope": "golang.org/x/crypto@v0.56.0",
+      "selectedFiles": 3,
+      "selectedFilesSha256": "a0676c2e79fa1437c694aaec770f57a1ae104c37d78dcf024c48f076a498e1f7"
+    },
+    {
+      "importPath": "golang.org/x/crypto/bcrypt",
+      "category": "externalModule",
+      "scope": "golang.org/x/crypto@v0.56.0",
+      "selectedFiles": 2,
+      "selectedFilesSha256": "b49dd1d58d5c5b32145b2f24b063bd36c80ea0189c53fcd767ddb58dd352cb79"
+    },
+    {
+      "importPath": "github.com/terraform-providers/terraform-provider-random/internal/provider",
+      "category": "mainModule",
+      "scope": "provider-source",
+      "selectedFiles": 13,
+      "selectedFilesSha256": "c0e3fa9773eaf5c9faeaaf949a79e438c8a292497225c29560dfa70a48f40e9f"
+    },
+    {
+      "importPath": "github.com/terraform-providers/terraform-provider-random",
+      "category": "mainModule",
+      "scope": "provider-source",
+      "selectedFiles": 1,
+      "selectedFilesSha256": "20eecb34525a99577b90bcff6d0fc32ac6043fa09c86d935faac69d6c5085eba"
+    }
+  ],
+  "uniqueSelectedFiles": 2973,
+  "selectedFileInventorySha256": "d672c9a2709b31a5508fba66453a8624117183b625cc687c618f7406f9260f35",
+  "fileInventoryEncoding": "SHA-256 of compact UTF-8 JSON arrays in observed order. File identities derive from native Go metadata, not an OS file-access trace. Full per-file inventory is retained in the operator observation.",
+  "moduleMetadataCount": 27,
+  "sourceOnlyPreparedModules": 31,
+  "selectedGoSdkVendorModules": [
+    {
+      "path": "golang.org/x/crypto",
+      "version": "v0.46.1-0.20251210140736-7dacc380ba00"
+    },
+    {
+      "path": "golang.org/x/net",
+      "version": "v0.47.1-0.20260731170545-cb1d721f7fb3"
+    },
+    {
+      "path": "golang.org/x/text",
+      "version": "v0.32.0"
+    }
+  ],
+  "candidateFilenameRule": "Case-insensitive license/licence/copying/copyright/third-party/notice/patent anywhere in the basename. Inline or unusually named attribution may require additional coverage.",
+  "retainedNotices": [
+    {
+      "scope": "github.com/dustinkirkland/golang-petname@v0.0.0-20240428194347-eebcea082ee0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30.txt",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/dustinkirkland/golang-petname/@v/v0.0.0-20240428194347-eebcea082ee0.zip",
+      "sourceArchiveSha256": "ac453a585c71d6e4dcdbf867bcc41c9ea60f03ef14ea679ea0f1774f927da06d"
+    },
+    {
+      "scope": "github.com/dustinkirkland/golang-petname@v0.0.0-20240428194347-eebcea082ee0",
+      "sourceMember": "debian/copyright",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/ebcbc297080e3d4e002414e40babc232d18a2cdc594dd5a453cadecc9a46a3ef.txt",
+        "bytes": 970,
+        "sha256": "ebcbc297080e3d4e002414e40babc232d18a2cdc594dd5a453cadecc9a46a3ef"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/dustinkirkland/golang-petname/@v/v0.0.0-20240428194347-eebcea082ee0.zip",
+      "sourceArchiveSha256": "ac453a585c71d6e4dcdbf867bcc41c9ea60f03ef14ea679ea0f1774f927da06d"
+    },
+    {
+      "scope": "github.com/fatih/color@v1.18.0",
+      "sourceMember": "LICENSE.md",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/de95ed802d2f90e3c72cb3c9a927cca5f2aec234a3ef1250232db0f8178b2d93.txt",
+        "bytes": 1079,
+        "sha256": "de95ed802d2f90e3c72cb3c9a927cca5f2aec234a3ef1250232db0f8178b2d93"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/fatih/color/@v/v1.18.0.zip",
+      "sourceArchiveSha256": "4dc6907b7f6807b37c21ad527d966437d398f03472115f471eaa8fe5875363d3"
+    },
+    {
+      "scope": "github.com/golang/protobuf@v1.5.4",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/8778a9fc1eaffb03ab873caae251df2d224f6b5502be8777d3cd573a4dd43903.txt",
+        "bytes": 1480,
+        "sha256": "8778a9fc1eaffb03ab873caae251df2d224f6b5502be8777d3cd573a4dd43903"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/golang/protobuf/@v/v1.5.4.zip",
+      "sourceArchiveSha256": "9a2f43d3eac8ceda506ebbeb4f229254b87235ce90346692a0e233614182190b"
+    },
+    {
+      "scope": "github.com/google/uuid@v1.6.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/0a8d61ed3cbfd5312326e8126c31ce9c627a283adc99131b56896d29ada04b2d.txt",
+        "bytes": 1480,
+        "sha256": "0a8d61ed3cbfd5312326e8126c31ce9c627a283adc99131b56896d29ada04b2d"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/google/uuid/@v/v1.6.0.zip",
+      "sourceArchiveSha256": "d0f02f377217f42702e259684e06441edbf5140dddcc34ba9bea56038b38a6ed"
+    },
+    {
+      "scope": "github.com/hashicorp/go-hclog@v1.6.3",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/2a820e13f7f30e2312a2a83ba91c90afce637b090efd823e65f0c8d4cb71fc45.txt",
+        "bytes": 1059,
+        "sha256": "2a820e13f7f30e2312a2a83ba91c90afce637b090efd823e65f0c8d4cb71fc45"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/go-hclog/@v/v1.6.3.zip",
+      "sourceArchiveSha256": "ebab3136e5327ad17606485f633c2d033c61eadb843b2f3629b6d65d6fbb1400"
+    },
+    {
+      "scope": "github.com/hashicorp/go-plugin@v1.7.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/62fdaf753e19c00ac69ee00dfd9b5002124ac2b4179360e47168429ad37fa5f8.txt",
+        "bytes": 16012,
+        "sha256": "62fdaf753e19c00ac69ee00dfd9b5002124ac2b4179360e47168429ad37fa5f8"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/go-plugin/@v/v1.7.0.zip",
+      "sourceArchiveSha256": "5375294fed312870c50ab1f13e2cd0cb217c798f6c22aef18f57906fc7942618"
+    },
+    {
+      "scope": "github.com/hashicorp/go-uuid@v1.0.3",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/87b250b11ffadc5f872cb676caa219e2871e454ddd562d9e532d52d5c9b7520d.txt",
+        "bytes": 15962,
+        "sha256": "87b250b11ffadc5f872cb676caa219e2871e454ddd562d9e532d52d5c9b7520d"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/go-uuid/@v/v1.0.3.zip",
+      "sourceArchiveSha256": "5e9dc2bb3785d69a65d287a4b3fa7e9f583a127e41c6a2fd095ac862fed71dad"
+    },
+    {
+      "scope": "github.com/hashicorp/terraform-plugin-framework-validators@v0.19.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/8b11e3440b3f2cf2e35170fd88efaec96c22126c44bea53823ff9df6045be4b2.txt",
+        "bytes": 16013,
+        "sha256": "8b11e3440b3f2cf2e35170fd88efaec96c22126c44bea53823ff9df6045be4b2"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/terraform-plugin-framework-validators/@v/v0.19.0.zip",
+      "sourceArchiveSha256": "8003492bf018404a8a133641b65a43dffe81af522b1bb8b9776912c55f46a0a2"
+    },
+    {
+      "scope": "github.com/hashicorp/terraform-plugin-framework@v1.19.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/43f41556ae4b79ced673902ee15021fbb413d88d4a0fa2c5786f309eeac1ee92.txt",
+        "bytes": 16009,
+        "sha256": "43f41556ae4b79ced673902ee15021fbb413d88d4a0fa2c5786f309eeac1ee92"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/terraform-plugin-framework/@v/v1.19.0.zip",
+      "sourceArchiveSha256": "a9a9462fde5dd83c83e8e67d31acd508520152813c975c44f78dd0711eb405a3"
+    },
+    {
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/aff4e69bd67075d771127826ddf1ffa929c064f48bdd7ed6f8c946598399f523.txt",
+        "bytes": 16009,
+        "sha256": "aff4e69bd67075d771127826ddf1ffa929c064f48bdd7ed6f8c946598399f523"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/terraform-plugin-go/@v/v0.31.0.zip",
+      "sourceArchiveSha256": "d736e0c23dd2b931913fc4732267b3eae3ae9ac5bdeab3f223fce044d4a9832a"
+    },
+    {
+      "scope": "github.com/hashicorp/terraform-plugin-log@v0.10.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/4735c52c8235ee7e8b5210f00ad2aaf703e68d6916a713462abaf1b98be7dc2d.txt",
+        "bytes": 16013,
+        "sha256": "4735c52c8235ee7e8b5210f00ad2aaf703e68d6916a713462abaf1b98be7dc2d"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/terraform-plugin-log/@v/v0.10.0.zip",
+      "sourceArchiveSha256": "361e1c0104a180083f50096fbbc05def0a1b14a1dd48678a6e3b1b63b40580a4"
+    },
+    {
+      "scope": "github.com/hashicorp/terraform-registry-address@v0.4.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/4735c52c8235ee7e8b5210f00ad2aaf703e68d6916a713462abaf1b98be7dc2d.txt",
+        "bytes": 16013,
+        "sha256": "4735c52c8235ee7e8b5210f00ad2aaf703e68d6916a713462abaf1b98be7dc2d"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/terraform-registry-address/@v/v0.4.0.zip",
+      "sourceArchiveSha256": "d9845ae9ab0d252ef1bd105a456c973f4ed20dc2dd8ebac0058b054a55afe79d"
+    },
+    {
+      "scope": "github.com/hashicorp/terraform-svchost@v0.2.1",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/1620c1cecf1eeef931d0cd2ea0f5793ef06b891e76534a026db858437ae8ae1f.txt",
+        "bytes": 16008,
+        "sha256": "1620c1cecf1eeef931d0cd2ea0f5793ef06b891e76534a026db858437ae8ae1f"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/terraform-svchost/@v/v0.2.1.zip",
+      "sourceArchiveSha256": "7d400ddcd0c03fbe8e42513bd65d3515f018856c7c65d0df3faae15dfcd11703"
+    },
+    {
+      "scope": "github.com/hashicorp/yamux@v0.1.2",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/ba36895caa0717b51eacc64ad50ef0b399482e1b82b93cfcdd065307409b3d9d.txt",
+        "bytes": 15956,
+        "sha256": "ba36895caa0717b51eacc64ad50ef0b399482e1b82b93cfcdd065307409b3d9d"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/yamux/@v/v0.1.2.zip",
+      "sourceArchiveSha256": "8ba2b4b2d37260d4aeabf85ac9c26841a287a264c02bc629f40f19d2bd977df4"
+    },
+    {
+      "scope": "github.com/mattn/go-colorable@v0.1.14",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/88a2379b3ca34bf5c57127aff9dcb802bbb60ece0805cdbda65b3bd115f971d9.txt",
+        "bytes": 1085,
+        "sha256": "88a2379b3ca34bf5c57127aff9dcb802bbb60ece0805cdbda65b3bd115f971d9"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/mattn/go-colorable/@v/v0.1.14.zip",
+      "sourceArchiveSha256": "5e0e7925a070bb5bd11b4097e1a7b608167f0217ee83901b44c135f6e5e85c78"
+    },
+    {
+      "scope": "github.com/mattn/go-isatty@v0.0.20",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/08eab1118c80885fa1fa6a6dd7303f65a379fcb3733e063d20d1bbc2c76e6fa1.txt",
+        "bytes": 1099,
+        "sha256": "08eab1118c80885fa1fa6a6dd7303f65a379fcb3733e063d20d1bbc2c76e6fa1"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/mattn/go-isatty/@v/v0.0.20.zip",
+      "sourceArchiveSha256": "f2d5f89ca451577e17464b9bb596dc0d0ecececb5eaa63622c41b57cd0b7b8cc"
+    },
+    {
+      "scope": "github.com/mitchellh/go-testing-interface@v1.14.1",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/f48b778b7fccb6650f915cf4527c941a9578f8876a2911d035c4e44641a916be.txt",
+        "bytes": 1085,
+        "sha256": "f48b778b7fccb6650f915cf4527c941a9578f8876a2911d035c4e44641a916be"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/mitchellh/go-testing-interface/@v/v1.14.1.zip",
+      "sourceArchiveSha256": "c178afbb9d041b7ecaebf40d3fee1b169f2f11f929accca7642f9b57f801ff4c"
+    },
+    {
+      "scope": "github.com/oklog/run@v1.2.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/4e5dde97b85cfd65edf08aeb9905c90135df692311ac8c68c092a855631b4645.txt",
+        "bytes": 11343,
+        "sha256": "4e5dde97b85cfd65edf08aeb9905c90135df692311ac8c68c092a855631b4645"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/oklog/run/@v/v1.2.0.zip",
+      "sourceArchiveSha256": "730451ad4b759a648873e99b72abb9e8b3f7e23a4949f808d0238b827594073d"
+    },
+    {
+      "scope": "github.com/vmihailenco/msgpack/v5@v5.4.1",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/1530185dd39cdde7cb2f786a7a5fcf8bc34368b6ae73c15e72bafe88fd80b9a2.txt",
+        "bytes": 1323,
+        "sha256": "1530185dd39cdde7cb2f786a7a5fcf8bc34368b6ae73c15e72bafe88fd80b9a2"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/vmihailenco/msgpack/v5/@v/v5.4.1.zip",
+      "sourceArchiveSha256": "f966b8091c59efce1b44e265097f239be5d4174a827be0a5debebae09517d2b8"
+    },
+    {
+      "scope": "github.com/vmihailenco/tagparser/v2@v2.0.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/0f02aac22084ef463aa5f42f566feeec6aa4c99653519744a8c25cb079da5b5d.txt",
+        "bytes": 1325,
+        "sha256": "0f02aac22084ef463aa5f42f566feeec6aa4c99653519744a8c25cb079da5b5d"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/vmihailenco/tagparser/v2/@v/v2.0.0.zip",
+      "sourceArchiveSha256": "70096ead331b4ac4efc0bf740674cbe55772beee6eace39507a610c5652aa8b5"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad.txt",
+        "bytes": 1453,
+        "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "PATENTS",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc.txt",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/vendor/golang.org/x/crypto/LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad.txt",
+        "bytes": 1453,
+        "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/vendor/golang.org/x/crypto/PATENTS",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc.txt",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/vendor/golang.org/x/net/LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad.txt",
+        "bytes": 1453,
+        "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/vendor/golang.org/x/net/PATENTS",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc.txt",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/vendor/golang.org/x/text/LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad.txt",
+        "bytes": 1453,
+        "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/vendor/golang.org/x/text/PATENTS",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc.txt",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0"
+    },
+    {
+      "scope": "golang.org/x/crypto@v0.56.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad.txt",
+        "bytes": 1453,
+        "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/golang.org/x/crypto/@v/v0.56.0.zip",
+      "sourceArchiveSha256": "fdffb67dc8c0ecea55664eb42c323c2e3b5af9fa72cd120939106c2cdc11dcb4"
+    },
+    {
+      "scope": "golang.org/x/crypto@v0.56.0",
+      "sourceMember": "PATENTS",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc.txt",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/golang.org/x/crypto/@v/v0.56.0.zip",
+      "sourceArchiveSha256": "fdffb67dc8c0ecea55664eb42c323c2e3b5af9fa72cd120939106c2cdc11dcb4"
+    },
+    {
+      "scope": "golang.org/x/net@v0.58.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad.txt",
+        "bytes": 1453,
+        "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/golang.org/x/net/@v/v0.58.0.zip",
+      "sourceArchiveSha256": "aa78bbf8d55db3e6995630165e2bcd7dce6d0b8831c166fa03b80ac94fb650e7"
+    },
+    {
+      "scope": "golang.org/x/net@v0.58.0",
+      "sourceMember": "PATENTS",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc.txt",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/golang.org/x/net/@v/v0.58.0.zip",
+      "sourceArchiveSha256": "aa78bbf8d55db3e6995630165e2bcd7dce6d0b8831c166fa03b80ac94fb650e7"
+    },
+    {
+      "scope": "golang.org/x/sys@v0.47.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad.txt",
+        "bytes": 1453,
+        "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/golang.org/x/sys/@v/v0.47.0.zip",
+      "sourceArchiveSha256": "cdac013ddced0262926ec29ffcda645da39670e61c7e5b761e572b6b1809bb1b"
+    },
+    {
+      "scope": "golang.org/x/sys@v0.47.0",
+      "sourceMember": "PATENTS",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc.txt",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/golang.org/x/sys/@v/v0.47.0.zip",
+      "sourceArchiveSha256": "cdac013ddced0262926ec29ffcda645da39670e61c7e5b761e572b6b1809bb1b"
+    },
+    {
+      "scope": "golang.org/x/text@v0.41.0",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad.txt",
+        "bytes": 1453,
+        "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/golang.org/x/text/@v/v0.41.0.zip",
+      "sourceArchiveSha256": "e63f35daaae749d0ffff97a295ad8f4837a662938a46b7a87f18a88e85a5cbf9"
+    },
+    {
+      "scope": "golang.org/x/text@v0.41.0",
+      "sourceMember": "PATENTS",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc.txt",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/golang.org/x/text/@v/v0.41.0.zip",
+      "sourceArchiveSha256": "e63f35daaae749d0ffff97a295ad8f4837a662938a46b7a87f18a88e85a5cbf9"
+    },
+    {
+      "scope": "google.golang.org/genproto/googleapis/rpc@v0.0.0-20260526163538-3dc84a4a5aaa",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30.txt",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/google.golang.org/genproto/googleapis/rpc/@v/v0.0.0-20260526163538-3dc84a4a5aaa.zip",
+      "sourceArchiveSha256": "55f932b106d6f4f8cb76ae869e44f5d6d8400965fa441ee3532d09c96d64aac1"
+    },
+    {
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30.txt",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/google.golang.org/grpc/@v/v1.83.2.zip",
+      "sourceArchiveSha256": "84292905a694e17862d15abc123a6f7f7efa9e1e3a77e80120982ff95b2605ea"
+    },
+    {
+      "scope": "google.golang.org/grpc@v1.83.2",
+      "sourceMember": "NOTICE.txt",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/693ff28ec216d5112ac1bbfe64ef539005867d1c7bd427b57d579683293b947f.txt",
+        "bytes": 554,
+        "sha256": "693ff28ec216d5112ac1bbfe64ef539005867d1c7bd427b57d579683293b947f"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/google.golang.org/grpc/@v/v1.83.2.zip",
+      "sourceArchiveSha256": "84292905a694e17862d15abc123a6f7f7efa9e1e3a77e80120982ff95b2605ea"
+    },
+    {
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/4835612df0098ca95f8e7d9e3bffcb02358d435dbb38057c844c99d7f725eb20.txt",
+        "bytes": 1479,
+        "sha256": "4835612df0098ca95f8e7d9e3bffcb02358d435dbb38057c844c99d7f725eb20"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/google.golang.org/protobuf/@v/v1.36.12.zip",
+      "sourceArchiveSha256": "68f8a3174aff42950fd9bd02c11b45c6986eb8060508d124d1c3dd6bf86b9be6"
+    },
+    {
+      "scope": "google.golang.org/protobuf@v1.36.12",
+      "sourceMember": "PATENTS",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc.txt",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/google.golang.org/protobuf/@v/v1.36.12.zip",
+      "sourceArchiveSha256": "68f8a3174aff42950fd9bd02c11b45c6986eb8060508d124d1c3dd6bf86b9be6"
+    },
+    {
+      "scope": "provider-source",
+      "sourceMember": "LICENSE",
+      "kind": "original notice file; candidate scope may exceed selected output",
+      "retainedInput": {
+        "file": "provider-notices/6cc8b40dbd9225bcae53f83bab17b8c01ad162c2093545c5bb7f1dcf5ae99d72.txt",
+        "bytes": 16757,
+        "sha256": "6cc8b40dbd9225bcae53f83bab17b8c01ad162c2093545c5bb7f1dcf5ae99d72"
+      },
+      "sourceArchiveUrl": "https://api.github.com/repos/hashicorp/terraform-provider-random/tarball/b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+      "sourceArchiveSha256": "7bde03e742619d0a310c4a7d74d9a1c10921dd9c8f3d262e66152b692fa39e58"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/crypto/internal/boring/LICENSE",
+      "kind": "original notice in an ancestor directory of selected Go files; native BoringSSL inclusion is not inferred",
+      "retainedInput": {
+        "file": "provider-notices/56210f826b8f0fbac3160dfe55c97f4019eb6cdda3963b5a0eab8a8bdb62360e.txt",
+        "bytes": 9714,
+        "sha256": "56210f826b8f0fbac3160dfe55c97f4019eb6cdda3963b5a0eab8a8bdb62360e"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0"
+    },
+    {
+      "scope": "github.com/hashicorp/go-hclog@v1.6.3",
+      "sourceMember": "stacktrace.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/eaaaab1018eda86bd7519e408ed5c289bac4403e96e687d6cc83bb4fa35c78a5.txt",
+        "bytes": 1121,
+        "sha256": "eaaaab1018eda86bd7519e408ed5c289bac4403e96e687d6cc83bb4fa35c78a5"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/go-hclog/@v/v1.6.3.zip",
+      "sourceArchiveSha256": "ebab3136e5327ad17606485f633c2d033c61eadb843b2f3629b6d65d6fbb1400",
+      "startLine": 1,
+      "endLine": 19,
+      "sourceFileSha256": "b7074c12711315304394cb4e6797c38152346ffbbc457f03212b44fbe2865011"
+    },
+    {
+      "scope": "github.com/hashicorp/terraform-plugin-go@v0.31.0",
+      "sourceMember": "tftypes/walk.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/66e7f4867d7fe6cfde2d25c550f56da52e37e25b2590bb8361e44e0bace32fa6.txt",
+        "bytes": 1215,
+        "sha256": "66e7f4867d7fe6cfde2d25c550f56da52e37e25b2590bb8361e44e0bace32fa6"
+      },
+      "sourceArchiveUrl": "https://proxy.golang.org/github.com/hashicorp/terraform-plugin-go/@v/v0.31.0.zip",
+      "sourceArchiveSha256": "d736e0c23dd2b931913fc4732267b3eae3ae9ac5bdeab3f223fce044d4a9832a",
+      "startLine": 3,
+      "endLine": 24,
+      "sourceFileSha256": "5209db38be48071c9408aae4b9b9856b6c3d66131f4e2109c2f5328ae2efb08b"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/crypto/internal/fips140/edwards25519/scalar.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/d63eafda50d8ef034c574babbd3348a4f8bb6995d692a56b2fee6fca0f15f10b.txt",
+        "bytes": 1469,
+        "sha256": "d63eafda50d8ef034c574babbd3348a4f8bb6995d692a56b2fee6fca0f15f10b"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 29,
+      "endLine": 55,
+      "sourceFileSha256": "b9bc9ba5a2160dccee62ccbb4371c90c5d1c654d55b8ae08f33fa29c58876050"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/debug/elf/elf.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/05f5cf488584cf7c3df139be6bea283691166366c511d29940602f295975448f.txt",
+        "bytes": 2567,
+        "sha256": "05f5cf488584cf7c3df139be6bea283691166366c511d29940602f295975448f"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 1,
+      "endLine": 43,
+      "sourceFileSha256": "ff2f811d29a56303bad96c3c7cff1a83814a974503a51cee918a314a96eb476e"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/acosh.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/558003954908d41ed09bcc3daf891cd32994ac9d204c0a1133e0c06339457029.txt",
+        "bytes": 972,
+        "sha256": "558003954908d41ed09bcc3daf891cd32994ac9d204c0a1133e0c06339457029"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 7,
+      "endLine": 34,
+      "sourceFileSha256": "e1b20885bef3ccb7763ae868d23120194cf38faef70f1af45d2870ccb1a00140"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/asinh.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/d2a0d020c35b9e830a694d97ebcfcb506043109080b6ef6bea67c9311c38787d.txt",
+        "bytes": 912,
+        "sha256": "d2a0d020c35b9e830a694d97ebcfcb506043109080b6ef6bea67c9311c38787d"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 7,
+      "endLine": 31,
+      "sourceFileSha256": "7bd3753d8bb94eb86682c9215c6266efccd75a66701aad16fc94d9fbfb89ccb1"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/atan.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/463e2061abd03c3292bd47abf45a6861fc5658750e90b2fd779dcd7a783d0aa6.txt",
+        "bytes": 1570,
+        "sha256": "463e2061abd03c3292bd47abf45a6861fc5658750e90b2fd779dcd7a783d0aa6"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 11,
+      "endLine": 52,
+      "sourceFileSha256": "777b61ebf72d42b754004fe6a5e9a4ac7fb85fb95cd5e6fef396540ce6c42ee1"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/atanh.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/8c6afe834ca6fdf58437bbbe5dda52aa260d78fa5a21130fd8ac9f1bb7bd3801.txt",
+        "bytes": 1080,
+        "sha256": "8c6afe834ca6fdf58437bbbe5dda52aa260d78fa5a21130fd8ac9f1bb7bd3801"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 7,
+      "endLine": 37,
+      "sourceFileSha256": "2afbcd791957596e7af481c3d23640f15e2d1149d8ed70fc108ddd1d5ab79430"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/cbrt.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/abbc05b6173bb8800201f22499ddda1fd32bf8fd4dac764d14befa911845c365.txt",
+        "bytes": 510,
+        "sha256": "abbc05b6173bb8800201f22499ddda1fd32bf8fd4dac764d14befa911845c365"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 7,
+      "endLine": 17,
+      "sourceFileSha256": "de08f8225477bd143bd5318c5f46b7e26bdb008db8e4d174c6130e751e66e335"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/erf.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/9987944df868ce4dfa0150661a90e835bebcfa3a4a174f3067f3e824050356d3.txt",
+        "bytes": 4452,
+        "sha256": "9987944df868ce4dfa0150661a90e835bebcfa3a4a174f3067f3e824050356d3"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 11,
+      "endLine": 117,
+      "sourceFileSha256": "31cba8a8f66d6081eb393b85e6a0d2a3737ebb3fc3fb192867e393a2907c0c8c"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/exp.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/625af5f087d09398b307a6fd8eb614ad3aff5103d2821b740e331f44d64001a4.txt",
+        "bytes": 2813,
+        "sha256": "625af5f087d09398b307a6fd8eb614ad3aff5103d2821b740e331f44d64001a4"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 23,
+      "endLine": 97,
+      "sourceFileSha256": "75d415ac8eca1afc796cd621b393153ff82d342c24f5b391dfdd6a6e70303f2b"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/expm1.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/fd22bd65488f4f6038e8fd9c511f420d3c3ea4fb904a72759cf7ee814756740e.txt",
+        "bytes": 4764,
+        "sha256": "fd22bd65488f4f6038e8fd9c511f420d3c3ea4fb904a72759cf7ee814756740e"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 7,
+      "endLine": 114,
+      "sourceFileSha256": "b05c184f92e2e4bdfb09eb34e6d2474fe4570a4eaf5eb1e128d2b6904908d63c"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/gamma.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/df317bb61b01d40c7801216d8c0bb53a895df489fe2186ce19f4e74117222f35.txt",
+        "bytes": 2104,
+        "sha256": "df317bb61b01d40c7801216d8c0bb53a895df489fe2186ce19f4e74117222f35"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 7,
+      "endLine": 64,
+      "sourceFileSha256": "627e52bb7a984ab2da61da481729f317eae7a320a2980c72aa6077ca9e6bd03b"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/j0.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/b7b7aec3918b05e745093324ceb27e213ca43ba4906c4491159d8fb143c1615b.txt",
+        "bytes": 2512,
+        "sha256": "b7b7aec3918b05e745093324ceb27e213ca43ba4906c4491159d8fb143c1615b"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 11,
+      "endLine": 68,
+      "sourceFileSha256": "8d226442c38eeb79e5273980fc5d94f0ba9d4c4407d0e9a7e8db45838fc128f8"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/j1.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/c8ac067fb0e233288914bafb3f7732d253700aca614372ad21dbcca52e4c3303.txt",
+        "bytes": 2580,
+        "sha256": "c8ac067fb0e233288914bafb3f7732d253700aca614372ad21dbcca52e4c3303"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 11,
+      "endLine": 67,
+      "sourceFileSha256": "599ddf54522dd0cf19e3cdcee1298a5ca98eaa529e6e647fb8311373f5bef1fa"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/jn.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/36d293131ff45b0a0efa706c26e20c65f4a35677569bc039e3c830ab8ce7c0de.txt",
+        "bytes": 1459,
+        "sha256": "36d293131ff45b0a0efa706c26e20c65f4a35677569bc039e3c830ab8ce7c0de"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 11,
+      "endLine": 46,
+      "sourceFileSha256": "b588c5389aa3ac04eeb72b29a610bef4af02b8ee7faf3d50717d2da2219bc144"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/lgamma.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/d8c60c71d695667355f7601da66883f4b5be1e17351fa94fe9a400db772c2f26.txt",
+        "bytes": 3317,
+        "sha256": "d8c60c71d695667355f7601da66883f4b5be1e17351fa94fe9a400db772c2f26"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 11,
+      "endLine": 89,
+      "sourceFileSha256": "c07c6b7b6d57e97f47531abca86accbd23e0a0d49d8d5cb60c226e87df9c6804"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/log.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/2b6df576e6ea2bfa77285340430fc3dfdad1b2ce311b798aace7076cd6e7eb8a.txt",
+        "bytes": 2457,
+        "sha256": "2b6df576e6ea2bfa77285340430fc3dfdad1b2ce311b798aace7076cd6e7eb8a"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 11,
+      "endLine": 71,
+      "sourceFileSha256": "d8675d3d9c665ec0db5cc15478c03efb244301bfa1268d02ae1861bf6f2812ab"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/log1p.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/c1c717b7c684c104334a1a64543507eb62e47a042260a09ba2deba69ac1dbc17.txt",
+        "bytes": 3292,
+        "sha256": "c1c717b7c684c104334a1a64543507eb62e47a042260a09ba2deba69ac1dbc17"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 7,
+      "endLine": 84,
+      "sourceFileSha256": "10cb153951ada1c8c5ed3897caded00d90a7314c0640812847c3064a0c5f4b06"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/remainder.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/3fa603a2cd535f4b6575f957c264635c0c873627b3b29d767090c12709e59c8b.txt",
+        "bytes": 881,
+        "sha256": "3fa603a2cd535f4b6575f957c264635c0c873627b3b29d767090c12709e59c8b"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 7,
+      "endLine": 27,
+      "sourceFileSha256": "b86740c9a71e4144feec5e728c13f18b157744151d55eeaada90c9c9f26cefef"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/sin.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/833858fc3756c1f011688f8470443265b855a1db92579c8667711c5ee18cadba.txt",
+        "bytes": 2653,
+        "sha256": "833858fc3756c1f011688f8470443265b855a1db92579c8667711c5ee18cadba"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 11,
+      "endLine": 90,
+      "sourceFileSha256": "913640c10f5093e8cdaafa1ebebbf5175b5a156bdc0fa89d77350dd4dad3be9b"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/sqrt.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/f894acfd6045a7025f8c6e409103c76096b2b8795ef7c2df226e7e079603cdcd.txt",
+        "bytes": 3382,
+        "sha256": "f894acfd6045a7025f8c6e409103c76096b2b8795ef7c2df226e7e079603cdcd"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 7,
+      "endLine": 83,
+      "sourceFileSha256": "c7e036d1511bea94992014f9b8c9259e5737c385cdd5135db9092369250d4a94"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/tan.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/24885ab7b237dc1445d2970a2f41472842e208ebeae06b6b9682e4ac57171489.txt",
+        "bytes": 1803,
+        "sha256": "24885ab7b237dc1445d2970a2f41472842e208ebeae06b6b9682e4ac57171489"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 11,
+      "endLine": 60,
+      "sourceFileSha256": "b1a549f6d267acf37399b29827ecc4cc152cfb655d8a2ed6dfe56a67e58f8e60"
+    },
+    {
+      "scope": "go1.26.8",
+      "sourceMember": "src/math/tanh.go",
+      "kind": "verbatim inline attribution/comment block; copied/generated origin reconciliation remains open",
+      "retainedInput": {
+        "file": "provider-notices/35454dbeb436d53995d234ff21baabb3c501ffc091d9a8a18ed90c04e15d682a.txt",
+        "bytes": 1684,
+        "sha256": "35454dbeb436d53995d234ff21baabb3c501ffc091d9a8a18ed90c04e15d682a"
+      },
+      "sourceArchiveUrl": "https://go.dev/dl/go1.26.8.linux-arm64.tar.gz",
+      "sourceArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "startLine": 7,
+      "endLine": 55,
+      "sourceFileSha256": "a80f128fa85ddc9e94983b53f4a928f6811b96174e7920032e3e1a4367b96591"
+    }
+  ],
+  "inlineScan": {
+    "selectedFiles": 2973,
+    "matchingLines": 6800,
+    "scope": "Lexical attribution candidate scan only. The scanner cannot establish that unrecognised attribution is absent.",
+    "manuallyRetainedCopyrightFamilies": [
+      "Uber Technologies",
+      "Martin Atkins",
+      "fiat-crypto Authors",
+      "John D. Polstra",
+      "David E. O'Brien",
+      "Sun Microsystems",
+      "Stephen L. Moshier"
+    ]
+  },
+  "remainingInputs": [
+    "Reconcile copied/generated origins and inline attribution beyond the retained named notices and selected comment blocks.",
+    "Resolve exact output inclusion where native package selection is broader than linked symbols, including the BoringSSL notice retained from a selected package ancestor.",
+    "Complete compiler/bootstrap, packaging and runtime preparation/receipt integration obligations separately."
+  ],
+  "completeTransitiveNoticeClosureVerified": false,
+  "providerExecuted": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}
