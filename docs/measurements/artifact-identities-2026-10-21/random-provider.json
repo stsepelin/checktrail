@@ -110,11 +110,36 @@
         }
       ],
       "independentSourceRebuildPerformed": false
+    },
+    "selectedExecutableSourceBuildBindingVerified": true,
+    "independentExecutableRebuild": {
+      "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+      "sourceTree": "fb1d86e1f941c0ede0d5c46841d7d4c0c3015265",
+      "expectedAndRebuiltExecutableSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+      "freshOfflineSourceRebuildPerformed": true,
+      "sourceChangeCompiledToDifferentExecutable": true,
+      "restoredSourceCompiledToExactSelectedExecutable": true,
+      "providerExecuted": false,
+      "releaseZipPackagingIndependentlyRebuilt": false,
+      "retainedInputs": [
+        {
+          "file": "provider-rebuild-inputs.json",
+          "bytes": 72164,
+          "sha256": "e33e4bd5866440b06e10b988205ab82541759d1b228bfad3f9c5df1b256136f6",
+          "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
+        },
+        {
+          "file": "provider-independent-rebuild.json",
+          "bytes": 7332,
+          "sha256": "6c134580a0aac20602d5ddb4cadb84db96f0f4e0ff277a11d25d5a712ff2a8a2",
+          "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
+        }
+      ]
     }
   },
   "remainingInputs": [
     "Reconcile exact linked module, copied/generated and Go runtime/standard-library notices.",
-    "Complete selected source/build-tool provenance beyond the observed owner-workflow artifact link, including enforcement semantics and frozen external action/tool inputs or an independently retained rebuild.",
+    "Complete build-tool and linked-component provenance/notice coverage beyond the independently rebuilt executable. ZIP packaging was not independently reconstructed; full action/tool enforcement semantics remain separate from executable byte identity.",
     "Integrate scoped signature evidence into preparation and physical receipt admission before changing runtime flags."
   ],
   "preparationAndReceiptIntegrationVerified": false,
@@ -122,5 +147,5 @@
   "gateAComplete": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "observationsUpdatedAt": "2026-10-21T18:13:02.425610+00:00"
+  "observationsUpdatedAt": "2026-10-21T18:44:19.265222+00:00"
 }
