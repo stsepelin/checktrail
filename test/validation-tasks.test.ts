@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
-import { once } from "node:events";
+import { spawn, type ChildProcess } from "node:child_process";
 import { readFile, realpath, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { test, type TestContext } from "node:test";
@@ -34,6 +33,69 @@ async function completed(
   }
   throw new Error("Native validation task did not finish");
 }
+const parentReadinessTimeoutMs = 20_000;
+function parentTaskMessage(
+  parent: ChildProcess,
+): Promise<StoredValidationTask> {
+  let diagnostic = "";
+  const capture = (chunk: string) => {
+    diagnostic = (diagnostic + chunk).slice(-16_384);
+  };
+  parent.stderr?.setEncoding("utf8").on("data", capture);
+  parent.once("close", () => parent.stderr?.off("data", capture));
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const finish = (error?: Error, task?: StoredValidationTask) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      parent.off("message", message);
+      parent.off("exit", exit);
+      parent.off("error", failed);
+      if (error) reject(error);
+      else resolve(task!);
+    };
+    const message = (value: unknown) => {
+      try {
+        assert.ok(value && typeof value === "object");
+        assert.ok("taskId" in value && typeof value.taskId === "string");
+        assert.ok("status" in value && value.status === "working");
+        finish(undefined, value as StoredValidationTask);
+      } catch (error) {
+        finish(error as Error);
+      }
+    };
+    const exit = (code: number | null, signal: NodeJS.Signals | null) =>
+      finish(
+        new Error(
+          `Parent exited before task IPC: code=${code}, signal=${signal}; ${diagnostic}`,
+        ),
+      );
+    const failed = (error: Error) => finish(error);
+    const timer = setTimeout(
+      () =>
+        finish(
+          new Error(`Parent startup did not provide task IPC; ${diagnostic}`),
+        ),
+      parentReadinessTimeoutMs,
+    );
+    parent.once("message", message);
+    parent.once("exit", exit);
+    parent.once("error", failed);
+  });
+}
+function parentExited(parent: ChildProcess): Promise<void> {
+  return new Promise((resolve) => {
+    const settled = () => {
+      parent.off("exit", settled);
+      parent.off("error", settled);
+      resolve();
+    };
+    parent.once("exit", settled);
+    parent.once("error", settled);
+  });
+}
+
 const slow = `import {test} from 'node:test'; import fs from 'node:fs'; import {spawn} from 'node:child_process';
 test('waits for cancellation', async () => {
   const child = spawn(process.execPath, ['-e', 'setInterval(()=>{},1000)'], {stdio:'inherit'});
@@ -189,7 +251,7 @@ for (const method of ["cancel", "close"] as const)
 
 test(
   "durable task parent SIGKILL triggers worker cleanup and retains cancellation across restart",
-  { timeout: 15000 },
+  { timeout: 30000 },
   async (t) => {
     const opt = await setup(t, slow);
     const moduleURL = new URL("../src/validation-tasks.js", import.meta.url)
@@ -199,40 +261,67 @@ test(
       [
         "--input-type=module",
         "-e",
-        `import {openValidationTasks} from ${JSON.stringify(moduleURL)}; const tasks=await openValidationTasks(${JSON.stringify(opt)}); process.send(await tasks.start());`,
+        `import {openValidationTasks} from ${JSON.stringify(moduleURL)}; await new Promise(resolve=>setTimeout(resolve,6000)); const tasks=await openValidationTasks(${JSON.stringify(opt)}); process.send(await tasks.start());`,
       ],
       { stdio: ["ignore", "ignore", "pipe", "ipc"] },
     );
-    t.after(() => {
-      parent.kill("SIGKILL");
-    });
-    const [task] = (await once(parent, "message", {
-      signal: AbortSignal.timeout(5000),
-    })) as [StoredValidationTask];
-    const pids = await started(t, opt.root);
-    await assert.rejects(openTaskStore(opt), /locked/);
-    const exited = once(parent, "exit");
-    assert.ok(parent.kill("SIGKILL"));
-    await exited;
-    await stopped(pids);
-    let store;
-    for (let attempt = 0; attempt < 100; attempt++) {
-      try {
-        store = await openTaskStore(opt);
-        break;
-      } catch (error) {
-        assert.match(String(error), /locked/);
-        await delay(25);
-      }
-    }
-    assert.ok(
-      store,
-      "Disconnected worker must release ownership after cleanup",
-    );
+    const exited = parentExited(parent);
     try {
-      assert.equal(store.get(task.taskId).status, "cancelled");
+      const task = await parentTaskMessage(parent);
+      const pids = await started(t, opt.root);
+      await assert.rejects(openTaskStore(opt), /locked/);
+      assert.ok(parent.kill("SIGKILL"));
+      await exited;
+      await stopped(pids);
+      let store;
+      for (let attempt = 0; attempt < 100; attempt++) {
+        try {
+          store = await openTaskStore(opt);
+          break;
+        } catch (error) {
+          assert.match(String(error), /locked/);
+          await delay(25);
+        }
+      }
+      assert.ok(
+        store,
+        "Disconnected worker must release ownership after cleanup",
+      );
+      try {
+        assert.equal(store.get(task.taskId).status, "cancelled");
+      } finally {
+        store.close();
+      }
     } finally {
-      store.close();
+      if (parent.exitCode === null && parent.signalCode === null)
+        parent.kill("SIGKILL");
+      await exited;
+    }
+  },
+);
+
+test(
+  "durable parent readiness reports early native startup exit instead of waiting for task IPC",
+  { timeout: 30000 },
+  async () => {
+    const parent = spawn(
+      process.execPath,
+      [
+        "-e",
+        "process.stderr.write('synthetic startup failure'); process.exit(7);",
+      ],
+      { stdio: ["ignore", "ignore", "pipe", "ipc"] },
+    );
+    const exited = parentExited(parent);
+    try {
+      await assert.rejects(
+        parentTaskMessage(parent),
+        /Parent exited before task IPC: code=7/,
+      );
+    } finally {
+      if (parent.exitCode === null && parent.signalCode === null)
+        parent.kill("SIGKILL");
+      await exited;
     }
   },
 );

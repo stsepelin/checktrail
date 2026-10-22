@@ -6,8 +6,9 @@ files. It loads native configuration only after execution trust is granted.
 Framework setup files with other names need a future scope contract; unexpected
 test files cannot silently extend the claimed scope.
 
-The native configuration integration is gated to Playwright 1.63.0. Other versions
-are incomplete until this internal API and its lifecycle are verified. The public
+The native configuration integration accepts exactly Playwright 1.63.0 and
+1.64.0. Other versions are incomplete until this internal API and its lifecycle
+are verified. The public
 reporter API supplies collected tests, project names, expected statuses, retry
 attempts, errors and terminal outcomes. The report identifies Playwright from its
 installed package metadata, separately from the Node runtime.
@@ -53,8 +54,12 @@ The synthetic suite exercises arithmetic and actual Chromium DOM assertions,
 failures, focus, retries, skips/expected failures, snapshot protection, excluded
 files, multiple/empty projects, TypeScript configuration, rejected startup,
 unsupported versions and absent browsers. Browser fixtures use only `setContent`;
-they do not contact a website. Current native evidence is macOS arm64 with
-Playwright 1.63.0 and its Chromium headless shell revision 1243.
+they do not contact a website. Earlier local macOS arm64 evidence used
+Playwright 1.63.0 and Chromium headless shell revision 1243. The development suite
+now also passes all four native controls on macOS arm64 with Playwright 1.64.0
+and its Chromium headless shell revision 1248. The preserved Gate A selection
+remains 1.63.0; this additional supported version does not close that gate.
+Fresh hosted acceptance for the dependency update remains required.
 
 Prepare development browsers explicitly after installing the locked npm tools:
 
@@ -65,8 +70,9 @@ node --test dist/test/playwright.test.js
 ```
 
 Browser preparation downloads development tools; validation does not. The CI
-definition additionally prepares OS libraries with `--with-deps`. Hosted CI has
-not run. Absent local browser preparation is an explicit native-test skip.
+definition additionally prepares OS libraries with `--with-deps`. Fresh hosted
+checks are required for a changed supported version. Absent local browser
+preparation is an explicit native-test skip.
 
 References: [reporter lifecycle](https://playwright.dev/docs/api/class-reporter),
 [test configuration](https://playwright.dev/docs/test-configuration),
