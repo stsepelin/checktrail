@@ -11,6 +11,12 @@ bindings, canonical notice addresses and explicit declaration conflicts. Its
 current development notice gaps remain incomplete; complete native
 artifact/license closure and the final runtime matrix remain pending.
 
+[Declared findings resolution](REVIEW-FINDINGS.md) adds parameter-name
+availability checks for captured JavaScript/TypeScript functions. This syntax
+check does not establish repair correctness, caller reachability or semantic
+support for other languages. Native imports and host judgment declarations retain
+their separate provenance and acceptance limits.
+
 Capability levels are discovery, planning, execution, structured evidence,
 semantic rules, and integration validation. None implies the next. This file's
 initial scope column describes the experimental implementation. Node, Python,

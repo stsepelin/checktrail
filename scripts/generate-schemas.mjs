@@ -1,4 +1,9 @@
 import {
+  reviewFindingsInputSchema,
+  reviewFindingsReportSchema,
+  reviewFindingsSummarySchema,
+} from "../dist/src/review-findings.js";
+import {
   taskArchiveManifestSchema,
   taskArchiveChunkSchema,
 } from "../dist/src/task-report-archives.js";
@@ -317,6 +322,9 @@ for (const [name, schema] of Object.entries({
   "review-probe-summary": reviewProbeSummarySchema,
   "review-provider-config": reviewProviderConfigSchema,
   "review-candidate": reviewCandidateSchema,
+  "review-findings-input": reviewFindingsInputSchema,
+  "review-findings-report": reviewFindingsReportSchema,
+  "review-findings-summary": reviewFindingsSummarySchema,
   "review-provenance-input": reviewProvenanceInputSchema,
   "review-provenance-report": reviewProvenanceReportSchema,
   "review-provenance-summary": reviewProvenanceSummarySchema,

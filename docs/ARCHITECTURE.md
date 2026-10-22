@@ -393,3 +393,10 @@ The opt-in [Terraform local module/provider extension](TERRAFORM-EXTENSIONS.md) 
 The opt-in [Helm application/subchart extension](HELM-EXTENSIONS.md) binds a finite local alias graph, physical chart defaults, coalesced scalar origins and complete native schema/render participation. Current-root receipt admission reconciles all physical lint outcomes and physical/rendered source markers through the shared engine. Native first-error coverage and bounded columns remain separate from exhaustive semantic truth, full provenance and Gate A.
 
 The selected [native mutation profiles](MUTATIONS.md) use fresh source and complete selected physical dependency snapshots for flat Vitest/Jest, pytest and PHPUnit experiments. Typed native assertion identity, explicit lifecycle phase, unchanged test cohorts, bounded physical output and current original/copied inputs constrain killed/survived admission. Summary projections omit native observations; detailed projections retain physical output. The original Node profile keeps its existing contract. Broader runner shapes, complete executable/license closure, independent host sessions and final Gate A acceptance remain separate.
+
+[Declared findings inspection](REVIEW-FINDINGS.md) shares current-source and
+native-import reconciliation with review provenance. Library, CLI and MCP use one
+bounded derivation; a memory-only JS/TS parser checks declared repair parameter
+names. Explicit host judgments, consequence priorities and common-cause groups
+remain unverified advisory data. Strict summary projection withholds retained
+source and judgment text; it cannot grant project execution or source disclosure.

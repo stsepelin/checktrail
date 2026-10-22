@@ -5052,5 +5052,71 @@
       "file": "dist/test/gate-mutation-runners.test.js",
       "name": "mutation-runners installed acceptance"
     }
+  ],
+  "finding-resolution": [
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution retains native disagreement and a reachable declared repair without verifying truth"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution keeps a satisfied predicate unresolved until a distinct refutation is declared"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution does not promote missing native evidence empty selections or labels"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution reconciles the entire candidate context native digest and ordered case cohort"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution degrades every candidate affected by refuter adjudicator or reviewer session reuse"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution keeps incomplete stages and missing decisions in the selected denominator"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution verifies a proposed repair uses only parameters available at its exact captured function"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding parameter parsing handles destructuring aliases rest Unicode and excludes nested defaults locals and globals"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution refuses to choose between identical native function bytes in different captured files"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution derives severity only from complete declared consequence descriptors"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding common-defect mappings preserve all attributions and fix scopes and never silently discard invalid groups"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution reports stale and unmatched source rather than retaining supported conclusions"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding projection rederives every result and refuses forged states severities groups and parameter names"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding CLI and MCP protect source judgments parameter names and execution trust"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding inspection accepts serialized bounded input and respects cancellation without executing project source"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution installed cohort uses a fresh offline production package"
+    }
   ]
 }

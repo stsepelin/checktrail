@@ -15,6 +15,14 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+[Declared findings resolution](REVIEW-FINDINGS.md) joins current citations,
+imported native observations, declared refutation/adjudication and explicit
+common-cause mappings. Captured JS/TS parsing checks whether a proposed repair's
+declared parameters exist at its cited function. Severity follows a finite
+policy over declared consequences. Truth, independent sessions, impact, common
+causes and repair correctness remain unverified; the whole multi-candidate
+workflow and Gate A acceptance remain open.
+
 [Review provenance](REVIEW-PROVENANCE.md) now joins current source/citation
 checks, exact host claims, imported native receipt accounting and bound
 descriptive scores through library, CLI and MCP. Evidence tiers and complete
