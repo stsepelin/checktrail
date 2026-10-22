@@ -337,7 +337,7 @@ test(
     assert.equal(receipt.evidence.profileEvidence.complete, true);
     assert.equal(
       receipt.evidence.profileEvidence.required,
-      process.platform === "win32" ? 27 : 24,
+      process.platform === "win32" ? 28 : 25,
     );
     assert.deepEqual(
       receipt.evidence.profileEvidence.ledger.cases

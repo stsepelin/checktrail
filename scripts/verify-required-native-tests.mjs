@@ -71,6 +71,7 @@ const timeoutMs =
   )
     ? 300000
     : fullSuite ||
+        selection.includes("tasks-matrix") ||
         selection.includes("dotnet-method") ||
         selection.includes("jvm-wrappers") ||
         selection.includes("kotlin-extensions") ||
@@ -131,19 +132,24 @@ const timeoutMs =
 // exhausted native threads under the required 256-PID container limit. A full-suite run keeps every file/test in scope.
 const isolatedCaseWorkers =
   !fullSuite &&
-  selection.length === 1 &&
-  [
-    "jvm-wrappers",
-    "scala-extensions",
-    "dotnet-format-extensions",
-    "dotnet-generator-extensions",
-    "ruby-extensions",
-    "swift-extensions",
-    "cpp-extensions",
-    "terraform-extensions",
-    "helm-extensions",
-    ...mutationProfiles,
-  ].includes(selection[0])
+  (selection.some((profile) =>
+    ["tasks-matrix", "tasks-runtime-manifest", "tasks-runtime-cli"].includes(
+      profile,
+    ),
+  ) ||
+    (selection.length === 1 &&
+      [
+        "jvm-wrappers",
+        "scala-extensions",
+        "dotnet-format-extensions",
+        "dotnet-generator-extensions",
+        "ruby-extensions",
+        "swift-extensions",
+        "cpp-extensions",
+        "terraform-extensions",
+        "helm-extensions",
+        ...mutationProfiles,
+      ].includes(selection[0])))
     ? 1
     : 0;
 // Retain the single-profile report used by installed acceptance harnesses.
@@ -168,6 +174,7 @@ const report =
     : await runRequiredProfiles(profiles, selection, {
         timeoutMs,
         additionalFiles,
+        isolatedCaseWorkers,
       });
 process.stdout.write(JSON.stringify({ timeoutMs, ...report }) + "\n");
 process.exitCode = report.complete ? 0 : 1;
