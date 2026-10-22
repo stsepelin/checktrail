@@ -6,7 +6,9 @@ Fresh-package harnesses copy the same observer outside the installed package and
 resolve their deliberate `dist/src` alias to that package’s engine. Every regular
 file under that root, including generated declarations, contributes its relative
 name, byte count and SHA-256 digest. A changed inventory prevents a successful
-runner result even when every selected test callback passed.
+runner result even when every selected test callback passed. All eight observer
+controls are declared in `native-acceptance-ledger`; skipped or missing required
+controls prevent that cohort from completing.
 
 The observer streams directory entries and file contents, rejects nested links
 and nonregular entries, and checks file/handle/directory identities while reading.
