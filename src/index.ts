@@ -18,6 +18,14 @@ export type {
   ReviewEvaluationProtocol,
   ReviewEvaluationProtocolReport,
 } from "./review-evaluation-protocol.js";
+export {
+  inspectReviewEvaluationMetering,
+  reviewEvaluationMeteringInputSchema,
+} from "./review-evaluation-metering.js";
+export type {
+  ReviewEvaluationMeteringInput,
+  ReviewEvaluationMeteringReport,
+} from "./review-evaluation-metering.js";
 export { validateContracts } from "./contracts.js";
 export type { ContractBundle, ContractReport } from "./contract-schema.js";
 export type { PlanOptions, ValidationOptions } from "./engine.js";

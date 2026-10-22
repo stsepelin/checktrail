@@ -5102,5 +5102,55 @@
       "file": "dist/test/review-evaluation-protocol.test.js",
       "name": "evaluation protocol controls run through a fresh offline production installation with an external harness"
     }
+  ],
+  "evaluation-protocol-metering": [
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering retains failed retries in exact common-arm totals without invoking a host"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering partitions missing duplicate foreign and excluded slots without shrinking the plan"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering rejects reused declared sessions and complete-record identities across every arm and retry"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering preserves ordered retry admissions and rejects success followed by another attempt"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering keeps explicit nonexecution separate from successful review and reconciles terminal failures"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering keeps unknown and provider-reported usage explicit without treating null as zero"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering checks equal per-arm budgets against every failed retry and preserves boundary equality"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering reconciles total arm wall time against all sequential attempts without claiming timestamp verification"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering binds the frozen protocol and external procedure and rejects stale or incomplete declarations"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering bounds all slot and attempt collections and rejects extra private fields and malformed counters"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering supports every bounded prospective slot and leaves declared totals independent of row order"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering stdin checker emits aggregate accounting only and invalid input never echoes private data"
+    }
   ]
 }

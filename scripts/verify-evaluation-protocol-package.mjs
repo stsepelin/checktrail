@@ -23,23 +23,43 @@ import { attemptOutputCodeIdentity } from "./attempt-output-evidence.mjs";
 
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+const args = process.argv.slice(2);
+assert.ok(args.length === 0 || (args.length === 1 && args[0] === "--metering"));
+const metering = args.length === 1;
+const selectedProfile = metering
+  ? "evaluation-protocol-metering"
+  : "evaluation-protocol-declarations";
+const harnessFiles = metering
+  ? [
+      "dist/test/review-evaluation-metering.test.js",
+      "dist/test/review-evaluation-metering-fixture.js",
+      "dist/test/review-evaluation-protocol-fixture.js",
+      "scripts/check-evaluation-metering.mjs",
+    ]
+  : [
+      "dist/test/review-evaluation-protocol.test.js",
+      "dist/test/review-evaluation-protocol-fixture.js",
+      "scripts/check-evaluation-protocol.mjs",
+    ];
 const expected = JSON.parse(
   await readFile(
     path.join(repository, "scripts/required-native-tests.json"),
     "utf8",
   ),
-)["evaluation-protocol-declarations"];
+)[selectedProfile];
 assert.equal(expected.length, 12);
 assert.equal(new Set(expected.map((row) => row.name)).size, 12);
 assert.ok(
   expected.every(
-    (row) => row.file === "dist/test/review-evaluation-protocol.test.js",
+    (row) =>
+      row.file ===
+      (metering
+        ? "dist/test/review-evaluation-metering.test.js"
+        : "dist/test/review-evaluation-protocol.test.js"),
   ),
 );
 const inputFiles = [
-  "dist/test/review-evaluation-protocol.test.js",
-  "dist/test/review-evaluation-protocol-fixture.js",
-  "scripts/check-evaluation-protocol.mjs",
+  ...harnessFiles,
   "scripts/required-native-tests.json",
   "scripts/required-test-evidence.mjs",
   "scripts/attempt-output-evidence.mjs",
@@ -104,18 +124,18 @@ try {
     await realpath(path.join(harness, "dist/src")),
     await realpath(path.join(installed, "dist/src")),
   );
-  for (const file of inputFiles.slice(0, 3))
+  for (const file of harnessFiles)
     await cp(path.join(repository, file), path.join(harness, file));
   const copiedInputs = async () =>
     Promise.all(
       inputFiles
-        .slice(0, 3)
+        .slice(0, harnessFiles.length)
         .map(async (file) => [
           file,
           hash(await readFile(path.join(harness, file))),
         ]),
     );
-  assert.deepEqual(await copiedInputs(), inputs.slice(0, 3));
+  assert.deepEqual(await copiedInputs(), inputs.slice(0, harnessFiles.length));
   const installedCode = await attemptOutputCodeIdentity(installed);
   assert.equal(installedCode, sourceCode);
   process.env.CHECKTRAIL_EVALUATION_PROTOCOL_INSTALLED = "1";
@@ -131,14 +151,14 @@ try {
   assert.equal(profile.ledger.cases.length, 12);
   assert.ok(profile.ledger.cases.every((row) => row.outcome === "passed"));
   assert.deepEqual(await inputIdentities(), inputs);
-  assert.deepEqual(await copiedInputs(), inputs.slice(0, 3));
+  assert.deepEqual(await copiedInputs(), inputs.slice(0, harnessFiles.length));
   assert.equal(await attemptOutputCodeIdentity(installed), installedCode);
   assert.equal(await attemptOutputCodeIdentity(repository), sourceCode);
   assert.equal(hash(await readFile(process.execPath)), executableSha256);
   process.stdout.write(
     JSON.stringify({
       schemaVersion: 1,
-      profile: "evaluation-protocol-declarations",
+      profile: selectedProfile,
       node: process.versions.node,
       platform: process.platform,
       architecture: process.arch,

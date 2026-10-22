@@ -76,3 +76,5 @@ integration, actual private identity/configuration selection and acceptance
 bindings remain required before the independent evaluation profile can complete.
 
 The `evaluation-protocol-declarations` required cohort exercises original synthetic binding, contamination, scale, exclusion, scheduling, identity, schema and privacy controls. Its installed callback repeats the same controls through a fresh locked offline production installation and an external harness. The checkout setup script remains outside the installed CLI/MCP catalogue. Before/after compiled-tree, harness and executable hashes detect observed changes; they do not trace loaded modules or independently attest dependency bytes. These component controls are separate from the frozen nine-case whole evaluation profile.
+
+[External usage accounting](EVALUATION-METERING.md) now binds supplied per-arm attempt records to this declaration, retains failed retries and unknown usage, and checks terminal inventory and equal resource ceilings. Its consistency checks do not verify the actual collector, all-attempt completeness, host independence or billing.
