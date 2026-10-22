@@ -416,8 +416,8 @@ test("evaluation metering supports every bounded prospective slot and leaves dec
 });
 
 test("evaluation metering stdin checker emits aggregate accounting only and invalid input never echoes private data", () => {
-  const run = (input: string | Buffer) =>
-    spawnSync(process.execPath, [script], {
+  const run = (input: string | Buffer, args: string[] = []) =>
+    spawnSync(process.execPath, [script, ...args], {
       input,
       encoding: "utf8",
       timeout: 30000,
@@ -427,6 +427,19 @@ test("evaluation metering stdin checker emits aggregate accounting only and inva
     ok = run(JSON.stringify(fixture));
   assert.equal(ok.status, 0, ok.stderr);
   assert.deepEqual(JSON.parse(ok.stdout), inspect(fixture));
+  const body = Buffer.from(JSON.stringify(fixture));
+  const exactLimit = run(
+    Buffer.concat([body, Buffer.alloc(4 * 1048576 - body.length, 32)]),
+  );
+  assert.equal(exactLimit.status, 0, exactLimit.stderr);
+  assert.deepEqual(JSON.parse(exactLimit.stdout), inspect(fixture));
+  const unknownOption = run(body, ["--allow-inference"]);
+  assert.equal(unknownOption.status, 1);
+  assert.equal(unknownOption.stdout, "");
+  assert.equal(
+    unknownOption.stderr,
+    "Evaluation metering input invalid or unavailable\n",
+  );
   fixture.metering.slots.pop();
   const missing = run(JSON.stringify(fixture));
   assert.equal(missing.status, 2, missing.stderr);
