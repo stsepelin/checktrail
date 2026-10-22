@@ -17,6 +17,8 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 The [prospective evaluation protocol preflight](EVALUATION-PROTOCOL-DECLARATIONS.md) binds opaque reference/workflow configuration commitments, the common cohort, incident clusters, equal resource ceilings and predeclared scoring parameters. Its source and fresh offline installed controls are required in the existing checks matrix. It reads declarations only; actual configuration identity, freeze chronology, licensed eligibility, independent judgments, host metering and final evaluation readiness remain unverified. The full independent-evaluation profile and Gate A stay open.
 
+The [external review metering intake](EVALUATION-METERING.md) reconciles declared terminal slots and ordered attempts against that prospective protocol, retaining failed retries, unknown usage and equal per-arm budget overages. It distinguishes operator-metered from provider-reported metadata and returns aggregate accounting only. Its consistency checks do not verify collector authenticity, actual all-attempt completeness, host independence, billing or review quality. The independent-evaluation profile and Gate A remain open.
+
 [Review provenance](REVIEW-PROVENANCE.md) now joins current source/citation
 checks, exact host claims, imported native receipt accounting and bound
 descriptive scores through library, CLI and MCP. Evidence tiers and complete
