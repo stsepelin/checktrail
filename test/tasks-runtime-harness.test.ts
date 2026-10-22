@@ -12,7 +12,7 @@ const target=process.argv[2],platform=process.argv[3];
 globalThis.originalBudgetCalls=[];globalThis.originalBudgetOutcomes=[];
 const testStub="export function test(name,options,callback){if(name==='tasks-matrix installed acceptance'){globalThis.originalBudgetCalls.push({kind:'callback',timeout:options.timeout});globalThis.originalBudgetOutcomes.push(Promise.resolve().then(callback).then(()=>({outcome:'passed'}),error=>({outcome:'failed',message:error.message})));}}";
 const childStub="export function spawnSync(executable,args,options){globalThis.originalBudgetCalls.push({kind:'child',executable,args,timeout:options.timeout,maxBuffer:options.maxBuffer});return{status:7,stdout:'',stderr:'synthetic package process refusal'};}";
-const unused="export const passingTest='synthetic';export const slow='synthetic';export function createPlan(){throw Error('unexpected engine execution');}export const validate=createPlan,openTaskStore=createPlan,setup=createPlan,wire=createPlan,taskId=createPlan,terminal=createPlan,report=createPlan,started=createPlan,stopped=createPlan,acknowledge=createPlan;";
+const unused="export const passingTest='synthetic';export const slow='synthetic',taskExecutionTimeoutMs=5000;export function createPlan(){throw Error('unexpected engine execution');}export const validate=createPlan,openTaskStore=createPlan,setup=createPlan,wire=createPlan,taskId=createPlan,terminal=createPlan,report=createPlan,started=createPlan,stopped=createPlan,acknowledge=createPlan;";
 registerHooks({resolve(specifier,context,next){if(context.parentURL===target){const stub=specifier==='node:test'?testStub:specifier==='node:child_process'?childStub:specifier.startsWith('.')?unused:null;if(stub)return{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true};}return next(specifier,context);}});
 Object.defineProperty(process,'platform',{value:platform});
 await import(target);
@@ -326,6 +326,86 @@ test("Tasks terminal observation bounds a stalled read and refuses invalid deadl
   assert.equal(calls, 0);
 });
 
+test("Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits", async (t) => {
+  const root = await fixture(t, {
+    "wire-observer.mjs": `import {registerHooks} from 'node:module';import{EventEmitter}from'node:events';import{PassThrough}from'node:stream';
+const target=process.argv[2],platform=process.argv[3],calls=[],hooks=[];let killed=0;
+globalThis.originalWireSpawn=(executable,args,options)=>{calls.push({executable,args,stdio:options.stdio});const child=new EventEmitter();child.pid=42;child.stdin=new PassThrough();child.stdout=new PassThrough();child.stderr=new PassThrough();child.kill=()=>{killed++;child.emit('exit',1);return true;};child.stdin.on('finish',()=>queueMicrotask(()=>{child.stdout.end();child.stderr.end();child.emit('exit',0);}));return child;};
+registerHooks({resolve(specifier,context,next){if(context.parentURL===target&&specifier==='node:child_process')return{url:'data:text/javascript,'+encodeURIComponent('export function spawn(...args){return globalThis.originalWireSpawn(...args)}'),shortCircuit:true};return next(specifier,context);}});
+Object.defineProperty(process,'platform',{value:platform});const {wire,terminal,taskExecutionTimeoutMs,taskObservationTimeoutMs}=await import(target);
+const t={after:fn=>hooks.push(fn)},opt={root:'original-root',directory:'original-store'};
+for(const args of [undefined,['--allow-execution','--timeout-ms','5000']]){const connection=await wire(t,opt,args);await connection.close();}
+for(const close of hooks)await close();
+let elapsed=0;const previous=Object.getOwnPropertyDescriptor(performance,'now');Object.defineProperty(performance,'now',{value:()=>elapsed,configurable:true});
+const connection={request:async()=>{elapsed+=20000;return{result:{resultType:'complete',status:'completed'}}}};const outcomes=[];
+try{for(const timeout of [undefined,10000]){elapsed=0;try{const result=await terminal(connection,'original-task',timeout);outcomes.push({status:result.status});}catch(error){outcomes.push({error:error.message});}}}finally{if(previous)Object.defineProperty(performance,'now',previous);else delete performance.now;}
+console.log(JSON.stringify({calls,killed,taskExecutionTimeoutMs,taskObservationTimeoutMs,outcomes}));`,
+    "lifecycle-observer.mjs": `import{registerHooks}from'node:module';const target=process.argv[2],platform=process.argv[3];globalThis.originalLifecycleCallbacks=[];globalThis.originalLifecycleCalls=[];
+const testStub="export function test(name,options,callback){if(name==='tasks-matrix lifecycle acceptance')globalThis.originalLifecycleCallbacks.push(callback);}";
+const fixtureStub="export const slow='await new Promise(resolve=>setTimeout(resolve,60000));',passingTest='original',taskExecutionTimeoutMs=20000;export async function setup(){return{root:'original-root',directory:'original-store'}};export async function wire(t,opt,args){globalThis.originalLifecycleCalls.push(args);throw new Error('original lifecycle selection observed');}export function unexpected(){throw Error('unexpected application execution')};export const createPlan=unexpected,validate=unexpected,openTaskStore=unexpected,taskId=unexpected,terminal=unexpected,report=unexpected,started=unexpected,stopped=unexpected,acknowledge=unexpected;";
+registerHooks({resolve(specifier,context,next){if(context.parentURL===target){const stub=specifier==='node:test'?testStub:specifier.startsWith('.')?fixtureStub:null;if(stub)return{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true};}return next(specifier,context);}});
+Object.defineProperty(process,'platform',{value:platform});await import(target);if(globalThis.originalLifecycleCallbacks.length!==1)throw Error('Lifecycle callback not selected');let message;try{await globalThis.originalLifecycleCallbacks[0]({});}catch(error){message=error.message;}console.log(JSON.stringify({calls:globalThis.originalLifecycleCalls,message}));`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  for (const platform of ["win32", "linux", "darwin"]) {
+    const observed = spawnSync(
+      process.execPath,
+      [
+        path.join(root, "wire-observer.mjs"),
+        new URL("./tasks-wire-fixture.js", import.meta.url).href,
+        platform,
+      ],
+      { env, encoding: "utf8", timeout: 15000 },
+    );
+    assert.equal(observed.error, undefined);
+    assert.equal(observed.status, 0, observed.stderr);
+    const value = JSON.parse(observed.stdout);
+    const execution = platform === "win32" ? 20000 : 5000,
+      observation = platform === "win32" ? 35000 : 15000;
+    assert.equal(value.taskExecutionTimeoutMs, execution);
+    assert.equal(value.taskObservationTimeoutMs, observation);
+    assert.ok(observation >= execution + 10000);
+    assert.equal(value.killed, 0);
+    assert.equal(value.calls.length, 2);
+    for (const [index, call] of value.calls.entries()) {
+      assert.equal(call.executable, process.execPath);
+      assert.deepEqual(call.stdio, ["pipe", "pipe", "pipe"]);
+      assert.deepEqual(call.args.slice(1), [
+        "serve",
+        "--root",
+        "original-root",
+        "--task-store",
+        "original-store",
+        "--timeout-ms",
+        String(execution),
+        "--allow-execution",
+        ...(index === 1 ? ["--timeout-ms", "5000"] : []),
+      ]);
+    }
+    if (platform === "win32")
+      assert.equal(value.outcomes[0].status, "completed");
+    else assert.match(value.outcomes[0].error, /within 15000ms/);
+    assert.match(value.outcomes[1].error, /within 10000ms/);
+    const lifecycle = spawnSync(
+      process.execPath,
+      [
+        path.join(root, "lifecycle-observer.mjs"),
+        new URL("./gate-tasks-matrix.test.js", import.meta.url).href,
+        platform,
+      ],
+      { env, encoding: "utf8", timeout: 15000 },
+    );
+    assert.equal(lifecycle.error, undefined);
+    assert.equal(lifecycle.status, 0, lifecycle.stderr);
+    const selected = JSON.parse(lifecycle.stdout);
+    assert.equal(selected.message, "original lifecycle selection observed");
+    assert.deepEqual(selected.calls, [
+      ["--allow-execution", "--timeout-ms", "5000"],
+    ]);
+  }
+});
+
 test("Tasks runtime selection binds every frozen acceptance case and preserves the complete platform control family", async () => {
   const { readFile } = await import("node:fs/promises");
   const { selectTasksRuntimeRequirements } = await import(
@@ -364,7 +444,16 @@ test("Tasks runtime selection binds every frozen acceptance case and preserves t
       expected,
     );
     assert.deepEqual(rows.slice(0, 10), profiles["mcp-tasks"]);
-    assert.equal(rows.length, platform === "win32" ? 28 : 25);
+    assert.equal(rows.length, platform === "win32" ? 29 : 26);
+    assert.equal(
+      rows.filter(
+        (row) =>
+          row.name ===
+          "Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits",
+      ).length,
+      1,
+    );
+
     assert.equal(
       new Set(rows.map((row) => JSON.stringify([row.file, row.name]))).size,
       rows.length,

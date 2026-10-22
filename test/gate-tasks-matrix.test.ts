@@ -9,6 +9,7 @@ import { openTaskStore } from "../src/task-store.js";
 import { passingTest } from "./helpers.js";
 import {
   setup,
+  taskExecutionTimeoutMs,
   wire,
   taskId,
   terminal,
@@ -162,7 +163,7 @@ test("tasks-matrix stale acceptance", async (t) => {
     );
     const changed = await validate(opt.root, {
       trusted: true,
-      timeoutMs: 5000,
+      timeoutMs: taskExecutionTimeoutMs,
     });
     assert.equal(changed.outcome, "failed");
     assert.notEqual(changed.sourceFingerprint, original);
@@ -257,7 +258,11 @@ test("tasks-matrix lifecycle acceptance", { timeout: 60000 }, async (t) => {
     );
     assert.notEqual(flood, slow);
     const opt = await setup(t, mode === "output" ? flood : slow);
-    const connection = await wire(t, opt);
+    const connection = await wire(t, opt, [
+      "--allow-execution",
+      "--timeout-ms",
+      "5000",
+    ]);
     const id = taskId(
       await connection.request("tools/call", {
         name: "validation_run",
@@ -337,19 +342,21 @@ test(
     assert.equal(receipt.evidence.profileEvidence.complete, true);
     assert.equal(
       receipt.evidence.profileEvidence.required,
-      process.platform === "win32" ? 28 : 25,
+      process.platform === "win32" ? 29 : 26,
     );
-    assert.deepEqual(
-      receipt.evidence.profileEvidence.ledger.cases
-        .filter(
-          (entry: { name: string }) =>
-            entry.name ===
-            "Tasks fixture teardown closes every live SQLite server before removing its directories",
-        )
-        .map((entry: { outcome: string }) => entry.outcome),
-      ["passed"],
-      "The fresh installed cohort must execute the cleanup-order control exactly once",
-    );
+    for (const control of [
+      "Tasks fixture teardown closes every live SQLite server before removing its directories",
+      "Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits",
+      "Tasks runtime selection binds every frozen acceptance case and preserves the complete platform control family",
+    ]) {
+      assert.deepEqual(
+        receipt.evidence.profileEvidence.ledger.cases
+          .filter((entry: { name: string }) => entry.name === control)
+          .map((entry: { outcome: string }) => entry.outcome),
+        ["passed"],
+        "The fresh installed cohort must execute each required fixture control exactly once",
+      );
+    }
     assert.equal(
       receipt.evidence.profileEvidence.passed,
       receipt.evidence.profileEvidence.required,

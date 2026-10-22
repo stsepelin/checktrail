@@ -65,6 +65,10 @@ export function selectTasksRuntimeRequirements(profiles, selected, platform) {
     },
     {
       file: "dist/test/tasks-runtime-harness.test.js",
+      name: "Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits",
+    },
+    {
+      file: "dist/test/tasks-runtime-harness.test.js",
       name: "Tasks runtime selection binds every frozen acceptance case and preserves the complete platform control family",
     },
     ...(platform === "win32"
@@ -97,7 +101,7 @@ export function selectTasksRuntimeRequirements(profiles, selected, platform) {
   ];
   assert.equal(
     requirements.length,
-    platform === "win32" ? 28 : 25,
+    platform === "win32" ? 29 : 26,
     "Tasks platform control family changed",
   );
   assert.equal(

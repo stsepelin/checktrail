@@ -9,6 +9,7 @@ import { McpValidationTasks } from "../src/mcp-validation-tasks.js";
 import { passingTest } from "./helpers.js";
 import {
   extension,
+  taskExecutionTimeoutMs,
   registerTaskCleanup,
   setup,
   wire,
@@ -169,7 +170,7 @@ test("MCP Tasks reject tool trust injection timeout changes and unknown handles 
     taskId(
       await trusted.request("tools/call", {
         name: "validation_run",
-        arguments: { timeoutMs: 5000 },
+        arguments: { timeoutMs: taskExecutionTimeoutMs },
       }),
     ),
   );

@@ -118,10 +118,20 @@ the shared suite, formatting, audits and fresh package/mutation verification.
 
 Selective routing additionally requires a successful full `main` push run of
 the exact PR base commit, with a complete job inventory and no skipped,
-cancelled or failed jobs. Missing history, an unavailable API, a pending/failed
+cancelled or failed jobs. Missing history, unavailable evidence APIs, a pending/failed
 base or a stale input contract falls back to all jobs. Pushes, tags, manual runs
 and the weekly scheduled run always verify every native job. API access is
 read-only and confined to `ci-plan`; PRs do not receive write permissions.
+
+If the jobs endpoint is unavailable because of a transport failure, rate limit or
+selected server error, the planner can read that same run's latest check suite.
+Every expected job name must occur exactly once, completed successfully, under
+the exact source commit, suite, GitHub Actions app and repository/run job URL.
+The run identity and successful attempt must remain unchanged after all bounded
+pages are read. A failed, skipped, duplicate, foreign or malformed job already
+observed on any jobs page prevents this fallback. Denied API access and malformed
+responses also keep the full plan. This alternative supplies baseline evidence
+only; it does not reuse results as acceptance of the PR revision.
 
 The initial full-verification wave admits the shared matrices, selected long .NET/Scala
 jobs and actionlint within the [Free plan's concurrent-job ceiling](https://docs.github.com/en/actions/reference/limits). The three JVM wrapper phases and shorter
@@ -803,5 +813,17 @@ the two explicitly pinned repository copies, after the bounded official mirror
 attempts. Byte counts, SHA-256 and offline APK signature checks remain required;
 redirects, permanent failures, corrupt bodies and cancellation cannot select the
 fallback. The toolchain versions and bytes do not change.
+
+The Tasks wire fixtures select a 20-second execution budget on Windows for normal
+native outcomes, with a separate 35-second completion-observation allowance.
+The fixed two-test case in [job 119518084084](https://github.com/stsepelin/checktrail/actions/runs/39685173985/job/119518084084)
+exhausted its previous five-second fixture limit and correctly returned
+incomplete. POSIX fixtures retain their five-second execution and fifteen-second
+observation defaults. Lifecycle cancellation, timeout and output controls select
+an explicit five-second execution limit and retain their existing observation
+bounds. Native outcomes must still finish with the exact original assertions;
+incomplete results cannot satisfy a passing fixture. These are test startup
+budgets; production defaults and the outer source/installed cohort deadlines
+are unchanged.
 
 The Tasks matrix acceptance cases are declared in `required-native-tests.json` as `tasks-matrix`. The source and fresh installed runtime selectors compare their exact addresses with the frozen profile before execution. A required `tasks-runtime-manifest` control rejects omitted, renamed, duplicated, foreign or extra bindings, checks all three supported platform selections and retains the Windows-only control family. Focused Tasks selections use exact named-callback isolation; full-suite runs keep every file and test in scope. The generic runner also selects the existing bounded Tasks file allowance for that profile. An adjacent profile name retains whole-file skip accounting. These bindings add no product permissions or execution defaults; exact current-source runtime acceptance remains separate.
