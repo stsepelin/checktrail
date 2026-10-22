@@ -171,13 +171,19 @@ test(
       "node_modules/playwright/package.json",
     );
     const metadata = JSON.parse(await readFile(metadataFile, "utf8"));
-    await writeFile(
-      metadataFile,
-      JSON.stringify({ ...metadata, version: "1.62.0" }),
-    );
-    const version = await validate(root, { trusted: true });
-    assert.equal(version.outcome, "incomplete");
-    assert.match(version.checks[0]!.processes[0]!.stderr, /verified version/);
+    for (const unsupported of ["1.62.0", "1.64.0-next.1", "11.64.0"]) {
+      await writeFile(
+        metadataFile,
+        JSON.stringify({ ...metadata, version: unsupported }),
+      );
+      const version = await validate(root, { trusted: true });
+      assert.equal(version.outcome, "incomplete", unsupported);
+      assert.match(
+        version.checks[0]!.processes[0]!.stderr,
+        /verified versions 1\.63\.0 or 1\.64\.0/,
+        unsupported,
+      );
+    }
   },
 );
 
