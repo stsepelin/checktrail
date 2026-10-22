@@ -10,6 +10,8 @@ import {
   buildNativeInputs,
   acceptFullBaseline,
   requestFullBaselineJobs,
+  requestFullBaselineChecks,
+  acceptFullBaselineChecks,
   workflowJobNames,
   nativeJobIds,
   planNativeJobs,
@@ -58,15 +60,27 @@ try {
       /^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/,
     );
     const request = async (url) => {
-      const response = await fetch(url, {
-        headers: {
-          Authorization: "Bearer " + process.env.GITHUB_TOKEN,
-          Accept: "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-        signal: AbortSignal.timeout(15000),
-        redirect: "error",
-      });
+      let response;
+      try {
+        response = await fetch(url, {
+          headers: {
+            Authorization: "Bearer " + process.env.GITHUB_TOKEN,
+            Accept: "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+          signal: AbortSignal.timeout(15000),
+          redirect: "error",
+        });
+      } catch {
+        throw Object.assign(new Error("Baseline API transport unavailable"), {
+          code: "CI_BASELINE_API_UNAVAILABLE",
+        });
+      }
+      if ([429, 500, 502, 503, 504].includes(response.status)) {
+        throw Object.assign(new Error("Baseline API temporarily unavailable"), {
+          code: "CI_BASELINE_API_UNAVAILABLE",
+        });
+      }
       assert.equal(response.status, 200, "Baseline API request failed");
       const body = await response.text();
       assert.ok(Buffer.byteLength(body) <= 4 * 1048576);
@@ -90,22 +104,62 @@ try {
       assert.ok(Number.isSafeInteger(run.id) && run.id > 0);
       assert.ok(Number.isSafeInteger(run.run_attempt) && run.run_attempt > 0);
       const expectedNames = workflowJobNames(workflow);
-      const result = await requestFullBaselineJobs(
-        request,
-        api +
-          "/actions/runs/" +
-          run.id +
-          "/attempts/" +
-          run.run_attempt +
-          "/jobs",
-        expectedNames.length,
-      );
-      // A successful push is full by policy. Bind the exact runtime job names,
-      // run ID and commit; no skip or truncated inventory supplies a baseline.
-      baseline = acceptFullBaseline(run, result, {
-        base,
-        expectedNames,
-      });
+      const seenJobNames = new Set(),
+        seenJobIds = new Set();
+      const requestJobs = async (url) => {
+        const page = await request(url);
+        assert.ok(Array.isArray(page.jobs), "Baseline job page is malformed");
+        for (const job of page.jobs) {
+          assert.ok(
+            job &&
+              Number.isSafeInteger(job.id) &&
+              job.id > 0 &&
+              job.run_id === run.id &&
+              job.status === "completed" &&
+              job.conclusion === "success" &&
+              expectedNames.includes(job.name) &&
+              !seenJobIds.has(job.id) &&
+              !seenJobNames.has(job.name),
+            "Observed baseline job is not a distinct successful expected job",
+          );
+          seenJobIds.add(job.id);
+          seenJobNames.add(job.name);
+        }
+        return page;
+      };
+      try {
+        const result = await requestFullBaselineJobs(
+          requestJobs,
+          api +
+            "/actions/runs/" +
+            run.id +
+            "/attempts/" +
+            run.run_attempt +
+            "/jobs",
+          expectedNames.length,
+        );
+        // Valid but failed, skipped or incomplete jobs remain unqualified.
+        baseline = acceptFullBaseline(run, result, { base, expectedNames });
+      } catch (error) {
+        if (error?.code !== "CI_BASELINE_API_UNAVAILABLE") throw error;
+        assert.ok(
+          Number.isSafeInteger(run.check_suite_id) && run.check_suite_id > 0,
+        );
+        const result = await requestFullBaselineChecks(
+          request,
+          api + "/check-suites/" + run.check_suite_id + "/check-runs",
+          expectedNames.length,
+        );
+        // Pagination is bounded; the run must still be the same successful
+        // attempt after the final page. A concurrent retry invalidates reuse.
+        const observedRun = await request(api + "/actions/runs/" + run.id);
+        baseline = acceptFullBaselineChecks(run, result, {
+          base,
+          expectedNames,
+          repository: process.env.GITHUB_REPOSITORY,
+          observedRun,
+        });
+      }
     }
   }
 } catch (error) {

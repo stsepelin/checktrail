@@ -17,7 +17,8 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
   const dependencies = {
     ...rootManifest.dependencies,
     eslint: "10.11.0",
-    "@typescript-eslint/parser": "8.71.0",
+    "@typescript-eslint/parser": "8.71.1",
+    "@types/node": "26.6.4",
     vite: "8.3.0",
     "@modelcontextprotocol/client": "2.3.1",
   };
