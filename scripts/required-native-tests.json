@@ -5052,5 +5052,51 @@
       "file": "dist/test/gate-mutation-runners.test.js",
       "name": "mutation-runners installed acceptance"
     }
+  ],
+  "selected-artifact-evidence": [
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit binds the retained byte and source graph without certifying native acceptance"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit rejects changed notice bytes and accepts exact byte restoration"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit preserves raw CRLF certificate bytes rather than accepting normalized text"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit refuses a rehashed notice when its retained reference is stale"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit rejects stale source bytes and stale source declarations separately"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit refuses completion claims even with a coherent file index"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit detects a removed retained reference after its record is rehashed"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit rejects missing, empty, unindexed and oversized files"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit rejects symlinked notice leaves and parent directories"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit rejects an empty index, duplicate paths, traversal and malformed arguments"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact audit accepts bounded added data and rejects reached total-byte and JSON-depth limits"
+    }
   ]
 }
