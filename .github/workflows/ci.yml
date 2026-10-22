@@ -5,6 +5,7 @@ on:
     branches-ignore:
       - "pr/**"
       - "dependabot/**"
+      - "fix/**"
     tags:
       - "**"
   pull_request:
@@ -849,10 +850,18 @@ jobs:
         run: node scripts/verify-scala-extensions-container.mjs
 
   jvm-wrappers-arm64:
-    needs: [ci-plan]
+    needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['jvm-wrappers-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [baseline, acceptance, guards-regressions]
+    outputs:
+      jvm_baseline: ${{ steps.native.outputs.jvm_baseline }}
+      jvm_acceptance: ${{ steps.native.outputs.jvm_acceptance }}
+      jvm_guards_regressions: ${{ steps.native.outputs.jvm_guards_regressions }}
     env:
       CHECKTRAIL_TEST_TASK: ci-jvm-wrappers
       CHECKTRAIL_JVM_WRAPPERS_IMAGE: checktrail-jvm-wrappers:ci
@@ -867,6 +876,8 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Verify bounded phase routing and complete aggregate requirements
+        run: node --test dist/test/jvm-wrapper-phases.test.js
       - name: Require bounded wrapper delivery and integrity controls
         run: node scripts/verify-required-native-tests.mjs maven-preparation
       - name: Prepare pinned public images with bounded delivery retries
@@ -885,8 +896,9 @@ jobs:
       - name: Verify signed wrapper artifacts and generate pinned templates
         run: node scripts/prepare-jvm-wrappers.mjs
       - run: node scripts/prepare-package-cache.mjs
-      - name: Require native baseline, source and installed callbacks, compiling controls and regressions
-        run: node scripts/verify-jvm-wrappers-container.mjs
+      - name: Require this native phase and publish its source-bound receipt
+        id: native
+        run: node scripts/verify-jvm-wrappers-container.mjs "${{ matrix.phase }}"
 
   rust-extensions-arm64:
     needs: [ci-plan, actionlint]
