@@ -224,6 +224,19 @@ test("finding resolution keeps incomplete stages and missing decisions in the se
   const r = await inspect(d.root, x);
   assert.ok(r.findings[0]!.gaps.includes("missing-decision"));
   assert.equal(r.candidates.unresolved, 1);
+  for (const role of ["refutation", "adjudication"] as const) {
+    for (const field of ["sessionId", "rationale"] as const) {
+      const invalidStage = structuredClone(d.input);
+      invalidStage.decisions[0]![role][field] = null;
+      await assert.rejects(inspect(d.root, invalidStage), /Completed stages/);
+    }
+  }
+  const absentJudgment = structuredClone(d.input);
+  absentJudgment.decisions[0]!.adjudication.judgment = null;
+  await assert.rejects(
+    inspect(d.root, absentJudgment),
+    /Completed adjudication/,
+  );
   const invalid = structuredClone(d.input);
   invalid.decisions[0]!.refutation.sessionId = null;
   await assert.rejects(inspect(d.root, invalid), /Completed stages/);
@@ -241,6 +254,47 @@ test("finding resolution verifies a proposed repair uses only parameters availab
   const x = structuredClone(d.input);
   x.decisions[0]!.adjudication.judgment!.repair!.requiredParameters = ["name"];
   x.decisions[0]!.adjudication.judgment!.repair!.functionId = "0".repeat(64);
+  for (const [mutate, gap] of [
+    [
+      (input: ReviewFindingsInput) => {
+        input.decisions[0]!.adjudication.judgment!.functionId = "0".repeat(64);
+      },
+      "source-address-differs",
+    ],
+    [
+      (input: ReviewFindingsInput) => {
+        input.decisions[0]!.adjudication.judgment!.citationIndex = 31;
+      },
+      "source-address-differs",
+    ],
+    [
+      (input: ReviewFindingsInput) => {
+        input.decisions[0]!.adjudication.judgment!.repair = null;
+      },
+      "repair-missing",
+    ],
+    [
+      (input: ReviewFindingsInput) => {
+        input.decisions[0]!.adjudication.judgment!.repair!.scope = "unknown";
+      },
+      "repair-scope-unknown",
+    ],
+    [
+      (input: ReviewFindingsInput) => {
+        input.decisions[0]!.adjudication.judgment!.repair!.citationIndex = 31;
+      },
+      "repair-address-differs",
+    ],
+  ] as const) {
+    const changed = structuredClone(d.input);
+    changed.decisions[0]!.adjudication.judgment!.repair!.requiredParameters = [
+      "name",
+    ];
+    mutate(changed);
+    const incomplete = await inspect(d.root, changed);
+    assert.equal(incomplete.candidates.unresolved, 1);
+    assert.ok(incomplete.findings[0]!.gaps.includes(gap), gap);
+  }
   const bad = await inspect(d.root, x);
   assert.ok(bad.findings[0]!.gaps.includes("repair-address-differs"));
   assert.ok(bad.findings[0]!.gaps.includes("repair-parameters-unavailable"));
@@ -358,6 +412,17 @@ test("finding resolution derives severity only from complete declared consequenc
     const r = await inspect(d.root, x);
     assert.equal(r.findings[0]!.declaredSeverity, "unassigned");
     assert.ok(r.findings[0]!.gaps.includes("consequence-unknown"));
+  }
+  for (const field of [
+    "mechanism",
+    "reachableCallers",
+    "defaultsChecked",
+  ] as const) {
+    const changed = structuredClone(d.input);
+    changed.decisions[0]!.adjudication.judgment![field] = null;
+    const incomplete = await inspect(d.root, changed);
+    assert.equal(incomplete.candidates.unresolved, 1);
+    assert.ok(incomplete.findings[0]!.gaps.includes("incomplete-reasoning"));
   }
   j.mechanism = null;
   const r = await inspect(d.root, d.input);
