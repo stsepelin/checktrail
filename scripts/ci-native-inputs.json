@@ -1,6 +1,6 @@
 {
-  "assets/context-grammars/tree-sitter-c.wasm": ["c-context-arm64"],
   "assets/context-grammars/tree-sitter-c_sharp.wasm": ["csharp-context-arm64"],
+  "assets/context-grammars/tree-sitter-c.wasm": ["c-context-arm64"],
   "assets/context-grammars/tree-sitter-cpp.wasm": ["cpp-context-arm64"],
   "assets/context-grammars/tree-sitter-fsharp.wasm": ["fsharp-context-arm64"],
   "assets/context-grammars/tree-sitter-go.wasm": ["go-workspaces-arm64"],
@@ -33,9 +33,13 @@
     "rust-extensions-arm64"
   ],
   "scripts/actionlint-tools.Dockerfile": ["actionlint"],
+  "scripts/attempt-output-evidence.mjs": ["jvm-wrappers-arm64"],
   "scripts/audit-php-review-tools.mjs": ["php-review"],
   "scripts/c-context-tools.Dockerfile": ["c-context-arm64"],
   "scripts/capture-jvm-wrapper-guards.mjs": ["jvm-wrappers-arm64"],
+  "scripts/check-ci-completion.mjs": ["jvm-wrappers-arm64"],
+  "scripts/ci-impact.mjs": ["jvm-wrappers-arm64"],
+  "scripts/ci-native-inputs.json": ["jvm-wrappers-arm64"],
   "scripts/clang-tools.Dockerfile": ["clang"],
   "scripts/cleanup-cpp-tools-runtime.mjs": [
     "cpp-extensions-arm64",
@@ -232,6 +236,7 @@
   "scripts/java-tools.Dockerfile": ["java"],
   "scripts/jvm-analyzer-tools.Dockerfile": ["jvm-analyzer-extensions-arm64"],
   "scripts/jvm-extension-tools.Dockerfile": ["jvm-wrappers-arm64"],
+  "scripts/jvm-wrapper-phase-evidence.mjs": ["jvm-wrappers-arm64"],
   "scripts/kotlin-context-tools.Dockerfile": ["kotlin-context-arm64"],
   "scripts/kotlin-tools.Dockerfile": ["kotlin", "kotlin-extensions-arm64"],
   "scripts/kubernetes-extension-schemas.json": ["kubernetes-extensions-arm64"],
@@ -291,6 +296,7 @@
   "scripts/php-review-tools/composer.lock": ["php-review"],
   "scripts/php-tools/composer.json": ["mutation-native-arm64"],
   "scripts/php-tools/composer.lock": ["mutation-native-arm64"],
+  "scripts/plan-ci-impact.mjs": ["jvm-wrappers-arm64"],
   "scripts/prepare-acceptance-cache-subset.mjs": [
     "cpp-extensions-arm64",
     "django-assembly-arm64",
@@ -907,6 +913,7 @@
   "scripts/verify-maven-package.mjs": ["maven"],
   "scripts/verify-mutation-container.mjs": ["mutation-native-arm64"],
   "scripts/verify-mutation-guards.mjs": [
+    "jvm-wrappers-arm64",
     "mutation-native-arm64",
     "mutation-passive-guards"
   ],
@@ -1270,6 +1277,7 @@
     "helm",
     "helm-extensions-arm64",
     "jvm-analyzer-extensions-arm64",
+    "jvm-wrappers-arm64",
     "kotlin",
     "kubeconform",
     "kustomize",
@@ -1573,6 +1581,7 @@
   "test/jvm-analyzer-evidence-controls.test.ts": [
     "jvm-analyzer-extensions-arm64"
   ],
+  "test/jvm-wrapper-phases.test.ts": ["jvm-wrappers-arm64"],
   "test/jvm-wrappers-fixture.ts": [
     "jvm-analyzer-extensions-arm64",
     "jvm-wrappers-arm64"

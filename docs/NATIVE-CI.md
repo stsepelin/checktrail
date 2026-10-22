@@ -133,8 +133,8 @@ observed on any jobs page prevents this fallback. Denied API access and malforme
 responses also keep the full plan. This alternative supplies baseline evidence
 only; it does not reuse results as acceptance of the PR revision.
 
-The initial full-verification wave admits the shared matrices, long .NET/JVM
-jobs and actionlint within the [Free plan's concurrent-job ceiling](https://docs.github.com/en/actions/reference/limits). Shorter
+The initial full-verification wave admits the shared matrices, selected long .NET/Scala
+jobs and actionlint within the [Free plan's concurrent-job ceiling](https://docs.github.com/en/actions/reference/limits). The three JVM wrapper phases and shorter
 native jobs wait for actionlint to terminate. An actionlint failure or skip does
 not block their selected checks: their job condition evaluates the plan even
 when that dependency did not pass. GitHub runner availability and other workflow
@@ -144,8 +144,9 @@ runs still affect queue times; this is not a job-priority API.
 both shared matrices, the planner and every selected native job to succeed.
 It requires unselected jobs to be explicitly skipped and reports them as
 **not selected**, never as passing native acceptance. Require this aggregate
-check in branch protection when enabling selective CI. Existing native check
-names and commands remain intact. Historical full baseline evidence is not
+check in branch protection when enabling selective CI. Native commands retain
+their assertions, and check names enumerate their declared matrix variants.
+Historical full baseline evidence is not
 acceptance of a native job against the new PR revision; Gate A still requires
 its separately specified current-revision evidence.
 
@@ -153,6 +154,33 @@ The first CI-improvement PR changes workflow/CI inputs and must run the complete
 matrix. There is no hosted speed claim before measuring that run. A source-code
 change still runs all native stacks: narrowing production-source changes needs
 separately reviewed ownership/dependency contracts, not filename prefixes.
+
+## JVM wrapper phase jobs
+
+The JVM wrapper job has three independent matrix members: `baseline`,
+`acceptance`, and `guards-regressions`. Each member verifies the pinned runtime
+and wrapper artifacts. Baseline retains preparation ownership and the Java,
+Maven and Gradle required profiles. Acceptance retains every source callback
+and fresh offline installed callback. Guards and regressions retain every
+compiling/restored control and both complete native regression files.
+
+The controller accepts one exact phase argument; omitting it runs every phase
+in the original order. Unknown or extra arguments fail before Docker or cache
+queries. Each container retains two CPUs, 4 GiB memory, 256 PIDs, a 2 GiB
+executable temporary filesystem, disabled networking, read-only source and root
+filesystems, and its 20-minute deadline. The outer job limit remains 40 minutes.
+Splitting duplicates preparation and can increase runner minutes; hosted timing
+must be measured before claiming a speed improvement.
+
+Each completed phase emits a distinct bounded job output and an explicitly
+partial native receipt. `ci-complete` requires all three outputs with matching
+source, compiled production code, compiled harness and native runtime identities,
+from the same workflow run and source revision. A retained successful phase from
+an earlier execution attempt of that run is allowed; missing or mismatched
+receipts fail the aggregate even if the matrix job reports success. A successful
+pre-split baseline cannot qualify the expanded job inventory. These phase receipts
+do not close Gate A, provenance/license review, or final platform acceptance.
+Dated measurements retain their original execution shape and outcomes.
 
 ## Native mutation target preflight
 

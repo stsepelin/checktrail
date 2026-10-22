@@ -219,6 +219,7 @@ export function planNativeJobs({
         "scripts/ci-impact.mjs",
         "scripts/plan-ci-impact.mjs",
         "scripts/check-ci-completion.mjs",
+        "scripts/jvm-wrapper-phase-evidence.mjs",
       ].includes(file)
     )
       return full(
