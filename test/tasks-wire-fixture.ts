@@ -11,6 +11,10 @@ import { fixture, nodeManifest, passingTest } from "./helpers.js";
 import { VERSION } from "../src/types.js";
 
 export const extension = "io.modelcontextprotocol/tasks";
+export const taskExecutionTimeoutMs =
+  process.platform === "win32" ? 20000 : 5000;
+export const taskObservationTimeoutMs =
+  process.platform === "win32" ? 35000 : 15000;
 type Response = {
   result?: Record<string, unknown>;
   error?: { code: number; message: string; data?: unknown };
@@ -77,7 +81,12 @@ export async function wire(
       "--root",
       opt.root,
       ...(configured
-        ? ["--task-store", opt.directory, "--timeout-ms", "5000"]
+        ? [
+            "--task-store",
+            opt.directory,
+            "--timeout-ms",
+            String(taskExecutionTimeoutMs),
+          ]
         : []),
       ...args,
     ],
@@ -192,11 +201,11 @@ export function taskId(response: Response): string {
 export async function terminal(
   connection: Pick<Awaited<ReturnType<typeof wire>>, "request">,
   id: string,
-  timeoutMs = 15000,
+  timeoutMs = taskObservationTimeoutMs,
 ) {
   if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1)
     throw new Error("Invalid task observation deadline");
-  // Fixture commands may execute for five seconds, followed by result persistence.
+  // Observe the selected fixture execution budget plus persistence/cleanup.
   // This observes completion; it never extends the server's execution deadline.
   const started = performance.now(),
     deadline = started + timeoutMs;
