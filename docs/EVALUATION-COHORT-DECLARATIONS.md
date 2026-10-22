@@ -70,3 +70,5 @@ inspection and projection exports, with declaration/report types checked during
 compilation. Each namespaced identity and each digest field has malformed boundary
 and valid near-miss cases. The dated measurement retains its original callback and
 engine bindings; it does not describe these later regression additions.
+
+The separate [prospective protocol preflight](EVALUATION-PROTOCOL-DECLARATIONS.md) binds these cohort declarations to opaque comparison configurations, incident clusters, equal resource ceilings, procedures and predeclared metrics. It opens no source or labels and leaves real protocol readiness and Gate A unassessed.

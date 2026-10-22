@@ -5052,5 +5052,55 @@
       "file": "dist/test/gate-mutation-runners.test.js",
       "name": "mutation-runners installed acceptance"
     }
+  ],
+  "evaluation-protocol-declarations": [
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol binds the common cohort reference and prior workflow without opening inputs or claiming freeze authority"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol rejects stale cohort and foreign reference or previous workflow bindings independently"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol keeps excluded connecting variants in transitive incident clusters"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol applies repository and family holdouts by exact identifiers and refuses split cluster declarations"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol refuses duplicate foreign and omitted cluster addresses while preserving the whole planned denominator"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol requires reserved uninspected eligible cases and sufficient declared incident clusters"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol rotates every three-arm order exactly once at six pairs and retains stable orders across metadata array permutations"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol pins every configuration procedure budget and threshold without silently accepting a later revision"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol refuses answer fields identity aliases malformed commitments floating fields and out-of-bound numeric decisions"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol projection excludes private schedules and unrecognized nested fields"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol setup script retains incomplete exit status and generic private error boundaries"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol controls run through a fresh offline production installation with an external harness"
+    }
   ]
 }

@@ -1,0 +1,163 @@
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import {
+  cp,
+  mkdir,
+  mkdtemp,
+  readFile,
+  realpath,
+  rm,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
+import path from "node:path";
+import os from "node:os";
+import process from "node:process";
+import { fileURLToPath, URL } from "node:url";
+import {
+  installAcceptancePackage,
+  runAcceptanceNpm,
+} from "./install-acceptance-package.mjs";
+import { runRequiredTests } from "./required-test-evidence.mjs";
+import { attemptOutputCodeIdentity } from "./attempt-output-evidence.mjs";
+
+const repository = fileURLToPath(new URL("../", import.meta.url));
+const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+const expected = JSON.parse(
+  await readFile(
+    path.join(repository, "scripts/required-native-tests.json"),
+    "utf8",
+  ),
+)["evaluation-protocol-declarations"];
+assert.equal(expected.length, 12);
+assert.equal(new Set(expected.map((row) => row.name)).size, 12);
+assert.ok(
+  expected.every(
+    (row) => row.file === "dist/test/review-evaluation-protocol.test.js",
+  ),
+);
+const inputFiles = [
+  "dist/test/review-evaluation-protocol.test.js",
+  "dist/test/review-evaluation-protocol-fixture.js",
+  "scripts/check-evaluation-protocol.mjs",
+  "scripts/required-native-tests.json",
+  "scripts/required-test-evidence.mjs",
+  "scripts/attempt-output-evidence.mjs",
+  "scripts/install-acceptance-package.mjs",
+  "scripts/verify-evaluation-protocol-package.mjs",
+  "package.json",
+  "package-lock.json",
+];
+const inputIdentities = async () =>
+  Promise.all(
+    inputFiles.map(async (file) => [
+      file,
+      hash(await readFile(path.join(repository, file))),
+    ]),
+  );
+const inputs = await inputIdentities();
+const harnessSha256 = hash(JSON.stringify(inputs));
+const sourceCode = await attemptOutputCodeIdentity(repository);
+const executableSha256 = hash(await readFile(process.execPath));
+const temporary = await mkdtemp(
+  path.join(os.tmpdir(), "checktrail-evaluation-protocol-installed-"),
+);
+try {
+  const [packed] = JSON.parse(
+    runAcceptanceNpm(
+      [
+        "pack",
+        "--json",
+        "--offline",
+        "--ignore-scripts",
+        "--pack-destination",
+        temporary,
+      ],
+      {
+        cwd: repository,
+        encoding: "utf8",
+        timeout: 60000,
+        maxBuffer: 4 * 1048576,
+      },
+    ),
+  );
+  const tarball = path.join(temporary, packed.filename);
+  const consumer = path.join(temporary, "consumer"),
+    harness = path.join(temporary, "harness");
+  const installation = await installAcceptancePackage(
+    repository,
+    tarball,
+    consumer,
+  );
+  const installed = path.join(consumer, "node_modules/@stsepelin/checktrail");
+  await mkdir(path.join(harness, "dist/test"), { recursive: true });
+  await mkdir(path.join(harness, "scripts"));
+  await writeFile(path.join(harness, "package.json"), '{"type":"module"}\n', {
+    flag: "wx",
+  });
+  await symlink(
+    path.join(installed, "dist/src"),
+    path.join(harness, "dist/src"),
+    process.platform === "win32" ? "junction" : "dir",
+  );
+  assert.equal(
+    await realpath(path.join(harness, "dist/src")),
+    await realpath(path.join(installed, "dist/src")),
+  );
+  for (const file of inputFiles.slice(0, 3))
+    await cp(path.join(repository, file), path.join(harness, file));
+  const copiedInputs = async () =>
+    Promise.all(
+      inputFiles
+        .slice(0, 3)
+        .map(async (file) => [
+          file,
+          hash(await readFile(path.join(harness, file))),
+        ]),
+    );
+  assert.deepEqual(await copiedInputs(), inputs.slice(0, 3));
+  const installedCode = await attemptOutputCodeIdentity(installed);
+  assert.equal(installedCode, sourceCode);
+  process.env.CHECKTRAIL_EVALUATION_PROTOCOL_INSTALLED = "1";
+  delete process.env.NODE_TEST_CONTEXT;
+  const profile = await runRequiredTests(
+    expected.map((row) => ({ ...row, file: path.join(harness, row.file) })),
+    { timeoutMs: 120000 },
+  );
+  assert.equal(profile.complete, true, JSON.stringify(profile.problems));
+  assert.equal(profile.required, 12);
+  assert.equal(profile.passed, 12);
+  assert.equal(profile.ledger.truncated, false);
+  assert.equal(profile.ledger.cases.length, 12);
+  assert.ok(profile.ledger.cases.every((row) => row.outcome === "passed"));
+  assert.deepEqual(await inputIdentities(), inputs);
+  assert.deepEqual(await copiedInputs(), inputs.slice(0, 3));
+  assert.equal(await attemptOutputCodeIdentity(installed), installedCode);
+  assert.equal(await attemptOutputCodeIdentity(repository), sourceCode);
+  assert.equal(hash(await readFile(process.execPath)), executableSha256);
+  process.stdout.write(
+    JSON.stringify({
+      schemaVersion: 1,
+      profile: "evaluation-protocol-declarations",
+      node: process.versions.node,
+      platform: process.platform,
+      architecture: process.arch,
+      nodeExecutableSha256: executableSha256,
+      tarballSha256: hash(await readFile(tarball)),
+      harnessSha256,
+      compiledCodeSha256: installedCode,
+      ...installation,
+      harnessOutsideInstalledPackage: true,
+      dependencyBytesInventoried: false,
+      actualModuleLoadsTraced: false,
+      protocolChronologyVerified: false,
+      independentEvaluationProfileComplete: false,
+      gateAComplete: false,
+      inferenceExecuted: false,
+      fieldEvaluationExecuted: false,
+      profileEvidence: profile,
+    }) + "\n",
+  );
+} finally {
+  await rm(temporary, { recursive: true, force: true });
+}

@@ -15,6 +15,8 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The [prospective evaluation protocol preflight](EVALUATION-PROTOCOL-DECLARATIONS.md) binds opaque reference/workflow configuration commitments, the common cohort, incident clusters, equal resource ceilings and predeclared scoring parameters. Its source and fresh offline installed controls are required in the existing checks matrix. It reads declarations only; actual configuration identity, freeze chronology, licensed eligibility, independent judgments, host metering and final evaluation readiness remain unverified. The full independent-evaluation profile and Gate A stay open.
+
 [Review provenance](REVIEW-PROVENANCE.md) now joins current source/citation
 checks, exact host claims, imported native receipt accounting and bound
 descriptive scores through library, CLI and MCP. Evidence tiers and complete

@@ -8,6 +8,16 @@ export type {
   ReviewCohortDeclaration,
   ReviewCohortDeclarationReport,
 } from "./review-cohort.js";
+export {
+  inspectReviewEvaluationProtocol,
+  projectReviewEvaluationProtocol,
+  reviewEvaluationProtocolSchema,
+  reviewEvaluationProtocolInputSchema,
+} from "./review-evaluation-protocol.js";
+export type {
+  ReviewEvaluationProtocol,
+  ReviewEvaluationProtocolReport,
+} from "./review-evaluation-protocol.js";
 export { validateContracts } from "./contracts.js";
 export type { ContractBundle, ContractReport } from "./contract-schema.js";
 export type { PlanOptions, ValidationOptions } from "./engine.js";
