@@ -19,6 +19,7 @@ export async function artifactFixture(
     a: ReturnType<typeof reviewEvaluationAttemptArtifactSchema.parse>,
     index: number,
   ) => void,
+  initial?: (input: ReviewEvaluationCaptureInput) => Buffer,
 ) {
   await mkdir(path.join(directory, "blobs"), { recursive: true, mode: 0o700 });
   await chmod(directory, 0o700);
@@ -30,15 +31,14 @@ export async function artifactFixture(
     blobs.set(id, bytes);
     return { sha256: id, bytes: bytes.length };
   };
-  const output = add(
-    Buffer.from("Original externally supplied independent review text."),
-  );
-  const stdout = add(
-      Buffer.from(
-        "Original externally supplied independent review text.".padEnd(80),
-      ),
-    ),
+  const body =
+    initial?.(input) ??
+    Buffer.from("Original externally supplied independent review text.");
+  const output = add(body),
+    physical = initial ? body : Buffer.from(body.toString().padEnd(80)),
+    stdout = add(physical),
     stderr = add(Buffer.alloc(0));
+  const observedBytes = physical.length;
   const assignments = new Map(
     reviewEvaluationCaptureAssignments(input.declaration).map((a) => [
       key(a),
@@ -56,7 +56,7 @@ export async function artifactFixture(
         profile: "external-review-attempt-artifact-v1" as const,
         assignmentSha256: assignment.assignmentSha256,
         ...metadata,
-        stdout: { retained: stdout, observedBytes: 80, truncated: false },
+        stdout: { retained: stdout, observedBytes, truncated: false },
         stderr: { retained: stderr, observedBytes: 0, truncated: false },
       };
       adjust?.(record, i++);

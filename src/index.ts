@@ -380,3 +380,14 @@ export {
   inspectSealedReviewEvaluationCaptures,
 } from "./review-evaluation-artifacts.js";
 export type { ReviewEvaluationSealedCaptureReport } from "./review-evaluation-artifacts.js";
+
+export {
+  reviewEvaluationSourcePacketSchema,
+  reviewEvaluationReviewOutputSchema,
+  reviewEvaluationJudgmentResponseSchema,
+  prepareReviewEvaluationJudging,
+  reviewEvaluationJudgmentPacket,
+  sealReviewEvaluationJudgments,
+  inspectSealedReviewEvaluationJudgments,
+} from "./review-evaluation-judging.js";
+export type { ReviewEvaluationJudgmentsReport } from "./review-evaluation-judging.js";

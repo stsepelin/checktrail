@@ -363,7 +363,7 @@ export function sealReviewEvaluationCaptures(
   return { ...loaded.report, archiveSha256: sha(bytes) };
 }
 /** Replay uses retained bytes only. Editing/deleting the original incoming blob files cannot rewrite a sealed result. */
-export function inspectSealedReviewEvaluationCaptures(
+export function loadSealedReviewEvaluationCaptureArchive(
   projectRoot: string,
   storageRoot: string,
   expectedArchiveSha256: string,
@@ -397,8 +397,31 @@ export function inspectSealedReviewEvaluationCaptures(
     !isDeepStrictEqual([...absent].sort(), [...result.missing].sort())
   )
     throw Error("Sealed physical artifact inventory disagrees");
-  return { ...result.report, archiveSha256: sha(bytes) };
+  return {
+    input: archive.input,
+    records,
+    report: { ...result.report, archiveSha256: sha(bytes) },
+  };
 }
+export function inspectSealedReviewEvaluationCaptures(
+  projectRoot: string,
+  storageRoot: string,
+  expectedArchiveSha256: string,
+) {
+  return loadSealedReviewEvaluationCaptureArchive(
+    projectRoot,
+    storageRoot,
+    expectedArchiveSha256,
+  ).report;
+}
+/** Internal operator storage primitives; not exported from the package root. */
+export const evaluationPrivateArtifacts = {
+  storage,
+  readPrivate,
+  writeNew,
+  decode,
+  sha,
+};
 export type ReviewEvaluationSealedCaptureReport = ReturnType<
   typeof sealReviewEvaluationCaptures
 >;

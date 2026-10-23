@@ -5288,5 +5288,63 @@
       "file": "dist/test/review-evaluation-artifacts.test.js",
       "name": "external capture artifacts repeat the same physical controls through a fresh offline production installation"
     }
+  ],
+  "evaluation-independent-judging": [
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging binds all three roles and repeated slots to sealed physical responses"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging discloses one source and anonymous review without peer answers roles or probabilities"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging rejects foreign packets claims and stale source citations with the exact expected inventory"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging rejects every reused judge session including review and foreign response sessions"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging preserves missing duplicate foreign and explicitly unrun planned denominators"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging binds source bytes protocol commitments and immutable books before disclosing"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging retains refused cancelled unavailable unfinished and unresolved judgments"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging keeps malformed stale and incomplete reviewer outputs distinct from valid abstentions"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging validates every source and packet target before writing any book"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging retains malformed physical responses and refuses changed bytes before sealing"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging replays retained responses and refuses stale duplicate missing unused or rewritten sealed inventories"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging never invokes inference or verifies authority and keeps private content out of summaries"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging CLI requires an explicit source grant and retains private sealed accounting"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging repeats anonymous packet and physical response controls through a fresh offline installation"
+    }
   ]
 }

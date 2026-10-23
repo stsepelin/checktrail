@@ -27,48 +27,64 @@ const args = process.argv.slice(2);
 assert.ok(
   args.length === 0 ||
     (args.length === 1 &&
-      ["--metering", "--captures", "--artifacts"].includes(args[0])),
+      ["--metering", "--captures", "--artifacts", "--judging"].includes(
+        args[0],
+      )),
 );
 const metering = args[0] === "--metering";
 const captures = args[0] === "--captures";
 const artifacts = args[0] === "--artifacts";
-const caseCount = artifacts ? 13 : 12;
-const selectedProfile = artifacts
-  ? "evaluation-physical-captures"
-  : captures
-    ? "evaluation-capture-declarations"
-    : metering
-      ? "evaluation-protocol-metering"
-      : "evaluation-protocol-declarations";
-const harnessFiles = artifacts
+const judging = args[0] === "--judging";
+const caseCount = judging ? 14 : artifacts ? 13 : 12;
+const selectedProfile = judging
+  ? "evaluation-independent-judging"
+  : artifacts
+    ? "evaluation-physical-captures"
+    : captures
+      ? "evaluation-capture-declarations"
+      : metering
+        ? "evaluation-protocol-metering"
+        : "evaluation-protocol-declarations";
+const harnessFiles = judging
   ? [
-      "dist/test/review-evaluation-artifacts.test.js",
+      "scripts/evaluation-judgments.mjs",
+      "dist/test/review-evaluation-judging.test.js",
+      "dist/test/review-evaluation-judging-fixture.js",
       "dist/test/review-evaluation-artifacts-fixture.js",
       "dist/test/review-evaluation-captures-fixture.js",
       "dist/test/review-evaluation-metering-fixture.js",
       "dist/test/review-evaluation-protocol-fixture.js",
       "dist/test/helpers.js",
     ]
-  : captures
+  : artifacts
     ? [
-        "dist/test/review-evaluation-captures.test.js",
+        "dist/test/review-evaluation-artifacts.test.js",
+        "dist/test/review-evaluation-artifacts-fixture.js",
         "dist/test/review-evaluation-captures-fixture.js",
         "dist/test/review-evaluation-metering-fixture.js",
         "dist/test/review-evaluation-protocol-fixture.js",
-        "scripts/check-evaluation-captures.mjs",
+        "dist/test/helpers.js",
       ]
-    : metering
+    : captures
       ? [
-          "dist/test/review-evaluation-metering.test.js",
+          "dist/test/review-evaluation-captures.test.js",
+          "dist/test/review-evaluation-captures-fixture.js",
           "dist/test/review-evaluation-metering-fixture.js",
           "dist/test/review-evaluation-protocol-fixture.js",
-          "scripts/check-evaluation-metering.mjs",
+          "scripts/check-evaluation-captures.mjs",
         ]
-      : [
-          "dist/test/review-evaluation-protocol.test.js",
-          "dist/test/review-evaluation-protocol-fixture.js",
-          "scripts/check-evaluation-protocol.mjs",
-        ];
+      : metering
+        ? [
+            "dist/test/review-evaluation-metering.test.js",
+            "dist/test/review-evaluation-metering-fixture.js",
+            "dist/test/review-evaluation-protocol-fixture.js",
+            "scripts/check-evaluation-metering.mjs",
+          ]
+        : [
+            "dist/test/review-evaluation-protocol.test.js",
+            "dist/test/review-evaluation-protocol-fixture.js",
+            "scripts/check-evaluation-protocol.mjs",
+          ];
 const expected = JSON.parse(
   await readFile(
     path.join(repository, "scripts/required-native-tests.json"),
@@ -81,13 +97,15 @@ assert.ok(
   expected.every(
     (row) =>
       row.file ===
-      (artifacts
-        ? "dist/test/review-evaluation-artifacts.test.js"
-        : captures
-          ? "dist/test/review-evaluation-captures.test.js"
-          : metering
-            ? "dist/test/review-evaluation-metering.test.js"
-            : "dist/test/review-evaluation-protocol.test.js"),
+      (judging
+        ? "dist/test/review-evaluation-judging.test.js"
+        : artifacts
+          ? "dist/test/review-evaluation-artifacts.test.js"
+          : captures
+            ? "dist/test/review-evaluation-captures.test.js"
+            : metering
+              ? "dist/test/review-evaluation-metering.test.js"
+              : "dist/test/review-evaluation-protocol.test.js"),
   ),
 );
 const inputFiles = [
