@@ -90,7 +90,12 @@ format checks need no diagnostics. A process failure cannot be converted into a
 pass by a parser. Source changes during execution invalidate a green result.
 
 Use bounded process output and timeouts, terminate the process group on supported
-POSIX hosts, and propagate cancellation. The owned POSIX root is paused before descendant observation. The observed family
+POSIX hosts, and propagate cancellation. A fixed Node owner holds a private process
+group and caller IPC channel; caller loss aborts the command, and normal target
+exit still leaves ordinary group members observable. Bootstrap consumes the same
+command deadline. Exact read-only host Git metadata uses a separate bounded
+collector, with no project-selectable bypass and unchanged inspection budgets.
+The owned POSIX target is paused before descendant observation. The observed family
 must acknowledge quiescence before deeper children are killed; children forked
 before that acknowledgement are included by repeated snapshots. Physical child
 exit precedes parent termination, while final reaping follows root termination

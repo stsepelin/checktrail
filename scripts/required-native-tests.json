@@ -5138,5 +5138,89 @@
       "file": "dist/test/tasks-runtime-harness.test.js",
       "name": "Tasks generic CLI isolates exact required callbacks while adjacent profile names retain whole-file skip accounting"
     }
+  ],
+  "posix-owner": [
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX parent loss reaps reached ordinary and detached workers and the actual owner while preserving unrelated siblings"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX parent loss during a stopped real owner bootstrap reaches no project code after that owner resumes"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX completed roots release ordinary orphaned group members before returning original output and status"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX absent and malformed private owners remain unavailable before project execution"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX owner deadline resolves from actual bootstrap exit and IPC disconnect without requiring close"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX missing owner interpreter reports unavailable and releases its private channel before any target starts"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "passes arguments literally, strips unlisted environment values, and captures streams"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "reports missing executables separately from code failures"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "kills long-running processes on deadline and cancellation"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "terminates a process group when a grandchild keeps the output pipe open"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "bounds combined output and marks truncated evidence"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "runner accounts raw combined bytes beyond retention without counting Unicode replacement characters"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output invalid admission limits reject before a project command can execute"
+    }
+  ],
+  "git-metadata": [
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "Git metadata admission permits exact read-only forms and literal leading-option filenames while rejecting neighboring commands and execution flags"
+    },
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "Git metadata rejects project-local executables and arbitrary commands before any native source marker"
+    },
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "Git metadata retains its five-second aggregate budget for both size and original byte reads across the selected 64-file boundary"
+    },
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "native Git metadata passes the complete independent safety configuration to the operator executable without inheriting a project override"
+    }
   ]
 }

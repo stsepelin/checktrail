@@ -125,7 +125,9 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
     result.stderr.trim()
   )
     throw Error("Process snapshot unavailable");
-  return darwinProcessIdentities(result.stdout);
+  return darwinProcessIdentities(result.stdout).filter(
+    (row) => row.pid !== result.pid,
+  );
 }
 /** Unknown Darwin status is never evidence of quiescence. */
 export function darwinProcessIdentities(text: string): ProcessIdentity[] {
