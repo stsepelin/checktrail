@@ -6,6 +6,7 @@ import { reviewFamilySchema } from "./review-hypotheses.js";
 import { reviewScoringObservationSchema } from "./review-scoring.js";
 import { reviewEvaluationCaptureAssignments } from "./review-evaluation-captures.js";
 import {
+  withEvaluationPrivateStorage,
   encodeReviewEvaluationArtifact,
   loadSealedReviewEvaluationCaptureArchive,
   evaluationPrivateArtifacts as privateFiles,
@@ -314,46 +315,49 @@ export function prepareReviewEvaluationJudging(
   expectedArchiveSha256: string,
   sources: unknown,
 ) {
-  if (Array.isArray(sources) && sources.length > 256)
-    throw Error("Judging source count bound exceeded");
-  const root = storage(projectRoot, storageRoot),
-    captured = loadSealedReviewEvaluationCaptureArchive(
-      projectRoot,
-      storageRoot,
-      expectedArchiveSha256,
-    );
-  const book: Book = bookSchema.parse({
-    schemaVersion: 1,
-    profile: "independent-external-review-judging-v1",
-    archiveSha256: expectedArchiveSha256,
-    protocolSha256: captured.report.protocolSha256,
-    procedureSha256:
-      captured.input.declaration.protocol.procedures.independentJudgmentSha256,
-    salt: randomBytes(32).toString("hex"),
-    sources,
-    slots: [],
+  return withEvaluationPrivateStorage(() => {
+    if (Array.isArray(sources) && sources.length > 256)
+      throw Error("Judging source count bound exceeded");
+    const root = storage(projectRoot, storageRoot),
+      captured = loadSealedReviewEvaluationCaptureArchive(
+        projectRoot,
+        storageRoot,
+        expectedArchiveSha256,
+      );
+    const book: Book = bookSchema.parse({
+      schemaVersion: 1,
+      profile: "independent-external-review-judging-v1",
+      archiveSha256: expectedArchiveSha256,
+      protocolSha256: captured.report.protocolSha256,
+      procedureSha256:
+        captured.input.declaration.protocol.procedures
+          .independentJudgmentSha256,
+      salt: randomBytes(32).toString("hex"),
+      sources,
+      slots: [],
+    });
+    book.slots = slotBook(captured.input, book.salt);
+    const prepared = {
+      root,
+      book,
+      captured,
+      sources: sourcePackets(book, captured.input),
+    };
+    if (new Set(book.slots.map((s) => s.blindId)).size !== book.slots.length)
+      throw Error("Judging slot identity collision");
+    for (const slot of book.slots) packetFor(prepared, slot.blindId);
+    const bytes = encodeReviewEvaluationArtifact(book);
+    writeNew(path.join(root, "judging.book.json"), bytes);
+    return {
+      schemaVersion: 1 as const,
+      bookSha256: sha(bytes),
+      plannedJudgments: book.slots.length,
+      blindIds: book.slots.map((s) => s.blindId),
+      sourceIncluded: false as const,
+      inferenceInvoked: false as const,
+      gateAClosed: false as const,
+    };
   });
-  book.slots = slotBook(captured.input, book.salt);
-  const prepared = {
-    root,
-    book,
-    captured,
-    sources: sourcePackets(book, captured.input),
-  };
-  if (new Set(book.slots.map((s) => s.blindId)).size !== book.slots.length)
-    throw Error("Judging slot identity collision");
-  for (const slot of book.slots) packetFor(prepared, slot.blindId);
-  const bytes = encodeReviewEvaluationArtifact(book);
-  writeNew(path.join(root, "judging.book.json"), bytes);
-  return {
-    schemaVersion: 1 as const,
-    bookSha256: sha(bytes),
-    plannedJudgments: book.slots.length,
-    blindIds: book.slots.map((s) => s.blindId),
-    sourceIncluded: false as const,
-    inferenceInvoked: false as const,
-    gateAClosed: false as const,
-  };
 }
 /** Deliberate source disclosure by the operator, outside CLI/MCP model arguments. */
 export function reviewEvaluationJudgmentPacket(
@@ -363,11 +367,13 @@ export function reviewEvaluationJudgmentPacket(
   id: string,
   allowSource: boolean,
 ) {
-  if (allowSource !== true)
-    throw Error("Judging source disclosure requires the operator grant");
-  const loaded = loadBook(projectRoot, storageRoot, expectedBookSha256),
-    p = packetFor(loaded, blindId.parse(id));
-  return { ...p.packet, packetSha256: p.packetSha256 };
+  return withEvaluationPrivateStorage(() => {
+    if (allowSource !== true)
+      throw Error("Judging source disclosure requires the operator grant");
+    const loaded = loadBook(projectRoot, storageRoot, expectedBookSha256),
+      p = packetFor(loaded, blindId.parse(id));
+    return { ...p.packet, packetSha256: p.packetSha256 };
+  });
 }
 function judgeIntakes(
   loaded: ReturnType<typeof loadBook>,
@@ -563,96 +569,102 @@ export function sealReviewEvaluationJudgments(
   expectedBookSha256: string,
   value: unknown,
 ) {
-  if (Array.isArray(value) && value.length > 1536)
-    throw Error("Judgment submission count bound exceeded");
-  const loaded = loadBook(projectRoot, storageRoot, expectedBookSha256),
-    submissions = submissionsSchema.parse(value),
-    intakes = judgeIntakes(loaded, submissions, (id) => {
-      try {
-        return readPrivate(
-          path.join(loaded.root, "blobs", id + ".blob"),
-          1048576,
-        );
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
-        throw error;
-      }
-    });
-  const archive = {
-    schemaVersion: 1,
-    profile: "sealed-independent-review-judgments-v1",
-    bookSha256: expectedBookSha256,
-    submissions,
-    responses: [...intakes.responses]
-      .sort(([a], [b]) => a.localeCompare(b, "en"))
-      .map(([sha256, b]) => ({ sha256, base64: b.toString("base64") })),
-    missing: [...intakes.missing].sort(),
-  };
-  const bytes = encodeReviewEvaluationArtifact(archive);
-  writeNew(path.join(loaded.root, "judgments.sealed.json"), bytes);
-  return {
-    ...intakes.report,
-    judgmentsSha256: sha(bytes),
-    bookSha256: expectedBookSha256,
-  };
+  return withEvaluationPrivateStorage(() => {
+    if (Array.isArray(value) && value.length > 1536)
+      throw Error("Judgment submission count bound exceeded");
+    const loaded = loadBook(projectRoot, storageRoot, expectedBookSha256),
+      submissions = submissionsSchema.parse(value),
+      intakes = judgeIntakes(loaded, submissions, (id) => {
+        try {
+          return readPrivate(
+            path.join(loaded.root, "blobs", id + ".blob"),
+            1048576,
+          );
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+          throw error;
+        }
+      });
+    const archive = {
+      schemaVersion: 1,
+      profile: "sealed-independent-review-judgments-v1",
+      bookSha256: expectedBookSha256,
+      submissions,
+      responses: [...intakes.responses]
+        .sort(([a], [b]) => a.localeCompare(b, "en"))
+        .map(([sha256, b]) => ({ sha256, base64: b.toString("base64") })),
+      missing: [...intakes.missing].sort(),
+    };
+    const bytes = encodeReviewEvaluationArtifact(archive);
+    writeNew(path.join(loaded.root, "judgments.sealed.json"), bytes);
+    return {
+      ...intakes.report,
+      judgmentsSha256: sha(bytes),
+      bookSha256: expectedBookSha256,
+    };
+  }, true);
 }
 export function loadSealedReviewEvaluationJudgments(
   projectRoot: string,
   storageRoot: string,
   expectedJudgmentsSha256: string,
 ) {
-  const root = storage(projectRoot, storageRoot),
-    bytes = readPrivate(path.join(root, "judgments.sealed.json"), MAX_BOOK);
-  if (sha(bytes) !== digest.parse(expectedJudgmentsSha256))
-    throw Error("Sealed judgment archive identity changed");
-  const archive = sealedSchema.parse(decode(bytes)),
-    loaded = loadBook(projectRoot, storageRoot, archive.bookSha256),
-    responses = new Map<string, Buffer>();
-  for (const row of archive.responses) {
-    const b = Buffer.from(row.base64, "base64");
+  return withEvaluationPrivateStorage(() => {
+    const root = storage(projectRoot, storageRoot),
+      bytes = readPrivate(path.join(root, "judgments.sealed.json"), MAX_BOOK);
+    if (sha(bytes) !== digest.parse(expectedJudgmentsSha256))
+      throw Error("Sealed judgment archive identity changed");
+    const archive = sealedSchema.parse(decode(bytes)),
+      loaded = loadBook(projectRoot, storageRoot, archive.bookSha256),
+      responses = new Map<string, Buffer>();
+    for (const row of archive.responses) {
+      const b = Buffer.from(row.base64, "base64");
+      if (
+        b.toString("base64") !== row.base64 ||
+        sha(b) !== row.sha256 ||
+        responses.has(row.sha256)
+      )
+        throw Error("Sealed judgment response inventory changed");
+      responses.set(row.sha256, b);
+    }
     if (
-      b.toString("base64") !== row.base64 ||
-      sha(b) !== row.sha256 ||
-      responses.has(row.sha256)
+      new Set(archive.missing).size !== archive.missing.length ||
+      archive.missing.some((id) => responses.has(id))
     )
-      throw Error("Sealed judgment response inventory changed");
-    responses.set(row.sha256, b);
-  }
-  if (
-    new Set(archive.missing).size !== archive.missing.length ||
-    archive.missing.some((id) => responses.has(id))
-  )
-    throw Error("Sealed judgment missing inventory changed");
-  const intakes = judgeIntakes(
-    loaded,
-    archive.submissions,
-    (id) => responses.get(id) ?? null,
-  );
-  if (
-    intakes.responses.size !== responses.size ||
-    !isDeepStrictEqual([...intakes.missing].sort(), archive.missing)
-  )
-    throw Error("Sealed judgment physical inventory disagrees");
-  return {
-    loaded,
-    intakes,
-    report: {
-      ...intakes.report,
-      judgmentsSha256: sha(bytes),
-      bookSha256: archive.bookSha256,
-    },
-  };
+      throw Error("Sealed judgment missing inventory changed");
+    const intakes = judgeIntakes(
+      loaded,
+      archive.submissions,
+      (id) => responses.get(id) ?? null,
+    );
+    if (
+      intakes.responses.size !== responses.size ||
+      !isDeepStrictEqual([...intakes.missing].sort(), archive.missing)
+    )
+      throw Error("Sealed judgment physical inventory disagrees");
+    return {
+      loaded,
+      intakes,
+      report: {
+        ...intakes.report,
+        judgmentsSha256: sha(bytes),
+        bookSha256: archive.bookSha256,
+      },
+    };
+  });
 }
 export function inspectSealedReviewEvaluationJudgments(
   projectRoot: string,
   storageRoot: string,
   expectedJudgmentsSha256: string,
 ) {
-  return loadSealedReviewEvaluationJudgments(
-    projectRoot,
-    storageRoot,
-    expectedJudgmentsSha256,
-  ).report;
+  return withEvaluationPrivateStorage(() => {
+    return loadSealedReviewEvaluationJudgments(
+      projectRoot,
+      storageRoot,
+      expectedJudgmentsSha256,
+    ).report;
+  });
 }
 export type ReviewEvaluationJudgmentsReport = ReturnType<
   typeof sealReviewEvaluationJudgments

@@ -1,3 +1,4 @@
+import { setPrivateFixtureAccess } from "./windows-private-fixture.js";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -5,7 +6,6 @@ import { realpath } from "node:fs/promises";
 import { test, type TestContext } from "node:test";
 import { createHash } from "node:crypto";
 import {
-  chmod,
   readFile,
   readdir,
   writeFile,
@@ -16,6 +16,7 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import {
+  initializeReviewEvaluationStorage,
   sealReviewEvaluationCaptures as seal,
   inspectSealedReviewEvaluationCaptures as replay,
   encodeReviewEvaluationArtifact,
@@ -181,15 +182,47 @@ test("external capture artifacts bind raw attempt metadata and retain malformed 
 test("external capture artifacts enforce private files directories and project boundaries before writing", async (t) => {
   const f = await setup(t),
     file = path.join(f.store, "blobs", f.output.sha256 + ".blob");
-  await chmod(file, 0o644);
+  const initialized = path.join(path.dirname(f.store), "original-initialized");
+  const result = initializeReviewEvaluationStorage(f.project, initialized);
+  assert.equal(result.initialized, true);
+  assert.equal(
+    result.backend,
+    process.platform === "win32" ? "windows-dacl" : "posix-mode",
+  );
+  assert.deepEqual(await readdir(initialized), ["blobs"]);
+  await writeFile(
+    path.join(initialized, "marker"),
+    "Original preserved operator data",
+    { mode: 0o600 },
+  );
+  assert.throws(
+    () => initializeReviewEvaluationStorage(f.project, initialized),
+    /EEXIST/,
+  );
+  assert.equal(
+    await readFile(path.join(initialized, "marker"), "utf8"),
+    "Original preserved operator data",
+  );
+  const forbidden = path.join(f.project, "original-refused");
+  assert.throws(
+    () => initializeReviewEvaluationStorage(f.project, forbidden),
+    /outside/,
+  );
+  await assert.rejects(readFile(forbidden), { code: "ENOENT" });
+
+  await setPrivateFixtureAccess(file, "file", false);
   assert.throws(() => seal(f.project, f.store, f.input), /private/);
-  await chmod(file, 0o600);
-  await chmod(path.join(f.store, "blobs"), 0o755);
+  await setPrivateFixtureAccess(file, "file");
+  await setPrivateFixtureAccess(
+    path.join(f.store, "blobs"),
+    "directory",
+    false,
+  );
   assert.throws(() => seal(f.project, f.store, f.input), /private/);
-  await chmod(path.join(f.store, "blobs"), 0o700);
-  await chmod(f.store, 0o755);
+  await setPrivateFixtureAccess(path.join(f.store, "blobs"), "directory");
+  await setPrivateFixtureAccess(f.store, "directory", false);
   assert.throws(() => seal(f.project, f.store, f.input), /private/);
-  await chmod(f.store, 0o700);
+  await setPrivateFixtureAccess(f.store, "directory");
   const inside = path.join(f.project, "private");
   await mkdir(inside, { mode: 0o700 });
   assert.throws(() => seal(f.project, inside, f.input), /outside/);

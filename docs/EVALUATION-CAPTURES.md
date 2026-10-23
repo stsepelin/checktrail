@@ -52,16 +52,35 @@ closes the independent-evaluation profile or Gate A.
 
 `sealReviewEvaluationCaptures(projectRoot, storageRoot, input)` reads incoming
 content-addressed files from `storageRoot/blobs/SHA256.blob`. Storage must be an
-absolute operator-owned private POSIX directory outside the project, with a
-private `blobs` directory. Files must be private regular singly linked files;
-symlinks, hardlinks, special files, changing files and digest mismatches fail
-before an archive is written. This storage component currently rejects Windows.
-It does not narrow the required engine/runtime profile or claim Windows storage
-acceptance.
+absolute private directory outside the project, with a private `blobs` directory.
+`initializeReviewEvaluationStorage(project, store)` creates a new namespace and
+refuses to overwrite or repair an existing one. POSIX storage requires the caller
+to own directories with mode 0700 and files with mode 0600. The Windows backend
+requires canonical local-drive paths, a protected caller-only directory DACL and
+exact caller-only file access, using the same native ACL policy as Tasks storage.
+Existing objects are inspected without repair.
+
+Windows batches fixed read-only OS ACL inspection over at most 8192 entries and
+eight directory levels per synchronous operator operation. Intake includes the
+incoming `blobs` tree; sealed replay ignores that inbox and reads retained bytes
+only. Permission observations
+are discarded afterward. BigInt file identities, size and modification/change
+times must still match when a retained file is opened and after reading. Files
+must be private regular singly linked files; links, reparse points, special files,
+changing files and digest mismatches fail before an archive is written. Newly
+written files receive their private ACL while empty, before any data is written.
+
+Publication flushes the new file and uses an exclusive hard link on both
+backends. POSIX additionally flushes the parent directory. Node cannot flush a
+Windows directory handle, so power-loss durability of that directory entry is
+not claimed. Native Windows acceptance is pending; local POSIX and pure ACL
+policy controls alone do not qualify the Windows runtime profile.
 
 The exported strict artifact schemas describe complete capture records and
-attempt records. Their record digests hash `encodeReviewEvaluationArtifact(record)`,
-which emits UTF-8 JSON plus one newline. Capture records contain the declaration
+attempt records. Digests bind the exact supplied bytes. The shared
+`encodeReviewEvaluationArtifact(record)` encoder emits UTF-8 JSON plus one newline;
+other valid UTF-8 JSON encodings are accepted when their raw digest and parsed
+metadata agree. Capture records contain the declaration
 fields except the self digest, with schema version 1 and profile
 `external-review-capture-artifact-v1`. Attempt records contain the meter fields
 except the self digest, their exact assignment digest, schema version 1, profile
@@ -94,5 +113,6 @@ schema maxima do not promise every maximum-sized combination fits storage.
 Summary reports omit blobs, source, case/session IDs and identity mappings.
 The required `evaluation-physical-captures` controls repeat against source and a
 fresh offline installed engine. This is a bounded physical intake component;
-judging, common-defect matching, final runtime bindings and the full independent
-evaluation acceptance remain open.
+the connected judging and common-defect matching components are described in
+EVALUATION-JUDGING.md and EVALUATION-MATCHING.md. Final runtime bindings and the
+whole independent evaluation acceptance remain open.

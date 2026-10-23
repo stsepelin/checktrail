@@ -105,6 +105,8 @@ const harnessFiles = matching
               "dist/test/review-evaluation-protocol-fixture.js",
               "scripts/check-evaluation-protocol.mjs",
             ];
+if (artifacts || judging || matching)
+  harnessFiles.push("dist/test/windows-private-fixture.js");
 const expected = JSON.parse(
   await readFile(
     path.join(repository, "scripts/required-native-tests.json"),

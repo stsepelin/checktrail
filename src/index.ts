@@ -373,6 +373,7 @@ export type { CppExtensionsConfig } from "./cpp-extensions-contract.js";
 export { cppExtensionsInvocationSchema } from "./cpp-extensions.js";
 
 export {
+  initializeReviewEvaluationStorage,
   encodeReviewEvaluationArtifact,
   reviewEvaluationAttemptArtifactSchema,
   reviewEvaluationCaptureArtifactSchema,

@@ -16,6 +16,7 @@ import {
 } from "./review-evaluation-judging.js";
 import {
   evaluationPrivateArtifacts as privateFiles,
+  withEvaluationPrivateStorage,
   encodeReviewEvaluationArtifact,
 } from "./review-evaluation-artifacts.js";
 import {
@@ -158,31 +159,33 @@ export function freezeReviewEvaluationCommonDefects(
   expectedProtocolSha256: string,
   value: unknown,
 ) {
-  const root = storage(projectRoot, storageRoot);
-  if (existsSync(path.join(root, "captures.sealed.json")))
-    throw Error("Common inventory must precede local capture sealing");
-  const inventory = validateInventory(
-      value,
-      declaration,
-      expectedProtocolSha256,
-    ),
-    bytes = encodeReviewEvaluationArtifact(inventory);
-  if (bytes.length > 8 * 1048576)
-    throw Error("Common inventory byte bound exceeded");
-  writeNew(path.join(root, "common-defects.frozen.json"), bytes);
-  return {
-    schemaVersion: 1 as const,
-    inventorySha256: sha(bytes),
-    protocolSha256: expectedProtocolSha256,
-    cases: inventory.cases.length,
-    defects: inventory.cases.reduce((n, c) => n + c.defects.length, 0),
-    localCaptureAlreadySealed: false as const,
-    chronologyVerified: false as const,
-    labelsVerified: false as const,
-    sourceIncluded: false as const,
-    gateAClosed: false as const,
-    inferenceInvoked: false as const,
-  };
+  return withEvaluationPrivateStorage(() => {
+    const root = storage(projectRoot, storageRoot);
+    if (existsSync(path.join(root, "captures.sealed.json")))
+      throw Error("Common inventory must precede local capture sealing");
+    const inventory = validateInventory(
+        value,
+        declaration,
+        expectedProtocolSha256,
+      ),
+      bytes = encodeReviewEvaluationArtifact(inventory);
+    if (bytes.length > 8 * 1048576)
+      throw Error("Common inventory byte bound exceeded");
+    writeNew(path.join(root, "common-defects.frozen.json"), bytes);
+    return {
+      schemaVersion: 1 as const,
+      inventorySha256: sha(bytes),
+      protocolSha256: expectedProtocolSha256,
+      cases: inventory.cases.length,
+      defects: inventory.cases.reduce((n, c) => n + c.defects.length, 0),
+      localCaptureAlreadySealed: false as const,
+      chronologyVerified: false as const,
+      labelsVerified: false as const,
+      sourceIncluded: false as const,
+      gateAClosed: false as const,
+      inferenceInvoked: false as const,
+    };
+  });
 }
 function caseBook(inventory: Inventory, salt: string) {
   return inventory.cases
@@ -302,51 +305,53 @@ export function prepareReviewEvaluationMatching(
   expectedJudgmentsSha256: string,
   expectedInventorySha256: string,
 ) {
-  const root = storage(projectRoot, storageRoot),
-    judged = loadSealedReviewEvaluationJudgments(
-      projectRoot,
-      storageRoot,
-      expectedJudgmentsSha256,
-    ),
-    raw = readPrivate(
-      path.join(root, "common-defects.frozen.json"),
-      8 * 1048576,
-    );
-  if (sha(raw) !== digest.parse(expectedInventorySha256))
-    throw Error("Frozen common inventory changed");
-  const inventory = validateInventory(
-      decode(raw),
-      judged.loaded.captured.input.declaration,
-      judged.loaded.book.protocolSha256,
-    ),
-    salt = randomBytes(32).toString("hex"),
-    book = bookSchema.parse({
-      schemaVersion: 1,
-      profile: "independent-common-defect-matching-v1",
-      judgmentsSha256: expectedJudgmentsSha256,
-      inventorySha256: expectedInventorySha256,
-      protocolSha256: inventory.protocolSha256,
-      procedureSha256:
-        judged.loaded.captured.input.declaration.protocol.procedures
-          .commonDefectMatchingSha256,
-      salt,
-      cases: caseBook(inventory, salt),
-    }),
-    prepared = { root, book, judged, inventory };
-  if (new Set(book.cases.map((c) => c.blindId)).size !== book.cases.length)
-    throw Error("Matching identity collision");
-  for (const row of book.cases) packetFor(prepared, row.blindId);
-  const bytes = encodeReviewEvaluationArtifact(book);
-  writeNew(path.join(root, "matching.book.json"), bytes);
-  return {
-    schemaVersion: 1 as const,
-    bookSha256: sha(bytes),
-    plannedMappings: book.cases.length,
-    blindIds: book.cases.map((c) => c.blindId),
-    sourceIncluded: false as const,
-    inferenceInvoked: false as const,
-    gateAClosed: false as const,
-  };
+  return withEvaluationPrivateStorage(() => {
+    const root = storage(projectRoot, storageRoot),
+      judged = loadSealedReviewEvaluationJudgments(
+        projectRoot,
+        storageRoot,
+        expectedJudgmentsSha256,
+      ),
+      raw = readPrivate(
+        path.join(root, "common-defects.frozen.json"),
+        8 * 1048576,
+      );
+    if (sha(raw) !== digest.parse(expectedInventorySha256))
+      throw Error("Frozen common inventory changed");
+    const inventory = validateInventory(
+        decode(raw),
+        judged.loaded.captured.input.declaration,
+        judged.loaded.book.protocolSha256,
+      ),
+      salt = randomBytes(32).toString("hex"),
+      book = bookSchema.parse({
+        schemaVersion: 1,
+        profile: "independent-common-defect-matching-v1",
+        judgmentsSha256: expectedJudgmentsSha256,
+        inventorySha256: expectedInventorySha256,
+        protocolSha256: inventory.protocolSha256,
+        procedureSha256:
+          judged.loaded.captured.input.declaration.protocol.procedures
+            .commonDefectMatchingSha256,
+        salt,
+        cases: caseBook(inventory, salt),
+      }),
+      prepared = { root, book, judged, inventory };
+    if (new Set(book.cases.map((c) => c.blindId)).size !== book.cases.length)
+      throw Error("Matching identity collision");
+    for (const row of book.cases) packetFor(prepared, row.blindId);
+    const bytes = encodeReviewEvaluationArtifact(book);
+    writeNew(path.join(root, "matching.book.json"), bytes);
+    return {
+      schemaVersion: 1 as const,
+      bookSha256: sha(bytes),
+      plannedMappings: book.cases.length,
+      blindIds: book.cases.map((c) => c.blindId),
+      sourceIncluded: false as const,
+      inferenceInvoked: false as const,
+      gateAClosed: false as const,
+    };
+  });
 }
 export function reviewEvaluationMatchingPacket(
   projectRoot: string,
@@ -355,11 +360,13 @@ export function reviewEvaluationMatchingPacket(
   id: string,
   allowSource: boolean,
 ) {
-  if (allowSource !== true)
-    throw Error("Matching source disclosure requires the operator grant");
-  const loaded = loadBook(projectRoot, storageRoot, expectedBookSha256),
-    p = packetFor(loaded, blindId.parse(id));
-  return { ...p.packet, packetSha256: p.packetSha256 };
+  return withEvaluationPrivateStorage(() => {
+    if (allowSource !== true)
+      throw Error("Matching source disclosure requires the operator grant");
+    const loaded = loadBook(projectRoot, storageRoot, expectedBookSha256),
+      p = packetFor(loaded, blindId.parse(id));
+    return { ...p.packet, packetSha256: p.packetSha256 };
+  });
 }
 function intakes(
   loaded: ReturnType<typeof loadBook>,
@@ -562,38 +569,40 @@ export function sealReviewEvaluationMappings(
   expectedBookSha256: string,
   value: unknown,
 ) {
-  if (Array.isArray(value) && value.length > 512)
-    throw Error("Matching submission count bound exceeded");
-  const loaded = loadBook(projectRoot, storageRoot, expectedBookSha256),
-    submissions = submissionsSchema.parse(value),
-    loadedIntakes = intakes(loaded, submissions, (id) => {
-      try {
-        return readPrivate(
-          path.join(loaded.root, "blobs", id + ".blob"),
-          MAX_FILE,
-        );
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
-        throw error;
-      }
-    }),
-    archive = {
-      schemaVersion: 1,
-      profile: "sealed-independent-common-defect-mappings-v1",
+  return withEvaluationPrivateStorage(() => {
+    if (Array.isArray(value) && value.length > 512)
+      throw Error("Matching submission count bound exceeded");
+    const loaded = loadBook(projectRoot, storageRoot, expectedBookSha256),
+      submissions = submissionsSchema.parse(value),
+      loadedIntakes = intakes(loaded, submissions, (id) => {
+        try {
+          return readPrivate(
+            path.join(loaded.root, "blobs", id + ".blob"),
+            MAX_FILE,
+          );
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+          throw error;
+        }
+      }),
+      archive = {
+        schemaVersion: 1,
+        profile: "sealed-independent-common-defect-mappings-v1",
+        bookSha256: expectedBookSha256,
+        submissions,
+        responses: [...loadedIntakes.responses]
+          .sort(([a], [b]) => a.localeCompare(b, "en"))
+          .map(([sha256, b]) => ({ sha256, base64: b.toString("base64") })),
+        missing: [...loadedIntakes.missing].sort(),
+      };
+    const bytes = encodeReviewEvaluationArtifact(archive);
+    writeNew(path.join(loaded.root, "mappings.sealed.json"), bytes);
+    return {
+      ...loadedIntakes.report,
       bookSha256: expectedBookSha256,
-      submissions,
-      responses: [...loadedIntakes.responses]
-        .sort(([a], [b]) => a.localeCompare(b, "en"))
-        .map(([sha256, b]) => ({ sha256, base64: b.toString("base64") })),
-      missing: [...loadedIntakes.missing].sort(),
+      mappingsSha256: sha(bytes),
     };
-  const bytes = encodeReviewEvaluationArtifact(archive);
-  writeNew(path.join(loaded.root, "mappings.sealed.json"), bytes);
-  return {
-    ...loadedIntakes.report,
-    bookSha256: expectedBookSha256,
-    mappingsSha256: sha(bytes),
-  };
+  }, true);
 }
 function loadMappings(
   projectRoot: string,
@@ -647,7 +656,10 @@ export function inspectSealedReviewEvaluationMappings(
   storageRoot: string,
   expectedMappingsSha256: string,
 ) {
-  return loadMappings(projectRoot, storageRoot, expectedMappingsSha256).report;
+  return withEvaluationPrivateStorage(() => {
+    return loadMappings(projectRoot, storageRoot, expectedMappingsSha256)
+      .report;
+  });
 }
 /** Descriptive paired scores derive from immutable reviewer probabilities, separate judgments and common mappings. */
 export function scoreReviewEvaluationArtifacts(
@@ -655,152 +667,161 @@ export function scoreReviewEvaluationArtifacts(
   storageRoot: string,
   expectedMappingsSha256: string,
 ) {
-  const mapped = loadMappings(projectRoot, storageRoot, expectedMappingsSha256),
-    { loaded } = mapped,
-    declaration = loaded.judged.loaded.captured.input.declaration,
-    selected = declaration.cohort.cases
-      .filter((c) => c.disposition.status === "selected")
-      .sort((a, b) => a.id.localeCompare(b.id, "en")),
-    clusters = new Map(
-      declaration.protocol.caseClusters.map((c) => [c.caseId, c.clusterId]),
-    );
-  const trials = selected.flatMap((c) =>
-      Array.from(
-        { length: declaration.protocol.scoring.repetitions },
-        (_, repetition) => ({
-          id: "trial-" + c.id.slice(5) + "-" + repetition,
-          caseId: c.id,
-          repetition,
-          clusterId: clusters.get(c.id)!,
-        }),
+  return withEvaluationPrivateStorage(() => {
+    const mapped = loadMappings(
+        projectRoot,
+        storageRoot,
+        expectedMappingsSha256,
       ),
-    ),
-    labels = trials.map((t) => {
-      const c = loaded.inventory.cases.find((c) => c.caseId === t.caseId)!;
-      return {
-        id: t.id,
-        label: c.label,
-        defects: c.defects.map(({ description, ...d }) => {
-          void description;
-          return d;
-        }),
-      };
-    });
-  type Observations = ReviewMultiReport["input"]["observations"]["a"];
-  const observations = (
-    role: "baseline" | "verifier" | "reference",
-  ): Observations =>
-    trials.map((t) => {
-      const slot = loaded.judged.loaded.book.slots.find(
-          (s) =>
-            s.caseId === t.caseId &&
-            s.repetition === t.repetition &&
-            s.role === role,
-        )!,
-        review = reviewFor(loaded, slot),
-        judge = loaded.judged.intakes.rows.find(
-          (r) => r.blindId === slot.blindId,
-        )!,
-        mappingCase = loaded.book.cases.find((c) => c.caseId === slot.caseId)!,
-        mapping = mapped.intakes.rows.find(
-          (r) => r.blindId === mappingCase.blindId,
-        )!;
-      const physical = loaded.judged.loaded.captured.input.captures.find(
-        (c) => key(c) === key(slot),
+      { loaded } = mapped,
+      declaration = loaded.judged.loaded.captured.input.declaration,
+      selected = declaration.cohort.cases
+        .filter((c) => c.disposition.status === "selected")
+        .sort((a, b) => a.id.localeCompare(b.id, "en")),
+      clusters = new Map(
+        declaration.protocol.caseClusters.map((c) => [c.caseId, c.clusterId]),
       );
-      const status =
-        review.status === "completed"
-          ? "completed"
-          : physical?.status === "cancelled"
-            ? "cancelled"
-            : physical?.status === "budget-exhausted"
-              ? "budget-exhausted"
-              : physical?.status === "not-run"
-                ? "unreviewed"
-                : "incomplete";
-      return {
-        id: t.id,
-        status,
-        claims: review.claims.map((c) => {
-          const judged =
-              judge.status === "accepted"
-                ? judge.response!.claims.find((x) => x.id === c.id)
-                : undefined,
-            common =
-              mapping.status === "accepted"
-                ? mapping.response!.mappings.find(
-                    (m) => m.reviewId === slot.blindId && m.claimId === c.id,
-                  )
-                : undefined;
-          const judgement =
-            judged?.judgement === "supported"
-              ? common?.defectId
-                ? "supported"
-                : "unresolved"
-              : (judged?.judgement ?? "unresolved");
-          return {
-            id: c.id,
-            family: c.family,
-            judgement,
-            defectId: judgement === "supported" ? common!.defectId : null,
-            probability: c.probability,
-          };
+    const trials = selected.flatMap((c) =>
+        Array.from(
+          { length: declaration.protocol.scoring.repetitions },
+          (_, repetition) => ({
+            id: "trial-" + c.id.slice(5) + "-" + repetition,
+            caseId: c.id,
+            repetition,
+            clusterId: clusters.get(c.id)!,
+          }),
+        ),
+      ),
+      labels = trials.map((t) => {
+        const c = loaded.inventory.cases.find((c) => c.caseId === t.caseId)!;
+        return {
+          id: t.id,
+          label: c.label,
+          defects: c.defects.map(({ description, ...d }) => {
+            void description;
+            return d;
+          }),
+        };
+      });
+    type Observations = ReviewMultiReport["input"]["observations"]["a"];
+    const observations = (
+      role: "baseline" | "verifier" | "reference",
+    ): Observations =>
+      trials.map((t) => {
+        const slot = loaded.judged.loaded.book.slots.find(
+            (s) =>
+              s.caseId === t.caseId &&
+              s.repetition === t.repetition &&
+              s.role === role,
+          )!,
+          review = reviewFor(loaded, slot),
+          judge = loaded.judged.intakes.rows.find(
+            (r) => r.blindId === slot.blindId,
+          )!,
+          mappingCase = loaded.book.cases.find(
+            (c) => c.caseId === slot.caseId,
+          )!,
+          mapping = mapped.intakes.rows.find(
+            (r) => r.blindId === mappingCase.blindId,
+          )!;
+        const physical = loaded.judged.loaded.captured.input.captures.find(
+          (c) => key(c) === key(slot),
+        );
+        const status =
+          review.status === "completed"
+            ? "completed"
+            : physical?.status === "cancelled"
+              ? "cancelled"
+              : physical?.status === "budget-exhausted"
+                ? "budget-exhausted"
+                : physical?.status === "not-run"
+                  ? "unreviewed"
+                  : "incomplete";
+        return {
+          id: t.id,
+          status,
+          claims: review.claims.map((c) => {
+            const judged =
+                judge.status === "accepted"
+                  ? judge.response!.claims.find((x) => x.id === c.id)
+                  : undefined,
+              common =
+                mapping.status === "accepted"
+                  ? mapping.response!.mappings.find(
+                      (m) => m.reviewId === slot.blindId && m.claimId === c.id,
+                    )
+                  : undefined;
+            const judgement =
+              judged?.judgement === "supported"
+                ? common?.defectId
+                  ? "supported"
+                  : "unresolved"
+                : (judged?.judgement ?? "unresolved");
+            return {
+              id: c.id,
+              family: c.family,
+              judgement,
+              defectId: judgement === "supported" ? common!.defectId : null,
+              probability: c.probability,
+            };
+          }),
+        };
+      });
+    const protocol = {
+      schemaVersion: 1 as const,
+      profile: "declared-multi-claim-paired-v1" as const,
+      purpose: "held-out" as const,
+      seed: declaration.protocol.scoring.seed,
+      resamples: declaration.protocol.scoring.resamples,
+      confidenceLevel: declaration.protocol.scoring.confidenceLevel,
+      trials: trials.map(({ id, clusterId }) => ({ id, clusterId })),
+    };
+    const verifier = observations("verifier"),
+      scores = {
+        baseline: scoreMultiClaimReviewTrials({
+          protocol,
+          labels,
+          observations: { a: observations("baseline"), b: verifier },
+        }),
+        reference: scoreMultiClaimReviewTrials({
+          protocol,
+          labels,
+          observations: { a: observations("reference"), b: verifier },
         }),
       };
-    });
-  const protocol = {
-    schemaVersion: 1 as const,
-    profile: "declared-multi-claim-paired-v1" as const,
-    purpose: "held-out" as const,
-    seed: declaration.protocol.scoring.seed,
-    resamples: declaration.protocol.scoring.resamples,
-    confidenceLevel: declaration.protocol.scoring.confidenceLevel,
-    trials: trials.map(({ id, clusterId }) => ({ id, clusterId })),
-  };
-  const verifier = observations("verifier"),
-    scores = {
-      baseline: scoreMultiClaimReviewTrials({
-        protocol,
-        labels,
-        observations: { a: observations("baseline"), b: verifier },
-      }),
-      reference: scoreMultiClaimReviewTrials({
-        protocol,
-        labels,
-        observations: { a: observations("reference"), b: verifier },
-      }),
+    return {
+      schemaVersion: 1 as const,
+      profile: "sealed-three-role-external-review-scoring-v1" as const,
+      protocolSha256: loaded.book.protocolSha256,
+      inventorySha256: loaded.book.inventorySha256,
+      judgmentsSha256: loaded.book.judgmentsSha256,
+      mappingsSha256: expectedMappingsSha256,
+      scoringBindingsComplete:
+        loaded.judged.report.judgmentsResolved &&
+        mapped.report.mappingsComplete &&
+        loaded.inventory.cases.every((c) => c.label !== "unresolved"),
+      measurementAccountingComplete:
+        loaded.judged.loaded.captured.report.measurementAccountingComplete,
+      accounting: { judgments: loaded.judged.report, mappings: mapped.report },
+      comparisons: {
+        baseline: projectMultiClaimReviewScoring(scores.baseline, false),
+        reference: projectMultiClaimReviewScoring(scores.reference, false),
+      },
+      probabilitySource: "sealed-reviewer-declared-uncalibrated" as const,
+      labelSource:
+        "frozen-operator-supplied-unverified-common-defects" as const,
+      declaredPurpose: "reserved-cohort-not-independently-verified" as const,
+      sourceIncluded: false as const,
+      privateIdentitiesIncluded: false as const,
+      claimTruthVerified: false as const,
+      labelsVerified: false as const,
+      hostIndependenceVerified: false as const,
+      actualAttemptsComplete: false as const,
+      qualityAssessed: false as const,
+      gateAClosed: false as const,
+      inferenceInvoked: false as const,
     };
-  return {
-    schemaVersion: 1 as const,
-    profile: "sealed-three-role-external-review-scoring-v1" as const,
-    protocolSha256: loaded.book.protocolSha256,
-    inventorySha256: loaded.book.inventorySha256,
-    judgmentsSha256: loaded.book.judgmentsSha256,
-    mappingsSha256: expectedMappingsSha256,
-    scoringBindingsComplete:
-      loaded.judged.report.judgmentsResolved &&
-      mapped.report.mappingsComplete &&
-      loaded.inventory.cases.every((c) => c.label !== "unresolved"),
-    measurementAccountingComplete:
-      loaded.judged.loaded.captured.report.measurementAccountingComplete,
-    accounting: { judgments: loaded.judged.report, mappings: mapped.report },
-    comparisons: {
-      baseline: projectMultiClaimReviewScoring(scores.baseline, false),
-      reference: projectMultiClaimReviewScoring(scores.reference, false),
-    },
-    probabilitySource: "sealed-reviewer-declared-uncalibrated" as const,
-    labelSource: "frozen-operator-supplied-unverified-common-defects" as const,
-    declaredPurpose: "reserved-cohort-not-independently-verified" as const,
-    sourceIncluded: false as const,
-    privateIdentitiesIncluded: false as const,
-    claimTruthVerified: false as const,
-    labelsVerified: false as const,
-    hostIndependenceVerified: false as const,
-    actualAttemptsComplete: false as const,
-    qualityAssessed: false as const,
-    gateAClosed: false as const,
-    inferenceInvoked: false as const,
-  };
+  });
 }
 export type ReviewEvaluationMappingsReport = ReturnType<
   typeof sealReviewEvaluationMappings

@@ -1,15 +1,19 @@
 import { createHash, randomUUID } from "node:crypto";
 import {
   constants,
+  type BigIntStats,
   closeSync,
   existsSync,
   fstatSync,
   fsyncSync,
   linkSync,
   lstatSync,
+  mkdirSync,
+  rmdirSync,
   openSync,
   readSync,
   realpathSync,
+  opendirSync,
   unlinkSync,
   writeSync,
 } from "node:fs";
@@ -22,6 +26,10 @@ import {
   reviewEvaluationCaptureAssignments,
   type ReviewEvaluationCaptureInput,
 } from "./review-evaluation-captures.js";
+import {
+  ensureWindowsTaskAccess,
+  ensureWindowsTaskAccessBatch,
+} from "./windows-task-access.js";
 const MAX_BLOB = 4 * 1048576,
   MAX_RECORD = 1048576,
   MAX_TOTAL = 16 * 1048576,
@@ -73,23 +81,181 @@ const archiveSchema = z.strictObject({
   missing: z.array(digest).max(MAX_FILES),
 });
 type Archive = z.infer<typeof archiveSchema>;
-function directory(filename: string) {
-  if (process.platform === "win32" || !path.isAbsolute(filename))
-    throw Error("Capture storage requires a private absolute POSIX directory");
+/** Initialize a new outside-project namespace; existing objects are never repaired. */
+export function initializeReviewEvaluationStorage(
+  projectRoot: string,
+  storageRoot: string,
+) {
+  if (!path.isAbsolute(storageRoot))
+    throw Error("Capture storage requires an absolute directory");
+  const parent = canonicalDirectory(path.dirname(storageRoot));
+  const root = path.join(parent, path.basename(storageRoot));
+  const relative = path.relative(realpathSync(projectRoot), root);
+  if (
+    !relative ||
+    (!path.isAbsolute(relative) &&
+      relative !== ".." &&
+      !relative.startsWith(".." + path.sep))
+  )
+    throw Error("Capture storage must be outside the project");
+  mkdirSync(root, { mode: 0o700 });
+  const owned = lstatSync(root, { bigint: true });
+  let child: BigIntStats | undefined;
+  const blobs = path.join(root, "blobs");
+  try {
+    if (process.platform === "win32")
+      ensureWindowsTaskAccess(root, "directory", true);
+    mkdirSync(blobs, { mode: 0o700 });
+    child = lstatSync(blobs, { bigint: true });
+    if (process.platform === "win32")
+      ensureWindowsTaskAccess(blobs, "directory", true);
+    withEvaluationPrivateStorage(() => storage(projectRoot, root));
+  } catch (error) {
+    // Only remove our own still-empty inodes. Preserve anything replaced/populated
+    // concurrently rather than recursively deleting an operator's namespace.
+    const sameObject = (a: BigIntStats, b: BigIntStats) =>
+      a.dev === b.dev && a.ino === b.ino && !b.isSymbolicLink();
+    try {
+      if (child && sameObject(child, lstatSync(blobs, { bigint: true })))
+        rmdirSync(blobs);
+    } catch {
+      /* Preserve nonempty/replaced objects. */
+    }
+    try {
+      if (sameObject(owned, lstatSync(root, { bigint: true }))) rmdirSync(root);
+    } catch {
+      /* Preserve nonempty/replaced objects. */
+    }
+    throw error;
+  }
+  return {
+    schemaVersion: 1 as const,
+    profile: "private-review-evaluation-storage-v1" as const,
+    backend:
+      process.platform === "win32"
+        ? ("windows-dacl" as const)
+        : ("posix-mode" as const),
+    initialized: true as const,
+    inferenceInvoked: false as const,
+  };
+}
+// Permission observations live only for one synchronous operator call. Nested
+// judging/matching replay shares them; no later invocation trusts this cache.
+let privateOperation: Map<string, BigIntStats> | undefined;
+let incomingOperation = false;
+export function withEvaluationPrivateStorage<T>(
+  operation: () => T,
+  incoming = false,
+): T {
+  if (privateOperation) {
+    if (incoming && !incomingOperation)
+      throw Error("Nested private operation cannot widen incoming access");
+    return operation();
+  }
+  incomingOperation = incoming;
+  privateOperation = new Map();
+  try {
+    return operation();
+  } finally {
+    privateOperation = undefined;
+    incomingOperation = false;
+  }
+}
+const pathKey = (filename: string) => filename.toLowerCase();
+function sameMetadata(a: BigIntStats, b: BigIntStats) {
+  return (
+    a.dev === b.dev &&
+    a.ino === b.ino &&
+    a.mode === b.mode &&
+    a.nlink === b.nlink &&
+    a.size === b.size &&
+    a.mtimeNs === b.mtimeNs &&
+    a.ctimeNs === b.ctimeNs
+  );
+}
+function canonicalDirectory(filename: string) {
+  if (!path.isAbsolute(filename))
+    throw Error("Capture storage requires a private absolute directory");
   const stat = lstatSync(filename);
+  const canonical = realpathSync(filename);
   if (
     !stat.isDirectory() ||
     stat.isSymbolicLink() ||
-    stat.uid !== process.getuid?.() ||
-    (stat.mode & 0o777) !== 0o700
+    (process.platform === "win32" &&
+      (canonical.toLowerCase() !== path.normalize(filename).toLowerCase() ||
+        !/^[A-Za-z]:\\/.test(canonical)))
   )
     throw Error(
-      "Capture storage directory is not private operator-owned storage",
+      "Capture private storage rejects linked or mistyped directories",
     );
-  return realpathSync(filename);
+  return canonical;
+}
+function directory(filename: string) {
+  const target = canonicalDirectory(filename);
+  if (process.platform === "win32") {
+    const checked = privateOperation?.get(pathKey(target));
+    if (!checked || !sameMetadata(checked, lstatSync(target, { bigint: true })))
+      throw Error(
+        "Capture storage directory lacks a current private ACL observation",
+      );
+  } else {
+    const stat = lstatSync(target);
+    if (stat.uid !== process.getuid?.() || (stat.mode & 0o777) !== 0o700)
+      throw Error(
+        "Capture storage directory is not private operator-owned storage",
+      );
+  }
+  return target;
+}
+function inspectWindowsRoot(root: string) {
+  if (!privateOperation)
+    throw Error("Private storage requires an operator operation");
+  if (privateOperation.has(pathKey(root))) return;
+  const entries = new Map<string, BigIntStats>();
+  const targets: { filename: string; kind: "file" | "directory" }[] = [];
+  const visit = (filename: string, depth: number) => {
+    if (depth > 8 || entries.size >= 8192)
+      throw Error("Private Windows storage inventory exceeds bound");
+    const stat = lstatSync(filename, { bigint: true });
+    if (
+      stat.isSymbolicLink() ||
+      (!stat.isFile() && !stat.isDirectory()) ||
+      (stat.isFile() && stat.nlink !== 1n) ||
+      realpathSync(filename).toLowerCase() !== filename.toLowerCase()
+    )
+      throw Error(
+        "Capture artifact is not a private singly linked regular file or directory",
+      );
+    const key = pathKey(filename);
+    if (entries.has(key))
+      throw Error("Private Windows storage has duplicate paths");
+    entries.set(key, stat);
+    targets.push({ filename, kind: stat.isDirectory() ? "directory" : "file" });
+    if (stat.isDirectory()) {
+      const stream = opendirSync(filename);
+      try {
+        for (let next = stream.readSync(); next; next = stream.readSync()) {
+          if (depth === 0 && next.name === "blobs" && !incomingOperation)
+            continue;
+          visit(path.join(filename, next.name), depth + 1);
+        }
+      } finally {
+        stream.closeSync();
+      }
+    }
+  };
+  visit(root, 0);
+  ensureWindowsTaskAccessBatch(targets);
+  for (const target of targets) {
+    const key = pathKey(target.filename),
+      before = entries.get(key)!;
+    if (!sameMetadata(before, lstatSync(target.filename, { bigint: true })))
+      throw Error("Private Windows storage changed during ACL inspection");
+    privateOperation.set(key, before);
+  }
 }
 function storage(project: string, root: string) {
-  const target = directory(root),
+  const target = canonicalDirectory(root),
     relative = path.relative(realpathSync(project), target);
   if (
     !relative ||
@@ -98,40 +264,44 @@ function storage(project: string, root: string) {
       !relative.startsWith(".." + path.sep))
   )
     throw Error("Capture storage must be outside the project");
-  return target;
+  if (process.platform === "win32") inspectWindowsRoot(target);
+  return directory(target);
 }
 function readPrivate(filename: string, limit: number) {
   const fd = openSync(
     filename,
-    constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK,
+    process.platform === "win32"
+      ? constants.O_RDONLY
+      : constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK,
   );
   try {
-    const before = fstatSync(fd);
+    const before = fstatSync(fd, { bigint: true });
+    const checked = privateOperation?.get(pathKey(filename));
     if (
       !before.isFile() ||
-      before.nlink !== 1 ||
-      before.uid !== process.getuid?.() ||
-      (before.mode & 0o777) !== 0o600 ||
-      before.size > limit
+      before.nlink !== 1n ||
+      before.size > BigInt(limit) ||
+      (process.platform === "win32"
+        ? !checked || !sameMetadata(checked, before)
+        : before.uid !== BigInt(process.getuid!()) ||
+          (before.mode & 0o777n) !== 0o600n)
     )
       throw Error(
         "Capture artifact is not a bounded private singly linked file",
       );
-    const bytes = Buffer.alloc(before.size);
+    const bytes = Buffer.alloc(Number(before.size));
     let at = 0;
     while (at < bytes.length) {
       const n = readSync(fd, bytes, at, bytes.length - at, at);
       if (!n) throw Error("Capture artifact ended early");
       at += n;
     }
-    const after = fstatSync(fd),
-      linked = lstatSync(filename);
+    const after = fstatSync(fd, { bigint: true }),
+      linked = lstatSync(filename, { bigint: true });
     if (
-      before.size !== after.size ||
-      before.mtimeMs !== after.mtimeMs ||
-      before.ctimeMs !== after.ctimeMs ||
-      after.dev !== linked.dev ||
-      after.ino !== linked.ino
+      !sameMetadata(before, after) ||
+      !sameMetadata(after, linked) ||
+      linked.isSymbolicLink()
     )
       throw Error("Capture artifact changed during reading");
     return bytes;
@@ -160,6 +330,8 @@ function writeNew(filename: string, bytes: Buffer) {
         constants.O_NOFOLLOW,
       0o600,
     );
+    if (process.platform === "win32")
+      ensureWindowsTaskAccess(pending, "file", true);
     let at = 0;
     while (at < bytes.length) {
       const n = writeSync(fd, bytes, at, bytes.length - at);
@@ -173,6 +345,18 @@ function writeNew(filename: string, bytes: Buffer) {
   } finally {
     if (fd !== undefined) closeSync(fd);
     if (existsSync(pending)) unlinkSync(pending);
+  }
+  if (process.platform === "win32") {
+    if (!privateOperation)
+      throw Error("Private storage requires an operator operation");
+    privateOperation.set(
+      pathKey(filename),
+      lstatSync(filename, { bigint: true }),
+    );
+    privateOperation.set(pathKey(parent), lstatSync(parent, { bigint: true }));
+    // Node cannot fsync a Windows directory handle. The file is flushed and the
+    // hard-link publication is exclusive; power-loss directory durability is not claimed.
+    return;
   }
   const dir = openSync(parent, constants.O_RDONLY | constants.O_DIRECTORY);
   try {
@@ -337,30 +521,32 @@ export function sealReviewEvaluationCaptures(
   storageRoot: string,
   value: unknown,
 ) {
-  const root = storage(projectRoot, storageRoot);
-  const blobRoot = directory(path.join(root, "blobs"));
-  const input = reviewEvaluationCaptureInputSchema.parse(value);
-  const loaded = evaluate(input, (id, max) => {
-    try {
-      return readPrivate(path.join(blobRoot, id + ".blob"), max);
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
-      throw error;
-    }
-  });
-  const archive: Archive = {
-    schemaVersion: 1,
-    profile: "sealed-external-review-captures-v1",
-    input,
-    blobs: [...loaded.records]
-      .sort(([a], [b]) => a.localeCompare(b, "en"))
-      .map(([sha256, b]) => ({ sha256, base64: b.toString("base64") })),
-    missing: [...loaded.missing].sort(),
-  };
-  const bytes = encodeReviewEvaluationArtifact(archive);
-  const file = path.join(root, "captures.sealed.json");
-  writeNew(file, bytes);
-  return { ...loaded.report, archiveSha256: sha(bytes) };
+  return withEvaluationPrivateStorage(() => {
+    const root = storage(projectRoot, storageRoot);
+    const blobRoot = directory(path.join(root, "blobs"));
+    const input = reviewEvaluationCaptureInputSchema.parse(value);
+    const loaded = evaluate(input, (id, max) => {
+      try {
+        return readPrivate(path.join(blobRoot, id + ".blob"), max);
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+        throw error;
+      }
+    });
+    const archive: Archive = {
+      schemaVersion: 1,
+      profile: "sealed-external-review-captures-v1",
+      input,
+      blobs: [...loaded.records]
+        .sort(([a], [b]) => a.localeCompare(b, "en"))
+        .map(([sha256, b]) => ({ sha256, base64: b.toString("base64") })),
+      missing: [...loaded.missing].sort(),
+    };
+    const bytes = encodeReviewEvaluationArtifact(archive);
+    const file = path.join(root, "captures.sealed.json");
+    writeNew(file, bytes);
+    return { ...loaded.report, archiveSha256: sha(bytes) };
+  }, true);
 }
 /** Replay uses retained bytes only. Editing/deleting the original incoming blob files cannot rewrite a sealed result. */
 export function loadSealedReviewEvaluationCaptureArchive(
@@ -368,51 +554,55 @@ export function loadSealedReviewEvaluationCaptureArchive(
   storageRoot: string,
   expectedArchiveSha256: string,
 ) {
-  const root = storage(projectRoot, storageRoot),
-    bytes = readPrivate(path.join(root, "captures.sealed.json"), MAX_ARCHIVE);
-  if (sha(bytes) !== digest.parse(expectedArchiveSha256))
-    throw Error("Sealed capture archive identity changed");
-  const archive = archiveSchema.parse(decode(bytes));
-  const records = new Map<string, Buffer>();
-  for (const row of archive.blobs) {
-    if (records.has(row.sha256)) throw Error("Duplicate sealed capture blob");
-    const b = Buffer.from(row.base64, "base64");
-    if (b.toString("base64") !== row.base64 || sha(b) !== row.sha256)
-      throw Error("Sealed capture blob changed");
-    records.set(row.sha256, b);
-  }
-  const absent = new Set(archive.missing);
-  if (
-    absent.size !== archive.missing.length ||
-    [...absent].some((k) => records.has(k))
-  )
-    throw Error("Invalid sealed missing inventory");
-  const result = evaluate(archive.input, (id, max) => {
-    const b = records.get(id);
-    if (b && b.length > max) throw Error("Sealed capture blob exceeds bound");
-    return b ?? null;
+  return withEvaluationPrivateStorage(() => {
+    const root = storage(projectRoot, storageRoot),
+      bytes = readPrivate(path.join(root, "captures.sealed.json"), MAX_ARCHIVE);
+    if (sha(bytes) !== digest.parse(expectedArchiveSha256))
+      throw Error("Sealed capture archive identity changed");
+    const archive = archiveSchema.parse(decode(bytes));
+    const records = new Map<string, Buffer>();
+    for (const row of archive.blobs) {
+      if (records.has(row.sha256)) throw Error("Duplicate sealed capture blob");
+      const b = Buffer.from(row.base64, "base64");
+      if (b.toString("base64") !== row.base64 || sha(b) !== row.sha256)
+        throw Error("Sealed capture blob changed");
+      records.set(row.sha256, b);
+    }
+    const absent = new Set(archive.missing);
+    if (
+      absent.size !== archive.missing.length ||
+      [...absent].some((k) => records.has(k))
+    )
+      throw Error("Invalid sealed missing inventory");
+    const result = evaluate(archive.input, (id, max) => {
+      const b = records.get(id);
+      if (b && b.length > max) throw Error("Sealed capture blob exceeds bound");
+      return b ?? null;
+    });
+    if (
+      records.size !== result.records.size ||
+      !isDeepStrictEqual([...absent].sort(), [...result.missing].sort())
+    )
+      throw Error("Sealed physical artifact inventory disagrees");
+    return {
+      input: archive.input,
+      records,
+      report: { ...result.report, archiveSha256: sha(bytes) },
+    };
   });
-  if (
-    records.size !== result.records.size ||
-    !isDeepStrictEqual([...absent].sort(), [...result.missing].sort())
-  )
-    throw Error("Sealed physical artifact inventory disagrees");
-  return {
-    input: archive.input,
-    records,
-    report: { ...result.report, archiveSha256: sha(bytes) },
-  };
 }
 export function inspectSealedReviewEvaluationCaptures(
   projectRoot: string,
   storageRoot: string,
   expectedArchiveSha256: string,
 ) {
-  return loadSealedReviewEvaluationCaptureArchive(
-    projectRoot,
-    storageRoot,
-    expectedArchiveSha256,
-  ).report;
+  return withEvaluationPrivateStorage(() => {
+    return loadSealedReviewEvaluationCaptureArchive(
+      projectRoot,
+      storageRoot,
+      expectedArchiveSha256,
+    ).report;
+  });
 }
 /** Internal operator storage primitives; not exported from the package root. */
 export const evaluationPrivateArtifacts = {

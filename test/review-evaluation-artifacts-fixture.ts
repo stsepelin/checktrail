@@ -1,5 +1,6 @@
+import { setPrivateFixtureAccess } from "./windows-private-fixture.js";
 import { createHash } from "node:crypto";
-import { mkdir, writeFile, chmod } from "node:fs/promises";
+import { mkdir, writeFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import {
   encodeReviewEvaluationArtifact,
@@ -21,9 +22,13 @@ export async function artifactFixture(
   ) => void,
   initial?: (input: ReviewEvaluationCaptureInput) => Buffer,
 ) {
-  await mkdir(path.join(directory, "blobs"), { recursive: true, mode: 0o700 });
-  await chmod(directory, 0o700);
-  await chmod(path.join(directory, "blobs"), 0o700);
+  if (process.platform === "win32" && (await readdir(directory)).length !== 0)
+    throw Error(
+      "Only new empty fixture directories may receive initial private ACLs",
+    );
+  await setPrivateFixtureAccess(directory, "directory");
+  await mkdir(path.join(directory, "blobs"), { mode: 0o700 });
+  await setPrivateFixtureAccess(path.join(directory, "blobs"), "directory");
   const input: ReviewEvaluationCaptureInput = captureFixture(),
     blobs = new Map<string, Buffer>();
   const add = (bytes: Buffer) => {
