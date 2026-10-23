@@ -5117,6 +5117,46 @@
     {
       "file": "dist/test/review-findings.test.js",
       "name": "finding resolution installed cohort uses a fresh offline production package"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings bind reversed target completion to original candidates native receipts and accepted host sessions"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings keep a satisfied fixed native predicate unresolved despite supported host declarations"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings retain every candidate and native receipt when a judgment declaration is absent"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings reject foreign duplicate and caller supplied identity or receipt bindings"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings require completed all candidate evidence and protected startup source disclosure"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings recheck final current source and preserve stale candidates"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings reject unreachable repair parameters and keep unknown consequences unassigned"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings reuse retained evidence without issuing host assignments or executing more native calls and summaries omit source"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings honour cancellation and close during asynchronous inspection without releasing a report"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings preserve empty reviewer abstention without approving the repository"
     }
   ]
 }

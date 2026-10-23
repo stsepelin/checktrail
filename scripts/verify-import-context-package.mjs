@@ -265,6 +265,7 @@ try {
     "gate-confidence-provenance.test.js",
     "confidence-provenance-fixture.js",
     "review-findings.test.js",
+    "review-workflow-findings.test.js",
     "review-findings-fixture.js",
     "native-process-observer.js",
     "spotbugs-extensions-fixture.js",

@@ -27,7 +27,7 @@ const repair = z.strictObject({
   scope: z.enum(["this-change", "follow-up", "unknown"]),
   text,
 });
-const judgment = z.strictObject({
+export const reviewFindingJudgmentSchema = z.strictObject({
   disposition: z.enum(["supported", "refuted", "unresolved"]),
   citationIndex: index,
   functionId: digest,
@@ -58,7 +58,7 @@ export const reviewFindingsInputSchema = z.strictObject({
         refutation: z.strictObject(stage),
         adjudication: z.strictObject({
           ...stage,
-          judgment: judgment.nullable(),
+          judgment: reviewFindingJudgmentSchema.nullable(),
         }),
       }),
     )

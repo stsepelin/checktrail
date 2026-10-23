@@ -356,3 +356,6 @@ export type {
   ReviewFindingsInput,
   ReviewFindingsReport,
 } from "./review-findings.js";
+
+export { reviewWorkflowFindingsDeclarationsSchema } from "./review-workflow-findings.js";
+export type { ReviewWorkflowFindingsDeclarations } from "./review-workflow-findings.js";

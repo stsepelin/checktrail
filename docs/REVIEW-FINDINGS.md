@@ -104,3 +104,33 @@ whole multi-candidate workflow profile, wider runtime acceptance, independent
 judgments or Gate A. All truth, independence, common-cause, repair-correctness and
 native-execution flags remain false; quality remains unassessed. No actual AI
 review or real-project field evaluation is invoked by this feature.
+
+## Retained workflow connection
+
+The library method `ReviewWorkflowEngine.inspectFindings(workflowId, serializedDeclarations, signal?)`
+connects a completed all-candidate workflow to this inspector. Startup source
+disclosure must be enabled. The declaration object contains `decisions` with an
+issued `target` handle, `refutationRationale`, `adjudicationRationale` and the
+existing `judgment` shape, plus `commonDefects` with `id`, `rootFunctionId`,
+`targets` and `rationale`. Declarations are capped at 256 KiB; the constructed
+findings input still has the inspector's 1 MiB limit.
+
+The engine supplies its retained context, original reviewer candidates and file
+accounting, each target's native run, and accepted reviewer/refuter/adjudicator
+host declarations. It binds completion order to the issued handles, including
+out-of-order target processing. Provider/client/session tuples become opaque
+digests; a digest remains a declaration, not evidence of an independent session.
+Callers cannot replace source, candidate, session or native identities. Missing
+judgment declarations retain unresolved candidates. Caller-supplied reasoning,
+consequences, repairs and common causes remain unverified host declarations,
+separate from the accepted stage outputs. The generated assessment timestamp
+records this inspection, not the earlier model execution.
+
+Inspection rechecks current source and issues no model assignment or native call.
+Cancellation and closing the engine interrupt inspection. It returns the same
+full source-containing findings report; `projectReviewFindings` supplies its
+restricted summary. Reports are returned to the caller, not retained by the
+workflow. This connection is currently library-only; the JSON-lines command, MCP
+workflow tool, durable command journal and interrupted workflows do not expose
+or persist this operation. Complete surface/runtime acceptance and Gate A remain
+open. No actual model review or held-out source is used by its synthetic tests.

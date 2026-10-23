@@ -783,8 +783,15 @@ test(
     const packet = JSON.parse(result.stdout);
     assert.equal(packet.offlineProductionInstall, true);
     assert.equal(packet.lifecycleScriptsExecuted, false);
-    assert.equal(packet.profile.required, 16);
-    assert.equal(packet.profile.passed, 16);
+    const required = JSON.parse(
+      await readFile(
+        new URL("../../scripts/required-native-tests.json", import.meta.url),
+        "utf8",
+      ),
+    )["finding-resolution"];
+    assert.ok(Array.isArray(required) && required.length > 0);
+    assert.equal(packet.profile.required, required.length);
+    assert.equal(packet.profile.passed, required.length);
     assert.equal(packet.profile.complete, true);
     if (process.env.CHECKTRAIL_FINDINGS_INSTALL_RECEIPT)
       await writeFile(
