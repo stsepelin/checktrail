@@ -104,6 +104,7 @@ test("terminates a process group when a grandchild keeps the output pipe open", 
     { timeoutMs: 5000 },
   );
   const child = await reached(marker);
+  assert.equal(result.errorCode, undefined);
   assert.equal(result.timedOut, true);
   assert.ok(result.durationMs < 8000);
   assert.throws(() => process.kill(child.pid, 0), { code: "ESRCH" });

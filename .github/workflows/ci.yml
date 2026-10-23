@@ -149,7 +149,7 @@ jobs:
       - name: Require the full suite and prepared native regression profiles
         run: |
           node scripts/verify-required-native-tests.mjs --full-suite gate-inventory probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings
-          node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli
+          node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
@@ -1651,6 +1651,8 @@ jobs:
         run: node scripts/verify-required-native-tests.mjs windows-process
       - name: Require physical process output controls on native Windows
         run: node scripts/verify-required-native-tests.mjs physical-process-output
+      - name: Require actual native namespace cleanup races and exhausted refusal
+        run: node scripts/verify-required-native-tests.mjs native-harness-cleanup
       - name: Require native compiling mutation guards with unchanged callbacks
         run: node scripts/verify-windows-guards.mjs
       - run: npm run format:check

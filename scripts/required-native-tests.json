@@ -5442,5 +5442,11 @@
       "file": "dist/test/git-metadata-policy.test.js",
       "name": "native Git metadata passes the complete independent safety configuration to the operator executable without inheriting a project override"
     }
+  ],
+  "native-harness-cleanup": [
+    {
+      "file": "dist/test/tasks-runtime-harness.test.js",
+      "name": "isolated native namespace cleanup retries actual final-directory races and retains exhausted and failed evidence"
+    }
   ]
 }

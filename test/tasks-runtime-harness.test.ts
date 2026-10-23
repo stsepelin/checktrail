@@ -581,7 +581,11 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
       "tasks-matrix": [first],
       "tasks-runtime-manifest": [second],
       "tasks-runtime-cli": [second],
+      "native-harness-cleanup": [second],
+      "assembly-laravel": [second],
+      "assembly-laravel-extra": [first],
       "tasks-matrix-extra": [first],
+      "native-harness-cleanup-extra": [first],
     }),
     "dist/src/original.js": "export const original = 1;\n",
     "marker.txt": "",
@@ -609,7 +613,10 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
     ["tasks-matrix"],
     ["tasks-runtime-manifest"],
     ["tasks-runtime-cli"],
+    ["native-harness-cleanup"],
+    ["assembly-laravel"],
     ["tasks-matrix", "tasks-runtime-manifest"],
+    ["tasks-runtime-manifest", "native-harness-cleanup"],
   ]) {
     await writeFile(path.join(root, "marker.txt"), "");
     const result = spawnSync(
@@ -622,9 +629,20 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
     );
     assert.equal(result.status, 0, result.stderr + result.stdout);
     const packet = JSON.parse(result.stdout);
-    const expected = selection
-      .map((profile) => (profile === "tasks-matrix" ? first.name : second.name))
-      .sort();
+    if (selection[0] === "assembly-laravel")
+      assert.equal(packet.timeoutMs, 300000);
+    const expected = [
+      ...new Set(
+        selection.map((profile) =>
+          profile === "tasks-matrix" ? first.name : second.name,
+        ),
+      ),
+    ].sort();
+    if (selection.length > 1)
+      assert.deepEqual(
+        packet.profiles,
+        selection.map((profile) => ({ profile, required: 1 })),
+      );
     assert.equal(packet.complete, true);
     assert.equal(packet.required, expected.length);
     assert.equal(packet.passed, expected.length);
@@ -650,26 +668,192 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
         .sort(),
     );
   }
-  await writeFile(path.join(root, "marker.txt"), "");
-  const adjacent = spawnSync(
-    process.execPath,
-    [
-      path.join(root, "scripts/verify-required-native-tests.mjs"),
-      "tasks-matrix-extra",
-    ],
-    { cwd: root, env, encoding: "utf8", timeout: 30000, maxBuffer: 1048576 },
-  );
-  assert.equal(adjacent.status, 1, adjacent.stderr);
-  const packet = JSON.parse(adjacent.stdout);
-  assert.equal(packet.complete, false);
-  assert.deepEqual(packet.problems, [
-    { name: "OriginalForeignPlatform", reason: "skipped-or-todo" },
-  ]);
-  assert.deepEqual(
-    (await readFile(path.join(root, "marker.txt"), "utf8"))
-      .trim()
-      .split("\n")
-      .sort(),
-    ["manifest", "matrix"],
-  );
+  for (const adjacentProfile of [
+    "tasks-matrix-extra",
+    "native-harness-cleanup-extra",
+    "assembly-laravel-extra",
+  ]) {
+    await writeFile(path.join(root, "marker.txt"), "");
+    const adjacent = spawnSync(
+      process.execPath,
+      [
+        path.join(root, "scripts/verify-required-native-tests.mjs"),
+        adjacentProfile,
+      ],
+      { cwd: root, env, encoding: "utf8", timeout: 30000, maxBuffer: 1048576 },
+    );
+    assert.equal(adjacent.status, 1, adjacent.stderr);
+    const packet = JSON.parse(adjacent.stdout);
+    assert.equal(packet.complete, false);
+    assert.deepEqual(packet.problems, [
+      { name: "OriginalForeignPlatform", reason: "skipped-or-todo" },
+    ]);
+    assert.deepEqual(
+      (await readFile(path.join(root, "marker.txt"), "utf8"))
+        .trim()
+        .split("\n")
+        .sort(),
+      ["manifest", "matrix"],
+    );
+  }
 });
+
+test(
+  "isolated native namespace cleanup retries actual final-directory races and retains exhausted and failed evidence",
+  { timeout: 90000 },
+  async (t) => {
+    const helper = new URL(
+      "../../scripts/required-test-evidence.mjs",
+      import.meta.url,
+    ).href;
+    const root = await fixture(t, {
+      "case.mjs": `import{test}from'node:test';import assert from'node:assert/strict';import{writeFileSync}from'node:fs';import{tmpdir}from'node:os';test('native-scoped-cleanup',()=>{writeFileSync(process.env.ORIGINAL_CASE_MARKER,JSON.stringify({namespace:tmpdir()}));assert.equal(process.env.ORIGINAL_CASE_FAIL,'0','Original failure must survive namespace cleanup');});`,
+      "writer.mjs": `import fs from'node:fs';process.on('message',request=>{try{fs.writeFileSync(request.namespace+'/original-late-'+request.sequence,'Original late native write.');process.send({sequence:request.sequence,created:true});}catch(error){process.send({sequence:request.sequence,error:error.code});}});process.on('disconnect',()=>process.exit(0));process.send({ready:true,pid:process.pid});`,
+      "runner.mjs": `import fs from'node:fs';import{fork}from'node:child_process';import{once}from'node:events';import{fileURLToPath}from'node:url';
+const nativeRmdir=fs.rmdir;let active=null,sequence=0;const outcomes=[];
+const writer=fork(fileURLToPath(new URL('writer.mjs',import.meta.url)),[],{execArgv:[],stdio:['ignore','ignore','ignore','ipc']});const exited=once(writer,'exit');
+const ready=(await once(writer,'message'))[0];if(!ready.ready||ready.pid!==writer.pid)throw Error('Original native writer did not start');
+function create(namespace){return new Promise((resolve,reject)=>{const id=++sequence;const receive=message=>{if(message.sequence!==id)return;writer.off('message',receive);if(message.created)resolve();else reject(Error('Actual native write failed: '+message.error));};writer.on('message',receive);writer.send({namespace,sequence:id});});}
+fs.rmdir=function(directory,...rest){const state=active,path=Buffer.isBuffer(directory)?directory.toString():String(directory);let empty=false;try{empty=fs.readdirSync(path).length===0;}catch{}const race=state&&state.namespace===path&&empty&&(state.mode.startsWith('held')||state.injected===0);if(!race)return Reflect.apply(nativeRmdir,fs,[directory,...rest]);state.injected++;const callback=rest.pop();void create(path).then(()=>{Reflect.apply(nativeRmdir,fs,[directory,...rest,error=>{if(error)state.nativeCodes.push(error.code);callback(error);}]);},callback);};
+const{runRequiredTests}=await import(${JSON.stringify(helper)});
+try{for(const mode of ['released','held','failed','held-failed']){const marker=fileURLToPath(new URL(mode+'.json',import.meta.url));process.env.ORIGINAL_CASE_MARKER=marker;process.env.ORIGINAL_CASE_FAIL=mode.includes('failed')?'1':'0';const state={mode,namespace:null,armed:false,injected:0,nativeCodes:[]};active=state;const started=Date.now();let report,error;
+try{report=await runRequiredTests([{file:fileURLToPath(new URL('case.mjs',import.meta.url)),name:'native-scoped-cleanup'}],{timeoutMs:10000,isolatedCaseWorkers:1,onCaseProgress:event=>{if(event.phase==='terminal'){state.namespace=JSON.parse(fs.readFileSync(marker,'utf8')).namespace;process.kill(writer.pid,0);state.armed=true;}}});}catch(value){error={code:value.code,evidence:value.nativeTestEvidence};}
+finally{active=null;const namespace=state.namespace;let exists=false;if(namespace){try{exists=fs.statSync(namespace).isDirectory();}catch(value){if(value.code!=='ENOENT')throw value;}}outcomes.push({mode,report,error,armed:state.armed,injected:state.injected,nativeCodes:state.nativeCodes,exists,durationMs:Date.now()-started});if(namespace)await fs.promises.rm(namespace,{recursive:true,force:true});}}
+}finally{active=null;fs.rmdir=nativeRmdir;if(writer.connected)writer.disconnect();await exited;}console.log(JSON.stringify(outcomes));`,
+    });
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    delete env.NODE_OPTIONS;
+    const result = spawnSync(
+      process.execPath,
+      [path.join(root, "runner.mjs")],
+      { env, encoding: "utf8", timeout: 60000, maxBuffer: 2 * 1048576 },
+    );
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 0, result.stderr);
+    const cleanupDiagnostics = result.stderr.split("\n").flatMap((line) => {
+      try {
+        const value = JSON.parse(line);
+        return value.profile === "required-native-case-cleanup-failure"
+          ? [value]
+          : [];
+      } catch {
+        return [];
+      }
+    });
+    assert.equal(
+      cleanupDiagnostics.length,
+      2,
+      "Every exhausted namespace must emit its observed test evidence",
+    );
+    assert.deepEqual(
+      cleanupDiagnostics.map((value) => value.requiredFailedTerminalCount),
+      [0, 1],
+    );
+    assert.deepEqual(
+      cleanupDiagnostics.map((value) => value.observedPasses),
+      [1, 0],
+    );
+    assert.ok(
+      cleanupDiagnostics.every(
+        (value) =>
+          value.evidenceComplete === false &&
+          value.sourceStabilityAssessed === false,
+      ),
+    );
+    const rows = JSON.parse(result.stdout) as Array<{
+      mode: string;
+      report?: {
+        complete: boolean;
+        required: number;
+        passed: number;
+        ledger: { cases: Array<{ name: string; outcome: string }> };
+      };
+      error?: {
+        code: string;
+        evidence?: {
+          evidenceComplete: boolean;
+          observedPasses: number;
+          failedTerminalCount: number;
+          requiredFailedTerminalCount: number;
+          failures: Array<{ name: string; outcome: string; required: boolean }>;
+        };
+      };
+      armed: boolean;
+      injected: number;
+      nativeCodes: string[];
+      exists: boolean;
+      durationMs: number;
+    }>;
+    assert.deepEqual(
+      rows.map((row) => row.mode),
+      ["released", "held", "failed", "held-failed"],
+    );
+    for (const row of rows) {
+      assert.equal(
+        row.armed,
+        true,
+        "The real writer must be alive before actual namespace cleanup",
+      );
+      assert.ok(row.injected > 0);
+      assert.ok(
+        row.nativeCodes.length > 0,
+        "A real final rmdir must reject the newly created entry",
+      );
+      assert.ok(
+        row.nativeCodes.every((code) =>
+          ["ENOTEMPTY", "EPERM", "EBUSY"].includes(code),
+        ),
+      );
+      assert.ok(
+        row.durationMs < 15000,
+        "Namespace cleanup must retain a finite refusal boundary",
+      );
+      if (row.mode.startsWith("held")) {
+        assert.equal(
+          row.report,
+          undefined,
+          "Persistent native writes must not return passing acceptance",
+        );
+        assert.ok(row.error);
+        assert.ok(["ENOTEMPTY", "EPERM", "EBUSY"].includes(row.error!.code));
+        assert.equal(row.exists, true);
+        assert.ok(
+          row.error!.evidence,
+          "Exhausted cleanup must retain observed test evidence",
+        );
+        assert.equal(row.error!.evidence!.evidenceComplete, false);
+        assert.equal(
+          row.error!.evidence!.observedPasses,
+          row.mode === "held" ? 1 : 0,
+        );
+        assert.equal(
+          row.error!.evidence!.requiredFailedTerminalCount,
+          row.mode === "held" ? 0 : 1,
+        );
+        if (row.mode === "held-failed")
+          assert.deepEqual(
+            row
+              .error!.evidence!.failures.filter((item) => item.required)
+              .map((item) => [item.name, item.outcome]),
+            [["native-scoped-cleanup", "failed"]],
+          );
+      } else {
+        assert.equal(row.error, undefined, JSON.stringify(row));
+        assert.equal(row.exists, false);
+        assert.equal(row.report!.required, 1);
+        assert.equal(row.report!.passed, row.mode === "released" ? 1 : 0);
+        assert.equal(row.report!.complete, row.mode === "released");
+        assert.deepEqual(
+          row.report!.ledger.cases.map((item) => [item.name, item.outcome]),
+          [
+            [
+              "native-scoped-cleanup",
+              row.mode === "released" ? "passed" : "failed",
+            ],
+          ],
+        );
+      }
+    }
+  },
+);
