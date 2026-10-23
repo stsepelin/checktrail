@@ -166,3 +166,75 @@ test("finite inventory keeps pending freeze decisions and declared receipts sepa
   assert.equal(claimed.code, 2);
   assert.match(claimed.stderr, /cannot assert acceptance or quality/);
 });
+
+test("finite inventory reports shared-manifest visibility without treating alternate controllers as missing native acceptance", async (t) => {
+  const root = await source(t);
+  const first = await audit(root);
+  assert.equal(first.code, 0, first.stderr);
+  const baseline = JSON.parse(first.stdout);
+  const before = baseline.selectedCaseBindings;
+  assert.equal(
+    before.plannedCases,
+    before.casesInSharedManifest + before.casesOutsideSharedManifest,
+  );
+  assert.equal(before.alternateControllersAssessed, false);
+  assert.equal(before.nativeExecutionAssessed, false);
+  assert.equal(
+    before.outsideSharedManifest.some(
+      (row: { profile: string }) => row.profile === "tasks-matrix",
+    ),
+    false,
+  );
+  assert.equal(
+    baseline.implementationDeclarations.implemented +
+      baseline.implementationDeclarations.pending,
+    baseline.selectedExtensionProfiles,
+  );
+  await alter<RequiredNative>(root, files[2]!, (rows) => {
+    delete rows["tasks-matrix"];
+  });
+  const removed = await audit(root);
+  assert.equal(removed.code, 0, removed.stderr);
+  const after = JSON.parse(removed.stdout);
+  assert.equal(after.selectedCaseBindings.plannedCases, before.plannedCases);
+  assert.equal(
+    after.selectedCaseBindings.casesInSharedManifest,
+    before.casesInSharedManifest - 9,
+  );
+  assert.equal(
+    after.selectedCaseBindings.casesOutsideSharedManifest,
+    before.casesOutsideSharedManifest + 9,
+  );
+  assert.deepEqual(
+    after.selectedCaseBindings.outsideSharedManifest.find(
+      (row: { profile: string }) => row.profile === "tasks-matrix",
+    ),
+    {
+      profile: "tasks-matrix",
+      plannedCases: 9,
+      casesInSharedManifest: 0,
+      casesOutsideSharedManifest: 9,
+    },
+  );
+  assert.equal(after.implementationAcceptanceAssessed, false);
+  assert.equal(after.gateAComplete, false);
+  await alter<RequiredNative>(root, files[2]!, (rows) => {
+    rows["original-empty-aggregate"] = [];
+  });
+  assert.equal((await audit(root)).code, 0);
+  for (const value of [
+    null,
+    [{ file: "../outside.test.js", name: "OriginalForeignAddress" }],
+    [{ file: "dist/test/foreign.test.js", name: null }],
+  ]) {
+    const raw = JSON.parse(await readFile(path.join(root, files[2]!), "utf8"));
+    raw["original-empty-aggregate"] = value;
+    await writeFile(path.join(root, files[2]!), JSON.stringify(raw));
+    const invalid = await audit(root);
+    assert.equal(invalid.code, 2);
+    assert.match(
+      invalid.stderr,
+      /Required native manifests must contain arrays|Invalid required native case/,
+    );
+  }
+});

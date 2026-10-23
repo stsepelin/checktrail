@@ -342,11 +342,12 @@ test(
     assert.equal(receipt.evidence.profileEvidence.complete, true);
     assert.equal(
       receipt.evidence.profileEvidence.required,
-      process.platform === "win32" ? 28 : 25,
+      process.platform === "win32" ? 29 : 26,
     );
     for (const control of [
       "Tasks fixture teardown closes every live SQLite server before removing its directories",
       "Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits",
+      "Tasks runtime selection binds every frozen acceptance case and preserves the complete platform control family",
     ]) {
       assert.deepEqual(
         receipt.evidence.profileEvidence.ledger.cases
