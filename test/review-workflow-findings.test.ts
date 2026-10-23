@@ -1,201 +1,35 @@
+import {
+  reviewWorkflowAllSummarySchema,
+  reviewWorkflowAssignmentSchema,
+} from "../src/review-workflow-schema.js";
+import {
+  complete,
+  options,
+  auditFile,
+  channel,
+  declarationsFor,
+} from "./review-workflow-findings-fixture.js";
 import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
-import { writeFile, readFile, mkdtemp, chmod, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { spawn } from "node:child_process";
-import { createInterface } from "node:readline";
-import { fileURLToPath } from "node:url";
-import { Client } from "@modelcontextprotocol/client";
-import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
+import { writeFile, readFile } from "node:fs/promises";
 import { ReviewWorkflowSession } from "../src/review-workflow-session.js";
 import { parseReviewWorkflowAuditArtifact } from "../src/review-workflow-audit.js";
 import { replayReviewFindings } from "../src/review-findings.js";
 import path from "node:path";
-import { test, type TestContext } from "node:test";
+import { test } from "node:test";
 import { ReviewWorkflowEngine } from "../src/review-workflow.js";
 import {
   projectReviewFindings,
   reviewFindingsSummarySchema,
 } from "../src/review-findings.js";
 import {
-  reviewWorkflowAssignmentSchema,
-  reviewWorkflowAllSummarySchema,
-} from "../src/review-workflow-schema.js";
-import {
-  type ReviewWorkflowFindingsDeclarations,
   reviewWorkflowFindingsResultSchema,
   projectWorkflowFindings,
 } from "../src/review-workflow-findings.js";
-import {
-  setup,
-  pin,
-  recipe,
-  response,
-  source,
-} from "./review-workflow-fixture.js";
-const options = {
-  allowReviewSource: true,
-  candidateScope: "all" as const,
-  trusted: true,
-  probes: [pin()],
-};
+import { setup, source, response } from "./review-workflow-fixture.js";
 const hash = (value: unknown) =>
   createHash("sha256").update(JSON.stringify(value)).digest("hex");
-type Call = (command: unknown) => Promise<unknown>;
-async function complete(
-  t: TestContext,
-  content = source,
-  empty = false,
-  channel?: (root: string) => Promise<Call>,
-  retry = false,
-) {
-  const d = await setup(t, content);
-  const engine = new ReviewWorkflowEngine(d.root, options);
-  t.after(() => engine.dispose());
-  const call: Call = channel
-    ? await channel(d.root)
-    : (command) => engine.command(command);
-  const opened = reviewWorkflowAllSummarySchema.parse(
-    await call({ operation: "open", context: ".checktrail/context.json" }),
-  );
-  async function next(target?: string) {
-    return reviewWorkflowAssignmentSchema.parse(
-      await call({
-        operation: "next",
-        workflowId: opened.workflowId,
-        ...(target ? { target } : {}),
-      }),
-    );
-  }
-  async function rejected(target?: string) {
-    const unavailable = response(await next(target));
-    unavailable.status = "unavailable";
-    unavailable.output = null;
-    unavailable.usage = {
-      inputTokens: 17,
-      outputTokens: 0,
-      elapsedMs: 9,
-      costUSD: null,
-    };
-    await call({
-      operation: "submit",
-      workflowId: opened.workflowId,
-      response: unavailable,
-    });
-  }
-  if (retry) await rejected();
-  const reviewer = response(
-    await next(),
-    empty
-      ? []
-      : [
-          d.target,
-          {
-            ...d.target,
-            id: "OriginalSiblingClaim",
-            claim: "A separately declared symptom of the synthetic boundary.",
-          },
-        ],
-  );
-  const state = reviewWorkflowAllSummarySchema.parse(
-    await call({
-      operation: "submit",
-      workflowId: opened.workflowId,
-      response: reviewer,
-    }),
-  );
-  const hosts: Array<{
-    target: string;
-    refuter: typeof reviewer.host;
-    adjudicator: typeof reviewer.host;
-  }> = [];
-  // Deliberately process the second handle first. Retained completion order is not reviewer order.
-  for (const target of [...state.candidateHandles].reverse()) {
-    if (retry) await rejected(target);
-    const refuter = response(await next(target));
-    await call({
-      operation: "submit",
-      workflowId: state.workflowId,
-      response: refuter,
-    });
-    await call({
-      operation: "probe",
-      workflowId: state.workflowId,
-      probeId: recipe.id,
-    });
-    if (retry) await rejected();
-    const adjudicator = response(await next());
-    await call({
-      operation: "submit",
-      workflowId: state.workflowId,
-      response: adjudicator,
-    });
-    hosts.push({
-      target,
-      refuter: refuter.host,
-      adjudicator: adjudicator.host,
-    });
-  }
-  if (!("analysis" in d.context)) throw Error("Captured functions required");
-  const fn = d.context.analysis.functions.find(
-    (f) => f.name === "decision" && f.revision === "current",
-  )!;
-  const declarations: ReviewWorkflowFindingsDeclarations = {
-    decisions: state.candidateHandles.map((target) => ({
-      target,
-      refutationRationale:
-        "A declared independent counterexample search; host isolation is unverified.",
-      adjudicationRationale:
-        "A declared reading of the original synthetic source and observed predicate.",
-      judgment: {
-        disposition: "supported",
-        citationIndex: 0,
-        functionId: fn.id,
-        mechanism:
-          "The identifier prefix includes a synthetic sibling identifier.",
-        reachableCallers:
-          "The synthetic exported function is the declared caller boundary.",
-        defaultsChecked: "This original function has no inherited defaults.",
-        consequence: {
-          category: "wrong-result",
-          extent: "single",
-          access: "unprivileged",
-          recovery: "reversible",
-          statement:
-            "The synthetic caller receives a different Boolean from its pinned expectation.",
-        },
-        repair: {
-          citationIndex: 0,
-          functionId: fn.id,
-          requiredParameters: ["name"],
-          scope: "this-change",
-          text: "Compare the complete parameter name.",
-        },
-      },
-    })),
-    commonDefects: empty
-      ? []
-      : [
-          {
-            id: "OriginalCommonBoundary",
-            rootFunctionId: fn.id,
-            targets: state.candidateHandles,
-            rationale:
-              "Explicit shared-root declaration, not semantic duplicate detection.",
-          },
-        ],
-  };
-  return {
-    ...d,
-    engine,
-    call,
-    id: state.workflowId,
-    state,
-    declarations,
-    hosts,
-    reviewer,
-  };
-}
+
 test("workflow findings bind reversed target completion to original candidates native receipts and accepted host sessions", async (t) => {
   const d = await complete(t);
   const report = await d.engine.inspectFindings(
@@ -326,7 +160,7 @@ test("workflow findings reject foreign duplicate and caller supplied identity or
   const report = await d.engine.inspectFindings(d.id, valid);
   assert.equal(report.candidates["declared-supported"], 2);
 });
-test("workflow findings require completed all candidate evidence and protected startup source disclosure", async (t) => {
+test("workflow findings require accepted all candidate reviewer evidence and protected startup source disclosure", async (t) => {
   const d = await setup(t);
   for (const extra of [
     {},
@@ -338,7 +172,7 @@ test("workflow findings require completed all candidate evidence and protected s
       const state = await engine.open(d.context);
       await assert.rejects(
         engine.inspectFindings(state.workflowId, "{}"),
-        /Completed disclosed all-candidate/,
+        /Quiescent disclosed all-candidate/,
       );
     } finally {
       engine.dispose();
@@ -348,7 +182,7 @@ test("workflow findings require completed all candidate evidence and protected s
   done.engine.close(done.id);
   await assert.rejects(
     done.engine.inspectFindings(done.id, JSON.stringify(done.declarations)),
-    /Completed disclosed all-candidate/,
+    /Quiescent disclosed all-candidate/,
   );
 });
 test("workflow findings recheck final current source and preserve stale candidates", async (t) => {
@@ -426,7 +260,7 @@ test("workflow findings honour cancellation and close during asynchronous inspec
   );
   await assert.rejects(
     d.engine.inspectFindings(d.id, JSON.stringify(d.declarations)),
-    /Completed disclosed/,
+    /Quiescent disclosed/,
   );
   d.engine.close(d.id);
   await assert.rejects(pending, /cancelled|abort/i);
@@ -444,14 +278,6 @@ test("workflow findings preserve empty reviewer abstention without approving the
   assert.equal(report.claimsVerified, false);
 });
 
-async function auditFile(t: TestContext) {
-  const directory = await mkdtemp(
-    path.join(tmpdir(), "checktrail-original-findings-audit-"),
-  );
-  await chmod(directory, 0o700);
-  t.after(() => rm(directory, { recursive: true, force: true }));
-  return path.join(directory, "epoch.jsonl");
-}
 function rechain(
   events: ReturnType<typeof parseReviewWorkflowAuditArtifact>["events"],
 ) {
@@ -726,7 +552,7 @@ test(
             workflowId: state.workflowId,
             declarations: d.declarations,
           }),
-          /Completed disclosed/,
+          /Quiescent disclosed/,
         );
         assert.equal(
           (
@@ -750,105 +576,6 @@ test(
     }
   },
 );
-async function channel(mode: "cli" | "mcp", root: string, file: string) {
-  const pinned = pin();
-  const probeFile = path.join(root, ".checktrail/probe.json");
-  await writeFile(probeFile, pinned.contents);
-  const cli = fileURLToPath(new URL("../src/cli.js", import.meta.url));
-  const flags = [
-    "--root",
-    root,
-    "--detailed",
-    "--allow-review-source",
-    "--workflow-candidates",
-    "all",
-    "--workflow-audit",
-    file,
-    "--probe",
-    probeFile + "#sha256=" + pinned.sha256,
-  ];
-  if (mode === "mcp") {
-    const client = new Client(
-      { name: "original-workflow-findings-host", version: "fixture-1" },
-      { versionNegotiation: { mode: { pin: "2026-07-28" } } },
-    );
-    try {
-      await client.connect(
-        new StdioClientTransport({
-          command: process.execPath,
-          args: [cli, "serve", ...flags, "--allow-execution"],
-          stderr: "pipe",
-        }),
-      );
-    } catch (error) {
-      await client.close();
-      throw error;
-    }
-    return {
-      call: async (command: unknown) => {
-        const result = await client.callTool({
-          name: "review_workflow",
-          arguments: command as Record<string, unknown>,
-        });
-        assert.notEqual(result.isError, true, JSON.stringify(result));
-        return result.structuredContent;
-      },
-      finish: async () => client.close(),
-      close: async () => client.close(),
-    };
-  }
-  const child = spawn(process.execPath, [
-    cli,
-    "review-session",
-    ...flags,
-    "--trust-project",
-  ]);
-  const reader = createInterface({ input: child.stdout });
-  const iterator = reader[Symbol.asyncIterator]();
-  let stderr = "";
-  child.stderr.on("data", (v: Buffer) => {
-    stderr += v.toString();
-  });
-  const exited = new Promise<number | null>((resolve, reject) => {
-    child.once("error", reject);
-    child.once("close", resolve);
-  });
-  const read = async () => {
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    try {
-      const line = await Promise.race([
-        iterator.next(),
-        new Promise<never>((_, reject) => {
-          timer = setTimeout(
-            () => reject(Error("Original findings CLI deadline")),
-            15000,
-          );
-        }),
-      ]);
-      assert.equal(line.done, false, stderr);
-      return JSON.parse(line.value!);
-    } finally {
-      clearTimeout(timer);
-    }
-  };
-  return {
-    call: async (command: unknown) => {
-      child.stdin.write(JSON.stringify(command) + "\n");
-      return read();
-    },
-    finish: async () => {
-      child.stdin.end();
-      assert.equal((await read()).format, "review-workflow-summary");
-      assert.equal(await exited, 0, stderr);
-    },
-    close: async () => {
-      if (child.exitCode === null && child.signalCode === null)
-        child.kill("SIGTERM");
-      await exited;
-      reader.close();
-    },
-  };
-}
 test(
   "workflow findings CLI and MCP retain complete audited evidence while returning bounded candidate details",
   {
@@ -900,3 +627,158 @@ test(
     }
   },
 );
+
+test("workflow findings preserve unfinished candidates and reached native evidence between accepted stages", async (t) => {
+  let observed = 0;
+  const d = await complete(
+    t,
+    source,
+    false,
+    undefined,
+    false,
+    async (stage, b) => {
+      const declarations = declarationsFor(b.context, b.state.candidateHandles);
+      declarations.decisions = declarations.decisions.filter((d) =>
+        b.state.completedTargets.includes(d.target),
+      );
+      const report = reviewWorkflowFindingsResultSchema.parse(
+        await b.call({ operation: "findings", workflowId: b.id, declarations }),
+      );
+      assert.equal(report.candidates.selected, 2);
+      assert.equal(
+        report.candidates["declared-supported"],
+        b.state.completedTargets.length,
+      );
+      assert.equal(
+        report.candidates.unresolved,
+        2 - b.state.completedTargets.length,
+      );
+      assert.equal(
+        report.groups[0]!.state,
+        b.state.completedTargets.length === 2
+          ? "declared-common-defect"
+          : "unresolved",
+      );
+      assert.deepEqual(
+        await b.call({ operation: "status", workflowId: b.id }),
+        b.state,
+      );
+      if (stage === "native") {
+        const forged = declarationsFor(b.context, b.state.candidateHandles);
+        await assert.rejects(
+          b.call({
+            operation: "findings",
+            workflowId: b.id,
+            declarations: forged,
+          }),
+          /Unknown workflow findings target/,
+        );
+      }
+      observed++;
+    },
+  );
+  assert.equal(observed, 5);
+  assert.equal(
+    reviewWorkflowAllSummarySchema.parse(d.engine.status(d.id)).completedTargets
+      .length,
+    2,
+  );
+});
+test(
+  "workflow findings audit binds unfinished reached native receipts before adjudication",
+  {
+    skip:
+      process.platform === "win32"
+        ? "Private workflow audit profile is POSIX-only"
+        : false,
+  },
+  async (t) => {
+    const file = await auditFile(t);
+    let session: ReviewWorkflowSession | undefined;
+    try {
+      await complete(
+        t,
+        source,
+        false,
+        async (root) => {
+          session = new ReviewWorkflowSession(root, {
+            ...options,
+            audit: { file },
+          });
+          return (command) => session!.command(command);
+        },
+        false,
+        async (_stage, b) => {
+          const declarations = declarationsFor(
+            b.context,
+            b.state.candidateHandles,
+          );
+          declarations.decisions = declarations.decisions.filter((d) =>
+            b.state.completedTargets.includes(d.target),
+          );
+          await b.call({
+            operation: "findings",
+            workflowId: b.id,
+            declarations,
+          });
+        },
+      );
+    } finally {
+      session?.dispose();
+    }
+    const parsed = parseReviewWorkflowAuditArtifact(await readFile(file));
+    const receipts = parsed.events.flatMap((e) =>
+      e.body.kind === "finish" &&
+      "findingsReceipt" in e.body &&
+      e.body.findingsReceipt
+        ? [
+            e.body.findingsReceipt as {
+              input: { provenance: { native: unknown[] } };
+            },
+          ]
+        : [],
+    );
+    assert.deepEqual(
+      receipts.map((r) => r.input.provenance.native.length),
+      [0, 1, 1, 2, 2],
+    );
+    assert.equal(parsed.summary.nativeReceipts.retained, 2);
+    assert.equal(parsed.summary.journalStatus, "sealed");
+  },
+);
+
+test("workflow findings refuse awaiting host stages without consuming the outstanding assignment", async (t) => {
+  const d = await setup(t);
+  const engine = new ReviewWorkflowEngine(d.root, options);
+  try {
+    const id = (await engine.open(d.context)).workflowId;
+    const reviewed = await engine.submit(
+      id,
+      response(reviewWorkflowAssignmentSchema.parse(await engine.next(id)), [
+        d.target,
+      ]),
+    );
+    const assignment = reviewWorkflowAssignmentSchema.parse(
+      await engine.next(id, reviewed.candidateHandles[0]),
+    );
+    const before = engine.status(id);
+    await assert.rejects(
+      engine.inspectFindings(
+        id,
+        JSON.stringify({ decisions: [], commonDefects: [] }),
+      ),
+      /Quiescent disclosed/,
+    );
+    assert.deepEqual(engine.status(id), before);
+    const accepted = await engine.submit(id, response(assignment));
+    assert.equal(accepted.nextStage, "probe");
+    const report = await engine.inspectFindings(
+      id,
+      JSON.stringify({ decisions: [], commonDefects: [] }),
+    );
+    assert.equal(report.candidates.unresolved, 1);
+    assert.equal(engine.status(id).assignments.length, 2);
+  } finally {
+    engine.dispose();
+  }
+});

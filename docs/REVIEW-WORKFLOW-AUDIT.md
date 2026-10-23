@@ -93,7 +93,7 @@ Read each workflow's disposition and `completedTargets` as well. The selected-ta
 default and legacy journal formats remain readable.
 
 All-candidate writers now use journal version 3. In addition to the version 2
-native receipts, a completed `findings` command retains its complete source-bound
+native receipts, a returned `findings` command retains its complete source-bound
 inspection receipt before the compact candidate result is released. Inspection
 rebuilds the retained input from the original reviewer output, accepted stage
 host/usage declarations, exact target/native bindings and command declarations.
@@ -201,3 +201,8 @@ and status for reached attempts inside the existing private native receipt. The
 journal's existing byte limits still apply: an artifact that cannot fit cannot
 be reported as completely retained. Summaries and independent worker packets
 omit these raw artifacts. See [NATIVE-RAW-EVIDENCE.md](NATIVE-RAW-EVIDENCE.md).
+
+Findings inspection may occur between accepted stages. Version 3 replay binds
+completed targets and each reached native receipt awaiting adjudication; missing
+judgments leave unfinished candidates unresolved. Inspection does not complete a
+workflow or alter its attempt counters.

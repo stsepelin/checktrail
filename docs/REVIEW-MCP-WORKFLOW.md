@@ -92,7 +92,7 @@ ends as `no-candidates-declared`, without approving the repository. A full stage
 exchange ends as `advisory-stages-completed`. Native outcomes do not change the
 deterministic validation result.
 
-After an all-candidate exchange completes, `findings` connects its retained
+Between stages after an all-candidate reviewer response is accepted, `findings` connects its retained
 context, accepted host declarations and native receipts to the
 [source-bound findings inspector](REVIEW-FINDINGS.md). Missing judgments remain
 unresolved; supported/refuted dispositions, consequences and common causes remain

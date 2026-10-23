@@ -383,11 +383,13 @@ export class ReviewWorkflowEngine {
       !this.#options.allowReviewSource ||
       workflow.busy ||
       workflow.report.schemaVersion !== 2 ||
-      workflow.report.status !== "completed" ||
+      !["ready", "completed"].includes(workflow.report.status) ||
       !workflow.context ||
       !workflow.outputs.reviewer
     )
-      throw Error("Completed disclosed all-candidate workflow required");
+      throw Error(
+        "Quiescent disclosed all-candidate reviewer evidence required",
+      );
     workflow.busy = true;
     try {
       const accepted = workflow.report.assignments.filter(
@@ -398,9 +400,16 @@ export class ReviewWorkflowEngine {
         reviewer?.stage !== "reviewer" ||
         !reviewer.host ||
         !reviewer.usage ||
-        accepted.length !== 1 + 2 * workflow.completed.length ||
+        accepted.length !==
+          1 +
+            2 * workflow.completed.length +
+            Number(
+              ["probe", "adjudicator"].includes(workflow.report.nextStage),
+            ) ||
+        (["probe", "adjudicator"].includes(workflow.report.nextStage) &&
+          accepted.at(-1)?.stage !== "refuter") ||
         workflow.completed.length !== workflow.report.completedTargets.length ||
-        workflow.completed.length !== workflow.targets.size
+        workflow.completed.length > workflow.targets.size
       )
         throw Error("Workflow findings evidence is incomplete");
       const cycles = workflow.completed.map((cycle, i) => {
@@ -436,6 +445,20 @@ export class ReviewWorkflowEngine {
             usage: reviewer.usage,
           },
           cycles,
+          pending: [...workflow.targets].flatMap(([target, candidate]) =>
+            cycles.some((c) => c.target === target)
+              ? []
+              : [
+                  {
+                    target,
+                    candidate,
+                    run:
+                      workflow.report.selectedTarget === target
+                        ? (workflow.probe ?? null)
+                        : null,
+                  },
+                ],
+          ),
         },
         serialized,
       );

@@ -5168,7 +5168,7 @@
     },
     {
       "file": "dist/test/review-workflow-findings.test.js",
-      "name": "workflow findings require completed all candidate evidence and protected startup source disclosure"
+      "name": "workflow findings require accepted all candidate reviewer evidence and protected startup source disclosure"
     },
     {
       "file": "dist/test/review-workflow-findings.test.js",
@@ -5213,6 +5213,56 @@
     {
       "file": "dist/test/review-workflow-findings.test.js",
       "name": "workflow findings CLI and MCP retain complete audited evidence while returning bounded candidate details"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings preserve unfinished candidates and reached native evidence between accepted stages"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings audit binds unfinished reached native receipts before adjudication"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings refuse awaiting host stages without consuming the outstanding assignment"
+    }
+  ],
+  "multi-candidate-workflow": [
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow installed acceptance"
     }
   ]
 }

@@ -401,7 +401,7 @@ names. Explicit host judgments, consequence priorities and common-cause groups
 remain unverified advisory data. Strict summary projection withholds retained
 source and judgment text; it cannot grant project execution or source disclosure.
 
-Completed all-candidate workflows can inspect declared findings through the shared
+Quiescent all-candidate workflows with accepted reviewer evidence can inspect declared findings through the shared
 library, JSON-lines CLI and MCP command. Retained source, accepted response
 identities and native receipts supply the evidence bindings; callers supply only
 judgment/common-cause declarations. The compact detailed result omits captured
@@ -411,3 +411,7 @@ replays both evidence bindings and captured-string parameter derivations. No
 inspection invokes a model, executes more project code or authenticates host
 independence, claim truth or severity. Existing selected-target benchmark journals
 remain version 2; wider runtime acceptance and Gate A remain open.
+
+Unfinished targets retain unresolved outcomes during between-stage inspection.
+Reached native receipts awaiting adjudication remain bound; cancellation and
+closure still scrub source and prevent further inspection.

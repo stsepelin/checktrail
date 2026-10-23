@@ -61,6 +61,7 @@ assert.ok(
     "kustomize-extensions",
     "confidence-provenance",
     "finding-resolution",
+    "multi-candidate-workflow",
     "dotnet-fsharp-format",
     "dotnet-format-extensions",
     "dotnet-generator-extensions",
@@ -154,6 +155,8 @@ if (profile === "swift-extensions")
   process.env.CHECKTRAIL_SWIFT_EXTENSIONS_INSTALLED = "1";
 if (profile === "ruby-extensions")
   process.env.CHECKTRAIL_RUBY_EXTENSIONS_INSTALLED = "1";
+if (profile === "multi-candidate-workflow")
+  process.env.CHECKTRAIL_MULTI_WORKFLOW_INSTALLED = "1";
 if (profile === "finding-resolution")
   process.env.CHECKTRAIL_FINDINGS_INSTALLED = "1";
 if (profile === "confidence-provenance")
@@ -266,6 +269,8 @@ try {
     "confidence-provenance-fixture.js",
     "review-findings.test.js",
     "review-workflow-findings.test.js",
+    "review-workflow-findings-fixture.js",
+    "gate-multi-candidate-workflow.test.js",
     "review-findings-fixture.js",
     "native-process-observer.js",
     "spotbugs-extensions-fixture.js",

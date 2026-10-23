@@ -1093,10 +1093,10 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
           if (
             !state ||
             state.schemaVersion !== 2 ||
-            state.status !== "completed" ||
+            !["ready", "completed"].includes(state.status) ||
             !isDeepStrictEqual(state, before) ||
             state.contextDigest !== receipt.contextDigest ||
-            state.completedTargets.length !== state.candidateHandles.length ||
+            state.completedTargets.length > state.candidateHandles.length ||
             body.nativeReceipt !== null
           )
             throw Error("Audit findings workflow binding disagrees");
@@ -1110,7 +1110,12 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
           if (
             !reviewer?.output ||
             reviewerAttempt?.stage !== "reviewer" ||
-            accepted.length !== 1 + 2 * state.completedTargets.length ||
+            accepted.length !==
+              1 +
+                2 * state.completedTargets.length +
+                Number(["probe", "adjudicator"].includes(state.nextStage)) ||
+            (["probe", "adjudicator"].includes(state.nextStage) &&
+              accepted.at(-1)?.stage !== "refuter") ||
             reviewer.output.candidates.length !== state.candidateHandles.length
           )
             throw Error("Audit findings accepted stages are incomplete");
@@ -1149,6 +1154,28 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
               adjudicator: adjudicator.host,
             };
           });
+          const pendingTargets = state.candidateHandles.flatMap((target, i) => {
+            if (state.completedTargets.includes(target)) return [];
+            const candidate = reviewer.output!.candidates[i]!;
+            const native =
+              nativeReceipts
+                .get(state.workflowId)
+                ?.filter((n) => n.targetHandle === target) ?? [];
+            if (
+              native.length !==
+                Number(
+                  state.selectedTarget === target &&
+                    state.nextStage === "adjudicator",
+                ) ||
+              (native.length === 1 &&
+                (state.selectedTarget !== target ||
+                  state.nextStage !== "adjudicator" ||
+                  accepted.at(-1)?.stage !== "refuter" ||
+                  !isDeepStrictEqual(candidate, native[0]!.candidate)))
+            )
+              throw Error("Audit findings unfinished native binding disagrees");
+            return [{ target, candidate, run: native[0]?.run ?? null }];
+          });
           const expected = workflowFindingsInput(
             {
               context: receipt.input.provenance.context,
@@ -1158,6 +1185,7 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
                 usage: reviewer.usage,
               },
               cycles,
+              pending: pendingTargets,
             },
             JSON.stringify(findingCommand.declarations),
           );

@@ -44,7 +44,7 @@ const hash = (value: unknown) =>
   createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const session = (host: Host) =>
   hash([host.provider, host.client, host.sessionId]);
-/** Internal adapter for an engine-owned completed snapshot; never accepts imported workflow receipts. */
+/** Internal adapter for an engine-owned quiescent snapshot; never accepts imported workflow receipts. */
 export function workflowFindingsInput(
   evidence: {
     context: ReviewContext;
@@ -53,6 +53,11 @@ export function workflowFindingsInput(
       host: Host;
       usage: ReviewWorkflowResponse["usage"];
     };
+    pending?: Array<{
+      target: string;
+      candidate: ReviewCandidate;
+      run: ReviewProbeRun | null;
+    }>;
     cycles: Array<{
       target: string;
       candidate: ReviewCandidate;
@@ -69,6 +74,10 @@ export function workflowFindingsInput(
     JSON.parse(serialized),
   );
   const cycles = new Map(evidence.cycles.map((c) => [c.target, c]));
+  const targets = new Map([
+    ...evidence.cycles.map((c) => [c.target, c] as const),
+    ...(evidence.pending ?? []).map((c) => [c.target, c] as const),
+  ]);
   const decisions = declarations.decisions.map((d) => {
     const cycle = cycles.get(d.target);
     if (!cycle) throw Error("Unknown workflow findings target");
@@ -97,7 +106,7 @@ export function workflowFindingsInput(
     id: g.id,
     rootFunctionId: g.rootFunctionId,
     candidateIds: g.targets.map((target) => {
-      const cycle = cycles.get(target);
+      const cycle = targets.get(target);
       if (!cycle) throw Error("Unknown common-defect workflow target");
       return cycle.candidate.id;
     }),
@@ -134,10 +143,15 @@ export function workflowFindingsInput(
         ),
       },
       candidates: reviewer.output.candidates,
-      native: evidence.cycles.map((c) => ({
-        candidateId: c.candidate.id,
-        run: c.run,
-      })),
+      native: [
+        ...evidence.cycles.map((c) => ({
+          candidateId: c.candidate.id,
+          run: c.run,
+        })),
+        ...(evidence.pending ?? []).flatMap((c) =>
+          c.run ? [{ candidateId: c.candidate.id, run: c.run }] : [],
+        ),
+      ],
       scoring: null,
     },
     reviewerSessionId: session(reviewer.host),

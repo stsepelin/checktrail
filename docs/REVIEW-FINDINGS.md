@@ -108,7 +108,7 @@ review or real-project field evaluation is invoked by this feature.
 ## Retained workflow connection
 
 The library method `ReviewWorkflowEngine.inspectFindings(workflowId, serializedDeclarations, signal?)`
-connects a completed all-candidate workflow to this inspector. Startup source
+connects a quiescent all-candidate workflow with an accepted reviewer response to this inspector. Startup source
 disclosure must be enabled. The declaration object contains `decisions` with an
 issued `target` handle, `refutationRationale`, `adjudicationRationale` and the
 existing `judgment` shape, plus `commonDefects` with `id`, `rootFunctionId`,
@@ -132,7 +132,12 @@ full source-containing findings report; `projectReviewFindings` supplies its
 restricted summary. Reports are returned to the caller, not retained by the
 workflow. The JSON-lines CLI and `review_workflow` MCP tool also accept
 `{operation: "findings", workflowId, declarations}`. They require the same
-protected startup source disclosure and completed all-candidate workflow.
+protected startup source disclosure and accepted all-candidate reviewer evidence.
+Inspection is available in `ready` and `completed` states, between host/native
+operations. Only targets with accepted refutation and adjudication may receive
+judgment declarations; unfinished targets remain unresolved. Reached native
+receipts awaiting adjudication are retained in the inspection input. Common-root
+mappings may include unfinished targets but cannot reconcile them as supported.
 The response contains candidate outcomes, gaps, parameter observations, common
 mapping results and unverified-provenance flags, without another copy of captured
 source, stage prose, session identities or native output. Candidate identities and
@@ -147,6 +152,11 @@ captured source strings. Historical replay does not recheck the filesystem or
 authenticate execution, host independence or the recorded inspection timestamp.
 Selected-target writers retain version 2; legacy version 1/2 journals remain
 readable. Inspection is not available after workflow artifacts have been scrubbed;
-interrupted workflows retain their existing incomplete stage/attempt accounting.
+interrupted workflows retain their existing incomplete stage/attempt accounting
+and clear source. Inspection neither resumes a closed workflow nor retains source
+after cancellation. The nine frozen whole-profile cases additionally exercise
+paired native predicates, incomplete stages, privacy, reached child cleanup and
+fresh offline installation. They do not verify host judgments or qualify the
+full runtime matrix.
 Wider native/runtime acceptance and Gate A remain open. No actual model review
 or held-out source is used by the original synthetic controls.
