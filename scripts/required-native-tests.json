@@ -2589,6 +2589,14 @@
     {
       "file": "dist/test/windows-resource.test.js",
       "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace establishes private access before fixed source or command data and removes its owned namespace"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace refuses private-access failure before every data write or process launch"
     }
   ],
   "windows-process": [
@@ -2655,6 +2663,18 @@
     {
       "file": "dist/test/windows-resource-native.test.js",
       "name": "native Windows source integrity refuses changed fixed compiler bytes before project execution"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace establishes private access before fixed source or command data and removes its owned namespace"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace refuses private-access failure before every data write or process launch"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows bootstrap protects a new workspace under a broadly readable temp parent before writing source or request data"
     }
   ],
   "physical-process-output": [

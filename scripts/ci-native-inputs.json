@@ -1123,6 +1123,7 @@
   "scripts/verify-windows-guards.mjs": ["windows"],
   "scripts/verify-windows-package.mjs": ["windows"],
   "scripts/verify-windows-resource-guards.mjs": ["windows"],
+  "scripts/verify-windows-workspace-guard.mjs": ["windows"],
   "scripts/verify-yaml-context-container.mjs": ["yaml-context-arm64"],
   "scripts/verify-yaml-context-guards.mjs": ["yaml-context-arm64"],
   "scripts/vue-router-tools/package-lock.json": [
@@ -2347,5 +2348,10 @@
     "tasks-runtime-arm64",
     "windows"
   ],
-  "test/windows-task-access.test.ts": ["tasks-runtime", "tasks-runtime-arm64"]
+  "test/windows-task-access.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/windows-workspace.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ]
 }

@@ -105,3 +105,5 @@ source and installed callback, and its compiling mutation, require native CI.
 
 The selected Node launcher owns a process-wide libuv job; see the pinned
 [Node 22.23.2 Windows process implementation](https://github.com/nodejs/node/blob/v22.23.2/deps/uv/src/win/process.c#L62).
+
+New runner namespaces receive the existing caller-only Windows ACL before source, ownership or request data is written. An access refusal stops before writes or process launch; an existing temp parent is not repaired. Portable ordering/refusal controls and a native broadly-readable-parent control are prepared; native qualification of this addition remains pending.

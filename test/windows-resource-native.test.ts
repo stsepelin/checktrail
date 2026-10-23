@@ -127,3 +127,105 @@ test(
     assert.equal(result.status, 0, result.stdout + result.stderr);
   },
 );
+
+test(
+  "native Windows bootstrap protects a new workspace under a broadly readable temp parent before writing source or request data",
+  native,
+  async (t) => {
+    const { realpath, readdir } = await import("node:fs/promises");
+    const { createRequire, syncBuiltinESMExports } =
+      await import("node:module");
+    const path = await import("node:path");
+    const { ensureWindowsTaskAccess } =
+      await import("../src/windows-task-access.js");
+    const { windowsKeeperSource } = await import("../src/windows-native.js");
+    const cp = createRequire(import.meta.url)(
+      "node:child_process",
+    ) as typeof import("node:child_process");
+    const root = await realpath(await fixture(t, {})),
+      parent = await realpath(await fixture(t, {}));
+    ensureWindowsTaskAccess(parent, "directory", true);
+    const script = String.raw`$ErrorActionPreference='Stop'
+[Console]::InputEncoding=[Text.UTF8Encoding]::new($false)
+[void][Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35')
+$json=[Web.Script.Serialization.JavaScriptSerializer]::new()
+$r=$json.DeserializeObject([Console]::In.ReadToEnd())
+$item=[IO.DirectoryInfo]::new($r.path)
+$acl=$item.GetAccessControl()
+$rule=[Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.SecurityIdentifier]::new('S-1-1-0'),[Security.AccessControl.FileSystemRights]::ReadAndExecute,[Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [Security.AccessControl.InheritanceFlags]::ObjectInherit,[Security.AccessControl.PropagationFlags]::None,[Security.AccessControl.AccessControlType]::Allow)
+$acl.AddAccessRule($rule)
+$item.SetAccessControl($acl)
+`;
+    const broaden = cp.spawnSync(
+      path.win32.join(
+        process.env.SystemRoot ?? process.env.SYSTEMROOT!,
+        "System32/WindowsPowerShell/v1.0/powershell.exe",
+      ),
+      [
+        "-NoProfile",
+        "-NonInteractive",
+        "-EncodedCommand",
+        Buffer.from(script, "utf16le").toString("base64"),
+      ],
+      {
+        encoding: "utf8",
+        input: JSON.stringify({ path: parent }),
+        timeout: 15000,
+      },
+    );
+    assert.equal(broaden.status, 0, broaden.stderr);
+    assert.throws(
+      () => ensureWindowsTaskAccess(parent, "directory", false),
+      "The inheritable broad-parent condition must actually be armed",
+    );
+    const previous = Object.fromEntries(
+      ["TMPDIR", "TMP", "TEMP"].map((k) => [k, process.env[k]]),
+    );
+    const original = cp.spawn;
+    let inspected = 0,
+      namespace: string | undefined;
+    const intercept: typeof cp.spawn = (...args: unknown[]) => {
+      const argv = Array.isArray(args[1]) ? args[1] : [],
+        options = (Array.isArray(args[1]) ? args[2] : args[1]) as
+          { cwd?: string } | undefined;
+      if (argv[0] === "-e" && argv[1] === windowsKeeperSource) {
+        namespace = String(options?.cwd);
+        ensureWindowsTaskAccess(namespace, "directory", false);
+        inspected++;
+      }
+      return Reflect.apply(original, cp, args);
+    };
+    try {
+      for (const name of Object.keys(previous)) process.env[name] = parent;
+      cp.spawn = intercept;
+      syncBuiltinESMExports();
+      const result = await runProcess(
+        root,
+        {
+          executable: process.execPath,
+          args: ["-e", "process.stdout.write('Original private bootstrap.');"],
+          cwd: ".",
+        },
+        { timeoutMs: 45000 },
+      );
+      assert.equal(result.errorCode, undefined, result.stderr);
+      assert.equal(result.exitCode, 0);
+      assert.equal(result.stdout, "Original private bootstrap.");
+      assert.equal(result.windowsExecution!.cleanup, "confirmed");
+      assert.equal(inspected, 1);
+      assert.throws(
+        () => ensureWindowsTaskAccess(parent, "directory", false),
+        "The runner must protect only its newly owned namespace and preserve its existing parent",
+      );
+      assert.deepEqual(await readdir(parent), []);
+      assert.ok(namespace);
+    } finally {
+      cp.spawn = original;
+      syncBuiltinESMExports();
+      for (const [name, value] of Object.entries(previous)) {
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+      }
+    }
+  },
+);

@@ -1651,6 +1651,8 @@ jobs:
         run: node scripts/verify-windows-guards.mjs
       - name: Require native resource counter and fixed-source integrity guards
         run: node scripts/verify-windows-resource-guards.mjs
+      - name: Require native workspace privacy before bootstrap data
+        run: node scripts/verify-windows-workspace-guard.mjs
       - run: npm run format:check
       - name: Prepare package install cache with network access
         run: node scripts/prepare-package-cache.mjs

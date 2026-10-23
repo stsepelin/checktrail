@@ -182,7 +182,7 @@ the runner's owned temporary namespace. The supervisor reads at most the expecte
 source byte count plus one, checks its embedded SHA-256, and compiles those exact
 bytes before the project target resumes. This keeps the fixed encoded launcher
 within the existing command-length allowance. Project arguments remain JSON data.
-The existing namespace lifecycle removes the source along with other owned files.
+The existing namespace lifecycle removes the source along with other owned files. The namespace receives the existing native caller-only ACL before any data write, including when its selected temp parent has a broader read ACL. An access failure refuses before data or process launch. Portable ordering/refusal controls and a native broad-parent control with an access-guard removal are prepared; native qualification remains pending.
 These controls are execution ownership and integrity checks; executed project code
 is not sandboxed.
 

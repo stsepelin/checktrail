@@ -52,6 +52,7 @@ try {
     "windows-contract.test.js",
     "windows-process.test.js",
     "windows-resource.test.js",
+    "windows-workspace.test.js",
     "windows-resource-native.test.js",
     "helpers.js",
   ])
