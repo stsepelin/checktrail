@@ -15,6 +15,10 @@ export const taskExecutionTimeoutMs =
   process.platform === "win32" ? 20000 : 5000;
 export const taskObservationTimeoutMs =
   process.platform === "win32" ? 35000 : 15000;
+// The first RPC includes CLI startup and the separately bounded task worker
+// opening its private store. This receive allowance never changes execution.
+export const taskRequestTimeoutMs =
+  process.platform === "win32" ? 35000 : 10000;
 type Response = {
   result?: Record<string, unknown>;
   error?: { code: number; message: string; data?: unknown };
@@ -160,9 +164,13 @@ export async function wire(
     const timer = setTimeout(() => {
       pending
         .get(id)
-        ?.reject(new Error(`Request timed out: ${method}: ${stderr}`));
+        ?.reject(
+          new Error(
+            `Request timed out after ${taskRequestTimeoutMs}ms: ${method}: ${stderr}`,
+          ),
+        );
       pending.delete(id);
-    }, 10000);
+    }, taskRequestTimeoutMs);
     try {
       return await new Promise<Response>((resolve, reject) => {
         pending.set(id, { resolve, reject });
