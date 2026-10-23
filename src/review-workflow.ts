@@ -1,4 +1,12 @@
 import { VERSION } from "./types.js";
+import {
+  inspectReviewFindings,
+  type ReviewFindingsReport,
+} from "./review-findings.js";
+import {
+  workflowFindingsInput,
+  projectWorkflowFindings,
+} from "./review-workflow-findings.js";
 import { createHash, randomUUID } from "node:crypto";
 import { readProjectFile } from "./inventory.js";
 import {
@@ -34,6 +42,7 @@ import {
   reviewWorkflowSummarySchema,
   type ReviewWorkflowAssignment,
   type ReviewWorkflowLimits,
+  type ReviewWorkflowResult,
   type ReviewWorkflowSummary,
   type ReviewWorkflowNativeReceipt,
 } from "./review-workflow-schema.js";
@@ -362,6 +371,111 @@ export class ReviewWorkflowEngine {
       ? this.#retained(workflow)
       : 0;
     return structuredClone(reviewWorkflowSummarySchema.parse(workflow.report));
+  }
+  /** Inspect host declarations against this epoch's retained all-candidate evidence. */
+  async inspectFindings(
+    id: string,
+    serialized: string,
+    signal?: AbortSignal,
+  ): Promise<ReviewFindingsReport> {
+    const workflow = this.#workflow(id);
+    if (
+      !this.#options.allowReviewSource ||
+      workflow.busy ||
+      workflow.report.schemaVersion !== 2 ||
+      !["ready", "completed"].includes(workflow.report.status) ||
+      !workflow.context ||
+      !workflow.outputs.reviewer
+    )
+      throw Error(
+        "Quiescent disclosed all-candidate reviewer evidence required",
+      );
+    workflow.busy = true;
+    try {
+      const accepted = workflow.report.assignments.filter(
+        (a) => a.status === "accepted",
+      );
+      const reviewer = accepted[0];
+      if (
+        reviewer?.stage !== "reviewer" ||
+        !reviewer.host ||
+        !reviewer.usage ||
+        accepted.length !==
+          1 +
+            2 * workflow.completed.length +
+            Number(
+              ["probe", "adjudicator"].includes(workflow.report.nextStage),
+            ) ||
+        (["probe", "adjudicator"].includes(workflow.report.nextStage) &&
+          accepted.at(-1)?.stage !== "refuter") ||
+        workflow.completed.length !== workflow.report.completedTargets.length ||
+        workflow.completed.length > workflow.targets.size
+      )
+        throw Error("Workflow findings evidence is incomplete");
+      const cycles = workflow.completed.map((cycle, i) => {
+        const target =
+          workflow.report.schemaVersion === 2
+            ? workflow.report.completedTargets[i]!
+            : "";
+        const candidate = workflow.targets.get(target);
+        const refuter = accepted[1 + 2 * i],
+          adjudicator = accepted[2 + 2 * i];
+        if (
+          !candidate ||
+          refuter?.stage !== "refuter" ||
+          !refuter.host ||
+          adjudicator?.stage !== "adjudicator" ||
+          !adjudicator.host
+        )
+          throw Error("Workflow findings stage binding differs");
+        return {
+          target,
+          candidate,
+          run: cycle.probe,
+          refuter: refuter.host,
+          adjudicator: adjudicator.host,
+        };
+      });
+      const input = workflowFindingsInput(
+        {
+          context: workflow.context,
+          reviewer: {
+            output: workflow.outputs.reviewer,
+            host: reviewer.host,
+            usage: reviewer.usage,
+          },
+          cycles,
+          pending: [...workflow.targets].flatMap(([target, candidate]) =>
+            cycles.some((c) => c.target === target)
+              ? []
+              : [
+                  {
+                    target,
+                    candidate,
+                    run:
+                      workflow.report.selectedTarget === target
+                        ? (workflow.probe ?? null)
+                        : null,
+                  },
+                ],
+          ),
+        },
+        serialized,
+      );
+      const combined = AbortSignal.any([
+        workflow.controller.signal,
+        ...(signal ? [signal] : []),
+      ]);
+      const report = await inspectReviewFindings(
+        this.#root,
+        JSON.stringify(input),
+        { signal: combined },
+      );
+      combined.throwIfAborted();
+      return report;
+    } finally {
+      workflow.busy = false;
+    }
   }
   close(id: string): ReviewWorkflowSummary {
     const workflow = this.#workflow(id);
@@ -870,7 +984,8 @@ export class ReviewWorkflowEngine {
     input: unknown,
     signal?: AbortSignal,
     retainNative?: (receipt: ReviewWorkflowNativeReceipt) => void,
-  ): Promise<ReviewWorkflowSummary | ReviewWorkflowAssignment> {
+    retainFindings?: (receipt: ReviewFindingsReport) => void,
+  ): Promise<ReviewWorkflowResult> {
     const command = reviewWorkflowCommandSchema.parse(input);
     switch (command.operation) {
       case "open":
@@ -889,6 +1004,15 @@ export class ReviewWorkflowEngine {
           signal,
           retainNative,
         );
+      case "findings": {
+        const report = await this.inspectFindings(
+          command.workflowId,
+          JSON.stringify(command.declarations),
+          signal,
+        );
+        retainFindings?.(report);
+        return projectWorkflowFindings(report);
+      }
       case "status":
         return this.status(command.workflowId);
       case "close":

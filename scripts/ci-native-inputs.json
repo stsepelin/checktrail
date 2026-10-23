@@ -188,6 +188,8 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
@@ -347,6 +349,8 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
@@ -464,6 +468,8 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
@@ -817,6 +823,10 @@
   ],
   "scripts/retry-go-acquisition.mjs": ["go-workspaces-arm64"],
   "scripts/retry-maven-acquisition.mjs": ["jvm-wrappers-arm64", "maven"],
+  "scripts/review-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/ruby-context-tools.Dockerfile": ["ruby-context-arm64"],
   "scripts/ruby-extensions-acceptance-selection.mjs": ["ruby-extensions-arm64"],
   "scripts/ruby-tools-archives.json": ["ruby-extensions-arm64", "ruby-tools"],
@@ -927,6 +937,8 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
@@ -1066,6 +1078,11 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "scripts/verify-review-runtime-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-review-runtime.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
   "scripts/verify-ruby-container.mjs": ["ruby"],
   "scripts/verify-ruby-context-container.mjs": ["ruby-context-arm64"],
   "scripts/verify-ruby-context-guards.mjs": ["ruby-context-arm64"],
@@ -1437,6 +1454,10 @@
     "kustomize-extensions-arm64"
   ],
   "test/gate-kustomize-extensions.test.ts": ["kustomize-extensions-arm64"],
+  "test/gate-multi-candidate-workflow.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/gate-mutation-runners.test.ts": ["mutation-native-arm64"],
   "test/gate-php-extensions.test.ts": ["php-extensions-arm64"],
   "test/gate-python-extensions.test.ts": ["python-extensions-arm64"],
@@ -1462,6 +1483,8 @@
     "rust-context-arm64",
     "scala-context-arm64",
     "swift-context-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -1963,7 +1986,9 @@
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
-    "scala-context-arm64"
+    "scala-context-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/review-c-boundaries-fixture.ts": ["c-context-arm64"],
   "test/review-c-boundaries.test.ts": ["c-context-arm64"],
@@ -1977,7 +2002,9 @@
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
-    "scala-context-arm64"
+    "scala-context-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/review-context-limits.test.ts": ["go-workspaces-arm64"],
   "test/review-cpp-boundaries-fixture.ts": ["cpp-context-arm64"],
@@ -2007,7 +2034,9 @@
   ],
   "test/review-nuxt-assembly-fixture.ts": ["nuxt-assembly-arm64"],
   "test/review-nuxt-assembly-guards.test.ts": ["nuxt-assembly-arm64"],
+  "test/review-probe-storage.test.ts": ["tasks-runtime"],
   "test/review-ruby-boundaries-fixture.ts": ["ruby-context-arm64"],
+  "test/review-runtime-evidence.test.ts": ["tasks-runtime"],
   "test/review-scala-boundaries-fixture.ts": ["scala-context-arm64"],
   "test/review-swift-boundaries-fixture.ts": ["swift-context-arm64"],
   "test/review-swift-boundaries.test.ts": ["swift-context-arm64"],
@@ -2017,14 +2046,24 @@
   "test/review-vue-router-assembly-guards.test.ts": [
     "vue-router-assembly-arm64"
   ],
-  "test/review-workflow-fixture.ts": ["go-workspaces-arm64"],
+  "test/review-workflow-findings-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-workflow-fixture.ts": [
+    "go-workspaces-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/review-yaml-boundaries-fixture.ts": ["yaml-context-arm64"],
   "test/review-yaml-boundaries.test.ts": ["yaml-context-arm64"],
   "test/review.test.ts": [
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
-    "scala-context-arm64"
+    "scala-context-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/ruby-extensions-fixture.ts": ["ruby-extensions-arm64"],
   "test/ruby-tools-cancellation.test.ts": [

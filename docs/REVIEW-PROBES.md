@@ -9,7 +9,12 @@ executed project code is operator-trusted and **not sandboxed**.
 
 Only selected plain ESM `.js`/`.mjs` files, selected module dependencies and one
 named function export are supported. TypeScript, external or dynamic dependencies,
-Windows, methods and arrow exports are unresolved or rejected by this profile.
+Methods and arrow exports are unresolved or rejected by this profile. The
+experimental Windows backend uses the existing owned Job Object runner and
+establishes a caller-only private ACL on an empty temporary workspace before
+copying captured source. Failed privacy setup removes that namespace before any
+probe execution. Native Windows qualification remains pending on the selected
+source and fresh installed runtime cohort.
 The engine does not infer callers, business policy or a production fixture from
 an advisory claim. A Boolean counterexample under operator expectations cannot
 verify the claim's mechanism, reachability, severity or proposed fix.

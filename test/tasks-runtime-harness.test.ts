@@ -329,17 +329,28 @@ test("Tasks terminal observation bounds a stalled read and refuses invalid deadl
 test("Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits", async (t) => {
   const root = await fixture(t, {
     "wire-observer.mjs": `import {registerHooks} from 'node:module';import{EventEmitter}from'node:events';import{PassThrough}from'node:stream';
-const target=process.argv[2],platform=process.argv[3],calls=[],hooks=[];let killed=0;
-globalThis.originalWireSpawn=(executable,args,options)=>{calls.push({executable,args,stdio:options.stdio});const child=new EventEmitter();child.pid=42;child.stdin=new PassThrough();child.stdout=new PassThrough();child.stderr=new PassThrough();child.kill=()=>{killed++;child.emit('exit',1);return true;};child.stdin.on('finish',()=>queueMicrotask(()=>{child.stdout.end();child.stderr.end();child.emit('exit',0);}));return child;};
+const target=process.argv[2],platform=process.argv[3],calls=[],hooks=[],children=[];let killed=0;
+globalThis.originalWireSpawn=(executable,args,options)=>{calls.push({executable,args,stdio:options.stdio});const child=new EventEmitter();child.pid=42;child.stdin=new PassThrough();child.stdout=new PassThrough();child.stderr=new PassThrough();child.kill=()=>{killed++;child.emit('exit',1);return true;};children.push(child);child.stdin.on('finish',()=>queueMicrotask(()=>{child.stdout.end();child.stderr.end();child.emit('exit',0);}));return child;};
 registerHooks({resolve(specifier,context,next){if(context.parentURL===target&&specifier==='node:child_process')return{url:'data:text/javascript,'+encodeURIComponent('export function spawn(...args){return globalThis.originalWireSpawn(...args)}'),shortCircuit:true};return next(specifier,context);}});
-Object.defineProperty(process,'platform',{value:platform});const {wire,terminal,taskExecutionTimeoutMs,taskObservationTimeoutMs}=await import(target);
+Object.defineProperty(process,'platform',{value:platform});const {wire,terminal,taskExecutionTimeoutMs,taskObservationTimeoutMs,taskRequestTimeoutMs}=await import(target);
 const t={after:fn=>hooks.push(fn)},opt={root:'original-root',directory:'original-store'};
 for(const args of [undefined,['--allow-execution','--timeout-ms','5000']]){const connection=await wire(t,opt,args);await connection.close();}
-for(const close of hooks)await close();
+const requestConnection=await wire(t,opt),child=children.at(-1),requestOutcomes=[];
+const savedSetTimeout=globalThis.setTimeout,savedClearTimeout=globalThis.clearTimeout,timers=new Map();let clock=0,nextTimer=0;
+globalThis.setTimeout=(callback,ms)=>{const id=++nextTimer;timers.set(id,{at:clock+ms,callback});return id;};globalThis.clearTimeout=id=>timers.delete(id);
+const advance=ms=>{clock+=ms;for(const [id,timer]of [...timers])if(timer.at<=clock){timers.delete(id);timer.callback();}};
+try{
+const first=requestConnection.request('tools/call',{name:'validation_run',arguments:{}}).then(value=>({result:value.result}),error=>({error:error.message}));
+advance(10000);await Promise.resolve();requestOutcomes.push({pending:timers.size});
+if(platform==='win32'){child.stdout.write(JSON.stringify({id:0,result:{resultType:'task',taskId:'original-task'}})+'\\n');requestOutcomes.push(await first);advance(taskRequestTimeoutMs);requestOutcomes.push({pending:timers.size});}else requestOutcomes.push(await first);
+const expired=requestConnection.request('tasks/get',{taskId:'original-task'}).then(()=>({unexpected:true}),error=>({error:error.message}));advance(taskRequestTimeoutMs-1);requestOutcomes.push({pending:timers.size});advance(1);requestOutcomes.push(await expired);
+child.stdout.write(JSON.stringify({id:1,result:{resultType:'complete',status:'completed'}})+'\\n');requestOutcomes.push({pending:timers.size});
+}finally{globalThis.setTimeout=savedSetTimeout;globalThis.clearTimeout=savedClearTimeout;}
+await requestConnection.close();for(const close of hooks)await close();
 let elapsed=0;const previous=Object.getOwnPropertyDescriptor(performance,'now');Object.defineProperty(performance,'now',{value:()=>elapsed,configurable:true});
 const connection={request:async()=>{elapsed+=20000;return{result:{resultType:'complete',status:'completed'}}}};const outcomes=[];
 try{for(const timeout of [undefined,10000]){elapsed=0;try{const result=await terminal(connection,'original-task',timeout);outcomes.push({status:result.status});}catch(error){outcomes.push({error:error.message});}}}finally{if(previous)Object.defineProperty(performance,'now',previous);else delete performance.now;}
-console.log(JSON.stringify({calls,killed,taskExecutionTimeoutMs,taskObservationTimeoutMs,outcomes}));`,
+console.log(JSON.stringify({calls,killed,taskExecutionTimeoutMs,taskObservationTimeoutMs,taskRequestTimeoutMs,requestOutcomes,outcomes}));`,
     "lifecycle-observer.mjs": `import{registerHooks}from'node:module';const target=process.argv[2],platform=process.argv[3];globalThis.originalLifecycleCallbacks=[];globalThis.originalLifecycleCalls=[];
 const testStub="export function test(name,options,callback){if(name==='tasks-matrix lifecycle acceptance')globalThis.originalLifecycleCallbacks.push(callback);}";
 const fixtureStub="export const slow='await new Promise(resolve=>setTimeout(resolve,60000));',passingTest='original',taskExecutionTimeoutMs=20000;export async function setup(){return{root:'original-root',directory:'original-store'}};export async function wire(t,opt,args){globalThis.originalLifecycleCalls.push(args);throw new Error('original lifecycle selection observed');}export function unexpected(){throw Error('unexpected application execution')};export const createPlan=unexpected,validate=unexpected,openTaskStore=unexpected,taskId=unexpected,terminal=unexpected,report=unexpected,started=unexpected,stopped=unexpected,acknowledge=unexpected;";
@@ -367,7 +378,31 @@ Object.defineProperty(process,'platform',{value:platform});await import(target);
     assert.equal(value.taskObservationTimeoutMs, observation);
     assert.ok(observation >= execution + 10000);
     assert.equal(value.killed, 0);
-    assert.equal(value.calls.length, 2);
+    const request = platform === "win32" ? 35000 : 10000;
+    assert.equal(value.taskRequestTimeoutMs, request);
+    const expired = {
+      error: `Request timed out after ${request}ms: tasks/get: `,
+    };
+    assert.deepEqual(
+      value.requestOutcomes,
+      platform === "win32"
+        ? [
+            { pending: 1 },
+            { result: { resultType: "task", taskId: "original-task" } },
+            { pending: 0 },
+            { pending: 1 },
+            expired,
+            { pending: 0 },
+          ]
+        : [
+            { pending: 0 },
+            { error: "Request timed out after 10000ms: tools/call: " },
+            { pending: 1 },
+            expired,
+            { pending: 0 },
+          ],
+    );
+    assert.equal(value.calls.length, 3);
     for (const [index, call] of value.calls.entries()) {
       assert.equal(call.executable, process.execPath);
       assert.deepEqual(call.stdio, ["pipe", "pipe", "pipe"]);
