@@ -5138,5 +5138,61 @@
       "file": "dist/test/tasks-runtime-harness.test.js",
       "name": "Tasks generic CLI isolates exact required callbacks while adjacent profile names retain whole-file skip accounting"
     }
+  ],
+  "consumer-impact": [
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact installed acceptance"
+    }
+  ],
+  "consumer-runtime-bindings": [
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime requirements preserve every frozen case and immutable unique source and installed harness inputs"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime selection rejects wrong Node platform architecture host image and native image boundaries even outside hosted CI"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime installation binds current runtime engine package harness SDK and exact non-skipped terminal cases without qualifying evaluation"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime CLI rejects missing unknown and extra hosted slots before emitting qualifying evidence"
+    }
   ]
 }

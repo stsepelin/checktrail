@@ -71,8 +71,9 @@ directly. Broken, repaired and valid adjacent cases repeat through their existin
 required source and offline installed profiles. These checks do not promote
 advisory context edges into validation selection.
 
-The broader Gate A consumer-impact profile remains pending: native
-producer/consumer chains for every advertised language, whole-profile frozen
-nine-case source and fresh installed acceptance, and final acceptance bindings
-still need measurement. No inference, field evaluation or review-quality claim
+The [whole frozen profile](CONSUMER-ACCEPTANCE.md) now has original synthetic
+source and offline installed development controls. The broader Gate A
+consumer-impact profile remains pending: the selected runtime matrix, native
+producer/consumer witness reconciliation for every advertised language, and final
+acceptance bindings still need measurement. No inference, field evaluation or review-quality claim
 follows from this foundation.

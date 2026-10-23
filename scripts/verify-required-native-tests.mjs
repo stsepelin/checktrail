@@ -77,6 +77,7 @@ const timeoutMs =
     ? 300000
     : fullSuite ||
         selection.includes("tasks-matrix") ||
+        selection.includes("consumer-impact") ||
         selection.includes("dotnet-method") ||
         selection.includes("jvm-wrappers") ||
         selection.includes("kotlin-extensions") ||
@@ -138,9 +139,12 @@ const timeoutMs =
 const isolatedCaseWorkers =
   !fullSuite &&
   (selection.some((profile) =>
-    ["tasks-matrix", "tasks-runtime-manifest", "tasks-runtime-cli"].includes(
-      profile,
-    ),
+    [
+      "tasks-matrix",
+      "tasks-runtime-manifest",
+      "tasks-runtime-cli",
+      "consumer-impact",
+    ].includes(profile),
   ) ||
     (selection.length === 1 &&
       [
