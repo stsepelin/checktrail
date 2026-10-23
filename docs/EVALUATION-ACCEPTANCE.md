@@ -54,7 +54,7 @@ local development observation and cannot qualify a hosted slot.
 
 Admission checks the selected exact Node version, platform, architecture and OS
 family. Hosted observations include their image family/build; the native workload
-binds its pinned image reference and separately observed configuration ID. Windows
+binds its pinned image reference and separately observed Docker image ID. Windows
 also records the fixed system PowerShell executable digest used for private ACL
 inspection. These observations do not independently attest an image or host.
 
