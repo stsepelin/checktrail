@@ -22,6 +22,10 @@ from these artifacts. Added implementation tests may extend current profiles;
 removing or renaming a preserved callback fails the audit. Changing selected
 profiles, tool pins or planned assertions requires a reviewable inventory
 revision. `--require-frozen` exits nonzero while freeze decisions remain pending.
+The audit derives implementation-state declarations and planned-case visibility in
+the shared required-test manifest. Counts partition the complete selected case
+inventory. Cases outside that manifest can belong to separate native controllers;
+the report does not assess those controllers or treat those cases as absent.
 The audit always reports implementation acceptance and quality as unassessed:
 it cannot turn declared receipts, historical measurements or a green structural
 check into Gate A completion. Native source/installed evidence remains separate.

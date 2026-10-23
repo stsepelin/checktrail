@@ -9,16 +9,56 @@ import { runRequiredTests } from "./required-test-evidence.mjs";
 import { windowsEnvironment } from "../dist/src/windows-process.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const hash = (b) => createHash("sha256").update(b).digest("hex");
-export async function tasksRuntimeRequirements() {
-  const profiles = JSON.parse(
-    await readFile(
-      path.join(root, "scripts/required-native-tests.json"),
-      "utf8",
-    ),
+export function selectTasksRuntimeRequirements(profiles, selected, platform) {
+  assert.ok(
+    ["darwin", "linux", "win32"].includes(platform),
+    "Unknown Tasks runtime platform",
   );
-  assert.equal(profiles["mcp-tasks"].length, 10);
-  return [
-    ...profiles["mcp-tasks"],
+  assert.equal(selected?.id, "tasks-matrix", "Unknown frozen Tasks profile");
+  assert.equal(selected.acceptanceFile, "dist/test/gate-tasks-matrix.test.js");
+  assert.deepEqual(
+    selected.acceptanceCases.map((row) => row.id),
+    [
+      "broken",
+      "fixed",
+      "near-miss",
+      "prerequisite",
+      "stale",
+      "empty",
+      "privacy",
+      "lifecycle",
+      "installed",
+    ],
+    "Frozen Tasks acceptance categories changed",
+  );
+  const frozen = selected.acceptanceCases.map((row) => ({
+    file: selected.acceptanceFile,
+    name: row.name,
+  }));
+  assert.deepEqual(
+    profiles["tasks-matrix"],
+    frozen,
+    "Frozen Tasks acceptance bindings changed",
+  );
+  assert.ok(
+    Array.isArray(profiles["mcp-tasks"]) && profiles["mcp-tasks"].length === 10,
+    "Preserved MCP Tasks cohort changed",
+  );
+  for (const row of [...profiles["mcp-tasks"], ...frozen]) {
+    assert.deepEqual(
+      Object.keys(row).sort(),
+      ["file", "name"],
+      "Invalid Tasks requirement fields",
+    );
+    assert.match(row.file, /^dist\/test\/[a-z0-9-]+\.test\.js$/);
+    assert.ok(
+      typeof row.name === "string" &&
+        row.name.length > 0 &&
+        row.name.length <= 512,
+    );
+  }
+  const requirements = [
+    ...profiles["mcp-tasks"].map((row) => ({ ...row })),
     {
       file: "dist/test/tasks-runtime-harness.test.js",
       name: "Tasks installed wrapper selects a bounded Windows aggregate allowance while preserving POSIX deadlines and failed child status",
@@ -27,7 +67,11 @@ export async function tasksRuntimeRequirements() {
       file: "dist/test/tasks-runtime-harness.test.js",
       name: "Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits",
     },
-    ...(process.platform === "win32"
+    {
+      file: "dist/test/tasks-runtime-harness.test.js",
+      name: "Tasks runtime selection binds every frozen acceptance case and preserves the complete platform control family",
+    },
+    ...(platform === "win32"
       ? [
           {
             file: "dist/test/tasks-runtime-harness.test.js",
@@ -39,20 +83,7 @@ export async function tasksRuntimeRequirements() {
       file: "dist/test/mcp-validation-tasks.test.js",
       name: "Tasks fixture teardown closes every live SQLite server before removing its directories",
     },
-    ...[
-      "broken",
-      "fixed",
-      "near-miss",
-      "prerequisite",
-      "stale",
-      "empty",
-      "privacy",
-      "lifecycle",
-      "installed",
-    ].map((kind) => ({
-      file: "dist/test/gate-tasks-matrix.test.js",
-      name: "tasks-matrix " + kind + " acceptance",
-    })),
+    ...frozen,
     {
       file: "dist/test/tasks-sdk-fallback.test.js",
       name: "Tasks-enabled servers retain ordinary native validation with pinned SDK modern and legacy clients",
@@ -60,7 +91,7 @@ export async function tasksRuntimeRequirements() {
     ...[
       "Windows task ACL validation admits only the exact caller rule and actual caller or token owner",
       "Windows task ACL validation refuses each private-access boundary independently",
-      ...(process.platform === "win32"
+      ...(platform === "win32"
         ? [
             "native Windows task storage uses private ACLs for literal Unicode paths and native SQLite owner journals",
             "native Windows task storage refuses a publicly readable directory without changing its ACL or creating a database",
@@ -68,7 +99,42 @@ export async function tasksRuntimeRequirements() {
         : []),
     ].map((name) => ({ file: "dist/test/windows-task-access.test.js", name })),
   ];
+  assert.equal(
+    requirements.length,
+    platform === "win32" ? 29 : 26,
+    "Tasks platform control family changed",
+  );
+  assert.equal(
+    new Set(requirements.map((row) => JSON.stringify([row.file, row.name])))
+      .size,
+    requirements.length,
+    "Duplicate Tasks runtime control",
+  );
+  assert.deepEqual(
+    requirements.filter((row) => row.file === selected.acceptanceFile),
+    frozen,
+    "Frozen Tasks acceptance omitted from runtime selection",
+  );
+  return requirements;
 }
+
+export async function tasksRuntimeRequirements() {
+  const [profiles, scope] = await Promise.all([
+    readFile(
+      path.join(root, "scripts/required-native-tests.json"),
+      "utf8",
+    ).then(JSON.parse),
+    readFile(path.join(root, "docs/gate-a-profiles.v1.json"), "utf8").then(
+      JSON.parse,
+    ),
+  ]);
+  return selectTasksRuntimeRequirements(
+    profiles,
+    scope.extensionProfiles.find((row) => row.id === "tasks-matrix"),
+    process.platform,
+  );
+}
+
 async function treeHash(directory) {
   const parts = [];
   async function walk(relative) {

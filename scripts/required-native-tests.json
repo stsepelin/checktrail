@@ -3137,6 +3137,10 @@
     {
       "file": "dist/test/gate-inventory.test.js",
       "name": "finite inventory keeps pending freeze decisions and declared receipts separate from feature acceptance"
+    },
+    {
+      "file": "dist/test/gate-inventory.test.js",
+      "name": "finite inventory reports shared-manifest visibility without treating alternate controllers as missing native acceptance"
     }
   ],
   "laravel-cache": [
@@ -5281,6 +5285,56 @@
     {
       "file": "dist/test/review-runtime-evidence.test.js",
       "name": "review workflow runtime rejects coherently shaped foreign installation evidence and incomplete execution"
+    }
+  ],
+  "tasks-matrix": [
+    {
+      "file": "dist/test/gate-tasks-matrix.test.js",
+      "name": "tasks-matrix broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-tasks-matrix.test.js",
+      "name": "tasks-matrix fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-tasks-matrix.test.js",
+      "name": "tasks-matrix near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-tasks-matrix.test.js",
+      "name": "tasks-matrix prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-tasks-matrix.test.js",
+      "name": "tasks-matrix stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-tasks-matrix.test.js",
+      "name": "tasks-matrix empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-tasks-matrix.test.js",
+      "name": "tasks-matrix privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-tasks-matrix.test.js",
+      "name": "tasks-matrix lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-tasks-matrix.test.js",
+      "name": "tasks-matrix installed acceptance"
+    }
+  ],
+  "tasks-runtime-manifest": [
+    {
+      "file": "dist/test/tasks-runtime-harness.test.js",
+      "name": "Tasks runtime selection binds every frozen acceptance case and preserves the complete platform control family"
+    }
+  ],
+  "tasks-runtime-cli": [
+    {
+      "file": "dist/test/tasks-runtime-harness.test.js",
+      "name": "Tasks generic CLI isolates exact required callbacks while adjacent profile names retain whole-file skip accounting"
     }
   ]
 }

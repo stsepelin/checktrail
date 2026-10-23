@@ -825,3 +825,5 @@ bounds. Native outcomes must still finish with the exact original assertions;
 incomplete results cannot satisfy a passing fixture. These are test startup
 budgets; production defaults and the outer source/installed cohort deadlines
 are unchanged.
+
+The Tasks matrix acceptance cases are declared in `required-native-tests.json` as `tasks-matrix`. The source and fresh installed runtime selectors compare their exact addresses with the frozen profile before execution. A required `tasks-runtime-manifest` control rejects omitted, renamed, duplicated, foreign or extra bindings, checks all three supported platform selections and retains the Windows-only control family. Focused Tasks selections use exact named-callback isolation; full-suite runs keep every file and test in scope. The generic runner also selects the existing bounded Tasks file allowance for that profile. An adjacent profile name retains whole-file skip accounting. These bindings add no product permissions or execution defaults; exact current-source runtime acceptance remains separate.
