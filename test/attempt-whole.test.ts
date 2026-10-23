@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
+import { setTimeout as delay } from "node:timers/promises";
 import { validate } from "../src/engine.js";
 import { openTaskStore } from "../src/task-store.js";
 import { reportSchema } from "../src/schemas.js";
@@ -216,5 +217,91 @@ test(
     assert.equal(restored.outcome, "passed");
     assert.equal(restored.sourceFingerprint, baseline.sourceFingerprint);
     archiveNativeWitness(restored);
+  },
+);
+
+test(
+  "native archive source changes remain incomplete even after every captured native case passes",
+  { timeout: 120000 },
+  async (t) => {
+    const d = await archiveFixture(t, "fixed", { hold: true }),
+      controller = new AbortController();
+    const running = validate(d.root, {
+      ...d.options,
+      signal: controller.signal,
+    });
+    try {
+      const until =
+        performance.now() + Math.min(35000, d.options.timeoutMs - 250);
+      let ready: { pid: number } | undefined;
+      while (performance.now() < until) {
+        try {
+          ready = JSON.parse(await readFile(d.ready, "utf8"));
+          break;
+        } catch (error) {
+          if (
+            !(error instanceof SyntaxError) &&
+            (error as NodeJS.ErrnoException).code !== "ENOENT"
+          )
+            throw error;
+        }
+        await delay(10);
+      }
+      assert.ok(
+        ready && ready.pid > 1,
+        "The actual consumer process must be held after importing the original source",
+      );
+      await writeFile(
+        path.join(d.root, "decision.mjs"),
+        archivePolicies.broken,
+      );
+      await writeFile(d.release, "Original release.\n");
+      const report = await running;
+      assert.equal(report.outcome, "incomplete");
+      assert.equal(report.sourceChanged, true);
+      assert.notEqual(report.sourceFingerprint, report.finalSourceFingerprint);
+      const witness = archiveNativeWitness(report);
+      assert.equal(witness.attempt.exitCode, 0);
+      assert.ok(witness.cases.every((c) => c.passed));
+      assert.equal(witness.attempt.pid, ready.pid);
+    } finally {
+      controller.abort();
+      await running;
+    }
+  },
+);
+
+test(
+  "native archive empty and genuinely skipped case bodies cannot become passing validation despite complete process journals",
+  { timeout: 180000 },
+  async (t) => {
+    for (const control of [{ empty: true }, { skip: true }]) {
+      const d = await archiveFixture(t, "fixed", control),
+        report = await validate(d.root, d.options);
+      reportSchema.parse(report);
+      assert.equal(report.outcome, "incomplete");
+      assert.equal(report.sourceChanged, false);
+      const capture = report.checks[0]!.processes[0]!.nativeJournal!.capture!;
+      assert.equal(capture.state, "complete");
+      assert.equal(capture.replay!.completeForRecordedCalls, true);
+      assert.equal(capture.replay!.attempts.length, 1);
+      const attempt = capture.replay!.attempts[0]!;
+      assert.equal(attempt.exitCode, 0);
+      const raw = JSON.parse(
+        Buffer.from(attempt.capturedOutput.stderr.base64, "base64").toString(
+          "utf8",
+        ),
+      );
+      if ("empty" in control) assert.deepEqual(raw.originalCases, []);
+      else {
+        assert.equal(raw.originalCases.length, 4);
+        assert.ok(
+          raw.originalCases.every(
+            (c: { skipped: boolean; actual: unknown; passed: unknown }) =>
+              c.skipped === true && c.actual === null && c.passed === null,
+          ),
+        );
+      }
+    }
   },
 );

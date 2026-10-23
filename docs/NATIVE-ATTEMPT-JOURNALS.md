@@ -167,7 +167,10 @@ preserve the operator policy identity. The oversized native report reaches real
 multi-chunk task storage; closing and reopening the store must reconstruct the
 exact report bytes and the same raw journal. These controls have local Node 22
 and 26 evidence; the frozen whole-profile and installed/runtime bindings remain
-pending. They do not extend the dated measurement above.
+pending. Source changed after native imports remains incomplete even when every
+captured case passes. Empty and genuinely skipped bodies also remain incomplete
+despite a complete process journal. These controls do not extend the dated
+measurement above.
 
 Complete native call migration acceptance, embedded language/VM subprocesses,
 required Windows/runtime acceptance and host-model usage remain open. The frozen
