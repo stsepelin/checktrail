@@ -34,6 +34,18 @@
   ],
   "scripts/actionlint-tools.Dockerfile": ["actionlint"],
   "scripts/attempt-output-evidence.mjs": ["jvm-wrappers-arm64"],
+  "scripts/attempt-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/attempt-runtime-tools.Dockerfile": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/attempt-whole-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/audit-php-review-tools.mjs": ["php-review"],
   "scripts/c-context-tools.Dockerfile": ["c-context-arm64"],
   "scripts/capture-jvm-wrapper-guards.mjs": ["jvm-wrappers-arm64"],
@@ -389,6 +401,7 @@
     "rust-extensions-arm64",
     "scala-extensions-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
     "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vue-router-assembly-arm64"
@@ -638,6 +651,7 @@
     "swift-context-arm64",
     "swift-extensions-arm64",
     "swift-tools",
+    "tasks-runtime",
     "tasks-runtime-arm64",
     "terraform",
     "terraform-extensions-arm64",
@@ -838,6 +852,18 @@
   "scripts/terraform-extensions-controls.json": ["terraform-extensions-arm64"],
   "scripts/vb-context-tools.Dockerfile": ["vb-context-arm64"],
   "scripts/verify-actionlint-container.mjs": ["actionlint"],
+  "scripts/verify-attempt-archives-whole-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-attempt-runtime-arm64.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-attempt-runtime.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/verify-c-context-container.mjs": ["c-context-arm64"],
   "scripts/verify-c-context-guards.mjs": ["c-context-arm64"],
   "scripts/verify-checkstyle-container.mjs": ["checkstyle"],
@@ -1135,6 +1161,9 @@
   "scripts/windows-task-access-diagnostics.mjs": ["tasks-runtime"],
   "scripts/yaml-context-tools.Dockerfile": ["yaml-context-arm64"],
   "test/actionlint.test.ts": ["actionlint"],
+  "test/attempt-whole-boundaries.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/attempt-whole-controls.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/attempt-whole-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/checkstyle-fixture.ts": ["checkstyle"],
   "test/checkstyle-surfaces.test.ts": ["checkstyle"],
   "test/checkstyle.test.ts": ["checkstyle"],
@@ -1399,6 +1428,10 @@
   "test/gate-assembly-laravel.test.ts": ["laravel-assembly-arm64"],
   "test/gate-assembly-nuxt.test.ts": ["nuxt-assembly-arm64"],
   "test/gate-assembly-vue-router.test.ts": ["vue-router-assembly-arm64"],
+  "test/gate-attempt-archives.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/gate-context-c.test.ts": ["c-context-arm64"],
   "test/gate-context-cpp.test.ts": ["cpp-context-arm64"],
   "test/gate-context-csharp.test.ts": ["csharp-context-arm64"],

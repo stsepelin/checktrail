@@ -1599,6 +1599,8 @@ jobs:
         run: node scripts/prepare-package-cache.mjs
       - name: Require the same controls in a fresh offline production installation
         run: node scripts/verify-tasks-runtime-package.mjs ${{ matrix.slot }}
+      - name: Require archive profile source and fresh offline runtime evidence
+        run: node scripts/verify-attempt-runtime.mjs ${{ matrix.slot }}
 
   tasks-runtime-arm64:
     needs: [ci-plan, actionlint]
@@ -1619,6 +1621,8 @@ jobs:
         run: node scripts/prepare-package-cache.mjs
       - name: Require source and offline installed controls in the pinned native runtime
         run: node scripts/verify-tasks-runtime-arm64.mjs
+      - name: Require archive profile in the pinned native runtime
+        run: node scripts/verify-attempt-runtime-arm64.mjs
 
   windows:
     needs: [ci-plan, actionlint]

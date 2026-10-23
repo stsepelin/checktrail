@@ -26,6 +26,7 @@ export async function archiveFixture(
     empty?: boolean;
     skip?: boolean;
     padding?: boolean;
+    prefix?: boolean;
   } = {},
 ) {
   const created = await fixture(t, {
@@ -52,9 +53,10 @@ const request=JSON.parse(await readFile(process.argv[2],'utf8')),modules=[];
 for(const name of ['first.mjs','second.mjs'])modules.push({name,module:await import(pathToFileURL(path.join(request.root,name)).href)});
 const control=${JSON.stringify(control)},ready=${JSON.stringify(ready)},release=${JSON.stringify(release)};
 let child;if(control.child)child=spawn(process.execPath,['-e','setInterval(()=>{},1000);'],{detached:true,stdio:'ignore'});
+if(control.prefix)process.stdout.write(JSON.stringify({pid:process.pid,originalPrefix:modules.map(({name,module})=>({consumer:name,exact:module.consume('grant'),adjacent:module.consume('granting')}))})+'\n');
 await writeFile(ready,JSON.stringify({pid:process.pid,child:child?.pid??null}));
 if(control.hold)while(!(await access(release).then(()=>true,()=>false)))await delay(10);
-if(control.flood)process.stdout.write('Original physical output. '.repeat(8192));
+if(control.flood)process.stdout.write('Original physical output. '.repeat(131072));
 const cases=[];if(!control.empty)for(const {name,module}of modules)for(const [input,expected]of [['grant',true],['granting',false]]){const result=control.skip?null:module.consume(input),actual=control.skip?null:name==='first.mjs'?result.visible:result.state==='ready';cases.push({consumer:name,input,expected,actual,passed:control.skip?null:actual===expected,skipped:control.skip===true});}
 const failed=cases.filter(c=>!c.skipped&&!c.passed);process.stderr.write(JSON.stringify({pid:process.pid,originalCases:cases,padding:control.padding?'Original retained bytes. '.repeat(8192):undefined,undeclared:process.env.CHECKTRAIL_ARCHIVE_SYNTHETIC_SECRET??null})+'\n');
 process.stdout.write(JSON.stringify({protocolVersion:1,identity:request.identity,checkId:request.checkId,sourceFingerprint:request.sourceFingerprint,files:request.scope.map(path=>{const selected=cases.filter(c=>c.consumer===path),failures=selected.filter(c=>!c.passed).length;return{path,status:'checked',tests:{total:selected.length,passed:control.skip?0:selected.length-failures,failed:control.skip?0:failures,skipped:control.skip?selected.length:0}};}),findings:control.skip?[]:failed.map(c=>({ruleId:'original-exact-policy',level:'error',message:'Original adjacent identifier was accepted by '+c.consumer,file:c.consumer,line:1})),findingsComplete:true,tools:[{name:'original-node-policy-witness',version:'1.0.0'}]}));process.exitCode=control.skip?0:failed.length?1:0;
@@ -91,6 +93,8 @@ process.stdout.write(JSON.stringify({protocolVersion:1,identity:request.identity
     ready,
     release,
     reference,
+    adapter: path.join(bundle, "adapter.mjs"),
+    manifest,
     options: {
       trusted: true,
       externalAdapters: [reference],

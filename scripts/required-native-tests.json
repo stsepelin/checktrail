@@ -5138,5 +5138,61 @@
       "file": "dist/test/tasks-runtime-harness.test.js",
       "name": "Tasks generic CLI isolates exact required callbacks while adjacent profile names retain whole-file skip accounting"
     }
+  ],
+  "attempt-archives": [
+    {
+      "file": "dist/test/gate-attempt-archives.test.js",
+      "name": "attempt-archives broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-attempt-archives.test.js",
+      "name": "attempt-archives fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-attempt-archives.test.js",
+      "name": "attempt-archives near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-attempt-archives.test.js",
+      "name": "attempt-archives prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-attempt-archives.test.js",
+      "name": "attempt-archives stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-attempt-archives.test.js",
+      "name": "attempt-archives empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-attempt-archives.test.js",
+      "name": "attempt-archives privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-attempt-archives.test.js",
+      "name": "attempt-archives lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-attempt-archives.test.js",
+      "name": "attempt-archives installed acceptance"
+    }
+  ],
+  "attempt-runtime-bindings": [
+    {
+      "file": "dist/test/attempt-runtime-evidence.test.js",
+      "name": "attempt runtime requirements preserve every frozen case and immutable unique source and installed harness inputs"
+    },
+    {
+      "file": "dist/test/attempt-runtime-evidence.test.js",
+      "name": "attempt runtime selection rejects wrong Node platform architecture host image and native image boundaries even outside hosted CI"
+    },
+    {
+      "file": "dist/test/attempt-runtime-evidence.test.js",
+      "name": "attempt runtime installation binds current runtime engine package harness SDK and exact non-skipped terminal cases without qualifying evaluation"
+    },
+    {
+      "file": "dist/test/attempt-runtime-evidence.test.js",
+      "name": "attempt runtime CLI rejects missing unknown and extra hosted slots before emitting qualifying evidence"
+    }
   ]
 }

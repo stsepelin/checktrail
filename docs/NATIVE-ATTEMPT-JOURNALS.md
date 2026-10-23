@@ -176,3 +176,8 @@ Complete native call migration acceptance, embedded language/VM subprocesses,
 required Windows/runtime acceptance and host-model usage remain open. The frozen
 attempt-archives profile remains pending.
 No Gate A closure, model inference or real-project field evaluation is claimed.
+
+The [whole archive acceptance profile](ATTEMPT-ACCEPTANCE.md) prepares the frozen
+nine callbacks and exact source/fresh-package runtime receipt reconciliation.
+Its native witness and storage controls share the preserved assertions; wider
+platform and call-family qualification remain separate from local success.
