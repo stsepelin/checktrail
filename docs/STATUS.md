@@ -15,15 +15,25 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The selected [Tasks runtime profile](TASK-STORAGE.md) has source and fresh offline
+installed receipts for every frozen runtime slot in [its dated matrix](measurements/tasks-runtime-matrix-2026-10-23.json).
+The frozen whole-profile callbacks, preserved wire/lifecycle cases and native
+Windows private-ACL controls passed at the recorded source commit. The inventory
+now records this profile as implemented with receipts declared. These observations
+do not attest image provenance, actual model-host compatibility or later candidate
+bytes. Other profiles, final acceptance bindings and Gate A remain open.
+
+The [whole independent setup acceptance](EVALUATION-ACCEPTANCE.md) connects the frozen original synthetic broken/fixed/near-miss, failure, privacy, native collector lifecycle and installed controls. The Windows private archive backend is implemented; native runtime qualification and the private prospective freeze remain pending. No model review or field evaluation has run.
+
 The [common-defect matching and paired scoring bridge](EVALUATION-MATCHING.md) joins separately frozen operator inventories, physical independent judgments and anonymous mapping responses to both three-role comparisons. It preserves every trial, duplicate claim, unresolved judgment and original reviewer probability. Scores remain descriptive: source/label authority, host independence, calibrated confidence, final runtime acceptance and Gate A remain unverified.
 
-The [independent external-review judging intake](EVALUATION-JUDGING.md) binds anonymous source packets and exact claim inventories to sealed physical judge responses, preserving unresolved, missing and reused-session states. The plain-host baseline uses the same common output contract without Checktrail review assistance. This bounded POSIX operator component does not authenticate hosts/judges, verify source-archive completeness or assess quality; common-defect matching, scoring, final runtime acceptance and Gate A remain open.
+The [independent external-review judging intake](EVALUATION-JUDGING.md) binds anonymous source packets and exact claim inventories to sealed physical judge responses, preserving unresolved, missing and reused-session states. The plain-host baseline uses the same common output contract without Checktrail review assistance. This bounded operator component does not authenticate hosts/judges, verify source-archive completeness or assess quality. Final runtime acceptance and Gate A remain open.
 
 The [prospective evaluation protocol preflight](EVALUATION-PROTOCOL-DECLARATIONS.md) binds opaque reference/workflow configuration commitments, the common cohort, incident clusters, equal resource ceilings and predeclared scoring parameters. Its source and fresh offline installed controls are required in the existing checks matrix. It reads declarations only; actual configuration identity, freeze chronology, licensed eligibility, independent judgments, host metering and final evaluation readiness remain unverified. The full independent-evaluation profile and Gate A stay open.
 
 The [external review metering intake](EVALUATION-METERING.md) reconciles declared terminal slots and ordered attempts against that prospective protocol, retaining failed retries, unknown usage and equal per-arm budget overages. It distinguishes operator-metered from provider-reported metadata and returns aggregate accounting only. Its consistency checks do not verify collector authenticity, actual all-attempt completeness, host independence, billing or review quality. The independent-evaluation profile and Gate A remain open.
 
-The [external review capture intake](EVALUATION-CAPTURES.md) binds every selected three-role output descriptor to its exact assignment, configuration, source and ordered attempt records. It supports externally produced plain-host baseline reviews and preserves incomplete outputs and unknown measurements. Its metadata inspector is complemented by bounded private POSIX physical sealing and replay; raw blob identity remains distinct from collector authenticity, actual all-attempt completeness, independent sessions, judging and quality. Those remain unverified; the full independent-evaluation profile and Gate A remain open.
+The [external review capture intake](EVALUATION-CAPTURES.md) binds every selected three-role output descriptor to its exact assignment, configuration, source and ordered attempt records. It supports externally produced plain-host baseline reviews and preserves incomplete outputs and unknown measurements. Its metadata inspector is complemented by bounded private physical sealing and replay; raw blob identity remains distinct from collector authenticity, actual all-attempt completeness, independent sessions, judging and quality. Those remain unverified; the full independent-evaluation profile and Gate A remain open.
 
 [Review provenance](REVIEW-PROVENANCE.md) now joins current source/citation
 checks, exact host claims, imported native receipt accounting and bound

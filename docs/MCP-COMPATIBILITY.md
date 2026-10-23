@@ -64,10 +64,12 @@ acceptance remain pending.
 
 ## Standard Tasks polling profile
 
-The Tasks runtime foundation now includes strict source/installed checks for the
-selected runtime slots and an experimental Windows ACL backend. Native Windows
-acceptance and the frozen whole-profile Gate A cases remain pending; CI wiring
-alone does not verify them. See [task storage](TASK-STORAGE.md).
+The selected Tasks runtime profile has source and fresh offline installed receipts
+for every frozen runtime slot, including the Windows private-ACL backend and the
+frozen whole-profile cases. The [dated matrix](measurements/tasks-runtime-matrix-2026-10-23.json)
+binds those observations to the recorded source commit. Image provenance, actual
+model-host interoperability and final candidate acceptance remain separate;
+Gate A remains open. See [task storage](TASK-STORAGE.md).
 
 The foreground server advertises `io.modelcontextprotocol/tasks` only when the
 operator supplies `--task-store`. A capable `validation_run` creates a durable

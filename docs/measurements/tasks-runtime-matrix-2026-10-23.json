@@ -1,0 +1,762 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-10-23T10:08:06.792790+00:00",
+  "profile": "tasks-matrix",
+  "sourceCommit": "03749dc5c3109e818e2ec41dc16adaafcb055854",
+  "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+  "ciRun": "https://github.com/stsepelin/checktrail/actions/runs/39925822880",
+  "allSelectedRuntimeSlotsObserved": true,
+  "rows": [
+    {
+      "slot": "ci-linux-node22",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39925822880/job/120330569017",
+      "jobConclusion": "success",
+      "node": "22.23.3",
+      "platform": "linux",
+      "architecture": "x64",
+      "osRelease": "6.17.0-1022-azure",
+      "imageOS": "ubuntu24",
+      "imageVersion": "20261012.334.1",
+      "nodeExecutableSha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
+      "systemPowerShellSha256": null,
+      "sourceRequired": 26,
+      "sourcePassed": 26,
+      "installedRequired": 26,
+      "installedPassed": 26,
+      "wholeProfileCallbacksPassed": [
+        "tasks-matrix broken acceptance",
+        "tasks-matrix fixed acceptance",
+        "tasks-matrix near-miss acceptance",
+        "tasks-matrix prerequisite acceptance",
+        "tasks-matrix stale acceptance",
+        "tasks-matrix empty acceptance",
+        "tasks-matrix privacy acceptance",
+        "tasks-matrix lifecycle acceptance",
+        "tasks-matrix installed acceptance"
+      ],
+      "runtimeArtifactsSha256": "5f7edd734f64c201390df89ff98f45ca0ebfb05e8492caf2c60cf5a360e9f286",
+      "harnessSha256": "ebbc1d7d3378ac432e5cdbc034b695d28a80f8640184b5931b398e33e7280496",
+      "inputSources": [
+        [
+          "dist/test/mcp-validation-tasks.test.js",
+          "4255fc7b8cd22b1864c8f246e65f868d99ebe0651bbaa5b4de65df4781a18020"
+        ],
+        [
+          "dist/test/tasks-runtime-harness.test.js",
+          "0171ab94652a468e43eac949325e7cca131b373dedc55cc9e5346d14c686c567"
+        ],
+        [
+          "dist/test/gate-tasks-matrix.test.js",
+          "e10418f92aa3213bbfcfe4311e248edfee586d4b8496d9d89946b419f94eb483"
+        ],
+        [
+          "dist/test/tasks-sdk-fallback.test.js",
+          "577f3eb7bf2f51b8500430fb97fc0d5f4a57f2f69a699c8654ce3aa6c84fe485"
+        ],
+        [
+          "dist/test/windows-task-access.test.js",
+          "f410afff14a89269d50b5458835f32b2447c2640000798e578512d2e200107c6"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "package.json",
+          "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/verify-tasks-runtime.mjs",
+          "a14686bb41b79ae4ca39fed13c99b2a58c1c26a1905fb3f1dffec975d279727c"
+        ],
+        [
+          "dist/test/tasks-wire-fixture.js",
+          "72efbedc53f16f495efea9b15b1742888a2986830793510c55073390fff1a2be"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ],
+        [
+          "scripts/required-native-tests.json",
+          "d9c5d870e0382e5f9b43ac235b240d076c7c5f792b5cd0a5425e1dc41c7af50f"
+        ],
+        [
+          "scripts/tasks-runtime-evidence.mjs",
+          "97cdb1df8a3ac99919d31f34528181e468d8025e40f7cfc1a1afddf0a669c5fb"
+        ]
+      ],
+      "tarballSha256": "2daf2136887f9a0826aa58869a31be933f7879c7d88fe0e80f7b8d9ef0eed4c7",
+      "productionDependencyLockSha256": "c6245052010a4f85084db130d4aef906ea14a68f2165bb23ff75d8bd8d116965",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "windowsPrivateStorageNativeVerified": false,
+      "container": null,
+      "rawLogSha256": "4006278d95df087e761a42d8e0a1e2e7218f37f9ef295eebfb9bb0559864e7cf"
+    },
+    {
+      "slot": "ci-linux-node24",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39925822880/job/120330569097",
+      "jobConclusion": "success",
+      "node": "24.21.0",
+      "platform": "linux",
+      "architecture": "x64",
+      "osRelease": "6.17.0-1022-azure",
+      "imageOS": "ubuntu24",
+      "imageVersion": "20261012.334.1",
+      "nodeExecutableSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "systemPowerShellSha256": null,
+      "sourceRequired": 26,
+      "sourcePassed": 26,
+      "installedRequired": 26,
+      "installedPassed": 26,
+      "wholeProfileCallbacksPassed": [
+        "tasks-matrix broken acceptance",
+        "tasks-matrix fixed acceptance",
+        "tasks-matrix near-miss acceptance",
+        "tasks-matrix prerequisite acceptance",
+        "tasks-matrix stale acceptance",
+        "tasks-matrix empty acceptance",
+        "tasks-matrix privacy acceptance",
+        "tasks-matrix lifecycle acceptance",
+        "tasks-matrix installed acceptance"
+      ],
+      "runtimeArtifactsSha256": "5f7edd734f64c201390df89ff98f45ca0ebfb05e8492caf2c60cf5a360e9f286",
+      "harnessSha256": "ebbc1d7d3378ac432e5cdbc034b695d28a80f8640184b5931b398e33e7280496",
+      "inputSources": [
+        [
+          "dist/test/mcp-validation-tasks.test.js",
+          "4255fc7b8cd22b1864c8f246e65f868d99ebe0651bbaa5b4de65df4781a18020"
+        ],
+        [
+          "dist/test/tasks-runtime-harness.test.js",
+          "0171ab94652a468e43eac949325e7cca131b373dedc55cc9e5346d14c686c567"
+        ],
+        [
+          "dist/test/gate-tasks-matrix.test.js",
+          "e10418f92aa3213bbfcfe4311e248edfee586d4b8496d9d89946b419f94eb483"
+        ],
+        [
+          "dist/test/tasks-sdk-fallback.test.js",
+          "577f3eb7bf2f51b8500430fb97fc0d5f4a57f2f69a699c8654ce3aa6c84fe485"
+        ],
+        [
+          "dist/test/windows-task-access.test.js",
+          "f410afff14a89269d50b5458835f32b2447c2640000798e578512d2e200107c6"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "package.json",
+          "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/verify-tasks-runtime.mjs",
+          "a14686bb41b79ae4ca39fed13c99b2a58c1c26a1905fb3f1dffec975d279727c"
+        ],
+        [
+          "dist/test/tasks-wire-fixture.js",
+          "72efbedc53f16f495efea9b15b1742888a2986830793510c55073390fff1a2be"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ],
+        [
+          "scripts/required-native-tests.json",
+          "d9c5d870e0382e5f9b43ac235b240d076c7c5f792b5cd0a5425e1dc41c7af50f"
+        ],
+        [
+          "scripts/tasks-runtime-evidence.mjs",
+          "97cdb1df8a3ac99919d31f34528181e468d8025e40f7cfc1a1afddf0a669c5fb"
+        ]
+      ],
+      "tarballSha256": "2daf2136887f9a0826aa58869a31be933f7879c7d88fe0e80f7b8d9ef0eed4c7",
+      "productionDependencyLockSha256": "ee4c45eebf3ce6288d05e89ec6d39b9c8a37866fdc2d4000fea10880e0315862",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "windowsPrivateStorageNativeVerified": false,
+      "container": null,
+      "rawLogSha256": "df545d2d3d5c31c302e58046ea0c9daaaa1ce38eba2bbb6f4ae498eefb0b7a77"
+    },
+    {
+      "slot": "ci-linux-node26",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39925822880/job/120330569034",
+      "jobConclusion": "success",
+      "node": "26.10.0",
+      "platform": "linux",
+      "architecture": "x64",
+      "osRelease": "6.17.0-1022-azure",
+      "imageOS": "ubuntu24",
+      "imageVersion": "20261012.334.1",
+      "nodeExecutableSha256": "ab9c8eecf9f82d6693cdc3accced17034065c8d96213b0aa76a7e803d20ae1da",
+      "systemPowerShellSha256": null,
+      "sourceRequired": 26,
+      "sourcePassed": 26,
+      "installedRequired": 26,
+      "installedPassed": 26,
+      "wholeProfileCallbacksPassed": [
+        "tasks-matrix broken acceptance",
+        "tasks-matrix fixed acceptance",
+        "tasks-matrix near-miss acceptance",
+        "tasks-matrix prerequisite acceptance",
+        "tasks-matrix stale acceptance",
+        "tasks-matrix empty acceptance",
+        "tasks-matrix privacy acceptance",
+        "tasks-matrix lifecycle acceptance",
+        "tasks-matrix installed acceptance"
+      ],
+      "runtimeArtifactsSha256": "5f7edd734f64c201390df89ff98f45ca0ebfb05e8492caf2c60cf5a360e9f286",
+      "harnessSha256": "ebbc1d7d3378ac432e5cdbc034b695d28a80f8640184b5931b398e33e7280496",
+      "inputSources": [
+        [
+          "dist/test/mcp-validation-tasks.test.js",
+          "4255fc7b8cd22b1864c8f246e65f868d99ebe0651bbaa5b4de65df4781a18020"
+        ],
+        [
+          "dist/test/tasks-runtime-harness.test.js",
+          "0171ab94652a468e43eac949325e7cca131b373dedc55cc9e5346d14c686c567"
+        ],
+        [
+          "dist/test/gate-tasks-matrix.test.js",
+          "e10418f92aa3213bbfcfe4311e248edfee586d4b8496d9d89946b419f94eb483"
+        ],
+        [
+          "dist/test/tasks-sdk-fallback.test.js",
+          "577f3eb7bf2f51b8500430fb97fc0d5f4a57f2f69a699c8654ce3aa6c84fe485"
+        ],
+        [
+          "dist/test/windows-task-access.test.js",
+          "f410afff14a89269d50b5458835f32b2447c2640000798e578512d2e200107c6"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "package.json",
+          "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/verify-tasks-runtime.mjs",
+          "a14686bb41b79ae4ca39fed13c99b2a58c1c26a1905fb3f1dffec975d279727c"
+        ],
+        [
+          "dist/test/tasks-wire-fixture.js",
+          "72efbedc53f16f495efea9b15b1742888a2986830793510c55073390fff1a2be"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ],
+        [
+          "scripts/required-native-tests.json",
+          "d9c5d870e0382e5f9b43ac235b240d076c7c5f792b5cd0a5425e1dc41c7af50f"
+        ],
+        [
+          "scripts/tasks-runtime-evidence.mjs",
+          "97cdb1df8a3ac99919d31f34528181e468d8025e40f7cfc1a1afddf0a669c5fb"
+        ]
+      ],
+      "tarballSha256": "2daf2136887f9a0826aa58869a31be933f7879c7d88fe0e80f7b8d9ef0eed4c7",
+      "productionDependencyLockSha256": "f35ee6a16431cff18bc4c496707e4728136757673c1c4cfb1bc05fd8ed8e2e53",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "windowsPrivateStorageNativeVerified": false,
+      "container": null,
+      "rawLogSha256": "7c90f2ad4a3f3e8da9d514c53cb9986076b486ff887ebd613d0f3c7e0fe40f41"
+    },
+    {
+      "slot": "ci-macos-node22",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39925822880/job/120330569164",
+      "jobConclusion": "success",
+      "node": "22.23.3",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "osRelease": "25.6.0",
+      "imageOS": "macos26",
+      "imageVersion": "20261013.0424.1",
+      "nodeExecutableSha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+      "systemPowerShellSha256": null,
+      "sourceRequired": 26,
+      "sourcePassed": 26,
+      "installedRequired": 26,
+      "installedPassed": 26,
+      "wholeProfileCallbacksPassed": [
+        "tasks-matrix broken acceptance",
+        "tasks-matrix fixed acceptance",
+        "tasks-matrix near-miss acceptance",
+        "tasks-matrix prerequisite acceptance",
+        "tasks-matrix stale acceptance",
+        "tasks-matrix empty acceptance",
+        "tasks-matrix privacy acceptance",
+        "tasks-matrix lifecycle acceptance",
+        "tasks-matrix installed acceptance"
+      ],
+      "runtimeArtifactsSha256": "5f7edd734f64c201390df89ff98f45ca0ebfb05e8492caf2c60cf5a360e9f286",
+      "harnessSha256": "ebbc1d7d3378ac432e5cdbc034b695d28a80f8640184b5931b398e33e7280496",
+      "inputSources": [
+        [
+          "dist/test/mcp-validation-tasks.test.js",
+          "4255fc7b8cd22b1864c8f246e65f868d99ebe0651bbaa5b4de65df4781a18020"
+        ],
+        [
+          "dist/test/tasks-runtime-harness.test.js",
+          "0171ab94652a468e43eac949325e7cca131b373dedc55cc9e5346d14c686c567"
+        ],
+        [
+          "dist/test/gate-tasks-matrix.test.js",
+          "e10418f92aa3213bbfcfe4311e248edfee586d4b8496d9d89946b419f94eb483"
+        ],
+        [
+          "dist/test/tasks-sdk-fallback.test.js",
+          "577f3eb7bf2f51b8500430fb97fc0d5f4a57f2f69a699c8654ce3aa6c84fe485"
+        ],
+        [
+          "dist/test/windows-task-access.test.js",
+          "f410afff14a89269d50b5458835f32b2447c2640000798e578512d2e200107c6"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "package.json",
+          "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/verify-tasks-runtime.mjs",
+          "a14686bb41b79ae4ca39fed13c99b2a58c1c26a1905fb3f1dffec975d279727c"
+        ],
+        [
+          "dist/test/tasks-wire-fixture.js",
+          "72efbedc53f16f495efea9b15b1742888a2986830793510c55073390fff1a2be"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ],
+        [
+          "scripts/required-native-tests.json",
+          "d9c5d870e0382e5f9b43ac235b240d076c7c5f792b5cd0a5425e1dc41c7af50f"
+        ],
+        [
+          "scripts/tasks-runtime-evidence.mjs",
+          "97cdb1df8a3ac99919d31f34528181e468d8025e40f7cfc1a1afddf0a669c5fb"
+        ]
+      ],
+      "tarballSha256": "2daf2136887f9a0826aa58869a31be933f7879c7d88fe0e80f7b8d9ef0eed4c7",
+      "productionDependencyLockSha256": "adbb3d1ba16d5278f5ef95f8f300d65afb37da719240f6a7998e43b589e6457a",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "windowsPrivateStorageNativeVerified": false,
+      "container": null,
+      "rawLogSha256": "0f3c8b55e7bf2fda667a92c8de883258369577521d5d8c71c62b5461933e8688"
+    },
+    {
+      "slot": "ci-macos-node24",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39925822880/job/120330569196",
+      "jobConclusion": "success",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "osRelease": "25.6.0",
+      "imageOS": "macos26",
+      "imageVersion": "20261013.0424.1",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "systemPowerShellSha256": null,
+      "sourceRequired": 26,
+      "sourcePassed": 26,
+      "installedRequired": 26,
+      "installedPassed": 26,
+      "wholeProfileCallbacksPassed": [
+        "tasks-matrix broken acceptance",
+        "tasks-matrix fixed acceptance",
+        "tasks-matrix near-miss acceptance",
+        "tasks-matrix prerequisite acceptance",
+        "tasks-matrix stale acceptance",
+        "tasks-matrix empty acceptance",
+        "tasks-matrix privacy acceptance",
+        "tasks-matrix lifecycle acceptance",
+        "tasks-matrix installed acceptance"
+      ],
+      "runtimeArtifactsSha256": "5f7edd734f64c201390df89ff98f45ca0ebfb05e8492caf2c60cf5a360e9f286",
+      "harnessSha256": "ebbc1d7d3378ac432e5cdbc034b695d28a80f8640184b5931b398e33e7280496",
+      "inputSources": [
+        [
+          "dist/test/mcp-validation-tasks.test.js",
+          "4255fc7b8cd22b1864c8f246e65f868d99ebe0651bbaa5b4de65df4781a18020"
+        ],
+        [
+          "dist/test/tasks-runtime-harness.test.js",
+          "0171ab94652a468e43eac949325e7cca131b373dedc55cc9e5346d14c686c567"
+        ],
+        [
+          "dist/test/gate-tasks-matrix.test.js",
+          "e10418f92aa3213bbfcfe4311e248edfee586d4b8496d9d89946b419f94eb483"
+        ],
+        [
+          "dist/test/tasks-sdk-fallback.test.js",
+          "577f3eb7bf2f51b8500430fb97fc0d5f4a57f2f69a699c8654ce3aa6c84fe485"
+        ],
+        [
+          "dist/test/windows-task-access.test.js",
+          "f410afff14a89269d50b5458835f32b2447c2640000798e578512d2e200107c6"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "package.json",
+          "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/verify-tasks-runtime.mjs",
+          "a14686bb41b79ae4ca39fed13c99b2a58c1c26a1905fb3f1dffec975d279727c"
+        ],
+        [
+          "dist/test/tasks-wire-fixture.js",
+          "72efbedc53f16f495efea9b15b1742888a2986830793510c55073390fff1a2be"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ],
+        [
+          "scripts/required-native-tests.json",
+          "d9c5d870e0382e5f9b43ac235b240d076c7c5f792b5cd0a5425e1dc41c7af50f"
+        ],
+        [
+          "scripts/tasks-runtime-evidence.mjs",
+          "97cdb1df8a3ac99919d31f34528181e468d8025e40f7cfc1a1afddf0a669c5fb"
+        ]
+      ],
+      "tarballSha256": "2daf2136887f9a0826aa58869a31be933f7879c7d88fe0e80f7b8d9ef0eed4c7",
+      "productionDependencyLockSha256": "484045a1efb1d5c0dc79b9c2cdc4cbb5d564ec3eced75a32b693d7e4de252bed",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "windowsPrivateStorageNativeVerified": false,
+      "container": null,
+      "rawLogSha256": "38d74d6c5fce62525653eb871237ebcfa70033c056d7c95ecfcfd4f72b747428"
+    },
+    {
+      "slot": "ci-macos-node26",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39925822880/job/120330569008",
+      "jobConclusion": "success",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "osRelease": "25.6.0",
+      "imageOS": "macos26",
+      "imageVersion": "20261021.0445.8",
+      "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+      "systemPowerShellSha256": null,
+      "sourceRequired": 26,
+      "sourcePassed": 26,
+      "installedRequired": 26,
+      "installedPassed": 26,
+      "wholeProfileCallbacksPassed": [
+        "tasks-matrix broken acceptance",
+        "tasks-matrix fixed acceptance",
+        "tasks-matrix near-miss acceptance",
+        "tasks-matrix prerequisite acceptance",
+        "tasks-matrix stale acceptance",
+        "tasks-matrix empty acceptance",
+        "tasks-matrix privacy acceptance",
+        "tasks-matrix lifecycle acceptance",
+        "tasks-matrix installed acceptance"
+      ],
+      "runtimeArtifactsSha256": "5f7edd734f64c201390df89ff98f45ca0ebfb05e8492caf2c60cf5a360e9f286",
+      "harnessSha256": "ebbc1d7d3378ac432e5cdbc034b695d28a80f8640184b5931b398e33e7280496",
+      "inputSources": [
+        [
+          "dist/test/mcp-validation-tasks.test.js",
+          "4255fc7b8cd22b1864c8f246e65f868d99ebe0651bbaa5b4de65df4781a18020"
+        ],
+        [
+          "dist/test/tasks-runtime-harness.test.js",
+          "0171ab94652a468e43eac949325e7cca131b373dedc55cc9e5346d14c686c567"
+        ],
+        [
+          "dist/test/gate-tasks-matrix.test.js",
+          "e10418f92aa3213bbfcfe4311e248edfee586d4b8496d9d89946b419f94eb483"
+        ],
+        [
+          "dist/test/tasks-sdk-fallback.test.js",
+          "577f3eb7bf2f51b8500430fb97fc0d5f4a57f2f69a699c8654ce3aa6c84fe485"
+        ],
+        [
+          "dist/test/windows-task-access.test.js",
+          "f410afff14a89269d50b5458835f32b2447c2640000798e578512d2e200107c6"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "package.json",
+          "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/verify-tasks-runtime.mjs",
+          "a14686bb41b79ae4ca39fed13c99b2a58c1c26a1905fb3f1dffec975d279727c"
+        ],
+        [
+          "dist/test/tasks-wire-fixture.js",
+          "72efbedc53f16f495efea9b15b1742888a2986830793510c55073390fff1a2be"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ],
+        [
+          "scripts/required-native-tests.json",
+          "d9c5d870e0382e5f9b43ac235b240d076c7c5f792b5cd0a5425e1dc41c7af50f"
+        ],
+        [
+          "scripts/tasks-runtime-evidence.mjs",
+          "97cdb1df8a3ac99919d31f34528181e468d8025e40f7cfc1a1afddf0a669c5fb"
+        ]
+      ],
+      "tarballSha256": "2daf2136887f9a0826aa58869a31be933f7879c7d88fe0e80f7b8d9ef0eed4c7",
+      "productionDependencyLockSha256": "d5d7f95ccfbc1d6acd7952192fc7300192d6587cda26e331d5d98f6e3bf3f871",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "windowsPrivateStorageNativeVerified": false,
+      "container": null,
+      "rawLogSha256": "763273f88b85251ed704c2c0bdde1205615be8c77e206625cf3c8c757f335d16"
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39925822880/job/120330568458",
+      "jobConclusion": "success",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "osRelease": "6.17.0-1022-azure",
+      "imageOS": null,
+      "imageVersion": null,
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "systemPowerShellSha256": null,
+      "sourceRequired": 26,
+      "sourcePassed": 26,
+      "installedRequired": 26,
+      "installedPassed": 26,
+      "wholeProfileCallbacksPassed": [
+        "tasks-matrix broken acceptance",
+        "tasks-matrix fixed acceptance",
+        "tasks-matrix near-miss acceptance",
+        "tasks-matrix prerequisite acceptance",
+        "tasks-matrix stale acceptance",
+        "tasks-matrix empty acceptance",
+        "tasks-matrix privacy acceptance",
+        "tasks-matrix lifecycle acceptance",
+        "tasks-matrix installed acceptance"
+      ],
+      "runtimeArtifactsSha256": "5f7edd734f64c201390df89ff98f45ca0ebfb05e8492caf2c60cf5a360e9f286",
+      "harnessSha256": "ebbc1d7d3378ac432e5cdbc034b695d28a80f8640184b5931b398e33e7280496",
+      "inputSources": [
+        [
+          "dist/test/mcp-validation-tasks.test.js",
+          "4255fc7b8cd22b1864c8f246e65f868d99ebe0651bbaa5b4de65df4781a18020"
+        ],
+        [
+          "dist/test/tasks-runtime-harness.test.js",
+          "0171ab94652a468e43eac949325e7cca131b373dedc55cc9e5346d14c686c567"
+        ],
+        [
+          "dist/test/gate-tasks-matrix.test.js",
+          "e10418f92aa3213bbfcfe4311e248edfee586d4b8496d9d89946b419f94eb483"
+        ],
+        [
+          "dist/test/tasks-sdk-fallback.test.js",
+          "577f3eb7bf2f51b8500430fb97fc0d5f4a57f2f69a699c8654ce3aa6c84fe485"
+        ],
+        [
+          "dist/test/windows-task-access.test.js",
+          "f410afff14a89269d50b5458835f32b2447c2640000798e578512d2e200107c6"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "package.json",
+          "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/verify-tasks-runtime.mjs",
+          "a14686bb41b79ae4ca39fed13c99b2a58c1c26a1905fb3f1dffec975d279727c"
+        ],
+        [
+          "dist/test/tasks-wire-fixture.js",
+          "72efbedc53f16f495efea9b15b1742888a2986830793510c55073390fff1a2be"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ],
+        [
+          "scripts/required-native-tests.json",
+          "d9c5d870e0382e5f9b43ac235b240d076c7c5f792b5cd0a5425e1dc41c7af50f"
+        ],
+        [
+          "scripts/tasks-runtime-evidence.mjs",
+          "97cdb1df8a3ac99919d31f34528181e468d8025e40f7cfc1a1afddf0a669c5fb"
+        ]
+      ],
+      "tarballSha256": "2daf2136887f9a0826aa58869a31be933f7879c7d88fe0e80f7b8d9ef0eed4c7",
+      "productionDependencyLockSha256": "b0e5068e18b42a2dda8ed6f9a34ab7646a18d9e414c9895da9f3ea93519f729c",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "windowsPrivateStorageNativeVerified": false,
+      "container": {
+        "reference": "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+        "imageConfigSha256": "sha256:828963118f6838ebdaf6b01b9b24d10c5dffe2f4aaf3ebca33d0d3f74366833e",
+        "network": "none",
+        "sourceReadOnly": true
+      },
+      "rawLogSha256": "f64891159ee450479060894222cf1f7f9b5b6dba1079fd64e1116f0f9eb378e7"
+    },
+    {
+      "slot": "windows-node22",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39925822880/job/120330569150",
+      "jobConclusion": "success",
+      "node": "22.23.3",
+      "platform": "win32",
+      "architecture": "x64",
+      "osRelease": "10.0.26100",
+      "imageOS": "win25-vs2026",
+      "imageVersion": "20261021.278.1",
+      "nodeExecutableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+      "systemPowerShellSha256": "41796f1f3d81f921fdb4030c865f9dcf5032a2a1b49dde148bbc99e8d10f6e8c",
+      "sourceRequired": 29,
+      "sourcePassed": 29,
+      "installedRequired": 29,
+      "installedPassed": 29,
+      "wholeProfileCallbacksPassed": [
+        "tasks-matrix broken acceptance",
+        "tasks-matrix fixed acceptance",
+        "tasks-matrix near-miss acceptance",
+        "tasks-matrix prerequisite acceptance",
+        "tasks-matrix stale acceptance",
+        "tasks-matrix empty acceptance",
+        "tasks-matrix privacy acceptance",
+        "tasks-matrix lifecycle acceptance",
+        "tasks-matrix installed acceptance"
+      ],
+      "runtimeArtifactsSha256": "5f7edd734f64c201390df89ff98f45ca0ebfb05e8492caf2c60cf5a360e9f286",
+      "harnessSha256": "ebbc1d7d3378ac432e5cdbc034b695d28a80f8640184b5931b398e33e7280496",
+      "inputSources": [
+        [
+          "dist/test/mcp-validation-tasks.test.js",
+          "4255fc7b8cd22b1864c8f246e65f868d99ebe0651bbaa5b4de65df4781a18020"
+        ],
+        [
+          "dist/test/tasks-runtime-harness.test.js",
+          "0171ab94652a468e43eac949325e7cca131b373dedc55cc9e5346d14c686c567"
+        ],
+        [
+          "dist/test/gate-tasks-matrix.test.js",
+          "e10418f92aa3213bbfcfe4311e248edfee586d4b8496d9d89946b419f94eb483"
+        ],
+        [
+          "dist/test/tasks-sdk-fallback.test.js",
+          "577f3eb7bf2f51b8500430fb97fc0d5f4a57f2f69a699c8654ce3aa6c84fe485"
+        ],
+        [
+          "dist/test/windows-task-access.test.js",
+          "f410afff14a89269d50b5458835f32b2447c2640000798e578512d2e200107c6"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "package.json",
+          "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/verify-tasks-runtime.mjs",
+          "a14686bb41b79ae4ca39fed13c99b2a58c1c26a1905fb3f1dffec975d279727c"
+        ],
+        [
+          "dist/test/tasks-wire-fixture.js",
+          "72efbedc53f16f495efea9b15b1742888a2986830793510c55073390fff1a2be"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ],
+        [
+          "scripts/required-native-tests.json",
+          "d9c5d870e0382e5f9b43ac235b240d076c7c5f792b5cd0a5425e1dc41c7af50f"
+        ],
+        [
+          "scripts/tasks-runtime-evidence.mjs",
+          "97cdb1df8a3ac99919d31f34528181e468d8025e40f7cfc1a1afddf0a669c5fb"
+        ]
+      ],
+      "tarballSha256": "2daf2136887f9a0826aa58869a31be933f7879c7d88fe0e80f7b8d9ef0eed4c7",
+      "productionDependencyLockSha256": "31a18a0f901f83ffc83889ddae7faad8fc5fe911de451a663e6c792495bf7ea7",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "windowsPrivateStorageNativeVerified": true,
+      "container": null,
+      "rawLogSha256": "0871a618c474ee41046ab7005fb2ac590e07d62fb622727619ff92ab656df94b"
+    }
+  ],
+  "receiptSource": "Current-head completed GitHub jobs and retained structured JSON packets; observed metadata, not independently authenticated execution.",
+  "compiledEngineScope": "SHA-256 of the sorted relative file/digest pairs under dist/src, before and after each source/installed run; dependencies and actual module loads are not attested.",
+  "finalCandidateRuntimeAcceptance": false,
+  "hostedImageMetadataAttested": false,
+  "operatorTrustAsserted": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}
