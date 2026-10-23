@@ -405,3 +405,236 @@ Object.defineProperty(process,'platform',{value:platform});await import(target);
     ]);
   }
 });
+
+test("Tasks runtime selection binds every frozen acceptance case and preserves the complete platform control family", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const { selectTasksRuntimeRequirements } = await import(
+    new URL("../../scripts/tasks-runtime-evidence.mjs", import.meta.url).href
+  );
+  const profiles = JSON.parse(
+    await readFile(
+      new URL("../../scripts/required-native-tests.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  const scope = JSON.parse(
+    await readFile(
+      new URL("../../docs/gate-a-profiles.v1.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  type Row = { file: string; name: string };
+  const selected = scope.extensionProfiles.find(
+    (row: { id: string }) => row.id === "tasks-matrix",
+  );
+  const expected = selected.acceptanceCases.map((row: { name: string }) => ({
+    file: selected.acceptanceFile,
+    name: row.name,
+  }));
+  assert.equal(expected.length, 9);
+  for (const platform of ["darwin", "linux", "win32"]) {
+    const before = structuredClone(profiles);
+    const rows: Row[] = selectTasksRuntimeRequirements(
+      profiles,
+      selected,
+      platform,
+    );
+    assert.deepEqual(
+      rows.filter((row) => row.file === selected.acceptanceFile),
+      expected,
+    );
+    assert.deepEqual(rows.slice(0, 10), profiles["mcp-tasks"]);
+    assert.equal(rows.length, platform === "win32" ? 29 : 26);
+    assert.equal(
+      rows.filter(
+        (row) =>
+          row.name ===
+          "Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits",
+      ).length,
+      1,
+    );
+
+    assert.equal(
+      new Set(rows.map((row) => JSON.stringify([row.file, row.name]))).size,
+      rows.length,
+    );
+    assert.equal(
+      rows.filter(
+        (row) =>
+          row.name ===
+          "Tasks runtime selection binds every frozen acceptance case and preserves the complete platform control family",
+      ).length,
+      1,
+    );
+    for (const name of [
+      "Windows isolated harness namespace cleanup waits for native cwd release and reports exhausted locks",
+      "native Windows task storage uses private ACLs for literal Unicode paths and native SQLite owner journals",
+      "native Windows task storage refuses a publicly readable directory without changing its ACL or creating a database",
+    ])
+      assert.equal(
+        rows.filter((row) => row.name === name).length,
+        platform === "win32" ? 1 : 0,
+      );
+    const other = structuredClone(profiles);
+    other["tasks-matrix-sibling"] = [
+      { file: "dist/test/foreign.test.js", name: "OriginalAdjacentProfile" },
+    ];
+    assert.deepEqual(
+      selectTasksRuntimeRequirements(other, selected, platform),
+      rows,
+    );
+    rows[0]!.name = "OriginalReturnedCopyMutation";
+    assert.deepEqual(profiles, before);
+  }
+  for (const mode of [
+    "missing",
+    "renamed",
+    "foreign-file",
+    "duplicate",
+    "extra",
+    "removed-mcp",
+    "mcp-extra-field",
+  ]) {
+    const changed = structuredClone(profiles);
+    if (mode === "missing") changed["tasks-matrix"].pop();
+    else if (mode === "renamed") changed["tasks-matrix"][0].name += " changed";
+    else if (mode === "foreign-file")
+      changed["tasks-matrix"][0].file = "dist/test/foreign.test.js";
+    else if (mode === "duplicate")
+      changed["tasks-matrix"][1] = changed["tasks-matrix"][0];
+    else if (mode === "extra")
+      changed["tasks-matrix"].push({
+        file: "dist/test/foreign.test.js",
+        name: "OriginalUnexpectedCase",
+      });
+    else if (mode === "removed-mcp") changed["mcp-tasks"].pop();
+    else changed["mcp-tasks"][0].extra = "OriginalUndeclaredField";
+    assert.throws(
+      () => selectTasksRuntimeRequirements(changed, selected, "darwin"),
+      mode === "removed-mcp"
+        ? /Preserved MCP Tasks cohort changed/
+        : mode === "mcp-extra-field"
+          ? /Invalid Tasks requirement fields/
+          : /Frozen Tasks acceptance bindings changed/,
+      mode,
+    );
+  }
+  for (const platform of ["win32-suffix", "freebsd", ""])
+    assert.throws(
+      () => selectTasksRuntimeRequirements(profiles, selected, platform),
+      /Unknown Tasks runtime platform/,
+    );
+  assert.throws(
+    () =>
+      selectTasksRuntimeRequirements(
+        profiles,
+        { ...selected, id: "tasks-matrix-sibling" },
+        "darwin",
+      ),
+    /Unknown frozen Tasks profile/,
+  );
+});
+
+test("Tasks generic CLI isolates exact required callbacks while adjacent profile names retain whole-file skip accounting", async (t) => {
+  const { cp, readFile, writeFile } = await import("node:fs/promises");
+  const file = "dist/test/original-tasks-cli.test.js";
+  const first = { file, name: "OriginalRequiredMatrix" };
+  const second = { file, name: "OriginalRequiredManifest" };
+  const root = await fixture(t, {
+    "package.json": '{"type":"module"}',
+    "scripts/required-native-tests.json": JSON.stringify({
+      "tasks-matrix": [first],
+      "tasks-runtime-manifest": [second],
+      "tasks-runtime-cli": [second],
+      "tasks-matrix-extra": [first],
+    }),
+    "dist/src/original.js": "export const original = 1;\n",
+    "marker.txt": "",
+    [file]: `import{test}from'node:test';import{appendFileSync}from'node:fs';test('OriginalRequiredMatrix',()=>appendFileSync('marker.txt','matrix\\n'));test('OriginalRequiredManifest',()=>appendFileSync('marker.txt','manifest\\n'));test.skip('OriginalForeignPlatform',()=>{throw Error('Unselected foreign callback must not execute');});`,
+  });
+  for (const helper of [
+    "verify-required-native-tests.mjs",
+    "required-test-evidence.mjs",
+  ])
+    await cp(
+      new URL("../../scripts/" + helper, import.meta.url),
+      path.join(root, "scripts", helper),
+    );
+  // Newer runtime revisions use this observer; its synthetic engine input above
+  // is deliberate fixture data, separate from the installed engine acceptance.
+  await cp(
+    new URL("../../scripts/compiled-engine-evidence.mjs", import.meta.url),
+    path.join(root, "scripts/compiled-engine-evidence.mjs"),
+  ).catch((error: NodeJS.ErrnoException) => {
+    if (error.code !== "ENOENT") throw error;
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  for (const selection of [
+    ["tasks-matrix"],
+    ["tasks-runtime-manifest"],
+    ["tasks-runtime-cli"],
+    ["tasks-matrix", "tasks-runtime-manifest"],
+  ]) {
+    await writeFile(path.join(root, "marker.txt"), "");
+    const result = spawnSync(
+      process.execPath,
+      [
+        path.join(root, "scripts/verify-required-native-tests.mjs"),
+        ...selection,
+      ],
+      { cwd: root, env, encoding: "utf8", timeout: 30000, maxBuffer: 1048576 },
+    );
+    assert.equal(result.status, 0, result.stderr + result.stdout);
+    const packet = JSON.parse(result.stdout);
+    const expected = selection
+      .map((profile) => (profile === "tasks-matrix" ? first.name : second.name))
+      .sort();
+    assert.equal(packet.complete, true);
+    assert.equal(packet.required, expected.length);
+    assert.equal(packet.passed, expected.length);
+    assert.deepEqual(packet.problems, []);
+    assert.deepEqual(
+      packet.ledger.cases.map((row: { name: string }) => row.name).sort(),
+      expected,
+    );
+    assert.ok(
+      packet.ledger.events.every(
+        (row: { required: boolean; outcome: string }) =>
+          row.required && row.outcome === "passed",
+      ),
+    );
+    const markers = (await readFile(path.join(root, "marker.txt"), "utf8"))
+      .trim()
+      .split("\n")
+      .sort();
+    assert.deepEqual(
+      markers,
+      expected
+        .map((name) => (name === first.name ? "matrix" : "manifest"))
+        .sort(),
+    );
+  }
+  await writeFile(path.join(root, "marker.txt"), "");
+  const adjacent = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "scripts/verify-required-native-tests.mjs"),
+      "tasks-matrix-extra",
+    ],
+    { cwd: root, env, encoding: "utf8", timeout: 30000, maxBuffer: 1048576 },
+  );
+  assert.equal(adjacent.status, 1, adjacent.stderr);
+  const packet = JSON.parse(adjacent.stdout);
+  assert.equal(packet.complete, false);
+  assert.deepEqual(packet.problems, [
+    { name: "OriginalForeignPlatform", reason: "skipped-or-todo" },
+  ]);
+  assert.deepEqual(
+    (await readFile(path.join(root, "marker.txt"), "utf8"))
+      .trim()
+      .split("\n")
+      .sort(),
+    ["manifest", "matrix"],
+  );
+});
