@@ -125,8 +125,8 @@
     "scope": "development",
     "notice": "docs/licenses/npm-fb-watchman2.0.2.txt",
     "sha256": "2d4c3d00d67067461412a2d9a2f3f8b7b9cda62b3db501e4b6844ccf35c949aa",
-    "source": "https://raw.githubusercontent.com/facebook/watchman/5a5c364ee24c7a44502bfd22f929fc8f74626bb7/LICENSE",
-    "upstreamManifestVersion": "2.0.1",
+    "source": "https://raw.githubusercontent.com/facebook/watchman/05872a3eb9d909858983b2c30addc6a286da2f0f/LICENSE",
+    "upstreamManifestVersion": "2.0.2",
     "license": "MIT",
     "files": {
       "index.js": "174162c01b5c8bf9b031bbef70f5ecd9b8a972e67c16e3cd1a098944b51293bf",
@@ -184,6 +184,19 @@
       "README.md": "4491517f7deb68d0b2a3bb590e785e276a60f12448447a9650d0bd50161a101c",
       "imurmurhash.js": "45368bfe11080c4504b7804602015d93873303c5b13d5710af6c42e9abc35b4a",
       "imurmurhash.min.js": "ea8490563a229b89f2b779217938f9eb2bcf93dd89de9f7fc5c035632f0934b5"
+    }
+  },
+  "eastasianwidth@0.2.0": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-eastasianwidth0.2.0.txt",
+    "sha256": "94aa6016fb9d436508366433e9caba061443ca58f4c7eb515caec7badf90ae5a",
+    "source": "https://raw.githubusercontent.com/komagata/eastasianwidth/1d41951a59d63fb2d77cda021050fc070cae424a/MIT-LICENSE.txt",
+    "upstreamManifestVersion": "0.3.0",
+    "license": "MIT",
+    "files": {
+      "README.md": "5a20e0a3c5f1a6b449dd3fee8e3f0c7dc0a6e508c93fa5703d7c8823d35aed54",
+      "eastasianwidth.js": "2672ae17e3d91c246546bf3d56e78c95570eec79381ec143f41d45ec498bccab",
+      "package.json": "51db62f97656d02d4bc9670393cae42930dbd1ed89f5837056851807e602867a"
     }
   }
 }

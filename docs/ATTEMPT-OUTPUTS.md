@@ -53,12 +53,15 @@ The [measurement](measurements/attempt-output-foundation-2026-10-11.json) record
 observed runtimes, immutable code/harness/package identities and paired guard
 removals using unchanged assertions on isolated copies.
 
-A [native journal codec and private storage foundation](NATIVE-ATTEMPT-JOURNALS.md)
+The [native journal and private storage implementation](NATIVE-ATTEMPT-JOURNALS.md)
 adds ordered admissions, actual process acknowledgements, bounded physical chunks
-and strict replay. Source and offline installed controls are measured; the shared
-engine does not collect these journals yet. Shared JVM and Rust workspace calls
-now use the streamed invocation boundary; the JVM helper can receive one explicit
-journal shared by its calls. The remaining synchronous wrappers are still pending.
+and strict replay. The shared engine prepares and collects journals for an exact
+catalog of shipped Node wrapper entrypoints after operator trust, before deleting
+owned scratch files. Selected JVM, Rust and formerly synchronous Node wrapper
+calls use the shared streamed invocation boundary. Source and offline installed
+controls cover these wiring and replay boundaries; complete native call-family
+acceptance, embedded language/VM subprocesses and the required Windows/runtime
+matrix remain pending.
 
 Detailed Tasks can retain oversized captured reports through the bounded hashed
 chunks described in [task storage](TASK-STORAGE.md). This retains existing report
