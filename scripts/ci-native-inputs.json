@@ -2034,6 +2034,7 @@
   ],
   "test/review-nuxt-assembly-fixture.ts": ["nuxt-assembly-arm64"],
   "test/review-nuxt-assembly-guards.test.ts": ["nuxt-assembly-arm64"],
+  "test/review-probe-storage.test.ts": ["tasks-runtime"],
   "test/review-ruby-boundaries-fixture.ts": ["ruby-context-arm64"],
   "test/review-runtime-evidence.test.ts": ["tasks-runtime"],
   "test/review-scala-boundaries-fixture.ts": ["scala-context-arm64"],

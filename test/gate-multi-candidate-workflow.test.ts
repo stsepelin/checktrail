@@ -132,6 +132,42 @@ test("multi-candidate-workflow fixed acceptance", async (t) => {
     ),
   );
   unknown(report);
+  const jsonRecipe = {
+    ...structuredClone(recipe),
+    schemaVersion: 2 as const,
+    profile: "node-export-json-v1" as const,
+  };
+  const contents = JSON.stringify(jsonRecipe),
+    json = await begin(
+      t,
+      "export function decision(name){return name === 'grant:read';}\n",
+      { probes: [{ contents, sha256: hash(contents) }] },
+    );
+  await json.engine.submit(
+    json.id,
+    response(
+      reviewWorkflowAssignmentSchema.parse(
+        await json.engine.next(json.id, json.state.candidateHandles[0]),
+      ),
+    ),
+  );
+  const receipts: ReviewWorkflowNativeReceipt[] = [];
+  const state = await json.engine.probe(json.id, recipe.id, undefined, (r) =>
+    receipts.push(r),
+  );
+  assert.equal(state.status, "ready");
+  assert.equal(state.nextStage, "adjudicator");
+  assert.equal(receipts.length, 1);
+  assert.equal(receipts[0]!.run.schemaVersion, 4);
+  assert.equal(receipts[0]!.run.status, "completed");
+  assert.equal(receipts[0]!.run.counts.observed, 3);
+  assert.equal(receipts[0]!.run.behavior, "satisfied");
+  assert.ok(
+    receipts[0]!.run.trials.every(
+      (item) =>
+        item.execution?.artifact.output?.completeForObservedStreams === true,
+    ),
+  );
 });
 test("multi-candidate-workflow near-miss acceptance", async (t) => {
   const d = await complete(
@@ -290,7 +326,7 @@ function alive(pid: number) {
 }
 test(
   "multi-candidate-workflow lifecycle acceptance",
-  { timeout: 60000 },
+  { timeout: process.platform === "win32" ? 90000 : 60000 },
   async (t) => {
     const previous = Object.fromEntries(
       ["TMPDIR", "TMP", "TEMP"].map((n) => [n, process.env[n]]),
@@ -306,7 +342,14 @@ test(
         const contents = JSON.stringify(selected);
         const d = await begin(t, lifecycleSource, {
           probes: [{ contents, sha256: hash(contents) }],
-          nativeWallMs: mode === "timeout" ? 4000 : 12000,
+          nativeWallMs:
+            process.platform === "win32"
+              ? mode === "timeout"
+                ? 12000
+                : 20000
+              : mode === "timeout"
+                ? 4000
+                : 12000,
           maxNativeOutputBytes: mode === "output" ? 128 : 65536,
         });
         for (const name of Object.keys(previous)) process.env[name] = temporary;
@@ -327,7 +370,8 @@ test(
           (r) => receipts.push(r),
         );
         try {
-          const deadline = Date.now() + 8000;
+          const deadline =
+            Date.now() + (process.platform === "win32" ? 15000 : 8000);
           let ids: { pid: number; child: number } | undefined;
           while (!ids) {
             try {

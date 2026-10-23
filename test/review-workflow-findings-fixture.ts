@@ -126,11 +126,16 @@ export async function complete(
       workflowId: state.workflowId,
       response: refuter,
     });
-    await call({
-      operation: "probe",
-      workflowId: state.workflowId,
-      probeId: recipe.id,
-    });
+    const probed = reviewWorkflowAllSummarySchema.parse(
+      await call({
+        operation: "probe",
+        workflowId: state.workflowId,
+        probeId: recipe.id,
+      }),
+    );
+    assert.equal(probed.status, "ready", JSON.stringify(probed));
+    assert.equal(probed.nextStage, "adjudicator", JSON.stringify(probed));
+    assert.equal(probed.native.status, "completed", JSON.stringify(probed));
     await boundary("native");
     if (retry) await rejected();
     const adjudicator = response(await next());

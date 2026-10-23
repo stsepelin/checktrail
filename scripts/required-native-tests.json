@@ -5336,5 +5336,23 @@
       "file": "dist/test/tasks-runtime-harness.test.js",
       "name": "Tasks generic CLI isolates exact required callbacks while adjacent profile names retain whole-file skip accounting"
     }
+  ],
+  "probe-workspace-privacy": [
+    {
+      "file": "dist/test/review-probe-storage.test.js",
+      "name": "review probe workspace establishes Windows private access before returning any writable captured-source namespace"
+    },
+    {
+      "file": "dist/test/review-probe-storage.test.js",
+      "name": "review probe workspace refuses failed Windows private access and removes its empty namespace before source copying"
+    },
+    {
+      "file": "dist/test/review-probe-storage.test.js",
+      "name": "native probes require the private workspace boundary before source copying or execution on Windows"
+    },
+    {
+      "file": "dist/test/review-probe-storage.test.js",
+      "name": "review probe workspace retains initialization and cleanup failures without returning a captured-source namespace"
+    }
   ]
 }

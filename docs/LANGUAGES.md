@@ -150,7 +150,7 @@ counts describe structural declarations; independent host isolation and verified
 claim truth remain unimplemented. See
 measurements/review-benchmark-judging-2026-10-05.json.
 The bounded [native Boolean probe](REVIEW-PROBES.md) supports selected plain ESM
-on POSIX with operator-pinned cases and measured V8 function/guard coverage. Wider
+with operator-pinned cases and measured V8 function/guard coverage on the recorded POSIX profiles. The Windows probe backend now establishes private source workspaces before using the owned Job Object runner; native Windows qualification remains pending on the selected source and fresh installed cohort. Wider
 language probes, automatic callers and independent claim verification remain pending.
 [Stateless refutation attempts](REVIEW-REFUTATION.md) can propose counterclaims
 without adding semantic support or establishing their correctness. See
