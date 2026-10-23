@@ -15,6 +15,14 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The selected [Tasks runtime profile](TASK-STORAGE.md) has source and fresh offline
+installed receipts for every frozen runtime slot in [its dated matrix](measurements/tasks-runtime-matrix-2026-10-23.json).
+The frozen whole-profile callbacks, preserved wire/lifecycle cases and native
+Windows private-ACL controls passed at the recorded source commit. The inventory
+now records this profile as implemented with receipts declared. These observations
+do not attest image provenance, actual model-host compatibility or later candidate
+bytes. Other profiles, final acceptance bindings and Gate A remain open.
+
 [Review provenance](REVIEW-PROVENANCE.md) now joins current source/citation
 checks, exact host claims, imported native receipt accounting and bound
 descriptive scores through library, CLI and MCP. Evidence tiers and complete

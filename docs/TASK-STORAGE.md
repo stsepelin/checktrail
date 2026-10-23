@@ -9,9 +9,11 @@ resume jobs, stop workers or act as a validation cache. The separate library
 for the remaining wire and executor integration gates.
 
 The implementation uses Node's built-in SQLite module, imported only when the
-store is opened. Native tests cover Node 26.8.1 on macOS and Node 22.23.2 on Linux;
-the latter reports SQLite as experimental. Earlier Node releases, the new Windows backend and
-network filesystems remain unverified storage profiles. Core imports do not load
+store is opened. The [dated selected matrix](measurements/tasks-runtime-matrix-2026-10-23.json)
+records native source and fresh offline installed controls for the pinned
+Linux/macOS Node slots, Linux ARM64 slot and Windows Node slot. SQLite is
+experimental on the selected Node 22 runtime. Other Node/OS versions and network
+filesystems remain unverified storage profiles. Core imports do not load
 SQLite, and no new npm runtime dependency is required.
 
 ## Windows storage acceptance
@@ -39,14 +41,17 @@ cmdlets through an ambient module path. The serializer has no type resolver and
 retains explicit length/depth bounds. This is an account permission check, not isolation from an
 administrator or trusted project execution.
 
-The [recorded original controls](measurements/tasks-runtime-controls-2026-10-11.json)
-passed on the measured macOS and pinned Linux ARM64 runtimes, against source and
-fresh offline production installations. Native Windows source and
-installed-package controls are pending. The new Tasks
-runtime jobs select the recorded Linux/macOS Node slots, Windows Node slot and
-pinned Linux ARM64 runtime; successful job receipts are still required. They retain
-observed image metadata, which is not a signed OS-image attestation. The whole
-Gate A Tasks profile and final acceptance bindings remain pending.
+The [earlier original controls](measurements/tasks-runtime-controls-2026-10-11.json)
+remain evidence for their measured revision. The [current dated matrix](measurements/tasks-runtime-matrix-2026-10-23.json)
+separately retains successful source and fresh offline installed receipts for all
+selected runtime slots at commit `03749dc5c3109e818e2ec41dc16adaafcb055854`.
+Every frozen whole-profile callback passed. Windows additionally exercised native
+caller-only storage, rejection of a readable directory, SQLite journal ownership
+and bounded namespace cleanup. Each source/installed pair matches its engine,
+harness and observed runtime identities. These are CI observations rather than
+signed image attestations, proof of every dependency/module load or evidence for
+later candidate bytes. The selected Tasks profile has implementation receipts;
+final candidate acceptance and the other Gate A requirements remain open.
 
 The frozen Tasks callbacks retain a two-case native identifier-boundary regression,
 its repair and valid adjacent control; current-source completion binding;
@@ -68,8 +73,9 @@ CI passes the exact frozen slot identifier. Receipts bind the Node executable,
 compiled runtime and unchanged harness/declaration inputs before/after the run.
 On Windows they additionally hash the selected system PowerShell executable.
 These bindings record observed bytes; they do not attest host isolation or OS-image
-provenance. Native Windows results and the complete selected runtime matrix are
-required before the Tasks profile can be marked accepted.
+provenance. The dated matrix records the selected profile's implementation
+receipts; acceptance must still be repeated for the final candidate when its
+relevant bytes change.
 
 ## Use from the library
 

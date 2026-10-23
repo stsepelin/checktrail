@@ -28,6 +28,11 @@ check into Gate A completion. Native source/installed evidence remains separate.
 
 The selected runtime matrix retains Node 22/24/26 on Linux and macOS, the
 existing Linux ARM64 native-tool runtime and Windows direct-executable runtime.
+The selected Tasks profile now has [dated source/fresh installed receipts](measurements/tasks-runtime-matrix-2026-10-23.json)
+for every selected slot, including native Windows. Its implementation state is
+`implemented` and acceptance state is `receipts-declared`; this does not qualify
+other profiles or later candidate bytes. The remaining freeze decisions and
+Gate A remain open.
 The current hosted `checks` job exercises four Linux/macOS slots. The additional
 macOS slots and exact OS-image/tool identities still require native acceptance.
 A repository license label and a selected grammar commit do not replace the
