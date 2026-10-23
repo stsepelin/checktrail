@@ -580,8 +580,18 @@ test("required profile batches execute shared files once and preserve all obliga
   );
 
   // Exercise CLI exit status and keep the single-profile acceptance format.
-  const { mkdir } = await import("node:fs/promises");
+  await mkdir(path.join(root, "dist/src"), { recursive: true });
+  await writeFile(
+    path.join(root, "dist/src/original.js"),
+    "export const original = true;\n",
+  );
   await mkdir(path.join(root, "scripts"));
+  await writeFile(
+    path.join(root, "scripts/compiled-engine-evidence.mjs"),
+    await readFile(
+      new URL("../../scripts/compiled-engine-evidence.mjs", import.meta.url),
+    ),
+  );
   await writeFile(
     path.join(root, "scripts/required-test-evidence.mjs"),
     await readFile(helper),
@@ -1234,12 +1244,15 @@ test("named native acceptance validates worker bounds before executing any callb
 });
 
 test("formatting acceptance CLI isolates exact callbacks without admitting an adjacent name", async (t) => {
-  const root = await fixture(t, {});
+  const root = await fixture(t, {
+    "dist/src/original.js": "export const original = true;\n",
+  });
   const { mkdir, readFile } = await import("node:fs/promises");
   await mkdir(path.join(root, "scripts"));
   for (const name of [
     "verify-required-native-tests.mjs",
     "required-test-evidence.mjs",
+    "compiled-engine-evidence.mjs",
   ])
     await writeFile(
       path.join(root, "scripts", name),

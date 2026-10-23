@@ -27,18 +27,21 @@ test("mutation acceptance rejects cohort substitution and aggregate reuse before
     ),
   );
   const scripts = await Promise.all(
-    ["verify-required-native-tests.mjs", "required-test-evidence.mjs"].map(
-      async (name) => [
-        "scripts/" + name,
-        await readFile(
-          fileURLToPath(new URL("../../scripts/" + name, import.meta.url)),
-          "utf8",
-        ),
-      ],
-    ),
+    [
+      "verify-required-native-tests.mjs",
+      "required-test-evidence.mjs",
+      "compiled-engine-evidence.mjs",
+    ].map(async (name) => [
+      "scripts/" + name,
+      await readFile(
+        fileURLToPath(new URL("../../scripts/" + name, import.meta.url)),
+        "utf8",
+      ),
+    ]),
   );
   const root = await fixture(t, {
     "package.json": '{"type":"module"}',
+    "dist/src/original.js": "export const original = true;\n",
     ...Object.fromEntries(scripts),
     "scripts/required-native-tests.json": JSON.stringify(requirements),
     "dist/test/original.test.js": `import{test}from'node:test';import{appendFileSync}from'node:fs';appendFileSync(process.env.ORIGINAL_MUTATION_SELECTION_MARKER,'entered\\n');for(const name of ${JSON.stringify(names)})test(name,()=>{});`,
