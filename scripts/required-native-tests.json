@@ -5346,5 +5346,67 @@
       "file": "dist/test/review-evaluation-judging.test.js",
       "name": "independent external judging repeats anonymous packet and physical response controls through a fresh offline installation"
     }
+  ],
+  "evaluation-common-matching": [
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching connects all retained three-role claims to frozen defects and paired incident clusters"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching freezes answers before collection and keeps them out of earlier judge packets"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching rejects wrong packets omitted duplicate foreign and adjacent defect identities"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching rejects every reused curator session including prior review and judge attempts"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching preserves missing duplicate foreign and exhausted mappings without shrinking trials"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching deduplicates common defects while preserving every sealed reviewer probability"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching uses separate judgments and paired roles rather than curator agreement as claim support"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching keeps invalid empty and unknown-label reviews distinct from a quality pass"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching binds immutable inventories source judgments and books before accepting mappings"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching retains malformed and missing responses and refuses physical digest mismatches before writing"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching replays only retained bytes and rejects altered unused duplicate or omitted inventories"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching never invokes inference verifies labels or leaks private identities in scores"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching checks exact schema admission and physical storage boundaries before publication"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching CLI shares source grants sealed accounting and descriptive scoring"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching repeats source freeze judgments mappings and paired scoring through a fresh offline installation"
+    }
   ]
 }

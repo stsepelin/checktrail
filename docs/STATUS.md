@@ -15,6 +15,8 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The [common-defect matching and paired scoring bridge](EVALUATION-MATCHING.md) joins separately frozen operator inventories, physical independent judgments and anonymous mapping responses to both three-role comparisons. It preserves every trial, duplicate claim, unresolved judgment and original reviewer probability. Scores remain descriptive: source/label authority, host independence, calibrated confidence, final runtime acceptance and Gate A remain unverified.
+
 The [independent external-review judging intake](EVALUATION-JUDGING.md) binds anonymous source packets and exact claim inventories to sealed physical judge responses, preserving unresolved, missing and reused-session states. The plain-host baseline uses the same common output contract without Checktrail review assistance. This bounded POSIX operator component does not authenticate hosts/judges, verify source-archive completeness or assess quality; common-defect matching, scoring, final runtime acceptance and Gate A remain open.
 
 The [prospective evaluation protocol preflight](EVALUATION-PROTOCOL-DECLARATIONS.md) binds opaque reference/workflow configuration commitments, the common cohort, incident clusters, equal resource ceilings and predeclared scoring parameters. Its source and fresh offline installed controls are required in the existing checks matrix. It reads declarations only; actual configuration identity, freeze chronology, licensed eligibility, independent judgments, host metering and final evaluation readiness remain unverified. The full independent-evaluation profile and Gate A stay open.

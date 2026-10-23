@@ -391,3 +391,18 @@ export {
   inspectSealedReviewEvaluationJudgments,
 } from "./review-evaluation-judging.js";
 export type { ReviewEvaluationJudgmentsReport } from "./review-evaluation-judging.js";
+
+export {
+  reviewEvaluationCommonDefectsSchema,
+  reviewEvaluationMappingResponseSchema,
+  freezeReviewEvaluationCommonDefects,
+  prepareReviewEvaluationMatching,
+  reviewEvaluationMatchingPacket,
+  sealReviewEvaluationMappings,
+  inspectSealedReviewEvaluationMappings,
+  scoreReviewEvaluationArtifacts,
+} from "./review-evaluation-matching.js";
+export type {
+  ReviewEvaluationMappingsReport,
+  ReviewEvaluationArtifactScores,
+} from "./review-evaluation-matching.js";
