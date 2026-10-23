@@ -7,6 +7,7 @@ import {
   readdir,
   realpath,
   rm,
+  rename,
 } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -15,6 +16,7 @@ import { test, type TestContext } from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
+import { setPrivateFixtureAccess } from "./windows-private-fixture.js";
 import { runProcess } from "../src/runner.js";
 import { inspectReviewEvaluationProtocol } from "../src/review-evaluation-protocol.js";
 import { inspectReviewEvaluationCaptures } from "../src/review-evaluation-captures.js";
@@ -306,8 +308,12 @@ test("independent-evaluation-protocol privacy acceptance", async (t) => {
     false,
   );
   assert.equal("probability" in p.claims[0]!, false);
-  const { scored } = await finish(f),
-    summary = JSON.stringify(scored);
+  const { scored } = await finish(f);
+  const literal = f.store + "-'[literal]-🧪";
+  await rename(f.store, literal);
+  f.store = literal;
+  assert.deepEqual(score(f.project, f.store, scored.mappingsSha256), scored);
+  const summary = JSON.stringify(scored);
   for (const secret of [
     f.store,
     f.project,
@@ -316,9 +322,28 @@ test("independent-evaluation-protocol privacy acceptance", async (t) => {
     p.source.files[0]!.content,
   ])
     assert.equal(summary.includes(secret), false);
+  const sealedFile = path.join(f.store, "mappings.sealed.json"),
+    sealedBytes = await readFile(sealedFile);
+  await setPrivateFixtureAccess(sealedFile, "file", false);
+  try {
+    assert.throws(
+      () => score(f.project, f.store, scored.mappingsSha256),
+      /private/i,
+    );
+    assert.throws(
+      () => score(f.project, f.store, scored.mappingsSha256),
+      /private/i,
+      "Inspection must not repair existing access",
+    );
+    assert.deepEqual(await readFile(sealedFile), sealedBytes);
+  } finally {
+    await setPrivateFixtureAccess(sealedFile, "file");
+  }
+  assert.deepEqual(score(f.project, f.store, scored.mappingsSha256), scored);
   const project = await fixture(t, {
     "package.json": nodeManifest,
-    "case.test.js": "require('node:fs').writeFileSync('executed','unexpected')",
+    "case.test.js":
+      'import {writeFileSync} from "node:fs"; import {test} from "node:test"; test("Original forbidden execution",()=>writeFileSync("executed","unexpected"));',
   });
   const client = new Client(
     { name: "original-independent-privacy", version: "1.0.0" },
@@ -342,6 +367,11 @@ test("independent-evaluation-protocol privacy acceptance", async (t) => {
   assert.ok(
     tools.tools.every((x) => !x.name.startsWith("independent_evaluation")),
   );
+  const baselineDenied = await client.callTool({
+    name: "validation_run",
+    arguments: {},
+  });
+  assert.equal(baselineDenied.isError, true);
   const injection = await client.callTool({
     name: "validation_run",
     arguments: { trusted: true, allowExecution: true },
@@ -558,6 +588,12 @@ test(
       (result.stdout + result.stderr).slice(-5000),
     );
     const proof = JSON.parse(result.stdout);
+    if (process.env.CHECKTRAIL_EVAL_RUNTIME_RECEIPT)
+      await writeFile(
+        process.env.CHECKTRAIL_EVAL_RUNTIME_RECEIPT,
+        JSON.stringify(proof) + "\n",
+        { mode: 0o600, flag: "wx" },
+      );
     assert.equal(proof.offlineProductionInstall, true);
     assert.equal(proof.lifecycleScriptsExecuted, false);
     assert.equal(proof.harnessOutsideInstalledPackage, true);

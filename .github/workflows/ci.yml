@@ -148,7 +148,7 @@ jobs:
         run: node scripts/audit-gate-inventory.mjs .
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory evaluation-protocol-declarations evaluation-protocol-metering evaluation-capture-declarations evaluation-physical-captures evaluation-independent-judging evaluation-common-matching independent-evaluation-protocol laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory evaluation-protocol-declarations evaluation-protocol-metering evaluation-capture-declarations evaluation-physical-captures evaluation-independent-judging evaluation-common-matching independent-evaluation-protocol evaluation-runtime-bindings laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance
           node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
       - name: Verify fresh installed external usage accounting
@@ -1601,6 +1601,8 @@ jobs:
         run: node scripts/prepare-package-cache.mjs
       - name: Require the same controls in a fresh offline production installation
         run: node scripts/verify-tasks-runtime-package.mjs ${{ matrix.slot }}
+      - name: Require whole independent setup from source and a fresh offline package
+        run: node scripts/verify-evaluation-runtime.mjs ${{ matrix.slot }}
 
   tasks-runtime-arm64:
     needs: [ci-plan, actionlint]

@@ -5500,5 +5500,23 @@
       "file": "dist/test/tasks-runtime-harness.test.js",
       "name": "Tasks generic CLI isolates exact required callbacks while adjacent profile names retain whole-file skip accounting"
     }
+  ],
+  "evaluation-runtime-bindings": [
+    {
+      "file": "dist/test/evaluation-runtime-evidence.test.js",
+      "name": "evaluation runtime requirements preserve all frozen whole-profile callbacks without admitting missing renamed or extra cases"
+    },
+    {
+      "file": "dist/test/evaluation-runtime-evidence.test.js",
+      "name": "evaluation runtime selection rejects every node architecture OS image and native container boundary even outside hosted CI"
+    },
+    {
+      "file": "dist/test/evaluation-runtime-evidence.test.js",
+      "name": "evaluation runtime installation binds all current bytes observations and exact non-skipped terminal cases"
+    },
+    {
+      "file": "dist/test/evaluation-runtime-evidence.test.js",
+      "name": "evaluation runtime CLI rejects unknown or missing hosted slots before emitting a qualifying receipt"
+    }
   ]
 }

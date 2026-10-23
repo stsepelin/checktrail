@@ -1,4 +1,8 @@
 import assert from "node:assert/strict";
+import {
+  evaluationRuntimeHarnessFiles,
+  verifyEvaluationRuntime,
+} from "./evaluation-runtime-evidence.mjs";
 import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 import { createHash } from "node:crypto";
 import {
@@ -66,19 +70,7 @@ const selectedProfile = whole
             ? "evaluation-protocol-metering"
             : "evaluation-protocol-declarations";
 const harnessFiles = whole
-  ? [
-      "scripts/evaluation-matching.mjs",
-      "scripts/evaluation-judgments.mjs",
-      "dist/test/gate-independent-evaluation-protocol.test.js",
-      "dist/test/review-evaluation-matching-fixture.js",
-      "dist/test/review-evaluation-judging-fixture.js",
-      "dist/test/review-evaluation-artifacts-fixture.js",
-      "dist/test/review-evaluation-captures-fixture.js",
-      "dist/test/review-evaluation-metering-fixture.js",
-      "dist/test/review-evaluation-protocol-fixture.js",
-      "dist/test/helpers.js",
-      "dist/test/tool-fixture.js",
-    ]
+  ? [...evaluationRuntimeHarnessFiles]
   : matching
     ? [
         "scripts/evaluation-matching.mjs",
@@ -132,7 +124,7 @@ const harnessFiles = whole
                 "dist/test/review-evaluation-protocol-fixture.js",
                 "scripts/check-evaluation-protocol.mjs",
               ];
-if (whole || artifacts || judging || matching)
+if (artifacts || judging || matching)
   harnessFiles.push("dist/test/windows-private-fixture.js");
 const expected = JSON.parse(
   await readFile(
@@ -162,14 +154,16 @@ assert.ok(
   ),
 );
 const inputFiles = [
-  ...harnessFiles,
-  "scripts/required-native-tests.json",
-  "scripts/required-test-evidence.mjs",
-  "scripts/attempt-output-evidence.mjs",
-  "scripts/install-acceptance-package.mjs",
-  "scripts/verify-evaluation-protocol-package.mjs",
-  "package.json",
-  "package-lock.json",
+  ...new Set([
+    ...harnessFiles,
+    "scripts/required-native-tests.json",
+    "scripts/required-test-evidence.mjs",
+    "scripts/attempt-output-evidence.mjs",
+    "scripts/install-acceptance-package.mjs",
+    "scripts/verify-evaluation-protocol-package.mjs",
+    "package.json",
+    "package-lock.json",
+  ]),
 ];
 const inputIdentities = async () =>
   Promise.all(
@@ -215,9 +209,10 @@ try {
   const installed = path.join(consumer, "node_modules/@stsepelin/checktrail");
   await mkdir(path.join(harness, "dist/test"), { recursive: true });
   await mkdir(path.join(harness, "scripts"));
-  await writeFile(path.join(harness, "package.json"), '{"type":"module"}\n', {
-    flag: "wx",
-  });
+  if (!whole)
+    await writeFile(path.join(harness, "package.json"), '{"type":"module"}\n', {
+      flag: "wx",
+    });
   await symlink(
     path.join(installed, "dist/src"),
     path.join(harness, "dist/src"),
@@ -227,8 +222,10 @@ try {
     await realpath(path.join(harness, "dist/src")),
     await realpath(path.join(installed, "dist/src")),
   );
-  for (const file of harnessFiles)
+  for (const file of harnessFiles) {
+    await mkdir(path.dirname(path.join(harness, file)), { recursive: true });
     await cp(path.join(repository, file), path.join(harness, file));
+  }
   const copiedInputs = async () =>
     Promise.all(
       inputFiles
@@ -259,10 +256,19 @@ try {
   assert.equal(installedCode, sourceCode);
   process.env.CHECKTRAIL_EVALUATION_PROTOCOL_INSTALLED = "1";
   delete process.env.NODE_TEST_CONTEXT;
-  const profile = await runRequiredTests(
-    expected.map((row) => ({ ...row, file: path.join(harness, row.file) })),
-    { timeoutMs: whole && process.platform === "win32" ? 600000 : 120000 },
-  );
+  let runtimeEvidence = null;
+  if (whole && process.env.CHECKTRAIL_EVAL_RUNTIME_ACTIVE === "1")
+    runtimeEvidence = await verifyEvaluationRuntime({
+      root: harness,
+      slot: process.env.CHECKTRAIL_EVAL_RUNTIME_SLOT || null,
+      installed: true,
+    });
+  const profile =
+    runtimeEvidence?.profileEvidence ??
+    (await runRequiredTests(
+      expected.map((row) => ({ ...row, file: path.join(harness, row.file) })),
+      { timeoutMs: whole && process.platform === "win32" ? 600000 : 120000 },
+    ));
   assert.equal(profile.complete, true, JSON.stringify(profile.problems));
   assert.equal(profile.required, caseCount);
   assert.equal(profile.passed, caseCount);
@@ -288,6 +294,7 @@ try {
       ...installation,
       harnessOutsideInstalledPackage: true,
       externalSdkClientDependencies,
+      runtimeEvidence,
       dependencyBytesInventoried: false,
       actualModuleLoadsTraced: false,
       protocolChronologyVerified: false,

@@ -82,17 +82,21 @@ try {
     "/workspace",
     "--env",
     "npm_config_cache=/tmp/npm-cache",
+    "--env",
+    "CHECKTRAIL_EVAL_RUNTIME_IMAGE_REFERENCE=" + reference,
+    "--env",
+    "CHECKTRAIL_EVAL_RUNTIME_IMAGE_ID=" + image.Id,
     image.Id,
     "sh",
     "-c",
-    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-tasks-runtime-package.mjs native-linux-arm64-node22",
+    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-tasks-runtime-package.mjs native-linux-arm64-node22\nnode scripts/verify-evaluation-runtime.mjs native-linux-arm64-node22",
   ]);
   const packets = output
     .trim()
     .split("\n")
     .map((line) => JSON.parse(line));
-  assert.equal(packets.length, 3);
-  const [, source, installed] = packets;
+  assert.equal(packets.length, 4);
+  const [, source, installed, evaluationRuntime] = packets;
   assert.equal(source.profileEvidence.complete, true);
   assert.equal(installed.evidence.profileEvidence.complete, true);
   assert.equal(source.harnessSha256, installed.evidence.harnessSha256);
@@ -111,6 +115,7 @@ try {
       sourceReadOnly: true,
       source,
       installed,
+      evaluationRuntime,
       gateATasksMatrixComplete: false,
     }) + "\n",
   );

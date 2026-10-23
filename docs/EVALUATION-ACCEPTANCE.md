@@ -42,3 +42,24 @@ runtime receipts, the private prospective setup and remaining inventory freeze
 decisions are still required before this profile or Gate A can close. Public
 fixtures are already inspected development material and cannot become held-out
 comparison cases by changing an identifier.
+
+## Selected runtime receipt binding
+
+`node scripts/verify-evaluation-runtime.mjs SLOT` runs the whole profile from
+source and binds the fresh installed repetition to the same required callbacks,
+compiled engine, package, harness and observed runtime bytes. The existing seven
+hosted Tasks runtime slots and pinned native Linux ARM64 workload invoke this
+controller; no additional CI jobs are introduced. A call without a slot is a
+local development observation and cannot qualify a hosted slot.
+
+Admission checks the selected exact Node version, platform, architecture and OS
+family. Hosted observations include their image family/build; the native workload
+binds its pinned image reference and separately observed configuration ID. Windows
+also records the fixed system PowerShell executable digest used for private ACL
+inspection. These observations do not independently attest an image or host.
+
+Every required source and installed callback must terminate as passed. Missing,
+duplicate, skipped, truncated, wrong-runtime and changed-byte receipts are
+rejected. Dependency bytes, actual module loads and producer source builds remain
+outside this compiled-artifact identity. Matrix qualification stays pending until
+all selected slots supply current matching receipts.
