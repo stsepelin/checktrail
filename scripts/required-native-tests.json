@@ -5408,5 +5408,43 @@
       "file": "dist/test/review-evaluation-matching.test.js",
       "name": "independent common matching repeats source freeze judgments mappings and paired scoring through a fresh offline installation"
     }
+  ],
+  "independent-evaluation-protocol": [
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol installed acceptance"
+    }
   ]
 }

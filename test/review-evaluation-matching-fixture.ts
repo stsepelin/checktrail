@@ -17,6 +17,8 @@ export async function matchingFixture(
   t: TestContext,
   options: {
     review?: unknown;
+    source?: string;
+    label?: "defect" | "valid" | "near-miss";
     unresolvedLabel?: boolean;
     judge?: (
       slot: { role: string; caseId: string; repetition: number },
@@ -28,6 +30,7 @@ export async function matchingFixture(
   let inventory:
     ReturnType<typeof freezeReviewEvaluationCommonDefects> | undefined;
   const f = await judgingFixture(t, {
+    ...(options.source !== undefined ? { source: options.source } : {}),
     ...(options.review !== undefined ? { review: options.review } : {}),
     beforeSeal: async (f, store) => {
       inventory = freezeReviewEvaluationCommonDefects(
@@ -41,9 +44,13 @@ export async function matchingFixture(
           protocolSha256: f.input.expectedProtocolSha256,
           cases: f.input.declaration.cohort.cases.map((c, i) => ({
             caseId: c.id,
-            label: options.unresolvedLabel && i === 0 ? "unresolved" : "defect",
-            defects:
+            label:
               options.unresolvedLabel && i === 0
+                ? "unresolved"
+                : (options.label ?? "defect"),
+            defects:
+              (options.unresolvedLabel && i === 0) ||
+              (options.label !== undefined && options.label !== "defect")
                 ? []
                 : [
                     {

@@ -29,6 +29,7 @@ export async function judgingFixture(
   t: TestContext,
   options: {
     review?: unknown;
+    source?: string;
     sourcePadding?: number;
     beforePrepare?: (store: string) => void;
     beforeSeal?: (
@@ -66,7 +67,9 @@ export async function judgingFixture(
           {
             file: "src/decision.ts",
             content:
-              "export function permits(value: number) { return value > 4; } // Original fixture " +
+              (options.source ??
+                "export function permits(value: number) { return value > 4; }") +
+              " // Original fixture " +
               (c + 1) +
               "\n" +
               " ".repeat(options.sourcePadding ?? 0),

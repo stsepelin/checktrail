@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 import { createHash } from "node:crypto";
 import {
   cp,
@@ -33,6 +34,7 @@ assert.ok(
         "--artifacts",
         "--judging",
         "--matching",
+        "--whole",
       ].includes(args[0])),
 );
 const metering = args[0] === "--metering";
@@ -40,23 +42,34 @@ const captures = args[0] === "--captures";
 const artifacts = args[0] === "--artifacts";
 const judging = args[0] === "--judging";
 const matching = args[0] === "--matching";
-const caseCount = matching ? 15 : judging ? 14 : artifacts ? 13 : 12;
-const selectedProfile = matching
-  ? "evaluation-common-matching"
-  : judging
-    ? "evaluation-independent-judging"
-    : artifacts
-      ? "evaluation-physical-captures"
-      : captures
-        ? "evaluation-capture-declarations"
-        : metering
-          ? "evaluation-protocol-metering"
-          : "evaluation-protocol-declarations";
-const harnessFiles = matching
+const whole = args[0] === "--whole";
+const caseCount = whole
+  ? 9
+  : matching
+    ? 15
+    : judging
+      ? 14
+      : artifacts
+        ? 13
+        : 12;
+const selectedProfile = whole
+  ? "independent-evaluation-protocol"
+  : matching
+    ? "evaluation-common-matching"
+    : judging
+      ? "evaluation-independent-judging"
+      : artifacts
+        ? "evaluation-physical-captures"
+        : captures
+          ? "evaluation-capture-declarations"
+          : metering
+            ? "evaluation-protocol-metering"
+            : "evaluation-protocol-declarations";
+const harnessFiles = whole
   ? [
       "scripts/evaluation-matching.mjs",
       "scripts/evaluation-judgments.mjs",
-      "dist/test/review-evaluation-matching.test.js",
+      "dist/test/gate-independent-evaluation-protocol.test.js",
       "dist/test/review-evaluation-matching-fixture.js",
       "dist/test/review-evaluation-judging-fixture.js",
       "dist/test/review-evaluation-artifacts-fixture.js",
@@ -64,11 +77,14 @@ const harnessFiles = matching
       "dist/test/review-evaluation-metering-fixture.js",
       "dist/test/review-evaluation-protocol-fixture.js",
       "dist/test/helpers.js",
+      "dist/test/tool-fixture.js",
     ]
-  : judging
+  : matching
     ? [
+        "scripts/evaluation-matching.mjs",
         "scripts/evaluation-judgments.mjs",
-        "dist/test/review-evaluation-judging.test.js",
+        "dist/test/review-evaluation-matching.test.js",
+        "dist/test/review-evaluation-matching-fixture.js",
         "dist/test/review-evaluation-judging-fixture.js",
         "dist/test/review-evaluation-artifacts-fixture.js",
         "dist/test/review-evaluation-captures-fixture.js",
@@ -76,36 +92,47 @@ const harnessFiles = matching
         "dist/test/review-evaluation-protocol-fixture.js",
         "dist/test/helpers.js",
       ]
-    : artifacts
+    : judging
       ? [
-          "dist/test/review-evaluation-artifacts.test.js",
+          "scripts/evaluation-judgments.mjs",
+          "dist/test/review-evaluation-judging.test.js",
+          "dist/test/review-evaluation-judging-fixture.js",
           "dist/test/review-evaluation-artifacts-fixture.js",
           "dist/test/review-evaluation-captures-fixture.js",
           "dist/test/review-evaluation-metering-fixture.js",
           "dist/test/review-evaluation-protocol-fixture.js",
           "dist/test/helpers.js",
         ]
-      : captures
+      : artifacts
         ? [
-            "dist/test/review-evaluation-captures.test.js",
+            "dist/test/review-evaluation-artifacts.test.js",
+            "dist/test/review-evaluation-artifacts-fixture.js",
             "dist/test/review-evaluation-captures-fixture.js",
             "dist/test/review-evaluation-metering-fixture.js",
             "dist/test/review-evaluation-protocol-fixture.js",
-            "scripts/check-evaluation-captures.mjs",
+            "dist/test/helpers.js",
           ]
-        : metering
+        : captures
           ? [
-              "dist/test/review-evaluation-metering.test.js",
+              "dist/test/review-evaluation-captures.test.js",
+              "dist/test/review-evaluation-captures-fixture.js",
               "dist/test/review-evaluation-metering-fixture.js",
               "dist/test/review-evaluation-protocol-fixture.js",
-              "scripts/check-evaluation-metering.mjs",
+              "scripts/check-evaluation-captures.mjs",
             ]
-          : [
-              "dist/test/review-evaluation-protocol.test.js",
-              "dist/test/review-evaluation-protocol-fixture.js",
-              "scripts/check-evaluation-protocol.mjs",
-            ];
-if (artifacts || judging || matching)
+          : metering
+            ? [
+                "dist/test/review-evaluation-metering.test.js",
+                "dist/test/review-evaluation-metering-fixture.js",
+                "dist/test/review-evaluation-protocol-fixture.js",
+                "scripts/check-evaluation-metering.mjs",
+              ]
+            : [
+                "dist/test/review-evaluation-protocol.test.js",
+                "dist/test/review-evaluation-protocol-fixture.js",
+                "scripts/check-evaluation-protocol.mjs",
+              ];
+if (whole || artifacts || judging || matching)
   harnessFiles.push("dist/test/windows-private-fixture.js");
 const expected = JSON.parse(
   await readFile(
@@ -119,17 +146,19 @@ assert.ok(
   expected.every(
     (row) =>
       row.file ===
-      (matching
-        ? "dist/test/review-evaluation-matching.test.js"
-        : judging
-          ? "dist/test/review-evaluation-judging.test.js"
-          : artifacts
-            ? "dist/test/review-evaluation-artifacts.test.js"
-            : captures
-              ? "dist/test/review-evaluation-captures.test.js"
-              : metering
-                ? "dist/test/review-evaluation-metering.test.js"
-                : "dist/test/review-evaluation-protocol.test.js"),
+      (whole
+        ? "dist/test/gate-independent-evaluation-protocol.test.js"
+        : matching
+          ? "dist/test/review-evaluation-matching.test.js"
+          : judging
+            ? "dist/test/review-evaluation-judging.test.js"
+            : artifacts
+              ? "dist/test/review-evaluation-artifacts.test.js"
+              : captures
+                ? "dist/test/review-evaluation-captures.test.js"
+                : metering
+                  ? "dist/test/review-evaluation-metering.test.js"
+                  : "dist/test/review-evaluation-protocol.test.js"),
   ),
 );
 const inputFiles = [
@@ -210,13 +239,29 @@ try {
         ]),
     );
   assert.deepEqual(await copiedInputs(), inputs.slice(0, harnessFiles.length));
+  const externalSdkClientDependencies = {};
+  if (whole) {
+    const lock = JSON.parse(
+      await readFile(path.join(repository, "package-lock.json"), "utf8"),
+    );
+    await copyInstalledPackages(
+      harness,
+      ["@modelcontextprotocol/client"],
+      path.join(repository, "node_modules"),
+      ({ relative, version }) => {
+        const key = relative.split(path.sep).join("/");
+        assert.equal(version, lock.packages["node_modules/" + key].version);
+        externalSdkClientDependencies[key] = version;
+      },
+    );
+  }
   const installedCode = await attemptOutputCodeIdentity(installed);
   assert.equal(installedCode, sourceCode);
   process.env.CHECKTRAIL_EVALUATION_PROTOCOL_INSTALLED = "1";
   delete process.env.NODE_TEST_CONTEXT;
   const profile = await runRequiredTests(
     expected.map((row) => ({ ...row, file: path.join(harness, row.file) })),
-    { timeoutMs: 120000 },
+    { timeoutMs: whole && process.platform === "win32" ? 600000 : 120000 },
   );
   assert.equal(profile.complete, true, JSON.stringify(profile.problems));
   assert.equal(profile.required, caseCount);
@@ -242,6 +287,7 @@ try {
       compiledCodeSha256: installedCode,
       ...installation,
       harnessOutsideInstalledPackage: true,
+      externalSdkClientDependencies,
       dependencyBytesInventoried: false,
       actualModuleLoadsTraced: false,
       protocolChronologyVerified: false,
