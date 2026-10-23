@@ -82,23 +82,31 @@ try {
     "/workspace",
     "--env",
     "npm_config_cache=/tmp/npm-cache",
+    "--env",
+    "CHECKTRAIL_REVIEW_RUNTIME_IMAGE_ID=" + image.Id,
     image.Id,
     "sh",
     "-c",
-    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-tasks-runtime-package.mjs native-linux-arm64-node22",
+    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-tasks-runtime-package.mjs native-linux-arm64-node22\nnode scripts/verify-review-runtime.mjs native-linux-arm64-node22",
   ]);
   const packets = output
     .trim()
     .split("\n")
     .map((line) => JSON.parse(line));
-  assert.equal(packets.length, 3);
-  const [, source, installed] = packets;
+  assert.equal(packets.length, 4);
+  const [, source, installed, reviewWorkflow] = packets;
   assert.equal(source.profileEvidence.complete, true);
   assert.equal(installed.evidence.profileEvidence.complete, true);
   assert.equal(source.harnessSha256, installed.evidence.harnessSha256);
   assert.equal(
     source.runtimeArtifactsSha256,
     installed.evidence.runtimeArtifactsSha256,
+  );
+  assert.equal(reviewWorkflow.complete, true);
+  assert.equal(reviewWorkflow.runtime.containerImageId, image.Id);
+  assert.equal(
+    reviewWorkflow.installedEvidence.profile.runtime.containerImageId,
+    image.Id,
   );
   process.stdout.write(
     JSON.stringify({
@@ -111,6 +119,7 @@ try {
       sourceReadOnly: true,
       source,
       installed,
+      reviewWorkflow,
       gateATasksMatrixComplete: false,
     }) + "\n",
   );

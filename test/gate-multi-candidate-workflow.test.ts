@@ -406,9 +406,12 @@ test(
       );
       return;
     }
+    const runtimeSlot = process.env.CHECKTRAIL_REVIEW_RUNTIME_SLOT;
     const script = fileURLToPath(
       new URL(
-        "../../scripts/verify-import-context-package.mjs",
+        runtimeSlot === undefined
+          ? "../../scripts/verify-import-context-package.mjs"
+          : "../../scripts/verify-review-runtime-package.mjs",
         import.meta.url,
       ),
     );
@@ -417,12 +420,16 @@ test(
       CHECKTRAIL_IMPORT_CONTEXT_PROFILE: "multi-candidate-workflow",
     };
     delete env.NODE_TEST_CONTEXT;
-    const result = spawnSync(process.execPath, [script], {
-      env,
-      encoding: "utf8",
-      timeout: 175000,
-      maxBuffer: 1048576,
-    });
+    const result = spawnSync(
+      process.execPath,
+      [script, ...(runtimeSlot === undefined ? [] : [runtimeSlot])],
+      {
+        env,
+        encoding: "utf8",
+        timeout: 175000,
+        maxBuffer: 1048576,
+      },
+    );
     assert.equal(
       result.status,
       0,

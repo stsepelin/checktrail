@@ -160,3 +160,20 @@ fresh offline installation. They do not verify host judgments or qualify the
 full runtime matrix.
 Wider native/runtime acceptance and Gate A remain open. No actual model review
 or held-out source is used by the original synthetic controls.
+
+## Runtime acceptance binding
+
+The source setup controller `node scripts/verify-review-runtime.mjs SLOT` selects
+exactly the frozen nine whole-workflow callbacks. It rejects different bindings,
+Node versions, architectures and OS/image families before executing the cases.
+A local invocation without a slot is development evidence and cannot qualify a
+selected runtime. Hosted image and parent-supplied container identities remain
+observations, not independently authenticated attestations.
+
+The controller retains exact engine and harness byte inventories before and
+after execution. Its installed callback repeats the same cases through a fresh
+locked offline production installation. Selected runtime, harness and compiled
+engine identities must agree across source and installation. These observations
+do not trace loaded modules, authenticate dependencies or prove host isolation.
+The existing runtime CI jobs collect this evidence; final eight-slot admission
+and the whole Gate A profile remain pending until those runs are complete.

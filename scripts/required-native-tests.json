@@ -5264,5 +5264,23 @@
       "file": "dist/test/gate-multi-candidate-workflow.test.js",
       "name": "multi-candidate-workflow installed acceptance"
     }
+  ],
+  "review-runtime-bindings": [
+    {
+      "file": "dist/test/review-runtime-evidence.test.js",
+      "name": "review workflow runtime binds every frozen case without admitting omitted extra foreign or adjacent controls"
+    },
+    {
+      "file": "dist/test/review-runtime-evidence.test.js",
+      "name": "review workflow runtime refuses wrong Node architecture OS image and unselected local qualification"
+    },
+    {
+      "file": "dist/test/review-runtime-evidence.test.js",
+      "name": "review workflow runtime CLI refuses unknown slots before running workflow callbacks"
+    },
+    {
+      "file": "dist/test/review-runtime-evidence.test.js",
+      "name": "review workflow runtime rejects coherently shaped foreign installation evidence and incomplete execution"
+    }
   ]
 }
