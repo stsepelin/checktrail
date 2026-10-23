@@ -1,3 +1,8 @@
+import {
+  reviewWorkflowFindingsDeclarationsSchema,
+  type ReviewWorkflowFindingsResult,
+} from "./review-workflow-findings.js";
+export { reviewWorkflowFindingsResultSchema } from "./review-workflow-findings.js";
 import { z } from "zod";
 import {
   reviewModelOutputSchema,
@@ -55,35 +60,50 @@ export const reviewWorkflowResponseSchema = z.strictObject({
   }),
   output: reviewModelOutputSchema.nullable(),
 });
+export const reviewWorkflowLegacyCommandSchema = z.discriminatedUnion(
+  "operation",
+  [
+    z.strictObject({
+      operation: z.literal("open"),
+      context: z.string().min(1).max(1024),
+    }),
+    z.strictObject({
+      operation: z.literal("next"),
+      workflowId: z.string().uuid(),
+      target: z.string().uuid().optional(),
+    }),
+    z.strictObject({
+      operation: z.literal("submit"),
+      workflowId: z.string().uuid(),
+      response: z.unknown(),
+    }),
+    z.strictObject({
+      operation: z.literal("probe"),
+      workflowId: z.string().uuid(),
+      probeId: z.string().min(1).max(64),
+    }),
+    z.strictObject({
+      operation: z.literal("status"),
+      workflowId: z.string().uuid(),
+    }),
+    z.strictObject({
+      operation: z.literal("close"),
+      workflowId: z.string().uuid(),
+    }),
+  ],
+);
 export const reviewWorkflowCommandSchema = z.discriminatedUnion("operation", [
+  ...reviewWorkflowLegacyCommandSchema.options,
   z.strictObject({
-    operation: z.literal("open"),
-    context: z.string().min(1).max(1024),
-  }),
-  z.strictObject({
-    operation: z.literal("next"),
+    operation: z.literal("findings"),
     workflowId: z.string().uuid(),
-    target: z.string().uuid().optional(),
-  }),
-  z.strictObject({
-    operation: z.literal("submit"),
-    workflowId: z.string().uuid(),
-    response: z.unknown(),
-  }),
-  z.strictObject({
-    operation: z.literal("probe"),
-    workflowId: z.string().uuid(),
-    probeId: z.string().min(1).max(64),
-  }),
-  z.strictObject({
-    operation: z.literal("status"),
-    workflowId: z.string().uuid(),
-  }),
-  z.strictObject({
-    operation: z.literal("close"),
-    workflowId: z.string().uuid(),
+    declarations: reviewWorkflowFindingsDeclarationsSchema,
   }),
 ]);
+export type ReviewWorkflowResult =
+  | ReviewWorkflowAssignment
+  | ReviewWorkflowSummary
+  | ReviewWorkflowFindingsResult;
 export const reviewWorkflowStageSchema = z.enum([
   "reviewer",
   "refuter",

@@ -407,3 +407,21 @@ export type {
   ReviewEvaluationMappingsReport,
   ReviewEvaluationArtifactScores,
 } from "./review-evaluation-matching.js";
+
+export {
+  inspectReviewFindings,
+  projectReviewFindings,
+  reviewFindingsInputSchema,
+  reviewFindingsReportSchema,
+  reviewFindingsSummarySchema,
+} from "./review-findings.js";
+export type {
+  ReviewFindingsInput,
+  ReviewFindingsReport,
+} from "./review-findings.js";
+
+export { reviewWorkflowFindingsDeclarationsSchema } from "./review-workflow-findings.js";
+export type { ReviewWorkflowFindingsDeclarations } from "./review-workflow-findings.js";
+
+export { reviewWorkflowFindingsResultSchema } from "./review-workflow-findings.js";
+export type { ReviewWorkflowFindingsResult } from "./review-workflow-findings.js";
