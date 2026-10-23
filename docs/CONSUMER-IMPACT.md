@@ -61,6 +61,12 @@ controls pass; the later macOS development corpus retains every observed failure
 The earlier foundation receipt remains an unchanged historical checkpoint.
 These parser guards do not prove arbitrary JavaScript runtime or loader validity.
 
+The Go and Python source-context witnesses additionally execute both captured
+consumer functions and bind the producer and consumer file digests to the native
+observations. A caller-only argument change must change the caller result while
+leaving the producer controls intact. Broken, repaired and valid adjacent cases
+repeat through their existing required source and offline installed profiles.
+
 The broader Gate A consumer-impact profile remains pending: native
 producer/consumer chains for every advertised language, whole-profile frozen
 nine-case source and fresh installed acceptance, and final acceptance bindings
