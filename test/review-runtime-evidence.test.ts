@@ -266,3 +266,107 @@ test("review workflow runtime rejects coherently shaped foreign installation evi
   foreign.profile.compiledEngine.treeSha256 = "f".repeat(64);
   assert.throws(() => check(foreign, local));
 });
+
+test("review runtime verification isolates callbacks and bounds Windows installed aggregation without hiding failed child status", async (t) => {
+  const { fixture } = await import("./helpers.js");
+  const { spawnSync } = await import("node:child_process");
+  const path = await import("node:path");
+  const root = await fixture(t, {
+    "controller.mjs": `import assert from'node:assert/strict';import{registerHooks}from'node:module';const target=process.argv[2];let observed;globalThis.originalRequiredSelection=(requirements,options)=>{observed={names:requirements.map(x=>x.name),timeoutMs:options.timeoutMs,isolatedCaseWorkers:options.isolatedCaseWorkers,progressCallback:typeof options.onCaseProgress};throw Error('Original isolated selector observed');};registerHooks({resolve(specifier,context,next){if(context.parentURL===target&&specifier==='./required-test-evidence.mjs')return{url:'data:text/javascript,'+encodeURIComponent('export const runRequiredTests=(...args)=>globalThis.originalRequiredSelection(...args);'),shortCircuit:true};return next(specifier,context);}});const {verifyReviewRuntime}=await import(target);await assert.rejects(verifyReviewRuntime({requireHostedIdentity:false}),/Original isolated selector observed/);console.log(JSON.stringify(observed));`,
+    "installed.mjs": `import{registerHooks}from'node:module';const target=process.argv[2],platform=process.argv[3],calls=[];globalThis.originalInstalledOutcomes=[];globalThis.originalInstalledCalls=calls;
+const tests="export function test(name,options,callback){if(name==='multi-candidate-workflow installed acceptance'){globalThis.originalInstalledCalls.push({kind:'callback',timeout:options.timeout});globalThis.originalInstalledOutcomes.push(Promise.resolve().then(callback).then(()=>({outcome:'passed'}),error=>({outcome:'failed',message:error.message})));}}";
+const child="export function spawnSync(executable,args,options){globalThis.originalInstalledCalls.push({kind:'child',timeout:options.timeout});return{status:7,stdout:'',stderr:'Original installed refusal'};}";
+const unused="export const options={},recipe={},source='original';export function unexpected(){throw Error('Unexpected application execution');}export const setup=unexpected,complete=unexpected,channel=unexpected,pin=unexpected,response=unexpected;export class ReviewWorkflowEngine{};export const reviewWorkflowAssignmentSchema={},reviewWorkflowAllSummarySchema={},reviewWorkflowFindingsResultSchema={};";
+registerHooks({resolve(specifier,context,next){if(context.parentURL===target){const stub=specifier==='node:test'?tests:specifier==='node:child_process'?child:specifier.startsWith('.')?unused:null;if(stub)return{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true};}return next(specifier,context);}});Object.defineProperty(process,'platform',{value:platform});await import(target);console.log(JSON.stringify({calls,outcomes:await Promise.all(globalThis.originalInstalledOutcomes)}));`,
+    "package.mjs": `import assert from'node:assert/strict';import{registerHooks}from'node:module';import{readFile}from'node:fs/promises';import path from'node:path';const target=process.argv[2],platform=process.argv[3],calls=[];const scope=JSON.parse(await readFile(new URL('../docs/gate-a-profiles.v1.json',target),'utf8'));const selected=scope.runtimeProfiles.find(p=>p.platform===platform);assert.ok(selected);process.argv=[process.execPath,target,selected.id];globalThis.originalPackageCalls=calls;
+const fs="export * from 'node:fs/promises';import{readFile as actualRead}from'node:fs/promises';export async function readFile(file,...args){return String(file).endsWith('original-packet.tgz')?Buffer.from('Original package metadata'):actualRead(file,...args);}export async function symlink(){}";
+const packing="export function runAcceptanceNpm(){return JSON.stringify([{filename:'original-packet.tgz'}]);}export async function installAcceptancePackage(){return{offlineProductionInstall:true,lifecycleScriptsExecuted:false};}";
+const child="export function spawnSync(executable,args,options){globalThis.originalPackageCalls.push({timeout:options.timeout,installed:options.env.CHECKTRAIL_MULTI_WORKFLOW_INSTALLED,args});return{status:7,signal:null,stdout:'',stderr:'Original package refusal'};}";
+registerHooks({resolve(specifier,context,next){if(context.parentURL===target){const stub=specifier==='node:fs/promises'?fs:specifier==='node:child_process'?child:specifier==='./install-acceptance-package.mjs'?packing:specifier==='../dist/test/tool-fixture.js'?'export async function copyInstalledPackages(){}':null;if(stub)return{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true};}return next(specifier,context);}});Object.defineProperty(process,'platform',{value:platform});Object.defineProperty(process,'arch',{value:selected.architecture});Object.defineProperty(process.versions,'node',{value:selected.node});await assert.rejects(import(target),/Original package refusal/);console.log(JSON.stringify({calls,slot:selected.id}));`,
+  });
+  const env: NodeJS.ProcessEnv = {
+    ...process.env,
+    GITHUB_ACTIONS: "false",
+    TMPDIR: root,
+    TMP: root,
+    TEMP: root,
+  };
+  delete env.NODE_TEST_CONTEXT;
+  delete env.CHECKTRAIL_MULTI_WORKFLOW_INSTALLED;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "controller.mjs"),
+      new URL("../../scripts/review-runtime-evidence.mjs", import.meta.url)
+        .href,
+    ],
+    { env, encoding: "utf8", timeout: 30000 },
+  );
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stderr);
+  const selected = JSON.parse(result.stdout);
+  assert.deepEqual(
+    selected.names,
+    [
+      "broken",
+      "fixed",
+      "near-miss",
+      "prerequisite",
+      "stale",
+      "empty",
+      "privacy",
+      "lifecycle",
+      "installed",
+    ].map((k) => "multi-candidate-workflow " + k + " acceptance"),
+  );
+  assert.equal(
+    selected.timeoutMs,
+    process.platform === "win32" ? 600000 : 300000,
+  );
+  assert.equal(selected.isolatedCaseWorkers, 1);
+  assert.equal(selected.progressCallback, "function");
+  for (const platform of ["win32", "darwin", "linux"]) {
+    const observed = spawnSync(
+      process.execPath,
+      [
+        path.join(root, "installed.mjs"),
+        new URL("./gate-multi-candidate-workflow.test.js", import.meta.url)
+          .href,
+        platform,
+      ],
+      { env, encoding: "utf8", timeout: 15000 },
+    );
+    assert.equal(observed.error, undefined);
+    assert.equal(observed.status, 0, observed.stderr);
+    const value = JSON.parse(observed.stdout);
+    assert.deepEqual(value.calls, [
+      { kind: "callback", timeout: platform === "win32" ? 580000 : 180000 },
+      { kind: "child", timeout: platform === "win32" ? 570000 : 175000 },
+    ]);
+    assert.equal(value.outcomes.length, 1);
+    assert.equal(value.outcomes[0].outcome, "failed");
+    assert.match(value.outcomes[0].message, /Original installed refusal/);
+    const packaged = spawnSync(
+      process.execPath,
+      [
+        path.join(root, "package.mjs"),
+        new URL(
+          "../../scripts/verify-review-runtime-package.mjs",
+          import.meta.url,
+        ).href,
+        platform,
+      ],
+      { env, encoding: "utf8", timeout: 15000 },
+    );
+    assert.equal(packaged.error, undefined);
+    assert.equal(packaged.status, 0, packaged.stderr);
+    const packet = JSON.parse(packaged.stdout);
+    assert.deepEqual(packet.calls, [
+      {
+        timeout: platform === "win32" ? 550000 : 170000,
+        installed: "1",
+        args: ["scripts/verify-review-runtime.mjs", packet.slot],
+      },
+    ]);
+  }
+});

@@ -117,7 +117,7 @@ try {
       cwd: harness,
       env,
       encoding: "utf8",
-      timeout: 170000,
+      timeout: process.platform === "win32" ? 550000 : 170000,
       maxBuffer: 4 * 1048576,
     },
   );

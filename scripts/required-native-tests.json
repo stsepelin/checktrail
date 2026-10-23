@@ -5285,6 +5285,10 @@
     {
       "file": "dist/test/review-runtime-evidence.test.js",
       "name": "review workflow runtime rejects coherently shaped foreign installation evidence and incomplete execution"
+    },
+    {
+      "file": "dist/test/review-runtime-evidence.test.js",
+      "name": "review runtime verification isolates callbacks and bounds Windows installed aggregation without hiding failed child status"
     }
   ],
   "tasks-matrix": [

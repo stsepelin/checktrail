@@ -19,6 +19,7 @@ const namespaceRemains=observed?existsSync(observed):null;if(observed)await rm(o
   });
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT;
+  Object.assign(env, { TMPDIR: root, TMP: root, TEMP: root });
   const result = spawnSync(
     process.execPath,
     [
@@ -61,6 +62,7 @@ Object.defineProperty(process,'platform',{value:'win32'});try{const {runReviewPr
   });
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT;
+  Object.assign(env, { TMPDIR: root, TMP: root, TEMP: root });
   const result = spawnSync(
     process.execPath,
     [

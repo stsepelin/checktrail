@@ -286,7 +286,14 @@ export async function verifyReviewRuntime({
     const startedAt = new Date().toISOString();
     const evidence = await runRequiredTests(
       requirements.map((x) => ({ ...x, file: path.join(root, x.file) })),
-      { timeoutMs: 300000 },
+      {
+        timeoutMs: process.platform === "win32" ? 600000 : 300000,
+        isolatedCaseWorkers: 1,
+        onCaseProgress: (event) =>
+          process.stderr.write(
+            JSON.stringify({ profile: "review-runtime", ...event }) + "\n",
+          ),
+      },
     );
     assert.equal(evidence.complete, true, JSON.stringify(evidence.problems));
     assert.equal(evidence.required, 9);

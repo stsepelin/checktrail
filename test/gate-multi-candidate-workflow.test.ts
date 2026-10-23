@@ -439,7 +439,7 @@ test(
 );
 test(
   "multi-candidate-workflow installed acceptance",
-  { timeout: 180000 },
+  { timeout: process.platform === "win32" ? 580000 : 180000 },
   async () => {
     if (process.env.CHECKTRAIL_MULTI_WORKFLOW_INSTALLED === "1") {
       const actual = await realpath(
@@ -470,7 +470,7 @@ test(
       {
         env,
         encoding: "utf8",
-        timeout: 175000,
+        timeout: process.platform === "win32" ? 570000 : 175000,
         maxBuffer: 1048576,
       },
     );
