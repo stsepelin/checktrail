@@ -22,9 +22,12 @@ this profile. Wrapper and wider tool profiles remain required separately.
 
 A fixed engine PowerShell bootstrap first assigns itself to an outer kill-on-close
 job through fixed Reflection.Emit P/Invoke signatures. This owns compiler children
-before the framework CodeDom compiler can launch them. It decodes compressed
-engine-owned C# source and compiles it in owned temporary storage with fixed
-framework references. Bounded JSON decoding and compilation use framework APIs
+before the framework CodeDom compiler can launch them. It reads the fixed
+engine-owned C# source from the runner's exclusively created `native.cs` file,
+bounds the read by the expected byte count plus one, and verifies an embedded
+SHA-256 before compilation. The encoded bootstrap carries that expected identity
+instead of the C# body, preserving the existing command-length allowance.
+Compilation uses owned temporary storage and fixed framework references. Bounded JSON decoding and compilation use framework APIs
 without bootstrap cmdlet/module auto-loading. Native Windows acceptance remains
 required for this experimental profile.
 Project commands, arguments, working directory and environment arrive as JSON
