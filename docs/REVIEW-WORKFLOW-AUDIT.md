@@ -92,6 +92,25 @@ reached evidence is accounted for, not that every candidate completed its stages
 Read each workflow's disposition and `completedTargets` as well. The selected-target
 default and legacy journal formats remain readable.
 
+All-candidate writers now use journal version 3. In addition to the version 2
+native receipts, a completed `findings` command retains its complete source-bound
+inspection receipt before the compact candidate result is released. Inspection
+rebuilds the retained input from the original reviewer output, accepted stage
+host/usage declarations, exact target/native bindings and command declarations.
+It rederives states, severity policy, common mappings and parameter observations
+from captured strings. No project configuration or module is loaded for parameter
+replay. Recorded timestamps and host independence remain unattested, and replay
+makes no current-filesystem check. Modified receipts, forged returned outcomes,
+missing receipts and foreign bindings are rejected even with recomputed hashes.
+Selected-target writers continue to emit version 2, and existing all-candidate
+version 2 journals remain readable. The current sealed benchmark remains
+selected-target/version 2 and does not admit this new all-candidate format.
+
+The existing two-MiB completion reservation also applies to a version 3 findings
+record, including its complete receipt. A larger result is withheld and the epoch
+stops with an interrupted journal; no partial record is reported as successful.
+This is separate from the findings inspector's four-MiB standalone report bound.
+
 A preparation exception with no returned receipt leaves accounting unknown. Errors retain the command and an
 error outcome; arbitrary exception messages are not copied into the journal.
 

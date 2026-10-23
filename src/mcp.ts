@@ -66,6 +66,7 @@ import { ReviewWorkflowSession } from "./review-workflow-session.js";
 import type { ReviewWorkflowAuditOptions } from "./review-workflow-audit-schema.js";
 import {
   reviewWorkflowCommandSchema,
+  reviewWorkflowFindingsResultSchema,
   reviewWorkflowSummarySchema,
   reviewWorkflowAssignmentSchema,
   type ReviewWorkflowLimits,
@@ -557,7 +558,11 @@ function createConnectionServer(
         "Coordinate model-independent review stages without invoking a model or reading host credentials. Open a captured context, request a bounded reviewer/refuter assignment, submit a one-use response, execute a startup-registered native probe, and request raw-evidence adjudication. Fresh host sessions and usage are declarations, never verified. Native execution requires operator startup trust; no tool argument can grant it. Close discards raw workflow artifacts; every issued attempt retains metadata. Completed stages never verify defects or approve a repository.",
       inputSchema: reviewWorkflowCommandSchema,
       outputSchema: options.allowReviewSource
-        ? z.union([reviewWorkflowSummarySchema, reviewWorkflowAssignmentSchema])
+        ? z.union([
+            reviewWorkflowSummarySchema,
+            reviewWorkflowAssignmentSchema,
+            reviewWorkflowFindingsResultSchema,
+          ])
         : reviewWorkflowSummarySchema,
       annotations: {
         readOnlyHint: false,

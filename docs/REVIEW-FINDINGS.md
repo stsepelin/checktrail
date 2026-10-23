@@ -130,7 +130,23 @@ Inspection rechecks current source and issues no model assignment or native call
 Cancellation and closing the engine interrupt inspection. It returns the same
 full source-containing findings report; `projectReviewFindings` supplies its
 restricted summary. Reports are returned to the caller, not retained by the
-workflow. This connection is currently library-only; the JSON-lines command, MCP
-workflow tool, durable command journal and interrupted workflows do not expose
-or persist this operation. Complete surface/runtime acceptance and Gate A remain
-open. No actual model review or held-out source is used by its synthetic tests.
+workflow. The JSON-lines CLI and `review_workflow` MCP tool also accept
+`{operation: "findings", workflowId, declarations}`. They require the same
+protected startup source disclosure and completed all-candidate workflow.
+The response contains candidate outcomes, gaps, parameter observations, common
+mapping results and unverified-provenance flags, without another copy of captured
+source, stage prose, session identities or native output. Candidate identities and
+parameter names remain private details; this is not the default summary projection.
+No new host assignment or native call is issued by inspection.
+
+Optional all-candidate command auditing uses journal version 3 and retains the
+complete findings receipt before releasing the compact response. Replay rebuilds
+its input from accepted response envelopes, target order, native receipts and the
+recorded declaration command; it rederives outcomes and parameter bindings from
+captured source strings. Historical replay does not recheck the filesystem or
+authenticate execution, host independence or the recorded inspection timestamp.
+Selected-target writers retain version 2; legacy version 1/2 journals remain
+readable. Inspection is not available after workflow artifacts have been scrubbed;
+interrupted workflows retain their existing incomplete stage/attempt accounting.
+Wider native/runtime acceptance and Gate A remain open. No actual model review
+or held-out source is used by the original synthetic controls.

@@ -1,3 +1,7 @@
+import {
+  captureCompiledEngine,
+  requireUnchangedCompiledEngine,
+} from "./compiled-engine-evidence.mjs";
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import process from "node:process";
@@ -16,6 +20,7 @@ const profiles = JSON.parse(
     "utf8",
   ),
 );
+const compiledEngineRoot = new URL("../dist/src/", import.meta.url);
 const fullSuite = process.argv[2] === "--full-suite";
 const selection = process.argv.slice(fullSuite ? 3 : 2);
 assert.ok(
@@ -156,6 +161,7 @@ assert.ok(
   !fullSuite || additionalFiles.length > 0,
   "Compiled full suite is empty",
 );
+const engineBefore = await captureCompiledEngine(compiledEngineRoot);
 const report =
   selection.length === 1 && !fullSuite
     ? {
@@ -169,5 +175,11 @@ const report =
         timeoutMs,
         additionalFiles,
       });
-process.stdout.write(JSON.stringify({ timeoutMs, ...report }) + "\n");
+const compiledEngine = requireUnchangedCompiledEngine(
+  engineBefore,
+  await captureCompiledEngine(compiledEngineRoot),
+);
+process.stdout.write(
+  JSON.stringify({ timeoutMs, ...report, compiledEngine }) + "\n",
+);
 process.exitCode = report.complete ? 0 : 1;

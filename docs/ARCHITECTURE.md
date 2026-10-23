@@ -110,7 +110,7 @@ sandbox. Tests may modify files or access networks and must be trusted according
 Expose `project_context`, `validation_plan`, `validation_run`, `validation_report`,
 `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-`review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, `review_paired_score`, `review_calibration_fit`,
+`review_hypotheses`, `review_benchmark`, `review_provenance`, `review_findings`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, `review_paired_score`, `review_calibration_fit`,
 `review_calibration_apply`, `import_context`, and `mutation_experiment`.
 Tool schemas are validated. Execution is disabled unless enabled when starting
 the server. Keep a bounded in-memory report store; report IDs are opaque and a
@@ -400,3 +400,14 @@ bounded derivation; a memory-only JS/TS parser checks declared repair parameter
 names. Explicit host judgments, consequence priorities and common-cause groups
 remain unverified advisory data. Strict summary projection withholds retained
 source and judgment text; it cannot grant project execution or source disclosure.
+
+Completed all-candidate workflows can inspect declared findings through the shared
+library, JSON-lines CLI and MCP command. Retained source, accepted response
+identities and native receipts supply the evidence bindings; callers supply only
+judgment/common-cause declarations. The compact detailed result omits captured
+source and raw stage/native output while preserving candidate outcomes and gaps.
+Optional all-candidate audit version 3 retains the full inspection receipt and
+replays both evidence bindings and captured-string parameter derivations. No
+inspection invokes a model, executes more project code or authenticates host
+independence, claim truth or severity. Existing selected-target benchmark journals
+remain version 2; wider runtime acceptance and Gate A remain open.

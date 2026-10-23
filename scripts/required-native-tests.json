@@ -2385,6 +2385,38 @@
     {
       "file": "dist/test/required-native-tests.test.js",
       "name": "native acceptance ledger preflights every selected file within exact byte limits"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine snapshots bind every relative file and raw bytes without certifying dependencies or module loads"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine snapshots reject changed removed and renamed files and admit exact restoration"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine snapshots resolve the installed root alias while refusing nested file and directory links"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine snapshot limits reject empty absent oversized deep and excessive directory inputs"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "native source and fresh-install runners actually emit the matching compiled engine byte manifest"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "native source and fresh-install runners refuse a passing callback after compiled engine bytes change"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine byte ceilings admit exact bounds and reject an extra byte or file"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine observations arm file-change guards before and during reads and close owned handles"
     }
   ],
   "review-paired-scoring": [
@@ -5157,6 +5189,30 @@
     {
       "file": "dist/test/review-workflow-findings.test.js",
       "name": "workflow findings preserve empty reviewer abstention without approving the repository"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings command returns source limited candidate details with a separately retained complete receipt"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings audit retains current inspection evidence and rejects altered identities native runs judgments parameters and returned outcomes"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings ignore unavailable retry metadata while binding each accepted stage and preserving every attempt"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings synchronous historical replay rederives captured parameter bindings without attesting current source"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings preserve legacy all candidate journal version two and selected target invalid command accounting"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings CLI and MCP retain complete audited evidence while returning bounded candidate details"
     }
   ]
 }

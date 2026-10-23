@@ -1,3 +1,4 @@
+import { createRequire } from "node:module";
 import type ts from "typescript";
 import type { ReviewContext } from "./review.js";
 
@@ -17,11 +18,12 @@ type Callable =
   | ts.SetAccessorDeclaration;
 
 /** Parse captured text only. No compiler config, project module or real host is loaded. */
-export async function observeFindingParameters(
+function observeParameterBindings(
   context: ReviewContext,
   requested: string[],
-  guard: () => void = () => {},
-): Promise<Map<string, FindingParameterObservation>> {
+  guard: () => void,
+  loadCompiler: () => typeof ts,
+): Map<string, FindingParameterObservation> {
   const observations = new Map<string, FindingParameterObservation>();
   const pending = [...new Set(requested)];
   for (const functionId of pending)
@@ -33,7 +35,7 @@ export async function observeFindingParameters(
     });
   if (!pending.length || !("analysis" in context)) return observations;
   guard();
-  const compiler = await import("typescript");
+  const compiler = loadCompiler();
   guard();
   if (compiler.version !== "6.0.3") return observations;
   const functions = context.analysis.functions.filter(
@@ -172,4 +174,34 @@ export async function observeFindingParameters(
     guard();
   }
   return observations;
+}
+
+const loadInstalledLibrary = createRequire(import.meta.url);
+/** Synchronous historical replay parses captured strings and never rechecks the filesystem. */
+export function replayFindingParameters(
+  context: ReviewContext,
+  requested: string[],
+  guard: () => void = () => {},
+) {
+  return observeParameterBindings(
+    context,
+    requested,
+    guard,
+    () => loadInstalledLibrary("typescript") as typeof ts,
+  );
+}
+/** Keep asynchronous loading and caller cancellation boundaries for live inspection. */
+export async function observeFindingParameters(
+  context: ReviewContext,
+  requested: string[],
+  guard: () => void = () => {},
+) {
+  if (!requested.length || !("analysis" in context))
+    return observeParameterBindings(context, requested, guard, () => {
+      throw Error("No parser requested");
+    });
+  guard();
+  const compiler = await import("typescript");
+  guard();
+  return observeParameterBindings(context, requested, guard, () => compiler);
 }

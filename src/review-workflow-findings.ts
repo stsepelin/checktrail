@@ -1,8 +1,10 @@
+import { replayReviewFindings } from "./review-findings.js";
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import {
   reviewFindingJudgmentSchema,
   reviewFindingsInputSchema,
+  reviewFindingsReportSchema,
 } from "./review-findings-schema.js";
 import type { ReviewContext } from "./review.js";
 import type { ReviewWorkflowResponse } from "./review-workflow-schema.js";
@@ -141,5 +143,31 @@ export function workflowFindingsInput(
     reviewerSessionId: session(reviewer.host),
     decisions,
     commonDefects,
+  });
+}
+
+export const reviewWorkflowFindingsResultSchema = reviewFindingsReportSchema
+  .omit({ input: true, receipt: true })
+  .extend({
+    format: z.literal("review-workflow-findings"),
+    detailsIncluded: z.literal(true),
+  });
+export type ReviewWorkflowFindingsResult = z.infer<
+  typeof reviewWorkflowFindingsResultSchema
+>;
+/** Detailed candidate outcomes without resending captured source, stage prose or native output. */
+export function projectWorkflowFindings(
+  value: unknown,
+): ReviewWorkflowFindingsResult {
+  const report = reviewFindingsReportSchema.parse(
+    replayReviewFindings(value, true),
+  );
+  const { input, receipt, ...details } = report;
+  void input;
+  void receipt;
+  return reviewWorkflowFindingsResultSchema.parse({
+    ...details,
+    format: "review-workflow-findings",
+    detailsIncluded: true,
   });
 }

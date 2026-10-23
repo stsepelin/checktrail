@@ -19,14 +19,15 @@ model inference, independent AI sessions or finding quality. See the
 Use a captured version 4, 5 or 6 context artifact. The host orchestrator keeps the
 workflow handle and gives each worker only its issued assignment.
 
-| Operation | Input                                                    | Result                                                            |
-| --------- | -------------------------------------------------------- | ----------------------------------------------------------------- |
-| `open`    | Relative `context` artifact path                         | Source-checked workflow summary and opaque workflow ID.           |
-| `next`    | `workflowId`; issued `target` handle for refutation only | One bounded reviewer, refuter or adjudicator assignment.          |
-| `submit`  | `workflowId`, host `response` envelope                   | Consumed attempt metadata and next-stage summary.                 |
-| `probe`   | `workflowId`, startup-registered `probeId`               | Live source-bound native observations, retained for adjudication. |
-| `status`  | `workflowId`                                             | Retained accounting snapshot, without source or claim prose.      |
-| `close`   | `workflowId`                                             | Aborted/scrubbed workflow and retained attempt accounting.        |
+| Operation  | Input                                                    | Result                                                                     |
+| ---------- | -------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `open`     | Relative `context` artifact path                         | Source-checked workflow summary and opaque workflow ID.                    |
+| `next`     | `workflowId`; issued `target` handle for refutation only | One bounded reviewer, refuter or adjudicator assignment.                   |
+| `submit`   | `workflowId`, host `response` envelope                   | Consumed attempt metadata and next-stage summary.                          |
+| `probe`    | `workflowId`, startup-registered `probeId`               | Live source-bound native observations, retained for adjudication.          |
+| `findings` | `workflowId`, judgment/common-cause `declarations`       | Source-bound declared candidate outcomes from retained completed evidence. |
+| `status`   | `workflowId`                                             | Retained accounting snapshot, without source or claim prose.               |
+| `close`    | `workflowId`                                             | Aborted/scrubbed workflow and retained attempt accounting.                 |
 
 Every assignment has an engine-issued UUID, whole-envelope digest, context digest,
 stage, instructions, source packet and inner model-output schema. Submission must
@@ -90,6 +91,18 @@ Summaries retain `claimsVerified: false`, `hostIsolationVerified: false`,
 ends as `no-candidates-declared`, without approving the repository. A full staged
 exchange ends as `advisory-stages-completed`. Native outcomes do not change the
 deterministic validation result.
+
+After an all-candidate exchange completes, `findings` connects its retained
+context, accepted host declarations and native receipts to the
+[source-bound findings inspector](REVIEW-FINDINGS.md). Missing judgments remain
+unresolved; supported/refuted dispositions, consequences and common causes remain
+host declarations. Its compact detailed response includes private candidate IDs,
+gaps and parameter observations, and therefore requires startup source disclosure.
+Workflow accounting summaries retain their unresolved/unassigned contract; the
+separate inspection result does not verify claim truth or approve the repository.
+Inspection issues no model assignment or native call and cannot resume a scrubbed
+or interrupted workflow. Optional version 3 command auditing retains and replays
+the full inspection receipt before returning its compact result.
 
 ## Operator permissions and limits
 

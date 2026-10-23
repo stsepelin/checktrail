@@ -14,6 +14,7 @@ import {
 } from "./review.js";
 import {
   observeFindingParameters,
+  replayFindingParameters,
   type FindingParameterObservation,
 } from "./review-finding-parameters.js";
 import {
@@ -376,16 +377,12 @@ export async function inspectReviewFindings(
   guard();
   return report;
 }
-export async function projectReviewFindings(
-  value: unknown,
-  allowSource = false,
+function checkedProjection(
+  report: ReviewFindingsReport,
+  parameters: Map<string, FindingParameterObservation>,
+  allowSource: boolean,
 ) {
-  const report = bounded(reviewFindingsReportSchema.parse(value));
   const { input, receipt, findings, groups, ...summary } = report;
-  const parameters = await observeFindingParameters(
-    parseReviewContext(input.provenance.context),
-    parameterIds(input),
-  );
   const {
     findings: expectedFindings,
     groups: expectedGroups,
@@ -402,4 +399,28 @@ export async function projectReviewFindings(
     ...summary,
     sourceIncluded: false,
   });
+}
+
+/** Recheck retained derivations and captured syntax only; this is no source-freshness attestation. */
+export function replayReviewFindings(value: unknown, allowSource = false) {
+  const report = bounded(reviewFindingsReportSchema.parse(value));
+  return checkedProjection(
+    report,
+    replayFindingParameters(
+      parseReviewContext(report.input.provenance.context),
+      parameterIds(report.input),
+    ),
+    allowSource,
+  );
+}
+export async function projectReviewFindings(
+  value: unknown,
+  allowSource = false,
+) {
+  const report = bounded(reviewFindingsReportSchema.parse(value));
+  const parameters = await observeFindingParameters(
+    parseReviewContext(report.input.provenance.context),
+    parameterIds(report.input),
+  );
+  return checkedProjection(report, parameters, allowSource);
 }

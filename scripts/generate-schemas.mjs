@@ -1,4 +1,8 @@
 import {
+  reviewWorkflowFindingsDeclarationsSchema,
+  reviewWorkflowFindingsResultSchema,
+} from "../dist/src/review-workflow-findings.js";
+import {
   reviewFindingsInputSchema,
   reviewFindingsReportSchema,
   reviewFindingsSummarySchema,
@@ -309,6 +313,9 @@ for (const [name, schema] of Object.entries({
   "review-workflow-limits": reviewWorkflowLimitsSchema,
   "review-workflow-response": reviewWorkflowResponseSchema,
   "review-workflow-command": reviewWorkflowCommandSchema,
+  "review-workflow-findings-declarations":
+    reviewWorkflowFindingsDeclarationsSchema,
+  "review-workflow-findings": reviewWorkflowFindingsResultSchema,
   "review-workflow-assignment": reviewWorkflowAssignmentSchema,
   "review-workflow-summary": reviewWorkflowSummarySchema,
   "review-host-lease-summary": reviewHostLeaseSummarySchema,

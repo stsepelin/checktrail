@@ -359,3 +359,6 @@ export type {
 
 export { reviewWorkflowFindingsDeclarationsSchema } from "./review-workflow-findings.js";
 export type { ReviewWorkflowFindingsDeclarations } from "./review-workflow-findings.js";
+
+export { reviewWorkflowFindingsResultSchema } from "./review-workflow-findings.js";
+export type { ReviewWorkflowFindingsResult } from "./review-workflow-findings.js";

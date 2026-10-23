@@ -1,3 +1,12 @@
+import {
+  reviewFindingsReportSchema,
+  type ReviewFindingsReport,
+} from "./review-findings.js";
+import {
+  workflowFindingsInput,
+  projectWorkflowFindings,
+  reviewWorkflowFindingsResultSchema,
+} from "./review-workflow-findings.js";
 import { isDeepStrictEqual } from "node:util";
 import { createHash, randomUUID } from "node:crypto";
 import {
@@ -20,9 +29,11 @@ import {
   reviewWorkflowAssignmentSchema,
   reviewWorkflowSummarySchema,
   reviewWorkflowCommandSchema,
+  reviewWorkflowLegacyCommandSchema,
   reviewWorkflowResponseSchema,
   reviewWorkflowNativeReceiptSchema,
   type ReviewWorkflowNativeReceipt,
+  type ReviewWorkflowResponse,
 } from "./review-workflow-schema.js";
 import {
   parseReviewProbe,
@@ -47,7 +58,7 @@ const MAX_BYTES = 134217728;
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const count = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 const states = z.array(reviewWorkflowSummarySchema).max(16);
-const operation = z.enum([
+const legacyOperation = z.enum([
   "open",
   "next",
   "submit",
@@ -56,6 +67,7 @@ const operation = z.enum([
   "close",
   "invalid",
 ]);
+const operation = z.enum([...legacyOperation.options, "findings"]);
 const captureSchema = z.strictObject({
   kind: z.enum(["complete", "prefix", "unserializable"]),
   bytes: count.nullable(),
@@ -96,7 +108,7 @@ const legacyBodySchema = z.discriminatedUnion("kind", [
   z.strictObject({
     kind: z.literal("begin"),
     commandId: z.string().uuid(),
-    operation,
+    operation: legacyOperation,
     capture: captureSchema,
     states,
   }),
@@ -125,6 +137,28 @@ const bodySchema = z.discriminatedUnion("kind", [
   }),
   endBody,
 ]);
+const findingsBodySchema = z.discriminatedUnion("kind", [
+  headerBody,
+  beginBody.extend({ operation }),
+  finishBody.extend({
+    result: z
+      .union([
+        reviewWorkflowAssignmentSchema,
+        reviewWorkflowSummarySchema,
+        reviewWorkflowFindingsResultSchema,
+      ])
+      .nullable(),
+    nativeReceipt: reviewWorkflowNativeReceiptSchema.nullable(),
+    // Parsed in the semantic replay below; keeping this leaf opaque avoids duplicating its large context union in every event type.
+    findingsReceipt: z
+      .unknown()
+      .refine(
+        (value) =>
+          value === null || reviewFindingsReportSchema.safeParse(value).success,
+      ),
+  }),
+  endBody,
+]);
 const eventFields = {
   epochId: z.string().uuid(),
   sequence: count,
@@ -143,8 +177,13 @@ const eventSchema = z.discriminatedUnion("schemaVersion", [
     schemaVersion: z.literal(2),
     body: bodySchema,
   }),
+  z.strictObject({
+    ...eventFields,
+    schemaVersion: z.literal(3),
+    body: findingsBodySchema,
+  }),
 ]);
-type Body = z.infer<typeof bodySchema>;
+type Body = z.infer<typeof bodySchema> | z.infer<typeof findingsBodySchema>;
 const sha = (text: string | Buffer): string =>
   createHash("sha256").update(text).digest("hex");
 function privateStat(stat: Stats): void {
@@ -157,7 +196,10 @@ function privateStat(stat: Stats): void {
   )
     throw new Error("Audit requires a bounded private singly linked file");
 }
-export function captureReviewWorkflowCommand(input: unknown): {
+export function captureReviewWorkflowCommand(
+  input: unknown,
+  allowFindings = false,
+): {
   capture: Capture;
   value: unknown;
   operation: z.infer<typeof operation>;
@@ -199,7 +241,11 @@ export function captureReviewWorkflowCommand(input: unknown): {
           prefixBase64: Buffer.from(text).subarray(0, 4096).toString("base64"),
           untrustedData: true,
         };
-  const parsed = reviewWorkflowCommandSchema.safeParse(captured.value);
+  const parsed = (
+    allowFindings
+      ? reviewWorkflowCommandSchema
+      : reviewWorkflowLegacyCommandSchema
+  ).safeParse(captured.value);
   return {
     capture: captured,
     value: captured.value,
@@ -291,6 +337,7 @@ function prepareAudit(
 /** Fresh, private, fsynced append-only epoch. Existing files are never reopened for writing. */
 export class ReviewWorkflowAudit {
   readonly #file: string;
+  readonly #journalVersion: 2 | 3;
   readonly #fd: number;
   readonly #limits: z.infer<typeof reviewWorkflowAuditOptionsSchema>;
   readonly #epochId = randomUUID();
@@ -321,6 +368,7 @@ export class ReviewWorkflowAudit {
     engine: ReviewWorkflowOptions,
   ) {
     const prepared = prepareAudit(root, options, engine);
+    this.#journalVersion = engine.candidateScope === "all" ? 3 : 2;
     this.#limits = prepared.limits;
     this.#file = prepared.file;
     const { parent, header } = prepared;
@@ -358,10 +406,12 @@ export class ReviewWorkflowAudit {
       throw error;
     }
   }
-  #line(body: Body): { buffer: Buffer; digest: string } {
-    bodySchema.parse(body);
+  #line(input: unknown): { buffer: Buffer; digest: string } {
+    const body = (
+      this.#journalVersion === 3 ? findingsBodySchema : bodySchema
+    ).parse(input);
     const base = {
-      schemaVersion: 2,
+      schemaVersion: this.#journalVersion,
       epochId: this.#epochId,
       sequence: this.#sequence,
       createdAt: new Date().toISOString(),
@@ -453,9 +503,11 @@ export class ReviewWorkflowAudit {
     result:
       | z.infer<typeof reviewWorkflowAssignmentSchema>
       | z.infer<typeof reviewWorkflowSummarySchema>
+      | z.infer<typeof reviewWorkflowFindingsResultSchema>
       | null,
     snapshots: z.infer<typeof states>,
     nativeReceipt: ReviewWorkflowNativeReceipt | null = null,
+    findingsReceipt: ReviewFindingsReport | null = null,
   ): void {
     if (!this.#pending.has(commandId))
       throw new Error("Audit command is not pending");
@@ -464,6 +516,7 @@ export class ReviewWorkflowAudit {
       commandId,
       outcome: result === null ? "error" : "result",
       nativeReceipt,
+      ...(this.#journalVersion === 3 ? { findingsReceipt } : {}),
       result,
       states: snapshots,
     });
@@ -794,14 +847,15 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
     throw new Error("Invalid audit event inventory");
   let previous: string | null = null,
     epochId: string | undefined,
-    journalVersion: 1 | 2 | undefined,
+    journalVersion: 1 | 2 | 3 | undefined,
     header: Extract<Body, { kind: "header" }> | undefined,
     end: Extract<Body, { kind: "end" }> | undefined;
   const pending = new Map<string, Extract<Body, { kind: "begin" }>>(),
     seen = new Set<string>(),
     nativeReceipts = new Map<string, ReviewWorkflowNativeReceipt[]>(),
     candidates = new Map<string, Map<string, string>>(),
-    completedStages = new Map<string, Set<string>>();
+    completedStages = new Map<string, Set<string>>(),
+    acceptedResponses = new Map<string, ReviewWorkflowResponse>();
   let snapshots: z.infer<typeof states> = [],
     finished = 0,
     rejected = 0,
@@ -842,6 +896,10 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
     }
     if (event.body.kind === "header") throw new Error("Repeated audit header");
     const body = event.body;
+    const commandSchema =
+      event.schemaVersion === 3
+        ? reviewWorkflowCommandSchema
+        : reviewWorkflowLegacyCommandSchema;
     checkSnapshots(body.states, snapshots);
     snapshots = body.states;
     for (const state of snapshots) {
@@ -855,7 +913,7 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
     }
     if (body.kind === "begin") {
       checkedCapture(body.capture);
-      const parsed = reviewWorkflowCommandSchema.safeParse(body.capture.value);
+      const parsed = commandSchema.safeParse(body.capture.value);
       if (
         body.operation !==
           (parsed.success ? parsed.data.operation : "invalid") ||
@@ -873,9 +931,7 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
       )
         throw new Error("Unmatched audit result");
       const began = pending.get(body.commandId)!;
-      const command = reviewWorkflowCommandSchema.safeParse(
-        began.capture.value,
-      );
+      const command = commandSchema.safeParse(began.capture.value);
       if (command.success && command.data.operation === "submit") {
         const response = reviewWorkflowResponseSchema.safeParse(
           command.data.response,
@@ -883,6 +939,25 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
         const workflowId = command.data.workflowId;
         const state = snapshots.find((s) => s.workflowId === workflowId);
         const attempt = state?.assignments.at(-1);
+        if (
+          body.outcome === "result" &&
+          response.success &&
+          response.data.output &&
+          attempt?.status === "accepted" &&
+          attempt.assignmentId === response.data.assignmentId &&
+          attempt.assignmentDigest === response.data.assignmentDigest &&
+          attempt.responseDigest ===
+            sha(JSON.stringify(command.data.response)) &&
+          isDeepStrictEqual(attempt.host, response.data.host) &&
+          isDeepStrictEqual(attempt.usage, response.data.usage) &&
+          began.states
+            .find((s) => s.workflowId === workflowId)
+            ?.assignments.at(-1)?.status === "awaiting-host"
+        ) {
+          if (acceptedResponses.has(attempt.assignmentId))
+            throw Error("Repeated accepted audit response");
+          acceptedResponses.set(attempt.assignmentId, response.data);
+        }
         if (
           body.outcome === "result" &&
           response.success &&
@@ -996,6 +1071,110 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
         )
           throw new Error("Audit reached native receipt is missing");
       }
+      if ("findingsReceipt" in body) {
+        if (body.findingsReceipt !== null) {
+          const receipt = reviewFindingsReportSchema.parse(
+            body.findingsReceipt,
+          );
+          if (
+            event.schemaVersion !== 3 ||
+            !command.success ||
+            command.data.operation !== "findings" ||
+            header!.settings.candidateScope !== "all"
+          )
+            throw Error("Audit findings command binding disagrees");
+          const findingCommand = command.data;
+          const state = snapshots.find(
+            (s) => s.workflowId === findingCommand.workflowId,
+          );
+          const before = began.states.find(
+            (s) => s.workflowId === findingCommand.workflowId,
+          );
+          if (
+            !state ||
+            state.schemaVersion !== 2 ||
+            state.status !== "completed" ||
+            !isDeepStrictEqual(state, before) ||
+            state.contextDigest !== receipt.contextDigest ||
+            state.completedTargets.length !== state.candidateHandles.length ||
+            body.nativeReceipt !== null
+          )
+            throw Error("Audit findings workflow binding disagrees");
+          const accepted = state.assignments.filter(
+            (a) => a.status === "accepted",
+          );
+          const reviewerAttempt = accepted[0];
+          const reviewer = reviewerAttempt
+            ? acceptedResponses.get(reviewerAttempt.assignmentId)
+            : undefined;
+          if (
+            !reviewer?.output ||
+            reviewerAttempt?.stage !== "reviewer" ||
+            accepted.length !== 1 + 2 * state.completedTargets.length ||
+            reviewer.output.candidates.length !== state.candidateHandles.length
+          )
+            throw Error("Audit findings accepted stages are incomplete");
+          const cycles = state.completedTargets.map((target, i) => {
+            const candidate =
+              reviewer.output!.candidates[
+                state.candidateHandles.indexOf(target)
+              ];
+            const refuterAttempt = accepted[1 + 2 * i],
+              adjudicatorAttempt = accepted[2 + 2 * i];
+            const refuter = refuterAttempt
+              ? acceptedResponses.get(refuterAttempt.assignmentId)
+              : undefined;
+            const adjudicator = adjudicatorAttempt
+              ? acceptedResponses.get(adjudicatorAttempt.assignmentId)
+              : undefined;
+            const native =
+              nativeReceipts
+                .get(state.workflowId)
+                ?.filter((n) => n.targetHandle === target) ?? [];
+            if (
+              !candidate ||
+              refuterAttempt?.stage !== "refuter" ||
+              adjudicatorAttempt?.stage !== "adjudicator" ||
+              !refuter ||
+              !adjudicator ||
+              native.length !== 1 ||
+              !isDeepStrictEqual(candidate, native[0]!.candidate)
+            )
+              throw Error("Audit findings target or native binding disagrees");
+            return {
+              target,
+              candidate,
+              run: native[0]!.run,
+              refuter: refuter.host,
+              adjudicator: adjudicator.host,
+            };
+          });
+          const expected = workflowFindingsInput(
+            {
+              context: receipt.input.provenance.context,
+              reviewer: {
+                output: reviewer.output,
+                host: reviewer.host,
+                usage: reviewer.usage,
+              },
+              cycles,
+            },
+            JSON.stringify(findingCommand.declarations),
+          );
+          // An inspection timestamp is retained, not authenticated by historical replay.
+          expected.provenance.assessment.createdAt =
+            receipt.input.provenance.assessment.createdAt;
+          if (!isDeepStrictEqual(expected, receipt.input))
+            throw Error("Audit findings retained input binding disagrees");
+          const projected = projectWorkflowFindings(receipt);
+          if (
+            body.result !== null &&
+            !isDeepStrictEqual(projected, body.result)
+          )
+            throw Error("Audit findings returned result disagrees");
+        } else if (body.result?.format === "review-workflow-findings")
+          throw Error("Audit findings receipt is missing");
+      }
       pending.delete(body.commandId);
       finished++;
       if (body.outcome === "error") rejected++;
@@ -1027,9 +1206,7 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
     }
     const pendingProbe = (id: string) =>
       [...pending.values()].some((began) => {
-        const command = reviewWorkflowCommandSchema.safeParse(
-          began.capture.value,
-        );
+        const command = commandSchema.safeParse(began.capture.value);
         return (
           command.success &&
           command.data.operation === "probe" &&

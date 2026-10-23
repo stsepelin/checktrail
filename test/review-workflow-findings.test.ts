@@ -1,6 +1,15 @@
 import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
-import { writeFile } from "node:fs/promises";
+import { writeFile, readFile, mkdtemp, chmod, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { spawn } from "node:child_process";
+import { createInterface } from "node:readline";
+import { fileURLToPath } from "node:url";
+import { Client } from "@modelcontextprotocol/client";
+import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
+import { ReviewWorkflowSession } from "../src/review-workflow-session.js";
+import { parseReviewWorkflowAuditArtifact } from "../src/review-workflow-audit.js";
+import { replayReviewFindings } from "../src/review-findings.js";
 import path from "node:path";
 import { test, type TestContext } from "node:test";
 import { ReviewWorkflowEngine } from "../src/review-workflow.js";
@@ -12,7 +21,11 @@ import {
   reviewWorkflowAssignmentSchema,
   reviewWorkflowAllSummarySchema,
 } from "../src/review-workflow-schema.js";
-import { type ReviewWorkflowFindingsDeclarations } from "../src/review-workflow-findings.js";
+import {
+  type ReviewWorkflowFindingsDeclarations,
+  reviewWorkflowFindingsResultSchema,
+  projectWorkflowFindings,
+} from "../src/review-workflow-findings.js";
 import {
   setup,
   pin,
@@ -28,13 +41,51 @@ const options = {
 };
 const hash = (value: unknown) =>
   createHash("sha256").update(JSON.stringify(value)).digest("hex");
-async function complete(t: TestContext, content = source, empty = false) {
+type Call = (command: unknown) => Promise<unknown>;
+async function complete(
+  t: TestContext,
+  content = source,
+  empty = false,
+  channel?: (root: string) => Promise<Call>,
+  retry = false,
+) {
   const d = await setup(t, content);
   const engine = new ReviewWorkflowEngine(d.root, options);
   t.after(() => engine.dispose());
-  const opened = await engine.open(d.context);
+  const call: Call = channel
+    ? await channel(d.root)
+    : (command) => engine.command(command);
+  const opened = reviewWorkflowAllSummarySchema.parse(
+    await call({ operation: "open", context: ".checktrail/context.json" }),
+  );
+  async function next(target?: string) {
+    return reviewWorkflowAssignmentSchema.parse(
+      await call({
+        operation: "next",
+        workflowId: opened.workflowId,
+        ...(target ? { target } : {}),
+      }),
+    );
+  }
+  async function rejected(target?: string) {
+    const unavailable = response(await next(target));
+    unavailable.status = "unavailable";
+    unavailable.output = null;
+    unavailable.usage = {
+      inputTokens: 17,
+      outputTokens: 0,
+      elapsedMs: 9,
+      costUSD: null,
+    };
+    await call({
+      operation: "submit",
+      workflowId: opened.workflowId,
+      response: unavailable,
+    });
+  }
+  if (retry) await rejected();
   const reviewer = response(
-    reviewWorkflowAssignmentSchema.parse(await engine.next(opened.workflowId)),
+    await next(),
     empty
       ? []
       : [
@@ -47,7 +98,11 @@ async function complete(t: TestContext, content = source, empty = false) {
         ],
   );
   const state = reviewWorkflowAllSummarySchema.parse(
-    await engine.submit(opened.workflowId, reviewer),
+    await call({
+      operation: "submit",
+      workflowId: opened.workflowId,
+      response: reviewer,
+    }),
   );
   const hosts: Array<{
     target: string;
@@ -56,17 +111,25 @@ async function complete(t: TestContext, content = source, empty = false) {
   }> = [];
   // Deliberately process the second handle first. Retained completion order is not reviewer order.
   for (const target of [...state.candidateHandles].reverse()) {
-    const refuter = response(
-      reviewWorkflowAssignmentSchema.parse(
-        await engine.next(state.workflowId, target),
-      ),
-    );
-    await engine.submit(state.workflowId, refuter);
-    await engine.probe(state.workflowId, recipe.id);
-    const adjudicator = response(
-      reviewWorkflowAssignmentSchema.parse(await engine.next(state.workflowId)),
-    );
-    await engine.submit(state.workflowId, adjudicator);
+    if (retry) await rejected(target);
+    const refuter = response(await next(target));
+    await call({
+      operation: "submit",
+      workflowId: state.workflowId,
+      response: refuter,
+    });
+    await call({
+      operation: "probe",
+      workflowId: state.workflowId,
+      probeId: recipe.id,
+    });
+    if (retry) await rejected();
+    const adjudicator = response(await next());
+    await call({
+      operation: "submit",
+      workflowId: state.workflowId,
+      response: adjudicator,
+    });
     hosts.push({
       target,
       refuter: refuter.host,
@@ -125,6 +188,7 @@ async function complete(t: TestContext, content = source, empty = false) {
   return {
     ...d,
     engine,
+    call,
     id: state.workflowId,
     state,
     declarations,
@@ -247,8 +311,17 @@ test("workflow findings reject foreign duplicate and caller supplied identity or
       ),
     );
   }
+  const exact = " ".repeat(262144 - Buffer.byteLength(valid)) + valid;
+  assert.equal(Buffer.byteLength(exact), 262144);
+  assert.equal(
+    (await d.engine.inspectFindings(d.id, exact)).candidates[
+      "declared-supported"
+    ],
+    2,
+  );
   await assert.rejects(
-    d.engine.inspectFindings(d.id, " ".repeat(262145) + valid),
+    d.engine.inspectFindings(d.id, " " + exact),
+    /Bounded workflow/,
   );
   const report = await d.engine.inspectFindings(d.id, valid);
   assert.equal(report.candidates["declared-supported"], 2);
@@ -370,3 +443,460 @@ test("workflow findings preserve empty reviewer abstention without approving the
   assert.equal(report.status, "incomplete");
   assert.equal(report.claimsVerified, false);
 });
+
+async function auditFile(t: TestContext) {
+  const directory = await mkdtemp(
+    path.join(tmpdir(), "checktrail-original-findings-audit-"),
+  );
+  await chmod(directory, 0o700);
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  return path.join(directory, "epoch.jsonl");
+}
+function rechain(
+  events: ReturnType<typeof parseReviewWorkflowAuditArtifact>["events"],
+) {
+  let previous: string | null = null;
+  return Buffer.from(
+    events
+      .map((event, i) => {
+        event.sequence = i;
+        event.previous = previous;
+        if (
+          event.body.kind === "begin" &&
+          event.body.capture.kind === "complete"
+        ) {
+          event.body.capture.bytes = Buffer.byteLength(
+            JSON.stringify(event.body.capture.value),
+          );
+          event.body.capture.sha256 = hash(event.body.capture.value);
+        }
+        const { digest, ...value } = event;
+        void digest;
+        event.digest = hash(value);
+        previous = event.digest;
+        return JSON.stringify(event);
+      })
+      .join("\n") + "\n",
+  );
+}
+test("workflow findings command returns source limited candidate details with a separately retained complete receipt", async (t) => {
+  const d = await complete(t);
+  const before = d.engine.status(d.id);
+  const receipts: unknown[] = [];
+  const result = reviewWorkflowFindingsResultSchema.parse(
+    await d.engine.command(
+      { operation: "findings", workflowId: d.id, declarations: d.declarations },
+      undefined,
+      undefined,
+      (receipt) => receipts.push(receipt),
+    ),
+  );
+  assert.equal(receipts.length, 1);
+  const full = replayReviewFindings(receipts[0], true);
+  assert.equal(result.inputDigest, full.inputDigest);
+  assert.equal(result.candidates["declared-supported"], 2);
+  assert.equal(result.findings.length, 2);
+  assert.equal(result.detailsIncluded, true);
+  assert.deepEqual(d.engine.status(d.id), before);
+  const serialized = JSON.stringify(result);
+  for (const privateText of [
+    source.trim(),
+    d.target.claim,
+    d.reviewer.host.sessionId,
+    "refutationRationale",
+    "rawArtifacts",
+    "stdoutBase64",
+  ])
+    assert.ok(!serialized.includes(privateText), privateText);
+  assert.equal(result.claimsVerified, false);
+  assert.equal(result.commonCauseVerified, false);
+});
+test(
+  "workflow findings audit retains current inspection evidence and rejects altered identities native runs judgments parameters and returned outcomes",
+  {
+    skip:
+      process.platform === "win32"
+        ? "Private workflow audit profile is POSIX-only"
+        : false,
+  },
+  async (t) => {
+    const file = await auditFile(t);
+    let session: ReviewWorkflowSession | undefined;
+    try {
+      const d = await complete(t, source, false, async (root) => {
+        session = new ReviewWorkflowSession(root, {
+          ...options,
+          audit: { file },
+        });
+        return (command) => session!.command(command);
+      });
+      const result = reviewWorkflowFindingsResultSchema.parse(
+        await d.call({
+          operation: "findings",
+          workflowId: d.id,
+          declarations: d.declarations,
+        }),
+      );
+      session!.dispose();
+      const original = parseReviewWorkflowAuditArtifact(await readFile(file));
+      assert.equal(original.summary.journalVersion, 3);
+      assert.equal(original.summary.journalStatus, "sealed");
+      assert.equal(original.summary.nativeReceipts.retained, 2);
+      const index = original.events.findIndex(
+        (e) =>
+          e.body.kind === "finish" &&
+          e.body.result?.format === "review-workflow-findings",
+      );
+      assert.ok(index > 0);
+      const row = original.events[index]!;
+      assert.equal(row.body.kind, "finish");
+      assert.deepEqual(
+        row.body.kind === "finish" ? row.body.result : null,
+        result,
+      );
+      const fixture = JSON.stringify(original.events);
+      const mutable = JSON.parse(fixture);
+      const variants: Array<(v: typeof mutable) => void> = [
+        (v) => {
+          v[index].body.findingsReceipt = null;
+        },
+        (v) => {
+          v[index].body.findingsReceipt = {};
+        },
+        (v) => {
+          v[index].body.result.findings[0].declaredSeverity = "high";
+        },
+        (v) => {
+          v[
+            index
+          ].body.findingsReceipt.findings[0].repairParameters.available.push(
+            "requestCeiling",
+          );
+        },
+        (v) => {
+          v[index].body.findingsReceipt.input.reviewerSessionId =
+            "ForeignSession";
+        },
+        (v) => {
+          v[
+            index
+          ].body.findingsReceipt.input.decisions[0].refutation.sessionId =
+            "ForeignRefuter";
+        },
+        (v) => {
+          v[
+            index
+          ].body.findingsReceipt.input.decisions[0].adjudication.sessionId =
+            "ForeignJudge";
+        },
+        (v) => {
+          v[index].body.findingsReceipt.input.provenance.native.reverse();
+        },
+        (v) => {
+          v[
+            index - 1
+          ].body.capture.value.declarations.decisions[0].judgment.consequence.category =
+            "unknown";
+        },
+        (v) => {
+          v[
+            index
+          ].body.findingsReceipt.input.provenance.assessment.usage.inputTokens =
+            71;
+        },
+        (v) => {
+          v[index].body.findingsReceipt.input.provenance.candidates.reverse();
+          v[
+            index
+          ].body.findingsReceipt.input.provenance.assessment.observations.reverse();
+        },
+        (v) => {
+          v[index].body.findingsReceipt.input.provenance.native[0].run =
+            v[index].body.findingsReceipt.input.provenance.native[1].run;
+        },
+      ];
+      variants.push((v) => {
+        const receipt = v[index].body.findingsReceipt;
+        receipt.input.reviewerSessionId = "OriginalCoherentlyForeignSession";
+        receipt.inputDigest = hash(receipt.input);
+        // The standalone imported report is internally consistent. Only workflow binding can reject it.
+        assert.doesNotThrow(() => projectWorkflowFindings(receipt));
+        v[index].body.result = projectWorkflowFindings(receipt);
+      });
+      for (const [i, mutate] of variants.entries()) {
+        const events = structuredClone(mutable);
+        mutate(events);
+        assert.throws(
+          () => parseReviewWorkflowAuditArtifact(rechain(events)),
+          "Original findings tamper " + i,
+        );
+      }
+    } finally {
+      session?.dispose();
+    }
+  },
+);
+test("workflow findings ignore unavailable retry metadata while binding each accepted stage and preserving every attempt", async (t) => {
+  const d = await complete(t, source, false, undefined, true);
+  const before = d.engine.status(d.id);
+  assert.equal(before.assignments.length, 10);
+  assert.equal(
+    before.assignments.filter((a) => a.status === "unavailable").length,
+    5,
+  );
+  const report = await d.engine.inspectFindings(
+    d.id,
+    JSON.stringify(d.declarations),
+  );
+  assert.equal(report.candidates["declared-supported"], 2);
+  assert.deepEqual(report.input.provenance.assessment.usage, d.reviewer.usage);
+  assert.equal(report.input.provenance.assessment.usage.inputTokens, null);
+  assert.equal(d.engine.status(d.id).assignments.length, 10);
+});
+test("workflow findings synchronous historical replay rederives captured parameter bindings without attesting current source", async (t) => {
+  const d = await complete(t);
+  const report = await d.engine.inspectFindings(
+    d.id,
+    JSON.stringify(d.declarations),
+  );
+  await writeFile(
+    path.join(d.root, "subject.mjs"),
+    "export function decision(){return false;}\n",
+  );
+  const replayed = replayReviewFindings(report);
+  assert.equal(replayed.freshness, "current");
+  assert.equal(replayed.nativeExecution, false);
+  const forged = structuredClone(report);
+  forged.findings[0]!.repairParameters.available.push("requestCeiling");
+  assert.throws(() => replayReviewFindings(forged), /does not reconcile/);
+  assert.equal(
+    (await d.engine.inspectFindings(d.id, JSON.stringify(d.declarations)))
+      .status,
+    "stale",
+  );
+});
+test(
+  "workflow findings preserve legacy all candidate journal version two and selected target invalid command accounting",
+  {
+    skip:
+      process.platform === "win32"
+        ? "Private workflow audit profile is POSIX-only"
+        : false,
+  },
+  async (t) => {
+    const file = await auditFile(t);
+    let session: ReviewWorkflowSession | undefined;
+    try {
+      const d = await complete(t, source, false, async (root) => {
+        session = new ReviewWorkflowSession(root, {
+          ...options,
+          audit: { file },
+        });
+        return (command) => session!.command(command);
+      });
+      session!.dispose();
+      const v3 = parseReviewWorkflowAuditArtifact(await readFile(file));
+      const v2 = JSON.parse(JSON.stringify(v3.events));
+      for (const event of v2) {
+        event.schemaVersion = 2;
+        if (event.body.kind === "finish") delete event.body.findingsReceipt;
+      }
+      assert.equal(
+        parseReviewWorkflowAuditArtifact(rechain(v2 as typeof v3.events))
+          .summary.journalVersion,
+        2,
+      );
+      const selectedFile = path.join(path.dirname(file), "selected.jsonl");
+      const selected = new ReviewWorkflowSession(d.root, {
+        ...options,
+        candidateScope: "selected",
+        audit: { file: selectedFile },
+      });
+      try {
+        const state = await selected.command({
+          operation: "open",
+          context: ".checktrail/context.json",
+        });
+        assert.equal(state.format, "review-workflow-summary");
+        if (state.format !== "review-workflow-summary")
+          throw Error("Summary required");
+        await assert.rejects(
+          selected.command({
+            operation: "findings",
+            workflowId: state.workflowId,
+            declarations: d.declarations,
+          }),
+          /Completed disclosed/,
+        );
+        assert.equal(
+          (
+            await selected.command({
+              operation: "status",
+              workflowId: state.workflowId,
+            })
+          ).format,
+          "review-workflow-summary",
+        );
+      } finally {
+        selected.dispose();
+      }
+      const legacy = parseReviewWorkflowAuditArtifact(
+        await readFile(selectedFile),
+      );
+      assert.equal(legacy.summary.journalVersion, 2);
+      assert.equal(legacy.summary.commands.rejected, 1);
+    } finally {
+      session?.dispose();
+    }
+  },
+);
+async function channel(mode: "cli" | "mcp", root: string, file: string) {
+  const pinned = pin();
+  const probeFile = path.join(root, ".checktrail/probe.json");
+  await writeFile(probeFile, pinned.contents);
+  const cli = fileURLToPath(new URL("../src/cli.js", import.meta.url));
+  const flags = [
+    "--root",
+    root,
+    "--detailed",
+    "--allow-review-source",
+    "--workflow-candidates",
+    "all",
+    "--workflow-audit",
+    file,
+    "--probe",
+    probeFile + "#sha256=" + pinned.sha256,
+  ];
+  if (mode === "mcp") {
+    const client = new Client(
+      { name: "original-workflow-findings-host", version: "fixture-1" },
+      { versionNegotiation: { mode: { pin: "2026-07-28" } } },
+    );
+    try {
+      await client.connect(
+        new StdioClientTransport({
+          command: process.execPath,
+          args: [cli, "serve", ...flags, "--allow-execution"],
+          stderr: "pipe",
+        }),
+      );
+    } catch (error) {
+      await client.close();
+      throw error;
+    }
+    return {
+      call: async (command: unknown) => {
+        const result = await client.callTool({
+          name: "review_workflow",
+          arguments: command as Record<string, unknown>,
+        });
+        assert.notEqual(result.isError, true, JSON.stringify(result));
+        return result.structuredContent;
+      },
+      finish: async () => client.close(),
+      close: async () => client.close(),
+    };
+  }
+  const child = spawn(process.execPath, [
+    cli,
+    "review-session",
+    ...flags,
+    "--trust-project",
+  ]);
+  const reader = createInterface({ input: child.stdout });
+  const iterator = reader[Symbol.asyncIterator]();
+  let stderr = "";
+  child.stderr.on("data", (v: Buffer) => {
+    stderr += v.toString();
+  });
+  const exited = new Promise<number | null>((resolve, reject) => {
+    child.once("error", reject);
+    child.once("close", resolve);
+  });
+  const read = async () => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const line = await Promise.race([
+        iterator.next(),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(
+            () => reject(Error("Original findings CLI deadline")),
+            15000,
+          );
+        }),
+      ]);
+      assert.equal(line.done, false, stderr);
+      return JSON.parse(line.value!);
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  return {
+    call: async (command: unknown) => {
+      child.stdin.write(JSON.stringify(command) + "\n");
+      return read();
+    },
+    finish: async () => {
+      child.stdin.end();
+      assert.equal((await read()).format, "review-workflow-summary");
+      assert.equal(await exited, 0, stderr);
+    },
+    close: async () => {
+      if (child.exitCode === null && child.signalCode === null)
+        child.kill("SIGTERM");
+      await exited;
+      reader.close();
+    },
+  };
+}
+test(
+  "workflow findings CLI and MCP retain complete audited evidence while returning bounded candidate details",
+  {
+    skip:
+      process.platform === "win32"
+        ? "Private workflow audit profile is POSIX-only"
+        : false,
+  },
+  async (t) => {
+    for (const mode of ["cli", "mcp"] as const) {
+      const file = await auditFile(t);
+      let connection: Awaited<ReturnType<typeof channel>> | undefined;
+      try {
+        const d = await complete(t, source, false, async (root) => {
+          connection = await channel(mode, root, file);
+          return connection.call;
+        });
+        const result = reviewWorkflowFindingsResultSchema.parse(
+          await d.call({
+            operation: "findings",
+            workflowId: d.id,
+            declarations: d.declarations,
+          }),
+        );
+        assert.equal(result.candidates["declared-supported"], 2);
+        assert.equal(result.groups[0]!.state, "declared-common-defect");
+        assert.equal(result.claimsVerified, false);
+        assert.equal(result.qualityGate, "not-assessed");
+        for (const hidden of [
+          source.trim(),
+          d.target.claim,
+          "refutationRationale",
+          d.reviewer.host.sessionId,
+          "stdoutBase64",
+        ])
+          assert.ok(
+            !JSON.stringify(result).includes(hidden),
+            mode + ":" + hidden,
+          );
+        await d.call({ operation: "close", workflowId: d.id });
+        await connection!.finish();
+        const audited = parseReviewWorkflowAuditArtifact(await readFile(file));
+        assert.equal(audited.summary.journalVersion, 3);
+        assert.equal(audited.summary.nativeReceipts.retained, 2);
+        assert.equal(audited.summary.journalStatus, "sealed");
+      } finally {
+        await connection?.close();
+      }
+    }
+  },
+);

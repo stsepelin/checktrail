@@ -21,10 +21,12 @@ common-cause mappings. Captured JS/TS parsing checks whether a proposed repair's
 declared parameters exist at its cited function. Severity follows a finite
 policy over declared consequences. Truth, independent sessions, impact, common
 causes and repair correctness remain unverified; the whole multi-candidate
-workflow and Gate A acceptance remain open. The library workflow connection now
+workflow and Gate A acceptance remain open. The shared library/CLI/MCP workflow connection
 binds completed candidate handles to retained source, accepted host declarations
-and native receipts before findings inspection. CLI/MCP workflow integration,
-interrupted workflow intake and wider runtime acceptance remain open.
+and native receipts before findings inspection. All-candidate journal version 3
+retains and replays the full inspection receipt before releasing a compact
+candidate result. Interrupted workflow intake and wider runtime acceptance remain
+open.
 
 [Review provenance](REVIEW-PROVENANCE.md) now joins current source/citation
 checks, exact host claims, imported native receipt accounting and bound

@@ -102,6 +102,7 @@ try {
   for (const file of [
     "verify-required-native-tests.mjs",
     "required-test-evidence.mjs",
+    "compiled-engine-evidence.mjs",
   ])
     await cp(
       path.join(repository, "scripts", file),

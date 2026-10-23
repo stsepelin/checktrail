@@ -3,7 +3,10 @@ import {
   inspectReviewFindings,
   type ReviewFindingsReport,
 } from "./review-findings.js";
-import { workflowFindingsInput } from "./review-workflow-findings.js";
+import {
+  workflowFindingsInput,
+  projectWorkflowFindings,
+} from "./review-workflow-findings.js";
 import { createHash, randomUUID } from "node:crypto";
 import { readProjectFile } from "./inventory.js";
 import {
@@ -39,6 +42,7 @@ import {
   reviewWorkflowSummarySchema,
   type ReviewWorkflowAssignment,
   type ReviewWorkflowLimits,
+  type ReviewWorkflowResult,
   type ReviewWorkflowSummary,
   type ReviewWorkflowNativeReceipt,
 } from "./review-workflow-schema.js";
@@ -957,7 +961,8 @@ export class ReviewWorkflowEngine {
     input: unknown,
     signal?: AbortSignal,
     retainNative?: (receipt: ReviewWorkflowNativeReceipt) => void,
-  ): Promise<ReviewWorkflowSummary | ReviewWorkflowAssignment> {
+    retainFindings?: (receipt: ReviewFindingsReport) => void,
+  ): Promise<ReviewWorkflowResult> {
     const command = reviewWorkflowCommandSchema.parse(input);
     switch (command.operation) {
       case "open":
@@ -976,6 +981,15 @@ export class ReviewWorkflowEngine {
           signal,
           retainNative,
         );
+      case "findings": {
+        const report = await this.inspectFindings(
+          command.workflowId,
+          JSON.stringify(command.declarations),
+          signal,
+        );
+        retainFindings?.(report);
+        return projectWorkflowFindings(report);
+      }
       case "status":
         return this.status(command.workflowId);
       case "close":

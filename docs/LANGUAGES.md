@@ -15,9 +15,10 @@ artifact/license closure and the final runtime matrix remain pending.
 availability checks for captured JavaScript/TypeScript functions. This syntax
 check does not establish repair correctness, caller reachability or semantic
 support for other languages. Native imports and host judgment declarations retain
-their separate provenance and acceptance limits. Completed all-candidate library
-workflows can supply retained source, sessions and native receipts directly to
-this inspector; host judgment declarations and wider surface/runtime acceptance
+their separate provenance and acceptance limits. Completed all-candidate library,
+CLI and MCP workflows can supply retained source, sessions and native receipts
+directly to this inspector. Optional private command journals retain the full
+inspection receipt; host judgment declarations and wider runtime acceptance
 remain separate.
 
 Capability levels are discovery, planning, execution, structured evidence,
