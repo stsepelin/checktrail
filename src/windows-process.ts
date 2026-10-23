@@ -21,6 +21,7 @@ import { withinRoot } from "./inventory.js";
 import {
   windowsLauncherScript,
   windowsKeeperSource,
+  windowsNativeCode,
 } from "./windows-native.js";
 import {
   windowsReceiptSchema,
@@ -254,6 +255,10 @@ export async function runWindowsProcess(
     const receiptFile = path.join(directory, "receipt.json");
     const requestId = randomUUID();
     const controlPipe = "checktrail-" + requestId;
+    await writeFile(path.join(directory, "native.cs"), windowsNativeCode, {
+      flag: "wx",
+      mode: 0o600,
+    });
     await writeFile(path.join(directory, "owner-id"), requestId, {
       flag: "wx",
     });

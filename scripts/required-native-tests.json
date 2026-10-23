@@ -2581,6 +2581,14 @@
     {
       "file": "dist/test/windows-contract.test.js",
       "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows resource counters retain native CPU precision and direct working-set scope with valid zero and numeric boundaries"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters"
     }
   ],
   "windows-process": [
@@ -2627,6 +2635,26 @@
     {
       "file": "dist/test/windows-process.test.js",
       "name": "native Windows guardian job cleanup does not depend on exit of the still-living launcher"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows resource counters retain native CPU precision and direct working-set scope with valid zero and numeric boundaries"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows resource collection preserves a failed target exit and collects only after owned-job cleanup"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows source integrity refuses changed fixed compiler bytes before project execution"
     }
   ],
   "physical-process-output": [

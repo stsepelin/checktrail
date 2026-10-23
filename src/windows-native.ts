@@ -1,4 +1,5 @@
 import { gzipSync } from "node:zlib";
+import { createHash } from "node:crypto";
 
 /** Engine-owned Windows supervisor. Project inputs arrive in an owned JSON data file; control uses a private pipe. */
 export const windowsNativeCode = String.raw`
@@ -26,6 +27,15 @@ public static class ChecktrailWindowsJobV1 {
     public long User, Kernel, PeriodUser, PeriodKernel;
     public uint Faults, Total, Active, Terminated;
   }
+  [StructLayout(LayoutKind.Sequential)] struct MemoryCounters {
+    public uint Size, Faults;
+    public UIntPtr PeakWorkingSet, WorkingSet, PeakPagedPool, PagedPool;
+    public UIntPtr PeakNonPagedPool, NonPagedPool, Pagefile, PeakPagefile;
+  }
+  [DllImport("kernel32.dll", SetLastError=true)]
+  static extern bool GetProcessTimes(IntPtr process, out long created, out long exited, out long kernel, out long user);
+  [DllImport("psapi.dll", SetLastError=true)]
+  static extern bool GetProcessMemoryInfo(IntPtr process, ref MemoryCounters counters, uint size);
   [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)] struct Startup {
     public uint Size; public string Reserved, Desktop, Title;
     public uint X, Y, Width, Height, CharsX, CharsY, Fill, Flags;
@@ -96,12 +106,41 @@ public static class ChecktrailWindowsJobV1 {
     Accounting info; Check(QueryInformationJobObject(job, 1, out info, (uint)Marshal.SizeOf(typeof(Accounting)), IntPtr.Zero));
     return info.Active;
   }
+  static string ResourceUnavailable(string stage, int? error) {
+    return new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new {
+      profile = "windows-job-resources-v1", state = "unavailable", stage,
+      nativeError = error.HasValue ? (uint?)unchecked((uint)error.Value) : null
+    });
+  }
+  static string ResourceUsage(IntPtr process, IntPtr job) {
+    long created, exited, kernel, user;
+    if (!GetProcessTimes(process, out created, out exited, out kernel, out user))
+      return ResourceUnavailable("process-times", Marshal.GetLastWin32Error());
+    MemoryCounters memory = new MemoryCounters(); memory.Size = (uint)Marshal.SizeOf(typeof(MemoryCounters));
+    if (!GetProcessMemoryInfo(process, ref memory, memory.Size))
+      return ResourceUnavailable("process-memory", Marshal.GetLastWin32Error());
+    Accounting info;
+    if (!QueryInformationJobObject(job, 1, out info, (uint)Marshal.SizeOf(typeof(Accounting)), IntPtr.Zero))
+      return ResourceUnavailable("job-accounting", Marshal.GetLastWin32Error());
+    const long maximum = 9007199254740991L;
+    ulong peak = memory.PeakWorkingSet.ToUInt64();
+    if (user < 0 || kernel < 0 || info.User < user || info.Kernel < kernel ||
+      info.User > maximum || info.Kernel > maximum || peak > (ulong)maximum || info.Active != 0 || info.Total == 0)
+      return ResourceUnavailable("counter-bounds", null);
+    return new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new {
+      profile = "windows-job-resources-v1", state = "collected", cpuUnit = "100ns",
+      processCpu = new { user100ns = user, kernel100ns = kernel },
+      jobCpu = new { user100ns = info.User, kernel100ns = info.Kernel },
+      totalJobProcesses = info.Total, peakWorkingSetBytes = peak,
+      memoryScope = "direct-target-lifetime-peak", collectedAfterJobEmpty = true, summedProcessTreeRss = false
+    });
+  }
   static IntPtr Inherited(int kind) {
     IntPtr result; var current = GetCurrentProcess();
     Check(DuplicateHandle(current, GetStdHandle(kind), current, out result, 0, true, 2)); return result;
   }
   static void Receipt(string file, string request, string phase, uint? child, bool assigned, bool resumed,
-    uint? exit, uint? before, uint? after, string cleanup, int? error) {
+    uint? exit, uint? before, uint? after, string cleanup, int? error, string resources = null) {
     string contents = "{\"profile\":\"windows-job-v1\",\"requestId\":\"" + request +
       "\",\"phase\":\"" + phase + "\",\"supervisorPid\":" + System.Diagnostics.Process.GetCurrentProcess().Id +
       ",\"childPid\":" + (child.HasValue ? child.Value.ToString() : "null") +
@@ -109,7 +148,7 @@ public static class ChecktrailWindowsJobV1 {
       ",\"childExitCode\":" + (exit.HasValue ? exit.Value.ToString() : "null") +
       ",\"activeBeforeCleanup\":" + (before.HasValue ? before.Value.ToString() : "null") +
       ",\"activeAfterCleanup\":" + (after.HasValue ? after.Value.ToString() : "null") +
-      ",\"cleanup\":\"" + cleanup + "\",\"nativeError\":" + (error.HasValue ? error.Value.ToString() : "null") + "}";
+      ",\"cleanup\":\"" + cleanup + "\",\"nativeError\":" + (error.HasValue ? error.Value.ToString() : "null") + ",\"resources\":" + (resources ?? "null") + "}";
     string temporary = file + ".new";
     File.WriteAllText(temporary, contents, new UTF8Encoding(false));
     if (File.Exists(file)) File.Replace(temporary, file, null); else File.Move(temporary, file);
@@ -173,7 +212,8 @@ public static class ChecktrailWindowsJobV1 {
       do { after = Active(job); if (after == 0) break; Thread.Sleep(10); } while (DateTime.UtcNow < deadline);
       if (after != 0) throw new Win32Exception(1460);
       completed = true;
-      Receipt(receipt, request, "completed", child, assigned, resumed, code, before, after, "confirmed", null);
+      Receipt(receipt, request, "completed", child, assigned, resumed, code, before, after, "confirmed", null,
+        resumed ? ResourceUsage(process.Process, job) : null);
       return code.HasValue ? unchecked((int)code.Value) : 0;
     } catch (Win32Exception failure) {
       if (process.Process != IntPtr.Zero) TerminateProcess(process.Process, 1);
@@ -218,6 +258,9 @@ public static class ChecktrailWindowsJobV1 {
   }
 }
 `;
+export const windowsNativeSourceSha256 = createHash("sha256")
+  .update(windowsNativeCode, "utf8")
+  .digest("hex");
 // Compress only fixed engine source; project arguments remain JSON data.
 export const windowsCompressedNative = gzipSync(
   Buffer.from(windowsNativeCode, "utf8"),
@@ -261,9 +304,12 @@ $json = [Web.Script.Serialization.JavaScriptSerializer]::new()
 $json.MaxJsonLength = 1048576
 $json.RecursionLimit = 16
 $request = $json.DeserializeObject($line)
-$source = @'
-${windowsNativeCode}
-'@
+$sourceReader = [IO.BinaryReader]::new([IO.File]::Open([IO.Path]::Combine($ownedDirectory, 'native.cs'), [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::Read))
+try { $sourceBytes = $sourceReader.ReadBytes(${Buffer.byteLength(windowsNativeCode, "utf8") + 1}) } finally { $sourceReader.Dispose() }
+$sourceHasher = [Security.Cryptography.SHA256]::Create()
+try { $sourceDigest = [BitConverter]::ToString($sourceHasher.ComputeHash($sourceBytes)).Replace('-','').ToLowerInvariant() } finally { $sourceHasher.Dispose() }
+if ($sourceDigest -ne '${windowsNativeSourceSha256}') { throw 'WINDOWS_NATIVE_SOURCE_CHANGED' }
+$source = [Text.Encoding]::UTF8.GetString($sourceBytes)
 $compiler = [Microsoft.CSharp.CSharpCodeProvider]::new()
 $parameters = [CodeDom.Compiler.CompilerParameters]::new()
 $parameters.GenerateInMemory = $true
@@ -271,6 +317,7 @@ $parameters.GenerateExecutable = $false
 $parameters.TempFiles = [CodeDom.Compiler.TempFileCollection]::new($ownedDirectory, $false)
 [void]$parameters.ReferencedAssemblies.Add('System.dll')
 [void]$parameters.ReferencedAssemblies.Add('System.Core.dll')
+[void]$parameters.ReferencedAssemblies.Add('System.Web.Extensions.dll')
 try {
   $compiled = $compiler.CompileAssemblyFromSource($parameters, [string[]]@($source))
   if ($compiled.Errors.HasErrors) { throw 'WINDOWS_NATIVE_COMPILATION_UNAVAILABLE' }

@@ -1122,6 +1122,7 @@
   "scripts/verify-vue-router-container.mjs": ["vue-router"],
   "scripts/verify-windows-guards.mjs": ["windows"],
   "scripts/verify-windows-package.mjs": ["windows"],
+  "scripts/verify-windows-resource-guards.mjs": ["windows"],
   "scripts/verify-yaml-context-container.mjs": ["yaml-context-arm64"],
   "scripts/verify-yaml-context-guards.mjs": ["yaml-context-arm64"],
   "scripts/vue-router-tools/package-lock.json": [
@@ -1365,7 +1366,8 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "vue-router",
+    "windows"
   ],
   "test/eslint-participation.test.ts": ["javascript-extensions-arm64"],
   "test/eslint.test.ts": [
@@ -1373,7 +1375,8 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "vue-router",
+    "windows"
   ],
   "test/executable-bundle-fixture.ts": ["external-adapters"],
   "test/executable-bundle-interpreters.test.ts": ["external-adapters"],
@@ -1647,7 +1650,8 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "vue-router",
+    "windows"
   ],
   "test/jvm-analyzer-evidence-controls.test.ts": [
     "jvm-analyzer-extensions-arm64"
@@ -1942,7 +1946,8 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "vue-router",
+    "windows"
   ],
   "test/process-output.test.ts": ["windows"],
   "test/process-tree.test.ts": ["laravel-assembly-arm64"],
@@ -2291,13 +2296,15 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "vue-router",
+    "windows"
   ],
   "test/typescript.test.ts": [
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "vue-router",
+    "windows"
   ],
   "test/validation-tasks.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/vite-library.test.ts": ["javascript-extensions-arm64"],
@@ -2305,7 +2312,8 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "vue-router",
+    "windows"
   ],
   "test/vue-router.test.ts": [
     "nuxt-assembly-arm64",
@@ -2316,7 +2324,8 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "vue-router",
+    "windows"
   ],
   "test/windows-contract.test.ts": [
     "tasks-runtime",
@@ -2324,6 +2333,16 @@
     "windows"
   ],
   "test/windows-process.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/windows-resource-native.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/windows-resource.test.ts": [
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"

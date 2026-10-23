@@ -159,3 +159,41 @@ process failure flags and valid zero and numeric-boundary cases. Compiler/SDK/st
 and publisher closures, Windows, final schema/package/privacy/upgrade readiness
 and the whole resource-release-readiness profile remain pending. Gate A stays open;
 no inference, field evaluation, tag or publication was performed.
+
+## Experimental Windows process and job counters
+
+The Windows supervisor can attach `resources` to its execution receipt after
+confirming that its owned job has no active processes. `GetProcessTimes` supplies
+the direct target's user and kernel CPU; `QueryInformationJobObject` supplies
+separate job totals, including terminated members. These retain native 100 ns
+ticks without rounding. `GetProcessMemoryInfo` supplies the direct target's peak
+working set in bytes. That memory value excludes a sum of descendant peaks and
+must not be described as job commit, total process-tree RSS or a validation-only
+memory delta. The launcher and supervisor are outside the target job counters.
+
+An API refusal or unsafe counter produces an explicit unavailable resource
+record with its stage and observed native error. A zero last-error value stays zero; an engine counter-bound refusal has no native API error and records `null`. It supplies no invented successful zero
+measurement and does not change the target's execution result. Required resource
+measurement must reject unavailable counters. A nonzero target exit remains a
+nonzero exit even if its resource counters were collected.
+
+The fixed C# source now travels through a bounded, exclusively created file in
+the runner's owned temporary namespace. The supervisor reads at most the expected
+source byte count plus one, checks its embedded SHA-256, and compiles those exact
+bytes before the project target resumes. This keeps the fixed encoded launcher
+within the existing command-length allowance. Project arguments remain JSON data.
+The existing namespace lifecycle removes the source along with other owned files.
+These controls are execution ownership and integrity checks; executed project code
+is not sandboxed.
+
+Portable contracts cover counter precision, numeric boundaries, incomplete
+records and unavailable API stages. Native Windows witnesses compare target and
+job CPU after two reaped children, compare direct peak working set with the
+target's own observation, and preserve a deliberately failed target exit.
+Windows qualification and the whole resource-release-readiness profile remain
+pending. No resource performance budget or release readiness is established by
+these prepared controls.
+
+API contracts: [process CPU](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes),
+[job CPU](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information),
+and [working-set counters](https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters).

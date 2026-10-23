@@ -55,6 +55,7 @@ Gate A profile remain pending.
 local-drive `.exe` runner and dedicated native source/offline-install CI profile.
 Native acceptance remains pending. Other Windows tool/framework/Git/persistence
 profiles are unverified; this does not promote them or close E4/E5.
+The prepared [Windows resource counters](NATIVE-RESOURCE-ACCOUNTING.md#experimental-windows-process-and-job-counters) distinguish direct target working-set memory from job CPU totals. Native Windows qualification and whole resource/release acceptance remain pending.
 
 ## Advisory review context support
 

@@ -1649,6 +1649,8 @@ jobs:
         run: node scripts/verify-required-native-tests.mjs physical-process-output
       - name: Require native compiling mutation guards with unchanged callbacks
         run: node scripts/verify-windows-guards.mjs
+      - name: Require native resource counter and fixed-source integrity guards
+        run: node scripts/verify-windows-resource-guards.mjs
       - run: npm run format:check
       - name: Prepare package install cache with network access
         run: node scripts/prepare-package-cache.mjs

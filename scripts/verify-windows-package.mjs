@@ -51,6 +51,8 @@ try {
   for (const file of [
     "windows-contract.test.js",
     "windows-process.test.js",
+    "windows-resource.test.js",
+    "windows-resource-native.test.js",
     "helpers.js",
   ])
     await cp(
