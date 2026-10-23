@@ -1,3 +1,12 @@
+export {
+  reviewEvaluationCaptureAssignments,
+  inspectReviewEvaluationCaptures,
+  reviewEvaluationCaptureInputSchema,
+} from "./review-evaluation-captures.js";
+export type {
+  ReviewEvaluationCaptureInput,
+  ReviewEvaluationCaptureReport,
+} from "./review-evaluation-captures.js";
 export { createPlan, validate, aggregate } from "./engine.js";
 export {
   inspectReviewCohortDeclaration,
@@ -362,3 +371,12 @@ export type { SwiftExtensionsConfig } from "./swift-extensions-contract.js";
 export { cppExtensionsConfigSchema } from "./cpp-extensions-contract.js";
 export type { CppExtensionsConfig } from "./cpp-extensions-contract.js";
 export { cppExtensionsInvocationSchema } from "./cpp-extensions.js";
+
+export {
+  encodeReviewEvaluationArtifact,
+  reviewEvaluationAttemptArtifactSchema,
+  reviewEvaluationCaptureArtifactSchema,
+  sealReviewEvaluationCaptures,
+  inspectSealedReviewEvaluationCaptures,
+} from "./review-evaluation-artifacts.js";
+export type { ReviewEvaluationSealedCaptureReport } from "./review-evaluation-artifacts.js";

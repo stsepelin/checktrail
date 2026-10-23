@@ -2385,6 +2385,38 @@
     {
       "file": "dist/test/required-native-tests.test.js",
       "name": "native acceptance ledger preflights every selected file within exact byte limits"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine snapshots bind every relative file and raw bytes without certifying dependencies or module loads"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine snapshots reject changed removed and renamed files and admit exact restoration"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine snapshots resolve the installed root alias while refusing nested file and directory links"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine snapshot limits reject empty absent oversized deep and excessive directory inputs"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "native source and fresh-install runners actually emit the matching compiled engine byte manifest"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "native source and fresh-install runners refuse a passing callback after compiled engine bytes change"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine byte ceilings admit exact bounds and reject an extra byte or file"
+    },
+    {
+      "file": "dist/test/compiled-engine-evidence.test.js",
+      "name": "compiled engine observations arm file-change guards before and during reads and close owned handles"
     }
   ],
   "review-paired-scoring": [
@@ -5151,6 +5183,110 @@
     {
       "file": "dist/test/review-evaluation-metering.test.js",
       "name": "evaluation metering stdin checker emits aggregate accounting only and invalid input never echoes private data"
+    }
+  ],
+  "evaluation-capture-declarations": [
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures bind every three-role slot without requiring review assistance from the baseline"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures preserve planned denominators for missing duplicate foreign and malformed inventories"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures bind assignments and exact source and configuration identities"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures preserve failed retry records and terminal status correspondence"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures retain empty partial and unfinished review states without approving the cohort"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures retain unknown usage and reject budgets and inconsistent output bytes"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures reject reused capture records and declared sessions while allowing matching review bodies"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures preserve the selected denominator when clustering or protocol commitments change"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures enforce exact record output and role schema boundaries"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures do not mutate input or invoke model transports and keep authenticity unverified"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures CLI preserves privacy and inclusive input limits for admissible incomplete and invalid metadata"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures run the same controls through a fresh offline production installation"
+    }
+  ],
+  "evaluation-physical-captures": [
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts retain every reached attempt and physical output with deterministic replay"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts reject changed body bytes before committing any archive and accept the original repair"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts allow equal bodies and preserve invalid metadata rather than authenticating a digest"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts retain missing records and reached retries even when their capture is absent"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts retain truncation unknown counters and independent stream accounting gaps"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts bind raw attempt metadata and retain malformed records without losing counts"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts enforce private files directories and project boundaries before writing"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts refuse links aliases and special files while preserving their targets"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts reject stale archives and malformed duplicate unused and omitted retained inventories"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts seal once replay retained bytes and never resume or mutate incoming work"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts keep physical validity distinct from empty reviews unknown usage and authenticity"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts enforce strict raw record contracts and per-file and aggregate storage limits"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts repeat the same physical controls through a fresh offline production installation"
     }
   ]
 }

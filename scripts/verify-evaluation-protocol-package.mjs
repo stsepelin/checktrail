@@ -24,38 +24,70 @@ import { attemptOutputCodeIdentity } from "./attempt-output-evidence.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const args = process.argv.slice(2);
-assert.ok(args.length === 0 || (args.length === 1 && args[0] === "--metering"));
-const metering = args.length === 1;
-const selectedProfile = metering
-  ? "evaluation-protocol-metering"
-  : "evaluation-protocol-declarations";
-const harnessFiles = metering
+assert.ok(
+  args.length === 0 ||
+    (args.length === 1 &&
+      ["--metering", "--captures", "--artifacts"].includes(args[0])),
+);
+const metering = args[0] === "--metering";
+const captures = args[0] === "--captures";
+const artifacts = args[0] === "--artifacts";
+const caseCount = artifacts ? 13 : 12;
+const selectedProfile = artifacts
+  ? "evaluation-physical-captures"
+  : captures
+    ? "evaluation-capture-declarations"
+    : metering
+      ? "evaluation-protocol-metering"
+      : "evaluation-protocol-declarations";
+const harnessFiles = artifacts
   ? [
-      "dist/test/review-evaluation-metering.test.js",
+      "dist/test/review-evaluation-artifacts.test.js",
+      "dist/test/review-evaluation-artifacts-fixture.js",
+      "dist/test/review-evaluation-captures-fixture.js",
       "dist/test/review-evaluation-metering-fixture.js",
       "dist/test/review-evaluation-protocol-fixture.js",
-      "scripts/check-evaluation-metering.mjs",
+      "dist/test/helpers.js",
     ]
-  : [
-      "dist/test/review-evaluation-protocol.test.js",
-      "dist/test/review-evaluation-protocol-fixture.js",
-      "scripts/check-evaluation-protocol.mjs",
-    ];
+  : captures
+    ? [
+        "dist/test/review-evaluation-captures.test.js",
+        "dist/test/review-evaluation-captures-fixture.js",
+        "dist/test/review-evaluation-metering-fixture.js",
+        "dist/test/review-evaluation-protocol-fixture.js",
+        "scripts/check-evaluation-captures.mjs",
+      ]
+    : metering
+      ? [
+          "dist/test/review-evaluation-metering.test.js",
+          "dist/test/review-evaluation-metering-fixture.js",
+          "dist/test/review-evaluation-protocol-fixture.js",
+          "scripts/check-evaluation-metering.mjs",
+        ]
+      : [
+          "dist/test/review-evaluation-protocol.test.js",
+          "dist/test/review-evaluation-protocol-fixture.js",
+          "scripts/check-evaluation-protocol.mjs",
+        ];
 const expected = JSON.parse(
   await readFile(
     path.join(repository, "scripts/required-native-tests.json"),
     "utf8",
   ),
 )[selectedProfile];
-assert.equal(expected.length, 12);
-assert.equal(new Set(expected.map((row) => row.name)).size, 12);
+assert.equal(expected.length, caseCount);
+assert.equal(new Set(expected.map((row) => row.name)).size, caseCount);
 assert.ok(
   expected.every(
     (row) =>
       row.file ===
-      (metering
-        ? "dist/test/review-evaluation-metering.test.js"
-        : "dist/test/review-evaluation-protocol.test.js"),
+      (artifacts
+        ? "dist/test/review-evaluation-artifacts.test.js"
+        : captures
+          ? "dist/test/review-evaluation-captures.test.js"
+          : metering
+            ? "dist/test/review-evaluation-metering.test.js"
+            : "dist/test/review-evaluation-protocol.test.js"),
   ),
 );
 const inputFiles = [
@@ -145,10 +177,10 @@ try {
     { timeoutMs: 120000 },
   );
   assert.equal(profile.complete, true, JSON.stringify(profile.problems));
-  assert.equal(profile.required, 12);
-  assert.equal(profile.passed, 12);
+  assert.equal(profile.required, caseCount);
+  assert.equal(profile.passed, caseCount);
   assert.equal(profile.ledger.truncated, false);
-  assert.equal(profile.ledger.cases.length, 12);
+  assert.equal(profile.ledger.cases.length, caseCount);
   assert.ok(profile.ledger.cases.every((row) => row.outcome === "passed"));
   assert.deepEqual(await inputIdentities(), inputs);
   assert.deepEqual(await copiedInputs(), inputs.slice(0, harnessFiles.length));

@@ -19,6 +19,8 @@ The [prospective evaluation protocol preflight](EVALUATION-PROTOCOL-DECLARATIONS
 
 The [external review metering intake](EVALUATION-METERING.md) reconciles declared terminal slots and ordered attempts against that prospective protocol, retaining failed retries, unknown usage and equal per-arm budget overages. It distinguishes operator-metered from provider-reported metadata and returns aggregate accounting only. Its consistency checks do not verify collector authenticity, actual all-attempt completeness, host independence, billing or review quality. The independent-evaluation profile and Gate A remain open.
 
+The [external review capture intake](EVALUATION-CAPTURES.md) binds every selected three-role output descriptor to its exact assignment, configuration, source and ordered attempt records. It supports externally produced plain-host baseline reviews and preserves incomplete outputs and unknown measurements. Its metadata inspector is complemented by bounded private POSIX physical sealing and replay; raw blob identity remains distinct from collector authenticity, actual all-attempt completeness, independent sessions, judging and quality. Those remain unverified; the full independent-evaluation profile and Gate A remain open.
+
 [Review provenance](REVIEW-PROVENANCE.md) now joins current source/citation
 checks, exact host claims, imported native receipt accounting and bound
 descriptive scores through library, CLI and MCP. Evidence tiers and complete
