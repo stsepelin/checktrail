@@ -212,3 +212,5 @@ frozen host/model profiles, observed independent sessions, sealed cases, complet
 persisted attempts, independent adjudication and paired scoring. Gate A remains
 open; these original synthetic controls enable no new real-project field test or
 quality comparison.
+
+The selected multi-candidate workflow profile has [dated source and fresh offline installed receipts](measurements/multi-candidate-runtime-matrix-2026-10-23.json) for every selected runtime slot at the recorded commit. Its implementation state is `implemented` and acceptance state is `receipts-declared`. These historical observations do not qualify later candidate bytes, independent model sessions, finding truth or review quality. The unchanged finite inventory remains unfrozen, and Gate A stays open.

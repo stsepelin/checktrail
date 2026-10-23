@@ -20,8 +20,8 @@ imported native observations, declared refutation/adjudication and explicit
 common-cause mappings. Captured JS/TS parsing checks whether a proposed repair's
 declared parameters exist at its cited function. Severity follows a finite
 policy over declared consequences. Truth, independent sessions, impact, common
-causes and repair correctness remain unverified; the whole multi-candidate
-workflow and Gate A acceptance remain open. The shared library/CLI/MCP workflow connection
+causes and repair correctness remain unverified; final candidate/runtime
+acceptance and Gate A remain open. The shared library/CLI/MCP workflow connection
 binds issued candidate handles to retained source, accepted host declarations
 and native receipts before findings inspection. All-candidate journal version 3
 retains and replays the full inspection receipt before releasing a compact
@@ -1045,3 +1045,5 @@ The [separate POSIX self/reaped-child resource binding](NATIVE-RESOURCE-ACCOUNTI
 The [synthetic native workload/resource harness](NATIVE-RESOURCE-ACCOUNTING.md#synthetic-native-workload-and-archive-measurements) has scoped small/large/JavaScript-Go validation, separate kernel CPU/RSS scopes, physical output and exact multi-chunk report/SQLite accounting in [its measurement](measurements/native-resource-workloads-2026-10-11.json). The dated original controls exercise source and fresh offline installed engines on macOS Node 24/26 and Linux Node 22. Current accounting regressions additionally check independent CPU fields, both RSS scopes, both raw streams and malformed-report rejection. This does not establish summed process-tree RSS, unreaped descendants, Windows, a performance regression budget or final release closure. Gate A remains open without inference or field evaluation.
 
 The [evaluation cohort declaration checker](EVALUATION-COHORT-DECLARATIONS.md) validates bounded declared lineage/content grouping, optional repository/family holdouts, retained exclusions, eligibility metadata and exposure declarations through the shared library and a repository setup script. These original synthetic development controls do not inspect source or labels, verify license grants or sessions, freeze the private reference/workflow, execute inference, or close the independent evaluation profile or Gate A.
+
+The selected multi-candidate workflow profile has [dated source and fresh offline installed receipts](measurements/multi-candidate-runtime-matrix-2026-10-23.json) for every selected runtime slot at the recorded commit. Its implementation state is `implemented` and acceptance state is `receipts-declared`. These historical observations do not qualify later candidate bytes, independent model sessions, finding truth or review quality. The unchanged finite inventory remains unfrozen, and Gate A stays open.

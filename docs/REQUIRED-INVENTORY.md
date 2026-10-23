@@ -37,6 +37,8 @@ for every selected slot, including native Windows. Its implementation state is
 `implemented` and acceptance state is `receipts-declared`; this does not qualify
 other profiles or later candidate bytes. The remaining freeze decisions and
 Gate A remain open.
+The selected multi-candidate workflow profile has [dated source and fresh offline installed receipts](measurements/multi-candidate-runtime-matrix-2026-10-23.json) for every selected runtime slot at the recorded commit. Its implementation state is `implemented` and acceptance state is `receipts-declared`. These historical observations do not qualify later candidate bytes, independent model sessions, finding truth or review quality. The unchanged finite inventory remains unfrozen, and Gate A stays open.
+
 The current hosted `checks` job exercises four Linux/macOS slots. The additional
 macOS slots and exact OS-image/tool identities still require native acceptance.
 A repository license label and a selected grammar commit do not replace the

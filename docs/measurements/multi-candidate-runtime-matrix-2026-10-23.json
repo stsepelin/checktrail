@@ -1,0 +1,1148 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-10-23T18:23:03.915727+00:00",
+  "profile": "multi-candidate-workflow",
+  "sourceCommit": "49945792f32ed85423c479d36769d47752a62597",
+  "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+  "ciRun": "https://github.com/stsepelin/checktrail/actions/runs/39988068788",
+  "allSelectedRuntimeSlotsObserved": true,
+  "rows": [
+    {
+      "slot": "ci-linux-node22",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39988068788/job/120533189003",
+      "jobConclusion": "success",
+      "runtime": {
+        "slot": "ci-linux-node22",
+        "node": "22.23.3",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "6.17.0-1022-azure",
+        "osVersion": "#22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261012.334.1",
+        "containerImageId": null,
+        "nodeExecutableSha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-linux-node22",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "sourceRequired": 9,
+      "sourcePassed": 9,
+      "installedRequired": 9,
+      "installedPassed": 9,
+      "wholeProfileCallbacksPassed": [
+        "multi-candidate-workflow broken acceptance",
+        "multi-candidate-workflow fixed acceptance",
+        "multi-candidate-workflow near-miss acceptance",
+        "multi-candidate-workflow prerequisite acceptance",
+        "multi-candidate-workflow stale acceptance",
+        "multi-candidate-workflow empty acceptance",
+        "multi-candidate-workflow privacy acceptance",
+        "multi-candidate-workflow lifecycle acceptance",
+        "multi-candidate-workflow installed acceptance"
+      ],
+      "harnessSha256": "0092cbf1cedd0e9a7a86837d0502c85b4e5223a6a11572e9211bc3204817f83e",
+      "requirementsSha256": "35dfe4d9393a7faf5ad6595ed0a77077bf0f82789b004e21d5524af436cc385b",
+      "packageSha256": "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd",
+      "inputSources": [
+        [
+          "dist/test/gate-multi-candidate-workflow.test.js",
+          "c610ff2db7bc46c98ae7661087cbd96d3b5ff48a9c275eea7abacc836356d0cf"
+        ],
+        [
+          "dist/test/review-workflow-findings-fixture.js",
+          "8bb4022f31ed24271eb64970211ac0c646219b57e34b9b357f8f9e9264ca40f0"
+        ],
+        [
+          "dist/test/review-workflow-fixture.js",
+          "650ae7f695240c716fc7b2bbb64779cc24ad96bc8dfe04695fea96eee7f86744"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "dist/test/tool-fixture.js",
+          "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+        ],
+        [
+          "scripts/verify-import-context-package.mjs",
+          "69f4f603e5d3be7f33aa0b074ff50943ca9b0a0d5c86033501433f05d67b7b0a"
+        ],
+        [
+          "scripts/verify-review-runtime-package.mjs",
+          "ef2c9570c91701f7d2d100da3f2696c9187e28844d95f3a62e67814cc516e7e3"
+        ],
+        [
+          "package-lock.json",
+          "0f3b88dcbf04dac16126b689c63df89a5a2e9237ec4ae60fc5fecfdea5c8b0a8"
+        ],
+        [
+          "scripts/install-acceptance-package.mjs",
+          "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+        ],
+        [
+          "scripts/prepare-javascript-tools.mjs",
+          "e39d2784b67a9e93d9f1bd885fc6e74707c58cc1c5dbcd1858647c35702f54ca"
+        ],
+        [
+          "scripts/native-acceptance-diagnostics.mjs",
+          "915e248fe4790c79bd0f3837c4b64bde311107a3732ecdb3579309c27c6b5478"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/review-runtime-evidence.mjs",
+          "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+        ],
+        [
+          "scripts/verify-review-runtime.mjs",
+          "d399c67e8cf65d77e63a7a70215136a3585f03271cb067ccc565289c5074200d"
+        ],
+        [
+          "scripts/compiled-engine-evidence.mjs",
+          "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ]
+      ],
+      "compiledEngine": {
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 964,
+        "bytes": 16138622,
+        "treeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "manifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "afterTreeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "afterManifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "beforeAfterByteIdentitiesMatch": true,
+        "dependencyBytesCaptured": false,
+        "actualModuleLoadsTraced": false,
+        "producerSourceBuildVerified": false
+      },
+      "tarballSha256": "0ba232f56a70f0ea714c4acf2f1c209e9dbc2855b022bbdd416395a9e8fa571f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "tasksRecheck": {
+        "sourceRequired": 26,
+        "sourcePassed": 26,
+        "installedRequired": 26,
+        "installedPassed": 26,
+        "harnessSha256": "33d83997bd3d7a99d7917cc18261060149bd10734d7e2d533ebc41bd67495f52",
+        "runtimeArtifactsSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "windowsPrivateStorageNativeVerified": false
+      },
+      "runtimeMetadataAttested": false,
+      "producerBuildVerified": false
+    },
+    {
+      "slot": "ci-linux-node24",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39988068788/job/120533188798",
+      "jobConclusion": "success",
+      "runtime": {
+        "slot": "ci-linux-node24",
+        "node": "24.21.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "6.17.0-1022-azure",
+        "osVersion": "#22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261012.334.1",
+        "containerImageId": null,
+        "nodeExecutableSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-linux-node24",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "24.21.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "sourceRequired": 9,
+      "sourcePassed": 9,
+      "installedRequired": 9,
+      "installedPassed": 9,
+      "wholeProfileCallbacksPassed": [
+        "multi-candidate-workflow broken acceptance",
+        "multi-candidate-workflow fixed acceptance",
+        "multi-candidate-workflow near-miss acceptance",
+        "multi-candidate-workflow prerequisite acceptance",
+        "multi-candidate-workflow stale acceptance",
+        "multi-candidate-workflow empty acceptance",
+        "multi-candidate-workflow privacy acceptance",
+        "multi-candidate-workflow lifecycle acceptance",
+        "multi-candidate-workflow installed acceptance"
+      ],
+      "harnessSha256": "0092cbf1cedd0e9a7a86837d0502c85b4e5223a6a11572e9211bc3204817f83e",
+      "requirementsSha256": "35dfe4d9393a7faf5ad6595ed0a77077bf0f82789b004e21d5524af436cc385b",
+      "packageSha256": "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd",
+      "inputSources": [
+        [
+          "dist/test/gate-multi-candidate-workflow.test.js",
+          "c610ff2db7bc46c98ae7661087cbd96d3b5ff48a9c275eea7abacc836356d0cf"
+        ],
+        [
+          "dist/test/review-workflow-findings-fixture.js",
+          "8bb4022f31ed24271eb64970211ac0c646219b57e34b9b357f8f9e9264ca40f0"
+        ],
+        [
+          "dist/test/review-workflow-fixture.js",
+          "650ae7f695240c716fc7b2bbb64779cc24ad96bc8dfe04695fea96eee7f86744"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "dist/test/tool-fixture.js",
+          "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+        ],
+        [
+          "scripts/verify-import-context-package.mjs",
+          "69f4f603e5d3be7f33aa0b074ff50943ca9b0a0d5c86033501433f05d67b7b0a"
+        ],
+        [
+          "scripts/verify-review-runtime-package.mjs",
+          "ef2c9570c91701f7d2d100da3f2696c9187e28844d95f3a62e67814cc516e7e3"
+        ],
+        [
+          "package-lock.json",
+          "0f3b88dcbf04dac16126b689c63df89a5a2e9237ec4ae60fc5fecfdea5c8b0a8"
+        ],
+        [
+          "scripts/install-acceptance-package.mjs",
+          "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+        ],
+        [
+          "scripts/prepare-javascript-tools.mjs",
+          "e39d2784b67a9e93d9f1bd885fc6e74707c58cc1c5dbcd1858647c35702f54ca"
+        ],
+        [
+          "scripts/native-acceptance-diagnostics.mjs",
+          "915e248fe4790c79bd0f3837c4b64bde311107a3732ecdb3579309c27c6b5478"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/review-runtime-evidence.mjs",
+          "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+        ],
+        [
+          "scripts/verify-review-runtime.mjs",
+          "d399c67e8cf65d77e63a7a70215136a3585f03271cb067ccc565289c5074200d"
+        ],
+        [
+          "scripts/compiled-engine-evidence.mjs",
+          "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ]
+      ],
+      "compiledEngine": {
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 964,
+        "bytes": 16138622,
+        "treeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "manifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "afterTreeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "afterManifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "beforeAfterByteIdentitiesMatch": true,
+        "dependencyBytesCaptured": false,
+        "actualModuleLoadsTraced": false,
+        "producerSourceBuildVerified": false
+      },
+      "tarballSha256": "0ba232f56a70f0ea714c4acf2f1c209e9dbc2855b022bbdd416395a9e8fa571f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "tasksRecheck": {
+        "sourceRequired": 26,
+        "sourcePassed": 26,
+        "installedRequired": 26,
+        "installedPassed": 26,
+        "harnessSha256": "33d83997bd3d7a99d7917cc18261060149bd10734d7e2d533ebc41bd67495f52",
+        "runtimeArtifactsSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "windowsPrivateStorageNativeVerified": false
+      },
+      "runtimeMetadataAttested": false,
+      "producerBuildVerified": false
+    },
+    {
+      "slot": "ci-linux-node26",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39988068788/job/120533188857",
+      "jobConclusion": "success",
+      "runtime": {
+        "slot": "ci-linux-node26",
+        "node": "26.10.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "6.17.0-1022-azure",
+        "osVersion": "#22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261012.334.1",
+        "containerImageId": null,
+        "nodeExecutableSha256": "ab9c8eecf9f82d6693cdc3accced17034065c8d96213b0aa76a7e803d20ae1da",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-linux-node26",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "26.10.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "sourceRequired": 9,
+      "sourcePassed": 9,
+      "installedRequired": 9,
+      "installedPassed": 9,
+      "wholeProfileCallbacksPassed": [
+        "multi-candidate-workflow broken acceptance",
+        "multi-candidate-workflow fixed acceptance",
+        "multi-candidate-workflow near-miss acceptance",
+        "multi-candidate-workflow prerequisite acceptance",
+        "multi-candidate-workflow stale acceptance",
+        "multi-candidate-workflow empty acceptance",
+        "multi-candidate-workflow privacy acceptance",
+        "multi-candidate-workflow lifecycle acceptance",
+        "multi-candidate-workflow installed acceptance"
+      ],
+      "harnessSha256": "0092cbf1cedd0e9a7a86837d0502c85b4e5223a6a11572e9211bc3204817f83e",
+      "requirementsSha256": "35dfe4d9393a7faf5ad6595ed0a77077bf0f82789b004e21d5524af436cc385b",
+      "packageSha256": "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd",
+      "inputSources": [
+        [
+          "dist/test/gate-multi-candidate-workflow.test.js",
+          "c610ff2db7bc46c98ae7661087cbd96d3b5ff48a9c275eea7abacc836356d0cf"
+        ],
+        [
+          "dist/test/review-workflow-findings-fixture.js",
+          "8bb4022f31ed24271eb64970211ac0c646219b57e34b9b357f8f9e9264ca40f0"
+        ],
+        [
+          "dist/test/review-workflow-fixture.js",
+          "650ae7f695240c716fc7b2bbb64779cc24ad96bc8dfe04695fea96eee7f86744"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "dist/test/tool-fixture.js",
+          "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+        ],
+        [
+          "scripts/verify-import-context-package.mjs",
+          "69f4f603e5d3be7f33aa0b074ff50943ca9b0a0d5c86033501433f05d67b7b0a"
+        ],
+        [
+          "scripts/verify-review-runtime-package.mjs",
+          "ef2c9570c91701f7d2d100da3f2696c9187e28844d95f3a62e67814cc516e7e3"
+        ],
+        [
+          "package-lock.json",
+          "0f3b88dcbf04dac16126b689c63df89a5a2e9237ec4ae60fc5fecfdea5c8b0a8"
+        ],
+        [
+          "scripts/install-acceptance-package.mjs",
+          "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+        ],
+        [
+          "scripts/prepare-javascript-tools.mjs",
+          "e39d2784b67a9e93d9f1bd885fc6e74707c58cc1c5dbcd1858647c35702f54ca"
+        ],
+        [
+          "scripts/native-acceptance-diagnostics.mjs",
+          "915e248fe4790c79bd0f3837c4b64bde311107a3732ecdb3579309c27c6b5478"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/review-runtime-evidence.mjs",
+          "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+        ],
+        [
+          "scripts/verify-review-runtime.mjs",
+          "d399c67e8cf65d77e63a7a70215136a3585f03271cb067ccc565289c5074200d"
+        ],
+        [
+          "scripts/compiled-engine-evidence.mjs",
+          "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ]
+      ],
+      "compiledEngine": {
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 964,
+        "bytes": 16138622,
+        "treeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "manifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "afterTreeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "afterManifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "beforeAfterByteIdentitiesMatch": true,
+        "dependencyBytesCaptured": false,
+        "actualModuleLoadsTraced": false,
+        "producerSourceBuildVerified": false
+      },
+      "tarballSha256": "0ba232f56a70f0ea714c4acf2f1c209e9dbc2855b022bbdd416395a9e8fa571f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "tasksRecheck": {
+        "sourceRequired": 26,
+        "sourcePassed": 26,
+        "installedRequired": 26,
+        "installedPassed": 26,
+        "harnessSha256": "33d83997bd3d7a99d7917cc18261060149bd10734d7e2d533ebc41bd67495f52",
+        "runtimeArtifactsSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "windowsPrivateStorageNativeVerified": false
+      },
+      "runtimeMetadataAttested": false,
+      "producerBuildVerified": false
+    },
+    {
+      "slot": "ci-macos-node22",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39988068788/job/120533188804",
+      "jobConclusion": "success",
+      "runtime": {
+        "slot": "ci-macos-node22",
+        "node": "22.23.3",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:16:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261013.0424.1",
+        "containerImageId": null,
+        "nodeExecutableSha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-macos-node22",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "sourceRequired": 9,
+      "sourcePassed": 9,
+      "installedRequired": 9,
+      "installedPassed": 9,
+      "wholeProfileCallbacksPassed": [
+        "multi-candidate-workflow broken acceptance",
+        "multi-candidate-workflow fixed acceptance",
+        "multi-candidate-workflow near-miss acceptance",
+        "multi-candidate-workflow prerequisite acceptance",
+        "multi-candidate-workflow stale acceptance",
+        "multi-candidate-workflow empty acceptance",
+        "multi-candidate-workflow privacy acceptance",
+        "multi-candidate-workflow lifecycle acceptance",
+        "multi-candidate-workflow installed acceptance"
+      ],
+      "harnessSha256": "0092cbf1cedd0e9a7a86837d0502c85b4e5223a6a11572e9211bc3204817f83e",
+      "requirementsSha256": "35dfe4d9393a7faf5ad6595ed0a77077bf0f82789b004e21d5524af436cc385b",
+      "packageSha256": "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd",
+      "inputSources": [
+        [
+          "dist/test/gate-multi-candidate-workflow.test.js",
+          "c610ff2db7bc46c98ae7661087cbd96d3b5ff48a9c275eea7abacc836356d0cf"
+        ],
+        [
+          "dist/test/review-workflow-findings-fixture.js",
+          "8bb4022f31ed24271eb64970211ac0c646219b57e34b9b357f8f9e9264ca40f0"
+        ],
+        [
+          "dist/test/review-workflow-fixture.js",
+          "650ae7f695240c716fc7b2bbb64779cc24ad96bc8dfe04695fea96eee7f86744"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "dist/test/tool-fixture.js",
+          "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+        ],
+        [
+          "scripts/verify-import-context-package.mjs",
+          "69f4f603e5d3be7f33aa0b074ff50943ca9b0a0d5c86033501433f05d67b7b0a"
+        ],
+        [
+          "scripts/verify-review-runtime-package.mjs",
+          "ef2c9570c91701f7d2d100da3f2696c9187e28844d95f3a62e67814cc516e7e3"
+        ],
+        [
+          "package-lock.json",
+          "0f3b88dcbf04dac16126b689c63df89a5a2e9237ec4ae60fc5fecfdea5c8b0a8"
+        ],
+        [
+          "scripts/install-acceptance-package.mjs",
+          "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+        ],
+        [
+          "scripts/prepare-javascript-tools.mjs",
+          "e39d2784b67a9e93d9f1bd885fc6e74707c58cc1c5dbcd1858647c35702f54ca"
+        ],
+        [
+          "scripts/native-acceptance-diagnostics.mjs",
+          "915e248fe4790c79bd0f3837c4b64bde311107a3732ecdb3579309c27c6b5478"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/review-runtime-evidence.mjs",
+          "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+        ],
+        [
+          "scripts/verify-review-runtime.mjs",
+          "d399c67e8cf65d77e63a7a70215136a3585f03271cb067ccc565289c5074200d"
+        ],
+        [
+          "scripts/compiled-engine-evidence.mjs",
+          "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ]
+      ],
+      "compiledEngine": {
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 964,
+        "bytes": 16138622,
+        "treeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "manifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "afterTreeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "afterManifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "beforeAfterByteIdentitiesMatch": true,
+        "dependencyBytesCaptured": false,
+        "actualModuleLoadsTraced": false,
+        "producerSourceBuildVerified": false
+      },
+      "tarballSha256": "0ba232f56a70f0ea714c4acf2f1c209e9dbc2855b022bbdd416395a9e8fa571f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "tasksRecheck": {
+        "sourceRequired": 26,
+        "sourcePassed": 26,
+        "installedRequired": 26,
+        "installedPassed": 26,
+        "harnessSha256": "33d83997bd3d7a99d7917cc18261060149bd10734d7e2d533ebc41bd67495f52",
+        "runtimeArtifactsSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "windowsPrivateStorageNativeVerified": false
+      },
+      "runtimeMetadataAttested": false,
+      "producerBuildVerified": false
+    },
+    {
+      "slot": "ci-macos-node24",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39988068788/job/120533188777",
+      "jobConclusion": "success",
+      "runtime": {
+        "slot": "ci-macos-node24",
+        "node": "24.20.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:16:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261013.0424.1",
+        "containerImageId": null,
+        "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-macos-node24",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "24.20.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "sourceRequired": 9,
+      "sourcePassed": 9,
+      "installedRequired": 9,
+      "installedPassed": 9,
+      "wholeProfileCallbacksPassed": [
+        "multi-candidate-workflow broken acceptance",
+        "multi-candidate-workflow fixed acceptance",
+        "multi-candidate-workflow near-miss acceptance",
+        "multi-candidate-workflow prerequisite acceptance",
+        "multi-candidate-workflow stale acceptance",
+        "multi-candidate-workflow empty acceptance",
+        "multi-candidate-workflow privacy acceptance",
+        "multi-candidate-workflow lifecycle acceptance",
+        "multi-candidate-workflow installed acceptance"
+      ],
+      "harnessSha256": "0092cbf1cedd0e9a7a86837d0502c85b4e5223a6a11572e9211bc3204817f83e",
+      "requirementsSha256": "35dfe4d9393a7faf5ad6595ed0a77077bf0f82789b004e21d5524af436cc385b",
+      "packageSha256": "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd",
+      "inputSources": [
+        [
+          "dist/test/gate-multi-candidate-workflow.test.js",
+          "c610ff2db7bc46c98ae7661087cbd96d3b5ff48a9c275eea7abacc836356d0cf"
+        ],
+        [
+          "dist/test/review-workflow-findings-fixture.js",
+          "8bb4022f31ed24271eb64970211ac0c646219b57e34b9b357f8f9e9264ca40f0"
+        ],
+        [
+          "dist/test/review-workflow-fixture.js",
+          "650ae7f695240c716fc7b2bbb64779cc24ad96bc8dfe04695fea96eee7f86744"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "dist/test/tool-fixture.js",
+          "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+        ],
+        [
+          "scripts/verify-import-context-package.mjs",
+          "69f4f603e5d3be7f33aa0b074ff50943ca9b0a0d5c86033501433f05d67b7b0a"
+        ],
+        [
+          "scripts/verify-review-runtime-package.mjs",
+          "ef2c9570c91701f7d2d100da3f2696c9187e28844d95f3a62e67814cc516e7e3"
+        ],
+        [
+          "package-lock.json",
+          "0f3b88dcbf04dac16126b689c63df89a5a2e9237ec4ae60fc5fecfdea5c8b0a8"
+        ],
+        [
+          "scripts/install-acceptance-package.mjs",
+          "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+        ],
+        [
+          "scripts/prepare-javascript-tools.mjs",
+          "e39d2784b67a9e93d9f1bd885fc6e74707c58cc1c5dbcd1858647c35702f54ca"
+        ],
+        [
+          "scripts/native-acceptance-diagnostics.mjs",
+          "915e248fe4790c79bd0f3837c4b64bde311107a3732ecdb3579309c27c6b5478"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/review-runtime-evidence.mjs",
+          "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+        ],
+        [
+          "scripts/verify-review-runtime.mjs",
+          "d399c67e8cf65d77e63a7a70215136a3585f03271cb067ccc565289c5074200d"
+        ],
+        [
+          "scripts/compiled-engine-evidence.mjs",
+          "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ]
+      ],
+      "compiledEngine": {
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 964,
+        "bytes": 16138622,
+        "treeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "manifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "afterTreeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "afterManifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "beforeAfterByteIdentitiesMatch": true,
+        "dependencyBytesCaptured": false,
+        "actualModuleLoadsTraced": false,
+        "producerSourceBuildVerified": false
+      },
+      "tarballSha256": "0ba232f56a70f0ea714c4acf2f1c209e9dbc2855b022bbdd416395a9e8fa571f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "tasksRecheck": {
+        "sourceRequired": 26,
+        "sourcePassed": 26,
+        "installedRequired": 26,
+        "installedPassed": 26,
+        "harnessSha256": "33d83997bd3d7a99d7917cc18261060149bd10734d7e2d533ebc41bd67495f52",
+        "runtimeArtifactsSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "windowsPrivateStorageNativeVerified": false
+      },
+      "runtimeMetadataAttested": false,
+      "producerBuildVerified": false
+    },
+    {
+      "slot": "ci-macos-node26",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39988068788/job/120533188998",
+      "jobConclusion": "success",
+      "runtime": {
+        "slot": "ci-macos-node26",
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:16:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261013.0424.1",
+        "containerImageId": null,
+        "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-macos-node26",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "26.9.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "sourceRequired": 9,
+      "sourcePassed": 9,
+      "installedRequired": 9,
+      "installedPassed": 9,
+      "wholeProfileCallbacksPassed": [
+        "multi-candidate-workflow broken acceptance",
+        "multi-candidate-workflow fixed acceptance",
+        "multi-candidate-workflow near-miss acceptance",
+        "multi-candidate-workflow prerequisite acceptance",
+        "multi-candidate-workflow stale acceptance",
+        "multi-candidate-workflow empty acceptance",
+        "multi-candidate-workflow privacy acceptance",
+        "multi-candidate-workflow lifecycle acceptance",
+        "multi-candidate-workflow installed acceptance"
+      ],
+      "harnessSha256": "0092cbf1cedd0e9a7a86837d0502c85b4e5223a6a11572e9211bc3204817f83e",
+      "requirementsSha256": "35dfe4d9393a7faf5ad6595ed0a77077bf0f82789b004e21d5524af436cc385b",
+      "packageSha256": "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd",
+      "inputSources": [
+        [
+          "dist/test/gate-multi-candidate-workflow.test.js",
+          "c610ff2db7bc46c98ae7661087cbd96d3b5ff48a9c275eea7abacc836356d0cf"
+        ],
+        [
+          "dist/test/review-workflow-findings-fixture.js",
+          "8bb4022f31ed24271eb64970211ac0c646219b57e34b9b357f8f9e9264ca40f0"
+        ],
+        [
+          "dist/test/review-workflow-fixture.js",
+          "650ae7f695240c716fc7b2bbb64779cc24ad96bc8dfe04695fea96eee7f86744"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "dist/test/tool-fixture.js",
+          "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+        ],
+        [
+          "scripts/verify-import-context-package.mjs",
+          "69f4f603e5d3be7f33aa0b074ff50943ca9b0a0d5c86033501433f05d67b7b0a"
+        ],
+        [
+          "scripts/verify-review-runtime-package.mjs",
+          "ef2c9570c91701f7d2d100da3f2696c9187e28844d95f3a62e67814cc516e7e3"
+        ],
+        [
+          "package-lock.json",
+          "0f3b88dcbf04dac16126b689c63df89a5a2e9237ec4ae60fc5fecfdea5c8b0a8"
+        ],
+        [
+          "scripts/install-acceptance-package.mjs",
+          "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+        ],
+        [
+          "scripts/prepare-javascript-tools.mjs",
+          "e39d2784b67a9e93d9f1bd885fc6e74707c58cc1c5dbcd1858647c35702f54ca"
+        ],
+        [
+          "scripts/native-acceptance-diagnostics.mjs",
+          "915e248fe4790c79bd0f3837c4b64bde311107a3732ecdb3579309c27c6b5478"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/review-runtime-evidence.mjs",
+          "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+        ],
+        [
+          "scripts/verify-review-runtime.mjs",
+          "d399c67e8cf65d77e63a7a70215136a3585f03271cb067ccc565289c5074200d"
+        ],
+        [
+          "scripts/compiled-engine-evidence.mjs",
+          "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ]
+      ],
+      "compiledEngine": {
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 964,
+        "bytes": 16138622,
+        "treeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "manifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "afterTreeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "afterManifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "beforeAfterByteIdentitiesMatch": true,
+        "dependencyBytesCaptured": false,
+        "actualModuleLoadsTraced": false,
+        "producerSourceBuildVerified": false
+      },
+      "tarballSha256": "0ba232f56a70f0ea714c4acf2f1c209e9dbc2855b022bbdd416395a9e8fa571f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "tasksRecheck": {
+        "sourceRequired": 26,
+        "sourcePassed": 26,
+        "installedRequired": 26,
+        "installedPassed": 26,
+        "harnessSha256": "33d83997bd3d7a99d7917cc18261060149bd10734d7e2d533ebc41bd67495f52",
+        "runtimeArtifactsSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "windowsPrivateStorageNativeVerified": false
+      },
+      "runtimeMetadataAttested": false,
+      "producerBuildVerified": false
+    },
+    {
+      "slot": "windows-node22",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39988068788/job/120533188855",
+      "jobConclusion": "success",
+      "runtime": {
+        "slot": "windows-node22",
+        "node": "22.23.3",
+        "platform": "win32",
+        "architecture": "x64",
+        "osRelease": "10.0.26100",
+        "osVersion": "Windows Server 2025 Datacenter",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "win25-vs2026",
+        "imageVersion": "20261021.278.1",
+        "containerImageId": null,
+        "nodeExecutableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "windows-node22",
+        "platform": "win32",
+        "architecture": "x64",
+        "osFamily": "Windows Server 2025",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "sourceRequired": 9,
+      "sourcePassed": 9,
+      "installedRequired": 9,
+      "installedPassed": 9,
+      "wholeProfileCallbacksPassed": [
+        "multi-candidate-workflow broken acceptance",
+        "multi-candidate-workflow fixed acceptance",
+        "multi-candidate-workflow near-miss acceptance",
+        "multi-candidate-workflow prerequisite acceptance",
+        "multi-candidate-workflow stale acceptance",
+        "multi-candidate-workflow empty acceptance",
+        "multi-candidate-workflow privacy acceptance",
+        "multi-candidate-workflow lifecycle acceptance",
+        "multi-candidate-workflow installed acceptance"
+      ],
+      "harnessSha256": "0092cbf1cedd0e9a7a86837d0502c85b4e5223a6a11572e9211bc3204817f83e",
+      "requirementsSha256": "35dfe4d9393a7faf5ad6595ed0a77077bf0f82789b004e21d5524af436cc385b",
+      "packageSha256": "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd",
+      "inputSources": [
+        [
+          "dist/test/gate-multi-candidate-workflow.test.js",
+          "c610ff2db7bc46c98ae7661087cbd96d3b5ff48a9c275eea7abacc836356d0cf"
+        ],
+        [
+          "dist/test/review-workflow-findings-fixture.js",
+          "8bb4022f31ed24271eb64970211ac0c646219b57e34b9b357f8f9e9264ca40f0"
+        ],
+        [
+          "dist/test/review-workflow-fixture.js",
+          "650ae7f695240c716fc7b2bbb64779cc24ad96bc8dfe04695fea96eee7f86744"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "dist/test/tool-fixture.js",
+          "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+        ],
+        [
+          "scripts/verify-import-context-package.mjs",
+          "69f4f603e5d3be7f33aa0b074ff50943ca9b0a0d5c86033501433f05d67b7b0a"
+        ],
+        [
+          "scripts/verify-review-runtime-package.mjs",
+          "ef2c9570c91701f7d2d100da3f2696c9187e28844d95f3a62e67814cc516e7e3"
+        ],
+        [
+          "package-lock.json",
+          "0f3b88dcbf04dac16126b689c63df89a5a2e9237ec4ae60fc5fecfdea5c8b0a8"
+        ],
+        [
+          "scripts/install-acceptance-package.mjs",
+          "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+        ],
+        [
+          "scripts/prepare-javascript-tools.mjs",
+          "e39d2784b67a9e93d9f1bd885fc6e74707c58cc1c5dbcd1858647c35702f54ca"
+        ],
+        [
+          "scripts/native-acceptance-diagnostics.mjs",
+          "915e248fe4790c79bd0f3837c4b64bde311107a3732ecdb3579309c27c6b5478"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/review-runtime-evidence.mjs",
+          "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+        ],
+        [
+          "scripts/verify-review-runtime.mjs",
+          "d399c67e8cf65d77e63a7a70215136a3585f03271cb067ccc565289c5074200d"
+        ],
+        [
+          "scripts/compiled-engine-evidence.mjs",
+          "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ]
+      ],
+      "compiledEngine": {
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 964,
+        "bytes": 16138622,
+        "treeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "manifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "afterTreeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "afterManifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "beforeAfterByteIdentitiesMatch": true,
+        "dependencyBytesCaptured": false,
+        "actualModuleLoadsTraced": false,
+        "producerSourceBuildVerified": false
+      },
+      "tarballSha256": "0ba232f56a70f0ea714c4acf2f1c209e9dbc2855b022bbdd416395a9e8fa571f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "tasksRecheck": {
+        "sourceRequired": 29,
+        "sourcePassed": 29,
+        "installedRequired": 29,
+        "installedPassed": 29,
+        "harnessSha256": "33d83997bd3d7a99d7917cc18261060149bd10734d7e2d533ebc41bd67495f52",
+        "runtimeArtifactsSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "windowsPrivateStorageNativeVerified": true
+      },
+      "runtimeMetadataAttested": false,
+      "producerBuildVerified": false
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "job": "https://github.com/stsepelin/checktrail/actions/runs/39988068788/job/120533188618",
+      "jobConclusion": "success",
+      "runtime": {
+        "slot": "native-linux-arm64-node22",
+        "node": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "osRelease": "6.17.0-1022-azure",
+        "osVersion": "#22-Ubuntu SMP Mon Jul 27 17:12:01 UTC 2026",
+        "distributionId": "alpine",
+        "distributionVersion": "3.24.1",
+        "distributionSha256": "3365ce31cddce87a228f1e7f17595960f836727ab68868663eb8cc06249004c9",
+        "imageOS": null,
+        "imageVersion": null,
+        "containerImageId": "sha256:828963118f6838ebdaf6b01b9b24d10c5dffe2f4aaf3ebca33d0d3f74366833e",
+        "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "native-linux-arm64-node22",
+        "platform": "linux",
+        "architecture": "arm64",
+        "node": "22.23.2",
+        "exactOsImageIdentityRequired": true
+      },
+      "sourceRequired": 9,
+      "sourcePassed": 9,
+      "installedRequired": 9,
+      "installedPassed": 9,
+      "wholeProfileCallbacksPassed": [
+        "multi-candidate-workflow broken acceptance",
+        "multi-candidate-workflow fixed acceptance",
+        "multi-candidate-workflow near-miss acceptance",
+        "multi-candidate-workflow prerequisite acceptance",
+        "multi-candidate-workflow stale acceptance",
+        "multi-candidate-workflow empty acceptance",
+        "multi-candidate-workflow privacy acceptance",
+        "multi-candidate-workflow lifecycle acceptance",
+        "multi-candidate-workflow installed acceptance"
+      ],
+      "harnessSha256": "0092cbf1cedd0e9a7a86837d0502c85b4e5223a6a11572e9211bc3204817f83e",
+      "requirementsSha256": "35dfe4d9393a7faf5ad6595ed0a77077bf0f82789b004e21d5524af436cc385b",
+      "packageSha256": "760bfbf668d0cc3e02f0218bfb8a61738e1070ec8969db136d46fa16a1b069dd",
+      "inputSources": [
+        [
+          "dist/test/gate-multi-candidate-workflow.test.js",
+          "c610ff2db7bc46c98ae7661087cbd96d3b5ff48a9c275eea7abacc836356d0cf"
+        ],
+        [
+          "dist/test/review-workflow-findings-fixture.js",
+          "8bb4022f31ed24271eb64970211ac0c646219b57e34b9b357f8f9e9264ca40f0"
+        ],
+        [
+          "dist/test/review-workflow-fixture.js",
+          "650ae7f695240c716fc7b2bbb64779cc24ad96bc8dfe04695fea96eee7f86744"
+        ],
+        [
+          "dist/test/helpers.js",
+          "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        ],
+        [
+          "dist/test/tool-fixture.js",
+          "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+        ],
+        [
+          "scripts/verify-import-context-package.mjs",
+          "69f4f603e5d3be7f33aa0b074ff50943ca9b0a0d5c86033501433f05d67b7b0a"
+        ],
+        [
+          "scripts/verify-review-runtime-package.mjs",
+          "ef2c9570c91701f7d2d100da3f2696c9187e28844d95f3a62e67814cc516e7e3"
+        ],
+        [
+          "package-lock.json",
+          "0f3b88dcbf04dac16126b689c63df89a5a2e9237ec4ae60fc5fecfdea5c8b0a8"
+        ],
+        [
+          "scripts/install-acceptance-package.mjs",
+          "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+        ],
+        [
+          "scripts/prepare-javascript-tools.mjs",
+          "e39d2784b67a9e93d9f1bd885fc6e74707c58cc1c5dbcd1858647c35702f54ca"
+        ],
+        [
+          "scripts/native-acceptance-diagnostics.mjs",
+          "915e248fe4790c79bd0f3837c4b64bde311107a3732ecdb3579309c27c6b5478"
+        ],
+        [
+          "docs/gate-a-profiles.v1.json",
+          "458cd4faa3bc0f014ea61e0ed65caf9063f3f2089f02c190495ad1cb0e17394a"
+        ],
+        [
+          "scripts/review-runtime-evidence.mjs",
+          "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+        ],
+        [
+          "scripts/verify-review-runtime.mjs",
+          "d399c67e8cf65d77e63a7a70215136a3585f03271cb067ccc565289c5074200d"
+        ],
+        [
+          "scripts/compiled-engine-evidence.mjs",
+          "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+        ],
+        [
+          "scripts/required-test-evidence.mjs",
+          "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+        ]
+      ],
+      "compiledEngine": {
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 964,
+        "bytes": 16138622,
+        "treeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "manifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "afterTreeSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "afterManifestSha256": "cc8a1eb3a2be594500a947ef6479cb89ae36e9661c20f8c6e139e4a1bea2fa7a",
+        "beforeAfterByteIdentitiesMatch": true,
+        "dependencyBytesCaptured": false,
+        "actualModuleLoadsTraced": false,
+        "producerSourceBuildVerified": false
+      },
+      "tarballSha256": "0ba232f56a70f0ea714c4acf2f1c209e9dbc2855b022bbdd416395a9e8fa571f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "tasksRecheck": {
+        "sourceRequired": 26,
+        "sourcePassed": 26,
+        "installedRequired": 26,
+        "installedPassed": 26,
+        "harnessSha256": "33d83997bd3d7a99d7917cc18261060149bd10734d7e2d533ebc41bd67495f52",
+        "runtimeArtifactsSha256": "18e1c1a7b65d3a18dcec2767eac8d54119be39e8688613b6c876b33dd4c04ff9",
+        "windowsPrivateStorageNativeVerified": false
+      },
+      "runtimeMetadataAttested": false,
+      "producerBuildVerified": false
+    }
+  ],
+  "receiptScope": "Historical source and fresh installed original synthetic runtime controls at the recorded commit; later candidate bytes are not qualified by this record",
+  "hostedImageMetadataAttested": false,
+  "completeDependencyClosureVerified": false,
+  "producerBuildVerified": false,
+  "independentModelSessionsVerified": false,
+  "findingTruthVerified": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}
