@@ -344,3 +344,21 @@ export type { SwiftExtensionsConfig } from "./swift-extensions-contract.js";
 export { cppExtensionsConfigSchema } from "./cpp-extensions-contract.js";
 export type { CppExtensionsConfig } from "./cpp-extensions-contract.js";
 export { cppExtensionsInvocationSchema } from "./cpp-extensions.js";
+
+export {
+  inspectReviewFindings,
+  projectReviewFindings,
+  reviewFindingsInputSchema,
+  reviewFindingsReportSchema,
+  reviewFindingsSummarySchema,
+} from "./review-findings.js";
+export type {
+  ReviewFindingsInput,
+  ReviewFindingsReport,
+} from "./review-findings.js";
+
+export { reviewWorkflowFindingsDeclarationsSchema } from "./review-workflow-findings.js";
+export type { ReviewWorkflowFindingsDeclarations } from "./review-workflow-findings.js";
+
+export { reviewWorkflowFindingsResultSchema } from "./review-workflow-findings.js";
+export type { ReviewWorkflowFindingsResult } from "./review-workflow-findings.js";

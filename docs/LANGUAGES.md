@@ -11,6 +11,16 @@ bindings, canonical notice addresses and explicit declaration conflicts. Its
 current development notice gaps remain incomplete; complete native
 artifact/license closure and the final runtime matrix remain pending.
 
+[Declared findings resolution](REVIEW-FINDINGS.md) adds parameter-name
+availability checks for captured JavaScript/TypeScript functions. This syntax
+check does not establish repair correctness, caller reachability or semantic
+support for other languages. Native imports and host judgment declarations retain
+their separate provenance and acceptance limits. Completed all-candidate library,
+CLI and MCP workflows can supply retained source, sessions and native receipts
+directly to this inspector. Optional private command journals retain the full
+inspection receipt; host judgment declarations and wider runtime acceptance
+remain separate.
+
 Capability levels are discovery, planning, execution, structured evidence,
 semantic rules, and integration validation. None implies the next. This file's
 initial scope column describes the experimental implementation. Node, Python,
@@ -140,7 +150,7 @@ counts describe structural declarations; independent host isolation and verified
 claim truth remain unimplemented. See
 measurements/review-benchmark-judging-2026-10-05.json.
 The bounded [native Boolean probe](REVIEW-PROBES.md) supports selected plain ESM
-on POSIX with operator-pinned cases and measured V8 function/guard coverage. Wider
+with operator-pinned cases and measured V8 function/guard coverage on the recorded POSIX profiles. The Windows probe backend now establishes private source workspaces before using the owned Job Object runner; native Windows qualification remains pending on the selected source and fresh installed cohort. Wider
 language probes, automatic callers and independent claim verification remain pending.
 [Stateless refutation attempts](REVIEW-REFUTATION.md) can propose counterclaims
 without adding semantic support or establishing their correctness. See
@@ -519,3 +529,8 @@ The [separate POSIX self/reaped-child resource binding](NATIVE-RESOURCE-ACCOUNTI
 The [synthetic native workload/resource harness](NATIVE-RESOURCE-ACCOUNTING.md#synthetic-native-workload-and-archive-measurements) has scoped small/large/JavaScript-Go validation, separate kernel CPU/RSS scopes, physical output and exact multi-chunk report/SQLite accounting in [its measurement](measurements/native-resource-workloads-2026-10-11.json). The dated original controls exercise source and fresh offline installed engines on macOS Node 24/26 and Linux Node 22. Current accounting regressions additionally check independent CPU fields, both RSS scopes, both raw streams and malformed-report rejection. This does not establish summed process-tree RSS, unreaped descendants, Windows, a performance regression budget or final release closure. Gate A remains open without inference or field evaluation.
 
 The [evaluation cohort declaration checker](EVALUATION-COHORT-DECLARATIONS.md) validates bounded declared lineage/content grouping, optional repository/family holdouts, retained exclusions, eligibility metadata and exposure declarations through the shared library and a repository setup script. These original synthetic development controls do not inspect source or labels, verify license grants or sessions, freeze the private reference/workflow, execute inference, or close the independent evaluation profile or Gate A.
+
+All-candidate findings inspection also supports quiescent unfinished stages after
+an accepted reviewer response. Missing judgments remain unresolved; reached native
+receipts awaiting adjudication stay bound. The whole-profile synthetic cases do
+not qualify the final engine matrix or verify host claim truth.

@@ -1,4 +1,13 @@
 import {
+  reviewWorkflowFindingsDeclarationsSchema,
+  reviewWorkflowFindingsResultSchema,
+} from "../dist/src/review-workflow-findings.js";
+import {
+  reviewFindingsInputSchema,
+  reviewFindingsReportSchema,
+  reviewFindingsSummarySchema,
+} from "../dist/src/review-findings.js";
+import {
   taskArchiveManifestSchema,
   taskArchiveChunkSchema,
 } from "../dist/src/task-report-archives.js";
@@ -304,6 +313,9 @@ for (const [name, schema] of Object.entries({
   "review-workflow-limits": reviewWorkflowLimitsSchema,
   "review-workflow-response": reviewWorkflowResponseSchema,
   "review-workflow-command": reviewWorkflowCommandSchema,
+  "review-workflow-findings-declarations":
+    reviewWorkflowFindingsDeclarationsSchema,
+  "review-workflow-findings": reviewWorkflowFindingsResultSchema,
   "review-workflow-assignment": reviewWorkflowAssignmentSchema,
   "review-workflow-summary": reviewWorkflowSummarySchema,
   "review-host-lease-summary": reviewHostLeaseSummarySchema,
@@ -317,6 +329,9 @@ for (const [name, schema] of Object.entries({
   "review-probe-summary": reviewProbeSummarySchema,
   "review-provider-config": reviewProviderConfigSchema,
   "review-candidate": reviewCandidateSchema,
+  "review-findings-input": reviewFindingsInputSchema,
+  "review-findings-report": reviewFindingsReportSchema,
+  "review-findings-summary": reviewFindingsSummarySchema,
   "review-provenance-input": reviewProvenanceInputSchema,
   "review-provenance-report": reviewProvenanceReportSchema,
   "review-provenance-summary": reviewProvenanceSummarySchema,

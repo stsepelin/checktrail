@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "review-workflow-findings" },
+    "engineVersion": { "type": "string" },
+    "channel": { "type": "string", "const": "advisory" },
+    "inputDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "freshness": { "type": "string", "enum": ["current", "stale"] },
+    "status": {
+      "type": "string",
+      "enum": ["completed", "incomplete", "stale"]
+    },
+    "judgmentProvenance": {
+      "type": "string",
+      "const": "host-declared-unverified"
+    },
+    "nativeReceiptProvenance": {
+      "type": "string",
+      "const": "imported-unattested"
+    },
+    "severityPolicy": {
+      "type": "string",
+      "const": "declared-consequence-matrix-v1"
+    },
+    "severityVerified": { "type": "boolean", "const": false },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "independenceVerified": { "type": "boolean", "const": false },
+    "commonCauseVerified": { "type": "boolean", "const": false },
+    "repairCorrectnessVerified": { "type": "boolean", "const": false },
+    "nativeExecution": { "type": "boolean", "const": false },
+    "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+    "qualityGate": { "type": "string", "const": "not-assessed" },
+    "candidates": {
+      "type": "object",
+      "properties": {
+        "selected": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "declared-supported": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 32
+        },
+        "declared-refuted": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "unresolved": { "type": "integer", "minimum": 0, "maximum": 32 }
+      },
+      "required": [
+        "selected",
+        "declared-supported",
+        "declared-refuted",
+        "unresolved"
+      ],
+      "additionalProperties": false
+    },
+    "commonDefects": {
+      "type": "object",
+      "properties": {
+        "declared": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "reconciled": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "unresolved": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "mappedSupported": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "unmappedSupported": { "type": "integer", "minimum": 0, "maximum": 32 }
+      },
+      "required": [
+        "declared",
+        "reconciled",
+        "unresolved",
+        "mappedSupported",
+        "unmappedSupported"
+      ],
+      "additionalProperties": false
+    },
+    "findings": {
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "candidateId": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "candidateDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "state": {
+            "type": "string",
+            "enum": ["declared-supported", "declared-refuted", "unresolved"]
+          },
+          "gaps": {
+            "maxItems": 24,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "missing-decision",
+                "stale-source",
+                "unmatched-source",
+                "binding-differs",
+                "incomplete-stages",
+                "reused-session",
+                "native-unavailable",
+                "ambiguous-native-address",
+                "source-address-differs",
+                "unresolved-judgment",
+                "incomplete-reasoning",
+                "native-predicate-not-violated",
+                "consequence-unknown",
+                "repair-missing",
+                "repair-address-differs",
+                "repair-parameters-unavailable",
+                "repair-parameter-missing",
+                "repair-scope-unknown"
+              ]
+            }
+          },
+          "rootFunctionId": {
+            "anyOf": [
+              { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              { "type": "null" }
+            ]
+          },
+          "declaredSeverity": {
+            "type": "string",
+            "enum": ["high", "moderate", "low", "unassigned"]
+          },
+          "repairParameters": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "type": "string",
+                "enum": ["observed", "unavailable", "not-requested"]
+              },
+              "available": {
+                "maxItems": 512,
+                "type": "array",
+                "items": { "type": "string", "maxLength": 256 }
+              },
+              "missing": {
+                "maxItems": 32,
+                "type": "array",
+                "items": { "type": "string", "maxLength": 256 }
+              }
+            },
+            "required": ["state", "available", "missing"],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "candidateId",
+          "candidateDigest",
+          "state",
+          "gaps",
+          "rootFunctionId",
+          "declaredSeverity",
+          "repairParameters"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "groups": {
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "candidateIds": {
+            "minItems": 1,
+            "maxItems": 32,
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+          },
+          "state": {
+            "type": "string",
+            "enum": ["declared-common-defect", "unresolved"]
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "source-addresses-reconciled",
+              "member-unresolved",
+              "root-function-differs"
+            ]
+          }
+        },
+        "required": ["id", "candidateIds", "state", "reason"],
+        "additionalProperties": false
+      }
+    },
+    "detailsIncluded": { "type": "boolean", "const": true }
+  },
+  "required": [
+    "schemaVersion",
+    "format",
+    "engineVersion",
+    "channel",
+    "inputDigest",
+    "contextDigest",
+    "freshness",
+    "status",
+    "judgmentProvenance",
+    "nativeReceiptProvenance",
+    "severityPolicy",
+    "severityVerified",
+    "claimsVerified",
+    "independenceVerified",
+    "commonCauseVerified",
+    "repairCorrectnessVerified",
+    "nativeExecution",
+    "deterministicOutcomeChanged",
+    "qualityGate",
+    "candidates",
+    "commonDefects",
+    "findings",
+    "groups",
+    "detailsIncluded"
+  ],
+  "additionalProperties": false
+}
