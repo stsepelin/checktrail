@@ -495,9 +495,15 @@ test("context-fsharp prerequisite acceptance", async (t) => {
       args: ["--version"],
       cwd: ".",
     },
-    { timeoutMs: 1000 },
+    { timeoutMs: 15000 },
   );
-  assert.equal(missingNative.errorCode, "ENOENT");
+  assert.equal(
+    missingNative.errorCode,
+    "ENOENT",
+    JSON.stringify(missingNative),
+  );
+  assert.equal(missingNative.timedOut, false, JSON.stringify(missingNative));
+  assert.equal(missingNative.cancelled, false, JSON.stringify(missingNative));
   assert.notEqual(missingNative.exitCode, 0);
 });
 test("context-fsharp stale acceptance", async (t) => {

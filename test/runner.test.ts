@@ -52,9 +52,11 @@ test("reports missing executables separately from code failures", async (t) => {
   const result = await runProcess(
     root,
     { executable: "checktrail-definitely-missing-tool", args: [], cwd: "." },
-    { timeoutMs: 1000 },
+    { timeoutMs: 15000 },
   );
-  assert.equal(result.errorCode, "ENOENT");
+  assert.equal(result.errorCode, "ENOENT", JSON.stringify(result));
+  assert.equal(result.timedOut, false, JSON.stringify(result));
+  assert.equal(result.cancelled, false, JSON.stringify(result));
   assert.notEqual(result.exitCode, 0);
 });
 

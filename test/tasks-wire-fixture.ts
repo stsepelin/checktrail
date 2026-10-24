@@ -7,7 +7,13 @@ import { createInterface } from "node:readline";
 import type { TestContext } from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
-import { fixture, nodeManifest, passingTest } from "./helpers.js";
+import {
+  fixture,
+  nodeManifest,
+  passingTest,
+  captureFixtureProcessGroup,
+  cleanupFixtureProcessGroup,
+} from "./helpers.js";
 import { VERSION } from "../src/types.js";
 
 export const extension = "io.modelcontextprotocol/tasks";
@@ -255,9 +261,9 @@ export function report(task: Record<string, unknown>) {
 }
 export const slow = `import {test} from 'node:test'; import fs from 'node:fs'; import {spawn} from 'node:child_process';
 test('waits', async()=> {const child=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'inherit'});
-fs.writeFileSync('.checktrail/started.json',JSON.stringify({pid:process.pid,group:process.ppid,child:child.pid}));
+fs.writeFileSync('.checktrail/started.json',JSON.stringify({pid:process.pid,parent:process.ppid,child:child.pid}));
 await new Promise(resolve=>setTimeout(resolve,60000));});`;
-type Pids = { pid: number; group: number; child: number };
+type Pids = { pid: number; parent: number; child: number };
 export async function alive(pid: number) {
   try {
     process.kill(pid, 0);
@@ -274,20 +280,18 @@ export async function alive(pid: number) {
   return true;
 }
 export async function started(t: TestContext, root: string): Promise<Pids> {
-  for (let attempt = 0; attempt < 160; attempt++) {
+  const deadline = performance.now() + taskRequestTimeoutMs;
+  while (performance.now() < deadline) {
     try {
       const value = JSON.parse(
         await readFile(path.join(root, ".checktrail/started.json"), "utf8"),
       ) as Pids;
-      t.after(() => {
-        try {
-          process.kill(-value.group, "SIGKILL");
-        } catch {
-          /* Cleaned up. */
-        }
-      });
       assert.equal(await alive(value.pid), true);
       assert.equal(await alive(value.child), true);
+      if (process.platform !== "win32") {
+        const group = await captureFixtureProcessGroup(value.pid, value.parent);
+        registerTaskCleanup(t, () => cleanupFixtureProcessGroup(group));
+      }
       return value;
     } catch {
       await delay(25);

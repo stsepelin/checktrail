@@ -1,9 +1,16 @@
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import { once } from "node:events";
 import path from "node:path";
 import { test } from "node:test";
-import { fixture } from "./helpers.js";
-import { terminal } from "./tasks-wire-fixture.js";
+import { fixture, captureFixtureProcessGroup } from "./helpers.js";
+import {
+  terminal,
+  setup as setupTaskFixture,
+  started as observeTaskFixture,
+  registerTaskCleanup,
+} from "./tasks-wire-fixture.js";
+import { processSnapshot, type ProcessIdentity } from "../src/process-tree.js";
 
 test("Tasks installed wrapper selects a bounded Windows aggregate allowance while preserving POSIX deadlines and failed child status", async (t) => {
   const root = await fixture(t, {
@@ -582,6 +589,10 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
       "tasks-runtime-manifest": [second],
       "tasks-runtime-cli": [second],
       "native-harness-cleanup": [second],
+      "tasks-runtime-startup": [second],
+      "tasks-runtime-startup-extra": [first],
+      "go-extensions": [second],
+      "go-extensions-extra": [first],
       "assembly-laravel": [second],
       "assembly-laravel-extra": [first],
       "tasks-matrix-extra": [first],
@@ -614,6 +625,9 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
     ["tasks-runtime-manifest"],
     ["tasks-runtime-cli"],
     ["native-harness-cleanup"],
+    ["tasks-runtime-startup"],
+    ["go-extensions"],
+    ["go-extensions", "tasks-runtime-manifest"],
     ["assembly-laravel"],
     ["tasks-matrix", "tasks-runtime-manifest"],
     ["tasks-runtime-manifest", "native-harness-cleanup"],
@@ -629,7 +643,7 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
     );
     assert.equal(result.status, 0, result.stderr + result.stdout);
     const packet = JSON.parse(result.stdout);
-    if (selection[0] === "assembly-laravel")
+    if (["assembly-laravel", "go-extensions"].includes(selection[0]!))
       assert.equal(packet.timeoutMs, 300000);
     const expected = [
       ...new Set(
@@ -671,6 +685,8 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
   for (const adjacentProfile of [
     "tasks-matrix-extra",
     "native-harness-cleanup-extra",
+    "tasks-runtime-startup-extra",
+    "go-extensions-extra",
     "assembly-laravel-extra",
   ]) {
     await writeFile(path.join(root, "marker.txt"), "");
@@ -855,5 +871,141 @@ finally{active=null;const namespace=state.namespace;let exists=false;if(namespac
         );
       }
     }
+  },
+);
+
+test(
+  "Tasks native startup observer admits delayed reached bodies and cleans their actual process group without touching siblings",
+  { skip: !["darwin", "linux"].includes(process.platform), timeout: 30000 },
+  async (t) => {
+    const { readFile, writeFile } = await import("node:fs/promises");
+    const { root } = await setupTaskFixture(t);
+    const leaf =
+      "require('node:fs').writeFileSync('.checktrail/leaf-ready',String(process.pid));setInterval(()=>{},1000);";
+    const file = path.join(root, "delayed-native-body.mjs");
+    await writeFile(
+      file,
+      `import{spawn}from'node:child_process';import{readFile,writeFile}from'node:fs/promises';import{setTimeout as delay}from'node:timers/promises';const child=spawn(process.execPath,['-e',${JSON.stringify(leaf)}],{stdio:'ignore'});for(;;){try{if(Number(await readFile('.checktrail/leaf-ready','utf8'))===child.pid)break;}catch(error){if(error.code!=='ENOENT')throw error;}await delay(10);}for(;;){try{await readFile('.checktrail/start-delay');break;}catch(error){if(error.code!=='ENOENT')throw error;}await delay(10);}await delay(4500);await writeFile('.checktrail/started.json',JSON.stringify({pid:process.pid,parent:process.ppid,child:child.pid}));setInterval(()=>{},1000);`,
+    );
+    const actor = spawn(process.execPath, [file], {
+        cwd: root,
+        detached: true,
+        stdio: "ignore",
+      }),
+      actorExit = once(actor, "exit");
+    // Teardown also runs when readiness fails before identities are captured.
+    let actorIdentity: ProcessIdentity | undefined = undefined,
+      childIdentity: ProcessIdentity | undefined = undefined;
+    const fallbackChildren: ProcessIdentity[] = [];
+    registerTaskCleanup(t, async () => {
+      const rows = await processSnapshot();
+      const current = rows.find((row) => row.pid === actor.pid);
+      if (
+        current &&
+        current.group === actor.pid &&
+        (!actorIdentity || current.identity === actorIdentity.identity)
+      ) {
+        fallbackChildren.push(
+          ...rows.filter((row) => row.parent === actor.pid),
+        );
+        actor.kill("SIGKILL");
+      }
+      await actorExit;
+    });
+    const sibling = spawn(
+        process.execPath,
+        ["-e", "setInterval(()=>{},1000)"],
+        { stdio: "ignore" },
+      ),
+      siblingExit = once(sibling, "exit");
+    t.after(async () => {
+      try {
+        const captured = [actorIdentity, childIdentity].filter(
+          (row): row is ProcessIdentity => row !== undefined,
+        );
+        for (let i = 0; i < 200; i++) {
+          const rows = await processSnapshot();
+          if (
+            captured.every(
+              (row) =>
+                !rows.some(
+                  (current) =>
+                    current.pid === row.pid &&
+                    current.identity === row.identity,
+                ),
+            )
+          )
+            break;
+          await new Promise((resolve) => setTimeout(resolve, 25));
+        }
+        const rows = await processSnapshot();
+        assert.ok(
+          captured.every(
+            (row) =>
+              !rows.some(
+                (current) =>
+                  current.pid === row.pid && current.identity === row.identity,
+              ),
+          ),
+          "Fixture cleanup must release the actual native group, not a guessed parent PID",
+        );
+        process.kill(sibling.pid!, 0);
+      } finally {
+        for (const row of [childIdentity, ...fallbackChildren]) {
+          if (!row) continue;
+          const current = (await processSnapshot()).find(
+            (current) => current.pid === row.pid,
+          );
+          if (current?.identity === row.identity && current.group === row.group)
+            process.kill(row.pid, "SIGKILL");
+        }
+        if (sibling.exitCode === null && sibling.signalCode === null)
+          sibling.kill("SIGKILL");
+        await siblingExit;
+      }
+    });
+    const until = performance.now() + 5000;
+    let childPid: number | undefined;
+    while (performance.now() < until) {
+      try {
+        childPid = Number(
+          await readFile(path.join(root, ".checktrail/leaf-ready"), "utf8"),
+        );
+        break;
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    assert.ok(childPid);
+    const rows = await processSnapshot();
+    actorIdentity = rows.find((row) => row.pid === actor.pid);
+    childIdentity = rows.find((row) => row.pid === childPid);
+    assert.ok(actorIdentity);
+    assert.ok(childIdentity);
+    assert.equal(actorIdentity.group, actor.pid);
+    assert.equal(childIdentity.parent, actor.pid);
+    await assert.rejects(
+      captureFixtureProcessGroup(actor.pid!, 1),
+      /parent differs/,
+    );
+    await assert.rejects(
+      captureFixtureProcessGroup(process.pid, process.ppid),
+      /outside this fixture/,
+    );
+    const started = performance.now();
+    const observation = observeTaskFixture(t, root);
+    void observation.catch(() => {});
+    await writeFile(
+      path.join(root, ".checktrail/start-delay"),
+      "Original observation armed.",
+    );
+    const value = await observation;
+    assert.equal(value.pid, actor.pid);
+    assert.equal(value.child, childPid);
+    assert.ok(
+      performance.now() - started >= 4000,
+      "The actual body must reach readiness beyond the old observation boundary",
+    );
   },
 );

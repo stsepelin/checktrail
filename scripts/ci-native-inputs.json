@@ -1503,6 +1503,7 @@
     "go-workspaces-arm64",
     "kustomize-extensions-arm64"
   ],
+  "test/go-installed-harness.test.ts": ["go-workspaces-arm64"],
   "test/go-matrix.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",

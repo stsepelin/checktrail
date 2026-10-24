@@ -45,6 +45,7 @@ try {
   const args = [
     "run",
     "--rm",
+    "--init",
     "--network",
     "none",
     "--mount",

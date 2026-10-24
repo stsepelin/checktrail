@@ -145,6 +145,8 @@ const isolatedCaseWorkers =
       "tasks-runtime-manifest",
       "tasks-runtime-cli",
       "native-harness-cleanup",
+      "tasks-runtime-startup",
+      "go-extensions",
     ].includes(profile),
   ) ||
     (selection.length === 1 &&

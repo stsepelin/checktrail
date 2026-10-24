@@ -64,3 +64,9 @@ reports installed runtime acceptance separately from CLI/MCP acceptance.
 
 No model execution, inference, field evaluation or review-quality claim follows
 from these process-lifetime controls.
+
+Containers executing acceptance fixtures use a native child reaper (`docker run --init`) so orphaned
+processes can be reaped. A runtime whose PID 1 leaves observed orphan zombies
+cannot supply confirmed cleanup. Missing-executable fixtures allow owner startup
+while still requiring an actual `ENOENT` result; a separate stopped-owner control
+keeps pre-execution deadline expiry distinct from an attempted executable lookup.

@@ -149,7 +149,7 @@ jobs:
       - name: Require the full suite and prepared native regression profiles
         run: |
           node scripts/verify-required-native-tests.mjs --full-suite gate-inventory probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings
-          node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup
+          node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
@@ -301,7 +301,7 @@ jobs:
           cp scripts/php-review-tools/composer.json scripts/php-review-tools/composer.lock .checktrail/php-review-tools/
           docker run --rm --mount "type=bind,src=$PWD/.checktrail/php-review-tools,target=/tools" --workdir /tools checktrail-php-review:synthetic-v1 composer install --no-plugins --no-scripts --no-interaction --prefer-dist --no-progress
       - name: Require native PHP evidence offline
-        run: docker run --rm --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-php-review:synthetic-v1 node scripts/verify-required-native-tests.mjs php-review
+        run: docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-php-review:synthetic-v1 node scripts/verify-required-native-tests.mjs php-review
       - name: Audit installed PHP review metadata and notices
         run: node scripts/audit-php-review-tools.mjs
       - name: Prepare package-install cache with network access
@@ -639,10 +639,10 @@ jobs:
         run: docker build --file scripts/executable-bundle-tools.Dockerfile --tag checktrail-executable-bundle-test:1 scripts
       - name: Require packed executable installation and separate trusted execution
         run: |
-          docker run --rm --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle
-          docker run --rm --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle-interpreters
-          docker run --rm --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs external-protocol
-          docker run --rm --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs policy-distribution
+          docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle
+          docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle-interpreters
+          docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs external-protocol
+          docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs policy-distribution
       - name: Verify packed executable adapters in a fresh offline production installation
         env:
           CHECKTRAIL_EXECUTABLE_BUNDLE_IMAGE: checktrail-executable-bundle-test:1
@@ -1689,7 +1689,7 @@ jobs:
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
       - name: Verify required original Go and context controls
-        run: node scripts/verify-required-native-tests.mjs go-extensions review-context-limits host-session-readiness context-python context-go
+        run: node scripts/verify-required-native-tests.mjs go-extensions go-installed-harness review-context-limits host-session-readiness context-python context-go
       - name: Verify installed original Go workspace controls
         run: node scripts/verify-go-workspace-package.mjs
       - name: Verify installed original expanded context controls

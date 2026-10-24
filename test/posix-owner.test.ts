@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import childProcesses, { spawn, type ChildProcess } from "node:child_process";
+import { syncBuiltinESMExports } from "node:module";
 import { once } from "node:events";
 import {
   access,
@@ -434,6 +435,122 @@ test(
       await assert.rejects(access(marker), { code: "ENOENT" });
     } finally {
       observer.mock.restore();
+      syncBuiltinESMExports();
+    }
+  },
+);
+
+test(
+  "native POSIX delayed owner bootstrap distinguishes an expired request from an actually missing executable",
+  { skip: !posix, timeout: 45000 },
+  async (t) => {
+    const root = await realpath(await fixture(t, {})),
+      executable = path.join(root, "missing-original-controlled-tool"),
+      originalFork = childProcesses.fork,
+      expectedOwner = await realpath(
+        fileURLToPath(new URL("../src/posix-owner-keeper.js", import.meta.url)),
+      );
+    await assert.rejects(access(executable), { code: "ENOENT" });
+    try {
+      for (const timeoutMs of [5000, 15000]) {
+        let child: ChildProcess | undefined,
+          exit: Promise<unknown> | undefined,
+          reached: ProcessIdentity | undefined,
+          resume: ReturnType<typeof setTimeout> | undefined,
+          resumeError: unknown,
+          readinessFailure: unknown;
+        childProcesses.fork = ((...args: Parameters<typeof originalFork>) => {
+          assert.equal(String(args[0]), expectedOwner);
+          const owner = Reflect.apply(
+            originalFork,
+            childProcesses,
+            args,
+          ) as ChildProcess;
+          assert.ok(owner.pid);
+          assert.equal(owner.kill("SIGSTOP"), true);
+          child = owner;
+          exit = once(owner, "exit");
+          return owner;
+        }) as typeof originalFork;
+        syncBuiltinESMExports();
+        const started = performance.now();
+        const pending = runProcess(
+          root,
+          { executable, args: [], cwd: "." },
+          { timeoutMs },
+        );
+        void pending.catch((error) => {
+          readinessFailure = error;
+        });
+        try {
+          reached = await waitFor(async () => {
+            if (readinessFailure) throw readinessFailure;
+            if (!child?.pid) return;
+            const row = (await processSnapshot()).find(
+              (row) => row.pid === child!.pid,
+            );
+            return row?.state === "stopped" ? row : undefined;
+          });
+          assert.equal(reached.parent, process.pid);
+          assert.equal(reached.group, child!.pid);
+          resume = setTimeout(
+            () => {
+              void (async () => {
+                const current = (await processSnapshot()).find(
+                  (row) => row.pid === reached!.pid,
+                );
+                if (
+                  current?.identity === reached!.identity &&
+                  current.group === reached!.group
+                )
+                  assert.equal(child!.kill("SIGCONT"), true);
+              })().catch((error) => {
+                resumeError = error;
+              });
+            },
+            Math.max(1, 6500 - (performance.now() - started)),
+          );
+          const result = await pending;
+          assert.equal(resumeError, undefined);
+          assert.equal(result.cancelled, false);
+          assert.equal(
+            result.timedOut,
+            timeoutMs === 5000,
+            JSON.stringify(result),
+          );
+          assert.equal(
+            result.errorCode,
+            timeoutMs === 5000 ? undefined : "ENOENT",
+            JSON.stringify(result),
+          );
+          if (timeoutMs === 5000) assert.equal(result.exitCode, null);
+          else assert.notEqual(result.exitCode, 0);
+          assert.equal(result.stdout, "");
+          assert.equal(result.stderr, "");
+          assert.equal(result.outputBytes, 0);
+          await exit;
+          await gone([reached]);
+        } finally {
+          clearTimeout(resume);
+          childProcesses.fork = originalFork;
+          syncBuiltinESMExports();
+          if (
+            child?.pid &&
+            child.exitCode === null &&
+            child.signalCode === null
+          ) {
+            const current = (await processSnapshot()).find(
+              (row) => row.pid === child!.pid,
+            );
+            if (current?.parent === process.pid && current.group === child.pid)
+              await killOwned([current]);
+          }
+          await pending.catch(() => {});
+          if (exit) await exit;
+        }
+      }
+    } finally {
+      childProcesses.fork = originalFork;
       syncBuiltinESMExports();
     }
   },

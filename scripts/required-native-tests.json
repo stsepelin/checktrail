@@ -5423,6 +5423,10 @@
     {
       "file": "dist/test/process-output.test.js",
       "name": "physical output invalid admission limits reject before a project command can execute"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX delayed owner bootstrap distinguishes an expired request from an actually missing executable"
     }
   ],
   "git-metadata": [
@@ -5447,6 +5451,18 @@
     {
       "file": "dist/test/tasks-runtime-harness.test.js",
       "name": "isolated native namespace cleanup retries actual final-directory races and retains exhausted and failed evidence"
+    }
+  ],
+  "tasks-runtime-startup": [
+    {
+      "file": "dist/test/tasks-runtime-harness.test.js",
+      "name": "Tasks native startup observer admits delayed reached bodies and cleans their actual process group without touching siblings"
+    }
+  ],
+  "go-installed-harness": [
+    {
+      "file": "dist/test/go-installed-harness.test.js",
+      "name": "Go installed harness keeps ordinary deadlines and bounds the aggregate while preserving a refused child"
     }
   ]
 }

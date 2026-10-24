@@ -90,6 +90,7 @@ try {
         [
           "run",
           "--rm",
+          "--init",
           "--read-only",
           "--tmpfs",
           "/tmp:rw,nosuid,nodev,size=512m",
