@@ -1603,6 +1603,12 @@ jobs:
         run: node scripts/verify-required-native-tests.mjs review-runtime-bindings probe-workspace-privacy
       - name: Require whole candidate workflow source and offline installed runtime evidence
         run: node scripts/verify-review-runtime.mjs ${{ matrix.slot }}
+      - name: Require lifecycle runtime admission and complete source controls
+        run: |
+          node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings
+          node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}
+      - name: Require the same lifecycle controls from a fresh offline installation
+        run: node scripts/verify-lifecycle-platforms-package.mjs ${{ matrix.slot }}
 
   tasks-runtime-arm64:
     needs: [ci-plan, actionlint]

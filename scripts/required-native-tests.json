@@ -5464,5 +5464,49 @@
       "file": "dist/test/go-installed-harness.test.js",
       "name": "Go installed harness keeps ordinary deadlines and bounds the aggregate while preserving a refused child"
     }
+  ],
+  "lifecycle-platforms": [
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms installed acceptance"
+    }
+  ],
+  "lifecycle-runtime-bindings": [
+    {
+      "file": "dist/test/lifecycle-runtime-harness.test.js",
+      "name": "lifecycle runtime admission refuses wrong slots and changed harnesses while retaining unqualified development evidence"
+    }
   ]
 }

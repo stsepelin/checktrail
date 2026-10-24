@@ -13,7 +13,8 @@ assert.equal(process.arch, "arm64");
 const reference =
   "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
 const name = "checktrail-tasks-runtime-" + process.pid,
-  task = "tasks-runtime-native-arm64";
+  task = process.env.CHECKTRAIL_TEST_TASK ?? "tasks-runtime-native-arm64";
+assert.match(task, /^[a-z][a-z0-9-]{0,80}$/);
 const cache = await realpath(
   runAcceptanceNpm(["config", "get", "cache"], { encoding: "utf8" }).trim(),
 );
@@ -87,14 +88,22 @@ try {
     image.Id,
     "sh",
     "-c",
-    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-tasks-runtime-package.mjs native-linux-arm64-node22\nnode scripts/verify-review-runtime.mjs native-linux-arm64-node22",
+    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-tasks-runtime-package.mjs native-linux-arm64-node22\nnode scripts/verify-review-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings\nnode scripts/verify-lifecycle-platforms.mjs native-linux-arm64-node22\nnode scripts/verify-lifecycle-platforms-package.mjs native-linux-arm64-node22",
   ]);
   const packets = output
     .trim()
     .split("\n")
     .map((line) => JSON.parse(line));
-  assert.equal(packets.length, 4);
-  const [, source, installed, reviewWorkflow] = packets;
+  assert.equal(packets.length, 7);
+  const [
+    ,
+    source,
+    installed,
+    reviewWorkflow,
+    lifecycleAdmission,
+    lifecycleSource,
+    lifecycleInstalled,
+  ] = packets;
   assert.equal(source.profileEvidence.complete, true);
   assert.equal(installed.evidence.profileEvidence.complete, true);
   assert.equal(source.harnessSha256, installed.evidence.harnessSha256);
@@ -108,6 +117,25 @@ try {
     reviewWorkflow.installedEvidence.profile.runtime.containerImageId,
     image.Id,
   );
+  assert.equal(lifecycleAdmission.complete, true);
+  for (const evidence of [lifecycleSource, lifecycleInstalled.evidence]) {
+    assert.equal(evidence.complete, true);
+    assert.equal(evidence.required, 9);
+    assert.equal(evidence.passed, 9);
+    assert.equal(evidence.runtime.slot, "native-linux-arm64-node22");
+    assert.equal(evidence.selectedRuntime.id, "native-linux-arm64-node22");
+    assert.equal(evidence.runtime.containerImageId, image.Id);
+    assert.equal(evidence.compiledEngine.beforeAfterByteIdentitiesMatch, true);
+  }
+  assert.equal(lifecycleSource.harnessSha256, lifecycleInstalled.harnessSha256);
+  assert.equal(
+    lifecycleSource.compiledEngine.treeSha256,
+    lifecycleInstalled.compiledEngine.treeSha256,
+  );
+  assert.equal(
+    lifecycleSource.compiledEngine.treeSha256,
+    lifecycleInstalled.evidence.compiledEngine.treeSha256,
+  );
   process.stdout.write(
     JSON.stringify({
       schemaVersion: 1,
@@ -120,7 +148,11 @@ try {
       source,
       installed,
       reviewWorkflow,
+      lifecycleAdmission,
+      lifecycleSource,
+      lifecycleInstalled,
       gateATasksMatrixComplete: false,
+      gateALifecycleComplete: false,
     }) + "\n",
   );
 } finally {

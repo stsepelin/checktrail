@@ -313,6 +313,10 @@
   "scripts/kubernetes-extension-schemas.json": ["kubernetes-extensions-arm64"],
   "scripts/laravel-tools/composer.json": ["laravel-assembly-arm64"],
   "scripts/laravel-tools/composer.lock": ["laravel-assembly-arm64"],
+  "scripts/lifecycle-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/maven-tools.Dockerfile": ["jvm-wrappers-arm64", "maven"],
   "scripts/native-acceptance-diagnostics.mjs": [
     "c-context-arm64",
@@ -991,6 +995,14 @@
   "scripts/verify-laravel-assembly-container.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-laravel-assembly-guards.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-laravel-supplemental.mjs": ["laravel-assembly-arm64"],
+  "scripts/verify-lifecycle-platforms-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-lifecycle-platforms.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/verify-maven-container.mjs": ["maven"],
   "scripts/verify-maven-package.mjs": ["maven"],
   "scripts/verify-mutation-container.mjs": ["mutation-native-arm64"],
@@ -1460,6 +1472,10 @@
     "kustomize-extensions-arm64"
   ],
   "test/gate-kustomize-extensions.test.ts": ["kustomize-extensions-arm64"],
+  "test/gate-lifecycle-platforms.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/gate-multi-candidate-workflow.test.ts": [
     "tasks-runtime",
     "tasks-runtime-arm64"
@@ -1853,6 +1869,22 @@
   "test/larastan.test.ts": ["php-extensions-arm64", "php-review"],
   "test/laravel-cache.test.ts": ["laravel-assembly-arm64"],
   "test/laravel.test.ts": ["laravel-assembly-arm64"],
+  "test/lifecycle-platforms-boundaries.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/lifecycle-platforms-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/lifecycle-platforms-interruption.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/lifecycle-runtime-harness.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/maven-fixture.ts": [
     "cpp-extensions-arm64",
     "cpp-tools",
