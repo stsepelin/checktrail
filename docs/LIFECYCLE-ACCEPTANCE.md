@@ -44,3 +44,10 @@ model inference, held-out case inspection or field evaluation follows from this
 harness. POSIX ownership has the bounded observation limits documented in
 [POSIX-CLEANUP.md](POSIX-CLEANUP.md), including visibility after a detached child
 escapes and the absence of a durable-report guarantee after abrupt caller loss.
+
+The separate fresh Windows foundation collector now requires both the native
+Windows process profile and the physical-output profile. Portable development
+invocations run the argument/environment contract and physical-output controls;
+they do not qualify Windows. The receipt binds source and installed engine bytes,
+all declared controller/test inputs, and exact required case accounting before
+and after acceptance. Native Windows qualification remains required.
