@@ -9,9 +9,25 @@ import {
   type ValidationTasks,
 } from "../src/validation-tasks.js";
 import { openTaskStore, type StoredValidationTask } from "../src/task-store.js";
-import { fixture, nodeManifest, passingTest } from "./helpers.js";
+import {
+  fixture,
+  nodeManifest,
+  passingTest,
+  captureFixtureProcessGroup,
+  cleanupFixtureProcessGroup,
+  type FixtureProcessGroup,
+} from "./helpers.js";
+const fixtureGroups = new WeakMap<TestContext, FixtureProcessGroup[]>();
 
 async function setup(t: TestContext, source = passingTest, detailed = false) {
+  if (!fixtureGroups.has(t)) {
+    const groups: FixtureProcessGroup[] = [];
+    fixtureGroups.set(t, groups);
+    t.after(async () => {
+      for (const group of groups.reverse())
+        await cleanupFixtureProcessGroup(group);
+    });
+  }
   const root = await realpath(
     await fixture(t, {
       "package.json": nodeManifest,
@@ -99,10 +115,10 @@ function parentExited(parent: ChildProcess): Promise<void> {
 const slow = `import {test} from 'node:test'; import fs from 'node:fs'; import {spawn} from 'node:child_process';
 test('waits for cancellation', async () => {
   const child = spawn(process.execPath, ['-e', 'setInterval(()=>{},1000)'], {stdio:'inherit'});
-  fs.writeFileSync('.checktrail/started.json', JSON.stringify({pid:process.pid,group:process.ppid,child:child.pid}));
+  fs.writeFileSync('.checktrail/started.json', JSON.stringify({pid:process.pid,parent:process.ppid,child:child.pid}));
   await new Promise(resolve=>setTimeout(resolve,60000));
 });`;
-type Pids = { pid: number; group: number; child: number };
+type Pids = { pid: number; parent: number; child: number };
 async function live(pid: number): Promise<boolean> {
   try {
     process.kill(pid, 0);
@@ -119,18 +135,16 @@ async function live(pid: number): Promise<boolean> {
   return true;
 }
 async function started(t: TestContext, root: string): Promise<Pids> {
-  for (let attempt = 0; attempt < 160; attempt++) {
+  const deadline = performance.now() + parentReadinessTimeoutMs;
+  while (performance.now() < deadline) {
     try {
       const pids = JSON.parse(
         await readFile(path.join(root, ".checktrail/started.json"), "utf8"),
       ) as Pids;
-      t.after(() => {
-        try {
-          process.kill(-pids.group, "SIGKILL");
-        } catch {
-          /* Already stopped. */
-        }
-      });
+      if (process.platform !== "win32")
+        fixtureGroups
+          .get(t)!
+          .push(await captureFixtureProcessGroup(pids.pid, pids.parent));
       assert.ok(await live(pids.pid));
       assert.ok(await live(pids.child));
       return pids;

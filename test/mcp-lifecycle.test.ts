@@ -4,7 +4,13 @@ import { once } from "node:events";
 import { test } from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
-import { fixture, nodeManifest } from "./helpers.js";
+import {
+  fixture,
+  nodeManifest,
+  captureFixtureProcessGroup,
+  cleanupFixtureProcessGroup,
+  type FixtureProcessGroup,
+} from "./helpers.js";
 import { contractFixture } from "./contract-helpers.js";
 import {
   waitForMcpStartup,
@@ -82,13 +88,25 @@ for (const shutdown of ["eof", "SIGTERM", "SIGINT"] as const) {
     `MCP ${shutdown} stops active validation and its child processes`,
     { timeout: 45_000 },
     async (t) => {
+      const cleanup: {
+        child?: ReturnType<typeof spawn>;
+        group?: FixtureProcessGroup;
+      } = {};
+      t.after(async () => {
+        if (
+          cleanup.child?.exitCode === null &&
+          cleanup.child.signalCode === null
+        )
+          cleanup.child.kill("SIGKILL");
+        if (cleanup.group) await cleanupFixtureProcessGroup(cleanup.group);
+      });
       const root = await fixture(t, {
         "package.json": nodeManifest,
         "slow.test.js": `import {test} from 'node:test';
 import fs from 'node:fs';
 test('waits for cancellation', async () => {
   fs.mkdirSync('.checktrail', {recursive:true});
-  fs.writeFileSync('.checktrail/starting.json', JSON.stringify({pid:process.pid,group:process.ppid}));
+  fs.writeFileSync('.checktrail/starting.json', JSON.stringify({pid:process.pid,parent:process.ppid}));
   fs.renameSync('.checktrail/starting.json', '.checktrail/started.json');
   await new Promise(resolve => setTimeout(resolve, 60000));
 });`,
@@ -104,17 +122,7 @@ test('waits for cancellation', async () => {
         ],
         { stdio: ["pipe", "pipe", "pipe"] },
       );
-      const cleanup: { group?: number } = {};
-      t.after(() => {
-        child.kill("SIGKILL");
-        if (cleanup.group) {
-          try {
-            process.kill(-cleanup.group, "SIGKILL");
-          } catch {
-            /* Already stopped. */
-          }
-        }
-      });
+      cleanup.child = child;
       const closed = once(child, "close");
       void closed.catch(() => {});
       child.stdin.write(
@@ -133,7 +141,11 @@ test('waits for cancellation', async () => {
         }) + "\n",
       );
       const started = await waitForValidationPid(root, child);
-      cleanup.group = started.group;
+      if (process.platform !== "win32")
+        cleanup.group = await captureFixtureProcessGroup(
+          started.pid,
+          started.parent,
+        );
       if (shutdown === "eof") child.stdin.end();
       else child.kill(shutdown);
       await waitForMcpShutdown(closed);

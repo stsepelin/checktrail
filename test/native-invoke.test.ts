@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
@@ -546,7 +546,7 @@ test("native invocation journal retains the reached physical prefix after its ac
   const storageModule = pathToFileURL(
     path.resolve(import.meta.dirname, "../src/native-attempt-storage.js"),
   ).href;
-  const script = `import {invokeNative} from ${JSON.stringify(invocationModule)};import {NativeAttemptWriter} from ${JSON.stringify(storageModule)};import{writeFileSync}from'node:fs';const writer=new NativeAttemptWriter(JSON.parse(process.argv[1]));await invokeNative(process.execPath,['-e','process.stdout.write(Buffer.from([0,255,7]));setInterval(()=>{},1000)'],{journal:writer,maxOutputBytes:1024,timeoutMs:110000,observe:()=>writeFileSync(process.argv[2],'ready')});writer.close();`;
+  const script = `import {invokeNative} from ${JSON.stringify(invocationModule)};import {NativeAttemptWriter} from ${JSON.stringify(storageModule)};import{writeFileSync,existsSync}from'node:fs';const writer=new NativeAttemptWriter(JSON.parse(process.argv[1]));let published=false;await invokeNative(process.execPath,['-e','process.stdout.write(Buffer.from([0,255,7]));setInterval(()=>{},1000)'],{journal:writer,maxOutputBytes:1024,timeoutMs:110000,observe:()=>{if(published)return;published=true;writeFileSync(process.argv[2],'');while(!existsSync(process.argv[2]+'.release'))Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,10);writeFileSync(process.argv[2],'ready')}});writer.close();`;
   const pending = runProcess(
     root,
     {
@@ -564,10 +564,16 @@ test("native invocation journal retains the reached physical prefix after its ac
   );
   try {
     const deadline = performance.now() + 5000;
+    let observedEmptyPublication = false;
     for (;;) {
       try {
-        assert.equal(await readFile(ready, "utf8"), "ready");
-        break;
+        const publication = await readFile(ready, "utf8");
+        if (publication === "ready") break;
+        // Hold the real writer between file creation and its complete marker.
+        // Existence alone cannot attest that its native output was published.
+        assert.equal(publication, "");
+        observedEmptyPublication = true;
+        await writeFile(ready + ".release", "release");
       } catch (cause) {
         if ((cause as NodeJS.ErrnoException).code !== "ENOENT") throw cause;
       }
@@ -577,6 +583,7 @@ test("native invocation journal retains the reached physical prefix after its ac
       );
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
+    assert.equal(observedEmptyPublication, true);
     const before = journal.read();
     assert.equal(before.attempts.length, 1);
     assert.equal(before.attempts[0]!.state, "interrupted");

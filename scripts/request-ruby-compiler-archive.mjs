@@ -56,7 +56,7 @@ export async function requestRubyCompilerArchive(
         asset: repository + encodeURIComponent(pin.path),
         fallbackAssets: [
           "https://dl-4.alpinelinux.org/",
-          "https://dl-5.alpinelinux.org/",
+          "https://mirrors.huaweicloud.com/",
         ].map(
           (origin) =>
             repository.replace("https://dl-cdn.alpinelinux.org/", origin) +

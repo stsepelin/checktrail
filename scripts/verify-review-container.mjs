@@ -21,6 +21,7 @@ assert.match(image, /^sha256:[a-f0-9]{64}$/);
 const native = [
   "run",
   "--rm",
+  "--init",
   "--network",
   "none",
   "--mount",
@@ -106,6 +107,7 @@ try {
   const installed = [
     "run",
     "--rm",
+    "--init",
     "--interactive",
     "--network",
     "none",
