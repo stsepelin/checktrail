@@ -13,6 +13,12 @@ export const lifecycleHarnessFiles = Object.freeze([
   "dist/test/lifecycle-platforms-fixture.js",
   "dist/test/lifecycle-platforms-boundaries.js",
   "dist/test/lifecycle-platforms-interruption.js",
+  "dist/test/process-tree.test.js",
+  "dist/test/posix-owner.test.js",
+  "dist/test/runner.test.js",
+  "dist/test/process-output.test.js",
+  "dist/test/windows-contract.test.js",
+  "dist/test/windows-process.test.js",
   "dist/test/helpers.js",
   "dist/test/tool-fixture.js",
   "scripts/verify-lifecycle-platforms.mjs",
@@ -24,6 +30,16 @@ export const lifecycleHarnessFiles = Object.freeze([
   "scripts/compiled-engine-evidence.mjs",
   "scripts/install-acceptance-package.mjs",
 ]);
+export function lifecycleFoundationSelection(platform = process.platform) {
+  assert.ok(
+    ["darwin", "linux", "win32"].includes(platform),
+    "Unsupported lifecycle platform",
+  );
+  return platform === "win32"
+    ? ["windows-process", "physical-process-output"]
+    : ["posix-cleanup", "posix-owner"];
+}
+
 export const lifecycleDigest = (bytes) =>
   createHash("sha256").update(bytes).digest("hex");
 

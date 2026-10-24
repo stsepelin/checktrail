@@ -5506,7 +5506,11 @@
   "lifecycle-runtime-bindings": [
     {
       "file": "dist/test/lifecycle-runtime-harness.test.js",
-      "name": "lifecycle runtime admission refuses wrong slots and changed harnesses while retaining unqualified development evidence"
+      "name": "lifecycle runtime admission refuses wrong slots, missing foundations and changed harnesses while retaining unqualified development evidence"
+    },
+    {
+      "file": "dist/test/lifecycle-runtime-harness.test.js",
+      "name": "lifecycle foundation selection admits only the declared native platforms"
     }
   ]
 }

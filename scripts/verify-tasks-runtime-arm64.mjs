@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { realpath, lstat, mkdtemp, readdir, chmod, rm } from "node:fs/promises";
+import {
+  realpath,
+  lstat,
+  mkdtemp,
+  readdir,
+  readFile,
+  chmod,
+  rm,
+} from "node:fs/promises";
 import path from "node:path";
 import { tmpdir } from "node:os";
 import { runAcceptanceNpm } from "./install-acceptance-package.mjs";
@@ -118,10 +126,40 @@ try {
     image.Id,
   );
   assert.equal(lifecycleAdmission.complete, true);
+  const nativeDefinitions = JSON.parse(
+    await readFile(
+      new URL("./required-native-tests.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  const foundationProfiles = ["posix-cleanup", "posix-owner"];
+  const foundationRequired = foundationProfiles.reduce(
+    (total, profile) => total + nativeDefinitions[profile].length,
+    0,
+  );
   for (const evidence of [lifecycleSource, lifecycleInstalled.evidence]) {
     assert.equal(evidence.complete, true);
     assert.equal(evidence.required, 9);
     assert.equal(evidence.passed, 9);
+    assert.equal(
+      evidence.completionScope,
+      "whole-profile-and-selected-platform-foundation",
+    );
+    assert.equal(evidence.foundation.complete, true);
+    assert.deepEqual(
+      evidence.foundation.profiles,
+      foundationProfiles.map((profile) => ({
+        profile,
+        required: nativeDefinitions[profile].length,
+      })),
+    );
+    assert.equal(evidence.foundation.required, foundationRequired);
+    assert.equal(evidence.foundation.passed, foundationRequired);
+    assert.equal(evidence.foundation.ledger.truncated, false);
+    assert.equal(evidence.foundation.ledger.cases.length, foundationRequired);
+    assert.ok(
+      evidence.foundation.ledger.cases.every((row) => row.outcome === "passed"),
+    );
     assert.equal(evidence.runtime.slot, "native-linux-arm64-node22");
     assert.equal(evidence.selectedRuntime.id, "native-linux-arm64-node22");
     assert.equal(evidence.runtime.containerImageId, image.Id);

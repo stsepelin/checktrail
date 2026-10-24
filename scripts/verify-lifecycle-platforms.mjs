@@ -7,9 +7,13 @@ import {
   captureCompiledEngine,
   requireUnchangedCompiledEngine,
 } from "./compiled-engine-evidence.mjs";
-import { runRequiredTests } from "./required-test-evidence.mjs";
+import {
+  runRequiredTests,
+  runRequiredProfiles,
+} from "./required-test-evidence.mjs";
 import {
   lifecycleHarnessFiles,
+  lifecycleFoundationSelection,
   lifecycleDigest,
   observeLifecycleRuntime,
 } from "./lifecycle-runtime-evidence.mjs";
@@ -24,12 +28,13 @@ if (slot !== null) {
   );
   process.env.CHECKTRAIL_LIFECYCLE_RUNTIME_SLOT = slot;
 }
-const requirements = JSON.parse(
+const profiles = JSON.parse(
   await readFile(
     new URL("./required-native-tests.json", import.meta.url),
     "utf8",
   ),
-)["lifecycle-platforms"];
+);
+const requirements = profiles["lifecycle-platforms"];
 const inventory = JSON.parse(
   await readFile(
     new URL("../docs/gate-a-profiles.v1.json", import.meta.url),
@@ -56,6 +61,25 @@ const captureHarness = () =>
       lifecycleDigest(await readFile(path.join(repository, file))),
     ]),
   );
+const foundationSelection = lifecycleFoundationSelection();
+const foundationRequirements = Object.fromEntries(
+  foundationSelection.map((profile) => {
+    assert.ok(
+      Array.isArray(profiles[profile]) && profiles[profile].length > 0,
+      "Missing lifecycle platform foundation",
+    );
+    return [
+      profile,
+      profiles[profile].map((row) => {
+        assert.ok(
+          lifecycleHarnessFiles.includes(row.file),
+          "Foundation file is outside the declared harness",
+        );
+        return { ...row, file: path.join(repository, row.file) };
+      }),
+    ];
+  }),
+);
 const inputSources = await captureHarness();
 const root = new URL("../dist/src/", import.meta.url),
   before = await captureCompiledEngine(root);
@@ -73,6 +97,20 @@ const evidence = await runRequiredTests(
       ),
   },
 );
+const foundation = await runRequiredProfiles(
+  foundationRequirements,
+  foundationSelection,
+  {
+    timeoutMs: process.platform === "win32" ? 600000 : 300000,
+    isolatedCaseWorkers: 1,
+    onCaseProgress: (event) =>
+      process.stderr.write(
+        JSON.stringify({ profile: "lifecycle-platform-foundation", ...event }) +
+          "\n",
+      ),
+  },
+);
+const complete = evidence.complete && foundation.complete;
 assert.deepEqual(
   await observeLifecycleRuntime(inventory, slot),
   runtime,
@@ -92,6 +130,16 @@ process.stdout.write(
     schemaVersion: 1,
     profile: "lifecycle-platforms-runtime-v1",
     ...evidence,
+    complete,
+    completionScope: "whole-profile-and-selected-platform-foundation",
+    problems: [
+      ...evidence.problems,
+      ...foundation.problems.map((problem) => ({
+        ...problem,
+        profile: "selected-platform-foundation",
+      })),
+    ],
+    foundation,
     compiledEngine,
     installed: process.env.CHECKTRAIL_LIFECYCLE_INSTALLED === "1",
     environment: {
@@ -109,4 +157,4 @@ process.stdout.write(
     gateAComplete: false,
   }) + "\n",
 );
-process.exitCode = evidence.complete ? 0 : 1;
+process.exitCode = complete ? 0 : 1;

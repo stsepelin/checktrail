@@ -5,30 +5,62 @@ import path from "node:path";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
 
-test("lifecycle runtime admission refuses wrong slots and changed harnesses while retaining unqualified development evidence", async (t) => {
+test("lifecycle runtime admission refuses wrong slots, missing foundations and changed harnesses while retaining unqualified development evidence", async (t) => {
   const repository = new URL("../../", import.meta.url);
   const { lifecycleHarnessFiles } = await import(
     new URL("scripts/lifecycle-runtime-evidence.mjs", repository).href
   );
-  const root = await fixture(t, {
+  // fixture() uses mkdtemp and registers cleanup; repository files are read-only inputs.
+  const fixtureRoot = await fixture(t, {
     "dist/src/original.js": "export const original = 1;\n",
   });
   for (const file of lifecycleHarnessFiles) {
-    const target = path.join(root, file);
+    const target = path.join(fixtureRoot, file);
     await mkdir(path.dirname(target), { recursive: true });
     await cp(new URL(file, repository), target);
   }
-  const requirements = JSON.parse(
+  const allRequirements = JSON.parse(
     await readFile(
-      path.join(root, "scripts/required-native-tests.json"),
+      path.join(fixtureRoot, "scripts/required-native-tests.json"),
       "utf8",
     ),
-  )["lifecycle-platforms"] as Array<{ file: string; name: string }>;
+  ) as Record<string, Array<{ file: string; name: string }>>;
+  const requirements = allRequirements["lifecycle-platforms"]!;
+  const foundationProfiles =
+    process.platform === "win32"
+      ? ["windows-process", "physical-process-output"]
+      : ["posix-cleanup", "posix-owner"];
+  const foundationRows = foundationProfiles.flatMap(
+    (profile) => allRequirements[profile]!,
+  );
+  const foundationMarker = path.join(fixtureRoot, "foundation-reached.jsonl");
+  for (const file of new Set(foundationRows.map((row) => row.file))) {
+    assert.match(file, /^dist\/test\/[a-z0-9-]+\.test\.js$/);
+    const target = path.resolve(fixtureRoot, file);
+    assert.equal(
+      path.relative(fixtureRoot, target).split(path.sep).join("/"),
+      file,
+    );
+    await mkdir(path.dirname(target), { recursive: true });
+    await rm(target, { force: true }); // Unlink only this owned fixture file before exclusive publication.
+    await writeFile(
+      target,
+      "import {test} from 'node:test';import {appendFileSync} from 'node:fs';\n" +
+        foundationRows
+          .filter((row) => row.file === file)
+          .map(
+            (row) =>
+              `test(${JSON.stringify(row.name)},()=>appendFileSync(${JSON.stringify(foundationMarker)},${JSON.stringify(row.name + "\n")}));`,
+          )
+          .join("\n"),
+      { flag: "wx" },
+    );
+  }
   assert.equal(requirements.length, 9);
   assert.equal(new Set(requirements.map((row) => row.file)).size, 1);
-  const marker = path.join(root, "body-reached.jsonl");
+  const marker = path.join(fixtureRoot, "body-reached.jsonl");
   await writeFile(
-    path.join(root, requirements[0]!.file),
+    path.join(fixtureRoot, requirements[0]!.file),
     "import {test} from 'node:test';import {appendFileSync} from 'node:fs';\n" +
       requirements
         .map(
@@ -47,10 +79,11 @@ test("lifecycle runtime admission refuses wrong slots and changed harnesses whil
     process.platform === "win32" ? "ci-linux-node22" : "windows-node22",
   ]) {
     await rm(marker, { force: true });
+    await rm(foundationMarker, { force: true });
     const refused = spawnSync(
       process.execPath,
-      [path.join(root, "scripts/verify-lifecycle-platforms.mjs"), slot],
-      { cwd: root, env, encoding: "utf8", timeout: 30000 },
+      [path.join(fixtureRoot, "scripts/verify-lifecycle-platforms.mjs"), slot],
+      { cwd: fixtureRoot, env, encoding: "utf8", timeout: 30000 },
     );
     assert.equal(refused.error, undefined);
     assert.equal(refused.status, 1);
@@ -65,12 +98,13 @@ test("lifecycle runtime admission refuses wrong slots and changed harnesses whil
       /SyntaxError|ERR_MODULE_NOT_FOUND|Cannot find module/,
     );
     await assert.rejects(readFile(marker), { code: "ENOENT" });
+    await assert.rejects(readFile(foundationMarker), { code: "ENOENT" });
   }
   const development = spawnSync(
     process.execPath,
-    [path.join(root, "scripts/verify-lifecycle-platforms.mjs")],
+    [path.join(fixtureRoot, "scripts/verify-lifecycle-platforms.mjs")],
     {
-      cwd: root,
+      cwd: fixtureRoot,
       env,
       encoding: "utf8",
       timeout: 30000,
@@ -83,6 +117,31 @@ test("lifecycle runtime admission refuses wrong slots and changed harnesses whil
   assert.equal(packet.complete, true);
   assert.equal(packet.required, 9);
   assert.equal(packet.passed, 9);
+  assert.equal(
+    packet.completionScope,
+    "whole-profile-and-selected-platform-foundation",
+  );
+  assert.equal(packet.foundation.complete, true);
+  assert.deepEqual(
+    packet.foundation.profiles,
+    foundationProfiles.map((profile) => ({
+      profile,
+      required: allRequirements[profile]!.length,
+    })),
+  );
+  assert.equal(packet.foundation.required, foundationRows.length);
+  assert.equal(packet.foundation.passed, foundationRows.length);
+  assert.equal(packet.foundation.ledger.truncated, false);
+  assert.equal(packet.foundation.ledger.cases.length, foundationRows.length);
+  assert.ok(
+    packet.foundation.ledger.cases.every(
+      (row: { outcome: string }) => row.outcome === "passed",
+    ),
+  );
+  assert.deepEqual(
+    (await readFile(foundationMarker, "utf8")).trim().split("\n").sort(),
+    foundationRows.map((row) => row.name).sort(),
+  );
   assert.equal(packet.runtime.slot, null);
   assert.equal(packet.selectedRuntime, null);
   assert.equal(packet.runtime.selectedRuntime, null);
@@ -99,14 +158,24 @@ test("lifecycle runtime admission refuses wrong slots and changed harnesses whil
     requirements.map((row) => row.name).sort(),
   );
 
-  const sibling = await fixture(t, {
-    [requirements[0]!.file]:
-      "throw Error('Original shadow harness must never execute');\n",
-  });
+  const shadowFiles = [
+    requirements[0]!.file,
+    ...new Set(foundationRows.map((row) => row.file)),
+  ];
+  const sibling = await fixture(
+    t,
+    Object.fromEntries(
+      shadowFiles.map((file) => [
+        file,
+        "throw Error('Original shadow harness must never execute');\n",
+      ]),
+    ),
+  );
   await rm(marker, { force: true });
+  await rm(foundationMarker, { force: true });
   const otherDirectory = spawnSync(
     process.execPath,
-    [path.join(root, "scripts/verify-lifecycle-platforms.mjs")],
+    [path.join(fixtureRoot, "scripts/verify-lifecycle-platforms.mjs")],
     {
       cwd: sibling,
       env,
@@ -123,6 +192,11 @@ test("lifecycle runtime admission refuses wrong slots and changed harnesses whil
   );
   const otherPacket = JSON.parse(otherDirectory.stdout);
   assert.equal(otherPacket.complete, true);
+  assert.deepEqual(otherPacket.foundation.profiles, packet.foundation.profiles);
+  assert.deepEqual(
+    (await readFile(foundationMarker, "utf8")).trim().split("\n").sort(),
+    foundationRows.map((row) => row.name).sort(),
+  );
   assert.equal(otherPacket.harnessSha256, packet.harnessSha256);
   assert.equal(
     otherPacket.compiledEngine.treeSha256,
@@ -133,13 +207,52 @@ test("lifecycle runtime admission refuses wrong slots and changed harnesses whil
     requirements.map((row) => row.name).sort(),
   );
 
+  // Successful whole-case callbacks cannot excuse a missing platform foundation.
+  const omitted = foundationRows[0]!;
+  const foundationFile = path.join(fixtureRoot, omitted.file);
+  const foundationBefore = await readFile(foundationFile, "utf8");
+  await writeFile(
+    foundationFile,
+    foundationBefore.replace(
+      JSON.stringify(omitted.name),
+      JSON.stringify(omitted.name + " adjacent"),
+    ),
+  );
+  try {
+    const missing = spawnSync(
+      process.execPath,
+      [path.join(fixtureRoot, "scripts/verify-lifecycle-platforms.mjs")],
+      {
+        cwd: fixtureRoot,
+        env,
+        encoding: "utf8",
+        timeout: 30000,
+        maxBuffer: 4 * 1048576,
+      },
+    );
+    assert.equal(missing.error, undefined);
+    assert.equal(missing.status, 1, missing.stdout + missing.stderr);
+    const refused = JSON.parse(missing.stdout);
+    assert.equal(refused.passed, 9);
+    assert.equal(refused.required, 9);
+    assert.equal(refused.complete, false);
+    assert.equal(refused.foundation.complete, false);
+    assert.ok(
+      refused.foundation.problems.some(
+        (item: { name: string }) => item.name === omitted.name,
+      ),
+    );
+  } finally {
+    await writeFile(foundationFile, foundationBefore);
+  }
+
   // A passing native test cannot certify supporting harness bytes it changed.
   const support = path.join(
-    root,
+    fixtureRoot,
     "dist/test/lifecycle-platforms-boundaries.js",
   );
   const supportBefore = await readFile(support);
-  const callback = path.join(root, requirements[0]!.file);
+  const callback = path.join(fixtureRoot, requirements[0]!.file);
   const callbackBefore = await readFile(callback, "utf8");
   const first = JSON.stringify(requirements[0]!.name);
   await rm(marker, { force: true });
@@ -158,9 +271,9 @@ test("lifecycle runtime admission refuses wrong slots and changed harnesses whil
   try {
     const stale = spawnSync(
       process.execPath,
-      [path.join(root, "scripts/verify-lifecycle-platforms.mjs")],
+      [path.join(fixtureRoot, "scripts/verify-lifecycle-platforms.mjs")],
       {
-        cwd: root,
+        cwd: fixtureRoot,
         env,
         encoding: "utf8",
         timeout: 30000,
@@ -184,4 +297,25 @@ test("lifecycle runtime admission refuses wrong slots and changed harnesses whil
   } finally {
     await writeFile(support, supportBefore);
   }
+});
+
+test("lifecycle foundation selection admits only the declared native platforms", async () => {
+  const { lifecycleFoundationSelection } = await import(
+    new URL("../../scripts/lifecycle-runtime-evidence.mjs", import.meta.url)
+      .href
+  );
+  for (const platform of ["linux", "darwin"])
+    assert.deepEqual(lifecycleFoundationSelection(platform), [
+      "posix-cleanup",
+      "posix-owner",
+    ]);
+  assert.deepEqual(lifecycleFoundationSelection("win32"), [
+    "windows-process",
+    "physical-process-output",
+  ]);
+  for (const platform of ["freebsd", "linux-extra", "windows", ""])
+    assert.throws(
+      () => lifecycleFoundationSelection(platform),
+      /Unsupported lifecycle platform/,
+    );
 });

@@ -22,7 +22,10 @@ import {
   captureCompiledEngine,
   requireUnchangedCompiledEngine,
 } from "./compiled-engine-evidence.mjs";
-import { lifecycleHarnessFiles } from "./lifecycle-runtime-evidence.mjs";
+import {
+  lifecycleHarnessFiles,
+  lifecycleFoundationSelection,
+} from "./lifecycle-runtime-evidence.mjs";
 import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 assert.ok(process.argv.length === 2 || process.argv.length === 3);
 const slot =
@@ -114,6 +117,31 @@ try {
   assert.equal(result.status, 0, (result.stdout + result.stderr).slice(-6000));
   const evidence = JSON.parse(result.stdout);
   assert.equal(evidence.complete, true);
+  const definitions = JSON.parse(
+    inputs
+      .find((item) => item.file === "scripts/required-native-tests.json")
+      .bytes.toString("utf8"),
+  );
+  const foundationProfiles = lifecycleFoundationSelection();
+  const foundationRequired = foundationProfiles.reduce(
+    (total, profile) => total + definitions[profile].length,
+    0,
+  );
+  assert.equal(evidence.foundation.complete, true);
+  assert.deepEqual(
+    evidence.foundation.profiles,
+    foundationProfiles.map((profile) => ({
+      profile,
+      required: definitions[profile].length,
+    })),
+  );
+  assert.equal(evidence.foundation.required, foundationRequired);
+  assert.equal(evidence.foundation.passed, foundationRequired);
+  assert.equal(evidence.foundation.ledger.truncated, false);
+  assert.equal(evidence.foundation.ledger.cases.length, foundationRequired);
+  assert.ok(
+    evidence.foundation.ledger.cases.every((item) => item.outcome === "passed"),
+  );
   assert.equal(evidence.required, 9);
   assert.equal(evidence.passed, 9);
   assert.equal(evidence.installed, true);

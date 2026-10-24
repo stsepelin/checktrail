@@ -2014,8 +2014,17 @@
     "python-extensions-arm64",
     "vue-router"
   ],
-  "test/process-output.test.ts": ["windows"],
-  "test/process-tree.test.ts": ["laravel-assembly-arm64"],
+  "test/posix-owner.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/process-output.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/process-tree.test.ts": [
+    "laravel-assembly-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/pytest-evidence.test.ts": ["python-extensions-arm64"],
   "test/pytest.test.ts": [
     "django-assembly-arm64",
@@ -2148,6 +2157,7 @@
     "python-extensions-arm64",
     "rust-extensions-arm64"
   ],
+  "test/runner.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/rust-component-preflight.test.ts": ["rust-extensions-arm64"],
   "test/rust-extensions-fixture.ts": ["rust-extensions-arm64"],
   "test/rust-extensions.test.ts": ["rust-extensions-arm64"],

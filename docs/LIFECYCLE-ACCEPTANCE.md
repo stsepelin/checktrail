@@ -23,7 +23,14 @@ engine-owned temporary directory. An unrelated sibling remains alive. POSIX
 observations use native start identities and process groups; Windows requires the
 native Job Object receipt and physical process disappearance. Bootstrap refusal
 and other native platform obligations remain required in the preserved platform
-foundation profiles. Laravel cache isolation has its separate native controls.
+foundation profiles. The lifecycle collector now runs the selected native
+foundation after its whole-profile controls: POSIX cleanup and ownership on
+Linux/macOS, or Windows process ownership and physical output on Windows.
+Completion requires both sets. Exact required case accounting, unchanged engine
+bytes and unchanged harness inputs cover the combined run. The fresh package
+repeats the same platform selection from the external harness. A passing whole
+profile cannot excuse an absent foundation callback. Laravel cache isolation has
+its separate native controls and still needs its lifecycle binding reconciled.
 
 Run `node scripts/verify-lifecycle-platforms.mjs` after compilation. Its exact
 callback selection comes from the finite inventory. The installed callback runs
