@@ -449,6 +449,11 @@ test(
       broken.checks
         .filter((c) => c.goBuild?.profile === "host")
         .every((c) => c.status === "passed"),
+      JSON.stringify(
+        broken.checks.filter(
+          (c) => c.goBuild?.profile === "host" && c.status !== "passed",
+        ),
+      ),
     );
     const failures = broken.checks.filter(
       (c) => c.goBuild?.profile === "foreign",
@@ -536,6 +541,9 @@ test(
       incomplete.checks
         .filter((c) => c !== unrun)
         .every((c) => c.status === "passed"),
+      JSON.stringify(
+        incomplete.checks.filter((c) => c !== unrun && c.status !== "passed"),
+      ),
     );
     await writeFile(
       path.join(root, "checktrail.go-build.json"),
