@@ -1,12 +1,16 @@
 # Prior-workflow comparison protocol
 
-Status: the provisional public baseline has a bounded [historical agent pilot](AGENT-EVALUATION-PILOT.md).
-A comparison with the actual previous workflow has not been completed. That previous
-workflow has not been specified. Use native tools plus public, project-agnostic
-review instructions as the provisional baseline below. That baseline must not be
-presented as a reproduction of any private team's workflow.
-The executable [agent evaluation workflow](AGENT-EVALUATION.md) implements the
-collection and adjudication stages for this provisional public baseline.
+Status: the selected future baseline is a plain Codex or Claude review with
+repository instructions and native tools, without Checktrail. Each provider/model
+cohort must use the same reviewer and settings in both arms. New review trials
+remain deferred until Gate A is complete; this selection is not a measured result.
+
+The bounded [historical agent pilot](AGENT-EVALUATION-PILOT.md) used the earlier
+provisional public baseline. It does not reproduce a private team's previous
+workflow or qualify the selected future comparison. The executable
+[agent evaluation workflow](AGENT-EVALUATION.md) implements the collection and
+adjudication stages; its synthetic development evidence remains separate from
+actual review observations.
 
 The existing [development evaluation](EVALUATION.md),
 [external ESLint cohort](EXTERNAL-EVALUATION.md) and
@@ -21,15 +25,15 @@ limits and reviewer version in both arms. Each arm starts from a separate fresh
 copy and receives the same task and source access. Run pairs in alternating order;
 do not carry findings, conversation history or caches between arms.
 
-| Arm      | Reviewer access                                                                             | Instructions                                                             |
-| -------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Baseline | Native tools through fixed documented commands; no Checktrail                               | The public review instruction below                                      |
-| Verifier | The same native tools and Checktrail's documented context, guidance and validation surfaces | The same public review instruction, plus factual tool usage instructions |
+| Arm      | Reviewer access                                                                             | Instructions                                                                      |
+| -------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Baseline | Native tools through fixed documented commands; no Checktrail                               | The same pinned repository instructions and common review prompt                  |
+| Verifier | The same native tools and Checktrail's documented context, guidance and validation surfaces | The same repository instructions and prompt, plus factual tool usage instructions |
 
-Record exactly which tools and commands each arm can use. If the baseline uses
-additional project instructions, version and hash a separately authored public
-replacement before selecting cases. Private rules may instead be evaluated
-privately, with an explicit statement that public reproduction excludes them.
+Record exactly which tools and commands each arm can use. Freeze and hash the
+same repository instruction bytes and common review prompt for both arms before
+selecting cases. Private rules may be evaluated privately; a public reproduction
+must identify their exclusion and use a separately authored public replacement.
 Do not copy private incidents, source or instructions into the public package.
 
 Public review instruction:
