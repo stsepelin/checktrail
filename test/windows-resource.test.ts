@@ -45,7 +45,7 @@ test("Windows resource counters retain native CPU precision and direct working-s
           [field]: collected.processCpu[field] - 1,
         },
       }).success,
-      false,
+      true,
     );
   }
   for (const field of Object.keys(collected)) {

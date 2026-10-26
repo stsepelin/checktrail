@@ -203,6 +203,24 @@ API contracts: [process CPU](https://learn.microsoft.com/en-us/windows/win32/api
 [job CPU](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information),
 and [working-set counters](https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters).
 
+The direct-process and job CPU fields are independent native API observations.
+A bounded synthetic probe reproduced smaller job CPU than direct-process CPU even
+with an empty job; closing both owned process/thread handles left those same job
+values unchanged. The mechanism remains unresolved. Collection therefore checks
+each field's nonnegative safe-integer bounds without inventing a cross-API
+conservation rule, rounding tolerance or corrected value. API failures and an
+active job still cannot produce collected counters.
+
+The current native fixture retains two separately reaped workload children and
+adds two independently compiled read-only observers of the immediate job. It
+accounts for all five process identities and proves the earlier/later job
+observations refer to that exact job through its member counts. Final CPU is
+compared with the earlier observation from the same API; direct process CPU is
+still compared with the target's own native CPU observations. Separate compiling
+mutations substitute direct user or kernel CPU for its job field, so those
+assertions must detect a lost descendant scope. The new fixture and bounds
+require native qualification before this candidate is ready.
+
 ## Prepared Windows workload measurement
 
 The operator-only `measureWindowsResourceSample` export in

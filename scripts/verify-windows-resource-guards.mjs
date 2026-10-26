@@ -22,6 +22,18 @@ const witness =
   "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU";
 const controls = [
   {
+    id: "job-user-not-direct-target-user",
+    name: witness,
+    from: "jobCpu = new { user100ns = info.User, kernel100ns = info.Kernel }",
+    to: "jobCpu = new { user100ns = user, kernel100ns = info.Kernel }",
+  },
+  {
+    id: "job-kernel-not-direct-target-kernel",
+    name: witness,
+    from: "jobCpu = new { user100ns = info.User, kernel100ns = info.Kernel }",
+    to: "jobCpu = new { user100ns = info.User, kernel100ns = kernel }",
+  },
+  {
     id: "direct-working-set-not-commit",
     name: witness,
     from: "peak = memory.PeakWorkingSet.ToUInt64();",

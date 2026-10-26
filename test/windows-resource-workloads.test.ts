@@ -81,6 +81,21 @@ test("Windows workload accounting sums distinct job CPU retains direct peaks and
   assert.equal(summary.summedProcessTreeRss, false);
   assert.equal(summary.cpuUnit, "100ns");
   assert.equal(summary.validationJobCpuExcludesLauncherAndSupervisor, true);
+  const independent = observation();
+  for (const process of independent.report.checks[0]!.processes)
+    process.windowsExecution.resources.jobCpu = {
+      user100ns: 0,
+      kernel100ns: 0,
+    };
+  const independentSummary = summarizeWindowsResources(
+    independent.report,
+    independent.expected,
+  );
+  assert.deepEqual(independentSummary.processCpu, {
+    user100ns: 3,
+    kernel100ns: 6,
+  });
+  assert.deepEqual(independentSummary.jobCpu, { user100ns: 0, kernel100ns: 0 });
   for (const process of report.checks[0]!.processes) {
     process.windowsExecution.resources.processCpu = {
       user100ns: 0,
@@ -156,7 +171,8 @@ test("Windows workload accounting rejects unavailable incomplete contradictory a
       });
     },
     (r: typeof report) => {
-      r.checks[0]!.processes[0]!.windowsExecution.resources.jobCpu.user100ns = 0;
+      r.checks[0]!.processes[0]!.windowsExecution.resources.processCpu.user100ns =
+        Number.MAX_SAFE_INTEGER + 1;
     },
     (r: typeof report) => {
       r.checks[0]!.processes[1]!.windowsExecution.requestId =

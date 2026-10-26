@@ -10,16 +10,74 @@ test(
   native,
   async (t) => {
     const root = await fixture(t, {});
+    const { spawnSync } = await import("node:child_process");
+    const { writeFile } = await import("node:fs/promises");
+    const path = await import("node:path");
+    // Compile this independent read-only job observer before starting the
+    // measured job. Its two invocations are accounted for as actual members.
+    const observerSource = path.join(root, "ObserveJob.cs"),
+      observer = path.join(root, "ObserveJob.exe");
+    await writeFile(
+      observerSource,
+      String.raw`using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+public static class ObserveJob {
+  [StructLayout(LayoutKind.Sequential)] struct Accounting {
+    public long User, Kernel, PeriodUser, PeriodKernel;
+    public uint Faults, Total, Active, Terminated;
+  }
+  [DllImport("kernel32.dll", SetLastError=true)] static extern bool QueryInformationJobObject(
+    IntPtr job, int kind, out Accounting info, uint length, IntPtr returned);
+  public static void Main() {
+    Accounting info;
+    if (!QueryInformationJobObject(IntPtr.Zero, 1, out info, (uint)Marshal.SizeOf(typeof(Accounting)), IntPtr.Zero))
+      throw new Win32Exception(Marshal.GetLastWin32Error());
+    Console.WriteLine("{\"pid\":" + System.Diagnostics.Process.GetCurrentProcess().Id +
+      ",\"user100ns\":" + info.User + ",\"kernel100ns\":" + info.Kernel +
+      ",\"active\":" + info.Active + ",\"total\":" + info.Total + "}");
+  }
+}`,
+    );
+    const compiler = String.raw`$ErrorActionPreference='Stop'
+[Console]::InputEncoding=[Text.UTF8Encoding]::new($false)
+[void][Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35')
+$data=([Web.Script.Serialization.JavaScriptSerializer]::new()).DeserializeObject([Console]::In.ReadToEnd())
+Add-Type -Path $data.source -OutputAssembly $data.output -OutputType ConsoleApplication
+`;
+    const compiled = spawnSync(
+      path.win32.join(
+        process.env.SystemRoot ?? process.env.SYSTEMROOT!,
+        "System32/WindowsPowerShell/v1.0/powershell.exe",
+      ),
+      [
+        "-NoProfile",
+        "-NonInteractive",
+        "-EncodedCommand",
+        Buffer.from(compiler, "utf16le").toString("base64"),
+      ],
+      {
+        encoding: "utf8",
+        input: JSON.stringify({ source: observerSource, output: observer }),
+        timeout: 15000,
+      },
+    );
+    assert.equal(compiled.error, undefined);
+    assert.equal(compiled.status, 0, compiled.stdout + compiled.stderr);
     // A short userspace loop can leave Windows' sampled kernel CPU at zero.
     // Arm both fields through observed work rather than weakening comparisons.
-    const kernelWitness = String.raw`const fs=require('node:fs');const kernelDeadline=performance.now()+5000;while(process.cpuUsage().system<20000&&performance.now()<kernelDeadline){for(let i=0;i<100;i++)fs.statSync(process.execPath);}if(process.cpuUsage().system<20000)throw Error('Original Windows kernel CPU witness did not reach its observed minimum');`;
+    const kernelWitness = String.raw`const fs=require('node:fs');const kernelStart=process.cpuUsage().system,kernelDeadline=performance.now()+5000;while(process.cpuUsage().system-kernelStart<20000&&performance.now()<kernelDeadline){for(let i=0;i<100;i++)fs.statSync(process.execPath);}if(process.cpuUsage().system-kernelStart<20000)throw Error('Original Windows kernel CPU witness did not reach its observed minimum');`;
     const childSource = String.raw`const b=Buffer.alloc(Number(process.argv[1])*1024*1024,7);${kernelWitness}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,bytes:b.length}));`;
-    const source = String.raw`const {spawnSync}=require('node:child_process');const touched=Buffer.alloc(32*1024*1024,7),reserved=Buffer.allocUnsafe(256*1024*1024),children=[];
+    const source = String.raw`const {spawnSync}=require('node:child_process');const touched=Buffer.alloc(32*1024*1024,7),reserved=Buffer.allocUnsafe(256*1024*1024),children=[];const observe=()=>{const r=spawnSync(process.argv[1],[],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);return JSON.parse(r.stdout);};const beforeJob=observe();
 for(const size of [64,96]){const r=spawnSync(process.execPath,['-e',${JSON.stringify(childSource)},String(size)],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);children.push(JSON.parse(r.stdout));}
-${kernelWitness}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,touched:touched.length,reserved:reserved.length,children}));`;
+const afterJob=observe();${kernelWitness}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,touched:touched.length,reserved:reserved.length,children,beforeJob,afterJob}));`;
     const result = await runProcess(
       root,
-      { executable: process.execPath, args: ["-e", source], cwd: "." },
+      {
+        executable: process.execPath,
+        args: ["-e", source, observer],
+        cwd: ".",
+      },
       { timeoutMs: 45000 },
     );
     assert.equal(result.errorCode, undefined, result.stderr);
@@ -36,15 +94,23 @@ ${kernelWitness}const end=performance.now()+150;while(performance.now()<end){};c
     const own = JSON.parse(result.stdout);
     assert.equal(own.pid, receipt.childPid);
     assert.equal(
-      new Set([own.pid, ...own.children.map((c: { pid: number }) => c.pid)])
-        .size,
-      3,
+      new Set([
+        own.pid,
+        own.beforeJob.pid,
+        own.afterJob.pid,
+        ...own.children.map((c: { pid: number }) => c.pid),
+      ]).size,
+      5,
     );
     assert.deepEqual(
       own.children.map((c: { bytes: number }) => c.bytes),
       [64, 96].map((n) => n * 1024 * 1024),
     );
-    assert.equal(usage.totalJobProcesses, 3);
+    assert.equal(own.beforeJob.total, 2);
+    assert.equal(own.afterJob.total, 5);
+    assert.equal(own.beforeJob.active, 2);
+    assert.equal(own.afterJob.active, 2);
+    assert.equal(usage.totalJobProcesses, 5);
     for (const [field, nativeField] of [
       ["user", "user100ns"],
       ["system", "kernel100ns"],
@@ -57,9 +123,16 @@ ${kernelWitness}const end=performance.now()+150;while(performance.now()<end){};c
         0,
       );
       assert.ok(childCpu > 0);
+      assert.ok(Number.isSafeInteger(own.beforeJob[nativeField]));
+      assert.ok(Number.isSafeInteger(own.afterJob[nativeField]));
+      assert.ok(own.beforeJob[nativeField] >= 0);
       assert.ok(
-        usage.jobCpu[nativeField] >=
-          usage.processCpu[nativeField] + childCpu * 10,
+        own.afterJob[nativeField] > own.beforeJob[nativeField],
+        "The same native job counter must observe work while descendants run",
+      );
+      assert.ok(
+        usage.jobCpu[nativeField] >= own.afterJob[nativeField],
+        "Final job CPU must retain the independent earlier observation of that exact job",
       );
     }
     assert.ok(usage.peakWorkingSetBytes >= own.rss * 1024);
