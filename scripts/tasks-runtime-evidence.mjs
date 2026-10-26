@@ -6,19 +6,60 @@ import os from "node:os";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import { runRequiredTests } from "./required-test-evidence.mjs";
+import { withRuntimeInstallationCapture } from "./runtime-installation-capture.mjs";
 import { windowsEnvironment } from "../dist/src/windows-process.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const hash = (b) => createHash("sha256").update(b).digest("hex");
-export async function tasksRuntimeRequirements() {
-  const profiles = JSON.parse(
-    await readFile(
-      path.join(root, "scripts/required-native-tests.json"),
-      "utf8",
-    ),
+export function selectTasksRuntimeRequirements(profiles, selected, platform) {
+  assert.ok(
+    ["darwin", "linux", "win32"].includes(platform),
+    "Unknown Tasks runtime platform",
   );
-  assert.equal(profiles["mcp-tasks"].length, 10);
-  return [
-    ...profiles["mcp-tasks"],
+  assert.equal(selected?.id, "tasks-matrix", "Unknown frozen Tasks profile");
+  assert.equal(selected.acceptanceFile, "dist/test/gate-tasks-matrix.test.js");
+  assert.deepEqual(
+    selected.acceptanceCases.map((row) => row.id),
+    [
+      "broken",
+      "fixed",
+      "near-miss",
+      "prerequisite",
+      "stale",
+      "empty",
+      "privacy",
+      "lifecycle",
+      "installed",
+    ],
+    "Frozen Tasks acceptance categories changed",
+  );
+  const frozen = selected.acceptanceCases.map((row) => ({
+    file: selected.acceptanceFile,
+    name: row.name,
+  }));
+  assert.deepEqual(
+    profiles["tasks-matrix"],
+    frozen,
+    "Frozen Tasks acceptance bindings changed",
+  );
+  assert.ok(
+    Array.isArray(profiles["mcp-tasks"]) && profiles["mcp-tasks"].length === 10,
+    "Preserved MCP Tasks cohort changed",
+  );
+  for (const row of [...profiles["mcp-tasks"], ...frozen]) {
+    assert.deepEqual(
+      Object.keys(row).sort(),
+      ["file", "name"],
+      "Invalid Tasks requirement fields",
+    );
+    assert.match(row.file, /^dist\/test\/[a-z0-9-]+\.test\.js$/);
+    assert.ok(
+      typeof row.name === "string" &&
+        row.name.length > 0 &&
+        row.name.length <= 512,
+    );
+  }
+  const requirements = [
+    ...profiles["mcp-tasks"].map((row) => ({ ...row })),
     {
       file: "dist/test/tasks-runtime-harness.test.js",
       name: "Tasks installed wrapper selects a bounded Windows aggregate allowance while preserving POSIX deadlines and failed child status",
@@ -27,7 +68,11 @@ export async function tasksRuntimeRequirements() {
       file: "dist/test/tasks-runtime-harness.test.js",
       name: "Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits",
     },
-    ...(process.platform === "win32"
+    {
+      file: "dist/test/tasks-runtime-harness.test.js",
+      name: "Tasks runtime selection binds every frozen acceptance case and preserves the complete platform control family",
+    },
+    ...(platform === "win32"
       ? [
           {
             file: "dist/test/tasks-runtime-harness.test.js",
@@ -39,20 +84,7 @@ export async function tasksRuntimeRequirements() {
       file: "dist/test/mcp-validation-tasks.test.js",
       name: "Tasks fixture teardown closes every live SQLite server before removing its directories",
     },
-    ...[
-      "broken",
-      "fixed",
-      "near-miss",
-      "prerequisite",
-      "stale",
-      "empty",
-      "privacy",
-      "lifecycle",
-      "installed",
-    ].map((kind) => ({
-      file: "dist/test/gate-tasks-matrix.test.js",
-      name: "tasks-matrix " + kind + " acceptance",
-    })),
+    ...frozen,
     {
       file: "dist/test/tasks-sdk-fallback.test.js",
       name: "Tasks-enabled servers retain ordinary native validation with pinned SDK modern and legacy clients",
@@ -60,7 +92,7 @@ export async function tasksRuntimeRequirements() {
     ...[
       "Windows task ACL validation admits only the exact caller rule and actual caller or token owner",
       "Windows task ACL validation refuses each private-access boundary independently",
-      ...(process.platform === "win32"
+      ...(platform === "win32"
         ? [
             "native Windows task storage uses private ACLs for literal Unicode paths and native SQLite owner journals",
             "native Windows task storage refuses a publicly readable directory without changing its ACL or creating a database",
@@ -68,7 +100,42 @@ export async function tasksRuntimeRequirements() {
         : []),
     ].map((name) => ({ file: "dist/test/windows-task-access.test.js", name })),
   ];
+  assert.equal(
+    requirements.length,
+    platform === "win32" ? 29 : 26,
+    "Tasks platform control family changed",
+  );
+  assert.equal(
+    new Set(requirements.map((row) => JSON.stringify([row.file, row.name])))
+      .size,
+    requirements.length,
+    "Duplicate Tasks runtime control",
+  );
+  assert.deepEqual(
+    requirements.filter((row) => row.file === selected.acceptanceFile),
+    frozen,
+    "Frozen Tasks acceptance omitted from runtime selection",
+  );
+  return requirements;
 }
+
+export async function tasksRuntimeRequirements() {
+  const [profiles, scope] = await Promise.all([
+    readFile(
+      path.join(root, "scripts/required-native-tests.json"),
+      "utf8",
+    ).then(JSON.parse),
+    readFile(path.join(root, "docs/gate-a-profiles.v1.json"), "utf8").then(
+      JSON.parse,
+    ),
+  ]);
+  return selectTasksRuntimeRequirements(
+    profiles,
+    scope.extensionProfiles.find((row) => row.id === "tasks-matrix"),
+    process.platform,
+  );
+}
+
 async function treeHash(directory) {
   const parts = [];
   async function walk(relative) {
@@ -109,97 +176,171 @@ export async function verifyTasksRuntime({
     assert.ok(imageVersion && /^20\d{6}\.\d+\.\d+$/.test(imageVersion));
     assert.ok(imageOS && /^[A-Za-z0-9-]+$/.test(imageOS));
   }
-  const requirements = await tasksRuntimeRequirements();
-  const harnessFiles = [
-    ...new Set(requirements.map((x) => x.file)),
-    "dist/test/helpers.js",
-    "package.json",
-    "docs/gate-a-profiles.v1.json",
-    "scripts/verify-tasks-runtime.mjs",
-    "dist/test/tasks-wire-fixture.js",
-    "scripts/required-test-evidence.mjs",
-    "scripts/required-native-tests.json",
-    "scripts/tasks-runtime-evidence.mjs",
-  ];
-  const inputs = await Promise.all(
-    harnessFiles.map(async (file) => [
-      file,
-      hash(await readFile(path.join(root, file))),
-    ]),
-  );
-  const nodeExecutableSha256 = hash(await readFile(process.execPath));
-  let systemPowerShell = null,
-    systemPowerShellSha256 = null;
-  if (process.platform === "win32") {
-    const environment = windowsEnvironment(process.env);
-    assert.ok(environment.SYSTEMROOT);
-    systemPowerShell = await realpath(
-      path.win32.join(
-        environment.SYSTEMROOT,
-        "System32/WindowsPowerShell/v1.0/powershell.exe",
-      ),
-    );
-    systemPowerShellSha256 = hash(await readFile(systemPowerShell));
-  }
-  const sourceBefore = await treeHash(path.join(root, "dist/src"));
-  const startedAt = new Date().toISOString();
-  const profile = await runRequiredTests(
-    requirements.map((p) => ({ ...p, file: path.join(root, p.file) })),
-    {
-      timeoutMs: 600000,
-      isolatedCaseWorkers: 1,
-      onCaseProgress: (event) =>
-        process.stderr.write(
-          JSON.stringify({ profile: "tasks-runtime", ...event }) + "\n",
-        ),
+  const installed = process.env.CHECKTRAIL_TASKS_MATRIX_INSTALLED === "1";
+  return await withRuntimeInstallationCapture(
+    "tasks",
+    { installed, slot },
+    async (capture) => {
+      const requirements = await tasksRuntimeRequirements();
+      const harnessFiles = tasksRuntimeHarnessFiles(requirements);
+      const inputs = await Promise.all(
+        harnessFiles.map(async (file) => [
+          file,
+          hash(await readFile(path.join(root, file))),
+        ]),
+      );
+      const nodeExecutableSha256 = hash(await readFile(process.execPath));
+      let systemPowerShell = null,
+        systemPowerShellSha256 = null;
+      if (process.platform === "win32") {
+        const environment = windowsEnvironment(process.env);
+        assert.ok(environment.SYSTEMROOT);
+        systemPowerShell = await realpath(
+          path.win32.join(
+            environment.SYSTEMROOT,
+            "System32/WindowsPowerShell/v1.0/powershell.exe",
+          ),
+        );
+        systemPowerShellSha256 = hash(await readFile(systemPowerShell));
+      }
+      const sourceBefore = await treeHash(path.join(root, "dist/src"));
+      const startedAt = new Date().toISOString();
+      const profile = await runRequiredTests(
+        requirements.map((p) => ({ ...p, file: path.join(root, p.file) })),
+        {
+          timeoutMs: 600000,
+          isolatedCaseWorkers: 1,
+          onCaseProgress: (event) =>
+            process.stderr.write(
+              JSON.stringify({ profile: "tasks-runtime", ...event }) + "\n",
+            ),
+        },
+      );
+      assert.equal(profile.complete, true, JSON.stringify(profile.problems));
+      assert.equal(profile.required, requirements.length);
+      assert.equal(profile.passed, requirements.length);
+      assert.equal(profile.ledger.truncated, false);
+      assert.equal(profile.ledger.cases.length, requirements.length);
+      assert.ok(profile.ledger.cases.every((c) => c.outcome === "passed"));
+      assert.equal(await treeHash(path.join(root, "dist/src")), sourceBefore);
+      const after = await Promise.all(
+        harnessFiles.map(async (file) => [
+          file,
+          hash(await readFile(path.join(root, file))),
+        ]),
+      );
+      assert.deepEqual(after, inputs);
+      assert.equal(
+        hash(await readFile(process.execPath)),
+        nodeExecutableSha256,
+      );
+      if (systemPowerShell !== null)
+        assert.equal(
+          hash(await readFile(systemPowerShell)),
+          systemPowerShellSha256,
+        );
+      const result = {
+        schemaVersion: 1,
+        profile: "tasks-runtime-foundation-v1",
+        installed,
+        installedEvidence: null,
+        runtime: {
+          slot,
+          node: process.versions.node,
+          platform: process.platform,
+          architecture: process.arch,
+          nodeExecutableSha256,
+          systemPowerShellSha256,
+          sqliteVersion: process.versions.sqlite ?? null,
+          osRelease: os.release(),
+          osVersion: os.version(),
+          imageVersion,
+          imageOS,
+          hostedImageMetadataAttested: false,
+        },
+        startedAt,
+        finishedAt: new Date().toISOString(),
+        runtimeArtifactsSha256: sourceBefore,
+        harnessSha256: hash(JSON.stringify(inputs)),
+        inputSources: inputs,
+        profileEvidence: profile,
+        windowsPrivateStorageNativeVerified: process.platform === "win32",
+        inferenceInvoked: false,
+        fieldEvaluationExecuted: false,
+        gateATasksMatrixComplete: false,
+      };
+      if (!installed)
+        result.installedEvidence = requireTasksRuntimeInstallation(
+          await capture.read(),
+          result,
+          requirements,
+        );
+      return result;
     },
   );
-  assert.equal(profile.complete, true, JSON.stringify(profile.problems));
+}
+
+export function tasksRuntimeHarnessFiles(requirements) {
+  return [
+    ...new Set([
+      ...requirements.map((row) => row.file),
+      "dist/test/helpers.js",
+      "dist/test/tool-fixture.js",
+      "package.json",
+      "package-lock.json",
+      "docs/gate-a-profiles.v1.json",
+      "scripts/verify-tasks-runtime.mjs",
+      "scripts/verify-tasks-runtime-package.mjs",
+      "dist/test/tasks-wire-fixture.js",
+      "scripts/required-test-evidence.mjs",
+      "scripts/required-native-tests.json",
+      "scripts/tasks-runtime-evidence.mjs",
+      "scripts/runtime-installation-capture.mjs",
+      "scripts/install-acceptance-package.mjs",
+    ]),
+  ];
+}
+export function requireTasksRuntimeInstallation(receipt, source, requirements) {
+  assert.equal(receipt.schemaVersion, 1);
+  assert.equal(receipt.profile, "tasks-runtime-foundation-installed-v1");
+  assert.equal(receipt.offlineProductionInstall, true);
+  assert.equal(receipt.lifecycleScriptsExecuted, false);
+  assert.equal(receipt.harnessOutsideInstalledPackage, true);
+  assert.match(receipt.tarballSha256, /^[a-f0-9]{64}$/);
+  assert.match(receipt.productionDependencyLockSha256, /^[a-f0-9]{64}$/);
+  const evidence = receipt.evidence;
+  assert.equal(evidence.profile, "tasks-runtime-foundation-v1");
+  assert.equal(evidence.installed, true);
+  assert.equal(evidence.installedEvidence, null);
+  assert.deepEqual(
+    evidence.runtime,
+    source.runtime,
+    "Installed Tasks runtime differs from source",
+  );
+  assert.equal(
+    evidence.runtimeArtifactsSha256,
+    source.runtimeArtifactsSha256,
+    "Installed Tasks engine differs from source",
+  );
+  assert.equal(
+    evidence.harnessSha256,
+    source.harnessSha256,
+    "Installed Tasks harness differs from source",
+  );
+  assert.deepEqual(evidence.inputSources, source.inputSources);
+  const profile = evidence.profileEvidence;
+  assert.equal(profile.complete, true);
   assert.equal(profile.required, requirements.length);
   assert.equal(profile.passed, requirements.length);
   assert.equal(profile.ledger.truncated, false);
   assert.equal(profile.ledger.cases.length, requirements.length);
-  assert.ok(profile.ledger.cases.every((c) => c.outcome === "passed"));
-  assert.equal(await treeHash(path.join(root, "dist/src")), sourceBefore);
-  const after = await Promise.all(
-    harnessFiles.map(async (file) => [
-      file,
-      hash(await readFile(path.join(root, file))),
-    ]),
+  assert.ok(profile.ledger.cases.every((row) => row.outcome === "passed"));
+  assert.deepEqual(
+    profile.ledger.cases.map((row) => row.name).sort(),
+    requirements.map((row) => row.name).sort(),
   );
-  assert.deepEqual(after, inputs);
-  assert.equal(hash(await readFile(process.execPath)), nodeExecutableSha256);
-  if (systemPowerShell !== null)
-    assert.equal(
-      hash(await readFile(systemPowerShell)),
-      systemPowerShellSha256,
-    );
-  return {
-    schemaVersion: 1,
-    profile: "tasks-runtime-foundation-v1",
-    runtime: {
-      slot,
-      node: process.versions.node,
-      platform: process.platform,
-      architecture: process.arch,
-      nodeExecutableSha256,
-      systemPowerShellSha256,
-      sqliteVersion: process.versions.sqlite ?? null,
-      osRelease: os.release(),
-      osVersion: os.version(),
-      imageVersion,
-      imageOS,
-      hostedImageMetadataAttested: false,
-    },
-    startedAt,
-    finishedAt: new Date().toISOString(),
-    runtimeArtifactsSha256: sourceBefore,
-    harnessSha256: hash(JSON.stringify(inputs)),
-    inputSources: inputs,
-    profileEvidence: profile,
-    windowsPrivateStorageNativeVerified: process.platform === "win32",
-    inferenceInvoked: false,
-    fieldEvaluationExecuted: false,
-    gateATasksMatrixComplete: false,
-  };
+  assert.equal(evidence.inferenceInvoked, false);
+  assert.equal(evidence.fieldEvaluationExecuted, false);
+  assert.equal(evidence.gateATasksMatrixComplete, false);
+  return receipt;
 }

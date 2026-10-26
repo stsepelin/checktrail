@@ -21,7 +21,7 @@ const guards = [
   {
     id: "shared-owned-parent-cleanup",
     name: forced,
-    source: "runner.js",
+    source: "posix-target.js",
     replacements: [
       [
         "if (temporary)\n            await rm(temporary, { recursive: true, force: true });",

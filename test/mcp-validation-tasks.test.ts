@@ -380,12 +380,17 @@ test("MCP Tasks reject expired handles and preserve crash interruption without r
 
 test("MCP Tasks admission shares the ordinary native execution slot in both directions", async (t) => {
   const opt = await setup(t, slow);
-  const connection = await wire(t, opt);
+  const connection = await wire(t, opt, [
+    "--allow-execution",
+    "--timeout-ms",
+    String(Math.max(15000, taskExecutionTimeoutMs)),
+  ]);
   const ordinary = connection.request(
     "tools/call",
     { name: "validation_run", arguments: {} },
     false,
   );
+  void ordinary.catch(() => {});
   const pids = await started(t, opt.root);
   const overlap = await connection.request("tools/call", {
     name: "validation_run",

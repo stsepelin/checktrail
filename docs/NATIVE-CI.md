@@ -25,8 +25,8 @@ requires restoration of mutation input bytes and inventory. The original command
 inventory is retained in a fixture and checked by the full suite. Output is
 bounded per command and retained in grouped CI logs. Cancellation and the bounded
 lane deadline stop owned descendants; incomplete or failed commands cannot yield
-a completed receipt. The four matrix variants, full-suite command, native jobs,
-callback assertions and 75-minute job limit are unchanged.
+a completed receipt. On the full verification path, the four matrix variants, full-suite command,
+native jobs, callback assertions and 75-minute job limit are unchanged.
 
 The package lane also requires the bounded attempt-output source controller and
 its fresh locked offline installed-package controller on every existing host
@@ -96,64 +96,60 @@ hashed APKs directly through [`cpp-tools-archives.json`](../scripts/cpp-tools-ar
 its original archive pins are unchanged by this index-pin repair. Dated native
 measurements retain the package identities actually observed at that time.
 
-## Affected native jobs on pull requests
-
-PRs keep the shared full suite, selected required profiles, and every fresh
-package/mutation command on each original OS/Node variant. The full suite and
-package/mutation phase now have independent jobs and identical tool preparation.
-This duplicates preparation to shorten the serial path; it can increase runner
-minutes. It does not cache passing results or omit any of those commands.
+## Affected checks on pull requests
 
 `ci-plan` compares the exact PR base and head with a NUL-delimited Git diff,
 including both paths of renames as delete/add changes. It reads the full Git
-inventory instead of using workflow-level path filters or a truncated PR-files
-response. `scripts/ci-native-inputs.json` is an explicit native input contract.
-The generator follows declared controller references, finite matrix members,
-required profiles and fixture imports; the contract is checked against that
-inventory before selective routing. It is not proof of every runtime dependency.
-All production source, schemas, dependency/configuration, CI and unknown inputs
-therefore select every native job. Native-specific fixture/controller inputs
-select the union of their exact recorded consumers. Markdown changes still run
-the shared suite, formatting, audits and fresh package/mutation verification.
+inventory instead of workflow-level path filters or a truncated PR-files
+response. `scripts/ci-native-inputs.json` records the declared native input
+consumers. The generator follows controller references, finite matrix members,
+required profiles and fixture imports; the contract must match the current
+inventory before selective routing. Global CI controller source is not traversed
+as a native fixture dependency. A literal example in CI control code therefore
+cannot attach an unrelated language to a native job.
 
-Selective routing additionally requires a successful full `main` push run of
-the exact PR base commit, with a complete job inventory and no skipped,
-cancelled or failed jobs. Missing history, unavailable evidence APIs, a pending/failed
-base or a stale input contract falls back to all jobs. Pushes, tags, manual runs
-and the weekly scheduled run always verify every native job. API access is
-read-only and confined to `ci-plan`; PRs do not receive write permissions.
+For a known native fixture or controller change, PRs select the union of its
+recorded native consumers. The four shared OS/Node variants run type checking,
+lint, formatting and artifact audits, followed by complete test files belonging
+to those selected consumers. The CI routing, affected-runner and finite-inventory
+control files always run as well. The shared runner requires named CI and
+inventory controls to pass; an omitted or skipped required control fails.
+It executes every callback in the selected files, not only the named controls.
+Its receipt identifies the selected files and records skips separately.
 
-If the jobs endpoint is unavailable because of a transport failure, rate limit or
-selected server error, the planner can read that same run's latest check suite.
-Every expected job name must occur exactly once, completed successfully, under
-the exact source commit, suite, GitHub Actions app and repository/run job URL.
-The run identity and successful attempt must remain unchanged after all bounded
-pages are read. A failed, skipped, duplicate, foreign or malformed job already
-observed on any jobs page prevents this fallback. Denied API access and malformed
-responses also keep the full plan. This alternative supplies baseline evidence
-only; it does not reuse results as acceptance of the PR revision.
+These affected runs avoid unrelated language tool preparation and the full
+package/mutation phase. That phase is explicitly skipped at this revision.
+Markdown-only PRs run the shared checks and control files without native stacks.
+A successful full run on the exact base is no longer a scheduling prerequisite:
+unavailable or failed historical CI does not broaden a known fixture change.
+No prior job result substitutes for execution of selected current inputs.
 
-The initial full-verification wave admits the shared matrices, selected long .NET/Scala
-jobs and actionlint within the [Free plan's concurrent-job ceiling](https://docs.github.com/en/actions/reference/limits). The three JVM wrapper phases and shorter
-native jobs wait for actionlint to terminate. An actionlint failure or skip does
-not block their selected checks: their job condition evaluates the plan even
-when that dependency did not pass. GitHub runner availability and other workflow
-runs still affect queue times; this is not a job-priority API.
+Shared production source, schemas, dependency/configuration, CI, executable
+inventories and unknown paths still select full verification. A missing, empty or
+invalid diff and a stale ownership contract also select full verification.
+Only the standalone source boundaries declared below can narrow production
+source changes. Semantic manifest changes remain global. Adapter names do not
+establish isolation from filename prefixes. Pushes, tags, manual runs and the weekly schedule retain
+the complete shared suite, package/mutation phases and all native stacks.
+The full path retains every original command and OS/Node variant.
 
-`ci-complete` runs even after dependency failure or cancellation and requires
-both shared matrices, the planner and every selected native job to succeed.
-It requires unselected jobs to be explicitly skipped and reports them as
-**not selected**, never as passing native acceptance. Require this aggregate
-check in branch protection when enabling selective CI. Native commands retain
-their assertions, and check names enumerate their declared matrix variants.
-Historical full baseline evidence is not
-acceptance of a native job against the new PR revision; Gate A still requires
-its separately specified current-revision evidence.
+Optional `CHECKTRAIL_CI_OBSERVE_BASELINE=1` records strictly validated historical
+full-run context using read-only GitHub APIs. Its jobs/check-suite fallback keeps
+the exact commit, successful attempt, complete distinct job names and Actions app
+constraints. Failed, skipped, duplicate, foreign or malformed historical records
+remain unqualified. This optional observation does not control PR routing and
+cannot qualify an omitted native job against the new revision.
 
-The first CI-improvement PR changes workflow/CI inputs and must run the complete
-matrix. There is no hosted speed claim before measuring that run. A source-code
-change still runs all native stacks: narrowing production-source changes needs
-separately reviewed ownership/dependency contracts, not filename prefixes.
+`ci-complete` requires the planner, shared matrix and every selected native job
+to succeed. It requires unselected jobs, including the affected run's full
+package/mutation phase, to be explicitly skipped. Its receipt reports whether
+full-revision verification occurred, and never qualifies omitted jobs. Require
+this aggregate check in branch protection when using selective CI. Gate A still
+requires its separately specified complete current-revision native evidence.
+
+A CI-policy change itself uses full verification. Hosted runtime improvements
+must be measured after that run; local routing and refusal tests are not evidence
+of a faster hosted workflow.
 
 ## JVM wrapper phase jobs
 
@@ -825,3 +821,33 @@ bounds. Native outcomes must still finish with the exact original assertions;
 incomplete results cannot satisfy a passing fixture. These are test startup
 budgets; production defaults and the outer source/installed cohort deadlines
 are unchanged.
+
+The Tasks matrix acceptance cases are declared in `required-native-tests.json` as `tasks-matrix`. The source and fresh installed runtime selectors compare their exact addresses with the frozen profile before execution. A required `tasks-runtime-manifest` control rejects omitted, renamed, duplicated, foreign or extra bindings, checks all three supported platform selections and retains the Windows-only control family. Focused Tasks selections use exact named-callback isolation; full-suite runs keep every file and test in scope. The generic runner also selects the existing bounded Tasks file allowance for that profile. An adjacent profile name retains whole-file skip accounting. These bindings add no product permissions or execution defaults; exact current-source runtime acceptance remains separate.
+
+## Declared standalone runner source boundaries
+
+A finite catalog at `scripts/ci-source-boundaries.json` binds selected standalone
+Node runner entrypoints to their existing native profiles and explicit source
+references. The catalog also enumerates related component test files. Their
+declared native consumers run alongside the shared checks and complete selected
+test files, including every callback in those component files. This covers the catalog's Helm, Terraform, Scala,
+Clang and analyzer entrypoints; it does not infer that every file bearing one of
+those language names is isolated. General planners, evidence parsers, the engine,
+process ownership, dependencies and unclassified source remain global.
+
+Before narrowing a source change, the builder inspects all source literals and
+requires the exact declared URL callers and validation references. New module
+imports, changed callers/counts, unresolved runner construction, encoded aliases
+from an undeclared caller and missing native consumers invalidate the contract.
+Unknown same-name paths remain unresolved rather than being assumed foreign.
+The planner then falls back to full verification. The source inspection parses
+text and never loads a runner or evaluates repository modules.
+
+The shared producer registry has one narrow exception, pinned to its exact
+LF-normalized source identity. That implementation constructs the fixed identity
+map and hashes only the selected program; its reference does not import a runner.
+A registry change invalidates source isolation until the exception is reassessed.
+The registry file itself always selects full verification. This is an explicit
+reviewed boundary contract, not proof of every possible runtime dependency or
+qualification of omitted jobs. Full main, scheduled and release verification
+remain required for broader evidence and Gate A reconciliation.

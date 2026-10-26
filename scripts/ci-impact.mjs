@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import path from "node:path";
 import ts from "typescript";
+import { sourceBoundaryInputs } from "./ci-source-boundaries.mjs";
+import sourceCatalog from "./ci-source-boundaries.json" with { type: "json" };
 
 const controls = new Set([
   "checks",
@@ -28,7 +30,8 @@ export const nativeJobIds = (workflow) =>
 
 // This enumerates declared file references. The checked-in map is a reviewable
 // contract, not a claim that lexical analysis proves every runtime dependency.
-// Source, schemas, dependency/config changes and unclassified paths stay global.
+// General source, schemas, dependency/config changes and unclassified paths
+// stay global. Only reviewed standalone runner boundaries can narrow source.
 export async function buildNativeInputs({
   workflow,
   requirements,
@@ -120,9 +123,17 @@ export async function buildNativeInputs({
       const file = pending.pop();
       if (visited.has(file)) continue;
       visited.add(file);
-      // Every production source change is global; do not infer stack isolation
-      // from a filename or traverse the shared engine as a selective boundary.
-      if (file.startsWith("src/")) continue;
+      // Do not infer source isolation from names or shared engine traversal.
+      // The explicit subprocess source contract is validated after this graph.
+      if (
+        file.startsWith("src/") ||
+        file.startsWith("scripts/ci-") ||
+        [
+          "scripts/plan-ci-impact.mjs",
+          "scripts/check-ci-completion.mjs",
+        ].includes(file)
+      )
+        continue;
       if (!owners.has(file)) owners.set(file, new Set());
       owners.get(file).add(id);
       if (/\.(?:mjs|ts|js)$/.test(file)) {
@@ -135,6 +146,17 @@ export async function buildNativeInputs({
       }
     }
   }
+  const declaredSources = await sourceBoundaryInputs({
+    files,
+    requirements,
+    jobs: nativeJobIds(workflow),
+    inputs: Object.fromEntries(
+      [...owners].map(([file, jobs]) => [file, [...jobs]]),
+    ),
+    readText,
+  });
+  for (const [file, jobs] of Object.entries(declaredSources))
+    owners.set(file, new Set(jobs));
   return Object.fromEntries(
     [...owners]
       .sort(([a], [b]) => a.localeCompare(b))
@@ -172,6 +194,7 @@ export function planNativeJobs({
   eventName,
   baseline,
   contractCurrent = true,
+  sourceBoundaries = sourceCatalog.boundaries,
 }) {
   validateInputContract(inputs, jobs);
   const full = (reason) => ({
@@ -185,8 +208,6 @@ export function planNativeJobs({
     return full("Non-PR verification always runs every native job");
   if (!contractCurrent)
     return full("Declared native input contract changed or is stale");
-  if (!baseline?.complete)
-    return full("No successful full verification of the exact PR base");
   if (
     !Array.isArray(changed) ||
     !changed.length ||
@@ -196,8 +217,8 @@ export function planNativeJobs({
     return full("Missing, empty or invalid changed-file inventory");
   const selected = new Set();
   for (const file of changed) {
-    // Markdown is still checked by the shared full-suite/package jobs. Other
-    // documentation formats can carry executable inventories and remain global.
+    // Markdown retains shared audits and the always-required control files.
+    // Other documentation formats can carry executable inventories and stay global.
     if (
       /^(?:docs\/.*\.md|README\.md|CONTRIBUTING\.md|SECURITY\.md|LICENSE)$/.test(
         file,
@@ -205,7 +226,7 @@ export function planNativeJobs({
     )
       continue;
     if (
-      file.startsWith("src/") ||
+      (file.startsWith("src/") && !Object.hasOwn(inputs, file)) ||
       file.startsWith("schemas/") ||
       file.startsWith("packs/") ||
       file.startsWith(".github/") ||
@@ -232,10 +253,30 @@ export function planNativeJobs({
   return {
     mode: "affected",
     reason:
-      "Exact declared native inputs; shared verification still runs in full",
+      "Exact declared native inputs with complete selected shared test files",
     selected: Object.fromEntries(jobs.map((id) => [id, selected.has(id)])),
     notSelected: jobs.filter((id) => !selected.has(id)),
-    baseline,
+    baseline: baseline?.complete ? baseline : null,
+    sharedTestFiles: [
+      ...new Set([
+        "dist/test/ci-impact.test.js",
+        "dist/test/gate-inventory.test.js",
+        "dist/test/ci-affected-tests.test.js",
+        "dist/test/ci-source-boundaries.test.js",
+        ...sourceBoundaries
+          .filter((row) => changed.includes(row.file))
+          .flatMap((row) => row.testFiles)
+          .map((file) => "dist/" + file.replace(/\.ts$/, ".js")),
+        ...Object.entries(inputs)
+          .filter(
+            ([file, owners]) =>
+              file.startsWith("test/") &&
+              file.endsWith(".test.ts") &&
+              owners.some((id) => selected.has(id)),
+          )
+          .map(([file]) => "dist/" + file.replace(/\.ts$/, ".js")),
+      ]),
+    ].sort(),
   };
 }
 export function requireCiCompletion(plan, needs) {
@@ -268,18 +309,28 @@ export function requireCiCompletion(plan, needs) {
   );
   for (const id of expected) {
     const required =
-      ["ci-plan", "checks", "host-validation"].includes(id) ||
-      plan.selected[id];
+      ["ci-plan", "checks"].includes(id) ||
+      (id === "host-validation" ? plan.mode === "full" : plan.selected[id]);
     assert.equal(
       needs[id].result,
       required ? "success" : "skipped",
       "CI outcome disagrees with selection: " + id,
     );
   }
-  assert.ok(
-    plan.mode !== "affected" || plan.baseline?.complete,
-    "Selective CI requires an accepted exact base",
-  );
+  if (plan.mode === "affected") {
+    assert.ok(
+      Array.isArray(plan.sharedTestFiles) && plan.sharedTestFiles.length >= 2,
+    );
+    assert.ok(
+      plan.sharedTestFiles.every((file) =>
+        /^dist\/test\/[a-z0-9-]+\.test\.js$/.test(file),
+      ),
+    );
+    assert.equal(
+      new Set(plan.sharedTestFiles).size,
+      plan.sharedTestFiles.length,
+    );
+  }
   return {
     complete: true,
     mode: plan.mode,
@@ -288,6 +339,8 @@ export function requireCiCompletion(plan, needs) {
     ),
     notSelectedNativeJobs: plan.notSelected,
     baseline: plan.baseline,
+    fullRevisionVerification: plan.mode === "full",
+    omittedJobsQualified: false,
   };
 }
 

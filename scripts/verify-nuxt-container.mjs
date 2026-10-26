@@ -21,6 +21,7 @@ await access(path.join(prepared, "node_modules/nuxt/package.json"));
 const native = [
   "run",
   "--rm",
+  "--init",
   "--network",
   "none",
   "--mount",
@@ -37,12 +38,15 @@ assert.equal(
   }).trim(),
   "v22.23.2",
 );
-const output = execFileSync(
+const source = spawnSync(
   "docker",
   [...native, "node", "scripts/verify-required-native-tests.mjs", "nuxt"],
   { encoding: "utf8", maxBuffer: 2 * 1024 * 1024 },
 );
-process.stdout.write(output);
+process.stdout.write(source.stdout ?? "");
+process.stderr.write(source.stderr ?? "");
+assert.equal(source.error, undefined, "Required Nuxt source process failed");
+assert.equal(source.status, 0, "Required Nuxt source cohort failed");
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-nuxt-package-"),
 );
@@ -73,6 +77,7 @@ try {
   const installed = [
     "run",
     "--rm",
+    "--init",
     "--interactive",
     "--network",
     "none",

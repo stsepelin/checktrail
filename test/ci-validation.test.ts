@@ -63,7 +63,7 @@ test("consumer impact retains its guard condition and fresh installed checks on 
   assert.equal(checks.filter((step) => step.run === guard).length, 1);
   assert.equal(
     checks.find((step) => step.run === guard)!.if,
-    "runner.os == 'Linux' && matrix.node == '26'",
+    "env.CHECKTRAIL_CI_MODE == 'full' && (runner.os == 'Linux' && matrix.node == '26')",
   );
   assert.ok(
     checks.findIndex((step) => step.run === guard) >
@@ -142,8 +142,15 @@ test("CI lanes preserve every original matrix command and keep distinct package 
     workflow.jobs.checks.strategy.matrix,
   );
   assert.equal(workflow.jobs["host-validation"]["timeout-minutes"], 75);
-  assert.equal(workflow.jobs["host-validation"].needs, undefined);
-  assert.equal(workflow.jobs.checks.needs, undefined);
+  assert.deepEqual(workflow.jobs["host-validation"].needs, ["ci-plan"]);
+  assert.deepEqual(workflow.jobs.checks.needs, ["ci-plan"]);
+  assert.match(workflow.jobs["host-validation"].if, /mode == 'full'/);
+  assert.equal(
+    workflow.jobs.checks.steps.find((s: { run?: string }) =>
+      s.run?.includes("--full-suite gate-inventory"),
+    )?.if,
+    "env.CHECKTRAIL_CI_MODE == 'full'",
+  );
   assert.ok(
     !workflow.jobs.checks.steps.some(
       (s: { run?: string }) => s.run === "node scripts/run-ci-validation.mjs",

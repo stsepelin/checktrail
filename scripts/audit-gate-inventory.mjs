@@ -13,7 +13,7 @@ import process from "node:process";
 const BASELINE =
   "04b2ba50cb1e4516d5472ff2412478b75ec5f5803de34d62fa4b78237a1d5568";
 const SCOPE =
-  "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794";
+  "e40772c9a43150f2cc613e4a188e81f3f1498a017733c555f57eb8f72b0c27f2";
 const obligations = [
   ...Array.from({ length: 6 }, (_, i) => "M" + i),
   "F1",
@@ -266,6 +266,60 @@ try {
       false,
       "Selection metadata cannot assert acceptance or quality",
     );
+  // These are declaration counts, separate from execution and acceptance.
+  const sharedCases = new Set();
+  for (const rows of Object.values(current)) {
+    assert.ok(
+      Array.isArray(rows),
+      "Required native manifests must contain arrays",
+    );
+    for (const row of rows) {
+      assert.ok(
+        row && typeof row === "object" && !Array.isArray(row),
+        "Invalid required native case object",
+      );
+      assert.deepEqual(
+        Object.keys(row).sort(),
+        ["file", "name"],
+        "Invalid required native case fields",
+      );
+      assert.match(
+        row.file,
+        /^dist\/test\/[a-z0-9-]+\.test\.js$/,
+        "Invalid required native case file",
+      );
+      assert.ok(
+        typeof row.name === "string" &&
+          row.name.length > 0 &&
+          row.name.length <= 512,
+        "Invalid required native case name",
+      );
+      sharedCases.add(canonical([row.file, row.name]));
+    }
+  }
+  let casesInSharedManifest = 0;
+  const outsideSharedManifest = [];
+  for (const profile of inventory.extensionProfiles) {
+    const present = profile.acceptanceCases.filter((entry) =>
+      sharedCases.has(canonical([profile.acceptanceFile, entry.name])),
+    ).length;
+    casesInSharedManifest += present;
+    if (present !== profile.acceptanceCases.length)
+      outsideSharedManifest.push({
+        profile: profile.id,
+        plannedCases: profile.acceptanceCases.length,
+        casesInSharedManifest: present,
+        casesOutsideSharedManifest: profile.acceptanceCases.length - present,
+      });
+  }
+  const casesOutsideSharedManifest = outsideSharedManifest.reduce(
+    (n, row) => n + row.casesOutsideSharedManifest,
+    0,
+  );
+  assert.equal(
+    casesInSharedManifest + casesOutsideSharedManifest,
+    selectedCases,
+  );
   process.stdout.write(
     JSON.stringify({
       schemaVersion: 1,
@@ -278,6 +332,22 @@ try {
       repeatedProfileEntries: preservedCases - uniqueCallbacks.size,
       selectedExtensionProfiles: inventory.extensionProfiles.length,
       plannedExtensionCases: selectedCases,
+      implementationDeclarations: {
+        implemented: inventory.extensionProfiles.filter(
+          (p) => p.implementationState === "implemented",
+        ).length,
+        pending: inventory.extensionProfiles.filter(
+          (p) => p.implementationState === "pending",
+        ).length,
+      },
+      selectedCaseBindings: {
+        plannedCases: selectedCases,
+        casesInSharedManifest,
+        casesOutsideSharedManifest,
+        outsideSharedManifest,
+        alternateControllersAssessed: false,
+        nativeExecutionAssessed: false,
+      },
       unresolvedFreezeDecisions: inventory.unresolvedFreezeDecisions.length,
       frozen: inventory.frozen,
       implementationAcceptanceAssessed: false,

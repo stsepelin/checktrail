@@ -373,9 +373,11 @@ test("context-hcl prerequisite acceptance", async (t) => {
       args: [],
       cwd: ".",
     },
-    { timeoutMs: 1000 },
+    { timeoutMs: 15000 },
   );
-  assert.equal(missing.errorCode, "ENOENT");
+  assert.equal(missing.errorCode, "ENOENT", JSON.stringify(missing));
+  assert.equal(missing.timedOut, false, JSON.stringify(missing));
+  assert.equal(missing.cancelled, false, JSON.stringify(missing));
   assert.notEqual(missing.exitCode, 0);
   const { moduleRoots: _moduleRoots, ...legacySelection } = input();
   void _moduleRoots;

@@ -76,6 +76,7 @@ const timeoutMs =
   )
     ? 300000
     : fullSuite ||
+        selection.includes("tasks-matrix") ||
         selection.includes("dotnet-method") ||
         selection.includes("jvm-wrappers") ||
         selection.includes("kotlin-extensions") ||
@@ -121,6 +122,7 @@ const timeoutMs =
                 "swift-tools",
                 "go-extensions",
                 "assembly-nuxt",
+                "assembly-laravel",
                 "javascript-extensions",
                 "python-extensions",
                 "php-extensions",
@@ -130,25 +132,37 @@ const timeoutMs =
             )
           ? 300000
           : 120000;
-// The selected wrapper, compiler and formatting inventories contain independent callbacks. Each
-// selected callback gets a fresh process and file budget; unchanged callback
-// deadlines still apply. One heavy case runs at a time: two Gradle pipelines
-// exhausted native threads under the required 256-PID container limit. A full-suite run keeps every file/test in scope.
+// These inventories contain independent callbacks; Laravel acceptance also
+// runs a complete fresh-package cohort. Give each selected callback a fresh
+// process and file budget, retaining its own deadline. One heavy case runs at
+// a time: two Gradle pipelines exhausted native threads under the required
+// 256-PID container limit. A full-suite run keeps every file/test in scope.
 const isolatedCaseWorkers =
   !fullSuite &&
-  selection.length === 1 &&
-  [
-    "jvm-wrappers",
-    "scala-extensions",
-    "dotnet-format-extensions",
-    "dotnet-generator-extensions",
-    "ruby-extensions",
-    "swift-extensions",
-    "cpp-extensions",
-    "terraform-extensions",
-    "helm-extensions",
-    ...mutationProfiles,
-  ].includes(selection[0])
+  (selection.some((profile) =>
+    [
+      "tasks-matrix",
+      "tasks-runtime-manifest",
+      "tasks-runtime-cli",
+      "native-harness-cleanup",
+      "tasks-runtime-startup",
+      "go-extensions",
+    ].includes(profile),
+  ) ||
+    (selection.length === 1 &&
+      [
+        "jvm-wrappers",
+        "scala-extensions",
+        "dotnet-format-extensions",
+        "dotnet-generator-extensions",
+        "ruby-extensions",
+        "swift-extensions",
+        "cpp-extensions",
+        "terraform-extensions",
+        "helm-extensions",
+        "assembly-laravel",
+        ...mutationProfiles,
+      ].includes(selection[0])))
     ? 1
     : 0;
 // Retain the single-profile report used by installed acceptance harnesses.
@@ -174,6 +188,7 @@ const report =
     : await runRequiredProfiles(profiles, selection, {
         timeoutMs,
         additionalFiles,
+        isolatedCaseWorkers,
       });
 const compiledEngine = requireUnchangedCompiledEngine(
   engineBefore,
