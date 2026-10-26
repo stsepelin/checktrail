@@ -95,8 +95,20 @@ function linuxIdentity(pid: number, text: string): ProcessIdentity {
     !/^[0-9]+$/.test(fields[1]!) ||
     !/^[0-9]+$/.test(fields[2]!) ||
     !/^[0-9]+$/.test(fields[19]!)
-  )
+  ) {
+    cleanupDiagnostic("linux-stat-shape", Error("Process identity invalid"), {
+      observedPid: pid,
+      textBytes: Buffer.byteLength(text),
+      prefixMatches: text.startsWith(pid + " ("),
+      delimiterPresent: end >= 0,
+      fieldCount: fields.length,
+      stateValid: /^[A-Za-z]$/.test(fields[0]!),
+      parentValid: /^[0-9]+$/.test(fields[1]!),
+      groupValid: /^[0-9]+$/.test(fields[2]!),
+      startTimeValid: /^[0-9]+$/.test(fields[19]!),
+    });
     throw Error("Process identity invalid");
+  }
   return {
     pid,
     parent: Number(fields[1]),
