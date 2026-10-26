@@ -54,7 +54,7 @@ for(const name of ['first.mjs','second.mjs'])modules.push({name,module:await imp
 const control=${JSON.stringify(control)},ready=${JSON.stringify(ready)},release=${JSON.stringify(release)};
 let child;if(control.child)child=spawn(process.execPath,['-e','setInterval(()=>{},1000);'],{detached:true,stdio:'ignore'});
 if(control.prefix)process.stdout.write(JSON.stringify({pid:process.pid,originalPrefix:modules.map(({name,module})=>({consumer:name,exact:module.consume('grant'),adjacent:module.consume('granting')}))})+'\n');
-await writeFile(ready,JSON.stringify({pid:process.pid,child:child?.pid??null}));
+await writeFile(ready,JSON.stringify({pid:process.pid,parent:process.ppid,child:child?.pid??null}));
 if(control.hold)while(!(await access(release).then(()=>true,()=>false)))await delay(10);
 if(control.flood)process.stdout.write('Original physical output. '.repeat(131072));
 const cases=[];if(!control.empty)for(const {name,module}of modules)for(const [input,expected]of [['grant',true],['granting',false]]){const result=control.skip?null:module.consume(input),actual=control.skip?null:name==='first.mjs'?result.visible:result.state==='ready';cases.push({consumer:name,input,expected,actual,passed:control.skip?null:actual===expected,skipped:control.skip===true});}

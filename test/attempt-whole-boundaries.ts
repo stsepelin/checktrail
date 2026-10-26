@@ -18,6 +18,10 @@ import { reportSchema } from "../src/schemas.js";
 import type { Report } from "../src/types.js";
 import { alive, stopped } from "./tasks-wire-fixture.js";
 import {
+  captureFixtureProcessGroup,
+  cleanupFixtureProcessGroup,
+} from "./helpers.js";
+import {
   archiveFixture,
   archiveNativeWitness,
   archivePolicies,
@@ -312,12 +316,13 @@ export async function archiveLifecycle(t: TestContext) {
           : d.options.timeoutMs,
       signal: controller.signal,
     });
-    let pids: { pid: number; child: number; group: number } | undefined;
+    let pids: { pid: number; parent: number; child: number } | undefined;
     try {
       const ready = await waitFor(async () => {
         try {
           return JSON.parse(await readFile(d.ready, "utf8")) as {
             pid: number;
+            parent: number;
             child: number;
           };
         } catch (error) {
@@ -328,8 +333,18 @@ export async function archiveLifecycle(t: TestContext) {
             throw error;
         }
       });
-      pids = { ...ready, group: 0 };
+      pids = ready;
       assert.ok(ready.pid > 1 && ready.child > 1 && ready.child !== ready.pid);
+      assert.ok(
+        Number.isSafeInteger(ready.parent) &&
+          ready.parent > 1 &&
+          ready.parent !== ready.pid &&
+          ready.parent !== ready.child,
+      );
+      if (process.platform !== "win32") {
+        const group = await captureFixtureProcessGroup(ready.pid, ready.parent);
+        t.after(() => cleanupFixtureProcessGroup(group));
+      }
       assert.equal(await alive(ready.pid), true);
       assert.equal(await alive(ready.child), true);
       const directory = await waitFor(async () => {
