@@ -1,5 +1,39 @@
 import { spawnSync } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
+
+function cleanupDiagnostic(phase: string, error: unknown, detail: object = {}) {
+  const known = [
+    "Process tree snapshot invalid",
+    "Process tree depth exceeds bound",
+    "Process identity invalid",
+    "Process snapshot exceeds bound",
+    "Process snapshot unavailable",
+    "Process snapshot platform unsupported",
+    "Process snapshot is empty",
+    "Process snapshot malformed",
+    "Process cleanup identity unavailable",
+    "Process cleanup identity changed group",
+    "Process cleanup deadline exceeded",
+    "Process cleanup root identity changed",
+  ];
+  const message = error instanceof Error ? error.message : "";
+  const code = (error as NodeJS.ErrnoException | null)?.code;
+  process.stderr.write(
+    JSON.stringify({
+      event: "temporary-cleanup-diagnostic",
+      phase,
+      platform: process.platform,
+      pid: process.pid,
+      reason: known.includes(message) ? message : "unclassified",
+      code:
+        typeof code === "string" && /^[A-Z0-9_]{1,32}$/.test(code)
+          ? code
+          : null,
+      ...detail,
+    }) + "\n",
+  );
+}
+
 export interface ProcessIdentity {
   pid: number;
   parent: number;
@@ -108,6 +142,7 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
   }
   if (process.platform !== "darwin")
     throw Error("Process snapshot platform unsupported");
+  const snapshotStarted = performance.now();
   const result = spawnSync(
     "/bin/ps",
     ["-axo", "pid=,ppid=,pgid=,stat=,lstart="],
@@ -123,8 +158,15 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
     result.error ||
     result.signal ||
     result.stderr.trim()
-  )
+  ) {
+    cleanupDiagnostic("snapshot-command", result.error, {
+      status: result.status,
+      signal: result.signal,
+      elapsedMs: performance.now() - snapshotStarted,
+      stderrBytes: Buffer.byteLength(result.stderr),
+    });
     throw Error("Process snapshot unavailable");
+  }
   return darwinProcessIdentities(result.stdout).filter(
     (row) => row.pid !== result.pid,
   );
@@ -202,6 +244,8 @@ export async function stopDescendants(
     }
   };
   const deadline = io.now() + 2000;
+  let diagnosticPhase = "initial",
+    diagnosticCurrent: ProcessIdentity[] = [];
   const observed = new Map<
     number,
     { process: ProcessIdentity; depth: number }
@@ -232,15 +276,20 @@ export async function stopDescendants(
       if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
     }
   };
-  const first = await io.snapshot(),
+  const first = await io.snapshot().catch((error) => {
+      cleanupDiagnostic("first-snapshot", error, { root });
+      throw error;
+    }),
     initialRoot = first.find((p) => p.pid === root);
   let rows = first;
   try {
     // A parent can fork between the initial snapshot and its SIGSTOP. Capture again
     // until every discovered identity is observed stopped or already exited.
+    diagnosticPhase = "quiesce";
     for (;;) {
       checkDeadline();
       const current = new Map(rows.map((p) => [p.pid, p]));
+      diagnosticCurrent = [...current.values()];
       if (
         initialRoot &&
         current.get(root) &&
@@ -270,6 +319,7 @@ export async function stopDescendants(
       await io.wait(Math.min(10, deadline - io.now()));
       rows = await io.snapshot();
     }
+    diagnosticPhase = "signal";
     for (const depth of [
       ...new Set([...observed.values()].map((entry) => entry.depth)),
     ].sort((a, b) => b - a)) {
@@ -277,6 +327,7 @@ export async function stopDescendants(
         (entry) => entry.depth === depth,
       );
       const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+      diagnosticCurrent = [...current.values()];
       for (const entry of children) {
         checkDeadline();
         if (!sameProcess(entry.process, current)) continue;
@@ -288,6 +339,7 @@ export async function stopDescendants(
       // disappearance) before signalling the next parent, then require final reaping.
       for (;;) {
         const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+        diagnosticCurrent = [...current.values()];
         if (
           !children.some(
             (entry) =>
@@ -301,8 +353,10 @@ export async function stopDescendants(
       }
     }
     finishRoot();
+    diagnosticPhase = "reap";
     for (;;) {
       const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+      diagnosticCurrent = [...current.values()];
       if (
         ![...observed.values()].some((child) =>
           sameProcess(child.process, current),
@@ -313,6 +367,21 @@ export async function stopDescendants(
       await io.wait(Math.min(25, deadline - io.now()));
     }
   } catch (error) {
+    cleanupDiagnostic(diagnosticPhase, error, {
+      root,
+      elapsedMs: io.now() - (deadline - 2000),
+      observedCount: observed.size,
+      signalled: [...signalled],
+      current: diagnosticCurrent
+        .filter((p) => observed.has(p.pid))
+        .slice(0, 16)
+        .map(({ pid, parent, group, state }) => ({
+          pid,
+          parent,
+          group,
+          state,
+        })),
+    });
     // An incomplete cleanup must still try to release each safely identified stopped
     // process. Never signal a reused or unreadable identity as a recovery shortcut.
     const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));

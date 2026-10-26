@@ -107,7 +107,19 @@ export async function lifecycleInterruption(t: TestContext) {
         if (mode === "output")
           await writeFile(d.release, "Original output release.");
         const result = await running;
-        assert.equal(result.errorCode, undefined);
+        assert.equal(
+          result.errorCode,
+          undefined,
+          JSON.stringify({
+            mode,
+            errorCode: result.errorCode,
+            signal: result.signal,
+            durationMs: result.durationMs,
+            timedOut: result.timedOut,
+            cancelled: result.cancelled,
+            truncated: result.truncated,
+          }),
+        );
         assert.equal(result.cancelled, mode === "cancel");
         assert.equal(result.timedOut, mode === "deadline");
         assert.equal(result.truncated, mode === "output");
