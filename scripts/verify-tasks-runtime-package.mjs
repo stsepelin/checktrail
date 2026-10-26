@@ -17,27 +17,15 @@ import {
   installAcceptancePackage,
   runAcceptanceNpm,
 } from "./install-acceptance-package.mjs";
+import {
+  tasksRuntimeHarnessFiles,
+  tasksRuntimeRequirements,
+} from "./tasks-runtime-evidence.mjs";
 import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 const root = fileURLToPath(new URL("../", import.meta.url)),
   hash = (b) => createHash("sha256").update(b).digest("hex");
 assert.ok(process.argv.length === 2 || process.argv.length === 3);
-const files = [
-  "package.json",
-  "package-lock.json",
-  "dist/test/tool-fixture.js",
-  "docs/gate-a-profiles.v1.json",
-  "dist/test/mcp-validation-tasks.test.js",
-  "dist/test/tasks-runtime-harness.test.js",
-  "dist/test/tasks-wire-fixture.js",
-  "dist/test/gate-tasks-matrix.test.js",
-  "dist/test/windows-task-access.test.js",
-  "dist/test/tasks-sdk-fallback.test.js",
-  "dist/test/helpers.js",
-  "scripts/required-native-tests.json",
-  "scripts/required-test-evidence.mjs",
-  "scripts/tasks-runtime-evidence.mjs",
-  "scripts/verify-tasks-runtime.mjs",
-];
+const files = tasksRuntimeHarnessFiles(await tasksRuntimeRequirements());
 const inputs = await Promise.all(
   files.map(async (file) => ({
     file,

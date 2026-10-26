@@ -542,3 +542,9 @@ The [external review capture intake](EVALUATION-CAPTURES.md) binds every selecte
 The [independent external-review judging intake](EVALUATION-JUDGING.md) binds anonymous source packets and exact claim inventories to sealed physical judge responses, preserving unresolved, missing and reused-session states. The plain-host baseline uses the same common output contract without Checktrail review assistance. This bounded POSIX operator component does not authenticate hosts/judges, verify source-archive completeness or assess quality; common-defect matching, scoring, final runtime acceptance and Gate A remain open.
 
 The [common-defect matching and paired scoring bridge](EVALUATION-MATCHING.md) joins separately frozen operator inventories, physical independent judgments and anonymous mapping responses to both three-role comparisons. It preserves every trial, duplicate claim, unresolved judgment and original reviewer probability. Scores remain descriptive: source/label authority, host independence, calibrated confidence, final runtime acceptance and Gate A remain unverified.
+
+The Laravel owned-cache foundation has source and fresh offline installed
+collectors that require all nine preserved callbacks, unchanged declared harness
+and engine bytes, observed Node/PHP executables and selected framework runtime
+bytes. This acceptance binding does not expand the Laravel semantic or platform
+support above and does not close Gate A.
