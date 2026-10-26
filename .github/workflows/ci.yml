@@ -74,17 +74,19 @@ jobs:
         with:
           go-version: "1.27.1"
           cache: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13"
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
-        if: runner.os != 'macOS'
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (runner.os != 'macOS')
         with:
           php-version: "8.5"
           coverage: none
       - name: Prepare PHP from the pinned macOS build-cache action
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
-        if: runner.os == 'macOS'
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (runner.os == 'macOS')
         with:
           php-version: "8.5"
           coverage: none
@@ -94,86 +96,110 @@ jobs:
           go version
           python3 --version
           php --version
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Prepare pinned Rust compiler
         run: |
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
           rustup target add --toolchain 1.98.1 wasm32-unknown-unknown
           dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Prepare pinned Go analyzers
         run: |
           node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Prepare locked PHP test tools
         run: |
           mkdir -p .checktrail/php-tools
           cp scripts/php-tools/composer.json scripts/php-tools/composer.lock .checktrail/php-tools/
           composer install --working-dir=.checktrail/php-tools --no-interaction --no-scripts --prefer-dist --no-progress
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Prepare locked PHP review tools
         run: |
           mkdir -p .checktrail/php-review-tools
           cp scripts/php-review-tools/composer.json scripts/php-review-tools/composer.lock .checktrail/php-review-tools/
           composer install --working-dir=.checktrail/php-review-tools --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Prepare locked Laravel runtime fixtures
         run: |
           mkdir -p .checktrail/laravel-tools
           cp scripts/laravel-tools/composer.json scripts/laravel-tools/composer.lock .checktrail/laravel-tools/
           composer install --working-dir=.checktrail/laravel-tools --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - run: python3 -m pip install -r scripts/python-tools.requirements.txt
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - run: python3 -m pip install -r scripts/framework-tools.requirements.txt
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - run: npm ci --ignore-scripts
       - name: Prepare locked legacy TypeScript compiler
         run: |
           mkdir -p .checktrail/typescript-legacy-tools
           cp scripts/typescript-legacy-tools/package.json scripts/typescript-legacy-tools/package-lock.json .checktrail/typescript-legacy-tools/
           npm ci --prefix .checktrail/typescript-legacy-tools --ignore-scripts --no-audit --no-fund
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Prepare locked Vue Router fixtures
         run: |
           mkdir -p .checktrail/vue-router-tools
           cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .checktrail/vue-router-tools/
           npm ci --prefix .checktrail/vue-router-tools --ignore-scripts --no-audit --no-fund
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Prepare locked Nuxt fixtures
         run: |
           mkdir -p .checktrail/nuxt-tools
           cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .checktrail/nuxt-tools/
           npm ci --prefix .checktrail/nuxt-tools --ignore-scripts --no-audit --no-fund
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Prepare pinned Chromium for native browser fixtures
         run: PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell --with-deps
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
       - name: Verify captured consumer selection guards
-        if: runner.os == 'Linux' && matrix.node == '26'
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (runner.os == 'Linux' && matrix.node == '26')
         run: node scripts/verify-consumer-impact-guards.mjs
       - name: Audit finite inventory structure and preserved native obligations
         run: node scripts/audit-gate-inventory.mjs .
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Require the full suite and prepared native regression profiles
         run: |
           node scripts/verify-required-native-tests.mjs --full-suite gate-inventory probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings
           node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
       - run: node scripts/audit-context-grammars.mjs
       - name: Prepare this runner's package-install cache for Linux container acceptance
-        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
         run: node scripts/prepare-package-cache.mjs
       - name: Prepare pinned public images with bounded delivery retries
-        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned review runtime
-        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
         run: docker build --file scripts/review-tools.Dockerfile --tag checktrail-review-tools:finish-first-v1 scripts
       - name: Verify review exchange in the packaged Linux runtime
-        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
         run: node scripts/verify-review-container.mjs
       - name: Verify task storage and execution in the packaged Linux runtime
-        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
         run: node scripts/verify-task-store-container.mjs
       - name: Verify installed MCP Tasks lifecycle offline in Linux
-        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
         run: CHECKTRAIL_TASKS_IMAGE=docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 node scripts/verify-mcp-tasks-package.mjs
+      - name: Require affected shared test files without claiming omitted native acceptance
+        if: env.CHECKTRAIL_CI_MODE == 'affected'
+        run: node scripts/verify-ci-affected-tests.mjs
+        env:
+          CHECKTRAIL_CI_PLAN: ${{ needs.ci-plan.outputs.plan }}
+    needs:
+      - ci-plan
+    if: ${{ always() && !cancelled() }}
+    env:
+      CHECKTRAIL_CI_MODE: ${{ needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).mode || 'full' }}
 
   host-validation:
     strategy:
@@ -202,7 +228,7 @@ jobs:
         with:
           go-version: "1.27.1"
           cache: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13"
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
@@ -273,6 +299,9 @@ jobs:
         run: node scripts/run-ci-validation.mjs
       - name: Verify captured consumer impact in the offline production package
         run: node scripts/verify-consumer-impact-package.mjs
+    needs:
+      - ci-plan
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).mode == 'full') }}
 
   php-review:
     needs: [ci-plan, actionlint]
@@ -1578,7 +1607,7 @@ jobs:
             os: windows-2025
             node: "22.23.3"
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: ${{ matrix.slot == 'windows-node22' && 45 || 30 }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -1593,16 +1622,18 @@ jobs:
       - name: Diagnose native Windows private-access setup boundaries
         if: matrix.slot == 'windows-node22'
         run: node scripts/diagnose-windows-task-access.mjs
-      - name: Require source controls with exact runtime and observed image identity
-        run: node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}
       - name: Prepare pinned production installation cache
         run: node scripts/prepare-package-cache.mjs
-      - name: Require the same controls in a fresh offline production installation
-        run: node scripts/verify-tasks-runtime-package.mjs ${{ matrix.slot }}
+      - name: Require source and retained fresh-install controls with exact runtime and observed image identity
+        run: node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}
       - name: Require runtime selection and installation admission controls
         run: node scripts/verify-required-native-tests.mjs review-runtime-bindings probe-workspace-privacy
       - name: Require whole candidate workflow source and offline installed runtime evidence
         run: node scripts/verify-review-runtime.mjs ${{ matrix.slot }}
+      - name: Require lifecycle runtime admission and source/fresh controls
+        run: |
+          node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings
+          node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}
 
   tasks-runtime-arm64:
     needs: [ci-plan, actionlint]
@@ -1678,7 +1709,7 @@ jobs:
         with:
           go-version: "1.27.1"
           cache: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13.5"
       - run: npm ci --ignore-scripts
