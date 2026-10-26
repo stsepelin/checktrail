@@ -1,8 +1,18 @@
 import assert from "node:assert/strict";
-import { readdir, readFile, realpath, writeFile } from "node:fs/promises";
+import {
+  copyFile,
+  readdir,
+  readFile,
+  realpath,
+  writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
+import {
+  resolveWindowsExecutable,
+  windowsEnvironment,
+} from "../src/windows-process.js";
 const { createNativeResourceFixture } = await import(
   new URL("../../scripts/native-resource-workloads.mjs", import.meta.url).href
 );
@@ -20,11 +30,31 @@ test(
       const root = await realpath(await fixture(t, {})),
         directory = await realpath(await fixture(t, {})),
         expected = await createNativeResourceFixture(root, id);
-      const value = await measureWindowsResourceSample({
-        root,
-        directory,
-        expected,
-      });
+      const originalPath = process.env.PATH;
+      let value;
+      try {
+        if (id === "polyglot") {
+          const shadow = await realpath(await fixture(t, {}));
+          await copyFile(process.execPath, path.join(shadow, "go.exe"));
+          process.env.PATH = originalPath + path.delimiter + shadow;
+          await assert.rejects(
+            resolveWindowsExecutable(
+              "go",
+              root,
+              windowsEnvironment(process.env),
+            ),
+            { code: "AMBIGUOUS_WINDOWS_EXECUTABLE" },
+          );
+        }
+        value = await measureWindowsResourceSample({
+          root,
+          directory,
+          expected,
+        });
+      } finally {
+        if (originalPath === undefined) delete process.env.PATH;
+        else process.env.PATH = originalPath;
+      }
       assert.equal(value.executedTests, id === "polyglot" ? 2 : 1);
       assert.ok(value.nativeJobs > 0);
       assert.equal(value.cpuUnit, "100ns");
