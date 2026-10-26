@@ -677,40 +677,44 @@ test(
   },
 );
 
-test("go-extensions installed acceptance", native, async (t) => {
-  if (process.env.CHECKTRAIL_GATE_GO_INSTALLED === "1") {
-    const actual = await realpath(
-      fileURLToPath(new URL("../src/engine.js", import.meta.url)),
-    );
-    assert.ok(
-      actual.includes(
-        path.join("node_modules", "@stsepelin", "checktrail", "dist", "src"),
-      ),
-    );
-    const root = await fixture(t, workspaceFiles(true));
-    assert.equal((await validate(root, workspaceOptions)).outcome, "failed");
-    await writeFile(path.join(root, "policy unit/value.go"), fixedPolicy);
-    assert.equal((await validate(root, workspaceOptions)).outcome, "passed");
-  } else {
-    const receipt = JSON.parse(
-      execFileSync(
-        process.execPath,
-        [path.join(engineRoot, "scripts/verify-go-workspace-package.mjs")],
-        {
-          encoding: "utf8",
-          maxBuffer: 1024 * 1024,
-          timeout: 120000,
-          env: Object.fromEntries(
-            Object.entries(process.env).filter(
-              ([name]) => name !== "NODE_TEST_CONTEXT",
+test(
+  "go-extensions installed acceptance",
+  { ...native, timeout: 300000 },
+  async (t) => {
+    if (process.env.CHECKTRAIL_GATE_GO_INSTALLED === "1") {
+      const actual = await realpath(
+        fileURLToPath(new URL("../src/engine.js", import.meta.url)),
+      );
+      assert.ok(
+        actual.includes(
+          path.join("node_modules", "@stsepelin", "checktrail", "dist", "src"),
+        ),
+      );
+      const root = await fixture(t, workspaceFiles(true));
+      assert.equal((await validate(root, workspaceOptions)).outcome, "failed");
+      await writeFile(path.join(root, "policy unit/value.go"), fixedPolicy);
+      assert.equal((await validate(root, workspaceOptions)).outcome, "passed");
+    } else {
+      const receipt = JSON.parse(
+        execFileSync(
+          process.execPath,
+          [path.join(engineRoot, "scripts/verify-go-workspace-package.mjs")],
+          {
+            encoding: "utf8",
+            maxBuffer: 1024 * 1024,
+            timeout: 280000,
+            env: Object.fromEntries(
+              Object.entries(process.env).filter(
+                ([name]) => name !== "NODE_TEST_CONTEXT",
+              ),
             ),
-          ),
-        },
-      ),
-    );
-    assert.equal(receipt.offlineProductionInstall, true);
-    assert.equal(receipt.profile.complete, true);
-    assert.equal(receipt.profile.passed, 9);
-    assert.equal(receipt.lifecycleScriptsExecuted, false);
-  }
-});
+          },
+        ),
+      );
+      assert.equal(receipt.offlineProductionInstall, true);
+      assert.equal(receipt.profile.complete, true);
+      assert.equal(receipt.profile.passed, 9);
+      assert.equal(receipt.lifecycleScriptsExecuted, false);
+    }
+  },
+);

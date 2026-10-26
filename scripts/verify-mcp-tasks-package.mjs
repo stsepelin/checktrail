@@ -93,6 +93,7 @@ try {
         [
           "run",
           "--rm",
+          "--init",
           "--network",
           "none",
           "--mount",

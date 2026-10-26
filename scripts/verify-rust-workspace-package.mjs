@@ -94,6 +94,7 @@ try {
         [
           "run",
           "--rm",
+          "--init",
           "--network",
           "none",
           "--cpus",

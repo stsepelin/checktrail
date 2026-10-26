@@ -3,7 +3,11 @@ import { access, lstat, readFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import { constants } from "node:fs";
 import { withinRoot } from "./inventory.js";
-import { runProcess } from "./runner.js";
+import { runHostGitMetadata } from "./posix-target.js";
+import {
+  gitMetadataEnvironment,
+  gitMetadataPrefix,
+} from "./git-metadata-policy.js";
 import { affectedProjects } from "./workspace.js";
 import type {
   ChangeSelection,
@@ -12,15 +16,6 @@ import type {
   Workspace,
 } from "./types.js";
 
-const gitEnvironment = {
-  GIT_CONFIG_NOSYSTEM: "1",
-  GIT_CONFIG_GLOBAL: "/dev/null",
-  GIT_OPTIONAL_LOCKS: "0",
-  GIT_TERMINAL_PROMPT: "0",
-  GIT_NO_LAZY_FETCH: "1",
-  GIT_NO_REPLACE_OBJECTS: "1",
-  GIT_ATTR_NOSYSTEM: "1",
-};
 async function hostGit(root: string): Promise<string> {
   const outside = (file: string) => {
     const relative = path.relative(root, file);
@@ -55,22 +50,13 @@ export function gitReader(root: string) {
     const remaining = deadline - Date.now();
     if (remaining <= 0 || bytes <= 0)
       throw new Error("Git inspection budget exceeded");
-    const result = await runProcess(
+    const result = await runHostGitMetadata(
       root,
       {
         executable: await executable,
-        args: [
-          "--no-pager",
-          "-c",
-          "core.fsmonitor=false",
-          "-c",
-          "core.hooksPath=/dev/null",
-          "-c",
-          "submodule.recurse=false",
-          ...args,
-        ],
+        args: [...gitMetadataPrefix, ...args],
         cwd: ".",
-        env: gitEnvironment,
+        env: gitMetadataEnvironment,
       },
       { timeoutMs: remaining, maxOutputBytes: bytes },
     );

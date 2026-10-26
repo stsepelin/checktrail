@@ -134,6 +134,62 @@ async function executeRequiredTests(
   const collect = async (selection, batch = files, exclusive = false) => {
     let temporary;
     let execArgv = [];
+    const cleanup = async () => {
+      if (temporary) {
+        try {
+          await rm(temporary, {
+            recursive: true,
+            force: true,
+            // Native owners can finish EOF cleanup after their test worker exits.
+            // Bound both Windows locks and POSIX final-directory write races.
+            maxRetries: 10,
+            retryDelay: 100,
+          });
+        } catch (error) {
+          const failed = terminalEvents.filter(
+            (event) => event.outcome === "failed",
+          );
+          const diagnostics = {
+            schemaVersion: 1,
+            profile: "required-native-case-cleanup-failure",
+            case: selection?.name ?? null,
+            fileIds: (selection ? [selection.file] : batch).map(
+              (file) => fileIds.get(file) ?? null,
+            ),
+            code: typeof error?.code === "string" ? error.code : "unknown",
+            observedPasses: passed,
+            observedOptionalSkipped: optionalSkipped,
+            terminalEventCount,
+            retainedTerminalEvents: terminalEvents.length,
+            terminalLedgerTruncated: terminalEventCount > terminalEvents.length,
+            failedTerminalCount: failed.length,
+            requiredFailedTerminalCount: failed.filter(
+              (event) => event.required,
+            ).length,
+            failures: failed
+              .slice(0, 64)
+              .map(({ fileId, name, outcome, required }) => ({
+                fileId,
+                name,
+                outcome,
+                required,
+              })),
+            failureDetailsTruncated: failed.length > 64,
+            sourceStabilityAssessed: false,
+            evidenceComplete: false,
+          };
+          if (error && typeof error === "object") {
+            try {
+              error.nativeTestEvidence = diagnostics;
+            } catch {
+              /* Preserve the original cleanup error. */
+            }
+          }
+          process.stderr.write(JSON.stringify(diagnostics) + "\n");
+          throw error;
+        }
+      }
+    };
     try {
       if (selection) onCaseProgress?.({ phase: "start", name: selection.name });
       if (selection || exclusive) {
@@ -284,15 +340,7 @@ async function executeRequiredTests(
         if (type === "test:pass" && !suite) passed++;
       }
     } finally {
-      if (temporary)
-        await rm(temporary, {
-          recursive: true,
-          force: true,
-          // Native Windows supervisors can still be completing EOF cleanup
-          // when their test worker exits. Persistent locks remain failures.
-          maxRetries: process.platform === "win32" ? 10 : 0,
-          retryDelay: 100,
-        });
+      await cleanup();
       if (selection)
         onCaseProgress?.({ phase: "finished", name: selection.name });
     }

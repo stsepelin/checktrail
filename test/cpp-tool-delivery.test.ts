@@ -19,7 +19,7 @@ const body = Buffer.from("original synthetic signed-archive stand-in"),
     sha256: createHash("sha256").update(body).digest("hex"),
   };
 
-test("C++ archive acquisition recovers an exact primary 404 through bounded official mirrors and preserves bytes and request limits", async () => {
+test("C++ archive acquisition recovers an exact primary 404 through bounded pinned mirrors and preserves bytes and request limits", async () => {
   const calls: { url: string; request: RequestInit }[] = [],
     waits: number[] = [],
     signal = AbortSignal.timeout(1000);
@@ -40,7 +40,10 @@ test("C++ archive acquisition recovers an exact primary 404 through bounded offi
     [
       repositories[0] + pin.path,
       repositories[0]!.replace("dl-cdn", "dl-4") + pin.path,
-      repositories[0]!.replace("dl-cdn", "dl-5") + pin.path,
+      repositories[0]!.replace(
+        "https://dl-cdn.alpinelinux.org/",
+        "https://mirrors.huaweicloud.com/",
+      ) + pin.path,
     ],
   );
   assert.deepEqual(waits, [1000, 3000]);
@@ -315,3 +318,48 @@ for (const retired of [retiredZlib, retainedExpat]) {
     }
   });
 }
+
+test("C++ archive acquisition retains the exact retired musl development bytes and refuses invalid final mirror responses before community", async () => {
+  const retired = { ...pin, path: "musl-dev-1.2.6-r2.apk" };
+  const expected = [
+    repositories[0] + retired.path,
+    repositories[0]!.replace("dl-cdn", "dl-4") + retired.path,
+    "https://mirrors.huaweicloud.com/alpine/v3.24/main/aarch64/" + retired.path,
+  ];
+  for (const kind of [
+    "valid",
+    "digest",
+    "short",
+    "overlong",
+    "redirect",
+    "forbidden",
+  ]) {
+    const calls: string[] = [];
+    const operation = requestCppToolArchive(retired, repositories, {
+      delayImpl: async () => {},
+      fetchImpl: async (url: string, request: RequestInit) => {
+        calls.push(url);
+        assert.equal(request.redirect, "error");
+        assert.equal(url, expected[calls.length - 1]);
+        if (calls.length < 3) return new Response(null, { status: 404 });
+        if (kind === "redirect") return new Response(null, { status: 302 });
+        if (kind === "forbidden") return new Response(null, { status: 403 });
+        return new Response(
+          kind === "valid"
+            ? body
+            : kind === "digest"
+              ? Buffer.alloc(body.length)
+              : kind === "short"
+                ? body.subarray(1)
+                : Buffer.concat([body, Buffer.from("x")]),
+        );
+      },
+    });
+    if (kind === "valid") {
+      const result = await operation;
+      assert.deepEqual(result.bytes, body);
+      assert.equal(result.asset, expected[2]);
+    } else await assert.rejects(operation);
+    assert.deepEqual(calls, expected, kind);
+  }
+});
