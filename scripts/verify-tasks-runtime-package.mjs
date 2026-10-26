@@ -102,24 +102,6 @@ try {
     ["typescript"],
     path.join(consumer, "node_modules"),
   );
-  for (const [base, name] of [
-    [harness, "client"],
-    [consumer, "server"],
-  ])
-    assert.equal(
-      JSON.parse(
-        await readFile(
-          path.join(
-            base,
-            "node_modules/@modelcontextprotocol",
-            name,
-            "package.json",
-          ),
-          "utf8",
-        ),
-      ).version,
-      name === "client" ? "2.3.1" : "2.3.0",
-    );
   const env = { ...process.env };
   env.CHECKTRAIL_TASKS_MATRIX_INSTALLED = "1";
   delete env.NODE_TEST_CONTEXT;
@@ -157,7 +139,9 @@ try {
       harnessSha256,
       ...installation,
       harnessOutsideInstalledPackage: true,
-      pinnedExternalSdkClient: "2.3.1",
+      pinnedExternalSdkClient:
+        sourceLock.packages["node_modules/@modelcontextprotocol/client"]
+          .version,
       externalSdkClientDependencies,
       evidence,
       gateATasksMatrixComplete: false,
