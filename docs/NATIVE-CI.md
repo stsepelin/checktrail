@@ -823,3 +823,10 @@ budgets; production defaults and the outer source/installed cohort deadlines
 are unchanged.
 
 The Tasks matrix acceptance cases are declared in `required-native-tests.json` as `tasks-matrix`. The source and fresh installed runtime selectors compare their exact addresses with the frozen profile before execution. A required `tasks-runtime-manifest` control rejects omitted, renamed, duplicated, foreign or extra bindings, checks all three supported platform selections and retains the Windows-only control family. Focused Tasks selections use exact named-callback isolation; full-suite runs keep every file and test in scope. The generic runner also selects the existing bounded Tasks file allowance for that profile. An adjacent profile name retains whole-file skip accounting. These bindings add no product permissions or execution defaults; exact current-source runtime acceptance remains separate.
+
+The ordinary MCP cancellation control observes server recovery with a bounded
+15-second monotonic deadline. Its earlier forty fixed polls could finish before
+the existing two-second native cleanup allowance. Each recovery request is
+limited by the remaining observation time, and a late reply cannot establish
+acceptance. The replacement validation must still pass, unexpected errors still
+fail, and production execution and cleanup limits remain unchanged.

@@ -382,7 +382,7 @@ test("MCP finding comparison retains native failure and enforces startup detail 
 
 test(
   "MCP remains responsive during validation, rejects overlap, and accepts a run after cancellation",
-  { timeout: 30_000 },
+  { timeout: 60_000 },
   async (t) => {
     const root = await fixture(t, {
       "package.json": nodeManifest,
@@ -439,11 +439,27 @@ test('waits', async () => {
       controller.abort();
       await cancelled;
       await writeFile(path.join(root, "slow.test.js"), passingTest);
-      for (let attempt = 0; attempt < 40; attempt++) {
-        const next = await client.callTool({
-          name: "validation_run",
-          arguments: { timeoutMs: 5000 },
-        });
+      // Recovery observes the existing bounded native cleanup; it does not
+      // extend project execution. Forty fixed polls can expire before cleanup.
+      const recoveryDeadline = performance.now() + 15000;
+      let recoveryPolls = 0;
+      while (performance.now() < recoveryDeadline) {
+        const remainingMs = Math.max(
+          1,
+          Math.ceil(recoveryDeadline - performance.now()),
+        );
+        const next = await client.callTool(
+          {
+            name: "validation_run",
+            arguments: { timeoutMs: 5000 },
+          },
+          { signal: AbortSignal.timeout(remainingMs) },
+        );
+        recoveryPolls++;
+        assert.ok(
+          performance.now() < recoveryDeadline,
+          "A late recovery reply cannot establish acceptance",
+        );
         if (!next.isError) {
           assert.equal(
             (next.structuredContent as { outcome: string }).outcome,
@@ -452,9 +468,13 @@ test('waits', async () => {
           return;
         }
         assert.match(JSON.stringify(next.content), /already running/);
-        await delay(25);
+        await delay(
+          Math.min(25, Math.max(0, recoveryDeadline - performance.now())),
+        );
       }
-      assert.fail("Validation remained busy after cancellation");
+      assert.fail(
+        `Validation remained busy after cancellation (${recoveryPolls} bounded polls)`,
+      );
     } finally {
       controller.abort();
       await cancelled;
