@@ -1163,6 +1163,7 @@ test("CI shared matrices retain every full command and use selected complete fil
   assert.deepEqual(docs.sharedTestFiles, [
     "dist/test/ci-affected-tests.test.js",
     "dist/test/ci-impact.test.js",
+    "dist/test/ci-source-boundaries.test.js",
     "dist/test/gate-inventory.test.js",
   ]);
 });
