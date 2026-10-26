@@ -105,6 +105,8 @@ function linuxIdentity(pid: number, text: string): ProcessIdentity {
       stateValid: /^[A-Za-z]$/.test(fields[0]!),
       parentValid: /^[0-9]+$/.test(fields[1]!),
       groupValid: /^[0-9]+$/.test(fields[2]!),
+      groupValue: /^-?[0-9]{1,12}$/.test(fields[2]!) ? Number(fields[2]) : null,
+      nativeState: /^[A-Za-z]$/.test(fields[0]!) ? fields[0] : null,
       startTimeValid: /^[0-9]+$/.test(fields[19]!),
     });
     throw Error("Process identity invalid");
