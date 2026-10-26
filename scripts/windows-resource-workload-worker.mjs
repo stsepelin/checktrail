@@ -56,6 +56,33 @@ const report = await validate(root, {
 const validationWallMs = performance.now() - start,
   afterValidation = snapshot();
 assert.equal(report.sourceFingerprint, source.fingerprint);
+if (report.outcome !== "passed") {
+  process.stderr.write(
+    JSON.stringify({
+      profile: "windows-workload-incomplete-diagnostic",
+      workload: expected.id,
+      outcome: report.outcome,
+      sourceChanged: report.sourceChanged,
+      sourceError: report.sourceError,
+      checks: report.checks.map((check) => ({
+        checkId: check.checkId,
+        status: check.status,
+        reason: check.reason,
+        processes: check.processes.map((p) => ({
+          exitCode: p.exitCode,
+          signal: p.signal,
+          errorCode: p.errorCode ?? null,
+          timedOut: p.timedOut,
+          cancelled: p.cancelled,
+          truncated: p.truncated,
+          windowsPhase: p.windowsExecution?.phase ?? null,
+          windowsNativeError: p.windowsExecution?.nativeError ?? null,
+          windowsCleanup: p.windowsExecution?.cleanup ?? null,
+        })),
+      })),
+    }) + "\n",
+  );
+}
 const accounting = summarizeWindowsResources(report, expected);
 assert.ok(
   accounting.jobCpu.user100ns + accounting.jobCpu.kernel100ns > 0,
