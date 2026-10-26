@@ -19,6 +19,45 @@ const refused =
   "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion";
 const guards = [
   {
+    id: "captured-selected-identities",
+    name: "native POSIX selected process snapshots retain both batch boundaries and captured caller selections without unrelated rows",
+    source: "process-tree.js",
+    replacements: [["selected = pid.slice();", "selected = pid;"]],
+  },
+  {
+    id: "frozen-pre-signal-identities",
+    name: "POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping",
+    source: "process-tree.js",
+    replacements: [
+      [
+        "io.snapshot(children.map((entry) => entry.process.pid))",
+        "io.snapshot()",
+      ],
+    ],
+  },
+  {
+    id: "frozen-physical-exit-identities",
+    name: "POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping",
+    source: "process-tree.js",
+    replacements: [
+      [
+        "\n                const current = new Map((await io.snapshot(remaining.map((entry) => entry.process.pid))).map((p) => [p.pid, p]));\n",
+        "\n                const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));\n",
+      ],
+    ],
+  },
+  {
+    id: "frozen-final-reaping-identities",
+    name: "POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping",
+    source: "process-tree.js",
+    replacements: [
+      [
+        "\n            const current = new Map((await io.snapshot(remaining.map((entry) => entry.process.pid))).map((p) => [p.pid, p]));\n",
+        "\n            const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));\n",
+      ],
+    ],
+  },
+  {
     id: "confirmed-exit-before-parent",
     name: delayed,
     source: "process-tree.js",

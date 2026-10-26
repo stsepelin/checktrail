@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFile } from "node:fs/promises";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync, type ChildProcess } from "node:child_process";
+import { once } from "node:events";
 import { setTimeout as delay } from "node:timers/promises";
 import path from "node:path";
 import { runProcess } from "../src/runner.js";
@@ -819,5 +820,168 @@ test(
     );
     assert.equal(result.signal, null, result.stderr);
     assert.equal(result.status, 0, result.stderr);
+  },
+);
+
+test("POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping", async () => {
+  const root = {
+    pid: 41,
+    parent: 10,
+    group: 41,
+    identity: "root",
+    state: "running" as const,
+  };
+  const child = {
+    pid: 42,
+    parent: 41,
+    group: 42,
+    identity: "owned",
+    state: "stopped" as "stopped" | "exited",
+  };
+  const sibling = {
+    pid: 45,
+    parent: 10,
+    group: 45,
+    identity: "unrelated",
+    state: "running" as const,
+  };
+  const selections: (number[] | null)[] = [];
+  const killed: number[] = [];
+  let discoveries = 0,
+    selectedReads = 0,
+    alive = true,
+    stoppedRoot = 0,
+    elapsed = 0;
+  await assert.doesNotReject(
+    stopDescendants(
+      41,
+      {
+        snapshot: async (pids) => {
+          selections.push(pids ? [...pids] : null);
+          if (pids === undefined) {
+            if (++discoveries > 2)
+              throw Error(
+                "Unrelated process enumeration after family quiescence",
+              );
+            return [root, { ...child }, sibling];
+          }
+          assert.equal(
+            discoveries,
+            2,
+            "Selected observation must follow complete discovery and quiescence",
+          );
+          assert.deepEqual(pids, [42]);
+          if (++selectedReads === 3) {
+            alive = false;
+            return [];
+          }
+          return [{ ...child }];
+        },
+        stop: () => {
+          throw Error("Already stopped fixture must not need another stop");
+        },
+        kill: (pid) => {
+          assert.equal(pid, 42);
+          killed.push(pid);
+          child.state = "exited";
+        },
+        exists: (pid) => {
+          assert.equal(pid, 42);
+          return alive;
+        },
+        now: () => elapsed,
+        wait: async (ms) => {
+          elapsed += ms;
+        },
+      },
+      () => {
+        stoppedRoot++;
+      },
+    ),
+  );
+  assert.deepEqual(killed, [42]);
+  assert.equal(stoppedRoot, 1);
+  assert.equal(alive, false);
+  assert.equal(discoveries, 2);
+  assert.deepEqual(selections.slice(0, 2), [null, null]);
+  assert.ok(
+    selections.length > 3,
+    "Both exit observation and final reaping must be reached",
+  );
+  assert.ok(
+    selections.slice(2).every((pids) => JSON.stringify(pids) === "[42]"),
+  );
+});
+
+test("POSIX selected process snapshots reject empty duplicate unsafe and oversized selections before observing processes", async () => {
+  for (const pids of [
+    [],
+    [0],
+    [-1],
+    [1.5],
+    [NaN],
+    [Infinity],
+    [1000000000],
+    [process.pid, process.pid],
+    Array.from({ length: 65537 }, (_, index) => index + 1),
+  ])
+    await assert.rejects(
+      processSnapshot(pids),
+      /Process snapshot selection invalid/,
+    );
+});
+
+test(
+  "native POSIX selected process snapshots retain both batch boundaries and captured caller selections without unrelated rows",
+  { skip: process.platform === "win32", timeout: 30000 },
+  async () => {
+    const helpers: { child: ChildProcess; closed: Promise<void> }[] = [];
+    try {
+      // One more live owned helper than a native query batch arms both reads.
+      // These fixed OS helpers are tracked before any assertion or observation.
+      for (let index = 0; index < 129; index++) {
+        const child = spawn("/bin/sleep", ["60"], { stdio: "ignore" });
+        const closed = new Promise<void>((resolve) =>
+          child.once("close", () => resolve()),
+        );
+        helpers.push({ child, closed });
+        await once(child, "spawn");
+      }
+      const expected = helpers
+        .map(({ child }) => child.pid!)
+        .sort((a, b) => a - b);
+      assert.equal(new Set(expected).size, 129);
+      const requested = [...expected];
+      const pending = processSnapshot(requested);
+      requested.length = 0;
+      const observed = await pending;
+      assert.deepEqual(
+        observed.map((row) => row.pid).sort((a, b) => a - b),
+        expected,
+      );
+      assert.ok(
+        observed.every(
+          (row) => row.parent === process.pid && row.identity.length > 0,
+        ),
+      );
+    } finally {
+      for (const { child } of helpers)
+        if (child.exitCode === null && child.signalCode === null)
+          child.kill("SIGKILL");
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      try {
+        await Promise.race([
+          Promise.all(helpers.map(({ closed }) => closed)),
+          new Promise<never>((_, reject) => {
+            timer = setTimeout(
+              () => reject(Error("Owned snapshot helpers did not close")),
+              5000,
+            );
+          }),
+        ]);
+      } finally {
+        if (timer) clearTimeout(timer);
+      }
+    }
   },
 );

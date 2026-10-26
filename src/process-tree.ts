@@ -88,18 +88,39 @@ export function linuxProcessIdentity(
   };
 }
 export async function processSnapshot(
-  pid?: number,
+  pid?: number | readonly number[],
 ): Promise<ProcessIdentity[]> {
-  if (
-    pid !== undefined &&
-    (!Number.isSafeInteger(pid) || pid < 1 || pid > 999999999)
-  )
-    throw Error("Process snapshot selection invalid");
+  let selected: readonly number[] | undefined;
+  if (pid !== undefined) {
+    if (typeof pid === "number") selected = [pid];
+    else if (Array.isArray(pid)) selected = pid.slice();
+    else throw Error("Process snapshot selection invalid");
+    if (
+      selected.length === 0 ||
+      selected.length > 65536 ||
+      new Set(selected).size !== selected.length ||
+      selected.some(
+        (value) =>
+          !Number.isSafeInteger(value) || value < 1 || value > 999999999,
+      )
+    )
+      throw Error("Process snapshot selection invalid");
+    // Keep ps arguments finite without enumerating unrelated identities. Only
+    // frozen, already-discovered families use this selected observation path.
+    if (selected.length > 128) {
+      const rows: ProcessIdentity[] = [];
+      for (let offset = 0; offset < selected.length; offset += 128)
+        rows.push(
+          ...(await processSnapshot(selected.slice(offset, offset + 128))),
+        );
+      return rows;
+    }
+  }
   if (process.platform === "linux") {
     const ids =
-      pid === undefined
+      selected === undefined
         ? (await readdir("/proc")).filter((p) => /^[1-9][0-9]{0,8}$/.test(p))
-        : [String(pid)];
+        : selected.map(String);
     if (ids.length > 65536) throw Error("Process snapshot exceeds bound");
     const rows: ProcessIdentity[] = [];
     // Batch reads; processes can exit during collection. No command lines or environments are read.
@@ -130,9 +151,9 @@ export async function processSnapshot(
     throw Error("Process snapshot platform unsupported");
   const result = spawnSync(
     "/bin/ps",
-    pid === undefined
+    selected === undefined
       ? ["-axo", "pid=,ppid=,pgid=,stat=,lstart="]
-      : ["-p", String(pid), "-o", "pid=,ppid=,pgid=,stat=,lstart="],
+      : ["-p", selected.join(","), "-o", "pid=,ppid=,pgid=,stat=,lstart="],
     {
       encoding: "utf8",
       maxBuffer: 2 * 1024 * 1024,
@@ -141,7 +162,7 @@ export async function processSnapshot(
     },
   );
   if (
-    pid !== undefined &&
+    selected !== undefined &&
     result.status === 1 &&
     !result.error &&
     !result.signal &&
@@ -159,7 +180,12 @@ export async function processSnapshot(
   const rows = darwinProcessIdentities(result.stdout).filter(
     (row) => row.pid !== result.pid,
   );
-  if (pid !== undefined && (rows.length !== 1 || rows[0]!.pid !== pid))
+  if (
+    selected !== undefined &&
+    (new Set(rows.map((row) => row.pid)).size !== rows.length ||
+      rows.some((row) => !selected.includes(row.pid)) ||
+      (typeof pid === "number" && (rows.length !== 1 || rows[0]!.pid !== pid)))
+  )
     throw Error("Process snapshot selection invalid");
   return rows;
 }
@@ -191,7 +217,7 @@ export function darwinProcessIdentities(text: string): ProcessIdentity[] {
   return rows;
 }
 interface StopDescendantIo {
-  snapshot(): Promise<ProcessIdentity[]>;
+  snapshot(pids?: readonly number[]): Promise<ProcessIdentity[]>;
   stop(pid: number): void;
   kill(pid: number): void;
   exists(pid: number): boolean;
@@ -310,7 +336,11 @@ export async function stopDescendants(
       const children = [...observed.values()].filter(
         (entry) => entry.depth === depth,
       );
-      const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+      const current = new Map(
+        (await io.snapshot(children.map((entry) => entry.process.pid))).map(
+          (p) => [p.pid, p],
+        ),
+      );
       for (const entry of children) {
         checkDeadline();
         if (!sameProcess(entry.process, current)) continue;
@@ -327,7 +357,11 @@ export async function stopDescendants(
           io.exists(entry.process.pid),
         );
         if (!remaining.length) break;
-        const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+        const current = new Map(
+          (await io.snapshot(remaining.map((entry) => entry.process.pid))).map(
+            (p) => [p.pid, p],
+          ),
+        );
         if (
           !remaining.some(
             (entry) =>
@@ -346,7 +380,11 @@ export async function stopDescendants(
         io.exists(child.process.pid),
       );
       if (!remaining.length) break;
-      const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+      const current = new Map(
+        (await io.snapshot(remaining.map((entry) => entry.process.pid))).map(
+          (p) => [p.pid, p],
+        ),
+      );
       if (!remaining.some((child) => sameProcess(child.process, current)))
         break;
       checkDeadline();

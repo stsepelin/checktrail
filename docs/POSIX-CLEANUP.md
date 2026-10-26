@@ -18,8 +18,8 @@ Before sending its readiness packet, the owner reads only its own exact PID:
 Linux reads that process's procfs record and macOS selects that PID with the same
 fixed `ps` columns and one-second bound. Invalid selections, foreign or duplicate
 rows and failed reads cannot establish readiness. A clean missing selected PID
-remains absent. Full process snapshots remain required for descendant discovery
-and cleanup, and their failures remain unavailable evidence.
+remains absent. Full process snapshots remain required for initial descendant discovery and
+repeated quiescence observations; their failures remain unavailable evidence.
 
 The owner retains its group through normal target exit, so ordinary orphaned
 members and children retaining output pipes can still be selected. The native
@@ -48,9 +48,13 @@ different start identity is left alone. A missing snapshot row is checked agains
 the native PID before it is treated as absence. After signalling, a native PID
 existence check can confirm physical disappearance directly. An already absent
 observed PID needs no further global snapshot; surviving, unreadable and reused
-PIDs still require the original identity, group and state checks. This also avoids
-a final global snapshot when no descendants were observed. The snapshot and
-cleanup deadlines are unchanged. Unrelated sibling tasks are not selected. Unknown macOS `?` status is retained as running/unknown; it never
+PIDs still require the original identity, group and state checks. After complete
+discovery and quiescence, pre-signal, physical-exit and final-reaping observations
+select only the captured owned PIDs. Selections are copied before any asynchronous
+read and divided into bounded native queries. Empty, duplicate, oversized or
+unsafe selections and foreign result rows are refused. Recovery still attempts
+a full snapshot. A final snapshot is unnecessary when no descendants were
+observed. The snapshot and cleanup deadlines are unchanged. Unrelated sibling tasks are not selected. Unknown macOS `?` status is retained as running/unknown; it never
 proves quiescence. Linux start identity comes from `/proc/PID/stat`; macOS uses the fixed
 `/bin/ps` PID, parent, group, status and start-time columns without command lines or
 process environments.
@@ -67,7 +71,9 @@ native detached-child cancellation, delayed child exit, unrelated siblings,
 surviving/unreadable/changed-group identities and reused PIDs. Additional required
 callbacks cover actual replacement-child prevention, late forks before stop
 acknowledgement, unknown statuses, family quiescence and final reaping. Paired
-controls preserve assertions while removing and restoring each addressed guard. `verify-posix-cleanup-package.mjs` repeats the
+controls preserve assertions while removing and restoring each addressed guard.
+Selected-observation controls also retain full discovery, exercise a live family
+larger than one query batch, and mutate the caller selection during observation. `verify-posix-cleanup-package.mjs` repeats the
 same preserved profile together with the `posix-owner` controls against a fresh
 locked offline production install. Source and installed engine artifacts and the
 unchanged external harness are reconciled before/after the required callbacks. It
