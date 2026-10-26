@@ -2923,6 +2923,10 @@
     {
       "file": "dist/test/process-tree.test.js",
       "name": "Darwin process status parser retains unknown status without inventing quiescence and canonicalises physical start identities"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "Linux procfs teardown sentinel retains only exited identities without breaking unrelated owned families"
     }
   ],
   "review-benchmark-multi": [
@@ -5137,6 +5141,208 @@
       "name": "mutation-runners installed acceptance"
     }
   ],
+  "finding-resolution": [
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution retains native disagreement and a reachable declared repair without verifying truth"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution keeps a satisfied predicate unresolved until a distinct refutation is declared"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution does not promote missing native evidence empty selections or labels"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution reconciles the entire candidate context native digest and ordered case cohort"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution degrades every candidate affected by refuter adjudicator or reviewer session reuse"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution keeps incomplete stages and missing decisions in the selected denominator"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution verifies a proposed repair uses only parameters available at its exact captured function"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding parameter parsing handles destructuring aliases rest Unicode and excludes nested defaults locals and globals"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution refuses to choose between identical native function bytes in different captured files"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution derives severity only from complete declared consequence descriptors"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding common-defect mappings preserve all attributions and fix scopes and never silently discard invalid groups"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution reports stale and unmatched source rather than retaining supported conclusions"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding projection rederives every result and refuses forged states severities groups and parameter names"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding CLI and MCP protect source judgments parameter names and execution trust"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding inspection accepts serialized bounded input and respects cancellation without executing project source"
+    },
+    {
+      "file": "dist/test/review-findings.test.js",
+      "name": "finding resolution installed cohort uses a fresh offline production package"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings bind reversed target completion to original candidates native receipts and accepted host sessions"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings keep a satisfied fixed native predicate unresolved despite supported host declarations"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings retain every candidate and native receipt when a judgment declaration is absent"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings reject foreign duplicate and caller supplied identity or receipt bindings"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings require accepted all candidate reviewer evidence and protected startup source disclosure"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings recheck final current source and preserve stale candidates"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings reject unreachable repair parameters and keep unknown consequences unassigned"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings reuse retained evidence without issuing host assignments or executing more native calls and summaries omit source"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings honour cancellation and close during asynchronous inspection without releasing a report"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings preserve empty reviewer abstention without approving the repository"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings command returns source limited candidate details with a separately retained complete receipt"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings audit retains current inspection evidence and rejects altered identities native runs judgments parameters and returned outcomes"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings ignore unavailable retry metadata while binding each accepted stage and preserving every attempt"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings synchronous historical replay rederives captured parameter bindings without attesting current source"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings preserve legacy all candidate journal version two and selected target invalid command accounting"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings CLI and MCP retain complete audited evidence while returning bounded candidate details"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings preserve unfinished candidates and reached native evidence between accepted stages"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings audit binds unfinished reached native receipts before adjudication"
+    },
+    {
+      "file": "dist/test/review-workflow-findings.test.js",
+      "name": "workflow findings refuse awaiting host stages without consuming the outstanding assignment"
+    }
+  ],
+  "multi-candidate-workflow": [
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-multi-candidate-workflow.test.js",
+      "name": "multi-candidate-workflow installed acceptance"
+    }
+  ],
+  "review-runtime-bindings": [
+    {
+      "file": "dist/test/review-runtime-evidence.test.js",
+      "name": "review workflow runtime binds every frozen case without admitting omitted extra foreign or adjacent controls"
+    },
+    {
+      "file": "dist/test/review-runtime-evidence.test.js",
+      "name": "review workflow runtime refuses wrong Node architecture OS image and unselected local qualification"
+    },
+    {
+      "file": "dist/test/review-runtime-evidence.test.js",
+      "name": "review workflow runtime CLI refuses unknown slots before running workflow callbacks"
+    },
+    {
+      "file": "dist/test/review-runtime-evidence.test.js",
+      "name": "review workflow runtime rejects coherently shaped foreign installation evidence and incomplete execution"
+    },
+    {
+      "file": "dist/test/review-runtime-evidence.test.js",
+      "name": "review runtime verification isolates callbacks and bounds Windows installed aggregation without hiding failed child status"
+    }
+  ],
   "tasks-matrix": [
     {
       "file": "dist/test/gate-tasks-matrix.test.js",
@@ -5185,6 +5391,192 @@
     {
       "file": "dist/test/tasks-runtime-harness.test.js",
       "name": "Tasks generic CLI isolates exact required callbacks while adjacent profile names retain whole-file skip accounting"
+    }
+  ],
+  "probe-workspace-privacy": [
+    {
+      "file": "dist/test/review-probe-storage.test.js",
+      "name": "review probe workspace establishes Windows private access before returning any writable captured-source namespace"
+    },
+    {
+      "file": "dist/test/review-probe-storage.test.js",
+      "name": "review probe workspace refuses failed Windows private access and removes its empty namespace before source copying"
+    },
+    {
+      "file": "dist/test/review-probe-storage.test.js",
+      "name": "native probes require the private workspace boundary before source copying or execution on Windows"
+    },
+    {
+      "file": "dist/test/review-probe-storage.test.js",
+      "name": "review probe workspace retains initialization and cleanup failures without returning a captured-source namespace"
+    }
+  ],
+  "posix-owner": [
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX parent loss reaps reached ordinary and detached workers and the actual owner while preserving unrelated siblings"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX parent loss during a stopped real owner bootstrap reaches no project code after that owner resumes"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX completed roots release ordinary orphaned group members before returning original output and status"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX absent and malformed private owners remain unavailable before project execution"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX owner deadline resolves from actual bootstrap exit and IPC disconnect without requiring close"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX missing owner interpreter reports unavailable and releases its private channel before any target starts"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "passes arguments literally, strips unlisted environment values, and captures streams"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "reports missing executables separately from code failures"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "kills long-running processes on deadline and cancellation"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "terminates a process group when a grandchild keeps the output pipe open"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "bounds combined output and marks truncated evidence"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "runner accounts raw combined bytes beyond retention without counting Unicode replacement characters"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output invalid admission limits reject before a project command can execute"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX delayed owner bootstrap distinguishes an expired request from an actually missing executable"
+    }
+  ],
+  "git-metadata": [
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "Git metadata admission permits exact read-only forms and literal leading-option filenames while rejecting neighboring commands and execution flags"
+    },
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "Git metadata rejects project-local executables and arbitrary commands before any native source marker"
+    },
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "Git metadata retains its five-second aggregate budget for both size and original byte reads across the selected 64-file boundary"
+    },
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "native Git metadata passes the complete independent safety configuration to the operator executable without inheriting a project override"
+    }
+  ],
+  "native-harness-cleanup": [
+    {
+      "file": "dist/test/tasks-runtime-harness.test.js",
+      "name": "isolated native namespace cleanup retries actual final-directory races and retains exhausted and failed evidence"
+    }
+  ],
+  "tasks-runtime-startup": [
+    {
+      "file": "dist/test/tasks-runtime-harness.test.js",
+      "name": "Tasks native startup observer admits delayed reached bodies and cleans their actual process group without touching siblings"
+    }
+  ],
+  "go-installed-harness": [
+    {
+      "file": "dist/test/go-installed-harness.test.js",
+      "name": "Go installed harness keeps ordinary deadlines and bounds the aggregate while preserving a refused child"
+    }
+  ],
+  "lifecycle-platforms": [
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms installed acceptance"
+    }
+  ],
+  "lifecycle-runtime-bindings": [
+    {
+      "file": "dist/test/lifecycle-runtime-harness.test.js",
+      "name": "lifecycle runtime admission refuses wrong slots, missing foundations and changed harnesses while retaining unqualified development evidence"
+    },
+    {
+      "file": "dist/test/lifecycle-runtime-harness.test.js",
+      "name": "lifecycle foundation selection admits only the declared native platforms"
+    },
+    {
+      "file": "dist/test/runtime-installation-capture.test.js",
+      "name": "runtime installation capture uses fresh private receipts, restores environment on failure and refuses absent malformed oversized and linked evidence"
+    },
+    {
+      "file": "dist/test/runtime-installation-capture.test.js",
+      "name": "source runtime admission binds retained installations to exact runtime engine harness and complete named cases"
+    }
+  ],
+  "laravel-cache-runtime-bindings": [
+    {
+      "file": "dist/test/laravel-cache-runtime-harness.test.js",
+      "name": "Laravel cache runtime admission binds every named case, supporting input and engine while retaining selected native identities"
     }
   ]
 }

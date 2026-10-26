@@ -90,7 +90,12 @@ format checks need no diagnostics. A process failure cannot be converted into a
 pass by a parser. Source changes during execution invalidate a green result.
 
 Use bounded process output and timeouts, terminate the process group on supported
-POSIX hosts, and propagate cancellation. The owned POSIX root is paused before descendant observation. The observed family
+POSIX hosts, and propagate cancellation. A fixed Node owner holds a private process
+group and caller IPC channel; caller loss aborts the command, and normal target
+exit still leaves ordinary group members observable. Bootstrap consumes the same
+command deadline. Exact read-only host Git metadata uses a separate bounded
+collector, with no project-selectable bypass and unchanged inspection budgets.
+The owned POSIX target is paused before descendant observation. The observed family
 must acknowledge quiescence before deeper children are killed; children forked
 before that acknowledgement are included by repeated snapshots. Physical child
 exit precedes parent termination, while final reaping follows root termination
@@ -110,7 +115,7 @@ sandbox. Tests may modify files or access networks and must be trusted according
 Expose `project_context`, `validation_plan`, `validation_run`, `validation_report`,
 `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-`review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, `review_paired_score`, `review_calibration_fit`,
+`review_hypotheses`, `review_benchmark`, `review_provenance`, `review_findings`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, `review_paired_score`, `review_calibration_fit`,
 `review_calibration_apply`, `import_context`, and `mutation_experiment`.
 Tool schemas are validated. Execution is disabled unless enabled when starting
 the server. Keep a bounded in-memory report store; report IDs are opaque and a
@@ -393,3 +398,25 @@ The opt-in [Terraform local module/provider extension](TERRAFORM-EXTENSIONS.md) 
 The opt-in [Helm application/subchart extension](HELM-EXTENSIONS.md) binds a finite local alias graph, physical chart defaults, coalesced scalar origins and complete native schema/render participation. Current-root receipt admission reconciles all physical lint outcomes and physical/rendered source markers through the shared engine. Native first-error coverage and bounded columns remain separate from exhaustive semantic truth, full provenance and Gate A.
 
 The selected [native mutation profiles](MUTATIONS.md) use fresh source and complete selected physical dependency snapshots for flat Vitest/Jest, pytest and PHPUnit experiments. Typed native assertion identity, explicit lifecycle phase, unchanged test cohorts, bounded physical output and current original/copied inputs constrain killed/survived admission. Summary projections omit native observations; detailed projections retain physical output. The original Node profile keeps its existing contract. Broader runner shapes, complete executable/license closure, independent host sessions and final Gate A acceptance remain separate.
+
+[Declared findings inspection](REVIEW-FINDINGS.md) shares current-source and
+native-import reconciliation with review provenance. Library, CLI and MCP use one
+bounded derivation; a memory-only JS/TS parser checks declared repair parameter
+names. Explicit host judgments, consequence priorities and common-cause groups
+remain unverified advisory data. Strict summary projection withholds retained
+source and judgment text; it cannot grant project execution or source disclosure.
+
+Quiescent all-candidate workflows with accepted reviewer evidence can inspect declared findings through the shared
+library, JSON-lines CLI and MCP command. Retained source, accepted response
+identities and native receipts supply the evidence bindings; callers supply only
+judgment/common-cause declarations. The compact detailed result omits captured
+source and raw stage/native output while preserving candidate outcomes and gaps.
+Optional all-candidate audit version 3 retains the full inspection receipt and
+replays both evidence bindings and captured-string parameter derivations. No
+inspection invokes a model, executes more project code or authenticates host
+independence, claim truth or severity. Existing selected-target benchmark journals
+remain version 2; wider runtime acceptance and Gate A remain open.
+
+Unfinished targets retain unresolved outcomes during between-stage inspection.
+Reached native receipts awaiting adjudication remain bound; cancellation and
+closure still scrub source and prevent further inspection.

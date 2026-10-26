@@ -46,12 +46,24 @@ export function ownedDescendants(rows: ProcessIdentity[], root: number) {
   }
   throw Error("Process tree depth exceeds bound");
 }
-function linuxIdentity(pid: number, text: string): ProcessIdentity {
+export function linuxProcessIdentity(
+  pid: number,
+  text: string,
+): ProcessIdentity {
   const end = text.lastIndexOf(") "),
     fields = text
       .slice(end + 2)
       .trim()
       .split(/\s+/);
+  // Linux do_task_stat initializes ppid=0, pgid=-1 and sid=-1 when an
+  // already-dead task no longer has a lockable sighand. Retain that exited
+  // identity instead of invalidating snapshots because an unrelated task died.
+  // This sentinel never proves ownership of a live process or physical reaping.
+  const deadWithoutGroup =
+    /^[ZX]$/.test(fields[0]!) &&
+    fields[1] === "0" &&
+    fields[2] === "-1" &&
+    fields[3] === "-1";
   if (
     text.length > 4096 ||
     !text.startsWith(pid + " (") ||
@@ -59,7 +71,7 @@ function linuxIdentity(pid: number, text: string): ProcessIdentity {
     fields.length < 20 ||
     !/^[A-Za-z]$/.test(fields[0]!) ||
     !/^[0-9]+$/.test(fields[1]!) ||
-    !/^[0-9]+$/.test(fields[2]!) ||
+    (!/^[0-9]+$/.test(fields[2]!) && !deadWithoutGroup) ||
     !/^[0-9]+$/.test(fields[19]!)
   )
     throw Error("Process identity invalid");
@@ -87,7 +99,7 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
       const batch = await Promise.all(
         ids.slice(i, i + 64).map(async (id) => {
           try {
-            return linuxIdentity(
+            return linuxProcessIdentity(
               Number(id),
               await readFile("/proc/" + id + "/stat", "utf8"),
             );
@@ -125,7 +137,9 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
     result.stderr.trim()
   )
     throw Error("Process snapshot unavailable");
-  return darwinProcessIdentities(result.stdout);
+  return darwinProcessIdentities(result.stdout).filter(
+    (row) => row.pid !== result.pid,
+  );
 }
 /** Unknown Darwin status is never evidence of quiescence. */
 export function darwinProcessIdentities(text: string): ProcessIdentity[] {

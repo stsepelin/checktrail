@@ -1,6 +1,6 @@
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -13,6 +13,7 @@ const image =
 const native = [
   "run",
   "--rm",
+  "--init",
   "--network",
   "none",
   "--mount",
@@ -27,12 +28,19 @@ assert.equal(
   }).trim(),
   "v22.23.2",
 );
-const output = execFileSync(
+const source = spawnSync(
   "docker",
   [...native, "node", "scripts/verify-required-native-tests.mjs", "tasks"],
   { encoding: "utf8", maxBuffer: 1024 * 1024 },
 );
-process.stdout.write(output);
+process.stdout.write(source.stdout ?? "");
+process.stderr.write(source.stderr ?? "");
+assert.equal(
+  source.error,
+  undefined,
+  "Required task-store source process failed",
+);
+assert.equal(source.status, 0, "Required task-store source cohort failed");
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-task-package-"),
 );
@@ -94,6 +102,7 @@ try {
       [
         "run",
         "--rm",
+        "--init",
         "--network",
         "none",
         "--mount",

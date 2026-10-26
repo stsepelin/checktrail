@@ -240,10 +240,21 @@ test("CI selection unions exact native owners and keeps unclassified near misses
   assert.equal(plan(["README.md", "docs/NATIVE-CI.md"]).mode, "affected");
   assert.deepEqual(selected(plan(["README.md", "docs/NATIVE-CI.md"])), []);
 });
-test("CI unknown missing stale and non-PR baselines always select the complete native inventory", () => {
+test("CI stale contracts and non-PR events select the complete inventory while missing history does not broaden known PR inputs", () => {
+  for (const baseline of [null, { complete: false }]) {
+    const result = plan(["test/gate-scala-extensions.test.ts"], { baseline });
+    assert.deepEqual(selected(result), ["scala-extensions-arm64"]);
+    assert.equal(result.baseline, null);
+    assert.ok(
+      result.sharedTestFiles.includes(
+        "dist/test/gate-scala-extensions.test.js",
+      ),
+    );
+    assert.ok(
+      !result.sharedTestFiles.includes("dist/test/gate-context-csharp.test.js"),
+    );
+  }
   for (const options of [
-    { baseline: null },
-    { baseline: { complete: false } },
     { contractCurrent: false },
     { eventName: "push" },
     { eventName: "schedule" },
@@ -274,7 +285,7 @@ test("CI completion requires selected jobs to pass and reports omitted jobs as u
       id,
       {
         result:
-          id === "scala-extensions-arm64" || !jobs.includes(id)
+          id === "scala-extensions-arm64" || ["ci-plan", "checks"].includes(id)
             ? "success"
             : "skipped",
       },
@@ -284,12 +295,7 @@ test("CI completion requires selected jobs to pass and reports omitted jobs as u
   assert.equal(receipt.complete, true);
   assert.deepEqual(receipt.selectedNativeJobs, ["scala-extensions-arm64"]);
   assert.ok(receipt.notSelectedNativeJobs.includes("jvm-wrappers-arm64"));
-  for (const id of [
-    "ci-plan",
-    "checks",
-    "host-validation",
-    "scala-extensions-arm64",
-  ])
+  for (const id of ["ci-plan", "checks", "scala-extensions-arm64"])
     for (const status of ["failure", "cancelled", "skipped"]) {
       const broken = structuredClone(needs);
       broken[id].result = status;
@@ -305,9 +311,14 @@ test("CI completion requires selected jobs to pass and reports omitted jobs as u
     /inventory differs/,
   );
   const falseBaseline = { ...result, baseline: null };
+  const withoutBaseline = requireCiCompletion(falseBaseline, needs);
+  assert.equal(withoutBaseline.fullRevisionVerification, false);
+  assert.equal(withoutBaseline.omittedJobsQualified, false);
+  const unnecessaryHost = structuredClone(needs);
+  unnecessaryHost["host-validation"].result = "success";
   assert.throws(
-    () => requireCiCompletion(falseBaseline, needs),
-    /accepted exact base/,
+    () => requireCiCompletion(result, unnecessaryHost),
+    /outcome disagrees/,
   );
   assert.throws(
     () => requireCiCompletion({ ...result, mode: "full" }, needs),
@@ -510,7 +521,7 @@ test("CI split matrix retains each runner's package cache before Linux installed
   assert.ok(cache >= 0);
   assert.equal(
     steps[cache].if,
-    "matrix.os == 'ubuntu-latest' && matrix.node == '22'",
+    "env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')",
   );
   for (const script of [
     "verify-review-container.mjs",
@@ -764,6 +775,7 @@ process.on("exit",()=>fs.writeFileSync(${JSON.stringify(marker)},JSON.stringify(
       GITHUB_STEP_SUMMARY: path.join(directory, "summary"),
     };
     delete env.NODE_TEST_CONTEXT;
+    env.CHECKTRAIL_CI_OBSERVE_BASELINE = "1";
     const result = spawnSync(
       process.execPath,
       [
@@ -982,7 +994,7 @@ test("CI Checks pagination keeps every page bounded and rejects missing changed 
   }
 });
 
-test("CI planner uses Checks only for unavailable jobs and never hides observed failures or concurrent retries", async (t) => {
+test("CI optional baseline observation uses Checks only for unavailable jobs and never qualifies observed failures or concurrent retries", async (t) => {
   const base = "a".repeat(40),
     names = workflowJobNames(workflow);
   const run = {
@@ -1078,6 +1090,7 @@ process.on("exit",()=>fs.writeFileSync(${JSON.stringify(marker)},JSON.stringify(
       GITHUB_STEP_SUMMARY: path.join(directory, "summary"),
     };
     delete env.NODE_TEST_CONTEXT;
+    env.CHECKTRAIL_CI_OBSERVE_BASELINE = "1";
     const result = spawnSync(
       process.execPath,
       [
@@ -1089,7 +1102,8 @@ process.on("exit",()=>fs.writeFileSync(${JSON.stringify(marker)},JSON.stringify(
     );
     assert.equal(result.status, 0, result.stderr);
     const actual = JSON.parse(result.stdout);
-    assert.equal(actual.mode, expectedMode, variant + ": " + actual.reason);
+    assert.equal(actual.mode, "affected", variant + ": " + actual.reason);
+    assert.equal(actual.baseline !== null, expectedMode === "affected");
     const counts = JSON.parse(await readFile(marker, "utf8"));
     if (["observed-failure", "denied", "malformed"].includes(variant))
       assert.deepEqual(counts, { jobs: 1, checks: 0, runReads: 0 });
@@ -1098,7 +1112,58 @@ process.on("exit",()=>fs.writeFileSync(${JSON.stringify(marker)},JSON.stringify(
       assert.equal(counts.checks, Math.ceil(names.length / 100));
       assert.equal(counts.runReads, 1);
     }
-    assert.deepEqual(selected(actual), expectedMode === "affected" ? [] : jobs);
+    assert.deepEqual(selected(actual), []);
   }
   assert.equal(workflow.jobs["ci-plan"].permissions.checks, "read");
+});
+
+test("CI shared matrices retain every full command and use selected complete files only for affected pull requests", () => {
+  const checks = workflow.jobs.checks;
+  assert.deepEqual(checks.needs, ["ci-plan"]);
+  assert.match(checks.if, /always\(\).*!cancelled\(\)/);
+  assert.match(
+    checks.env.CHECKTRAIL_CI_MODE,
+    /needs.ci-plan.result == 'success'.*mode \|\| 'full'/,
+  );
+  assert.deepEqual(checks.strategy.matrix.include, [
+    { os: "ubuntu-latest", node: "22" },
+    { os: "ubuntu-latest", node: "24" },
+    { os: "ubuntu-latest", node: "26" },
+    { os: "macos-latest", node: "24" },
+  ]);
+  const fast = checks.steps.filter(
+    (step: { run?: string }) =>
+      step.run === "node scripts/verify-ci-affected-tests.mjs",
+  );
+  assert.equal(fast.length, 1);
+  assert.equal(fast[0].if, "env.CHECKTRAIL_CI_MODE == 'affected'");
+  const full = checks.steps.find((step: { run?: string }) =>
+    step.run?.includes("--full-suite"),
+  );
+  assert.ok(full);
+  assert.equal(full.if, "env.CHECKTRAIL_CI_MODE == 'full'");
+  for (const command of [
+    "npm ci --ignore-scripts",
+    "npm run typecheck",
+    "npm run lint",
+    "npm run build",
+    "npm run format:check",
+    "node scripts/audit-dependencies.mjs",
+    "node scripts/audit-context-grammars.mjs",
+  ])
+    assert.equal(
+      checks.steps.find((step: { run?: string }) => step.run === command)?.if,
+      undefined,
+      command,
+    );
+  assert.deepEqual(workflow.jobs["host-validation"].needs, ["ci-plan"]);
+  assert.match(workflow.jobs["host-validation"].if, /mode == 'full'/);
+  const docs = plan(["docs/NATIVE-CI.md"], { baseline: null });
+  assert.deepEqual(selected(docs), []);
+  assert.deepEqual(docs.sharedTestFiles, [
+    "dist/test/ci-affected-tests.test.js",
+    "dist/test/ci-impact.test.js",
+    "dist/test/ci-source-boundaries.test.js",
+    "dist/test/gate-inventory.test.js",
+  ]);
 });

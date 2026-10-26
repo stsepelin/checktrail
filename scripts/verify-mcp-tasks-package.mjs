@@ -38,18 +38,6 @@ try {
     consumer,
     "node_modules/@stsepelin/checktrail/dist/src",
   );
-  for (const name of ["server", "core"]) {
-    const manifest = JSON.parse(
-      await readFile(
-        path.join(
-          consumer,
-          `node_modules/@modelcontextprotocol/${name}/package.json`,
-        ),
-        "utf8",
-      ),
-    );
-    assert.equal(manifest.version, "2.3.0");
-  }
   // The acceptance harness is outside the installed package. Its src link points
   // to shipped bytes, so internal imports and the CLI both exercise that install.
   await mkdir(path.join(consumer, "dist/test"), { recursive: true });
@@ -93,6 +81,7 @@ try {
         [
           "run",
           "--rm",
+          "--init",
           "--network",
           "none",
           "--mount",

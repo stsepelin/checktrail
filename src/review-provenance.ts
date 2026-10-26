@@ -413,6 +413,13 @@ function derive(input: Input, receipt: ReviewReceipt) {
     scoring,
   };
 }
+/** Reconcile retained provenance only; this does not recheck the current filesystem. */
+export function replayReviewProvenance(input: unknown, receipt: unknown) {
+  return derive(
+    reviewProvenanceInputSchema.parse(input),
+    reviewReceiptSchema.parse(receipt),
+  );
+}
 export async function inspectReviewProvenance(
   root: string,
   text: string,

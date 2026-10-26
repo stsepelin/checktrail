@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "review-findings-report" },
+    "engineVersion": { "type": "string" },
+    "channel": { "type": "string", "const": "advisory" },
+    "inputDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "freshness": { "type": "string", "enum": ["current", "stale"] },
+    "status": {
+      "type": "string",
+      "enum": ["completed", "incomplete", "stale"]
+    },
+    "judgmentProvenance": {
+      "type": "string",
+      "const": "host-declared-unverified"
+    },
+    "nativeReceiptProvenance": {
+      "type": "string",
+      "const": "imported-unattested"
+    },
+    "severityPolicy": {
+      "type": "string",
+      "const": "declared-consequence-matrix-v1"
+    },
+    "severityVerified": { "type": "boolean", "const": false },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "independenceVerified": { "type": "boolean", "const": false },
+    "commonCauseVerified": { "type": "boolean", "const": false },
+    "repairCorrectnessVerified": { "type": "boolean", "const": false },
+    "nativeExecution": { "type": "boolean", "const": false },
+    "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+    "qualityGate": { "type": "string", "const": "not-assessed" },
+    "candidates": {
+      "type": "object",
+      "properties": {
+        "selected": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "declared-supported": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 32
+        },
+        "declared-refuted": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "unresolved": { "type": "integer", "minimum": 0, "maximum": 32 }
+      },
+      "required": [
+        "selected",
+        "declared-supported",
+        "declared-refuted",
+        "unresolved"
+      ],
+      "additionalProperties": false
+    },
+    "commonDefects": {
+      "type": "object",
+      "properties": {
+        "declared": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "reconciled": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "unresolved": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "mappedSupported": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "unmappedSupported": { "type": "integer", "minimum": 0, "maximum": 32 }
+      },
+      "required": [
+        "declared",
+        "reconciled",
+        "unresolved",
+        "mappedSupported",
+        "unmappedSupported"
+      ],
+      "additionalProperties": false
+    },
+    "sourceIncluded": { "type": "boolean", "const": false }
+  },
+  "required": [
+    "schemaVersion",
+    "format",
+    "engineVersion",
+    "channel",
+    "inputDigest",
+    "contextDigest",
+    "freshness",
+    "status",
+    "judgmentProvenance",
+    "nativeReceiptProvenance",
+    "severityPolicy",
+    "severityVerified",
+    "claimsVerified",
+    "independenceVerified",
+    "commonCauseVerified",
+    "repairCorrectnessVerified",
+    "nativeExecution",
+    "deterministicOutcomeChanged",
+    "qualityGate",
+    "candidates",
+    "commonDefects",
+    "sourceIncluded"
+  ],
+  "additionalProperties": false
+}
