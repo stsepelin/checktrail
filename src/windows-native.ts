@@ -124,8 +124,11 @@ public static class ChecktrailWindowsJobV1 {
       return ResourceUnavailable("job-accounting", Marshal.GetLastWin32Error());
     const long maximum = 9007199254740991L;
     ulong peak = memory.PeakWorkingSet.ToUInt64();
-    if (user < 0 || kernel < 0 || info.User < user || info.Kernel < kernel ||
-      info.User > maximum || info.Kernel > maximum || peak > (ulong)maximum || info.Active != 0 || info.Total == 0)
+    // Retain each native API observation independently; their separate
+    // accounting cannot be reconciled by an exact cross-API inequality.
+    if (user < 0 || kernel < 0 || user > maximum || kernel > maximum ||
+      info.User < 0 || info.Kernel < 0 || info.User > maximum || info.Kernel > maximum ||
+      peak > (ulong)maximum || info.Active != 0 || info.Total == 0)
       return ResourceUnavailable("counter-bounds", null);
     return new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new {
       profile = "windows-job-resources-v1", state = "collected", cpuUnit = "100ns",
