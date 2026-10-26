@@ -5578,5 +5578,33 @@
       "file": "dist/test/laravel-cache-runtime-harness.test.js",
       "name": "Laravel cache runtime admission binds every named case, supporting input and engine while retaining selected native identities"
     }
+  ],
+  "windows-resource-workloads": [
+    {
+      "file": "dist/test/windows-resource-workload-native.test.js",
+      "name": "native Windows resource workloads bind small large and polyglot validation jobs to output archive and whole-worker counters"
+    },
+    {
+      "file": "dist/test/windows-resource-workload-native.test.js",
+      "name": "native Windows resource measurement refuses original broken and stale workloads before publishing task storage"
+    }
+  ],
+  "windows-resource-workload-bindings": [
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload accounting sums distinct job CPU retains direct peaks and counts identical tool aliases once"
+    },
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload accounting rejects unavailable incomplete contradictory and reused native resource evidence"
+    },
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload accounting includes distinct version commands and refuses their unverified physical output"
+    },
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload CPU aggregation preserves exact safe boundaries and refuses overflow across otherwise valid jobs"
+    }
   ]
 }

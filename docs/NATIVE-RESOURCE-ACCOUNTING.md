@@ -182,7 +182,12 @@ the runner's owned temporary namespace. The supervisor reads at most the expecte
 source byte count plus one, checks its embedded SHA-256, and compiles those exact
 bytes before the project target resumes. This keeps the fixed encoded launcher
 within the existing command-length allowance. Project arguments remain JSON data.
-The existing namespace lifecycle removes the source along with other owned files. The namespace receives the existing native caller-only ACL before any data write, including when its selected temp parent has a broader read ACL. An access failure refuses before data or process launch. Portable ordering/refusal controls and a native broad-parent control with an access-guard removal are prepared; native qualification remains pending.
+The existing namespace lifecycle removes the source along with other owned files. The namespace receives the existing native caller-only ACL before any data write, including when its selected temp parent has a broader read ACL. An access failure refuses before data or process launch. Portable ordering/refusal controls and the native broad-parent access-guard
+removal have [recorded source and offline installed acceptance](measurements/windows-resource-foundation-2026-10-26.json)
+on Windows with Node 22.23.3. The same observation records the native counter,
+fixed-source integrity and retained ownership controls with removed/restored guards.
+It is dated foundation evidence, not current package, representative workload,
+whole-profile or final runtime-matrix qualification.
 These controls are execution ownership and integrity checks; executed project code
 is not sandboxed.
 
@@ -197,3 +202,35 @@ these prepared controls.
 API contracts: [process CPU](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes),
 [job CPU](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information),
 and [working-set counters](https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters).
+
+## Prepared Windows workload measurement
+
+The operator-only `measureWindowsResourceSample` export in
+`scripts/measure-windows-resources.mjs` measures the original small, large and
+polyglot fixtures through the actual engine in a fresh Windows worker. The
+polyglot fixture requires the actual Go 1.27.1 executable and retains its version
+and executable digest before and after execution. Fixture construction and
+inventory capture precede validation counters. A private per-sample Go cache is
+outside archive-byte accounting.
+
+Separate self CPU readings use microseconds; native direct-process and job CPU
+retain their original 100 ns units. Distinct validation jobs are summed only for
+CPU. Direct target working-set peaks use the maximum observed lifetime peak and
+never a sum of process-tree RSS. Tool-version invocations remain in physical
+output and job accounting; an identical receipt alias is counted once, while
+contradictory reuse is refused. The outer job binds the actual worker PID and
+covers startup, validation and later storage.
+
+Every original check must pass with complete native execution and physical
+stdout/stderr. Broken or stale validation is refused before publishing task
+storage. The worker reconstructs large archived reports byte for byte, checks
+chunk and report digests, and measures physical SQLite files after closing the
+store. Logical report/archive bytes and physical store bytes remain distinct.
+Only counters, relative store names, counts and hashes are returned; raw reports
+and local fixture paths remain private.
+
+Portable controls cover CPU boundaries, unavailable native receipts, contradictory
+job identities and malformed physical streams. These newly prepared workload
+controls still require native Windows source and fresh-package acceptance. They
+do not establish representative project performance, a regression budget, final
+runtime-matrix qualification or the whole resource-release-readiness profile.
