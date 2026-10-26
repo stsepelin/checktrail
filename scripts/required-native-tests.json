@@ -5512,5 +5512,11 @@
       "file": "dist/test/lifecycle-runtime-harness.test.js",
       "name": "lifecycle foundation selection admits only the declared native platforms"
     }
+  ],
+  "laravel-cache-runtime-bindings": [
+    {
+      "file": "dist/test/laravel-cache-runtime-harness.test.js",
+      "name": "Laravel cache runtime admission binds every named case, supporting input and engine while retaining selected native identities"
+    }
   ]
 }

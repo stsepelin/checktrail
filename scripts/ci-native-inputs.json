@@ -19,6 +19,15 @@
   "examples/external-adapter/bundle/adapter.mjs": ["external-adapters"],
   "examples/external-adapter/native/adapter.go": ["external-adapters"],
   "examples/frameworks/laravel/bootstrap/app.php": ["laravel-assembly-arm64"],
+  "examples/frameworks/laravel/bootstrap/providers.php": [
+    "laravel-assembly-arm64"
+  ],
+  "examples/frameworks/laravel/checktrail.json": ["laravel-assembly-arm64"],
+  "examples/frameworks/laravel/checktrail.laravel.json": [
+    "laravel-assembly-arm64"
+  ],
+  "examples/frameworks/laravel/composer.json": ["laravel-assembly-arm64"],
+  "examples/frameworks/laravel/config/app.php": ["laravel-assembly-arm64"],
   "examples/frameworks/laravel/wiring.php": ["laravel-assembly-arm64"],
   "examples/ruby-tools/Gemfile": ["ruby-extensions-arm64", "ruby-tools"],
   "examples/ruby-tools/Gemfile.lock": ["ruby-extensions-arm64", "ruby-tools"],
@@ -311,6 +320,7 @@
   "scripts/kotlin-context-tools.Dockerfile": ["kotlin-context-arm64"],
   "scripts/kotlin-tools.Dockerfile": ["kotlin", "kotlin-extensions-arm64"],
   "scripts/kubernetes-extension-schemas.json": ["kubernetes-extensions-arm64"],
+  "scripts/laravel-cache-runtime-evidence.mjs": ["laravel-assembly-arm64"],
   "scripts/laravel-tools/composer.json": ["laravel-assembly-arm64"],
   "scripts/laravel-tools/composer.lock": ["laravel-assembly-arm64"],
   "scripts/lifecycle-runtime-evidence.mjs": [
@@ -994,6 +1004,8 @@
   "scripts/verify-kustomize-package.mjs": ["kustomize"],
   "scripts/verify-laravel-assembly-container.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-laravel-assembly-guards.mjs": ["laravel-assembly-arm64"],
+  "scripts/verify-laravel-cache-package.mjs": ["laravel-assembly-arm64"],
+  "scripts/verify-laravel-cache.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-laravel-supplemental.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-lifecycle-platforms-package.mjs": [
     "tasks-runtime",
@@ -1197,7 +1209,11 @@
   "test/detekt-surfaces.test.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
   "test/detekt.test.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
   "test/django-evidence.test.ts": ["django-assembly-arm64"],
-  "test/django.test.ts": ["django-assembly-arm64", "fastapi-assembly-arm64"],
+  "test/django.test.ts": [
+    "django-assembly-arm64",
+    "fastapi-assembly-arm64",
+    "laravel-assembly-arm64"
+  ],
   "test/dotnet-build-analyzers.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
@@ -1415,11 +1431,16 @@
   "test/executable-bundle.test.ts": ["external-adapters"],
   "test/external-adapter.test.ts": ["external-adapters"],
   "test/fastapi-evidence.test.ts": ["fastapi-assembly-arm64"],
-  "test/fastapi.test.ts": ["django-assembly-arm64", "fastapi-assembly-arm64"],
+  "test/fastapi.test.ts": [
+    "django-assembly-arm64",
+    "fastapi-assembly-arm64",
+    "laravel-assembly-arm64"
+  ],
   "test/fetch-pack.test.ts": ["external-adapters"],
   "test/framework-examples.test.ts": [
     "django-assembly-arm64",
-    "fastapi-assembly-arm64"
+    "fastapi-assembly-arm64",
+    "laravel-assembly-arm64"
   ],
   "test/framework-report-semantics.ts": [
     "django-assembly-arm64",
@@ -1867,6 +1888,7 @@
     "terraform-extensions-arm64"
   ],
   "test/larastan.test.ts": ["php-extensions-arm64", "php-review"],
+  "test/laravel-cache-runtime-harness.test.ts": ["laravel-assembly-arm64"],
   "test/laravel-cache.test.ts": ["laravel-assembly-arm64"],
   "test/laravel.test.ts": ["laravel-assembly-arm64"],
   "test/lifecycle-platforms-boundaries.ts": [

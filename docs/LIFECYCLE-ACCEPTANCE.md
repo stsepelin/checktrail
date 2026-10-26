@@ -29,8 +29,15 @@ Linux/macOS, or Windows process ownership and physical output on Windows.
 Completion requires both sets. Exact required case accounting, unchanged engine
 bytes and unchanged harness inputs cover the combined run. The fresh package
 repeats the same platform selection from the external harness. A passing whole
-profile cannot excuse an absent foundation callback. Laravel cache isolation has
-its separate native controls and still needs its lifecycle binding reconciled.
+profile cannot excuse an absent foundation callback. Laravel cache isolation retains its nine separate native controls. The source
+and fresh-package collectors now require exact named-case accounting and bind the
+same declared harness and compiled engine, observed Node/PHP executable identities,
+SQLite availability, and selected framework versions and bytes before and after
+execution. The installed harness is outside the installed package. The existing
+pinned native Laravel job requires both envelopes and the binding refusal
+controls. These selected observations do not establish complete PHP dependencies,
+loaded modules, operating-system bytes or publisher/license closure. Wider final
+runtime bindings remain required.
 
 Run `node scripts/verify-lifecycle-platforms.mjs` after compilation. Its exact
 callback selection comes from the finite inventory. The installed callback runs
