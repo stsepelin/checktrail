@@ -43,8 +43,11 @@ async function observeWindowsGo() {
       (process.arch === "x64" ? "amd64" : process.arch),
   );
   return {
-    version: value.stdout.trim(),
-    executableSha256: resourceHash(await readFile(executable)),
+    executable,
+    identity: {
+      version: value.stdout.trim(),
+      executableSha256: resourceHash(await readFile(executable)),
+    },
   };
 }
 /** Operator-only measurement of an original fixture. No execution grant, model
@@ -84,7 +87,23 @@ export async function measureWindowsResourceSample({
       args: [worker, root, directory, specificationFile],
       cwd: ".",
     },
-    { timeoutMs: 120000, maxOutputBytes: 64 * 1024, captureRawOutput: true },
+    {
+      timeoutMs: 120000,
+      maxOutputBytes: 64 * 1024,
+      captureRawOutput: true,
+      ...(go
+        ? {
+            environment: {
+              PATH: [
+                ...new Set([
+                  path.dirname(await realpath(process.execPath)),
+                  path.dirname(go.executable),
+                ]),
+              ].join(path.delimiter),
+            },
+          }
+        : {}),
+    },
   );
   assert.equal(execution.exitCode, 0, execution.stderr);
   assert.ok(
@@ -135,7 +154,7 @@ export async function measureWindowsResourceSample({
   if (go) assert.deepEqual(await observeWindowsGo(), go);
   return {
     ...measurement,
-    go,
+    go: go?.identity ?? null,
     observer: receipt,
     workerTransport: {
       observedBytes: execution.outputBytes,

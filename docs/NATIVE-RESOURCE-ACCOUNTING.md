@@ -209,7 +209,10 @@ The operator-only `measureWindowsResourceSample` export in
 `scripts/measure-windows-resources.mjs` measures the original small, large and
 polyglot fixtures through the actual engine in a fresh Windows worker. The
 polyglot fixture requires the actual Go 1.27.1 executable and retains its version
-and executable digest before and after execution. Fixture construction and
+and executable digest before and after execution. The operator worker receives a path containing only the verified Go and Node
+executable directories; the host path remains unchanged. A deliberate second
+`go.exe` still triggers the ordinary ambiguous-executable guard, while the
+measurement worker uses its explicitly selected tool path. Fixture construction and
 inventory capture precede validation counters. A private per-sample Go cache is
 outside archive-byte accounting.
 
