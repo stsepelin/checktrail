@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import path from "node:path";
 import ts from "typescript";
+import { sourceBoundaryInputs } from "./ci-source-boundaries.mjs";
+import sourceCatalog from "./ci-source-boundaries.json" with { type: "json" };
 
 const controls = new Set([
   "checks",
@@ -28,7 +30,8 @@ export const nativeJobIds = (workflow) =>
 
 // This enumerates declared file references. The checked-in map is a reviewable
 // contract, not a claim that lexical analysis proves every runtime dependency.
-// Source, schemas, dependency/config changes and unclassified paths stay global.
+// General source, schemas, dependency/config changes and unclassified paths
+// stay global. Only reviewed standalone runner boundaries can narrow source.
 export async function buildNativeInputs({
   workflow,
   requirements,
@@ -120,8 +123,8 @@ export async function buildNativeInputs({
       const file = pending.pop();
       if (visited.has(file)) continue;
       visited.add(file);
-      // Every production source change is global; do not infer stack isolation
-      // from a filename or traverse the shared engine as a selective boundary.
+      // Do not infer source isolation from names or shared engine traversal.
+      // The explicit subprocess source contract is validated after this graph.
       if (
         file.startsWith("src/") ||
         file.startsWith("scripts/ci-") ||
@@ -143,6 +146,17 @@ export async function buildNativeInputs({
       }
     }
   }
+  const declaredSources = await sourceBoundaryInputs({
+    files,
+    requirements,
+    jobs: nativeJobIds(workflow),
+    inputs: Object.fromEntries(
+      [...owners].map(([file, jobs]) => [file, [...jobs]]),
+    ),
+    readText,
+  });
+  for (const [file, jobs] of Object.entries(declaredSources))
+    owners.set(file, new Set(jobs));
   return Object.fromEntries(
     [...owners]
       .sort(([a], [b]) => a.localeCompare(b))
@@ -180,6 +194,7 @@ export function planNativeJobs({
   eventName,
   baseline,
   contractCurrent = true,
+  sourceBoundaries = sourceCatalog.boundaries,
 }) {
   validateInputContract(inputs, jobs);
   const full = (reason) => ({
@@ -211,7 +226,7 @@ export function planNativeJobs({
     )
       continue;
     if (
-      file.startsWith("src/") ||
+      (file.startsWith("src/") && !Object.hasOwn(inputs, file)) ||
       file.startsWith("schemas/") ||
       file.startsWith("packs/") ||
       file.startsWith(".github/") ||
@@ -247,6 +262,11 @@ export function planNativeJobs({
         "dist/test/ci-impact.test.js",
         "dist/test/gate-inventory.test.js",
         "dist/test/ci-affected-tests.test.js",
+        "dist/test/ci-source-boundaries.test.js",
+        ...sourceBoundaries
+          .filter((row) => changed.includes(row.file))
+          .flatMap((row) => row.testFiles)
+          .map((file) => "dist/" + file.replace(/\.ts$/, ".js")),
         ...Object.entries(inputs)
           .filter(
             ([file, owners]) =>

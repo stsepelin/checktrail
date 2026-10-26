@@ -1211,6 +1211,44 @@
   ],
   "scripts/windows-task-access-diagnostics.mjs": ["tasks-runtime"],
   "scripts/yaml-context-tools.Dockerfile": ["yaml-context-arm64"],
+  "src/clang-runner.ts": [
+    "clang",
+    "cpp-extensions-arm64",
+    "cpp-tools",
+    "swift-extensions-arm64"
+  ],
+  "src/detekt-extensions-runner.ts": ["jvm-analyzer-extensions-arm64"],
+  "src/detekt-runner.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
+  "src/helm-extensions-runner.ts": ["helm-extensions-arm64"],
+  "src/helm-runner.ts": [
+    "helm",
+    "helm-extensions-arm64",
+    "kubeconform",
+    "kubernetes-extensions-arm64",
+    "kustomize",
+    "kustomize-extensions-arm64",
+    "terraform",
+    "terraform-extensions-arm64"
+  ],
+  "src/scala-extensions-runner.ts": ["scala-extensions-arm64"],
+  "src/scala-runner.ts": [
+    "kotlin-extensions-arm64",
+    "scala",
+    "scala-context-arm64",
+    "scala-extensions-arm64"
+  ],
+  "src/terraform-extensions-runner.ts": ["terraform-extensions-arm64"],
+  "src/terraform-runner.ts": [
+    "hcl-context-arm64",
+    "helm",
+    "helm-extensions-arm64",
+    "kubeconform",
+    "kubernetes-extensions-arm64",
+    "kustomize",
+    "kustomize-extensions-arm64",
+    "terraform",
+    "terraform-extensions-arm64"
+  ],
   "test/actionlint.test.ts": ["actionlint"],
   "test/checkstyle-fixture.ts": ["checkstyle"],
   "test/checkstyle-surfaces.test.ts": ["checkstyle"],

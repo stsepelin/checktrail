@@ -127,9 +127,9 @@ No prior job result substitutes for execution of selected current inputs.
 Shared production source, schemas, dependency/configuration, CI, executable
 inventories and unknown paths still select full verification. A missing, empty or
 invalid diff and a stale ownership contract also select full verification.
-Production-source isolation and semantic manifest changes require further
-reviewed ownership contracts; this first stage does not infer adapter isolation
-from filename prefixes. Pushes, tags, manual runs and the weekly schedule retain
+Only the standalone source boundaries declared below can narrow production
+source changes. Semantic manifest changes remain global. Adapter names do not
+establish isolation from filename prefixes. Pushes, tags, manual runs and the weekly schedule retain
 the complete shared suite, package/mutation phases and all native stacks.
 The full path retains every original command and OS/Node variant.
 
@@ -830,3 +830,31 @@ the existing two-second native cleanup allowance. Each recovery request is
 limited by the remaining observation time, and a late reply cannot establish
 acceptance. The replacement validation must still pass, unexpected errors still
 fail, and production execution and cleanup limits remain unchanged.
+
+## Declared standalone runner source boundaries
+
+A finite catalog at `scripts/ci-source-boundaries.json` binds selected standalone
+Node runner entrypoints to their existing native profiles and explicit source
+references. The catalog also enumerates related component test files. Their
+declared native consumers run alongside the shared checks and complete selected
+test files, including every callback in those component files. This covers the catalog's Helm, Terraform, Scala,
+Clang and analyzer entrypoints; it does not infer that every file bearing one of
+those language names is isolated. General planners, evidence parsers, the engine,
+process ownership, dependencies and unclassified source remain global.
+
+Before narrowing a source change, the builder inspects all source literals and
+requires the exact declared URL callers and validation references. New module
+imports, changed callers/counts, unresolved runner construction, encoded aliases
+from an undeclared caller and missing native consumers invalidate the contract.
+Unknown same-name paths remain unresolved rather than being assumed foreign.
+The planner then falls back to full verification. The source inspection parses
+text and never loads a runner or evaluates repository modules.
+
+The shared producer registry has one narrow exception, pinned to its exact
+LF-normalized source identity. That implementation constructs the fixed identity
+map and hashes only the selected program; its reference does not import a runner.
+A registry change invalidates source isolation until the exception is reassessed.
+The registry file itself always selects full verification. This is an explicit
+reviewed boundary contract, not proof of every possible runtime dependency or
+qualification of omitted jobs. Full main, scheduled and release verification
+remain required for broader evidence and Gate A reconciliation.

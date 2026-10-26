@@ -7,13 +7,20 @@ provider is required.
 
 ## SDK dependency roles
 
-The production server and its core remain pinned to `2.3.0`. The external
-acceptance client is pinned to `2.3.1` and resolves its own nested `2.3.1` core.
-Acceptance harnesses preserve those separate dependency locations. The
-version-checked installed harnesses validate every resolved client dependency
-against its exact root lockfile entry before copying any of the graph. This client update requires fresh wire
-and installed-package acceptance; historical receipts retain their original SDK
-identities.
+The production server and its core are pinned to `2.3.1`. The external
+acceptance client remains pinned to `2.3.1`; npm now resolves their shared core
+at the root rather than keeping a separate nested client core. Acceptance checks
+resolve the client's actual dependency and compare it with the exact lock entry.
+They do not require one hoisting layout.
+
+The shared offline installer verifies every required production package version
+against the source lock before publishing an installed consumer. External client
+copies validate their entire resolved graph before copying. Individual language
+collectors rely on that shared check instead of repeating an obsolete literal
+server/core version. Actual Tasks routing and native wire acceptance remain
+required. The candidate SDK pin changes as a reviewable inventory revision;
+historical receipts retain their original identities and do not qualify this
+new version.
 
 ## Application clients
 
