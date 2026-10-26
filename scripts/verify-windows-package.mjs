@@ -30,6 +30,8 @@ const testFiles = [
   "windows-resource.test.js",
   "windows-workspace.test.js",
   "windows-resource-native.test.js",
+  "windows-resource-workloads.test.js",
+  "windows-resource-workload-native.test.js",
   "process-output.test.js",
   "helpers.js",
 ];
@@ -44,6 +46,10 @@ const harnessFiles = [
   "scripts/required-test-evidence.mjs",
   "scripts/compiled-engine-evidence.mjs",
   "scripts/install-acceptance-package.mjs",
+  "scripts/native-resource-workloads.mjs",
+  "scripts/windows-resource-workloads.mjs",
+  "scripts/windows-resource-workload-worker.mjs",
+  "scripts/measure-windows-resources.mjs",
 ];
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const captureHarness = () =>
@@ -127,6 +133,10 @@ try {
     "verify-required-native-tests.mjs",
     "required-test-evidence.mjs",
     "compiled-engine-evidence.mjs",
+    "native-resource-workloads.mjs",
+    "windows-resource-workloads.mjs",
+    "windows-resource-workload-worker.mjs",
+    "measure-windows-resources.mjs",
   ])
     await cp(
       path.join(repository, "scripts", file),
@@ -144,6 +154,9 @@ try {
       "windows-contract": profiles["windows-contract"],
       "windows-process": profiles["windows-process"],
       "physical-process-output": profiles["physical-process-output"],
+      "windows-resource-workload-bindings":
+        profiles["windows-resource-workload-bindings"],
+      "windows-resource-workloads": profiles["windows-resource-workloads"],
     }),
   );
   const selectedImage = process.env.CHECKTRAIL_WINDOWS_CONTRACT_IMAGE;
@@ -160,6 +173,10 @@ try {
       ? "windows-process"
       : "windows-contract",
     "physical-process-output",
+    "windows-resource-workload-bindings",
+    ...(process.platform === "win32" && !image
+      ? ["windows-resource-workloads"]
+      : []),
   ];
   const output = image
     ? execFileSync(
@@ -198,7 +215,7 @@ try {
           cwd: consumer,
           encoding: "utf8",
           maxBuffer: 1024 * 1024,
-          timeout: process.platform === "win32" ? 600000 : 120000,
+          timeout: process.platform === "win32" ? 1200000 : 120000,
         },
       );
   const acceptance = JSON.parse(output);

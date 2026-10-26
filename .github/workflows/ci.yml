@@ -1659,7 +1659,7 @@ jobs:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['windows']) }}
     runs-on: windows-2025
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6.0.2
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -1673,6 +1673,10 @@ jobs:
           [Environment]::OSVersion.VersionString
           $env:ImageVersion
           & "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -Command '$PSVersionTable | ConvertTo-Json -Depth 3'
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.27.1"
+          cache: false
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run build
@@ -1686,6 +1690,8 @@ jobs:
         run: node scripts/verify-required-native-tests.mjs native-harness-cleanup
       - name: Require native compiling mutation guards with unchanged callbacks
         run: node scripts/verify-windows-guards.mjs
+      - name: Require native Windows workload and accounting controls
+        run: node scripts/verify-required-native-tests.mjs windows-resource-workload-bindings windows-resource-workloads
       - name: Require native resource counter and fixed-source integrity guards
         run: node scripts/verify-windows-resource-guards.mjs
       - name: Require native workspace privacy before bootstrap data

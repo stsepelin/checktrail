@@ -325,6 +325,7 @@
     "tasks-runtime-arm64"
   ],
   "scripts/maven-tools.Dockerfile": ["jvm-wrappers-arm64", "maven"],
+  "scripts/measure-windows-resources.mjs": ["windows"],
   "scripts/native-acceptance-diagnostics.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -367,6 +368,7 @@
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
   ],
+  "scripts/native-resource-workloads.mjs": ["windows"],
   "scripts/nuxt-tools/package-lock.json": ["nuxt", "nuxt-assembly-arm64"],
   "scripts/nuxt-tools/package.json": ["nuxt", "nuxt-assembly-arm64"],
   "scripts/php-context-tools.Dockerfile": [
@@ -1181,6 +1183,8 @@
     "vue-router",
     "vue-router-assembly-arm64"
   ],
+  "scripts/windows-resource-workload-worker.mjs": ["windows"],
+  "scripts/windows-resource-workloads.mjs": ["windows"],
   "scripts/windows-task-access-diagnostics.mjs": ["tasks-runtime"],
   "scripts/yaml-context-tools.Dockerfile": ["yaml-context-arm64"],
   "src/clang-runner.ts": [
@@ -1580,29 +1584,34 @@
   "test/go-build.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "windows"
   ],
   "test/go-installed-harness.test.ts": ["go-workspaces-arm64"],
   "test/go-matrix.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "windows"
   ],
   "test/go-race.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "windows"
   ],
   "test/go-scope.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "windows"
   ],
   "test/go-workspace-fixture.ts": ["go-workspaces-arm64"],
   "test/golangci.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "windows"
   ],
   "test/gradle-builds.test.ts": ["gradle", "jvm-wrappers-arm64"],
   "test/gradle-evidence.test.ts": ["gradle", "jvm-wrappers-arm64"],
@@ -2303,7 +2312,8 @@
   "test/staticcheck.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "windows"
   ],
   "test/swift-extensions-fixture.ts": ["swift-extensions-arm64"],
   "test/swift-testing.test.ts": ["swift-extensions-arm64", "swift-tools"],
@@ -2520,6 +2530,8 @@
     "tasks-runtime-arm64",
     "windows"
   ],
+  "test/windows-resource-workload-native.test.ts": ["windows"],
+  "test/windows-resource-workloads.test.ts": ["windows"],
   "test/windows-resource.test.ts": [
     "tasks-runtime",
     "tasks-runtime-arm64",

@@ -202,3 +202,35 @@ these prepared controls.
 API contracts: [process CPU](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes),
 [job CPU](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information),
 and [working-set counters](https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters).
+
+## Prepared Windows workload measurement
+
+The operator-only `measureWindowsResourceSample` export in
+`scripts/measure-windows-resources.mjs` measures the original small, large and
+polyglot fixtures through the actual engine in a fresh Windows worker. The
+polyglot fixture requires the actual Go 1.27.1 executable and retains its version
+and executable digest before and after execution. Fixture construction and
+inventory capture precede validation counters. A private per-sample Go cache is
+outside archive-byte accounting.
+
+Separate self CPU readings use microseconds; native direct-process and job CPU
+retain their original 100 ns units. Distinct validation jobs are summed only for
+CPU. Direct target working-set peaks use the maximum observed lifetime peak and
+never a sum of process-tree RSS. Tool-version invocations remain in physical
+output and job accounting; an identical receipt alias is counted once, while
+contradictory reuse is refused. The outer job binds the actual worker PID and
+covers startup, validation and later storage.
+
+Every original check must pass with complete native execution and physical
+stdout/stderr. Broken or stale validation is refused before publishing task
+storage. The worker reconstructs large archived reports byte for byte, checks
+chunk and report digests, and measures physical SQLite files after closing the
+store. Logical report/archive bytes and physical store bytes remain distinct.
+Only counters, relative store names, counts and hashes are returned; raw reports
+and local fixture paths remain private.
+
+Portable controls cover CPU boundaries, unavailable native receipts, contradictory
+job identities and malformed physical streams. These newly prepared workload
+controls still require native Windows source and fresh-package acceptance. They
+do not establish representative project performance, a regression budget, final
+runtime-matrix qualification or the whole resource-release-readiness profile.
