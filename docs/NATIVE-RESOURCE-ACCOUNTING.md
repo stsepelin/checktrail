@@ -213,7 +213,8 @@ conservation rule, rounding tolerance or corrected value. API failures and an
 active job still cannot produce collected counters.
 
 The current native fixture retains two separately reaped workload children and
-adds two independently compiled read-only observers of the immediate job. It
+adds two invocations of an independently compiled read-only observer of the
+immediate job. It
 accounts for all five process identities and proves the earlier/later job
 observations refer to that exact job through its member counts. Final CPU is
 compared with the earlier observation from the same API; direct process CPU is
