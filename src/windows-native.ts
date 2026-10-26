@@ -112,7 +112,8 @@ public static class ChecktrailWindowsJobV1 {
       nativeError = error.HasValue ? (uint?)unchecked((uint)error.Value) : null
     });
   }
-  static string ResourceUsage(IntPtr process, IntPtr job) {
+  static string ResourceUsage(ref ProcessInfo target, IntPtr job) {
+    IntPtr process = target.Process;
     long created, exited, kernel, user;
     if (!GetProcessTimes(process, out created, out exited, out kernel, out user))
       return ResourceUnavailable("process-times", Marshal.GetLastWin32Error());
@@ -127,13 +128,21 @@ public static class ChecktrailWindowsJobV1 {
     if (user < 0 || kernel < 0 || info.User < user || info.Kernel < kernel ||
       info.User > maximum || info.Kernel > maximum || peak > (ulong)maximum || info.Active != 0 || info.Total == 0)
     {
+      bool threadReleased = CloseHandle(target.Thread); int threadError = threadReleased ? 0 : Marshal.GetLastWin32Error();
+      if (threadReleased) target.Thread = IntPtr.Zero;
+      bool processReleased = CloseHandle(target.Process); int processError = processReleased ? 0 : Marshal.GetLastWin32Error();
+      if (processReleased) target.Process = IntPtr.Zero;
       Accounting next; bool nextObserved = QueryInformationJobObject(job, 1, out next, (uint)Marshal.SizeOf(typeof(Accounting)), IntPtr.Zero);
-      Console.Error.WriteLine(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new {
+      string diagnostic = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new {
         profile = "diagnostic-windows-counter-bounds-v1",
         user = user.ToString(), kernel = kernel.ToString(), jobUser = info.User.ToString(), jobKernel = info.Kernel.ToString(),
         active = info.Active.ToString(), total = info.Total.ToString(), peak = peak.ToString(),
+        threadReleased, threadError, processReleased, processError,
         nextObserved, nextUser = nextObserved ? next.User.ToString() : null, nextKernel = nextObserved ? next.Kernel.ToString() : null
-      }));
+      });
+      using (var output = new FileStream(Path.Combine(Environment.CurrentDirectory, "counter-diagnostic.json"), FileMode.CreateNew, FileAccess.Write, FileShare.Read)) {
+        byte[] bytes = new UTF8Encoding(false).GetBytes(diagnostic); output.Write(bytes, 0, bytes.Length);
+      }
       return ResourceUnavailable("counter-bounds", null);
     }
     return new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new {
@@ -222,7 +231,7 @@ public static class ChecktrailWindowsJobV1 {
       if (after != 0) throw new Win32Exception(1460);
       completed = true;
       Receipt(receipt, request, "completed", child, assigned, resumed, code, before, after, "confirmed", null,
-        resumed ? ResourceUsage(process.Process, job) : null);
+        resumed ? ResourceUsage(ref process, job) : null);
       return code.HasValue ? unchecked((int)code.Value) : 0;
     } catch (Win32Exception failure) {
       if (process.Process != IntPtr.Zero) TerminateProcess(process.Process, 1);

@@ -10,8 +10,10 @@ const root = await realpath(
   await mkdtemp(path.join(tmpdir(), "checktrail-counter-observe-")),
 );
 const observations = [];
+process.env.CHECKTRAIL_WINDOWS_COUNTER_OBSERVE = "1";
 try {
-  for (let sample = 0; sample < 16; sample++) {
+  for (let sample = 0; sample < 32; sample++) {
+    process.env.CHECKTRAIL_WINDOWS_COUNTER_SAMPLE = String(sample);
     const result = await runProcess(
       root,
       {

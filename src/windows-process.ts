@@ -496,6 +496,33 @@ export async function runWindowsProcess(
     controlSocket?.destroy();
     controlServer?.close();
     if (directory) {
+      if (process.env.CHECKTRAIL_WINDOWS_COUNTER_OBSERVE === "1") {
+        try {
+          const file = path.join(directory, "counter-diagnostic.json");
+          const entry = await lstat(file);
+          if (entry.isFile() && !entry.isSymbolicLink() && entry.size <= 4096) {
+            const bytes = await readFile(file);
+            if (bytes.length <= 4096) {
+              const counters = JSON.parse(bytes.toString("utf8"));
+              process.stderr.write(
+                JSON.stringify({
+                  profile: "diagnostic-windows-counter-release-v1",
+                  sample: process.env.CHECKTRAIL_WINDOWS_COUNTER_SAMPLE,
+                  counters,
+                }) + "\n",
+              );
+            }
+          }
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== "ENOENT")
+            process.stderr.write(
+              JSON.stringify({
+                profile: "diagnostic-windows-counter-read-refusal",
+                code: (error as NodeJS.ErrnoException).code ?? "invalid-data",
+              }) + "\n",
+            );
+        }
+      }
       try {
         await cleanup(directory);
       } catch {
