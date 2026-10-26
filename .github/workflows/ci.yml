@@ -30,6 +30,8 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run build
+      - name: Observe the original failed-target counter path without qualifying it
+        run: node scripts/diagnostic-windows-counter-observations.mjs
       - name: Require original native execution and resource controls
         run: node scripts/verify-required-native-tests.mjs windows-process physical-process-output windows-resource-workload-bindings windows-resource-workloads
       - name: Prepare pinned production package cache

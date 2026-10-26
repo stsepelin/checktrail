@@ -126,7 +126,16 @@ public static class ChecktrailWindowsJobV1 {
     ulong peak = memory.PeakWorkingSet.ToUInt64();
     if (user < 0 || kernel < 0 || info.User < user || info.Kernel < kernel ||
       info.User > maximum || info.Kernel > maximum || peak > (ulong)maximum || info.Active != 0 || info.Total == 0)
+    {
+      Accounting next; bool nextObserved = QueryInformationJobObject(job, 1, out next, (uint)Marshal.SizeOf(typeof(Accounting)), IntPtr.Zero);
+      Console.Error.WriteLine(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new {
+        profile = "diagnostic-windows-counter-bounds-v1",
+        user = user.ToString(), kernel = kernel.ToString(), jobUser = info.User.ToString(), jobKernel = info.Kernel.ToString(),
+        active = info.Active.ToString(), total = info.Total.ToString(), peak = peak.ToString(),
+        nextObserved, nextUser = nextObserved ? next.User.ToString() : null, nextKernel = nextObserved ? next.Kernel.ToString() : null
+      }));
       return ResourceUnavailable("counter-bounds", null);
+    }
     return new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new {
       profile = "windows-job-resources-v1", state = "collected", cpuUnit = "100ns",
       processCpu = new { user100ns = user, kernel100ns = kernel },
