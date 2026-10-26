@@ -87,11 +87,19 @@ export function linuxProcessIdentity(
         : "running",
   };
 }
-export async function processSnapshot(): Promise<ProcessIdentity[]> {
+export async function processSnapshot(
+  pid?: number,
+): Promise<ProcessIdentity[]> {
+  if (
+    pid !== undefined &&
+    (!Number.isSafeInteger(pid) || pid < 1 || pid > 999999999)
+  )
+    throw Error("Process snapshot selection invalid");
   if (process.platform === "linux") {
-    const ids = (await readdir("/proc")).filter((p) =>
-      /^[1-9][0-9]{0,8}$/.test(p),
-    );
+    const ids =
+      pid === undefined
+        ? (await readdir("/proc")).filter((p) => /^[1-9][0-9]{0,8}$/.test(p))
+        : [String(pid)];
     if (ids.length > 65536) throw Error("Process snapshot exceeds bound");
     const rows: ProcessIdentity[] = [];
     // Batch reads; processes can exit during collection. No command lines or environments are read.
@@ -122,7 +130,9 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
     throw Error("Process snapshot platform unsupported");
   const result = spawnSync(
     "/bin/ps",
-    ["-axo", "pid=,ppid=,pgid=,stat=,lstart="],
+    pid === undefined
+      ? ["-axo", "pid=,ppid=,pgid=,stat=,lstart="]
+      : ["-p", String(pid), "-o", "pid=,ppid=,pgid=,stat=,lstart="],
     {
       encoding: "utf8",
       maxBuffer: 2 * 1024 * 1024,
@@ -131,15 +141,27 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
     },
   );
   if (
+    pid !== undefined &&
+    result.status === 1 &&
+    !result.error &&
+    !result.signal &&
+    !result.stdout.trim() &&
+    !result.stderr.trim()
+  )
+    return [];
+  if (
     result.status !== 0 ||
     result.error ||
     result.signal ||
     result.stderr.trim()
   )
     throw Error("Process snapshot unavailable");
-  return darwinProcessIdentities(result.stdout).filter(
+  const rows = darwinProcessIdentities(result.stdout).filter(
     (row) => row.pid !== result.pid,
   );
+  if (pid !== undefined && (rows.length !== 1 || rows[0]!.pid !== pid))
+    throw Error("Process snapshot selection invalid");
+  return rows;
 }
 /** Unknown Darwin status is never evidence of quiescence. */
 export function darwinProcessIdentities(text: string): ProcessIdentity[] {

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 import path from "node:path";
 import { runProcess } from "../src/runner.js";
@@ -744,3 +745,79 @@ test("POSIX cleanup does not enumerate unrelated processes after every observed 
     assert.equal(snapshots, withChild ? 3 : 1);
   }
 });
+
+test(
+  "native POSIX targeted snapshots retain only their exact PID and preserve global snapshot failure",
+  { skip: process.platform === "win32" },
+  () => {
+    const module = new URL("../src/process-tree.js", import.meta.url).href;
+    const program = `
+      import assert from 'node:assert/strict';
+      import cp from 'node:child_process';
+      import {syncBuiltinESMExports} from 'node:module';
+      const original = cp.spawnSync;
+      let globalCalls = 0;
+      if (process.platform === 'darwin') {
+        cp.spawnSync = (executable, args, options) => {
+          if (executable === '/bin/ps' && args[0] === '-axo') {
+            globalCalls++;
+            return {status:null,signal:'SIGTERM',error:Object.assign(Error('observed global snapshot timeout'),{code:'ETIMEDOUT'}),stdout:'',stderr:'',pid:0};
+          }
+          if (executable === '/bin/ps' && args[0] === '-p') {
+            const selected = Number(args[1]);
+            const row = selected+' '+process.ppid+' '+process.pid+' S Mon Jan 5 12:00:00 2026';
+            const clean = {status:0,signal:null,error:undefined,stdout:row,stderr:'',pid:0};
+            switch (selected) {
+              case 999999999:return {...clean,status:1,stdout:''};
+              case 999999998:return {...clean,status:1,stdout:'',error:Error('unreadable')};
+              case 999999997:return {...clean,status:1,stdout:'',signal:'SIGTERM'};
+              case 999999996:return {...clean,status:1,stdout:'',stderr:'unavailable'};
+              case 999999995:return {...clean,status:2};
+              case 999999994:return {...clean,stdout:row.replace(String(selected),String(process.pid))};
+              case 999999993:return {...clean,stdout:row+String.fromCharCode(10)+row};
+              case 999999992:return {...clean,error:Error('unreadable')};
+              case 999999991:return {...clean,signal:'SIGTERM'};
+              case 999999990:return {...clean,stderr:'unavailable'};
+              case 999999989:return {...clean,status:2,stdout:''};
+            }
+          }
+          return original(executable,args,options);
+        };
+        syncBuiltinESMExports();
+      }
+      const {processSnapshot} = await import(${JSON.stringify(module)});
+      const rows = await processSnapshot(process.pid);
+      assert.equal(rows.length, 1);
+      assert.equal(rows[0].pid, process.pid);
+      assert.equal(rows[0].parent, process.ppid);
+      assert.ok(Number.isSafeInteger(rows[0].group) && rows[0].group > 0);
+      assert.ok(rows[0].identity.length > 0);
+      for (const invalid of [0,-1,1.5,NaN,Infinity,1000000000,'1',[],{}])
+        await assert.rejects(() => processSnapshot(invalid), /selection invalid/);
+      if (process.platform === 'darwin') {
+        assert.equal(globalCalls,0,'selected identity must not take a global snapshot');
+        await assert.rejects(() => processSnapshot(), /snapshot unavailable/);
+        assert.equal(globalCalls,1,'global discovery still reports its original failure');
+        assert.deepEqual(await processSnapshot(999999999),[],'only a clean missing selection is empty');
+        for (const invalid of [999999998,999999997,999999996,999999995,999999994,999999993,999999992,999999991,999999990,999999989])
+          await assert.rejects(() => processSnapshot(invalid), /snapshot (?:selection invalid|unavailable)/);
+      }
+    `;
+    const result = spawnSync(
+      process.execPath,
+      ["--input-type=module", "-e", program],
+      {
+        encoding: "utf8",
+        timeout: 10000,
+        maxBuffer: 128 * 1024,
+      },
+    );
+    assert.equal(
+      result.error,
+      undefined,
+      result.error?.message ?? "Snapshot helper must start",
+    );
+    assert.equal(result.signal, null, result.stderr);
+    assert.equal(result.status, 0, result.stderr);
+  },
+);

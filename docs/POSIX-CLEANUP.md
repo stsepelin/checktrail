@@ -14,6 +14,13 @@ budget. Admission enumerates only version, revision, tree, index and blob reads,
 requires an executable outside the project, disables project hooks/filters and
 [network protocols](https://git-scm.com/docs/git/2.47.0), and offers no MCP-selectable metadata bypass.
 
+Before sending its readiness packet, the owner reads only its own exact PID:
+Linux reads that process's procfs record and macOS selects that PID with the same
+fixed `ps` columns and one-second bound. Invalid selections, foreign or duplicate
+rows and failed reads cannot establish readiness. A clean missing selected PID
+remains absent. Full process snapshots remain required for descendant discovery
+and cleanup, and their failures remain unavailable evidence.
+
 The owner retains its group through normal target exit, so ordinary orphaned
 members and children retaining output pipes can still be selected. The native
 macOS snapshot omits its own short-lived inspection process by its actual PID.

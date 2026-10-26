@@ -2883,6 +2883,10 @@
     {
       "file": "dist/test/process-tree.test.js",
       "name": "POSIX cleanup does not enumerate unrelated processes after every observed PID is physically absent"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "native POSIX targeted snapshots retain only their exact PID and preserve global snapshot failure"
     }
   ],
   "review-benchmark-multi": [
@@ -5435,6 +5439,10 @@
     {
       "file": "dist/test/posix-owner.test.js",
       "name": "native POSIX delayed owner bootstrap distinguishes an expired request from an actually missing executable"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX owner bootstrap uses only its own identity and refuses a failed selected identity without starting project code"
     }
   ],
   "git-metadata": [
