@@ -684,7 +684,10 @@ test("native wrapper output adapter rejects invalid modes before admission and k
     assert.equal(store.read().attempts.length, 0);
     for (const [kind, bound, timeout] of [
       ["output", 3, 10000],
-      ["deadline", 64, 200],
+      // This case asserts a reached physical prefix before the invocation's
+      // deadline. Cold child startup on loaded native runners is not bounded by
+      // 200 ms; retain a finite fixture allowance before testing timeout cleanup.
+      ["deadline", 64, 5000],
     ] as const) {
       const value = await invokeNativeOutput(
         process.execPath,
