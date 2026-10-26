@@ -17,7 +17,7 @@ test("MCP lifecycle startup allows a delayed marker beyond the old polling windo
     await mkdir(path.join(root, ".checktrail"), { recursive: true });
     await writeFile(
       path.join(root, ".checktrail", "starting.json"),
-      JSON.stringify({ pid: 123, group: 456 }),
+      JSON.stringify({ pid: 123, parent: 456 }),
     );
     await rename(
       path.join(root, ".checktrail", "starting.json"),
@@ -29,7 +29,7 @@ test("MCP lifecycle startup allows a delayed marker beyond the old polling windo
   try {
     assert.deepEqual(await waitForMcpStartup(ready, closed), {
       pid: 123,
-      group: 456,
+      parent: 456,
     });
   } finally {
     await writer;
@@ -70,8 +70,8 @@ test("MCP lifecycle phase waits refuse early exits malformed markers and missing
   await mkdir(path.join(root, ".checktrail"), { recursive: true });
   for (const marker of [
     "{invalid",
-    JSON.stringify({ pid: 0, group: 2 }),
-    JSON.stringify({ pid: 1, group: "2" }),
+    JSON.stringify({ pid: 0, parent: 2 }),
+    JSON.stringify({ pid: 1, parent: "2" }),
   ]) {
     await writeFile(path.join(root, ".checktrail", "started.json"), marker);
     await assert.rejects(

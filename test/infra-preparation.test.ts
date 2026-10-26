@@ -190,7 +190,7 @@ const task=process.env.CHECKTRAIL_TEST_TASK,tag='checktrail-'+task+':public',ima
 const digest=createHash('sha256').update('original').digest('hex');const manifest=JSON.parse(await readFile(new URL('./scripts/ruby-tools-archives.json',root),'utf8'));
 for(const architecture of Object.values(manifest.architectures)) for(const pin of architecture.archives){pin.bytes=8;pin.sha256=digest;}
 await writeFile(new URL('./scripts/ruby-tools-archives.json',root),JSON.stringify(manifest));
-const pins=manifest.architectures.aarch64.archives,primary=manifest.architectures.aarch64.repository,mirror='https://dl-4.alpinelinux.org/alpine/v3.24/main/aarch64/',secondMirror='https://dl-5.alpinelinux.org/alpine/v3.24/main/aarch64/';let built=false,pulls=0;const requests=new Map(),signals=new Map(),deliveryUrls=new Map();const badDigest=${badDigest};
+const pins=manifest.architectures.aarch64.archives,primary=manifest.architectures.aarch64.repository,mirror='https://dl-4.alpinelinux.org/alpine/v3.24/main/aarch64/',secondMirror='https://mirrors.huaweicloud.com/alpine/v3.24/main/aarch64/';let built=false,pulls=0;const requests=new Map(),signals=new Map(),deliveryUrls=new Map();const badDigest=${badDigest};
 const allowed=new Map(pins.flatMap(pin=>[[primary+encodeURIComponent(pin.path),pin],[mirror+encodeURIComponent(pin.path),pin],[secondMirror+encodeURIComponent(pin.path),pin]]));
 childProcess.execFileSync=(command,args)=>{
  assert.equal(command,'docker');

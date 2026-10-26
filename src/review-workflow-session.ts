@@ -1,3 +1,4 @@
+import type { ReviewFindingsReport } from "./review-findings.js";
 import {
   ReviewWorkflowEngine,
   type ReviewWorkflowOptions,
@@ -9,7 +10,7 @@ import {
 } from "./review-workflow-audit.js";
 import type { ReviewWorkflowAuditOptions } from "./review-workflow-audit-schema.js";
 import type {
-  ReviewWorkflowAssignment,
+  ReviewWorkflowResult,
   ReviewWorkflowSummary,
   ReviewWorkflowNativeReceipt,
 } from "./review-workflow-schema.js";
@@ -19,6 +20,7 @@ export interface ReviewWorkflowSessionOptions extends ReviewWorkflowOptions {
 /** One command-only epoch; audited history is never passed to a worker or resumed. */
 export class ReviewWorkflowSession {
   readonly #engine: ReviewWorkflowEngine;
+  readonly #allCandidates: boolean;
   #audit: ReviewWorkflowAudit | undefined;
   #deferred:
     | {
@@ -38,6 +40,7 @@ export class ReviewWorkflowSession {
   ) {
     const { audit, ...engine } = options;
     this.#engine = new ReviewWorkflowEngine(root, engine);
+    this.#allCandidates = engine.candidateScope === "all";
     try {
       if (audit && auditActivation === "first-command") {
         ReviewWorkflowAudit.preflight(root, audit, engine);
@@ -69,7 +72,7 @@ export class ReviewWorkflowSession {
   async command(
     input: unknown,
     signal?: AbortSignal,
-  ): Promise<ReviewWorkflowAssignment | ReviewWorkflowSummary> {
+  ): Promise<ReviewWorkflowResult> {
     if (this.#closing || this.#failure)
       throw new Error("Workflow session is unavailable");
     if (this.#deferred) {
@@ -84,7 +87,7 @@ export class ReviewWorkflowSession {
       }
     }
     if (!this.#audit) return this.#engine.command(input, signal);
-    const captured = captureReviewWorkflowCommand(input);
+    const captured = captureReviewWorkflowCommand(input, this.#allCandidates);
     let commandId: string;
     try {
       commandId = this.#audit.begin(
@@ -100,17 +103,26 @@ export class ReviewWorkflowSession {
       throw error;
     }
     this.#active++;
-    let result: ReviewWorkflowAssignment | ReviewWorkflowSummary | null = null;
+    let result: ReviewWorkflowResult | null = null;
     let nativeReceipt: ReviewWorkflowNativeReceipt | null = null;
+    let findingsReceipt: ReviewFindingsReport | null = null;
     let operationError: unknown;
     let operationFailed = false;
     try {
       if (captured.capture.kind !== "complete")
         throw new Error("Workflow command exceeds JSON transport profile");
-      result = await this.#engine.command(captured.value, signal, (receipt) => {
-        if (nativeReceipt) throw new Error("Duplicate native receipt");
-        nativeReceipt = receipt;
-      });
+      result = await this.#engine.command(
+        captured.value,
+        signal,
+        (receipt) => {
+          if (nativeReceipt) throw new Error("Duplicate native receipt");
+          nativeReceipt = receipt;
+        },
+        (receipt) => {
+          if (findingsReceipt) throw new Error("Duplicate findings receipt");
+          findingsReceipt = receipt;
+        },
+      );
     } catch (error) {
       operationFailed = true;
       operationError = error;
@@ -123,6 +135,7 @@ export class ReviewWorkflowSession {
         result,
         this.#engine.snapshots(),
         nativeReceipt,
+        findingsReceipt,
       );
     } catch (error) {
       auditFailed = true;

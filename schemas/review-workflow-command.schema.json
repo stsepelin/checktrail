@@ -81,6 +81,252 @@
       },
       "required": ["operation", "workflowId"],
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": { "type": "string", "const": "findings" },
+        "workflowId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "declarations": {
+          "type": "object",
+          "properties": {
+            "decisions": {
+              "maxItems": 32,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "target": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "refutationRationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "adjudicationRationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "judgment": {
+                    "type": "object",
+                    "properties": {
+                      "disposition": {
+                        "type": "string",
+                        "enum": ["supported", "refuted", "unresolved"]
+                      },
+                      "citationIndex": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 31
+                      },
+                      "functionId": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "mechanism": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "reachableCallers": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "defaultsChecked": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "consequence": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "enum": [
+                                  "security-boundary",
+                                  "data-loss",
+                                  "availability",
+                                  "wrong-result",
+                                  "maintainability",
+                                  "unknown"
+                                ]
+                              },
+                              "extent": {
+                                "type": "string",
+                                "enum": [
+                                  "single",
+                                  "multiple",
+                                  "systemwide",
+                                  "unknown"
+                                ]
+                              },
+                              "access": {
+                                "type": "string",
+                                "enum": [
+                                  "unprivileged",
+                                  "authenticated",
+                                  "privileged",
+                                  "unknown"
+                                ]
+                              },
+                              "recovery": {
+                                "type": "string",
+                                "enum": [
+                                  "reversible",
+                                  "irreversible",
+                                  "unknown"
+                                ]
+                              },
+                              "statement": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 4096
+                              }
+                            },
+                            "required": [
+                              "category",
+                              "extent",
+                              "access",
+                              "recovery",
+                              "statement"
+                            ],
+                            "additionalProperties": false
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "repair": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "citationIndex": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 31
+                              },
+                              "functionId": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              },
+                              "requiredParameters": {
+                                "maxItems": 32,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 256
+                                }
+                              },
+                              "scope": {
+                                "type": "string",
+                                "enum": ["this-change", "follow-up", "unknown"]
+                              },
+                              "text": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 4096
+                              }
+                            },
+                            "required": [
+                              "citationIndex",
+                              "functionId",
+                              "requiredParameters",
+                              "scope",
+                              "text"
+                            ],
+                            "additionalProperties": false
+                          },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "disposition",
+                      "citationIndex",
+                      "functionId",
+                      "mechanism",
+                      "reachableCallers",
+                      "defaultsChecked",
+                      "consequence",
+                      "repair"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "target",
+                  "refutationRationale",
+                  "adjudicationRationale",
+                  "judgment"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "commonDefects": {
+              "maxItems": 32,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+                  "rootFunctionId": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "targets": {
+                    "minItems": 1,
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  }
+                },
+                "required": ["id", "rootFunctionId", "targets", "rationale"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["decisions", "commonDefects"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["operation", "workflowId", "declarations"],
+      "additionalProperties": false
     }
   ]
 }

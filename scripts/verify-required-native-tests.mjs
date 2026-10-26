@@ -123,6 +123,7 @@ const timeoutMs =
                 "swift-tools",
                 "go-extensions",
                 "assembly-nuxt",
+                "assembly-laravel",
                 "javascript-extensions",
                 "python-extensions",
                 "php-extensions",
@@ -132,10 +133,11 @@ const timeoutMs =
             )
           ? 300000
           : 120000;
-// The selected wrapper, compiler and formatting inventories contain independent callbacks. Each
-// selected callback gets a fresh process and file budget; unchanged callback
-// deadlines still apply. One heavy case runs at a time: two Gradle pipelines
-// exhausted native threads under the required 256-PID container limit. A full-suite run keeps every file/test in scope.
+// These inventories contain independent callbacks; Laravel acceptance also
+// runs a complete fresh-package cohort. Give each selected callback a fresh
+// process and file budget, retaining its own deadline. One heavy case runs at
+// a time: two Gradle pipelines exhausted native threads under the required
+// 256-PID container limit. A full-suite run keeps every file/test in scope.
 const isolatedCaseWorkers =
   !fullSuite &&
   (selection.some((profile) =>
@@ -144,6 +146,9 @@ const isolatedCaseWorkers =
       "tasks-runtime-manifest",
       "tasks-runtime-cli",
       "consumer-impact",
+      "native-harness-cleanup",
+      "tasks-runtime-startup",
+      "go-extensions",
     ].includes(profile),
   ) ||
     (selection.length === 1 &&
@@ -157,6 +162,7 @@ const isolatedCaseWorkers =
         "cpp-extensions",
         "terraform-extensions",
         "helm-extensions",
+        "assembly-laravel",
         ...mutationProfiles,
       ].includes(selection[0])))
     ? 1

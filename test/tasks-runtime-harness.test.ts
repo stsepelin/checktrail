@@ -1,9 +1,16 @@
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import { once } from "node:events";
 import path from "node:path";
 import { test } from "node:test";
-import { fixture } from "./helpers.js";
-import { terminal } from "./tasks-wire-fixture.js";
+import { fixture, captureFixtureProcessGroup } from "./helpers.js";
+import {
+  terminal,
+  setup as setupTaskFixture,
+  started as observeTaskFixture,
+  registerTaskCleanup,
+} from "./tasks-wire-fixture.js";
+import { processSnapshot, type ProcessIdentity } from "../src/process-tree.js";
 
 test("Tasks installed wrapper selects a bounded Windows aggregate allowance while preserving POSIX deadlines and failed child status", async (t) => {
   const root = await fixture(t, {
@@ -23,6 +30,7 @@ console.log(JSON.stringify({calls:globalThis.originalBudgetCalls,outcomes}));`,
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT;
   delete env.CHECKTRAIL_TASKS_MATRIX_INSTALLED;
+  env.CHECKTRAIL_TASKS_RUNTIME_SLOT = "original-selected-slot";
   for (const platform of ["win32", "linux", "darwin"]) {
     const result = spawnSync(
       process.execPath,
@@ -56,8 +64,9 @@ console.log(JSON.stringify({calls:globalThis.originalBudgetCalls,outcomes}));`,
     const child = observed.calls[1]!;
     assert.equal(child.executable, process.execPath);
     assert.ok(child.args);
-    assert.equal(child.args.length, 1);
+    assert.equal(child.args.length, 2);
     assert.ok(child.args[0]!.endsWith("verify-tasks-runtime-package.mjs"));
+    assert.equal(child.args[1], "original-selected-slot");
     assert.equal(child.maxBuffer, 4 * 1048576);
     assert.ok(child.timeout < observed.calls[0]!.timeout);
     assert.equal(observed.outcomes.length, 1);
@@ -329,17 +338,28 @@ test("Tasks terminal observation bounds a stalled read and refuses invalid deadl
 test("Tasks wire fixtures select bounded Windows budgets and preserve explicit lifecycle execution limits", async (t) => {
   const root = await fixture(t, {
     "wire-observer.mjs": `import {registerHooks} from 'node:module';import{EventEmitter}from'node:events';import{PassThrough}from'node:stream';
-const target=process.argv[2],platform=process.argv[3],calls=[],hooks=[];let killed=0;
-globalThis.originalWireSpawn=(executable,args,options)=>{calls.push({executable,args,stdio:options.stdio});const child=new EventEmitter();child.pid=42;child.stdin=new PassThrough();child.stdout=new PassThrough();child.stderr=new PassThrough();child.kill=()=>{killed++;child.emit('exit',1);return true;};child.stdin.on('finish',()=>queueMicrotask(()=>{child.stdout.end();child.stderr.end();child.emit('exit',0);}));return child;};
+const target=process.argv[2],platform=process.argv[3],calls=[],hooks=[],children=[];let killed=0;
+globalThis.originalWireSpawn=(executable,args,options)=>{calls.push({executable,args,stdio:options.stdio});const child=new EventEmitter();child.pid=42;child.stdin=new PassThrough();child.stdout=new PassThrough();child.stderr=new PassThrough();child.kill=()=>{killed++;child.emit('exit',1);return true;};children.push(child);child.stdin.on('finish',()=>queueMicrotask(()=>{child.stdout.end();child.stderr.end();child.emit('exit',0);}));return child;};
 registerHooks({resolve(specifier,context,next){if(context.parentURL===target&&specifier==='node:child_process')return{url:'data:text/javascript,'+encodeURIComponent('export function spawn(...args){return globalThis.originalWireSpawn(...args)}'),shortCircuit:true};return next(specifier,context);}});
-Object.defineProperty(process,'platform',{value:platform});const {wire,terminal,taskExecutionTimeoutMs,taskObservationTimeoutMs}=await import(target);
+Object.defineProperty(process,'platform',{value:platform});const {wire,terminal,taskExecutionTimeoutMs,taskObservationTimeoutMs,taskRequestTimeoutMs}=await import(target);
 const t={after:fn=>hooks.push(fn)},opt={root:'original-root',directory:'original-store'};
 for(const args of [undefined,['--allow-execution','--timeout-ms','5000']]){const connection=await wire(t,opt,args);await connection.close();}
-for(const close of hooks)await close();
+const requestConnection=await wire(t,opt),child=children.at(-1),requestOutcomes=[];
+const savedSetTimeout=globalThis.setTimeout,savedClearTimeout=globalThis.clearTimeout,timers=new Map();let clock=0,nextTimer=0;
+globalThis.setTimeout=(callback,ms)=>{const id=++nextTimer;timers.set(id,{at:clock+ms,callback});return id;};globalThis.clearTimeout=id=>timers.delete(id);
+const advance=ms=>{clock+=ms;for(const [id,timer]of [...timers])if(timer.at<=clock){timers.delete(id);timer.callback();}};
+try{
+const first=requestConnection.request('tools/call',{name:'validation_run',arguments:{}}).then(value=>({result:value.result}),error=>({error:error.message}));
+advance(10000);await Promise.resolve();requestOutcomes.push({pending:timers.size});
+if(platform==='win32'){child.stdout.write(JSON.stringify({id:0,result:{resultType:'task',taskId:'original-task'}})+'\\n');requestOutcomes.push(await first);advance(taskRequestTimeoutMs);requestOutcomes.push({pending:timers.size});}else requestOutcomes.push(await first);
+const expired=requestConnection.request('tasks/get',{taskId:'original-task'}).then(()=>({unexpected:true}),error=>({error:error.message}));advance(taskRequestTimeoutMs-1);requestOutcomes.push({pending:timers.size});advance(1);requestOutcomes.push(await expired);
+child.stdout.write(JSON.stringify({id:1,result:{resultType:'complete',status:'completed'}})+'\\n');requestOutcomes.push({pending:timers.size});
+}finally{globalThis.setTimeout=savedSetTimeout;globalThis.clearTimeout=savedClearTimeout;}
+await requestConnection.close();for(const close of hooks)await close();
 let elapsed=0;const previous=Object.getOwnPropertyDescriptor(performance,'now');Object.defineProperty(performance,'now',{value:()=>elapsed,configurable:true});
 const connection={request:async()=>{elapsed+=20000;return{result:{resultType:'complete',status:'completed'}}}};const outcomes=[];
 try{for(const timeout of [undefined,10000]){elapsed=0;try{const result=await terminal(connection,'original-task',timeout);outcomes.push({status:result.status});}catch(error){outcomes.push({error:error.message});}}}finally{if(previous)Object.defineProperty(performance,'now',previous);else delete performance.now;}
-console.log(JSON.stringify({calls,killed,taskExecutionTimeoutMs,taskObservationTimeoutMs,outcomes}));`,
+console.log(JSON.stringify({calls,killed,taskExecutionTimeoutMs,taskObservationTimeoutMs,taskRequestTimeoutMs,requestOutcomes,outcomes}));`,
     "lifecycle-observer.mjs": `import{registerHooks}from'node:module';const target=process.argv[2],platform=process.argv[3];globalThis.originalLifecycleCallbacks=[];globalThis.originalLifecycleCalls=[];
 const testStub="export function test(name,options,callback){if(name==='tasks-matrix lifecycle acceptance')globalThis.originalLifecycleCallbacks.push(callback);}";
 const fixtureStub="export const slow='await new Promise(resolve=>setTimeout(resolve,60000));',passingTest='original',taskExecutionTimeoutMs=20000;export async function setup(){return{root:'original-root',directory:'original-store'}};export async function wire(t,opt,args){globalThis.originalLifecycleCalls.push(args);throw new Error('original lifecycle selection observed');}export function unexpected(){throw Error('unexpected application execution')};export const createPlan=unexpected,validate=unexpected,openTaskStore=unexpected,taskId=unexpected,terminal=unexpected,report=unexpected,started=unexpected,stopped=unexpected,acknowledge=unexpected;";
@@ -367,7 +387,31 @@ Object.defineProperty(process,'platform',{value:platform});await import(target);
     assert.equal(value.taskObservationTimeoutMs, observation);
     assert.ok(observation >= execution + 10000);
     assert.equal(value.killed, 0);
-    assert.equal(value.calls.length, 2);
+    const request = platform === "win32" ? 35000 : 10000;
+    assert.equal(value.taskRequestTimeoutMs, request);
+    const expired = {
+      error: `Request timed out after ${request}ms: tasks/get: `,
+    };
+    assert.deepEqual(
+      value.requestOutcomes,
+      platform === "win32"
+        ? [
+            { pending: 1 },
+            { result: { resultType: "task", taskId: "original-task" } },
+            { pending: 0 },
+            { pending: 1 },
+            expired,
+            { pending: 0 },
+          ]
+        : [
+            { pending: 0 },
+            { error: "Request timed out after 10000ms: tools/call: " },
+            { pending: 1 },
+            expired,
+            { pending: 0 },
+          ],
+    );
+    assert.equal(value.calls.length, 3);
     for (const [index, call] of value.calls.entries()) {
       assert.equal(call.executable, process.execPath);
       assert.deepEqual(call.stdio, ["pipe", "pipe", "pipe"]);
@@ -546,7 +590,15 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
       "tasks-matrix": [first],
       "tasks-runtime-manifest": [second],
       "tasks-runtime-cli": [second],
+      "native-harness-cleanup": [second],
+      "tasks-runtime-startup": [second],
+      "tasks-runtime-startup-extra": [first],
+      "go-extensions": [second],
+      "go-extensions-extra": [first],
+      "assembly-laravel": [second],
+      "assembly-laravel-extra": [first],
       "tasks-matrix-extra": [first],
+      "native-harness-cleanup-extra": [first],
     }),
     "dist/src/original.js": "export const original = 1;\n",
     "marker.txt": "",
@@ -574,7 +626,13 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
     ["tasks-matrix"],
     ["tasks-runtime-manifest"],
     ["tasks-runtime-cli"],
+    ["native-harness-cleanup"],
+    ["tasks-runtime-startup"],
+    ["go-extensions"],
+    ["go-extensions", "tasks-runtime-manifest"],
+    ["assembly-laravel"],
     ["tasks-matrix", "tasks-runtime-manifest"],
+    ["tasks-runtime-manifest", "native-harness-cleanup"],
   ]) {
     await writeFile(path.join(root, "marker.txt"), "");
     const result = spawnSync(
@@ -587,9 +645,20 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
     );
     assert.equal(result.status, 0, result.stderr + result.stdout);
     const packet = JSON.parse(result.stdout);
-    const expected = selection
-      .map((profile) => (profile === "tasks-matrix" ? first.name : second.name))
-      .sort();
+    if (["assembly-laravel", "go-extensions"].includes(selection[0]!))
+      assert.equal(packet.timeoutMs, 300000);
+    const expected = [
+      ...new Set(
+        selection.map((profile) =>
+          profile === "tasks-matrix" ? first.name : second.name,
+        ),
+      ),
+    ].sort();
+    if (selection.length > 1)
+      assert.deepEqual(
+        packet.profiles,
+        selection.map((profile) => ({ profile, required: 1 })),
+      );
     assert.equal(packet.complete, true);
     assert.equal(packet.required, expected.length);
     assert.equal(packet.passed, expected.length);
@@ -615,26 +684,330 @@ test("Tasks generic CLI isolates exact required callbacks while adjacent profile
         .sort(),
     );
   }
-  await writeFile(path.join(root, "marker.txt"), "");
-  const adjacent = spawnSync(
-    process.execPath,
-    [
-      path.join(root, "scripts/verify-required-native-tests.mjs"),
-      "tasks-matrix-extra",
-    ],
-    { cwd: root, env, encoding: "utf8", timeout: 30000, maxBuffer: 1048576 },
-  );
-  assert.equal(adjacent.status, 1, adjacent.stderr);
-  const packet = JSON.parse(adjacent.stdout);
-  assert.equal(packet.complete, false);
-  assert.deepEqual(packet.problems, [
-    { name: "OriginalForeignPlatform", reason: "skipped-or-todo" },
-  ]);
-  assert.deepEqual(
-    (await readFile(path.join(root, "marker.txt"), "utf8"))
-      .trim()
-      .split("\n")
-      .sort(),
-    ["manifest", "matrix"],
-  );
+  for (const adjacentProfile of [
+    "tasks-matrix-extra",
+    "native-harness-cleanup-extra",
+    "tasks-runtime-startup-extra",
+    "go-extensions-extra",
+    "assembly-laravel-extra",
+  ]) {
+    await writeFile(path.join(root, "marker.txt"), "");
+    const adjacent = spawnSync(
+      process.execPath,
+      [
+        path.join(root, "scripts/verify-required-native-tests.mjs"),
+        adjacentProfile,
+      ],
+      { cwd: root, env, encoding: "utf8", timeout: 30000, maxBuffer: 1048576 },
+    );
+    assert.equal(adjacent.status, 1, adjacent.stderr);
+    const packet = JSON.parse(adjacent.stdout);
+    assert.equal(packet.complete, false);
+    assert.deepEqual(packet.problems, [
+      { name: "OriginalForeignPlatform", reason: "skipped-or-todo" },
+    ]);
+    assert.deepEqual(
+      (await readFile(path.join(root, "marker.txt"), "utf8"))
+        .trim()
+        .split("\n")
+        .sort(),
+      ["manifest", "matrix"],
+    );
+  }
 });
+
+test(
+  "isolated native namespace cleanup retries actual final-directory races and retains exhausted and failed evidence",
+  { timeout: 90000 },
+  async (t) => {
+    const helper = new URL(
+      "../../scripts/required-test-evidence.mjs",
+      import.meta.url,
+    ).href;
+    const root = await fixture(t, {
+      "case.mjs": `import{test}from'node:test';import assert from'node:assert/strict';import{writeFileSync}from'node:fs';import{tmpdir}from'node:os';test('native-scoped-cleanup',()=>{writeFileSync(process.env.ORIGINAL_CASE_MARKER,JSON.stringify({namespace:tmpdir()}));assert.equal(process.env.ORIGINAL_CASE_FAIL,'0','Original failure must survive namespace cleanup');});`,
+      "writer.mjs": `import fs from'node:fs';process.on('message',request=>{try{fs.writeFileSync(request.namespace+'/original-late-'+request.sequence,'Original late native write.');process.send({sequence:request.sequence,created:true});}catch(error){process.send({sequence:request.sequence,error:error.code});}});process.on('disconnect',()=>process.exit(0));process.send({ready:true,pid:process.pid});`,
+      "runner.mjs": `import fs from'node:fs';import{fork}from'node:child_process';import{once}from'node:events';import{fileURLToPath}from'node:url';
+const nativeRmdir=fs.rmdir;let active=null,sequence=0;const outcomes=[];
+const writer=fork(fileURLToPath(new URL('writer.mjs',import.meta.url)),[],{execArgv:[],stdio:['ignore','ignore','ignore','ipc']});const exited=once(writer,'exit');
+const ready=(await once(writer,'message'))[0];if(!ready.ready||ready.pid!==writer.pid)throw Error('Original native writer did not start');
+function create(namespace){return new Promise((resolve,reject)=>{const id=++sequence;const receive=message=>{if(message.sequence!==id)return;writer.off('message',receive);if(message.created)resolve();else reject(Error('Actual native write failed: '+message.error));};writer.on('message',receive);writer.send({namespace,sequence:id});});}
+fs.rmdir=function(directory,...rest){const state=active,path=Buffer.isBuffer(directory)?directory.toString():String(directory);let empty=false;try{empty=fs.readdirSync(path).length===0;}catch{}const race=state&&state.namespace===path&&empty&&(state.mode.startsWith('held')||state.injected===0);if(!race)return Reflect.apply(nativeRmdir,fs,[directory,...rest]);state.injected++;const callback=rest.pop();void create(path).then(()=>{Reflect.apply(nativeRmdir,fs,[directory,...rest,error=>{if(error)state.nativeCodes.push(error.code);callback(error);}]);},callback);};
+const{runRequiredTests}=await import(${JSON.stringify(helper)});
+try{for(const mode of ['released','held','failed','held-failed']){const marker=fileURLToPath(new URL(mode+'.json',import.meta.url));process.env.ORIGINAL_CASE_MARKER=marker;process.env.ORIGINAL_CASE_FAIL=mode.includes('failed')?'1':'0';const state={mode,namespace:null,armed:false,injected:0,nativeCodes:[]};active=state;const started=Date.now();let report,error;
+try{report=await runRequiredTests([{file:fileURLToPath(new URL('case.mjs',import.meta.url)),name:'native-scoped-cleanup'}],{timeoutMs:10000,isolatedCaseWorkers:1,onCaseProgress:event=>{if(event.phase==='terminal'){state.namespace=JSON.parse(fs.readFileSync(marker,'utf8')).namespace;process.kill(writer.pid,0);state.armed=true;}}});}catch(value){error={code:value.code,evidence:value.nativeTestEvidence};}
+finally{active=null;const namespace=state.namespace;let exists=false;if(namespace){try{exists=fs.statSync(namespace).isDirectory();}catch(value){if(value.code!=='ENOENT')throw value;}}outcomes.push({mode,report,error,armed:state.armed,injected:state.injected,nativeCodes:state.nativeCodes,exists,durationMs:Date.now()-started});if(namespace)await fs.promises.rm(namespace,{recursive:true,force:true});}}
+}finally{active=null;fs.rmdir=nativeRmdir;if(writer.connected)writer.disconnect();await exited;}console.log(JSON.stringify(outcomes));`,
+    });
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    delete env.NODE_OPTIONS;
+    const result = spawnSync(
+      process.execPath,
+      [path.join(root, "runner.mjs")],
+      { env, encoding: "utf8", timeout: 60000, maxBuffer: 2 * 1048576 },
+    );
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 0, result.stderr);
+    const cleanupDiagnostics = result.stderr.split("\n").flatMap((line) => {
+      try {
+        const value = JSON.parse(line);
+        return value.profile === "required-native-case-cleanup-failure"
+          ? [value]
+          : [];
+      } catch {
+        return [];
+      }
+    });
+    assert.equal(
+      cleanupDiagnostics.length,
+      2,
+      "Every exhausted namespace must emit its observed test evidence",
+    );
+    assert.deepEqual(
+      cleanupDiagnostics.map((value) => value.requiredFailedTerminalCount),
+      [0, 1],
+    );
+    assert.deepEqual(
+      cleanupDiagnostics.map((value) => value.observedPasses),
+      [1, 0],
+    );
+    assert.ok(
+      cleanupDiagnostics.every(
+        (value) =>
+          value.evidenceComplete === false &&
+          value.sourceStabilityAssessed === false,
+      ),
+    );
+    const rows = JSON.parse(result.stdout) as Array<{
+      mode: string;
+      report?: {
+        complete: boolean;
+        required: number;
+        passed: number;
+        ledger: { cases: Array<{ name: string; outcome: string }> };
+      };
+      error?: {
+        code: string;
+        evidence?: {
+          evidenceComplete: boolean;
+          observedPasses: number;
+          failedTerminalCount: number;
+          requiredFailedTerminalCount: number;
+          failures: Array<{ name: string; outcome: string; required: boolean }>;
+        };
+      };
+      armed: boolean;
+      injected: number;
+      nativeCodes: string[];
+      exists: boolean;
+      durationMs: number;
+    }>;
+    assert.deepEqual(
+      rows.map((row) => row.mode),
+      ["released", "held", "failed", "held-failed"],
+    );
+    for (const row of rows) {
+      assert.equal(
+        row.armed,
+        true,
+        "The real writer must be alive before actual namespace cleanup",
+      );
+      assert.ok(row.injected > 0);
+      assert.ok(
+        row.nativeCodes.length > 0,
+        "A real final rmdir must reject the newly created entry",
+      );
+      assert.ok(
+        row.nativeCodes.every((code) =>
+          ["ENOTEMPTY", "EPERM", "EBUSY"].includes(code),
+        ),
+      );
+      assert.ok(
+        row.durationMs < 15000,
+        "Namespace cleanup must retain a finite refusal boundary",
+      );
+      if (row.mode.startsWith("held")) {
+        assert.equal(
+          row.report,
+          undefined,
+          "Persistent native writes must not return passing acceptance",
+        );
+        assert.ok(row.error);
+        assert.ok(["ENOTEMPTY", "EPERM", "EBUSY"].includes(row.error!.code));
+        assert.equal(row.exists, true);
+        assert.ok(
+          row.error!.evidence,
+          "Exhausted cleanup must retain observed test evidence",
+        );
+        assert.equal(row.error!.evidence!.evidenceComplete, false);
+        assert.equal(
+          row.error!.evidence!.observedPasses,
+          row.mode === "held" ? 1 : 0,
+        );
+        assert.equal(
+          row.error!.evidence!.requiredFailedTerminalCount,
+          row.mode === "held" ? 0 : 1,
+        );
+        if (row.mode === "held-failed")
+          assert.deepEqual(
+            row
+              .error!.evidence!.failures.filter((item) => item.required)
+              .map((item) => [item.name, item.outcome]),
+            [["native-scoped-cleanup", "failed"]],
+          );
+      } else {
+        assert.equal(row.error, undefined, JSON.stringify(row));
+        assert.equal(row.exists, false);
+        assert.equal(row.report!.required, 1);
+        assert.equal(row.report!.passed, row.mode === "released" ? 1 : 0);
+        assert.equal(row.report!.complete, row.mode === "released");
+        assert.deepEqual(
+          row.report!.ledger.cases.map((item) => [item.name, item.outcome]),
+          [
+            [
+              "native-scoped-cleanup",
+              row.mode === "released" ? "passed" : "failed",
+            ],
+          ],
+        );
+      }
+    }
+  },
+);
+
+test(
+  "Tasks native startup observer admits delayed reached bodies and cleans their actual process group without touching siblings",
+  { skip: !["darwin", "linux"].includes(process.platform), timeout: 30000 },
+  async (t) => {
+    const { readFile, writeFile } = await import("node:fs/promises");
+    const { root } = await setupTaskFixture(t);
+    const leaf =
+      "require('node:fs').writeFileSync('.checktrail/leaf-ready',String(process.pid));setInterval(()=>{},1000);";
+    const file = path.join(root, "delayed-native-body.mjs");
+    await writeFile(
+      file,
+      `import{spawn}from'node:child_process';import{readFile,writeFile}from'node:fs/promises';import{setTimeout as delay}from'node:timers/promises';const child=spawn(process.execPath,['-e',${JSON.stringify(leaf)}],{stdio:'ignore'});for(;;){try{if(Number(await readFile('.checktrail/leaf-ready','utf8'))===child.pid)break;}catch(error){if(error.code!=='ENOENT')throw error;}await delay(10);}for(;;){try{await readFile('.checktrail/start-delay');break;}catch(error){if(error.code!=='ENOENT')throw error;}await delay(10);}await delay(4500);await writeFile('.checktrail/started.json',JSON.stringify({pid:process.pid,parent:process.ppid,child:child.pid}));setInterval(()=>{},1000);`,
+    );
+    const actor = spawn(process.execPath, [file], {
+        cwd: root,
+        detached: true,
+        stdio: "ignore",
+      }),
+      actorExit = once(actor, "exit");
+    // Teardown also runs when readiness fails before identities are captured.
+    let actorIdentity: ProcessIdentity | undefined = undefined,
+      childIdentity: ProcessIdentity | undefined = undefined;
+    const fallbackChildren: ProcessIdentity[] = [];
+    registerTaskCleanup(t, async () => {
+      const rows = await processSnapshot();
+      const current = rows.find((row) => row.pid === actor.pid);
+      if (
+        current &&
+        current.group === actor.pid &&
+        (!actorIdentity || current.identity === actorIdentity.identity)
+      ) {
+        fallbackChildren.push(
+          ...rows.filter((row) => row.parent === actor.pid),
+        );
+        actor.kill("SIGKILL");
+      }
+      await actorExit;
+    });
+    const sibling = spawn(
+        process.execPath,
+        ["-e", "setInterval(()=>{},1000)"],
+        { stdio: "ignore" },
+      ),
+      siblingExit = once(sibling, "exit");
+    t.after(async () => {
+      try {
+        const captured = [actorIdentity, childIdentity].filter(
+          (row): row is ProcessIdentity => row !== undefined,
+        );
+        for (let i = 0; i < 200; i++) {
+          const rows = await processSnapshot();
+          if (
+            captured.every(
+              (row) =>
+                !rows.some(
+                  (current) =>
+                    current.pid === row.pid &&
+                    current.identity === row.identity,
+                ),
+            )
+          )
+            break;
+          await new Promise((resolve) => setTimeout(resolve, 25));
+        }
+        const rows = await processSnapshot();
+        assert.ok(
+          captured.every(
+            (row) =>
+              !rows.some(
+                (current) =>
+                  current.pid === row.pid && current.identity === row.identity,
+              ),
+          ),
+          "Fixture cleanup must release the actual native group, not a guessed parent PID",
+        );
+        process.kill(sibling.pid!, 0);
+      } finally {
+        for (const row of [childIdentity, ...fallbackChildren]) {
+          if (!row) continue;
+          const current = (await processSnapshot()).find(
+            (current) => current.pid === row.pid,
+          );
+          if (current?.identity === row.identity && current.group === row.group)
+            process.kill(row.pid, "SIGKILL");
+        }
+        if (sibling.exitCode === null && sibling.signalCode === null)
+          sibling.kill("SIGKILL");
+        await siblingExit;
+      }
+    });
+    const until = performance.now() + 5000;
+    let childPid: number | undefined;
+    while (performance.now() < until) {
+      try {
+        childPid = Number(
+          await readFile(path.join(root, ".checktrail/leaf-ready"), "utf8"),
+        );
+        break;
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    assert.ok(childPid);
+    const rows = await processSnapshot();
+    actorIdentity = rows.find((row) => row.pid === actor.pid);
+    childIdentity = rows.find((row) => row.pid === childPid);
+    assert.ok(actorIdentity);
+    assert.ok(childIdentity);
+    assert.equal(actorIdentity.group, actor.pid);
+    assert.equal(childIdentity.parent, actor.pid);
+    await assert.rejects(
+      captureFixtureProcessGroup(actor.pid!, 1),
+      /parent differs/,
+    );
+    await assert.rejects(
+      captureFixtureProcessGroup(process.pid, process.ppid),
+      /outside this fixture/,
+    );
+    const started = performance.now();
+    const observation = observeTaskFixture(t, root);
+    void observation.catch(() => {});
+    await writeFile(
+      path.join(root, ".checktrail/start-delay"),
+      "Original observation armed.",
+    );
+    const value = await observation;
+    assert.equal(value.pid, actor.pid);
+    assert.equal(value.child, childPid);
+    assert.ok(
+      performance.now() - started >= 4000,
+      "The actual body must reach readiness beyond the old observation boundary",
+    );
+  },
+);

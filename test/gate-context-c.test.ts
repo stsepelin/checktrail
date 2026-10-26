@@ -420,9 +420,11 @@ test("context-c prerequisite acceptance", async (t) => {
   const unavailable = await runProcess(
     root,
     { executable: path.join(root, "missing-original-c"), args: [], cwd: "." },
-    { timeoutMs: 1000 },
+    { timeoutMs: 15000 },
   );
-  assert.equal(unavailable.errorCode, "ENOENT");
+  assert.equal(unavailable.errorCode, "ENOENT", JSON.stringify(unavailable));
+  assert.equal(unavailable.timedOut, false, JSON.stringify(unavailable));
+  assert.equal(unavailable.cancelled, false, JSON.stringify(unavailable));
   assert.notEqual(unavailable.exitCode, 0);
 });
 test("context-c stale acceptance", async (t) => {

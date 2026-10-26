@@ -19,6 +19,15 @@
   "examples/external-adapter/bundle/adapter.mjs": ["external-adapters"],
   "examples/external-adapter/native/adapter.go": ["external-adapters"],
   "examples/frameworks/laravel/bootstrap/app.php": ["laravel-assembly-arm64"],
+  "examples/frameworks/laravel/bootstrap/providers.php": [
+    "laravel-assembly-arm64"
+  ],
+  "examples/frameworks/laravel/checktrail.json": ["laravel-assembly-arm64"],
+  "examples/frameworks/laravel/checktrail.laravel.json": [
+    "laravel-assembly-arm64"
+  ],
+  "examples/frameworks/laravel/composer.json": ["laravel-assembly-arm64"],
+  "examples/frameworks/laravel/config/app.php": ["laravel-assembly-arm64"],
   "examples/frameworks/laravel/wiring.php": ["laravel-assembly-arm64"],
   "examples/ruby-tools/Gemfile": ["ruby-extensions-arm64", "ruby-tools"],
   "examples/ruby-tools/Gemfile.lock": ["ruby-extensions-arm64", "ruby-tools"],
@@ -37,9 +46,6 @@
   "scripts/audit-php-review-tools.mjs": ["php-review"],
   "scripts/c-context-tools.Dockerfile": ["c-context-arm64"],
   "scripts/capture-jvm-wrapper-guards.mjs": ["jvm-wrappers-arm64"],
-  "scripts/check-ci-completion.mjs": ["jvm-wrappers-arm64"],
-  "scripts/ci-impact.mjs": ["jvm-wrappers-arm64"],
-  "scripts/ci-native-inputs.json": ["jvm-wrappers-arm64"],
   "scripts/clang-tools.Dockerfile": ["clang"],
   "scripts/cleanup-cpp-tools-runtime.mjs": [
     "cpp-extensions-arm64",
@@ -196,6 +202,8 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
@@ -317,8 +325,13 @@
   "scripts/kotlin-context-tools.Dockerfile": ["kotlin-context-arm64"],
   "scripts/kotlin-tools.Dockerfile": ["kotlin", "kotlin-extensions-arm64"],
   "scripts/kubernetes-extension-schemas.json": ["kubernetes-extensions-arm64"],
+  "scripts/laravel-cache-runtime-evidence.mjs": ["laravel-assembly-arm64"],
   "scripts/laravel-tools/composer.json": ["laravel-assembly-arm64"],
   "scripts/laravel-tools/composer.lock": ["laravel-assembly-arm64"],
+  "scripts/lifecycle-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/maven-tools.Dockerfile": ["jvm-wrappers-arm64", "maven"],
   "scripts/native-acceptance-diagnostics.mjs": [
     "c-context-arm64",
@@ -355,6 +368,8 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
@@ -373,7 +388,6 @@
   "scripts/php-review-tools/composer.lock": ["php-review"],
   "scripts/php-tools/composer.json": ["mutation-native-arm64"],
   "scripts/php-tools/composer.lock": ["mutation-native-arm64"],
-  "scripts/plan-ci-impact.mjs": ["jvm-wrappers-arm64"],
   "scripts/prepare-acceptance-cache-subset.mjs": [
     "cpp-extensions-arm64",
     "django-assembly-arm64",
@@ -473,6 +487,8 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
@@ -827,10 +843,19 @@
   ],
   "scripts/retry-go-acquisition.mjs": ["go-workspaces-arm64"],
   "scripts/retry-maven-acquisition.mjs": ["jvm-wrappers-arm64", "maven"],
+  "scripts/review-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/ruby-context-tools.Dockerfile": ["ruby-context-arm64"],
   "scripts/ruby-extensions-acceptance-selection.mjs": ["ruby-extensions-arm64"],
   "scripts/ruby-tools-archives.json": ["ruby-extensions-arm64", "ruby-tools"],
   "scripts/ruby-tools.Dockerfile": ["ruby-extensions-arm64", "ruby-tools"],
+  "scripts/runtime-installation-capture.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
   "scripts/rust-context-tools.Dockerfile": ["rust-context-arm64"],
   "scripts/rust-extension-components.json": ["rust-extensions-arm64"],
   "scripts/rust-extension-tools.Dockerfile": ["rust-extensions-arm64"],
@@ -843,7 +868,8 @@
   "scripts/swift-tools.Dockerfile": ["swift-tools"],
   "scripts/tasks-runtime-evidence.mjs": [
     "tasks-runtime",
-    "tasks-runtime-arm64"
+    "tasks-runtime-arm64",
+    "windows"
   ],
   "scripts/terraform-extensions-controls.json": ["terraform-extensions-arm64"],
   "scripts/vb-context-tools.Dockerfile": ["vb-context-arm64"],
@@ -949,6 +975,8 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
@@ -999,12 +1027,21 @@
   "scripts/verify-kustomize-package.mjs": ["kustomize"],
   "scripts/verify-laravel-assembly-container.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-laravel-assembly-guards.mjs": ["laravel-assembly-arm64"],
+  "scripts/verify-laravel-cache-package.mjs": ["laravel-assembly-arm64"],
+  "scripts/verify-laravel-cache.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-laravel-supplemental.mjs": ["laravel-assembly-arm64"],
+  "scripts/verify-lifecycle-platforms-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-lifecycle-platforms.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/verify-maven-container.mjs": ["maven"],
   "scripts/verify-maven-package.mjs": ["maven"],
   "scripts/verify-mutation-container.mjs": ["mutation-native-arm64"],
   "scripts/verify-mutation-guards.mjs": [
-    "jvm-wrappers-arm64",
     "mutation-native-arm64",
     "mutation-passive-guards"
   ],
@@ -1088,6 +1125,11 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "scripts/verify-review-runtime-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-review-runtime.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
   "scripts/verify-ruby-container.mjs": ["ruby"],
   "scripts/verify-ruby-context-container.mjs": ["ruby-context-arm64"],
   "scripts/verify-ruby-context-guards.mjs": ["ruby-context-arm64"],
@@ -1119,9 +1161,14 @@
   "scripts/verify-tasks-runtime-arm64.mjs": ["tasks-runtime-arm64"],
   "scripts/verify-tasks-runtime-package.mjs": [
     "tasks-runtime",
-    "tasks-runtime-arm64"
+    "tasks-runtime-arm64",
+    "windows"
   ],
-  "scripts/verify-tasks-runtime.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
+  "scripts/verify-tasks-runtime.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
   "scripts/verify-terraform-container.mjs": ["terraform"],
   "scripts/verify-terraform-extensions-container.mjs": [
     "terraform-extensions-arm64"
@@ -1156,6 +1203,44 @@
   ],
   "scripts/windows-task-access-diagnostics.mjs": ["tasks-runtime"],
   "scripts/yaml-context-tools.Dockerfile": ["yaml-context-arm64"],
+  "src/clang-runner.ts": [
+    "clang",
+    "cpp-extensions-arm64",
+    "cpp-tools",
+    "swift-extensions-arm64"
+  ],
+  "src/detekt-extensions-runner.ts": ["jvm-analyzer-extensions-arm64"],
+  "src/detekt-runner.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
+  "src/helm-extensions-runner.ts": ["helm-extensions-arm64"],
+  "src/helm-runner.ts": [
+    "helm",
+    "helm-extensions-arm64",
+    "kubeconform",
+    "kubernetes-extensions-arm64",
+    "kustomize",
+    "kustomize-extensions-arm64",
+    "terraform",
+    "terraform-extensions-arm64"
+  ],
+  "src/scala-extensions-runner.ts": ["scala-extensions-arm64"],
+  "src/scala-runner.ts": [
+    "kotlin-extensions-arm64",
+    "scala",
+    "scala-context-arm64",
+    "scala-extensions-arm64"
+  ],
+  "src/terraform-extensions-runner.ts": ["terraform-extensions-arm64"],
+  "src/terraform-runner.ts": [
+    "hcl-context-arm64",
+    "helm",
+    "helm-extensions-arm64",
+    "kubeconform",
+    "kubernetes-extensions-arm64",
+    "kustomize",
+    "kustomize-extensions-arm64",
+    "terraform",
+    "terraform-extensions-arm64"
+  ],
   "test/actionlint.test.ts": ["actionlint"],
   "test/checkstyle-fixture.ts": ["checkstyle"],
   "test/checkstyle-surfaces.test.ts": ["checkstyle"],
@@ -1185,7 +1270,11 @@
   "test/detekt-surfaces.test.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
   "test/detekt.test.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
   "test/django-evidence.test.ts": ["django-assembly-arm64"],
-  "test/django.test.ts": ["django-assembly-arm64", "fastapi-assembly-arm64"],
+  "test/django.test.ts": [
+    "django-assembly-arm64",
+    "fastapi-assembly-arm64",
+    "laravel-assembly-arm64"
+  ],
   "test/dotnet-build-analyzers.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
@@ -1403,11 +1492,16 @@
   "test/executable-bundle.test.ts": ["external-adapters"],
   "test/external-adapter.test.ts": ["external-adapters"],
   "test/fastapi-evidence.test.ts": ["fastapi-assembly-arm64"],
-  "test/fastapi.test.ts": ["django-assembly-arm64", "fastapi-assembly-arm64"],
+  "test/fastapi.test.ts": [
+    "django-assembly-arm64",
+    "fastapi-assembly-arm64",
+    "laravel-assembly-arm64"
+  ],
   "test/fetch-pack.test.ts": ["external-adapters"],
   "test/framework-examples.test.ts": [
     "django-assembly-arm64",
-    "fastapi-assembly-arm64"
+    "fastapi-assembly-arm64",
+    "laravel-assembly-arm64"
   ],
   "test/framework-report-semantics.ts": [
     "django-assembly-arm64",
@@ -1461,6 +1555,14 @@
     "kustomize-extensions-arm64"
   ],
   "test/gate-kustomize-extensions.test.ts": ["kustomize-extensions-arm64"],
+  "test/gate-lifecycle-platforms.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/gate-multi-candidate-workflow.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/gate-mutation-runners.test.ts": ["mutation-native-arm64"],
   "test/gate-php-extensions.test.ts": ["php-extensions-arm64"],
   "test/gate-python-extensions.test.ts": ["python-extensions-arm64"],
@@ -1468,7 +1570,11 @@
   "test/gate-rust-extensions.test.ts": ["rust-extensions-arm64"],
   "test/gate-scala-extensions.test.ts": ["scala-extensions-arm64"],
   "test/gate-swift-extensions.test.ts": ["swift-extensions-arm64"],
-  "test/gate-tasks-matrix.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/gate-tasks-matrix.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
   "test/gate-terraform-extensions.test.ts": ["terraform-extensions-arm64"],
   "test/git-fixture.ts": [
     "c-context-arm64",
@@ -1496,6 +1602,7 @@
     "go-workspaces-arm64",
     "kustomize-extensions-arm64"
   ],
+  "test/go-installed-harness.test.ts": ["go-workspaces-arm64"],
   "test/go-matrix.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
@@ -1843,8 +1950,25 @@
     "terraform-extensions-arm64"
   ],
   "test/larastan.test.ts": ["php-extensions-arm64", "php-review"],
+  "test/laravel-cache-runtime-harness.test.ts": ["laravel-assembly-arm64"],
   "test/laravel-cache.test.ts": ["laravel-assembly-arm64"],
   "test/laravel.test.ts": ["laravel-assembly-arm64"],
+  "test/lifecycle-platforms-boundaries.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/lifecycle-platforms-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/lifecycle-platforms-interruption.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/lifecycle-runtime-harness.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/maven-fixture.ts": [
     "cpp-extensions-arm64",
     "cpp-tools",
@@ -1913,7 +2037,11 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
-  "test/mcp-validation-tasks.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/mcp-validation-tasks.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
   "test/mutation-native-copy.test.ts": ["mutation-passive-guards"],
   "test/mutation-native-evidence.test.ts": ["mutation-passive-guards"],
   "test/mutation-native-fixture.ts": [
@@ -1970,8 +2098,17 @@
     "python-extensions-arm64",
     "vue-router"
   ],
-  "test/process-output.test.ts": ["windows"],
-  "test/process-tree.test.ts": ["laravel-assembly-arm64"],
+  "test/posix-owner.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/process-output.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/process-tree.test.ts": [
+    "laravel-assembly-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/pytest-evidence.test.ts": ["python-extensions-arm64"],
   "test/pytest.test.ts": [
     "django-assembly-arm64",
@@ -1989,7 +2126,9 @@
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
-    "scala-context-arm64"
+    "scala-context-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/review-c-boundaries-fixture.ts": ["c-context-arm64"],
   "test/review-c-boundaries.test.ts": ["c-context-arm64"],
@@ -2003,7 +2142,9 @@
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
-    "scala-context-arm64"
+    "scala-context-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/review-context-limits.test.ts": ["go-workspaces-arm64"],
   "test/review-cpp-boundaries-fixture.ts": ["cpp-context-arm64"],
@@ -2033,7 +2174,9 @@
   ],
   "test/review-nuxt-assembly-fixture.ts": ["nuxt-assembly-arm64"],
   "test/review-nuxt-assembly-guards.test.ts": ["nuxt-assembly-arm64"],
+  "test/review-probe-storage.test.ts": ["tasks-runtime"],
   "test/review-ruby-boundaries-fixture.ts": ["ruby-context-arm64"],
+  "test/review-runtime-evidence.test.ts": ["tasks-runtime"],
   "test/review-scala-boundaries-fixture.ts": ["scala-context-arm64"],
   "test/review-swift-boundaries-fixture.ts": ["swift-context-arm64"],
   "test/review-swift-boundaries.test.ts": ["swift-context-arm64"],
@@ -2043,14 +2186,24 @@
   "test/review-vue-router-assembly-guards.test.ts": [
     "vue-router-assembly-arm64"
   ],
-  "test/review-workflow-fixture.ts": ["go-workspaces-arm64"],
+  "test/review-workflow-findings-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-workflow-fixture.ts": [
+    "go-workspaces-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/review-yaml-boundaries-fixture.ts": ["yaml-context-arm64"],
   "test/review-yaml-boundaries.test.ts": ["yaml-context-arm64"],
   "test/review.test.ts": [
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
-    "scala-context-arm64"
+    "scala-context-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/ruby-extensions-fixture.ts": ["ruby-extensions-arm64"],
   "test/ruby-tools-cancellation.test.ts": [
@@ -2087,6 +2240,11 @@
     "mutation-native-arm64",
     "python-extensions-arm64",
     "rust-extensions-arm64"
+  ],
+  "test/runner.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/runtime-installation-capture.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/rust-component-preflight.test.ts": ["rust-extensions-arm64"],
   "test/rust-extensions-fixture.ts": ["rust-extensions-arm64"],
@@ -2184,13 +2342,26 @@
     "swift-extensions-arm64",
     "swift-tools"
   ],
-  "test/task-store.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/task-store.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
   "test/tasks-runtime-harness.test.ts": [
     "tasks-runtime",
-    "tasks-runtime-arm64"
+    "tasks-runtime-arm64",
+    "windows"
   ],
-  "test/tasks-sdk-fallback.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
-  "test/tasks-wire-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/tasks-sdk-fallback.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/tasks-wire-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
   "test/terraform-extensions-fixture.ts": ["terraform-extensions-arm64"],
   "test/terraform-extensions-lifecycle.test.ts": ["terraform-extensions-arm64"],
   "test/terraform-extensions-surfaces.test.ts": ["terraform-extensions-arm64"],
@@ -2325,7 +2496,11 @@
     "python-extensions-arm64",
     "vue-router"
   ],
-  "test/validation-tasks.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/validation-tasks.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
   "test/vite-library.test.ts": ["javascript-extensions-arm64"],
   "test/vitest.test.ts": [
     "nuxt",
@@ -2354,5 +2529,9 @@
     "tasks-runtime-arm64",
     "windows"
   ],
-  "test/windows-task-access.test.ts": ["tasks-runtime", "tasks-runtime-arm64"]
+  "test/windows-task-access.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ]
 }

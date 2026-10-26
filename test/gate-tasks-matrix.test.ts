@@ -322,6 +322,9 @@ test(
             import.meta.url,
           ),
         ),
+        ...(process.env.CHECKTRAIL_TASKS_RUNTIME_SLOT
+          ? [process.env.CHECKTRAIL_TASKS_RUNTIME_SLOT]
+          : []),
       ],
       {
         env,
@@ -361,5 +364,10 @@ test(
       receipt.evidence.profileEvidence.passed,
       receipt.evidence.profileEvidence.required,
     );
+    const { writeRuntimeInstallation } = await import(
+      new URL("../../scripts/runtime-installation-capture.mjs", import.meta.url)
+        .href
+    );
+    await writeRuntimeInstallation("tasks", receipt);
   },
 );
