@@ -30,6 +30,7 @@ console.log(JSON.stringify({calls:globalThis.originalBudgetCalls,outcomes}));`,
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT;
   delete env.CHECKTRAIL_TASKS_MATRIX_INSTALLED;
+  env.CHECKTRAIL_TASKS_RUNTIME_SLOT = "original-selected-slot";
   for (const platform of ["win32", "linux", "darwin"]) {
     const result = spawnSync(
       process.execPath,
@@ -63,8 +64,9 @@ console.log(JSON.stringify({calls:globalThis.originalBudgetCalls,outcomes}));`,
     const child = observed.calls[1]!;
     assert.equal(child.executable, process.execPath);
     assert.ok(child.args);
-    assert.equal(child.args.length, 1);
+    assert.equal(child.args.length, 2);
     assert.ok(child.args[0]!.endsWith("verify-tasks-runtime-package.mjs"));
+    assert.equal(child.args[1], "original-selected-slot");
     assert.equal(child.maxBuffer, 4 * 1048576);
     assert.ok(child.timeout < observed.calls[0]!.timeout);
     assert.equal(observed.outcomes.length, 1);

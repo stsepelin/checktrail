@@ -534,3 +534,9 @@ All-candidate findings inspection also supports quiescent unfinished stages afte
 an accepted reviewer response. Missing judgments remain unresolved; reached native
 receipts awaiting adjudication stay bound. The whole-profile synthetic cases do
 not qualify the final engine matrix or verify host claim truth.
+
+The Laravel owned-cache foundation has source and fresh offline installed
+collectors that require all nine preserved callbacks, unchanged declared harness
+and engine bytes, observed Node/PHP executables and selected framework runtime
+bytes. This acceptance binding does not expand the Laravel semantic or platform
+support above and does not close Gate A.

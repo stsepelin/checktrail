@@ -6,6 +6,7 @@ import os from "node:os";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import { runRequiredTests } from "./required-test-evidence.mjs";
+import { withRuntimeInstallationCapture } from "./runtime-installation-capture.mjs";
 import { windowsEnvironment } from "../dist/src/windows-process.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const hash = (b) => createHash("sha256").update(b).digest("hex");
@@ -175,97 +176,171 @@ export async function verifyTasksRuntime({
     assert.ok(imageVersion && /^20\d{6}\.\d+\.\d+$/.test(imageVersion));
     assert.ok(imageOS && /^[A-Za-z0-9-]+$/.test(imageOS));
   }
-  const requirements = await tasksRuntimeRequirements();
-  const harnessFiles = [
-    ...new Set(requirements.map((x) => x.file)),
-    "dist/test/helpers.js",
-    "package.json",
-    "docs/gate-a-profiles.v1.json",
-    "scripts/verify-tasks-runtime.mjs",
-    "dist/test/tasks-wire-fixture.js",
-    "scripts/required-test-evidence.mjs",
-    "scripts/required-native-tests.json",
-    "scripts/tasks-runtime-evidence.mjs",
-  ];
-  const inputs = await Promise.all(
-    harnessFiles.map(async (file) => [
-      file,
-      hash(await readFile(path.join(root, file))),
-    ]),
-  );
-  const nodeExecutableSha256 = hash(await readFile(process.execPath));
-  let systemPowerShell = null,
-    systemPowerShellSha256 = null;
-  if (process.platform === "win32") {
-    const environment = windowsEnvironment(process.env);
-    assert.ok(environment.SYSTEMROOT);
-    systemPowerShell = await realpath(
-      path.win32.join(
-        environment.SYSTEMROOT,
-        "System32/WindowsPowerShell/v1.0/powershell.exe",
-      ),
-    );
-    systemPowerShellSha256 = hash(await readFile(systemPowerShell));
-  }
-  const sourceBefore = await treeHash(path.join(root, "dist/src"));
-  const startedAt = new Date().toISOString();
-  const profile = await runRequiredTests(
-    requirements.map((p) => ({ ...p, file: path.join(root, p.file) })),
-    {
-      timeoutMs: 600000,
-      isolatedCaseWorkers: 1,
-      onCaseProgress: (event) =>
-        process.stderr.write(
-          JSON.stringify({ profile: "tasks-runtime", ...event }) + "\n",
-        ),
+  const installed = process.env.CHECKTRAIL_TASKS_MATRIX_INSTALLED === "1";
+  return await withRuntimeInstallationCapture(
+    "tasks",
+    { installed, slot },
+    async (capture) => {
+      const requirements = await tasksRuntimeRequirements();
+      const harnessFiles = tasksRuntimeHarnessFiles(requirements);
+      const inputs = await Promise.all(
+        harnessFiles.map(async (file) => [
+          file,
+          hash(await readFile(path.join(root, file))),
+        ]),
+      );
+      const nodeExecutableSha256 = hash(await readFile(process.execPath));
+      let systemPowerShell = null,
+        systemPowerShellSha256 = null;
+      if (process.platform === "win32") {
+        const environment = windowsEnvironment(process.env);
+        assert.ok(environment.SYSTEMROOT);
+        systemPowerShell = await realpath(
+          path.win32.join(
+            environment.SYSTEMROOT,
+            "System32/WindowsPowerShell/v1.0/powershell.exe",
+          ),
+        );
+        systemPowerShellSha256 = hash(await readFile(systemPowerShell));
+      }
+      const sourceBefore = await treeHash(path.join(root, "dist/src"));
+      const startedAt = new Date().toISOString();
+      const profile = await runRequiredTests(
+        requirements.map((p) => ({ ...p, file: path.join(root, p.file) })),
+        {
+          timeoutMs: 600000,
+          isolatedCaseWorkers: 1,
+          onCaseProgress: (event) =>
+            process.stderr.write(
+              JSON.stringify({ profile: "tasks-runtime", ...event }) + "\n",
+            ),
+        },
+      );
+      assert.equal(profile.complete, true, JSON.stringify(profile.problems));
+      assert.equal(profile.required, requirements.length);
+      assert.equal(profile.passed, requirements.length);
+      assert.equal(profile.ledger.truncated, false);
+      assert.equal(profile.ledger.cases.length, requirements.length);
+      assert.ok(profile.ledger.cases.every((c) => c.outcome === "passed"));
+      assert.equal(await treeHash(path.join(root, "dist/src")), sourceBefore);
+      const after = await Promise.all(
+        harnessFiles.map(async (file) => [
+          file,
+          hash(await readFile(path.join(root, file))),
+        ]),
+      );
+      assert.deepEqual(after, inputs);
+      assert.equal(
+        hash(await readFile(process.execPath)),
+        nodeExecutableSha256,
+      );
+      if (systemPowerShell !== null)
+        assert.equal(
+          hash(await readFile(systemPowerShell)),
+          systemPowerShellSha256,
+        );
+      const result = {
+        schemaVersion: 1,
+        profile: "tasks-runtime-foundation-v1",
+        installed,
+        installedEvidence: null,
+        runtime: {
+          slot,
+          node: process.versions.node,
+          platform: process.platform,
+          architecture: process.arch,
+          nodeExecutableSha256,
+          systemPowerShellSha256,
+          sqliteVersion: process.versions.sqlite ?? null,
+          osRelease: os.release(),
+          osVersion: os.version(),
+          imageVersion,
+          imageOS,
+          hostedImageMetadataAttested: false,
+        },
+        startedAt,
+        finishedAt: new Date().toISOString(),
+        runtimeArtifactsSha256: sourceBefore,
+        harnessSha256: hash(JSON.stringify(inputs)),
+        inputSources: inputs,
+        profileEvidence: profile,
+        windowsPrivateStorageNativeVerified: process.platform === "win32",
+        inferenceInvoked: false,
+        fieldEvaluationExecuted: false,
+        gateATasksMatrixComplete: false,
+      };
+      if (!installed)
+        result.installedEvidence = requireTasksRuntimeInstallation(
+          await capture.read(),
+          result,
+          requirements,
+        );
+      return result;
     },
   );
-  assert.equal(profile.complete, true, JSON.stringify(profile.problems));
+}
+
+export function tasksRuntimeHarnessFiles(requirements) {
+  return [
+    ...new Set([
+      ...requirements.map((row) => row.file),
+      "dist/test/helpers.js",
+      "dist/test/tool-fixture.js",
+      "package.json",
+      "package-lock.json",
+      "docs/gate-a-profiles.v1.json",
+      "scripts/verify-tasks-runtime.mjs",
+      "scripts/verify-tasks-runtime-package.mjs",
+      "dist/test/tasks-wire-fixture.js",
+      "scripts/required-test-evidence.mjs",
+      "scripts/required-native-tests.json",
+      "scripts/tasks-runtime-evidence.mjs",
+      "scripts/runtime-installation-capture.mjs",
+      "scripts/install-acceptance-package.mjs",
+    ]),
+  ];
+}
+export function requireTasksRuntimeInstallation(receipt, source, requirements) {
+  assert.equal(receipt.schemaVersion, 1);
+  assert.equal(receipt.profile, "tasks-runtime-foundation-installed-v1");
+  assert.equal(receipt.offlineProductionInstall, true);
+  assert.equal(receipt.lifecycleScriptsExecuted, false);
+  assert.equal(receipt.harnessOutsideInstalledPackage, true);
+  assert.match(receipt.tarballSha256, /^[a-f0-9]{64}$/);
+  assert.match(receipt.productionDependencyLockSha256, /^[a-f0-9]{64}$/);
+  const evidence = receipt.evidence;
+  assert.equal(evidence.profile, "tasks-runtime-foundation-v1");
+  assert.equal(evidence.installed, true);
+  assert.equal(evidence.installedEvidence, null);
+  assert.deepEqual(
+    evidence.runtime,
+    source.runtime,
+    "Installed Tasks runtime differs from source",
+  );
+  assert.equal(
+    evidence.runtimeArtifactsSha256,
+    source.runtimeArtifactsSha256,
+    "Installed Tasks engine differs from source",
+  );
+  assert.equal(
+    evidence.harnessSha256,
+    source.harnessSha256,
+    "Installed Tasks harness differs from source",
+  );
+  assert.deepEqual(evidence.inputSources, source.inputSources);
+  const profile = evidence.profileEvidence;
+  assert.equal(profile.complete, true);
   assert.equal(profile.required, requirements.length);
   assert.equal(profile.passed, requirements.length);
   assert.equal(profile.ledger.truncated, false);
   assert.equal(profile.ledger.cases.length, requirements.length);
-  assert.ok(profile.ledger.cases.every((c) => c.outcome === "passed"));
-  assert.equal(await treeHash(path.join(root, "dist/src")), sourceBefore);
-  const after = await Promise.all(
-    harnessFiles.map(async (file) => [
-      file,
-      hash(await readFile(path.join(root, file))),
-    ]),
+  assert.ok(profile.ledger.cases.every((row) => row.outcome === "passed"));
+  assert.deepEqual(
+    profile.ledger.cases.map((row) => row.name).sort(),
+    requirements.map((row) => row.name).sort(),
   );
-  assert.deepEqual(after, inputs);
-  assert.equal(hash(await readFile(process.execPath)), nodeExecutableSha256);
-  if (systemPowerShell !== null)
-    assert.equal(
-      hash(await readFile(systemPowerShell)),
-      systemPowerShellSha256,
-    );
-  return {
-    schemaVersion: 1,
-    profile: "tasks-runtime-foundation-v1",
-    runtime: {
-      slot,
-      node: process.versions.node,
-      platform: process.platform,
-      architecture: process.arch,
-      nodeExecutableSha256,
-      systemPowerShellSha256,
-      sqliteVersion: process.versions.sqlite ?? null,
-      osRelease: os.release(),
-      osVersion: os.version(),
-      imageVersion,
-      imageOS,
-      hostedImageMetadataAttested: false,
-    },
-    startedAt,
-    finishedAt: new Date().toISOString(),
-    runtimeArtifactsSha256: sourceBefore,
-    harnessSha256: hash(JSON.stringify(inputs)),
-    inputSources: inputs,
-    profileEvidence: profile,
-    windowsPrivateStorageNativeVerified: process.platform === "win32",
-    inferenceInvoked: false,
-    fieldEvaluationExecuted: false,
-    gateATasksMatrixComplete: false,
-  };
+  assert.equal(evidence.inferenceInvoked, false);
+  assert.equal(evidence.fieldEvaluationExecuted, false);
+  assert.equal(evidence.gateATasksMatrixComplete, false);
+  return receipt;
 }

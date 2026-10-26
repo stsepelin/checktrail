@@ -19,6 +19,15 @@
   "examples/external-adapter/bundle/adapter.mjs": ["external-adapters"],
   "examples/external-adapter/native/adapter.go": ["external-adapters"],
   "examples/frameworks/laravel/bootstrap/app.php": ["laravel-assembly-arm64"],
+  "examples/frameworks/laravel/bootstrap/providers.php": [
+    "laravel-assembly-arm64"
+  ],
+  "examples/frameworks/laravel/checktrail.json": ["laravel-assembly-arm64"],
+  "examples/frameworks/laravel/checktrail.laravel.json": [
+    "laravel-assembly-arm64"
+  ],
+  "examples/frameworks/laravel/composer.json": ["laravel-assembly-arm64"],
+  "examples/frameworks/laravel/config/app.php": ["laravel-assembly-arm64"],
   "examples/frameworks/laravel/wiring.php": ["laravel-assembly-arm64"],
   "examples/ruby-tools/Gemfile": ["ruby-extensions-arm64", "ruby-tools"],
   "examples/ruby-tools/Gemfile.lock": ["ruby-extensions-arm64", "ruby-tools"],
@@ -37,9 +46,6 @@
   "scripts/audit-php-review-tools.mjs": ["php-review"],
   "scripts/c-context-tools.Dockerfile": ["c-context-arm64"],
   "scripts/capture-jvm-wrapper-guards.mjs": ["jvm-wrappers-arm64"],
-  "scripts/check-ci-completion.mjs": ["jvm-wrappers-arm64"],
-  "scripts/ci-impact.mjs": ["jvm-wrappers-arm64"],
-  "scripts/ci-native-inputs.json": ["jvm-wrappers-arm64"],
   "scripts/clang-tools.Dockerfile": ["clang"],
   "scripts/cleanup-cpp-tools-runtime.mjs": [
     "cpp-extensions-arm64",
@@ -311,8 +317,13 @@
   "scripts/kotlin-context-tools.Dockerfile": ["kotlin-context-arm64"],
   "scripts/kotlin-tools.Dockerfile": ["kotlin", "kotlin-extensions-arm64"],
   "scripts/kubernetes-extension-schemas.json": ["kubernetes-extensions-arm64"],
+  "scripts/laravel-cache-runtime-evidence.mjs": ["laravel-assembly-arm64"],
   "scripts/laravel-tools/composer.json": ["laravel-assembly-arm64"],
   "scripts/laravel-tools/composer.lock": ["laravel-assembly-arm64"],
+  "scripts/lifecycle-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/maven-tools.Dockerfile": ["jvm-wrappers-arm64", "maven"],
   "scripts/native-acceptance-diagnostics.mjs": [
     "c-context-arm64",
@@ -369,7 +380,6 @@
   "scripts/php-review-tools/composer.lock": ["php-review"],
   "scripts/php-tools/composer.json": ["mutation-native-arm64"],
   "scripts/php-tools/composer.lock": ["mutation-native-arm64"],
-  "scripts/plan-ci-impact.mjs": ["jvm-wrappers-arm64"],
   "scripts/prepare-acceptance-cache-subset.mjs": [
     "cpp-extensions-arm64",
     "django-assembly-arm64",
@@ -831,6 +841,11 @@
   "scripts/ruby-extensions-acceptance-selection.mjs": ["ruby-extensions-arm64"],
   "scripts/ruby-tools-archives.json": ["ruby-extensions-arm64", "ruby-tools"],
   "scripts/ruby-tools.Dockerfile": ["ruby-extensions-arm64", "ruby-tools"],
+  "scripts/runtime-installation-capture.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
   "scripts/rust-context-tools.Dockerfile": ["rust-context-arm64"],
   "scripts/rust-extension-components.json": ["rust-extensions-arm64"],
   "scripts/rust-extension-tools.Dockerfile": ["rust-extensions-arm64"],
@@ -990,12 +1005,21 @@
   "scripts/verify-kustomize-package.mjs": ["kustomize"],
   "scripts/verify-laravel-assembly-container.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-laravel-assembly-guards.mjs": ["laravel-assembly-arm64"],
+  "scripts/verify-laravel-cache-package.mjs": ["laravel-assembly-arm64"],
+  "scripts/verify-laravel-cache.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-laravel-supplemental.mjs": ["laravel-assembly-arm64"],
+  "scripts/verify-lifecycle-platforms-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-lifecycle-platforms.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/verify-maven-container.mjs": ["maven"],
   "scripts/verify-maven-package.mjs": ["maven"],
   "scripts/verify-mutation-container.mjs": ["mutation-native-arm64"],
   "scripts/verify-mutation-guards.mjs": [
-    "jvm-wrappers-arm64",
     "mutation-native-arm64",
     "mutation-passive-guards"
   ],
@@ -1185,7 +1209,11 @@
   "test/detekt-surfaces.test.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
   "test/detekt.test.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
   "test/django-evidence.test.ts": ["django-assembly-arm64"],
-  "test/django.test.ts": ["django-assembly-arm64", "fastapi-assembly-arm64"],
+  "test/django.test.ts": [
+    "django-assembly-arm64",
+    "fastapi-assembly-arm64",
+    "laravel-assembly-arm64"
+  ],
   "test/dotnet-build-analyzers.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
@@ -1403,11 +1431,16 @@
   "test/executable-bundle.test.ts": ["external-adapters"],
   "test/external-adapter.test.ts": ["external-adapters"],
   "test/fastapi-evidence.test.ts": ["fastapi-assembly-arm64"],
-  "test/fastapi.test.ts": ["django-assembly-arm64", "fastapi-assembly-arm64"],
+  "test/fastapi.test.ts": [
+    "django-assembly-arm64",
+    "fastapi-assembly-arm64",
+    "laravel-assembly-arm64"
+  ],
   "test/fetch-pack.test.ts": ["external-adapters"],
   "test/framework-examples.test.ts": [
     "django-assembly-arm64",
-    "fastapi-assembly-arm64"
+    "fastapi-assembly-arm64",
+    "laravel-assembly-arm64"
   ],
   "test/framework-report-semantics.ts": [
     "django-assembly-arm64",
@@ -1460,6 +1493,10 @@
     "kustomize-extensions-arm64"
   ],
   "test/gate-kustomize-extensions.test.ts": ["kustomize-extensions-arm64"],
+  "test/gate-lifecycle-platforms.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/gate-multi-candidate-workflow.test.ts": [
     "tasks-runtime",
     "tasks-runtime-arm64"
@@ -1851,8 +1888,25 @@
     "terraform-extensions-arm64"
   ],
   "test/larastan.test.ts": ["php-extensions-arm64", "php-review"],
+  "test/laravel-cache-runtime-harness.test.ts": ["laravel-assembly-arm64"],
   "test/laravel-cache.test.ts": ["laravel-assembly-arm64"],
   "test/laravel.test.ts": ["laravel-assembly-arm64"],
+  "test/lifecycle-platforms-boundaries.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/lifecycle-platforms-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/lifecycle-platforms-interruption.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/lifecycle-runtime-harness.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/maven-fixture.ts": [
     "cpp-extensions-arm64",
     "cpp-tools",
@@ -1982,8 +2036,17 @@
     "python-extensions-arm64",
     "vue-router"
   ],
-  "test/process-output.test.ts": ["windows"],
-  "test/process-tree.test.ts": ["laravel-assembly-arm64"],
+  "test/posix-owner.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/process-output.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/process-tree.test.ts": [
+    "laravel-assembly-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/pytest-evidence.test.ts": ["python-extensions-arm64"],
   "test/pytest.test.ts": [
     "django-assembly-arm64",
@@ -2115,6 +2178,11 @@
     "mutation-native-arm64",
     "python-extensions-arm64",
     "rust-extensions-arm64"
+  ],
+  "test/runner.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/runtime-installation-capture.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/rust-component-preflight.test.ts": ["rust-extensions-arm64"],
   "test/rust-extensions-fixture.ts": ["rust-extensions-arm64"],
