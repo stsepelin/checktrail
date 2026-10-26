@@ -24,6 +24,14 @@ const files = await Promise.all(
 );
 const required = [
   {
+    file: path.join(root, "dist/test/ci-source-boundaries.test.js"),
+    name: "CI source boundaries bind exact subprocess callers and all recorded native consumers without executing source",
+  },
+  {
+    file: path.join(root, "dist/test/ci-source-boundaries.test.js"),
+    name: "CI source boundary guards reject new imports duplicate callers encoded aliases dynamic resolution and missing profile consumers",
+  },
+  {
     file: path.join(root, "dist/test/ci-impact.test.js"),
     name: "CI declared native inputs match every workflow controller profile matrix and imported fixture",
   },
