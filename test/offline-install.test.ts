@@ -227,4 +227,46 @@ test("offline package acceptance uses tarball integrity without registry metadat
       integrity,
     ),
   );
+
+  // Internally consistent lock metadata must still be checked against the
+  // installed tarball manifest before publication. The cached leaf remains
+  // 1.2.3 while this synthetic registry record claims 1.2.4.
+  const mismatchManifest = {
+    ...manifest,
+    dependencies: { "original-offline-leaf": "1.2.4" },
+  };
+  const mismatchLock = {
+    ...lock,
+    packages: {
+      ...lock.packages,
+      "": { ...lock.packages[""], dependencies: mismatchManifest.dependencies },
+      "node_modules/original-offline-leaf": {
+        ...lock.packages["node_modules/original-offline-leaf"],
+        version: "1.2.4",
+        resolved:
+          "https://registry.npmjs.org/original-offline-leaf/-/original-offline-leaf-1.2.4.tgz",
+      },
+    },
+  };
+  await writeFile(
+    path.join(repository, "package.json"),
+    JSON.stringify(mismatchManifest),
+  );
+  await writeFile(
+    path.join(repository, "package-lock.json"),
+    JSON.stringify(mismatchLock),
+  );
+  const mismatchTarball = pack(repository),
+    mismatchConsumer = path.join(root, "version-mismatch");
+  const beforeMismatch = await readdir(root);
+  await assert.rejects(
+    installAcceptancePackage(repository, mismatchTarball, mismatchConsumer, {
+      cache,
+    }),
+    /Installed version differs: node_modules\/original-offline-leaf/,
+  );
+  await assert.rejects(readFile(path.join(mismatchConsumer, "package.json")), {
+    code: "ENOENT",
+  });
+  assert.deepEqual(await readdir(root), beforeMismatch);
 });
