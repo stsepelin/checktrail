@@ -135,7 +135,7 @@ export async function runSupervisedPosixProcess(
       execArgv: [],
       detached: true,
       serialization: "advanced",
-      stdio: ["ignore", "ignore", "inherit", "ipc"],
+      stdio: ["ignore", "ignore", "ignore", "ipc"],
     });
     let launched = false,
       received: PosixTargetResult | undefined,
@@ -169,18 +169,7 @@ export async function runSupervisedPosixProcess(
             child.kill("SIGKILL");
           }
         } else child.kill("SIGKILL");
-      })().catch((error) => {
-        process.stderr.write(
-          JSON.stringify({
-            event: "temporary-cleanup-diagnostic",
-            phase: "owner-fallback",
-            reason:
-              error instanceof Error &&
-              error.message === "POSIX owner identity changed"
-                ? "owner-identity-changed"
-                : "owner-cleanup-unavailable",
-          }) + "\n",
-        );
+      })().catch(() => {
         failure = "PROCESS_TREE_CLEANUP_UNAVAILABLE";
       });
       return cleanup;

@@ -1,39 +1,5 @@
 import { spawnSync } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
-
-function cleanupDiagnostic(phase: string, error: unknown, detail: object = {}) {
-  const known = [
-    "Process tree snapshot invalid",
-    "Process tree depth exceeds bound",
-    "Process identity invalid",
-    "Process snapshot exceeds bound",
-    "Process snapshot unavailable",
-    "Process snapshot platform unsupported",
-    "Process snapshot is empty",
-    "Process snapshot malformed",
-    "Process cleanup identity unavailable",
-    "Process cleanup identity changed group",
-    "Process cleanup deadline exceeded",
-    "Process cleanup root identity changed",
-  ];
-  const message = error instanceof Error ? error.message : "";
-  const code = (error as NodeJS.ErrnoException | null)?.code;
-  process.stderr.write(
-    JSON.stringify({
-      event: "temporary-cleanup-diagnostic",
-      phase,
-      platform: process.platform,
-      pid: process.pid,
-      reason: known.includes(message) ? message : "unclassified",
-      code:
-        typeof code === "string" && /^[A-Z0-9_]{1,32}$/.test(code)
-          ? code
-          : null,
-      ...detail,
-    }) + "\n",
-  );
-}
-
 export interface ProcessIdentity {
   pid: number;
   parent: number;
@@ -80,12 +46,24 @@ export function ownedDescendants(rows: ProcessIdentity[], root: number) {
   }
   throw Error("Process tree depth exceeds bound");
 }
-function linuxIdentity(pid: number, text: string): ProcessIdentity {
+export function linuxProcessIdentity(
+  pid: number,
+  text: string,
+): ProcessIdentity {
   const end = text.lastIndexOf(") "),
     fields = text
       .slice(end + 2)
       .trim()
       .split(/\s+/);
+  // Linux do_task_stat initializes ppid=0, pgid=-1 and sid=-1 when an
+  // already-dead task no longer has a lockable sighand. Retain that exited
+  // identity instead of invalidating snapshots because an unrelated task died.
+  // This sentinel never proves ownership of a live process or physical reaping.
+  const deadWithoutGroup =
+    /^[ZX]$/.test(fields[0]!) &&
+    fields[1] === "0" &&
+    fields[2] === "-1" &&
+    fields[3] === "-1";
   if (
     text.length > 4096 ||
     !text.startsWith(pid + " (") ||
@@ -93,24 +71,10 @@ function linuxIdentity(pid: number, text: string): ProcessIdentity {
     fields.length < 20 ||
     !/^[A-Za-z]$/.test(fields[0]!) ||
     !/^[0-9]+$/.test(fields[1]!) ||
-    !/^[0-9]+$/.test(fields[2]!) ||
+    (!/^[0-9]+$/.test(fields[2]!) && !deadWithoutGroup) ||
     !/^[0-9]+$/.test(fields[19]!)
-  ) {
-    cleanupDiagnostic("linux-stat-shape", Error("Process identity invalid"), {
-      observedPid: pid,
-      textBytes: Buffer.byteLength(text),
-      prefixMatches: text.startsWith(pid + " ("),
-      delimiterPresent: end >= 0,
-      fieldCount: fields.length,
-      stateValid: /^[A-Za-z]$/.test(fields[0]!),
-      parentValid: /^[0-9]+$/.test(fields[1]!),
-      groupValid: /^[0-9]+$/.test(fields[2]!),
-      groupValue: /^-?[0-9]{1,12}$/.test(fields[2]!) ? Number(fields[2]) : null,
-      nativeState: /^[A-Za-z]$/.test(fields[0]!) ? fields[0] : null,
-      startTimeValid: /^[0-9]+$/.test(fields[19]!),
-    });
+  )
     throw Error("Process identity invalid");
-  }
   return {
     pid,
     parent: Number(fields[1]),
@@ -135,7 +99,7 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
       const batch = await Promise.all(
         ids.slice(i, i + 64).map(async (id) => {
           try {
-            return linuxIdentity(
+            return linuxProcessIdentity(
               Number(id),
               await readFile("/proc/" + id + "/stat", "utf8"),
             );
@@ -156,7 +120,6 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
   }
   if (process.platform !== "darwin")
     throw Error("Process snapshot platform unsupported");
-  const snapshotStarted = performance.now();
   const result = spawnSync(
     "/bin/ps",
     ["-axo", "pid=,ppid=,pgid=,stat=,lstart="],
@@ -172,15 +135,8 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
     result.error ||
     result.signal ||
     result.stderr.trim()
-  ) {
-    cleanupDiagnostic("snapshot-command", result.error, {
-      status: result.status,
-      signal: result.signal,
-      elapsedMs: performance.now() - snapshotStarted,
-      stderrBytes: Buffer.byteLength(result.stderr),
-    });
+  )
     throw Error("Process snapshot unavailable");
-  }
   return darwinProcessIdentities(result.stdout).filter(
     (row) => row.pid !== result.pid,
   );
@@ -258,8 +214,6 @@ export async function stopDescendants(
     }
   };
   const deadline = io.now() + 2000;
-  let diagnosticPhase = "initial",
-    diagnosticCurrent: ProcessIdentity[] = [];
   const observed = new Map<
     number,
     { process: ProcessIdentity; depth: number }
@@ -290,20 +244,15 @@ export async function stopDescendants(
       if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
     }
   };
-  const first = await io.snapshot().catch((error) => {
-      cleanupDiagnostic("first-snapshot", error, { root });
-      throw error;
-    }),
+  const first = await io.snapshot(),
     initialRoot = first.find((p) => p.pid === root);
   let rows = first;
   try {
     // A parent can fork between the initial snapshot and its SIGSTOP. Capture again
     // until every discovered identity is observed stopped or already exited.
-    diagnosticPhase = "quiesce";
     for (;;) {
       checkDeadline();
       const current = new Map(rows.map((p) => [p.pid, p]));
-      diagnosticCurrent = [...current.values()];
       if (
         initialRoot &&
         current.get(root) &&
@@ -333,7 +282,6 @@ export async function stopDescendants(
       await io.wait(Math.min(10, deadline - io.now()));
       rows = await io.snapshot();
     }
-    diagnosticPhase = "signal";
     for (const depth of [
       ...new Set([...observed.values()].map((entry) => entry.depth)),
     ].sort((a, b) => b - a)) {
@@ -341,7 +289,6 @@ export async function stopDescendants(
         (entry) => entry.depth === depth,
       );
       const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
-      diagnosticCurrent = [...current.values()];
       for (const entry of children) {
         checkDeadline();
         if (!sameProcess(entry.process, current)) continue;
@@ -353,7 +300,6 @@ export async function stopDescendants(
       // disappearance) before signalling the next parent, then require final reaping.
       for (;;) {
         const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
-        diagnosticCurrent = [...current.values()];
         if (
           !children.some(
             (entry) =>
@@ -367,10 +313,8 @@ export async function stopDescendants(
       }
     }
     finishRoot();
-    diagnosticPhase = "reap";
     for (;;) {
       const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
-      diagnosticCurrent = [...current.values()];
       if (
         ![...observed.values()].some((child) =>
           sameProcess(child.process, current),
@@ -381,21 +325,6 @@ export async function stopDescendants(
       await io.wait(Math.min(25, deadline - io.now()));
     }
   } catch (error) {
-    cleanupDiagnostic(diagnosticPhase, error, {
-      root,
-      elapsedMs: io.now() - (deadline - 2000),
-      observedCount: observed.size,
-      signalled: [...signalled],
-      current: diagnosticCurrent
-        .filter((p) => observed.has(p.pid))
-        .slice(0, 16)
-        .map(({ pid, parent, group, state }) => ({
-          pid,
-          parent,
-          group,
-          state,
-        })),
-    });
     // An incomplete cleanup must still try to release each safely identified stopped
     // process. Never signal a reused or unreadable identity as a recovery shortcut.
     const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
