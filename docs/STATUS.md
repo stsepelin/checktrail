@@ -15,6 +15,14 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The [dated runtime reconciliation](measurements/runtime-source-install-matrix-2026-10-26.json)
+records complete source/fresh Tasks, lifecycle and multi-candidate workflow
+cohorts across every selected runtime at its pinned SDK 2.3.0 candidate. Lifecycle
+also includes the selected native platform foundation. These historical receipts
+do not qualify a changed SDK, engine or harness; final candidate bindings,
+artifact/license closure, independent evaluation setup and inventory freeze remain
+open. No inference, held-out review or quality comparison was performed.
+
 [Declared findings resolution](REVIEW-FINDINGS.md) joins current citations,
 imported native observations, declared refutation/adjudication and explicit
 common-cause mappings. Captured JS/TS parsing checks whether a proposed repair's

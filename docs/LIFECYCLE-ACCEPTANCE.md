@@ -52,8 +52,11 @@ source/fresh controls; the controller reuses their observed runtime selection
 policy. Observed image metadata does not authenticate the image or publisher. The source and fresh package require acceptance on every selected
 engine runtime before profile promotion.
 
-These are prepared development controls. The profile remains pending until its
-complete native source/fresh matrix and foundation bindings are reconciled. No
+The [dated matrix](measurements/runtime-source-install-matrix-2026-10-26.json)
+records the complete source/fresh cohort and selected platform foundation for
+every selected runtime at its pinned candidate. The implementation is declared
+with these historical receipts; later engine, dependency or harness changes still
+require current-candidate acceptance. Inventory freeze and Gate A remain open. No
 model inference, held-out case inspection or field evaluation follows from this
 harness. POSIX ownership has the bounded observation limits documented in
 [POSIX-CLEANUP.md](POSIX-CLEANUP.md), including visibility after a detached child

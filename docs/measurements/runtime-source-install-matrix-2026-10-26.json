@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "scope": "Historical exact candidate runtime acceptance; no model inference or quality assessment",
+  "head": "9cb87c8ccbf4a92e70d663fa63b615475c1c1b33",
+  "merge": "d3aef432a9841ea083a6e13a03b35cd8468b6f31",
+  "sdk": "2.3.0",
+  "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+  "rows": [
+    {
+      "slot": "ci-linux-node24",
+      "node": "24.21.0",
+      "platform": "linux",
+      "architecture": "x64",
+      "job": 121501317906,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/40301647612/job/121501317906",
+      "observedLogSha256": "0d413d5f3249b80fdc5d39a63189cdfc85589d455c8f6f562c50c3e407d7741c",
+      "tasks": {
+        "source": 26,
+        "installed": 26
+      },
+      "lifecycle": {
+        "source": 9,
+        "installed": 9,
+        "foundationSource": 27,
+        "foundationInstalled": 27
+      },
+      "multiCandidate": {
+        "source": 9,
+        "installed": 9
+      },
+      "compiledEngineSha256": "ac5634708c6a744d729c4ad2d6010ffb27bddd49bc19810814999eee18cbb0e1"
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "job": 121501317949,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/40301647612/job/121501317949",
+      "observedLogSha256": "065426eeab93bfa98e6e87a8fcbedd6fd5bc95fea725a3940b44da8b3f3b6de5",
+      "tasks": {
+        "source": 26,
+        "installed": 26
+      },
+      "lifecycle": {
+        "source": 9,
+        "installed": 9,
+        "foundationSource": 27,
+        "foundationInstalled": 27
+      },
+      "multiCandidate": {
+        "source": 9,
+        "installed": 9
+      },
+      "compiledEngineSha256": "ac5634708c6a744d729c4ad2d6010ffb27bddd49bc19810814999eee18cbb0e1"
+    },
+    {
+      "slot": "ci-macos-node24",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "job": 121501317979,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/40301647612/job/121501317979",
+      "observedLogSha256": "e3c6dfcba68aed9f8d2f4d9c7d4ce949bbf504ada66e90877682846b59e9a545",
+      "tasks": {
+        "source": 26,
+        "installed": 26
+      },
+      "lifecycle": {
+        "source": 9,
+        "installed": 9,
+        "foundationSource": 27,
+        "foundationInstalled": 27
+      },
+      "multiCandidate": {
+        "source": 9,
+        "installed": 9
+      },
+      "compiledEngineSha256": "ac5634708c6a744d729c4ad2d6010ffb27bddd49bc19810814999eee18cbb0e1"
+    },
+    {
+      "slot": "ci-macos-node22",
+      "node": "22.23.3",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "job": 121501318014,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/40301647612/job/121501318014",
+      "observedLogSha256": "6932115ae2d3f741a30b25bf2dc85a166969c47b6f5a3cb29fb4dfe52f2b27d5",
+      "tasks": {
+        "source": 26,
+        "installed": 26
+      },
+      "lifecycle": {
+        "source": 9,
+        "installed": 9,
+        "foundationSource": 27,
+        "foundationInstalled": 27
+      },
+      "multiCandidate": {
+        "source": 9,
+        "installed": 9
+      },
+      "compiledEngineSha256": "ac5634708c6a744d729c4ad2d6010ffb27bddd49bc19810814999eee18cbb0e1"
+    },
+    {
+      "slot": "windows-node22",
+      "node": "22.23.3",
+      "platform": "win32",
+      "architecture": "x64",
+      "job": 121501318049,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/40301647612/job/121501318049",
+      "observedLogSha256": "eef5e072a680f8a9b5dbe29bb3992c556616c8e4366aeeca6ccb015f2d341888",
+      "tasks": {
+        "source": 29,
+        "installed": 29
+      },
+      "lifecycle": {
+        "source": 9,
+        "installed": 9,
+        "foundationSource": 15,
+        "foundationInstalled": 15
+      },
+      "multiCandidate": {
+        "source": 9,
+        "installed": 9
+      },
+      "compiledEngineSha256": "ac5634708c6a744d729c4ad2d6010ffb27bddd49bc19810814999eee18cbb0e1"
+    },
+    {
+      "slot": "ci-linux-node22",
+      "node": "22.23.3",
+      "platform": "linux",
+      "architecture": "x64",
+      "job": 121501318115,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/40301647612/job/121501318115",
+      "observedLogSha256": "d28d7a2029099e88d3a5460f828d10b6586d0944546ab4a2ee31f0b414bd9923",
+      "tasks": {
+        "source": 26,
+        "installed": 26
+      },
+      "lifecycle": {
+        "source": 9,
+        "installed": 9,
+        "foundationSource": 27,
+        "foundationInstalled": 27
+      },
+      "multiCandidate": {
+        "source": 9,
+        "installed": 9
+      },
+      "compiledEngineSha256": "ac5634708c6a744d729c4ad2d6010ffb27bddd49bc19810814999eee18cbb0e1"
+    },
+    {
+      "slot": "ci-linux-node26",
+      "node": "26.10.0",
+      "platform": "linux",
+      "architecture": "x64",
+      "job": 121501318127,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/40301647612/job/121501318127",
+      "observedLogSha256": "ca9d5657e28417a6832ac02b49115b2d5ba5e706a535e4f4f599b6fc39a9a685",
+      "tasks": {
+        "source": 26,
+        "installed": 26
+      },
+      "lifecycle": {
+        "source": 9,
+        "installed": 9,
+        "foundationSource": 27,
+        "foundationInstalled": 27
+      },
+      "multiCandidate": {
+        "source": 9,
+        "installed": 9
+      },
+      "compiledEngineSha256": "ac5634708c6a744d729c4ad2d6010ffb27bddd49bc19810814999eee18cbb0e1"
+    },
+    {
+      "slot": "ci-macos-node26",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "job": 121501318132,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/40301647612/job/121501318132",
+      "observedLogSha256": "75a6e19bc425b14c60b4502508e3ec951c53efaa3cdd3ec68e1a7fcdba79a02f",
+      "tasks": {
+        "source": 26,
+        "installed": 26
+      },
+      "lifecycle": {
+        "source": 9,
+        "installed": 9,
+        "foundationSource": 27,
+        "foundationInstalled": 27
+      },
+      "multiCandidate": {
+        "source": 9,
+        "installed": 9
+      },
+      "compiledEngineSha256": "ac5634708c6a744d729c4ad2d6010ffb27bddd49bc19810814999eee18cbb0e1"
+    }
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false,
+  "measuredAt": "2026-10-26T11:39:06.157735+00:00",
+  "sourceFreshPairs": 24,
+  "allSelectedRuntimeSlotsObserved": true,
+  "qualityAssessed": false
+}
