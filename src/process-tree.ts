@@ -299,9 +299,15 @@ export async function stopDescendants(
       // A stopped parent cannot reap a zombie. Confirm physical exit (or complete
       // disappearance) before signalling the next parent, then require final reaping.
       for (;;) {
+        // ESRCH already proves physical disappearance. Only remaining PIDs need
+        // a fresh identity/state snapshot; a surviving or reused PID still does.
+        const remaining = children.filter((entry) =>
+          io.exists(entry.process.pid),
+        );
+        if (!remaining.length) break;
         const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
         if (
-          !children.some(
+          !remaining.some(
             (entry) =>
               sameProcess(entry.process, current) &&
               current.get(entry.process.pid)!.state !== "exited",
@@ -314,12 +320,12 @@ export async function stopDescendants(
     }
     finishRoot();
     for (;;) {
+      const remaining = [...observed.values()].filter((child) =>
+        io.exists(child.process.pid),
+      );
+      if (!remaining.length) break;
       const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
-      if (
-        ![...observed.values()].some((child) =>
-          sameProcess(child.process, current),
-        )
-      )
+      if (!remaining.some((child) => sameProcess(child.process, current)))
         break;
       checkDeadline();
       await io.wait(Math.min(25, deadline - io.now()));

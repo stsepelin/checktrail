@@ -22,7 +22,12 @@ const guards = [
     id: "confirmed-exit-before-parent",
     name: delayed,
     source: "process-tree.js",
-    replacements: [["if (!children.some(", "if (true || !children.some("]],
+    replacements: [
+      [
+        "if (!remaining.some((entry) =>",
+        "if (true || !remaining.some((entry) =>",
+      ],
+    ],
   },
   {
     id: "reused-start-identity",
@@ -96,8 +101,8 @@ const guards = [
     source: "process-tree.js",
     replacements: [
       [
-        "if (![...observed.values()].some(",
-        "if (true || ![...observed.values()].some(",
+        "if (!remaining.some((child) =>",
+        "if (true || !remaining.some((child) =>",
       ],
     ],
   },

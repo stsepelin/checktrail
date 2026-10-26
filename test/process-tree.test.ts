@@ -704,3 +704,43 @@ test("Linux procfs teardown sentinel retains only exited identities without brea
       /Process identity invalid/,
     );
 });
+
+test("POSIX cleanup does not enumerate unrelated processes after every observed PID is physically absent", async () => {
+  for (const withChild of [false, true]) {
+    const root = { pid: 41, parent: 10, group: 41, identity: "root" },
+      child = {
+        pid: 42,
+        parent: 41,
+        group: 42,
+        identity: "child",
+        state: "stopped" as const,
+      };
+    let snapshots = 0;
+    const rows = new Map(
+      (withChild ? [root, child] : [root]).map((row) => [row.pid, row]),
+    );
+    const killed: number[] = [];
+    await stopDescendants(41, {
+      snapshot: async () => {
+        snapshots++;
+        if (snapshots > (withChild ? 3 : 1))
+          throw Error(
+            "Unrelated process enumeration unavailable after physical reaping",
+          );
+        return [...rows.values()];
+      },
+      exists: (pid) => rows.has(pid),
+      stop: () => assert.fail("The observed child is already stopped"),
+      kill: (pid) => {
+        assert.equal(pid, child.pid);
+        killed.push(pid);
+        rows.delete(pid);
+      },
+      now: () => 0,
+      wait: async (ms) => assert.equal(ms, 10),
+    });
+    assert.deepEqual(killed, withChild ? [child.pid] : []);
+    assert.equal(rows.has(child.pid), false);
+    assert.equal(snapshots, withChild ? 3 : 1);
+  }
+});

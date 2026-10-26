@@ -2879,6 +2879,10 @@
     {
       "file": "dist/test/process-tree.test.js",
       "name": "Linux procfs teardown sentinel retains only exited identities without breaking unrelated owned families"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX cleanup does not enumerate unrelated processes after every observed PID is physically absent"
     }
   ],
   "review-benchmark-multi": [

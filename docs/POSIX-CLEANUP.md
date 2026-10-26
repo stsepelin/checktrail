@@ -38,8 +38,12 @@ cleanup failure into a passing check.
 
 Observations bind the PID, start identity and process group. A PID reused for a
 different start identity is left alone. A missing snapshot row is checked against
-the native PID before it is treated as absence. Unrelated sibling tasks are not
-selected. Unknown macOS `?` status is retained as running/unknown; it never
+the native PID before it is treated as absence. After signalling, a native PID
+existence check can confirm physical disappearance directly. An already absent
+observed PID needs no further global snapshot; surviving, unreadable and reused
+PIDs still require the original identity, group and state checks. This also avoids
+a final global snapshot when no descendants were observed. The snapshot and
+cleanup deadlines are unchanged. Unrelated sibling tasks are not selected. Unknown macOS `?` status is retained as running/unknown; it never
 proves quiescence. Linux start identity comes from `/proc/PID/stat`; macOS uses the fixed
 `/bin/ps` PID, parent, group, status and start-time columns without command lines or
 process environments.
