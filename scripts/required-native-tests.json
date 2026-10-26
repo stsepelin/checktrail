@@ -2875,6 +2875,10 @@
     {
       "file": "dist/test/process-tree.test.js",
       "name": "Darwin process status parser retains unknown status without inventing quiescence and canonicalises physical start identities"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "Linux procfs teardown sentinel retains only exited identities without breaking unrelated owned families"
     }
   ],
   "review-benchmark-multi": [
@@ -5463,6 +5467,68 @@
     {
       "file": "dist/test/go-installed-harness.test.js",
       "name": "Go installed harness keeps ordinary deadlines and bounds the aggregate while preserving a refused child"
+    }
+  ],
+  "lifecycle-platforms": [
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "name": "lifecycle-platforms installed acceptance"
+    }
+  ],
+  "lifecycle-runtime-bindings": [
+    {
+      "file": "dist/test/lifecycle-runtime-harness.test.js",
+      "name": "lifecycle runtime admission refuses wrong slots, missing foundations and changed harnesses while retaining unqualified development evidence"
+    },
+    {
+      "file": "dist/test/lifecycle-runtime-harness.test.js",
+      "name": "lifecycle foundation selection admits only the declared native platforms"
+    },
+    {
+      "file": "dist/test/runtime-installation-capture.test.js",
+      "name": "runtime installation capture uses fresh private receipts, restores environment on failure and refuses absent malformed oversized and linked evidence"
+    },
+    {
+      "file": "dist/test/runtime-installation-capture.test.js",
+      "name": "source runtime admission binds retained installations to exact runtime engine harness and complete named cases"
+    }
+  ],
+  "laravel-cache-runtime-bindings": [
+    {
+      "file": "dist/test/laravel-cache-runtime-harness.test.js",
+      "name": "Laravel cache runtime admission binds every named case, supporting input and engine while retaining selected native identities"
     }
   ]
 }
