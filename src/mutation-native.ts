@@ -34,7 +34,7 @@ const settings = {
     directory: "node_modules",
     tool: "vitest/dist/node.js",
     name: "vitest",
-    version: "5.0.1",
+    version: "5.0.5",
     extension: /\.[cm]?[jt]sx?$/,
   },
   "jest-flat-tests": {

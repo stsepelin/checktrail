@@ -65,7 +65,7 @@
   {
     "id": "native-vitest-pin",
     "file": "mutation-native-evidence.js",
-    "from": "packet.version === \"5.0.1\" &&",
+    "from": "packet.version === \"5.0.5\" &&",
     "to": "true &&",
     "mode": "passive",
     "testFile": "mutation-native-evidence.test.js",

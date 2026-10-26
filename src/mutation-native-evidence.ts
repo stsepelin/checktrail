@@ -114,7 +114,7 @@ export function mutationNativeEvidence(
     if (profile === "vitest-flat-tests") {
       need(
         packet.format === "checktrail-mutation-vitest-1" &&
-          packet.version === "5.0.1" &&
+          packet.version === "5.0.5" &&
           ["passed", "failed"].includes(str(packet.endReason)),
       );
       globalExecution = arr(packet.unhandled).length > 0;

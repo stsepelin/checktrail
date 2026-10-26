@@ -17,7 +17,7 @@ const root = fileURLToPath(new URL("../", import.meta.url)),
   destination = path.join(root, ".checktrail/mutation-javascript-tools");
 const rootLock = await readFile(path.join(root, "package-lock.json"), "utf8"),
   { manifest, lock } = selectJavaScriptToolsLock(
-    { dependencies: { vitest: "5.0.1", jest: "30.5.2" } },
+    { dependencies: { vitest: "5.0.5", jest: "30.5.2" } },
     JSON.parse(rootLock),
   );
 await assert.rejects(lstat(destination), { code: "ENOENT" });
