@@ -182,7 +182,12 @@ the runner's owned temporary namespace. The supervisor reads at most the expecte
 source byte count plus one, checks its embedded SHA-256, and compiles those exact
 bytes before the project target resumes. This keeps the fixed encoded launcher
 within the existing command-length allowance. Project arguments remain JSON data.
-The existing namespace lifecycle removes the source along with other owned files. The namespace receives the existing native caller-only ACL before any data write, including when its selected temp parent has a broader read ACL. An access failure refuses before data or process launch. Portable ordering/refusal controls and a native broad-parent control with an access-guard removal are prepared; native qualification remains pending.
+The existing namespace lifecycle removes the source along with other owned files. The namespace receives the existing native caller-only ACL before any data write, including when its selected temp parent has a broader read ACL. An access failure refuses before data or process launch. Portable ordering/refusal controls and the native broad-parent access-guard
+removal have [recorded source and offline installed acceptance](measurements/windows-resource-foundation-2026-10-26.json)
+on Windows with Node 22.23.3. The same observation records the native counter,
+fixed-source integrity and retained ownership controls with removed/restored guards.
+It is dated foundation evidence, not current package, representative workload,
+whole-profile or final runtime-matrix qualification.
 These controls are execution ownership and integrity checks; executed project code
 is not sandboxed.
 
