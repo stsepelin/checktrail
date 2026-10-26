@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { realpath, lstat, mkdtemp, readdir, chmod, rm } from "node:fs/promises";
+import {
+  realpath,
+  lstat,
+  mkdtemp,
+  readdir,
+  readFile,
+  chmod,
+  rm,
+} from "node:fs/promises";
 import path from "node:path";
 import { tmpdir } from "node:os";
 import { runAcceptanceNpm } from "./install-acceptance-package.mjs";
@@ -13,7 +21,8 @@ assert.equal(process.arch, "arm64");
 const reference =
   "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
 const name = "checktrail-tasks-runtime-" + process.pid,
-  task = "tasks-runtime-native-arm64";
+  task = process.env.CHECKTRAIL_TEST_TASK ?? "tasks-runtime-native-arm64";
+assert.match(task, /^[a-z][a-z0-9-]{0,80}$/);
 const cache = await realpath(
   runAcceptanceNpm(["config", "get", "cache"], { encoding: "utf8" }).trim(),
 );
@@ -82,23 +91,83 @@ try {
     "/workspace",
     "--env",
     "npm_config_cache=/tmp/npm-cache",
+    "--env",
+    "CHECKTRAIL_REVIEW_RUNTIME_IMAGE_ID=" + image.Id,
     image.Id,
     "sh",
     "-c",
-    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-tasks-runtime-package.mjs native-linux-arm64-node22",
+    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-review-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings\nnode scripts/verify-lifecycle-platforms.mjs native-linux-arm64-node22",
   ]);
   const packets = output
     .trim()
     .split("\n")
     .map((line) => JSON.parse(line));
-  assert.equal(packets.length, 3);
-  const [, source, installed] = packets;
+  assert.equal(packets.length, 5);
+  const [, source, reviewWorkflow, lifecycleAdmission, lifecycleSource] =
+    packets;
+  const installed = source.installedEvidence;
+  const lifecycleInstalled = lifecycleSource.installedEvidence;
   assert.equal(source.profileEvidence.complete, true);
   assert.equal(installed.evidence.profileEvidence.complete, true);
   assert.equal(source.harnessSha256, installed.evidence.harnessSha256);
   assert.equal(
     source.runtimeArtifactsSha256,
     installed.evidence.runtimeArtifactsSha256,
+  );
+  assert.equal(reviewWorkflow.complete, true);
+  assert.equal(reviewWorkflow.runtime.containerImageId, image.Id);
+  assert.equal(
+    reviewWorkflow.installedEvidence.profile.runtime.containerImageId,
+    image.Id,
+  );
+  assert.equal(lifecycleAdmission.complete, true);
+  const nativeDefinitions = JSON.parse(
+    await readFile(
+      new URL("./required-native-tests.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  const foundationProfiles = ["posix-cleanup", "posix-owner"];
+  const foundationRequired = foundationProfiles.reduce(
+    (total, profile) => total + nativeDefinitions[profile].length,
+    0,
+  );
+  for (const evidence of [lifecycleSource, lifecycleInstalled.evidence]) {
+    assert.equal(evidence.complete, true);
+    assert.equal(evidence.required, 9);
+    assert.equal(evidence.passed, 9);
+    assert.equal(
+      evidence.completionScope,
+      "whole-profile-and-selected-platform-foundation",
+    );
+    assert.equal(evidence.foundation.complete, true);
+    assert.deepEqual(
+      evidence.foundation.profiles,
+      foundationProfiles.map((profile) => ({
+        profile,
+        required: nativeDefinitions[profile].length,
+      })),
+    );
+    assert.equal(evidence.foundation.required, foundationRequired);
+    assert.equal(evidence.foundation.passed, foundationRequired);
+    assert.equal(evidence.foundation.ledger.truncated, false);
+    assert.equal(evidence.foundation.ledger.cases.length, foundationRequired);
+    assert.ok(
+      evidence.foundation.ledger.cases.every((row) => row.outcome === "passed"),
+    );
+    assert.equal(evidence.runtime.slot, "native-linux-arm64-node22");
+    assert.equal(evidence.selectedRuntime.id, "native-linux-arm64-node22");
+    assert.equal(evidence.runtime.containerImageId, image.Id);
+    assert.equal(evidence.compiledEngine.beforeAfterByteIdentitiesMatch, true);
+  }
+  assert.equal(lifecycleSource.harnessSha256, lifecycleInstalled.harnessSha256);
+  assert.equal(
+    lifecycleSource.compiledEngine.treeSha256,
+    lifecycleInstalled.compiledEngine.treeSha256,
+  );
+  assert.equal(
+    lifecycleSource.compiledEngine.treeSha256,
+    lifecycleInstalled.evidence.compiledEngine.treeSha256,
   );
   process.stdout.write(
     JSON.stringify({
@@ -111,7 +180,12 @@ try {
       sourceReadOnly: true,
       source,
       installed,
+      reviewWorkflow,
+      lifecycleAdmission,
+      lifecycleSource,
+      lifecycleInstalled,
       gateATasksMatrixComplete: false,
+      gateALifecycleComplete: false,
     }) + "\n",
   );
 } finally {

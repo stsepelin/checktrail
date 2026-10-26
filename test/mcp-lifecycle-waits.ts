@@ -43,7 +43,7 @@ export async function waitForValidationPid(
   root: string,
   child: Pick<ChildProcess, "exitCode" | "signalCode">,
   timeoutMs = 30_000,
-): Promise<{ pid: number; group: number }> {
+): Promise<{ pid: number; parent: number }> {
   if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0 || timeoutMs > 30_000)
     throw new Error("Invalid lifecycle startup bound");
   const deadline = performance.now() + timeoutMs;
@@ -58,14 +58,14 @@ export async function waitForValidationPid(
         !marker ||
         typeof marker !== "object" ||
         !("pid" in marker) ||
-        !("group" in marker) ||
+        !("parent" in marker) ||
         !Number.isSafeInteger(marker.pid) ||
-        !Number.isSafeInteger(marker.group) ||
+        !Number.isSafeInteger(marker.parent) ||
         Number(marker.pid) <= 0 ||
-        Number(marker.group) <= 0
+        Number(marker.parent) <= 0
       )
         throw new Error("Invalid validation startup marker");
-      return { pid: Number(marker.pid), group: Number(marker.group) };
+      return { pid: Number(marker.pid), parent: Number(marker.parent) };
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     }

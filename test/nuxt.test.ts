@@ -145,7 +145,9 @@ test(
 
 test(
   "Nuxt cancellation terminates a live startup and removes its owned build directory",
-  { skip, timeout: 45000 },
+  // Copying the pinned fixture and final cleanup use this outer allowance.
+  // Reached startup still has its own 15s observation and 30s native deadline.
+  { skip, timeout: 120000 },
   async (t) => {
     const root = await project(t);
     const marker = path.join(root, "node_modules/nuxt-startup-state.json");
@@ -191,7 +193,9 @@ test(
 
 test(
   "Nuxt native evidence reconciles capture identity, ordered records and probe accounting",
-  { skip, timeout: 45000 },
+  // Runtime copying, planning, evidence checks and cleanup share this allowance.
+  // The native SSR process retains its separate 30000 ms deadline.
+  { skip, timeout: 120000 },
   async (t) => {
     const root = await project(t);
     const { plan } = await createPlan(root);

@@ -1,4 +1,10 @@
 import {
+  inspectReviewFindings,
+  projectReviewFindings,
+  reviewFindingsReportSchema,
+  reviewFindingsSummarySchema,
+} from "./review-findings.js";
+import {
   inspectReviewProvenance,
   projectReviewProvenance,
   reviewProvenanceReportSchema,
@@ -60,6 +66,7 @@ import { ReviewWorkflowSession } from "./review-workflow-session.js";
 import type { ReviewWorkflowAuditOptions } from "./review-workflow-audit-schema.js";
 import {
   reviewWorkflowCommandSchema,
+  reviewWorkflowFindingsResultSchema,
   reviewWorkflowSummarySchema,
   reviewWorkflowAssignmentSchema,
   type ReviewWorkflowLimits,
@@ -551,7 +558,11 @@ function createConnectionServer(
         "Coordinate model-independent review stages without invoking a model or reading host credentials. Open a captured context, request a bounded reviewer/refuter assignment, submit a one-use response, execute a startup-registered native probe, and request raw-evidence adjudication. Fresh host sessions and usage are declarations, never verified. Native execution requires operator startup trust; no tool argument can grant it. Close discards raw workflow artifacts; every issued attempt retains metadata. Completed stages never verify defects or approve a repository.",
       inputSchema: reviewWorkflowCommandSchema,
       outputSchema: options.allowReviewSource
-        ? z.union([reviewWorkflowSummarySchema, reviewWorkflowAssignmentSchema])
+        ? z.union([
+            reviewWorkflowSummarySchema,
+            reviewWorkflowAssignmentSchema,
+            reviewWorkflowFindingsResultSchema,
+          ])
         : reviewWorkflowSummarySchema,
       annotations: {
         readOnlyHint: false,
@@ -927,6 +938,36 @@ function createConnectionServer(
       } catch {
         return error(
           "Paired review scoring failed. Check frozen identities, paired labels, observations and bootstrap limits locally with the CLI.",
+        );
+      }
+    },
+  );
+  registerTool(
+    "review_findings",
+    {
+      description:
+        "Recheck cited sources, reconcile declared refutation/adjudication and common-defect mappings, and inspect repair parameter names in captured JavaScript/TypeScript. No inference or execution. Claims, severity, sessions, common causes and repair correctness remain unverified.",
+      inputSchema: z.strictObject({ input: z.string().min(1).max(1024) }),
+      outputSchema: options.allowReviewSource
+        ? reviewFindingsReportSchema
+        : reviewFindingsSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }, request) => {
+      try {
+        return reply(
+          await projectReviewFindings(
+            await inspectReviewFindings(
+              options.root,
+              await readProjectFile(options.root, input),
+              { signal: request.mcpReq.signal, wallMs: probeLimits.wallMs },
+            ),
+            Boolean(options.allowReviewSource),
+          ),
+        );
+      } catch {
+        return error(
+          "Review findings inspection failed. Check input and source bindings locally.",
         );
       }
     },

@@ -13,7 +13,7 @@ export const reviewWorkflowAuditOptionsSchema = z.strictObject({
 });
 export const reviewWorkflowAuditSummarySchema = z.strictObject({
   schemaVersion: z.literal(2),
-  journalVersion: z.union([z.literal(1), z.literal(2)]),
+  journalVersion: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   format: z.literal("review-workflow-audit-summary"),
   epochId: z.string().uuid(),
   engineVersion: z.string().min(1).max(128),

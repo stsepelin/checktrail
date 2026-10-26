@@ -13,6 +13,7 @@ const repository = fileURLToPath(new URL("../", import.meta.url));
 const args = [
   "run",
   "--rm",
+  "--init",
   "--network",
   "none",
   "--mount",

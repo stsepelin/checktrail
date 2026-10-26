@@ -2,16 +2,7 @@ import { parseCapturedProcessOutput } from "./process-output.js";
 import { createHash } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 import { constants } from "node:fs";
-import {
-  open,
-  readFile,
-  mkdir,
-  mkdtemp,
-  realpath,
-  rm,
-  writeFile,
-} from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { open, readFile, mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -22,6 +13,7 @@ import {
 import { reviewCandidateSchema } from "./review-provider-schema.js";
 import { runProcess } from "./runner.js";
 import { VERSION } from "./types.js";
+import { createPrivateProbeWorkspace } from "./review-probe-storage.js";
 import {
   reviewNativeBudgetLimitsSchema,
   type ReviewNativeBudgetLimits,
@@ -228,7 +220,6 @@ export async function runReviewProbe(
     execution: null,
   }));
   const supported =
-    process.platform !== "win32" &&
     context.files.every((file) => /\.(?:js|mjs)$/.test(file.path)) &&
     context.analysis.files
       .filter((file) => file.revision === "current")
@@ -286,9 +277,7 @@ export async function runReviewProbe(
               : "output-budget";
           break;
         }
-        temporary ??= await realpath(
-          await mkdtemp(path.join(tmpdir(), "checktrail-probe-")),
-        );
+        temporary ??= await createPrivateProbeWorkspace();
         const caseRoot = path.join(temporary, `case-${index}`);
         await mkdir(path.join(caseRoot, "source"), { recursive: true });
         await writeFile(

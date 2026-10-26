@@ -629,3 +629,78 @@ test("Darwin process status parser retains unknown status without inventing quie
   ])
     assert.throws(() => darwinProcessIdentities(bad), /snapshot/);
 });
+
+test("Linux procfs teardown sentinel retains only exited identities without breaking unrelated owned families", async () => {
+  const { linuxProcessIdentity, ownedDescendants } =
+    await import("../src/process-tree.js");
+  function stat({
+    pid = 730,
+    state = "X",
+    parent = "0",
+    group = "-1",
+    session = "-1",
+    start = "123456",
+  } = {}) {
+    const fields = [
+      state,
+      parent,
+      group,
+      session,
+      ...Array(15).fill("0"),
+      start,
+    ];
+    return `${pid} (original name ) with delimiters) ${fields.join(" ")}\n`;
+  }
+  for (const state of ["X", "Z"]) {
+    const identity = linuxProcessIdentity(730, stat({ state }));
+    assert.deepEqual(identity, {
+      pid: 730,
+      parent: 0,
+      group: -1,
+      identity: "123456",
+      state: "exited",
+    });
+    assert.deepEqual(
+      ownedDescendants(
+        [
+          identity,
+          { pid: 800, parent: 1, group: 800, identity: "10", state: "running" },
+          {
+            pid: 801,
+            parent: 800,
+            group: 800,
+            identity: "11",
+            state: "running",
+          },
+        ],
+        800,
+      ).map((row) => row.process.pid),
+      [801],
+    );
+  }
+  assert.deepEqual(
+    linuxProcessIdentity(
+      730,
+      stat({ state: "S", parent: "42", group: "42", session: "42" }),
+    ),
+    { pid: 730, parent: 42, group: 42, identity: "123456", state: "running" },
+  );
+  for (const input of [
+    stat({ state: "R" }),
+    stat({ state: "T" }),
+    stat({ state: "?" }),
+    stat({ group: "-2" }),
+    stat({ group: "-01" }),
+    stat({ parent: "1" }),
+    stat({ session: "42" }),
+    stat({ start: "invalid" }),
+    stat({ pid: 731 }),
+    "730 (original) X 0 -1 -1",
+    "",
+    "x".repeat(4097),
+  ])
+    assert.throws(
+      () => linuxProcessIdentity(730, input),
+      /Process identity invalid/,
+    );
+});
