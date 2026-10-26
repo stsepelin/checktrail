@@ -45,7 +45,47 @@ async function cohort(repetitions, workers) {
 assert.equal(process.platform, "linux");
 assert.equal(process.arch, "x64");
 assert.equal(process.versions.node, "26.10.0");
-await cohort(20, 1);
+// Exercise native procfs reads while real short-lived processes exit. No
+// command lines, environments or process names are retained in diagnostics.
+const { processSnapshot } = await import("../dist/src/process-tree.js");
+let snapshotCount = 0;
+await Promise.all(
+  Array.from({ length: 4 }, async () => {
+    for (let index = 0; index < 500 && !failed; index++) {
+      const child = spawn("/bin/true", [], { stdio: "ignore" });
+      const exited = new Promise((resolve, reject) => {
+        child.on("exit", resolve);
+        child.on("error", reject);
+      });
+      try {
+        await processSnapshot();
+        snapshotCount++;
+      } catch (error) {
+        failed = true;
+        process.stdout.write(
+          JSON.stringify({
+            diagnosticSnapshotFailure: true,
+            reason:
+              error.message === "Process identity invalid"
+                ? error.message
+                : "unclassified",
+            qualificationClaimed: false,
+          }) + "\n",
+        );
+      } finally {
+        await exited;
+      }
+    }
+  }),
+);
+process.stdout.write(
+  JSON.stringify({
+    diagnosticSnapshotCount: snapshotCount,
+    failed,
+    qualificationClaimed: false,
+  }) + "\n",
+);
+if (!failed) await cohort(20, 1);
 if (!failed) await cohort(80, 4);
 process.stdout.write(
   JSON.stringify({
