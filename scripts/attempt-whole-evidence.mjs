@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { attemptFoundationFiles } from "./attempt-foundation-evidence.mjs";
 export const attemptWholeHarnessFiles = Object.freeze([
   "package.json",
   "package-lock.json",
@@ -10,6 +11,8 @@ export const attemptWholeHarnessFiles = Object.freeze([
   "scripts/required-test-evidence.mjs",
   "scripts/compiled-engine-evidence.mjs",
   "scripts/attempt-whole-evidence.mjs",
+  "scripts/attempt-foundation-evidence.mjs",
+  ...attemptFoundationFiles,
   "scripts/attempt-runtime-evidence.mjs",
   "scripts/attempt-runtime-tools.Dockerfile",
   "scripts/verify-attempt-runtime.mjs",

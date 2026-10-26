@@ -6,4 +6,4 @@ COPY --from=node /lib/ld-musl-*.so.1 /lib/
 COPY --from=node /usr/lib/libstdc++.so.6* /usr/lib/
 COPY --from=node /usr/lib/libgcc_s.so.1 /usr/lib/
 COPY --from=node /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
-RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && node --version && git --version
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && node --version && git --version && test "$(go env GOVERSION)" = go1.27.1

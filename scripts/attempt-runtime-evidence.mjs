@@ -12,6 +12,11 @@ import {
   requireUnchangedCompiledEngine,
 } from "./compiled-engine-evidence.mjs";
 import { ensureWindowsTaskAccess } from "../dist/src/windows-task-access.js";
+import {
+  selectAttemptFoundation,
+  requireAttemptFoundationEvidence,
+  runAttemptFoundation,
+} from "./attempt-foundation-evidence.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url)),
   hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 export const attemptRuntimeBaseImages = Object.freeze({
@@ -74,6 +79,16 @@ export function checkAttemptRuntimeSelection(
     assert.match(observed.imageVersion ?? "", /^20\d{6}\.\d+\.\d+$/);
   assert.match(observed.gitExecutableSha256 ?? "", /^[a-f0-9]{64}$/);
   assert.match(observed.gitVersion ?? "", /^git version [^\r\n]{1,128}$/);
+  assert.equal(observed.goVersion, "go1.27.1");
+  assert.match(observed.goExecutableSha256 ?? "", /^[a-f0-9]{64}$/);
+  assert.equal(
+    observed.goPlatform,
+    selected.platform === "win32" ? "windows" : selected.platform,
+  );
+  assert.equal(
+    observed.goArchitecture,
+    selected.architecture === "x64" ? "amd64" : selected.architecture,
+  );
   return selected;
 }
 
@@ -130,6 +145,49 @@ async function observeGit() {
     gitExecutableSha256: hash(await readFile(executable)),
   };
 }
+async function observeGo() {
+  for (const directory of (process.env.PATH ?? "").split(path.delimiter)) {
+    if (!directory) continue;
+    let executable;
+    try {
+      executable = await realpath(
+        path.join(directory, process.platform === "win32" ? "go.exe" : "go"),
+      );
+    } catch (error) {
+      if (["ENOENT", "ENOTDIR"].includes(error.code)) continue;
+      throw error;
+    }
+    const info = await stat(executable);
+    assert.ok(
+      info.isFile() && info.size > 0 && info.size <= 128 * 1048576,
+      "Go executable observation unavailable",
+    );
+    const version = execFileSync(executable, ["version"], {
+      encoding: "utf8",
+      timeout: 10000,
+      maxBuffer: 4096,
+      windowsHide: true,
+      env: { ...process.env, GOTOOLCHAIN: "local" },
+    }).trim();
+    const match =
+      /^go version (go1\.27\.1) (darwin|linux|windows)\/(amd64|arm64)$/.exec(
+        version,
+      );
+    assert.ok(match, "Pinned Go 1.27.1 prerequisite unavailable");
+    assert.equal(
+      match[2],
+      process.platform === "win32" ? "windows" : process.platform,
+    );
+    assert.equal(match[3], process.arch === "x64" ? "amd64" : process.arch);
+    return {
+      goVersion: match[1],
+      goPlatform: match[2],
+      goArchitecture: match[3],
+      goExecutableSha256: hash(await readFile(executable)),
+    };
+  }
+  throw Error("Pinned Go prerequisite unavailable");
+}
 export async function observeAttemptRuntime(slot = null) {
   let distributionBytes = null,
     distributionId = null,
@@ -181,6 +239,7 @@ export async function observeAttemptRuntime(slot = null) {
       ),
     ),
     ...(await observeGit()),
+    ...(await observeGo()),
     nodeExecutableSha256: hash(await readFile(process.execPath)),
     systemPowerShellSha256,
     hostedImageMetadataAttested: false,
@@ -200,6 +259,8 @@ export function requireAttemptRuntimeInstallation(receipt, expected) {
     "selectedRuntime",
     "harnessSha256",
     "requirementsSha256",
+    "foundationRequirementsSha256",
+    "foundationExclusions",
     "packageSha256",
     "compiledEngine",
   ])
@@ -216,6 +277,11 @@ export function requireAttemptRuntimeInstallation(receipt, expected) {
     receipt.profileEvidence,
     expected.requirements,
     expected.acceptanceSha256,
+  );
+  requireAttemptFoundationEvidence(
+    receipt.foundationEvidence,
+    expected.foundationRequirements,
+    expected.foundationDigests,
   );
   for (const key of [
     "gateAAttemptArchivesComplete",
@@ -250,6 +316,15 @@ export async function verifyAttemptRuntime({
           path.join(root, "scripts/required-native-tests.json"),
           "utf8",
         ),
+      );
+    // Reject invalid selection before observing or invoking native prerequisites.
+    if (slot === null)
+      assert.equal(hosted, false, "Hosted runtime requires a selected slot");
+    else
+      assert.equal(
+        scope.runtimeProfiles.filter((p) => p.id === slot).length,
+        1,
+        "Unknown selected runtime slot",
       );
     const requirements = selectAttemptRuntimeRequirements(profiles, scope),
       runtime = await observeAttemptRuntime(slot),
@@ -301,6 +376,18 @@ export async function verifyAttemptRuntime({
           ),
       },
     );
+    const foundationSelection = selectAttemptFoundation(
+        profiles,
+        runtime.platform,
+      ),
+      foundationDigests = Object.fromEntries(inputs),
+      foundationRequirementsSha256 = hash(JSON.stringify(foundationSelection)),
+      foundationEvidence = await runAttemptFoundation(
+        root,
+        foundationSelection,
+        foundationDigests,
+        "attempt-foundation-source",
+      );
     const acceptanceSha256 = inputs.find(
       ([file]) => file === "dist/test/gate-attempt-archives.test.js",
     )[1];
@@ -344,6 +431,10 @@ export async function verifyAttemptRuntime({
       requirements,
       clientVersion,
       acceptanceSha256,
+      foundationRequirementsSha256,
+      foundationExclusions: foundationSelection.exclusions,
+      foundationRequirements: foundationSelection.requirements,
+      foundationDigests,
     });
     return {
       schemaVersion: 1,
@@ -357,6 +448,9 @@ export async function verifyAttemptRuntime({
       packageSha256,
       compiledEngine,
       profileEvidence,
+      foundationEvidence,
+      foundationRequirementsSha256,
+      foundationExclusions: foundationSelection.exclusions,
       installedEvidence,
       gateAAttemptArchivesComplete: false,
       gateAComplete: false,

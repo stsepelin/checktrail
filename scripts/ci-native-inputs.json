@@ -42,6 +42,10 @@
     "rust-extensions-arm64"
   ],
   "scripts/actionlint-tools.Dockerfile": ["actionlint"],
+  "scripts/attempt-foundation-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/attempt-output-evidence.mjs": ["jvm-wrappers-arm64"],
   "scripts/attempt-runtime-evidence.mjs": [
     "tasks-runtime",
@@ -1246,6 +1250,12 @@
     "terraform-extensions-arm64"
   ],
   "test/actionlint.test.ts": ["actionlint"],
+  "test/attempt-archive-native.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/attempt-archive.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/attempt-runtime-evidence.test.ts": ["tasks-runtime"],
   "test/attempt-whole-boundaries.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/attempt-whole-controls.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/attempt-whole-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
@@ -1609,29 +1619,39 @@
   "test/go-build.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/go-installed-harness.test.ts": ["go-workspaces-arm64"],
   "test/go-matrix.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/go-race.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/go-scope.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/go-workspace-fixture.ts": ["go-workspaces-arm64"],
   "test/golangci.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/gradle-builds.test.ts": ["gradle", "jvm-wrappers-arm64"],
   "test/gradle-evidence.test.ts": ["gradle", "jvm-wrappers-arm64"],
@@ -2073,6 +2093,19 @@
     "python-extensions-arm64",
     "rust-extensions-arm64"
   ],
+  "test/native-attempt-frames.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/native-attempt-storage.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/native-invoke.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/native-journal-engine.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/native-process-observer.test.ts": [
     "kubeconform",
     "kustomize",
@@ -2330,7 +2363,9 @@
   "test/staticcheck.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/swift-extensions-fixture.ts": ["swift-extensions-arm64"],
   "test/swift-testing.test.ts": ["swift-extensions-arm64", "swift-tools"],

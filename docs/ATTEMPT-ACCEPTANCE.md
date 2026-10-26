@@ -48,9 +48,27 @@ image metadata and Docker image IDs are observations, not host attestations or
 verified producer source builds. Development receipts with no selected slot do
 not qualify a frozen runtime slot.
 
-The existing frame codec, private storage, streamed invocation, wrapper catalog,
-engine journal and offline API-attempt controls remain separate required
-foundation evidence. The API controls use fully scripted transports for both
+The runtime controller also executes the original frame codec, private storage,
+streamed invocation, wrapper catalog, engine journal, physical process output and
+offline API-attempt callbacks as a separate foundation ledger. Their required
+names and files are reconciled against the preserved source manifest. Every
+selected callback must have exactly one non-skipped terminal event, bound to its
+unchanged test file. Missing, duplicate, extra, skipped, truncated or inconsistent
+file/event/case evidence fails acceptance even if the whole-profile count passes.
+The same foundation runs through the unchanged external harness against the fresh
+production install in that runtime cohort. Controls that copy the engine into
+another fixture resolve its runtime dependencies through copies from that same
+fresh locked installation. The external MCP test client has a separate dependency
+root and cannot overwrite those production dependency copies. Windows explicitly excludes only the
+POSIX ordinary-descendant ownership callback; native POSIX slots retain it.
+
+A pinned Go 1.27.1 executable runs the physical archive broken/fixed control.
+Version, target OS, architecture and executable digest are observed before/after
+both cohorts and must match. Missing or different Go is unavailable acceptance;
+the controller does not install or download it. Hosted jobs provision the exact
+version before the archive controller; the native ARM image supplies its pinned
+Go toolchain. The whole-feature nine-case ledger remains separate from these
+foundation controls. The API controls use fully scripted transports for both
 provider protocols, including failed and successful attempts; they contact no
 provider. External Codex/Claude host usage remains unknown unless independently
 supplied. The complete call-family and frozen runtime receipt reconciliation,

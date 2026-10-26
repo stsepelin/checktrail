@@ -33,6 +33,10 @@ import {
   checkAttemptRuntimeSelection,
   compactAttemptEngine,
 } from "./attempt-runtime-evidence.mjs";
+import {
+  selectAttemptFoundation,
+  runAttemptFoundation,
+} from "./attempt-foundation-evidence.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 assert.equal(process.argv.length, 2);
 const harnessBefore = await captureAttemptHarness(repository),
@@ -95,8 +99,25 @@ try {
   }
   const lock = JSON.parse(input("package-lock.json")),
     externalSdkDependencies = {};
+  // The preserved collector controls copy the engine into another fixture and
+  // resolve its dependencies through the external harness. Supply those packages
+  // from this fresh locked production install, rather than the source checkout.
+  const productionHarnessDependencies = {};
   await copyInstalledPackages(
     harness,
+    Object.keys(JSON.parse(input("package.json")).dependencies),
+    path.join(consumer, "node_modules"),
+    ({ relative, version }) => {
+      const name = relative.split(path.sep).join("/");
+      assert.equal(version, lock.packages["node_modules/" + name].version);
+      productionHarnessDependencies[name] = version;
+    },
+  );
+  // Keep the external test client and its dependency graph separate so copying
+  // it cannot replace any of the fresh engine dependency packages above.
+  const sdkHarness = path.join(temporary, "external-sdk-client");
+  await copyInstalledPackages(
+    sdkHarness,
     ["@modelcontextprotocol/client"],
     path.join(repository, "node_modules"),
     ({ relative, version }) => {
@@ -108,6 +129,19 @@ try {
   assert.equal(
     externalSdkDependencies["@modelcontextprotocol/client"],
     "2.3.1",
+  );
+  const clientParent = path.join(harness, "node_modules/@modelcontextprotocol"),
+    externalClient = path.join(
+      sdkHarness,
+      "node_modules/@modelcontextprotocol/client",
+    );
+  await mkdir(clientParent, { recursive: true });
+  await symlink(
+    process.platform === "win32"
+      ? externalClient
+      : path.relative(clientParent, externalClient),
+    path.join(clientParent, "client"),
+    process.platform === "win32" ? "junction" : "dir",
   );
   process.env.CHECKTRAIL_ATTEMPT_WHOLE_INSTALLED = "1";
   const installedBefore = await captureCompiledEngine(installed);
@@ -130,6 +164,19 @@ try {
     requirements,
     attemptHash(input("dist/test/gate-attempt-archives.test.js")),
   );
+  const foundationSelection = selectAttemptFoundation(
+      JSON.parse(input("scripts/required-native-tests.json")),
+      runtime.platform,
+    ),
+    foundationDigests = Object.fromEntries(
+      inputs.map((x) => [x.file, attemptHash(x.bytes)]),
+    ),
+    foundationEvidence = await runAttemptFoundation(
+      harness,
+      foundationSelection,
+      foundationDigests,
+      "attempt-foundation-installed",
+    );
   const compiledEngine = requireUnchangedCompiledEngine(
     installedBefore,
     await captureCompiledEngine(installed),
@@ -169,8 +216,14 @@ try {
       ...installation,
       harnessOutsideInstalledPackage: true,
       externalSdkDependencies,
+      productionHarnessDependencies,
       compiledEngine: compactAttemptEngine(identity),
       profileEvidence: profile,
+      foundationEvidence,
+      foundationRequirementsSha256: attemptHash(
+        JSON.stringify(foundationSelection),
+      ),
+      foundationExclusions: foundationSelection.exclusions,
       gateAAttemptArchivesComplete: false,
       gateAComplete: false,
       inferenceInvoked: false,

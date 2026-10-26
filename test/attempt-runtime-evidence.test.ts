@@ -14,6 +14,11 @@ const {
   requireAttemptRuntimeInstallation,
   attemptRuntimeHarnessFiles,
 } = runtimeModule;
+const { selectAttemptFoundation, requireAttemptFoundationEvidence } =
+  await import(
+    new URL("../../scripts/attempt-foundation-evidence.mjs", import.meta.url)
+      .href
+  );
 const scope = JSON.parse(
     await readFile(
       new URL("../../docs/gate-a-profiles.v1.json", import.meta.url),
@@ -70,6 +75,10 @@ function observed(p: {
       "docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
     containerDefinitionSha256: "c".repeat(64),
     gitVersion: "git version 2.56.0",
+    goVersion: "go1.27.1",
+    goPlatform: p.platform === "win32" ? "windows" : p.platform,
+    goArchitecture: p.architecture === "x64" ? "amd64" : p.architecture,
+    goExecutableSha256: "8".repeat(64),
     gitExecutableSha256: "d".repeat(64),
     containerImageId: "sha256:" + "b".repeat(64),
   };
@@ -171,6 +180,10 @@ test("attempt runtime selection rejects wrong Node platform architecture host im
     for (const bad of [
       { gitExecutableSha256: null },
       { gitVersion: "original malformed version" },
+      { goVersion: "go1.27.2" },
+      { goExecutableSha256: null },
+      { goPlatform: "foreign" },
+      { goArchitecture: "foreign" },
     ])
       assert.throws(() =>
         checkAttemptRuntimeSelection(scope, p.id, { ...valid, ...bad }),
@@ -248,7 +261,51 @@ test("attempt runtime selection rejects wrong Node platform architecture host im
     checkAttemptRuntimeSelection(scope, "original-unknown-slot", {}),
   );
 });
+function foundationObservation(platform = "linux") {
+  const selection = selectAttemptFoundation(profiles, platform),
+    requirements: { file: string; name: string }[] = selection.requirements,
+    files = [...new Set(requirements.map((c) => c.file))],
+    digests = Object.fromEntries(
+      files.map((file, i) => [file, String(i + 1).repeat(64)]),
+    ),
+    fileId = (file: string) => "file-" + (files.indexOf(file) + 1),
+    evidence = {
+      complete: true,
+      problems: [],
+      required: requirements.length,
+      passed: requirements.length,
+      ledger: {
+        schemaVersion: 1,
+        truncated: false,
+        terminalEventCount: requirements.length,
+        files: files.map((file) => ({
+          id: fileId(file),
+          stable: true,
+          before: { state: "present", sha256: digests[file] },
+          after: { state: "present", sha256: digests[file] },
+        })),
+        events: requirements.map((c, i) => ({
+          sequence: i + 1,
+          fileId: fileId(c.file),
+          name: c.name,
+          kind: "test",
+          outcome: "passed",
+          required: true,
+          nameTruncated: false,
+          durationMs: 0,
+        })),
+        cases: requirements.map((c, i) => ({
+          fileId: fileId(c.file),
+          name: c.name,
+          outcome: "passed",
+          terminalSequences: [i + 1],
+        })),
+      },
+    };
+  return { selection, digests, evidence };
+}
 function installation() {
+  const foundation = foundationObservation();
   const expected = {
     runtime: observed(scope.runtimeProfiles[0]),
     selectedRuntime: structuredClone(scope.runtimeProfiles[0]),
@@ -269,6 +326,10 @@ function installation() {
     },
     clientVersion: "2.3.1",
     requirements: requirements(),
+    foundationRequirements: foundation.selection.requirements,
+    foundationExclusions: foundation.selection.exclusions,
+    foundationDigests: foundation.digests,
+    foundationRequirementsSha256: "9".repeat(64),
   };
   const receipt = {
     schemaVersion: 1,
@@ -319,6 +380,9 @@ function installation() {
         })),
       },
     },
+    foundationEvidence: foundation.evidence,
+    foundationExclusions: foundation.selection.exclusions,
+    foundationRequirementsSha256: expected.foundationRequirementsSha256,
     gateAAttemptArchivesComplete: false,
     gateAComplete: false,
     inferenceInvoked: false,
@@ -559,5 +623,169 @@ test("attempt runtime CLI rejects missing unknown and extra hosted slots before 
           ? /Unknown selected runtime slot/
           : /process.argv.length/,
     );
+  }
+});
+
+test("attempt foundation selects every original journal and physical callback while recording the sole POSIX exclusion on Windows", async () => {
+  for (const platform of ["linux", "darwin", "win32"]) {
+    const { selection, digests, evidence } = foundationObservation(platform);
+    assert.equal(selection.requirements.length, platform === "win32" ? 44 : 45);
+    assert.equal(selection.exclusions.length, platform === "win32" ? 1 : 0);
+    if (platform === "win32")
+      assert.match(selection.exclusions[0].reason, /POSIX/);
+    assert.doesNotThrow(() =>
+      requireAttemptFoundationEvidence(
+        evidence,
+        selection.requirements,
+        digests,
+      ),
+    );
+  }
+  for (const profile of [
+    "attempt-journal-foundation",
+    "attempt-output-foundation",
+  ]) {
+    for (const mode of ["omit", "duplicate", "rename", "foreign-file"]) {
+      const changed = structuredClone(profiles),
+        rows = changed[profile];
+      if (mode === "omit") rows.pop();
+      if (mode === "duplicate") rows[0] = structuredClone(rows[1]);
+      if (mode === "rename") rows[0].name += " changed";
+      if (mode === "foreign-file") rows[0].file = "dist/test/foreign.test.js";
+      assert.throws(() => selectAttemptFoundation(changed, "linux"));
+    }
+  }
+  assert.throws(() => selectAttemptFoundation(profiles, "foreign"));
+});
+test("attempt foundation refuses forged totals and missing duplicate extra skipped truncated unstable or foreign terminal evidence", () => {
+  const { selection, digests, evidence } = foundationObservation();
+  const edits: ((e: typeof evidence) => void)[] = [
+    (e) => {
+      e.complete = false;
+    },
+    (e) => {
+      e.required--;
+    },
+    (e) => {
+      e.passed--;
+    },
+    (e) => {
+      e.ledger.events.pop();
+    },
+    (e) => {
+      e.ledger.events.push(structuredClone(e.ledger.events[0]!));
+    },
+    (e) => {
+      e.ledger.cases.pop();
+    },
+    (e) => {
+      e.ledger.cases[0] = structuredClone(e.ledger.cases[1]!);
+    },
+    (e) => {
+      e.ledger.events[0]!.outcome = "skipped";
+    },
+    (e) => {
+      e.ledger.cases[0]!.outcome = "skipped";
+    },
+    (e) => {
+      e.ledger.events[0]!.nameTruncated = true;
+    },
+    (e) => {
+      e.ledger.truncated = true;
+    },
+    (e) => {
+      e.ledger.events[0]!.sequence = 2;
+    },
+    (e) => {
+      e.ledger.events[0]!.required = false;
+    },
+    (e) => {
+      e.ledger.events[0]!.kind = "suite";
+    },
+    (e) => {
+      e.ledger.events[0]!.durationMs = NaN;
+    },
+    (e) => {
+      e.ledger.events[0]!.durationMs = -1;
+    },
+    (e) => {
+      e.ledger.events[0]!.fileId = "foreign";
+    },
+    (e) => {
+      e.ledger.cases[0]!.fileId = "foreign";
+    },
+    (e) => {
+      e.ledger.cases[0]!.terminalSequences = [2];
+    },
+    (e) => {
+      e.ledger.files[0]!.stable = false;
+    },
+    (e) => {
+      e.ledger.files[0]!.before.sha256 = "f".repeat(64);
+      e.ledger.files[0]!.after.sha256 = "f".repeat(64);
+    },
+    (e) => {
+      e.ledger.files[0]!.after.sha256 = "f".repeat(64);
+    },
+    (e) => {
+      e.ledger.files[0]!.id = "";
+    },
+    (e) => {
+      e.ledger.files[0] = structuredClone(e.ledger.files[1]!);
+    },
+    (e) => {
+      e.ledger.files.pop();
+    },
+    (e) => {
+      e.ledger.terminalEventCount--;
+    },
+    (e) => {
+      e.ledger.events[0]!.name = e.ledger.events[1]!.name;
+    },
+  ];
+  for (const edit of edits) {
+    const changed = structuredClone(evidence);
+    edit(changed);
+    assert.throws(() =>
+      requireAttemptFoundationEvidence(
+        changed,
+        selection.requirements,
+        digests,
+      ),
+    );
+  }
+  const changed = structuredClone(digests);
+  changed[selection.requirements[0].file] = "e".repeat(64);
+  assert.throws(() =>
+    requireAttemptFoundationEvidence(evidence, selection.requirements, changed),
+  );
+});
+test("attempt installation requires the platform-specific foundation and cannot borrow a passing whole-profile count", () => {
+  const { expected, receipt } = installation();
+  for (const mode of [
+    "missing",
+    "foreign-selection",
+    "foreign-exclusion",
+    "foreign-digest",
+    "missing-case",
+    "skipped-case",
+  ]) {
+    const changed = structuredClone(receipt);
+    if (mode === "missing")
+      Reflect.deleteProperty(changed, "foundationEvidence");
+    if (mode === "foreign-selection")
+      changed.foundationRequirementsSha256 = "f".repeat(64);
+    if (mode === "foreign-exclusion")
+      changed.foundationExclusions = [
+        { file: "foreign", name: "foreign", reason: "foreign" },
+      ];
+    if (mode === "foreign-digest")
+      changed.foundationEvidence.ledger.files[0]!.before.sha256 = "f".repeat(
+        64,
+      );
+    if (mode === "missing-case") changed.foundationEvidence.ledger.cases.pop();
+    if (mode === "skipped-case")
+      changed.foundationEvidence.ledger.events[0]!.outcome = "skipped";
+    assert.throws(() => requireAttemptRuntimeInstallation(changed, expected));
   }
 });
