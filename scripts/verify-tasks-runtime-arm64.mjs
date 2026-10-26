@@ -96,22 +96,17 @@ try {
     image.Id,
     "sh",
     "-c",
-    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-tasks-runtime-package.mjs native-linux-arm64-node22\nnode scripts/verify-review-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings\nnode scripts/verify-lifecycle-platforms.mjs native-linux-arm64-node22\nnode scripts/verify-lifecycle-platforms-package.mjs native-linux-arm64-node22",
+    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-review-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings\nnode scripts/verify-lifecycle-platforms.mjs native-linux-arm64-node22",
   ]);
   const packets = output
     .trim()
     .split("\n")
     .map((line) => JSON.parse(line));
-  assert.equal(packets.length, 7);
-  const [
-    ,
-    source,
-    installed,
-    reviewWorkflow,
-    lifecycleAdmission,
-    lifecycleSource,
-    lifecycleInstalled,
-  ] = packets;
+  assert.equal(packets.length, 5);
+  const [, source, reviewWorkflow, lifecycleAdmission, lifecycleSource] =
+    packets;
+  const installed = source.installedEvidence;
+  const lifecycleInstalled = lifecycleSource.installedEvidence;
   assert.equal(source.profileEvidence.complete, true);
   assert.equal(installed.evidence.profileEvidence.complete, true);
   assert.equal(source.harnessSha256, installed.evidence.harnessSha256);

@@ -254,5 +254,10 @@ test(
     assert.equal(evidence.evidence.complete, true);
     assert.equal(evidence.evidence.required, 9);
     assert.equal(evidence.evidence.passed, 9);
+    const { writeRuntimeInstallation } = await import(
+      new URL("../../scripts/runtime-installation-capture.mjs", import.meta.url)
+        .href
+    );
+    await writeRuntimeInstallation("lifecycle", evidence);
   },
 );

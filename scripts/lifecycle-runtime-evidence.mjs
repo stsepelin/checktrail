@@ -29,6 +29,7 @@ export const lifecycleHarnessFiles = Object.freeze([
   "scripts/required-test-evidence.mjs",
   "scripts/compiled-engine-evidence.mjs",
   "scripts/install-acceptance-package.mjs",
+  "scripts/runtime-installation-capture.mjs",
 ]);
 export function lifecycleFoundationSelection(platform = process.platform) {
   assert.ok(
@@ -84,4 +85,83 @@ export async function observeLifecycleRuntime(scope, slot) {
       slot !== null && process.env.GITHUB_ACTIONS === "true",
     ),
   };
+}
+
+export function requireLifecycleRuntimeInstallation(
+  receipt,
+  source,
+  definitions,
+) {
+  assert.equal(receipt.schemaVersion, 1);
+  assert.equal(receipt.profile, "lifecycle-platforms-installed-v1");
+  assert.equal(receipt.offlineProductionInstall, true);
+  assert.equal(receipt.lifecycleScriptsExecuted, false);
+  assert.equal(receipt.harnessOutsideInstalledPackage, true);
+  assert.match(receipt.tarballSha256, /^[a-f0-9]{64}$/);
+  assert.match(receipt.productionDependencyLockSha256, /^[a-f0-9]{64}$/);
+  const evidence = receipt.evidence;
+  assert.equal(evidence.profile, "lifecycle-platforms-runtime-v1");
+  assert.equal(evidence.installed, true);
+  assert.equal(evidence.installedEvidence, null);
+  assert.deepEqual(
+    evidence.runtime,
+    source.runtime,
+    "Installed lifecycle runtime differs from source",
+  );
+  assert.equal(evidence.compiledEngine.beforeAfterByteIdentitiesMatch, true);
+  for (const engine of [receipt.compiledEngine, evidence.compiledEngine]) {
+    for (const key of [
+      "schemaVersion",
+      "fileCount",
+      "bytes",
+      "treeSha256",
+      "manifestSha256",
+    ])
+      assert.equal(
+        engine[key],
+        source.compiledEngine[key],
+        "Installed lifecycle engine differs from source",
+      );
+  }
+  assert.equal(
+    receipt.harnessSha256,
+    source.harnessSha256,
+    "Installed lifecycle harness differs from source",
+  );
+  assert.equal(evidence.harnessSha256, source.harnessSha256);
+  assert.deepEqual(evidence.inputSources, source.inputSources);
+  assert.equal(evidence.harnessInputsUnchanged, true);
+  function complete(profile, rows) {
+    assert.equal(profile.complete, true);
+    assert.equal(profile.required, rows.length);
+    assert.equal(profile.passed, rows.length);
+    assert.equal(profile.ledger.truncated, false);
+    assert.equal(profile.ledger.cases.length, rows.length);
+    assert.ok(profile.ledger.cases.every((row) => row.outcome === "passed"));
+    assert.deepEqual(
+      profile.ledger.cases.map((row) => row.name).sort(),
+      rows.map((row) => row.name).sort(),
+    );
+  }
+  complete(evidence, definitions["lifecycle-platforms"]);
+  const selection = lifecycleFoundationSelection(source.runtime.platform);
+  assert.deepEqual(
+    evidence.foundation.profiles,
+    selection.map((profile) => ({
+      profile,
+      required: definitions[profile].length,
+    })),
+  );
+  complete(
+    evidence.foundation,
+    selection.flatMap((profile) => definitions[profile]),
+  );
+  assert.equal(
+    evidence.completionScope,
+    "whole-profile-and-selected-platform-foundation",
+  );
+  assert.equal(evidence.inferenceInvoked, false);
+  assert.equal(evidence.fieldEvaluationExecuted, false);
+  assert.equal(evidence.gateAComplete, false);
+  return receipt;
 }

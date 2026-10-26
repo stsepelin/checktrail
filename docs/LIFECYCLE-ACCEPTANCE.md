@@ -65,3 +65,18 @@ invocations run the argument/environment contract and physical-output controls;
 they do not qualify Windows. The receipt binds source and installed engine bytes,
 all declared controller/test inputs, and exact required case accounting before
 and after acceptance. Native Windows qualification remains required.
+
+Source controllers retain the fresh-install receipt produced by their installed
+acceptance callback in a new private temporary namespace. Before returning source
+evidence they require the same selected runtime, compiled engine, harness inputs
+and exact complete case ledger. Missing, malformed or mismatched receipts fail
+admission. The namespace is removed after collection. Installed controllers do
+not recursively create another installation. This is internal acceptance
+bookkeeping and grants no operator trust or project execution permission.
+
+The hosted and ARM64 wrappers consume that validated nested receipt rather than
+running the complete installed cohort a second time. Both actual source and
+fresh offline execution remain required in the same job; no previous job's
+receipt substitutes for execution. The Windows job has a 45-minute aggregate
+allowance for its combined Tasks, review and lifecycle work. Individual callback,
+cleanup and project execution deadlines are unchanged.

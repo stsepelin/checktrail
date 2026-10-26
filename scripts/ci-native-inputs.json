@@ -46,9 +46,6 @@
   "scripts/audit-php-review-tools.mjs": ["php-review"],
   "scripts/c-context-tools.Dockerfile": ["c-context-arm64"],
   "scripts/capture-jvm-wrapper-guards.mjs": ["jvm-wrappers-arm64"],
-  "scripts/check-ci-completion.mjs": ["jvm-wrappers-arm64"],
-  "scripts/ci-impact.mjs": ["jvm-wrappers-arm64"],
-  "scripts/ci-native-inputs.json": ["jvm-wrappers-arm64"],
   "scripts/clang-tools.Dockerfile": ["clang"],
   "scripts/cleanup-cpp-tools-runtime.mjs": [
     "cpp-extensions-arm64",
@@ -383,7 +380,6 @@
   "scripts/php-review-tools/composer.lock": ["php-review"],
   "scripts/php-tools/composer.json": ["mutation-native-arm64"],
   "scripts/php-tools/composer.lock": ["mutation-native-arm64"],
-  "scripts/plan-ci-impact.mjs": ["jvm-wrappers-arm64"],
   "scripts/prepare-acceptance-cache-subset.mjs": [
     "cpp-extensions-arm64",
     "django-assembly-arm64",
@@ -845,6 +841,11 @@
   "scripts/ruby-extensions-acceptance-selection.mjs": ["ruby-extensions-arm64"],
   "scripts/ruby-tools-archives.json": ["ruby-extensions-arm64", "ruby-tools"],
   "scripts/ruby-tools.Dockerfile": ["ruby-extensions-arm64", "ruby-tools"],
+  "scripts/runtime-installation-capture.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
   "scripts/rust-context-tools.Dockerfile": ["rust-context-arm64"],
   "scripts/rust-extension-components.json": ["rust-extensions-arm64"],
   "scripts/rust-extension-tools.Dockerfile": ["rust-extensions-arm64"],
@@ -1019,7 +1020,6 @@
   "scripts/verify-maven-package.mjs": ["maven"],
   "scripts/verify-mutation-container.mjs": ["mutation-native-arm64"],
   "scripts/verify-mutation-guards.mjs": [
-    "jvm-wrappers-arm64",
     "mutation-native-arm64",
     "mutation-passive-guards"
   ],
@@ -2180,6 +2180,10 @@
     "rust-extensions-arm64"
   ],
   "test/runner.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/runtime-installation-capture.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/rust-component-preflight.test.ts": ["rust-extensions-arm64"],
   "test/rust-extensions-fixture.ts": ["rust-extensions-arm64"],
   "test/rust-extensions.test.ts": ["rust-extensions-arm64"],

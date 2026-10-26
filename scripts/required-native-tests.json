@@ -2875,6 +2875,10 @@
     {
       "file": "dist/test/process-tree.test.js",
       "name": "Darwin process status parser retains unknown status without inventing quiescence and canonicalises physical start identities"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "Linux procfs teardown sentinel retains only exited identities without breaking unrelated owned families"
     }
   ],
   "review-benchmark-multi": [
@@ -5511,6 +5515,14 @@
     {
       "file": "dist/test/lifecycle-runtime-harness.test.js",
       "name": "lifecycle foundation selection admits only the declared native platforms"
+    },
+    {
+      "file": "dist/test/runtime-installation-capture.test.js",
+      "name": "runtime installation capture uses fresh private receipts, restores environment on failure and refuses absent malformed oversized and linked evidence"
+    },
+    {
+      "file": "dist/test/runtime-installation-capture.test.js",
+      "name": "source runtime admission binds retained installations to exact runtime engine harness and complete named cases"
     }
   ],
   "laravel-cache-runtime-bindings": [

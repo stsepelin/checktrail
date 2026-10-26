@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 import { fixture } from "./helpers.js";
 
 test("lifecycle runtime admission refuses wrong slots, missing foundations and changed harnesses while retaining unqualified development evidence", async (t) => {
@@ -14,6 +15,20 @@ test("lifecycle runtime admission refuses wrong slots, missing foundations and c
   const fixtureRoot = await fixture(t, {
     "dist/src/original.js": "export const original = 1;\n",
   });
+  if (process.platform === "win32") {
+    // Admission bookkeeping uses the actual native ACL implementation, even in
+    // this explicitly synthetic collector fixture.
+    await cp(
+      new URL("dist/src/", repository),
+      path.join(fixtureRoot, "dist/src"),
+      { recursive: true },
+    );
+    await symlink(
+      fileURLToPath(new URL("node_modules/", repository)),
+      path.join(fixtureRoot, "node_modules"),
+      "junction",
+    );
+  }
   for (const file of lifecycleHarnessFiles) {
     const target = path.join(fixtureRoot, file);
     await mkdir(path.dirname(target), { recursive: true });
@@ -59,13 +74,18 @@ test("lifecycle runtime admission refuses wrong slots, missing foundations and c
   assert.equal(requirements.length, 9);
   assert.equal(new Set(requirements.map((row) => row.file)).size, 1);
   const marker = path.join(fixtureRoot, "body-reached.jsonl");
+  const receiptTemplate = path.join(
+    fixtureRoot,
+    "original-installed-template.json",
+  );
   await writeFile(
     path.join(fixtureRoot, requirements[0]!.file),
-    "import {test} from 'node:test';import {appendFileSync} from 'node:fs';\n" +
+    "import {test} from 'node:test';import {appendFileSync,readFileSync,writeFileSync} from 'node:fs';\n" +
       requirements
-        .map(
-          (row) =>
-            `test(${JSON.stringify(row.name)},()=>appendFileSync(${JSON.stringify(marker)},${JSON.stringify(row.name + "\n")}));`,
+        .map((row) =>
+          row.name.endsWith(" installed acceptance")
+            ? `test(${JSON.stringify(row.name)},()=>{appendFileSync(${JSON.stringify(marker)},${JSON.stringify(row.name + "\n")});if(process.env.CHECKTRAIL_LIFECYCLE_INSTALL_RECEIPT&&process.env.ORIGINAL_INSTALLED_TEMPLATE)writeFileSync(process.env.CHECKTRAIL_LIFECYCLE_INSTALL_RECEIPT,readFileSync(process.env.ORIGINAL_INSTALLED_TEMPLATE),{flag:'wx',mode:0o600});});`
+            : `test(${JSON.stringify(row.name)},()=>appendFileSync(${JSON.stringify(marker)},${JSON.stringify(row.name + "\n")}));`,
         )
         .join("\n"),
   );
@@ -74,6 +94,9 @@ test("lifecycle runtime admission refuses wrong slots, missing foundations and c
   delete env.NODE_TEST_CONTEXT;
   delete env.GITHUB_ACTIONS;
   delete env.CHECKTRAIL_LIFECYCLE_RUNTIME_SLOT;
+  delete env.CHECKTRAIL_LIFECYCLE_INSTALLED;
+  delete env.CHECKTRAIL_LIFECYCLE_INSTALL_RECEIPT;
+  delete env.ORIGINAL_INSTALLED_TEMPLATE;
   for (const slot of [
     "original-unknown-slot",
     process.platform === "win32" ? "ci-linux-node22" : "windows-node22",
@@ -100,6 +123,38 @@ test("lifecycle runtime admission refuses wrong slots, missing foundations and c
     await assert.rejects(readFile(marker), { code: "ENOENT" });
     await assert.rejects(readFile(foundationMarker), { code: "ENOENT" });
   }
+  // Obtain the fixture's real collector identities with the recursion guard set.
+  // These stub callbacks test envelope admission only, never native qualification.
+  const bootstrap = spawnSync(
+    process.execPath,
+    [path.join(fixtureRoot, "scripts/verify-lifecycle-platforms.mjs")],
+    {
+      cwd: fixtureRoot,
+      env: { ...env, CHECKTRAIL_LIFECYCLE_INSTALLED: "1" },
+      encoding: "utf8",
+      timeout: 60000,
+      maxBuffer: 4 * 1048576,
+    },
+  );
+  assert.equal(bootstrap.error, undefined);
+  assert.equal(bootstrap.status, 0, bootstrap.stdout + bootstrap.stderr);
+  const childEvidence = JSON.parse(bootstrap.stdout);
+  const template = {
+    schemaVersion: 1,
+    profile: "lifecycle-platforms-installed-v1",
+    offlineProductionInstall: true,
+    lifecycleScriptsExecuted: false,
+    harnessOutsideInstalledPackage: true,
+    tarballSha256: "a".repeat(64),
+    productionDependencyLockSha256: "b".repeat(64),
+    compiledEngine: childEvidence.compiledEngine,
+    harnessSha256: childEvidence.harnessSha256,
+    evidence: childEvidence,
+  };
+  await writeFile(receiptTemplate, JSON.stringify(template));
+  env.ORIGINAL_INSTALLED_TEMPLATE = receiptTemplate;
+  await rm(marker, { force: true });
+  await rm(foundationMarker, { force: true });
   const development = spawnSync(
     process.execPath,
     [path.join(fixtureRoot, "scripts/verify-lifecycle-platforms.mjs")],
@@ -115,6 +170,8 @@ test("lifecycle runtime admission refuses wrong slots, missing foundations and c
   assert.equal(development.status, 0, development.stdout + development.stderr);
   const packet = JSON.parse(development.stdout);
   assert.equal(packet.complete, true);
+  assert.equal(packet.installed, false);
+  assert.deepEqual(packet.installedEvidence, template);
   assert.equal(packet.required, 9);
   assert.equal(packet.passed, 9);
   assert.equal(
@@ -156,6 +213,28 @@ test("lifecycle runtime admission refuses wrong slots, missing foundations and c
   assert.deepEqual(
     (await readFile(marker, "utf8")).trim().split("\n").sort(),
     requirements.map((row) => row.name).sort(),
+  );
+
+  const missingEnv = { ...env };
+  delete missingEnv.ORIGINAL_INSTALLED_TEMPLATE;
+  const noInstallation = spawnSync(
+    process.execPath,
+    [path.join(fixtureRoot, "scripts/verify-lifecycle-platforms.mjs")],
+    {
+      cwd: fixtureRoot,
+      env: missingEnv,
+      encoding: "utf8",
+      timeout: 60000,
+      maxBuffer: 4 * 1048576,
+    },
+  );
+  assert.equal(noInstallation.error, undefined);
+  assert.equal(noInstallation.status, 1);
+  assert.equal(noInstallation.stdout, "");
+  assert.match(noInstallation.stderr, /ENOENT/);
+  assert.doesNotMatch(
+    noInstallation.stderr,
+    /SyntaxError|ERR_MODULE_NOT_FOUND|Cannot find module/,
   );
 
   const shadowFiles = [
