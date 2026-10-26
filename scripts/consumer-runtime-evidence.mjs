@@ -12,6 +12,12 @@ import {
   requireUnchangedCompiledEngine,
 } from "./compiled-engine-evidence.mjs";
 import { ensureWindowsTaskAccess } from "../dist/src/windows-task-access.js";
+import {
+  consumerFoundationHarnessFiles,
+  selectConsumerFoundation,
+  runConsumerFoundation,
+  requireConsumerFoundationEvidence,
+} from "./consumer-foundation-evidence.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url)),
   hash = (bytes) => createHash("sha256").update(bytes).digest("hex"),
   profileId = "consumer-impact";
@@ -21,6 +27,7 @@ export const consumerRuntimeBaseImages = Object.freeze({
     "docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
 });
 export const consumerRuntimeHarnessFiles = Object.freeze([
+  ...consumerFoundationHarnessFiles,
   "package.json",
   "package-lock.json",
   "docs/gate-a-profiles.v1.json",
@@ -298,6 +305,7 @@ export function requireConsumerRuntimeInstallation(receipt, expected) {
     "selectedRuntime",
     "harnessSha256",
     "requirementsSha256",
+    "foundationRequirementsSha256",
     "packageSha256",
     "compiledEngine",
   ])
@@ -314,6 +322,11 @@ export function requireConsumerRuntimeInstallation(receipt, expected) {
     receipt.profileEvidence,
     expected.requirements,
     expected.acceptanceSha256,
+  );
+  requireConsumerFoundationEvidence(
+    receipt.foundationEvidence,
+    expected.foundationSelection,
+    expected.foundationDigests,
   );
   for (const key of [
     "gateAConsumerImpactComplete",
@@ -391,6 +404,15 @@ export async function verifyConsumerRuntime({
       requirements.map((c) => ({ ...c, file: path.join(root, c.file) })),
       { timeoutMs: 600000, isolatedCaseWorkers: 1 },
     );
+    const foundationSelection = selectConsumerFoundation(profiles),
+      foundationDigests = Object.fromEntries(inputs),
+      foundationRequirementsSha256 = hash(JSON.stringify(foundationSelection)),
+      foundationEvidence = await runConsumerFoundation(
+        root,
+        foundationSelection,
+        foundationDigests,
+        "consumer-foundation-source",
+      );
     const acceptanceSha256 = inputs.find(
       ([file]) => file === "dist/test/gate-consumer-impact.test.js",
     )[1];
@@ -434,6 +456,9 @@ export async function verifyConsumerRuntime({
       requirements,
       clientVersion,
       acceptanceSha256,
+      foundationSelection,
+      foundationDigests,
+      foundationRequirementsSha256,
     });
     return {
       schemaVersion: 1,
@@ -447,6 +472,8 @@ export async function verifyConsumerRuntime({
       packageSha256,
       compiledEngine,
       profileEvidence,
+      foundationEvidence,
+      foundationRequirementsSha256,
       installedEvidence,
       gateAConsumerImpactComplete: false,
       gateAComplete: false,

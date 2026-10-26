@@ -1635,7 +1635,9 @@ jobs:
           node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings
           node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}
       - name: Require whole consumer impact from source and a fresh offline package
-        run: node scripts/verify-consumer-runtime.mjs ${{ matrix.slot }}
+        run: |
+          node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings
+          node scripts/verify-consumer-runtime.mjs ${{ matrix.slot }}
 
   tasks-runtime-arm64:
     needs: [ci-plan, actionlint]

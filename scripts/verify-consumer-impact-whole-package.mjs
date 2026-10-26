@@ -30,6 +30,10 @@ import {
   compactConsumerEngine,
   requireConsumerTerminalCases,
 } from "./consumer-runtime-evidence.mjs";
+import {
+  selectConsumerFoundation,
+  runConsumerFoundation,
+} from "./consumer-foundation-evidence.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url)),
   hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 assert.equal(process.argv.length, 2);
@@ -156,6 +160,16 @@ try {
         .bytes,
     ),
   );
+  const foundationSelection = selectConsumerFoundation(profiles),
+    foundationDigests = Object.fromEntries(
+      inputs.map((x) => [x.file, hash(x.bytes)]),
+    ),
+    foundationEvidence = await runConsumerFoundation(
+      harness,
+      foundationSelection,
+      foundationDigests,
+      "consumer-foundation-installed",
+    );
   const installedAfter = await captureCompiledEngine(installed),
     compiledEngine = requireUnchangedCompiledEngine(
       installedBefore,
@@ -205,6 +219,8 @@ try {
       externalSdkDependencies,
       compiledEngine: compactConsumerEngine(engineIdentity),
       profileEvidence,
+      foundationEvidence,
+      foundationRequirementsSha256: hash(JSON.stringify(foundationSelection)),
       gateAConsumerImpactComplete: false,
       gateAComplete: false,
       inferenceInvoked: false,

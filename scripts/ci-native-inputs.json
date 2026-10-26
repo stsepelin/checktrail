@@ -143,6 +143,10 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "scripts/consumer-foundation-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/consumer-runtime-evidence.mjs": [
     "tasks-runtime",
     "tasks-runtime-arm64"
@@ -230,6 +234,8 @@
   "scripts/gradle-tools.Dockerfile": ["gradle"],
   "scripts/hcl-context-tools.Dockerfile": ["hcl-context-arm64"],
   "scripts/helm-extensions-controls.json": ["helm-extensions-arm64"],
+  "scripts/impact-corpus.json": ["tasks-runtime", "tasks-runtime-arm64"],
+  "scripts/impact-metrics.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
   "scripts/infra-tools-artifacts.json": [
     "hcl-context-arm64",
     "helm",
@@ -1255,6 +1261,8 @@
   "test/clippy-surfaces.test.ts": ["rust-extensions-arm64"],
   "test/clippy.test.ts": ["rust-extensions-arm64"],
   "test/consumer-impact-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/consumer-imports.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/consumer-runtime-evidence.test.ts": ["tasks-runtime"],
   "test/cpp-controls.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
   "test/cpp-extensions-cancel.test.ts": ["cpp-extensions-arm64"],
   "test/cpp-extensions-fixture.ts": ["cpp-extensions-arm64"],
@@ -1597,6 +1605,7 @@
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
+  "test/git-selection.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/go-build.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
@@ -1758,6 +1767,7 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "test/impact.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/java.test.ts": [
     "checkstyle",
     "detekt",

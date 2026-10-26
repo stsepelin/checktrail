@@ -36,6 +36,16 @@ PowerShell digest. These observations do not attest a host or container and do
 not trace loaded modules, dependency bytes or producer source builds. A call with
 no slot is a development observation and cannot qualify a hosted runtime.
 
+The same runtime cohort also requires the original Node import/resource,
+Git-selection and paired-impact foundation controls from source and the fresh
+production installation. Their ledger binds each unchanged file, each required
+top-level callback and every original nested unknown-source control. Nested
+terminal events remain separate from top-level requirements; an advertised total
+cannot replace a missing, skipped, duplicated or foreign event. The whole-feature
+ledger stays separate. The external harness captures the paired-impact scripts
+and both original corpus versions, their retained historical development snapshots,
+and the compiled fixture dependencies.
+
 The existing Tasks runtime jobs invoke the controller without adding jobs.
 Qualification remains pending until the selected matrix supplies current source
 and installed receipts and the native language witnesses are reconciled. The

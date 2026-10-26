@@ -14,6 +14,11 @@ const {
   requireConsumerRuntimeInstallation,
   consumerRuntimeHarnessFiles,
 } = runtimeModule;
+const { selectConsumerFoundation, requireConsumerFoundationEvidence } =
+  await import(
+    new URL("../../scripts/consumer-foundation-evidence.mjs", import.meta.url)
+      .href
+  );
 const scope = JSON.parse(
     await readFile(
       new URL("../../docs/gate-a-profiles.v1.json", import.meta.url),
@@ -249,7 +254,55 @@ test("consumer runtime selection rejects wrong Node platform architecture host i
     checkConsumerRuntimeSelection(scope, "original-unknown-slot", {}),
   );
 });
+function foundationObservation() {
+  const selection = selectConsumerFoundation(profiles),
+    requirements: { file: string; name: string }[] = selection.requirements,
+    events: { file: string; name: string }[] = selection.events,
+    files = [...new Set(requirements.map((c) => c.file))],
+    digests = Object.fromEntries(
+      files.map((file, i) => [file, String(i + 1).repeat(64)]),
+    ),
+    fileId = (file: string) => "file-" + (files.indexOf(file) + 1),
+    key = (c: { file: string; name: string }) =>
+      JSON.stringify([c.file, c.name]),
+    required = new Set(requirements.map(key)),
+    evidence = {
+      complete: true,
+      problems: [],
+      required: requirements.length,
+      passed: events.length,
+      ledger: {
+        schemaVersion: 1,
+        truncated: false,
+        terminalEventCount: events.length,
+        files: files.map((file) => ({
+          id: fileId(file),
+          stable: true,
+          before: { state: "present", sha256: digests[file] },
+          after: { state: "present", sha256: digests[file] },
+        })),
+        events: events.map((c, i) => ({
+          sequence: i + 1,
+          fileId: fileId(c.file),
+          name: c.name,
+          kind: "test",
+          outcome: "passed",
+          required: required.has(key(c)),
+          nameTruncated: false,
+          durationMs: 0,
+        })),
+        cases: requirements.map((c) => ({
+          fileId: fileId(c.file),
+          name: c.name,
+          outcome: "passed",
+          terminalSequences: [events.findIndex((e) => key(e) === key(c)) + 1],
+        })),
+      },
+    };
+  return { selection, digests, evidence };
+}
 function installation() {
+  const foundation = foundationObservation();
   const expected = {
     runtime: observed(scope.runtimeProfiles[0]),
     selectedRuntime: structuredClone(scope.runtimeProfiles[0]),
@@ -270,6 +323,9 @@ function installation() {
     },
     clientVersion: "2.3.1",
     requirements: requirements(),
+    foundationSelection: foundation.selection,
+    foundationDigests: foundation.digests,
+    foundationRequirementsSha256: "9".repeat(64),
   };
   const receipt = {
     schemaVersion: 1,
@@ -320,6 +376,8 @@ function installation() {
         })),
       },
     },
+    foundationEvidence: foundation.evidence,
+    foundationRequirementsSha256: expected.foundationRequirementsSha256,
     gateAConsumerImpactComplete: false,
     gateAComplete: false,
     inferenceInvoked: false,
@@ -504,5 +562,146 @@ test("consumer runtime CLI rejects missing unknown and extra hosted slots before
           ? /Unknown selected runtime slot/
           : /process.argv.length/,
     );
+  }
+});
+
+test("consumer foundation binds every original top-level and nested control while refusing renamed removed or duplicate source requirements", () => {
+  const { selection, digests, evidence } = foundationObservation();
+  assert.equal(selection.requirements.length, 18);
+  assert.equal(selection.events.length, 45);
+  assert.equal(evidence.ledger.events.filter((e) => !e.required).length, 27);
+  assert.doesNotThrow(() =>
+    requireConsumerFoundationEvidence(evidence, selection, digests),
+  );
+  for (const mode of ["omit", "duplicate", "rename", "foreign-file"]) {
+    const changed = structuredClone(profiles),
+      rows = changed["consumer-impact-foundation"];
+    if (mode === "omit") rows.pop();
+    if (mode === "duplicate") rows[0] = structuredClone(rows[1]);
+    if (mode === "rename") rows[0].name += " changed";
+    if (mode === "foreign-file") rows[0].file = "dist/test/foreign.test.js";
+    assert.throws(() => selectConsumerFoundation(changed));
+  }
+});
+test("consumer foundation rejects missing skipped or extra nested events forged totals foreign files and broken terminal bindings", () => {
+  const { selection, digests, evidence } = foundationObservation();
+  const edits: ((e: typeof evidence) => void)[] = [
+    (e) => {
+      e.complete = false;
+    },
+    (e) => {
+      e.required--;
+    },
+    (e) => {
+      e.passed--;
+    },
+    (e) => {
+      e.ledger.truncated = true;
+    },
+    (e) => {
+      e.ledger.terminalEventCount--;
+    },
+    (e) => {
+      e.ledger.events.pop();
+    },
+    (e) => {
+      e.ledger.events.push(structuredClone(e.ledger.events[0]!));
+    },
+    (e) => {
+      e.ledger.cases.pop();
+    },
+    (e) => {
+      e.ledger.events.at(-1)!.outcome = "skipped";
+    },
+    (e) => {
+      e.ledger.events.at(-1)!.name = "foreign nested control";
+    },
+    (e) => {
+      e.ledger.events.at(-1)!.required = true;
+    },
+    (e) => {
+      e.ledger.events[0]!.required = false;
+    },
+    (e) => {
+      e.ledger.events[0]!.nameTruncated = true;
+    },
+    (e) => {
+      e.ledger.events[0]!.sequence = 2;
+    },
+    (e) => {
+      e.ledger.events[0]!.durationMs = NaN;
+    },
+    (e) => {
+      e.ledger.events[0]!.durationMs = Infinity;
+    },
+    (e) => {
+      e.ledger.events[0]!.durationMs = -1;
+    },
+    (e) => {
+      e.ledger.events[0]!.kind = "suite";
+    },
+    (e) => {
+      e.ledger.events.at(-1)!.fileId = "foreign";
+    },
+    (e) => {
+      e.ledger.files[0]!.stable = false;
+    },
+    (e) => {
+      e.ledger.files[0]!.id = e.ledger.files[1]!.id;
+    },
+    (e) => {
+      e.ledger.files[0]!.before.sha256 = "f".repeat(64);
+      e.ledger.files[0]!.after.sha256 = "f".repeat(64);
+    },
+    (e) => {
+      e.ledger.files[0]!.after.sha256 = "f".repeat(64);
+    },
+    (e) => {
+      e.ledger.cases[0]!.terminalSequences = [2];
+    },
+    (e) => {
+      e.ledger.cases[0]!.fileId = "foreign";
+    },
+    (e) => {
+      e.ledger.cases[0] = structuredClone(e.ledger.cases[1]!);
+    },
+  ];
+  for (const edit of edits) {
+    const changed = structuredClone(evidence);
+    edit(changed);
+    assert.throws(() =>
+      requireConsumerFoundationEvidence(changed, selection, digests),
+    );
+  }
+  const changed = structuredClone(evidence);
+  changed.ledger.events = changed.ledger.events.filter((e) => e.required);
+  changed.passed = 45;
+  changed.ledger.terminalEventCount = 45;
+  assert.throws(
+    () => requireConsumerFoundationEvidence(changed, selection, digests),
+    "Advertising the original total cannot replace omitted nested controls",
+  );
+});
+test("consumer installation requires the matching foundation even when all whole-feature callbacks pass", () => {
+  const { expected, receipt } = installation();
+  for (const mode of [
+    "missing",
+    "wrong-selection",
+    "missing-nested",
+    "skipped-nested",
+    "changed-file",
+  ]) {
+    const changed = structuredClone(receipt);
+    if (mode === "missing")
+      Reflect.deleteProperty(changed, "foundationEvidence");
+    if (mode === "wrong-selection")
+      changed.foundationRequirementsSha256 = "f".repeat(64);
+    if (mode === "missing-nested")
+      changed.foundationEvidence.ledger.events.pop();
+    if (mode === "skipped-nested")
+      changed.foundationEvidence.ledger.events.at(-1)!.outcome = "skipped";
+    if (mode === "changed-file")
+      changed.foundationEvidence.ledger.files[0]!.stable = false;
+    assert.throws(() => requireConsumerRuntimeInstallation(changed, expected));
   }
 });

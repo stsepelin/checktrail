@@ -12,7 +12,11 @@ import { inventory } from "../src/inventory.js";
 import { reconcileConsumerImports } from "../src/consumer-imports.js";
 import { projectPlan, projectReport } from "../src/output.js";
 import { runProcess } from "../src/runner.js";
-import { fixture } from "./helpers.js";
+import {
+  fixture,
+  captureFixtureProcessGroup,
+  cleanupFixtureProcessGroup,
+} from "./helpers.js";
 import { alive, stopped } from "./tasks-wire-fixture.js";
 import {
   consumerFixture,
@@ -205,7 +209,7 @@ test("consumer-impact stale acceptance", async (t) => {
   const old = await inventory(root);
   await writeFile(
     path.join(root, "app/value.test.js"),
-    "import{test}from'node:test';import{writeFileSync,existsSync}from'node:fs';test('original source-change witness',async()=>{writeFileSync('.checktrail/ready.json','{}');while(!existsSync('.checktrail/release'))await new Promise(r=>setTimeout(r,10));});",
+    "import{test}from'node:test';import{writeFileSync,renameSync,existsSync}from'node:fs';test('original source-change witness',async()=>{writeFileSync('.checktrail/ready.json.pending','{}');renameSync('.checktrail/ready.json.pending','.checktrail/ready.json');while(!existsSync('.checktrail/release'))await new Promise(r=>setTimeout(r,10));});",
   );
   const running = validate(root, {
     trusted: true,
@@ -360,7 +364,7 @@ test("consumer-impact lifecycle acceptance", { timeout: 120000 }, async (t) => {
     await changeConsumerPolicy(root, "fixed");
     await writeFile(
       path.join(root, "app/value.test.js"),
-      `import{test}from'node:test';import fs from'node:fs';import{spawn}from'node:child_process';test('original owned consumer tree',async()=>{const child=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'inherit'});fs.writeFileSync('.checktrail/started.json',JSON.stringify({pid:process.pid,group:process.ppid,child:child.pid}));${mode === "output" ? "while(!fs.existsSync('.checktrail/release'))await new Promise(r=>setTimeout(r,10));process.stdout.write('x'.repeat(6*1024*1024));" : ""}await new Promise(r=>setTimeout(r,60000));});`,
+      `import{test}from'node:test';import fs from'node:fs';import{spawn}from'node:child_process';test('original owned consumer tree',async()=>{const child=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'inherit'});fs.writeFileSync('.checktrail/started.json.pending',JSON.stringify({pid:process.pid,parent:process.ppid,child:child.pid}));fs.renameSync('.checktrail/started.json.pending','.checktrail/started.json');${mode === "output" ? "while(!fs.existsSync('.checktrail/release'))await new Promise(r=>setTimeout(r,10));process.stdout.write('x'.repeat(6*1024*1024));" : ""}await new Promise(r=>setTimeout(r,60000));});`,
     );
     const controller = new AbortController();
     const running = validate(root, {
@@ -369,9 +373,15 @@ test("consumer-impact lifecycle acceptance", { timeout: 120000 }, async (t) => {
       signal: controller.signal,
       timeoutMs: mode === "timeout" ? 5000 : 20000,
     });
-    let pids: { pid: number; group: number; child: number } | undefined;
+    let pids: { pid: number; parent: number; child: number } | undefined;
     try {
       pids = await waitMarker(root, "started.json");
+      assert.ok(Number.isSafeInteger(pids!.parent) && pids!.parent > 1);
+      assert.equal(new Set([pids!.pid, pids!.parent, pids!.child]).size, 3);
+      if (process.platform !== "win32") {
+        const group = await captureFixtureProcessGroup(pids!.pid, pids!.parent);
+        t.after(() => cleanupFixtureProcessGroup(group));
+      }
       assert.equal(await alive(pids!.pid), true);
       assert.equal(await alive(pids!.child), true);
       if (mode === "cancel") controller.abort();
@@ -380,11 +390,11 @@ test("consumer-impact lifecycle acceptance", { timeout: 120000 }, async (t) => {
       const report = await running;
       assert.equal(report.outcome, "incomplete");
       assert.equal(report.checks.length, 4);
-      const process = report.checks.find((c) => c.project === "app")!
+      const result = report.checks.find((c) => c.project === "app")!
         .processes[0]!;
-      assert.equal(process.cancelled, mode === "cancel");
-      assert.equal(process.timedOut, mode === "timeout");
-      assert.equal(process.truncated, mode === "output");
+      assert.equal(result.cancelled, mode === "cancel");
+      assert.equal(result.timedOut, mode === "timeout");
+      assert.equal(result.truncated, mode === "output");
       assert.equal(
         report.checks.some((c) => c.status === "failed"),
         false,
