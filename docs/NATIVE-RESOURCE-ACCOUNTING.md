@@ -204,7 +204,8 @@ API contracts: [process CPU](https://learn.microsoft.com/en-us/windows/win32/api
 and [working-set counters](https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters).
 
 The direct-process and job CPU fields are independent native API observations.
-A bounded synthetic probe reproduced smaller job CPU than direct-process CPU even
+[A bounded synthetic probe](measurements/windows-counter-api-observations-2026-10-26.json)
+reproduced smaller job CPU than direct-process CPU even
 with an empty job; closing both owned process/thread handles left those same job
 values unchanged. The mechanism remains unresolved. Collection therefore checks
 each field's nonnegative safe-integer bounds without inventing a cross-API
