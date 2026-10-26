@@ -105,7 +105,7 @@ process.on("message", (message) => {
 });
 if (!process.connected) await complete();
 else {
-  const identity = (await processSnapshot()).find(
+  const identity = (await processSnapshot(process.pid)).find(
     (row) => row.pid === process.pid,
   );
   if (!identity || identity.group !== process.pid)
