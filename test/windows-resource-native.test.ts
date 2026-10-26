@@ -10,9 +10,13 @@ test(
   native,
   async (t) => {
     const root = await fixture(t, {});
+    // A short userspace loop can leave Windows' sampled kernel CPU at zero.
+    // Arm both fields through observed work rather than weakening comparisons.
+    const kernelWitness = String.raw`const fs=require('node:fs');const kernelDeadline=performance.now()+5000;while(process.cpuUsage().system<20000&&performance.now()<kernelDeadline){for(let i=0;i<100;i++)fs.statSync(process.execPath);}if(process.cpuUsage().system<20000)throw Error('Original Windows kernel CPU witness did not reach its observed minimum');`;
+    const childSource = String.raw`const b=Buffer.alloc(Number(process.argv[1])*1024*1024,7);${kernelWitness}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,bytes:b.length}));`;
     const source = String.raw`const {spawnSync}=require('node:child_process');const touched=Buffer.alloc(32*1024*1024,7),reserved=Buffer.allocUnsafe(256*1024*1024),children=[];
-for(const size of [64,96]){const r=spawnSync(process.execPath,['-e',"const b=Buffer.alloc(Number(process.argv[1])*1024*1024,7);const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,bytes:b.length}));",String(size)],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);children.push(JSON.parse(r.stdout));}
-const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,touched:touched.length,reserved:reserved.length,children}));`;
+for(const size of [64,96]){const r=spawnSync(process.execPath,['-e',${JSON.stringify(childSource)},String(size)],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);children.push(JSON.parse(r.stdout));}
+${kernelWitness}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,touched:touched.length,reserved:reserved.length,children}));`;
     const result = await runProcess(
       root,
       { executable: process.execPath, args: ["-e", source], cwd: "." },

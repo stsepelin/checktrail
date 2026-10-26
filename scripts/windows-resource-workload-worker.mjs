@@ -65,7 +65,7 @@ if (report.outcome !== "passed") {
       sourceChanged: report.sourceChanged,
       sourceError: report.sourceError,
       checks: report.checks.map((check) => ({
-        checkId: check.checkId,
+        checkId: check.id,
         status: check.status,
         reason: check.reason,
         processes: check.processes.map((p) => ({
