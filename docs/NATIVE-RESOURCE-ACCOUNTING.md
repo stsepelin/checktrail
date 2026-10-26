@@ -195,9 +195,9 @@ Portable contracts cover counter precision, numeric boundaries, incomplete
 records and unavailable API stages. Native Windows witnesses compare target and
 job CPU after two reaped children, compare direct peak working set with the
 target's own observation, and preserve a deliberately failed target exit.
-Windows qualification and the whole resource-release-readiness profile remain
-pending. No resource performance budget or release readiness is established by
-these prepared controls.
+The scoped native qualification is recorded below. The whole resource-release-readiness
+profile, final current-source matrix, artifact closure and release acceptance
+remain pending; no resource performance budget is established by these controls.
 
 API contracts: [process CPU](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes),
 [job CPU](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information),
@@ -219,8 +219,11 @@ observations refer to that exact job through its member counts. Final CPU is
 compared with the earlier observation from the same API; direct process CPU is
 still compared with the target's own native CPU observations. Separate compiling
 mutations substitute direct user or kernel CPU for its job field, so those
-assertions must detect a lost descendant scope. The new fixture and bounds
-require native qualification before this candidate is ready.
+assertions must detect a lost descendant scope. [The dated native qualification](measurements/windows-resource-workloads-2026-10-26.json)
+records every required source and fresh offline package callback, separate job-user
+and job-kernel substitution controls, and the preserved direct-memory, CPU-field,
+fixed-source and private-namespace guards. Its exact component bindings remain
+separate from subsequent source changes and final current-source qualification.
 
 ## Prepared Windows workload measurement
 
@@ -253,6 +256,7 @@ and local fixture paths remain private.
 
 Portable controls cover CPU boundaries, unavailable native receipts, contradictory
 job identities and malformed physical streams. These newly prepared workload
-controls still require native Windows source and fresh-package acceptance. They
+controls have the scoped native Windows source and fresh-package acceptance
+recorded above. They
 do not establish representative project performance, a regression budget, final
 runtime-matrix qualification or the whole resource-release-readiness profile.
