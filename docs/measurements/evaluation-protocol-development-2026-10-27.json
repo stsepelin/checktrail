@@ -1,0 +1,866 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original synthetic independent-evaluation protocol development acceptance; no actual model review, held-out acquisition or field evaluation.",
+  "sourceCommit": "108f7a243ca06608f118f0c0f7eb28fdb6757110",
+  "fullCheckSourceCommit": "b98d401cd56019b542521dd1caeb1250017c9be9",
+  "fullCheck": {
+    "tests": 2267,
+    "pass": 1507,
+    "fail": 0,
+    "skipped": 760,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "fullCheckPrecedesDeclarationOnlyUpdate": true,
+  "compiledEngineUnchangedSinceFullCheck": true,
+  "sourceAndFreshRuntimeReceipt": {
+    "schemaVersion": 1,
+    "profile": "independent-evaluation-runtime-v1",
+    "startedAt": "2026-10-27T04:08:20.553Z",
+    "finishedAt": "2026-10-27T04:08:41.023Z",
+    "runtime": {
+      "slot": null,
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "osRelease": "27.0.0",
+      "osVersion": "Darwin Kernel Version 27.0.0: Tue Aug 11 21:06:40 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T6050",
+      "distributionId": null,
+      "distributionVersion": null,
+      "distributionSha256": null,
+      "imageOS": null,
+      "imageVersion": null,
+      "containerReference": null,
+      "containerImageId": null,
+      "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+      "systemPowerShellSha256": null,
+      "hostedImageMetadataAttested": false,
+      "containerImageMetadataAttested": false
+    },
+    "selectedRuntime": null,
+    "installed": false,
+    "compiledEngine": {
+      "schemaVersion": 1,
+      "fileCount": 984,
+      "bytes": 16364330,
+      "treeSha256": "9d172aba4f68ba30739e7ab27830eedb071c1fcadf00bd9da7adf341855c006a",
+      "manifestSha256": "8a1b37c26d960a99bd1d566e0410c884b2b07d1ec45e219a3e2ef67bbb295f35",
+      "beforeAfterByteIdentitiesMatch": true,
+      "dependencyBytesCaptured": false,
+      "actualModuleLoadsTraced": false,
+      "producerSourceBuildVerified": false
+    },
+    "harnessSha256": "d6fc0b6ed0837456c43bbab02650c40a6f4c0b761417a5bc2a6da652066bf450",
+    "requirementsSha256": "f10b74ce0a3ff9f78d58bb87096a0e09aaa13d9d400415a8f6e6a7d8f59c4ea5",
+    "packageSha256": "718f9dabb95737c9ad8b2e4de385412d6a1e1c4e79cdc798e891a6aa62274a28",
+    "inputSources": [
+      [
+        "package.json",
+        "718f9dabb95737c9ad8b2e4de385412d6a1e1c4e79cdc798e891a6aa62274a28"
+      ],
+      [
+        "package-lock.json",
+        "12c5f96efc2cf2654865a2a41ebb423e545858889cd8039139108f8e75788303"
+      ],
+      [
+        "docs/gate-a-profiles.v1.json",
+        "34929d7a638495eeea58308a563ee02eee9e02b0f36ec672064ce2579a18b7fe"
+      ],
+      [
+        "scripts/evaluation-runtime-evidence.mjs",
+        "40d1646981e03e56da70a898d9e0c7652abe1195b40f5a5f5f98951a27722bf1"
+      ],
+      [
+        "scripts/verify-evaluation-runtime.mjs",
+        "7933c50c9f500d228a3dd5106351844dda66c4e26dd41d9aa0630007a5206d30"
+      ],
+      [
+        "scripts/verify-evaluation-protocol-package.mjs",
+        "2fa7b3ca9dde35276e75ccff490ce4d889f20d21079d43e79f54c96d4fbdd7a4"
+      ],
+      [
+        "scripts/evaluation-judgments.mjs",
+        "5226b921e55f8a14f9f68a9e34eeddde03784638752fcea331520202039fb687"
+      ],
+      [
+        "scripts/evaluation-matching.mjs",
+        "51e02502a8ac2af908d9d7dc8b65b938ac466b67f6685fd4c71abed0b5cbc340"
+      ],
+      [
+        "scripts/required-native-tests.json",
+        "ac43cef095e39e9f6b9c87785a0d7b50f47d1df9cc7a09f5e833ff3d6754f5e0"
+      ],
+      [
+        "scripts/required-test-evidence.mjs",
+        "4b4f23ad3e4c470d71baf244240b379b8e47f788e7724699e0cd2e34c5c2f74d"
+      ],
+      [
+        "scripts/compiled-engine-evidence.mjs",
+        "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+      ],
+      [
+        "scripts/attempt-output-evidence.mjs",
+        "9d1d3bdf945dddbbcbc1290125cd41a6ee37dc0939b2a3998599eb6c5ee66bea"
+      ],
+      [
+        "scripts/install-acceptance-package.mjs",
+        "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+      ],
+      [
+        "dist/test/gate-independent-evaluation-protocol.test.js",
+        "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+      ],
+      [
+        "dist/test/review-evaluation-matching-fixture.js",
+        "5456b387c229cfdf024e4544257478a8845d1a6ce0e1465bbd7b138e912e8b56"
+      ],
+      [
+        "dist/test/review-evaluation-judging-fixture.js",
+        "00e72a240db75ebfe57a8325ac9fbe41486ea9f7434f607d94e547c32b69b434"
+      ],
+      [
+        "dist/test/review-evaluation-artifacts-fixture.js",
+        "3eb4dfa7b1ab55a685d8352f8ef40dfce6500012fd94e8c60cadc9fd40fd8960"
+      ],
+      [
+        "dist/test/review-evaluation-captures-fixture.js",
+        "928c301283d2422e13e4809026ac6c95bc6961a906ec6fbef64e5488b0c8bfb6"
+      ],
+      [
+        "dist/test/review-evaluation-metering-fixture.js",
+        "2087eef7188413e89fac58dba2e5767cc5334e38af07d40e45a750779ed19292"
+      ],
+      [
+        "dist/test/review-evaluation-protocol-fixture.js",
+        "6048be6da0a3f59126781849155b7a474eea4bc252c6c72e8c58fd57e4df0a4f"
+      ],
+      [
+        "dist/test/windows-private-fixture.js",
+        "4f338c0a35a3fbf0448cee4745a14759398f875fee2e529f159cc7700f394e3c"
+      ],
+      [
+        "dist/test/helpers.js",
+        "e870d22a40d31aedba5cec6d2a37d80cbef95a1ddea252dd55c798c28d0c3854"
+      ],
+      [
+        "dist/test/tool-fixture.js",
+        "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+      ]
+    ],
+    "profileEvidence": {
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 299.194584,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 269.679667,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 244.932417,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.656958,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 92.943834,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 187.838291,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1010.9515,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4681.664542,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13382.925583,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "independent-evaluation-protocol installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installedEvidence": {
+      "schemaVersion": 1,
+      "profile": "independent-evaluation-protocol",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+      "tarballSha256": "825a97ceaf52335394d7ab4847751645e6723a7e2113d7ef996d731296996be9",
+      "harnessSha256": "d6fc0b6ed0837456c43bbab02650c40a6f4c0b761417a5bc2a6da652066bf450",
+      "compiledCodeSha256": "9d172aba4f68ba30739e7ab27830eedb071c1fcadf00bd9da7adf341855c006a",
+      "productionDependencyLockSha256": "f17d4390483888e15be09b8f4152838b765fb4ebda08771ffcb65176034cd4fb",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "externalSdkClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.1",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1",
+        "zod": "4.6.7",
+        "@modelcontextprotocol/core": "2.3.1"
+      },
+      "runtimeEvidence": {
+        "schemaVersion": 1,
+        "profile": "independent-evaluation-runtime-v1",
+        "startedAt": "2026-10-27T04:08:33.495Z",
+        "finishedAt": "2026-10-27T04:08:40.466Z",
+        "runtime": {
+          "slot": null,
+          "node": "26.9.0",
+          "platform": "darwin",
+          "architecture": "arm64",
+          "osRelease": "27.0.0",
+          "osVersion": "Darwin Kernel Version 27.0.0: Tue Aug 11 21:06:40 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T6050",
+          "distributionId": null,
+          "distributionVersion": null,
+          "distributionSha256": null,
+          "imageOS": null,
+          "imageVersion": null,
+          "containerReference": null,
+          "containerImageId": null,
+          "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+          "systemPowerShellSha256": null,
+          "hostedImageMetadataAttested": false,
+          "containerImageMetadataAttested": false
+        },
+        "selectedRuntime": null,
+        "installed": true,
+        "compiledEngine": {
+          "schemaVersion": 1,
+          "fileCount": 984,
+          "bytes": 16364330,
+          "treeSha256": "9d172aba4f68ba30739e7ab27830eedb071c1fcadf00bd9da7adf341855c006a",
+          "manifestSha256": "8a1b37c26d960a99bd1d566e0410c884b2b07d1ec45e219a3e2ef67bbb295f35",
+          "beforeAfterByteIdentitiesMatch": true,
+          "dependencyBytesCaptured": false,
+          "actualModuleLoadsTraced": false,
+          "producerSourceBuildVerified": false
+        },
+        "harnessSha256": "d6fc0b6ed0837456c43bbab02650c40a6f4c0b761417a5bc2a6da652066bf450",
+        "requirementsSha256": "f10b74ce0a3ff9f78d58bb87096a0e09aaa13d9d400415a8f6e6a7d8f59c4ea5",
+        "packageSha256": "718f9dabb95737c9ad8b2e4de385412d6a1e1c4e79cdc798e891a6aa62274a28",
+        "inputSources": [
+          [
+            "package.json",
+            "718f9dabb95737c9ad8b2e4de385412d6a1e1c4e79cdc798e891a6aa62274a28"
+          ],
+          [
+            "package-lock.json",
+            "12c5f96efc2cf2654865a2a41ebb423e545858889cd8039139108f8e75788303"
+          ],
+          [
+            "docs/gate-a-profiles.v1.json",
+            "34929d7a638495eeea58308a563ee02eee9e02b0f36ec672064ce2579a18b7fe"
+          ],
+          [
+            "scripts/evaluation-runtime-evidence.mjs",
+            "40d1646981e03e56da70a898d9e0c7652abe1195b40f5a5f5f98951a27722bf1"
+          ],
+          [
+            "scripts/verify-evaluation-runtime.mjs",
+            "7933c50c9f500d228a3dd5106351844dda66c4e26dd41d9aa0630007a5206d30"
+          ],
+          [
+            "scripts/verify-evaluation-protocol-package.mjs",
+            "2fa7b3ca9dde35276e75ccff490ce4d889f20d21079d43e79f54c96d4fbdd7a4"
+          ],
+          [
+            "scripts/evaluation-judgments.mjs",
+            "5226b921e55f8a14f9f68a9e34eeddde03784638752fcea331520202039fb687"
+          ],
+          [
+            "scripts/evaluation-matching.mjs",
+            "51e02502a8ac2af908d9d7dc8b65b938ac466b67f6685fd4c71abed0b5cbc340"
+          ],
+          [
+            "scripts/required-native-tests.json",
+            "ac43cef095e39e9f6b9c87785a0d7b50f47d1df9cc7a09f5e833ff3d6754f5e0"
+          ],
+          [
+            "scripts/required-test-evidence.mjs",
+            "4b4f23ad3e4c470d71baf244240b379b8e47f788e7724699e0cd2e34c5c2f74d"
+          ],
+          [
+            "scripts/compiled-engine-evidence.mjs",
+            "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+          ],
+          [
+            "scripts/attempt-output-evidence.mjs",
+            "9d1d3bdf945dddbbcbc1290125cd41a6ee37dc0939b2a3998599eb6c5ee66bea"
+          ],
+          [
+            "scripts/install-acceptance-package.mjs",
+            "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+          ],
+          [
+            "dist/test/gate-independent-evaluation-protocol.test.js",
+            "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+          ],
+          [
+            "dist/test/review-evaluation-matching-fixture.js",
+            "5456b387c229cfdf024e4544257478a8845d1a6ce0e1465bbd7b138e912e8b56"
+          ],
+          [
+            "dist/test/review-evaluation-judging-fixture.js",
+            "00e72a240db75ebfe57a8325ac9fbe41486ea9f7434f607d94e547c32b69b434"
+          ],
+          [
+            "dist/test/review-evaluation-artifacts-fixture.js",
+            "3eb4dfa7b1ab55a685d8352f8ef40dfce6500012fd94e8c60cadc9fd40fd8960"
+          ],
+          [
+            "dist/test/review-evaluation-captures-fixture.js",
+            "928c301283d2422e13e4809026ac6c95bc6961a906ec6fbef64e5488b0c8bfb6"
+          ],
+          [
+            "dist/test/review-evaluation-metering-fixture.js",
+            "2087eef7188413e89fac58dba2e5767cc5334e38af07d40e45a750779ed19292"
+          ],
+          [
+            "dist/test/review-evaluation-protocol-fixture.js",
+            "6048be6da0a3f59126781849155b7a474eea4bc252c6c72e8c58fd57e4df0a4f"
+          ],
+          [
+            "dist/test/windows-private-fixture.js",
+            "4f338c0a35a3fbf0448cee4745a14759398f875fee2e529f159cc7700f394e3c"
+          ],
+          [
+            "dist/test/helpers.js",
+            "e870d22a40d31aedba5cec6d2a37d80cbef95a1ddea252dd55c798c28d0c3854"
+          ],
+          [
+            "dist/test/tool-fixture.js",
+            "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+          ]
+        ],
+        "profileEvidence": {
+          "fileWorkerLimit": 1,
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 296.005125,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 255.001541,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 259.898375,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1.604625,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 93.6325,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 176.486541,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 984.151084,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4599.788875,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.219834,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              }
+            ]
+          }
+        },
+        "installedEvidence": null,
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "gateAComplete": false
+      },
+      "dependencyBytesInventoried": false,
+      "actualModuleLoadsTraced": false,
+      "protocolChronologyVerified": false,
+      "independentEvaluationProfileComplete": false,
+      "gateAComplete": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false,
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 296.005125,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 255.001541,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 259.898375,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.604625,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 93.6325,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 176.486541,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 984.151084,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4599.788875,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.219834,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      }
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "gateAComplete": false
+  },
+  "measurementPackagePredatesThisRecord": true,
+  "selectedRuntimeMatrixQualified": false,
+  "privateProspectiveSetupFrozen": false,
+  "actualHostIndependenceVerified": false,
+  "qualityAssessed": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

@@ -63,3 +63,14 @@ duplicate, skipped, truncated, wrong-runtime and changed-byte receipts are
 rejected. Dependency bytes, actual module loads and producer source builds remain
 outside this compiled-artifact identity. Matrix qualification stays pending until
 all selected slots supply current matching receipts.
+
+The [development receipt](measurements/evaluation-protocol-development-2026-10-27.json)
+records complete original source/fresh cohorts and the full development check for
+the recorded code. The later implementation declaration changes no compiled
+engine bytes; the source/fresh runtime binding was refreshed after that declaration.
+The macOS 27 observation qualifies no selected runtime slot. The cohort is declared
+implemented with receipts retained, while final native matrix acceptance, the
+private prospective freeze, actual review-host independence and review quality
+remain open. The measured package predates this additional record. These tests
+use original synthetic declarations and responses and invoke no model or field
+trial.
