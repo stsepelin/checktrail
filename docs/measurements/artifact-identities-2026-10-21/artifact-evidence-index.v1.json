@@ -36,7 +36,7 @@
     {
       "file": "fantomas-generated-document-file-controls.json",
       "bytes": 1693,
-      "sha256": "5c109f2d1f546161542e2c9d6d6d24c20c0060268f3a9a4154761e614b94eeb2"
+      "sha256": "0ec3d0d36d750fea924c28cc9017e7ef1d599df0019b99888221da9819d94588"
     },
     {
       "file": "fantomas-generated-document-projection.mjs",
@@ -86,22 +86,22 @@
     {
       "file": "fantomas-sdk-generated-documents.inputs.json",
       "bytes": 3279,
-      "sha256": "0716f0890237fe67f1b51acbd9eb62d6e61c5e68728fcb3e9030ea6b2ebd93bc"
+      "sha256": "d9d0738d624e7d098141f96ac03e63b9edd7f566d462469da7abecb67b969de3"
     },
     {
       "file": "fantomas-sdk-generated-documents.json",
       "bytes": 4383,
-      "sha256": "37b78691d61c07e79f2824c9b1958306ffad57b72605e4d230a24b763b2e6e3c"
+      "sha256": "46d83800fe0f57b2b589d66a8dbda5b0a724d7fb4dd24546ce55692c256c25f1"
     },
     {
       "file": "fantomas-source-observations.json",
-      "bytes": 149573,
-      "sha256": "93666a1eeaf6fcdd47e497247599d62d968559b76e96eea7565fd35f1fe5b92f"
+      "bytes": 149821,
+      "sha256": "6a6c322acf4685728636896cba9e0d0267a229278ccad6814089cf585e1aa498"
     },
     {
       "file": "fantomas.json",
-      "bytes": 26654,
-      "sha256": "b4b6b338f87ba17bfe533b14f21690774553da8cc7982686fc3c275b77a06a5b"
+      "bytes": 26809,
+      "sha256": "3d2141474902090aa8ac597ae656e86ea0dd856b9f77c58c78a29c8a7bbad735"
     },
     {
       "file": "jline-native-notices/169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988.txt",

@@ -59,8 +59,8 @@
     },
     {
       "file": "fantomas-source-observations.json",
-      "bytes": 149573,
-      "sha256": "93666a1eeaf6fcdd47e497247599d62d968559b76e96eea7565fd35f1fe5b92f",
+      "bytes": 149821,
+      "sha256": "6a6c322acf4685728636896cba9e0d0267a229278ccad6814089cf585e1aa498",
       "role": "debug-documents"
     }
   ]

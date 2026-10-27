@@ -394,8 +394,8 @@
     "debugSourceMetadata": {
       "retainedInput": {
         "file": "fantomas-source-observations.json",
-        "bytes": 149573,
-        "sha256": "93666a1eeaf6fcdd47e497247599d62d968559b76e96eea7565fd35f1fe5b92f"
+        "bytes": 149821,
+        "sha256": "6a6c322acf4685728636896cba9e0d0267a229278ccad6814089cf585e1aa498"
       },
       "sourceBuildVerified": false,
       "compilationInputInventoryComplete": false
@@ -405,12 +405,12 @@
         {
           "file": "fantomas-sdk-generated-documents.json",
           "bytes": 4383,
-          "sha256": "37b78691d61c07e79f2824c9b1958306ffad57b72605e4d230a24b763b2e6e3c"
+          "sha256": "46d83800fe0f57b2b589d66a8dbda5b0a724d7fb4dd24546ce55692c256c25f1"
         },
         {
           "file": "fantomas-generated-document-file-controls.json",
           "bytes": 1693,
-          "sha256": "5c109f2d1f546161542e2c9d6d6d24c20c0060268f3a9a4154761e614b94eeb2"
+          "sha256": "0ec3d0d36d750fea924c28cc9017e7ef1d599df0019b99888221da9819d94588"
         }
       ],
       "scope": "Three retained debug-document checksums match original projections from pinned public template candidates. Actual producer SDK and evaluated build inputs remain unverified.",
@@ -419,7 +419,7 @@
     }
   },
   "remainingInputs": [
-    "Resolve three nonembedded SDK-generated debug documents and reconcile evaluated compiler/generated/resource/task inputs separately from the observed source checksums.",
+    "The three nonembedded assembly-attribute document checksums now match two original template projections in fantomas-sdk-generated-documents.json. Actual producer SDK identity, native MSBuild generation and evaluated compiler/generated/resource/task inputs remain unverified.",
     "Reconcile selected SDK native requirements, component notices and pinned image layers/OS; aggregate notice text is incomplete coverage.",
     "Integrate exact signature policy and witness bindings coherently with preparation and receipt admission; this observation changes no runtime verification flag."
   ],
@@ -428,5 +428,6 @@
   "gateAComplete": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "observationsUpdatedAt": "2026-10-27"
+  "observationsUpdatedAt": "2026-10-27",
+  "remainingInputsReconciledAt": "2026-10-27"
 }
