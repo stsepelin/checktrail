@@ -193,10 +193,11 @@
       "scope": "Both scheduling tests plus the required-native-test harness before extending the regression from the two Go files to all five observed conflict files."
     }
   },
-  "laterWholeSuitePassed": false,
+  "laterWholeSuitePassed": true,
   "performanceImprovementMeasured": false,
   "completeNativeArtifactClosure": false,
   "gateAComplete": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "laterWholeSuiteEvidence": "native-suite-admission-full-2026-10-27.json"
 }

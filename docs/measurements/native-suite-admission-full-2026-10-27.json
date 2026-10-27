@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Uninstrumented mandatory project check after bounded native test-file admission. This local macOS runtime is not the final selected native matrix.",
+  "sourceCommit": "5c95c82fc6d27415598b3ab93770697e75d755fe",
+  "command": "npm run check",
+  "exitCode": 0,
+  "elapsedSeconds": 1149.438200459,
+  "logSha256": "ae7fb2ad3dce025f736cf4ca3c71f52e544ab7ac1b83f4595690ebe389ec95da",
+  "batches": {
+    "tests": [2202, 82],
+    "pass": [1441, 82],
+    "fail": [0, 0],
+    "cancelled": [0, 0],
+    "skipped": [761, 0],
+    "todo": [0, 0]
+  },
+  "totals": {
+    "tests": 2284,
+    "pass": 1523,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 761,
+    "todo": 0
+  },
+  "nativeExclusiveWave": {
+    "callbacks": 82,
+    "pass": 82,
+    "fail": 0,
+    "skipped": 0
+  },
+  "compiledEngine": {
+    "schemaVersion": 1,
+    "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+    "fileCount": 984,
+    "bytes": 16364330,
+    "treeSha256": "55c0f4734c5badb73a686605d6ce3a846f80adf69e33f80dd7ee38e25213d97a",
+    "manifestSha256": "d50640758be9e7cc605f96ea0f529ba89d140f7e976bf73ed88f5c3d0374c635",
+    "limits": {
+      "files": 4096,
+      "entries": 8192,
+      "depth": 24,
+      "fileBytes": 8388608,
+      "totalBytes": 134217728
+    },
+    "observationScope": "Post-check compiled directory snapshot only; not a loaded-module or whole-check before/after trace."
+  },
+  "laterDocumentationOnlyMerge": {
+    "sourceCommit": "d520a5110aeffe04adda090800bca7298a271de0",
+    "files": [
+      ".gitattributes",
+      "docs/TERRAFORM-EXTENSIONS.md",
+      "docs/measurements/artifact-identities-2026-10-21/artifact-evidence-index.v1.json",
+      "docs/measurements/artifact-identities-2026-10-21/provider-independent-rebuild.json",
+      "docs/measurements/artifact-identities-2026-10-21/provider-independent-zip-repack.json",
+      "docs/measurements/artifact-identities-2026-10-21/provider-notice-inventory.json",
+      "docs/measurements/artifact-identities-2026-10-21/provider-zip-inputs/original-repack.go.txt",
+      "docs/measurements/artifact-identities-2026-10-21/provider-zip-inputs/packager-go-LICENSE.txt",
+      "docs/measurements/artifact-identities-2026-10-21/provider-zip-inputs/packager-go-PATENTS.txt",
+      "docs/measurements/artifact-identities-2026-10-21/provider-zip-inputs/packager-go-VERSION.txt",
+      "docs/measurements/artifact-identities-2026-10-21/provider-zip-inputs/publisher-MPL-2.0-LICENSE.txt",
+      "docs/measurements/artifact-identities-2026-10-21/provider-zip-inputs/publisher-action.yml.txt",
+      "docs/measurements/artifact-identities-2026-10-21/provider-zip-inputs/publisher-build.go.txt",
+      "docs/measurements/artifact-identities-2026-10-21/provider-zip-inputs/publisher-product.go.txt",
+      "docs/measurements/artifact-identities-2026-10-21/provider-zip-inputs/publisher-zipper.go.txt",
+      "docs/measurements/artifact-identities-2026-10-21/random-provider.json"
+    ],
+    "behaviorChanges": false,
+    "separateArtifactControls": {
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "skipped": 0
+    }
+  },
+  "limitations": [
+    "Explicit skips are not passed checks and do not qualify their unavailable native prerequisites.",
+    "Test admission retains every complete file and original callback; production process timeouts and cleanup guards were unchanged.",
+    "The local full suite does not certify Windows or the final frozen runtime matrix.",
+    "Merged main later reported a fresh-installed Windows upgrade-wrapper timeout. That separate native failure remains under investigation and is not converted to a pass here."
+  ],
+  "selectedRuntimeMatrixQualified": false,
+  "completeNativeArtifactClosure": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
