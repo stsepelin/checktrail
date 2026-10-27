@@ -1,0 +1,647 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Upgrade command observation regression plus one selected Windows resource source/fresh-install cohort at the exact recorded product source; final current-harness matrix and Gate A remain open.",
+  "productSourceCommit": "a0e77e71cc605221bf061c78ae29e8e2c3290481",
+  "sources": [
+    {
+      "file": "scripts/package-upgrade-readiness.mjs",
+      "sha256": "dfdd6489828599120092b4227b88320b54344613296c127bdeea21a4a3bb9cb0"
+    },
+    {
+      "file": "test/upgrade-observation.test.ts",
+      "sha256": "bc47cfc8411551b16bf2014a58ad8f20a0bf17f5e501cd70fd9ab4c300bc5f15"
+    }
+  ],
+  "observationPolicy": {
+    "originalOuterCommandMs": 30000,
+    "changedOuterCommandMs": 60000,
+    "nativeEngineBudgetMs": 30000,
+    "engineBudgetChanged": false,
+    "startupAndResponseObservationIsSeparate": true,
+    "outputByteLimitsChanged": false,
+    "nonzeroExitStatusAndOutputPreserved": true,
+    "phaseSpecificFailureContextRetained": true,
+    "nativeCleanupAndIdentityGuardsChanged": false
+  },
+  "localPairedControl": {
+    "test": "upgrade observer admits slow process startup before a complete native validation without extending the engine budget",
+    "syntheticPreEngineStartupMs": 31000,
+    "nativeExecutedTestBodies": 2,
+    "originalObserverExitCode": 1,
+    "originalObserverFailedWith": "ETIMEDOUT",
+    "engineStartedBeforeOriginalObserverTerminated": false,
+    "changedObserverTests": 2,
+    "changedObserverPass": 2,
+    "changedObserverFail": 0,
+    "changedObserverSkipped": 0,
+    "originalLogSha256": "2cd5927b17ef108dae9a350fdd511c4d59b389600aacb00f20f884601b28a82c",
+    "changedLogSha256": "22817d21235015f40d868d36c0ca6c2d798589693d95e8173677f67239125a39",
+    "nativeReportOutcome": "passed",
+    "exactExecutedBodyMarkers": ["first", "second"],
+    "validNonzeroAndOutputOverflowControlsRetained": true
+  },
+  "originalMainWindowsFailure": {
+    "run": 40478447903,
+    "job": 122103049371,
+    "failure": "Nested fresh resource near-miss command observation ETIMEDOUT",
+    "exactInnerCommandPhaseKnownFromOriginalLog": false,
+    "sameFailureMechanismIndependentlyProvenForOriginalJob": false
+  },
+  "excludedDiagnostic": {
+    "run": 40487941953,
+    "conclusion": "failure",
+    "observerControlsPassed": 2,
+    "sourceControllerPassed": false,
+    "diagnosticUsedProductionShell": false,
+    "observedProblems": [
+      "Git Bash tar interpreted a Windows drive path as a remote host.",
+      "Prerequisite callback exceeded its existing deadline."
+    ],
+    "qualifiedAsPassing": false
+  },
+  "windows": {
+    "run": 40489501207,
+    "job": 122139573765,
+    "url": "https://github.com/stsepelin/checktrail/actions/runs/40489501207",
+    "diagnosticHead": "42024e63fd54227c0e48e68a078ff5382d47ff9b",
+    "diagnosticWorkflowNeverMerge": true,
+    "productionPowerShellUsed": true,
+    "conclusion": "success",
+    "observerControls": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skipped": 0,
+      "durationMs": 36607.7894,
+      "logSha256": "abd933bb6ed044ccc816b4352d6dbd37042bde0560a28d82de932afd15ba4323"
+    },
+    "runtime": {
+      "slot": "windows-node22",
+      "node": "22.23.3",
+      "platform": "win32",
+      "architecture": "x64",
+      "osRelease": "10.0.26100",
+      "osVersion": "Windows Server 2025 Datacenter",
+      "distributionId": null,
+      "distributionVersion": null,
+      "distributionSha256": null,
+      "imageOS": "win25-vs2026",
+      "imageVersion": "20261021.278.1",
+      "containerImageId": null,
+      "nodeExecutableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+      "hostedImageMetadataAttested": false,
+      "containerImageMetadataAttested": false,
+      "selectedRuntime": {
+        "id": "windows-node22",
+        "platform": "win32",
+        "architecture": "x64",
+        "osFamily": "Windows Server 2025",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      }
+    },
+    "resourceReceiptBytes": 12807,
+    "resourceReceiptSha256": "ec5ecebb31b4f3629e07e18731aafb44391e09bb4d275f19f01c1fa88b28f919",
+    "harnessSha256": "8694a382ce25a81d6056cd32b614d57d00f722bff550ccc22a5330834136aac9",
+    "inputSources": [
+      [
+        "package.json",
+        "156bd08332ef14e8608f204d6cfb73665226476eff3d25417d102f8349147618"
+      ],
+      [
+        "package-lock.json",
+        "99a8dd651fe6e12e83a3b98a105bd249927269d98f80afd7c8a2a98add09c75f"
+      ],
+      [
+        "docs/gate-a-profiles.v1.json",
+        "efd0ccb28c37934f86bdce7f0f93a370d0da986641b8a6ce60ae8e5cc24a6239"
+      ],
+      [
+        "dist/test/gate-resource-release-readiness.test.js",
+        "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+      ],
+      [
+        "dist/test/resource-release-fixture.js",
+        "0957e204b839055d6e65d55c962c9edd634a8d4a6a6e85533f0688bdd649db30"
+      ],
+      [
+        "dist/test/helpers.js",
+        "e870d22a40d31aedba5cec6d2a37d80cbef95a1ddea252dd55c798c28d0c3854"
+      ],
+      [
+        "scripts/resource-release-evidence.mjs",
+        "3fe8163e258432ab5ff9f0f0b8622bda468123409b0c7dc12441da9c28c9d9ff"
+      ],
+      [
+        "scripts/verify-resource-release-readiness.mjs",
+        "1a0d79736a8535a7ac7cbb5c6d0afc109917d507dac6c9848b6c2eba06bbbd43"
+      ],
+      [
+        "scripts/verify-resource-release-arm64.mjs",
+        "8c6a5e8d2126502e555071e042a2bcc9c9e5d091291e3b30631178b0811bb063"
+      ],
+      [
+        "scripts/verify-resource-release-guards.mjs",
+        "3ff2b26753d26bf853bb14584ca4042b508b0bbfd0245c7ce016de3d1459f236"
+      ],
+      [
+        "scripts/prepare-resource-cache-subset.mjs",
+        "9f31124cbfdae3836d225f4258701d6e2349b508d3c029131f0b4a5bf170f1d9"
+      ],
+      [
+        "scripts/required-test-evidence.mjs",
+        "c6dc443bdfc108423ef6aac98a4d7df5af5603fa0c2ea795ccbf3c79d57ff362"
+      ],
+      [
+        "scripts/required-native-tests.json",
+        "bc20587dab20a4975e6675cc82fcc7d08124be7210d3023a7493ed019e4d730c"
+      ],
+      [
+        "scripts/lifecycle-runtime-evidence.mjs",
+        "fe426a9f8d668658ae9522838784e55e4b97a47456777d8b64e806e07569c1bf"
+      ],
+      [
+        "scripts/review-runtime-evidence.mjs",
+        "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+      ],
+      [
+        "scripts/release-readiness-tools.mjs",
+        "1ac4a72c1bf1cf25675d8b1f586c7ad9994e2c027e8d02d8d235cf05ef6739a6"
+      ],
+      [
+        "scripts/package-upgrade-readiness.mjs",
+        "dfdd6489828599120092b4227b88320b54344613296c127bdeea21a4a3bb9cb0"
+      ],
+      [
+        "scripts/install-acceptance-package.mjs",
+        "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+      ],
+      [
+        "scripts/request-pinned-artifact.mjs",
+        "c5e76c374886fa7ad9009e1c9152569b34218cbb4004948915245edaf7ca432e"
+      ],
+      [
+        "scripts/compiled-engine-evidence.mjs",
+        "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+      ],
+      [
+        "scripts/measure-native-resources.mjs",
+        "3633aba2763d936c753cfb15585bc5b891deff2a178f99cb67fe5a4dacf8bdc8"
+      ],
+      [
+        "scripts/measure-windows-resources.mjs",
+        "ca1e17a57ec53ec8d933cbc4dde9b586f8cbdb91fca827215eee20023c7c2246"
+      ],
+      [
+        "scripts/native-resource-workloads.mjs",
+        "3e7abe38c21f1fc7db50aea480c87a401b14688a61931b37d937926e9c3ce625"
+      ],
+      [
+        "scripts/native-resource-workload-worker.mjs",
+        "d45dce865d3b79ba6a6cd3dd4bedb71f3e2ceac7e1991be54ca347a14c9f5cb9"
+      ],
+      [
+        "scripts/windows-resource-workloads.mjs",
+        "39c89bfcb605cf25ce18013f8308f72fbeba1c07f9948f769c7f60cfd411bec3"
+      ],
+      [
+        "scripts/windows-resource-workload-worker.mjs",
+        "20c9867fec51d814e66ebedda0ab0932be016e58d5e0ead1b0ba1b284f599a4f"
+      ],
+      [
+        "scripts/native-child-resource.mjs",
+        "87db901495728cf21fc5d83818ce0d7f5b96669154c8c45c6089e018fc9e3fa6"
+      ],
+      [
+        "scripts/native-child-resource.c",
+        "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877"
+      ],
+      [
+        "scripts/native-resource-receipt.mjs",
+        "1c3fe5ea7222b7e21fd31f94477c34cd1189f065a7c1ba2ca952ed6e2c02a3ec"
+      ],
+      [
+        "scripts/native-resource-observer.c",
+        "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5"
+      ],
+      [
+        "scripts/prepare-native-child-resource.mjs",
+        "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e"
+      ],
+      [
+        "scripts/prepare-native-resource-observer.mjs",
+        "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508"
+      ],
+      [
+        "scripts/prepared-native-resource-tools.mjs",
+        "fa2bd91297529096514ecf040aaf7210ab67932263c7a1380b46c28ab23aa69a"
+      ],
+      [
+        "scripts/resource-compiler.Dockerfile",
+        "14157454cb93aa9a118e1abe7fecfe27aabe2b408fefd10730384e2034a416f1"
+      ],
+      [
+        "scripts/ruby-tools-archives.json",
+        "06958fcdc400bf4c70a03d748a14079bb70d31c62d092d373287e0053b4a4142"
+      ],
+      [
+        "scripts/request-ruby-compiler-archive.mjs",
+        "e755a685e5de59f7e4326b5fbff48fe62796273089d08a41637391a9cd3189ea"
+      ],
+      [
+        "assets/native-tool-archives/alpine-v3.24/aarch64/zlib-1.3.2-r0.apk",
+        "a535991af7c9e8369ebbf33c1e388c1bc63c87ead5142eddaee71f65836c33e3"
+      ],
+      [
+        "scripts/release-readiness-tools/baseline.json",
+        "690e0a3e3b22406be1d0d111e510e3c65f1614c4a05bd905737ee316209b7629"
+      ],
+      [
+        "scripts/release-readiness-tools/package.json",
+        "4186199f79aaf471bd86224b180a95df45a49f758eb5b517627b36a9bf9f602e"
+      ],
+      [
+        "scripts/release-readiness-tools/package-lock.json",
+        "993a8f253409fdbae1b403ab2b7f66238bdff0a33c68f864f3ea63b29f0214d9"
+      ]
+    ],
+    "compiledEngineSha256": "55c0f4734c5badb73a686605d6ce3a846f80adf69e33f80dd7ee38e25213d97a",
+    "source": {
+      "fileWorkerLimit": 1,
+      "requiredCaseWorkerLimit": 1,
+      "timeoutScope": "one fresh process per required named case",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "resource-release-readiness broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8099.8252,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "resource-release-readiness fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 53971.4237,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "resource-release-readiness near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 111391.1741,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "resource-release-readiness prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 112721.3572,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "resource-release-readiness stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8525.4472,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "resource-release-readiness empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8133.2058,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "resource-release-readiness privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 24900.1175,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "resource-release-readiness lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 24488.7494,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "resource-release-readiness installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 224414.1088,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "profile": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "resource-release-readiness broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8160.2704,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "resource-release-readiness fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 54609.7063,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "resource-release-readiness near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 101055.0582,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "resource-release-readiness prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 107119.7127,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "resource-release-readiness stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8312.7263,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "resource-release-readiness empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8264.1939,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "resource-release-readiness privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 21930.4117,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "resource-release-readiness lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 24025.1599,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "resource-release-readiness installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 163086.7567,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "tarballSha256": "d3e988e3f76c82d1f947ff4df8f4122217f569b9ff2a74467c3bad895838650c",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "compiledEngineSha256": "55c0f4734c5badb73a686605d6ce3a846f80adf69e33f80dd7ee38e25213d97a",
+      "harnessOutsideInstalledPackage": true,
+      "harnessSha256": "8694a382ce25a81d6056cd32b614d57d00f722bff550ccc22a5330834136aac9"
+    },
+    "harnessInputsUnchanged": true,
+    "selectedRuntimeValidated": true
+  },
+  "laterCombinedHarnessChangesRequireFreshFinalBinding": [
+    "scripts/required-test-evidence.mjs"
+  ],
+  "wholeCurrentProjectCheckPassed": false,
+  "selectedRuntimeMatrixQualified": false,
+  "completeProducerBuildClosureVerified": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
