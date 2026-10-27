@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 255,
+  "retainedReferences": 269,
   "files": [
     {
       "file": "README.md",
-      "bytes": 22707,
-      "sha256": "fd605580894c554ea809cf79830416d1bce5f826f986cc51a13aaafb4ddafdde"
+      "bytes": 23636,
+      "sha256": "0a000147b8d321d3811bba6f54bdd73ec4b4e8432e3ca089ae81314439579bfd"
     },
     {
       "file": "dotnet-sdk-LICENSE.txt",
@@ -215,8 +215,8 @@
     },
     {
       "file": "provider-bootstrap-sdk-rebuild.json",
-      "bytes": 330725,
-      "sha256": "25759084879fdc25d9d246ccb094fc215f9d139d74a9f2fa00f9d6424a2e07c3"
+      "bytes": 331008,
+      "sha256": "3166423bb0e0638e7120c904bca9c0bc95912e70ee810a1c1ce984c9a9e4648f"
     },
     {
       "file": "provider-build-observations.json",
@@ -404,6 +404,41 @@
       "sha256": "31c35433580b25b421c3e12f8e80f36a6d1ffc94b3fe822ce08c75d6472c7186"
     },
     {
+      "file": "provider-compiler-inputs/tz-signatures/public-key.asc",
+      "bytes": 8022,
+      "sha256": "f4e2ce25d99791638cdaedfcd30da882dfc2a701cec5139a6b32eb18255e9326"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzcode2025a.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "618767631a8575d30b1c19cc85f833f40e66b4914b47cd779ed91699f1cdb3f5"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzcode2025c.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "99b21584f0f9b1a2ce422e116e71c92f114dd86c03a90340f064aa494aec576a"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzcode2026c.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "b4c8faf48ff1df7e9198e1b99a6c65fa5cecafb8f449c8d237d35871e8e5c4bf"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzdata2025a.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "ed1d0264162b11f16a1c968adc413ed410458477ac094b4a2adc3357a069b2a2"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzdata2025c.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "6d72ec402e89cd426d5e22b28cf6f51bde6fe8e0f6ce2bd1a0129a3108735747"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzdata2026c.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "26cd02e034eed682aa911d224bca3247ff15914df317e3bb0b1a01dc557b46fe"
+    },
+    {
       "file": "provider-compiler-inputs/tzcode2025a-LICENSE.txt",
       "bytes": 252,
       "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf"
@@ -465,8 +500,8 @@
     },
     {
       "file": "provider-compiler-timezone-rebuilds.json",
-      "bytes": 20386,
-      "sha256": "0a0f7e4f15e4202995ffbed2b4213bee6e20122ec4a683ef10dbc09f50e4b4e7"
+      "bytes": 20550,
+      "sha256": "3231c19802a42c7a365a8a7dba2907ff698a60116672b8adc2ff376353ff1359"
     },
     {
       "file": "provider-independent-rebuild.json",
@@ -480,8 +515,13 @@
     },
     {
       "file": "provider-native-packager-sdk-rebuild.json",
-      "bytes": 48000,
-      "sha256": "8e9ef3ed9017623029fa00059e299f85c28706154e47fdcb2efea413bdf8953b"
+      "bytes": 48216,
+      "sha256": "9849d75264b2f57bc1150413a9e373001806444e9487f4c8edb17c991a90a1fb"
+    },
+    {
+      "file": "provider-native-sdk-signatures.json",
+      "bytes": 57475,
+      "sha256": "0066ec15f55204286373ab2a3ee58e5f022d5cfe8e2a966d57fff9cc5cc5d03d"
     },
     {
       "file": "provider-notice-inventory.json",
@@ -807,6 +847,11 @@
       "file": "provider-rebuild-inputs.json",
       "bytes": 72164,
       "sha256": "e33e4bd5866440b06e10b988205ab82541759d1b228bfad3f9c5df1b256136f6"
+    },
+    {
+      "file": "provider-timezone-source-signatures.json",
+      "bytes": 17235,
+      "sha256": "25d8cb111b9c66a6258ffe7a2720ce0cd8590a5a244678361f4e00e177f32ff2"
     },
     {
       "file": "provider-zip-inputs/original-repack.go.txt",

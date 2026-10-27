@@ -150,3 +150,17 @@ upstream signature normalization. The original source archive reproduces exactly
 and the named original notices match source and SDK bytes. Both observations
 still descend from the original binary seed; deeper bootstrap independence and
 all copied/generated producer and notice chains remain open Gate A work.
+
+The [IANA source signature follow-up](provider-timezone-source-signatures.json)
+verifies the six exact code/data archives selected by the time-zone recipes.
+A different valid source release and altered signed bytes are both rejected;
+exact original bytes verify again. The public keyring was isolated, and key
+retrieval and agent startup were disabled. Independent key-identity trust and
+the required compiler/SDK/build/notice closure remain separate.
+
+The [original native SDK signature observation](provider-native-sdk-signatures.json)
+verifies every selected publisher-signed executable against the Apple signing
+anchor and selected team requirement. Changed instruction bytes are rejected.
+The rebuilt ad-hoc signatures pass their own integrity checks while failing the
+stronger publisher requirement. This verification executes no SDK program and
+does not reproduce the signing service or the full producer/notice closure.

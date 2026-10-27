@@ -498,18 +498,20 @@
       "sourcePath": "LICENSE"
     }
   ],
-  "sourceReleaseSignaturesVerified": false,
+  "sourceReleaseSignaturesVerified": true,
   "originalPublisherLoadedToolchainAttested": false,
   "cCompilerSdkAndGoPackagerProducerBuildClosureVerified": false,
   "completeOriginalInlineNoticeClosureVerified": false,
   "fullUpstreamCompilerSdkAndBootstrapClosureVerified": false,
   "limitations": [
-    "Pinned public IANA downloads and exact source checksums bind the inputs; release signatures and full source-to-Git attribution were not verified by this observation.",
+    "The later detached-signature observation verifies the exact pinned public IANA source bytes; independent key-identity trust and complete source-to-Git attribution remain open.",
     "The independent host used an observed prebuilt Go packager and Apple C compiler. Their complete compiler, SDK and bootstrap build chains remain open.",
     "Rebuilding zoneinfo.zip does not rebuild other copied SDK payloads or qualify the full selected native runtime matrix."
   ],
   "gateAComplete": false,
   "qualityAssessed": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "initialBuildObservationSourceReleaseSignaturesVerified": false,
+  "sourceReleaseSignatureFollowUpEvidence": "provider-timezone-source-signatures.json"
 }

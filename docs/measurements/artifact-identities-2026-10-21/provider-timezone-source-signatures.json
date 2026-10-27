@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "state": "completed",
+  "gpgVersion": ["gpg (GnuPG) 2.5.24", "libgcrypt 1.12.4"],
+  "isolatedPublicKeyring": true,
+  "userKeyringUsed": false,
+  "automaticKeyRetrievalEnabled": false,
+  "agentAutostartEnabled": false,
+  "expectedSignerFingerprint": "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34",
+  "observedPublicKeyFingerprints": [
+    "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34",
+    "E78E2E21104851C6D01934BC3706DA463F348748"
+  ],
+  "publicKey": {
+    "file": "provider-compiler-inputs/tz-signatures/public-key.asc",
+    "url": "https://keys.openpgp.org/vks/v1/by-fingerprint/7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34",
+    "bytes": 8022,
+    "sha256": "f4e2ce25d99791638cdaedfcd30da882dfc2a701cec5139a6b32eb18255e9326"
+  },
+  "records": [
+    {
+      "version": "2025a",
+      "family": "tzcode",
+      "archiveBytes": 308522,
+      "archiveSha256": "119679d59f76481eb5e03d3d2a47d7870d592f3999549af189dbd31f2ebf5061",
+      "signature": {
+        "file": "provider-compiler-inputs/tz-signatures/tzcode2025a.tar.gz.asc",
+        "url": "https://data.iana.org/time-zones/releases/tzcode2025a.tar.gz.asc",
+        "bytes": 833,
+        "sha256": "618767631a8575d30b1c19cc85f833f40e66b4914b47cd779ed91699f1cdb3f5"
+      },
+      "controls": [
+        {
+          "control": "original",
+          "inputBytes": 308522,
+          "inputSha256": "119679d59f76481eb5e03d3d2a47d7870d592f3999549af189dbd31f2ebf5061",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "39d7fcc3622c8ce114893176b65070aaffac3edfa5324d1c64fc3d6c52d26a6e"
+        },
+        {
+          "control": "different-valid-release",
+          "inputBytes": 320200,
+          "inputSha256": "697ebe6625444aef5080f58e49d03424bbb52e08bf483d3ddb5acf10cbd15740",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "0dd05aaa2ebd89324197b4cea4ccc1905f0a1931cdbccf452b2e6b352414e06a"
+        },
+        {
+          "control": "altered-signed-bytes",
+          "inputBytes": 308522,
+          "inputSha256": "976a213e0d441f63fee6207b0d4a49a410237afd5eb89cd1f1e04e454fc23625",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "0dd05aaa2ebd89324197b4cea4ccc1905f0a1931cdbccf452b2e6b352414e06a"
+        },
+        {
+          "control": "exact-byte-restoration",
+          "inputBytes": 308522,
+          "inputSha256": "119679d59f76481eb5e03d3d2a47d7870d592f3999549af189dbd31f2ebf5061",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "39d7fcc3622c8ce114893176b65070aaffac3edfa5324d1c64fc3d6c52d26a6e"
+        }
+      ],
+      "originalArchiveUnchanged": true
+    },
+    {
+      "version": "2025a",
+      "family": "tzdata",
+      "archiveBytes": 462943,
+      "archiveSha256": "4d5fcbc72c7c450ebfe0b659bd0f1c02fbf52fd7f517a9ea13fe71c21eb5f0d0",
+      "signature": {
+        "file": "provider-compiler-inputs/tz-signatures/tzdata2025a.tar.gz.asc",
+        "url": "https://data.iana.org/time-zones/releases/tzdata2025a.tar.gz.asc",
+        "bytes": 833,
+        "sha256": "ed1d0264162b11f16a1c968adc413ed410458477ac094b4a2adc3357a069b2a2"
+      },
+      "controls": [
+        {
+          "control": "original",
+          "inputBytes": 462943,
+          "inputSha256": "4d5fcbc72c7c450ebfe0b659bd0f1c02fbf52fd7f517a9ea13fe71c21eb5f0d0",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "d0a06e91bcfec4636a52b91a4addac82b21e17ab4ce001c2e47019450ffc57d5"
+        },
+        {
+          "control": "different-valid-release",
+          "inputBytes": 469363,
+          "inputSha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "0dd05aaa2ebd89324197b4cea4ccc1905f0a1931cdbccf452b2e6b352414e06a"
+        },
+        {
+          "control": "altered-signed-bytes",
+          "inputBytes": 462943,
+          "inputSha256": "b2cb2a3c3899ad63b8eab1d2f20978b9ee7f6f9ab3a344794a3eebc1762bf9a2",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "0dd05aaa2ebd89324197b4cea4ccc1905f0a1931cdbccf452b2e6b352414e06a"
+        },
+        {
+          "control": "exact-byte-restoration",
+          "inputBytes": 462943,
+          "inputSha256": "4d5fcbc72c7c450ebfe0b659bd0f1c02fbf52fd7f517a9ea13fe71c21eb5f0d0",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "d0a06e91bcfec4636a52b91a4addac82b21e17ab4ce001c2e47019450ffc57d5"
+        }
+      ],
+      "originalArchiveUnchanged": true
+    },
+    {
+      "version": "2025c",
+      "family": "tzcode",
+      "archiveBytes": 320200,
+      "archiveSha256": "697ebe6625444aef5080f58e49d03424bbb52e08bf483d3ddb5acf10cbd15740",
+      "signature": {
+        "file": "provider-compiler-inputs/tz-signatures/tzcode2025c.tar.gz.asc",
+        "url": "https://data.iana.org/time-zones/releases/tzcode2025c.tar.gz.asc",
+        "bytes": 833,
+        "sha256": "99b21584f0f9b1a2ce422e116e71c92f114dd86c03a90340f064aa494aec576a"
+      },
+      "controls": [
+        {
+          "control": "original",
+          "inputBytes": 320200,
+          "inputSha256": "697ebe6625444aef5080f58e49d03424bbb52e08bf483d3ddb5acf10cbd15740",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "04dd1afdd66718a12c058c015ce3ae29fe078f145415a554a4f5500d563e92b4"
+        },
+        {
+          "control": "different-valid-release",
+          "inputBytes": 308522,
+          "inputSha256": "119679d59f76481eb5e03d3d2a47d7870d592f3999549af189dbd31f2ebf5061",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "334fd9f94e28e46231acfe91d82d492a7c9bccf2a75c6c8036eb8af442573850"
+        },
+        {
+          "control": "altered-signed-bytes",
+          "inputBytes": 320200,
+          "inputSha256": "c72d0e5a974bfaa3baf63cb2dd3223793cafa5651cd2f16fa57485f2809aa1b7",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "334fd9f94e28e46231acfe91d82d492a7c9bccf2a75c6c8036eb8af442573850"
+        },
+        {
+          "control": "exact-byte-restoration",
+          "inputBytes": 320200,
+          "inputSha256": "697ebe6625444aef5080f58e49d03424bbb52e08bf483d3ddb5acf10cbd15740",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "04dd1afdd66718a12c058c015ce3ae29fe078f145415a554a4f5500d563e92b4"
+        }
+      ],
+      "originalArchiveUnchanged": true
+    },
+    {
+      "version": "2025c",
+      "family": "tzdata",
+      "archiveBytes": 469363,
+      "archiveSha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
+      "signature": {
+        "file": "provider-compiler-inputs/tz-signatures/tzdata2025c.tar.gz.asc",
+        "url": "https://data.iana.org/time-zones/releases/tzdata2025c.tar.gz.asc",
+        "bytes": 833,
+        "sha256": "6d72ec402e89cd426d5e22b28cf6f51bde6fe8e0f6ce2bd1a0129a3108735747"
+      },
+      "controls": [
+        {
+          "control": "original",
+          "inputBytes": 469363,
+          "inputSha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "28a715892615d49fd3723bdbcd78061c4d08c9b73831152129082d479f94f3ef"
+        },
+        {
+          "control": "different-valid-release",
+          "inputBytes": 462943,
+          "inputSha256": "4d5fcbc72c7c450ebfe0b659bd0f1c02fbf52fd7f517a9ea13fe71c21eb5f0d0",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "c59b0c4c236c590bfb4bbf6a4f8a86b5f27704d5407e5195cf63a9978d6c7e66"
+        },
+        {
+          "control": "altered-signed-bytes",
+          "inputBytes": 469363,
+          "inputSha256": "ab96b7d94c6fdbe1dfaec35b299774d94b22a8d694c8f8663c8ea1ff30c235ac",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "c59b0c4c236c590bfb4bbf6a4f8a86b5f27704d5407e5195cf63a9978d6c7e66"
+        },
+        {
+          "control": "exact-byte-restoration",
+          "inputBytes": 469363,
+          "inputSha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "28a715892615d49fd3723bdbcd78061c4d08c9b73831152129082d479f94f3ef"
+        }
+      ],
+      "originalArchiveUnchanged": true
+    },
+    {
+      "version": "2026c",
+      "family": "tzcode",
+      "archiveBytes": 325445,
+      "archiveSha256": "b1cffc3ace4c4c7cd0efba2f7add86ec3d0b79da48bcf03582671fd3c8feace8",
+      "signature": {
+        "file": "provider-compiler-inputs/tz-signatures/tzcode2026c.tar.gz.asc",
+        "url": "https://data.iana.org/time-zones/releases/tzcode2026c.tar.gz.asc",
+        "bytes": 833,
+        "sha256": "b4c8faf48ff1df7e9198e1b99a6c65fa5cecafb8f449c8d237d35871e8e5c4bf"
+      },
+      "controls": [
+        {
+          "control": "original",
+          "inputBytes": 325445,
+          "inputSha256": "b1cffc3ace4c4c7cd0efba2f7add86ec3d0b79da48bcf03582671fd3c8feace8",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "cce61acc74920ee2d86b21d0921716f64d2b31efe849c67e6f77cab815f2386c"
+        },
+        {
+          "control": "different-valid-release",
+          "inputBytes": 320200,
+          "inputSha256": "697ebe6625444aef5080f58e49d03424bbb52e08bf483d3ddb5acf10cbd15740",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "a396d71df056e8adf5e8c66c07420a2a2d743b21af245cf073f8de2458363649"
+        },
+        {
+          "control": "altered-signed-bytes",
+          "inputBytes": 325445,
+          "inputSha256": "017bdef480e0e1fab573a57d554ebfae47a42ea71fd79eecbb8dfaafed57974d",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "a396d71df056e8adf5e8c66c07420a2a2d743b21af245cf073f8de2458363649"
+        },
+        {
+          "control": "exact-byte-restoration",
+          "inputBytes": 325445,
+          "inputSha256": "b1cffc3ace4c4c7cd0efba2f7add86ec3d0b79da48bcf03582671fd3c8feace8",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "cce61acc74920ee2d86b21d0921716f64d2b31efe849c67e6f77cab815f2386c"
+        }
+      ],
+      "originalArchiveUnchanged": true
+    },
+    {
+      "version": "2026c",
+      "family": "tzdata",
+      "archiveBytes": 475694,
+      "archiveSha256": "e4a178a4477f3d0ea77cc31828ff72aa38feff8d61aa13e7e99e142e9d902be4",
+      "signature": {
+        "file": "provider-compiler-inputs/tz-signatures/tzdata2026c.tar.gz.asc",
+        "url": "https://data.iana.org/time-zones/releases/tzdata2026c.tar.gz.asc",
+        "bytes": 833,
+        "sha256": "26cd02e034eed682aa911d224bca3247ff15914df317e3bb0b1a01dc557b46fe"
+      },
+      "controls": [
+        {
+          "control": "original",
+          "inputBytes": 475694,
+          "inputSha256": "e4a178a4477f3d0ea77cc31828ff72aa38feff8d61aa13e7e99e142e9d902be4",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "c15b617d57dea864eb1174375fbdcb9e1cb86d2a7ff3db2d181dc996dceda666"
+        },
+        {
+          "control": "different-valid-release",
+          "inputBytes": 469363,
+          "inputSha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "a396d71df056e8adf5e8c66c07420a2a2d743b21af245cf073f8de2458363649"
+        },
+        {
+          "control": "altered-signed-bytes",
+          "inputBytes": 475694,
+          "inputSha256": "be5a271f286f20543242c8de04bf284282484e5d6c7aac3175ef0a3855aada57",
+          "exitCode": 1,
+          "validSignatureFingerprints": [],
+          "badSignatureObserved": true,
+          "logSha256": "a396d71df056e8adf5e8c66c07420a2a2d743b21af245cf073f8de2458363649"
+        },
+        {
+          "control": "exact-byte-restoration",
+          "inputBytes": 475694,
+          "inputSha256": "e4a178a4477f3d0ea77cc31828ff72aa38feff8d61aa13e7e99e142e9d902be4",
+          "exitCode": 0,
+          "validSignatureFingerprints": [
+            "7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34"
+          ],
+          "badSignatureObserved": false,
+          "logSha256": "c15b617d57dea864eb1174375fbdcb9e1cb86d2a7ff3db2d181dc996dceda666"
+        }
+      ],
+      "originalArchiveUnchanged": true
+    }
+  ],
+  "allSixSourceReleasesCryptographicallyVerify": true,
+  "publicKeyIdentityIndependentTrustAssessed": false,
+  "compilerAndSdkProducerClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "observedAt": "2026-10-27",
+  "scope": "Cryptographic detached-signature checks for the exact IANA source inputs of the two compiler SDK time-zone reconstructions and the acquired bootstrap time-zone recipe. This does not rebuild the compilers/SDKs or establish independent key-identity trust.",
+  "publisherReleaseIndex": "https://ftp.iana.org/tz/releases/",
+  "publisherReleasePages": [
+    "https://www.iana.org/time-zones/releases/2025a",
+    "https://www.iana.org/time-zones/releases/2025c",
+    "https://www.iana.org/time-zones/releases/2026c"
+  ],
+  "retainedSignatureAndNoticeInputs": [
+    {
+      "file": "provider-compiler-inputs/tz-signatures/public-key.asc",
+      "url": "https://keys.openpgp.org/vks/v1/by-fingerprint/7E3792A9D8ACF7D633BC1588ED97E90E62AA7E34",
+      "bytes": 8022,
+      "sha256": "f4e2ce25d99791638cdaedfcd30da882dfc2a701cec5139a6b32eb18255e9326"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzcode2025a.tar.gz.asc",
+      "url": "https://data.iana.org/time-zones/releases/tzcode2025a.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "618767631a8575d30b1c19cc85f833f40e66b4914b47cd779ed91699f1cdb3f5"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzdata2025a.tar.gz.asc",
+      "url": "https://data.iana.org/time-zones/releases/tzdata2025a.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "ed1d0264162b11f16a1c968adc413ed410458477ac094b4a2adc3357a069b2a2"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzcode2025c.tar.gz.asc",
+      "url": "https://data.iana.org/time-zones/releases/tzcode2025c.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "99b21584f0f9b1a2ce422e116e71c92f114dd86c03a90340f064aa494aec576a"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzdata2025c.tar.gz.asc",
+      "url": "https://data.iana.org/time-zones/releases/tzdata2025c.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "6d72ec402e89cd426d5e22b28cf6f51bde6fe8e0f6ce2bd1a0129a3108735747"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzcode2026c.tar.gz.asc",
+      "url": "https://data.iana.org/time-zones/releases/tzcode2026c.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "b4c8faf48ff1df7e9198e1b99a6c65fa5cecafb8f449c8d237d35871e8e5c4bf"
+    },
+    {
+      "file": "provider-compiler-inputs/tz-signatures/tzdata2026c.tar.gz.asc",
+      "url": "https://data.iana.org/time-zones/releases/tzdata2026c.tar.gz.asc",
+      "bytes": 833,
+      "sha256": "26cd02e034eed682aa911d224bca3247ff15914df317e3bb0b1a01dc557b46fe"
+    }
+  ],
+  "initialTimezoneBuildObservation": "provider-compiler-timezone-rebuilds.json",
+  "originalSourceArchivesPassedThroughUnchanged": true,
+  "completeOriginalInlineNoticeClosureVerified": false,
+  "qualityAssessed": false
+}

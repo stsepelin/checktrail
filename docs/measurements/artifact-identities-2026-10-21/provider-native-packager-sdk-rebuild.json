@@ -383,7 +383,9 @@
     "privateWrapperSha256": "31c35433580b25b421c3e12f8e80f36a6d1ffc94b3fe822ce08c75d6472c7186",
     "sourceUrl": "https://github.com/golang/build/blob/63b63b04bd2424ddcf42e7ef9ca8a02810de6fe4/cmd/gorebuild/darwin.go",
     "method": "Strip only the final Mach-O LC_CODE_SIGNATURE and its payload, and update the LINKEDIT signature-dependent sizes exactly as the unchanged upstream function does. Compare all other regular member names, modes, times, uid/gid, sizes and SHA-256 values.",
-    "signatureCryptographicTrustVerified": false
+    "signatureCryptographicTrustVerified": true,
+    "initialNormalizationObservationSignatureCryptographicTrustVerified": false,
+    "originalSignatureVerificationFollowUpEvidence": "provider-native-sdk-signatures.json"
   },
   "normalizedComparison": {
     "regularMembers": 14179,
@@ -1136,7 +1138,7 @@
   ],
   "remainingProducerObligations": [
     "The initial Go 1.27.1 bootstrap compiler is prebuilt in this observation. Its independent reconstruction and deeper bootstrap ancestry remain separate work.",
-    "The official signed archive cannot be called byte-identical to this unsigned/ad-hoc build. This observation does not establish cryptographic trust of the publisher signature or reproduce its signing service.",
+    "The complete signed archive remains byte-different from the source build. Original executable signatures pass the separate Apple-anchor/team verification; signing-service reproduction and separate notarization/revocation policy assessment remain open.",
     "The complete SDK archive contains copied and generated source/payload inputs. Normalized archive equality does not independently rebuild those producers.",
     "The exact native SDK does not attest the separate original Linux publisher cached compiler bytes."
   ],

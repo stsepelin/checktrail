@@ -1,0 +1,1272 @@
+{
+  "schemaVersion": 1,
+  "state": "completed",
+  "source": "Pinned official Darwin ARM64 Go SDK binaries, verified as data without execution",
+  "command": [
+    "codesign",
+    "--verify",
+    "--strict",
+    "--verbose=2",
+    "--test-requirement",
+    "=anchor apple generic and certificate leaf[subject.OU] = \"EQHXZ8M8AV\"",
+    "selected SDK relative executable"
+  ],
+  "expectedTeamIdentifier": "EQHXZ8M8AV",
+  "expectedTeamIdentitySource": "Embedded signing metadata of the pinned official Go SDK; official archive digests bind the artifact publisher selection",
+  "appleSigningAnchorVerified": true,
+  "separateGatekeeperOrNotarizationPolicyAssessed": false,
+  "separateCertificateRevocationStatusAssessed": false,
+  "verifierExecutableSha256": "d517c9be608ffd266ec106c685e880cda71abc94001450e36d2476016406dd1e",
+  "records": [
+    {
+      "version": "go1.24.13",
+      "path": "go/bin/go",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "c9507e881b743649af2b8d9edd8678433b999acfe4da2f9834a08a4fcebb1861",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "81044e18a705e55b25389a11a06f07053c457e9f203e36102a5755397801e706"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "4ca25e201e6fe8e3140b42140cca62a62dba203c0ca9bd10b46976168ab35325",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "75c8075d29eaf1bb97740278b9ba92e3b58b873b980a87be7dbba7bcca49bf63"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "5588df879187a7587f98446ee8205ee1a8da506d362ab92c6d50d348fbeb39be",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "c79941dada8b1d43c2600c576f56d08833e85e0e0097e3c33901baf54389b3bd"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "c9507e881b743649af2b8d9edd8678433b999acfe4da2f9834a08a4fcebb1861",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "81044e18a705e55b25389a11a06f07053c457e9f203e36102a5755397801e706"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "eaaf89c167e40d6a420e21438220fc28e5e2ba5a1e029a9fbe48ce78122ab6c6"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/bin/gofmt",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "3eb3566be692616deb103d3d97d9a4e5dcaee853f145df384a2f796868f28aae",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "c74b55f6e9966a1e661b2712a375f123c4cfccb73f2fdd73ee43f41535e7e788"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "d6365d10d5883a1962dff6afb0418ec1fc91c1ae0369f3a1223de7c2c660ef54",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "48e2ccf6027f5d115c978bd1a8a019f62ae466d16e049c02e95d7a78cc22aac6"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "cab69c2429ad110aa46b9a78178c9ff96d370e05432ea694e3e6a0078369306d",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "231db6ff5d202e4bae11a8f5e0cd774acea81a42123df37efaef0d51fb8910ac"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "3eb3566be692616deb103d3d97d9a4e5dcaee853f145df384a2f796868f28aae",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "c74b55f6e9966a1e661b2712a375f123c4cfccb73f2fdd73ee43f41535e7e788"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "d894e20fb50b0b49060eec306804085820b477e42722643cda4d87390a3c887c"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/addr2line",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "39b25e1c0c064a42056c7c76bc609c81397143e582bfd5c25143c48c48e1fd64",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "7dd088997788ac3310b0209ba0466568e4716c387dd1ee5b4eb1b2d729d4deb0"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "3349359b6ea75209252f7fef6ce15c417d6ff7189bfaba21e5dcb37c28a7404e",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "3d4464db6a4cd717eef3cdde35a28cab7043d602273fe3b5fe548c2602f54122"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "def658692ec0105ff0e1fc5abc77f7779dacf6e5c777da851f357bf60ea4d3b4",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "115631238499f1653679a88908f9dd941c225f000a051a72df6438cdeb54ded5"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "39b25e1c0c064a42056c7c76bc609c81397143e582bfd5c25143c48c48e1fd64",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "7dd088997788ac3310b0209ba0466568e4716c387dd1ee5b4eb1b2d729d4deb0"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "8ea2d5977c9c637217ca7d6b6a9425d1e582f7120f1b0ac56c34fbd86aa2cbe6"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/asm",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "8ae5b5729e84e5871ddf7c05a0478b395d3a26b3dd3e24f81092db6bb870ee0f",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "63214cc1d5d96c14fd882e420e639efd6eca39765445ddc4538fd52ac7a5a701"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "43036542767380d5b13ba9c332d8693968b822430e08c0f6f30243308807ae85",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "90dd8e794fb7c324cd1a72cdd43b1bd73759851191533d4ff032e08afc02cf53"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "68172e3a3f07989de14b1dda97b080148ad706ed0d7abfdf7e282eb9551c331d",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "7a0afc85a26381d907161fee80c7d91c6a652cbbec9058ca59d40ba47998971b"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "8ae5b5729e84e5871ddf7c05a0478b395d3a26b3dd3e24f81092db6bb870ee0f",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "63214cc1d5d96c14fd882e420e639efd6eca39765445ddc4538fd52ac7a5a701"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "6b8da29254e6d99dd9ac4038c16a6b24e61039f771ec77e1f62e1d32169f7901"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/buildid",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "82ac514afa3251e1359f2b7a1518a15c19bd418650090f26db6e6a835908f693",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "3f0c8682cbbc0dc94f63f06f15489d6e04105d6b401466fc5d65f6e9398a5c87"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "3e5dbb4d4394756f53212a8fbde679e1f37dda9f34cf5c272e07390ba517ddfa",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "dfd087102e9f5dad1d51afae475e27e8d17619040f9e816932bc2c9daaf3a0cd"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "21f618cfdb33bcca73a2b32cb9b7599ce2ca9b5f3c7e761b9306ebc9bcf810c9",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "73a849ed95813ef2249b85f4bc29c99aa0f7b06d787409b6b1e7508457d01643"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "82ac514afa3251e1359f2b7a1518a15c19bd418650090f26db6e6a835908f693",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "3f0c8682cbbc0dc94f63f06f15489d6e04105d6b401466fc5d65f6e9398a5c87"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "3894dcf15fad88f8699eff6688165da8e7bd6a9c37ea318f59bba03f82e9fcc5"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/cgo",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "7871d4dc881b3d1896925bb28733444fb4544b7844902934aefb06b2a190be17",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "9c17a9ba4e84bba4070565da439d03adfbe9cd835ed869714fa934d41bde900f"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "025d120ac19cd8807a431f0ee57a925e7edf6b05289d22c8ad23450c058a98b1",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "3b73a6253c9d625e9eb3c65670753b16bf99297af84592f3e2e6ba0783536c2d"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "06c6dd533cbe4ed8566e4607e1d7215a5c51cd4c1c6b82343326ca724ddcaca9",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "2a85f184bd3851def412a25d8c5e6aadce013ec6bb4cfa5087ac589a827a5b59"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "7871d4dc881b3d1896925bb28733444fb4544b7844902934aefb06b2a190be17",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "9c17a9ba4e84bba4070565da439d03adfbe9cd835ed869714fa934d41bde900f"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "f9fab251f503d4cad5c8cf7c444f61adb2cd5dd0f72be3186950b75abb8f5620"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/compile",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "242f6de9606e60c2bd0358d67d6167931fbff0087dc4be67eb274020988946a3",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "a255d576d5e0d839d88d7be0d978d6719d42622c310d6cfbd8e1940c1214ca5e"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "708e23d6bbc350b8fad7c51f4a50029676ea71447b46e8644f3cc6195a47a42d",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "990d2fc66ee2d02630a7a35f3592e7ba47d9ed8f577fcd16c2fd372377974064"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "0bfc6f0430f2bffe8ec7d1c584bc105404e1522557fa1c2e393080581c249f27",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "16c74b989b988d4a8b367da2a20f1d6fbc306a8c04cbfa1a9eb7d88fcb1042e0"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "242f6de9606e60c2bd0358d67d6167931fbff0087dc4be67eb274020988946a3",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "a255d576d5e0d839d88d7be0d978d6719d42622c310d6cfbd8e1940c1214ca5e"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "021f01f0ae89b64b489ee94a7d8c4e7c4bc8e44416dc0cbfe09e5be40d411aa6"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/covdata",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "18f454d6fdf625a6bf595b87dea6420ed5cf0b6f04315146b11650561408f29c",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "67d3b6e00a88972d16f0849aca06cb5e23db7dce885b50814f4784ce28e901c5"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "67b41daabe2ba20f9749535ff9ebb705ae8bf892ae19145030fd29d634ea338c",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "20b2a2ac352f6a0d4c1ebdcc75d2ccf3c19dda86563bc4acc5520e47cef40abe"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "23e9edf44e23a45e89018b7c047cd707e7dc3de964d36e410456b5a2480f9472",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "5c6b2a4d40934cba3c56ad2a1ab29e11f2f17e246c91850dad98128260223657"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "18f454d6fdf625a6bf595b87dea6420ed5cf0b6f04315146b11650561408f29c",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "67d3b6e00a88972d16f0849aca06cb5e23db7dce885b50814f4784ce28e901c5"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "31fcdc7bf2ad99f6ac73c301f3b901c23c6db5682652cd70c1b90ac7fe87387c"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/cover",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "2f7199679978ab8b846a23b77b1b7f0fd48bdae07604decc3d0a09e7faee6a10",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "b8195a189682907f083bbcbd5ab5084e388c89d53952fabf8f9fe5cd17bbe90b"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "472caef5fc06bf221cb5c1f311507832180be68048b4ac1fa4b7fc7b6bab2984",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "9d19e205d4c2f52299e3d2119b5c92afff1a5e3c11b75ae99715bf410ef7ef7b"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "7e023fa81c8e16bc18c234896df6c431842b7a6a1d0e2bd59bcab87d267a1918",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "e11ee5279d78d3d89adcf7fb34fc783fe9c837803abe2ad8a86ee377cfe46d41"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "2f7199679978ab8b846a23b77b1b7f0fd48bdae07604decc3d0a09e7faee6a10",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "b8195a189682907f083bbcbd5ab5084e388c89d53952fabf8f9fe5cd17bbe90b"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "a8d36c8f599d5d6f7cd4829cc6ac0acc2ba103f502ea6dc8c4b3eb7b9d573ccc"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/doc",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "0291bdf8c188143937054454d8fe76bd46531099a379283f652d5cdb1851f26c",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "562aa5db4a420226c2ca7d36bdb758b990c4f745081f6d16bde89f0a3cf9f1b3"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "bb485bb35a11fed213465f9002998a3ade11166bdd4d37fff7579b45eaf5fa68",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "62ca8fda36c741e373082ba20142ac7300561d43d0faeaee6fded3032b0bc5a7"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "fcb7957108952ae7272717cae3644e4b6abf5ce820ac2b0a0f1ee4f3a4cdaf10",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "d8643661d2d8dba984ae9e8d663482e6327ec325739ac8c1827e22d43794f83a"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "0291bdf8c188143937054454d8fe76bd46531099a379283f652d5cdb1851f26c",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "562aa5db4a420226c2ca7d36bdb758b990c4f745081f6d16bde89f0a3cf9f1b3"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "02060a5dc85c7f97b1be435b007a19dee89359a4ddcfedc7459c6c4896fd4373"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/fix",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "15090f7d06ad53450739ef0485d0a888bef3cc6c92a2aa94fc0c6dbf1c189089",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "8dc0c55114fbf044e535a31d22bfdc5ff5476067bdd64c3e72c26d3c473b75fa"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "13d3b6a37031df6d6b3758a7748d345dca90b8c6ad33b3ca021be47478a3c572",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "9b6aa20edb24cbd882424e96cf883b3014cacf4d3e4c6e5fea4612fa3693f5b4"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "d3d95578f522261bd2008724a2cf5edbfcefd90908c928812c914da91760f504",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "e545b7f7cb1c9fc9985e03b4e32e965cb9027bce4e717615adf50d6d587bbee4"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "15090f7d06ad53450739ef0485d0a888bef3cc6c92a2aa94fc0c6dbf1c189089",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "8dc0c55114fbf044e535a31d22bfdc5ff5476067bdd64c3e72c26d3c473b75fa"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "e090bb13ceba6779263bcec479be0d0a50331b95eecd909481e183e64b7fb6b9"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/link",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "c2d08c5bdbc7689a141dbdbd1d652ba1596590a006d9b9411282871605e0b2ec",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "0d8a4c7fe00a6cc617b2c13b1e84e634da44be564eb71878ef029be6af9ab09b"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "3307e2e31027432e007d7f2341d1b3c01afb7e76fa3ada3dda44e147bec32932",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "8f420ad4926f1e7b192dc76cce63d390e9ce2ca65dd080dc31fc4b3817702870"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "53ab89a4a772f322b0363f7aab38d97793450ab003cfdbd85aa3050c1c103f12",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "f908462bfc46c25c6ecdcb9f94b71f94fda491abc7f9161546152baffbefb2f2"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "c2d08c5bdbc7689a141dbdbd1d652ba1596590a006d9b9411282871605e0b2ec",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "0d8a4c7fe00a6cc617b2c13b1e84e634da44be564eb71878ef029be6af9ab09b"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "6810df90d0e7bbcfb228a63773542f908ad8036be3e9ac0283e8bc6853ccd2fe"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/nm",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "6be389a5150069c8a1e70965013b92f0ba708e922cbd440eb04bebc529f2dad1",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "646347046040af110f1729de6e07101b0e972410da6c7c482d9deabc5a8ace7a"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "574b247afd789c4f421dad34c18b2d6c231ddc82fafa6ff0f31d212241e6d1fe",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "ae2d00acf5bcad0fd423eb9ea0ce3c7ef6599e5d625f86527b66650bd6b72587"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "8b9e9e9b7f1ff6cd433d74c60002e1d4e0abf4b30164b874e9155f0a7c893f8a",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "db4d37ce744c98d5c93de2093c34762eddeeb25574ce646fd9ead32eb045636e"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "6be389a5150069c8a1e70965013b92f0ba708e922cbd440eb04bebc529f2dad1",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "646347046040af110f1729de6e07101b0e972410da6c7c482d9deabc5a8ace7a"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "4bc0b4877fa5d3e13cf940c99e8a53025aa2c5493d753b7383456e1ce7d469cf"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/objdump",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "453681cf99a8078690fc75d8ceaf9e468fa53a219aba18fc427496135d20e90e",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "3848027edcfdad3a63d912063d0dd9861efa506281c98b1545072edaa59309b4"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "56f360908853169c5ce2f844feca9e2c1dfd0828650d5b597a2fed9325b6cae2",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "73bb8f420fa2b4137bfa1894d91046adcf640b0a0e2d3eb1681956599e843fc1"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "15a9d6abb1a0df2f92a262d3556ffbe5036d040d328bc47cde37e24c45b0a195",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "8d7aca4ff6a8ed25b288842451793886ebf8e74dea5f0e149ceb3b30838629d1"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "453681cf99a8078690fc75d8ceaf9e468fa53a219aba18fc427496135d20e90e",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "3848027edcfdad3a63d912063d0dd9861efa506281c98b1545072edaa59309b4"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "8c868449f7fb6b84e27bfc5921a22dc7735b9105aeb91e0ec72c210c43ddfae2"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/pack",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "a0d53692225c53585271eac5a5f1a20d1632bf9898b71b8edcac47fd762627c7",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "be6318d265504f97ec4e14a3e7262f5486f21f25b3f37033c9af3f9230e66697"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "a6184f14ddb1e605fbfbfa51e30ff5da834087d3eaaac88f64008ca264eac9c7",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "dc9f7e2dfa1f296c3fe1114c801e4be9c748feadb27322a4a3b68fb3993e2916"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "c9ddcb5fc41473380334fa3c84591f3c4688b01b7b3ecac4d0ea1ca9accb4166",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "aa55bb742ae2c7b07e65b0d1821fd4fc94bc7916a1e75f6a84ebe62600920a20"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "a0d53692225c53585271eac5a5f1a20d1632bf9898b71b8edcac47fd762627c7",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "be6318d265504f97ec4e14a3e7262f5486f21f25b3f37033c9af3f9230e66697"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "1df05814b01e2dd3d22f0bfabf3feefc119ccf7f369c0a69b4f7771f5ad86e81"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/pprof",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "07bae15272983f1bd331ca0d2ab1c4173e89c34f7dbf57b748bc898a6c0385a9",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "38066906394d36a514d003f7889bab7efaef5422c9d28fefd2cc9b3b225bf628"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "0a3743c4124e9457d23dbc0e29d5c40adf0a8de3d668bde3587242bc798ead0f",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "9c913b5d95357abd32a1275563391a3ac4f863935d527dee943108ee66773364"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "30c3f9cdafbe39ef7a84d704ea668a3d54d878642241f87d01687d4c7e1ca3dd",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "27b207190ec08bd926176404b0fef97b37b0961e77f8410bc3b047b297018b3e"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "07bae15272983f1bd331ca0d2ab1c4173e89c34f7dbf57b748bc898a6c0385a9",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "38066906394d36a514d003f7889bab7efaef5422c9d28fefd2cc9b3b225bf628"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "d1e95d69b4332607414a6eec2faedb3f4dff4afb730e90d76c0de95dc30abc08"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/preprofile",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "117842d8a76ebf3884ef2e3d75e8d17c798c21d182af50a6ee7fb7394feca2fe",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "36e40f483d0311075b371284a4b495f2725b21eaa88d8d5847935638d9f95deb"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "d0f997984e59f0b5f5c3be197747714f7363b03d28948a4f18094c960587cce8",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "b994b30b3447de56b367e8343335eaf0cfcbd6b511f987731c3d3dda54545bc7"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "d0937bf0aab2727e21333c6cc661c095d31b2dc63199cda4a54f81830a5f6134",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "27a5fd1f1a85c6bc515bbfd23affefd377b39d056d51dd5c6cfde0f722a44134"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "117842d8a76ebf3884ef2e3d75e8d17c798c21d182af50a6ee7fb7394feca2fe",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "36e40f483d0311075b371284a4b495f2725b21eaa88d8d5847935638d9f95deb"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "b3b5f96540ae6f1c7ae6bdefea3bb2ee158a1a32c632c370424092798f2d2b34"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/test2json",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "7f795e1da03abcc7b7b4fffea9a8e0cd18600915546836a851a6800ca1ece8d1",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "5481948c651198cc12bdddf2307bcc5c34b78baf5c8bb34575a679e68d701bd3"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "98d9d738d8654af578c60303ed7d1217eea73fdb7387534a83697bf120bcbe77",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "7280c893072f07055d991085f303058c2bd7932d68c59bb3d1daab7b391d5933"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "e8b7d6798ab4e8651756d7a7e1381762ad82fa396415a6d8ea6f9afbb0c15cc7",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "f90851a997c0afc49a607297be7581f6cd685b632ce5807e9df85c0e35568dc3"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "7f795e1da03abcc7b7b4fffea9a8e0cd18600915546836a851a6800ca1ece8d1",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "5481948c651198cc12bdddf2307bcc5c34b78baf5c8bb34575a679e68d701bd3"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "cf95f9c8a3e0bfaaca793e90d172733f4e8fbd06845fff4f6d403addaba81dbc"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/trace",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "0ab91e0839dbf5655167d70f5b8674835d0fc342b1cc0c76b883ad6871e33c93",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "522a2f28ccf378ecb42eb8aff036a8854e5ae4fd8cd5ee3eca9a2b08a01ec89e"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "ce6bce0149c5489c5145265e514cbb2083e9d215ffcab1286098d8037d546683",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "cdde4b74e65d202af479e26c555095b11e8387752bda4e42836d18abd738e827"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "3120a1c402c0b2dcd1d6fa0635714ba06e0b4d93e6f9e2e5bcaf34399232b31d",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "d1aa531eff5a24bef9d3f1fa1126c11935aa1fc23fcd2c9404f8cb659935a2cf"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "0ab91e0839dbf5655167d70f5b8674835d0fc342b1cc0c76b883ad6871e33c93",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "522a2f28ccf378ecb42eb8aff036a8854e5ae4fd8cd5ee3eca9a2b08a01ec89e"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "27cde1cb07335e841be6ec156e632d7e1735e3bec514f3aa651d591930c8d72f"
+    },
+    {
+      "version": "go1.24.13",
+      "path": "go/pkg/tool/darwin_arm64/vet",
+      "officialArchiveSha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "f9a001ea026caa7d1d00a3c638046f7cfec38884e5b6d15b6d6aa6dfed4ea200",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "0076d929140dbe9ce6faf4d499b47c4cd140258df56aa63f924f2034b63d693e"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "d6153c04e4db435fc11eb66165dbf2ca47d9466cd425c8b2612fd020263aafdb",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "a1647c419daa9e01f20fd540ccc791b918c7c740571cf9f826ec6e229f257db6"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "d6775217b3dc022e69d00c0dcfe1cc4da867ff5eee941499bb11031d6c9fd259",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "9cabab561c7d0c2ec66f134a42e18913fbf6b2d0cba1263bb75f75fe4575575d"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "f9a001ea026caa7d1d00a3c638046f7cfec38884e5b6d15b6d6aa6dfed4ea200",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "0076d929140dbe9ce6faf4d499b47c4cd140258df56aa63f924f2034b63d693e"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "6e2e72aa3c8f3be9666c1321e498fb06ddc943f91c70139f1b578856ebb02d41"
+    },
+    {
+      "version": "go1.27.1",
+      "path": "go/bin/go",
+      "officialArchiveSha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "9524bd8d391ab8dfd61af05648af4bdc59cdbb483769e474e38dfa0cd21b09de"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "6c6d51a73b5c85219b081f5a4c880df35a2cffc16b405b3eba7cc5d17e886aff",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "9fcc3f466722d1539492b1b77ea1653dd89bfd797bbc9a71d6a20d110d0bcb83"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "4c11d358225050c80f09c55c165795eaf5b9dc2af0a2c3e5b670c2a8c33e20ec",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "4b38a4d24e4ef5b55af3c1d8eeda1bf53b97daebb46fd7ff8c03fb7c133a7cb6"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "9524bd8d391ab8dfd61af05648af4bdc59cdbb483769e474e38dfa0cd21b09de"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "c5fab5dc3f8eaee4451d42bba9dce5570fae5a661249a620effd66d57836f6b8"
+    },
+    {
+      "version": "go1.27.1",
+      "path": "go/bin/gofmt",
+      "officialArchiveSha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "1e950d1efa1539f5b9239ca95bbfd367d9338348513242b5a959093034c51e8c",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "2d144d30bfb6ed6c8e7c28acf32e1ea2f7d07289c6107e10937eab2031f9fe84"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "9ec0b076d0ed011ade5ce17f81822083972454f084c0c05bc95b87011285f339",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "18f9c44e2de98db579f0e872cbd73c251046866b7a96b5ba508ca62ab284e168"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "9cd491f4ab78b3b3312d5120f425904d86ba55643eeaf815c36fc8034e999997",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "48b85a6e2605e9e1b66b194306b78cab95c5f21e842f5c99790869bcdb23b367"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "1e950d1efa1539f5b9239ca95bbfd367d9338348513242b5a959093034c51e8c",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "2d144d30bfb6ed6c8e7c28acf32e1ea2f7d07289c6107e10937eab2031f9fe84"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "fb62a2f5f7a7050a7883b668fb970d4077092fc2c421e06f5fbceb935feacf4e"
+    },
+    {
+      "version": "go1.27.1",
+      "path": "go/pkg/tool/darwin_arm64/asm",
+      "officialArchiveSha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "b8b91a7dce966bb76fcaf0ee91f8153dc20c9d8bc079ba35158c8efb87a168af",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "577ea3161c6c76939ee17f3b81172755b23b86b0f6fc25ce7ab69bc9aa35a40e"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "f9d989164b444cd90b1e090533cce67c6bc7a9901d7c95612c34fd75be400ed6",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "3d2e0b80981bffe14554ffef661bb5b29e37829370c16553c12892d2d4c2cce1"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "247bf352f8fa9de8eb640eb28d562949d03a8b6e4632c8af1f28fbb18464d1ff",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "e341828eb5124337efb21b2a49115b57b212e81b09c9bf6387c89e8023c2ff95"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "b8b91a7dce966bb76fcaf0ee91f8153dc20c9d8bc079ba35158c8efb87a168af",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "577ea3161c6c76939ee17f3b81172755b23b86b0f6fc25ce7ab69bc9aa35a40e"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "a9f95d16e78bb5da9d34b1efbcf21935d432ae87ebcb2bf90a678cac3502f7b3"
+    },
+    {
+      "version": "go1.27.1",
+      "path": "go/pkg/tool/darwin_arm64/cgo",
+      "officialArchiveSha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "f5cbaf99a84858e4c5e01996ca2a20624d05d99e1940188a749da948ce94ad1e",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "491556f62b60d83f69adbc649855644d52aea6e3cc4f70a7a7300acc30e16b9d"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "60218d5ff408c38a0ddeb5dac883a5fb2cae942972d86fa5bdbfee20f6faf583",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "8bac8ae0b004f84276b542d0b2eba259465b26d212f2419b86277e9213ca03d2"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "1c8fd55e217c865b82b975c68515ad6d5aaf36cb778860092c239b5dffa2dfaa",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "25c3b79cfaf0edfed98cb5fafca4e02a4723c31278986cef1f2fda54decbf7cf"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "f5cbaf99a84858e4c5e01996ca2a20624d05d99e1940188a749da948ce94ad1e",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "491556f62b60d83f69adbc649855644d52aea6e3cc4f70a7a7300acc30e16b9d"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "148f47e7970c28803586bf5c59987235b7b7bcb4ccb37884b681ba85c1220ee9"
+    },
+    {
+      "version": "go1.27.1",
+      "path": "go/pkg/tool/darwin_arm64/compile",
+      "officialArchiveSha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "5936b43cd2d699c8c4e750172b38abf360040457a18eebdc583701a3ec9ce5c0",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "dcfe7b467642453ce6cf4869e7a728763d6334a457a81933f8d01e881a7dc494"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "fff584bd6591823b3e83acfa060579a7f41d0415f5a69f2a79c1b964c6a18c47",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "9fdf2cb8a293d827ebd948088c3567bea375b8a3f54a75833a53388108da7774"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "da10adfefec48f7681707909e213b24c423f5f5aa7efebfcede7eabb1c3b4156",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "e749aee488a51bc486d75065a817fa4fa2e655e86f3d95149e20075a3f6d0373"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "5936b43cd2d699c8c4e750172b38abf360040457a18eebdc583701a3ec9ce5c0",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "dcfe7b467642453ce6cf4869e7a728763d6334a457a81933f8d01e881a7dc494"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "6fec0bdc453a16fda76120b83bec188a738a0e88356ae94fd41824eb77aaa1df"
+    },
+    {
+      "version": "go1.27.1",
+      "path": "go/pkg/tool/darwin_arm64/cover",
+      "officialArchiveSha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "c4f5cc0fbb1354c538df40b8a5e30e6ee281ff01fd807d60c38ee5bf2cba7d1a",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "ee9937bc10699ac71db0029df9bf1f4cd29b53e1c0800190d2a1abcf452d1e29"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "fd06df17c7365f7b2e824924f573589b49077f4a8e809579251796b82e7ead8d",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "ae4c9488fadc86b57e9c99c8fddef283431fbbc4fff3612dd1c86d500487120a"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "1a64b64b23b5b32b76dc56e612a960b2d2e497b8b80565e24d3430f8181407c5",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "950669226acf612b8b945788887ade8aadbcd0042ef894c8c3ee3278a6a5ae48"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "c4f5cc0fbb1354c538df40b8a5e30e6ee281ff01fd807d60c38ee5bf2cba7d1a",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "ee9937bc10699ac71db0029df9bf1f4cd29b53e1c0800190d2a1abcf452d1e29"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "05e46145a81ad74e94ae45832b6a2a4f9bffa52c8d22d1cb30773378374b1aae"
+    },
+    {
+      "version": "go1.27.1",
+      "path": "go/pkg/tool/darwin_arm64/fix",
+      "officialArchiveSha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "dcd1fbc09c140bc681b233e992f0f44bea6c21c020b5deb34959a0f2fdb631fa",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "0a85f83977b6f8b79d59256023f8f4f8c9458853ddf337b3577a3cd124ccb310"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "2061e984eee647c029b9e0beec2069521be81c7a8a4691078a20a67738409007",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "7425059cc2c9c59a9686578efa8b995b1c823cfdb119193504a4bcc42c44cada"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "24c90d7ea91036230a0c054f2dc40a2c54e42565f2c7c6c387fd601a5af5a713",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "bcb783a5a7d55290b8bfcc6106133d4240b97a44890af8adc36ef1726fd714aa"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "dcd1fbc09c140bc681b233e992f0f44bea6c21c020b5deb34959a0f2fdb631fa",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "0a85f83977b6f8b79d59256023f8f4f8c9458853ddf337b3577a3cd124ccb310"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "687d97ac10c0321037eb92f234210dbf307e1f7e9e4d7138bf31e7dcaba0c7d5"
+    },
+    {
+      "version": "go1.27.1",
+      "path": "go/pkg/tool/darwin_arm64/link",
+      "officialArchiveSha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "98189845a0fd2670c43f765e1b9d8ca953d01f1f0df11cdc3a6416cf3bd11b13",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "62d333ab59c50195a0c5887f0da0764b84003612262c7a5d1232634417c6d5c2"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "fb8297610680f2388106f306777e6eab6053b977b40f9e639081f93597d92a6f",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "95d68ad0c94af8f475afa6cc4b7b453ab67fd140f252149f2b030ffab208d523"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "d902c2e516560075d90000abad15f5ec89f633b5e451e3dc65a318481a62e8fd",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "c115ec48133a91bbf02321a0ac356dbc989bc68eaba668d0e4c3f22f8beede61"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "98189845a0fd2670c43f765e1b9d8ca953d01f1f0df11cdc3a6416cf3bd11b13",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "62d333ab59c50195a0c5887f0da0764b84003612262c7a5d1232634417c6d5c2"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "a3b2d2ccbb2ede55366cda16295f74cad8f67f68c6add4f903705097413ca13a"
+    },
+    {
+      "version": "go1.27.1",
+      "path": "go/pkg/tool/darwin_arm64/preprofile",
+      "officialArchiveSha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "c6c8f38f20dfb6a57d21e6b9626e765c9973e9727f37aacadc87859f1bacc060",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "c6129b0cba7bd3d3574e28972cf9a36a13f11abbf4e9b9896312b9248dff6a8f"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "a0db9696151b562257e712e5eeee5fc4d195ecc3f84d4c4911992593e1b16569",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "35da3033689d53032beef7d3903a5c44a3c807c31b0b61a924d8b2ed16a8cd69"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "8b1449341a454380816d6c2b7992235fcbb71c29da8a9bb79e8ea6d50399be36",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "3a27698910ef5ae0e35eeabaf6ed65e375f3cb12fa3f01d0414a309a5403a1b8"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "c6c8f38f20dfb6a57d21e6b9626e765c9973e9727f37aacadc87859f1bacc060",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "c6129b0cba7bd3d3574e28972cf9a36a13f11abbf4e9b9896312b9248dff6a8f"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "a38e0023e703a87379304f4fff97f83d1e0bd693d8a111e5075033e9fd067a34"
+    },
+    {
+      "version": "go1.27.1",
+      "path": "go/pkg/tool/darwin_arm64/vet",
+      "officialArchiveSha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+      "originalBytesMatchPinnedOfficialArchive": true,
+      "mutationOffset": 4096,
+      "mutationInFileBackedSection": "__text",
+      "controls": [
+        {
+          "control": "official",
+          "inputSha256": "7941b9dc0b714c3c263cf88b74ef10f291792beac65658cfa86b62239bba4ef8",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "877bc55b00ab552462ec3197c4c7ece47abbc68459867b1af68d5a06f2e3b160"
+        },
+        {
+          "control": "changed-text",
+          "inputSha256": "bdfaea154502b5680051d8770eecd166bf18c494165463302aafdd362dcf34a8",
+          "exitCode": 1,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "e50d4333d7502d68cd92973adc95fbf7cf207bc6e1f36d93be13af3b6776af18"
+        },
+        {
+          "control": "valid-rebuilt-adhoc-near-miss",
+          "inputSha256": "7f06c4354995bd5b5b20dcb7c77684bdf9d54591b4a50d86080548504d2c07b0",
+          "exitCode": 3,
+          "explicitRequirementSatisfied": false,
+          "logSha256": "9feea6e6d18470182b4667ae0d74e1524f8372f6b1ca813e0103462f76b339e4"
+        },
+        {
+          "control": "original-restoration",
+          "inputSha256": "7941b9dc0b714c3c263cf88b74ef10f291792beac65658cfa86b62239bba4ef8",
+          "exitCode": 0,
+          "explicitRequirementSatisfied": true,
+          "logSha256": "877bc55b00ab552462ec3197c4c7ece47abbc68459867b1af68d5a06f2e3b160"
+        }
+      ],
+      "originalBytesUnchanged": true,
+      "adhocNearMissInternalSignatureValidityVerified": true,
+      "adhocNearMissInternalSignatureVerificationLogSha256": "dc3c9b030fce89cbe7393b931f45eeabb77e3678bc4f024d6ffbf3cc44577941"
+    }
+  ],
+  "allSelectedOfficialSdkExecutableSignaturesVerified": true,
+  "allTextMutantsRejected": true,
+  "allAdhocNearMissesRejected": true,
+  "sdkCodeExecutedByObservation": false,
+  "wholeSignedArchiveReproducedExactly": false,
+  "fullCompilerSdkAndBootstrapProducerClosureVerified": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "observedAt": "2026-10-27",
+  "scope": "Original signature verification for the two independently reconstructed native Darwin SDKs. This verifies publisher-signed executable bytes as data, separately from normalized source-build equality and complete compiler/SDK/bootstrap provenance.",
+  "primarySignatureControls": 120,
+  "additionalValidAdhocInternalSignatureChecks": 30,
+  "sourceBuildEvidence": [
+    "provider-native-packager-sdk-rebuild.json",
+    "provider-bootstrap-sdk-rebuild.json"
+  ],
+  "originalSigningServiceBuildReproduced": false,
+  "completeOriginalNoticeClosureVerified": false
+}

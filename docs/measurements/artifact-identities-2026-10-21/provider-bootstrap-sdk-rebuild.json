@@ -7086,7 +7086,7 @@
   ],
   "remainingProducerObligations": [
     "Both source-build observations still descend from the original prebuilt Go 1.27.1 seed. The matching SDK results do not establish an independent deeper bootstrap root.",
-    "Published signing trust and the signing service are not reproduced or cryptographically attested by signature normalization.",
+    "Original executable signatures pass the separate Apple-anchor/team verification. Signature normalization does not reproduce the original signing service, and separate notarization/revocation policy assessment remains open.",
     "The SDK still copies generated arithmetic, assembly, native objects, archives and binary fixtures. Every actual producer and complete original notice chain remains required.",
     "The named original notices are byte-bound; complete inline/copyright and copied-payload notice closure remains open."
   ],
@@ -7095,5 +7095,7 @@
   "gateAComplete": false,
   "qualityAssessed": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "acquiredCopiedTimezoneSourceSignatureEvidence": "provider-timezone-source-signatures.json",
+  "originalSignatureVerificationFollowUpEvidence": "provider-native-sdk-signatures.json"
 }
