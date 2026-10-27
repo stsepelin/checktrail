@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Focused native cleanup and test-harness reliability repair on main. Local macOS 27 ARM64 / Node 26.9.0 is outside the selected final runtime slots.",
+  "sourceCommit": "9277b860f312401364b7a175372d7590e549f7fe",
+  "fullCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "elapsedSeconds": 1108.568388375,
+    "logSha256": "dc927347f2d10c0338d77c8df50ae3248440b96c99209909f5c99611b4d0d272",
+    "batches": {
+      "tests": [2047, 95],
+      "pass": [1288, 95],
+      "fail": [0, 0],
+      "cancelled": [0, 0],
+      "skipped": [759, 0],
+      "todo": [0, 0]
+    },
+    "totals": {
+      "tests": 2142,
+      "pass": 1383,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 759,
+      "todo": 0
+    },
+    "nativeExclusiveWave": {
+      "callbacks": 95,
+      "pass": 95,
+      "fail": 0,
+      "skipped": 0
+    }
+  },
+  "posixSourceAndFreshOfflineInstall": {
+    "profiles": [
+      {
+        "profile": "posix-cleanup",
+        "required": 22
+      },
+      {
+        "profile": "posix-owner",
+        "required": 18
+      }
+    ],
+    "source": {
+      "required": 40,
+      "passed": 40,
+      "complete": true,
+      "receiptSha256": "36b79d64f11146714a1aa9e6da4c7bbe3ceec74ce3d6402e92a4bb818014f091"
+    },
+    "installed": {
+      "required": 40,
+      "passed": 40,
+      "complete": true,
+      "receiptSha256": "5b5fe6147f75379facc64a5ffe91dbba18e3a49240dc614f27e9096b8ef66116",
+      "tarballSha256": "7eceb47d5763638ba35b4f765c43832149bf120e13d9b71537a0502950e00e80",
+      "harnessSha256": "63a0172a52ed4289789c1d8ab566bbadd92febbf6b6912f9a75cf2a69de20cab",
+      "productionDependencyLockSha256": "cb14081d8ec28c654cb30a7fde4f8124b1fa71d2bf0f8f08284d20ca94422d00",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "installedRuntimeEvaluated": true,
+      "installedCliEvaluated": false,
+      "installedMcpEvaluated": false
+    },
+    "compiledEngine": {
+      "schemaVersion": 1,
+      "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+      "fileCount": 972,
+      "bytes": 16179282,
+      "treeSha256": "12fe869aa42ab8efe4eaa05f992eb6debdb8f9d069621ae16fc022bc86c07db1",
+      "manifestSha256": "16244f8dd7c76596da1a0ab71824387711425b9e038c0ac71780db5afa40c76f",
+      "limits": {
+        "files": 4096,
+        "entries": 8192,
+        "depth": 24,
+        "fileBytes": 8388608,
+        "totalBytes": 134217728
+      },
+      "afterTreeSha256": "12fe869aa42ab8efe4eaa05f992eb6debdb8f9d069621ae16fc022bc86c07db1",
+      "afterManifestSha256": "16244f8dd7c76596da1a0ab71824387711425b9e038c0ac71780db5afa40c76f",
+      "beforeAfterByteIdentitiesMatch": true,
+      "dependencyBytesCaptured": false,
+      "actualModuleLoadsTraced": false,
+      "producerSourceBuildVerified": false
+    }
+  },
+  "cleanupGuardControls": {
+    "sourceCommit": "9277b860f312401364b7a175372d7590e549f7fe",
+    "compiledTargetSha256": "7250503b1b0c49ad5309e30f9eb38c673f514e96a43089f7403ca48c93b139b9",
+    "mutations": [
+      {
+        "guard": "native-timeout-cause",
+        "exitCode": 1,
+        "expectedFailureObserved": true,
+        "elapsedSeconds": 1.442618583,
+        "mutantSha256": "c3b6677be279502ea0c4001d5460fc73e8f52d25e163fec377d4f5d10e5433cb",
+        "logSha256": "8a46a8ec01574a832d61111b63b9ab5f1b1abeafb0c2194bddce641ffa7ef7dc"
+      },
+      {
+        "guard": "remaining-native-query-budget",
+        "exitCode": 1,
+        "expectedFailureObserved": true,
+        "elapsedSeconds": 1.4768347499999999,
+        "mutantSha256": "7b0e99a0965c4f6f9840a498d5cb7d2e4166560503c8d6121564b063fc55b560",
+        "logSha256": "a3722e84518b3aa1b93e36513c0807f53a41f3bf30d08288d64f7a5283d1b1cb"
+      },
+      {
+        "guard": "late-complete-observation",
+        "exitCode": 1,
+        "expectedFailureObserved": true,
+        "elapsedSeconds": 0.13291566600000015,
+        "mutantSha256": "0f57a8cb69331b46ae938744b3819c4744b1aa73064054f9b228398fc202c1f8",
+        "logSha256": "2fe45c9e6de52d74a0f670449024ba9b3ac0e34baa575a7e4f3b8cf58d7fadbc"
+      }
+    ],
+    "compiledBytesRestored": true,
+    "restoredTests": 6,
+    "restoredPass": 6,
+    "restoredFail": 0,
+    "restoredLogSha256": "a302f1209f54b842052f8961f25144ecf7edd276a83694eb4ddee69c9a5c64cc",
+    "inferenceInvoked": false
+  },
+  "changes": {
+    "successfulCleanupDeadlineMs": 2000,
+    "maximumSnapshotMs": 1000,
+    "transientNativeTimeoutRetryLimit": 1,
+    "separateFailureRecoverySnapshotLimit": 1,
+    "separateFailureRecoveryMaximumMs": 1000,
+    "failedCleanupCannotEarnPass": true,
+    "engineExecutionBudgetsChanged": false,
+    "fullSuiteSharedFileWorkers": 4,
+    "additionalNativeFilesRunExclusively": [
+      "gate-go-extensions.test.js",
+      "go-matrix.test.js",
+      "process-tree.test.js",
+      "review-json-probe.test.js",
+      "review-probe.test.js"
+    ],
+    "upgradeNodeObserverMs": 60000,
+    "upgradeEngineExecutionMs": 30000,
+    "upgradeNpmTimeoutChanged": false
+  },
+  "windowsDiagnosticHistory": {
+    "originalFullProfileFailedRun": "https://github.com/stsepelin/checktrail/actions/runs/40493335008",
+    "laterTargetedRun": "https://github.com/stsepelin/checktrail/actions/runs/40498608649",
+    "laterTargetedRequiredCallbacks": [1, 1],
+    "laterTargetedPassedCallbacks": [1, 1],
+    "targetedRunIncludesCurrentCleanupRepair": false,
+    "fullProfileFailureReproducedByTargetedRun": false,
+    "originalInnerOperationEstablished": false,
+    "currentWindowsFullProfileQualified": false
+  },
+  "limitations": [
+    "Explicit skips are not passed checks and do not qualify unavailable native prerequisites.",
+    "The cleanup native mutation control executed the Darwin host-query path locally; Linux execution of that path remains for native CI.",
+    "Compiled source and installed-package byte identity does not attest dependencies, loaded modules, compiler provenance or full producer-build closure.",
+    "The full run records terminal test events; it does not trace every production module load.",
+    "Historical diagnostic Windows observations bind earlier product bytes and do not qualify this repair or the final runtime matrix."
+  ],
+  "selectedRuntimeMatrixQualified": false,
+  "completeNativeArtifactClosure": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

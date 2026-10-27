@@ -35,7 +35,14 @@ existing Linux ARM64 native-tool runtime and Windows direct-executable runtime.
 The current hosted `checks` job exercises four Linux/macOS slots. The additional
 macOS slots and exact OS-image/tool identities still require native acceptance.
 A repository license label and a selected grammar commit do not replace the
-required source/archive/notice inspection. Context collection must remain
+required source/archive/notice inspection.
+
+Gate A retains full upstream producer-build closure for the selected artifacts,
+including compiler, SDK and bootstrap build inputs and complete original notices.
+Verified pinned releases, payload reconstruction and source attribution contribute
+to that evidence. Unreproduced producer builds and unknown inputs remain open
+Gate A work; they are not deferred to a later gate.
+Context collection must remain
 non-evaluating; dynamic dispatch, unsupported syntax and exhausted capture retain
 conservative impact fallback.
 
