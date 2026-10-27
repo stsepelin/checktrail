@@ -25,6 +25,7 @@ import {
 import {
   lifecycleHarnessFiles,
   lifecycleFoundationSelection,
+  lifecycleFailureDiagnostic,
 } from "./lifecycle-runtime-evidence.mjs";
 import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 assert.ok(process.argv.length === 2 || process.argv.length === 3);
@@ -114,7 +115,7 @@ try {
   );
   assert.equal(result.error, undefined);
   assert.equal(result.signal, null);
-  assert.equal(result.status, 0, (result.stdout + result.stderr).slice(-6000));
+  assert.equal(result.status, 0, lifecycleFailureDiagnostic(result));
   const evidence = JSON.parse(result.stdout);
   assert.equal(evidence.complete, true);
   const definitions = JSON.parse(
