@@ -500,8 +500,8 @@
     },
     {
       "file": "scala-component-inventory.json",
-      "bytes": 334133,
-      "sha256": "48200a17d5c600f696b738f365abeb2e2be3e03df85e9a66831d03d2bb9e2ef3"
+      "bytes": 332925,
+      "sha256": "74ac7ee0672b5e6bb8f742e88ea8ef5921cf407d81838b9892691e1a81c348a2"
     },
     {
       "file": "scala-component-notices/169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988.txt",
@@ -601,7 +601,7 @@
     {
       "file": "scala2.json",
       "bytes": 9712,
-      "sha256": "39381944c1d1e0a4d5122c47fa057356859df5e1bfcfc9c226926145b207cdee"
+      "sha256": "506a95730ae94eb13205e7e163e63ac7680d4aab4f795d103fd4854f38f1aedd"
     },
     {
       "file": "sigstore-trusted-root.jsonl",
