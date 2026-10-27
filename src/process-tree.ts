@@ -87,11 +87,40 @@ export function linuxProcessIdentity(
         : "running",
   };
 }
-export async function processSnapshot(): Promise<ProcessIdentity[]> {
+export async function processSnapshot(
+  pid?: number | readonly number[],
+): Promise<ProcessIdentity[]> {
+  let selected: readonly number[] | undefined;
+  if (pid !== undefined) {
+    if (typeof pid === "number") selected = [pid];
+    else if (Array.isArray(pid)) selected = pid.slice();
+    else throw Error("Process snapshot selection invalid");
+    if (
+      selected.length === 0 ||
+      selected.length > 65536 ||
+      new Set(selected).size !== selected.length ||
+      selected.some(
+        (value) =>
+          !Number.isSafeInteger(value) || value < 1 || value > 999999999,
+      )
+    )
+      throw Error("Process snapshot selection invalid");
+    // Keep ps arguments finite without enumerating unrelated identities. Only
+    // frozen, already-discovered families use this selected observation path.
+    if (selected.length > 128) {
+      const rows: ProcessIdentity[] = [];
+      for (let offset = 0; offset < selected.length; offset += 128)
+        rows.push(
+          ...(await processSnapshot(selected.slice(offset, offset + 128))),
+        );
+      return rows;
+    }
+  }
   if (process.platform === "linux") {
-    const ids = (await readdir("/proc")).filter((p) =>
-      /^[1-9][0-9]{0,8}$/.test(p),
-    );
+    const ids =
+      selected === undefined
+        ? (await readdir("/proc")).filter((p) => /^[1-9][0-9]{0,8}$/.test(p))
+        : selected.map(String);
     if (ids.length > 65536) throw Error("Process snapshot exceeds bound");
     const rows: ProcessIdentity[] = [];
     // Batch reads; processes can exit during collection. No command lines or environments are read.
@@ -122,7 +151,9 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
     throw Error("Process snapshot platform unsupported");
   const result = spawnSync(
     "/bin/ps",
-    ["-axo", "pid=,ppid=,pgid=,stat=,lstart="],
+    selected === undefined
+      ? ["-axo", "pid=,ppid=,pgid=,stat=,lstart="]
+      : ["-p", selected.join(","), "-o", "pid=,ppid=,pgid=,stat=,lstart="],
     {
       encoding: "utf8",
       maxBuffer: 2 * 1024 * 1024,
@@ -131,15 +162,32 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
     },
   );
   if (
+    selected !== undefined &&
+    result.status === 1 &&
+    !result.error &&
+    !result.signal &&
+    !result.stdout.trim() &&
+    !result.stderr.trim()
+  )
+    return [];
+  if (
     result.status !== 0 ||
     result.error ||
     result.signal ||
     result.stderr.trim()
   )
     throw Error("Process snapshot unavailable");
-  return darwinProcessIdentities(result.stdout).filter(
+  const rows = darwinProcessIdentities(result.stdout).filter(
     (row) => row.pid !== result.pid,
   );
+  if (
+    selected !== undefined &&
+    (new Set(rows.map((row) => row.pid)).size !== rows.length ||
+      rows.some((row) => !selected.includes(row.pid)) ||
+      (typeof pid === "number" && (rows.length !== 1 || rows[0]!.pid !== pid)))
+  )
+    throw Error("Process snapshot selection invalid");
+  return rows;
 }
 /** Unknown Darwin status is never evidence of quiescence. */
 export function darwinProcessIdentities(text: string): ProcessIdentity[] {
@@ -169,7 +217,7 @@ export function darwinProcessIdentities(text: string): ProcessIdentity[] {
   return rows;
 }
 interface StopDescendantIo {
-  snapshot(): Promise<ProcessIdentity[]>;
+  snapshot(pids?: readonly number[]): Promise<ProcessIdentity[]>;
   stop(pid: number): void;
   kill(pid: number): void;
   exists(pid: number): boolean;
@@ -230,7 +278,13 @@ export async function stopDescendants(
       return false;
     }
     if (identity.identity !== child.identity) return false;
-    if (identity.group !== child.group)
+    // Linux can clear parent/group during final task teardown. The held start
+    // identity still binds this exited task; final physical reaping is required.
+    const exitedWithoutGroup =
+      identity.state === "exited" &&
+      identity.parent === 0 &&
+      identity.group === -1;
+    if (identity.group !== child.group && !exitedWithoutGroup)
       throw Error("Process cleanup identity changed group");
     return true;
   };
@@ -288,7 +342,11 @@ export async function stopDescendants(
       const children = [...observed.values()].filter(
         (entry) => entry.depth === depth,
       );
-      const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+      const current = new Map(
+        (await io.snapshot(children.map((entry) => entry.process.pid))).map(
+          (p) => [p.pid, p],
+        ),
+      );
       for (const entry of children) {
         checkDeadline();
         if (!sameProcess(entry.process, current)) continue;
@@ -299,9 +357,19 @@ export async function stopDescendants(
       // A stopped parent cannot reap a zombie. Confirm physical exit (or complete
       // disappearance) before signalling the next parent, then require final reaping.
       for (;;) {
-        const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+        // ESRCH already proves physical disappearance. Only remaining PIDs need
+        // a fresh identity/state snapshot; a surviving or reused PID still does.
+        const remaining = children.filter((entry) =>
+          io.exists(entry.process.pid),
+        );
+        if (!remaining.length) break;
+        const current = new Map(
+          (await io.snapshot(remaining.map((entry) => entry.process.pid))).map(
+            (p) => [p.pid, p],
+          ),
+        );
         if (
-          !children.some(
+          !remaining.some(
             (entry) =>
               sameProcess(entry.process, current) &&
               current.get(entry.process.pid)!.state !== "exited",
@@ -314,12 +382,16 @@ export async function stopDescendants(
     }
     finishRoot();
     for (;;) {
-      const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
-      if (
-        ![...observed.values()].some((child) =>
-          sameProcess(child.process, current),
-        )
-      )
+      const remaining = [...observed.values()].filter((child) =>
+        io.exists(child.process.pid),
+      );
+      if (!remaining.length) break;
+      const current = new Map(
+        (await io.snapshot(remaining.map((entry) => entry.process.pid))).map(
+          (p) => [p.pid, p],
+        ),
+      );
+      if (!remaining.some((child) => sameProcess(child.process, current)))
         break;
       checkDeadline();
       await io.wait(Math.min(25, deadline - io.now()));

@@ -1055,3 +1055,12 @@ The [synthetic native workload/resource harness](NATIVE-RESOURCE-ACCOUNTING.md#s
 The [evaluation cohort declaration checker](EVALUATION-COHORT-DECLARATIONS.md) validates bounded declared lineage/content grouping, optional repository/family holdouts, retained exclusions, eligibility metadata and exposure declarations through the shared library and a repository setup script. These original synthetic development controls do not inspect source or labels, verify license grants or sessions, freeze the private reference/workflow, execute inference, or close the independent evaluation profile or Gate A.
 
 The selected multi-candidate workflow profile has [dated source and fresh offline installed receipts](measurements/multi-candidate-runtime-matrix-2026-10-23.json) for every selected runtime slot at the recorded commit. Its implementation state is `implemented` and acceptance state is `receipts-declared`. These historical observations do not qualify later candidate bytes, independent model sessions, finding truth or review quality. The unchanged finite inventory remains unfrozen, and Gate A stays open.
+
+The original resource/release acceptance cohort now has complete required-name
+collection, a source/fresh offline package harness, real native workloads and
+locked previous-package upgrade/rollback controls. Its native runtime matrix and
+artifact/license closure remain separate acceptance requirements. Inventory
+implementation declarations also reconcile the already shipped multi-candidate
+workflow, lifecycle and Tasks cohorts. Those declarations and retained development
+receipts do not certify current native matrix acceptance or close Gate A. See
+[NATIVE-RESOURCE-ACCOUNTING.md](NATIVE-RESOURCE-ACCOUNTING.md#resource-and-release-readiness-cohort).

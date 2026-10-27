@@ -159,3 +159,170 @@ process failure flags and valid zero and numeric-boundary cases. Compiler/SDK/st
 and publisher closures, Windows, final schema/package/privacy/upgrade readiness
 and the whole resource-release-readiness profile remain pending. Gate A stays open;
 no inference, field evaluation, tag or publication was performed.
+
+## Experimental Windows process and job counters
+
+The Windows supervisor can attach `resources` to its execution receipt after
+confirming that its owned job has no active processes. `GetProcessTimes` supplies
+the direct target's user and kernel CPU; `QueryInformationJobObject` supplies
+separate job totals, including terminated members. These retain native 100 ns
+ticks without rounding. `GetProcessMemoryInfo` supplies the direct target's peak
+working set in bytes. That memory value excludes a sum of descendant peaks and
+must not be described as job commit, total process-tree RSS or a validation-only
+memory delta. The launcher and supervisor are outside the target job counters.
+
+An API refusal or unsafe counter produces an explicit unavailable resource
+record with its stage and observed native error. A zero last-error value stays zero; an engine counter-bound refusal has no native API error and records `null`. It supplies no invented successful zero
+measurement and does not change the target's execution result. Required resource
+measurement must reject unavailable counters. A nonzero target exit remains a
+nonzero exit even if its resource counters were collected.
+
+The fixed C# source now travels through a bounded, exclusively created file in
+the runner's owned temporary namespace. The supervisor reads at most the expected
+source byte count plus one, checks its embedded SHA-256, and compiles those exact
+bytes before the project target resumes. This keeps the fixed encoded launcher
+within the existing command-length allowance. Project arguments remain JSON data.
+The existing namespace lifecycle removes the source along with other owned files. The namespace receives the existing native caller-only ACL before any data write, including when its selected temp parent has a broader read ACL. An access failure refuses before data or process launch. Portable ordering/refusal controls and the native broad-parent access-guard
+removal have [recorded source and offline installed acceptance](measurements/windows-resource-foundation-2026-10-26.json)
+on Windows with Node 22.23.3. The same observation records the native counter,
+fixed-source integrity and retained ownership controls with removed/restored guards.
+It is dated foundation evidence, not current package, representative workload,
+whole-profile or final runtime-matrix qualification.
+These controls are execution ownership and integrity checks; executed project code
+is not sandboxed.
+
+Portable contracts cover counter precision, numeric boundaries, incomplete
+records and unavailable API stages. Native Windows witnesses compare target and
+job CPU after two reaped children, compare direct peak working set with the
+target's own observation, and preserve a deliberately failed target exit.
+The scoped native qualification is recorded below. The whole resource-release-readiness
+profile, final current-source matrix, artifact closure and release acceptance
+remain pending; no resource performance budget is established by these controls.
+
+API contracts: [process CPU](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes),
+[job CPU](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information),
+and [working-set counters](https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters).
+
+The direct-process and job CPU fields are independent native API observations.
+[A bounded synthetic probe](measurements/windows-counter-api-observations-2026-10-26.json)
+reproduced smaller job CPU than direct-process CPU even
+with an empty job; closing both owned process/thread handles left those same job
+values unchanged. The mechanism remains unresolved. Collection therefore checks
+each field's nonnegative safe-integer bounds without inventing a cross-API
+conservation rule, rounding tolerance or corrected value. API failures and an
+active job still cannot produce collected counters.
+
+The current native fixture retains two separately reaped workload children and
+adds two invocations of an independently compiled read-only observer of the
+immediate job. It
+accounts for all five process identities and proves the earlier/later job
+observations refer to that exact job through its member counts. Final CPU is
+compared with the earlier observation from the same API; direct process CPU is
+still compared with the target's own native CPU observations. Separate compiling
+mutations substitute direct user or kernel CPU for its job field, so those
+assertions must detect a lost descendant scope. [The dated native qualification](measurements/windows-resource-workloads-2026-10-26.json)
+records every required source and fresh offline package callback, separate job-user
+and job-kernel substitution controls, and the preserved direct-memory, CPU-field,
+fixed-source and private-namespace guards. Its exact component bindings remain
+separate from subsequent source changes and final current-source qualification.
+
+## Prepared Windows workload measurement
+
+The operator-only `measureWindowsResourceSample` export in
+`scripts/measure-windows-resources.mjs` measures the original small, large and
+polyglot fixtures through the actual engine in a fresh Windows worker. The
+polyglot fixture requires the actual Go 1.27.1 executable and retains its version
+and executable digest before and after execution. The operator worker receives a path containing only the verified Go and Node
+executable directories; the host path remains unchanged. A deliberate second
+`go.exe` still triggers the ordinary ambiguous-executable guard, while the
+measurement worker uses its explicitly selected tool path. Fixture construction and
+inventory capture precede validation counters. A private per-sample Go cache is
+outside archive-byte accounting.
+
+Separate self CPU readings use microseconds; native direct-process and job CPU
+retain their original 100 ns units. Distinct validation jobs are summed only for
+CPU. Direct target working-set peaks use the maximum observed lifetime peak and
+never a sum of process-tree RSS. Tool-version invocations remain in physical
+output and job accounting; an identical receipt alias is counted once, while
+contradictory reuse is refused. The outer job binds the actual worker PID and
+covers startup, validation and later storage.
+
+Every original check must pass with complete native execution and physical
+stdout/stderr. Broken or stale validation is refused before publishing task
+storage. The worker reconstructs large archived reports byte for byte, checks
+chunk and report digests, and measures physical SQLite files after closing the
+store. Logical report/archive bytes and physical store bytes remain distinct.
+Only counters, relative store names, counts and hashes are returned; raw reports
+and local fixture paths remain private.
+
+Portable controls cover CPU boundaries, unavailable native receipts, contradictory
+job identities and malformed physical streams. These newly prepared workload
+controls have the scoped native Windows source and fresh-package acceptance
+recorded above. They
+do not establish representative project performance, a regression budget, final
+runtime-matrix qualification or the whole resource-release-readiness profile.
+
+## Resource and release readiness cohort
+
+The original `resource-release-readiness` cohort is implemented in
+`test/gate-resource-release-readiness.test.ts`. Its required names retain the
+frozen broken/fixed/near-miss/prerequisite/stale/empty/privacy/lifecycle/installed
+assertions. `scripts/verify-resource-release-readiness.mjs` reconciles those names
+with the selected inventory, then requires complete source and fresh offline
+production-package ledgers. The external harness, compiled engine and selected
+older-package dependencies are captured before and after their runs. These
+identities describe configured artifacts; they do not authenticate every loaded
+module or complete producer/build provenance.
+
+The fixed workload cases collect real small, large and JavaScript/Go validation,
+separate native counter scopes, complete physical streams and exact report/chunk
+reconstruction with physical SQLite storage. Broken native assertions, changed
+source and all-skipped tests are refused before task storage is published. The
+lifecycle controls observe a real three-process family before cancellation,
+timeout or output exhaustion and require every observed PID to disappear.
+Library, CLI and MCP controls preserve execution trust and summary/source grants.
+
+Upgrade and rollback use the pinned previous public Checktrail package recorded
+in `scripts/release-readiness-tools/baseline.json`. This is a package-compatibility
+baseline. The later independent AI review comparison retains its separate
+operator-selected baseline and finish-first restriction. Each package phase
+starts fresh CLI/library/MCP processes, uses its exact production dependency lock
+with offline installation and disabled lifecycle scripts, preserves project
+configuration and imports the actual older report identity into SARIF. The older
+Windows release's explicit unsupported backend remains unavailable; the candidate
+must execute its native test bodies. Acquisition and preparation are explicit
+operator commands; imports, discovery and planning install nothing.
+
+Preparation checks the older archive, original manifest/license bytes, lock and
+actual prepared dependency snapshot. A held startup snapshot rejects a coherently
+rewritten receipt. Missing, changed and linked public cache artifacts are refused
+before any cache output is published. Only the exact locked registry tarballs
+enter the native ARM64 container; registry metadata and historical local package
+archives are excluded from that cache. This container restriction is distinct
+from a general security isolation claim.
+
+The full Node suite and required full-suite collector share the same finite
+exclusive-file selection for the JavaScript extension, Tasks and resource cohorts.
+Ordinary files retain their existing worker limit; each exclusive file has one
+worker. Both waves run after ordinary assertion failures, and their terminal
+counts must be combined. No callback, assertion or production cleanup deadline
+is omitted by this scheduling.
+
+The [development measurement](measurements/resource-release-readiness-2026-10-27.json)
+retains the complete source/fresh installed ledgers, paired guard controls and
+full development-check totals for the recorded code commit. Its macOS 27 run is
+unselected. The measured package predates the record itself; its hash does not
+identify a later archive containing this additional documentation.
+
+The `resource-release` CI matrix selects the frozen Linux/macOS Node slots and
+Windows slot. `resource-release-arm64` uses the pinned native Node container and
+an explicitly selected Go tree. Its C helpers are prepared separately using the
+existing pinned Alpine compiler archives, with APK signature verification and an
+offline compiler-image build. Acceptance retains the original Node runtime image
+without installing a compiler there. The external harness verifies the helper
+source, binary, platform, architecture, Node executable and selected Node header
+identities before publishing a complete private copy into each fixture. Compiler
+SDK and complete artifact/license closure remain unverified. Each collector
+observes its actual runtime and rejects a mismatched selected slot. An unselected development run qualifies no
+matrix slot. Final matrix and artifact/license closure remain open; these
+synthetic controls invoke no model or field evaluation and publish no package.

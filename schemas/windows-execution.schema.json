@@ -49,6 +49,116 @@
         { "type": "null" }
       ]
     },
+    "resources": {
+      "anyOf": [
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "profile": {
+                  "type": "string",
+                  "const": "windows-job-resources-v1"
+                },
+                "state": { "type": "string", "const": "collected" },
+                "cpuUnit": { "type": "string", "const": "100ns" },
+                "processCpu": {
+                  "type": "object",
+                  "properties": {
+                    "user100ns": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "kernel100ns": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": ["user100ns", "kernel100ns"],
+                  "additionalProperties": false
+                },
+                "jobCpu": {
+                  "type": "object",
+                  "properties": {
+                    "user100ns": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "kernel100ns": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": ["user100ns", "kernel100ns"],
+                  "additionalProperties": false
+                },
+                "totalJobProcesses": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4294967295
+                },
+                "peakWorkingSetBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "memoryScope": {
+                  "type": "string",
+                  "const": "direct-target-lifetime-peak"
+                },
+                "collectedAfterJobEmpty": { "type": "boolean", "const": true },
+                "summedProcessTreeRss": { "type": "boolean", "const": false }
+              },
+              "required": [
+                "profile",
+                "state",
+                "cpuUnit",
+                "processCpu",
+                "jobCpu",
+                "totalJobProcesses",
+                "peakWorkingSetBytes",
+                "memoryScope",
+                "collectedAfterJobEmpty",
+                "summedProcessTreeRss"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "profile": {
+                  "type": "string",
+                  "const": "windows-job-resources-v1"
+                },
+                "state": { "type": "string", "const": "unavailable" },
+                "stage": {
+                  "type": "string",
+                  "enum": [
+                    "process-times",
+                    "process-memory",
+                    "job-accounting",
+                    "counter-bounds"
+                  ]
+                },
+                "nativeError": {
+                  "anyOf": [
+                    { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["profile", "state", "stage", "nativeError"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        { "type": "null" }
+      ]
+    },
     "launcherPid": { "type": "integer", "minimum": 1, "maximum": 4294967295 },
     "launcherSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "supervisorSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
