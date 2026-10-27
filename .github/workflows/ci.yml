@@ -28,6 +28,8 @@ jobs:
         run: node scripts/prepare-release-readiness-tools.mjs
       - name: Retain observer regression and failure controls
         run: node --test dist/test/upgrade-observation.test.js > upgrade-observer-tests.txt 2>&1
+      - name: Retain physical file admission controls
+        run: node --test dist/test/test-suite-scheduling.test.js > test-admission-controls.txt 2>&1
       - name: Require original source and fresh offline resource readiness
         run: node scripts/verify-resource-release-readiness.mjs windows-node22 > resource-receipt.json
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -36,6 +38,7 @@ jobs:
           name: upgrade-observer-windows-node22
           path: |
             upgrade-observer-tests.txt
+            test-admission-controls.txt
             resource-receipt.json
           retention-days: 30
           if-no-files-found: error
