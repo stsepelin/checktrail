@@ -19,6 +19,7 @@ const exclusiveFullSuiteFiles = Object.freeze([
   "gate-go-extensions.test.js",
   "go-matrix.test.js",
   "process-tree.test.js",
+  "clang.test.js",
   "review-json-probe.test.js",
   "review-probe.test.js",
 ]);

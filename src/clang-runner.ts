@@ -13,7 +13,9 @@ async function invoke(executable: string, args: string[], cwd: string) {
     maxBuffer: 1024 * 1024,
   });
   if (result.error || result.signal || result.status === null)
-    throw new Error("Clang did not complete within native evidence limits");
+    throw new Error("Clang did not complete within native evidence limits", {
+      cause: result.error,
+    });
   return result;
 }
 
@@ -32,7 +34,13 @@ async function main() {
         ["--no-default-config", "--version"],
         projectRoot,
       );
-    } catch {
+    } catch (error) {
+      if (
+        !(error instanceof Error) ||
+        !(error.cause instanceof Error) ||
+        (error.cause as NodeJS.ErrnoException).code !== "ENOENT"
+      )
+        throw error;
       process.stdout.write(
         JSON.stringify({
           unavailable: "clang-toolchain",

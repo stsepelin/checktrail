@@ -423,6 +423,10 @@
     {
       "file": "dist/test/clang.test.js",
       "name": "native Clang checks every database configuration and distinguishes warnings, missing tools and compiler failures"
+    },
+    {
+      "file": "dist/test/clang.test.js",
+      "name": "Clang version probes separate missing executables and exact-limit unsupported output from reached native output exhaustion"
     }
   ],
   "java": [
