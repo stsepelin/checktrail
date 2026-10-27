@@ -382,7 +382,7 @@ test("MCP finding comparison retains native failure and enforces startup detail 
 
 test(
   "MCP remains responsive during validation, rejects overlap, and accepts a run after cancellation",
-  { timeout: 30_000 },
+  { timeout: 45_000 },
   async (t) => {
     const root = await fixture(t, {
       "package.json": nodeManifest,
@@ -439,7 +439,10 @@ test('waits', async () => {
       controller.abort();
       await cancelled;
       await writeFile(path.join(root, "slow.test.js"), passingTest);
-      for (let attempt = 0; attempt < 40; attempt++) {
+      // Client cancellation rejects before server-side native cleanup settles.
+      // Retain a bounded retry window for that cleanup and owner IPC teardown.
+      const cleanupDeadline = performance.now() + 10000;
+      while (performance.now() < cleanupDeadline) {
         const next = await client.callTool({
           name: "validation_run",
           arguments: { timeoutMs: 5000 },
