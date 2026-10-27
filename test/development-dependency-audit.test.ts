@@ -1064,32 +1064,39 @@ test("audit libc observation restores report privacy settings after success or f
     },
   ])
     assert.equal(auditLibcFromReport(value, "x64"), null);
-  for (const fail of [false, true]) {
-    const reporter = {
-      excludeNetwork: false,
-      excludeEnv: false,
-      getReport() {
-        assert.equal(this.excludeNetwork, true);
-        assert.equal(this.excludeEnv, true);
-        if (fail) throw new Error("original synthetic report failure");
-        return { header: { glibcVersionRuntime: "2.39" } };
-      },
-    };
-    assert.equal(
-      observeAuditLibc("linux", "x64", reporter),
-      fail ? null : "glibc",
-    );
-    assert.equal(reporter.excludeNetwork, false);
-    assert.equal(reporter.excludeEnv, false);
-    assert.equal(
-      observeAuditLibc("darwin", "arm64", {
-        getReport() {
-          throw new Error("must not inspect non-Linux report");
-        },
-      }),
-      null,
-    );
-  }
+  for (const network of [false, true])
+    for (const environment of [false, true])
+      for (const fail of [false, true]) {
+        const reporter = {
+          excludeNetwork: network,
+          excludeEnv: environment,
+          getReport() {
+            assert.equal(this.excludeNetwork, true);
+            assert.equal(this.excludeEnv, true);
+            if (fail) throw new Error("original synthetic report failure");
+            return { header: { glibcVersionRuntime: "2.39" } };
+          },
+        };
+        assert.equal(
+          observeAuditLibc("linux", "x64", reporter),
+          fail ? null : "glibc",
+        );
+        assert.equal(reporter.excludeNetwork, network);
+        assert.equal(reporter.excludeEnv, environment);
+      }
+  let nonLinuxCalls = 0;
+  const reporter = {
+    excludeNetwork: false,
+    excludeEnv: false,
+    getReport() {
+      nonLinuxCalls++;
+      return { header: { glibcVersionRuntime: "2.39" } };
+    },
+  };
+  assert.equal(observeAuditLibc("darwin", "arm64", reporter), null);
+  assert.equal(nonLinuxCalls, 0);
+  assert.equal(reporter.excludeNetwork, false);
+  assert.equal(reporter.excludeEnv, false);
 });
 
 test("development audit rejects malformed libc selectors before returning any successful report", async (t) => {

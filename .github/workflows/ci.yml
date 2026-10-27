@@ -102,14 +102,14 @@ jobs:
           docker pull "$CHECKTRAIL_NPM_CONTAINER_REFERENCE"
           CHECKTRAIL_NPM_CONTAINER_IMAGE_ID=$(docker image inspect --format '{{.Id}}' "$CHECKTRAIL_NPM_CONTAINER_REFERENCE")
           export CHECKTRAIL_NPM_CONTAINER_IMAGE_ID
-          docker run --rm --cpus 2 --memory 2g \
+          docker run --rm --cpus 2 --memory 4g \
             --mount "type=bind,src=$PWD,target=/app" --workdir /app \
             -e GITHUB_SHA -e ImageOS -e ImageVersion \
             -e CHECKTRAIL_NPM_SLOT -e CHECKTRAIL_NPM_EXPECTED_NODE \
             -e CHECKTRAIL_NPM_EXPECTED_PLATFORM -e CHECKTRAIL_NPM_EXPECTED_ARCH \
             -e CHECKTRAIL_NPM_CONTAINER_REFERENCE -e CHECKTRAIL_NPM_CONTAINER_IMAGE_ID \
             "$CHECKTRAIL_NPM_CONTAINER_REFERENCE" sh -c \
-            'node scripts/diagnostic-npm-runtime.mjs && npm ci --ignore-scripts --no-audit --no-fund && npm run build && node --test --test-name-pattern="dependency audit reconciles installed metadata|Linux development audit excludes libc-specific|audit libc observation|development audit rejects malformed libc" dist/test/dependency-audit.test.js dist/test/development-dependency-audit.test.js && node scripts/audit-dependencies.mjs --include-dev > npm-notice-audit.json'
+            'node scripts/diagnostic-npm-runtime.mjs && npm ci --ignore-scripts --no-audit --no-fund && node --max-old-space-size=2048 node_modules/typescript/bin/tsc && node --test --test-name-pattern="dependency audit reconciles installed metadata|Linux development audit excludes libc-specific|audit libc observation|development audit rejects malformed libc" dist/test/dependency-audit.test.js dist/test/development-dependency-audit.test.js && node scripts/audit-dependencies.mjs --include-dev > npm-notice-audit.json'
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
