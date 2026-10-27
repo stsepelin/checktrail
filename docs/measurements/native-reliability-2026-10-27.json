@@ -163,5 +163,113 @@
   "gateAComplete": false,
   "qualityAssessed": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "consolidatedFollowUp": {
+    "observedAt": "2026-10-27",
+    "sourceCommit": "e4f82a1c7a320b5fd149ca6c6e3e0d710072bfec",
+    "fullCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "elapsedSeconds": 1084.080002166,
+      "logSha256": "5058bcfb7f76cfaa6ca2c9c170f0edfaf71fcd4977c5295008a4edee81a4f879",
+      "batches": {
+        "tests": [2041, 102],
+        "pass": [1282, 102],
+        "fail": [0, 0],
+        "skipped": [759, 0],
+        "cancelled": [0, 0],
+        "todo": [0, 0]
+      },
+      "totals": {
+        "tests": 2143,
+        "pass": 1384,
+        "fail": 0,
+        "skipped": 759,
+        "cancelled": 0,
+        "todo": 0
+      },
+      "compiledEnginePostCheck": {
+        "schemaVersion": 1,
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 972,
+        "bytes": 16179784,
+        "treeSha256": "c647f2d3d44ce1afbfcb51b79eb53860c2a24521d155e2b931d927a56f74193c",
+        "manifestSha256": "8ba37f5bb25dd054f160e641eed6115067b1036642cddf71f7d84d31ccbc0957",
+        "limits": {
+          "files": 4096,
+          "entries": 8192,
+          "depth": 24,
+          "fileBytes": 8388608,
+          "totalBytes": 134217728
+        }
+      }
+    },
+    "guardController": {
+      "requiredMutations": 22,
+      "allOriginalCallbacksPassed": true,
+      "allMutantsKilled": true,
+      "allCompiledBytesRestored": true,
+      "callbacksUnchanged": true,
+      "scriptSha256": "a105e5ede0a809b74b54f8bc0195d321efd9c8756ceaaec22661e2d9aa667c5b",
+      "receiptSha256": "aa61d49abecc08382f7fdf0096a72bfd6389124ad96ad173170a9164ee09be73",
+      "processTreeCompiledModuleSha256": "7250503b1b0c49ad5309e30f9eb38c673f514e96a43089f7403ca48c93b139b9",
+      "darwinNativeHostQueryControls": 2,
+      "scope": "POSIX guards shared across Linux/macOS plus two explicitly Darwin-only native host-query controls; the controller executed locally on Darwin.",
+      "executedControllerWasUnmodified": true
+    },
+    "clangSourceAndFreshOfflineInstall": {
+      "requiredCallbacksPerPhase": 7,
+      "sourcePassed": 7,
+      "installedPassed": 7,
+      "sourceReceiptSha256": "a5a5d1e365a72c7941d6be55d32083324cf83c391eddfa052197c3fc51c8caba",
+      "installedReceiptSha256": "5ea36c2a4806da030408f0037fdb0877e41ac52f87e0660c702d0b1d2f8c8fb2",
+      "installedTarballSha256": "d951fa094840fb2685bd40b392adf9c1dc8b6c4fa626891d5786885ff2ad6125",
+      "externalHarnessSha256": "de73946d88fbdb18c10b0ed10c6e1784bc77680cea81e25b95c2e8dd4f4efe53",
+      "compiledSourceInstalledTreeMatches": true,
+      "compilerProbeFamily": ["clang", "clang++"],
+      "physicalControls": [
+        "Actual missing executable",
+        "Exactly one MiB of reached unsupported-version output",
+        "Reached output exceeding the one MiB bound by one byte"
+      ],
+      "installedLibraryPathsExercised": true,
+      "installedCliMissingCompilerPathExercised": true,
+      "independentPositiveInstalledCliAcceptanceQualified": false,
+      "installedMcpEvaluated": false,
+      "classificationRegressionFailedBeforeFix": true,
+      "failureCodeContextRegressionFailedBeforeFix": true,
+      "productionExecutionAndCleanupLimitsChanged": false
+    },
+    "previousRejectedFullRun": {
+      "sourceCommit": "79c8bf4be1036423bb7dc7305dfe9fdef7076169",
+      "exitCode": 1,
+      "elapsedSeconds": 1167.7628185419999,
+      "logSha256": "c6231b01eb1d213fa9b132dd5dcf619b9e45be0969500afbb394883e27b4ee7f",
+      "failedCallback": "native Clang checks every database configuration and distinguishes warnings, missing tools and compiler failures",
+      "observedWorkerClassification": "missing-tool despite both outer compiler probes identifying the selected compiler",
+      "exactInnerNativeFailureCauseEstablished": false,
+      "remainingExclusiveCallbacksPassed": 95,
+      "usedToQualifyCurrentCandidate": false
+    },
+    "originalCiHarnessFailure": {
+      "run": "https://github.com/stsepelin/checktrail/actions/runs/40502281205",
+      "sourceCommit": "7e993d852933571dfb85b170f73a7698decbb2a3",
+      "affectedJobs": [122182830346, 122182830422, 122182830542, 122182830626],
+      "observedError": "Exact mutation address: frozen-pre-signal-identities; three earlier literal addresses bypassed the new bounded snapshot helper",
+      "currentHarnessRetainsEveryOriginalGuard": true,
+      "currentNativeCiQualified": false
+    },
+    "limitations": [
+      "The local host remains macOS 27 ARM64 / Node 26.9.0, outside selected final runtime slots.",
+      "Explicitly skipped checks remain unqualified.",
+      "The new diagnostic prevents non-missing native errors from being labelled missing-tool; the historical hidden native cause is not retrospectively established.",
+      "Exclusive admission reserves the complete Clang file and preserves unlisted callbacks and all original production budgets. This observation does not prove contention was the hidden historical failure cause."
+    ],
+    "selectedRuntimeMatrixQualified": false,
+    "fullUpstreamProducerBuildClosureVerified": false,
+    "gateAComplete": false,
+    "qualityAssessed": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  }
 }
