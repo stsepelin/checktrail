@@ -26,6 +26,7 @@ type Dependency = {
   optional?: boolean;
   os?: string[];
   cpu?: string[];
+  libc?: string[];
   dependencies?: Record<string, string>;
   optionalDependencies?: Record<string, string>;
 };
@@ -45,6 +46,14 @@ async function auditFixture(t: TestContext, dependencies: Dependency[]) {
   const packages: Record<string, unknown> = { "": manifest };
   const files: Record<string, string> = {
     "scripts/audit-dependencies.mjs": script,
+    "scripts/dependency-audit-runtime.mjs": await readFile(
+      new URL("../../scripts/dependency-audit-runtime.mjs", import.meta.url),
+      "utf8",
+    ),
+    "scripts/install-acceptance-package.mjs": await readFile(
+      new URL("../../scripts/install-acceptance-package.mjs", import.meta.url),
+      "utf8",
+    ),
     "scripts/license-sources.json": "{}",
   };
   for (const dependency of dependencies) {
@@ -67,6 +76,7 @@ async function auditFixture(t: TestContext, dependencies: Dependency[]) {
       optional: dependency.optional ?? false,
       ...(dependency.os ? { os: dependency.os } : {}),
       ...(dependency.cpu ? { cpu: dependency.cpu } : {}),
+      ...(dependency.libc ? { libc: dependency.libc } : {}),
       resolved:
         "https://registry.npmjs.org/" +
         dependency.name +
@@ -247,7 +257,7 @@ test("development audit reconciles installed foreign-platform and unresolved opt
     {
       package: "synthetic-local@1.0.0",
       reason:
-        "Optional package absent without an incompatible OS or CPU declaration",
+        "Optional package absent without an incompatible OS, CPU or observed libc declaration",
     },
   ]);
   assert.deepEqual(
@@ -480,7 +490,7 @@ test("development audit excludes an absent dependency only when every declared p
     {
       package: "synthetic-shared@1.0.0",
       reason:
-        "Optional package absent without an incompatible OS or CPU declaration",
+        "Optional package absent without an incompatible OS, CPU or observed libc declaration",
     },
   ]);
   assert.equal(
@@ -942,4 +952,164 @@ test("dependency audit requires canonical notice addresses before platform norma
   await f.setSource({ ...f.source, notice: valid });
   for (const args of [[], ["--include-dev"]])
     assert.equal(parsed(invoke(f.root, args)).complete, true);
+});
+
+test(
+  "Linux development audit excludes libc-specific optional packages only with positive runtime evidence and preserves compatible and unknown paths",
+  {
+    skip:
+      process.platform !== "linux"
+        ? "Linux libc selection requires a Linux native host"
+        : false,
+  },
+  async (t) => {
+    const root = await auditFixture(t, [
+      { name: "synthetic-prod" },
+      ...[
+        ["synthetic-glibc", ["glibc"]],
+        ["synthetic-musl", ["musl"]],
+        ["synthetic-both", ["glibc", "musl"]],
+        ["synthetic-not-musl", ["!musl"]],
+        ["synthetic-near", ["!musl-extra"]],
+        ["synthetic-any", ["any"]],
+      ].map(([name, libc]) => ({
+        name: name as string,
+        libc: libc as string[],
+        os: ["linux"],
+        optional: true,
+        absent: true,
+      })),
+    ]);
+    const loader =
+      process.arch === "arm64"
+        ? "/lib/ld-musl-aarch64.so.1"
+        : "/lib/ld-musl-x86_64.so.1";
+    for (const [report, excluded] of [
+      [
+        { header: { glibcVersionRuntime: "2.39" }, sharedObjects: [] },
+        ["synthetic-musl@1.0.0"],
+      ],
+      [
+        { header: {}, sharedObjects: [loader] },
+        ["synthetic-glibc@1.0.0", "synthetic-not-musl@1.0.0"],
+      ],
+      [{ header: {}, sharedObjects: [loader + ".backup"] }, []],
+      [
+        { header: { glibcVersionRuntime: "2.39" }, sharedObjects: [loader] },
+        [],
+      ],
+    ] as const) {
+      const preload = path.join(root, "report-preload.mjs");
+      await writeFile(
+        preload,
+        `process.report.getReport=()=>(${JSON.stringify(report)});`,
+      );
+      const observed = parsed(
+        invoke(
+          root,
+          ["--include-dev"],
+          ["--import", pathToFileURL(preload).href],
+        ),
+        2,
+      );
+      assert.deepEqual(
+        observed.absentPackages
+          .filter((p) => p.state === "platform-inapplicable")
+          .map((p) => p.package)
+          .sort(),
+        [...excluded].sort(),
+      );
+      assert.equal(observed.optionalAbsentCount, 6 - excluded.length);
+      assert.equal(
+        observed.installedPackageCount +
+          observed.platformInapplicableCount +
+          observed.optionalAbsentCount,
+        observed.lockedPackageCount,
+      );
+      assert.ok(
+        observed.gaps.some((p) => p.package === "synthetic-near@1.0.0"),
+      );
+      assert.ok(observed.gaps.some((p) => p.package === "synthetic-any@1.0.0"));
+      assert.ok(
+        observed.gaps.some((p) => p.package === "synthetic-both@1.0.0"),
+      );
+    }
+  },
+);
+
+test("audit libc observation restores report privacy settings after success or failure and refuses ambiguous or lookalike loaders", async () => {
+  const { auditLibcFromReport, observeAuditLibc } = await import(
+    new URL("../../scripts/dependency-audit-runtime.mjs", import.meta.url).href
+  );
+  assert.equal(
+    auditLibcFromReport({ header: { glibcVersionRuntime: "2.39" } }, "x64"),
+    "glibc",
+  );
+  assert.equal(
+    auditLibcFromReport(
+      { sharedObjects: ["/lib/ld-musl-aarch64.so.1"] },
+      "arm64",
+    ),
+    "musl",
+  );
+  for (const value of [
+    null,
+    {},
+    { header: { glibcVersionRuntime: "unknown" } },
+    { sharedObjects: ["/lib/ld-musl-x86_64.so.1.backup"] },
+    { sharedObjects: ["/other/ld-musl-x86_64.so.1"] },
+    {
+      header: { glibcVersionRuntime: "2.39" },
+      sharedObjects: ["/lib/ld-musl-x86_64.so.1"],
+    },
+  ])
+    assert.equal(auditLibcFromReport(value, "x64"), null);
+  for (const network of [false, true])
+    for (const environment of [false, true])
+      for (const fail of [false, true]) {
+        const reporter = {
+          excludeNetwork: network,
+          excludeEnv: environment,
+          getReport() {
+            assert.equal(this.excludeNetwork, true);
+            assert.equal(this.excludeEnv, true);
+            if (fail) throw new Error("original synthetic report failure");
+            return { header: { glibcVersionRuntime: "2.39" } };
+          },
+        };
+        assert.equal(
+          observeAuditLibc("linux", "x64", reporter),
+          fail ? null : "glibc",
+        );
+        assert.equal(reporter.excludeNetwork, network);
+        assert.equal(reporter.excludeEnv, environment);
+      }
+  let nonLinuxCalls = 0;
+  const reporter = {
+    excludeNetwork: false,
+    excludeEnv: false,
+    getReport() {
+      nonLinuxCalls++;
+      return { header: { glibcVersionRuntime: "2.39" } };
+    },
+  };
+  assert.equal(observeAuditLibc("darwin", "arm64", reporter), null);
+  assert.equal(nonLinuxCalls, 0);
+  assert.equal(reporter.excludeNetwork, false);
+  assert.equal(reporter.excludeEnv, false);
+});
+
+test("development audit rejects malformed libc selectors before returning any successful report", async (t) => {
+  const root = await auditFixture(t, [
+    { name: "synthetic-prod" },
+    { name: "synthetic-optional", optional: true, absent: true },
+  ]);
+  const file = path.join(root, "package-lock.json"),
+    lock = JSON.parse(await readFile(file, "utf8"));
+  lock.packages["node_modules/synthetic-optional"].libc = ["musl", 17];
+  await writeFile(file, JSON.stringify(lock));
+  const result = invoke(root);
+  assert.equal(result.status, 1, result.stderr);
+  assert.match(result.stderr, /Invalid optional platform selector/);
+  assert.equal(result.stdout, "");
 });

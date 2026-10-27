@@ -21,9 +21,9 @@ nonregular entries, changed files, individual files above 128 MiB and package
 contents above 256 MiB or 8,192 files are refused. These are per-package bounds;
 they do not establish a global resource bound or a hermetic filesystem snapshot.
 
-Absent optional packages remain accounted for. Literal OS/CPU constraints and
-inherited incompatible ancestors can justify a platform exclusion only when no
-compatible root path reaches the missing package. An absent compatible optional
+Absent optional packages remain accounted for. Literal OS/CPU/libc constraints
+and inherited incompatible ancestors can justify a platform exclusion only when
+no compatible root path reaches the missing package. An absent compatible optional
 package remains a gap. Required missing packages and conflicting installed
 locations are errors. Platform selection is not a claim that another platform's
 binary has been validated.
@@ -124,3 +124,13 @@ Those historical gaps are retained. The qualified Vitest 5.0.5 dependency graph
 contains neither version, and the unused version-specific fallbacks were removed
 only after checking the new lock. The dated current audit records the resulting
 npm scope; complete native/container artifact closure and Gate A remain open.
+
+Linux libc exclusions require positive runtime-report evidence. A valid glibc
+version or an exact loaded x64/ARM64 musl loader path can select a family; missing,
+contradictory and lookalike observations remain unknown and cannot excuse missing
+optional packages. Report collection excludes environment/network data and
+restores the original report settings in a `finally` block. libc constraints apply
+only on Linux, as specified by [npm](https://docs.npmjs.com/cli/configuring-npm/package-json/#libc).
+The report mechanism is documented by [Node.js](https://nodejs.org/api/report.html).
+Windows tree inspection uses the same fixed host npm CLI runner as installed
+acceptance, through the selected Node executable.

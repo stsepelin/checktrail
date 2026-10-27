@@ -172,5 +172,70 @@
       "eastasianwidth.js": "2672ae17e3d91c246546bf3d56e78c95570eec79381ec143f41d45ec498bccab",
       "package.json": "51db62f97656d02d4bc9670393cae42930dbd1ed89f5837056851807e602867a"
     }
+  },
+  "@rolldown/binding-linux-x64-gnu@1.2.9": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-rolldown-native1.2.9.txt",
+    "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+    "source": "https://raw.githubusercontent.com/rolldown/rolldown/5b4746e442989d770c606ce08d2737e6aafbd25d/LICENSE",
+    "upstreamManifestVersion": "1.2.9",
+    "license": "MIT",
+    "files": {
+      "README.md": "8424466220cb244a154dc80cf19b4252ee20aef8f13a04a50eeac672cd0aaed7",
+      "package.json": "ef4095e3e34d90c6f2126b4a3d0fea3e26c1b42910ce2ca539beea56e5ebcdac",
+      "rolldown-binding.linux-x64-gnu.node": "a598f668450446221687e79d0a288c4d5503ff528d94db77a2178b4d3bb2c3d3"
+    }
+  },
+  "@rolldown/binding-win32-x64-msvc@1.2.9": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-rolldown-native1.2.9.txt",
+    "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+    "source": "https://raw.githubusercontent.com/rolldown/rolldown/5b4746e442989d770c606ce08d2737e6aafbd25d/LICENSE",
+    "upstreamManifestVersion": "1.2.9",
+    "license": "MIT",
+    "files": {
+      "README.md": "327b514303b86e589a6d6bb831928bb9720678fb72648f81c8c2cdcb2f7a856f",
+      "package.json": "c0514055b78edabaa1e2cf855e114ba467943678c8042fb5d3f8af9416a64079",
+      "rolldown-binding.win32-x64-msvc.node": "94ded39dbe6d1e8733dd6b64746894a3f6bdce013b89fef4c55887ddce50c0eb"
+    }
+  },
+  "@unrs/resolver-binding-linux-x64-gnu@1.12.2": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-unrs-native1.12.2.txt",
+    "sha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f",
+    "source": "https://raw.githubusercontent.com/unrs/unrs-resolver/ccb26d205e2938b16069c64a28996b48ee97ff94/LICENSE",
+    "upstreamManifestVersion": "1.12.2",
+    "license": "MIT",
+    "files": {
+      "README.md": "d3fea91d5663b2fe4f3b1c47b8ba8a7568332e5d2712fde35b65c6339f9d9b7d",
+      "package.json": "72cecf001066926be4b669b4501d629fb81034ddc94dc87bd194415af37f3101",
+      "resolver.linux-x64-gnu.node": "13bd18708eaf0f050f2d86732ed29ce8cdbc7f1ee81263c10790b5c90a46d28b"
+    }
+  },
+  "@unrs/resolver-binding-linux-arm64-musl@1.12.2": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-unrs-native1.12.2.txt",
+    "sha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f",
+    "source": "https://raw.githubusercontent.com/unrs/unrs-resolver/ccb26d205e2938b16069c64a28996b48ee97ff94/LICENSE",
+    "upstreamManifestVersion": "1.12.2",
+    "license": "MIT",
+    "files": {
+      "README.md": "aa34bbb63fd9a3c3ec4a5f19cc41eaf6e449de54e34486f7c621ee99291685d0",
+      "package.json": "f77dd8ed668e85757365aa6c985327cbfcbe517c37f4166e8c5c6b8320576a18",
+      "resolver.linux-arm64-musl.node": "3307a51fa9fb5acdebee47e0d095af8715db9761f3d3b3125e454b7331f6550c"
+    }
+  },
+  "@unrs/resolver-binding-win32-x64-msvc@1.12.2": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-unrs-native1.12.2.txt",
+    "sha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f",
+    "source": "https://raw.githubusercontent.com/unrs/unrs-resolver/ccb26d205e2938b16069c64a28996b48ee97ff94/LICENSE",
+    "upstreamManifestVersion": "1.12.2",
+    "license": "MIT",
+    "files": {
+      "README.md": "ba0255937e21ea298a784538dc3ffecc3f795d11babe35ced01b18deaebf5ac4",
+      "package.json": "6ba36f30301cd853e94c3f61f096e5dcbac9407359e596502e9b26bc63ecc8ee",
+      "resolver.win32-x64-msvc.node": "19654fe888473d39f326eb79b23fc0c29890a3ba129b01fb68f136e3353b1bc5"
+    }
   }
 }

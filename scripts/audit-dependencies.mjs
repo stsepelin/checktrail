@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { runAuditNpm, observeAuditLibc } from "./dependency-audit-runtime.mjs";
 import { createHash } from "node:crypto";
 import { lstat, readFile, readdir, realpath } from "node:fs/promises";
 import path from "node:path";
@@ -128,8 +128,7 @@ const sources = Object.fromEntries(
   ),
 );
 const tree = JSON.parse(
-  execFileSync(
-    "npm",
+  runAuditNpm(
     ["ls", ...(includeDev ? ["--long"] : ["--omit=dev"]), "--all", "--json"],
     {
       cwd: root,
@@ -181,6 +180,7 @@ inspectTree(tree);
 // excluded only when every root-reachable path crosses an incompatible package.
 const graph = new Map();
 const platformBlocked = new Set();
+const libc = includeDev ? observeAuditLibc() : null;
 function lockedDependency(parent, name) {
   let prefix = parent;
   while (true) {
@@ -228,9 +228,11 @@ const includesPlatform = (selection, value) => {
 };
 if (includeDev) {
   for (const [location, entry] of Object.entries(lock.packages)) {
+    const libcAllowed = includesPlatform(entry.libc, libc ?? "unknown");
     if (
       !includesPlatform(entry.os, process.platform) ||
-      !includesPlatform(entry.cpu, process.arch)
+      !includesPlatform(entry.cpu, process.arch) ||
+      (process.platform === "linux" && libc !== null && !libcAllowed)
     )
       platformBlocked.add(location);
     const names = new Set([
@@ -296,13 +298,14 @@ for (const [location, entry] of Object.entries(lock.packages).sort(([a], [b]) =>
         state: excluded ? "platform-inapplicable" : "not-installed-optional",
         os: entry.os ?? null,
         cpu: entry.cpu ?? null,
+        libc: entry.libc ?? null,
         ...(inheritedExclusion ? { blockingAncestors } : {}),
       });
       if (!excluded)
         gaps.push({
           package: id,
           reason:
-            "Optional package absent without an incompatible OS or CPU declaration",
+            "Optional package absent without an incompatible OS, CPU or observed libc declaration",
         });
       continue;
     }
@@ -598,6 +601,13 @@ process.stdout.write(
               node: process.versions.node,
               platform: process.platform,
               architecture: process.arch,
+              libc,
+              libcEvidence:
+                process.platform !== "linux"
+                  ? "not-applicable"
+                  : libc === null
+                    ? "unknown"
+                    : "runtime-report",
             },
             lockedPackageCount,
             installedPackageCount: packages.length,
