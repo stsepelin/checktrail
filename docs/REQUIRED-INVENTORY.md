@@ -46,6 +46,12 @@ required source/archive/notice inspection. Context collection must remain
 non-evaluating; dynamic dispatch, unsupported syntax and exhausted capture retain
 conservative impact fallback.
 
+Gate A retains full upstream producer-build closure for the selected artifacts,
+including compiler, SDK and bootstrap build inputs and complete original notices.
+Verified pinned releases, payload reconstruction and source attribution contribute
+to that evidence. Unreproduced producer builds and unknown inputs remain open
+Gate A work; upstream reproducibility is not deferred to a later gate.
+
 Original structural and compiling-control evidence is recorded in
 [gate-inventory-2026-10-07.json](measurements/gate-inventory-2026-10-07.json).
 It assesses preservation and selection coherence; it leaves implementation/native
