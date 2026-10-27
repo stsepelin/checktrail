@@ -92,3 +92,14 @@ retained as candidates, without asserting complete attribution. JAR packaging,
 actual producer identity, broader SDK/native notices, fonts/JLine and admission
 integration remain separate requirements. This adds no complete-closure or Gate A
 promotion.
+
+The [jQuery resource bindings](scala-jquery-resource-bindings.json) match both
+selected minified payloads against the exact WebJar declared by the immutable
+Scala build. Its extraction glob selects both files and excludes the adjacent
+non-minified file. The release's original MIT license is retained from its pinned
+upstream Git blob; the WebJar itself has no named license or notice member.
+Changed payload, omitted member and changed notice controls fail their unchanged
+byte/set comparisons and restoration matches. This supplies resource origin and
+notice evidence without executing JavaScript or the upstream generator. The
+minification build, compiler packaging, other generated resources and font/native
+attribution remain open.

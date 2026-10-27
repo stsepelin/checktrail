@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 158,
+  "retainedReferences": 161,
   "files": [
     {
       "file": "README.md",
-      "bytes": 18748,
-      "sha256": "34b6150de7cf7f90f134f88a4ca0a021bdf7677a5f956ebfd1f8ccfa9c59b1b7"
+      "bytes": 19486,
+      "sha256": "3250985cc39bb531ce02059448d543add0307712fb8ce8f51c5eea86931eb8ad"
     },
     {
       "file": "dotnet-sdk-LICENSE.txt",
@@ -500,8 +500,8 @@
     },
     {
       "file": "scala-component-inventory.json",
-      "bytes": 332239,
-      "sha256": "52043913e56169f35ab46e2fce1500f959325099d41f0b575f25e20ea9774fae"
+      "bytes": 333965,
+      "sha256": "4952e5f9e92128c6f5eb8e9285012dc702dd38e54edd8daf5eb41e9a62b0eedb"
     },
     {
       "file": "scala-component-notices/169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988.txt",
@@ -529,6 +529,11 @@
       "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
     },
     {
+      "file": "scala-component-notices/d4db9ebe6f29f5168eac45ad713f055623ac5d0dcd5ba92da23d650ae012020d.txt",
+      "bytes": 1097,
+      "sha256": "d4db9ebe6f29f5168eac45ad713f055623ac5d0dcd5ba92da23d650ae012020d"
+    },
+    {
       "file": "scala-doc-LICENSE.txt",
       "bytes": 1169,
       "sha256": "e2ca1dada0810bc6a08a21d4f4ee1209f1e95c4fa2842dc69422be207988d6de"
@@ -554,6 +559,11 @@
       "sha256": "083a08a7937b16a31f3328f62e85084389d4110ad0c630b5de39698ddf559ada"
     },
     {
+      "file": "scala-jquery-resource-bindings.json",
+      "bytes": 3912,
+      "sha256": "88b6479432583c6c29e89ca1f808397faf3ca5036fa84bac31a38a2f41793b4b"
+    },
+    {
       "file": "scala-library-2.13.18.jar.asc",
       "bytes": 833,
       "sha256": "29df493c0f7cdd2507e85ed57830abca9667e711c0d63770bddcccb7b56fe9f7"
@@ -569,9 +579,14 @@
       "sha256": "d7ec1f87e162ee0429d4aec698352e6b08187f47bf7c730474d8000646b23cff"
     },
     {
+      "file": "scala-resource-inputs/ScaladocSettings.scala.txt",
+      "bytes": 1025,
+      "sha256": "36dcdc6cc3ccb05d1566f5fc57badbfa47ff8de872cd26579f0710ed2496541f"
+    },
+    {
       "file": "scala2.json",
       "bytes": 9712,
-      "sha256": "251a1204799390eeafc043c4b718c64b2861ca9e24c1efb36a345bc00cb220f4"
+      "sha256": "75825bbcf081b9f45983e73e686f67ca115a914dd723b546020c2d62ed2f90a0"
     },
     {
       "file": "sigstore-trusted-root.jsonl",

@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Static exact-byte jQuery resource and notice bindings; no JavaScript, JVM class, upstream generator or minifier executed.",
+  "scalaSource": {
+    "repository": "https://github.com/scala/scala",
+    "commit": "98f40d00ddcf59a802862d38a9fe79806cde59fa",
+    "gitPath": "project/ScaladocSettings.scala",
+    "gitBlobSha1": "08d1e79882de5ae46f2df46bf6aa0194aeea3f05",
+    "sourceArchiveSha256": "81fa8591e8cd9940ccb6584c604a0e694f51fb7a3928f5ec379dfc89483e5abe",
+    "declaredDependency": "org.webjars:jquery:3.7.1",
+    "declaredSelection": "All .min.js files extracted from declared org.webjars dependencies.",
+    "actualGeneratorExecuted": false
+  },
+  "webjar": {
+    "url": "https://repo.maven.apache.org/maven2/org/webjars/jquery/3.7.1/jquery-3.7.1.jar",
+    "bytes": 307911,
+    "sha256": "262016dd3a559df87aefbe392804e9bf620787c9204c0ab8522d4c231ea65097",
+    "selectedMinifiedMembers": 2,
+    "namedLicenseOrNoticeMembers": [],
+    "publisherSignatureVerified": false
+  },
+  "compiler": {
+    "artifact": "scala-compiler-2.13.18.jar",
+    "bytes": 12343847,
+    "sha256": "2f15891fcae7aad30a3892194fb2abb6224cf7ce5d2bd90fba7f1c48682fca21"
+  },
+  "members": [
+    {
+      "webjarMember": "META-INF/resources/webjars/jquery/3.7.1/jquery.min.js",
+      "compilerMember": "jquery.min.js",
+      "bytes": 87533,
+      "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a",
+      "exactPayloadMatch": true,
+      "embeddedCopyrightHeaderObserved": true
+    },
+    {
+      "webjarMember": "META-INF/resources/webjars/jquery/3.7.1/jquery.slim.min.js",
+      "compilerMember": "jquery.slim.min.js",
+      "bytes": 70264,
+      "sha256": "9261efb3407e3a9096e4654750d8eff6b3a663422f48845c7fbcc65034c340cf",
+      "exactPayloadMatch": true,
+      "embeddedCopyrightHeaderObserved": true
+    }
+  ],
+  "license": {
+    "repository": "https://github.com/jquery/jquery",
+    "releaseTag": "3.7.1",
+    "commit": "f79d5f1a337528940ab7029d4f8bbba72326f269",
+    "gitPath": "LICENSE.txt",
+    "gitBlobSha1": "f642c3f7a77a5833bc3dfee643ad8ca6387b23e7",
+    "classification": "Original MIT license at the selected upstream release. The selected WebJar itself has no named license/notice member.",
+    "deliveredMinifiedFilesPointToOriginalLicense": true
+  },
+  "retainedInputs": [
+    {
+      "file": "scala-resource-inputs/ScaladocSettings.scala.txt",
+      "bytes": 1025,
+      "sha256": "36dcdc6cc3ccb05d1566f5fc57badbfa47ff8de872cd26579f0710ed2496541f"
+    },
+    {
+      "file": "scala-component-notices/d4db9ebe6f29f5168eac45ad713f055623ac5d0dcd5ba92da23d650ae012020d.txt",
+      "bytes": 1097,
+      "sha256": "d4db9ebe6f29f5168eac45ad713f055623ac5d0dcd5ba92da23d650ae012020d"
+    }
+  ],
+  "controls": [
+    {
+      "id": "changed-minified-header-byte",
+      "changedPayloadRejectedByUnchangedCompilerMember": true,
+      "restoredPayloadMatches": true,
+      "mutantSha256": "cd5763e254aa7ff047f6e2040cdedc1eeb18db4db2e9fb304153247d963c2227"
+    },
+    {
+      "id": "omitted-selected-member",
+      "omittedSetRejectedByUnchangedCompleteMinifiedSelection": true,
+      "restoredSelectionMatches": true
+    },
+    {
+      "id": "non-minified-adjacent-file",
+      "validAdjacentFilePresent": true,
+      "excludedByDeclaredMinifiedGlob": true,
+      "notEqualToDeliveredMinifiedPayload": true
+    },
+    {
+      "id": "changed-notice-copyright",
+      "changedNoticeRejectedByUnchangedLicenseIdentity": true,
+      "restoredNoticeMatches": true,
+      "mutantSha256": "107859d84393cad5c8a49383b12a917447c2565cbdb381bf2d65cf271cc2dc46"
+    }
+  ],
+  "sourceToMinifiedBuildReproduced": false,
+  "compilerPackagingReproduced": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "preparationAndReceiptIntegrationVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
