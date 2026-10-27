@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   mkdir,
@@ -338,9 +338,34 @@ export async function verifyPackageUpgrade(
           JSON.parse(invoke(["init", "--root", project, "--write"])).status,
           "preserved",
         );
+        const doctor = spawnSync(
+          process.execPath,
+          [binary, "doctor", "--root", project],
+          { cwd: installation, encoding: "utf8", timeout: 30000 },
+        );
+        assert.equal(doctor.error, undefined);
+        assert.equal(doctor.signal, null);
         assert.equal(
-          JSON.parse(invoke(["doctor", "--root", project])).status,
-          "no-static-blockers",
+          doctor.status,
+          process.platform === "win32" ? 2 : 0,
+          doctor.stdout + doctor.stderr,
+        );
+        const diagnosis = JSON.parse(doctor.stdout);
+        assert.equal(diagnosis.validationPerformed, false);
+        assert.equal(diagnosis.projects, 1);
+        assert.equal(diagnosis.checks, 1);
+        assert.equal(
+          diagnosis.status,
+          process.platform === "win32"
+            ? "attention-required"
+            : "no-static-blockers",
+        );
+        assert.deepEqual(
+          diagnosis.issues,
+          process.platform === "win32"
+            ? [{ code: "limited-platform-support" }]
+            : [],
+          "Upgrade doctor must retain only the declared platform limitation",
         );
         await writeFile(
           path.join(project, "prior-report.json"),

@@ -66,11 +66,12 @@ Add-Type -Path $data.source -OutputAssembly $data.output -OutputType ConsoleAppl
     assert.equal(compiled.status, 0, compiled.stdout + compiled.stderr);
     // A short userspace loop can leave Windows' sampled kernel CPU at zero.
     // Arm both fields through observed work rather than weakening comparisons.
-    const kernelWitness = String.raw`const fs=require('node:fs');const kernelStart=process.cpuUsage().system,kernelDeadline=performance.now()+5000;while(process.cpuUsage().system-kernelStart<20000&&performance.now()<kernelDeadline){for(let i=0;i<100;i++)fs.statSync(process.execPath);}if(process.cpuUsage().system-kernelStart<20000)throw Error('Original Windows kernel CPU witness did not reach its observed minimum');`;
-    const childSource = String.raw`const b=Buffer.alloc(Number(process.argv[1])*1024*1024,7);${kernelWitness}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,bytes:b.length}));`;
+    const kernelWitness = (minimum: number) =>
+      String.raw`const fs=require('node:fs');const kernelStart=process.cpuUsage().system,kernelDeadline=performance.now()+5000;while(process.cpuUsage().system-kernelStart<${minimum}&&performance.now()<kernelDeadline){for(let i=0;i<100;i++)fs.statSync(process.execPath);}if(process.cpuUsage().system-kernelStart<${minimum})throw Error('Original Windows kernel CPU witness did not reach its observed minimum');`;
+    const childSource = String.raw`const b=Buffer.alloc(Number(process.argv[1])*1024*1024,7);${kernelWitness(200000)}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,bytes:b.length}));`;
     const source = String.raw`const {spawnSync}=require('node:child_process');const touched=Buffer.alloc(32*1024*1024,7),reserved=Buffer.allocUnsafe(256*1024*1024),children=[];const observe=()=>{const r=spawnSync(process.argv[1],[],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);return JSON.parse(r.stdout);};const beforeJob=observe();
 for(const size of [64,96]){const r=spawnSync(process.execPath,['-e',${JSON.stringify(childSource)},String(size)],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);children.push(JSON.parse(r.stdout));}
-const afterJob=observe();${kernelWitness}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,touched:touched.length,reserved:reserved.length,children,beforeJob,afterJob}));`;
+const afterJob=observe();${kernelWitness(20000)}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,touched:touched.length,reserved:reserved.length,children,beforeJob,afterJob}));`;
     const result = await runProcess(
       root,
       {
@@ -111,6 +112,10 @@ const afterJob=observe();${kernelWitness}const end=performance.now()+150;while(p
     assert.equal(own.beforeJob.active, 2);
     assert.equal(own.afterJob.active, 2);
     assert.equal(usage.totalJobProcesses, 5);
+    assert.ok(
+      own.afterJob.kernel100ns > usage.processCpu.kernel100ns,
+      "The descendant workload must put the independent earlier job kernel counter above the final direct-target counter",
+    );
     for (const [field, nativeField] of [
       ["user", "user100ns"],
       ["system", "kernel100ns"],

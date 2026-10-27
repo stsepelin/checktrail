@@ -316,7 +316,13 @@ identify a later archive containing this additional documentation.
 
 The `resource-release` CI matrix selects the frozen Linux/macOS Node slots and
 Windows slot. `resource-release-arm64` uses the pinned native Node container and
-an explicitly selected Go tree. Each collector observes its actual runtime and
-rejects a mismatched selected slot. An unselected development run qualifies no
+an explicitly selected Go tree. Its C helpers are prepared separately using the
+existing pinned Alpine compiler archives, with APK signature verification and an
+offline compiler-image build. Acceptance retains the original Node runtime image
+without installing a compiler there. The external harness verifies the helper
+source, binary, platform, architecture, Node executable and selected Node header
+identities before publishing a complete private copy into each fixture. Compiler
+SDK and complete artifact/license closure remain unverified. Each collector
+observes its actual runtime and rejects a mismatched selected slot. An unselected development run qualifies no
 matrix slot. Final matrix and artifact/license closure remain open; these
 synthetic controls invoke no model or field evaluation and publish no package.
