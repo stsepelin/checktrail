@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scope": "Independent rebuild of the selected executable, not ZIP packaging, full compiler provenance or notice closure.",
+  "scope": "Independent selected executable rebuild with a separately retained original ZIP reconstruction; full compiler provenance and notice closure remain open.",
   "recipeFrozenBeforeBuild": {
     "schemaVersion": 1,
     "purpose": "Fresh offline rebuild of one selected public provider executable; no provider or model-review execution.",
@@ -188,11 +188,19 @@
     "scope": "Native Go package metadata for the exact build configuration; not an OS file-access trace or final linked-symbol inventory."
   },
   "selectedExecutableSourceBuildBindingVerified": true,
-  "releaseZipPackagingIndependentlyRebuilt": false,
+  "releaseZipPackagingIndependentlyRebuilt": true,
   "completeBuildToolProvenanceVerified": false,
   "completeTransitiveNoticeClosureVerified": false,
   "preparationAndReceiptIntegrationVerified": false,
   "gateAComplete": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "packagingFollowUpObservedAt": "2026-10-27",
+  "retainedInputs": [
+    {
+      "file": "provider-independent-zip-repack.json",
+      "bytes": 10094,
+      "sha256": "075dc968b41c7b272e421c23434e95b52066d1c53bd9db2a911a8123b995dd0b"
+    }
+  ]
 }

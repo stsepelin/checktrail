@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Original independent reconstruction of the selected ZIP packaging from exact selected member bytes, with source-bound timestamp and native Go packager. This run did not repeat the separately recorded source-to-executable rebuild.",
+  "publisherSource": {
+    "repository": "https://github.com/hashicorp/actions-go-build",
+    "commit": "dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4",
+    "actionFileUrl": "https://github.com/hashicorp/actions-go-build/blob/dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4/action.yml",
+    "zipperSourceUrl": "https://github.com/hashicorp/actions-go-build/blob/dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4/internal/zipper/zipper.go",
+    "declaredCliCompilerMajor": "1.24",
+    "separateProviderCompilerVersion": "1.26.8",
+    "actualPublisherCliCompilerPatchVerified": false
+  },
+  "providerSource": {
+    "commit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+    "tree": "fb1d86e1f941c0ede0d5c46841d7d4c0c3015265",
+    "commitMetadataUrl": "https://api.github.com/repos/hashicorp/terraform-provider-random/git/commits/b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+    "authorAndCommitterTime": "2026-09-11T12:35:54Z",
+    "selectedSourceTimeMatchesBothZipEntryTimes": true
+  },
+  "selectedArchive": {
+    "source": "https://releases.hashicorp.com/terraform-provider-random/3.9.1/terraform-provider-random_3.9.1_linux_arm64.zip",
+    "archiveSha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+    "archiveBytes": 5964673,
+    "members": [
+      {
+        "filename": "LICENSE.txt",
+        "date_time": [2026, 9, 11, 12, 35, 54],
+        "compress_type": 8,
+        "create_system": 3,
+        "create_version": 20,
+        "extract_version": 20,
+        "flag_bits": 8,
+        "external_attr": 2175008768,
+        "internal_attr": 0,
+        "header_offset": 0,
+        "CRC": 1491608527,
+        "compress_size": 5316,
+        "file_size": 16757,
+        "extraHex": "5554050001aaf5a36a",
+        "commentHex": ""
+      },
+      {
+        "filename": "terraform-provider-random_v3.9.1_x5",
+        "date_time": [2026, 9, 11, 12, 35, 54],
+        "compress_type": 8,
+        "create_system": 3,
+        "create_version": 20,
+        "extract_version": 20,
+        "flag_bits": 8,
+        "external_attr": 2179792896,
+        "internal_attr": 0,
+        "header_offset": 5382,
+        "CRC": 398590210,
+        "compress_size": 5959023,
+        "file_size": 17039522,
+        "extraHex": "5554050001aaf5a36a",
+        "commentHex": ""
+      }
+    ],
+    "archiveExecuted": false
+  },
+  "recipeFrozenBeforeExecution": {
+    "schemaVersion": 1,
+    "purpose": "Original independent ZIP reconstruction using the published two member bytes and source-bound commit time; does not execute the provider.",
+    "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+    "modificationTime": "2026-09-11T12:35:54Z",
+    "entryOrder": ["LICENSE.txt", "terraform-provider-random_v3.9.1_x5"],
+    "permissions": {
+      "LICENSE.txt": "0644",
+      "terraform-provider-random_v3.9.1_x5": "0755"
+    },
+    "compression": "Go archive/zip default Deflate",
+    "programSha256": "60d8e65919188ad8443401ad51f3ca1a62769d0a4d20129d92761ba3e1f713e7",
+    "selectedArchiveUsedByProgram": false,
+    "providerExecuted": false,
+    "goRuntime": "go1.24.13 darwin/arm64",
+    "goCompilerMatchesPublisher": false,
+    "recipeWrittenBeforeProgramExecution": true,
+    "compilerPatchSource": "Official pinned archive; original action major is Go 1.24, actual producer patch remains unverified"
+  },
+  "toolchain": {
+    "officialIndexUrl": "https://go.dev/dl/?mode=json&include=all",
+    "officialIndexSha256": "6b83804b8dd2d6052bb93cc03e4aba2ddee834f82c15f7bf8faacf5f91825950",
+    "asset": {
+      "filename": "go1.24.13.darwin-arm64.tar.gz",
+      "os": "darwin",
+      "arch": "arm64",
+      "version": "go1.24.13",
+      "sha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "size": 76442495,
+      "kind": "archive"
+    },
+    "downloadUrl": "https://go.dev/dl/go1.24.13.darwin-arm64.tar.gz",
+    "archiveIntegrityRecomputed": true,
+    "fileCount": 15739,
+    "actualPublisherCliCompilerPatchVerified": false,
+    "selectionReason": "The pinned action builds its own ZIP CLI using the separate Go 1.24 major range; the provider compiler uses another version. Selected a concrete official Go 1.24 archive for independent packaging, without claiming the exact original patch."
+  },
+  "nativeObservation": {
+    "compilerExecutableSha256": "c9507e881b743649af2b8d9edd8678433b999acfe4da2f9834a08a4fcebb1861",
+    "packagerExecutableSha256": "1cdbd0ca2f878fd0f38359d70c100e7d05efd2b581cd8f7e168b869ec7cc9a56",
+    "outputBytes": 5964673,
+    "outputSha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+    "expectedArchiveSha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+    "matchesSelectedReleaseArchive": true,
+    "elapsedSeconds": 6.062686792,
+    "providerExecuted": false
+  },
+  "alternateToolchainObservation": {
+    "goRuntime": "go1.27.1 darwin/arm64",
+    "compilerExecutableSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598",
+    "packagerExecutableSha256": "db54f86d0bb990469e6a4c709139146f39a930fb0750cc92ab27972fd2fd660f",
+    "outputBytes": 6113349,
+    "outputSha256": "0ced42fb059073382e2bb065c17dc3e82ecffb96fef72986a56aa230cada5a0c",
+    "matchesSelectedReleaseArchive": false,
+    "differenceObservedInCompressedPayloadBytes": true,
+    "exactCauseBeyondToolchainDifferenceEstablished": false,
+    "decodedMemberBytesAndSemanticFileMetadataMatchSelected": true,
+    "comparedSemanticMetadataFields": [
+      "filename",
+      "date_time",
+      "compress_type",
+      "create_system",
+      "create_version",
+      "extract_version",
+      "flag_bits",
+      "external_attr",
+      "internal_attr",
+      "CRC",
+      "file_size",
+      "extra",
+      "comment"
+    ],
+    "compressedSizesAndLayoutOffsetsExcludedFromMetadataEquality": true
+  },
+  "memberControls": {
+    "memberControls": [
+      {
+        "changedMember": "LICENSE.txt",
+        "mutantMemberSha256": "7cff1c85bdc0ed56b2bbf3d39dd0828929eed73845aea68ce756272280edcffc",
+        "validMutantArchiveBytes": 5964674,
+        "mutantArchiveSha256": "fe2e765653d535cc0b27993e1bb90624c38044e2903677a34608ae5812bbc295",
+        "unchangedExpectedArchiveDigestRejected": true,
+        "otherMemberPreserved": true
+      },
+      {
+        "changedMember": "terraform-provider-random_v3.9.1_x5",
+        "mutantMemberSha256": "1110cb47582f33ea19c6e70da7e0b94afb4ab45a1ce3916f51e9d81a31abcc40",
+        "validMutantArchiveBytes": 5964673,
+        "mutantArchiveSha256": "86db265796cfdfa74c7a63d86471ddfa23bf6bc77760acbd3873f5e7be611fc6",
+        "unchangedExpectedArchiveDigestRejected": true,
+        "otherMemberPreserved": true
+      }
+    ],
+    "originalMemberBytesRestored": true,
+    "restoredArchiveMatchesSelected": true,
+    "restoredArchiveSha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+    "providerExecuted": false
+  },
+  "retainedInputs": [
+    {
+      "file": "provider-zip-inputs/original-repack.go.txt",
+      "bytes": 1457,
+      "sha256": "60d8e65919188ad8443401ad51f3ca1a62769d0a4d20129d92761ba3e1f713e7"
+    },
+    {
+      "file": "provider-zip-inputs/publisher-zipper.go.txt",
+      "bytes": 2486,
+      "sha256": "05c57bf77063b4781501c04139a85d400417f4411ff69c072dbb022775f708af"
+    },
+    {
+      "file": "provider-zip-inputs/publisher-build.go.txt",
+      "bytes": 5297,
+      "sha256": "6574252c21e641114f5e118acf92c0dc22aaeff60aabca8bc1bc283043679809"
+    },
+    {
+      "file": "provider-zip-inputs/publisher-action.yml.txt",
+      "bytes": 6025,
+      "sha256": "56496e01a2c711d1ff11e708b9225dceea4ef5b701c005d15fb16640f5887b25"
+    },
+    {
+      "file": "provider-zip-inputs/publisher-product.go.txt",
+      "bytes": 4461,
+      "sha256": "d2dbc2f1a9c7f274426f8bc1fde52f392f059e5108d8e111580fd4f5cee88659"
+    },
+    {
+      "file": "provider-zip-inputs/publisher-MPL-2.0-LICENSE.txt",
+      "bytes": 15954,
+      "sha256": "e4733c00a3971c57bd8d54d5e8c757d6a0ad9ec5e014f22175833f389a71104d"
+    },
+    {
+      "file": "provider-zip-inputs/packager-go-LICENSE.txt",
+      "bytes": 1453,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+    },
+    {
+      "file": "provider-zip-inputs/packager-go-PATENTS.txt",
+      "bytes": 1303,
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+    },
+    {
+      "file": "provider-zip-inputs/packager-go-VERSION.txt",
+      "bytes": 36,
+      "sha256": "756345ba66e44025c7756e491a40b0a2fbbbd9611e462477df64fa38c6ddaba0"
+    }
+  ],
+  "limitations": [
+    "The packager read only the two named member files; it did not receive or parse the selected ZIP.",
+    "The executable input in this packaging run came from the selected release. Its exact hash matches the separately recorded independent source rebuild; a new combined end-to-end source-to-ZIP run was not performed.",
+    "Selected member order, modes and source-derived timestamp are explicit recipe inputs. Hash equality binds the full resulting archive, including compressed bytes and headers.",
+    "The action selects a Go 1.24 major for its own CLI and a separate target compiler. A matching independent Go 1.24.13 reconstruction does not prove its original compiler patch.",
+    "Exact ZIP reconstruction does not authenticate publisher attestation, prove all action enforcement paths or close compiler/bootstrap, copied/generated component and native/container notice provenance."
+  ],
+  "selectedZipPackagingReconstructionVerified": true,
+  "freshCombinedSourceToZipRebuildPerformed": false,
+  "completeBuildToolProvenanceVerified": false,
+  "completeTransitiveNoticeClosureVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "preparationAndReceiptIntegrationVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
