@@ -129,6 +129,9 @@ test("finite inventory rejects silently removed obligations profiles pins cases 
       value.toolVersions.kotlin = "latest";
     },
     (value: SelectedInventory) => {
+      value.toolVersions.vitest = "5.0.1";
+    },
+    (value: SelectedInventory) => {
       value.contextGrammarPins[0]!.commit = "0".repeat(40);
     },
   ];

@@ -41,8 +41,9 @@ async function setup(t: TestContext, source = passingTest, detailed = false) {
 async function completed(
   tasks: ValidationTasks,
   id: string,
+  maximumPolls = 200,
 ): Promise<StoredValidationTask> {
-  for (let attempt = 0; attempt < 200; attempt++) {
+  for (let attempt = 0; attempt < maximumPolls; attempt++) {
     const task = await tasks.get(id);
     if (task.status !== "working") return task;
     await delay(25);
@@ -342,11 +343,12 @@ test(
 
 test("durable task timeout retains incomplete native evidence rather than a passing result", async (t) => {
   const opt = await setup(t, slow, true);
-  const tasks = await openValidationTasks({ ...opt, timeoutMs: 700 });
+  // Use the fixture's bounded execution budget so startup can reach both live PIDs.
+  const tasks = await openValidationTasks(opt);
   t.after(() => tasks.close());
   const task = await tasks.start();
   const pids = await started(t, opt.root);
-  const result = await completed(tasks, task.taskId);
+  const result = await completed(tasks, task.taskId, 400);
   assert.equal(
     (result.result!.structuredContent as { outcome: string }).outcome,
     "incomplete",

@@ -48,7 +48,7 @@
   "toolVersions": {
     "typescript": "6.0.3",
     "eslint": "10.11.0",
-    "vitest": "5.0.1",
+    "vitest": "5.0.5",
     "jest": "30.5.2",
     "playwright": "1.63.0",
     "vue-tsc": "3.3.11",
@@ -3206,5 +3206,5 @@
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
   "qualityAssessed": false,
-  "scopeSha256": "e40772c9a43150f2cc613e4a188e81f3f1498a017733c555f57eb8f72b0c27f2"
+  "scopeSha256": "f321dc57bf4714c99f8999c8aa61ef397cd09a4c653904a61f3c173ef3e7165f"
 }
