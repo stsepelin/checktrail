@@ -108,32 +108,6 @@
       "index.d.ts": "2e36248ff3cc1b0b20adc82e596d519539cd892bd98d8338c4bd4a1ed625634d"
     }
   },
-  "bser@2.1.1": {
-    "scope": "development",
-    "notice": "docs/licenses/npm-bser2.1.1.txt",
-    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
-    "source": "https://raw.githubusercontent.com/facebook/watchman/df9f2c4a5eb37354949fdefb2b917427fe05fa6c/LICENSE",
-    "upstreamManifestVersion": "2.1.0",
-    "license": "Apache-2.0",
-    "files": {
-      "README.md": "fbc3054ed9e51cce426c17344d2c0b9a3792e7f13828c2da2941e92032571650",
-      "index.js": "c62fdb182214f4d56354b4955f3beebd3a50da617eef8a8937fcaddf8adc2f7d",
-      "package.json": "1e90f98039f760ebd91af36846690b70a09154608f228967d3fa7858402b3de6"
-    }
-  },
-  "fb-watchman@2.0.2": {
-    "scope": "development",
-    "notice": "docs/licenses/npm-fb-watchman2.0.2.txt",
-    "sha256": "2d4c3d00d67067461412a2d9a2f3f8b7b9cda62b3db501e4b6844ccf35c949aa",
-    "source": "https://raw.githubusercontent.com/facebook/watchman/05872a3eb9d909858983b2c30addc6a286da2f0f/LICENSE",
-    "upstreamManifestVersion": "2.0.2",
-    "license": "MIT",
-    "files": {
-      "index.js": "174162c01b5c8bf9b031bbef70f5ecd9b8a972e67c16e3cd1a098944b51293bf",
-      "package.json": "1cbf98d28443db3b03e6fe0425fcebbea9aa6569c421abee605da0fd61d612ee",
-      "README.md": "2b5f0e7274a619ee2b37eee170bf1d32ffae35e9806312e886561f93ceea80df"
-    }
-  },
   "natural-compare@1.4.0": {
     "scope": "development",
     "notice": "docs/licenses/npm-natural-compare1.4.0.txt",

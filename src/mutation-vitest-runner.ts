@@ -24,7 +24,7 @@ async function main() {
       ),
     ),
   );
-  if (metadata.name !== "vitest" || metadata.version !== "5.0.1")
+  if (metadata.name !== "vitest" || metadata.version !== "5.0.5")
     throw new Error("Selected mutation Vitest pin differs");
   const files = await Promise.all(
     selected.map((file) => withinRoot(root, file)),

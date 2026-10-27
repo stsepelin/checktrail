@@ -24,7 +24,7 @@ remain separate.
 Capability levels are discovery, planning, execution, structured evidence,
 semantic rules, and integration validation. None implies the next. This file's
 initial scope column describes the experimental implementation. Node, Python,
-Go, TypeScript, ESLint, Vitest, Jest and vue-tsc execution have been exercised locally. Vitest accepts stable major versions 4 and 5; native compatibility is exercised at 4.1.9 and 5.0.1 (see [Vitest validation](VITEST.md)). PHP syntax
+Go, TypeScript, ESLint, Vitest, Jest and vue-tsc execution have been exercised locally. Vitest accepts stable major versions 4 and 5; native compatibility has been exercised at 4.1.9, 5.0.1 and 5.0.5 (see [Vitest validation](VITEST.md)). PHP syntax
 has been verified separately in an isolated official Linux container. Tool versions and remaining gaps are tracked in `STATUS.md`.
 
 | Family                        | Project boundaries                                                                                             | Initial scope                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Subsequent native integrations                                                                       | Important constraints                                                                                                                         |
@@ -513,7 +513,7 @@ The opt-in [Terraform module/provider extension](TERRAFORM-EXTENSIONS.md) adds a
 
 The opt-in [Helm application/subchart extension](HELM-EXTENSIONS.md) validates a finite local alias graph with transitive and repeated charts, scalar value/schema constraints and physical/rendered native diagnostics. Exact source bytes, full debug schemas, all physical lint outcomes and complete template-instance participation remain current at admission. Linux ARM64/Helm 4.3.0 is the measured scope; wider charts, cluster/API schema behavior, provenance and Gate A remain open.
 
-[Selected native mutation runners](MUTATIONS.md) add flat Vitest 5.0.1, Jest 30.5.2, pytest 9.1.1/Python 3.12.13 and PHPUnit 13.3.4/PHP 8.5.6 experiments on Linux ARM64/Node 22.23.2. Fresh copies preserve originals and distinguish skips, collection/setup errors, body errors and teardown assertions from mutation kills. Wider runners/platforms, complete runtime/license closure and Gate A remain open.
+[Selected native mutation runners](MUTATIONS.md) add flat Vitest 5.0.5, Jest 30.5.2, pytest 9.1.1/Python 3.12.13 and PHPUnit 13.3.4/PHP 8.5.6 experiments on Linux ARM64/Node 22.23.2. Fresh copies preserve originals and distinguish skips, collection/setup errors, body errors and teardown assertions from mutation kills. Wider runners/platforms, complete runtime/license closure and Gate A remain open.
 
 Journal codec/private storage foundation controls retain actual binary native child
 observations in separate bounded files with interrupted-call replay. This is a

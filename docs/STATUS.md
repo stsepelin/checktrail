@@ -616,6 +616,10 @@ parser tests reject mismatched totals, duplicate/unexpected files and nontermina
 assertions. Configuration cannot make a missing dependency trigger installation.
 The Vitest integration and parser tests pass on Node 22, 24 and 26 on macOS.
 See `VITEST.md` for scope and compatibility limits.
+The current dependency candidate selects Vitest 5.0.5 while retaining Vite
+8.3.0. Its original integration/parser controls passed locally, and the selected
+Vitest/Jest mutation cohorts passed separately on Linux ARM64/Node 22.23.2.
+Those update checks do not rewrite the historical platform measurements above.
 
 Jest 30.5.2 integration verifies passing and failing assertions, files under
 `__tests__`, import failures, empty files, intentional skips, focus omissions,
