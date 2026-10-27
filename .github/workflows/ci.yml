@@ -23,4 +23,4 @@ jobs:
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
       - run: node scripts/prepare-release-readiness-tools.mjs
-      - run: node scripts/diagnose-windows-upgrade.mjs
+      - run: node scripts/verify-resource-release-readiness.mjs windows-node22
