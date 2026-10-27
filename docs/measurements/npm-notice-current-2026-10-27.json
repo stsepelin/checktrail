@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "sourceCommit": "3a506f630ab020583cb68ddc07e55fd44b408e1a",
+  "command": "node scripts/audit-dependencies.mjs --include-dev",
+  "scope": "production-and-development-npm-dependencies",
+  "runtime": {
+    "node": "26.9.0",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "inputs": [
+    {
+      "file": "package.json",
+      "sha256": "156bd08332ef14e8608f204d6cfb73665226476eff3d25417d102f8349147618"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "99a8dd651fe6e12e83a3b98a105bd249927269d98f80afd7c8a2a98add09c75f"
+    },
+    {
+      "file": "scripts/audit-dependencies.mjs",
+      "sha256": "ebafa734bffb8b015c08194c07e26e6f3f6ea4a0b8141a8f1a77681b8450d952"
+    },
+    {
+      "file": "scripts/license-sources.json",
+      "sha256": "3d7bac0170ac74b4f3607efa13587de776805d5d4b18a8bf3c191b444bcf362f"
+    }
+  ],
+  "lockedPackageCount": 495,
+  "installedPackageCount": 433,
+  "platformInapplicableCount": 62,
+  "optionalAbsentCount": 0,
+  "packageCount": 433,
+  "partitionCloses": true,
+  "uninspectedNoticeSources": [
+    {
+      "package": "@rolldown/binding-linux-arm64-musl@1.2.9",
+      "state": "platform-inapplicable",
+      "noticeInspected": false
+    }
+  ],
+  "gaps": [],
+  "completeForDeclaredNpmScope": true,
+  "installedContentIntegrityIsArchiveIntegrity": false,
+  "completeNativeArtifactClosure": false,
+  "limitations": [
+    "Declared integrity is recorded, not recomputed over installed package contents",
+    "License declarations and notice presence do not establish legal compliance",
+    "Absent optional packages retain explicit platform exclusions or unresolved gaps",
+    "Installed content hashes bind observed files, not npm archive integrity or producer authentication",
+    "Native toolchains and container images are outside this audit"
+  ],
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

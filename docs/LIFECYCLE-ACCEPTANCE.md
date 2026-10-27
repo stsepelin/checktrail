@@ -83,3 +83,16 @@ fresh offline execution remain required in the same job; no previous job's
 receipt substitutes for execution. The Windows job has a 45-minute aggregate
 allowance for its combined Tasks, review and lifecycle work. Individual callback,
 cleanup and project execution deadlines are unchanged.
+
+The [readiness fixture correction](measurements/lifecycle-readiness-fixture-2026-10-27.json)
+records a real native body that completes after an eleven-second delay inside its
+fifteen-second execution budget. The earlier ten-second fixture observer aborted
+that valid workload. The observer now has a thirty-second ceiling matching the
+existing CLI/MCP request budget and reports an execution that rejects or completes
+before its body marker. Library and native execution limits stay unchanged.
+The existing near-miss callback retains its literal filename boundary and adds
+that delayed body; a separate runtime-binding callback preserves early trust
+rejection and incomplete native outcomes. Removing either fixture correction
+fails the unchanged native regression, and restoration passes. These development
+controls do not establish the intermittent hosted failure's cause or qualify the
+final native matrix.

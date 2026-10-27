@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "9a22011685199bedd5535742569e5746b77c5bcb",
+  "scope": "Original synthetic native lifecycle fixture correctness controls. No model review, inference or field trial.",
+  "runtime": {
+    "node": "26.9.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "selectedRuntimeSlot": null
+  },
+  "inputSources": [
+    {
+      "file": "test/lifecycle-platforms-fixture.ts",
+      "sha256": "0ebddad7628365f52c26767dbd5e0db88c5e5ec6b08240562aaa221fe63b6edf"
+    },
+    {
+      "file": "test/gate-lifecycle-platforms.test.ts",
+      "sha256": "ae0eac3694e8b9cf775abb7e8c26b15a139261f3c22b82dace6bc28dfa2f0583"
+    },
+    {
+      "file": "test/lifecycle-runtime-harness.test.ts",
+      "sha256": "c51602177bff9564b90be91395e78dc1eb134892513610a4280d49a81663f05f"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "bc20587dab20a4975e6675cc82fcc7d08124be7210d3023a7493ed019e4d730c"
+    },
+    {
+      "file": "dist/test/lifecycle-platforms-fixture.js",
+      "sha256": "b8a1541a91a62728e1a1b9b2e895195080e81a81fdd859bbdcc0c28bb146da6c"
+    },
+    {
+      "file": "dist/test/gate-lifecycle-platforms.test.js",
+      "sha256": "63c817305a52e27a575af003d6d8c62f25ea383ef14104676d7dabdb25c9158e"
+    },
+    {
+      "file": "dist/test/lifecycle-runtime-harness.test.js",
+      "sha256": "5425dc90ed567b6e38ddedceb01a96e07ab5f4761f561cfa51ce52a9ff1de78c"
+    }
+  ],
+  "originalNativeControl": [
+    {
+      "case": "direct-native-control",
+      "passed": true,
+      "operatorTimeoutMs": 15000,
+      "bodyDelayMs": 11000,
+      "elapsedMs": 11447.528625,
+      "allObservedProcessesGone": true
+    },
+    {
+      "case": "original-fixture-rejection",
+      "expectedFailureObserved": true,
+      "operatorTimeoutMs": 15000,
+      "bodyDelayMs": 11000,
+      "elapsedMs": 10422.342749999998
+    }
+  ],
+  "originalRegressionFailures": {
+    "required": 2,
+    "failedAsExpected": 2,
+    "elapsedSeconds": 11.068508417,
+    "reason": "Original readiness observation expired before an eligible native body; early rejected/incomplete execution was hidden by the same generic wait."
+  },
+  "correctedRegressionCallbacks": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0
+  },
+  "fixtureObserver": {
+    "previousCeilingMs": 10000,
+    "currentCeilingMs": 30000,
+    "nativeExecutionLimitsChanged": false,
+    "delayedBodyMs": 11000,
+    "libraryExecutionLimitMs": 15000,
+    "cliAndMcpExecutionLimitMs": 30000,
+    "earlyRejectedAndIncompleteResultsReportedBeforeMarker": true,
+    "missingBodyMarkersStillRejected": true
+  },
+  "pairedControls": {
+    "controls": [
+      {
+        "id": "wait-for-eligible-native-readiness",
+        "callback": "lifecycle-platforms near-miss acceptance",
+        "originalPassed": true,
+        "mutantJavaScriptParsed": true,
+        "mutantRejectedByUnchangedReadinessAssertion": true,
+        "restoredPassed": true,
+        "callbacksUnchanged": true,
+        "mutantSha256": "666ea4d4272da5d7398ce441ba42ce23f1c591e3be2a034c0b5356fe955894c5",
+        "mutantSeconds": 10.892946292
+      },
+      {
+        "id": "observe-early-terminal-before-marker",
+        "callback": "lifecycle readiness preserves early rejected and incomplete native outcomes before any body marker",
+        "originalPassed": true,
+        "mutantJavaScriptParsed": true,
+        "mutantRejectedByUnchangedReadinessAssertion": true,
+        "restoredPassed": true,
+        "callbacksUnchanged": true,
+        "mutantSha256": "6995c3f3bb9e3c9cd4b5fec935725850c2032db94c6eda3fd5ac7c15a93ea4ef",
+        "mutantSeconds": 30.288121458
+      }
+    ],
+    "fixtureSha256": "b8a1541a91a62728e1a1b9b2e895195080e81a81fdd859bbdcc0c28bb146da6c",
+    "callbackSha256": {
+      "dist/test/gate-lifecycle-platforms.test.js": "63c817305a52e27a575af003d6d8c62f25ea383ef14104676d7dabdb25c9158e",
+      "dist/test/lifecycle-runtime-harness.test.js": "5425dc90ed567b6e38ddedceb01a96e07ab5f4761f561cfa51ce52a9ff1de78c"
+    },
+    "sourceRestored": true,
+    "nativeProductionLimitsChanged": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "intermittentHostedFailureCauseConfirmed": false,
+  "currentNativeMatrixQualified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

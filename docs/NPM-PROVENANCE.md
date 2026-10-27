@@ -36,9 +36,11 @@ unrecognized filename remains a gap pending deliberate reconciliation.
 
 A complete audit exits 0. Missing declarations or notices produce an incomplete
 report and exit 2. Invalid trees, stale bindings and unsafe contents fail without
-a successful report. The current development audit remains incomplete because
-some notices remain unavailable or declarations conflict;
-[the dated notice binding measurement](measurements/npm-notice-bindings-2026-10-11.json)
+a successful report. The [2026-10-27 development audit](measurements/npm-notice-current-2026-10-27.json)
+is complete for its declared installed npm scope, with platform exclusions and
+one uninspected platform-specific notice source retained explicitly. Native tools
+and container images remain outside that scope.
+[The earlier notice binding measurement](measurements/npm-notice-bindings-2026-10-11.json)
 records its original gaps and package accounting. The
 [earlier audit measurement](measurements/npm-provenance-2026-10-11.json) records
 its pre-reconciliation state. The recorded production audit is
@@ -113,11 +115,12 @@ are retained separately. This does not manufacture a notice in the original
 checks the fallback and installed-file bytes; it does not interpret the
 publisher's clarification.
 
-The `fb-watchman@2.0.2` fallback now points to
+The earlier `fb-watchman@2.0.2` observation binds
 [the exact release-preparation tree](https://github.com/facebook/watchman/tree/05872a3eb9d909858983b2c30addc6a286da2f0f/watchman/node).
-Its retained original MIT notice bytes are unchanged. The actual package's
-Apache-2.0 declaration and MIT source/root notice disagreement remains an
-incomplete audit result. `stackback@0.0.2` still lacks a complete package-wide
-MIT notice; the original BSD-form V8 comment in `formatstack.js` covers its own
-component and cannot replace that missing notice. No dependency versions change,
-and complete artifact/license closure and Gate A remain open.
+Its retained original MIT notice differs from that package's Apache-2.0
+declaration. The earlier `stackback@0.0.2` observation also lacked a complete
+package-wide MIT notice; its BSD-form V8 comment covered its own component.
+Those historical gaps are retained. The qualified Vitest 5.0.5 dependency graph
+contains neither version, and the unused version-specific fallbacks were removed
+only after checking the new lock. The dated current audit records the resulting
+npm scope; complete native/container artifact closure and Gate A remain open.
