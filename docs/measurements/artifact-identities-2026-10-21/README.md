@@ -134,3 +134,11 @@ and module code. Every source member binds to the identified upstream Git tree,
 including the documented version substitution. Valid Go source edits change both
 archives; exact restoration reproduces them. Compiler/bootstrap and generated
 arithmetic/assembly producer chains remain separate open Gate A work.
+
+The [native packaging SDK rebuild](provider-native-packager-sdk-rebuild.json)
+reproduces every regular member of the selected Darwin ARM64 Go 1.24.13 SDK
+after the [pinned upstream Go verifier](https://github.com/golang/build/blob/63b63b04bd2424ddcf42e7ef9ca8a02810de6fe4/cmd/gorebuild/darwin.go) normalizes executable signatures.
+The complete signed archive is byte-different. Payload mutations remain visible,
+and both FIPS archives reproduce exactly with this source-built compiler.
+Bootstrap ancestry, original signing trust, copied/generated payload producers
+and complete original inline notices remain open.

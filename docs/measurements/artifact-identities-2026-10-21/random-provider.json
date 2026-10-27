@@ -131,7 +131,7 @@
         {
           "file": "provider-independent-rebuild.json",
           "bytes": 8571,
-          "sha256": "810625437c5a1ea84d8a9718c8947ad5485773e1157553db326af7cef5f2f572",
+          "sha256": "f5b08e5c28524695ed6f662e1a33d80ea6be7f3c5230835da7d80b6339dbcd96",
           "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
         }
       ]
@@ -159,8 +159,8 @@
       "retainedInputs": [
         {
           "file": "provider-independent-zip-repack.json",
-          "bytes": 10624,
-          "sha256": "8f4c05251321b67dc503b5b004cab7996e77c19d30292692d54d4f2fcbbea2c7"
+          "bytes": 11276,
+          "sha256": "8410bcff6a5b18d697b2883766e53322b960b7a994ab77a786814000998e3768"
         }
       ]
     }

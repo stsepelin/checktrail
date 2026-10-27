@@ -1,0 +1,1149 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Independent native Darwin ARM64 Go 1.24.13 source build. Every regular SDK member matches the official SDK after the exact pinned upstream signature normalization. The complete signed archive is byte-different, and bootstrap/copied-input closure remains open.",
+  "frozenBuildRecipe": {
+    "schemaVersion": 1,
+    "frozenBeforeBuild": true,
+    "sourceVersion": "go1.24.13",
+    "sourceArchiveSha256": "639a6204c2486b137df1eb6e78ee3ed038f9877d0e4b5a465e796a2153f858d7",
+    "sourceArchiveBytes": 30802752,
+    "sourceUrl": "https://go.dev/dl/go1.24.13.src.tar.gz",
+    "expectedOfficialArchive": {
+      "filename": "go1.24.13.darwin-arm64.tar.gz",
+      "os": "darwin",
+      "arch": "arm64",
+      "version": "go1.24.13",
+      "sha256": "f282d882c3353485e2fc6c634606d85caf36e855167d59b996dbeae19fa7629a",
+      "size": 76442495,
+      "kind": "archive"
+    },
+    "bootstrapVersion": "go version go1.27.1 darwin/arm64",
+    "bootstrapGoExecutableSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598",
+    "bootstrapProducerBuildClosureVerified": false,
+    "command": ["bash", "make.bash", "-distpack"],
+    "environment": {
+      "GOOS": "darwin",
+      "GOARCH": "arm64",
+      "CGO_ENABLED": "unset",
+      "GOROOT_BOOTSTRAP": "exact observed prebuilt Darwin ARM64 Go 1.27.1 root",
+      "GOTOOLCHAIN": "local",
+      "GOENV": "off",
+      "GOTELEMETRY": "off",
+      "GOMAXPROCS": "2",
+      "GOCACHE": "fresh private cache",
+      "GOPROXY": "off",
+      "GOSUMDB": "off"
+    },
+    "expectedBinaryArchivePassedToBuild": false,
+    "buildTimeoutSeconds": 1200,
+    "fullProducerClosureVerified": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "nativeBuildObservation": {
+    "state": "completed",
+    "recipeSha256": "239bec57bd963fd2a8151461dea1a6310c2187d17d16dce477fdd85f3ba9ca6c",
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "exitCode": 0,
+    "elapsedSeconds": 104.39203404099999,
+    "logSha256": "fd536761a897f2c1fbae6e2c60255599d9cd5afdedebbd43364e0493f5b95a6b",
+    "sourceArchiveUnchanged": true,
+    "outputBytes": 76337394,
+    "outputSha256": "0ece28e0b87491252bd7127f81408327ae65e7633c4658ffbf0ad6b061b22d05",
+    "matchesCompleteOfficialArchive": false,
+    "rebuiltSourceArchiveMatches": true,
+    "fullBootstrapAndCopiedPayloadClosureVerified": false
+  },
+  "wholeSignedArchiveByteEquality": false,
+  "sourceArchiveReproducedExactly": true,
+  "officialArchiveEntryPartition": {
+    "entries": 15739,
+    "regularFiles": 14179,
+    "directories": 1560,
+    "other": 0
+  },
+  "unnormalizedArchiveMemberComparison": {
+    "expectedFiles": 14179,
+    "rebuiltFiles": 14179,
+    "exactMemberNameSetMatches": true,
+    "differingFiles": [
+      {
+        "path": "go/bin/go",
+        "expected": {
+          "bytes": 13777920,
+          "sha256": "c9507e881b743649af2b8d9edd8678433b999acfe4da2f9834a08a4fcebb1861",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 13759634,
+          "sha256": "5588df879187a7587f98446ee8205ee1a8da506d362ab92c6d50d348fbeb39be",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/bin/gofmt",
+        "expected": {
+          "bytes": 2894992,
+          "sha256": "3eb3566be692616deb103d3d97d9a4e5dcaee853f145df384a2f796868f28aae",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 2876706,
+          "sha256": "cab69c2429ad110aa46b9a78178c9ff96d370e05432ea694e3e6a0078369306d",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/addr2line",
+        "expected": {
+          "bytes": 2643664,
+          "sha256": "39b25e1c0c064a42056c7c76bc609c81397143e582bfd5c25143c48c48e1fd64",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 2625362,
+          "sha256": "def658692ec0105ff0e1fc5abc77f7779dacf6e5c777da851f357bf60ea4d3b4",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/asm",
+        "expected": {
+          "bytes": 4660208,
+          "sha256": "8ae5b5729e84e5871ddf7c05a0478b395d3a26b3dd3e24f81092db6bb870ee0f",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 4641922,
+          "sha256": "68172e3a3f07989de14b1dda97b080148ad706ed0d7abfdf7e282eb9551c331d",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/buildid",
+        "expected": {
+          "bytes": 2496432,
+          "sha256": "82ac514afa3251e1359f2b7a1518a15c19bd418650090f26db6e6a835908f693",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 2478130,
+          "sha256": "21f618cfdb33bcca73a2b32cb9b7599ce2ca9b5f3c7e761b9306ebc9bcf810c9",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/cgo",
+        "expected": {
+          "bytes": 4174528,
+          "sha256": "7871d4dc881b3d1896925bb28733444fb4544b7844902934aefb06b2a190be17",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 4156242,
+          "sha256": "06c6dd533cbe4ed8566e4607e1d7215a5c51cd4c1c6b82343326ca724ddcaca9",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/compile",
+        "expected": {
+          "bytes": 20443280,
+          "sha256": "242f6de9606e60c2bd0358d67d6167931fbff0087dc4be67eb274020988946a3",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 20424978,
+          "sha256": "0bfc6f0430f2bffe8ec7d1c584bc105404e1522557fa1c2e393080581c249f27",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/covdata",
+        "expected": {
+          "bytes": 2951424,
+          "sha256": "18f454d6fdf625a6bf595b87dea6420ed5cf0b6f04315146b11650561408f29c",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 2933122,
+          "sha256": "23e9edf44e23a45e89018b7c047cd707e7dc3de964d36e410456b5a2480f9472",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/cover",
+        "expected": {
+          "bytes": 5001872,
+          "sha256": "2f7199679978ab8b846a23b77b1b7f0fd48bdae07604decc3d0a09e7faee6a10",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 4983586,
+          "sha256": "7e023fa81c8e16bc18c234896df6c431842b7a6a1d0e2bd59bcab87d267a1918",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/doc",
+        "expected": {
+          "bytes": 3382944,
+          "sha256": "0291bdf8c188143937054454d8fe76bd46531099a379283f652d5cdb1851f26c",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 3364658,
+          "sha256": "fcb7957108952ae7272717cae3644e4b6abf5ce820ac2b0a0f1ee4f3a4cdaf10",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/fix",
+        "expected": {
+          "bytes": 2894560,
+          "sha256": "15090f7d06ad53450739ef0485d0a888bef3cc6c92a2aa94fc0c6dbf1c189089",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 2876274,
+          "sha256": "d3d95578f522261bd2008724a2cf5edbfcefd90908c928812c914da91760f504",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/link",
+        "expected": {
+          "bytes": 6019984,
+          "sha256": "c2d08c5bdbc7689a141dbdbd1d652ba1596590a006d9b9411282871605e0b2ec",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 6001698,
+          "sha256": "53ab89a4a772f322b0363f7aab38d97793450ab003cfdbd85aa3050c1c103f12",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/nm",
+        "expected": {
+          "bytes": 2628000,
+          "sha256": "6be389a5150069c8a1e70965013b92f0ba708e922cbd440eb04bebc529f2dad1",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 2609714,
+          "sha256": "8b9e9e9b7f1ff6cd433d74c60002e1d4e0abf4b30164b874e9155f0a7c893f8a",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/objdump",
+        "expected": {
+          "bytes": 4755792,
+          "sha256": "453681cf99a8078690fc75d8ceaf9e468fa53a219aba18fc427496135d20e90e",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 4737490,
+          "sha256": "15a9d6abb1a0df2f92a262d3556ffbe5036d040d328bc47cde37e24c45b0a195",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/pack",
+        "expected": {
+          "bytes": 2110112,
+          "sha256": "a0d53692225c53585271eac5a5f1a20d1632bf9898b71b8edcac47fd762627c7",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 2091826,
+          "sha256": "c9ddcb5fc41473380334fa3c84591f3c4688b01b7b3ecac4d0ea1ca9accb4166",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/pprof",
+        "expected": {
+          "bytes": 13688736,
+          "sha256": "07bae15272983f1bd331ca0d2ab1c4173e89c34f7dbf57b748bc898a6c0385a9",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 13670450,
+          "sha256": "30c3f9cdafbe39ef7a84d704ea668a3d54d878642241f87d01687d4c7e1ca3dd",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/preprofile",
+        "expected": {
+          "bytes": 2256432,
+          "sha256": "117842d8a76ebf3884ef2e3d75e8d17c798c21d182af50a6ee7fb7394feca2fe",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 2238130,
+          "sha256": "d0937bf0aab2727e21333c6cc661c095d31b2dc63199cda4a54f81830a5f6134",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/test2json",
+        "expected": {
+          "bytes": 2368624,
+          "sha256": "7f795e1da03abcc7b7b4fffea9a8e0cd18600915546836a851a6800ca1ece8d1",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 2350322,
+          "sha256": "e8b7d6798ab4e8651756d7a7e1381762ad82fa396415a6d8ea6f9afbb0c15cc7",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/trace",
+        "expected": {
+          "bytes": 13064320,
+          "sha256": "0ab91e0839dbf5655167d70f5b8674835d0fc342b1cc0c76b883ad6871e33c93",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 13046034,
+          "sha256": "3120a1c402c0b2dcd1d6fa0635714ba06e0b4d93e6f9e2e5bcaf34399232b31d",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/vet",
+        "expected": {
+          "bytes": 7400240,
+          "sha256": "f9a001ea026caa7d1d00a3c638046f7cfec38884e5b6d15b6d6aa6dfed4ea200",
+          "mode": 493,
+          "mtime": 1770148950
+        },
+        "rebuilt": {
+          "bytes": 7381954,
+          "sha256": "d6775217b3dc022e69d00c0dcfe1cc4da867ff5eee941499bb11031d6c9fd259",
+          "mode": 493,
+          "mtime": 1770148950
+        }
+      }
+    ],
+    "wholeArchiveMatches": false,
+    "fullProducerBuildClosure": false
+  },
+  "upstreamVerifier": {
+    "upstreamCommit": "63b63b04bd2424ddcf42e7ef9ca8a02810de6fe4",
+    "upstreamFile": "cmd/gorebuild/darwin.go",
+    "upstreamFileSha256": "40cc6f2fab3e685ea8e339e2a9257524c4b8b776dac6a6739977864568382a09",
+    "exactFunctionBytesSha256": "b757c2341b715fcfc9e9ee76a64d0262621f88b032f7734d52e4271c6f5ecfe5",
+    "exactFunctionUsedWithoutEdits": true,
+    "privateWrapperSha256": "31c35433580b25b421c3e12f8e80f36a6d1ffc94b3fe822ce08c75d6472c7186",
+    "sourceUrl": "https://github.com/golang/build/blob/63b63b04bd2424ddcf42e7ef9ca8a02810de6fe4/cmd/gorebuild/darwin.go",
+    "method": "Strip only the final Mach-O LC_CODE_SIGNATURE and its payload, and update the LINKEDIT signature-dependent sizes exactly as the unchanged upstream function does. Compare all other regular member names, modes, times, uid/gid, sizes and SHA-256 values.",
+    "signatureCryptographicTrustVerified": false
+  },
+  "normalizedComparison": {
+    "regularMembers": 14179,
+    "officialExecutableSignaturesNormalized": 20,
+    "rebuiltExecutableSignaturesNormalized": 20,
+    "completeNormalizedMemberTableMatches": true,
+    "verifierProblems": [],
+    "retainedFullPrivateComparisonSha256": "8c65551832b01ef9c06fc950472e2d4e91018d44bbcab3cd7160618e9398bb81",
+    "officialExecutableControls": [
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/bin/go",
+        "normalizedBytes": 13652832,
+        "normalizedSha256": "471f9a5e94cb121a0e4294e38564bc8f7bacdcc3ef8412867126e749aeb7bdc7"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/bin/gofmt",
+        "normalizedBytes": 2854288,
+        "normalizedSha256": "349e8d82084f6ec39c0a878f655f474adf8e23f7b3c4958b2d2430c65adfdf8b"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/addr2line",
+        "normalizedBytes": 2604896,
+        "normalizedSha256": "f07a59134d17178260b37f6cf6822d17b7375e234af8f7d70bc71510b11c5ef9"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/asm",
+        "normalizedBytes": 4605808,
+        "normalizedSha256": "d423f0def5a88e7143a8274b867c5e5ba72af4fbc76a1a79efc886f3b906d489"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/buildid",
+        "normalizedBytes": 2458784,
+        "normalizedSha256": "d238d09d4219406b91074b732e27013f172e6522241b66ca41a7ae8d4d9917fe"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/cgo",
+        "normalizedBytes": 4123904,
+        "normalizedSha256": "3b0f483d1ebce13119b66a3c9c5c32485b2f82ea30837800d8e0ebc1423ca7c9"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/compile",
+        "normalizedBytes": 20266528,
+        "normalizedSha256": "dc53f2d90867d2b170a3bedaa76cd7447a4890a4b0027252251943a646e85c73"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/covdata",
+        "normalizedBytes": 2910256,
+        "normalizedSha256": "3ea0208de5de79d330852c29e85ac8433049732e9b256c544c6be84614faef41"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/cover",
+        "normalizedBytes": 4944816,
+        "normalizedSha256": "5de3c9038e35b4ef32b127fd1342cd7c61fae19bfc32566b538f2be33e7e0454"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/doc",
+        "normalizedBytes": 3338432,
+        "normalizedSha256": "b2671329470cc3e2d968b8dfdf2333d70e54870bce7f67f42d1165936b075a22"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/fix",
+        "normalizedBytes": 2853856,
+        "normalizedSha256": "790a1af20bed44f71c3784b77bab01e6295324c0d79b65b51d0017f62174e7b0"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/link",
+        "normalizedBytes": 5955056,
+        "normalizedSha256": "5bad168010e0509024d32e004c9a53fa3a029ae5d5d87511c2e5571471f5f0cd"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/nm",
+        "normalizedBytes": 2589344,
+        "normalizedSha256": "087cff1726e98d1c1841132b5dabfbe998fa516ce710d476ad188453cc429ed6"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/objdump",
+        "normalizedBytes": 4700640,
+        "normalizedSha256": "1c637f3203463e486fdee7723a953743879e863ab873e49dd56bf83e1e137665"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/pack",
+        "normalizedBytes": 2075488,
+        "normalizedSha256": "45998edf4285b6d772b885ffca7f963f81b5d5eacc7cfbaf63f450553a78b42b"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/pprof",
+        "normalizedBytes": 13564352,
+        "normalizedSha256": "f4c12473596ad777c1a3a91fb56c22066ad5d6d4b142467c16c24be98cca2338"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/preprofile",
+        "normalizedBytes": 2220640,
+        "normalizedSha256": "734cff09c8c5c20f1e265bd1f20b5e712578151b31c2ee2594c800dcce779982"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/test2json",
+        "normalizedBytes": 2331968,
+        "normalizedSha256": "79528e0bfc67602761d53c7f45a70fa9c4f5e0ee75a886a82cddb1ee7da2792f"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/trace",
+        "normalizedBytes": 12944768,
+        "normalizedSha256": "c6c55efb0bf494ef2e042706cb7778842079895b6d655eda0f02f4feb3cad7bd"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/vet",
+        "normalizedBytes": 7324592,
+        "normalizedSha256": "8c9ece699db0fdb117919e480bf38511ad56bfcd6278078abc4af6cfd73630a9"
+      }
+    ],
+    "rebuiltExecutableControls": [
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/bin/go",
+        "normalizedBytes": 13652832,
+        "normalizedSha256": "471f9a5e94cb121a0e4294e38564bc8f7bacdcc3ef8412867126e749aeb7bdc7"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/bin/gofmt",
+        "normalizedBytes": 2854288,
+        "normalizedSha256": "349e8d82084f6ec39c0a878f655f474adf8e23f7b3c4958b2d2430c65adfdf8b"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/addr2line",
+        "normalizedBytes": 2604896,
+        "normalizedSha256": "f07a59134d17178260b37f6cf6822d17b7375e234af8f7d70bc71510b11c5ef9"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/asm",
+        "normalizedBytes": 4605808,
+        "normalizedSha256": "d423f0def5a88e7143a8274b867c5e5ba72af4fbc76a1a79efc886f3b906d489"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/buildid",
+        "normalizedBytes": 2458784,
+        "normalizedSha256": "d238d09d4219406b91074b732e27013f172e6522241b66ca41a7ae8d4d9917fe"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/cgo",
+        "normalizedBytes": 4123904,
+        "normalizedSha256": "3b0f483d1ebce13119b66a3c9c5c32485b2f82ea30837800d8e0ebc1423ca7c9"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/compile",
+        "normalizedBytes": 20266528,
+        "normalizedSha256": "dc53f2d90867d2b170a3bedaa76cd7447a4890a4b0027252251943a646e85c73"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/covdata",
+        "normalizedBytes": 2910256,
+        "normalizedSha256": "3ea0208de5de79d330852c29e85ac8433049732e9b256c544c6be84614faef41"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/cover",
+        "normalizedBytes": 4944816,
+        "normalizedSha256": "5de3c9038e35b4ef32b127fd1342cd7c61fae19bfc32566b538f2be33e7e0454"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/doc",
+        "normalizedBytes": 3338432,
+        "normalizedSha256": "b2671329470cc3e2d968b8dfdf2333d70e54870bce7f67f42d1165936b075a22"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/fix",
+        "normalizedBytes": 2853856,
+        "normalizedSha256": "790a1af20bed44f71c3784b77bab01e6295324c0d79b65b51d0017f62174e7b0"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/link",
+        "normalizedBytes": 5955056,
+        "normalizedSha256": "5bad168010e0509024d32e004c9a53fa3a029ae5d5d87511c2e5571471f5f0cd"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/nm",
+        "normalizedBytes": 2589344,
+        "normalizedSha256": "087cff1726e98d1c1841132b5dabfbe998fa516ce710d476ad188453cc429ed6"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/objdump",
+        "normalizedBytes": 4700640,
+        "normalizedSha256": "1c637f3203463e486fdee7723a953743879e863ab873e49dd56bf83e1e137665"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/pack",
+        "normalizedBytes": 2075488,
+        "normalizedSha256": "45998edf4285b6d772b885ffca7f963f81b5d5eacc7cfbaf63f450553a78b42b"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/pprof",
+        "normalizedBytes": 13564352,
+        "normalizedSha256": "f4c12473596ad777c1a3a91fb56c22066ad5d6d4b142467c16c24be98cca2338"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/preprofile",
+        "normalizedBytes": 2220640,
+        "normalizedSha256": "734cff09c8c5c20f1e265bd1f20b5e712578151b31c2ee2594c800dcce779982"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/test2json",
+        "normalizedBytes": 2331968,
+        "normalizedSha256": "79528e0bfc67602761d53c7f45a70fa9c4f5e0ee75a886a82cddb1ee7da2792f"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/trace",
+        "normalizedBytes": 12944768,
+        "normalizedSha256": "c6c55efb0bf494ef2e042706cb7778842079895b6d655eda0f02f4feb3cad7bd"
+      },
+      {
+        "exactRestorationAccepted": true,
+        "instructionPayloadMutationRejected": true,
+        "name": "go/pkg/tool/darwin_arm64/vet",
+        "normalizedBytes": 7324592,
+        "normalizedSha256": "8c9ece699db0fdb117919e480bf38511ad56bfcd6278078abc4af6cfd73630a9"
+      }
+    ]
+  },
+  "initialHostSignatureRemovalControl": {
+    "command": [
+      "codesign",
+      "--remove-signature",
+      "private copy of each executable"
+    ],
+    "completeUnsignedByteEquality": false,
+    "comparison": [
+      {
+        "path": "go/bin/go",
+        "officialUnsignedBytes": 13652832,
+        "rebuiltUnsignedBytes": 13652832,
+        "officialUnsignedSha256": "c67776fdae5146acd0540f7aa33a899fc377804216924888a96adda071527dfb",
+        "rebuiltUnsignedSha256": "e27d1e9846321973d96f35232ddaa35c01f46398d3508bb4a05ba044c61a5439",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      },
+      {
+        "path": "go/bin/gofmt",
+        "officialUnsignedBytes": 2854288,
+        "rebuiltUnsignedBytes": 2854288,
+        "officialUnsignedSha256": "e62cd302519314afb024d0f67792d16c25430fdd849b850cd8b0e68775da833e",
+        "rebuiltUnsignedSha256": "eaf7797af2b617ac32ae417612ceee1ae2e2ee7ce78eb7fbb96e3c2f64488215",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/addr2line",
+        "officialUnsignedBytes": 2604896,
+        "rebuiltUnsignedBytes": 2604896,
+        "officialUnsignedSha256": "35aef6e329e3e3917a5dd89bc2c50ce4418cb95d10af5452f58e8b8bf6ad852b",
+        "rebuiltUnsignedSha256": "44b0d73768b791ef9ca2ac3e1deaf08fb28ed14bed1df9960a2b1cbef70c456a",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 3,
+        "firstDifferenceOffsets": [1552, 1553, 1554]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/asm",
+        "officialUnsignedBytes": 4605808,
+        "rebuiltUnsignedBytes": 4605808,
+        "officialUnsignedSha256": "a3ffe1b9ee25e704cf1ea107c462f752ac33454671b9a894404a394d710de889",
+        "rebuiltUnsignedSha256": "811b3f54a7e7681dbc4565d7173c8ee603ecf57234ad4bf8bf01761f4495bef6",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/buildid",
+        "officialUnsignedBytes": 2458784,
+        "rebuiltUnsignedBytes": 2458784,
+        "officialUnsignedSha256": "0fbdd859e8f8eb2fc1f4e69e1349af9ae2df488170a457fc948374abcca77a29",
+        "rebuiltUnsignedSha256": "bfc675348f920bfe4140f820dc636bbe3edb15b825a7724dfe3f469c6ab286d2",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 3,
+        "firstDifferenceOffsets": [1552, 1553, 1554]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/cgo",
+        "officialUnsignedBytes": 4123904,
+        "rebuiltUnsignedBytes": 4123904,
+        "officialUnsignedSha256": "104d614378838746803591a9ef59ed4c86b776f7da1c4ab85770bca9329f53ef",
+        "rebuiltUnsignedSha256": "08f7c9ca9b3da9c3936867bed6f3ed531f99f135d129fe3159f310f60c97d41a",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 3,
+        "firstDifferenceOffsets": [1552, 1553, 1554]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/compile",
+        "officialUnsignedBytes": 20266528,
+        "rebuiltUnsignedBytes": 20266528,
+        "officialUnsignedSha256": "1ac3a74782a0d23470dad8f8c190c94cc6d1128e9f295398712c833f3aac208d",
+        "rebuiltUnsignedSha256": "6e3dce951d069c31b8b7b7da44ea47269c3b30dbc4e00566d6a20ed6f9d8ccff",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/covdata",
+        "officialUnsignedBytes": 2910256,
+        "rebuiltUnsignedBytes": 2910256,
+        "officialUnsignedSha256": "56fe7755ae6c97abb0d7bad6e5f10a609e719c68c090bea4d41e93ac68ae8910",
+        "rebuiltUnsignedSha256": "ff62296eada8c8fdf4bc8bdc1e702dea03116d2a491ced59729c9aa78940bd32",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/cover",
+        "officialUnsignedBytes": 4944816,
+        "rebuiltUnsignedBytes": 4944816,
+        "officialUnsignedSha256": "5129d13c0fcc95f7488d868642f2161c977c9b5322eb80e8d90969ba2e723400",
+        "rebuiltUnsignedSha256": "1e8a99ac1abe4f0e115ecf50a7b829ee1650af361fc5ad7c0bd3ad134633004d",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/doc",
+        "officialUnsignedBytes": 3338432,
+        "rebuiltUnsignedBytes": 3338432,
+        "officialUnsignedSha256": "bc997a6426813b4aca13c3a649f6ea6550c2433090bb3cd914c01cdcdb67c010",
+        "rebuiltUnsignedSha256": "68b5d6fd8f5b654a8912950c06c95255510b42dbbc1283de3e5f3e809ab738de",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 3,
+        "firstDifferenceOffsets": [1552, 1553, 1554]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/fix",
+        "officialUnsignedBytes": 2853856,
+        "rebuiltUnsignedBytes": 2853856,
+        "officialUnsignedSha256": "8c7cc80e3b3101b455f3c00ddfec4388caddd6d9f92b173859837c909d95c4fb",
+        "rebuiltUnsignedSha256": "460f0c4dda64b1a2c336396fd57d10aff60193e5e2bd612e325bca3323288157",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/link",
+        "officialUnsignedBytes": 5955056,
+        "rebuiltUnsignedBytes": 5955056,
+        "officialUnsignedSha256": "e3ee5cc24d95a2c7cf7f480d899fe21ea07ab57872a8040847d2dd4d0b139360",
+        "rebuiltUnsignedSha256": "5b46a6044baf6df6cde5030036f0005d9e2459eefc0b1fccb6b3c64a9a4a7d8b",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 3,
+        "firstDifferenceOffsets": [1552, 1553, 1554]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/nm",
+        "officialUnsignedBytes": 2589344,
+        "rebuiltUnsignedBytes": 2589344,
+        "officialUnsignedSha256": "abfdb779661beb3d25e4ef1266ad4a331a5e63f901b2588599fd4750ba8290da",
+        "rebuiltUnsignedSha256": "0e8dcdb74233aa12bf4938054c32c9b054531d2dc07fe7db278a7390fe4e0945",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 3,
+        "firstDifferenceOffsets": [1552, 1553, 1554]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/objdump",
+        "officialUnsignedBytes": 4700640,
+        "rebuiltUnsignedBytes": 4700640,
+        "officialUnsignedSha256": "542b7b0da32c526b4bb664f19499e6955b1ccc38508e661fdc6e9c73323f604c",
+        "rebuiltUnsignedSha256": "6154351e20f5668e517da4383906134fb876099210330cfbd9dd219bb0f323f6",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 3,
+        "firstDifferenceOffsets": [1552, 1553, 1554]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/pack",
+        "officialUnsignedBytes": 2075488,
+        "rebuiltUnsignedBytes": 2075488,
+        "officialUnsignedSha256": "17c20add63ee7828a0e759fae9da09dd118c49406a86631506ffeaa8d484e509",
+        "rebuiltUnsignedSha256": "e674444de702811ce03fc3b071b7a197f00453b32002aee9f2baf898c3788918",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 3,
+        "firstDifferenceOffsets": [1552, 1553, 1554]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/pprof",
+        "officialUnsignedBytes": 13564352,
+        "rebuiltUnsignedBytes": 13564352,
+        "officialUnsignedSha256": "7e5257d6c8c7c9d5eadbdaf376ca5c4f2c1a52444b4dc5e832b424b18683b855",
+        "rebuiltUnsignedSha256": "60b75877d4d41fd6f58a3fbc3af4808c74b87eb7201b1a9f7135df4b9ba33fa7",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/preprofile",
+        "officialUnsignedBytes": 2220640,
+        "rebuiltUnsignedBytes": 2220640,
+        "officialUnsignedSha256": "2bd9a9604d3fc8cbf503895d4668d23e21068824c87306165622e59ae74ccaef",
+        "rebuiltUnsignedSha256": "79f43f77d375cee25f0a46e965769e51b0aaa285cd08c2f58050a58107913203",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/test2json",
+        "officialUnsignedBytes": 2331968,
+        "rebuiltUnsignedBytes": 2331968,
+        "officialUnsignedSha256": "415e55e317bf416fb85d631be868c512e5b56346b607cb980154e0099e42da82",
+        "rebuiltUnsignedSha256": "587dd7bad8abe8ccca9d8c097b1dbed0e1bf83e34dbee983bf611065b0c00649",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/trace",
+        "officialUnsignedBytes": 12944768,
+        "rebuiltUnsignedBytes": 12944768,
+        "officialUnsignedSha256": "4d0ea56dc979cac3fedda9de15dcc7d5e7cc2d7853b6731c12950a81403701bf",
+        "rebuiltUnsignedSha256": "65a045895c2780d1761997cdf5517285a6640142862a148c2e54e1bbadbb9325",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 3,
+        "firstDifferenceOffsets": [1552, 1553, 1554]
+      },
+      {
+        "path": "go/pkg/tool/darwin_arm64/vet",
+        "officialUnsignedBytes": 7324592,
+        "rebuiltUnsignedBytes": 7324592,
+        "officialUnsignedSha256": "afeca959cce1692789df1c155a0f1ff538a55c018fd4a22e7712a158e3a9a5a6",
+        "rebuiltUnsignedSha256": "27071f6a9fb84df9983ba0b24266e98ec3f4b2dc69195ca00412f716df77b602",
+        "exactUnsignedBytesMatch": false,
+        "differingBytesInCommonPrefix": 2,
+        "firstDifferenceOffsets": [1552, 1553]
+      }
+    ],
+    "usedToEarnSdkMatch": false
+  },
+  "sourceBuiltCompilerConsumedByFipsReconstruction": {
+    "frozenRecipe": {
+      "schemaVersion": 1,
+      "frozenBeforeBuild": true,
+      "purpose": "Independently reconstruct copied FIPS source snapshots with their original mkzip and vendored module source",
+      "host": "darwin/arm64",
+      "goPackagerCompilerVersion": "go version go1.24.13 darwin/arm64",
+      "goCompilerExecutableSha256": "5588df879187a7587f98446ee8205ee1a8da506d362ab92c6d50d348fbeb39be",
+      "producerInputs": [
+        {
+          "version": "v1.26.0",
+          "producerCommit": "4b89bcb8b7141c7e4ef1a7dbb4c3f17f589d89c0",
+          "sourceArchiveUrl": "https://codeload.github.com/golang/go/tar.gz/4b89bcb8b7141c7e4ef1a7dbb4c3f17f589d89c0",
+          "sourceArchiveBytes": 34393108,
+          "sourceArchiveSha256": "2969b473df53e2b40c0e892896ef8cefa38600c287ebd7712eda610d302f3e2d",
+          "completeSourceArchiveGitTreeVerified": true,
+          "originalGitTree": "fb44abab56e0fbc720921ee0ee935dff44f37d3d",
+          "mkzipSha256": "2abb1de9bf960c1cf55d0b6f99bed624512e12dd4e9bb07baf12f8dac91934b5"
+        },
+        {
+          "version": "v1.0.0-c2097c7c",
+          "producerCommit": "e8a4f508d1140eef70463c6c085c352418e03d9c",
+          "sourceArchiveUrl": "https://codeload.github.com/golang/go/tar.gz/e8a4f508d1140eef70463c6c085c352418e03d9c",
+          "sourceArchiveBytes": 32675198,
+          "sourceArchiveSha256": "09353bf36f726d475bf35e84723decf65b8c6801210d08bdc39b62ca8da1b504",
+          "completeSourceArchiveGitTreeVerified": true,
+          "originalGitTree": "7b9895a6efddce82750dece43fd2d5991db12d33",
+          "mkzipSha256": "2abb1de9bf960c1cf55d0b6f99bed624512e12dd4e9bb07baf12f8dac91934b5"
+        }
+      ],
+      "snapshotInputs": [
+        {
+          "version": "v1.26.0",
+          "candidateSourceCommit": "8ac4477d83672af8c3d39399685731ee6b81ce2f",
+          "sourceArchiveUrl": "https://codeload.github.com/golang/go/tar.gz/8ac4477d83672af8c3d39399685731ee6b81ce2f",
+          "sourceArchiveBytes": 34394818,
+          "sourceArchiveSha256": "3a0eab35519f9756169a4f82a4f3abc8f9e0cb4ca50011fd4e86faad042cf1b3",
+          "sourceCommitConfirmedAgainstEveryPayload": false,
+          "originalGitTree": "961ce0a2f55308fe144dca622f5f73e3d2115123",
+          "completeSourceArchiveTreeMatchesOriginalGit": true,
+          "zipBytes": 676132,
+          "zipSha256": "9b28f847fdf1db4a36cb2b2f8ec09443c039383f085630a03ecfaddf6db7ea23",
+          "members": 231,
+          "payloadMatches": 231,
+          "unmatched": []
+        },
+        {
+          "version": "v1.0.0-c2097c7c",
+          "candidateSourceCommit": "c2097c7cc732918d854cae92a94c7f5c39f22138",
+          "sourceArchiveUrl": "https://codeload.github.com/golang/go/tar.gz/c2097c7cc732918d854cae92a94c7f5c39f22138",
+          "sourceArchiveBytes": 31055484,
+          "sourceArchiveSha256": "1a6d7306fb3129bbdc07695f8740a4894162198a2fb7c5b7be76962af0d625af",
+          "sourceCommitConfirmedAgainstEveryPayload": false,
+          "originalGitTree": "2d438f8a572d980ca2ad8313118c206bb9b8683e",
+          "completeSourceArchiveTreeMatchesOriginalGit": true,
+          "zipBytes": 658130,
+          "zipSha256": "daf3614e0406f67ae6323c902db3f953a1effb199142362a039e7526dfb9368b",
+          "members": 225,
+          "payloadMatches": 225,
+          "unmatched": []
+        }
+      ],
+      "moduleWrapper": "Synthetic go.mod only: module example.invalid/reconstruction; go 1.24; require golang.org/x/mod v0.0.0; replace golang.org/x/mod => exact copied producer src/cmd/vendor/golang.org/x/mod, with synthetic module golang.org/x/mod go 1.24 metadata. Original Go source bytes are unchanged.",
+      "gitReconstruction": "Complete codeload archive recreates original Git tree. Use private synthetic commits with fixed metadata over that tree, not original commit IDs. mkzip reads that exact tree via -b checktrail-source.",
+      "buildCommand": [
+        "go",
+        "build",
+        "-mod=mod",
+        "-trimpath",
+        "-o",
+        "private packager",
+        "exact original producer mkzip.go"
+      ],
+      "packageCommand": [
+        "private packager",
+        "-b",
+        "checktrail-source",
+        "exact snapshot version"
+      ],
+      "variants": [
+        "baseline exact original source tree",
+        "valid Go source comment appended to aes/aes.go",
+        "exact original source tree restored"
+      ],
+      "originalSnapshotZipPassedToBuild": false,
+      "nativeCommandTimeoutSeconds": 180,
+      "fullGoBootstrapCompilerSdkAndGeneratedSourceClosure": false,
+      "gateAComplete": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "nativeObservations": {
+      "recipeSha256": "eb0f1478a860ffda1ed1f8dd04e63386a3e600762ff6dd7bf3011c12aa561521",
+      "state": "completed",
+      "observations": [
+        {
+          "version": "v1.26.0",
+          "producerCommit": "4b89bcb8b7141c7e4ef1a7dbb4c3f17f589d89c0",
+          "snapshotSourceCommit": "8ac4477d83672af8c3d39399685731ee6b81ce2f",
+          "snapshotSourceTree": "961ce0a2f55308fe144dca622f5f73e3d2115123",
+          "expectedZipSha256": "9b28f847fdf1db4a36cb2b2f8ec09443c039383f085630a03ecfaddf6db7ea23",
+          "allOriginalSourcePayloadsMatch": true,
+          "packagerBuild": {
+            "exitCode": 0,
+            "elapsedSeconds": 2.7550631250000004,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "packagerExecutableSha256": "2e9e54d6cd90ad835739bc44c19ab4e7f73c9265cd2cf01c2ea2bf21cae52072",
+          "vendoredModuleSourceFileCount": 20,
+          "vendoredModuleSourceManifestSha256": "c419ac7d34f4fe3da2fc033639ba4148a95c7f74bf7a29e7f77539f5f5fa1d45",
+          "variants": [
+            {
+              "variant": "baseline",
+              "sourceTreeSha1": "961ce0a2f55308fe144dca622f5f73e3d2115123",
+              "originalSourceTreeRestored": true,
+              "result": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.8291424169999999,
+                "logSha256": "890b582dd92e8ab639f5805c12b35dcc641e7a4ec1ead1bd344ec3f3aa30bb8b"
+              },
+              "outputBytes": 676132,
+              "outputSha256": "9b28f847fdf1db4a36cb2b2f8ec09443c039383f085630a03ecfaddf6db7ea23",
+              "matchesOriginalZip": true
+            },
+            {
+              "variant": "mutant",
+              "sourceTreeSha1": "e1b7af51174f1bbe3378db672a2f8a34d94a8320",
+              "originalSourceTreeRestored": false,
+              "result": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.23306079099999977,
+                "logSha256": "890b582dd92e8ab639f5805c12b35dcc641e7a4ec1ead1bd344ec3f3aa30bb8b"
+              },
+              "outputBytes": 676163,
+              "outputSha256": "ccb5a0eb282eb9fdf9c3aa6815eaa4a2d9aef68505a9acdd9cb06aaaa22a0126",
+              "matchesOriginalZip": false
+            },
+            {
+              "variant": "restored",
+              "sourceTreeSha1": "961ce0a2f55308fe144dca622f5f73e3d2115123",
+              "originalSourceTreeRestored": true,
+              "result": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.23024812500000014,
+                "logSha256": "890b582dd92e8ab639f5805c12b35dcc641e7a4ec1ead1bd344ec3f3aa30bb8b"
+              },
+              "outputBytes": 676132,
+              "outputSha256": "9b28f847fdf1db4a36cb2b2f8ec09443c039383f085630a03ecfaddf6db7ea23",
+              "matchesOriginalZip": true
+            }
+          ],
+          "exactOriginalTreeRestored": true
+        },
+        {
+          "version": "v1.0.0-c2097c7c",
+          "producerCommit": "e8a4f508d1140eef70463c6c085c352418e03d9c",
+          "snapshotSourceCommit": "c2097c7cc732918d854cae92a94c7f5c39f22138",
+          "snapshotSourceTree": "2d438f8a572d980ca2ad8313118c206bb9b8683e",
+          "expectedZipSha256": "daf3614e0406f67ae6323c902db3f953a1effb199142362a039e7526dfb9368b",
+          "allOriginalSourcePayloadsMatch": true,
+          "packagerBuild": {
+            "exitCode": 0,
+            "elapsedSeconds": 2.507727333,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "packagerExecutableSha256": "c1aa59d00ab682a7300a1f528a47ea7e04c886a0d7b45f0d1fa61d62cff11a78",
+          "vendoredModuleSourceFileCount": 20,
+          "vendoredModuleSourceManifestSha256": "90b679789846a304964c39d4db97bd970f65f65fe6ecc457cc6aa6535b723997",
+          "variants": [
+            {
+              "variant": "baseline",
+              "sourceTreeSha1": "2d438f8a572d980ca2ad8313118c206bb9b8683e",
+              "originalSourceTreeRestored": true,
+              "result": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.8144853750000003,
+                "logSha256": "4a1736a877e4792499350c7d4b5811facbb10e7e4c482832590f470fe1a78dca"
+              },
+              "outputBytes": 658130,
+              "outputSha256": "daf3614e0406f67ae6323c902db3f953a1effb199142362a039e7526dfb9368b",
+              "matchesOriginalZip": true
+            },
+            {
+              "variant": "mutant",
+              "sourceTreeSha1": "6bcbf0c1f03cc1b0172fe47ecef67626129559a8",
+              "originalSourceTreeRestored": false,
+              "result": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.22360199999999963,
+                "logSha256": "4a1736a877e4792499350c7d4b5811facbb10e7e4c482832590f470fe1a78dca"
+              },
+              "outputBytes": 658161,
+              "outputSha256": "105857d43a842c88df38172fa036aae5e2babb6e6264a57fb0ed5329edae76ad",
+              "matchesOriginalZip": false
+            },
+            {
+              "variant": "restored",
+              "sourceTreeSha1": "2d438f8a572d980ca2ad8313118c206bb9b8683e",
+              "originalSourceTreeRestored": true,
+              "result": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.22814116700000042,
+                "logSha256": "4a1736a877e4792499350c7d4b5811facbb10e7e4c482832590f470fe1a78dca"
+              },
+              "outputBytes": 658130,
+              "outputSha256": "daf3614e0406f67ae6323c902db3f953a1effb199142362a039e7526dfb9368b",
+              "matchesOriginalZip": true
+            }
+          ],
+          "exactOriginalTreeRestored": true
+        }
+      ],
+      "completeProducerClosure": false
+    },
+    "allSourceBaselineAndRestorationArchivesMatch": true,
+    "validSourceMutationChangesEachArchive": true
+  },
+  "retainedInputs": [
+    {
+      "file": "provider-compiler-inputs/gorebuild-darwin.go.txt",
+      "bytes": 8677,
+      "sha256": "40cc6f2fab3e685ea8e339e2a9257524c4b8b776dac6a6739977864568382a09",
+      "sourceCommit": "63b63b04bd2424ddcf42e7ef9ca8a02810de6fe4",
+      "sourcePath": "cmd/gorebuild/darwin.go"
+    },
+    {
+      "file": "provider-compiler-inputs/gorebuild-LICENSE.txt",
+      "bytes": 1453,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "sourceCommit": "63b63b04bd2424ddcf42e7ef9ca8a02810de6fe4",
+      "sourcePath": "LICENSE"
+    },
+    {
+      "file": "provider-compiler-inputs/native-sdk-normalization-wrapper.go.txt",
+      "bytes": 6309,
+      "sha256": "31c35433580b25b421c3e12f8e80f36a6d1ffc94b3fe822ce08c75d6472c7186",
+      "scope": "Executed private command wrapper plus exact unchanged upstream function; paths are arguments, no private host path is embedded"
+    },
+    {
+      "file": "provider-compiler-inputs/native-go1.24.13-LICENSE.txt",
+      "bytes": 1453,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "sourcePath": "LICENSE",
+      "sourceVersion": "go1.24.13"
+    }
+  ],
+  "remainingProducerObligations": [
+    "The initial Go 1.27.1 bootstrap compiler is prebuilt in this observation. Its independent reconstruction and deeper bootstrap ancestry remain separate work.",
+    "The official signed archive cannot be called byte-identical to this unsigned/ad-hoc build. This observation does not establish cryptographic trust of the publisher signature or reproduce its signing service.",
+    "The complete SDK archive contains copied and generated source/payload inputs. Normalized archive equality does not independently rebuild those producers.",
+    "The exact native SDK does not attest the separate original Linux publisher cached compiler bytes."
+  ],
+  "fullCompilerSdkBootstrapAndCopiedPayloadProducerClosureVerified": false,
+  "completeOriginalInlineNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

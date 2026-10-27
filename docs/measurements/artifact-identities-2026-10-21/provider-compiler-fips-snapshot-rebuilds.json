@@ -4298,5 +4298,6 @@
   "gateAComplete": false,
   "qualityAssessed": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "sourceBuiltNativeCompilerFollowUpEvidence": "provider-native-packager-sdk-rebuild.json"
 }

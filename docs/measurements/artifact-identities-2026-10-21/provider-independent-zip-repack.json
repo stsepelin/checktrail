@@ -93,9 +93,14 @@
     },
     "downloadUrl": "https://go.dev/dl/go1.24.13.darwin-arm64.tar.gz",
     "archiveIntegrityRecomputed": true,
-    "fileCount": 15739,
     "actualPublisherCliCompilerPatchVerified": false,
-    "selectionReason": "The pinned action builds its own ZIP CLI using the separate Go 1.24 major range; the provider compiler uses another version. Selected a concrete official Go 1.24 archive for independent packaging, without claiming the exact original patch."
+    "selectionReason": "The pinned action builds its own ZIP CLI using the separate Go 1.24 major range; the provider compiler uses another version. Selected a concrete official Go 1.24 archive for independent packaging, without claiming the exact original patch.",
+    "archiveEntryCount": 15739,
+    "regularFileCount": 14179,
+    "directoryCount": 1560,
+    "independentNativeSourceBuildEvidence": "provider-native-packager-sdk-rebuild.json",
+    "publisherReportedCompilerVersionEvidence": "provider-original-producer-binding.json",
+    "publisherCachedCompilerByteIdentityVerified": false
   },
   "nativeObservation": {
     "compilerExecutableSha256": "c9507e881b743649af2b8d9edd8678433b999acfe4da2f9834a08a4fcebb1861",
@@ -233,5 +238,7 @@
     "providerCompiler": "go1.26.8 linux/amd64",
     "originalRunReportsSameExecutableAndZip": true,
     "completeCompilerAndSdkBuildClosureVerified": false
-  }
+  },
+  "nativeSourceBuildFollowUpObservedAt": "2026-10-27",
+  "nativeSourceBuildFollowUp": "Independent pinned Darwin ARM64 Go 1.24.13 SDK rebuilt from source. Original publisher logs separately report Go 1.24.13 Linux AMD64; cached publisher compiler bytes remain unattested. The earlier frozen recipe retains its original discovery-time statement."
 }

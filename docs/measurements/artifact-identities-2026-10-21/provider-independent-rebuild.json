@@ -199,8 +199,8 @@
   "retainedInputs": [
     {
       "file": "provider-independent-zip-repack.json",
-      "bytes": 10624,
-      "sha256": "8f4c05251321b67dc503b5b004cab7996e77c19d30292692d54d4f2fcbbea2c7"
+      "bytes": 11276,
+      "sha256": "8410bcff6a5b18d697b2883766e53322b960b7a994ab77a786814000998e3768"
     },
     {
       "file": "provider-original-producer-binding.json",
