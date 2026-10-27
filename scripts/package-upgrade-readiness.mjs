@@ -17,6 +17,26 @@ import { runAcceptanceNpm } from "./install-acceptance-package.mjs";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
+// This is a harness observation ceiling, separate from engine execution limits.
+export const upgradeCommandObservationMs = 60000;
+export function observeUpgradeNode(
+  args,
+  { cwd, maxBuffer = 1048576, phase = "preparation", operation = "node" } = {},
+) {
+  try {
+    return execFileSync(process.execPath, args, {
+      cwd,
+      encoding: "utf8",
+      timeout: upgradeCommandObservationMs,
+      maxBuffer,
+    });
+  } catch (error) {
+    if (error instanceof Error)
+      error.message = `Upgrade ${phase} ${operation}: ${error.message}`;
+    throw error;
+  }
+}
+
 /** Operator-only synthetic package upgrade verification. Each CLI, library and
  * MCP phase starts fresh processes. This invokes no model or review trial. */
 export async function verifyPackageUpgrade(
@@ -173,20 +193,25 @@ export async function verifyPackageUpgrade(
       installation,
       "node_modules/@stsepelin/checktrail/dist/src/cli.js",
     );
+    let activePhase = "preparation";
     const invoke = (args) =>
-      execFileSync(process.execPath, [binary, ...args], {
+      observeUpgradeNode([binary, ...args], {
         cwd: installation,
-        encoding: "utf8",
-        timeout: 30_000,
+        phase: activePhase,
+        operation: "CLI " + (args[0] ?? "version"),
       });
     const readCliResult = (args, expectedStatus) => {
       const result = spawnSync(process.execPath, [binary, ...args], {
         cwd: installation,
         encoding: "utf8",
-        timeout: 30000,
+        timeout: upgradeCommandObservationMs,
         maxBuffer: 4 * 1048576,
       });
-      assert.equal(result.error, undefined);
+      assert.equal(
+        result.error,
+        undefined,
+        `Upgrade ${activePhase} CLI ${args[0]}: ${result.error?.message ?? ""}`,
+      );
       assert.equal(result.signal, null);
       assert.equal(
         result.status,
@@ -202,6 +227,7 @@ export async function verifyPackageUpgrade(
       ["upgrade", candidate],
       ["rollback", baseline],
     ]) {
+      activePhase = phase;
       const locked =
         installationInputs?.[phase === "upgrade" ? "candidate" : "baseline"];
       if (locked) {
@@ -298,7 +324,8 @@ export async function verifyPackageUpgrade(
           throw error;
         report = JSON.parse(String(error.stdout));
       }
-      const verify = (value) => {
+      const verify = (value, surface) => {
+        const context = `Upgrade ${phase} ${surface}: `;
         if (legacyUnavailable) {
           assert.equal(value.outcome, "incomplete");
           assert.equal(value.checks[0].status, "unavailable");
@@ -312,8 +339,21 @@ export async function verifyPackageUpgrade(
             ),
           );
         } else {
-          assert.equal(value.outcome, "passed");
-          assert.equal(value.checks[0].status, "passed");
+          assert.equal(
+            value.outcome,
+            "passed",
+            context +
+              JSON.stringify(
+                value.checks.map((check) => ({
+                  id: check.id,
+                  status: check.status,
+                  errors: check.processes?.map(
+                    (process) => process.errorCode ?? null,
+                  ),
+                })),
+              ),
+          );
+          assert.equal(value.checks[0].status, "passed", context);
           assert.deepEqual(value.checks[0].tests, {
             total: 2,
             passed: 2,
@@ -322,23 +362,19 @@ export async function verifyPackageUpgrade(
           });
         }
       };
-      verify(report);
+      verify(report, "CLI");
       if (legacyUnavailable) assert.deepEqual(await reached(), []);
       else bodies(await reached());
       const libraryCode = `import assert from'node:assert/strict';import{readFile}from'node:fs/promises';import*as api from ${JSON.stringify(pathToFileURL(path.join(installation, "node_modules/@stsepelin/checktrail/dist/src/index.js")).href)};const root=${JSON.stringify(project)},marker=${JSON.stringify(marker)};const read=()=>readFile(marker,'utf8').catch(error=>{if(error.code==='ENOENT')return '';throw error;});const before=await read();const {plan}=await api.createPlan(root);assert.deepEqual(plan.checks.map(check=>check.id),['javascript.node-test']);assert.equal(await read(),before,'Library planning executed project code');const report=await api.validate(root,{trusted:true});process.stdout.write(JSON.stringify(report));`;
       const library = JSON.parse(
-        execFileSync(
-          process.execPath,
-          ["--input-type=module", "-e", libraryCode],
-          {
-            cwd: installation,
-            encoding: "utf8",
-            timeout: 30000,
-            maxBuffer: 4 * 1048576,
-          },
-        ),
+        observeUpgradeNode(["--input-type=module", "-e", libraryCode], {
+          cwd: installation,
+          phase,
+          operation: "library validation",
+          maxBuffer: 4 * 1048576,
+        }),
       );
-      verify(library);
+      verify(library, "library");
       assert.equal(library.sourceFingerprint, report.sourceFingerprint);
       const observedBodies = await reached();
       if (legacyUnavailable) assert.deepEqual(observedBodies, []);
