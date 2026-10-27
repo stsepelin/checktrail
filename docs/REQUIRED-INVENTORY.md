@@ -266,3 +266,13 @@ The shared native manifest now exposes the original resource acceptance names;
 its controller also requires fresh offline package evidence. These declarations
 and development receipts leave selected current-source matrix acceptance,
 artifact/license closure and the private evaluation freeze separate and open.
+
+The [current combined development receipt](measurements/combined-workflow-current-2026-10-27.json)
+refreshes the consumer, attempt-journal and synthetic independent-evaluation
+source/fresh-install cohorts after the merged npm refresh and lifecycle readiness
+fixture repair. It also retains the full development check, including every
+unqualified skip. Later documentation/notice-only changes leave compiled engine
+bytes unchanged. The recorded macOS observation selects no final native runtime
+slot. Complete artifact/notice closure, the private prospective freeze and the
+current-source native runtime matrix remain open; no model inference or field
+evaluation ran. The measured package predates this additional record.
