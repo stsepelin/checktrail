@@ -199,8 +199,8 @@
   "retainedInputs": [
     {
       "file": "provider-independent-zip-repack.json",
-      "bytes": 11276,
-      "sha256": "900e8743b3e771e2d31aba1be47eb02dccd3f7904a22c46c9522b2835fd4d448"
+      "bytes": 11586,
+      "sha256": "4f4098eb1113fbaafd5bcded7aecb47bb937e333f02d1ac921eb6f552bda5c5b"
     },
     {
       "file": "provider-original-producer-binding.json",
@@ -211,6 +211,11 @@
       "file": "provider-compiler-source-rebuilds.json",
       "bytes": 37022,
       "sha256": "4b3b0b62c866cd27b041dc7f75234f076f792e7cfe0e44c40fbf4773fd8cfab4"
+    },
+    {
+      "file": "provider-source-built-complete-rebuild.json",
+      "bytes": 74444,
+      "sha256": "5aee793a73a260c9c52a1704bdd3ed2dce02d4a590bb0ca21f7764b6e71041b4"
     }
   ],
   "originalProducerFollowUpObservedAt": "2026-10-27",
@@ -226,5 +231,12 @@
     "go12413LinuxAmd64CompleteArchiveRebuilt": true,
     "go1268LinuxAmd64CompleteArchiveRebuilt": true,
     "bootstrapAndCompleteNoticeClosureVerified": false
+  },
+  "sourceBuiltCombinedRebuildFollowUp": {
+    "evidence": "provider-source-built-complete-rebuild.json",
+    "wholeExecutableAndZipReproducedExactly": true,
+    "freshBaselineMutationRestorationVariants": 3,
+    "originalObservationUnchanged": true,
+    "fullUpstreamBuildAndNoticeClosureVerified": false
   }
 }

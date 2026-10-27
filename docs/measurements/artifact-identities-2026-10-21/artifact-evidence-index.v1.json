@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 269,
+  "retainedReferences": 289,
   "files": [
     {
       "file": "README.md",
@@ -214,9 +214,19 @@
       "sha256": "fa551977fc2b4466daca08701e2d0d028ed5fe43d53dab3b0c30602a5313d6f8"
     },
     {
+      "file": "provider-arm64-compiler-sdk-rebuild.json",
+      "bytes": 13425,
+      "sha256": "462b772efd5781f8bc357dd3c88d1f99aa36d52b32e9728a73c428215ba5b86e"
+    },
+    {
       "file": "provider-bootstrap-sdk-rebuild.json",
-      "bytes": 331008,
-      "sha256": "3166423bb0e0638e7120c904bca9c0bc95912e70ee810a1c1ce984c9a9e4648f"
+      "bytes": 331537,
+      "sha256": "f4e3b9aee9c6c3ae8df7f103aada78f9e8d98ac094aad9a0936dcaa53c050aaf"
+    },
+    {
+      "file": "provider-bootstrap-timezone-rebuild.json",
+      "bytes": 11322,
+      "sha256": "068f338396528348b7ba7785e652acd473369a3d606cb75508814252970f89e9"
     },
     {
       "file": "provider-build-observations.json",
@@ -379,9 +389,19 @@
       "sha256": "40dd37b9c445549e07a1673bf6093b17bcf27f06baf4fb2c8924641388b1023e"
     },
     {
+      "file": "provider-compiler-inputs/go1.27.1-mkzip.go.txt",
+      "bytes": 2155,
+      "sha256": "afbc4414d4053db4cf6befc0936cf15862a1d4b0433644adf3c0410f3796a820"
+    },
+    {
       "file": "provider-compiler-inputs/go1.27.1-original-named-notices.txt",
       "bytes": 71201,
       "sha256": "985826e4e746d2390c834efa9baff5c4de6d8105fc3e62a256a5abc2a9df411a"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.27.1-upstream-update.bash.txt",
+      "bytes": 2201,
+      "sha256": "a0248cbca7fc118da6ff8cd87019f646bae5262dc71704c28a68ebf09e708feb"
     },
     {
       "file": "provider-compiler-inputs/gorebuild-LICENSE.txt",
@@ -479,12 +499,37 @@
       "sha256": "2511c7f095cde7ccb6fbf245f90459d1b3f3c210bdb3c50a65f30cc86122118e"
     },
     {
+      "file": "provider-compiler-inputs/tzcode2026c-LICENSE.txt",
+      "bytes": 252,
+      "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2026c-date.c.txt",
+      "bytes": 5414,
+      "sha256": "6c093549ddbbc94bde79a313cf37e7fe479ad007464c44f91d002d7c2b819d24"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2026c-newstrftime.3.txt",
+      "bytes": 10804,
+      "sha256": "35f7ee165363d50879321cb12ffd52711b021e0813cc45b8ef3b208d12f70e93"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2026c-strftime.c.txt",
+      "bytes": 19380,
+      "sha256": "119fd12398d687c366df07dbbde6530caf74979ea5ec2f90718f111b4e7fb717"
+    },
+    {
       "file": "provider-compiler-inputs/tzdata2025a-LICENSE.txt",
       "bytes": 252,
       "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf"
     },
     {
       "file": "provider-compiler-inputs/tzdata2025c-LICENSE.txt",
+      "bytes": 252,
+      "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf"
+    },
+    {
+      "file": "provider-compiler-inputs/tzdata2026c-LICENSE.txt",
       "bytes": 252,
       "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf"
     },
@@ -505,13 +550,13 @@
     },
     {
       "file": "provider-independent-rebuild.json",
-      "bytes": 8571,
-      "sha256": "7a257b9256b332248b8fae724ecd9876d2042a5e3da5904972c00002fe115daf"
+      "bytes": 9060,
+      "sha256": "3e522a00b389074c38d5e45aada3176ae6aa4190026dfb0e2bd70624673c034b"
     },
     {
       "file": "provider-independent-zip-repack.json",
-      "bytes": 11276,
-      "sha256": "900e8743b3e771e2d31aba1be47eb02dccd3f7904a22c46c9522b2835fd4d448"
+      "bytes": 11586,
+      "sha256": "4f4098eb1113fbaafd5bcded7aecb47bb937e333f02d1ac921eb6f552bda5c5b"
     },
     {
       "file": "provider-native-packager-sdk-rebuild.json",
@@ -845,8 +890,13 @@
     },
     {
       "file": "provider-rebuild-inputs.json",
-      "bytes": 72164,
-      "sha256": "e33e4bd5866440b06e10b988205ab82541759d1b228bfad3f9c5df1b256136f6"
+      "bytes": 72382,
+      "sha256": "9b7ac259480b3b9994baa70c94f232a1cdf3c4f521fa8b1fec0480fbd547ed3d"
+    },
+    {
+      "file": "provider-source-built-complete-rebuild.json",
+      "bytes": 74444,
+      "sha256": "5aee793a73a260c9c52a1704bdd3ed2dce02d4a590bb0ca21f7764b6e71041b4"
     },
     {
       "file": "provider-timezone-source-signatures.json",
@@ -901,7 +951,7 @@
     {
       "file": "random-provider.json",
       "bytes": 8623,
-      "sha256": "7a0a79d716919151a7da22bdca00f91c172f4cb8f64627555153cecf79d9d481"
+      "sha256": "b568b47e2332447cae22e67f4535d62afa01b199f39619bf3c9677bc2ee0a10f"
     },
     {
       "file": "scala-LICENSE",

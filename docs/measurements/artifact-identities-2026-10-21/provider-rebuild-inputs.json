@@ -1722,5 +1722,10 @@
   "allSelectedBinaryModuleSumsMatched": true,
   "checksumDatabaseNetworkLookupsIndependentlyObserved": false,
   "completeTransitiveNoticeClosureVerified": false,
-  "gateAComplete": false
+  "gateAComplete": false,
+  "compilerSourceBuildFollowUp": {
+    "evidence": "provider-arm64-compiler-sdk-rebuild.json",
+    "selectedCompilerArchiveReproducedExactly": true,
+    "fullUpstreamCompilerSdkAndBootstrapClosureVerified": false
+  }
 }

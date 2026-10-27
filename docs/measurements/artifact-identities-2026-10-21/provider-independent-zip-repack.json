@@ -240,5 +240,12 @@
     "completeCompilerAndSdkBuildClosureVerified": false
   },
   "nativeSourceBuildFollowUpObservedAt": "2026-10-27",
-  "nativeSourceBuildFollowUp": "Independent pinned Darwin ARM64 Go 1.24.13 SDK rebuilt from source. Original publisher logs separately report Go 1.24.13 Linux AMD64; cached publisher compiler bytes remain unattested. The earlier frozen recipe retains its original discovery-time statement."
+  "nativeSourceBuildFollowUp": "Independent pinned Darwin ARM64 Go 1.24.13 SDK rebuilt from source. Original publisher logs separately report Go 1.24.13 Linux AMD64; cached publisher compiler bytes remain unattested. The earlier frozen recipe retains its original discovery-time statement.",
+  "sourceBuiltCombinedRebuildFollowUp": {
+    "evidence": "provider-source-built-complete-rebuild.json",
+    "wholeExecutableAndZipReproducedExactly": true,
+    "freshBaselineMutationRestorationVariants": 3,
+    "originalObservationUnchanged": true,
+    "fullUpstreamBuildAndNoticeClosureVerified": false
+  }
 }

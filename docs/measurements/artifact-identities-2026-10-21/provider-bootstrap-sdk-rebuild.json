@@ -7082,6 +7082,11 @@
       "sha256": "40dd37b9c445549e07a1673bf6093b17bcf27f06baf4fb2c8924641388b1023e",
       "sourcePath": "src/cmd/distpack/pack.go",
       "sourceCommit": "862c888e612ac346c7c4d99c9392bdfd265f33b0"
+    },
+    {
+      "file": "provider-bootstrap-timezone-rebuild.json",
+      "bytes": 11322,
+      "sha256": "068f338396528348b7ba7785e652acd473369a3d606cb75508814252970f89e9"
     }
   ],
   "remainingProducerObligations": [
@@ -7097,5 +7102,13 @@
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
   "acquiredCopiedTimezoneSourceSignatureEvidence": "provider-timezone-source-signatures.json",
-  "originalSignatureVerificationFollowUpEvidence": "provider-native-sdk-signatures.json"
+  "originalSignatureVerificationFollowUpEvidence": "provider-native-sdk-signatures.json",
+  "copiedTimezoneSourceBuildFollowUp": {
+    "member": "go/lib/time/zoneinfo.zip",
+    "bytes": 408467,
+    "sha256": "b2d18a7c8fa8142097a48c99609fb3c92db5ee98bc740294e57eab8ae9f94779",
+    "wholeCopiedZipReproducedExactly": true,
+    "evidence": "provider-bootstrap-timezone-rebuild.json",
+    "cCompilerAndSdkProducerBuildClosureVerified": false
+  }
 }

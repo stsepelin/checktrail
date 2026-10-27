@@ -124,14 +124,14 @@
       "retainedInputs": [
         {
           "file": "provider-rebuild-inputs.json",
-          "bytes": 72164,
-          "sha256": "e33e4bd5866440b06e10b988205ab82541759d1b228bfad3f9c5df1b256136f6",
+          "bytes": 72382,
+          "sha256": "9b7ac259480b3b9994baa70c94f232a1cdf3c4f521fa8b1fec0480fbd547ed3d",
           "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
         },
         {
           "file": "provider-independent-rebuild.json",
-          "bytes": 8571,
-          "sha256": "7a257b9256b332248b8fae724ecd9876d2042a5e3da5904972c00002fe115daf",
+          "bytes": 9060,
+          "sha256": "3e522a00b389074c38d5e45aada3176ae6aa4190026dfb0e2bd70624673c034b",
           "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
         }
       ]
@@ -159,8 +159,8 @@
       "retainedInputs": [
         {
           "file": "provider-independent-zip-repack.json",
-          "bytes": 11276,
-          "sha256": "900e8743b3e771e2d31aba1be47eb02dccd3f7904a22c46c9522b2835fd4d448"
+          "bytes": 11586,
+          "sha256": "4f4098eb1113fbaafd5bcded7aecb47bb937e333f02d1ac921eb6f552bda5c5b"
         }
       ]
     }
