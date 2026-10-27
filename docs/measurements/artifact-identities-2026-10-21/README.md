@@ -113,3 +113,10 @@ payload/notice comparisons; restoration matches. This accounts for the selected
 Material Icons payloads and their historical root notice. The other bundled
 fonts, actual font generation, complete attribution and native admission remain
 open.
+
+The [compiler source Git binding](provider-compiler-source-git-binding.json) checks
+every regular member of both reproduced source archives against canonical Git
+objects and the pinned release mode/exclusion policy. Its payload categories
+partition each complete archive and retain opaque-byte follow-up candidates.
+This is source attribution: copied object files, archives, generated text and
+the bootstrap compiler still require their own producer-build and notice closure.

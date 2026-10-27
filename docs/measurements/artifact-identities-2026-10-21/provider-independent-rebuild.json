@@ -200,17 +200,17 @@
     {
       "file": "provider-independent-zip-repack.json",
       "bytes": 10624,
-      "sha256": "268b1dc30504d16bef5433bbe48401b89d04a7943e5e0712e50972246625c26f"
+      "sha256": "041c5bf66b90810c5876ac6bc9494875dfb39411c31fccf3cfd98ffbaaf0b284"
     },
     {
       "file": "provider-original-producer-binding.json",
       "bytes": 7837,
-      "sha256": "279993d04e05f12355f5d5032125182587df791d7467d8cff7bfd5945b036b08"
+      "sha256": "3a1f5f5c76b582eaa4cbab1de6f28b17d380b16b30c1032c9e8d0492d23b83d8"
     },
     {
       "file": "provider-compiler-source-rebuilds.json",
-      "bytes": 36573,
-      "sha256": "fdf18c7fd0689e624a011c0acaa7ad645de811329057a5dd19f35f93e7b39a13"
+      "bytes": 36767,
+      "sha256": "85116d21e084d8d17e7dea19171e4a9a10ea1fbc1d2607be69315a832a1e26fb"
     }
   ],
   "originalProducerFollowUpObservedAt": "2026-10-27",

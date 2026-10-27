@@ -868,5 +868,8 @@
   "gateAComplete": false,
   "qualityAssessed": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "sourceGitAttributionEvidence": "provider-compiler-source-git-binding.json",
+  "copiedPayloadProducerBuildClosureVerified": false,
+  "completeArchiveEqualityDoesNotRebuildCopiedInputs": true
 }
