@@ -1167,3 +1167,51 @@ test("CI shared matrices retain every full command and use selected complete fil
     "dist/test/gate-inventory.test.js",
   ]);
 });
+
+test("CI resource readiness jobs retain every dynamic native harness input and the frozen host matrix", async () => {
+  const { resourceReleaseHarnessFiles } = await import(
+    new URL("scripts/resource-release-evidence.mjs", root).href
+  );
+  const owners = ["resource-release", "resource-release-arm64"];
+  for (const file of [
+    "test/gate-resource-release-readiness.test.ts",
+    "test/resource-release-fixture.ts",
+    "scripts/prepare-resource-cache-subset.mjs",
+    "scripts/native-resource-workload-worker.mjs",
+    "scripts/native-child-resource.c",
+    "scripts/release-readiness-tools/baseline.json",
+  ]) {
+    for (const id of owners)
+      assert.equal(plan([file]).selected[id], true, file + " omitted " + id);
+  }
+  assert.deepEqual(
+    selected(plan(["test/resource-release-fixture.ts"])),
+    owners,
+  );
+  for (const declared of resourceReleaseHarnessFiles) {
+    const file = declared.startsWith("dist/")
+      ? declared.slice(5).replace(/\.js$/, ".ts")
+      : declared;
+    if (
+      file.startsWith("scripts/") &&
+      !file.startsWith("scripts/required-") &&
+      !file.startsWith("scripts/install-") &&
+      !file.startsWith("scripts/lifecycle-") &&
+      !file.startsWith("scripts/review-") &&
+      !file.startsWith("scripts/compiled-")
+    )
+      for (const id of owners)
+        assert.ok(
+          inputs[file]?.includes(id),
+          file + " lacks " + id + " ownership",
+        );
+  }
+  assert.deepEqual(
+    workflow.jobs["resource-release"].strategy.matrix.include,
+    workflow.jobs["tasks-runtime"].strategy.matrix.include,
+  );
+  for (const id of owners) {
+    assert.deepEqual(workflow.jobs[id].needs, ["ci-plan", "actionlint"]);
+    assert.ok(workflow.jobs["ci-complete"].needs.includes(id));
+  }
+});

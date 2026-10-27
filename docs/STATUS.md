@@ -1025,3 +1025,12 @@ The [separate POSIX self/reaped-child resource binding](NATIVE-RESOURCE-ACCOUNTI
 The [synthetic native workload/resource harness](NATIVE-RESOURCE-ACCOUNTING.md#synthetic-native-workload-and-archive-measurements) has scoped small/large/JavaScript-Go validation, separate kernel CPU/RSS scopes, physical output and exact multi-chunk report/SQLite accounting in [its measurement](measurements/native-resource-workloads-2026-10-11.json). The dated original controls exercise source and fresh offline installed engines on macOS Node 24/26 and Linux Node 22. Current accounting regressions additionally check independent CPU fields, both RSS scopes, both raw streams and malformed-report rejection. This does not establish summed process-tree RSS, unreaped descendants, Windows, a performance regression budget or final release closure. Gate A remains open without inference or field evaluation.
 
 The [evaluation cohort declaration checker](EVALUATION-COHORT-DECLARATIONS.md) validates bounded declared lineage/content grouping, optional repository/family holdouts, retained exclusions, eligibility metadata and exposure declarations through the shared library and a repository setup script. These original synthetic development controls do not inspect source or labels, verify license grants or sessions, freeze the private reference/workflow, execute inference, or close the independent evaluation profile or Gate A.
+
+The original resource/release acceptance cohort now has complete required-name
+collection, a source/fresh offline package harness, real native workloads and
+locked previous-package upgrade/rollback controls. Its native runtime matrix and
+artifact/license closure remain separate acceptance requirements. Inventory
+implementation declarations also reconcile the already shipped multi-candidate
+workflow, lifecycle and Tasks cohorts. Those declarations and retained development
+receipts do not certify current native matrix acceptance or close Gate A. See
+[NATIVE-RESOURCE-ACCOUNTING.md](NATIVE-RESOURCE-ACCOUNTING.md#resource-and-release-readiness-cohort).

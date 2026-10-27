@@ -547,3 +547,13 @@ collectors that require all nine preserved callbacks, unchanged declared harness
 and engine bytes, observed Node/PHP executables and selected framework runtime
 bytes. This acceptance binding does not expand the Laravel semantic or platform
 support above and does not close Gate A.
+
+The [resource and release readiness cohort](NATIVE-RESOURCE-ACCOUNTING.md#resource-and-release-readiness-cohort)
+now combines real small/large/JavaScript-Go measurements, physical report storage,
+previous-package upgrade/rollback, source grants and reached native lifecycle
+controls through source and a fresh offline production package. POSIX self and
+reaped-child counters and Windows direct/job counters retain their distinct
+scopes and units. The declared selected runtime jobs require fresh exact-input
+receipts; the local development controls and historical Windows observations do
+not certify the final matrix or full artifact/license closure. Gate A remains
+open without model inference or field evaluation.

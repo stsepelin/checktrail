@@ -261,3 +261,56 @@ controls have the scoped native Windows source and fresh-package acceptance
 recorded above. They
 do not establish representative project performance, a regression budget, final
 runtime-matrix qualification or the whole resource-release-readiness profile.
+
+## Resource and release readiness cohort
+
+The original `resource-release-readiness` cohort is implemented in
+`test/gate-resource-release-readiness.test.ts`. Its required names retain the
+frozen broken/fixed/near-miss/prerequisite/stale/empty/privacy/lifecycle/installed
+assertions. `scripts/verify-resource-release-readiness.mjs` reconciles those names
+with the selected inventory, then requires complete source and fresh offline
+production-package ledgers. The external harness, compiled engine and selected
+older-package dependencies are captured before and after their runs. These
+identities describe configured artifacts; they do not authenticate every loaded
+module or complete producer/build provenance.
+
+The fixed workload cases collect real small, large and JavaScript/Go validation,
+separate native counter scopes, complete physical streams and exact report/chunk
+reconstruction with physical SQLite storage. Broken native assertions, changed
+source and all-skipped tests are refused before task storage is published. The
+lifecycle controls observe a real three-process family before cancellation,
+timeout or output exhaustion and require every observed PID to disappear.
+Library, CLI and MCP controls preserve execution trust and summary/source grants.
+
+Upgrade and rollback use the pinned previous public Checktrail package recorded
+in `scripts/release-readiness-tools/baseline.json`. This is a package-compatibility
+baseline. The later independent AI review comparison retains its separate
+operator-selected baseline and finish-first restriction. Each package phase
+starts fresh CLI/library/MCP processes, uses its exact production dependency lock
+with offline installation and disabled lifecycle scripts, preserves project
+configuration and imports the actual older report identity into SARIF. The older
+Windows release's explicit unsupported backend remains unavailable; the candidate
+must execute its native test bodies. Acquisition and preparation are explicit
+operator commands; imports, discovery and planning install nothing.
+
+Preparation checks the older archive, original manifest/license bytes, lock and
+actual prepared dependency snapshot. A held startup snapshot rejects a coherently
+rewritten receipt. Missing, changed and linked public cache artifacts are refused
+before any cache output is published. Only the exact locked registry tarballs
+enter the native ARM64 container; registry metadata and historical local package
+archives are excluded from that cache. This container restriction is distinct
+from a general security isolation claim.
+
+The full Node suite and required full-suite collector share the same finite
+exclusive-file selection for the JavaScript extension, Tasks and resource cohorts.
+Ordinary files retain their existing worker limit; each exclusive file has one
+worker. Both waves run after ordinary assertion failures, and their terminal
+counts must be combined. No callback, assertion or production cleanup deadline
+is omitted by this scheduling.
+
+The `resource-release` CI matrix selects the frozen Linux/macOS Node slots and
+Windows slot. `resource-release-arm64` uses the pinned native Node container and
+an explicitly selected Go tree. Each collector observes its actual runtime and
+rejects a mismatched selected slot. An unselected development run qualifies no
+matrix slot. Final matrix and artifact/license closure remain open; these
+synthetic controls invoke no model or field evaluation and publish no package.

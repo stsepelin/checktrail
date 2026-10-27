@@ -5630,5 +5630,43 @@
       "file": "dist/test/windows-resource-workloads.test.js",
       "name": "Windows workload CPU aggregation preserves exact safe boundaries and refuses overflow across otherwise valid jobs"
     }
+  ],
+  "resource-release-readiness": [
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness installed acceptance"
+    }
   ]
 }
