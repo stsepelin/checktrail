@@ -23,6 +23,14 @@ test("dependency audit reconciles installed metadata, reports missing notices an
   };
   const root = await fixture(t, {
     "scripts/audit-dependencies.mjs": script,
+    "scripts/dependency-audit-runtime.mjs": await readFile(
+      new URL("../../scripts/dependency-audit-runtime.mjs", import.meta.url),
+      "utf8",
+    ),
+    "scripts/install-acceptance-package.mjs": await readFile(
+      new URL("../../scripts/install-acceptance-package.mjs", import.meta.url),
+      "utf8",
+    ),
     "scripts/license-sources.json": "{}",
     "package.json": JSON.stringify(rootPackage),
     "package-lock.json": JSON.stringify({

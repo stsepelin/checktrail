@@ -11,6 +11,10 @@ const files = [
   "package-lock.json",
   "scripts/audit-dependencies.mjs",
   "scripts/license-sources.json",
+  "scripts/dependency-audit-runtime.mjs",
+  "scripts/install-acceptance-package.mjs",
+  "test/dependency-audit.test.ts",
+  "test/development-dependency-audit.test.ts",
 ];
 const inputSources = await Promise.all(
   files.map(async (file) => [

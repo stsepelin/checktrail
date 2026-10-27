@@ -66,6 +66,10 @@ jobs:
           cache: npm
       - run: node scripts/diagnostic-npm-runtime.mjs
       - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - name: Exercise original audit and new platform regressions
+        shell: bash
+        run: node --test --test-name-pattern="dependency audit reconciles installed metadata|Linux development audit excludes libc-specific|audit libc observation|development audit rejects malformed libc" dist/test/dependency-audit.test.js dist/test/development-dependency-audit.test.js
       - name: Audit actual installed production and development notices
         shell: bash
         run: node scripts/audit-dependencies.mjs --include-dev > npm-notice-audit.json
@@ -105,7 +109,7 @@ jobs:
             -e CHECKTRAIL_NPM_EXPECTED_PLATFORM -e CHECKTRAIL_NPM_EXPECTED_ARCH \
             -e CHECKTRAIL_NPM_CONTAINER_REFERENCE -e CHECKTRAIL_NPM_CONTAINER_IMAGE_ID \
             "$CHECKTRAIL_NPM_CONTAINER_REFERENCE" sh -c \
-            'node scripts/diagnostic-npm-runtime.mjs && npm ci --ignore-scripts --no-audit --no-fund && node scripts/audit-dependencies.mjs --include-dev > npm-notice-audit.json'
+            'node scripts/diagnostic-npm-runtime.mjs && npm ci --ignore-scripts --no-audit --no-fund && npm run build && node --test --test-name-pattern="dependency audit reconciles installed metadata|Linux development audit excludes libc-specific|audit libc observation|development audit rejects malformed libc" dist/test/dependency-audit.test.js dist/test/development-dependency-audit.test.js && node scripts/audit-dependencies.mjs --include-dev > npm-notice-audit.json'
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
