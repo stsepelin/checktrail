@@ -1,0 +1,720 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent byte reproduction of the 16 selected grammar outputs with pinned source inputs and released host tools.",
+  "observedAt": "2026-10-21T21:19:29.610721+00:00",
+  "repositoryCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+  "sourceRecordSha256": "639e582c29cce571010f5fb1d46e8b381c3c369d4fac771502683a4532a2bb85",
+  "actualHostMacosVersion": "27.0",
+  "qualifiesSelectedMacos26": false,
+  "durationSeconds": 34.0158475,
+  "inputPreparation": {
+    "at": "2026-10-21T21:15:42.071960+00:00",
+    "recordSha256": "639e582c29cce571010f5fb1d46e8b381c3c369d4fac771502683a4532a2bb85",
+    "toolArchivesAndCopies": [
+      {
+        "tool": "wasi-sdk",
+        "archive": {
+          "url": "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-34/wasi-sdk-34.0-arm64-macos.tar.gz",
+          "sha256": "9c59398106b417f8f14913380fdf0097a8cc0ff4af9eb3ce0065a859e88d49e9",
+          "bytes": 180322002
+        },
+        "members": 17271,
+        "regularPayloadBytes": 595535658,
+        "inventorySha256": "515010776e826e87258bf7ab1f95d66332a4112b1fb37746c9bd0718fd81b7ef",
+        "allCopiedToolBytesMatchedArchive": true
+      },
+      {
+        "tool": "binaryen",
+        "archive": {
+          "url": "https://github.com/WebAssembly/binaryen/releases/download/version_132/binaryen-version_132-arm64-macos.tar.gz",
+          "sha256": "98aad827847af7ef990ed7098d885725c8e5b5aae75073403635617ae4e259aa",
+          "bytes": 7640117
+        },
+        "members": 18,
+        "regularPayloadBytes": 26050243,
+        "inventorySha256": "f85a963e3555ebee8093e8d0c979907039342d147727abae4ff7fc9badb993cd",
+        "allCopiedToolBytesMatchedArchive": true
+      }
+    ],
+    "builderSha256": "f0e7b6b81e4faad74cd935c3536ea061d61b402f0ccaf3829300c70c8fe9fcb6",
+    "sourceArchives": [
+      {
+        "grammar": "python",
+        "sourceCommit": "26855eabccb19c6abf499fbc5b8dc7cc9ab8bc64",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter/tree-sitter-python/tar.gz/26855eabccb19c6abf499fbc5b8dc7cc9ab8bc64",
+          "sha256": "43e71c4d0cbbd2350e83e0b2da3558eab09b8dc78153a8990508b0c9eec754e6",
+          "bytes": 265695
+        },
+        "filesVerified": 76,
+        "bytes": 4106984,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "go",
+        "sourceCommit": "2346a3ab1bb3857b48b29d779a1ef9799a248cd7",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter/tree-sitter-go/tar.gz/2346a3ab1bb3857b48b29d779a1ef9799a248cd7",
+          "sha256": "94d08fc0f727a8dbe03203e2aaf1c5dc33a57e496b583049324eddc79769797b",
+          "bytes": 211421
+        },
+        "filesVerified": 62,
+        "bytes": 2251983,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "php",
+        "sourceCommit": "58d5643086ae60e93a3746cca648363ee97c8761",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter/tree-sitter-php/tar.gz/58d5643086ae60e93a3746cca648363ee97c8761",
+          "sha256": "139701b185691b6f82d81ef6387de5cfe23b7833a75fa1eeca9b80416aa58039",
+          "bytes": 765736
+        },
+        "filesVerified": 100,
+        "bytes": 15457662,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "rust",
+        "sourceCommit": "77a3747266f4d621d0757825e6b11edcbf991ca5",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter/tree-sitter-rust/tar.gz/77a3747266f4d621d0757825e6b11edcbf991ca5",
+          "sha256": "dee82ddfd01bfc3a8ed201cc03b56448107d3217a4b3a7a8fc7fa6bc32b2405b",
+          "bytes": 468573
+        },
+        "filesVerified": 68,
+        "bytes": 7231602,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "java",
+        "sourceCommit": "e10607b45ff745f5f876bfa3e94fbcc6b44bdc11",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter/tree-sitter-java/tar.gz/e10607b45ff745f5f876bfa3e94fbcc6b44bdc11",
+          "sha256": "95a46b6b7b545b48cd6c3a0d5b1014fed271a63a71164cdc4382d9d441e3609f",
+          "bytes": 214927
+        },
+        "filesVerified": 57,
+        "bytes": 3072362,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "kotlin",
+        "sourceCommit": "1852ea17b7f60fb3f9d84e0b1555d56b46b39fb1",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/fwcd/tree-sitter-kotlin/tar.gz/1852ea17b7f60fb3f9d84e0b1555d56b46b39fb1",
+          "sha256": "61282c8d3d231fab7d6086d4d0c9ff284824f78d4a7a8d3993d49023fbb739c5",
+          "bytes": 2426219
+        },
+        "filesVerified": 193,
+        "bytes": 35179316,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "scala",
+        "sourceCommit": "db390f312a54b04b13790e1767bfac32665c17ac",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter/tree-sitter-scala/tar.gz/db390f312a54b04b13790e1767bfac32665c17ac",
+          "sha256": "09362d65dce3560f6146048947d56a96364bc658b51b8436c73db2fcaf4af91f",
+          "bytes": 1428092
+        },
+        "filesVerified": 79,
+        "bytes": 28566064,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "c_sharp",
+        "sourceCommit": "8c0abe0b84a3681d3e6852ce2e2a1eecb4f731c5",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter/tree-sitter-c-sharp/tar.gz/8c0abe0b84a3681d3e6852ce2e2a1eecb4f731c5",
+          "sha256": "ecbc039a6a451bf14d531cbef0028fc6224daffeda325c79173e223e00805e71",
+          "bytes": 1491900
+        },
+        "filesVerified": 83,
+        "bytes": 33053882,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "fsharp",
+        "sourceCommit": "aefd0c8741bdf3aeb827a228aa4a996a6536697e",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/ionide/tree-sitter-fsharp/tar.gz/aefd0c8741bdf3aeb827a228aa4a996a6536697e",
+          "sha256": "5c40b126e9c4641ac8775d2cd9d390503fd3ec1307531412143969f263b0f0ad",
+          "bytes": 4550609
+        },
+        "filesVerified": 129,
+        "bytes": 78601623,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "fsharp_signature",
+        "sourceCommit": "aefd0c8741bdf3aeb827a228aa4a996a6536697e",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/ionide/tree-sitter-fsharp/tar.gz/aefd0c8741bdf3aeb827a228aa4a996a6536697e",
+          "sha256": "5c40b126e9c4641ac8775d2cd9d390503fd3ec1307531412143969f263b0f0ad",
+          "bytes": 4550609
+        },
+        "filesVerified": 129,
+        "bytes": 78601623,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "ruby",
+        "sourceCommit": "ad907a69da0c8a4f7a943a7fe012712208da6dee",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter/tree-sitter-ruby/tar.gz/ad907a69da0c8a4f7a943a7fe012712208da6dee",
+          "sha256": "f7aa2408f1b39922f85add38cacd60b59828a8222c609a240f08779d46d079d9",
+          "bytes": 630155
+        },
+        "filesVerified": 69,
+        "bytes": 15847967,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "c",
+        "sourceCommit": "b780e47fc780ddc8da13afa35a3f4ed5c157823d",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter/tree-sitter-c/tar.gz/b780e47fc780ddc8da13afa35a3f4ed5c157823d",
+          "sha256": "dc3979e40fce678c27273ba8ab93b48b5acd6b91d1dfde6a4451222d366d689f",
+          "bytes": 382014
+        },
+        "filesVerified": 71,
+        "bytes": 4750922,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "cpp",
+        "sourceCommit": "c009222808634c1014f82438d4883753516a2c24",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter/tree-sitter-cpp/tar.gz/c009222808634c1014f82438d4883753516a2c24",
+          "sha256": "6c6efaf024f5c02fee0403e4e2373346eeadc40828587bcfad9351df2f0a7986",
+          "bytes": 1740811
+        },
+        "filesVerified": 79,
+        "bytes": 26972118,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "hcl",
+        "sourceCommit": "64ad62785d442eb4d45df3a1764962dafd5bc98b",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter-grammars/tree-sitter-hcl/tar.gz/64ad62785d442eb4d45df3a1764962dafd5bc98b",
+          "sha256": "b71a0efe45b2aef5e91410d8d4ce15d107be47bc1f729752efae53c60d2d1158",
+          "bytes": 818084
+        },
+        "filesVerified": 1966,
+        "bytes": 5259722,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "yaml",
+        "sourceCommit": "a1c4812a73ec5e089de8e441fdea3a921e8d5079",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/tree-sitter-grammars/tree-sitter-yaml/tar.gz/a1c4812a73ec5e089de8e441fdea3a921e8d5079",
+          "sha256": "6548cd059983e8073dfa39f102641f71d045b37f3a05b7ebd799ad17df8471d1",
+          "bytes": 174838
+        },
+        "filesVerified": 91,
+        "bytes": 1907785,
+        "generatedOrPatched": false
+      },
+      {
+        "grammar": "swift",
+        "sourceCommit": "171fa3bc343233fe07f5e17205aaada33d778825",
+        "sourceArchive": {
+          "url": "https://codeload.github.com/alex-pinkus/tree-sitter-swift/tar.gz/171fa3bc343233fe07f5e17205aaada33d778825",
+          "sha256": "11cf7dc67388c69e0ec22ebf5a6ded9910ad38cf4aef2312c0a589a4fef11bb4",
+          "bytes": 146324
+        },
+        "filesVerified": 92,
+        "bytes": 1538207,
+        "generatedOrPatched": false
+      }
+    ],
+    "sourceAcquisitionCodeExecuted": false,
+    "compilerOrBuilderExecuted": false,
+    "originalBorrowedToolCachesModified": false,
+    "toolsExtractedFromCompletePinnedArchives": true,
+    "gateAComplete": false
+  },
+  "outputs": [
+    {
+      "grammar": "python",
+      "bytes": 457492,
+      "sha256": "4d4d110d8c8c948fdebf926958d9b65138ad533fa665da1c7f14b35c6080148d",
+      "expectedBytes": 457492,
+      "expectedSha256": "4d4d110d8c8c948fdebf926958d9b65138ad533fa665da1c7f14b35c6080148d",
+      "byteExact": true
+    },
+    {
+      "grammar": "go",
+      "bytes": 217764,
+      "sha256": "058a4f6c7cb7156c599c2ca07af9645f03b3f655b84bced9c72816e755c7030b",
+      "expectedBytes": 217764,
+      "expectedSha256": "058a4f6c7cb7156c599c2ca07af9645f03b3f655b84bced9c72816e755c7030b",
+      "byteExact": true
+    },
+    {
+      "grammar": "php",
+      "bytes": 1081285,
+      "sha256": "bd5e2bf8d42306b7aa32e6b7e39ae9fd9543c62a875ad8b2bc3d488242f72817",
+      "expectedBytes": 1081285,
+      "expectedSha256": "bd5e2bf8d42306b7aa32e6b7e39ae9fd9543c62a875ad8b2bc3d488242f72817",
+      "byteExact": true
+    },
+    {
+      "grammar": "rust",
+      "bytes": 1115157,
+      "sha256": "158bd555055271ba754f52574fc12c8d5c6aa7316fefeddd3fa563297f50d5c8",
+      "expectedBytes": 1115157,
+      "expectedSha256": "158bd555055271ba754f52574fc12c8d5c6aa7316fefeddd3fa563297f50d5c8",
+      "byteExact": true
+    },
+    {
+      "grammar": "java",
+      "bytes": 415233,
+      "sha256": "6476728734128931bd50de2d1e5e9c75c506b51e278f54eaf709836a0de35759",
+      "expectedBytes": 415233,
+      "expectedSha256": "6476728734128931bd50de2d1e5e9c75c506b51e278f54eaf709836a0de35759",
+      "byteExact": true
+    },
+    {
+      "grammar": "kotlin",
+      "bytes": 5773627,
+      "sha256": "2f68d2a9be3c2136fb59687abbc94ed016ef5d4ef7984e023f5ec024de366f70",
+      "expectedBytes": 5773627,
+      "expectedSha256": "2f68d2a9be3c2136fb59687abbc94ed016ef5d4ef7984e023f5ec024de366f70",
+      "byteExact": true
+    },
+    {
+      "grammar": "scala",
+      "bytes": 4014596,
+      "sha256": "fb17a89ba0bb1d350f03d4718174f3c1d36b75d9ddccc5dcfcedacec4574bb07",
+      "expectedBytes": 4014596,
+      "expectedSha256": "fb17a89ba0bb1d350f03d4718174f3c1d36b75d9ddccc5dcfcedacec4574bb07",
+      "byteExact": true
+    },
+    {
+      "grammar": "c_sharp",
+      "bytes": 5845081,
+      "sha256": "315d54ed50bb56940e978ea75c75b74743407fa113c3c98b87aad72c919aaf18",
+      "expectedBytes": 5845081,
+      "expectedSha256": "315d54ed50bb56940e978ea75c75b74743407fa113c3c98b87aad72c919aaf18",
+      "byteExact": true
+    },
+    {
+      "grammar": "fsharp",
+      "bytes": 11430318,
+      "sha256": "ff1a927387fec25e184d120d9e18ec7cd5271b30f6380f02d494d3548a99f7b7",
+      "expectedBytes": 11430318,
+      "expectedSha256": "ff1a927387fec25e184d120d9e18ec7cd5271b30f6380f02d494d3548a99f7b7",
+      "byteExact": true
+    },
+    {
+      "grammar": "fsharp_signature",
+      "bytes": 2695892,
+      "sha256": "23de7d67ae268119f524ad361806773ae8df5c0d54af02b738e60897f9c4cdb5",
+      "expectedBytes": 2695892,
+      "expectedSha256": "23de7d67ae268119f524ad361806773ae8df5c0d54af02b738e60897f9c4cdb5",
+      "byteExact": true
+    },
+    {
+      "grammar": "ruby",
+      "bytes": 2107106,
+      "sha256": "e255f2dd39812e9730a824f85e4f5c8660426bd8e8d9a4790e8e7e6e41da3761",
+      "expectedBytes": 2107106,
+      "expectedSha256": "e255f2dd39812e9730a824f85e4f5c8660426bd8e8d9a4790e8e7e6e41da3761",
+      "byteExact": true
+    },
+    {
+      "grammar": "c",
+      "bytes": 625963,
+      "sha256": "2030a766fa6c6fe18039524008e52fd4a4995bdd9ed07fc4a73ec892450d2f4a",
+      "expectedBytes": 625963,
+      "expectedSha256": "2030a766fa6c6fe18039524008e52fd4a4995bdd9ed07fc4a73ec892450d2f4a",
+      "byteExact": true
+    },
+    {
+      "grammar": "cpp",
+      "bytes": 5585559,
+      "sha256": "ab9e891709f5dc88fd6b1b4d33f110fb23e5ddc5e64296caf4a41d0a3e585ebe",
+      "expectedBytes": 5585559,
+      "expectedSha256": "ab9e891709f5dc88fd6b1b4d33f110fb23e5ddc5e64296caf4a41d0a3e585ebe",
+      "byteExact": true
+    },
+    {
+      "grammar": "hcl",
+      "bytes": 94489,
+      "sha256": "3483fda1b5a6b2409454f66ec341f82a4041befeafcb81583712c072bd98da3f",
+      "expectedBytes": 94489,
+      "expectedSha256": "3483fda1b5a6b2409454f66ec341f82a4041befeafcb81583712c072bd98da3f",
+      "byteExact": true
+    },
+    {
+      "grammar": "yaml",
+      "bytes": 192686,
+      "sha256": "a6493a7ec9533dc532e4c4db221439064aae4923612f8b0ced4d2eb88131bae3",
+      "expectedBytes": 192686,
+      "expectedSha256": "a6493a7ec9533dc532e4c4db221439064aae4923612f8b0ced4d2eb88131bae3",
+      "byteExact": true
+    },
+    {
+      "grammar": "swift",
+      "bytes": 4149770,
+      "sha256": "8591c61d1313ca331ab651d32b6544a0125dad10168a60887cde3801b15fcea0",
+      "expectedBytes": 4149770,
+      "expectedSha256": "8591c61d1313ca331ab651d32b6544a0125dad10168a60887cde3801b15fcea0",
+      "byteExact": true
+    }
+  ],
+  "steps": [
+    {
+      "step": "python-build",
+      "exitCode": 0,
+      "durationSeconds": 3.5693905420000003,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "python-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.09157758299999985,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "python-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.048884624999999904,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "go-build",
+      "exitCode": 0,
+      "durationSeconds": 0.2588108330000001,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "go-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.048991874999999574,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "php-build",
+      "exitCode": 0,
+      "durationSeconds": 0.6296554159999994,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "php-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.0807287919999995,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "php-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.048563499999999316,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "rust-build",
+      "exitCode": 0,
+      "durationSeconds": 0.5100209579999992,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "rust-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.08109791699999924,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "rust-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.048688834000000014,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "java-build",
+      "exitCode": 0,
+      "durationSeconds": 0.32077654199999994,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "java-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.08918504199999955,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "kotlin-build",
+      "exitCode": 0,
+      "durationSeconds": 1.8356593330000006,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "kotlin-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.20701404100000076,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "kotlin-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.04746566700000088,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "scala-build",
+      "exitCode": 0,
+      "durationSeconds": 1.9322349580000004,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "scala-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.14744450000000064,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "scala-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.049296375000000836,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "c_sharp-build",
+      "exitCode": 0,
+      "durationSeconds": 1.3184715409999992,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "c_sharp-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.21113962500000127,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "c_sharp-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.04851066699999862,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "fsharp-build",
+      "exitCode": 0,
+      "durationSeconds": 2.9422975000000005,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "fsharp-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.2714181670000002,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "fsharp-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.04832854200000014,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "fsharp_signature-build",
+      "exitCode": 0,
+      "durationSeconds": 1.808626499999999,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "fsharp_signature-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.14399329199999755,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "fsharp_signature-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.04489225000000019,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "ruby-build",
+      "exitCode": 0,
+      "durationSeconds": 0.9032439579999973,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "ruby-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.15121512500000023,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "ruby-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.047897417000001496,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "c-build",
+      "exitCode": 0,
+      "durationSeconds": 0.44372566699999894,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "c-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.08003054199999937,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "cpp-build",
+      "exitCode": 0,
+      "durationSeconds": 1.636984292000001,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "cpp-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.19246704199999698,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "cpp-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.04899966700000036,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "hcl-build",
+      "exitCode": 0,
+      "durationSeconds": 0.2599832080000013,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "hcl-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.04562587499999893,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "hcl-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.04872887499999834,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "yaml-build",
+      "exitCode": 0,
+      "durationSeconds": 0.3305925830000014,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "yaml-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.048797042000000346,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "yaml-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.04387233300000304,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "swift-generate",
+      "exitCode": 0,
+      "durationSeconds": 0.774605042000001,
+      "logBytes": 519,
+      "logSha256": "760825d403e94efb85a0f8bdebdf708d525496b7ed8fba372dbd23c9e673b15f"
+    },
+    {
+      "step": "swift-patch",
+      "exitCode": 0,
+      "durationSeconds": 0.012994250000001983,
+      "logBytes": 30,
+      "logSha256": "ad095b64534329f51db705c33638812ae079fe221e98f21ecf5590708cee24eb"
+    },
+    {
+      "step": "swift-build",
+      "exitCode": 0,
+      "durationSeconds": 5.819808084000002,
+      "logBytes": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "swift-dependencies-0",
+      "exitCode": 0,
+      "durationSeconds": 0.13986979199999894,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    },
+    {
+      "step": "swift-dependencies-1",
+      "exitCode": 0,
+      "durationSeconds": 0.04400729200000342,
+      "logBytes": 101,
+      "logSha256": "976e0204246570189c71c61b71e57d8f3c4dc59d4a07ebff1c95ffb44ffba135"
+    }
+  ],
+  "commands": {
+    "grammarBuildAndSwiftGenerationAndPatch": "Exact per-grammar commands and generated/patched input digests in the bound repository build record. Private absolute work paths are omitted.",
+    "dependencyObservation": "Native Clang -M preprocessor dependency observation with the same target/optimization/visibility/header inputs; not a complete file-access or link-symbol trace.",
+    "relativeSourceWorkspaces": true,
+    "javascriptGrammarOrAcquisitionScriptsExecuted": false
+  },
+  "nativeProcessLimits": {
+    "perCommandCpuSeconds": 180,
+    "perCommandWallSeconds": 210,
+    "perFileBytes": 268435456,
+    "binaryenWorkerSetting": 2,
+    "hardMemoryLimitClaimed": false,
+    "hardCpuCoreLimitClaimed": false
+  },
+  "preparationAndReceiptIntegrationVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

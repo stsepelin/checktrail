@@ -1,2 +1,28 @@
 # Keep text checkouts consistent with the formatter on every platform.
 * text=auto eol=lf
+
+# Preserve this retained response byte-for-byte, including its original CRLF.
+docs/measurements/artifact-identities-2026-10-21/nuget-repository-certificates.txt -text
+docs/measurements/artifact-identities-2026-10-21/provider-notices/*.txt -text -whitespace
+docs/measurements/artifact-identities-2026-10-21/scala-component-notices/*.txt -text -whitespace
+docs/measurements/artifact-identities-2026-10-21/fantomas-pdb-checksum-rejected.txt -text
+docs/measurements/artifact-identities-2026-10-21/fantomas-pdb-checksum-restored.txt -text
+docs/measurements/tasks-runtime-matrix-2026-10-21/receipts/*.json -text
+docs/measurements/artifact-identities-2026-10-21/wasm-tool-notices/*.txt -text -whitespace
+docs/measurements/artifact-identities-2026-10-21/fantomas-generator-inputs/* -text -whitespace
+
+# Preserve the inspected upstream ASM build/workflow and license bytes.
+docs/measurements/artifact-identities-2026-10-21/scala-asm-inputs/*.txt -text -whitespace
+docs/measurements/artifact-identities-2026-10-21/scala-component-notices/293b6af371eee28b0ff16f0334ea19e20a3d5522143faa4b95b346855507879a.txt -text -whitespace
+docs/measurements/artifact-identities-2026-10-21/scala-asm-compiler-notices/*.txt -text -whitespace
+
+# Preserve original Scala resource declaration and selected jQuery license bytes.
+docs/measurements/artifact-identities-2026-10-21/scala-resource-inputs/*.txt -text -whitespace
+docs/measurements/artifact-identities-2026-10-21/scala-component-notices/d4db9ebe6f29f5168eac45ad713f055623ac5d0dcd5ba92da23d650ae012020d.txt -text -whitespace
+
+# Preserve the selected historical font license and root declaration bytes.
+docs/measurements/artifact-identities-2026-10-21/scala-font-notices/*.txt -text -whitespace
+
+# Original retained notices, verification output and keys keep upstream whitespace.
+docs/measurements/artifact-identities-2026-10-21/*.txt -text -whitespace
+docs/measurements/artifact-identities-2026-10-21/*.asc -text -whitespace

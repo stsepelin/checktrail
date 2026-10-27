@@ -1,0 +1,64 @@
+{
+  "at": "2026-10-21T20:24:49.784775+00:00",
+  "sdkImage": "mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256",
+  "inspectorAssemblySha256": "e64e3779f5ee4943ffb00a0d6887f3f4e76e0c5f18eb09ec082e122d6304a3d8",
+  "inspectorSourceSha256": "d2c5f208b01a8c848386b716963b5686f3f1c6f5dfe81d7a7b6e3f146409ee22",
+  "cases": [
+    {
+      "case": "altered-document-hash",
+      "exitCode": 139,
+      "expectedGuard": "Native PDB document checksum mismatch",
+      "outputCommitted": false
+    },
+    {
+      "case": "original-restored",
+      "exitCode": 0,
+      "expectedGuard": "successful exact metadata and source payload restoration",
+      "outputCommitted": true
+    }
+  ],
+  "originalInputsUnchanged": true,
+  "targetAssembliesLoadedOrExecuted": false,
+  "network": "none",
+  "ownedContainersRemaining": 0,
+  "borrowedSdkImagePreserved": true,
+  "gateAComplete": false,
+  "mutation": {
+    "artifact": "Fantomas.Core.dll.pdb",
+    "document": "generated/Fantomas.Core.AssemblyInfo.fs",
+    "byteChanges": 1,
+    "lengthUnchanged": true,
+    "originalSha256": "38f4b584224f1afaf837db3f85c3348f1854f212965ad50cfd75316b83517643",
+    "alteredSha256": "a65aad180d520fb62e459ebc1fc69c4e61d228a93f67df27b1ed393ec1702c12",
+    "originalDeclaredHash": "3d2115dbb538c1672ffd2bd34772ad8449cd528355f2250786faa01d754992d5",
+    "embeddedSourcePayloadChanged": false
+  },
+  "retainedInputs": [
+    {
+      "file": "fantomas-pdb-inspector.cs",
+      "bytes": 7099,
+      "sha256": "d2c5f208b01a8c848386b716963b5686f3f1c6f5dfe81d7a7b6e3f146409ee22"
+    },
+    {
+      "file": "fantomas-pdb-checksum-rejected.txt",
+      "bytes": 156,
+      "sha256": "6f18828c3fd45fd08d3e5335b2bd8cbb318ad1ad88c42cd81bdb0dc2cbf36239"
+    },
+    {
+      "file": "fantomas-pdb-checksum-restored.txt",
+      "bytes": 105,
+      "sha256": "3a0b88f63ab978b393f0ee38f15ca30197deafaaf5953bc399eb096dac1f9bbe"
+    }
+  ],
+  "observationScope": "Original bounded metadata reader, compiled with the pinned SDK, against selected DLLs and extracted PDBs as data. One fixed-length declared-checksum byte changed; embedded source and PDB structure preserved. Failure occurs before any output is written. Restoration reproduces complete original metadata and all 19 source payloads.",
+  "compilerCommand": "dotnet build /tool/Inspect.csproj --configuration Release --configfile /tool/NuGet.Config --disable-build-servers -p:UseSharedCompilation=false -p:BaseIntermediateOutputPath=/out/obj/ -p:OutputPath=/out/bin/ -nodeReuse:false",
+  "inspectorProject": "<Project Sdk=\"Microsoft.NET.Sdk\"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup></Project>\n",
+  "nugetConfig": "<?xml version=\"1.0\" encoding=\"utf-8\"?><configuration><packageSources><clear /></packageSources></configuration>\n",
+  "executionCommand": "dotnet /tool/Inspect.dll /inputs /out",
+  "allInputsMountedReadonly": true,
+  "resources": {
+    "cpus": 2,
+    "memoryMiB": 2048,
+    "pids": 128
+  }
+}

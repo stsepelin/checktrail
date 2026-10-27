@@ -1,0 +1,52 @@
+{
+  "at": "2026-10-21T17:33:42.392371+00:00",
+  "network": "denied by enclosing macOS sandbox profile",
+  "bundleSha256": "92d47908620daebe5f6657c123701957cc174a3530219cd4b1c6fb19252ed6ba",
+  "trustedRootSha256": "65ca537f6ed8a47fd0e560c421baa1f6c1efb8b25fc200d8c5c02c0e92eb2b9c",
+  "cases": [
+    {
+      "case": "builder.gz-offline",
+      "expectedSuccess": true,
+      "exitCode": 0,
+      "stdoutSha256": "1452e0e390a12e59244a40dcbbd80cd6267fb7c14ab0be44b1153a6681b043b2",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "web-tree-sitter.tar.gz-offline",
+      "expectedSuccess": true,
+      "exitCode": 0,
+      "stdoutSha256": "1452e0e390a12e59244a40dcbbd80cd6267fb7c14ab0be44b1153a6681b043b2",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "wrong-workflow",
+      "expectedSuccess": false,
+      "exitCode": 1,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "486941643d59bcaec905305a9ad2843539956d60f735745f77a05db562cfda19"
+    },
+    {
+      "case": "wrong-source",
+      "expectedSuccess": false,
+      "exitCode": 1,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "ac01b5057ad478767fc56d336eb3c10bdf2a313af73d8265dd7bfd8df3f2b91f"
+    },
+    {
+      "case": "tampered-artifact",
+      "expectedSuccess": false,
+      "exitCode": 1,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "486941643d59bcaec905305a9ad2843539956d60f735745f77a05db562cfda19"
+    },
+    {
+      "case": "tampered-signature",
+      "expectedSuccess": false,
+      "exitCode": 1,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "486941643d59bcaec905305a9ad2843539956d60f735745f77a05db562cfda19"
+    }
+  ],
+  "completeTransitiveNoticeClosureVerified": false,
+  "gateAComplete": false
+}

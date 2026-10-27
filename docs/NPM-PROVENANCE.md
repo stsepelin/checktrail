@@ -100,3 +100,24 @@ The setup work recomputed the listed public npm archive integrity and compared
 every archived file with its installed counterpart. This finite observation is
 separate from the audit command's metadata/content capture and does not establish
 publisher authentication or complete dependency/native/container closure.
+
+## Version-specific documentary updates
+
+[The retained notice record](measurements/npm-notice-version-bindings-2026-10-23.json)
+binds original upstream text and fixed source URLs. For `eastasianwidth@0.2.0`,
+the fallback preserves the historical complete notice from a version 0.3.0 tree;
+[the publisher's version-specific clarification](https://github.com/komagata/eastasianwidth/blob/f42b1e7b2a403d2050dda1141211b4e198e50e70/LICENSE-NOTES.md)
+explicitly addresses that release. The clarification and distinct current notice
+are retained separately. This does not manufacture a notice in the original
+0.2.0 tarball, equate the two source trees, or verify a legal grant. The audit
+checks the fallback and installed-file bytes; it does not interpret the
+publisher's clarification.
+
+The `fb-watchman@2.0.2` fallback now points to
+[the exact release-preparation tree](https://github.com/facebook/watchman/tree/05872a3eb9d909858983b2c30addc6a286da2f0f/watchman/node).
+Its retained original MIT notice bytes are unchanged. The actual package's
+Apache-2.0 declaration and MIT source/root notice disagreement remains an
+incomplete audit result. `stackback@0.0.2` still lacks a complete package-wide
+MIT notice; the original BSD-form V8 comment in `formatstack.js` covers its own
+component and cannot replace that missing notice. No dependency versions change,
+and complete artifact/license closure and Gate A remain open.

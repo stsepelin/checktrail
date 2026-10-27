@@ -1,0 +1,2 @@
+Unhandled exception. System.IO.InvalidDataException: Native PDB document checksum mismatch
+   at Program.<Main>$(String[] args) in /tool/Program.cs:line 79

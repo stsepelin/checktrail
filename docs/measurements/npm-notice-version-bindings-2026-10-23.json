@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "observedDate": "2026-10-23",
+  "scope": "Retained original notice bytes and version-specific documentary source bindings",
+  "files": [
+    {
+      "file": "docs/licenses/npm-eastasianwidth0.2.0.txt",
+      "source": "https://raw.githubusercontent.com/komagata/eastasianwidth/1d41951a59d63fb2d77cda021050fc070cae424a/MIT-LICENSE.txt",
+      "bytes": 1043,
+      "sha256": "94aa6016fb9d436508366433e9caba061443ca58f4c7eb515caec7badf90ae5a",
+      "scope": "Historical full notice; source manifest version 0.3.0"
+    },
+    {
+      "file": "docs/licenses/npm-eastasianwidth0.2.0-publisher-notes.txt",
+      "source": "https://raw.githubusercontent.com/komagata/eastasianwidth/f42b1e7b2a403d2050dda1141211b4e198e50e70/LICENSE-NOTES.md",
+      "bytes": 1977,
+      "sha256": "652d0486b433ecd1e91c2a933f6d320f651bda1d7bb32ba50a48cf7329bb81b3",
+      "scope": "Publisher version-specific clarification; not a historical tarball member"
+    },
+    {
+      "file": "docs/licenses/npm-eastasianwidth-current-clarification.txt",
+      "source": "https://raw.githubusercontent.com/komagata/eastasianwidth/f42b1e7b2a403d2050dda1141211b4e198e50e70/MIT-LICENSE.txt",
+      "bytes": 1071,
+      "sha256": "543f72322f0ec407fc96f9d2ea9c9af98db9b8448fdd99483be94d65a1011b16",
+      "scope": "Distinct current notice with additional attribution"
+    },
+    {
+      "file": "docs/licenses/npm-fb-watchman2.0.2.txt",
+      "source": "https://raw.githubusercontent.com/facebook/watchman/05872a3eb9d909858983b2c30addc6a286da2f0f/LICENSE",
+      "bytes": 1092,
+      "sha256": "2d4c3d00d67067461412a2d9a2f3f8b7b9cda62b3db501e4b6844ccf35c949aa",
+      "scope": "Original root notice at exact release-preparation source version 2.0.2"
+    }
+  ],
+  "dependencyVersionsChanged": false,
+  "noticeBytesDownloadedAndHashesChecked": true,
+  "tarballSignatureVerified": false,
+  "publisherIdentityAuthenticated": false,
+  "licensingDisagreementResolved": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "remainingGaps": [
+    "fb-watchman@2.0.2 installed Apache-2.0 declaration differs from its source header and selected MIT root notice",
+    "stackback@0.0.2 package-wide MIT notice remains unavailable; its separate original V8 component notice does not replace that gap"
+  ],
+  "limits": [
+    "The audit verifies selected notice and installed-file bytes, not the meaning or legal effect of publisher clarification",
+    "The historical eastasianwidth notice source tree has version 0.3.0 and is not the version 0.2.0 release tree",
+    "The current eastasianwidth notice is retained separately and is not presented as byte-identical to the historical notice"
+  ]
+}

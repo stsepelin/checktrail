@@ -1,0 +1,741 @@
+{
+  "scope": "Static declared Mach-O libraries and selected native preprocessor header observations only; not a complete runtime loader or file-access trace.",
+  "hostToolMetadata": [
+    {
+      "cpuType": 16777228,
+      "fileType": 2,
+      "declaredDylibs": [
+        "/usr/lib/libSystem.B.dylib",
+        "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+        "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+        "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+        "/usr/lib/libobjc.A.dylib",
+        "/usr/lib/libiconv.2.dylib"
+      ],
+      "declaredRpaths": [],
+      "buildVersions": [
+        {
+          "platform": 1,
+          "minimumOsEncoded": 720896,
+          "sdkEncoded": 984320,
+          "buildToolCount": 1
+        }
+      ],
+      "sourceMember": "tree-sitter",
+      "bytes": 21581328,
+      "sha256": "f0e7b6b81e4faad74cd935c3536ea061d61b402f0ccaf3829300c70c8fe9fcb6",
+      "declaredDependencyMapping": [
+        {
+          "name": "/usr/lib/libSystem.B.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/usr/lib/libobjc.A.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/usr/lib/libiconv.2.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        }
+      ]
+    },
+    {
+      "cpuType": 16777228,
+      "fileType": 2,
+      "declaredDylibs": [
+        "@rpath/libclang-cpp.23.1-wasi-sdk.dylib",
+        "@rpath/libLLVM.23.1-wasi-sdk.dylib",
+        "/usr/lib/libc++.1.dylib",
+        "/usr/lib/libSystem.B.dylib"
+      ],
+      "declaredRpaths": ["@loader_path/../lib"],
+      "buildVersions": [
+        {
+          "platform": 1,
+          "minimumOsEncoded": 720896,
+          "sdkEncoded": 918784,
+          "buildToolCount": 1
+        }
+      ],
+      "sourceMember": "wasi-sdk/bin/clang-23",
+      "bytes": 139976,
+      "sha256": "19b9ef777eec50d9a353060db546963f588fc10b13baff7839a54d0d97bf871c",
+      "declaredDependencyMapping": [
+        {
+          "name": "@rpath/libclang-cpp.23.1-wasi-sdk.dylib",
+          "scope": "pinned-archive-library-candidate",
+          "sourceMember": "wasi-sdk/lib/libclang-cpp.23.1-wasi-sdk.dylib",
+          "sha256": "e107cf46ebcedaf8a0bc12b71886232ef8c38e866583aa32f36ba54f3611db21",
+          "actualLoaderTraceVerified": false
+        },
+        {
+          "name": "@rpath/libLLVM.23.1-wasi-sdk.dylib",
+          "scope": "pinned-archive-library-candidate",
+          "sourceMember": "wasi-sdk/lib/libLLVM.23.1-wasi-sdk.dylib",
+          "sha256": "d23931bcd79bfacfaef01fb6c5a5b42ebe6c61f7498a79d199fe7555b4a31cfd",
+          "actualLoaderTraceVerified": false
+        },
+        {
+          "name": "/usr/lib/libc++.1.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/usr/lib/libSystem.B.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        }
+      ]
+    },
+    {
+      "cpuType": 16777228,
+      "fileType": 2,
+      "declaredDylibs": [
+        "@rpath/libLLVM.23.1-wasi-sdk.dylib",
+        "/usr/lib/libc++.1.dylib",
+        "/usr/lib/libSystem.B.dylib"
+      ],
+      "declaredRpaths": ["@loader_path/../lib"],
+      "buildVersions": [
+        {
+          "platform": 1,
+          "minimumOsEncoded": 720896,
+          "sdkEncoded": 918784,
+          "buildToolCount": 1
+        }
+      ],
+      "sourceMember": "wasi-sdk/bin/lld",
+      "bytes": 4115152,
+      "sha256": "f3f36480cec4c76cd996e7e7624c811d18f92d63dc81fd224c0f757a7f4c3377",
+      "declaredDependencyMapping": [
+        {
+          "name": "@rpath/libLLVM.23.1-wasi-sdk.dylib",
+          "scope": "pinned-archive-library-candidate",
+          "sourceMember": "wasi-sdk/lib/libLLVM.23.1-wasi-sdk.dylib",
+          "sha256": "d23931bcd79bfacfaef01fb6c5a5b42ebe6c61f7498a79d199fe7555b4a31cfd",
+          "actualLoaderTraceVerified": false
+        },
+        {
+          "name": "/usr/lib/libc++.1.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/usr/lib/libSystem.B.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        }
+      ]
+    },
+    {
+      "cpuType": 16777228,
+      "fileType": 2,
+      "declaredDylibs": [
+        "@rpath/libbinaryen.dylib",
+        "/usr/lib/libc++.1.dylib",
+        "/usr/lib/libSystem.B.dylib"
+      ],
+      "declaredRpaths": ["@loader_path/../lib"],
+      "buildVersions": [
+        {
+          "platform": 1,
+          "minimumOsEncoded": 720896,
+          "sdkEncoded": 918784,
+          "buildToolCount": 1
+        }
+      ],
+      "sourceMember": "binaryen/bin/wasm-opt",
+      "bytes": 1677000,
+      "sha256": "a9c8d09d84186e4c8efe937f3de19b887404d24a96e2638f3bd3b476e17b7218",
+      "declaredDependencyMapping": [
+        {
+          "name": "@rpath/libbinaryen.dylib",
+          "scope": "pinned-archive-library-candidate",
+          "sourceMember": "binaryen/lib/libbinaryen.dylib",
+          "sha256": "6627f4f3f3655bfc14b3cd4816b0e7b0cb62ce6a530bab00cdd26855d5f6359b",
+          "actualLoaderTraceVerified": false
+        },
+        {
+          "name": "/usr/lib/libc++.1.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/usr/lib/libSystem.B.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        }
+      ]
+    },
+    {
+      "cpuType": 16777228,
+      "fileType": 6,
+      "declaredDylibs": [
+        "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+        "@rpath/libLLVM.23.1-wasi-sdk.dylib",
+        "/usr/lib/libc++.1.dylib",
+        "/usr/lib/libSystem.B.dylib",
+        "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation"
+      ],
+      "declaredRpaths": ["@loader_path/../lib"],
+      "buildVersions": [
+        {
+          "platform": 1,
+          "minimumOsEncoded": 720896,
+          "sdkEncoded": 918784,
+          "buildToolCount": 1
+        }
+      ],
+      "sourceMember": "wasi-sdk/lib/libclang-cpp.23.1-wasi-sdk.dylib",
+      "bytes": 58776432,
+      "sha256": "e107cf46ebcedaf8a0bc12b71886232ef8c38e866583aa32f36ba54f3611db21",
+      "declaredDependencyMapping": [
+        {
+          "name": "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "@rpath/libLLVM.23.1-wasi-sdk.dylib",
+          "scope": "pinned-archive-library-candidate",
+          "sourceMember": "wasi-sdk/lib/libLLVM.23.1-wasi-sdk.dylib",
+          "sha256": "d23931bcd79bfacfaef01fb6c5a5b42ebe6c61f7498a79d199fe7555b4a31cfd",
+          "actualLoaderTraceVerified": false
+        },
+        {
+          "name": "/usr/lib/libc++.1.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/usr/lib/libSystem.B.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        }
+      ]
+    },
+    {
+      "cpuType": 16777228,
+      "fileType": 6,
+      "declaredDylibs": [
+        "@rpath/libedit.0.dylib",
+        "/usr/lib/libSystem.B.dylib",
+        "/usr/lib/libc++.1.dylib"
+      ],
+      "declaredRpaths": ["@loader_path/../lib"],
+      "buildVersions": [
+        {
+          "platform": 1,
+          "minimumOsEncoded": 720896,
+          "sdkEncoded": 918784,
+          "buildToolCount": 1
+        }
+      ],
+      "sourceMember": "wasi-sdk/lib/libLLVM.23.1-wasi-sdk.dylib",
+      "bytes": 55989944,
+      "sha256": "d23931bcd79bfacfaef01fb6c5a5b42ebe6c61f7498a79d199fe7555b4a31cfd",
+      "declaredDependencyMapping": [
+        {
+          "name": "@rpath/libedit.0.dylib",
+          "scope": "pinned-archive-library-candidate",
+          "sourceMember": "wasi-sdk/lib/libedit.0.dylib",
+          "sha256": "5be31ba80f69562a90d6d3ed7937e7507a2df5dcd93013956a08bf98544c1979",
+          "actualLoaderTraceVerified": false
+        },
+        {
+          "name": "/usr/lib/libSystem.B.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/usr/lib/libc++.1.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        }
+      ]
+    },
+    {
+      "cpuType": 16777228,
+      "fileType": 6,
+      "declaredDylibs": [
+        "/usr/lib/libc++.1.dylib",
+        "/usr/lib/libSystem.B.dylib"
+      ],
+      "declaredRpaths": ["@loader_path/../lib"],
+      "buildVersions": [
+        {
+          "platform": 1,
+          "minimumOsEncoded": 720896,
+          "sdkEncoded": 918784,
+          "buildToolCount": 1
+        }
+      ],
+      "sourceMember": "binaryen/lib/libbinaryen.dylib",
+      "bytes": 14954752,
+      "sha256": "6627f4f3f3655bfc14b3cd4816b0e7b0cb62ce6a530bab00cdd26855d5f6359b",
+      "declaredDependencyMapping": [
+        {
+          "name": "/usr/lib/libc++.1.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/usr/lib/libSystem.B.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        }
+      ]
+    },
+    {
+      "cpuType": 16777228,
+      "fileType": 6,
+      "declaredDylibs": [
+        "/usr/lib/libncurses.5.4.dylib",
+        "/usr/lib/libSystem.B.dylib"
+      ],
+      "declaredRpaths": [],
+      "buildVersions": [
+        {
+          "platform": 1,
+          "minimumOsEncoded": 917504,
+          "sdkEncoded": 918784,
+          "buildToolCount": 1
+        }
+      ],
+      "sourceMember": "wasi-sdk/lib/libedit.0.dylib",
+      "bytes": 248736,
+      "sha256": "5be31ba80f69562a90d6d3ed7937e7507a2df5dcd93013956a08bf98544c1979",
+      "declaredDependencyMapping": [
+        {
+          "name": "/usr/lib/libncurses.5.4.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        },
+        {
+          "name": "/usr/lib/libSystem.B.dylib",
+          "scope": "host-system-declaration-only",
+          "runtimeByteIdentityVerified": false
+        }
+      ]
+    }
+  ],
+  "uniqueGrammarInputAddresses": 69,
+  "uniqueSdkHeaders": 35,
+  "dependencyEntryCounting": "802 translation-unit/file entries across 29 units; grammar addresses include the grammar identifier, SDK addresses share one pinned root.",
+  "selectedSdkHeaders": [
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "lib/clang/23/include/__stddef_null.h",
+      "bytes": 875,
+      "sha256": "b1d71b08563ab3d2c22a1e4f8ddf4d9a1111c89e9404b859a45c307e8ebc6c69",
+      "initialCommentBytes": 370,
+      "initialCommentSha256": "48999a1a764e023033497f96bb51b2e64ba94d62aac90e9c58ee7e68fbbff79c",
+      "initialComment": "/*===---- __stddef_null.h - Definition of NULL -----------------------------===\n *\n * Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.\n * See https://llvm.org/LICENSE.txt for license information.\n * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception\n *\n *===-----------------------------------------------------------------------===\n */",
+      "upstreamComponentHint": "LLVM clang headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "lib/clang/23/include/__stddef_size_t.h",
+      "bytes": 708,
+      "sha256": "d86ddc0238da09b385846ebef814ffc50a44e40cf85d4e3793f485952b7e73ad",
+      "initialCommentBytes": 370,
+      "initialCommentSha256": "ccb60d2103e256246a6b0732a3a1db5fc5fdded3e0ee94e833b2e05c02faf3a5",
+      "initialComment": "/*===---- __stddef_size_t.h - Definition of size_t -------------------------===\n *\n * Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.\n * See https://llvm.org/LICENSE.txt for license information.\n * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception\n *\n *===-----------------------------------------------------------------------===\n */",
+      "upstreamComponentHint": "LLVM clang headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "lib/clang/23/include/__stddef_wchar_t.h",
+      "bytes": 853,
+      "sha256": "1900d4998aef3698b06399ed686db0c21e26509b08638a25734fb97ae89b1001",
+      "initialCommentBytes": 370,
+      "initialCommentSha256": "b7a1e583d3f2b973304b4de9602aef6ee86d75fe57360b95088c5f14fae8abc9",
+      "initialComment": "/*===---- __stddef_wchar.h - Definition of wchar_t -------------------------===\n *\n * Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.\n * See https://llvm.org/LICENSE.txt for license information.\n * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception\n *\n *===-----------------------------------------------------------------------===\n */",
+      "upstreamComponentHint": "LLVM clang headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "lib/clang/23/include/__stddef_wint_t.h",
+      "bytes": 443,
+      "sha256": "f2ededa38c5454397242aceaefa65b42b292a1b3cc258e7ca6e216f146e51f0d",
+      "initialCommentBytes": 370,
+      "initialCommentSha256": "91ace78f6565e868d15c9f1d646c3cf31346a8cd7ed854a3d5e9e16dcb620b89",
+      "initialComment": "/*===---- __stddef_wint.h - Definition of wint_t ---------------------------===\n *\n * Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.\n * See https://llvm.org/LICENSE.txt for license information.\n * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception\n *\n *===-----------------------------------------------------------------------===\n */",
+      "upstreamComponentHint": "LLVM clang headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "lib/clang/23/include/limits.h",
+      "bytes": 3794,
+      "sha256": "6b59cc1b6f86c901bf41ce942b8434530e852eb16e79e6e9287f89441f71efca",
+      "initialCommentBytes": 368,
+      "initialCommentSha256": "6419aa5057cfa7b031f7dc9efd2d7245435c1d6ed6dec5289bd70f1b844b61d7",
+      "initialComment": "/*===---- limits.h - Standard header for integer sizes --------------------===*\\\n *\n * Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.\n * See https://llvm.org/LICENSE.txt for license information.\n * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception\n *\n\\*===----------------------------------------------------------------------===*/",
+      "upstreamComponentHint": "LLVM clang headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "lib/clang/23/include/stdbool.h",
+      "bytes": 1172,
+      "sha256": "48655faf4ebd4ca0af26a1ee8e3e16f8dc68385c9cd550ffb3629320681305b3",
+      "initialCommentBytes": 370,
+      "initialCommentSha256": "41e9b270852cfd989f4a7d0395eaab7bab8ece2a1d035c0f0172f53c61116ef0",
+      "initialComment": "/*===---- stdbool.h - Standard header for booleans -------------------------===\n *\n * Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.\n * See https://llvm.org/LICENSE.txt for license information.\n * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception\n *\n *===-----------------------------------------------------------------------===\n */",
+      "upstreamComponentHint": "LLVM clang headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "lib/clang/23/include/stddef.h",
+      "bytes": 5053,
+      "sha256": "b3e62a046ddf28d09eedebe6eb9461cb7060e47cad2c69964b222c4eea10347e",
+      "initialCommentBytes": 370,
+      "initialCommentSha256": "7da4f4300323d10670343222edc2b6083488ab66198f3a77f4cd1d5f102ed9b8",
+      "initialComment": "/*===---- stddef.h - Basic type definitions --------------------------------===\n *\n * Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.\n * See https://llvm.org/LICENSE.txt for license information.\n * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception\n *\n *===-----------------------------------------------------------------------===\n */",
+      "upstreamComponentHint": "LLVM clang headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "lib/clang/23/include/stdint.h",
+      "bytes": 27175,
+      "sha256": "5e0ab094f39830fafd0ecde083d329c423378ff325142a52700b17773977f6c3",
+      "initialCommentBytes": 368,
+      "initialCommentSha256": "7d9cd6421468acd1cfdab8881bc240a68f997c2a637896cd65d9b61a6415272a",
+      "initialComment": "/*===---- stdint.h - Standard header for sized integer types --------------===*\\\n *\n * Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.\n * See https://llvm.org/LICENSE.txt for license information.\n * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception\n *\n\\*===----------------------------------------------------------------------===*/",
+      "upstreamComponentHint": "LLVM clang headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__functions_malloc.h",
+      "bytes": 702,
+      "sha256": "b8d38918f17c2850b75c7135b1cf14f32a1cb2c9d9670f7fd122b0601cf1c7cc",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__functions_memcpy.h",
+      "bytes": 608,
+      "sha256": "2066232303f51c11aa73ee0d140aaa55378c8d57bd1487f7347b7e30f1dc56de",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__header_stdlib.h",
+      "bytes": 396,
+      "sha256": "076be483fea034975836ec11cce1890a475c87794956963c18dd0c694388d80e",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__header_string.h",
+      "bytes": 621,
+      "sha256": "b349ab283073e141735c2fb06a27a97504cab9540fbd0ee1ae143778e5fcd363",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__macro_PAGESIZE.h",
+      "bytes": 939,
+      "sha256": "06fb86f22763a6b4fc6d3dee09cfef54275f622706b74b3c204fad0ee3470e36",
+      "initialCommentBytes": 516,
+      "initialCommentSha256": "2a3d008c2b7a96d954ad65d39b7b55ced51290866b053f48a6e74c941239c7d9",
+      "initialComment": "/*\n * Without custom-page-sizes proposal, the page size in WebAssembly\n * is fixed at 64 KiB.\n *\n * The LLVM versions with a support of custom-page-sizes proposal\n * provides __wasm_first_page_end global to allow page-size-agnostic\n * objects.\n *\n * If this ever needs to be a value outside the range of an `int`, the\n * `getpagesize` function which returns this value will need special\n * consideration. POSIX has deprecated `getpagesize` in favor of\n * `sysconf(_SC_PAGESIZE)` which does not have this problem.\n */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__seek.h",
+      "bytes": 122,
+      "sha256": "21b0646d441deb41cd97f20f471e1dbdd8693d85c89c7f98d0f28c521ccb0192",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__struct_iovec.h",
+      "bytes": 178,
+      "sha256": "9d0e70e1444e0d20d49a050b063d3d2341de9344e1ecac3b5f237c837e0e521a",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__struct_timespec.h",
+      "bytes": 201,
+      "sha256": "613f7cf5be480a6622aff8e1858187bc8a34a7278d9ce3d710a2c6e8eaa8d386",
+      "initialCommentBytes": 28,
+      "initialCommentSha256": "765715ea728da8d7f38a32920c3f581d11276babfc3ca8298778ba44507cf3a0",
+      "initialComment": "/* As specified in POSIX. */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__struct_timeval.h",
+      "bytes": 240,
+      "sha256": "2f1bf6957fcfec53a116498e50bf86432f79342bf377b6fd919a3fcef879f1c2",
+      "initialCommentBytes": 28,
+      "initialCommentSha256": "765715ea728da8d7f38a32920c3f581d11276babfc3ca8298778ba44507cf3a0",
+      "initialComment": "/* As specified in POSIX. */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__typedef_suseconds_t.h",
+      "bytes": 247,
+      "sha256": "c258310734c92f07ec10b86b756183d66c277fec85bdff84d82a695b925b38cb",
+      "initialCommentBytes": 120,
+      "initialCommentSha256": "8c527f63e70d689460a5821b819fed18f8727f13a4bd3ae0b10b12a3c35774f4",
+      "initialComment": "/* Define this to be 64-bit as its main use is in struct timeval where the\n   extra space would otherwise be padding. */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__typedef_time_t.h",
+      "bytes": 179,
+      "sha256": "b1ad083733361f8b5077ff9dc3412bd7d7a5f455fdd1eef5fb66d188fada1e98",
+      "initialCommentBytes": 67,
+      "initialCommentSha256": "ead031ef358469d8af257fa48247e4735bcb05f1393c4f02e8eac0a366902059",
+      "initialComment": "/* Define this as a 64-bit signed integer to avoid the 2038 bug. */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/alloca.h",
+      "bytes": 219,
+      "sha256": "8768404d7cf4af5fb135b1a2ca91765bd2be311ac072e0ec8b68f5cb3e6e0f3e",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/assert.h",
+      "bytes": 428,
+      "sha256": "477f9fcf67e8eccb59dea935f0dc7abd40829f8d61a3e73e4151ff6a18ef25f9",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/bits/alltypes.h",
+      "bytes": 12767,
+      "sha256": "c96ceaca634a361be4def3e9ff27dc12bb21cadaae67a46553e1559e52fc9cf4",
+      "initialCommentBytes": 133,
+      "initialCommentSha256": "3eff95ad15991597253d8650c8adbf40b054281d96d3055a4e473e4a47279c1b",
+      "initialComment": "/*\n * Rather than define everything ourselves here in the musl layer, for\n * WASI, reference the definitions in the lower layers.\n */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/bits/limits.h",
+      "bytes": 30,
+      "sha256": "9b0580d75ef3986460a8baea35ebf694542ff798d5fef32cc7b02c0a43dc6570",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/bits/stdint.h",
+      "bytes": 789,
+      "sha256": "da756261a2d5fcd7b64bcc323d91897c75a1f9b3883cf2dbf6d066454ae6f511",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/features.h",
+      "bytes": 865,
+      "sha256": "6d228e77b88b69f70f9157548b6ec673ffc6b998ce6035fbbee0caddb8442903",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/limits.h",
+      "bytes": 4474,
+      "sha256": "8095825cf6c9775c834bed141ff7e800d7394a9f4d1c5cd4712b8014408b2fbc",
+      "initialCommentBytes": 16,
+      "initialCommentSha256": "afbe087914281bfb100fac71d0b53f131a0c9460cba09e2f6bdccbaab0666de8",
+      "initialComment": "/* __LONG_MAX */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/stdbool.h",
+      "bytes": 167,
+      "sha256": "5cd1f701b5e927e4e39bcc69f4b7e437a98c8821168e69171c626502a6fc13d9",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/stdint.h",
+      "bytes": 2578,
+      "sha256": "b6e77f1611e56cf499233172cab8bc09c0f7d937f3daa5ad552e1712fc6663e5",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/stdio.h",
+      "bytes": 7158,
+      "sha256": "68af96bf70fb6d22c853050366feb94ea22e700a497aa642867e9dc1b07821c7",
+      "initialCommentBytes": 57,
+      "initialCommentSha256": "8d308c0e71011ff15b468c61716bb068b11abee7314fd9f312496136da364c7a",
+      "initialComment": "/* WASI doesn't need to define FILE as a complete type */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/stdlib.h",
+      "bytes": 6141,
+      "sha256": "38c9f91ab4e32210d42bee4ba946f237fe130ec837d993dde1d3538417092185",
+      "initialCommentBytes": 37,
+      "initialCommentSha256": "99cf8502d3360c40e76a304f0cd33d3ee66e0ffedf2808200d4a992d47c0586e",
+      "initialComment": "/* Use alternate WASI libc headers */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/string.h",
+      "bytes": 3681,
+      "sha256": "85eaadf7ab59b931fefe325a6d1f87728c0acbc5c0b0a81ef453e5021275b590",
+      "initialCommentBytes": 37,
+      "initialCommentSha256": "99cf8502d3360c40e76a304f0cd33d3ee66e0ffedf2808200d4a992d47c0586e",
+      "initialComment": "/* Use alternate WASI libc headers */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/strings.h",
+      "bytes": 964,
+      "sha256": "b8fde0a141ac481de1f88abafbf5678ddfd8d89b309e3253adea1fa0ecb8d9e4",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/wasi/version.h",
+      "bytes": 739,
+      "sha256": "f4b6118e5051bdf33173bf25b2d0d1c893c8ae8b8ee7f0a32acede0a1ba370c5",
+      "initialCommentBytes": 23,
+      "initialCommentSha256": "e6700b676a19e6f07c241a8493a3eb2a4c2a0bb450a157a81980fd3567f8491a",
+      "initialComment": "/* #undef __wasip2__ */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/wchar.h",
+      "bytes": 7113,
+      "sha256": "214bffff576c41bc3599530dce0bec937106c38c73b7ae5dacee1dc90b1b6fd1",
+      "initialCommentBytes": 57,
+      "initialCommentSha256": "8d308c0e71011ff15b468c61716bb068b11abee7314fd9f312496136da364c7a",
+      "initialComment": "/* WASI doesn't need to define FILE as a complete type */",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    },
+    {
+      "origin": "wasi-sdk",
+      "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/wctype.h",
+      "bytes": 1915,
+      "sha256": "cfb9a3d564aad013b7bb8d326fd9b01263c87ff73fb69c823e7695b4989fc2e9",
+      "initialCommentBytes": 0,
+      "initialCommentSha256": null,
+      "initialComment": "",
+      "upstreamComponentHint": "WASI libc sysroot headers",
+      "noticeCoverageIndependentlyDetermined": false
+    }
+  ],
+  "hostSystemClosureVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "schemaVersion": 1,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
