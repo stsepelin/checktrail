@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original synthetic Linux installed-lifecycle failure investigation and deterministic failure-presentation regression. The original hosted failure was not reproduced or causally resolved.",
+  "originalFailedRun": {
+    "runId": 40448677171,
+    "jobId": 122006082985,
+    "sourceCommit": "c24eb8889e41dcf0f39d5e11d0bb07c1b0577776",
+    "status": "failure",
+    "innerCause": null,
+    "failureDetailLostToProgressTail": true
+  },
+  "diagnostic": {
+    "runId": 40454792009,
+    "jobId": 122025490112,
+    "url": "https://github.com/stsepelin/checktrail/actions/runs/40454792009/job/122025490112",
+    "sourceCommit": "7c58f26dbf32d845e4ee1837156cb4fbdbabdb1c",
+    "originalCompiledEngineSha256": "ab68e78abd45324db1ee0f5e86885aa0512618069f1ecc5da79ac9ca4e199fa0",
+    "platform": "linux",
+    "architecture": "x64",
+    "node": "24.21.0",
+    "osRelease": "6.17.0-1022-azure",
+    "configuredImageOS": "ubuntu24",
+    "configuredImageVersion": "20261023.334.3",
+    "unrelatedCpuWorkers": 3,
+    "failurePresentationAdjusted": true,
+    "originalAssertionsUnchanged": true,
+    "compiledInputsRestored": true,
+    "cases": [
+      {
+        "phase": "unmodified",
+        "wave": 0,
+        "case": "installed",
+        "originalName": "lifecycle-platforms installed acceptance",
+        "passed": true,
+        "exitCode": 0,
+        "elapsedMs": 74204.393522,
+        "readinessFailure": false,
+        "cleanupUnavailable": false,
+        "failureExcerpt": null
+      },
+      {
+        "phase": "traced-a",
+        "wave": 1,
+        "case": "installed",
+        "originalName": "lifecycle-platforms installed acceptance",
+        "passed": true,
+        "exitCode": 0,
+        "elapsedMs": 85728.16384899999,
+        "readinessFailure": false,
+        "cleanupUnavailable": false,
+        "failureExcerpt": null
+      },
+      {
+        "phase": "traced-b",
+        "wave": 1,
+        "case": "installed",
+        "originalName": "lifecycle-platforms installed acceptance",
+        "passed": true,
+        "exitCode": 0,
+        "elapsedMs": 88891.30929399999,
+        "readinessFailure": false,
+        "cleanupUnavailable": false,
+        "failureExcerpt": null
+      },
+      {
+        "phase": "traced-a",
+        "wave": 2,
+        "case": "installed",
+        "originalName": "lifecycle-platforms installed acceptance",
+        "passed": true,
+        "exitCode": 0,
+        "elapsedMs": 86283.683662,
+        "readinessFailure": false,
+        "cleanupUnavailable": false,
+        "failureExcerpt": null
+      },
+      {
+        "phase": "traced-b",
+        "wave": 2,
+        "case": "installed",
+        "originalName": "lifecycle-platforms installed acceptance",
+        "passed": true,
+        "exitCode": 0,
+        "elapsedMs": 88744.045266,
+        "readinessFailure": false,
+        "cleanupUnavailable": false,
+        "failureExcerpt": null
+      }
+    ],
+    "snapshotRejectionMessages": {
+      "Process snapshot selection invalid": 72,
+      "original selected identity unavailable": 4
+    },
+    "otherObservedErrors": [],
+    "maximumSlowSnapshotMs": 145.21481999999924,
+    "confirmedCause": null
+  },
+  "diagnosticRepair": {
+    "sourceCommit": "8596b08fc2dbc4cf0c7cb7f3b2d381222fa9fcf5",
+    "test": "installed lifecycle failures retain the original problem before long progress output while malformed or empty collectors retain bounded raw diagnostics",
+    "structuredProblemsPrecedeProgressTail": true,
+    "rawCrashFallbackPreserved": true,
+    "messageLimitCharacters": 6000,
+    "acceptanceAssertionsOrDeadlinesChanged": false
+  },
+  "fullDevelopmentCheck": {
+    "sourceCommit": "8596b08fc2dbc4cf0c7cb7f3b2d381222fa9fcf5",
+    "command": "npm run check",
+    "passed": 1375,
+    "failed": 0,
+    "skipped": 759,
+    "cancelled": 0,
+    "tests": 2134,
+    "elapsedSeconds": 707.242886292,
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "26.9.0",
+    "selectedRuntimeSlot": null
+  },
+  "selectedRuntimeQualified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

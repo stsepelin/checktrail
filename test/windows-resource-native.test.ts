@@ -68,10 +68,14 @@ Add-Type -Path $data.source -OutputAssembly $data.output -OutputType ConsoleAppl
     // Arm both fields through observed work rather than weakening comparisons.
     const kernelWitness = (minimum: number) =>
       String.raw`const fs=require('node:fs');const kernelStart=process.cpuUsage().system,kernelDeadline=performance.now()+5000;while(process.cpuUsage().system-kernelStart<${minimum}&&performance.now()<kernelDeadline){for(let i=0;i<100;i++)fs.statSync(process.execPath);}if(process.cpuUsage().system-kernelStart<${minimum})throw Error('Original Windows kernel CPU witness did not reach its observed minimum');`;
-    const childSource = String.raw`const b=Buffer.alloc(Number(process.argv[1])*1024*1024,7);${kernelWitness(200000)}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,bytes:b.length}));`;
+    // Wall time does not establish CPU separation on a descheduled runner.
+    // Observe enough user CPU in each descendant and in the target itself.
+    const userWitness = (minimum: number) =>
+      String.raw`const {createHash}=require('node:crypto'),userBuffer=Buffer.alloc(256*1024,17),userStart=process.cpuUsage().user,userDeadline=performance.now()+5000;let userCpu,userDigest='';do{for(let i=0;i<10;i++)userDigest=createHash('sha256').update(userBuffer).digest('hex');userCpu=process.cpuUsage();}while((userCpu.user-userStart<${minimum}||userCpu.user<=userCpu.system*4)&&performance.now()<userDeadline);if(userCpu.user-userStart<${minimum}||userCpu.user<=userCpu.system*4)throw Error('Original Windows user CPU witness did not reach its observed minimum and separation');`;
+    const childSource = String.raw`const b=Buffer.alloc(Number(process.argv[1])*1024*1024,7);${kernelWitness(200000)}${userWitness(1000000)}console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),userDigest,rss:process.resourceUsage().maxRSS,bytes:b.length}));`;
     const source = String.raw`const {spawnSync}=require('node:child_process');const touched=Buffer.alloc(32*1024*1024,7),reserved=Buffer.allocUnsafe(256*1024*1024),children=[];const observe=()=>{const r=spawnSync(process.argv[1],[],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);return JSON.parse(r.stdout);};const beforeJob=observe();
 for(const size of [64,96]){const r=spawnSync(process.execPath,['-e',${JSON.stringify(childSource)},String(size)],{encoding:'utf8'});if(r.status!==0)throw Error(r.stderr);children.push(JSON.parse(r.stdout));}
-const afterJob=observe();${kernelWitness(20000)}const end=performance.now()+150;while(performance.now()<end){};console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),rss:process.resourceUsage().maxRSS,touched:touched.length,reserved:reserved.length,children,beforeJob,afterJob}));`;
+const afterJob=observe();${kernelWitness(20000)}${userWitness(250000)}console.log(JSON.stringify({pid:process.pid,cpu:process.cpuUsage(),userDigest,rss:process.resourceUsage().maxRSS,touched:touched.length,reserved:reserved.length,children,beforeJob,afterJob}));`;
     const result = await runProcess(
       root,
       {
@@ -93,6 +97,16 @@ const afterJob=observe();${kernelWitness(20000)}const end=performance.now()+150;
     assert.equal(usage.state, "collected", JSON.stringify(usage));
     if (usage.state !== "collected") throw Error("Native counters unavailable");
     const own = JSON.parse(result.stdout);
+    t.diagnostic(
+      JSON.stringify({
+        witness: "observed-independent-cpu-fields",
+        targetCpu: own.cpu,
+        childrenCpu: own.children.map((child: { cpu: unknown }) => child.cpu),
+        earlierJob: own.afterJob,
+        reportedDirect: usage.processCpu,
+        reportedJob: usage.jobCpu,
+      }),
+    );
     assert.equal(own.pid, receipt.childPid);
     assert.equal(
       new Set([
@@ -112,10 +126,18 @@ const afterJob=observe();${kernelWitness(20000)}const end=performance.now()+150;
     assert.equal(own.beforeJob.active, 2);
     assert.equal(own.afterJob.active, 2);
     assert.equal(usage.totalJobProcesses, 5);
+    assert.match(own.userDigest, /^[a-f0-9]{64}$/);
     assert.ok(
-      own.afterJob.kernel100ns > usage.processCpu.kernel100ns,
-      "The descendant workload must put the independent earlier job kernel counter above the final direct-target counter",
+      own.cpu.user > own.cpu.system * 4,
+      "Observed target user/system CPU must be distinct enough to detect swapped fields",
     );
+    for (const child of own.children)
+      assert.match(child.userDigest, /^[a-f0-9]{64}$/);
+    for (const field of ["user100ns", "kernel100ns"] as const)
+      assert.ok(
+        own.afterJob[field] > usage.processCpu[field],
+        "The descendant workload must put each independent earlier job CPU counter above its final direct-target counter",
+      );
     for (const [field, nativeField] of [
       ["user", "user100ns"],
       ["system", "kernel100ns"],

@@ -226,6 +226,15 @@ and job-kernel substitution controls, and the preserved direct-memory, CPU-field
 fixed-source and private-namespace guards. Its exact component bindings remain
 separate from subsequent source changes and final current-source qualification.
 
+The [observed CPU witness follow-up](measurements/windows-resource-cpu-witness-2026-10-27.json)
+records a fixture correction after the CPU-field-swap mutant survived a
+wall-clock-bounded loop. The target and both descendants now require measured
+user CPU work; the target also requires distinct user/system counters. All five
+paired controls pass on Node 22.23.2 and 22.23.3, both ordinarily and with three
+owned unrelated CPU workers. Production counters and deadlines are unchanged.
+This verifies those mutation witnesses; it does not qualify the complete runtime
+matrix or resolve the separate Linux installed-lifecycle failure.
+
 ## Prepared Windows workload measurement
 
 The operator-only `measureWindowsResourceSample` export in
@@ -326,3 +335,24 @@ SDK and complete artifact/license closure remain unverified. Each collector
 observes its actual runtime and rejects a mismatched selected slot. An unselected development run qualifies no
 matrix slot. Final matrix and artifact/license closure remain open; these
 synthetic controls invoke no model or field evaluation and publish no package.
+
+The [CI repair measurement](measurements/resource-ci-repairs-2026-10-27.json)
+binds the current development source/fresh resource cohort, full check, paired
+resource/helper guards and POSIX source/fresh controls. The native Windows
+source/fresh cohort passed with the same compiled engine and finite harness
+identities. Its independent counter guards also passed. The retained ARM64
+observation verifies separate pinned compiler preparation in the original
+runtime image; it predates the later upgrade-fixture refactor and requires final
+harness requalification. The owned Linux teardown-sentinel correction has a
+failing unit regression and narrow negative controls. The separate native
+diagnostics did not reproduce the intermittent hosted cleanup/readiness failures,
+so those failures are not attributed to this correction. Final matrix and
+artifact/license closure remain open.
+
+The [Linux diagnostic follow-up](measurements/lifecycle-ci-diagnostics-2026-10-27.json)
+records five passing original installed-lifecycle replays under CPU load, with
+concurrent traced waves and restored compiled inputs. The original hosted failure
+was not reproduced, so its cause remains unconfirmed. The package verifier now
+places structured failed-case details before progress logs; malformed or crashed
+collectors retain bounded raw diagnostics. A regression covers both paths and
+the message bound. Terminal assertions and execution deadlines are unchanged.

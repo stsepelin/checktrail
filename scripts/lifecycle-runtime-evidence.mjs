@@ -44,6 +44,30 @@ export function lifecycleFoundationSelection(platform = process.platform) {
     : ["posix-cleanup", "posix-owner"];
 }
 
+// Failure presentation only: terminal status and receipt admission stay at callers.
+export function lifecycleFailureDiagnostic({ stdout, stderr }) {
+  try {
+    const evidence = JSON.parse(stdout);
+    if (
+      evidence !== null &&
+      typeof evidence === "object" &&
+      Array.isArray(evidence.problems) &&
+      evidence.problems.length > 0
+    ) {
+      return JSON.stringify({
+        problems: evidence.problems,
+        profile: evidence.profile,
+        passed: evidence.passed,
+        required: evidence.required,
+        complete: evidence.complete,
+      }).slice(0, 6000);
+    }
+  } catch {
+    // A crashed/malformed collector has no structured diagnostic to prefer.
+  }
+  return (stdout + stderr).slice(-6000);
+}
+
 export const lifecycleDigest = (bytes) =>
   createHash("sha256").update(bytes).digest("hex");
 
