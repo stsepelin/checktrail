@@ -52,3 +52,11 @@ and installed receipts and the native language witnesses are reconciled. The
 consumer implementation is declared, while selected runtime qualification and Gate A
 remain pending; no review trial, model inference or
 review-quality claim follows from these development controls.
+
+The [development measurement](measurements/consumer-impact-whole-2026-10-27.json)
+binds complete source and fresh-install whole-profile and foundation ledgers,
+paired binding guard controls, and the full development check to the recorded
+code commit. The observation used macOS 27 with no selected runtime slot. Its
+package archive predates this additional record; the archive hash does not identify
+a later package containing the record. Selected native runtime qualification,
+artifact/license closure and Gate A remain open.
