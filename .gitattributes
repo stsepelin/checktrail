@@ -26,3 +26,6 @@ docs/measurements/artifact-identities-2026-10-21/scala-font-notices/*.txt -text 
 # Original retained notices, verification output and keys keep upstream whitespace.
 docs/measurements/artifact-identities-2026-10-21/*.txt -text -whitespace
 docs/measurements/artifact-identities-2026-10-21/*.asc -text -whitespace
+
+# Preserve exact declared JNI/native-source notices, including original byte ranges.
+docs/measurements/artifact-identities-2026-10-21/jline-native-notices/*.txt -text -whitespace

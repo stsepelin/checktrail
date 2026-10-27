@@ -7519,7 +7519,8 @@
       }
     ],
     "allNativePayloadsMatchPinnedSourceArchive": true,
-    "sourceFileAttributesEstablishReproducibleBuild": false
+    "sourceFileAttributesEstablishReproducibleBuild": false,
+    "declaredNativeSourceHeaderBindings": "jline-native-source-bindings.json"
   },
   "retainedNotices": [
     {
@@ -7560,7 +7561,7 @@
   ],
   "remainingInputs": [
     "Reconcile compiler documentation resource/font attribution and generated resource origins; a compiler-only invocation does not remove bundled resources from the delivery.",
-    "Reconcile JLine native C headers and exact build inputs, plus external provider dependencies; embedded POM metadata does not prove a dependency is bundled or executed.",
+    "Finish actual JLine producer include/toolchain/container/native-build correspondence and external provider attribution. Exact declared C/JNI inputs and original mixed BSD/Apache/GPL-with-Classpath header notices are retained separately; declared downloads do not prove producer inclusion.",
     "Finish ASM packaging, compiler/SDK/component notice coverage and preparation/receipt admission around the exact source/class-payload reproduction; the source-JAR manifest remains an original byte projection rather than an executed SBT generation."
   ],
   "completeArtifactAndNoticeClosureVerified": false,
@@ -7728,6 +7729,11 @@
       "file": "scala-material-font-bindings.json",
       "bytes": 3865,
       "sha256": "cbec52c66c642c2353bd230f10afd70cc84ece157ae1dd66e805e1e1e2bdc070"
+    },
+    {
+      "file": "jline-native-source-bindings.json",
+      "bytes": 13226,
+      "sha256": "28970e155f0a3ac0670aa1a7d89d36ef2c48b391eb79d076160b2883033c2e56"
     }
   ]
 }

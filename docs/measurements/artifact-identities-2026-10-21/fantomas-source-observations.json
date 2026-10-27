@@ -3009,7 +3009,7 @@
     }
   ],
   "remainingInputs": [
-    "Resolve the three nonembedded SDK-generated assembly-attribute documents.",
+    "The three nonembedded assembly-attribute document checksums now match two original template projections in fantomas-sdk-generated-documents.json. Actual producer SDK identity, native MSBuild generation and evaluated compiler/generated/resource/task inputs remain unverified.",
     "Reconcile evaluated compiler/generated/resource/task inputs separately from debug document metadata.",
     "Complete component/native/image notice mapping and scoped preparation/receipt integration."
   ],
@@ -3018,5 +3018,6 @@
   "preparationAndReceiptIntegrationVerified": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "gateAComplete": false
+  "gateAComplete": false,
+  "remainingInputsReconciledAt": "2026-10-27"
 }
