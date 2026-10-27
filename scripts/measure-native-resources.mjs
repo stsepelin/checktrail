@@ -23,6 +23,7 @@ import {
   resourceHash,
 } from "./native-resource-workloads.mjs";
 import { readNativeResourceReceipt } from "./native-resource-receipt.mjs";
+import { prepareNativeResourceTools } from "./prepared-native-resource-tools.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const worker = fileURLToPath(
   new URL("./native-resource-workload-worker.mjs", import.meta.url),
@@ -37,6 +38,7 @@ const inputFiles = [
   "scripts/native-resource-observer.c",
   "scripts/native-resource-receipt.mjs",
   "scripts/prepare-native-resource-observer.mjs",
+  "scripts/prepared-native-resource-tools.mjs",
   "package-lock.json",
 ];
 async function treeDigest(directory) {
@@ -204,24 +206,10 @@ export async function measureNativeResources(headers, samples = 10) {
       await mkdtemp(path.join(tmpdir(), "checktrail-native-resources-")),
     );
   try {
-    const counterOutput = path.join(temporary, "counter"),
-      observerOutput = path.join(temporary, "observer");
-    await mkdir(counterOutput, { mode: 0o700 });
-    await mkdir(observerOutput, { mode: 0o700 });
-    const builds = [];
-    for (const [script, args] of [
-      ["prepare-native-child-resource.mjs", [counterOutput, actualHeaders]],
-      ["prepare-native-resource-observer.mjs", [observerOutput]],
-    ]) {
-      const result = spawnSync(
-        process.execPath,
-        [path.join(repository, "scripts", script), ...args],
-        { encoding: "utf8", timeout: 45000, maxBuffer: 65536 },
-      );
-      assert.equal(result.status, 0, result.stderr);
-      assert.ok(!result.error && !result.signal);
-      builds.push(JSON.parse(result.stdout));
-    }
+    const { bundle, observer, builds } = await prepareNativeResourceTools(
+      temporary,
+      actualHeaders,
+    );
     const fixtures = [];
     for (const specification of nativeResourceCases) {
       const root = path.join(temporary, specification.id);
@@ -242,11 +230,8 @@ export async function measureNativeResources(headers, samples = 10) {
           root,
           expected,
           directory,
-          bundle: path.join(counterOutput, "native-child-resource"),
-          observer: path.join(
-            observerOutput,
-            "native-resource-observer/observer",
-          ),
+          bundle,
+          observer,
         });
         results.push({
           case: expected.id,

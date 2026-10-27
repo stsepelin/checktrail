@@ -361,26 +361,14 @@ type MeasurementTools = { bundle: string; observer: string } | undefined;
 async function measurementTools(t: TestContext): Promise<MeasurementTools> {
   if (process.platform === "win32") return undefined;
   const root = await realpath(await fixture(t, {}));
-  const counter = path.join(root, "counter"),
-    observer = path.join(root, "observer");
-  await mkdir(counter, { mode: 0o700 });
-  await mkdir(observer, { mode: 0o700 });
-  for (const [script, args] of [
-    [
-      "prepare-native-child-resource.mjs",
-      [counter, await realpath(nodeHeaders)],
-    ],
-    ["prepare-native-resource-observer.mjs", [observer]],
-  ] as const)
-    await execute(
-      process.execPath,
-      [fileURLToPath(new URL(script, resourceScripts)), ...args],
-      { timeout: 45000, maxBuffer: 2 * 1048576 },
-    );
-  return {
-    bundle: path.join(counter, "native-child-resource"),
-    observer: path.join(observer, "native-resource-observer/observer"),
-  };
+  const { prepareNativeResourceTools } = await import(
+    new URL("prepared-native-resource-tools.mjs", resourceScripts).href
+  );
+  const { bundle, observer } = await prepareNativeResourceTools(
+    root,
+    await realpath(nodeHeaders),
+  );
+  return { bundle, observer };
 }
 async function measuredFixture(
   t: TestContext,

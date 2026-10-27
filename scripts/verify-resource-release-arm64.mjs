@@ -1,12 +1,23 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { realpath, lstat, mkdtemp, readdir, chmod, rm } from "node:fs/promises";
+import {
+  realpath,
+  lstat,
+  mkdir,
+  mkdtemp,
+  readFile,
+  readdir,
+  writeFile,
+  chmod,
+  rm,
+} from "node:fs/promises";
 import path from "node:path";
 import { tmpdir } from "node:os";
 import { runAcceptanceNpm } from "./install-acceptance-package.mjs";
 import { fileURLToPath, URL } from "node:url";
 import process from "node:process";
 import { pullPinnedImage } from "./pull-pinned-image.mjs";
+import { requestRubyCompilerArchive } from "./request-ruby-compiler-archive.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 assert.equal(
   process.platform,
@@ -52,8 +63,106 @@ assert.match(image.Id, /^sha256:[a-f0-9]{64}$/);
 const temporary = await realpath(
   await mkdtemp(path.join(tmpdir(), "checktrail-resource-public-cache-")),
 );
-const preparedCache = path.join(temporary, "cache");
+const preparedCache = path.join(temporary, "cache"),
+  compilerContext = path.join(temporary, "compiler"),
+  preparedTools = path.join(temporary, "prepared-tools"),
+  compilerTag =
+    "checktrail-resource-compiler-" + task + "-" + process.pid + ":private",
+  compilerName = name + "-compiler";
+let compilerImage;
 try {
+  run(["image", "inspect", compilerTag], 10000);
+  assert.fail("Resource compiler tag must be absent");
+} catch (error) {
+  assert.match(error.stderr?.toString() ?? "", /No such image/);
+}
+try {
+  await mkdir(compilerContext, { mode: 0o700 });
+  const artifacts = path.join(compilerContext, "artifacts");
+  await mkdir(artifacts, { mode: 0o700 });
+  await mkdir(preparedTools, { mode: 0o700 });
+  const compilerManifest = JSON.parse(
+      await readFile(
+        path.join(root, "scripts/ruby-tools-archives.json"),
+        "utf8",
+      ),
+    ),
+    compilerPins = compilerManifest.architectures.aarch64;
+  assert.equal(compilerManifest.schemaVersion, 1);
+  assert.equal(compilerManifest.alpine, "3.24.2");
+  assert.equal(
+    new Set(compilerPins.archives.map((pin) => pin.path)).size,
+    compilerPins.archives.length,
+  );
+  for (let offset = 0; offset < compilerPins.archives.length; offset += 4) {
+    const rows = await Promise.allSettled(
+      compilerPins.archives.slice(offset, offset + 4).map(async (pin) => {
+        const bytes = await requestRubyCompilerArchive({
+          root,
+          architecture: "aarch64",
+          pin,
+          repository: compilerPins.repository,
+          local: process.env.CHECKTRAIL_RESOURCE_APK_DIRECTORY,
+        });
+        await writeFile(path.join(artifacts, pin.path), bytes, {
+          flag: "wx",
+          mode: 0o600,
+        });
+      }),
+    );
+    for (const row of rows) if (row.status === "rejected") throw row.reason;
+  }
+  run([
+    "build",
+    "--network",
+    "none",
+    "--label",
+    "checktrail.task=" + task,
+    "--file",
+    path.join(root, "scripts/resource-compiler.Dockerfile"),
+    "--tag",
+    compilerTag,
+    compilerContext,
+  ]);
+  [compilerImage] = JSON.parse(run(["image", "inspect", compilerTag]));
+  assert.equal(compilerImage.Config.Labels["checktrail.task"], task);
+  assert.equal(compilerImage.Architecture, "arm64");
+  const compilerPreparation = JSON.parse(
+    run([
+      "run",
+      "--rm",
+      "--init",
+      "--name",
+      compilerName,
+      "--label",
+      "checktrail.task=" + task,
+      "--network",
+      "none",
+      "--read-only",
+      "--user",
+      String(process.getuid()) + ":" + String(process.getgid()),
+      "--cpus",
+      "2",
+      "--memory",
+      "1g",
+      "--pids-limit",
+      "64",
+      "--tmpfs",
+      "/tmp:rw,exec,nosuid,nodev,size=256m,mode=1777",
+      "--mount",
+      "type=bind,src=" + root + ",target=/workspace,readonly",
+      "--mount",
+      "type=bind,src=" + preparedTools + ",target=/prepared",
+      "--workdir",
+      "/workspace",
+      compilerImage.Id,
+      "node",
+      "--input-type=module",
+      "-e",
+      "import {prepareNativeResourceTools} from './scripts/prepared-native-resource-tools.mjs';console.log(JSON.stringify(await prepareNativeResourceTools('/prepared','/usr/local/include/node')));",
+    ]),
+  );
+  assert.equal(compilerPreparation.builds.length, 2);
   const prepared = JSON.parse(
     execFileSync(
       process.execPath,
@@ -74,7 +183,7 @@ try {
     }
     await chmod(directory, 0o755);
   }
-  await publicPermissions(temporary);
+  await publicPermissions(preparedCache);
   const output = run([
     "run",
     "--rm",
@@ -102,8 +211,14 @@ try {
     "type=bind,src=" + preparedCache + ",target=/prepared-cache,readonly",
     "--mount",
     "type=bind,src=" + goRoot + ",target=/selected-go,readonly",
+    "--mount",
+    "type=bind,src=" +
+      path.join(preparedTools, "tools") +
+      ",target=/prepared-native-resources,readonly",
     "--workdir",
     "/workspace",
+    "--env",
+    "CHECKTRAIL_TEST_NATIVE_RESOURCE_TOOLS=/prepared-native-resources",
     "--env",
     "GOROOT=/selected-go",
     "--env",
@@ -152,6 +267,17 @@ try {
       reference,
       imageId: image.Id,
       preparedPublicCache: prepared,
+      nativeToolPreparation: {
+        imageId: compilerImage.Id,
+        baseReference: reference,
+        archives: compilerPins.archives,
+        builds: compilerPreparation.builds,
+        buildNetwork: "none",
+        runtimeImageUnchanged: true,
+        runtimeCompilerRequired: false,
+        packageSignaturesDisabled: false,
+        completeNativeArtifactClosure: false,
+      },
       network: "none",
       sourceReadOnly: true,
       receipt,
@@ -161,31 +287,43 @@ try {
     }) + "\n",
   );
 } finally {
-  let owned;
-  try {
-    owned = run(
-      [
-        "container",
-        "inspect",
-        name,
-        "--format",
-        '{{index .Config.Labels "checktrail.task"}}',
-      ],
-      10000,
-    ).trim();
-  } catch (error) {
-    assert.match(
-      error.stderr?.toString() ?? "",
-      /No such (?:container|object)/,
+  for (const ownedName of [name, compilerName]) {
+    let owned;
+    try {
+      owned = run(
+        [
+          "container",
+          "inspect",
+          ownedName,
+          "--format",
+          '{{index .Config.Labels "checktrail.task"}}',
+        ],
+        10000,
+      ).trim();
+    } catch (error) {
+      assert.match(
+        error.stderr?.toString() ?? "",
+        /No such (?:container|object)/,
+      );
+    }
+    if (owned !== undefined) {
+      assert.equal(owned, task);
+      run(["rm", "-f", ownedName], 10000);
+    }
+    assert.equal(
+      run(["ps", "-aq", "--filter", "name=^/" + ownedName + "$"], 10000).trim(),
+      "",
     );
   }
-  if (owned !== undefined) {
-    assert.equal(owned, task);
-    run(["rm", "-f", name], 10000);
+  let ownedImage;
+  try {
+    [ownedImage] = JSON.parse(run(["image", "inspect", compilerTag], 10000));
+  } catch (error) {
+    assert.match(error.stderr?.toString() ?? "", /No such image/);
   }
-  assert.equal(
-    run(["ps", "-aq", "--filter", "name=^/" + name + "$"], 10000).trim(),
-    "",
-  );
+  if (ownedImage !== undefined) {
+    assert.equal(ownedImage.Config.Labels["checktrail.task"], task);
+    run(["image", "rm", compilerTag], 30000);
+  }
   await rm(temporary, { recursive: true, force: true });
 }

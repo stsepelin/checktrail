@@ -79,6 +79,13 @@ function passed(result) {
 const receipts = [];
 try {
   for (const control of controls) {
+    process.stderr.write(
+      JSON.stringify({
+        profile: "windows-resource-guards",
+        control: control.id,
+        phase: "start",
+      }) + "\n",
+    );
     passed(run(control.name));
     const text = original.toString("utf8");
     assert.equal(text.split(control.from).length, 2, control.id);
@@ -90,7 +97,11 @@ try {
       const result = run(control.name);
       assert.equal(result.error, undefined);
       assert.equal(result.signal, null);
-      assert.equal(result.status, 1, result.stdout + result.stderr);
+      assert.equal(
+        result.status,
+        1,
+        control.id + "\n" + result.stdout + result.stderr,
+      );
       assert.match(result.stdout, /ERR_ASSERTION/);
       assert.match(result.stdout, /^# fail 1$/m);
       assert.doesNotMatch(
