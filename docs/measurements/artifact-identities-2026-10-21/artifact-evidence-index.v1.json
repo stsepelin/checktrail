@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 206,
+  "retainedReferences": 218,
   "files": [
     {
       "file": "README.md",
@@ -219,19 +219,64 @@
       "sha256": "dbab8058789659bbac02bbd3c0e5cd85e2740156f8395192975f23b9c8d2160b"
     },
     {
+      "file": "provider-compiler-inputs/go1.24.13-VERSION.txt",
+      "bytes": 36,
+      "sha256": "756345ba66e44025c7756e491a40b0a2fbbbd9611e462477df64fa38c6ddaba0"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.24.13-build.go.txt",
+      "bytes": 56928,
+      "sha256": "469a3c6da0df04601f26d3919a574485b7870a723ffe97c9a968371a258941c7"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.24.13-buildgo.go.txt",
+      "bytes": 4352,
+      "sha256": "166d2a95ed900fc3b87e6f098ba164efe95ad005c17c08ddada8577d31e40971"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.24.13-original-notices.txt",
+      "bytes": 67291,
+      "sha256": "73b75285270c169a4a5daf0d69b2f8611a355847c886de8be1336f9b5fa3a41d"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.26.8-VERSION.txt",
+      "bytes": 35,
+      "sha256": "25b231b380ff42bb887b29e7c2eb176167820f3416665cd4fbc2d3b116bc417d"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.26.8-build.go.txt",
+      "bytes": 57573,
+      "sha256": "dec5902ce857937eb8dee9e5053f35592c77cfe9ad765b7702aa716f3608b0a2"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.26.8-buildgo.go.txt",
+      "bytes": 3913,
+      "sha256": "b053d3d34fa03b0e29d1d6f439fccca8a7ccc4b43425a3eb21cbb366102802da"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.26.8-original-notices.txt",
+      "bytes": 71429,
+      "sha256": "52b2d23055eeb5db593684c981a2848b8a3a56fa8f102d988e822fb080feaa8b"
+    },
+    {
+      "file": "provider-compiler-source-rebuilds.json",
+      "bytes": 36573,
+      "sha256": "fdf18c7fd0689e624a011c0acaa7ad645de811329057a5dd19f35f93e7b39a13"
+    },
+    {
       "file": "provider-independent-rebuild.json",
-      "bytes": 8148,
-      "sha256": "75de022d96efa7e8a20b6305c5956fe1ec893bf4c97e2e07500562cefd40ec50"
+      "bytes": 8571,
+      "sha256": "b3fb76ed8ff5aee5a19e642e14e45a641f36259e793778723ff4bf52eae9e252"
     },
     {
       "file": "provider-independent-zip-repack.json",
       "bytes": 10624,
-      "sha256": "6b1e6d7083a97fa3b6dafeedfa49dc942de0049f7be073e1041e3ab6f41a411f"
+      "sha256": "268b1dc30504d16bef5433bbe48401b89d04a7943e5e0712e50972246625c26f"
     },
     {
       "file": "provider-notice-inventory.json",
-      "bytes": 172102,
-      "sha256": "da2e940db4dbced2fe73004b3ab653ec25a418bd0032773f75424472440e30e2"
+      "bytes": 172525,
+      "sha256": "04ded4668831a344d6fb946711b29a85aaf1cc45bad0d4998eaeb4056e276eaf"
     },
     {
       "file": "provider-notices/05f5cf488584cf7c3df139be6bea283691166366c511d29940602f295975448f.txt",
@@ -485,8 +530,8 @@
     },
     {
       "file": "provider-original-producer-binding.json",
-      "bytes": 7414,
-      "sha256": "da21c6b1db4cbef54bf89af5d90d307b5b7767ccc047e7f2cbcbc3d2d8002ddf"
+      "bytes": 7837,
+      "sha256": "279993d04e05f12355f5d5032125182587df791d7467d8cff7bfd5945b036b08"
     },
     {
       "file": "provider-producer-inputs/original-producer-verification.json.txt",
@@ -600,8 +645,8 @@
     },
     {
       "file": "random-provider.json",
-      "bytes": 8200,
-      "sha256": "49f05517386aa0eaf955a5b4ae18b01050cbe5e95f7a85951fd48ec6edf42cfa"
+      "bytes": 8623,
+      "sha256": "2344f2f861053adc6701c112934e65812b1d1f0b583a9780bd82e02d05e2d7ed"
     },
     {
       "file": "scala-LICENSE",

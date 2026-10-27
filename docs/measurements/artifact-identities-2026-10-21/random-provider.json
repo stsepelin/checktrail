@@ -130,8 +130,8 @@
         },
         {
           "file": "provider-independent-rebuild.json",
-          "bytes": 8148,
-          "sha256": "75de022d96efa7e8a20b6305c5956fe1ec893bf4c97e2e07500562cefd40ec50",
+          "bytes": 8571,
+          "sha256": "b3fb76ed8ff5aee5a19e642e14e45a641f36259e793778723ff4bf52eae9e252",
           "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
         }
       ]
@@ -140,8 +140,8 @@
       "retainedInputs": [
         {
           "file": "provider-notice-inventory.json",
-          "bytes": 172102,
-          "sha256": "da2e940db4dbced2fe73004b3ab653ec25a418bd0032773f75424472440e30e2",
+          "bytes": 172525,
+          "sha256": "04ded4668831a344d6fb946711b29a85aaf1cc45bad0d4998eaeb4056e276eaf",
           "generation": "Reconciled native package metadata and exact public source/module/SDK notice bytes; stronger closure remains unverified."
         }
       ],
@@ -160,7 +160,7 @@
         {
           "file": "provider-independent-zip-repack.json",
           "bytes": 10624,
-          "sha256": "6b1e6d7083a97fa3b6dafeedfa49dc942de0049f7be073e1041e3ab6f41a411f"
+          "sha256": "268b1dc30504d16bef5433bbe48401b89d04a7943e5e0712e50972246625c26f"
         }
       ]
     }
@@ -187,8 +187,19 @@
   "retainedInputs": [
     {
       "file": "provider-original-producer-binding.json",
-      "bytes": 7414,
-      "sha256": "da21c6b1db4cbef54bf89af5d90d307b5b7767ccc047e7f2cbcbc3d2d8002ddf"
+      "bytes": 7837,
+      "sha256": "279993d04e05f12355f5d5032125182587df791d7467d8cff7bfd5945b036b08"
+    },
+    {
+      "file": "provider-compiler-source-rebuilds.json",
+      "bytes": 36573,
+      "sha256": "fdf18c7fd0689e624a011c0acaa7ad645de811329057a5dd19f35f93e7b39a13"
     }
-  ]
+  ],
+  "compilerArchiveFollowUpObservedAt": "2026-10-27",
+  "compilerArchiveFollowUp": {
+    "go12413LinuxAmd64CompleteArchiveRebuilt": true,
+    "go1268LinuxAmd64CompleteArchiveRebuilt": true,
+    "bootstrapAndCompleteNoticeClosureVerified": false
+  }
 }

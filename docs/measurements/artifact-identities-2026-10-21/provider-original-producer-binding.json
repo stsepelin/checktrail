@@ -167,6 +167,11 @@
       "file": "provider-producer-inputs/original-release-log-09.txt",
       "bytes": 3013,
       "sha256": "ea02e2b1e76d40b1d5e98f597da850e37b91c3c0545cfb23ddb7934163da67e1"
+    },
+    {
+      "file": "provider-compiler-source-rebuilds.json",
+      "bytes": 36573,
+      "sha256": "fdf18c7fd0689e624a011c0acaa7ad645de811329057a5dd19f35f93e7b39a13"
     }
   ],
   "remainingInputs": [
@@ -180,5 +185,11 @@
   "gateAComplete": false,
   "qualityAssessed": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "compilerArchiveFollowUpObservedAt": "2026-10-27",
+  "compilerArchiveFollowUp": {
+    "go12413LinuxAmd64CompleteArchiveRebuilt": true,
+    "go1268LinuxAmd64CompleteArchiveRebuilt": true,
+    "bootstrapAndCompleteNoticeClosureVerified": false
+  }
 }
