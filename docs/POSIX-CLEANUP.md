@@ -93,7 +93,10 @@ and session `-1` while its signal-handler state is being released. The parser
 admits that exact sentinel only for the native `X` or `Z` exited states and keeps
 its start identity. An unrelated dying task therefore does not invalidate the
 whole snapshot. Negative groups on live/stopped states and partial or malformed
-identities still fail. This row grants no live-process ownership, and existing
-owned-identity group checks and final physical-reaping requirements remain in
-force. The kernel representation is defined by `do_task_stat` in
+identities still fail. For an already captured PID/start identity pair, the exact
+exited sentinel preserves the known identity while cleanup still waits for the
+PID to disappear. Other changed-group shapes remain cleanup failures, and a new
+start identity is left alone. This row cannot establish ownership of a previously
+unobserved process. Native-shaped parent/child controls preserve deepest-first
+termination, unrelated siblings, final reaping and the shared two-second deadline. The kernel representation is defined by `do_task_stat` in
 [the Linux procfs implementation](https://code.googlesource.com/linux/torvalds/linux/+/7acf90feab8b009fde7def08ff2c622d0f10e99f/fs/proc/array.c).

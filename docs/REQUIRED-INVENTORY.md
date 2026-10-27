@@ -2,8 +2,8 @@
 
 This reconciles the existing M0–M5 obligations with F1, R1–R8 and E1–E17 in
 [REVIEWER-TASKS.md](REVIEWER-TASKS.md). Required capability families are bounded
-below. Exact acceptance-profile pins for the new integrations remain open, so
-Gate A's inventory is not yet frozen. No new field evaluation is authorized here.
+below. Current-source native acceptance and the remaining freeze decisions stay
+open, so Gate A's inventory is not yet frozen. No new field evaluation is authorized here.
 A required integration stays pending when its toolchain is unavailable.
 
 ## Selected profile candidate
@@ -252,3 +252,10 @@ HELM-EXTENSIONS.md records the selected local application/subchart alias graph, 
 MUTATIONS.md records the selected flat Vitest/Jest, pytest and PHPUnit mutation-runner contract. Each family requires its own frozen source and fresh installed-package cohort, plus actual native guard controls; one family cannot close the aggregate profile. Native observations, full artifact/license closure, independent host/evaluation evidence and final Gate A acceptance remain separate.
 
 The selected mutation-runner source and fresh installed-package cohorts passed for all four families. [The scoped measurement](measurements/mutation-runners-2026-10-11.json) retains the named receipts, paired native/parser controls and reached lifecycle witnesses. These receipts do not close the remaining Gate A profiles, artifact/license closure, final runtime bindings or independent evaluation.
+
+Implementation declarations reconcile the already shipped multi-candidate
+workflow, lifecycle and Tasks cohorts and the resource/release acceptance code.
+The shared native manifest now exposes the original resource acceptance names;
+its controller also requires fresh offline package evidence. These declarations
+and development receipts leave selected current-source matrix acceptance,
+artifact/license closure and the private evaluation freeze separate and open.

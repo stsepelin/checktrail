@@ -1,0 +1,1935 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original synthetic resource CI repairs and development verification; no model review or field trial.",
+  "sourceCommit": "9d17d19775ae6f7402f95e342bb7faf5c22cf593",
+  "compiledEngineSha256": "ab68e78abd45324db1ee0f5e86885aa0512618069f1ecc5da79ac9ca4e199fa0",
+  "harnessSha256": "bf4091956a5e759c66b90926e30adb99b6e7c4a23bb724136bd34096548f3a3c",
+  "inputSources": [
+    [
+      "package.json",
+      "718f9dabb95737c9ad8b2e4de385412d6a1e1c4e79cdc798e891a6aa62274a28"
+    ],
+    [
+      "package-lock.json",
+      "12c5f96efc2cf2654865a2a41ebb423e545858889cd8039139108f8e75788303"
+    ],
+    [
+      "docs/gate-a-profiles.v1.json",
+      "d3b6c09b721a8ac8280733db44732fe6490bcf1f34e27ba964dcf28628503e77"
+    ],
+    [
+      "dist/test/gate-resource-release-readiness.test.js",
+      "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+    ],
+    [
+      "dist/test/resource-release-fixture.js",
+      "0957e204b839055d6e65d55c962c9edd634a8d4a6a6e85533f0688bdd649db30"
+    ],
+    [
+      "dist/test/helpers.js",
+      "e870d22a40d31aedba5cec6d2a37d80cbef95a1ddea252dd55c798c28d0c3854"
+    ],
+    [
+      "scripts/resource-release-evidence.mjs",
+      "3fe8163e258432ab5ff9f0f0b8622bda468123409b0c7dc12441da9c28c9d9ff"
+    ],
+    [
+      "scripts/verify-resource-release-readiness.mjs",
+      "1a0d79736a8535a7ac7cbb5c6d0afc109917d507dac6c9848b6c2eba06bbbd43"
+    ],
+    [
+      "scripts/verify-resource-release-arm64.mjs",
+      "8c6a5e8d2126502e555071e042a2bcc9c9e5d091291e3b30631178b0811bb063"
+    ],
+    [
+      "scripts/verify-resource-release-guards.mjs",
+      "3ff2b26753d26bf853bb14584ca4042b508b0bbfd0245c7ce016de3d1459f236"
+    ],
+    [
+      "scripts/prepare-resource-cache-subset.mjs",
+      "9f31124cbfdae3836d225f4258701d6e2349b508d3c029131f0b4a5bf170f1d9"
+    ],
+    [
+      "scripts/required-test-evidence.mjs",
+      "4b4f23ad3e4c470d71baf244240b379b8e47f788e7724699e0cd2e34c5c2f74d"
+    ],
+    [
+      "scripts/required-native-tests.json",
+      "4d3a1360367a8a5201f408216cf565168e3e8009e60d2a66f6e1b3ebc892dd51"
+    ],
+    [
+      "scripts/lifecycle-runtime-evidence.mjs",
+      "16218d19b0a41aa1228d01e1c1817565d99846bad8c0e6524caae733993b863a"
+    ],
+    [
+      "scripts/review-runtime-evidence.mjs",
+      "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+    ],
+    [
+      "scripts/release-readiness-tools.mjs",
+      "1ac4a72c1bf1cf25675d8b1f586c7ad9994e2c027e8d02d8d235cf05ef6739a6"
+    ],
+    [
+      "scripts/package-upgrade-readiness.mjs",
+      "f4ef3bf3ed2ee0db21f52ff86941f7dab27acbc8ccbab0fe8e6904fdac0cc443"
+    ],
+    [
+      "scripts/install-acceptance-package.mjs",
+      "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+    ],
+    [
+      "scripts/request-pinned-artifact.mjs",
+      "c5e76c374886fa7ad9009e1c9152569b34218cbb4004948915245edaf7ca432e"
+    ],
+    [
+      "scripts/compiled-engine-evidence.mjs",
+      "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+    ],
+    [
+      "scripts/measure-native-resources.mjs",
+      "3633aba2763d936c753cfb15585bc5b891deff2a178f99cb67fe5a4dacf8bdc8"
+    ],
+    [
+      "scripts/measure-windows-resources.mjs",
+      "ca1e17a57ec53ec8d933cbc4dde9b586f8cbdb91fca827215eee20023c7c2246"
+    ],
+    [
+      "scripts/native-resource-workloads.mjs",
+      "3e7abe38c21f1fc7db50aea480c87a401b14688a61931b37d937926e9c3ce625"
+    ],
+    [
+      "scripts/native-resource-workload-worker.mjs",
+      "d45dce865d3b79ba6a6cd3dd4bedb71f3e2ceac7e1991be54ca347a14c9f5cb9"
+    ],
+    [
+      "scripts/windows-resource-workloads.mjs",
+      "39c89bfcb605cf25ce18013f8308f72fbeba1c07f9948f769c7f60cfd411bec3"
+    ],
+    [
+      "scripts/windows-resource-workload-worker.mjs",
+      "20c9867fec51d814e66ebedda0ab0932be016e58d5e0ead1b0ba1b284f599a4f"
+    ],
+    [
+      "scripts/native-child-resource.mjs",
+      "87db901495728cf21fc5d83818ce0d7f5b96669154c8c45c6089e018fc9e3fa6"
+    ],
+    [
+      "scripts/native-child-resource.c",
+      "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877"
+    ],
+    [
+      "scripts/native-resource-receipt.mjs",
+      "1c3fe5ea7222b7e21fd31f94477c34cd1189f065a7c1ba2ca952ed6e2c02a3ec"
+    ],
+    [
+      "scripts/native-resource-observer.c",
+      "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5"
+    ],
+    [
+      "scripts/prepare-native-child-resource.mjs",
+      "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e"
+    ],
+    [
+      "scripts/prepare-native-resource-observer.mjs",
+      "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508"
+    ],
+    [
+      "scripts/prepared-native-resource-tools.mjs",
+      "fa2bd91297529096514ecf040aaf7210ab67932263c7a1380b46c28ab23aa69a"
+    ],
+    [
+      "scripts/resource-compiler.Dockerfile",
+      "14157454cb93aa9a118e1abe7fecfe27aabe2b408fefd10730384e2034a416f1"
+    ],
+    [
+      "scripts/ruby-tools-archives.json",
+      "06958fcdc400bf4c70a03d748a14079bb70d31c62d092d373287e0053b4a4142"
+    ],
+    [
+      "scripts/request-ruby-compiler-archive.mjs",
+      "e755a685e5de59f7e4326b5fbff48fe62796273089d08a41637391a9cd3189ea"
+    ],
+    [
+      "assets/native-tool-archives/alpine-v3.24/aarch64/zlib-1.3.2-r0.apk",
+      "a535991af7c9e8369ebbf33c1e388c1bc63c87ead5142eddaee71f65836c33e3"
+    ],
+    [
+      "scripts/release-readiness-tools/baseline.json",
+      "690e0a3e3b22406be1d0d111e510e3c65f1614c4a05bd905737ee316209b7629"
+    ],
+    [
+      "scripts/release-readiness-tools/package.json",
+      "4186199f79aaf471bd86224b180a95df45a49f758eb5b517627b36a9bf9f602e"
+    ],
+    [
+      "scripts/release-readiness-tools/package-lock.json",
+      "993a8f253409fdbae1b403ab2b7f66238bdff0a33c68f864f3ea63b29f0214d9"
+    ]
+  ],
+  "developmentRuntime": {
+    "slot": null,
+    "node": "26.9.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "osRelease": "27.0.0",
+    "osVersion": "Darwin Kernel Version 27.0.0: Tue Aug 11 21:06:40 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T6050",
+    "distributionId": null,
+    "distributionVersion": null,
+    "distributionSha256": null,
+    "imageOS": null,
+    "imageVersion": null,
+    "containerImageId": null,
+    "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+    "hostedImageMetadataAttested": false,
+    "containerImageMetadataAttested": false,
+    "selectedRuntime": null
+  },
+  "sourceResource": {
+    "fileWorkerLimit": 1,
+    "requiredCaseWorkerLimit": 1,
+    "timeoutScope": "one fresh process per required named case",
+    "passed": 9,
+    "required": 9,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 4096,
+      "terminalEventCount": 9,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "resource-release-readiness broken acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1321.105792,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "resource-release-readiness fixed acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 5743.236208,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "resource-release-readiness near-miss acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 11772.700625,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-1",
+          "name": "resource-release-readiness prerequisite acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 10553.673708,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-1",
+          "name": "resource-release-readiness stale acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1154.045583,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-1",
+          "name": "resource-release-readiness empty acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1082.865875,
+          "required": true
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-1",
+          "name": "resource-release-readiness privacy acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3788.912417,
+          "required": true
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-1",
+          "name": "resource-release-readiness lifecycle acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 17468.713083,
+          "required": true
+        },
+        {
+          "sequence": 9,
+          "fileId": "file-1",
+          "name": "resource-release-readiness installed acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 23198.05125,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness broken acceptance",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness fixed acceptance",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness near-miss acceptance",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness prerequisite acceptance",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness stale acceptance",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness empty acceptance",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness privacy acceptance",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness lifecycle acceptance",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness installed acceptance",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        }
+      ]
+    }
+  },
+  "freshResource": {
+    "profile": {
+      "fileWorkerLimit": 1,
+      "requiredCaseWorkerLimit": 1,
+      "timeoutScope": "one fresh process per required named case",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "resource-release-readiness broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1318.955084,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "resource-release-readiness fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6932.881792,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "resource-release-readiness near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10098.809291,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "resource-release-readiness prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16503.198542,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "resource-release-readiness stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1735.600625,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "resource-release-readiness empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1319.554208,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "resource-release-readiness privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4562.66775,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "resource-release-readiness lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17797.043416,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "resource-release-readiness installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 19770.443375,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "tarballSha256": "0ddb870c2b8cca541b11bf1c03927b3f516c421f4415a0a54e238a42a23ae7e6",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "compiledEngineSha256": "ab68e78abd45324db1ee0f5e86885aa0512618069f1ecc5da79ac9ca4e199fa0",
+    "harnessOutsideInstalledPackage": true,
+    "harnessSha256": "bf4091956a5e759c66b90926e30adb99b6e7c4a23bb724136bd34096548f3a3c"
+  },
+  "fullCheck": {
+    "tests": 2133,
+    "pass": 1374,
+    "fail": 0,
+    "skipped": 759,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "resourcePairedGuards": {
+    "schemaVersion": 1,
+    "profile": "resource-release-readiness-guards-v1",
+    "controls": [
+      {
+        "id": "summary-withholds-native-resource-detail",
+        "callback": "resource-release-readiness privacy acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "480104041580aa48298fd874451fedba35ddcecf24972ba174db68cac6f4e266"
+      },
+      {
+        "id": "source-grant-remains-explicit",
+        "callback": "resource-release-readiness privacy acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "18c9a2b90c2a79f17ed4a1a3c1e3e8531144fbd89281e256a0d3086518c82923"
+      },
+      {
+        "id": "retained-legacy-input-identity",
+        "callback": "resource-release-readiness prerequisite acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "683821f875ed09e50321a52b23a0a8d44448d20186fd1e3fcdb025b34cc1b7a6"
+      },
+      {
+        "id": "failed-preparation-publishes-no-partial-selection",
+        "callback": "resource-release-readiness prerequisite acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "f3ea287edd1723417f1ab9aa9d13a223f7b2d899c6b067504acce3d2e6b75b2d"
+      },
+      {
+        "id": "fresh-library-executes-original-native-bodies",
+        "callback": "resource-release-readiness near-miss acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "6b2693d4e25601a1f3b3ec40e119fd4614462e4744b75eda8f4792bb0a43b66c"
+      },
+      {
+        "id": "child-cpu-is-interval-not-worker-lifetime",
+        "callback": "resource-release-readiness fixed acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "528e0ec62d53654ec584b849477b74a6020bef45609d189b772cccc19a48a34a"
+      },
+      {
+        "id": "physical-archive-reconstruction",
+        "callback": "resource-release-readiness fixed acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "ef2671687ba64ba4a8ed586caf9bfa3e2dfe0bde11764bd151ff9bc632325e6d"
+      }
+    ],
+    "originalCallbacksUnchanged": true,
+    "mutatedBytesRestored": true,
+    "nativePosixCounterControlsIncluded": true,
+    "complete": true,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "preparedToolPairedGuards": {
+    "controls": [
+      {
+        "id": "runtime-node-version",
+        "originalPassed": true,
+        "mutantParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "source-binding",
+        "originalPassed": true,
+        "mutantParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "binary-binding",
+        "originalPassed": true,
+        "mutantParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "sourceSha256": "fa2bd91297529096514ecf040aaf7210ab67932263c7a1380b46c28ab23aa69a",
+    "sourceRestored": true,
+    "testsUnchanged": true,
+    "runtimeQualificationAssessed": false
+  },
+  "posixPairedGuards": {
+    "profile": "posix-observed-cleanup-guards-v1",
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "guards": [
+      {
+        "id": "held-exit-sentinel-recognition",
+        "callback": "POSIX cleanup recognizes an already-owned Linux teardown sentinel while requiring final reaping",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "4dbdf671618b4045318538b9248304cbef500665c4c2b22832357a5c296dca89",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "held-exit-sentinel-state",
+        "callback": "POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "1cf82c1801b9f7533eda1b82db2bafac408f67af770d8f06460723f9cc07da3f",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "held-exit-sentinel-parent",
+        "callback": "POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "230e6cc95acc2c7792505737c5d085b5e2d5435eafca20aa0b34058cb23742bd",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "held-exit-sentinel-group",
+        "callback": "POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "271bf52a6599357fe3f2abe28046a3683531d7d77455cd52d11f94c282b37504",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "captured-selected-identities",
+        "callback": "native POSIX selected process snapshots retain both batch boundaries and captured caller selections without unrelated rows",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "28d264c8285650e9d24a9f46def8d48a07f657a9a7913f79d922e24ddccccc22",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "frozen-pre-signal-identities",
+        "callback": "POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "36c1d36979e24ca93930dfe7131e2a7468ce7b2ec6537b46993a596bdda65957",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "frozen-physical-exit-identities",
+        "callback": "POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "defd67acd3cbad48060cfbac4f4be018900e6bcd75f9fe930b97d259f0e6198b",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "frozen-final-reaping-identities",
+        "callback": "POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "d77c67f988714df9c14a98b66d594bb1824f98449dd4cf4a110294b08db7c704",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "confirmed-exit-before-parent",
+        "callback": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "416705abe8431575051c8c4e2bbc13ae76b563b83d72c71c00acfffe70bff91a",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "reused-start-identity",
+        "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "905320d2f2b3798301fb06e86c4b07c95e4a8497bcd8a0b146c9384b716a4814",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "missing-row-is-not-absence",
+        "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "b7471b47fb144edb0c1c7ec46e39783669458dba6619cdcd1c06b319a5de7a56",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "changed-group-refusal",
+        "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "68478877ea627bfc09006162f6c6e9f2d001b30f60f5d6be0317a8a56bc6071b",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "aggregate-cleanup-bound",
+        "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "6d84ffb04031f262d6a24ed972820c856a83fe5d349803d9c560ed8d269a7585",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "family-quiescence",
+        "callback": "POSIX cleanup quiesces parents before children, signals children first, and waits for all identities to disappear without touching siblings",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "23bd535218ac92e095f9322af567937680a05c49dbbc4711f9ba4e46ee16381a",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "late-child-resnapshot",
+        "callback": "POSIX cleanup captures a child forked before its parent's stop acknowledgement and never accepts an unacknowledged stop",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "57460fcb9a9bd71cca4fa6d9becf13e6cef32c20faddfc187ee4fd606e5b103e",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "exact-stop-state",
+        "callback": "Darwin process status parser retains unknown status without inventing quiescence and canonicalises physical start identities",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "b4fb750d95fc87cbe19dcfb7515e0e1752fb77ca8f00a29b92ffea5783182080",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "final-family-reaping",
+        "callback": "POSIX cleanup quiesces parents before children, signals children first, and waits for all identities to disappear without touching siblings",
+        "callbackSha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7",
+        "sourceSha256": "bcbe9d23b6b30e178e64fe89a30c12ad4aaba075cfad512f4967090e347b400c",
+        "mutantSha256": "6a006f896dddc812ce2c79be78ecce9bfc8506216b67c4d15c52518b29a7ebb1",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "restoredPassed": true
+      }
+    ],
+    "sourceRestored": true,
+    "callbacksUnchanged": true,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "posixSource": {
+    "required": 35,
+    "passed": 35,
+    "complete": true
+  },
+  "posixFresh": {
+    "tarballSha256": "0ddb870c2b8cca541b11bf1c03927b3f516c421f4415a0a54e238a42a23ae7e6",
+    "harnessSha256": "5181b14cdeda81df3c23f8e38735b64ce8fbc7df15f1df98344105e3b068769a",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "harnessOutsideInstalledPackage": true,
+    "profile": {
+      "timeoutMs": 120000,
+      "profiles": [
+        {
+          "profile": "posix-cleanup",
+          "required": 17
+        },
+        {
+          "profile": "posix-owner",
+          "required": 18
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 35,
+      "required": 35,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 35,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "06b6fb3cdaafc07f4dc756637c997a5ce216d4581c77eeae612f010582a654b7"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "98662aa4eaf0fe7067ff03c09322566677a6453577a0cba64b71e476a4df68fc"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "98662aa4eaf0fe7067ff03c09322566677a6453577a0cba64b71e476a4df68fc"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "7e0ec9129d0416057f4e3bcd4efe683ab1265116177a29c9c1fd9c87a42760b4"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "7e0ec9129d0416057f4e3bcd4efe683ab1265116177a29c9c1fd9c87a42760b4"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.788208,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 392.923167,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "POSIX cleanup quiesces parents before children, signals children first, and waits for all identities to disappear without touching siblings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.901167,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.163875,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.41625,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "POSIX cleanup stops a quiesced root after direct children are signalled and before requiring their reaping",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.129167,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "native POSIX cancellation prevents a detached waiting parent from replacing its killed child",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2183.033833,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "POSIX cleanup captures a child forked before its parent's stop acknowledgement and never accepts an unacknowledged stop",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.739083,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "Darwin process status parser retains unknown status without inventing quiescence and canonicalises physical start identities",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.096,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-1",
+            "name": "Linux procfs teardown sentinel retains only exited identities without breaking unrelated owned families",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.379083,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-1",
+            "name": "POSIX cleanup does not enumerate unrelated processes after every observed PID is physically absent",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.08825,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-1",
+            "name": "native POSIX targeted snapshots retain only their exact PID and preserve global snapshot failure",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 33.387042,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-1",
+            "name": "POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.192209,
+            "required": true
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-1",
+            "name": "POSIX selected process snapshots reject empty duplicate unsafe and oversized selections before observing processes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.527459,
+            "required": true
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-1",
+            "name": "native POSIX selected process snapshots retain both batch boundaries and captured caller selections without unrelated rows",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 112.774542,
+            "required": true
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-1",
+            "name": "POSIX cleanup recognizes an already-owned Linux teardown sentinel while requiring final reaping",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.787375,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-1",
+            "name": "POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.303541,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-2",
+            "name": "native POSIX parent loss reaps reached ordinary and detached workers and the actual owner while preserving unrelated siblings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1358.888292,
+            "required": true
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-2",
+            "name": "native POSIX parent loss during a stopped real owner bootstrap reaches no project code after that owner resumes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 470.955042,
+            "required": true
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-2",
+            "name": "native POSIX completed roots release ordinary orphaned group members before returning original output and status",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 533.649791,
+            "required": true
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-2",
+            "name": "native POSIX absent and malformed private owners remain unavailable before project execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6015.894292,
+            "required": true
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-2",
+            "name": "native POSIX owner deadline resolves from actual bootstrap exit and IPC disconnect without requiring close",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 465.882042,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-2",
+            "name": "native POSIX missing owner interpreter reports unavailable and releases its private channel before any target starts",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.235375,
+            "required": true
+          },
+          {
+            "sequence": 24,
+            "fileId": "file-2",
+            "name": "native POSIX delayed owner bootstrap distinguishes an expired request from an actually missing executable",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13554.014708,
+            "required": true
+          },
+          {
+            "sequence": 25,
+            "fileId": "file-2",
+            "name": "native POSIX owner bootstrap uses only its own identity and refuses a failed selected identity without starting project code",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1088.408292,
+            "required": true
+          },
+          {
+            "sequence": 26,
+            "fileId": "file-3",
+            "name": "passes arguments literally, strips unlisted environment values, and captures streams",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 264.443375,
+            "required": true
+          },
+          {
+            "sequence": 27,
+            "fileId": "file-3",
+            "name": "reports missing executables separately from code failures",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 142.283542,
+            "required": true
+          },
+          {
+            "sequence": 28,
+            "fileId": "file-3",
+            "name": "kills long-running processes on deadline and cancellation",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5671.108208,
+            "required": true
+          },
+          {
+            "sequence": 29,
+            "fileId": "file-3",
+            "name": "terminates a process group when a grandchild keeps the output pipe open",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5343.110583,
+            "required": true
+          },
+          {
+            "sequence": 30,
+            "fileId": "file-3",
+            "name": "bounds combined output and marks truncated evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 384.712875,
+            "required": true
+          },
+          {
+            "sequence": 31,
+            "fileId": "file-3",
+            "name": "runner accounts raw combined bytes beyond retention without counting Unicode replacement characters",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 607.761,
+            "required": true
+          },
+          {
+            "sequence": 32,
+            "fileId": "file-4",
+            "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 330.619542,
+            "required": true
+          },
+          {
+            "sequence": 33,
+            "fileId": "file-4",
+            "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1005.429291,
+            "required": true
+          },
+          {
+            "sequence": 34,
+            "fileId": "file-4",
+            "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 88.598375,
+            "required": true
+          },
+          {
+            "sequence": 35,
+            "fileId": "file-4",
+            "name": "physical output invalid admission limits reject before a project command can execute",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.541333,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup stops a quiesced root after direct children are signalled and before requiring their reaping",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup quiesces parents before children, signals children first, and waits for all identities to disappear without touching siblings",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native POSIX cancellation prevents a detached waiting parent from replacing its killed child",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup captures a child forked before its parent's stop acknowledgement and never accepts an unacknowledged stop",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Darwin process status parser retains unknown status without inventing quiescence and canonicalises physical start identities",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Linux procfs teardown sentinel retains only exited identities without breaking unrelated owned families",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup does not enumerate unrelated processes after every observed PID is physically absent",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native POSIX targeted snapshots retain only their exact PID and preserve global snapshot failure",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX selected process snapshots reject empty duplicate unsafe and oversized selections before observing processes",
+            "outcome": "passed",
+            "terminalSequences": [14]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native POSIX selected process snapshots retain both batch boundaries and captured caller selections without unrelated rows",
+            "outcome": "passed",
+            "terminalSequences": [15]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup recognizes an already-owned Linux teardown sentinel while requiring final reaping",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native POSIX parent loss reaps reached ordinary and detached workers and the actual owner while preserving unrelated siblings",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native POSIX parent loss during a stopped real owner bootstrap reaches no project code after that owner resumes",
+            "outcome": "passed",
+            "terminalSequences": [19]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native POSIX completed roots release ordinary orphaned group members before returning original output and status",
+            "outcome": "passed",
+            "terminalSequences": [20]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native POSIX absent and malformed private owners remain unavailable before project execution",
+            "outcome": "passed",
+            "terminalSequences": [21]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native POSIX owner deadline resolves from actual bootstrap exit and IPC disconnect without requiring close",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native POSIX missing owner interpreter reports unavailable and releases its private channel before any target starts",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          },
+          {
+            "fileId": "file-3",
+            "name": "passes arguments literally, strips unlisted environment values, and captures streams",
+            "outcome": "passed",
+            "terminalSequences": [26]
+          },
+          {
+            "fileId": "file-3",
+            "name": "reports missing executables separately from code failures",
+            "outcome": "passed",
+            "terminalSequences": [27]
+          },
+          {
+            "fileId": "file-3",
+            "name": "kills long-running processes on deadline and cancellation",
+            "outcome": "passed",
+            "terminalSequences": [28]
+          },
+          {
+            "fileId": "file-3",
+            "name": "terminates a process group when a grandchild keeps the output pipe open",
+            "outcome": "passed",
+            "terminalSequences": [29]
+          },
+          {
+            "fileId": "file-3",
+            "name": "bounds combined output and marks truncated evidence",
+            "outcome": "passed",
+            "terminalSequences": [30]
+          },
+          {
+            "fileId": "file-3",
+            "name": "runner accounts raw combined bytes beyond retention without counting Unicode replacement characters",
+            "outcome": "passed",
+            "terminalSequences": [31]
+          },
+          {
+            "fileId": "file-4",
+            "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+            "outcome": "passed",
+            "terminalSequences": [32]
+          },
+          {
+            "fileId": "file-4",
+            "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+            "outcome": "passed",
+            "terminalSequences": [33]
+          },
+          {
+            "fileId": "file-4",
+            "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+            "outcome": "passed",
+            "terminalSequences": [34]
+          },
+          {
+            "fileId": "file-4",
+            "name": "physical output invalid admission limits reject before a project command can execute",
+            "outcome": "passed",
+            "terminalSequences": [35]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native POSIX delayed owner bootstrap distinguishes an expired request from an actually missing executable",
+            "outcome": "passed",
+            "terminalSequences": [24]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native POSIX owner bootstrap uses only its own identity and refuses a failed selected identity without starting project code",
+            "outcome": "passed",
+            "terminalSequences": [25]
+          }
+        ]
+      },
+      "compiledEngine": {
+        "schemaVersion": 1,
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 972,
+        "bytes": 16177501,
+        "treeSha256": "ab68e78abd45324db1ee0f5e86885aa0512618069f1ecc5da79ac9ca4e199fa0",
+        "manifestSha256": "3c6856c9fc6d0fe7decbfdcc78fc65d642ed0deb0a2e5e136742dae455f3f5d0",
+        "limits": {
+          "files": 4096,
+          "entries": 8192,
+          "depth": 24,
+          "fileBytes": 8388608,
+          "totalBytes": 134217728
+        },
+        "afterTreeSha256": "ab68e78abd45324db1ee0f5e86885aa0512618069f1ecc5da79ac9ca4e199fa0",
+        "afterManifestSha256": "3c6856c9fc6d0fe7decbfdcc78fc65d642ed0deb0a2e5e136742dae455f3f5d0",
+        "beforeAfterByteIdentitiesMatch": true,
+        "dependencyBytesCaptured": false,
+        "actualModuleLoadsTraced": false,
+        "producerSourceBuildVerified": false
+      }
+    }
+  },
+  "nativeCi": {
+    "windowsCounterGuards": {
+      "run": 40443979311,
+      "job": 121990717677,
+      "head": "bf73ed3eee7b4f75ba1bb7e20587dad56d357408",
+      "allFiveControlsPassed": true
+    },
+    "arm64ResourceHistoricalHarness": {
+      "run": 40443979311,
+      "job": 121990717700,
+      "head": "bf73ed3eee7b4f75ba1bb7e20587dad56d357408",
+      "sourceRequired": 9,
+      "sourcePassed": 9,
+      "freshRequired": 9,
+      "freshPassed": 9,
+      "runtimeImageUnchanged": true,
+      "laterHarnessChanged": ["scripts/package-upgrade-readiness.mjs"],
+      "finalHarnessRequalificationRequired": true
+    },
+    "windowsResourceCurrentHarness": {
+      "run": 40446809759,
+      "job": 121999936121,
+      "head": "dd0cf4eb93948c3a7a6af4f219f102fbd23d91e2",
+      "runtime": {
+        "slot": "windows-node22",
+        "node": "22.23.3",
+        "platform": "win32",
+        "architecture": "x64",
+        "osRelease": "10.0.26100",
+        "osVersion": "Windows Server 2025 Datacenter",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "win25-vs2026",
+        "imageVersion": "20261021.278.1",
+        "containerImageId": null,
+        "nodeExecutableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false,
+        "selectedRuntime": {
+          "id": "windows-node22",
+          "platform": "win32",
+          "architecture": "x64",
+          "osFamily": "Windows Server 2025",
+          "node": "22.23.3",
+          "exactOsImageIdentityRequired": true
+        }
+      },
+      "compiledEngineSha256": "ab68e78abd45324db1ee0f5e86885aa0512618069f1ecc5da79ac9ca4e199fa0",
+      "harnessSha256": "bf4091956a5e759c66b90926e30adb99b6e7c4a23bb724136bd34096548f3a3c",
+      "sameEngineAndHarnessAsDevelopment": true,
+      "source": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "resource-release-readiness broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7388.6762,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "resource-release-readiness fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 40526.0088,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "resource-release-readiness near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 89021.5928,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "resource-release-readiness prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 63995.6043,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "resource-release-readiness stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6896.2342,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "resource-release-readiness empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6655.8162,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "resource-release-readiness privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13706.9107,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "resource-release-readiness lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 23156.9656,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "resource-release-readiness installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 233832.5453,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "fresh": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "resource-release-readiness broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6712.0267,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "resource-release-readiness fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 40248.846,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "resource-release-readiness near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 84592.9888,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "resource-release-readiness prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 64971.6138,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "resource-release-readiness stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7082.3429,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "resource-release-readiness empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6778.2332,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "resource-release-readiness privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 14215.7868,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "resource-release-readiness lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 23238.7141,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "resource-release-readiness installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 133989.8743,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "resource-release-readiness installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "offlineProductionInstall": true,
+      "harnessOutsideInstalledPackage": true
+    }
+  },
+  "cleanupCausalAttribution": "Owned Linux exited-task sentinel handling has a deterministic failing unit regression. The intermittent hosted cleanup/readiness failures were not reproduced by the separate native diagnostics; no causal attribution is claimed.",
+  "measurementPackagePredatesThisRecord": true,
+  "selectedRuntimeMatrixQualified": false,
+  "completeArtifactClosure": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

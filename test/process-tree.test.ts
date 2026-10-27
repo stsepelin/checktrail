@@ -985,3 +985,177 @@ test(
     }
   },
 );
+
+test("POSIX cleanup recognizes an already-owned Linux teardown sentinel while requiring final reaping", async () => {
+  const { linuxProcessIdentity } = await import("../src/process-tree.js");
+  type Row = Awaited<ReturnType<typeof processSnapshot>>[number];
+  for (const state of ["X", "Z"]) {
+    for (const reaps of [true, false]) {
+      const root: Row = {
+        pid: 41,
+        parent: 10,
+        group: 41,
+        identity: "4100",
+        state: "stopped",
+      };
+      const parent: Row = {
+        pid: 42,
+        parent: 41,
+        group: 42,
+        identity: "4200",
+        state: "running",
+      };
+      const child: Row = {
+        pid: 43,
+        parent: 42,
+        group: 43,
+        identity: "4300",
+        state: "running",
+      };
+      const sibling: Row = {
+        pid: 44,
+        parent: 10,
+        group: 44,
+        identity: "4400",
+        state: "running",
+      };
+      const rows = new Map(
+        [root, parent, child, sibling].map((row) => [row.pid, row]),
+      );
+      const events: string[] = [];
+      let elapsed = 0,
+        rootStopped = false;
+      const running = stopDescendants(
+        41,
+        {
+          snapshot: async (pids) =>
+            [...rows.values()]
+              .filter((row) => pids === undefined || pids.includes(row.pid))
+              .map((row) => ({ ...row })),
+          exists: (pid) => rows.has(pid),
+          stop: (pid) => {
+            events.push("stop-" + pid);
+            rows.get(pid)!.state = "stopped";
+          },
+          kill: (pid) => {
+            const held = rows.get(pid)!;
+            assert.equal(held.state, "stopped");
+            if (pid === parent.pid)
+              assert.equal(
+                rows.get(child.pid)!.state,
+                "exited",
+                "The deeper child must physically exit before its parent is terminated",
+              );
+            events.push("kill-" + pid);
+            const fields = [
+              state,
+              "0",
+              "-1",
+              "-1",
+              ...Array(15).fill("0"),
+              held.identity,
+            ];
+            rows.set(
+              pid,
+              linuxProcessIdentity(
+                pid,
+                `${pid} (original) ${fields.join(" ")}\n`,
+              ),
+            );
+          },
+          now: () => elapsed,
+          wait: async (ms) => {
+            elapsed += ms;
+            if (rootStopped && reaps && elapsed >= 60) {
+              for (const [pid, row] of rows)
+                if (row.state === "exited") rows.delete(pid);
+            }
+          },
+        },
+        () => {
+          assert.equal(rootStopped, false);
+          rootStopped = true;
+          events.push("root-stopped");
+          rows.delete(root.pid);
+        },
+      );
+      if (reaps) {
+        await assert.doesNotReject(running);
+        assert.deepEqual([...rows.values()], [sibling]);
+        assert.equal(
+          elapsed,
+          60,
+          "Exit metadata alone must not replace observed final reaping",
+        );
+      } else {
+        await assert.rejects(running, /Process cleanup deadline exceeded/);
+        assert.equal(elapsed, 2000);
+        assert.deepEqual([...rows.keys()], [42, 43, 44]);
+      }
+      assert.deepEqual(events, [
+        "stop-42",
+        "stop-43",
+        "kill-43",
+        "kill-42",
+        "root-stopped",
+      ]);
+      assert.deepEqual(rows.get(sibling.pid), sibling);
+    }
+  }
+});
+
+test("POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity", async () => {
+  type Row = Awaited<ReturnType<typeof processSnapshot>>[number];
+  for (const change of [
+    { state: "running", parent: 0, group: -1 },
+    { state: "stopped", parent: 0, group: -1 },
+    { state: "exited", parent: 1, group: -1 },
+    { state: "exited", parent: 0, group: -2 },
+    { state: "exited", parent: 0, group: 99 },
+    { state: "exited", parent: 0, group: -1, identity: "reused" },
+  ] as const) {
+    const root: Row = {
+      pid: 41,
+      parent: 10,
+      group: 41,
+      identity: "4100",
+      state: "stopped",
+    };
+    const child: Row = {
+      pid: 42,
+      parent: 41,
+      group: 42,
+      identity: "4200",
+      state: "running",
+    };
+    let snapshots = 0,
+      elapsed = 0,
+      stops = 0;
+    const current = { ...child, ...change };
+    const running = stopDescendants(41, {
+      snapshot: async () => {
+        snapshots++;
+        return [root, snapshots === 1 ? child : current];
+      },
+      exists: () => true,
+      stop: (pid) => {
+        assert.equal(pid, child.pid);
+        stops++;
+      },
+      kill: () =>
+        assert.fail(
+          "Changed group and reused identities must not be signalled",
+        ),
+      now: () => elapsed,
+      wait: async (ms) => {
+        elapsed += ms;
+      },
+    });
+    if (current.identity === "reused") await running;
+    else
+      await assert.rejects(running, /Process cleanup identity changed group/);
+    assert.equal(stops, 1);
+    assert.equal(elapsed, 10);
+    assert.deepEqual(current, { ...child, ...change });
+  }
+});

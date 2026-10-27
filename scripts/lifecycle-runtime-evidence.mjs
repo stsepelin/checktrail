@@ -19,6 +19,9 @@ export const lifecycleHarnessFiles = Object.freeze([
   "dist/test/process-output.test.js",
   "dist/test/windows-contract.test.js",
   "dist/test/windows-process.test.js",
+  "dist/test/windows-resource.test.js",
+  "dist/test/windows-workspace.test.js",
+  "dist/test/windows-resource-native.test.js",
   "dist/test/helpers.js",
   "dist/test/tool-fixture.js",
   "scripts/verify-lifecycle-platforms.mjs",
@@ -39,6 +42,30 @@ export function lifecycleFoundationSelection(platform = process.platform) {
   return platform === "win32"
     ? ["windows-process", "physical-process-output"]
     : ["posix-cleanup", "posix-owner"];
+}
+
+// Failure presentation only: terminal status and receipt admission stay at callers.
+export function lifecycleFailureDiagnostic({ stdout, stderr }) {
+  try {
+    const evidence = JSON.parse(stdout);
+    if (
+      evidence !== null &&
+      typeof evidence === "object" &&
+      Array.isArray(evidence.problems) &&
+      evidence.problems.length > 0
+    ) {
+      return JSON.stringify({
+        problems: evidence.problems,
+        profile: evidence.profile,
+        passed: evidence.passed,
+        required: evidence.required,
+        complete: evidence.complete,
+      }).slice(0, 6000);
+    }
+  } catch {
+    // A crashed/malformed collector has no structured diagnostic to prefer.
+  }
+  return (stdout + stderr).slice(-6000);
 }
 
 export const lifecycleDigest = (bytes) =>

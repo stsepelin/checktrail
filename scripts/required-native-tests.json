@@ -2581,6 +2581,22 @@
     {
       "file": "dist/test/windows-contract.test.js",
       "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows resource counters retain native CPU precision and direct working-set scope with valid zero and numeric boundaries"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace establishes private access before fixed source or command data and removes its owned namespace"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace refuses private-access failure before every data write or process launch"
     }
   ],
   "windows-process": [
@@ -2627,6 +2643,38 @@
     {
       "file": "dist/test/windows-process.test.js",
       "name": "native Windows guardian job cleanup does not depend on exit of the still-living launcher"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows resource counters retain native CPU precision and direct working-set scope with valid zero and numeric boundaries"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows resource collection preserves a failed target exit and collects only after owned-job cleanup"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows source integrity refuses changed fixed compiler bytes before project execution"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace establishes private access before fixed source or command data and removes its owned namespace"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace refuses private-access failure before every data write or process launch"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows bootstrap protects a new workspace under a broadly readable temp parent before writing source or request data"
     }
   ],
   "physical-process-output": [
@@ -2899,6 +2947,14 @@
     {
       "file": "dist/test/process-tree.test.js",
       "name": "native POSIX selected process snapshots retain both batch boundaries and captured caller selections without unrelated rows"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX cleanup recognizes an already-owned Linux teardown sentinel while requiring final reaping"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity"
     }
   ],
   "review-benchmark-multi": [
@@ -5553,6 +5609,72 @@
     {
       "file": "dist/test/laravel-cache-runtime-harness.test.js",
       "name": "Laravel cache runtime admission binds every named case, supporting input and engine while retaining selected native identities"
+    }
+  ],
+  "windows-resource-workloads": [
+    {
+      "file": "dist/test/windows-resource-workload-native.test.js",
+      "name": "native Windows resource workloads bind small large and polyglot validation jobs to output archive and whole-worker counters"
+    },
+    {
+      "file": "dist/test/windows-resource-workload-native.test.js",
+      "name": "native Windows resource measurement refuses original broken and stale workloads before publishing task storage"
+    }
+  ],
+  "windows-resource-workload-bindings": [
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload accounting sums distinct job CPU retains direct peaks and counts identical tool aliases once"
+    },
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload accounting rejects unavailable incomplete contradictory and reused native resource evidence"
+    },
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload accounting includes distinct version commands and refuses their unverified physical output"
+    },
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload CPU aggregation preserves exact safe boundaries and refuses overflow across otherwise valid jobs"
+    }
+  ],
+  "resource-release-readiness": [
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness installed acceptance"
     }
   ]
 }

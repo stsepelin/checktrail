@@ -278,7 +278,13 @@ export async function stopDescendants(
       return false;
     }
     if (identity.identity !== child.identity) return false;
-    if (identity.group !== child.group)
+    // Linux can clear parent/group during final task teardown. The held start
+    // identity still binds this exited task; final physical reaping is required.
+    const exitedWithoutGroup =
+      identity.state === "exited" &&
+      identity.parent === 0 &&
+      identity.group === -1;
+    if (identity.group !== child.group && !exitedWithoutGroup)
       throw Error("Process cleanup identity changed group");
     return true;
   };

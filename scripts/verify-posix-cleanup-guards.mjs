@@ -19,6 +19,22 @@ const refused =
   "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion";
 const guards = [
   {
+    id: "held-exit-sentinel-recognition",
+    name: "POSIX cleanup recognizes an already-owned Linux teardown sentinel while requiring final reaping",
+    source: "process-tree.js",
+    replacements: [["&& !exitedWithoutGroup)", "&& true)"]],
+  },
+  ...[
+    ["held-exit-sentinel-state", 'identity.state === "exited"'],
+    ["held-exit-sentinel-parent", "identity.parent === 0"],
+    ["held-exit-sentinel-group", "identity.group === -1"],
+  ].map(([id, condition]) => ({
+    id,
+    name: "POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity",
+    source: "process-tree.js",
+    replacements: [[condition, "true"]],
+  })),
+  {
     id: "captured-selected-identities",
     name: "native POSIX selected process snapshots retain both batch boundaries and captured caller selections without unrelated rows",
     source: "process-tree.js",
@@ -93,8 +109,8 @@ const guards = [
     source: "process-tree.js",
     replacements: [
       [
-        "if (identity.group !== child.group)",
-        "if (false && identity.group !== child.group)",
+        "if (identity.group !== child.group && !exitedWithoutGroup)",
+        "if (false && identity.group !== child.group && !exitedWithoutGroup)",
       ],
     ],
   },
