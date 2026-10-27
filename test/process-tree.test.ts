@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFile } from "node:fs/promises";
+import { spawn, spawnSync, type ChildProcess } from "node:child_process";
+import { once } from "node:events";
 import { setTimeout as delay } from "node:timers/promises";
 import path from "node:path";
 import { runProcess } from "../src/runner.js";
@@ -704,3 +706,282 @@ test("Linux procfs teardown sentinel retains only exited identities without brea
       /Process identity invalid/,
     );
 });
+
+test("POSIX cleanup does not enumerate unrelated processes after every observed PID is physically absent", async () => {
+  for (const withChild of [false, true]) {
+    const root = { pid: 41, parent: 10, group: 41, identity: "root" },
+      child = {
+        pid: 42,
+        parent: 41,
+        group: 42,
+        identity: "child",
+        state: "stopped" as const,
+      };
+    let snapshots = 0;
+    const rows = new Map(
+      (withChild ? [root, child] : [root]).map((row) => [row.pid, row]),
+    );
+    const killed: number[] = [];
+    await stopDescendants(41, {
+      snapshot: async () => {
+        snapshots++;
+        if (snapshots > (withChild ? 3 : 1))
+          throw Error(
+            "Unrelated process enumeration unavailable after physical reaping",
+          );
+        return [...rows.values()];
+      },
+      exists: (pid) => rows.has(pid),
+      stop: () => assert.fail("The observed child is already stopped"),
+      kill: (pid) => {
+        assert.equal(pid, child.pid);
+        killed.push(pid);
+        rows.delete(pid);
+      },
+      now: () => 0,
+      wait: async (ms) => assert.equal(ms, 10),
+    });
+    assert.deepEqual(killed, withChild ? [child.pid] : []);
+    assert.equal(rows.has(child.pid), false);
+    assert.equal(snapshots, withChild ? 3 : 1);
+  }
+});
+
+test(
+  "native POSIX targeted snapshots retain only their exact PID and preserve global snapshot failure",
+  { skip: process.platform === "win32" },
+  () => {
+    const module = new URL("../src/process-tree.js", import.meta.url).href;
+    const program = `
+      import assert from 'node:assert/strict';
+      import cp from 'node:child_process';
+      import {syncBuiltinESMExports} from 'node:module';
+      const original = cp.spawnSync;
+      let globalCalls = 0;
+      if (process.platform === 'darwin') {
+        cp.spawnSync = (executable, args, options) => {
+          if (executable === '/bin/ps' && args[0] === '-axo') {
+            globalCalls++;
+            return {status:null,signal:'SIGTERM',error:Object.assign(Error('observed global snapshot timeout'),{code:'ETIMEDOUT'}),stdout:'',stderr:'',pid:0};
+          }
+          if (executable === '/bin/ps' && args[0] === '-p') {
+            const selected = Number(args[1]);
+            const row = selected+' '+process.ppid+' '+process.pid+' S Mon Jan 5 12:00:00 2026';
+            const clean = {status:0,signal:null,error:undefined,stdout:row,stderr:'',pid:0};
+            switch (selected) {
+              case 999999999:return {...clean,status:1,stdout:''};
+              case 999999998:return {...clean,status:1,stdout:'',error:Error('unreadable')};
+              case 999999997:return {...clean,status:1,stdout:'',signal:'SIGTERM'};
+              case 999999996:return {...clean,status:1,stdout:'',stderr:'unavailable'};
+              case 999999995:return {...clean,status:2};
+              case 999999994:return {...clean,stdout:row.replace(String(selected),String(process.pid))};
+              case 999999993:return {...clean,stdout:row+String.fromCharCode(10)+row};
+              case 999999992:return {...clean,error:Error('unreadable')};
+              case 999999991:return {...clean,signal:'SIGTERM'};
+              case 999999990:return {...clean,stderr:'unavailable'};
+              case 999999989:return {...clean,status:2,stdout:''};
+            }
+          }
+          return original(executable,args,options);
+        };
+        syncBuiltinESMExports();
+      }
+      const {processSnapshot} = await import(${JSON.stringify(module)});
+      const rows = await processSnapshot(process.pid);
+      assert.equal(rows.length, 1);
+      assert.equal(rows[0].pid, process.pid);
+      assert.equal(rows[0].parent, process.ppid);
+      assert.ok(Number.isSafeInteger(rows[0].group) && rows[0].group > 0);
+      assert.ok(rows[0].identity.length > 0);
+      for (const invalid of [0,-1,1.5,NaN,Infinity,1000000000,'1',[],{}])
+        await assert.rejects(() => processSnapshot(invalid), /selection invalid/);
+      if (process.platform === 'darwin') {
+        assert.equal(globalCalls,0,'selected identity must not take a global snapshot');
+        await assert.rejects(() => processSnapshot(), /snapshot unavailable/);
+        assert.equal(globalCalls,1,'global discovery still reports its original failure');
+        assert.deepEqual(await processSnapshot(999999999),[],'only a clean missing selection is empty');
+        for (const invalid of [999999998,999999997,999999996,999999995,999999994,999999993,999999992,999999991,999999990,999999989])
+          await assert.rejects(() => processSnapshot(invalid), /snapshot (?:selection invalid|unavailable)/);
+      }
+    `;
+    const result = spawnSync(
+      process.execPath,
+      ["--input-type=module", "-e", program],
+      {
+        encoding: "utf8",
+        timeout: 10000,
+        maxBuffer: 128 * 1024,
+      },
+    );
+    assert.equal(
+      result.error,
+      undefined,
+      result.error?.message ?? "Snapshot helper must start",
+    );
+    assert.equal(result.signal, null, result.stderr);
+    assert.equal(result.status, 0, result.stderr);
+  },
+);
+
+test("POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping", async () => {
+  const root = {
+    pid: 41,
+    parent: 10,
+    group: 41,
+    identity: "root",
+    state: "running" as const,
+  };
+  const child = {
+    pid: 42,
+    parent: 41,
+    group: 42,
+    identity: "owned",
+    state: "stopped" as "stopped" | "exited",
+  };
+  const sibling = {
+    pid: 45,
+    parent: 10,
+    group: 45,
+    identity: "unrelated",
+    state: "running" as const,
+  };
+  const selections: (number[] | null)[] = [];
+  const killed: number[] = [];
+  let discoveries = 0,
+    selectedReads = 0,
+    alive = true,
+    stoppedRoot = 0,
+    elapsed = 0;
+  await assert.doesNotReject(
+    stopDescendants(
+      41,
+      {
+        snapshot: async (pids) => {
+          selections.push(pids ? [...pids] : null);
+          if (pids === undefined) {
+            if (++discoveries > 2)
+              throw Error(
+                "Unrelated process enumeration after family quiescence",
+              );
+            return [root, { ...child }, sibling];
+          }
+          assert.equal(
+            discoveries,
+            2,
+            "Selected observation must follow complete discovery and quiescence",
+          );
+          assert.deepEqual(pids, [42]);
+          if (++selectedReads === 3) {
+            alive = false;
+            return [];
+          }
+          return [{ ...child }];
+        },
+        stop: () => {
+          throw Error("Already stopped fixture must not need another stop");
+        },
+        kill: (pid) => {
+          assert.equal(pid, 42);
+          killed.push(pid);
+          child.state = "exited";
+        },
+        exists: (pid) => {
+          assert.equal(pid, 42);
+          return alive;
+        },
+        now: () => elapsed,
+        wait: async (ms) => {
+          elapsed += ms;
+        },
+      },
+      () => {
+        stoppedRoot++;
+      },
+    ),
+  );
+  assert.deepEqual(killed, [42]);
+  assert.equal(stoppedRoot, 1);
+  assert.equal(alive, false);
+  assert.equal(discoveries, 2);
+  assert.deepEqual(selections.slice(0, 2), [null, null]);
+  assert.ok(
+    selections.length > 3,
+    "Both exit observation and final reaping must be reached",
+  );
+  assert.ok(
+    selections.slice(2).every((pids) => JSON.stringify(pids) === "[42]"),
+  );
+});
+
+test("POSIX selected process snapshots reject empty duplicate unsafe and oversized selections before observing processes", async () => {
+  for (const pids of [
+    [],
+    [0],
+    [-1],
+    [1.5],
+    [NaN],
+    [Infinity],
+    [1000000000],
+    [process.pid, process.pid],
+    Array.from({ length: 65537 }, (_, index) => index + 1),
+  ])
+    await assert.rejects(
+      processSnapshot(pids),
+      /Process snapshot selection invalid/,
+    );
+});
+
+test(
+  "native POSIX selected process snapshots retain both batch boundaries and captured caller selections without unrelated rows",
+  { skip: process.platform === "win32", timeout: 30000 },
+  async () => {
+    const helpers: { child: ChildProcess; closed: Promise<void> }[] = [];
+    try {
+      // One more live owned helper than a native query batch arms both reads.
+      // These fixed OS helpers are tracked before any assertion or observation.
+      for (let index = 0; index < 129; index++) {
+        const child = spawn("/bin/sleep", ["60"], { stdio: "ignore" });
+        const closed = new Promise<void>((resolve) =>
+          child.once("close", () => resolve()),
+        );
+        helpers.push({ child, closed });
+        await once(child, "spawn");
+      }
+      const expected = helpers
+        .map(({ child }) => child.pid!)
+        .sort((a, b) => a - b);
+      assert.equal(new Set(expected).size, 129);
+      const requested = [...expected];
+      const pending = processSnapshot(requested);
+      requested.length = 0;
+      const observed = await pending;
+      assert.deepEqual(
+        observed.map((row) => row.pid).sort((a, b) => a - b),
+        expected,
+      );
+      assert.ok(
+        observed.every(
+          (row) => row.parent === process.pid && row.identity.length > 0,
+        ),
+      );
+    } finally {
+      for (const { child } of helpers)
+        if (child.exitCode === null && child.signalCode === null)
+          child.kill("SIGKILL");
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      try {
+        await Promise.race([
+          Promise.all(helpers.map(({ closed }) => closed)),
+          new Promise<never>((_, reject) => {
+            timer = setTimeout(
+              () => reject(Error("Owned snapshot helpers did not close")),
+              5000,
+            );
+          }),
+        ]);
+      } finally {
+        if (timer) clearTimeout(timer);
+      }
+    }
+  },
+);

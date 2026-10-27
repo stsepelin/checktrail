@@ -555,3 +555,74 @@ test(
     }
   },
 );
+
+test(
+  "native POSIX owner bootstrap uses only its own identity and refuses a failed selected identity without starting project code",
+  { skip: !posix, timeout: 30000 },
+  async (t) => {
+    for (const mode of ["global-unavailable", "selected-unavailable"]) {
+      const d = await copiedRuntime(t),
+        helper = path.join(d.root, "src/posix-owner-keeper.js"),
+        mark = path.join(d.root, "reached-target");
+      const original = await readFile(helper, "utf8");
+      const prefix = `
+        import bootstrapCp from 'node:child_process';
+        import bootstrapFs from 'node:fs/promises';
+        import {syncBuiltinESMExports as syncBootstrapExports} from 'node:module';
+        let bootstrapReady = false;
+        const bootstrapMode = ${JSON.stringify(mode)};
+        const bootstrapSend = process.send.bind(process);
+        process.send = (value,...rest) => {
+          if (value && value.kind === 'ready') bootstrapReady = true;
+          return bootstrapSend(value,...rest);
+        };
+        const bootstrapSpawn = bootstrapCp.spawnSync;
+        bootstrapCp.spawnSync = (executable,args,options) => {
+          if (!bootstrapReady && executable === '/bin/ps' &&
+              ((bootstrapMode === 'global-unavailable' && args[0] === '-axo') ||
+               (bootstrapMode === 'selected-unavailable' && args[0] === '-p')))
+            return {status:null,signal:'SIGTERM',error:Object.assign(Error('original snapshot timeout'),{code:'ETIMEDOUT'}),stdout:'',stderr:'',pid:0};
+          return bootstrapSpawn(executable,args,options);
+        };
+        const bootstrapReaddir = bootstrapFs.readdir;
+        bootstrapFs.readdir = (filename,...options) => {
+          if (!bootstrapReady && bootstrapMode === 'global-unavailable' && filename === '/proc')
+            throw Object.assign(Error('original global snapshot unavailable'),{code:'EIO'});
+          return bootstrapReaddir(filename,...options);
+        };
+        const bootstrapRead = bootstrapFs.readFile;
+        bootstrapFs.readFile = (filename,...options) => {
+          if (!bootstrapReady && bootstrapMode === 'selected-unavailable' && filename === '/proc/'+process.pid+'/stat')
+            throw Object.assign(Error('original selected identity unavailable'),{code:'EIO'});
+          return bootstrapRead(filename,...options);
+        };
+        syncBootstrapExports();
+      `;
+      await writeFile(helper, prefix + original);
+      const result = await d.run.runProcess(
+        d.root,
+        {
+          executable: process.execPath,
+          args: [
+            "-e",
+            `require('node:fs').writeFileSync(${JSON.stringify(mark)},'actual target')`,
+          ],
+          cwd: ".",
+        },
+        { timeoutMs: 10000, captureRawOutput: true },
+      );
+      assert.equal(result.timedOut, false);
+      assert.equal(result.cancelled, false);
+      if (mode === "global-unavailable") {
+        assert.equal(result.errorCode, undefined);
+        assert.equal(result.exitCode, 0);
+        assert.equal(await readFile(mark, "utf8"), "actual target");
+        assert.equal(result.capturedOutput!.completeForObservedStreams, true);
+      } else {
+        assert.equal(result.errorCode, "POSIX_OWNER_UNAVAILABLE");
+        assert.equal(result.exitCode, null);
+        await assert.rejects(access(mark), { code: "ENOENT" });
+      }
+    }
+  },
+);

@@ -2879,6 +2879,26 @@
     {
       "file": "dist/test/process-tree.test.js",
       "name": "Linux procfs teardown sentinel retains only exited identities without breaking unrelated owned families"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX cleanup does not enumerate unrelated processes after every observed PID is physically absent"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "native POSIX targeted snapshots retain only their exact PID and preserve global snapshot failure"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX cleanup retains full discovery and uses only frozen owned identities during child exit and final reaping"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX selected process snapshots reject empty duplicate unsafe and oversized selections before observing processes"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "native POSIX selected process snapshots retain both batch boundaries and captured caller selections without unrelated rows"
     }
   ],
   "review-benchmark-multi": [
@@ -5431,6 +5451,10 @@
     {
       "file": "dist/test/posix-owner.test.js",
       "name": "native POSIX delayed owner bootstrap distinguishes an expired request from an actually missing executable"
+    },
+    {
+      "file": "dist/test/posix-owner.test.js",
+      "name": "native POSIX owner bootstrap uses only its own identity and refuses a failed selected identity without starting project code"
     }
   ],
   "git-metadata": [
