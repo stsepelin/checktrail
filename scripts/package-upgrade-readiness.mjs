@@ -194,6 +194,15 @@ export async function verifyPackageUpgrade(
       "node_modules/@stsepelin/checktrail/dist/src/cli.js",
     );
     let activePhase = "preparation";
+    const invokeNpm = (args, options) => {
+      try {
+        return runAcceptanceNpm(args, options);
+      } catch (error) {
+        if (error instanceof Error)
+          error.message = `Upgrade ${activePhase} npm ${args[0]}: ${error.message}`;
+        throw error;
+      }
+    };
     const invoke = (args) =>
       observeUpgradeNode([binary, ...args], {
         cwd: installation,
@@ -239,7 +248,7 @@ export async function verifyPackageUpgrade(
           path.join(installation, "package-lock.json"),
           locked.lock,
         );
-        runAcceptanceNpm(
+        invokeNpm(
           [
             "ci",
             "--offline",
@@ -274,7 +283,7 @@ export async function verifyPackageUpgrade(
           );
         }
       } else {
-        runAcceptanceNpm(
+        invokeNpm(
           [
             "install",
             "--offline",

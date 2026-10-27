@@ -25,13 +25,17 @@ jobs:
       - name: Prepare pinned production installation cache
         run: node scripts/prepare-package-cache.mjs
       - name: Prepare pinned older public package without lifecycle scripts
+        id: release_tools
         run: node scripts/prepare-release-readiness-tools.mjs
       - name: Retain observer regression and failure controls
         run: node --test dist/test/upgrade-observation.test.js > upgrade-observer-tests.txt 2>&1
       - name: Retain physical file admission controls
         run: node --test dist/test/test-suite-scheduling.test.js > test-admission-controls.txt 2>&1
-      - name: Require original source and fresh offline resource readiness
-        run: node scripts/verify-resource-release-readiness.mjs windows-node22 > resource-receipt.json
+      - name: Reproduce exact upgrade near-miss callback with operation context
+        run: node scripts/diagnose-resource-upgrade.mjs > near-miss-first.json
+      - name: Retain a second fresh callback even after the first failure
+        if: ${{ !cancelled() && steps.release_tools.outcome == 'success' }}
+        run: node scripts/diagnose-resource-upgrade.mjs > near-miss-second.json
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
@@ -39,6 +43,7 @@ jobs:
           path: |
             upgrade-observer-tests.txt
             test-admission-controls.txt
-            resource-receipt.json
+            near-miss-first.json
+            near-miss-second.json
           retention-days: 30
           if-no-files-found: error
