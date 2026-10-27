@@ -142,3 +142,11 @@ The complete signed archive is byte-different. Payload mutations remain visible,
 and both FIPS archives reproduce exactly with this source-built compiler.
 Bootstrap ancestry, original signing trust, copied/generated payload producers
 and complete original inline notices remain open.
+
+The [bootstrap SDK reconstruction](provider-bootstrap-sdk-rebuild.json) builds
+Go 1.27.1 from its pinned original source using the reconstructed native Go
+1.24.13 SDK. Every regular official SDK member matches after the unchanged
+upstream signature normalization. The original source archive reproduces exactly,
+and the named original notices match source and SDK bytes. Both observations
+still descend from the original binary seed; deeper bootstrap independence and
+all copied/generated producer and notice chains remain open Gate A work.

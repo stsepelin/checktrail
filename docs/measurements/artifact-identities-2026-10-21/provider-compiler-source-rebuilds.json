@@ -873,5 +873,6 @@
   "copiedPayloadProducerBuildClosureVerified": false,
   "completeArchiveEqualityDoesNotRebuildCopiedInputs": true,
   "copiedTimezonePayloadRebuildEvidence": "provider-compiler-timezone-rebuilds.json",
-  "copiedFipsSnapshotRebuildEvidence": "provider-compiler-fips-snapshot-rebuilds.json"
+  "copiedFipsSnapshotRebuildEvidence": "provider-compiler-fips-snapshot-rebuilds.json",
+  "bootstrapSourceBuildFollowUpEvidence": "provider-bootstrap-sdk-rebuild.json"
 }
