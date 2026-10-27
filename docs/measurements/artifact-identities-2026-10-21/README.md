@@ -127,3 +127,10 @@ releases and Go packager source. A valid historical-offset edit changes the
 archive, and exact source restoration reproduces the original bytes. This closes
 that reconstruction step only; source-release signature verification and the
 C compiler, SDK, Go packager and bootstrap producer chains remain open.
+
+The [FIPS snapshot reconstruction](provider-compiler-fips-snapshot-rebuilds.json)
+recreates both copied source ZIPs byte-for-byte with their original generators
+and module code. Every source member binds to the identified upstream Git tree,
+including the documented version substitution. Valid Go source edits change both
+archives; exact restoration reproduces them. Compiler/bootstrap and generated
+arithmetic/assembly producer chains remain separate open Gate A work.

@@ -131,7 +131,7 @@
         {
           "file": "provider-independent-rebuild.json",
           "bytes": 8571,
-          "sha256": "c7e541b06f65c16dab8b13cd3b2f88cb52f190fc2092a67ab1783b68c1f0f1d3",
+          "sha256": "810625437c5a1ea84d8a9718c8947ad5485773e1157553db326af7cef5f2f572",
           "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
         }
       ]
@@ -141,7 +141,7 @@
         {
           "file": "provider-notice-inventory.json",
           "bytes": 172525,
-          "sha256": "4a0f82465f388afb25bcf0d22710b963377017fdb1d7b7f93e801e9ef16ef55b",
+          "sha256": "bdbbccf265cb55f7db5969d7b06212ef05e3bff03c20317b23ea30a90a0d6098",
           "generation": "Reconciled native package metadata and exact public source/module/SDK notice bytes; stronger closure remains unverified."
         }
       ],
@@ -160,7 +160,7 @@
         {
           "file": "provider-independent-zip-repack.json",
           "bytes": 10624,
-          "sha256": "3ec1dc0f4bfa384b264fdf6e7f041f17653164c669badb955fe20aa7bf9d25e8"
+          "sha256": "8f4c05251321b67dc503b5b004cab7996e77c19d30292692d54d4f2fcbbea2c7"
         }
       ]
     }
@@ -188,12 +188,12 @@
     {
       "file": "provider-original-producer-binding.json",
       "bytes": 7837,
-      "sha256": "5ef6258e445806bf1e93004d3566b680a23aafff540683d56f410391e5106539"
+      "sha256": "da1372630065b30c3c173f001ffd535e3e14f95346fa01b6818271bc9d3aa12e"
     },
     {
       "file": "provider-compiler-source-rebuilds.json",
-      "bytes": 36853,
-      "sha256": "4fc210a28a88678ee1152f42d6f0eedfb8dce292bbf986e096fbf7b3a3c3eba4"
+      "bytes": 36941,
+      "sha256": "0ad37e39a95e31a31e708a5610e2863f17bcd6579ee9b01636c18e5c50abbc37"
     }
   ],
   "compilerArchiveFollowUpObservedAt": "2026-10-27",

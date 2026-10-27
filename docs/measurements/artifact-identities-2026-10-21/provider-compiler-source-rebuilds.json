@@ -872,5 +872,6 @@
   "sourceGitAttributionEvidence": "provider-compiler-source-git-binding.json",
   "copiedPayloadProducerBuildClosureVerified": false,
   "completeArchiveEqualityDoesNotRebuildCopiedInputs": true,
-  "copiedTimezonePayloadRebuildEvidence": "provider-compiler-timezone-rebuilds.json"
+  "copiedTimezonePayloadRebuildEvidence": "provider-compiler-timezone-rebuilds.json",
+  "copiedFipsSnapshotRebuildEvidence": "provider-compiler-fips-snapshot-rebuilds.json"
 }

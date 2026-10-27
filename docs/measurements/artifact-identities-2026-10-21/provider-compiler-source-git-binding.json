@@ -156,7 +156,9 @@
           "bytes": 658130,
           "sha256": "daf3614e0406f67ae6323c902db3f953a1effb199142362a039e7526dfb9368b",
           "gitBlobSha1": "aabf762d0fecb29fcf3e42fbf8acefc994cf8358",
-          "producerBuildReproduced": false
+          "producerBuildReproduced": true,
+          "producerBuildEvidence": "provider-compiler-fips-snapshot-rebuilds.json",
+          "compilerSdkBootstrapAndGeneratedCodeChainClosed": false
         },
         {
           "path": "lib/time/zoneinfo.zip",
@@ -6267,7 +6269,9 @@
           "bytes": 658130,
           "sha256": "daf3614e0406f67ae6323c902db3f953a1effb199142362a039e7526dfb9368b",
           "gitBlobSha1": "aabf762d0fecb29fcf3e42fbf8acefc994cf8358",
-          "producerBuildReproduced": false
+          "producerBuildReproduced": true,
+          "producerBuildEvidence": "provider-compiler-fips-snapshot-rebuilds.json",
+          "compilerSdkBootstrapAndGeneratedCodeChainClosed": false
         },
         {
           "path": "lib/fips140/v1.26.0.zip",
@@ -6275,7 +6279,9 @@
           "bytes": 676132,
           "sha256": "9b28f847fdf1db4a36cb2b2f8ec09443c039383f085630a03ecfaddf6db7ea23",
           "gitBlobSha1": "f53ade80367a8b77c259d9de130328a85c74f758",
-          "producerBuildReproduced": false
+          "producerBuildReproduced": true,
+          "producerBuildEvidence": "provider-compiler-fips-snapshot-rebuilds.json",
+          "compilerSdkBootstrapAndGeneratedCodeChainClosed": false
         },
         {
           "path": "lib/time/zoneinfo.zip",
@@ -12316,5 +12322,6 @@
   "qualityAssessed": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "copiedPayloadFollowUpEvidence": "provider-compiler-timezone-rebuilds.json"
+  "copiedPayloadFollowUpEvidence": "provider-compiler-timezone-rebuilds.json",
+  "copiedFipsSnapshotFollowUpEvidence": "provider-compiler-fips-snapshot-rebuilds.json"
 }

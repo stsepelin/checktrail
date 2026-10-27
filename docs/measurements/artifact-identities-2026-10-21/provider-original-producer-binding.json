@@ -170,8 +170,8 @@
     },
     {
       "file": "provider-compiler-source-rebuilds.json",
-      "bytes": 36853,
-      "sha256": "4fc210a28a88678ee1152f42d6f0eedfb8dce292bbf986e096fbf7b3a3c3eba4"
+      "bytes": 36941,
+      "sha256": "0ad37e39a95e31a31e708a5610e2863f17bcd6579ee9b01636c18e5c50abbc37"
     }
   ],
   "remainingInputs": [
