@@ -185,8 +185,8 @@
       "retainedInputs": [
         {
           "file": "scala-component-inventory.json",
-          "bytes": 331299,
-          "sha256": "44bb4285c5476188c9049679cb79ffc6f7f041612915638d3a916cf71b6d4e86",
+          "bytes": 332239,
+          "sha256": "52043913e56169f35ab46e2fce1500f959325099d41f0b575f25e20ea9774fae",
           "generation": "Static comparison of exact public delivery/source bytes, embedded class identities, SourceFile attributes and font metadata; no compiler or native payload execution."
         }
       ],
@@ -220,7 +220,7 @@
     }
   },
   "remainingInputs": [
-    "Complete ASM fork source/build and component notice admission beyond the retained exact class comparisons.",
+    "Finish ASM archive packaging, compiler/SDK notice closure and preparation/receipt admission around the retained exact Java source and class-payload bindings.",
     "Reconcile compiler documentation font/resource attribution and generated resources; bundled resource bytes remain in scope even when a compiler-only invocation does not use them.",
     "Complete JLine native build/C-header and external-provider dependency attribution; byte matches and embedded POM metadata do not prove runtime use.",
     "Complete selected source/build and runtime notice coverage plus preparation/receipt integration before changing stronger closure flags."
@@ -230,5 +230,5 @@
   "gateAComplete": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "observationsUpdatedAt": "2026-10-21T19:00:15.754298+00:00"
+  "observationsUpdatedAt": "2026-10-27"
 }

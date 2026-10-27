@@ -7559,7 +7559,7 @@
   "remainingInputs": [
     "Reconcile compiler documentation resource/font attribution and generated resource origins; a compiler-only invocation does not remove bundled resources from the delivery.",
     "Reconcile JLine native C headers and exact build inputs, plus external provider dependencies; embedded POM metadata does not prove a dependency is bundled or executed.",
-    "Bind ASM fork and remaining source/build/component notice inputs before stronger closure admission; public source tags and SourceFile attributes alone are not build reproduction."
+    "Finish ASM packaging, compiler/SDK/component notice coverage and preparation/receipt admission around the exact source/class-payload reproduction; the source-JAR manifest remains an original byte projection rather than an executed SBT generation."
   ],
   "completeArtifactAndNoticeClosureVerified": false,
   "preparationAndReceiptIntegrationVerified": false,
@@ -7691,6 +7691,29 @@
     "tag": "v9.9.0-scala-1",
     "resolvedCommit": "e8ac5559249d87f312df832f788cb745276ef296",
     "sourceJarToGitTreeFullyVerified": false,
-    "binaryClassesByteMatchedSelectedCompiler": true
-  }
+    "binaryClassesByteMatchedSelectedCompiler": true,
+    "sourceJarJavaMembersToPinnedGitTreeVerified": true,
+    "generatedManifestByteProjectionMatched": true,
+    "actualSourceJarBuildReproduced": false,
+    "retainedInputs": [
+      {
+        "file": "scala-asm-source-bindings.json",
+        "bytes": 45636,
+        "sha256": "d72d97f65aeab137902f117a96a4082c8e22366147ee6aef13a9b248a733f936"
+      },
+      {
+        "file": "scala-asm-source-binding-controls.json",
+        "bytes": 1833,
+        "sha256": "ffb21ae0b064bb4b0b3c7e8b27c302b74e27c92d6feed73d4c0cabd472b05a1f"
+      },
+      {
+        "file": "scala-asm-independent-class-build.json",
+        "bytes": 89344,
+        "sha256": "b7b52a8cf5cd6a6a6bb2c4b26bde1c1e55d4ac9a69e66803f08fde99f38371ce"
+      }
+    ],
+    "independentBinaryClassPayloadBuildVerified": true,
+    "completeJarPackagingReproduced": false
+  },
+  "sourceFollowUpObservedAt": "2026-10-27"
 }

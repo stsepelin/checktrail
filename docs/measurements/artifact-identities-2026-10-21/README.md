@@ -62,3 +62,33 @@ remain unchanged, including their whitespace. A matching projection identifies
 possible source bytes; the actual producer SDK, evaluated compiler inputs,
 resources, component/native notices and preparation/receipt integration remain
 unverified. This adds no artifact-closure or Gate A promotion.
+
+The [ASM source follow-up](scala-asm-source-bindings.json) binds every Java member
+of the exact selected source JAR to the corresponding immutable fork Git blob
+and mode. The complete main-Java set is accounted for, with every intervening Git
+tree hash reconstructed against the pinned commit. The single non-Java member
+is reproduced by an original byte projection of the pinned build's declared
+organization, name and version. SBT and the upstream release workflow are not
+executed; the projection does not establish the actual generator or producer.
+The original fork license and inspected build/workflow bytes are retained.
+One Java member has no inline license preamble; it is retained as a root-scoped
+case rather than inferred to have different licensing. [Changed/restored byte
+controls](scala-asm-source-binding-controls.json) exercise source, property,
+line-ending and Git mode bindings. Full copied/generated attribution, binary
+build reproduction, compiler/SDK and font/JLine notice coverage, and native
+preparation/receipt admission remain open. No stronger closure flag is promoted.
+
+The [independent ASM class build](scala-asm-independent-class-build.json) compiles
+the exact source members with the selected official Java 8 archive and the pinned
+build's debug/parameter options. Every selected ASM class payload matches byte for
+byte. Changing one valid error-message literal still compiles and changes only
+the corresponding class; restoring the source reproduces every original selected ASM class.
+Each offline run has fresh output and no mounted delivered JAR or compilation
+cache. The SDK and source stay read-only, annotation processing is disabled, and
+the upstream library classes and release scripts are never executed. The compiler
+archive matches both official release metadata and the retained checksum; its
+publisher signature is not independently verified. Original SDK notice files are
+retained as candidates, without asserting complete attribution. JAR packaging,
+actual producer identity, broader SDK/native notices, fonts/JLine and admission
+integration remain separate requirements. This adds no complete-closure or Gate A
+promotion.
