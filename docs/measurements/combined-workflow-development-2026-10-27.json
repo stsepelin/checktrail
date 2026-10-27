@@ -1,0 +1,4179 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original synthetic consumer, attempt and independent-evaluation workflow development on one compiled engine; scripted provider responses only. No actual AI review, model inference, held-out or field trial.",
+  "sourceCommit": "13b702368350fc07402912fe0a022c44a07e5dd7",
+  "compiledEngine": {
+    "schemaVersion": 1,
+    "fileCount": 984,
+    "bytes": 16364330,
+    "treeSha256": "9d172aba4f68ba30739e7ab27830eedb071c1fcadf00bd9da7adf341855c006a",
+    "manifestSha256": "8a1b37c26d960a99bd1d566e0410c884b2b07d1ec45e219a3e2ef67bbb295f35",
+    "beforeAfterByteIdentitiesMatch": true,
+    "dependencyBytesCaptured": false,
+    "actualModuleLoadsTraced": false,
+    "producerSourceBuildVerified": false
+  },
+  "profiles": [
+    {
+      "family": "consumer",
+      "controller": "consumer-impact-runtime-v1",
+      "harnessSha256": "d819696fd95c2df1949bdc64816ff6cef692deb853d77223f4e49115a328d0ca",
+      "requirementsSha256": "4d82fde6122557bfc88aba5a6a8611c84007ac26896d3c73a0c02e52a8773446",
+      "runtime": {
+        "slot": null,
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "27.0.0",
+        "osVersion": "Darwin Kernel Version 27.0.0: Tue Aug 11 21:06:40 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T6050",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": null,
+        "imageVersion": null,
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.0",
+        "gitExecutableSha256": "40163333061f7223ecb604ed0f12988cfc8096d57ca8b1db006d410d4aeb700e",
+        "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": null,
+      "sourceProfileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "90852df4be2785cab0ab3b085b4cd0996ee5a8fb20db8daf1e3af0a02f000e3e"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "90852df4be2785cab0ab3b085b4cd0996ee5a8fb20db8daf1e3af0a02f000e3e"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "consumer-impact broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3160.927459,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "consumer-impact fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1496.870583,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "consumer-impact near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2757.559834,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "consumer-impact prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 936.48675,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "consumer-impact stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 949.293875,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "consumer-impact empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1365.020458,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "consumer-impact privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2443.483042,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "consumer-impact lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8302.12475,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "consumer-impact installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 55749.269458,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "consumer-impact broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "consumer-impact fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "consumer-impact near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "consumer-impact prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "consumer-impact stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "consumer-impact empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "consumer-impact privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "consumer-impact lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "consumer-impact installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "installedEvidence": {
+        "profile": "consumer-impact-whole-installed-v1",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "tarballSha256": "ac25d2241f0eeda7bb20d299cc3ce1d1c951405d767c2df06dc95bf86cafbba4",
+        "productionDependencyLockSha256": "2c526f74bc681ccdafdf710e1563a3062215c084abeb413af42f51595268ac97",
+        "externalSdkDependencies": {
+          "@modelcontextprotocol/client": "2.3.1",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1",
+          "zod": "4.6.7",
+          "@modelcontextprotocol/core": "2.3.1"
+        },
+        "compiledEngine": {
+          "schemaVersion": 1,
+          "fileCount": 984,
+          "bytes": 16364330,
+          "treeSha256": "9d172aba4f68ba30739e7ab27830eedb071c1fcadf00bd9da7adf341855c006a",
+          "manifestSha256": "8a1b37c26d960a99bd1d566e0410c884b2b07d1ec45e219a3e2ef67bbb295f35",
+          "beforeAfterByteIdentitiesMatch": true,
+          "dependencyBytesCaptured": false,
+          "actualModuleLoadsTraced": false,
+          "producerSourceBuildVerified": false
+        },
+        "profileEvidence": {
+          "fileWorkerLimit": 1,
+          "requiredCaseWorkerLimit": 1,
+          "timeoutScope": "one fresh process per required named case",
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "90852df4be2785cab0ab3b085b4cd0996ee5a8fb20db8daf1e3af0a02f000e3e"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "90852df4be2785cab0ab3b085b4cd0996ee5a8fb20db8daf1e3af0a02f000e3e"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "consumer-impact broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3132.635708,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "consumer-impact fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1508.952042,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "consumer-impact near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2813.192833,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "consumer-impact prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 910.852083,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "consumer-impact stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1014.417375,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "consumer-impact empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1414.249666,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "consumer-impact privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2410.775917,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "consumer-impact lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 8290.100416,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "consumer-impact installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1.016625,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "consumer-impact broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "consumer-impact fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "consumer-impact near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "consumer-impact prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "consumer-impact stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "consumer-impact empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "consumer-impact privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "consumer-impact lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-1",
+                "name": "consumer-impact installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              }
+            ]
+          }
+        },
+        "foundationEvidence": {
+          "fileWorkerLimit": 1,
+          "requiredCaseWorkerLimit": 1,
+          "timeoutScope": "one fresh process per required named case",
+          "passed": 45,
+          "required": 18,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 45,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "62f325431ec3d2087b83f40b9babed98ec3eb8485ece21bbc56e9d3ecf9c9c0d"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "62f325431ec3d2087b83f40b9babed98ec3eb8485ece21bbc56e9d3ecf9c9c0d"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-2",
+                "before": {
+                  "state": "present",
+                  "sha256": "d4378d44678ca88bee5567409a63d5ad757e6943a021de3e3d8d6fda2d79f5cd"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "d4378d44678ca88bee5567409a63d5ad757e6943a021de3e3d8d6fda2d79f5cd"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-3",
+                "before": {
+                  "state": "present",
+                  "sha256": "cfa63eb1299fc65e14c2221bac990c899b3ac53f9ae5e6e5831d6ce8f9b5f35f"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "cfa63eb1299fc65e14c2221bac990c899b3ac53f9ae5e6e5831d6ce8f9b5f35f"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "captured imports expose an undeclared consumer and full validation retains its native failure",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1463.550042,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "a declared transitive graph retains affected consumers and omits the independent project",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 123.12925,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "captured file edges follow reexports and unowned bridges without treating a project prefix as ownership",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 25.7435,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "literal shared JSON reads reconcile the physical producer for named synchronous and asynchronous readers",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 28.984583,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "dynamic-import",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 108.077125,
+                "required": false
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "require-alias",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 83.578875,
+                "required": false
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "shadow-require",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 86.1535,
+                "required": false
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "computed-loader",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 92.319417,
+                "required": false
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "reflected-loader",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 83.621958,
+                "required": false
+              },
+              {
+                "sequence": 10,
+                "fileId": "file-1",
+                "name": "create-require",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 85.975875,
+                "required": false
+              },
+              {
+                "sequence": 11,
+                "fileId": "file-1",
+                "name": "native-worker",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 82.761375,
+                "required": false
+              },
+              {
+                "sequence": 12,
+                "fileId": "file-1",
+                "name": "unselected-builtin",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 81.07075,
+                "required": false
+              },
+              {
+                "sequence": 13,
+                "fileId": "file-1",
+                "name": "mandatory-builtin-prefix",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 83.707,
+                "required": false
+              },
+              {
+                "sequence": 14,
+                "fileId": "file-1",
+                "name": "builtin-prefix",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 81.296,
+                "required": false
+              },
+              {
+                "sequence": 15,
+                "fileId": "file-1",
+                "name": "bare-package",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 87.729542,
+                "required": false
+              },
+              {
+                "sequence": 16,
+                "fileId": "file-1",
+                "name": "package-alias",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 83.223833,
+                "required": false
+              },
+              {
+                "sequence": 17,
+                "fileId": "file-1",
+                "name": "extensionless",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 82.452083,
+                "required": false
+              },
+              {
+                "sequence": 18,
+                "fileId": "file-1",
+                "name": "escaping",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 87.105459,
+                "required": false
+              },
+              {
+                "sequence": 19,
+                "fileId": "file-1",
+                "name": "encoded-path",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 81.190041,
+                "required": false
+              },
+              {
+                "sequence": 20,
+                "fileId": "file-1",
+                "name": "query-path",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 79.632083,
+                "required": false
+              },
+              {
+                "sequence": 21,
+                "fileId": "file-1",
+                "name": "missing-path",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 84.562666,
+                "required": false
+              },
+              {
+                "sequence": 22,
+                "fileId": "file-1",
+                "name": "namespace-fs",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 80.173958,
+                "required": false
+              },
+              {
+                "sequence": 23,
+                "fileId": "file-1",
+                "name": "fs-loader-require",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 86.789834,
+                "required": false
+              },
+              {
+                "sequence": 24,
+                "fileId": "file-1",
+                "name": "reader-alias",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 84.53075,
+                "required": false
+              },
+              {
+                "sequence": 25,
+                "fileId": "file-1",
+                "name": "shadow-reader",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 79.633042,
+                "required": false
+              },
+              {
+                "sequence": 26,
+                "fileId": "file-1",
+                "name": "shadow-url",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 80.67825,
+                "required": false
+              },
+              {
+                "sequence": 27,
+                "fileId": "file-1",
+                "name": "indirect-url",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 81.891167,
+                "required": false
+              },
+              {
+                "sequence": 28,
+                "fileId": "file-1",
+                "name": "dynamic-resource",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 85.408417,
+                "required": false
+              },
+              {
+                "sequence": 29,
+                "fileId": "file-1",
+                "name": "mutated-url",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 88.942292,
+                "required": false
+              },
+              {
+                "sequence": 30,
+                "fileId": "file-1",
+                "name": "broken-syntax",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 89.16175,
+                "required": false
+              },
+              {
+                "sequence": 31,
+                "fileId": "file-1",
+                "name": "compiler-reference",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 83.629833,
+                "required": false
+              },
+              {
+                "sequence": 32,
+                "fileId": "file-1",
+                "name": "unknown source and resource families retain the full shared engine plan",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2297.469459,
+                "required": true
+              },
+              {
+                "sequence": 33,
+                "fileId": "file-1",
+                "name": "literal dynamic imports and CommonJS exact imports expose a missing graph without executing source",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 29.862416,
+                "required": true
+              },
+              {
+                "sequence": 34,
+                "fileId": "file-1",
+                "name": "stale, excluded, empty, unsupported and exhausted import observations stay unknown",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 230.242041,
+                "required": true
+              },
+              {
+                "sequence": 35,
+                "fileId": "file-1",
+                "name": "CommonJS module loaders retain full validation and its actual consumer assertion failure",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2568.751625,
+                "required": true
+              },
+              {
+                "sequence": 36,
+                "fileId": "file-1",
+                "name": "compiler-dependent syntax in JavaScript retains full validation while ordinary keyword spellings remain resolved",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4235.530291,
+                "required": true
+              },
+              {
+                "sequence": 37,
+                "fileId": "file-2",
+                "name": "workspace impact follows transitive consumers, terminates cycles and falls back for uncertain ownership",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.687375,
+                "required": true
+              },
+              {
+                "sequence": 38,
+                "fileId": "file-2",
+                "name": "Git scopes committed, staged, unstaged, untracked and renamed files without running filters",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1000.940834,
+                "required": true
+              },
+              {
+                "sequence": 39,
+                "fileId": "file-2",
+                "name": "Git selection falls back for missing history, root changes, incomplete graphs and tracked excluded content",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 277.86775,
+                "required": true
+              },
+              {
+                "sequence": 40,
+                "fileId": "file-2",
+                "name": "worktrees have separate identities and metadata changes during validation invalidate pass",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 438.657,
+                "required": true
+              },
+              {
+                "sequence": 41,
+                "fileId": "file-2",
+                "name": "unresolved index stages and project-local Git executables cannot narrow or execute project code",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 162.175875,
+                "required": true
+              },
+              {
+                "sequence": 42,
+                "fileId": "file-2",
+                "name": "CLI and MCP share startup-selected Git scope and tool calls cannot change the base",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1080.056834,
+                "required": true
+              },
+              {
+                "sequence": 43,
+                "fileId": "file-3",
+                "name": "impact metrics reconcile retained, omitted, changed and incomplete failures without dropping observations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 28.420334,
+                "required": true
+              },
+              {
+                "sequence": 44,
+                "fileId": "file-3",
+                "name": "native impact measurement retains a transitive assertion failure and exposes a misdeclared graph",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 7128.295667,
+                "required": true
+              },
+              {
+                "sequence": 45,
+                "fileId": "file-3",
+                "name": "impact snapshots account for each paired observation, assertion identity and frozen case",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 33.785875,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "captured imports expose an undeclared consumer and full validation retains its native failure",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "a declared transitive graph retains affected consumers and omits the independent project",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "captured file edges follow reexports and unowned bridges without treating a project prefix as ownership",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "literal shared JSON reads reconcile the physical producer for named synchronous and asynchronous readers",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "unknown source and resource families retain the full shared engine plan",
+                "outcome": "passed",
+                "terminalSequences": [32]
+              },
+              {
+                "fileId": "file-1",
+                "name": "literal dynamic imports and CommonJS exact imports expose a missing graph without executing source",
+                "outcome": "passed",
+                "terminalSequences": [33]
+              },
+              {
+                "fileId": "file-1",
+                "name": "stale, excluded, empty, unsupported and exhausted import observations stay unknown",
+                "outcome": "passed",
+                "terminalSequences": [34]
+              },
+              {
+                "fileId": "file-1",
+                "name": "CommonJS module loaders retain full validation and its actual consumer assertion failure",
+                "outcome": "passed",
+                "terminalSequences": [35]
+              },
+              {
+                "fileId": "file-1",
+                "name": "compiler-dependent syntax in JavaScript retains full validation while ordinary keyword spellings remain resolved",
+                "outcome": "passed",
+                "terminalSequences": [36]
+              },
+              {
+                "fileId": "file-2",
+                "name": "workspace impact follows transitive consumers, terminates cycles and falls back for uncertain ownership",
+                "outcome": "passed",
+                "terminalSequences": [37]
+              },
+              {
+                "fileId": "file-2",
+                "name": "Git scopes committed, staged, unstaged, untracked and renamed files without running filters",
+                "outcome": "passed",
+                "terminalSequences": [38]
+              },
+              {
+                "fileId": "file-2",
+                "name": "Git selection falls back for missing history, root changes, incomplete graphs and tracked excluded content",
+                "outcome": "passed",
+                "terminalSequences": [39]
+              },
+              {
+                "fileId": "file-2",
+                "name": "worktrees have separate identities and metadata changes during validation invalidate pass",
+                "outcome": "passed",
+                "terminalSequences": [40]
+              },
+              {
+                "fileId": "file-2",
+                "name": "unresolved index stages and project-local Git executables cannot narrow or execute project code",
+                "outcome": "passed",
+                "terminalSequences": [41]
+              },
+              {
+                "fileId": "file-2",
+                "name": "CLI and MCP share startup-selected Git scope and tool calls cannot change the base",
+                "outcome": "passed",
+                "terminalSequences": [42]
+              },
+              {
+                "fileId": "file-3",
+                "name": "impact metrics reconcile retained, omitted, changed and incomplete failures without dropping observations",
+                "outcome": "passed",
+                "terminalSequences": [43]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native impact measurement retains a transitive assertion failure and exposes a misdeclared graph",
+                "outcome": "passed",
+                "terminalSequences": [44]
+              },
+              {
+                "fileId": "file-3",
+                "name": "impact snapshots account for each paired observation, assertion identity and frozen case",
+                "outcome": "passed",
+                "terminalSequences": [45]
+              }
+            ]
+          }
+        },
+        "foundationRequirementsSha256": "1448209046ad142110704b2a6bbb89e0bb1cebf10a097f0337f034910c48f2fb"
+      },
+      "foundationEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 45,
+        "required": 18,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 45,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "62f325431ec3d2087b83f40b9babed98ec3eb8485ece21bbc56e9d3ecf9c9c0d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "62f325431ec3d2087b83f40b9babed98ec3eb8485ece21bbc56e9d3ecf9c9c0d"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "d4378d44678ca88bee5567409a63d5ad757e6943a021de3e3d8d6fda2d79f5cd"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "d4378d44678ca88bee5567409a63d5ad757e6943a021de3e3d8d6fda2d79f5cd"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "cfa63eb1299fc65e14c2221bac990c899b3ac53f9ae5e6e5831d6ce8f9b5f35f"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "cfa63eb1299fc65e14c2221bac990c899b3ac53f9ae5e6e5831d6ce8f9b5f35f"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "captured imports expose an undeclared consumer and full validation retains its native failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1415.592375,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "a declared transitive graph retains affected consumers and omits the independent project",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 135.6145,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "captured file edges follow reexports and unowned bridges without treating a project prefix as ownership",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 24.703458,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "literal shared JSON reads reconcile the physical producer for named synchronous and asynchronous readers",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 29.636166,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "dynamic-import",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 97.522625,
+              "required": false
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "require-alias",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 76.37475,
+              "required": false
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "shadow-require",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 90.608792,
+              "required": false
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "computed-loader",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 91.780125,
+              "required": false
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "reflected-loader",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 83.384042,
+              "required": false
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-1",
+              "name": "create-require",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 84.849667,
+              "required": false
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-1",
+              "name": "native-worker",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 77.774083,
+              "required": false
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-1",
+              "name": "unselected-builtin",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 81.515625,
+              "required": false
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-1",
+              "name": "mandatory-builtin-prefix",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 88.716083,
+              "required": false
+            },
+            {
+              "sequence": 14,
+              "fileId": "file-1",
+              "name": "builtin-prefix",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 83.995667,
+              "required": false
+            },
+            {
+              "sequence": 15,
+              "fileId": "file-1",
+              "name": "bare-package",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 83.083167,
+              "required": false
+            },
+            {
+              "sequence": 16,
+              "fileId": "file-1",
+              "name": "package-alias",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 81.890666,
+              "required": false
+            },
+            {
+              "sequence": 17,
+              "fileId": "file-1",
+              "name": "extensionless",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 81.942625,
+              "required": false
+            },
+            {
+              "sequence": 18,
+              "fileId": "file-1",
+              "name": "escaping",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 81.228542,
+              "required": false
+            },
+            {
+              "sequence": 19,
+              "fileId": "file-1",
+              "name": "encoded-path",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 80.078541,
+              "required": false
+            },
+            {
+              "sequence": 20,
+              "fileId": "file-1",
+              "name": "query-path",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 82.06675,
+              "required": false
+            },
+            {
+              "sequence": 21,
+              "fileId": "file-1",
+              "name": "missing-path",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 79.763333,
+              "required": false
+            },
+            {
+              "sequence": 22,
+              "fileId": "file-1",
+              "name": "namespace-fs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 81.178625,
+              "required": false
+            },
+            {
+              "sequence": 23,
+              "fileId": "file-1",
+              "name": "fs-loader-require",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 84.618583,
+              "required": false
+            },
+            {
+              "sequence": 24,
+              "fileId": "file-1",
+              "name": "reader-alias",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 81.833167,
+              "required": false
+            },
+            {
+              "sequence": 25,
+              "fileId": "file-1",
+              "name": "shadow-reader",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 80.691375,
+              "required": false
+            },
+            {
+              "sequence": 26,
+              "fileId": "file-1",
+              "name": "shadow-url",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 77.301833,
+              "required": false
+            },
+            {
+              "sequence": 27,
+              "fileId": "file-1",
+              "name": "indirect-url",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 75.585,
+              "required": false
+            },
+            {
+              "sequence": 28,
+              "fileId": "file-1",
+              "name": "dynamic-resource",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 84.383542,
+              "required": false
+            },
+            {
+              "sequence": 29,
+              "fileId": "file-1",
+              "name": "mutated-url",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 84.035792,
+              "required": false
+            },
+            {
+              "sequence": 30,
+              "fileId": "file-1",
+              "name": "broken-syntax",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 77.795166,
+              "required": false
+            },
+            {
+              "sequence": 31,
+              "fileId": "file-1",
+              "name": "compiler-reference",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 85.980083,
+              "required": false
+            },
+            {
+              "sequence": 32,
+              "fileId": "file-1",
+              "name": "unknown source and resource families retain the full shared engine plan",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2242.123583,
+              "required": true
+            },
+            {
+              "sequence": 33,
+              "fileId": "file-1",
+              "name": "literal dynamic imports and CommonJS exact imports expose a missing graph without executing source",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 28.134333,
+              "required": true
+            },
+            {
+              "sequence": 34,
+              "fileId": "file-1",
+              "name": "stale, excluded, empty, unsupported and exhausted import observations stay unknown",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 234.517,
+              "required": true
+            },
+            {
+              "sequence": 35,
+              "fileId": "file-1",
+              "name": "CommonJS module loaders retain full validation and its actual consumer assertion failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2493.197541,
+              "required": true
+            },
+            {
+              "sequence": 36,
+              "fileId": "file-1",
+              "name": "compiler-dependent syntax in JavaScript retains full validation while ordinary keyword spellings remain resolved",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4041.623625,
+              "required": true
+            },
+            {
+              "sequence": 37,
+              "fileId": "file-2",
+              "name": "workspace impact follows transitive consumers, terminates cycles and falls back for uncertain ownership",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.735959,
+              "required": true
+            },
+            {
+              "sequence": 38,
+              "fileId": "file-2",
+              "name": "Git scopes committed, staged, unstaged, untracked and renamed files without running filters",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 969.396208,
+              "required": true
+            },
+            {
+              "sequence": 39,
+              "fileId": "file-2",
+              "name": "Git selection falls back for missing history, root changes, incomplete graphs and tracked excluded content",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 324.475625,
+              "required": true
+            },
+            {
+              "sequence": 40,
+              "fileId": "file-2",
+              "name": "worktrees have separate identities and metadata changes during validation invalidate pass",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 456.225,
+              "required": true
+            },
+            {
+              "sequence": 41,
+              "fileId": "file-2",
+              "name": "unresolved index stages and project-local Git executables cannot narrow or execute project code",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 176.883542,
+              "required": true
+            },
+            {
+              "sequence": 42,
+              "fileId": "file-2",
+              "name": "CLI and MCP share startup-selected Git scope and tool calls cannot change the base",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1375.081708,
+              "required": true
+            },
+            {
+              "sequence": 43,
+              "fileId": "file-3",
+              "name": "impact metrics reconcile retained, omitted, changed and incomplete failures without dropping observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 26.495958,
+              "required": true
+            },
+            {
+              "sequence": 44,
+              "fileId": "file-3",
+              "name": "native impact measurement retains a transitive assertion failure and exposes a misdeclared graph",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7505.930916,
+              "required": true
+            },
+            {
+              "sequence": 45,
+              "fileId": "file-3",
+              "name": "impact snapshots account for each paired observation, assertion identity and frozen case",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 29.758833,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "captured imports expose an undeclared consumer and full validation retains its native failure",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "a declared transitive graph retains affected consumers and omits the independent project",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "captured file edges follow reexports and unowned bridges without treating a project prefix as ownership",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "literal shared JSON reads reconcile the physical producer for named synchronous and asynchronous readers",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "unknown source and resource families retain the full shared engine plan",
+              "outcome": "passed",
+              "terminalSequences": [32]
+            },
+            {
+              "fileId": "file-1",
+              "name": "literal dynamic imports and CommonJS exact imports expose a missing graph without executing source",
+              "outcome": "passed",
+              "terminalSequences": [33]
+            },
+            {
+              "fileId": "file-1",
+              "name": "stale, excluded, empty, unsupported and exhausted import observations stay unknown",
+              "outcome": "passed",
+              "terminalSequences": [34]
+            },
+            {
+              "fileId": "file-1",
+              "name": "CommonJS module loaders retain full validation and its actual consumer assertion failure",
+              "outcome": "passed",
+              "terminalSequences": [35]
+            },
+            {
+              "fileId": "file-1",
+              "name": "compiler-dependent syntax in JavaScript retains full validation while ordinary keyword spellings remain resolved",
+              "outcome": "passed",
+              "terminalSequences": [36]
+            },
+            {
+              "fileId": "file-2",
+              "name": "workspace impact follows transitive consumers, terminates cycles and falls back for uncertain ownership",
+              "outcome": "passed",
+              "terminalSequences": [37]
+            },
+            {
+              "fileId": "file-2",
+              "name": "Git scopes committed, staged, unstaged, untracked and renamed files without running filters",
+              "outcome": "passed",
+              "terminalSequences": [38]
+            },
+            {
+              "fileId": "file-2",
+              "name": "Git selection falls back for missing history, root changes, incomplete graphs and tracked excluded content",
+              "outcome": "passed",
+              "terminalSequences": [39]
+            },
+            {
+              "fileId": "file-2",
+              "name": "worktrees have separate identities and metadata changes during validation invalidate pass",
+              "outcome": "passed",
+              "terminalSequences": [40]
+            },
+            {
+              "fileId": "file-2",
+              "name": "unresolved index stages and project-local Git executables cannot narrow or execute project code",
+              "outcome": "passed",
+              "terminalSequences": [41]
+            },
+            {
+              "fileId": "file-2",
+              "name": "CLI and MCP share startup-selected Git scope and tool calls cannot change the base",
+              "outcome": "passed",
+              "terminalSequences": [42]
+            },
+            {
+              "fileId": "file-3",
+              "name": "impact metrics reconcile retained, omitted, changed and incomplete failures without dropping observations",
+              "outcome": "passed",
+              "terminalSequences": [43]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native impact measurement retains a transitive assertion failure and exposes a misdeclared graph",
+              "outcome": "passed",
+              "terminalSequences": [44]
+            },
+            {
+              "fileId": "file-3",
+              "name": "impact snapshots account for each paired observation, assertion identity and frozen case",
+              "outcome": "passed",
+              "terminalSequences": [45]
+            }
+          ]
+        }
+      },
+      "foundationRequirementsSha256": "1448209046ad142110704b2a6bbb89e0bb1cebf10a097f0337f034910c48f2fb"
+    },
+    {
+      "family": "attempt",
+      "controller": "attempt-archives-runtime-v1",
+      "harnessSha256": "b9881da5882259f771e461940bd228a6f27491398386441db914c49b321eb32f",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "runtime": {
+        "slot": null,
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "27.0.0",
+        "osVersion": "Darwin Kernel Version 27.0.0: Tue Aug 11 21:06:40 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T6050",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": null,
+        "imageVersion": null,
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "bc721385d73f9ea447efdbd2b14569c1dba6472b08d4b31710e4e24228b8fb79",
+        "gitVersion": "git version 2.56.0",
+        "gitExecutableSha256": "40163333061f7223ecb604ed0f12988cfc8096d57ca8b1db006d410d4aeb700e",
+        "goVersion": "go1.27.1",
+        "goPlatform": "darwin",
+        "goArchitecture": "arm64",
+        "goExecutableSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598",
+        "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": null,
+      "sourceProfileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "cf271ef1f410f16ffeb51df7a921bfbd6f6225e243b92dc115b779a52635bcc1"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "cf271ef1f410f16ffeb51df7a921bfbd6f6225e243b92dc115b779a52635bcc1"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "attempt-archives broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2353.137,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "attempt-archives fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 938.95175,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "attempt-archives near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 495.209,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "attempt-archives prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 25.6615,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "attempt-archives stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 684.357042,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "attempt-archives empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 944.680916,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "attempt-archives privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4842.753,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "attempt-archives lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12412.68425,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "attempt-archives installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 64018.96225,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "attempt-archives broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "attempt-archives fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "attempt-archives near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "attempt-archives prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "attempt-archives stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "attempt-archives empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "attempt-archives privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "attempt-archives lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "attempt-archives installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "installedEvidence": {
+        "profile": "attempt-archives-whole-installed-v1",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "tarballSha256": "ac25d2241f0eeda7bb20d299cc3ce1d1c951405d767c2df06dc95bf86cafbba4",
+        "productionDependencyLockSha256": "dfa064b082a597a24b627bab57339631d334e012d98c05768e0057eb678da109",
+        "externalSdkDependencies": {
+          "@modelcontextprotocol/client": "2.3.1",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1",
+          "zod": "4.6.7",
+          "@modelcontextprotocol/core": "2.3.1"
+        },
+        "compiledEngine": {
+          "schemaVersion": 1,
+          "fileCount": 984,
+          "bytes": 16364330,
+          "treeSha256": "9d172aba4f68ba30739e7ab27830eedb071c1fcadf00bd9da7adf341855c006a",
+          "manifestSha256": "8a1b37c26d960a99bd1d566e0410c884b2b07d1ec45e219a3e2ef67bbb295f35",
+          "beforeAfterByteIdentitiesMatch": true,
+          "dependencyBytesCaptured": false,
+          "actualModuleLoadsTraced": false,
+          "producerSourceBuildVerified": false
+        },
+        "profileEvidence": {
+          "fileWorkerLimit": 1,
+          "requiredCaseWorkerLimit": 1,
+          "timeoutScope": "one fresh process per required named case",
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "cf271ef1f410f16ffeb51df7a921bfbd6f6225e243b92dc115b779a52635bcc1"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "cf271ef1f410f16ffeb51df7a921bfbd6f6225e243b92dc115b779a52635bcc1"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "attempt-archives broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2454.301459,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "attempt-archives fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 992.114958,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "attempt-archives near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 532.250291,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "attempt-archives prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 25.314208,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "attempt-archives stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 491.550542,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "attempt-archives empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1082.739125,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "attempt-archives privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4655.764167,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "attempt-archives lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 12458.445208,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "attempt-archives installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 562.675833,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "attempt-archives broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "attempt-archives fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "attempt-archives near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "attempt-archives prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "attempt-archives stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "attempt-archives empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "attempt-archives privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "attempt-archives lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-1",
+                "name": "attempt-archives installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              }
+            ]
+          }
+        },
+        "foundationEvidence": {
+          "fileWorkerLimit": 1,
+          "requiredCaseWorkerLimit": 1,
+          "timeoutScope": "one fresh process per required named case",
+          "passed": 45,
+          "required": 45,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 45,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "a3a0b73b655aa912850cfddf49a48f268449e50dfea0447005d74ad5b6f7960f"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "a3a0b73b655aa912850cfddf49a48f268449e50dfea0447005d74ad5b6f7960f"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-2",
+                "before": {
+                  "state": "present",
+                  "sha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-3",
+                "before": {
+                  "state": "present",
+                  "sha256": "a0049e47715a6b6fd13a4357d0f5a8e35b64e4ff3f7b468bf88b50722763e54d"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "a0049e47715a6b6fd13a4357d0f5a8e35b64e4ff3f7b468bf88b50722763e54d"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-4",
+                "before": {
+                  "state": "present",
+                  "sha256": "92e391821a8c91aa20cc86db89b732c4477a051e9a1b8cc2634512c7b115cb59"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "92e391821a8c91aa20cc86db89b732c4477a051e9a1b8cc2634512c7b115cb59"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-5",
+                "before": {
+                  "state": "present",
+                  "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-6",
+                "before": {
+                  "state": "present",
+                  "sha256": "b91c4e8100aa2e757a5be1a4c44104e3052c3115ca8e18b46dd28a488ace32d9"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "b91c4e8100aa2e757a5be1a4c44104e3052c3115ca8e18b46dd28a488ace32d9"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-7",
+                "before": {
+                  "state": "present",
+                  "sha256": "c1792ba1a787010981d22758c903ef23651c5fbcd51f362558aad47f36033cc9"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "c1792ba1a787010981d22758c903ef23651c5fbcd51f362558aad47f36033cc9"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "native invocation retains binary bytes and real process identities for successful and failed children in one ordered journal",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 190.748833,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "native invocation preserves failed spawn evidence without manufacturing a PID and refuses exhausted admission before starting project code",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 11.33025,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "native invocation leaves preaborted and invalid-bound calls unreached while retaining exact zero-output and exact-prefix controls",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 184.644667,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "native invocation distinguishes journal exhaustion from a smaller caller output cap and keeps each observed prefix on failure",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 277.48825,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "native invocation retains reached child bytes and identities across actual cancellation deadlines and observer failure",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1302.830917,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "native invocation closes ordinary descendants retaining output pipes after root exit without inventing a successful timeout",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 335.996375,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "native invocation respects mirror backpressure without dropping physical chunks and deadlines release a stalled drain",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1236.661458,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "native invocation retains mirror failures before and after native exit and bounds pending writes without removing caller listeners",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4980.255208,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "JVM invokers share one explicit native journal across quiet and observed calls and retain bytes rejected by strict decoding",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 276.09225,
+                "required": true
+              },
+              {
+                "sequence": 10,
+                "fileId": "file-1",
+                "name": "native invocation journal retains the reached physical prefix after its actual wrapper is killed before any final response",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 450.643875,
+                "required": true
+              },
+              {
+                "sequence": 11,
+                "fileId": "file-1",
+                "name": "native wrapper output adapter keeps binary evidence before parser decoding and preserves failed exit receipts",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 190.035542,
+                "required": true
+              },
+              {
+                "sequence": 12,
+                "fileId": "file-1",
+                "name": "native wrapper output adapter rejects invalid modes before admission and keeps reached prefixes on bounded failure",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 5236.219625,
+                "required": true
+              },
+              {
+                "sequence": 13,
+                "fileId": "file-1",
+                "name": "shipped native wrapper inventory awaits every migrated invocation and downstream collector without asynchronous predicate shortcuts",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 103.157375,
+                "required": true
+              },
+              {
+                "sequence": 14,
+                "fileId": "file-1",
+                "name": "native output receipt keeps physical exit codes separate from parser completion for zero nonzero and absent exits",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 5.654,
+                "required": true
+              },
+              {
+                "sequence": 15,
+                "fileId": "file-2",
+                "name": "native capture preserves physical valid partial invalid and changed-header buffers while strict replay remains strict",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 57.445584,
+                "required": true
+              },
+              {
+                "sequence": 16,
+                "fileId": "file-2",
+                "name": "native capture revalidates every held file and directory boundary and preserves replacement safety",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 12.613167,
+                "required": true
+              },
+              {
+                "sequence": 17,
+                "fileId": "file-2",
+                "name": "native receipt schemas recompute physical replay and reject every false declaration and lifecycle error",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 57.603375,
+                "required": true
+              },
+              {
+                "sequence": 18,
+                "fileId": "file-2",
+                "name": "native producer catalog matches exact shipped entrypoints and exempts only the two metadata-only identity paths",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 9.925542,
+                "required": true
+              },
+              {
+                "sequence": 19,
+                "fileId": "file-2",
+                "name": "native protected process channel records two actual child PIDs and strips exact context aliases without stripping near misses",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 251.17525,
+                "required": true
+              },
+              {
+                "sequence": 20,
+                "fileId": "file-2",
+                "name": "native context initialization failures stay failed across retries before any child executes",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 208.640916,
+                "required": true
+              },
+              {
+                "sequence": 21,
+                "fileId": "file-2",
+                "name": "native outer launch uses the engine-owned context after stripping operator and command aliases",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 285.449125,
+                "required": true
+              },
+              {
+                "sequence": 22,
+                "fileId": "file-2",
+                "name": "native cancelled outer wrappers retain reached raw prefixes without inventing completion after cleanup",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 444.477792,
+                "required": true
+              },
+              {
+                "sequence": 23,
+                "fileId": "file-2",
+                "name": "engine journals preserve actual original adapter success and failure while discovery and untrusted runs execute nothing",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 967.971541,
+                "required": true
+              },
+              {
+                "sequence": 24,
+                "fileId": "file-2",
+                "name": "engine wrapper journals are shared by native CLI and stateless MCP with startup-only trust and detailed receipts",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1674.230125,
+                "required": true
+              },
+              {
+                "sequence": 25,
+                "fileId": "file-2",
+                "name": "engine collector retains physical bytes on producer changes and simulated cleanup failure and rejects empty capture",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 477.994792,
+                "required": true
+              },
+              {
+                "sequence": 26,
+                "fileId": "file-2",
+                "name": "engine refuses a zero-call successful wrapper and rejects a passed report with an incomplete current journal",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1366.092959,
+                "required": true
+              },
+              {
+                "sequence": 27,
+                "fileId": "file-3",
+                "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 53.594292,
+                "required": true
+              },
+              {
+                "sequence": 28,
+                "fileId": "file-3",
+                "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 9.85625,
+                "required": true
+              },
+              {
+                "sequence": 29,
+                "fileId": "file-3",
+                "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 6.179417,
+                "required": true
+              },
+              {
+                "sequence": 30,
+                "fileId": "file-3",
+                "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4.373875,
+                "required": true
+              },
+              {
+                "sequence": 31,
+                "fileId": "file-4",
+                "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 50.859792,
+                "required": true
+              },
+              {
+                "sequence": 32,
+                "fileId": "file-4",
+                "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 49.874666,
+                "required": true
+              },
+              {
+                "sequence": 33,
+                "fileId": "file-4",
+                "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 50.655125,
+                "required": true
+              },
+              {
+                "sequence": 34,
+                "fileId": "file-4",
+                "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 143.823209,
+                "required": true
+              },
+              {
+                "sequence": 35,
+                "fileId": "file-4",
+                "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 50.139541,
+                "required": true
+              },
+              {
+                "sequence": 36,
+                "fileId": "file-5",
+                "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 289.513875,
+                "required": true
+              },
+              {
+                "sequence": 37,
+                "fileId": "file-5",
+                "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 921.898458,
+                "required": true
+              },
+              {
+                "sequence": 38,
+                "fileId": "file-5",
+                "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 89.567625,
+                "required": true
+              },
+              {
+                "sequence": 39,
+                "fileId": "file-5",
+                "name": "physical output invalid admission limits reject before a project command can execute",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1.59325,
+                "required": true
+              },
+              {
+                "sequence": 40,
+                "fileId": "file-6",
+                "name": "native validation retains physical command output while summary omits every byte archive",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 225.765875,
+                "required": true
+              },
+              {
+                "sequence": 41,
+                "fileId": "file-6",
+                "name": "offline API attempts retain each bounded JSON error and response with exact request/body bindings without credentials or summary disclosure",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 63.029417,
+                "required": true
+              },
+              {
+                "sequence": 42,
+                "fileId": "file-6",
+                "name": "offline API response archives refuse literal and JSON-escaped credentials while keeping a valid adjacent value",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 203.76625,
+                "required": true
+              },
+              {
+                "sequence": 43,
+                "fileId": "file-6",
+                "name": "offline API partial overflow aborted and unavailable attempts account for observed bytes without retaining an unchecked body",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 54.687625,
+                "required": true
+              },
+              {
+                "sequence": 44,
+                "fileId": "file-6",
+                "name": "retained model response archives reject omitted foreign reordered changed and noncanonical evidence independently",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 41.906333,
+                "required": true
+              },
+              {
+                "sequence": 45,
+                "fileId": "file-7",
+                "name": "native version and broken/fixed test commands retain physical output with exact two-case accounting",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2253.002541,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "native invocation retains binary bytes and real process identities for successful and failed children in one ordered journal",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native invocation preserves failed spawn evidence without manufacturing a PID and refuses exhausted admission before starting project code",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native invocation leaves preaborted and invalid-bound calls unreached while retaining exact zero-output and exact-prefix controls",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native invocation distinguishes journal exhaustion from a smaller caller output cap and keeps each observed prefix on failure",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native invocation retains reached child bytes and identities across actual cancellation deadlines and observer failure",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native invocation closes ordinary descendants retaining output pipes after root exit without inventing a successful timeout",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native invocation respects mirror backpressure without dropping physical chunks and deadlines release a stalled drain",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native invocation retains mirror failures before and after native exit and bounds pending writes without removing caller listeners",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-1",
+                "name": "JVM invokers share one explicit native journal across quiet and observed calls and retain bytes rejected by strict decoding",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native invocation journal retains the reached physical prefix after its actual wrapper is killed before any final response",
+                "outcome": "passed",
+                "terminalSequences": [10]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native wrapper output adapter keeps binary evidence before parser decoding and preserves failed exit receipts",
+                "outcome": "passed",
+                "terminalSequences": [11]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native wrapper output adapter rejects invalid modes before admission and keeps reached prefixes on bounded failure",
+                "outcome": "passed",
+                "terminalSequences": [12]
+              },
+              {
+                "fileId": "file-1",
+                "name": "shipped native wrapper inventory awaits every migrated invocation and downstream collector without asynchronous predicate shortcuts",
+                "outcome": "passed",
+                "terminalSequences": [13]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native output receipt keeps physical exit codes separate from parser completion for zero nonzero and absent exits",
+                "outcome": "passed",
+                "terminalSequences": [14]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native capture preserves physical valid partial invalid and changed-header buffers while strict replay remains strict",
+                "outcome": "passed",
+                "terminalSequences": [15]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native capture revalidates every held file and directory boundary and preserves replacement safety",
+                "outcome": "passed",
+                "terminalSequences": [16]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native receipt schemas recompute physical replay and reject every false declaration and lifecycle error",
+                "outcome": "passed",
+                "terminalSequences": [17]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native producer catalog matches exact shipped entrypoints and exempts only the two metadata-only identity paths",
+                "outcome": "passed",
+                "terminalSequences": [18]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native protected process channel records two actual child PIDs and strips exact context aliases without stripping near misses",
+                "outcome": "passed",
+                "terminalSequences": [19]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native context initialization failures stay failed across retries before any child executes",
+                "outcome": "passed",
+                "terminalSequences": [20]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native outer launch uses the engine-owned context after stripping operator and command aliases",
+                "outcome": "passed",
+                "terminalSequences": [21]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native cancelled outer wrappers retain reached raw prefixes without inventing completion after cleanup",
+                "outcome": "passed",
+                "terminalSequences": [22]
+              },
+              {
+                "fileId": "file-2",
+                "name": "engine journals preserve actual original adapter success and failure while discovery and untrusted runs execute nothing",
+                "outcome": "passed",
+                "terminalSequences": [23]
+              },
+              {
+                "fileId": "file-2",
+                "name": "engine wrapper journals are shared by native CLI and stateless MCP with startup-only trust and detailed receipts",
+                "outcome": "passed",
+                "terminalSequences": [24]
+              },
+              {
+                "fileId": "file-2",
+                "name": "engine collector retains physical bytes on producer changes and simulated cleanup failure and rejects empty capture",
+                "outcome": "passed",
+                "terminalSequences": [25]
+              },
+              {
+                "fileId": "file-2",
+                "name": "engine refuses a zero-call successful wrapper and rejects a passed report with an incomplete current journal",
+                "outcome": "passed",
+                "terminalSequences": [26]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+                "outcome": "passed",
+                "terminalSequences": [27]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+                "outcome": "passed",
+                "terminalSequences": [28]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+                "outcome": "passed",
+                "terminalSequences": [29]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+                "outcome": "passed",
+                "terminalSequences": [30]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+                "outcome": "passed",
+                "terminalSequences": [31]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+                "outcome": "passed",
+                "terminalSequences": [32]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+                "outcome": "passed",
+                "terminalSequences": [33]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+                "outcome": "passed",
+                "terminalSequences": [34]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+                "outcome": "passed",
+                "terminalSequences": [35]
+              },
+              {
+                "fileId": "file-5",
+                "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+                "outcome": "passed",
+                "terminalSequences": [36]
+              },
+              {
+                "fileId": "file-5",
+                "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+                "outcome": "passed",
+                "terminalSequences": [37]
+              },
+              {
+                "fileId": "file-5",
+                "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+                "outcome": "passed",
+                "terminalSequences": [38]
+              },
+              {
+                "fileId": "file-5",
+                "name": "physical output invalid admission limits reject before a project command can execute",
+                "outcome": "passed",
+                "terminalSequences": [39]
+              },
+              {
+                "fileId": "file-6",
+                "name": "native validation retains physical command output while summary omits every byte archive",
+                "outcome": "passed",
+                "terminalSequences": [40]
+              },
+              {
+                "fileId": "file-6",
+                "name": "offline API attempts retain each bounded JSON error and response with exact request/body bindings without credentials or summary disclosure",
+                "outcome": "passed",
+                "terminalSequences": [41]
+              },
+              {
+                "fileId": "file-6",
+                "name": "offline API response archives refuse literal and JSON-escaped credentials while keeping a valid adjacent value",
+                "outcome": "passed",
+                "terminalSequences": [42]
+              },
+              {
+                "fileId": "file-6",
+                "name": "offline API partial overflow aborted and unavailable attempts account for observed bytes without retaining an unchecked body",
+                "outcome": "passed",
+                "terminalSequences": [43]
+              },
+              {
+                "fileId": "file-6",
+                "name": "retained model response archives reject omitted foreign reordered changed and noncanonical evidence independently",
+                "outcome": "passed",
+                "terminalSequences": [44]
+              },
+              {
+                "fileId": "file-7",
+                "name": "native version and broken/fixed test commands retain physical output with exact two-case accounting",
+                "outcome": "passed",
+                "terminalSequences": [45]
+              }
+            ]
+          }
+        },
+        "foundationRequirementsSha256": "1747b6012cae6ad92860c93cb7cd9649daab691c8c2630afe1e0d346def59f44",
+        "foundationExclusions": []
+      },
+      "foundationEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 45,
+        "required": 45,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 45,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "a3a0b73b655aa912850cfddf49a48f268449e50dfea0447005d74ad5b6f7960f"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "a3a0b73b655aa912850cfddf49a48f268449e50dfea0447005d74ad5b6f7960f"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "a0049e47715a6b6fd13a4357d0f5a8e35b64e4ff3f7b468bf88b50722763e54d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "a0049e47715a6b6fd13a4357d0f5a8e35b64e4ff3f7b468bf88b50722763e54d"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-4",
+              "before": {
+                "state": "present",
+                "sha256": "92e391821a8c91aa20cc86db89b732c4477a051e9a1b8cc2634512c7b115cb59"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "92e391821a8c91aa20cc86db89b732c4477a051e9a1b8cc2634512c7b115cb59"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-5",
+              "before": {
+                "state": "present",
+                "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-6",
+              "before": {
+                "state": "present",
+                "sha256": "b91c4e8100aa2e757a5be1a4c44104e3052c3115ca8e18b46dd28a488ace32d9"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "b91c4e8100aa2e757a5be1a4c44104e3052c3115ca8e18b46dd28a488ace32d9"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-7",
+              "before": {
+                "state": "present",
+                "sha256": "c1792ba1a787010981d22758c903ef23651c5fbcd51f362558aad47f36033cc9"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "c1792ba1a787010981d22758c903ef23651c5fbcd51f362558aad47f36033cc9"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native invocation retains binary bytes and real process identities for successful and failed children in one ordered journal",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 181.167916,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native invocation preserves failed spawn evidence without manufacturing a PID and refuses exhausted admission before starting project code",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 11.408666,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native invocation leaves preaborted and invalid-bound calls unreached while retaining exact zero-output and exact-prefix controls",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 200.488792,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native invocation distinguishes journal exhaustion from a smaller caller output cap and keeps each observed prefix on failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 285.121709,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native invocation retains reached child bytes and identities across actual cancellation deadlines and observer failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1303.348416,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "native invocation closes ordinary descendants retaining output pipes after root exit without inventing a successful timeout",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 386.281834,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "native invocation respects mirror backpressure without dropping physical chunks and deadlines release a stalled drain",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1250.278916,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "native invocation retains mirror failures before and after native exit and bounds pending writes without removing caller listeners",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5000.342917,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "JVM invokers share one explicit native journal across quiet and observed calls and retain bytes rejected by strict decoding",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 281.714917,
+              "required": true
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-1",
+              "name": "native invocation journal retains the reached physical prefix after its actual wrapper is killed before any final response",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 451.672083,
+              "required": true
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-1",
+              "name": "native wrapper output adapter keeps binary evidence before parser decoding and preserves failed exit receipts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 187.016667,
+              "required": true
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-1",
+              "name": "native wrapper output adapter rejects invalid modes before admission and keeps reached prefixes on bounded failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5200.146375,
+              "required": true
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-1",
+              "name": "shipped native wrapper inventory awaits every migrated invocation and downstream collector without asynchronous predicate shortcuts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 100.67675,
+              "required": true
+            },
+            {
+              "sequence": 14,
+              "fileId": "file-1",
+              "name": "native output receipt keeps physical exit codes separate from parser completion for zero nonzero and absent exits",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2.459166,
+              "required": true
+            },
+            {
+              "sequence": 15,
+              "fileId": "file-2",
+              "name": "native capture preserves physical valid partial invalid and changed-header buffers while strict replay remains strict",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 63.864667,
+              "required": true
+            },
+            {
+              "sequence": 16,
+              "fileId": "file-2",
+              "name": "native capture revalidates every held file and directory boundary and preserves replacement safety",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 16.0465,
+              "required": true
+            },
+            {
+              "sequence": 17,
+              "fileId": "file-2",
+              "name": "native receipt schemas recompute physical replay and reject every false declaration and lifecycle error",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 56.125666,
+              "required": true
+            },
+            {
+              "sequence": 18,
+              "fileId": "file-2",
+              "name": "native producer catalog matches exact shipped entrypoints and exempts only the two metadata-only identity paths",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6.748542,
+              "required": true
+            },
+            {
+              "sequence": 19,
+              "fileId": "file-2",
+              "name": "native protected process channel records two actual child PIDs and strips exact context aliases without stripping near misses",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 237.222375,
+              "required": true
+            },
+            {
+              "sequence": 20,
+              "fileId": "file-2",
+              "name": "native context initialization failures stay failed across retries before any child executes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 221.059542,
+              "required": true
+            },
+            {
+              "sequence": 21,
+              "fileId": "file-2",
+              "name": "native outer launch uses the engine-owned context after stripping operator and command aliases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 285.288417,
+              "required": true
+            },
+            {
+              "sequence": 22,
+              "fileId": "file-2",
+              "name": "native cancelled outer wrappers retain reached raw prefixes without inventing completion after cleanup",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 472.876542,
+              "required": true
+            },
+            {
+              "sequence": 23,
+              "fileId": "file-2",
+              "name": "engine journals preserve actual original adapter success and failure while discovery and untrusted runs execute nothing",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1046.537292,
+              "required": true
+            },
+            {
+              "sequence": 24,
+              "fileId": "file-2",
+              "name": "engine wrapper journals are shared by native CLI and stateless MCP with startup-only trust and detailed receipts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1910.800625,
+              "required": true
+            },
+            {
+              "sequence": 25,
+              "fileId": "file-2",
+              "name": "engine collector retains physical bytes on producer changes and simulated cleanup failure and rejects empty capture",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 429.674917,
+              "required": true
+            },
+            {
+              "sequence": 26,
+              "fileId": "file-2",
+              "name": "engine refuses a zero-call successful wrapper and rejects a passed report with an incomplete current journal",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1070.915583,
+              "required": true
+            },
+            {
+              "sequence": 27,
+              "fileId": "file-3",
+              "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 54.997,
+              "required": true
+            },
+            {
+              "sequence": 28,
+              "fileId": "file-3",
+              "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9.650792,
+              "required": true
+            },
+            {
+              "sequence": 29,
+              "fileId": "file-3",
+              "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5.558667,
+              "required": true
+            },
+            {
+              "sequence": 30,
+              "fileId": "file-3",
+              "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3.965875,
+              "required": true
+            },
+            {
+              "sequence": 31,
+              "fileId": "file-4",
+              "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 52.202458,
+              "required": true
+            },
+            {
+              "sequence": 32,
+              "fileId": "file-4",
+              "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 55.833,
+              "required": true
+            },
+            {
+              "sequence": 33,
+              "fileId": "file-4",
+              "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 51.89675,
+              "required": true
+            },
+            {
+              "sequence": 34,
+              "fileId": "file-4",
+              "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 142.586,
+              "required": true
+            },
+            {
+              "sequence": 35,
+              "fileId": "file-4",
+              "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 49.706791,
+              "required": true
+            },
+            {
+              "sequence": 36,
+              "fileId": "file-5",
+              "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 296.076667,
+              "required": true
+            },
+            {
+              "sequence": 37,
+              "fileId": "file-5",
+              "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 920.912083,
+              "required": true
+            },
+            {
+              "sequence": 38,
+              "fileId": "file-5",
+              "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 102.024542,
+              "required": true
+            },
+            {
+              "sequence": 39,
+              "fileId": "file-5",
+              "name": "physical output invalid admission limits reject before a project command can execute",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.767541,
+              "required": true
+            },
+            {
+              "sequence": 40,
+              "fileId": "file-6",
+              "name": "native validation retains physical command output while summary omits every byte archive",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 208.622334,
+              "required": true
+            },
+            {
+              "sequence": 41,
+              "fileId": "file-6",
+              "name": "offline API attempts retain each bounded JSON error and response with exact request/body bindings without credentials or summary disclosure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 57.970583,
+              "required": true
+            },
+            {
+              "sequence": 42,
+              "fileId": "file-6",
+              "name": "offline API response archives refuse literal and JSON-escaped credentials while keeping a valid adjacent value",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 195.622125,
+              "required": true
+            },
+            {
+              "sequence": 43,
+              "fileId": "file-6",
+              "name": "offline API partial overflow aborted and unavailable attempts account for observed bytes without retaining an unchecked body",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 57.391666,
+              "required": true
+            },
+            {
+              "sequence": 44,
+              "fileId": "file-6",
+              "name": "retained model response archives reject omitted foreign reordered changed and noncanonical evidence independently",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 41.792333,
+              "required": true
+            },
+            {
+              "sequence": 45,
+              "fileId": "file-7",
+              "name": "native version and broken/fixed test commands retain physical output with exact two-case accounting",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1971.766042,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native invocation retains binary bytes and real process identities for successful and failed children in one ordered journal",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native invocation preserves failed spawn evidence without manufacturing a PID and refuses exhausted admission before starting project code",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native invocation leaves preaborted and invalid-bound calls unreached while retaining exact zero-output and exact-prefix controls",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native invocation distinguishes journal exhaustion from a smaller caller output cap and keeps each observed prefix on failure",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native invocation retains reached child bytes and identities across actual cancellation deadlines and observer failure",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native invocation closes ordinary descendants retaining output pipes after root exit without inventing a successful timeout",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native invocation respects mirror backpressure without dropping physical chunks and deadlines release a stalled drain",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native invocation retains mirror failures before and after native exit and bounds pending writes without removing caller listeners",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "JVM invokers share one explicit native journal across quiet and observed calls and retain bytes rejected by strict decoding",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native invocation journal retains the reached physical prefix after its actual wrapper is killed before any final response",
+              "outcome": "passed",
+              "terminalSequences": [10]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native wrapper output adapter keeps binary evidence before parser decoding and preserves failed exit receipts",
+              "outcome": "passed",
+              "terminalSequences": [11]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native wrapper output adapter rejects invalid modes before admission and keeps reached prefixes on bounded failure",
+              "outcome": "passed",
+              "terminalSequences": [12]
+            },
+            {
+              "fileId": "file-1",
+              "name": "shipped native wrapper inventory awaits every migrated invocation and downstream collector without asynchronous predicate shortcuts",
+              "outcome": "passed",
+              "terminalSequences": [13]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native output receipt keeps physical exit codes separate from parser completion for zero nonzero and absent exits",
+              "outcome": "passed",
+              "terminalSequences": [14]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native capture preserves physical valid partial invalid and changed-header buffers while strict replay remains strict",
+              "outcome": "passed",
+              "terminalSequences": [15]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native capture revalidates every held file and directory boundary and preserves replacement safety",
+              "outcome": "passed",
+              "terminalSequences": [16]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native receipt schemas recompute physical replay and reject every false declaration and lifecycle error",
+              "outcome": "passed",
+              "terminalSequences": [17]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native producer catalog matches exact shipped entrypoints and exempts only the two metadata-only identity paths",
+              "outcome": "passed",
+              "terminalSequences": [18]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native protected process channel records two actual child PIDs and strips exact context aliases without stripping near misses",
+              "outcome": "passed",
+              "terminalSequences": [19]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native context initialization failures stay failed across retries before any child executes",
+              "outcome": "passed",
+              "terminalSequences": [20]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native outer launch uses the engine-owned context after stripping operator and command aliases",
+              "outcome": "passed",
+              "terminalSequences": [21]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native cancelled outer wrappers retain reached raw prefixes without inventing completion after cleanup",
+              "outcome": "passed",
+              "terminalSequences": [22]
+            },
+            {
+              "fileId": "file-2",
+              "name": "engine journals preserve actual original adapter success and failure while discovery and untrusted runs execute nothing",
+              "outcome": "passed",
+              "terminalSequences": [23]
+            },
+            {
+              "fileId": "file-2",
+              "name": "engine wrapper journals are shared by native CLI and stateless MCP with startup-only trust and detailed receipts",
+              "outcome": "passed",
+              "terminalSequences": [24]
+            },
+            {
+              "fileId": "file-2",
+              "name": "engine collector retains physical bytes on producer changes and simulated cleanup failure and rejects empty capture",
+              "outcome": "passed",
+              "terminalSequences": [25]
+            },
+            {
+              "fileId": "file-2",
+              "name": "engine refuses a zero-call successful wrapper and rejects a passed report with an incomplete current journal",
+              "outcome": "passed",
+              "terminalSequences": [26]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+              "outcome": "passed",
+              "terminalSequences": [27]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+              "outcome": "passed",
+              "terminalSequences": [28]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+              "outcome": "passed",
+              "terminalSequences": [29]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+              "outcome": "passed",
+              "terminalSequences": [30]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+              "outcome": "passed",
+              "terminalSequences": [31]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+              "outcome": "passed",
+              "terminalSequences": [32]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+              "outcome": "passed",
+              "terminalSequences": [33]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+              "outcome": "passed",
+              "terminalSequences": [34]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+              "outcome": "passed",
+              "terminalSequences": [35]
+            },
+            {
+              "fileId": "file-5",
+              "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+              "outcome": "passed",
+              "terminalSequences": [36]
+            },
+            {
+              "fileId": "file-5",
+              "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+              "outcome": "passed",
+              "terminalSequences": [37]
+            },
+            {
+              "fileId": "file-5",
+              "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+              "outcome": "passed",
+              "terminalSequences": [38]
+            },
+            {
+              "fileId": "file-5",
+              "name": "physical output invalid admission limits reject before a project command can execute",
+              "outcome": "passed",
+              "terminalSequences": [39]
+            },
+            {
+              "fileId": "file-6",
+              "name": "native validation retains physical command output while summary omits every byte archive",
+              "outcome": "passed",
+              "terminalSequences": [40]
+            },
+            {
+              "fileId": "file-6",
+              "name": "offline API attempts retain each bounded JSON error and response with exact request/body bindings without credentials or summary disclosure",
+              "outcome": "passed",
+              "terminalSequences": [41]
+            },
+            {
+              "fileId": "file-6",
+              "name": "offline API response archives refuse literal and JSON-escaped credentials while keeping a valid adjacent value",
+              "outcome": "passed",
+              "terminalSequences": [42]
+            },
+            {
+              "fileId": "file-6",
+              "name": "offline API partial overflow aborted and unavailable attempts account for observed bytes without retaining an unchecked body",
+              "outcome": "passed",
+              "terminalSequences": [43]
+            },
+            {
+              "fileId": "file-6",
+              "name": "retained model response archives reject omitted foreign reordered changed and noncanonical evidence independently",
+              "outcome": "passed",
+              "terminalSequences": [44]
+            },
+            {
+              "fileId": "file-7",
+              "name": "native version and broken/fixed test commands retain physical output with exact two-case accounting",
+              "outcome": "passed",
+              "terminalSequences": [45]
+            }
+          ]
+        }
+      },
+      "foundationRequirementsSha256": "1747b6012cae6ad92860c93cb7cd9649daab691c8c2630afe1e0d346def59f44",
+      "foundationExclusions": []
+    },
+    {
+      "family": "evaluation",
+      "controller": "independent-evaluation-runtime-v1",
+      "harnessSha256": "d6fc0b6ed0837456c43bbab02650c40a6f4c0b761417a5bc2a6da652066bf450",
+      "requirementsSha256": "f10b74ce0a3ff9f78d58bb87096a0e09aaa13d9d400415a8f6e6a7d8f59c4ea5",
+      "runtime": {
+        "slot": null,
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "27.0.0",
+        "osVersion": "Darwin Kernel Version 27.0.0: Tue Aug 11 21:06:40 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T6050",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": null,
+        "imageVersion": null,
+        "containerReference": null,
+        "containerImageId": null,
+        "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": null,
+      "sourceProfileEvidence": {
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 299.194584,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 269.679667,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 244.932417,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.656958,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 92.943834,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 187.838291,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1010.9515,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4681.664542,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13382.925583,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "independent-evaluation-protocol installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "installedEvidence": {
+        "profile": "independent-evaluation-protocol",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "tarballSha256": "825a97ceaf52335394d7ab4847751645e6723a7e2113d7ef996d731296996be9",
+        "productionDependencyLockSha256": "f17d4390483888e15be09b8f4152838b765fb4ebda08771ffcb65176034cd4fb",
+        "externalSdkClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.1",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1",
+          "zod": "4.6.7",
+          "@modelcontextprotocol/core": "2.3.1"
+        },
+        "compiledCodeSha256": "9d172aba4f68ba30739e7ab27830eedb071c1fcadf00bd9da7adf341855c006a",
+        "profileEvidence": {
+          "fileWorkerLimit": 1,
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "ffdee018aebc7a07652a9fbd1c59956d6696bab4a6f4164be15989fea7c65473"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 296.005125,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 255.001541,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 259.898375,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1.604625,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 93.6325,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 176.486541,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 984.151084,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4599.788875,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.219834,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-1",
+                "name": "independent-evaluation-protocol installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "sourceRequiredCallbacks": 27,
+  "freshInstalledRequiredCallbacks": 27,
+  "requiredCallbacksSkipped": 0,
+  "fullDevelopmentCheck": {
+    "sourceCommit": "b98d401cd56019b542521dd1caeb1250017c9be9",
+    "passed": 1507,
+    "failed": 0,
+    "skipped": 760,
+    "cancelled": 0,
+    "tests": 2267,
+    "elapsedSeconds": 787.518,
+    "scope": "Full check preceded the declaration-only inventory update; the engine stayed unchanged and all three whole controllers were refreshed afterward."
+  },
+  "implementationDeclarations": {
+    "implemented": 50,
+    "pending": 1,
+    "remainingProfile": "native-license-provenance"
+  },
+  "nativeMatrixQualified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
