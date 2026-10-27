@@ -540,12 +540,18 @@ async function candidateArchive(t: TestContext) {
     return selected;
   }
   const directory = await realpath(await fixture(t, {}));
-  const [packed] = JSON.parse(
-    packageTools.runAcceptanceNpm(
+  let output: string;
+  try {
+    output = packageTools.runAcceptanceNpm(
       ["pack", "--json", "--ignore-scripts", "--pack-destination", directory],
       { cwd: repository, encoding: "utf8", timeout: 60000 },
-    ),
-  );
+    );
+  } catch (error) {
+    if (error instanceof Error)
+      error.message = `Resource candidate npm pack: ${error.message}`;
+    throw error;
+  }
+  const [packed] = JSON.parse(output);
   assert.ok(
     packed.files.some(
       (file: { path: string }) => file.path === "dist/src/index.js",

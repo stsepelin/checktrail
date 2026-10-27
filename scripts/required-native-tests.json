@@ -2955,6 +2955,26 @@
     {
       "file": "dist/test/process-tree.test.js",
       "name": "POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "cleanup retries only a transient snapshot timeout with fresh ownership evidence inside the original deadline"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "cleanup persistent unavailable or malformed snapshots cannot earn success or authorize descendant signals"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "process snapshots reject invalid observation budgets before invoking a host query"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "native POSIX cleanup obtains a fresh host snapshot after an injected timeout and closes only its original child"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "cleanup refuses late disappearance evidence and bounds failure recovery without promoting success"
     }
   ],
   "review-benchmark-multi": [

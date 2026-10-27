@@ -36,9 +36,15 @@ only an observed stopped or exited state counts as quiescence. Deeper children
 must physically exit before their waiting parents are killed. Stopped parents
 cannot reap zombies, so direct children are signalled before root termination,
 then disappearance of every observed identity is required under the same
-two-second cleanup deadline. Signal delivery, physical exit and reaping remain
+two-second cleanup deadline. A host-query timeout can be retried once using
+only the remaining deadline and a fresh complete identity observation. Each
+query remains bounded by one second; permanent, malformed and expired evidence
+cannot become a successful cleanup. After failure, the existing best-effort recovery uses one separate bounded
+identity query of at most one second, still attempts to release safely identified
+family members and preserves the original incomplete outcome.
+Signal delivery, physical exit and reaping remain
 separate observations. A
-surviving or unreadable observed identity, snapshot error or
+surviving or unreadable observed identity, unrecovered snapshot error or
 changed process group produces `PROCESS_TREE_CLEANUP_UNAVAILABLE`; the runner
 still attempts to terminate the observed owned family and never promotes that
 cleanup failure into a passing check.
@@ -53,7 +59,7 @@ discovery and quiescence, pre-signal, physical-exit and final-reaping observatio
 select only the captured owned PIDs. Selections are copied before any asynchronous
 read and divided into bounded native queries. Empty, duplicate, oversized or
 unsafe selections and foreign result rows are refused. Recovery still attempts
-a full snapshot. A final snapshot is unnecessary when no descendants were
+one separately bounded full snapshot after failure. A final snapshot is unnecessary when no descendants were
 observed. The snapshot and cleanup deadlines are unchanged. Unrelated sibling tasks are not selected. Unknown macOS `?` status is retained as running/unknown; it never
 proves quiescence. Linux start identity comes from `/proc/PID/stat`; macOS uses the fixed
 `/bin/ps` PID, parent, group, status and start-time columns without command lines or

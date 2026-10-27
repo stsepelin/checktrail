@@ -16,6 +16,11 @@ const exclusiveFullSuiteFiles = Object.freeze([
   "gate-javascript-extensions.test.js",
   "gate-tasks-matrix.test.js",
   "gate-resource-release-readiness.test.js",
+  "gate-go-extensions.test.js",
+  "go-matrix.test.js",
+  "process-tree.test.js",
+  "review-json-probe.test.js",
+  "review-probe.test.js",
 ]);
 function isExclusiveFullSuiteFile(file, directory) {
   return exclusiveFullSuiteFiles.some(
