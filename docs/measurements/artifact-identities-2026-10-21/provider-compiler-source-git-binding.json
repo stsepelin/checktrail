@@ -164,7 +164,9 @@
           "bytes": 406409,
           "sha256": "58b3770b2c2216eaa856c18464dcac90bcb8547764e40ef660ef3b0f19cd43d0",
           "gitBlobSha1": "6ba9ff6fd6afc9736c41c5ec2c3bfd1aa12a0f1b",
-          "producerBuildReproduced": false
+          "producerBuildReproduced": true,
+          "producerBuildEvidence": "provider-compiler-timezone-rebuilds.json",
+          "compilerSdkAndBootstrapChainClosed": false
         },
         {
           "path": "misc/chrome/gophertool/gopher.png",
@@ -6281,7 +6283,9 @@
           "bytes": 408125,
           "sha256": "8f55634d05f8bca1f7bc7c69c5933428c69357e0bdf565e5ba224e3f88ff12e8",
           "gitBlobSha1": "3e781165ca055c52b1df8576e910c263bb77e91d",
-          "producerBuildReproduced": false
+          "producerBuildReproduced": true,
+          "producerBuildEvidence": "provider-compiler-timezone-rebuilds.json",
+          "compilerSdkAndBootstrapChainClosed": false
         },
         {
           "path": "misc/chrome/gophertool/gopher.png",
@@ -12311,5 +12315,6 @@
   "gateAComplete": false,
   "qualityAssessed": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "copiedPayloadFollowUpEvidence": "provider-compiler-timezone-rebuilds.json"
 }

@@ -871,5 +871,6 @@
   "fieldEvaluationExecuted": false,
   "sourceGitAttributionEvidence": "provider-compiler-source-git-binding.json",
   "copiedPayloadProducerBuildClosureVerified": false,
-  "completeArchiveEqualityDoesNotRebuildCopiedInputs": true
+  "completeArchiveEqualityDoesNotRebuildCopiedInputs": true,
+  "copiedTimezonePayloadRebuildEvidence": "provider-compiler-timezone-rebuilds.json"
 }

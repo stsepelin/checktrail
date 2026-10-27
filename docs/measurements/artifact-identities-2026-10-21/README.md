@@ -120,3 +120,10 @@ objects and the pinned release mode/exclusion policy. Its payload categories
 partition each complete archive and retain opaque-byte follow-up candidates.
 This is source attribution: copied object files, archives, generated text and
 the bootstrap compiler still require their own producer-build and notice closure.
+
+The [time-zone copied-payload observation](provider-compiler-timezone-rebuilds.json)
+reconstructs both selected SDK time-zone archives from their pinned IANA source
+releases and Go packager source. A valid historical-offset edit changes the
+archive, and exact source restoration reproduces the original bytes. This closes
+that reconstruction step only; source-release signature verification and the
+C compiler, SDK, Go packager and bootstrap producer chains remain open.
