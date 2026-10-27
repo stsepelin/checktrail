@@ -22,3 +22,6 @@ docs/measurements/artifact-identities-2026-10-21/scala-component-notices/d4db9eb
 
 # Preserve the selected historical font license and root declaration bytes.
 docs/measurements/artifact-identities-2026-10-21/scala-font-notices/*.txt -text -whitespace
+
+# Preserve exact declared JNI/native-source notices, including original byte ranges.
+docs/measurements/artifact-identities-2026-10-21/jline-native-notices/*.txt -text -whitespace

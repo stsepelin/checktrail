@@ -127,3 +127,12 @@ incomplete. A native macro-annotation control proves its compile-time body ran;
 a distinct ordinary annotation remains a valid near miss. This observation is
 a completeness check after compilation, not a barrier against compile-time code.
 The correction adds no supported extension profile and does not close Gate A.
+
+The [declared JLine native inputs](measurements/artifact-identities-2026-10-21/jline-native-source-bindings.json)
+bind seven native build/source files, all three OpenJDK JNI downloads named by
+the original Makefile, and their exact Git blobs. Original notices preserve the
+separate BSD, Apache and GPL-with-Classpath declarations rather than treating the
+root BSD license as coverage for every file. These are declared inputs: include
+ordering and macOS SDK overrides leave actual producer header selection unknown.
+No upstream build or native binary executed for this observation, and full build,
+container, component-notice and receipt-admission closure remains open.

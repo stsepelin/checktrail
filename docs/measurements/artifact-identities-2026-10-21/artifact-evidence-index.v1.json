@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 164,
+  "retainedReferences": 179,
   "files": [
     {
       "file": "README.md",
@@ -102,6 +102,66 @@
       "file": "fantomas.json",
       "bytes": 26654,
       "sha256": "b4b6b338f87ba17bfe533b14f21690774553da8cc7982686fc3c275b77a06a5b"
+    },
+    {
+      "file": "jline-native-notices/169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988.txt",
+      "bytes": 771,
+      "sha256": "169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988"
+    },
+    {
+      "file": "jline-native-notices/2a261ce0ee381e1216892e5104307960dbd96c641d71387fe723a5fa16044fa4.txt",
+      "bytes": 785,
+      "sha256": "2a261ce0ee381e1216892e5104307960dbd96c641d71387fe723a5fa16044fa4"
+    },
+    {
+      "file": "jline-native-notices/44e55d448e3324fa5b8f26b42556ee4a758aa27bbcb86babe32c144b5aa11ac0.txt",
+      "bytes": 1529,
+      "sha256": "44e55d448e3324fa5b8f26b42556ee4a758aa27bbcb86babe32c144b5aa11ac0"
+    },
+    {
+      "file": "jline-native-notices/4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726.txt",
+      "bytes": 19274,
+      "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726"
+    },
+    {
+      "file": "jline-native-notices/583264c98089cb8a380c3c2469437d067605eef03af54a414a7f288e5f66b34b.txt",
+      "bytes": 1212,
+      "sha256": "583264c98089cb8a380c3c2469437d067605eef03af54a414a7f288e5f66b34b"
+    },
+    {
+      "file": "jline-native-notices/8d38f441963edd57ba09f18e6714abd985ef70f9cd0feabd10f19afc88f85547.txt",
+      "bytes": 1212,
+      "sha256": "8d38f441963edd57ba09f18e6714abd985ef70f9cd0feabd10f19afc88f85547"
+    },
+    {
+      "file": "jline-native-notices/a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb.txt",
+      "bytes": 1522,
+      "sha256": "a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb"
+    },
+    {
+      "file": "jline-native-notices/a69bce275ba7a3570af6579cb0f55682cd75fedfcd49e0e8e9022270c447c916.txt",
+      "bytes": 2114,
+      "sha256": "a69bce275ba7a3570af6579cb0f55682cd75fedfcd49e0e8e9022270c447c916"
+    },
+    {
+      "file": "jline-native-notices/d45bda75b53fbc028e7ad05da8409104c758c4bbe50dd6a7a367f34184bb6837.txt",
+      "bytes": 405,
+      "sha256": "d45bda75b53fbc028e7ad05da8409104c758c4bbe50dd6a7a367f34184bb6837"
+    },
+    {
+      "file": "jline-native-notices/e78600e8d5bbd428ebeacf7ecb860937bc4b4c6255f524fd4f26f7bb48b3878a.txt",
+      "bytes": 1212,
+      "sha256": "e78600e8d5bbd428ebeacf7ecb860937bc4b4c6255f524fd4f26f7bb48b3878a"
+    },
+    {
+      "file": "jline-native-notices/f320211da4c193f34416646751dc347518ea6038c6260b473f267a91b239f4bb.txt",
+      "bytes": 11345,
+      "sha256": "f320211da4c193f34416646751dc347518ea6038c6260b473f267a91b239f4bb"
+    },
+    {
+      "file": "jline-native-source-bindings.json",
+      "bytes": 13226,
+      "sha256": "28970e155f0a3ac0670aa1a7d89d36ef2c48b391eb79d076160b2883033c2e56"
     },
     {
       "file": "nuget-integrity-tamper.txt",
@@ -500,8 +560,8 @@
     },
     {
       "file": "scala-component-inventory.json",
-      "bytes": 332925,
-      "sha256": "74ac7ee0672b5e6bb8f742e88ea8ef5921cf407d81838b9892691e1a81c348a2"
+      "bytes": 333294,
+      "sha256": "84dd823339ffc363da622914b1c9a96a02deb41ac1b99d9556c8c663784840b8"
     },
     {
       "file": "scala-component-notices/169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988.txt",
@@ -601,7 +661,7 @@
     {
       "file": "scala2.json",
       "bytes": 9712,
-      "sha256": "506a95730ae94eb13205e7e163e63ac7680d4aab4f795d103fd4854f38f1aedd"
+      "sha256": "f1e9daa3b483ded693652bb1f3664754939ab4a59b23e3dd6464603083d77638"
     },
     {
       "file": "sigstore-trusted-root.jsonl",
