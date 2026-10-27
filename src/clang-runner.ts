@@ -190,7 +190,17 @@ async function main() {
   }
 }
 
-main().catch(() => {
-  process.stderr.write("Clang evidence collection could not complete\n");
+main().catch((error: unknown) => {
+  const causeCode =
+    error instanceof Error && error.cause instanceof Error
+      ? (error.cause as NodeJS.ErrnoException).code
+      : undefined;
+  const context =
+    typeof causeCode === "string" && /^[A-Z][A-Z0-9_]{1,63}$/.test(causeCode)
+      ? ` (${causeCode})`
+      : "";
+  process.stderr.write(
+    `Clang evidence collection could not complete${context}\n`,
+  );
   process.exitCode = 2;
 });

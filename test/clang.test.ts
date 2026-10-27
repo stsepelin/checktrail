@@ -480,7 +480,7 @@ test(
           assert.equal(result.stdout, "");
           assert.match(
             result.stderr,
-            /Clang evidence collection could not complete/,
+            /Clang evidence collection could not complete \(NATIVE_OUTPUT_LIMIT\)/,
           );
         }
       }
