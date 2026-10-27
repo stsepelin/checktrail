@@ -308,6 +308,12 @@ worker. Both waves run after ordinary assertion failures, and their terminal
 counts must be combined. No callback, assertion or production cleanup deadline
 is omitted by this scheduling.
 
+The [development measurement](measurements/resource-release-readiness-2026-10-27.json)
+retains the complete source/fresh installed ledgers, paired guard controls and
+full development-check totals for the recorded code commit. Its macOS 27 run is
+unselected. The measured package predates the record itself; its hash does not
+identify a later archive containing this additional documentation.
+
 The `resource-release` CI matrix selects the frozen Linux/macOS Node slots and
 Windows slot. `resource-release-arm64` uses the pinned native Node container and
 an explicitly selected Go tree. Each collector observes its actual runtime and
