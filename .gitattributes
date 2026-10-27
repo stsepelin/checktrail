@@ -28,3 +28,4 @@ docs/measurements/artifact-identities-2026-10-21/jline-native-notices/*.txt -tex
 
 # Preserve original pinned provider packaging sources and toolchain notices.
 docs/measurements/artifact-identities-2026-10-21/provider-zip-inputs/*.txt -text -whitespace
+docs/measurements/artifact-identities-2026-10-21/provider-producer-inputs/** -text -whitespace

@@ -1,0 +1,23 @@
+2026-09-11T15:17:57.6308901Z ##[start-action display=Run actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c;id=__hashicorp_actions-go-build.__actions_setup-go_2]
+2026-09-11T15:17:57.6355469Z ##[group]Run actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c
+2026-09-11T15:17:57.6355929Z with:
+2026-09-11T15:17:57.6356663Z   go-version: 1.26.8
+2026-09-11T15:17:57.6357034Z   cache: false
+2026-09-11T15:17:57.6357373Z   check-latest: false
+2026-09-11T15:17:57.6359938Z   token: ***
+2026-09-11T15:17:57.6360235Z env:
+2026-09-11T15:17:57.6360738Z   PKG_NAME: terraform-provider-random
+2026-09-11T15:17:57.6361122Z   GOTOOLCHAIN: local
+2026-09-11T15:17:57.6361452Z   TMPDIR: /home/runner/work/_temp
+2026-09-11T15:17:57.6361984Z   RUN: /home/runner/work/_actions/hashicorp/actions-go-build/v1/scripts/gha run
+2026-09-11T15:17:57.6363096Z   RUN_CLI: env DEBUG=true /home/runner/work/_actions/hashicorp/actions-go-build/v1/scripts/gha run actions-go-build
+2026-09-11T15:17:57.6363737Z   CGO_ENABLED: 0
+2026-09-11T15:17:57.6364056Z   BASE_VERSION: 3.9.1
+2026-09-11T15:17:57.6364375Z   PRERELEASE_VERSION: 
+2026-09-11T15:17:57.6364707Z   METADATA_VERSION: 
+2026-09-11T15:17:57.6365011Z ##[endgroup]
+2026-09-11T15:17:57.7753433Z Setup go version spec 1.26.8
+2026-09-11T15:17:57.7764418Z Found in cache @ /opt/hostedtoolcache/go/1.26.8/x64
+2026-09-11T15:17:57.7766473Z Added go to the path
+2026-09-11T15:17:57.7769454Z Successfully set up Go version 1.26.8
+2026-09-11T15:17:58.8890562Z go version go1.26.8 linux/amd64

@@ -1,0 +1,21 @@
+2026-09-11T15:18:34.6560795Z ##[group]Run actions-go-build verify -verification-build-result /home/runner/work/_temp/actions-go-build/1.1.2/dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4/verification/7749e05889b1adce0fee388fbea55d4781d054343f4cc388e3daad9e2564f73d/cache/buildresult/terraform-provider-random/terraform-provider-random/clean_b59b1791 -json
+2026-09-11T15:18:34.6592470Z 2026/09/11 15:18:34 DEBUG: Resolving buildish "."
+2026-09-11T15:18:34.6593255Z 2026/09/11 15:18:34 DEBUG: dir exists: /home/runner/work/terraform-provider-random/terraform-provider-random
+2026-09-11T15:18:34.6594088Z 2026/09/11 15:18:34 Getting primary build result using config and source code from /home/runner/work/terraform-provider-random/terraform-provider-random
+2026-09-11T15:18:34.6709138Z 2026/09/11 15:18:34 Getting verification build result from "/home/runner/work/_temp/actions-go-build/1.1.2/dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4/verification/7749e05889b1adce0fee388fbea55d4781d054343f4cc388e3daad9e2564f73d/cache/buildresult/terraform-provider-random/terraform-provider-random/clean_b59b1791"
+2026-09-11T15:18:34.6711172Z 2026/09/11 15:18:34 DEBUG: beginning verification
+2026-09-11T15:18:34.6711551Z 2026/09/11 15:18:34 DEBUG: Getting primary build result
+2026-09-11T15:18:34.6712094Z 2026/09/11 15:18:34 DEBUG: primary build: Beginning getting result.
+2026-09-11T15:18:34.6712677Z 2026/09/11 15:18:34 DEBUG: primary build: Inspecting cache.
+2026-09-11T15:18:34.6714667Z 2026/09/11 15:18:34 DEBUG: primary build: Cache hit: /home/runner/work/_temp/actions-go-build/1.1.2/dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4/primary/7749e05889b1adce0fee388fbea55d4781d054343f4cc388e3daad9e2564f73d/cache/buildresult/terraform-provider-random/terraform-provider-random/clean_b59b1791
+2026-09-11T15:18:34.6716470Z 2026/09/11 15:18:34 primary build: Loaded build result from cache; SourceID: b59b1791a688fe2737b5b70ab05fdd0a4190190e; Dirty: false
+2026-09-11T15:18:34.6717188Z 2026/09/11 15:18:34 DEBUG: got primary build result: error: <nil>
+2026-09-11T15:18:34.6717731Z 2026/09/11 15:18:34 DEBUG: Getting verification build result
+2026-09-11T15:18:34.6718286Z 2026/09/11 15:18:34 DEBUG: got verification build result: error: <nil>
+2026-09-11T15:18:34.6718825Z 2026/09/11 15:18:34 DEBUG: Returning verification result.
+2026-09-11T15:18:34.6719599Z 2026/09/11 15:18:34 DEBUG: Comparing primary and verification versions of executable file: terraform-provider-random_v3.9.1_x5
+2026-09-11T15:18:34.6720714Z 2026/09/11 15:18:34 DEBUG: Comparing primary and verification versions of zip file: terraform-provider-random_3.9.1_linux_arm64.zip
+2026-09-11T15:18:34.6722068Z 2026/09/11 15:18:34 Writing GitHub Step Summary to /home/runner/work/_temp/_runner_file_commands/step_summary_c0def357-a43b-449c-a5be-b17432249f0b
+2026-09-11T15:18:34.6724801Z Group ending.
+2026-09-11T15:18:34.6725351Z ##[endgroup]
+2026-09-11T15:18:34.6781130Z ##[end-action id=__hashicorp_actions-go-build.__run_6;outcome=success;conclusion=success;duration_ms=38]
