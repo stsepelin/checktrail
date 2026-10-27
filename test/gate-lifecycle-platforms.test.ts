@@ -46,6 +46,7 @@ test(
   async (t) => {
     const { report, reached } = await validateLifecycleProject(t, {
       file: "quota ; original literal.test.js",
+      delayedReady: true,
     });
     assert.equal(report.outcome, "passed");
     assert.equal(report.sourceChanged, false);

@@ -51,7 +51,12 @@ export async function cleanupLifecycleIdentities(rows: ProcessIdentity[]) {
 }
 export async function lifecycleProject(
   t: TestContext,
-  options: { broken?: boolean; stale?: boolean; file?: string } = {},
+  options: {
+    broken?: boolean;
+    stale?: boolean;
+    file?: string;
+    delayedReady?: boolean;
+  } = {},
 ) {
   const control = await realpath(await fixture(t, {})),
     marker = path.join(control, "reached.json"),
@@ -71,6 +76,7 @@ test('original two enabled and one disabled quota',async()=>{
 const control=${JSON.stringify(control)},marker=${JSON.stringify(marker)},release=${JSON.stringify(release)};
 const children=[0,1].map(i=>spawn(process.execPath,['-e',${JSON.stringify(childBody)},control+'/child-'+i],{stdio:'ignore'}));
 for(let i=0;i<children.length;i++){for(;;){try{assert.equal(Number(await readFile(control+'/child-'+i,'utf8')),children[i].pid);break;}catch(error){if(error.code!=='ENOENT')throw error;}await delay(10);}children[i].unref();}
+${options.delayedReady ? "await delay(11000);" : ""}
 await writeFile(marker+'.partial',JSON.stringify({body:process.pid,driver:process.ppid,children:children.map(child=>child.pid)}));await rename(marker+'.partial',marker);
 for(;;){try{await readFile(release);break;}catch(error){if(error.code!=='ENOENT')throw error;}await delay(10);}
 ${options.stale ? "await appendFile(new URL('./quota.js',import.meta.url),'// Original source changed during execution.\\n');" : ""}
@@ -79,15 +85,18 @@ assert.equal(visible([{enabled:true},{enabled:true},{enabled:false}]),2,${JSON.s
 });\n`,
     }),
   );
-  const observe = async () =>
+  const observe = async (checkCompletion?: () => void) =>
     await lifecycleWait(async () => {
       try {
         return JSON.parse(await readFile(marker, "utf8")) as LifecycleReached;
       } catch (error) {
-        if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+          checkCompletion?.();
+          return;
+        }
         throw error;
       }
-    });
+    }, 30000);
   const identities = async (reached: LifecycleReached) => {
     const ids = [...reached.children, reached.body, reached.driver];
     assert.equal(new Set(ids).size, 4);
@@ -120,9 +129,55 @@ export async function lifecycleExecute<T>(
   const controller = new AbortController(),
     running = start(controller.signal);
   void running.catch(() => {});
+  let terminalFailure: Error | undefined;
+  const object = (value: unknown): Record<string, unknown> =>
+    value !== null && typeof value === "object" && !Array.isArray(value)
+      ? (value as Record<string, unknown>)
+      : {};
+  void running.then(
+    (value) => {
+      const envelope = object(value),
+        report = object(envelope.structuredContent ?? value);
+      const details = {
+        outcome:
+          typeof report.outcome === "string" ? report.outcome : "unknown",
+        isError: envelope.isError === true,
+        checks: Array.isArray(report.checks)
+          ? report.checks.map((value) => {
+              const check = object(value);
+              return {
+                status:
+                  typeof check.status === "string" ? check.status : "unknown",
+                reason:
+                  typeof check.reason === "string"
+                    ? check.reason.slice(0, 200)
+                    : null,
+                nativeErrorCodes: Array.isArray(check.processes)
+                  ? check.processes
+                      .map((value) => object(value).errorCode)
+                      .filter((value) => typeof value === "string")
+                  : [],
+              };
+            })
+          : [],
+      };
+      terminalFailure = Error(
+        "Original lifecycle execution completed before body readiness: " +
+          JSON.stringify(details),
+      );
+    },
+    (error: unknown) => {
+      terminalFailure = Error(
+        "Original lifecycle execution rejected before body readiness: " +
+          String(error instanceof Error ? error.message : error).slice(0, 240),
+      );
+    },
+  );
   let rows: ProcessIdentity[] = [];
   try {
-    const reached = await project.observe();
+    const reached = await project.observe(() => {
+      if (terminalFailure) throw terminalFailure;
+    });
     rows = await project.identities(reached);
     await project.continue();
     const value = await running;

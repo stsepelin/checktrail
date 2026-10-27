@@ -5983,6 +5983,10 @@
     {
       "file": "dist/test/runtime-installation-capture.test.js",
       "name": "source runtime admission binds retained installations to exact runtime engine harness and complete named cases"
+    },
+    {
+      "file": "dist/test/lifecycle-runtime-harness.test.js",
+      "name": "lifecycle readiness preserves early rejected and incomplete native outcomes before any body marker"
     }
   ],
   "laravel-cache-runtime-bindings": [

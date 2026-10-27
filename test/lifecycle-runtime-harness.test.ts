@@ -398,3 +398,37 @@ test("lifecycle foundation selection admits only the declared native platforms",
       /Unsupported lifecycle platform/,
     );
 });
+
+test(
+  "lifecycle readiness preserves early rejected and incomplete native outcomes before any body marker",
+  { timeout: 60000 },
+  async (t) => {
+    const { access } = await import("node:fs/promises");
+    const { validate } = await import("../src/engine.js");
+    const { lifecycleProject, lifecycleExecute } =
+      await import("./lifecycle-platforms-fixture.js");
+    for (const mode of ["untrusted", "empty"] as const) {
+      const project = await lifecycleProject(t);
+      if (mode === "empty")
+        await writeFile(path.join(project.root, project.file), "");
+      await assert.rejects(
+        lifecycleExecute(project, (signal) =>
+          validate(project.root, {
+            trusted: mode !== "untrusted",
+            timeoutMs: 15000,
+            signal,
+          }),
+        ),
+        mode === "untrusted"
+          ? /execution rejected before body readiness:.*operator trust/
+          : /execution completed before body readiness:.*incomplete.*inconclusive/,
+      );
+      for (const file of [
+        project.marker,
+        project.release,
+        ...[0, 1].map((i) => path.join(project.control, "child-" + i)),
+      ])
+        await assert.rejects(access(file), { code: "ENOENT" });
+    }
+  },
+);
