@@ -226,6 +226,15 @@ and job-kernel substitution controls, and the preserved direct-memory, CPU-field
 fixed-source and private-namespace guards. Its exact component bindings remain
 separate from subsequent source changes and final current-source qualification.
 
+The [observed CPU witness follow-up](measurements/windows-resource-cpu-witness-2026-10-27.json)
+records a fixture correction after the CPU-field-swap mutant survived a
+wall-clock-bounded loop. The target and both descendants now require measured
+user CPU work; the target also requires distinct user/system counters. All five
+paired controls pass on Node 22.23.2 and 22.23.3, both ordinarily and with three
+owned unrelated CPU workers. Production counters and deadlines are unchanged.
+This verifies those mutation witnesses; it does not qualify the complete runtime
+matrix or resolve the separate Linux installed-lifecycle failure.
+
 ## Prepared Windows workload measurement
 
 The operator-only `measureWindowsResourceSample` export in
