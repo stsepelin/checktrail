@@ -326,3 +326,16 @@ SDK and complete artifact/license closure remain unverified. Each collector
 observes its actual runtime and rejects a mismatched selected slot. An unselected development run qualifies no
 matrix slot. Final matrix and artifact/license closure remain open; these
 synthetic controls invoke no model or field evaluation and publish no package.
+
+The [CI repair measurement](measurements/resource-ci-repairs-2026-10-27.json)
+binds the current development source/fresh resource cohort, full check, paired
+resource/helper guards and POSIX source/fresh controls. The native Windows
+source/fresh cohort passed with the same compiled engine and finite harness
+identities. Its independent counter guards also passed. The retained ARM64
+observation verifies separate pinned compiler preparation in the original
+runtime image; it predates the later upgrade-fixture refactor and requires final
+harness requalification. The owned Linux teardown-sentinel correction has a
+failing unit regression and narrow negative controls. The separate native
+diagnostics did not reproduce the intermittent hosted cleanup/readiness failures,
+so those failures are not attributed to this correction. Final matrix and
+artifact/license closure remain open.
