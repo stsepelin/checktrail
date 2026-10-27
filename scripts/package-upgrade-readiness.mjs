@@ -179,6 +179,22 @@ export async function verifyPackageUpgrade(
         encoding: "utf8",
         timeout: 30_000,
       });
+    const readCliResult = (args, expectedStatus) => {
+      const result = spawnSync(process.execPath, [binary, ...args], {
+        cwd: installation,
+        encoding: "utf8",
+        timeout: 30000,
+        maxBuffer: 4 * 1048576,
+      });
+      assert.equal(result.error, undefined);
+      assert.equal(result.signal, null);
+      assert.equal(
+        result.status,
+        expectedStatus,
+        result.stdout + result.stderr,
+      );
+      return JSON.parse(result.stdout);
+    };
     const stages = [];
     let baselineReport;
     for (const [phase, tarball] of [
@@ -338,19 +354,10 @@ export async function verifyPackageUpgrade(
           JSON.parse(invoke(["init", "--root", project, "--write"])).status,
           "preserved",
         );
-        const doctor = spawnSync(
-          process.execPath,
-          [binary, "doctor", "--root", project],
-          { cwd: installation, encoding: "utf8", timeout: 30000 },
-        );
-        assert.equal(doctor.error, undefined);
-        assert.equal(doctor.signal, null);
-        assert.equal(
-          doctor.status,
+        const diagnosis = readCliResult(
+          ["doctor", "--root", project],
           process.platform === "win32" ? 2 : 0,
-          doctor.stdout + doctor.stderr,
         );
-        const diagnosis = JSON.parse(doctor.stdout);
         assert.equal(diagnosis.validationPerformed, false);
         assert.equal(diagnosis.projects, 1);
         assert.equal(diagnosis.checks, 1);
@@ -387,14 +394,13 @@ export async function verifyPackageUpgrade(
           path.join(project, "prior-report.json"),
           JSON.stringify(baselineReport),
         );
-        const sarif = JSON.parse(
-          invoke([
-            "export-sarif",
-            "--root",
-            project,
-            "--input",
-            "prior-report.json",
-          ]),
+        const sarif = readCliResult(
+          ["export-sarif", "--root", project, "--input", "prior-report.json"],
+          baselineReport.outcome === "passed"
+            ? 0
+            : baselineReport.outcome === "failed"
+              ? 1
+              : 2,
         );
         assert.equal(sarif.version, "2.1.0");
         assert.deepEqual(
