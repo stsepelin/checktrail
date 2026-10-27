@@ -49,5 +49,6 @@ and the compiled fixture dependencies.
 The existing Tasks runtime jobs invoke the controller without adding jobs.
 Qualification remains pending until the selected matrix supplies current source
 and installed receipts and the native language witnesses are reconciled. The
-consumer profile and Gate A remain pending; no review trial, model inference or
+consumer implementation is declared, while selected runtime qualification and Gate A
+remain pending; no review trial, model inference or
 review-quality claim follows from these development controls.

@@ -1,0 +1,1111 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26",
+  "historicalEvidence": true,
+  "scope": "Native Windows execution, physical output, kernel resource counters and private bootstrap workspace controls. Whole resource readiness and final runtime matrix remain open.",
+  "sourceCommit": "9ab6bca2887088eee6da305c7cfc6495f8e024ee",
+  "diagnosticCommit": "d4ba1b5f63017906e649cf69b60f239063ebe47b",
+  "diagnosticDiffScope": [".github/workflows/ci.yml"],
+  "run": "https://github.com/stsepelin/checktrail/actions/runs/40368658153",
+  "job": "https://github.com/stsepelin/checktrail/actions/runs/40368658153/job/121733131989",
+  "runtime": {
+    "node": "v22.23.3",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "selectedRuntimeSlotQualified": false,
+  "hostAttested": false,
+  "engine": {
+    "fileCount": 972,
+    "bytes": 16174829,
+    "treeSha256": "8fd284e0e8857e7713a9a4e98e8268b49764513bf3fd758951bca8193b2fa97b",
+    "manifestSha256": "ced14cf8956527ac8ecb4bab6bf40d725fc204d1d3db8dfad1115a9b55d590fb",
+    "beforeAfterByteIdentitiesMatch": true,
+    "dependencyBytesCaptured": false,
+    "actualModuleLoadsTraced": false,
+    "producerSourceBuildVerified": false
+  },
+  "source": {
+    "profiles": [
+      {
+        "profile": "windows-process",
+        "required": 19
+      },
+      {
+        "profile": "physical-process-output",
+        "required": 4
+      }
+    ],
+    "passed": 23,
+    "required": 23,
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 4096,
+      "terminalEventCount": 23,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "23c520f2fc6cc8a26f3d6ee66d05fd1ad9d57df642fd934897350fab7d9c0ce4"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "23c520f2fc6cc8a26f3d6ee66d05fd1ad9d57df642fd934897350fab7d9c0ce4"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-2",
+          "before": {
+            "state": "present",
+            "sha256": "a45e73cb20f14679effd2151f997700997fbe9e843a165041d688623ad1d5f35"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "a45e73cb20f14679effd2151f997700997fbe9e843a165041d688623ad1d5f35"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-3",
+          "before": {
+            "state": "present",
+            "sha256": "7be99529612d04c2b99a9e337f048924004cc028fc8a89a5a63518fda37b8fbf"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "7be99529612d04c2b99a9e337f048924004cc028fc8a89a5a63518fda37b8fbf"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-4",
+          "before": {
+            "state": "present",
+            "sha256": "29265bf352a4a7e13b1dd11b645a89f6107232cb2fe009266322e4cc02afb327"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "29265bf352a4a7e13b1dd11b645a89f6107232cb2fe009266322e4cc02afb327"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-5",
+          "before": {
+            "state": "present",
+            "sha256": "61dc1ffffdd128f7a3910e5b9631ffef5eb01ecedd5adf4c7c54a81e7e474541"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "61dc1ffffdd128f7a3910e5b9631ffef5eb01ecedd5adf4c7c54a81e7e474541"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-6",
+          "before": {
+            "state": "present",
+            "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 7.9215,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1.3324,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-2",
+          "name": "native Windows runs literal hostile arguments Unicode environment and exit status with confirmed job cleanup",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 9756.3221,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-2",
+          "name": "native Windows resolves exact executable paths spaces missing tools ambiguous PATH and refused wrappers without execution",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3401.4355,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-2",
+          "name": "native Windows cancellation kills multiple detached descendants preserves an unrelated sibling and removes owned temporary files",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2975.7048,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-2",
+          "name": "native Windows deadlines output zero exact overrun and preaborted calls cannot become successful validation",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 18919.7517,
+          "required": true
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-2",
+          "name": "native Windows shared engine CLI and MCP preserve failing skipped and trusted Node validation accounting",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 35349.2321,
+          "required": true
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-2",
+          "name": "native Windows normal root exit closes detached descendants and inherited output pipes before returning",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2949.9944,
+          "required": true
+        },
+        {
+          "sequence": 9,
+          "fileId": "file-2",
+          "name": "native Windows parent loss closes the private control pipe job termination and owned temporary directory cleanup",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2749.7738,
+          "required": true
+        },
+        {
+          "sequence": 10,
+          "fileId": "file-2",
+          "name": "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 651.2437,
+          "required": true
+        },
+        {
+          "sequence": 11,
+          "fileId": "file-2",
+          "name": "native Windows guardian job cleanup does not depend on exit of the still-living launcher",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 584.3886,
+          "required": true
+        },
+        {
+          "sequence": 12,
+          "fileId": "file-3",
+          "name": "Windows resource counters retain native CPU precision and direct working-set scope with valid zero and numeric boundaries",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 4.6368,
+          "required": true
+        },
+        {
+          "sequence": 13,
+          "fileId": "file-3",
+          "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1.2469,
+          "required": true
+        },
+        {
+          "sequence": 14,
+          "fileId": "file-4",
+          "name": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3453.3349,
+          "required": true
+        },
+        {
+          "sequence": 15,
+          "fileId": "file-4",
+          "name": "native Windows resource collection preserves a failed target exit and collects only after owned-job cleanup",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2967.5501,
+          "required": true
+        },
+        {
+          "sequence": 16,
+          "fileId": "file-4",
+          "name": "native Windows source integrity refuses changed fixed compiler bytes before project execution",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 932.7562,
+          "required": true
+        },
+        {
+          "sequence": 17,
+          "fileId": "file-4",
+          "name": "native Windows bootstrap protects a new workspace under a broadly readable temp parent before writing source or request data",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3852.9665,
+          "required": true
+        },
+        {
+          "sequence": 18,
+          "fileId": "file-5",
+          "name": "Windows process workspace establishes private access before fixed source or command data and removes its owned namespace",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 103.9691,
+          "required": true
+        },
+        {
+          "sequence": 19,
+          "fileId": "file-5",
+          "name": "Windows process workspace refuses private-access failure before every data write or process launch",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 102.6064,
+          "required": true
+        },
+        {
+          "sequence": 20,
+          "fileId": "file-6",
+          "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 5694.4054,
+          "required": true
+        },
+        {
+          "sequence": 21,
+          "fileId": "file-6",
+          "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 11374.6882,
+          "required": true
+        },
+        {
+          "sequence": 22,
+          "fileId": "file-6",
+          "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 102.7038,
+          "required": true
+        },
+        {
+          "sequence": 23,
+          "fileId": "file-6",
+          "name": "physical output invalid admission limits reject before a project command can execute",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 8.4253,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows runs literal hostile arguments Unicode environment and exit status with confirmed job cleanup",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows resolves exact executable paths spaces missing tools ambiguous PATH and refused wrappers without execution",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows cancellation kills multiple detached descendants preserves an unrelated sibling and removes owned temporary files",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows deadlines output zero exact overrun and preaborted calls cannot become successful validation",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows shared engine CLI and MCP preserve failing skipped and trusted Node validation accounting",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows normal root exit closes detached descendants and inherited output pipes before returning",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows parent loss closes the private control pipe job termination and owned temporary directory cleanup",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt",
+          "outcome": "passed",
+          "terminalSequences": [10]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows guardian job cleanup does not depend on exit of the still-living launcher",
+          "outcome": "passed",
+          "terminalSequences": [11]
+        },
+        {
+          "fileId": "file-3",
+          "name": "Windows resource counters retain native CPU precision and direct working-set scope with valid zero and numeric boundaries",
+          "outcome": "passed",
+          "terminalSequences": [12]
+        },
+        {
+          "fileId": "file-3",
+          "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters",
+          "outcome": "passed",
+          "terminalSequences": [13]
+        },
+        {
+          "fileId": "file-4",
+          "name": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+          "outcome": "passed",
+          "terminalSequences": [14]
+        },
+        {
+          "fileId": "file-4",
+          "name": "native Windows resource collection preserves a failed target exit and collects only after owned-job cleanup",
+          "outcome": "passed",
+          "terminalSequences": [15]
+        },
+        {
+          "fileId": "file-4",
+          "name": "native Windows source integrity refuses changed fixed compiler bytes before project execution",
+          "outcome": "passed",
+          "terminalSequences": [16]
+        },
+        {
+          "fileId": "file-5",
+          "name": "Windows process workspace establishes private access before fixed source or command data and removes its owned namespace",
+          "outcome": "passed",
+          "terminalSequences": [18]
+        },
+        {
+          "fileId": "file-5",
+          "name": "Windows process workspace refuses private-access failure before every data write or process launch",
+          "outcome": "passed",
+          "terminalSequences": [19]
+        },
+        {
+          "fileId": "file-4",
+          "name": "native Windows bootstrap protects a new workspace under a broadly readable temp parent before writing source or request data",
+          "outcome": "passed",
+          "terminalSequences": [17]
+        },
+        {
+          "fileId": "file-6",
+          "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+          "outcome": "passed",
+          "terminalSequences": [20]
+        },
+        {
+          "fileId": "file-6",
+          "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+          "outcome": "passed",
+          "terminalSequences": [21]
+        },
+        {
+          "fileId": "file-6",
+          "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+          "outcome": "passed",
+          "terminalSequences": [22]
+        },
+        {
+          "fileId": "file-6",
+          "name": "physical output invalid admission limits reject before a project command can execute",
+          "outcome": "passed",
+          "terminalSequences": [23]
+        }
+      ]
+    }
+  },
+  "freshInstallation": {
+    "profiles": [
+      {
+        "profile": "windows-process",
+        "required": 19
+      },
+      {
+        "profile": "physical-process-output",
+        "required": 4
+      }
+    ],
+    "passed": 23,
+    "required": 23,
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 4096,
+      "terminalEventCount": 23,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "23c520f2fc6cc8a26f3d6ee66d05fd1ad9d57df642fd934897350fab7d9c0ce4"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "23c520f2fc6cc8a26f3d6ee66d05fd1ad9d57df642fd934897350fab7d9c0ce4"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-2",
+          "before": {
+            "state": "present",
+            "sha256": "a45e73cb20f14679effd2151f997700997fbe9e843a165041d688623ad1d5f35"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "a45e73cb20f14679effd2151f997700997fbe9e843a165041d688623ad1d5f35"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-3",
+          "before": {
+            "state": "present",
+            "sha256": "7be99529612d04c2b99a9e337f048924004cc028fc8a89a5a63518fda37b8fbf"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "7be99529612d04c2b99a9e337f048924004cc028fc8a89a5a63518fda37b8fbf"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-4",
+          "before": {
+            "state": "present",
+            "sha256": "29265bf352a4a7e13b1dd11b645a89f6107232cb2fe009266322e4cc02afb327"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "29265bf352a4a7e13b1dd11b645a89f6107232cb2fe009266322e4cc02afb327"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-5",
+          "before": {
+            "state": "present",
+            "sha256": "61dc1ffffdd128f7a3910e5b9631ffef5eb01ecedd5adf4c7c54a81e7e474541"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "61dc1ffffdd128f7a3910e5b9631ffef5eb01ecedd5adf4c7c54a81e7e474541"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-6",
+          "before": {
+            "state": "present",
+            "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 6.387,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1.1477,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-2",
+          "name": "native Windows runs literal hostile arguments Unicode environment and exit status with confirmed job cleanup",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 5738.0654,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-2",
+          "name": "native Windows resolves exact executable paths spaces missing tools ambiguous PATH and refused wrappers without execution",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3395.2233,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-2",
+          "name": "native Windows cancellation kills multiple detached descendants preserves an unrelated sibling and removes owned temporary files",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2891.7503,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-2",
+          "name": "native Windows deadlines output zero exact overrun and preaborted calls cannot become successful validation",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 18721.5711,
+          "required": true
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-2",
+          "name": "native Windows shared engine CLI and MCP preserve failing skipped and trusted Node validation accounting",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 35337.4777,
+          "required": true
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-2",
+          "name": "native Windows normal root exit closes detached descendants and inherited output pipes before returning",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2900.683,
+          "required": true
+        },
+        {
+          "sequence": 9,
+          "fileId": "file-2",
+          "name": "native Windows parent loss closes the private control pipe job termination and owned temporary directory cleanup",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2746.1001,
+          "required": true
+        },
+        {
+          "sequence": 10,
+          "fileId": "file-2",
+          "name": "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 621.5212,
+          "required": true
+        },
+        {
+          "sequence": 11,
+          "fileId": "file-2",
+          "name": "native Windows guardian job cleanup does not depend on exit of the still-living launcher",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 631.6155,
+          "required": true
+        },
+        {
+          "sequence": 12,
+          "fileId": "file-3",
+          "name": "Windows resource counters retain native CPU precision and direct working-set scope with valid zero and numeric boundaries",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 4.7578,
+          "required": true
+        },
+        {
+          "sequence": 13,
+          "fileId": "file-3",
+          "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1.2465,
+          "required": true
+        },
+        {
+          "sequence": 14,
+          "fileId": "file-4",
+          "name": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3441.4767,
+          "required": true
+        },
+        {
+          "sequence": 15,
+          "fileId": "file-4",
+          "name": "native Windows resource collection preserves a failed target exit and collects only after owned-job cleanup",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2953.152,
+          "required": true
+        },
+        {
+          "sequence": 16,
+          "fileId": "file-4",
+          "name": "native Windows source integrity refuses changed fixed compiler bytes before project execution",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 639.8628,
+          "required": true
+        },
+        {
+          "sequence": 17,
+          "fileId": "file-4",
+          "name": "native Windows bootstrap protects a new workspace under a broadly readable temp parent before writing source or request data",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3867.2003,
+          "required": true
+        },
+        {
+          "sequence": 18,
+          "fileId": "file-5",
+          "name": "Windows process workspace establishes private access before fixed source or command data and removes its owned namespace",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 107.8846,
+          "required": true
+        },
+        {
+          "sequence": 19,
+          "fileId": "file-5",
+          "name": "Windows process workspace refuses private-access failure before every data write or process launch",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 105.1501,
+          "required": true
+        },
+        {
+          "sequence": 20,
+          "fileId": "file-6",
+          "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 5704.5357,
+          "required": true
+        },
+        {
+          "sequence": 21,
+          "fileId": "file-6",
+          "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 11412.9058,
+          "required": true
+        },
+        {
+          "sequence": 22,
+          "fileId": "file-6",
+          "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 103.2631,
+          "required": true
+        },
+        {
+          "sequence": 23,
+          "fileId": "file-6",
+          "name": "physical output invalid admission limits reject before a project command can execute",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 8.6722,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows runs literal hostile arguments Unicode environment and exit status with confirmed job cleanup",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows resolves exact executable paths spaces missing tools ambiguous PATH and refused wrappers without execution",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows cancellation kills multiple detached descendants preserves an unrelated sibling and removes owned temporary files",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows deadlines output zero exact overrun and preaborted calls cannot become successful validation",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows shared engine CLI and MCP preserve failing skipped and trusted Node validation accounting",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows normal root exit closes detached descendants and inherited output pipes before returning",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows parent loss closes the private control pipe job termination and owned temporary directory cleanup",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt",
+          "outcome": "passed",
+          "terminalSequences": [10]
+        },
+        {
+          "fileId": "file-2",
+          "name": "native Windows guardian job cleanup does not depend on exit of the still-living launcher",
+          "outcome": "passed",
+          "terminalSequences": [11]
+        },
+        {
+          "fileId": "file-3",
+          "name": "Windows resource counters retain native CPU precision and direct working-set scope with valid zero and numeric boundaries",
+          "outcome": "passed",
+          "terminalSequences": [12]
+        },
+        {
+          "fileId": "file-3",
+          "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters",
+          "outcome": "passed",
+          "terminalSequences": [13]
+        },
+        {
+          "fileId": "file-4",
+          "name": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+          "outcome": "passed",
+          "terminalSequences": [14]
+        },
+        {
+          "fileId": "file-4",
+          "name": "native Windows resource collection preserves a failed target exit and collects only after owned-job cleanup",
+          "outcome": "passed",
+          "terminalSequences": [15]
+        },
+        {
+          "fileId": "file-4",
+          "name": "native Windows source integrity refuses changed fixed compiler bytes before project execution",
+          "outcome": "passed",
+          "terminalSequences": [16]
+        },
+        {
+          "fileId": "file-5",
+          "name": "Windows process workspace establishes private access before fixed source or command data and removes its owned namespace",
+          "outcome": "passed",
+          "terminalSequences": [18]
+        },
+        {
+          "fileId": "file-5",
+          "name": "Windows process workspace refuses private-access failure before every data write or process launch",
+          "outcome": "passed",
+          "terminalSequences": [19]
+        },
+        {
+          "fileId": "file-4",
+          "name": "native Windows bootstrap protects a new workspace under a broadly readable temp parent before writing source or request data",
+          "outcome": "passed",
+          "terminalSequences": [17]
+        },
+        {
+          "fileId": "file-6",
+          "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+          "outcome": "passed",
+          "terminalSequences": [20]
+        },
+        {
+          "fileId": "file-6",
+          "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+          "outcome": "passed",
+          "terminalSequences": [21]
+        },
+        {
+          "fileId": "file-6",
+          "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+          "outcome": "passed",
+          "terminalSequences": [22]
+        },
+        {
+          "fileId": "file-6",
+          "name": "physical output invalid admission limits reject before a project command can execute",
+          "outcome": "passed",
+          "terminalSequences": [23]
+        }
+      ]
+    },
+    "tarballSha256": "9e3c653f944febad383fde0ea79272fe474550523d35bfcec95d66797aed8633",
+    "productionDependencyLockSha256": "642a89ee07138bd45a89fda93728ca5bb88ad0b088bc7e50c27e3b0b2082bbf2",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "harnessSha256": "b35a02a125d6cedbb1df3e72f12895af17cc70ea2972cfe9bccd515e8a998cd6",
+    "inputSources": [
+      [
+        "dist/test/windows-contract.test.js",
+        "23c520f2fc6cc8a26f3d6ee66d05fd1ad9d57df642fd934897350fab7d9c0ce4"
+      ],
+      [
+        "dist/test/windows-process.test.js",
+        "a45e73cb20f14679effd2151f997700997fbe9e843a165041d688623ad1d5f35"
+      ],
+      [
+        "dist/test/windows-resource.test.js",
+        "7be99529612d04c2b99a9e337f048924004cc028fc8a89a5a63518fda37b8fbf"
+      ],
+      [
+        "dist/test/windows-workspace.test.js",
+        "61dc1ffffdd128f7a3910e5b9631ffef5eb01ecedd5adf4c7c54a81e7e474541"
+      ],
+      [
+        "dist/test/windows-resource-native.test.js",
+        "29265bf352a4a7e13b1dd11b645a89f6107232cb2fe009266322e4cc02afb327"
+      ],
+      [
+        "dist/test/process-output.test.js",
+        "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+      ],
+      [
+        "dist/test/helpers.js",
+        "e870d22a40d31aedba5cec6d2a37d80cbef95a1ddea252dd55c798c28d0c3854"
+      ],
+      [
+        "dist/test/tool-fixture.js",
+        "3641ddeec687e3d73a067d8fa1d9d6b3e6b95f167b63bb477512f81d7437dc49"
+      ],
+      [
+        "package.json",
+        "718f9dabb95737c9ad8b2e4de385412d6a1e1c4e79cdc798e891a6aa62274a28"
+      ],
+      [
+        "package-lock.json",
+        "12c5f96efc2cf2654865a2a41ebb423e545858889cd8039139108f8e75788303"
+      ],
+      [
+        "scripts/required-native-tests.json",
+        "11a0c2368aecb674a91516a74b8087a56524fa0a6c3d3de099babb5fe45df1ab"
+      ],
+      [
+        "scripts/verify-windows-package.mjs",
+        "1a5fc279fd0cc1becd1b18894de5cceb8204d095d81c2061cff63b5c36c24742"
+      ],
+      [
+        "scripts/verify-required-native-tests.mjs",
+        "9098ebad4ab9b51eb6077b82a14eb172ac18d609549609ac81ef0c21c9259562"
+      ],
+      [
+        "scripts/required-test-evidence.mjs",
+        "280500552aa2bc8012c31b36ce514879b42ccc02273cd1ef5013e77334a06caf"
+      ],
+      [
+        "scripts/compiled-engine-evidence.mjs",
+        "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+      ],
+      [
+        "scripts/install-acceptance-package.mjs",
+        "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+      ]
+    ],
+    "harnessInputsUnchanged": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.1",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1",
+      "zod": "4.6.7",
+      "@modelcontextprotocol/core": "2.3.1"
+    }
+  },
+  "resourceGuards": {
+    "profile": "windows-job-resource-guards-v1",
+    "controls": [
+      {
+        "id": "direct-working-set-not-commit",
+        "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "b592ff17db3b84a9d3fb11723459de68f33f3a2e85d8e1ea439c301d62327e68"
+      },
+      {
+        "id": "separate-native-cpu-fields",
+        "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "f58436fc40b8e1e9958074a804d9724019c91f90bd66ec4a51d0e6bbc46cd551"
+      },
+      {
+        "id": "fixed-source-digest-before-project",
+        "callback": "native Windows source integrity refuses changed fixed compiler bytes before project execution",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "0fb37d3533628493ad1bcb2b22be64de22da1739e279dbc9ca15acf533b3fa5f"
+      }
+    ],
+    "sourceSha256": "e7577a812eae0fb38685f9a407ad3ee5f63a332b8e15aa84e8f30253623e36fd",
+    "callbackSha256": "29265bf352a4a7e13b1dd11b645a89f6107232cb2fe009266322e4cc02afb327",
+    "sourceRestored": true,
+    "callbacksUnchanged": true,
+    "complete": true,
+    "nativeQualificationRequired": true,
+    "inferenceInvoked": false
+  },
+  "workspaceGuard": {
+    "profile": "windows-workspace-guard-v1",
+    "callback": "native Windows bootstrap protects a new workspace under a broadly readable temp parent before writing source or request data",
+    "sourceSha256": "086933830276123e173dac9707d43faf0cd5f167b722fa52a852e29d2b0a6897",
+    "callbackSha256": "29265bf352a4a7e13b1dd11b645a89f6107232cb2fe009266322e4cc02afb327",
+    "mutantSha256": "914d54a741c1d156f265e2f45b35c625a5a1bb403dbc0e95372adf43b1944937",
+    "originalPassed": true,
+    "javascriptParsed": true,
+    "removedAccessGuardFailed": true,
+    "restoredPassed": true,
+    "sourceRestored": true,
+    "callbacksUnchanged": true,
+    "inferenceInvoked": false
+  },
+  "representativeWindowsWorkloadsQualified": false,
+  "resourceReleaseReadinessComplete": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

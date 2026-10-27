@@ -63,8 +63,15 @@ Gate A profile remain pending.
 
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md) describes the experimental bounded
 local-drive `.exe` runner and dedicated native source/offline-install CI profile.
-Native acceptance remains pending. Other Windows tool/framework/Git/persistence
-profiles are unverified; this does not promote them or close E4/E5.
+[Dated scoped native controls](measurements/windows-resource-workloads-2026-10-26.json)
+passed the preserved execution/output/resource cohort against source and a fresh
+offline production package on Windows 2025/Node 22.23.3. Other Windows
+tool/framework/Git/persistence profiles and final current-source acceptance remain
+unverified; this does not close E4/E5.
+The [Windows resource counters](NATIVE-RESOURCE-ACCOUNTING.md#experimental-windows-process-and-job-counters)
+retain independent process/job CPU observations and direct target working-set
+peaks. Synthetic small/large/Go-Node workload and physical output/archive controls
+have scoped native evidence. Whole resource/release acceptance remains pending.
 
 ## Advisory review context support
 
@@ -540,3 +547,13 @@ collectors that require all nine preserved callbacks, unchanged declared harness
 and engine bytes, observed Node/PHP executables and selected framework runtime
 bytes. This acceptance binding does not expand the Laravel semantic or platform
 support above and does not close Gate A.
+
+The [resource and release readiness cohort](NATIVE-RESOURCE-ACCOUNTING.md#resource-and-release-readiness-cohort)
+now combines real small/large/JavaScript-Go measurements, physical report storage,
+previous-package upgrade/rollback, source grants and reached native lifecycle
+controls through source and a fresh offline production package. POSIX self and
+reaped-child counters and Windows direct/job counters retain their distinct
+scopes and units. The declared selected runtime jobs require fresh exact-input
+receipts; the local development controls and historical Windows observations do
+not certify the final matrix or full artifact/license closure. Gate A remains
+open without model inference or field evaluation.

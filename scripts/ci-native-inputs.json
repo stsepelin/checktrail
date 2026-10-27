@@ -119,6 +119,8 @@
     "php-extensions-arm64",
     "php-review",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
@@ -198,6 +200,8 @@
     "php-context-arm64",
     "php-extensions-arm64",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
     "rust-context-arm64",
@@ -300,6 +304,8 @@
     "php-extensions-arm64",
     "php-review",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
     "ruby-tools",
@@ -335,10 +341,21 @@
   "scripts/laravel-tools/composer.json": ["laravel-assembly-arm64"],
   "scripts/laravel-tools/composer.lock": ["laravel-assembly-arm64"],
   "scripts/lifecycle-runtime-evidence.mjs": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
   "scripts/maven-tools.Dockerfile": ["jvm-wrappers-arm64", "maven"],
+  "scripts/measure-native-resources.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/measure-windows-resources.mjs": [
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
+  ],
   "scripts/native-acceptance-diagnostics.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -366,6 +383,8 @@
     "php-context-arm64",
     "php-extensions-arm64",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
     "rust-context-arm64",
@@ -381,8 +400,37 @@
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
   ],
+  "scripts/native-child-resource.c": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/native-child-resource.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/native-resource-observer.c": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/native-resource-receipt.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/native-resource-workload-worker.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/native-resource-workloads.mjs": [
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
+  ],
   "scripts/nuxt-tools/package-lock.json": ["nuxt", "nuxt-assembly-arm64"],
   "scripts/nuxt-tools/package.json": ["nuxt", "nuxt-assembly-arm64"],
+  "scripts/package-upgrade-readiness.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
   "scripts/php-context-tools.Dockerfile": [
     "laravel-assembly-arm64",
     "mutation-native-arm64",
@@ -485,6 +533,8 @@
     "php-context-arm64",
     "php-extensions-arm64",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
     "rust-context-arm64",
@@ -514,6 +564,14 @@
   "scripts/prepare-maven-dependencies.mjs": ["jvm-wrappers-arm64", "maven"],
   "scripts/prepare-maven-tools.mjs": ["jvm-wrappers-arm64", "maven"],
   "scripts/prepare-mutation-tools.mjs": ["mutation-native-arm64"],
+  "scripts/prepare-native-child-resource.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/prepare-native-resource-observer.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
   "scripts/prepare-package-cache.mjs": [
     "actionlint",
     "c-context-arm64",
@@ -557,6 +615,8 @@
     "php-extensions-arm64",
     "php-review",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
     "rust-context-arm64",
@@ -581,6 +641,14 @@
   "scripts/prepare-python-extensions-tools.mjs": [
     "mutation-native-arm64",
     "python-extensions-arm64"
+  ],
+  "scripts/prepare-release-readiness-tools.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/prepare-resource-cache-subset.mjs": [
+    "resource-release",
+    "resource-release-arm64"
   ],
   "scripts/prepare-ruby-tools-container-dependencies.mjs": [
     "ruby-extensions-arm64",
@@ -656,6 +724,8 @@
     "php-extensions-arm64",
     "php-review",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
@@ -683,6 +753,22 @@
     "python-extensions-arm64"
   ],
   "scripts/python-extensions-wheels.json": ["python-extensions-arm64"],
+  "scripts/release-readiness-tools.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/release-readiness-tools/baseline.json": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/release-readiness-tools/package-lock.json": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/release-readiness-tools/package.json": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
   "scripts/request-cpp-tool-archive.mjs": ["cpp-extensions-arm64", "cpp-tools"],
   "scripts/request-gradle-distribution.mjs": ["gradle", "jvm-wrappers-arm64"],
   "scripts/request-jvm-wrapper-artifact.mjs": ["jvm-wrappers-arm64", "maven"],
@@ -699,6 +785,8 @@
     "kustomize",
     "kustomize-extensions-arm64",
     "maven",
+    "resource-release",
+    "resource-release-arm64",
     "ruby-extensions-arm64",
     "ruby-tools",
     "scala",
@@ -757,6 +845,8 @@
     "php-extensions-arm64",
     "php-review",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
     "ruby-tools",
@@ -823,6 +913,8 @@
     "php-extensions-arm64",
     "php-review",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
@@ -847,9 +939,15 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "scripts/resource-release-evidence.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
   "scripts/retry-go-acquisition.mjs": ["go-workspaces-arm64"],
   "scripts/retry-maven-acquisition.mjs": ["jvm-wrappers-arm64", "maven"],
   "scripts/review-runtime-evidence.mjs": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
@@ -858,6 +956,8 @@
   "scripts/ruby-tools-archives.json": ["ruby-extensions-arm64", "ruby-tools"],
   "scripts/ruby-tools.Dockerfile": ["ruby-extensions-arm64", "ruby-tools"],
   "scripts/runtime-installation-capture.mjs": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"
@@ -973,6 +1073,8 @@
     "php-context-arm64",
     "php-extensions-arm64",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
     "rust-context-arm64",
@@ -1037,10 +1139,14 @@
   "scripts/verify-laravel-cache.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-laravel-supplemental.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-lifecycle-platforms-package.mjs": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
   "scripts/verify-lifecycle-platforms.mjs": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
@@ -1107,6 +1213,8 @@
     "php-extensions-arm64",
     "php-review",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
@@ -1131,11 +1239,30 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "scripts/verify-resource-release-arm64.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/verify-resource-release-guards.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
+  "scripts/verify-resource-release-readiness.mjs": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
   "scripts/verify-review-runtime-package.mjs": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "scripts/verify-review-runtime.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
+  "scripts/verify-review-runtime.mjs": [
+    "resource-release",
+    "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/verify-ruby-container.mjs": ["ruby"],
   "scripts/verify-ruby-context-container.mjs": ["ruby-context-arm64"],
   "scripts/verify-ruby-context-guards.mjs": ["ruby-context-arm64"],
@@ -1197,6 +1324,8 @@
   "scripts/verify-vue-router-container.mjs": ["vue-router"],
   "scripts/verify-windows-guards.mjs": ["windows"],
   "scripts/verify-windows-package.mjs": ["windows"],
+  "scripts/verify-windows-resource-guards.mjs": ["windows"],
+  "scripts/verify-windows-workspace-guard.mjs": ["windows"],
   "scripts/verify-yaml-context-container.mjs": ["yaml-context-arm64"],
   "scripts/verify-yaml-context-guards.mjs": ["yaml-context-arm64"],
   "scripts/vue-router-tools/package-lock.json": [
@@ -1206,6 +1335,16 @@
   "scripts/vue-router-tools/package.json": [
     "vue-router",
     "vue-router-assembly-arm64"
+  ],
+  "scripts/windows-resource-workload-worker.mjs": [
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
+  ],
+  "scripts/windows-resource-workloads.mjs": [
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
   ],
   "scripts/windows-task-access-diagnostics.mjs": ["tasks-runtime"],
   "scripts/yaml-context-tools.Dockerfile": ["yaml-context-arm64"],
@@ -1485,7 +1624,10 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "resource-release",
+    "resource-release-arm64",
+    "vue-router",
+    "windows"
   ],
   "test/eslint-participation.test.ts": ["javascript-extensions-arm64"],
   "test/eslint.test.ts": [
@@ -1493,7 +1635,10 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "resource-release",
+    "resource-release-arm64",
+    "vue-router",
+    "windows"
   ],
   "test/executable-bundle-fixture.ts": ["external-adapters"],
   "test/executable-bundle-interpreters.test.ts": ["external-adapters"],
@@ -1564,16 +1709,24 @@
   ],
   "test/gate-kustomize-extensions.test.ts": ["kustomize-extensions-arm64"],
   "test/gate-lifecycle-platforms.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
   "test/gate-multi-candidate-workflow.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
   "test/gate-mutation-runners.test.ts": ["mutation-native-arm64"],
   "test/gate-php-extensions.test.ts": ["php-extensions-arm64"],
   "test/gate-python-extensions.test.ts": ["python-extensions-arm64"],
+  "test/gate-resource-release-readiness.test.ts": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
   "test/gate-ruby-extensions.test.ts": ["ruby-extensions-arm64"],
   "test/gate-rust-extensions.test.ts": ["rust-extensions-arm64"],
   "test/gate-scala-extensions.test.ts": ["scala-extensions-arm64"],
@@ -1596,6 +1749,8 @@
     "kustomize-extensions-arm64",
     "php-context-arm64",
     "php-review",
+    "resource-release",
+    "resource-release-arm64",
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
@@ -1609,29 +1764,44 @@
   "test/go-build.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
   ],
   "test/go-installed-harness.test.ts": ["go-workspaces-arm64"],
   "test/go-matrix.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
   ],
   "test/go-race.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
   ],
   "test/go-scope.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
   ],
   "test/go-workspace-fixture.ts": ["go-workspaces-arm64"],
   "test/golangci.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
   ],
   "test/gradle-builds.test.ts": ["gradle", "jvm-wrappers-arm64"],
   "test/gradle-evidence.test.ts": ["gradle", "jvm-wrappers-arm64"],
@@ -1743,6 +1913,8 @@
     "php-extensions-arm64",
     "php-review",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
@@ -1790,7 +1962,10 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "resource-release",
+    "resource-release-arm64",
+    "vue-router",
+    "windows"
   ],
   "test/jvm-analyzer-evidence-controls.test.ts": [
     "jvm-analyzer-extensions-arm64"
@@ -1964,14 +2139,20 @@
   "test/laravel-cache.test.ts": ["laravel-assembly-arm64"],
   "test/laravel.test.ts": ["laravel-assembly-arm64"],
   "test/lifecycle-platforms-boundaries.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
   "test/lifecycle-platforms-fixture.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
   "test/lifecycle-platforms-interruption.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
@@ -2106,16 +2287,28 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "resource-release",
+    "resource-release-arm64",
+    "vue-router",
+    "windows"
   ],
-  "test/posix-owner.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/posix-owner.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/process-output.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"
   ],
   "test/process-tree.test.ts": [
     "laravel-assembly-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
@@ -2132,10 +2325,16 @@
   "test/python-extension-planning.test.ts": ["python-extensions-arm64"],
   "test/python-extensions-fixture.ts": ["python-extensions-arm64"],
   "test/python-extensions.test.ts": ["python-extensions-arm64"],
+  "test/resource-release-fixture.ts": [
+    "resource-release",
+    "resource-release-arm64"
+  ],
   "test/review-behavior.test.ts": [
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
+    "resource-release",
+    "resource-release-arm64",
     "scala-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
@@ -2152,6 +2351,8 @@
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
+    "resource-release",
+    "resource-release-arm64",
     "scala-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
@@ -2197,11 +2398,15 @@
     "vue-router-assembly-arm64"
   ],
   "test/review-workflow-findings-fixture.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
   "test/review-workflow-fixture.ts": [
     "go-workspaces-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
@@ -2211,6 +2416,8 @@
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
+    "resource-release",
+    "resource-release-arm64",
     "scala-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
@@ -2251,7 +2458,12 @@
     "python-extensions-arm64",
     "rust-extensions-arm64"
   ],
-  "test/runner.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/runner.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/runtime-installation-capture.test.ts": [
     "tasks-runtime",
     "tasks-runtime-arm64"
@@ -2331,7 +2543,10 @@
   "test/staticcheck.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
-    "kustomize-extensions-arm64"
+    "kustomize-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
   ],
   "test/swift-extensions-fixture.ts": ["swift-extensions-arm64"],
   "test/swift-testing.test.ts": ["swift-extensions-arm64", "swift-tools"],
@@ -2353,6 +2568,8 @@
     "swift-tools"
   ],
   "test/task-store.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"
@@ -2471,6 +2688,8 @@
     "php-context-arm64",
     "php-extensions-arm64",
     "python-extensions-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
     "ruby-tools",
@@ -2498,15 +2717,23 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "resource-release",
+    "resource-release-arm64",
+    "vue-router",
+    "windows"
   ],
   "test/typescript.test.ts": [
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "resource-release",
+    "resource-release-arm64",
+    "vue-router",
+    "windows"
   ],
   "test/validation-tasks.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"
@@ -2516,7 +2743,10 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "resource-release",
+    "resource-release-arm64",
+    "vue-router",
+    "windows"
   ],
   "test/vue-router.test.ts": [
     "nuxt-assembly-arm64",
@@ -2527,19 +2757,53 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
-    "vue-router"
+    "resource-release",
+    "resource-release-arm64",
+    "vue-router",
+    "windows"
   ],
   "test/windows-contract.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"
   ],
   "test/windows-process.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/windows-resource-native.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/windows-resource-workload-native.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
+    "windows"
+  ],
+  "test/windows-resource-workloads.test.ts": ["windows"],
+  "test/windows-resource.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"
   ],
   "test/windows-task-access.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/windows-workspace.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"

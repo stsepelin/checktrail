@@ -2614,8 +2614,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "mutation-runners",
@@ -2785,8 +2785,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "confidence-provenance",
@@ -2956,8 +2956,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "tasks-matrix",
@@ -3013,8 +3013,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "native-license-provenance",
@@ -3127,8 +3127,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "independent-evaluation-protocol",
@@ -3199,7 +3199,7 @@
     },
     {
       "id": "matrix-and-acceptance-bindings",
-      "detail": "Bind each selected extension and every preserved profile to exact source/installed native run identities and the finite runtime matrix; currently observed CI covers four of the six Linux/macOS Node slots, not all six."
+      "detail": "Bind each selected extension and every preserved profile to exact current-source and fresh-installed native run identities across the finite runtime matrix. Historical and scoped receipts do not certify changed engine or harness inputs."
     }
   ],
   "gateAComplete": false,
