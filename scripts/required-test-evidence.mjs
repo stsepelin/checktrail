@@ -16,6 +16,11 @@ const exclusiveFullSuiteFiles = Object.freeze([
   "gate-javascript-extensions.test.js",
   "gate-tasks-matrix.test.js",
   "gate-resource-release-readiness.test.js",
+  "gate-go-extensions.test.js",
+  "go-matrix.test.js",
+  "gate-attempt-archives.test.js",
+  "review-json-probe.test.js",
+  "review-probe.test.js",
 ]);
 function isExclusiveFullSuiteFile(file, directory) {
   return exclusiveFullSuiteFiles.some(
@@ -131,7 +136,7 @@ async function executeRequiredTests(
   const fileIds = new Map(
     files.map((file, index) => [file, "file-" + (index + 1)]),
   );
-  // These native files repeat loader/build or Tasks fresh-install controls. Give
+  // These native files repeat loader/build, Go, Tasks or probe process controls. Give
   // each complete file an exclusive slot after the shared full-suite wave; named
   // selection would omit unlisted callbacks. All existing deadlines still apply.
   const exclusiveFiles =

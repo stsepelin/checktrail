@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Original synthetic native test-file admission and callback-retention controls. Diagnostic instrumentation is not engine qualification.",
+  "originalFailure": {
+    "sourceCommit": "b1df1d1afb678d3f04170ef8a59b7f0314a9b2e2",
+    "command": "npm run check",
+    "exitCode": 1,
+    "tests": 2283,
+    "pass": 1520,
+    "fail": 2,
+    "skipped": 761,
+    "callbacks": [
+      "go-extensions installed acceptance",
+      "native Go target matrices compile and link cross targets while retaining host tests and unavailable foreign execution"
+    ]
+  },
+  "followUp": {
+    "sameTwoFocusedCallbacks": {
+      "iterations": 4,
+      "allPassed": true,
+      "failureReproduced": false
+    },
+    "fullWorkloadDiagnostic": {
+      "compiledModulesTemporarilyInstrumented": true,
+      "sourceFilesModified": false,
+      "qualificationClaimed": false,
+      "observedGlobalSnapshotTimeouts": [
+        {
+          "stage": "snapshot-unavailable",
+          "selected": null,
+          "status": null,
+          "signal": "SIGTERM",
+          "error": "ETIMEDOUT",
+          "elapsed": 1039.544542
+        },
+        {
+          "stage": "snapshot-unavailable",
+          "selected": null,
+          "status": null,
+          "signal": "SIGTERM",
+          "error": "ETIMEDOUT",
+          "elapsed": 1003.248625
+        },
+        {
+          "stage": "snapshot-unavailable",
+          "selected": null,
+          "status": null,
+          "signal": "SIGTERM",
+          "error": "ETIMEDOUT",
+          "elapsed": 1002.2918330000001
+        },
+        {
+          "stage": "snapshot-unavailable",
+          "selected": null,
+          "status": null,
+          "signal": "SIGTERM",
+          "error": "ETIMEDOUT",
+          "elapsed": 1142.63
+        },
+        {
+          "stage": "snapshot-unavailable",
+          "selected": null,
+          "status": null,
+          "signal": "SIGTERM",
+          "error": "ETIMEDOUT",
+          "elapsed": 1004.9044170000001
+        },
+        {
+          "stage": "snapshot-unavailable",
+          "selected": null,
+          "status": null,
+          "signal": "SIGTERM",
+          "error": "ETIMEDOUT",
+          "elapsed": 1004.758042
+        },
+        {
+          "stage": "snapshot-unavailable",
+          "selected": null,
+          "status": null,
+          "signal": "SIGTERM",
+          "error": "ETIMEDOUT",
+          "elapsed": 1046.900834
+        }
+      ],
+      "wholeCheckPassed": false,
+      "compiledBytesRestored": false,
+      "note": "Diagnostic still running when this bounded record was prepared; completion is retained separately."
+    }
+  },
+  "admission": {
+    "sharedFileWorkerCeiling": 4,
+    "newExclusiveFiles": [
+      "gate-go-extensions.test.js",
+      "go-matrix.test.js",
+      "gate-attempt-archives.test.js",
+      "review-json-probe.test.js",
+      "review-probe.test.js"
+    ],
+    "existingExclusiveFilesPreserved": true,
+    "callbacksOmitted": false,
+    "nativeCleanupDeadlineChanged": false,
+    "nativeSnapshotTimeoutChanged": false,
+    "nativeFailureClassificationChanged": false,
+    "requiredCaseBudgetChanged": false
+  },
+  "syntheticRegression": {
+    "file": "test/test-suite-scheduling.test.ts",
+    "sha256": "9b06e4c2f93a40d21c968d0fe69bb27ff39a434336355bb61d3b4a7bf00ae3d1",
+    "name": "native process full-suite bodies wait for the shared wave and retain every callback after a failure",
+    "observations": [
+      "Shared completion precedes native bodies.",
+      "Exclusive native files cannot overlap.",
+      "Every original native and unlisted callback runs after a deliberate later-file failure.",
+      "The whole entry point retains the failure status."
+    ],
+    "pairedControls": {
+      "sourceHarnessSha256": "c6dc443bdfc108423ef6aac98a4d7df5af5603fa0c2ea795ccbf3c79d57ff362",
+      "mutants": [
+        {
+          "removedAdmission": "gate-go-extensions.test.js",
+          "mutantSha256": "6f9fd69565c362f37a36a0c537fcfe2f4639f0ea8030d8974897c036bc1524ea",
+          "exitCode": 1,
+          "callbackFailedForMissingNativeBody": true,
+          "elapsedSeconds": 1.001850583,
+          "logSha256": "e2270e1baf2aad4d3669090e5052d74001cd5e36bf48ccc7cd8f0914542a7e7c"
+        },
+        {
+          "removedAdmission": "go-matrix.test.js",
+          "mutantSha256": "5a83125496732a28c1028172e4d3b1c1fd862b1828ddfb8bb9c3e17d8f200c6f",
+          "exitCode": 1,
+          "callbackFailedForMissingNativeBody": true,
+          "elapsedSeconds": 1.0512070000000002,
+          "logSha256": "a669050bd4a4e177b48e378a5b2aa98a61482bebb3003006ce349daa51f46bc8"
+        },
+        {
+          "removedAdmission": "gate-attempt-archives.test.js",
+          "mutantSha256": "d238b29af127d083d964f82b5baa607046d63691168b0058866075e55ef92799",
+          "exitCode": 1,
+          "callbackFailedForMissingNativeBody": true,
+          "elapsedSeconds": 0.9852156249999999,
+          "logSha256": "fd0304c8ea4899c7e8a4d40600faa7fc50a51d2f1da6b41b2e889a3571d3928b"
+        },
+        {
+          "removedAdmission": "review-json-probe.test.js",
+          "mutantSha256": "4b076d8c4cdeb671972e00ced47314d03e060488785b8ca649303d92e573c00a",
+          "exitCode": 1,
+          "callbackFailedForMissingNativeBody": true,
+          "elapsedSeconds": 0.9984877910000001,
+          "logSha256": "a62d950af81c3c4794921a342d8a75453da1a79cdaf4a3bd739cb33d3ee88554"
+        },
+        {
+          "removedAdmission": "review-probe.test.js",
+          "mutantSha256": "9a9581ff07d7c875d076df3fc914c3f61fd837878f6de6bf3ea69993f9ca3824",
+          "exitCode": 1,
+          "callbackFailedForMissingNativeBody": true,
+          "elapsedSeconds": 1.0162153329999999,
+          "logSha256": "719d4841e2acb9caf753daad375e995953d130f08a5d10381f6a3c5733c38f48"
+        }
+      ],
+      "restoredExitCode": 0,
+      "sourceBytesRestored": true,
+      "restoredLogSha256": "2d3e0ac9803f78a695f1a4e655b103babd79aa724549dae6dfd60004d001778d"
+    },
+    "restoredCallbacks": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skipped": 0
+    },
+    "earlierWholeHarnessControls": {
+      "tests": 21,
+      "pass": 21,
+      "fail": 0,
+      "skipped": 0,
+      "scope": "Both scheduling tests plus the required-native-test harness before extending the regression from the two Go files to all five observed conflict files."
+    }
+  },
+  "laterWholeSuitePassed": false,
+  "performanceImprovementMeasured": false,
+  "completeNativeArtifactClosure": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

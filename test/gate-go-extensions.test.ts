@@ -502,6 +502,17 @@ test("go-extensions privacy acceptance", native, async (t) => {
   );
   await assert.rejects(validate(root, { trusted: false }), /operator trust/);
   const library = await validate(root, workspaceOptions);
+  assert.equal(
+    library.outcome,
+    "passed",
+    JSON.stringify(
+      library.checks.map((check) => ({
+        id: check.id,
+        status: check.status,
+        errors: check.processes.map((result) => result.errorCode ?? null),
+      })),
+    ),
+  );
   const projection = projectReport(library, false);
   reportSummarySchema.parse(projection);
   assert.ok(
