@@ -160,7 +160,24 @@ in force; failed archive retention is not successful completion. See
 [TASK-STORAGE.md](TASK-STORAGE.md) and the
 [durable archive measurement](measurements/durable-task-report-archives-2026-10-11.json).
 
+Original consumer witnesses additionally execute the captured producer through
+two distinct caller outputs. Paired repair and caller-only perturbations retain
+every exact/adjacent case, bind the actual child PID to physical stderr, and
+preserve the operator policy identity. The oversized native report reaches real
+multi-chunk task storage; closing and reopening the store must reconstruct the
+exact report bytes and the same raw journal. These controls have local Node 22
+and 26 evidence; the frozen whole-profile and installed/runtime bindings remain
+pending. Source changed after native imports remains incomplete even when every
+captured case passes. Empty and genuinely skipped bodies also remain incomplete
+despite a complete process journal. These controls do not extend the dated
+measurement above.
+
 Complete native call migration acceptance, embedded language/VM subprocesses,
 required Windows/runtime acceptance and host-model usage remain open. The frozen
 attempt-archives profile remains pending.
 No Gate A closure, model inference or real-project field evaluation is claimed.
+
+The [whole archive acceptance profile](ATTEMPT-ACCEPTANCE.md) prepares the frozen
+nine callbacks and exact source/fresh-package runtime receipt reconciliation.
+Its native witness and storage controls share the preserved assertions; wider
+platform and call-family qualification remain separate from local success.

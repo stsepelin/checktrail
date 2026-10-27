@@ -101,15 +101,15 @@ async function original(t: TestContext, policy = broken) {
   return { root, context, result: analysis(context) };
 }
 async function witness(root: string) {
-  await mkdir(path.join(root, "witness"));
+  await mkdir(path.join(root, "witness"), { recursive: true });
   await writeFile(
     path.join(root, "witness/main.go"),
-    'package main\nimport ("encoding/json";"fmt";"runtime";rules "example.invalid/original/policy")\nfunc main(){ values:=[]string{"grant:read","grantToken","grant2","other"}; answers:=[]bool{};for _,value:=range values { answers=append(answers,rules.Decision(value)) }; data,_:=json.Marshal(map[string]any{"go":runtime.Version(),"answers":answers});fmt.Println(string(data)) }\n',
+    'package main\nimport ("encoding/json";"fmt";"runtime";"os";"crypto/sha256";rules "example.invalid/original/policy";"example.invalid/original/consumer")\nfunc main(){ values:=[]string{"grant:read","grantToken","grant2","other"}; answers:=[]bool{};for _,value:=range values { answers=append(answers,rules.Decision(value)) }; answers=append(answers,consumer.Submit(),consumer.Route()); sources:=map[string]string{};for _,name:=range []string{"policy/policy.go","consumer/consumer.go"}{bytes,err:=os.ReadFile(name);if err!=nil {panic(err)};sources[name]=fmt.Sprintf("%x",sha256.Sum256(bytes))};data,err:=json.Marshal(map[string]any{"go":runtime.Version(),"answers":answers,"sources":sources});if err!=nil{panic(err)};fmt.Println(string(data)) }\n',
   );
   const result = await runProcess(
     root,
     { executable: "go", args: ["run", "./witness"], cwd: ".", env: goEnv },
-    { timeoutMs: 60000, maxOutputBytes: 65536 },
+    { timeoutMs: 60000, maxOutputBytes: 65536, captureRawOutput: true },
   );
   assert.equal(result.exitCode, 0, result.stderr);
   assert.equal(result.errorCode, undefined);
@@ -117,8 +117,15 @@ async function witness(root: string) {
   assert.equal(result.timedOut, false);
   assert.equal(result.truncated, false);
   assert.equal(result.stderr, "");
+  assert.equal(result.capturedOutput?.completeForObservedStreams, true);
+  assert.equal(result.capturedOutput?.stdout.sha256, hash(result.stdout));
   const value = JSON.parse(result.stdout);
-  assert.equal(value.answers.length, 4);
+  assert.equal(value.answers.length, 6);
+  for (const name of ["policy/policy.go", "consumer/consumer.go"])
+    assert.equal(
+      value.sources[name],
+      hash(await readFile(path.join(root, name), "utf8")),
+    );
   assert.match(value.go, /^go1\./);
   return value.answers as boolean[];
 }
@@ -183,7 +190,22 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-go broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [true, true, true, false]);
+  assert.deepEqual(await witness(root), [true, true, true, false, true, true]);
+  const callerPath = path.join(root, "consumer/consumer.go"),
+    callerBytes = await readFile(callerPath, "utf8");
+  try {
+    await writeFile(callerPath, callerBytes.replace('"grantToken"', '"other"'));
+    assert.deepEqual(await witness(root), [
+      true,
+      true,
+      true,
+      false,
+      false,
+      true,
+    ]);
+  } finally {
+    await writeFile(callerPath, callerBytes);
+  }
   const fn = result.functions.find((fn) => fn.name === "Decision")!,
     file = context.files.find((file) => file.path === fn.file)!;
   assert.equal(
@@ -266,7 +288,14 @@ test("context-go broken acceptance", native, async (t) => {
 test("context-go fixed acceptance", native, async (t) => {
   const { root, context, result } = await original(t, fixed);
   bindings(result);
-  assert.deepEqual(await witness(root), [true, false, false, false]);
+  assert.deepEqual(await witness(root), [
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+  ]);
   assert.equal(
     parseReviewContext(context).contextDigest,
     context.contextDigest,
@@ -284,7 +313,14 @@ test("context-go fixed acceptance", native, async (t) => {
 test("context-go near-miss acceptance", native, async (t) => {
   await callIdentityFixture(t, "go", true, goEnv);
   const { root } = await original(t, near);
-  assert.deepEqual(await witness(root), [true, false, false, false]);
+  assert.deepEqual(await witness(root), [
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+  ]);
   const cases: [string, string][] = [
     [
       'type C struct{};func (p C) Use()bool{return p.Decision("x")}',

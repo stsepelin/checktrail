@@ -77,6 +77,8 @@ const timeoutMs =
     ? 300000
     : fullSuite ||
         selection.includes("tasks-matrix") ||
+        selection.includes("consumer-impact") ||
+        selection.includes("attempt-archives") ||
         selection.includes("windows-resource-workloads") ||
         selection.includes("resource-release-readiness") ||
         selection.includes("dotnet-method") ||
@@ -148,6 +150,8 @@ const isolatedCaseWorkers =
       "resource-release-readiness",
       "tasks-runtime-manifest",
       "tasks-runtime-cli",
+      "consumer-impact",
+      "attempt-archives",
       "native-harness-cleanup",
       "tasks-runtime-startup",
       "go-extensions",
