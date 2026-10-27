@@ -7734,6 +7734,11 @@
       "file": "jline-native-source-bindings.json",
       "bytes": 13226,
       "sha256": "28970e155f0a3ac0670aa1a7d89d36ef2c48b391eb79d076160b2883033c2e56"
+    },
+    {
+      "file": "scala-primary-font-payload-bindings.json",
+      "bytes": 4993,
+      "sha256": "fef3439fd2cd30452520003fa3ad8c3e7e8de63e7309a75f6016909a041f8a4b"
     }
   ]
 }
