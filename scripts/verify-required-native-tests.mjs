@@ -79,6 +79,7 @@ const timeoutMs =
         selection.includes("tasks-matrix") ||
         selection.includes("consumer-impact") ||
         selection.includes("attempt-archives") ||
+        selection.includes("independent-evaluation-protocol") ||
         selection.includes("windows-resource-workloads") ||
         selection.includes("resource-release-readiness") ||
         selection.includes("dotnet-method") ||

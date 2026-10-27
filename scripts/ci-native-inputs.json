@@ -46,8 +46,24 @@
     "rust-extensions-arm64"
   ],
   "scripts/actionlint-tools.Dockerfile": ["actionlint"],
+  "scripts/attempt-foundation-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/attempt-output-evidence.mjs": [
     "jvm-wrappers-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/attempt-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/attempt-runtime-tools.Dockerfile": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/attempt-whole-evidence.mjs": [
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
@@ -165,6 +181,18 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "scripts/consumer-foundation-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/consumer-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/consumer-runtime-tools.Dockerfile": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/cpp-archive-fallbacks/libexpat-2.8.5-r0.apk": [
     "cpp-extensions-arm64",
     "cpp-tools"
@@ -252,6 +280,8 @@
   "scripts/gradle-tools.Dockerfile": ["gradle"],
   "scripts/hcl-context-tools.Dockerfile": ["hcl-context-arm64"],
   "scripts/helm-extensions-controls.json": ["helm-extensions-arm64"],
+  "scripts/impact-corpus.json": ["tasks-runtime", "tasks-runtime-arm64"],
+  "scripts/impact-metrics.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
   "scripts/infra-tools-artifacts.json": [
     "hcl-context-arm64",
     "helm",
@@ -477,6 +507,7 @@
     "rust-extensions-arm64",
     "scala-extensions-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
     "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vue-router-assembly-arm64"
@@ -754,6 +785,7 @@
     "swift-context-arm64",
     "swift-extensions-arm64",
     "swift-tools",
+    "tasks-runtime",
     "tasks-runtime-arm64",
     "terraform",
     "terraform-extensions-arm64",
@@ -1005,11 +1037,35 @@
   "scripts/terraform-extensions-controls.json": ["terraform-extensions-arm64"],
   "scripts/vb-context-tools.Dockerfile": ["vb-context-arm64"],
   "scripts/verify-actionlint-container.mjs": ["actionlint"],
+  "scripts/verify-attempt-archives-whole-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-attempt-runtime-arm64.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-attempt-runtime.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/verify-c-context-container.mjs": ["c-context-arm64"],
   "scripts/verify-c-context-guards.mjs": ["c-context-arm64"],
   "scripts/verify-checkstyle-container.mjs": ["checkstyle"],
   "scripts/verify-checkstyle-package.mjs": ["checkstyle"],
   "scripts/verify-clang-container.mjs": ["clang"],
+  "scripts/verify-consumer-impact-whole-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-consumer-runtime-arm64.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-consumer-runtime.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/verify-cpp-context-container.mjs": ["cpp-context-arm64"],
   "scripts/verify-cpp-context-guards.mjs": ["cpp-context-arm64"],
   "scripts/verify-cpp-extensions-container.mjs": ["cpp-extensions-arm64"],
@@ -1408,6 +1464,15 @@
     "terraform-extensions-arm64"
   ],
   "test/actionlint.test.ts": ["actionlint"],
+  "test/attempt-archive-native.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/attempt-archive.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/attempt-runtime-evidence.test.ts": ["tasks-runtime"],
+  "test/attempt-whole-boundaries.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/attempt-whole-controls.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/attempt-whole-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/checkstyle-fixture.ts": ["checkstyle"],
   "test/checkstyle-surfaces.test.ts": ["checkstyle"],
   "test/checkstyle.test.ts": ["checkstyle"],
@@ -1420,6 +1485,9 @@
   "test/clippy-evidence.test.ts": ["rust-extensions-arm64"],
   "test/clippy-surfaces.test.ts": ["rust-extensions-arm64"],
   "test/clippy.test.ts": ["rust-extensions-arm64"],
+  "test/consumer-impact-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/consumer-imports.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/consumer-runtime-evidence.test.ts": ["tasks-runtime"],
   "test/cpp-controls.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
   "test/cpp-extensions-cancel.test.ts": ["cpp-extensions-arm64"],
   "test/cpp-extensions-fixture.ts": ["cpp-extensions-arm64"],
@@ -1687,6 +1755,11 @@
   "test/gate-assembly-laravel.test.ts": ["laravel-assembly-arm64"],
   "test/gate-assembly-nuxt.test.ts": ["nuxt-assembly-arm64"],
   "test/gate-assembly-vue-router.test.ts": ["vue-router-assembly-arm64"],
+  "test/gate-attempt-archives.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/gate-consumer-impact.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/gate-context-c.test.ts": ["c-context-arm64"],
   "test/gate-context-cpp.test.ts": ["cpp-context-arm64"],
   "test/gate-context-csharp.test.ts": ["csharp-context-arm64"],
@@ -1781,12 +1854,15 @@
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
+  "test/git-selection.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/go-build.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
     "kustomize-extensions-arm64",
     "resource-release",
     "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "windows"
   ],
   "test/go-installed-harness.test.ts": ["go-workspaces-arm64"],
@@ -1796,6 +1872,8 @@
     "kustomize-extensions-arm64",
     "resource-release",
     "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "windows"
   ],
   "test/go-race.test.ts": [
@@ -1804,6 +1882,8 @@
     "kustomize-extensions-arm64",
     "resource-release",
     "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "windows"
   ],
   "test/go-scope.test.ts": [
@@ -1812,6 +1892,8 @@
     "kustomize-extensions-arm64",
     "resource-release",
     "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "windows"
   ],
   "test/go-workspace-fixture.ts": ["go-workspaces-arm64"],
@@ -1821,6 +1903,8 @@
     "kustomize-extensions-arm64",
     "resource-release",
     "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "windows"
   ],
   "test/gradle-builds.test.ts": ["gradle", "jvm-wrappers-arm64"],
@@ -1959,6 +2043,7 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "test/impact.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/java.test.ts": [
     "checkstyle",
     "detekt",
@@ -2273,6 +2358,19 @@
     "mutation-native-arm64",
     "python-extensions-arm64",
     "rust-extensions-arm64"
+  ],
+  "test/native-attempt-frames.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/native-attempt-storage.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/native-invoke.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/native-journal-engine.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/native-process-observer.test.ts": [
     "kubeconform",
@@ -2613,6 +2711,8 @@
     "kustomize-extensions-arm64",
     "resource-release",
     "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "windows"
   ],
   "test/swift-extensions-fixture.ts": ["swift-extensions-arm64"],
