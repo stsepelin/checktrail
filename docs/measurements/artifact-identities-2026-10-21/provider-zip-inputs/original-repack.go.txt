@@ -1,0 +1,75 @@
+package main
+
+import (
+	"archive/zip"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"time"
+)
+
+func repack(root, output string) (err error) {
+	stamp, err := time.Parse(time.RFC3339, "2026-09-11T12:35:54Z")
+	if err != nil {
+		return err
+	}
+	out, err := os.OpenFile(output, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if e := out.Close(); err == nil {
+			err = e
+		}
+	}()
+	writer := zip.NewWriter(out)
+	for _, name := range []string{"LICENSE.txt", "terraform-provider-random_v3.9.1_x5"} {
+		input, e := os.Open(filepath.Join(root, name))
+		if e != nil {
+			return e
+		}
+		info, e := input.Stat()
+		if e != nil {
+			input.Close()
+			return e
+		}
+		if !info.Mode().IsRegular() {
+			input.Close()
+			return fmt.Errorf("input is not regular")
+		}
+		header, e := zip.FileInfoHeader(info)
+		if e != nil {
+			input.Close()
+			return e
+		}
+		header.SetModTime(stamp)
+		header.SetMode(0644)
+		if name != "LICENSE.txt" {
+			header.SetMode(0755)
+		}
+		header.Method = zip.Deflate
+		entry, e := writer.CreateHeader(header)
+		if e != nil {
+			input.Close()
+			return e
+		}
+		_, copyErr := io.Copy(entry, input)
+		closeErr := input.Close()
+		if copyErr != nil {
+			return copyErr
+		}
+		if closeErr != nil {
+			return closeErr
+		}
+	}
+	return writer.Close()
+}
+func main() {
+	if len(os.Args) != 3 {
+		panic("expected input directory and exclusive output file")
+	}
+	if err := repack(os.Args[1], os.Args[2]); err != nil {
+		panic(err)
+	}
+}

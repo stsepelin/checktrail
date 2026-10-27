@@ -129,3 +129,10 @@ do not certify later changes. Full artifact/license provenance, wider providers,
 languages and platforms, attempt archives, representative project performance and
 final Gate A acceptance remain separate. These controls execute no inference or
 real-project MCP field evaluation and establish no independent AI host sessions.
+
+The [selected provider ZIP reconstruction](measurements/artifact-identities-2026-10-21/provider-independent-zip-repack.json)
+matches the entire release archive with an original Go 1.24 packager and explicit
+source-time and member metadata. The separate earlier executable rebuild has the
+same member hash. This packaging run reused the release member bytes and did not
+repeat a combined source-to-ZIP build. Original publisher compiler patch, complete
+component notices and preparation/receipt admission remain open.
