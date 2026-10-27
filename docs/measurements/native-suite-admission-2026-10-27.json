@@ -84,8 +84,37 @@
         }
       ],
       "wholeCheckPassed": false,
-      "compiledBytesRestored": false,
-      "note": "Diagnostic still running when this bounded record was prepared; completion is retained separately."
+      "compiledBytesRestored": true,
+      "note": "Instrumented reproduction only; its temporary compiled bytes were restored. The later uninstrumented complete project check remains separate.",
+      "command": "node scripts/run-test-suite.mjs",
+      "exitCode": 1,
+      "elapsedSeconds": 825.000100084,
+      "batches": {
+        "tests": [
+          2256,
+          27
+        ],
+        "pass": [
+          1491,
+          23
+        ],
+        "fail": [
+          4,
+          1
+        ],
+        "skipped": [
+          761,
+          3
+        ]
+      },
+      "failingCallbacks": [
+        "attempt-archives installed acceptance",
+        "structured native values enforce exact physical byte depth and node boundaries before admission and during execution",
+        "structured native probes exercise broken repaired and valid near miss consequences for every declared hypothesis family",
+        "native probes reset module state and source bytes per case and preserve unsupported cancelled timeout and cleanup states",
+        "tasks-matrix lifecycle acceptance"
+      ],
+      "allFailuresAttributedToSnapshotTimeouts": false
     }
   },
   "admission": {
