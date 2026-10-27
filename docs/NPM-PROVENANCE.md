@@ -134,3 +134,10 @@ only on Linux, as specified by [npm](https://docs.npmjs.com/cli/configuring-npm/
 The report mechanism is documented by [Node.js](https://nodejs.org/api/report.html).
 Windows tree inspection uses the same fixed host npm CLI runner as installed
 acceptance, through the selected Node executable.
+
+[The selected platform notice measurement](measurements/npm-platform-notices-2026-10-27.json)
+records byte-bound component audits on the eight selected native runtimes and
+separate registry-archive bindings for five additional native packages. Each
+report retains its excluded packages and uninspected notice sources. These
+component results do not qualify the whole engine matrix or the later whole-suite
+check, which reported two Go callback failures at that implementation source.
