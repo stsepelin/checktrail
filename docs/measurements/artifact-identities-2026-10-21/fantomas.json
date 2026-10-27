@@ -399,6 +399,23 @@
       },
       "sourceBuildVerified": false,
       "compilationInputInventoryComplete": false
+    },
+    "generatedDocumentByteProjection": {
+      "retainedInputs": [
+        {
+          "file": "fantomas-sdk-generated-documents.json",
+          "bytes": 4383,
+          "sha256": "37b78691d61c07e79f2824c9b1958306ffad57b72605e4d230a24b763b2e6e3c"
+        },
+        {
+          "file": "fantomas-generated-document-file-controls.json",
+          "bytes": 1693,
+          "sha256": "5c109f2d1f546161542e2c9d6d6d24c20c0060268f3a9a4154761e614b94eeb2"
+        }
+      ],
+      "scope": "Three retained debug-document checksums match original projections from pinned public template candidates. Actual producer SDK and evaluated build inputs remain unverified.",
+      "nativeMsbuildGeneratorExecuted": false,
+      "actualProducerSdkVerified": false
     }
   },
   "remainingInputs": [
@@ -411,5 +428,5 @@
   "gateAComplete": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "observationsUpdatedAt": "2026-10-21T20:36:37.924849+00:00"
+  "observationsUpdatedAt": "2026-10-27"
 }

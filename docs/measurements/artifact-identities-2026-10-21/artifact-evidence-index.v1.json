@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 135,
+  "retainedReferences": 147,
   "files": [
     {
       "file": "README.md",
-      "bytes": 15248,
-      "sha256": "332ba1dee85bd81afe1c6e189d216106f7b455bb55b0fc2494d8694b96928150"
+      "bytes": 16578,
+      "sha256": "70eb638eff5952639adedd76864408b97a3c34047e7b09484af7fab368ac3a2d"
     },
     {
       "file": "dotnet-sdk-LICENSE.txt",
@@ -34,6 +34,36 @@
       "sha256": "998d2cc11dbab57ff42f11fe0a5a2eab3262c8341310f21b3e83033a21ff5255"
     },
     {
+      "file": "fantomas-generated-document-file-controls.json",
+      "bytes": 1693,
+      "sha256": "5c109f2d1f546161542e2c9d6d6d24c20c0060268f3a9a4154761e614b94eeb2"
+    },
+    {
+      "file": "fantomas-generated-document-projection.mjs",
+      "bytes": 6852,
+      "sha256": "e035ff4d4439d371150da4124c2afc93f48e983b0e985fca9f33b9f94e3278a2"
+    },
+    {
+      "file": "fantomas-generator-inputs/WriteLinesToFile.cs",
+      "bytes": 16530,
+      "sha256": "e6094cec83811f8c49fe92544fd477e30959fd6170f1d93c0aae0b83f30a5cf9"
+    },
+    {
+      "file": "fantomas-generator-inputs/core-Microsoft.FSharp.Targets",
+      "bytes": 30205,
+      "sha256": "1d2a9be5855677b8f2c83d313d78db39ffdf6ce54820d34e2aa8b2bb1a69c5b3"
+    },
+    {
+      "file": "fantomas-generator-inputs/fcs-Microsoft.FSharp.Targets",
+      "bytes": 30254,
+      "sha256": "0f55b72765941b18ba5d16b951c32b341b7611a924cb02c33a0a644402e71f46"
+    },
+    {
+      "file": "fantomas-generator-inputs/msbuild-LICENSE.txt",
+      "bytes": 1117,
+      "sha256": "9aebac42398b50e652a84a7b92d70e85cd1a9c8746558a743dc6cec11b8d7d3e"
+    },
+    {
       "file": "fantomas-pdb-checksum-controls.json",
       "bytes": 3092,
       "sha256": "2f05d5fa600282014e47fa9b711d7f9bf6015168412e0de3d9ca8ff890b20b2b"
@@ -54,14 +84,24 @@
       "sha256": "d2c5f208b01a8c848386b716963b5686f3f1c6f5dfe81d7a7b6e3f146409ee22"
     },
     {
+      "file": "fantomas-sdk-generated-documents.inputs.json",
+      "bytes": 3279,
+      "sha256": "0716f0890237fe67f1b51acbd9eb62d6e61c5e68728fcb3e9030ea6b2ebd93bc"
+    },
+    {
+      "file": "fantomas-sdk-generated-documents.json",
+      "bytes": 4383,
+      "sha256": "37b78691d61c07e79f2824c9b1958306ffad57b72605e4d230a24b763b2e6e3c"
+    },
+    {
       "file": "fantomas-source-observations.json",
       "bytes": 149573,
       "sha256": "93666a1eeaf6fcdd47e497247599d62d968559b76e96eea7565fd35f1fe5b92f"
     },
     {
       "file": "fantomas.json",
-      "bytes": 25922,
-      "sha256": "43092e73e9486643f3d6eae420d39488aeeb84403f8db12ee5709363101c215e"
+      "bytes": 26654,
+      "sha256": "b4b6b338f87ba17bfe533b14f21690774553da8cc7982686fc3c275b77a06a5b"
     },
     {
       "file": "nuget-integrity-tamper.txt",

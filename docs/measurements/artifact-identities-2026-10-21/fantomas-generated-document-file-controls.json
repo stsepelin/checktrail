@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Original projector file-admission controls in a fresh private copy of retained public inputs; no upstream target assembly or native build-generator execution.",
+  "retainedInputs": [
+    {
+      "file": "fantomas-generated-document-projection.mjs",
+      "bytes": 6852,
+      "sha256": "e035ff4d4439d371150da4124c2afc93f48e983b0e985fca9f33b9f94e3278a2"
+    },
+    {
+      "file": "fantomas-sdk-generated-documents.inputs.json",
+      "bytes": 3279,
+      "sha256": "0716f0890237fe67f1b51acbd9eb62d6e61c5e68728fcb3e9030ea6b2ebd93bc"
+    }
+  ],
+  "originalOutputSha256": "ca15b4674c9ec0571fe728cdc5cb00ca40b7c94057d22bfaf3cd95a48c076a5f",
+  "matchedDocuments": 3,
+  "controls": [
+    {
+      "id": "changed-template-same-length",
+      "unchangedCommandRejectedInput": true,
+      "refusedBeforeJsonOutput": true,
+      "restoredOutputByteIdentical": true
+    },
+    {
+      "id": "missing-writer",
+      "unchangedCommandRejectedInput": true,
+      "refusedBeforeJsonOutput": true,
+      "restoredOutputByteIdentical": true
+    },
+    {
+      "id": "linked-template",
+      "unchangedCommandRejectedInput": true,
+      "refusedBeforeJsonOutput": true,
+      "restoredOutputByteIdentical": true
+    },
+    {
+      "id": "over-limit-template",
+      "unchangedCommandRejectedInput": true,
+      "refusedBeforeJsonOutput": true,
+      "restoredOutputByteIdentical": true
+    }
+  ],
+  "originalRepositoryInputsUnchanged": true,
+  "temporaryCopyRemoved": true,
+  "nativeMsbuildGeneratorExecuted": false,
+  "selectedRuntimeQualified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}
