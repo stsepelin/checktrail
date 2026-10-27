@@ -2947,6 +2947,14 @@
     {
       "file": "dist/test/process-tree.test.js",
       "name": "native POSIX selected process snapshots retain both batch boundaries and captured caller selections without unrelated rows"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX cleanup recognizes an already-owned Linux teardown sentinel while requiring final reaping"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity"
     }
   ],
   "review-benchmark-multi": [
