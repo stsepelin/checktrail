@@ -9,8 +9,13 @@ import { availableParallelism, tmpdir } from "node:os";
 import { pathToFileURL, fileURLToPath, URL } from "node:url";
 import { run } from "node:test";
 
+// Darwin process ownership uses bounded host-wide ps snapshots. Admit fewer
+// shared files there so native fixture workers do not exhaust that observation.
 export const testFileWorkerLimit = () =>
-  Math.max(1, Math.min(4, availableParallelism()));
+  Math.max(
+    1,
+    Math.min(process.platform === "darwin" ? 2 : 4, availableParallelism()),
+  );
 
 const exclusiveFullSuiteFiles = Object.freeze([
   "gate-javascript-extensions.test.js",
