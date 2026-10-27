@@ -61,8 +61,19 @@ controls pass; the later macOS development corpus retains every observed failure
 The earlier foundation receipt remains an unchanged historical checkpoint.
 These parser guards do not prove arbitrary JavaScript runtime or loader validity.
 
-The broader Gate A consumer-impact profile remains pending: native
-producer/consumer chains for every advertised language, whole-profile frozen
-nine-case source and fresh installed acceptance, and final acceptance bindings
-still need measurement. No inference, field evaluation or review-quality claim
+The Go, Python, PHP and Rust source-context witnesses additionally execute both
+captured consumer functions and bind the producer and consumer file digests to
+physical native output. Rust also includes the captured crate entry and checks
+the file bytes read by the native witness. A caller-only argument change must
+change the caller result while leaving the producer controls intact. The PHP
+and Rust controls additionally reject a witness changed to call the producer
+directly. Broken, repaired and valid adjacent cases repeat through their existing
+required source and offline installed profiles. These checks do not promote
+advisory context edges into validation selection.
+
+The [whole frozen profile](CONSUMER-ACCEPTANCE.md) now has original synthetic
+source and offline installed development controls. The broader Gate A
+consumer-impact profile remains pending: the selected runtime matrix, native
+producer/consumer witness reconciliation for every advertised language, and final
+acceptance bindings still need measurement. No inference, field evaluation or review-quality claim
 follows from this foundation.

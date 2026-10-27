@@ -73,3 +73,9 @@ provider protocols, including failed and successful attempts; they contact no
 provider. External Codex/Claude host usage remains unknown unless independently
 supplied. The complete call-family and frozen runtime receipt reconciliation,
 artifact/license closure, evaluation protocol freeze and Gate A remain pending.
+
+The shared named-profile collector uses the same bounded fresh callback workers
+and 600-second collection allowance for `attempt-archives` as the runtime
+controller. Individual callback deadlines and production execution/cleanup limits
+remain unchanged. Implementation and receipt collection are declared separately
+from the still-pending selected runtime and artifact/license qualification.

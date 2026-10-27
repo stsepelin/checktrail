@@ -2581,6 +2581,22 @@
     {
       "file": "dist/test/windows-contract.test.js",
       "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows resource counters retain native CPU precision and direct working-set scope with valid zero and numeric boundaries"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace establishes private access before fixed source or command data and removes its owned namespace"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace refuses private-access failure before every data write or process launch"
     }
   ],
   "windows-process": [
@@ -2627,6 +2643,38 @@
     {
       "file": "dist/test/windows-process.test.js",
       "name": "native Windows guardian job cleanup does not depend on exit of the still-living launcher"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows resource counters retain native CPU precision and direct working-set scope with valid zero and numeric boundaries"
+    },
+    {
+      "file": "dist/test/windows-resource.test.js",
+      "name": "Windows unavailable resource collection retains its exact API stage and error instead of successful zero counters"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows resource collection preserves a failed target exit and collects only after owned-job cleanup"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows source integrity refuses changed fixed compiler bytes before project execution"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace establishes private access before fixed source or command data and removes its owned namespace"
+    },
+    {
+      "file": "dist/test/windows-workspace.test.js",
+      "name": "Windows process workspace refuses private-access failure before every data write or process launch"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "name": "native Windows bootstrap protects a new workspace under a broadly readable temp parent before writing source or request data"
     }
   ],
   "physical-process-output": [
@@ -5807,6 +5855,216 @@
     {
       "file": "dist/test/attempt-runtime-evidence.test.js",
       "name": "attempt installation requires the platform-specific foundation and cannot borrow a passing whole-profile count"
+    }
+  ],
+  "consumer-impact": [
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact installed acceptance"
+    }
+  ],
+  "consumer-runtime-bindings": [
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime requirements preserve every frozen case and immutable unique source and installed harness inputs"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime selection rejects wrong Node platform architecture host image and native image boundaries even outside hosted CI"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime installation binds current runtime engine package harness SDK and exact non-skipped terminal cases without qualifying evaluation"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime CLI rejects missing unknown and extra hosted slots before emitting qualifying evidence"
+    }
+  ],
+  "consumer-impact-foundation": [
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "captured imports expose an undeclared consumer and full validation retains its native failure"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "a declared transitive graph retains affected consumers and omits the independent project"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "captured file edges follow reexports and unowned bridges without treating a project prefix as ownership"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "literal shared JSON reads reconcile the physical producer for named synchronous and asynchronous readers"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "unknown source and resource families retain the full shared engine plan"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "literal dynamic imports and CommonJS exact imports expose a missing graph without executing source"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "stale, excluded, empty, unsupported and exhausted import observations stay unknown"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "CommonJS module loaders retain full validation and its actual consumer assertion failure"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "compiler-dependent syntax in JavaScript retains full validation while ordinary keyword spellings remain resolved"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "workspace impact follows transitive consumers, terminates cycles and falls back for uncertain ownership"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "Git scopes committed, staged, unstaged, untracked and renamed files without running filters"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "Git selection falls back for missing history, root changes, incomplete graphs and tracked excluded content"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "worktrees have separate identities and metadata changes during validation invalidate pass"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "unresolved index stages and project-local Git executables cannot narrow or execute project code"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "CLI and MCP share startup-selected Git scope and tool calls cannot change the base"
+    },
+    {
+      "file": "dist/test/impact.test.js",
+      "name": "impact metrics reconcile retained, omitted, changed and incomplete failures without dropping observations"
+    },
+    {
+      "file": "dist/test/impact.test.js",
+      "name": "native impact measurement retains a transitive assertion failure and exposes a misdeclared graph"
+    },
+    {
+      "file": "dist/test/impact.test.js",
+      "name": "impact snapshots account for each paired observation, assertion identity and frozen case"
+    }
+  ],
+  "consumer-foundation-bindings": [
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer foundation binds every original top-level and nested control while refusing renamed removed or duplicate source requirements"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer foundation rejects missing skipped or extra nested events forged totals foreign files and broken terminal bindings"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer installation requires the matching foundation even when all whole-feature callbacks pass"
+    }
+  ],
+  "windows-resource-workloads": [
+    {
+      "file": "dist/test/windows-resource-workload-native.test.js",
+      "name": "native Windows resource workloads bind small large and polyglot validation jobs to output archive and whole-worker counters"
+    },
+    {
+      "file": "dist/test/windows-resource-workload-native.test.js",
+      "name": "native Windows resource measurement refuses original broken and stale workloads before publishing task storage"
+    }
+  ],
+  "windows-resource-workload-bindings": [
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload accounting sums distinct job CPU retains direct peaks and counts identical tool aliases once"
+    },
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload accounting rejects unavailable incomplete contradictory and reused native resource evidence"
+    },
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload accounting includes distinct version commands and refuses their unverified physical output"
+    },
+    {
+      "file": "dist/test/windows-resource-workloads.test.js",
+      "name": "Windows workload CPU aggregation preserves exact safe boundaries and refuses overflow across otherwise valid jobs"
+    }
+  ],
+  "resource-release-readiness": [
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "name": "resource-release-readiness installed acceptance"
     }
   ]
 }

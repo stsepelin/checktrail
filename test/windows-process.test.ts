@@ -21,6 +21,8 @@ import { randomUUID } from "node:crypto";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { once } from "node:events";
+import { windowsNativeCode } from "../src/windows-native.js";
+import { ensureWindowsTaskAccess } from "../src/windows-task-access.js";
 import { windowsReceiptSchema } from "../src/windows-execution.js";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
@@ -662,6 +664,7 @@ test(
       await mkdtemp(path.join(tmpdir(), "checktrail-windows-")),
     );
     t.after(() => rm(owned, { recursive: true, force: true }));
+    ensureWindowsTaskAccess(owned, "directory", true);
     const temporary = path.join(owned, "original-command");
     await mkdir(temporary);
     const requestId = randomUUID(),
@@ -677,6 +680,10 @@ test(
     });
     const systemRoot = process.env.SystemRoot ?? process.env.SYSTEMROOT;
     assert.ok(systemRoot);
+    await writeFile(path.join(owned, "native.cs"), windowsNativeCode, {
+      flag: "wx",
+      mode: 0o600,
+    });
     await writeFile(path.join(owned, "owner-id"), requestId, { flag: "wx" });
     await writeFile(
       path.join(owned, "request.json"),
@@ -737,7 +744,16 @@ test(
     const siblingClosed = once(sibling, "close");
     let state: Awaited<ReturnType<typeof jsonFile>> = null;
     try {
-      state = await waitFor(() => jsonFile(ids));
+      state = await waitFor(async () => {
+        const observed = await jsonFile(ids);
+        if (observed) return observed;
+        assert.equal(
+          guardian.exitCode,
+          null,
+          "Native guardian exited before readiness: " + error,
+        );
+        return null;
+      });
       const receipt = await treeReceipt(state);
       assert.equal(receipt.supervisorPid, guardian.pid);
       assert.ok(

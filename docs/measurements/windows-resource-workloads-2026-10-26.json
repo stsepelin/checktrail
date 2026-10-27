@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26",
+  "scope": "independent-Windows-CPU-scopes-and-synthetic-native-workloads",
+  "workflowRun": "https://github.com/stsepelin/checktrail/actions/runs/40401494663",
+  "job": 121848222588,
+  "diagnosticCommit": "da98d981db76d696a21417d5484dbd9c6169eebb",
+  "featureComponentCommit": "c14c9765f7cf7ae55b916791393a8a6b92882519",
+  "featureComponentsByteIdentical": [
+    {
+      "file": "src/windows-native.ts",
+      "sha256": "3dcb3ffbf13eb0e8b80f5ea9aaf5bc496968d3af6c56dd74c815221a23a2df70"
+    },
+    {
+      "file": "src/windows-process.ts",
+      "sha256": "25f8a0a7ea1226ab0b038c0f01f91fd48eecfa86994d54ae665ff9fcf71e86fe"
+    },
+    {
+      "file": "src/windows-execution.ts",
+      "sha256": "17277356465f458c4f01ff8807fa6c1ed1a859a97e347a681529e2db56dccd1b"
+    },
+    {
+      "file": "test/windows-resource.test.ts",
+      "sha256": "ac81bc90e5d5cff05fb82258b8687b387a7f3b7abf6e9a66267ebb7bc84767eb"
+    },
+    {
+      "file": "test/windows-resource-native.test.ts",
+      "sha256": "2b52158df3cc950a2f489882774291b0ab7a3da6050c5f8d193dd3a67c3777d1"
+    },
+    {
+      "file": "test/windows-resource-workloads.test.ts",
+      "sha256": "b2530ef0bf051830eb072af76cef95c2fa4a4021e0f1b49b90bf2ecc3e74b7a1"
+    },
+    {
+      "file": "scripts/verify-windows-resource-guards.mjs",
+      "sha256": "ef1d28692cf4f22229b413975567ecbeff29a2be3e4fcd4a7b14ecc1afc71f25"
+    }
+  ],
+  "nativeCohorts": {
+    "source": {
+      "profiles": [
+        {
+          "profile": "windows-process",
+          "required": 19
+        },
+        {
+          "profile": "physical-process-output",
+          "required": 4
+        },
+        {
+          "profile": "windows-resource-workload-bindings",
+          "required": 4
+        },
+        {
+          "profile": "windows-resource-workloads",
+          "required": 2
+        }
+      ],
+      "required": 29,
+      "passed": 29,
+      "complete": true,
+      "ledgerCases": 29,
+      "terminalEvents": 29,
+      "ledgerTruncated": false,
+      "allTestFilesStable": true,
+      "compiledEngineTreeSha256": "2d176ba1f5988ca78a698832287ca4e6cfde490e2a4064a738b76e054d5ef594",
+      "compiledEngineManifestSha256": "b11373e98c0a40f8c2df2ec7d5c56abde9daea82350e22dd08589472a441f1ba",
+      "compiledEngineBeforeAfterUnchanged": true,
+      "rawStageLogMember": "resources/9_Require original native execution and resource controls.txt",
+      "rawStageLogSha256": "0c37281cf9d97315c0cbc428eee39e54a2339a3a66797b03219efb3586446b6b"
+    },
+    "fresh": {
+      "profiles": [
+        {
+          "profile": "windows-process",
+          "required": 19
+        },
+        {
+          "profile": "physical-process-output",
+          "required": 4
+        },
+        {
+          "profile": "windows-resource-workload-bindings",
+          "required": 4
+        },
+        {
+          "profile": "windows-resource-workloads",
+          "required": 2
+        }
+      ],
+      "required": 29,
+      "passed": 29,
+      "complete": true,
+      "ledgerCases": 29,
+      "terminalEvents": 29,
+      "ledgerTruncated": false,
+      "allTestFilesStable": true,
+      "compiledEngineTreeSha256": "2d176ba1f5988ca78a698832287ca4e6cfde490e2a4064a738b76e054d5ef594",
+      "compiledEngineManifestSha256": "b11373e98c0a40f8c2df2ec7d5c56abde9daea82350e22dd08589472a441f1ba",
+      "compiledEngineBeforeAfterUnchanged": true,
+      "rawStageLogMember": "resources/11_Require the same controls in a fresh offline production package.txt",
+      "rawStageLogSha256": "ad319920f04339d93fa052380cdffb41948773a8834f478fae2d9a1f59d8ed54",
+      "tarballSha256": "36f1fa29404f1d166a690f5282e6b868e415473435c62bb24dd1624a56fdeb83",
+      "harnessSha256": "39096d6c4def7c479490dbd117e07f5df569930dde7950229bdcb89d3f23b2a3",
+      "harnessInputsUnchanged": true,
+      "harnessOutsideInstalledPackage": true,
+      "environment": {
+        "node": "v22.23.3",
+        "platform": "win32",
+        "arch": "x64"
+      }
+    },
+    "privateNamespaceGuard": {
+      "callback": "native Windows bootstrap protects a new workspace under a broadly readable temp parent before writing source or request data",
+      "sourceSha256": "086933830276123e173dac9707d43faf0cd5f167b722fa52a852e29d2b0a6897",
+      "callbackSha256": "cabab560147904206e5ea3a21f2c7cf4c665da4cd478af0c5068894bd3fd4cdd",
+      "mutantSha256": "914d54a741c1d156f265e2f45b35c625a5a1bb403dbc0e95372adf43b1944937",
+      "originalPassed": true,
+      "removedAccessGuardFailed": true,
+      "restoredPassed": true,
+      "sourceRestored": true,
+      "callbacksUnchanged": true
+    }
+  },
+  "nativeResourceGuards": {
+    "controls": [
+      {
+        "id": "job-user-not-direct-target-user",
+        "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "fc6b7e9210b9943dfafd0d7813d69c41346ccc1715940c2197b5bc871b4cdc5f"
+      },
+      {
+        "id": "job-kernel-not-direct-target-kernel",
+        "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "e862f89fd8d70fa0605ddd4f6274550a9541512ce721f0a1e7cde4edace9ed57"
+      },
+      {
+        "id": "direct-working-set-not-commit",
+        "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "0e98873e34d76cbbd956cdf592e6fccf0908595a4fd997adc673608a5b37e7b1"
+      },
+      {
+        "id": "separate-native-cpu-fields",
+        "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "9c815c7941d1dafa55268f084b00e253dccafef2d958be56d450d0382adb56c7"
+      },
+      {
+        "id": "fixed-source-digest-before-project",
+        "callback": "native Windows source integrity refuses changed fixed compiler bytes before project execution",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "372ea773a942278df3a07ebfca5280371dbb74f3c8deee572b7518494399322e"
+      }
+    ],
+    "sourceSha256": "a630c81624b9196377a7989da9801162f1ef1da677e072f0d2cb83136eae4d21",
+    "callbackSha256": "cabab560147904206e5ea3a21f2c7cf4c665da4cd478af0c5068894bd3fd4cdd",
+    "sourceRestored": true,
+    "callbacksUnchanged": true,
+    "complete": true,
+    "rawStageLogMember": "resources/12_Remove and restore native resource guards.txt",
+    "rawStageLogSha256": "9f15942e57e1bd35ffe9c539705bb8789b0ad46330fbde18657855f7d7d17597"
+  },
+  "wholeCurrentSourceMatrixQualified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "resourceReleaseReadinessProfileComplete": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { gunzipSync } from "node:zlib";
+import { createHash } from "node:crypto";
 import {
   windowsNativeCode,
+  windowsNativeSourceSha256,
   windowsCompressedNative,
   windowsCompressedSupervisor,
   windowsSupervisorScript,
@@ -18,6 +20,7 @@ test("Windows literal argument encoding follows exact quote backslash empty and 
   assert.equal(
     gunzipSync(Buffer.from(windowsCompressedNative, "base64")).toString("utf8"),
     windowsNativeCode,
+    windowsNativeSourceSha256,
   );
   assert.equal(
     gunzipSync(Buffer.from(windowsCompressedSupervisor, "base64")).toString(
@@ -29,6 +32,15 @@ test("Windows literal argument encoding follows exact quote backslash empty and 
     Buffer.from(windowsEncodedSupervisor, "base64").toString("utf16le"),
     windowsLauncherScript,
   );
+  assert.equal(
+    windowsNativeSourceSha256,
+    createHash("sha256").update(windowsNativeCode, "utf8").digest("hex"),
+  );
+  assert.ok(
+    windowsSupervisorScript.includes("'" + windowsNativeSourceSha256 + "'"),
+  );
+  assert.ok(windowsSupervisorScript.includes("WINDOWS_NATIVE_SOURCE_CHANGED"));
+  assert.equal(windowsSupervisorScript.includes(windowsNativeCode), false);
   assert.equal(quoteWindowsArgument(""), '""');
   assert.equal(quoteWindowsArgument("ordinary"), '"ordinary"');
   assert.equal(quoteWindowsArgument('a"b'), '"a\\"b"');

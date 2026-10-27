@@ -77,7 +77,7 @@ async function original(t: TestContext, policy = broken) {
 }
 async function witness(root: string) {
   const program =
-    'import importlib.util,json,sys; spec=importlib.util.spec_from_file_location("original_fixture",sys.argv[1]); unit=importlib.util.module_from_spec(spec); spec.loader.exec_module(unit); values=["grant:read","grantToken","grant2","other"]; print(json.dumps({"python":list(sys.version_info[:3]),"cases":[{"input":value,"actual":unit.decision(value)} for value in values]}))';
+    'import importlib.util,json,sys,types,pathlib,hashlib; directory=pathlib.Path(sys.argv[1]).parent; package=types.ModuleType("pkg"); package.__path__=[str(directory)]; sys.modules["pkg"]=package; spec=importlib.util.spec_from_file_location("pkg.policy",sys.argv[1]); unit=importlib.util.module_from_spec(spec); sys.modules[spec.name]=unit; spec.loader.exec_module(unit); package.policy=unit; callerSpec=importlib.util.spec_from_file_location("pkg.consumer",str(directory/"consumer.py")); caller=importlib.util.module_from_spec(callerSpec); sys.modules[callerSpec.name]=caller; callerSpec.loader.exec_module(caller); values=["grant:read","grantToken","grant2","other"]; print(json.dumps({"python":list(sys.version_info[:3]),"cases":[{"input":value,"actual":unit.decision(value)} for value in values],"consumers":[caller.submit(),caller.route()],"sources":{name:hashlib.sha256((directory/name).read_bytes()).hexdigest() for name in ["policy.py","consumer.py"]}}))';
   const native = await runProcess(
     root,
     {
@@ -85,7 +85,7 @@ async function witness(root: string) {
       args: ["-I", "-B", "-c", program, path.join(root, "pkg/policy.py")],
       cwd: ".",
     },
-    { timeoutMs: 5000, maxOutputBytes: 65536 },
+    { timeoutMs: 5000, maxOutputBytes: 65536, captureRawOutput: true },
   );
   assert.equal(native.exitCode, 0, native.stderr);
   assert.equal(native.errorCode, undefined);
@@ -93,8 +93,16 @@ async function witness(root: string) {
   assert.equal(native.cancelled, false);
   assert.equal(native.truncated, false);
   assert.equal(native.stderr, "");
+  assert.equal(native.capturedOutput?.completeForObservedStreams, true);
+  assert.equal(native.capturedOutput?.stdout.sha256, hash(native.stdout));
   const receipt = JSON.parse(native.stdout);
   assert.equal(receipt.cases.length, 4);
+  assert.equal(receipt.consumers.length, 2);
+  for (const name of ["policy.py", "consumer.py"])
+    assert.equal(
+      receipt.sources[name],
+      hash(await readFile(path.join(root, "pkg", name), "utf8")),
+    );
   return receipt;
 }
 function bindings(result: ReturnType<typeof analysis>) {
@@ -156,6 +164,15 @@ test("context-python broken acceptance", async (t) => {
     live.cases.map((item: { actual: boolean }) => item.actual),
     [true, true, true, false],
   );
+  assert.deepEqual(live.consumers, [true, true]);
+  const callerPath = path.join(root, "pkg/consumer.py"),
+    callerBytes = await readFile(callerPath, "utf8");
+  try {
+    await writeFile(callerPath, callerBytes.replace('"grantToken"', '"other"'));
+    assert.deepEqual((await witness(root)).consumers, [false, true]);
+  } finally {
+    await writeFile(callerPath, callerBytes);
+  }
   const fn = result.functions.find((fn) => fn.name === "decision")!;
   const file = context.files.find((file) => file.path === fn.file)!;
   assert.equal(
@@ -251,6 +268,7 @@ test("context-python fixed acceptance", async (t) => {
   const { root, result } = await original(t, fixed);
   bindings(result);
   const live = await witness(root);
+  assert.deepEqual(live.consumers, [false, true]);
   assert.deepEqual(
     live.cases.map((item: { actual: boolean }) => item.actual),
     [true, false, false, false],
@@ -263,6 +281,7 @@ test("context-python near-miss acceptance", async (t) => {
   await callIdentityFixture(t, "python", true);
   const { root, result } = await original(t, near);
   bindings(result);
+  assert.deepEqual((await witness(root)).consumers, [false, true]);
   assert.deepEqual(
     (await witness(root)).cases.map((item: { actual: boolean }) => item.actual),
     [true, false, false, false],

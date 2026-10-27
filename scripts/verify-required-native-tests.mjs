@@ -77,6 +77,10 @@ const timeoutMs =
     ? 300000
     : fullSuite ||
         selection.includes("tasks-matrix") ||
+        selection.includes("consumer-impact") ||
+        selection.includes("attempt-archives") ||
+        selection.includes("windows-resource-workloads") ||
+        selection.includes("resource-release-readiness") ||
         selection.includes("dotnet-method") ||
         selection.includes("jvm-wrappers") ||
         selection.includes("kotlin-extensions") ||
@@ -142,8 +146,12 @@ const isolatedCaseWorkers =
   (selection.some((profile) =>
     [
       "tasks-matrix",
+      "windows-resource-workloads",
+      "resource-release-readiness",
       "tasks-runtime-manifest",
       "tasks-runtime-cli",
+      "consumer-impact",
+      "attempt-archives",
       "native-harness-cleanup",
       "tasks-runtime-startup",
       "go-extensions",
