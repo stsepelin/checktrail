@@ -348,3 +348,11 @@ failing unit regression and narrow negative controls. The separate native
 diagnostics did not reproduce the intermittent hosted cleanup/readiness failures,
 so those failures are not attributed to this correction. Final matrix and
 artifact/license closure remain open.
+
+The [Linux diagnostic follow-up](measurements/lifecycle-ci-diagnostics-2026-10-27.json)
+records five passing original installed-lifecycle replays under CPU load, with
+concurrent traced waves and restored compiled inputs. The original hosted failure
+was not reproduced, so its cause remains unconfirmed. The package verifier now
+places structured failed-case details before progress logs; malformed or crashed
+collectors retain bounded raw diagnostics. A regression covers both paths and
+the message bound. Terminal assertions and execution deadlines are unchanged.
