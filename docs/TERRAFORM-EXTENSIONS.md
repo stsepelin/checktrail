@@ -136,3 +136,5 @@ source-time and member metadata. The separate earlier executable rebuild has the
 same member hash. This packaging run reused the release member bytes and did not
 repeat a combined source-to-ZIP build. Original publisher compiler patch, complete
 component notices and preparation/receipt admission remain open.
+
+The separate [original producer binding](measurements/artifact-identities-2026-10-21/provider-original-producer-binding.json) retains the tagged public release log and exact original verification receipt. The log resolves the packaging compiler patch to Go 1.24.13 on Linux x64, while the provider compiler is Go 1.26.8. Both original build results report the selected executable and ZIP digests. The upstream mode reports reproducibility and skips its enforcement step; these observations do not reproduce compiler/bootstrap, runner/SDK or full action builds, establish complete notices, or close Gate A.

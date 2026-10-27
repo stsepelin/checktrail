@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Original physical file-admission regression and local contention follow-up; whole-suite verification of the changed policy remains pending.",
+  "precedingFullCheck": {
+    "sourceCommit": "91e634caca87d6ac53e33e1e05b7ee37774a8d34",
+    "command": "npm run check",
+    "exitCode": 1,
+    "elapsedSeconds": 1388.461898583,
+    "tests": 2286,
+    "pass": 1519,
+    "fail": 6,
+    "skipped": 761,
+    "sharedBatch": {
+      "tests": 2204,
+      "pass": 1437,
+      "fail": 6,
+      "skipped": 761
+    },
+    "exclusiveBatch": {
+      "tests": 82,
+      "pass": 82,
+      "fail": 0,
+      "skipped": 0
+    },
+    "logSha256": "cb01ac1368c2900747b6cd7a6f1d0d64136bea08bb2a63dc24825db0f1608f82",
+    "explicitCleanupUnavailableFailures": [
+      "native Clang validates mixed C/C++ public sources and headers, catches type errors and never emits objects or runs code",
+      "native Go ordinary and race checks use independent tags and exclusions",
+      "lifecycle-platforms installed acceptance"
+    ],
+    "otherFailures": [
+      "confidence-provenance installed acceptance",
+      "multi-candidate-workflow installed acceptance",
+      "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators"
+    ],
+    "allFailuresAttributedToSnapshotTimeouts": false
+  },
+  "admission": {
+    "darwinSharedWorkerCeiling": 2,
+    "otherPlatformSharedWorkerCeiling": 4,
+    "availableParallelismStillBoundsBoth": true,
+    "exclusiveNativeFilesPreserved": true,
+    "callbackSelectionReduced": false,
+    "nativeExecutionBudgetChanged": false,
+    "nativeSnapshotTimeoutChanged": false,
+    "nativeCleanupDeadlineChanged": false,
+    "nativeIdentityOrOutcomeGuardChanged": false,
+    "productionEngineSourceChanged": false
+  },
+  "physicalRegression": {
+    "file": "test/test-suite-scheduling.test.ts",
+    "name": "full suite bounds measured native file admission while retaining parallel bodies and later failures",
+    "sourceSha256": "47fa3d10cf7d044e3afec22c4a9c51f44e4d85d3b678518120d8b4681178b765",
+    "actualSeparateFileProcesses": 6,
+    "everyLaterUnlistedBodyRetained": true,
+    "deliberateNativeFileFailuresRetained": true,
+    "oldHarnessSha256": "c6dc443bdfc108423ef6aac98a4d7df5af5603fa0c2ea795ccbf3c79d57ff362",
+    "oldPolicyObservedConcurrency": 4,
+    "redExitCode": 1,
+    "redLogSha256": "9d45b7947ba1285d949631c71aa6b005095d934154b5f856383cfd28baa36c18",
+    "changedHarnessSha256": "099686ee8146c5e1054b46fb1f94712d3bbb7a1d858cd7142c02346a25399b68",
+    "allSchedulingControls": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "skipped": 0,
+      "logSha256": "23078aeb613b0fc11ffdc0c3827e467511b0ea58940979f45fcf90c5273fceea"
+    },
+    "parallelAdmissionStillRequired": true
+  },
+  "wholeSuiteOnChangedPolicyPassed": false,
+  "performanceImprovementMeasured": false,
+  "selectedFinalRuntimeQualified": false,
+  "completeProducerBuildClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

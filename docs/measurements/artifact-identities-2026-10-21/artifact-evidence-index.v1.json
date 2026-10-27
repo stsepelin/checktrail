@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 191,
+  "retainedReferences": 206,
   "files": [
     {
       "file": "README.md",
@@ -220,18 +220,18 @@
     },
     {
       "file": "provider-independent-rebuild.json",
-      "bytes": 7618,
-      "sha256": "008a20d3fcab28e1205f952c6aef491c9717a8cbab2796f4c78b3bf26c84cfde"
+      "bytes": 8148,
+      "sha256": "75de022d96efa7e8a20b6305c5956fe1ec893bf4c97e2e07500562cefd40ec50"
     },
     {
       "file": "provider-independent-zip-repack.json",
-      "bytes": 10094,
-      "sha256": "075dc968b41c7b272e421c23434e95b52066d1c53bd9db2a911a8123b995dd0b"
+      "bytes": 10624,
+      "sha256": "6b1e6d7083a97fa3b6dafeedfa49dc942de0049f7be073e1041e3ab6f41a411f"
     },
     {
       "file": "provider-notice-inventory.json",
-      "bytes": 171546,
-      "sha256": "e735bc3c2ff4f24b85edc62d8bd706fec20b30c25e954c69a07fbf6bc422cb8d"
+      "bytes": 172102,
+      "sha256": "da2e940db4dbced2fe73004b3ab653ec25a418bd0032773f75424472440e30e2"
     },
     {
       "file": "provider-notices/05f5cf488584cf7c3df139be6bea283691166366c511d29940602f295975448f.txt",
@@ -484,6 +484,66 @@
       "sha256": "fd22bd65488f4f6038e8fd9c511f420d3c3ea4fb904a72759cf7ee814756740e"
     },
     {
+      "file": "provider-original-producer-binding.json",
+      "bytes": 7414,
+      "sha256": "da21c6b1db4cbef54bf89af5d90d307b5b7767ccc047e7f2cbcbc3d2d8002ddf"
+    },
+    {
+      "file": "provider-producer-inputs/original-producer-verification.json.txt",
+      "bytes": 8502,
+      "sha256": "1de253e3b5666b606fecbf31ec99818bf37e09ec0b613bf01d613f11eb83d7bc"
+    },
+    {
+      "file": "provider-producer-inputs/original-provider-build.yml.txt",
+      "bytes": 8035,
+      "sha256": "43be3bf498600d91b70c367bd29b703e66f0d0f1f6f044bc3165ba5e7c59360e"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-01.txt",
+      "bytes": 1216,
+      "sha256": "fbd8dd836fff346307d4f7c9b2d93f6ddc526f670c5db8e8020ca3d0fd1ce76c"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-02.txt",
+      "bytes": 861,
+      "sha256": "3198c26bb99038d69344499359fffa16442071f53a413e76a79ef063539c7217"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-03.txt",
+      "bytes": 1144,
+      "sha256": "6bb2769cb0e77934de4e41a16b074edb3094a4b73ad0380fc0228545d22f8379"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-04.txt",
+      "bytes": 2607,
+      "sha256": "1e435cdbdad33278f77ac6001a62c32751baa6fc97704e790a4c3da7eb2e2564"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-05.txt",
+      "bytes": 1517,
+      "sha256": "be982ab69ef298aca47575634b529f65bdd83214fed2e716921e54c93d32aee2"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-06.txt",
+      "bytes": 5289,
+      "sha256": "fa4808915374564423c608a670e7f2ea80a1effdcafcaec007e76ef3d6a6f062"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-07.txt",
+      "bytes": 6693,
+      "sha256": "5a123c54ada8fb236cf672a002d217c54f863e423accf1f70dbea3fb910f14d2"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-08.txt",
+      "bytes": 258,
+      "sha256": "eb58dba9865c4f6acd8e62f3b70502202d93bebc5bde35465315d67fc784b64c"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-09.txt",
+      "bytes": 3013,
+      "sha256": "ea02e2b1e76d40b1d5e98f597da850e37b91c3c0545cfb23ddb7934163da67e1"
+    },
+    {
       "file": "provider-public-key.asc",
       "bytes": 7717,
       "sha256": "c2f5bc1163bd8d15a711616b587bcede212d045a5b8b52df01c74095897cd065"
@@ -540,8 +600,8 @@
     },
     {
       "file": "random-provider.json",
-      "bytes": 7553,
-      "sha256": "6629ae345e61934a740a6933e085f47ee715077d881241a937a0d1403d88e134"
+      "bytes": 8200,
+      "sha256": "49f05517386aa0eaf955a5b4ae18b01050cbe5e95f7a85951fd48ec6edf42cfa"
     },
     {
       "file": "scala-LICENSE",

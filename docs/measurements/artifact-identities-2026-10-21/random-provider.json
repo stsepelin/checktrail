@@ -130,8 +130,8 @@
         },
         {
           "file": "provider-independent-rebuild.json",
-          "bytes": 7618,
-          "sha256": "008a20d3fcab28e1205f952c6aef491c9717a8cbab2796f4c78b3bf26c84cfde",
+          "bytes": 8148,
+          "sha256": "75de022d96efa7e8a20b6305c5956fe1ec893bf4c97e2e07500562cefd40ec50",
           "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
         }
       ]
@@ -140,8 +140,8 @@
       "retainedInputs": [
         {
           "file": "provider-notice-inventory.json",
-          "bytes": 171546,
-          "sha256": "e735bc3c2ff4f24b85edc62d8bd706fec20b30c25e954c69a07fbf6bc422cb8d",
+          "bytes": 172102,
+          "sha256": "da2e940db4dbced2fe73004b3ab653ec25a418bd0032773f75424472440e30e2",
           "generation": "Reconciled native package metadata and exact public source/module/SDK notice bytes; stronger closure remains unverified."
         }
       ],
@@ -159,15 +159,15 @@
       "retainedInputs": [
         {
           "file": "provider-independent-zip-repack.json",
-          "bytes": 10094,
-          "sha256": "075dc968b41c7b272e421c23434e95b52066d1c53bd9db2a911a8123b995dd0b"
+          "bytes": 10624,
+          "sha256": "6b1e6d7083a97fa3b6dafeedfa49dc942de0049f7be073e1041e3ab6f41a411f"
         }
       ]
     }
   },
   "remainingInputs": [
     "Reconcile exact linked module, copied/generated and Go runtime/standard-library notices.",
-    "Complete build-tool and linked-component provenance/notice coverage beyond the independently rebuilt executable. The selected ZIP bytes now match a separate Go 1.24 packaging reconstruction. The original publisher CLI compiler patch and full action/tool enforcement semantics remain unverified.",
+    "Complete build-tool and linked-component provenance/notice coverage beyond the independently rebuilt executable. The selected ZIP bytes match a separate Go 1.24.13 packaging reconstruction, and the original tagged public log now reports Go 1.24.13 linux/amd64 for packaging. Compiler/bootstrap, runner/SDK, transitive notice and full action build/enforcement closure remain unverified.",
     "Integrate scoped signature evidence into preparation and physical receipt admission before changing runtime flags."
   ],
   "preparationAndReceiptIntegrationVerified": false,
@@ -175,5 +175,20 @@
   "gateAComplete": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "observationsUpdatedAt": "2026-10-21T18:44:19.265222+00:00"
+  "observationsUpdatedAt": "2026-10-21T18:44:19.265222+00:00",
+  "originalProducerFollowUpObservedAt": "2026-10-27",
+  "originalProducerFollowUp": {
+    "packagingCompilerPatchObservedFromOriginalLog": true,
+    "packagingCompiler": "go1.24.13 linux/amd64",
+    "providerCompiler": "go1.26.8 linux/amd64",
+    "originalRunReportsSameExecutableAndZip": true,
+    "completeCompilerAndSdkBuildClosureVerified": false
+  },
+  "retainedInputs": [
+    {
+      "file": "provider-original-producer-binding.json",
+      "bytes": 7414,
+      "sha256": "da21c6b1db4cbef54bf89af5d90d307b5b7767ccc047e7f2cbcbc3d2d8002ddf"
+    }
+  ]
 }

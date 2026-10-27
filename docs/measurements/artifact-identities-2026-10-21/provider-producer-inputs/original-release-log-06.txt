@@ -1,0 +1,74 @@
+2026-09-11T15:18:29.7935910Z {
+2026-09-11T15:18:29.7936437Z   "Config": {
+2026-09-11T15:18:29.7937049Z     "Product": {
+2026-09-11T15:18:29.7937719Z       "Repository": "terraform-provider-random",
+2026-09-11T15:18:29.7938638Z       "Module": "github.com/terraform-providers/terraform-provider-random",
+2026-09-11T15:18:29.7939414Z       "Name": "terraform-provider-random",
+2026-09-11T15:18:29.7940074Z       "CoreName": "terraform-provider-random",
+2026-09-11T15:18:29.7941085Z       "ExecutableName": "terraform-provider-random_v3.9.1_x5",
+2026-09-11T15:18:29.7941864Z       "Version": {
+2026-09-11T15:18:29.7942401Z         "Full": "3.9.1",
+2026-09-11T15:18:29.7943077Z         "Core": "3.9.1",
+2026-09-11T15:18:29.7943567Z Group ending.
+2026-09-11T15:18:29.7944633Z ##[endgroup]
+2026-09-11T15:18:29.7945057Z         "Meta": ""
+2026-09-11T15:18:29.7945507Z       },
+2026-09-11T15:18:29.7946018Z       "Revision": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+2026-09-11T15:18:29.7946720Z       "RevisionTime": "2026-09-11T12:35:54Z",
+2026-09-11T15:18:29.7947450Z       "SourceHash": "b59b1791a688fe2737b5b70ab05fdd0a4190190e"
+2026-09-11T15:18:29.7947990Z     },
+2026-09-11T15:18:29.7948440Z     "Parameters": {
+2026-09-11T15:18:29.7948961Z       "GoVersion": "1.26.8",
+2026-09-11T15:18:29.7950315Z       "Instructions": "go build \\\n  -o \"$BIN_PATH\" \\\n  -trimpath \\\n  -buildvcs=false \\\n  -ldflags \"-s -w\"\ncp LICENSE \"$TARGET_DIR/LICENSE.txt\"",
+2026-09-11T15:18:29.7951044Z       "OS": "linux",
+2026-09-11T15:18:29.7951374Z       "Arch": "arm64",
+2026-09-11T15:18:29.7951896Z       "ZipName": "terraform-provider-random_3.9.1_linux_arm64.zip"
+2026-09-11T15:18:29.7952340Z     },
+2026-09-11T15:18:29.7952824Z     "Paths": {
+2026-09-11T15:18:29.7953448Z       "WorkDir": "/home/runner/work/terraform-provider-random/terraform-provider-random",
+2026-09-11T15:18:29.7954651Z       "BinPath": "/home/runner/work/terraform-provider-random/terraform-provider-random/dist/terraform-provider-random_v3.9.1_x5",
+2026-09-11T15:18:29.7955778Z       "ZipPath": "/home/runner/work/terraform-provider-random/terraform-provider-random/out/terraform-provider-random_3.9.1_linux_arm64.zip",
+2026-09-11T15:18:29.7956691Z       "MetaDir": "/home/runner/work/terraform-provider-random/terraform-provider-random/meta"
+2026-09-11T15:18:29.7957186Z     },
+2026-09-11T15:18:29.7957502Z     "Tool": {
+2026-09-11T15:18:29.7957843Z       "Name": "actions-go-build",
+2026-09-11T15:18:29.7958239Z       "Version": "1.1.2",
+2026-09-11T15:18:29.7958718Z       "Revision": "dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4",
+2026-09-11T15:18:29.7959187Z       "RevisionTime": "2026-05-06T07:35:32Z"
+2026-09-11T15:18:29.7959630Z     },
+2026-09-11T15:18:29.7959940Z     "Reproducible": false
+2026-09-11T15:18:29.7960256Z   },
+2026-09-11T15:18:29.7960534Z   "Env": [
+2026-09-11T15:18:29.7960875Z     "PRODUCT_NAME=terraform-provider-random",
+2026-09-11T15:18:29.7961332Z     "PRODUCT_VERSION=3.9.1",
+2026-09-11T15:18:29.7961789Z     "PRODUCT_REVISION=b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+2026-09-11T15:18:29.7962278Z     "PRODUCT_REVISION_TIME=2026-09-11T12:35:54Z",
+2026-09-11T15:18:29.7962812Z     "OS=linux",
+2026-09-11T15:18:29.7963123Z     "ARCH=arm64",
+2026-09-11T15:18:29.7963502Z     "GOOS=linux",
+2026-09-11T15:18:29.7963987Z     "GOARCH=arm64",
+2026-09-11T15:18:29.7964326Z     "WORKTREE_DIRTY=false",
+2026-09-11T15:18:29.7964786Z     "WORKTREE_HASH=b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+2026-09-11T15:18:29.7965486Z     "TARGET_DIR=/home/runner/work/terraform-provider-random/terraform-provider-random/dist",
+2026-09-11T15:18:29.7966412Z     "BIN_PATH=/home/runner/work/terraform-provider-random/terraform-provider-random/dist/terraform-provider-random_v3.9.1_x5"
+2026-09-11T15:18:29.7967017Z   ],
+2026-09-11T15:18:29.7967282Z   "Meta": {
+2026-09-11T15:18:29.7967697Z     "Start": "2026-09-11T15:17:59.111292739Z",
+2026-09-11T15:18:29.7968140Z     "Finish": "2026-09-11T15:18:29.792854902Z",
+2026-09-11T15:18:29.7968546Z     "Duration": "30.681562169s"
+2026-09-11T15:18:29.7968858Z   },
+2026-09-11T15:18:29.7969116Z   "Zip": {
+2026-09-11T15:18:29.7969558Z     "Name": "terraform-provider-random_3.9.1_linux_arm64.zip",
+2026-09-11T15:18:29.7970456Z     "OriginalPath": "/home/runner/work/terraform-provider-random/terraform-provider-random/out/terraform-provider-random_3.9.1_linux_arm64.zip",
+2026-09-11T15:18:29.7971173Z     "Size": 5964673,
+2026-09-11T15:18:29.7971712Z     "SHA256Sum": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc"
+2026-09-11T15:18:29.7972288Z   },
+2026-09-11T15:18:29.7972729Z   "Executable": {
+2026-09-11T15:18:29.7973151Z     "Name": "terraform-provider-random_v3.9.1_x5",
+2026-09-11T15:18:29.7973951Z     "OriginalPath": "/home/runner/work/terraform-provider-random/terraform-provider-random/dist/terraform-provider-random_v3.9.1_x5",
+2026-09-11T15:18:29.7975236Z     "Size": 17039522,
+2026-09-11T15:18:29.7975754Z     "SHA256Sum": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2"
+2026-09-11T15:18:29.7976233Z   },
+2026-09-11T15:18:29.7976544Z   "Successful": true
+2026-09-11T15:18:29.7976873Z }
+2026-09-11T15:18:29.7982742Z ##[end-action id=__hashicorp_actions-go-build.__run_3;outcome=success;conclusion=success;duration_ms=30715]

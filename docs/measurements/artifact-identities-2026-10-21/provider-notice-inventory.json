@@ -4108,5 +4108,20 @@
   "providerExecuted": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "gateAComplete": false
+  "gateAComplete": false,
+  "originalProducerFollowUpObservedAt": "2026-10-27",
+  "originalProducerFollowUp": {
+    "packagingCompilerPatchObservedFromOriginalLog": true,
+    "packagingCompiler": "go1.24.13 linux/amd64",
+    "providerCompiler": "go1.26.8 linux/amd64",
+    "originalRunReportsSameExecutableAndZip": true,
+    "completeCompilerAndSdkBuildClosureVerified": false
+  },
+  "retainedInputs": [
+    {
+      "file": "provider-original-producer-binding.json",
+      "bytes": 7414,
+      "sha256": "da21c6b1db4cbef54bf89af5d90d307b5b7767ccc047e7f2cbcbc3d2d8002ddf"
+    }
+  ]
 }

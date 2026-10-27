@@ -119,3 +119,59 @@ test("native process full-suite bodies wait for the shared wave and retain every
     files.flatMap((_, index) => [String(index), "unlisted-" + index]),
   );
 });
+
+test("full suite bounds measured native file admission while retaining parallel bodies and later failures", async (t) => {
+  const repository = fileURLToPath(new URL("../../", import.meta.url));
+  const { availableParallelism } = await import("node:os");
+  const maximum = Math.max(
+    1,
+    Math.min(process.platform === "darwin" ? 2 : 4, availableParallelism()),
+  );
+  const root = await fixture(t, { "package.json": '{"type":"module"}' });
+  await mkdir(path.join(root, "dist/test"), { recursive: true });
+  await mkdir(path.join(root, "scripts"));
+  for (const file of ["run-test-suite.mjs", "required-test-evidence.mjs"])
+    await cp(
+      path.join(repository, "scripts", file),
+      path.join(root, "scripts", file),
+    );
+  for (let index = 0; index < 6; index++)
+    await writeFile(
+      path.join(root, "dist/test", `ordinary-${index}.test.js`),
+      `import{test}from'node:test';import assert from'node:assert/strict';import{writeFileSync,readdirSync,unlinkSync}from'node:fs';test('original admission ${index}',async()=>{const marker='active-${index}';writeFileSync(marker,String(process.pid));try{const active=readdirSync('.').filter(p=>p.startsWith('active-')).length;writeFileSync('observation-${index}.json',JSON.stringify({pid:process.pid,active}));await new Promise(r=>setTimeout(r,1000));assert.equal(${index},0,'Original failure remains a failure');}finally{unlinkSync(marker);}});test('later unlisted body ${index}',()=>writeFileSync('later-${index}','reached'));`,
+    );
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(process.execPath, ["scripts/run-test-suite.mjs"], {
+    cwd: root,
+    env,
+    encoding: "utf8",
+    timeout: 20000,
+    maxBuffer: 1048576,
+  });
+  assert.equal(result.error, undefined);
+  assert.equal(result.signal, null);
+  assert.equal(result.status, 1, result.stdout + result.stderr);
+  const observations = [];
+  for (let index = 0; index < 6; index++) {
+    observations.push(
+      JSON.parse(
+        await readFile(path.join(root, `observation-${index}.json`), "utf8"),
+      ),
+    );
+    assert.equal(
+      await readFile(path.join(root, `later-${index}`), "utf8"),
+      "reached",
+    );
+  }
+  assert.equal(new Set(observations.map((row) => row.pid)).size, 6);
+  const peak = Math.max(...observations.map((row) => row.active));
+  assert.ok(
+    peak <= maximum,
+    `Observed ${peak} admitted files exceeds ${maximum}`,
+  );
+  assert.ok(
+    peak >= Math.min(2, maximum),
+    "Shared native files retain parallel admission",
+  );
+});

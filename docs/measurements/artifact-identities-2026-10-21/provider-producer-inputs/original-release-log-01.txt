@@ -1,0 +1,20 @@
+2026-09-11T15:17:03.9740675Z Current runner version: '2.337.0'
+2026-09-11T15:17:03.9763606Z ##[group]Runner Image Provisioner
+2026-09-11T15:17:03.9764493Z Hosted Compute Agent
+2026-09-11T15:17:03.9765116Z Version: 20260828.587
+2026-09-11T15:17:03.9765750Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-09-11T15:17:03.9766477Z Build Date: 2026-08-28T16:44:25Z
+2026-09-11T15:17:03.9767172Z Worker ID: {2c83b10b-4bc7-4ed3-ac2f-ec12e670650d}
+2026-09-11T15:17:03.9767881Z Azure Region: westcentralus
+2026-09-11T15:17:03.9768486Z ##[endgroup]
+2026-09-11T15:17:03.9769765Z ##[group]Operating System
+2026-09-11T15:17:03.9770353Z Ubuntu
+2026-09-11T15:17:03.9771501Z 24.04.5
+2026-09-11T15:17:03.9772027Z LTS
+2026-09-11T15:17:03.9772508Z ##[endgroup]
+2026-09-11T15:17:03.9773287Z ##[group]Runner Image
+2026-09-11T15:17:03.9773911Z Image: ubuntu-24.04
+2026-09-11T15:17:03.9774499Z Version: 20260907.300.1
+2026-09-11T15:17:03.9775696Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+2026-09-11T15:17:03.9777138Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+2026-09-11T15:17:03.9778046Z ##[endgroup]
