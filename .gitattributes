@@ -19,3 +19,6 @@ docs/measurements/artifact-identities-2026-10-21/scala-asm-compiler-notices/*.tx
 # Preserve original Scala resource declaration and selected jQuery license bytes.
 docs/measurements/artifact-identities-2026-10-21/scala-resource-inputs/*.txt -text -whitespace
 docs/measurements/artifact-identities-2026-10-21/scala-component-notices/d4db9ebe6f29f5168eac45ad713f055623ac5d0dcd5ba92da23d650ae012020d.txt -text -whitespace
+
+# Preserve the selected historical font license and root declaration bytes.
+docs/measurements/artifact-identities-2026-10-21/scala-font-notices/*.txt -text -whitespace

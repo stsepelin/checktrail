@@ -7828,6 +7828,11 @@
       "file": "scala-jquery-resource-bindings.json",
       "bytes": 3912,
       "sha256": "88b6479432583c6c29e89ca1f808397faf3ca5036fa84bac31a38a2f41793b4b"
+    },
+    {
+      "file": "scala-material-font-bindings.json",
+      "bytes": 3865,
+      "sha256": "cbec52c66c642c2353bd230f10afd70cc84ece157ae1dd66e805e1e1e2bdc070"
     }
   ]
 }

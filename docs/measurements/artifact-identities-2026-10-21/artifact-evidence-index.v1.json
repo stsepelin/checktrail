@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 161,
+  "retainedReferences": 164,
   "files": [
     {
       "file": "README.md",
-      "bytes": 19486,
-      "sha256": "3250985cc39bb531ce02059448d543add0307712fb8ce8f51c5eea86931eb8ad"
+      "bytes": 20129,
+      "sha256": "89113184f7ee702f38964b252330ec576706aceffcde8224ef94650aca241fbf"
     },
     {
       "file": "dotnet-sdk-LICENSE.txt",
@@ -500,8 +500,8 @@
     },
     {
       "file": "scala-component-inventory.json",
-      "bytes": 333965,
-      "sha256": "4952e5f9e92128c6f5eb8e9285012dc702dd38e54edd8daf5eb41e9a62b0eedb"
+      "bytes": 334133,
+      "sha256": "48200a17d5c600f696b738f365abeb2e2be3e03df85e9a66831d03d2bb9e2ef3"
     },
     {
       "file": "scala-component-notices/169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988.txt",
@@ -554,6 +554,16 @@
       "sha256": "9e8132baa73e478072b91445fd86d0875ef75fe524406d032b23d0da33bb261e"
     },
     {
+      "file": "scala-font-notices/8ae9438818c26e4873b91d8c6ad620526c011e27e125677f13031eda903f007c.txt",
+      "bytes": 18524,
+      "sha256": "8ae9438818c26e4873b91d8c6ad620526c011e27e125677f13031eda903f007c"
+    },
+    {
+      "file": "scala-font-notices/d1c459ff53e651b44820cf351295f6fc9f0e0febf0bd5267834b79d1719f3979.txt",
+      "bytes": 1311,
+      "sha256": "d1c459ff53e651b44820cf351295f6fc9f0e0febf0bd5267834b79d1719f3979"
+    },
+    {
       "file": "scala-jar-signature-controls.json",
       "bytes": 3361,
       "sha256": "083a08a7937b16a31f3328f62e85084389d4110ad0c630b5de39698ddf559ada"
@@ -567,6 +577,11 @@
       "file": "scala-library-2.13.18.jar.asc",
       "bytes": 833,
       "sha256": "29df493c0f7cdd2507e85ed57830abca9667e711c0d63770bddcccb7b56fe9f7"
+    },
+    {
+      "file": "scala-material-font-bindings.json",
+      "bytes": 3865,
+      "sha256": "cbec52c66c642c2353bd230f10afd70cc84ece157ae1dd66e805e1e1e2bdc070"
     },
     {
       "file": "scala-public-key.asc",
@@ -586,7 +601,7 @@
     {
       "file": "scala2.json",
       "bytes": 9712,
-      "sha256": "75825bbcf081b9f45983e73e686f67ca115a914dd723b546020c2d62ed2f90a0"
+      "sha256": "39381944c1d1e0a4d5122c47fa057356859df5e1bfcfc9c226926145b207cdee"
     },
     {
       "file": "sigstore-trusted-root.jsonl",

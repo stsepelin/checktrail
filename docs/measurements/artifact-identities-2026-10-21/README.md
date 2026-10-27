@@ -103,3 +103,13 @@ byte/set comparisons and restoration matches. This supplies resource origin and
 notice evidence without executing JavaScript or the upstream generator. The
 minification build, compiler packaging, other generated resources and font/native
 attribution remain open.
+
+The [Material Icons font bindings](scala-material-font-bindings.json) match all
+three delivered font formats against one immutable official upstream revision.
+The original root license and README at that revision declare CC BY 4.0; those
+bytes are retained rather than replaced with a later upstream license. A changed
+font byte, an earlier valid font version and a changed notice fail the unchanged
+payload/notice comparisons; restoration matches. This accounts for the selected
+Material Icons payloads and their historical root notice. The other bundled
+fonts, actual font generation, complete attribution and native admission remain
+open.
