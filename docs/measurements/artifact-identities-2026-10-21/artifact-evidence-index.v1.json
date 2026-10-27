@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 179,
+  "retainedReferences": 180,
   "files": [
     {
       "file": "README.md",
@@ -560,8 +560,8 @@
     },
     {
       "file": "scala-component-inventory.json",
-      "bytes": 333294,
-      "sha256": "84dd823339ffc363da622914b1c9a96a02deb41ac1b99d9556c8c663784840b8"
+      "bytes": 333469,
+      "sha256": "475bf71eb778c7ce9258250a9da97e7e4ead302e7e8f520c8c2f040b69958c6c"
     },
     {
       "file": "scala-component-notices/169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988.txt",
@@ -644,6 +644,11 @@
       "sha256": "cbec52c66c642c2353bd230f10afd70cc84ece157ae1dd66e805e1e1e2bdc070"
     },
     {
+      "file": "scala-primary-font-payload-bindings.json",
+      "bytes": 4993,
+      "sha256": "fef3439fd2cd30452520003fa3ad8c3e7e8de63e7309a75f6016909a041f8a4b"
+    },
+    {
       "file": "scala-public-key.asc",
       "bytes": 2967,
       "sha256": "30b860116721fbff5b43dc6f10c2bc0d88ec284241f96eb542c694ed57ff3dd8"
@@ -661,7 +666,7 @@
     {
       "file": "scala2.json",
       "bytes": 9712,
-      "sha256": "f1e9daa3b483ded693652bb1f3664754939ab4a59b23e3dd6464603083d77638"
+      "sha256": "301a21b54080dd5640233d937b089fdf4054a21c02046b47546cbfbd0790eebe"
     },
     {
       "file": "sigstore-trusted-root.jsonl",

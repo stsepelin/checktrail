@@ -136,3 +136,8 @@ root BSD license as coverage for every file. These are declared inputs: include
 ordering and macOS SDK overrides leave actual producer header selection unknown.
 No upstream build or native binary executed for this observation, and full build,
 container, component-notice and receipt-admission closure remains open.
+
+The [primary hosted font payload observation](measurements/artifact-identities-2026-10-21/scala-primary-font-payload-bindings.json)
+binds five additional bundled documentation fonts to exact bytes served by the
+original font host. It retains the remaining resource partition and leaves
+font generation, license attribution and the complete Scala artifact closure open.
