@@ -71,10 +71,7 @@
         "src/compiler/templates/tool-windows.tmpl",
         "test/files/jvm/mkLibNatives.bat"
       ],
-      "attributeRulesVerified": [
-        "*.bat eol=crlf",
-        "*-windows.tmpl eol=crlf"
-      ],
+      "attributeRulesVerified": ["*.bat eol=crlf", "*-windows.tmpl eol=crlf"],
       "archiveBytesNormalized": false,
       "gitTree": "1deb546ec00a5eb37b23ac11c654410aa3589e56",
       "sourceCommit": "98f40d00ddcf59a802862d38a9fe79806cde59fa"
@@ -1063,9 +1060,7 @@
       "member": "LICENSE",
       "bytes": 11357,
       "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
-      "matchingSourceMembers": [
-        "LICENSE"
-      ],
+      "matchingSourceMembers": ["LICENSE"],
       "sourceBinding": "exact source bytes"
     },
     {
@@ -1093,9 +1088,7 @@
       "member": "NOTICE",
       "bytes": 634,
       "sha256": "50ce10d50898ba07e632c8913b34098521416d6eed480d44edca93bd92344a45",
-      "matchingSourceMembers": [
-        "NOTICE"
-      ],
+      "matchingSourceMembers": ["NOTICE"],
       "sourceBinding": "exact source bytes"
     },
     {
@@ -1146,9 +1139,7 @@
       "member": "rootdoc.txt",
       "bytes": 40,
       "sha256": "6910c0cab8bc7e7db6f352ed42cc332e941af4ce3802593bc036f66a9f894164",
-      "matchingSourceMembers": [
-        "src/compiler/rootdoc.txt"
-      ],
+      "matchingSourceMembers": ["src/compiler/rootdoc.txt"],
       "sourceBinding": "exact source bytes"
     },
     {
@@ -1655,18 +1646,14 @@
       "member": "templates/tool-unix.tmpl",
       "bytes": 6634,
       "sha256": "f2a77b282c65367905a8ab89766b47116997630c4e09896ffc86cf956bf2dc01",
-      "matchingSourceMembers": [
-        "src/compiler/templates/tool-unix.tmpl"
-      ],
+      "matchingSourceMembers": ["src/compiler/templates/tool-unix.tmpl"],
       "sourceBinding": "exact source bytes"
     },
     {
       "member": "templates/tool-windows.tmpl",
       "bytes": 5126,
       "sha256": "04af84be36ef53061067fa5c320d2f42ad91696ead60f72646f8e9d1dfd34bbb",
-      "matchingSourceMembers": [
-        "src/compiler/templates/tool-windows.tmpl"
-      ],
+      "matchingSourceMembers": ["src/compiler/templates/tool-windows.tmpl"],
       "sourceBinding": "exact source bytes"
     }
   ],
@@ -7596,61 +7583,31 @@
       {
         "member": "scala/tools/nsc/doc/html/resource/lib/MaterialIcons-Regular.ttf",
         "nameRecords": {
-          "0": [
-            "Copyright 2015 Google, Inc. All Rights Reserved."
-          ],
-          "1": [
-            "Material Icons"
-          ],
-          "2": [
-            "Regular"
-          ],
-          "5": [
-            "Version 1.008"
-          ],
-          "6": [
-            "MaterialIcons-Regular"
-          ]
+          "0": ["Copyright 2015 Google, Inc. All Rights Reserved."],
+          "1": ["Material Icons"],
+          "2": ["Regular"],
+          "5": ["Version 1.008"],
+          "6": ["MaterialIcons-Regular"]
         }
       },
       {
         "member": "scala/tools/nsc/doc/html/resource/lib/lato-v11-latin-100.ttf",
         "nameRecords": {
-          "1": [
-            "Lato Hairline"
-          ],
-          "2": [
-            "Regular"
-          ],
-          "5": [
-            "Version 1.104; Western+Polish opensource"
-          ],
-          "6": [
-            "Lato-Hairline"
-          ],
-          "14": [
-            "http://scripts.sil.org/OFL"
-          ]
+          "1": ["Lato Hairline"],
+          "2": ["Regular"],
+          "5": ["Version 1.104; Western+Polish opensource"],
+          "6": ["Lato-Hairline"],
+          "14": ["http://scripts.sil.org/OFL"]
         }
       },
       {
         "member": "scala/tools/nsc/doc/html/resource/lib/lato-v11-latin-regular.ttf",
         "nameRecords": {
-          "1": [
-            "Lato"
-          ],
-          "2": [
-            "Regular"
-          ],
-          "5": [
-            "Version 1.104; Western+Polish opensource"
-          ],
-          "6": [
-            "Lato-Regular"
-          ],
-          "14": [
-            "http://scripts.sil.org/OFL"
-          ]
+          "1": ["Lato"],
+          "2": ["Regular"],
+          "5": ["Version 1.104; Western+Polish opensource"],
+          "6": ["Lato-Regular"],
+          "14": ["http://scripts.sil.org/OFL"]
         }
       },
       {
@@ -7659,24 +7616,12 @@
           "0": [
             "Digitized data copyright \u00a9 2010-2011, Google Corporation."
           ],
-          "1": [
-            "Open Sans"
-          ],
-          "2": [
-            "Italic"
-          ],
-          "5": [
-            "Version 1.10"
-          ],
-          "6": [
-            "OpenSans-Italic"
-          ],
-          "13": [
-            "Licensed under the Apache License, Version 2.0"
-          ],
-          "14": [
-            "http://www.apache.org/licenses/LICENSE-2.0"
-          ]
+          "1": ["Open Sans"],
+          "2": ["Italic"],
+          "5": ["Version 1.10"],
+          "6": ["OpenSans-Italic"],
+          "13": ["Licensed under the Apache License, Version 2.0"],
+          "14": ["http://www.apache.org/licenses/LICENSE-2.0"]
         }
       },
       {
@@ -7685,24 +7630,12 @@
           "0": [
             "Digitized data copyright \u00a9 2010-2011, Google Corporation."
           ],
-          "1": [
-            "Open Sans"
-          ],
-          "2": [
-            "Bold"
-          ],
-          "5": [
-            "Version 1.10"
-          ],
-          "6": [
-            "OpenSans-Bold"
-          ],
-          "13": [
-            "Licensed under the Apache License, Version 2.0"
-          ],
-          "14": [
-            "http://www.apache.org/licenses/LICENSE-2.0"
-          ]
+          "1": ["Open Sans"],
+          "2": ["Bold"],
+          "5": ["Version 1.10"],
+          "6": ["OpenSans-Bold"],
+          "13": ["Licensed under the Apache License, Version 2.0"],
+          "14": ["http://www.apache.org/licenses/LICENSE-2.0"]
         }
       },
       {
@@ -7711,84 +7644,46 @@
           "0": [
             "Digitized data copyright \u00a9 2010-2011, Google Corporation."
           ],
-          "1": [
-            "Open Sans"
-          ],
-          "2": [
-            "Bold Italic"
-          ],
-          "5": [
-            "Version 1.10"
-          ],
-          "6": [
-            "OpenSans-BoldItalic"
-          ],
-          "13": [
-            "Licensed under the Apache License, Version 2.0"
-          ],
-          "14": [
-            "http://www.apache.org/licenses/LICENSE-2.0"
-          ]
+          "1": ["Open Sans"],
+          "2": ["Bold Italic"],
+          "5": ["Version 1.10"],
+          "6": ["OpenSans-BoldItalic"],
+          "13": ["Licensed under the Apache License, Version 2.0"],
+          "14": ["http://www.apache.org/licenses/LICENSE-2.0"]
         }
       },
       {
         "member": "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-regular.ttf",
         "nameRecords": {
-          "1": [
-            "Open Sans"
-          ],
-          "2": [
-            "Regular"
-          ],
-          "5": [
-            "Version 1.10"
-          ],
-          "6": [
-            "OpenSans"
-          ],
-          "14": [
-            "http://www.apache.org/licenses/LICENSE-2.0"
-          ]
+          "1": ["Open Sans"],
+          "2": ["Regular"],
+          "5": ["Version 1.10"],
+          "6": ["OpenSans"],
+          "14": ["http://www.apache.org/licenses/LICENSE-2.0"]
         }
       },
       {
         "member": "scala/tools/nsc/doc/html/resource/lib/source-code-pro-v6-latin-700.ttf",
         "nameRecords": {
-          "1": [
-            "Source Code Pro"
-          ],
-          "2": [
-            "Bold"
-          ],
+          "1": ["Source Code Pro"],
+          "2": ["Bold"],
           "5": [
             "Version 1.017;PS Version 1.000;hotconv 1.0.70;makeotf.lib2.5.5900"
           ],
-          "6": [
-            "SourceCodePro-Bold"
-          ],
-          "14": [
-            "http://www.adobe.com/type/legal.html"
-          ]
+          "6": ["SourceCodePro-Bold"],
+          "14": ["http://www.adobe.com/type/legal.html"]
         }
       },
       {
         "member": "scala/tools/nsc/doc/html/resource/lib/source-code-pro-v6-latin-regular.ttf",
         "nameRecords": {
-          "1": [
-            "Source Code Pro"
-          ],
-          "2": [
-            "Regular"
-          ],
+          "1": ["Source Code Pro"],
+          "2": ["Regular"],
           "5": [
             "Version 1.017;PS Version 1.000;hotconv 1.0.70;makeotf.lib2.5.5900"
           ],
-          "6": [
-            "SourceCodePro-Regular"
-          ],
-          "14": [
-            "http://www.adobe.com/type/legal.html"
-          ]
+          "6": ["SourceCodePro-Regular"],
+          "14": ["http://www.adobe.com/type/legal.html"]
         }
       }
     ]

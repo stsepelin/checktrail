@@ -185,8 +185,8 @@
       "retainedInputs": [
         {
           "file": "scala-component-inventory.json",
-          "bytes": 334133,
-          "sha256": "48200a17d5c600f696b738f365abeb2e2be3e03df85e9a66831d03d2bb9e2ef3",
+          "bytes": 332925,
+          "sha256": "74ac7ee0672b5e6bb8f742e88ea8ef5921cf407d81838b9892691e1a81c348a2",
           "generation": "Static comparison of exact public delivery/source bytes, embedded class identities, SourceFile attributes and font metadata; no compiler or native payload execution."
         }
       ],
