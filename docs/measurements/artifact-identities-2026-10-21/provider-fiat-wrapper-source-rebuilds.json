@@ -1,0 +1,749 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Reconstruct only the four generated template-wrapper members in each of the three selected Go source/SDK versions. The Fiat Cryptography arithmetic and addchain inversion phases were neither executed nor qualified.",
+  "frozenRecipe": {
+    "schemaVersion": 1,
+    "frozenBeforeBuild": true,
+    "scope": "Only the four template-wrapper outputs of each exact upstream Go fiat generator. Fiat Cryptography and addchain phases are excluded and remain open.",
+    "nativeCompilerVersion": "go version go1.24.13 darwin/arm64",
+    "nativeCompilerExecutableSha256": "5588df879187a7587f98446ee8205ee1a8da506d362ab92c6d50d348fbeb39be",
+    "compilerEvidence": "provider-native-packager-sdk-rebuild.json",
+    "cases": [
+      {
+        "version": "go1.24.13",
+        "sourceArchiveSha256": "639a6204c2486b137df1eb6e78ee3ed038f9877d0e4b5a465e796a2153f858d7",
+        "generatorSourceSha256": "dcd20834a497693faa9549a6a8db8087a8e3345048c45f1a6e9634fee856585c",
+        "generatorSourceBytes": 9336,
+        "selectedSourceSegments": [
+          {
+            "byteStart": 274,
+            "byteEndExclusive": 1332,
+            "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+          },
+          {
+            "byteStart": 1753,
+            "byteEndExclusive": 2001,
+            "sha256": "c70b0959566d06802532663318377a3872f13ca7eb3e48d0879d977ea2f73a5f"
+          },
+          {
+            "byteStart": 3876,
+            "byteEndExclusive": 8032,
+            "sha256": "090a06a52adc4c521fe3c0bc07bd4128ae6fbf2daa4284edef225776d14c659f"
+          }
+        ],
+        "phaseHarnessSha256": "3fc0ffe1bf7b531ecf74cf8023b137cb5dbdc5d221a1f910ef51ba0fa2e5d9cb",
+        "expectedOutputs": [
+          {
+            "file": "p224.go",
+            "bytes": 3720,
+            "sha256": "c2861a6931c9e353dbcb23f8946b4d7649e06bb1c3cd8d75c0234d3fec14c3f7"
+          },
+          {
+            "file": "p256.go",
+            "bytes": 3752,
+            "sha256": "5947e77b724ffcf0d3a63e3166496fe5e0a511c33b696740660610bc23946d8d"
+          },
+          {
+            "file": "p384.go",
+            "bytes": 3750,
+            "sha256": "ffaf3a5aa2aac1d2d2201e53442da8de01c097d82be9c5d9f20a57a989e9d73f"
+          },
+          {
+            "file": "p521.go",
+            "bytes": 3706,
+            "sha256": "9ecaeed724ae4328ed859e023c4d1372340969e070cd574ddbf106ad6e331244"
+          }
+        ]
+      },
+      {
+        "version": "go1.26.8",
+        "sourceArchiveSha256": "4e39b98e42f946fa05ac8bc5b71877df97dbdb7cbb1a777b541667ad7117fd2e",
+        "generatorSourceSha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d",
+        "generatorSourceBytes": 9295,
+        "selectedSourceSegments": [
+          {
+            "byteStart": 274,
+            "byteEndExclusive": 1332,
+            "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+          },
+          {
+            "byteStart": 1753,
+            "byteEndExclusive": 2001,
+            "sha256": "c70b0959566d06802532663318377a3872f13ca7eb3e48d0879d977ea2f73a5f"
+          },
+          {
+            "byteStart": 3876,
+            "byteEndExclusive": 7991,
+            "sha256": "1b31024bd1ad5b5e1eaaae4aaa33b608614fff7e1ea2dc375f98cf6d02024ac3"
+          }
+        ],
+        "phaseHarnessSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+        "expectedOutputs": [
+          {
+            "file": "p224.go",
+            "bytes": 3679,
+            "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec"
+          },
+          {
+            "file": "p256.go",
+            "bytes": 3711,
+            "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68"
+          },
+          {
+            "file": "p384.go",
+            "bytes": 3709,
+            "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f"
+          },
+          {
+            "file": "p521.go",
+            "bytes": 3665,
+            "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24"
+          }
+        ]
+      },
+      {
+        "version": "go1.27.1",
+        "sourceArchiveSha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+        "generatorSourceSha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d",
+        "generatorSourceBytes": 9295,
+        "selectedSourceSegments": [
+          {
+            "byteStart": 274,
+            "byteEndExclusive": 1332,
+            "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+          },
+          {
+            "byteStart": 1753,
+            "byteEndExclusive": 2001,
+            "sha256": "c70b0959566d06802532663318377a3872f13ca7eb3e48d0879d977ea2f73a5f"
+          },
+          {
+            "byteStart": 3876,
+            "byteEndExclusive": 7991,
+            "sha256": "1b31024bd1ad5b5e1eaaae4aaa33b608614fff7e1ea2dc375f98cf6d02024ac3"
+          }
+        ],
+        "phaseHarnessSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+        "expectedOutputs": [
+          {
+            "file": "p224.go",
+            "bytes": 3679,
+            "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec"
+          },
+          {
+            "file": "p256.go",
+            "bytes": 3711,
+            "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68"
+          },
+          {
+            "file": "p384.go",
+            "bytes": 3709,
+            "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f"
+          },
+          {
+            "file": "p521.go",
+            "bytes": 3665,
+            "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24"
+          }
+        ]
+      }
+    ],
+    "phaseHarnessMethod": "Copy exact original curves declaration, exact original wrapper loop-body segment and exact original wrapper template into a small main with the same template.New/Parse/Execute calls. No fiat output or expected file is passed to the running generator.",
+    "mutation": "Change the wrapper template comment from The zero value is a valid zero element. to The zero value is a valid canonical zero element.; executable generator and generated Go remain syntactically valid.",
+    "variants": [
+      "baseline",
+      "valid generator template comment mutation",
+      "exact original template restoration"
+    ],
+    "freshSourceDirectoryAndCompilationCachePerVariant": true,
+    "environment": {
+      "GOTOOLCHAIN": "local",
+      "GOENV": "off",
+      "GOWORK": "off",
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOTELEMETRY": "off",
+      "CGO_ENABLED": "0",
+      "GOMAXPROCS": "2"
+    },
+    "buildCommand": [
+      "go",
+      "build",
+      "-trimpath",
+      "-o",
+      "fresh generator executable",
+      "wrapper-phase.go"
+    ],
+    "runCommand": ["fresh generator executable"],
+    "commandTimeoutSeconds": 180,
+    "wholeOriginalGeneratorExecuted": false,
+    "fullProducerAndOriginalNoticeClosureVerified": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "nativeObservations": {
+    "state": "completed",
+    "recipeSha256": "70e2904e599abad29d2b1897a5bee60aedf6dacc2bf31ce0fc7fce0513e41f58",
+    "cases": [
+      {
+        "version": "go1.24.13",
+        "variants": [
+          {
+            "variant": "baseline",
+            "generatorSourceSha256": "3fc0ffe1bf7b531ecf74cf8023b137cb5dbdc5d221a1f910ef51ba0fa2e5d9cb",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.334321458,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "4b83e5a8edc4a6c10df9a0bf3420c8ebf881f1f6cffe3d0eacd123a66b50d484",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.2968447919999999,
+              "logSha256": "7a3ffe88e9d621c85caf7332ca6025adb2f4f6ea83002453de0d480d272e0112"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3720,
+                "sha256": "c2861a6931c9e353dbcb23f8946b4d7649e06bb1c3cd8d75c0234d3fec14c3f7",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3752,
+                "sha256": "5947e77b724ffcf0d3a63e3166496fe5e0a511c33b696740660610bc23946d8d",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3750,
+                "sha256": "ffaf3a5aa2aac1d2d2201e53442da8de01c097d82be9c5d9f20a57a989e9d73f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3706,
+                "sha256": "9ecaeed724ae4328ed859e023c4d1372340969e070cd574ddbf106ad6e331244",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          },
+          {
+            "variant": "mutant",
+            "generatorSourceSha256": "dcfe82b9aa0d43f4db1ffaf8e32f96754460398bafc769fd58b9148cb9e5d51f",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.215002416,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "91ce43691d9dfe23b48d4e50c28918ecb559df984b7a0f06ff35ac8641e66693",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.29227858300000076,
+              "logSha256": "9b964a5c19cd13384599da01fdf80a1842cd9872e3adb27a0f83fb1d5320c0dd"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3730,
+                "sha256": "a34433e7c6fcede0b978325916972f1dd94724185a9ad20fc1b95554d3bb1768",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3762,
+                "sha256": "430ce55cbde4d0159963a47a60a24cf56b965308d43ee0ba5c3c4d6e97cb9f44",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3760,
+                "sha256": "f6a4ae5c8d7d1c8688ec78bc13481d7f8966b6a92e30751c5d7c1fd33d3fc744",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3716,
+                "sha256": "dd877f42f3832bfe0ff4ce78f964e1cac3671a29d8fbdc7eef6d98ffe005fee2",
+                "matchesSelectedWholeFile": false
+              }
+            ],
+            "allOutputsMatch": false
+          },
+          {
+            "variant": "restored",
+            "generatorSourceSha256": "3fc0ffe1bf7b531ecf74cf8023b137cb5dbdc5d221a1f910ef51ba0fa2e5d9cb",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.2547352919999994,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "4b83e5a8edc4a6c10df9a0bf3420c8ebf881f1f6cffe3d0eacd123a66b50d484",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.23884695899999997,
+              "logSha256": "493ca77da7fd898f55a3af487dde8aa686394602008cb1537600330322a3fda8"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3720,
+                "sha256": "c2861a6931c9e353dbcb23f8946b4d7649e06bb1c3cd8d75c0234d3fec14c3f7",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3752,
+                "sha256": "5947e77b724ffcf0d3a63e3166496fe5e0a511c33b696740660610bc23946d8d",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3750,
+                "sha256": "ffaf3a5aa2aac1d2d2201e53442da8de01c097d82be9c5d9f20a57a989e9d73f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3706,
+                "sha256": "9ecaeed724ae4328ed859e023c4d1372340969e070cd574ddbf106ad6e331244",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          }
+        ]
+      },
+      {
+        "version": "go1.26.8",
+        "variants": [
+          {
+            "variant": "baseline",
+            "generatorSourceSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.3163711659999997,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "5839bd1dfa34851eecaba79b6e871cb62ecd86c3e0f447b8779d3146c0e22754",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.3931142080000001,
+              "logSha256": "8160896ed5e0e6d179caaea97000cc894a24165a53d81dcc5b6766ea7522a738"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3679,
+                "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3711,
+                "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3709,
+                "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3665,
+                "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          },
+          {
+            "variant": "mutant",
+            "generatorSourceSha256": "1ff45780ba40860d474504c6f0126226ce707e3a79f7b721f73b29e8958c2253",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.156543041000001,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "0668c53cc6b5afbb72e3e0186b7867f4abf149f5355fca3bbb8da11103dcc9bb",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.24271616599999923,
+              "logSha256": "d544f6b5ae6d33869782a7ecf2f25b39f300f59e604e96805a6847326cb2af1e"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3689,
+                "sha256": "09f0e30810c9353b3ac1ee0d186c5b31985394130dbc9d7b4f9915181e1777ee",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3721,
+                "sha256": "04e759aa563596a6475556c86f94dae0aca551fef375176953e6cc01484fc2d4",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3719,
+                "sha256": "315e215d12c05f48ffa2522495fef8e92447abf7405b78f5cba26c705f289906",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3675,
+                "sha256": "2947fd2f4015215fd76d9f39f6165843ae195d3719ef208da698bc600a7ff914",
+                "matchesSelectedWholeFile": false
+              }
+            ],
+            "allOutputsMatch": false
+          },
+          {
+            "variant": "restored",
+            "generatorSourceSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.1428702909999995,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "5839bd1dfa34851eecaba79b6e871cb62ecd86c3e0f447b8779d3146c0e22754",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.13299220799999745,
+              "logSha256": "f27215465b0c82436fa6560c19ecb6398015f240dc29a1ee4976b041ebad50ea"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3679,
+                "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3711,
+                "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3709,
+                "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3665,
+                "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          }
+        ]
+      },
+      {
+        "version": "go1.27.1",
+        "variants": [
+          {
+            "variant": "baseline",
+            "generatorSourceSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.3456262079999988,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "5839bd1dfa34851eecaba79b6e871cb62ecd86c3e0f447b8779d3146c0e22754",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.13321916700000003,
+              "logSha256": "6cf609117031ee5d90fc2efcbe5757f50259ff1ce9eb4d40c4c187afa9c26861"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3679,
+                "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3711,
+                "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3709,
+                "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3665,
+                "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          },
+          {
+            "variant": "mutant",
+            "generatorSourceSha256": "1ff45780ba40860d474504c6f0126226ce707e3a79f7b721f73b29e8958c2253",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.1553376669999977,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "0668c53cc6b5afbb72e3e0186b7867f4abf149f5355fca3bbb8da11103dcc9bb",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.13309087499999706,
+              "logSha256": "34f7318ee3200b62bc0e225ec9819dbff0c2eebe8d488728d150104268f373fa"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3689,
+                "sha256": "09f0e30810c9353b3ac1ee0d186c5b31985394130dbc9d7b4f9915181e1777ee",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3721,
+                "sha256": "04e759aa563596a6475556c86f94dae0aca551fef375176953e6cc01484fc2d4",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3719,
+                "sha256": "315e215d12c05f48ffa2522495fef8e92447abf7405b78f5cba26c705f289906",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3675,
+                "sha256": "2947fd2f4015215fd76d9f39f6165843ae195d3719ef208da698bc600a7ff914",
+                "matchesSelectedWholeFile": false
+              }
+            ],
+            "allOutputsMatch": false
+          },
+          {
+            "variant": "restored",
+            "generatorSourceSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.2653711670000014,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "5839bd1dfa34851eecaba79b6e871cb62ecd86c3e0f447b8779d3146c0e22754",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.13001833299999888,
+              "logSha256": "f0286b0f664bdb0593f323500381da1a4ea169c4bdddec2fd8be0e41cd7f4de2"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3679,
+                "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3711,
+                "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3709,
+                "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3665,
+                "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          }
+        ]
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "wholeFileBaselineAndRestoredMatches": 24,
+    "mutatedGeneratedFilesRejected": 12,
+    "allTwelveTemplateWrapperMembersReproduced": true,
+    "wholeFiatGeneratorProducerClosureVerified": false
+  },
+  "retainedInputs": [
+    {
+      "file": "provider-compiler-inputs/go1.24.13-fiat-generate.go.txt",
+      "bytes": 9336,
+      "sha256": "dcd20834a497693faa9549a6a8db8087a8e3345048c45f1a6e9634fee856585c"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.26.8-fiat-generate.go.txt",
+      "bytes": 9295,
+      "sha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d"
+    },
+    {
+      "file": "provider-native-packager-sdk-rebuild.json",
+      "bytes": 48216,
+      "sha256": "9849d75264b2f57bc1150413a9e373001806444e9487f4c8edb17c991a90a1fb"
+    },
+    {
+      "file": "provider-compiler-source-git-binding.json",
+      "bytes": 607380,
+      "sha256": "6863ccf9d80c9dd2eb47d3fa2d58c2605747ffdcb602050dd0bccb6f8332bc5c"
+    },
+    {
+      "file": "provider-bootstrap-sdk-rebuild.json",
+      "bytes": 331537,
+      "sha256": "f4e3b9aee9c6c3ae8df7f103aada78f9e8d98ac094aad9a0936dcaa53c050aaf"
+    }
+  ],
+  "originalGeneratorSourceBindings": {
+    "go1.24.13": "provider-compiler-inputs/go1.24.13-fiat-generate.go.txt",
+    "go1.26.8": "provider-compiler-inputs/go1.26.8-fiat-generate.go.txt",
+    "go1.27.1": "provider-compiler-inputs/go1.26.8-fiat-generate.go.txt",
+    "go1.26.8AndGo1.27.1OriginalGeneratorBytesEqual": true
+  },
+  "separateInversionProducerMetadata": [
+    {
+      "sourceVersion": "go1.24.13",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p224_invert.go",
+      "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.24.13",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p256_invert.go",
+      "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.24.13",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p384_invert.go",
+      "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.24.13",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p521_invert.go",
+      "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.26.8",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p224_invert.go",
+      "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.26.8",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p256_invert.go",
+      "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.26.8",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p384_invert.go",
+      "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.26.8",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p521_invert.go",
+      "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.27.1",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p224_invert.go",
+      "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.27.1",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p256_invert.go",
+      "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.27.1",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p384_invert.go",
+      "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.27.1",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p521_invert.go",
+      "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    }
+  ],
+  "remainingProducerObligations": [
+    "Rebuild the actual separately pinned Fiat Cryptography/Coq/OCaml producer, its compiler/SDK/base-image/bootstrap chain, dependencies and complete original notices.",
+    "Rebuild and verify the separate addchain inversion producer. The original README install pin and generated inversion headers disagree; no producer-version match is inferred from the README.",
+    "Complete copied/generated payload attribution, source-built Go deeper bootstrap independence and original inline notices remain required.",
+    "These are isolated phase harnesses retaining exact original segments. They do not execute or qualify the whole original generator or the full source tree."
+  ],
+  "allTwelveSelectedWrapperMembersReproducedExactly": true,
+  "completeFiatArithmeticProducerClosureVerified": false,
+  "completeAddchainProducerClosureVerified": false,
+  "fullUpstreamCompilerSdkAndBootstrapClosureVerified": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

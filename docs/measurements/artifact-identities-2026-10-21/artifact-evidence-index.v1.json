@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 289,
+  "retainedReferences": 294,
   "files": [
     {
       "file": "README.md",
@@ -329,6 +329,11 @@
       "sha256": "076bebd27adeca06733da06fd35fa2c81b77d7937502643abe06df3b3ca6929d"
     },
     {
+      "file": "provider-compiler-inputs/go1.24.13-fiat-generate.go.txt",
+      "bytes": 9336,
+      "sha256": "dcd20834a497693faa9549a6a8db8087a8e3345048c45f1a6e9634fee856585c"
+    },
+    {
       "file": "provider-compiler-inputs/go1.24.13-mkzip.go.txt",
       "bytes": 2155,
       "sha256": "afbc4414d4053db4cf6befc0936cf15862a1d4b0433644adf3c0410f3796a820"
@@ -362,6 +367,11 @@
       "file": "provider-compiler-inputs/go1.26.8-distpack-pack.go.txt",
       "bytes": 11333,
       "sha256": "d0ffed074fb2e6cd07a237cbfb5f6bdfdd7b6872723849807a8604ed6282c434"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.26.8-fiat-generate.go.txt",
+      "bytes": 9295,
+      "sha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d"
     },
     {
       "file": "provider-compiler-inputs/go1.26.8-mkzip.go.txt",
@@ -547,6 +557,11 @@
       "file": "provider-compiler-timezone-rebuilds.json",
       "bytes": 20550,
       "sha256": "3231c19802a42c7a365a8a7dba2907ff698a60116672b8adc2ff376353ff1359"
+    },
+    {
+      "file": "provider-fiat-wrapper-source-rebuilds.json",
+      "bytes": 31099,
+      "sha256": "5c6e258f4fde8c56728b09b55563321d8ba3d5fad31d2508dc8236dda565795d"
     },
     {
       "file": "provider-independent-rebuild.json",

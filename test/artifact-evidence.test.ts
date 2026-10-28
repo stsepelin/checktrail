@@ -277,11 +277,22 @@ test("artifact audit accepts bounded added data and rejects reached total-byte a
     const value = await index(root);
     const additions: { file: string; bytes: Buffer }[] = [];
     if (mode === "total-bytes") {
-      for (let i = 0; i < 4; i += 1)
+      // Reach the byte ceiling with the fewest new files so this control
+      // does not accidentally hit the independent index-entry ceiling first.
+      let remaining =
+        8 * 1024 * 1024 -
+        value.files.reduce((total, file) => total + file.bytes, 0) +
+        1;
+      assert.ok(remaining > 0);
+      for (let i = 0; remaining > 0; i += 1) {
+        const bytes = Math.min(remaining, 2 * 1024 * 1024);
         additions.push({
           file: `synthetic-${i}.txt`,
-          bytes: Buffer.alloc(2 * 1024 * 1024, "x"),
+          bytes: Buffer.alloc(bytes, "x"),
         });
+        remaining -= bytes;
+      }
+      assert.ok(value.files.length + additions.length <= 256);
     } else {
       let nested: unknown = "original synthetic data";
       for (let i = 0; i < (mode === "bounded" ? 16 : 80); i += 1)
