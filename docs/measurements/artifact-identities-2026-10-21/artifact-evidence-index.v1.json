@@ -565,8 +565,8 @@
     },
     {
       "file": "provider-fiat-wrapper-source-rebuilds.json",
-      "bytes": 144765,
-      "sha256": "025664d708a49b5c4ade72f3b36e251c0d72bacf8df14d042aed52e51d4f7627"
+      "bytes": 171255,
+      "sha256": "7d2d66ea92b81eb4fb818443fafa3cb496c9ad3e580a28767b225b900f43a150"
     },
     {
       "file": "provider-independent-rebuild.json",

@@ -733,7 +733,7 @@
   ],
   "remainingProducerObligations": [
     "Build the actual pinned Fiat Cryptography/Coq/OCaml arithmetic producer and close its compiler/SDK/base-image/bootstrap chain and complete original notices. All declared source/submodule revisions have been acquired and byte-bound, without executing that producer.",
-    "The source-built addchain step reproduces the selected inversion files. Its pinned parser producer now reproduces the whole selected parser with a changing source mutation and exact restoration; the parser producer's own generated inputs, canonical Git, complete notices and compiler/bootstrap chain remain open.",
+    "The source-built addchain step reproduces the selected inversion files. Its parser producer reproduces the complete selected parser, and four inner generated inputs now have original producer mutation/restoration controls and a canonical root Git binding. Remaining Unicode data, dependency Git, complete notices and compiler/bootstrap chains remain open.",
     "Complete copied/generated input attribution, source-built Go deeper bootstrap independence, original producer metadata and original inline notices remain required.",
     "Isolated phase harnesses do not execute or qualify the whole original generator or full source tree."
   ],
@@ -2001,8 +2001,8 @@
         }
       ],
       "remainingProducerObligations": [
-        "Rebuild both generated static builder inputs, both staged Pigeon parser inputs and the Unicode-class input from their original producers.",
-        "Bind canonical source Git inputs, complete all original inline notices and the compiler/SDK/base-image/deeper bootstrap chain.",
+        "Rebuild the remaining Unicode-class input from its original producer and account separately for broader generated example/test inputs.",
+        "Bind the remaining dependency canonical source-Git inputs, complete all original inline notices and the compiler/SDK/base-image/deeper bootstrap chain.",
         "The exact original historical compiler patch and builder image have not been attested."
       ],
       "fullUpstreamProducerClosureVerified": false,
@@ -2010,7 +2010,584 @@
       "gateAComplete": false,
       "qualityAssessed": false,
       "inferenceInvoked": false,
-      "fieldEvaluationExecuted": false
+      "fieldEvaluationExecuted": false,
+      "canonicalSourceGitBinding": {
+        "sourceCommit": "18953b277063b2e5c4968af69f6ef43ba68aebd2",
+        "canonicalGitTree": "d4e66e0bf60608197c45608d55efcbb9c0e5b4a5",
+        "gitTreeResponseSha256": "26e2934f454be98e639b1f0750327b231fe12c8b0d6bf290bb645df63cf5c52a",
+        "sourceArchiveSha256": "1330cb429eb9d69cef12548d6e1ed1605be67079d405c2e17dd1e0096424b7fb",
+        "archiveFileCount": 146,
+        "allArchiveFileGitBlobsMatch": true,
+        "modeProjectionCounts": {
+          "('100644', '0o0')": 146
+        },
+        "gitFilesAbsentFromModuleArchive": [],
+        "gitLinks": [],
+        "archiveToGitManifestSha256": "9ad75de9c24bdd36ae1da297f9412b3f1669c91b8aad597295b1c4e56125447e",
+        "fullUpstreamProducerClosureVerified": false,
+        "upstreamCodeExecutedByGitBinding": false,
+        "canonicalGitRootReconstructedFromAllMemberBlobsAndModes": true,
+        "reconstructedTreeCount": 55,
+        "moduleAndGoModH1IndependentByteRecomputation": [
+          {
+            "module": "github.com/mna/pigeon",
+            "version": "v1.0.1-0.20200224192238-18953b277063",
+            "archiveH1": "h1:V7s6vhIrNeOqocziAmRoVJh6gnPPx83ovlpT7Hf5shI=",
+            "goModH1": "h1:rkFeDZ0gc+YbnrXPw0q2RlI0QRuKBBPu67fgYIyGRNg=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/crypto",
+            "version": "v0.0.0-20190308221718-c2843e01d9a2",
+            "archiveH1": "h1:VklqNMn3ovrHsnt90PveolxSbWFaJdECFbxSq0Mqo2M=",
+            "goModH1": "h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/net",
+            "version": "v0.0.0-20190620200207-3b0461eec859",
+            "archiveH1": "h1:R/3boaszxrf1GEUWTVDzSKVwLmSJpwZ1yqXm8j0v2QI=",
+            "goModH1": "h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/sync",
+            "version": "v0.0.0-20190423024810-112230192c58",
+            "archiveH1": "h1:8gQV6CLnAEikrhgkHFbMAEhagSSnXWGV915qUMm9mrU=",
+            "goModH1": "h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/sys",
+            "version": "v0.0.0-20190215142949-d0b11bdaac8a",
+            "archiveH1": "h1:1BGLXjeY4akVXGgbC9HugT3Jv3hCI0z56oJR5vAMgBU=",
+            "goModH1": "h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/text",
+            "version": "v0.3.0",
+            "archiveH1": "h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=",
+            "goModH1": "h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/tools",
+            "version": "v0.0.0-20190830223141-573d9926052a",
+            "archiveH1": "h1:XAHT1kdPpnU8Hk+FPi42KZFhtNFEk4vBg1U4OmIeHTU=",
+            "goModH1": "h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/xerrors",
+            "version": "v0.0.0-20190717185122-a985d3407aa7",
+            "archiveH1": "h1:9zdDQZ7Thm29KFXgAX/+yaf3eVbP7djjWp/dXAppNCc=",
+            "goModH1": "h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          }
+        ],
+        "independentChecksumDatabaseTrustVerifiedByThisRecomputation": false
+      },
+      "innerGeneratedSourceProducerFollowUp": {
+        "observedAt": "2026-10-28",
+        "scope": "Unchanged original static-code and staged parser producers reproduce four complete selected generated Pigeon inputs after all four expected outputs and the producer self-module cache/download were removed before compilation. Unicode-class and wider generated-example inputs remain outside this proof.",
+        "frozenBuildRecipe": {
+          "schemaVersion": 1,
+          "frozenBeforeBuild": true,
+          "scope": "Rebuild the two static builder inputs and two staged parser inputs using original Pigeon producer source. Unicode-class generation, original compiler profile, canonical Git and deeper SDK/bootstrap/notices remain separate.",
+          "sourceInput": {
+            "Path": "github.com/mna/pigeon",
+            "Version": "v1.0.1-0.20200224192238-18953b277063",
+            "Sum": "h1:V7s6vhIrNeOqocziAmRoVJh6gnPPx83ovlpT7Hf5shI=",
+            "GoModSum": "h1:rkFeDZ0gc+YbnrXPw0q2RlI0QRuKBBPu67fgYIyGRNg=",
+            "sourceArchiveBytes": 498143,
+            "sourceArchiveSha256": "1330cb429eb9d69cef12548d6e1ed1605be67079d405c2e17dd1e0096424b7fb"
+          },
+          "sourceManifestSha256": "e2d8e4ca57eec2cc9234d16309985ab3d0abd2eafafcdd8434a3c545007425ff",
+          "historicalCompilerRecipeSha256": "e0b18153087d73f4638c8ead0c7d6958dc8b9e5877b49dc654f800d559326f28",
+          "compilerVersion": "go1.17.2 linux/arm64",
+          "hostImage": "docker.io/library/debian@sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a",
+          "expectedOutputMembers": [
+            {
+              "file": "builder/generated_static_code.go",
+              "bytes": 36424,
+              "sha256": "4bb9057b727c4a80ca4e55d52a4e4a27a43f8b3a564c70635e3fcb8c249d0f1d"
+            },
+            {
+              "file": "builder/generated_static_code_range_table.go",
+              "bytes": 424,
+              "sha256": "0532799079d384d05d39ec67600c8e45384aecd7cbc8fa275169a2b52ade27a4"
+            },
+            {
+              "file": "bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go",
+              "bytes": 89875,
+              "sha256": "cfb3ac07a2d4115e1e22faf72d55487c25ca3cb64a2e61cf24beb6f46910b193"
+            },
+            {
+              "file": "pigeon.go",
+              "bytes": 119765,
+              "sha256": "4c4737812b2b10b9a6ad45ff730bf0b00c5bbfccc0659b42a8cc0a5e3f53f4d7"
+            }
+          ],
+          "allExpectedOutputsRemovedBeforeAnyBuild": true,
+          "producerOwnModuleCacheAndDownloadRemoved": true,
+          "originalMakefileCommandsExecutedAsFixedArgv": true,
+          "makeInvoked": false,
+          "originalMakefileShellRedirectionInsideNativeContainer": true,
+          "freshSourceAndCompileCachePerVariant": true,
+          "variants": [
+            "baseline",
+            "valid generated-header string source mutations",
+            "exact source restoration"
+          ],
+          "environment": {
+            "GOROOT": "/sdk",
+            "GOOS": "linux",
+            "GOARCH": "arm64",
+            "CGO_ENABLED": "0",
+            "GO111MODULE": "on",
+            "GOENV": "off",
+            "GOPROXY": "off",
+            "GOSUMDB": "off",
+            "GOMAXPROCS": "2",
+            "GOFLAGS": "-mod=readonly",
+            "PATH": "/sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+          },
+          "network": "none",
+          "limits": {
+            "cpus": 2,
+            "memoryBytes": 3221225472,
+            "perCommandSeconds": 300
+          },
+          "completeUpstreamProducerClosureVerified": false,
+          "gateAComplete": false,
+          "inferenceInvoked": false,
+          "fieldEvaluationExecuted": false
+        },
+        "nativeBuildObservations": {
+          "state": "completed",
+          "recipeSha256": "e64166f77897c9fa1df86a13b4b0d6593a8e404a797c8a6794e1e02c08d84c3d",
+          "variants": [
+            {
+              "variant": "baseline",
+              "sourceMutations": [],
+              "commands": [
+                {
+                  "phase": "build-static",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/baseline/bin/static_code_generator",
+                    "./bootstrap/cmd/static_code_generator"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 2.621918042,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-staticCode",
+                  "argv": [
+                    "/work/baseline/bin/static_code_generator",
+                    "builder/static_code.go",
+                    "builder/generated_static_code.go",
+                    "staticCode"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.22943941700000048,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-rangeTable0",
+                  "argv": [
+                    "/work/baseline/bin/static_code_generator",
+                    "builder/static_code_range_table.go",
+                    "builder/generated_static_code_range_table.go",
+                    "rangeTable0"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.23714941600000028,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/baseline/bin/bootstrap-build",
+                    "./bootstrap/cmd/bootstrap-build"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 3.193872,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-bootstrap",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/baseline/bin/bootstrap-build grammar/bootstrap.peg > /work/baseline/source/bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.38847962499999955,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap-pigeon",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/baseline/bin/bootstrap-pigeon",
+                    "./bootstrap/cmd/bootstrap-pigeon"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.5995861250000001,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-main-pigeon",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/baseline/bin/bootstrap-pigeon grammar/pigeon.peg > /work/baseline/source/pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.3883403750000003,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                }
+              ],
+              "outputs": [
+                {
+                  "file": "builder/generated_static_code.go",
+                  "bytes": 36424,
+                  "sha256": "4bb9057b727c4a80ca4e55d52a4e4a27a43f8b3a564c70635e3fcb8c249d0f1d",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "builder/generated_static_code_range_table.go",
+                  "bytes": 424,
+                  "sha256": "0532799079d384d05d39ec67600c8e45384aecd7cbc8fa275169a2b52ade27a4",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go",
+                  "bytes": 89875,
+                  "sha256": "cfb3ac07a2d4115e1e22faf72d55487c25ca3cb64a2e61cf24beb6f46910b193",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "pigeon.go",
+                  "bytes": 119765,
+                  "sha256": "4c4737812b2b10b9a6ad45ff730bf0b00c5bbfccc0659b42a8cc0a5e3f53f4d7",
+                  "matchesWholeSelectedMember": true
+                }
+              ],
+              "originalModuleMetadataUnchanged": true
+            },
+            {
+              "variant": "mutant",
+              "sourceMutations": [
+                "bootstrap/cmd/static_code_generator/main.go",
+                "builder/builder.go"
+              ],
+              "commands": [
+                {
+                  "phase": "build-static",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/mutant/bin/static_code_generator",
+                    "./bootstrap/cmd/static_code_generator"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 2.5280813339999995,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-staticCode",
+                  "argv": [
+                    "/work/mutant/bin/static_code_generator",
+                    "builder/static_code.go",
+                    "builder/generated_static_code.go",
+                    "staticCode"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.18606929200000089,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-rangeTable0",
+                  "argv": [
+                    "/work/mutant/bin/static_code_generator",
+                    "builder/static_code_range_table.go",
+                    "builder/generated_static_code_range_table.go",
+                    "rangeTable0"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.23332937500000028,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/mutant/bin/bootstrap-build",
+                    "./bootstrap/cmd/bootstrap-build"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 3.444175583,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-bootstrap",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/mutant/bin/bootstrap-build grammar/bootstrap.peg > /work/mutant/source/bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.34829049999999917,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap-pigeon",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/mutant/bin/bootstrap-pigeon",
+                    "./bootstrap/cmd/bootstrap-pigeon"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.6535970840000012,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-main-pigeon",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/mutant/bin/bootstrap-pigeon grammar/pigeon.peg > /work/mutant/source/pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.3970038750000029,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                }
+              ],
+              "outputs": [
+                {
+                  "file": "builder/generated_static_code.go",
+                  "bytes": 36432,
+                  "sha256": "8fb28a5c3b143ea7f1161b45c7a2c7b15430e26d4e419dd2b3ddd7ecac854fdc",
+                  "matchesWholeSelectedMember": false
+                },
+                {
+                  "file": "builder/generated_static_code_range_table.go",
+                  "bytes": 432,
+                  "sha256": "ceff1a6d370b03f5d0dbb44042c722cd867e40e9995f25c11e95e4aca88d7457",
+                  "matchesWholeSelectedMember": false
+                },
+                {
+                  "file": "bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go",
+                  "bytes": 89883,
+                  "sha256": "c2491bbdc31c4f3e4883042e3b8c4ea77852e58351fe1cd1a27c3b2c27a928ac",
+                  "matchesWholeSelectedMember": false
+                },
+                {
+                  "file": "pigeon.go",
+                  "bytes": 119773,
+                  "sha256": "0757f312c41b8e3857e7398d598924c768e2774fdf56489a4951eae70de638dd",
+                  "matchesWholeSelectedMember": false
+                }
+              ],
+              "originalModuleMetadataUnchanged": true
+            },
+            {
+              "variant": "restored",
+              "sourceMutations": [],
+              "commands": [
+                {
+                  "phase": "build-static",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/restored/bin/static_code_generator",
+                    "./bootstrap/cmd/static_code_generator"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 2.7315668330000022,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-staticCode",
+                  "argv": [
+                    "/work/restored/bin/static_code_generator",
+                    "builder/static_code.go",
+                    "builder/generated_static_code.go",
+                    "staticCode"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.23711216699999937,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-rangeTable0",
+                  "argv": [
+                    "/work/restored/bin/static_code_generator",
+                    "builder/static_code_range_table.go",
+                    "builder/generated_static_code_range_table.go",
+                    "rangeTable0"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.2833498750000025,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/restored/bin/bootstrap-build",
+                    "./bootstrap/cmd/bootstrap-build"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 4.293926334000002,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-bootstrap",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/restored/bin/bootstrap-build grammar/bootstrap.peg > /work/restored/source/bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.38441895900000134,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap-pigeon",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/restored/bin/bootstrap-pigeon",
+                    "./bootstrap/cmd/bootstrap-pigeon"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.6669916249999979,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-main-pigeon",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/restored/bin/bootstrap-pigeon grammar/pigeon.peg > /work/restored/source/pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.34570166700000016,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                }
+              ],
+              "outputs": [
+                {
+                  "file": "builder/generated_static_code.go",
+                  "bytes": 36424,
+                  "sha256": "4bb9057b727c4a80ca4e55d52a4e4a27a43f8b3a564c70635e3fcb8c249d0f1d",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "builder/generated_static_code_range_table.go",
+                  "bytes": 424,
+                  "sha256": "0532799079d384d05d39ec67600c8e45384aecd7cbc8fa275169a2b52ade27a4",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go",
+                  "bytes": 89875,
+                  "sha256": "cfb3ac07a2d4115e1e22faf72d55487c25ca3cb64a2e61cf24beb6f46910b193",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "pigeon.go",
+                  "bytes": 119765,
+                  "sha256": "4c4737812b2b10b9a6ad45ff730bf0b00c5bbfccc0659b42a8cc0a5e3f53f4d7",
+                  "matchesWholeSelectedMember": true
+                }
+              ],
+              "originalModuleMetadataUnchanged": true
+            }
+          ],
+          "completeUpstreamProducerClosureVerified": false,
+          "inferenceInvoked": false,
+          "fieldEvaluationExecuted": false,
+          "allFourBaselineAndRestoredWholeSelectedMembersMatch": true,
+          "validProducerSourceMutationsChangeAllFourWholeOutputs": true,
+          "allOwnedContainersAbsent": true
+        },
+        "baselineAndRestoredWholeMemberMatches": 8,
+        "validProducerSourceMutationWholeMemberRejections": 4,
+        "expectedOutputsAvailableAsBuildInputs": false,
+        "originalModuleMetadataUsedUnchanged": true,
+        "originalShellRedirectionPerformedInsideNativeContainer": true,
+        "preservedRejectedAttempts": [
+          {
+            "state": "preparation-failed-before-producer-compilation",
+            "cause": "Removing the producer self-module from a read-only copied cache failed; no native command ran.",
+            "usedToQualifyWholeChain": false
+          },
+          {
+            "state": "failed-before-main-parser-generation",
+            "observedFailure": "Three host-observed generated members matched, then native bootstrap-pigeon compilation reported EOF for the generated bootstrap parser. A later native byte observation matched the retained expected bytes.",
+            "underlyingFailureCauseEstablished": false,
+            "handoff": "The rejected recipe sent producer stdout to a host-opened file. The subsequent frozen recipe uses the original Makefile shell redirection inside the native container.",
+            "usedToQualifyWholeChain": false
+          }
+        ],
+        "fullUpstreamProducerClosureVerified": false,
+        "completeOriginalInlineNoticeClosureVerified": false,
+        "gateAComplete": false,
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      }
     }
   },
   "arithmeticProducerSourceAcquisition": {
