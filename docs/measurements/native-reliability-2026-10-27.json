@@ -271,5 +271,171 @@
     "qualityAssessed": false,
     "inferenceInvoked": false,
     "fieldEvaluationExecuted": false
+  },
+  "rubyLifecycleFollowUp": {
+    "observedAt": "2026-10-28",
+    "sourceCommit": "f9662ff9d0ae5dddb052d8388b4e6bf6c1a35d6f",
+    "scope": "Scoped aggregate file observation correction for the two original Ruby lifecycle callbacks. Every existing required callback and each production engine timeout is preserved.",
+    "originalCiFailure": {
+      "run": "https://github.com/stsepelin/checktrail/actions/runs/40515510429",
+      "job": 122229054896,
+      "head": "b53b2b42783f1cd7778b6fedc0fda3ea45a47d50",
+      "completedSuccessfulChecks": 128,
+      "rootFailingChecks": 1,
+      "aggregateFailingChecks": 1,
+      "selectedRequiredCallbacks": 2,
+      "requiredCallbacksPassed": 0,
+      "observedFailure": "Both complete test files timed out at the controller 300000ms file deadline before their required parent callback passed.",
+      "usedToQualifyCandidate": false
+    },
+    "previousSuccessfulCiObservation": {
+      "job": 122183555961,
+      "aggregateFileTimeoutMs": 300000,
+      "sourceCallbackDurationsMs": [239841.11577, 241850.616265],
+      "installedCallbackDurationsMs": [240904.111353, 239824.311514]
+    },
+    "correction": {
+      "profile": "ruby-tools-lifecycle",
+      "aggregateFileTimeoutMs": 600000,
+      "previousAggregateFileTimeoutMs": 300000,
+      "perEngineTimeoutMs": 120000,
+      "productionEngineTimeoutChanged": false,
+      "otherRubyProfilesRetain300000msFileBudget": true,
+      "rspecFreshValidationsPerCallback": 6,
+      "minitestFreshValidationsPerCallback": 7,
+      "requiredCallbacksRemovedOrSkipped": false
+    },
+    "physicalControllerControls": {
+      "state": "completed",
+      "controls": [
+        {
+          "variant": "baseline",
+          "exitCode": 0,
+          "logSha256": "b6f5f937ef08a07a1e931ce0fb38a2a4d45f38e01980ece5e14fa6fa47d6e64e",
+          "selectedBudgetMismatchObserved": false
+        },
+        {
+          "variant": "mutation",
+          "exitCode": 1,
+          "logSha256": "34da6c73f8f864cd543e1fff210cb607b0ff7bcdda70eb4686663a172e96c947",
+          "selectedBudgetMismatchObserved": true
+        },
+        {
+          "variant": "restored",
+          "exitCode": 0,
+          "logSha256": "9b02450c1ed85c16ff40b8b7f12f6d33bc3690e62777e9d0ba52859f2925d3f9",
+          "selectedBudgetMismatchObserved": false
+        }
+      ],
+      "controllerBytesRestored": true,
+      "productionEngineLimitsChanged": false
+    },
+    "nativeSourceAndFreshOfflineInstall": {
+      "runtimeIdentity": {
+        "image": "sha256:c3d0f262320542bfba04e22930aec8b5b1e0d1b1428d88da1e87c2f4111de4ce",
+        "architecture": "aarch64",
+        "nodeVersion": "v22.23.2",
+        "rubyVersion": "ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [aarch64-linux-musl]",
+        "gccVersion": "15.2.0",
+        "makeVersion": "GNU Make 4.4.1"
+      },
+      "aggregateObservationElapsedSeconds": 616.129619291,
+      "source": {
+        "profile": "ruby-tools-lifecycle",
+        "passed": 2,
+        "required": 2,
+        "complete": true,
+        "events": [
+          {
+            "name": "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting",
+            "outcome": "passed",
+            "durationMs": 153006.808063
+          },
+          {
+            "name": "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting",
+            "outcome": "passed",
+            "durationMs": 154117.782426
+          }
+        ]
+      },
+      "installed": {
+        "profile": "ruby-tools-lifecycle",
+        "passed": 2,
+        "required": 2,
+        "complete": true,
+        "events": [
+          {
+            "name": "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting",
+            "outcome": "passed",
+            "durationMs": 147189.398806
+          },
+          {
+            "name": "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting",
+            "outcome": "passed",
+            "durationMs": 150782.930976
+          }
+        ]
+      },
+      "sourceAndInstalledCompiledEngineTreeSha256": "c647f2d3d44ce1afbfcb51b79eb53860c2a24521d155e2b931d927a56f74193c",
+      "compiledEngineByteBindingsMatch": true,
+      "tarballSha256": "19618032e9df77e60c71aaadbdf7066cdbf264187196d172cd0c1ead11126d86",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "installedLibraryProfileEvaluated": true,
+      "independentPositiveInstalledRubyCliAcceptanceQualified": false,
+      "installedRubyMcpAcceptanceEvaluated": false,
+      "ownedRuntimeImageRemoved": true,
+      "receiptSha256": "b5b78503d2d3a7a4e6af5d8454ce7efb0aa608b8b831da1aacf89f6b79def177"
+    },
+    "fullCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "elapsedSeconds": 1053.894727791,
+      "logSha256": "f18d6079944a4374adc5d084f34cb29a7385c422e90fa6666a310198330bab79",
+      "batches": {
+        "tests": [2041, 102],
+        "pass": [1282, 102],
+        "fail": [0, 0],
+        "skipped": [759, 0],
+        "cancelled": [0, 0],
+        "todo": [0, 0]
+      },
+      "totals": {
+        "tests": 2143,
+        "pass": 1384,
+        "fail": 0,
+        "skipped": 759,
+        "cancelled": 0,
+        "todo": 0
+      },
+      "compiledEnginePostCheck": {
+        "schemaVersion": 1,
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 972,
+        "bytes": 16179784,
+        "treeSha256": "c647f2d3d44ce1afbfcb51b79eb53860c2a24521d155e2b931d927a56f74193c",
+        "manifestSha256": "8ba37f5bb25dd054f160e641eed6115067b1036642cddf71f7d84d31ccbc0957",
+        "limits": {
+          "files": 4096,
+          "entries": 8192,
+          "depth": 24,
+          "fileBytes": 8388608,
+          "totalBytes": 134217728
+        }
+      }
+    },
+    "limitations": [
+      "The local full check is macOS 27 ARM64 / Node 26.9.0, outside the selected final runtime matrix.",
+      "The separate Ruby source and installed observations ran on Linux ARM64 / Node22.23.2 in the explicitly pinned composite Ruby runtime; the current GitHub Linux x64 retry remains required.",
+      "The selected lifecycle callbacks exercise the installed library profile; this record does not qualify independent positive Ruby CLI or MCP acceptance.",
+      "Explicitly skipped checks, original upstream compiler/SDK/bootstrap producers and the complete artifact/notice closure remain unqualified."
+    ],
+    "selectedRuntimeMatrixQualified": false,
+    "fullUpstreamProducerBuildClosureVerified": false,
+    "gateAComplete": false,
+    "qualityAssessed": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
   }
 }
