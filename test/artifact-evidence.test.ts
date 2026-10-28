@@ -277,11 +277,15 @@ test("artifact audit accepts bounded added data and rejects reached total-byte a
     const value = await index(root);
     const additions: { file: string; bytes: Buffer }[] = [];
     if (mode === "total-bytes") {
-      // Reach the byte ceiling with the fewest new files so this control
-      // does not accidentally hit the independent index-entry ceiling first.
+      // The audit reads the index, retained files and repository inputs once.
+      // Include all three before choosing filler so this control reaches the
+      // byte ceiling without first exceeding the independent file-count limit.
+      // Appending the filler metadata only increases the reached byte total.
       let remaining =
         8 * 1024 * 1024 -
-        value.files.reduce((total, file) => total + file.bytes, 0) +
+        value.files.reduce((total, file) => total + file.bytes, 0) -
+        value.repositoryInputs.reduce((total, file) => total + file.bytes, 0) -
+        Buffer.byteLength(JSON.stringify(value)) +
         1;
       assert.ok(remaining > 0);
       for (let i = 0; remaining > 0; i += 1) {

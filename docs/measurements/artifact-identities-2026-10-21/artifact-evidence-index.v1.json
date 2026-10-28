@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 304,
+  "retainedReferences": 305,
   "files": [
     {
       "file": "README.md",
-      "bytes": 26513,
-      "sha256": "1cfdbba1d583d653b66df103f123f501e69fdf64399142100e76188284dcb55c"
+      "bytes": 27431,
+      "sha256": "ed2b8520f75a74422d8ba1eeb73c5cd0f54c83ff7dfd93557785b58d69aac029"
     },
     {
       "file": "dotnet-sdk-LICENSE.txt",
@@ -232,6 +232,11 @@
       "file": "provider-build-observations.json",
       "bytes": 17186,
       "sha256": "dbab8058789659bbac02bbd3c0e5cd85e2740156f8395192975f23b9c8d2160b"
+    },
+    {
+      "file": "provider-c-root-sdk-and-generator-replays.json",
+      "bytes": 496773,
+      "sha256": "3eee5d311df43881197a0d101177b1d878e7346330734dafb9374e308c796acb"
     },
     {
       "file": "provider-compiler-fips-snapshot-rebuilds.json",
@@ -565,8 +570,8 @@
     },
     {
       "file": "provider-fiat-wrapper-source-rebuilds.json",
-      "bytes": 504790,
-      "sha256": "247f6e126e059f452580ca99df8167e2d7fdf7496a5b13ed26cada3e463d9ab2"
+      "bytes": 504754,
+      "sha256": "5602666950f041411651a1ae1fb55b8045b017fcf301668769753b9b46a402fc"
     },
     {
       "file": "provider-independent-rebuild.json",

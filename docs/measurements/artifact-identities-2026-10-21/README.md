@@ -209,3 +209,18 @@ The offline audit rejects whole-gate completion, review-quality, inference and
 field-evaluation claims at every JSON depth, including rehashed nested records.
 Scoped successful payload reconstructions remain allowed. This consistency check
 does not replay the recorded native builds or authenticate their publishers.
+
+## C-root SDK contribution replay observed 2026-10-29
+
+`provider-c-root-sdk-and-generator-replays.json` retains a separately identified
+maintained official C bootstrap and the selected source-built Go SDK stages.
+Original historical Go 1.4.2 failures remain failures. The record keeps canonical
+archive payload/mode distinctions, exact SDK byte-manifest deltas and captured
+original notice bytes; those captures do not claim complete notice ancestry.
+
+The complete original Fiat generators were compiled with the rebuilt Linux SDK
+and executed in separate offline containers without the full SDK, original source
+archives or selected expected output files mounted. The selected generated files
+matched in that cohort. C compiler, assembler/linker, C SDK, base-image and wider
+producer/bootstrap/license closure remain open. No Gate A, quality, inference or
+field-evaluation acceptance is implied by this observation.
