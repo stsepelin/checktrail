@@ -71,10 +71,12 @@ acceptance remain pending.
 
 ## Standard Tasks polling profile
 
-The Tasks runtime foundation now includes strict source/installed checks for the
-selected runtime slots and an experimental Windows ACL backend. Native Windows
-acceptance and the frozen whole-profile Gate A cases remain pending; CI wiring
-alone does not verify them. See [task storage](TASK-STORAGE.md).
+The Tasks runtime foundation includes strict source/installed checks for the
+selected runtime slots and an experimental Windows ACL backend. The
+[2026-10-21 main receipts](measurements/tasks-runtime-matrix-2026-10-21/README.md)
+record all eight selected foundation runtimes, including native Windows ACL and
+SQLite controls, at the recorded source commit. Broader host-client and
+whole-profile Gate A acceptance remain pending. See [task storage](TASK-STORAGE.md).
 
 The foreground server advertises `io.modelcontextprotocol/tasks` only when the
 operator supplies `--task-store`. A capable `validation_run` creates a durable

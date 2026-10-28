@@ -1,0 +1,12 @@
+An issue was encountered verifying workloads. For more information, run "dotnet workload update".
+X.509 certificate chain validation will use the fallback certificate bundle at '/usr/share/dotnet/sdk/10.0.401/trustedroots/codesignctl.pem'.
+X.509 certificate chain validation will use the fallback certificate bundle at '/usr/share/dotnet/sdk/10.0.401/trustedroots/timestampctl.pem'.
+
+Verifying fantomas.8.0.7
+Content hash: Od4xHHm6e7sZTX6dRWi8GSZrdtVFRC6H9ljp24RixSZXRgPyFGWBuMAOvsQn9PODb5azIBx/GWay/4rE4ZkYqw==
+/artifact/fantomas.nupkg
+
+Finished with 1 errors and 0 warnings.
+error: NU3004: The package is not signed.
+
+Package signature validation failed.

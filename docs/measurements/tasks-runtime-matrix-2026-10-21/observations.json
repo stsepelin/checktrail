@@ -1,0 +1,387 @@
+{
+  "at": "2026-10-21T20:46:06.255573+00:00",
+  "sourceCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+  "run": 39626059097,
+  "scope": "Selected Tasks foundation receipts only: exact source/installed case ledgers, current frozen comparison inputs, selected runtime fields and successful hosted-job identities. No inference or field evaluation.",
+  "runtimeSlots": [
+    {
+      "slot": "native-linux-arm64-node22",
+      "job": 119312520867,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119312520867",
+      "attempt": 1,
+      "runtime": {
+        "slot": "native-linux-arm64-node22",
+        "node": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+        "systemPowerShellSha256": null,
+        "sqliteVersion": "3.51.3",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 19:06:39 UTC 2026",
+        "imageVersion": null,
+        "imageOS": null,
+        "hostedImageMetadataAttested": false
+      },
+      "sourceAndInstalledNamedCasesEach": 24,
+      "compiledArtifactsSha256": "0cf110d9b5ec97bcde38a4c8e36e3874bf284e2c083ee4ce9852f9399271a8d5",
+      "harnessSha256": "41dd7f9db9a6d40e4c8a067eefdf749171d84f9ec1379bfb7200b4b577e8eddf",
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "reportedProductionDependencyLockSha256": "7db8194b60064f9b2279d0b6109fda51e4eac499e58891971c9307ec81a912a2",
+      "rawLogBytes": 57337,
+      "rawLogSha256": "9bf2c983bdf0160b91170ba2d8103782d1349bd7a000242f7609c881540ce0d1",
+      "caseLedgersReconciled": true,
+      "installedTarballIndependentlyReconstructed": false,
+      "qualifiesNewerSource": false,
+      "retainedInputs": [
+        {
+          "file": "receipts/native-linux-arm64-node22.json",
+          "bytes": 26315,
+          "sha256": "e7abc61275b55487c2f8b3f9791ffb1a1c2e78ecc6a91ddfd7822ca419280ed2"
+        }
+      ]
+    },
+    {
+      "slot": "ci-linux-node24",
+      "job": 119312521039,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119312521039",
+      "attempt": 1,
+      "runtime": {
+        "slot": "ci-linux-node24",
+        "node": "24.21.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "nodeExecutableSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "systemPowerShellSha256": null,
+        "sqliteVersion": "3.53.4",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "imageVersion": "20261018.339.1",
+        "imageOS": "ubuntu24",
+        "hostedImageMetadataAttested": false
+      },
+      "sourceAndInstalledNamedCasesEach": 24,
+      "compiledArtifactsSha256": "0cf110d9b5ec97bcde38a4c8e36e3874bf284e2c083ee4ce9852f9399271a8d5",
+      "harnessSha256": "41dd7f9db9a6d40e4c8a067eefdf749171d84f9ec1379bfb7200b4b577e8eddf",
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "reportedProductionDependencyLockSha256": "b31c681e80449f3cafd4fa77914a7a3e238413fa7839d3d9baa53b755dfca45b",
+      "rawLogBytes": 57870,
+      "rawLogSha256": "aaad7d835103b7c8845e662463c0858008b647def72d87de527bb1793c244e90",
+      "caseLedgersReconciled": true,
+      "installedTarballIndependentlyReconstructed": false,
+      "qualifiesNewerSource": false,
+      "retainedInputs": [
+        {
+          "file": "receipts/ci-linux-node24-source.json",
+          "bytes": 12426,
+          "sha256": "046db645e8a5c96be239eb5c052b4f80afcbc280a47c33c2cd4d65112f2028fd"
+        },
+        {
+          "file": "receipts/ci-linux-node24-installed.json",
+          "bytes": 13323,
+          "sha256": "c3cb1537cd0734f17f672610884e753e63f605db65bc0940924598c52e2bda3b"
+        }
+      ]
+    },
+    {
+      "slot": "ci-macos-node24",
+      "job": 119444644807,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119444644807",
+      "attempt": 2,
+      "runtime": {
+        "slot": "ci-macos-node24",
+        "node": "24.20.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+        "systemPowerShellSha256": null,
+        "sqliteVersion": "3.53.4",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:16:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE",
+        "imageVersion": "20261013.0424.1",
+        "imageOS": "macos26",
+        "hostedImageMetadataAttested": false
+      },
+      "sourceAndInstalledNamedCasesEach": 24,
+      "compiledArtifactsSha256": "0cf110d9b5ec97bcde38a4c8e36e3874bf284e2c083ee4ce9852f9399271a8d5",
+      "harnessSha256": "41dd7f9db9a6d40e4c8a067eefdf749171d84f9ec1379bfb7200b4b577e8eddf",
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "reportedProductionDependencyLockSha256": "c372233db52f1bf2c92e23a0b5d4ad9b2e724c944f81de8f9b90d09a6f74e120",
+      "rawLogBytes": 58683,
+      "rawLogSha256": "c62fddf0bb5095e859f404a158b9c008ec46dec8b55046746a30d9db10e4df20",
+      "caseLedgersReconciled": true,
+      "installedTarballIndependentlyReconstructed": false,
+      "qualifiesNewerSource": false,
+      "retainedInputs": [
+        {
+          "file": "receipts/ci-macos-node24-source.json",
+          "bytes": 12467,
+          "sha256": "34a802bfd70dd3b55812c63dee4da574b6d2a8cc53346dcd285bbaea6090aaeb"
+        },
+        {
+          "file": "receipts/ci-macos-node24-installed.json",
+          "bytes": 13361,
+          "sha256": "366792d6ab7dffc33e9e214fc291d5b94f8d0ee2530f273c0478c5e0ce7d4a49"
+        }
+      ]
+    },
+    {
+      "slot": "ci-macos-node26",
+      "job": 119312521182,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119312521182",
+      "attempt": 1,
+      "runtime": {
+        "slot": "ci-macos-node26",
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+        "systemPowerShellSha256": null,
+        "sqliteVersion": "3.53.4",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:16:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE",
+        "imageVersion": "20261013.0424.1",
+        "imageOS": "macos26",
+        "hostedImageMetadataAttested": false
+      },
+      "sourceAndInstalledNamedCasesEach": 24,
+      "compiledArtifactsSha256": "0cf110d9b5ec97bcde38a4c8e36e3874bf284e2c083ee4ce9852f9399271a8d5",
+      "harnessSha256": "41dd7f9db9a6d40e4c8a067eefdf749171d84f9ec1379bfb7200b4b577e8eddf",
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "reportedProductionDependencyLockSha256": "01fa9a51e74de0a554362431885197e15d36512946fee82e5b4c172ce4e734f7",
+      "rawLogBytes": 58660,
+      "rawLogSha256": "19b6904abd7c31354e67846ba9a4984fb15d7116f755ce6ce893bd9bf50c32cd",
+      "caseLedgersReconciled": true,
+      "installedTarballIndependentlyReconstructed": false,
+      "qualifiesNewerSource": false,
+      "retainedInputs": [
+        {
+          "file": "receipts/ci-macos-node26-source.json",
+          "bytes": 12463,
+          "sha256": "97b3431aa9a4748d3b39bc11a419fb299dabcaf90eb1ff9c7e3f30b1fe1fc06f"
+        },
+        {
+          "file": "receipts/ci-macos-node26-installed.json",
+          "bytes": 13353,
+          "sha256": "298dab5238ad385c5cacf04a38321df8602e3f05b636319a6d70be7e86f61240"
+        }
+      ]
+    },
+    {
+      "slot": "ci-macos-node22",
+      "job": 119312521228,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119312521228",
+      "attempt": 1,
+      "runtime": {
+        "slot": "ci-macos-node22",
+        "node": "22.23.3",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "nodeExecutableSha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+        "systemPowerShellSha256": null,
+        "sqliteVersion": "3.51.3",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:16:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE",
+        "imageVersion": "20261013.0424.1",
+        "imageOS": "macos26",
+        "hostedImageMetadataAttested": false
+      },
+      "sourceAndInstalledNamedCasesEach": 24,
+      "compiledArtifactsSha256": "0cf110d9b5ec97bcde38a4c8e36e3874bf284e2c083ee4ce9852f9399271a8d5",
+      "harnessSha256": "41dd7f9db9a6d40e4c8a067eefdf749171d84f9ec1379bfb7200b4b577e8eddf",
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "reportedProductionDependencyLockSha256": "66303a5784966f03aba2b93acdbeba8c90f837de540219633e1f093a916a95d7",
+      "rawLogBytes": 58235,
+      "rawLogSha256": "5fcf8c9045ffb59174b75185ace84d60754e30c957d462d6e3241efab2aee776",
+      "caseLedgersReconciled": true,
+      "installedTarballIndependentlyReconstructed": false,
+      "qualifiesNewerSource": false,
+      "retainedInputs": [
+        {
+          "file": "receipts/ci-macos-node22-source.json",
+          "bytes": 12464,
+          "sha256": "715ef61da4f536d536d68c45f9c6d78e85cffe3144c526ca8133e577211362bb"
+        },
+        {
+          "file": "receipts/ci-macos-node22-installed.json",
+          "bytes": 13351,
+          "sha256": "6cfe5180adcca9eaf5918fd09b0269d65d0500ec439705af9a7b12c296e65787"
+        }
+      ]
+    },
+    {
+      "slot": "windows-node22",
+      "job": 119312521257,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119312521257",
+      "attempt": 1,
+      "runtime": {
+        "slot": "windows-node22",
+        "node": "22.23.3",
+        "platform": "win32",
+        "architecture": "x64",
+        "nodeExecutableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+        "systemPowerShellSha256": "41796f1f3d81f921fdb4030c865f9dcf5032a2a1b49dde148bbc99e8d10f6e8c",
+        "sqliteVersion": "3.51.3",
+        "osRelease": "10.0.26100",
+        "osVersion": "Windows Server 2025 Datacenter",
+        "imageVersion": "20261018.275.1",
+        "imageOS": "win25-vs2026",
+        "hostedImageMetadataAttested": false
+      },
+      "sourceAndInstalledNamedCasesEach": 27,
+      "compiledArtifactsSha256": "0cf110d9b5ec97bcde38a4c8e36e3874bf284e2c083ee4ce9852f9399271a8d5",
+      "harnessSha256": "41dd7f9db9a6d40e4c8a067eefdf749171d84f9ec1379bfb7200b4b577e8eddf",
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "reportedProductionDependencyLockSha256": "551bd723b0a614003951b1d61c2c9443925d6e9df17e9f5562cffe13619e5cba",
+      "rawLogBytes": 66940,
+      "rawLogSha256": "2ce25989a5759495b83829736c890e0fb3d454e32cb3beff086ed266eec04d44",
+      "caseLedgersReconciled": true,
+      "installedTarballIndependentlyReconstructed": false,
+      "qualifiesNewerSource": false,
+      "retainedInputs": [
+        {
+          "file": "receipts/windows-node22-source.json",
+          "bytes": 13678,
+          "sha256": "fbef8feaaca1519106d0d12d8a53517cd42b4598191860187beec173c1e54fc0"
+        },
+        {
+          "file": "receipts/windows-node22-installed.json",
+          "bytes": 14574,
+          "sha256": "2bb64a388e101c25b8d5211b994633832566534a203bce74d0a6702e13f6b098"
+        }
+      ]
+    },
+    {
+      "slot": "ci-linux-node26",
+      "job": 119312521501,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119312521501",
+      "attempt": 1,
+      "runtime": {
+        "slot": "ci-linux-node26",
+        "node": "26.10.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "nodeExecutableSha256": "ab9c8eecf9f82d6693cdc3accced17034065c8d96213b0aa76a7e803d20ae1da",
+        "systemPowerShellSha256": null,
+        "sqliteVersion": "3.53.4",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "imageVersion": "20261018.339.1",
+        "imageOS": "ubuntu24",
+        "hostedImageMetadataAttested": false
+      },
+      "sourceAndInstalledNamedCasesEach": 24,
+      "compiledArtifactsSha256": "0cf110d9b5ec97bcde38a4c8e36e3874bf284e2c083ee4ce9852f9399271a8d5",
+      "harnessSha256": "41dd7f9db9a6d40e4c8a067eefdf749171d84f9ec1379bfb7200b4b577e8eddf",
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "reportedProductionDependencyLockSha256": "3874c7584e8e4de9475af3b8069c8e700bae2a2596dc43a1e3bfe7f05adf407f",
+      "rawLogBytes": 57870,
+      "rawLogSha256": "bc44633e1fbaa235123a47554e88373e750f02ac139d3e01f39fc05760f068d1",
+      "caseLedgersReconciled": true,
+      "installedTarballIndependentlyReconstructed": false,
+      "qualifiesNewerSource": false,
+      "retainedInputs": [
+        {
+          "file": "receipts/ci-linux-node26-source.json",
+          "bytes": 12428,
+          "sha256": "847ed93494a1e5b40285aabe65ca77c18923985b5f3a176ed1de797d52b3e97a"
+        },
+        {
+          "file": "receipts/ci-linux-node26-installed.json",
+          "bytes": 13319,
+          "sha256": "525839deb0d907521372a20a4438c4b2711ca181481f9c52c644a58b7a77b213"
+        }
+      ]
+    },
+    {
+      "slot": "ci-linux-node22",
+      "job": 119312521579,
+      "url": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119312521579",
+      "attempt": 1,
+      "runtime": {
+        "slot": "ci-linux-node22",
+        "node": "22.23.3",
+        "platform": "linux",
+        "architecture": "x64",
+        "nodeExecutableSha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
+        "systemPowerShellSha256": null,
+        "sqliteVersion": "3.51.3",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "imageVersion": "20261018.339.1",
+        "imageOS": "ubuntu24",
+        "hostedImageMetadataAttested": false
+      },
+      "sourceAndInstalledNamedCasesEach": 24,
+      "compiledArtifactsSha256": "0cf110d9b5ec97bcde38a4c8e36e3874bf284e2c083ee4ce9852f9399271a8d5",
+      "harnessSha256": "41dd7f9db9a6d40e4c8a067eefdf749171d84f9ec1379bfb7200b4b577e8eddf",
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "reportedProductionDependencyLockSha256": "814ae9f8b68739034de8f89d0d1a982a12ecaaeb89bcf396728300b419573e0f",
+      "rawLogBytes": 57403,
+      "rawLogSha256": "127fb0a622ebdb652c1ba3d784541b0e599171ede688e0a857fea5e7380f5cd9",
+      "caseLedgersReconciled": true,
+      "installedTarballIndependentlyReconstructed": false,
+      "qualifiesNewerSource": false,
+      "retainedInputs": [
+        {
+          "file": "receipts/ci-linux-node22-source.json",
+          "bytes": 12430,
+          "sha256": "6dadefaa0838cbc61aedf4f328263bd2d0e5b219be7b55ae704e47c90a8de382"
+        },
+        {
+          "file": "receipts/ci-linux-node22-installed.json",
+          "bytes": 13322,
+          "sha256": "8b280639c52ccdb0b6d6529917e38711efb5704a5c254da0c90fd9b12e630956"
+        }
+      ]
+    }
+  ],
+  "sourceAndInstalledTerminalCasesReconciled": 390,
+  "negativeControls": [
+    {
+      "case": "wrong-node",
+      "rejectedBy": "runtime-slot-mismatch"
+    },
+    {
+      "case": "failed-native-case",
+      "rejectedBy": "nonpassing-terminal-event"
+    },
+    {
+      "case": "missing-terminal-event",
+      "rejectedBy": "terminal-accounting-mismatch"
+    },
+    {
+      "case": "changed-harness-input",
+      "rejectedBy": "harness-source-mismatch"
+    },
+    {
+      "case": "changed-compiled-source",
+      "rejectedBy": "compiled-source-mismatch"
+    },
+    {
+      "case": "foreign-case",
+      "rejectedBy": "foreign-or-duplicate-case"
+    },
+    {
+      "case": "empty-accounting",
+      "rejectedBy": "required-accounting-mismatch"
+    }
+  ],
+  "compiledSourceAndHarnessReconciled": true,
+  "hostedImageMetadataIndependentlyAttested": false,
+  "wholeGateAMatrixComplete": false,
+  "qualifiesNewerSource": false,
+  "gateAComplete": false,
+  "schemaVersion": 1,
+  "observationKind": "Actual main CI receipt observations, not acceptance of newer source or independent execution attestation.",
+  "retainedPacketEncoding": "Original JSON packet bodies after removing GitHub log timestamp prefixes; UTF-8 plus one LF. The ARM64 packet retains its original source/installed container envelope.",
+  "sourceInputComparison": "Every declared harness input and compiled runtime tree digest matches the frozen source comparison. Exact named callbacks, terminal sequence links, unchanged test bytes, complete non-skipped counters and selected runtime fields were reconciled separately from job conclusion.",
+  "verificationRecipeSourceFiles": [
+    "scripts/tasks-runtime-evidence.mjs",
+    "scripts/verify-tasks-runtime-package.mjs",
+    "scripts/verify-tasks-runtime-arm64.mjs",
+    "scripts/required-test-evidence.mjs",
+    "scripts/required-native-tests.json"
+  ],
+  "verificationRecipeSourceCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df"
+}

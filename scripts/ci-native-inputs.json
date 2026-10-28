@@ -968,6 +968,7 @@
   "scripts/rust-context-tools.Dockerfile": ["rust-context-arm64"],
   "scripts/rust-extension-components.json": ["rust-extensions-arm64"],
   "scripts/rust-extension-tools.Dockerfile": ["rust-extensions-arm64"],
+  "scripts/scala-ci-phases.mjs": ["scala"],
   "scripts/scala-context-tools.Dockerfile": ["scala-context-arm64"],
   "scripts/scala-extensions-tools.Dockerfile": ["scala-extensions-arm64"],
   "scripts/scala-tools.Dockerfile": ["scala"],
@@ -2475,6 +2476,7 @@
     "scala-context-arm64",
     "scala-extensions-arm64"
   ],
+  "test/scala-ci-phases.test.ts": ["scala"],
   "test/scala-dependencies.test.ts": [
     "kotlin-extensions-arm64",
     "scala",

@@ -1,8 +1,11 @@
+import { readFile } from "node:fs/promises";
+import { selectScalaCiPhases, runScalaCiPhases } from "./scala-ci-phases.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath, URL } from "node:url";
 import { performance } from "node:perf_hooks";
 import process from "node:process";
+const phases = selectScalaCiPhases(process.argv.slice(2));
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const selected =
   process.env.CHECKTRAIL_SCALA_IMAGE ?? "checktrail-scala-test:3.9.0";
@@ -51,40 +54,61 @@ assert.match(
   /^openjdk 25\.0\.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25\.0\.4\+7 /,
 );
 phaseProgress("versions", "completed");
-phaseProgress("source", "started");
-const native = JSON.parse(
-  invoke(["node", "scripts/verify-required-native-tests.mjs", "scala"]),
+const requirements = JSON.parse(
+  await readFile(
+    new URL("./required-native-tests.json", import.meta.url),
+    "utf8",
+  ),
 );
-assert.equal(native.complete, true);
-phaseProgress("source", "completed");
-phaseProgress("guards", "started");
-const guards = JSON.parse(
-  invoke([
-    "sh",
-    "-c",
-    `set -e
+const { receipts, ...completion } = runScalaCiPhases(
+  phases,
+  {
+    source: () => {
+      phaseProgress("source", "started");
+      const native = JSON.parse(
+        invoke(["node", "scripts/verify-required-native-tests.mjs", "scala"]),
+      );
+      assert.equal(native.complete, true);
+      phaseProgress("source", "completed");
+      return native;
+    },
+    guards: () => {
+      phaseProgress("guards", "started");
+      const guards = JSON.parse(
+        invoke([
+          "sh",
+          "-c",
+          `set -e
 mkdir -p /tmp/checktrail-scala-controls
 cp -R /workspace/dist /workspace/scripts /tmp/checktrail-scala-controls/
 cp /workspace/package.json /tmp/checktrail-scala-controls/
 ln -s /workspace/node_modules /tmp/checktrail-scala-controls/node_modules
 cd /tmp/checktrail-scala-controls
 node scripts/verify-scala-guards.mjs`,
-  ]),
-);
-assert.equal(guards.sourceRestored, true);
-assert.equal(guards.callbacksUnchanged, true);
-phaseProgress("guards", "completed");
-phaseProgress("installed", "started");
+        ]),
+      );
+      assert.equal(guards.sourceRestored, true);
+      assert.equal(guards.callbacksUnchanged, true);
+      phaseProgress("guards", "completed");
+      return guards;
+    },
+    installed: () => {
+      phaseProgress("installed", "started");
 
-const installed = JSON.parse(
-  execFileSync(process.execPath, ["scripts/verify-scala-package.mjs"], {
-    cwd: repository,
-    env: { ...process.env, CHECKTRAIL_SCALA_IMAGE: image },
-    encoding: "utf8",
-    maxBuffer: 4 * 1024 * 1024,
-  }),
+      const installed = JSON.parse(
+        execFileSync(process.execPath, ["scripts/verify-scala-package.mjs"], {
+          cwd: repository,
+          env: { ...process.env, CHECKTRAIL_SCALA_IMAGE: image },
+          encoding: "utf8",
+          maxBuffer: 4 * 1024 * 1024,
+        }),
+      );
+      phaseProgress("installed", "completed");
+      return installed;
+    },
+  },
+  requirements.scala.length,
 );
-phaseProgress("installed", "completed");
 process.stdout.write(
   JSON.stringify({
     image,
@@ -95,9 +119,10 @@ process.stdout.write(
     memory: "2g",
     repositoryMount: "readonly",
     rootFilesystemReadonly: false,
-    native,
-    guards,
-    installed,
+    ...completion,
+    native: receipts.source ?? null,
+    guards: receipts.guards ?? null,
+    installed: receipts.installed ?? null,
     durationMs: Math.round(performance.now() - started),
     inferenceInvoked: false,
     fieldEvaluationExecuted: false,

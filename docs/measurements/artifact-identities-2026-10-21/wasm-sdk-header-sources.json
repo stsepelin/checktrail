@@ -1,0 +1,353 @@
+{
+  "schemaVersion": 1,
+  "scope": "All 35 selected preprocessor-observed SDK header byte identities. This is not a complete compiler-input, actual producer configuration, emitted output or notice closure.",
+  "counting": {
+    "selectedSdkHeaders": 35,
+    "wasiLibcSourceArchiveByteMatches": 25,
+    "llvmImmutableSourceByteMatches": 8,
+    "nativeGeneratedByteMatches": 1,
+    "independentTemplateProjectionByteMatches": 1,
+    "sum": 35
+  },
+  "wasiLibcSourceArchive": {
+    "sourceCommit": "2e6fb9d8ee0cdf9e431fbcabe8af3115de000a13",
+    "sha256": "f25ccd526235f7b351f9b49451b75fdd8e23250b9ad8fc9f8f2a19f517a4892f",
+    "members": [
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__functions_malloc.h",
+        "bytes": 702,
+        "sha256": "b8d38918f17c2850b75c7135b1cf14f32a1cb2c9d9670f7fd122b0601cf1c7cc",
+        "sourceArchiveMatches": [
+          "libc-bottom-half/headers/public/__functions_malloc.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__functions_memcpy.h",
+        "bytes": 608,
+        "sha256": "2066232303f51c11aa73ee0d140aaa55378c8d57bd1487f7347b7e30f1dc56de",
+        "sourceArchiveMatches": [
+          "libc-bottom-half/headers/public/__functions_memcpy.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__header_stdlib.h",
+        "bytes": 396,
+        "sha256": "076be483fea034975836ec11cce1890a475c87794956963c18dd0c694388d80e",
+        "sourceArchiveMatches": [
+          "libc-bottom-half/headers/public/__header_stdlib.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__header_string.h",
+        "bytes": 621,
+        "sha256": "b349ab283073e141735c2fb06a27a97504cab9540fbd0ee1ae143778e5fcd363",
+        "sourceArchiveMatches": [
+          "libc-bottom-half/headers/public/__header_string.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__macro_PAGESIZE.h",
+        "bytes": 939,
+        "sha256": "06fb86f22763a6b4fc6d3dee09cfef54275f622706b74b3c204fad0ee3470e36",
+        "sourceArchiveMatches": [
+          "libc-bottom-half/headers/public/__macro_PAGESIZE.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__seek.h",
+        "bytes": 122,
+        "sha256": "21b0646d441deb41cd97f20f471e1dbdd8693d85c89c7f98d0f28c521ccb0192",
+        "sourceArchiveMatches": ["libc-bottom-half/headers/public/__seek.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__struct_iovec.h",
+        "bytes": 178,
+        "sha256": "9d0e70e1444e0d20d49a050b063d3d2341de9344e1ecac3b5f237c837e0e521a",
+        "sourceArchiveMatches": [
+          "libc-bottom-half/headers/public/__struct_iovec.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__struct_timespec.h",
+        "bytes": 201,
+        "sha256": "613f7cf5be480a6622aff8e1858187bc8a34a7278d9ce3d710a2c6e8eaa8d386",
+        "sourceArchiveMatches": [
+          "libc-bottom-half/headers/public/__struct_timespec.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__struct_timeval.h",
+        "bytes": 240,
+        "sha256": "2f1bf6957fcfec53a116498e50bf86432f79342bf377b6fd919a3fcef879f1c2",
+        "sourceArchiveMatches": [
+          "libc-bottom-half/headers/public/__struct_timeval.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__typedef_suseconds_t.h",
+        "bytes": 247,
+        "sha256": "c258310734c92f07ec10b86b756183d66c277fec85bdff84d82a695b925b38cb",
+        "sourceArchiveMatches": [
+          "libc-bottom-half/headers/public/__typedef_suseconds_t.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/__typedef_time_t.h",
+        "bytes": 179,
+        "sha256": "b1ad083733361f8b5077ff9dc3412bd7d7a5f455fdd1eef5fb66d188fada1e98",
+        "sourceArchiveMatches": [
+          "libc-bottom-half/headers/public/__typedef_time_t.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/alloca.h",
+        "bytes": 219,
+        "sha256": "8768404d7cf4af5fb135b1a2ca91765bd2be311ac072e0ec8b68f5cb3e6e0f3e",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/alloca.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/assert.h",
+        "bytes": 428,
+        "sha256": "477f9fcf67e8eccb59dea935f0dc7abd40829f8d61a3e73e4151ff6a18ef25f9",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/assert.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/bits/limits.h",
+        "bytes": 30,
+        "sha256": "9b0580d75ef3986460a8baea35ebf694542ff798d5fef32cc7b02c0a43dc6570",
+        "sourceArchiveMatches": ["libc-top-half/musl/arch/wasm32/bits/limits.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/bits/stdint.h",
+        "bytes": 789,
+        "sha256": "da756261a2d5fcd7b64bcc323d91897c75a1f9b3883cf2dbf6d066454ae6f511",
+        "sourceArchiveMatches": [
+          "libc-top-half/musl/arch/generic/bits/stdint.h"
+        ]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/features.h",
+        "bytes": 865,
+        "sha256": "6d228e77b88b69f70f9157548b6ec673ffc6b998ce6035fbbee0caddb8442903",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/features.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/limits.h",
+        "bytes": 4474,
+        "sha256": "8095825cf6c9775c834bed141ff7e800d7394a9f4d1c5cd4712b8014408b2fbc",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/limits.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/stdbool.h",
+        "bytes": 167,
+        "sha256": "5cd1f701b5e927e4e39bcc69f4b7e437a98c8821168e69171c626502a6fc13d9",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/stdbool.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/stdint.h",
+        "bytes": 2578,
+        "sha256": "b6e77f1611e56cf499233172cab8bc09c0f7d937f3daa5ad552e1712fc6663e5",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/stdint.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/stdio.h",
+        "bytes": 7158,
+        "sha256": "68af96bf70fb6d22c853050366feb94ea22e700a497aa642867e9dc1b07821c7",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/stdio.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/stdlib.h",
+        "bytes": 6141,
+        "sha256": "38c9f91ab4e32210d42bee4ba946f237fe130ec837d993dde1d3538417092185",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/stdlib.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/string.h",
+        "bytes": 3681,
+        "sha256": "85eaadf7ab59b931fefe325a6d1f87728c0acbc5c0b0a81ef453e5021275b590",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/string.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/strings.h",
+        "bytes": 964,
+        "sha256": "b8fde0a141ac481de1f88abafbf5678ddfd8d89b309e3253adea1fa0ecb8d9e4",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/strings.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/wchar.h",
+        "bytes": 7113,
+        "sha256": "214bffff576c41bc3599530dce0bec937106c38c73b7ae5dacee1dc90b1b6fd1",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/wchar.h"]
+      },
+      {
+        "sourceMember": "share/wasi-sysroot/include/wasm32-wasip1/wctype.h",
+        "bytes": 1915,
+        "sha256": "cfb9a3d564aad013b7bb8d326fd9b01263c87ff73fb69c823e7695b4989fc2e9",
+        "sourceArchiveMatches": ["libc-top-half/musl/include/wctype.h"]
+      }
+    ],
+    "matchingRule": "Full byte count and SHA-256, enumerating every equal source archive member; multiple equal members are not a unique origin claim."
+  },
+  "llvmResourceHeaderSources": {
+    "sourceCommit": "895aa2c896ada719451be2e3673c83da8ddf1141",
+    "members": [
+      {
+        "sourceMember": "clang/lib/Headers/__stddef_null.h",
+        "sourceUrl": "https://raw.githubusercontent.com/llvm/llvm-project/895aa2c896ada719451be2e3673c83da8ddf1141/clang/lib/Headers/__stddef_null.h",
+        "sdkMember": "lib/clang/23/include/__stddef_null.h",
+        "bytes": 875,
+        "sha256": "b1d71b08563ab3d2c22a1e4f8ddf4d9a1111c89e9404b859a45c307e8ebc6c69",
+        "sdkHeaderByteExact": true
+      },
+      {
+        "sourceMember": "clang/lib/Headers/__stddef_size_t.h",
+        "sourceUrl": "https://raw.githubusercontent.com/llvm/llvm-project/895aa2c896ada719451be2e3673c83da8ddf1141/clang/lib/Headers/__stddef_size_t.h",
+        "sdkMember": "lib/clang/23/include/__stddef_size_t.h",
+        "bytes": 708,
+        "sha256": "d86ddc0238da09b385846ebef814ffc50a44e40cf85d4e3793f485952b7e73ad",
+        "sdkHeaderByteExact": true
+      },
+      {
+        "sourceMember": "clang/lib/Headers/__stddef_wchar_t.h",
+        "sourceUrl": "https://raw.githubusercontent.com/llvm/llvm-project/895aa2c896ada719451be2e3673c83da8ddf1141/clang/lib/Headers/__stddef_wchar_t.h",
+        "sdkMember": "lib/clang/23/include/__stddef_wchar_t.h",
+        "bytes": 853,
+        "sha256": "1900d4998aef3698b06399ed686db0c21e26509b08638a25734fb97ae89b1001",
+        "sdkHeaderByteExact": true
+      },
+      {
+        "sourceMember": "clang/lib/Headers/__stddef_wint_t.h",
+        "sourceUrl": "https://raw.githubusercontent.com/llvm/llvm-project/895aa2c896ada719451be2e3673c83da8ddf1141/clang/lib/Headers/__stddef_wint_t.h",
+        "sdkMember": "lib/clang/23/include/__stddef_wint_t.h",
+        "bytes": 443,
+        "sha256": "f2ededa38c5454397242aceaefa65b42b292a1b3cc258e7ca6e216f146e51f0d",
+        "sdkHeaderByteExact": true
+      },
+      {
+        "sourceMember": "clang/lib/Headers/limits.h",
+        "sourceUrl": "https://raw.githubusercontent.com/llvm/llvm-project/895aa2c896ada719451be2e3673c83da8ddf1141/clang/lib/Headers/limits.h",
+        "sdkMember": "lib/clang/23/include/limits.h",
+        "bytes": 3794,
+        "sha256": "6b59cc1b6f86c901bf41ce942b8434530e852eb16e79e6e9287f89441f71efca",
+        "sdkHeaderByteExact": true
+      },
+      {
+        "sourceMember": "clang/lib/Headers/stdbool.h",
+        "sourceUrl": "https://raw.githubusercontent.com/llvm/llvm-project/895aa2c896ada719451be2e3673c83da8ddf1141/clang/lib/Headers/stdbool.h",
+        "sdkMember": "lib/clang/23/include/stdbool.h",
+        "bytes": 1172,
+        "sha256": "48655faf4ebd4ca0af26a1ee8e3e16f8dc68385c9cd550ffb3629320681305b3",
+        "sdkHeaderByteExact": true
+      },
+      {
+        "sourceMember": "clang/lib/Headers/stddef.h",
+        "sourceUrl": "https://raw.githubusercontent.com/llvm/llvm-project/895aa2c896ada719451be2e3673c83da8ddf1141/clang/lib/Headers/stddef.h",
+        "sdkMember": "lib/clang/23/include/stddef.h",
+        "bytes": 5053,
+        "sha256": "b3e62a046ddf28d09eedebe6eb9461cb7060e47cad2c69964b222c4eea10347e",
+        "sdkHeaderByteExact": true
+      },
+      {
+        "sourceMember": "clang/lib/Headers/stdint.h",
+        "sourceUrl": "https://raw.githubusercontent.com/llvm/llvm-project/895aa2c896ada719451be2e3673c83da8ddf1141/clang/lib/Headers/stdint.h",
+        "sdkMember": "lib/clang/23/include/stdint.h",
+        "bytes": 27175,
+        "sha256": "5e0ab094f39830fafd0ecde083d329c423378ff325142a52700b17773977f6c3",
+        "sdkHeaderByteExact": true
+      }
+    ],
+    "source": "Exact selected immutable public raw source URLs, byte-equal to the pinned released SDK headers."
+  },
+  "generatedHeaderControls": {
+    "observedAt": "2026-10-21T21:50:15.363296+00:00",
+    "sourceArchiveSha256": "f25ccd526235f7b351f9b49451b75fdd8e23250b9ad8fc9f8f2a19f517a4892f",
+    "sourceInputs": [
+      {
+        "sourceMember": "libc-top-half/musl/tools/mkalltypes.sed",
+        "bytes": 451,
+        "sha256": "8ccea9ec27a8450a52973cab8cdea0af8b4bd93d246b1f206b37ccc6fa0b8b7b"
+      },
+      {
+        "sourceMember": "libc-top-half/musl/arch/wasm32/bits/alltypes.h.in",
+        "bytes": 1385,
+        "sha256": "87b86df7af12c26d6648d6d1e773c908732727b9dccf43f2b0cb8805a451caa3"
+      },
+      {
+        "sourceMember": "libc-top-half/musl/include/alltypes.h.in",
+        "bytes": 4242,
+        "sha256": "d6c0af87e170f3c3674bb3e37300245b0ca0b04a8a4b5d83a5efa4d9ad8d967f"
+      },
+      {
+        "sourceMember": "libc-bottom-half/headers/public/wasi/version.h.in",
+        "bytes": 790,
+        "sha256": "6848fdb02614f17756cb90467ca54c7143e4a82e9fb751138f3caf913bc45c34"
+      },
+      {
+        "sourceMember": "libc-bottom-half/CMakeLists.txt",
+        "bytes": 9773,
+        "sha256": "2270846e3ec313021c9d929a472bcaadebbbbb3c78e70fb42db503d9ec4717eb"
+      },
+      {
+        "sourceMember": "libc-top-half/CMakeLists.txt",
+        "bytes": 18861,
+        "sha256": "76cdc12dd12021d9b965d15973eb693b75fa4c8ec03d7930a01a008a468a9ac8"
+      },
+      {
+        "sourceMember": "CMakeLists.txt",
+        "bytes": 15793,
+        "sha256": "9789aa14ab4c1fc63ec4a5dafd09afa70c7591933989ef9160ad3651505c58c9"
+      }
+    ],
+    "alltypes": {
+      "method": "Actual native sed execution of the pinned source generator and two pinned input templates.",
+      "tool": {
+        "name": "macOS /usr/bin/sed",
+        "sha256": "bb1cb46089269d91ba83ef291364e6e7121e7b27f12037629fe8daaf5238a559"
+      },
+      "sourceGenerator": "libc-top-half/musl/tools/mkalltypes.sed",
+      "sourceTemplates": [
+        "libc-top-half/musl/arch/wasm32/bits/alltypes.h.in",
+        "libc-top-half/musl/include/alltypes.h.in"
+      ],
+      "sdkMember": "share/wasi-sysroot/include/wasm32-wasip1/bits/alltypes.h",
+      "outputBytes": 12767,
+      "outputSha256": "c96ceaca634a361be4def3e9ff27dc12bb21cadaae67a46553e1559e52fc9cf4",
+      "sdkHeaderByteExact": true,
+      "changedAddressTypeGeneratorStillSucceeded": true,
+      "changedOutputSha256": "62f1d0f61f6d019b328b086fa59f50a25cd0fc70b9912d268a7329eac90d5598",
+      "changedOutputDiffers": true,
+      "restorationByteExact": true
+    },
+    "version": {
+      "method": "Original independent deterministic template projection of declared CMake substitutions; no CMake command executed.",
+      "sourceTemplate": "libc-bottom-half/headers/public/wasi/version.h.in",
+      "sdkMember": "share/wasi-sysroot/include/wasm32-wasip1/wasi/version.h",
+      "configuredValues": {
+        "__wasip1__": true,
+        "__wasip2__": false,
+        "__wasip3__": false,
+        "__wasi_cooperative_threads__": false,
+        "__wasi_sdk_major__": "34",
+        "__wasi_sdk_version__": "34.0"
+      },
+      "outputBytes": 739,
+      "outputSha256": "f4b6118e5051bdf33173bf25b2d0d1c893c8ae8b8ee7f0a32acede0a1ba370c5",
+      "sdkHeaderByteExact": true,
+      "changedVersionOutputSha256": "72c81f5ae1ccbe5cfee1f54b3118ffe63d630705046268888cf8e22f3f41cdd9",
+      "changedVersionDiffers": true,
+      "restorationByteExact": true,
+      "actualProducerConfigurationIndependentlyObserved": false
+    },
+    "policySha256": "71678e9e20523e13070c542be20317068713511dac1c40192fbfcd4256ffd8c3",
+    "originalPinnedSourceArchiveUnchanged": true,
+    "completeArtifactAndNoticeClosureVerified": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "actualProducerConfigurationIndependentlyObserved": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

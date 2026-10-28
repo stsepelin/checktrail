@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Public original producer log and receipt bindings for the selected provider archive; independent local compiler and SDK builds are still required.",
+  "upstreamRun": {
+    "repository": "https://github.com/hashicorp/terraform-provider-random",
+    "id": 34615171553,
+    "url": "https://github.com/hashicorp/terraform-provider-random/actions/runs/34615171553",
+    "event": "push",
+    "tag": "v3.9.1",
+    "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+    "startedAt": "2026-09-11T15:16:45Z",
+    "conclusion": "success",
+    "runMetadataSha256": "7cb69fcb7005ed1a27eb15e1a75d13c00e7ada8983c8b494be341fe30abfc864",
+    "jobId": 103315240729,
+    "jobUrl": "https://github.com/hashicorp/terraform-provider-random/actions/runs/34615171553/job/103315240729",
+    "jobName": "Go 1.26.8 linux arm64 build",
+    "jobMetadataSha256": "f0b3233ba3bfc598da3f8034bdfede18564f3aeb9c861cd63c7055df2c99bdd2"
+  },
+  "originalLog": {
+    "downloadUrl": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/jobs/103315240729/logs",
+    "bytes": 132699,
+    "sha256": "654f22d010e269df6a95d717796436209982f47c2d00dd4ee018addf1c51d8f0",
+    "retainedExcerpts": "Noncontiguous original lines with timestamps; ANSI terminal escapes removed only. Line numbers use the decoded original log.",
+    "lineRanges": [
+      {
+        "first": 1,
+        "last": 20,
+        "file": "provider-producer-inputs/original-release-log-01.txt"
+      },
+      {
+        "first": 28,
+        "last": 35,
+        "file": "provider-producer-inputs/original-release-log-02.txt"
+      },
+      {
+        "first": 167,
+        "last": 185,
+        "file": "provider-producer-inputs/original-release-log-03.txt"
+      },
+      {
+        "first": 237,
+        "last": 275,
+        "file": "provider-producer-inputs/original-release-log-04.txt"
+      },
+      {
+        "first": 276,
+        "last": 298,
+        "file": "provider-producer-inputs/original-release-log-05.txt"
+      },
+      {
+        "first": 749,
+        "last": 822,
+        "file": "provider-producer-inputs/original-release-log-06.txt"
+      },
+      {
+        "first": 1149,
+        "last": 1222,
+        "file": "provider-producer-inputs/original-release-log-07.txt"
+      },
+      {
+        "first": 1285,
+        "last": 1286,
+        "file": "provider-producer-inputs/original-release-log-08.txt"
+      },
+      {
+        "first": 1335,
+        "last": 1355,
+        "file": "provider-producer-inputs/original-release-log-09.txt"
+      }
+    ]
+  },
+  "observedProducer": {
+    "runnerImage": "ubuntu-24.04",
+    "runnerImageVersion": "20260907.300.1",
+    "runnerImageFullyRebuilt": false,
+    "actionCommit": "dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4",
+    "actionVersion": "1.1.2",
+    "packagingCompiler": "go1.24.13 linux/amd64",
+    "providerCompiler": "go1.26.8 linux/amd64",
+    "packagingCompilerPatchObservedFromOriginalLog": true,
+    "compilerExecutableBytesAttestedByLog": false,
+    "compilerBootstrapBuildsReproduced": false,
+    "hostSdkBuildReproduced": false,
+    "providerTarget": "linux/arm64",
+    "cgoEnabled": false,
+    "reproducibilityMode": "report",
+    "identicalOutputsEnforcementStep": "skipped",
+    "originalReceiptReportsMatchingExecutableAndZip": true,
+    "producerRunIsIndependentLocalRebuild": false
+  },
+  "originalVerificationReceipt": {
+    "artifactId": 10270173800,
+    "artifactName": "terraform-provider-random_3.9.1_linux_arm64.zip.verificationresult.json",
+    "artifactUrl": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10270173800",
+    "artifactArchiveBytes": 1455,
+    "artifactArchiveSha256": "bc8038c35482f80116ec15eca2cc9e4222ab99f6ef8852f21b0a69859aa6dec5",
+    "artifactDigestRecomputed": true,
+    "memberBytes": 8502,
+    "memberSha256": "1de253e3b5666b606fecbf31ec99818bf37e09ec0b613bf01d613f11eb83d7bc",
+    "sourceAndParametersMatchSelected": true,
+    "primaryAndVerificationMemberDigestsMatchSelected": true,
+    "receiptReportsReproducedCorrectly": true,
+    "independentCompilationCacheVerified": false,
+    "cryptographicallySignedProvenanceVerified": false
+  },
+  "relationshipToIndependentObservations": {
+    "independentExecutableRecord": "provider-independent-rebuild.json",
+    "independentZipRecord": "provider-independent-zip-repack.json",
+    "independentZipCompilerVersionMatchesObservedProducer": true,
+    "independentZipCompilerHostMatchesObservedProducer": false,
+    "independentZipCompilerArtifactMatchesObservedProducer": false,
+    "newProviderOrCompilerBuildExecutedDuringThisObservation": false
+  },
+  "retainedInputs": [
+    {
+      "file": "provider-producer-inputs/original-producer-verification.json.txt",
+      "bytes": 8502,
+      "sha256": "1de253e3b5666b606fecbf31ec99818bf37e09ec0b613bf01d613f11eb83d7bc"
+    },
+    {
+      "file": "provider-producer-inputs/original-provider-build.yml.txt",
+      "bytes": 8035,
+      "sha256": "43be3bf498600d91b70c367bd29b703e66f0d0f1f6f044bc3165ba5e7c59360e"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-01.txt",
+      "bytes": 1216,
+      "sha256": "fbd8dd836fff346307d4f7c9b2d93f6ddc526f670c5db8e8020ca3d0fd1ce76c"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-02.txt",
+      "bytes": 861,
+      "sha256": "3198c26bb99038d69344499359fffa16442071f53a413e76a79ef063539c7217"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-03.txt",
+      "bytes": 1144,
+      "sha256": "6bb2769cb0e77934de4e41a16b074edb3094a4b73ad0380fc0228545d22f8379"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-04.txt",
+      "bytes": 2607,
+      "sha256": "1e435cdbdad33278f77ac6001a62c32751baa6fc97704e790a4c3da7eb2e2564"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-05.txt",
+      "bytes": 1517,
+      "sha256": "be982ab69ef298aca47575634b529f65bdd83214fed2e716921e54c93d32aee2"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-06.txt",
+      "bytes": 5289,
+      "sha256": "fa4808915374564423c608a670e7f2ea80a1effdcafcaec007e76ef3d6a6f062"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-07.txt",
+      "bytes": 6693,
+      "sha256": "5a123c54ada8fb236cf672a002d217c54f863e423accf1f70dbea3fb910f14d2"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-08.txt",
+      "bytes": 258,
+      "sha256": "eb58dba9865c4f6acd8e62f3b70502202d93bebc5bde35465315d67fc784b64c"
+    },
+    {
+      "file": "provider-producer-inputs/original-release-log-09.txt",
+      "bytes": 3013,
+      "sha256": "ea02e2b1e76d40b1d5e98f597da850e37b91c3c0545cfb23ddb7934163da67e1"
+    },
+    {
+      "file": "provider-compiler-source-rebuilds.json",
+      "bytes": 37022,
+      "sha256": "4b3b0b62c866cd27b041dc7f75234f076f792e7cfe0e44c40fbf4773fd8cfab4"
+    }
+  ],
+  "remainingInputs": [
+    "Reproduce and bind exact producer compilers and their bootstrap inputs, original packaging action build and transitive notices.",
+    "Reconcile copied/generated and linked Go component origins and complete original notices.",
+    "Bind original runner/SDK build inputs and integrate qualified artifact identities into preparation and receipt admission."
+  ],
+  "completeBuildToolProvenanceVerified": false,
+  "completeTransitiveNoticeClosureVerified": false,
+  "preparationAndReceiptIntegrationVerified": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "compilerArchiveFollowUpObservedAt": "2026-10-27",
+  "compilerArchiveFollowUp": {
+    "go12413LinuxAmd64CompleteArchiveRebuilt": true,
+    "go1268LinuxAmd64CompleteArchiveRebuilt": true,
+    "bootstrapAndCompleteNoticeClosureVerified": false
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-28",
+  "scope": "Current-main integration of retained public artifact observations and an offline consistency audit. The check does not independently replay or authenticate recorded producer builds.",
+  "sourceCommit": "092d95cd80584933bcd6a882e5ce05cdc1574d66",
+  "mainBaseCommit": "d07be0296fdb48c78e1c4da4c690066ddb439d4d",
+  "mainBaseMergedPr": 147,
+  "artifactObservationSourceCommit": "be77e28c2894ece6dd989b0611f67f9f4b3b74ab",
+  "integration": {
+    "productionEngineSourceChanged": false,
+    "currentMainNativeRequiredProfilesPreserved": true,
+    "currentMainDependencyFallbackMapPreserved": true,
+    "historicalNoticeRecordsRemainVersionScoped": true,
+    "upstreamOriginalBytesPreserved": true,
+    "retainedIndexSha256": "d26dcfd7afe5e67a4c5980886d63f74ba29f5ed50c44aced30b5bbdf8af7d6d2",
+    "auditScriptSha256": "59d157a3e7e28eb5630a6efbda9571df9a6aecec0501bd6e1303e27386a3bbbc"
+  },
+  "artifactConsistency": {
+    "schemaVersion": 1,
+    "evidenceConsistent": true,
+    "files": 254,
+    "retainedReferences": 298,
+    "repositoryInputs": 9,
+    "observedBytes": 5563586,
+    "cryptographicVerificationPerformedByAudit": false,
+    "nativeAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "requiredCaseController": {
+    "sourceCommit": "092d95cd80584933bcd6a882e5ce05cdc1574d66",
+    "committedEvidenceFilesByteExact": 255,
+    "passed": 12,
+    "required": 12,
+    "complete": true,
+    "elapsedSeconds": 3.1560529170000002,
+    "receiptSha256": "ee6d0327d653598d2549b43a4f966d6856cc62a37a6a459a3afba6d8570935ea",
+    "compiledEngine": {
+      "fileCount": 972,
+      "bytes": 16179784,
+      "treeSha256": "c647f2d3d44ce1afbfcb51b79eb53860c2a24521d155e2b931d927a56f74193c"
+    },
+    "sourceAuditSha256": "59d157a3e7e28eb5630a6efbda9571df9a6aecec0501bd6e1303e27386a3bbbc",
+    "gateAComplete": false
+  },
+  "nestedClaimGuardControls": {
+    "state": "completed",
+    "controls": [
+      {
+        "control": "baseline",
+        "exitCode": 0,
+        "expectedAdmissionFailureObserved": false,
+        "logSha256": "ec99ebc775b16223fd3cdb73103dc0259f8663be39b71b1d837d16cc82696fad"
+      },
+      {
+        "control": "gateAComplete",
+        "exitCode": 1,
+        "expectedAdmissionFailureObserved": true,
+        "logSha256": "6317017ab204c43a03a7d7fd077375bbc54d3af1dce836a6df56a47bfc653461"
+      },
+      {
+        "control": "qualityAssessed",
+        "exitCode": 1,
+        "expectedAdmissionFailureObserved": true,
+        "logSha256": "0867fdc11a9040243bdce70b8284bc9f63b0a247e3c8cd6d8d383160da81ac16"
+      },
+      {
+        "control": "inferenceInvoked",
+        "exitCode": 1,
+        "expectedAdmissionFailureObserved": true,
+        "logSha256": "1b3e9d358956c75e8f8af74b300adbb211f248e60c90e10b47071529a70830b6"
+      },
+      {
+        "control": "fieldEvaluationExecuted",
+        "exitCode": 1,
+        "expectedAdmissionFailureObserved": true,
+        "logSha256": "0eadcdabe4bb9f5422ffb545e2f49cc42f1f8e26a45f5979e9bd94e10b3a7279"
+      },
+      {
+        "control": "restored",
+        "exitCode": 0,
+        "expectedAdmissionFailureObserved": false,
+        "logSha256": "ce6b6356dbf170a39e5be23506ba71c9ad0c8279709ff56764b96150adb9ded1"
+      }
+    ],
+    "originalScriptSha256": "59d157a3e7e28eb5630a6efbda9571df9a6aecec0501bd6e1303e27386a3bbbc",
+    "scriptExactlyRestored": true,
+    "nativeProducerRunsOrModelCallsPerformed": false
+  },
+  "regressionBeforeCorrection": {
+    "expectedAuditExitCode": 2,
+    "observedAuditExitCode": 0,
+    "claim": "nested gateAComplete=true after coherent rehashing",
+    "failure": "ERR_ASSERTION",
+    "logSha256": "87ce0fb84dd61b2d986bfedca4e592280f9001f709c835a820d1cba13cb7b558"
+  },
+  "fixedGuards": [
+    "gateAComplete",
+    "qualityAssessed",
+    "inferenceInvoked",
+    "fieldEvaluationExecuted"
+  ],
+  "validNearMisses": "The same exact flags set false and adjacent names with the Control suffix set true are admitted. Scoped successful payload reconstruction flags remain allowed.",
+  "fullCheck": {
+    "command": "npm run check",
+    "sourceCommit": "092d95cd80584933bcd6a882e5ce05cdc1574d66",
+    "sourceWorkingTreeCleanBeforeAndAfter": true,
+    "exitCode": 0,
+    "elapsedSeconds": 1066.076481417,
+    "logSha256": "68c0129bb384ae4357a248455a94677a8b66ac1e81047ec4d903fd0ae6af48d0",
+    "runtime": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "macOsProductVersion": "27.0",
+      "selectedFinalRuntimeSlot": false
+    },
+    "batches": [
+      {
+        "tests": 2054,
+        "pass": 1295,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 759,
+        "todo": 0,
+        "duration_ms": 444243.042083
+      },
+      {
+        "tests": 102,
+        "pass": 102,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 595386.74825
+      }
+    ],
+    "totals": {
+      "tests": 2156,
+      "pass": 1397,
+      "fail": 0,
+      "skipped": 759,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "compiledEnginePostCheck": {
+      "schemaVersion": 1,
+      "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+      "fileCount": 972,
+      "bytes": 16179784,
+      "treeSha256": "c647f2d3d44ce1afbfcb51b79eb53860c2a24521d155e2b931d927a56f74193c",
+      "manifestSha256": "8ba37f5bb25dd054f160e641eed6115067b1036642cddf71f7d84d31ccbc0957",
+      "limits": {
+        "files": 4096,
+        "entries": 8192,
+        "depth": 24,
+        "fileBytes": 8388608,
+        "totalBytes": 134217728
+      }
+    },
+    "preparedLegacyToolFingerprint": "eec40e2318eefd99e386bece5d6b5bc38741f8d02a48e27ed50d181dbf606fdc",
+    "baselineExecutedDuringToolCopy": false
+  },
+  "previousFailuresRemainHistorical": {
+    "record": "native-reliability-2026-10-27.json",
+    "sourceCommit": "8fc7f6a00ac4db0dcf8d535f44dbd95543d5994c",
+    "underlyingGoAndResourceFailureCausesEstablishedByThisPassingRun": false,
+    "originalFailedRunRemovedOrReclassified": false
+  },
+  "limits": [
+    "The coherent byte graph and mutation controls do not establish complete source/build/notice coverage, publisher authentication or runtime preparation/receipt admission.",
+    "The full check is outside the selected final runtime matrix and retains all explicitly skipped cases separately.",
+    "The committed-byte verifier uses fixed request/response files. An earlier optional pipe-based Git batch reader stalled before required cases ran; its cause remains unestablished and it is not acceptance evidence.",
+    "Reads reject observed symlinked paths; an adversarial atomic filesystem snapshot is not established.",
+    "The latest integration retains current main profiles and fallback admission rather than copying the older branch definitions."
+  ],
+  "selectedRuntimeMatrixQualified": false,
+  "fullUpstreamProducerBuildClosureVerified": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

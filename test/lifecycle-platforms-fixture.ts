@@ -38,7 +38,9 @@ export function lifecycleAlive(pid: number) {
 }
 export async function cleanupLifecycleIdentities(rows: ProcessIdentity[]) {
   for (const row of rows) {
-    const current = (await processSnapshot()).find((p) => p.pid === row.pid);
+    const current = (await processSnapshot(row.pid)).find(
+      (p) => p.pid === row.pid,
+    );
     if (current?.identity !== row.identity || current.group !== row.group)
       continue;
     try {
@@ -93,7 +95,7 @@ assert.equal(visible([{enabled:true},{enabled:true},{enabled:false}]),2,${JSON.s
     assert.equal(new Set(ids).size, 4);
     assert.ok(ids.every((pid) => pid !== process.pid && lifecycleAlive(pid)));
     if (process.platform === "win32") return [];
-    const rows = await processSnapshot();
+    const rows = await processSnapshot(ids);
     return ids.map((pid) => {
       const found = rows.find((row) => row.pid === pid);
       assert.ok(found, "Every reached native process must be observable");

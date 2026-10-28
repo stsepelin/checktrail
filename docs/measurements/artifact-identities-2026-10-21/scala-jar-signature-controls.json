@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-21T19:01:04.388974+00:00",
+  "scope": "Actual detached OpenPGP verification of three selected Scala JARs and an altered/restored compiler control; not a signature over the whole distribution.",
+  "verifier": {
+    "name": "gpg",
+    "versionOutput": "gpg (GnuPG) 2.5.24",
+    "binarySha256": "21cb9adcad96b7be404014ff6e9fb837160a2135455c217dec9efe196cf0661a",
+    "automaticKeyRetrieval": false,
+    "freshPublicOnlyKeyring": true,
+    "agentAutostart": false
+  },
+  "expectedSignerFingerprint": "2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E",
+  "cases": [
+    {
+      "case": "compiler-original",
+      "artifactSha256": "2f15891fcae7aad30a3892194fb2abb6224cf7ce5d2bd90fba7f1c48682fca21",
+      "signatureSha256": "f754dc62a7e4720bde25096929f755b2eb1699961dcae15627b74cc64fbc2e22",
+      "exitCode": 0,
+      "statusCodes": [
+        "NEWSIG",
+        "KEY_CONSIDERED",
+        "SIG_ID",
+        "GOODSIG",
+        "VALIDSIG",
+        "TRUST_UNDEFINED"
+      ],
+      "validSignerFingerprints": ["2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E"],
+      "operatorTrustAsserted": false
+    },
+    {
+      "case": "library-original",
+      "artifactSha256": "4e85d96ff7bc7dc627985523c3541b9917aaa08e956391380c42db21a2c4e5a0",
+      "signatureSha256": "29df493c0f7cdd2507e85ed57830abca9667e711c0d63770bddcccb7b56fe9f7",
+      "exitCode": 0,
+      "statusCodes": [
+        "NEWSIG",
+        "KEY_CONSIDERED",
+        "SIG_ID",
+        "GOODSIG",
+        "VALIDSIG",
+        "TRUST_UNDEFINED"
+      ],
+      "validSignerFingerprints": ["2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E"],
+      "operatorTrustAsserted": false
+    },
+    {
+      "case": "reflect-original",
+      "artifactSha256": "6935ff1982b2ac93d695f15aa66921be2f602921277afe002f018fd8c7d6e29b",
+      "signatureSha256": "d7ec1f87e162ee0429d4aec698352e6b08187f47bf7c730474d8000646b23cff",
+      "exitCode": 0,
+      "statusCodes": [
+        "NEWSIG",
+        "KEY_CONSIDERED",
+        "SIG_ID",
+        "GOODSIG",
+        "VALIDSIG",
+        "TRUST_UNDEFINED"
+      ],
+      "validSignerFingerprints": ["2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E"],
+      "operatorTrustAsserted": false
+    },
+    {
+      "case": "compiler-altered-bytes",
+      "artifactSha256": "b5cbb3d8e96352a2e9b821b145ae37506c6533d8fad2f03986b6f7d0c49c7edf",
+      "signatureSha256": "f754dc62a7e4720bde25096929f755b2eb1699961dcae15627b74cc64fbc2e22",
+      "exitCode": 1,
+      "statusCodes": [
+        "NEWSIG",
+        "KEY_CONSIDERED",
+        "BADSIG",
+        "SIGINFO",
+        "FAILURE"
+      ],
+      "validSignerFingerprints": [],
+      "operatorTrustAsserted": false
+    },
+    {
+      "case": "compiler-restored-original",
+      "artifactSha256": "2f15891fcae7aad30a3892194fb2abb6224cf7ce5d2bd90fba7f1c48682fca21",
+      "signatureSha256": "f754dc62a7e4720bde25096929f755b2eb1699961dcae15627b74cc64fbc2e22",
+      "exitCode": 0,
+      "statusCodes": [
+        "NEWSIG",
+        "KEY_CONSIDERED",
+        "SIG_ID",
+        "GOODSIG",
+        "VALIDSIG",
+        "TRUST_UNDEFINED"
+      ],
+      "validSignerFingerprints": ["2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E"],
+      "operatorTrustAsserted": false
+    }
+  ],
+  "operatorTrustAsserted": false,
+  "distributionSignatureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
