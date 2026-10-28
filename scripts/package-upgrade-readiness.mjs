@@ -195,12 +195,29 @@ export async function verifyPackageUpgrade(
     );
     let activePhase = "preparation";
     const invokeNpm = (args, options) => {
+      const started = performance.now();
+      const installationObservationMs =
+        process.platform === "win32" ? 120000 : 60000;
       try {
-        return runAcceptanceNpm(args, options);
+        return runAcceptanceNpm(args, {
+          ...options,
+          timeout: installationObservationMs,
+        });
       } catch (error) {
         if (error instanceof Error)
           error.message = `Upgrade ${activePhase} npm ${args[0]}: ${error.message}`;
         throw error;
+      } finally {
+        process.stderr.write(
+          JSON.stringify({
+            diagnostic: "never-merge-windows-npm-installation",
+            phase: activePhase,
+            operation: args[0],
+            elapsedMs: Math.round(performance.now() - started),
+            installationObservationMs,
+            engineExecutionLimitsChanged: false,
+          }) + "\n",
+        );
       }
     };
     const invoke = (args) =>
