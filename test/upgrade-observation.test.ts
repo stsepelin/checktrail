@@ -93,3 +93,115 @@ test("upgrade observation retains nonzero exit output byte limits and phase-spec
     },
   );
 });
+
+test("upgrade installation observation keeps both installation paths bounded by the exact host and preserves refusal evidence", async (t) => {
+  const { spawnSync } = await import("node:child_process");
+  const { writeFile, realpath } = await import("node:fs/promises");
+  const source = await readFile(
+    new URL("../../scripts/package-upgrade-readiness.mjs", import.meta.url),
+    "utf8",
+  );
+  for (const platform of ["win32", "linux", "darwin", "win32-control"]) {
+    for (const locked of [false, true]) {
+      const root = await realpath(await fixture(t, {}));
+      let controlled = source;
+      for (const [before, after] of [
+        ['from "node:process"', 'from "./controlled-process.mjs"'],
+        [
+          'from "./install-acceptance-package.mjs"',
+          'from "./controlled-npm.mjs"',
+        ],
+        [
+          'from "@modelcontextprotocol/client"',
+          'from "./controlled-client.mjs"',
+        ],
+        [
+          'from "@modelcontextprotocol/client/stdio"',
+          'from "./controlled-client.mjs"',
+        ],
+      ] as const) {
+        assert.equal(controlled.split(before).length, 2, before);
+        controlled = controlled.replace(before, after);
+      }
+      await writeFile(path.join(root, "subject.mjs"), controlled);
+      await writeFile(
+        path.join(root, "controlled-process.mjs"),
+        `import process from "node:process";export default {platform:${JSON.stringify(platform)},execPath:process.execPath};`,
+      );
+      await writeFile(
+        path.join(root, "controlled-client.mjs"),
+        'export let starts=0;export class Client{constructor(){starts++;throw Error("Installation refusal must prevent MCP startup");}}export class StdioClientTransport{constructor(){starts++;throw Error("Installation refusal must prevent transport startup");}}',
+      );
+      await writeFile(
+        path.join(root, "controlled-npm.mjs"),
+        `import {readFileSync,appendFileSync}from"node:fs";import path from"node:path";export const failure=Object.assign(new Error("original installation timeout"),{code:"ETIMEDOUT",status:null,signal:"SIGTERM",stdout:Buffer.from("original npm output"),stderr:Buffer.from("original npm error")});export function runAcceptanceNpm(args,options){appendFileSync(new URL("calls.jsonl",import.meta.url),JSON.stringify({args,options,manifest:JSON.parse(readFileSync(path.join(options.cwd,"package.json"),"utf8"))})+String.fromCharCode(10));throw failure;}`,
+      );
+      await writeFile(
+        path.join(root, "runner.mjs"),
+        `import{writeFile}from"node:fs/promises";import{fileURLToPath}from"node:url";import{createHash}from"node:crypto";import{verifyPackageUpgrade}from"./subject.mjs";import{failure}from"./controlled-npm.mjs";import{starts}from"./controlled-client.mjs";const baseline=fileURLToPath(new URL("baseline.tgz",import.meta.url)),candidate=fileURLToPath(new URL("candidate.tgz",import.meta.url)),rawA=Buffer.from("original baseline archive"),rawB=Buffer.from("original different candidate archive");await writeFile(baseline,rawA);await writeFile(candidate,rawB);const digest=(bytes,algorithm)=>createHash(algorithm).update(bytes).digest(algorithm==="sha256"?"hex":"base64");const prepare=(artifact,bytes,version)=>{const dependencies={"@stsepelin/checktrail":"file:"+artifact};return{manifest:{private:true,dependencies},lock:{lockfileVersion:3,packages:{"":{dependencies},"node_modules/@stsepelin/checktrail":{version,resolved:"file:"+artifact,integrity:"sha512-"+digest(bytes,"sha512")}}}}};const options={baselineIdentity:{sha256:digest(rawA,"sha256"),version:"0.0.1"},candidateVersion:"0.0.2",...(${locked}?{baselineInstallation:prepare(baseline,rawA,"0.0.1"),candidateInstallation:prepare(candidate,rawB,"0.0.2")}:{} )};let caught;try{await verifyPackageUpgrade(baseline,candidate,options);}catch(error){caught=error;}process.stdout.write(JSON.stringify({sameFailure:caught===failure,message:caught?.message,code:caught?.code,status:caught?.status,signal:caught?.signal,stdout:caught?.stdout?.toString(),stderr:caught?.stderr?.toString(),mcpStarts:starts}));`,
+      );
+      const env = { ...process.env };
+      delete env.NODE_TEST_CONTEXT;
+      const child = spawnSync(
+        process.execPath,
+        [path.join(root, "runner.mjs")],
+        {
+          encoding: "utf8",
+          env,
+          timeout: 10000,
+        },
+      );
+      assert.equal(child.error, undefined, child.error?.message ?? "");
+      assert.equal(child.status, 0, child.stderr);
+      const observed = JSON.parse(child.stdout);
+      assert.equal(observed.sameFailure, true);
+      assert.equal(observed.code, "ETIMEDOUT");
+      assert.equal(observed.status, null);
+      assert.equal(observed.signal, "SIGTERM");
+      assert.equal(observed.stdout, "original npm output");
+      assert.equal(observed.stderr, "original npm error");
+      assert.equal(observed.mcpStarts, 0);
+      const operation = locked ? "ci" : "install";
+      assert.equal(
+        observed.message,
+        `Upgrade baseline npm ${operation}: original installation timeout`,
+      );
+      const attempts = (await readFile(path.join(root, "calls.jsonl"), "utf8"))
+        .trim()
+        .split("\n")
+        .map((line) => JSON.parse(line));
+      assert.equal(
+        attempts.length,
+        1,
+        "installation refusal must stop before another attempt",
+      );
+      const calls = attempts[0];
+      assert.deepEqual(calls.args, [
+        operation,
+        "--offline",
+        "--ignore-scripts",
+        "--omit=dev",
+        "--no-audit",
+        "--no-fund",
+        ...(locked ? [] : [path.join(root, "baseline.tgz")]),
+      ]);
+      assert.equal(
+        calls.options.timeout,
+        platform === "win32" ? 120000 : 60000,
+      );
+      assert.equal(calls.options.stdio, "pipe");
+      assert.equal(path.basename(calls.options.cwd), "installation");
+      assert.equal(path.isAbsolute(calls.options.cwd), true);
+      assert.equal(Object.hasOwn(calls.options, "phase"), false);
+      assert.deepEqual(
+        calls.manifest.dependencies,
+        locked
+          ? {
+              "@stsepelin/checktrail":
+                "file:" + path.join(root, "baseline.tgz"),
+            }
+          : undefined,
+      );
+    }
+  }
+});

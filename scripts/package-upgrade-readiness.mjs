@@ -19,6 +19,23 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
 // This is a harness observation ceiling, separate from engine execution limits.
 export const upgradeCommandObservationMs = 60000;
+export const upgradeInstallationObservationMs =
+  process.platform === "win32" ? 120000 : 60000;
+export function observeUpgradeNpm(
+  args,
+  { phase = "preparation", ...options } = {},
+) {
+  try {
+    return runAcceptanceNpm(args, {
+      ...options,
+      timeout: upgradeInstallationObservationMs,
+    });
+  } catch (error) {
+    if (error instanceof Error)
+      error.message = `Upgrade ${phase} npm ${args[0]}: ${error.message}`;
+    throw error;
+  }
+}
 export function observeUpgradeNode(
   args,
   { cwd, maxBuffer = 1048576, phase = "preparation", operation = "node" } = {},
@@ -194,15 +211,8 @@ export async function verifyPackageUpgrade(
       "node_modules/@stsepelin/checktrail/dist/src/cli.js",
     );
     let activePhase = "preparation";
-    const invokeNpm = (args, options) => {
-      try {
-        return runAcceptanceNpm(args, options);
-      } catch (error) {
-        if (error instanceof Error)
-          error.message = `Upgrade ${activePhase} npm ${args[0]}: ${error.message}`;
-        throw error;
-      }
-    };
+    const invokeNpm = (args, options) =>
+      observeUpgradeNpm(args, { ...options, phase: activePhase });
     const invoke = (args) =>
       observeUpgradeNode([binary, ...args], {
         cwd: installation,
@@ -257,7 +267,7 @@ export async function verifyPackageUpgrade(
             "--no-audit",
             "--no-fund",
           ],
-          { cwd: installation, stdio: "pipe", timeout: 60000 },
+          { cwd: installation, stdio: "pipe" },
         );
         assert.equal(
           await readFile(path.join(installation, "package.json"), "utf8"),
@@ -293,7 +303,7 @@ export async function verifyPackageUpgrade(
             "--no-fund",
             tarball,
           ],
-          { cwd: installation, stdio: "pipe", timeout: 60_000 },
+          { cwd: installation, stdio: "pipe" },
         );
       }
       const version = invoke(["--version"]).trim();
