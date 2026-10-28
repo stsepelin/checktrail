@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "scope": "Development synthetic evaluation-protocol cohort with no selected final runtime slot; measured before final CI/documentation wiring and not a qualification of a future integration tree. All inputs, responses and usage declarations are synthetic.",
+  "observedAt": "2026-10-29",
+  "preparedSourceReference": "54ffa5ff83c158e78b4695064a191d8efb5078ac",
+  "freshMainBase": "7a331094144e94109f992713e7b0173768514586",
+  "receiptSha256": "cae7c1107d42b31c6b3c0d06ecc4db2071021eb306737a32db575a09affbea4f",
+  "runtime": {
+    "node": "26.12.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "osRelease": "27.0.0"
+  },
+  "selectedRuntime": null,
+  "compiledEngine": {
+    "schemaVersion": 1,
+    "fileCount": 984,
+    "bytes": 16366613,
+    "treeSha256": "fdb606571799885e66c873f15a7d0c3a67fe981333310f71dcf3cc8d05cb1544",
+    "manifestSha256": "6c44e8fdfd25987aa4d4d2d9366f1c9d60501746aea0855a7ca6646ec35f06bb",
+    "beforeAfterByteIdentitiesMatch": true,
+    "dependencyBytesCaptured": false,
+    "actualModuleLoadsTraced": false,
+    "producerSourceBuildVerified": false
+  },
+  "source": {
+    "required": 9,
+    "passed": 9,
+    "complete": true
+  },
+  "installed": {
+    "required": 9,
+    "passed": 9,
+    "complete": true
+  },
+  "offlineProductionInstall": true,
+  "harnessOutsideInstalledPackage": true,
+  "privateProspectiveComparisonFrozen": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

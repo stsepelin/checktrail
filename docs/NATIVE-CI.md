@@ -885,3 +885,18 @@ prerequisite. Local development evidence is recorded separately in
 [CONSUMER-ACCEPTANCE.md](CONSUMER-ACCEPTANCE.md); hosted acceptance requires
 complete source and fresh-install receipts. This wiring does not qualify omitted
 native profiles, upstream producer closure or Gate A.
+
+## Prepared independent evaluation setup
+
+The selected Tasks hosted jobs and existing pinned ARM64 controller now collect
+whole `independent-evaluation-protocol` source and fresh offline installed
+receipts. Shared full verification also requires the synthetic declaration,
+usage, capture, physical-storage, judgment, matching and runtime-binding controls;
+fresh installed usage intake runs separately. Native Windows requires the new
+literal private ACL batch profile, with read-only inspection and explicit public
+access refusal. No new CI jobs are introduced by this wiring.
+
+See [EVALUATION-ACCEPTANCE.md](EVALUATION-ACCEPTANCE.md) for the development
+observation and remaining qualification. The selected hosted runs, private
+prospective comparison freeze and full upstream build/license closure remain
+open. These controls invoke no model or field trial and do not measure quality.

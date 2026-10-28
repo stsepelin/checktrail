@@ -2601,6 +2601,14 @@
     {
       "file": "dist/test/windows-workspace.test.js",
       "name": "Windows process workspace refuses private-access failure before every data write or process launch"
+    },
+    {
+      "file": "dist/test/windows-task-access.test.js",
+      "name": "Windows private ACL batches bind every indexed literal target and each permission boundary"
+    },
+    {
+      "file": "dist/test/windows-task-access.test.js",
+      "name": "Windows private ACL batching ships one fixed read-only OS program"
     }
   ],
   "windows-process": [
@@ -5921,6 +5929,404 @@
     {
       "file": "dist/test/consumer-runtime-evidence.test.js",
       "name": "consumer installation requires the matching foundation even when all whole-feature callbacks pass"
+    }
+  ],
+  "evaluation-protocol-declarations": [
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol binds the common cohort reference and prior workflow without opening inputs or claiming freeze authority"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol rejects stale cohort and foreign reference or previous workflow bindings independently"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol keeps excluded connecting variants in transitive incident clusters"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol applies repository and family holdouts by exact identifiers and refuses split cluster declarations"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol refuses duplicate foreign and omitted cluster addresses while preserving the whole planned denominator"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol requires reserved uninspected eligible cases and sufficient declared incident clusters"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol rotates every three-arm order exactly once at six pairs and retains stable orders across metadata array permutations"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol pins every configuration procedure budget and threshold without silently accepting a later revision"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol refuses answer fields identity aliases malformed commitments floating fields and out-of-bound numeric decisions"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol projection excludes private schedules and unrecognized nested fields"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol setup script retains incomplete exit status and generic private error boundaries"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol controls run through a fresh offline production installation with an external harness"
+    }
+  ],
+  "evaluation-protocol-metering": [
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering retains failed retries in exact common-arm totals without invoking a host"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering partitions missing duplicate foreign and excluded slots without shrinking the plan"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering rejects reused declared sessions and complete-record identities across every arm and retry"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering preserves ordered retry admissions and rejects success followed by another attempt"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering keeps explicit nonexecution separate from successful review and reconciles terminal failures"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering keeps unknown and provider-reported usage explicit without treating null as zero"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering checks equal per-arm budgets against every failed retry and preserves boundary equality"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering reconciles total arm wall time against all sequential attempts without claiming timestamp verification"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering binds the frozen protocol and external procedure and rejects stale or incomplete declarations"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering bounds all slot and attempt collections and rejects extra private fields and malformed counters"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering supports every bounded prospective slot and leaves declared totals independent of row order"
+    },
+    {
+      "file": "dist/test/review-evaluation-metering.test.js",
+      "name": "evaluation metering stdin checker emits aggregate accounting only and invalid input never echoes private data"
+    }
+  ],
+  "evaluation-capture-declarations": [
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures bind every three-role slot without requiring review assistance from the baseline"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures preserve planned denominators for missing duplicate foreign and malformed inventories"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures bind assignments and exact source and configuration identities"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures preserve failed retry records and terminal status correspondence"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures retain empty partial and unfinished review states without approving the cohort"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures retain unknown usage and reject budgets and inconsistent output bytes"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures reject reused capture records and declared sessions while allowing matching review bodies"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures preserve the selected denominator when clustering or protocol commitments change"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures enforce exact record output and role schema boundaries"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures do not mutate input or invoke model transports and keep authenticity unverified"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures CLI preserves privacy and inclusive input limits for admissible incomplete and invalid metadata"
+    },
+    {
+      "file": "dist/test/review-evaluation-captures.test.js",
+      "name": "evaluation captures run the same controls through a fresh offline production installation"
+    }
+  ],
+  "evaluation-physical-captures": [
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts retain every reached attempt and physical output with deterministic replay"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts reject changed body bytes before committing any archive and accept the original repair"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts allow equal bodies and preserve invalid metadata rather than authenticating a digest"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts retain missing records and reached retries even when their capture is absent"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts retain truncation unknown counters and independent stream accounting gaps"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts bind raw attempt metadata and retain malformed records without losing counts"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts enforce private files directories and project boundaries before writing"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts refuse links aliases and special files while preserving their targets"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts reject stale archives and malformed duplicate unused and omitted retained inventories"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts seal once replay retained bytes and never resume or mutate incoming work"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts keep physical validity distinct from empty reviews unknown usage and authenticity"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts enforce strict raw record contracts and per-file and aggregate storage limits"
+    },
+    {
+      "file": "dist/test/review-evaluation-artifacts.test.js",
+      "name": "external capture artifacts repeat the same physical controls through a fresh offline production installation"
+    }
+  ],
+  "evaluation-independent-judging": [
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging binds all three roles and repeated slots to sealed physical responses"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging discloses one source and anonymous review without peer answers roles or probabilities"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging rejects foreign packets claims and stale source citations with the exact expected inventory"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging rejects every reused judge session including review and foreign response sessions"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging preserves missing duplicate foreign and explicitly unrun planned denominators"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging binds source bytes protocol commitments and immutable books before disclosing"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging retains refused cancelled unavailable unfinished and unresolved judgments"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging keeps malformed stale and incomplete reviewer outputs distinct from valid abstentions"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging validates every source and packet target before writing any book"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging retains malformed physical responses and refuses changed bytes before sealing"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging replays retained responses and refuses stale duplicate missing unused or rewritten sealed inventories"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging never invokes inference or verifies authority and keeps private content out of summaries"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging CLI requires an explicit source grant and retains private sealed accounting"
+    },
+    {
+      "file": "dist/test/review-evaluation-judging.test.js",
+      "name": "independent external judging repeats anonymous packet and physical response controls through a fresh offline installation"
+    }
+  ],
+  "evaluation-common-matching": [
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching connects all retained three-role claims to frozen defects and paired incident clusters"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching freezes answers before collection and keeps them out of earlier judge packets"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching rejects wrong packets omitted duplicate foreign and adjacent defect identities"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching rejects every reused curator session including prior review and judge attempts"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching preserves missing duplicate foreign and exhausted mappings without shrinking trials"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching deduplicates common defects while preserving every sealed reviewer probability"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching uses separate judgments and paired roles rather than curator agreement as claim support"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching keeps invalid empty and unknown-label reviews distinct from a quality pass"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching binds immutable inventories source judgments and books before accepting mappings"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching retains malformed and missing responses and refuses physical digest mismatches before writing"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching replays only retained bytes and rejects altered unused duplicate or omitted inventories"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching never invokes inference verifies labels or leaks private identities in scores"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching checks exact schema admission and physical storage boundaries before publication"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching CLI shares source grants sealed accounting and descriptive scoring"
+    },
+    {
+      "file": "dist/test/review-evaluation-matching.test.js",
+      "name": "independent common matching repeats source freeze judgments mappings and paired scoring through a fresh offline installation"
+    }
+  ],
+  "independent-evaluation-protocol": [
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol installed acceptance"
+    }
+  ],
+  "evaluation-runtime-bindings": [
+    {
+      "file": "dist/test/evaluation-runtime-evidence.test.js",
+      "name": "evaluation runtime requirements preserve all frozen whole-profile callbacks without admitting missing renamed or extra cases"
+    },
+    {
+      "file": "dist/test/evaluation-runtime-evidence.test.js",
+      "name": "evaluation runtime selection rejects every node architecture OS image and native container boundary even outside hosted CI"
+    },
+    {
+      "file": "dist/test/evaluation-runtime-evidence.test.js",
+      "name": "evaluation runtime installation binds all current bytes observations and exact non-skipped terminal cases"
+    },
+    {
+      "file": "dist/test/evaluation-runtime-evidence.test.js",
+      "name": "evaluation runtime CLI rejects unknown or missing hosted slots before emitting a qualifying receipt"
+    },
+    {
+      "file": "dist/test/evaluation-runtime-evidence.test.js",
+      "name": "CI independent evaluation runs each core runtime once keeps consumer-only lanes separate and requires completion"
+    }
+  ],
+  "windows-private-access-batch": [
+    {
+      "file": "dist/test/windows-task-access.test.js",
+      "name": "Windows private ACL batches bind every indexed literal target and each permission boundary"
+    },
+    {
+      "file": "dist/test/windows-task-access.test.js",
+      "name": "native Windows private ACL batches inspect literal file and directory targets and refuse public access without repair"
+    },
+    {
+      "file": "dist/test/windows-task-access.test.js",
+      "name": "Windows private ACL batching ships one fixed read-only OS program"
     }
   ]
 }

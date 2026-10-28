@@ -1,40 +1,94 @@
 {
-  "assets/context-grammars/tree-sitter-c_sharp.wasm": ["csharp-context-arm64"],
-  "assets/context-grammars/tree-sitter-c.wasm": ["c-context-arm64"],
-  "assets/context-grammars/tree-sitter-cpp.wasm": ["cpp-context-arm64"],
-  "assets/context-grammars/tree-sitter-fsharp.wasm": ["fsharp-context-arm64"],
-  "assets/context-grammars/tree-sitter-go.wasm": ["go-workspaces-arm64"],
-  "assets/context-grammars/tree-sitter-hcl.wasm": ["hcl-context-arm64"],
-  "assets/context-grammars/tree-sitter-java.wasm": ["java-context-arm64"],
-  "assets/context-grammars/tree-sitter-kotlin.wasm": ["kotlin-context-arm64"],
-  "assets/context-grammars/tree-sitter-php.wasm": ["php-context-arm64"],
-  "assets/context-grammars/tree-sitter-python.wasm": ["go-workspaces-arm64"],
-  "assets/context-grammars/tree-sitter-ruby.wasm": ["ruby-context-arm64"],
-  "assets/context-grammars/tree-sitter-rust.wasm": ["rust-context-arm64"],
-  "assets/context-grammars/tree-sitter-scala.wasm": ["scala-context-arm64"],
-  "assets/context-grammars/tree-sitter-swift.wasm": ["swift-context-arm64"],
-  "assets/context-grammars/tree-sitter-yaml.wasm": ["yaml-context-arm64"],
-  "assets/context-vb-grammar/tree-sitter-vbnet.wasm": ["vb-context-arm64"],
+  "assets/context-grammars/tree-sitter-c_sharp.wasm": [
+    "csharp-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-c.wasm": [
+    "c-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-cpp.wasm": [
+    "cpp-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-fsharp.wasm": [
+    "fsharp-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-go.wasm": [
+    "go-workspaces-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-hcl.wasm": [
+    "hcl-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-java.wasm": [
+    "java-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-kotlin.wasm": [
+    "kotlin-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-php.wasm": [
+    "php-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-python.wasm": [
+    "go-workspaces-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-ruby.wasm": [
+    "ruby-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-rust.wasm": [
+    "rust-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-scala.wasm": [
+    "scala-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-swift.wasm": [
+    "swift-context-arm64"
+  ],
+  "assets/context-grammars/tree-sitter-yaml.wasm": [
+    "yaml-context-arm64"
+  ],
+  "assets/context-vb-grammar/tree-sitter-vbnet.wasm": [
+    "vb-context-arm64"
+  ],
   "assets/native-tool-archives/alpine-v3.24/aarch64/zlib-1.3.2-r0.apk": [
     "resource-release",
     "resource-release-arm64"
   ],
-  "examples/external-adapter/bundle/adapter.json": ["external-adapters"],
-  "examples/external-adapter/bundle/adapter.mjs": ["external-adapters"],
-  "examples/external-adapter/native/adapter.go": ["external-adapters"],
-  "examples/frameworks/laravel/bootstrap/app.php": ["laravel-assembly-arm64"],
+  "examples/external-adapter/bundle/adapter.json": [
+    "external-adapters"
+  ],
+  "examples/external-adapter/bundle/adapter.mjs": [
+    "external-adapters"
+  ],
+  "examples/external-adapter/native/adapter.go": [
+    "external-adapters"
+  ],
+  "examples/frameworks/laravel/bootstrap/app.php": [
+    "laravel-assembly-arm64"
+  ],
   "examples/frameworks/laravel/bootstrap/providers.php": [
     "laravel-assembly-arm64"
   ],
-  "examples/frameworks/laravel/checktrail.json": ["laravel-assembly-arm64"],
+  "examples/frameworks/laravel/checktrail.json": [
+    "laravel-assembly-arm64"
+  ],
   "examples/frameworks/laravel/checktrail.laravel.json": [
     "laravel-assembly-arm64"
   ],
-  "examples/frameworks/laravel/composer.json": ["laravel-assembly-arm64"],
-  "examples/frameworks/laravel/config/app.php": ["laravel-assembly-arm64"],
-  "examples/frameworks/laravel/wiring.php": ["laravel-assembly-arm64"],
-  "examples/ruby-tools/Gemfile": ["ruby-extensions-arm64", "ruby-tools"],
-  "examples/ruby-tools/Gemfile.lock": ["ruby-extensions-arm64", "ruby-tools"],
+  "examples/frameworks/laravel/composer.json": [
+    "laravel-assembly-arm64"
+  ],
+  "examples/frameworks/laravel/config/app.php": [
+    "laravel-assembly-arm64"
+  ],
+  "examples/frameworks/laravel/wiring.php": [
+    "laravel-assembly-arm64"
+  ],
+  "examples/ruby-tools/Gemfile": [
+    "ruby-extensions-arm64",
+    "ruby-tools"
+  ],
+  "examples/ruby-tools/Gemfile.lock": [
+    "ruby-extensions-arm64",
+    "ruby-tools"
+  ],
   "schemas/dotnet-build-config.schema.json": [
     "jvm-wrappers-arm64",
     "php-extensions-arm64",
@@ -45,17 +99,45 @@
     "php-extensions-arm64",
     "rust-extensions-arm64"
   ],
-  "scripts/actionlint-tools.Dockerfile": ["actionlint"],
-  "scripts/attempt-output-evidence.mjs": ["jvm-wrappers-arm64"],
-  "scripts/audit-php-review-tools.mjs": ["php-review"],
-  "scripts/c-context-tools.Dockerfile": ["c-context-arm64"],
-  "scripts/capture-jvm-wrapper-guards.mjs": ["jvm-wrappers-arm64"],
-  "scripts/clang-tools.Dockerfile": ["clang"],
+  "scripts/actionlint-tools.Dockerfile": [
+    "actionlint"
+  ],
+  "scripts/attempt-output-evidence.mjs": [
+    "jvm-wrappers-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/audit-php-review-tools.mjs": [
+    "php-review"
+  ],
+  "scripts/c-context-tools.Dockerfile": [
+    "c-context-arm64"
+  ],
+  "scripts/capture-jvm-wrapper-guards.mjs": [
+    "jvm-wrappers-arm64"
+  ],
+  "scripts/check-evaluation-captures.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/check-evaluation-metering.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/check-evaluation-protocol.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/clang-tools.Dockerfile": [
+    "clang"
+  ],
   "scripts/cleanup-cpp-tools-runtime.mjs": [
     "cpp-extensions-arm64",
     "cpp-tools"
   ],
-  "scripts/cleanup-hcl-context-runtime.mjs": ["hcl-context-arm64"],
+  "scripts/cleanup-hcl-context-runtime.mjs": [
+    "hcl-context-arm64"
+  ],
   "scripts/cleanup-infra-tools-runtime.mjs": [
     "helm",
     "helm-extensions-arm64",
@@ -73,11 +155,21 @@
     "ruby-extensions-arm64",
     "ruby-tools"
   ],
-  "scripts/cleanup-swift-extensions-runtime.mjs": ["swift-extensions-arm64"],
-  "scripts/cleanup-swift-tools-runtime.mjs": ["swift-tools"],
-  "scripts/cleanup-yaml-context-runtime.mjs": ["yaml-context-arm64"],
-  "scripts/collect-cpp-extensions-sdk.mjs": ["cpp-extensions-arm64"],
-  "scripts/collect-swift-extensions-sdk.mjs": ["swift-extensions-arm64"],
+  "scripts/cleanup-swift-extensions-runtime.mjs": [
+    "swift-extensions-arm64"
+  ],
+  "scripts/cleanup-swift-tools-runtime.mjs": [
+    "swift-tools"
+  ],
+  "scripts/cleanup-yaml-context-runtime.mjs": [
+    "yaml-context-arm64"
+  ],
+  "scripts/collect-cpp-extensions-sdk.mjs": [
+    "cpp-extensions-arm64"
+  ],
+  "scripts/collect-swift-extensions-sdk.mjs": [
+    "swift-extensions-arm64"
+  ],
   "scripts/compiled-engine-evidence.mjs": [
     "actionlint",
     "c-context-arm64",
@@ -169,13 +261,29 @@
     "cpp-extensions-arm64",
     "cpp-tools"
   ],
-  "scripts/cpp-context-tools.Dockerfile": ["cpp-context-arm64"],
-  "scripts/cpp-extensions-controls.json": ["cpp-extensions-arm64"],
-  "scripts/cpp-tools-archives.json": ["cpp-extensions-arm64", "cpp-tools"],
-  "scripts/cpp-tools.Dockerfile": ["cpp-extensions-arm64", "cpp-tools"],
-  "scripts/csharp-context-tools.Dockerfile": ["csharp-context-arm64"],
-  "scripts/detekt-tools.Dockerfile": ["detekt"],
-  "scripts/diagnose-windows-task-access.mjs": ["tasks-runtime"],
+  "scripts/cpp-context-tools.Dockerfile": [
+    "cpp-context-arm64"
+  ],
+  "scripts/cpp-extensions-controls.json": [
+    "cpp-extensions-arm64"
+  ],
+  "scripts/cpp-tools-archives.json": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
+  "scripts/cpp-tools.Dockerfile": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
+  "scripts/csharp-context-tools.Dockerfile": [
+    "csharp-context-arm64"
+  ],
+  "scripts/detekt-tools.Dockerfile": [
+    "detekt"
+  ],
+  "scripts/diagnose-windows-task-access.mjs": [
+    "tasks-runtime"
+  ],
   "scripts/dotnet-build-fixture-projects.json": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -221,10 +329,30 @@
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
   ],
-  "scripts/dotnet-tools.Dockerfile": ["dotnet"],
-  "scripts/executable-bundle-tools.Dockerfile": ["external-adapters"],
-  "scripts/external-tools.Dockerfile": ["external-adapters"],
-  "scripts/extract-rust-extension-components.py": ["rust-extensions-arm64"],
+  "scripts/dotnet-tools.Dockerfile": [
+    "dotnet"
+  ],
+  "scripts/evaluation-judgments.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/evaluation-matching.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/evaluation-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/executable-bundle-tools.Dockerfile": [
+    "external-adapters"
+  ],
+  "scripts/external-tools.Dockerfile": [
+    "external-adapters"
+  ],
+  "scripts/extract-rust-extension-components.py": [
+    "rust-extensions-arm64"
+  ],
   "scripts/fastapi-assembly-tools.Dockerfile": [
     "django-assembly-arm64",
     "fastapi-assembly-arm64"
@@ -233,17 +361,31 @@
     "django-assembly-arm64",
     "fastapi-assembly-arm64"
   ],
-  "scripts/fsharp-context-tools.Dockerfile": ["fsharp-context-arm64"],
+  "scripts/fsharp-context-tools.Dockerfile": [
+    "fsharp-context-arm64"
+  ],
   "scripts/fsharp-format-tools.Dockerfile": [
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
-  "scripts/gradle-tools.Dockerfile": ["gradle"],
-  "scripts/hcl-context-tools.Dockerfile": ["hcl-context-arm64"],
-  "scripts/helm-extensions-controls.json": ["helm-extensions-arm64"],
-  "scripts/impact-corpus.json": ["tasks-runtime", "tasks-runtime-arm64"],
-  "scripts/impact-metrics.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
+  "scripts/gradle-tools.Dockerfile": [
+    "gradle"
+  ],
+  "scripts/hcl-context-tools.Dockerfile": [
+    "hcl-context-arm64"
+  ],
+  "scripts/helm-extensions-controls.json": [
+    "helm-extensions-arm64"
+  ],
+  "scripts/impact-corpus.json": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/impact-metrics.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/infra-tools-artifacts.json": [
     "hcl-context-arm64",
     "helm",
@@ -332,25 +474,53 @@
     "windows",
     "yaml-context-arm64"
   ],
-  "scripts/java-context-tools.Dockerfile": ["java-context-arm64"],
-  "scripts/java-review-tools.Dockerfile": ["checkstyle"],
-  "scripts/java-tools.Dockerfile": ["java"],
-  "scripts/jvm-analyzer-tools.Dockerfile": ["jvm-analyzer-extensions-arm64"],
-  "scripts/jvm-extension-tools.Dockerfile": ["jvm-wrappers-arm64"],
-  "scripts/jvm-wrapper-phase-evidence.mjs": ["jvm-wrappers-arm64"],
-  "scripts/kotlin-context-tools.Dockerfile": ["kotlin-context-arm64"],
-  "scripts/kotlin-tools.Dockerfile": ["kotlin", "kotlin-extensions-arm64"],
-  "scripts/kubernetes-extension-schemas.json": ["kubernetes-extensions-arm64"],
-  "scripts/laravel-cache-runtime-evidence.mjs": ["laravel-assembly-arm64"],
-  "scripts/laravel-tools/composer.json": ["laravel-assembly-arm64"],
-  "scripts/laravel-tools/composer.lock": ["laravel-assembly-arm64"],
+  "scripts/java-context-tools.Dockerfile": [
+    "java-context-arm64"
+  ],
+  "scripts/java-review-tools.Dockerfile": [
+    "checkstyle"
+  ],
+  "scripts/java-tools.Dockerfile": [
+    "java"
+  ],
+  "scripts/jvm-analyzer-tools.Dockerfile": [
+    "jvm-analyzer-extensions-arm64"
+  ],
+  "scripts/jvm-extension-tools.Dockerfile": [
+    "jvm-wrappers-arm64"
+  ],
+  "scripts/jvm-wrapper-phase-evidence.mjs": [
+    "jvm-wrappers-arm64"
+  ],
+  "scripts/kotlin-context-tools.Dockerfile": [
+    "kotlin-context-arm64"
+  ],
+  "scripts/kotlin-tools.Dockerfile": [
+    "kotlin",
+    "kotlin-extensions-arm64"
+  ],
+  "scripts/kubernetes-extension-schemas.json": [
+    "kubernetes-extensions-arm64"
+  ],
+  "scripts/laravel-cache-runtime-evidence.mjs": [
+    "laravel-assembly-arm64"
+  ],
+  "scripts/laravel-tools/composer.json": [
+    "laravel-assembly-arm64"
+  ],
+  "scripts/laravel-tools/composer.lock": [
+    "laravel-assembly-arm64"
+  ],
   "scripts/lifecycle-runtime-evidence.mjs": [
     "resource-release",
     "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "scripts/maven-tools.Dockerfile": ["jvm-wrappers-arm64", "maven"],
+  "scripts/maven-tools.Dockerfile": [
+    "jvm-wrappers-arm64",
+    "maven"
+  ],
   "scripts/measure-native-resources.mjs": [
     "resource-release",
     "resource-release-arm64"
@@ -429,8 +599,14 @@
     "resource-release-arm64",
     "windows"
   ],
-  "scripts/nuxt-tools/package-lock.json": ["nuxt", "nuxt-assembly-arm64"],
-  "scripts/nuxt-tools/package.json": ["nuxt", "nuxt-assembly-arm64"],
+  "scripts/nuxt-tools/package-lock.json": [
+    "nuxt",
+    "nuxt-assembly-arm64"
+  ],
+  "scripts/nuxt-tools/package.json": [
+    "nuxt",
+    "nuxt-assembly-arm64"
+  ],
   "scripts/package-upgrade-readiness.mjs": [
     "resource-release",
     "resource-release-arm64"
@@ -441,11 +617,21 @@
     "php-context-arm64",
     "php-extensions-arm64"
   ],
-  "scripts/php-review-tools.Dockerfile": ["php-review"],
-  "scripts/php-review-tools/composer.json": ["php-review"],
-  "scripts/php-review-tools/composer.lock": ["php-review"],
-  "scripts/php-tools/composer.json": ["mutation-native-arm64"],
-  "scripts/php-tools/composer.lock": ["mutation-native-arm64"],
+  "scripts/php-review-tools.Dockerfile": [
+    "php-review"
+  ],
+  "scripts/php-review-tools/composer.json": [
+    "php-review"
+  ],
+  "scripts/php-review-tools/composer.lock": [
+    "php-review"
+  ],
+  "scripts/php-tools/composer.json": [
+    "mutation-native-arm64"
+  ],
+  "scripts/php-tools/composer.lock": [
+    "mutation-native-arm64"
+  ],
   "scripts/prepare-acceptance-cache-subset.mjs": [
     "cpp-extensions-arm64",
     "django-assembly-arm64",
@@ -474,7 +660,9 @@
     "terraform-extensions-arm64",
     "vue-router-assembly-arm64"
   ],
-  "scripts/prepare-cpp-extensions-runtime.mjs": ["cpp-extensions-arm64"],
+  "scripts/prepare-cpp-extensions-runtime.mjs": [
+    "cpp-extensions-arm64"
+  ],
   "scripts/prepare-cpp-tools-runtime.mjs": [
     "cpp-extensions-arm64",
     "cpp-tools"
@@ -493,11 +681,23 @@
     "django-assembly-arm64",
     "fastapi-assembly-arm64"
   ],
-  "scripts/prepare-fsharp-format-tools.mjs": ["fsharp-format-arm64"],
-  "scripts/prepare-go-tools.mjs": ["go-workspaces-arm64"],
-  "scripts/prepare-gradle-dependencies.mjs": ["gradle", "jvm-wrappers-arm64"],
-  "scripts/prepare-gradle-tools.mjs": ["gradle", "jvm-wrappers-arm64"],
-  "scripts/prepare-hcl-context-runtime.mjs": ["hcl-context-arm64"],
+  "scripts/prepare-fsharp-format-tools.mjs": [
+    "fsharp-format-arm64"
+  ],
+  "scripts/prepare-go-tools.mjs": [
+    "go-workspaces-arm64"
+  ],
+  "scripts/prepare-gradle-dependencies.mjs": [
+    "gradle",
+    "jvm-wrappers-arm64"
+  ],
+  "scripts/prepare-gradle-tools.mjs": [
+    "gradle",
+    "jvm-wrappers-arm64"
+  ],
+  "scripts/prepare-hcl-context-runtime.mjs": [
+    "hcl-context-arm64"
+  ],
   "scripts/prepare-infra-tools-runtime.mjs": [
     "helm",
     "helm-extensions-arm64",
@@ -508,7 +708,9 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
-  "scripts/prepare-java-review-tools.mjs": ["checkstyle"],
+  "scripts/prepare-java-review-tools.mjs": [
+    "checkstyle"
+  ],
   "scripts/prepare-javascript-tools.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -554,8 +756,12 @@
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
   ],
-  "scripts/prepare-jvm-analyzer-tools.mjs": ["jvm-analyzer-extensions-arm64"],
-  "scripts/prepare-jvm-wrappers.mjs": ["jvm-wrappers-arm64"],
+  "scripts/prepare-jvm-analyzer-tools.mjs": [
+    "jvm-analyzer-extensions-arm64"
+  ],
+  "scripts/prepare-jvm-wrappers.mjs": [
+    "jvm-wrappers-arm64"
+  ],
   "scripts/prepare-kotlin-tools.mjs": [
     "jvm-analyzer-extensions-arm64",
     "kotlin",
@@ -565,9 +771,17 @@
   "scripts/prepare-kubernetes-extensions-runtime.mjs": [
     "kubernetes-extensions-arm64"
   ],
-  "scripts/prepare-maven-dependencies.mjs": ["jvm-wrappers-arm64", "maven"],
-  "scripts/prepare-maven-tools.mjs": ["jvm-wrappers-arm64", "maven"],
-  "scripts/prepare-mutation-tools.mjs": ["mutation-native-arm64"],
+  "scripts/prepare-maven-dependencies.mjs": [
+    "jvm-wrappers-arm64",
+    "maven"
+  ],
+  "scripts/prepare-maven-tools.mjs": [
+    "jvm-wrappers-arm64",
+    "maven"
+  ],
+  "scripts/prepare-mutation-tools.mjs": [
+    "mutation-native-arm64"
+  ],
   "scripts/prepare-native-child-resource.mjs": [
     "resource-release",
     "resource-release-arm64"
@@ -666,29 +880,43 @@
     "ruby-extensions-arm64",
     "ruby-tools"
   ],
-  "scripts/prepare-rust-extension-components.mjs": ["rust-extensions-arm64"],
-  "scripts/prepare-scala-context-tools.mjs": ["scala-context-arm64"],
+  "scripts/prepare-rust-extension-components.mjs": [
+    "rust-extensions-arm64"
+  ],
+  "scripts/prepare-scala-context-tools.mjs": [
+    "scala-context-arm64"
+  ],
   "scripts/prepare-scala-tools.mjs": [
     "scala",
     "scala-context-arm64",
     "scala-extensions-arm64"
   ],
-  "scripts/prepare-scala2-tools.mjs": ["scala-extensions-arm64"],
+  "scripts/prepare-scala2-tools.mjs": [
+    "scala-extensions-arm64"
+  ],
   "scripts/prepare-spotbugs-tools.mjs": [
     "jvm-analyzer-extensions-arm64",
     "spotbugs"
   ],
-  "scripts/prepare-swift-extensions-runtime.mjs": ["swift-extensions-arm64"],
-  "scripts/prepare-swift-tools-runtime.mjs": ["swift-tools"],
+  "scripts/prepare-swift-extensions-runtime.mjs": [
+    "swift-extensions-arm64"
+  ],
+  "scripts/prepare-swift-tools-runtime.mjs": [
+    "swift-tools"
+  ],
   "scripts/prepare-terraform-extensions-runtime.mjs": [
     "terraform-extensions-arm64"
   ],
-  "scripts/prepare-yaml-context-runtime.mjs": ["yaml-context-arm64"],
+  "scripts/prepare-yaml-context-runtime.mjs": [
+    "yaml-context-arm64"
+  ],
   "scripts/prepared-native-resource-tools.mjs": [
     "resource-release",
     "resource-release-arm64"
   ],
-  "scripts/probe-windows-runner.mjs": ["windows"],
+  "scripts/probe-windows-runner.mjs": [
+    "windows"
+  ],
   "scripts/pull-pinned-image.mjs": [
     "actionlint",
     "c-context-arm64",
@@ -760,7 +988,9 @@
     "mutation-native-arm64",
     "python-extensions-arm64"
   ],
-  "scripts/python-extensions-wheels.json": ["python-extensions-arm64"],
+  "scripts/python-extensions-wheels.json": [
+    "python-extensions-arm64"
+  ],
   "scripts/release-readiness-tools.mjs": [
     "resource-release",
     "resource-release-arm64"
@@ -777,10 +1007,22 @@
     "resource-release",
     "resource-release-arm64"
   ],
-  "scripts/request-cpp-tool-archive.mjs": ["cpp-extensions-arm64", "cpp-tools"],
-  "scripts/request-gradle-distribution.mjs": ["gradle", "jvm-wrappers-arm64"],
-  "scripts/request-jvm-wrapper-artifact.mjs": ["jvm-wrappers-arm64", "maven"],
-  "scripts/request-maven-distribution.mjs": ["jvm-wrappers-arm64", "maven"],
+  "scripts/request-cpp-tool-archive.mjs": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
+  "scripts/request-gradle-distribution.mjs": [
+    "gradle",
+    "jvm-wrappers-arm64"
+  ],
+  "scripts/request-jvm-wrapper-artifact.mjs": [
+    "jvm-wrappers-arm64",
+    "maven"
+  ],
+  "scripts/request-maven-distribution.mjs": [
+    "jvm-wrappers-arm64",
+    "maven"
+  ],
   "scripts/request-pinned-artifact.mjs": [
     "cpp-extensions-arm64",
     "cpp-tools",
@@ -957,23 +1199,35 @@
     "resource-release",
     "resource-release-arm64"
   ],
-  "scripts/retry-go-acquisition.mjs": ["go-workspaces-arm64"],
-  "scripts/retry-maven-acquisition.mjs": ["jvm-wrappers-arm64", "maven"],
+  "scripts/retry-go-acquisition.mjs": [
+    "go-workspaces-arm64"
+  ],
+  "scripts/retry-maven-acquisition.mjs": [
+    "jvm-wrappers-arm64",
+    "maven"
+  ],
   "scripts/review-runtime-evidence.mjs": [
     "resource-release",
     "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "scripts/ruby-context-tools.Dockerfile": ["ruby-context-arm64"],
-  "scripts/ruby-extensions-acceptance-selection.mjs": ["ruby-extensions-arm64"],
+  "scripts/ruby-context-tools.Dockerfile": [
+    "ruby-context-arm64"
+  ],
+  "scripts/ruby-extensions-acceptance-selection.mjs": [
+    "ruby-extensions-arm64"
+  ],
   "scripts/ruby-tools-archives.json": [
     "resource-release",
     "resource-release-arm64",
     "ruby-extensions-arm64",
     "ruby-tools"
   ],
-  "scripts/ruby-tools.Dockerfile": ["ruby-extensions-arm64", "ruby-tools"],
+  "scripts/ruby-tools.Dockerfile": [
+    "ruby-extensions-arm64",
+    "ruby-tools"
+  ],
   "scripts/runtime-installation-capture.mjs": [
     "resource-release",
     "resource-release-arm64",
@@ -981,30 +1235,68 @@
     "tasks-runtime-arm64",
     "windows"
   ],
-  "scripts/rust-context-tools.Dockerfile": ["rust-context-arm64"],
-  "scripts/rust-extension-components.json": ["rust-extensions-arm64"],
-  "scripts/rust-extension-tools.Dockerfile": ["rust-extensions-arm64"],
-  "scripts/scala-ci-phases.mjs": ["scala"],
-  "scripts/scala-context-tools.Dockerfile": ["scala-context-arm64"],
-  "scripts/scala-extensions-tools.Dockerfile": ["scala-extensions-arm64"],
-  "scripts/scala-tools.Dockerfile": ["scala"],
-  "scripts/spotbugs-tools.Dockerfile": ["spotbugs"],
-  "scripts/swift-context-tools.Dockerfile": ["swift-context-arm64"],
-  "scripts/swift-extensions-tools.Dockerfile": ["swift-extensions-arm64"],
-  "scripts/swift-tools.Dockerfile": ["swift-tools"],
+  "scripts/rust-context-tools.Dockerfile": [
+    "rust-context-arm64"
+  ],
+  "scripts/rust-extension-components.json": [
+    "rust-extensions-arm64"
+  ],
+  "scripts/rust-extension-tools.Dockerfile": [
+    "rust-extensions-arm64"
+  ],
+  "scripts/scala-ci-phases.mjs": [
+    "scala"
+  ],
+  "scripts/scala-context-tools.Dockerfile": [
+    "scala-context-arm64"
+  ],
+  "scripts/scala-extensions-tools.Dockerfile": [
+    "scala-extensions-arm64"
+  ],
+  "scripts/scala-tools.Dockerfile": [
+    "scala"
+  ],
+  "scripts/spotbugs-tools.Dockerfile": [
+    "spotbugs"
+  ],
+  "scripts/swift-context-tools.Dockerfile": [
+    "swift-context-arm64"
+  ],
+  "scripts/swift-extensions-tools.Dockerfile": [
+    "swift-extensions-arm64"
+  ],
+  "scripts/swift-tools.Dockerfile": [
+    "swift-tools"
+  ],
   "scripts/tasks-runtime-evidence.mjs": [
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"
   ],
-  "scripts/terraform-extensions-controls.json": ["terraform-extensions-arm64"],
-  "scripts/vb-context-tools.Dockerfile": ["vb-context-arm64"],
-  "scripts/verify-actionlint-container.mjs": ["actionlint"],
-  "scripts/verify-c-context-container.mjs": ["c-context-arm64"],
-  "scripts/verify-c-context-guards.mjs": ["c-context-arm64"],
-  "scripts/verify-checkstyle-container.mjs": ["checkstyle"],
-  "scripts/verify-checkstyle-package.mjs": ["checkstyle"],
-  "scripts/verify-clang-container.mjs": ["clang"],
+  "scripts/terraform-extensions-controls.json": [
+    "terraform-extensions-arm64"
+  ],
+  "scripts/vb-context-tools.Dockerfile": [
+    "vb-context-arm64"
+  ],
+  "scripts/verify-actionlint-container.mjs": [
+    "actionlint"
+  ],
+  "scripts/verify-c-context-container.mjs": [
+    "c-context-arm64"
+  ],
+  "scripts/verify-c-context-guards.mjs": [
+    "c-context-arm64"
+  ],
+  "scripts/verify-checkstyle-container.mjs": [
+    "checkstyle"
+  ],
+  "scripts/verify-checkstyle-package.mjs": [
+    "checkstyle"
+  ],
+  "scripts/verify-clang-container.mjs": [
+    "clang"
+  ],
   "scripts/verify-consumer-impact-whole-package.mjs": [
     "tasks-runtime",
     "tasks-runtime-arm64"
@@ -1017,55 +1309,139 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "scripts/verify-cpp-context-container.mjs": ["cpp-context-arm64"],
-  "scripts/verify-cpp-context-guards.mjs": ["cpp-context-arm64"],
-  "scripts/verify-cpp-extensions-container.mjs": ["cpp-extensions-arm64"],
-  "scripts/verify-cpp-extensions-guards.mjs": ["cpp-extensions-arm64"],
-  "scripts/verify-cpp-tools-container.mjs": ["cpp-tools"],
-  "scripts/verify-cpp-tools-package.mjs": ["cpp-extensions-arm64", "cpp-tools"],
-  "scripts/verify-csharp-context-container.mjs": ["csharp-context-arm64"],
-  "scripts/verify-csharp-context-guards.mjs": ["csharp-context-arm64"],
-  "scripts/verify-detekt-container.mjs": ["detekt"],
-  "scripts/verify-detekt-guards.mjs": ["detekt"],
-  "scripts/verify-detekt-package.mjs": ["detekt"],
-  "scripts/verify-django-assembly-container.mjs": ["django-assembly-arm64"],
-  "scripts/verify-django-assembly-guards.mjs": ["django-assembly-arm64"],
-  "scripts/verify-dotnet-build-container.mjs": ["dotnet"],
-  "scripts/verify-dotnet-build-package.mjs": ["dotnet"],
-  "scripts/verify-dotnet-container.mjs": ["dotnet"],
-  "scripts/verify-dotnet-format-container.mjs": ["dotnet"],
+  "scripts/verify-cpp-context-container.mjs": [
+    "cpp-context-arm64"
+  ],
+  "scripts/verify-cpp-context-guards.mjs": [
+    "cpp-context-arm64"
+  ],
+  "scripts/verify-cpp-extensions-container.mjs": [
+    "cpp-extensions-arm64"
+  ],
+  "scripts/verify-cpp-extensions-guards.mjs": [
+    "cpp-extensions-arm64"
+  ],
+  "scripts/verify-cpp-tools-container.mjs": [
+    "cpp-tools"
+  ],
+  "scripts/verify-cpp-tools-package.mjs": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
+  "scripts/verify-csharp-context-container.mjs": [
+    "csharp-context-arm64"
+  ],
+  "scripts/verify-csharp-context-guards.mjs": [
+    "csharp-context-arm64"
+  ],
+  "scripts/verify-detekt-container.mjs": [
+    "detekt"
+  ],
+  "scripts/verify-detekt-guards.mjs": [
+    "detekt"
+  ],
+  "scripts/verify-detekt-package.mjs": [
+    "detekt"
+  ],
+  "scripts/verify-django-assembly-container.mjs": [
+    "django-assembly-arm64"
+  ],
+  "scripts/verify-django-assembly-guards.mjs": [
+    "django-assembly-arm64"
+  ],
+  "scripts/verify-dotnet-build-container.mjs": [
+    "dotnet"
+  ],
+  "scripts/verify-dotnet-build-package.mjs": [
+    "dotnet"
+  ],
+  "scripts/verify-dotnet-container.mjs": [
+    "dotnet"
+  ],
+  "scripts/verify-dotnet-format-container.mjs": [
+    "dotnet"
+  ],
   "scripts/verify-dotnet-format-extensions-container.mjs": [
     "dotnet-format-extensions-arm64"
   ],
   "scripts/verify-dotnet-format-extensions-guards.mjs": [
     "dotnet-format-extensions-arm64"
   ],
-  "scripts/verify-dotnet-generated-container.mjs": ["dotnet"],
+  "scripts/verify-dotnet-generated-container.mjs": [
+    "dotnet"
+  ],
   "scripts/verify-dotnet-generator-extensions-container.mjs": [
     "dotnet-generator-extensions-arm64"
   ],
   "scripts/verify-dotnet-generator-extensions-guards.mjs": [
     "dotnet-generator-extensions-arm64"
   ],
-  "scripts/verify-dotnet-method-container.mjs": ["dotnet"],
-  "scripts/verify-dotnet-test-container.mjs": ["dotnet"],
-  "scripts/verify-executable-bundle-package.mjs": ["external-adapters"],
-  "scripts/verify-external-container.mjs": ["external-adapters"],
-  "scripts/verify-fastapi-assembly-container.mjs": ["fastapi-assembly-arm64"],
-  "scripts/verify-fastapi-assembly-guards.mjs": ["fastapi-assembly-arm64"],
-  "scripts/verify-fsharp-context-container.mjs": ["fsharp-context-arm64"],
-  "scripts/verify-fsharp-context-guards.mjs": ["fsharp-context-arm64"],
-  "scripts/verify-fsharp-format-container.mjs": ["fsharp-format-arm64"],
-  "scripts/verify-fsharp-format-guards.mjs": ["fsharp-format-arm64"],
-  "scripts/verify-go-workspace-package.mjs": ["go-workspaces-arm64"],
-  "scripts/verify-gradle-container.mjs": ["gradle"],
-  "scripts/verify-gradle-package.mjs": ["gradle"],
-  "scripts/verify-hcl-context-container.mjs": ["hcl-context-arm64"],
-  "scripts/verify-hcl-context-guards.mjs": ["hcl-context-arm64"],
-  "scripts/verify-helm-container.mjs": ["helm"],
-  "scripts/verify-helm-extensions-container.mjs": ["helm-extensions-arm64"],
-  "scripts/verify-helm-extensions-guards.mjs": ["helm-extensions-arm64"],
-  "scripts/verify-helm-package.mjs": ["helm", "helm-extensions-arm64"],
+  "scripts/verify-dotnet-method-container.mjs": [
+    "dotnet"
+  ],
+  "scripts/verify-dotnet-test-container.mjs": [
+    "dotnet"
+  ],
+  "scripts/verify-evaluation-protocol-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-evaluation-runtime.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-executable-bundle-package.mjs": [
+    "external-adapters"
+  ],
+  "scripts/verify-external-container.mjs": [
+    "external-adapters"
+  ],
+  "scripts/verify-fastapi-assembly-container.mjs": [
+    "fastapi-assembly-arm64"
+  ],
+  "scripts/verify-fastapi-assembly-guards.mjs": [
+    "fastapi-assembly-arm64"
+  ],
+  "scripts/verify-fsharp-context-container.mjs": [
+    "fsharp-context-arm64"
+  ],
+  "scripts/verify-fsharp-context-guards.mjs": [
+    "fsharp-context-arm64"
+  ],
+  "scripts/verify-fsharp-format-container.mjs": [
+    "fsharp-format-arm64"
+  ],
+  "scripts/verify-fsharp-format-guards.mjs": [
+    "fsharp-format-arm64"
+  ],
+  "scripts/verify-go-workspace-package.mjs": [
+    "go-workspaces-arm64"
+  ],
+  "scripts/verify-gradle-container.mjs": [
+    "gradle"
+  ],
+  "scripts/verify-gradle-package.mjs": [
+    "gradle"
+  ],
+  "scripts/verify-hcl-context-container.mjs": [
+    "hcl-context-arm64"
+  ],
+  "scripts/verify-hcl-context-guards.mjs": [
+    "hcl-context-arm64"
+  ],
+  "scripts/verify-helm-container.mjs": [
+    "helm"
+  ],
+  "scripts/verify-helm-extensions-container.mjs": [
+    "helm-extensions-arm64"
+  ],
+  "scripts/verify-helm-extensions-guards.mjs": [
+    "helm-extensions-arm64"
+  ],
+  "scripts/verify-helm-package.mjs": [
+    "helm",
+    "helm-extensions-arm64"
+  ],
   "scripts/verify-import-context-package.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -1110,9 +1486,15 @@
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
   ],
-  "scripts/verify-java-container.mjs": ["java"],
-  "scripts/verify-java-context-container.mjs": ["java-context-arm64"],
-  "scripts/verify-java-context-guards.mjs": ["java-context-arm64"],
+  "scripts/verify-java-container.mjs": [
+    "java"
+  ],
+  "scripts/verify-java-context-container.mjs": [
+    "java-context-arm64"
+  ],
+  "scripts/verify-java-context-guards.mjs": [
+    "java-context-arm64"
+  ],
   "scripts/verify-javascript-extensions-container.mjs": [
     "javascript-extensions-arm64"
   ],
@@ -1122,42 +1504,82 @@
   "scripts/verify-jvm-analyzer-extensions-container.mjs": [
     "jvm-analyzer-extensions-arm64"
   ],
-  "scripts/verify-jvm-analyzer-guards.mjs": ["jvm-analyzer-extensions-arm64"],
+  "scripts/verify-jvm-analyzer-guards.mjs": [
+    "jvm-analyzer-extensions-arm64"
+  ],
   "scripts/verify-jvm-java-warning-package.mjs": [
     "kotlin-extensions-arm64",
     "scala-extensions-arm64"
   ],
-  "scripts/verify-jvm-preparation-ownership.mjs": ["jvm-wrappers-arm64"],
-  "scripts/verify-jvm-wrappers-container.mjs": ["jvm-wrappers-arm64"],
-  "scripts/verify-jvm-wrappers-guards.mjs": ["jvm-wrappers-arm64"],
-  "scripts/verify-kotlin-container.mjs": ["kotlin"],
-  "scripts/verify-kotlin-context-container.mjs": ["kotlin-context-arm64"],
-  "scripts/verify-kotlin-context-guards.mjs": ["kotlin-context-arm64"],
-  "scripts/verify-kotlin-extensions-container.mjs": ["kotlin-extensions-arm64"],
-  "scripts/verify-kotlin-extensions-guards.mjs": ["kotlin-extensions-arm64"],
-  "scripts/verify-kotlin-guards.mjs": ["kotlin"],
-  "scripts/verify-kotlin-package.mjs": ["kotlin"],
-  "scripts/verify-kubeconform-container.mjs": ["kubeconform"],
-  "scripts/verify-kubeconform-package.mjs": ["kubeconform"],
+  "scripts/verify-jvm-preparation-ownership.mjs": [
+    "jvm-wrappers-arm64"
+  ],
+  "scripts/verify-jvm-wrappers-container.mjs": [
+    "jvm-wrappers-arm64"
+  ],
+  "scripts/verify-jvm-wrappers-guards.mjs": [
+    "jvm-wrappers-arm64"
+  ],
+  "scripts/verify-kotlin-container.mjs": [
+    "kotlin"
+  ],
+  "scripts/verify-kotlin-context-container.mjs": [
+    "kotlin-context-arm64"
+  ],
+  "scripts/verify-kotlin-context-guards.mjs": [
+    "kotlin-context-arm64"
+  ],
+  "scripts/verify-kotlin-extensions-container.mjs": [
+    "kotlin-extensions-arm64"
+  ],
+  "scripts/verify-kotlin-extensions-guards.mjs": [
+    "kotlin-extensions-arm64"
+  ],
+  "scripts/verify-kotlin-guards.mjs": [
+    "kotlin"
+  ],
+  "scripts/verify-kotlin-package.mjs": [
+    "kotlin"
+  ],
+  "scripts/verify-kubeconform-container.mjs": [
+    "kubeconform"
+  ],
+  "scripts/verify-kubeconform-package.mjs": [
+    "kubeconform"
+  ],
   "scripts/verify-kubernetes-extensions-container.mjs": [
     "kubernetes-extensions-arm64"
   ],
   "scripts/verify-kubernetes-extensions-guards.mjs": [
     "kubernetes-extensions-arm64"
   ],
-  "scripts/verify-kustomize-container.mjs": ["kustomize"],
+  "scripts/verify-kustomize-container.mjs": [
+    "kustomize"
+  ],
   "scripts/verify-kustomize-extensions-container.mjs": [
     "kustomize-extensions-arm64"
   ],
   "scripts/verify-kustomize-extensions-guards.mjs": [
     "kustomize-extensions-arm64"
   ],
-  "scripts/verify-kustomize-package.mjs": ["kustomize"],
-  "scripts/verify-laravel-assembly-container.mjs": ["laravel-assembly-arm64"],
-  "scripts/verify-laravel-assembly-guards.mjs": ["laravel-assembly-arm64"],
-  "scripts/verify-laravel-cache-package.mjs": ["laravel-assembly-arm64"],
-  "scripts/verify-laravel-cache.mjs": ["laravel-assembly-arm64"],
-  "scripts/verify-laravel-supplemental.mjs": ["laravel-assembly-arm64"],
+  "scripts/verify-kustomize-package.mjs": [
+    "kustomize"
+  ],
+  "scripts/verify-laravel-assembly-container.mjs": [
+    "laravel-assembly-arm64"
+  ],
+  "scripts/verify-laravel-assembly-guards.mjs": [
+    "laravel-assembly-arm64"
+  ],
+  "scripts/verify-laravel-cache-package.mjs": [
+    "laravel-assembly-arm64"
+  ],
+  "scripts/verify-laravel-cache.mjs": [
+    "laravel-assembly-arm64"
+  ],
+  "scripts/verify-laravel-supplemental.mjs": [
+    "laravel-assembly-arm64"
+  ],
   "scripts/verify-lifecycle-platforms-package.mjs": [
     "resource-release",
     "resource-release-arm64",
@@ -1170,24 +1592,52 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "scripts/verify-maven-container.mjs": ["maven"],
-  "scripts/verify-maven-package.mjs": ["maven"],
-  "scripts/verify-mutation-container.mjs": ["mutation-native-arm64"],
+  "scripts/verify-maven-container.mjs": [
+    "maven"
+  ],
+  "scripts/verify-maven-package.mjs": [
+    "maven"
+  ],
+  "scripts/verify-mutation-container.mjs": [
+    "mutation-native-arm64"
+  ],
   "scripts/verify-mutation-guards.mjs": [
     "mutation-native-arm64",
     "mutation-passive-guards"
   ],
-  "scripts/verify-mutation-package.mjs": ["mutation-native-arm64"],
-  "scripts/verify-nuxt-assembly-container.mjs": ["nuxt-assembly-arm64"],
-  "scripts/verify-nuxt-assembly-guards.mjs": ["nuxt-assembly-arm64"],
-  "scripts/verify-nuxt-container.mjs": ["nuxt"],
-  "scripts/verify-php-context-container.mjs": ["php-context-arm64"],
-  "scripts/verify-php-context-guards.mjs": ["php-context-arm64"],
-  "scripts/verify-php-extensions-container.mjs": ["php-extensions-arm64"],
-  "scripts/verify-php-extensions-guards.mjs": ["php-extensions-arm64"],
-  "scripts/verify-php-review-package.mjs": ["php-review"],
-  "scripts/verify-python-extensions-container.mjs": ["python-extensions-arm64"],
-  "scripts/verify-python-extensions-guards.mjs": ["python-extensions-arm64"],
+  "scripts/verify-mutation-package.mjs": [
+    "mutation-native-arm64"
+  ],
+  "scripts/verify-nuxt-assembly-container.mjs": [
+    "nuxt-assembly-arm64"
+  ],
+  "scripts/verify-nuxt-assembly-guards.mjs": [
+    "nuxt-assembly-arm64"
+  ],
+  "scripts/verify-nuxt-container.mjs": [
+    "nuxt"
+  ],
+  "scripts/verify-php-context-container.mjs": [
+    "php-context-arm64"
+  ],
+  "scripts/verify-php-context-guards.mjs": [
+    "php-context-arm64"
+  ],
+  "scripts/verify-php-extensions-container.mjs": [
+    "php-extensions-arm64"
+  ],
+  "scripts/verify-php-extensions-guards.mjs": [
+    "php-extensions-arm64"
+  ],
+  "scripts/verify-php-review-package.mjs": [
+    "php-review"
+  ],
+  "scripts/verify-python-extensions-container.mjs": [
+    "python-extensions-arm64"
+  ],
+  "scripts/verify-python-extensions-guards.mjs": [
+    "python-extensions-arm64"
+  ],
   "scripts/verify-required-native-tests.mjs": [
     "actionlint",
     "c-context-arm64",
@@ -1283,35 +1733,93 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "scripts/verify-ruby-container.mjs": ["ruby"],
-  "scripts/verify-ruby-context-container.mjs": ["ruby-context-arm64"],
-  "scripts/verify-ruby-context-guards.mjs": ["ruby-context-arm64"],
-  "scripts/verify-ruby-extensions-acceptance.mjs": ["ruby-extensions-arm64"],
-  "scripts/verify-ruby-extensions-container.mjs": ["ruby-extensions-arm64"],
-  "scripts/verify-ruby-extensions-guards.mjs": ["ruby-extensions-arm64"],
-  "scripts/verify-ruby-tools-baseline.mjs": ["ruby-extensions-arm64"],
-  "scripts/verify-ruby-tools-container.mjs": ["ruby-tools"],
-  "scripts/verify-ruby-tools-package.mjs": ["ruby-tools"],
-  "scripts/verify-rust-context-container.mjs": ["rust-context-arm64"],
-  "scripts/verify-rust-context-guards.mjs": ["rust-context-arm64"],
-  "scripts/verify-rust-extensions-container.mjs": ["rust-extensions-arm64"],
-  "scripts/verify-rust-extensions-guards.mjs": ["rust-extensions-arm64"],
-  "scripts/verify-scala-container.mjs": ["scala"],
-  "scripts/verify-scala-context-container.mjs": ["scala-context-arm64"],
-  "scripts/verify-scala-context-guards.mjs": ["scala-context-arm64"],
-  "scripts/verify-scala-extensions-container.mjs": ["scala-extensions-arm64"],
-  "scripts/verify-scala-extensions-guards.mjs": ["scala-extensions-arm64"],
-  "scripts/verify-scala-guards.mjs": ["scala"],
-  "scripts/verify-scala-package.mjs": ["scala"],
-  "scripts/verify-spotbugs-container.mjs": ["spotbugs"],
-  "scripts/verify-spotbugs-package.mjs": ["spotbugs"],
-  "scripts/verify-swift-context-container.mjs": ["swift-context-arm64"],
-  "scripts/verify-swift-context-guards.mjs": ["swift-context-arm64"],
-  "scripts/verify-swift-extensions-container.mjs": ["swift-extensions-arm64"],
-  "scripts/verify-swift-extensions-guards.mjs": ["swift-extensions-arm64"],
-  "scripts/verify-swift-tools-container.mjs": ["swift-tools"],
-  "scripts/verify-swift-tools-package.mjs": ["swift-tools"],
-  "scripts/verify-tasks-runtime-arm64.mjs": ["tasks-runtime-arm64"],
+  "scripts/verify-ruby-container.mjs": [
+    "ruby"
+  ],
+  "scripts/verify-ruby-context-container.mjs": [
+    "ruby-context-arm64"
+  ],
+  "scripts/verify-ruby-context-guards.mjs": [
+    "ruby-context-arm64"
+  ],
+  "scripts/verify-ruby-extensions-acceptance.mjs": [
+    "ruby-extensions-arm64"
+  ],
+  "scripts/verify-ruby-extensions-container.mjs": [
+    "ruby-extensions-arm64"
+  ],
+  "scripts/verify-ruby-extensions-guards.mjs": [
+    "ruby-extensions-arm64"
+  ],
+  "scripts/verify-ruby-tools-baseline.mjs": [
+    "ruby-extensions-arm64"
+  ],
+  "scripts/verify-ruby-tools-container.mjs": [
+    "ruby-tools"
+  ],
+  "scripts/verify-ruby-tools-package.mjs": [
+    "ruby-tools"
+  ],
+  "scripts/verify-rust-context-container.mjs": [
+    "rust-context-arm64"
+  ],
+  "scripts/verify-rust-context-guards.mjs": [
+    "rust-context-arm64"
+  ],
+  "scripts/verify-rust-extensions-container.mjs": [
+    "rust-extensions-arm64"
+  ],
+  "scripts/verify-rust-extensions-guards.mjs": [
+    "rust-extensions-arm64"
+  ],
+  "scripts/verify-scala-container.mjs": [
+    "scala"
+  ],
+  "scripts/verify-scala-context-container.mjs": [
+    "scala-context-arm64"
+  ],
+  "scripts/verify-scala-context-guards.mjs": [
+    "scala-context-arm64"
+  ],
+  "scripts/verify-scala-extensions-container.mjs": [
+    "scala-extensions-arm64"
+  ],
+  "scripts/verify-scala-extensions-guards.mjs": [
+    "scala-extensions-arm64"
+  ],
+  "scripts/verify-scala-guards.mjs": [
+    "scala"
+  ],
+  "scripts/verify-scala-package.mjs": [
+    "scala"
+  ],
+  "scripts/verify-spotbugs-container.mjs": [
+    "spotbugs"
+  ],
+  "scripts/verify-spotbugs-package.mjs": [
+    "spotbugs"
+  ],
+  "scripts/verify-swift-context-container.mjs": [
+    "swift-context-arm64"
+  ],
+  "scripts/verify-swift-context-guards.mjs": [
+    "swift-context-arm64"
+  ],
+  "scripts/verify-swift-extensions-container.mjs": [
+    "swift-extensions-arm64"
+  ],
+  "scripts/verify-swift-extensions-guards.mjs": [
+    "swift-extensions-arm64"
+  ],
+  "scripts/verify-swift-tools-container.mjs": [
+    "swift-tools"
+  ],
+  "scripts/verify-swift-tools-package.mjs": [
+    "swift-tools"
+  ],
+  "scripts/verify-tasks-runtime-arm64.mjs": [
+    "tasks-runtime-arm64"
+  ],
   "scripts/verify-tasks-runtime-package.mjs": [
     "tasks-runtime",
     "tasks-runtime-arm64",
@@ -1322,7 +1830,9 @@
     "tasks-runtime-arm64",
     "windows"
   ],
-  "scripts/verify-terraform-container.mjs": ["terraform"],
+  "scripts/verify-terraform-container.mjs": [
+    "terraform"
+  ],
   "scripts/verify-terraform-extensions-container.mjs": [
     "terraform-extensions-arm64"
   ],
@@ -1333,21 +1843,39 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
-  "scripts/verify-vb-context-container.mjs": ["vb-context-arm64"],
-  "scripts/verify-vb-context-guards.mjs": ["vb-context-arm64"],
+  "scripts/verify-vb-context-container.mjs": [
+    "vb-context-arm64"
+  ],
+  "scripts/verify-vb-context-guards.mjs": [
+    "vb-context-arm64"
+  ],
   "scripts/verify-vue-router-assembly-container.mjs": [
     "vue-router-assembly-arm64"
   ],
   "scripts/verify-vue-router-assembly-guards.mjs": [
     "vue-router-assembly-arm64"
   ],
-  "scripts/verify-vue-router-container.mjs": ["vue-router"],
-  "scripts/verify-windows-guards.mjs": ["windows"],
-  "scripts/verify-windows-package.mjs": ["windows"],
-  "scripts/verify-windows-resource-guards.mjs": ["windows"],
-  "scripts/verify-windows-workspace-guard.mjs": ["windows"],
-  "scripts/verify-yaml-context-container.mjs": ["yaml-context-arm64"],
-  "scripts/verify-yaml-context-guards.mjs": ["yaml-context-arm64"],
+  "scripts/verify-vue-router-container.mjs": [
+    "vue-router"
+  ],
+  "scripts/verify-windows-guards.mjs": [
+    "windows"
+  ],
+  "scripts/verify-windows-package.mjs": [
+    "windows"
+  ],
+  "scripts/verify-windows-resource-guards.mjs": [
+    "windows"
+  ],
+  "scripts/verify-windows-workspace-guard.mjs": [
+    "windows"
+  ],
+  "scripts/verify-yaml-context-container.mjs": [
+    "yaml-context-arm64"
+  ],
+  "scripts/verify-yaml-context-guards.mjs": [
+    "yaml-context-arm64"
+  ],
   "scripts/vue-router-tools/package-lock.json": [
     "vue-router",
     "vue-router-assembly-arm64"
@@ -1366,17 +1894,28 @@
     "resource-release-arm64",
     "windows"
   ],
-  "scripts/windows-task-access-diagnostics.mjs": ["tasks-runtime"],
-  "scripts/yaml-context-tools.Dockerfile": ["yaml-context-arm64"],
+  "scripts/windows-task-access-diagnostics.mjs": [
+    "tasks-runtime"
+  ],
+  "scripts/yaml-context-tools.Dockerfile": [
+    "yaml-context-arm64"
+  ],
   "src/clang-runner.ts": [
     "clang",
     "cpp-extensions-arm64",
     "cpp-tools",
     "swift-extensions-arm64"
   ],
-  "src/detekt-extensions-runner.ts": ["jvm-analyzer-extensions-arm64"],
-  "src/detekt-runner.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
-  "src/helm-extensions-runner.ts": ["helm-extensions-arm64"],
+  "src/detekt-extensions-runner.ts": [
+    "jvm-analyzer-extensions-arm64"
+  ],
+  "src/detekt-runner.ts": [
+    "detekt",
+    "jvm-analyzer-extensions-arm64"
+  ],
+  "src/helm-extensions-runner.ts": [
+    "helm-extensions-arm64"
+  ],
   "src/helm-runner.ts": [
     "helm",
     "helm-extensions-arm64",
@@ -1387,14 +1926,18 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
-  "src/scala-extensions-runner.ts": ["scala-extensions-arm64"],
+  "src/scala-extensions-runner.ts": [
+    "scala-extensions-arm64"
+  ],
   "src/scala-runner.ts": [
     "kotlin-extensions-arm64",
     "scala",
     "scala-context-arm64",
     "scala-extensions-arm64"
   ],
-  "src/terraform-extensions-runner.ts": ["terraform-extensions-arm64"],
+  "src/terraform-extensions-runner.ts": [
+    "terraform-extensions-arm64"
+  ],
   "src/terraform-runner.ts": [
     "hcl-context-arm64",
     "helm",
@@ -1406,37 +1949,99 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
-  "test/actionlint.test.ts": ["actionlint"],
-  "test/checkstyle-fixture.ts": ["checkstyle"],
-  "test/checkstyle-surfaces.test.ts": ["checkstyle"],
-  "test/checkstyle.test.ts": ["checkstyle"],
+  "test/actionlint.test.ts": [
+    "actionlint"
+  ],
+  "test/checkstyle-fixture.ts": [
+    "checkstyle"
+  ],
+  "test/checkstyle-surfaces.test.ts": [
+    "checkstyle"
+  ],
+  "test/checkstyle.test.ts": [
+    "checkstyle"
+  ],
   "test/clang.test.ts": [
     "clang",
     "cpp-extensions-arm64",
     "cpp-tools",
     "swift-extensions-arm64"
   ],
-  "test/clippy-evidence.test.ts": ["rust-extensions-arm64"],
-  "test/clippy-surfaces.test.ts": ["rust-extensions-arm64"],
-  "test/clippy.test.ts": ["rust-extensions-arm64"],
-  "test/consumer-impact-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
-  "test/consumer-imports.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
-  "test/consumer-runtime-evidence.test.ts": ["tasks-runtime"],
-  "test/cpp-controls.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
-  "test/cpp-extensions-cancel.test.ts": ["cpp-extensions-arm64"],
-  "test/cpp-extensions-fixture.ts": ["cpp-extensions-arm64"],
-  "test/cpp-extensions-surfaces.test.ts": ["cpp-extensions-arm64"],
-  "test/cpp-tools-cancel.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
-  "test/cpp-tools-fixture.ts": ["cpp-extensions-arm64", "cpp-tools"],
-  "test/cpp-tools-lifecycle.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
-  "test/cpp-tools-surfaces.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
-  "test/cpp-tools.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
-  "test/detekt-boundaries.test.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
-  "test/detekt-extensions-fixture.ts": ["jvm-analyzer-extensions-arm64"],
-  "test/detekt-fixture.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
-  "test/detekt-surfaces.test.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
-  "test/detekt.test.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
-  "test/django-evidence.test.ts": ["django-assembly-arm64"],
+  "test/clippy-evidence.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/clippy-surfaces.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/clippy.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/consumer-impact-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/consumer-imports.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/consumer-runtime-evidence.test.ts": [
+    "tasks-runtime"
+  ],
+  "test/cpp-controls.test.ts": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
+  "test/cpp-extensions-cancel.test.ts": [
+    "cpp-extensions-arm64"
+  ],
+  "test/cpp-extensions-fixture.ts": [
+    "cpp-extensions-arm64"
+  ],
+  "test/cpp-extensions-surfaces.test.ts": [
+    "cpp-extensions-arm64"
+  ],
+  "test/cpp-tools-cancel.test.ts": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
+  "test/cpp-tools-fixture.ts": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
+  "test/cpp-tools-lifecycle.test.ts": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
+  "test/cpp-tools-surfaces.test.ts": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
+  "test/cpp-tools.test.ts": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
+  "test/detekt-boundaries.test.ts": [
+    "detekt",
+    "jvm-analyzer-extensions-arm64"
+  ],
+  "test/detekt-extensions-fixture.ts": [
+    "jvm-analyzer-extensions-arm64"
+  ],
+  "test/detekt-fixture.ts": [
+    "detekt",
+    "jvm-analyzer-extensions-arm64"
+  ],
+  "test/detekt-surfaces.test.ts": [
+    "detekt",
+    "jvm-analyzer-extensions-arm64"
+  ],
+  "test/detekt.test.ts": [
+    "detekt",
+    "jvm-analyzer-extensions-arm64"
+  ],
+  "test/django-evidence.test.ts": [
+    "django-assembly-arm64"
+  ],
   "test/django.test.ts": [
     "django-assembly-arm64",
     "fastapi-assembly-arm64",
@@ -1565,7 +2170,10 @@
     "dotnet",
     "dotnet-generator-extensions-arm64"
   ],
-  "test/dotnet-method.test.ts": ["dotnet", "dotnet-generator-extensions-arm64"],
+  "test/dotnet-method.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
   "test/dotnet-test-cancellation.test.ts": [
     "dotnet",
     "dotnet-generator-extensions-arm64"
@@ -1606,7 +2214,10 @@
     "dotnet",
     "dotnet-generator-extensions-arm64"
   ],
-  "test/dotnet-test.test.ts": ["dotnet", "dotnet-generator-extensions-arm64"],
+  "test/dotnet-test.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
   "test/dotnet.test.ts": [
     "csharp-context-arm64",
     "dotnet",
@@ -1649,7 +2260,9 @@
     "vue-router",
     "windows"
   ],
-  "test/eslint-participation.test.ts": ["javascript-extensions-arm64"],
+  "test/eslint-participation.test.ts": [
+    "javascript-extensions-arm64"
+  ],
   "test/eslint.test.ts": [
     "javascript-extensions-arm64",
     "nuxt",
@@ -1660,18 +2273,32 @@
     "vue-router",
     "windows"
   ],
-  "test/executable-bundle-fixture.ts": ["external-adapters"],
-  "test/executable-bundle-interpreters.test.ts": ["external-adapters"],
-  "test/executable-bundle.test.ts": ["external-adapters"],
-  "test/external-adapter.test.ts": ["external-adapters"],
-  "test/fastapi-evidence.test.ts": ["fastapi-assembly-arm64"],
+  "test/executable-bundle-fixture.ts": [
+    "external-adapters"
+  ],
+  "test/executable-bundle-interpreters.test.ts": [
+    "external-adapters"
+  ],
+  "test/executable-bundle.test.ts": [
+    "external-adapters"
+  ],
+  "test/external-adapter.test.ts": [
+    "external-adapters"
+  ],
+  "test/fastapi-evidence.test.ts": [
+    "fastapi-assembly-arm64"
+  ],
   "test/fastapi.test.ts": [
     "django-assembly-arm64",
     "fastapi-assembly-arm64",
     "laravel-assembly-arm64"
   ],
-  "test/fetch-pack.test.ts": ["external-adapters"],
-  "test/fixture-process-cleanup.test.ts": ["windows"],
+  "test/fetch-pack.test.ts": [
+    "external-adapters"
+  ],
+  "test/fixture-process-cleanup.test.ts": [
+    "windows"
+  ],
   "test/framework-examples.test.ts": [
     "django-assembly-arm64",
     "fastapi-assembly-arm64",
@@ -1684,51 +2311,120 @@
     "nuxt-assembly-arm64",
     "vue-router-assembly-arm64"
   ],
-  "test/fsharp-format-fixture.ts": ["fsharp-format-arm64"],
-  "test/gate-assembly-django.test.ts": ["django-assembly-arm64"],
-  "test/gate-assembly-fastapi.test.ts": ["fastapi-assembly-arm64"],
-  "test/gate-assembly-laravel.test.ts": ["laravel-assembly-arm64"],
-  "test/gate-assembly-nuxt.test.ts": ["nuxt-assembly-arm64"],
-  "test/gate-assembly-vue-router.test.ts": ["vue-router-assembly-arm64"],
-  "test/gate-consumer-impact.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
-  "test/gate-context-c.test.ts": ["c-context-arm64"],
-  "test/gate-context-cpp.test.ts": ["cpp-context-arm64"],
-  "test/gate-context-csharp.test.ts": ["csharp-context-arm64"],
-  "test/gate-context-fsharp.test.ts": ["fsharp-context-arm64"],
-  "test/gate-context-go.test.ts": ["go-workspaces-arm64"],
-  "test/gate-context-hcl.test.ts": ["hcl-context-arm64"],
-  "test/gate-context-java.test.ts": ["java-context-arm64"],
-  "test/gate-context-kotlin.test.ts": ["kotlin-context-arm64"],
-  "test/gate-context-php.test.ts": ["php-context-arm64"],
-  "test/gate-context-python.test.ts": ["go-workspaces-arm64"],
-  "test/gate-context-ruby.test.ts": ["ruby-context-arm64"],
-  "test/gate-context-rust.test.ts": ["rust-context-arm64"],
-  "test/gate-context-scala.test.ts": ["scala-context-arm64"],
-  "test/gate-context-swift.test.ts": ["swift-context-arm64"],
-  "test/gate-context-vb.test.ts": ["vb-context-arm64"],
-  "test/gate-context-yaml.test.ts": ["yaml-context-arm64"],
-  "test/gate-cpp-extensions.test.ts": ["cpp-extensions-arm64"],
+  "test/fsharp-format-fixture.ts": [
+    "fsharp-format-arm64"
+  ],
+  "test/gate-assembly-django.test.ts": [
+    "django-assembly-arm64"
+  ],
+  "test/gate-assembly-fastapi.test.ts": [
+    "fastapi-assembly-arm64"
+  ],
+  "test/gate-assembly-laravel.test.ts": [
+    "laravel-assembly-arm64"
+  ],
+  "test/gate-assembly-nuxt.test.ts": [
+    "nuxt-assembly-arm64"
+  ],
+  "test/gate-assembly-vue-router.test.ts": [
+    "vue-router-assembly-arm64"
+  ],
+  "test/gate-consumer-impact.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/gate-context-c.test.ts": [
+    "c-context-arm64"
+  ],
+  "test/gate-context-cpp.test.ts": [
+    "cpp-context-arm64"
+  ],
+  "test/gate-context-csharp.test.ts": [
+    "csharp-context-arm64"
+  ],
+  "test/gate-context-fsharp.test.ts": [
+    "fsharp-context-arm64"
+  ],
+  "test/gate-context-go.test.ts": [
+    "go-workspaces-arm64"
+  ],
+  "test/gate-context-hcl.test.ts": [
+    "hcl-context-arm64"
+  ],
+  "test/gate-context-java.test.ts": [
+    "java-context-arm64"
+  ],
+  "test/gate-context-kotlin.test.ts": [
+    "kotlin-context-arm64"
+  ],
+  "test/gate-context-php.test.ts": [
+    "php-context-arm64"
+  ],
+  "test/gate-context-python.test.ts": [
+    "go-workspaces-arm64"
+  ],
+  "test/gate-context-ruby.test.ts": [
+    "ruby-context-arm64"
+  ],
+  "test/gate-context-rust.test.ts": [
+    "rust-context-arm64"
+  ],
+  "test/gate-context-scala.test.ts": [
+    "scala-context-arm64"
+  ],
+  "test/gate-context-swift.test.ts": [
+    "swift-context-arm64"
+  ],
+  "test/gate-context-vb.test.ts": [
+    "vb-context-arm64"
+  ],
+  "test/gate-context-yaml.test.ts": [
+    "yaml-context-arm64"
+  ],
+  "test/gate-cpp-extensions.test.ts": [
+    "cpp-extensions-arm64"
+  ],
   "test/gate-dotnet-format-extensions.test.ts": [
     "dotnet-format-extensions-arm64"
   ],
-  "test/gate-dotnet-fsharp-format.test.ts": ["fsharp-format-arm64"],
+  "test/gate-dotnet-fsharp-format.test.ts": [
+    "fsharp-format-arm64"
+  ],
   "test/gate-dotnet-generator-extensions.test.ts": [
     "dotnet-generator-extensions-arm64"
   ],
-  "test/gate-go-extensions.test.ts": ["go-workspaces-arm64"],
-  "test/gate-helm-extensions.test.ts": ["helm-extensions-arm64"],
-  "test/gate-host-session-readiness.test.ts": ["go-workspaces-arm64"],
-  "test/gate-javascript-extensions.test.ts": ["javascript-extensions-arm64"],
+  "test/gate-go-extensions.test.ts": [
+    "go-workspaces-arm64"
+  ],
+  "test/gate-helm-extensions.test.ts": [
+    "helm-extensions-arm64"
+  ],
+  "test/gate-host-session-readiness.test.ts": [
+    "go-workspaces-arm64"
+  ],
+  "test/gate-independent-evaluation-protocol.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/gate-javascript-extensions.test.ts": [
+    "javascript-extensions-arm64"
+  ],
   "test/gate-jvm-analyzer-extensions.test.ts": [
     "jvm-analyzer-extensions-arm64"
   ],
-  "test/gate-jvm-wrappers.test.ts": ["jvm-wrappers-arm64"],
-  "test/gate-kotlin-extensions.test.ts": ["kotlin-extensions-arm64"],
+  "test/gate-jvm-wrappers.test.ts": [
+    "jvm-wrappers-arm64"
+  ],
+  "test/gate-kotlin-extensions.test.ts": [
+    "kotlin-extensions-arm64"
+  ],
   "test/gate-kubernetes-extensions.test.ts": [
     "kubernetes-extensions-arm64",
     "kustomize-extensions-arm64"
   ],
-  "test/gate-kustomize-extensions.test.ts": ["kustomize-extensions-arm64"],
+  "test/gate-kustomize-extensions.test.ts": [
+    "kustomize-extensions-arm64"
+  ],
   "test/gate-lifecycle-platforms.test.ts": [
     "resource-release",
     "resource-release-arm64",
@@ -1741,23 +2437,39 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "test/gate-mutation-runners.test.ts": ["mutation-native-arm64"],
-  "test/gate-php-extensions.test.ts": ["php-extensions-arm64"],
-  "test/gate-python-extensions.test.ts": ["python-extensions-arm64"],
+  "test/gate-mutation-runners.test.ts": [
+    "mutation-native-arm64"
+  ],
+  "test/gate-php-extensions.test.ts": [
+    "php-extensions-arm64"
+  ],
+  "test/gate-python-extensions.test.ts": [
+    "python-extensions-arm64"
+  ],
   "test/gate-resource-release-readiness.test.ts": [
     "resource-release",
     "resource-release-arm64"
   ],
-  "test/gate-ruby-extensions.test.ts": ["ruby-extensions-arm64"],
-  "test/gate-rust-extensions.test.ts": ["rust-extensions-arm64"],
-  "test/gate-scala-extensions.test.ts": ["scala-extensions-arm64"],
-  "test/gate-swift-extensions.test.ts": ["swift-extensions-arm64"],
+  "test/gate-ruby-extensions.test.ts": [
+    "ruby-extensions-arm64"
+  ],
+  "test/gate-rust-extensions.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/gate-scala-extensions.test.ts": [
+    "scala-extensions-arm64"
+  ],
+  "test/gate-swift-extensions.test.ts": [
+    "swift-extensions-arm64"
+  ],
   "test/gate-tasks-matrix.test.ts": [
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"
   ],
-  "test/gate-terraform-extensions.test.ts": ["terraform-extensions-arm64"],
+  "test/gate-terraform-extensions.test.ts": [
+    "terraform-extensions-arm64"
+  ],
   "test/git-fixture.ts": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -1781,7 +2493,10 @@
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
-  "test/git-selection.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/git-selection.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/go-build.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
@@ -1790,7 +2505,9 @@
     "resource-release-arm64",
     "windows"
   ],
-  "test/go-installed-harness.test.ts": ["go-workspaces-arm64"],
+  "test/go-installed-harness.test.ts": [
+    "go-workspaces-arm64"
+  ],
   "test/go-matrix.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
@@ -1815,7 +2532,9 @@
     "resource-release-arm64",
     "windows"
   ],
-  "test/go-workspace-fixture.ts": ["go-workspaces-arm64"],
+  "test/go-workspace-fixture.ts": [
+    "go-workspaces-arm64"
+  ],
   "test/golangci.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
@@ -1824,21 +2543,47 @@
     "resource-release-arm64",
     "windows"
   ],
-  "test/gradle-builds.test.ts": ["gradle", "jvm-wrappers-arm64"],
-  "test/gradle-evidence.test.ts": ["gradle", "jvm-wrappers-arm64"],
-  "test/gradle-failures.test.ts": ["gradle", "jvm-wrappers-arm64"],
-  "test/gradle-filtering.test.ts": ["gradle", "jvm-wrappers-arm64"],
+  "test/gradle-builds.test.ts": [
+    "gradle",
+    "jvm-wrappers-arm64"
+  ],
+  "test/gradle-evidence.test.ts": [
+    "gradle",
+    "jvm-wrappers-arm64"
+  ],
+  "test/gradle-failures.test.ts": [
+    "gradle",
+    "jvm-wrappers-arm64"
+  ],
+  "test/gradle-filtering.test.ts": [
+    "gradle",
+    "jvm-wrappers-arm64"
+  ],
   "test/gradle-fixture.ts": [
     "gradle",
     "jvm-analyzer-extensions-arm64",
     "jvm-wrappers-arm64"
   ],
-  "test/gradle-preparation.test.ts": ["gradle"],
-  "test/gradle-surfaces.test.ts": ["gradle", "jvm-wrappers-arm64"],
-  "test/gradle.test.ts": ["gradle", "jvm-wrappers-arm64"],
-  "test/helm-extensions-fixture.ts": ["helm-extensions-arm64"],
-  "test/helm-extensions-lifecycle.test.ts": ["helm-extensions-arm64"],
-  "test/helm-extensions-surfaces.test.ts": ["helm-extensions-arm64"],
+  "test/gradle-preparation.test.ts": [
+    "gradle"
+  ],
+  "test/gradle-surfaces.test.ts": [
+    "gradle",
+    "jvm-wrappers-arm64"
+  ],
+  "test/gradle.test.ts": [
+    "gradle",
+    "jvm-wrappers-arm64"
+  ],
+  "test/helm-extensions-fixture.ts": [
+    "helm-extensions-arm64"
+  ],
+  "test/helm-extensions-lifecycle.test.ts": [
+    "helm-extensions-arm64"
+  ],
+  "test/helm-extensions-surfaces.test.ts": [
+    "helm-extensions-arm64"
+  ],
   "test/helm-fixture.ts": [
     "helm",
     "helm-extensions-arm64",
@@ -1960,7 +2705,10 @@
     "windows",
     "yaml-context-arm64"
   ],
-  "test/impact.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/impact.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/java.test.ts": [
     "checkstyle",
     "detekt",
@@ -1978,7 +2726,9 @@
     "scala-extensions-arm64",
     "spotbugs"
   ],
-  "test/javascript-extensions-fixture.ts": ["javascript-extensions-arm64"],
+  "test/javascript-extensions-fixture.ts": [
+    "javascript-extensions-arm64"
+  ],
   "test/jest.test.ts": [
     "nuxt",
     "php-extensions-arm64",
@@ -1991,12 +2741,16 @@
   "test/jvm-analyzer-evidence-controls.test.ts": [
     "jvm-analyzer-extensions-arm64"
   ],
-  "test/jvm-wrapper-phases.test.ts": ["jvm-wrappers-arm64"],
+  "test/jvm-wrapper-phases.test.ts": [
+    "jvm-wrappers-arm64"
+  ],
   "test/jvm-wrappers-fixture.ts": [
     "jvm-analyzer-extensions-arm64",
     "jvm-wrappers-arm64"
   ],
-  "test/jvm-wrappers.test.ts": ["jvm-wrappers-arm64"],
+  "test/jvm-wrappers.test.ts": [
+    "jvm-wrappers-arm64"
+  ],
   "test/kotlin-boundaries.test.ts": [
     "jvm-analyzer-extensions-arm64",
     "kotlin",
@@ -2014,8 +2768,12 @@
   "test/kotlin-extension-evidence-controls.test.ts": [
     "kotlin-extensions-arm64"
   ],
-  "test/kotlin-extension-regressions.test.ts": ["kotlin-extensions-arm64"],
-  "test/kotlin-extensions-fixture.ts": ["kotlin-extensions-arm64"],
+  "test/kotlin-extension-regressions.test.ts": [
+    "kotlin-extensions-arm64"
+  ],
+  "test/kotlin-extensions-fixture.ts": [
+    "kotlin-extensions-arm64"
+  ],
   "test/kotlin-fixture.ts": [
     "jvm-analyzer-extensions-arm64",
     "kotlin",
@@ -2023,7 +2781,9 @@
     "kotlin-extensions-arm64",
     "scala-extensions-arm64"
   ],
-  "test/kotlin-java-warning-policy.test.ts": ["kotlin-extensions-arm64"],
+  "test/kotlin-java-warning-policy.test.ts": [
+    "kotlin-extensions-arm64"
+  ],
   "test/kotlin-surfaces.test.ts": [
     "jvm-analyzer-extensions-arm64",
     "kotlin",
@@ -2088,13 +2848,19 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
-  "test/kubernetes-evidence-controls.test.ts": ["kubernetes-extensions-arm64"],
+  "test/kubernetes-evidence-controls.test.ts": [
+    "kubernetes-extensions-arm64"
+  ],
   "test/kubernetes-extensions-fixture.ts": [
     "kubernetes-extensions-arm64",
     "kustomize-extensions-arm64"
   ],
-  "test/kustomize-evidence-controls.test.ts": ["kustomize-extensions-arm64"],
-  "test/kustomize-extensions-fixture.ts": ["kustomize-extensions-arm64"],
+  "test/kustomize-evidence-controls.test.ts": [
+    "kustomize-extensions-arm64"
+  ],
+  "test/kustomize-extensions-fixture.ts": [
+    "kustomize-extensions-arm64"
+  ],
   "test/kustomize-fixture.ts": [
     "helm",
     "helm-extensions-arm64",
@@ -2155,10 +2921,19 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
-  "test/larastan.test.ts": ["php-extensions-arm64", "php-review"],
-  "test/laravel-cache-runtime-harness.test.ts": ["laravel-assembly-arm64"],
-  "test/laravel-cache.test.ts": ["laravel-assembly-arm64"],
-  "test/laravel.test.ts": ["laravel-assembly-arm64"],
+  "test/larastan.test.ts": [
+    "php-extensions-arm64",
+    "php-review"
+  ],
+  "test/laravel-cache-runtime-harness.test.ts": [
+    "laravel-assembly-arm64"
+  ],
+  "test/laravel-cache.test.ts": [
+    "laravel-assembly-arm64"
+  ],
+  "test/laravel.test.ts": [
+    "laravel-assembly-arm64"
+  ],
   "test/lifecycle-platforms-boundaries.ts": [
     "resource-release",
     "resource-release-arm64",
@@ -2204,7 +2979,10 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
-  "test/maven-preparation.test.ts": ["jvm-wrappers-arm64", "maven"],
+  "test/maven-preparation.test.ts": [
+    "jvm-wrappers-arm64",
+    "maven"
+  ],
   "test/maven-surfaces.test.ts": [
     "cpp-extensions-arm64",
     "cpp-tools",
@@ -2254,19 +3032,29 @@
     "tasks-runtime-arm64",
     "windows"
   ],
-  "test/mutation-native-copy.test.ts": ["mutation-passive-guards"],
-  "test/mutation-native-evidence.test.ts": ["mutation-passive-guards"],
+  "test/mutation-native-copy.test.ts": [
+    "mutation-passive-guards"
+  ],
+  "test/mutation-native-evidence.test.ts": [
+    "mutation-passive-guards"
+  ],
   "test/mutation-native-fixture.ts": [
     "mutation-native-arm64",
     "mutation-passive-guards"
   ],
-  "test/mutation-native-guards.test.ts": ["mutation-passive-guards"],
+  "test/mutation-native-guards.test.ts": [
+    "mutation-passive-guards"
+  ],
   "test/mutation-native-lifecycle-fixture.ts": [
     "mutation-native-arm64",
     "mutation-passive-guards"
   ],
-  "test/mutation-native-selection.test.ts": ["mutation-passive-guards"],
-  "test/mypy-evidence.test.ts": ["python-extensions-arm64"],
+  "test/mutation-native-selection.test.ts": [
+    "mutation-passive-guards"
+  ],
+  "test/mypy-evidence.test.ts": [
+    "python-extensions-arm64"
+  ],
   "test/mypy.test.ts": [
     "django-assembly-arm64",
     "external-adapters",
@@ -2293,17 +3081,46 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
-  "test/node-loaders.test.ts": ["javascript-extensions-arm64"],
-  "test/nuxt.test.ts": ["nuxt", "nuxt-assembly-arm64"],
-  "test/pest.test.ts": ["mutation-native-arm64", "php-extensions-arm64"],
-  "test/php-cs-fixer.test.ts": ["php-extensions-arm64", "php-review"],
-  "test/php-extension-planning.test.ts": ["php-extensions-arm64"],
-  "test/php-extensions-fixture.ts": ["php-extensions-arm64"],
-  "test/php-extensions.test.ts": ["php-extensions-arm64"],
-  "test/php-review-surfaces.test.ts": ["php-extensions-arm64", "php-review"],
-  "test/phpstan.test.ts": ["mutation-native-arm64", "php-extensions-arm64"],
-  "test/phpunit.test.ts": ["mutation-native-arm64", "php-extensions-arm64"],
-  "test/pint.test.ts": ["mutation-native-arm64", "php-extensions-arm64"],
+  "test/node-loaders.test.ts": [
+    "javascript-extensions-arm64"
+  ],
+  "test/nuxt.test.ts": [
+    "nuxt",
+    "nuxt-assembly-arm64"
+  ],
+  "test/pest.test.ts": [
+    "mutation-native-arm64",
+    "php-extensions-arm64"
+  ],
+  "test/php-cs-fixer.test.ts": [
+    "php-extensions-arm64",
+    "php-review"
+  ],
+  "test/php-extension-planning.test.ts": [
+    "php-extensions-arm64"
+  ],
+  "test/php-extensions-fixture.ts": [
+    "php-extensions-arm64"
+  ],
+  "test/php-extensions.test.ts": [
+    "php-extensions-arm64"
+  ],
+  "test/php-review-surfaces.test.ts": [
+    "php-extensions-arm64",
+    "php-review"
+  ],
+  "test/phpstan.test.ts": [
+    "mutation-native-arm64",
+    "php-extensions-arm64"
+  ],
+  "test/phpunit.test.ts": [
+    "mutation-native-arm64",
+    "php-extensions-arm64"
+  ],
+  "test/pint.test.ts": [
+    "mutation-native-arm64",
+    "php-extensions-arm64"
+  ],
   "test/playwright.test.ts": [
     "nuxt",
     "php-extensions-arm64",
@@ -2333,7 +3150,9 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "test/pytest-evidence.test.ts": ["python-extensions-arm64"],
+  "test/pytest-evidence.test.ts": [
+    "python-extensions-arm64"
+  ],
   "test/pytest.test.ts": [
     "django-assembly-arm64",
     "external-adapters",
@@ -2343,9 +3162,15 @@
     "python-extensions-arm64",
     "rust-extensions-arm64"
   ],
-  "test/python-extension-planning.test.ts": ["python-extensions-arm64"],
-  "test/python-extensions-fixture.ts": ["python-extensions-arm64"],
-  "test/python-extensions.test.ts": ["python-extensions-arm64"],
+  "test/python-extension-planning.test.ts": [
+    "python-extensions-arm64"
+  ],
+  "test/python-extensions-fixture.ts": [
+    "python-extensions-arm64"
+  ],
+  "test/python-extensions.test.ts": [
+    "python-extensions-arm64"
+  ],
   "test/resource-release-fixture.ts": [
     "resource-release",
     "resource-release-arm64"
@@ -2360,8 +3185,12 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "test/review-c-boundaries-fixture.ts": ["c-context-arm64"],
-  "test/review-c-boundaries.test.ts": ["c-context-arm64"],
+  "test/review-c-boundaries-fixture.ts": [
+    "c-context-arm64"
+  ],
+  "test/review-c-boundaries.test.ts": [
+    "c-context-arm64"
+  ],
   "test/review-call-identity-fixture.ts": [
     "go-workspaces-arm64",
     "java-context-arm64",
@@ -2378,43 +3207,143 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "test/review-context-limits.test.ts": ["go-workspaces-arm64"],
-  "test/review-cpp-boundaries-fixture.ts": ["cpp-context-arm64"],
-  "test/review-cpp-boundaries.test.ts": ["cpp-context-arm64"],
-  "test/review-csharp-boundaries-fixture.ts": ["csharp-context-arm64"],
-  "test/review-django-assembly-fixture.ts": ["django-assembly-arm64"],
-  "test/review-django-assembly-guards.test.ts": ["django-assembly-arm64"],
+  "test/review-context-limits.test.ts": [
+    "go-workspaces-arm64"
+  ],
+  "test/review-cpp-boundaries-fixture.ts": [
+    "cpp-context-arm64"
+  ],
+  "test/review-cpp-boundaries.test.ts": [
+    "cpp-context-arm64"
+  ],
+  "test/review-csharp-boundaries-fixture.ts": [
+    "csharp-context-arm64"
+  ],
+  "test/review-django-assembly-fixture.ts": [
+    "django-assembly-arm64"
+  ],
+  "test/review-django-assembly-guards.test.ts": [
+    "django-assembly-arm64"
+  ],
+  "test/review-evaluation-artifacts-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-artifacts.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-captures-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-captures.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-judging-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-judging.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-matching-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-matching.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-metering-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-metering.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-protocol-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-protocol.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/review-fastapi-assembly-fixture.ts": [
     "fastapi-assembly-arm64",
     "jvm-wrappers-arm64",
     "php-extensions-arm64",
     "rust-extensions-arm64"
   ],
-  "test/review-fastapi-assembly-guards.test.ts": ["fastapi-assembly-arm64"],
-  "test/review-fsharp-boundaries-fixture.ts": ["fsharp-context-arm64"],
-  "test/review-hcl-boundaries-fixture.ts": ["hcl-context-arm64"],
-  "test/review-hcl-boundaries.test.ts": ["hcl-context-arm64"],
-  "test/review-java-boundaries-fixture.ts": ["java-context-arm64"],
-  "test/review-kotlin-boundaries-fixture.ts": ["kotlin-context-arm64"],
-  "test/review-laravel-assembly-contract.ts": ["laravel-assembly-arm64"],
-  "test/review-laravel-assembly-fixture.ts": ["laravel-assembly-arm64"],
-  "test/review-laravel-assembly-guards.test.ts": ["laravel-assembly-arm64"],
+  "test/review-fastapi-assembly-guards.test.ts": [
+    "fastapi-assembly-arm64"
+  ],
+  "test/review-fsharp-boundaries-fixture.ts": [
+    "fsharp-context-arm64"
+  ],
+  "test/review-hcl-boundaries-fixture.ts": [
+    "hcl-context-arm64"
+  ],
+  "test/review-hcl-boundaries.test.ts": [
+    "hcl-context-arm64"
+  ],
+  "test/review-java-boundaries-fixture.ts": [
+    "java-context-arm64"
+  ],
+  "test/review-kotlin-boundaries-fixture.ts": [
+    "kotlin-context-arm64"
+  ],
+  "test/review-laravel-assembly-contract.ts": [
+    "laravel-assembly-arm64"
+  ],
+  "test/review-laravel-assembly-fixture.ts": [
+    "laravel-assembly-arm64"
+  ],
+  "test/review-laravel-assembly-guards.test.ts": [
+    "laravel-assembly-arm64"
+  ],
   "test/review-name-boundaries-fixture.ts": [
     "c-context-arm64",
     "cpp-context-arm64",
     "hcl-context-arm64"
   ],
-  "test/review-nuxt-assembly-fixture.ts": ["nuxt-assembly-arm64"],
-  "test/review-nuxt-assembly-guards.test.ts": ["nuxt-assembly-arm64"],
-  "test/review-probe-storage.test.ts": ["tasks-runtime"],
-  "test/review-ruby-boundaries-fixture.ts": ["ruby-context-arm64"],
-  "test/review-runtime-evidence.test.ts": ["tasks-runtime"],
-  "test/review-scala-boundaries-fixture.ts": ["scala-context-arm64"],
-  "test/review-swift-boundaries-fixture.ts": ["swift-context-arm64"],
-  "test/review-swift-boundaries.test.ts": ["swift-context-arm64"],
-  "test/review-vb-boundaries-fixture.ts": ["vb-context-arm64"],
-  "test/review-vb-boundaries.test.ts": ["vb-context-arm64"],
-  "test/review-vue-router-assembly-fixture.ts": ["vue-router-assembly-arm64"],
+  "test/review-nuxt-assembly-fixture.ts": [
+    "nuxt-assembly-arm64"
+  ],
+  "test/review-nuxt-assembly-guards.test.ts": [
+    "nuxt-assembly-arm64"
+  ],
+  "test/review-probe-storage.test.ts": [
+    "tasks-runtime"
+  ],
+  "test/review-ruby-boundaries-fixture.ts": [
+    "ruby-context-arm64"
+  ],
+  "test/review-runtime-evidence.test.ts": [
+    "tasks-runtime"
+  ],
+  "test/review-scala-boundaries-fixture.ts": [
+    "scala-context-arm64"
+  ],
+  "test/review-swift-boundaries-fixture.ts": [
+    "swift-context-arm64"
+  ],
+  "test/review-swift-boundaries.test.ts": [
+    "swift-context-arm64"
+  ],
+  "test/review-vb-boundaries-fixture.ts": [
+    "vb-context-arm64"
+  ],
+  "test/review-vb-boundaries.test.ts": [
+    "vb-context-arm64"
+  ],
+  "test/review-vue-router-assembly-fixture.ts": [
+    "vue-router-assembly-arm64"
+  ],
   "test/review-vue-router-assembly-guards.test.ts": [
     "vue-router-assembly-arm64"
   ],
@@ -2431,8 +3360,12 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "test/review-yaml-boundaries-fixture.ts": ["yaml-context-arm64"],
-  "test/review-yaml-boundaries.test.ts": ["yaml-context-arm64"],
+  "test/review-yaml-boundaries-fixture.ts": [
+    "yaml-context-arm64"
+  ],
+  "test/review-yaml-boundaries.test.ts": [
+    "yaml-context-arm64"
+  ],
   "test/review.test.ts": [
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
@@ -2443,33 +3376,58 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "test/ruby-extensions-fixture.ts": ["ruby-extensions-arm64"],
+  "test/ruby-extensions-fixture.ts": [
+    "ruby-extensions-arm64"
+  ],
   "test/ruby-tools-cancellation.test.ts": [
     "ruby-extensions-arm64",
     "ruby-tools"
   ],
-  "test/ruby-tools-evidence.test.ts": ["ruby-extensions-arm64", "ruby-tools"],
-  "test/ruby-tools-fixture.ts": ["ruby-extensions-arm64", "ruby-tools"],
-  "test/ruby-tools-guards.test.ts": ["ruby-extensions-arm64", "ruby-tools"],
+  "test/ruby-tools-evidence.test.ts": [
+    "ruby-extensions-arm64",
+    "ruby-tools"
+  ],
+  "test/ruby-tools-fixture.ts": [
+    "ruby-extensions-arm64",
+    "ruby-tools"
+  ],
+  "test/ruby-tools-guards.test.ts": [
+    "ruby-extensions-arm64",
+    "ruby-tools"
+  ],
   "test/ruby-tools-lifecycle-fixture.ts": [
     "ruby-extensions-arm64",
     "ruby-tools"
   ],
-  "test/ruby-tools-lifecycle.test.ts": ["ruby-extensions-arm64", "ruby-tools"],
+  "test/ruby-tools-lifecycle.test.ts": [
+    "ruby-extensions-arm64",
+    "ruby-tools"
+  ],
   "test/ruby-tools-minitest-lifecycle.test.ts": [
     "ruby-extensions-arm64",
     "ruby-tools"
   ],
-  "test/ruby-tools-surfaces.test.ts": ["ruby-extensions-arm64", "ruby-tools"],
-  "test/ruby-tools-tests.test.ts": ["ruby-extensions-arm64", "ruby-tools"],
-  "test/ruby-tools.test.ts": ["ruby-extensions-arm64", "ruby-tools"],
+  "test/ruby-tools-surfaces.test.ts": [
+    "ruby-extensions-arm64",
+    "ruby-tools"
+  ],
+  "test/ruby-tools-tests.test.ts": [
+    "ruby-extensions-arm64",
+    "ruby-tools"
+  ],
+  "test/ruby-tools.test.ts": [
+    "ruby-extensions-arm64",
+    "ruby-tools"
+  ],
   "test/ruby.test.ts": [
     "ruby",
     "ruby-context-arm64",
     "ruby-extensions-arm64",
     "ruby-tools"
   ],
-  "test/ruff-evidence.test.ts": ["python-extensions-arm64"],
+  "test/ruff-evidence.test.ts": [
+    "python-extensions-arm64"
+  ],
   "test/ruff.test.ts": [
     "django-assembly-arm64",
     "external-adapters",
@@ -2489,39 +3447,71 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
-  "test/rust-component-preflight.test.ts": ["rust-extensions-arm64"],
-  "test/rust-extensions-fixture.ts": ["rust-extensions-arm64"],
-  "test/rust-extensions.test.ts": ["rust-extensions-arm64"],
-  "test/rust-test-events.test.ts": ["rust-extensions-arm64"],
-  "test/rust-test-surfaces.test.ts": ["rust-extensions-arm64"],
-  "test/rust-tests.test.ts": ["rust-extensions-arm64"],
-  "test/rust-workspace-directory.test.ts": ["rust-extensions-arm64"],
-  "test/rust-workspace-fixture.ts": ["rust-extensions-arm64"],
-  "test/rust-workspace-surfaces.test.ts": ["rust-extensions-arm64"],
-  "test/rust-workspace.test.ts": ["rust-extensions-arm64"],
+  "test/rust-component-preflight.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/rust-extensions-fixture.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/rust-extensions.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/rust-test-events.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/rust-test-surfaces.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/rust-tests.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/rust-workspace-directory.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/rust-workspace-fixture.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/rust-workspace-surfaces.test.ts": [
+    "rust-extensions-arm64"
+  ],
+  "test/rust-workspace.test.ts": [
+    "rust-extensions-arm64"
+  ],
   "test/rust.test.ts": [
     "jvm-wrappers-arm64",
     "rust-context-arm64",
     "rust-extensions-arm64"
   ],
-  "test/rustfmt.test.ts": ["rust-extensions-arm64"],
+  "test/rustfmt.test.ts": [
+    "rust-extensions-arm64"
+  ],
   "test/scala-boundaries.test.ts": [
     "kotlin-extensions-arm64",
     "scala",
     "scala-context-arm64",
     "scala-extensions-arm64"
   ],
-  "test/scala-ci-phases.test.ts": ["scala"],
+  "test/scala-ci-phases.test.ts": [
+    "scala"
+  ],
   "test/scala-dependencies.test.ts": [
     "kotlin-extensions-arm64",
     "scala",
     "scala-context-arm64",
     "scala-extensions-arm64"
   ],
-  "test/scala-extension-evidence-controls.test.ts": ["scala-extensions-arm64"],
-  "test/scala-extension-evidence-fixture.ts": ["scala-extensions-arm64"],
-  "test/scala-extension-regressions.test.ts": ["scala-extensions-arm64"],
-  "test/scala-extensions-fixture.ts": ["scala-extensions-arm64"],
+  "test/scala-extension-evidence-controls.test.ts": [
+    "scala-extensions-arm64"
+  ],
+  "test/scala-extension-evidence-fixture.ts": [
+    "scala-extensions-arm64"
+  ],
+  "test/scala-extension-regressions.test.ts": [
+    "scala-extensions-arm64"
+  ],
+  "test/scala-extensions-fixture.ts": [
+    "scala-extensions-arm64"
+  ],
   "test/scala-feature-phases.test.ts": [
     "kotlin-extensions-arm64",
     "scala",
@@ -2534,7 +3524,9 @@
     "scala-context-arm64",
     "scala-extensions-arm64"
   ],
-  "test/scala-java-warning-policy.test.ts": ["scala-extensions-arm64"],
+  "test/scala-java-warning-policy.test.ts": [
+    "scala-extensions-arm64"
+  ],
   "test/scala-surfaces.test.ts": [
     "kotlin-extensions-arm64",
     "scala",
@@ -2555,13 +3547,21 @@
   "test/spotbugs-extension-evidence-fixture.ts": [
     "jvm-analyzer-extensions-arm64"
   ],
-  "test/spotbugs-extensions-fixture.ts": ["jvm-analyzer-extensions-arm64"],
-  "test/spotbugs-fixture.ts": ["jvm-analyzer-extensions-arm64", "spotbugs"],
+  "test/spotbugs-extensions-fixture.ts": [
+    "jvm-analyzer-extensions-arm64"
+  ],
+  "test/spotbugs-fixture.ts": [
+    "jvm-analyzer-extensions-arm64",
+    "spotbugs"
+  ],
   "test/spotbugs-surfaces.test.ts": [
     "jvm-analyzer-extensions-arm64",
     "spotbugs"
   ],
-  "test/spotbugs.test.ts": ["jvm-analyzer-extensions-arm64", "spotbugs"],
+  "test/spotbugs.test.ts": [
+    "jvm-analyzer-extensions-arm64",
+    "spotbugs"
+  ],
   "test/staticcheck.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
@@ -2570,10 +3570,21 @@
     "resource-release-arm64",
     "windows"
   ],
-  "test/swift-extensions-fixture.ts": ["swift-extensions-arm64"],
-  "test/swift-testing.test.ts": ["swift-extensions-arm64", "swift-tools"],
-  "test/swift-tools-cancel.test.ts": ["swift-extensions-arm64", "swift-tools"],
-  "test/swift-tools-fixture.ts": ["swift-extensions-arm64", "swift-tools"],
+  "test/swift-extensions-fixture.ts": [
+    "swift-extensions-arm64"
+  ],
+  "test/swift-testing.test.ts": [
+    "swift-extensions-arm64",
+    "swift-tools"
+  ],
+  "test/swift-tools-cancel.test.ts": [
+    "swift-extensions-arm64",
+    "swift-tools"
+  ],
+  "test/swift-tools-fixture.ts": [
+    "swift-extensions-arm64",
+    "swift-tools"
+  ],
   "test/swift-tools-lifecycle.test.ts": [
     "swift-extensions-arm64",
     "swift-tools"
@@ -2582,7 +3593,10 @@
     "swift-extensions-arm64",
     "swift-tools"
   ],
-  "test/swift-tools.test.ts": ["swift-extensions-arm64", "swift-tools"],
+  "test/swift-tools.test.ts": [
+    "swift-extensions-arm64",
+    "swift-tools"
+  ],
   "test/swift.test.ts": [
     "swift",
     "swift-context-arm64",
@@ -2611,9 +3625,15 @@
     "tasks-runtime-arm64",
     "windows"
   ],
-  "test/terraform-extensions-fixture.ts": ["terraform-extensions-arm64"],
-  "test/terraform-extensions-lifecycle.test.ts": ["terraform-extensions-arm64"],
-  "test/terraform-extensions-surfaces.test.ts": ["terraform-extensions-arm64"],
+  "test/terraform-extensions-fixture.ts": [
+    "terraform-extensions-arm64"
+  ],
+  "test/terraform-extensions-lifecycle.test.ts": [
+    "terraform-extensions-arm64"
+  ],
+  "test/terraform-extensions-surfaces.test.ts": [
+    "terraform-extensions-arm64"
+  ],
   "test/terraform-fixture.ts": [
     "hcl-context-arm64",
     "helm",
@@ -2760,7 +3780,9 @@
     "tasks-runtime-arm64",
     "windows"
   ],
-  "test/vite-library.test.ts": ["javascript-extensions-arm64"],
+  "test/vite-library.test.ts": [
+    "javascript-extensions-arm64"
+  ],
   "test/vitest.test.ts": [
     "nuxt",
     "php-extensions-arm64",
@@ -2791,6 +3813,10 @@
     "tasks-runtime-arm64",
     "windows"
   ],
+  "test/windows-private-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/windows-process.test.ts": [
     "resource-release",
     "resource-release-arm64",
@@ -2810,7 +3836,9 @@
     "resource-release-arm64",
     "windows"
   ],
-  "test/windows-resource-workloads.test.ts": ["windows"],
+  "test/windows-resource-workloads.test.ts": [
+    "windows"
+  ],
   "test/windows-resource.test.ts": [
     "resource-release",
     "resource-release-arm64",
@@ -2819,6 +3847,8 @@
     "windows"
   ],
   "test/windows-task-access.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"
