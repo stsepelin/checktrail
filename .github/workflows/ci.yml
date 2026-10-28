@@ -163,7 +163,7 @@ jobs:
         if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory selected-artifact-evidence probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory selected-artifact-evidence probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings consumer-impact consumer-runtime-bindings consumer-foundation-bindings
           node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
         if: env.CHECKTRAIL_CI_MODE == 'full'
@@ -1642,6 +1642,10 @@ jobs:
         run: |
           node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings
           node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}
+      - name: Require whole consumer impact from source and a fresh offline package
+        run: |
+          node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings
+          node scripts/verify-consumer-runtime.mjs ${{ matrix.slot }}
 
   tasks-runtime-arm64:
     needs: [ci-plan, actionlint]
@@ -1662,6 +1666,8 @@ jobs:
         run: node scripts/prepare-package-cache.mjs
       - name: Require source and offline installed controls in the pinned native runtime
         run: node scripts/verify-tasks-runtime-arm64.mjs
+      - name: Require whole consumer impact with pinned native Git prerequisites
+        run: node scripts/verify-consumer-runtime-arm64.mjs
 
   resource-release:
     needs: [ci-plan, actionlint]

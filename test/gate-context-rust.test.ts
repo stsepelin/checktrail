@@ -117,20 +117,31 @@ async function compile(root: string, source: string, name = "native-witness") {
 async function witness(root: string) {
   const executable = await compile(
     root,
-    'mod policy { include!("src/policy.rs"); } fn main(){let values=["grant:read","grantToken","grant2","other"]; let answers:Vec<bool>=values.iter().map(|value|policy::decision(value)).collect();println!("{:?}",answers);}',
+    'include!("src/lib.rs"); fn main(){let values=["grant:read","grantToken","grant2","other"]; let answers:Vec<bool>=values.iter().map(|value|policy::decision(value)).collect();println!("{{\\"cases\\":{:?},\\"consumers\\":{:?},\\"sources\\":{{\\"src/policy.rs\\":{:?},\\"src/consumer.rs\\":{:?},\\"src/lib.rs\\":{:?}}}}}",answers,[consumer::submit(),consumer::route()],std::fs::read("src/policy.rs").unwrap(),std::fs::read("src/consumer.rs").unwrap(),std::fs::read("src/lib.rs").unwrap());}',
   );
   try {
     const result = await runProcess(
       root,
       { executable, args: [], cwd: "." },
-      { timeoutMs: 10000, maxOutputBytes: 65536 },
+      { timeoutMs: 10000, maxOutputBytes: 65536, captureRawOutput: true },
     );
     assert.equal(result.exitCode, 0, result.stderr);
     assert.equal(result.errorCode, undefined);
     assert.equal(result.stderr, "");
     assert.equal(result.truncated, false);
     assert.equal(result.timedOut, false);
-    return JSON.parse(result.stdout);
+    assert.equal(result.cancelled, false);
+    assert.equal(result.capturedOutput?.completeForObservedStreams, true);
+    assert.equal(result.capturedOutput?.stdout.sha256, hash(result.stdout));
+    const receipt = JSON.parse(result.stdout);
+    assert.equal(receipt.cases.length, 4);
+    assert.equal(receipt.consumers.length, 2);
+    for (const name of ["src/policy.rs", "src/consumer.rs", "src/lib.rs"]) {
+      const bytes = await readFile(path.join(root, name));
+      assert.deepEqual(Buffer.from(receipt.sources[name]), bytes);
+      receipt.sources[name] = createHash("sha256").update(bytes).digest("hex");
+    }
+    return receipt;
   } finally {
     await rm(executable);
     await rm(path.join(root, "native-witness.rs"));
@@ -178,7 +189,32 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-rust broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [true, true, true, false]);
+  const live = await witness(root);
+  assert.deepEqual(live.cases, [true, true, true, false]);
+  assert.deepEqual(live.consumers, [true, true]);
+  const callerPath = path.join(root, "src/consumer.rs"),
+    callerBytes = await readFile(callerPath, "utf8");
+  try {
+    await writeFile(
+      callerPath,
+      callerBytes.replace('choose("grantToken")', 'choose("other")'),
+    );
+    const changed = await witness(root);
+    assert.deepEqual(changed.cases, live.cases);
+    assert.deepEqual(changed.consumers, [false, true]);
+    assert.notEqual(
+      changed.sources["src/consumer.rs"],
+      live.sources["src/consumer.rs"],
+    );
+    assert.equal(
+      changed.sources["src/policy.rs"],
+      live.sources["src/policy.rs"],
+    );
+    assert.equal(changed.sources["src/lib.rs"], live.sources["src/lib.rs"]);
+  } finally {
+    await writeFile(callerPath, callerBytes);
+  }
+  assert.deepEqual(await witness(root), live);
   const fn = result.functions.find((fn) => fn.name === "decision")!,
     file = context.files.find((file) => file.path === fn.file)!;
   assert.equal(
@@ -255,7 +291,9 @@ test("context-rust broken acceptance", native, async (t) => {
 test("context-rust fixed acceptance", native, async (t) => {
   const { root, context, result } = await original(t, fixed);
   bindings(result);
-  assert.deepEqual(await witness(root), [true, false, false, false]);
+  const live = await witness(root);
+  assert.deepEqual(live.cases, [true, false, false, false]);
+  assert.deepEqual(live.consumers, [false, true]);
   assert.equal(
     parseReviewContext(context).contextDigest,
     context.contextDigest,
@@ -270,7 +308,9 @@ test("context-rust fixed acceptance", native, async (t) => {
 test("context-rust near-miss acceptance", native, async (t) => {
   await callIdentityFixture(t, "rust", true);
   const { root } = await original(t, near);
-  assert.deepEqual(await witness(root), [true, false, false, false]);
+  const live = await witness(root);
+  assert.deepEqual(live.cases, [true, false, false, false]);
+  assert.deepEqual(live.consumers, [false, false]);
   const cases: [string, string][] = [
     [
       'fn useit(choose:fn(&str)->bool)->bool{choose("x")}',

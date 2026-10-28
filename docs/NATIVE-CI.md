@@ -870,3 +870,11 @@ and separate corruption/cache controls.
 Other hosts and each preparation/execution command keep their existing limits.
 This changes the harness deadline; its byte, receipt, publication and cleanup
 assertions remain required.
+
+The selected Tasks runtime jobs additionally require the whole consumer-impact
+source and fresh offline installed cohort, with unchanged original foundation
+callbacks and nested event accounting. The Linux ARM64 controller binds its
+selected base images and native Git prerequisite. Local development evidence is
+recorded separately in [CONSUMER-ACCEPTANCE.md](CONSUMER-ACCEPTANCE.md); the newly
+configured hosted cohort remains unverified. This wiring does not qualify
+omitted native profiles, upstream producer closure or Gate A.
