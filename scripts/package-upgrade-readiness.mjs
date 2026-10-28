@@ -12,6 +12,7 @@ import {
 import { tmpdir } from "node:os";
 import path from "node:path";
 import process from "node:process";
+import { performance } from "node:perf_hooks";
 import { pathToFileURL } from "node:url";
 import { runAcceptanceNpm } from "./install-acceptance-package.mjs";
 import { Client } from "@modelcontextprotocol/client";
