@@ -611,6 +611,8 @@ test("required profile batches execute shared files once and preserve all obliga
       first: [alpha],
       second: [alpha, beta],
       absent: [requirement("other.mjs", "beta")],
+      "ruby-tools-lifecycle": [alpha, beta],
+      "ruby-tools-rubocop": [alpha],
     }),
   );
   await mkdir(path.join(root, "dist/test"), { recursive: true });
@@ -651,6 +653,18 @@ test("required profile batches execute shared files once and preserve all obliga
   assert.equal(batch.status, 0, batch.stderr);
   assert.equal(JSON.parse(batch.stdout).required, 2);
   assert.equal(JSON.parse(batch.stdout).timeoutMs, 120000);
+  const rubyLifecycle = cli("ruby-tools-lifecycle");
+  assert.equal(rubyLifecycle.status, 0, rubyLifecycle.stderr);
+  assert.equal(JSON.parse(rubyLifecycle.stdout).timeoutMs, 600000);
+  assert.equal(JSON.parse(rubyLifecycle.stdout).required, 2);
+  assert.equal(
+    JSON.parse(rubyLifecycle.stdout).passed,
+    3,
+    "both required callbacks and the unlisted shared-file callback still run",
+  );
+  const rubyRubocop = cli("ruby-tools-rubocop");
+  assert.equal(rubyRubocop.status, 0, rubyRubocop.stderr);
+  assert.equal(JSON.parse(rubyRubocop.stdout).timeoutMs, 300000);
   assert.equal(cli("first", "absent").status, 1);
   const suite = cli("--full-suite", "first", "second");
   assert.equal(suite.status, 0, suite.stderr);
