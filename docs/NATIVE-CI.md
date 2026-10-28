@@ -861,3 +861,12 @@ The registry file itself always selects full verification. This is an explicit
 reviewed boundary contract, not proof of every possible runtime dependency or
 qualification of omitted jobs. Full main, scheduled and release verification
 remain required for broader evidence and Gate A reconciliation.
+
+The resource-readiness prerequisite case retains separate complete prepared-tool
+copies for its corruption controls. Its Windows aggregate test deadline is five
+minutes after the Windows case timed out at its former two-minute test limit.
+The case includes an offline install with its own three-minute command budget
+and separate corruption/cache controls.
+Other hosts and each preparation/execution command keep their existing limits.
+This changes the harness deadline; its byte, receipt, publication and cleanup
+assertions remain required.
