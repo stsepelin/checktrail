@@ -732,10 +732,10 @@
     }
   ],
   "remainingProducerObligations": [
-    "Rebuild the actual separately pinned Fiat Cryptography/Coq/OCaml arithmetic producer, its compiler/SDK/base-image/bootstrap chain, dependencies and complete original notices.",
-    "The source-built addchain step reproduces all selected inversion files. Canonical source-Git attribution, copied/generated inputs and its complete compiler/SDK/bootstrap and original inline-notice chains remain open.",
-    "Complete copied/generated payload attribution, source-built Go deeper bootstrap independence and original inline notices remain required.",
-    "These are isolated phase harnesses retaining exact original segments. They do not execute or qualify the whole original generator or the full source tree."
+    "Build the actual pinned Fiat Cryptography/Coq/OCaml arithmetic producer and close its compiler/SDK/base-image/bootstrap chain and complete original notices. All declared source/submodule revisions have been acquired and byte-bound, without executing that producer.",
+    "The source-built addchain step reproduces the selected inversion files. Its generated parser and inner producer chain remain under independent reconstruction; failed outputs are not qualified.",
+    "Complete copied/generated input attribution, source-built Go deeper bootstrap independence, original producer metadata and original inline notices remain required.",
+    "Isolated phase harnesses do not execute or qualify the whole original generator or full source tree."
   ],
   "allTwelveSelectedWrapperMembersReproducedExactly": true,
   "completeFiatArithmeticProducerClosureVerified": false,
@@ -1418,9 +1418,9 @@
     ],
     "retainedInputs": [
       {
-        "file": "provider-compiler-inputs/addchain-v0.4.0-original-notices.txt",
-        "bytes": 14607,
-        "sha256": "5616fb1cc9945904bb1038c3e3aab032fc0f85f2b7c9d5e2940f6ff844e36057"
+        "file": "provider-compiler-inputs/fiat-producer-chain-original-notices.txt",
+        "bytes": 303512,
+        "sha256": "bfb3ca8ce5c925b764e0c6e4c20264ca901505c89e3395a41f2443778b666b1b"
       }
     ],
     "preservedRejectedHarnessPreparation": {
@@ -1434,5 +1434,1332 @@
     },
     "fullUpstreamProducerClosureVerified": false,
     "completeOriginalInlineNoticeClosureVerified": false
+  },
+  "arithmeticProducerSourceAcquisition": {
+    "observedAt": "2026-10-28",
+    "scope": "Exact source and recursive submodule inputs for the arithmetic generator named in the SDK Docker recipe. No arithmetic producer was built or executed by this acquisition.",
+    "sourceRevisionNodesIncludingRoot": 11,
+    "uniqueGitHubRepositories": 10,
+    "duplicateRepositoryRevisionOccurrences": 1,
+    "sourceFileTotal": 2115,
+    "sourceFilePartition": [
+      {
+        "mountPath": "root",
+        "sourceFileCount": 736
+      },
+      {
+        "mountPath": "coqprime",
+        "sourceFileCount": 224
+      },
+      {
+        "mountPath": "etc/coq-scripts",
+        "sourceFileCount": 109
+      },
+      {
+        "mountPath": "rewriter/etc/coq-scripts",
+        "sourceFileCount": 109
+      },
+      {
+        "mountPath": "rewriter",
+        "sourceFileCount": 268
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/coq-record-update",
+        "sourceFileCount": 32
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/coqutil",
+        "sourceFileCount": 77
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/kami",
+        "sourceFileCount": 177
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/riscv-coq",
+        "sourceFileCount": 146
+      },
+      {
+        "mountPath": "rupicola/bedrock2",
+        "sourceFileCount": 171
+      },
+      {
+        "mountPath": "rupicola",
+        "sourceFileCount": 66
+      }
+    ],
+    "gitlinksWithExactAcquiredSourceBindings": 10,
+    "allDeclaredNestedGitlinksAcquired": true,
+    "sourceRevisionInputs": [
+      {
+        "mountPath": "root",
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "canonicalGitTree": "7a6fe22745486426e541b5a0dd0f7b6cf8e62bd4",
+        "sourceCommitUrl": "https://github.com/mit-plv/fiat-crypto/commit/23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/fiat-crypto/tarball/23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 4675809,
+          "sha256": "6704ca3ec964288113518a91d9273e6cbcbffb8bd8010aeb03dc1b9085f65e2d"
+        },
+        "sourceFileCount": 736,
+        "sourceManifestSha256": "bf4d85b074849a5b1e27a7224e382d5224cdad989528b982e91f27bffd49f254",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [
+          {
+            "path": "coqprime",
+            "commit": "d4bcfa8f7d7bdbe879d842ecfe575406f622c8ae"
+          },
+          {
+            "path": "etc/coq-scripts",
+            "commit": "1d6880c82e77a41d9a73a4ee0d8a1cd5dfa26fd4"
+          },
+          {
+            "path": "rewriter",
+            "commit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5"
+          },
+          {
+            "path": "rupicola",
+            "commit": "935a01c3f4cdca06a1921d918f9e5350380fd9ee"
+          }
+        ],
+        "namedNoticeCandidateCount": 18,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "coqprime",
+        "repository": "thery/coqprime",
+        "sourceCommit": "d4bcfa8f7d7bdbe879d842ecfe575406f622c8ae",
+        "canonicalGitTree": "9be6d099852c09675be36e5e37f4da88d6352c26",
+        "sourceCommitUrl": "https://github.com/thery/coqprime/commit/d4bcfa8f7d7bdbe879d842ecfe575406f622c8ae",
+        "sourceArchiveUrl": "https://api.github.com/repos/thery/coqprime/tarball/d4bcfa8f7d7bdbe879d842ecfe575406f622c8ae",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 1098805,
+          "sha256": "a3cf94e3b8c02d01125d8be42d7202e597f0f89478db7ee678bac97855ae89ee"
+        },
+        "sourceFileCount": 224,
+        "sourceManifestSha256": "1677c86949852f12356ec4f7ce72f32e89ae0e041996d8b6d82c9d4ffe380248",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "etc/coq-scripts",
+        "repository": "JasonGross/coq-scripts",
+        "sourceCommit": "1d6880c82e77a41d9a73a4ee0d8a1cd5dfa26fd4",
+        "canonicalGitTree": "e4b191d15f26520cae05f7598bb92f5e2d21a0da",
+        "sourceCommitUrl": "https://github.com/JasonGross/coq-scripts/commit/1d6880c82e77a41d9a73a4ee0d8a1cd5dfa26fd4",
+        "sourceArchiveUrl": "https://api.github.com/repos/JasonGross/coq-scripts/tarball/1d6880c82e77a41d9a73a4ee0d8a1cd5dfa26fd4",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 35363,
+          "sha256": "5ea6ceb58c87239a24c1883deb106993a46e00cff7344fb77fd4f13fb422228b"
+        },
+        "sourceFileCount": 109,
+        "sourceManifestSha256": "0272dc77695192248c26138c5bb8d41b8a5fa24b9e9c7af5331abef5d12881f4",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rewriter/etc/coq-scripts",
+        "repository": "JasonGross/coq-scripts",
+        "sourceCommit": "1ad4075c553415ba01f27796231ef26019e76093",
+        "canonicalGitTree": "43531aebdc60aa4f8d91b5b50033ff61e961ae93",
+        "sourceCommitUrl": "https://github.com/JasonGross/coq-scripts/commit/1ad4075c553415ba01f27796231ef26019e76093",
+        "sourceArchiveUrl": "https://api.github.com/repos/JasonGross/coq-scripts/tarball/1ad4075c553415ba01f27796231ef26019e76093",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 35327,
+          "sha256": "49d44dd78133ec15627050a86eafa2bf8ff49a465c5e193b726e99bbde253b5f"
+        },
+        "sourceFileCount": 109,
+        "sourceManifestSha256": "ecd2ff0b986a7dd1253bec85acfeffa59a84460b05d93b0cb418c863e3188dd4",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rewriter",
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "canonicalGitTree": "0da88e61a60de999e3ee18f219782dbc7ccb808a",
+        "sourceCommitUrl": "https://github.com/mit-plv/rewriter/commit/a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/rewriter/tarball/a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 374095,
+          "sha256": "abec402f14fda86281ba4465c02b9f944d0b23fd83332cc9845aab4bb311eea1"
+        },
+        "sourceFileCount": 268,
+        "sourceManifestSha256": "e0e4f4815d200ecfdd78e480c7025eadb8f7b6032f0f336697383a2596727a95",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [
+          {
+            "path": "etc/coq-scripts",
+            "commit": "1ad4075c553415ba01f27796231ef26019e76093"
+          }
+        ],
+        "namedNoticeCandidateCount": 6,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/coq-record-update",
+        "repository": "tchajed/coq-record-update",
+        "sourceCommit": "268a735cc2d9e0469e9b6f390365f81e7e576023",
+        "canonicalGitTree": "8f28a599e8424437e7345b5af0ee21fb5e8841f4",
+        "sourceCommitUrl": "https://github.com/tchajed/coq-record-update/commit/268a735cc2d9e0469e9b6f390365f81e7e576023",
+        "sourceArchiveUrl": "https://api.github.com/repos/tchajed/coq-record-update/tarball/268a735cc2d9e0469e9b6f390365f81e7e576023",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 13270,
+          "sha256": "48ebe9a8f7970ea584f105aaa94d82aac1c21bdd1564478fc9fd3ef47587ce1d"
+        },
+        "sourceFileCount": 32,
+        "sourceManifestSha256": "0eb5ee2d731b7e68a84f7e4987154b2f018b8690065a37ccd5a331392910567c",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/coqutil",
+        "repository": "mit-plv/coqutil",
+        "sourceCommit": "7161c1bca19d0e2a6577aafbc704979d01494468",
+        "canonicalGitTree": "21ea7aab51f7d44cebb65110488f367719724d6c",
+        "sourceCommitUrl": "https://github.com/mit-plv/coqutil/commit/7161c1bca19d0e2a6577aafbc704979d01494468",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/coqutil/tarball/7161c1bca19d0e2a6577aafbc704979d01494468",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 76459,
+          "sha256": "00528b48dd8733b36626b9eadcef442f44ec81dcb5a303a669997951faef3520"
+        },
+        "sourceFileCount": 77,
+        "sourceManifestSha256": "6c7543dca4ee990b9e270614c43424eb2ab1f2d2b6a5c5a6f7781a2f26182f2e",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 3,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/kami",
+        "repository": "mit-plv/kami",
+        "sourceCommit": "86d352dd1d8d904e2520e6e1cfeade8dd6e8b2bf",
+        "canonicalGitTree": "62d35f24f29edb7a22445216c4bed404b80a8b97",
+        "sourceCommitUrl": "https://github.com/mit-plv/kami/commit/86d352dd1d8d904e2520e6e1cfeade8dd6e8b2bf",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/kami/tarball/86d352dd1d8d904e2520e6e1cfeade8dd6e8b2bf",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 344789,
+          "sha256": "5bca2a4a0c8f9dee708af08e3acb91d4e77de2b990430cec83e89c71eece8dad"
+        },
+        "sourceFileCount": 177,
+        "sourceManifestSha256": "24a0d396cec3f61fb8545da6ff00b8aff37099323f41f370b74c28f852915204",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/riscv-coq",
+        "repository": "mit-plv/riscv-coq",
+        "sourceCommit": "b299f5a3c51e326f4f33675e12ea5c585a31c5a8",
+        "canonicalGitTree": "d79ce90301964efb3e85259c9fdef327150c4a8b",
+        "sourceCommitUrl": "https://github.com/mit-plv/riscv-coq/commit/b299f5a3c51e326f4f33675e12ea5c585a31c5a8",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/riscv-coq/tarball/b299f5a3c51e326f4f33675e12ea5c585a31c5a8",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 118492,
+          "sha256": "e349c24568bb8859484825551f5a3f09370f044c7738c878d9390976ade6a2bb"
+        },
+        "sourceFileCount": 146,
+        "sourceManifestSha256": "c89cb8dbd04db45c393b54f4e19205ab354e1a2d3abf8d17d8ae04c49dc78c73",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola/bedrock2",
+        "repository": "mit-plv/bedrock2",
+        "sourceCommit": "7db60537a06afffae3f40630afc030b27630e47c",
+        "canonicalGitTree": "2bf113b7752586823891d3be5d97d939fee66f48",
+        "sourceCommitUrl": "https://github.com/mit-plv/bedrock2/commit/7db60537a06afffae3f40630afc030b27630e47c",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/bedrock2/tarball/7db60537a06afffae3f40630afc030b27630e47c",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 825333,
+          "sha256": "e5fedfca5be840ab6632597800c46e2133b8528e29bb2cb973c9d40f72879b69"
+        },
+        "sourceFileCount": 171,
+        "sourceManifestSha256": "f0c8102bd1790dfdb0102aeb182e92509fd60b773d2b8d0f709a3d7cc85acb6b",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [
+          {
+            "path": "deps/coq-record-update",
+            "commit": "268a735cc2d9e0469e9b6f390365f81e7e576023"
+          },
+          {
+            "path": "deps/coqutil",
+            "commit": "7161c1bca19d0e2a6577aafbc704979d01494468"
+          },
+          {
+            "path": "deps/kami",
+            "commit": "86d352dd1d8d904e2520e6e1cfeade8dd6e8b2bf"
+          },
+          {
+            "path": "deps/riscv-coq",
+            "commit": "b299f5a3c51e326f4f33675e12ea5c585a31c5a8"
+          }
+        ],
+        "namedNoticeCandidateCount": 3,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola",
+        "repository": "mit-plv/rupicola",
+        "sourceCommit": "935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "canonicalGitTree": "a473ef43bb9691e5f91246df141ff2193285b87b",
+        "sourceCommitUrl": "https://github.com/mit-plv/rupicola/commit/935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/rupicola/tarball/935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 190136,
+          "sha256": "f6ce7ca114520f0b1e8b6d6705d9fbf1f17b68e73da4318e52c0ca610f21848b"
+        },
+        "sourceFileCount": 66,
+        "sourceManifestSha256": "4500c1899a6bf970457fac7e196f3e4a81c9de917173a1d7bc079a2571d1033c",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [
+          {
+            "path": "bedrock2",
+            "commit": "7db60537a06afffae3f40630afc030b27630e47c"
+          }
+        ],
+        "namedNoticeCandidateCount": 3,
+        "upstreamCodeExecuted": false
+      }
+    ],
+    "originalNamedNoticeMembers": [
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "AUTHORS",
+        "bytes": 648,
+        "sha256": "ad74c036a6afaedc418fed65f171c877c2f74a4c70938a03930aa11c98a20508",
+        "bundleOffset": 14684,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "CONTRIBUTORS",
+        "bytes": 1200,
+        "sha256": "52cef8877355b9394bf2c5172a351265f025c0e6783fedc289b23ee28ecd4693",
+        "bundleOffset": 15415,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "COPYRIGHT",
+        "bytes": 375,
+        "sha256": "6c935d087a2992d0f092665400a2fa99c98db58d96fbe29368f8f48182bed9aa",
+        "bundleOffset": 16695,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "LICENSE-APACHE",
+        "bytes": 638,
+        "sha256": "9eacbcb81be660840c714a560a9d65ba07913db98dd4baf969f78dd499fdd60f",
+        "bundleOffset": 17155,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "LICENSE-BSD-1",
+        "bytes": 1153,
+        "sha256": "0c1240e29b4a2c528bcc3ccc38a98b1dba5e3e6b465da910208935f082e2ced6",
+        "bundleOffset": 17877,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "LICENSE-MIT",
+        "bytes": 1119,
+        "sha256": "0034712d5e97a4f5b900a160a5c19d582b740d8e0638b4e44fd07e7b492dcd13",
+        "bundleOffset": 19112,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/AUTHORS",
+        "bytes": 648,
+        "sha256": "ad74c036a6afaedc418fed65f171c877c2f74a4c70938a03930aa11c98a20508",
+        "bundleOffset": 20317,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/CONTRIBUTORS",
+        "bytes": 1200,
+        "sha256": "52cef8877355b9394bf2c5172a351265f025c0e6783fedc289b23ee28ecd4693",
+        "bundleOffset": 21056,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/COPYRIGHT",
+        "bytes": 375,
+        "sha256": "6c935d087a2992d0f092665400a2fa99c98db58d96fbe29368f8f48182bed9aa",
+        "bundleOffset": 22344,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/LICENSE-APACHE",
+        "bytes": 638,
+        "sha256": "9eacbcb81be660840c714a560a9d65ba07913db98dd4baf969f78dd499fdd60f",
+        "bundleOffset": 22812,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/LICENSE-BSD-1",
+        "bytes": 1153,
+        "sha256": "0c1240e29b4a2c528bcc3ccc38a98b1dba5e3e6b465da910208935f082e2ced6",
+        "bundleOffset": 23542,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/LICENSE-MIT",
+        "bytes": 1119,
+        "sha256": "0034712d5e97a4f5b900a160a5c19d582b740d8e0638b4e44fd07e7b492dcd13",
+        "bundleOffset": 24785,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/AUTHORS",
+        "bytes": 648,
+        "sha256": "ad74c036a6afaedc418fed65f171c877c2f74a4c70938a03930aa11c98a20508",
+        "bundleOffset": 25992,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/CONTRIBUTORS",
+        "bytes": 1200,
+        "sha256": "52cef8877355b9394bf2c5172a351265f025c0e6783fedc289b23ee28ecd4693",
+        "bundleOffset": 26733,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/COPYRIGHT",
+        "bytes": 375,
+        "sha256": "6c935d087a2992d0f092665400a2fa99c98db58d96fbe29368f8f48182bed9aa",
+        "bundleOffset": 28023,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/LICENSE-APACHE",
+        "bytes": 638,
+        "sha256": "9eacbcb81be660840c714a560a9d65ba07913db98dd4baf969f78dd499fdd60f",
+        "bundleOffset": 28493,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/LICENSE-BSD-1",
+        "bytes": 1153,
+        "sha256": "0c1240e29b4a2c528bcc3ccc38a98b1dba5e3e6b465da910208935f082e2ced6",
+        "bundleOffset": 29225,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/LICENSE-MIT",
+        "bytes": 1119,
+        "sha256": "0034712d5e97a4f5b900a160a5c19d582b740d8e0638b4e44fd07e7b492dcd13",
+        "bundleOffset": 30470,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "thery/coqprime",
+        "sourceCommit": "d4bcfa8f7d7bdbe879d842ecfe575406f622c8ae",
+        "sourcePath": "LICENSE",
+        "bytes": 24381,
+        "sha256": "d4594b82f4d50840df6a7e9d14132a8c0a3cc05d0ac46d15310a264a1f75447e",
+        "bundleOffset": 31662,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "JasonGross/coq-scripts",
+        "sourceCommit": "1d6880c82e77a41d9a73a4ee0d8a1cd5dfa26fd4",
+        "sourcePath": "LICENSE",
+        "bytes": 1077,
+        "sha256": "c00e2016e053e93fdcfbd15861052b6916ab8b80089863c595d8386c5fddbb26",
+        "bundleOffset": 56124,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "JasonGross/coq-scripts",
+        "sourceCommit": "1ad4075c553415ba01f27796231ef26019e76093",
+        "sourcePath": "LICENSE",
+        "bytes": 1077,
+        "sha256": "c00e2016e053e93fdcfbd15861052b6916ab8b80089863c595d8386c5fddbb26",
+        "bundleOffset": 57282,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "AUTHORS",
+        "bytes": 503,
+        "sha256": "269b9890771c15ba97fea25ba76338eb3b712485888b1ce85db5a5470006cf14",
+        "bundleOffset": 58434,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "CONTRIBUTORS",
+        "bytes": 1057,
+        "sha256": "8ea866124dd259706635676f908a57b940fb45ed36dab126552f0fec610f0f6a",
+        "bundleOffset": 59017,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "COPYRIGHT",
+        "bytes": 370,
+        "sha256": "e89a0880ae0e8f29d2532344f4b5a8ca34ce06d5747a67ba2d430234ddb6cd6a",
+        "bundleOffset": 60151,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "LICENSE-APACHE",
+        "bytes": 635,
+        "sha256": "2f55d5e7eaa624771a9be10626d1c6b86edff8db8b7dd6bcbb933ae4b1db5778",
+        "bundleOffset": 60603,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "LICENSE-BSD-1",
+        "bytes": 1147,
+        "sha256": "cd4343e62cf5bb2bd57d424d52dbf18cd720424eba0614bd0ed59859b72b0316",
+        "bundleOffset": 61319,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "LICENSE-MIT",
+        "bytes": 1116,
+        "sha256": "744dc13b7c10b871b95700e58c99ba842800404fd8e51abe122274c82e1dc4ca",
+        "bundleOffset": 62545,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "tchajed/coq-record-update",
+        "sourceCommit": "268a735cc2d9e0469e9b6f390365f81e7e576023",
+        "sourcePath": "LICENSE",
+        "bytes": 1091,
+        "sha256": "86bc18f7c5d1a7d65fc58b5cdbb31bd965f3815efe83e8556c1a875270678ae4",
+        "bundleOffset": 63745,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/coqutil",
+        "sourceCommit": "7161c1bca19d0e2a6577aafbc704979d01494468",
+        "sourcePath": "AUTHORS",
+        "bytes": 38,
+        "sha256": "82b42b22d98b235ebb1893c1ee8c4dd7831a80e3275cb8cc8d5e8193147adfab",
+        "bundleOffset": 64910,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/coqutil",
+        "sourceCommit": "7161c1bca19d0e2a6577aafbc704979d01494468",
+        "sourcePath": "CONTRIBUTORS",
+        "bytes": 121,
+        "sha256": "2088498441d9f109f6a586d6d021e8c609d9d532257b20ea18af61e66459521e",
+        "bundleOffset": 65027,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/coqutil",
+        "sourceCommit": "7161c1bca19d0e2a6577aafbc704979d01494468",
+        "sourcePath": "LICENSE",
+        "bytes": 1115,
+        "sha256": "031b27d9d2b5cd3db255f9eeecb4f4926cc880fdb511162a104c7bae67b3e716",
+        "bundleOffset": 65222,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/kami",
+        "sourceCommit": "86d352dd1d8d904e2520e6e1cfeade8dd6e8b2bf",
+        "sourcePath": "LICENSE",
+        "bytes": 1101,
+        "sha256": "63082d883447899f66556cc1de985a01d42d5e2a0a3bff732627a64584da3088",
+        "bundleOffset": 66408,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/riscv-coq",
+        "sourceCommit": "b299f5a3c51e326f4f33675e12ea5c585a31c5a8",
+        "sourcePath": "LICENSE.txt",
+        "bytes": 1509,
+        "sha256": "3fe70f2d0e878d4bdd8313a18dc53567e8b7f888123e928298b948e798626bab",
+        "bundleOffset": 67589,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/bedrock2",
+        "sourceCommit": "7db60537a06afffae3f40630afc030b27630e47c",
+        "sourcePath": "AUTHORS",
+        "bytes": 51,
+        "sha256": "4cc7fc9b1f9dfc9ac564bffac9313c8332ece5eca6d8d009f5e662662b9555d6",
+        "bundleOffset": 69173,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/bedrock2",
+        "sourceCommit": "7db60537a06afffae3f40630afc030b27630e47c",
+        "sourcePath": "CONTRIBUTORS",
+        "bytes": 30,
+        "sha256": "78cf05dfe70bd936ce91dd1b7e90ff5a596cec7cd6a966d8bced0383d7d274c4",
+        "bundleOffset": 69304,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/bedrock2",
+        "sourceCommit": "7db60537a06afffae3f40630afc030b27630e47c",
+        "sourcePath": "LICENSE",
+        "bytes": 1116,
+        "sha256": "c903b70f530785181ed37b14225229dd1b718cea1c3401ff24a6ef04f5f4bf69",
+        "bundleOffset": 69409,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rupicola",
+        "sourceCommit": "935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "sourcePath": "AUTHORS",
+        "bytes": 38,
+        "sha256": "82b42b22d98b235ebb1893c1ee8c4dd7831a80e3275cb8cc8d5e8193147adfab",
+        "bundleOffset": 70600,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rupicola",
+        "sourceCommit": "935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "sourcePath": "CONTRIBUTORS",
+        "bytes": 97,
+        "sha256": "61a49c0adee48f9828de82e7e98376082693b28e249445935997a42244cccc10",
+        "bundleOffset": 70718,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rupicola",
+        "sourceCommit": "935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "sourcePath": "LICENSE",
+        "bytes": 1100,
+        "sha256": "c9f9bd53ed50adf16b775a819f418236d12ebfe279c4120f3ae89b5402493b15",
+        "bundleOffset": 70890,
+        "originalBytesRetainedUnchanged": true
+      }
+    ],
+    "retainedInputs": [
+      {
+        "file": "provider-compiler-inputs/fiat-producer-chain-original-notices.txt",
+        "bytes": 303512,
+        "sha256": "bfb3ca8ce5c925b764e0c6e4c20264ca901505c89e3395a41f2443778b666b1b"
+      }
+    ],
+    "sourceBuildExecuted": false,
+    "coqOcamlCompilerSdkAndBootstrapBuildClosureVerified": false,
+    "completeOriginalInlineNoticeClosureVerified": false
+  },
+  "historicalCompilerSourceBuildFollowUp": {
+    "observedAt": "2026-10-28",
+    "scope": "Independent source-built pure-Go Linux ARM64 Go1.17.2 profile for checking the historical parser generator. Exact original patch/image identity, complete official SDK archive reproduction, host image and deeper compiler bootstrap closure remain open.",
+    "frozenBuildRecipe": {
+      "schemaVersion": 1,
+      "frozenBeforeBuild": true,
+      "scope": "Source-build the older pure-Go Linux ARM64 compiler/stdlib profile needed to test the pinned historical parser generator. This is not a complete official SDK archive reproduction or complete upstream closure.",
+      "sourceArchive": {
+        "filename": "go1.17.2.src.tar.gz",
+        "os": "",
+        "arch": "",
+        "version": "go1.17.2",
+        "sha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "size": 22182111,
+        "kind": "source",
+        "rawArchiveSizeAndHashVerified": true
+      },
+      "sourceUrl": "https://go.dev/dl/go1.17.2.src.tar.gz",
+      "upstreamDeclaredCompilerProfile": "Go1.17.x in the pinned addchain CI/generation workflow",
+      "selectedIndependentCompilerVersion": "go1.17.2",
+      "exactOriginalCompilerPatchAttested": false,
+      "bootstrapVersion": "go version go1.26.8 linux/arm64",
+      "bootstrapWholeSourceBuiltSdkArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "bootstrapEvidence": "provider-arm64-compiler-sdk-rebuild.json",
+      "bootstrapFullAncestryClosed": false,
+      "hostImage": "docker.io/library/debian@sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a",
+      "verifiedBashPrerequisite": {
+        "state": "verified-independent-builder-prerequisites",
+        "initialPublicTag": "docker.io/library/debian:bookworm-slim",
+        "frozenIndex": "docker.io/library/debian@sha256:99c0b25c46d0214d5a2091092e7908907dcaecd6a962cde0ac700acee222b6f3",
+        "selectedArm64Image": "docker.io/library/debian@sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a",
+        "selectedManifest": {
+          "annotations": {
+            "com.docker.official-images.bashbrew.arch": "arm64v8",
+            "org.opencontainers.image.base.name": "scratch",
+            "org.opencontainers.image.created": "2026-10-27T00:00:00Z",
+            "org.opencontainers.image.revision": "e36653f9967231373aeba7cff2102fd004ac4f4a",
+            "org.opencontainers.image.source": "https://github.com/debuerreotype/docker-debian-artifacts.git",
+            "org.opencontainers.image.url": "https://hub.docker.com/_/debian",
+            "org.opencontainers.image.version": "bookworm-slim"
+          },
+          "digest": "sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a",
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux",
+            "variant": "v8"
+          },
+          "size": 1041
+        },
+        "bashVersion": "GNU bash, version 5.2.15(1)-release (aarch64-unknown-linux-gnu)",
+        "bashExecutableSha256": "f5918390c5b15392ad8835e8368a79c1ee9937fbb19f2349cccf5d4524183299",
+        "osRelease": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+        "originalGo117ProducerImageAttested": false,
+        "builderImageAndBashSourceBuildClosureVerified": false,
+        "go117SourceBuildExecuted": false,
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "dockerReportedImageId": "sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a"
+      },
+      "priorMissingBashPrerequisiteFailurePreserved": true,
+      "hostImageSourceBuildClosureVerified": false,
+      "command": ["bash", "make.bash"],
+      "environment": {
+        "GOROOT_BOOTSTRAP": "/bootstrap",
+        "GOROOT_FINAL": "/usr/local/go",
+        "GOOS": "linux",
+        "GOARCH": "arm64",
+        "CGO_ENABLED": "0",
+        "GOTOOLCHAIN": "local",
+        "GOENV": "off",
+        "GOWORK": "off",
+        "GOPROXY": "off",
+        "GOSUMDB": "off",
+        "GOTELEMETRY": "off",
+        "GOMAXPROCS": "2",
+        "GOCACHE": "/work/cache",
+        "GOTMPDIR": "/work/tmp",
+        "GOPATH": "/work/gopath"
+      },
+      "resourceLimits": {
+        "cpus": 2,
+        "memoryBytes": 4294967296,
+        "commandTimeoutSeconds": 1200,
+        "network": "none"
+      },
+      "expectedOfficialGo117SdkMountedIntoBuild": false,
+      "bootstrapMountReadonly": true,
+      "wholeFilesystemOrDependencyHermeticityVerified": false,
+      "optionalHostCCompilerProbeIndependentlyTraced": false,
+      "completeOfficialSdkArchiveReproductionVerified": false,
+      "fullUpstreamProducerClosureVerified": false,
+      "gateAComplete": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "nativeBuildObservation": {
+      "state": "completed",
+      "recipeSha256": "e0b18153087d73f4638c8ead0c7d6958dc8b9e5877b49dc654f800d559326f28",
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "exitCode": 0,
+      "elapsedSeconds": 57.955334292,
+      "logSha256": "57704941635af56e13f8a9e0165ac17b284abe7e11c5b5201ea3877d29624cdc",
+      "originalSourceArchiveUnchanged": true,
+      "nativeBuiltCompilerVersion": "go version go1.17.2 linux/arm64",
+      "builtExecutableIdentities": [
+        {
+          "file": "bin/go",
+          "bytes": 13578341,
+          "sha256": "351d81190a328a88befae6d85dd5232cf973eae7ec660751e7d70de7576ad55c"
+        },
+        {
+          "file": "pkg/tool/linux_arm64/compile",
+          "bytes": 22778340,
+          "sha256": "3f0fb11cbc0f3fac7111b887019576aacfd3509c6054d9c4338f55fed9fdeba8"
+        },
+        {
+          "file": "pkg/tool/linux_arm64/link",
+          "bytes": 6364152,
+          "sha256": "dfd86cb5762dfc06c0d7971c76a93753d25662c7317c918ea66b5efd862cb325"
+        },
+        {
+          "file": "pkg/tool/linux_arm64/asm",
+          "bytes": 4777954,
+          "sha256": "34cd489c7ed2e8ab680e37a96c8aa08f4cab339130b07f0534b54fbc9cb05dd1"
+        }
+      ],
+      "completeOfficialSdkAndBootstrapClosureVerified": false,
+      "ownedBuildContainerAbsentAfterCleanup": true
+    },
+    "officialSourceAndSdkAcquisition": {
+      "state": "verified-official-source-and-sdk-acquired",
+      "officialIndexSha256": "6b83804b8dd2d6052bb93cc03e4aba2ddee834f82c15f7bf8faacf5f91825950",
+      "inputs": [
+        {
+          "filename": "go1.17.2.src.tar.gz",
+          "os": "",
+          "arch": "",
+          "version": "go1.17.2",
+          "sha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+          "size": 22182111,
+          "kind": "source",
+          "rawArchiveSizeAndHashVerified": true
+        },
+        {
+          "filename": "go1.17.2.linux-arm64.tar.gz",
+          "os": "linux",
+          "arch": "arm64",
+          "version": "go1.17.2",
+          "sha256": "a5a43c9cdabdb9f371d56951b14290eba8ce2f9b0db48fb5fc657943984fd4fc",
+          "size": 102615093,
+          "kind": "archive",
+          "rawArchiveSizeAndHashVerified": true
+        }
+      ],
+      "upstreamDeclaredCompilerProfile": "Go 1.17.x in the pinned addchain CI/generation workflow",
+      "selectedIndependentCompilerVersion": "go1.17.2",
+      "exactOriginalCompilerPatchAttested": false,
+      "producerCodeExecuted": false,
+      "compilerSdkSourceBuildClosureVerified": false,
+      "gateAComplete": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "namedOriginalSourceNoticeMembers": [
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/AUTHORS",
+        "bytes": 55782,
+        "sha256": "1ed7ad40d9fc8c13fed016fdd3889714b701028152b696ba2caf16762ab8447e",
+        "bundleOffset": 72029,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/CONTRIBUTORS",
+        "bytes": 107225,
+        "sha256": "5ea54baddd85a5a788f2f9d8e1a50ac1562692dc22b96d34fdaabe1f44ebeb46",
+        "bundleOffset": 127855,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 235119,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 236637,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/AUTHORS",
+        "bytes": 305,
+        "sha256": "8a196dfd9252ad9cb0670365e680d6b19560c688776fa76f0203854ae2c0e29c",
+        "bundleOffset": 238018,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/CONTRIBUTORS",
+        "bytes": 654,
+        "sha256": "2e6c7aac8aaaed781b36b1edb63cfb0692671310008d9a50afb585a686c74f1e",
+        "bundleOffset": 238406,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/LICENSE",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "bundleOffset": 239138,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/third_party/d3/LICENSE",
+        "bytes": 1475,
+        "sha256": "7a3cb0e5055874e67db9aa2d5fe26de23204fa994ffbad198901ffe9c812a717",
+        "bundleOffset": 250589,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/third_party/d3flamegraph/LICENSE",
+        "bytes": 11357,
+        "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+        "bundleOffset": 252167,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/third_party/svgpan/LICENSE",
+        "bytes": 1754,
+        "sha256": "154c946c17de61ca71d28e13673d76a5798e6e25995a7397fbae157afc8f62b4",
+        "bundleOffset": 263621,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/ianlancetaylor/demangle/LICENSE",
+        "bytes": 1479,
+        "sha256": "b73277f7730993ef8e7f80aed83e5309762fed4d77eced982abb2c00657c074d",
+        "bundleOffset": 265464,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/arch/AUTHORS",
+        "bytes": 174,
+        "sha256": "5aa3167c44245f0b12b27195d85c6a8c8e067cfdd511059daa4d7b3c5b232129",
+        "bundleOffset": 267015,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/arch/CONTRIBUTORS",
+        "bytes": 171,
+        "sha256": "fa714cb1012a065fbe08b174eb1f5604327bd24d42dab2c461878ce36f68d0c9",
+        "bundleOffset": 267266,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/arch/LICENSE",
+        "bytes": 1479,
+        "sha256": "b73277f7730993ef8e7f80aed83e5309762fed4d77eced982abb2c00657c074d",
+        "bundleOffset": 267509,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/arch/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 269060,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/crypto/AUTHORS",
+        "bytes": 174,
+        "sha256": "5aa3167c44245f0b12b27195d85c6a8c8e067cfdd511059daa4d7b3c5b232129",
+        "bundleOffset": 270437,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/crypto/CONTRIBUTORS",
+        "bytes": 171,
+        "sha256": "fa714cb1012a065fbe08b174eb1f5604327bd24d42dab2c461878ce36f68d0c9",
+        "bundleOffset": 270690,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/crypto/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 270935,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/crypto/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 272488,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/mod/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 273862,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/mod/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 275412,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/sys/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 276786,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/sys/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 277035,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/sys/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 277276,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/sys/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 278826,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/term/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 280201,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/term/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 280451,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/term/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 280693,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/term/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 282244,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/tools/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 283620,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/tools/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 283871,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/tools/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 284114,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/tools/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 285666,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/xerrors/LICENSE",
+        "bytes": 1479,
+        "sha256": "84d554e7a5d139b7c7b5d6ef0670ae556c4cdcfa354eaad72a1c07c08012c96f",
+        "bundleOffset": 287044,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/xerrors/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 288598,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/crypto/AUTHORS",
+        "bytes": 174,
+        "sha256": "5aa3167c44245f0b12b27195d85c6a8c8e067cfdd511059daa4d7b3c5b232129",
+        "bundleOffset": 289971,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/crypto/CONTRIBUTORS",
+        "bytes": 171,
+        "sha256": "fa714cb1012a065fbe08b174eb1f5604327bd24d42dab2c461878ce36f68d0c9",
+        "bundleOffset": 290220,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/crypto/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 290461,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/crypto/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 292010,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/net/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 293380,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/net/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 293625,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/net/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 293862,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/net/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 295408,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/sys/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 296778,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/sys/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 297023,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/sys/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 297260,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/sys/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 298806,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/text/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 300177,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/text/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 300423,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/text/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 300661,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/text/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 302208,
+        "originalBytesRetainedUnchanged": true
+      }
+    ],
+    "namedNoticeCandidateExclusions": [],
+    "retainedInputs": [
+      {
+        "file": "provider-compiler-inputs/fiat-producer-chain-original-notices.txt",
+        "bytes": 303512,
+        "sha256": "bfb3ca8ce5c925b764e0c6e4c20264ca901505c89e3395a41f2443778b666b1b"
+      }
+    ],
+    "selectedGeneratedParserReproductionQualified": false,
+    "remainingProducerWork": [
+      "Reproduce the selected generated parser under the original package-context and compiler profile; failed modern-compiler output is not accepted.",
+      "Close the complete original compiler/SDK, builder image/Bash, deeper bootstrap and copied/generated input chains.",
+      "Complete canonical source-Git and original inline/copied notice attribution for the historical SDK."
+    ],
+    "completeOfficialSdkAndBootstrapClosureVerified": false
   }
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "observationsOnly": true,
-  "retainedReferences": 295,
+  "retainedReferences": 297,
   "files": [
     {
       "file": "README.md",
@@ -239,9 +239,9 @@
       "sha256": "e96b058170e3c964ce71a326544a16285959a170f6120fac07ceb841ee0840c0"
     },
     {
-      "file": "provider-compiler-inputs/addchain-v0.4.0-original-notices.txt",
-      "bytes": 14607,
-      "sha256": "5616fb1cc9945904bb1038c3e3aab032fc0f85f2b7c9d5e2940f6ff844e36057"
+      "file": "provider-compiler-inputs/fiat-producer-chain-original-notices.txt",
+      "bytes": 303512,
+      "sha256": "bfb3ca8ce5c925b764e0c6e4c20264ca901505c89e3395a41f2443778b666b1b"
     },
     {
       "file": "provider-compiler-inputs/fips-v1.0.0-c2097c7c-lib-fips140-Makefile.txt",
@@ -565,8 +565,8 @@
     },
     {
       "file": "provider-fiat-wrapper-source-rebuilds.json",
-      "bytes": 59805,
-      "sha256": "b78816a2296d6f9608fb1cddaaf71662c376f21955076a6cead4c2e2dc0f8571"
+      "bytes": 117786,
+      "sha256": "9c104db5cfd75df04bc44048997a64a8225b3cc709d01aee1f1af7e183fed1a2"
     },
     {
       "file": "provider-independent-rebuild.json",
