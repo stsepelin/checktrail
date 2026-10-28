@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "observedAt": "2026-10-27",
-  "scope": "Reconstruct only the four generated template-wrapper members in each of the three selected Go source/SDK versions. The Fiat Cryptography arithmetic and addchain inversion phases were neither executed nor qualified.",
+  "scope": "The initial isolated phase reconstruction covers four template-wrapper members in each of the three selected Go source/SDK versions. The separately retained source-built addchain follow-up below reproduces every selected inversion member. Fiat Cryptography arithmetic, whole-generator execution and full upstream producer closure remain open.",
   "frozenRecipe": {
     "schemaVersion": 1,
     "frozenBeforeBuild": true,
@@ -732,8 +732,8 @@
     }
   ],
   "remainingProducerObligations": [
-    "Rebuild the actual separately pinned Fiat Cryptography/Coq/OCaml producer, its compiler/SDK/base-image/bootstrap chain, dependencies and complete original notices.",
-    "Rebuild and verify the separate addchain inversion producer. The original README install pin and generated inversion headers disagree; no producer-version match is inferred from the README.",
+    "Rebuild the actual separately pinned Fiat Cryptography/Coq/OCaml arithmetic producer, its compiler/SDK/base-image/bootstrap chain, dependencies and complete original notices.",
+    "The source-built addchain step reproduces all selected inversion files. Canonical source-Git attribution, copied/generated inputs and its complete compiler/SDK/bootstrap and original inline-notice chains remain open.",
     "Complete copied/generated payload attribution, source-built Go deeper bootstrap independence and original inline notices remain required.",
     "These are isolated phase harnesses retaining exact original segments. They do not execute or qualify the whole original generator or the full source tree."
   ],
@@ -745,5 +745,694 @@
   "gateAComplete": false,
   "qualityAssessed": false,
   "inferenceInvoked": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "sourceBuiltInversionFollowUp": {
+    "observedAt": "2026-10-28",
+    "scope": "Source-built addchain v0.4.0 through exact isolated upstream inversion phases. This reproduces selected output bytes, without qualifying the full compiler/SDK/bootstrap, canonical source-Git or inline-notice chains.",
+    "frozenBuildRecipe": {
+      "schemaVersion": 1,
+      "frozenBeforeBuild": true,
+      "scope": "Source-built addchain v0.4.0 generates the twelve selected inversion files through isolated exact original upstream generator phases. Fiat Crypto and Coq arithmetic phases remain excluded.",
+      "sourceInput": {
+        "Path": "github.com/mmcloughlin/addchain",
+        "Version": "v0.4.0",
+        "Sum": "h1:SobOdjm2xLj1KkXN5/n0xTIWyZA2+s99UCY1iPfkHRY=",
+        "GoModSum": "h1:A86O+tHqZLMNO4w6ZZ4FlVQEadcoqkyU72HC5wJ4RlU=",
+        "sourceArchiveBytes": 227613,
+        "sourceArchiveSha256": "d780c169bb88f372c8e43c69976cd014bfce952e60e5df27e82f263884f1ab1d"
+      },
+      "dependencyInputs": {
+        "state": "completed",
+        "sourceModule": "github.com/mmcloughlin/addchain",
+        "sourceVersion": "v0.4.0",
+        "dependencies": [
+          {
+            "Path": "github.com/google/subcommands",
+            "Version": "v1.2.0",
+            "Sum": "h1:vWQspBTo2nEqTUFita5/KeEWlUL8kQObDFbub/EN9oE=",
+            "GoModSum": "h1:ZjhPrFU+Olkh9WazFPsl27BQ4UPiG37m3yTrtFlrHVk=",
+            "archiveBytes": 10617,
+            "archiveSha256": "e9f735d6ddb726a3ca124d8996041880726e55def6909b19e142c07829991179"
+          },
+          {
+            "Path": "github.com/mmcloughlin/profile",
+            "Version": "v0.1.1",
+            "Sum": "h1:jhDmAqPyebOsVDOCICJoINoLb/AnLBaUw58nFzxWS2w=",
+            "GoModSum": "h1:IhHD7q1ooxgwTgjxQYkACGA77oFTDdFVejUS1/tS/qU=",
+            "archiveBytes": 19768,
+            "archiveSha256": "58075cc3b175e487788c143eae5a9b9451c82ff4998d6719a805ab2261e359f2"
+          }
+        ],
+        "allDependencyModuleAndGoModSumsMatchOriginalSourceGoSum": true,
+        "sourceGoModAndGoSumUnchanged": true,
+        "sourceCodeExecutedDuringAcquisition": false,
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      },
+      "sourceFileCount": 205,
+      "sourceManifestSha256": "c80505c17dbb751d97e15a58b2d6da6d0b83932d8e60db64ce8981ceeed13296",
+      "compilerVersion": "go version go1.24.13 darwin/arm64",
+      "compilerExecutableSha256": "5588df879187a7587f98446ee8205ee1a8da506d362ab92c6d50d348fbeb39be",
+      "compilerEvidence": "provider-native-packager-sdk-rebuild.json",
+      "producerBuildCommand": [
+        "go",
+        "build",
+        "-mod=readonly",
+        "-trimpath",
+        "-buildvcs=false",
+        "-o",
+        "fresh addchain executable",
+        "./cmd/addchain"
+      ],
+      "phaseHarnessMethod": "Copy unchanged original curves declaration, temporary template preparation, complete inversion loop body and tmplAddchain constant. Declare only the original loop variables supplied by excluded earlier phases. Invoke the exact fresh source-built addchain executable through its exclusive first PATH directory.",
+      "cases": [
+        {
+          "version": "go1.24.13",
+          "sourceArchiveSha256": "639a6204c2486b137df1eb6e78ee3ed038f9877d0e4b5a465e796a2153f858d7",
+          "originalGeneratorSha256": "dcd20834a497693faa9549a6a8db8087a8e3345048c45f1a6e9634fee856585c",
+          "phaseHarnessSha256": "bd7ea68d3c06994aaea0496c44dc40baa31176a2e939ceb02b0eee39d61fcd60",
+          "originalSourceSegments": [
+            {
+              "byteStart": 274,
+              "byteEndExclusive": 1332,
+              "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+            },
+            {
+              "byteStart": 1415,
+              "byteEndExclusive": 1724,
+              "sha256": "65e80ce851f03ff1c929bb1f6fe1ff8b7ec266518231128fbbfe22b5d5eecc05"
+            },
+            {
+              "byteStart": 3070,
+              "byteEndExclusive": 3869,
+              "sha256": "2787486171a971e1de8d3f1fc5dbd54c90184c5a0122bac1c2126d862ae888e1"
+            },
+            {
+              "byteStart": 8033,
+              "byteEndExclusive": 9336,
+              "sha256": "bbdcd4ee899e55b9ca7ff763c0a1f25c612f8f21527f12e593df0e39be7a5877"
+            }
+          ],
+          "expectedOutputs": [
+            {
+              "file": "p224_invert.go",
+              "bytes": 1815,
+              "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135"
+            },
+            {
+              "file": "p256_invert.go",
+              "bytes": 1763,
+              "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc"
+            },
+            {
+              "file": "p384_invert.go",
+              "bytes": 2106,
+              "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4"
+            },
+            {
+              "file": "p521_invert.go",
+              "bytes": 1873,
+              "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce"
+            }
+          ]
+        },
+        {
+          "version": "go1.26.8",
+          "sourceArchiveSha256": "4e39b98e42f946fa05ac8bc5b71877df97dbdb7cbb1a777b541667ad7117fd2e",
+          "originalGeneratorSha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d",
+          "phaseHarnessSha256": "bd7ea68d3c06994aaea0496c44dc40baa31176a2e939ceb02b0eee39d61fcd60",
+          "originalSourceSegments": [
+            {
+              "byteStart": 274,
+              "byteEndExclusive": 1332,
+              "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+            },
+            {
+              "byteStart": 1415,
+              "byteEndExclusive": 1724,
+              "sha256": "65e80ce851f03ff1c929bb1f6fe1ff8b7ec266518231128fbbfe22b5d5eecc05"
+            },
+            {
+              "byteStart": 3070,
+              "byteEndExclusive": 3869,
+              "sha256": "2787486171a971e1de8d3f1fc5dbd54c90184c5a0122bac1c2126d862ae888e1"
+            },
+            {
+              "byteStart": 7992,
+              "byteEndExclusive": 9295,
+              "sha256": "bbdcd4ee899e55b9ca7ff763c0a1f25c612f8f21527f12e593df0e39be7a5877"
+            }
+          ],
+          "expectedOutputs": [
+            {
+              "file": "p224_invert.go",
+              "bytes": 1815,
+              "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135"
+            },
+            {
+              "file": "p256_invert.go",
+              "bytes": 1763,
+              "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc"
+            },
+            {
+              "file": "p384_invert.go",
+              "bytes": 2106,
+              "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4"
+            },
+            {
+              "file": "p521_invert.go",
+              "bytes": 1873,
+              "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce"
+            }
+          ]
+        },
+        {
+          "version": "go1.27.1",
+          "sourceArchiveSha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+          "originalGeneratorSha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d",
+          "phaseHarnessSha256": "bd7ea68d3c06994aaea0496c44dc40baa31176a2e939ceb02b0eee39d61fcd60",
+          "originalSourceSegments": [
+            {
+              "byteStart": 274,
+              "byteEndExclusive": 1332,
+              "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+            },
+            {
+              "byteStart": 1415,
+              "byteEndExclusive": 1724,
+              "sha256": "65e80ce851f03ff1c929bb1f6fe1ff8b7ec266518231128fbbfe22b5d5eecc05"
+            },
+            {
+              "byteStart": 3070,
+              "byteEndExclusive": 3869,
+              "sha256": "2787486171a971e1de8d3f1fc5dbd54c90184c5a0122bac1c2126d862ae888e1"
+            },
+            {
+              "byteStart": 7992,
+              "byteEndExclusive": 9295,
+              "sha256": "bbdcd4ee899e55b9ca7ff763c0a1f25c612f8f21527f12e593df0e39be7a5877"
+            }
+          ],
+          "expectedOutputs": [
+            {
+              "file": "p224_invert.go",
+              "bytes": 1815,
+              "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135"
+            },
+            {
+              "file": "p256_invert.go",
+              "bytes": 1763,
+              "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc"
+            },
+            {
+              "file": "p384_invert.go",
+              "bytes": 2106,
+              "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4"
+            },
+            {
+              "file": "p521_invert.go",
+              "bytes": 1873,
+              "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        "original producer source",
+        "valid source change to meta/vars.go releaseversion string from 0.4.0 to 0.4.0-control",
+        "exact original source restoration"
+      ],
+      "freshProducerSourceAndCompilationCachePerVariant": true,
+      "expectedGeneratedFilesPassedAsExplicitGeneratorInputs": false,
+      "filesystemIsolationProvided": false,
+      "networkAccessIndependentlyTraced": false,
+      "environment": {
+        "GOTOOLCHAIN": "local",
+        "GOENV": "off",
+        "GOAUTH": "off",
+        "GOWORK": "off",
+        "GOPROXY": "off",
+        "GOSUMDB": "sum.golang.org",
+        "GOTELEMETRY": "off",
+        "CGO_ENABLED": "0",
+        "GOMAXPROCS": "2"
+      },
+      "commandTimeoutSeconds": 300,
+      "wholeOriginalFiatGeneratorExecuted": false,
+      "fullCompilerSdkBootstrapAndOriginalNoticeClosureVerified": false,
+      "gateAComplete": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "nativeBuildObservations": {
+      "state": "completed",
+      "recipeSha256": "d78526beb271822c18c081973461c0c7b68793049aaa3ccd07b9609fa6e230e1",
+      "variants": [
+        {
+          "variant": "baseline",
+          "changedProducerSourceFiles": [],
+          "producerBuild": {
+            "exitCode": 0,
+            "elapsedSeconds": 3.409328125,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "producerExecutableSha256": "7ea085897fc42e5ff51b0e153688b793f04e3924a4b5409dcef0697d40bb8355",
+          "cases": [
+            {
+              "version": "go1.24.13",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.4416817919999998,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 2.182870917,
+                "logSha256": "d7b39448ef2b962afe436f423e41700295f02b57a389e2344bbc78fd77518111"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            },
+            {
+              "version": "go1.26.8",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.1765720419999992,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.7762916669999997,
+                "logSha256": "e09938f1c4876b3fa1f48d04a14db95a52dd49c2ac5407d06d334d4fbd7d0dd8"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            },
+            {
+              "version": "go1.27.1",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.13125016600000095,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.873115791,
+                "logSha256": "145e91d7cb0d16e6c8bdc1ecfc0f6589b9c3f1ea41335ef4e0b9658d7bd59547"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "variant": "mutant",
+          "changedProducerSourceFiles": ["meta/vars.go"],
+          "producerBuild": {
+            "exitCode": 0,
+            "elapsedSeconds": 3.4645174579999996,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "producerExecutableSha256": "630ea0743b319e63db9885da4372efb10486c2b5341eeb933962c45d3089e753",
+          "cases": [
+            {
+              "version": "go1.24.13",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.4989883329999998,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.9726181670000003,
+                "logSha256": "5ca8acf79fffa959f43058341322439fa8d14eb4aca62d97ebaad25b61f17d78"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1823,
+                  "sha256": "008790cbee743833e3fc7d6ab38b757da6d93c124ff6b66821e1af3c3249be7e",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1771,
+                  "sha256": "ef96c3cf620a85e28674f324cbb96681ba10cff6db68539c90a1209e4faa90cb",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2114,
+                  "sha256": "f751ae9ea8ad347f16e843ec38717601129de4bd33410d5e8e8812f40768f8f1",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1881,
+                  "sha256": "b86e20b667a3d888c1d1e14f17f80f630a7dc99f1059fc4dbb1b55c1eec40fa5",
+                  "matchesSelectedWholeFile": false
+                }
+              ]
+            },
+            {
+              "version": "go1.26.8",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.17697845900000075,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.7869354160000022,
+                "logSha256": "cfdd476a8f3af25be1e58194d3a187daa550ccede044d6e22231ad240b2c833a"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1823,
+                  "sha256": "008790cbee743833e3fc7d6ab38b757da6d93c124ff6b66821e1af3c3249be7e",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1771,
+                  "sha256": "ef96c3cf620a85e28674f324cbb96681ba10cff6db68539c90a1209e4faa90cb",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2114,
+                  "sha256": "f751ae9ea8ad347f16e843ec38717601129de4bd33410d5e8e8812f40768f8f1",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1881,
+                  "sha256": "b86e20b667a3d888c1d1e14f17f80f630a7dc99f1059fc4dbb1b55c1eec40fa5",
+                  "matchesSelectedWholeFile": false
+                }
+              ]
+            },
+            {
+              "version": "go1.27.1",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.1841686249999981,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.7683295829999999,
+                "logSha256": "ea2fa4e8fa529af1db6a7be9e923af764087ec2a4e673ffa93569938c8351cd4"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1823,
+                  "sha256": "008790cbee743833e3fc7d6ab38b757da6d93c124ff6b66821e1af3c3249be7e",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1771,
+                  "sha256": "ef96c3cf620a85e28674f324cbb96681ba10cff6db68539c90a1209e4faa90cb",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2114,
+                  "sha256": "f751ae9ea8ad347f16e843ec38717601129de4bd33410d5e8e8812f40768f8f1",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1881,
+                  "sha256": "b86e20b667a3d888c1d1e14f17f80f630a7dc99f1059fc4dbb1b55c1eec40fa5",
+                  "matchesSelectedWholeFile": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "variant": "restored",
+          "changedProducerSourceFiles": [],
+          "producerBuild": {
+            "exitCode": 0,
+            "elapsedSeconds": 3.287258958999999,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "producerExecutableSha256": "7ea085897fc42e5ff51b0e153688b793f04e3924a4b5409dcef0697d40bb8355",
+          "cases": [
+            {
+              "version": "go1.24.13",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.5375046670000003,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.8311783330000004,
+                "logSha256": "a3aadc41af84b9d51480a21708d15708815ad0b61c6a42c8689c1383256efb8b"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            },
+            {
+              "version": "go1.26.8",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.18146654099999893,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.7187512920000003,
+                "logSha256": "bf517ddf7b655d0ca1d53d236a9c93c0d285c97971fd868938b2ad726a65ed8b"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            },
+            {
+              "version": "go1.27.1",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.13189462500000104,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 2.0917295829999993,
+                "logSha256": "b88ca2cc102615253fed69322d26aaa47b270ff2df7f54edfd1668b7c0ae126d"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "sourceProducerBaselineAndRestorationWholeFileMatches": 24,
+      "validSourceMutationWholeFileRejections": 12,
+      "allSelectedInversionFilesReproduced": true,
+      "fullUpstreamProducerClosureVerified": false
+    },
+    "wholeSelectedInversionMembersReproducedExactly": true,
+    "sourceProducerMutationChangesAllTwelveGeneratedFiles": true,
+    "sourceRestorationRecoversAllTwelveWholeFiles": true,
+    "initialReadmeProducerVersionUsedAsBuildIdentity": false,
+    "namedOriginalNoticeFiles": [
+      {
+        "module": "github.com/mmcloughlin/addchain",
+        "version": "v0.4.0",
+        "member": "LICENSE",
+        "bytes": 1526,
+        "sha256": "8599e9798db3512072e5d344d6860eb0ef327ec83e995b7851bd4d0aaa3940a5",
+        "bundleOffset": 55,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "module": "github.com/google/subcommands",
+        "version": "v1.2.0",
+        "member": "LICENSE",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "bundleOffset": 1635,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "module": "github.com/mmcloughlin/profile",
+        "version": "v0.1.1",
+        "member": "LICENSE",
+        "bytes": 1558,
+        "sha256": "973c8abe8404ef7350631412f14a0c9eb007e89d97a2e1987308a28d0d36fffb",
+        "bundleOffset": 13048,
+        "originalBytesRetainedUnchanged": true
+      }
+    ],
+    "retainedInputs": [
+      {
+        "file": "provider-compiler-inputs/addchain-v0.4.0-original-notices.txt",
+        "bytes": 14607,
+        "sha256": "5616fb1cc9945904bb1038c3e3aab032fc0f85f2b7c9d5e2940f6ff844e36057"
+      }
+    ],
+    "preservedRejectedHarnessPreparation": {
+      "state": "failed-before-generator-execution",
+      "phase": "isolated-phase-harness-compilation",
+      "originalRecipeSha256": "96923924a3ac6302879b7275ae036e64e49d67389bb6252ce579a40300732721",
+      "producerSourceBuildCompleted": true,
+      "cause": "The original Go1.24 inversion body reuses out from the excluded arithmetic phase; the first isolated harness omitted that declaration.",
+      "correctedRecipeFrozenBeforeFreshBuilds": true,
+      "generatedOutputsFromFailedAttemptUsedToQualifyBuild": false
+    },
+    "fullUpstreamProducerClosureVerified": false,
+    "completeOriginalInlineNoticeClosureVerified": false
+  }
 }
