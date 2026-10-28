@@ -498,6 +498,10 @@ jobs:
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['scala']) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [source, guards, installed]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -508,6 +512,8 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Verify phase routing and required matrix completeness
+        run: node --test dist/test/scala-ci-phases.test.js
       - name: Prepare pinned scala artifact
         run: node scripts/prepare-scala-tools.mjs
       - name: Prepare pinned public images with bounded delivery retries
@@ -517,8 +523,10 @@ jobs:
       - name: Prepare pinned scala runtime
         run: docker build --file scripts/scala-tools.Dockerfile --tag checktrail-scala-test:3.9.0 .checktrail/scala-tools
       - name: Prepare package-install cache with network access
+        if: matrix.phase == 'installed'
         run: node scripts/prepare-package-cache.mjs
-      - run: node scripts/verify-scala-container.mjs
+      - name: Require the selected independent Scala phase
+        run: node scripts/verify-scala-container.mjs "${{ matrix.phase }}"
 
   maven:
     needs: [ci-plan, actionlint]
