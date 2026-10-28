@@ -1,0 +1,103 @@
+{
+  "at": "2026-10-21T17:46:00.528490+00:00",
+  "image": "mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256",
+  "verifierAndTrustRootFiles": {
+    "sdk/10.0.401/NuGet.CommandLine.XPlat.dll": {
+      "bytes": 1392976,
+      "sha256": "612c4c8ee573d61e8a4f7a7b157262597fa4cd5bfbee29ef1ed28f9bd5c1bdc7"
+    },
+    "sdk/10.0.401/trustedroots/timestampctl.pem": {
+      "bytes": 552370,
+      "sha256": "5ccb03367b52f047099f07e1653160e8578a83711cb18560c979febb65f8cb5d"
+    },
+    "sdk/10.0.401/trustedroots/codesignctl.pem": {
+      "bytes": 512074,
+      "sha256": "aab671f52e5229906b2100727370007ef4b6d2e360b23f2cf12a6d87773be611"
+    }
+  },
+  "sdkArchiveSha256": "830d3b4b022453b09b9ecdf59b004e6b032a8a4394b275d47dec175e37030782",
+  "repositoryCertificateIndexSha256": "5f45cbf2d7f8a4b57fea6e43bb603d29a0682058a71eb61d900db74860d210b0",
+  "selectedRepositoryCertificate": {
+    "fingerprints": {
+      "2.16.840.1.101.3.4.2.1": "1f4b311d9acc115c8dc8018b5a49e00fce6da8e2855f9f014ca6f34570bc482d"
+    },
+    "subject": "CN=NuGet.org Repository by Microsoft, O=NuGet.org Repository by Microsoft, L=Redmond, S=Washington, C=US",
+    "issuer": "CN=DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1, O=\"DigiCert, Inc.\", C=US",
+    "notBefore": "2024-02-23T00:00:00.0000000Z",
+    "notAfter": "2027-05-18T23:59:59.0000000Z",
+    "contentUrl": "https://api.nuget.org/v3-index/repository-signatures/certificates/1f4b311d9acc115c8dc8018b5a49e00fce6da8e2855f9f014ca6f34570bc482d.crt"
+  },
+  "configSha256": "88948d94b3ced17400f5cfe7dc7bf2cad9b9a8cf98670b3fc3a6d956f8519c7c",
+  "configuredRevocationMode": "online",
+  "unsignedDeliveryLogicalMembersMatchSignedPackage": true,
+  "alteredPackageIsReadableZip": true,
+  "alteredLogicalMembers": ["tools/net10.0/any/Fantomas.Core.dll"],
+  "cases": [
+    {
+      "case": "wrong-certificate",
+      "artifactSha256": "cbf317a4583d7547666195fcada160fff695a1a6f4a7062701b01ee75d5d8971",
+      "expectedSuccess": false,
+      "exitCode": 1,
+      "errors": [
+        {
+          "code": "NU3034",
+          "message": "The package signature did not match any of the allowed certificate fingerprints."
+        }
+      ],
+      "log": "nuget-wrong-certificate.txt",
+      "logSha256": "3a6fe88de20ddae6844c736256746905107ff86a39612654abfc6d70f45adf81"
+    },
+    {
+      "case": "unsigned-github-delivery",
+      "artifactSha256": "d6dccc44663cdc2c1c681693f5873aa21c9ece870fbf937f8dda6056834f5947",
+      "expectedSuccess": false,
+      "exitCode": 1,
+      "errors": [
+        {
+          "code": "NU3004",
+          "message": "The package is not signed."
+        }
+      ],
+      "log": "nuget-unsigned-github-delivery.txt",
+      "logSha256": "a008249d68133a4ba2f7dd7f7113be033d9722a16a3ce8e07ba6b04cee023368"
+    },
+    {
+      "case": "valid-zip-altered-payload",
+      "artifactSha256": "61d3aeafb3816a7eb97a3c64f85a6164de25c713c26df568850f24f830f41e47",
+      "expectedSuccess": false,
+      "exitCode": 1,
+      "errors": [
+        {
+          "code": "NU3008",
+          "message": "The package integrity check failed. The package has changed since it was signed. Try clearing the local http-cache and run nuget operation again."
+        }
+      ],
+      "log": "nuget-integrity-tamper.txt",
+      "logSha256": "8d6efcb03dc0fff0e9bef5e6d9b2bd67c1d1de33dbfb2c87298c9d5e8cd310bd"
+    },
+    {
+      "case": "original-restored",
+      "artifactSha256": "cbf317a4583d7547666195fcada160fff695a1a6f4a7062701b01ee75d5d8971",
+      "expectedSuccess": true,
+      "exitCode": 0,
+      "errors": [],
+      "log": "nuget-package-verification.txt",
+      "logSha256": "76dee44d6156c457cdad7c3ab12908340590482429a322e47aeb0fa9c3f627ec"
+    }
+  ],
+  "ownedContainersRemaining": 0,
+  "borrowedImagePreserved": true,
+  "completeTransitiveNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "nativeContainerLimits": {
+    "cpus": 2,
+    "memoryMiB": 2048,
+    "pids": 128,
+    "rootFilesystemReadonly": true,
+    "temporaryFilesystemMiB": 256,
+    "temporaryHomeFilesystemMiB": 64,
+    "packageAndConfigMounts": "readonly",
+    "repositoryAndCredentialMounts": false,
+    "network": "bridge; configured online certificate revocation checks"
+  }
+}

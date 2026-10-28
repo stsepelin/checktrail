@@ -1,0 +1,238 @@
+{
+  "profile": "terraform-extensions",
+  "scope": "source",
+  "caseEvidence": {
+    "timeoutMs": 300000,
+    "profile": "terraform-extensions",
+    "fileWorkerLimit": 1,
+    "requiredCaseWorkerLimit": 1,
+    "timeoutScope": "one fresh process per required named case",
+    "passed": 10,
+    "required": 10,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 4096,
+      "terminalEventCount": 10,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "42e834ee9dadf9fad9b14e9983226a4f77a2877a5cbc503068782f53422bdd7b"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "42e834ee9dadf9fad9b14e9983226a4f77a2877a5cbc503068782f53422bdd7b"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-2",
+          "before": {
+            "state": "present",
+            "sha256": "0317ed9479bba549caa9ca4d4c9569a5900792fa81df5c99df8d67470630f0b6"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "0317ed9479bba549caa9ca4d4c9569a5900792fa81df5c99df8d67470630f0b6"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-3",
+          "before": {
+            "state": "present",
+            "sha256": "35a13d7b60b63ac390f7ddfd3177bfadd5991851fb957709f2d5ae9dcd38a622"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "35a13d7b60b63ac390f7ddfd3177bfadd5991851fb957709f2d5ae9dcd38a622"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "terraform-extensions broken acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 6861.278187,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "terraform-extensions fixed acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3440.793968,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "terraform-extensions near-miss acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3536.179449,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-1",
+          "name": "terraform-extensions prerequisite acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3305.451224,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-1",
+          "name": "terraform-extensions stale acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2053.286342,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-1",
+          "name": "terraform-extensions empty acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 4137.156951,
+          "required": true
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-1",
+          "name": "terraform-extensions diagnostic acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3044.073077,
+          "required": true
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-1",
+          "name": "terraform-extensions installed acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 76017.117035,
+          "required": true
+        },
+        {
+          "sequence": 9,
+          "fileId": "file-2",
+          "name": "terraform-extensions privacy acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 13571.844084,
+          "required": true
+        },
+        {
+          "sequence": 10,
+          "fileId": "file-3",
+          "name": "terraform-extensions lifecycle acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 17833.878681,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "terraform-extensions broken acceptance",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "terraform-extensions fixed acceptance",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "terraform-extensions near-miss acceptance",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-1",
+          "name": "terraform-extensions prerequisite acceptance",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-1",
+          "name": "terraform-extensions stale acceptance",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-1",
+          "name": "terraform-extensions empty acceptance",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-1",
+          "name": "terraform-extensions diagnostic acceptance",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-1",
+          "name": "terraform-extensions installed acceptance",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-2",
+          "name": "terraform-extensions privacy acceptance",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        },
+        {
+          "fileId": "file-3",
+          "name": "terraform-extensions lifecycle acceptance",
+          "outcome": "passed",
+          "terminalSequences": [10]
+        }
+      ]
+    }
+  },
+  "compiledHarnessFiles": [
+    {
+      "file": "dist/test/gate-terraform-extensions.test.js",
+      "sha256": "42e834ee9dadf9fad9b14e9983226a4f77a2877a5cbc503068782f53422bdd7b"
+    },
+    {
+      "file": "dist/test/terraform-extensions-surfaces.test.js",
+      "sha256": "0317ed9479bba549caa9ca4d4c9569a5900792fa81df5c99df8d67470630f0b6"
+    },
+    {
+      "file": "dist/test/terraform-extensions-lifecycle.test.js",
+      "sha256": "35a13d7b60b63ac390f7ddfd3177bfadd5991851fb957709f2d5ae9dcd38a622"
+    }
+  ]
+}

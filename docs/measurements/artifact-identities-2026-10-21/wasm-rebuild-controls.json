@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "scope": "Paired valid source-change/restoration builds and observed network/write restriction controls.",
+  "sourceMutation": {
+    "at": "2026-10-21T21:21:47.043740+00:00",
+    "mutation": {
+      "sourceMember": "src/parser.c",
+      "grammar": "python",
+      "originalSourceSha256": "53a7bd87ba22c4fdbb8566a2caf848a1478f3ac9d47a1b32677a71de75d75db6",
+      "changedSourceSha256": "b6bbb3ca6b016094a1fd60cff73aee932ba019e7b2fe83a540f3da9f8ba7ab1b",
+      "changedField": "TSLanguage.name C string literal only",
+      "nativeBuildStillValid": true
+    },
+    "cases": [
+      {
+        "case": "changed-language-name",
+        "compilerAndOptimizerSucceeded": true,
+        "outputBytes": 457508,
+        "outputSha256": "10befd137628961b9686c6aa874c7ba848f9fd81adcd9d750b9fdeeb90df2754",
+        "matchesPublishedGrammar": false,
+        "durationSeconds": 0.360653709,
+        "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "case": "original-source-restored",
+        "compilerAndOptimizerSucceeded": true,
+        "outputBytes": 457492,
+        "outputSha256": "4d4d110d8c8c948fdebf926958d9b65138ad533fa665da1c7f14b35c6080148d",
+        "matchesPublishedGrammar": true,
+        "durationSeconds": 0.377522875,
+        "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "allPinnedToolBytesUnchanged": true,
+    "allOriginalGrammarInputsUnchangedExceptDeclaredSwiftGenerationAndPatch": true,
+    "all16OriginalOutputBytesStillMatchPins": true,
+    "networkPolicySha256": "71678e9e20523e13070c542be20317068713511dac1c40192fbfcd4256ffd8c3",
+    "runtimeBehaviorOrReviewQualityAssessed": false,
+    "gateAComplete": false
+  },
+  "policy": {
+    "beforePolicyParentUdpConnectAndOwnedWriteSucceeded": true,
+    "underPolicy": {
+      "networkErrno": 1,
+      "outsideWriteErrno": 1
+    },
+    "allowedOwnedWriteSucceeded": true,
+    "policySha256": "71678e9e20523e13070c542be20317068713511dac1c40192fbfcd4256ffd8c3",
+    "scope": "Observed network and write restrictions only; not a general security isolation claim."
+  },
+  "policyTemplate": [
+    "(version 1)",
+    "(allow default)",
+    "(deny network*)",
+    "(deny file-write*)",
+    "(allow file-write* (subpath \"<owned sources>\") (subpath \"<owned outputs>\") (subpath \"<owned temporary>\") (subpath \"<owned home>\") (literal \"/dev/null\"))"
+  ],
+  "policySha256BindsPrivateOriginalWithAbsoluteOwnedPaths": true,
+  "generalSecurityIsolationClaimed": false,
+  "runtimeBehaviorOrReviewQualityAssessed": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

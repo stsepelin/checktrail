@@ -1,0 +1,112 @@
+package main
+import("archive/tar";"compress/gzip";"crypto/sha256";"encoding/hex";"encoding/json";"bytes";"debug/macho";"encoding/binary";"fmt";"io";"os";"strings")
+type Log struct{Problems []string}
+func(l *Log)Printf(f string,a ...any){l.Problems=append(l.Problems,fmt.Sprintf(f,a...))}
+func StripDarwinSig(log *Log, name string, data []byte) []byte {
+	// Binaries only expected in bin and pkg/tool.
+	// This is an archive path, not a host file system path, so always forward slash.
+	if !strings.Contains(name, "/bin/") && !strings.Contains(name, "/pkg/tool/") {
+		return data
+	}
+	// Check 64-bit Mach-O magic before trying to parse, to keep log quiet.
+	if len(data) < 4 || string(data[:4]) != "\xcf\xfa\xed\xfe" {
+		return data
+	}
+
+	h, err := macho.NewFile(bytes.NewReader(data))
+	if err != nil {
+		log.Printf("macho %s: %v", name, err)
+		return data
+	}
+	if len(h.Loads) < 4 {
+		log.Printf("macho %s: too few loads", name)
+		return data
+	}
+
+	// at returns the uint32 at the given data offset.
+	// If the offset is out of range, at returns 0.
+	le := binary.LittleEndian
+	at := func(off int) uint32 {
+		if off < 0 || off+4 < 0 || off+4 > len(data) {
+			log.Printf("macho %s: offset out of bounds", name)
+			return 0
+		}
+		return le.Uint32(data[off : off+4])
+	}
+
+	// LC_CODE_SIGNATURE must be the last load.
+	raw := h.Loads[len(h.Loads)-1].Raw()
+	const LC_CODE_SIGNATURE = 0x1d
+	if len(raw) != 16 || le.Uint32(raw[0:]) != LC_CODE_SIGNATURE || le.Uint32(raw[4:]) != 16 {
+		// OK not to have a signature. No logging.
+		return data
+	}
+	sigOff := le.Uint32(raw[8:])
+	sigSize := le.Uint32(raw[12:])
+	if int64(sigOff) >= int64(len(data)) {
+		log.Printf("macho %s: invalid signature", name)
+		return data
+	}
+
+	// Find __LINKEDIT segment (3rd or 4th load, usually).
+	// Each load command has its size as the second uint32 of the command.
+	// We maintain the offset in the file as we walk, since we need to edit
+	// the loads later.
+	off := 32
+	load := 0
+	for {
+		if load >= len(h.Loads) {
+			log.Printf("macho %s: cannot find __LINKEDIT", name)
+			return data
+		}
+		lc64, ok := h.Loads[load].(*macho.Segment)
+		if ok && lc64.Name == "__LINKEDIT" {
+			break
+		}
+		off += int(at(off + 4))
+		load++
+	}
+	if at(off) != uint32(macho.LoadCmdSegment64) {
+		log.Printf("macho %s: confused finding __LINKEDIT", name)
+		return data
+	}
+	linkOff := off + 4 + 4 + 16 + 8 // skip cmd, len, name, addr
+	if linkOff < 0 || linkOff+32 < 0 || linkOff+32 > len(data) {
+		log.Printf("macho %s: confused finding __LINKEDIT", name)
+		return data
+	}
+	for ; load < len(h.Loads)-1; load++ {
+		off += int(at(off + 4))
+	}
+	if off < 0 || off+16 < 0 || off+16 > len(data) {
+		log.Printf("macho %s: confused finding signature load", name)
+		return data
+	}
+
+	// Point of no return: edit data to strip signature.
+
+	// Delete LC_CODE_SIGNATURE entry in load table
+	le.PutUint32(data[16:], at(16)-1)  // ncmd--
+	le.PutUint32(data[20:], at(20)-16) // cmdsz -= 16
+	copy(data[off:], make([]byte, 16)) // clear LC_CODE_SIGNATURE
+
+	// Update __LINKEDIT file and memory size to not include signature.
+	//	filesz -= sigSize
+	//	memsz = filesz
+	// We can't do memsz -= sigSize because the Apple signer rounds memsz
+	// to a page boundary. Go always sets memsz = filesz (unrounded).
+	fileSize := le.Uint64(data[linkOff+16:]) - uint64(sigSize)
+	le.PutUint64(data[linkOff:], fileSize)    // memsz
+	le.PutUint64(data[linkOff+16:], fileSize) // filesize
+
+	// Remove signature bytes at end of file.
+	data = data[:sigOff]
+
+	return data
+}
+
+func hash(b []byte) string {h:=sha256.Sum256(b);return hex.EncodeToString(h[:])}
+type Entry struct{Name string `json:"name"`;Mode int64 `json:"mode"`;Mtime int64 `json:"mtime"`;Uid int `json:"uid"`;Gid int `json:"gid"`;Bytes int `json:"bytes"`;Sha256 string `json:"sha256"`;Normalized bool `json:"signatureNormalized"`}
+type Archive struct{Entries map[string]Entry `json:"entries"`;SignatureControls []map[string]any `json:"signatureControls"`;Problems []string `json:"problems"`}
+func scan(name string) Archive {f,e:=os.Open(name);if e!=nil{panic(e)};defer f.Close();gz,e:=gzip.NewReader(f);if e!=nil{panic(e)};defer gz.Close();tr:=tar.NewReader(gz);out:=Archive{Entries:map[string]Entry{}};l:=new(Log);for{h,e:=tr.Next();if e==io.EOF{break};if e!=nil{panic(e)};if h.Typeflag==tar.TypeDir{continue};if h.Typeflag!=tar.TypeReg{panic("unexpected nonregular member")};if _,ok:=out.Entries[h.Name];ok{panic("duplicate member")};data,e:=io.ReadAll(tr);if e!=nil{panic(e)};before:=hash(data);normalized:=StripDarwinSig(l,h.Name,append([]byte(nil),data...));changed:=hash(normalized)!=before;if changed{if len(data)<4097{panic("short control")};mutant:=append([]byte(nil),data...);mutant[4096]^=1;rejected:=hash(StripDarwinSig(l,h.Name,mutant))!=hash(normalized);restored:=hash(StripDarwinSig(l,h.Name,append([]byte(nil),data...)))==hash(normalized);if !rejected||!restored{panic("guard mutation failed")};out.SignatureControls=append(out.SignatureControls,map[string]any{"name":h.Name,"normalizedBytes":len(normalized),"normalizedSha256":hash(normalized),"instructionPayloadMutationRejected":rejected,"exactRestorationAccepted":restored})};out.Entries[h.Name]=Entry{h.Name,h.Mode,h.ModTime.Unix(),h.Uid,h.Gid,len(normalized),hash(normalized),changed}};out.Problems=l.Problems;return out}
+func main(){if len(os.Args)!=4{panic("expected and rebuilt archive plus result")};a:=scan(os.Args[1]);b:=scan(os.Args[2]);differences:=[]string{};if len(a.Entries)!=len(b.Entries){differences=append(differences,"member counts")};for n,x:=range a.Entries{y,ok:=b.Entries[n];x.Normalized=false;y.Normalized=false;if !ok||x!=y{differences=append(differences,n)}};out:=map[string]any{"official":a,"rebuilt":b,"differences":differences,"completeNormalizedMemberTableMatches":len(differences)==0&&len(a.Problems)==0&&len(b.Problems)==0,"wholeSignedArchiveByteEquality":false,"fullProducerBootstrapAndCopiedPayloadClosure":false};raw,e:=json.MarshalIndent(out,"","  ");if e!=nil{panic(e)};if e=os.WriteFile(os.Args[3],append(raw,'\n'),0600);e!=nil{panic(e)};fmt.Printf("members=%d; official normalized=%d; rebuilt normalized=%d; differences=%d; verifier problems=%d\n",len(a.Entries),len(a.SignatureControls),len(b.SignatureControls),len(differences),len(a.Problems)+len(b.Problems));if len(differences)>0||len(a.Problems)+len(b.Problems)>0{os.Exit(1)}}

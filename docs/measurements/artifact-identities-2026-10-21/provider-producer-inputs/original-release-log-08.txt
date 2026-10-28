@@ -1,0 +1,2 @@
+2026-09-11T15:18:34.6381937Z ##[start-action display=Assert Build Outputs Identical;id=__hashicorp_actions-go-build.__run_5]
+2026-09-11T15:18:34.6389702Z ##[end-action id=__hashicorp_actions-go-build.__run_5;outcome=skipped;conclusion=skipped;duration_ms=0]

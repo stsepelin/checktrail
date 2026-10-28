@@ -1,0 +1,3023 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-21T20:35:09.414679+00:00",
+  "scope": "Selected formatter debug source and static build declarations; no target assembly loading or execution, independent formatter build, or complete compilation input inventory.",
+  "sourceArchives": [
+    {
+      "repository": "fsprojects/fantomas",
+      "sourceCommit": "13099e465c1c85da6e84451e7eed34c8f0934044",
+      "gitTreeSha1": "e81937005d449e6ee078268458aeb99c76fafbdc",
+      "archive": {
+        "cachedFilename": "fantomas-v8.0.7.tar.gz",
+        "bytes": 37330682,
+        "sha256": "97b702014fee6ad57ce232d6ed8699b1197cc96a96f2e701fc70c5adc2192f39",
+        "originalAcquisitionUrlRetained": false
+      },
+      "gitBlobsAndModesVerified": 6263,
+      "gitSubtreesReconstructedAndVerified": 842,
+      "canonicalInventorySha256": "3a130e57e512f55c5fb93634e358bbfe9565e798f92e7cf22125499db920e54a",
+      "canonicalInventoryEncoding": "UTF-8 JSON sorted by path; keys sorted, separators comma/colon, no terminal newline; entries path/bytes/mode/gitBlobSha1/sha256",
+      "sourceBytesNormalizedForGitComparison": false,
+      "sourceArchiveLookupUrl": "https://api.github.com/repos/fsprojects/fantomas/tarball/13099e465c1c85da6e84451e7eed34c8f0934044"
+    },
+    {
+      "repository": "dotnet/fsharp",
+      "sourceCommit": "5e9647f158fe282462aba57ed83ada910a91b90e",
+      "gitTreeSha1": "bfbc86020ff2a277c0d5912d6c4c6db6d563a28b",
+      "archive": {
+        "cachedFilename": "fsharp-5e9647f158fe282462aba57ed83ada910a91b90e.tar.gz",
+        "bytes": 15145364,
+        "sha256": "740900810ec20960cbf8bbc5254f75120874c69621ab2b26ab8560b51fac0721",
+        "originalAcquisitionUrlRetained": false
+      },
+      "gitBlobsAndModesVerified": 10901,
+      "gitSubtreesReconstructedAndVerified": 942,
+      "canonicalInventorySha256": "2047f3ed76ed5ef2113aa215cb75f61bf91d83f93375137be6e5a2e66821ae55",
+      "canonicalInventoryEncoding": "UTF-8 JSON sorted by path; keys sorted, separators comma/colon, no terminal newline; entries path/bytes/mode/gitBlobSha1/sha256",
+      "sourceBytesNormalizedForGitComparison": false,
+      "sourceArchiveLookupUrl": "https://api.github.com/repos/dotnet/fsharp/tarball/5e9647f158fe282462aba57ed83ada910a91b90e"
+    }
+  ],
+  "sourceDeclaredBuildSdk": {
+    "version": "11.0.100-rc.1.26425.128",
+    "rollForward": "latestMinor"
+  },
+  "buildSdkActuallyObserved": false,
+  "selectedRuntimeSdkVersion": "10.0.401",
+  "declaredBuildDependencies": {
+    "FSharp.Core": "10.1.203",
+    "FsLexYacc": "13.0.0",
+    "FCSCommitHash": "5e9647f158fe282462aba57ed83ada910a91b90e"
+  },
+  "sourceDeclaredReleaseRunner": "windows-latest",
+  "actualProducerOsIndependentlyObserved": false,
+  "buildInputDeclarations": [
+    {
+      "sourceMember": "global.json",
+      "bytes": 94,
+      "sha256": "35fa518ed718f684b7f45a26722f1ac0dfc2d424a8654d2b9f85b57eef8062f6"
+    },
+    {
+      "sourceMember": "Directory.Build.props",
+      "bytes": 3662,
+      "sha256": "0a8d1bbc66fe46262a46d353648950f540a7ec71612e5208dc7a0b23330cdb30"
+    },
+    {
+      "sourceMember": "Directory.Packages.props",
+      "bytes": 2528,
+      "sha256": "109dfd293e5e8dacac9a08a960ddfceabcb54c198f6387a4e9c1b7723c11e478"
+    },
+    {
+      "sourceMember": "build.fsx",
+      "bytes": 32862,
+      "sha256": "47e608ef904ea35ebbe0d3dbe6fb3c4056fb4986cfa5a6ba772669666de21962"
+    },
+    {
+      "sourceMember": ".github/workflows/release.yml",
+      "bytes": 841,
+      "sha256": "73c65b45077bd8db49b5d0d1e925af67aff26f336e5c9c121f7c8b4a86594a05"
+    },
+    {
+      "sourceMember": "src/Fantomas.Core/Fantomas.Core.fsproj",
+      "bytes": 2120,
+      "sha256": "a7a897e0b0a7bef8b8d39bd6e5559e0c10d28dfcd9dcf3ac3160723212fa2b37",
+      "declaredItemCounts": {
+        "Compile": 33
+      },
+      "unexpandedDeclarations": [
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "AssemblyInfo.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "RangeHelpers.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "RangeHelpers.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Utils.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Utils.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Exceptions.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "FormatConfig.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "SyntaxOak.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "ASTTransformer.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "ASTTransformer.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Version.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Queue.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Trivia.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Trivia.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Defines.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Defines.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "CodeFormatterTypes.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "WriterEvent.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "EventList.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Context.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Context.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "CodePrinter.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "CodePrinter.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "MultipleDefineCombinations.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "MultipleDefineCombinations.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "CodeFormatterImpl.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "CodeFormatterImpl.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Validation.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Validation.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Selection.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Selection.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "CodeFormatter.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "CodeFormatter.fs"
+          }
+        }
+      ],
+      "evaluatedMsbuildInputsClaimed": false
+    },
+    {
+      "sourceMember": "src/Fantomas.FCS/Fantomas.FCS.fsproj",
+      "bytes": 21234,
+      "sha256": "97029b6cc744b45c8eecea1894efc4855602eaf2a1e40d4513400d4cdca37ec6",
+      "declaredItemCounts": {
+        "Compile": 97,
+        "FsLex": 3,
+        "FsYacc": 3,
+        "Target": 3,
+        "Exec": 2,
+        "UsingTask": 1
+      },
+      "unexpandedDeclarations": [
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "AssemblyInfo.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\NullHelpers.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\Activity.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\Activity.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\Caches.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\Caches.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\sformat.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\sformat.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\sr.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\sr.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\RichText.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\RichText.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\ResizeArray.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\ResizeArray.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\HashMultiMap.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\HashMultiMap.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\ReadOnlySpan.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\ReadOnlySpan.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\TaggedCollections.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\TaggedCollections.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\illib.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\illib.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\Cancellable.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\Cancellable.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\FileSystem.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\FileSystem.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\ildiag.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\ildiag.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\zmap.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\zmap.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\zset.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\zset.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\XmlAdapters.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\XmlAdapters.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\InternalCollections.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\InternalCollections.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\lib.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\lib.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\PathMap.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\PathMap.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\range.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Utilities\\range.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\LanguageFeatures.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\LanguageFeatures.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\DiagnosticOptions.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\DiagnosticOptions.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\DiagnosticsLogger.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\DiagnosticsLogger.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\Hashing.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\Hashing.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\prim-lexing.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\prim-lexing.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\prim-parsing.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\Facilities\\prim-parsing.fs"
+          }
+        },
+        {
+          "element": "FsLex",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\AbstractIL\\illex.fsl"
+          }
+        },
+        {
+          "element": "FsYacc",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\AbstractIL\\ilpars.fsy"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\AbstractIL\\il.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\AbstractIL\\il.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\AbstractIL\\ilascii.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\AbstractIL\\ilascii.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsYaccOutputFolder)ilpars.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsYaccOutputFolder)ilpars.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsLexOutputFolder)illex.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsLexOutputFolder)illex.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\PrettyNaming.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\PrettyNaming.fs"
+          }
+        },
+        {
+          "element": "FsLex",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\pplex.fsl"
+          }
+        },
+        {
+          "element": "FsYacc",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\pppars.fsy"
+          }
+        },
+        {
+          "element": "FsLex",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\lex.fsl"
+          }
+        },
+        {
+          "element": "FsYacc",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\pars.fsy"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\UnicodeLexing.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\UnicodeLexing.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\XmlDocIncludeExpander.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\XmlDocIncludeExpander.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\XmlDoc.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\XmlDoc.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\SyntaxTrivia.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\SyntaxTrivia.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\SyntaxTree.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\SyntaxTree.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\SyntaxTreeOps.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\SyntaxTreeOps.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\WarnScopes.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\WarnScopes.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\LexerStore.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\LexerStore.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\ParseHelpers.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\ParseHelpers.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsYaccOutputFolder)pppars.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsYaccOutputFolder)pppars.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsYaccOutputFolder)pars.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsYaccOutputFolder)pars.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\LexHelpers.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\LexHelpers.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsLexOutputFolder)pplex.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsLexOutputFolder)pplex.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsLexOutputFolder)lex.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "$(FsLexOutputFolder)lex.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\LexFilter.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "..\\..\\.deps\\$(FCSCommitHash)\\src\\Compiler\\SyntaxTree\\LexFilter.fs"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Parse.fsi"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "Parse.fs"
+          }
+        },
+        {
+          "element": "Target",
+          "attributes": {
+            "Name": "AcquireCompilerFiles",
+            "Condition": "!Exists('../../.deps/$(FCSCommitHash)')",
+            "BeforeTargets": "CollectPackageReferences"
+          }
+        },
+        {
+          "element": "Exec",
+          "attributes": {
+            "Command": "dotnet fsi ../../build.fsx -p Init"
+          }
+        },
+        {
+          "element": "UsingTask",
+          "attributes": {
+            "TaskName": "Fantomas.FCS.Build.FSharpEmbedResourceText",
+            "AssemblyFile": "$(FantomasBuildTasksAssembly)"
+          }
+        },
+        {
+          "element": "Target",
+          "attributes": {
+            "Name": "BuildFantomasBuildTasks",
+            "BeforeTargets": "GenerateFantomasTextResources",
+            "Condition": "!Exists('$(FantomasBuildTasksAssembly)')"
+          }
+        },
+        {
+          "element": "Exec",
+          "attributes": {
+            "Command": "dotnet build \"$(MSBuildThisFileDirectory)..\\Fantomas.FCS.BuildTasks\\Fantomas.FCS.BuildTasks.fsproj\" -c $(Configuration) -v quiet"
+          }
+        },
+        {
+          "element": "Target",
+          "attributes": {
+            "Name": "GenerateFantomasTextResources",
+            "BeforeTargets": "CoreResGen;PrepareForBuild"
+          }
+        },
+        {
+          "element": "Compile",
+          "attributes": {
+            "Include": "@(_FantomasGeneratedTxtSource)",
+            "CompileOrder": "CompileBefore"
+          }
+        }
+      ],
+      "evaluatedMsbuildInputsClaimed": false
+    }
+  ],
+  "projections": {
+    "originalPublicPayloadsPreserved": true,
+    "coreAndFsharpCore": "Original UTF-8 source including any BOM preserved; LF line endings projected to CRLF before SHA-256 comparison.",
+    "fcs": "Decode source with UTF-8 BOM removal, split lines, apply ordered per-line conditional rewrite, then write CRLF with a terminal newline and no BOM.",
+    "orderedFcsRewrites": [
+      {
+        "when": "line starts with namespace FSharp.Build",
+        "replace": "namespace FSharp.Build",
+        "with": "namespace Fantomas.FCS.Build"
+      },
+      {
+        "elseWhen": "line contains FSharp.Compiler",
+        "replace": "FSharp.Compiler",
+        "with": "Fantomas.FCS"
+      },
+      {
+        "elseWhen": "line contains [<TailCall>]",
+        "replace": "[<TailCall>]",
+        "with": "[<Microsoft.FSharp.Core.TailCall>]"
+      }
+    ],
+    "acquisitionScriptExecuted": false
+  },
+  "sourceLinkBoundary": {
+    "fantomasDepsDirectoryAbsentFromGitArchive": true,
+    "fcsVendoredInputsResolvedThroughExplicitUpstreamPinAndTransforms": true,
+    "sourceLinkAloneDoesNotResolveVendoredInputs": true,
+    "fsharpCoreDocumentsFetchedFromExactDotnetSourceLinkCommit": true,
+    "fsharpCoreWholeRepositoryReconstructed": false
+  },
+  "aggregateDocumentCounts": {
+    "no-document-checksum": 3,
+    "unresolved-generated-document": 1,
+    "embedded-document-checksum-verified": 19,
+    "crlf-source-projection-matched": 69,
+    "unresolved": 2,
+    "fantomas-crlf-source-matched": 36,
+    "transformed-fcs-crlf-matched": 87
+  },
+  "artifacts": [
+    {
+      "assembly": "FSharp.Core.dll",
+      "bytes": 2396976,
+      "sha256": "4a626d62bb15815b6404567aa1bd37d9f2208e8e3c99c3c346d0efcfca72af6c",
+      "embeddedPortablePdb": {
+        "bytes": 554760,
+        "sha256": "f0a37dd2d141fec1d766bbe6277e18cad405bd14e1d3a3075f37fffcd1040fec",
+        "peDebugDirectoryType": 17
+      },
+      "mvid": "48a5026b-3c98-fa15-8a32-479272f2e80d",
+      "assemblyReferences": [
+        {
+          "name": "netstandard",
+          "version": "2.1.0.0",
+          "publicKeyOrToken": "cc7b13ffcd2ddd51"
+        },
+        {
+          "name": "System.Runtime.Numerics",
+          "version": "4.0.1.0",
+          "publicKeyOrToken": "b03f5f7f11d50a3a"
+        }
+      ],
+      "documentCounts": {
+        "no-document-checksum": 1,
+        "unresolved-generated-document": 1,
+        "embedded-document-checksum-verified": 3,
+        "crlf-source-projection-matched": 69
+      },
+      "sourceLinkRepository": "dotnet/dotnet",
+      "sourceLinkCommit": "c23858a6d860abe3ca94f9ac630c3e61b2625664",
+      "compilationOptionRecordCount": 0,
+      "embeddedSourceDocuments": [
+        {
+          "sourceMember": "generated/FSCore.fs",
+          "bytes": 22640,
+          "sha256": "d773b49b4a71f618467e6f0b3fa535882a968cb309345a93724948e379c7869d",
+          "declaredDocumentHash": "d773b49b4a71f618467e6f0b3fa535882a968cb309345a93724948e379c7869d",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/FSharp.Core.AssemblyInfo.fs",
+          "bytes": 1055,
+          "sha256": "ab8a86cf2bfe533880b46f6e9c3feb372e30d531c0278647e6b4385dcdfe3fa0",
+          "declaredDocumentHash": "ab8a86cf2bfe533880b46f6e9c3feb372e30d531c0278647e6b4385dcdfe3fa0",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/buildproperties.fs",
+          "bytes": 219,
+          "sha256": "6c223e370a4a3b52f2dc54f89d6c229ec603f714b28314f61a806574277b2586",
+          "declaredDocumentHash": "6c223e370a4a3b52f2dc54f89d6c229ec603f714b28314f61a806574277b2586",
+          "checksumMatches": true
+        }
+      ],
+      "debugDocuments": [
+        {
+          "sourceMember": "generated/unknown",
+          "state": "no-document-checksum"
+        },
+        {
+          "sourceMember": "src/fsharp/artifacts/obj/FSharp.Core/Release/netstandard2.1/.NETStandard,Version=v2.1.AssemblyAttributes.fs",
+          "state": "unresolved-generated-document",
+          "declaredDocumentHash": "80a6758ea6385546168b52f88879344781eb512437ae7ad13e58e8ff53d784b1"
+        },
+        {
+          "sourceMember": "src/fsharp/artifacts/obj/FSharp.Core/Release/netstandard2.1/FSCore.fs",
+          "state": "embedded-document-checksum-verified",
+          "embeddedSha256": "d773b49b4a71f618467e6f0b3fa535882a968cb309345a93724948e379c7869d",
+          "bytes": 22640,
+          "declaredDocumentHash": "d773b49b4a71f618467e6f0b3fa535882a968cb309345a93724948e379c7869d"
+        },
+        {
+          "sourceMember": "src/fsharp/artifacts/obj/FSharp.Core/Release/netstandard2.1/FSharp.Core.AssemblyInfo.fs",
+          "state": "embedded-document-checksum-verified",
+          "embeddedSha256": "ab8a86cf2bfe533880b46f6e9c3feb372e30d531c0278647e6b4385dcdfe3fa0",
+          "bytes": 1055,
+          "declaredDocumentHash": "ab8a86cf2bfe533880b46f6e9c3feb372e30d531c0278647e6b4385dcdfe3fa0"
+        },
+        {
+          "sourceMember": "src/fsharp/artifacts/obj/FSharp.Core/Release/netstandard2.1/buildproperties.fs",
+          "state": "embedded-document-checksum-verified",
+          "embeddedSha256": "6c223e370a4a3b52f2dc54f89d6c229ec603f714b28314f61a806574277b2586",
+          "bytes": 219,
+          "declaredDocumentHash": "6c223e370a4a3b52f2dc54f89d6c229ec603f714b28314f61a806574277b2586"
+        },
+        {
+          "sourceMember": "src/fsharp/src/Compiler/Utilities/sformat.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/Compiler/Utilities/sformat.fs",
+          "bytes": 64866,
+          "originalSourceSha256": "937c94749d69d9ed45da3ed994bc43719db4451254d8cbb59957b3f3f85dd459",
+          "crlfProjectionBytes": 66511,
+          "projectedSourceSha256": "97fa7814c16a9cd348f589e35a6dbff1d9db9982bc2e931b72c3deff0b0d9f13",
+          "declaredDocumentHash": "97fa7814c16a9cd348f589e35a6dbff1d9db9982bc2e931b72c3deff0b0d9f13",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/Compiler/Utilities/sformat.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/Compiler/Utilities/sformat.fsi",
+          "bytes": 14262,
+          "originalSourceSha256": "2c2660046d895014cbb26649e5701de78f64cedda94b4fc1b1eee254ecfd17d7",
+          "crlfProjectionBytes": 14672,
+          "projectedSourceSha256": "dcc3f6177103542208d05c68cc040023cd13dc0a3c1a7ffeef2b8814c19e7b80",
+          "declaredDocumentHash": "dcc3f6177103542208d05c68cc040023cd13dc0a3c1a7ffeef2b8814c19e7b80",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/Linq.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/Linq.fs",
+          "bytes": 67094,
+          "originalSourceSha256": "d36c233de9a5501978c8112fe78eda584ad915a32c2deb59d0ecc6eaca9e1744",
+          "crlfProjectionBytes": 68071,
+          "projectedSourceSha256": "4f3f9fb5e3b1d5158c620b06c25e9f566bdb313018bc7ee217c0cb9ce523091f",
+          "declaredDocumentHash": "4f3f9fb5e3b1d5158c620b06c25e9f566bdb313018bc7ee217c0cb9ce523091f",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/Linq.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/Linq.fsi",
+          "bytes": 3973,
+          "originalSourceSha256": "48f83f6b5833870ef3027dcf9cac68cadbb096d8ec7377058cd310d244730215",
+          "crlfProjectionBytes": 4064,
+          "projectedSourceSha256": "8a331f3918cf35c41251c4000b891d7a1e3507d145fbe52d1c635f1ffc5fb300",
+          "declaredDocumentHash": "8a331f3918cf35c41251c4000b891d7a1e3507d145fbe52d1c635f1ffc5fb300",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/MutableTuple.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/MutableTuple.fs",
+          "bytes": 11335,
+          "originalSourceSha256": "fa955001bbd5a6c1cd5bc6adfd2bd2c40f9ee5ddf0a2b27ea6b65a11db784277",
+          "crlfProjectionBytes": 11574,
+          "projectedSourceSha256": "0443a6521e9db7e515a2b347b440d0d594f6b80b6c71ee7a3105d661bdc58928",
+          "declaredDocumentHash": "0443a6521e9db7e515a2b347b440d0d594f6b80b6c71ee7a3105d661bdc58928",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/Nullable.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/Nullable.fs",
+          "bytes": 8174,
+          "originalSourceSha256": "f13b20ae0fa68acf3be2e27d7c2c00ba7eabb916bd4ec913b10534cb32d8b102",
+          "crlfProjectionBytes": 8479,
+          "projectedSourceSha256": "2a15ddff645f8ade7386e3830eb7032327ae46db11b5968f3fdccc55ca69732a",
+          "declaredDocumentHash": "2a15ddff645f8ade7386e3830eb7032327ae46db11b5968f3fdccc55ca69732a",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/Nullable.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/Nullable.fsi",
+          "bytes": 33913,
+          "originalSourceSha256": "b993801bf079d8ec799e60ab1afee6462f3a2f779a8048822445cdc2a7541f4a",
+          "crlfProjectionBytes": 34628,
+          "projectedSourceSha256": "e9650d2977afa96fdf32ce597cf2e217d27f504f3fb56a1f68a6e9119f3e35d2",
+          "declaredDocumentHash": "e9650d2977afa96fdf32ce597cf2e217d27f504f3fb56a1f68a6e9119f3e35d2",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/Query.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/Query.fs",
+          "bytes": 112237,
+          "originalSourceSha256": "ef6919508ea03695c1a78c90618af11da6ff1115c581e28dfa8ee59af33b110a",
+          "crlfProjectionBytes": 114179,
+          "projectedSourceSha256": "b884ed1c022c230c029bbc563e5ba89f981f7eb3a79c5e0c38cfae4ccd76e0e3",
+          "declaredDocumentHash": "b884ed1c022c230c029bbc563e5ba89f981f7eb3a79c5e0c38cfae4ccd76e0e3",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/Query.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/Query.fsi",
+          "bytes": 24694,
+          "originalSourceSha256": "342e5f6c1e771d523d98b114e13fc7ced04ff209dcd95d43ff3c09fb4d87041f",
+          "crlfProjectionBytes": 25142,
+          "projectedSourceSha256": "b4e9868e338e3104c043b0552c859028ca04d2efd9e0ead0e2ffe1c875d83fbc",
+          "declaredDocumentHash": "b4e9868e338e3104c043b0552c859028ca04d2efd9e0ead0e2ffe1c875d83fbc",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/QueryExtensions.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/QueryExtensions.fs",
+          "bytes": 14014,
+          "originalSourceSha256": "5c1c7bdde3813919a6c0dff9a885092bad6375601b238e460c242f435ac6df81",
+          "crlfProjectionBytes": 14355,
+          "projectedSourceSha256": "57f02120c4aa5c59e8d920f25fd6f18bb2e6384bb8c2843961a93fe2e760ad78",
+          "declaredDocumentHash": "57f02120c4aa5c59e8d920f25fd6f18bb2e6384bb8c2843961a93fe2e760ad78",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/Random.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/Random.fs",
+          "bytes": 724,
+          "originalSourceSha256": "44b9ae2d63ef32659fd961e18294208a4e24a1d55c71ecd0201437fe7e028de8",
+          "crlfProjectionBytes": 748,
+          "projectedSourceSha256": "1c6ce29e613e4c00d47f76dcb75d195b69dfbc0b19abff6dd207124c1fbbe14d",
+          "declaredDocumentHash": "1c6ce29e613e4c00d47f76dcb75d195b69dfbc0b19abff6dd207124c1fbbe14d",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/Random.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/Random.fsi",
+          "bytes": 138,
+          "originalSourceSha256": "752b692a1e20dca0cd51d91d27d2c52f6a2eb343b871c7e714e032c2a7ddd762",
+          "crlfProjectionBytes": 145,
+          "projectedSourceSha256": "da2d1d04d677aee4a9470cae654a3c1084a3f92e1290cc3acc8ceb2f08d1deea",
+          "declaredDocumentHash": "da2d1d04d677aee4a9470cae654a3c1084a3f92e1290cc3acc8ceb2f08d1deea",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/SI.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/SI.fs",
+          "bytes": 4791,
+          "originalSourceSha256": "caa6cb89acea4fae1abced1f0db010c404c0d47418b38317e5c334ae33055202",
+          "crlfProjectionBytes": 5015,
+          "projectedSourceSha256": "2c3cee6910fd9a46dc8491d21154db78f311e14ec60385d242c8c257a835432a",
+          "declaredDocumentHash": "2c3cee6910fd9a46dc8491d21154db78f311e14ec60385d242c8c257a835432a",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/array.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/array.fs",
+          "bytes": 98565,
+          "originalSourceSha256": "79d2d2d5dcebfdab5e6f9d394d8121a7ee0c004dd4d31b0487940d2d99d755c6",
+          "crlfProjectionBytes": 101436,
+          "projectedSourceSha256": "2d4b3810d4bbd4fa229f2a2e15bb402e51a5c6a665b3fbeec910fdc03279c426",
+          "declaredDocumentHash": "2d4b3810d4bbd4fa229f2a2e15bb402e51a5c6a665b3fbeec910fdc03279c426",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/array.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/array.fsi",
+          "bytes": 196109,
+          "originalSourceSha256": "7ab7a04e6a745778175d1185bf7928dd4f4c4ae5a6cbb455f1746f7b08f3ae58",
+          "crlfProjectionBytes": 200671,
+          "projectedSourceSha256": "04e042584e2da9005d38df7d0d82c921baaef8fadc5c2764f582ac37bcdd7e63",
+          "declaredDocumentHash": "04e042584e2da9005d38df7d0d82c921baaef8fadc5c2764f582ac37bcdd7e63",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/array2.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/array2.fs",
+          "bytes": 7037,
+          "originalSourceSha256": "51af5bb759fc818d172d434b87475b93917d87f1cc1da5717216e75765c75fcd",
+          "crlfProjectionBytes": 7191,
+          "projectedSourceSha256": "14ba302269ff963304e0483162ecf4f190d8b05d7ec24724e81f1fa0a50397ef",
+          "declaredDocumentHash": "14ba302269ff963304e0483162ecf4f190d8b05d7ec24724e81f1fa0a50397ef",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/array2.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/array2.fsi",
+          "bytes": 18663,
+          "originalSourceSha256": "590cdf2e5d47d92da0eac4e9899b888c340437abf2b9ed34b709195d27a18eaf",
+          "crlfProjectionBytes": 19113,
+          "projectedSourceSha256": "7d5bff535463ce47755886ac3eb97c8b874db3dca099dd87e040cf09f358318a",
+          "declaredDocumentHash": "7d5bff535463ce47755886ac3eb97c8b874db3dca099dd87e040cf09f358318a",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/array3.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/array3.fs",
+          "bytes": 5910,
+          "originalSourceSha256": "815fe7e7f54df0174b74ea9e0a940ce76b10cf992ab7b80cf0980b85b7dd273f",
+          "crlfProjectionBytes": 6066,
+          "projectedSourceSha256": "4129569ea1a3bd8ee7354c7ec6ff0278993a00ab160b5fe5dc35252144b1117d",
+          "declaredDocumentHash": "4129569ea1a3bd8ee7354c7ec6ff0278993a00ab160b5fe5dc35252144b1117d",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/array3.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/array3.fsi",
+          "bytes": 18492,
+          "originalSourceSha256": "dad6506210a2c88d261a3ecda7a03bd4599f48e623bc076461301978b8b7071d",
+          "crlfProjectionBytes": 18971,
+          "projectedSourceSha256": "61901d10d8ae4ba3d7029096dda57464e5df70cd63f683b6fa16802edc6da0b1",
+          "declaredDocumentHash": "61901d10d8ae4ba3d7029096dda57464e5df70cd63f683b6fa16802edc6da0b1",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/async.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/async.fs",
+          "bytes": 102121,
+          "originalSourceSha256": "d100baeb32c21f5456885189edb079285cc3957e0eb688d2ab464aa7e80f3989",
+          "crlfProjectionBytes": 104478,
+          "projectedSourceSha256": "cb4b454d5b7e6a0a6d5c19f15278b2ba6150f6e63ea184a99bd923905ed25fcc",
+          "declaredDocumentHash": "cb4b454d5b7e6a0a6d5c19f15278b2ba6150f6e63ea184a99bd923905ed25fcc",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/async.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/async.fsi",
+          "bytes": 79769,
+          "originalSourceSha256": "3941d9bbc2fc9467aee666b1b0232eaf62d7644d63061159292191640b430b5c",
+          "crlfProjectionBytes": 81318,
+          "projectedSourceSha256": "dc22441cc078a321909cc80bed72b126b9bbb2843a0f9fefb14598bbeaf1a86b",
+          "declaredDocumentHash": "dc22441cc078a321909cc80bed72b126b9bbb2843a0f9fefb14598bbeaf1a86b",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/collections.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/collections.fs",
+          "bytes": 2170,
+          "originalSourceSha256": "8a7b789cdbe0d3329714565ca04cc783283db8383a0f131281092c9661959cc4",
+          "crlfProjectionBytes": 2235,
+          "projectedSourceSha256": "e57ea49d5c60c49f7f236cef6840faaeceedc86d759ef49576ed221a4916d4dd",
+          "declaredDocumentHash": "e57ea49d5c60c49f7f236cef6840faaeceedc86d759ef49576ed221a4916d4dd",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/collections.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/collections.fsi",
+          "bytes": 8229,
+          "originalSourceSha256": "5c84cd7fc0d24b09f8b1c5f50c303e2d2915030caa7dc915c3d5344bf201e6b0",
+          "crlfProjectionBytes": 8393,
+          "projectedSourceSha256": "08da5c3eb1e496b1f399c78038ad4b01f2ba2d55642bcd9664152aa2631ea157",
+          "declaredDocumentHash": "08da5c3eb1e496b1f399c78038ad4b01f2ba2d55642bcd9664152aa2631ea157",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/event.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/event.fs",
+          "bytes": 7180,
+          "originalSourceSha256": "e5709e937f7f733228f77d08fbbb23a5551e7bc21e8cfad7a5c2d5aa4de9910c",
+          "crlfProjectionBytes": 7374,
+          "projectedSourceSha256": "698c4121bf8904f6bfe929d3acc58532a75ec6c187838b583287c4c2615a463c",
+          "declaredDocumentHash": "698c4121bf8904f6bfe929d3acc58532a75ec6c187838b583287c4c2615a463c",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/event.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/event.fsi",
+          "bytes": 3091,
+          "originalSourceSha256": "b2e38b461a24eb679e0eed3326e0448855f19f9e02df5a146d4e9ae97f15953e",
+          "crlfProjectionBytes": 3170,
+          "projectedSourceSha256": "88af84b3c08eb0ef0e2c2caf0560688b2643010d5ebaa2ea66209fe682ace130",
+          "declaredDocumentHash": "88af84b3c08eb0ef0e2c2caf0560688b2643010d5ebaa2ea66209fe682ace130",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/eventmodule.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/eventmodule.fs",
+          "bytes": 2816,
+          "originalSourceSha256": "719da1d034a96c30f8a2ad8ad70dcb117f733c9cf7f7bec926c5b7be267f8103",
+          "crlfProjectionBytes": 2916,
+          "projectedSourceSha256": "5bb0738460a3ef321eb151fa9305264179a378f0b9793789bebfd3ee5785ef6e",
+          "declaredDocumentHash": "5bb0738460a3ef321eb151fa9305264179a378f0b9793789bebfd3ee5785ef6e",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/eventmodule.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/eventmodule.fsi",
+          "bytes": 14803,
+          "originalSourceSha256": "bce1ef5d21a3414abe4adb9b008ef7cf905f1ec9e4ba84f7f8fde9ba2cc30e00",
+          "crlfProjectionBytes": 15163,
+          "projectedSourceSha256": "5ab987b5ce4b2d9cbaf7be9ba5aa950bdf6cce2ad80c7df244d54e4ba3329b0e",
+          "declaredDocumentHash": "5ab987b5ce4b2d9cbaf7be9ba5aa950bdf6cce2ad80c7df244d54e4ba3329b0e",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/fslib-extra-pervasives.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/fslib-extra-pervasives.fs",
+          "bytes": 17232,
+          "originalSourceSha256": "65c1282c61dcb2fb601d7e776f7798b764e153464b1b8ca089da37f9a8cf852c",
+          "crlfProjectionBytes": 17724,
+          "projectedSourceSha256": "dc2e19d9e9ce039178714a127207d58794b4d30bd6eddbe3c79f3ee4bc63c830",
+          "declaredDocumentHash": "dc2e19d9e9ce039178714a127207d58794b4d30bd6eddbe3c79f3ee4bc63c830",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/fslib-extra-pervasives.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/fslib-extra-pervasives.fsi",
+          "bytes": 25788,
+          "originalSourceSha256": "041b47cb18f4f6721bca8ad7954b818db4cdd7c6473ce21095d1d76971f869a9",
+          "crlfProjectionBytes": 26376,
+          "projectedSourceSha256": "e87be70aac1b1d430ed6982703c33eabb91058581188bbba473f706e396f1325",
+          "declaredDocumentHash": "e87be70aac1b1d430ed6982703c33eabb91058581188bbba473f706e396f1325",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/list.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/list.fs",
+          "bytes": 38994,
+          "originalSourceSha256": "aba2dc4eeb5f06cad425edea575bfb16306e5d2c6d7ef3640894e62e10e1e610",
+          "crlfProjectionBytes": 40165,
+          "projectedSourceSha256": "0a54f9403fff381ef58784a2f12da526ad99d207c4d5180d441dfaa8446fd291",
+          "declaredDocumentHash": "0a54f9403fff381ef58784a2f12da526ad99d207c4d5180d441dfaa8446fd291",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/list.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/list.fsi",
+          "bytes": 126663,
+          "originalSourceSha256": "435f92e45def270470c3341cc11b2c85411d8743c9444c2e966b02226ece5eeb",
+          "crlfProjectionBytes": 129816,
+          "projectedSourceSha256": "5608b23595aa3fef391008a5bf8af21495b15c357780f3b7051cbdba8e6ebaaf",
+          "declaredDocumentHash": "5608b23595aa3fef391008a5bf8af21495b15c357780f3b7051cbdba8e6ebaaf",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/local.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/local.fs",
+          "bytes": 47467,
+          "originalSourceSha256": "189273a6c76d7070e97c8c8da7b7ff490b4bc5ad78abde95d2df50690e576f56",
+          "crlfProjectionBytes": 48707,
+          "projectedSourceSha256": "2015cda515189701d06f2e7ddb68158a2154cb30031d2e7b49b6b0a11ffe0c98",
+          "declaredDocumentHash": "2015cda515189701d06f2e7ddb68158a2154cb30031d2e7b49b6b0a11ffe0c98",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/local.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/local.fsi",
+          "bytes": 5876,
+          "originalSourceSha256": "4d5d20e0b771e6bd6a47f2857703159e38076c2a0a4ce436dcc1c3b1c3c515f0",
+          "crlfProjectionBytes": 6008,
+          "projectedSourceSha256": "281c576b3a91ff7e197d623b6042d867e566dd43c48d9209272c205a70f12028",
+          "declaredDocumentHash": "281c576b3a91ff7e197d623b6042d867e566dd43c48d9209272c205a70f12028",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/mailbox.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/mailbox.fs",
+          "bytes": 21260,
+          "originalSourceSha256": "ec806c1b5351656fecdf891446f53506e1b737efdaf5dae8e62ab3c0a8aa9a30",
+          "crlfProjectionBytes": 21808,
+          "projectedSourceSha256": "d1ac88a97dbd8a62bef665a6323c5352111df6072b398d34124d8abe65a2bb43",
+          "declaredDocumentHash": "d1ac88a97dbd8a62bef665a6323c5352111df6072b398d34124d8abe65a2bb43",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/mailbox.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/mailbox.fsi",
+          "bytes": 15884,
+          "originalSourceSha256": "c8960c3e5469c4ddcaffcd499b8ee35e3bc9fe010671fbe2755546b58b518507",
+          "crlfProjectionBytes": 16185,
+          "projectedSourceSha256": "53aaa3ff597e09191c7c3ab6cc41693920a5c34f7004e2327d27c260763b05f4",
+          "declaredDocumentHash": "53aaa3ff597e09191c7c3ab6cc41693920a5c34f7004e2327d27c260763b05f4",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/map.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/map.fs",
+          "bytes": 42183,
+          "originalSourceSha256": "8b27b61db4253b1af92e2cbe09e56f81d2a8000a5d443be017acd44eb8a7969a",
+          "crlfProjectionBytes": 43473,
+          "projectedSourceSha256": "5dc59ef4991e0dafc70ee533879e1e1887455765dbe478050104c2c1c50d67af",
+          "declaredDocumentHash": "5dc59ef4991e0dafc70ee533879e1e1887455765dbe478050104c2c1c50d67af",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/map.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/map.fsi",
+          "bytes": 35451,
+          "originalSourceSha256": "f91d1927598491771e378c7ee23c63b77619bd80ef1d87cb6002c7217d60958a",
+          "crlfProjectionBytes": 36322,
+          "projectedSourceSha256": "d9d907341f7c047ace04a927a15ebe9ee6f27ec8c8e7c78cb93bf26c62c442c6",
+          "declaredDocumentHash": "d9d907341f7c047ace04a927a15ebe9ee6f27ec8c8e7c78cb93bf26c62c442c6",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/math/z.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/math/z.fs",
+          "bytes": 2898,
+          "originalSourceSha256": "19bedea3ccbe13404c07875b7b77cb92bc085831f4328c2dc307b1814a92a15e",
+          "crlfProjectionBytes": 2983,
+          "projectedSourceSha256": "5a99ed2b21a277c0da817d2ae784b2c335de92ade6e69d437ed17ce455c14530",
+          "declaredDocumentHash": "5a99ed2b21a277c0da817d2ae784b2c335de92ade6e69d437ed17ce455c14530",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/math/z.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/math/z.fsi",
+          "bytes": 2014,
+          "originalSourceSha256": "2315700df3322a3c9cc1e06cf8110829b5ff613e5d0ab5fe0895376534772aa1",
+          "crlfProjectionBytes": 2061,
+          "projectedSourceSha256": "9de4c62703b5768fb5f35120963e34ea7bb2effd70cc7003878d89e194fa01f2",
+          "declaredDocumentHash": "9de4c62703b5768fb5f35120963e34ea7bb2effd70cc7003878d89e194fa01f2",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/nativeptr.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/nativeptr.fs",
+          "bytes": 3628,
+          "originalSourceSha256": "e7b9e8db4baec911b363d35c17fc9a80233384956539a10ff30e36811338cadd",
+          "crlfProjectionBytes": 3712,
+          "projectedSourceSha256": "41f6187c9e132dce05f56ba944080b9f293d6807ba3acdaf6f7e897516638a15",
+          "declaredDocumentHash": "41f6187c9e132dce05f56ba944080b9f293d6807ba3acdaf6f7e897516638a15",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/nativeptr.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/nativeptr.fsi",
+          "bytes": 8919,
+          "originalSourceSha256": "64d74e99652a529c4bee073df8bc88a3500ba34ebbc0854a761a0e945015435b",
+          "crlfProjectionBytes": 9145,
+          "projectedSourceSha256": "7f5713993d99eab7ac4bea383bcd13f3acd8436f66021a9bfd4bb916441b6faf",
+          "declaredDocumentHash": "7f5713993d99eab7ac4bea383bcd13f3acd8436f66021a9bfd4bb916441b6faf",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/observable.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/observable.fs",
+          "bytes": 7660,
+          "originalSourceSha256": "20928f2b9a7f932f280a10b14acf2f994b45575618dee114b757d4673a898ffb",
+          "crlfProjectionBytes": 7889,
+          "projectedSourceSha256": "451371ea5a7e2ce2c2349ba4c2dac7db3f89282d329889ec26fdf256d4a46c13",
+          "declaredDocumentHash": "451371ea5a7e2ce2c2349ba4c2dac7db3f89282d329889ec26fdf256d4a46c13",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/observable.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/observable.fsi",
+          "bytes": 15203,
+          "originalSourceSha256": "9b224b7693ee2e8f19457c2f2aee3b2fce257fa57aea39f49153b5f4824016c5",
+          "crlfProjectionBytes": 15533,
+          "projectedSourceSha256": "193cc9ccae77a2be5467e8c9e4db4fbcba8e466169b3f6cf75b7dd462c6953c2",
+          "declaredDocumentHash": "193cc9ccae77a2be5467e8c9e4db4fbcba8e466169b3f6cf75b7dd462c6953c2",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/option.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/option.fs",
+          "bytes": 10508,
+          "originalSourceSha256": "7bc1e364b234903dd63adb2a0e6dbf3a5c3e65a67bbd5156d4cc62f8952c85a9",
+          "crlfProjectionBytes": 10861,
+          "projectedSourceSha256": "20925f5b6e0743b0a0d4fb0787f2c239ea68e84cc8d874a93235827346877268",
+          "declaredDocumentHash": "20925f5b6e0743b0a0d4fb0787f2c239ea68e84cc8d874a93235827346877268",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/option.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/option.fsi",
+          "bytes": 44621,
+          "originalSourceSha256": "9bdeb623eb24a1643d0d721b94abe8190554035339f4a6f5c445ee4fc71d17de",
+          "crlfProjectionBytes": 45589,
+          "projectedSourceSha256": "7c8bb98726b3aa377cb0a4ffb3b77ff0262100ef22acd4a9de5d00eefce32c9c",
+          "declaredDocumentHash": "7c8bb98726b3aa377cb0a4ffb3b77ff0262100ef22acd4a9de5d00eefce32c9c",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/prim-types-prelude.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/prim-types-prelude.fs",
+          "bytes": 6120,
+          "originalSourceSha256": "c1375f875c31bf0b4085df531c96b8ffec714434f20214482fcb79222fb5be8d",
+          "crlfProjectionBytes": 6243,
+          "projectedSourceSha256": "f5f6967bfa8238b3dfdbf7831849f9f2a98b2e3f455c5dcd61f07d7e31c31495",
+          "declaredDocumentHash": "f5f6967bfa8238b3dfdbf7831849f9f2a98b2e3f455c5dcd61f07d7e31c31495",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/prim-types-prelude.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/prim-types-prelude.fsi",
+          "bytes": 21417,
+          "originalSourceSha256": "b3aa101a3e2e1c8ebb1af8b91986892d186c1f1d91928b149dbb54bcf8930852",
+          "crlfProjectionBytes": 21869,
+          "projectedSourceSha256": "81e7918b0d1e3e1a3b07a151209c6b715c454f1ef7695ccbe4490f2994990836",
+          "declaredDocumentHash": "81e7918b0d1e3e1a3b07a151209c6b715c454f1ef7695ccbe4490f2994990836",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/prim-types.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/prim-types.fs",
+          "bytes": 449690,
+          "originalSourceSha256": "923d3d4fbe7dced1c751f3db3cb884a745cef7500a734a9435864caa9df2f5dd",
+          "crlfProjectionBytes": 457045,
+          "projectedSourceSha256": "0dd54c68032d8c4bec23fde3446bb82d90d06c08b4d5f21f3d5c11ed57ec702a",
+          "declaredDocumentHash": "0dd54c68032d8c4bec23fde3446bb82d90d06c08b4d5f21f3d5c11ed57ec702a",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/prim-types.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/prim-types.fsi",
+          "bytes": 321804,
+          "originalSourceSha256": "c327966ca2130b02d377a9a9435e3e9913a6dc7fa94713c292a8469dad6c7147",
+          "crlfProjectionBytes": 328035,
+          "projectedSourceSha256": "4abdeedf3575f85c7253d7780908a49e5a721949f4088bbee1488d02eddc07be",
+          "declaredDocumentHash": "4abdeedf3575f85c7253d7780908a49e5a721949f4088bbee1488d02eddc07be",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/printf.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/printf.fs",
+          "bytes": 69663,
+          "originalSourceSha256": "1118a90ff2ccbf518980a8956feb3dabbe07cb608deefcd8896337e6661fe409",
+          "crlfProjectionBytes": 71126,
+          "projectedSourceSha256": "7e9812171982c4963959a84e461225918d126a00ba3e334f7b0257c00f4b944f",
+          "declaredDocumentHash": "7e9812171982c4963959a84e461225918d126a00ba3e334f7b0257c00f4b944f",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/printf.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/printf.fsi",
+          "bytes": 19003,
+          "originalSourceSha256": "2e48c4672ce420caf38bdd8bd8411bebaba0e307e4284303d42b7a816cd4d574",
+          "crlfProjectionBytes": 19447,
+          "projectedSourceSha256": "c099efb839b315cf231ac22688a1505d35c0aebc5ea523143c0d6cba42d2752f",
+          "declaredDocumentHash": "c099efb839b315cf231ac22688a1505d35c0aebc5ea523143c0d6cba42d2752f",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/quotations.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/quotations.fs",
+          "bytes": 114986,
+          "originalSourceSha256": "c0af425355dd2e27d9c53a732a6a74664864403937755ea80175500a4c80091f",
+          "crlfProjectionBytes": 117958,
+          "projectedSourceSha256": "10456eb526a94b4231cd669047ecc6927abcde932350027a0fe123c95fe717e5",
+          "declaredDocumentHash": "10456eb526a94b4231cd669047ecc6927abcde932350027a0fe123c95fe717e5",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/quotations.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/quotations.fsi",
+          "bytes": 95937,
+          "originalSourceSha256": "7ff5832431fb08ed2f66d635fa18b83261a30ec866e87b3fb1477ac1a3567b89",
+          "crlfProjectionBytes": 98218,
+          "projectedSourceSha256": "8d37f38776e7d78613fc43e6a1e750d28fe8b6ff5e138d971360597828ac28e6",
+          "declaredDocumentHash": "8d37f38776e7d78613fc43e6a1e750d28fe8b6ff5e138d971360597828ac28e6",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/reflect.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/reflect.fs",
+          "bytes": 61518,
+          "originalSourceSha256": "b1c2c6303f7cfd2904c50f1f89e7f878c868ea8d5892ecc5b68982efe5dc6018",
+          "crlfProjectionBytes": 63009,
+          "projectedSourceSha256": "b6a15c6c015cacd39f6473119bfd914a0ee9c5ac6c54496200220db85c1a729d",
+          "declaredDocumentHash": "b6a15c6c015cacd39f6473119bfd914a0ee9c5ac6c54496200220db85c1a729d",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/reflect.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/reflect.fsi",
+          "bytes": 50431,
+          "originalSourceSha256": "b5a1348090417512c327599fc26c8eea4a8725bd22087ada18dede38fa723437",
+          "crlfProjectionBytes": 51461,
+          "projectedSourceSha256": "6b3784df9dfed3344af0711078bb20be94ea55aa538f4b5eb4db6872bb55ee45",
+          "declaredDocumentHash": "6b3784df9dfed3344af0711078bb20be94ea55aa538f4b5eb4db6872bb55ee45",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/result.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/result.fs",
+          "bytes": 3255,
+          "originalSourceSha256": "0cf84dbc6ef243e25554e81aea037b753acd020cb5ce38873fb8a4d1f4962073",
+          "crlfProjectionBytes": 3369,
+          "projectedSourceSha256": "dadb943d17f1407194aefa8439c3345d4c6d6bc4154dd81bf68798f92e6cbf36",
+          "declaredDocumentHash": "dadb943d17f1407194aefa8439c3345d4c6d6bc4154dd81bf68798f92e6cbf36",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/result.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/result.fsi",
+          "bytes": 13542,
+          "originalSourceSha256": "5fb059daf929ddf31c2663544d225640d72b353fd3bd483f363686f474925c39",
+          "crlfProjectionBytes": 13856,
+          "projectedSourceSha256": "90cb521c1d1ec64a7968c9be6b27752dc81d6cb24f155bab2ee79e0b8aef5f7d",
+          "declaredDocumentHash": "90cb521c1d1ec64a7968c9be6b27752dc81d6cb24f155bab2ee79e0b8aef5f7d",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/resumable.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/resumable.fs",
+          "bytes": 17284,
+          "originalSourceSha256": "1f5a1a924de5421cac158decd4b063dd8f83a7bc4d65bca314b8934667002c46",
+          "crlfProjectionBytes": 17709,
+          "projectedSourceSha256": "36765fc1827da311fe98e5b13490911f6975df0e5ee86e77913e66f0ce2f0268",
+          "declaredDocumentHash": "36765fc1827da311fe98e5b13490911f6975df0e5ee86e77913e66f0ce2f0268",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/resumable.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/resumable.fsi",
+          "bytes": 11901,
+          "originalSourceSha256": "ba0e4a1f95cbbfee67ed291680a26c6b83578e329bfa2548d0a43f2036ef416b",
+          "crlfProjectionBytes": 12131,
+          "projectedSourceSha256": "dc7adeabefcd612347414868efc1f51fc89bf4920bf63d852ce3aa82dcba21fe",
+          "declaredDocumentHash": "dc7adeabefcd612347414868efc1f51fc89bf4920bf63d852ce3aa82dcba21fe",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/seq.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/seq.fs",
+          "bytes": 70036,
+          "originalSourceSha256": "a83f5221fc6e9e4e2231409ff6cf3fff320fe897501cbc6ebf3affe3b0f53544",
+          "crlfProjectionBytes": 72169,
+          "projectedSourceSha256": "02c136d87df06e7b477c9e77a59a6dc601ae875e2704d3e15a8684eb5c8b46f0",
+          "declaredDocumentHash": "02c136d87df06e7b477c9e77a59a6dc601ae875e2704d3e15a8684eb5c8b46f0",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/seq.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/seq.fsi",
+          "bytes": 147957,
+          "originalSourceSha256": "e146caa040433432ee30b19d37af4547e85e1c4f1c0b9cc36e9c819508985830",
+          "crlfProjectionBytes": 151332,
+          "projectedSourceSha256": "774165a94dfd6dfd6109d2e50f8d7e8de88a3ff28a0f5d28d187ce32406596c6",
+          "declaredDocumentHash": "774165a94dfd6dfd6109d2e50f8d7e8de88a3ff28a0f5d28d187ce32406596c6",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/seqcore.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/seqcore.fs",
+          "bytes": 24193,
+          "originalSourceSha256": "68fdf468de4856c836bdd8b7c6b6f22341719742752a8085d5dfcbb7ad19bfd4",
+          "crlfProjectionBytes": 24853,
+          "projectedSourceSha256": "a75d35a17191cc67b14ed1c12a680e88451c44a2e8043615f42f69eed6ed84a5",
+          "declaredDocumentHash": "a75d35a17191cc67b14ed1c12a680e88451c44a2e8043615f42f69eed6ed84a5",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/seqcore.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/seqcore.fsi",
+          "bytes": 8208,
+          "originalSourceSha256": "87c849ecc30af853f3129741a3ab940574abd3ac2fb21bd152897f86656ebd60",
+          "crlfProjectionBytes": 8417,
+          "projectedSourceSha256": "df78ad4b41f4901c8cf44c42c4004a74cfcc3aec66edd89e09d7f45d411404cd",
+          "declaredDocumentHash": "df78ad4b41f4901c8cf44c42c4004a74cfcc3aec66edd89e09d7f45d411404cd",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/set.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/set.fs",
+          "bytes": 38305,
+          "originalSourceSha256": "acadad9be942f28790f4b750796bf187dd1ac77dee580be60c85be97bfd8578a",
+          "crlfProjectionBytes": 39477,
+          "projectedSourceSha256": "d89805abb2a5116950b6edcdaadc79c27daf32987e742ba6cb447a38f17e7c56",
+          "declaredDocumentHash": "d89805abb2a5116950b6edcdaadc79c27daf32987e742ba6cb447a38f17e7c56",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/set.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/set.fsi",
+          "bytes": 41056,
+          "originalSourceSha256": "54de4f3057badf08abee596811e0283de9bd5e5c834c04d6e0fd3332d3f2807f",
+          "crlfProjectionBytes": 41988,
+          "projectedSourceSha256": "413910439ab11419c973ad85cf905af0b674fd56d54dfdb17935c456ce2cf81e",
+          "declaredDocumentHash": "413910439ab11419c973ad85cf905af0b674fd56d54dfdb17935c456ce2cf81e",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/string.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/string.fs",
+          "bytes": 6483,
+          "originalSourceSha256": "970dd52b8e7f1f94a9739b38c9ff79a10542f95a65035c73a886d36a7529209f",
+          "crlfProjectionBytes": 6684,
+          "projectedSourceSha256": "0a50d9452a8a5a434f4ab6718c33de0230933bfc9e8350a2c44bee786b2b97a9",
+          "declaredDocumentHash": "0a50d9452a8a5a434f4ab6718c33de0230933bfc9e8350a2c44bee786b2b97a9",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/string.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/string.fsi",
+          "bytes": 11282,
+          "originalSourceSha256": "64a9baef516c9f0124154f33f1f5c2e5a42a947863bb0fe5ee9ec4f050e46de0",
+          "crlfProjectionBytes": 11559,
+          "projectedSourceSha256": "c10880e9456b06b39bcf9e72a26cd3cc3689b8f95d6e095eefa1dc82e79de75a",
+          "declaredDocumentHash": "c10880e9456b06b39bcf9e72a26cd3cc3689b8f95d6e095eefa1dc82e79de75a",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/tasks.fs",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/tasks.fs",
+          "bytes": 31892,
+          "originalSourceSha256": "7fa6b0f8c70da3648849b0cd43fed52e92f23c80af2af1d843207fcb25e22e3a",
+          "crlfProjectionBytes": 32610,
+          "projectedSourceSha256": "5a6872b9b2e61ecc09a7f2941f1d15aface679e2a37899887f218d12004c7246",
+          "declaredDocumentHash": "5a6872b9b2e61ecc09a7f2941f1d15aface679e2a37899887f218d12004c7246",
+          "state": "crlf-source-projection-matched"
+        },
+        {
+          "sourceMember": "src/fsharp/src/FSharp.Core/tasks.fsi",
+          "url": "https://raw.githubusercontent.com/dotnet/dotnet/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Core/tasks.fsi",
+          "bytes": 20818,
+          "originalSourceSha256": "371f62e44cb4c2daa37d191f2f994c7c7d1f28172fe3cfc00c8ffd9c8af38a12",
+          "crlfProjectionBytes": 21277,
+          "projectedSourceSha256": "ee0a4ccbe3afb96e16a583339798f1c31ff9fdc325a7462b3a6bb034ed55bd03",
+          "declaredDocumentHash": "ee0a4ccbe3afb96e16a583339798f1c31ff9fdc325a7462b3a6bb034ed55bd03",
+          "state": "crlf-source-projection-matched"
+        }
+      ],
+      "targetAssemblyLoadedOrExecuted": false
+    },
+    {
+      "assembly": "Fantomas.Core.dll",
+      "bytes": 1951232,
+      "sha256": "69738cba70e9e820d399b28b7ffb284063cbe3082a295b8f081369b192c68fbc",
+      "embeddedPortablePdb": {
+        "bytes": 437492,
+        "sha256": "38f4b584224f1afaf837db3f85c3348f1854f212965ad50cfd75316b83517643",
+        "peDebugDirectoryType": 17
+      },
+      "mvid": "92217fb8-433a-1a6d-c7d7-4442a1544e79",
+      "assemblyReferences": [
+        {
+          "name": "netstandard",
+          "version": "2.0.0.0",
+          "publicKeyOrToken": "cc7b13ffcd2ddd51"
+        },
+        {
+          "name": "FSharp.Core",
+          "version": "10.0.0.0",
+          "publicKeyOrToken": "b03f5f7f11d50a3a"
+        },
+        {
+          "name": "Fantomas.FCS",
+          "version": "8.0.7.0",
+          "publicKeyOrToken": ""
+        }
+      ],
+      "documentCounts": {
+        "unresolved": 1,
+        "embedded-document-checksum-verified": 1,
+        "fantomas-crlf-source-matched": 33,
+        "no-document-checksum": 1
+      },
+      "sourceLinkRepository": "fsprojects/fantomas",
+      "sourceLinkCommit": "13099e465c1c85da6e84451e7eed34c8f0934044",
+      "compilationOptionRecordCount": 0,
+      "embeddedSourceDocuments": [
+        {
+          "sourceMember": "generated/Fantomas.Core.AssemblyInfo.fs",
+          "bytes": 1516,
+          "sha256": "3d2115dbb538c1672ffd2bd34772ad8449cd528355f2250786faa01d754992d5",
+          "declaredDocumentHash": "3d2115dbb538c1672ffd2bd34772ad8449cd528355f2250786faa01d754992d5",
+          "checksumMatches": true
+        }
+      ],
+      "debugDocuments": [
+        {
+          "sourceMember": "generated/.NETStandard,Version=v2.0.AssemblyAttributes.fs",
+          "state": "unresolved",
+          "declaredDocumentHash": "a6210cd5e6a4620b34cbb2d9194fde6789d29376565de2e5eee130ffde00a78d",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/Fantomas.Core.AssemblyInfo.fs",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "3d2115dbb538c1672ffd2bd34772ad8449cd528355f2250786faa01d754992d5",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/ASTTransformer.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "c406dc04d219c9e922821b2828146ef94bfaf368c3e15ff054d68befc1c92907",
+          "originalSourceSha256": "dfee1b9a7d4deb29e840f0270f136c1ea1edd259cd4a03acd4fe4c4fb172c332",
+          "projectedSourceSha256": "c406dc04d219c9e922821b2828146ef94bfaf368c3e15ff054d68befc1c92907"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/ASTTransformer.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "234e40e1cd801d4948e3f444345e356be2ee8afd6b2a4de67123a10778cdec60",
+          "originalSourceSha256": "446dc1537e2af5ef458cc0edfa8b3e748e0fa950bcadc7138efa11ca55f56d9e",
+          "projectedSourceSha256": "234e40e1cd801d4948e3f444345e356be2ee8afd6b2a4de67123a10778cdec60"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/AssemblyInfo.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "63e91b3d6b9098d86818b11a8a8bf54c3fcc72648c301874583cd3527081de95",
+          "originalSourceSha256": "31f6fe782ec18a9e2df2ebad835357053986f3cae9624ade4fb667afb74ca3b9",
+          "projectedSourceSha256": "63e91b3d6b9098d86818b11a8a8bf54c3fcc72648c301874583cd3527081de95"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/CodeFormatter.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "0761fade2d68daf45660c6016fb3aa08f8edb5e738e6d14ef7f4e9b4aa57f09c",
+          "originalSourceSha256": "922fb00f3109402b79237edd6ae485159b047ee3bcfdcabd7698ded0152c7909",
+          "projectedSourceSha256": "0761fade2d68daf45660c6016fb3aa08f8edb5e738e6d14ef7f4e9b4aa57f09c"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/CodeFormatter.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "cf84397aa40bed12206db0fa46671556738066b787869f6862458b98409cb69f",
+          "originalSourceSha256": "f88302da8e1d8bac852fe31ad5d7764b9034012d3cf578e7c38a4636b62e13a6",
+          "projectedSourceSha256": "cf84397aa40bed12206db0fa46671556738066b787869f6862458b98409cb69f"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/CodeFormatterImpl.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "8e8dd9ae82eaa651f83b8196090e2ef994f51a6c0175a682e0f89a50d96794da",
+          "originalSourceSha256": "cb9fc7a40e9b146dfe8f4de7ef40393a5812bf77c4f07c0e33d3c0fae9e3603d",
+          "projectedSourceSha256": "8e8dd9ae82eaa651f83b8196090e2ef994f51a6c0175a682e0f89a50d96794da"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/CodeFormatterImpl.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "b4f0476489e40862740ea00091bba863c164245c04f5c67a9798a7b17c8db182",
+          "originalSourceSha256": "0bc1abfb8e63f9a2053696e016c89879d53d003612739999926b44086a7aa4df",
+          "projectedSourceSha256": "b4f0476489e40862740ea00091bba863c164245c04f5c67a9798a7b17c8db182"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/CodeFormatterTypes.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "432968566e5e4b7c53c3dc93cd992be711a427291fbccaa3f32420b4fd63102d",
+          "originalSourceSha256": "9df5ad7e30c0d191390e17e79e1694c6b88dde1fb783a0f66600078940338543",
+          "projectedSourceSha256": "432968566e5e4b7c53c3dc93cd992be711a427291fbccaa3f32420b4fd63102d"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/CodePrinter.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "2ba865a72608ce7060d0f4e78c609bf13e29087302c4385749fe28997a62be4f",
+          "originalSourceSha256": "0e4ba481500f28360eda83d44e4de04da854be753fd49ff9f4afeae85db5e77e",
+          "projectedSourceSha256": "2ba865a72608ce7060d0f4e78c609bf13e29087302c4385749fe28997a62be4f"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/CodePrinter.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "26d238e8c7a4747f56cf20ef0c66c388a56df2c5ff44711fb32d6a065edac89b",
+          "originalSourceSha256": "d5d614d43e85b39cddfd6645d1c8933683e3924cae988279a07a9dc9c033deef",
+          "projectedSourceSha256": "26d238e8c7a4747f56cf20ef0c66c388a56df2c5ff44711fb32d6a065edac89b"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Context.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "70212de1786bd7b589684b4f461c425d5cda6e041fb422dcf9a3c35101018aa3",
+          "originalSourceSha256": "3b3383f205545790ab21b6cf25e0bbb859a2e39e0537817af76dc348547e12fd",
+          "projectedSourceSha256": "70212de1786bd7b589684b4f461c425d5cda6e041fb422dcf9a3c35101018aa3"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Context.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "7d1d6774934a0334403b2ff3334ac06c6749a4b511a524db4c6dee2743813264",
+          "originalSourceSha256": "363609d9c5404abb88b4badea0713ed3103c157951618033cb4332d63bb60e43",
+          "projectedSourceSha256": "7d1d6774934a0334403b2ff3334ac06c6749a4b511a524db4c6dee2743813264"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Defines.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "34d07ae0d934090ef91670746abb8505d3e93e1c57667555219e016a389300c1",
+          "originalSourceSha256": "ecf30afdf40246c87cc3296ad9c8b3a92bebde22a70b2a41f4e4d5b3333eae09",
+          "projectedSourceSha256": "34d07ae0d934090ef91670746abb8505d3e93e1c57667555219e016a389300c1"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Defines.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "b180f830f1df0536bd40bea819bf0153db5bad5e6db5089ea4fe253372735324",
+          "originalSourceSha256": "217f5b782a0d9e8230c8ffea4e8355dc923600871a3f34a85ea27e58eb052187",
+          "projectedSourceSha256": "b180f830f1df0536bd40bea819bf0153db5bad5e6db5089ea4fe253372735324"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/EventList.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "b490f2cf030787eb4258f33ba457f9a91cf931c5d9defbbdca7fd5ae550d31f2",
+          "originalSourceSha256": "7d949dac95ba1f8d1ff44f81070435914418b9ebea5c774296fe7713e5cbced0",
+          "projectedSourceSha256": "b490f2cf030787eb4258f33ba457f9a91cf931c5d9defbbdca7fd5ae550d31f2"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Exceptions.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "b3f066fb1bd632feb602353db7a24eed55e871981b164880e6282f916150905a",
+          "originalSourceSha256": "6b1ee7003d971fdaa60d584629f2a741601cdf234941ae93ba61e73cdc6992f5",
+          "projectedSourceSha256": "b3f066fb1bd632feb602353db7a24eed55e871981b164880e6282f916150905a"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/FormatConfig.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "e0bed3bc1870f89338b30dcbc015d1defa95464bcd25dad9c1ed97d1aae05a08",
+          "originalSourceSha256": "dd7044e5a17f0b270c30cdc73d288f915e2d50b198eb88e885ec81755a505606",
+          "projectedSourceSha256": "e0bed3bc1870f89338b30dcbc015d1defa95464bcd25dad9c1ed97d1aae05a08"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/MultipleDefineCombinations.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "9e73be727498a384d3b12350010cb547f9006594417a9873a9312de0662b67fe",
+          "originalSourceSha256": "27e07e3e7b06a4705c31beee5cdc56c723989e6a8d7f70f750f2d114f043c391",
+          "projectedSourceSha256": "9e73be727498a384d3b12350010cb547f9006594417a9873a9312de0662b67fe"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/MultipleDefineCombinations.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "41ae0505e6ce12165e5050a5e442431f63b201dc2ce3dd1a2d9483e13e24387f",
+          "originalSourceSha256": "9944d83b7f71118382248311fb367fb096189057b65efe52bbf844a5362ad922",
+          "projectedSourceSha256": "41ae0505e6ce12165e5050a5e442431f63b201dc2ce3dd1a2d9483e13e24387f"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Queue.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "60550623387edd8a210da8a4d4f4dd32f761490c1edc921f9b1db9bf9f5862e3",
+          "originalSourceSha256": "7418e0e190a0f5ee6264fcf6377e5733ebe968036031e3c2da7fa51eb353c8e1",
+          "projectedSourceSha256": "60550623387edd8a210da8a4d4f4dd32f761490c1edc921f9b1db9bf9f5862e3"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/RangeHelpers.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "72979cfb12383b6f9f6cf1fff5ab21afc100945ecd4b648d4fee8c14cd0ea33e",
+          "originalSourceSha256": "54855bbe3fbae724d5cc73fb8c19f77bd42f5d905913473d01782a2a7b73b60e",
+          "projectedSourceSha256": "72979cfb12383b6f9f6cf1fff5ab21afc100945ecd4b648d4fee8c14cd0ea33e"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/RangeHelpers.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "2b2e9a9f4c691da26d7657fbca72a0114c54a8b320db1ec9d9b22ee7f1f680cb",
+          "originalSourceSha256": "1345c4df363d42748f5c304cc5bfc136ea29dbd0ea44036fb0b94c400248a84e",
+          "projectedSourceSha256": "2b2e9a9f4c691da26d7657fbca72a0114c54a8b320db1ec9d9b22ee7f1f680cb"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Selection.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "72560b1a6d225d9f569326e0a447a4038d75899d6fbfa7bf39e1a75365c987b1",
+          "originalSourceSha256": "c84202e00e87a579534b5a44031909bfeded343744be6ae6fdbb633edc09d6ab",
+          "projectedSourceSha256": "72560b1a6d225d9f569326e0a447a4038d75899d6fbfa7bf39e1a75365c987b1"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Selection.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "85542d8a7a05a79f258f416862617744aac3d207eb628f63c94af6cb5cf5e894",
+          "originalSourceSha256": "607d05e82960ac2bf3c39aa971fe299c27e7ff27178be8ec20cd8d1e464834c5",
+          "projectedSourceSha256": "85542d8a7a05a79f258f416862617744aac3d207eb628f63c94af6cb5cf5e894"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/SyntaxOak.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "6f351024fed0af9de4fd16fa15e65e19c46fb4b6e8452a7d3bd0728ad9ff2e7f",
+          "originalSourceSha256": "3574d6e1bc6a6fabf865c451642e9f01a2a682991991f8b94130a7bb73a9a8e4",
+          "projectedSourceSha256": "6f351024fed0af9de4fd16fa15e65e19c46fb4b6e8452a7d3bd0728ad9ff2e7f"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Trivia.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "586ad8deaae82497aaf252b90308f54124686c0b98fee431c52b39218cf6749c",
+          "originalSourceSha256": "f8ccfb462dce53fcfe0f01d6b8d42a4bb3545a2c5f6463005ac848d91eff561f",
+          "projectedSourceSha256": "586ad8deaae82497aaf252b90308f54124686c0b98fee431c52b39218cf6749c"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Trivia.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "73dea588c9f25eac5c05f15dfd1cefc2ec67f8e20aa1d710d901b3da09be5430",
+          "originalSourceSha256": "fd85e03d3f2901241f14663c58ec16e347853eb0b01af9f8577e406630f515a0",
+          "projectedSourceSha256": "73dea588c9f25eac5c05f15dfd1cefc2ec67f8e20aa1d710d901b3da09be5430"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Utils.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "cf89d51238c4dc610876c8ecbfb5201e9ea317513469e0ceb8a1261b1fd908bd",
+          "originalSourceSha256": "49bbe263641237b7d6f45eeafe269a89a126fb501fe7b555f879416313206be1",
+          "projectedSourceSha256": "cf89d51238c4dc610876c8ecbfb5201e9ea317513469e0ceb8a1261b1fd908bd"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Utils.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "3e581600ba90c437c9c9bbc730c765e1d53aaff8978c42c41d0a028f1632a343",
+          "originalSourceSha256": "ef76a0f5aba187bc7974c771b436d2f3b3280fd0e913530914f3b63807b5cead",
+          "projectedSourceSha256": "3e581600ba90c437c9c9bbc730c765e1d53aaff8978c42c41d0a028f1632a343"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Validation.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "d3bc9fc86040a45207c95b40a53af69202a86c4e85afb486017b937afbfc2349",
+          "originalSourceSha256": "3912117084f5094099cd057161bfe3d1141cf64bb43481cc23d2db2597484539",
+          "projectedSourceSha256": "d3bc9fc86040a45207c95b40a53af69202a86c4e85afb486017b937afbfc2349"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Validation.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "9a8ea2d38baabc18f5c5a1cfb6f222ed4566ce31dc35b01318b1a97653ff3a35",
+          "originalSourceSha256": "9e3ee2238dcf0af4bdcff2b4658b9ddb1c4e3f98f1e6f342b148d254679921c1",
+          "projectedSourceSha256": "9a8ea2d38baabc18f5c5a1cfb6f222ed4566ce31dc35b01318b1a97653ff3a35"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/Version.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "5b3c091334e8541de004f566ef5f295f47aa0461f688a1b9fdb91055928f0e8a",
+          "originalSourceSha256": "4bfcdfc093de45476ac5232975f30b1e81df34252885b2f854419ace08ca2fd7",
+          "projectedSourceSha256": "5b3c091334e8541de004f566ef5f295f47aa0461f688a1b9fdb91055928f0e8a"
+        },
+        {
+          "sourceMember": "src/Fantomas.Core/WriterEvent.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "64c0e15f47e1ca39d8f69d03d9ff6a5e0c37670b1baf76934f91566cfb910961",
+          "originalSourceSha256": "ac4a3f4bb07108766828473c328cabb262ac82fee46e91f0d364cdafd1b1ba61",
+          "projectedSourceSha256": "64c0e15f47e1ca39d8f69d03d9ff6a5e0c37670b1baf76934f91566cfb910961"
+        },
+        {
+          "sourceMember": "generated/unknown",
+          "state": "no-document-checksum",
+          "declaredDocumentHash": "",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        }
+      ],
+      "targetAssemblyLoadedOrExecuted": false
+    },
+    {
+      "assembly": "Fantomas.FCS.dll",
+      "bytes": 6706176,
+      "sha256": "0274b668420330d6633b9a41acdeaf2b774cddab6c03a23ab750e20863552ff4",
+      "embeddedPortablePdb": {
+        "bytes": 1622360,
+        "sha256": "7211b048062e69ccb747ee262aad3f43c5acb97b2192ddd68d915dbc83c4d465",
+        "peDebugDirectoryType": 17
+      },
+      "mvid": "8fb5cf9d-258a-45b1-f558-79b13bca6542",
+      "assemblyReferences": [
+        {
+          "name": "netstandard",
+          "version": "2.0.0.0",
+          "publicKeyOrToken": "cc7b13ffcd2ddd51"
+        },
+        {
+          "name": "FSharp.Core",
+          "version": "10.0.0.0",
+          "publicKeyOrToken": "b03f5f7f11d50a3a"
+        },
+        {
+          "name": "System.Diagnostics.DiagnosticSource",
+          "version": "10.0.0.0",
+          "publicKeyOrToken": "cc7b13ffcd2ddd51"
+        },
+        {
+          "name": "System.Memory",
+          "version": "4.0.2.0",
+          "publicKeyOrToken": "cc7b13ffcd2ddd51"
+        },
+        {
+          "name": "System.Buffers",
+          "version": "4.0.2.0",
+          "publicKeyOrToken": "cc7b13ffcd2ddd51"
+        },
+        {
+          "name": "System.Collections.Immutable",
+          "version": "10.0.0.0",
+          "publicKeyOrToken": "b03f5f7f11d50a3a"
+        }
+      ],
+      "documentCounts": {
+        "transformed-fcs-crlf-matched": 87,
+        "unresolved": 1,
+        "embedded-document-checksum-verified": 15,
+        "fantomas-crlf-source-matched": 3,
+        "no-document-checksum": 1
+      },
+      "sourceLinkRepository": "fsprojects/fantomas",
+      "sourceLinkCommit": "13099e465c1c85da6e84451e7eed34c8f0934044",
+      "compilationOptionRecordCount": 0,
+      "embeddedSourceDocuments": [
+        {
+          "sourceMember": "generated/FSComp.fs",
+          "bytes": 1017610,
+          "sha256": "ac8224fb2feb2dff859e44b8d4a69e6a939ea301d876e435c23abaf3539d1322",
+          "declaredDocumentHash": "ac8224fb2feb2dff859e44b8d4a69e6a939ea301d876e435c23abaf3539d1322",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/FSComp.fsi",
+          "bytes": 740448,
+          "sha256": "4aa88d8469c81c6cd24da3b06bf49cf392bf6a957f18f20850620e9eb429de6e",
+          "declaredDocumentHash": "4aa88d8469c81c6cd24da3b06bf49cf392bf6a957f18f20850620e9eb429de6e",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/Fantomas.FCS.AssemblyInfo.fs",
+          "bytes": 1514,
+          "sha256": "9172fe066c3926cc6d9b18da73528550a28c2a96a2a7f7a041357d091e8498f2",
+          "declaredDocumentHash": "9172fe066c3926cc6d9b18da73528550a28c2a96a2a7f7a041357d091e8498f2",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/illex.fs",
+          "bytes": 380958,
+          "sha256": "f6baa13f15723b8cffce61bfecab295ccbdb847146d84a4c56a35f92069fb2ca",
+          "declaredDocumentHash": "f6baa13f15723b8cffce61bfecab295ccbdb847146d84a4c56a35f92069fb2ca",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/illex.fsi",
+          "bytes": 371,
+          "sha256": "a83f6b0148f5588b0bd6347eee0ee1f27b7526f5a9d31be86aa04d31dd2c6d15",
+          "declaredDocumentHash": "a83f6b0148f5588b0bd6347eee0ee1f27b7526f5a9d31be86aa04d31dd2c6d15",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/ilpars.fs",
+          "bytes": 83851,
+          "sha256": "0125ba4a71b89bbadb0e48b4adc75e3a57a7a8975fc1ea7a4e7f2abfb628c165",
+          "declaredDocumentHash": "0125ba4a71b89bbadb0e48b4adc75e3a57a7a8975fc1ea7a4e7f2abfb628c165",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/ilpars.fsi",
+          "bytes": 4159,
+          "sha256": "bdc3f8c2bebe464292b5875c1db2fbdfe3c577718033c1bf630bf639bea4312a",
+          "declaredDocumentHash": "bdc3f8c2bebe464292b5875c1db2fbdfe3c577718033c1bf630bf639bea4312a",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/lex.fs",
+          "bytes": 1136279,
+          "sha256": "0fc4d2fd119999c47148e076037d12a0d82b02a59c12f9bee1019a6e98ff0d5d",
+          "declaredDocumentHash": "0fc4d2fd119999c47148e076037d12a0d82b02a59c12f9bee1019a6e98ff0d5d",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/lex.fsi",
+          "bytes": 2042,
+          "sha256": "15532d5000b9a8f7e9ba9e71fd951e7262801a7babf5ca111d7eba1141e1c38f",
+          "declaredDocumentHash": "15532d5000b9a8f7e9ba9e71fd951e7262801a7babf5ca111d7eba1141e1c38f",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/pars.fs",
+          "bytes": 1709814,
+          "sha256": "9bfed64604f90381fb3ccce924531508ce47549d2de3a84ac04728a05eb4d35c",
+          "declaredDocumentHash": "9bfed64604f90381fb3ccce924531508ce47549d2de3a84ac04728a05eb4d35c",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/pars.fsi",
+          "bytes": 21173,
+          "sha256": "e9eccb158fba41e1f093076f10d2625cf1cebd802c3f8ddfbf626ea830b1ee9b",
+          "declaredDocumentHash": "e9eccb158fba41e1f093076f10d2625cf1cebd802c3f8ddfbf626ea830b1ee9b",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/pplex.fs",
+          "bytes": 38611,
+          "sha256": "537f94e737004c0b63f2a88c2cc0ed84d4ffccdb02ce1752d76933df7401853d",
+          "declaredDocumentHash": "537f94e737004c0b63f2a88c2cc0ed84d4ffccdb02ce1752d76933df7401853d",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/pplex.fsi",
+          "bytes": 352,
+          "sha256": "063414e4b463d8b1f68f42b7da7a2080eff307d1a879e7192b0c588103e5d83f",
+          "declaredDocumentHash": "063414e4b463d8b1f68f42b7da7a2080eff307d1a879e7192b0c588103e5d83f",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/pppars.fs",
+          "bytes": 20407,
+          "sha256": "a463a417d62ba7b78c9fc9625ba9c759ee0dc4c19d82ef8c9456d99ecb094fd3",
+          "declaredDocumentHash": "a463a417d62ba7b78c9fc9625ba9c759ee0dc4c19d82ef8c9456d99ecb094fd3",
+          "checksumMatches": true
+        },
+        {
+          "sourceMember": "generated/pppars.fsi",
+          "bytes": 1292,
+          "sha256": "b7431d866da51c7c8326c590d2fd73c09648ca698e53cc19f281d782c10dee61",
+          "declaredDocumentHash": "b7431d866da51c7c8326c590d2fd73c09648ca698e53cc19f281d782c10dee61",
+          "checksumMatches": true
+        }
+      ],
+      "debugDocuments": [
+        {
+          "sourceMember": "src/Compiler/AbstractIL/il.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "267052fa2567abb6df03365e04bf6a6a93baeaa8de45c1224c0c91718ab7ad2f",
+          "originalSourceSha256": "bd8070774772a41f52eefc7fa09d2f78da40022622448ad6e13ad53265fb78e6",
+          "projectedSourceSha256": "267052fa2567abb6df03365e04bf6a6a93baeaa8de45c1224c0c91718ab7ad2f"
+        },
+        {
+          "sourceMember": "src/Compiler/AbstractIL/il.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "2ce4793c40ef573fe6c96164e2f1f2af7674077ec10e6d3c2545b6e010ca0d98",
+          "originalSourceSha256": "6c39907eff242391df3903da87e2e24ac9f999bc107d1cc5bdfcf2b2f3aa5c85",
+          "projectedSourceSha256": "2ce4793c40ef573fe6c96164e2f1f2af7674077ec10e6d3c2545b6e010ca0d98"
+        },
+        {
+          "sourceMember": "src/Compiler/AbstractIL/ilascii.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "bba2dd6ec39c9f9da0effb27b9141a5319eae8a6b2cd27acac8e7d86d39e9040",
+          "originalSourceSha256": "f2dd48ab4adf253a67c6bba8e9852e983f42d33975168e87c9547f5300cdf5f3",
+          "projectedSourceSha256": "bba2dd6ec39c9f9da0effb27b9141a5319eae8a6b2cd27acac8e7d86d39e9040"
+        },
+        {
+          "sourceMember": "src/Compiler/AbstractIL/ilascii.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "a6e012289a43306e6d8f1ff4ec7aa9abd432e4d0190bc0793e9891a378ab3d75",
+          "originalSourceSha256": "dee9ff8ce6a42ae945626fc53aabe325c540dab7ad3d14c9eff69949d4dd31a1",
+          "projectedSourceSha256": "a6e012289a43306e6d8f1ff4ec7aa9abd432e4d0190bc0793e9891a378ab3d75"
+        },
+        {
+          "sourceMember": "src/Compiler/AbstractIL/illex.fsl",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "da3249322344977b633a051cc619f005164a9e2ad2c323c9809bfdf5f45c0e86",
+          "originalSourceSha256": "88abc29a33210e08870eccd2a0de3a1e733dc9b6ca9653d5b204ea99f9ffb6d3",
+          "projectedSourceSha256": "da3249322344977b633a051cc619f005164a9e2ad2c323c9809bfdf5f45c0e86"
+        },
+        {
+          "sourceMember": "src/Compiler/AbstractIL/ilpars.fsy",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "7278448606f1d3ffe9b94ff804f0d33b9ec628f39191e2bac73c20d4b281885a",
+          "originalSourceSha256": "afec2f02b6625b1206bc8c561c755fff1e15a7efef6a804467a6eda7bfa3c034",
+          "projectedSourceSha256": "7278448606f1d3ffe9b94ff804f0d33b9ec628f39191e2bac73c20d4b281885a"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/DiagnosticOptions.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "d9b58e7c96c603b7b8f8b3241e5fd74867f800b6e50ad109a17ceb98c185a364",
+          "originalSourceSha256": "27662ceb72cea772d011cc9cc8e57c8d091adf5e3027971ea37545af8e60d5cf",
+          "projectedSourceSha256": "d9b58e7c96c603b7b8f8b3241e5fd74867f800b6e50ad109a17ceb98c185a364"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/DiagnosticOptions.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "d02ef2b2c9c3bffb51b0a6204df8a11fd95698957440555576e12146efcfa8d0",
+          "originalSourceSha256": "63cb240a125e42a6b0dcb0644e74ef72b568c46cc177954424efeeb526ba40d4",
+          "projectedSourceSha256": "d02ef2b2c9c3bffb51b0a6204df8a11fd95698957440555576e12146efcfa8d0"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/DiagnosticsLogger.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "e72f8db6acb48773562b10dde84a2059c312dd87e1b1050e474a9a33a64bc57b",
+          "originalSourceSha256": "7bd91dd2ff250aa348d6c205483e63c6b4340b3d76d7767956c0235726948123",
+          "projectedSourceSha256": "e72f8db6acb48773562b10dde84a2059c312dd87e1b1050e474a9a33a64bc57b"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/DiagnosticsLogger.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "b235ee009ce689de48c71a6b58ea50910d03540d14f54b7118273bb9711baa2a",
+          "originalSourceSha256": "ee8c2bf5a3176b00017b7f38aaac5a8dfee0dfcf00d930ef2114ca6c0a69eaa0",
+          "projectedSourceSha256": "b235ee009ce689de48c71a6b58ea50910d03540d14f54b7118273bb9711baa2a"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/Hashing.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "5d017335b343c9f0f8c67795d92c5cdbb5d3afcf179f09066e8a508d2beb9b13",
+          "originalSourceSha256": "248661e1b47a2ef12bd87283a9313586dab26092c157486199c852e9551f95fe",
+          "projectedSourceSha256": "5d017335b343c9f0f8c67795d92c5cdbb5d3afcf179f09066e8a508d2beb9b13"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/Hashing.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "892c569b387ec4673845f77a657c1abc21ecbd67ad0552ce582a5f88ac3123cd",
+          "originalSourceSha256": "1096abd61bf45265397e09130a0c0d4625ecae4d71c503df267cfc1698ce73a2",
+          "projectedSourceSha256": "892c569b387ec4673845f77a657c1abc21ecbd67ad0552ce582a5f88ac3123cd"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/LanguageFeatures.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "209f76b4d50132e3ba900cfa19a729e1b052b0775a6f28dd547e412327e8859f",
+          "originalSourceSha256": "46a21816d1cb279087578381abb376f320d7d3422bdf3108012eee0fa8e7a49c",
+          "projectedSourceSha256": "209f76b4d50132e3ba900cfa19a729e1b052b0775a6f28dd547e412327e8859f"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/LanguageFeatures.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "878f22f212dc6f7c6021ebc10c6128fb9825809ce61306da67b75e2b8fc8abdc",
+          "originalSourceSha256": "61cca7465b66a615b2d69ce13621bc8511deb1af1cb154353e6036a75915e340",
+          "projectedSourceSha256": "878f22f212dc6f7c6021ebc10c6128fb9825809ce61306da67b75e2b8fc8abdc"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/RichText.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "04042a8004cfe550104da4e0fe7936126614a21bc7ffdc7ced52bf8259820074",
+          "originalSourceSha256": "660d75b12aa155a02b567559d8888ec044f998d9167426368220d1e68cf09db5",
+          "projectedSourceSha256": "04042a8004cfe550104da4e0fe7936126614a21bc7ffdc7ced52bf8259820074"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/RichText.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "1d07d4edb2d6c1463cc3cef9b3806d2c57929452cf4f46f7bb7c2ff00dfc6671",
+          "originalSourceSha256": "8b246c8e6eb8e94f5e07ebc67e9f22ad971d49799c9ad706d73c0a766623dbd4",
+          "projectedSourceSha256": "1d07d4edb2d6c1463cc3cef9b3806d2c57929452cf4f46f7bb7c2ff00dfc6671"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/prim-lexing.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "7ccdb9381c107c4eff0f90b9d1994769972aa5c7ed4346262ecb00f1362f5822",
+          "originalSourceSha256": "9db9c8b680e8cd46a33cfd3383d8a9916373ee2d22e563a7a6fd5ac0c594115a",
+          "projectedSourceSha256": "7ccdb9381c107c4eff0f90b9d1994769972aa5c7ed4346262ecb00f1362f5822"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/prim-lexing.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "4962c084c3b25eab410185f4f7adc67045a63525fcfcf722ba5188b70aa7e8a6",
+          "originalSourceSha256": "5e6ab3770093b65d46800d55a50e4f1c5b4a2c4eb150c4f1567953fc9215d5c0",
+          "projectedSourceSha256": "4962c084c3b25eab410185f4f7adc67045a63525fcfcf722ba5188b70aa7e8a6"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/prim-parsing.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "0d150ccda50b9c6375e60af4107c6fe50c8af6931095c6f656d118eae864d204",
+          "originalSourceSha256": "056750c911d82899a8d215e9cbcc3b08ff55b41a81a4c87bb3dca48cb2bb9274",
+          "projectedSourceSha256": "0d150ccda50b9c6375e60af4107c6fe50c8af6931095c6f656d118eae864d204"
+        },
+        {
+          "sourceMember": "src/Compiler/Facilities/prim-parsing.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "2688b0227f917343ab002cacb468a28fc03a028d45522eac73b21cfc11a654a1",
+          "originalSourceSha256": "3bb09b9b0c1494d512d232105d92a99a922dd116c67c182194ff5a011179dff6",
+          "projectedSourceSha256": "2688b0227f917343ab002cacb468a28fc03a028d45522eac73b21cfc11a654a1"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/LexFilter.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "509cd78b8cff0f7232d44b104d072f5ca25098a1a8bc582ed467322b24e1dbbc",
+          "originalSourceSha256": "76f5f8fa4f5e58fbfd4d426984e502cfd066cca7b22edcd43d5b50f13600be2f",
+          "projectedSourceSha256": "509cd78b8cff0f7232d44b104d072f5ca25098a1a8bc582ed467322b24e1dbbc"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/LexFilter.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "aa6f040607d021396e88bb8129ead0994c6a7f25b5d4f11db60d4e4b5c98f8b9",
+          "originalSourceSha256": "1bd70eecff6189f12329497561811a5c55bfafd7153f2c9819a6669fb41bcc99",
+          "projectedSourceSha256": "aa6f040607d021396e88bb8129ead0994c6a7f25b5d4f11db60d4e4b5c98f8b9"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/LexHelpers.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "a608237a72a992d5722c41d6736e3165a4aa5ecda39af0f191b3ceebbaad5d3e",
+          "originalSourceSha256": "7306540c2db1621a9b5b2fc665bf0c05c1fb8e2d6864aef8b33258b3579c6704",
+          "projectedSourceSha256": "a608237a72a992d5722c41d6736e3165a4aa5ecda39af0f191b3ceebbaad5d3e"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/LexHelpers.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "cd73ba86b9f31a437e4e1176e06c0bc3142d1a2e387d832b7d0a0638753fab47",
+          "originalSourceSha256": "9c438d6802a3f2b99321fb43366d37a97e00f3e49997680b67dd3b130652a27d",
+          "projectedSourceSha256": "cd73ba86b9f31a437e4e1176e06c0bc3142d1a2e387d832b7d0a0638753fab47"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/LexerStore.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "ef85fc9aafa76c897424d9bc9c812357c46200dfbf1022a6f12c96e67c3909ef",
+          "originalSourceSha256": "cfd388b66aaa622235a79224de032cc6eb178a03b7af99d06272926462f318c7",
+          "projectedSourceSha256": "ef85fc9aafa76c897424d9bc9c812357c46200dfbf1022a6f12c96e67c3909ef"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/LexerStore.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "7e9392d30c7fedf8f169655e4c960ddaf87c478bf9d5dbecb5b1247c92d8a2c4",
+          "originalSourceSha256": "7dd37206c9714bbe5421e6d0acff121904b892f2b845c77b03a6926e3cbe2c13",
+          "projectedSourceSha256": "7e9392d30c7fedf8f169655e4c960ddaf87c478bf9d5dbecb5b1247c92d8a2c4"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/ParseHelpers.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "1c23e37aa2eccd915134e6312056d7e5b3a1af820f628f93aea79ef6cf844738",
+          "originalSourceSha256": "6aa9210d3562e8096e3a0599d043f1e63d7f001495aa5201c1c80fd73e4b5f61",
+          "projectedSourceSha256": "1c23e37aa2eccd915134e6312056d7e5b3a1af820f628f93aea79ef6cf844738"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/ParseHelpers.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "96cad55ab2f5267fb1b704a8fc6b0868e064608da3cc288279e2fdb93a3e4f40",
+          "originalSourceSha256": "06b6b6125613dd3295bcf7677d8c2241340646ab8aa0528d442650198929c0be",
+          "projectedSourceSha256": "96cad55ab2f5267fb1b704a8fc6b0868e064608da3cc288279e2fdb93a3e4f40"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/PrettyNaming.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "dbf8eeef8d1094498750c6e7c3fc0511366b0a202e15f6c81882f394033c2292",
+          "originalSourceSha256": "d93e61e6b95ab20dfe6d7830fc0b844ce625bf290ca83e580babe0bbce676788",
+          "projectedSourceSha256": "dbf8eeef8d1094498750c6e7c3fc0511366b0a202e15f6c81882f394033c2292"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/PrettyNaming.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "6c4aa38ebcae84cb61e4399cd096bcacc59efbe77fa56222b69cf705fd402e82",
+          "originalSourceSha256": "e62c6f4cfd34ca4c1fea9583287d040bca6f04f0a9d682d241d95f79f096e314",
+          "projectedSourceSha256": "6c4aa38ebcae84cb61e4399cd096bcacc59efbe77fa56222b69cf705fd402e82"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/SyntaxTree.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "271ee9ece1b885eead0192d057670c3a30f2677d6d2bb0eb194495d4f48349ab",
+          "originalSourceSha256": "cdf99deb387687d7e0f21e82152ceada3d8604ee3194f56e0bdf24e888cb6752",
+          "projectedSourceSha256": "271ee9ece1b885eead0192d057670c3a30f2677d6d2bb0eb194495d4f48349ab"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/SyntaxTree.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "7b4404f7e7c9cddb662bc0cd0c9d921c66c1683a199ffcbc2af0c94fa7ac8ecd",
+          "originalSourceSha256": "5ce94de482e060a7508d1f5a795e6a8e32ea2d8e43ac1fde320223fded624795",
+          "projectedSourceSha256": "7b4404f7e7c9cddb662bc0cd0c9d921c66c1683a199ffcbc2af0c94fa7ac8ecd"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/SyntaxTreeOps.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "47b2266fa3c5c64e5ee09493f06322aa14444edc4156277bb5757170afc63ee7",
+          "originalSourceSha256": "2f38217dc9290cf82b71f46dce0c71c6ff5398c78a1395be27f46f998b5a6516",
+          "projectedSourceSha256": "47b2266fa3c5c64e5ee09493f06322aa14444edc4156277bb5757170afc63ee7"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/SyntaxTreeOps.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "57fa9b8a3d432581f9830bed8a9896d89316c90e09752f5c5ba9254dd79d9624",
+          "originalSourceSha256": "a41ca50ef4c3e65594d3a45d693d493f746d421e484dbf11e39bc3fe194cd16e",
+          "projectedSourceSha256": "57fa9b8a3d432581f9830bed8a9896d89316c90e09752f5c5ba9254dd79d9624"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/SyntaxTrivia.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "52e461c31629f110f9fe58243d531a1735c9be7bcc7a0c7647a9412b10cbf033",
+          "originalSourceSha256": "4c83eb56968e829182e844b3e167cc08df0f0e553f2651e93caf614fe538c2cb",
+          "projectedSourceSha256": "52e461c31629f110f9fe58243d531a1735c9be7bcc7a0c7647a9412b10cbf033"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/SyntaxTrivia.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "4c9b7a4baa8b9f36f26e1f0dd11b845447aa89e69346a76ab19c1f8b779ab707",
+          "originalSourceSha256": "427846196a4230371cf09fcedaa8073d3e683981f1719f7ddb072c3a0c243ed7",
+          "projectedSourceSha256": "4c9b7a4baa8b9f36f26e1f0dd11b845447aa89e69346a76ab19c1f8b779ab707"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/UnicodeLexing.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "a8c49be12cfdbe6380c6b23ac222edc12ad790c6b154d9a02dbc577258d99877",
+          "originalSourceSha256": "77eceb0add5a665445579dad4f9b2e5eef6295820d6f52366f5f19261f09f1b3",
+          "projectedSourceSha256": "a8c49be12cfdbe6380c6b23ac222edc12ad790c6b154d9a02dbc577258d99877"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/UnicodeLexing.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "eaa7420cd4aaab7ed15a5fa5cea397904bf44b1d6332ae335c208b1dc3bf5cec",
+          "originalSourceSha256": "531a94e6b96409338bd301e623c9b8ed79401af1087256648b116e960c7a26f6",
+          "projectedSourceSha256": "eaa7420cd4aaab7ed15a5fa5cea397904bf44b1d6332ae335c208b1dc3bf5cec"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/WarnScopes.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "07e961d4ba52f37016ae6ee212604a44cdce3912d765322cdca766ce794edd07",
+          "originalSourceSha256": "71c567fd320c6a4cfb28207ec97a4b0538616e150d4c05616564b2c57c092cb2",
+          "projectedSourceSha256": "07e961d4ba52f37016ae6ee212604a44cdce3912d765322cdca766ce794edd07"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/WarnScopes.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "fa899ab215532c143473898e8fd85e911b9f7f6c170223057578616803f8667a",
+          "originalSourceSha256": "6ac03e23a05a716c92e414339068bfe1f62d9d3d63af71c8017b3e6c8cca9800",
+          "projectedSourceSha256": "fa899ab215532c143473898e8fd85e911b9f7f6c170223057578616803f8667a"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/XmlDoc.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "a01aa8a39fa726d032b3ca27b774e3a0176da4e2941794ca434074856af0c879",
+          "originalSourceSha256": "bb444626b985833ca97ee8af5b81f04fd00422b54f08f1aaed8c65b572bff3b9",
+          "projectedSourceSha256": "a01aa8a39fa726d032b3ca27b774e3a0176da4e2941794ca434074856af0c879"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/XmlDoc.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "4dc2eafb0bbfa3a9f2ccf944d0f332e568bfa7d03e06c2603bbf39c1ff25c687",
+          "originalSourceSha256": "f11fd0266b8c57391a96be0f5f7f4de1671ef4c34965693e54a56fa1c3b032ac",
+          "projectedSourceSha256": "4dc2eafb0bbfa3a9f2ccf944d0f332e568bfa7d03e06c2603bbf39c1ff25c687"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/XmlDocIncludeExpander.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "6e6c7e70a19534c3e42770dc0296e9b2f50b88439f30b3b8fa88a93b508379f6",
+          "originalSourceSha256": "db4634430fd918f241a74c3f0434de71f8a70d27c6bddbee3fd51214221b84f5",
+          "projectedSourceSha256": "6e6c7e70a19534c3e42770dc0296e9b2f50b88439f30b3b8fa88a93b508379f6"
+        },
+        {
+          "sourceMember": "src/Compiler/SyntaxTree/XmlDocIncludeExpander.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "2533a1215dd99b0c8973a10f7b92bf57d39c167b44b7253d769b752a96a4651b",
+          "originalSourceSha256": "9af946e1f928b4f31465739cd061f0e5ea37255523a106785f266966d186bfc6",
+          "projectedSourceSha256": "2533a1215dd99b0c8973a10f7b92bf57d39c167b44b7253d769b752a96a4651b"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/Activity.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "5a51e554395efb552b1de5fea8971df15e14c560c5b0f27d2dd4a1c3094b79b6",
+          "originalSourceSha256": "ba03f6924a0b09e32a4c4f367e43e4ab181f4d11da25a5ab83d520abbd7e8654",
+          "projectedSourceSha256": "5a51e554395efb552b1de5fea8971df15e14c560c5b0f27d2dd4a1c3094b79b6"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/Activity.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "6b034a4f2269189495cc41af15a07417ceaaca2af85cfa55d9c22e8e2c4ff180",
+          "originalSourceSha256": "cac1e4b549c192add18a40d8da6c43bad56fd903a453985db763e32a6a6fd9c6",
+          "projectedSourceSha256": "6b034a4f2269189495cc41af15a07417ceaaca2af85cfa55d9c22e8e2c4ff180"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/Caches.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "b8260911f8d3016ef00ffd0f1dd1dcf2b263e7aab4434c5981df98cbd38be493",
+          "originalSourceSha256": "f98b8cbf643defc871eded58b62e3121364e2e3db9ac28222bbea288ee987738",
+          "projectedSourceSha256": "b8260911f8d3016ef00ffd0f1dd1dcf2b263e7aab4434c5981df98cbd38be493"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/Caches.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "b22767bd46079243724156aa3bc796ed63bef37eccf455821ae70bbf5bfe6b0a",
+          "originalSourceSha256": "68de3e1ac9cc180db97a65d7945b6dd3e7b1763f1f960b987509531c5f1eae0f",
+          "projectedSourceSha256": "b22767bd46079243724156aa3bc796ed63bef37eccf455821ae70bbf5bfe6b0a"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/Cancellable.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "395547d1dcb7ecd98ea87cf50c5ce3f1e7fee81ba26bea768c2f0f7cd184e388",
+          "originalSourceSha256": "105c77e4a7b357307e081358a28fd64f42077a437b7684da9c83ee8963f34e81",
+          "projectedSourceSha256": "395547d1dcb7ecd98ea87cf50c5ce3f1e7fee81ba26bea768c2f0f7cd184e388"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/Cancellable.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "c193060dc2a9147cda9c0c21413951e719e618e297216169397539e5a023fc43",
+          "originalSourceSha256": "7c4e2751b84246cf8fee8b57081e87d53166536997eebadd931517dcd553622c",
+          "projectedSourceSha256": "c193060dc2a9147cda9c0c21413951e719e618e297216169397539e5a023fc43"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/FileSystem.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "18b02fb5408155805fc2b1b18c42cba60c8cd196a7400c16253a923a06fcdfa5",
+          "originalSourceSha256": "7747242f3061efcde28f62d685a16fffffdd79493f4efb860243c73c99f48570",
+          "projectedSourceSha256": "18b02fb5408155805fc2b1b18c42cba60c8cd196a7400c16253a923a06fcdfa5"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/FileSystem.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "4889ae6397d1383e5c332e33df798903e367935715e8f3de8d1093ac0f3b09cc",
+          "originalSourceSha256": "1abc7c691895fe8eb8122d5fe79d785c7de26ccb4b6d7998827d7b4fffa5b0d8",
+          "projectedSourceSha256": "4889ae6397d1383e5c332e33df798903e367935715e8f3de8d1093ac0f3b09cc"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/HashMultiMap.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "89b932c2734d6396f952df2adc94222bd1a51248f280de226999c0236a6004e2",
+          "originalSourceSha256": "bb6b5f6ace493be3fac57a291f56a464bef0b27a6729060568b5176320a16a86",
+          "projectedSourceSha256": "89b932c2734d6396f952df2adc94222bd1a51248f280de226999c0236a6004e2"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/HashMultiMap.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "90585f58d7cc2d6a3bf88d9e75c6827d9896fbf4bbb4fd0c173a1361c0354b3a",
+          "originalSourceSha256": "238930f46304ecee528458759ce927f6f64cd9b66f4353c331eedb32ed84112c",
+          "projectedSourceSha256": "90585f58d7cc2d6a3bf88d9e75c6827d9896fbf4bbb4fd0c173a1361c0354b3a"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/InternalCollections.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "5e18dbaa0a85759e61bdf4926fe9a277d6bfd5d93cff1950947ec692ff34e862",
+          "originalSourceSha256": "65a07cea9db1f0c2a4188578a8050c36629832bf024940836f097f2377331f5e",
+          "projectedSourceSha256": "5e18dbaa0a85759e61bdf4926fe9a277d6bfd5d93cff1950947ec692ff34e862"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/InternalCollections.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "4aeb24cd5f22b0065a2c4cb9de4b8d84ba41fbba904bf1b66ccde38671804942",
+          "originalSourceSha256": "4f35a4eb22bc501d8718cb90f93759f6af7c8ab3fa4b27390171e820daf7a193",
+          "projectedSourceSha256": "4aeb24cd5f22b0065a2c4cb9de4b8d84ba41fbba904bf1b66ccde38671804942"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/NullHelpers.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "800c0dcaf171a2f1aa1b3f90a8e4691f2d0429665cf4db87d3214c71f718a29f",
+          "originalSourceSha256": "f46f08f97bf7c42f42d835af645e0fc2cfd5014d16f5c56285b0cc7c2e934240",
+          "projectedSourceSha256": "800c0dcaf171a2f1aa1b3f90a8e4691f2d0429665cf4db87d3214c71f718a29f"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/PathMap.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "92754f26d4a1690390b3771303c7ea3ec567f671eb433fbb4a3daff61bd89347",
+          "originalSourceSha256": "2e648a5c4b6f0e55c0ab582fc87a494823d18a58dd68548f39dd0cb3069d91d3",
+          "projectedSourceSha256": "92754f26d4a1690390b3771303c7ea3ec567f671eb433fbb4a3daff61bd89347"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/PathMap.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "75a257d88ba644eb4ce599e1b7f600dcf999b28a28ec6a02ba3c13028af45c88",
+          "originalSourceSha256": "6241053768c35d2bfdb16ea9c7c4b2f56907097babd9e0bc26d05c17e5c25253",
+          "projectedSourceSha256": "75a257d88ba644eb4ce599e1b7f600dcf999b28a28ec6a02ba3c13028af45c88"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/ReadOnlySpan.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "0153fcffdb3e7527f9bee478bc075e8fa796778e8064283f4b364297517f61e0",
+          "originalSourceSha256": "761ec0ce0dbc6c3705f4a0489d256e1dcf42cd5efa0b110460aa1272c1266f08",
+          "projectedSourceSha256": "0153fcffdb3e7527f9bee478bc075e8fa796778e8064283f4b364297517f61e0"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/ReadOnlySpan.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "ebf400e60add8a9921d3f3f965e742714b9a06f5d37c3d7a87d9dd8f5208492f",
+          "originalSourceSha256": "97099fc59c093201de4817a9ec721bab5b98ae64478d28cd727f21f46369285d",
+          "projectedSourceSha256": "ebf400e60add8a9921d3f3f965e742714b9a06f5d37c3d7a87d9dd8f5208492f"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/ResizeArray.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "78adc411bf5ec3127f077d042a509bd4641e7ec9e6f55fde8289a6b062fa514c",
+          "originalSourceSha256": "e9cec5101c89d64f3fe67b38a2ce00351f518efeace168101a886d6c9232c81a",
+          "projectedSourceSha256": "78adc411bf5ec3127f077d042a509bd4641e7ec9e6f55fde8289a6b062fa514c"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/ResizeArray.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "70b6c40a12530ed1e39938d7490ffd56456c03c0499fa9904eb5ce8abdb90d9b",
+          "originalSourceSha256": "e6f350f5bebb92904328a72526033bba22523622555731df47ae0bdf0c6cd201",
+          "projectedSourceSha256": "70b6c40a12530ed1e39938d7490ffd56456c03c0499fa9904eb5ce8abdb90d9b"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/TaggedCollections.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "2dd1ac1a5dd4ad1796afaac68cd3d67e4cc1d292020dc1ecb918659032f70e3f",
+          "originalSourceSha256": "89f5f72880bc19d8b99bfe28214e03d93eadb8e6e7db42bce453552b2c8b1912",
+          "projectedSourceSha256": "2dd1ac1a5dd4ad1796afaac68cd3d67e4cc1d292020dc1ecb918659032f70e3f"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/TaggedCollections.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "b557718bc207b1e08ae671def5424c62557e38b4ef7577ee683ebaeb9c164f85",
+          "originalSourceSha256": "a69e3a87591beec879377bc47b157221b7ca937f67864ae024df10e06d0864f5",
+          "projectedSourceSha256": "b557718bc207b1e08ae671def5424c62557e38b4ef7577ee683ebaeb9c164f85"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/XmlAdapters.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "de1c4521748ea897c03eaf1612419278920bd7a14c9070782af472d3352582ba",
+          "originalSourceSha256": "432f24fe3a4fc7c61617ed088c0b5f7332b63d3ef13533513315f1816c669415",
+          "projectedSourceSha256": "de1c4521748ea897c03eaf1612419278920bd7a14c9070782af472d3352582ba"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/XmlAdapters.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "0fa7e387f30663c70e4ab239cd3bc1945339aa130ed16c066499c28e89895150",
+          "originalSourceSha256": "703fbeec25d3db643ec92c6e914a8c82f27ae528cbe5c9147730cd7a32567831",
+          "projectedSourceSha256": "0fa7e387f30663c70e4ab239cd3bc1945339aa130ed16c066499c28e89895150"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/ildiag.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "adbd83d7adddad8827b2f6bc5dfdfc202f6116265e79b63c560f2c34a44f1f3e",
+          "originalSourceSha256": "4bdb23aeeb91e9a3d9d4c7801833bd62b42ae8f03cffa827d23a416b5cd1a774",
+          "projectedSourceSha256": "adbd83d7adddad8827b2f6bc5dfdfc202f6116265e79b63c560f2c34a44f1f3e"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/ildiag.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "c35a9c97ca9d0dc90a0c2ff29a4ea2f5ac1df9bee34d16f903e6b4b5f92ef5b7",
+          "originalSourceSha256": "5a5be5bda61e61e2af74afe795d29b5557db452a82417d290692207d09aa540b",
+          "projectedSourceSha256": "c35a9c97ca9d0dc90a0c2ff29a4ea2f5ac1df9bee34d16f903e6b4b5f92ef5b7"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/illib.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "0f6d311ceb9694f79ab739b8e281a11d7468a5501ed9d192840381e0662168fc",
+          "originalSourceSha256": "a20a894d83ba37a454ad8e0b86293f90ee2393c1a3f9fc139a5936569f093053",
+          "projectedSourceSha256": "0f6d311ceb9694f79ab739b8e281a11d7468a5501ed9d192840381e0662168fc"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/illib.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "fdfa4774634bd15ee90df9af0a46762755b8c3cd8024ff34495516f291c10920",
+          "originalSourceSha256": "e6aad7048de99dc4af3224a12c1c677a74039caaecf01878d5dc6c84e9fcfad7",
+          "projectedSourceSha256": "fdfa4774634bd15ee90df9af0a46762755b8c3cd8024ff34495516f291c10920"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/lib.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "3d5073b68a9ce8c2c84f54bbc7b46e6bc759ddcd18e955818adb3b6ef86a7ed8",
+          "originalSourceSha256": "1b5ee81be73db647cbd4efe4530542c3c37b480fd6726b8755f085e995c1e694",
+          "projectedSourceSha256": "3d5073b68a9ce8c2c84f54bbc7b46e6bc759ddcd18e955818adb3b6ef86a7ed8"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/lib.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "98a6c590c16f2b737341909aa071810364ec280389ef39e94d697a504d8561a3",
+          "originalSourceSha256": "bae7d7b2c582268e12f3e4548dc374a5a9dc93d97f49cfd8cfe10efce0037c2d",
+          "projectedSourceSha256": "98a6c590c16f2b737341909aa071810364ec280389ef39e94d697a504d8561a3"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/range.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "f05f9edacdfa9701cbe37a207d7b27344b96c4a1fbd921e15db110b68e84336f",
+          "originalSourceSha256": "55aebb537f19d0ddd818c1070df50eebdb0a1a6876bec1d5f735102891e25872",
+          "projectedSourceSha256": "f05f9edacdfa9701cbe37a207d7b27344b96c4a1fbd921e15db110b68e84336f"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/range.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "4e097ff5ab7903861d68145c98d338d23ada4c9e74dc5c4094d24a7b29429b75",
+          "originalSourceSha256": "70857be44d38472612d5c9a376b69e752f063dfead7ebacd540291519b919028",
+          "projectedSourceSha256": "4e097ff5ab7903861d68145c98d338d23ada4c9e74dc5c4094d24a7b29429b75"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/sformat.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "d7ec01e1352cc60f1c28ba35dfba7341e0cb12036a73a96161793d490f8596e1",
+          "originalSourceSha256": "2acbbc02a758f1922b3e88353dfbe16ec434c10af1b7463d65df8d462300b520",
+          "projectedSourceSha256": "d7ec01e1352cc60f1c28ba35dfba7341e0cb12036a73a96161793d490f8596e1"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/sformat.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "c76edc4ac1f97c6ffc07a4161841f78518b9b340b90ed008360ffe9210e93976",
+          "originalSourceSha256": "5340ac224ed4bb2226ef3256e52b199b275b5367f0bfd2396ea136211012ef36",
+          "projectedSourceSha256": "c76edc4ac1f97c6ffc07a4161841f78518b9b340b90ed008360ffe9210e93976"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/sr.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "23d449ee30c92756b691d7b465aa6b1d8c74a97826c4d61e0aa1a78ca466f840",
+          "originalSourceSha256": "e7c3b0f42a39d16c836604f16abc98d595ace3e334f5fac34bd2919da225a08c",
+          "projectedSourceSha256": "23d449ee30c92756b691d7b465aa6b1d8c74a97826c4d61e0aa1a78ca466f840"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/sr.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "1c3372aa96ebb088306e5b4f4d841984ac86f76b7ea5b4b7bc2653c8a1bcf06d",
+          "originalSourceSha256": "81b039878c6efbbfb49baa88cdc601ea1242c032c7989a9f44d1db956928a022",
+          "projectedSourceSha256": "1c3372aa96ebb088306e5b4f4d841984ac86f76b7ea5b4b7bc2653c8a1bcf06d"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/zmap.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "9a5cb6946ade5719d05830d1705f36be610d79067dab9a807f86889bbba79851",
+          "originalSourceSha256": "c65192c556dda7adb8dae7fe9b605f6c85e56892094776aeafa3dd636131b3d3",
+          "projectedSourceSha256": "9a5cb6946ade5719d05830d1705f36be610d79067dab9a807f86889bbba79851"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/zmap.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "dcd49a743b6d25812948c0387ecd68d249d5d3b50c7a66a69febb9ba88bd8c03",
+          "originalSourceSha256": "be7aeac1081e0ced2ca178fbbcb50f7f8dccfb1ee220503bff0b5fbb64b431c7",
+          "projectedSourceSha256": "dcd49a743b6d25812948c0387ecd68d249d5d3b50c7a66a69febb9ba88bd8c03"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/zset.fs",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "dcdcf449014ec78178b5625172bf768717b74d76fb0f5dec3318cdeb8b549399",
+          "originalSourceSha256": "28d48db069de5f0189d733029bc82bf5ff06271af5b51b75aacd2280b4c51917",
+          "projectedSourceSha256": "dcdcf449014ec78178b5625172bf768717b74d76fb0f5dec3318cdeb8b549399"
+        },
+        {
+          "sourceMember": "src/Compiler/Utilities/zset.fsi",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "94098e895ada62bc89e5b9dd2e2329be49d4ec23abc11297ef09b109870b32c6",
+          "originalSourceSha256": "5050f1d706c810ae9620e0027024835754ffdeabf29ada7e143aa0b4c4c9d270",
+          "projectedSourceSha256": "94098e895ada62bc89e5b9dd2e2329be49d4ec23abc11297ef09b109870b32c6"
+        },
+        {
+          "sourceMember": "src/Compiler/lex.fsl",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "5e2096aa0ae45b59928ef0f3872d2e8199f56771000f4863c5f1cf9da36d4070",
+          "originalSourceSha256": "966f8cf59d5818d4dd3fbfc65952655873b0b349369ea3719240d8d999574f65",
+          "projectedSourceSha256": "5e2096aa0ae45b59928ef0f3872d2e8199f56771000f4863c5f1cf9da36d4070"
+        },
+        {
+          "sourceMember": "src/Compiler/pars.fsy",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "9cef15307ec82c3a46d92d1e3b66b94b481f260aa185c4490e102de71ff4cfa9",
+          "originalSourceSha256": "c48ab8be55514ed445c57841a7690fdd846731097ed70ac250e8c6bb2bdc5d81",
+          "projectedSourceSha256": "9cef15307ec82c3a46d92d1e3b66b94b481f260aa185c4490e102de71ff4cfa9"
+        },
+        {
+          "sourceMember": "src/Compiler/pplex.fsl",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "d4efcd568d571f05f170dbf7af7bcc9e162748278b36d5021d28fe7749fbca75",
+          "originalSourceSha256": "90203d59c5c0533d60412a537ac6becd2b82b9cf5d24d92ca48781241692b3fd",
+          "projectedSourceSha256": "d4efcd568d571f05f170dbf7af7bcc9e162748278b36d5021d28fe7749fbca75"
+        },
+        {
+          "sourceMember": "src/Compiler/pppars.fsy",
+          "state": "transformed-fcs-crlf-matched",
+          "declaredDocumentHash": "8ca12e24a9cec8f5001cd3171e46eaf9e3aede4850cf6da195aba25bb5180b57",
+          "originalSourceSha256": "8968e4d02add5ea452719eccde99a1b0e870d2f1575da393c9e1c24a33d2d67e",
+          "projectedSourceSha256": "8ca12e24a9cec8f5001cd3171e46eaf9e3aede4850cf6da195aba25bb5180b57"
+        },
+        {
+          "sourceMember": "generated/.NETStandard,Version=v2.0.AssemblyAttributes.fs",
+          "state": "unresolved",
+          "declaredDocumentHash": "a6210cd5e6a4620b34cbb2d9194fde6789d29376565de2e5eee130ffde00a78d",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/FSComp.fs",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "ac8224fb2feb2dff859e44b8d4a69e6a939ea301d876e435c23abaf3539d1322",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/FSComp.fsi",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "4aa88d8469c81c6cd24da3b06bf49cf392bf6a957f18f20850620e9eb429de6e",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/Fantomas.FCS.AssemblyInfo.fs",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "9172fe066c3926cc6d9b18da73528550a28c2a96a2a7f7a041357d091e8498f2",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/illex.fs",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "f6baa13f15723b8cffce61bfecab295ccbdb847146d84a4c56a35f92069fb2ca",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/illex.fsi",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "a83f6b0148f5588b0bd6347eee0ee1f27b7526f5a9d31be86aa04d31dd2c6d15",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/ilpars.fs",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "0125ba4a71b89bbadb0e48b4adc75e3a57a7a8975fc1ea7a4e7f2abfb628c165",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/ilpars.fsi",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "bdc3f8c2bebe464292b5875c1db2fbdfe3c577718033c1bf630bf639bea4312a",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/lex.fs",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "0fc4d2fd119999c47148e076037d12a0d82b02a59c12f9bee1019a6e98ff0d5d",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/lex.fsi",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "15532d5000b9a8f7e9ba9e71fd951e7262801a7babf5ca111d7eba1141e1c38f",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/pars.fs",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "9bfed64604f90381fb3ccce924531508ce47549d2de3a84ac04728a05eb4d35c",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/pars.fsi",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "e9eccb158fba41e1f093076f10d2625cf1cebd802c3f8ddfbf626ea830b1ee9b",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/pplex.fs",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "537f94e737004c0b63f2a88c2cc0ed84d4ffccdb02ce1752d76933df7401853d",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/pplex.fsi",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "063414e4b463d8b1f68f42b7da7a2080eff307d1a879e7192b0c588103e5d83f",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/pppars.fs",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "a463a417d62ba7b78c9fc9625ba9c759ee0dc4c19d82ef8c9456d99ecb094fd3",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "generated/pppars.fsi",
+          "state": "embedded-document-checksum-verified",
+          "declaredDocumentHash": "b7431d866da51c7c8326c590d2fd73c09648ca698e53cc19f281d782c10dee61",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        },
+        {
+          "sourceMember": "src/Fantomas.FCS/AssemblyInfo.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "29e28885054a88b444c997e4456d1ebf727f7275f2c77174e96e0cd4ed3a592b",
+          "originalSourceSha256": "6c948304cda23481de464f1c548b5ffc440a97068fab85a888122e8c3375579b",
+          "projectedSourceSha256": "29e28885054a88b444c997e4456d1ebf727f7275f2c77174e96e0cd4ed3a592b"
+        },
+        {
+          "sourceMember": "src/Fantomas.FCS/Parse.fs",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "2847c6c3a30ffee3e8971a99809747f486d72eb5ae6bc44e53dea7943e3c1222",
+          "originalSourceSha256": "0645d3f5d03e52b946b2c2e2dc1e58c23d4388655c51707652a713d6852a484b",
+          "projectedSourceSha256": "2847c6c3a30ffee3e8971a99809747f486d72eb5ae6bc44e53dea7943e3c1222"
+        },
+        {
+          "sourceMember": "src/Fantomas.FCS/Parse.fsi",
+          "state": "fantomas-crlf-source-matched",
+          "declaredDocumentHash": "f561b4a5ead2ad85e06b7fdf5b3008179ff25b043821c3e6094813862929e22d",
+          "originalSourceSha256": "b717fbe371e231f7261bd17eff2ddbaa0748b5cd7afecc2c8174229d47d74bf5",
+          "projectedSourceSha256": "f561b4a5ead2ad85e06b7fdf5b3008179ff25b043821c3e6094813862929e22d"
+        },
+        {
+          "sourceMember": "generated/unknown",
+          "state": "no-document-checksum",
+          "declaredDocumentHash": "",
+          "originalSourceSha256": null,
+          "projectedSourceSha256": null
+        }
+      ],
+      "targetAssemblyLoadedOrExecuted": false
+    }
+  ],
+  "retainedInputs": [
+    {
+      "file": "fantomas-pdb-checksum-controls.json",
+      "bytes": 3092,
+      "sha256": "2f05d5fa600282014e47fa9b711d7f9bf6015168412e0de3d9ca8ff890b20b2b"
+    },
+    {
+      "file": "fantomas-pdb-inspector.cs",
+      "bytes": 7099,
+      "sha256": "d2c5f208b01a8c848386b716963b5686f3f1c6f5dfe81d7a7b6e3f146409ee22"
+    }
+  ],
+  "remainingInputs": [
+    "The three nonembedded assembly-attribute document checksums now match two original template projections in fantomas-sdk-generated-documents.json. Actual producer SDK identity, native MSBuild generation and evaluated compiler/generated/resource/task inputs remain unverified.",
+    "Reconcile evaluated compiler/generated/resource/task inputs separately from debug document metadata.",
+    "Complete component/native/image notice mapping and scoped preparation/receipt integration."
+  ],
+  "sourceBuildVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "preparationAndReceiptIntegrationVerified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false,
+  "remainingInputsReconciledAt": "2026-10-27"
+}

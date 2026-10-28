@@ -1,0 +1,3920 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "The initial isolated phase reconstruction covers four template-wrapper members in each of the three selected Go source/SDK versions. The separately retained source-built addchain follow-up below reproduces every selected inversion member. Fiat Cryptography arithmetic, whole-generator execution and full upstream producer closure remain open.",
+  "frozenRecipe": {
+    "schemaVersion": 1,
+    "frozenBeforeBuild": true,
+    "scope": "Only the four template-wrapper outputs of each exact upstream Go fiat generator. Fiat Cryptography and addchain phases are excluded and remain open.",
+    "nativeCompilerVersion": "go version go1.24.13 darwin/arm64",
+    "nativeCompilerExecutableSha256": "5588df879187a7587f98446ee8205ee1a8da506d362ab92c6d50d348fbeb39be",
+    "compilerEvidence": "provider-native-packager-sdk-rebuild.json",
+    "cases": [
+      {
+        "version": "go1.24.13",
+        "sourceArchiveSha256": "639a6204c2486b137df1eb6e78ee3ed038f9877d0e4b5a465e796a2153f858d7",
+        "generatorSourceSha256": "dcd20834a497693faa9549a6a8db8087a8e3345048c45f1a6e9634fee856585c",
+        "generatorSourceBytes": 9336,
+        "selectedSourceSegments": [
+          {
+            "byteStart": 274,
+            "byteEndExclusive": 1332,
+            "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+          },
+          {
+            "byteStart": 1753,
+            "byteEndExclusive": 2001,
+            "sha256": "c70b0959566d06802532663318377a3872f13ca7eb3e48d0879d977ea2f73a5f"
+          },
+          {
+            "byteStart": 3876,
+            "byteEndExclusive": 8032,
+            "sha256": "090a06a52adc4c521fe3c0bc07bd4128ae6fbf2daa4284edef225776d14c659f"
+          }
+        ],
+        "phaseHarnessSha256": "3fc0ffe1bf7b531ecf74cf8023b137cb5dbdc5d221a1f910ef51ba0fa2e5d9cb",
+        "expectedOutputs": [
+          {
+            "file": "p224.go",
+            "bytes": 3720,
+            "sha256": "c2861a6931c9e353dbcb23f8946b4d7649e06bb1c3cd8d75c0234d3fec14c3f7"
+          },
+          {
+            "file": "p256.go",
+            "bytes": 3752,
+            "sha256": "5947e77b724ffcf0d3a63e3166496fe5e0a511c33b696740660610bc23946d8d"
+          },
+          {
+            "file": "p384.go",
+            "bytes": 3750,
+            "sha256": "ffaf3a5aa2aac1d2d2201e53442da8de01c097d82be9c5d9f20a57a989e9d73f"
+          },
+          {
+            "file": "p521.go",
+            "bytes": 3706,
+            "sha256": "9ecaeed724ae4328ed859e023c4d1372340969e070cd574ddbf106ad6e331244"
+          }
+        ]
+      },
+      {
+        "version": "go1.26.8",
+        "sourceArchiveSha256": "4e39b98e42f946fa05ac8bc5b71877df97dbdb7cbb1a777b541667ad7117fd2e",
+        "generatorSourceSha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d",
+        "generatorSourceBytes": 9295,
+        "selectedSourceSegments": [
+          {
+            "byteStart": 274,
+            "byteEndExclusive": 1332,
+            "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+          },
+          {
+            "byteStart": 1753,
+            "byteEndExclusive": 2001,
+            "sha256": "c70b0959566d06802532663318377a3872f13ca7eb3e48d0879d977ea2f73a5f"
+          },
+          {
+            "byteStart": 3876,
+            "byteEndExclusive": 7991,
+            "sha256": "1b31024bd1ad5b5e1eaaae4aaa33b608614fff7e1ea2dc375f98cf6d02024ac3"
+          }
+        ],
+        "phaseHarnessSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+        "expectedOutputs": [
+          {
+            "file": "p224.go",
+            "bytes": 3679,
+            "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec"
+          },
+          {
+            "file": "p256.go",
+            "bytes": 3711,
+            "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68"
+          },
+          {
+            "file": "p384.go",
+            "bytes": 3709,
+            "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f"
+          },
+          {
+            "file": "p521.go",
+            "bytes": 3665,
+            "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24"
+          }
+        ]
+      },
+      {
+        "version": "go1.27.1",
+        "sourceArchiveSha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+        "generatorSourceSha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d",
+        "generatorSourceBytes": 9295,
+        "selectedSourceSegments": [
+          {
+            "byteStart": 274,
+            "byteEndExclusive": 1332,
+            "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+          },
+          {
+            "byteStart": 1753,
+            "byteEndExclusive": 2001,
+            "sha256": "c70b0959566d06802532663318377a3872f13ca7eb3e48d0879d977ea2f73a5f"
+          },
+          {
+            "byteStart": 3876,
+            "byteEndExclusive": 7991,
+            "sha256": "1b31024bd1ad5b5e1eaaae4aaa33b608614fff7e1ea2dc375f98cf6d02024ac3"
+          }
+        ],
+        "phaseHarnessSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+        "expectedOutputs": [
+          {
+            "file": "p224.go",
+            "bytes": 3679,
+            "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec"
+          },
+          {
+            "file": "p256.go",
+            "bytes": 3711,
+            "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68"
+          },
+          {
+            "file": "p384.go",
+            "bytes": 3709,
+            "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f"
+          },
+          {
+            "file": "p521.go",
+            "bytes": 3665,
+            "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24"
+          }
+        ]
+      }
+    ],
+    "phaseHarnessMethod": "Copy exact original curves declaration, exact original wrapper loop-body segment and exact original wrapper template into a small main with the same template.New/Parse/Execute calls. No fiat output or expected file is passed to the running generator.",
+    "mutation": "Change the wrapper template comment from The zero value is a valid zero element. to The zero value is a valid canonical zero element.; executable generator and generated Go remain syntactically valid.",
+    "variants": [
+      "baseline",
+      "valid generator template comment mutation",
+      "exact original template restoration"
+    ],
+    "freshSourceDirectoryAndCompilationCachePerVariant": true,
+    "environment": {
+      "GOTOOLCHAIN": "local",
+      "GOENV": "off",
+      "GOWORK": "off",
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOTELEMETRY": "off",
+      "CGO_ENABLED": "0",
+      "GOMAXPROCS": "2"
+    },
+    "buildCommand": [
+      "go",
+      "build",
+      "-trimpath",
+      "-o",
+      "fresh generator executable",
+      "wrapper-phase.go"
+    ],
+    "runCommand": ["fresh generator executable"],
+    "commandTimeoutSeconds": 180,
+    "wholeOriginalGeneratorExecuted": false,
+    "fullProducerAndOriginalNoticeClosureVerified": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "nativeObservations": {
+    "state": "completed",
+    "recipeSha256": "70e2904e599abad29d2b1897a5bee60aedf6dacc2bf31ce0fc7fce0513e41f58",
+    "cases": [
+      {
+        "version": "go1.24.13",
+        "variants": [
+          {
+            "variant": "baseline",
+            "generatorSourceSha256": "3fc0ffe1bf7b531ecf74cf8023b137cb5dbdc5d221a1f910ef51ba0fa2e5d9cb",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.334321458,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "4b83e5a8edc4a6c10df9a0bf3420c8ebf881f1f6cffe3d0eacd123a66b50d484",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.2968447919999999,
+              "logSha256": "7a3ffe88e9d621c85caf7332ca6025adb2f4f6ea83002453de0d480d272e0112"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3720,
+                "sha256": "c2861a6931c9e353dbcb23f8946b4d7649e06bb1c3cd8d75c0234d3fec14c3f7",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3752,
+                "sha256": "5947e77b724ffcf0d3a63e3166496fe5e0a511c33b696740660610bc23946d8d",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3750,
+                "sha256": "ffaf3a5aa2aac1d2d2201e53442da8de01c097d82be9c5d9f20a57a989e9d73f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3706,
+                "sha256": "9ecaeed724ae4328ed859e023c4d1372340969e070cd574ddbf106ad6e331244",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          },
+          {
+            "variant": "mutant",
+            "generatorSourceSha256": "dcfe82b9aa0d43f4db1ffaf8e32f96754460398bafc769fd58b9148cb9e5d51f",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.215002416,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "91ce43691d9dfe23b48d4e50c28918ecb559df984b7a0f06ff35ac8641e66693",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.29227858300000076,
+              "logSha256": "9b964a5c19cd13384599da01fdf80a1842cd9872e3adb27a0f83fb1d5320c0dd"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3730,
+                "sha256": "a34433e7c6fcede0b978325916972f1dd94724185a9ad20fc1b95554d3bb1768",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3762,
+                "sha256": "430ce55cbde4d0159963a47a60a24cf56b965308d43ee0ba5c3c4d6e97cb9f44",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3760,
+                "sha256": "f6a4ae5c8d7d1c8688ec78bc13481d7f8966b6a92e30751c5d7c1fd33d3fc744",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3716,
+                "sha256": "dd877f42f3832bfe0ff4ce78f964e1cac3671a29d8fbdc7eef6d98ffe005fee2",
+                "matchesSelectedWholeFile": false
+              }
+            ],
+            "allOutputsMatch": false
+          },
+          {
+            "variant": "restored",
+            "generatorSourceSha256": "3fc0ffe1bf7b531ecf74cf8023b137cb5dbdc5d221a1f910ef51ba0fa2e5d9cb",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.2547352919999994,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "4b83e5a8edc4a6c10df9a0bf3420c8ebf881f1f6cffe3d0eacd123a66b50d484",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.23884695899999997,
+              "logSha256": "493ca77da7fd898f55a3af487dde8aa686394602008cb1537600330322a3fda8"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3720,
+                "sha256": "c2861a6931c9e353dbcb23f8946b4d7649e06bb1c3cd8d75c0234d3fec14c3f7",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3752,
+                "sha256": "5947e77b724ffcf0d3a63e3166496fe5e0a511c33b696740660610bc23946d8d",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3750,
+                "sha256": "ffaf3a5aa2aac1d2d2201e53442da8de01c097d82be9c5d9f20a57a989e9d73f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3706,
+                "sha256": "9ecaeed724ae4328ed859e023c4d1372340969e070cd574ddbf106ad6e331244",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          }
+        ]
+      },
+      {
+        "version": "go1.26.8",
+        "variants": [
+          {
+            "variant": "baseline",
+            "generatorSourceSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.3163711659999997,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "5839bd1dfa34851eecaba79b6e871cb62ecd86c3e0f447b8779d3146c0e22754",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.3931142080000001,
+              "logSha256": "8160896ed5e0e6d179caaea97000cc894a24165a53d81dcc5b6766ea7522a738"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3679,
+                "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3711,
+                "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3709,
+                "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3665,
+                "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          },
+          {
+            "variant": "mutant",
+            "generatorSourceSha256": "1ff45780ba40860d474504c6f0126226ce707e3a79f7b721f73b29e8958c2253",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.156543041000001,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "0668c53cc6b5afbb72e3e0186b7867f4abf149f5355fca3bbb8da11103dcc9bb",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.24271616599999923,
+              "logSha256": "d544f6b5ae6d33869782a7ecf2f25b39f300f59e604e96805a6847326cb2af1e"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3689,
+                "sha256": "09f0e30810c9353b3ac1ee0d186c5b31985394130dbc9d7b4f9915181e1777ee",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3721,
+                "sha256": "04e759aa563596a6475556c86f94dae0aca551fef375176953e6cc01484fc2d4",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3719,
+                "sha256": "315e215d12c05f48ffa2522495fef8e92447abf7405b78f5cba26c705f289906",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3675,
+                "sha256": "2947fd2f4015215fd76d9f39f6165843ae195d3719ef208da698bc600a7ff914",
+                "matchesSelectedWholeFile": false
+              }
+            ],
+            "allOutputsMatch": false
+          },
+          {
+            "variant": "restored",
+            "generatorSourceSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.1428702909999995,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "5839bd1dfa34851eecaba79b6e871cb62ecd86c3e0f447b8779d3146c0e22754",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.13299220799999745,
+              "logSha256": "f27215465b0c82436fa6560c19ecb6398015f240dc29a1ee4976b041ebad50ea"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3679,
+                "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3711,
+                "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3709,
+                "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3665,
+                "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          }
+        ]
+      },
+      {
+        "version": "go1.27.1",
+        "variants": [
+          {
+            "variant": "baseline",
+            "generatorSourceSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.3456262079999988,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "5839bd1dfa34851eecaba79b6e871cb62ecd86c3e0f447b8779d3146c0e22754",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.13321916700000003,
+              "logSha256": "6cf609117031ee5d90fc2efcbe5757f50259ff1ce9eb4d40c4c187afa9c26861"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3679,
+                "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3711,
+                "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3709,
+                "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3665,
+                "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          },
+          {
+            "variant": "mutant",
+            "generatorSourceSha256": "1ff45780ba40860d474504c6f0126226ce707e3a79f7b721f73b29e8958c2253",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.1553376669999977,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "0668c53cc6b5afbb72e3e0186b7867f4abf149f5355fca3bbb8da11103dcc9bb",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.13309087499999706,
+              "logSha256": "34f7318ee3200b62bc0e225ec9819dbff0c2eebe8d488728d150104268f373fa"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3689,
+                "sha256": "09f0e30810c9353b3ac1ee0d186c5b31985394130dbc9d7b4f9915181e1777ee",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3721,
+                "sha256": "04e759aa563596a6475556c86f94dae0aca551fef375176953e6cc01484fc2d4",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3719,
+                "sha256": "315e215d12c05f48ffa2522495fef8e92447abf7405b78f5cba26c705f289906",
+                "matchesSelectedWholeFile": false
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3675,
+                "sha256": "2947fd2f4015215fd76d9f39f6165843ae195d3719ef208da698bc600a7ff914",
+                "matchesSelectedWholeFile": false
+              }
+            ],
+            "allOutputsMatch": false
+          },
+          {
+            "variant": "restored",
+            "generatorSourceSha256": "110a0937f3f56483b367392752b93778829c520994dd532d32f87575d7d9ee7a",
+            "build": {
+              "exitCode": 0,
+              "elapsedSeconds": 2.2653711670000014,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "generatorExecutableSha256": "5839bd1dfa34851eecaba79b6e871cb62ecd86c3e0f447b8779d3146c0e22754",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.13001833299999888,
+              "logSha256": "f0286b0f664bdb0593f323500381da1a4ea169c4bdddec2fd8be0e41cd7f4de2"
+            },
+            "outputs": [
+              {
+                "file": "p224.go",
+                "bytes": 3679,
+                "sha256": "728051c5690f3442e87d4b9c7e8d3d879e2029f28c291049fbe4747bcaf235ec",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p256.go",
+                "bytes": 3711,
+                "sha256": "b5e874ddd907466916c93ed1bca988d7264ee2cadcc4892bcf72c8d3ea50fa68",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p384.go",
+                "bytes": 3709,
+                "sha256": "0f8f338749206814b9cd551bc571ae2a69c7d300d66976ddd59f64df15e1243f",
+                "matchesSelectedWholeFile": true
+              },
+              {
+                "file": "p521.go",
+                "bytes": 3665,
+                "sha256": "05a2e3778e9601f8d3e10df3c367eb993bfe3a975e7258751d13321ca1512a24",
+                "matchesSelectedWholeFile": true
+              }
+            ],
+            "allOutputsMatch": true
+          }
+        ]
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "wholeFileBaselineAndRestoredMatches": 24,
+    "mutatedGeneratedFilesRejected": 12,
+    "allTwelveTemplateWrapperMembersReproduced": true,
+    "wholeFiatGeneratorProducerClosureVerified": false
+  },
+  "retainedInputs": [
+    {
+      "file": "provider-compiler-inputs/go1.24.13-fiat-generate.go.txt",
+      "bytes": 9336,
+      "sha256": "dcd20834a497693faa9549a6a8db8087a8e3345048c45f1a6e9634fee856585c"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.26.8-fiat-generate.go.txt",
+      "bytes": 9295,
+      "sha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d"
+    },
+    {
+      "file": "provider-native-packager-sdk-rebuild.json",
+      "bytes": 48216,
+      "sha256": "9849d75264b2f57bc1150413a9e373001806444e9487f4c8edb17c991a90a1fb"
+    },
+    {
+      "file": "provider-compiler-source-git-binding.json",
+      "bytes": 607380,
+      "sha256": "6863ccf9d80c9dd2eb47d3fa2d58c2605747ffdcb602050dd0bccb6f8332bc5c"
+    },
+    {
+      "file": "provider-bootstrap-sdk-rebuild.json",
+      "bytes": 331537,
+      "sha256": "f4e3b9aee9c6c3ae8df7f103aada78f9e8d98ac094aad9a0936dcaa53c050aaf"
+    }
+  ],
+  "originalGeneratorSourceBindings": {
+    "go1.24.13": "provider-compiler-inputs/go1.24.13-fiat-generate.go.txt",
+    "go1.26.8": "provider-compiler-inputs/go1.26.8-fiat-generate.go.txt",
+    "go1.27.1": "provider-compiler-inputs/go1.26.8-fiat-generate.go.txt",
+    "go1.26.8AndGo1.27.1OriginalGeneratorBytesEqual": true
+  },
+  "separateInversionProducerMetadata": [
+    {
+      "sourceVersion": "go1.24.13",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p224_invert.go",
+      "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.24.13",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p256_invert.go",
+      "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.24.13",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p384_invert.go",
+      "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.24.13",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p521_invert.go",
+      "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.26.8",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p224_invert.go",
+      "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.26.8",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p256_invert.go",
+      "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.26.8",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p384_invert.go",
+      "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.26.8",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p521_invert.go",
+      "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.27.1",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p224_invert.go",
+      "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.27.1",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p256_invert.go",
+      "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.27.1",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p384_invert.go",
+      "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    },
+    {
+      "sourceVersion": "go1.27.1",
+      "member": "go/src/crypto/internal/fips140/nistec/fiat/p521_invert.go",
+      "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+      "generatedHeaderDeclaredAddchainVersion": "v0.4.0",
+      "readmeInstallVersion": "v0.3.1-0.20211027081849-6a7d3decbe08",
+      "upstreamProducerVersionAgreement": false,
+      "producerRebuilt": false
+    }
+  ],
+  "remainingProducerObligations": [
+    "Build the actual pinned Fiat Cryptography/Coq/OCaml arithmetic producer and close its compiler/SDK/base-image/bootstrap chain and complete original notices. All declared source/submodule revisions have been acquired and byte-bound, without executing that producer.",
+    "The source-built addchain step reproduces the selected inversion files. Its parser producer reproduces the complete selected parser, and four inner generated inputs now have original producer mutation/restoration controls and a canonical root Git binding. Remaining Unicode data, dependency Git, complete notices and compiler/bootstrap chains remain open.",
+    "Complete copied/generated input attribution, source-built Go deeper bootstrap independence, original producer metadata and original inline notices remain required.",
+    "Isolated phase harnesses do not execute or qualify the whole original generator or full source tree."
+  ],
+  "allTwelveSelectedWrapperMembersReproducedExactly": true,
+  "completeFiatArithmeticProducerClosureVerified": false,
+  "completeAddchainProducerClosureVerified": false,
+  "fullUpstreamCompilerSdkAndBootstrapClosureVerified": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "sourceBuiltInversionFollowUp": {
+    "observedAt": "2026-10-28",
+    "scope": "Source-built addchain v0.4.0 through exact isolated upstream inversion phases. This reproduces selected output bytes, without qualifying the full compiler/SDK/bootstrap, canonical source-Git or inline-notice chains.",
+    "frozenBuildRecipe": {
+      "schemaVersion": 1,
+      "frozenBeforeBuild": true,
+      "scope": "Source-built addchain v0.4.0 generates the twelve selected inversion files through isolated exact original upstream generator phases. Fiat Crypto and Coq arithmetic phases remain excluded.",
+      "sourceInput": {
+        "Path": "github.com/mmcloughlin/addchain",
+        "Version": "v0.4.0",
+        "Sum": "h1:SobOdjm2xLj1KkXN5/n0xTIWyZA2+s99UCY1iPfkHRY=",
+        "GoModSum": "h1:A86O+tHqZLMNO4w6ZZ4FlVQEadcoqkyU72HC5wJ4RlU=",
+        "sourceArchiveBytes": 227613,
+        "sourceArchiveSha256": "d780c169bb88f372c8e43c69976cd014bfce952e60e5df27e82f263884f1ab1d"
+      },
+      "dependencyInputs": {
+        "state": "completed",
+        "sourceModule": "github.com/mmcloughlin/addchain",
+        "sourceVersion": "v0.4.0",
+        "dependencies": [
+          {
+            "Path": "github.com/google/subcommands",
+            "Version": "v1.2.0",
+            "Sum": "h1:vWQspBTo2nEqTUFita5/KeEWlUL8kQObDFbub/EN9oE=",
+            "GoModSum": "h1:ZjhPrFU+Olkh9WazFPsl27BQ4UPiG37m3yTrtFlrHVk=",
+            "archiveBytes": 10617,
+            "archiveSha256": "e9f735d6ddb726a3ca124d8996041880726e55def6909b19e142c07829991179"
+          },
+          {
+            "Path": "github.com/mmcloughlin/profile",
+            "Version": "v0.1.1",
+            "Sum": "h1:jhDmAqPyebOsVDOCICJoINoLb/AnLBaUw58nFzxWS2w=",
+            "GoModSum": "h1:IhHD7q1ooxgwTgjxQYkACGA77oFTDdFVejUS1/tS/qU=",
+            "archiveBytes": 19768,
+            "archiveSha256": "58075cc3b175e487788c143eae5a9b9451c82ff4998d6719a805ab2261e359f2"
+          }
+        ],
+        "allDependencyModuleAndGoModSumsMatchOriginalSourceGoSum": true,
+        "sourceGoModAndGoSumUnchanged": true,
+        "sourceCodeExecutedDuringAcquisition": false,
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      },
+      "sourceFileCount": 205,
+      "sourceManifestSha256": "c80505c17dbb751d97e15a58b2d6da6d0b83932d8e60db64ce8981ceeed13296",
+      "compilerVersion": "go version go1.24.13 darwin/arm64",
+      "compilerExecutableSha256": "5588df879187a7587f98446ee8205ee1a8da506d362ab92c6d50d348fbeb39be",
+      "compilerEvidence": "provider-native-packager-sdk-rebuild.json",
+      "producerBuildCommand": [
+        "go",
+        "build",
+        "-mod=readonly",
+        "-trimpath",
+        "-buildvcs=false",
+        "-o",
+        "fresh addchain executable",
+        "./cmd/addchain"
+      ],
+      "phaseHarnessMethod": "Copy unchanged original curves declaration, temporary template preparation, complete inversion loop body and tmplAddchain constant. Declare only the original loop variables supplied by excluded earlier phases. Invoke the exact fresh source-built addchain executable through its exclusive first PATH directory.",
+      "cases": [
+        {
+          "version": "go1.24.13",
+          "sourceArchiveSha256": "639a6204c2486b137df1eb6e78ee3ed038f9877d0e4b5a465e796a2153f858d7",
+          "originalGeneratorSha256": "dcd20834a497693faa9549a6a8db8087a8e3345048c45f1a6e9634fee856585c",
+          "phaseHarnessSha256": "bd7ea68d3c06994aaea0496c44dc40baa31176a2e939ceb02b0eee39d61fcd60",
+          "originalSourceSegments": [
+            {
+              "byteStart": 274,
+              "byteEndExclusive": 1332,
+              "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+            },
+            {
+              "byteStart": 1415,
+              "byteEndExclusive": 1724,
+              "sha256": "65e80ce851f03ff1c929bb1f6fe1ff8b7ec266518231128fbbfe22b5d5eecc05"
+            },
+            {
+              "byteStart": 3070,
+              "byteEndExclusive": 3869,
+              "sha256": "2787486171a971e1de8d3f1fc5dbd54c90184c5a0122bac1c2126d862ae888e1"
+            },
+            {
+              "byteStart": 8033,
+              "byteEndExclusive": 9336,
+              "sha256": "bbdcd4ee899e55b9ca7ff763c0a1f25c612f8f21527f12e593df0e39be7a5877"
+            }
+          ],
+          "expectedOutputs": [
+            {
+              "file": "p224_invert.go",
+              "bytes": 1815,
+              "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135"
+            },
+            {
+              "file": "p256_invert.go",
+              "bytes": 1763,
+              "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc"
+            },
+            {
+              "file": "p384_invert.go",
+              "bytes": 2106,
+              "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4"
+            },
+            {
+              "file": "p521_invert.go",
+              "bytes": 1873,
+              "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce"
+            }
+          ]
+        },
+        {
+          "version": "go1.26.8",
+          "sourceArchiveSha256": "4e39b98e42f946fa05ac8bc5b71877df97dbdb7cbb1a777b541667ad7117fd2e",
+          "originalGeneratorSha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d",
+          "phaseHarnessSha256": "bd7ea68d3c06994aaea0496c44dc40baa31176a2e939ceb02b0eee39d61fcd60",
+          "originalSourceSegments": [
+            {
+              "byteStart": 274,
+              "byteEndExclusive": 1332,
+              "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+            },
+            {
+              "byteStart": 1415,
+              "byteEndExclusive": 1724,
+              "sha256": "65e80ce851f03ff1c929bb1f6fe1ff8b7ec266518231128fbbfe22b5d5eecc05"
+            },
+            {
+              "byteStart": 3070,
+              "byteEndExclusive": 3869,
+              "sha256": "2787486171a971e1de8d3f1fc5dbd54c90184c5a0122bac1c2126d862ae888e1"
+            },
+            {
+              "byteStart": 7992,
+              "byteEndExclusive": 9295,
+              "sha256": "bbdcd4ee899e55b9ca7ff763c0a1f25c612f8f21527f12e593df0e39be7a5877"
+            }
+          ],
+          "expectedOutputs": [
+            {
+              "file": "p224_invert.go",
+              "bytes": 1815,
+              "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135"
+            },
+            {
+              "file": "p256_invert.go",
+              "bytes": 1763,
+              "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc"
+            },
+            {
+              "file": "p384_invert.go",
+              "bytes": 2106,
+              "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4"
+            },
+            {
+              "file": "p521_invert.go",
+              "bytes": 1873,
+              "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce"
+            }
+          ]
+        },
+        {
+          "version": "go1.27.1",
+          "sourceArchiveSha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+          "originalGeneratorSha256": "e3a176e3b22ea703186542d92bd858e60d5cbcf0e742f30b6b3335d3c6dc8f2d",
+          "phaseHarnessSha256": "bd7ea68d3c06994aaea0496c44dc40baa31176a2e939ceb02b0eee39d61fcd60",
+          "originalSourceSegments": [
+            {
+              "byteStart": 274,
+              "byteEndExclusive": 1332,
+              "sha256": "b211abf6611c7296fd859a17be390a2c63e073f1761de4f96f60122d98153144"
+            },
+            {
+              "byteStart": 1415,
+              "byteEndExclusive": 1724,
+              "sha256": "65e80ce851f03ff1c929bb1f6fe1ff8b7ec266518231128fbbfe22b5d5eecc05"
+            },
+            {
+              "byteStart": 3070,
+              "byteEndExclusive": 3869,
+              "sha256": "2787486171a971e1de8d3f1fc5dbd54c90184c5a0122bac1c2126d862ae888e1"
+            },
+            {
+              "byteStart": 7992,
+              "byteEndExclusive": 9295,
+              "sha256": "bbdcd4ee899e55b9ca7ff763c0a1f25c612f8f21527f12e593df0e39be7a5877"
+            }
+          ],
+          "expectedOutputs": [
+            {
+              "file": "p224_invert.go",
+              "bytes": 1815,
+              "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135"
+            },
+            {
+              "file": "p256_invert.go",
+              "bytes": 1763,
+              "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc"
+            },
+            {
+              "file": "p384_invert.go",
+              "bytes": 2106,
+              "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4"
+            },
+            {
+              "file": "p521_invert.go",
+              "bytes": 1873,
+              "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        "original producer source",
+        "valid source change to meta/vars.go releaseversion string from 0.4.0 to 0.4.0-control",
+        "exact original source restoration"
+      ],
+      "freshProducerSourceAndCompilationCachePerVariant": true,
+      "expectedGeneratedFilesPassedAsExplicitGeneratorInputs": false,
+      "filesystemIsolationProvided": false,
+      "networkAccessIndependentlyTraced": false,
+      "environment": {
+        "GOTOOLCHAIN": "local",
+        "GOENV": "off",
+        "GOAUTH": "off",
+        "GOWORK": "off",
+        "GOPROXY": "off",
+        "GOSUMDB": "sum.golang.org",
+        "GOTELEMETRY": "off",
+        "CGO_ENABLED": "0",
+        "GOMAXPROCS": "2"
+      },
+      "commandTimeoutSeconds": 300,
+      "wholeOriginalFiatGeneratorExecuted": false,
+      "fullCompilerSdkBootstrapAndOriginalNoticeClosureVerified": false,
+      "gateAComplete": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "nativeBuildObservations": {
+      "state": "completed",
+      "recipeSha256": "d78526beb271822c18c081973461c0c7b68793049aaa3ccd07b9609fa6e230e1",
+      "variants": [
+        {
+          "variant": "baseline",
+          "changedProducerSourceFiles": [],
+          "producerBuild": {
+            "exitCode": 0,
+            "elapsedSeconds": 3.409328125,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "producerExecutableSha256": "7ea085897fc42e5ff51b0e153688b793f04e3924a4b5409dcef0697d40bb8355",
+          "cases": [
+            {
+              "version": "go1.24.13",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.4416817919999998,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 2.182870917,
+                "logSha256": "d7b39448ef2b962afe436f423e41700295f02b57a389e2344bbc78fd77518111"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            },
+            {
+              "version": "go1.26.8",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.1765720419999992,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.7762916669999997,
+                "logSha256": "e09938f1c4876b3fa1f48d04a14db95a52dd49c2ac5407d06d334d4fbd7d0dd8"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            },
+            {
+              "version": "go1.27.1",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.13125016600000095,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.873115791,
+                "logSha256": "145e91d7cb0d16e6c8bdc1ecfc0f6589b9c3f1ea41335ef4e0b9658d7bd59547"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "variant": "mutant",
+          "changedProducerSourceFiles": ["meta/vars.go"],
+          "producerBuild": {
+            "exitCode": 0,
+            "elapsedSeconds": 3.4645174579999996,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "producerExecutableSha256": "630ea0743b319e63db9885da4372efb10486c2b5341eeb933962c45d3089e753",
+          "cases": [
+            {
+              "version": "go1.24.13",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.4989883329999998,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.9726181670000003,
+                "logSha256": "5ca8acf79fffa959f43058341322439fa8d14eb4aca62d97ebaad25b61f17d78"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1823,
+                  "sha256": "008790cbee743833e3fc7d6ab38b757da6d93c124ff6b66821e1af3c3249be7e",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1771,
+                  "sha256": "ef96c3cf620a85e28674f324cbb96681ba10cff6db68539c90a1209e4faa90cb",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2114,
+                  "sha256": "f751ae9ea8ad347f16e843ec38717601129de4bd33410d5e8e8812f40768f8f1",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1881,
+                  "sha256": "b86e20b667a3d888c1d1e14f17f80f630a7dc99f1059fc4dbb1b55c1eec40fa5",
+                  "matchesSelectedWholeFile": false
+                }
+              ]
+            },
+            {
+              "version": "go1.26.8",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.17697845900000075,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.7869354160000022,
+                "logSha256": "cfdd476a8f3af25be1e58194d3a187daa550ccede044d6e22231ad240b2c833a"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1823,
+                  "sha256": "008790cbee743833e3fc7d6ab38b757da6d93c124ff6b66821e1af3c3249be7e",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1771,
+                  "sha256": "ef96c3cf620a85e28674f324cbb96681ba10cff6db68539c90a1209e4faa90cb",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2114,
+                  "sha256": "f751ae9ea8ad347f16e843ec38717601129de4bd33410d5e8e8812f40768f8f1",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1881,
+                  "sha256": "b86e20b667a3d888c1d1e14f17f80f630a7dc99f1059fc4dbb1b55c1eec40fa5",
+                  "matchesSelectedWholeFile": false
+                }
+              ]
+            },
+            {
+              "version": "go1.27.1",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.1841686249999981,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.7683295829999999,
+                "logSha256": "ea2fa4e8fa529af1db6a7be9e923af764087ec2a4e673ffa93569938c8351cd4"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1823,
+                  "sha256": "008790cbee743833e3fc7d6ab38b757da6d93c124ff6b66821e1af3c3249be7e",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1771,
+                  "sha256": "ef96c3cf620a85e28674f324cbb96681ba10cff6db68539c90a1209e4faa90cb",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2114,
+                  "sha256": "f751ae9ea8ad347f16e843ec38717601129de4bd33410d5e8e8812f40768f8f1",
+                  "matchesSelectedWholeFile": false
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1881,
+                  "sha256": "b86e20b667a3d888c1d1e14f17f80f630a7dc99f1059fc4dbb1b55c1eec40fa5",
+                  "matchesSelectedWholeFile": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "variant": "restored",
+          "changedProducerSourceFiles": [],
+          "producerBuild": {
+            "exitCode": 0,
+            "elapsedSeconds": 3.287258958999999,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "producerExecutableSha256": "7ea085897fc42e5ff51b0e153688b793f04e3924a4b5409dcef0697d40bb8355",
+          "cases": [
+            {
+              "version": "go1.24.13",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.5375046670000003,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.8311783330000004,
+                "logSha256": "a3aadc41af84b9d51480a21708d15708815ad0b61c6a42c8689c1383256efb8b"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            },
+            {
+              "version": "go1.26.8",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.18146654099999893,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 1.7187512920000003,
+                "logSha256": "bf517ddf7b655d0ca1d53d236a9c93c0d285c97971fd868938b2ad726a65ed8b"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            },
+            {
+              "version": "go1.27.1",
+              "harnessBuild": {
+                "exitCode": 0,
+                "elapsedSeconds": 0.13189462500000104,
+                "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "generation": {
+                "exitCode": 0,
+                "elapsedSeconds": 2.0917295829999993,
+                "logSha256": "b88ca2cc102615253fed69322d26aaa47b270ff2df7f54edfd1668b7c0ae126d"
+              },
+              "outputs": [
+                {
+                  "file": "p224_invert.go",
+                  "bytes": 1815,
+                  "sha256": "3d13e6db8c00173af0fc1409d699d227bf33a16a6191f4594c1e3a5a9e319135",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p256_invert.go",
+                  "bytes": 1763,
+                  "sha256": "2677f82201b5789d9257a9cc5b5ddd6036858245574d9ee220bdd1715d2e67bc",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p384_invert.go",
+                  "bytes": 2106,
+                  "sha256": "35f64d7c76a9ed425dcd9925696ce4c69c064d5d1ab9093c3cebca3915e508e4",
+                  "matchesSelectedWholeFile": true
+                },
+                {
+                  "file": "p521_invert.go",
+                  "bytes": 1873,
+                  "sha256": "f1cb1bd68ebcb1e147e493298f5a33a06c22ae8d278dacb84ddade9680b5c8ce",
+                  "matchesSelectedWholeFile": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "sourceProducerBaselineAndRestorationWholeFileMatches": 24,
+      "validSourceMutationWholeFileRejections": 12,
+      "allSelectedInversionFilesReproduced": true,
+      "fullUpstreamProducerClosureVerified": false
+    },
+    "wholeSelectedInversionMembersReproducedExactly": true,
+    "sourceProducerMutationChangesAllTwelveGeneratedFiles": true,
+    "sourceRestorationRecoversAllTwelveWholeFiles": true,
+    "initialReadmeProducerVersionUsedAsBuildIdentity": false,
+    "namedOriginalNoticeFiles": [
+      {
+        "module": "github.com/mmcloughlin/addchain",
+        "version": "v0.4.0",
+        "member": "LICENSE",
+        "bytes": 1526,
+        "sha256": "8599e9798db3512072e5d344d6860eb0ef327ec83e995b7851bd4d0aaa3940a5",
+        "bundleOffset": 55,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "module": "github.com/google/subcommands",
+        "version": "v1.2.0",
+        "member": "LICENSE",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "bundleOffset": 1635,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "module": "github.com/mmcloughlin/profile",
+        "version": "v0.1.1",
+        "member": "LICENSE",
+        "bytes": 1558,
+        "sha256": "973c8abe8404ef7350631412f14a0c9eb007e89d97a2e1987308a28d0d36fffb",
+        "bundleOffset": 13048,
+        "originalBytesRetainedUnchanged": true
+      }
+    ],
+    "retainedInputs": [
+      {
+        "file": "provider-compiler-inputs/fiat-producer-chain-original-notices.txt",
+        "bytes": 330588,
+        "sha256": "e4cadc28aed3802d1ab38396e465ec6f52cbc987fff52a80012473327d3fc6b8"
+      }
+    ],
+    "preservedRejectedHarnessPreparation": {
+      "state": "failed-before-generator-execution",
+      "phase": "isolated-phase-harness-compilation",
+      "originalRecipeSha256": "96923924a3ac6302879b7275ae036e64e49d67389bb6252ce579a40300732721",
+      "producerSourceBuildCompleted": true,
+      "cause": "The original Go1.24 inversion body reuses out from the excluded arithmetic phase; the first isolated harness omitted that declaration.",
+      "correctedRecipeFrozenBeforeFreshBuilds": true,
+      "generatedOutputsFromFailedAttemptUsedToQualifyBuild": false
+    },
+    "fullUpstreamProducerClosureVerified": false,
+    "completeOriginalInlineNoticeClosureVerified": false,
+    "generatedParserProducerFollowUp": {
+      "observedAt": "2026-10-28",
+      "scope": "Pinned Pigeon source-built with the independently reconstructed pure-Go Linux ARM64 Go1.17.2 profile generates the complete selected addchain parser. This does not qualify the Pigeon generated-input, canonical source-Git, complete SDK/bootstrap or inline-notice chains.",
+      "sourceInput": {
+        "Path": "github.com/mna/pigeon",
+        "Version": "v1.0.1-0.20200224192238-18953b277063",
+        "Sum": "h1:V7s6vhIrNeOqocziAmRoVJh6gnPPx83ovlpT7Hf5shI=",
+        "GoModSum": "h1:rkFeDZ0gc+YbnrXPw0q2RlI0QRuKBBPu67fgYIyGRNg=",
+        "sourceArchiveBytes": 498143,
+        "sourceArchiveSha256": "1330cb429eb9d69cef12548d6e1ed1605be67079d405c2e17dd1e0096424b7fb"
+      },
+      "frozenBuildRecipe": {
+        "schemaVersion": 1,
+        "frozenBeforeBuild": true,
+        "scope": "Pinned Pigeon source build with reconstructed Linux ARM64 Go1.17.2, using the original module metadata and a fresh complete target-project context with the selected expected parser removed.",
+        "sourceInput": {
+          "Path": "github.com/mna/pigeon",
+          "Version": "v1.0.1-0.20200224192238-18953b277063",
+          "Sum": "h1:V7s6vhIrNeOqocziAmRoVJh6gnPPx83ovlpT7Hf5shI=",
+          "GoModSum": "h1:rkFeDZ0gc+YbnrXPw0q2RlI0QRuKBBPu67fgYIyGRNg=",
+          "sourceArchiveBytes": 498143,
+          "sourceArchiveSha256": "1330cb429eb9d69cef12548d6e1ed1605be67079d405c2e17dd1e0096424b7fb"
+        },
+        "sourceManifestSha256": "0284a496e561113b975f1036f023dc26cc044f75369a7d654e6c978b338a3534",
+        "sourceOriginalGoModSha256": "0af1e5b99253ca0f248f1f4ac633c03fffede22c177b9ee672ef2f4e586f8f6d",
+        "sourceOriginalGoSumSha256": "72de36e373dfdf020cda3a206747a77a08aecce956a2fd904a88bccfb91ccadf",
+        "alternateBuildMetadataUsed": false,
+        "extraDefaultWriteModuleVerificationOmitted": true,
+        "compilerSdkSourceBuildRecipeSha256": "e0b18153087d73f4638c8ead0c7d6958dc8b9e5877b49dc654f800d559326f28",
+        "compilerVersion": "go version go1.17.2 linux/arm64",
+        "compilerExecutableIdentities": [
+          {
+            "file": "bin/go",
+            "bytes": 13578341,
+            "sha256": "351d81190a328a88befae6d85dd5232cf973eae7ec660751e7d70de7576ad55c"
+          },
+          {
+            "file": "pkg/tool/linux_arm64/compile",
+            "bytes": 22778340,
+            "sha256": "3f0fb11cbc0f3fac7111b887019576aacfd3509c6054d9c4338f55fed9fdeba8"
+          },
+          {
+            "file": "pkg/tool/linux_arm64/link",
+            "bytes": 6364152,
+            "sha256": "dfd86cb5762dfc06c0d7971c76a93753d25662c7317c918ea66b5efd862cb325"
+          },
+          {
+            "file": "pkg/tool/linux_arm64/asm",
+            "bytes": 4777954,
+            "sha256": "34cd489c7ed2e8ab680e37a96c8aa08f4cab339130b07f0534b54fbc9cb05dd1"
+          }
+        ],
+        "hostImage": "docker.io/library/debian@sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a",
+        "targetModule": "github.com/mmcloughlin/addchain@v0.4.0",
+        "grammarSha256": "ec1cb85b735d78f4cc2b3a5ea4bbf1153eab165468527a1bba82c2db2b2393fa",
+        "expectedGeneratedFile": "acc/parse/internal/parser/zparser.go",
+        "expectedGeneratedFileSha256": "7f3abe7a84be13ebe1de32767a6b11bf61d088f0ec3ddf52fafe97d66ce951c3",
+        "targetExpectedParserRemovedBeforeGeneration": true,
+        "targetSelfModuleArchiveAndCacheDirectoryAbsent": true,
+        "hostExpectedComparisonFileMountedIntoContainer": false,
+        "buildCommand": [
+          "/sdk/bin/go",
+          "build",
+          "-mod=readonly",
+          "-trimpath",
+          "-o",
+          "fresh producer executable",
+          "."
+        ],
+        "generationCommand": [
+          "fresh producer executable",
+          "-o",
+          "internal/parser/zparser.go",
+          "acc.peg"
+        ],
+        "generatorWorkingDirectory": "fresh target project at GOPATH/src/github.com/mmcloughlin/addchain/acc/parse",
+        "variants": [
+          "original producer source",
+          "valid builder generated-header string source mutation",
+          "exact original source restoration"
+        ],
+        "freshCompilationCacheAndProducerAndTargetSourcePerVariant": true,
+        "environment": {
+          "GOROOT": "/sdk",
+          "GOOS": "linux",
+          "GOARCH": "arm64",
+          "CGO_ENABLED": "0",
+          "GO111MODULE": "on",
+          "GOENV": "off",
+          "GOPROXY": "off",
+          "GOSUMDB": "off",
+          "GOMAXPROCS": "2",
+          "PATH": "/sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        },
+        "network": "none",
+        "resourceLimits": {
+          "cpus": 2,
+          "memoryBytes": 3221225472,
+          "commandTimeoutSeconds": 300
+        },
+        "originalExactCompilerPatchAndBuilderImageAttested": false,
+        "completeSdkAndCompilerBootstrapAndOriginalNoticeClosureVerified": false,
+        "gateAComplete": false,
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      },
+      "nativeBuildObservations": {
+        "state": "completed",
+        "recipeSha256": "ff6deba711318f7b84238fef6e33c507199dea94be31769b34707bec86129de4",
+        "variants": [
+          {
+            "variant": "baseline",
+            "changedProducerSourceFiles": [],
+            "producerBuild": {
+              "exitCode": 0,
+              "elapsedSeconds": 5.999826584,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "ownedContainerAbsentAfterCleanup": true
+            },
+            "producerExecutableSha256": "2ac5bc0bdc837258a8e875cc09c09c93f26b523c71886efe1521332f3df41746",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.337582834,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "ownedContainerAbsentAfterCleanup": true
+            },
+            "generatedBytes": 53326,
+            "generatedSha256": "7f3abe7a84be13ebe1de32767a6b11bf61d088f0ec3ddf52fafe97d66ce951c3",
+            "wholeSelectedGeneratedParserMatches": true,
+            "grammarUnchanged": true,
+            "originalProducerGoModAndGoSumUnchanged": true
+          },
+          {
+            "variant": "mutant",
+            "changedProducerSourceFiles": ["builder/builder.go"],
+            "producerBuild": {
+              "exitCode": 0,
+              "elapsedSeconds": 6.464509667,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "ownedContainerAbsentAfterCleanup": true
+            },
+            "producerExecutableSha256": "80f3544cd28b65e80e3974638ff57edf53961be03b9df9bd53a2cd0df8294808",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.3905773339999996,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "ownedContainerAbsentAfterCleanup": true
+            },
+            "generatedBytes": 53334,
+            "generatedSha256": "b97e7a7a4b84d3f47c26c3bab81613dec10f6aa81982cbf4b473816074b6f9ff",
+            "wholeSelectedGeneratedParserMatches": false,
+            "grammarUnchanged": true,
+            "originalProducerGoModAndGoSumUnchanged": true
+          },
+          {
+            "variant": "restored",
+            "changedProducerSourceFiles": [],
+            "producerBuild": {
+              "exitCode": 0,
+              "elapsedSeconds": 5.480533041999999,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "ownedContainerAbsentAfterCleanup": true
+            },
+            "producerExecutableSha256": "2ac5bc0bdc837258a8e875cc09c09c93f26b523c71886efe1521332f3df41746",
+            "generation": {
+              "exitCode": 0,
+              "elapsedSeconds": 0.34035987500000076,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "ownedContainerAbsentAfterCleanup": true
+            },
+            "generatedBytes": 53326,
+            "generatedSha256": "7f3abe7a84be13ebe1de32767a6b11bf61d088f0ec3ddf52fafe97d66ce951c3",
+            "wholeSelectedGeneratedParserMatches": true,
+            "grammarUnchanged": true,
+            "originalProducerGoModAndGoSumUnchanged": true
+          }
+        ],
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "allBaselineAndRestoredSelectedParserBytesMatch": true,
+        "validProducerSourceMutationChangesParser": true,
+        "originalMetadataUsedAndUnchanged": true,
+        "allOwnedContainersCleaned": true,
+        "completeUpstreamProducerClosureVerified": false
+      },
+      "wholeSelectedGeneratedParserReproducedExactly": true,
+      "validProducerSourceMutationChangesWholeSelectedParser": true,
+      "sourceRestorationRecoversWholeSelectedParser": true,
+      "originalGoModAndGoSumUsedUnchanged": true,
+      "additionalAuthoredBuildModuleMetadataUsed": false,
+      "dependencyArchiveInputs": [
+        {
+          "Path": "golang.org/x/crypto",
+          "Version": "v0.0.0-20190308221718-c2843e01d9a2",
+          "Sum": "h1:VklqNMn3ovrHsnt90PveolxSbWFaJdECFbxSq0Mqo2M=",
+          "GoModSum": "h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=",
+          "archiveBytes": 1776515,
+          "archiveSha256": "46882ccda86aa64aa862fc64b7c6861318f03b18b834550be83d91b26acad6d4",
+          "originalSourceGoSumMatchesModuleAndMod": false
+        },
+        {
+          "Path": "golang.org/x/net",
+          "Version": "v0.0.0-20190620200207-3b0461eec859",
+          "Sum": "h1:R/3boaszxrf1GEUWTVDzSKVwLmSJpwZ1yqXm8j0v2QI=",
+          "GoModSum": "h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=",
+          "archiveBytes": 1421786,
+          "archiveSha256": "8b437b88ece68e61336150fbdd2a4c0e8d80f143bcdc86ce4ef047c4c93f3caa",
+          "originalSourceGoSumMatchesModuleAndMod": false
+        },
+        {
+          "Path": "golang.org/x/sync",
+          "Version": "v0.0.0-20190423024810-112230192c58",
+          "Sum": "h1:8gQV6CLnAEikrhgkHFbMAEhagSSnXWGV915qUMm9mrU=",
+          "GoModSum": "h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=",
+          "archiveBytes": 25620,
+          "archiveSha256": "dc105c2b4d6c7ab48e54946ce2f624e8d1f5d47270eff1e88fed06cc65f91fb4",
+          "originalSourceGoSumMatchesModuleAndMod": false
+        },
+        {
+          "Path": "golang.org/x/sys",
+          "Version": "v0.0.0-20190215142949-d0b11bdaac8a",
+          "Sum": "h1:1BGLXjeY4akVXGgbC9HugT3Jv3hCI0z56oJR5vAMgBU=",
+          "GoModSum": "h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=",
+          "archiveBytes": 1584596,
+          "archiveSha256": "d6bf74e7bc64e245a75dd666e62160a8446242b1cde4e66b2e5f93399950a97f",
+          "originalSourceGoSumMatchesModuleAndMod": false
+        },
+        {
+          "Path": "golang.org/x/text",
+          "Version": "v0.3.0",
+          "Sum": "h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=",
+          "GoModSum": "h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=",
+          "archiveBytes": 6349244,
+          "archiveSha256": "ea3068395503d3c7ef8ce16a286f75c8c93882c25a66c2aa6c8e2ad4da7a9ae0",
+          "originalSourceGoSumMatchesModuleAndMod": false
+        },
+        {
+          "Path": "golang.org/x/tools",
+          "Version": "v0.0.0-20190830223141-573d9926052a",
+          "Sum": "h1:XAHT1kdPpnU8Hk+FPi42KZFhtNFEk4vBg1U4OmIeHTU=",
+          "GoModSum": "h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=",
+          "archiveBytes": 2834327,
+          "archiveSha256": "112b581d78ca1ef22e1a6bf724e316f45f5e61a35477983b7d9ba27f3fd46bad",
+          "originalSourceGoSumMatchesModuleAndMod": true
+        },
+        {
+          "Path": "golang.org/x/xerrors",
+          "Version": "v0.0.0-20190717185122-a985d3407aa7",
+          "Sum": "h1:9zdDQZ7Thm29KFXgAX/+yaf3eVbP7djjWp/dXAppNCc=",
+          "GoModSum": "h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=",
+          "archiveBytes": 20009,
+          "archiveSha256": "c4e9f063cfed546c90f00a9657deac4f915a8994f8cbe6dbd3f18e79eb8302cf",
+          "originalSourceGoSumMatchesModuleAndMod": false
+        }
+      ],
+      "allDependencySumsPresentInOriginalRootGoSum": false,
+      "namedOriginalNoticeMembers": [
+        {
+          "module": "github.com/mna/pigeon",
+          "version": "v1.0.1-0.20200224192238-18953b277063",
+          "archiveSha256": "1330cb429eb9d69cef12548d6e1ed1605be67079d405c2e17dd1e0096424b7fb",
+          "member": "LICENSE",
+          "bytes": 1486,
+          "sha256": "fc898b9c92e02199eb2e242cac33f15b0f99e2690cc41894bfe478d9062ea504",
+          "bundleOffset": 303611,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/crypto",
+          "version": "v0.0.0-20190308221718-c2843e01d9a2",
+          "archiveSha256": "46882ccda86aa64aa862fc64b7c6861318f03b18b834550be83d91b26acad6d4",
+          "member": "AUTHORS",
+          "bytes": 174,
+          "sha256": "5aa3167c44245f0b12b27195d85c6a8c8e067cfdd511059daa4d7b3c5b232129",
+          "bundleOffset": 305193,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/crypto",
+          "version": "v0.0.0-20190308221718-c2843e01d9a2",
+          "archiveSha256": "46882ccda86aa64aa862fc64b7c6861318f03b18b834550be83d91b26acad6d4",
+          "member": "CONTRIBUTORS",
+          "bytes": 171,
+          "sha256": "fa714cb1012a065fbe08b174eb1f5604327bd24d42dab2c461878ce36f68d0c9",
+          "bundleOffset": 305468,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/crypto",
+          "version": "v0.0.0-20190308221718-c2843e01d9a2",
+          "archiveSha256": "46882ccda86aa64aa862fc64b7c6861318f03b18b834550be83d91b26acad6d4",
+          "member": "LICENSE",
+          "bytes": 1479,
+          "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+          "bundleOffset": 305735,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/crypto",
+          "version": "v0.0.0-20190308221718-c2843e01d9a2",
+          "archiveSha256": "46882ccda86aa64aa862fc64b7c6861318f03b18b834550be83d91b26acad6d4",
+          "member": "PATENTS",
+          "bytes": 1303,
+          "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+          "bundleOffset": 307310,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/net",
+          "version": "v0.0.0-20190620200207-3b0461eec859",
+          "archiveSha256": "8b437b88ece68e61336150fbdd2a4c0e8d80f143bcdc86ce4ef047c4c93f3caa",
+          "member": "AUTHORS",
+          "bytes": 173,
+          "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+          "bundleOffset": 308706,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/net",
+          "version": "v0.0.0-20190620200207-3b0461eec859",
+          "archiveSha256": "8b437b88ece68e61336150fbdd2a4c0e8d80f143bcdc86ce4ef047c4c93f3caa",
+          "member": "CONTRIBUTORS",
+          "bytes": 170,
+          "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+          "bundleOffset": 308977,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/net",
+          "version": "v0.0.0-20190620200207-3b0461eec859",
+          "archiveSha256": "8b437b88ece68e61336150fbdd2a4c0e8d80f143bcdc86ce4ef047c4c93f3caa",
+          "member": "LICENSE",
+          "bytes": 1479,
+          "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+          "bundleOffset": 309240,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/net",
+          "version": "v0.0.0-20190620200207-3b0461eec859",
+          "archiveSha256": "8b437b88ece68e61336150fbdd2a4c0e8d80f143bcdc86ce4ef047c4c93f3caa",
+          "member": "PATENTS",
+          "bytes": 1303,
+          "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+          "bundleOffset": 310812,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/sync",
+          "version": "v0.0.0-20190423024810-112230192c58",
+          "archiveSha256": "dc105c2b4d6c7ab48e54946ce2f624e8d1f5d47270eff1e88fed06cc65f91fb4",
+          "member": "AUTHORS",
+          "bytes": 173,
+          "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+          "bundleOffset": 312209,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/sync",
+          "version": "v0.0.0-20190423024810-112230192c58",
+          "archiveSha256": "dc105c2b4d6c7ab48e54946ce2f624e8d1f5d47270eff1e88fed06cc65f91fb4",
+          "member": "CONTRIBUTORS",
+          "bytes": 170,
+          "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+          "bundleOffset": 312481,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/sync",
+          "version": "v0.0.0-20190423024810-112230192c58",
+          "archiveSha256": "dc105c2b4d6c7ab48e54946ce2f624e8d1f5d47270eff1e88fed06cc65f91fb4",
+          "member": "LICENSE",
+          "bytes": 1479,
+          "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+          "bundleOffset": 312745,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/sync",
+          "version": "v0.0.0-20190423024810-112230192c58",
+          "archiveSha256": "dc105c2b4d6c7ab48e54946ce2f624e8d1f5d47270eff1e88fed06cc65f91fb4",
+          "member": "PATENTS",
+          "bytes": 1303,
+          "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+          "bundleOffset": 314318,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/sys",
+          "version": "v0.0.0-20190215142949-d0b11bdaac8a",
+          "archiveSha256": "d6bf74e7bc64e245a75dd666e62160a8446242b1cde4e66b2e5f93399950a97f",
+          "member": "AUTHORS",
+          "bytes": 173,
+          "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+          "bundleOffset": 315714,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/sys",
+          "version": "v0.0.0-20190215142949-d0b11bdaac8a",
+          "archiveSha256": "d6bf74e7bc64e245a75dd666e62160a8446242b1cde4e66b2e5f93399950a97f",
+          "member": "CONTRIBUTORS",
+          "bytes": 170,
+          "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+          "bundleOffset": 315985,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/sys",
+          "version": "v0.0.0-20190215142949-d0b11bdaac8a",
+          "archiveSha256": "d6bf74e7bc64e245a75dd666e62160a8446242b1cde4e66b2e5f93399950a97f",
+          "member": "LICENSE",
+          "bytes": 1479,
+          "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+          "bundleOffset": 316248,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/sys",
+          "version": "v0.0.0-20190215142949-d0b11bdaac8a",
+          "archiveSha256": "d6bf74e7bc64e245a75dd666e62160a8446242b1cde4e66b2e5f93399950a97f",
+          "member": "PATENTS",
+          "bytes": 1303,
+          "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+          "bundleOffset": 317820,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/text",
+          "version": "v0.3.0",
+          "archiveSha256": "ea3068395503d3c7ef8ce16a286f75c8c93882c25a66c2aa6c8e2ad4da7a9ae0",
+          "member": "AUTHORS",
+          "bytes": 173,
+          "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+          "bundleOffset": 319189,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/text",
+          "version": "v0.3.0",
+          "archiveSha256": "ea3068395503d3c7ef8ce16a286f75c8c93882c25a66c2aa6c8e2ad4da7a9ae0",
+          "member": "CONTRIBUTORS",
+          "bytes": 170,
+          "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+          "bundleOffset": 319433,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/text",
+          "version": "v0.3.0",
+          "archiveSha256": "ea3068395503d3c7ef8ce16a286f75c8c93882c25a66c2aa6c8e2ad4da7a9ae0",
+          "member": "LICENSE",
+          "bytes": 1479,
+          "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+          "bundleOffset": 319669,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/text",
+          "version": "v0.3.0",
+          "archiveSha256": "ea3068395503d3c7ef8ce16a286f75c8c93882c25a66c2aa6c8e2ad4da7a9ae0",
+          "member": "PATENTS",
+          "bytes": 1303,
+          "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+          "bundleOffset": 321214,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/tools",
+          "version": "v0.0.0-20190830223141-573d9926052a",
+          "archiveSha256": "112b581d78ca1ef22e1a6bf724e316f45f5e61a35477983b7d9ba27f3fd46bad",
+          "member": "AUTHORS",
+          "bytes": 173,
+          "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+          "bundleOffset": 322612,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/tools",
+          "version": "v0.0.0-20190830223141-573d9926052a",
+          "archiveSha256": "112b581d78ca1ef22e1a6bf724e316f45f5e61a35477983b7d9ba27f3fd46bad",
+          "member": "CONTRIBUTORS",
+          "bytes": 170,
+          "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+          "bundleOffset": 322885,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/tools",
+          "version": "v0.0.0-20190830223141-573d9926052a",
+          "archiveSha256": "112b581d78ca1ef22e1a6bf724e316f45f5e61a35477983b7d9ba27f3fd46bad",
+          "member": "LICENSE",
+          "bytes": 1479,
+          "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+          "bundleOffset": 323150,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/tools",
+          "version": "v0.0.0-20190830223141-573d9926052a",
+          "archiveSha256": "112b581d78ca1ef22e1a6bf724e316f45f5e61a35477983b7d9ba27f3fd46bad",
+          "member": "PATENTS",
+          "bytes": 1303,
+          "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+          "bundleOffset": 324724,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/tools",
+          "version": "v0.0.0-20190830223141-573d9926052a",
+          "archiveSha256": "112b581d78ca1ef22e1a6bf724e316f45f5e61a35477983b7d9ba27f3fd46bad",
+          "member": "cmd/getgo/LICENSE",
+          "bytes": 1479,
+          "sha256": "17b5d209ba8f9684257ecfcff87df6ceda6194143a8fbd074f29727cff6f0c40",
+          "bundleOffset": 326132,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/xerrors",
+          "version": "v0.0.0-20190717185122-a985d3407aa7",
+          "archiveSha256": "c4e9f063cfed546c90f00a9657deac4f915a8994f8cbe6dbd3f18e79eb8302cf",
+          "member": "LICENSE",
+          "bytes": 1479,
+          "sha256": "84d554e7a5d139b7c7b5d6ef0670ae556c4cdcfa354eaad72a1c07c08012c96f",
+          "bundleOffset": 327708,
+          "originalBytesRetainedUnchanged": true
+        },
+        {
+          "module": "golang.org/x/xerrors",
+          "version": "v0.0.0-20190717185122-a985d3407aa7",
+          "archiveSha256": "c4e9f063cfed546c90f00a9657deac4f915a8994f8cbe6dbd3f18e79eb8302cf",
+          "member": "PATENTS",
+          "bytes": 1303,
+          "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+          "bundleOffset": 329284,
+          "originalBytesRetainedUnchanged": true
+        }
+      ],
+      "retainedInputs": [
+        {
+          "file": "provider-compiler-inputs/fiat-producer-chain-original-notices.txt",
+          "bytes": 330588,
+          "sha256": "e4cadc28aed3802d1ab38396e465ec6f52cbc987fff52a80012473327d3fc6b8"
+        }
+      ],
+      "historicalCompilerEvidence": "historicalCompilerSourceBuildFollowUp in this record",
+      "preservedRejectedAttempts": [
+        {
+          "scope": "Modern source-built Go1.24 and alternate metadata outside complete target-project context",
+          "state": "baseline-generated-output-mismatch",
+          "wholeSelectedParserQualified": false,
+          "whyRejected": "Generated whole parser bytes differed. The historical compiler and complete project context were changed together later; neither is independently established as the sole cause."
+        },
+        {
+          "scope": "First Go1.17 target-layout preparation",
+          "state": "failed-before-producer-execution",
+          "wholeSelectedParserQualified": false,
+          "whyRejected": "Removing the expected parser from a read-only copied parent directory failed before producer execution."
+        },
+        {
+          "scope": "Second Go1.17 preparation with extra verification",
+          "state": "failed-before-producer-compilation",
+          "wholeSelectedParserQualified": false,
+          "whyRejected": "Go1.17 module verification tried writing the original module metadata; the original file stayed read-only."
+        }
+      ],
+      "remainingProducerObligations": [
+        "Rebuild the remaining Unicode-class input from its original producer and account separately for broader generated example/test inputs.",
+        "Bind the remaining dependency canonical source-Git inputs, complete all original inline notices and the compiler/SDK/base-image/deeper bootstrap chain.",
+        "The exact original historical compiler patch and builder image have not been attested."
+      ],
+      "fullUpstreamProducerClosureVerified": false,
+      "completeOriginalInlineNoticeClosureVerified": false,
+      "gateAComplete": false,
+      "qualityAssessed": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "canonicalSourceGitBinding": {
+        "sourceCommit": "18953b277063b2e5c4968af69f6ef43ba68aebd2",
+        "canonicalGitTree": "d4e66e0bf60608197c45608d55efcbb9c0e5b4a5",
+        "gitTreeResponseSha256": "26e2934f454be98e639b1f0750327b231fe12c8b0d6bf290bb645df63cf5c52a",
+        "sourceArchiveSha256": "1330cb429eb9d69cef12548d6e1ed1605be67079d405c2e17dd1e0096424b7fb",
+        "archiveFileCount": 146,
+        "allArchiveFileGitBlobsMatch": true,
+        "modeProjectionCounts": {
+          "('100644', '0o0')": 146
+        },
+        "gitFilesAbsentFromModuleArchive": [],
+        "gitLinks": [],
+        "archiveToGitManifestSha256": "9ad75de9c24bdd36ae1da297f9412b3f1669c91b8aad597295b1c4e56125447e",
+        "fullUpstreamProducerClosureVerified": false,
+        "upstreamCodeExecutedByGitBinding": false,
+        "canonicalGitRootReconstructedFromAllMemberBlobsAndModes": true,
+        "reconstructedTreeCount": 55,
+        "moduleAndGoModH1IndependentByteRecomputation": [
+          {
+            "module": "github.com/mna/pigeon",
+            "version": "v1.0.1-0.20200224192238-18953b277063",
+            "archiveH1": "h1:V7s6vhIrNeOqocziAmRoVJh6gnPPx83ovlpT7Hf5shI=",
+            "goModH1": "h1:rkFeDZ0gc+YbnrXPw0q2RlI0QRuKBBPu67fgYIyGRNg=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/crypto",
+            "version": "v0.0.0-20190308221718-c2843e01d9a2",
+            "archiveH1": "h1:VklqNMn3ovrHsnt90PveolxSbWFaJdECFbxSq0Mqo2M=",
+            "goModH1": "h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/net",
+            "version": "v0.0.0-20190620200207-3b0461eec859",
+            "archiveH1": "h1:R/3boaszxrf1GEUWTVDzSKVwLmSJpwZ1yqXm8j0v2QI=",
+            "goModH1": "h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/sync",
+            "version": "v0.0.0-20190423024810-112230192c58",
+            "archiveH1": "h1:8gQV6CLnAEikrhgkHFbMAEhagSSnXWGV915qUMm9mrU=",
+            "goModH1": "h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/sys",
+            "version": "v0.0.0-20190215142949-d0b11bdaac8a",
+            "archiveH1": "h1:1BGLXjeY4akVXGgbC9HugT3Jv3hCI0z56oJR5vAMgBU=",
+            "goModH1": "h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/text",
+            "version": "v0.3.0",
+            "archiveH1": "h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=",
+            "goModH1": "h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/tools",
+            "version": "v0.0.0-20190830223141-573d9926052a",
+            "archiveH1": "h1:XAHT1kdPpnU8Hk+FPi42KZFhtNFEk4vBg1U4OmIeHTU=",
+            "goModH1": "h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          },
+          {
+            "module": "golang.org/x/xerrors",
+            "version": "v0.0.0-20190717185122-a985d3407aa7",
+            "archiveH1": "h1:9zdDQZ7Thm29KFXgAX/+yaf3eVbP7djjWp/dXAppNCc=",
+            "goModH1": "h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=",
+            "bothRecomputedValuesMatchAcquiredDeclarations": true
+          }
+        ],
+        "independentChecksumDatabaseTrustVerifiedByThisRecomputation": false
+      },
+      "innerGeneratedSourceProducerFollowUp": {
+        "observedAt": "2026-10-28",
+        "scope": "Unchanged original static-code and staged parser producers reproduce four complete selected generated Pigeon inputs after all four expected outputs and the producer self-module cache/download were removed before compilation. Unicode-class and wider generated-example inputs remain outside this proof.",
+        "frozenBuildRecipe": {
+          "schemaVersion": 1,
+          "frozenBeforeBuild": true,
+          "scope": "Rebuild the two static builder inputs and two staged parser inputs using original Pigeon producer source. Unicode-class generation, original compiler profile, canonical Git and deeper SDK/bootstrap/notices remain separate.",
+          "sourceInput": {
+            "Path": "github.com/mna/pigeon",
+            "Version": "v1.0.1-0.20200224192238-18953b277063",
+            "Sum": "h1:V7s6vhIrNeOqocziAmRoVJh6gnPPx83ovlpT7Hf5shI=",
+            "GoModSum": "h1:rkFeDZ0gc+YbnrXPw0q2RlI0QRuKBBPu67fgYIyGRNg=",
+            "sourceArchiveBytes": 498143,
+            "sourceArchiveSha256": "1330cb429eb9d69cef12548d6e1ed1605be67079d405c2e17dd1e0096424b7fb"
+          },
+          "sourceManifestSha256": "e2d8e4ca57eec2cc9234d16309985ab3d0abd2eafafcdd8434a3c545007425ff",
+          "historicalCompilerRecipeSha256": "e0b18153087d73f4638c8ead0c7d6958dc8b9e5877b49dc654f800d559326f28",
+          "compilerVersion": "go1.17.2 linux/arm64",
+          "hostImage": "docker.io/library/debian@sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a",
+          "expectedOutputMembers": [
+            {
+              "file": "builder/generated_static_code.go",
+              "bytes": 36424,
+              "sha256": "4bb9057b727c4a80ca4e55d52a4e4a27a43f8b3a564c70635e3fcb8c249d0f1d"
+            },
+            {
+              "file": "builder/generated_static_code_range_table.go",
+              "bytes": 424,
+              "sha256": "0532799079d384d05d39ec67600c8e45384aecd7cbc8fa275169a2b52ade27a4"
+            },
+            {
+              "file": "bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go",
+              "bytes": 89875,
+              "sha256": "cfb3ac07a2d4115e1e22faf72d55487c25ca3cb64a2e61cf24beb6f46910b193"
+            },
+            {
+              "file": "pigeon.go",
+              "bytes": 119765,
+              "sha256": "4c4737812b2b10b9a6ad45ff730bf0b00c5bbfccc0659b42a8cc0a5e3f53f4d7"
+            }
+          ],
+          "allExpectedOutputsRemovedBeforeAnyBuild": true,
+          "producerOwnModuleCacheAndDownloadRemoved": true,
+          "originalMakefileCommandsExecutedAsFixedArgv": true,
+          "makeInvoked": false,
+          "originalMakefileShellRedirectionInsideNativeContainer": true,
+          "freshSourceAndCompileCachePerVariant": true,
+          "variants": [
+            "baseline",
+            "valid generated-header string source mutations",
+            "exact source restoration"
+          ],
+          "environment": {
+            "GOROOT": "/sdk",
+            "GOOS": "linux",
+            "GOARCH": "arm64",
+            "CGO_ENABLED": "0",
+            "GO111MODULE": "on",
+            "GOENV": "off",
+            "GOPROXY": "off",
+            "GOSUMDB": "off",
+            "GOMAXPROCS": "2",
+            "GOFLAGS": "-mod=readonly",
+            "PATH": "/sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+          },
+          "network": "none",
+          "limits": {
+            "cpus": 2,
+            "memoryBytes": 3221225472,
+            "perCommandSeconds": 300
+          },
+          "completeUpstreamProducerClosureVerified": false,
+          "gateAComplete": false,
+          "inferenceInvoked": false,
+          "fieldEvaluationExecuted": false
+        },
+        "nativeBuildObservations": {
+          "state": "completed",
+          "recipeSha256": "e64166f77897c9fa1df86a13b4b0d6593a8e404a797c8a6794e1e02c08d84c3d",
+          "variants": [
+            {
+              "variant": "baseline",
+              "sourceMutations": [],
+              "commands": [
+                {
+                  "phase": "build-static",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/baseline/bin/static_code_generator",
+                    "./bootstrap/cmd/static_code_generator"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 2.621918042,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-staticCode",
+                  "argv": [
+                    "/work/baseline/bin/static_code_generator",
+                    "builder/static_code.go",
+                    "builder/generated_static_code.go",
+                    "staticCode"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.22943941700000048,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-rangeTable0",
+                  "argv": [
+                    "/work/baseline/bin/static_code_generator",
+                    "builder/static_code_range_table.go",
+                    "builder/generated_static_code_range_table.go",
+                    "rangeTable0"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.23714941600000028,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/baseline/bin/bootstrap-build",
+                    "./bootstrap/cmd/bootstrap-build"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 3.193872,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-bootstrap",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/baseline/bin/bootstrap-build grammar/bootstrap.peg > /work/baseline/source/bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.38847962499999955,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap-pigeon",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/baseline/bin/bootstrap-pigeon",
+                    "./bootstrap/cmd/bootstrap-pigeon"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.5995861250000001,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-main-pigeon",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/baseline/bin/bootstrap-pigeon grammar/pigeon.peg > /work/baseline/source/pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.3883403750000003,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                }
+              ],
+              "outputs": [
+                {
+                  "file": "builder/generated_static_code.go",
+                  "bytes": 36424,
+                  "sha256": "4bb9057b727c4a80ca4e55d52a4e4a27a43f8b3a564c70635e3fcb8c249d0f1d",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "builder/generated_static_code_range_table.go",
+                  "bytes": 424,
+                  "sha256": "0532799079d384d05d39ec67600c8e45384aecd7cbc8fa275169a2b52ade27a4",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go",
+                  "bytes": 89875,
+                  "sha256": "cfb3ac07a2d4115e1e22faf72d55487c25ca3cb64a2e61cf24beb6f46910b193",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "pigeon.go",
+                  "bytes": 119765,
+                  "sha256": "4c4737812b2b10b9a6ad45ff730bf0b00c5bbfccc0659b42a8cc0a5e3f53f4d7",
+                  "matchesWholeSelectedMember": true
+                }
+              ],
+              "originalModuleMetadataUnchanged": true
+            },
+            {
+              "variant": "mutant",
+              "sourceMutations": [
+                "bootstrap/cmd/static_code_generator/main.go",
+                "builder/builder.go"
+              ],
+              "commands": [
+                {
+                  "phase": "build-static",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/mutant/bin/static_code_generator",
+                    "./bootstrap/cmd/static_code_generator"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 2.5280813339999995,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-staticCode",
+                  "argv": [
+                    "/work/mutant/bin/static_code_generator",
+                    "builder/static_code.go",
+                    "builder/generated_static_code.go",
+                    "staticCode"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.18606929200000089,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-rangeTable0",
+                  "argv": [
+                    "/work/mutant/bin/static_code_generator",
+                    "builder/static_code_range_table.go",
+                    "builder/generated_static_code_range_table.go",
+                    "rangeTable0"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.23332937500000028,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/mutant/bin/bootstrap-build",
+                    "./bootstrap/cmd/bootstrap-build"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 3.444175583,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-bootstrap",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/mutant/bin/bootstrap-build grammar/bootstrap.peg > /work/mutant/source/bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.34829049999999917,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap-pigeon",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/mutant/bin/bootstrap-pigeon",
+                    "./bootstrap/cmd/bootstrap-pigeon"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.6535970840000012,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-main-pigeon",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/mutant/bin/bootstrap-pigeon grammar/pigeon.peg > /work/mutant/source/pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.3970038750000029,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                }
+              ],
+              "outputs": [
+                {
+                  "file": "builder/generated_static_code.go",
+                  "bytes": 36432,
+                  "sha256": "8fb28a5c3b143ea7f1161b45c7a2c7b15430e26d4e419dd2b3ddd7ecac854fdc",
+                  "matchesWholeSelectedMember": false
+                },
+                {
+                  "file": "builder/generated_static_code_range_table.go",
+                  "bytes": 432,
+                  "sha256": "ceff1a6d370b03f5d0dbb44042c722cd867e40e9995f25c11e95e4aca88d7457",
+                  "matchesWholeSelectedMember": false
+                },
+                {
+                  "file": "bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go",
+                  "bytes": 89883,
+                  "sha256": "c2491bbdc31c4f3e4883042e3b8c4ea77852e58351fe1cd1a27c3b2c27a928ac",
+                  "matchesWholeSelectedMember": false
+                },
+                {
+                  "file": "pigeon.go",
+                  "bytes": 119773,
+                  "sha256": "0757f312c41b8e3857e7398d598924c768e2774fdf56489a4951eae70de638dd",
+                  "matchesWholeSelectedMember": false
+                }
+              ],
+              "originalModuleMetadataUnchanged": true
+            },
+            {
+              "variant": "restored",
+              "sourceMutations": [],
+              "commands": [
+                {
+                  "phase": "build-static",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/restored/bin/static_code_generator",
+                    "./bootstrap/cmd/static_code_generator"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 2.7315668330000022,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-staticCode",
+                  "argv": [
+                    "/work/restored/bin/static_code_generator",
+                    "builder/static_code.go",
+                    "builder/generated_static_code.go",
+                    "staticCode"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.23711216699999937,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-rangeTable0",
+                  "argv": [
+                    "/work/restored/bin/static_code_generator",
+                    "builder/static_code_range_table.go",
+                    "builder/generated_static_code_range_table.go",
+                    "rangeTable0"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.2833498750000025,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/restored/bin/bootstrap-build",
+                    "./bootstrap/cmd/bootstrap-build"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 4.293926334000002,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-bootstrap",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/restored/bin/bootstrap-build grammar/bootstrap.peg > /work/restored/source/bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.38441895900000134,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "build-bootstrap-pigeon",
+                  "argv": [
+                    "/sdk/bin/go",
+                    "build",
+                    "-trimpath",
+                    "-o",
+                    "/work/restored/bin/bootstrap-pigeon",
+                    "./bootstrap/cmd/bootstrap-pigeon"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.6669916249999979,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                },
+                {
+                  "phase": "generate-main-pigeon",
+                  "argv": [
+                    "/bin/bash",
+                    "-c",
+                    "exec /work/restored/bin/bootstrap-pigeon grammar/pigeon.peg > /work/restored/source/pigeon.go"
+                  ],
+                  "exitCode": 0,
+                  "elapsedSeconds": 0.34570166700000016,
+                  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "ownedContainerAbsentAfterCleanup": true
+                }
+              ],
+              "outputs": [
+                {
+                  "file": "builder/generated_static_code.go",
+                  "bytes": 36424,
+                  "sha256": "4bb9057b727c4a80ca4e55d52a4e4a27a43f8b3a564c70635e3fcb8c249d0f1d",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "builder/generated_static_code_range_table.go",
+                  "bytes": 424,
+                  "sha256": "0532799079d384d05d39ec67600c8e45384aecd7cbc8fa275169a2b52ade27a4",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "bootstrap/cmd/bootstrap-pigeon/bootstrap_pigeon.go",
+                  "bytes": 89875,
+                  "sha256": "cfb3ac07a2d4115e1e22faf72d55487c25ca3cb64a2e61cf24beb6f46910b193",
+                  "matchesWholeSelectedMember": true
+                },
+                {
+                  "file": "pigeon.go",
+                  "bytes": 119765,
+                  "sha256": "4c4737812b2b10b9a6ad45ff730bf0b00c5bbfccc0659b42a8cc0a5e3f53f4d7",
+                  "matchesWholeSelectedMember": true
+                }
+              ],
+              "originalModuleMetadataUnchanged": true
+            }
+          ],
+          "completeUpstreamProducerClosureVerified": false,
+          "inferenceInvoked": false,
+          "fieldEvaluationExecuted": false,
+          "allFourBaselineAndRestoredWholeSelectedMembersMatch": true,
+          "validProducerSourceMutationsChangeAllFourWholeOutputs": true,
+          "allOwnedContainersAbsent": true
+        },
+        "baselineAndRestoredWholeMemberMatches": 8,
+        "validProducerSourceMutationWholeMemberRejections": 4,
+        "expectedOutputsAvailableAsBuildInputs": false,
+        "originalModuleMetadataUsedUnchanged": true,
+        "originalShellRedirectionPerformedInsideNativeContainer": true,
+        "preservedRejectedAttempts": [
+          {
+            "state": "preparation-failed-before-producer-compilation",
+            "cause": "Removing the producer self-module from a read-only copied cache failed; no native command ran.",
+            "usedToQualifyWholeChain": false
+          },
+          {
+            "state": "failed-before-main-parser-generation",
+            "observedFailure": "Three host-observed generated members matched, then native bootstrap-pigeon compilation reported EOF for the generated bootstrap parser. A later native byte observation matched the retained expected bytes.",
+            "underlyingFailureCauseEstablished": false,
+            "handoff": "The rejected recipe sent producer stdout to a host-opened file. The subsequent frozen recipe uses the original Makefile shell redirection inside the native container.",
+            "usedToQualifyWholeChain": false
+          }
+        ],
+        "fullUpstreamProducerClosureVerified": false,
+        "completeOriginalInlineNoticeClosureVerified": false,
+        "gateAComplete": false,
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      }
+    }
+  },
+  "arithmeticProducerSourceAcquisition": {
+    "observedAt": "2026-10-28",
+    "scope": "Exact source and recursive submodule inputs for the arithmetic generator named in the SDK Docker recipe. No arithmetic producer was built or executed by this acquisition.",
+    "sourceRevisionNodesIncludingRoot": 11,
+    "uniqueGitHubRepositories": 10,
+    "duplicateRepositoryRevisionOccurrences": 1,
+    "sourceFileTotal": 2115,
+    "sourceFilePartition": [
+      {
+        "mountPath": "root",
+        "sourceFileCount": 736
+      },
+      {
+        "mountPath": "coqprime",
+        "sourceFileCount": 224
+      },
+      {
+        "mountPath": "etc/coq-scripts",
+        "sourceFileCount": 109
+      },
+      {
+        "mountPath": "rewriter/etc/coq-scripts",
+        "sourceFileCount": 109
+      },
+      {
+        "mountPath": "rewriter",
+        "sourceFileCount": 268
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/coq-record-update",
+        "sourceFileCount": 32
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/coqutil",
+        "sourceFileCount": 77
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/kami",
+        "sourceFileCount": 177
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/riscv-coq",
+        "sourceFileCount": 146
+      },
+      {
+        "mountPath": "rupicola/bedrock2",
+        "sourceFileCount": 171
+      },
+      {
+        "mountPath": "rupicola",
+        "sourceFileCount": 66
+      }
+    ],
+    "gitlinksWithExactAcquiredSourceBindings": 10,
+    "allDeclaredNestedGitlinksAcquired": true,
+    "sourceRevisionInputs": [
+      {
+        "mountPath": "root",
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "canonicalGitTree": "7a6fe22745486426e541b5a0dd0f7b6cf8e62bd4",
+        "sourceCommitUrl": "https://github.com/mit-plv/fiat-crypto/commit/23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/fiat-crypto/tarball/23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 4675809,
+          "sha256": "6704ca3ec964288113518a91d9273e6cbcbffb8bd8010aeb03dc1b9085f65e2d"
+        },
+        "sourceFileCount": 736,
+        "sourceManifestSha256": "bf4d85b074849a5b1e27a7224e382d5224cdad989528b982e91f27bffd49f254",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [
+          {
+            "path": "coqprime",
+            "commit": "d4bcfa8f7d7bdbe879d842ecfe575406f622c8ae"
+          },
+          {
+            "path": "etc/coq-scripts",
+            "commit": "1d6880c82e77a41d9a73a4ee0d8a1cd5dfa26fd4"
+          },
+          {
+            "path": "rewriter",
+            "commit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5"
+          },
+          {
+            "path": "rupicola",
+            "commit": "935a01c3f4cdca06a1921d918f9e5350380fd9ee"
+          }
+        ],
+        "namedNoticeCandidateCount": 18,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "coqprime",
+        "repository": "thery/coqprime",
+        "sourceCommit": "d4bcfa8f7d7bdbe879d842ecfe575406f622c8ae",
+        "canonicalGitTree": "9be6d099852c09675be36e5e37f4da88d6352c26",
+        "sourceCommitUrl": "https://github.com/thery/coqprime/commit/d4bcfa8f7d7bdbe879d842ecfe575406f622c8ae",
+        "sourceArchiveUrl": "https://api.github.com/repos/thery/coqprime/tarball/d4bcfa8f7d7bdbe879d842ecfe575406f622c8ae",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 1098805,
+          "sha256": "a3cf94e3b8c02d01125d8be42d7202e597f0f89478db7ee678bac97855ae89ee"
+        },
+        "sourceFileCount": 224,
+        "sourceManifestSha256": "1677c86949852f12356ec4f7ce72f32e89ae0e041996d8b6d82c9d4ffe380248",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "etc/coq-scripts",
+        "repository": "JasonGross/coq-scripts",
+        "sourceCommit": "1d6880c82e77a41d9a73a4ee0d8a1cd5dfa26fd4",
+        "canonicalGitTree": "e4b191d15f26520cae05f7598bb92f5e2d21a0da",
+        "sourceCommitUrl": "https://github.com/JasonGross/coq-scripts/commit/1d6880c82e77a41d9a73a4ee0d8a1cd5dfa26fd4",
+        "sourceArchiveUrl": "https://api.github.com/repos/JasonGross/coq-scripts/tarball/1d6880c82e77a41d9a73a4ee0d8a1cd5dfa26fd4",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 35363,
+          "sha256": "5ea6ceb58c87239a24c1883deb106993a46e00cff7344fb77fd4f13fb422228b"
+        },
+        "sourceFileCount": 109,
+        "sourceManifestSha256": "0272dc77695192248c26138c5bb8d41b8a5fa24b9e9c7af5331abef5d12881f4",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rewriter/etc/coq-scripts",
+        "repository": "JasonGross/coq-scripts",
+        "sourceCommit": "1ad4075c553415ba01f27796231ef26019e76093",
+        "canonicalGitTree": "43531aebdc60aa4f8d91b5b50033ff61e961ae93",
+        "sourceCommitUrl": "https://github.com/JasonGross/coq-scripts/commit/1ad4075c553415ba01f27796231ef26019e76093",
+        "sourceArchiveUrl": "https://api.github.com/repos/JasonGross/coq-scripts/tarball/1ad4075c553415ba01f27796231ef26019e76093",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 35327,
+          "sha256": "49d44dd78133ec15627050a86eafa2bf8ff49a465c5e193b726e99bbde253b5f"
+        },
+        "sourceFileCount": 109,
+        "sourceManifestSha256": "ecd2ff0b986a7dd1253bec85acfeffa59a84460b05d93b0cb418c863e3188dd4",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rewriter",
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "canonicalGitTree": "0da88e61a60de999e3ee18f219782dbc7ccb808a",
+        "sourceCommitUrl": "https://github.com/mit-plv/rewriter/commit/a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/rewriter/tarball/a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 374095,
+          "sha256": "abec402f14fda86281ba4465c02b9f944d0b23fd83332cc9845aab4bb311eea1"
+        },
+        "sourceFileCount": 268,
+        "sourceManifestSha256": "e0e4f4815d200ecfdd78e480c7025eadb8f7b6032f0f336697383a2596727a95",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [
+          {
+            "path": "etc/coq-scripts",
+            "commit": "1ad4075c553415ba01f27796231ef26019e76093"
+          }
+        ],
+        "namedNoticeCandidateCount": 6,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/coq-record-update",
+        "repository": "tchajed/coq-record-update",
+        "sourceCommit": "268a735cc2d9e0469e9b6f390365f81e7e576023",
+        "canonicalGitTree": "8f28a599e8424437e7345b5af0ee21fb5e8841f4",
+        "sourceCommitUrl": "https://github.com/tchajed/coq-record-update/commit/268a735cc2d9e0469e9b6f390365f81e7e576023",
+        "sourceArchiveUrl": "https://api.github.com/repos/tchajed/coq-record-update/tarball/268a735cc2d9e0469e9b6f390365f81e7e576023",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 13270,
+          "sha256": "48ebe9a8f7970ea584f105aaa94d82aac1c21bdd1564478fc9fd3ef47587ce1d"
+        },
+        "sourceFileCount": 32,
+        "sourceManifestSha256": "0eb5ee2d731b7e68a84f7e4987154b2f018b8690065a37ccd5a331392910567c",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/coqutil",
+        "repository": "mit-plv/coqutil",
+        "sourceCommit": "7161c1bca19d0e2a6577aafbc704979d01494468",
+        "canonicalGitTree": "21ea7aab51f7d44cebb65110488f367719724d6c",
+        "sourceCommitUrl": "https://github.com/mit-plv/coqutil/commit/7161c1bca19d0e2a6577aafbc704979d01494468",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/coqutil/tarball/7161c1bca19d0e2a6577aafbc704979d01494468",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 76459,
+          "sha256": "00528b48dd8733b36626b9eadcef442f44ec81dcb5a303a669997951faef3520"
+        },
+        "sourceFileCount": 77,
+        "sourceManifestSha256": "6c7543dca4ee990b9e270614c43424eb2ab1f2d2b6a5c5a6f7781a2f26182f2e",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 3,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/kami",
+        "repository": "mit-plv/kami",
+        "sourceCommit": "86d352dd1d8d904e2520e6e1cfeade8dd6e8b2bf",
+        "canonicalGitTree": "62d35f24f29edb7a22445216c4bed404b80a8b97",
+        "sourceCommitUrl": "https://github.com/mit-plv/kami/commit/86d352dd1d8d904e2520e6e1cfeade8dd6e8b2bf",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/kami/tarball/86d352dd1d8d904e2520e6e1cfeade8dd6e8b2bf",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 344789,
+          "sha256": "5bca2a4a0c8f9dee708af08e3acb91d4e77de2b990430cec83e89c71eece8dad"
+        },
+        "sourceFileCount": 177,
+        "sourceManifestSha256": "24a0d396cec3f61fb8545da6ff00b8aff37099323f41f370b74c28f852915204",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/riscv-coq",
+        "repository": "mit-plv/riscv-coq",
+        "sourceCommit": "b299f5a3c51e326f4f33675e12ea5c585a31c5a8",
+        "canonicalGitTree": "d79ce90301964efb3e85259c9fdef327150c4a8b",
+        "sourceCommitUrl": "https://github.com/mit-plv/riscv-coq/commit/b299f5a3c51e326f4f33675e12ea5c585a31c5a8",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/riscv-coq/tarball/b299f5a3c51e326f4f33675e12ea5c585a31c5a8",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 118492,
+          "sha256": "e349c24568bb8859484825551f5a3f09370f044c7738c878d9390976ade6a2bb"
+        },
+        "sourceFileCount": 146,
+        "sourceManifestSha256": "c89cb8dbd04db45c393b54f4e19205ab354e1a2d3abf8d17d8ae04c49dc78c73",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [],
+        "namedNoticeCandidateCount": 1,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola/bedrock2",
+        "repository": "mit-plv/bedrock2",
+        "sourceCommit": "7db60537a06afffae3f40630afc030b27630e47c",
+        "canonicalGitTree": "2bf113b7752586823891d3be5d97d939fee66f48",
+        "sourceCommitUrl": "https://github.com/mit-plv/bedrock2/commit/7db60537a06afffae3f40630afc030b27630e47c",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/bedrock2/tarball/7db60537a06afffae3f40630afc030b27630e47c",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 825333,
+          "sha256": "e5fedfca5be840ab6632597800c46e2133b8528e29bb2cb973c9d40f72879b69"
+        },
+        "sourceFileCount": 171,
+        "sourceManifestSha256": "f0c8102bd1790dfdb0102aeb182e92509fd60b773d2b8d0f709a3d7cc85acb6b",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [
+          {
+            "path": "deps/coq-record-update",
+            "commit": "268a735cc2d9e0469e9b6f390365f81e7e576023"
+          },
+          {
+            "path": "deps/coqutil",
+            "commit": "7161c1bca19d0e2a6577aafbc704979d01494468"
+          },
+          {
+            "path": "deps/kami",
+            "commit": "86d352dd1d8d904e2520e6e1cfeade8dd6e8b2bf"
+          },
+          {
+            "path": "deps/riscv-coq",
+            "commit": "b299f5a3c51e326f4f33675e12ea5c585a31c5a8"
+          }
+        ],
+        "namedNoticeCandidateCount": 3,
+        "upstreamCodeExecuted": false
+      },
+      {
+        "mountPath": "rupicola",
+        "repository": "mit-plv/rupicola",
+        "sourceCommit": "935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "canonicalGitTree": "a473ef43bb9691e5f91246df141ff2193285b87b",
+        "sourceCommitUrl": "https://github.com/mit-plv/rupicola/commit/935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "sourceArchiveUrl": "https://api.github.com/repos/mit-plv/rupicola/tarball/935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "acquiredSourceArchive": {
+          "file": "source.tar.gz",
+          "bytes": 190136,
+          "sha256": "f6ce7ca114520f0b1e8b6d6705d9fbf1f17b68e73da4318e52c0ca610f21848b"
+        },
+        "sourceFileCount": 66,
+        "sourceManifestSha256": "4500c1899a6bf970457fac7e196f3e4a81c9de917173a1d7bc079a2571d1033c",
+        "everyArchiveFileGitBlobAndModeVerified": true,
+        "sourceArchiveExcludedGitFileCount": 0,
+        "gitlinks": [
+          {
+            "path": "bedrock2",
+            "commit": "7db60537a06afffae3f40630afc030b27630e47c"
+          }
+        ],
+        "namedNoticeCandidateCount": 3,
+        "upstreamCodeExecuted": false
+      }
+    ],
+    "originalNamedNoticeMembers": [
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "AUTHORS",
+        "bytes": 648,
+        "sha256": "ad74c036a6afaedc418fed65f171c877c2f74a4c70938a03930aa11c98a20508",
+        "bundleOffset": 14684,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "CONTRIBUTORS",
+        "bytes": 1200,
+        "sha256": "52cef8877355b9394bf2c5172a351265f025c0e6783fedc289b23ee28ecd4693",
+        "bundleOffset": 15415,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "COPYRIGHT",
+        "bytes": 375,
+        "sha256": "6c935d087a2992d0f092665400a2fa99c98db58d96fbe29368f8f48182bed9aa",
+        "bundleOffset": 16695,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "LICENSE-APACHE",
+        "bytes": 638,
+        "sha256": "9eacbcb81be660840c714a560a9d65ba07913db98dd4baf969f78dd499fdd60f",
+        "bundleOffset": 17155,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "LICENSE-BSD-1",
+        "bytes": 1153,
+        "sha256": "0c1240e29b4a2c528bcc3ccc38a98b1dba5e3e6b465da910208935f082e2ced6",
+        "bundleOffset": 17877,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "LICENSE-MIT",
+        "bytes": 1119,
+        "sha256": "0034712d5e97a4f5b900a160a5c19d582b740d8e0638b4e44fd07e7b492dcd13",
+        "bundleOffset": 19112,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/AUTHORS",
+        "bytes": 648,
+        "sha256": "ad74c036a6afaedc418fed65f171c877c2f74a4c70938a03930aa11c98a20508",
+        "bundleOffset": 20317,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/CONTRIBUTORS",
+        "bytes": 1200,
+        "sha256": "52cef8877355b9394bf2c5172a351265f025c0e6783fedc289b23ee28ecd4693",
+        "bundleOffset": 21056,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/COPYRIGHT",
+        "bytes": 375,
+        "sha256": "6c935d087a2992d0f092665400a2fa99c98db58d96fbe29368f8f48182bed9aa",
+        "bundleOffset": 22344,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/LICENSE-APACHE",
+        "bytes": 638,
+        "sha256": "9eacbcb81be660840c714a560a9d65ba07913db98dd4baf969f78dd499fdd60f",
+        "bundleOffset": 22812,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/LICENSE-BSD-1",
+        "bytes": 1153,
+        "sha256": "0c1240e29b4a2c528bcc3ccc38a98b1dba5e3e6b465da910208935f082e2ced6",
+        "bundleOffset": 23542,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-go/LICENSE-MIT",
+        "bytes": 1119,
+        "sha256": "0034712d5e97a4f5b900a160a5c19d582b740d8e0638b4e44fd07e7b492dcd13",
+        "bundleOffset": 24785,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/AUTHORS",
+        "bytes": 648,
+        "sha256": "ad74c036a6afaedc418fed65f171c877c2f74a4c70938a03930aa11c98a20508",
+        "bundleOffset": 25992,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/CONTRIBUTORS",
+        "bytes": 1200,
+        "sha256": "52cef8877355b9394bf2c5172a351265f025c0e6783fedc289b23ee28ecd4693",
+        "bundleOffset": 26733,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/COPYRIGHT",
+        "bytes": 375,
+        "sha256": "6c935d087a2992d0f092665400a2fa99c98db58d96fbe29368f8f48182bed9aa",
+        "bundleOffset": 28023,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/LICENSE-APACHE",
+        "bytes": 638,
+        "sha256": "9eacbcb81be660840c714a560a9d65ba07913db98dd4baf969f78dd499fdd60f",
+        "bundleOffset": 28493,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/LICENSE-BSD-1",
+        "bytes": 1153,
+        "sha256": "0c1240e29b4a2c528bcc3ccc38a98b1dba5e3e6b465da910208935f082e2ced6",
+        "bundleOffset": 29225,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/fiat-crypto",
+        "sourceCommit": "23d2dbc4ab897d14bde4404f70cd6991635f9c01",
+        "sourcePath": "fiat-rust/LICENSE-MIT",
+        "bytes": 1119,
+        "sha256": "0034712d5e97a4f5b900a160a5c19d582b740d8e0638b4e44fd07e7b492dcd13",
+        "bundleOffset": 30470,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "thery/coqprime",
+        "sourceCommit": "d4bcfa8f7d7bdbe879d842ecfe575406f622c8ae",
+        "sourcePath": "LICENSE",
+        "bytes": 24381,
+        "sha256": "d4594b82f4d50840df6a7e9d14132a8c0a3cc05d0ac46d15310a264a1f75447e",
+        "bundleOffset": 31662,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "JasonGross/coq-scripts",
+        "sourceCommit": "1d6880c82e77a41d9a73a4ee0d8a1cd5dfa26fd4",
+        "sourcePath": "LICENSE",
+        "bytes": 1077,
+        "sha256": "c00e2016e053e93fdcfbd15861052b6916ab8b80089863c595d8386c5fddbb26",
+        "bundleOffset": 56124,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "JasonGross/coq-scripts",
+        "sourceCommit": "1ad4075c553415ba01f27796231ef26019e76093",
+        "sourcePath": "LICENSE",
+        "bytes": 1077,
+        "sha256": "c00e2016e053e93fdcfbd15861052b6916ab8b80089863c595d8386c5fddbb26",
+        "bundleOffset": 57282,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "AUTHORS",
+        "bytes": 503,
+        "sha256": "269b9890771c15ba97fea25ba76338eb3b712485888b1ce85db5a5470006cf14",
+        "bundleOffset": 58434,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "CONTRIBUTORS",
+        "bytes": 1057,
+        "sha256": "8ea866124dd259706635676f908a57b940fb45ed36dab126552f0fec610f0f6a",
+        "bundleOffset": 59017,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "COPYRIGHT",
+        "bytes": 370,
+        "sha256": "e89a0880ae0e8f29d2532344f4b5a8ca34ce06d5747a67ba2d430234ddb6cd6a",
+        "bundleOffset": 60151,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "LICENSE-APACHE",
+        "bytes": 635,
+        "sha256": "2f55d5e7eaa624771a9be10626d1c6b86edff8db8b7dd6bcbb933ae4b1db5778",
+        "bundleOffset": 60603,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "LICENSE-BSD-1",
+        "bytes": 1147,
+        "sha256": "cd4343e62cf5bb2bd57d424d52dbf18cd720424eba0614bd0ed59859b72b0316",
+        "bundleOffset": 61319,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rewriter",
+        "sourceCommit": "a038b7c5b9c28bcd89ab810f7b063f4950a617e5",
+        "sourcePath": "LICENSE-MIT",
+        "bytes": 1116,
+        "sha256": "744dc13b7c10b871b95700e58c99ba842800404fd8e51abe122274c82e1dc4ca",
+        "bundleOffset": 62545,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "tchajed/coq-record-update",
+        "sourceCommit": "268a735cc2d9e0469e9b6f390365f81e7e576023",
+        "sourcePath": "LICENSE",
+        "bytes": 1091,
+        "sha256": "86bc18f7c5d1a7d65fc58b5cdbb31bd965f3815efe83e8556c1a875270678ae4",
+        "bundleOffset": 63745,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/coqutil",
+        "sourceCommit": "7161c1bca19d0e2a6577aafbc704979d01494468",
+        "sourcePath": "AUTHORS",
+        "bytes": 38,
+        "sha256": "82b42b22d98b235ebb1893c1ee8c4dd7831a80e3275cb8cc8d5e8193147adfab",
+        "bundleOffset": 64910,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/coqutil",
+        "sourceCommit": "7161c1bca19d0e2a6577aafbc704979d01494468",
+        "sourcePath": "CONTRIBUTORS",
+        "bytes": 121,
+        "sha256": "2088498441d9f109f6a586d6d021e8c609d9d532257b20ea18af61e66459521e",
+        "bundleOffset": 65027,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/coqutil",
+        "sourceCommit": "7161c1bca19d0e2a6577aafbc704979d01494468",
+        "sourcePath": "LICENSE",
+        "bytes": 1115,
+        "sha256": "031b27d9d2b5cd3db255f9eeecb4f4926cc880fdb511162a104c7bae67b3e716",
+        "bundleOffset": 65222,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/kami",
+        "sourceCommit": "86d352dd1d8d904e2520e6e1cfeade8dd6e8b2bf",
+        "sourcePath": "LICENSE",
+        "bytes": 1101,
+        "sha256": "63082d883447899f66556cc1de985a01d42d5e2a0a3bff732627a64584da3088",
+        "bundleOffset": 66408,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/riscv-coq",
+        "sourceCommit": "b299f5a3c51e326f4f33675e12ea5c585a31c5a8",
+        "sourcePath": "LICENSE.txt",
+        "bytes": 1509,
+        "sha256": "3fe70f2d0e878d4bdd8313a18dc53567e8b7f888123e928298b948e798626bab",
+        "bundleOffset": 67589,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/bedrock2",
+        "sourceCommit": "7db60537a06afffae3f40630afc030b27630e47c",
+        "sourcePath": "AUTHORS",
+        "bytes": 51,
+        "sha256": "4cc7fc9b1f9dfc9ac564bffac9313c8332ece5eca6d8d009f5e662662b9555d6",
+        "bundleOffset": 69173,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/bedrock2",
+        "sourceCommit": "7db60537a06afffae3f40630afc030b27630e47c",
+        "sourcePath": "CONTRIBUTORS",
+        "bytes": 30,
+        "sha256": "78cf05dfe70bd936ce91dd1b7e90ff5a596cec7cd6a966d8bced0383d7d274c4",
+        "bundleOffset": 69304,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/bedrock2",
+        "sourceCommit": "7db60537a06afffae3f40630afc030b27630e47c",
+        "sourcePath": "LICENSE",
+        "bytes": 1116,
+        "sha256": "c903b70f530785181ed37b14225229dd1b718cea1c3401ff24a6ef04f5f4bf69",
+        "bundleOffset": 69409,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rupicola",
+        "sourceCommit": "935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "sourcePath": "AUTHORS",
+        "bytes": 38,
+        "sha256": "82b42b22d98b235ebb1893c1ee8c4dd7831a80e3275cb8cc8d5e8193147adfab",
+        "bundleOffset": 70600,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rupicola",
+        "sourceCommit": "935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "sourcePath": "CONTRIBUTORS",
+        "bytes": 97,
+        "sha256": "61a49c0adee48f9828de82e7e98376082693b28e249445935997a42244cccc10",
+        "bundleOffset": 70718,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "repository": "mit-plv/rupicola",
+        "sourceCommit": "935a01c3f4cdca06a1921d918f9e5350380fd9ee",
+        "sourcePath": "LICENSE",
+        "bytes": 1100,
+        "sha256": "c9f9bd53ed50adf16b775a819f418236d12ebfe279c4120f3ae89b5402493b15",
+        "bundleOffset": 70890,
+        "originalBytesRetainedUnchanged": true
+      }
+    ],
+    "retainedInputs": [
+      {
+        "file": "provider-compiler-inputs/fiat-producer-chain-original-notices.txt",
+        "bytes": 330588,
+        "sha256": "e4cadc28aed3802d1ab38396e465ec6f52cbc987fff52a80012473327d3fc6b8"
+      }
+    ],
+    "sourceBuildExecuted": false,
+    "coqOcamlCompilerSdkAndBootstrapBuildClosureVerified": false,
+    "completeOriginalInlineNoticeClosureVerified": false
+  },
+  "historicalCompilerSourceBuildFollowUp": {
+    "observedAt": "2026-10-28",
+    "scope": "Independent source-built pure-Go Linux ARM64 Go1.17.2 profile for checking the historical parser generator. Exact original patch/image identity, complete official SDK archive reproduction, host image and deeper compiler bootstrap closure remain open.",
+    "frozenBuildRecipe": {
+      "schemaVersion": 1,
+      "frozenBeforeBuild": true,
+      "scope": "Source-build the older pure-Go Linux ARM64 compiler/stdlib profile needed to test the pinned historical parser generator. This is not a complete official SDK archive reproduction or complete upstream closure.",
+      "sourceArchive": {
+        "filename": "go1.17.2.src.tar.gz",
+        "os": "",
+        "arch": "",
+        "version": "go1.17.2",
+        "sha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "size": 22182111,
+        "kind": "source",
+        "rawArchiveSizeAndHashVerified": true
+      },
+      "sourceUrl": "https://go.dev/dl/go1.17.2.src.tar.gz",
+      "upstreamDeclaredCompilerProfile": "Go1.17.x in the pinned addchain CI/generation workflow",
+      "selectedIndependentCompilerVersion": "go1.17.2",
+      "exactOriginalCompilerPatchAttested": false,
+      "bootstrapVersion": "go version go1.26.8 linux/arm64",
+      "bootstrapWholeSourceBuiltSdkArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+      "bootstrapEvidence": "provider-arm64-compiler-sdk-rebuild.json",
+      "bootstrapFullAncestryClosed": false,
+      "hostImage": "docker.io/library/debian@sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a",
+      "verifiedBashPrerequisite": {
+        "state": "verified-independent-builder-prerequisites",
+        "initialPublicTag": "docker.io/library/debian:bookworm-slim",
+        "frozenIndex": "docker.io/library/debian@sha256:99c0b25c46d0214d5a2091092e7908907dcaecd6a962cde0ac700acee222b6f3",
+        "selectedArm64Image": "docker.io/library/debian@sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a",
+        "selectedManifest": {
+          "annotations": {
+            "com.docker.official-images.bashbrew.arch": "arm64v8",
+            "org.opencontainers.image.base.name": "scratch",
+            "org.opencontainers.image.created": "2026-10-27T00:00:00Z",
+            "org.opencontainers.image.revision": "e36653f9967231373aeba7cff2102fd004ac4f4a",
+            "org.opencontainers.image.source": "https://github.com/debuerreotype/docker-debian-artifacts.git",
+            "org.opencontainers.image.url": "https://hub.docker.com/_/debian",
+            "org.opencontainers.image.version": "bookworm-slim"
+          },
+          "digest": "sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a",
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux",
+            "variant": "v8"
+          },
+          "size": 1041
+        },
+        "bashVersion": "GNU bash, version 5.2.15(1)-release (aarch64-unknown-linux-gnu)",
+        "bashExecutableSha256": "f5918390c5b15392ad8835e8368a79c1ee9937fbb19f2349cccf5d4524183299",
+        "osRelease": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+        "originalGo117ProducerImageAttested": false,
+        "builderImageAndBashSourceBuildClosureVerified": false,
+        "go117SourceBuildExecuted": false,
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "dockerReportedImageId": "sha256:7ccb8b5b60c7654f5b795d94ee7d751cd0811500803f0b09cefcd555e755a55a"
+      },
+      "priorMissingBashPrerequisiteFailurePreserved": true,
+      "hostImageSourceBuildClosureVerified": false,
+      "command": ["bash", "make.bash"],
+      "environment": {
+        "GOROOT_BOOTSTRAP": "/bootstrap",
+        "GOROOT_FINAL": "/usr/local/go",
+        "GOOS": "linux",
+        "GOARCH": "arm64",
+        "CGO_ENABLED": "0",
+        "GOTOOLCHAIN": "local",
+        "GOENV": "off",
+        "GOWORK": "off",
+        "GOPROXY": "off",
+        "GOSUMDB": "off",
+        "GOTELEMETRY": "off",
+        "GOMAXPROCS": "2",
+        "GOCACHE": "/work/cache",
+        "GOTMPDIR": "/work/tmp",
+        "GOPATH": "/work/gopath"
+      },
+      "resourceLimits": {
+        "cpus": 2,
+        "memoryBytes": 4294967296,
+        "commandTimeoutSeconds": 1200,
+        "network": "none"
+      },
+      "expectedOfficialGo117SdkMountedIntoBuild": false,
+      "bootstrapMountReadonly": true,
+      "wholeFilesystemOrDependencyHermeticityVerified": false,
+      "optionalHostCCompilerProbeIndependentlyTraced": false,
+      "completeOfficialSdkArchiveReproductionVerified": false,
+      "fullUpstreamProducerClosureVerified": false,
+      "gateAComplete": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "nativeBuildObservation": {
+      "state": "completed",
+      "recipeSha256": "e0b18153087d73f4638c8ead0c7d6958dc8b9e5877b49dc654f800d559326f28",
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "exitCode": 0,
+      "elapsedSeconds": 57.955334292,
+      "logSha256": "57704941635af56e13f8a9e0165ac17b284abe7e11c5b5201ea3877d29624cdc",
+      "originalSourceArchiveUnchanged": true,
+      "nativeBuiltCompilerVersion": "go version go1.17.2 linux/arm64",
+      "builtExecutableIdentities": [
+        {
+          "file": "bin/go",
+          "bytes": 13578341,
+          "sha256": "351d81190a328a88befae6d85dd5232cf973eae7ec660751e7d70de7576ad55c"
+        },
+        {
+          "file": "pkg/tool/linux_arm64/compile",
+          "bytes": 22778340,
+          "sha256": "3f0fb11cbc0f3fac7111b887019576aacfd3509c6054d9c4338f55fed9fdeba8"
+        },
+        {
+          "file": "pkg/tool/linux_arm64/link",
+          "bytes": 6364152,
+          "sha256": "dfd86cb5762dfc06c0d7971c76a93753d25662c7317c918ea66b5efd862cb325"
+        },
+        {
+          "file": "pkg/tool/linux_arm64/asm",
+          "bytes": 4777954,
+          "sha256": "34cd489c7ed2e8ab680e37a96c8aa08f4cab339130b07f0534b54fbc9cb05dd1"
+        }
+      ],
+      "completeOfficialSdkAndBootstrapClosureVerified": false,
+      "ownedBuildContainerAbsentAfterCleanup": true
+    },
+    "officialSourceAndSdkAcquisition": {
+      "state": "verified-official-source-and-sdk-acquired",
+      "officialIndexSha256": "6b83804b8dd2d6052bb93cc03e4aba2ddee834f82c15f7bf8faacf5f91825950",
+      "inputs": [
+        {
+          "filename": "go1.17.2.src.tar.gz",
+          "os": "",
+          "arch": "",
+          "version": "go1.17.2",
+          "sha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+          "size": 22182111,
+          "kind": "source",
+          "rawArchiveSizeAndHashVerified": true
+        },
+        {
+          "filename": "go1.17.2.linux-arm64.tar.gz",
+          "os": "linux",
+          "arch": "arm64",
+          "version": "go1.17.2",
+          "sha256": "a5a43c9cdabdb9f371d56951b14290eba8ce2f9b0db48fb5fc657943984fd4fc",
+          "size": 102615093,
+          "kind": "archive",
+          "rawArchiveSizeAndHashVerified": true
+        }
+      ],
+      "upstreamDeclaredCompilerProfile": "Go 1.17.x in the pinned addchain CI/generation workflow",
+      "selectedIndependentCompilerVersion": "go1.17.2",
+      "exactOriginalCompilerPatchAttested": false,
+      "producerCodeExecuted": false,
+      "compilerSdkSourceBuildClosureVerified": false,
+      "gateAComplete": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "namedOriginalSourceNoticeMembers": [
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/AUTHORS",
+        "bytes": 55782,
+        "sha256": "1ed7ad40d9fc8c13fed016fdd3889714b701028152b696ba2caf16762ab8447e",
+        "bundleOffset": 72029,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/CONTRIBUTORS",
+        "bytes": 107225,
+        "sha256": "5ea54baddd85a5a788f2f9d8e1a50ac1562692dc22b96d34fdaabe1f44ebeb46",
+        "bundleOffset": 127855,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 235119,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 236637,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/AUTHORS",
+        "bytes": 305,
+        "sha256": "8a196dfd9252ad9cb0670365e680d6b19560c688776fa76f0203854ae2c0e29c",
+        "bundleOffset": 238018,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/CONTRIBUTORS",
+        "bytes": 654,
+        "sha256": "2e6c7aac8aaaed781b36b1edb63cfb0692671310008d9a50afb585a686c74f1e",
+        "bundleOffset": 238406,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/LICENSE",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "bundleOffset": 239138,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/third_party/d3/LICENSE",
+        "bytes": 1475,
+        "sha256": "7a3cb0e5055874e67db9aa2d5fe26de23204fa994ffbad198901ffe9c812a717",
+        "bundleOffset": 250589,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/third_party/d3flamegraph/LICENSE",
+        "bytes": 11357,
+        "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+        "bundleOffset": 252167,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/google/pprof/third_party/svgpan/LICENSE",
+        "bytes": 1754,
+        "sha256": "154c946c17de61ca71d28e13673d76a5798e6e25995a7397fbae157afc8f62b4",
+        "bundleOffset": 263621,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/github.com/ianlancetaylor/demangle/LICENSE",
+        "bytes": 1479,
+        "sha256": "b73277f7730993ef8e7f80aed83e5309762fed4d77eced982abb2c00657c074d",
+        "bundleOffset": 265464,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/arch/AUTHORS",
+        "bytes": 174,
+        "sha256": "5aa3167c44245f0b12b27195d85c6a8c8e067cfdd511059daa4d7b3c5b232129",
+        "bundleOffset": 267015,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/arch/CONTRIBUTORS",
+        "bytes": 171,
+        "sha256": "fa714cb1012a065fbe08b174eb1f5604327bd24d42dab2c461878ce36f68d0c9",
+        "bundleOffset": 267266,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/arch/LICENSE",
+        "bytes": 1479,
+        "sha256": "b73277f7730993ef8e7f80aed83e5309762fed4d77eced982abb2c00657c074d",
+        "bundleOffset": 267509,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/arch/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 269060,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/crypto/AUTHORS",
+        "bytes": 174,
+        "sha256": "5aa3167c44245f0b12b27195d85c6a8c8e067cfdd511059daa4d7b3c5b232129",
+        "bundleOffset": 270437,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/crypto/CONTRIBUTORS",
+        "bytes": 171,
+        "sha256": "fa714cb1012a065fbe08b174eb1f5604327bd24d42dab2c461878ce36f68d0c9",
+        "bundleOffset": 270690,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/crypto/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 270935,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/crypto/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 272488,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/mod/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 273862,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/mod/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 275412,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/sys/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 276786,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/sys/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 277035,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/sys/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 277276,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/sys/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 278826,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/term/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 280201,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/term/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 280451,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/term/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 280693,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/term/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 282244,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/tools/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 283620,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/tools/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 283871,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/tools/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 284114,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/tools/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 285666,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/xerrors/LICENSE",
+        "bytes": 1479,
+        "sha256": "84d554e7a5d139b7c7b5d6ef0670ae556c4cdcfa354eaad72a1c07c08012c96f",
+        "bundleOffset": 287044,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/cmd/vendor/golang.org/x/xerrors/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 288598,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/crypto/AUTHORS",
+        "bytes": 174,
+        "sha256": "5aa3167c44245f0b12b27195d85c6a8c8e067cfdd511059daa4d7b3c5b232129",
+        "bundleOffset": 289971,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/crypto/CONTRIBUTORS",
+        "bytes": 171,
+        "sha256": "fa714cb1012a065fbe08b174eb1f5604327bd24d42dab2c461878ce36f68d0c9",
+        "bundleOffset": 290220,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/crypto/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 290461,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/crypto/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 292010,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/net/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 293380,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/net/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 293625,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/net/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 293862,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/net/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 295408,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/sys/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 296778,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/sys/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 297023,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/sys/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 297260,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/sys/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 298806,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/text/AUTHORS",
+        "bytes": 173,
+        "sha256": "b82446c166daa6932dc33418961ed7a7f06c5a9fee17e9d214e16079e3442757",
+        "bundleOffset": 300177,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/text/CONTRIBUTORS",
+        "bytes": 170,
+        "sha256": "9a8de5acb21b2911cc799e14f943b8974b281f503637cf92aeee4f01aa568e03",
+        "bundleOffset": 300423,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/text/LICENSE",
+        "bytes": 1479,
+        "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+        "bundleOffset": 300661,
+        "originalBytesRetainedUnchanged": true
+      },
+      {
+        "sourceVersion": "go1.17.2",
+        "sourceArchiveSha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431",
+        "sourcePath": "go/src/vendor/golang.org/x/text/PATENTS",
+        "bytes": 1303,
+        "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+        "bundleOffset": 302208,
+        "originalBytesRetainedUnchanged": true
+      }
+    ],
+    "namedNoticeCandidateExclusions": [],
+    "retainedInputs": [
+      {
+        "file": "provider-compiler-inputs/fiat-producer-chain-original-notices.txt",
+        "bytes": 330588,
+        "sha256": "e4cadc28aed3802d1ab38396e465ec6f52cbc987fff52a80012473327d3fc6b8"
+      }
+    ],
+    "selectedGeneratedParserReproductionQualified": false,
+    "remainingProducerWork": [
+      "Reproduce the selected generated parser under the original package-context and compiler profile; failed modern-compiler output is not accepted.",
+      "Close the complete original compiler/SDK, builder image/Bash, deeper bootstrap and copied/generated input chains.",
+      "Complete canonical source-Git and original inline/copied notice attribution for the historical SDK."
+    ],
+    "completeOfficialSdkAndBootstrapClosureVerified": false
+  }
+}

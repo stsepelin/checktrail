@@ -1,0 +1,190 @@
+{
+  "profile": "scala-extensions",
+  "scope": "fresh-installed",
+  "caseEvidence": {
+    "timeoutMs": 600000,
+    "profile": "scala-extensions",
+    "fileWorkerLimit": 1,
+    "requiredCaseWorkerLimit": 1,
+    "timeoutScope": "one fresh process per required named case",
+    "passed": 9,
+    "required": 9,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 4096,
+      "terminalEventCount": 9,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "4462e58fb2c1a5fcde29ee3b3bfdf294b0f49d3023222c5f4ac5c5176d921939"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "4462e58fb2c1a5fcde29ee3b3bfdf294b0f49d3023222c5f4ac5c5176d921939"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "scala-extensions broken acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 117249.184801,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "scala-extensions fixed acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 40398.074916,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "scala-extensions near-miss acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 39990.630071,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-1",
+          "name": "scala-extensions prerequisite acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 344.986392,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-1",
+          "name": "scala-extensions stale acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 43391.843181,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-1",
+          "name": "scala-extensions empty acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 56644.050509,
+          "required": true
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-1",
+          "name": "scala-extensions privacy acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 79553.093686,
+          "required": true
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-1",
+          "name": "scala-extensions lifecycle acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 77110.725115,
+          "required": true
+        },
+        {
+          "sequence": 9,
+          "fileId": "file-1",
+          "name": "scala-extensions installed acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 4.247819,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "scala-extensions broken acceptance",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "scala-extensions fixed acceptance",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "scala-extensions near-miss acceptance",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-1",
+          "name": "scala-extensions prerequisite acceptance",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-1",
+          "name": "scala-extensions stale acceptance",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-1",
+          "name": "scala-extensions empty acceptance",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-1",
+          "name": "scala-extensions privacy acceptance",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-1",
+          "name": "scala-extensions lifecycle acceptance",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-1",
+          "name": "scala-extensions installed acceptance",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        }
+      ]
+    }
+  },
+  "compiledHarnessFiles": [
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "sha256": "4462e58fb2c1a5fcde29ee3b3bfdf294b0f49d3023222c5f4ac5c5176d921939"
+    }
+  ]
+}
