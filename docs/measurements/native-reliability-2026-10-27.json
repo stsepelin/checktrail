@@ -437,5 +437,236 @@
     "qualityAssessed": false,
     "inferenceInvoked": false,
     "fieldEvaluationExecuted": false
+  },
+  "windowsNpmObservationFollowUp": {
+    "observedAt": "2026-10-28",
+    "sourceCommit": "8fc7f6a00ac4db0dcf8d535f44dbd95543d5994c",
+    "scope": "Separate the host package installation observer from the Node/engine execution observers. Both locked and ambient package-upgrade paths retain fixed offline arguments and original refusal evidence.",
+    "originalCiFailure": {
+      "run": "https://github.com/stsepelin/checktrail/actions/runs/40656088924",
+      "job": 122708132924,
+      "head": "562439d01649c3b82a26dfcdd856fdeebc7db6cd",
+      "completedSuccessfulChecks": 128,
+      "rootFailingChecks": 1,
+      "aggregateFailingChecks": 1,
+      "observedFailure": "Fresh installed resource near-miss acceptance failed during Upgrade baseline npm ci with spawnSync node.exe ETIMEDOUT at the fixed 60000ms installation observer.",
+      "underlyingInstallationDelayCauseEstablished": false,
+      "usedToQualifyCandidate": false
+    },
+    "correction": {
+      "windowsExactPlatform": "win32",
+      "windowsInstallationObservationMs": 120000,
+      "otherHostInstallationObservationMs": 60000,
+      "nodeCommandObservationMs": 60000,
+      "productionEngineTimeoutMs": 30000,
+      "productionEngineLimitsChanged": false,
+      "automaticRetriesAdded": false,
+      "requiredCallbacksRemovedOrSkipped": false
+    },
+    "controlledHostAndRefusalTests": {
+      "passedNamedTests": 3,
+      "failedNamedTests": 0,
+      "scope": "The complete upgrade-observation component; the added installation test runs the actual upgrade path until a controlled npm refusal for win32, linux, darwin and the win32-control near miss in both locked and ambient modes. It does not run native Windows.",
+      "platforms": ["win32", "linux", "darwin", "win32-control"],
+      "installationModes": ["locked npm ci", "ambient npm install"],
+      "originalErrorObjectAndOutputAndStatusPreserved": true,
+      "exactOneAttemptAndOfflineArgumentsAsserted": true,
+      "refusalPreventsMcpStartup": true
+    },
+    "physicalMutationControls": {
+      "state": "completed",
+      "controls": [
+        {
+          "control": "baseline",
+          "exitCode": 0,
+          "logSha256": "e817878e08aa8c72e06f834ec8c4c36706f8fe2d995b06f4a5c7f119b7a09785",
+          "expectedFailureObserved": false
+        },
+        {
+          "control": "windows-installation-limit",
+          "exitCode": 1,
+          "logSha256": "77248445fe0ea4505815eb71c6fd58730523226ac67b099b34c3b72cd566389d",
+          "expectedFailureObserved": true
+        },
+        {
+          "control": "exact-host-match",
+          "exitCode": 1,
+          "logSha256": "332bd45d87409b2cac88ab21432f47f2cffdef59333d739d145011ccbd18098e",
+          "expectedFailureObserved": true
+        },
+        {
+          "control": "locked-observer-wiring",
+          "exitCode": 1,
+          "logSha256": "78b3f72bfc5c0a3b41c24bc87f910fd848fd67084d2f3b71925d87b016e669d0",
+          "expectedFailureObserved": true
+        },
+        {
+          "control": "ambient-observer-wiring",
+          "exitCode": 1,
+          "logSha256": "2fc7caae87037e113f9a404792f8f3a9f87d798121eb92f63af811f58ce13274",
+          "expectedFailureObserved": true
+        },
+        {
+          "control": "restored",
+          "exitCode": 0,
+          "logSha256": "81af6ee67bda8a315b32282ceab97656e0f53c4d33a361691be0aa22c5652536",
+          "expectedFailureObserved": false
+        }
+      ],
+      "sourceHelperExactlyRestored": true,
+      "productionEngineLimitsChanged": false,
+      "nativeWindowsQualifiedByTheseUnitControls": false
+    },
+    "nativeWindowsDiagnostic": {
+      "run": "https://github.com/stsepelin/checktrail/actions/runs/40663185295",
+      "job": 122731025552,
+      "diagnosticSourceCommit": "e96140ff43b6275697f34d8274019df2746caf87",
+      "workflowDispatchOnly": true,
+      "mergeableFeatureBranch": false,
+      "decodedLogSha256": "50fb78b5f86656aaad3e14722fc746e7f978885f04994dbda3b3a625318d25da",
+      "fullResourceReceipts": 1,
+      "plainInstallationTimingEvents": [],
+      "source": {
+        "passed": 9,
+        "required": 9,
+        "complete": true
+      },
+      "installed": {
+        "passed": 9,
+        "required": 9,
+        "complete": true
+      },
+      "node": "22.23.3",
+      "platform": "win32",
+      "architecture": "x64",
+      "compiledEngineSha256": "c647f2d3d44ce1afbfcb51b79eb53860c2a24521d155e2b931d927a56f74193c",
+      "harnessSha256": "5d3366b36b69b45ac7226811c45bdc00f973058c6b72709c5979c97734d228ec",
+      "sourceHarnessUnchanged": true,
+      "installedHarnessSha256": "5d3366b36b69b45ac7226811c45bdc00f973058c6b72709c5979c97734d228ec",
+      "selectedRuntimeValidated": true,
+      "runtime": {
+        "slot": "windows-node22",
+        "node": "22.23.3",
+        "platform": "win32",
+        "architecture": "x64",
+        "osRelease": "10.0.26100",
+        "osVersion": "Windows Server 2025 Datacenter",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "win25-vs2026",
+        "imageVersion": "20261021.278.1",
+        "containerImageId": null,
+        "nodeExecutableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false,
+        "selectedRuntime": {
+          "id": "windows-node22",
+          "platform": "win32",
+          "architecture": "x64",
+          "osFamily": "Windows Server 2025",
+          "node": "22.23.3",
+          "exactOsImageIdentityRequired": true
+        }
+      },
+      "selectedRuntimeMatrixQualified": false,
+      "scope": "Original complete source and fresh offline installed resource callbacks on the diagnostic harness with the same effective installation windows. This differs from the final shared helper wiring and does not qualify final current-head CI.",
+      "individualNpmInstallationDurationsRetained": false,
+      "installedResourceProfileEvaluated": true
+    },
+    "fullCheck": {
+      "sourceCommit": "8fc7f6a00ac4db0dcf8d535f44dbd95543d5994c",
+      "command": "npm run check",
+      "exitCode": 1,
+      "elapsedSeconds": 1102.385657458,
+      "logSha256": "19e84e00b13e502110aa52ee96e607971e9f341612cc288d18a85171cd31ecf8",
+      "batches": [
+        {
+          "tests": 2042,
+          "pass": 1283,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 759,
+          "duration_ms": 406124.057417
+        },
+        {
+          "tests": 102,
+          "pass": 100,
+          "fail": 2,
+          "cancelled": 0,
+          "skipped": 0,
+          "duration_ms": 673035.840334
+        }
+      ],
+      "total": {
+        "tests": 2144,
+        "pass": 1383,
+        "fail": 2,
+        "cancelled": 0,
+        "skipped": 759
+      },
+      "failures": [
+        "go-extensions installed acceptance: fresh installed near-miss case returned an extra go.build error; original process detail not retained",
+        "resource-release-readiness lifecycle acceptance: output-limit case returned PROCESS_TREE_CLEANUP_UNAVAILABLE; original underlying cleanup exception not retained"
+      ],
+      "gateAComplete": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "compiledEnginePostCheck": {
+        "schemaVersion": 1,
+        "scope": "Regular files beneath the configured compiled engine root; root aliases resolved, nested links rejected. Not a loaded-module, dependency, producer-source or host identity trace.",
+        "fileCount": 972,
+        "bytes": 16179784,
+        "treeSha256": "c647f2d3d44ce1afbfcb51b79eb53860c2a24521d155e2b931d927a56f74193c",
+        "manifestSha256": "8ba37f5bb25dd054f160e641eed6115067b1036642cddf71f7d84d31ccbc0957",
+        "limits": {
+          "files": 4096,
+          "entries": 8192,
+          "depth": 24,
+          "fileBytes": 8388608,
+          "totalBytes": 134217728
+        }
+      },
+      "currentSourceFullCheckPassed": false
+    },
+    "subsequentFocusedDiagnostics": {
+      "controls": [
+        {
+          "name": "resource-lifecycle",
+          "exitCode": 0,
+          "elapsedSeconds": 19.436865417,
+          "logSha256": "748f3c1f08ec8ef9a6197b89ed066db8cb54e651127033b51b7293d65388757c",
+          "compiledHarnessDiagnosticOnly": false,
+          "assertionsUnchanged": true,
+          "compiledEngineUnchanged": true
+        },
+        {
+          "name": "go-installed",
+          "exitCode": 0,
+          "elapsedSeconds": 90.54017295800001,
+          "logSha256": "8db077020d1e90384d9c75ed7df7a9c0a7312b32263a23372f0b9e8410599922",
+          "compiledHarnessDiagnosticOnly": true,
+          "assertionsUnchanged": true,
+          "compiledEngineUnchanged": true
+        }
+      ],
+      "compiledHarnessExactlyRestored": true,
+      "originalFailuresInvalidated": false,
+      "underlyingFailureCausesEstablished": false,
+      "scope": "The unmodified resource lifecycle callback passed once. The fresh installed Go profile passed with only bounded diagnostic report capture added to its copied harness; engine bytes and assertions were unchanged. These observations neither explain nor erase the two full-check failures.",
+      "rejectedPrivateDiagnostic": "An earlier temporary Go report-capture edit failed JavaScript syntax preflight before its native test ran; it was restored and corrected. It is not native acceptance evidence."
+    },
+    "limitations": [
+      "The full check at this source failed: 1383 passed, 2 failed and 759 explicitly skipped; the failures remain unresolved.",
+      "Local macOS27 ARM64 / Node26.9 is outside the selected final runtime matrix.",
+      "The successful targeted Windows diagnostic is not a final current-head workflow run and retained no individual npm installation timings.",
+      "All final runtime bindings, full upstream compiler/SDK/bootstrap and original-notice closure remain required."
+    ],
+    "selectedRuntimeMatrixQualified": false,
+    "fullUpstreamProducerBuildClosureVerified": false,
+    "gateAComplete": false,
+    "qualityAssessed": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
   }
 }
