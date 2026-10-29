@@ -5829,6 +5829,10 @@
     {
       "file": "dist/test/consumer-runtime-evidence.test.js",
       "name": "consumer runtime CLI rejects missing unknown and extra hosted slots before emitting qualifying evidence"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer package observation preserves platform-specific aggregate limits and fixed execution inputs"
     }
   ],
   "consumer-impact-foundation": [

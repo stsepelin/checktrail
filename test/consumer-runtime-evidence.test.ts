@@ -705,3 +705,40 @@ test("consumer installation requires the matching foundation even when all whole
     assert.throws(() => requireConsumerRuntimeInstallation(changed, expected));
   }
 });
+
+test("consumer package observation preserves platform-specific aggregate limits and fixed execution inputs", () => {
+  const code = `import assert from'node:assert/strict';import cp from'node:child_process';import{registerHooks,syncBuiltinESMExports}from'node:module';import path from'node:path';
+const[gate,platform]=process.argv.slice(1),cases=[],calls=[];globalThis.originalConsumerBudgetCases=cases;
+registerHooks({resolve(specifier,context,next){if(specifier==='node:test')return{url:'data:text/javascript,'+encodeURIComponent("export function test(name,options,body){if(typeof options==='function'){body=options;options={};}globalThis.originalConsumerBudgetCases.push({name,options,body});}"),shortCircuit:true};return next(specifier,context);}});
+cp.spawnSync=(executable,args,options)=>{assert.equal(executable,process.execPath);assert.equal(args.length,1);assert.equal(path.basename(args[0]),'verify-consumer-impact-whole-package.mjs');assert.equal(options.env.NODE_OPTIONS,undefined);assert.equal(options.env.NODE_TEST_CONTEXT,undefined);calls.push(options);return{status:0,stdout:JSON.stringify({offlineProductionInstall:true,harnessOutsideInstalledPackage:true,profileEvidence:{complete:true,required:9,passed:9,ledger:{truncated:false}}}),stderr:''};};syncBuiltinESMExports();
+Object.defineProperty(process,'platform',{value:platform});for(const key of['CHECKTRAIL_CONSUMER_WHOLE_INSTALLED','CHECKTRAIL_CONSUMER_RUNTIME_ACTIVE','CHECKTRAIL_CONSUMER_RUNTIME_RECEIPT','CHECKTRAIL_CONSUMER_RUNTIME_SLOT'])delete process.env[key];
+await import(gate);const installed=cases.find(row=>row.name==='consumer-impact installed acceptance'),lifecycle=cases.find(row=>row.name==='consumer-impact lifecycle acceptance');assert.ok(installed&&lifecycle);await installed.body();assert.equal(calls.length,1);console.log(JSON.stringify({parent:installed.options.timeout,command:calls[0].timeout,lifecycle:lifecycle.options.timeout,maxBuffer:calls[0].maxBuffer,encoding:calls[0].encoding}));`;
+  for (const platform of ["win32", "linux", "darwin"]) {
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    const result = spawnSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        code,
+        new URL("./gate-consumer-impact.test.js", import.meta.url).href,
+        platform,
+      ],
+      { env, encoding: "utf8", timeout: 15000 },
+    );
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.deepEqual(
+      JSON.parse(result.stdout),
+      {
+        parent: platform === "win32" ? 600000 : 240000,
+        command: platform === "win32" ? 590000 : 230000,
+        lifecycle: 120000,
+        maxBuffer: 8 * 1048576,
+        encoding: "utf8",
+      },
+      platform,
+    );
+  }
+});

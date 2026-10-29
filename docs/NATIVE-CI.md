@@ -876,6 +876,10 @@ fresh offline installed cohort, preserving the original foundation callbacks and
 nested event accounting. Windows consumer acceptance has its own matrix lane,
 using the same pinned Windows slot as the task, review and lifecycle lane. Both
 remain required by `ci-complete`, and each cohort keeps its execution limits.
+The Windows installed callback has a separate aggregate observation allowance
+for the complete packaged profile and original foundation cohort. Individual
+execution limits and output caps stay fixed, and other hosts retain their
+original package observation allowance.
 The Linux ARM64 controller binds its selected base images and native Git
 prerequisite. Local development evidence is recorded separately in
 [CONSUMER-ACCEPTANCE.md](CONSUMER-ACCEPTANCE.md); hosted acceptance requires
