@@ -368,6 +368,7 @@ test("native invocation retains mirror failures before and after native exit and
     const delivered: Buffer[] = [];
     const callerErrors: Error[] = [];
     let lateErrorObserved: (() => void) | undefined;
+    let releaseLateError: (() => void) | undefined;
     const lateError = new Promise<void>((resolve) => {
       lateErrorObserved = resolve;
     });
@@ -383,11 +384,9 @@ test("native invocation retains mirror failures before and after native exit and
           throw Object.assign(Error("synthetic"), { code: "EPIPE" });
         if (mode === "exited-stall") return;
         if (mode === "late-error") {
-          setTimeout(
-            () =>
-              callback(Object.assign(Error("synthetic"), { code: "EPIPE" })),
-            2500,
-          );
+          // Release only after the real native timeout and cleanup have returned.
+          releaseLateError = () =>
+            callback(Object.assign(Error("synthetic"), { code: "EPIPE" }));
           return;
         }
         const finish = () => {
@@ -446,8 +445,11 @@ test("native invocation retains mirror failures before and after native exit and
       if (mode === "late-error") {
         assert.deepEqual(sink.listeners("error"), [callerError]);
         assert.deepEqual(callerErrors, []);
+        assert.ok(releaseLateError);
+        releaseLateError();
         await lateError;
         await new Promise<void>((resolve) => setImmediate(resolve));
+        assert.equal(result.error?.code, "NATIVE_TIMEOUT");
       }
       assert.deepEqual(sink.listeners("error"), [callerError]);
       assert.equal(sink.listenerCount("drain"), 0);
