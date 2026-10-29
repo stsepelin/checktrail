@@ -17,6 +17,7 @@ const exclusiveFullSuiteFiles = Object.freeze([
   "gate-tasks-matrix.test.js",
   "gate-resource-release-readiness.test.js",
   "gate-go-extensions.test.js",
+  "gate-lifecycle-platforms.test.js",
   "go-matrix.test.js",
   "process-tree.test.js",
   "clang.test.js",

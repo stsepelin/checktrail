@@ -5553,6 +5553,10 @@
     {
       "file": "dist/test/git-metadata-policy.test.js",
       "name": "native Git metadata passes the complete independent safety configuration to the operator executable without inheriting a project override"
+    },
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "Windows metadata uses only the native outside-project executable, retains refusal and output boundaries, and compares staged modes without inventing chmod changes"
     }
   ],
   "native-harness-cleanup": [

@@ -67,6 +67,12 @@ adapter, later source changes or the complete Gate A runtime matrix.
 
 ## Windows execution profile
 
+The Git selection path uses a native host `git.exe` outside the project for its
+fixed read-only metadata queries, with the same five-second/output bounds and
+execution-disabled Git configuration. Tracked Windows executable modes are read
+from the index. The consumer source/fresh-install CI cohort qualifies affected
+selection alongside the existing native validation controls.
+
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md) describes the experimental bounded
 local-drive `.exe` runner and dedicated native source/offline-install CI profile.
 [Dated scoped native controls](measurements/windows-resource-workloads-2026-10-26.json)

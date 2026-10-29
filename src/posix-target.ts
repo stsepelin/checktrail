@@ -3,7 +3,7 @@ import {
   nativeJournalContextEnvironment,
   withoutNativeJournalContext,
 } from "./native-journal-channel.js";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { stopDescendants } from "./process-tree.js";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -193,7 +193,7 @@ export async function runHostGitMetadata(
   options: Pick<RunOptions, "timeoutMs" | "maxOutputBytes">,
 ) {
   if (
-    !["darwin", "linux"].includes(process.platform) ||
+    !["darwin", "linux", "win32"].includes(process.platform) ||
     !isGitMetadataCommand(command) ||
     !path.isAbsolute(command.executable)
   )
@@ -220,6 +220,44 @@ export async function runHostGitMetadata(
         options.maxOutputBytes > 4 * 1048576))
   )
     throw Error("Host Git metadata limits are invalid");
+  if (process.platform === "win32") {
+    if (path.extname(executable).toLowerCase() !== ".exe")
+      throw Error("Host Git metadata requires a native executable");
+    const { windowsEnvironment } = await import("./windows-process.js"),
+      maximum = options.maxOutputBytes ?? 1024 * 1024,
+      started = performance.now();
+    // This fixed read-only command family disables hooks, filters, monitors,
+    // paging and lazy fetch. It does not execute project-controlled programs.
+    // A native synchronous call avoids a PowerShell/SDK bootstrap per Git read.
+    const result = spawnSync(executable, command.args, {
+      cwd: canonicalRoot,
+      env: windowsEnvironment(process.env, undefined, command.env),
+      shell: false,
+      windowsHide: true,
+      timeout: options.timeoutMs,
+      killSignal: "SIGKILL",
+      maxBuffer: maximum,
+    });
+    const stdout = result.stdout ?? Buffer.alloc(0),
+      stderr = result.stderr ?? Buffer.alloc(0),
+      bytes = stdout.length + stderr.length,
+      code = (result.error as NodeJS.ErrnoException | undefined)?.code;
+    return {
+      command,
+      exitCode: result.status,
+      signal: result.signal,
+      stdout: stdout.subarray(0, maximum).toString("utf8"),
+      stderr: stderr
+        .subarray(0, Math.max(0, maximum - stdout.length))
+        .toString("utf8"),
+      durationMs: performance.now() - started,
+      timedOut: code === "ETIMEDOUT",
+      cancelled: false,
+      truncated: code === "ENOBUFS" || bytes > maximum,
+      outputBytes: bytes,
+      ...(code ? { errorCode: code } : {}),
+    };
+  }
   return collectPosixTarget(
     root,
     command,

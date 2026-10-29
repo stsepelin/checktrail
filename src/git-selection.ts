@@ -27,7 +27,10 @@ async function hostGit(root: string): Promise<string> {
   };
   for (const directory of (process.env.PATH ?? "").split(path.delimiter)) {
     if (!path.isAbsolute(directory)) continue;
-    const candidate = path.join(directory, "git");
+    const candidate = path.join(
+      directory,
+      process.platform === "win32" ? "git.exe" : "git",
+    );
     if (!outside(candidate)) continue;
     try {
       const resolved = await realpath(candidate);
@@ -215,7 +218,14 @@ export async function selectGitChanges(
         .update(bytes)
         .digest("hex");
       working.set(file, {
-        mode: stat.mode & 0o111 ? "100755" : "100644",
+        // Windows does not expose POSIX executable bits. Retain the staged mode
+        // for tracked files, as a chmod cannot supply new evidence there.
+        mode:
+          process.platform === "win32"
+            ? (index.get(file)?.mode ?? "100644")
+            : stat.mode & 0o111
+              ? "100755"
+              : "100644",
         hash,
       });
     }
