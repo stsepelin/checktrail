@@ -67,6 +67,15 @@ adapter, later source changes or the complete Gate A runtime matrix.
 
 ## Windows execution profile
 
+The selected Git for Windows x64 path resolves launchers to one native SDK
+built-in, `mingw64/bin/git.exe` or `ucrt64/bin/git.exe`, outside the project.
+Fixed read-only metadata queries retain the same five-second/output bounds and
+execution-disabled Git configuration. Ambiguous or unrecognized launcher
+candidates are skipped; when no supported host executable remains, selection
+retains the full plan. Tracked Windows executable modes are read from the index.
+The consumer source/fresh-install CI cohort qualifies affected selection alongside
+the existing native validation controls.
+
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md) describes the experimental bounded
 local-drive `.exe` runner and dedicated native source/offline-install CI profile.
 [Dated scoped native controls](measurements/windows-resource-workloads-2026-10-26.json)

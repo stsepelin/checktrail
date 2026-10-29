@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "scope": "Development cohort using the current main production engine and prepared consumer harness; final frozen runtime slot not selected. Measurement precedes final CI wiring and does not qualify a future integration tree.",
+  "logSha256": "c2aca44e4475cdc5ce53afdcf8d3620cc2a70c0168aa530af081ecc61537539b",
+  "runtime": {
+    "node": "26.12.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "osRelease": "27.0.0"
+  },
+  "selectedRuntime": null,
+  "compiledEngineTreeSha256": "c647f2d3d44ce1afbfcb51b79eb53860c2a24521d155e2b931d927a56f74193c",
+  "source": {
+    "profileRequired": 9,
+    "profilePassed": 9,
+    "foundationRequired": 18,
+    "foundationEventsPassed": 45
+  },
+  "installed": {
+    "profileRequired": 9,
+    "profilePassed": 9,
+    "foundationRequired": 18,
+    "foundationEventsPassed": 45,
+    "offlineProductionInstall": true,
+    "harnessOutsideInstalledPackage": true
+  },
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "preparedSourceReference": "54ffa5ff83c158e78b4695064a191d8efb5078ac",
+  "freshMainBase": "7a331094144e94109f992713e7b0173768514586"
+}

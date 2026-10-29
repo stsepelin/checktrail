@@ -1278,12 +1278,78 @@ test("CI resource readiness jobs retain every dynamic native harness input and t
           file + " lacks " + id + " ownership",
         );
   }
+  const resourceMatrix =
+    workflow.jobs["resource-release"].strategy.matrix.include;
+  const taskMatrix = workflow.jobs["tasks-runtime"].strategy.matrix.include;
   assert.deepEqual(
-    workflow.jobs["resource-release"].strategy.matrix.include,
-    workflow.jobs["tasks-runtime"].strategy.matrix.include,
+    [...new Set(taskMatrix.map((entry: { slot: string }) => entry.slot))],
+    resourceMatrix.map((entry: { slot: string }) => entry.slot),
   );
+  for (const entry of taskMatrix) {
+    const pinned = resourceMatrix.find(
+      (row: { slot: string }) => row.slot === entry.slot,
+    );
+    assert.ok(pinned);
+    assert.deepEqual(
+      { slot: entry.slot, os: entry.os, node: entry.node },
+      pinned,
+    );
+  }
   for (const id of owners) {
     assert.deepEqual(workflow.jobs[id].needs, ["ci-plan", "actionlint"]);
     assert.ok(workflow.jobs["ci-complete"].needs.includes(id));
   }
+});
+
+test("CI Windows lanes preserve frozen runtime pins and partition every original runtime cohort behind the completion gate", () => {
+  const job = workflow.jobs["tasks-runtime"];
+  const entries = job.strategy.matrix.include;
+  const windows = entries.filter(
+    (entry: { slot: string }) => entry.slot === "windows-node22",
+  );
+  const pinned = workflow.jobs["resource-release"].strategy.matrix.include.find(
+    (entry: { slot: string }) => entry.slot === "windows-node22",
+  );
+  assert.ok(pinned);
+  assert.deepEqual(windows, [
+    { ...pinned, lane: "windows-node22", core: true, consumer: false },
+    { ...pinned, lane: "windows-consumer-node22", core: false, consumer: true },
+  ]);
+  for (const entry of entries.filter(
+    (row: { slot: string }) => row.slot !== "windows-node22",
+  )) {
+    assert.equal(entry.lane, entry.slot);
+    assert.equal(entry.core, true);
+    assert.equal(entry.consumer, true);
+  }
+  assert.equal(job.name, "tasks-runtime (${{ matrix.lane }})");
+  assert.equal(job.strategy["fail-fast"], false);
+  assert.equal(
+    new Set(entries.map((entry: { lane: string }) => entry.lane)).size,
+    entries.length,
+  );
+  const steps = job.steps as Array<{ run?: string; if?: string }>;
+  const commands = (condition: string) =>
+    steps
+      .filter((step) => step.if === condition)
+      .flatMap((step) => step.run!.trim().split("\n"));
+  assert.deepEqual(commands("matrix.core"), [
+    "node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}",
+    "node scripts/verify-required-native-tests.mjs review-runtime-bindings probe-workspace-privacy",
+    "node scripts/verify-review-runtime.mjs ${{ matrix.slot }}",
+    "node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings &&",
+    "node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}",
+  ]);
+  assert.deepEqual(commands("matrix.consumer"), [
+    "node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings &&",
+    "node scripts/verify-consumer-runtime.mjs ${{ matrix.slot }}",
+  ]);
+  const names = workflowJobNames(workflow);
+  for (const entry of windows)
+    assert.equal(
+      names.filter((name: string) => name === `tasks-runtime (${entry.lane})`)
+        .length,
+      1,
+    );
+  assert.ok(workflow.jobs["ci-complete"].needs.includes("tasks-runtime"));
 });

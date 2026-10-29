@@ -149,6 +149,18 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "scripts/consumer-foundation-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/consumer-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/consumer-runtime-tools.Dockerfile": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/cpp-archive-fallbacks/libexpat-2.8.5-r0.apk": [
     "cpp-extensions-arm64",
     "cpp-tools"
@@ -230,6 +242,8 @@
   "scripts/gradle-tools.Dockerfile": ["gradle"],
   "scripts/hcl-context-tools.Dockerfile": ["hcl-context-arm64"],
   "scripts/helm-extensions-controls.json": ["helm-extensions-arm64"],
+  "scripts/impact-corpus.json": ["tasks-runtime", "tasks-runtime-arm64"],
+  "scripts/impact-metrics.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
   "scripts/infra-tools-artifacts.json": [
     "hcl-context-arm64",
     "helm",
@@ -455,6 +469,7 @@
     "rust-extensions-arm64",
     "scala-extensions-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime",
     "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vue-router-assembly-arm64"
@@ -732,6 +747,7 @@
     "swift-context-arm64",
     "swift-extensions-arm64",
     "swift-tools",
+    "tasks-runtime",
     "tasks-runtime-arm64",
     "terraform",
     "terraform-extensions-arm64",
@@ -989,6 +1005,18 @@
   "scripts/verify-checkstyle-container.mjs": ["checkstyle"],
   "scripts/verify-checkstyle-package.mjs": ["checkstyle"],
   "scripts/verify-clang-container.mjs": ["clang"],
+  "scripts/verify-consumer-impact-whole-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-consumer-runtime-arm64.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-consumer-runtime.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/verify-cpp-context-container.mjs": ["cpp-context-arm64"],
   "scripts/verify-cpp-context-guards.mjs": ["cpp-context-arm64"],
   "scripts/verify-cpp-extensions-container.mjs": ["cpp-extensions-arm64"],
@@ -1391,6 +1419,9 @@
   "test/clippy-evidence.test.ts": ["rust-extensions-arm64"],
   "test/clippy-surfaces.test.ts": ["rust-extensions-arm64"],
   "test/clippy.test.ts": ["rust-extensions-arm64"],
+  "test/consumer-impact-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/consumer-imports.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/consumer-runtime-evidence.test.ts": ["tasks-runtime"],
   "test/cpp-controls.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
   "test/cpp-extensions-cancel.test.ts": ["cpp-extensions-arm64"],
   "test/cpp-extensions-fixture.ts": ["cpp-extensions-arm64"],
@@ -1640,6 +1671,7 @@
     "laravel-assembly-arm64"
   ],
   "test/fetch-pack.test.ts": ["external-adapters"],
+  "test/fixture-process-cleanup.test.ts": ["windows"],
   "test/framework-examples.test.ts": [
     "django-assembly-arm64",
     "fastapi-assembly-arm64",
@@ -1658,6 +1690,7 @@
   "test/gate-assembly-laravel.test.ts": ["laravel-assembly-arm64"],
   "test/gate-assembly-nuxt.test.ts": ["nuxt-assembly-arm64"],
   "test/gate-assembly-vue-router.test.ts": ["vue-router-assembly-arm64"],
+  "test/gate-consumer-impact.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/gate-context-c.test.ts": ["c-context-arm64"],
   "test/gate-context-cpp.test.ts": ["cpp-context-arm64"],
   "test/gate-context-csharp.test.ts": ["csharp-context-arm64"],
@@ -1748,6 +1781,7 @@
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
+  "test/git-selection.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/go-build.test.ts": [
     "external-adapters",
     "go-workspaces-arm64",
@@ -1926,6 +1960,7 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "test/impact.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/java.test.ts": [
     "checkstyle",
     "detekt",

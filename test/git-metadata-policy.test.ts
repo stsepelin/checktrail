@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { access, chmod, readFile, realpath, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
@@ -6,6 +7,7 @@ import {
   gitMetadataEnvironment,
   gitMetadataPrefix,
   isGitMetadataCommand,
+  isWindowsBuiltinGit,
 } from "../src/git-metadata-policy.js";
 import { runHostGitMetadata } from "../src/posix-target.js";
 import { gitReader } from "../src/git-selection.js";
@@ -21,6 +23,30 @@ const command = (args: string[]): Command => ({
   env: { ...gitMetadataEnvironment },
 });
 test("Git metadata admission permits exact read-only forms and literal leading-option filenames while rejecting neighboring commands and execution flags", () => {
+  for (const file of [
+    "C:/synthetic/SDK/mingw64/bin/git.exe",
+    "D:/SYNTHETIC/MINGW64/BIN/GIT.EXE",
+    "C:/synthetic/SDK/ucrt64/bin/git.exe",
+    "D:/SYNTHETIC/UCRT64/BIN/GIT.EXE",
+  ])
+    assert.equal(isWindowsBuiltinGit(file), true, file);
+  for (const file of [
+    "C:/synthetic/SDK/cmd/git.exe",
+    "C:/synthetic/SDK/bin/git.exe",
+    "C:/synthetic/SDK/mingw640/bin/git.exe",
+    "C:/synthetic/SDK/ucrt640/bin/git.exe",
+    "C:/synthetic/SDK/ucrt64/binary/git.exe",
+    "C:/synthetic/SDK/ucrt64/bin/git.exe.backup",
+    "C:/synthetic/SDK/ucrt64/bin/git.cmd",
+    "//synthetic.invalid/share/ucrt64/bin/git.exe",
+    "C:/synthetic/SDK/mingw64/binary/git.exe",
+    "C:/synthetic/SDK/mingw64/bin/git.exe.backup",
+    "C:/synthetic/SDK/mingw64/bin/git.cmd",
+    "//synthetic.invalid/share/mingw64/bin/git.exe",
+    "mingw64/bin/git.exe",
+  ])
+    assert.equal(isWindowsBuiltinGit(file), false, file);
+
   for (const args of [
     ["--version"],
     ["rev-parse", "--show-toplevel"],
@@ -207,3 +233,133 @@ test(
     });
   },
 );
+
+test("Windows metadata uses only the native outside-project executable, retains refusal and output boundaries, and compares staged modes without inventing chmod changes", async (t) => {
+  const root = await realpath(
+    await fixture(t, {
+      "original.js": "export const original = true;\n",
+      "git.exe": "Original project executable marker; must never execute.",
+    }),
+  );
+  const operator = await realpath(
+    await fixture(t, {
+      "mingw64/bin/git.exe":
+        "Original synthetic operator built-in; native calls are intercepted.",
+      "cmd/git.exe": "Original forwarding launcher; must not execute.",
+      "git.cmd": "Original synthetic wrapper; must never be admitted.",
+    }),
+  );
+  await chmod(path.join(operator, "mingw64/bin/git.exe"), 0o755);
+  await chmod(path.join(operator, "cmd/git.exe"), 0o755);
+  const helper = await fixture(t, {
+    "observe.mjs": `import assert from 'node:assert/strict';
+import cp from 'node:child_process';import{syncBuiltinESMExports}from'node:module';
+import{createHash}from'node:crypto';import{readFile}from'node:fs/promises';import path from'node:path';
+const[root,operator,metadataModule,selectionModule]=process.argv.slice(2);const calls=[];
+let reply='version',indexMode='100755',treeMode='100755';
+const contents=await readFile(path.join(root,'original.js'));
+const nul=String.fromCharCode(0),nl=String.fromCharCode(10),tab=String.fromCharCode(9);
+const oid=createHash('sha1').update('blob '+contents.length+nul).update(contents).digest('hex');
+cp.spawnSync=(executable,args,options)=>{
+ calls.push({executable,args,options});
+ assert.equal(executable,path.join(operator,'mingw64','bin','git.exe'));
+ assert.equal(options.shell,false);assert.equal(options.killSignal,'SIGKILL');
+ assert.equal(options.env.ORIGINAL_UNLISTED_SECRET,undefined);
+ assert.equal(options.env.GIT_CONFIG_NOSYSTEM,'1');assert.equal(options.env.GIT_NO_LAZY_FETCH,'1');
+ const flags=['--no-pager','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null','-c','submodule.recurse=false'];assert.deepEqual(args.slice(0,flags.length),flags);
+ let stdout='git version 2.56.0'+nl,stderr='',status=0,error;
+ if(reply==='output'){stdout='abcd';stderr='efgh';}
+ else if(reply==='refusal'){status=7;stderr='Original refusal';}
+ else if(reply==='timeout'){status=null;error=Object.assign(new Error('Original timeout'),{code:'ETIMEDOUT'});}
+ else if(reply==='metadata'){
+  const q=args.slice(flags.length);if(q[0]==='--version')stdout='git version 2.56.0'+nl;
+  else if(q[0]==='rev-parse')stdout=q[1]==='--show-toplevel'?root+nl:'a'.repeat(40)+nl;
+  else if(q[0]==='ls-tree')stdout=treeMode+' blob '+oid+tab+'original.js'+nul;
+  else if(q[0]==='ls-files')stdout=indexMode+' '+oid+' 0'+tab+'original.js'+nul;
+  else throw Error('Unexpected metadata command');
+ }
+ return{pid:42,status,signal:null,stdout:Buffer.from(stdout),stderr:Buffer.from(stderr),error};
+};syncBuiltinESMExports();Object.defineProperty(process,'platform',{value:'win32'});
+process.env.PATH=[root,path.join(operator,'cmd')].join(path.delimiter);process.env.ORIGINAL_UNLISTED_SECRET='Must remain outside the native query';
+const{runHostGitMetadata}=await import(metadataModule);const{gitReader,selectGitChanges}=await import(selectionModule);
+const command={executable:path.join(operator,'mingw64','bin','git.exe'),args:['--no-pager','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null','-c','submodule.recurse=false','--version'],cwd:'.',env:{GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_OPTIONAL_LOCKS:'0',GIT_TERMINAL_PROMPT:'0',GIT_NO_LAZY_FETCH:'1',GIT_NO_REPLACE_OBJECTS:'1',GIT_ATTR_NOSYSTEM:'1',GIT_ALLOW_PROTOCOL:''}};
+const read=gitReader(root);assert.match(await read(['--version']),/^git version 2[.]56[.]0/);assert.equal(calls.length,1);
+for(const invalid of [{...command,executable:path.join(root,'git.exe')},{...command,executable:path.join(operator,'git.cmd')},{...command,executable:path.join(operator,'cmd','git.exe')},{...command,args:[...command.args.slice(0,-1),'--exec-path']},{...command,env:{...command.env,GIT_CONFIG_NOSYSTEM:'0'}}])await assert.rejects(runHostGitMetadata(root,invalid,{timeoutMs:1000}));
+assert.equal(calls.length,1,'Rejected commands must never reach native creation');
+reply='output';const bounded=await runHostGitMetadata(root,command,{timeoutMs:1000,maxOutputBytes:7});assert.equal(bounded.stdout,'abcd');assert.equal(bounded.stderr,'efg');assert.equal(bounded.outputBytes,8);assert.equal(bounded.truncated,true);
+reply='refusal';const refused=await runHostGitMetadata(root,command,{timeoutMs:1000});assert.equal(refused.exitCode,7);assert.equal(refused.stderr,'Original refusal');
+reply='timeout';const timed=await runHostGitMetadata(root,command,{timeoutMs:1000});assert.equal(timed.timedOut,true);assert.equal(timed.errorCode,'ETIMEDOUT');
+reply='metadata';
+for(const mode of ['100644','100755']){indexMode=treeMode=mode;const selected=await selectGitChanges({root,files:['original.js'],excluded:[]},['.'],'a'.repeat(40),{complete:true,dependencies:[]});assert.deepEqual(selected.changedFiles,[]);assert.match(selected.reason,/No changed paths/);assert.ok(selected.git);}
+indexMode='100755';treeMode='100644';const staged=await selectGitChanges({root,files:['original.js'],excluded:[]},['.'],'a'.repeat(40),{complete:true,dependencies:[]});assert.deepEqual(staged.changedFiles,['original.js'],'A staged executable-mode change must remain visible');
+console.log(JSON.stringify({nativeAdmissionCalls:calls.length,stagedModeChangeRetained:true}));`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(helper, "observe.mjs"),
+      root,
+      operator,
+      new URL("../src/posix-target.js", import.meta.url).href,
+      new URL("../src/git-selection.js", import.meta.url).href,
+    ],
+    { env, encoding: "utf8", timeout: 15000 },
+  );
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.equal(JSON.parse(result.stdout).stagedModeChangeRetained, true);
+});
+
+test("Windows metadata resolves current and legacy native SDKs and refuses ambiguous or neighboring launcher layouts", async (t) => {
+  const root = await realpath(await fixture(t, {}));
+  const operator = await realpath(
+    await fixture(t, {
+      "cmd/git.exe": "Original forwarding launcher; must not execute.",
+      "ucrt64/bin/git.exe":
+        "Original current SDK builtin; native calls are intercepted.",
+    }),
+  );
+  await chmod(path.join(operator, "ucrt64/bin/git.exe"), 0o755);
+  const helper = await fixture(t, {
+    "observe.mjs": `import assert from 'node:assert/strict';
+import cp from 'node:child_process';import{syncBuiltinESMExports}from'node:module';
+import{mkdir,rename,writeFile}from'node:fs/promises';import path from'node:path';
+const[root,operator,selectionModule]=process.argv.slice(2);let sdk='ucrt64';const calls=[];
+cp.spawnSync=(executable,args,options)=>{assert.equal(executable,path.join(operator,sdk,'bin','git.exe'));assert.equal(options.shell,false);assert.deepEqual(args.slice(-1),['--version']);calls.push(sdk);return{pid:42,status:0,signal:null,stdout:Buffer.from('git version 2.56.0'+String.fromCharCode(10)),stderr:Buffer.alloc(0)};};
+syncBuiltinESMExports();Object.defineProperty(process,'platform',{value:'win32'});
+process.env.PATH=path.join(operator,'cmd');
+const{gitReader}=await import(selectionModule);
+assert.match(await gitReader(root)(['--version']),/^git version 2[.]56[.]0/);
+await rename(path.join(operator,'ucrt64'),path.join(operator,'ucrt640'));
+await assert.rejects(gitReader(root)(['--version']),/host Git executable/);assert.equal(calls.length,1);
+await rename(path.join(operator,'ucrt640'),path.join(operator,'mingw64'));sdk='mingw64';
+assert.match(await gitReader(root)(['--version']),/^git version 2[.]56[.]0/);
+await mkdir(path.join(operator,'ucrt64','bin'),{recursive:true});
+await writeFile(path.join(operator,'ucrt64','bin','git.exe'),'Original second native SDK',{mode:0o755});
+await assert.rejects(gitReader(root)(['--version']),/host Git executable/);assert.equal(calls.length,2,'An ambiguous launcher must not select an SDK');
+process.env.PATH=path.join(operator,'ucrt64','bin');sdk='ucrt64';
+assert.match(await gitReader(root)(['--version']),/^git version 2[.]56[.]0/);
+assert.deepEqual(calls,['ucrt64','mingw64','ucrt64']);console.log(JSON.stringify({nativeSDKs:calls}));`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(helper, "observe.mjs"),
+      root,
+      operator,
+      new URL("../src/git-selection.js", import.meta.url).href,
+    ],
+    { env, encoding: "utf8", timeout: 15000 },
+  );
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.deepEqual(JSON.parse(result.stdout).nativeSDKs, [
+    "ucrt64",
+    "mingw64",
+    "ucrt64",
+  ]);
+});

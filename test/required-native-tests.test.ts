@@ -613,12 +613,20 @@ test("required profile batches execute shared files once and preserve all obliga
       absent: [requirement("other.mjs", "beta")],
       "ruby-tools-lifecycle": [alpha, beta],
       "ruby-tools-rubocop": [alpha],
+      "consumer-impact": [
+        requirement("isolated-profile.mjs", "alpha"),
+        requirement("isolated-profile.mjs", "beta"),
+      ],
     }),
   );
   await mkdir(path.join(root, "dist/test"), { recursive: true });
   await writeFile(
     path.join(root, "dist/test/optional.test.js"),
     "const {test}=require('node:test');test('optional',{skip:true},()=>{});",
+  );
+  await writeFile(
+    path.join(root, "isolated-profile.mjs"),
+    "import{test}from'node:test';import assert from'node:assert/strict';import{appendFileSync}from'node:fs';let calls=0;for(const name of ['alpha','beta'])test(name,()=>{assert.equal(++calls,1,'each selected callback must have fresh module state');appendFileSync(process.env.BATCH_MARKER,JSON.stringify({pid:process.pid,name})+'\\n')});test('extra',()=>assert.fail('unselected callback must not execute'));",
   );
   const cli = (...selection: string[]) =>
     spawnSync(
@@ -665,6 +673,26 @@ test("required profile batches execute shared files once and preserve all obliga
   const rubyRubocop = cli("ruby-tools-rubocop");
   assert.equal(rubyRubocop.status, 0, rubyRubocop.stderr);
   assert.equal(JSON.parse(rubyRubocop.stdout).timeoutMs, 300000);
+  await writeFile(marker, "");
+  const whole = cli("consumer-impact");
+  assert.equal(whole.status, 0, whole.stdout + whole.stderr);
+  const wholeReport = JSON.parse(whole.stdout);
+  assert.equal(wholeReport.timeoutMs, 600000);
+  assert.equal(wholeReport.requiredCaseWorkerLimit, 1);
+  assert.equal(wholeReport.required, 2);
+  assert.equal(wholeReport.passed, 2);
+  const executions: { pid: number; name: string }[] = (
+    await readFile(marker, "utf8")
+  )
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  assert.deepEqual(executions.map((row) => row.name).sort(), ["alpha", "beta"]);
+  assert.equal(
+    new Set(executions.map((row) => row.pid)).size,
+    2,
+    "whole-profile callbacks must execute in separate real processes",
+  );
   assert.equal(cli("first", "absent").status, 1);
   const suite = cli("--full-suite", "first", "second");
   assert.equal(suite.status, 0, suite.stderr);

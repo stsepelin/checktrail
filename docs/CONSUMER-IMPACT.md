@@ -61,8 +61,9 @@ controls pass; the later macOS development corpus retains every observed failure
 The earlier foundation receipt remains an unchanged historical checkpoint.
 These parser guards do not prove arbitrary JavaScript runtime or loader validity.
 
-The broader Gate A consumer-impact profile remains pending: native
-producer/consumer chains for every advertised language, whole-profile frozen
-nine-case source and fresh installed acceptance, and final acceptance bindings
-still need measurement. No inference, field evaluation or review-quality claim
-follows from this foundation.
+[Whole-profile acceptance](CONSUMER-ACCEPTANCE.md) now has original source and
+fresh offline installed development evidence. The frozen final runtime matrix
+and broader native language/framework producer-consumer chains remain open.
+Unsupported import families continue to retain full validation. These
+observations do not authorize inference or field evaluation and make no
+review-quality claim.

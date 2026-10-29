@@ -5553,12 +5553,36 @@
     {
       "file": "dist/test/git-metadata-policy.test.js",
       "name": "native Git metadata passes the complete independent safety configuration to the operator executable without inheriting a project override"
+    },
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "Windows metadata uses only the native outside-project executable, retains refusal and output boundaries, and compares staged modes without inventing chmod changes"
+    },
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "Windows metadata resolves current and legacy native SDKs and refuses ambiguous or neighboring launcher layouts"
     }
   ],
   "native-harness-cleanup": [
     {
       "file": "dist/test/tasks-runtime-harness.test.js",
       "name": "isolated native namespace cleanup retries actual final-directory races and retains exhausted and failed evidence"
+    },
+    {
+      "file": "dist/test/fixture-process-cleanup.test.js",
+      "name": "fixture cleanup proves absent captured processes without inspecting unrelated host identities"
+    },
+    {
+      "file": "dist/test/fixture-process-cleanup.test.js",
+      "name": "fixture cleanup queries and signals only its surviving captured identity and never a reused PID"
+    },
+    {
+      "file": "dist/test/fixture-process-cleanup.test.js",
+      "name": "fixture cleanup refuses unreadable changed-group and late identity observations without signaling"
+    },
+    {
+      "file": "dist/test/fixture-process-cleanup.test.js",
+      "name": "fixture cleanup requires physical reaping and keeps every surviving identity inside its original deadline"
     }
   ],
   "tasks-runtime-startup": [
@@ -5749,6 +5773,154 @@
     {
       "file": "dist/test/artifact-evidence.test.js",
       "name": "artifact audit rejects nested completion inference and field-evaluation claims after rehashing"
+    }
+  ],
+  "consumer-impact": [
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-consumer-impact.test.js",
+      "name": "consumer-impact installed acceptance"
+    }
+  ],
+  "consumer-runtime-bindings": [
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime requirements preserve every frozen case and immutable unique source and installed harness inputs"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime selection rejects wrong Node platform architecture host image and native image boundaries even outside hosted CI"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime installation binds current runtime engine package harness SDK and exact non-skipped terminal cases without qualifying evaluation"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer runtime CLI rejects missing unknown and extra hosted slots before emitting qualifying evidence"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer package observation preserves platform-specific aggregate limits and fixed execution inputs"
+    }
+  ],
+  "consumer-impact-foundation": [
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "captured imports expose an undeclared consumer and full validation retains its native failure"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "a declared transitive graph retains affected consumers and omits the independent project"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "captured file edges follow reexports and unowned bridges without treating a project prefix as ownership"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "literal shared JSON reads reconcile the physical producer for named synchronous and asynchronous readers"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "unknown source and resource families retain the full shared engine plan"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "literal dynamic imports and CommonJS exact imports expose a missing graph without executing source"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "stale, excluded, empty, unsupported and exhausted import observations stay unknown"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "CommonJS module loaders retain full validation and its actual consumer assertion failure"
+    },
+    {
+      "file": "dist/test/consumer-imports.test.js",
+      "name": "compiler-dependent syntax in JavaScript retains full validation while ordinary keyword spellings remain resolved"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "workspace impact follows transitive consumers, terminates cycles and falls back for uncertain ownership"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "Git scopes committed, staged, unstaged, untracked and renamed files without running filters"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "Git selection falls back for missing history, root changes, incomplete graphs and tracked excluded content"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "worktrees have separate identities and metadata changes during validation invalidate pass"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "unresolved index stages and project-local Git executables cannot narrow or execute project code"
+    },
+    {
+      "file": "dist/test/git-selection.test.js",
+      "name": "CLI and MCP share startup-selected Git scope and tool calls cannot change the base"
+    },
+    {
+      "file": "dist/test/impact.test.js",
+      "name": "impact metrics reconcile retained, omitted, changed and incomplete failures without dropping observations"
+    },
+    {
+      "file": "dist/test/impact.test.js",
+      "name": "native impact measurement retains a transitive assertion failure and exposes a misdeclared graph"
+    },
+    {
+      "file": "dist/test/impact.test.js",
+      "name": "impact snapshots account for each paired observation, assertion identity and frozen case"
+    }
+  ],
+  "consumer-foundation-bindings": [
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer foundation binds every original top-level and nested control while refusing renamed removed or duplicate source requirements"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer foundation rejects missing skipped or extra nested events forged totals foreign files and broken terminal bindings"
+    },
+    {
+      "file": "dist/test/consumer-runtime-evidence.test.js",
+      "name": "consumer installation requires the matching foundation even when all whole-feature callbacks pass"
     }
   ]
 }
