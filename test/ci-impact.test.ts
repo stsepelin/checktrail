@@ -1337,11 +1337,11 @@ test("CI Windows lanes preserve frozen runtime pins and partition every original
     "node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}",
     "node scripts/verify-required-native-tests.mjs review-runtime-bindings probe-workspace-privacy",
     "node scripts/verify-review-runtime.mjs ${{ matrix.slot }}",
-    "node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings",
+    "node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings &&",
     "node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}",
   ]);
   assert.deepEqual(commands("matrix.consumer"), [
-    "node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings",
+    "node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings &&",
     "node scripts/verify-consumer-runtime.mjs ${{ matrix.slot }}",
   ]);
   const names = workflowJobNames(workflow);

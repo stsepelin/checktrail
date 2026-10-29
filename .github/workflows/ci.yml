@@ -1671,12 +1671,12 @@ jobs:
       - name: Require lifecycle runtime admission and source/fresh controls
         if: matrix.core
         run: |
-          node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings
+          node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings &&
           node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}
       - name: Require whole consumer impact from source and a fresh offline package
         if: matrix.consumer
         run: |
-          node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings
+          node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings &&
           node scripts/verify-consumer-runtime.mjs ${{ matrix.slot }}
 
   tasks-runtime-arm64:
