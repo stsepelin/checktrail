@@ -2018,7 +2018,9 @@
         "sourceArchiveSha256": "1330cb429eb9d69cef12548d6e1ed1605be67079d405c2e17dd1e0096424b7fb",
         "archiveFileCount": 146,
         "allArchiveFileGitBlobsMatch": true,
-        "modeProjectionCounts": { "('100644', '0o0')": 146 },
+        "modeProjectionCounts": {
+          "('100644', '0o0')": 146
+        },
         "gitFilesAbsentFromModuleArchive": [],
         "gitLinks": [],
         "archiveToGitManifestSha256": "9ad75de9c24bdd36ae1da297f9412b3f1669c91b8aad597295b1c4e56125447e",
@@ -2596,23 +2598,50 @@
     "duplicateRepositoryRevisionOccurrences": 1,
     "sourceFileTotal": 2115,
     "sourceFilePartition": [
-      { "mountPath": "root", "sourceFileCount": 736 },
-      { "mountPath": "coqprime", "sourceFileCount": 224 },
-      { "mountPath": "etc/coq-scripts", "sourceFileCount": 109 },
-      { "mountPath": "rewriter/etc/coq-scripts", "sourceFileCount": 109 },
-      { "mountPath": "rewriter", "sourceFileCount": 268 },
+      {
+        "mountPath": "root",
+        "sourceFileCount": 736
+      },
+      {
+        "mountPath": "coqprime",
+        "sourceFileCount": 224
+      },
+      {
+        "mountPath": "etc/coq-scripts",
+        "sourceFileCount": 109
+      },
+      {
+        "mountPath": "rewriter/etc/coq-scripts",
+        "sourceFileCount": 109
+      },
+      {
+        "mountPath": "rewriter",
+        "sourceFileCount": 268
+      },
       {
         "mountPath": "rupicola/bedrock2/deps/coq-record-update",
         "sourceFileCount": 32
       },
-      { "mountPath": "rupicola/bedrock2/deps/coqutil", "sourceFileCount": 77 },
-      { "mountPath": "rupicola/bedrock2/deps/kami", "sourceFileCount": 177 },
+      {
+        "mountPath": "rupicola/bedrock2/deps/coqutil",
+        "sourceFileCount": 77
+      },
+      {
+        "mountPath": "rupicola/bedrock2/deps/kami",
+        "sourceFileCount": 177
+      },
       {
         "mountPath": "rupicola/bedrock2/deps/riscv-coq",
         "sourceFileCount": 146
       },
-      { "mountPath": "rupicola/bedrock2", "sourceFileCount": 171 },
-      { "mountPath": "rupicola", "sourceFileCount": 66 }
+      {
+        "mountPath": "rupicola/bedrock2",
+        "sourceFileCount": 171
+      },
+      {
+        "mountPath": "rupicola",
+        "sourceFileCount": 66
+      }
     ],
     "gitlinksWithExactAcquiredSourceBindings": 10,
     "allDeclaredNestedGitlinksAcquired": true,
@@ -5408,7 +5437,10 @@
       "network": "none",
       "cpus": 4,
       "memoryBytes": 10737418240,
-      "stackLimitBytes": { "soft": 67108864, "hard": 67108864 },
+      "stackLimitBytes": {
+        "soft": 67108864,
+        "hard": 67108864
+      },
       "stackSelectionEvidenceSha256": "dc601849637b5100621ae5e0a8cc45daafc5fb37c5a239f0de35012f1427d994",
       "pidsLimit": 512,
       "perCommandTimeoutSeconds": 7200,
@@ -6965,7 +6997,10 @@
       "cpus": 2,
       "memoryBytes": 6442450944,
       "pidsLimit": 512,
-      "stackLimitBytes": { "soft": 67108864, "hard": 67108864 },
+      "stackLimitBytes": {
+        "soft": 67108864,
+        "hard": 67108864
+      },
       "environment": {
         "HOME": "/work/home",
         "PATH": "/work/deny-image-ocaml:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -7009,9 +7044,18 @@
             "-flambda"
           ]
         },
-        { "phase": "build-bytecode-world", "argv": ["make", "-j2", "world"] },
-        { "phase": "build-native-world", "argv": ["make", "-j2", "world.opt"] },
-        { "phase": "install", "argv": ["make", "install"] },
+        {
+          "phase": "build-bytecode-world",
+          "argv": ["make", "-j2", "world"]
+        },
+        {
+          "phase": "build-native-world",
+          "argv": ["make", "-j2", "world.opt"]
+        },
+        {
+          "phase": "install",
+          "argv": ["make", "install"]
+        },
         {
           "phase": "installed-version",
           "argv": ["/work/install/bin/ocamlc", "-version"]
@@ -7607,7 +7651,10 @@
       "network": "none",
       "cpus": 4,
       "memoryBytes": 10737418240,
-      "stackLimitBytes": { "soft": 67108864, "hard": 67108864 },
+      "stackLimitBytes": {
+        "soft": 67108864,
+        "hard": 67108864
+      },
       "stackSelectionEvidenceSha256": "dc601849637b5100621ae5e0a8cc45daafc5fb37c5a239f0de35012f1427d994",
       "pidsLimit": 512,
       "perCommandTimeoutSeconds": 7200,
@@ -8949,7 +8996,10 @@
       "network": "none",
       "cpus": 4,
       "memoryBytes": 10737418240,
-      "stackLimitBytes": { "soft": 67108864, "hard": 67108864 },
+      "stackLimitBytes": {
+        "soft": 67108864,
+        "hard": 67108864
+      },
       "stackSelectionEvidenceSha256": "dc601849637b5100621ae5e0a8cc45daafc5fb37c5a239f0de35012f1427d994",
       "pidsLimit": 512,
       "perCommandTimeoutSeconds": 7200,
@@ -10396,7 +10446,10 @@
       "cpus": 2,
       "memoryBytes": 6442450944,
       "pidsLimit": 512,
-      "stackLimitBytes": { "soft": 67108864, "hard": 67108864 },
+      "stackLimitBytes": {
+        "soft": 67108864,
+        "hard": 67108864
+      },
       "environment": {
         "HOME": "/work/home",
         "PATH": "/work/install/bin:/work/libtool-install/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -10487,7 +10540,11 @@
             "CFLAGS=-O3"
           ]
         },
-        { "phase": "gmp-build", "cwd": "/work/gmp", "argv": ["make", "-j2"] },
+        {
+          "phase": "gmp-build",
+          "cwd": "/work/gmp",
+          "argv": ["make", "-j2"]
+        },
         {
           "phase": "gmp-native-tests",
           "cwd": "/work/gmp",
@@ -10573,7 +10630,11 @@
           "cwd": "/work/zarith",
           "argv": ["./configure"]
         },
-        { "phase": "zarith-build", "cwd": "/work/zarith", "argv": ["make"] },
+        {
+          "phase": "zarith-build",
+          "cwd": "/work/zarith",
+          "argv": ["make"]
+        },
         {
           "phase": "zarith-native-tests",
           "cwd": "/work/zarith",
@@ -11719,7 +11780,9 @@
       "compatibilityPrefixSha256": "d8a9e443805d59736f43941f3e2cee3a0d83ef98f28706a5d96b5e9e07ddd49a",
       "originalZqTestSha256": "1af917a3d84c416d90898ec0f56f891309c4ce6693345d96ce8036ac42a8f94f",
       "compatibilityZqTestSha256": "ab432749e000dd5293127acd6a62c9860e06640bf75455527ebf13b97818e619",
-      "allRequiredNewerBytesApiOccurrences": { "set_uint8": 1 },
+      "allRequiredNewerBytesApiOccurrences": {
+        "set_uint8": 1
+      },
       "allOtherOriginalSourceAndGoldenInputsUnchanged": true,
       "controlValues": 14,
       "validIndices": 3,
@@ -11755,7 +11818,10 @@
       "cpus": 2,
       "memoryBytes": 6442450944,
       "pidsLimit": 512,
-      "stackLimitBytes": { "soft": 67108864, "hard": 67108864 },
+      "stackLimitBytes": {
+        "soft": 67108864,
+        "hard": 67108864
+      },
       "environment": {
         "HOME": "/work/home",
         "PATH": "/work/install/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -11904,7 +11970,11 @@
         }
       ],
       "observedReadComparisons": 452,
-      "categories": { "ok": 58, "wrong": 0, "failure": 394 },
+      "categories": {
+        "ok": 58,
+        "wrong": 0,
+        "failure": 394
+      },
       "failureMessages": ["input_value: ill-formed message"],
       "originalTestPassed": false,
       "gateAComplete": false,
@@ -11929,14 +11999,24 @@
       ],
       "observedReadComparisons": 452,
       "comparisonClasses": [
-        { "topLevelCode": 2, "expected": "OK", "actual": "OK", "count": 58 },
+        {
+          "topLevelCode": 2,
+          "expected": "OK",
+          "actual": "OK",
+          "count": 58
+        },
         {
           "topLevelCode": 24,
           "expected": "Fail",
           "actual": "Fail",
           "count": 128
         },
-        { "topLevelCode": 24, "expected": "OK", "actual": "Fail", "count": 266 }
+        {
+          "topLevelCode": 24,
+          "expected": "OK",
+          "actual": "Fail",
+          "count": 266
+        }
       ],
       "unexpectedFixtureReadFailures": 266,
       "unsupportedTopLevelCode": 24,
@@ -11985,7 +12065,10 @@
       "cpus": 2,
       "memoryBytes": 6442450944,
       "pidsLimit": 512,
-      "stackLimitBytes": { "soft": 67108864, "hard": 67108864 },
+      "stackLimitBytes": {
+        "soft": 67108864,
+        "hard": 67108864
+      },
       "environment": {
         "HOME": "/work/home",
         "PATH": "/work/install/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -12125,8 +12208,8 @@
     "retainedInputs": [
       {
         "file": "provider-c-root-sdk-and-generator-replays.json",
-        "bytes": 496773,
-        "sha256": "3eee5d311df43881197a0d101177b1d878e7346330734dafb9374e308c796acb"
+        "bytes": 1992115,
+        "sha256": "b60ea07fee02ca8828aaba2da68d2928f14b67efb36423f3734f50aa959e37dd"
       }
     ],
     "fullUpstreamCompilerSdkAndBootstrapClosureVerified": false,

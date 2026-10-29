@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { TextDecoder } from "node:util";
+import { gunzipSync } from "node:zlib";
 import { createHash } from "node:crypto";
 import {
   closeSync,
@@ -237,12 +238,84 @@ try {
   for (const [name, entry] of sources) read(root, name, entry);
   let references = 0;
   let nodes = 0;
+  let compressedOriginalNoticeObjects = 0;
+  let decompressedOriginalNoticeBytes = 0;
+  function originalNotice(value) {
+    if (!Object.hasOwn(value, "originalBytesGzipBase64")) return;
+    assert.ok(
+      !Object.hasOwn(value, "originalBytesBase64"),
+      "Compressed original notice has ambiguous encodings",
+    );
+    assert.ok(
+      Number.isSafeInteger(value.bytes) &&
+        value.bytes > 0 &&
+        value.bytes <= maximumFile,
+      "Invalid original notice expansion bound",
+    );
+    assert.ok(
+      decompressedOriginalNoticeBytes + value.bytes <= maximumTotal,
+      "Total decompressed original notice byte bound exceeded",
+    );
+    const encoded = value.originalBytesGzipBase64;
+    assert.ok(
+      typeof encoded === "string" &&
+        encoded.length > 0 &&
+        encoded.length <= 4 * Math.ceil(maximumFile / 3),
+      "Invalid compressed original notice encoding bound",
+    );
+    const compressed = Buffer.from(encoded, "base64");
+    assert.equal(
+      compressed.toString("base64"),
+      encoded,
+      "Noncanonical compressed original notice encoding",
+    );
+    assert.ok(
+      compressed.length > 0 && compressed.length <= maximumFile,
+      "Invalid compressed original notice byte bound",
+    );
+    assert.equal(
+      compressed.length,
+      value.gzipBytes,
+      "Compressed original notice byte count mismatch",
+    );
+    assert.match(value.gzipSha256, /^[a-f0-9]{64}$/u);
+    assert.equal(
+      digest(compressed),
+      value.gzipSha256,
+      "Compressed original notice digest mismatch",
+    );
+    let bytes;
+    try {
+      bytes = gunzipSync(compressed, { maxOutputLength: value.bytes });
+    } catch (error) {
+      throw new Error(
+        error.code === "ERR_BUFFER_TOO_LARGE"
+          ? "Compressed original notice exceeds its declared expansion bound"
+          : "Invalid compressed original notice stream",
+        { cause: error },
+      );
+    }
+    assert.equal(
+      bytes.length,
+      value.bytes,
+      "Original notice byte count mismatch",
+    );
+    assert.match(value.sha256, /^[a-f0-9]{64}$/u);
+    assert.equal(
+      digest(bytes),
+      value.sha256,
+      "Original notice digest mismatch",
+    );
+    compressedOriginalNoticeObjects += 1;
+    decompressedOriginalNoticeBytes += bytes.length;
+  }
   function walk(value, label, retained = false, depth = 0) {
     assert.ok(
       ++nodes <= 100000 && depth <= 64,
       "Evidence JSON structural bound exceeded",
     );
     if (!value || typeof value !== "object") return;
+    originalNotice(value);
     for (const flag of [
       "gateAComplete",
       "qualityAssessed",
@@ -295,6 +368,8 @@ try {
       retainedReferences: references,
       repositoryInputs: sources.size,
       observedBytes: totalBytes,
+      compressedOriginalNoticeObjects,
+      decompressedOriginalNoticeBytes,
       cryptographicVerificationPerformedByAudit: false,
       nativeAcceptanceAssessed: false,
       gateAComplete: false,

@@ -5773,6 +5773,22 @@
     {
       "file": "dist/test/artifact-evidence.test.js",
       "name": "artifact audit rejects nested completion inference and field-evaluation claims after rehashing"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact evidence verifies lossless compressed original notices while retaining incomplete attribution"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact evidence refuses malformed ambiguous and altered compressed original notices"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact evidence stops compressed expansion at its declared output boundary"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact evidence bounds cumulative decompressed notice bytes separately from indexed bytes"
     }
   ],
   "consumer-impact": [

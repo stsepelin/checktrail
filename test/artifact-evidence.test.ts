@@ -6,6 +6,7 @@ import { test, type TestContext } from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 import { fixture } from "./helpers.js";
 
 const exec = promisify(execFile);
@@ -362,4 +363,98 @@ test("artifact audit rejects nested completion inference and field-evaluation cl
     const restored = await audit(root);
     assert.equal(restored.code, 0, restored.stderr);
   }
+});
+
+function compressedNotice(bytes: Uint8Array) {
+  const compressed = gzipSync(bytes);
+  return {
+    bytes: bytes.length,
+    sha256: digest(bytes),
+    gzipBytes: compressed.length,
+    gzipSha256: digest(compressed),
+    originalBytesGzipBase64: compressed.toString("base64"),
+  };
+}
+async function compressedSource(t: TestContext, notices: unknown[]) {
+  const root = await source(t);
+  const name = "random-provider.json";
+  const target = path.join(root, directory, name);
+  const record = JSON.parse(await readFile(target, "utf8"));
+  record.syntheticOriginalNoticeControls = notices;
+  await writeFile(target, JSON.stringify(record));
+  await reindex(root, name);
+  return root;
+}
+test("artifact evidence verifies lossless compressed original notices while retaining incomplete attribution", async (t) => {
+  const bytes = Buffer.from(
+    "Original synthetic copyright\nLicense text\n",
+    "utf8",
+  );
+  const baseline = await audit(repository);
+  assert.equal(baseline.code, 0, baseline.stderr);
+  const before = JSON.parse(baseline.stdout);
+  const root = await compressedSource(t, [compressedNotice(bytes)]);
+  const result = await audit(root);
+  assert.equal(result.code, 0, result.stderr);
+  const report = JSON.parse(result.stdout);
+  assert.equal(
+    report.compressedOriginalNoticeObjects,
+    before.compressedOriginalNoticeObjects + 1,
+  );
+  assert.equal(
+    report.decompressedOriginalNoticeBytes,
+    before.decompressedOriginalNoticeBytes + bytes.length,
+  );
+  assert.equal(report.gateAComplete, false);
+  assert.equal(report.qualityAssessed, false);
+  assert.equal(report.nativeAcceptanceAssessed, false);
+});
+test("artifact evidence refuses malformed ambiguous and altered compressed original notices", async (t) => {
+  const original = compressedNotice(Buffer.from("Original synthetic notice\n"));
+  for (const mode of [
+    "encoding",
+    "compressed-digest",
+    "digest",
+    "size",
+    "ambiguous",
+    "stream",
+  ]) {
+    const changed = { ...original } as Record<string, unknown>;
+    if (mode === "encoding")
+      changed.originalBytesGzipBase64 = original.originalBytesGzipBase64 + " ";
+    if (mode === "compressed-digest") changed.gzipSha256 = "f".repeat(64);
+    if (mode === "digest") changed.sha256 = "f".repeat(64);
+    if (mode === "size") changed.gzipBytes = original.gzipBytes + 1;
+    if (mode === "ambiguous") changed.originalBytesBase64 = "eA==";
+    if (mode === "stream") {
+      const invalid = Buffer.from("Original synthetic non-gzip bytes");
+      changed.originalBytesGzipBase64 = invalid.toString("base64");
+      changed.gzipSha256 = digest(invalid);
+      changed.gzipBytes = invalid.length;
+    }
+    const result = await audit(await compressedSource(t, [changed]));
+    assert.equal(result.code, 2, mode);
+    assert.match(result.stderr, /original notice/i, mode);
+  }
+});
+test("artifact evidence stops compressed expansion at its declared output boundary", async (t) => {
+  const oversized = compressedNotice(Buffer.alloc(65536, "x"));
+  oversized.bytes = 1;
+  const result = await audit(await compressedSource(t, [oversized]));
+  assert.equal(result.code, 2);
+  assert.match(result.stderr, /exceeds its declared expansion bound/);
+});
+test("artifact evidence bounds cumulative decompressed notice bytes separately from indexed bytes", async (t) => {
+  const notice = compressedNotice(Buffer.alloc(2 * 1024 * 1024, "x"));
+  const result = await audit(
+    await compressedSource(
+      t,
+      Array.from({ length: 5 }, () => ({ ...notice })),
+    ),
+  );
+  assert.equal(result.code, 2);
+  assert.match(
+    result.stderr,
+    /Total decompressed original notice byte bound exceeded/,
+  );
 });

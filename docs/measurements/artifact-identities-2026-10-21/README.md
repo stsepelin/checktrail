@@ -224,3 +224,14 @@ archives or selected expected output files mounted. The selected generated files
 matched in that cohort. C compiler, assembler/linker, C SDK, base-image and wider
 producer/bootstrap/license closure remain open. No Gate A, quality, inference or
 field-evaluation acceptance is implied by this observation.
+
+The C-root record also retains the original recognized binary-package document
+notices from the selected original C producer dependency transactions. Its explicit
+column tables preserve archive identity, document links, exact-version baseline
+providers and copyright reference reconciliation. Lossless gzip objects retain
+independent compressed and original byte counts and SHA-256 digests; the audit
+bounds each expansion and cumulative decoded bytes separately from the unchanged
+indexed-file limits. A literal upstream shared-license filename discrepancy stays
+unresolved. Embedded source notices, legal obligations and complete compiler,
+SDK, bootstrap and base-image build closure remain open; this is scoped notice
+retention rather than a completed attribution or Gate A claim.
