@@ -8,6 +8,7 @@ import {
   gitMetadataEnvironment,
   gitMetadataPrefix,
   isWindowsBuiltinGit,
+  windowsGitSdkDirectories,
 } from "./git-metadata-policy.js";
 import { affectedProjects } from "./workspace.js";
 import type {
@@ -47,9 +48,26 @@ async function hostGit(root: string): Promise<string> {
         const directory = path.dirname(resolved);
         if (!["cmd", "bin"].includes(path.basename(directory).toLowerCase()))
           continue;
-        resolved = await realpath(
-          path.join(path.dirname(directory), "mingw64", "bin", "git.exe"),
-        );
+        const builtins = new Set<string>();
+        for (const sdk of windowsGitSdkDirectories) {
+          try {
+            const native = await realpath(
+              path.join(path.dirname(directory), sdk, "bin", "git.exe"),
+            );
+            if (
+              isWindowsBuiltinGit(native) &&
+              outside(native) &&
+              (await lstat(native)).isFile()
+            ) {
+              await access(native, constants.X_OK);
+              builtins.add(native);
+            }
+          } catch {
+            continue;
+          }
+        }
+        if (builtins.size !== 1) continue;
+        resolved = [...builtins][0]!;
       }
       if (process.platform === "win32" && !isWindowsBuiltinGit(resolved))
         continue;
