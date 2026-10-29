@@ -231,6 +231,7 @@ test("CI selection unions exact native owners and keeps unclassified near misses
     ".github/workflows/ci.yml",
     "scripts/required-native-tests.json",
     "docs/required-inventory.json",
+    "docs/gate-a-profiles.v1.json",
     "test/deleted-old-fixture.ts",
   ]) {
     const result = plan([file]);
@@ -239,6 +240,76 @@ test("CI selection unions exact native owners and keeps unclassified near misses
   }
   assert.equal(plan(["README.md", "docs/NATIVE-CI.md"]).mode, "affected");
   assert.deepEqual(selected(plan(["README.md", "docs/NATIVE-CI.md"])), []);
+});
+test("CI native input traversal retains exact documentation data consumers", async () => {
+  const file =
+    "docs/measurements/artifact-identities-2026-10-21/native-input.json";
+  const actual = await buildNativeInputs({
+    workflow: {
+      jobs: {
+        native: { steps: [{ run: "node scripts/native-controller.mjs" }] },
+      },
+    },
+    requirements: {},
+    files: [
+      "scripts/native-controller.mjs",
+      file,
+      "docs/gate-a-profiles.v1.json",
+    ],
+    readText: () =>
+      Promise.resolve(
+        `readFile("${file}"); readFile("docs/gate-a-profiles.v1.json")`,
+      ),
+  });
+  assert.deepEqual(actual[file], ["native"]);
+  assert.equal(Object.hasOwn(actual, "docs/gate-a-profiles.v1.json"), false);
+  const result = planNativeJobs({
+    jobs: ["native"],
+    inputs: actual,
+    changed: [file],
+    eventName: "pull_request",
+    sourceBoundaries: [],
+  });
+  assert.deepEqual(result.selected, { native: true });
+  assert.ok(
+    result.sharedTestFiles.includes("dist/test/artifact-evidence.test.js"),
+  );
+});
+test("CI retained artifact data requires whole shared audits without unrelated native stacks and preserves native consumers", () => {
+  const directory = "docs/measurements/artifact-identities-2026-10-21/";
+  const artifactFile = "dist/test/artifact-evidence.test.js";
+  for (const file of [
+    "README.md",
+    "artifact-evidence-index.v1.json",
+    "provider-fiat-wrapper-source-rebuilds.json",
+    "provider-compiler-inputs/fiat-producer-chain-original-notices.txt",
+    "new-record.json",
+  ]) {
+    const result = plan([directory + file]);
+    assert.equal(result.mode, "affected", file);
+    assert.deepEqual(selected(result), [], file);
+    assert.ok(result.sharedTestFiles.includes(artifactFile), file);
+  }
+  assert.ok(plan(["README.md"]).sharedTestFiles.includes(artifactFile));
+  for (const file of [
+    directory.slice(0, -1) + "0/record.json",
+    directory.slice(0, -1),
+    directory + "../record.json",
+    "docs/measurements/other/record.json",
+    "scripts/ci-impact.mjs",
+    "scripts/verify-ci-affected-tests.mjs",
+  ]) {
+    assert.equal(plan([file]).mode, "full", file);
+  }
+  const data = directory + "README.md";
+  const combined = plan([data, "test/gate-scala-extensions.test.ts"], {
+    inputs: { ...inputs, [data]: ["csharp-context-arm64"] },
+  });
+  assert.deepEqual(selected(combined), [
+    "csharp-context-arm64",
+    "scala-extensions-arm64",
+  ]);
+  assert.ok(combined.sharedTestFiles.includes(artifactFile));
 });
 test("CI stale contracts and non-PR events select the complete inventory while missing history does not broaden known PR inputs", () => {
   for (const baseline of [null, { complete: false }]) {
@@ -1161,6 +1232,7 @@ test("CI shared matrices retain every full command and use selected complete fil
   const docs = plan(["docs/NATIVE-CI.md"], { baseline: null });
   assert.deepEqual(selected(docs), []);
   assert.deepEqual(docs.sharedTestFiles, [
+    "dist/test/artifact-evidence.test.js",
     "dist/test/ci-affected-tests.test.js",
     "dist/test/ci-impact.test.js",
     "dist/test/ci-source-boundaries.test.js",

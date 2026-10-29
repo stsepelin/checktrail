@@ -175,14 +175,35 @@ reproduces the complete selected target SDK archive. Deeper bootstrap ancestry,
 remaining generated inputs, complete original notices and runtime receipt
 admission remain open.
 
-The [Fiat wrapper and inversion producer follow-ups](provider-fiat-wrapper-source-rebuilds.json)
-reconstruct the selected wrapper and inversion files. The pinned parser producer
-also reproduces its complete selected parser, and its inner static-code and
-staged parser inputs have source mutation and restoration controls. The parser
-source archive binds to its complete canonical Git tree. Remaining Unicode input
-production and the Fiat arithmetic Coq/OCaml producer, compiler/SDK/base-image
-ancestry and complete original attribution remain open. These scoped builds do
-not execute or qualify the whole original arithmetic generator.
+The [Fiat and parser producer follow-ups](provider-fiat-wrapper-source-rebuilds.json)
+retain the original wrapper, inversion and parser observations. Later native
+follow-ups reconstruct the selected Unicode-class file with the unchanged
+producer and explicit historical Unicode/formatter source overlays through a
+source-built Go compiler. The historical whole SDK and bootstrap chain remain
+open.
+
+The complete pinned Fiat source and recursive submodules build every original
+selected standalone OCaml target with source-built Coq. Each complete original
+Go generator runs with source-built arithmetic and addchain tools. A predeclared
+source edit changes only the selected arithmetic headers; wrapper and inversion
+near misses stay exact, and the changed arithmetic files compile. Fresh original
+source restoration reproduces the selected files and native producer executables
+byte-for-byte. SDK executions share compiler/producer roots and contain repeated
+source bodies; they do not establish independent evaluation or original image-tag
+identity.
+
+Separate OCaml compiler/standard-library and supporting-library rebuilds retain
+original source and notice bindings. GMP and Num native tests passed. The
+unmodified Zarith suite fails to compile with the selected older Bytes API. A
+separately labelled API backport passes native/bytecode boundary and mutation
+controls, then fails a cross-word-size fixture comparison because the selected
+runtime does not implement that fixture opcode. Both failed suites remain
+failed. Original-library installation and source-GMP linkage are recorded
+separately from test acceptance.
+
+Full upstream compiler, SDK, bootstrap, base-image and original-notice closure
+remain open Gate A work. These observations do not claim a completed gate,
+review quality or field evaluation.
 
 The offline audit rejects whole-gate completion, review-quality, inference and
 field-evaluation claims at every JSON depth, including rehashed nested records.

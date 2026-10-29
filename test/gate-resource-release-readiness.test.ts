@@ -29,7 +29,9 @@ test(
   {
     skip:
       !releaseToolsAvailable && "Pinned synthetic upgrade tools not prepared",
-    timeout: 120000,
+    // The offline install alone allows 180s, alongside independent tool-tree
+    // corruption and cache controls. Preserve those individual command limits.
+    timeout: process.platform === "win32" ? 300000 : 120000,
   },
   resourcePrerequisiteControl,
 );
