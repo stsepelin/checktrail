@@ -12208,8 +12208,8 @@
     "retainedInputs": [
       {
         "file": "provider-c-root-sdk-and-generator-replays.json",
-        "bytes": 1992115,
-        "sha256": "b60ea07fee02ca8828aaba2da68d2928f14b67efb36423f3734f50aa959e37dd"
+        "bytes": 1998876,
+        "sha256": "6af5811409180975eaf780d059a812976d3dc6ba9fe72be2e242511eabdd0248"
       }
     ],
     "fullUpstreamCompilerSdkAndBootstrapClosureVerified": false,

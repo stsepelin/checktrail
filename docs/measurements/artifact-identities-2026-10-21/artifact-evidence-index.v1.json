@@ -235,8 +235,8 @@
     },
     {
       "file": "provider-c-root-sdk-and-generator-replays.json",
-      "bytes": 1992115,
-      "sha256": "b60ea07fee02ca8828aaba2da68d2928f14b67efb36423f3734f50aa959e37dd"
+      "bytes": 1998876,
+      "sha256": "6af5811409180975eaf780d059a812976d3dc6ba9fe72be2e242511eabdd0248"
     },
     {
       "file": "provider-compiler-fips-snapshot-rebuilds.json",
@@ -571,7 +571,7 @@
     {
       "file": "provider-fiat-wrapper-source-rebuilds.json",
       "bytes": 505425,
-      "sha256": "442a112fa7942842a7a1386e3b851418080b3c1903128fe4b3e0e85843cbe83e"
+      "sha256": "9a0b8d0f4fbfda5424a8085eb4804ba85ca46b9be61f868300143d66ae15b9b2"
     },
     {
       "file": "provider-independent-rebuild.json",

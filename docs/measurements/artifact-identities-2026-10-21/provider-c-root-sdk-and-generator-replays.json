@@ -32812,6 +32812,137 @@
       "recognizedOriginalNotices",
       "documentLinks",
       "directOwnCopyrightCaptured"
-    ]
+    ],
+    "pinnedBaselinePackageArchiveVerification": {
+      "schemaVersion": 1,
+      "scope": "All five exact installed baseline package versions acquired against retained signed APT metadata, with their original copyright documents resolved from only the authenticated acquired archives and compared byte-for-byte to the pinned image documents. No package installed or maintainer script executed. Source embedded notices, producer ancestry and full original notice closure remain separate.",
+      "archives": [
+        {
+          "package": "binutils-common",
+          "version": "2.40-2",
+          "architecture": "amd64",
+          "bytes": 2486664,
+          "sha256": "ab314134f43a0891a48f69a9bc33d825da748fa5e0ba2bebb7a5c491b026f1a0",
+          "filename": "pool/main/b/binutils/binutils-common_2.40-2_amd64.deb",
+          "rawSignedIndexPackageMetadataSha256": "1ff520271e7424c36487c9aa3c1ddda8b0f3d040e35a7493901e57829b42bf85",
+          "frozenBeforeDownload": true,
+          "archiveBasename": "binutils-common_2.40-2_amd64.deb",
+          "rawControlSha256": "252f446895bce2fd2953a96d4c7fd748decc98b1bd0686f48f5b264d0e65967b"
+        },
+        {
+          "package": "binutils",
+          "version": "2.40-2",
+          "architecture": "amd64",
+          "bytes": 64980,
+          "sha256": "83c3e20b53e1fbd84d764c3ba27d26a0376e361ae5d7fb37120196934dd87424",
+          "filename": "pool/main/b/binutils/binutils_2.40-2_amd64.deb",
+          "rawSignedIndexPackageMetadataSha256": "2e2708a623598e3fcdfea054159b104bcbac3bd3ffdfd7edf1a2c1e2841392e8",
+          "frozenBeforeDownload": true,
+          "archiveBasename": "binutils_2.40-2_amd64.deb",
+          "rawControlSha256": "772024907619750dc0761ee655a0d9a42f32b7f24b3c3ff318d835a0e522ce45"
+        },
+        {
+          "package": "cpp",
+          "version": "4:12.2.0-3",
+          "architecture": "amd64",
+          "bytes": 6836,
+          "sha256": "a63db920f7aa1857a57beab185423deffb6111fa09437a99bbb4ef724fb7ba78",
+          "filename": "pool/main/g/gcc-defaults/cpp_12.2.0-3_amd64.deb",
+          "rawSignedIndexPackageMetadataSha256": "644e27b3ec2e97ba27fbec41368feb5907322a6e72b6c97e98fe83b49e90f0d6",
+          "frozenBeforeDownload": true,
+          "archiveBasename": "cpp_4%3a12.2.0-3_amd64.deb",
+          "rawControlSha256": "f1ae2735f2c546493303f26b8d700e1a4fff85522950885d2cfa391e94057075"
+        },
+        {
+          "package": "gcc-12-base",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "bytes": 37596,
+          "sha256": "1896a2aacf4ad681ff5eacc24a5b0ca4d5d9c9b9c9e4b6de5197bc1e116ea619",
+          "filename": "pool/main/g/gcc-12/gcc-12-base_12.2.0-14+deb12u1_amd64.deb",
+          "rawSignedIndexPackageMetadataSha256": "eeee16fa8f254fca1ac4e2c1e6ce56d49797bb91c826459ce4458c05e2aad67c",
+          "frozenBeforeDownload": true,
+          "archiveBasename": "gcc-12-base_12.2.0-14+deb12u1_amd64.deb",
+          "rawControlSha256": "98d554fc1ecc48c11784fab0cda89ce555fca098e44dc6e3f466f926155473c7"
+        },
+        {
+          "package": "libisl23",
+          "version": "0.25-1.1",
+          "architecture": "amd64",
+          "bytes": 683060,
+          "sha256": "ebff0b2f8b220c74224197523019366e97ee4770d464bebc48e4865114e4da0e",
+          "filename": "pool/main/i/isl/libisl23_0.25-1.1_amd64.deb",
+          "rawSignedIndexPackageMetadataSha256": "476d0d79f1ac9e2777c747b7884b7fb5339dbd43b99213a0186c92b343b3c372",
+          "frozenBeforeDownload": true,
+          "archiveBasename": "libisl23_0.25-1.1_amd64.deb",
+          "rawControlSha256": "2568ec55225a4fd85d9b8c09b052fc367a16c230c9598e8b2e6fe216e87223e3"
+        }
+      ],
+      "copyrightComparisons": [
+        {
+          "package": "binutils-common",
+          "version": "2.40-2",
+          "architecture": "amd64",
+          "requestedPath": "usr/share/doc/binutils-common/copyright",
+          "resolvedArchiveMember": "usr/share/doc/binutils-common/copyright",
+          "archiveDocumentLinkChain": [],
+          "originalBytes": 1795,
+          "originalSha256": "a81bdd422c2c015deca84bf6ad249bf0d7d19885fc01d1894463291b0b7313e1",
+          "pinnedImageDocumentBytesEqualAuthenticatedArchive": true
+        },
+        {
+          "package": "binutils",
+          "version": "2.40-2",
+          "architecture": "amd64",
+          "requestedPath": "usr/share/doc/binutils/copyright",
+          "resolvedArchiveMember": "usr/share/doc/binutils/copyright",
+          "archiveDocumentLinkChain": [],
+          "originalBytes": 1795,
+          "originalSha256": "a81bdd422c2c015deca84bf6ad249bf0d7d19885fc01d1894463291b0b7313e1",
+          "pinnedImageDocumentBytesEqualAuthenticatedArchive": true
+        },
+        {
+          "package": "cpp",
+          "version": "4:12.2.0-3",
+          "architecture": "amd64",
+          "requestedPath": "usr/share/doc/cpp/copyright",
+          "resolvedArchiveMember": "usr/share/doc/cpp/copyright",
+          "archiveDocumentLinkChain": [],
+          "originalBytes": 2196,
+          "originalSha256": "156004744edbf17a975f0004ac4a9295b160ab403d646c445235711255ca9ff8",
+          "pinnedImageDocumentBytesEqualAuthenticatedArchive": true
+        },
+        {
+          "package": "gcc-12-base",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "requestedPath": "usr/share/doc/gcc-12-base/copyright",
+          "resolvedArchiveMember": "usr/share/doc/gcc-12-base/copyright",
+          "archiveDocumentLinkChain": [],
+          "originalBytes": 68194,
+          "originalSha256": "da8191658b3452ce9caf31638ba61dab31a38c619fa39df119812e050f592fd3",
+          "pinnedImageDocumentBytesEqualAuthenticatedArchive": true
+        },
+        {
+          "package": "libisl23",
+          "version": "0.25-1.1",
+          "architecture": "amd64",
+          "requestedPath": "usr/share/doc/libisl23/copyright",
+          "resolvedArchiveMember": "usr/share/doc/libisl23/copyright",
+          "archiveDocumentLinkChain": [],
+          "originalBytes": 7035,
+          "originalSha256": "fb1ea085945df53c756939eecf5d9bf4072316538bc3b314a5408350b679a637",
+          "pinnedImageDocumentBytesEqualAuthenticatedArchive": true
+        }
+      ],
+      "packageManagerSignatureVerificationDisabled": false,
+      "packagesInstalled": false,
+      "packageCodeExecuted": false,
+      "completeOriginalNoticeClosureVerified": false,
+      "gateAComplete": false,
+      "originalNativeObservationsSha256": "1ade2a084caa3bdea54e18d00e5c0d79d037e91a720ba67b925d215afba4defd",
+      "frozenOriginalRecipeSha256": "5c428d5a9cd7c741f8c9d0c61ca9ffa7b18cc47fb6dadc96a6de0e012f69e70f",
+      "signedAptAcquisitionObservationsSha256": "27a964d7b37014e759a4c37b58f6fba43ecfffe4feb10b802f405eee7484d741"
+    }
   }
 }
