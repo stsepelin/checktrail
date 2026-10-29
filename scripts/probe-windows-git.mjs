@@ -26,6 +26,7 @@ const report = {
     ["PATH", "SYSTEMROOT", "HOME", "USERPROFILE"].includes(key.toUpperCase()),
   ),
   candidates: [],
+  cmdOnlyReader: [],
   reader: [],
   gateAComplete: false,
   inferenceInvoked: false,
@@ -139,8 +140,41 @@ try {
       break;
     }
   }
+  const launcher = [...candidates].find(
+    (value) => path.basename(path.dirname(value)).toLowerCase() === "cmd",
+  );
+  const originalPath = process.env.PATH;
+  try {
+    if (!launcher) throw Error("Selected diagnostic host has no cmd launcher");
+    process.env.PATH = path.dirname(launcher);
+    const readFromLauncher = gitReader(root);
+    for (const args of [
+      ["--version"],
+      ["rev-parse", "--show-toplevel"],
+      ["rev-parse", "--verify", "HEAD^{commit}"],
+      ["ls-files", "--stage", "-z"],
+    ]) {
+      try {
+        report.cmdOnlyReader.push({
+          args,
+          stdout: (await readFromLauncher(args)).slice(0, 4000),
+        });
+      } catch (error) {
+        report.cmdOnlyReader.push({
+          args,
+          error: { code: error.code, message: error.message },
+        });
+        break;
+      }
+    }
+  } finally {
+    process.env.PATH = originalPath;
+  }
   readerPassed =
-    report.reader.length === 4 && report.reader.every((value) => !value.error);
+    report.reader.length === 4 &&
+    report.reader.every((value) => !value.error) &&
+    report.cmdOnlyReader.length === 4 &&
+    report.cmdOnlyReader.every((value) => !value.error);
 } catch (error) {
   report.setupError = {
     code: error.code,
