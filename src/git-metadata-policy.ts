@@ -75,6 +75,8 @@ export function isGitMetadataCommand(command: Command): boolean {
   return false;
 }
 
+export const windowsGitSdkDirectories = Object.freeze(["mingw64", "ucrt64"]);
+
 /** Selected Git for Windows x64 built-in, not the cmd/bin forwarding launcher. */
 export function isWindowsBuiltinGit(executable: string): boolean {
   if (executable.startsWith("\\") || executable.startsWith("//")) return false;
@@ -83,7 +85,8 @@ export function isWindowsBuiltinGit(executable: string): boolean {
   return (
     path.win32.basename(executable).toLowerCase() === "git.exe" &&
     path.win32.basename(directory).toLowerCase() === "bin" &&
-    path.win32.basename(path.win32.dirname(directory)).toLowerCase() ===
-      "mingw64"
+    windowsGitSdkDirectories.includes(
+      path.win32.basename(path.win32.dirname(directory)).toLowerCase(),
+    )
   );
 }

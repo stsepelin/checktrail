@@ -5557,6 +5557,10 @@
     {
       "file": "dist/test/git-metadata-policy.test.js",
       "name": "Windows metadata uses only the native outside-project executable, retains refusal and output boundaries, and compares staged modes without inventing chmod changes"
+    },
+    {
+      "file": "dist/test/git-metadata-policy.test.js",
+      "name": "Windows metadata resolves current and legacy native SDKs and refuses ambiguous or neighboring launcher layouts"
     }
   ],
   "native-harness-cleanup": [

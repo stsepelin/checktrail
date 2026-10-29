@@ -26,12 +26,19 @@ test("Git metadata admission permits exact read-only forms and literal leading-o
   for (const file of [
     "C:/synthetic/SDK/mingw64/bin/git.exe",
     "D:/SYNTHETIC/MINGW64/BIN/GIT.EXE",
+    "C:/synthetic/SDK/ucrt64/bin/git.exe",
+    "D:/SYNTHETIC/UCRT64/BIN/GIT.EXE",
   ])
     assert.equal(isWindowsBuiltinGit(file), true, file);
   for (const file of [
     "C:/synthetic/SDK/cmd/git.exe",
     "C:/synthetic/SDK/bin/git.exe",
     "C:/synthetic/SDK/mingw640/bin/git.exe",
+    "C:/synthetic/SDK/ucrt640/bin/git.exe",
+    "C:/synthetic/SDK/ucrt64/binary/git.exe",
+    "C:/synthetic/SDK/ucrt64/bin/git.exe.backup",
+    "C:/synthetic/SDK/ucrt64/bin/git.cmd",
+    "//synthetic.invalid/share/ucrt64/bin/git.exe",
     "C:/synthetic/SDK/mingw64/binary/git.exe",
     "C:/synthetic/SDK/mingw64/bin/git.exe.backup",
     "C:/synthetic/SDK/mingw64/bin/git.cmd",
@@ -303,4 +310,56 @@ console.log(JSON.stringify({nativeAdmissionCalls:calls.length,stagedModeChangeRe
   assert.equal(result.error, undefined);
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.equal(JSON.parse(result.stdout).stagedModeChangeRetained, true);
+});
+
+test("Windows metadata resolves current and legacy native SDKs and refuses ambiguous or neighboring launcher layouts", async (t) => {
+  const root = await realpath(await fixture(t, {}));
+  const operator = await realpath(
+    await fixture(t, {
+      "cmd/git.exe": "Original forwarding launcher; must not execute.",
+      "ucrt64/bin/git.exe":
+        "Original current SDK builtin; native calls are intercepted.",
+    }),
+  );
+  await chmod(path.join(operator, "ucrt64/bin/git.exe"), 0o755);
+  const helper = await fixture(t, {
+    "observe.mjs": `import assert from 'node:assert/strict';
+import cp from 'node:child_process';import{syncBuiltinESMExports}from'node:module';
+import{mkdir,rename,writeFile}from'node:fs/promises';import path from'node:path';
+const[root,operator,selectionModule]=process.argv.slice(2);let sdk='ucrt64';const calls=[];
+cp.spawnSync=(executable,args,options)=>{assert.equal(executable,path.join(operator,sdk,'bin','git.exe'));assert.equal(options.shell,false);assert.deepEqual(args.slice(-1),['--version']);calls.push(sdk);return{pid:42,status:0,signal:null,stdout:Buffer.from('git version 2.56.0'+String.fromCharCode(10)),stderr:Buffer.alloc(0)};};
+syncBuiltinESMExports();Object.defineProperty(process,'platform',{value:'win32'});
+process.env.PATH=path.join(operator,'cmd');
+const{gitReader}=await import(selectionModule);
+assert.match(await gitReader(root)(['--version']),/^git version 2[.]56[.]0/);
+await rename(path.join(operator,'ucrt64'),path.join(operator,'ucrt640'));
+await assert.rejects(gitReader(root)(['--version']),/host Git executable/);assert.equal(calls.length,1);
+await rename(path.join(operator,'ucrt640'),path.join(operator,'mingw64'));sdk='mingw64';
+assert.match(await gitReader(root)(['--version']),/^git version 2[.]56[.]0/);
+await mkdir(path.join(operator,'ucrt64','bin'),{recursive:true});
+await writeFile(path.join(operator,'ucrt64','bin','git.exe'),'Original second native SDK',{mode:0o755});
+await assert.rejects(gitReader(root)(['--version']),/host Git executable/);assert.equal(calls.length,2,'An ambiguous launcher must not select an SDK');
+process.env.PATH=path.join(operator,'ucrt64','bin');sdk='ucrt64';
+assert.match(await gitReader(root)(['--version']),/^git version 2[.]56[.]0/);
+assert.deepEqual(calls,['ucrt64','mingw64','ucrt64']);console.log(JSON.stringify({nativeSDKs:calls}));`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(helper, "observe.mjs"),
+      root,
+      operator,
+      new URL("../src/git-selection.js", import.meta.url).href,
+    ],
+    { env, encoding: "utf8", timeout: 15000 },
+  );
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.deepEqual(JSON.parse(result.stdout).nativeSDKs, [
+    "ucrt64",
+    "mingw64",
+    "ucrt64",
+  ]);
 });
