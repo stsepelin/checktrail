@@ -29,8 +29,7 @@ jobs:
         run: node scripts/probe-windows-git.mjs
       - name: Require current and legacy metadata selection controls
         run: node --test --test-name-pattern="Windows metadata" dist/test/git-metadata-policy.test.js
-      - name: Measure the original installed package cohort directly
-        run: node scripts/verify-consumer-impact-whole-package.mjs
-        env:
-          CHECKTRAIL_CONSUMER_RUNTIME_ACTIVE: "1"
-          CHECKTRAIL_CONSUMER_RUNTIME_SLOT: windows-node22
+      - name: Require original consumer controls and source with a fresh offline installed package
+        run: |
+          node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings
+          node scripts/verify-consumer-runtime.mjs windows-node22

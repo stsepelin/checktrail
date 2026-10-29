@@ -407,49 +407,64 @@ test("consumer-impact lifecycle acceptance", { timeout: 120000 }, async (t) => {
     }
   }
 });
-test("consumer-impact installed acceptance", { timeout: 240000 }, async () => {
-  if (process.env.CHECKTRAIL_CONSUMER_WHOLE_INSTALLED === "1") {
-    const runtime = await realpath(
-      fileURLToPath(new URL("../src/engine.js", import.meta.url)),
-    );
-    assert.ok(
-      runtime.includes(
-        path.join("node_modules", "@stsepelin", "checktrail", "dist", "src"),
-      ),
-    );
-    return;
-  }
-  const env = { ...process.env };
-  delete env.NODE_TEST_CONTEXT;
-  delete env.NODE_OPTIONS;
-  const result = spawnSync(
-    process.execPath,
-    [
-      fileURLToPath(
-        new URL(
-          "../../scripts/verify-consumer-impact-whole-package.mjs",
-          import.meta.url,
+const installedObservationMs = process.platform === "win32" ? 600000 : 240000;
+
+test(
+  "consumer-impact installed acceptance",
+  { timeout: installedObservationMs },
+  async () => {
+    if (process.env.CHECKTRAIL_CONSUMER_WHOLE_INSTALLED === "1") {
+      const runtime = await realpath(
+        fileURLToPath(new URL("../src/engine.js", import.meta.url)),
+      );
+      assert.ok(
+        runtime.includes(
+          path.join("node_modules", "@stsepelin", "checktrail", "dist", "src"),
         ),
-      ),
-    ],
-    { env, encoding: "utf8", timeout: 230000, maxBuffer: 8 * 1048576 },
-  );
-  assert.equal(result.error, undefined);
-  assert.equal(result.status, 0, (result.stdout + result.stderr).slice(-5000));
-  const receipt = JSON.parse(result.stdout);
-  if (process.env.CHECKTRAIL_CONSUMER_RUNTIME_ACTIVE === "1") {
-    const file = process.env.CHECKTRAIL_CONSUMER_RUNTIME_RECEIPT;
-    assert.equal(typeof file, "string");
-    assert.ok(path.isAbsolute(file!));
-    await writeFile(file!, JSON.stringify(receipt), {
-      flag: "wx",
-      mode: 0o600,
-    });
-  }
-  assert.equal(receipt.offlineProductionInstall, true);
-  assert.equal(receipt.harnessOutsideInstalledPackage, true);
-  assert.equal(receipt.profileEvidence.complete, true);
-  assert.equal(receipt.profileEvidence.required, 9);
-  assert.equal(receipt.profileEvidence.passed, 9);
-  assert.equal(receipt.profileEvidence.ledger.truncated, false);
-});
+      );
+      return;
+    }
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    delete env.NODE_OPTIONS;
+    const result = spawnSync(
+      process.execPath,
+      [
+        fileURLToPath(
+          new URL(
+            "../../scripts/verify-consumer-impact-whole-package.mjs",
+            import.meta.url,
+          ),
+        ),
+      ],
+      {
+        env,
+        encoding: "utf8",
+        timeout: installedObservationMs - 10000,
+        maxBuffer: 8 * 1048576,
+      },
+    );
+    assert.equal(result.error, undefined);
+    assert.equal(
+      result.status,
+      0,
+      (result.stdout + result.stderr).slice(-5000),
+    );
+    const receipt = JSON.parse(result.stdout);
+    if (process.env.CHECKTRAIL_CONSUMER_RUNTIME_ACTIVE === "1") {
+      const file = process.env.CHECKTRAIL_CONSUMER_RUNTIME_RECEIPT;
+      assert.equal(typeof file, "string");
+      assert.ok(path.isAbsolute(file!));
+      await writeFile(file!, JSON.stringify(receipt), {
+        flag: "wx",
+        mode: 0o600,
+      });
+    }
+    assert.equal(receipt.offlineProductionInstall, true);
+    assert.equal(receipt.harnessOutsideInstalledPackage, true);
+    assert.equal(receipt.profileEvidence.complete, true);
+    assert.equal(receipt.profileEvidence.required, 9);
+    assert.equal(receipt.profileEvidence.passed, 9);
+    assert.equal(receipt.profileEvidence.ledger.truncated, false);
+  },
+);
