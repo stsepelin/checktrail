@@ -7,6 +7,7 @@ import {
   gitMetadataEnvironment,
   gitMetadataPrefix,
   isGitMetadataCommand,
+  isWindowsBuiltinGit,
 } from "../src/git-metadata-policy.js";
 import { runHostGitMetadata } from "../src/posix-target.js";
 import { gitReader } from "../src/git-selection.js";
@@ -22,6 +23,23 @@ const command = (args: string[]): Command => ({
   env: { ...gitMetadataEnvironment },
 });
 test("Git metadata admission permits exact read-only forms and literal leading-option filenames while rejecting neighboring commands and execution flags", () => {
+  for (const file of [
+    "C:/synthetic/SDK/mingw64/bin/git.exe",
+    "D:/SYNTHETIC/MINGW64/BIN/GIT.EXE",
+  ])
+    assert.equal(isWindowsBuiltinGit(file), true, file);
+  for (const file of [
+    "C:/synthetic/SDK/cmd/git.exe",
+    "C:/synthetic/SDK/bin/git.exe",
+    "C:/synthetic/SDK/mingw640/bin/git.exe",
+    "C:/synthetic/SDK/mingw64/binary/git.exe",
+    "C:/synthetic/SDK/mingw64/bin/git.exe.backup",
+    "C:/synthetic/SDK/mingw64/bin/git.cmd",
+    "//synthetic.invalid/share/mingw64/bin/git.exe",
+    "mingw64/bin/git.exe",
+  ])
+    assert.equal(isWindowsBuiltinGit(file), false, file);
+
   for (const args of [
     ["--version"],
     ["rev-parse", "--show-toplevel"],
@@ -218,12 +236,14 @@ test("Windows metadata uses only the native outside-project executable, retains 
   );
   const operator = await realpath(
     await fixture(t, {
-      "git.exe":
-        "Original synthetic operator executable; native calls are intercepted.",
+      "mingw64/bin/git.exe":
+        "Original synthetic operator built-in; native calls are intercepted.",
+      "cmd/git.exe": "Original forwarding launcher; must not execute.",
       "git.cmd": "Original synthetic wrapper; must never be admitted.",
     }),
   );
-  await chmod(path.join(operator, "git.exe"), 0o755);
+  await chmod(path.join(operator, "mingw64/bin/git.exe"), 0o755);
+  await chmod(path.join(operator, "cmd/git.exe"), 0o755);
   const helper = await fixture(t, {
     "observe.mjs": `import assert from 'node:assert/strict';
 import cp from 'node:child_process';import{syncBuiltinESMExports}from'node:module';
@@ -235,7 +255,7 @@ const nul=String.fromCharCode(0),nl=String.fromCharCode(10),tab=String.fromCharC
 const oid=createHash('sha1').update('blob '+contents.length+nul).update(contents).digest('hex');
 cp.spawnSync=(executable,args,options)=>{
  calls.push({executable,args,options});
- assert.equal(executable,path.join(operator,'git.exe'));
+ assert.equal(executable,path.join(operator,'mingw64','bin','git.exe'));
  assert.equal(options.shell,false);assert.equal(options.killSignal,'SIGKILL');
  assert.equal(options.env.ORIGINAL_UNLISTED_SECRET,undefined);
  assert.equal(options.env.GIT_CONFIG_NOSYSTEM,'1');assert.equal(options.env.GIT_NO_LAZY_FETCH,'1');
@@ -253,11 +273,11 @@ cp.spawnSync=(executable,args,options)=>{
  }
  return{pid:42,status,signal:null,stdout:Buffer.from(stdout),stderr:Buffer.from(stderr),error};
 };syncBuiltinESMExports();Object.defineProperty(process,'platform',{value:'win32'});
-process.env.PATH=[root,operator].join(path.delimiter);process.env.ORIGINAL_UNLISTED_SECRET='Must remain outside the native query';
+process.env.PATH=[root,path.join(operator,'cmd')].join(path.delimiter);process.env.ORIGINAL_UNLISTED_SECRET='Must remain outside the native query';
 const{runHostGitMetadata}=await import(metadataModule);const{gitReader,selectGitChanges}=await import(selectionModule);
-const command={executable:path.join(operator,'git.exe'),args:['--no-pager','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null','-c','submodule.recurse=false','--version'],cwd:'.',env:{GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_OPTIONAL_LOCKS:'0',GIT_TERMINAL_PROMPT:'0',GIT_NO_LAZY_FETCH:'1',GIT_NO_REPLACE_OBJECTS:'1',GIT_ATTR_NOSYSTEM:'1',GIT_ALLOW_PROTOCOL:''}};
+const command={executable:path.join(operator,'mingw64','bin','git.exe'),args:['--no-pager','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null','-c','submodule.recurse=false','--version'],cwd:'.',env:{GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_OPTIONAL_LOCKS:'0',GIT_TERMINAL_PROMPT:'0',GIT_NO_LAZY_FETCH:'1',GIT_NO_REPLACE_OBJECTS:'1',GIT_ATTR_NOSYSTEM:'1',GIT_ALLOW_PROTOCOL:''}};
 const read=gitReader(root);assert.match(await read(['--version']),/^git version 2[.]56[.]0/);assert.equal(calls.length,1);
-for(const invalid of [{...command,executable:path.join(root,'git.exe')},{...command,executable:path.join(operator,'git.cmd')},{...command,args:[...command.args.slice(0,-1),'--exec-path']},{...command,env:{...command.env,GIT_CONFIG_NOSYSTEM:'0'}}])await assert.rejects(runHostGitMetadata(root,invalid,{timeoutMs:1000}));
+for(const invalid of [{...command,executable:path.join(root,'git.exe')},{...command,executable:path.join(operator,'git.cmd')},{...command,executable:path.join(operator,'cmd','git.exe')},{...command,args:[...command.args.slice(0,-1),'--exec-path']},{...command,env:{...command.env,GIT_CONFIG_NOSYSTEM:'0'}}])await assert.rejects(runHostGitMetadata(root,invalid,{timeoutMs:1000}));
 assert.equal(calls.length,1,'Rejected commands must never reach native creation');
 reply='output';const bounded=await runHostGitMetadata(root,command,{timeoutMs:1000,maxOutputBytes:7});assert.equal(bounded.stdout,'abcd');assert.equal(bounded.stderr,'efg');assert.equal(bounded.outputBytes,8);assert.equal(bounded.truncated,true);
 reply='refusal';const refused=await runHostGitMetadata(root,command,{timeoutMs:1000});assert.equal(refused.exitCode,7);assert.equal(refused.stderr,'Original refusal');

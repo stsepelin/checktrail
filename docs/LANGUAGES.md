@@ -67,10 +67,11 @@ adapter, later source changes or the complete Gate A runtime matrix.
 
 ## Windows execution profile
 
-The Git selection path uses a native host `git.exe` outside the project for its
+The selected Git for Windows x64 path resolves launchers to the native SDK
+`mingw64/bin/git.exe` outside the project for its
 fixed read-only metadata queries, with the same five-second/output bounds and
 execution-disabled Git configuration. Tracked Windows executable modes are read
-from the index. The consumer source/fresh-install CI cohort qualifies affected
+from the index; unrecognized Git layouts retain the full plan. The consumer source/fresh-install CI cohort qualifies affected
 selection alongside the existing native validation controls.
 
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md) describes the experimental bounded

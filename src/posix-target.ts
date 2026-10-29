@@ -10,7 +10,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { withinRoot } from "./inventory.js";
 import { realpath } from "node:fs/promises";
-import { isGitMetadataCommand } from "./git-metadata-policy.js";
+import {
+  isGitMetadataCommand,
+  isWindowsBuiltinGit,
+} from "./git-metadata-policy.js";
 import type { Command, ProcessResult } from "./types.js";
 
 import type { RunOptions } from "./runner.js";
@@ -221,8 +224,10 @@ export async function runHostGitMetadata(
   )
     throw Error("Host Git metadata limits are invalid");
   if (process.platform === "win32") {
-    if (path.extname(executable).toLowerCase() !== ".exe")
-      throw Error("Host Git metadata requires a native executable");
+    if (!isWindowsBuiltinGit(executable))
+      throw Error(
+        "Host Git metadata requires the selected native Git built-in",
+      );
     const { windowsEnvironment } = await import("./windows-process.js"),
       maximum = options.maxOutputBytes ?? 1024 * 1024,
       started = performance.now();

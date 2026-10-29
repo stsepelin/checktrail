@@ -312,6 +312,7 @@ test(
         mode === "absent"
           ? "POSIX_OWNER_UNAVAILABLE"
           : "POSIX_OWNER_PROTOCOL_INVALID",
+        "Original owner mode: " + mode,
       );
       await assert.rejects(access(mark), { code: "ENOENT" });
     }

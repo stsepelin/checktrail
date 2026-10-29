@@ -7,6 +7,7 @@ import { runHostGitMetadata } from "./posix-target.js";
 import {
   gitMetadataEnvironment,
   gitMetadataPrefix,
+  isWindowsBuiltinGit,
 } from "./git-metadata-policy.js";
 import { affectedProjects } from "./workspace.js";
 import type {
@@ -27,13 +28,31 @@ async function hostGit(root: string): Promise<string> {
   };
   for (const directory of (process.env.PATH ?? "").split(path.delimiter)) {
     if (!path.isAbsolute(directory)) continue;
+    if (
+      process.platform === "win32" &&
+      (directory.startsWith("\\") || directory.startsWith("//"))
+    )
+      continue;
     const candidate = path.join(
       directory,
       process.platform === "win32" ? "git.exe" : "git",
     );
     if (!outside(candidate)) continue;
     try {
-      const resolved = await realpath(candidate);
+      let resolved = await realpath(candidate);
+      if (!outside(resolved)) continue;
+      if (process.platform === "win32" && !isWindowsBuiltinGit(resolved)) {
+        // Git for Windows cmd/bin launchers forward to another process. Resolve
+        // the selected SDK built-in so the bounded query owns the actual PID.
+        const directory = path.dirname(resolved);
+        if (!["cmd", "bin"].includes(path.basename(directory).toLowerCase()))
+          continue;
+        resolved = await realpath(
+          path.join(path.dirname(directory), "mingw64", "bin", "git.exe"),
+        );
+      }
+      if (process.platform === "win32" && !isWindowsBuiltinGit(resolved))
+        continue;
       if (outside(resolved) && (await lstat(resolved)).isFile()) {
         await access(resolved, constants.X_OK);
         return resolved;

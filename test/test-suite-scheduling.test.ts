@@ -85,6 +85,7 @@ test("native process full-suite bodies wait for the shared wave and retain every
   });
   const files = [
     "process-tree.test.js",
+    "posix-owner.test.js",
     "clang.test.js",
     "gate-go-extensions.test.js",
     "gate-lifecycle-platforms.test.js",
