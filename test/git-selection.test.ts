@@ -170,15 +170,16 @@ test("Git scopes committed, staged, unstaged, untracked and renamed files withou
     ["lib/value.js"],
   );
   fixtureGit(root, ["read-tree", base]);
-  await writeFile(
-    path.join(root, "lib/with space\nand newline.js"),
-    "export const another = 1;\n",
-  );
+  const untracked =
+    process.platform === "win32"
+      ? "lib/with space and unicode-π.js"
+      : "lib/with space\nand newline.js";
+  await writeFile(path.join(root, untracked), "export const another = 1;\n");
   assert.deepEqual(
     (await createPlan(root, { base })).plan.selection?.changedFiles,
-    ["lib/with space\nand newline.js"],
+    [untracked],
   );
-  await rm(path.join(root, "lib/with space\nand newline.js"));
+  await rm(path.join(root, untracked));
   await rename(
     path.join(root, "lib/value.js"),
     path.join(root, "other/moved.js"),
@@ -192,10 +193,19 @@ test("Git scopes committed, staged, unstaged, untracked and renamed files withou
     path.join(root, "lib/value.js"),
   );
   await chmod(path.join(root, "lib/value.js"), 0o755);
+  if (process.platform === "win32") {
+    assert.deepEqual(
+      (await createPlan(root, { base })).plan.selection?.changedFiles,
+      [],
+      "Windows chmod must not invent an executable-mode change",
+    );
+    fixtureGit(root, ["update-index", "--chmod=+x", "lib/value.js"]);
+  }
   assert.deepEqual(
     (await createPlan(root, { base })).plan.selection?.changedFiles,
     ["lib/value.js"],
   );
+  if (process.platform === "win32") fixtureGit(root, ["read-tree", base]);
   await chmod(path.join(root, "lib/value.js"), 0o644);
   await writeFile(
     path.join(root, ".gitattributes"),
