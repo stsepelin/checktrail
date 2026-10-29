@@ -1671,6 +1671,7 @@
     "laravel-assembly-arm64"
   ],
   "test/fetch-pack.test.ts": ["external-adapters"],
+  "test/fixture-process-cleanup.test.ts": ["windows"],
   "test/framework-examples.test.ts": [
     "django-assembly-arm64",
     "fastapi-assembly-arm64",

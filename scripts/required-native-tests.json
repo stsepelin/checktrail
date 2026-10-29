@@ -5563,6 +5563,22 @@
     {
       "file": "dist/test/tasks-runtime-harness.test.js",
       "name": "isolated native namespace cleanup retries actual final-directory races and retains exhausted and failed evidence"
+    },
+    {
+      "file": "dist/test/fixture-process-cleanup.test.js",
+      "name": "fixture cleanup proves absent captured processes without inspecting unrelated host identities"
+    },
+    {
+      "file": "dist/test/fixture-process-cleanup.test.js",
+      "name": "fixture cleanup queries and signals only its surviving captured identity and never a reused PID"
+    },
+    {
+      "file": "dist/test/fixture-process-cleanup.test.js",
+      "name": "fixture cleanup refuses unreadable changed-group and late identity observations without signaling"
+    },
+    {
+      "file": "dist/test/fixture-process-cleanup.test.js",
+      "name": "fixture cleanup requires physical reaping and keeps every surviving identity inside its original deadline"
     }
   ],
   "tasks-runtime-startup": [
