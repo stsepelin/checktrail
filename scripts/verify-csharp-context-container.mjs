@@ -1,3 +1,10 @@
+import { readFile } from "node:fs/promises";
+import { captureConsumerWitnessController } from "./consumer-witness-controller.mjs";
+import {
+  bindConsumerWitnessController,
+  inspectConsumerWitnesses,
+  requireQualifiedConsumerWitnessFamily,
+} from "./consumer-witness-evidence.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import process from "node:process";
@@ -56,7 +63,7 @@ const runtime = JSON.parse(
     "node",
     "--input-type=module",
     "-e",
-    'import {execFileSync} from "node:child_process";import {readFileSync,readdirSync} from "node:fs";import {createHash} from "node:crypto";const ref="/usr/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0";console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,compiler:execFileSync("dotnet",["exec","/usr/share/dotnet/sdk/10.0.401/Roslyn/bincore/csc.dll","-version"],{encoding:"utf8"}).trim(),dotnet:execFileSync("dotnet",["--version"],{encoding:"utf8"}).trim(),runtimes:execFileSync("dotnet",["--list-runtimes"],{encoding:"utf8"}).trim(),referenceLibraries:readdirSync(ref).filter(name=>name.endsWith(".dll")).sort().map(name=>({name,bytes:readFileSync(ref+"/"+name).length,sha256:createHash("sha256").update(readFileSync(ref+"/"+name)).digest("hex")})),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8")}));',
+    'import {execFileSync} from "node:child_process";import {readFileSync,readdirSync} from "node:fs";import {createHash} from "node:crypto";import {observeConsumerWitnessTool,observeConsumerWitnessManagedInputs} from "./dist/test/consumer-witness-fixture.js";const ref="/usr/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0";console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,compiler:execFileSync("dotnet",["exec","/usr/share/dotnet/sdk/10.0.401/Roslyn/bincore/csc.dll","-version"],{encoding:"utf8"}).trim(),dotnet:execFileSync("dotnet",["--version"],{encoding:"utf8"}).trim(),runtimes:execFileSync("dotnet",["--list-runtimes"],{encoding:"utf8"}).trim(),referenceLibraries:readdirSync(ref).filter(name=>name.endsWith(".dll")).sort().map(name=>({name,bytes:readFileSync(ref+"/"+name).length,sha256:createHash("sha256").update(readFileSync(ref+"/"+name)).digest("hex")})),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8"),nodeExecutableSha256:createHash("sha256").update(readFileSync(process.execPath)).digest("hex"),distributionSha256:createHash("sha256").update(readFileSync("/etc/os-release")).digest("hex"),tool:await observeConsumerWitnessTool("csharp"),managedInputs:await observeConsumerWitnessManagedInputs("csharp")}));',
   ]),
 );
 assert.equal(runtime.node, "v22.23.2");
@@ -69,13 +76,56 @@ assert.equal(
 );
 assert.match(runtime.runtimes, /Microsoft.NETCore.App 10\.0\.12/);
 assert.ok(runtime.referenceLibraries.length > 100);
-const source = JSON.parse(
+const consumerRuntime = {
+  ...runtime,
+  node: runtime.node.slice(1),
+  architecture: runtime.arch,
+  hostAttestationPerformed: false,
+  toolVersion: runtime.compiler,
+};
+const consumerExpected = await captureConsumerWitnessController(
+  repository,
+  "csharp",
+  { kind: "oci-image-observation", id: image },
+  consumerRuntime,
+  runtime.tool,
+);
+const consumerCollection = JSON.parse(
   run([
     "/bin/sh",
     "-c",
-    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs context-csharp",
+    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-consumer-witness-profile.mjs context-csharp",
   ]),
 );
+const source = consumerCollection.evidence;
+consumerCollection.bindings = bindConsumerWitnessController(
+  consumerCollection,
+  consumerExpected,
+);
+consumerCollection.coverage = inspectConsumerWitnesses(
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-consumer-witnesses.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-profiles.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "scripts/required-native-tests.json"),
+      "utf8",
+    ),
+  ),
+  consumerCollection.observations,
+  consumerCollection.bindings,
+  consumerCollection.attemptRecords,
+);
+requireQualifiedConsumerWitnessFamily(consumerCollection.coverage, "csharp");
 assert.equal(source.complete, true);
 assert.equal(source.passed, 9);
 // Guard mutations operate only on an owned compiled copy; the source mount stays read-only.
@@ -122,6 +172,7 @@ process.stdout.write(
     runtime,
     image,
     source,
+    consumerWitnesses: consumerCollection,
     guards,
     installed,
     environment: {
