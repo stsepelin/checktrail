@@ -1,0 +1,517 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Independent reconstruction of the time-zone archive copied into both selected compiler SDKs, including a valid source-data mutation and exact source restoration. This is a copied-payload observation, not full compiler/SDK/bootstrap closure.",
+  "relationshipToCompilerRebuild": "provider-compiler-source-rebuilds.json",
+  "relationshipToSourceAttribution": "provider-compiler-source-git-binding.json",
+  "recipeFrozenBeforeBuild": {
+    "schemaVersion": 1,
+    "frozenBeforeBuild": true,
+    "goal": "Independently reconstruct lib/time/zoneinfo.zip copied into each selected compiler SDK archive",
+    "host": "darwin/arm64",
+    "producerVersions": {
+      "goPackager": "go version go1.27.1 darwin/arm64",
+      "goPackagerExecutableSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598",
+      "cCompilerVersion": [
+        "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "Target: arm64-apple-darwin27.0.0",
+        "Thread model: posix"
+      ],
+      "cCompilerExecutableSha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+      "cCompilerSourceBuildClosureVerified": false,
+      "goPackagerBootstrapBuildClosureVerified": false
+    },
+    "sourceArchives": [
+      {
+        "version": "2025a",
+        "family": "tzcode",
+        "url": "https://www.iana.org/time-zones/repository/releases/tzcode2025a.tar.gz",
+        "bytes": 308522,
+        "sha256": "119679d59f76481eb5e03d3d2a47d7870d592f3999549af189dbd31f2ebf5061"
+      },
+      {
+        "version": "2025a",
+        "family": "tzdata",
+        "url": "https://www.iana.org/time-zones/repository/releases/tzdata2025a.tar.gz",
+        "bytes": 462943,
+        "sha256": "4d5fcbc72c7c450ebfe0b659bd0f1c02fbf52fd7f517a9ea13fe71c21eb5f0d0"
+      },
+      {
+        "version": "2025c",
+        "family": "tzcode",
+        "url": "https://www.iana.org/time-zones/repository/releases/tzcode2025c.tar.gz",
+        "bytes": 320200,
+        "sha256": "697ebe6625444aef5080f58e49d03424bbb52e08bf483d3ddb5acf10cbd15740"
+      },
+      {
+        "version": "2025c",
+        "family": "tzdata",
+        "url": "https://www.iana.org/time-zones/repository/releases/tzdata2025c.tar.gz",
+        "bytes": 469363,
+        "sha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957"
+      }
+    ],
+    "goSourceArchivePins": [
+      {
+        "version": "go1.24.13",
+        "sha256": "639a6204c2486b137df1eb6e78ee3ed038f9877d0e4b5a465e796a2153f858d7"
+      },
+      {
+        "version": "go1.26.8",
+        "sha256": "4e39b98e42f946fa05ac8bc5b71877df97dbdb7cbb1a777b541667ad7117fd2e"
+      }
+    ],
+    "commands": {
+      "mkzip": [
+        "go",
+        "build",
+        "-trimpath",
+        "-o",
+        "private output/mkzip",
+        "lib/time/mkzip.go"
+      ],
+      "zic": [
+        "make",
+        "CFLAGS=-DSTD_INSPIRED",
+        "AWK=awk",
+        "TZDIR=zoneinfo",
+        "posix_only"
+      ],
+      "go1.26.8AdditionalMakeArguments": [
+        "PACKRATDATA=backzone",
+        "PACKRATLIST=zone.tab"
+      ],
+      "package": ["mkzip", "private output/zoneinfo.zip"]
+    },
+    "variants": [
+      "baseline",
+      "changed valid historical offset in Africa/Abidjan from -0:16:08 to -0:16:09",
+      "exact original source restoration"
+    ],
+    "freshExtractAndBuildPerVariant": true,
+    "originalArchivePassedToBuildCommands": false,
+    "commandTimeoutSeconds": 180,
+    "fullUpstreamBuildClosureVerified": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "recipeSha256": "70061436f43c66b6ef162d3c8dcd356dc73a64836a37f843e9f58627ad8fd75c",
+  "archiveObservations": [
+    {
+      "version": "go1.24.13",
+      "tzVersion": "2025a",
+      "mkzipSourceSha256": "afbc4414d4053db4cf6befc0936cf15862a1d4b0433644adf3c0410f3796a820",
+      "updateRecipeSourceSha256": "93c28676be2548d23a053536ad3cef287b92309b022763c6afd78141d59159f2",
+      "expectedArchiveBytes": 406409,
+      "expectedArchiveSha256": "58b3770b2c2216eaa856c18464dcac90bcb8547764e40ef660ef3b0f19cd43d0",
+      "variants": [
+        {
+          "variant": "baseline",
+          "allCommandsExitZero": true,
+          "commands": [
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 3.550796166,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.9753856250000004,
+              "logSha256": "6a15185adcbf920fb7221a855514c6d7a73332beb54ff9b8486d8551170b48f0"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.22517504200000005,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "africaSourceSha256": "40e411950ede9d132c53377d1255d55eae78ddc1184f04f790ead09278b69d32",
+          "originalSourceRestored": true,
+          "zicExecutableSha256": "98b36dc8d186b3fcf83a668b11755ebb0ecf0f01e4cb4cfb29bd713bc062f19d",
+          "mkzipExecutableSha256": "80e6dd4cdae9a766f01068bbd246365aad24387f39160a9f993ea68acf663995",
+          "outputBytes": 406409,
+          "outputSha256": "58b3770b2c2216eaa856c18464dcac90bcb8547764e40ef660ef3b0f19cd43d0",
+          "matchesOriginalArchive": true
+        },
+        {
+          "variant": "mutant",
+          "allCommandsExitZero": true,
+          "commands": [
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 3.362825999999999,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.5471772500000007,
+              "logSha256": "6a15185adcbf920fb7221a855514c6d7a73332beb54ff9b8486d8551170b48f0"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.13188324999999956,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "africaSourceSha256": "a5d721cda865dcce3ba24931d84c031ecb5faaf67598dee120c92fec0f5ba104",
+          "originalSourceRestored": false,
+          "zicExecutableSha256": "98b36dc8d186b3fcf83a668b11755ebb0ecf0f01e4cb4cfb29bd713bc062f19d",
+          "mkzipExecutableSha256": "80e6dd4cdae9a766f01068bbd246365aad24387f39160a9f993ea68acf663995",
+          "outputBytes": 406409,
+          "outputSha256": "2c22a25917eb3a80e77ae824322318a113fa8aa532eaf229203029aa91c71279",
+          "matchesOriginalArchive": false
+        },
+        {
+          "variant": "restored",
+          "allCommandsExitZero": true,
+          "commands": [
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 3.525860958000001,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.5518199999999993,
+              "logSha256": "6a15185adcbf920fb7221a855514c6d7a73332beb54ff9b8486d8551170b48f0"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.18231833399999964,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "africaSourceSha256": "40e411950ede9d132c53377d1255d55eae78ddc1184f04f790ead09278b69d32",
+          "originalSourceRestored": true,
+          "zicExecutableSha256": "98b36dc8d186b3fcf83a668b11755ebb0ecf0f01e4cb4cfb29bd713bc062f19d",
+          "mkzipExecutableSha256": "80e6dd4cdae9a766f01068bbd246365aad24387f39160a9f993ea68acf663995",
+          "outputBytes": 406409,
+          "outputSha256": "58b3770b2c2216eaa856c18464dcac90bcb8547764e40ef660ef3b0f19cd43d0",
+          "matchesOriginalArchive": true
+        }
+      ],
+      "memberControls": [
+        {
+          "variant": "baseline",
+          "members": 597,
+          "changedMemberNames": [],
+          "exactSameMemberInventory": true
+        },
+        {
+          "variant": "mutant",
+          "members": 597,
+          "changedMemberNames": [
+            "Africa/Abidjan",
+            "Africa/Accra",
+            "Africa/Bamako",
+            "Africa/Banjul",
+            "Africa/Conakry",
+            "Africa/Dakar",
+            "Africa/Freetown",
+            "Africa/Lome",
+            "Africa/Nouakchott",
+            "Africa/Ouagadougou",
+            "Africa/Timbuktu",
+            "Atlantic/Reykjavik",
+            "Atlantic/St_Helena",
+            "Iceland"
+          ],
+          "exactSameMemberInventory": true
+        },
+        {
+          "variant": "restored",
+          "members": 597,
+          "changedMemberNames": [],
+          "exactSameMemberInventory": true
+        }
+      ],
+      "expectedOriginalArchivePassedToBuildCommands": false,
+      "allThreeVariantsUseFreshSourceExtractionAndCache": true,
+      "originalPayloadRebuiltFromSource": true,
+      "buildCompilerAndSdkProducerChainClosed": false
+    },
+    {
+      "version": "go1.26.8",
+      "tzVersion": "2025c",
+      "mkzipSourceSha256": "afbc4414d4053db4cf6befc0936cf15862a1d4b0433644adf3c0410f3796a820",
+      "updateRecipeSourceSha256": "5f3c3426338a7992997d754f970808645f1982557f6336e91a6f332921629939",
+      "expectedArchiveBytes": 408125,
+      "expectedArchiveSha256": "8f55634d05f8bca1f7bc7c69c5933428c69357e0bdf565e5ba224e3f88ff12e8",
+      "variants": [
+        {
+          "variant": "baseline",
+          "allCommandsExitZero": true,
+          "commands": [
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 3.4165656250000005,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.5524867499999999,
+              "logSha256": "22723b501102a8141fc0563884b8788298e07b3faa3906b81cfa26b75a03afeb"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.12307508299999981,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "africaSourceSha256": "c19940072a9e79d57ad844fc9f676f2067e5fada6708f3bf9a1cd4de34c8eeb7",
+          "originalSourceRestored": true,
+          "zicExecutableSha256": "00dccf46910cf90adae028f63044140aee0d6218d7c1358f60ec41b71933b101",
+          "mkzipExecutableSha256": "80e6dd4cdae9a766f01068bbd246365aad24387f39160a9f993ea68acf663995",
+          "outputBytes": 408125,
+          "outputSha256": "8f55634d05f8bca1f7bc7c69c5933428c69357e0bdf565e5ba224e3f88ff12e8",
+          "matchesOriginalArchive": true
+        },
+        {
+          "variant": "mutant",
+          "allCommandsExitZero": true,
+          "commands": [
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 3.231071749999998,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.5057239580000008,
+              "logSha256": "22723b501102a8141fc0563884b8788298e07b3faa3906b81cfa26b75a03afeb"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.1241312910000012,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "africaSourceSha256": "1c326402d28d4416da37aff71ac77382710184559c0ac79f6cb5d264f297f335",
+          "originalSourceRestored": false,
+          "zicExecutableSha256": "00dccf46910cf90adae028f63044140aee0d6218d7c1358f60ec41b71933b101",
+          "mkzipExecutableSha256": "80e6dd4cdae9a766f01068bbd246365aad24387f39160a9f993ea68acf663995",
+          "outputBytes": 408125,
+          "outputSha256": "9aa243690f35af5a0baabf303b204b00dd5e842f5db823f491b3e4fe9f832efd",
+          "matchesOriginalArchive": false
+        },
+        {
+          "variant": "restored",
+          "allCommandsExitZero": true,
+          "commands": [
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 3.279588083,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.4970421250000001,
+              "logSha256": "22723b501102a8141fc0563884b8788298e07b3faa3906b81cfa26b75a03afeb"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.12323695799999967,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "africaSourceSha256": "c19940072a9e79d57ad844fc9f676f2067e5fada6708f3bf9a1cd4de34c8eeb7",
+          "originalSourceRestored": true,
+          "zicExecutableSha256": "00dccf46910cf90adae028f63044140aee0d6218d7c1358f60ec41b71933b101",
+          "mkzipExecutableSha256": "80e6dd4cdae9a766f01068bbd246365aad24387f39160a9f993ea68acf663995",
+          "outputBytes": 408125,
+          "outputSha256": "8f55634d05f8bca1f7bc7c69c5933428c69357e0bdf565e5ba224e3f88ff12e8",
+          "matchesOriginalArchive": true
+        }
+      ],
+      "memberControls": [
+        {
+          "variant": "baseline",
+          "members": 598,
+          "changedMemberNames": [],
+          "exactSameMemberInventory": true
+        },
+        {
+          "variant": "mutant",
+          "members": 598,
+          "changedMemberNames": [
+            "Africa/Abidjan",
+            "Africa/Timbuktu",
+            "Iceland"
+          ],
+          "exactSameMemberInventory": true
+        },
+        {
+          "variant": "restored",
+          "members": 598,
+          "changedMemberNames": [],
+          "exactSameMemberInventory": true
+        }
+      ],
+      "expectedOriginalArchivePassedToBuildCommands": false,
+      "allThreeVariantsUseFreshSourceExtractionAndCache": true,
+      "originalPayloadRebuiltFromSource": true,
+      "buildCompilerAndSdkProducerChainClosed": false
+    }
+  ],
+  "noticeObservations": [
+    {
+      "version": "2025a",
+      "family": "tzcode",
+      "originalRootLicenseRetained": true,
+      "namedBsdExceptionFilesPresent": [
+        "date.c",
+        "newstrftime.3",
+        "strftime.c"
+      ],
+      "originalInlineNoticeClosureVerified": false
+    },
+    {
+      "version": "2025a",
+      "family": "tzdata",
+      "originalRootLicenseRetained": true,
+      "namedBsdExceptionFilesPresent": [],
+      "originalInlineNoticeClosureVerified": false
+    },
+    {
+      "version": "2025c",
+      "family": "tzcode",
+      "originalRootLicenseRetained": true,
+      "namedBsdExceptionFilesPresent": [
+        "date.c",
+        "newstrftime.3",
+        "strftime.c"
+      ],
+      "originalInlineNoticeClosureVerified": false
+    },
+    {
+      "version": "2025c",
+      "family": "tzdata",
+      "originalRootLicenseRetained": true,
+      "namedBsdExceptionFilesPresent": [],
+      "originalInlineNoticeClosureVerified": false
+    }
+  ],
+  "retainedInputs": [
+    {
+      "file": "provider-compiler-inputs/go1.24.13-mkzip.go.txt",
+      "bytes": 2155,
+      "sha256": "afbc4414d4053db4cf6befc0936cf15862a1d4b0433644adf3c0410f3796a820",
+      "sourcePath": "lib/time/mkzip.go",
+      "sourceCommit": "96e4e2b1616c3c59577d48abcf2823bf1fdcd2e2"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.24.13-upstream-update.bash.txt",
+      "bytes": 1882,
+      "sha256": "93c28676be2548d23a053536ad3cef287b92309b022763c6afd78141d59159f2",
+      "sourcePath": "lib/time/update.bash",
+      "sourceCommit": "96e4e2b1616c3c59577d48abcf2823bf1fdcd2e2"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2025a-LICENSE.txt",
+      "bytes": 252,
+      "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf",
+      "sourceArchive": "tzcode2025a.tar.gz",
+      "sourcePath": "LICENSE"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2025a-date.c.txt",
+      "bytes": 5500,
+      "sha256": "2eb4c8a5c2292123b3e128c1bc9d0daaf6009b40e211d51eb6d21357eba7c9c2",
+      "sourceArchive": "tzcode2025a.tar.gz",
+      "sourcePath": "date.c",
+      "reason": "Complete original file named as a BSD exception in the original root LICENSE"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2025a-newstrftime.3.txt",
+      "bytes": 10798,
+      "sha256": "a53002efdcf55360b43b8dc7aaa70a8d95f813751b31e9e6a274f42aa4e448d2",
+      "sourceArchive": "tzcode2025a.tar.gz",
+      "sourcePath": "newstrftime.3",
+      "reason": "Complete original file named as a BSD exception in the original root LICENSE"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2025a-strftime.c.txt",
+      "bytes": 19356,
+      "sha256": "2511c7f095cde7ccb6fbf245f90459d1b3f3c210bdb3c50a65f30cc86122118e",
+      "sourceArchive": "tzcode2025a.tar.gz",
+      "sourcePath": "strftime.c",
+      "reason": "Complete original file named as a BSD exception in the original root LICENSE"
+    },
+    {
+      "file": "provider-compiler-inputs/tzdata2025a-LICENSE.txt",
+      "bytes": 252,
+      "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf",
+      "sourceArchive": "tzdata2025a.tar.gz",
+      "sourcePath": "LICENSE"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.26.8-mkzip.go.txt",
+      "bytes": 2155,
+      "sha256": "afbc4414d4053db4cf6befc0936cf15862a1d4b0433644adf3c0410f3796a820",
+      "sourcePath": "lib/time/mkzip.go",
+      "sourceCommit": "c293dd49cbe25e1fe8d97d94a5cb618e7b6d831e"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.26.8-upstream-update.bash.txt",
+      "bytes": 2201,
+      "sha256": "5f3c3426338a7992997d754f970808645f1982557f6336e91a6f332921629939",
+      "sourcePath": "lib/time/update.bash",
+      "sourceCommit": "c293dd49cbe25e1fe8d97d94a5cb618e7b6d831e"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2025c-LICENSE.txt",
+      "bytes": 252,
+      "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf",
+      "sourceArchive": "tzcode2025c.tar.gz",
+      "sourcePath": "LICENSE"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2025c-date.c.txt",
+      "bytes": 5414,
+      "sha256": "6c093549ddbbc94bde79a313cf37e7fe479ad007464c44f91d002d7c2b819d24",
+      "sourceArchive": "tzcode2025c.tar.gz",
+      "sourcePath": "date.c",
+      "reason": "Complete original file named as a BSD exception in the original root LICENSE"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2025c-newstrftime.3.txt",
+      "bytes": 10797,
+      "sha256": "6914d73518d63842aad45125fb6e395e369e507a862c448c4a874a54e79bce41",
+      "sourceArchive": "tzcode2025c.tar.gz",
+      "sourcePath": "newstrftime.3",
+      "reason": "Complete original file named as a BSD exception in the original root LICENSE"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2025c-strftime.c.txt",
+      "bytes": 19356,
+      "sha256": "2511c7f095cde7ccb6fbf245f90459d1b3f3c210bdb3c50a65f30cc86122118e",
+      "sourceArchive": "tzcode2025c.tar.gz",
+      "sourcePath": "strftime.c",
+      "reason": "Complete original file named as a BSD exception in the original root LICENSE"
+    },
+    {
+      "file": "provider-compiler-inputs/tzdata2025c-LICENSE.txt",
+      "bytes": 252,
+      "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf",
+      "sourceArchive": "tzdata2025c.tar.gz",
+      "sourcePath": "LICENSE"
+    }
+  ],
+  "sourceReleaseSignaturesVerified": true,
+  "originalPublisherLoadedToolchainAttested": false,
+  "cCompilerSdkAndGoPackagerProducerBuildClosureVerified": false,
+  "completeOriginalInlineNoticeClosureVerified": false,
+  "fullUpstreamCompilerSdkAndBootstrapClosureVerified": false,
+  "limitations": [
+    "The later detached-signature observation verifies the exact pinned public IANA source bytes; independent key-identity trust and complete source-to-Git attribution remain open.",
+    "The independent host used an observed prebuilt Go packager and Apple C compiler. Their complete compiler, SDK and bootstrap build chains remain open.",
+    "Rebuilding zoneinfo.zip does not rebuild other copied SDK payloads or qualify the full selected native runtime matrix."
+  ],
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "initialBuildObservationSourceReleaseSignaturesVerified": false,
+  "sourceReleaseSignatureFollowUpEvidence": "provider-timezone-source-signatures.json"
+}

@@ -7,13 +7,20 @@ provider is required.
 
 ## SDK dependency roles
 
-The production server and its core remain pinned to `2.3.0`. The external
-acceptance client is pinned to `2.3.1` and resolves its own nested `2.3.1` core.
-Acceptance harnesses preserve those separate dependency locations. The
-version-checked installed harnesses validate every resolved client dependency
-against its exact root lockfile entry before copying any of the graph. This client update requires fresh wire
-and installed-package acceptance; historical receipts retain their original SDK
-identities.
+The production server and its core are pinned to `2.3.1`. The external
+acceptance client remains pinned to `2.3.1`; npm now resolves their shared core
+at the root rather than keeping a separate nested client core. Acceptance checks
+resolve the client's actual dependency and compare it with the exact lock entry.
+They do not require one hoisting layout.
+
+The shared offline installer verifies every required production package version
+against the source lock before publishing an installed consumer. External client
+copies validate their entire resolved graph before copying. Individual language
+collectors rely on that shared check instead of repeating an obsolete literal
+server/core version. Actual Tasks routing and native wire acceptance remain
+required. The candidate SDK pin changes as a reviewable inventory revision;
+historical receipts retain their original identities and do not qualify this
+new version.
 
 ## Application clients
 
@@ -64,10 +71,12 @@ acceptance remain pending.
 
 ## Standard Tasks polling profile
 
-The Tasks runtime foundation now includes strict source/installed checks for the
-selected runtime slots and an experimental Windows ACL backend. Native Windows
-acceptance and the frozen whole-profile Gate A cases remain pending; CI wiring
-alone does not verify them. See [task storage](TASK-STORAGE.md).
+The Tasks runtime foundation includes strict source/installed checks for the
+selected runtime slots and an experimental Windows ACL backend. The
+[2026-10-21 main receipts](measurements/tasks-runtime-matrix-2026-10-21/README.md)
+record all eight selected foundation runtimes, including native Windows ACL and
+SQLite controls, at the recorded source commit. Broader host-client and
+whole-profile Gate A acceptance remain pending. See [task storage](TASK-STORAGE.md).
 
 The foreground server advertises `io.modelcontextprotocol/tasks` only when the
 operator supplies `--task-store`. A capable `validation_run` creates a durable

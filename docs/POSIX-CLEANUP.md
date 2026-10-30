@@ -14,6 +14,13 @@ budget. Admission enumerates only version, revision, tree, index and blob reads,
 requires an executable outside the project, disables project hooks/filters and
 [network protocols](https://git-scm.com/docs/git/2.47.0), and offers no MCP-selectable metadata bypass.
 
+Before sending its readiness packet, the owner reads only its own exact PID:
+Linux reads that process's procfs record and macOS selects that PID with the same
+fixed `ps` columns and one-second bound. Invalid selections, foreign or duplicate
+rows and failed reads cannot establish readiness. A clean missing selected PID
+remains absent. Full process snapshots remain required for initial descendant discovery and
+repeated quiescence observations; their failures remain unavailable evidence.
+
 The owner retains its group through normal target exit, so ordinary orphaned
 members and children retaining output pipes can still be selected. The native
 macOS snapshot omits its own short-lived inspection process by its actual PID.
@@ -29,17 +36,31 @@ only an observed stopped or exited state counts as quiescence. Deeper children
 must physically exit before their waiting parents are killed. Stopped parents
 cannot reap zombies, so direct children are signalled before root termination,
 then disappearance of every observed identity is required under the same
-two-second cleanup deadline. Signal delivery, physical exit and reaping remain
+two-second cleanup deadline. A host-query timeout can be retried once using
+only the remaining deadline and a fresh complete identity observation. Each
+query remains bounded by one second; permanent, malformed and expired evidence
+cannot become a successful cleanup. After failure, the existing best-effort recovery uses one separate bounded
+identity query of at most one second, still attempts to release safely identified
+family members and preserves the original incomplete outcome.
+Signal delivery, physical exit and reaping remain
 separate observations. A
-surviving or unreadable observed identity, snapshot error or
+surviving or unreadable observed identity, unrecovered snapshot error or
 changed process group produces `PROCESS_TREE_CLEANUP_UNAVAILABLE`; the runner
 still attempts to terminate the observed owned family and never promotes that
 cleanup failure into a passing check.
 
 Observations bind the PID, start identity and process group. A PID reused for a
 different start identity is left alone. A missing snapshot row is checked against
-the native PID before it is treated as absence. Unrelated sibling tasks are not
-selected. Unknown macOS `?` status is retained as running/unknown; it never
+the native PID before it is treated as absence. After signalling, a native PID
+existence check can confirm physical disappearance directly. An already absent
+observed PID needs no further global snapshot; surviving, unreadable and reused
+PIDs still require the original identity, group and state checks. After complete
+discovery and quiescence, pre-signal, physical-exit and final-reaping observations
+select only the captured owned PIDs. Selections are copied before any asynchronous
+read and divided into bounded native queries. Empty, duplicate, oversized or
+unsafe selections and foreign result rows are refused. Recovery still attempts
+one separately bounded full snapshot after failure. A final snapshot is unnecessary when no descendants were
+observed. The snapshot and cleanup deadlines are unchanged. Unrelated sibling tasks are not selected. Unknown macOS `?` status is retained as running/unknown; it never
 proves quiescence. Linux start identity comes from `/proc/PID/stat`; macOS uses the fixed
 `/bin/ps` PID, parent, group, status and start-time columns without command lines or
 process environments.
@@ -56,7 +77,9 @@ native detached-child cancellation, delayed child exit, unrelated siblings,
 surviving/unreadable/changed-group identities and reused PIDs. Additional required
 callbacks cover actual replacement-child prevention, late forks before stop
 acknowledgement, unknown statuses, family quiescence and final reaping. Paired
-controls preserve assertions while removing and restoring each addressed guard. `verify-posix-cleanup-package.mjs` repeats the
+controls preserve assertions while removing and restoring each addressed guard.
+Selected-observation controls also retain full discovery, exercise a live family
+larger than one query batch, and mutate the caller selection during observation. `verify-posix-cleanup-package.mjs` repeats the
 same preserved profile together with the `posix-owner` controls against a fresh
 locked offline production install. Source and installed engine artifacts and the
 unchanged external harness are reconciled before/after the required callbacks. It
@@ -70,3 +93,16 @@ processes can be reaped. A runtime whose PID 1 leaves observed orphan zombies
 cannot supply confirmed cleanup. Missing-executable fixtures allow owner startup
 while still requiring an actual `ENOENT` result; a separate stopped-owner control
 keeps pre-execution deadline expiry distinct from an attempted executable lookup.
+
+Linux procfs can expose an already-dead task with parent zero, process group `-1`
+and session `-1` while its signal-handler state is being released. The parser
+admits that exact sentinel only for the native `X` or `Z` exited states and keeps
+its start identity. An unrelated dying task therefore does not invalidate the
+whole snapshot. Negative groups on live/stopped states and partial or malformed
+identities still fail. For an already captured PID/start identity pair, the exact
+exited sentinel preserves the known identity while cleanup still waits for the
+PID to disappear. Other changed-group shapes remain cleanup failures, and a new
+start identity is left alone. This row cannot establish ownership of a previously
+unobserved process. Native-shaped parent/child controls preserve deepest-first
+termination, unrelated siblings, final reaping and the shared two-second deadline. The kernel representation is defined by `do_task_stat` in
+[the Linux procfs implementation](https://code.googlesource.com/linux/torvalds/linux/+/7acf90feab8b009fde7def08ff2c622d0f10e99f/fs/proc/array.c).

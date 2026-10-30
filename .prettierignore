@@ -6,3 +6,6 @@ test/fixtures
 
 # Go templates are checked by native Helm; their source is not plain YAML.
 examples/helm/templates/*.yaml
+
+# Preserve the measured native JSON packet bodies byte-for-byte.
+docs/measurements/tasks-runtime-matrix-2026-10-21/receipts/*.json

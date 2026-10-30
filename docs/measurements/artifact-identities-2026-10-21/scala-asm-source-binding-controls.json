@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent original byte-comparison controls; no upstream source or native compiler executed.",
+  "controls": [
+    {
+      "id": "changed-java-comment-byte",
+      "changedInputRetainsValidUtf8": true,
+      "changedInputRejectedByUnchangedGitBlob": true,
+      "restoredInputMatches": true,
+      "originalSha256": "05b0fbade02e69f0cba66b4cdfb058e6cdf88ece0aa2f9b50e93750bec985d63",
+      "mutantSha256": "b022266fc188a3cd9187cdc8195b853901ec9aca435efc4e275677e3ea22f5d1"
+    },
+    {
+      "id": "manifest-version",
+      "changedProjectionRejectedByUnchangedArchiveMember": true,
+      "restoredProjectionMatches": true,
+      "mutantSha256": "7fb3516696d1298c61cb6e699c30868e6bc7cf1accb487d4de027e43cca68335"
+    },
+    {
+      "id": "manifest-name",
+      "changedProjectionRejectedByUnchangedArchiveMember": true,
+      "restoredProjectionMatches": true,
+      "mutantSha256": "056d3bc95f6ba53c674f931452f27caefeface7e6728ffc307c07dd20968a872"
+    },
+    {
+      "id": "manifest-organization",
+      "changedProjectionRejectedByUnchangedArchiveMember": true,
+      "restoredProjectionMatches": true,
+      "mutantSha256": "17567793ebed52950c1c05a128d5871f18fd30decf29d395cd1c1ae967eae109"
+    },
+    {
+      "id": "manifest-line-endings",
+      "lfProjectionRejectedByUnchangedArchiveMember": true,
+      "restoredCrlfProjectionMatches": true
+    },
+    {
+      "id": "git-java-mode-change",
+      "changedModeRejectedByUnchangedRootTree": true,
+      "restoredRootTreeMatches": true,
+      "mutantRootTreeSha1": "d151527ce4b7cca54c63917ac84a11ec5564ed3c"
+    }
+  ],
+  "upstreamInputsUnchanged": true,
+  "javaMemberCount": 105,
+  "wholeArtifactClosureAssessed": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

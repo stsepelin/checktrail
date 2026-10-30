@@ -24,7 +24,7 @@ remain separate.
 Capability levels are discovery, planning, execution, structured evidence,
 semantic rules, and integration validation. None implies the next. This file's
 initial scope column describes the experimental implementation. Node, Python,
-Go, TypeScript, ESLint, Vitest, Jest and vue-tsc execution have been exercised locally. Vitest accepts stable major versions 4 and 5; native compatibility is exercised at 4.1.9 and 5.0.1 (see [Vitest validation](VITEST.md)). PHP syntax
+Go, TypeScript, ESLint, Vitest, Jest and vue-tsc execution have been exercised locally. Vitest accepts stable major versions 4 and 5; native compatibility has been exercised at 4.1.9, 5.0.1 and 5.0.5 (see [Vitest validation](VITEST.md)). PHP syntax
 has been verified separately in an isolated official Linux container. Tool versions and remaining gaps are tracked in `STATUS.md`.
 
 | Family                        | Project boundaries                                                                                             | Initial scope                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Subsequent native integrations                                                                       | Important constraints                                                                                                                         |
@@ -59,12 +59,34 @@ all-Node-test plan. Other runners/languages, unresolved inputs and missing graph
 edges retain full validation. Native per-language consumer acceptance and the
 Gate A profile remain pending.
 
+The [selected Tasks foundation observations](measurements/tasks-runtime-matrix-2026-10-21/README.md)
+record source and fresh-install cases on all eight selected runtime slots at
+main commit `fcf1344ad43b586e9504ade1587f33d3d24575df`, including native Windows
+ACL/SQLite controls. This scoped Tasks evidence does not qualify every native
+adapter, later source changes or the complete Gate A runtime matrix.
+
 ## Windows execution profile
+
+The selected Git for Windows x64 path resolves launchers to one native SDK
+built-in, `mingw64/bin/git.exe` or `ucrt64/bin/git.exe`, outside the project.
+Fixed read-only metadata queries retain the same five-second/output bounds and
+execution-disabled Git configuration. Ambiguous or unrecognized launcher
+candidates are skipped; when no supported host executable remains, selection
+retains the full plan. Tracked Windows executable modes are read from the index.
+The consumer source/fresh-install CI cohort qualifies affected selection alongside
+the existing native validation controls.
 
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md) describes the experimental bounded
 local-drive `.exe` runner and dedicated native source/offline-install CI profile.
-Native acceptance remains pending. Other Windows tool/framework/Git/persistence
-profiles are unverified; this does not promote them or close E4/E5.
+[Dated scoped native controls](measurements/windows-resource-workloads-2026-10-26.json)
+passed the preserved execution/output/resource cohort against source and a fresh
+offline production package on Windows 2025/Node 22.23.3. Other Windows
+tool/framework/Git/persistence profiles and final current-source acceptance remain
+unverified; this does not close E4/E5.
+The [Windows resource counters](NATIVE-RESOURCE-ACCOUNTING.md#experimental-windows-process-and-job-counters)
+retain independent process/job CPU observations and direct target working-set
+peaks. Synthetic small/large/Go-Node workload and physical output/archive controls
+have scoped native evidence. Whole resource/release acceptance remains pending.
 
 ## Advisory review context support
 
@@ -500,7 +522,7 @@ The opt-in [Terraform module/provider extension](TERRAFORM-EXTENSIONS.md) adds a
 
 The opt-in [Helm application/subchart extension](HELM-EXTENSIONS.md) validates a finite local alias graph with transitive and repeated charts, scalar value/schema constraints and physical/rendered native diagnostics. Exact source bytes, full debug schemas, all physical lint outcomes and complete template-instance participation remain current at admission. Linux ARM64/Helm 4.3.0 is the measured scope; wider charts, cluster/API schema behavior, provenance and Gate A remain open.
 
-[Selected native mutation runners](MUTATIONS.md) add flat Vitest 5.0.1, Jest 30.5.2, pytest 9.1.1/Python 3.12.13 and PHPUnit 13.3.4/PHP 8.5.6 experiments on Linux ARM64/Node 22.23.2. Fresh copies preserve originals and distinguish skips, collection/setup errors, body errors and teardown assertions from mutation kills. Wider runners/platforms, complete runtime/license closure and Gate A remain open.
+[Selected native mutation runners](MUTATIONS.md) add flat Vitest 5.0.5, Jest 30.5.2, pytest 9.1.1/Python 3.12.13 and PHPUnit 13.3.4/PHP 8.5.6 experiments on Linux ARM64/Node 22.23.2. Fresh copies preserve originals and distinguish skips, collection/setup errors, body errors and teardown assertions from mutation kills. Wider runners/platforms, complete runtime/license closure and Gate A remain open.
 
 Journal codec/private storage foundation controls retain actual binary native child
 observations in separate bounded files with interrupted-call replay. This is a
@@ -534,3 +556,19 @@ All-candidate findings inspection also supports quiescent unfinished stages afte
 an accepted reviewer response. Missing judgments remain unresolved; reached native
 receipts awaiting adjudication stay bound. The whole-profile synthetic cases do
 not qualify the final engine matrix or verify host claim truth.
+
+The Laravel owned-cache foundation has source and fresh offline installed
+collectors that require all nine preserved callbacks, unchanged declared harness
+and engine bytes, observed Node/PHP executables and selected framework runtime
+bytes. This acceptance binding does not expand the Laravel semantic or platform
+support above and does not close Gate A.
+
+The [resource and release readiness cohort](NATIVE-RESOURCE-ACCOUNTING.md#resource-and-release-readiness-cohort)
+now combines real small/large/JavaScript-Go measurements, physical report storage,
+previous-package upgrade/rollback, source grants and reached native lifecycle
+controls through source and a fresh offline production package. POSIX self and
+reaped-child counters and Windows direct/job counters retain their distinct
+scopes and units. The declared selected runtime jobs require fresh exact-input
+receipts; the local development controls and historical Windows observations do
+not certify the final matrix or full artifact/license closure. Gate A remains
+open without model inference or field evaluation.

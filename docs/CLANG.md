@@ -111,3 +111,11 @@ Tests cover the actual public example, native C/C++ errors and repair, header
 coverage, ignored build configuration, relative `__FILE__` spelling, working
 directories, space-containing includes, standard-library headers, multiple
 configurations, warnings, missing compilers and malformed evidence.
+
+Only an observed missing-executable error during a compiler version probe is
+reported as `missing-tool`. Native output exhaustion, cancellation, cleanup
+failure and other incomplete observations remain collection errors with bounded
+native failure-code context. The selected
+Clang source and fresh-install cohort also exercises a physically reached output
+limit and its exact-limit unsupported-version control. Full-suite admission runs
+the complete Clang test file after the shared wave.

@@ -30,7 +30,7 @@ function vitest(status = "passed", names: string[] = []) {
   return {
     schemaVersion: 1,
     format: "checktrail-mutation-vitest-1",
-    version: "5.0.1",
+    version: "5.0.5",
     selectedFiles: [file],
     endReason: status === "failed" ? "failed" : "passed",
     unhandled: [],

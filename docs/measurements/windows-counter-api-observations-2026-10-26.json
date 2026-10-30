@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "scope": "bounded-original-synthetic-failed-target-CPU-observations",
+  "observedAt": "2026-10-26",
+  "diagnosticCommit": "0ffb2e2735c72026c077e27ec4c57ea70db99973",
+  "workflowRun": "https://github.com/stsepelin/checktrail/actions/runs/40397995700",
+  "requestedRunner": "windows-2025",
+  "requestedNode": "22.23.3",
+  "targetExitCode": 7,
+  "probeSamples": 32,
+  "crossApiRefusals": 2,
+  "cpuUnit": "100ns",
+  "samples": [
+    {
+      "sample": 0,
+      "processCpu100ns": {
+        "user": "1562500",
+        "kernel": "0"
+      },
+      "jobCpu100nsBeforeRelease": {
+        "user": "1406250",
+        "kernel": "0"
+      },
+      "threadHandleReleased": true,
+      "processHandleReleased": true,
+      "jobCpu100nsAfterRelease": {
+        "user": "1406250",
+        "kernel": "0"
+      },
+      "activeJobProcesses": 0,
+      "totalJobProcesses": 1
+    },
+    {
+      "sample": 1,
+      "processCpu100ns": {
+        "user": "1250000",
+        "kernel": "312500"
+      },
+      "jobCpu100nsBeforeRelease": {
+        "user": "1093750",
+        "kernel": "312500"
+      },
+      "threadHandleReleased": true,
+      "processHandleReleased": true,
+      "jobCpu100nsAfterRelease": {
+        "user": "1093750",
+        "kernel": "312500"
+      },
+      "activeJobProcesses": 0,
+      "totalJobProcesses": 1
+    }
+  ],
+  "sameInvocationComparedBeforeAndAfterHandleRelease": true,
+  "collectorRetainedOriginalUnavailableResult": true,
+  "immediateHandleReleaseResolvedObservedDifference": false,
+  "underlyingMechanismEstablished": false,
+  "roundingToleranceInferred": false,
+  "completeResourceReadinessEstablished": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

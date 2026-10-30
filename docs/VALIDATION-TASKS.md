@@ -50,8 +50,11 @@ macOS arm64 Node 26.9.0 and Linux arm64 Node 22.23.2 lifecycle, ordinary-client 
 fresh offline production-package evidence with pinned SDK 2.3.0. Required profiles
 are `mcp-tasks` and `mcp-task-dispatch`. This is a polling-only native validation
 profile: no input-required flow, subscriptions, HTTP service or AI execution is
-implemented. Windows, other runtime/client versions, full Tasks conformance and
-model-host Tasks interoperability remain unverified. These controls are not a
+implemented. That historical measurement did not cover Windows. The later
+[selected runtime observations](measurements/tasks-runtime-matrix-2026-10-21/README.md)
+include Windows foundation controls at their recorded source. Broader client
+versions, full Tasks conformance and model-host Tasks interoperability remain
+unverified. These controls are not a
 real-project field review or a finding-quality measurement.
 
 ## Use

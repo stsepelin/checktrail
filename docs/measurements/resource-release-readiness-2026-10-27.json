@@ -1,0 +1,666 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Original synthetic resource/release acceptance from source and a fresh offline production install. Development runtime only; no selected native matrix or artifact/license closure qualification.",
+  "sourceCommit": "10f2372f8d1979f2c8513a99cec95bd097386873",
+  "sourceTree": "3f312c24eb030854593e1f974f75dcc72453eb87",
+  "recordAddedAfterMeasuredPackage": true,
+  "measuredPackageDoesNotContainThisRecord": true,
+  "node": "26.9.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+  "runtime": {
+    "slot": null,
+    "osRelease": "27.0.0",
+    "selectedRuntimeValidated": false,
+    "hostAttested": false
+  },
+  "harnessSha256": "71ea4d0c65f41b2a4d1b7f07b5cf7e226086897bde56a9490827d2e08e1e15b5",
+  "harnessInputs": [
+    {
+      "file": "package.json",
+      "sha256": "718f9dabb95737c9ad8b2e4de385412d6a1e1c4e79cdc798e891a6aa62274a28"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "12c5f96efc2cf2654865a2a41ebb423e545858889cd8039139108f8e75788303"
+    },
+    {
+      "file": "docs/gate-a-profiles.v1.json",
+      "sha256": "d3b6c09b721a8ac8280733db44732fe6490bcf1f34e27ba964dcf28628503e77"
+    },
+    {
+      "file": "dist/test/gate-resource-release-readiness.test.js",
+      "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+    },
+    {
+      "file": "dist/test/resource-release-fixture.js",
+      "sha256": "a9de6e26437edca3b8597f4cf20bbe95c3e94b65399dedfd256e924eb0fb1117"
+    },
+    {
+      "file": "dist/test/helpers.js",
+      "sha256": "e870d22a40d31aedba5cec6d2a37d80cbef95a1ddea252dd55c798c28d0c3854"
+    },
+    {
+      "file": "scripts/resource-release-evidence.mjs",
+      "sha256": "f81590c218780c605bc9fbb46c505bf4464de4c6181d0b5fde01a05b50ec6e13"
+    },
+    {
+      "file": "scripts/verify-resource-release-readiness.mjs",
+      "sha256": "1a0d79736a8535a7ac7cbb5c6d0afc109917d507dac6c9848b6c2eba06bbbd43"
+    },
+    {
+      "file": "scripts/verify-resource-release-arm64.mjs",
+      "sha256": "985d5cb4fa8a0971f725fafd4e100fb275db979e705b68f8304d9bb7c8c591bf"
+    },
+    {
+      "file": "scripts/verify-resource-release-guards.mjs",
+      "sha256": "3ff2b26753d26bf853bb14584ca4042b508b0bbfd0245c7ce016de3d1459f236"
+    },
+    {
+      "file": "scripts/prepare-resource-cache-subset.mjs",
+      "sha256": "9f31124cbfdae3836d225f4258701d6e2349b508d3c029131f0b4a5bf170f1d9"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "4b4f23ad3e4c470d71baf244240b379b8e47f788e7724699e0cd2e34c5c2f74d"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "22163285652fa57d259c3cfa39ea6194fb2abfdc1896e1436fc5225681e80ad2"
+    },
+    {
+      "file": "scripts/lifecycle-runtime-evidence.mjs",
+      "sha256": "16218d19b0a41aa1228d01e1c1817565d99846bad8c0e6524caae733993b863a"
+    },
+    {
+      "file": "scripts/review-runtime-evidence.mjs",
+      "sha256": "9a359d9b9059d4e64740c394385b55c5286f2b1c80779af26c6450d6e2d3b836"
+    },
+    {
+      "file": "scripts/release-readiness-tools.mjs",
+      "sha256": "1ac4a72c1bf1cf25675d8b1f586c7ad9994e2c027e8d02d8d235cf05ef6739a6"
+    },
+    {
+      "file": "scripts/package-upgrade-readiness.mjs",
+      "sha256": "ceae06fb6cf79a766c79a6d795fff3bc581331a406bbdef6e0b0fa678f935efd"
+    },
+    {
+      "file": "scripts/install-acceptance-package.mjs",
+      "sha256": "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+    },
+    {
+      "file": "scripts/request-pinned-artifact.mjs",
+      "sha256": "c5e76c374886fa7ad9009e1c9152569b34218cbb4004948915245edaf7ca432e"
+    },
+    {
+      "file": "scripts/compiled-engine-evidence.mjs",
+      "sha256": "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+    },
+    {
+      "file": "scripts/measure-native-resources.mjs",
+      "sha256": "b3c22ebcf21ab49bb80a5909d86b8caa939f7d00167b39f5d0d66f23d5bb3f53"
+    },
+    {
+      "file": "scripts/measure-windows-resources.mjs",
+      "sha256": "ca1e17a57ec53ec8d933cbc4dde9b586f8cbdb91fca827215eee20023c7c2246"
+    },
+    {
+      "file": "scripts/native-resource-workloads.mjs",
+      "sha256": "3e7abe38c21f1fc7db50aea480c87a401b14688a61931b37d937926e9c3ce625"
+    },
+    {
+      "file": "scripts/native-resource-workload-worker.mjs",
+      "sha256": "d45dce865d3b79ba6a6cd3dd4bedb71f3e2ceac7e1991be54ca347a14c9f5cb9"
+    },
+    {
+      "file": "scripts/windows-resource-workloads.mjs",
+      "sha256": "39c89bfcb605cf25ce18013f8308f72fbeba1c07f9948f769c7f60cfd411bec3"
+    },
+    {
+      "file": "scripts/windows-resource-workload-worker.mjs",
+      "sha256": "20c9867fec51d814e66ebedda0ab0932be016e58d5e0ead1b0ba1b284f599a4f"
+    },
+    {
+      "file": "scripts/native-child-resource.mjs",
+      "sha256": "87db901495728cf21fc5d83818ce0d7f5b96669154c8c45c6089e018fc9e3fa6"
+    },
+    {
+      "file": "scripts/native-child-resource.c",
+      "sha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877"
+    },
+    {
+      "file": "scripts/native-resource-receipt.mjs",
+      "sha256": "1c3fe5ea7222b7e21fd31f94477c34cd1189f065a7c1ba2ca952ed6e2c02a3ec"
+    },
+    {
+      "file": "scripts/native-resource-observer.c",
+      "sha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5"
+    },
+    {
+      "file": "scripts/prepare-native-child-resource.mjs",
+      "sha256": "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e"
+    },
+    {
+      "file": "scripts/prepare-native-resource-observer.mjs",
+      "sha256": "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508"
+    },
+    {
+      "file": "scripts/release-readiness-tools/baseline.json",
+      "sha256": "690e0a3e3b22406be1d0d111e510e3c65f1614c4a05bd905737ee316209b7629"
+    },
+    {
+      "file": "scripts/release-readiness-tools/package.json",
+      "sha256": "4186199f79aaf471bd86224b180a95df45a49f758eb5b517627b36a9bf9f602e"
+    },
+    {
+      "file": "scripts/release-readiness-tools/package-lock.json",
+      "sha256": "993a8f253409fdbae1b403ab2b7f66238bdff0a33c68f864f3ea63b29f0214d9"
+    }
+  ],
+  "harnessInputsUnchanged": true,
+  "compiledEngineSha256": "a4ad0b9b35488497ae0cf59011a76a0190fa079441a1a142df95567bda68ac50",
+  "engineBeforeAfterIdentitiesMatch": true,
+  "source": {
+    "fileWorkerLimit": 1,
+    "requiredCaseWorkerLimit": 1,
+    "timeoutScope": "one fresh process per required named case",
+    "passed": 9,
+    "required": 9,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 4096,
+      "terminalEventCount": 9,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+          },
+          "stable": true,
+          "relativeHarnessFile": "dist/test/gate-resource-release-readiness.test.js"
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "resource-release-readiness broken acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1441.348333,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "resource-release-readiness fixed acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 5300.95175,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "resource-release-readiness near-miss acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 11617.291917,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-1",
+          "name": "resource-release-readiness prerequisite acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 10549.031917,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-1",
+          "name": "resource-release-readiness stale acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1228.047291,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-1",
+          "name": "resource-release-readiness empty acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 957.690917,
+          "required": true
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-1",
+          "name": "resource-release-readiness privacy acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3716.677875,
+          "required": true
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-1",
+          "name": "resource-release-readiness lifecycle acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 17518.612125,
+          "required": true
+        },
+        {
+          "sequence": 9,
+          "fileId": "file-1",
+          "name": "resource-release-readiness installed acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 20688.533542,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness broken acceptance",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness fixed acceptance",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness near-miss acceptance",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness prerequisite acceptance",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness stale acceptance",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness empty acceptance",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness privacy acceptance",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness lifecycle acceptance",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-1",
+          "name": "resource-release-readiness installed acceptance",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        }
+      ]
+    }
+  },
+  "installed": {
+    "profile": {
+      "fileWorkerLimit": 1,
+      "requiredCaseWorkerLimit": 1,
+      "timeoutScope": "one fresh process per required named case",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "9a5e5d21717f79a87eabd1f292bd2b2435aff85b584be42696e0d5b7380895a7"
+            },
+            "stable": true,
+            "relativeHarnessFile": "dist/test/gate-resource-release-readiness.test.js"
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "resource-release-readiness broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1073.0605,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "resource-release-readiness fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5439.647958,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "resource-release-readiness near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6957.225875,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "resource-release-readiness prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10150.317667,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "resource-release-readiness stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 973.13675,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "resource-release-readiness empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 922.771709,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "resource-release-readiness privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3664.401166,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "resource-release-readiness lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17617.290333,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "resource-release-readiness installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 14142.893292,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "resource-release-readiness installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "tarballSha256": "73e95c88f4543d8fb52f780ecda0b3f62a554de05029f3883eef9f96bfbcf105",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "compiledEngineSha256": "a4ad0b9b35488497ae0cf59011a76a0190fa079441a1a142df95567bda68ac50",
+    "harnessOutsideInstalledPackage": true,
+    "harnessSha256": "71ea4d0c65f41b2a4d1b7f07b5cf7e226086897bde56a9490827d2e08e1e15b5"
+  },
+  "guardControls": {
+    "schemaVersion": 1,
+    "profile": "resource-release-readiness-guards-v1",
+    "controls": [
+      {
+        "id": "summary-withholds-native-resource-detail",
+        "callback": "resource-release-readiness privacy acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "480104041580aa48298fd874451fedba35ddcecf24972ba174db68cac6f4e266"
+      },
+      {
+        "id": "source-grant-remains-explicit",
+        "callback": "resource-release-readiness privacy acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "18c9a2b90c2a79f17ed4a1a3c1e3e8531144fbd89281e256a0d3086518c82923"
+      },
+      {
+        "id": "retained-legacy-input-identity",
+        "callback": "resource-release-readiness prerequisite acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "683821f875ed09e50321a52b23a0a8d44448d20186fd1e3fcdb025b34cc1b7a6"
+      },
+      {
+        "id": "failed-preparation-publishes-no-partial-selection",
+        "callback": "resource-release-readiness prerequisite acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "f3ea287edd1723417f1ab9aa9d13a223f7b2d899c6b067504acce3d2e6b75b2d"
+      },
+      {
+        "id": "fresh-library-executes-original-native-bodies",
+        "callback": "resource-release-readiness near-miss acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "25d887c4c0d5b44a191b0e8b63d6cca416e5ec17c65a6d14f348f7165fe32beb"
+      },
+      {
+        "id": "child-cpu-is-interval-not-worker-lifetime",
+        "callback": "resource-release-readiness fixed acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "528e0ec62d53654ec584b849477b74a6020bef45609d189b772cccc19a48a34a"
+      },
+      {
+        "id": "physical-archive-reconstruction",
+        "callback": "resource-release-readiness fixed acceptance",
+        "originalPassed": true,
+        "javascriptParsed": true,
+        "mutantFailedUnchangedAssertion": true,
+        "restoredPassed": true,
+        "mutantSha256": "ef2671687ba64ba4a8ed586caf9bfa3e2dfe0bde11764bd151ff9bc632325e6d"
+      }
+    ],
+    "originalCallbacksUnchanged": true,
+    "mutatedBytesRestored": true,
+    "nativePosixCounterControlsIncluded": true,
+    "complete": true,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "olderPackageScope": "Own public older package, used only for synthetic upgrade and rollback; separate from the later plain host-review comparison baseline.",
+  "olderPackage": {
+    "package": "@stsepelin/checktrail",
+    "version": "0.1.0-alpha.4",
+    "tarball": "https://registry.npmjs.org/@stsepelin/checktrail/-/checktrail-0.1.0-alpha.4.tgz",
+    "bytes": 468450,
+    "integrity": "sha512-6DaG6WAO0OFcoyiqZ7lAjkj4ts5hwUXneeQmgIq/c1rWTvxmgE2oi98pJJVOH9QHg7Z+H++Toaw7lbVaAUnJLQ==",
+    "sha1": "920c6a5935211f7e5212da5ccc46543446e476fc",
+    "sha256": "4cc6dca5877b29cb452595c1c50233b0d377248f6f6e84e18ffe1b74b2031f8c",
+    "manifestSha256": "367355e3c4ab107fc5a00da31057add24909120f29e387f4a8654eebf248c041",
+    "license": "MIT",
+    "licenseMember": "package/LICENSE",
+    "licenseSha256": "38fbc60c5849e96fbfb96227eb1eef160e8e3c5a3959b0d51ee0b89b7bca291d",
+    "schemaVersion": 1,
+    "scope": "older-public-package-for-synthetic-upgrade-and-rollback-controls",
+    "producerSourceBuildVerified": false,
+    "toolsManifestSha256": "4186199f79aaf471bd86224b180a95df45a49f758eb5b517627b36a9bf9f602e",
+    "toolsLockfileSha256": "993a8f253409fdbae1b403ab2b7f66238bdff0a33c68f864f3ea63b29f0214d9"
+  },
+  "fullDevelopmentCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "elapsedSeconds": 734.245,
+    "waves": [
+      {
+        "tests": 2102,
+        "pass": 1343,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 759,
+        "todo": 0
+      },
+      {
+        "tests": 27,
+        "pass": 27,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    ],
+    "aggregate": {
+      "tests": 2129,
+      "pass": 1370,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 759,
+      "todo": 0
+    },
+    "skipsQualifyNoNativeProfiles": true
+  },
+  "selectedRuntimeMatrixQualified": false,
+  "dependencyBytesCapturedByCompiledEngineIdentity": false,
+  "actualModuleLoadsTraced": false,
+  "producerSourceBuildVerified": false,
+  "completeArtifactClosure": false,
+  "privateReviewBaselineOrCasesFrozen": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

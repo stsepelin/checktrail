@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { Command } from "./types.js";
 export const gitMetadataEnvironment = Object.freeze({
   GIT_CONFIG_NOSYSTEM: "1",
@@ -72,4 +73,20 @@ export function isGitMetadataCommand(command: Command): boolean {
     );
   }
   return false;
+}
+
+export const windowsGitSdkDirectories = Object.freeze(["mingw64", "ucrt64"]);
+
+/** Selected Git for Windows x64 built-in, not the cmd/bin forwarding launcher. */
+export function isWindowsBuiltinGit(executable: string): boolean {
+  if (executable.startsWith("\\") || executable.startsWith("//")) return false;
+  if (!path.win32.isAbsolute(executable)) return false;
+  const directory = path.win32.dirname(executable);
+  return (
+    path.win32.basename(executable).toLowerCase() === "git.exe" &&
+    path.win32.basename(directory).toLowerCase() === "bin" &&
+    windowsGitSdkDirectories.includes(
+      path.win32.basename(path.win32.dirname(directory)).toLowerCase(),
+    )
+  );
 }

@@ -1,0 +1,18 @@
+{
+  "package": "@stsepelin/checktrail",
+  "version": "0.1.0-alpha.4",
+  "tarball": "https://registry.npmjs.org/@stsepelin/checktrail/-/checktrail-0.1.0-alpha.4.tgz",
+  "bytes": 468450,
+  "integrity": "sha512-6DaG6WAO0OFcoyiqZ7lAjkj4ts5hwUXneeQmgIq/c1rWTvxmgE2oi98pJJVOH9QHg7Z+H++Toaw7lbVaAUnJLQ==",
+  "sha1": "920c6a5935211f7e5212da5ccc46543446e476fc",
+  "sha256": "4cc6dca5877b29cb452595c1c50233b0d377248f6f6e84e18ffe1b74b2031f8c",
+  "manifestSha256": "367355e3c4ab107fc5a00da31057add24909120f29e387f4a8654eebf248c041",
+  "license": "MIT",
+  "licenseMember": "package/LICENSE",
+  "licenseSha256": "38fbc60c5849e96fbfb96227eb1eef160e8e3c5a3959b0d51ee0b89b7bca291d",
+  "schemaVersion": 1,
+  "scope": "older-public-package-for-synthetic-upgrade-and-rollback-controls",
+  "producerSourceBuildVerified": false,
+  "toolsManifestSha256": "4186199f79aaf471bd86224b180a95df45a49f758eb5b517627b36a9bf9f602e",
+  "toolsLockfileSha256": "993a8f253409fdbae1b403ab2b7f66238bdff0a33c68f864f3ea63b29f0214d9"
+}

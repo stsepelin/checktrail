@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 1,
+  "scope": "Selected random provider public publisher build/artifact observations",
+  "observedAt": "2026-10-21T18:06:45.976991+00:00",
+  "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+  "selectedReleaseArchiveSha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+  "selectedReleaseExecutableSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+  "sourceLicenseSha256": "6cc8b40dbd9225bcae53f83bab17b8c01ad162c2093545c5bb7f1dcf5ae99d72",
+  "sourceLicenseUrl": "https://raw.githubusercontent.com/hashicorp/terraform-provider-random/b59b1791a688fe2737b5b70ab05fdd0a4190190e/LICENSE",
+  "authenticatedGitHubArtifactDeliveryDigestsMatched": true,
+  "selectedArchiveAndExecutableBytesMatchedAllFourArtifacts": true,
+  "publisherBuildRuns": [
+    {
+      "workflowRunId": 34599749034,
+      "workflowRunUrl": "https://github.com/hashicorp/terraform-provider-random/actions/runs/34599749034",
+      "repositoryId": 93446128,
+      "sourceHeadRepositoryId": 93446128,
+      "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+      "metadataBranch": "main",
+      "product": "terraform-provider-random",
+      "version": "3.9.1",
+      "publisherReportedReproducedCorrectly": true,
+      "publisherReportedDirty": false,
+      "publisherReportedHashes": {
+        "Bin": {
+          "Name": "terraform-provider-random_v3.9.1_x5",
+          "Description": "executable",
+          "SHA256": {
+            "Primary": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+            "Verification": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+            "Match": true
+          }
+        },
+        "Zip": {
+          "Name": "terraform-provider-random_3.9.1_linux_arm64.zip",
+          "Description": "zip",
+          "SHA256": {
+            "Primary": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+            "Verification": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+            "Match": true
+          }
+        },
+        "AllMatch": true
+      },
+      "publisherStages": [
+        {
+          "publisherStageLabel": "Primary",
+          "publisherReportedSuccessful": true,
+          "publisherReportedBuilderTool": {
+            "Name": "actions-go-build",
+            "Version": "1.1.2",
+            "Revision": "dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4",
+            "RevisionTime": "2026-05-06T07:35:32Z"
+          },
+          "publisherConfigurationReproducibleFlag": false,
+          "reportedGoVersion": "1.26.8",
+          "reportedPlatform": "linux/arm64",
+          "reportedInstructionsSha256": "e564f1995d25d66ad0c0d6ef0a08d022a52b2f217486162d877570be780afd19"
+        },
+        {
+          "publisherStageLabel": "Verification",
+          "publisherReportedSuccessful": true,
+          "publisherReportedBuilderTool": {
+            "Name": "actions-go-build",
+            "Version": "1.1.2",
+            "Revision": "dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4",
+            "RevisionTime": "2026-05-06T07:35:32Z"
+          },
+          "publisherConfigurationReproducibleFlag": false,
+          "reportedGoVersion": "1.26.8",
+          "reportedPlatform": "linux/arm64",
+          "reportedInstructionsSha256": "e564f1995d25d66ad0c0d6ef0a08d022a52b2f217486162d877570be780afd19"
+        }
+      ],
+      "deliveryAndByteObservations": [
+        {
+          "artifactId": 10263649520,
+          "artifactName": "terraform-provider-random_3.9.1_linux_arm64.zip.verificationresult.json",
+          "api": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10263649520",
+          "download": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10263649520/zip",
+          "downloadSha256": "076856fba9b8299eb9b3804b25fb94d07501181fdbe6626a0282b0320f6dae59",
+          "downloadBytes": 1449,
+          "jsonMembers": [
+            {
+              "name": "terraform-provider-random_3.9.1_linux_arm64.zip.json",
+              "bytes": 8502,
+              "sha256": "779cdf4dd3ee0a227db11b9723a69bb6d62dce666ef28b3c7437a91cee809afd",
+              "topLevelKeys": [
+                "Primary",
+                "Verification",
+                "Hashes",
+                "Dirty",
+                "ReproducedCorrectly"
+              ]
+            }
+          ]
+        },
+        {
+          "artifactId": 10263642748,
+          "artifactName": "metadata.json",
+          "api": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10263642748",
+          "download": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10263642748/zip",
+          "downloadSha256": "ea5d7bb3ae379f1cae2e623c689a3a633d163bfeb1d01509460f5d2a64a4b7ba",
+          "downloadBytes": 1055,
+          "jsonMembers": [
+            {
+              "name": "metadata.json",
+              "bytes": 1539,
+              "sha256": "0d0f97bdda35b5b9adec8152ffb22e47065f64ec0d256b4d79a604731a87d01b",
+              "topLevelKeys": [
+                "branch",
+                "buildworkflowid",
+                "org",
+                "product",
+                "releaseMetadata",
+                "repo",
+                "sha",
+                "securityScan",
+                "version"
+              ]
+            }
+          ]
+        },
+        {
+          "artifactId": 10263614515,
+          "artifactName": "terraform-provider-random_3.9.1_linux_arm64.zip.local-verification-build.zip",
+          "api": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10263614515",
+          "download": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10263614515/zip",
+          "downloadSha256": "3538564ec22d61ed73548b73f619e32cc04441b4c243a65444ed40c873631489",
+          "downloadBytes": 5952205,
+          "archiveMembers": [
+            {
+              "member": "terraform-provider-random_3.9.1_linux_arm64.zip",
+              "depth": 0,
+              "bytes": 5964673,
+              "sha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+              "matchesSelectedReleaseArchive": true,
+              "matchesSelectedReleaseExecutable": false
+            },
+            {
+              "member": "LICENSE.txt",
+              "depth": 1,
+              "bytes": 16757,
+              "sha256": "6cc8b40dbd9225bcae53f83bab17b8c01ad162c2093545c5bb7f1dcf5ae99d72",
+              "matchesSelectedReleaseArchive": false,
+              "matchesSelectedReleaseExecutable": false
+            },
+            {
+              "member": "terraform-provider-random_v3.9.1_x5",
+              "depth": 1,
+              "bytes": 17039522,
+              "sha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+              "matchesSelectedReleaseArchive": false,
+              "matchesSelectedReleaseExecutable": true
+            }
+          ]
+        },
+        {
+          "artifactId": 10263409742,
+          "artifactName": "terraform-provider-random_3.9.1_linux_arm64.zip",
+          "api": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10263409742",
+          "download": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10263409742/zip",
+          "downloadSha256": "bd8bf8913dbe43623fb0337b1f2dab4466270bcbfef3f520a62ad6161a903a0b",
+          "downloadBytes": 5952205,
+          "archiveMembers": [
+            {
+              "member": "terraform-provider-random_3.9.1_linux_arm64.zip",
+              "depth": 0,
+              "bytes": 5964673,
+              "sha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+              "matchesSelectedReleaseArchive": true,
+              "matchesSelectedReleaseExecutable": false
+            },
+            {
+              "member": "LICENSE.txt",
+              "depth": 1,
+              "bytes": 16757,
+              "sha256": "6cc8b40dbd9225bcae53f83bab17b8c01ad162c2093545c5bb7f1dcf5ae99d72",
+              "matchesSelectedReleaseArchive": false,
+              "matchesSelectedReleaseExecutable": false
+            },
+            {
+              "member": "terraform-provider-random_v3.9.1_x5",
+              "depth": 1,
+              "bytes": 17039522,
+              "sha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+              "matchesSelectedReleaseArchive": false,
+              "matchesSelectedReleaseExecutable": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflowRunId": 34615171553,
+      "workflowRunUrl": "https://github.com/hashicorp/terraform-provider-random/actions/runs/34615171553",
+      "repositoryId": 93446128,
+      "sourceHeadRepositoryId": 93446128,
+      "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+      "metadataBranch": "refs/tags/v3.9.1",
+      "product": "terraform-provider-random",
+      "version": "3.9.1",
+      "publisherReportedReproducedCorrectly": true,
+      "publisherReportedDirty": false,
+      "publisherReportedHashes": {
+        "Bin": {
+          "Name": "terraform-provider-random_v3.9.1_x5",
+          "Description": "executable",
+          "SHA256": {
+            "Primary": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+            "Verification": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+            "Match": true
+          }
+        },
+        "Zip": {
+          "Name": "terraform-provider-random_3.9.1_linux_arm64.zip",
+          "Description": "zip",
+          "SHA256": {
+            "Primary": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+            "Verification": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+            "Match": true
+          }
+        },
+        "AllMatch": true
+      },
+      "publisherStages": [
+        {
+          "publisherStageLabel": "Primary",
+          "publisherReportedSuccessful": true,
+          "publisherReportedBuilderTool": {
+            "Name": "actions-go-build",
+            "Version": "1.1.2",
+            "Revision": "dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4",
+            "RevisionTime": "2026-05-06T07:35:32Z"
+          },
+          "publisherConfigurationReproducibleFlag": false,
+          "reportedGoVersion": "1.26.8",
+          "reportedPlatform": "linux/arm64",
+          "reportedInstructionsSha256": "e564f1995d25d66ad0c0d6ef0a08d022a52b2f217486162d877570be780afd19"
+        },
+        {
+          "publisherStageLabel": "Verification",
+          "publisherReportedSuccessful": true,
+          "publisherReportedBuilderTool": {
+            "Name": "actions-go-build",
+            "Version": "1.1.2",
+            "Revision": "dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4",
+            "RevisionTime": "2026-05-06T07:35:32Z"
+          },
+          "publisherConfigurationReproducibleFlag": false,
+          "reportedGoVersion": "1.26.8",
+          "reportedPlatform": "linux/arm64",
+          "reportedInstructionsSha256": "e564f1995d25d66ad0c0d6ef0a08d022a52b2f217486162d877570be780afd19"
+        }
+      ],
+      "deliveryAndByteObservations": [
+        {
+          "artifactId": 10270173800,
+          "artifactName": "terraform-provider-random_3.9.1_linux_arm64.zip.verificationresult.json",
+          "api": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10270173800",
+          "download": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10270173800/zip",
+          "downloadSha256": "bc8038c35482f80116ec15eca2cc9e4222ab99f6ef8852f21b0a69859aa6dec5",
+          "downloadBytes": 1455,
+          "jsonMembers": [
+            {
+              "name": "terraform-provider-random_3.9.1_linux_arm64.zip.json",
+              "bytes": 8502,
+              "sha256": "1de253e3b5666b606fecbf31ec99818bf37e09ec0b613bf01d613f11eb83d7bc",
+              "topLevelKeys": [
+                "Primary",
+                "Verification",
+                "Hashes",
+                "Dirty",
+                "ReproducedCorrectly"
+              ]
+            }
+          ]
+        },
+        {
+          "artifactId": 10270148571,
+          "artifactName": "metadata.json",
+          "api": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10270148571",
+          "download": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10270148571/zip",
+          "downloadSha256": "5b4adb007b8c28479fbce5500af7e79c6010bf969a5168f193c354bcb484de3a",
+          "downloadBytes": 1064,
+          "jsonMembers": [
+            {
+              "name": "metadata.json",
+              "bytes": 1551,
+              "sha256": "d86078d3f0a99cd604540a8ac79b0e518b58e33e00f8bf389ac03d3e58aaaa29",
+              "topLevelKeys": [
+                "branch",
+                "buildworkflowid",
+                "org",
+                "product",
+                "releaseMetadata",
+                "repo",
+                "sha",
+                "securityScan",
+                "version"
+              ]
+            }
+          ]
+        },
+        {
+          "artifactId": 10270198888,
+          "artifactName": "terraform-provider-random_3.9.1_linux_arm64.zip.local-verification-build.zip",
+          "api": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10270198888",
+          "download": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10270198888/zip",
+          "downloadSha256": "3d17c91f48884a0ddcc93f475c312742532242a442f0e560d9f95a7766bee7ea",
+          "downloadBytes": 5952205,
+          "archiveMembers": [
+            {
+              "member": "terraform-provider-random_3.9.1_linux_arm64.zip",
+              "depth": 0,
+              "bytes": 5964673,
+              "sha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+              "matchesSelectedReleaseArchive": true,
+              "matchesSelectedReleaseExecutable": false
+            },
+            {
+              "member": "LICENSE.txt",
+              "depth": 1,
+              "bytes": 16757,
+              "sha256": "6cc8b40dbd9225bcae53f83bab17b8c01ad162c2093545c5bb7f1dcf5ae99d72",
+              "matchesSelectedReleaseArchive": false,
+              "matchesSelectedReleaseExecutable": false
+            },
+            {
+              "member": "terraform-provider-random_v3.9.1_x5",
+              "depth": 1,
+              "bytes": 17039522,
+              "sha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+              "matchesSelectedReleaseArchive": false,
+              "matchesSelectedReleaseExecutable": true
+            }
+          ]
+        },
+        {
+          "artifactId": 10270108646,
+          "artifactName": "terraform-provider-random_3.9.1_linux_arm64.zip",
+          "api": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10270108646",
+          "download": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/artifacts/10270108646/zip",
+          "downloadSha256": "f08355802a0347ddb114348d8e2a029d58078178a7bb09d39e161df5be9905c0",
+          "downloadBytes": 5952205,
+          "archiveMembers": [
+            {
+              "member": "terraform-provider-random_3.9.1_linux_arm64.zip",
+              "depth": 0,
+              "bytes": 5964673,
+              "sha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+              "matchesSelectedReleaseArchive": true,
+              "matchesSelectedReleaseExecutable": false
+            },
+            {
+              "member": "LICENSE.txt",
+              "depth": 1,
+              "bytes": 16757,
+              "sha256": "6cc8b40dbd9225bcae53f83bab17b8c01ad162c2093545c5bb7f1dcf5ae99d72",
+              "matchesSelectedReleaseArchive": false,
+              "matchesSelectedReleaseExecutable": false
+            },
+            {
+              "member": "terraform-provider-random_v3.9.1_x5",
+              "depth": 1,
+              "bytes": 17039522,
+              "sha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+              "matchesSelectedReleaseArchive": false,
+              "matchesSelectedReleaseExecutable": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "providerExecuted": false,
+  "independentSourceRebuildPerformed": false,
+  "completeBuildToolAndDependencyClosureVerified": false,
+  "publisherAttestationCryptographicallyVerified": false,
+  "limitations": [
+    "Authenticated owner-repository artifact records and byte equality are publisher build-link observations; no independent local build was performed.",
+    "The comparison result ReproducedCorrectly and stage Config.Reproducible fields are retained separately; enforcement semantics of the latter were not established.",
+    "Moving workflow/action inputs, full build composition, transitive module/runtime notices and runtime preparation/receipt integration remain outside this observation."
+  ],
+  "gateAComplete": false
+}

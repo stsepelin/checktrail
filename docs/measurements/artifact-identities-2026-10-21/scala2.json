@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "scope": "scala2",
+  "observedAt": "2026-10-21T17:22:21.518730+00:00",
+  "repositoryCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+  "repositoryInputs": [
+    {
+      "file": "src/scala2-artifacts.ts",
+      "sha256": "2609bc9f6aa3db43c5b3e77ba15e7cca1ef7410ddb9868b3b38818fabcd3a238"
+    },
+    {
+      "file": "scripts/prepare-scala2-tools.mjs",
+      "sha256": "7b1f92376c66ca3366115f636b324e3e7ddf4fd0248fbf1a2a3fe341175572b4"
+    }
+  ],
+  "observations": {
+    "archive": {
+      "url": "https://github.com/scala/scala/releases/download/v2.13.18/scala-2.13.18.zip",
+      "bytes": 22720670,
+      "sha256": "9c90562f29b0a316e269474d6752bc8ec45b1cabf61d5401d7ca50407b3a9d2b"
+    },
+    "selectedMembers": [
+      {
+        "path": "lib/scala-reflect.jar",
+        "bytes": 3814367,
+        "sha256": "6935ff1982b2ac93d695f15aa66921be2f602921277afe002f018fd8c7d6e29b"
+      },
+      {
+        "path": "lib/java-diff-utils-4.16.jar",
+        "bytes": 78743,
+        "sha256": "620403030d676a4a27f780a3acec7438dee1b1651a1c804fa6bb11bb07399a6f"
+      },
+      {
+        "path": "lib/scala-library.jar",
+        "bytes": 5940741,
+        "sha256": "4e85d96ff7bc7dc627985523c3541b9917aaa08e956391380c42db21a2c4e5a0"
+      },
+      {
+        "path": "lib/scala-compiler.jar",
+        "bytes": 12343847,
+        "sha256": "2f15891fcae7aad30a3892194fb2abb6224cf7ce5d2bd90fba7f1c48682fca21"
+      },
+      {
+        "path": "lib/jline-3.29.0.jar",
+        "bytes": 1371851,
+        "sha256": "ed2680487642df95379f220c09c0f77e25095713387e2bc00c2d6581bb79c804"
+      }
+    ],
+    "retainedDistributionNotices": [
+      {
+        "file": "scala-LICENSE",
+        "bytes": 11357,
+        "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "source": "https://github.com/scala/scala/releases/download/v2.13.18/scala-2.13.18.zip",
+        "sourceMember": "scala-2.13.18/LICENSE"
+      },
+      {
+        "file": "scala-NOTICE",
+        "bytes": 634,
+        "sha256": "50ce10d50898ba07e632c8913b34098521416d6eed480d44edca93bd92344a45",
+        "source": "https://github.com/scala/scala/releases/download/v2.13.18/scala-2.13.18.zip",
+        "sourceMember": "scala-2.13.18/NOTICE"
+      },
+      {
+        "file": "scala-doc-LICENSE.txt",
+        "bytes": 1169,
+        "sha256": "e2ca1dada0810bc6a08a21d4f4ee1209f1e95c4fa2842dc69422be207988d6de",
+        "source": "https://github.com/scala/scala/releases/download/v2.13.18/scala-2.13.18.zip",
+        "sourceMember": "scala-2.13.18/doc/LICENSE.md"
+      },
+      {
+        "file": "scala-doc-licenses-bsd_asm.txt",
+        "bytes": 1544,
+        "sha256": "2d1506f9f3b54137f7a1e9055e3a42d43517abd2ec585fa6a98eb212fcb8e348",
+        "source": "https://github.com/scala/scala/releases/download/v2.13.18/scala-2.13.18.zip",
+        "sourceMember": "scala-2.13.18/doc/licenses/bsd_asm.txt"
+      },
+      {
+        "file": "scala-doc-licenses-bsd_jline.txt",
+        "bytes": 1565,
+        "sha256": "3021db3b23db57438541460a4c9e7cf50f0089665b67a72474989f503e144e11",
+        "source": "https://github.com/scala/scala/releases/download/v2.13.18/scala-2.13.18.zip",
+        "sourceMember": "scala-2.13.18/doc/licenses/bsd_jline.txt"
+      },
+      {
+        "file": "scala-doc-licenses-mit_jquery.txt",
+        "bytes": 1131,
+        "sha256": "9e8132baa73e478072b91445fd86d0875ef75fe524406d032b23d0da33bb261e",
+        "source": "https://github.com/scala/scala/releases/download/v2.13.18/scala-2.13.18.zip",
+        "sourceMember": "scala-2.13.18/doc/licenses/mit_jquery.txt"
+      }
+    ],
+    "publicKey": {
+      "file": "scala-public-key.asc",
+      "bytes": 2967,
+      "sha256": "30b860116721fbff5b43dc6f10c2bc0d88ec284241f96eb542c694ed57ff3dd8",
+      "source": "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E"
+    },
+    "publisherFingerprintSource": "https://www.scala-lang.org/security/",
+    "selectedJarSignatures": [
+      {
+        "artifact": {
+          "url": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-compiler/2.13.18/scala-compiler-2.13.18.jar",
+          "bytes": 12343847,
+          "sha256": "2f15891fcae7aad30a3892194fb2abb6224cf7ce5d2bd90fba7f1c48682fca21"
+        },
+        "signature": {
+          "file": "scala-compiler-2.13.18.jar.asc",
+          "bytes": 833,
+          "sha256": "f754dc62a7e4720bde25096929f755b2eb1699961dcae15627b74cc64fbc2e22",
+          "source": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-compiler/2.13.18/scala-compiler-2.13.18.jar.asc"
+        },
+        "verification": {
+          "exitCode": 0,
+          "statusCodes": [
+            "NEWSIG",
+            "KEY_CONSIDERED",
+            "SIG_ID",
+            "GOODSIG",
+            "VALIDSIG",
+            "TRUST_UNDEFINED"
+          ],
+          "signerFingerprint": "2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E",
+          "primaryFingerprint": "2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E",
+          "operatorTrustAsserted": false
+        }
+      },
+      {
+        "artifact": {
+          "url": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.13.18/scala-library-2.13.18.jar",
+          "bytes": 5940741,
+          "sha256": "4e85d96ff7bc7dc627985523c3541b9917aaa08e956391380c42db21a2c4e5a0"
+        },
+        "signature": {
+          "file": "scala-library-2.13.18.jar.asc",
+          "bytes": 833,
+          "sha256": "29df493c0f7cdd2507e85ed57830abca9667e711c0d63770bddcccb7b56fe9f7",
+          "source": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.13.18/scala-library-2.13.18.jar.asc"
+        },
+        "verification": {
+          "exitCode": 0,
+          "statusCodes": [
+            "NEWSIG",
+            "KEY_CONSIDERED",
+            "SIG_ID",
+            "GOODSIG",
+            "VALIDSIG",
+            "TRUST_UNDEFINED"
+          ],
+          "signerFingerprint": "2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E",
+          "primaryFingerprint": "2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E",
+          "operatorTrustAsserted": false
+        }
+      },
+      {
+        "artifact": {
+          "url": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-reflect/2.13.18/scala-reflect-2.13.18.jar",
+          "bytes": 3814367,
+          "sha256": "6935ff1982b2ac93d695f15aa66921be2f602921277afe002f018fd8c7d6e29b"
+        },
+        "signature": {
+          "file": "scala-reflect-2.13.18.jar.asc",
+          "bytes": 833,
+          "sha256": "d7ec1f87e162ee0429d4aec698352e6b08187f47bf7c730474d8000646b23cff",
+          "source": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-reflect/2.13.18/scala-reflect-2.13.18.jar.asc"
+        },
+        "verification": {
+          "exitCode": 0,
+          "statusCodes": [
+            "NEWSIG",
+            "KEY_CONSIDERED",
+            "SIG_ID",
+            "GOODSIG",
+            "VALIDSIG",
+            "TRUST_UNDEFINED"
+          ],
+          "signerFingerprint": "2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E",
+          "primaryFingerprint": "2A5E8B338438CAC7033F9D8FB8A045C0A6EC398E",
+          "operatorTrustAsserted": false
+        }
+      }
+    ],
+    "distributionSignatureVerified": false,
+    "selectedComponentInventoryObserved": {
+      "retainedInputs": [
+        {
+          "file": "scala-component-inventory.json",
+          "bytes": 333469,
+          "sha256": "475bf71eb778c7ce9258250a9da97e7e4ead302e7e8f520c8c2f040b69958c6c",
+          "generation": "Static comparison of exact public delivery/source bytes, embedded class identities, SourceFile attributes and font metadata; no compiler or native payload execution."
+        }
+      ],
+      "compilerClassCategories": {
+        "scalaNamespaceExcludingEmbeddedAsm": 3367,
+        "embeddedAsm": 117,
+        "embeddedDiffUtils": 42
+      },
+      "standaloneDiffUtilsDeliveryMatchesDistribution": true,
+      "allJlineNativeMembersMatchPinnedSourceArchive": true,
+      "jlinePomProperties": 13,
+      "jlineBundleIdentityRecords": 1,
+      "jlineComponentMetadataRecords": 12,
+      "allJlineClassSourceFileAttributesHaveOneSourceMatch": true,
+      "completeArtifactAndNoticeClosureVerified": false
+    },
+    "selectedJarSignatureControls": {
+      "retainedInputs": [
+        {
+          "file": "scala-jar-signature-controls.json",
+          "bytes": 3361,
+          "sha256": "083a08a7937b16a31f3328f62e85084389d4110ad0c630b5de39698ddf559ada",
+          "generation": "Actual native OpenPGP verification with fresh public-only keyring, no automatic key retrieval and altered/restored compiler controls."
+        }
+      ],
+      "originalJarCount": 3,
+      "alteredCompilerRejected": true,
+      "restoredCompilerAccepted": true,
+      "operatorTrustAsserted": false,
+      "distributionSignatureVerified": false
+    }
+  },
+  "remainingInputs": [
+    "Finish ASM archive packaging, compiler/SDK notice closure and preparation/receipt admission around the retained exact Java source and class-payload bindings.",
+    "Reconcile compiler documentation font/resource attribution and generated resources; bundled resource bytes remain in scope even when a compiler-only invocation does not use them.",
+    "Complete JLine native build/C-header and external-provider dependency attribution; byte matches and embedded POM metadata do not prove runtime use.",
+    "Complete selected source/build and runtime notice coverage plus preparation/receipt integration before changing stronger closure flags."
+  ],
+  "preparationAndReceiptIntegrationVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "observationsUpdatedAt": "2026-10-27"
+}

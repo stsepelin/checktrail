@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent selected executable rebuild with a separately retained original ZIP reconstruction; full compiler provenance and notice closure remain open.",
+  "recipeFrozenBeforeBuild": {
+    "schemaVersion": 1,
+    "purpose": "Fresh offline rebuild of one selected public provider executable; no provider or model-review execution.",
+    "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+    "sourceSnapshotSha256": "65f29d25e74371511e55a1a8f5f0e960ca9b58025997d19afd9655926d2d6ba2",
+    "goCompilerArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+    "moduleCount": 58,
+    "selectedBinaryModuleCount": 27,
+    "expectedExecutableSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+    "containerBase": "mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256",
+    "command": [
+      "go",
+      "-C",
+      "/src",
+      "build",
+      "-mod=readonly",
+      "-trimpath",
+      "-buildvcs=false",
+      "-ldflags",
+      "-s -w",
+      "-o",
+      "/out/terraform-provider-random_v3.9.1_x5"
+    ],
+    "environment": {
+      "GOOS": "linux",
+      "GOARCH": "arm64",
+      "GOARM64": "v8.0",
+      "CGO_ENABLED": "0",
+      "GOTOOLCHAIN": "local",
+      "GOSUMDB": "sum.golang.org",
+      "GOPROXY": "off",
+      "GOCACHE": "fresh temporary cache",
+      "GOMAXPROCS": "2",
+      "GOENV": "off",
+      "GOTELEMETRY": "off"
+    },
+    "limits": {
+      "cpus": 2,
+      "memoryMiB": 4096,
+      "pids": 128,
+      "temporaryFilesystemMiB": 2048,
+      "timeoutSeconds": 1200,
+      "network": "none",
+      "sourceToolchainModuleAndChecksumCaches": "readonly"
+    },
+    "expectedBinaryAndPublisherArtifactsMounted": false,
+    "providerExecutionAllowed": false,
+    "gateAComplete": false
+  },
+  "observation": {
+    "at": "2026-10-21T18:32:41.853012+00:00",
+    "recipeSha256": "739d3e4fedfdd5999bfbd3724ade4c15d644360b9e5f9a14866ef7ae1534946a",
+    "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+    "sourceSnapshotSha256": "65f29d25e74371511e55a1a8f5f0e960ca9b58025997d19afd9655926d2d6ba2",
+    "goCompilerArchiveSha256": "211ffced9dcb9633a55eac6364816ec0ddd951389a740e88fa8b3337971bdda0",
+    "preparedModules": 58,
+    "selectedReleaseBinaryModules": 27,
+    "binaryBytes": 17039522,
+    "expectedExecutableSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+    "actualExecutableSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+    "matchesSelectedReleaseExecutable": true,
+    "independentSourceRebuildPerformed": true,
+    "providerExecuted": false,
+    "publisherBinaryOrBuildCacheMounted": false,
+    "inputBytesUnchanged": true,
+    "phases": [
+      {
+        "phase": "offline-module-verify-before",
+        "exitCode": 0,
+        "containerExitCode": 0,
+        "durationSeconds": 0.951770209,
+        "logSha256": "b4537ed75f533f993f371954de47e42a793b8e5b0587577de7e27fb3e50696bd",
+        "network": "none",
+        "readonlyInputsObserved": true,
+        "freshTemporaryCompilationCache": true
+      },
+      {
+        "phase": "offline-build",
+        "exitCode": 0,
+        "containerExitCode": 0,
+        "durationSeconds": 11.176326083,
+        "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "network": "none",
+        "readonlyInputsObserved": true,
+        "freshTemporaryCompilationCache": true
+      },
+      {
+        "phase": "rebuilt-buildinfo",
+        "exitCode": 0,
+        "containerExitCode": 0,
+        "durationSeconds": 0.1553135000000001,
+        "logSha256": "fbf3fbfc5036d90336497144ad84dd1d8e6be0332c346fdb18f860ee044a0de7",
+        "network": "none",
+        "readonlyInputsObserved": true,
+        "freshTemporaryCompilationCache": true
+      },
+      {
+        "phase": "offline-package-inventory",
+        "exitCode": 0,
+        "containerExitCode": 0,
+        "durationSeconds": 0.6293838330000003,
+        "logSha256": "1038cb94b46e2d89cbfa807aa4b06e3de3a527ffab6c82c47e81bd41c549327c",
+        "network": "none",
+        "readonlyInputsObserved": true,
+        "freshTemporaryCompilationCache": true
+      },
+      {
+        "phase": "offline-module-verify-after",
+        "exitCode": 0,
+        "containerExitCode": 0,
+        "durationSeconds": 0.814522083,
+        "logSha256": "b4537ed75f533f993f371954de47e42a793b8e5b0587577de7e27fb3e50696bd",
+        "network": "none",
+        "readonlyInputsObserved": true,
+        "freshTemporaryCompilationCache": true
+      }
+    ],
+    "completeTransitiveNoticeClosureVerified": false,
+    "gateAComplete": false
+  },
+  "sourceBindingControlRecipe": {
+    "sourceFile": "main.go",
+    "originalSha256": "9b6538ef1daf42a6063d3b1db21c348aea20aa2bf1f75b68b63e6d6265836147",
+    "oldLiteral": "\"registry.terraform.io/hashicorp/random\"",
+    "newLiteral": "\"registry.terraform.io/hashicorp/random-control\"",
+    "mutantMustCompile": true,
+    "mutantMustDifferFromSelectedExecutable": true,
+    "restoredMustEqualSelectedExecutable": true,
+    "freshCompilationCacheEachCase": true,
+    "providerExecutionAllowed": false
+  },
+  "sourceBindingControls": {
+    "at": "2026-10-21T18:39:23.712197+00:00",
+    "selectedReleaseExecutableSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+    "mutantCompiledAndChangedExpectedBytes": true,
+    "restoredSourceCompiledToExactSelectedBytes": true,
+    "cases": [
+      {
+        "case": "mutated",
+        "sourceMainSha256": "be982a0409b9ca02a1b3020d99bc8f3e6c450b6f3bc3a033ad9596132303da92",
+        "changedSourceFiles": ["main.go"],
+        "compiled": true,
+        "actualExecutableSha256": "3819045094243cbf48409626fa802297ae5f021718bbe9aef1068e7773a8bb04",
+        "matchesSelectedRelease": false,
+        "durationSeconds": 11.370023667,
+        "freshCache": true,
+        "network": "none",
+        "providerExecuted": false
+      },
+      {
+        "case": "restored",
+        "sourceMainSha256": "9b6538ef1daf42a6063d3b1db21c348aea20aa2bf1f75b68b63e6d6265836147",
+        "changedSourceFiles": [],
+        "compiled": true,
+        "actualExecutableSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+        "matchesSelectedRelease": true,
+        "durationSeconds": 11.118574042,
+        "freshCache": true,
+        "network": "none",
+        "providerExecuted": false
+      }
+    ],
+    "originalVerifiedSourceUntouched": true,
+    "providerExecuted": false,
+    "gateAComplete": false
+  },
+  "packageInventory": {
+    "nativeCommand": [
+      "go",
+      "-C",
+      "/src",
+      "list",
+      "-mod=readonly",
+      "-deps",
+      "-json",
+      "."
+    ],
+    "packages": 452,
+    "categories": {
+      "standardLibrary": 217,
+      "mainModule": 8,
+      "externalModule": 227
+    },
+    "externalModules": 27,
+    "scope": "Native Go package metadata for the exact build configuration; not an OS file-access trace or final linked-symbol inventory."
+  },
+  "selectedExecutableSourceBuildBindingVerified": true,
+  "releaseZipPackagingIndependentlyRebuilt": true,
+  "completeBuildToolProvenanceVerified": false,
+  "completeTransitiveNoticeClosureVerified": false,
+  "preparationAndReceiptIntegrationVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "packagingFollowUpObservedAt": "2026-10-27",
+  "retainedInputs": [
+    {
+      "file": "provider-independent-zip-repack.json",
+      "bytes": 11586,
+      "sha256": "4f4098eb1113fbaafd5bcded7aecb47bb937e333f02d1ac921eb6f552bda5c5b"
+    },
+    {
+      "file": "provider-original-producer-binding.json",
+      "bytes": 7837,
+      "sha256": "5f8cef121934cd2c0b50c25eb0189ef0a3581391c5dc63256513f9fb931a1873"
+    },
+    {
+      "file": "provider-compiler-source-rebuilds.json",
+      "bytes": 37022,
+      "sha256": "4b3b0b62c866cd27b041dc7f75234f076f792e7cfe0e44c40fbf4773fd8cfab4"
+    },
+    {
+      "file": "provider-source-built-complete-rebuild.json",
+      "bytes": 74444,
+      "sha256": "5aee793a73a260c9c52a1704bdd3ed2dce02d4a590bb0ca21f7764b6e71041b4"
+    }
+  ],
+  "originalProducerFollowUpObservedAt": "2026-10-27",
+  "originalProducerFollowUp": {
+    "packagingCompilerPatchObservedFromOriginalLog": true,
+    "packagingCompiler": "go1.24.13 linux/amd64",
+    "providerCompiler": "go1.26.8 linux/amd64",
+    "originalRunReportsSameExecutableAndZip": true,
+    "completeCompilerAndSdkBuildClosureVerified": false
+  },
+  "compilerArchiveFollowUpObservedAt": "2026-10-27",
+  "compilerArchiveFollowUp": {
+    "go12413LinuxAmd64CompleteArchiveRebuilt": true,
+    "go1268LinuxAmd64CompleteArchiveRebuilt": true,
+    "bootstrapAndCompleteNoticeClosureVerified": false
+  },
+  "sourceBuiltCombinedRebuildFollowUp": {
+    "evidence": "provider-source-built-complete-rebuild.json",
+    "wholeExecutableAndZipReproducedExactly": true,
+    "freshBaselineMutationRestorationVariants": 3,
+    "originalObservationUnchanged": true,
+    "fullUpstreamBuildAndNoticeClosureVerified": false
+  }
+}

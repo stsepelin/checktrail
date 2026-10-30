@@ -10,8 +10,9 @@ for the remaining wire and executor integration gates.
 
 The implementation uses Node's built-in SQLite module, imported only when the
 store is opened. Native tests cover Node 26.8.1 on macOS and Node 22.23.2 on Linux;
-the latter reports SQLite as experimental. Earlier Node releases, the new Windows backend and
-network filesystems remain unverified storage profiles. Core imports do not load
+the latter reports SQLite as experimental. Later selected Windows and runtime
+foundation observations are recorded below; earlier Node releases and network
+filesystems remain unverified storage profiles. Core imports do not load
 SQLite, and no new npm runtime dependency is required.
 
 ## Windows storage acceptance
@@ -41,12 +42,14 @@ administrator or trusted project execution.
 
 The [recorded original controls](measurements/tasks-runtime-controls-2026-10-11.json)
 passed on the measured macOS and pinned Linux ARM64 runtimes, against source and
-fresh offline production installations. Native Windows source and
-installed-package controls are pending. The new Tasks
-runtime jobs select the recorded Linux/macOS Node slots, Windows Node slot and
-pinned Linux ARM64 runtime; successful job receipts are still required. They retain
-observed image metadata, which is not a signed OS-image attestation. The whole
-Gate A Tasks profile and final acceptance bindings remain pending.
+fresh offline production installations. The
+[2026-10-21 main receipts](measurements/tasks-runtime-matrix-2026-10-21/README.md)
+add source and fresh-install foundation observations for all eight selected
+runtime slots, including native Windows caller-only ACL and SQLite journal
+controls. They bind their recorded source commit; later source/dependency
+changes require fresh validation. Observed image metadata is not a signed
+OS-image attestation. The whole Gate A Tasks profile and final acceptance
+bindings remain pending.
 
 The frozen Tasks callbacks retain a two-case native identifier-boundary regression,
 its repair and valid adjacent control; current-source completion binding;

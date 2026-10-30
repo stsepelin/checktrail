@@ -58,6 +58,18 @@ Raw content comparison can select additional files when Git attributes transform
 content; it cannot establish a normalized checkout identity. `.gitignore` is not
 interpreted. The inventory's fixed exclusions still apply.
 
+Windows discovery resolves Git for Windows x64 forwarding launchers to the SDK
+built-in `mingw64/bin/git.exe` or `ucrt64/bin/git.exe` outside the project.
+A launcher must resolve to one distinct executable in those exact layouts.
+Ambiguous or unrecognized launcher candidates are skipped; if no supported
+host executable remains, selection retains the full plan. Forwarding launchers
+are not admitted for metadata execution.
+Only the same
+fixed read-only metadata commands use the native process path; project validation
+continues through the owned Windows Job Object runner. Tracked executable modes
+on Windows come from the index because the filesystem does not expose POSIX
+execute bits. New Windows files use the ordinary non-executable mode.
+
 Each Git inspection has a five-second/four-MiB process-output budget, separate
 from native validation execution. Entries and working-file reads use the same
 20,000-entry, eight-MiB-file and 64-MiB-total limits as inventory. Post-run Git

@@ -1,0 +1,8 @@
+2026-09-11T15:17:03.9786642Z Prepare workflow directory
+2026-09-11T15:17:04.0146708Z Prepare all required actions
+2026-09-11T15:17:04.0196654Z Getting action download info
+2026-09-11T15:17:04.3647839Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-09-11T15:17:04.4685286Z Download action repository 'hashicorp/actions-go-build@v1' (SHA:dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4)
+2026-09-11T15:17:04.9228918Z Getting action download info
+2026-09-11T15:17:05.0787610Z Download action repository 'actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c' (SHA:4a3601121dd01d1626a1e23e37211e3254c1c06c)
+2026-09-11T15:17:05.8673437Z Download action repository 'actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f' (SHA:bbbca2ddaa5d8feaa63e36b76fdaad77386f024f)

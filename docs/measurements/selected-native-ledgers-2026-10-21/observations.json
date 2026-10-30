@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "scope": "Selected named test ledgers and compiled harness byte bindings from three successful public main-source native jobs.",
+  "sourceCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+  "githubRun": 39626059097,
+  "profiles": [
+    {
+      "profile": "dotnet-fsharp-format",
+      "job": 119444644918,
+      "jobName": "fsharp-format-arm64",
+      "run": 39626059097,
+      "runAttempt": 2,
+      "sourceCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+      "sourceCases": 9,
+      "freshInstalledCases": 9,
+      "namedEventsAndHarnessBytesVerified": true,
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "tarballIndependentlyReconstructed": false,
+      "importedEngineAndDependencyBytesCapturedByLedger": false,
+      "wholeNativeAcceptanceQualified": false,
+      "runAttemptMeaning": "Latest successful GitHub job metadata snapshot; retries may recreate check identities while preserving earlier successful execution times.",
+      "observedJobStartedAt": "2026-10-21T17:49:11Z",
+      "observedJobCompletedAt": "2026-10-21T18:10:47Z",
+      "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119444644918",
+      "rawGitHubJobLogBytes": 312261,
+      "rawGitHubJobLogSha256": "e956191f287194417c61be6d84742c490f59f85dfba0878a251fab55ce3b064b",
+      "retainedLedgerProjections": [
+        {
+          "scope": "source",
+          "file": "dotnet-fsharp-format-source.json",
+          "bytes": 5430,
+          "sha256": "8a53f3722b87ce675858f074c78472501e08e2897724b9446c4c371f3cc12171"
+        },
+        {
+          "scope": "fresh-installed",
+          "file": "dotnet-fsharp-format-fresh-installed.json",
+          "bytes": 5436,
+          "sha256": "d3504393314ca55af472eafaa3769b9f16f5cd45abe0629e7f9441e396383e13"
+        }
+      ]
+    },
+    {
+      "profile": "terraform-extensions",
+      "job": 119444645889,
+      "jobName": "terraform-extensions (acceptance)",
+      "run": 39626059097,
+      "runAttempt": 2,
+      "sourceCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+      "sourceCases": 10,
+      "freshInstalledCases": 10,
+      "namedEventsAndHarnessBytesVerified": true,
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "tarballIndependentlyReconstructed": false,
+      "importedEngineAndDependencyBytesCapturedByLedger": false,
+      "wholeNativeAcceptanceQualified": false,
+      "runAttemptMeaning": "Latest successful GitHub job metadata snapshot; retries may recreate check identities while preserving earlier successful execution times.",
+      "observedJobStartedAt": "2026-10-21T18:31:45Z",
+      "observedJobCompletedAt": "2026-10-21T18:35:07Z",
+      "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119444645889",
+      "rawGitHubJobLogBytes": 37778,
+      "rawGitHubJobLogSha256": "7e881b8c657a7dc05ef59596186a4d13bcd3e1a22e4a964cbfc429d7d7b04369",
+      "retainedLedgerProjections": [
+        {
+          "scope": "source",
+          "file": "terraform-extensions-source.json",
+          "bytes": 7100,
+          "sha256": "aa0040ef0a5439604f57fe09ea64315d639f3e2ad54841723d6466104e8b9199"
+        },
+        {
+          "scope": "fresh-installed",
+          "file": "terraform-extensions-fresh-installed.json",
+          "bytes": 7105,
+          "sha256": "0d9834b6c86db40144680443d840940330d6d40448d19e38e5aff3c4bf45bafd"
+        }
+      ]
+    },
+    {
+      "profile": "scala-extensions",
+      "job": 119444698205,
+      "jobName": "scala-extensions-arm64",
+      "run": 39626059097,
+      "runAttempt": 2,
+      "sourceCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+      "sourceCases": 9,
+      "freshInstalledCases": 9,
+      "namedEventsAndHarnessBytesVerified": true,
+      "tarballSha256": "6059db9625af0b7136799e40cd05cfbb0bb2f681505a4332374d54c7e11d7c18",
+      "tarballIndependentlyReconstructed": false,
+      "importedEngineAndDependencyBytesCapturedByLedger": false,
+      "wholeNativeAcceptanceQualified": false,
+      "runAttemptMeaning": "Latest successful GitHub job metadata snapshot; retries may recreate check identities while preserving earlier successful execution times.",
+      "observedJobStartedAt": "2026-10-21T15:29:16Z",
+      "observedJobCompletedAt": "2026-10-21T15:47:40Z",
+      "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/39626059097/job/119444698205",
+      "rawGitHubJobLogBytes": 56554,
+      "rawGitHubJobLogSha256": "269a2a46b222c96270ff8c165f873b383276f4bd282d66be4e5c6c8dd61e8288",
+      "retainedLedgerProjections": [
+        {
+          "scope": "source",
+          "file": "scala-extensions-source.json",
+          "bytes": 5450,
+          "sha256": "51f81f321decaea284aec7b446a8988b439ba5d7245c2c81e4e6613d7acf92db"
+        },
+        {
+          "scope": "fresh-installed",
+          "file": "scala-extensions-fresh-installed.json",
+          "bytes": 5456,
+          "sha256": "5a84614a5500372703f463a51f443833a69d366fbff41eba48db42073707b4a9"
+        }
+      ]
+    }
+  ],
+  "requiredTerminalCases": 56,
+  "repositoryInputBytes": [
+    {
+      "file": "scripts/required-native-tests.json",
+      "bytes": 196767,
+      "sha256": "c8cf73330129dbc37592deb3be941cd14dcbc60ea5bb24a0a758e2a8415b4c3b"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "bytes": 15916,
+      "sha256": "0288c45878fff1e6799df32064d94b7432a1d5aaac4ebf0737c0a00cd3072b60"
+    },
+    {
+      "file": "test/gate-dotnet-fsharp-format.test.ts",
+      "bytes": 24076,
+      "sha256": "4301fe4b11327585afe3ee8498ad76d4a65c929e45f5599ac551a31f5d2a5133"
+    },
+    {
+      "file": "test/gate-scala-extensions.test.ts",
+      "bytes": 21431,
+      "sha256": "1658e603ba181c90a4523d0efefccbc6f9ec483453c4ec276fcc10bb3581147c"
+    },
+    {
+      "file": "test/gate-terraform-extensions.test.ts",
+      "bytes": 17064,
+      "sha256": "fc0b86481ca3040377a9de9f4832f8eaea866c4c20ae0ae4b9cca79b35770f80"
+    },
+    {
+      "file": "test/terraform-extensions-lifecycle.test.ts",
+      "bytes": 9339,
+      "sha256": "1a1ca6f37a209898ca956e0fd412fc02543c47d10e0041a1c278a0eeaae6e0b0"
+    },
+    {
+      "file": "test/terraform-extensions-surfaces.test.ts",
+      "bytes": 4171,
+      "sha256": "38523c59c624186364370f0006340e28d4c2a8548250af4e875a91fa097bc056"
+    }
+  ],
+  "changedReceiptControls": [
+    {
+      "profile": "dotnet-fsharp-format",
+      "scope": "source",
+      "case": "failed-event",
+      "rejected": true
+    },
+    {
+      "profile": "dotnet-fsharp-format",
+      "scope": "source",
+      "case": "missing-event",
+      "rejected": true
+    },
+    {
+      "profile": "dotnet-fsharp-format",
+      "scope": "source",
+      "case": "changed-harness",
+      "rejected": true
+    },
+    {
+      "profile": "dotnet-fsharp-format",
+      "scope": "source",
+      "case": "wrong-profile",
+      "rejected": true
+    },
+    {
+      "profile": "dotnet-fsharp-format",
+      "scope": "source",
+      "case": "duplicate-sequence",
+      "rejected": true
+    },
+    {
+      "profile": "dotnet-fsharp-format",
+      "scope": "fresh-installed",
+      "case": "failed-event",
+      "rejected": true
+    },
+    {
+      "profile": "dotnet-fsharp-format",
+      "scope": "fresh-installed",
+      "case": "missing-event",
+      "rejected": true
+    },
+    {
+      "profile": "dotnet-fsharp-format",
+      "scope": "fresh-installed",
+      "case": "changed-harness",
+      "rejected": true
+    },
+    {
+      "profile": "dotnet-fsharp-format",
+      "scope": "fresh-installed",
+      "case": "wrong-profile",
+      "rejected": true
+    },
+    {
+      "profile": "dotnet-fsharp-format",
+      "scope": "fresh-installed",
+      "case": "duplicate-sequence",
+      "rejected": true
+    },
+    {
+      "profile": "terraform-extensions",
+      "scope": "source",
+      "case": "failed-event",
+      "rejected": true
+    },
+    {
+      "profile": "terraform-extensions",
+      "scope": "source",
+      "case": "missing-event",
+      "rejected": true
+    },
+    {
+      "profile": "terraform-extensions",
+      "scope": "source",
+      "case": "changed-harness",
+      "rejected": true
+    },
+    {
+      "profile": "terraform-extensions",
+      "scope": "source",
+      "case": "wrong-profile",
+      "rejected": true
+    },
+    {
+      "profile": "terraform-extensions",
+      "scope": "source",
+      "case": "duplicate-sequence",
+      "rejected": true
+    },
+    {
+      "profile": "terraform-extensions",
+      "scope": "fresh-installed",
+      "case": "failed-event",
+      "rejected": true
+    },
+    {
+      "profile": "terraform-extensions",
+      "scope": "fresh-installed",
+      "case": "missing-event",
+      "rejected": true
+    },
+    {
+      "profile": "terraform-extensions",
+      "scope": "fresh-installed",
+      "case": "changed-harness",
+      "rejected": true
+    },
+    {
+      "profile": "terraform-extensions",
+      "scope": "fresh-installed",
+      "case": "wrong-profile",
+      "rejected": true
+    },
+    {
+      "profile": "terraform-extensions",
+      "scope": "fresh-installed",
+      "case": "duplicate-sequence",
+      "rejected": true
+    },
+    {
+      "profile": "scala-extensions",
+      "scope": "source",
+      "case": "failed-event",
+      "rejected": true
+    },
+    {
+      "profile": "scala-extensions",
+      "scope": "source",
+      "case": "missing-event",
+      "rejected": true
+    },
+    {
+      "profile": "scala-extensions",
+      "scope": "source",
+      "case": "changed-harness",
+      "rejected": true
+    },
+    {
+      "profile": "scala-extensions",
+      "scope": "source",
+      "case": "wrong-profile",
+      "rejected": true
+    },
+    {
+      "profile": "scala-extensions",
+      "scope": "source",
+      "case": "duplicate-sequence",
+      "rejected": true
+    },
+    {
+      "profile": "scala-extensions",
+      "scope": "fresh-installed",
+      "case": "failed-event",
+      "rejected": true
+    },
+    {
+      "profile": "scala-extensions",
+      "scope": "fresh-installed",
+      "case": "missing-event",
+      "rejected": true
+    },
+    {
+      "profile": "scala-extensions",
+      "scope": "fresh-installed",
+      "case": "changed-harness",
+      "rejected": true
+    },
+    {
+      "profile": "scala-extensions",
+      "scope": "fresh-installed",
+      "case": "wrong-profile",
+      "rejected": true
+    },
+    {
+      "profile": "scala-extensions",
+      "scope": "fresh-installed",
+      "case": "duplicate-sequence",
+      "rejected": true
+    }
+  ],
+  "projectionRule": "Retained parsed source and fresh-installed case evidence with file IDs, exact compiled harness byte hashes and original terminal accounting. Private raw logs and larger native controller packets are not copied.",
+  "limitations": [
+    "The ledgers explicitly exclude imported production source, dependencies, raw child output and whole-process identity.",
+    "Recorded package tarball digests are not independently reconstructed.",
+    "GitHub metadata and runtime observations are not independent hosted-image attestations.",
+    "Preserved baseline cohorts and compiling guard packets are not qualified by this selected ledger projection.",
+    "This does not qualify newer source, the full platform matrix, complete native acceptance, review quality or Gate A."
+  ],
+  "wholeNativeAcceptanceQualified": false,
+  "platformMatrixComplete": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

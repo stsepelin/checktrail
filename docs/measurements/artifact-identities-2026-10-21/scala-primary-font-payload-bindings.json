@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Exact primary hosted payload bytes for five selected Scala compiler documentation font members. URL discovery used public CSS as locators only; downloaded font bytes came from the primary Google Fonts host. No font renderer, generator or upstream script executed.",
+  "compiler": {
+    "artifact": "scala-compiler-2.13.18.jar",
+    "bytes": 12343847,
+    "sha256": "2f15891fcae7aad30a3892194fb2abb6224cf7ce5d2bd90fba7f1c48682fca21"
+  },
+  "members": [
+    {
+      "primaryPayloadUrl": "https://fonts.gstatic.com/s/lato/v11/v0SdcGFAl2aezM9Vq_aFTQ.ttf",
+      "compilerMember": "scala/tools/nsc/doc/html/resource/lib/lato-v11-latin-regular.ttf",
+      "bytes": 81980,
+      "sha256": "8165616cb4ff92ed4ca4912e6b473b3e59807673cafb2ed225391f6711cb2932",
+      "exactPayloadMatch": true
+    },
+    {
+      "primaryPayloadUrl": "https://fonts.gstatic.com/s/lato/v11/zJY4gsxBiSo5L7tNutxFNg.ttf",
+      "compilerMember": "scala/tools/nsc/doc/html/resource/lib/lato-v11-latin-100.ttf",
+      "bytes": 76144,
+      "sha256": "3a97d59e47833db84bbaf57e15d82130eda8dc5ab44b8def5300d0c5cb397a0a",
+      "exactPayloadMatch": true
+    },
+    {
+      "primaryPayloadUrl": "https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3aCWcynf_cDxXwCLxiixG1c.ttf",
+      "compilerMember": "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-regular.ttf",
+      "bytes": 34156,
+      "sha256": "24b337181983cb1cff33d2bacf608a0568be59b83e505e26c8597cea5d2171c4",
+      "exactPayloadMatch": true
+    },
+    {
+      "primaryPayloadUrl": "https://fonts.gstatic.com/s/sourcecodepro/v6/leqv3v-yTsJNC7nFznSMqVkQc6VGVFSmCnC_l7QZG60.woff",
+      "compilerMember": "scala/tools/nsc/doc/html/resource/lib/source-code-pro-v6-latin-700.woff",
+      "bytes": 15336,
+      "sha256": "e92a503bb36625e59f1885b430fc766a581115e888c9ad59690f950d3dffd920",
+      "exactPayloadMatch": true
+    },
+    {
+      "primaryPayloadUrl": "https://fonts.gstatic.com/s/sourcecodepro/v6/mrl8jkM18OlOQN8JLgasD9zbP97U9sKh0jjxbPbfOKg.ttf",
+      "compilerMember": "scala/tools/nsc/doc/html/resource/lib/source-code-pro-v6-latin-regular.ttf",
+      "bytes": 27916,
+      "sha256": "9e64f607d7af1a484dedab1cc460f518f94b024860aaa395ae395e559c94a782",
+      "exactPayloadMatch": true
+    }
+  ],
+  "partition": {
+    "compilerFontFiles": 27,
+    "earlierMaterialIconsExactSourceBindings": 3,
+    "additionalPrimaryHostedPayloadBindings": 5,
+    "remainingWithoutIndependentExactSourceOrPrimaryHostedPayloadBinding": 19,
+    "remainingMembers": [
+      "scala/tools/nsc/doc/html/resource/lib/lato-v11-latin-100.eot",
+      "scala/tools/nsc/doc/html/resource/lib/lato-v11-latin-100.woff",
+      "scala/tools/nsc/doc/html/resource/lib/lato-v11-latin-regular.eot",
+      "scala/tools/nsc/doc/html/resource/lib/lato-v11-latin-regular.woff",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-400i.eot",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-400i.ttf",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-400i.woff",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-700.eot",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-700.ttf",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-700.woff",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-700i.eot",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-700i.ttf",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-700i.woff",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-regular.eot",
+      "scala/tools/nsc/doc/html/resource/lib/open-sans-v13-latin-regular.woff",
+      "scala/tools/nsc/doc/html/resource/lib/source-code-pro-v6-latin-700.eot",
+      "scala/tools/nsc/doc/html/resource/lib/source-code-pro-v6-latin-700.ttf",
+      "scala/tools/nsc/doc/html/resource/lib/source-code-pro-v6-latin-regular.eot",
+      "scala/tools/nsc/doc/html/resource/lib/source-code-pro-v6-latin-regular.woff"
+    ],
+    "partitionCloses": true
+  },
+  "limitations": [
+    "Versioned hosted URLs are observations bound by the retained payload digests, not immutable Git source identities.",
+    "Other valid fonts fetched while locating these payloads did not match and supply no selected-member attribution.",
+    "These payload matches do not verify font conversion/subsetting, original generator inputs or source-build correspondence.",
+    "License and copyright coverage for these five deliveries remains open; earlier historical license candidates have not been promoted to verified grants.",
+    "The earlier Material Icons source and historical notice bindings retain their separate scope."
+  ],
+  "fontGenerationReproduced": false,
+  "completeFontAttributionVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "preparationAndReceiptIntegrationVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

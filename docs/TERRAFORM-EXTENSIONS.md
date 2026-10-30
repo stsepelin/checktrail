@@ -129,3 +129,14 @@ do not certify later changes. Full artifact/license provenance, wider providers,
 languages and platforms, attempt archives, representative project performance and
 final Gate A acceptance remain separate. These controls execute no inference or
 real-project MCP field evaluation and establish no independent AI host sessions.
+
+The [selected provider ZIP reconstruction](measurements/artifact-identities-2026-10-21/provider-independent-zip-repack.json)
+matches the entire release archive with an original Go 1.24 packager and explicit
+source-time and member metadata. The separate earlier executable rebuild has the
+same member hash. This packaging run reused the release member bytes and did not
+repeat a combined source-to-ZIP build. Original publisher compiler patch, complete
+component notices and preparation/receipt admission remain open.
+
+The separate [original producer binding](measurements/artifact-identities-2026-10-21/provider-original-producer-binding.json) retains the tagged public release log and exact original verification receipt. The log resolves the packaging compiler patch to Go 1.24.13 on Linux x64, while the provider compiler is Go 1.26.8. Both original build results report the selected executable and ZIP digests. The upstream mode reports reproducibility and skips its enforcement step; these observations do not reproduce compiler/bootstrap, runner/SDK or full action builds, establish complete notices, or close Gate A.
+
+The separate [compiler source rebuilds](measurements/artifact-identities-2026-10-21/provider-compiler-source-rebuilds.json) reproduce the complete official Linux x64 Go 1.24.13 and Go 1.26.8 archives, including their source archive outputs. Fresh builds with an explicit CGO default remain recorded as valid differing controls. Identified named SDK license and notice files retain original bytes. Bootstrap/compiler trust, copied and generated attribution, the original packaging-action build and preparation/receipt admission remain separate open requirements.
