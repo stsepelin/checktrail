@@ -45,7 +45,11 @@ function unknownQuality(
 test("confidence-provenance broken acceptance", async (t) => {
   const d = await provenanceFixture(t),
     report = await inspect(d.root, d.input);
-  assert.equal(d.input.native[0]!.run.behavior, "violated");
+  assert.equal(
+    d.input.native[0]!.run.behavior,
+    "violated",
+    JSON.stringify(d.input.native[0]!.run),
+  );
   assert.equal(d.input.native[0]!.run.counts.triggerMismatches, 1);
   assert.equal(report.status, "completed");
   assert.equal(report.candidateEvidence[0]!.tier, "native-receipt-reconciled");
@@ -74,7 +78,11 @@ test("confidence-provenance fixed acceptance", async (t) => {
   d.input.scoring!.observations[0]!.label = "valid";
   d.input.scoring!.observations[0]!.judgement = "refuted";
   const report = await inspect(d.root, d.input);
-  assert.equal(d.input.native[0]!.run.behavior, "satisfied");
+  assert.equal(
+    d.input.native[0]!.run.behavior,
+    "satisfied",
+    JSON.stringify(d.input.native[0]!.run),
+  );
   assert.equal(d.input.native[0]!.run.counts.observed, 3);
   assert.equal(report.candidateEvidence[0]!.native.behavior, "satisfied");
   assert.ok(

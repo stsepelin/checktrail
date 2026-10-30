@@ -29,6 +29,7 @@ const testFiles = [
 const inputFiles = [
   ...testFiles.map(([f]) => "dist/test/" + f),
   "dist/test/helpers.js",
+  "dist/test/native-storage-fixture.js",
 ];
 const inputs = await Promise.all(
   inputFiles.map(async (file) => ({

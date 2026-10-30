@@ -121,10 +121,23 @@ export async function lifecycleExecute<T>(
 ) {
   const controller = new AbortController(),
     running = start(controller.signal);
-  void running.catch(() => {});
+  let settled = false;
+  let terminal: { value?: T; error?: string } | undefined;
+  void running.then(
+    (value) => {
+      settled = true;
+      terminal = { value };
+    },
+    (error: unknown) => {
+      settled = true;
+      terminal = { error: String(error) };
+    },
+  );
   let rows: ProcessIdentity[] = [];
+  let bodyObserved = false;
   try {
     const reached = await project.observe();
+    bodyObserved = true;
     rows = await project.identities(reached);
     await project.continue();
     const value = await running;
@@ -138,6 +151,20 @@ export async function lifecycleExecute<T>(
     );
     await access(project.release);
     return { project, value, reached };
+  } catch (error) {
+    if (!bodyObserved && settled) {
+      const diagnostic = JSON.stringify(terminal, (_key, value: unknown) =>
+        typeof value === "string" && value.length > 512
+          ? value.slice(0, 512) + " [truncated]"
+          : value,
+      );
+      throw new Error(
+        "Lifecycle execution ended before body readiness: " +
+          diagnostic.slice(0, 12000),
+        { cause: error },
+      );
+    }
+    throw error;
   } finally {
     controller.abort();
     await Promise.allSettled([running]);

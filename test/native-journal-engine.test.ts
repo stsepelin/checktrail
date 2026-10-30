@@ -50,6 +50,8 @@ import type { Command, Report } from "../src/types.js";
 import type { NativeJournalHeader } from "../src/native-attempt-frames.js";
 import { fixture } from "./helpers.js";
 import { wire } from "./tasks-wire-fixture.js";
+import { ensureWindowsTaskAccess } from "../src/windows-task-access.js";
+import { renameNativeStorageDirectory } from "./native-storage-fixture.js";
 const hash = (bytes: Uint8Array | string) =>
   createHash("sha256").update(bytes).digest("hex");
 const entry = (name: string) =>
@@ -210,14 +212,21 @@ test("native capture revalidates every held file and directory boundary and pres
         kind.startsWith("header") ? "header.json" : "frames.jsonl",
       ),
       moved = root + "-moved";
+    let directoryMoved = false;
+    const movedFiles: string[] = [];
     try {
       if (kind === "directory-replaced") {
-        await rename(root, moved);
+        await renameNativeStorageDirectory(storage, moved);
+        directoryMoved = true;
         await mkdir(root, { mode: 0o700 });
+        if (process.platform === "win32")
+          ensureWindowsTaskAccess(root, "directory", true);
         await writeFile(path.join(root, "foreign"), "preserve");
-        // Moving both held files must not make a new directory impersonate the old one.
-        for (const name of ["header.json", "frames.jsonl"])
+        // Moving both original files must not make a new directory impersonate the old one.
+        for (const name of ["header.json", "frames.jsonl"]) {
           await rename(path.join(moved, name), path.join(root, name));
+          movedFiles.push(name);
+        }
       } else if (kind === "directory-mode") await chmod(root, 0o755);
       else if (kind.endsWith("-replaced")) {
         await rename(target, target + ".old");
@@ -239,8 +248,8 @@ test("native capture revalidates every held file and directory boundary and pres
         );
       }
     } finally {
-      if (kind === "directory-replaced") {
-        for (const name of ["header.json", "frames.jsonl"])
+      if (directoryMoved) {
+        for (const name of movedFiles)
           await rename(path.join(root, name), path.join(moved, name));
         await rm(root, { recursive: true });
         await rename(moved, root);

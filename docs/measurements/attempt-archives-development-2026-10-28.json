@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "scope": "Development cohort using the current main production engine and prepared attempt-archive harness; final frozen runtime slot not selected. Measurement precedes final CI and standalone runner wiring and does not qualify a future integration tree.",
+  "runtime": {
+    "node": "26.12.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "osRelease": "27.0.0",
+    "goVersion": "go1.27.1"
+  },
+  "selectedRuntime": null,
+  "logSha256": "4e01fd9372d08c5bf454696d3fed5a31edcdd0ecfbda0dc38f9a037d8a0fdd9b",
+  "compiledEngineTreeSha256": "c647f2d3d44ce1afbfcb51b79eb53860c2a24521d155e2b931d927a56f74193c",
+  "source": {
+    "profile": {
+      "required": 9,
+      "passed": 9,
+      "complete": true
+    },
+    "foundation": {
+      "required": 45,
+      "passed": 45,
+      "complete": true
+    },
+    "foundationExclusions": []
+  },
+  "installed": {
+    "profile": {
+      "required": 9,
+      "passed": 9,
+      "complete": true
+    },
+    "foundation": {
+      "required": 45,
+      "passed": 45,
+      "complete": true
+    },
+    "foundationExclusions": [],
+    "offlineProductionInstall": true,
+    "harnessOutsideInstalledPackage": true
+  },
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "preparedSourceReference": "54ffa5ff83c158e78b4695064a191d8efb5078ac",
+  "freshMainBase": "7a331094144e94109f992713e7b0173768514586"
+}

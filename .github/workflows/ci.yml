@@ -22,6 +22,10 @@ concurrency:
 permissions:
   contents: read
 
+# Fall back sooner when an optional cache segment stalls.
+env:
+  SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
+
 jobs:
   ci-plan:
     runs-on: ubuntu-latest
@@ -163,7 +167,7 @@ jobs:
         if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory selected-artifact-evidence probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings consumer-impact consumer-runtime-bindings consumer-foundation-bindings consumer-witness-bindings
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory selected-artifact-evidence probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings consumer-impact consumer-runtime-bindings consumer-foundation-bindings attempt-archives attempt-runtime-bindings attempt-foundation-bindings consumer-witness-bindings
           node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
         if: env.CHECKTRAIL_CI_MODE == 'full'
@@ -1750,6 +1754,88 @@ jobs:
           retention-days: 7
           include-hidden-files: false
 
+  attempt-runtime:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['attempt-runtime']) }}
+    name: attempt-runtime (${{ matrix.slot }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - slot: ci-linux-node22
+            os: ubuntu-24.04
+            node: "22.23.3"
+          - slot: ci-linux-node24
+            os: ubuntu-24.04
+            node: "24.21.0"
+          - slot: ci-linux-node26
+            os: ubuntu-24.04
+            node: "26.10.0"
+          - slot: ci-macos-node22
+            os: macos-26
+            node: "22.23.3"
+          - slot: ci-macos-node24
+            os: macos-26
+            node: "24.20.0"
+          - slot: ci-macos-node26
+            os: macos-26
+            node: "26.9.0"
+          - slot: windows-node22
+            os: windows-2025
+            node: "22.23.3"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: ${{ matrix.slot == 'windows-node22' && 45 || 30 }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.27.1"
+          cache: false
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run build
+      - name: Diagnose native Windows private-access setup boundaries
+        if: matrix.slot == 'windows-node22'
+        run: node scripts/diagnose-windows-task-access.mjs
+      - name: Prepare pinned production installation cache
+        run: node scripts/prepare-package-cache.mjs
+      - name: Require attempt archive bindings before source and fresh offline evidence
+        run: |
+          node scripts/verify-required-native-tests.mjs attempt-runtime-bindings attempt-foundation-bindings &&
+          node scripts/verify-attempt-runtime.mjs ${{ matrix.slot }}
+
+  attempt-runtime-arm64:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['attempt-runtime-arm64']) }}
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22.23.3"
+          cache: npm
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.27.1"
+          cache: false
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - name: Prepare pinned production installation cache
+        run: node scripts/prepare-package-cache.mjs
+      - name: Require whole attempt archives with pinned native Git and Go prerequisites
+        run: |
+          node scripts/verify-required-native-tests.mjs attempt-runtime-bindings attempt-foundation-bindings &&
+          node scripts/verify-attempt-runtime-arm64.mjs
+
   resource-release:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['resource-release']) }}
@@ -1780,7 +1866,7 @@ jobs:
             os: windows-2025
             node: "22.23.3"
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: ${{ matrix.slot == 'windows-node22' && 45 || 30 }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2561,6 +2647,8 @@ jobs:
       - helm-extensions-arm64
       - tasks-runtime
       - tasks-runtime-arm64
+      - attempt-runtime
+      - attempt-runtime-arm64
       - resource-release
       - resource-release-arm64
       - windows

@@ -80,6 +80,7 @@ const timeoutMs =
     : fullSuite ||
         selection.includes("tasks-matrix") ||
         selection.includes("consumer-impact") ||
+        selection.includes("attempt-archives") ||
         selection.includes("windows-resource-workloads") ||
         selection.includes("resource-release-readiness") ||
         selection.includes("dotnet-method") ||
@@ -150,6 +151,8 @@ const isolatedCaseWorkers =
       "tasks-matrix",
       "consumer-impact",
       "consumer-native-windows-capture",
+
+      "attempt-archives",
       "windows-resource-workloads",
       "resource-release-readiness",
       "tasks-runtime-manifest",
@@ -162,6 +165,7 @@ const isolatedCaseWorkers =
     (selection.length === 1 &&
       [
         "jvm-wrappers",
+        "jvm-analyzer-extensions",
         "scala-extensions",
         "dotnet-format-extensions",
         "dotnet-generator-extensions",
@@ -171,6 +175,7 @@ const isolatedCaseWorkers =
         "terraform-extensions",
         "helm-extensions",
         "assembly-laravel",
+        "assembly-fastapi",
         ...mutationProfiles,
       ].includes(selection[0])))
     ? 1

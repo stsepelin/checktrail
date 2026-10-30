@@ -232,25 +232,35 @@ async function executeRequiredTests(
         );
         execArgv = ["--import", pathToFileURL(preload).href];
       }
-      // Only this exact isolated wrapper needs time to repeat the native cases
-      // through a fresh installation. Other callbacks and file budgets stay bounded.
+      // Exact isolated installed wrappers repeat a complete native cohort. Their
+      // parent observation allowance does not change native command deadlines.
+      // Other callback names, paths and caller-selected budgets stay unchanged.
       const caseTimeoutMs =
-        timeoutMs === 600000 &&
-        [
-          "dotnet-generator-extensions",
-          "ruby-extensions",
-          "swift-extensions",
-          "mutation-runners",
-        ].some(
-          (profile) =>
-            selection?.file ===
-              path.join(
-                fileURLToPath(new URL("../dist/test/", import.meta.url)),
-                `gate-${profile}.test.js`,
-              ) && selection.name === `${profile} installed acceptance`,
-        )
-          ? 1200000
-          : timeoutMs;
+        timeoutMs === 120000 &&
+        selection?.file ===
+          path.join(
+            fileURLToPath(new URL("../dist/test/", import.meta.url)),
+            "gate-assembly-fastapi.test.js",
+          ) &&
+        selection.name === "assembly-fastapi installed acceptance"
+          ? 300000
+          : timeoutMs === 600000 &&
+              [
+                "dotnet-generator-extensions",
+                "ruby-extensions",
+                "swift-extensions",
+                "mutation-runners",
+                "attempt-archives",
+              ].some(
+                (profile) =>
+                  selection?.file ===
+                    path.join(
+                      fileURLToPath(new URL("../dist/test/", import.meta.url)),
+                      `gate-${profile}.test.js`,
+                    ) && selection.name === `${profile} installed acceptance`,
+              )
+            ? 1200000
+            : timeoutMs;
       for await (const { type, data } of run({
         files: selection ? [selection.file] : batch,
         concurrency: selection || exclusive ? 1 : fileWorkerLimit,
