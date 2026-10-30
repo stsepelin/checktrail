@@ -400,3 +400,90 @@ test(
     );
   },
 );
+
+test(
+  "Clang version probes separate missing executables and exact-limit unsupported output from reached native output exhaustion",
+  { skip: process.platform === "win32", timeout: 30000 },
+  async (t) => {
+    const root = await fixture(t, {
+      "value.c": "int value(void) { return 1; }",
+    });
+    const runner = fileURLToPath(
+      new URL("../src/clang-runner.js", import.meta.url),
+    );
+    const run = (searchPath: string, compiler: "clang" | "clang++") => {
+      const invocation = JSON.stringify({
+        units: [
+          {
+            compiler,
+            cwd: ".",
+            file: "value.c",
+            input: "value.c",
+            args: ["-std=c17"],
+          },
+        ],
+        scope: ["value.c"],
+      });
+      const result = spawnSync(process.execPath, [runner, root, invocation], {
+        cwd: root,
+        env: { ...process.env, PATH: searchPath },
+        encoding: "utf8",
+        timeout: 10000,
+        maxBuffer: 2 * 1024 * 1024,
+      });
+      assert.equal(result.error, undefined);
+      assert.equal(result.signal, null, result.stderr);
+      return result;
+    };
+    const tools = path.join(root, "tools");
+    await mkdir(tools);
+    const program = path.join(tools, "version.mjs");
+    const marker = path.join(root, "version-reached");
+    const quote = (value: string) => "'" + value.replace(/'/g, "'\\''") + "'";
+    for (const compiler of ["clang", "clang++"] as const) {
+      const missing = run("", compiler);
+      assert.equal(missing.status, 3, missing.stderr);
+      assert.deepEqual(JSON.parse(missing.stdout), {
+        unavailable: "clang-toolchain",
+        reason: "missing-tool",
+      });
+      await writeFile(
+        path.join(tools, compiler),
+        "#!/bin/sh\nexec " +
+          quote(process.execPath) +
+          " " +
+          quote(program) +
+          " " +
+          quote(compiler) +
+          ' "$@"\n',
+        { mode: 0o755 },
+      );
+      for (const bytes of [1024 * 1024, 1024 * 1024 + 1]) {
+        await writeFile(
+          program,
+          `import assert from'node:assert/strict';import{writeFileSync}from'node:fs';assert.deepEqual(process.argv.slice(3),['--no-default-config','--version']);writeFileSync(${JSON.stringify(marker)},JSON.stringify({compiler:process.argv[2],bytes:${bytes}}));process.stdout.write(Buffer.alloc(${bytes},65));`,
+        );
+        const result = run(tools, compiler);
+        assert.deepEqual(
+          JSON.parse(await readFile(marker, "utf8")),
+          { compiler, bytes },
+          "The selected executable must physically reach the exact output boundary with the original probe arguments",
+        );
+        if (bytes === 1024 * 1024) {
+          assert.equal(result.status, 3, result.stderr);
+          assert.deepEqual(JSON.parse(result.stdout), {
+            unavailable: "clang-toolchain",
+            reason: "unsupported-version",
+          });
+        } else {
+          assert.equal(result.status, 2, result.stdout + result.stderr);
+          assert.equal(result.stdout, "");
+          assert.match(
+            result.stderr,
+            /Clang evidence collection could not complete \(NATIVE_OUTPUT_LIMIT\)/,
+          );
+        }
+      }
+    }
+  },
+);

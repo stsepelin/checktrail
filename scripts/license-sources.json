@@ -108,32 +108,6 @@
       "index.d.ts": "2e36248ff3cc1b0b20adc82e596d519539cd892bd98d8338c4bd4a1ed625634d"
     }
   },
-  "bser@2.1.1": {
-    "scope": "development",
-    "notice": "docs/licenses/npm-bser2.1.1.txt",
-    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
-    "source": "https://raw.githubusercontent.com/facebook/watchman/df9f2c4a5eb37354949fdefb2b917427fe05fa6c/LICENSE",
-    "upstreamManifestVersion": "2.1.0",
-    "license": "Apache-2.0",
-    "files": {
-      "README.md": "fbc3054ed9e51cce426c17344d2c0b9a3792e7f13828c2da2941e92032571650",
-      "index.js": "c62fdb182214f4d56354b4955f3beebd3a50da617eef8a8937fcaddf8adc2f7d",
-      "package.json": "1e90f98039f760ebd91af36846690b70a09154608f228967d3fa7858402b3de6"
-    }
-  },
-  "fb-watchman@2.0.2": {
-    "scope": "development",
-    "notice": "docs/licenses/npm-fb-watchman2.0.2.txt",
-    "sha256": "2d4c3d00d67067461412a2d9a2f3f8b7b9cda62b3db501e4b6844ccf35c949aa",
-    "source": "https://raw.githubusercontent.com/facebook/watchman/5a5c364ee24c7a44502bfd22f929fc8f74626bb7/LICENSE",
-    "upstreamManifestVersion": "2.0.1",
-    "license": "MIT",
-    "files": {
-      "index.js": "174162c01b5c8bf9b031bbef70f5ecd9b8a972e67c16e3cd1a098944b51293bf",
-      "package.json": "1cbf98d28443db3b03e6fe0425fcebbea9aa6569c421abee605da0fd61d612ee",
-      "README.md": "2b5f0e7274a619ee2b37eee170bf1d32ffae35e9806312e886561f93ceea80df"
-    }
-  },
   "natural-compare@1.4.0": {
     "scope": "development",
     "notice": "docs/licenses/npm-natural-compare1.4.0.txt",
@@ -184,6 +158,19 @@
       "README.md": "4491517f7deb68d0b2a3bb590e785e276a60f12448447a9650d0bd50161a101c",
       "imurmurhash.js": "45368bfe11080c4504b7804602015d93873303c5b13d5710af6c42e9abc35b4a",
       "imurmurhash.min.js": "ea8490563a229b89f2b779217938f9eb2bcf93dd89de9f7fc5c035632f0934b5"
+    }
+  },
+  "eastasianwidth@0.2.0": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-eastasianwidth0.2.0.txt",
+    "sha256": "94aa6016fb9d436508366433e9caba061443ca58f4c7eb515caec7badf90ae5a",
+    "source": "https://raw.githubusercontent.com/komagata/eastasianwidth/1d41951a59d63fb2d77cda021050fc070cae424a/MIT-LICENSE.txt",
+    "upstreamManifestVersion": "0.3.0",
+    "license": "MIT",
+    "files": {
+      "README.md": "5a20e0a3c5f1a6b449dd3fee8e3f0c7dc0a6e508c93fa5703d7c8823d35aed54",
+      "eastasianwidth.js": "2672ae17e3d91c246546bf3d56e78c95570eec79381ec143f41d45ec498bccab",
+      "package.json": "51db62f97656d02d4bc9670393cae42930dbd1ed89f5837056851807e602867a"
     }
   }
 }

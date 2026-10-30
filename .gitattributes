@@ -1,2 +1,13 @@
 # Keep text checkouts consistent with the formatter on every platform.
 * text=auto eol=lf
+
+# The bounded evidence index hashes every retained byte, including original CRLF.
+docs/measurements/artifact-identities-2026-10-21/** -text
+# Preserve original notice, public-key and verifier-output whitespace.
+docs/measurements/artifact-identities-2026-10-21/**/*.txt -whitespace
+docs/measurements/artifact-identities-2026-10-21/**/*.asc -whitespace
+# These are retained upstream build inputs, including unmodified source files.
+docs/measurements/artifact-identities-2026-10-21/fantomas-generator-inputs/* -whitespace
+
+# Preserve measured native JSON packet bodies byte-for-byte.
+docs/measurements/tasks-runtime-matrix-2026-10-21/receipts/*.json -text

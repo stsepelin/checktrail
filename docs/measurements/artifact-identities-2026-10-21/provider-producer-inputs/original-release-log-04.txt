@@ -1,0 +1,39 @@
+2026-09-11T15:17:10.3766805Z ##[start-action display=Action Setup;id=__hashicorp_actions-go-build.__run]
+2026-09-11T15:17:10.3802347Z ##[group]Run ./action-setup
+2026-09-11T15:17:10.3803249Z ./action-setup
+2026-09-11T15:17:10.3833246Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-09-11T15:17:10.3833895Z env:
+2026-09-11T15:17:10.3834269Z   PKG_NAME: terraform-provider-random
+2026-09-11T15:17:10.3834666Z   GOTOOLCHAIN: local
+2026-09-11T15:17:10.3835008Z   CGO_ENABLED: 0
+2026-09-11T15:17:10.3835328Z   BASE_VERSION: 3.9.1
+2026-09-11T15:17:10.3835647Z   PRERELEASE_VERSION: 
+2026-09-11T15:17:10.3835991Z   METADATA_VERSION: 
+2026-09-11T15:17:10.3836296Z ##[endgroup]
+2026-09-11T15:17:10.3983896Z Cloning into '/home/runner/work/_actions/hashicorp/actions-go-build/v1'...
+2026-09-11T15:17:10.9924362Z Note: switching to 'dd7ca5a30c402c933e1fe61e0ff7165e5c4ee9e4'.
+2026-09-11T15:17:10.9924951Z 
+2026-09-11T15:17:10.9925241Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-09-11T15:17:10.9925824Z changes and commit them, and you can discard any commits you make in this
+2026-09-11T15:17:10.9926401Z state without impacting any branches by switching back to a branch.
+2026-09-11T15:17:10.9926772Z 
+2026-09-11T15:17:10.9926992Z If you want to create a new branch to retain commits you create, you may
+2026-09-11T15:17:10.9927510Z do so (now or later) by using -c with the switch command. Example:
+2026-09-11T15:17:10.9927835Z 
+2026-09-11T15:17:10.9927991Z   git switch -c <new-branch-name>
+2026-09-11T15:17:10.9928214Z 
+2026-09-11T15:17:10.9928383Z Or undo this operation with:
+2026-09-11T15:17:10.9928549Z 
+2026-09-11T15:17:10.9928764Z   git switch -
+2026-09-11T15:17:10.9928918Z 
+2026-09-11T15:17:10.9929194Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-09-11T15:17:10.9929534Z 
+2026-09-11T15:17:10.9998912Z ##[group]Run make install
+2026-09-11T15:17:11.3581988Z # Running tests...
+2026-09-11T15:17:40.2609033Z Building initial linux/amd64 binary...
+2026-09-11T15:17:40.8309411Z Building intermediate linux/amd64 binary...
+2026-09-11T15:17:56.5624045Z Building bootstrapped linux/amd64 binary...
+2026-09-11T15:17:57.6220697Z Command 'actions-go-build' installed to GITHUB_PATH (/home/runner/work/_temp/_runner_file_commands/add_path_ca127ed9-7553-4bd6-b931-55c580cc9ee4)
+2026-09-11T15:17:57.6279049Z actions-go-build v1.1.2 (dd7ca5a3) 2026-05-06
+2026-09-11T15:17:57.6284982Z ##[endgroup]
+2026-09-11T15:17:57.6304934Z ##[end-action id=__hashicorp_actions-go-build.__run;outcome=success;conclusion=success;duration_ms=47253]

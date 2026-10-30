@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "scope": "Selected original source notice inputs and static build declarations; not legal advice or complete component/output attribution.",
+  "sourceArchiveIdentities": [
+    {
+      "component": "WASI SDK source",
+      "sourceCommit": "5a0bf653a1a06e1c18867567c5937006d3394a69",
+      "url": "https://codeload.github.com/WebAssembly/wasi-sdk/tar.gz/refs/tags/wasi-sdk-34",
+      "bytes": 48831,
+      "sha256": "3d7bc84a88b1a90a6cec5a6797e744c958bb7b357781797003a0ca2a8beaa2c9",
+      "archiveToEveryGitBlobIndependentlyVerified": false
+    },
+    {
+      "component": "Binaryen source",
+      "sourceCommit": "79dfe6b412a3c22bfdb190ed6a4d79adf734db5d",
+      "url": "https://codeload.github.com/WebAssembly/binaryen/tar.gz/refs/tags/version_132",
+      "bytes": 7089501,
+      "sha256": "ede5e20f2f5148641bad31ceaef3c1fd4de4fb63b2d7b5081c605ba475483f6b",
+      "archiveToEveryGitBlobIndependentlyVerified": false
+    },
+    {
+      "component": "WASI libc source",
+      "sourceCommit": "2e6fb9d8ee0cdf9e431fbcabe8af3115de000a13",
+      "url": "https://codeload.github.com/WebAssembly/wasi-libc/tar.gz/2e6fb9d8ee0cdf9e431fbcabe8af3115de000a13",
+      "bytes": 2670964,
+      "sha256": "f25ccd526235f7b351f9b49451b75fdd8e23250b9ad8fc9f8f2a19f517a4892f",
+      "archiveToEveryGitBlobIndependentlyVerified": false
+    }
+  ],
+  "sdkSourceDeclaredGitlinks": {
+    "llvm": "895aa2c896ada719451be2e3673c83da8ddf1141",
+    "wasiLibc": "2e6fb9d8ee0cdf9e431fbcabe8af3115de000a13"
+  },
+  "sdkLibeditBuildDeclaration": {
+    "source": "https://github.com/WebAssembly/wasi-sdk/blob/5a0bf653a1a06e1c18867567c5937006d3394a69/cmake/wasi-sdk-toolchain.cmake",
+    "sourceMember": "cmake/wasi-sdk-toolchain.cmake",
+    "bytes": 11910,
+    "sha256": "6342ac67b8004e4d1aa95c351b8f6c065de6f15488c0a2f4e1b56b2b24dec2fb",
+    "declaredArchiveUrl": "https://thrysoee.dk/editline/libedit-20251016-3.1.tar.gz",
+    "declaredAndDownloadedArchiveSha256": "21362b00653bbfc1c71f71a7578da66b5b5203559d43134d2dd7719e313ce041",
+    "downloadedArchiveBytes": 549005,
+    "selectedSdkLibrary": "wasi-sdk/lib/libedit.0.dylib",
+    "independentLibeditBuildVerified": false
+  },
+  "retainedNoticeInputs": [
+    {
+      "file": "wasm-tool-notices/wasi-sdk-LICENSE.txt",
+      "bytes": 12243,
+      "sha256": "268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5",
+      "source": "https://github.com/WebAssembly/wasi-sdk/blob/5a0bf653a1a06e1c18867567c5937006d3394a69/LICENSE",
+      "sourceMember": "LICENSE",
+      "scope": "SDK source root notice; selected distribution archive has no named license/notice files.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    },
+    {
+      "file": "wasm-tool-notices/binaryen-LICENSE.txt",
+      "bytes": 11535,
+      "sha256": "64c0d02491e16eced74826440ecd2bcf7722d37fa586faf457b2494293afbffe",
+      "source": "https://github.com/WebAssembly/binaryen/blob/79dfe6b412a3c22bfdb190ed6a4d79adf734db5d/LICENSE",
+      "sourceMember": "LICENSE",
+      "scope": "Binaryen source root notice.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    },
+    {
+      "file": "wasm-tool-notices/binaryen-FP16-LICENSE.txt",
+      "bytes": 1157,
+      "sha256": "17e4f539024be2749ee729d1e2f01d24cef12ece8c9bf18e91a4349be29c80bf",
+      "source": "https://github.com/WebAssembly/binaryen/blob/79dfe6b412a3c22bfdb190ed6a4d79adf734db5d/third_party/FP16/LICENSE",
+      "sourceMember": "third_party/FP16/LICENSE",
+      "scope": "Vendored FP16 source notice; selected output inclusion not independently established.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    },
+    {
+      "file": "wasm-tool-notices/binaryen-LLVM-LICENSE.txt",
+      "bytes": 15141,
+      "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee",
+      "source": "https://github.com/WebAssembly/binaryen/blob/79dfe6b412a3c22bfdb190ed6a4d79adf734db5d/third_party/llvm-project/include/llvm/LICENSE.TXT",
+      "sourceMember": "third_party/llvm-project/include/llvm/LICENSE.TXT",
+      "scope": "Vendored LLVM source root notice; selected output inclusion not independently established.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    },
+    {
+      "file": "wasm-tool-notices/binaryen-LLVM-Support-LICENSE.txt",
+      "bytes": 284,
+      "sha256": "a012d664e4e01df52a65b2eeafdfb8aeb856fec0e6c372265d01b0109c3f5e2a",
+      "source": "https://github.com/WebAssembly/binaryen/blob/79dfe6b412a3c22bfdb190ed6a4d79adf734db5d/third_party/llvm-project/include/llvm/Support/LICENSE.TXT",
+      "sourceMember": "third_party/llvm-project/include/llvm/Support/LICENSE.TXT",
+      "scope": "Vendored LLVM Support notice; selected output inclusion not independently established.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    },
+    {
+      "file": "wasm-tool-notices/wasi-libc-LICENSE.txt",
+      "bytes": 910,
+      "sha256": "2711a8b5a5cdfef0e639f96c1aca12ae23d7d64a02d0507f1bdf14d2b27bbc3a",
+      "source": "https://github.com/WebAssembly/wasi-libc/blob/2e6fb9d8ee0cdf9e431fbcabe8af3115de000a13/LICENSE",
+      "sourceMember": "LICENSE",
+      "scope": "SDK source-declared WASI libc input; individual generated header origins and emitted output inclusion remain unverified.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    },
+    {
+      "file": "wasm-tool-notices/wasi-libc-musl-COPYRIGHT.txt",
+      "bytes": 6196,
+      "sha256": "b870108ec5e7790e9f9919064f1b9421d62d5f9b0e6c230c6adf7ea2da62e97b",
+      "source": "https://github.com/WebAssembly/wasi-libc/blob/2e6fb9d8ee0cdf9e431fbcabe8af3115de000a13/libc-top-half/musl/COPYRIGHT",
+      "sourceMember": "libc-top-half/musl/COPYRIGHT",
+      "scope": "SDK source-declared WASI libc input; individual generated header origins and emitted output inclusion remain unverified.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    },
+    {
+      "file": "wasm-tool-notices/wasi-libc-cloudlibc-LICENSE.txt",
+      "bytes": 1292,
+      "sha256": "c8b789cf5a746611e6300a0cc7750dbf92b61912a709d04e639245f7290656d0",
+      "source": "https://github.com/WebAssembly/wasi-libc/blob/2e6fb9d8ee0cdf9e431fbcabe8af3115de000a13/libc-bottom-half/cloudlibc/LICENSE",
+      "sourceMember": "libc-bottom-half/cloudlibc/LICENSE",
+      "scope": "SDK source-declared WASI libc input; individual generated header origins and emitted output inclusion remain unverified.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    },
+    {
+      "file": "wasm-tool-notices/wasi-headers-LICENSE.txt",
+      "bytes": 12243,
+      "sha256": "268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5",
+      "source": "https://github.com/WebAssembly/wasi-libc/blob/2e6fb9d8ee0cdf9e431fbcabe8af3115de000a13/tools/wasi-headers/LICENSE",
+      "sourceMember": "tools/wasi-headers/LICENSE",
+      "scope": "SDK source-declared WASI libc input; individual generated header origins and emitted output inclusion remain unverified.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    },
+    {
+      "file": "wasm-tool-notices/libedit-COPYING.txt",
+      "bytes": 1615,
+      "sha256": "9da6c9c74987a36c84302982799d17d2f748ba1c1c0c471425716173c1d07649",
+      "source": "https://thrysoee.dk/editline/libedit-20251016-3.1.tar.gz",
+      "sourceMember": "COPYING",
+      "scope": "SDK source-declared libedit version; exact libedit binary source-to-build binding and inline notice coverage remain unverified.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    },
+    {
+      "file": "wasm-tool-notices/llvm-LICENSE.txt",
+      "bytes": 15141,
+      "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee",
+      "source": "https://raw.githubusercontent.com/llvm/llvm-project/895aa2c896ada719451be2e3673c83da8ddf1141/LICENSE.TXT",
+      "sourceMember": "LICENSE.TXT",
+      "scope": "SDK source-declared LLVM commit root notice; not a complete LLVM copied/generated or host library attribution inventory.",
+      "completeSelectedComponentNoticeCoverageVerified": false
+    }
+  ],
+  "selectedSdkHeaderSummary": {
+    "llvmResourceHeaders": 8,
+    "wasiSysrootHeaders": 27,
+    "completeInlineNoticeCoverageVerified": false
+  },
+  "boundaries": [
+    "Static Mach-O dependency declarations and archive library candidates are not an actual loader trace.",
+    "The selected SDK release archive supplies no named license, notice or copyright files; notices here come from separately pinned public sources.",
+    "Source root notices do not identify every copied/generated component, host OS dependency or emitted grammar/runtime contribution.",
+    "Test-only source notice files and unrelated cached notice versions are excluded from the selected-component claims.",
+    "Actual producer configuration for generated SDK headers, host system bytes and web runtime source/build binding remain open."
+  ],
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

@@ -13,7 +13,7 @@ import process from "node:process";
 const BASELINE =
   "04b2ba50cb1e4516d5472ff2412478b75ec5f5803de34d62fa4b78237a1d5568";
 const SCOPE =
-  "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794";
+  "f321dc57bf4714c99f8999c8aa61ef397cd09a4c653904a61f3c173ef3e7165f";
 const obligations = [
   ...Array.from({ length: 6 }, (_, i) => "M" + i),
   "F1",

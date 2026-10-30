@@ -7,6 +7,8 @@ import { runHostGitMetadata } from "./posix-target.js";
 import {
   gitMetadataEnvironment,
   gitMetadataPrefix,
+  isWindowsBuiltinGit,
+  windowsGitSdkDirectories,
 } from "./git-metadata-policy.js";
 import { affectedProjects } from "./workspace.js";
 import type {
@@ -27,10 +29,48 @@ async function hostGit(root: string): Promise<string> {
   };
   for (const directory of (process.env.PATH ?? "").split(path.delimiter)) {
     if (!path.isAbsolute(directory)) continue;
-    const candidate = path.join(directory, "git");
+    if (
+      process.platform === "win32" &&
+      (directory.startsWith("\\") || directory.startsWith("//"))
+    )
+      continue;
+    const candidate = path.join(
+      directory,
+      process.platform === "win32" ? "git.exe" : "git",
+    );
     if (!outside(candidate)) continue;
     try {
-      const resolved = await realpath(candidate);
+      let resolved = await realpath(candidate);
+      if (!outside(resolved)) continue;
+      if (process.platform === "win32" && !isWindowsBuiltinGit(resolved)) {
+        // Git for Windows cmd/bin launchers forward to another process. Resolve
+        // the selected SDK built-in so the bounded query owns the actual PID.
+        const directory = path.dirname(resolved);
+        if (!["cmd", "bin"].includes(path.basename(directory).toLowerCase()))
+          continue;
+        const builtins = new Set<string>();
+        for (const sdk of windowsGitSdkDirectories) {
+          try {
+            const native = await realpath(
+              path.join(path.dirname(directory), sdk, "bin", "git.exe"),
+            );
+            if (
+              isWindowsBuiltinGit(native) &&
+              outside(native) &&
+              (await lstat(native)).isFile()
+            ) {
+              await access(native, constants.X_OK);
+              builtins.add(native);
+            }
+          } catch {
+            continue;
+          }
+        }
+        if (builtins.size !== 1) continue;
+        resolved = [...builtins][0]!;
+      }
+      if (process.platform === "win32" && !isWindowsBuiltinGit(resolved))
+        continue;
       if (outside(resolved) && (await lstat(resolved)).isFile()) {
         await access(resolved, constants.X_OK);
         return resolved;
@@ -215,7 +255,14 @@ export async function selectGitChanges(
         .update(bytes)
         .digest("hex");
       working.set(file, {
-        mode: stat.mode & 0o111 ? "100755" : "100644",
+        // Windows does not expose POSIX executable bits. Retain the staged mode
+        // for tracked files, as a chmod cannot supply new evidence there.
+        mode:
+          process.platform === "win32"
+            ? (index.get(file)?.mode ?? "100644")
+            : stat.mode & 0o111
+              ? "100755"
+              : "100644",
         hash,
       });
     }

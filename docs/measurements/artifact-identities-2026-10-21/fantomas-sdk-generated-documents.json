@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Original byte projection of three retained portable-debug checksums using pinned public F# template candidates. This does not identify or execute the actual producer SDK or evaluate a build.",
+  "retainedInputs": [
+    {
+      "file": "fantomas-sdk-generated-documents.inputs.json",
+      "bytes": 3279,
+      "sha256": "d9d0738d624e7d098141f96ac03e63b9edd7f566d462469da7abecb67b969de3"
+    },
+    {
+      "file": "fantomas-generated-document-projection.mjs",
+      "bytes": 6852,
+      "sha256": "e035ff4d4439d371150da4124c2afc93f48e983b0e985fca9f33b9f94e3278a2"
+    }
+  ],
+  "projection": {
+    "additionalSourcesTextInitiallyEmpty": true,
+    "templatePropertyTrimmed": true,
+    "explicitFrameworkAndDisplayNameSubstitutions": true,
+    "newlines": "CRLF",
+    "utf8Bom": false,
+    "finalNewline": true,
+    "writerSourceInspectedForAppendLineAndDefaultEncoding": true
+  },
+  "documents": [
+    {
+      "assembly": "FSharp.Core.dll",
+      "assemblySha256": "4a626d62bb15815b6404567aa1bd37d9f2208e8e3c99c3c346d0efcfca72af6c",
+      "sourceMember": "src/fsharp/artifacts/obj/FSharp.Core/Release/netstandard2.1/.NETStandard,Version=v2.1.AssemblyAttributes.fs",
+      "templateRole": "core-targets",
+      "framework": "2.1",
+      "frameworkDisplayName": ".NET Standard 2.1",
+      "projectedBytes": 201,
+      "projectedSha256": "80a6758ea6385546168b52f88879344781eb512437ae7ad13e58e8ff53d784b1",
+      "declaredDocumentHash": "80a6758ea6385546168b52f88879344781eb512437ae7ad13e58e8ff53d784b1",
+      "projectionMatchesRetainedChecksum": true
+    },
+    {
+      "assembly": "Fantomas.Core.dll",
+      "assemblySha256": "69738cba70e9e820d399b28b7ffb284063cbe3082a295b8f081369b192c68fbc",
+      "sourceMember": "generated/.NETStandard,Version=v2.0.AssemblyAttributes.fs",
+      "templateRole": "fcs-targets",
+      "framework": "2.0",
+      "frameworkDisplayName": ".NET Standard 2.0",
+      "projectedBytes": 201,
+      "projectedSha256": "a6210cd5e6a4620b34cbb2d9194fde6789d29376565de2e5eee130ffde00a78d",
+      "declaredDocumentHash": "a6210cd5e6a4620b34cbb2d9194fde6789d29376565de2e5eee130ffde00a78d",
+      "projectionMatchesRetainedChecksum": true
+    },
+    {
+      "assembly": "Fantomas.FCS.dll",
+      "assemblySha256": "0274b668420330d6633b9a41acdeaf2b774cddab6c03a23ab750e20863552ff4",
+      "sourceMember": "generated/.NETStandard,Version=v2.0.AssemblyAttributes.fs",
+      "templateRole": "fcs-targets",
+      "framework": "2.0",
+      "frameworkDisplayName": ".NET Standard 2.0",
+      "projectedBytes": 201,
+      "projectedSha256": "a6210cd5e6a4620b34cbb2d9194fde6789d29376565de2e5eee130ffde00a78d",
+      "declaredDocumentHash": "a6210cd5e6a4620b34cbb2d9194fde6789d29376565de2e5eee130ffde00a78d",
+      "projectionMatchesRetainedChecksum": true
+    }
+  ],
+  "uniqueProjectedContents": 2,
+  "pairedControls": [
+    {
+      "id": "changed-namespace",
+      "framework": "2.1",
+      "changedProjectionSha256": "1134777c94445ea4632540b9df8c9fcd9ff6ced4f23e3f3db6f63e5c8b4ec7f0",
+      "unchangedPdbChecksumAssertionRejectedChange": true,
+      "restoredProjectionMatched": true
+    },
+    {
+      "id": "lf-instead-of-crlf",
+      "framework": "2.1",
+      "changedProjectionSha256": "fd7a2734975ea25ac31e19ac49ef8c49e189724466443e1c8b107cfedc78b342",
+      "unchangedPdbChecksumAssertionRejectedChange": true,
+      "restoredProjectionMatched": true
+    },
+    {
+      "id": "changed-namespace",
+      "framework": "2.0",
+      "changedProjectionSha256": "e36dbe4b21ebc9c1869291df404a1850665b7f5c19eae5e49271a4e046d29365",
+      "unchangedPdbChecksumAssertionRejectedChange": true,
+      "restoredProjectionMatched": true
+    },
+    {
+      "id": "lf-instead-of-crlf",
+      "framework": "2.0",
+      "changedProjectionSha256": "387ee60baca6aa6eabc65f9fc594498732d0326d01a625899952e6e593e389f1",
+      "unchangedPdbChecksumAssertionRejectedChange": true,
+      "restoredProjectionMatched": true
+    }
+  ],
+  "targetAssembliesReinspected": false,
+  "nativeMsbuildGeneratorExecuted": false,
+  "actualProducerSdkVerified": false,
+  "completeCompilerInputInventory": false,
+  "sourceBuildVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "preparationAndReceiptIntegrationVerified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}

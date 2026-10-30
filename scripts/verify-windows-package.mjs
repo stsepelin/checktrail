@@ -19,7 +19,51 @@ import {
   installAcceptancePackage,
   runAcceptanceNpm,
 } from "./install-acceptance-package.mjs";
+import {
+  captureCompiledEngine,
+  requireUnchangedCompiledEngine,
+} from "./compiled-engine-evidence.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url));
+const testFiles = [
+  "windows-contract.test.js",
+  "windows-process.test.js",
+  "windows-resource.test.js",
+  "windows-workspace.test.js",
+  "windows-resource-native.test.js",
+  "windows-resource-workloads.test.js",
+  "windows-resource-workload-native.test.js",
+  "process-output.test.js",
+  "helpers.js",
+];
+const harnessFiles = [
+  ...testFiles.map((file) => "dist/test/" + file),
+  "dist/test/tool-fixture.js",
+  "package.json",
+  "package-lock.json",
+  "scripts/required-native-tests.json",
+  "scripts/verify-windows-package.mjs",
+  "scripts/verify-required-native-tests.mjs",
+  "scripts/required-test-evidence.mjs",
+  "scripts/compiled-engine-evidence.mjs",
+  "scripts/install-acceptance-package.mjs",
+  "scripts/native-resource-workloads.mjs",
+  "scripts/windows-resource-workloads.mjs",
+  "scripts/windows-resource-workload-worker.mjs",
+  "scripts/measure-windows-resources.mjs",
+];
+const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+const captureHarness = () =>
+  Promise.all(
+    harnessFiles.map(async (file) => [
+      file,
+      hash(await readFile(path.join(repository, file))),
+    ]),
+  );
+const inputSources = await captureHarness();
+const harnessSha256 = hash(JSON.stringify(inputSources));
+const sourceEngine = await captureCompiledEngine(
+  path.join(repository, "dist/src"),
+);
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-windows-package-"),
 );
@@ -35,11 +79,17 @@ try {
   const tarballSha256 = createHash("sha256")
     .update(await readFile(tarball))
     .digest("hex");
-  await installAcceptancePackage(repository, tarball, consumer);
+  const installation = await installAcceptancePackage(
+    repository,
+    tarball,
+    consumer,
+  );
   const installed = path.join(
     consumer,
     "node_modules/@stsepelin/checktrail/dist/src",
   );
+  const installedBefore = await captureCompiledEngine(installed);
+  requireUnchangedCompiledEngine(sourceEngine, installedBefore);
   await mkdir(path.join(consumer, "dist/test"), { recursive: true });
   await symlink(
     process.platform === "win32"
@@ -48,11 +98,7 @@ try {
     path.join(consumer, "dist/src"),
     process.platform === "win32" ? "junction" : "dir",
   );
-  for (const file of [
-    "windows-contract.test.js",
-    "windows-process.test.js",
-    "helpers.js",
-  ])
+  for (const file of testFiles)
     await cp(
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
@@ -87,6 +133,10 @@ try {
     "verify-required-native-tests.mjs",
     "required-test-evidence.mjs",
     "compiled-engine-evidence.mjs",
+    "native-resource-workloads.mjs",
+    "windows-resource-workloads.mjs",
+    "windows-resource-workload-worker.mjs",
+    "measure-windows-resources.mjs",
   ])
     await cp(
       path.join(repository, "scripts", file),
@@ -103,6 +153,10 @@ try {
     JSON.stringify({
       "windows-contract": profiles["windows-contract"],
       "windows-process": profiles["windows-process"],
+      "physical-process-output": profiles["physical-process-output"],
+      "windows-resource-workload-bindings":
+        profiles["windows-resource-workload-bindings"],
+      "windows-resource-workloads": profiles["windows-resource-workloads"],
     }),
   );
   const selectedImage = process.env.CHECKTRAIL_WINDOWS_CONTRACT_IMAGE;
@@ -114,6 +168,16 @@ try {
       ).trim()
     : undefined;
   if (image) assert.match(image, /^sha256:[a-f0-9]{64}$/);
+  const selection = [
+    process.platform === "win32" && !image
+      ? "windows-process"
+      : "windows-contract",
+    "physical-process-output",
+    "windows-resource-workload-bindings",
+    ...(process.platform === "win32" && !image
+      ? ["windows-resource-workloads"]
+      : []),
+  ];
   const output = image
     ? execFileSync(
         "docker",
@@ -140,25 +204,60 @@ try {
           image,
           "node",
           "scripts/verify-required-native-tests.mjs",
-          "windows-contract",
+          ...selection,
         ],
-        { encoding: "utf8", maxBuffer: 1024 * 1024 },
+        { encoding: "utf8", maxBuffer: 1024 * 1024, timeout: 120000 },
       )
     : execFileSync(
         process.execPath,
-        [
-          "scripts/verify-required-native-tests.mjs",
-          process.platform === "win32" ? "windows-process" : "windows-contract",
-        ],
-        { cwd: consumer, encoding: "utf8", maxBuffer: 1024 * 1024 },
+        ["scripts/verify-required-native-tests.mjs", ...selection],
+        {
+          cwd: consumer,
+          encoding: "utf8",
+          maxBuffer: 1024 * 1024,
+          timeout: process.platform === "win32" ? 1200000 : 120000,
+        },
       );
   const acceptance = JSON.parse(output);
   assert.equal(acceptance.complete, true);
+  assert.deepEqual(
+    acceptance.profiles,
+    selection.map((profile) => ({
+      profile,
+      required: profiles[profile].length,
+    })),
+  );
+  const required = selection.reduce(
+    (total, profile) => total + profiles[profile].length,
+    0,
+  );
+  assert.equal(acceptance.required, required);
+  assert.equal(acceptance.passed, required);
+  assert.equal(acceptance.ledger.truncated, false);
+  assert.equal(acceptance.ledger.cases.length, required);
+  assert.ok(acceptance.ledger.cases.every((item) => item.outcome === "passed"));
+  requireUnchangedCompiledEngine(installedBefore, acceptance.compiledEngine);
+  requireUnchangedCompiledEngine(
+    installedBefore,
+    await captureCompiledEngine(installed),
+  );
+  const compiledEngine = requireUnchangedCompiledEngine(
+    sourceEngine,
+    await captureCompiledEngine(path.join(repository, "dist/src")),
+  );
+  assert.deepEqual(
+    await captureHarness(),
+    inputSources,
+    "Windows acceptance harness bytes changed",
+  );
   process.stdout.write(
     JSON.stringify({
       tarballSha256,
-      offlineProductionInstall: true,
-      lifecycleScriptsExecuted: false,
+      ...installation,
+      compiledEngine,
+      inputSources,
+      harnessSha256,
+      harnessInputsUnchanged: true,
       installedCliEvaluated: process.platform === "win32" && !image,
       installedNativeWindowsEvaluated: process.platform === "win32" && !image,
       installedRuntimeEvaluated: true,

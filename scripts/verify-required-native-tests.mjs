@@ -68,6 +68,8 @@ const installedExtensionProfile =
     (selection[0] === "rust-extensions" &&
       process.env.CHECKTRAIL_RUST_EXTENSIONS_INSTALLED === "1"));
 // node:test applies this timeout to the whole selected file, not each callback.
+// Ruby lifecycle files perform six or seven fresh offline restores. Keep their
+// aggregate file observation separate from each unchanged 120-second engine run.
 const timeoutMs =
   !fullSuite &&
   selection.length === 1 &&
@@ -77,6 +79,9 @@ const timeoutMs =
     ? 300000
     : fullSuite ||
         selection.includes("tasks-matrix") ||
+        selection.includes("consumer-impact") ||
+        selection.includes("windows-resource-workloads") ||
+        selection.includes("resource-release-readiness") ||
         selection.includes("dotnet-method") ||
         selection.includes("jvm-wrappers") ||
         selection.includes("kotlin-extensions") ||
@@ -85,6 +90,7 @@ const timeoutMs =
         selection.includes("dotnet-format-extensions") ||
         selection.includes("dotnet-generator-extensions") ||
         selection.includes("ruby-extensions") ||
+        selection.includes("ruby-tools-lifecycle") ||
         selection.includes("swift-extensions") ||
         selection.some((profile) => mutationProfiles.includes(profile))
       ? 600000
@@ -142,6 +148,9 @@ const isolatedCaseWorkers =
   (selection.some((profile) =>
     [
       "tasks-matrix",
+      "consumer-impact",
+      "windows-resource-workloads",
+      "resource-release-readiness",
       "tasks-runtime-manifest",
       "tasks-runtime-cli",
       "native-harness-cleanup",

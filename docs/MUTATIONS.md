@@ -97,7 +97,7 @@ The separate `vitest-flat-tests`, `jest-flat-tests`, `pytest-flat-tests` and
 `phpunit-flat-tests` recipes use the same library, CLI and MCP entry points.
 They select one root project and only its registered test check, without
 project environment grants. The measured runtime target is Linux ARM64 with
-Node 22.23.2. Selected tool versions are Vitest 5.0.1, Jest 30.5.2,
+Node 22.23.2. Selected tool versions are Vitest 5.0.5, Jest 30.5.2,
 Python 3.12.13 with pytest 9.1.1, and PHP 8.5.6 with PHPUnit 13.3.4.
 No automatic tool download or project configuration evaluation occurs during
 planning. Trusted test execution can execute source and imported dependencies.
@@ -176,3 +176,15 @@ controls to succeed. Gate A's remaining profiles, full runtime/license closure,
 final platform matrix and independent evaluation remain separate obligations.
 
 The selected mutation-runner source and fresh installed-package cohorts passed for all four families. [The scoped measurement](measurements/mutation-runners-2026-10-11.json) retains the named receipts, paired native/parser controls and reached lifecycle witnesses. These receipts do not close the remaining Gate A profiles, artifact/license closure, final runtime bindings or independent evaluation.
+
+The selected JavaScript dependency update was separately checked with Vitest
+5.0.5 and Jest 30.5.2 on Linux ARM64/Node 22.23.2. Each family passed its entire
+nine-case source and fresh offline production-install cohort, reached lifecycle
+witnesses, and paired native guard controls. The dated four-family measurement
+above retains its original Vitest 5.0.1 inputs. These scoped update checks do not
+replace the final current-source matrix or establish complete artifact closure.
+
+This update explicitly revises the selected inventory pin from Vitest 5.0.1
+to 5.0.5 and recomputes its checked scope identity. Profile obligations, runtime
+slots, named cases and the preserved native baseline remain unchanged. The
+inventory rejection controls include a stable-version rollback to the prior pin.

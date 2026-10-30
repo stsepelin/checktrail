@@ -48,7 +48,7 @@
   "toolVersions": {
     "typescript": "6.0.3",
     "eslint": "10.11.0",
-    "vitest": "5.0.1",
+    "vitest": "5.0.5",
     "jest": "30.5.2",
     "playwright": "1.63.0",
     "vue-tsc": "3.3.11",
@@ -95,7 +95,7 @@
     "kustomize": "5.8.2",
     "kubeconform": "0.8.0",
     "kubernetes": "1.36.0",
-    "mcp-sdk": "2.3.0",
+    "mcp-sdk": "2.3.1",
     "mcp-protocol": "2026-07-28",
     "tree-sitter": "0.27.0"
   },
@@ -2785,8 +2785,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "confidence-provenance",
@@ -2956,8 +2956,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "tasks-matrix",
@@ -3013,8 +3013,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "native-license-provenance",
@@ -3127,8 +3127,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "independent-evaluation-protocol",
@@ -3199,12 +3199,12 @@
     },
     {
       "id": "matrix-and-acceptance-bindings",
-      "detail": "Bind each selected extension and every preserved profile to exact source/installed native run identities and the finite runtime matrix; currently observed CI covers four of the six Linux/macOS Node slots, not all six."
+      "detail": "Bind each selected extension and every preserved profile to exact current-source and fresh-installed native run identities across the finite runtime matrix. Historical and scoped receipts do not certify changed engine or harness inputs."
     }
   ],
   "gateAComplete": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
   "qualityAssessed": false,
-  "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794"
+  "scopeSha256": "f321dc57bf4714c99f8999c8aa61ef397cd09a4c653904a61f3c173ef3e7165f"
 }

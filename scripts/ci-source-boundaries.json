@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "scope": "declared-standalone-subprocess-runners",
+  "boundaries": [
+    {
+      "file": "src/helm-runner.ts",
+      "profiles": ["helm"],
+      "references": [
+        {
+          "file": "src/helm.ts",
+          "kind": "module-url",
+          "count": 1
+        }
+      ],
+      "testFiles": [
+        "test/gate-helm-extensions.test.ts",
+        "test/helm-extension-ci.test.ts",
+        "test/helm-extensions-contract.test.ts",
+        "test/helm-extensions-lifecycle.test.ts",
+        "test/helm-extensions-physical.test.ts",
+        "test/helm-extensions-planning.test.ts",
+        "test/helm-extensions-surfaces.test.ts",
+        "test/helm-lifecycle.test.ts",
+        "test/helm-scope.test.ts",
+        "test/helm-surfaces.test.ts",
+        "test/helm.test.ts",
+        "test/tool-versions.test.ts"
+      ]
+    },
+    {
+      "file": "src/terraform-runner.ts",
+      "profiles": ["terraform"],
+      "references": [
+        {
+          "file": "src/terraform.ts",
+          "kind": "module-url",
+          "count": 1
+        }
+      ],
+      "testFiles": [
+        "test/gate-terraform-extensions.test.ts",
+        "test/terraform-extension-ci.test.ts",
+        "test/terraform-extensions-contract.test.ts",
+        "test/terraform-extensions-lifecycle.test.ts",
+        "test/terraform-extensions-physical.test.ts",
+        "test/terraform-extensions-planning.test.ts",
+        "test/terraform-extensions-surfaces.test.ts",
+        "test/terraform-lifecycle.test.ts",
+        "test/terraform-reached.test.ts",
+        "test/terraform-surfaces.test.ts",
+        "test/terraform.test.ts",
+        "test/tool-versions.test.ts"
+      ]
+    },
+    {
+      "file": "src/scala-runner.ts",
+      "profiles": ["scala"],
+      "references": [
+        {
+          "file": "src/scala.ts",
+          "kind": "module-url",
+          "count": 1
+        }
+      ],
+      "testFiles": [
+        "test/gate-scala-extensions.test.ts",
+        "test/scala-boundaries.test.ts",
+        "test/scala-dependencies.test.ts",
+        "test/scala-extension-evidence-controls.test.ts",
+        "test/scala-extension-regressions.test.ts",
+        "test/scala-extension-scope.test.ts",
+        "test/scala-extensions-contracts.test.ts",
+        "test/scala-feature-phases.test.ts",
+        "test/scala-java-warning-policy.test.ts",
+        "test/scala-surfaces.test.ts",
+        "test/scala-tool-delivery.test.ts",
+        "test/scala.test.ts",
+        "test/tool-versions.test.ts"
+      ]
+    },
+    {
+      "file": "src/clang-runner.ts",
+      "profiles": ["clang"],
+      "references": [
+        {
+          "file": "src/clang.ts",
+          "kind": "module-url",
+          "count": 1
+        }
+      ],
+      "testFiles": ["test/clang.test.ts", "test/tool-versions.test.ts"]
+    },
+    {
+      "file": "src/detekt-runner.ts",
+      "profiles": ["detekt"],
+      "references": [
+        {
+          "file": "src/detekt.ts",
+          "kind": "module-url",
+          "count": 1
+        }
+      ],
+      "testFiles": [
+        "test/detekt-boundaries.test.ts",
+        "test/detekt-extensions.test.ts",
+        "test/detekt-surfaces.test.ts",
+        "test/detekt.test.ts",
+        "test/gate-jvm-analyzer-extensions.test.ts",
+        "test/jvm-analyzer-evidence-controls.test.ts",
+        "test/tool-versions.test.ts"
+      ]
+    },
+    {
+      "file": "src/helm-extensions-runner.ts",
+      "profiles": ["helm-extensions"],
+      "references": [
+        {
+          "file": "src/helm-extensions.ts",
+          "kind": "module-url",
+          "count": 1
+        },
+        {
+          "file": "src/helm-extensions-evidence.ts",
+          "kind": "validation-literal",
+          "count": 1
+        },
+        {
+          "file": "src/tool-versions.ts",
+          "kind": "validation-literal",
+          "count": 1
+        }
+      ],
+      "testFiles": [
+        "test/gate-helm-extensions.test.ts",
+        "test/helm-extension-ci.test.ts",
+        "test/helm-extensions-contract.test.ts",
+        "test/helm-extensions-lifecycle.test.ts",
+        "test/helm-extensions-physical.test.ts",
+        "test/helm-extensions-planning.test.ts",
+        "test/helm-extensions-surfaces.test.ts",
+        "test/helm-lifecycle.test.ts",
+        "test/helm-scope.test.ts",
+        "test/helm-surfaces.test.ts",
+        "test/helm.test.ts",
+        "test/tool-versions.test.ts"
+      ]
+    },
+    {
+      "file": "src/terraform-extensions-runner.ts",
+      "profiles": ["terraform-extensions"],
+      "references": [
+        {
+          "file": "src/terraform-extensions.ts",
+          "kind": "module-url",
+          "count": 1
+        },
+        {
+          "file": "src/terraform-extensions-evidence.ts",
+          "kind": "validation-literal",
+          "count": 1
+        },
+        {
+          "file": "src/tool-versions.ts",
+          "kind": "validation-literal",
+          "count": 1
+        }
+      ],
+      "testFiles": [
+        "test/gate-terraform-extensions.test.ts",
+        "test/terraform-extension-ci.test.ts",
+        "test/terraform-extensions-contract.test.ts",
+        "test/terraform-extensions-lifecycle.test.ts",
+        "test/terraform-extensions-physical.test.ts",
+        "test/terraform-extensions-planning.test.ts",
+        "test/terraform-extensions-surfaces.test.ts",
+        "test/terraform-lifecycle.test.ts",
+        "test/terraform-reached.test.ts",
+        "test/terraform-surfaces.test.ts",
+        "test/terraform.test.ts",
+        "test/tool-versions.test.ts"
+      ]
+    },
+    {
+      "file": "src/scala-extensions-runner.ts",
+      "profiles": ["scala-extensions"],
+      "references": [
+        {
+          "file": "src/scala.ts",
+          "kind": "module-url",
+          "count": 1
+        }
+      ],
+      "testFiles": [
+        "test/gate-scala-extensions.test.ts",
+        "test/scala-boundaries.test.ts",
+        "test/scala-dependencies.test.ts",
+        "test/scala-extension-evidence-controls.test.ts",
+        "test/scala-extension-regressions.test.ts",
+        "test/scala-extension-scope.test.ts",
+        "test/scala-extensions-contracts.test.ts",
+        "test/scala-feature-phases.test.ts",
+        "test/scala-java-warning-policy.test.ts",
+        "test/scala-surfaces.test.ts",
+        "test/scala-tool-delivery.test.ts",
+        "test/scala.test.ts",
+        "test/tool-versions.test.ts"
+      ]
+    },
+    {
+      "file": "src/detekt-extensions-runner.ts",
+      "profiles": ["jvm-analyzer-extensions"],
+      "references": [
+        {
+          "file": "src/detekt.ts",
+          "kind": "module-url",
+          "count": 1
+        }
+      ],
+      "testFiles": [
+        "test/detekt-boundaries.test.ts",
+        "test/detekt-extensions.test.ts",
+        "test/detekt-surfaces.test.ts",
+        "test/detekt.test.ts",
+        "test/gate-jvm-analyzer-extensions.test.ts",
+        "test/jvm-analyzer-evidence-controls.test.ts",
+        "test/tool-versions.test.ts"
+      ]
+    }
+  ]
+}

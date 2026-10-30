@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Static declared JLine native source/header/build-input and original-notice bindings. No upstream Makefile, Maven plugin, compiler or native payload executed.",
+  "jlineSource": {
+    "repository": "https://github.com/jline/jline3",
+    "sourceCommit": "c095db83dd4948a670a14294f042e105f59a2465",
+    "gitTree": "932705014a5f12a6b88b8ede9ba9d19883ce3a7c",
+    "archiveBytes": 2384138,
+    "archiveSha256": "847158a71e2c9565ed05590efe33470ce3f0d65678ece964ca39b171869c8589"
+  },
+  "nativeBuildInputs": [
+    {
+      "sourcePath": "native/Makefile",
+      "bytes": 9264,
+      "sha256": "e955ae787e636ec89d46d7175939f1e0d0afd15a7f837d39ccbb5eeb4b31d5d1",
+      "gitBlobSha1": "cda0344197bf56b89bff5eac172ab7998e0be063",
+      "mode": "100644",
+      "noticeByteRange": {
+        "start": 0,
+        "endExclusive": 785
+      },
+      "retainedInput": {
+        "file": "jline-native-notices/2a261ce0ee381e1216892e5104307960dbd96c641d71387fe723a5fa16044fa4.txt",
+        "bytes": 785,
+        "sha256": "2a261ce0ee381e1216892e5104307960dbd96c641d71387fe723a5fa16044fa4"
+      }
+    },
+    {
+      "sourcePath": "native/Makefile.common",
+      "bytes": 8019,
+      "sha256": "9cfc4d34dc68dea23c440d90909ab6393fb8d7c9721be24714e4eddd2023827a",
+      "gitBlobSha1": "f4a83cc6224c05df266ca1898e0d3ead18beafbb",
+      "mode": "100644",
+      "noticeByteRange": {
+        "start": 0,
+        "endExclusive": 785
+      },
+      "retainedInput": {
+        "file": "jline-native-notices/2a261ce0ee381e1216892e5104307960dbd96c641d71387fe723a5fa16044fa4.txt",
+        "bytes": 785,
+        "sha256": "2a261ce0ee381e1216892e5104307960dbd96c641d71387fe723a5fa16044fa4"
+      }
+    },
+    {
+      "sourcePath": "native/pom.xml",
+      "bytes": 4235,
+      "sha256": "5825548c79a919b6b1d8b7c0904be72a1de43e84ab5525923c2f91279f38dc83",
+      "gitBlobSha1": "99b832143106a978cc28e53658172ba66be05340",
+      "mode": "100644"
+    },
+    {
+      "sourcePath": "native/src/main/native/jlinenative.c",
+      "bytes": 2157,
+      "sha256": "7417469ae8ee0a3f2242f5bbdc7b34433ace9231490f368c9c531c29762bb227",
+      "gitBlobSha1": "7e8711282bd719a3ceb2a3695b511834bc309000",
+      "mode": "100644",
+      "noticeByteRange": {
+        "start": 0,
+        "endExclusive": 405
+      },
+      "retainedInput": {
+        "file": "jline-native-notices/d45bda75b53fbc028e7ad05da8409104c758c4bbe50dd6a7a367f34184bb6837.txt",
+        "bytes": 405,
+        "sha256": "d45bda75b53fbc028e7ad05da8409104c758c4bbe50dd6a7a367f34184bb6837"
+      }
+    },
+    {
+      "sourcePath": "native/src/main/native/clibrary.c",
+      "bytes": 9392,
+      "sha256": "83aa14a0b68fe81805eefae1ca88304184356c8f2123d5562b6027b0dfc84ed0",
+      "gitBlobSha1": "59b9c14d33894050f31181b2613faecaff0b712e",
+      "mode": "100644",
+      "noticeByteRange": {
+        "start": 0,
+        "endExclusive": 771
+      },
+      "retainedInput": {
+        "file": "jline-native-notices/169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988.txt",
+        "bytes": 771,
+        "sha256": "169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988"
+      }
+    },
+    {
+      "sourcePath": "native/src/main/native/kernel32.c",
+      "bytes": 44365,
+      "sha256": "9be8dc42bc97d6fd7e5130deb0e697e857ccfd417cdb6b0ed5dbf4fa3b5660a0",
+      "gitBlobSha1": "fde49c4b62a0c66340f3112b459f68dc6f9fa12a",
+      "mode": "100644",
+      "noticeByteRange": {
+        "start": 0,
+        "endExclusive": 771
+      },
+      "retainedInput": {
+        "file": "jline-native-notices/169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988.txt",
+        "bytes": 771,
+        "sha256": "169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988"
+      }
+    },
+    {
+      "sourcePath": "native/src/main/native/jlinenative.h",
+      "bytes": 3996,
+      "sha256": "80bdb7216baa487c5dbcff30e5f1195b3e265a6083a614b7e506cea13292d53f",
+      "gitBlobSha1": "fe8b87615884104df142eb6d54f311f836327077",
+      "mode": "100644",
+      "noticeByteRange": {
+        "start": 0,
+        "endExclusive": 405
+      },
+      "retainedInput": {
+        "file": "jline-native-notices/d45bda75b53fbc028e7ad05da8409104c758c4bbe50dd6a7a367f34184bb6837.txt",
+        "bytes": 405,
+        "sha256": "d45bda75b53fbc028e7ad05da8409104c758c4bbe50dd6a7a367f34184bb6837"
+      }
+    }
+  ],
+  "declaredNativeTargets": [
+    "linux-x86",
+    "linux-x86_64",
+    "linux-arm",
+    "linux-armv6",
+    "linux-armv7",
+    "linux-arm64",
+    "linux-ppc64",
+    "win-x86",
+    "win-x86_64",
+    "win-arm64",
+    "mac-x86",
+    "mac-x86_64",
+    "mac-arm64",
+    "freebsd-x86",
+    "freebsd-x86_64"
+  ],
+  "declaredLinkedObjectSources": [
+    "native/src/main/native/jlinenative.c",
+    "native/src/main/native/clibrary.c",
+    "native/src/main/native/kernel32.c"
+  ],
+  "declaredJniHeaders": {
+    "repository": "https://github.com/openjdk/jdk",
+    "tag": "jdk-11+28",
+    "annotatedTagObject": "6953356297f51be519e94a63b2c570d7ac1da826",
+    "sourceCommit": "da75f3c4ad5bdf25167a3ed80e51f567ab3dbd01",
+    "gitTree": "2f5b43a8ba6e59294996553f9c7277634e0efec4",
+    "pathTreesVerifiedWithoutRecursiveTruncation": true,
+    "headers": [
+      {
+        "sourcePath": "src/java.base/share/native/include/jni.h",
+        "bytes": 74987,
+        "sha256": "ff6edf23a412719911a58f7d7c317d5d0995e0a40dcfaf441fb7edc5f9ac73f2",
+        "gitBlobSha1": "e15503f4d4ff79eba4e98e05e169e7acbb0a6236",
+        "noticeByteRange": {
+          "start": 0,
+          "endExclusive": 1212
+        },
+        "retainedInput": {
+          "file": "jline-native-notices/583264c98089cb8a380c3c2469437d067605eef03af54a414a7f288e5f66b34b.txt",
+          "bytes": 1212,
+          "sha256": "583264c98089cb8a380c3c2469437d067605eef03af54a414a7f288e5f66b34b"
+        }
+      },
+      {
+        "sourcePath": "src/java.base/unix/native/include/jni_md.h",
+        "bytes": 2002,
+        "sha256": "48888b52ef525a8c92985b501162b2e4ca7bb2a742456e4c053c1417e8ccfff2",
+        "gitBlobSha1": "6e352038fc59ea23f5a722c81cf6361d45a5e7be",
+        "noticeByteRange": {
+          "start": 0,
+          "endExclusive": 1212
+        },
+        "retainedInput": {
+          "file": "jline-native-notices/8d38f441963edd57ba09f18e6714abd985ef70f9cd0feabd10f19afc88f85547.txt",
+          "bytes": 1212,
+          "sha256": "8d38f441963edd57ba09f18e6714abd985ef70f9cd0feabd10f19afc88f85547"
+        }
+      },
+      {
+        "sourcePath": "src/java.base/windows/native/include/jni_md.h",
+        "bytes": 1553,
+        "sha256": "4c06961075d5e4544892b49061e8674db8663d1757cbb56585ae5e3cc5d2b5e5",
+        "gitBlobSha1": "6c8d6b9e77e6e77807b4a187d6b6f035e2adf962",
+        "noticeByteRange": {
+          "start": 0,
+          "endExclusive": 1212
+        },
+        "retainedInput": {
+          "file": "jline-native-notices/e78600e8d5bbd428ebeacf7ecb860937bc4b4c6255f524fd4f26f7bb48b3878a.txt",
+          "bytes": 1212,
+          "sha256": "e78600e8d5bbd428ebeacf7ecb860937bc4b4c6255f524fd4f26f7bb48b3878a"
+        }
+      }
+    ],
+    "actualProducerIncludeResolutionVerified": false
+  },
+  "declaredContainerDigestVariables": [
+    {
+      "name": "linux-armv6-digest",
+      "sha256": "a90a7deda7f561932d9ad658f8d661d17eeb44f4e7f7024ac087db1d0b95c6f5",
+      "downloadedOrExecuted": false
+    },
+    {
+      "name": "linux-x86-digest",
+      "sha256": "fbe45fcb0c2ce82f84a998a1d37d67b3906502723ed89f8191c3243d9d835d17",
+      "downloadedOrExecuted": false
+    },
+    {
+      "name": "windows-static-x86-digest",
+      "sha256": "b205eeeafaef4f44482d16254670da815d5679b03cf8e51e4adc3539d1c4a9c0",
+      "downloadedOrExecuted": false
+    },
+    {
+      "name": "windows-static-x64-digest",
+      "sha256": "f159861bc80b29e5dafb223477167bec53ecec6cdacb051d31e90c5823542100",
+      "downloadedOrExecuted": false
+    },
+    {
+      "name": "windows-arm64-digest",
+      "sha256": "5a8e872064c5f600386e4124f9425d3e2ce2e168cadb6626655b2d69ed748849",
+      "downloadedOrExecuted": false
+    },
+    {
+      "name": "cross-build-digest",
+      "sha256": "8dbaa86462270db93ae1b1b319bdd88d89272faf3a68632daf4fa36b414a326e",
+      "downloadedOrExecuted": false
+    },
+    {
+      "name": "freebsd-crossbuild-digest",
+      "sha256": "cda62697a15d8bdc0bc26e780b1771ee78f12c55e7d5813e62c478af5a747c43",
+      "downloadedOrExecuted": false
+    },
+    {
+      "name": "mcandre-snek-digest",
+      "sha256": "e5aaf20daece19796dcd0553feb971143b71cc67d13d79d73649cc689fb87287",
+      "downloadedOrExecuted": false
+    }
+  ],
+  "observedNoticeDeclarations": [
+    {
+      "sourcePaths": [
+        "native/src/main/native/jlinenative.c",
+        "native/src/main/native/jlinenative.h"
+      ],
+      "declaration": "BSD-3-Clause reference in original header; root BSD notice retained."
+    },
+    {
+      "sourcePaths": [
+        "native/src/main/native/clibrary.c",
+        "native/src/main/native/kernel32.c",
+        "native/Makefile",
+        "native/Makefile.common"
+      ],
+      "declaration": "Apache-2.0 reference in original header. Separately retained original Apache license text from the same source tree; the root BSD license alone does not describe these files."
+    },
+    {
+      "sourcePaths": [
+        "src/java.base/share/native/include/jni.h",
+        "src/java.base/unix/native/include/jni_md.h",
+        "src/java.base/windows/native/include/jni_md.h"
+      ],
+      "declaration": "GNU GPL version 2 with the Classpath exception stated in each original JNI header. Original LICENSE, ADDITIONAL_LICENSE_INFO and ASSEMBLY_EXCEPTION retained without a legal conclusion about delivered binaries."
+    }
+  ],
+  "retainedNotices": [
+    {
+      "repository": "https://github.com/openjdk/jdk",
+      "sourceCommit": "da75f3c4ad5bdf25167a3ed80e51f567ab3dbd01",
+      "sourcePath": "LICENSE",
+      "gitBlobSha1": "8b400c7ab81b7b18baff3f81d597f5e511883134",
+      "retainedInput": {
+        "file": "jline-native-notices/4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726.txt",
+        "bytes": 19274,
+        "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726"
+      }
+    },
+    {
+      "repository": "https://github.com/openjdk/jdk",
+      "sourceCommit": "da75f3c4ad5bdf25167a3ed80e51f567ab3dbd01",
+      "sourcePath": "ADDITIONAL_LICENSE_INFO",
+      "gitBlobSha1": "ff700cd09f6ea0cc497f68169fd5c210bdaa7c2b",
+      "retainedInput": {
+        "file": "jline-native-notices/a69bce275ba7a3570af6579cb0f55682cd75fedfcd49e0e8e9022270c447c916.txt",
+        "bytes": 2114,
+        "sha256": "a69bce275ba7a3570af6579cb0f55682cd75fedfcd49e0e8e9022270c447c916"
+      }
+    },
+    {
+      "repository": "https://github.com/openjdk/jdk",
+      "sourceCommit": "da75f3c4ad5bdf25167a3ed80e51f567ab3dbd01",
+      "sourcePath": "ASSEMBLY_EXCEPTION",
+      "gitBlobSha1": "065b8d90239f30b7de3eba350f6446a932d4d131",
+      "retainedInput": {
+        "file": "jline-native-notices/a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb.txt",
+        "bytes": 1522,
+        "sha256": "a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb"
+      }
+    },
+    {
+      "repository": "https://github.com/jline/jline3",
+      "sourceCommit": "c095db83dd4948a670a14294f042e105f59a2465",
+      "sourcePath": "LICENSE.txt",
+      "gitBlobSha1": "b62fe457163c11466dbb041cb76268e8187e2070",
+      "retainedInput": {
+        "file": "jline-native-notices/44e55d448e3324fa5b8f26b42556ee4a758aa27bbcb86babe32c144b5aa11ac0.txt",
+        "bytes": 1529,
+        "sha256": "44e55d448e3324fa5b8f26b42556ee4a758aa27bbcb86babe32c144b5aa11ac0"
+      }
+    },
+    {
+      "repository": "https://github.com/jline/jline3",
+      "sourceCommit": "c095db83dd4948a670a14294f042e105f59a2465",
+      "sourcePath": "console-ui/LICENSE.txt",
+      "gitBlobSha1": "bc955e3ef0b3d8820ecaa1a9ccae5bc23ca9ee38",
+      "retainedInput": {
+        "file": "jline-native-notices/f320211da4c193f34416646751dc347518ea6038c6260b473f267a91b239f4bb.txt",
+        "bytes": 11345,
+        "sha256": "f320211da4c193f34416646751dc347518ea6038c6260b473f267a91b239f4bb"
+      }
+    }
+  ],
+  "includeResolutionLimits": [
+    "Makefile include ordering can select JAVA_HOME or platform SDK headers before downloaded headers. The pinned downloads are declared inputs, not proof of actual producer inclusion.",
+    "macOS x86_64/arm64 flags select a JavaVM framework header directory under a platform SDK. Those SDKs and their component notices are not established by downloading OpenJDK headers.",
+    "System headers, libc/linker/toolchain inputs, container contents, external Java providers and actual binary build correspondence remain separate."
+  ],
+  "originalByteControls": {
+    "allSevenJlineInputsMatchPinnedGitBlobs": true,
+    "allThreeDeclaredHeaderPathsMatchMakefileInOrder": true,
+    "allThreeHeadersMatchExactResolvedGitBlobs": true,
+    "allFiveRootNoticePayloadsMatchExactGitBlobs": true
+  },
+  "nativeBinariesIndependentlyRebuilt": false,
+  "actualProducerBuildInputsVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "preparationAndReceiptIntegrationVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

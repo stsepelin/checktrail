@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original synthetic native Windows counter guard development controls; no model review or field evaluation.",
+  "sourceCommit": "348642d61ea35da04aaa9785679e44857a245f49",
+  "diagnosticSourceCommit": "05ec044a1bf8c727f15afbe7403d4e272c9f9ae0",
+  "sourceFiles": [
+    {
+      "file": "test/windows-resource-native.test.ts",
+      "sha256": "d8cfc6126355e6635bd2cc4f2ec29ecf7dc34ed353f069cc5626b8c98656b779"
+    },
+    {
+      "file": "scripts/verify-windows-resource-guards.mjs",
+      "sha256": "30996001841c51fefbe9afdd57c379df50a4106fa4320d2296324f60bd76c480"
+    },
+    {
+      "file": "dist/src/windows-native.js",
+      "sha256": "a630c81624b9196377a7989da9801162f1ef1da677e072f0d2cb83136eae4d21"
+    },
+    {
+      "file": "dist/test/windows-resource-native.test.js",
+      "sha256": "0258562217a0b47ab6e44be1114dfc0357c546cf7897591b9f12570a777fa760"
+    }
+  ],
+  "observedDefect": "The CPU-field-swap mutant survived a wall-clock-bounded user workload. The fixture now waits for observed user CPU and requires user/system asymmetry.",
+  "productionCountersAndDeadlinesChanged": false,
+  "workloadWitness": {
+    "childMinimumUserMicroseconds": 1000000,
+    "targetMinimumUserMicroseconds": 250000,
+    "kernelCpuWorkRetained": true,
+    "targetUserMustExceedFourTimesSystem": true,
+    "independentEarlierJobCpuMustExceedTargetCpu": true
+  },
+  "nativeReports": [
+    {
+      "node": "22.23.2",
+      "platform": "win32",
+      "runId": 40450786567,
+      "jobId": 122012753253,
+      "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/40450786567/job/122012753253",
+      "condition": "ordinary",
+      "receipt": {
+        "profile": "windows-job-resource-guards-v1",
+        "controls": [
+          {
+            "id": "job-user-not-direct-target-user",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "fc6b7e9210b9943dfafd0d7813d69c41346ccc1715940c2197b5bc871b4cdc5f"
+          },
+          {
+            "id": "job-kernel-not-direct-target-kernel",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "e862f89fd8d70fa0605ddd4f6274550a9541512ce721f0a1e7cde4edace9ed57"
+          },
+          {
+            "id": "direct-working-set-not-commit",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "0e98873e34d76cbbd956cdf592e6fccf0908595a4fd997adc673608a5b37e7b1"
+          },
+          {
+            "id": "separate-native-cpu-fields",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "9c815c7941d1dafa55268f084b00e253dccafef2d958be56d450d0382adb56c7"
+          },
+          {
+            "id": "fixed-source-digest-before-project",
+            "callback": "native Windows source integrity refuses changed fixed compiler bytes before project execution",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "372ea773a942278df3a07ebfca5280371dbb74f3c8deee572b7518494399322e"
+          }
+        ],
+        "sourceSha256": "a630c81624b9196377a7989da9801162f1ef1da677e072f0d2cb83136eae4d21",
+        "callbackSha256": "0258562217a0b47ab6e44be1114dfc0357c546cf7897591b9f12570a777fa760",
+        "sourceRestored": true,
+        "callbacksUnchanged": true,
+        "complete": true,
+        "nativeQualificationRequired": true,
+        "inferenceInvoked": false
+      }
+    },
+    {
+      "node": "22.23.2",
+      "platform": "win32",
+      "runId": 40450786567,
+      "jobId": 122012753253,
+      "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/40450786567/job/122012753253",
+      "condition": "three-owned-unrelated-cpu-workers",
+      "receipt": {
+        "profile": "windows-job-resource-guards-v1",
+        "controls": [
+          {
+            "id": "job-user-not-direct-target-user",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "fc6b7e9210b9943dfafd0d7813d69c41346ccc1715940c2197b5bc871b4cdc5f"
+          },
+          {
+            "id": "job-kernel-not-direct-target-kernel",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "e862f89fd8d70fa0605ddd4f6274550a9541512ce721f0a1e7cde4edace9ed57"
+          },
+          {
+            "id": "direct-working-set-not-commit",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "0e98873e34d76cbbd956cdf592e6fccf0908595a4fd997adc673608a5b37e7b1"
+          },
+          {
+            "id": "separate-native-cpu-fields",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "9c815c7941d1dafa55268f084b00e253dccafef2d958be56d450d0382adb56c7"
+          },
+          {
+            "id": "fixed-source-digest-before-project",
+            "callback": "native Windows source integrity refuses changed fixed compiler bytes before project execution",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "372ea773a942278df3a07ebfca5280371dbb74f3c8deee572b7518494399322e"
+          }
+        ],
+        "sourceSha256": "a630c81624b9196377a7989da9801162f1ef1da677e072f0d2cb83136eae4d21",
+        "callbackSha256": "0258562217a0b47ab6e44be1114dfc0357c546cf7897591b9f12570a777fa760",
+        "sourceRestored": true,
+        "callbacksUnchanged": true,
+        "complete": true,
+        "nativeQualificationRequired": true,
+        "inferenceInvoked": false
+      }
+    },
+    {
+      "node": "22.23.3",
+      "platform": "win32",
+      "runId": 40450786567,
+      "jobId": 122012753071,
+      "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/40450786567/job/122012753071",
+      "condition": "ordinary",
+      "receipt": {
+        "profile": "windows-job-resource-guards-v1",
+        "controls": [
+          {
+            "id": "job-user-not-direct-target-user",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "fc6b7e9210b9943dfafd0d7813d69c41346ccc1715940c2197b5bc871b4cdc5f"
+          },
+          {
+            "id": "job-kernel-not-direct-target-kernel",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "e862f89fd8d70fa0605ddd4f6274550a9541512ce721f0a1e7cde4edace9ed57"
+          },
+          {
+            "id": "direct-working-set-not-commit",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "0e98873e34d76cbbd956cdf592e6fccf0908595a4fd997adc673608a5b37e7b1"
+          },
+          {
+            "id": "separate-native-cpu-fields",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "9c815c7941d1dafa55268f084b00e253dccafef2d958be56d450d0382adb56c7"
+          },
+          {
+            "id": "fixed-source-digest-before-project",
+            "callback": "native Windows source integrity refuses changed fixed compiler bytes before project execution",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "372ea773a942278df3a07ebfca5280371dbb74f3c8deee572b7518494399322e"
+          }
+        ],
+        "sourceSha256": "a630c81624b9196377a7989da9801162f1ef1da677e072f0d2cb83136eae4d21",
+        "callbackSha256": "0258562217a0b47ab6e44be1114dfc0357c546cf7897591b9f12570a777fa760",
+        "sourceRestored": true,
+        "callbacksUnchanged": true,
+        "complete": true,
+        "nativeQualificationRequired": true,
+        "inferenceInvoked": false
+      }
+    },
+    {
+      "node": "22.23.3",
+      "platform": "win32",
+      "runId": 40450786567,
+      "jobId": 122012753071,
+      "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/40450786567/job/122012753071",
+      "condition": "three-owned-unrelated-cpu-workers",
+      "receipt": {
+        "profile": "windows-job-resource-guards-v1",
+        "controls": [
+          {
+            "id": "job-user-not-direct-target-user",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "fc6b7e9210b9943dfafd0d7813d69c41346ccc1715940c2197b5bc871b4cdc5f"
+          },
+          {
+            "id": "job-kernel-not-direct-target-kernel",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "e862f89fd8d70fa0605ddd4f6274550a9541512ce721f0a1e7cde4edace9ed57"
+          },
+          {
+            "id": "direct-working-set-not-commit",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "0e98873e34d76cbbd956cdf592e6fccf0908595a4fd997adc673608a5b37e7b1"
+          },
+          {
+            "id": "separate-native-cpu-fields",
+            "callback": "native Windows resource receipt binds direct CPU and working set separately from two reaped descendants and job CPU",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "9c815c7941d1dafa55268f084b00e253dccafef2d958be56d450d0382adb56c7"
+          },
+          {
+            "id": "fixed-source-digest-before-project",
+            "callback": "native Windows source integrity refuses changed fixed compiler bytes before project execution",
+            "originalPassed": true,
+            "javascriptParsed": true,
+            "mutantFailedUnchangedAssertion": true,
+            "restoredPassed": true,
+            "mutantSha256": "372ea773a942278df3a07ebfca5280371dbb74f3c8deee572b7518494399322e"
+          }
+        ],
+        "sourceSha256": "a630c81624b9196377a7989da9801162f1ef1da677e072f0d2cb83136eae4d21",
+        "callbackSha256": "0258562217a0b47ab6e44be1114dfc0357c546cf7897591b9f12570a777fa760",
+        "sourceRestored": true,
+        "callbacksUnchanged": true,
+        "complete": true,
+        "nativeQualificationRequired": true,
+        "inferenceInvoked": false
+      }
+    }
+  ],
+  "pairedControls": 20,
+  "originalMutantRestoredCallbackRuns": 60,
+  "requiredNativeCallbacksSkipped": 0,
+  "localFullCheck": {
+    "command": "npm run check",
+    "sourceCommit": "348642d61ea35da04aaa9785679e44857a245f49",
+    "passed": 1374,
+    "failed": 0,
+    "skipped": 759,
+    "cancelled": 0,
+    "tests": 2133,
+    "elapsedSeconds": 698.584253,
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "26.9.0",
+    "selectedRuntimeSlot": null
+  },
+  "selectedWholeRuntimeQualificationComplete": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

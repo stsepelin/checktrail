@@ -368,6 +368,7 @@ test("native invocation retains mirror failures before and after native exit and
     const delivered: Buffer[] = [];
     const callerErrors: Error[] = [];
     let lateErrorObserved: (() => void) | undefined;
+    let releaseLateError: (() => void) | undefined;
     const lateError = new Promise<void>((resolve) => {
       lateErrorObserved = resolve;
     });
@@ -383,11 +384,9 @@ test("native invocation retains mirror failures before and after native exit and
           throw Object.assign(Error("synthetic"), { code: "EPIPE" });
         if (mode === "exited-stall") return;
         if (mode === "late-error") {
-          setTimeout(
-            () =>
-              callback(Object.assign(Error("synthetic"), { code: "EPIPE" })),
-            2500,
-          );
+          // Release only after the real native timeout and cleanup have returned.
+          releaseLateError = () =>
+            callback(Object.assign(Error("synthetic"), { code: "EPIPE" }));
           return;
         }
         const finish = () => {
@@ -446,8 +445,11 @@ test("native invocation retains mirror failures before and after native exit and
       if (mode === "late-error") {
         assert.deepEqual(sink.listeners("error"), [callerError]);
         assert.deepEqual(callerErrors, []);
+        assert.ok(releaseLateError);
+        releaseLateError();
         await lateError;
         await new Promise<void>((resolve) => setImmediate(resolve));
+        assert.equal(result.error?.code, "NATIVE_TIMEOUT");
       }
       assert.deepEqual(sink.listeners("error"), [callerError]);
       assert.equal(sink.listenerCount("drain"), 0);
@@ -684,7 +686,10 @@ test("native wrapper output adapter rejects invalid modes before admission and k
     assert.equal(store.read().attempts.length, 0);
     for (const [kind, bound, timeout] of [
       ["output", 3, 10000],
-      ["deadline", 64, 200],
+      // This case asserts a reached physical prefix before the invocation's
+      // deadline. Cold child startup on loaded native runners is not bounded by
+      // 200 ms; retain a finite fixture allowance before testing timeout cleanup.
+      ["deadline", 64, 5000],
     ] as const) {
       const value = await invokeNativeOutput(
         process.execPath,

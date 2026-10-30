@@ -71,15 +71,19 @@ assert.deepEqual(runtime.versions, {
   "symfony/routing": "v8.1.6",
 });
 assert.ok(runtime.selectedRuntimeBytes.every((p) => p.matches));
-stage("legacy");
-const legacy = JSON.parse(
+stage("cache-bindings");
+const cacheBindings = JSON.parse(
   run([
     "node",
     "scripts/verify-required-native-tests.mjs",
-    "laravel",
-    "laravel-cache",
+    "laravel-cache-runtime-bindings",
   ]),
 );
+assert.equal(cacheBindings.required, 1);
+assert.equal(cacheBindings.passed, 1);
+assert.equal(cacheBindings.complete, true);
+stage("legacy");
+const legacy = JSON.parse(run(["node", "scripts/verify-laravel-cache.mjs"]));
 assert.equal(legacy.required, 9);
 assert.equal(legacy.passed, 9);
 assert.equal(legacy.complete, true);
@@ -138,12 +142,32 @@ const installed = JSON.parse(
 );
 assert.equal(installed.profile.passed, 9);
 assert.equal(installed.profile.complete, true);
+stage("cache-installed");
+const cacheInstalledLines = run([
+  "/bin/sh",
+  "-c",
+  "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache && node scripts/verify-laravel-cache-package.mjs",
+])
+  .trim()
+  .split("\n");
+assert.equal(cacheInstalledLines.length, 2);
+const cacheInstalled = JSON.parse(cacheInstalledLines[1]);
+assert.equal(cacheInstalled.profile.passed, 9);
+assert.equal(cacheInstalled.profile.complete, true);
+assert.equal(cacheInstalled.harnessSha256, legacy.harnessSha256);
+assert.equal(
+  cacheInstalled.profile.compiledEngine.treeSha256,
+  legacy.compiledEngine.treeSha256,
+);
+assert.deepEqual(cacheInstalled.profile.runtime, legacy.runtime);
 stage("complete");
 process.stdout.write(
   JSON.stringify({
     runtime,
     image,
     legacy,
+    cacheBindings,
+    cacheInstalled,
     preparedCache,
     source,
     guards,

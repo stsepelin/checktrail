@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "scope": "Pinned public template/writer candidates and retained debug-document observations for an original byte projection; actual producer SDK and evaluated build remain unverified.",
+  "retainedInputs": [
+    {
+      "file": "fantomas-generator-inputs/fcs-Microsoft.FSharp.Targets",
+      "bytes": 30254,
+      "sha256": "0f55b72765941b18ba5d16b951c32b341b7611a924cb02c33a0a644402e71f46",
+      "role": "fcs-targets",
+      "sourceRepository": "dotnet/fsharp",
+      "sourceCommit": "5e9647f158fe282462aba57ed83ada910a91b90e",
+      "sourceMember": "src/FSharp.Build/Microsoft.FSharp.Targets",
+      "gitBlobSha1": "a225e8861e85b784b477d187f37f1c08f075ea1a",
+      "sourceUrl": "https://github.com/dotnet/fsharp/blob/5e9647f158fe282462aba57ed83ada910a91b90e/src/FSharp.Build/Microsoft.FSharp.Targets"
+    },
+    {
+      "file": "fantomas-generator-inputs/core-Microsoft.FSharp.Targets",
+      "bytes": 30205,
+      "sha256": "1d2a9be5855677b8f2c83d313d78db39ffdf6ce54820d34e2aa8b2bb1a69c5b3",
+      "role": "core-targets",
+      "sourceRepository": "dotnet/dotnet",
+      "sourceCommit": "c23858a6d860abe3ca94f9ac630c3e61b2625664",
+      "sourceMember": "src/fsharp/src/FSharp.Build/Microsoft.FSharp.Targets",
+      "gitBlobSha1": "9049f2f71187c669dd191cba7785f90f280b7e7c",
+      "sourceUrl": "https://github.com/dotnet/dotnet/blob/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/fsharp/src/FSharp.Build/Microsoft.FSharp.Targets"
+    },
+    {
+      "file": "fantomas-generator-inputs/WriteLinesToFile.cs",
+      "bytes": 16530,
+      "sha256": "e6094cec83811f8c49fe92544fd477e30959fd6170f1d93c0aae0b83f30a5cf9",
+      "role": "writer-source",
+      "sourceRepository": "dotnet/dotnet",
+      "sourceCommit": "c23858a6d860abe3ca94f9ac630c3e61b2625664",
+      "sourceMember": "src/msbuild/src/Tasks/FileIO/WriteLinesToFile.cs",
+      "gitBlobSha1": "15b93fc25f0b7b390ce37395d93862e8ed0ddb76",
+      "sourceUrl": "https://github.com/dotnet/dotnet/blob/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/msbuild/src/Tasks/FileIO/WriteLinesToFile.cs"
+    },
+    {
+      "file": "fantomas-generator-inputs/msbuild-LICENSE.txt",
+      "bytes": 1117,
+      "sha256": "9aebac42398b50e652a84a7b92d70e85cd1a9c8746558a743dc6cec11b8d7d3e",
+      "role": "writer-license",
+      "sourceRepository": "dotnet/dotnet",
+      "sourceCommit": "c23858a6d860abe3ca94f9ac630c3e61b2625664",
+      "sourceMember": "src/msbuild/LICENSE",
+      "gitBlobSha1": "55e3030dcb40eb191f0297f9e63714d81f7c8a9e",
+      "sourceUrl": "https://github.com/dotnet/dotnet/blob/c23858a6d860abe3ca94f9ac630c3e61b2625664/src/msbuild/LICENSE"
+    },
+    {
+      "file": "fantomas-fcs-upstream-LICENSE.txt",
+      "bytes": 1106,
+      "sha256": "480d420fd388a3ce0cecb73d79aee3f02f70fee060e95f4727b1335feff33201",
+      "role": "fsharp-license",
+      "sourceCommits": [
+        "5e9647f158fe282462aba57ed83ada910a91b90e",
+        "c23858a6d860abe3ca94f9ac630c3e61b2625664"
+      ],
+      "sourceMember": "License.txt (FCS repository) / src/fsharp/License.txt (Core SourceLink repository)"
+    },
+    {
+      "file": "fantomas-source-observations.json",
+      "bytes": 149821,
+      "sha256": "6a6c322acf4685728636896cba9e0d0267a229278ccad6814089cf585e1aa498",
+      "role": "debug-documents"
+    }
+  ]
+}
