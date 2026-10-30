@@ -37,15 +37,6 @@ macOS slots and exact OS-image/tool identities still require native acceptance.
 A repository license label and a selected grammar commit do not replace the
 required source/archive/notice inspection.
 
-Gate A retains full upstream producer-build closure for the selected artifacts,
-including compiler, SDK and bootstrap build inputs and complete original notices.
-Verified pinned releases, payload reconstruction and source attribution contribute
-to that evidence. Unreproduced producer builds and unknown inputs remain open
-Gate A work; they are not deferred to a later gate.
-The finite [original producer-build controller](UPSTREAM-PRODUCER-BUILDS.md)
-prepares a fixed binutils package build with explicit native execution admission.
-Its synthetic orchestration controls do not qualify a native producer or close
-the upstream ancestry and original-notice requirements.
 Context collection must remain
 non-evaluating; dynamic dispatch, unsupported syntax and exhausted capture retain
 conservative impact fallback.
@@ -55,6 +46,13 @@ including compiler, SDK and bootstrap build inputs and complete original notices
 Verified pinned releases, payload reconstruction and source attribution contribute
 to that evidence. Unreproduced producer builds and unknown inputs remain open
 Gate A work; upstream reproducibility is not deferred to a later gate.
+
+The finite [original producer-build controller](UPSTREAM-PRODUCER-BUILDS.md)
+prepares a fixed binutils package build with explicit native execution admission.
+It retains DejaGNU and Automake result files with separately bound original logs;
+complete PGO/check-phase selection remains unassessed. Synthetic orchestration
+controls and signed input preparation do not qualify a native producer or close
+the upstream ancestry and original-notice requirements.
 
 Original structural and compiling-control evidence is recorded in
 [gate-inventory-2026-10-07.json](measurements/gate-inventory-2026-10-07.json).

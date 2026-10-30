@@ -234,33 +234,12 @@ export async function caseSensitiveParent(parent) {
     await rm(probe, { recursive: true, force: true });
   }
 }
-export async function summarizeReports(value, root, minimum) {
-  await physicalPath(root, true);
-  assert.equal(value.schemaVersion, 1);
-  assert.equal(value.completeConfigurationInventoryAssessed, false);
-  assert.ok(Array.isArray(value.reports) && value.reports.length <= 1024);
-  const names = new Set();
-  let failing = false;
-  let observed = false;
-  let everyReportObserved = true;
-  for (const row of value.reports) {
-    assert.ok(
-      relative(row.file) &&
-        row.file.startsWith(row.configuration + "/") &&
-        /^builddir-[A-Za-z0-9_-]+$/.test(row.configuration) &&
-        row.file.endsWith(".sum") &&
-        !names.has(row.file),
-    );
-    names.add(row.file);
-    const raw = await boundedPhysicalBytes(path.join(root, row.file), 1048576);
-    assert.deepEqual(
-      { bytes: raw.length, sha256: sha(raw) },
-      { bytes: row.bytes, sha256: row.sha256 },
-      "Original report byte identity mismatch",
-    );
-    const lines = raw.length ? raw.toString("latin1").split(/\r\n|\n|\r/) : [];
-    if (raw.length && /[\r\n]$/.test(raw.toString("latin1"))) lines.pop();
-    const derived = {
+function originalReportOutcomes(raw, format) {
+  const text = raw.toString("latin1");
+  const lines = raw.length ? text.split(/\r\n|\n|\r/) : [];
+  if (raw.length && /[\r\n]$/.test(text)) lines.pop();
+  if (format === "dejagnu") {
+    const counts = {
       PASS: 0,
       FAIL: 0,
       XFAIL: 0,
@@ -276,35 +255,104 @@ export async function summarizeReports(value, root, minimum) {
         /^(PASS|FAIL|XFAIL|XPASS|UNSUPPORTED|UNRESOLVED|UNTESTED|ERROR):(?:[ \t\f\v]|$)/.exec(
           line,
         );
-      if (match) derived[match[1]]++;
+      if (match) counts[match[1]]++;
       else other++;
     }
+    return { counts, other, total: lines.length, metadata: undefined };
+  }
+  const metadata = {};
+  for (const line of lines) {
+    const match =
+      /^:(test-result|global-test-result|recheck|copy-in-global-log): ([A-Za-z]+)$/.exec(
+        line,
+      );
+    assert.ok(
+      match && !Object.hasOwn(metadata, match[1]),
+      "Original Automake result has unknown or duplicate fields",
+    );
+    metadata[match[1]] = match[2];
+  }
+  const keys = ["PASS", "FAIL", "XFAIL", "XPASS", "SKIP", "ERROR"];
+  const result = metadata["test-result"];
+  assert.deepEqual(
+    Object.keys(metadata).sort(),
+    [
+      "test-result",
+      "global-test-result",
+      "recheck",
+      "copy-in-global-log",
+    ].sort(),
+    "Original Automake result has missing fields",
+  );
+  assert.ok(keys.includes(result), "Original Automake result is unsupported");
+  assert.equal(
+    metadata["global-test-result"],
+    result,
+    "Original Automake global result is inconsistent",
+  );
+  assert.equal(
+    metadata.recheck,
+    ["FAIL", "XPASS", "ERROR"].includes(result) ? "yes" : "no",
+    "Original Automake recheck is inconsistent",
+  );
+  assert.equal(
+    metadata["copy-in-global-log"],
+    result === "PASS" ? "no" : "yes",
+    "Original Automake log inclusion is inconsistent",
+  );
+  return {
+    counts: Object.fromEntries(
+      keys.map((key) => [key, Number(key === result)]),
+    ),
+    other: lines.length - 1,
+    total: lines.length,
+    metadata,
+  };
+}
+export async function summarizeReports(value, root, minimum) {
+  await physicalPath(root, true);
+  assert.equal(value.schemaVersion, 1);
+  assert.equal(value.completeConfigurationInventoryAssessed, false);
+  assert.ok(Array.isArray(value.reports) && value.reports.length <= 1024);
+  const names = new Set();
+  let failing = false;
+  let observed = false;
+  let everyReportObserved = true;
+  for (const row of value.reports) {
+    const format = row.format ?? "dejagnu";
+    assert.ok(
+      relative(row.file) &&
+        row.file.startsWith(row.configuration + "/") &&
+        /^builddir-[A-Za-z0-9_-]+$/.test(row.configuration) &&
+        ((format === "dejagnu" && row.file.endsWith(".sum")) ||
+          (format === "automake-trs" && row.file.endsWith(".trs"))) &&
+        !names.has(row.file),
+    );
+    names.add(row.file);
+    const raw = await boundedPhysicalBytes(path.join(root, row.file), 1048576);
+    assert.deepEqual(
+      { bytes: raw.length, sha256: sha(raw) },
+      { bytes: row.bytes, sha256: row.sha256 },
+      "Original report byte identity mismatch",
+    );
+    const derived = originalReportOutcomes(raw, format);
     assert.deepEqual(
       row.counts,
-      derived,
+      derived.counts,
       "Original test outcomes differ from physical report bytes",
     );
-    assert.equal(row.otherLines, other);
-    assert.equal(row.totalLines, lines.length);
-
+    assert.deepEqual(
+      row.metadata,
+      derived.metadata,
+      "Original Automake metadata differs from physical report bytes",
+    );
+    assert.equal(row.otherLines, derived.other);
+    assert.equal(row.totalLines, derived.total);
     assert.ok(
       Number.isSafeInteger(row.bytes) &&
         row.bytes >= 0 &&
         row.bytes <= 1048576 &&
         /^[a-f0-9]{64}$/.test(row.sha256),
-    );
-    assert.deepEqual(
-      Object.keys(row.counts).sort(),
-      [
-        "PASS",
-        "FAIL",
-        "XFAIL",
-        "XPASS",
-        "UNSUPPORTED",
-        "UNRESOLVED",
-        "UNTESTED",
-        "ERROR",
-      ].sort(),
     );
     const counts = Object.values(row.counts);
     assert.ok(counts.every((n) => Number.isSafeInteger(n) && n >= 0));
@@ -319,12 +367,35 @@ export async function summarizeReports(value, root, minimum) {
       row.totalLines,
       "Original report line accounting does not partition",
     );
+    if (row.log !== undefined) {
+      assert.equal(
+        row.log.file,
+        row.file.slice(0, -4) + ".log",
+        "Original report log does not match its result path",
+      );
+      assert.ok(!names.has(row.log.file), "Duplicate original report/log");
+      const log = await boundedPhysicalBytes(
+        path.join(root, row.log.file),
+        8 * 1048576,
+      );
+      assert.deepEqual(
+        { bytes: log.length, sha256: sha(log) },
+        { bytes: row.log.bytes, sha256: row.log.sha256 },
+        "Original log byte identity mismatch",
+      );
+      names.add(row.log.file);
+    } else
+      assert.notEqual(
+        format,
+        "automake-trs",
+        "Original Automake log is missing",
+      );
     observed ||= row.counts.PASS + row.counts.XFAIL > 0;
     everyReportObserved &&= row.counts.PASS + row.counts.XFAIL > 0;
     failing ||=
       row.counts.FAIL +
         row.counts.XPASS +
-        row.counts.UNRESOLVED +
+        (row.counts.UNRESOLVED ?? 0) +
         row.counts.ERROR >
       0;
   }
@@ -536,7 +607,10 @@ async function boundedPhysicalBytes(file, maximum) {
   const handle = await open(file, constants.O_RDONLY | constants.O_NOFOLLOW);
   try {
     const before = await handle.stat({ bigint: true });
-    assert.ok(before.isFile() && before.size <= BigInt(maximum));
+    assert.ok(
+      before.isFile() && before.size <= BigInt(maximum),
+      "Physical JSON/report is nonregular or exceeds its byte bound",
+    );
     const buffer = Buffer.alloc(maximum + 1);
     let size = 0;
     while (size < buffer.length) {

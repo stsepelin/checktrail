@@ -2814,8 +2814,8 @@
     },
     {
       "file": "binutils-test-reports.py",
-      "bytes": 2681,
-      "sha256": "dbafac9542395e0ae625ed5f5ce5224fb085ae8f3fb54d209fa4d04be175a7f2"
+      "bytes": 5304,
+      "sha256": "83cd37b58f920aa96bb85d8c0c3ceed329cdc9bea41ce433070ecc10b1df3e5f"
     },
     {
       "file": "binutils-expectations.v1.json",

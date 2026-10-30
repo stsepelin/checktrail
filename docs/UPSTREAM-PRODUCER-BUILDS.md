@@ -93,9 +93,15 @@ compiler builds alongside the timing-sensitive local native test suite.
 
 The private result directory retains `receipt.json`, bounded original process
 output, exact output-package identities, the original case-preserving build tree
-and per-file `.sum` report identities/counts. Repeated configurations are not
-pooled into independent tests. Missing/empty reports and unexpected test outcomes
-cannot count as passing evidence. The report collector records observed generated
+and per-file DejaGNU `.sum` and Automake `.trs` identities/counts. Associated
+logs are retained and byte-bound separately; an Automake result requires its log.
+Result files are limited to 1 MiB each and logs to 8 MiB each, beneath the aggregate
+retention bound. The reader independently rederives all status/metadata fields
+from physical bytes, including Automake skip, unexpected-pass and error outcomes.
+A passed report cannot cover for another report with no executed non-skipped test.
+Repeated configurations are not pooled into independent tests. Missing/empty
+reports, contradictory metadata and unexpected outcomes cannot count as passing
+evidence. Complete PGO/Automake phase selection remains separately unassessed. The report collector records observed generated
 `builddir-*` configurations; it does not assert an independently complete
 configuration inventory.
 
