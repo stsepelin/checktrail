@@ -28,6 +28,8 @@ const generic = new Set([
   "scripts/consumer-witness-data.mjs",
   "scripts/consumer-witness-swift.mjs",
   "scripts/consumer-witness-project.mjs",
+  "scripts/consumer-native-acceptance-scope.mjs",
+  "scripts/consumer-native-acceptance-frame.mjs",
   "scripts/selected-clang-consumer-witness.mjs",
   "test/selected-clang-consumer-fixture.ts",
   "scripts/consumer-witness-project-controller.mjs",
