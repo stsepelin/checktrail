@@ -21,6 +21,13 @@ outside the production installation. Compiled engine, harness, runtime, package
 and lock bindings accompany the observation. Missing, duplicated, skipped,
 changed or foreign receipts fail admission.
 
+Runtime admission also pins the acceptance test file before and after execution
+and reconciles each required case with its passed terminal event, file identity
+and sequence. Matching callback names and totals alone cannot admit a foreign
+file ledger. Source and installed receipts use the same validator. The hosted
+core lanes run the evaluation cohort once per selected slot; the separate
+consumer-only Windows lane does not duplicate it.
+
 Run the synthetic source profile after building:
 
 ```sh

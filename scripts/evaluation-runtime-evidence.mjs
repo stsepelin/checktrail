@@ -134,6 +134,54 @@ const compactEngine = (full) => ({
   actualModuleLoadsTraced: false,
   producerSourceBuildVerified: false,
 });
+export function requireEvaluationTerminalCases(
+  p,
+  requirements,
+  acceptanceSha256,
+) {
+  assert.match(acceptanceSha256 ?? "", /^[a-f0-9]{64}$/);
+  assert.equal(p.complete, true, JSON.stringify(p.problems));
+  assert.deepEqual(p.problems, []);
+  assert.equal(p.required, 9);
+  assert.equal(p.passed, 9);
+  assert.equal(p.ledger.truncated, false);
+  assert.equal(p.ledger.cases.length, 9);
+  assert.equal(p.ledger.schemaVersion, 1);
+  assert.equal(p.ledger.files.length, 1);
+  const file = p.ledger.files[0];
+  assert.equal(typeof file.id, "string");
+  assert.ok(file.id.length > 0);
+  assert.equal(file.stable, true);
+  assert.deepEqual(file.before, { state: "present", sha256: acceptanceSha256 });
+  assert.deepEqual(file.after, file.before);
+  assert.equal(p.ledger.terminalEventCount, 9);
+  assert.equal(p.ledger.events.length, 9);
+  const events = new Map();
+  for (const event of p.ledger.events) {
+    assert.equal(event.fileId, file.id);
+    assert.equal(event.kind, "test");
+    assert.equal(event.outcome, "passed");
+    assert.equal(event.nameTruncated, false);
+    assert.equal(event.required, true);
+    assert.equal(Number.isSafeInteger(event.sequence), true);
+    assert.ok(event.sequence >= 1 && event.sequence <= 9);
+    assert.equal(events.has(event.name), false);
+    assert.equal(Number.isFinite(event.durationMs), true);
+    assert.ok(event.durationMs >= 0);
+    events.set(event.name, event);
+  }
+  assert.equal(new Set([...events.values()].map((e) => e.sequence)).size, 9);
+  for (const item of p.ledger.cases) {
+    assert.equal(item.fileId, file.id);
+    assert.ok(events.has(item.name));
+    assert.deepEqual(item.terminalSequences, [events.get(item.name).sequence]);
+  }
+
+  assert.deepEqual(
+    p.ledger.cases.map((c) => [c.name, c.outcome]).sort(),
+    requirements.map((c) => [c.name, "passed"]).sort(),
+  );
+}
 export function requireEvaluationRuntimeInstallation(receipt, expected) {
   assert.equal(receipt?.schemaVersion, 1);
   assert.equal(receipt?.profile, profileId);
@@ -167,6 +215,7 @@ export function requireEvaluationRuntimeInstallation(receipt, expected) {
     "harnessSha256",
     "requirementsSha256",
     "packageSha256",
+    "acceptanceSha256",
   ])
     assert.deepEqual(
       evidence[key],
@@ -178,19 +227,12 @@ export function requireEvaluationRuntimeInstallation(receipt, expected) {
     expected.compiledEngine,
     "Installed compiled engine changed",
   );
-  const check = (p) => {
-    assert.equal(p.complete, true);
-    assert.equal(p.required, 9);
-    assert.equal(p.passed, 9);
-    assert.equal(p.ledger.truncated, false);
-    assert.equal(p.ledger.cases.length, 9);
-    assert.deepEqual(
-      p.ledger.cases.map((c) => [c.name, c.outcome]).sort(),
-      expected.requirements.map((c) => [c.name, "passed"]).sort(),
+  for (const p of [receipt.profileEvidence, evidence.profileEvidence])
+    requireEvaluationTerminalCases(
+      p,
+      expected.requirements,
+      expected.acceptanceSha256,
     );
-  };
-  check(receipt.profileEvidence);
-  check(evidence.profileEvidence);
   assert.equal(evidence.inferenceInvoked, false);
   assert.equal(evidence.fieldEvaluationExecuted, false);
   assert.equal(evidence.gateAComplete, false);
@@ -285,6 +327,9 @@ export async function verifyEvaluationRuntime({
         hash(await readFile(path.join(root, f))),
       ]),
     );
+    const acceptanceSha256 = inputs.find(
+      ([file]) => file === requirements[0].file,
+    )?.[1];
     const harnessSha256 = hash(JSON.stringify(inputs)),
       requirementsSha256 = hash(JSON.stringify(requirements)),
       engineRoot = path.join(root, "dist/src"),
@@ -316,17 +361,10 @@ export async function verifyEvaluationRuntime({
       requirements.map((c) => ({ ...c, file: path.join(root, c.file) })),
       { timeoutMs: 600000 },
     );
-    assert.equal(
-      profileEvidence.complete,
-      true,
-      JSON.stringify(profileEvidence.problems),
-    );
-    assert.equal(profileEvidence.required, 9);
-    assert.equal(profileEvidence.passed, 9);
-    assert.equal(profileEvidence.ledger.truncated, false);
-    assert.equal(profileEvidence.ledger.cases.length, 9);
-    assert.ok(
-      profileEvidence.ledger.cases.every((c) => c.outcome === "passed"),
+    requireEvaluationTerminalCases(
+      profileEvidence,
+      requirements,
+      acceptanceSha256,
     );
     const compiledEngine = compactEngine(
       requireUnchangedCompiledEngine(
@@ -368,6 +406,7 @@ export async function verifyEvaluationRuntime({
       requireEvaluationRuntimeInstallation(installedEvidence, {
         runtime,
         harnessSha256,
+        acceptanceSha256,
         requirementsSha256,
         packageSha256,
         compiledEngine,
@@ -387,6 +426,7 @@ export async function verifyEvaluationRuntime({
       installed,
       compiledEngine,
       harnessSha256,
+      acceptanceSha256,
       requirementsSha256,
       packageSha256,
       inputSources: inputs,

@@ -6313,6 +6313,10 @@
     {
       "file": "dist/test/evaluation-runtime-evidence.test.js",
       "name": "CI independent evaluation runs each core runtime once keeps consumer-only lanes separate and requires completion"
+    },
+    {
+      "file": "dist/test/evaluation-runtime-evidence.test.js",
+      "name": "evaluation terminal evidence rejects foreign changed or forged file event and case bindings"
     }
   ],
   "windows-private-access-batch": [

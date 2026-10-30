@@ -214,11 +214,34 @@ function installation() {
     complete: true,
     required: 9,
     passed: 9,
+    problems: [],
     ledger: {
+      schemaVersion: 1,
       truncated: false,
-      cases: requirements.map((r: { name: string }) => ({
+      terminalEventCount: 9,
+      files: [
+        {
+          id: "file-1",
+          before: { state: "present", sha256: hex("9") },
+          after: { state: "present", sha256: hex("9") },
+          stable: true,
+        },
+      ],
+      events: requirements.map((r: { name: string }, index: number) => ({
+        sequence: index + 1,
+        fileId: "file-1",
+        kind: "test",
         name: r.name,
         outcome: "passed",
+        nameTruncated: false,
+        durationMs: 1,
+        required: true,
+      })),
+      cases: requirements.map((r: { name: string }, index: number) => ({
+        fileId: "file-1",
+        name: r.name,
+        outcome: "passed",
+        terminalSequences: [index + 1],
       })),
     },
   };
@@ -226,6 +249,7 @@ function installation() {
     runtime,
     compiledEngine,
     requirements,
+    acceptanceSha256: hex("9"),
     harnessSha256: hex("e"),
     requirementsSha256: hex("f"),
     packageSha256: hex("a"),
@@ -256,6 +280,7 @@ function installation() {
       profile: "independent-evaluation-runtime-v1",
       runtime,
       compiledEngine,
+      acceptanceSha256: expected.acceptanceSha256,
       harnessSha256: expected.harnessSha256,
       requirementsSha256: expected.requirementsSha256,
       packageSha256: expected.packageSha256,
@@ -306,6 +331,7 @@ test("evaluation runtime installation binds all current bytes observations and e
     ],
     ["runtime", (r) => (r.runtimeEvidence.runtime.imageVersion = "other")],
     ["inner-harness", (r) => (r.runtimeEvidence.harnessSha256 = hex("0"))],
+    ["acceptance-file", (r) => (r.runtimeEvidence.acceptanceSha256 = hex("0"))],
     ["requirements", (r) => (r.runtimeEvidence.requirementsSha256 = hex("0"))],
     ["package", (r) => (r.runtimeEvidence.packageSha256 = hex("0"))],
     ["engine", (r) => (r.runtimeEvidence.compiledEngine.treeSha256 = hex("0"))],
@@ -507,4 +533,67 @@ test("CI independent evaluation runs each core runtime once keeps consumer-only 
     assert.throws(() => validate(changed, controller), mode);
   }
   validate(workflow);
+});
+
+test("evaluation terminal evidence rejects foreign changed or forged file event and case bindings", () => {
+  const { expected, receipt } = installation();
+  const baseline = receipt.profileEvidence;
+  const requireEvidence = (p: typeof baseline) =>
+    harness.requireEvaluationTerminalCases(
+      p,
+      expected.requirements,
+      expected.acceptanceSha256,
+    );
+  requireEvidence(baseline);
+  const changes: [string, (p: typeof baseline) => void][] = [
+    ["problems", (p) => p.problems.push("Original unknown problem" as never)],
+    ["schema", (p) => (p.ledger.schemaVersion = 2)],
+    ["no-file", (p) => p.ledger.files.splice(0)],
+    [
+      "extra-file",
+      (p) => p.ledger.files.push(structuredClone(p.ledger.files[0]!)),
+    ],
+    ["foreign-hash", (p) => (p.ledger.files[0]!.before.sha256 = hex("0"))],
+    ["changed-hash", (p) => (p.ledger.files[0]!.after.sha256 = hex("0"))],
+    [
+      "coherent-foreign-hash",
+      (p) => {
+        p.ledger.files[0]!.before.sha256 = hex("0");
+        p.ledger.files[0]!.after.sha256 = hex("0");
+      },
+    ],
+    ["unavailable", (p) => (p.ledger.files[0]!.before.state = "unavailable")],
+    ["unstable", (p) => (p.ledger.files[0]!.stable = false)],
+    ["foreign-file", (p) => (p.ledger.events[0]!.fileId = "other")],
+    ["event-count", (p) => (p.ledger.terminalEventCount = 8)],
+    ["missing-event", (p) => p.ledger.events.pop()],
+    [
+      "extra-event",
+      (p) => p.ledger.events.push(structuredClone(p.ledger.events[0]!)),
+    ],
+    ["event-outcome", (p) => (p.ledger.events[0]!.outcome = "skipped")],
+    ["event-kind", (p) => (p.ledger.events[0]!.kind = "suite")],
+    ["event-required", (p) => (p.ledger.events[0]!.required = false)],
+    ["event-name", (p) => (p.ledger.events[0]!.name += " foreign")],
+    ["name-truncated", (p) => (p.ledger.events[0]!.nameTruncated = true)],
+    ["event-sequence", (p) => (p.ledger.events[0]!.sequence = 2)],
+    ["duration", (p) => (p.ledger.events[0]!.durationMs = -1)],
+    ["case-file", (p) => (p.ledger.cases[0]!.fileId = "other")],
+    ["case-sequence", (p) => (p.ledger.cases[0]!.terminalSequences = [2])],
+  ];
+  for (const [name, change] of changes) {
+    const changed = structuredClone(baseline);
+    change(changed);
+    assert.throws(() => requireEvidence(changed), name);
+    for (const inner of [false, true]) {
+      const altered = structuredClone(receipt);
+      if (inner) altered.runtimeEvidence.profileEvidence = changed;
+      else altered.profileEvidence = changed;
+      assert.throws(
+        () => harness.requireEvaluationRuntimeInstallation(altered, expected),
+        name,
+      );
+    }
+  }
+  requireEvidence(baseline);
 });
