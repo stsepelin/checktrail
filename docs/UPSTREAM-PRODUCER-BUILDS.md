@@ -18,7 +18,16 @@ container privileges and mounts; this is not a security sandbox for that code.
 lists every required relative filename, byte count and SHA-256. Arrange those
 exact public inputs beneath a separate bundle directory. Source download URLs
 are recorded for the original source descriptor and archives. Dependency files
-and signed APT metadata retain their exact selected filenames and hashes; the
+and signed APT metadata retain their exact selected filenames and hashes. The
+recipe also records explicit public download locations for the dependency archives,
+canonical Packages payloads checked against the pinned InRelease files, and the
+original developer source-signing keyring package and member. The developer
+keyring is distinct from the image-provided APT archive keyring. Empty generated
+lock files are classified separately from downloaded archives.
+
+These locations do not establish current remote availability. Exact signed
+metadata reacquisition and regeneration of the retained APT-compressed indexes
+remain unverified; arranging a bundle still requires its exact pinned bytes. The
 controller does not replace an expired or missing snapshot with current packages,
 disable authentication/freshness, or install on the host. Changed pins require a
 reviewable recipe revision. Extra bundle files are not staged or executed.
