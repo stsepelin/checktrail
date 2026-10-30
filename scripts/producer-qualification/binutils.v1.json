@@ -9,13 +9,7 @@
   },
   "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
   "platform": "linux/amd64",
-  "command": [
-    "dpkg-buildpackage",
-    "-b",
-    "-us",
-    "-uc",
-    "--jobs=4"
-  ],
+  "command": ["dpkg-buildpackage", "-b", "-us", "-uc", "--jobs=4"],
   "environment": {
     "HOME": "/work/home",
     "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
