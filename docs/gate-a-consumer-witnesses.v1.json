@@ -230,9 +230,9 @@
           "name": "context-csharp near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["src/policy/Policy.cs", "src/consumer/Consumer.cs"]
     },
     {
       "id": "fsharp",
@@ -253,9 +253,9 @@
           "name": "context-fsharp near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["src/policy/Policy.fs", "src/consumer/Consumer.fs"]
     },
     {
       "id": "vb",
@@ -276,9 +276,9 @@
           "name": "context-vb near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["src/policy/Policy.vb", "src/consumer/Consumer.vb"]
     },
     {
       "id": "ruby",

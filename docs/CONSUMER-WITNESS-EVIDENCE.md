@@ -1,10 +1,10 @@
 # Native consumer witness evidence
 
 The selected consumer-family manifest keeps nineteen required family boundaries
-visible. The first collector implementation covers the existing Go, Python, PHP,
-Rust, Ruby, C, C++, Java, Kotlin and Scala producer/consumer witness functions. Other families remain required and
-pending. This is development acceptance tooling, not a review-quality result or
-complete consumer-family qualification.
+visible. Families marked prepared have their original producer/consumer witness
+and controller hooks integrated. Other families remain required and pending.
+This is development acceptance tooling, not a review-quality result or complete
+consumer-family qualification.
 
 The optional test helper captures source bytes before and after the native
 invocation, the observed compiler/interpreter and executable bytes, bounded
@@ -94,3 +94,7 @@ must each contain the frozen version alone; additional versions cannot hide
 roll-forward selection. The pre-compiler seed contains the exact runtimeconfig
 and, for F#, its byte-matching copied FSharp.Core. Witness.dll must be produced
 after that seed and stay unchanged through the actual consumer invocation.
+
+C#/F#/VB now have their original fixture and OCI controller hooks integrated.
+Their compiler/runtime acceptance remains pending; a prepared hook, SDK label or
+synthetic control is not a selected native result.
