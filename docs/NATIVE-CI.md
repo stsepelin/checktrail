@@ -4,11 +4,14 @@
 
 Independent jobs and the OS/Node matrix are allowed to run in parallel. GitHub's
 account and runner capacity decides when queued jobs receive a runner. Steps
-within an individual job remain ordered. After the complete required suite, the
-OS/Node matrix runs the unchanged host mutation and fresh-package command sets
-in two concurrent lanes inside one runner. The mutation lane receives a private
-copy of tracked/unignored working source and compiled files; package checks use
-the unchanged checkout. Each lane has its own temporary namespace. Prepared
+within an individual job remain ordered. Separate host-validation jobs in the
+OS/Node matrix run the unchanged mutation and fresh-package command sets
+with at most two concurrent command workers inside one runner. Mutations run
+serially on a private copy of tracked/unignored source and compiled files. The
+other worker starts the package queue on the unchanged checkout. After all
+mutations finish and the copy's source bytes and inventory are restored, the
+mutation worker can take remaining package commands against that restored copy.
+Each command has its own temporary namespace and indexed log/receipt. Prepared
 dependencies and caches are reused; test results are not cached. Every package
 controller still performs its original fresh-install verification.
 
@@ -20,11 +23,13 @@ that is removed after execution. Adjacent filenames stay in the parallel wave;
 file and callback deadlines are unchanged. This scheduling boundary avoids
 competition with other full-suite files without weakening native cleanup checks.
 
-The controller waits for both lanes, rejects changed original inputs, and
+The controller waits for both workers, rejects changed original inputs, and
 requires restoration of mutation input bytes and inventory. The original command
 inventory is retained in a fixture and checked by the full suite. Output is
-bounded per command and retained in grouped CI logs. Cancellation and the bounded
-lane deadline stop owned descendants; incomplete or failed commands cannot yield
+bounded per command and retained in grouped CI logs. A failed command stops new
+admission while already-running peers finish; failed and unrun indices remain
+explicit. Cancellation and the unchanged 45-minute aggregate deadline stop owned
+descendants; incomplete or failed commands cannot yield
 a completed receipt. On the full verification path, the four matrix variants, full-suite command,
 native jobs, callback assertions and 75-minute job limit are unchanged.
 
@@ -904,3 +909,16 @@ See [ATTEMPT-ACCEPTANCE.md](ATTEMPT-ACCEPTANCE.md) for boundaries and the dated
 development observation. Newly wired hosted runs and final frozen matrix
 qualification remain unverified; Gate A and full upstream producer-build closure
 remain open.
+
+The FastAPI assembly cohort selects each of its nine exact callbacks in a fresh
+process. Pinned Node 22 applies its test-runner timeout to the whole file, unlike
+newer Node versions that can leave the file wrapper untimed. The selected native
+callback allowance remains 120 seconds. Only the exact installed callback at the
+canonical acceptance-file path receives five minutes to repeat the native cohort
+through a fresh offline installation. Adjacent names, foreign files, non-isolated
+batches and custom caller budgets retain their original allowances. Its installed
+wrapper has the same five-minute parent limit; the source container's enclosing
+observation has ten minutes and the final fresh-package host observation five.
+Lifecycle cancellation and output controls keep their fifteen-second native
+command limits, and the intentional timeout keeps four seconds. These are harness observation
+allowances, separate from project execution permission and native command limits.

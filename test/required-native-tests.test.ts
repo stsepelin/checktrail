@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
+import { fileURLToPath, URL } from "node:url";
 import { access, mkdir, readFile, writeFile, realpath } from "node:fs/promises";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
@@ -1433,7 +1434,7 @@ test("formatting acceptance CLI isolates exact callbacks without admitting an ad
   );
 });
 
-test("required native runner grants the installation budget only to exact isolated generator Ruby Swift mutation and archive installed callbacks", async (t) => {
+async function timerAdmissionFixture(t: import("node:test").TestContext) {
   const root = await realpath(await fixture(t, {}));
   const helper = path.join(root, "scripts/required-test-evidence.mjs");
   await mkdir(path.dirname(helper), { recursive: true });
@@ -1445,31 +1446,6 @@ test("required native runner grants the installation budget only to exact isolat
       new URL("../../scripts/required-test-evidence.mjs", import.meta.url),
     ),
   );
-  const profiles = [
-    "dotnet-generator-extensions",
-    "ruby-extensions",
-    "swift-extensions",
-    "mutation-runners",
-    "attempt-archives",
-  ];
-  const requirements = profiles.flatMap((profile) => {
-    const exact = path.join(root, "dist/test", `gate-${profile}.test.js`);
-    const adjacent = path.join(root, "other", `gate-${profile}.test.js`);
-    const installed = `${profile} installed acceptance`;
-    return [
-      { file: exact, name: installed },
-      { file: exact, name: `${profile} broken acceptance` },
-      { file: exact, name: installed + "-extra" },
-      { file: adjacent, name: installed },
-    ];
-  });
-  for (const file of new Set(requirements.map((item) => item.file))) {
-    await mkdir(path.dirname(file), { recursive: true });
-    await writeFile(
-      file,
-      "// Synthetic timer-admission fixture; no native acceptance.\n",
-    );
-  }
   const runner = path.join(root, "timer-admission.mjs");
   // Observe options at the actual node:test boundary without waiting twenty minutes.
   // Synthetic terminal events exercise harness accounting, not native acceptance.
@@ -1507,6 +1483,39 @@ const{runRequiredTests}=await import(helper);const report=await runRequiredTests
       calls: { files: string[]; timeout: number; patterns?: string[] }[];
     };
   };
+  const prepare = async (requirements: { file: string; name: string }[]) => {
+    for (const file of new Set(requirements.map((item) => item.file))) {
+      await mkdir(path.dirname(file), { recursive: true });
+      await writeFile(
+        file,
+        "// Synthetic timer-admission fixture; no native acceptance.\n",
+      );
+    }
+  };
+  return { root, invoke, prepare };
+}
+
+test("required native runner grants the installation budget only to exact isolated generator Ruby Swift mutation and archive installed callbacks", async (t) => {
+  const { root, invoke, prepare } = await timerAdmissionFixture(t);
+  const profiles = [
+    "dotnet-generator-extensions",
+    "ruby-extensions",
+    "swift-extensions",
+    "mutation-runners",
+    "attempt-archives",
+  ];
+  const requirements = profiles.flatMap((profile) => {
+    const exact = path.join(root, "dist/test", `gate-${profile}.test.js`);
+    const adjacent = path.join(root, "other", `gate-${profile}.test.js`);
+    const installed = `${profile} installed acceptance`;
+    return [
+      { file: exact, name: installed },
+      { file: exact, name: `${profile} broken acceptance` },
+      { file: exact, name: installed + "-extra" },
+      { file: adjacent, name: installed },
+    ];
+  });
+  await prepare(requirements);
   const admitted = invoke(requirements);
   assert.equal(admitted.report.complete, true, JSON.stringify(admitted));
   assert.equal(admitted.report.required, requirements.length);
@@ -1533,6 +1542,40 @@ const{runRequiredTests}=await import(helper);const report=await runRequiredTests
   const batch = invoke(requirements, 600000, 0);
   assert.equal(batch.calls.length, 1);
   assert.equal(batch.calls[0]!.timeout, 600000);
+});
+
+test("FastAPI installed observer admission preserves exact paths names isolation and caller budgets", async (t) => {
+  const { root, invoke, prepare } = await timerAdmissionFixture(t);
+  const exact = path.join(root, "dist/test/gate-assembly-fastapi.test.js");
+  const foreign = path.join(root, "other/gate-assembly-fastapi.test.js");
+  const installed = "assembly-fastapi installed acceptance";
+  const requirements = [
+    { file: exact, name: installed },
+    { file: exact, name: "assembly-fastapi broken acceptance" },
+    { file: exact, name: installed + "-extra" },
+    { file: foreign, name: installed },
+  ];
+  await prepare(requirements);
+  const admitted = invoke(requirements, 120000);
+  assert.equal(admitted.report.complete, true, JSON.stringify(admitted));
+  assert.equal(admitted.report.required, 4);
+  assert.equal(admitted.report.passed, 4);
+  assert.deepEqual(
+    admitted.calls.map((call) => call.timeout),
+    [300000, 120000, 120000, 120000],
+  );
+  assert.ok(admitted.calls.every((call) => call.patterns?.length === 1));
+  for (const budget of [1000, 119999, 120001, 600000]) {
+    const custom = invoke(requirements, budget);
+    assert.deepEqual(
+      custom.calls.map((call) => call.timeout),
+      requirements.map(() => budget),
+    );
+  }
+  const batch = invoke(requirements, 120000, 0);
+  assert.equal(batch.report.complete, true);
+  assert.equal(batch.calls.length, 1);
+  assert.equal(batch.calls[0]!.timeout, 120000);
 });
 
 test("named required case progress identifies starts and terminal failures without crediting absent or skipped cases", async (t) => {
@@ -1662,3 +1705,56 @@ else {console.log(${JSON.stringify(JSON.stringify(ledger))});process.exitCode=7;
     assert.deepEqual(JSON.parse(result.stdout), ledger);
   },
 );
+
+test("FastAPI controller admits the source and installed composite windows while keeping other phases bounded", async (t) => {
+  const root = await fixture(t, {
+    "observe-controller.mjs": `
+import{registerHooks}from'node:module';import{pathToFileURL}from'node:url';
+const target=pathToFileURL(process.argv[2]).href;globalThis.originalObserverCalls=[];
+// Observe fixed subprocess arguments only. These synthetic results are not native receipts.
+const stub=String.raw\`export function execFileSync(command,args,options){globalThis.originalObserverCalls.push({command,args,timeout:options?.timeout??null});if(command==='npm')return '/synthetic/cache';if(command==='docker'){const text=args.join(' ');if(text.includes('from importlib.metadata import version'))return JSON.stringify({python:'3.12.13',packages:{fastapi:'0.141.1',starlette:'1.6.0',pydantic:'2.13.5'}});if(text.includes('readFileSync(process.execPath)'))return JSON.stringify({version:'v22.23.2',platform:'linux',arch:'arm64'});if(text.includes('prepare-acceptance-cache-subset'))return JSON.stringify({lockedRegistryTarballs:1,bytes:1,registryMetadataCopied:false,historicalLocalPackageTarballsCopied:false})+'\\n'+JSON.stringify({complete:true,passed:9});if(text.includes('verify-fastapi-assembly-guards.mjs'))return JSON.stringify({controls:Array.from({length:37},()=>({originalPassed:true,mutantCompiled:true,mutantFailedAssertion:true,restoredPassed:true}))});if(text.includes('frameworks'))return JSON.stringify({required:8,passed:8,complete:true});if(text.includes('review-fastapi-assembly-guards.test.js'))return '# pass 10\\n# fail 0\\n# skipped 0\\n';if(text.includes('fastapi.test.js'))return '# pass 1\\n# fail 0\\n# skipped 0\\n';}if(command===process.execPath&&args[0]==='scripts/verify-import-context-package.mjs')return JSON.stringify({profile:{complete:true,passed:9}});throw Error('Unexpected fixed controller command');}\`;
+registerHooks({resolve(specifier,context,next){return specifier==='node:child_process'&&context.parentURL===target?{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true}:next(specifier,context)}});
+process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_IMAGE='synthetic-operator-image';process.env.CHECKTRAIL_TEST_TASK='synthetic-observer-control';await import(target);console.log(JSON.stringify({calls:globalThis.originalObserverCalls}));
+`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const observed = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "observe-controller.mjs"),
+      fileURLToPath(
+        new URL(
+          "../../scripts/verify-fastapi-assembly-container.mjs",
+          import.meta.url,
+        ),
+      ),
+    ],
+    { env, encoding: "utf8", timeout: 10000 },
+  );
+  assert.equal(observed.status, 0, observed.stdout + observed.stderr);
+  const last = JSON.parse(observed.stdout.trim().split("\n").at(-1)!) as {
+    calls: { command: string; args: string[]; timeout: number | null }[];
+  };
+  const docker = last.calls.filter((call) => call.command === "docker");
+  assert.equal(docker.length, 7);
+  const source = docker.filter((call) =>
+    call.args.some((value) =>
+      value.includes("prepare-acceptance-cache-subset"),
+    ),
+  );
+  assert.equal(source.length, 1);
+  assert.equal(source[0]!.timeout, 600000);
+  assert.ok(
+    docker
+      .filter((call) => call !== source[0])
+      .every((call) => call.timeout === 300000),
+  );
+  const installed = last.calls.filter(
+    (call) =>
+      call.command === process.execPath &&
+      call.args[0] === "scripts/verify-import-context-package.mjs",
+  );
+  assert.equal(installed.length, 1);
+  assert.equal(installed[0]!.timeout, 300000);
+});

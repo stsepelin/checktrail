@@ -2425,6 +2425,14 @@
     {
       "file": "dist/test/required-native-tests.test.js",
       "name": "named callback isolation preserves complete cohorts beyond one file window with a physical process per case"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "FastAPI installed observer admission preserves exact paths names isolation and caller budgets"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "FastAPI controller admits the source and installed composite windows while keeping other phases bounded"
     }
   ],
   "review-paired-scoring": [

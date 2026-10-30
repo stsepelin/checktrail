@@ -522,7 +522,7 @@ else:
 );
 test(
   "assembly-fastapi installed acceptance",
-  { skip, timeout: 120000 },
+  { skip, timeout: 300000 },
   async () => {
     if (process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_INSTALLED === "1") {
       const engine = await realpath(
@@ -552,7 +552,7 @@ test(
           ),
         ),
       ],
-      { env, encoding: "utf8", timeout: 120000, maxBuffer: 4 * 1048576 },
+      { env, encoding: "utf8", timeout: 300000, maxBuffer: 4 * 1048576 },
     );
     assert.equal(result.status, 0, result.stdout + result.stderr);
     const receipt = JSON.parse(result.stdout.trim().split("\n").at(-1)!);
