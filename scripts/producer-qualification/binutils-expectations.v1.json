@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "scope": "Static source-derived minimum for the exact native amd64 Debian binutils original default command, with no TARGET/BACKPORT/DEB_BUILD_OPTIONS feature or check suppression. This is not a complete upstream PGO/Automake test inventory.",
+  "source": {
+    "archive": {
+      "file": "source/binutils/binutils_2.40-2.debian.tar.xz",
+      "bytes": 102476,
+      "sha256": "a71c03e51d7ac2be8d97daa29dc02e578978c8eeddfd51045502fd008cec8adc",
+      "sourceUrl": "https://deb.debian.org/debian/pool/main/b/binutils/binutils_2.40-2.debian.tar.xz"
+    },
+    "member": "debian/rules",
+    "retainedFile": "binutils-debian-rules.txt",
+    "bytes": 76324,
+    "sha256": "e54a2c11379523a780256c614c0f650ba558a2e03a90b8457eaa0ae3db0f9358",
+    "targetOverrideFileAbsentFromOriginalArchive": true
+  },
+  "buildConfigurations": [
+    "builddir-single",
+    "builddir-multi",
+    "builddir-hppa64",
+    "builddir-i386",
+    "builddir-x32",
+    "builddir-s390x",
+    "builddir-ppc64el",
+    "builddir-arm64",
+    "builddir-armhf",
+    "builddir-armel",
+    "builddir-alpha",
+    "builddir-arc",
+    "builddir-hppa",
+    "builddir-m68k",
+    "builddir-powerpc",
+    "builddir-ppc64",
+    "builddir-sh4",
+    "builddir-sparc64",
+    "builddir-ia64",
+    "builddir-riscv64",
+    "builddir-kfreebsd-amd64",
+    "builddir-kfreebsd-i386",
+    "builddir-hurd-i386"
+  ],
+  "minimumExplicitPackageCheckReports": [
+    "builddir-single/binutils/binutils.sum",
+    "builddir-single/gas/testsuite/gas.sum",
+    "builddir-single/ld/ld.sum",
+    "builddir-i386/binutils/binutils.sum",
+    "builddir-i386/gas/testsuite/gas.sum",
+    "builddir-i386/ld/ld.sum",
+    "builddir-x32/binutils/binutils.sum",
+    "builddir-x32/gas/testsuite/gas.sum",
+    "builddir-x32/ld/ld.sum",
+    "builddir-s390x/binutils/binutils.sum",
+    "builddir-s390x/gas/testsuite/gas.sum",
+    "builddir-s390x/ld/ld.sum",
+    "builddir-ppc64el/binutils/binutils.sum",
+    "builddir-ppc64el/gas/testsuite/gas.sum",
+    "builddir-ppc64el/ld/ld.sum",
+    "builddir-arm64/binutils/binutils.sum",
+    "builddir-arm64/gas/testsuite/gas.sum",
+    "builddir-arm64/ld/ld.sum",
+    "builddir-armhf/binutils/binutils.sum",
+    "builddir-armhf/gas/testsuite/gas.sum",
+    "builddir-armhf/ld/ld.sum",
+    "builddir-armel/binutils/binutils.sum",
+    "builddir-armel/gas/testsuite/gas.sum",
+    "builddir-armel/ld/ld.sum",
+    "builddir-alpha/binutils/binutils.sum",
+    "builddir-alpha/gas/testsuite/gas.sum",
+    "builddir-alpha/ld/ld.sum",
+    "builddir-arc/binutils/binutils.sum",
+    "builddir-arc/gas/testsuite/gas.sum",
+    "builddir-arc/ld/ld.sum",
+    "builddir-hppa/binutils/binutils.sum",
+    "builddir-hppa/gas/testsuite/gas.sum",
+    "builddir-hppa/ld/ld.sum",
+    "builddir-m68k/binutils/binutils.sum",
+    "builddir-m68k/gas/testsuite/gas.sum",
+    "builddir-m68k/ld/ld.sum",
+    "builddir-powerpc/binutils/binutils.sum",
+    "builddir-powerpc/gas/testsuite/gas.sum",
+    "builddir-powerpc/ld/ld.sum",
+    "builddir-ppc64/binutils/binutils.sum",
+    "builddir-ppc64/gas/testsuite/gas.sum",
+    "builddir-ppc64/ld/ld.sum",
+    "builddir-sh4/binutils/binutils.sum",
+    "builddir-sh4/gas/testsuite/gas.sum",
+    "builddir-sh4/ld/ld.sum",
+    "builddir-sparc64/binutils/binutils.sum",
+    "builddir-sparc64/gas/testsuite/gas.sum",
+    "builddir-sparc64/ld/ld.sum",
+    "builddir-ia64/binutils/binutils.sum",
+    "builddir-ia64/gas/testsuite/gas.sum",
+    "builddir-ia64/ld/ld.sum",
+    "builddir-riscv64/binutils/binutils.sum",
+    "builddir-riscv64/gas/testsuite/gas.sum",
+    "builddir-riscv64/ld/ld.sum",
+    "builddir-kfreebsd-amd64/binutils/binutils.sum",
+    "builddir-kfreebsd-amd64/gas/testsuite/gas.sum",
+    "builddir-kfreebsd-amd64/ld/ld.sum",
+    "builddir-kfreebsd-i386/binutils/binutils.sum",
+    "builddir-kfreebsd-i386/gas/testsuite/gas.sum",
+    "builddir-kfreebsd-i386/ld/ld.sum",
+    "builddir-hurd-i386/binutils/binutils.sum",
+    "builddir-hurd-i386/gas/testsuite/gas.sum",
+    "builddir-hurd-i386/ld/ld.sum"
+  ],
+  "buildOnlyConfigurationsWithoutExplicitPackageCheck": [
+    "builddir-multi",
+    "builddir-hppa64"
+  ],
+  "selectionReferences": [
+    {
+      "lines": [134, 168],
+      "decision": "Native amd64 CROSS_ARCHS list, excluding host amd64"
+    },
+    {
+      "lines": [170, 187],
+      "decision": "hppa64 and multiarch enabled by default on amd64"
+    },
+    {
+      "lines": [306, 311],
+      "decision": "Original PGO/LTO default remains selected"
+    },
+    {
+      "lines": [558, 565],
+      "decision": "Checks enabled unless original build options disable them; controller supplies no disabling options"
+    },
+    {
+      "lines": [693, 720],
+      "decision": "Single configuration native package check and three required .sum reports"
+    },
+    {
+      "lines": [842, 870],
+      "decision": "Each cross configuration native package check and three required .sum reports"
+    },
+    {
+      "lines": [1013, 1046],
+      "decision": "Original aggregate build prerequisites retain single, multi, hppa64 and every selected cross target"
+    }
+  ],
+  "completeConfigurationSelectionAssessed": true,
+  "completeUpstreamTestInventoryAssessed": false,
+  "remainingTestInventory": [
+    "PGO training and its generated report locations",
+    "Enabled gold and gprofng Automake test evidence and skipped/unavailable accounting",
+    "Every other original configure-selected check target beyond the three explicit package summary files"
+  ],
+  "qualificationComplete": false,
+  "gateAComplete": false
+}

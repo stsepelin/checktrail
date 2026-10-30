@@ -42,6 +42,10 @@ including compiler, SDK and bootstrap build inputs and complete original notices
 Verified pinned releases, payload reconstruction and source attribution contribute
 to that evidence. Unreproduced producer builds and unknown inputs remain open
 Gate A work; they are not deferred to a later gate.
+The finite [original producer-build controller](UPSTREAM-PRODUCER-BUILDS.md)
+prepares a fixed binutils package build with explicit native execution admission.
+Its synthetic orchestration controls do not qualify a native producer or close
+the upstream ancestry and original-notice requirements.
 Context collection must remain
 non-evaluating; dynamic dispatch, unsupported syntax and exhausted capture retain
 conservative impact fallback.
