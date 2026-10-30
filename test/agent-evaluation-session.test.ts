@@ -192,17 +192,23 @@ test("wall and explicit cancellation kill a SIGTERM-resistant child process grou
       const controller=new AbortController();
       const childCode='process.on("SIGTERM",()=>{});require("fs").writeFileSync("'+name+'.pid",String(process.pid));setInterval(()=>{},1000)';
       const parentCode='process.on("SIGTERM",()=>{});require("child_process").spawn(process.execPath,["-e",'+JSON.stringify(childCode)+'],{stdio:"inherit"});setInterval(()=>{},1000)';
-      const started=run(parentCode,{outputDirectory:path.join(temporary,name),budget:{...budget,wallSeconds:1},signal:controller.signal});
-      if(cancel){
-        for(let i=0;i<100;i++){try{await fs.stat(path.join(temporary,name+'.pid'));break;}catch{await new Promise(r=>setTimeout(r,5));}}
+      const started=run(parentCode,{outputDirectory:path.join(temporary,name),budget:{...budget,wallSeconds:cancel?3:1},signal:controller.signal});
+      try {
+        if(cancel){
+          for(let i=0;i<400;i++){try{await fs.stat(path.join(temporary,name+'.pid'));break;}catch(error){if(error.code!=='ENOENT')throw error;await new Promise(r=>setTimeout(r,5));}}
+          await fs.stat(path.join(temporary,name+'.pid'));
+          controller.abort();
+        }
+        const result=await started;
+        assert.equal(result.stoppedReason,cancel?'cancelled':'wall-budget');assert.equal(result.complete,false);assert.ok(result.elapsedMs<2500);
+        const pid=Number(await fs.readFile(path.join(temporary,name+'.pid'),'utf8'));
+        let alive=true;
+        for(let i=0;i<100&&alive;i++){try{process.kill(pid,0);await new Promise(r=>setTimeout(r,10));}catch(e){assert.equal(e.code,'ESRCH');alive=false;}}
+        assert.equal(alive,false,'descendant survived supervisor');
+      } finally {
         controller.abort();
+        await started;
       }
-      const result=await started;
-      assert.equal(result.stoppedReason,cancel?'cancelled':'wall-budget');assert.equal(result.complete,false);assert.ok(result.elapsedMs<2500);
-      const pid=Number(await fs.readFile(path.join(temporary,name+'.pid'),'utf8'));
-      let alive=true;
-      for(let i=0;i<100&&alive;i++){try{process.kill(pid,0);await new Promise(r=>setTimeout(r,10));}catch(e){assert.equal(e.code,'ESRCH');alive=false;}}
-      assert.equal(alive,false,'descendant survived supervisor');
     }
   `);
 });

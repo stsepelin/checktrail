@@ -32943,6 +32943,64 @@
       "originalNativeObservationsSha256": "1ade2a084caa3bdea54e18d00e5c0d79d037e91a720ba67b925d215afba4defd",
       "frozenOriginalRecipeSha256": "5c428d5a9cd7c741f8c9d0c61ca9ffa7b18cc47fb6dadc96a6de0e012f69e70f",
       "signedAptAcquisitionObservationsSha256": "27a964d7b37014e759a4c37b58f6fba43ecfffe4feb10b802f405eee7484d741"
-    }
+    },
+    "explicitAlternativeCompleteTextBindings": [
+      {
+        "kind": "explicit-alternative-complete-text-bytes",
+        "sourceNoticeSha256": "3a29d0e487eae553ec47f260be1570a0d96e4f28c21f29ef58a14cd3d53147ff",
+        "sourceNoticeBytes": 20917,
+        "byteOffset": 8550,
+        "literalPath": "/usr/share/common-licenses/GPL-2.0",
+        "sourceParagraph": {
+          "startByte": 7935,
+          "endByteExclusive": 8587,
+          "bytes": 652,
+          "sha256": "28c25ebc4e464049e0a875feb1d1cf30d5d8e7bdbc82e663ce68e54e9806e810"
+        },
+        "originalStatus": "unresolved-literal-reference",
+        "literalReferenceResolved": false,
+        "targetCapture": {
+          "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+          "imagePath": "/usr/share/common-licenses/GPL-2",
+          "bytes": 18092,
+          "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+        },
+        "pathAliasCreated": false,
+        "legalInterpretationAssessed": false,
+        "originalSourceFileCoverageAssessed": false,
+        "completeOriginalNoticeClosureVerified": false,
+        "fullCompilerSdkBootstrapClosureVerified": false,
+        "gateAComplete": false,
+        "archiveAssociations": [
+          {
+            "archiveSha256": "78da3f494109f6e7a39c4626aaae7571c600c5854cecda0bc0c902224986a63b",
+            "archiveBytes": 47384,
+            "package": "libpangoft2-1.0-0",
+            "version": "1.50.12+ds-1",
+            "architecture": "amd64",
+            "sourcePackage": "pango1.0",
+            "noticeMember": "usr/share/doc/libpangoft2-1.0-0/copyright"
+          },
+          {
+            "archiveSha256": "851720de07441ae6bb6a7f51fc0f2edb4db7aa6f25b5bf1bf7b72dcab8947b7f",
+            "archiveBytes": 211788,
+            "package": "libpango-1.0-0",
+            "version": "1.50.12+ds-1",
+            "architecture": "amd64",
+            "sourcePackage": "pango1.0",
+            "noticeMember": "usr/share/doc/libpango-1.0-0/copyright"
+          },
+          {
+            "archiveSha256": "96695f9cdd3bf346e3555cf0aa158e23a36114d6dec203b00ab4e93f1b77aab9",
+            "archiveBytes": 34184,
+            "package": "libpangocairo-1.0-0",
+            "version": "1.50.12+ds-1",
+            "architecture": "amd64",
+            "sourcePackage": "pango1.0",
+            "noticeMember": "usr/share/doc/libpangocairo-1.0-0/copyright"
+          }
+        ]
+      }
+    ]
   }
 }

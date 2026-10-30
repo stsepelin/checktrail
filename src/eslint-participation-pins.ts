@@ -1,5 +1,5 @@
 export const eslintParticipationVersions = {
-  eslint: "10.11.0",
+  eslint: "10.13.0",
   "@eslint/config-array": "0.23.5",
 } as const;
 /** Selected native participation APIs; whole dependency/license closure is separate. */

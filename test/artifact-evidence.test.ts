@@ -6,7 +6,7 @@ import { test, type TestContext } from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { createHash } from "node:crypto";
-import { gzipSync } from "node:zlib";
+import { gzipSync, gunzipSync } from "node:zlib";
 import { fixture } from "./helpers.js";
 
 const exec = promisify(execFile);
@@ -632,4 +632,233 @@ test("artifact evidence refuses reindexed omitted duplicated shifted or prefix-g
     assert.equal(result.code, 2, mode);
     assert.match(result.stderr, /Literal license/, mode);
   }
+});
+
+const { inspectPangoCompleteTextBinding } = await import(
+  new URL("../../scripts/pango-complete-text-binding.mjs", import.meta.url).href
+);
+async function pangoBindingFixture() {
+  const record = JSON.parse(
+      await readFile(
+        path.join(
+          repository,
+          directory,
+          "provider-c-root-sdk-and-generator-replays.json",
+        ),
+        "utf8",
+      ),
+    ),
+    notices = record.cBuildDependencyNotices,
+    bodies = new Map<string, Buffer>();
+  for (const blob of record.originalNoticeByteObjects) {
+    const raw = Buffer.from(
+        blob.originalBytesGzipBase64 ?? blob.originalBytesBase64,
+        "base64",
+      ),
+      bytes = blob.originalBytesGzipBase64 ? gunzipSync(raw) : raw;
+    bodies.set(blob.sha256, bytes);
+  }
+  return {
+    notices,
+    bodies,
+    rows: structuredClone(notices.literalCommonLicenseReferences.references),
+  };
+}
+test("Pango alternative complete text binds one original reference and three exact archives while leaving the literal path unresolved", async () => {
+  const f = await pangoBindingFixture(),
+    result = inspectPangoCompleteTextBinding(f.notices, f.bodies, f.rows);
+  assert.equal(result.bindings, 1);
+  assert.equal(result.sourceNoticeObjects, 1);
+  assert.equal(result.literalReferences, 1);
+  assert.equal(result.associatedArchives, 3);
+  assert.equal(result.completeCapturedTextBytesVerified, true);
+  for (const field of [
+    "originalLiteralReferenceResolved",
+    "pathAliasCreated",
+    "legalInterpretationAssessed",
+    "originalSourceFileCoverageAssessed",
+    "completeOriginalNoticeClosureVerified",
+    "fullCompilerSdkBootstrapClosureVerified",
+    "gateAComplete",
+  ])
+    assert.equal(result[field], false);
+  const baseline = await audit(repository);
+  assert.equal(baseline.code, 0, baseline.stderr);
+  const report = JSON.parse(baseline.stdout);
+  assert.deepEqual(report.explicitAlternativeCompleteTextBindings, result);
+  assert.equal(report.literalCommonLicenseReferences.references, 246);
+  assert.deepEqual(report.literalCommonLicenseReferences.counts, {
+    "resolved-captured-shared-license-bytes": 245,
+    "unresolved-literal-reference": 1,
+  });
+});
+test("Pango alternative declarations reject changed source offsets paragraph targets aliases associations and normalization rather than widening the closed binding", async () => {
+  for (const mode of [
+    "source",
+    "offset",
+    "literal-prefix",
+    "paragraph",
+    "target",
+    "target-size",
+    "alias",
+    "missing-association",
+    "duplicate-association",
+    "wrong-association",
+    "legal-promotion",
+  ]) {
+    const f = await pangoBindingFixture(),
+      b = f.notices.explicitAlternativeCompleteTextBindings[0];
+    if (mode === "source") b.sourceNoticeSha256 = "0".repeat(64);
+    else if (mode === "offset") b.byteOffset++;
+    else if (mode === "literal-prefix")
+      b.literalPath = "/usr/share/common-licenses/GPL-2";
+    else if (mode === "paragraph") b.sourceParagraph.sha256 = "0".repeat(64);
+    else if (mode === "target") b.targetCapture.sha256 = "0".repeat(64);
+    else if (mode === "target-size") b.targetCapture.bytes++;
+    else if (mode === "alias") b.targetCapture.imagePath = b.literalPath;
+    else if (mode === "missing-association") b.archiveAssociations.pop();
+    else if (mode === "duplicate-association")
+      b.archiveAssociations.push({ ...b.archiveAssociations[0] });
+    else if (mode === "wrong-association")
+      b.archiveAssociations[0].architecture = "arm64";
+    else b.legalInterpretationAssessed = true;
+    assert.throws(
+      () => inspectPangoCompleteTextBinding(f.notices, f.bodies, f.rows),
+      /exact closed/,
+      mode,
+    );
+  }
+});
+test("Pango alternative raw bytes literal status capture identity and original archive associations fail closed with adjacent-path near misses", async () => {
+  for (const mode of [
+    "source-bytes",
+    "paragraph-bytes",
+    "target-bytes",
+    "resolved-row",
+    "alias-capture",
+    "association",
+    "closure",
+  ]) {
+    const f = await pangoBindingFixture(),
+      b = f.notices.explicitAlternativeCompleteTextBindings[0];
+    if (mode.endsWith("bytes")) {
+      const key =
+          mode === "target-bytes"
+            ? b.targetCapture.sha256
+            : b.sourceNoticeSha256,
+        raw = Buffer.from(f.bodies.get(key)!);
+      const offset =
+        mode === "paragraph-bytes" ? b.sourceParagraph.startByte + 20 : 0;
+      raw[offset] = raw[offset]! ^ 1;
+      f.bodies.set(key, raw);
+    } else if (mode === "resolved-row") {
+      const row = f.rows.find(
+        (row: unknown[]) =>
+          row[0] === b.sourceNoticeSha256 && row[1] === b.byteOffset,
+      );
+      row[5] = "resolved-captured-shared-license-bytes";
+      row[6] = b.targetCapture.sha256;
+      row[7] = b.targetCapture.bytes;
+    } else if (mode === "alias-capture") {
+      const target = f.notices.pinnedBaselineSharedLicenseFiles.find(
+        (row: { imagePath: string }) =>
+          row.imagePath === b.targetCapture.imagePath,
+      );
+      f.notices.pinnedBaselineSharedLicenseFiles.push({
+        ...target,
+        imagePath: b.literalPath,
+      });
+    } else if (mode === "association") {
+      const archive = f.notices.uniqueArchives.find(
+        (row: unknown[]) => row[0] === b.archiveAssociations[0].archiveSha256,
+      );
+      archive[4] = "arm64";
+    } else f.notices.completeOriginalNoticeClosureVerified = true;
+    assert.throws(
+      () => inspectPangoCompleteTextBinding(f.notices, f.bodies, f.rows),
+      /Pango/,
+      mode,
+    );
+  }
+  const valid = await pangoBindingFixture(),
+    b = valid.notices.explicitAlternativeCompleteTextBindings[0],
+    target = valid.notices.pinnedBaselineSharedLicenseFiles.find(
+      (row: { imagePath: string }) =>
+        row.imagePath === b.targetCapture.imagePath,
+    );
+  valid.notices.pinnedBaselineSharedLicenseFiles.push({
+    ...target,
+    imagePath: "/usr/share/common-licenses/GPL-2.0-extra",
+  });
+  assert.equal(
+    inspectPangoCompleteTextBinding(valid.notices, valid.bodies, valid.rows)
+      .originalLiteralReferenceResolved,
+    false,
+  );
+});
+test("Pango alternative matching refuses a byte-consistent synthetic lookalike document and reindexed paragraph changes", async (t) => {
+  const f = await pangoBindingFixture(),
+    b = f.notices.explicitAlternativeCompleteTextBindings[0],
+    prior = b.sourceNoticeSha256,
+    raw = Buffer.from(
+      "Original synthetic header\n\nLicense: GPL-2+\n Original synthetic context /usr/share/common-licenses/GPL-2.0\n\n",
+    ),
+    sha = digest(raw),
+    offset = raw.indexOf(Buffer.from(b.literalPath)),
+    start = raw.lastIndexOf(Buffer.from("\n\n"), offset) + 2,
+    end = raw.indexOf(Buffer.from("\n\n"), offset) + 1;
+  b.sourceNoticeSha256 = sha;
+  b.sourceNoticeBytes = raw.length;
+  b.byteOffset = offset;
+  b.sourceParagraph = {
+    startByte: start,
+    endByteExclusive: end,
+    bytes: end - start,
+    sha256: digest(raw.subarray(start, end)),
+  };
+  f.bodies.set(sha, raw);
+  for (const archive of f.notices.uniqueArchives)
+    for (const doc of archive[7])
+      if (doc.sha256 === prior) {
+        doc.sha256 = sha;
+        doc.bytes = raw.length;
+      }
+  const rows = [
+    [
+      sha,
+      offset,
+      b.literalPath,
+      b.literalPath,
+      false,
+      "unresolved-literal-reference",
+      null,
+      null,
+    ],
+  ];
+  assert.throws(
+    () => inspectPangoCompleteTextBinding(f.notices, f.bodies, rows),
+    /exact closed/,
+  );
+  const root = await source(t),
+    name = "provider-c-root-sdk-and-generator-replays.json",
+    file = path.join(root, directory, name),
+    record = JSON.parse(await readFile(file, "utf8"));
+  record.cBuildDependencyNotices.explicitAlternativeCompleteTextBindings[0].sourceParagraph.sha256 =
+    "0".repeat(64);
+  await writeFile(file, JSON.stringify(record));
+  await reindex(root, name);
+  const wrapperName = "provider-fiat-wrapper-source-rebuilds.json",
+    wrapperFile = path.join(root, directory, wrapperName),
+    wrapper = JSON.parse(await readFile(wrapperFile, "utf8")),
+    ref = wrapper.cRootCompilerAndWholeGeneratorFollowUp.retainedInputs.find(
+      (row: Entry) => row.file === name,
+    ),
+    bytes = await readFile(file);
+  ref.bytes = bytes.length;
+  ref.sha256 = digest(bytes);
+  await writeFile(wrapperFile, JSON.stringify(wrapper));
+  await reindex(root, wrapperName);
+  const result = await audit(root);
+  assert.equal(result.code, 2);
+  assert.match(result.stderr, /Pango alternative/);
 });

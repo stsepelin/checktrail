@@ -16,6 +16,7 @@ import {
 import path from "node:path";
 import process from "node:process";
 
+import { inspectPangoCompleteTextBinding } from "./pango-complete-text-binding.mjs";
 const directory = "docs/measurements/artifact-identities-2026-10-21";
 const indexName = "artifact-evidence-index.v1.json";
 const records = {
@@ -370,6 +371,7 @@ try {
   for (const [name, document] of documents) walk(document, name);
   const cRoot = documents.get("provider-c-root-sdk-and-generator-replays.json");
   let literalCommonLicenseReferences = null;
+  let explicitAlternativeCompleteTextBindings = null;
   if (cRoot?.cBuildDependencyNotices) {
     const notices = cRoot.cBuildDependencyNotices;
     const declared = notices.literalCommonLicenseReferences;
@@ -454,6 +456,11 @@ try {
       shared.size,
       "Literal shared license denominator differs",
     );
+    explicitAlternativeCompleteTextBindings = inspectPangoCompleteTextBinding(
+      notices,
+      originalNotices,
+      derived,
+    );
     literalCommonLicenseReferences = {
       noticeObjectsScanned: selected.size,
       sharedLicenseNamesCaptured: shared.size,
@@ -479,6 +486,7 @@ try {
       decompressedOriginalNoticeBytes,
       originalNoticeBytes,
       literalCommonLicenseReferences,
+      explicitAlternativeCompleteTextBindings,
       cryptographicVerificationPerformedByAudit: false,
       nativeAcceptanceAssessed: false,
       gateAComplete: false,

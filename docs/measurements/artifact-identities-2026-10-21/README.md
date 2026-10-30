@@ -250,3 +250,11 @@ references. A terminal full stop is recorded separately as punctuation; filename
 prefixes do not resolve missing files. The original `GPL-2.0` reference remains
 unresolved even though captured `GPL-2` text is available. These observations do
 not infer a license choice or close embedded-source notice obligations.
+
+The Pango notice has one separately declared alternative complete-text binding.
+It names the exact original notice digest, byte offset, literal path and containing
+paragraph digest, together with the captured GPL-2 document's own byte identity.
+The original GPL-2.0 path remains unresolved; no alias or normalized-text equality
+is recorded. The three exact archive associations retain one original document
+and one literal-reference denominator. This binds retained bytes and preserves
+all broader notice/build closure, legal interpretation and source-coverage limits.
