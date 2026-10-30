@@ -99,6 +99,7 @@ async function terraform(root: string, args: string[]) {
     {
       timeoutMs: 30000,
       maxOutputBytes: 1048576,
+      captureRawOutput: true,
       environment: {
         CHECKPOINT_DISABLE: "1",
         TF_IN_AUTOMATION: "1",

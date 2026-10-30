@@ -125,7 +125,11 @@ async function compileSwift(
       ],
       cwd: ".",
     },
-    { timeoutMs: 30000, maxOutputBytes: 65536 },
+    {
+      timeoutMs: 30000,
+      maxOutputBytes: 65536,
+      captureRawOutput: Boolean(capture),
+    },
   );
   await recordConsumerWitnessAttempt(capture, result, stage);
   bindConsumerWitnessCompiler(capture, result, stage);
@@ -150,7 +154,11 @@ async function execute(
       cwd: ".",
       env: { LD_LIBRARY_PATH: path.join(root, "out") },
     },
-    { timeoutMs: 10000, maxOutputBytes: 65536 },
+    {
+      timeoutMs: 10000,
+      maxOutputBytes: 65536,
+      captureRawOutput: Boolean(capture),
+    },
   );
   await recordConsumerWitnessAttempt(capture, result, "consumer");
   assert.equal(result.exitCode, 0, result.stdout + result.stderr);

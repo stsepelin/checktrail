@@ -7,6 +7,7 @@ import {
   readdir,
   symlink,
   rename,
+  chmod,
 } from "node:fs/promises";
 import { test } from "node:test";
 import { spawnSync } from "node:child_process";
@@ -17,6 +18,7 @@ import {
   recordConsumerWitnessAttempt,
   finishConsumerWitness,
   observeConsumerWitnessDirectory,
+  consumerWitnessCaptureParent,
 } from "./consumer-witness-fixture.js";
 import { runProcess } from "../src/runner.js";
 import { fixture } from "./helpers.js";
@@ -1556,3 +1558,30 @@ test(
     assert.equal((await readdir(destination)).length, 2);
   },
 );
+
+test("operator consumer capture parent requires an explicit canonical private directory without granting execution trust", async (t) => {
+  const root = await realpath(
+    await fixture(t, { "ordinary-file": "synthetic" }),
+  );
+  if (process.platform === "win32") {
+    await assert.rejects(consumerWitnessCaptureParent(root), /POSIX/);
+    assert.ok(path.isAbsolute(await consumerWitnessCaptureParent(undefined)));
+    return;
+  }
+  assert.equal(await consumerWitnessCaptureParent(root), root);
+  await assert.rejects(
+    consumerWitnessCaptureParent("relative-private"),
+    /absolute/,
+  );
+  await assert.rejects(
+    consumerWitnessCaptureParent(path.join(root, "ordinary-file")),
+    /private directory/,
+  );
+  const alias = path.join(root, "alias");
+  await symlink(root, alias);
+  await assert.rejects(consumerWitnessCaptureParent(alias), /crosses a link/);
+  await chmod(root, 0o755);
+  await assert.rejects(consumerWitnessCaptureParent(root), /private directory/);
+  await chmod(root, 0o700);
+  assert.ok(path.isAbsolute(await consumerWitnessCaptureParent(undefined)));
+});

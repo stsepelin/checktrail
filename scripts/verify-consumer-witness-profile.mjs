@@ -16,7 +16,6 @@ import {
   realpath,
 } from "node:fs/promises";
 import path from "node:path";
-import os from "node:os";
 import { fileURLToPath, URL } from "node:url";
 import { runRequiredTests } from "./required-test-evidence.mjs";
 import {
@@ -36,6 +35,7 @@ import {
   observeConsumerWitnessManagedInputs,
   observeConsumerWitnessDataInputs,
   observeConsumerWitnessSwiftInputs,
+  consumerWitnessCaptureParent,
 } from "../dist/test/consumer-witness-fixture.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const profile = process.argv[2];
@@ -243,7 +243,14 @@ const expectedController = await captureConsumerWitnessController(
   beforeTool,
 );
 const namespace = await realpath(
-  await mkdtemp(path.join(os.tmpdir(), "checktrail-consumer-witness-")),
+  await mkdtemp(
+    path.join(
+      await consumerWitnessCaptureParent(
+        process.env.CHECKTRAIL_CONSUMER_CAPTURE_ROOT,
+      ),
+      "checktrail-consumer-witness-",
+    ),
+  ),
 );
 const previous = process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR;
 let complete = false;

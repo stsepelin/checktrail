@@ -98,7 +98,11 @@ async function witness(root: string, variant: ConsumerVariant) {
       args: ["--input-type=module", "-e", program],
       cwd: ".",
     },
-    { timeoutMs: 10000, maxOutputBytes: 65536 },
+    {
+      timeoutMs: 10000,
+      maxOutputBytes: 65536,
+      captureRawOutput: Boolean(capture),
+    },
   );
   await recordConsumerWitnessAttempt(capture, ran, "consumer");
   assert.equal(ran.exitCode, 0, ran.stdout + ran.stderr);

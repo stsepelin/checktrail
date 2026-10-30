@@ -124,6 +124,36 @@ function outside(root: string, target: string) {
     relative.startsWith(".." + path.sep)
   );
 }
+/** Private controller-maintenance storage only; this grants no project execution trust. */
+export async function consumerWitnessCaptureParent(
+  filename: string | undefined,
+) {
+  if (filename === undefined) return realpath(os.tmpdir());
+  assert.notEqual(
+    process.platform,
+    "win32",
+    "Operator POSIX capture parent is unsupported on Windows",
+  );
+  assert.ok(
+    path.isAbsolute(filename),
+    "Operator capture parent must be absolute",
+  );
+  assert.equal(
+    await realpath(filename),
+    filename,
+    "Operator capture parent crosses a link",
+  );
+  const stat = await lstat(filename);
+  assert.ok(
+    stat.isDirectory() &&
+      !stat.isSymbolicLink() &&
+      (stat.mode & 0o777) === 0o700,
+    "Operator capture parent must be a private directory",
+  );
+  // A mounted parent can have an operator UID; each namespace below is separately
+  // created and checked against the actual native collector UID and mode0700.
+  return filename;
+}
 async function privateDirectory(filename: string, root: string) {
   assert.ok(path.isAbsolute(filename));
   assert.equal(await realpath(filename), filename);
