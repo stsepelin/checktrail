@@ -28,6 +28,7 @@ import {
   grammarManifestDigest,
 } from "../src/review-grammar-assets.js";
 import { fixture } from "./helpers.js";
+import { copyInstalledPackages } from "./tool-fixture.js";
 import { fixtureGit, syntheticCommit } from "./git-fixture.js";
 import { syntheticSyntaxSources } from "./review-polyglot-fixture.js";
 
@@ -376,6 +377,92 @@ test("selected syntax reports missing or changed grammar prerequisites before pa
   );
   assert.equal(changed.files[0]!.state, "error");
   assert.deepEqual(changed.functions, []);
+});
+
+test("selected syntax accepts exact runtime bytes and refuses changed JavaScript or valid WASM before parsing", async (t) => {
+  const repository = fileURLToPath(new URL("../../", import.meta.url));
+  for (const changedFile of [
+    null,
+    "web-tree-sitter.js",
+    "web-tree-sitter.wasm",
+  ]) {
+    await t.test(changedFile ?? "original runtime", async (t) => {
+      const copied = await fixture(t, {});
+      await cp(
+        await realpath(path.join(repository, "dist/src")),
+        path.join(copied, "dist/src"),
+        { recursive: true, dereference: true },
+      );
+      await cp(
+        path.join(repository, "assets/context-grammars"),
+        path.join(copied, "assets/context-grammars"),
+        { recursive: true },
+      );
+      await copyInstalledPackages(copied, [
+        "web-tree-sitter",
+        "zod",
+        "typescript",
+      ]);
+      await writeFile(path.join(copied, "package.json"), '{"type":"module"}');
+      if (changedFile) {
+        const target = path.join(
+          copied,
+          "node_modules/web-tree-sitter",
+          changedFile,
+        );
+        const original = await readFile(target),
+          changed = Buffer.from(original);
+        const marker = Buffer.from(
+          changedFile.endsWith(".wasm")
+            ? "web-tree-sitter.wasm.map"
+            : "sourceMappingURL",
+        );
+        const position = changed.indexOf(marker);
+        assert.notEqual(
+          position,
+          -1,
+          "The changed byte is in a non-executable runtime annotation",
+        );
+        changed[position] = changed[position] === 120 ? 121 : 120;
+        assert.equal(
+          changed.length,
+          original.length,
+          "The SHA guard must reject equal-size replacements",
+        );
+        if (changedFile.endsWith(".wasm"))
+          assert.doesNotThrow(() => new WebAssembly.Module(changed));
+        await writeFile(target, changed);
+      }
+      const result = spawnSync(
+        process.execPath,
+        [
+          "--input-type=module",
+          "-e",
+          `
+        import {createHash} from 'node:crypto';
+        import {collectReviewPolyglotBehavior} from './dist/src/review-polyglot.js';
+        const content=${JSON.stringify('def assign(value):\n    return value or "fallback"\n')};
+        const source={path:'sample.py',content,sha256:createHash('sha256').update(content).digest('hex')};
+        console.log(JSON.stringify(await collectReviewPolyglotBehavior([source],[],[source.path],false)));
+      `,
+        ],
+        { cwd: copied, encoding: "utf8", timeout: 30000 },
+      );
+      assert.equal(result.status, 0, result.stderr);
+      const observed = JSON.parse(result.stdout) as {
+        state: string;
+        files: { state: string }[];
+        functions: unknown[];
+      };
+      assert.equal(observed.state, changedFile ? "partial" : "collected");
+      assert.equal(
+        observed.files[0]!.state,
+        changedFile ? "error" : "collected",
+      );
+      if (changedFile) assert.deepEqual(observed.functions, []);
+      else assert.equal(observed.functions.length, 1);
+    });
+  }
 });
 
 test("selected syntax bounds node and source exhaustion while preserving valid adjacent controls", async (t) => {
