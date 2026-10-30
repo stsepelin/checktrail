@@ -98,5 +98,6 @@ The bounded observation archive includes receipts and logs, including failures.
 Raw SDK/source trees, archive inputs and binary products are hashed and retained
 during the job; this upload does not promise indefinite availability of those
 bodies. A complete runtime recipe can establish runtime reproduction and byte
-agreement only. SDK/compiler/bootstrap producer builds, historical publisher
-consumption, complete notice closure and Gate A remain separate unfinished gates.
+agreement only. SDK/compiler/bootstrap producer builds and complete notice closure
+remain unfinished. Historical publisher consumption is unproven; runtime byte
+agreement does not establish it. Gate A remains incomplete.

@@ -9,14 +9,14 @@ const source = path.join(root, "scripts/producer-qualification");
 const cohortEnvironment = { ...process.env };
 // A real independent Node test process must not inherit the parent runner context.
 delete cohortEnvironment.NODE_TEST_CONTEXT;
-for (const [file, count] of [
-  ["web-runtime-controller.test.mjs", 22],
-  ["web-runtime-inputs.test.mjs", 10],
+for (const [file, count, maximumSkips] of [
+  ["web-runtime-controller.test.mjs", 22, process.platform === "win32" ? 2 : 0],
+  ["web-runtime-inputs.test.mjs", 10, 1],
 ] as const) {
   test(
     `public runtime producer synthetic cohort: ${file}`,
     { timeout: 45000 },
-    () => {
+    (t) => {
       const result = spawnSync(
         process.execPath,
         ["--test", "--test-reporter=tap", path.join(source, file)],
@@ -49,15 +49,25 @@ for (const [file, count] of [
       // Native-only cancellation and actual unavailable Python controls remain visible.
       const skipped = Number(/^# skipped (\d+)$/mu.exec(result.stdout)?.[1]);
       assert.ok(
-        Number.isSafeInteger(skipped) && skipped >= 0 && skipped <= 3,
+        Number.isSafeInteger(skipped) &&
+          skipped >= 0 &&
+          skipped <= maximumSkips,
         diagnostic,
       );
-      if (skipped > 0)
+      if (skipped > 0) {
         assert.match(
           result.stdout,
           /SKIP (?:POSIX group cancellation|Verified Python 3 unavailable)/u,
           diagnostic,
         );
+        const reason = /# SKIP ([^\n]+)/u.exec(result.stdout)?.[1];
+        t.diagnostic(
+          `Synthetic child controls: ${count - skipped} passed; ${skipped} explicitly skipped: ${reason ?? "unavailable native primitive"}`,
+        );
+        t.skip(
+          `Synthetic cohort includes ${skipped} unavailable controls: ${reason ?? "unavailable native primitive"}`,
+        );
+      }
     },
   );
 }
