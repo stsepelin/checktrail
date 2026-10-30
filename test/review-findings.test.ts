@@ -569,7 +569,7 @@ test("finding CLI and MCP protect source judgments parameter names and execution
       [cli, "review-findings", "--root", d.root, "--input", input, ...args],
       { encoding: "utf8", timeout: 15000 },
     );
-    assert.equal(c.status, 0, c.stderr);
+    assert.equal(c.status, 0, c.stdout + c.stderr);
     assert.deepEqual(JSON.parse(c.stdout), summary);
   }
   const full = spawnSync(
