@@ -9,7 +9,13 @@
   },
   "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
   "platform": "linux/amd64",
-  "command": ["dpkg-buildpackage", "-b", "-us", "-uc", "--jobs=4"],
+  "command": [
+    "dpkg-buildpackage",
+    "-b",
+    "-us",
+    "-uc",
+    "--jobs=4"
+  ],
   "environment": {
     "HOME": "/work/home",
     "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -3180,6 +3186,16 @@
       "file": "binutils-input-reacquisition.v1.json",
       "bytes": 3478,
       "sha256": "e724f1acb487772acb9a77caba09267e6b9638abde920613419f395761ca11e2"
+    },
+    {
+      "file": "binutils-retention-observer.py",
+      "bytes": 3147,
+      "sha256": "1f4a08e23053306b573b1be65def084e7b6fc4d7ef18b4d8cf179dffb489bc0d"
+    },
+    {
+      "file": "binutils-retention-observer.mjs",
+      "bytes": 11128,
+      "sha256": "4fa341cc7296a97b5b7c47a6ab99d8806a2fd274596e90521d3282eee21a3702"
     }
   ],
   "inputOrigins": {

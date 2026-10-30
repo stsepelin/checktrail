@@ -72,6 +72,10 @@ jobs:
           const recipe = JSON.parse(readFileSync('scripts/producer-qualification/binutils.v1.json', 'utf8'));
           execFileSync('docker', ['pull', '--platform', 'linux/amd64', recipe.image], {stdio: 'inherit'});
           NODE
+      - name: Verify private APT directories remain measurable without changing permissions
+        run: >-
+          node scripts/verify-binutils-retention-observer.mjs
+          --output "$RUNNER_TEMP/binutils-observer-check"
       - name: Acquire and authenticate every original input
         shell: bash
         run: |
@@ -99,6 +103,7 @@ jobs:
           --output "$RUNNER_TEMP/binutils-evidence.zip"
           --admission-log "$RUNNER_TEMP/binutils-input-admission.log"
           --controller-log "$RUNNER_TEMP/binutils-build-controller.log"
+          --observer-check "$RUNNER_TEMP/binutils-observer-check"
       - name: Upload original observation archive
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

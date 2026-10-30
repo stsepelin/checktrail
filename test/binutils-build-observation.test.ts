@@ -43,6 +43,28 @@ const valid = () => ({
     retainedBytes: 25,
   },
   cleanup: { state: "absent" },
+  retainedWorkBytes: 25,
+  retentionObserver: {
+    state: "completed",
+    independentImage: recipe.image,
+    readOnly: true,
+    network: "none",
+    capability: "DAC_READ_SEARCH",
+    nativeFilesystemQuotaEnforced: false,
+    terminal: { exitCode: 0, signal: null },
+    samples: 2,
+    lastSample: {
+      schemaVersion: 1,
+      kind: "sample",
+      sequence: 2,
+      bytes: 25,
+      files: 4,
+      directories: 3,
+    },
+    retainedLogBytes: 80,
+    log: { bytes: 80, sha256: "c".repeat(64) },
+  },
+  retentionObserverCleanup: { state: "absent" },
   runtime: {
     platform: "linux",
     architecture: "x64",
@@ -141,6 +163,32 @@ test("stale source command image platform and incomplete report inventories cann
     (r) => (r.fullCompilerSdkBootstrapClosureVerified = true),
     (r) => (r.completeOriginalNoticeClosureVerified = true),
     (r) => (r.gateAComplete = true),
+  ];
+  for (const edit of edits) {
+    const receipt = valid();
+    edit(receipt);
+    assert.throws(() => validateBuildObservation(receipt, recipe, expected, 2));
+  }
+});
+
+test("inaccessible stale partial and unclean independent observer outcomes cannot qualify original build completion", () => {
+  const edits: ((receipt: ReturnType<typeof valid>) => void)[] = [
+    (r) => (r.retentionObserver.state = "unavailable"),
+    (r) => (r.retentionObserver.independentImage = "different"),
+    (r) => (r.retentionObserver.readOnly = false),
+    (r) => (r.retentionObserver.network = "bridge"),
+    (r) => (r.retentionObserver.capability = "ALL"),
+    (r) => (r.retentionObserver.nativeFilesystemQuotaEnforced = true),
+    (r) => (r.retentionObserver.terminal.exitCode = 137),
+    (r) => (r.retentionObserver.samples = 0),
+    (r) => (r.retentionObserver.lastSample.sequence = 1),
+    (r) => (r.retentionObserver.lastSample.bytes = -1),
+    (r) => (r.retentionObserver.lastSample.directories = 2),
+    (r) => (r.retainedWorkBytes = 24),
+    (r) => (r.retentionObserver.retainedLogBytes = 0),
+    (r) => (r.retentionObserver.log.bytes = 81),
+    (r) => (r.retentionObserver.log.sha256 = "invalid"),
+    (r) => (r.retentionObserverCleanup.state = "unavailable"),
   ];
   for (const edit of edits) {
     const receipt = valid();

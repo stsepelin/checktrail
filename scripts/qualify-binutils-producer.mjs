@@ -30,6 +30,11 @@ import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import { promisify } from "node:util";
 
+import {
+  startRetentionObserver,
+  reconcileRetentionLog,
+} from "./producer-qualification/binutils-retention-observer.mjs";
+
 const directory = fileURLToPath(
   new URL("producer-qualification/", import.meta.url),
 );
@@ -670,16 +675,16 @@ async function docker(args) {
     maxBuffer: 65536,
   });
 }
-async function cleanupContainer(cidFile, attempt) {
-  let id = "checktrail-producer-" + attempt;
+export async function cleanupContainer(cidFile, attempt, role = "producer") {
+  assert.ok(["producer", "retention"].includes(role));
+  const name = "checktrail-" + role + "-" + attempt;
+  let id = name;
   try {
     id = (await boundedPhysicalBytes(cidFile, 128)).toString("utf8").trim();
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
   }
-  assert.ok(
-    /^[a-f0-9]{64}$/.test(id) || id === "checktrail-producer-" + attempt,
-  );
+  assert.ok(/^[a-f0-9]{64}$/.test(id) || id === name);
   let inspected;
   try {
     inspected = JSON.parse((await docker(["inspect", id])).stdout)[0];
@@ -693,6 +698,11 @@ async function cleanupContainer(cidFile, attempt) {
     attempt,
     "Refuse cleanup of a different owner",
   );
+  if (role === "retention")
+    assert.equal(
+      inspected.Config.Labels["io.checktrail.producer-role"],
+      "retention-observer",
+    );
   await docker(["rm", "--force", id]);
   try {
     await docker(["inspect", id]);
@@ -701,24 +711,6 @@ async function cleanupContainer(cidFile, attempt) {
     assert.match(error.stderr ?? "", /No such (object|container)/i);
   }
   return { state: "removed", id };
-}
-async function retainedWorkBytes(roots) {
-  let total = 0;
-  const pending = [...roots];
-  while (pending.length) {
-    const file = pending.pop();
-    const info = await lstat(file);
-    assert.ok(!info.isSymbolicLink(), "Linked retained work refused");
-    if (info.isDirectory())
-      pending.push(
-        ...(await readdir(file)).map((name) => path.join(file, name)),
-      );
-    else {
-      assert.ok(info.isFile(), "Nonphysical retained work refused");
-      total += info.size;
-    }
-  }
-  return total;
 }
 async function outputIdentities(work) {
   const directory = path.join(work, "output");
@@ -862,7 +854,8 @@ async function main(args) {
     inferenceInvoked: false,
     fieldEvaluationExecuted: false,
   };
-  let workLimitTimer;
+  let workLimitTimer, retentionObserver, measuring;
+  const observerCid = path.join(destination, "retention-observer.id");
   try {
     await atomicReceipt(destination, state);
     await mkdir(work, { mode: 0o700 });
@@ -947,22 +940,41 @@ async function main(args) {
       "/controller/binutils-build.sh",
     ];
 
-    let measuring = false;
-    workLimitTimer = setInterval(async () => {
-      if (measuring) return;
-      measuring = true;
+    retentionObserver = await startRetentionObserver({
+      destination,
+      image: recipe.image,
+      platform: recipe.platform,
+      attempt,
+      environment: dockerEnvironment,
+      onFailure: (error) => {
+        state.retentionObservationError = String(error).slice(0, 1000);
+        controller.abort("retained-work-observer-unavailable");
+      },
+    });
+    const measure = async () => {
       try {
-        if (
-          (await retainedWorkBytes([bundle, controls, work])) >
-          recipe.limits.workByteLimit
-        )
+        const sample = await retentionObserver.sample();
+        if (sample.bytes > recipe.limits.workByteLimit)
           controller.abort("retained-work-limit");
+        return sample;
       } catch (error) {
         state.retentionObservationError = String(error).slice(0, 1000);
         controller.abort("retained-work-observer-unavailable");
-      } finally {
-        measuring = false;
+        throw error;
       }
+    };
+    await measure(); // Observer readiness and the first complete sample precede producer execution.
+    assert.ok(
+      !controller.signal.aborted,
+      "Retention observation failed before producer execution",
+    );
+    workLimitTimer = setInterval(() => {
+      if (measuring) return;
+      measuring = measure()
+        .catch(() => undefined)
+        .finally(() => {
+          measuring = undefined;
+        });
     }, 1000);
     state.state = "starting";
     await atomicReceipt(destination, state);
@@ -970,7 +982,7 @@ async function main(args) {
       () => {
         state.executionInvoked = true;
         state.state = "running";
-        state.buildExecuted = true;
+        // Wrapper launch does not prove that the original compiler command ran.
         return spawn("docker", argv, {
           env: dockerEnvironment,
           stdio: ["ignore", "pipe", "pipe"],
@@ -986,6 +998,8 @@ async function main(args) {
       },
     );
     state.executionObserver = native;
+    clearInterval(workLimitTimer);
+    if (measuring) await measuring;
     const command = await boundedJson(
       path.join(work, "original-command.json"),
       4096,
@@ -1018,7 +1032,7 @@ async function main(args) {
       minimum,
     );
     state.outputs = await outputIdentities(work);
-    state.retainedWorkBytes = await retainedWorkBytes([bundle, controls, work]);
+    state.retainedWorkBytes = (await measure()).bytes;
     assert.ok(
       state.retainedWorkBytes <= recipe.limits.workByteLimit,
       "Retained work exceeded bound",
@@ -1031,6 +1045,8 @@ async function main(args) {
       "Retained work exceeded bound",
     );
     await validateInputs(inputs, recipe.files);
+    await validateInputs(directory, recipe.controllerFiles);
+    await validateInputs(controls, recipe.controllerFiles);
     state.buildCompletion = summarizeBuildCompletion(
       state.originalBuild,
       state.testEvidence,
@@ -1060,6 +1076,42 @@ async function main(args) {
     state.error = String(error).slice(0, 2000);
   } finally {
     clearInterval(workLimitTimer);
+    if (measuring) await measuring;
+    try {
+      if (retentionObserver) {
+        state.retentionObserver = await retentionObserver.close();
+        const rawFile = path.join(destination, "retention-observer.jsonl");
+        state.retentionObserver.log = await identifyFile(
+          rawFile,
+          16 * 1024 ** 2,
+        );
+        const raw = await boundedPhysicalBytes(rawFile, 16 * 1024 ** 2);
+        assert.deepEqual(
+          { bytes: raw.length, sha256: sha(raw) },
+          state.retentionObserver.log,
+        );
+        reconcileRetentionLog(raw, state.retentionObserver);
+      }
+    } catch (error) {
+      state.retentionObserver = {
+        state: "unavailable",
+        error: String(error).slice(0, 1000),
+      };
+      state.state = "observer-failed";
+    }
+    try {
+      state.retentionObserverCleanup = await cleanupContainer(
+        observerCid,
+        attempt,
+        "retention",
+      );
+    } catch (error) {
+      state.retentionObserverCleanup = {
+        state: "unavailable",
+        error: String(error).slice(0, 1000),
+      };
+      state.state = "failed";
+    }
     try {
       state.cleanup = await cleanupContainer(cid, attempt);
     } catch (error) {

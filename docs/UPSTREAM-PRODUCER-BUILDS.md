@@ -132,9 +132,18 @@ cleanup; an interrupted or stale `running` receipt cannot qualify a build.
 A hard crash may prevent a terminal receipt, so retained ownership/receipt data
 must be inspected rather than inferred to indicate success.
 
-The retained-byte monitor covers staged inputs and produced files. The selected
-recipe does **not** enforce a native container-filesystem disk quota; that
-limitation stays explicit. Cleanup failures stay failures. Do not run these long
+The retained-byte monitor covers staged inputs and produced files using a separate
+foreground observer in the pinned immutable image. Its three mounts are read-only;
+network access is disabled and its only added capability is `DAC_READ_SEARCH`, so
+APT's private directories can be counted without changing their ownership or mode.
+The observer has separate 0.25 CPU, 128 MiB and 16 PID bounds; each complete scan
+has a 30-second deadline and finite entry/depth limits. Missing, unreadable, linked,
+nonregular, stale or incomplete observations stop the original producer. Complete
+request/response logs and exact owner-checked cleanup are required for a successful
+build observation. A native Linux synthetic preflight first demonstrates actual
+host permission denial and accurate counting of a private UID42 directory.
+The selected recipe does **not** enforce a native container-filesystem disk quota;
+that limitation stays explicit. Cleanup failures stay failures. Do not run these long
 compiler builds alongside the timing-sensitive local native test suite.
 
 ## Reading the receipt

@@ -10,6 +10,10 @@ import {
   summarizeReports,
   validateInputs,
 } from "./qualify-binutils-producer.mjs";
+import {
+  validateRetentionMessage,
+  reconcileRetentionLog,
+} from "./producer-qualification/binutils-retention-observer.mjs";
 const directory = fileURLToPath(
   new URL("producer-qualification/", import.meta.url),
 );
@@ -56,6 +60,29 @@ export function validateBuildObservation(
       execution.retainedBytes <= recipe.limits.logByteLimit,
   );
   assert.ok(["absent", "removed"].includes(receipt.cleanup.state));
+  const observer = receipt.retentionObserver;
+  assert.equal(observer.state, "completed");
+  assert.equal(observer.independentImage, recipe.image);
+  assert.equal(observer.readOnly, true);
+  assert.equal(observer.network, "none");
+  assert.equal(observer.capability, "DAC_READ_SEARCH");
+  assert.equal(observer.nativeFilesystemQuotaEnforced, false);
+  assert.deepEqual(observer.terminal, { exitCode: 0, signal: null });
+  assert.ok(Number.isSafeInteger(observer.samples) && observer.samples > 0);
+  validateRetentionMessage(observer.lastSample, observer.samples);
+  assert.equal(receipt.retainedWorkBytes, observer.lastSample.bytes);
+  assert.ok(receipt.retainedWorkBytes <= recipe.limits.workByteLimit);
+  assert.ok(
+    Number.isSafeInteger(observer.retainedLogBytes) &&
+      observer.retainedLogBytes > 0 &&
+      observer.retainedLogBytes <= 16 * 1024 ** 2,
+  );
+  assert.equal(observer.log.bytes, observer.retainedLogBytes);
+  assert.match(observer.log.sha256, /^[a-f0-9]{64}$/u);
+  assert.ok(
+    ["absent", "removed"].includes(receipt.retentionObserverCleanup.state),
+  );
+
   assert.equal(receipt.runtime.platform, "linux");
   assert.equal(receipt.runtime.architecture, "x64");
   assert.equal(receipt.runtime.kernelMachine, "x86_64");
@@ -137,6 +164,17 @@ async function main(args) {
     expected,
     Number(args[3]),
   );
+  const observerLog = path.join(root, "retention-observer.jsonl");
+  const observerBytes = await readFile(observerLog);
+  assert.deepEqual(
+    await identifyFile(observerLog, 16 * 1024 ** 2),
+    receipt.retentionObserver.log,
+  );
+  assert.deepEqual(
+    { bytes: observerBytes.length, sha256: sha(observerBytes) },
+    receipt.retentionObserver.log,
+  );
+  reconcileRetentionLog(observerBytes, receipt.retentionObserver);
   await validateInputs(path.join(root, "bundle"), recipe.files);
   await validateInputs(path.join(root, "controls"), recipe.controllerFiles);
   assert.deepEqual(

@@ -29,7 +29,7 @@ def physical(file):
     return file
 
 
-def export(inputs, result, output, admission_log=None, controller_log=None):
+def export(inputs, result, output, admission_log=None, controller_log=None, observer_check=None):
     inputs, result, output = map(lambda value: Path(value).absolute(), [inputs, result, output])
     physical(output.parent)
     assert output.parent.is_dir() and not output.exists()
@@ -53,6 +53,10 @@ def export(inputs, result, output, admission_log=None, controller_log=None):
         add(Path(admission_log).absolute(), 'inputs/admission.log', 8 * 1024**2)
     if controller_log is not None:
         add(Path(controller_log).absolute(), 'result/controller.log', 8 * 1024**2)
+    if observer_check is not None:
+        check = Path(observer_check).absolute()
+        add(check / 'observations.json', 'observer-check/observations.json', 1024**2)
+        add(check / 'retention-observer.jsonl', 'observer-check/retention-observer.jsonl', 16 * 1024**2)
     add(inputs / 'receipt.json', 'inputs/receipt.json', 2 * 1024**2)
     add(inputs / 'transform.log', 'inputs/transform.log', 8 * 1024**2)
     if (inputs / 'transform').exists():
@@ -60,7 +64,7 @@ def export(inputs, result, output, admission_log=None, controller_log=None):
         for file in sorted((inputs / 'transform').iterdir()):
             assert re.fullmatch(r'(preparation\.json|(?:release-\d+|release-mutant|release-restored|source|source-mutant|source-restored|store-\d+)\.(?:stdout|stderr))', file.name)
             add(file, 'inputs/transform/' + file.name, 1024**2)
-    for file, maximum in [('receipt.json', 16 * 1024**2), ('build-observation.json', 1024**2), ('build.log', 512 * 1024**2), ('work/original-command.json', 4096), ('work/test-reports.json', 8 * 1024**2), ('work/installed-build-package-identities.txt', 1024**2)]:
+    for file, maximum in [('receipt.json', 16 * 1024**2), ('retention-observer.jsonl', 16 * 1024**2), ('build-observation.json', 1024**2), ('build.log', 512 * 1024**2), ('work/original-command.json', 4096), ('work/test-reports.json', 8 * 1024**2), ('work/installed-build-package-identities.txt', 1024**2)]:
         add(result / file, 'result/' + file, maximum)
     reports = result / 'work/original-test-reports'
     if reports.exists():
@@ -125,5 +129,6 @@ if __name__ == '__main__':
     parser.add_argument('--output', required=True)
     parser.add_argument('--admission-log')
     parser.add_argument('--controller-log')
+    parser.add_argument('--observer-check')
     args = parser.parse_args()
-    print(json.dumps(export(args.inputs, args.result, args.output, args.admission_log, args.controller_log)))
+    print(json.dumps(export(args.inputs, args.result, args.output, args.admission_log, args.controller_log, args.observer_check)))
