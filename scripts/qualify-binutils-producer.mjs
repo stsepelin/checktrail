@@ -840,6 +840,7 @@ async function main(args) {
   const state = {
     ...plan,
     controllerSha256: sha(controllerBytes),
+    buildExecuted: null,
     attempt,
     state: "preparing",
     startedAt: new Date().toISOString(),
@@ -1008,6 +1009,7 @@ async function main(args) {
         native.reason === null,
       wrapperExitCode: command.wrapperExitCode,
     };
+    state.buildExecuted = command.invoked;
     state.log = await identifyFile(path.join(destination, "build.log"));
     state.cleanup = await cleanupContainer(cid, attempt);
     state.testEvidence = await summarizeReports(

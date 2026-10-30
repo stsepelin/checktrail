@@ -50,6 +50,40 @@ snapshot with current packages,
 disable authentication/freshness, or install on the host. Changed pins require a
 reviewable recipe revision. Extra bundle files are not staged or executed.
 
+Print the exact input operations before arranging the bundle:
+
+```sh
+node scripts/producer-qualification/binutils-acquisition-plan.mjs --plan-only
+```
+
+The planner checks local controller pins and records the frozen Snapshot downloads,
+original APT transformations, fixed keyring member and empty locks. Its output binds
+the transform image and retained preparation record, with a complete input partition.
+It reports declaration coverage and local integrity; remote availability, produced
+files and compiler builds require later execution evidence.
+
+The separate explicit input utility performs that plan:
+
+```sh
+node scripts/acquire-binutils-inputs.mjs --output /absolute/new-input-attempt \
+  --operator-trust-execution
+```
+
+It requires a POSIX host and the exact selected image already acquired locally.
+Four workers download fixed Snapshot objects with exact SHA-256 and byte counts;
+a failed or interrupted download cannot publish its final file. The original
+image's APT store method regenerates the indexes without network access or package
+installation. Original archive and developer signatures, canonical payloads and
+rejected signature mutations are checked independently. Every original bundle file
+is rehashed before the complete bundle is published. Failed attempts retain their
+receipts and bounded private partial files.
+
+The data transform has one CPU, 512 MiB, 64 PIDs and a two-minute deadline. Input
+acquisition has a thirty-minute cancellation signal and per-file deadlines. Final
+hashing and owned cleanup also run before publication. A monitored retained-byte
+ceiling is distinct from a filesystem quota; no quota is claimed. These operations
+compile no source and do not close producer or notice ancestry.
+
 Use a managed foreground lease for every agent invocation. Preparation can run on
 other hosts and only inspects data:
 
@@ -137,6 +171,39 @@ even if the wrapper exits zero. Those minimums do not replace the still-open
 complete PGO/Automake test inventory. The original rules retain their complete
 upstream copyright and permission text.
 
-A separate explicit producer-qualification workflow can later run these frozen
-inputs on a suitable native host. The multi-hour original compiler build is not
-added to ordinary PR CI by this implementation.
+The [dedicated upstream workflow](../.github/workflows/upstream-binutils.yml)
+selects this one original producer on a Linux x86-64 hosted runner. It runs only
+through an explicit dispatch or a push to `pr/upstream-producer/binutils-*`; ordinary pull
+requests retain their existing validation jobs. Image acquisition, exact public
+input preparation, the original package defaults and physical receipt reconciliation
+remain separate stages. The frozen original command, native resource limits,
+authentication and default upstream checks are preserved.
+
+Standard [hosted-runner storage](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
+is smaller than this producer's frozen work-retention ceiling. This dedicated job
+reclaims a fixed list of unrelated preinstalled SDK directories only after checking
+that it runs on a disposable GitHub-hosted Linux x64 VM. It refuses linked roots
+and does not prune shared Docker storage. The original producer still checks
+actual available capacity before starting; its resource and retention limits are
+unchanged.
+
+The development producer controller deliberately exits with incomplete
+qualification status even after the original package command succeeds. The
+separate observation verifier requires that exact exit, the original command's
+successful terminal result, native host identities, retained binaries, complete
+minimum source obligations and independently reread physical reports and logs.
+A successful build-observation job means that the package build and its evidence
+collection completed. Original failed, skipped or unavailable upstream outcomes
+remain visible and do not become passing tests. Full compiler/SDK/bootstrap,
+complete test-configuration and original-notice qualification remain incomplete.
+
+The workflow retains a bounded archive of original metadata, test reports and
+associated logs for one day, including failed attempts. Its manifest records each
+raw file's length and SHA-256. The collector rereads the actual ZIP members before
+publication. Native worktree archives and binary packages are hashed by the build
+controller and retained during the job; they are not uploaded in this bounded
+observation archive. A receipt does not promise indefinite artifact availability.
+
+The workflow is prepared for native acceptance; its existence is not a successful
+producer-build observation. Gate A remains open until the required original builds
+and all other outstanding acceptance and closure obligations have evidence.
