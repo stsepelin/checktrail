@@ -241,6 +241,7 @@ async function executeRequiredTests(
           "ruby-extensions",
           "swift-extensions",
           "mutation-runners",
+          "attempt-archives",
         ].some(
           (profile) =>
             selection?.file ===

@@ -242,7 +242,7 @@ test("agent reference execution records source deletion as incomplete terminal e
     const {run, frozen} = await setup('deleted', {validators: [{id: 'deleting-check', kind: 'reproduction', version: 'synthetic', command: [process.execPath, '-e', 'require("node:fs").unlinkSync("value.mjs")'], required: true, assets: []}]});
     const result = await api.reference(run, 'case-one', 'deleting-check', true);
     assert.equal(result.status, 'incomplete');
-    assert.equal(result.sourceUnchanged, false);
+    assert.equal(result.sourceUnchanged, false, JSON.stringify(result));
     const saved = await read(path.join(run, 'references/case-one/deleting-check.json'));
     assert.equal(saved.record.sourceSha256, frozen.manifest.cases[0].captured.sha256);
     assert.equal(saved.record.status, 'incomplete');

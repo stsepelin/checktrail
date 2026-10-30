@@ -43,7 +43,7 @@ test(
 );
 test(
   "attempt-archives installed acceptance",
-  { timeout: process.platform === "win32" ? 600000 : 240000 },
+  { timeout: process.platform === "win32" ? 1200000 : 240000 },
   async (t) => {
     if (process.env.CHECKTRAIL_ATTEMPT_WHOLE_INSTALLED === "1") {
       const actual = await realpath(
@@ -73,11 +73,15 @@ test(
       {
         env,
         encoding: "utf8",
-        timeout: process.platform === "win32" ? 590000 : 230000,
+        timeout: process.platform === "win32" ? 1190000 : 230000,
         maxBuffer: 8 * 1048576,
       },
     );
-    assert.equal(result.error, undefined);
+    assert.equal(
+      result.error,
+      undefined,
+      (result.stdout + result.stderr).slice(-8000),
+    );
     assert.equal(
       result.status,
       0,

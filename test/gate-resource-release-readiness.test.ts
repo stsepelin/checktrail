@@ -47,7 +47,9 @@ test(
   {
     skip:
       !releaseToolsAvailable && "Pinned synthetic upgrade tools not prepared",
-    timeout: 180000,
+    // Three offline installations and fresh CLI/library/MCP phases retain
+    // their individual command ceilings within this platform observation bound.
+    timeout: process.platform === "win32" ? 300000 : 180000,
   },
   resourceNearMissControl,
 );

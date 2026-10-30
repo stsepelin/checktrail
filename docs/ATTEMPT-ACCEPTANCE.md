@@ -24,6 +24,8 @@ Scripted API controls contact no provider.
 
 A pinned Go 1.27.1 executable runs the physical archive control. Its version,
 target and executable digest must remain unchanged across both cohorts. The
+Windows Go control supplies a private operator cache outside project source; the
+runner does not inherit ambient `LocalAppData`. The
 controller observes the tool and does not install it. Hosted jobs provision the
 exact version; the ARM controller verifies the native Linux ARM64 Go tree and
 mounts it read-only into the pinned container. The image supplies Git. Host image
@@ -32,8 +34,11 @@ complete upstream producer-build qualification.
 
 The shared named-profile runner gives `attempt-archives` the same fresh callback
 processes and 600-second collection allowance as the dedicated controller.
-Individual callback deadlines and production execution/cleanup limits remain
-unchanged. CI runs source and installed cohorts in separate required jobs for the selected
+The Windows installed callback has a 20-minute outer observation allowance for
+its complete fresh profile, original foundation and package setup; its child
+collector has ten seconds less. The shared runner grants this allowance only to
+the exact isolated installed callback. Other individual callback deadlines and
+production execution/cleanup limits remain unchanged. CI runs source and installed cohorts in separate required jobs for the selected
 runtime slots and a pinned Linux ARM64 controller. Those hosted runs remain
 unverified until observed.
 
