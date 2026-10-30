@@ -163,6 +163,7 @@ const isolatedCaseWorkers =
     (selection.length === 1 &&
       [
         "jvm-wrappers",
+        "jvm-analyzer-extensions",
         "scala-extensions",
         "dotnet-format-extensions",
         "dotnet-generator-extensions",

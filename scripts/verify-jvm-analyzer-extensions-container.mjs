@@ -112,9 +112,16 @@ const preparedCache = JSON.parse(lines[0]),
 assert.equal(source.required, 9);
 assert.equal(source.passed, 9);
 assert.equal(source.complete, true);
+assert.equal(source.requiredCaseWorkerLimit, 1);
+assert.equal(source.timeoutScope, "one fresh process per required named case");
 assert.equal(installed.profile.required, 9);
 assert.equal(installed.profile.passed, 9);
 assert.equal(installed.profile.complete, true);
+assert.equal(installed.profile.requiredCaseWorkerLimit, 1);
+assert.equal(
+  installed.profile.timeoutScope,
+  "one fresh process per required named case",
+);
 stage("original-native-regressions");
 const regressionFiles = [
   "spotbugs-extensions.test.js",

@@ -631,6 +631,14 @@ test("required profile batches execute shared files once and preserve all obliga
         requirement("isolated-profile.mjs", "alpha"),
         requirement("isolated-profile.mjs", "beta"),
       ],
+      "jvm-analyzer-extensions": [
+        requirement("isolated-profile.mjs", "alpha"),
+        requirement("isolated-profile.mjs", "beta"),
+      ],
+      "jvm-analyzer-extensions-extra": [
+        requirement("isolated-profile.mjs", "alpha"),
+        requirement("isolated-profile.mjs", "beta"),
+      ],
     }),
   );
   await mkdir(path.join(root, "dist/test"), { recursive: true });
@@ -691,6 +699,7 @@ test("required profile batches execute shared files once and preserve all obliga
     "consumer-impact",
     "attempt-archives",
     "assembly-fastapi",
+    "jvm-analyzer-extensions",
   ]) {
     await writeFile(marker, "");
     const whole = cli(profile);
@@ -719,28 +728,42 @@ test("required profile batches execute shared files once and preserve all obliga
       "whole-profile callbacks must execute in separate real processes",
     );
   }
-  const adjacent = cli("assembly-fastapi-extra");
-  assert.equal(adjacent.status, 1, adjacent.stdout + adjacent.stderr);
-  const adjacentReport = JSON.parse(adjacent.stdout);
-  assert.equal(adjacentReport.timeoutMs, 120000);
-  assert.equal(Object.hasOwn(adjacentReport, "requiredCaseWorkerLimit"), false);
+  for (const profile of ["assembly-fastapi", "jvm-analyzer-extensions"]) {
+    const adjacent = cli(profile + "-extra");
+    assert.equal(adjacent.status, 1, adjacent.stdout + adjacent.stderr);
+    const adjacentReport = JSON.parse(adjacent.stdout);
+    assert.equal(adjacentReport.timeoutMs, 120000);
+    assert.equal(
+      Object.hasOwn(adjacentReport, "requiredCaseWorkerLimit"),
+      false,
+    );
+    assert.ok(
+      adjacentReport.problems.some((p: { message?: string }) =>
+        p.message?.includes(
+          "each selected callback must have fresh module state",
+        ),
+      ),
+    );
+    const full = cli("--full-suite", profile);
+    assert.equal(full.status, 1, full.stdout + full.stderr);
+    const fullReport = JSON.parse(full.stdout);
+    assert.equal(Object.hasOwn(fullReport, "requiredCaseWorkerLimit"), false);
+    assert.ok(
+      fullReport.problems.some((p: { message?: string }) =>
+        p.message?.includes("unselected callback must not execute"),
+      ),
+    );
+  }
+  const compound = cli("jvm-analyzer-extensions", "first");
+  assert.equal(compound.status, 1, compound.stdout + compound.stderr);
+  const compoundReport = JSON.parse(compound.stdout);
+  assert.equal(compoundReport.timeoutMs, 600000);
+  assert.equal(Object.hasOwn(compoundReport, "requiredCaseWorkerLimit"), false);
   assert.ok(
-    adjacentReport.problems.some((p: { message?: string }) =>
+    compoundReport.problems.some((p: { message?: string }) =>
       p.message?.includes(
         "each selected callback must have fresh module state",
       ),
-    ),
-  );
-  const fullFastapi = cli("--full-suite", "assembly-fastapi");
-  assert.equal(fullFastapi.status, 1, fullFastapi.stdout + fullFastapi.stderr);
-  const fullFastapiReport = JSON.parse(fullFastapi.stdout);
-  assert.equal(
-    Object.hasOwn(fullFastapiReport, "requiredCaseWorkerLimit"),
-    false,
-  );
-  assert.ok(
-    fullFastapiReport.problems.some((p: { message?: string }) =>
-      p.message?.includes("unselected callback must not execute"),
     ),
   );
   assert.equal(cli("first", "absent").status, 1);

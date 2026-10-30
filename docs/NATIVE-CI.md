@@ -341,8 +341,14 @@ non-root user, including when freshly prepared inputs have owner-only permission
 The controller runs preserved Java/SpotBugs/light-detekt callbacks, nine required
 source cases and the same nine fresh offline installed cases, native regressions
 and compiling guard controls. A required skip, timeout, surviving guard or failed
-restoration prevents acceptance. The selected-file budget is ten minutes; the job
-limit is thirty minutes. These are upper bounds, not passing evidence.
+restoration prevents acceptance. The exact single-profile selector observes each
+required callback in its own process under the existing ten-minute observer. The
+controller requires that isolation in both source and fresh installed receipts.
+This exact selector does not broaden isolation to adjacent names, multi-profile
+selections or full-suite runs; their existing admission and execution behavior is
+unchanged. Callback, native execution and cleanup deadlines remain unchanged; the
+source/fresh container stage retains twenty minutes and the job retains thirty
+minutes. These are upper bounds, not passing evidence.
 
 The [local measurement](measurements/jvm-analyzer-extensions-2026-10-10.json) records
 its exact selected Linux ARM64 runtime and outcomes. Fresh installation uses a
