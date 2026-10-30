@@ -27,6 +27,7 @@ export const attemptWholeHarnessFiles = Object.freeze([
   "dist/test/attempt-whole-boundaries.js",
   "dist/test/tasks-wire-fixture.js",
   "dist/test/helpers.js",
+  "dist/test/native-storage-fixture.js",
   "dist/test/tool-fixture.js",
 ]);
 export const attemptHash = (bytes) =>

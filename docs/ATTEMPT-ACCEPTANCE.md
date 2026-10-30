@@ -16,12 +16,17 @@ preserves the original journal codec, private storage, streaming invocation,
 wrapper catalog, physical output and scripted API-attempt controls. Missing,
 duplicate, extra, skipped, stale or inconsistent receipt entries fail admission.
 Windows records the sole ordinary POSIX descendant control as excluded; native
-POSIX slots retain it. Scripted API controls contact no provider.
+POSIX slots retain it. On Windows, where held files can block a directory move,
+the replacement controls inject one cleanup refusal to release the descriptors,
+then physically replace the directory and verify that identity checks still reject
+collection and deletion. POSIX controls replace the directory with descriptors held.
+Scripted API controls contact no provider.
 
 A pinned Go 1.27.1 executable runs the physical archive control. Its version,
 target and executable digest must remain unchanged across both cohorts. The
 controller observes the tool and does not install it. Hosted jobs provision the
-exact version; the native ARM image supplies its pinned toolchain. Host image
+exact version; the ARM controller verifies the native Linux ARM64 Go tree and
+mounts it read-only into the pinned container. The image supplies Git. Host image
 metadata and container identities are observations, without host attestation or
 complete upstream producer-build qualification.
 

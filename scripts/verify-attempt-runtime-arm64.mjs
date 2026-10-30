@@ -18,8 +18,27 @@ import { pullPinnedImage } from "./pull-pinned-image.mjs";
 import { runAcceptanceNpm } from "./install-acceptance-package.mjs";
 import { attemptRuntimeBaseImages } from "./attempt-runtime-evidence.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
-assert.ok(["linux", "darwin"].includes(process.platform));
+assert.equal(
+  process.platform,
+  "linux",
+  "The selected Go tree must be native Linux",
+);
 assert.equal(process.arch, "arm64");
+const goRoot = await realpath(
+  execFileSync("go", ["env", "GOROOT"], {
+    encoding: "utf8",
+    timeout: 10000,
+    env: { ...process.env, GOTOOLCHAIN: "local" },
+  }).trim(),
+);
+assert.equal(
+  execFileSync(path.join(goRoot, "bin/go"), ["version"], {
+    encoding: "utf8",
+    timeout: 10000,
+    env: { ...process.env, GOTOOLCHAIN: "local" },
+  }).trim(),
+  "go version go1.27.1 linux/arm64",
+);
 const run = (args) =>
   execFileSync("docker", args, {
     encoding: "utf8",
@@ -116,6 +135,16 @@ try {
     "type=bind,src=" + root + ",target=/workspace,readonly",
     "--mount",
     "type=bind,src=" + cache + ",target=/prepared-cache,readonly",
+    "--mount",
+    "type=bind,src=" + goRoot + ",target=/selected-go,readonly",
+    "--env",
+    "GOROOT=/selected-go",
+    "--env",
+    "GOTOOLCHAIN=local",
+    "--env",
+    "PATH=/usr/local/bin:/selected-go/bin:/usr/bin:/bin",
+    "--env",
+    "HOME=/tmp",
     "--workdir",
     "/workspace",
     "--env",

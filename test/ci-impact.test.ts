@@ -1362,15 +1362,6 @@ test("CI attempt archive lanes retain every frozen runtime, prerequisite and com
   );
   assert.equal(hosted.name, "attempt-runtime (${{ matrix.slot }})");
   assert.equal(hosted.strategy["fail-fast"], false);
-  const go = hosted.steps.filter((step: { uses?: string }) =>
-    step.uses?.startsWith("actions/setup-go@"),
-  );
-  assert.equal(go.length, 1);
-  assert.equal(
-    go[0].uses,
-    "actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e",
-  );
-  assert.deepEqual(go[0].with, { "go-version": "1.27.1", cache: false });
   for (const [id, command] of [
     [
       "attempt-runtime",
@@ -1379,6 +1370,16 @@ test("CI attempt archive lanes retain every frozen runtime, prerequisite and com
     ["attempt-runtime-arm64", "node scripts/verify-attempt-runtime-arm64.mjs"],
   ] as const) {
     const job = workflow.jobs[id];
+    const go = job.steps.filter((step: { uses?: string }) =>
+      step.uses?.startsWith("actions/setup-go@"),
+    );
+    assert.equal(go.length, 1);
+    assert.equal(
+      go[0].uses,
+      "actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e",
+    );
+    assert.deepEqual(go[0].with, { "go-version": "1.27.1", cache: false });
+
     assert.deepEqual(job.needs, ["ci-plan", "actionlint"]);
     assert.equal(
       job.if,

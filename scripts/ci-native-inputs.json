@@ -2390,6 +2390,10 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
+  "test/native-storage-fixture.ts": [
+    "attempt-runtime",
+    "attempt-runtime-arm64"
+  ],
   "test/node-loaders.test.ts": ["javascript-extensions-arm64"],
   "test/nuxt.test.ts": ["nuxt", "nuxt-assembly-arm64"],
   "test/pest.test.ts": ["mutation-native-arm64", "php-extensions-arm64"],
