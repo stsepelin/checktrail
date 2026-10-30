@@ -885,3 +885,22 @@ prerequisite. Local development evidence is recorded separately in
 [CONSUMER-ACCEPTANCE.md](CONSUMER-ACCEPTANCE.md); hosted acceptance requires
 complete source and fresh-install receipts. This wiring does not qualify omitted
 native profiles, upstream producer closure or Gate A.
+
+## Prepared whole attempt-archive cohort
+
+Separate `attempt-runtime` jobs require `verify-attempt-runtime.mjs`, with Go
+1.27.1 provisioned explicitly. The `attempt-runtime-arm64` job requires its
+pinned native controller. These jobs retain the frozen runtime slots and remain
+required by `ci-complete`, without adding time to existing Tasks/consumer lanes.
+Binding controls must pass before the hosted runtime controller starts on every
+platform.
+The source and fresh offline installation must each retain the complete selected
+profile and the preserved journal/output foundation ledger. Runtime and receipt
+admission controls are also required by shared full verification. The common
+named-profile runner isolates each selected `attempt-archives` callback and uses
+a 600-second collection allowance, preserving individual case deadlines.
+
+See [ATTEMPT-ACCEPTANCE.md](ATTEMPT-ACCEPTANCE.md) for boundaries and the dated
+development observation. Newly wired hosted runs and final frozen matrix
+qualification remain unverified; Gate A and full upstream producer-build closure
+remain open.
