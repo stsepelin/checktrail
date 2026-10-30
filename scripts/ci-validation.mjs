@@ -13,6 +13,7 @@ import {
   realpath,
   rm,
   symlink,
+  writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -292,84 +293,38 @@ export async function runValidationLanes(
   await mkdir(logDirectory, { recursive: true });
   const logs = await mkdtemp(path.join(logDirectory, "run-"));
   const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-ci-lanes-"));
+  const mutationRoot = path.join(temporary, "mutations");
   const abort = new AbortController();
   const deadline = setTimeout(() => abort.abort(), timeoutMs);
   const cancellation = () => abort.abort();
   signal?.addEventListener("abort", cancellation, { once: true });
   if (signal?.aborted) abort.abort();
   const started = performance.now();
-  try {
-    const mutationRoot = path.join(temporary, "mutations");
-    await mkdir(mutationRoot);
-    await snapshot(repository, mutationRoot, files);
-    assert.equal(
-      await fingerprint(mutationRoot, files),
-      before,
-      "CI snapshot differs from source",
-    );
-    const outcomes = await Promise.allSettled(
-      Object.entries(phases).map(async ([lane, tasks]) => {
-        const root = lane === "mutations" ? mutationRoot : repository;
-        const namespace = path.join(temporary, lane + "-tmp");
-        await mkdir(namespace);
-        const receipts = [];
-        for (const [index, task] of tasks.entries()) {
-          progress({ lane, index, script: task.script, state: "started" });
-          const log = path.join(logs, lane + "-" + index + ".log");
-          let receipt, failure;
-          try {
-            receipt = await runCiCommand(root, task, {
-              signal: abort.signal,
-              temporary: namespace,
-              log,
-            });
-          } catch (error) {
-            failure = error;
-          }
-          try {
-            emitLog(
-              { lane, index, script: task.script, log },
-              await readFile(log),
-            );
-          } catch (error) {
-            failure ??= error;
-          }
-          if (failure) {
-            progress({
-              lane,
-              index,
-              script: task.script,
-              state: "failed",
-              log,
-            });
-            throw failure;
-          }
-          receipts.push(receipt);
-          progress({
-            lane,
-            index,
-            script: task.script,
-            state: "passed",
-            durationMs: receipt.durationMs,
-          });
-        }
-        assert.equal(receipts.length, tasks.length);
-        return { lane, receipts };
-      }),
-    );
-    const failures = outcomes.filter(
-      (outcome) => outcome.status === "rejected",
-    );
-    assert.deepEqual(
-      await inputs(repository),
-      files,
-      "CI source inventory changed",
-    );
-    assert.equal(
-      await fingerprint(repository, files),
-      before,
-      "CI source bytes changed",
-    );
+  const failures = [];
+  const commands = Object.fromEntries(
+    Object.entries(phases).map(([lane, tasks]) => [
+      lane,
+      tasks.map((task, index) => ({
+        lane,
+        index,
+        script: task.script,
+        command: commandKey(task),
+        state: "unrun",
+      })),
+    ]),
+  );
+  let admissionClosed = false,
+    nextPackage = 0,
+    active = 0,
+    peak = 0;
+  let sourceStable = false,
+    mutationsRestored = false,
+    cleanupComplete = false;
+  const fail = (error) => {
+    admissionClosed = true;
+    failures.push(error);
+  };
+  async function verifyMutations() {
     assert.deepEqual(
       await snapshotInputs(mutationRoot),
       files,
@@ -380,28 +335,194 @@ export async function runValidationLanes(
       before,
       "Mutation source was not restored",
     );
-    if (failures.length)
-      throw new AggregateError(
-        failures.map((outcome) => outcome.reason),
-        "Required CI lanes failed; logs: " + logs,
-      );
-    assert.ok(
-      !abort.signal.aborted,
-      "CI lanes did not finish before cancellation/deadline",
+  }
+  async function execute(lane, index, root, worker) {
+    if (admissionClosed || abort.signal.aborted) return false;
+    const task = phases[lane][index],
+      record = commands[lane][index];
+    const namespace = await mkdtemp(
+      path.join(temporary, lane + "-" + index + "-"),
     );
-    return {
-      complete: true,
-      sourceSha256: before,
-      sourceStable: true,
-      mutationsRestored: true,
-      maxConcurrentCommands: 2,
-      lanes: outcomes.map((outcome) => outcome.value),
-      durationMs: Math.round(performance.now() - started),
-      logs,
-    };
+    if (admissionClosed || abort.signal.aborted) return false;
+    const log = path.join(logs, lane + "-" + index + ".log");
+    Object.assign(record, {
+      state: "started",
+      worker,
+      log,
+      temporary: namespace,
+    });
+    active++;
+    peak = Math.max(peak, active);
+    try {
+      progress({ lane, index, script: task.script, state: "started" });
+      try {
+        record.receipt = await runCiCommand(root, task, {
+          signal: abort.signal,
+          temporary: namespace,
+          log,
+        });
+      } catch (error) {
+        record.error = String(error);
+        fail(error);
+      }
+      try {
+        await emitLog(
+          { lane, index, script: task.script, log },
+          await readFile(log),
+        );
+      } catch (error) {
+        record.logError = String(error);
+        fail(error);
+      }
+      if (record.error || record.logError) {
+        record.state = "failed";
+        progress({ lane, index, script: task.script, state: "failed", log });
+        return false;
+      }
+      progress({
+        lane,
+        index,
+        script: task.script,
+        state: "passed",
+        durationMs: record.receipt.durationMs,
+      });
+      record.state = "passed";
+      return true;
+    } catch (error) {
+      record.state = "failed";
+      record.error ??= String(error);
+      fail(error);
+      return false;
+    } finally {
+      active--;
+    }
+  }
+  async function packages(root, worker) {
+    while (
+      !admissionClosed &&
+      !abort.signal.aborted &&
+      nextPackage < phases.packages.length
+    ) {
+      const index = nextPackage++;
+      if (!(await execute("packages", index, root, worker))) return;
+    }
+  }
+  async function mutations() {
+    for (let index = 0; index < phases.mutations.length; index++) {
+      if (!(await execute("mutations", index, mutationRoot, "mutations")))
+        return;
+    }
+    // Package entrypoints and their harness helpers were audited for source writes.
+    // Each uses private projects/installations in its command TMPDIR; prepared
+    // dependencies are read/copied. Only the independent package queue is shared.
+    // Never admit one against the mutation copy until every source byte is restored.
+    await verifyMutations();
+    await packages(mutationRoot, "mutations");
+  }
+  async function worker(run) {
+    try {
+      await run();
+    } catch (error) {
+      fail(error);
+    }
+  }
+  try {
+    try {
+      await mkdir(mutationRoot);
+      await snapshot(repository, mutationRoot, files);
+      assert.equal(
+        await fingerprint(mutationRoot, files),
+        before,
+        "CI snapshot differs from source",
+      );
+      // Exactly two workers exist. Once mutations finish, its free slot consumes
+      // independent package work rather than waiting beside a long serial lane.
+      await Promise.allSettled([
+        worker(mutations),
+        worker(() => packages(repository, "packages")),
+      ]);
+    } catch (error) {
+      fail(error);
+    }
+    try {
+      assert.deepEqual(
+        await inputs(repository),
+        files,
+        "CI source inventory changed",
+      );
+      assert.equal(
+        await fingerprint(repository, files),
+        before,
+        "CI source bytes changed",
+      );
+      sourceStable = true;
+    } catch (error) {
+      fail(error);
+    }
+    try {
+      await verifyMutations();
+      mutationsRestored = true;
+    } catch (error) {
+      fail(error);
+    }
+    if (abort.signal.aborted)
+      fail(Error("CI lanes did not finish before cancellation/deadline"));
   } finally {
     clearTimeout(deadline);
     signal?.removeEventListener("abort", cancellation);
-    await rm(temporary, { recursive: true, force: true });
+    try {
+      await rm(temporary, { recursive: true, force: true });
+      cleanupComplete = true;
+    } catch (error) {
+      fail(error);
+    }
   }
+  const complete =
+    failures.length === 0 &&
+    sourceStable &&
+    mutationsRestored &&
+    cleanupComplete &&
+    Object.values(commands)
+      .flat()
+      .every((record) => record.state === "passed");
+  const result = {
+    complete,
+    sourceSha256: before,
+    sourceStable,
+    mutationsRestored,
+    cleanupComplete,
+    maxConcurrentCommands: 2,
+    peakConcurrentCommandAdmissions: peak,
+    lanes: Object.entries(commands).map(([lane, records]) => ({
+      lane,
+      receipts: records
+        .filter((record) => record.state === "passed")
+        .map((record) => ({
+          ...record.receipt,
+          index: record.index,
+          worker: record.worker,
+        })),
+      commands: records,
+    })),
+    problems: failures.map(String),
+    durationMs: Math.round(performance.now() - started),
+    logs,
+  };
+  await writeFile(
+    path.join(logs, "result.json"),
+    JSON.stringify(result, null, 2) + "\n",
+    { flag: "wx" },
+  );
+  if (!complete) {
+    const error = new AggregateError(
+      failures,
+      "Required CI lanes failed; " +
+        result.problems.join("; ") +
+        "; logs: " +
+        logs,
+    );
+    error.result = result;
+    throw error;
+  }
+  return result;
 }

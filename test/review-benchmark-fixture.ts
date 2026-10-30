@@ -338,6 +338,8 @@ export async function runTrial(
           probeId: "OriginalWorkflow",
         }),
       );
+      assert.equal(result.status, "ready", JSON.stringify(result));
+      assert.equal(result.nextStage, "adjudicator", JSON.stringify(result));
       const adjudicator = reviewWorkflowAssignmentSchema.parse(
         await session.command({
           operation: "next",

@@ -406,3 +406,251 @@ test("CI lane deadline terminates both physically started commands and cannot re
     await assert.rejects(access(started.tmp), { code: "ENOENT" });
   }
 });
+
+test("CI reuses the restored mutation worker for packages, caps actual simultaneous bodies and records every index once", async (t) => {
+  const body =
+    prelude +
+    `
+const [coord,id]=process.argv.slice(2);const stateFile=path.join(coord,'body-state.json');
+async function event(kind){const lock=path.join(coord,'body-lock');for(;;){try{await fs.mkdir(lock);break;}catch(e){if(e.code!=='EEXIST')throw e;await delay(5);}}
+try{const s=await fs.readFile(stateFile,'utf8').then(JSON.parse,e=>{if(e.code!=='ENOENT')throw e;return{active:0,peak:0,events:[]}});s.active+=kind==='start'?1:-1;assert.ok(s.active>=0&&s.active<=2,'More than two actual command bodies overlapped');s.peak=Math.max(s.peak,s.active);s.events.push({kind,id,pid:process.pid,root:process.cwd(),tmp:process.env.TMPDIR});await fs.writeFile(stateFile,JSON.stringify(s));}finally{await fs.rm(lock,{recursive:true});}}
+assert.equal(await fs.readFile(file,'utf8'),'original');await event('start');
+if(id==='mutation'){await fs.writeFile(file,'mutated');while(!await fs.access(path.join(coord,'p0-started')).then(()=>true,()=>false))await delay(5);await fs.writeFile(file,'original');}
+else if(id==='p0'){await fs.writeFile(path.join(coord,'p0-started'),'ready');while(!await fs.access(path.join(coord,'p1-started')).then(()=>true,()=>false))await delay(5);}
+else if(id==='p1'){assert.equal(await fs.readFile(file,'utf8'),'original','Mutation must restore its source before taking package work');await fs.writeFile(path.join(coord,'p1-started'),'ready');await delay(30);}
+else await delay(30);
+await event('finish');`;
+  const { root, outer } = await repository(t, { "queue.mjs": body });
+  const result = await runValidationLanes(root, {
+    phases: {
+      mutations: [task("scripts/queue.mjs", [outer, "mutation"])],
+      packages: Array.from({ length: 4 }, (_, index) =>
+        task("scripts/queue.mjs", [outer, "p" + index]),
+      ),
+    },
+    timeoutMs: 10000,
+  });
+  assert.equal(result.complete, true);
+  assert.equal(result.peakConcurrentCommandAdmissions, 2);
+  assert.equal(result.cleanupComplete, true);
+  const observed = JSON.parse(
+    await readFile(path.join(outer, "body-state.json"), "utf8"),
+  ) as {
+    active: number;
+    peak: number;
+    events: {
+      kind: string;
+      id: string;
+      pid: number;
+      root: string;
+      tmp: string;
+    }[];
+  };
+  assert.equal(observed.active, 0);
+  assert.equal(observed.peak, 2);
+  const starts = observed.events.filter((event) => event.kind === "start");
+  const finishes = observed.events.filter((event) => event.kind === "finish");
+  const ids = ["mutation", "p0", "p1", "p2", "p3"].sort();
+  assert.deepEqual(starts.map((event) => event.id).sort(), ids);
+  assert.deepEqual(finishes.map((event) => event.id).sort(), ids);
+  assert.equal(new Set(starts.map((event) => event.pid)).size, ids.length);
+  assert.equal(new Set(starts.map((event) => event.tmp)).size, ids.length);
+  assert.equal(starts.find((event) => event.id === "p0")!.root, root);
+  assert.equal(
+    starts.find((event) => event.id === "p1")!.root,
+    starts.find((event) => event.id === "mutation")!.root,
+  );
+  assert.notEqual(starts.find((event) => event.id === "p1")!.root, root);
+  for (const started of starts)
+    await assert.rejects(access(started.tmp), { code: "ENOENT" });
+  await assert.rejects(
+    access(starts.find((event) => event.id === "mutation")!.root),
+    { code: "ENOENT" },
+  );
+  const packages = result.lanes.find(
+    (lane: { lane: string }) => lane.lane === "packages",
+  );
+  assert.deepEqual(
+    packages.receipts.map((receipt: { index: number }) => receipt.index),
+    [0, 1, 2, 3],
+  );
+  assert.equal(
+    new Set(packages.receipts.map((receipt: { log: string }) => receipt.log))
+      .size,
+    4,
+  );
+  assert.equal(packages.receipts[0].worker, "packages");
+  assert.equal(packages.receipts[1].worker, "mutations");
+  const retained = JSON.parse(
+    await readFile(path.join(result.logs, "result.json"), "utf8"),
+  );
+  assert.deepEqual(retained, result);
+  assert.equal(
+    await readFile(path.join(root, "dist/src/subject.txt"), "utf8"),
+    "original",
+  );
+});
+
+test("CI package failure stops further admission while its already-running package peer completes and unrun indices remain explicit", async (t) => {
+  const { root, outer } = await repository(t, {
+    "mutation.mjs": prelude,
+    "failure.mjs":
+      prelude +
+      `const coord=process.argv[2];await fs.writeFile(path.join(coord,'failure-ready'),'ready');while(!await fs.access(path.join(coord,'peer-ready')).then(()=>true,()=>false))await delay(5);process.exitCode=7;`,
+    "peer.mjs":
+      prelude +
+      `const coord=process.argv[2];await fs.writeFile(path.join(coord,'peer-ready'),'ready');while(!await fs.access(path.join(coord,'failure-ready')).then(()=>true,()=>false))await delay(5);await delay(150);await fs.writeFile(path.join(coord,'peer-finished'),'finished');`,
+    "unrun.mjs":
+      prelude + `await fs.writeFile(process.argv[2],'incorrect admission');`,
+  });
+  let failure:
+    | {
+        result?: {
+          complete: boolean;
+          cleanupComplete: boolean;
+          logs: string;
+          lanes: {
+            lane: string;
+            commands: { index: number; state: string; temporary?: string }[];
+          }[];
+        };
+      }
+    | undefined;
+  try {
+    await runValidationLanes(root, {
+      phases: {
+        mutations: [task("scripts/mutation.mjs")],
+        packages: [
+          task("scripts/failure.mjs", [outer]),
+          task("scripts/peer.mjs", [outer]),
+          task("scripts/unrun.mjs", [path.join(outer, "unexpected")]),
+        ],
+      },
+      timeoutMs: 10000,
+    });
+    assert.fail("The failed original command must fail the scheduler");
+  } catch (error) {
+    failure = error as typeof failure;
+  }
+  assert.ok(failure?.result);
+  const result = failure.result;
+  assert.equal(result.complete, false);
+  assert.equal(result.cleanupComplete, true);
+  assert.equal(
+    await readFile(path.join(outer, "peer-finished"), "utf8"),
+    "finished",
+  );
+  await assert.rejects(access(path.join(outer, "unexpected")), {
+    code: "ENOENT",
+  });
+  const packages = result.lanes.find((lane) => lane.lane === "packages")!;
+  assert.deepEqual(
+    packages.commands.map((command) => [command.index, command.state]),
+    [
+      [0, "failed"],
+      [1, "passed"],
+      [2, "unrun"],
+    ],
+  );
+  const retained = JSON.parse(
+    await readFile(path.join(result.logs, "result.json"), "utf8"),
+  );
+  assert.equal(retained.complete, false);
+  assert.deepEqual(retained.lanes, result.lanes);
+  for (const lane of result.lanes)
+    for (const command of lane.commands)
+      if (command.temporary)
+        await assert.rejects(access(command.temporary), { code: "ENOENT" });
+});
+
+test("CI cancellation after mutation completion stops both reached package workers and retains queued work as unrun", async (t) => {
+  const { root, outer } = await repository(t, {
+    "mutation.mjs": prelude,
+    "hang.mjs":
+      prelude +
+      `const marker=process.argv[2];await fs.writeFile(marker,JSON.stringify({pid:process.pid,tmp:process.env.TMPDIR,root:process.cwd()}));setInterval(()=>{},1000);`,
+    "unrun.mjs":
+      prelude + `await fs.writeFile(process.argv[2],'incorrect admission');`,
+  });
+  const controller = new AbortController();
+  const markers = [path.join(outer, "p0"), path.join(outer, "p1")];
+  const running = runValidationLanes(root, {
+    phases: {
+      mutations: [task("scripts/mutation.mjs")],
+      packages: [
+        task("scripts/hang.mjs", [markers[0]!]),
+        task("scripts/hang.mjs", [markers[1]!]),
+        task("scripts/unrun.mjs", [path.join(outer, "unexpected")]),
+      ],
+    },
+    signal: controller.signal,
+    timeoutMs: 10000,
+  });
+  let failure:
+    | {
+        result?: {
+          complete: boolean;
+          cleanupComplete: boolean;
+          sourceStable: boolean;
+          mutationsRestored: boolean;
+          lanes: {
+            lane: string;
+            commands: { index: number; state: string }[];
+          }[];
+        };
+      }
+    | undefined;
+  const finished = running.catch((error: unknown) => {
+    failure = error as typeof failure;
+  });
+  try {
+    for (const marker of markers) {
+      let reached = false;
+      for (let attempt = 0; attempt < 300; attempt++) {
+        reached = await access(marker).then(
+          () => true,
+          (error: NodeJS.ErrnoException) => {
+            if (error.code !== "ENOENT") throw error;
+            return false;
+          },
+        );
+        if (reached) break;
+        await delay(10);
+      }
+      assert.equal(
+        reached,
+        true,
+        "Both actual package bodies must start before cancellation",
+      );
+    }
+    controller.abort();
+    await finished;
+    assert.ok(failure?.result);
+    assert.equal(failure.result.complete, false);
+    assert.equal(failure.result.cleanupComplete, true);
+    assert.equal(failure.result.sourceStable, true);
+    assert.equal(failure.result.mutationsRestored, true);
+    const packages = failure.result.lanes.find(
+      (lane) => lane.lane === "packages",
+    )!;
+    assert.deepEqual(
+      packages.commands.map((command) => [command.index, command.state]),
+      [
+        [0, "failed"],
+        [1, "failed"],
+        [2, "unrun"],
+      ],
+    );
+    for (const marker of markers) {
+      const reached = JSON.parse(await readFile(marker, "utf8"));
+      assert.throws(() => process.kill(reached.pid, 0), { code: "ESRCH" });
+      await assert.rejects(access(reached.tmp), { code: "ENOENT" });
+    }
+    await assert.rejects(access(path.join(outer, "unexpected")), {
+      code: "ENOENT",
+    });
+  } finally {
+    controller.abort();
+    await finished;
+  }
+});
