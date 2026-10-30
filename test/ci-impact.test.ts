@@ -402,6 +402,68 @@ test("CI completion requires selected jobs to pass and reports omitted jobs as u
     /outcome disagrees/,
   );
 });
+test("CI completion YAML policy admits failed dependencies and skips a canceled workflow", () => {
+  // A closed model of the documented GitHub status functions, applied to the
+  // actual YAML scalar. This does not execute GitHub's hosted scheduler.
+  const condition =
+    /^\$\{\{\s*(!?)(always|cancelled|success|failure)\(\)\s*\}\}$/u.exec(
+      workflow.jobs["ci-complete"].if,
+    );
+  assert.ok(
+    condition,
+    "Completion requires an explicit supported status condition",
+  );
+  const eligible = (workflowCanceled: boolean, dependencies: string[]) => {
+    const status: Record<string, boolean> = {
+      always: true,
+      cancelled: workflowCanceled,
+      success:
+        !workflowCanceled && dependencies.every((value) => value === "success"),
+      failure: dependencies.includes("failure"),
+    };
+    const value = status[condition[2]!];
+    assert.equal(typeof value, "boolean");
+    return condition[1] === "!" ? !value : value;
+  };
+  for (const result of ["success", "failure", "skipped"]) {
+    assert.equal(
+      eligible(false, ["success", result]),
+      true,
+      `Aggregate stays eligible after dependency ${result}`,
+    );
+    assert.equal(
+      eligible(true, ["success", result]),
+      false,
+      `A canceled workflow does not retain aggregate work after ${result}`,
+    );
+  }
+  const selected = plan(["test/gate-scala-extensions.test.ts"]);
+  const needs: Record<string, { result: string }> = Object.fromEntries(
+    ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
+      id,
+      {
+        result:
+          id === "scala-extensions-arm64"
+            ? "failure"
+            : ["ci-plan", "checks"].includes(id)
+              ? "success"
+              : "skipped",
+      },
+    ]),
+  );
+  assert.equal(
+    eligible(
+      false,
+      Object.values(needs).map((row) => row.result),
+    ),
+    true,
+  );
+  assert.throws(
+    () => requireCiCompletion(selected, needs),
+    /outcome disagrees/,
+    "Reaching the aggregate after a dependency failure still refuses completion",
+  );
+});
 test("CI managed pull-request branch prefixes avoid duplicate push workflows while tags retain verification", () => {
   assert.deepEqual(workflow.on.push["branches-ignore"], [
     "pr/**",
@@ -458,7 +520,7 @@ test("CI initial wave stays within the free runner ceiling and selected jobs sur
     "ci-plan",
     "actionlint",
   ]);
-  assert.equal(workflow.jobs["ci-complete"].if, "${{ always() }}");
+  assert.equal(workflow.jobs["ci-complete"].if, "${{ !cancelled() }}");
   assert.ok(workflow.on.schedule.length > 0);
   assert.ok(Object.hasOwn(workflow.on, "workflow_dispatch"));
 });
