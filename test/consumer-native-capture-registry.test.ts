@@ -30,6 +30,7 @@ const {
   readConsumerCaptureRegistry,
   decodeConsumerCaptureRegistry,
   consumerCaptureRegistryBootstrapProgram,
+  consumerCaptureOwner,
 } = await import(
   new URL("../../scripts/consumer-native-capture-registry.mjs", import.meta.url)
     .href
@@ -773,4 +774,16 @@ test("a valid-looking complete-line truncation cannot replace history already ob
     (await readConsumerCaptureRegistry(registry.path)).registrations[0].state,
     "collected-retained",
   );
+});
+
+test("new owned volume owner validation preserves observed root defaults and both nonroot controller users while refusing malformed identities", () => {
+  for (const uid of [0, 1000, 65532])
+    assert.deepEqual(consumerCaptureOwner({ uid, gid: uid }), {
+      uid,
+      gid: uid,
+    });
+  for (const uid of [-1, 4294967295, Number.NaN, 1.5, "0", undefined])
+    assert.throws(() => consumerCaptureOwner({ uid, gid: 1000 }));
+  for (const gid of [-1, 4294967295, Number.NaN, 1.5, "0", undefined])
+    assert.throws(() => consumerCaptureOwner({ uid: 1000, gid }));
 });

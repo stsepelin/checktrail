@@ -87,6 +87,16 @@ function identityValue(value) {
   for (const scalar of Object.values(value))
     assert.ok(typeof scalar === "string" && /^\d{1,40}$/.test(scalar));
 }
+/** Observed Linux image users include both the original root defaults and explicit nonroot users. */
+export function consumerCaptureOwner(value) {
+  assert.ok(
+    Number.isSafeInteger(value.uid) && value.uid >= 0 && value.uid < 4294967295,
+  );
+  assert.ok(
+    Number.isSafeInteger(value.gid) && value.gid >= 0 && value.gid < 4294967295,
+  );
+  return { uid: value.uid, gid: value.gid };
+}
 function headerValue(selected, filename, stat, parentPath, parent) {
   return {
     schemaVersion: 1,
@@ -606,15 +616,14 @@ ${kind}
 ${context}
 ${identity}
 ${headerValue}
+${consumerCaptureOwner}
 assert.equal(process.platform,"linux","Capture registry volume bootstrap requires Linux");
 assert.equal(process.getuid(),0,"Capture registry volume bootstrap requires its root initializer");
 assert.equal(process.argv.length,2,"Capture registry bootstrap requires one JSON request argument");
 const body=process.argv[1];assert.ok(typeof body==="string"&&Buffer.byteLength(body)<=16384,"Capture registry bootstrap input exceeds bound");
 const request=JSON.parse(body);assert.equal(JSON.stringify(request),body,"Capture registry bootstrap request is noncanonical or has duplicate keys");
 keys(request,["context","uid","gid"]);
-const selected=context(request.context),uid=request.uid,gid=request.gid;
-assert.ok(Number.isSafeInteger(uid)&&uid>0&&uid<4294967295);
-assert.ok(Number.isSafeInteger(gid)&&gid>=0&&gid<4294967295);
+const selected=context(request.context),{uid,gid}=consumerCaptureOwner(request);
 const parentPath="/operator-consumer-captures",filename=parentPath+"/capture-registry.jsonl";
 assert.equal(await realpath(parentPath),parentPath);
 const original=await lstat(parentPath,{bigint:true});
