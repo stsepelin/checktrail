@@ -1,7 +1,17 @@
 import assert from "node:assert/strict";
 import { randomUUID, createHash } from "node:crypto";
-import { open, readFile, readdir, rm, link, chmod } from "node:fs/promises";
+import {
+  open,
+  readFile,
+  readdir,
+  rm,
+  link,
+  chmod,
+  mkdtemp,
+  realpath,
+} from "node:fs/promises";
 import path from "node:path";
+import os from "node:os";
 import { test } from "node:test";
 import { ensureWindowsTaskAccess } from "../src/windows-task-access.js";
 const { collectConsumerWitnesses, readConsumerWitnessNamespace } = await import(
@@ -205,5 +215,118 @@ test("selected Clang operator scope has separate bounded packet storage and cann
     );
   } finally {
     if (namespace) await rm(namespace, { recursive: true, force: true });
+  }
+});
+
+const { createConsumerCaptureRegistry, readConsumerCaptureRegistry } =
+  await import(
+    new URL(
+      "../../scripts/consumer-native-capture-registry.mjs",
+      import.meta.url,
+    ).href
+  );
+test("registered collection journals namespace creation before the body and retains exact successful bytes for parent export", async () => {
+  const directory = await realpath(
+    await mkdtemp(path.join(os.tmpdir(), "checktrail-storage-registry-")),
+  );
+  if (process.platform === "win32")
+    ensureWindowsTaskAccess(directory, "directory", true);
+  let namespace = "";
+  const previous = process.env.CHECKTRAIL_CONSUMER_CAPTURE_REGISTRY;
+  try {
+    const registry = await createConsumerCaptureRegistry(directory, {
+      attemptId: randomUUID(),
+      scopeId: "synthetic:storage-only",
+      captureKind: "native-consumer",
+      sourceFrameSha256: "a".repeat(64),
+    });
+    process.env.CHECKTRAIL_CONSUMER_CAPTURE_REGISTRY = registry.path;
+    const result = await collectConsumerWitnesses(
+      async () => {
+        namespace = process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR!;
+        const running = await readConsumerCaptureRegistry(registry.path);
+        assert.equal(running.registrations.length, 1);
+        assert.equal(running.registrations[0].state, "created");
+        assert.equal(running.registrations[0].path, namespace);
+        await stored(namespace, "attempt-" + randomUUID() + ".json", {
+          family: "php",
+          syntheticStorageOnly: true,
+        });
+        return {};
+      },
+      async (_result: unknown, capture: { attemptRecords: unknown[] }) => {
+        assert.equal(capture.attemptRecords.length, 1);
+        return { nativeQualification: false };
+      },
+    );
+    assert.equal(result.nativeQualification, false);
+    assert.equal(
+      (await readConsumerCaptureRegistry(registry.path)).registrations[0].state,
+      "collected-retained",
+    );
+    assert.equal(
+      (await readConsumerWitnessNamespace(namespace)).attemptRecords.length,
+      1,
+    );
+    assert.equal(
+      JSON.parse(
+        await readFile(path.join(namespace, "controller.json"), "utf8"),
+      ).state,
+      "collected-scoped",
+    );
+  } finally {
+    if (previous === undefined)
+      delete process.env.CHECKTRAIL_CONSUMER_CAPTURE_REGISTRY;
+    else process.env.CHECKTRAIL_CONSUMER_CAPTURE_REGISTRY = previous;
+    if (namespace) await rm(namespace, { recursive: true, force: true });
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+test("registered collection preserves actual failed journals and terminal state without replacing the original error", async () => {
+  const directory = await realpath(
+    await mkdtemp(path.join(os.tmpdir(), "checktrail-storage-registry-")),
+  );
+  if (process.platform === "win32")
+    ensureWindowsTaskAccess(directory, "directory", true);
+  const previous = process.env.CHECKTRAIL_CONSUMER_CAPTURE_REGISTRY;
+  let namespace = "";
+  try {
+    const registry = await createConsumerCaptureRegistry(directory, {
+      attemptId: randomUUID(),
+      scopeId: "synthetic:refused-storage",
+      captureKind: "native-consumer",
+      sourceFrameSha256: "b".repeat(64),
+    });
+    process.env.CHECKTRAIL_CONSUMER_CAPTURE_REGISTRY = registry.path;
+    await assert.rejects(
+      collectConsumerWitnesses(
+        async () => {
+          namespace = process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR!;
+          await stored(namespace, "attempt-" + randomUUID() + ".json", {
+            family: "php",
+            syntheticFailure: true,
+          });
+          throw Error("Original synthetic body failure");
+        },
+        async () => ({ nativeQualification: false }),
+      ),
+      /Original synthetic body failure/,
+    );
+    assert.equal(
+      (await readConsumerCaptureRegistry(registry.path)).registrations[0].state,
+      "failed-retained",
+    );
+    assert.equal(
+      (await readConsumerWitnessNamespace(namespace)).attemptRecords.length,
+      1,
+    );
+    await rm(namespace, { recursive: true, force: true });
+    namespace = "";
+  } finally {
+    if (previous === undefined)
+      delete process.env.CHECKTRAIL_CONSUMER_CAPTURE_REGISTRY;
+    else process.env.CHECKTRAIL_CONSUMER_CAPTURE_REGISTRY = previous;
+    if (namespace) await rm(namespace, { recursive: true, force: true });
+    await rm(directory, { recursive: true, force: true });
   }
 });

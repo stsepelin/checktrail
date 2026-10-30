@@ -1,15 +1,10 @@
 import process from "node:process";
-import { Buffer } from "node:buffer";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { constants } from "node:fs";
 import {
   mkdtemp,
   readFile,
-  readdir,
-  lstat,
-  open,
   rm,
   writeFile,
   rename,
@@ -18,6 +13,11 @@ import {
 import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import { runRequiredTests } from "./required-test-evidence.mjs";
+import { readConsumerWitnessNamespace } from "./consumer-witness-collection.mjs";
+import {
+  registerConsumerCaptureNamespace,
+  finishConsumerCaptureRegistration,
+} from "./consumer-native-capture-registry.mjs";
 import {
   captureCompiledEngine,
   requireUnchangedCompiledEngine,
@@ -94,6 +94,8 @@ const files = [
   "scripts/consumer-witness-swift.mjs",
   "scripts/consumer-witness-project.mjs",
   "scripts/consumer-runtime-selection.mjs",
+  "scripts/consumer-witness-collection.mjs",
+  "scripts/consumer-native-capture-registry.mjs",
   ".github/workflows/ci.yml",
   ...([
     "php",
@@ -255,7 +257,13 @@ const namespace = await realpath(
   ),
 );
 const previous = process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR;
-let complete = false;
+let complete = false,
+  registration = null;
+assert.equal(
+  previous,
+  undefined,
+  "Nested consumer collection would mix independent namespaces",
+);
 async function checkpoint(value) {
   const pending = path.join(namespace, ".controller.pending"),
     target = path.join(namespace, "controller.json");
@@ -263,6 +271,10 @@ async function checkpoint(value) {
   await rename(pending, target);
 }
 try {
+  registration = await registerConsumerCaptureNamespace(
+    namespace,
+    "native-consumer",
+  );
   await checkpoint({
     schemaVersion: 1,
     state: "running",
@@ -275,73 +287,8 @@ try {
   const evidence = await runRequiredTests(requirements[selected.profile], {
     timeoutMs: 600000,
   });
-  const observations = [];
-  const attemptRecords = [];
-  let retainedBytes = 0;
-  const names = (await readdir(namespace))
-    .filter((name) => name !== "controller.json")
-    .sort();
-  assert.ok(names.length <= 512);
-  for (const name of names) {
-    assert.match(
-      name,
-      /^(?:(?:go|python|php|rust|ruby|c|cpp|java|kotlin|scala|csharp|fsharp|vb|hcl|yaml|swift)-(?:broken|fixed|near-miss)-(?:canonical|caller-change|restored|repeat)|attempt)-[a-f0-9-]{36}\.json$/,
-    );
-    const file = path.join(namespace, name),
-      stat = await lstat(file, { bigint: true });
-    assert.ok(
-      stat.isFile() &&
-        !stat.isSymbolicLink() &&
-        stat.nlink === 1n &&
-        stat.uid === BigInt(process.getuid()) &&
-        (stat.mode & 0o777n) === 0o600n &&
-        stat.size <= 2097152n,
-    );
-    const fd = await open(file, constants.O_RDONLY | constants.O_NOFOLLOW);
-    let bytes;
-    try {
-      const opened = await fd.stat({ bigint: true });
-      assert.equal(opened.ino, stat.ino);
-      assert.equal(opened.dev, stat.dev);
-      const chunks = [];
-      let count = 0;
-      while (true) {
-        const chunk = Buffer.alloc(Math.min(65536, 2097153 - count));
-        const { bytesRead } = await fd.read(chunk, 0, chunk.length, null);
-        if (bytesRead === 0) break;
-        count += bytesRead;
-        assert.ok(count <= 2097152, "Consumer capture grew beyond byte bound");
-        chunks.push(chunk.subarray(0, bytesRead));
-      }
-      bytes = Buffer.concat(chunks, count);
-      assert.equal(BigInt(bytes.length), stat.size);
-      const after = await fd.stat({ bigint: true });
-      assert.equal(after.mtimeNs, stat.mtimeNs);
-      assert.equal(after.ctimeNs, stat.ctimeNs);
-      const linked = await lstat(file, { bigint: true });
-      assert.equal(linked.isSymbolicLink(), false);
-      for (const key of ["dev", "ino", "size", "mtimeNs", "ctimeNs"])
-        assert.equal(
-          linked[key],
-          after[key],
-          "Consumer capture path changed during bounded read",
-        );
-    } finally {
-      await fd.close();
-    }
-    retainedBytes += bytes.length;
-    assert.ok(retainedBytes <= 32 * 1048576);
-    const value = JSON.parse(bytes.toString("utf8"));
-    assert.ok(bytes.length <= (value.family === "hcl" ? 2097152 : 262144));
-    if (name.startsWith("attempt-"))
-      attemptRecords.push({
-        file: name,
-        bytes: bytes.length,
-        sha256: hash(bytes),
-        value,
-      });
-    else observations.push(value);
-  }
+  const { observations, attemptRecords } =
+    await readConsumerWitnessNamespace(namespace);
   assert.equal(evidence.complete, true, JSON.stringify(evidence.problems));
   assert.equal(evidence.required, 9);
   assert.equal(evidence.passed, 9);
@@ -427,18 +374,36 @@ try {
     observations: observations.length,
     gateAComplete: false,
   });
+  await finishConsumerCaptureRegistration(registration, "collected-retained");
   process.stdout.write(JSON.stringify(result) + "\n");
   complete = true;
 } catch (error) {
-  await checkpoint({
-    schemaVersion: 1,
-    state: "failed-incomplete",
-    family,
-    error: String(error).slice(0, 4000),
-    gateAComplete: false,
-    inferenceInvoked: false,
-    fieldEvaluationExecuted: false,
-  });
+  try {
+    await finishConsumerCaptureRegistration(registration, "failed-retained");
+  } catch (storageError) {
+    process.stderr.write(
+      "Consumer registry failure retained: " +
+        String(storageError).slice(0, 1024) +
+        "\n",
+    );
+  }
+  try {
+    await checkpoint({
+      schemaVersion: 1,
+      state: "failed-incomplete",
+      family,
+      error: String(error).slice(0, 4000),
+      gateAComplete: false,
+      inferenceInvoked: false,
+      fieldEvaluationExecuted: false,
+    });
+  } catch (storageError) {
+    process.stderr.write(
+      "Consumer failure checkpoint unavailable: " +
+        String(storageError).slice(0, 1024) +
+        "\n",
+    );
+  }
   process.stderr.write(
     "Incomplete consumer capture retained at " + namespace + "\n",
   );
@@ -447,5 +412,6 @@ try {
   if (previous === undefined)
     delete process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR;
   else process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR = previous;
-  if (complete) await rm(namespace, { recursive: true, force: true });
+  if (complete && registration === null)
+    await rm(namespace, { recursive: true, force: true });
 }

@@ -15,6 +15,10 @@ import {
 import path from "node:path";
 import { consumerWitnessCaptureParent } from "../dist/test/consumer-witness-fixture.js";
 import { ensureWindowsTaskAccess } from "../dist/src/windows-task-access.js";
+import {
+  registerConsumerCaptureNamespace,
+  finishConsumerCaptureRegistration,
+} from "./consumer-native-capture-registry.mjs";
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 function privateMode(stat, mode) {
   return (
@@ -167,7 +171,8 @@ export async function collectConsumerWitnesses(
     );
   if (process.platform === "win32")
     ensureWindowsTaskAccess(namespace, "directory", true);
-  let completed = false;
+  let completed = false,
+    registration = null;
   async function checkpoint(state) {
     const pending = path.join(namespace, ".controller.pending"),
       fd = await open(pending, "wx", 0o600);
@@ -190,6 +195,7 @@ export async function collectConsumerWitnesses(
     await rename(pending, path.join(namespace, "controller.json"));
   }
   try {
+    registration = await registerConsumerCaptureNamespace(namespace, scope);
     process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR = namespace;
     await checkpoint("running");
     const result = await operation(),
@@ -200,9 +206,19 @@ export async function collectConsumerWitnesses(
       "Scoped consumer reconciliation returned no packet",
     );
     await checkpoint("collected-scoped");
+    await finishConsumerCaptureRegistration(registration, "collected-retained");
     completed = true;
     return qualified;
   } catch (error) {
+    try {
+      await finishConsumerCaptureRegistration(registration, "failed-retained");
+    } catch (storageError) {
+      process.stderr.write(
+        "Consumer registry failure retained: " +
+          String(storageError).slice(0, 1024) +
+          "\n",
+      );
+    }
     try {
       await checkpoint("failed-incomplete");
     } catch (storageError) {
@@ -220,6 +236,7 @@ export async function collectConsumerWitnesses(
     if (previous === undefined)
       delete process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR;
     else process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR = previous;
-    if (completed) await rm(namespace, { recursive: true, force: true });
+    if (completed && registration === null)
+      await rm(namespace, { recursive: true, force: true });
   }
 }
