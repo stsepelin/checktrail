@@ -215,3 +215,8 @@ observation archive. A receipt does not promise indefinite artifact availability
 The workflow is prepared for native acceptance; its existence is not a successful
 producer-build observation. Gate A remains open until the required original builds
 and all other outstanding acceptance and closure obligations have evidence.
+
+The separate [original web runtime controller](WEB-RUNTIME-PRODUCER.md) prepares
+the pinned GitHub and npm publisher recipes through its own operator-only native
+workflow. Its native acceptance, SDK/bootstrap ancestry and complete notice
+closure remain pending; no existing producer completion flag is changed.
