@@ -192,6 +192,7 @@
   "scripts/consumer-runtime-selection.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -232,6 +233,7 @@
   "scripts/consumer-witness-attempts.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -252,6 +254,7 @@
   "scripts/consumer-witness-collection.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -292,6 +295,7 @@
   "scripts/consumer-witness-data.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -332,6 +336,7 @@
   "scripts/consumer-witness-jvm.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -352,6 +357,7 @@
   "scripts/consumer-witness-managed.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -392,6 +398,7 @@
   "scripts/consumer-witness-project.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -412,6 +419,7 @@
   "scripts/consumer-witness-swift.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -1310,6 +1318,7 @@
   "scripts/scala-context-tools.Dockerfile": ["scala-context-arm64"],
   "scripts/scala-extensions-tools.Dockerfile": ["scala-extensions-arm64"],
   "scripts/scala-tools.Dockerfile": ["scala"],
+  "scripts/selected-clang-consumer-witness.mjs": ["cpp-extensions-arm64"],
   "scripts/spotbugs-tools.Dockerfile": ["spotbugs"],
   "scripts/swift-context-tools.Dockerfile": ["swift-context-arm64"],
   "scripts/swift-extensions-tools.Dockerfile": ["swift-extensions-arm64"],
@@ -1744,6 +1753,7 @@
   "scripts/verify-scala-extensions-guards.mjs": ["scala-extensions-arm64"],
   "scripts/verify-scala-guards.mjs": ["scala"],
   "scripts/verify-scala-package.mjs": ["scala"],
+  "scripts/verify-selected-clang-consumers.mjs": ["cpp-extensions-arm64"],
   "scripts/verify-spotbugs-container.mjs": ["spotbugs"],
   "scripts/verify-spotbugs-package.mjs": ["spotbugs"],
   "scripts/verify-swift-context-container.mjs": ["swift-context-arm64"],
@@ -1904,6 +1914,7 @@
   "test/consumer-witness-fixture.ts": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -3255,6 +3266,7 @@
     "php-extensions-arm64",
     "rust-extensions-arm64"
   ],
+  "test/selected-clang-consumer-fixture.ts": ["cpp-extensions-arm64"],
   "test/spotbugs-extension-evidence-fixture.ts": [
     "jvm-analyzer-extensions-arm64"
   ],

@@ -22,8 +22,28 @@ import {
   cppExtensionsWriteConfig,
 } from "./cpp-extensions-fixture.js";
 import type { ProcessResult } from "../src/types.js";
+import {
+  beginSelectedClangConsumer,
+  finishSelectedClangConsumer,
+} from "./selected-clang-consumer-fixture.js";
 const run = (root: string) =>
   validate(root, { trusted: true, timeoutMs: 120000 });
+async function runConsumerWitness(
+  root: string,
+  variant: "broken" | "fixed" | "near-miss",
+  phase: "canonical" | "repeat",
+  scenario: string,
+) {
+  const capture = await beginSelectedClangConsumer(
+    root,
+    variant,
+    phase,
+    scenario,
+  );
+  const report = await run(root);
+  await finishSelectedClangConsumer(capture, report);
+  return report;
+}
 const brief = (r: Awaited<ReturnType<typeof run>>) =>
   JSON.stringify(
     r.checks.map((c) => ({
@@ -62,7 +82,12 @@ const breakCore = async (root: string) => {
 test("cpp-extensions broken acceptance", native, async (t) => {
   const { root } = await cppExtensionsFixture(t, ["build", "ctest"]);
   await breakCore(root);
-  const r = await run(root);
+  const r = await runConsumerWitness(
+    root,
+    "broken",
+    "canonical",
+    "mixed-graph",
+  );
   assert.equal(r.outcome, "failed", brief(r));
   assert.equal(r.checks[0]!.status, "passed", brief(r));
   assert.deepEqual(r.checks[1]!.tests, {
@@ -84,9 +109,15 @@ test("cpp-extensions broken acceptance", native, async (t) => {
 test("cpp-extensions fixed acceptance", native, async (t) => {
   const { root } = await cppExtensionsFixture(t);
   const before = await breakCore(root);
-  assert.equal((await run(root)).outcome, "failed");
+  const failed = await runConsumerWitness(
+    root,
+    "fixed",
+    "repeat",
+    "repair-before",
+  );
+  assert.equal(failed.outcome, "failed");
   await writeFile(path.join(root, "lib/core/core.c"), before);
-  const r = await run(root);
+  const r = await runConsumerWitness(root, "fixed", "canonical", "mixed-graph");
   assert.equal(r.outcome, "passed", brief(r));
   assert.deepEqual(r.checks[1]!.tests, {
     total: 2,
@@ -112,7 +143,12 @@ test("cpp-extensions near-miss acceptance", native, async (t) => {
     "original_core",
   ];
   await cppExtensionsWriteConfig(root, config);
-  const r = await run(root);
+  const r = await runConsumerWitness(
+    root,
+    "near-miss",
+    "canonical",
+    "private-link",
+  );
   assert.equal(r.outcome, "passed", brief(r));
   assert.deepEqual(r.checks[1]!.tests, {
     total: 2,
@@ -123,7 +159,12 @@ test("cpp-extensions near-miss acceptance", native, async (t) => {
   const file = path.join(root, "lib/core/include/original_step.h.in"),
     before = await readFile(file, "utf8");
   await writeFile(file, "// original adjacent template\n" + before);
-  const near = await run(root);
+  const near = await runConsumerWitness(
+    root,
+    "near-miss",
+    "repeat",
+    "adjacent-template",
+  );
   assert.equal(near.outcome, "passed", brief(near));
   assert.equal(
     packet(near.checks[0]!.processes[0]!).generated[0]!.text,
@@ -164,7 +205,12 @@ test("cpp-extensions near-miss acceptance", native, async (t) => {
       ),
   );
   await cppExtensionsWriteConfig(privateGraph.root, c);
-  const linked = await run(privateGraph.root);
+  const linked = await runConsumerWitness(
+    privateGraph.root,
+    "near-miss",
+    "repeat",
+    "private-leaf",
+  );
   assert.equal(linked.outcome, "passed", brief(linked));
   assert.deepEqual(linked.checks[1]!.tests, {
     total: 2,
@@ -190,7 +236,12 @@ test("cpp-extensions near-miss acceptance", native, async (t) => {
     '#include "original_bridge.hpp"\n#include "original_core.h"\nint original_bridge(int value){return original_core(value);}\n',
   );
   await cppExtensionsWriteConfig(pureC.root, pureC.config);
-  const nativeC = await run(pureC.root);
+  const nativeC = await runConsumerWitness(
+    pureC.root,
+    "near-miss",
+    "repeat",
+    "pure-c",
+  );
   assert.equal(nativeC.outcome, "passed", brief(nativeC));
   assert.deepEqual(nativeC.checks[1]!.tests, {
     total: 2,

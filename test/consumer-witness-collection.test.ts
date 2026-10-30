@@ -156,3 +156,54 @@ test("private collection refuses linked records permissive permissions and neste
     delete process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR;
   }
 });
+
+test("selected Clang operator scope has separate bounded packet storage and cannot broaden ordinary consumer journals or admit foreign profiles", async () => {
+  const result = await collectConsumerWitnesses(
+    async () => {
+      const namespace = process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR!;
+      await stored(namespace, "attempt-" + randomUUID() + ".json", {
+        family: "cpp",
+        profile: "selected-clang-process-result-observation-v1",
+        syntheticStorageOnly: true,
+        data: "x".repeat(300000),
+      });
+      return namespace;
+    },
+    async (namespace: string, capture: { attemptRecords: unknown[] }) => {
+      assert.equal(capture.attemptRecords.length, 1);
+      await assert.rejects(
+        readConsumerWitnessNamespace(namespace),
+        /assert|false/i,
+      );
+      return { nativeQualification: false };
+    },
+    { scope: "selected-clang-producer-consumer" },
+  );
+  assert.equal(result.nativeQualification, false);
+  await assert.rejects(
+    collectConsumerWitnesses(
+      async () => ({}),
+      async () => ({}),
+      { scope: "foreign" },
+    ),
+  );
+  let namespace = "";
+  try {
+    await assert.rejects(
+      collectConsumerWitnesses(
+        async () => {
+          namespace = process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR!;
+          await stored(namespace, "attempt-" + randomUUID() + ".json", {
+            family: "cpp",
+            profile: "foreign-synthetic-packet",
+          });
+          return {};
+        },
+        async () => ({ nativeQualification: false }),
+        { scope: "selected-clang-producer-consumer" },
+      ),
+    );
+  } finally {
+    if (namespace) await rm(namespace, { recursive: true, force: true });
+  }
+});

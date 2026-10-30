@@ -274,6 +274,7 @@ try {
     "review-findings-fixture.js",
     "native-process-observer.js",
     "consumer-witness-fixture.js",
+    "selected-clang-consumer-fixture.js",
     "spotbugs-extensions-fixture.js",
     "spotbugs-fixture.js",
     "detekt-extensions-fixture.js",
@@ -509,6 +510,13 @@ try {
       },
     );
   }
+  if (["javascript-extensions", "cpp-extensions"].includes(profile)) {
+    await mkdir(path.join(consumer, "docs"), { recursive: true });
+    await cp(
+      path.join(repository, "docs/gate-a-profiles.v1.json"),
+      path.join(consumer, "docs/gate-a-profiles.v1.json"),
+    );
+  }
   await mkdir(path.join(consumer, "scripts"), { recursive: true });
   for (const file of [
     "verify-required-native-tests.mjs",
@@ -520,6 +528,7 @@ try {
     "consumer-witness-data.mjs",
     "consumer-witness-swift.mjs",
     "consumer-witness-project.mjs",
+    "selected-clang-consumer-witness.mjs",
     "consumer-runtime-selection.mjs",
     ...(rubyAcceptanceShard === undefined
       ? []

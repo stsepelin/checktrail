@@ -23,7 +23,19 @@ function privateMode(stat, mode) {
       (stat.mode & 0o777n) === BigInt(mode))
   );
 }
-export async function readConsumerWitnessNamespace(namespace) {
+function collectionBounds(scope) {
+  assert.ok(
+    ["native-consumer", "selected-clang-producer-consumer"].includes(scope),
+  );
+  return scope === "selected-clang-producer-consumer"
+    ? { fileBytes: 32 * 1048576, totalBytes: 256 * 1048576 }
+    : { fileBytes: 2097152, totalBytes: 32 * 1048576 };
+}
+export async function readConsumerWitnessNamespace(
+  namespace,
+  scope = "native-consumer",
+) {
+  const bounds = collectionBounds(scope);
   assert.equal(await realpath(namespace), namespace);
   const identity = await lstat(namespace, { bigint: true });
   assert.ok(
@@ -51,7 +63,7 @@ export async function readConsumerWitnessNamespace(namespace) {
       before.isFile() &&
         !before.isSymbolicLink() &&
         before.nlink === 1n &&
-        before.size <= 2097152n &&
+        before.size <= BigInt(bounds.fileBytes) &&
         privateMode(before, 0o600),
     );
     if (process.platform === "win32")
@@ -65,11 +77,13 @@ export async function readConsumerWitnessNamespace(namespace) {
       const parts = [];
       let count = 0;
       for (;;) {
-        const chunk = Buffer.alloc(Math.min(65536, 2097153 - count)),
+        const chunk = Buffer.alloc(
+            Math.min(65536, bounds.fileBytes + 1 - count),
+          ),
           { bytesRead } = await fd.read(chunk, 0, chunk.length, null);
         if (bytesRead === 0) break;
         count += bytesRead;
-        assert.ok(count <= 2097152);
+        assert.ok(count <= bounds.fileBytes);
         parts.push(chunk.subarray(0, bytesRead));
       }
       bytes = Buffer.concat(parts, count);
@@ -90,16 +104,25 @@ export async function readConsumerWitnessNamespace(namespace) {
       await fd.close();
     }
     retainedBytes += bytes.length;
-    assert.ok(retainedBytes <= 32 * 1048576);
+    assert.ok(retainedBytes <= bounds.totalBytes);
     const value = JSON.parse(bytes.toString("utf8"));
-    assert.ok(
-      bytes.length <=
-        (["hcl", "javascript", "typescript", "shared-json"].includes(
-          value.family,
-        )
-          ? 2097152
-          : 262144),
-    );
+    if (scope === "selected-clang-producer-consumer") {
+      assert.equal(value.family, "cpp");
+      assert.ok(
+        [
+          "selected-clang-consumer-witness-observation-v1",
+          "selected-clang-process-result-observation-v1",
+        ].includes(value.profile),
+      );
+    } else
+      assert.ok(
+        bytes.length <=
+          (["hcl", "javascript", "typescript", "shared-json"].includes(
+            value.family,
+          )
+            ? 2097152
+            : 262144),
+      );
     if (name.startsWith("attempt-"))
       attemptRecords.push({
         file: name,
@@ -118,7 +141,12 @@ export async function readConsumerWitnessNamespace(namespace) {
   return { observations, attemptRecords, retainedBytes };
 }
 /** Internal operator/native-test collection; never a product tool or execution trust grant. */
-export async function collectConsumerWitnesses(operation, qualify) {
+export async function collectConsumerWitnesses(
+  operation,
+  qualify,
+  { scope = "native-consumer" } = {},
+) {
+  collectionBounds(scope);
   assert.equal(
     typeof qualify,
     "function",
@@ -165,7 +193,7 @@ export async function collectConsumerWitnesses(operation, qualify) {
     process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR = namespace;
     await checkpoint("running");
     const result = await operation(),
-      capture = await readConsumerWitnessNamespace(namespace),
+      capture = await readConsumerWitnessNamespace(namespace, scope),
       qualified = await qualify(result, capture);
     assert.ok(
       qualified && typeof qualified === "object",
