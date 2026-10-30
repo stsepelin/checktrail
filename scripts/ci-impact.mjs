@@ -3,6 +3,10 @@ import path from "node:path";
 import ts from "typescript";
 import { sourceBoundaryInputs } from "./ci-source-boundaries.mjs";
 import sourceCatalog from "./ci-source-boundaries.json" with { type: "json" };
+import {
+  consumerNativeEntrypoint,
+  consumerNativeProfiles,
+} from "./consumer-native-entrypoints.mjs";
 
 const controls = new Set([
   "checks",
@@ -30,6 +34,8 @@ const generic = new Set([
   "scripts/consumer-witness-project.mjs",
   "scripts/consumer-native-acceptance-scope.mjs",
   "scripts/consumer-native-acceptance-frame.mjs",
+  "scripts/consumer-native-entrypoints.mjs",
+  "scripts/consumer-native-acceptance-capsule.mjs",
   "scripts/selected-clang-consumer-witness.mjs",
   "test/selected-clang-consumer-fixture.ts",
   "scripts/consumer-witness-project-controller.mjs",
@@ -37,6 +43,23 @@ const generic = new Set([
   "scripts/consumer-runtime-selection.mjs",
   "test/consumer-witness-fixture.ts",
 ]);
+// These reviewed selectors/observers return targets or hash native harness bytes; they execute no native controller or test. Their static imports remain inputs. Workflow invocations enumerate actual selected targets below; any execution primitive restores conservative full profile expansion.
+const consumerDataSelectors = new Set([
+  "scripts/consumer-native-entrypoints.mjs",
+  "scripts/consumer-native-acceptance-scope.mjs",
+  "scripts/consumer-native-acceptance-capsule.mjs",
+  "scripts/selected-clang-consumer-witness.mjs",
+]);
+const consumerControllerPaths = new Set(
+  consumerNativeProfiles
+    .flatMap((profile) =>
+      consumerNativeEntrypoint(profile, "native-linux-arm64-node22").slice(
+        0,
+        1,
+      ),
+    )
+    .concat("scripts/verify-consumer-runtime.mjs"),
+);
 const compiledSource = (file) =>
   file.startsWith("dist/") ? file.slice(5).replace(/\.js$/, ".ts") : file;
 const validPath = (file) =>
@@ -74,6 +97,15 @@ export async function buildNativeInputs({
       if (resolved && !visited.has(resolved)) pending.push(resolved);
     };
     const references = (text, parent, expandProfiles) => {
+      const selector = consumerDataSelectors.has(parent),
+        dataOnly =
+          selector &&
+          !/\b(?:runRequiredTests|runProcess|spawn|spawnSync|execFile|execFileSync|exec|execSync|fork|eval|import)\s*\(|["']node:child_process["']/.test(
+            text,
+          );
+      if (selector && !dataOnly)
+        for (const rows of Object.values(requirements))
+          for (const item of rows) admit(item.file);
       for (const match of text.matchAll(
         /(?:scripts|dist\/test|test|assets|examples|schemas|packs|docs)\/[a-zA-Z0-9_./-]+/g,
       )) {
@@ -83,9 +115,15 @@ export async function buildNativeInputs({
           !match[0].startsWith(retainedArtifactDirectory)
         )
           continue;
+        if (
+          dataOnly &&
+          (consumerControllerPaths.has(match[0]) ||
+            compiledSource(match[0]).startsWith("test/"))
+        )
+          continue;
         admit(match[0]);
       }
-      if (expandProfiles) {
+      if (expandProfiles || (selector && !dataOnly)) {
         // Image repository names are setup data, not native profile arguments.
         // Keep explicit profile invocations after an address visible.
         const profileText = text.replace(
@@ -128,8 +166,42 @@ export async function buildNativeInputs({
         walk(source);
       }
     };
+    const matrixEntries = workflow.jobs[id].strategy?.matrix?.include ?? [];
     for (const step of workflow.jobs[id].steps)
-      if (step.run) references(step.run, null, true);
+      if (step.run) {
+        references(step.run, null, true);
+        if (
+          step.run.includes("scripts/verify-consumer-native-acceptance.mjs")
+        ) {
+          const variants = matrixEntries.length ? matrixEntries : [{}];
+          for (const entry of variants) {
+            const expanded = step.run.replace(
+              /\$\{\{\s*matrix\.([a-zA-Z0-9_-]+)\s*\}\}/g,
+              (whole, key) =>
+                typeof entry[key] === "string" ? entry[key] : whole,
+            );
+            const calls = [
+              ...expanded.matchAll(
+                /scripts\/verify-consumer-native-acceptance\.mjs\s+(\S+)\s+(\S+)/g,
+              ),
+            ];
+            if (!calls.length)
+              for (const rows of Object.values(requirements))
+                for (const item of rows) admit(item.file);
+            for (const call of calls)
+              try {
+                for (const target of consumerNativeEntrypoint(
+                  call[1],
+                  call[2],
+                ).slice(0, 1))
+                  admit(target);
+              } catch {
+                for (const rows of Object.values(requirements))
+                  for (const item of rows) admit(item.file);
+              }
+          }
+        }
+      }
     // Resolve the finite workflow matrix entries instead of treating the
     // interpolated script/profile as an unknown or one representative case.
     const matrix = workflow.jobs[id].strategy?.matrix;

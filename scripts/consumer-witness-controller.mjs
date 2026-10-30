@@ -24,14 +24,8 @@ import path from "node:path";
 import { parse } from "yaml";
 import { captureCompiledEngine } from "./compiled-engine-evidence.mjs";
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
-/** Read actual controller inputs. Native tool and image observations come from its existing runtime probe. */
-export async function captureConsumerWitnessController(
-  root,
-  family,
-  runtimeImage,
-  runtime,
-  tool,
-) {
+/** Current selected code identities, shared by existing controllers and receipt reconciliation. */
+export async function captureConsumerWitnessCode(root, family) {
   assert.ok(
     [
       "go",
@@ -114,6 +108,43 @@ export async function captureConsumerWitnessController(
           ? "scripts/" + family + "-context-tools.Dockerfile"
           : ".github/workflows/ci.yml";
   const definitionSha256 = hash(await readFile(path.join(root, definition)));
+  return {
+    definitionSha256,
+    requirements: required,
+    engineSha256: engine.treeSha256,
+    harnessSha256: hash(
+      JSON.stringify([
+        identities[0],
+        identities[1],
+        identities[3],
+        identities[4],
+        identities[5],
+        identities[6],
+        identities[7],
+        identities[8],
+        identities[9],
+        identities[10],
+      ]),
+    ),
+    requirementsSha256: hash(JSON.stringify(required)),
+    acceptanceSha256: identities[1].sha256,
+    packageManifestSha256: hash(
+      await readFile(path.join(root, "package.json")),
+    ),
+  };
+}
+/** Read actual controller inputs. Native tool and image observations come from its existing runtime probe. */
+export async function captureConsumerWitnessController(
+  root,
+  family,
+  runtimeImage,
+  runtime,
+  tool,
+) {
+  const { definitionSha256, ...code } = await captureConsumerWitnessCode(
+    root,
+    family,
+  );
   const observedImage =
     runtimeImage.kind === "oci-image-observation"
       ? { kind: runtimeImage.kind, id: runtimeImage.id, definitionSha256 }
@@ -262,27 +293,7 @@ export async function captureConsumerWitnessController(
     managedInputs,
     swiftInputs,
     dataInputs,
-    requirements: required,
-    engineSha256: engine.treeSha256,
-    harnessSha256: hash(
-      JSON.stringify([
-        identities[0],
-        identities[1],
-        identities[3],
-        identities[4],
-        identities[5],
-        identities[6],
-        identities[7],
-        identities[8],
-        identities[9],
-        identities[10],
-      ]),
-    ),
-    requirementsSha256: hash(JSON.stringify(required)),
-    acceptanceSha256: identities[1].sha256,
-    packageManifestSha256: hash(
-      await readFile(path.join(root, "package.json")),
-    ),
+    ...code,
     toolInputsSha256,
     runtimeImage: observedImage,
     runtime,

@@ -12,6 +12,7 @@ import {
   chmod,
   link,
   unlink,
+  writeFile,
 } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -28,7 +29,7 @@ const {
   new URL("../../scripts/consumer-native-capture-registry.mjs", import.meta.url)
     .href
 );
-const { acquireConsumerHostCapture } = await import(
+const { acquireConsumerHostCapture, releaseConsumerHostCapture } = await import(
   new URL("../../scripts/consumer-native-host-storage.mjs", import.meta.url)
     .href
 );
@@ -178,6 +179,28 @@ test("host native custody validates actual registered files before copying and p
     );
     assert.equal(journals.logicalStorageBindingsComplete, true);
     assert.equal(journals.nativeSemanticsValidated, false);
+    await assert.rejects(
+      releaseConsumerHostCapture({ ...acquired }),
+      /foreign or already released/,
+    );
+    const report = await releaseConsumerHostCapture(acquired);
+    assert.equal(report.durableCopyPreserved, true);
+    assert.equal(report.removedRegistrations.length, 1);
+    await assert.rejects(readdir(f.namespace), { code: "ENOENT" });
+    assert.deepEqual(
+      await readFile(
+        path.join(
+          acquired.directory,
+          "namespace-" + acquired.transport.namespaces[0]!.registrationId,
+          f.name,
+        ),
+      ),
+      f.bytes,
+    );
+    await assert.rejects(
+      releaseConsumerHostCapture(acquired),
+      /foreign or already released/,
+    );
   } finally {
     await f.cleanup();
   }
@@ -257,6 +280,10 @@ test("host native custody retains failed raw diagnostics while logical successfu
         (file: { name: string }) => file.name === f.name,
       ).bytes,
       f.bytes,
+    );
+    await assert.rejects(
+      releaseConsumerHostCapture(acquired),
+      /Failed or unfinished/,
     );
     assert.deepEqual(await readFile(path.join(f.namespace, f.name)), f.bytes);
     assert.throws(
@@ -338,6 +365,16 @@ test("host native custody validates every registered sibling before writing any 
         .namespaces.length,
       2,
     );
+    const originalSecond = await readFile(filename);
+    await writeFile(filename, Buffer.from("changed"));
+    await assert.rejects(releaseConsumerHostCapture(acquired));
+    assert.deepEqual(await readFile(path.join(f.namespace, f.name)), f.bytes);
+    assert.deepEqual(await readFile(filename), Buffer.from("changed"));
+    await writeFile(filename, originalSecond);
+    const released = await releaseConsumerHostCapture(acquired);
+    assert.equal(released.removedRegistrations.length, 2);
+    await assert.rejects(readdir(f.namespace), { code: "ENOENT" });
+    await assert.rejects(readdir(second), { code: "ENOENT" });
   } finally {
     if (previous === undefined)
       delete process.env.CHECKTRAIL_CONSUMER_CAPTURE_REGISTRY;

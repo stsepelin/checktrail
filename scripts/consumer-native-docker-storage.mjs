@@ -171,6 +171,63 @@ export function readConsumerDockerCaptureContext(filename) {
   assert.match(value.registryContext.sourceFrameSha256, /^[a-f0-9]{64}$/);
   return value;
 }
+/** Bind transported original registry identities to the exact native observer manifest, never copied host inodes. */
+export function requireConsumerExportRegistry(
+  manifest,
+  registry,
+  expectedContext,
+) {
+  assert.deepEqual(registry.context, expectedContext);
+  assert.equal(
+    registry.header.registryPath,
+    "/operator-consumer-captures/capture-registry.jsonl",
+  );
+  assert.equal(registry.header.parentPath, "/operator-consumer-captures");
+  const registryFile = manifest.files.find(
+    (file) => file.path === "capture-registry.jsonl",
+  );
+  assert.ok(registryFile);
+  for (const field of ["dev", "ino", "birthtimeNs", "uid"]) {
+    assert.equal(
+      String(registryFile[field]),
+      registry.header.registryIdentity[field],
+    );
+    assert.equal(
+      manifest.rootIdentity[field],
+      registry.header.parentIdentity[field],
+    );
+  }
+  const retainedNamespaces = [];
+  for (const registration of registry.registrations) {
+    assert.equal(
+      path.posix.dirname(registration.path),
+      "/operator-consumer-captures",
+    );
+    assert.equal(registration.parent.path, "/operator-consumer-captures");
+    for (const field of ["dev", "ino", "birthtimeNs", "uid"])
+      assert.equal(
+        manifest.rootIdentity[field],
+        registration.parent.identity[field],
+      );
+    const relative = path.posix.basename(registration.path),
+      native = manifest.directories.find((entry) => entry.path === relative);
+    if (registration.state === "collected-removed") {
+      assert.equal(native, undefined);
+      continue;
+    }
+    assert.ok(native, "Registered native namespace is missing before export");
+    retainedNamespaces.push(relative);
+    for (const field of ["dev", "ino", "birthtimeNs"])
+      assert.equal(native[field], registration.identity[field]);
+    assert.equal(String(native.uid), registration.identity.uid);
+  }
+  assert.deepEqual(
+    retainedNamespaces.sort(),
+    manifest.directories.map((value) => value.path).sort(),
+    "Unregistered native capture namespace exported",
+  );
+  return registry;
+}
 /** Foreground CLI supervision only; no native PID/start acknowledgement is inferred from this client. */
 export async function runCapturedConsumerDocker(args, context) {
   ownedDirectory(context.directory);
@@ -575,55 +632,7 @@ export async function runCapturedConsumerDocker(args, context) {
     }
     const registryPath = path.join(destination, "capture-registry.jsonl"),
       registry = decodeConsumerCaptureRegistry(privateBytes(registryPath));
-    assert.deepEqual(registry.context, context.registryContext);
-    assert.equal(
-      registry.header.registryPath,
-      "/operator-consumer-captures/capture-registry.jsonl",
-    );
-    assert.equal(registry.header.parentPath, "/operator-consumer-captures");
-    const registryFile = manifest.files.find(
-      (file) => file.path === "capture-registry.jsonl",
-    );
-    assert.ok(registryFile);
-    for (const field of ["dev", "ino", "birthtimeNs", "uid"]) {
-      assert.equal(
-        String(registryFile[field]),
-        registry.header.registryIdentity[field],
-      );
-      assert.equal(
-        manifest.rootIdentity[field],
-        registry.header.parentIdentity[field],
-      );
-    }
-    const retainedNamespaces = [];
-    for (const registration of registry.registrations) {
-      assert.equal(
-        path.posix.dirname(registration.path),
-        "/operator-consumer-captures",
-      );
-      assert.equal(registration.parent.path, "/operator-consumer-captures");
-      for (const field of ["dev", "ino", "birthtimeNs", "uid"])
-        assert.equal(
-          manifest.rootIdentity[field],
-          registration.parent.identity[field],
-        );
-      const relative = path.posix.basename(registration.path),
-        native = manifest.directories.find((entry) => entry.path === relative);
-      if (registration.state === "collected-removed") {
-        assert.equal(native, undefined);
-        continue;
-      }
-      assert.ok(native, "Registered native namespace is missing before export");
-      retainedNamespaces.push(relative);
-      for (const field of ["dev", "ino", "birthtimeNs"])
-        assert.equal(native[field], registration.identity[field]);
-      assert.equal(String(native.uid), registration.identity.uid);
-    }
-    assert.deepEqual(
-      retainedNamespaces.sort(),
-      manifest.directories.map((value) => value.path).sort(),
-      "Unregistered native capture namespace exported",
-    );
+    requireConsumerExportRegistry(manifest, registry, context.registryContext);
     writePrivate(
       path.join(directory, "verified-export.json"),
       Buffer.from(

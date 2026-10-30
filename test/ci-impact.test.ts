@@ -1331,7 +1331,7 @@ test("CI Windows lanes preserve frozen runtime pins and partition every original
   const steps = job.steps as Array<{ run?: string; if?: string }>;
   const commands = (condition: string) =>
     steps
-      .filter((step) => step.if === condition)
+      .filter((step) => step.if === condition && step.run !== undefined)
       .flatMap((step) => step.run!.trim().split("\n"));
   assert.deepEqual(commands("matrix.core"), [
     "node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}",
@@ -1342,7 +1342,7 @@ test("CI Windows lanes preserve frozen runtime pins and partition every original
   ]);
   assert.deepEqual(commands("matrix.consumer"), [
     "node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings &&",
-    "node scripts/verify-consumer-runtime.mjs ${{ matrix.slot }}",
+    "node scripts/verify-consumer-native-acceptance.mjs consumer-impact ${{ matrix.slot }}",
   ]);
   const names = workflowJobNames(workflow);
   for (const entry of windows)
@@ -1459,4 +1459,293 @@ test("CI consumer profile aliases in the shared read-only fixture observer prese
     Object.hasOwn(inputs, "test/unrelated-typescript.test.ts"),
     false,
   );
+});
+
+test("CI fixed consumer entrypoints resolve exact selected controller paths and keep unknown calls and actual execution conservative", async () => {
+  const files = [
+      "scripts/verify-consumer-native-acceptance.mjs",
+      "scripts/consumer-native-acceptance-scope.mjs",
+      "scripts/verify-consumer-witness-profile.mjs",
+      "scripts/verify-rust-context-container.mjs",
+      "scripts/verify-cpp-extensions-container.mjs",
+      "test/selected-go.test.ts",
+      "test/selected-rust.test.ts",
+      "test/selected-cpp.test.ts",
+      "test/extra-execution.test.ts",
+    ],
+    requirements = {
+      "context-go": [{ file: "dist/test/selected-go.test.js" }],
+      "context-rust": [{ file: "dist/test/selected-rust.test.js" }],
+      "cpp-extensions": [{ file: "dist/test/selected-cpp.test.js" }],
+      rust: [{ file: "dist/test/extra-execution.test.js" }],
+    };
+  const base = {
+    requirements,
+    files,
+    readText: (file: string) =>
+      Promise.resolve(
+        file === "scripts/verify-consumer-native-acceptance.mjs"
+          ? 'import "./consumer-native-acceptance-scope.mjs";'
+          : file === "scripts/consumer-native-acceptance-scope.mjs"
+            ? 'const alternatives=["scripts/verify-cpp-extensions-container.mjs"];'
+            : file === "scripts/verify-consumer-witness-profile.mjs"
+              ? 'const family="go";'
+              : file === "scripts/verify-rust-context-container.mjs"
+                ? 'const profile="context-rust";'
+                : "",
+      ),
+  };
+  const actual = await buildNativeInputs({
+    ...base,
+    workflow: {
+      jobs: {
+        go: {
+          steps: [
+            {
+              run: "node scripts/verify-consumer-native-acceptance.mjs context-go native-linux-arm64-node22",
+            },
+          ],
+        },
+        rust: {
+          steps: [
+            {
+              run: "node scripts/verify-consumer-native-acceptance.mjs context-rust native-linux-arm64-node22",
+            },
+          ],
+        },
+        unknown: {
+          steps: [
+            {
+              run: "node scripts/verify-consumer-native-acceptance.mjs dynamic-profile dynamic-slot",
+            },
+          ],
+        },
+      },
+    },
+  });
+  assert.deepEqual(actual["scripts/verify-rust-context-container.mjs"], [
+    "rust",
+  ]);
+  assert.deepEqual(actual["scripts/verify-consumer-witness-profile.mjs"], [
+    "go",
+  ]);
+  assert.equal(
+    actual["scripts/verify-cpp-extensions-container.mjs"],
+    undefined,
+  );
+  assert.deepEqual(actual["test/selected-go.test.ts"], ["go", "unknown"]);
+  assert.deepEqual(actual["test/selected-rust.test.ts"], ["rust", "unknown"]);
+  assert.deepEqual(actual["test/selected-cpp.test.ts"], ["unknown"]);
+  assert.deepEqual(actual["test/extra-execution.test.ts"], ["unknown"]);
+  const executor = await buildNativeInputs({
+    ...base,
+    workflow: {
+      jobs: {
+        actual: {
+          steps: [
+            {
+              run: "node scripts/verify-consumer-native-acceptance.mjs context-go native-linux-arm64-node22",
+            },
+          ],
+        },
+      },
+    },
+    readText: (file: string) =>
+      file === "scripts/verify-consumer-native-acceptance.mjs"
+        ? Promise.resolve(
+            'const selected="rust";runRequiredTests(requirements[selected]);',
+          )
+        : base.readText(file),
+  });
+  assert.deepEqual(executor["test/extra-execution.test.ts"], ["actual"]);
+});
+
+test("native capsule CI preserves every frozen controller scope and finalizes only sanitized current-attempt artifacts after original job completion", async () => {
+  const { consumerNativeAcceptanceScopes } = await import(
+      new URL(
+        "../../scripts/consumer-native-acceptance-scope.mjs",
+        import.meta.url,
+      ).href
+    ),
+    { consumerNativeScopeJob } = await import(
+      new URL(
+        "../../scripts/consumer-native-acceptance-capsule.mjs",
+        import.meta.url,
+      ).href
+    );
+  const data = async (file: string) =>
+      JSON.parse(await readFile(new URL(file, root), "utf8")),
+    scopes = consumerNativeAcceptanceScopes(
+      await data("docs/gate-a-consumer-witnesses.v1.json"),
+      await data("docs/gate-a-profiles.v1.json"),
+      await data("scripts/required-native-tests.json"),
+    );
+  for (const scope of scopes) {
+    const job = consumerNativeScopeJob(scope),
+      steps = workflow.jobs[job].steps,
+      run = steps.find((step: { run?: string }) =>
+        step.run?.includes(
+          "scripts/verify-consumer-native-acceptance.mjs " +
+            scope.acceptanceProfile +
+            " ",
+        ),
+      );
+    assert.ok(run, "Missing actual native capsule controller " + scope.id);
+    assert.equal(
+      run.env.CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY,
+      "${{ runner.temp }}/checktrail-native-capsules",
+    );
+    const upload = steps.at(-1);
+    assert.equal(
+      upload.uses,
+      "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+    );
+    assert.equal(
+      upload.with.path,
+      "${{ runner.temp }}/checktrail-native-capsules/*.json",
+    );
+    assert.equal(upload.with["if-no-files-found"], "error");
+    assert.equal(upload.with["include-hidden-files"], false);
+    assert.ok(upload.with.name.endsWith("-${{ github.run_attempt }}"));
+  }
+  const cpp = workflow.jobs["cpp-extensions-arm64"].steps;
+  assert.ok(
+    cpp.some(
+      (step: { if?: string; run?: string }) =>
+        step.if === "matrix.phase != 'acceptance'" &&
+        step.run ===
+          "node scripts/verify-cpp-extensions-container.mjs ${{ matrix.phase }}",
+    ),
+  );
+  const complete = workflow.jobs["ci-complete"].steps,
+    download = complete.find((step: { uses?: string }) =>
+      step.uses?.startsWith("actions/download-artifact@"),
+    );
+  assert.equal(
+    download.uses,
+    "actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+  );
+  assert.equal(
+    download.with.pattern,
+    "native-consumer-*-${{ github.run_attempt }}",
+  );
+  assert.equal(download.with["merge-multiple"], false);
+  assert.equal(download.with["digest-mismatch"], "error");
+  assert.equal(
+    complete.at(-1).run,
+    "node scripts/check-consumer-native-ci.mjs",
+  );
+  assert.ok(
+    complete.findIndex(
+      (step: { run?: string }) =>
+        step.run === "node scripts/check-ci-completion.mjs",
+    ) <
+      complete.length - 1,
+  );
+});
+
+test("actual Windows consumer lane requires both Windows-only ACL controls and all host-custody controls through a strict non-skipping inventory", async () => {
+  const requirements = JSON.parse(
+      await readFile(
+        new URL("scripts/required-native-tests.json", root),
+        "utf8",
+      ),
+    ),
+    rows = requirements["consumer-native-windows-capture"],
+    registry = await readFile(
+      new URL("test/consumer-native-capture-registry.test.ts", root),
+      "utf8",
+    ),
+    host = await readFile(
+      new URL("test/consumer-native-host-storage.test.ts", root),
+      "utf8",
+    ),
+    windows = [...registry.matchAll(/test\(\s*"(native Windows [^"]+)"/g)].map(
+      (row) => row[1],
+    ),
+    custody = [...host.matchAll(/test\(\s*"([^"]+)"/g)].map((row) => row[1]);
+  assert.equal(windows.length, 2);
+  assert.equal(custody.length, 4);
+  assert.deepEqual(rows, [
+    ...windows.map((name) => ({
+      file: "dist/test/consumer-native-capture-registry.test.js",
+      name,
+    })),
+    ...custody.map((name) => ({
+      file: "dist/test/consumer-native-host-storage.test.js",
+      name,
+    })),
+  ]);
+  const step = workflow.jobs["tasks-runtime"].steps.find(
+    (step: { run?: string }) =>
+      step.run ===
+      "node scripts/verify-required-native-tests.mjs consumer-native-windows-capture",
+  );
+  assert.equal(step.if, "matrix.consumer && matrix.slot == 'windows-node22'");
+  const runner = await readFile(
+    new URL("scripts/verify-required-native-tests.mjs", root),
+    "utf8",
+  );
+  assert.match(
+    runner,
+    /const isolatedCaseWorkers\s*=.*?"consumer-native-windows-capture"/s,
+  );
+});
+
+test("read-only native byte observers retain real imports without selecting hashed native test bodies while a new execution path restores full fallback", async () => {
+  const files = [
+      "scripts/verify-consumer-native-acceptance.mjs",
+      "scripts/consumer-native-acceptance-capsule.mjs",
+      "scripts/selected-clang-consumer-witness.mjs",
+      "scripts/verify-cpp-extensions-container.mjs",
+      "scripts/actual-observer.mjs",
+      "test/selected-cpp.test.ts",
+      "test/other.test.ts",
+    ],
+    requirements = {
+      "cpp-extensions": [{ file: "dist/test/selected-cpp.test.js" }],
+      other: [{ file: "dist/test/other.test.js" }],
+    },
+    workflow = {
+      jobs: {
+        observe: {
+          steps: [
+            {
+              run: "node scripts/verify-consumer-native-acceptance.mjs context-go native-linux-arm64-node22",
+            },
+          ],
+        },
+      },
+    };
+  const reader = (executing: boolean) => (file: string) =>
+    Promise.resolve(
+      file === "scripts/verify-consumer-native-acceptance.mjs"
+        ? 'import "./consumer-native-acceptance-capsule.mjs";'
+        : file === "scripts/consumer-native-acceptance-capsule.mjs"
+          ? 'import "./selected-clang-consumer-witness.mjs"; const definition="scripts/verify-cpp-extensions-container.mjs";'
+          : file === "scripts/selected-clang-consumer-witness.mjs"
+            ? 'import "./actual-observer.mjs"; const hashed="dist/test/selected-cpp.test.js";' +
+              (executing ? "runProcess(target);" : "")
+            : "",
+    );
+  const observed = await buildNativeInputs({
+    workflow,
+    requirements,
+    files,
+    readText: reader(false),
+  });
+  assert.deepEqual(observed["scripts/actual-observer.mjs"], ["observe"]);
+  assert.equal(
+    observed["scripts/verify-cpp-extensions-container.mjs"],
+    undefined,
+  );
+  assert.equal(observed["test/selected-cpp.test.ts"], undefined);
+  const executing = await buildNativeInputs({
+    workflow,
+    requirements,
+    files,
+    readText: reader(true),
+  });
+  assert.deepEqual(executing["test/selected-cpp.test.ts"], ["observe"]);
+  assert.deepEqual(executing["test/other.test.ts"], ["observe"]);
 });

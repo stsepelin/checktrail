@@ -295,3 +295,155 @@ test(
     }
   },
 );
+
+test("transported native registry matches all original root file parent and retained namespace identities without accepting copied-inode claims", async () => {
+  const { requireConsumerExportRegistry } = await import(
+      new URL(
+        "../../scripts/consumer-native-docker-storage.mjs",
+        import.meta.url,
+      ).href
+    ),
+    identity = { dev: "1", ino: "2", birthtimeNs: "3", uid: "1000" },
+    context = { syntheticTransportOnly: true },
+    root = "/operator-consumer-captures",
+    name = "checktrail-consumer-witness-ABC123",
+    namespace = { ...identity, ino: "5" },
+    header = {
+      registryPath: root + "/capture-registry.jsonl",
+      parentPath: root,
+      registryIdentity: { ...identity, ino: "4" },
+      parentIdentity: identity,
+    },
+    registration = {
+      id: randomUUID(),
+      path: root + "/" + name,
+      parent: { path: root, identity },
+      identity: namespace,
+      state: "collected-retained",
+    },
+    registry = { context, header, registrations: [registration] },
+    manifest = {
+      rootIdentity: identity,
+      files: [{ path: "capture-registry.jsonl", ...header.registryIdentity }],
+      directories: [{ path: name, ...namespace }],
+    };
+  assert.equal(
+    requireConsumerExportRegistry(manifest, registry, context),
+    registry,
+  );
+  for (const field of ["dev", "ino", "birthtimeNs", "uid"]) {
+    const file = structuredClone(manifest);
+    file.files[0]![field as keyof typeof identity] = "900";
+    assert.throws(() => requireConsumerExportRegistry(file, registry, context));
+    const parent = structuredClone(registry);
+    parent.registrations[0]!.parent.identity[field as keyof typeof identity] =
+      "900";
+    assert.throws(() =>
+      requireConsumerExportRegistry(manifest, parent, context),
+    );
+    const child = structuredClone(manifest);
+    child.directories[0]![field as keyof typeof identity] = "900";
+    assert.throws(() =>
+      requireConsumerExportRegistry(child, registry, context),
+    );
+  }
+  assert.throws(() =>
+    requireConsumerExportRegistry(manifest, registry, {
+      syntheticTransportOnly: false,
+    }),
+  );
+  const unknown = structuredClone(manifest);
+  unknown.directories.push({ path: "unregistered", ...namespace });
+  assert.throws(
+    () => requireConsumerExportRegistry(unknown, registry, context),
+    /Unregistered/,
+  );
+  const removed = structuredClone(registry);
+  removed.registrations[0]!.state = "collected-removed";
+  assert.throws(() =>
+    requireConsumerExportRegistry(manifest, removed, context),
+  );
+  assert.equal(
+    requireConsumerExportRegistry(
+      { ...manifest, directories: [] },
+      removed,
+      context,
+    ),
+    removed,
+  );
+  const missing = structuredClone(registry);
+  missing.header.registryPath = root + "/foreign";
+  assert.throws(() =>
+    requireConsumerExportRegistry(manifest, missing, context),
+  );
+});
+
+test(
+  "closed Docker capture acquisition preserves handled actual failed metadata status and rejects foreign context or an unregistered capture entry",
+  { skip: process.platform === "win32" },
+  async () => {
+    const { acquireConsumerDockerCaptures } = await import(
+        new URL(
+          "../../scripts/consumer-native-docker-acquisition.mjs",
+          import.meta.url,
+        ).href
+      ),
+      created = await context();
+    try {
+      const result = spawnSync(
+        process.execPath,
+        [
+          wrapper,
+          "--input-type=module",
+          "-e",
+          "process.stderr.write('synthetic actual metadata refusal');process.exitCode=7",
+        ],
+        {
+          env: {
+            ...process.env,
+            CHECKTRAIL_CONSUMER_DOCKER_CONTEXT: created.path,
+          },
+          encoding: "utf8",
+          timeout: 10000,
+        },
+      );
+      assert.equal(result.error, undefined);
+      assert.equal(result.status, 7);
+      const acquired = await acquireConsumerDockerCaptures(
+        created.directory,
+        created.context.registryContext,
+      );
+      assert.deepEqual(acquired.transports, []);
+      assert.equal(acquired.captures.length, 1);
+      assert.equal(acquired.captures[0].clientStatus, 7);
+      assert.equal(acquired.captures[0].exportVerified, false);
+      await assert.rejects(
+        acquireConsumerDockerCaptures(created.directory, {
+          ...created.context.registryContext,
+          attemptId: randomUUID(),
+        }),
+      );
+      const extra = path.join(created.directory, "unregistered");
+      await mkdir(extra);
+      await assert.rejects(
+        acquireConsumerDockerCaptures(
+          created.directory,
+          created.context.registryContext,
+        ),
+        /Unknown native/,
+      );
+      await rm(extra, { recursive: true });
+      assert.equal(
+        (
+          await acquireConsumerDockerCaptures(
+            created.directory,
+            created.context.registryContext,
+          )
+        ).captures[0].clientStatus,
+        7,
+      );
+    } finally {
+      await rm(created.directory, { recursive: true, force: true });
+    }
+  },
+);

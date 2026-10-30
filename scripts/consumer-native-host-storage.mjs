@@ -10,6 +10,7 @@ import {
   readdir,
   mkdir,
   rename,
+  rm,
 } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
@@ -20,6 +21,7 @@ import {
 } from "./consumer-native-capture-registry.mjs";
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const fields = ["dev", "ino", "size", "mtimeNs", "ctimeNs"];
+const acquisitions = new WeakMap();
 function ownedMode(stat, mode) {
   return (
     process.platform === "win32" ||
@@ -269,7 +271,7 @@ export async function acquireConsumerHostCapture(
     const destination = path.join(parent, "host-capture-" + randomUUID());
     await rename(staging, destination);
     await directory(destination);
-    return {
+    const acquired = {
       directory: destination,
       descriptor,
       transport: {
@@ -280,10 +282,87 @@ export async function acquireConsumerHostCapture(
         })),
       },
     };
+    acquisitions.set(acquired, {
+      registryPath,
+      registrySha256: original.sha256,
+      context: expectedContext,
+      registrations: selected.registrations,
+      namespaces,
+      used: false,
+    });
+    return acquired;
   } catch (error) {
     process.stderr.write(
       "Incomplete host native copy retained at " + staging + "\n",
     );
     throw error;
   }
+}
+
+// Internal operator storage primitives, including positive Windows ACL checks; no product/MCP path grant.
+export {
+  directory as requireConsumerPrivateDirectory,
+  physical as readConsumerPrivateFile,
+  writePrivate as writeConsumerPrivateFile,
+};
+
+/** Remove only the exact successful originals after their durable copy; the copied registry remains historical bytes. */
+export async function releaseConsumerHostCapture(acquired) {
+  const saved = acquisitions.get(acquired);
+  assert.ok(
+    saved && !saved.used,
+    "Host custody handle is foreign or already released",
+  );
+  const registry = await readConsumerCaptureRegistry(saved.registryPath);
+  assert.equal(registry.file.sha256, saved.registrySha256);
+  assert.deepEqual(registry.context, saved.context);
+  for (const registration of saved.registrations) {
+    assert.equal(
+      registration.state,
+      "collected-retained",
+      "Failed or unfinished originals remain retained",
+    );
+    const namespace = saved.namespaces.find(
+      (row) => row.registrationId === registration.id,
+    );
+    const identity = await directory(registration.path);
+    for (const field of ["dev", "ino", "birthtimeNs", "uid"])
+      assert.equal(String(identity[field]), registration.identity[field]);
+    assert.deepEqual(
+      (await readdir(registration.path)).sort(),
+      namespace.files.map((row) => row.name).sort(),
+    );
+    for (const file of namespace.files) {
+      const current = await physical(
+        path.join(registration.path, file.name),
+        file.bytes.length,
+      );
+      assert.equal(
+        current.sha256,
+        hash(file.bytes),
+        "Original native journal changed after custody transfer",
+      );
+    }
+  }
+  saved.used = true;
+  for (const registration of saved.registrations) {
+    const current = await directory(registration.path);
+    for (const field of ["dev", "ino", "birthtimeNs", "uid"])
+      assert.equal(String(current[field]), registration.identity[field]);
+    await rm(registration.path, { recursive: true, force: false });
+  }
+  const report = {
+    schemaVersion: 1,
+    profile: "native-host-capture-parent-cleanup-v1",
+    registrySha256: saved.registrySha256,
+    removedRegistrations: saved.registrations.map((row) => row.id),
+    durableCopyPreserved: true,
+    hostAttestationPerformed: false,
+    gateAComplete: false,
+  };
+  await writePrivate(
+    path.join(acquired.directory, "cleanup.json"),
+    Buffer.from(JSON.stringify(report) + "\n"),
+  );
+  return report;
 }

@@ -98,3 +98,43 @@ after that seed and stay unchanged through the actual consumer invocation.
 C#/F#/VB now have their original fixture and OCI controller hooks integrated.
 Their compiler/runtime acceptance remains pending; a prepared hook, SDK label or
 synthetic control is not a selected native result.
+
+## Current-source native matrix transport
+
+`node scripts/verify-consumer-native-acceptance.mjs --list` enumerates the frozen
+operator acceptance scopes without executing their controllers. A selected
+`PROFILE RUNTIME_SLOT` invocation awaits the existing fixed controller with its
+original arguments and native execution limits. This is internal development/CI
+tooling; an MCP argument cannot enable it or grant execution trust.
+
+The invocation captures actual controller writes privately and reconciles the
+original required callback ledger, current engine/harness/source identities,
+selected tool bindings and all retained native attempts. Docker collection uses
+an owned private volume initialized for the image's observed user, including
+nonroot users. Fixed read-only extraction verifies native identities against the
+registered namespaces before copying bytes. Host collection reads only explicitly
+registered namespaces with verified private ownership/ACLs. Windows keeps its
+custom capture-parent refusal and uses the existing protected default namespace
+contract. Failed or incomplete originals remain private diagnostics.
+
+Only a successful reconciled scope publishes a sanitized capsule to the
+operator-selected output directory. Raw packets, stdout/stderr, namespace paths
+and attempt files remain private and are never uploaded by the workflow. The
+capsule records controller module completion without claiming that the same
+process observed its own exit or a native process-start acknowledgement.
+
+The CI completion step independently requires successful outer jobs and exact
+current-run/attempt artifact names. It rejects missing or duplicate scopes,
+foreign source/engine/lockfile identities, omitted source/fresh scenarios and
+reused witness, process-attempt or registry identities. Artifacts remain separate
+rather than overwriting one another during download. Related-scope CI may qualify
+only its selected subset; consumer profile completion requires every declared
+family/runtime scope and the separate selected-Clang obligation. Hosted Windows
+also requires its actual Windows-only ACL and host-custody inventory; optional
+skips on another operating system do not satisfy it.
+
+These controls and transport wiring do not themselves qualify the current native
+matrix. The manifest's native acceptance remains pending until actual exact-source
+source/fresh execution and complete aggregation. Whole upstream build/license
+closure, host/client isolation and independent evaluation remain separate Gate A
+requirements. No model or field trial runs through these entrypoints.

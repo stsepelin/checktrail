@@ -6008,5 +6008,31 @@
       "file": "dist/test/consumer-witness-managed.test.js",
       "name": "native source echo decoding covers every prepared and managed collector format with exact byte counts"
     }
+  ],
+  "consumer-native-windows-capture": [
+    {
+      "file": "dist/test/consumer-native-capture-registry.test.js",
+      "name": "native Windows uses verified existing namespace ACLs and refuses permissive ones without repair"
+    },
+    {
+      "file": "dist/test/consumer-native-capture-registry.test.js",
+      "name": "native Windows preserves explicit custom-parent refusal before creating registry bytes"
+    },
+    {
+      "file": "dist/test/consumer-native-host-storage.test.js",
+      "name": "host native custody validates actual registered files before copying and preserves transported native identities without pretending the copy has the original inode"
+    },
+    {
+      "file": "dist/test/consumer-native-host-storage.test.js",
+      "name": "host native custody refuses foreign contexts and unsafe source records before any destination copy exists then accepts the restored near miss"
+    },
+    {
+      "file": "dist/test/consumer-native-host-storage.test.js",
+      "name": "host native custody retains failed raw diagnostics while logical successful acceptance still refuses their terminal state"
+    },
+    {
+      "file": "dist/test/consumer-native-host-storage.test.js",
+      "name": "host native custody validates every registered sibling before writing any output and retains both namespaces in the valid multi-namespace case"
+    }
   ]
 }

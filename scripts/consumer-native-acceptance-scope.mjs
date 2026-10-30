@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import process from "node:process";
+import { consumerNativeEntrypoint } from "./consumer-native-entrypoints.mjs";
 import { projectConsumerRequiredKeys } from "./consumer-witness-project.mjs";
 import { selectConsumerWitnessRequirements } from "./consumer-witness-evidence.mjs";
 import { selectedClangWitnessScenarios } from "./selected-clang-consumer-witness.mjs";
@@ -121,6 +122,7 @@ export function selectConsumerNativeAcceptance(
       ),
     };
   }
+  assert.deepEqual(command, consumerNativeEntrypoint(profile, slot));
   for (const family of selected) {
     const row = families.find((row) => row.id === family);
     assert.ok(row);

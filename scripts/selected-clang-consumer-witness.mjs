@@ -212,7 +212,7 @@ async function publish(capture, value, name) {
   );
   return { file: name, bytes: bytes.length, sha256: hash(bytes) };
 }
-async function codeIdentity() {
+export async function captureSelectedClangConsumerCode() {
   const engineRoot = await realpath(path.join(moduleRoot, "dist/src"));
   const files = [
     "dist/test/selected-clang-consumer-fixture.js",
@@ -312,7 +312,7 @@ export async function beginSelectedClangWitness(
         : "source",
     before: await sources(root, paths),
     checks: plan.checks,
-    code: await codeIdentity(),
+    code: await captureSelectedClangConsumerCode(),
     node: await nodeIdentity(),
     attempts: [],
     storageFailure: null,
@@ -378,7 +378,7 @@ export async function finishSelectedClangWitness(capture, report) {
       "Selected Clang physical sources changed",
     );
     assert.deepEqual(
-      await codeIdentity(),
+      await captureSelectedClangConsumerCode(),
       capture.code,
       "Selected Clang harness or engine changed",
     );
@@ -786,7 +786,7 @@ export async function selectedClangControllerBinding(
       ),
     ),
     sdkPinsSha256: sdk.pinsSha256,
-    code: await codeIdentity(),
+    code: await captureSelectedClangConsumerCode(),
     hostAttestationPerformed: false,
     wholeRuntimeClosureVerified: false,
   };
