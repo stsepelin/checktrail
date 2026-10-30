@@ -34,7 +34,7 @@ project-relative files/directories. The published contract is
 
 ## ESLint source participation
 
-Select `javascript.eslint`. The opt-in contract requires ESLint 10.11.0 and
+Select `javascript.eslint`. The opt-in contract requires ESLint 10.13.0 and
 `@eslint/config-array` 0.23.5 with selected native API byte pins. Physical source
 and flat configuration bytes are bound before importing configuration, and checked
 again after linting. Every source is canonical UTF-8, including any BOM.
