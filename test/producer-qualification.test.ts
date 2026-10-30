@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { spawn, spawnSync } from "node:child_process";
+import { spawn, spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { createHash } from "node:crypto";
 import filesystem, {
   mkdir,
@@ -34,6 +34,44 @@ const pin = (file: string, value: string) => ({
   bytes: Buffer.byteLength(value),
   sha256: digest(value),
 });
+
+function childDiagnostic(result: SpawnSyncReturns<string>) {
+  return [
+    result.error?.message ?? "",
+    `status=${String(result.status)} signal=${String(result.signal)}`,
+    result.stdout ?? "",
+    result.stderr ?? "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+const pythonProbeFailures: string[] = [];
+const verifiedPython = ["python3", "python"].find((executable) => {
+  const result = spawnSync(
+    executable,
+    ["-c", "import sys; print(sys.version_info.major)"],
+    {
+      encoding: "utf8",
+      timeout: 3000,
+      maxBuffer: 65536,
+    },
+  );
+  if (
+    result.error === undefined &&
+    result.status === 0 &&
+    result.signal === null &&
+    result.stdout?.trim() === "3"
+  )
+    return true;
+  pythonProbeFailures.push(`${executable}: ${childDiagnostic(result)}`);
+  return false;
+});
+const pythonCollector = {
+  skip: verifiedPython
+    ? false
+    : "Verified Python 3 report collector unavailable: " +
+      pythonProbeFailures.join("; "),
+};
 
 test("producer preflight refuses changed later inputs and linked paths before publishing a destination", async (t) => {
   const root = await fixture(t, {
@@ -477,46 +515,55 @@ test("producer pre-cancelled admission never starts a child or publishes a log",
   assert.deepEqual(await readdir(root), []);
 });
 
-test("producer report collection preserves configurations with no declared package test reports", async (t) => {
-  const root = await fixture(t, {
-    "source/builddir-single/ld/ld.sum": "PASS: first\nPASS: second\n",
-    "source/builddir-multi/.keep":
-      "Original configuration without a package test rule\n",
-    "output/.keep": "",
-  });
-  const result = spawnSync(
-    "python3",
-    [
-      path.join(
-        repository,
-        "scripts/producer-qualification/binutils-test-reports.py",
-      ),
-      path.join(root, "source"),
-      path.join(root, "output/test-reports.json"),
-    ],
-    { encoding: "utf8", timeout: 5000, maxBuffer: 65536 },
-  );
-  assert.equal(result.status, 0, result.stdout + result.stderr);
-  const retained = path.join(root, "output/original-test-reports");
-  assert.deepEqual((await readdir(retained)).sort(), [
-    "builddir-multi",
-    "builddir-single",
-  ]);
-  assert.deepEqual(await readdir(path.join(retained, "builddir-multi")), []);
-  const report = JSON.parse(
-    await readFile(path.join(root, "output/test-reports.json"), "utf8"),
-  );
-  const observed = await api.summarizeReports(report, retained, {
-    completeUpstreamTestInventoryAssessed: false,
-    buildConfigurations: ["builddir-single", "builddir-multi"],
-    minimumExplicitPackageCheckReports: ["builddir-single/ld/ld.sum"],
-  });
-  assert.equal(observed.state, "reported");
-  assert.equal(observed.minimumSourceObligationsSatisfied, true);
-  assert.equal(observed.completeConfigurationInventoryAssessed, false);
-  assert.equal(observed.reports.length, 1);
-  assert.equal(report.gateAComplete, false);
-});
+test(
+  "producer report collection preserves configurations with no declared package test reports",
+  pythonCollector,
+  async (t) => {
+    const root = await fixture(t, {
+      "source/builddir-single/ld/ld.sum": "PASS: first\nPASS: second\n",
+      "source/builddir-multi/.keep":
+        "Original configuration without a package test rule\n",
+      "output/.keep": "",
+    });
+    assert.ok(
+      verifiedPython,
+      "Python collector requires a verified Python 3 interpreter",
+    );
+    const result = spawnSync(
+      verifiedPython,
+      [
+        path.join(
+          repository,
+          "scripts/producer-qualification/binutils-test-reports.py",
+        ),
+        path.join(root, "source"),
+        path.join(root, "output/test-reports.json"),
+      ],
+      { encoding: "utf8", timeout: 5000, maxBuffer: 65536 },
+    );
+    assert.equal(result.error, undefined, childDiagnostic(result));
+    assert.equal(result.status, 0, childDiagnostic(result));
+    const retained = path.join(root, "output/original-test-reports");
+    assert.deepEqual((await readdir(retained)).sort(), [
+      "builddir-multi",
+      "builddir-single",
+    ]);
+    assert.deepEqual(await readdir(path.join(retained, "builddir-multi")), []);
+    const report = JSON.parse(
+      await readFile(path.join(root, "output/test-reports.json"), "utf8"),
+    );
+    const observed = await api.summarizeReports(report, retained, {
+      completeUpstreamTestInventoryAssessed: false,
+      buildConfigurations: ["builddir-single", "builddir-multi"],
+      minimumExplicitPackageCheckReports: ["builddir-single/ld/ld.sum"],
+    });
+    assert.equal(observed.state, "reported");
+    assert.equal(observed.minimumSourceObligationsSatisfied, true);
+    assert.equal(observed.completeConfigurationInventoryAssessed, false);
+    assert.equal(observed.reports.length, 1);
+    assert.equal(report.gateAComplete, false);
+  },
+);
 
 const automakeCounts = (status: string) =>
   Object.fromEntries(
@@ -538,13 +585,58 @@ const automakeReport = (status: string) =>
   ":copy-in-global-log: " +
   (status === "PASS" ? "no" : "yes") +
   "\n";
+async function automakeReaderFixture(
+  t: TestContext,
+  rows: { name: string; status: string; log: string }[],
+) {
+  const files: Record<string, string> = {};
+  const reports = rows.map(({ name, status, log }) => {
+    const file = `builddir-single/gold/${name}.trs`;
+    const raw = automakeReport(status);
+    files[file] = raw;
+    files[file.slice(0, -4) + ".log"] = log;
+    return {
+      file,
+      configuration: "builddir-single",
+      format: "automake-trs",
+      bytes: Buffer.byteLength(raw),
+      sha256: digest(raw),
+      counts: automakeCounts(status),
+      metadata: {
+        "test-result": status,
+        "global-test-result": status,
+        recheck: ["FAIL", "XPASS", "ERROR"].includes(status) ? "yes" : "no",
+        "copy-in-global-log": status === "PASS" ? "no" : "yes",
+      },
+      otherLines: 3,
+      totalLines: 4,
+      log: {
+        file: file.slice(0, -4) + ".log",
+        bytes: Buffer.byteLength(log),
+        sha256: digest(log),
+      },
+    };
+  });
+  return {
+    retained: await fixture(t, files),
+    value: {
+      schemaVersion: 1,
+      completeConfigurationInventoryAssessed: false,
+      reports,
+    },
+  };
+}
 async function collectProducerReports(
   t: TestContext,
   files: Record<string, string>,
 ) {
   const root = await fixture(t, { ...files, "output/.keep": "" });
+  assert.ok(
+    verifiedPython,
+    "Python collector requires a verified Python 3 interpreter",
+  );
   const result = spawnSync(
-    "python3",
+    verifiedPython,
     [
       path.join(
         repository,
@@ -555,6 +647,7 @@ async function collectProducerReports(
     ],
     { encoding: "utf8", timeout: 5000, maxBuffer: 65536 },
   );
+  assert.equal(result.error, undefined, childDiagnostic(result));
   return {
     root,
     result,
@@ -562,149 +655,166 @@ async function collectProducerReports(
     retained: path.join(root, "output/original-test-reports"),
   };
 }
-test("producer report collection retains all Automake outcomes and original logs beside DejaGNU reports", async (t) => {
-  const files: Record<string, string> = {
-    "source/builddir-single/ld/ld.sum": "PASS: original linker\n",
-    "source/builddir-single/ld/ld.log": "Original linker process output\n",
-    "source/builddir-single/gold/ordinary.log":
-      "FAIL: this is ordinary output, not a result report\n",
-    "source/builddir-single/gold/not-native.trs.bak": automakeReport("FAIL"),
-  };
-  for (const status of ["PASS", "FAIL", "XFAIL", "XPASS", "SKIP", "ERROR"]) {
-    files[`source/builddir-single/gold/${status}.trs`] = automakeReport(status);
-    files[`source/builddir-single/gold/${status}.log`] =
-      `Original ${status} process output\n`;
-  }
-  const f = await collectProducerReports(t, files);
-  assert.equal(f.result.status, 0, f.result.stdout + f.result.stderr);
-  const report = JSON.parse(await readFile(f.output, "utf8"));
-  assert.equal(
-    report.reports.length,
-    7,
-    "Every original result report, including Automake failures, must be retained",
-  );
-  for (const status of ["PASS", "FAIL", "XFAIL", "XPASS", "SKIP", "ERROR"]) {
-    const row = report.reports.find((value: { file: string }) =>
-      value.file.endsWith(`/gold/${status}.trs`),
-    );
-    assert.ok(row, status);
-    assert.equal(row.format, "automake-trs");
-    assert.deepEqual(row.counts, automakeCounts(status));
-    assert.equal(row.metadata["global-test-result"], status);
-    assert.equal(row.totalLines, 4);
-    assert.equal(row.otherLines, 3, "Global metadata is not a second test");
-    assert.equal(row.log.file, `builddir-single/gold/${status}.log`);
-    assert.equal(
-      await readFile(path.join(f.retained, row.log.file), "utf8"),
-      `Original ${status} process output\n`,
-    );
-  }
-  const observed = await api.summarizeReports(report, f.retained);
-  assert.equal(
-    observed.state,
-    "failed",
-    "Native wrapper success cannot hide FAIL, XPASS or ERROR",
-  );
-  const omitted = structuredClone(report);
-  omitted.reports = omitted.reports.filter(
-    (row: { file: string }) => !row.file.endsWith("/FAIL.trs"),
-  );
-  await assert.rejects(
-    api.summarizeReports(omitted, f.retained),
-    /physical report inventory/,
-  );
-  const forged = structuredClone(report);
-  forged.reports.find((row: { file: string }) =>
-    row.file.endsWith("/FAIL.trs"),
-  ).counts = automakeCounts("PASS");
-  await assert.rejects(
-    api.summarizeReports(forged, f.retained),
-    /outcomes differ from physical report bytes/,
-  );
-  const altered = report.reports.find((row: { file: string }) =>
-    row.file.endsWith("/PASS.trs"),
-  );
-  await writeFile(
-    path.join(f.retained, altered.log.file),
-    "Changed physical process output\n",
-  );
-  await assert.rejects(
-    api.summarizeReports(report, f.retained),
-    /log byte identity mismatch/,
-  );
-});
-test("producer Automake skips and malformed or absent result evidence cannot become passing observations", async (t) => {
-  for (const status of ["PASS", "XFAIL", "SKIP"]) {
-    const f = await collectProducerReports(t, {
-      "source/builddir-single/gold/original.trs": automakeReport(status),
-      "source/builddir-single/gold/original.log": `Original ${status}\n`,
-    });
-    assert.equal(f.result.status, 0, f.result.stderr);
+test(
+  "producer report collection retains all Automake outcomes and original logs beside DejaGNU reports",
+  pythonCollector,
+  async (t) => {
+    const files: Record<string, string> = {
+      "source/builddir-single/ld/ld.sum": "PASS: original linker\n",
+      "source/builddir-single/ld/ld.log": "Original linker process output\n",
+      "source/builddir-single/gold/ordinary.log":
+        "FAIL: this is ordinary output, not a result report\n",
+      "source/builddir-single/gold/not-native.trs.bak": automakeReport("FAIL"),
+    };
+    for (const status of ["PASS", "FAIL", "XFAIL", "XPASS", "SKIP", "ERROR"]) {
+      files[`source/builddir-single/gold/${status}.trs`] =
+        automakeReport(status);
+      files[`source/builddir-single/gold/${status}.log`] =
+        `Original ${status} process output\n`;
+    }
+    const f = await collectProducerReports(t, files);
+    assert.equal(f.result.status, 0, childDiagnostic(f.result));
     const report = JSON.parse(await readFile(f.output, "utf8"));
     assert.equal(
-      (await api.summarizeReports(report, f.retained)).state,
-      status === "SKIP" ? "unavailable" : "reported",
-      status,
+      report.reports.length,
+      7,
+      "Every original result report, including Automake failures, must be retained",
     );
-  }
-  for (const [name, raw] of [
-    ["prefix", automakeReport("PASSING")],
-    ["duplicate", automakeReport("PASS") + ":test-result: PASS\n"],
-    [
-      "inconsistent",
-      automakeReport("PASS").replace(
-        ":global-test-result: PASS",
-        ":global-test-result: FAIL",
-      ),
-    ],
-    ["missing", ":test-result: PASS\n"],
-    [
-      "wrong-recheck",
-      automakeReport("PASS").replace(":recheck: no", ":recheck: yes"),
-    ],
-  ] as const) {
+    for (const status of ["PASS", "FAIL", "XFAIL", "XPASS", "SKIP", "ERROR"]) {
+      const row = report.reports.find((value: { file: string }) =>
+        value.file.endsWith(`/gold/${status}.trs`),
+      );
+      assert.ok(row, status);
+      assert.equal(row.format, "automake-trs");
+      assert.deepEqual(row.counts, automakeCounts(status));
+      assert.equal(row.metadata["global-test-result"], status);
+      assert.equal(row.totalLines, 4);
+      assert.equal(row.otherLines, 3, "Global metadata is not a second test");
+      assert.equal(row.log.file, `builddir-single/gold/${status}.log`);
+      assert.equal(
+        await readFile(path.join(f.retained, row.log.file), "utf8"),
+        `Original ${status} process output\n`,
+      );
+    }
+    const observed = await api.summarizeReports(report, f.retained);
+    assert.equal(
+      observed.state,
+      "failed",
+      "Native wrapper success cannot hide FAIL, XPASS or ERROR",
+    );
+    const omitted = structuredClone(report);
+    omitted.reports = omitted.reports.filter(
+      (row: { file: string }) => !row.file.endsWith("/FAIL.trs"),
+    );
+    await assert.rejects(
+      api.summarizeReports(omitted, f.retained),
+      /physical report inventory/,
+    );
+    const forged = structuredClone(report);
+    forged.reports.find((row: { file: string }) =>
+      row.file.endsWith("/FAIL.trs"),
+    ).counts = automakeCounts("PASS");
+    await assert.rejects(
+      api.summarizeReports(forged, f.retained),
+      /outcomes differ from physical report bytes/,
+    );
+    const altered = report.reports.find((row: { file: string }) =>
+      row.file.endsWith("/PASS.trs"),
+    );
+    await writeFile(
+      path.join(f.retained, altered.log.file),
+      "Changed physical process output\n",
+    );
+    await assert.rejects(
+      api.summarizeReports(report, f.retained),
+      /log byte identity mismatch/,
+    );
+  },
+);
+test(
+  "producer Automake skips and malformed or absent result evidence cannot become passing observations",
+  pythonCollector,
+  async (t) => {
+    for (const status of ["PASS", "XFAIL", "SKIP"]) {
+      const f = await collectProducerReports(t, {
+        "source/builddir-single/gold/original.trs": automakeReport(status),
+        "source/builddir-single/gold/original.log": `Original ${status}\n`,
+      });
+      assert.equal(f.result.status, 0, childDiagnostic(f.result));
+      const report = JSON.parse(await readFile(f.output, "utf8"));
+      assert.equal(
+        (await api.summarizeReports(report, f.retained)).state,
+        status === "SKIP" ? "unavailable" : "reported",
+        status,
+      );
+    }
+    for (const [name, raw] of [
+      ["prefix", automakeReport("PASSING")],
+      ["duplicate", automakeReport("PASS") + ":test-result: PASS\n"],
+      [
+        "inconsistent",
+        automakeReport("PASS").replace(
+          ":global-test-result: PASS",
+          ":global-test-result: FAIL",
+        ),
+      ],
+      ["missing", ":test-result: PASS\n"],
+      [
+        "wrong-recheck",
+        automakeReport("PASS").replace(":recheck: no", ":recheck: yes"),
+      ],
+    ] as const) {
+      const f = await collectProducerReports(t, {
+        "source/builddir-single/gold/original.trs": raw,
+        "source/builddir-single/gold/original.log": "Original process output\n",
+      });
+      assert.notEqual(
+        f.result.status,
+        0,
+        `${name}\n${childDiagnostic(f.result)}`,
+      );
+      assert.match(
+        f.result.stderr,
+        /Automake/,
+        `${name}\n${childDiagnostic(f.result)}`,
+      );
+      await assert.rejects(filesystem.access(f.output), /ENOENT/);
+    }
     const f = await collectProducerReports(t, {
-      "source/builddir-single/gold/original.trs": raw,
-      "source/builddir-single/gold/original.log": "Original process output\n",
+      "source/builddir-single/gold/original.trs": automakeReport("PASS"),
     });
-    assert.notEqual(f.result.status, 0, name);
-    assert.match(f.result.stderr, /Automake/, name);
+    assert.notEqual(f.result.status, 0, childDiagnostic(f.result));
     await assert.rejects(filesystem.access(f.output), /ENOENT/);
-  }
-  const f = await collectProducerReports(t, {
-    "source/builddir-single/gold/original.trs": automakeReport("PASS"),
-  });
-  assert.notEqual(f.result.status, 0);
-  await assert.rejects(filesystem.access(f.output), /ENOENT/);
-});
+  },
+);
 
 test("producer independently refuses coherent Automake contradictions and mixed skipped cohorts", async (t) => {
-  const mixed = await collectProducerReports(t, {
-    "source/builddir-single/gold/passed.trs": automakeReport("PASS"),
-    "source/builddir-single/gold/passed.log": "Original passed output\n",
-    "source/builddir-single/gold/skipped.trs": automakeReport("SKIP"),
-    "source/builddir-single/gold/skipped.log": "Original skipped output\n",
-  });
-  assert.equal(mixed.result.status, 0, mixed.result.stderr);
-  const mixedReport = JSON.parse(await readFile(mixed.output, "utf8"));
+  const mixed = await automakeReaderFixture(t, [
+    { name: "passed", status: "PASS", log: "Original passed output\n" },
+    { name: "skipped", status: "SKIP", log: "Original skipped output\n" },
+  ]);
+  const mixedReport = mixed.value;
   assert.equal(mixedReport.reports.length, 2);
   assert.equal(
     (await api.summarizeReports(mixedReport, mixed.retained)).state,
     "unavailable",
     "A passed report must not cover for a skipped report",
   );
-  const f = await collectProducerReports(t, {
-    "source/builddir-single/gold/original.trs": automakeReport("PASS"),
-    "source/builddir-single/gold/original.log":
-      "Original successful process output\n",
-  });
-  assert.equal(f.result.status, 0, f.result.stderr);
-  const report = JSON.parse(await readFile(f.output, "utf8"));
+  const f = await automakeReaderFixture(t, [
+    {
+      name: "original",
+      status: "PASS",
+      log: "Original successful process output\n",
+    },
+  ]);
+  const report = f.value;
   assert.equal(
     (await api.summarizeReports(report, f.retained)).state,
     "reported",
   );
-  const file = path.join(f.retained, report.reports[0].file);
+  const originalReport = report.reports[0];
+  assert.ok(originalReport);
+  const file = path.join(f.retained, originalReport.file);
   const original = await readFile(file);
   for (const [key, value, reason] of [
     ["global-test-result", "FAIL", /global result is inconsistent/],
@@ -712,16 +822,16 @@ test("producer independently refuses coherent Automake contradictions and mixed 
     ["copy-in-global-log", "yes", /log inclusion is inconsistent/],
   ] as const) {
     const forged = structuredClone(report);
-    const before = forged.reports[0].metadata[key];
+    const forgedReport = forged.reports[0];
+    assert.ok(forgedReport);
+    const before = forgedReport.metadata[key];
     assert.equal(typeof before, "string");
     const changed = Buffer.from(
       original.toString().replace(`:${key}: ${before}`, `:${key}: ${value}`),
     );
-    forged.reports[0].metadata[key] = value;
-    forged.reports[0].bytes = changed.length;
-    forged.reports[0].sha256 = createHash("sha256")
-      .update(changed)
-      .digest("hex");
+    forgedReport.metadata[key] = value;
+    forgedReport.bytes = changed.length;
+    forgedReport.sha256 = createHash("sha256").update(changed).digest("hex");
     try {
       await writeFile(file, changed);
       await assert.rejects(
@@ -739,47 +849,55 @@ test("producer independently refuses coherent Automake contradictions and mixed 
   );
 });
 
-test("producer retains bounded multi-megabyte native logs without admitting oversized output", async (t) => {
-  for (const bytes of [2 * 1048576, 8 * 1048576, 8 * 1048576 + 1]) {
-    const f = await collectProducerReports(t, {
-      "source/builddir-single/gold/original.trs": automakeReport("PASS"),
-      "source/builddir-single/gold/original.log": "L".repeat(bytes),
-    });
-    if (bytes > 8 * 1048576) {
-      assert.notEqual(f.result.status, 0);
-      assert.match(f.result.stderr, /Unbounded or nonphysical/);
-      await assert.rejects(filesystem.access(f.output), /ENOENT/);
-    } else {
-      assert.equal(f.result.status, 0, f.result.stderr);
-      const report = JSON.parse(await readFile(f.output, "utf8"));
-      assert.equal(report.reports[0].log.bytes, bytes);
-      assert.equal(
-        (await api.summarizeReports(report, f.retained)).state,
-        "reported",
-      );
-      if (bytes === 2 * 1048576) {
-        const forged = structuredClone(report);
-        const file = path.join(f.retained, report.reports[0].log.file);
-        const original = await readFile(file);
-        const oversized = Buffer.alloc(8 * 1048576 + 1, 76);
-        forged.reports[0].log.bytes = oversized.length;
-        forged.reports[0].log.sha256 = createHash("sha256")
-          .update(oversized)
-          .digest("hex");
-        try {
-          await writeFile(file, oversized);
-          await assert.rejects(
-            api.summarizeReports(forged, f.retained),
-            /exceeds its byte bound/,
-            "A coherent helper declaration cannot raise the reader's log limit",
-          );
-        } finally {
-          await writeFile(file, original);
+test(
+  "producer retains bounded multi-megabyte native logs without admitting oversized output",
+  pythonCollector,
+  async (t) => {
+    for (const bytes of [2 * 1048576, 8 * 1048576, 8 * 1048576 + 1]) {
+      const f = await collectProducerReports(t, {
+        "source/builddir-single/gold/original.trs": automakeReport("PASS"),
+        "source/builddir-single/gold/original.log": "L".repeat(bytes),
+      });
+      if (bytes > 8 * 1048576) {
+        assert.notEqual(f.result.status, 0, childDiagnostic(f.result));
+        assert.match(
+          f.result.stderr,
+          /Unbounded or nonphysical/,
+          childDiagnostic(f.result),
+        );
+        await assert.rejects(filesystem.access(f.output), /ENOENT/);
+      } else {
+        assert.equal(f.result.status, 0, childDiagnostic(f.result));
+        const report = JSON.parse(await readFile(f.output, "utf8"));
+        assert.equal(report.reports[0].log.bytes, bytes);
+        assert.equal(
+          (await api.summarizeReports(report, f.retained)).state,
+          "reported",
+        );
+        if (bytes === 2 * 1048576) {
+          const forged = structuredClone(report);
+          const file = path.join(f.retained, report.reports[0].log.file);
+          const original = await readFile(file);
+          const oversized = Buffer.alloc(8 * 1048576 + 1, 76);
+          forged.reports[0].log.bytes = oversized.length;
+          forged.reports[0].log.sha256 = createHash("sha256")
+            .update(oversized)
+            .digest("hex");
+          try {
+            await writeFile(file, oversized);
+            await assert.rejects(
+              api.summarizeReports(forged, f.retained),
+              /exceeds its byte bound/,
+              "A coherent helper declaration cannot raise the reader's log limit",
+            );
+          } finally {
+            await writeFile(file, original);
+          }
         }
       }
     }
-  }
-});
+  },
+);
 
 test("producer original package completion preserves failed and unavailable test evidence without claiming qualification", async (t) => {
   const complete = { commandCompleted: true };
@@ -799,15 +917,16 @@ test("producer original package completion preserves failed and unavailable test
     "Original failures must remain unchanged",
   );
 
-  const collected = await collectProducerReports(t, {
-    "source/builddir-single/gold/testsuite/skip.trs": automakeReport("SKIP"),
-    "source/builddir-single/gold/testsuite/skip.log":
-      "Original unavailable test\n",
-  });
-  assert.equal(collected.result.status, 0, collected.result.stderr);
+  const originalSkipped = await automakeReaderFixture(t, [
+    {
+      name: "testsuite/skip",
+      status: "SKIP",
+      log: "Original unavailable test\n",
+    },
+  ]);
   const unavailable = await api.summarizeReports(
-    JSON.parse(await readFile(collected.output, "utf8")),
-    collected.retained,
+    originalSkipped.value,
+    originalSkipped.retained,
   );
   assert.equal(unavailable.state, "unavailable");
   const unavailableBefore = structuredClone(unavailable);
