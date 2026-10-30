@@ -64,37 +64,87 @@ export async function captureFixtureProcessGroup(
     members: ownedDescendants(rows, owner.pid).map((row) => row.process),
   };
 }
+export interface FixtureCleanupControl {
+  snapshot(
+    pids: readonly number[],
+    timeoutMs: number,
+  ): Promise<ProcessIdentity[]>;
+  exists(pid: number): boolean;
+  kill(pid: number): void;
+  now(): number;
+  wait(ms: number): Promise<void>;
+}
 export async function cleanupFixtureProcessGroup(
   group: FixtureProcessGroup,
+  provided?: FixtureCleanupControl,
 ): Promise<void> {
   const { processSnapshot } = await import("../src/process-tree.js");
-  const captured = [...group.members, group.owner];
-  for (const row of captured) {
-    const current = (await processSnapshot()).find(
-      (current) => current.pid === row.pid,
+  const io: FixtureCleanupControl = provided ?? {
+    snapshot: processSnapshot,
+    exists: (pid) => {
+      try {
+        process.kill(pid, 0);
+        return true;
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "ESRCH") return false;
+        throw error;
+      }
+    },
+    kill: (pid) => {
+      process.kill(pid, "SIGKILL");
+    },
+    now: () => performance.now(),
+    wait: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  };
+  const captured = [...group.members, group.owner],
+    deadline = io.now() + 5000;
+  const checkDeadline = () => {
+    if (io.now() >= deadline)
+      throw Error("Observed fixture process group survived cleanup");
+  };
+  const snapshot = async (pids: number[]) => {
+    checkDeadline();
+    const rows = await io.snapshot(
+      pids,
+      Math.max(1, Math.min(1000, Math.floor(deadline - io.now()))),
     );
-    if (current?.identity !== row.identity || current.group !== row.group)
-      continue;
+    checkDeadline();
+    return new Map(rows.map((row) => [row.pid, row]));
+  };
+  const same = (row: ProcessIdentity, rows: Map<number, ProcessIdentity>) => {
+    const current = rows.get(row.pid);
+    if (!current) {
+      if (io.exists(row.pid))
+        throw Error("Fixture process identity unavailable");
+      return false;
+    }
+    if (current.identity !== row.identity) return false;
+    const exiting =
+      current.state === "exited" &&
+      current.parent === 0 &&
+      current.group === -1;
+    if (current.group !== row.group && !exiting)
+      throw Error("Fixture process identity changed group");
+    return true;
+  };
+  for (const row of captured) {
+    checkDeadline();
+    // ESRCH is physical disappearance. A dead family needs no host enumeration.
+    if (!io.exists(row.pid)) continue;
+    const rows = await snapshot([row.pid]);
+    if (!same(row, rows) || rows.get(row.pid)!.state === "exited") continue;
     try {
-      process.kill(row.pid, "SIGKILL");
+      io.kill(row.pid);
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
     }
   }
-  const until = performance.now() + 5000;
-  while (performance.now() < until) {
-    const rows = await processSnapshot();
-    if (
-      captured.every(
-        (row) =>
-          !rows.some(
-            (current) =>
-              current.pid === row.pid && current.identity === row.identity,
-          ),
-      )
-    )
-      return;
-    await new Promise((resolve) => setTimeout(resolve, 25));
+  for (;;) {
+    checkDeadline();
+    const remaining = captured.filter((row) => io.exists(row.pid));
+    if (!remaining.length) return;
+    const rows = await snapshot(remaining.map((row) => row.pid));
+    if (!remaining.some((row) => same(row, rows))) return;
+    await io.wait(Math.min(25, deadline - io.now()));
   }
-  throw Error("Observed fixture process group survived cleanup");
 }

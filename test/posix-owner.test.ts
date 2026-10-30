@@ -55,7 +55,7 @@ async function marker(file: string) {
   });
 }
 async function identities(pids: number[]) {
-  const snapshot = await processSnapshot();
+  const snapshot = await processSnapshot(pids);
   return pids.map((pid) => {
     const r = snapshot.find((r) => r.pid === pid);
     assert.ok(r, "Reached original process identity must be observable");
@@ -63,8 +63,9 @@ async function identities(pids: number[]) {
   });
 }
 async function gone(rows: ProcessIdentity[]) {
+  if (rows.length === 0) return;
   await waitFor(async () => {
-    const current = await processSnapshot();
+    const current = await processSnapshot(rows.map((row) => row.pid));
     return rows.every(
       (row) =>
         !current.some((p) => p.pid === row.pid && p.identity === row.identity),
@@ -75,7 +76,9 @@ async function gone(rows: ProcessIdentity[]) {
 }
 async function killOwned(rows: ProcessIdentity[]) {
   for (const row of rows) {
-    const current = (await processSnapshot()).find((p) => p.pid === row.pid);
+    const current = (await processSnapshot(row.pid)).find(
+      (p) => p.pid === row.pid,
+    );
     if (current?.identity === row.identity && current.group === row.group) {
       process.kill(row.pid, "SIGSTOP");
       await stopDescendants(row.pid, undefined, () => {
@@ -204,7 +207,7 @@ test(
       const value = JSON.parse(await readFile(ready, "utf8")) as {
         pid: number;
       };
-      const current = await processSnapshot();
+      const current = await processSnapshot(value.pid);
       owned = current.filter((p) => p.pid === value.pid);
       assert.equal(result.exitCode, 0);
       assert.equal(result.errorCode, undefined);
@@ -282,12 +285,12 @@ test(
       )
         await writeFile(
           helper,
-          `import{processSnapshot}from'./process-tree.js';import{spawn}from'node:child_process';const identity=(await processSnapshot()).find(p=>p.pid===process.pid),mode=${JSON.stringify(mode)};let nonce=process.argv[2];if(mode==='foreign')nonce='original-foreign-nonce';if(mode==='wrong-pid')identity.pid+=1;if(mode==='wrong-parent')identity.parent+=1;if(mode==='wrong-group')identity.group+=1;if(mode==='empty-identity')identity.identity='';if(mode==='long-identity')identity.identity='x'.repeat(129);process.on('message',request=>{if(request.kind==='run'){const child=spawn(request.command.executable,request.command.args,{stdio:'ignore'});child.once('exit',()=>{if(process.connected)process.disconnect();});}});process.send({kind:'ready',nonce,identity});setTimeout(()=>process.exit(0),1500);`,
+          `import{processSnapshot}from'./process-tree.js';import{spawn}from'node:child_process';const identity=(await processSnapshot(process.pid)).find(p=>p.pid===process.pid),mode=${JSON.stringify(mode)};let nonce=process.argv[2];if(mode==='foreign')nonce='original-foreign-nonce';if(mode==='wrong-pid')identity.pid+=1;if(mode==='wrong-parent')identity.parent+=1;if(mode==='wrong-group')identity.group+=1;if(mode==='empty-identity')identity.identity='';if(mode==='long-identity')identity.identity='x'.repeat(129);process.on('message',request=>{if(request.kind==='run'){const child=spawn(request.command.executable,request.command.args,{stdio:'ignore'});child.once('exit',()=>{if(process.connected)process.disconnect();});}});process.send({kind:'ready',nonce,identity});setTimeout(()=>process.exit(0),1500);`,
         );
       else
         await writeFile(
           helper,
-          `import{processSnapshot}from'./process-tree.js';import{createHash}from'node:crypto';const nonce=process.argv[2],identity=(await processSnapshot()).find(p=>p.pid===process.pid);process.send({kind:'ready',nonce,identity});process.once('message',request=>{const digest=b=>createHash('sha256').update(b).digest('hex'),blob=b=>({base64:b.toString('base64'),bytes:b.length,sha256:digest(b)});const result={command:request.command,exitCode:0,signal:null,stdout:'x',stderr:'',durationMs:1,timedOut:false,cancelled:false,truncated:false,outputBytes:1,capturedOutput:{profile:'bounded-physical-process-output-v1',stdout:blob(Buffer.from('x')),stderr:blob(Buffer.alloc(0)),observedBytes:1,completeForObservedStreams:true}};const mode=${JSON.stringify(mode)};if(mode==='bad-digest')result.capturedOutput.stdout.sha256='0'.repeat(64);if(mode==='bad-observed')result.outputBytes=2;if(mode==='bad-text')result.stdout='z';if(mode==='foreign-receipt')result.windowsExecution={profile:'original-foreign'};process.send({kind:'result',nonce,result},()=>process.disconnect());});`,
+          `import{processSnapshot}from'./process-tree.js';import{createHash}from'node:crypto';const nonce=process.argv[2],identity=(await processSnapshot(process.pid)).find(p=>p.pid===process.pid);process.send({kind:'ready',nonce,identity});process.once('message',request=>{const digest=b=>createHash('sha256').update(b).digest('hex'),blob=b=>({base64:b.toString('base64'),bytes:b.length,sha256:digest(b)});const result={command:request.command,exitCode:0,signal:null,stdout:'x',stderr:'',durationMs:1,timedOut:false,cancelled:false,truncated:false,outputBytes:1,capturedOutput:{profile:'bounded-physical-process-output-v1',stdout:blob(Buffer.from('x')),stderr:blob(Buffer.alloc(0)),observedBytes:1,completeForObservedStreams:true}};const mode=${JSON.stringify(mode)};if(mode==='bad-digest')result.capturedOutput.stdout.sha256='0'.repeat(64);if(mode==='bad-observed')result.outputBytes=2;if(mode==='bad-text')result.stdout='z';if(mode==='foreign-receipt')result.windowsExecution={profile:'original-foreign'};process.send({kind:'result',nonce,result},()=>process.disconnect());});`,
         );
       const result = await d.run.runProcess(
         d.root,
@@ -309,6 +312,7 @@ test(
         mode === "absent"
           ? "POSIX_OWNER_UNAVAILABLE"
           : "POSIX_OWNER_PROTOCOL_INVALID",
+        "Original owner mode: " + mode,
       );
       await assert.rejects(access(mark), { code: "ENOENT" });
     }
@@ -486,7 +490,7 @@ test(
           reached = await waitFor(async () => {
             if (readinessFailure) throw readinessFailure;
             if (!child?.pid) return;
-            const row = (await processSnapshot()).find(
+            const row = (await processSnapshot(child.pid)).find(
               (row) => row.pid === child!.pid,
             );
             return row?.state === "stopped" ? row : undefined;
@@ -496,7 +500,7 @@ test(
           resume = setTimeout(
             () => {
               void (async () => {
-                const current = (await processSnapshot()).find(
+                const current = (await processSnapshot(reached!.pid)).find(
                   (row) => row.pid === reached!.pid,
                 );
                 if (
@@ -539,7 +543,7 @@ test(
             child.exitCode === null &&
             child.signalCode === null
           ) {
-            const current = (await processSnapshot()).find(
+            const current = (await processSnapshot(child.pid)).find(
               (row) => row.pid === child!.pid,
             );
             if (current?.parent === process.pid && current.group === child.pid)

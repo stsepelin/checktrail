@@ -35,7 +35,7 @@ const broken =
 const fixed =
   "<?php\nnamespace Rules;\nconst FALLBACK = 'grant';\nfunction Decision(string $value = FALLBACK): bool { return $value === FALLBACK || str_starts_with($value, FALLBACK . ':'); }\n";
 const near =
-  "<?php\nnamespace Rules;\nfunction Decision(string $value = 'grant'): bool { return $value === 'grant:read' || $value === 'grant:write'; }\n";
+  "<?php\nnamespace Rules;\nconst FALLBACK = 'grant';\nfunction Decision(string $value = 'grant'): bool { return $value === 'grant:read' || $value === 'grant:write'; }\n";
 const consumer =
   "<?php\nnamespace Consumer;\nuse function Rules\\Decision as choose;\nuse Rules as P;\nuse const Rules\\FALLBACK as DEFAULT_VALUE;\nrequire_once __DIR__ . '/../policy/policy.php';\nfunction Submit($choose = DEFAULT_VALUE) { return choose('grantToken'); }\nfunction Route() { return P\\Decision('grant:read'); }\n";
 const native = {
@@ -86,7 +86,7 @@ async function php(root: string, code: string) {
   const result = await runProcess(
     root,
     { executable: "php", args: ["-r", code], cwd: "." },
-    { timeoutMs: 10000, maxOutputBytes: 65536 },
+    { timeoutMs: 10000, maxOutputBytes: 65536, captureRawOutput: true },
   );
   assert.equal(result.exitCode, 0, result.stderr);
   assert.equal(result.errorCode, undefined);
@@ -94,13 +94,23 @@ async function php(root: string, code: string) {
   assert.equal(result.timedOut, false);
   assert.equal(result.truncated, false);
   assert.equal(result.stderr, "");
+  assert.equal(result.capturedOutput?.completeForObservedStreams, true);
+  assert.equal(result.capturedOutput?.stdout.sha256, hash(result.stdout));
   return JSON.parse(result.stdout);
 }
 async function witness(root: string) {
-  return php(
+  const receipt = await php(
     root,
-    "require 'policy/policy.php'; echo json_encode(array_map('Rules\\\\Decision', ['grant:read','grantToken','grant2','other']));",
+    "require 'consumer/consumer.php'; echo json_encode(['cases'=>array_map('Rules\\\\Decision', ['grant:read','grantToken','grant2','other']),'consumers'=>[Consumer\\Submit(),Consumer\\Route()],'sources'=>['policy/policy.php'=>hash_file('sha256','policy/policy.php'),'consumer/consumer.php'=>hash_file('sha256','consumer/consumer.php')]]);",
   );
+  assert.equal(receipt.cases.length, 4);
+  assert.equal(receipt.consumers.length, 2);
+  for (const name of ["policy/policy.php", "consumer/consumer.php"])
+    assert.equal(
+      receipt.sources[name],
+      hash(await readFile(path.join(root, name), "utf8")),
+    );
+  return receipt;
 }
 function bindings(result: ReturnType<typeof analysis>) {
   const policy = result.functions.find(
@@ -154,7 +164,31 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-php broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [true, true, true, false]);
+  const live = await witness(root);
+  assert.deepEqual(live.cases, [true, true, true, false]);
+  assert.deepEqual(live.consumers, [true, true]);
+  const callerPath = path.join(root, "consumer/consumer.php"),
+    callerBytes = await readFile(callerPath, "utf8");
+  try {
+    await writeFile(
+      callerPath,
+      callerBytes.replace("choose('grantToken')", "choose('other')"),
+    );
+    const changed = await witness(root);
+    assert.deepEqual(changed.cases, live.cases);
+    assert.deepEqual(changed.consumers, [false, true]);
+    assert.notEqual(
+      changed.sources["consumer/consumer.php"],
+      live.sources["consumer/consumer.php"],
+    );
+    assert.equal(
+      changed.sources["policy/policy.php"],
+      live.sources["policy/policy.php"],
+    );
+  } finally {
+    await writeFile(callerPath, callerBytes);
+  }
+  assert.deepEqual(await witness(root), live);
   const fn = result.functions.find((fn) => fn.name === "Decision")!,
     file = context.files.find((file) => file.path === fn.file)!;
   assert.equal(
@@ -240,7 +274,9 @@ test("context-php broken acceptance", native, async (t) => {
 test("context-php fixed acceptance", native, async (t) => {
   const { root, context, result } = await original(t, fixed);
   bindings(result);
-  assert.deepEqual(await witness(root), [true, false, false, false]);
+  const live = await witness(root);
+  assert.deepEqual(live.cases, [true, false, false, false]);
+  assert.deepEqual(live.consumers, [false, true]);
   assert.equal(
     parseReviewContext(context).contextDigest,
     context.contextDigest,
@@ -258,7 +294,9 @@ test("context-php fixed acceptance", native, async (t) => {
 test("context-php near-miss acceptance", native, async (t) => {
   await callIdentityFixture(t, "php", true);
   const { root } = await original(t, near);
-  assert.deepEqual(await witness(root), [true, false, false, false]);
+  const live = await witness(root);
+  assert.deepEqual(live.cases, [true, false, false, false]);
+  assert.deepEqual(live.consumers, [false, true]);
   const cases: [string, string][] = [
     ["function UseIt($choose){return choose('x');}", "lexical-binding"],
     ["function UseIt($choose){return $choose('x');}", "unsupported-dispatch"],

@@ -34,6 +34,25 @@ for(const tile of ['8/1/133','8/0/x219/832','8/0/x219/832.p/255']) {
 }
 `,
   ));
+test("Go analyzer acquisition retries exact proxy zip stream failures and rejects mixed or altered diagnostics", async (t) =>
+  control(
+    t,
+    `
+const proxy='./synthetic.go:4:2: example.invalid/synthetic@v0.0.1: read "https://proxy.golang.org/example.invalid/synthetic/@v/v0.0.1.zip": stream error: stream ID 295; INTERNAL_ERROR; received from peer';
+const second=proxy.replace('example.invalid/synthetic','example.invalid/other').replace('stream ID 295','stream ID 103');
+const escaped=proxy.replace('/example.invalid/synthetic/@v/','/example.invalid/%21synthetic/@v/');
+const failure=Object.assign(new Error('synthetic proxy stream'),{status:1,signal:null,stdout:'',stderr:'go: downloading example.invalid/synthetic v0.0.1\\n'+proxy+'\\n'+second+'\\n'+escaped});
+const events=[];let calls=0;
+const result=await acquirePinnedGoAnalyzer({invoke:()=>{events.push('invoke');if(++calls<3)throw failure;return 'original proxy success';},delayImpl:async ms=>events.push(ms),onRetry:row=>events.push(row)});
+assert.equal(result.output,'original proxy success');assert.equal(result.attempts,3);
+assert.deepEqual(events,['invoke',{attempt:1,delayMs:1000},1000,'invoke',{attempt:2,delayMs:3000},3000,'invoke']);
+for(const stderr of [proxy+'\\n./synthetic.go:1: undefined: missing',proxy+'\\nSECURITY ERROR: checksum mismatch',proxy.replace('proxy.golang.org','proxy.golang.org.evil.invalid'),proxy.replace('https:','http:'),proxy.replace('/example.invalid/synthetic/@v/','/example.invalid/%2fsynthetic/@v/'),proxy.replace('.zip','.mod'),proxy.replace('/@v/','/../'),proxy.replace('INTERNAL_ERROR','CANCEL'),proxy.replace('stream ID 295','stream ID 0'),proxy+' trailing']) {
+ const permanent=Object.assign(new Error('synthetic permanent failure'),{status:1,signal:null,stdout:'',stderr});let attempts=0;
+ await assert.rejects(acquirePinnedGoAnalyzer({invoke:()=>{attempts++;throw permanent;},delayImpl:async()=>assert.fail('Permanent diagnostics cannot retry')}),error=>error===permanent);
+ assert.equal(attempts,1,stderr);
+}
+`,
+  ));
 test("Go analyzer acquisition exhausts its finite attempts and preserves a later permanent failure", async (t) =>
   control(
     t,

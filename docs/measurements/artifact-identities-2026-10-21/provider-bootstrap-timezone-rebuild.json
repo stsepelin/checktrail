@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Source reconstruction of the exact 2026c time-zone ZIP copied into the source and SDK for the recorded Go 1.27.1 bootstrap. Baseline and exact restoration match the whole ZIP; a valid historical-offset mutation changes it.",
+  "frozenBuildRecipe": {
+    "schemaVersion": 1,
+    "frozenBeforeBuild": true,
+    "goal": "Independently reconstruct lib/time/zoneinfo.zip copied into each selected compiler SDK archive",
+    "host": "darwin/arm64",
+    "producerVersions": {
+      "goPackager": "go version go1.24.13 darwin/arm64",
+      "goPackagerExecutableSha256": "5588df879187a7587f98446ee8205ee1a8da506d362ab92c6d50d348fbeb39be",
+      "cCompilerVersion": [
+        "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "Target: arm64-apple-darwin27.0.0",
+        "Thread model: posix"
+      ],
+      "cCompilerExecutableSha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+      "cCompilerSourceBuildClosureVerified": false,
+      "goPackagerBootstrapBuildClosureVerified": false
+    },
+    "sourceArchives": [
+      {
+        "version": "2026c",
+        "family": "tzcode",
+        "url": "https://www.iana.org/time-zones/repository/releases/tzcode2026c.tar.gz",
+        "bytes": 325445,
+        "sha256": "b1cffc3ace4c4c7cd0efba2f7add86ec3d0b79da48bcf03582671fd3c8feace8"
+      },
+      {
+        "version": "2026c",
+        "family": "tzdata",
+        "url": "https://www.iana.org/time-zones/repository/releases/tzdata2026c.tar.gz",
+        "bytes": 475694,
+        "sha256": "e4a178a4477f3d0ea77cc31828ff72aa38feff8d61aa13e7e99e142e9d902be4"
+      }
+    ],
+    "goSourceArchivePins": [
+      {
+        "version": "go1.27.1",
+        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1"
+      }
+    ],
+    "commands": {
+      "mkzip": [
+        "go",
+        "build",
+        "-trimpath",
+        "-o",
+        "private output/mkzip",
+        "lib/time/mkzip.go"
+      ],
+      "zic": [
+        "make",
+        "CFLAGS=-DSTD_INSPIRED",
+        "AWK=awk",
+        "TZDIR=zoneinfo",
+        "posix_only"
+      ],
+      "go1.27.1AdditionalMakeArguments": [
+        "PACKRATDATA=backzone",
+        "PACKRATLIST=zone.tab"
+      ],
+      "package": ["mkzip", "private output/zoneinfo.zip"]
+    },
+    "variants": [
+      "baseline",
+      "changed valid historical offset in Africa/Abidjan from -0:16:08 to -0:16:09",
+      "exact original source restoration"
+    ],
+    "freshExtractAndBuildPerVariant": true,
+    "originalArchivePassedToBuildCommands": false,
+    "commandTimeoutSeconds": 180,
+    "fullUpstreamBuildClosureVerified": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "recipeSha256": "05151ff4bda0b6f64eac7abd49df776f3a3fe09ab7aa63f532a36fb5c5d8efba",
+  "archiveObservations": [
+    {
+      "version": "go1.27.1",
+      "tzVersion": "2026c",
+      "mkzipSourceSha256": "afbc4414d4053db4cf6befc0936cf15862a1d4b0433644adf3c0410f3796a820",
+      "updateRecipeSourceSha256": "a0248cbca7fc118da6ff8cd87019f646bae5262dc71704c28a68ebf09e708feb",
+      "expectedArchiveBytes": 408467,
+      "expectedArchiveSha256": "b2d18a7c8fa8142097a48c99609fb3c92db5ee98bc740294e57eab8ae9f94779",
+      "variants": [
+        {
+          "variant": "baseline",
+          "allCommandsExitZero": true,
+          "commands": [
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 4.036620458,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.9871670000000003,
+              "logSha256": "83e24d1a5a8cff819725685ac5ce7fbe8b54b8c9a6856e8bcb3948d95980201b"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.23116191599999958,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "africaSourceSha256": "f2851d4be4a4925cbdc9d56e10d780bccadb89d6ffb9aed78c3e35f97c200aed",
+          "originalSourceRestored": true,
+          "zicExecutableSha256": "ba606d5d2e19208e54afcdcf22afcbc8cd4f34e12bbd3ed88d07a012a2ede82f",
+          "mkzipExecutableSha256": "ff02d509070c14fd11a124313c3e45f764595f2672784972e2ffeb1682e7fd5a",
+          "outputBytes": 408467,
+          "outputSha256": "b2d18a7c8fa8142097a48c99609fb3c92db5ee98bc740294e57eab8ae9f94779",
+          "matchesOriginalArchive": true
+        },
+        {
+          "variant": "mutant",
+          "allCommandsExitZero": true,
+          "commands": [
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 3.33507875,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.49505183399999986,
+              "logSha256": "83e24d1a5a8cff819725685ac5ce7fbe8b54b8c9a6856e8bcb3948d95980201b"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.13044645799999977,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "africaSourceSha256": "5cbe545ac65a667f839a2da0e87b7570c6e76740fb44ce8f4b6b158a894001b6",
+          "originalSourceRestored": false,
+          "zicExecutableSha256": "ba606d5d2e19208e54afcdcf22afcbc8cd4f34e12bbd3ed88d07a012a2ede82f",
+          "mkzipExecutableSha256": "ff02d509070c14fd11a124313c3e45f764595f2672784972e2ffeb1682e7fd5a",
+          "outputBytes": 408467,
+          "outputSha256": "20849e0156c3ca6097bd4080d9e72000acd7a56ab69147953ec58eda1618d9d7",
+          "matchesOriginalArchive": false
+        },
+        {
+          "variant": "restored",
+          "allCommandsExitZero": true,
+          "commands": [
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 3.08466125,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.8610733340000003,
+              "logSha256": "83e24d1a5a8cff819725685ac5ce7fbe8b54b8c9a6856e8bcb3948d95980201b"
+            },
+            {
+              "exitCode": 0,
+              "elapsedSeconds": 0.12165725000000016,
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "africaSourceSha256": "f2851d4be4a4925cbdc9d56e10d780bccadb89d6ffb9aed78c3e35f97c200aed",
+          "originalSourceRestored": true,
+          "zicExecutableSha256": "ba606d5d2e19208e54afcdcf22afcbc8cd4f34e12bbd3ed88d07a012a2ede82f",
+          "mkzipExecutableSha256": "ff02d509070c14fd11a124313c3e45f764595f2672784972e2ffeb1682e7fd5a",
+          "outputBytes": 408467,
+          "outputSha256": "b2d18a7c8fa8142097a48c99609fb3c92db5ee98bc740294e57eab8ae9f94779",
+          "matchesOriginalArchive": true
+        }
+      ]
+    }
+  ],
+  "noticeObservations": [
+    {
+      "version": "2026c",
+      "family": "tzcode",
+      "originalRootLicenseRetained": true,
+      "namedBsdExceptionFilesPresent": [
+        "date.c",
+        "newstrftime.3",
+        "strftime.c"
+      ],
+      "completeOriginalInlineNoticeClosureVerified": false
+    },
+    {
+      "version": "2026c",
+      "family": "tzdata",
+      "originalRootLicenseRetained": true,
+      "namedBsdExceptionFilesPresent": [],
+      "completeOriginalInlineNoticeClosureVerified": false
+    }
+  ],
+  "sourceReleaseSignatureEvidence": "provider-timezone-source-signatures.json",
+  "sourceReleaseSignaturesCryptographicallyVerified": true,
+  "independentSigningKeyIdentityTrustAssessed": false,
+  "retainedInputs": [
+    {
+      "file": "provider-compiler-inputs/go1.27.1-mkzip.go.txt",
+      "bytes": 2155,
+      "sha256": "afbc4414d4053db4cf6befc0936cf15862a1d4b0433644adf3c0410f3796a820",
+      "sourcePath": "lib/time/mkzip.go",
+      "sourceCommit": "862c888e612ac346c7c4d99c9392bdfd265f33b0"
+    },
+    {
+      "file": "provider-compiler-inputs/go1.27.1-upstream-update.bash.txt",
+      "bytes": 2201,
+      "sha256": "a0248cbca7fc118da6ff8cd87019f646bae5262dc71704c28a68ebf09e708feb",
+      "sourcePath": "lib/time/update.bash",
+      "sourceCommit": "862c888e612ac346c7c4d99c9392bdfd265f33b0"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2026c-LICENSE.txt",
+      "bytes": 252,
+      "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf",
+      "sourceArchive": "tzcode2026c.tar.gz",
+      "sourcePath": "LICENSE",
+      "reason": "Original root notice or complete file explicitly named by its BSD exception clause"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2026c-date.c.txt",
+      "bytes": 5414,
+      "sha256": "6c093549ddbbc94bde79a313cf37e7fe479ad007464c44f91d002d7c2b819d24",
+      "sourceArchive": "tzcode2026c.tar.gz",
+      "sourcePath": "date.c",
+      "reason": "Original root notice or complete file explicitly named by its BSD exception clause"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2026c-newstrftime.3.txt",
+      "bytes": 10804,
+      "sha256": "35f7ee165363d50879321cb12ffd52711b021e0813cc45b8ef3b208d12f70e93",
+      "sourceArchive": "tzcode2026c.tar.gz",
+      "sourcePath": "newstrftime.3",
+      "reason": "Original root notice or complete file explicitly named by its BSD exception clause"
+    },
+    {
+      "file": "provider-compiler-inputs/tzcode2026c-strftime.c.txt",
+      "bytes": 19380,
+      "sha256": "119fd12398d687c366df07dbbde6530caf74979ea5ec2f90718f111b4e7fb717",
+      "sourceArchive": "tzcode2026c.tar.gz",
+      "sourcePath": "strftime.c",
+      "reason": "Original root notice or complete file explicitly named by its BSD exception clause"
+    },
+    {
+      "file": "provider-compiler-inputs/tzdata2026c-LICENSE.txt",
+      "bytes": 252,
+      "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf",
+      "sourceArchive": "tzdata2026c.tar.gz",
+      "sourcePath": "LICENSE",
+      "reason": "Original root notice or complete file explicitly named by its BSD exception clause"
+    },
+    {
+      "file": "provider-timezone-source-signatures.json",
+      "bytes": 17235,
+      "sha256": "25d8cb111b9c66a6258ffe7a2720ce0cd8590a5a244678361f4e00e177f32ff2"
+    },
+    {
+      "file": "provider-native-packager-sdk-rebuild.json",
+      "bytes": 48216,
+      "sha256": "9849d75264b2f57bc1150413a9e373001806444e9487f4c8edb17c991a90a1fb"
+    }
+  ],
+  "cCompilerSdkAndGoPackagerProducerBuildClosureVerified": false,
+  "limitations": [
+    "The observed Apple C compiler and SDK were not reconstructed. The Go packager is source-built, with the recorded deeper bootstrap ancestry still open.",
+    "Exact ZIP reconstruction does not establish every upstream source generator or complete original inline notice closure.",
+    "The original ZIP was a comparison target, not an explicit input to the build commands; filesystem isolation and network tracing were not provided."
+  ],
+  "fullUpstreamCompilerSdkAndBootstrapClosureVerified": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

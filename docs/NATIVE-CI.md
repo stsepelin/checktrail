@@ -111,11 +111,21 @@ cannot attach an unrelated language to a native job.
 For a known native fixture or controller change, PRs select the union of its
 recorded native consumers. The four shared OS/Node variants run type checking,
 lint, formatting and artifact audits, followed by complete test files belonging
-to those selected consumers. The CI routing, affected-runner and finite-inventory
+to those selected consumers. The artifact, CI routing, affected-runner and finite-inventory
 control files always run as well. The shared runner requires named CI and
 inventory controls to pass; an omitted or skipped required control fails.
 It executes every callback in the selected files, not only the named controls.
 Its receipt identifies the selected files and records skips separately.
+
+The exact `docs/measurements/artifact-identities-2026-10-21/` namespace
+contains retained observation data. Changes there select the shared artifact
+audit and its complete regression file, including every named
+`selected-artifact-evidence` guard. Missing or skipped artifact guards fail.
+Declared native consumers, when present, are added to the selection. Added data
+must still satisfy the audit's index, byte, source, notice and completion-claim
+constraints. Adjacent directory names and other unclassified documentation data
+retain full verification. This routing does not certify upstream builds or
+native acceptance.
 
 These affected runs avoid unrelated language tool preparation and the full
 package/mutation phase. That phase is explicitly skipped at this revision.
@@ -851,3 +861,27 @@ The registry file itself always selects full verification. This is an explicit
 reviewed boundary contract, not proof of every possible runtime dependency or
 qualification of omitted jobs. Full main, scheduled and release verification
 remain required for broader evidence and Gate A reconciliation.
+
+The resource-readiness prerequisite case retains separate complete prepared-tool
+copies for its corruption controls. Its Windows aggregate test deadline is five
+minutes after the Windows case timed out at its former two-minute test limit.
+The case includes an offline install with its own three-minute command budget
+and separate corruption/cache controls.
+Other hosts and each preparation/execution command keep their existing limits.
+This changes the harness deadline; its byte, receipt, publication and cleanup
+assertions remain required.
+
+The Tasks runtime matrix also requires the whole consumer-impact source and
+fresh offline installed cohort, preserving the original foundation callbacks and
+nested event accounting. Windows consumer acceptance has its own matrix lane,
+using the same pinned Windows slot as the task, review and lifecycle lane. Both
+remain required by `ci-complete`, and each cohort keeps its execution limits.
+The Windows installed callback has a separate aggregate observation allowance
+for the complete packaged profile and original foundation cohort. Individual
+execution limits and output caps stay fixed, and other hosts retain their
+original package observation allowance.
+The Linux ARM64 controller binds its selected base images and native Git
+prerequisite. Local development evidence is recorded separately in
+[CONSUMER-ACCEPTANCE.md](CONSUMER-ACCEPTANCE.md); hosted acceptance requires
+complete source and fresh-install receipts. This wiring does not qualify omitted
+native profiles, upstream producer closure or Gate A.

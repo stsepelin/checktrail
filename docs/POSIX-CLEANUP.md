@@ -36,9 +36,15 @@ only an observed stopped or exited state counts as quiescence. Deeper children
 must physically exit before their waiting parents are killed. Stopped parents
 cannot reap zombies, so direct children are signalled before root termination,
 then disappearance of every observed identity is required under the same
-two-second cleanup deadline. Signal delivery, physical exit and reaping remain
+two-second cleanup deadline. A host-query timeout can be retried once using
+only the remaining deadline and a fresh complete identity observation. Each
+query remains bounded by one second; permanent, malformed and expired evidence
+cannot become a successful cleanup. After failure, the existing best-effort recovery uses one separate bounded
+identity query of at most one second, still attempts to release safely identified
+family members and preserves the original incomplete outcome.
+Signal delivery, physical exit and reaping remain
 separate observations. A
-surviving or unreadable observed identity, snapshot error or
+surviving or unreadable observed identity, unrecovered snapshot error or
 changed process group produces `PROCESS_TREE_CLEANUP_UNAVAILABLE`; the runner
 still attempts to terminate the observed owned family and never promotes that
 cleanup failure into a passing check.
@@ -53,7 +59,7 @@ discovery and quiescence, pre-signal, physical-exit and final-reaping observatio
 select only the captured owned PIDs. Selections are copied before any asynchronous
 read and divided into bounded native queries. Empty, duplicate, oversized or
 unsafe selections and foreign result rows are refused. Recovery still attempts
-a full snapshot. A final snapshot is unnecessary when no descendants were
+one separately bounded full snapshot after failure. A final snapshot is unnecessary when no descendants were
 observed. The snapshot and cleanup deadlines are unchanged. Unrelated sibling tasks are not selected. Unknown macOS `?` status is retained as running/unknown; it never
 proves quiescence. Linux start identity comes from `/proc/PID/stat`; macOS uses the fixed
 `/bin/ps` PID, parent, group, status and start-time columns without command lines or
@@ -93,7 +99,10 @@ and session `-1` while its signal-handler state is being released. The parser
 admits that exact sentinel only for the native `X` or `Z` exited states and keeps
 its start identity. An unrelated dying task therefore does not invalidate the
 whole snapshot. Negative groups on live/stopped states and partial or malformed
-identities still fail. This row grants no live-process ownership, and existing
-owned-identity group checks and final physical-reaping requirements remain in
-force. The kernel representation is defined by `do_task_stat` in
+identities still fail. For an already captured PID/start identity pair, the exact
+exited sentinel preserves the known identity while cleanup still waits for the
+PID to disappear. Other changed-group shapes remain cleanup failures, and a new
+start identity is left alone. This row cannot establish ownership of a previously
+unobserved process. Native-shaped parent/child controls preserve deepest-first
+termination, unrelated siblings, final reaping and the shared two-second deadline. The kernel representation is defined by `do_task_stat` in
 [the Linux procfs implementation](https://code.googlesource.com/linux/torvalds/linux/+/7acf90feab8b009fde7def08ff2c622d0f10e99f/fs/proc/array.c).

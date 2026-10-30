@@ -12,6 +12,38 @@ import { run } from "node:test";
 export const testFileWorkerLimit = () =>
   Math.max(1, Math.min(4, availableParallelism()));
 
+const exclusiveFullSuiteFiles = Object.freeze([
+  "gate-javascript-extensions.test.js",
+  "gate-tasks-matrix.test.js",
+  "gate-resource-release-readiness.test.js",
+  "gate-go-extensions.test.js",
+  "gate-lifecycle-platforms.test.js",
+  "go-matrix.test.js",
+  "process-tree.test.js",
+  "posix-owner.test.js",
+  "clang.test.js",
+  "review-json-probe.test.js",
+  "review-probe.test.js",
+]);
+function isExclusiveFullSuiteFile(file, directory) {
+  return exclusiveFullSuiteFiles.some(
+    (name) => file === path.join(directory, name),
+  );
+}
+export function fullSuiteBatches(files) {
+  const exclusive = new Set(exclusiveFullSuiteFiles);
+  return [
+    {
+      exclusive: false,
+      files: files.filter((file) => !exclusive.has(path.basename(file))),
+    },
+    {
+      exclusive: true,
+      files: files.filter((file) => exclusive.has(path.basename(file))),
+    },
+  ].filter((batch) => batch.files.length > 0);
+}
+
 const MAX_REQUIREMENTS = 256;
 const MAX_EVENTS = 4096;
 const MAX_NAME_CHARACTERS = 512;
@@ -113,13 +145,9 @@ async function executeRequiredTests(
   const exclusiveFiles =
     additionalFiles.length > 0
       ? files.filter((file) =>
-          ["javascript-extensions", "tasks-matrix"].some(
-            (profile) =>
-              file ===
-              path.join(
-                fileURLToPath(new URL("../dist/test/", import.meta.url)),
-                `gate-${profile}.test.js`,
-              ),
+          isExclusiveFullSuiteFile(
+            file,
+            fileURLToPath(new URL("../dist/test/", import.meta.url)),
           ),
         )
       : [];

@@ -89,7 +89,11 @@ export function linuxProcessIdentity(
 }
 export async function processSnapshot(
   pid?: number | readonly number[],
+  timeoutMs = 1000,
 ): Promise<ProcessIdentity[]> {
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 1000)
+    throw Error("Process snapshot observation limit invalid");
+  const observationStarted = performance.now();
   let selected: readonly number[] | undefined;
   if (pid !== undefined) {
     if (typeof pid === "number") selected = [pid];
@@ -109,10 +113,20 @@ export async function processSnapshot(
     // frozen, already-discovered families use this selected observation path.
     if (selected.length > 128) {
       const rows: ProcessIdentity[] = [];
-      for (let offset = 0; offset < selected.length; offset += 128)
+      for (let offset = 0; offset < selected.length; offset += 128) {
+        const remaining =
+          process.platform === "darwin"
+            ? Math.floor(timeoutMs - (performance.now() - observationStarted))
+            : timeoutMs;
+        if (remaining < 1)
+          throw Error("Process snapshot observation limit exhausted");
         rows.push(
-          ...(await processSnapshot(selected.slice(offset, offset + 128))),
+          ...(await processSnapshot(
+            selected.slice(offset, offset + 128),
+            remaining,
+          )),
         );
+      }
       return rows;
     }
   }
@@ -157,7 +171,7 @@ export async function processSnapshot(
     {
       encoding: "utf8",
       maxBuffer: 2 * 1024 * 1024,
-      timeout: 1000,
+      timeout: timeoutMs,
       env: { PATH: "/usr/bin:/bin", LC_ALL: "C" },
     },
   );
@@ -176,7 +190,7 @@ export async function processSnapshot(
     result.signal ||
     result.stderr.trim()
   )
-    throw Error("Process snapshot unavailable");
+    throw new Error("Process snapshot unavailable", { cause: result.error });
   const rows = darwinProcessIdentities(result.stdout).filter(
     (row) => row.pid !== result.pid,
   );
@@ -217,7 +231,10 @@ export function darwinProcessIdentities(text: string): ProcessIdentity[] {
   return rows;
 }
 interface StopDescendantIo {
-  snapshot(pids?: readonly number[]): Promise<ProcessIdentity[]>;
+  snapshot(
+    pids?: readonly number[],
+    timeoutMs?: number,
+  ): Promise<ProcessIdentity[]>;
   stop(pid: number): void;
   kill(pid: number): void;
   exists(pid: number): boolean;
@@ -278,12 +295,44 @@ export async function stopDescendants(
       return false;
     }
     if (identity.identity !== child.identity) return false;
-    if (identity.group !== child.group)
+    // Linux can clear parent/group during final task teardown. The held start
+    // identity still binds this exited task; final physical reaping is required.
+    const exitedWithoutGroup =
+      identity.state === "exited" &&
+      identity.parent === 0 &&
+      identity.group === -1;
+    if (identity.group !== child.group && !exitedWithoutGroup)
       throw Error("Process cleanup identity changed group");
     return true;
   };
   const checkDeadline = () => {
     if (io.now() >= deadline) throw Error("Process cleanup deadline exceeded");
+  };
+  const snapshot = async (
+    pids?: readonly number[],
+  ): Promise<ProcessIdentity[]> => {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      checkDeadline();
+      const remaining = Math.floor(deadline - io.now());
+      if (remaining < 1) throw Error("Process cleanup deadline exceeded");
+      try {
+        const rows = await io.snapshot(pids, Math.min(1000, remaining));
+        checkDeadline();
+        return rows;
+      } catch (error) {
+        if (
+          attempt !== 0 ||
+          !(error instanceof Error) ||
+          !(error.cause instanceof Error) ||
+          (error.cause as NodeJS.ErrnoException).code !== "ETIMEDOUT"
+        )
+          throw error;
+        // A timed-out read proves nothing. Retry only within the same cleanup
+        // deadline, and require a complete new identity observation.
+        checkDeadline();
+      }
+    }
+    throw Error("Process snapshot unavailable");
   };
   const signal = (pid: number, kind: "stop" | "kill") => {
     try {
@@ -292,7 +341,7 @@ export async function stopDescendants(
       if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
     }
   };
-  const first = await io.snapshot(),
+  const first = await snapshot(),
     initialRoot = first.find((p) => p.pid === root);
   let rows = first;
   try {
@@ -328,7 +377,7 @@ export async function stopDescendants(
       }
       if (!added && !pending) break;
       await io.wait(Math.min(10, deadline - io.now()));
-      rows = await io.snapshot();
+      rows = await snapshot();
     }
     for (const depth of [
       ...new Set([...observed.values()].map((entry) => entry.depth)),
@@ -337,7 +386,7 @@ export async function stopDescendants(
         (entry) => entry.depth === depth,
       );
       const current = new Map(
-        (await io.snapshot(children.map((entry) => entry.process.pid))).map(
+        (await snapshot(children.map((entry) => entry.process.pid))).map(
           (p) => [p.pid, p],
         ),
       );
@@ -358,7 +407,7 @@ export async function stopDescendants(
         );
         if (!remaining.length) break;
         const current = new Map(
-          (await io.snapshot(remaining.map((entry) => entry.process.pid))).map(
+          (await snapshot(remaining.map((entry) => entry.process.pid))).map(
             (p) => [p.pid, p],
           ),
         );
@@ -381,7 +430,7 @@ export async function stopDescendants(
       );
       if (!remaining.length) break;
       const current = new Map(
-        (await io.snapshot(remaining.map((entry) => entry.process.pid))).map(
+        (await snapshot(remaining.map((entry) => entry.process.pid))).map(
           (p) => [p.pid, p],
         ),
       );
@@ -393,17 +442,23 @@ export async function stopDescendants(
   } catch (error) {
     // An incomplete cleanup must still try to release each safely identified stopped
     // process. Never signal a reused or unreadable identity as a recovery shortcut.
-    const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
-    for (const child of observed.values()) {
-      try {
-        if (
-          !signalled.has(child.process.pid) &&
-          sameProcess(child.process, current)
-        )
-          signal(child.process.pid, "kill");
-      } catch {
-        /* The original cleanup error remains incomplete. */
+    try {
+      const current = new Map(
+        (await io.snapshot(undefined, 1000)).map((p) => [p.pid, p]),
+      );
+      for (const child of observed.values()) {
+        try {
+          if (
+            !signalled.has(child.process.pid) &&
+            sameProcess(child.process, current)
+          )
+            signal(child.process.pid, "kill");
+        } catch {
+          /* The original cleanup error remains incomplete. */
+        }
       }
+    } catch {
+      /* Unavailable recovery evidence never authorizes a signal. */
     }
     throw error;
   } finally {

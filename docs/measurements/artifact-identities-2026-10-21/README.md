@@ -1,0 +1,211 @@
+# Selected artifact evidence
+
+These four records retain measured public artifact identities and selected original notice/signature inputs from the 2026-10-21 Gate A follow-up. They bind the repository declarations at the recorded commit. They are retained observations, separate from native adapter acceptance and preparation/receipt integration. Complete artifact and notice closure remains unverified for every record; Gate A remains open.
+
+| Record                                  | Retained observation                                                                                                                                 | Remaining boundary                                                                          |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [Scala 2](scala2.json)                  | Exact distribution and selected JAR bytes; three Scala-owned JAR signatures; original distribution notices.                                          | Embedded/native components, source/build and transitive notices.                            |
+| [Fantomas and SDK](fantomas.json)       | Exact formatter DLLs; official musl SDK matches every selected SDK pin; glibc distribution is a measured nonmatching control; original notice bytes. | Selected component/native/source and image notice mapping; preparation/receipt integration. |
+| [Random provider](random-provider.json) | Exact signed archive/member hashes; owner-workflow deliveries; independent offline executable rebuild and source-change/restoration controls.        | Full build-tool/notice coverage and preparation/receipt integration.                        |
+| [WASM toolchain](wasm-toolchain.json)   | Pinned archives/runtime members, verified Tree-sitter attestation, byte-exact independent grammar rebuilds and selected component notices.           | Compiler/optimizer composition and output-specific notice coverage.                         |
+
+Hashes identify the retained bytes. A notice filename or aggregate notice text does not establish complete component coverage. A valid signature establishes the recorded input/signing-key relationship; key-owner evidence and operator trust remain separate. The selected provider's updated public key includes a retired expired subkey; the record retains all status codes and evaluates the actual signature rather than treating any unrelated KEYEXPIRED status as the signer result. No operator trust is asserted.
+
+Original notice bytes are preserved, including legacy non-UTF-8 F# attribution. Public source URLs and archive member names are recorded beside each retained file. Original upstream notices may describe components outside the selected executable scope; their presence is not a claim those components execute or enter generated output.
+
+The SDK comparisons close delivery identity for the selected files only. They do not qualify every file in the SDK, its container image, OS or native dependency closure. The glibc near miss demonstrates why matching version labels and matching root notice text are insufficient.
+
+The original archive and detached-signature observations used local host tools. The provider and grammar follow-ups below execute pinned compilers; they never execute the provider. No formatter, AI review or field evaluation was run. The NuGet follow-up runs the pinned SDK package-signature verifier in a bounded foreground container with only the public package and explicit verification policy mounted. These records add no downloads or execution to discovery or planning and change no runtime closure flags. Missing source/build/notice mappings remain explicit in each record. The next integration must validate all targets before publishing a cache and must bind scoped verification evidence coherently through preparation and receipt admission.
+
+The Tree-sitter follow-up verifies the selected builder and web archive digests against the retained Sigstore bundle and CLI-acquired trust roots, with exact repository, certificate workflow identity, source commit/ref, issuer, predicate type and hosted-runner policy. Both valid archives pass with network access denied; changed workflow/source identities, changed artifact bytes and an altered signature are rejected. The [verification result](tree-sitter-attestation-verified.json) and [paired controls](tree-sitter-attestation-controls.json) are retained beside the [policy and tool identity](wasm-toolchain.json). This validates the selected signed provenance claims; it does not independently reconstruct the build or complete transitive notice coverage. See the [CLI verification contract](https://cli.github.com/manual/gh_attestation_verify).
+
+The Fantomas follow-up validates the selected NuGet delivery with the recorded repository certificate, ordinary certificate-root trust, timestamp chain and online revocation mode configured. The [native witness](nuget-package-verification.txt), [exact temporary policy](nuget-verification.config), [certificate-index snapshot](nuget-repository-certificates.txt) and [paired controls](nuget-signature-controls.json) are retained. The wrong certificate is refused with NU3034, the unsigned GitHub delivery with NU3004, and a readable ZIP carrying an altered DLL with the native integrity failure NU3008. The original signed package then passes unchanged. The verifier DLL and fallback code-signing/timestamp trust-root files match the exact pinned musl SDK archive. The SDK workload-startup notice is retained separately from the successful NuGet result; no workload update was attempted. This is repository-package signature evidence, with broader source/build/notice and runtime integration obligations still open.
+
+The [provider build observations](provider-build-observations.json) bind two public owner-repository workflow runs at the selected source commit to retrieved primary and verification artifacts. All four GitHub delivery digests match their downloaded wrappers, and each contains the exact signed release ZIP, license and executable bytes. Curated fields retain publisher-reported success, comparison hashes, builder identity and the separate configuration Reproducible flags without importing upstream environment or absolute path fields. These observations supply a publisher build/artifact link. Those publisher observations do not independently reproduce the build, verify a publisher attestation, freeze all workflow inputs or complete transitive notice coverage.
+
+The [independent provider rebuild](provider-independent-rebuild.json) separately compiles the selected public source with the exact official Go 1.26.8 linux/arm64 toolchain and verified module inputs. All 154 source blobs and modes match the selected Git tree. The 58 prepared module ZIPs match the source go.sum; 27 also match the selected binary module metadata and 31 are source-only requirements. A fresh build with network disabled, read-only source/toolchain/module inputs and a fresh temporary compilation cache produces the exact signed release executable. Changing the provider address literal in a separate source copy still compiles and changes the executable; restoring the source reproduces the original digest. The signed release binary and publisher compilation cache are never mounted. [Input identities](provider-rebuild-inputs.json) retain the source inventory, compiler pin and module checksums. The provider itself is never executed. This establishes the selected executable source/build binding; it does not reproduce ZIP packaging, establish complete compiler/bootstrap provenance, complete copied/generated/Go notice coverage or integrate the observation into preparation and receipt admission.
+
+The [provider notice inventory](provider-notice-inventory.json) reconciles the native package/file selection with the selected module archives and Go SDK. It retains original named notices for every module in the binary metadata, separately records the SDK-vendored module versions, and preserves selected inline attribution from copied/generated code and math routines. A BoringSSL notice is retained from a selected package ancestor without asserting that its native code enters this CGO-disabled executable. Lexical scanning and root licenses do not establish complete attribution; copied/generated origins, exact output inclusion and broader build-tool coverage remain open.
+
+The [Scala component inventory](scala-component-inventory.json) matches the embedded ASM and diff-utils classes against their exact standalone JARs and independently matches the diff-utils delivery to the distribution. JLine has one bundle identity and twelve component metadata records; its fifteen native files match the pinned source archive, and every class SourceFile attribute has one matching declared source file. These are static bindings, not source-to-binary reproduction or evidence of native runtime use. The compiler also bundles documentation fonts; their selected resource bytes and TTF name-table attribution candidates remain explicit. The retained source headers include Apache notices in JLine native C inputs, separately from its root BSD notice. Scala source comparison records three attribute-declared CRLF archive members alongside their LF Git identities without normalizing the original archive. Complete source/build/notice coverage and runtime admission remain unresolved.
+
+The [Scala signature controls](scala-jar-signature-controls.json) reverify all three selected Scala-owned JARs in a fresh public-only keyring. An altered compiler JAR is rejected with BADSIG, and the restored original verifies with the expected full fingerprint. Automatic key retrieval and agent autostart are disabled. Operator trust and a signature over the distribution ZIP are not asserted.
+
+Run `node scripts/audit-selected-artifact-evidence.mjs .` from the repository root to check the [retained-byte index](artifact-evidence-index.v1.json), every typed retained-file reference and the recorded repository input bytes. The audit is offline, reads bounded regular files, rejects observed symlinked paths and executes no project code. It does not establish an atomic snapshot or protection against adversarial path replacement. Archive members and upstream source filenames remain separate from retained sibling files. A coherent byte graph does not independently verify the recorded signatures, native runs or attribution claims; the audit cannot close Gate A or promote a runtime capability. Original notice bytes remain byte-exact through the scoped Git attributes.
+
+The [formatter source observations](fantomas-source-observations.json) inspect the embedded portable debug metadata of the three exact selected DLLs with an original bounded [metadata reader](fantomas-pdb-inspector.cs). Of 217 debug documents, 192 match pinned public source projections, 19 have verified embedded-source checksums, three declare no checksum and three nonembedded SDK-generated documents were unresolved at that observation. Original source payloads are preserved; the projections explicitly reproduce CRLF encoding and the ordered FCS acquisition transformations. The Fantomas and upstream FCS archives match every pinned Git blob and mode, with all subtree hashes reconstructed. FSharp.Core document bytes come from its separate exact .NET SourceLink commit. Debug documents are not a complete compiler-input inventory; the source-declared .NET 11 build SDK is separate from the selected .NET 10 runtime, and the actual producer SDK/OS is not independently observed. The vendored `.deps` inputs are absent from the Fantomas Git archive and require the explicit upstream source pin and transformations.
+
+The [metadata controls](fantomas-pdb-checksum-controls.json) change one declared PDB document-checksum byte while preserving the embedded source payload and metadata structure. The reader rejects it with the checksum guard before writing any output; restoring the original reproduces the complete metadata and all embedded payloads. The retained [failure](fantomas-pdb-checksum-rejected.txt) and [restoration](fantomas-pdb-checksum-restored.txt) witnesses come from offline bounded executions of the original reader. The formatter assemblies remain data throughout. This adds source-document evidence without claiming an independent formatter build, complete attribution, native acceptance or Gate A completion.
+
+The [independent grammar rebuild](wasm-independent-rebuild.json) reproduces all sixteen selected grammar WASM outputs byte for byte using the exact released builder, complete pinned WASI SDK and Binaryen archives, and pinned public grammar sources. Swift JSON generation and the declared patch reproduce their recorded input hashes; no JavaScript grammar or acquisition script runs. The actual host is macOS 27, which does not qualify the selected macOS 26 acceptance slot. The [compiler input observations](wasm-compiler-inputs.json) reconcile the native preprocessor dependencies by grammar and SDK member. They identify selected headers, not every file read or symbol emitted.
+
+The [paired rebuild controls](wasm-rebuild-controls.json) change one valid C language-name literal: the compiler and optimizer still succeed, and the output differs. Restoring the source reproduces the original digest. All pinned tools, original source inputs and original outputs are rechecked. The observed policy refuses network connection and an outside write while permitting owned writes, with corresponding positive controls outside the policy. These are measured restrictions, not a general security isolation claim. Per-command CPU, wall and file-size limits remain separate from the Binaryen worker setting.
+
+The [host component observations](wasm-host-components.json) enumerate declared Mach-O library dependencies and pinned archive candidates, including the LLVM dependency on `libedit`. They do not trace the actual loader or verify host system library bytes. The [notice observations](wasm-notice-observations.json) retain exact selected SDK, LLVM, WASI libc, Binaryen and libedit source notices. The SDK source pins the libedit archive by version and digest; downloading that exact archive verifies delivery, not a source-to-library build. Actual producer configuration, copied and inline attributions, conditional output contributions, web runtime source/build binding and preparation/receipt integration remain open.
+
+The [selected SDK header source mapping](wasm-sdk-header-sources.json) accounts for all thirty-five preprocessor-observed SDK headers: twenty-five match pinned WASI libc archive members, eight match immutable LLVM source files, one is reproduced by the pinned native sed generator, and one is reproduced by an original projection of the declared version-template substitutions. The generator and projection each have changed-input and restored-input controls. CMake itself was not executed for the projection, and the actual SDK producer configuration is not independently observed. Equal archive members remain listed as candidates rather than assigned a unique origin. These byte mappings do not establish complete source or notice closure.
+
+The [generated-document follow-up](fantomas-sdk-generated-documents.json) reproduces
+all three previously unresolved document checksums as two distinct byte contents.
+It substitutes the explicit .NET Standard moniker and display name into the
+[pinned public F# template candidates](fantomas-sdk-generated-documents.inputs.json),
+then applies the declared property trim, CRLF lines, terminal newline and UTF-8
+without a BOM. The retained MSBuild writer source supplies the inspected
+`AppendLine` and default encoding behavior. The original
+[read-only projector](fantomas-generated-document-projection.mjs) runs no upstream
+assembly, build target or compiler. Changed namespace and line-ending controls
+fail the unchanged debug-checksum assertions; restoration matches. Separate
+[file controls](fantomas-generated-document-file-controls.json) refuse changed,
+missing, linked and oversized source inputs before JSON output and reproduce
+byte-identical output after restoration. Original public source and notice bytes
+remain unchanged, including their whitespace. A matching projection identifies
+possible source bytes; the actual producer SDK, evaluated compiler inputs,
+resources, component/native notices and preparation/receipt integration remain
+unverified. This adds no artifact-closure or Gate A promotion.
+
+The [ASM source follow-up](scala-asm-source-bindings.json) binds every Java member
+of the exact selected source JAR to the corresponding immutable fork Git blob
+and mode. The complete main-Java set is accounted for, with every intervening Git
+tree hash reconstructed against the pinned commit. The single non-Java member
+is reproduced by an original byte projection of the pinned build's declared
+organization, name and version. SBT and the upstream release workflow are not
+executed; the projection does not establish the actual generator or producer.
+The original fork license and inspected build/workflow bytes are retained.
+One Java member has no inline license preamble; it is retained as a root-scoped
+case rather than inferred to have different licensing. [Changed/restored byte
+controls](scala-asm-source-binding-controls.json) exercise source, property,
+line-ending and Git mode bindings. Full copied/generated attribution, binary
+build reproduction, compiler/SDK and font/JLine notice coverage, and native
+preparation/receipt admission remain open. No stronger closure flag is promoted.
+
+The [independent ASM class build](scala-asm-independent-class-build.json) compiles
+the exact source members with the selected official Java 8 archive and the pinned
+build's debug/parameter options. Every selected ASM class payload matches byte for
+byte. Changing one valid error-message literal still compiles and changes only
+the corresponding class; restoring the source reproduces every original selected ASM class.
+Each offline run has fresh output and no mounted delivered JAR or compilation
+cache. The SDK and source stay read-only, annotation processing is disabled, and
+the upstream library classes and release scripts are never executed. The compiler
+archive matches both official release metadata and the retained checksum; its
+publisher signature is not independently verified. Original SDK notice files are
+retained as candidates, without asserting complete attribution. JAR packaging,
+actual producer identity, broader SDK/native notices, fonts/JLine and admission
+integration remain separate requirements. This adds no complete-closure or Gate A
+promotion.
+
+The [jQuery resource bindings](scala-jquery-resource-bindings.json) match both
+selected minified payloads against the exact WebJar declared by the immutable
+Scala build. Its extraction glob selects both files and excludes the adjacent
+non-minified file. The release's original MIT license is retained from its pinned
+upstream Git blob; the WebJar itself has no named license or notice member.
+Changed payload, omitted member and changed notice controls fail their unchanged
+byte/set comparisons and restoration matches. This supplies resource origin and
+notice evidence without executing JavaScript or the upstream generator. The
+minification build, compiler packaging, other generated resources and font/native
+attribution remain open.
+
+The [Material Icons font bindings](scala-material-font-bindings.json) match all
+three delivered font formats against one immutable official upstream revision.
+The original root license and README at that revision declare CC BY 4.0; those
+bytes are retained rather than replaced with a later upstream license. A changed
+font byte, an earlier valid font version and a changed notice fail the unchanged
+payload/notice comparisons; restoration matches. This accounts for the selected
+Material Icons payloads and their historical root notice. The other bundled
+fonts, actual font generation, complete attribution and native admission remain
+open.
+
+The [compiler source Git binding](provider-compiler-source-git-binding.json) checks
+every regular member of both reproduced source archives against canonical Git
+objects and the pinned release mode/exclusion policy. Its payload categories
+partition each complete archive and retain opaque-byte follow-up candidates.
+This is source attribution: copied object files, archives, generated text and
+the bootstrap compiler still require their own producer-build and notice closure.
+
+The [time-zone copied-payload observation](provider-compiler-timezone-rebuilds.json)
+reconstructs both selected SDK time-zone archives from their pinned IANA source
+releases and Go packager source. A valid historical-offset edit changes the
+archive, and exact source restoration reproduces the original bytes. This closes
+that reconstruction step only; source-release signature verification and the
+C compiler, SDK, Go packager and bootstrap producer chains remain open.
+
+The [FIPS snapshot reconstruction](provider-compiler-fips-snapshot-rebuilds.json)
+recreates both copied source ZIPs byte-for-byte with their original generators
+and module code. Every source member binds to the identified upstream Git tree,
+including the documented version substitution. Valid Go source edits change both
+archives; exact restoration reproduces them. Compiler/bootstrap and generated
+arithmetic/assembly producer chains remain separate open Gate A work.
+
+The [native packaging SDK rebuild](provider-native-packager-sdk-rebuild.json)
+reproduces every regular member of the selected Darwin ARM64 Go 1.24.13 SDK
+after the [pinned upstream Go verifier](https://github.com/golang/build/blob/63b63b04bd2424ddcf42e7ef9ca8a02810de6fe4/cmd/gorebuild/darwin.go) normalizes executable signatures.
+The complete signed archive is byte-different. Payload mutations remain visible,
+and both FIPS archives reproduce exactly with this source-built compiler.
+Bootstrap ancestry, original signing trust, copied/generated payload producers
+and complete original inline notices remain open.
+
+The [bootstrap SDK reconstruction](provider-bootstrap-sdk-rebuild.json) builds
+Go 1.27.1 from its pinned original source using the reconstructed native Go
+1.24.13 SDK. Every regular official SDK member matches after the unchanged
+upstream signature normalization. The original source archive reproduces exactly,
+and the named original notices match source and SDK bytes. Both observations
+still descend from the original binary seed; deeper bootstrap independence and
+all copied/generated producer and notice chains remain open Gate A work.
+
+The [IANA source signature follow-up](provider-timezone-source-signatures.json)
+verifies the six exact code/data archives selected by the time-zone recipes.
+A different valid source release and altered signed bytes are both rejected;
+exact original bytes verify again. The public keyring was isolated, and key
+retrieval and agent startup were disabled. Independent key-identity trust and
+the required compiler/SDK/build/notice closure remain separate.
+
+The [original native SDK signature observation](provider-native-sdk-signatures.json)
+verifies every selected publisher-signed executable against the Apple signing
+anchor and selected team requirement. Changed instruction bytes are rejected.
+The rebuilt ad-hoc signatures pass their own integrity checks while failing the
+stronger publisher requirement. This verification executes no SDK program and
+does not reproduce the signing service or the full producer/notice closure.
+
+The [combined selected provider reconstruction](provider-source-built-complete-rebuild.json)
+uses source-built compiler and packaging tools to reproduce the complete selected
+executable and release ZIP, with source-change and restoration controls. These
+native Darwin tools cross-compile the Linux ARM64 provider; this is separate from
+reproducing the original publisher's Linux runner. The
+[Linux ARM64 SDK reconstruction](provider-arm64-compiler-sdk-rebuild.json)
+reproduces the complete selected target SDK archive. Deeper bootstrap ancestry,
+remaining generated inputs, complete original notices and runtime receipt
+admission remain open.
+
+The [Fiat and parser producer follow-ups](provider-fiat-wrapper-source-rebuilds.json)
+retain the original wrapper, inversion and parser observations. Later native
+follow-ups reconstruct the selected Unicode-class file with the unchanged
+producer and explicit historical Unicode/formatter source overlays through a
+source-built Go compiler. The historical whole SDK and bootstrap chain remain
+open.
+
+The complete pinned Fiat source and recursive submodules build every original
+selected standalone OCaml target with source-built Coq. Each complete original
+Go generator runs with source-built arithmetic and addchain tools. A predeclared
+source edit changes only the selected arithmetic headers; wrapper and inversion
+near misses stay exact, and the changed arithmetic files compile. Fresh original
+source restoration reproduces the selected files and native producer executables
+byte-for-byte. SDK executions share compiler/producer roots and contain repeated
+source bodies; they do not establish independent evaluation or original image-tag
+identity.
+
+Separate OCaml compiler/standard-library and supporting-library rebuilds retain
+original source and notice bindings. GMP and Num native tests passed. The
+unmodified Zarith suite fails to compile with the selected older Bytes API. A
+separately labelled API backport passes native/bytecode boundary and mutation
+controls, then fails a cross-word-size fixture comparison because the selected
+runtime does not implement that fixture opcode. Both failed suites remain
+failed. Original-library installation and source-GMP linkage are recorded
+separately from test acceptance.
+
+Full upstream compiler, SDK, bootstrap, base-image and original-notice closure
+remain open Gate A work. These observations do not claim a completed gate,
+review quality or field evaluation.
+
+The offline audit rejects whole-gate completion, review-quality, inference and
+field-evaluation claims at every JSON depth, including rehashed nested records.
+Scoped successful payload reconstructions remain allowed. This consistency check
+does not replay the recorded native builds or authenticate their publishers.

@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-28",
+  "scope": "Focused Scala CI phase-routing and selected-PID fixture controls. This record preserves the earlier failed full local check and makes no final native-matrix or Gate A qualification claim.",
+  "implementationInputs": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "bytes": 124981,
+      "sha256": "b2125b04a3fbe5d326c307988330255af9130ced4d9d26d7d17d66459ba438a5"
+    },
+    {
+      "file": "scripts/ci-native-inputs.json",
+      "bytes": 88060,
+      "sha256": "535669e5c9efbd31c20720e8658e41644a09e21d23e11c42cf122ce7e38925cc"
+    },
+    {
+      "file": "scripts/scala-ci-phases.mjs",
+      "bytes": 2082,
+      "sha256": "97da6ecf440d62f835a3c7031458077b6bbe9f453c4686730d1257535040da49"
+    },
+    {
+      "file": "scripts/verify-scala-container.mjs",
+      "bytes": 3802,
+      "sha256": "38cf77d99a9f90c7c10bab8c72f89b19141bc6649dcd3756987525cfc7e58bec"
+    },
+    {
+      "file": "test/scala-ci-phases.test.ts",
+      "bytes": 6911,
+      "sha256": "6a0870322f2da60215f34be5498fa7cbc17dbdf928f505cb27e42542ba39b44e"
+    },
+    {
+      "file": "test/lifecycle-platforms-fixture.ts",
+      "bytes": 6471,
+      "sha256": "ca615ab6c5d294451dd793052557a7c79758e1714a6b7a0e7a0610ce0e5b687c"
+    },
+    {
+      "file": "test/lifecycle-platforms-interruption.ts",
+      "bytes": 7200,
+      "sha256": "428433bbeca7264723ba449033d0c91fd04eee3f0bdddaaf3dda469ab565c8ae"
+    },
+    {
+      "file": "test/posix-owner.test.ts",
+      "bytes": 24444,
+      "sha256": "55c347533f5e75438f4974d0c42455edfc0998c1c68a5fe76d3c532d34aec400"
+    },
+    {
+      "file": "test/lifecycle-observation.test.ts",
+      "bytes": 5539,
+      "sha256": "f5ed0d9b2fa1bb6a56edcd68601086c220bfa8974cb4f89907ff5cb565cafa38"
+    }
+  ],
+  "scalaJobBudgetObservation": {
+    "sourceCommit": "baf509f7dfd9967b978c91e903a5b89f9590f64e",
+    "job": "https://github.com/stsepelin/checktrail/actions/runs/40699191458/job/122863132000",
+    "configuredJobMinutes": 30,
+    "conclusion": "cancelled",
+    "sourcePhaseElapsedMs": 660057,
+    "guardPhaseElapsedMs": 403392,
+    "installedPhaseStarted": true,
+    "installedPhaseCompleted": false,
+    "decodedLogSha256": "11294e842a85e1f4a532c7ed3c8fcce3518d0e945cc3c10cbbf3f1fd83eebc61"
+  },
+  "scalaRefactor": {
+    "phases": ["source", "guards", "installed"],
+    "allThreeRequiredByWorkflow": true,
+    "failFast": false,
+    "originalPhaseStatementAstComparison": {
+      "originalCommit": "baf509f7dfd9967b978c91e903a5b89f9590f64e",
+      "currentCommit": "576998901a39c7ac71e386cd80a9b400415fce8e",
+      "phases": [
+        {
+          "phase": "source",
+          "originalStatementsPreserved": true,
+          "originalStatementCount": 4,
+          "canonicalBodySha256": "cb175e1965094e494f647ead8ee2ba357329feba6f3a6f6c2ec87ed2d1bb5622"
+        },
+        {
+          "phase": "guards",
+          "originalStatementsPreserved": true,
+          "originalStatementCount": 5,
+          "canonicalBodySha256": "1b52694094ef9323d42eb80718a567db14b35be34a43f966014fe3ed62f5504a"
+        },
+        {
+          "phase": "installed",
+          "originalStatementsPreserved": true,
+          "originalStatementCount": 3,
+          "canonicalBodySha256": "78ac0627a6914d361d2adb3d6097667d0aedb4d5430cd0727db53c5cdd440ca7"
+        }
+      ],
+      "nativeScalaExecutionAssessed": false
+    },
+    "phaseControls": {
+      "sourceSha256": "97da6ecf440d62f835a3c7031458077b6bbe9f453c4686730d1257535040da49",
+      "mutants": [
+        {
+          "name": "prefix-selection",
+          "syntaxValid": true,
+          "expectedTestFailed": true,
+          "outputSha256": "b3d1d5c76337dc5cdae3e5d2f4a380fa56a1fcafaa426e16328b0bbdce321671",
+          "intendedNamedTestFailed": true
+        },
+        {
+          "name": "incomplete-cohort",
+          "syntaxValid": true,
+          "expectedTestFailed": true,
+          "outputSha256": "a2349a406fc400939cc822fa5cd28509701ad7efc21677ecae470ed5ddf8cea7",
+          "intendedNamedTestFailed": true
+        },
+        {
+          "name": "partial-whole-completion",
+          "syntaxValid": true,
+          "expectedTestFailed": true,
+          "outputSha256": "59d5079b3b907c603d133546892f5f97e9bd8dc6114b399338ba5c4dbfa53587",
+          "intendedNamedTestFailed": true
+        }
+      ],
+      "restoredFiveTestsPassed": true,
+      "nativeScalaExecutionAssessed": false
+    },
+    "focusedCiAndArtifactTests": {
+      "executed": 37,
+      "passed": 37,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "selectedPidFixtureControls": {
+    "redCaseCount": 2,
+    "bothOriginalControlsFailedWhenGlobalEnumerationWasRefused": true,
+    "restoredRealChildTestsPassed": 2,
+    "realOwnedChildrenPerCase": 6,
+    "changedIdentityControlPreserved": true,
+    "changedGroupControlPreserved": true,
+    "queryScope": "Only already-known PIDs are selected; genuine unknown-child discovery still enumerates the process inventory.",
+    "operatorOrFixtureDeadlinesChanged": false,
+    "ownershipAndDisappearanceAssertionsWeakened": false,
+    "guardMutationControls": {
+      "sourceSha256": "50acfb050f26e36407b1533ec7cdb83d28e35ac167cfcb4207cbbfaef4e0a918",
+      "mutants": [
+        {
+          "name": "missing-identity",
+          "syntaxValid": true,
+          "intendedRealChildControlFailed": true,
+          "outputSha256": "88bb96e7ecc4a24e23db95e28dd0414e69a550541314c73f7f1c46b1ca85333d"
+        },
+        {
+          "name": "missing-group",
+          "syntaxValid": true,
+          "intendedRealChildControlFailed": true,
+          "outputSha256": "43bc9179fc417d0de8b053139e57a2ba1fc2f24873b6a6a8ccd208cf37bcd781"
+        }
+      ],
+      "restoredRealChildTestsPassed": 2,
+      "operatorDeadlinesChanged": false,
+      "productionSourceChanged": false
+    }
+  },
+  "preservedFailedFullCheck": {
+    "sourceCommit": "576998901a39c7ac71e386cd80a9b400415fce8e",
+    "command": "npm run check",
+    "exitCode": 1,
+    "durationSeconds": 1247.020096333,
+    "tests": 2161,
+    "passed": 1398,
+    "failed": 4,
+    "skipped": 759,
+    "failureNames": [
+      "lifecycle-platforms broken acceptance",
+      "lifecycle-platforms privacy acceptance",
+      "lifecycle-platforms lifecycle acceptance",
+      "lifecycle-platforms installed acceptance"
+    ],
+    "failureScope": "Known-PID fixture all-process snapshot timeouts; the installed lifecycle callbacks passed9/9 but one selected-platform foundation observation failed.",
+    "sourceStage": {
+      "tests": 2059,
+      "passed": 1296,
+      "failed": 4,
+      "skipped": 759
+    },
+    "exclusiveStage": {
+      "tests": 102,
+      "passed": 102,
+      "failed": 0,
+      "skipped": 0
+    },
+    "rawLogSha256": "02c547aa55f8fda56cc77f826bcc8261d15f936a57f8d431d1a3b9bcae209cf5"
+  },
+  "host": {
+    "node": "26.9.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "selectedFinalRuntimeSlotQualified": false
+  },
+  "productionEngineSourceChanged": false,
+  "originalCiLifecycleReadinessFailureCauseEstablished": false,
+  "fullCheckAfterFixtureFixClaimedByThisRecord": false,
+  "selectedRuntimeMatrixQualified": false,
+  "completeUpstreamProducerBuildAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "finalFocusedCiArtifactAndFixtureCohort": {
+    "tests": 39,
+    "passed": 39,
+    "failed": 0,
+    "skipped": 0,
+    "nativeSelectedRuntimeMatrixQualified": false
+  }
+}

@@ -32,12 +32,33 @@ test("affected shared CI runs whole selected files, refuses skipped required con
       new URL("../../scripts/" + file, import.meta.url),
       path.join(root, "scripts", file),
     );
+  await cp(
+    new URL("../../scripts/required-native-tests.json", import.meta.url),
+    path.join(root, "scripts/required-native-tests.json"),
+  );
+  const artifactRows: { file: string; name: string }[] = JSON.parse(
+    await readFile(
+      path.join(root, "scripts/required-native-tests.json"),
+      "utf8",
+    ),
+  )["selected-artifact-evidence"];
+  const artifactFile = artifactRows[0]!.file;
+  const artifactFixture = (mode = "complete", target = artifactRows[0]!.name) =>
+    `import{test}from'node:test';${artifactRows
+      .filter((row) => mode !== "missing" || row.name !== target)
+      .map(
+        (row) =>
+          `test(${JSON.stringify(row.name)},{skip:${mode === "skipped" && row.name === target}},()=>{});`,
+      )
+      .join("")}`;
+  await writeFile(path.join(root, artifactFile), artifactFixture());
   const marker = path.join(root, "original-marker.jsonl");
   const files = [
     "dist/test/ci-impact.test.js",
     "dist/test/gate-inventory.test.js",
     "dist/test/original-selected.test.js",
     "dist/test/ci-source-boundaries.test.js",
+    artifactFile,
   ];
   const env: NodeJS.ProcessEnv = { ...process.env, ORIGINAL_CI_MARKER: marker };
   delete env.NODE_TEST_CONTEXT;
@@ -60,8 +81,8 @@ test("affected shared CI runs whole selected files, refuses skipped required con
   assert.equal(await readFile(marker, "utf8"), "first\nsecond\n");
   const report = JSON.parse(passed.stdout);
   assert.equal(report.evidence.complete, true);
-  assert.equal(report.evidence.required, 4);
-  assert.equal(report.evidence.passed, 6);
+  assert.equal(report.evidence.required, 4 + artifactRows.length);
+  assert.equal(report.evidence.passed, 6 + artifactRows.length);
   assert.equal(report.fullRevisionVerification, false);
   assert.equal(report.nativeProfileQualificationClaimed, false);
   assert.equal(report.gateAComplete, false);
@@ -96,7 +117,7 @@ test("affected shared CI runs whole selected files, refuses skipped required con
   assert.equal(skipped.status, 1, skipped.stdout + skipped.stderr);
   const incomplete = JSON.parse(skipped.stdout);
   assert.equal(incomplete.evidence.complete, false);
-  assert.equal(incomplete.evidence.passed, 5);
+  assert.equal(incomplete.evidence.passed, 5 + artifactRows.length);
   assert.ok(
     incomplete.evidence.problems.some(
       (row: { name: string }) => row.name === second,
@@ -116,7 +137,7 @@ test("affected shared CI runs whole selected files, refuses skipped required con
   );
   const boundaryIncomplete = JSON.parse(boundarySkipped.stdout);
   assert.equal(boundaryIncomplete.evidence.complete, false);
-  assert.equal(boundaryIncomplete.evidence.passed, 4);
+  assert.equal(boundaryIncomplete.evidence.passed, 4 + artifactRows.length);
   assert.deepEqual(
     boundaryIncomplete.evidence.problems
       .map((row: { name: string; reason: string }) =>
@@ -131,4 +152,28 @@ test("affected shared CI runs whole selected files, refuses skipped required con
       )
       .sort(),
   );
+  await writeFile(path.join(root, files[3]!), boundaryFixture(false));
+  for (const row of artifactRows) {
+    for (const mode of ["skipped", "missing"]) {
+      await writeFile(
+        path.join(root, artifactFile),
+        artifactFixture(mode, row.name),
+      );
+      const result = execute({ mode: "affected", sharedTestFiles: files });
+      assert.equal(result.error, undefined);
+      assert.equal(result.status, 1, mode + ": " + row.name);
+      const evidence = JSON.parse(result.stdout).evidence;
+      assert.equal(evidence.complete, false);
+      assert.equal(evidence.passed, 5 + artifactRows.length);
+      assert.ok(
+        evidence.problems.some(
+          (problem: { name: string; reason: string }) =>
+            problem.name === row.name &&
+            problem.reason === "required-test-not-passed",
+        ),
+      );
+    }
+  }
+  await writeFile(path.join(root, artifactFile), artifactFixture());
+  assert.equal(execute({ mode: "affected", sharedTestFiles: files }).status, 0);
 });

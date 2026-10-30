@@ -3,6 +3,7 @@ import {
   withoutNativeJournalContext,
 } from "./native-journal-channel.js";
 import { captureProcessOutput } from "./process-output.js";
+import { ensureWindowsTaskAccess } from "./windows-task-access.js";
 import { createHash, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import {
@@ -21,6 +22,7 @@ import { withinRoot } from "./inventory.js";
 import {
   windowsLauncherScript,
   windowsKeeperSource,
+  windowsNativeCode,
 } from "./windows-native.js";
 import {
   windowsReceiptSchema,
@@ -254,6 +256,11 @@ export async function runWindowsProcess(
     const receiptFile = path.join(directory, "receipt.json");
     const requestId = randomUUID();
     const controlPipe = "checktrail-" + requestId;
+    ensureWindowsTaskAccess(directory, "directory", true);
+    await writeFile(path.join(directory, "native.cs"), windowsNativeCode, {
+      flag: "wx",
+      mode: 0o600,
+    });
     await writeFile(path.join(directory, "owner-id"), requestId, {
       flag: "wx",
     });

@@ -10,6 +10,8 @@ const controls = new Set([
   "ci-plan",
   "ci-complete",
 ]);
+const retainedArtifactDirectory =
+  "docs/measurements/artifact-identities-2026-10-21/";
 const generic = new Set([
   "scripts/verify-required-native-tests.mjs",
   "scripts/required-test-evidence.mjs",
@@ -54,9 +56,16 @@ export async function buildNativeInputs({
     };
     const references = (text, parent, expandProfiles) => {
       for (const match of text.matchAll(
-        /(?:scripts|dist\/test|test|assets|examples|schemas|packs)\/[a-zA-Z0-9_./-]+/g,
-      ))
+        /(?:scripts|dist\/test|test|assets|examples|schemas|packs|docs)\/[a-zA-Z0-9_./-]+/g,
+      )) {
+        // Other documentation may define shared policy and stays unclassified.
+        if (
+          match[0].startsWith("docs/") &&
+          !match[0].startsWith(retainedArtifactDirectory)
+        )
+          continue;
         admit(match[0]);
+      }
       if (expandProfiles) {
         // Image repository names are setup data, not native profile arguments.
         // Keep explicit profile invocations after an address visible.
@@ -217,6 +226,14 @@ export function planNativeJobs({
     return full("Missing, empty or invalid changed-file inventory");
   const selected = new Set();
   for (const file of changed) {
+    // Retained observations are data consumed by the always-required artifact
+    // audit and its complete regression file. New/unindexed data still fails
+    // that audit. The trailing slash excludes adjacent directory names, and
+    // recorded native consumers are preserved rather than replaced.
+    if (file.startsWith(retainedArtifactDirectory)) {
+      for (const id of inputs[file] ?? []) selected.add(id);
+      continue;
+    }
     // Markdown retains shared audits and the always-required control files.
     // Other documentation formats can carry executable inventories and stay global.
     if (
@@ -259,6 +276,7 @@ export function planNativeJobs({
     baseline: baseline?.complete ? baseline : null,
     sharedTestFiles: [
       ...new Set([
+        "dist/test/artifact-evidence.test.js",
         "dist/test/ci-impact.test.js",
         "dist/test/gate-inventory.test.js",
         "dist/test/ci-affected-tests.test.js",

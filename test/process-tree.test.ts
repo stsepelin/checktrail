@@ -10,6 +10,7 @@ import { fixture } from "./helpers.js";
 import {
   darwinProcessIdentities,
   ownedDescendants,
+  type ProcessIdentity,
   processSnapshot,
   stopDescendants,
 } from "../src/process-tree.js";
@@ -985,3 +986,413 @@ test(
     }
   },
 );
+
+test("POSIX cleanup recognizes an already-owned Linux teardown sentinel while requiring final reaping", async () => {
+  const { linuxProcessIdentity } = await import("../src/process-tree.js");
+  type Row = Awaited<ReturnType<typeof processSnapshot>>[number];
+  for (const state of ["X", "Z"]) {
+    for (const reaps of [true, false]) {
+      const root: Row = {
+        pid: 41,
+        parent: 10,
+        group: 41,
+        identity: "4100",
+        state: "stopped",
+      };
+      const parent: Row = {
+        pid: 42,
+        parent: 41,
+        group: 42,
+        identity: "4200",
+        state: "running",
+      };
+      const child: Row = {
+        pid: 43,
+        parent: 42,
+        group: 43,
+        identity: "4300",
+        state: "running",
+      };
+      const sibling: Row = {
+        pid: 44,
+        parent: 10,
+        group: 44,
+        identity: "4400",
+        state: "running",
+      };
+      const rows = new Map(
+        [root, parent, child, sibling].map((row) => [row.pid, row]),
+      );
+      const events: string[] = [];
+      let elapsed = 0,
+        rootStopped = false;
+      const running = stopDescendants(
+        41,
+        {
+          snapshot: async (pids) =>
+            [...rows.values()]
+              .filter((row) => pids === undefined || pids.includes(row.pid))
+              .map((row) => ({ ...row })),
+          exists: (pid) => rows.has(pid),
+          stop: (pid) => {
+            events.push("stop-" + pid);
+            rows.get(pid)!.state = "stopped";
+          },
+          kill: (pid) => {
+            const held = rows.get(pid)!;
+            assert.equal(held.state, "stopped");
+            if (pid === parent.pid)
+              assert.equal(
+                rows.get(child.pid)!.state,
+                "exited",
+                "The deeper child must physically exit before its parent is terminated",
+              );
+            events.push("kill-" + pid);
+            const fields = [
+              state,
+              "0",
+              "-1",
+              "-1",
+              ...Array(15).fill("0"),
+              held.identity,
+            ];
+            rows.set(
+              pid,
+              linuxProcessIdentity(
+                pid,
+                `${pid} (original) ${fields.join(" ")}\n`,
+              ),
+            );
+          },
+          now: () => elapsed,
+          wait: async (ms) => {
+            elapsed += ms;
+            if (rootStopped && reaps && elapsed >= 60) {
+              for (const [pid, row] of rows)
+                if (row.state === "exited") rows.delete(pid);
+            }
+          },
+        },
+        () => {
+          assert.equal(rootStopped, false);
+          rootStopped = true;
+          events.push("root-stopped");
+          rows.delete(root.pid);
+        },
+      );
+      if (reaps) {
+        await assert.doesNotReject(running);
+        assert.deepEqual([...rows.values()], [sibling]);
+        assert.equal(
+          elapsed,
+          60,
+          "Exit metadata alone must not replace observed final reaping",
+        );
+      } else {
+        await assert.rejects(running, /Process cleanup deadline exceeded/);
+        assert.equal(elapsed, 2000);
+        assert.deepEqual([...rows.keys()], [42, 43, 44]);
+      }
+      assert.deepEqual(events, [
+        "stop-42",
+        "stop-43",
+        "kill-43",
+        "kill-42",
+        "root-stopped",
+      ]);
+      assert.deepEqual(rows.get(sibling.pid), sibling);
+    }
+  }
+});
+
+test("POSIX cleanup keeps terminal sentinel matching narrow and never signals a reused identity", async () => {
+  type Row = Awaited<ReturnType<typeof processSnapshot>>[number];
+  for (const change of [
+    { state: "running", parent: 0, group: -1 },
+    { state: "stopped", parent: 0, group: -1 },
+    { state: "exited", parent: 1, group: -1 },
+    { state: "exited", parent: 0, group: -2 },
+    { state: "exited", parent: 0, group: 99 },
+    { state: "exited", parent: 0, group: -1, identity: "reused" },
+  ] as const) {
+    const root: Row = {
+      pid: 41,
+      parent: 10,
+      group: 41,
+      identity: "4100",
+      state: "stopped",
+    };
+    const child: Row = {
+      pid: 42,
+      parent: 41,
+      group: 42,
+      identity: "4200",
+      state: "running",
+    };
+    let snapshots = 0,
+      elapsed = 0,
+      stops = 0;
+    const current = { ...child, ...change };
+    const running = stopDescendants(41, {
+      snapshot: async () => {
+        snapshots++;
+        return [root, snapshots === 1 ? child : current];
+      },
+      exists: () => true,
+      stop: (pid) => {
+        assert.equal(pid, child.pid);
+        stops++;
+      },
+      kill: () =>
+        assert.fail(
+          "Changed group and reused identities must not be signalled",
+        ),
+      now: () => elapsed,
+      wait: async (ms) => {
+        elapsed += ms;
+      },
+    });
+    if (current.identity === "reused") await running;
+    else
+      await assert.rejects(running, /Process cleanup identity changed group/);
+    assert.equal(stops, 1);
+    assert.equal(elapsed, 10);
+    assert.deepEqual(current, { ...child, ...change });
+  }
+});
+
+test("cleanup retries only a transient snapshot timeout with fresh ownership evidence inside the original deadline", async () => {
+  for (const failedCall of [1, 2, 3]) {
+    const rows = new Map<number, ProcessIdentity>([
+      [
+        41,
+        { pid: 41, parent: 10, group: 41, identity: "owner", state: "stopped" },
+      ],
+      [
+        42,
+        { pid: 42, parent: 41, group: 42, identity: "child", state: "running" },
+      ],
+      [
+        44,
+        {
+          pid: 44,
+          parent: 10,
+          group: 44,
+          identity: "sibling",
+          state: "running",
+        },
+      ],
+    ]);
+    const events: string[] = [];
+    let elapsed = 0,
+      calls = 0,
+      boundedReads = 0;
+    await stopDescendants(
+      41,
+      {
+        snapshot: async (pids?: readonly number[], timeoutMs = 1000) => {
+          calls++;
+          assert.ok(timeoutMs > 0 && timeoutMs <= 1000);
+          assert.ok(
+            timeoutMs <= 2000 - elapsed,
+            "Every retry and selected read shares the original deadline",
+          );
+          boundedReads++;
+          if (calls === failedCall) {
+            elapsed += timeoutMs;
+            throw new Error("Process snapshot unavailable", {
+              cause: Object.assign(
+                new Error("Original transient host query timeout"),
+                { code: "ETIMEDOUT" },
+              ),
+            });
+          }
+          elapsed += 20;
+          return [...rows.values()]
+            .filter((row) => pids === undefined || pids.includes(row.pid))
+            .map((row) => ({ ...row }));
+        },
+        stop: (pid) => {
+          assert.equal(pid, 42);
+          events.push("stop-child");
+          rows.get(pid)!.state = "stopped";
+        },
+        kill: (pid) => {
+          assert.equal(pid, 42);
+          assert.equal(rows.get(pid)!.identity, "child");
+          assert.equal(rows.get(pid)!.state, "stopped");
+          events.push("kill-child");
+          rows.delete(pid);
+        },
+        exists: (pid) => rows.has(pid),
+        now: () => elapsed,
+        wait: async (ms) => {
+          elapsed += ms;
+        },
+      },
+      () => events.push("root"),
+    );
+    assert.deepEqual(events, ["stop-child", "kill-child", "root"]);
+    assert.deepEqual([...rows.keys()], [41, 44]);
+    assert.equal(
+      boundedReads,
+      4,
+      "The failed read cannot stand in for any fresh ownership observation",
+    );
+    assert.ok(elapsed < 2000);
+  }
+});
+
+test("cleanup persistent unavailable or malformed snapshots cannot earn success or authorize descendant signals", async () => {
+  const timeout = () =>
+    new Error("Process snapshot unavailable", {
+      cause: Object.assign(new Error("Original persistent timeout"), {
+        code: "ETIMEDOUT",
+      }),
+    });
+  for (const failure of [
+    timeout,
+    () => new Error("Process snapshot malformed"),
+    () =>
+      new Error("Process snapshot unavailable", {
+        cause: Object.assign(new Error("Original denied query"), {
+          code: "EACCES",
+        }),
+      }),
+    () =>
+      new Error("Process snapshot unavailable", {
+        cause: { code: "ETIMEDOUT" },
+      }),
+  ]) {
+    let elapsed = 0,
+      calls = 0;
+    const signals: number[] = [];
+    const error = failure();
+    await assert.rejects(
+      stopDescendants(41, {
+        snapshot: async (_pids?: readonly number[], timeoutMs = 1000) => {
+          calls++;
+          assert.ok(timeoutMs <= 2000 - elapsed);
+          elapsed += timeoutMs;
+          throw error;
+        },
+        stop: (pid) => signals.push(pid),
+        kill: (pid) => signals.push(pid),
+        exists: () => true,
+        now: () => elapsed,
+        wait: async (ms) => {
+          elapsed += ms;
+        },
+      }),
+      (actual) =>
+        actual === error || /Process cleanup deadline/.test(String(actual)),
+    );
+    assert.deepEqual(signals, []);
+    assert.equal(
+      calls,
+      failure === timeout ? 2 : 1,
+      "Only a genuine transient timeout can be retried",
+    );
+    assert.ok(elapsed <= 2000, "A retry cannot extend cleanup admission");
+  }
+});
+
+test("process snapshots reject invalid observation budgets before invoking a host query", async () => {
+  for (const budget of [0, -1, 1001, NaN, 1.5])
+    await assert.rejects(
+      Reflect.apply(processSnapshot, undefined, [process.pid, budget]),
+      /snapshot observation limit/,
+    );
+});
+
+test(
+  "native POSIX cleanup obtains a fresh host snapshot after an injected timeout and closes only its original child",
+  {
+    skip:
+      !["darwin", "linux"].includes(process.platform) &&
+      "Native POSIX host-query control",
+  },
+  () => {
+    const moduleUrl = new URL("../src/process-tree.js", import.meta.url).href;
+    const code = `import assert from'node:assert/strict';import cp from'node:child_process';import{syncBuiltinESMExports}from'node:module';const originalSpawn=cp.spawnSync,originalKill=process.kill;let injected=0,fresh=0;const signals=[],budgets=[];cp.spawnSync=(...args)=>{if(process.platform==='darwin'&&args[0]==='/bin/ps'&&injected===0){injected++;Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,1100);return{pid:0,status:null,signal:'SIGTERM',stdout:'',stderr:'',error:Object.assign(new Error('Original synthetic host timeout'),{code:'ETIMEDOUT'})};}if(args[0]==='/bin/ps')budgets.push(args[2].timeout);const result=originalSpawn(...args);if(args[0]==='/bin/ps'&&result.status===0)fresh++;return result;};syncBuiltinESMExports();process.kill=(pid,signal)=>{if(signal!==0)signals.push({pid,signal,fresh});return originalKill(pid,signal);};const target=cp.spawn(process.execPath,['-e',"process.send('ready');setInterval(()=>{},1000);"],{stdio:['ignore','ignore','ignore','ipc']});const closed=new Promise(resolve=>target.once('close',resolve));try{await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Original native child did not become ready')),5000);target.once('message',message=>{clearTimeout(timer);assert.equal(message,'ready');resolve();});});const{stopDescendants,processSnapshot}=await import(${JSON.stringify(moduleUrl)});const io=process.platform==='darwin'?undefined:{snapshot:async(pids,timeoutMs=1000)=>{if(injected===0){injected++;Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,1100);throw new Error('Process snapshot unavailable',{cause:Object.assign(new Error('Original synthetic host timeout'),{code:'ETIMEDOUT'})});}budgets.push(timeoutMs);const rows=await processSnapshot(pids,timeoutMs);fresh++;return rows;},stop:pid=>process.kill(pid,'SIGSTOP'),kill:pid=>process.kill(pid,'SIGKILL'),exists:pid=>{try{originalKill(pid,0);return true;}catch(error){if(error.code==='ESRCH')return false;throw error;}},now:()=>performance.now(),wait:ms=>new Promise(resolve=>setTimeout(resolve,ms))};await stopDescendants(process.pid,io);await closed;assert.equal(injected,1);assert.ok(fresh>=3);assert.ok(budgets.length>=3&&budgets.every(value=>value>0&&value<=900),'Every real host query uses only the remaining cleanup budget');assert.ok(signals.some(event=>event.signal==='SIGSTOP'));assert.ok(signals.some(event=>event.signal==='SIGKILL'));assert.ok(signals.every(event=>event.pid===target.pid&&event.fresh>0));assert.throws(()=>originalKill(target.pid,0),error=>error.code==='ESRCH');process.stdout.write(JSON.stringify({injected,fresh,ownedChildClosed:true,foreignSignals:signals.filter(event=>event.pid!==target.pid).length}));}finally{cp.spawnSync=originalSpawn;process.kill=originalKill;syncBuiltinESMExports();target.kill('SIGKILL');await closed;}`;
+    const result = spawnSync(
+      process.execPath,
+      ["--input-type=module", "-e", code],
+      { encoding: "utf8", timeout: 15000, maxBuffer: 1048576 },
+    );
+    assert.equal(result.error, undefined);
+    assert.equal(result.signal, null);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    const report = JSON.parse(result.stdout);
+    assert.equal(report.injected, 1);
+    assert.equal(report.ownedChildClosed, true);
+    assert.equal(report.foreignSignals, 0);
+  },
+);
+
+test("cleanup refuses late disappearance evidence and bounds failure recovery without promoting success", async () => {
+  const rows = new Map<number, ProcessIdentity>([
+    [
+      41,
+      { pid: 41, parent: 10, group: 41, identity: "owner", state: "stopped" },
+    ],
+    [
+      42,
+      { pid: 42, parent: 41, group: 42, identity: "child", state: "running" },
+    ],
+  ]);
+  let elapsed = 0,
+    reads = 0,
+    killed = false,
+    rootClosed = false;
+  await assert.rejects(
+    stopDescendants(
+      41,
+      {
+        snapshot: async (pids?: readonly number[], timeoutMs = 1000) => {
+          reads++;
+          if (elapsed > 2000)
+            assert.equal(
+              timeoutMs,
+              1000,
+              "Failure recovery retains its separate single-query bound",
+            );
+          else assert.ok(timeoutMs > 0 && timeoutMs <= 2000 - elapsed);
+          if (killed) {
+            elapsed = 2001;
+            rows.delete(42);
+          } else elapsed += 20;
+          return [...rows.values()]
+            .filter((row) => pids === undefined || pids.includes(row.pid))
+            .map((row) => ({ ...row }));
+        },
+        stop: (pid) => {
+          assert.equal(pid, 42);
+          rows.get(pid)!.state = "stopped";
+        },
+        kill: (pid) => {
+          assert.equal(pid, 42);
+          assert.ok(elapsed < 2000);
+          killed = true;
+          rows.get(pid)!.state = "exited";
+        },
+        exists: (pid) => rows.has(pid),
+        now: () => elapsed,
+        wait: async (ms) => {
+          elapsed += ms;
+        },
+      },
+      () => {
+        rootClosed = true;
+      },
+    ),
+    /Process cleanup deadline exceeded/,
+  );
+  assert.equal(killed, true);
+  assert.equal(rootClosed, true);
+  assert.equal(
+    reads,
+    5,
+    "One bounded failure-recovery read cannot promote late evidence to success",
+  );
+});

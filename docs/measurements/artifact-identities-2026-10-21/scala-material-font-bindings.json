@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27",
+  "scope": "Exact public upstream payload and original root-notice bindings for every Material Icons font format bundled in the selected Scala compiler. No font renderer, generator or upstream script executed.",
+  "upstream": {
+    "repository": "https://github.com/google/material-design-icons",
+    "commit": "f63ad8dc9604d9ccd4ca846febbd00a5054ce466",
+    "historicalRootDeclaration": "CC-BY-4.0 as named by this immutable root README and LICENSE; no later license is substituted.",
+    "fontSpecificLicenseMemberObserved": false
+  },
+  "compiler": {
+    "artifact": "scala-compiler-2.13.18.jar",
+    "sha256": "2f15891fcae7aad30a3892194fb2abb6224cf7ce5d2bd90fba7f1c48682fca21"
+  },
+  "members": [
+    {
+      "sourcePath": "iconfont/MaterialIcons-Regular.eot",
+      "gitBlobSha1": "bf67d48bdb064080ae9506557f15705a34fe8e04",
+      "compilerMember": "scala/tools/nsc/doc/html/resource/lib/MaterialIcons-Regular.eot",
+      "bytes": 137002,
+      "sha256": "b15db5db832205c97a25ec5a3a933abf8ce3ec734ba960b4deffc582d4590543",
+      "exactPayloadMatch": true
+    },
+    {
+      "sourcePath": "iconfont/MaterialIcons-Regular.ttf",
+      "gitBlobSha1": "683dcd05ac96df15b00df6db60e17d4943072656",
+      "compilerMember": "scala/tools/nsc/doc/html/resource/lib/MaterialIcons-Regular.ttf",
+      "bytes": 122640,
+      "sha256": "d4dce8e9d683ae7b7d9cc1c86544a6cd8d2f855fddb02d4328a04815aa704c5d",
+      "exactPayloadMatch": true
+    },
+    {
+      "sourcePath": "iconfont/MaterialIcons-Regular.woff",
+      "gitBlobSha1": "ddd6be3e3df04d31ae1c79b5beb6fbf9bce56a4a",
+      "compilerMember": "scala/tools/nsc/doc/html/resource/lib/MaterialIcons-Regular.woff",
+      "bytes": 56792,
+      "sha256": "cf7881fd4d4c4c30e4a730b34cee417df72504228dd55ff767949579b0cc50e4",
+      "exactPayloadMatch": true
+    }
+  ],
+  "fontResourcePartition": {
+    "compilerFontFiles": 27,
+    "materialIconsExactMatches": 3,
+    "otherBundledFontFilesRemaining": 24,
+    "partitionCloses": true
+  },
+  "retainedInputs": [
+    {
+      "gitPath": "LICENSE",
+      "gitBlobSha1": "dc8853a70cfa9d7e8933c080caa147815c659fab",
+      "retainedInput": {
+        "file": "scala-font-notices/8ae9438818c26e4873b91d8c6ad620526c011e27e125677f13031eda903f007c.txt",
+        "bytes": 18524,
+        "sha256": "8ae9438818c26e4873b91d8c6ad620526c011e27e125677f13031eda903f007c"
+      }
+    },
+    {
+      "gitPath": "README.md",
+      "gitBlobSha1": "abdab0517e4fd6f07490234f74a3d47b7f7b5c12",
+      "retainedInput": {
+        "file": "scala-font-notices/d1c459ff53e651b44820cf351295f6fc9f0e0febf0bd5267834b79d1719f3979.txt",
+        "bytes": 1311,
+        "sha256": "d1c459ff53e651b44820cf351295f6fc9f0e0febf0bd5267834b79d1719f3979"
+      }
+    }
+  ],
+  "controls": [
+    {
+      "id": "changed-ttf-payload-byte",
+      "changedInputRejectedByUnchangedCompilerMember": true,
+      "restoredInputMatches": true,
+      "mutantSha256": "57d87dd8f9e954738bcdccd02454d9bd8d31eb3090d73bcd18daf01e3c568e30"
+    },
+    {
+      "id": "earlier-valid-font-version",
+      "earlierSourceCommit": "15f560ec93cff7b68d11cc0609aa43fd5f7ed0e9",
+      "earlierFontSha256": "676a4c011c5d0c76437dd6d0c1213c80b28052f635ad2bb1181b2f47afbf5597",
+      "earlierFontDoesNotMatchSelectedPayload": true,
+      "selectedPayloadRestoredMatches": true
+    },
+    {
+      "id": "changed-historical-notice",
+      "changedNoticeRejectedByUnchangedIdentity": true,
+      "restoredNoticeMatches": true,
+      "mutantSha256": "b3b7f169551ebb2b8aa6dc16962e6fd29ba564df1a44e0cbb14a7ae4580e2f55"
+    }
+  ],
+  "fontGenerationReproduced": false,
+  "completeOtherFontAttributionVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "preparationAndReceiptIntegrationVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

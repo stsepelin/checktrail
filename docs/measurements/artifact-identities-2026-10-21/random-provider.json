@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "scope": "random-provider",
+  "observedAt": "2026-10-21T17:22:24.610192+00:00",
+  "repositoryCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+  "repositoryInputs": [
+    {
+      "file": "src/terraform-extensions-contract.ts",
+      "sha256": "3a748511488030ea9b75864fcfc9186b1c1d611c6a20ff4d699aa1a57da19548"
+    },
+    {
+      "file": "scripts/prepare-terraform-extensions-runtime.mjs",
+      "sha256": "cb5e4e9b28692a4e05020215716959cdc3a745141445e43d7e6bed61fc148eaf"
+    }
+  ],
+  "observations": {
+    "archive": {
+      "url": "https://releases.hashicorp.com/terraform-provider-random/3.9.1/terraform-provider-random_3.9.1_linux_arm64.zip",
+      "bytes": 5964673,
+      "sha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc"
+    },
+    "members": [
+      {
+        "file": "LICENSE.txt",
+        "bytes": 16757,
+        "sha256": "6cc8b40dbd9225bcae53f83bab17b8c01ad162c2093545c5bb7f1dcf5ae99d72"
+      },
+      {
+        "file": "terraform-provider-random_v3.9.1_x5",
+        "bytes": 17039522,
+        "sha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2"
+      }
+    ],
+    "retainedSignatureAndNoticeInputs": [
+      {
+        "file": "provider-SHA256SUMS.txt",
+        "bytes": 1482,
+        "sha256": "fa551977fc2b4466daca08701e2d0d028ed5fe43d53dab3b0c30602a5313d6f8",
+        "source": "https://releases.hashicorp.com/terraform-provider-random/3.9.1/terraform-provider-random_3.9.1_SHA256SUMS"
+      },
+      {
+        "file": "provider-SHA256SUMS.sig",
+        "bytes": 566,
+        "sha256": "dc8cfcc4308c5707b85d83d2dfb30640411935494f7d5ccedcf32b0a9c26f437",
+        "source": "https://releases.hashicorp.com/terraform-provider-random/3.9.1/terraform-provider-random_3.9.1_SHA256SUMS.sig"
+      },
+      {
+        "file": "provider-public-key.asc",
+        "bytes": 7717,
+        "sha256": "c2f5bc1163bd8d15a711616b587bcede212d045a5b8b52df01c74095897cd065",
+        "source": "https://www.hashicorp.com/.well-known/pgp-key.txt"
+      },
+      {
+        "file": "provider-LICENSE.txt",
+        "bytes": 16757,
+        "sha256": "6cc8b40dbd9225bcae53f83bab17b8c01ad162c2093545c5bb7f1dcf5ae99d72",
+        "source": "https://releases.hashicorp.com/terraform-provider-random/3.9.1/terraform-provider-random_3.9.1_linux_arm64.zip",
+        "sourceMember": "LICENSE.txt"
+      }
+    ],
+    "checksumSignature": {
+      "exitCode": 0,
+      "statusCodes": [
+        "NEWSIG",
+        "KEYEXPIRED",
+        "KEY_CONSIDERED",
+        "SIG_ID",
+        "GOODSIG",
+        "VALIDSIG",
+        "KEYEXPIRED",
+        "KEY_CONSIDERED",
+        "TRUST_UNDEFINED"
+      ],
+      "signerFingerprint": "374EC75B485913604A831CC7C820C6D5CD27AB87",
+      "primaryFingerprint": "C874011F0AB405110D02105534365D9472D7468F",
+      "operatorTrustAsserted": false
+    },
+    "tamperedChecksumRejected": {
+      "exitCode": 1,
+      "statusCodes": [
+        "NEWSIG",
+        "KEYEXPIRED",
+        "KEY_CONSIDERED",
+        "BADSIG",
+        "SIGINFO",
+        "FAILURE"
+      ],
+      "signerFingerprint": null,
+      "primaryFingerprint": null,
+      "operatorTrustAsserted": false
+    },
+    "publisherIdentitySources": [
+      "https://www.hashicorp.com/.well-known/pgp-key.txt",
+      "https://discuss.hashicorp.com/t/hcsec-2026-03-hashicorp-gpg-key-72d7468f-update/77237"
+    ],
+    "sourceToReleaseBuildBindingVerified": false,
+    "publisherBuildArtifactLinkObserved": {
+      "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+      "ownerRepository": "hashicorp/terraform-provider-random",
+      "workflowRunIds": [34599749034, 34615171553],
+      "primaryAndVerificationArtifactCount": 4,
+      "releaseArchiveAndExecutableByteMatch": true,
+      "retainedInputs": [
+        {
+          "file": "provider-build-observations.json",
+          "bytes": 17186,
+          "sha256": "dbab8058789659bbac02bbd3c0e5cd85e2740156f8395192975f23b9c8d2160b",
+          "source": "https://api.github.com/repos/hashicorp/terraform-provider-random/actions/runs/34599749034/artifacts?per_page=100",
+          "generation": "Curated owner-repository metadata and independently matched delivered artifact bytes; excludes upstream environment and absolute path fields."
+        }
+      ],
+      "independentSourceRebuildPerformed": false
+    },
+    "selectedExecutableSourceBuildBindingVerified": true,
+    "independentExecutableRebuild": {
+      "sourceCommit": "b59b1791a688fe2737b5b70ab05fdd0a4190190e",
+      "sourceTree": "fb1d86e1f941c0ede0d5c46841d7d4c0c3015265",
+      "expectedAndRebuiltExecutableSha256": "0dbc7f4ee8038f92f973c248db4a9783a8c3100d14d8aecda69922b1cb423fa2",
+      "freshOfflineSourceRebuildPerformed": true,
+      "sourceChangeCompiledToDifferentExecutable": true,
+      "restoredSourceCompiledToExactSelectedExecutable": true,
+      "providerExecuted": false,
+      "releaseZipPackagingIndependentlyRebuilt": true,
+      "retainedInputs": [
+        {
+          "file": "provider-rebuild-inputs.json",
+          "bytes": 72382,
+          "sha256": "9b7ac259480b3b9994baa70c94f232a1cdf3c4f521fa8b1fec0480fbd547ed3d",
+          "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
+        },
+        {
+          "file": "provider-independent-rebuild.json",
+          "bytes": 9060,
+          "sha256": "3e522a00b389074c38d5e45aada3176ae6aa4190026dfb0e2bd70624673c034b",
+          "generation": "Curated observed public input identities and actual native build/control results; no absolute host paths or credentials."
+        }
+      ]
+    },
+    "selectedNoticeInventoryObserved": {
+      "retainedInputs": [
+        {
+          "file": "provider-notice-inventory.json",
+          "bytes": 172525,
+          "sha256": "5541f2c2f054b98e2c400805b5c9c559f08732b9fa953b05277b312e3848a67b",
+          "generation": "Reconciled native package metadata and exact public source/module/SDK notice bytes; stronger closure remains unverified."
+        }
+      ],
+      "nativeSelectedPackages": 452,
+      "nativeSelectedFiles": 2973,
+      "linkedModuleMetadataCount": 27,
+      "selectedGoSdkVendorModules": 3,
+      "completeTransitiveNoticeClosureVerified": false
+    },
+    "independentZipReconstruction": {
+      "observedAt": "2026-10-27",
+      "selectedArchiveSha256": "7c7fbb8895eb75bb4de1f933e98553bd99c8d048c89a925ddba490aa5a67f7dc",
+      "separateGoPackagerVersion": "go1.24.13",
+      "freshCombinedSourceToZipRebuildPerformed": false,
+      "retainedInputs": [
+        {
+          "file": "provider-independent-zip-repack.json",
+          "bytes": 11586,
+          "sha256": "4f4098eb1113fbaafd5bcded7aecb47bb937e333f02d1ac921eb6f552bda5c5b"
+        }
+      ]
+    }
+  },
+  "remainingInputs": [
+    "Reconcile exact linked module, copied/generated and Go runtime/standard-library notices.",
+    "Complete build-tool and linked-component provenance/notice coverage beyond the independently rebuilt executable. The selected ZIP bytes match a separate Go 1.24.13 packaging reconstruction, and the original tagged public log now reports Go 1.24.13 linux/amd64 for packaging. Compiler/bootstrap, runner/SDK, transitive notice and full action build/enforcement closure remain unverified.",
+    "Integrate scoped signature evidence into preparation and physical receipt admission before changing runtime flags."
+  ],
+  "preparationAndReceiptIntegrationVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "observationsUpdatedAt": "2026-10-21T18:44:19.265222+00:00",
+  "originalProducerFollowUpObservedAt": "2026-10-27",
+  "originalProducerFollowUp": {
+    "packagingCompilerPatchObservedFromOriginalLog": true,
+    "packagingCompiler": "go1.24.13 linux/amd64",
+    "providerCompiler": "go1.26.8 linux/amd64",
+    "originalRunReportsSameExecutableAndZip": true,
+    "completeCompilerAndSdkBuildClosureVerified": false
+  },
+  "retainedInputs": [
+    {
+      "file": "provider-original-producer-binding.json",
+      "bytes": 7837,
+      "sha256": "5f8cef121934cd2c0b50c25eb0189ef0a3581391c5dc63256513f9fb931a1873"
+    },
+    {
+      "file": "provider-compiler-source-rebuilds.json",
+      "bytes": 37022,
+      "sha256": "4b3b0b62c866cd27b041dc7f75234f076f792e7cfe0e44c40fbf4773fd8cfab4"
+    }
+  ],
+  "compilerArchiveFollowUpObservedAt": "2026-10-27",
+  "compilerArchiveFollowUp": {
+    "go12413LinuxAmd64CompleteArchiveRebuilt": true,
+    "go1268LinuxAmd64CompleteArchiveRebuilt": true,
+    "bootstrapAndCompleteNoticeClosureVerified": false
+  }
+}

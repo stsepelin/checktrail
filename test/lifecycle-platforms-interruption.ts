@@ -49,7 +49,7 @@ setInterval(()=>{},1000);for(;;){try{await readFile(release);break;}catch(error)
     assert.equal(new Set(ids).size, 3);
     assert.ok(ids.every(lifecycleAlive));
     if (process.platform === "win32") return [];
-    const all = await processSnapshot();
+    const all = await processSnapshot(ids);
     return ids.map((pid) => {
       const row = all.find((value) => value.pid === pid);
       assert.ok(row);

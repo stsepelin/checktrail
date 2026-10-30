@@ -1,0 +1,1094 @@
+{
+  "schemaVersion": 1,
+  "scope": "Exact selected ASM source-JAR Java member bindings and original manifest byte projection; no upstream build or compiler executed.",
+  "source": {
+    "repository": "https://github.com/scala/scala-asm",
+    "commit": "e8ac5559249d87f312df832f788cb745276ef296",
+    "gitRootTreeSha1": "1c29b15d2968dd09d46f7d838848ec1150bf55c2",
+    "gitObjectEncoding": "SHA-1 of Git object kind, space, decimal byte length, NUL and raw payload; tree entries sorted with directory slash ordering.",
+    "verifiedSubtrees": [
+      {
+        "gitPath": ".github",
+        "sha1": "4f03fa6e1b0869899c5c0682ab4168970dc8d1b5"
+      },
+      {
+        "gitPath": ".github/workflows",
+        "sha1": "91a70b7d0433ba2458954fef3aef2a020776769d"
+      },
+      {
+        "gitPath": "project",
+        "sha1": "add45c78bad4cc9245787137b4ae732f2c8516a3"
+      },
+      {
+        "gitPath": "scripts",
+        "sha1": "ed6241f4c52c49a2518e5768721f29395b8ea11b"
+      },
+      {
+        "gitPath": "src",
+        "sha1": "36d5ea61e1e148ceac0308d4a659c61b9eb87a6f"
+      },
+      {
+        "gitPath": "src/main",
+        "sha1": "b351893aef964978d058143c2e1d7a5bd2ff1f30"
+      },
+      {
+        "gitPath": "src/main/java",
+        "sha1": "400a9d18337e508ee1e7b889b71e6ae84fa5c60d"
+      },
+      {
+        "gitPath": "src/main/java/scala",
+        "sha1": "32372c2586bab8bd452a11b783e7e3d1e938b79d"
+      },
+      {
+        "gitPath": "src/main/java/scala/tools",
+        "sha1": "25c9384c63a7315ad7dc9b8361fe721231c66b10"
+      },
+      {
+        "gitPath": "src/main/java/scala/tools/asm",
+        "sha1": "4d0cf695bb2466fe2948f807633901cc23283a34"
+      },
+      {
+        "gitPath": "src/main/java/scala/tools/asm/commons",
+        "sha1": "687b1079baf765c42cfa3e320cc0e0301b0835a6"
+      },
+      {
+        "gitPath": "src/main/java/scala/tools/asm/signature",
+        "sha1": "364d794f69297929fadb0f1d34b2bae6a1ae0843"
+      },
+      {
+        "gitPath": "src/main/java/scala/tools/asm/tree",
+        "sha1": "831de57db5496c79dcec5fd13159fe91dabdbed9"
+      },
+      {
+        "gitPath": "src/main/java/scala/tools/asm/tree/analysis",
+        "sha1": "2ea30d81e5462f10a6a19029363a8bc2ca81171b"
+      },
+      {
+        "gitPath": "src/main/java/scala/tools/asm/util",
+        "sha1": "35b63f0cb6825881c31ba014d6612fe1142559dd"
+      }
+    ],
+    "gitCommitApiUrl": "https://api.github.com/repos/scala/scala-asm/git/commits/e8ac5559249d87f312df832f788cb745276ef296"
+  },
+  "sourceArchive": {
+    "artifact": "scala-asm-9.9.0-scala-1-sources.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/scala-lang/modules/scala-asm/9.9.0-scala-1/scala-asm-9.9.0-scala-1-sources.jar",
+    "bytes": 383888,
+    "sha256": "c4a40287795a38e23d971ecd7287f9d14c3ed207081ce40afb4fbac2f18ba2cf",
+    "javaMembers": 105,
+    "nonJavaMembers": 1,
+    "nonDirectoryMembers": 106
+  },
+  "javaMembers": [
+    {
+      "member": "scala/tools/asm/AnnotationVisitor.java",
+      "bytes": 6556,
+      "sha256": "05b0fbade02e69f0cba66b4cdfb058e6cdf88ece0aa2f9b50e93750bec985d63",
+      "gitPath": "src/main/java/scala/tools/asm/AnnotationVisitor.java",
+      "gitBlobSha1": "2d842e7a29473eebd80b1ad14ceb0f418e00f336",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/AnnotationWriter.java",
+      "bytes": 27703,
+      "sha256": "690fae8ff35cece41bfcde26c14505563a0ff133e8bc19b41372c22babb5d8b7",
+      "gitPath": "src/main/java/scala/tools/asm/AnnotationWriter.java",
+      "gitBlobSha1": "b89b24639a07464906a397a63f87114f9513c2db",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Attribute.java",
+      "bytes": 23301,
+      "sha256": "675499c7efa16193e96a7d4ada400a4ad3c73c0ca48903c3ba615566271e4806",
+      "gitPath": "src/main/java/scala/tools/asm/Attribute.java",
+      "gitBlobSha1": "041d08d384c9d8141ff6dd63c188de3c0baec21f",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/ByteVector.java",
+      "bytes": 13497,
+      "sha256": "c7bd1736bddc64ecbf81b1302fc296e0639b1932020fbc24f5b3ea88d238b023",
+      "gitPath": "src/main/java/scala/tools/asm/ByteVector.java",
+      "gitBlobSha1": "f7d04eeac0eb141e0520ae9fa8cd08e53d084ef1",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/ClassReader.java",
+      "bytes": 172590,
+      "sha256": "ff655073c2d4a4147632f51b7f7b734e18ffc6fb4bc97394bdd59ae654c0ea48",
+      "gitPath": "src/main/java/scala/tools/asm/ClassReader.java",
+      "gitBlobSha1": "ea0880aca4620a65653a24bbb1dcaae3c2b8ecd4",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/ClassTooLargeException.java",
+      "bytes": 2951,
+      "sha256": "9922e8f41d6cfdae8f2ba436bdba8d20dc6f194ae2e3d725f03d1c4977d82529",
+      "gitPath": "src/main/java/scala/tools/asm/ClassTooLargeException.java",
+      "gitBlobSha1": "627f5f357331ef8df220b66a991d36a31bf33ee7",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/ClassVisitor.java",
+      "bytes": 17200,
+      "sha256": "8abd5ff5f154549516850c794091d98fa1b5fe02d6be4443b64f0580deaccb2f",
+      "gitPath": "src/main/java/scala/tools/asm/ClassVisitor.java",
+      "gitBlobSha1": "a920aa2a6cd5e6372905053c309dd8c9667e70ce",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/ClassWriter.java",
+      "bytes": 46823,
+      "sha256": "a95c0be52a771e0f5c72d34836007317002099838079a56ef0970d20fa170077",
+      "gitPath": "src/main/java/scala/tools/asm/ClassWriter.java",
+      "gitBlobSha1": "71082ef988af7e31523d6241c196f47412bfb54f",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/ConstantDynamic.java",
+      "bytes": 6176,
+      "sha256": "9a2693f754814ff241ef5568dc8dbc24b02713e910919f85cb6b074cf4d79af5",
+      "gitPath": "src/main/java/scala/tools/asm/ConstantDynamic.java",
+      "gitBlobSha1": "7a11bd84a6490c0323b7b4174cfcac29f60a2ea1",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Constants.java",
+      "bytes": 10313,
+      "sha256": "17a3a75a832344d00e2bce48ccfa0688ff1f8746f784ca4c658095724e700df2",
+      "gitPath": "src/main/java/scala/tools/asm/Constants.java",
+      "gitBlobSha1": "ba6d56da3ec63bab15d93d7cada0e29b4a35d944",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Context.java",
+      "bytes": 5629,
+      "sha256": "c78ef6cedcdac3e73dd57edac00994c17474bc05914347c8aa7d8d017e1bf548",
+      "gitPath": "src/main/java/scala/tools/asm/Context.java",
+      "gitBlobSha1": "8fc4e3d887efab4952a50adc4fb44f0010a43671",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/CurrentFrame.java",
+      "bytes": 2597,
+      "sha256": "9a43e48c474b443456c16ae31f1c99735ffce7e55aff0f4fa9074817991800e3",
+      "gitPath": "src/main/java/scala/tools/asm/CurrentFrame.java",
+      "gitBlobSha1": "2a411c998fb158c446f0ed42edf922759a2c571b",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Edge.java",
+      "bytes": 3941,
+      "sha256": "6cb04e34fe11fab1170b21ba211acfc6b7681c72790fcfc9ef3760dc3fa0e38d",
+      "gitPath": "src/main/java/scala/tools/asm/Edge.java",
+      "gitBlobSha1": "0a4e39c2d611cfa0c0720792621b78d6c69e07dd",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/FieldVisitor.java",
+      "bytes": 5862,
+      "sha256": "b056d4498b7794496a0707d959fa0bc1c5722ebf24da9319e4a0c5562105e228",
+      "gitPath": "src/main/java/scala/tools/asm/FieldVisitor.java",
+      "gitBlobSha1": "83122df08db578de0675ddd5406faa175784594e",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/FieldWriter.java",
+      "bytes": 11463,
+      "sha256": "d196c1a5f3f2acf4cc13bf4eb6014b855650bb453c567809f1ed0a03f45538ab",
+      "gitPath": "src/main/java/scala/tools/asm/FieldWriter.java",
+      "gitBlobSha1": "da759855f1e71fc0e640a6902f1f7665999f0dd8",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Frame.java",
+      "bytes": 59690,
+      "sha256": "bee7e469ebd10f4348cf621c2ea58e985f689e28df1a0c0659c90c383869b553",
+      "gitPath": "src/main/java/scala/tools/asm/Frame.java",
+      "gitBlobSha1": "5a5ebef269c509fb7e185351bc9cbb691d712f8f",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Handle.java",
+      "bytes": 7360,
+      "sha256": "ac868574b4bf8afbd1085d7215fd424faa1b77323f7980a899422438318bf0d7",
+      "gitPath": "src/main/java/scala/tools/asm/Handle.java",
+      "gitBlobSha1": "7a46e1df92785446a8958646b8e21a5162bcab1e",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Handler.java",
+      "bytes": 8304,
+      "sha256": "6be3b0896da1b893e1d744cdcc96084caa5effbcd048934f2c732a85cdbd59c9",
+      "gitPath": "src/main/java/scala/tools/asm/Handler.java",
+      "gitBlobSha1": "061fffad2ea2c59fe58a084c1ba6ff30660fcf8e",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Label.java",
+      "bytes": 32228,
+      "sha256": "376fed38cf8102553d21028068c2a5ad76a14aa47720b29ce61e0ecfa8a4f178",
+      "gitPath": "src/main/java/scala/tools/asm/Label.java",
+      "gitBlobSha1": "e623cc56408f401ff932332e2b0754dbe973eab1",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/MethodTooLargeException.java",
+      "bytes": 3550,
+      "sha256": "36f6f4ae81da4e4b896ee3feef8fdc91a870c985bbbd2401c8c524e99504f460",
+      "gitPath": "src/main/java/scala/tools/asm/MethodTooLargeException.java",
+      "gitBlobSha1": "395cb16779439864bb036fbcb7836ebf39b2a1ba",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/MethodVisitor.java",
+      "bytes": 35974,
+      "sha256": "30c95ac8bb2f013e2044a90d557d866c97b41db383878c761926346013f6e934",
+      "gitPath": "src/main/java/scala/tools/asm/MethodVisitor.java",
+      "gitBlobSha1": "1fda2413c41740e9393dbb2397c70a54a0187452",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/MethodWriter.java",
+      "bytes": 101856,
+      "sha256": "7aaeb703a2048e918e941c7829f1ebfcf49f4726d63cdc89cf90e801450aec44",
+      "gitPath": "src/main/java/scala/tools/asm/MethodWriter.java",
+      "gitBlobSha1": "cf9889c427204a8d0afa83666e2453d1cfea2710",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/ModuleVisitor.java",
+      "bytes": 7260,
+      "sha256": "787f31df6e3b92f5132cf83c77ffa902356b30038c29363caa665f2ff4c90b93",
+      "gitPath": "src/main/java/scala/tools/asm/ModuleVisitor.java",
+      "gitBlobSha1": "7190af4165369ecca461dc31e4adea90cbea44bd",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/ModuleWriter.java",
+      "bytes": 9614,
+      "sha256": "474a2d722457386b46831363ee7c37bcff56b874bb42fd6fa8f534c641c4d066",
+      "gitPath": "src/main/java/scala/tools/asm/ModuleWriter.java",
+      "gitBlobSha1": "f5b5263b1768442e168b5d6f1b57eca7c136e30c",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Opcodes.java",
+      "bytes": 20610,
+      "sha256": "617cf27c568cbc56573bf452bdc7ee39a071b175cc11a70c9f0ef01cc99845da",
+      "gitPath": "src/main/java/scala/tools/asm/Opcodes.java",
+      "gitBlobSha1": "8cc65f7c633b41adf323a4abd5f1060f250bd6bc",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/RecordComponentVisitor.java",
+      "bytes": 6072,
+      "sha256": "88bf7b81297112cd1b2eda636ff5be02c88e8eafaf127f9d5ba80358343c789b",
+      "gitPath": "src/main/java/scala/tools/asm/RecordComponentVisitor.java",
+      "gitBlobSha1": "59a73fcb01d2f6f1f7a1e73cf74f45a979690248",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/RecordComponentWriter.java",
+      "bytes": 9274,
+      "sha256": "0d2bd0ca1216945cc38233245b964093d5fb560e11b4d0f41766a8a9b45ff925",
+      "gitPath": "src/main/java/scala/tools/asm/RecordComponentWriter.java",
+      "gitBlobSha1": "ec9bb713cda0298f62e8290afd2030ccbc4656e9",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Symbol.java",
+      "bytes": 11673,
+      "sha256": "61ba7e8f58abec99476816af2335da416a9166897064ac614ce547cf24e3f720",
+      "gitPath": "src/main/java/scala/tools/asm/Symbol.java",
+      "gitBlobSha1": "49df3565c8a4f674afe1aab14ef2f0c79dc2cce8",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/SymbolTable.java",
+      "bytes": 61944,
+      "sha256": "bf39dbd5d37745f00a32b0ddb95dcba5816dc434b814a8aafd88e4afe3bb32cc",
+      "gitPath": "src/main/java/scala/tools/asm/SymbolTable.java",
+      "gitBlobSha1": "d98b957b41ce15ccdbde6a898e4735c253fc15c2",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/Type.java",
+      "bytes": 33442,
+      "sha256": "9a18a6b9e2bd84958ff1e6b1b1e12fd6505e7c13e989c4b86845da8bf8ce0fe1",
+      "gitPath": "src/main/java/scala/tools/asm/Type.java",
+      "gitBlobSha1": "3380698efbb706aed212574f42ea573cc9bbeb83",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/TypePath.java",
+      "bytes": 7723,
+      "sha256": "11fa82b446b3d3f559992f1781d1b72b1d54b18e2ac448cd5a6c61fdc967b72c",
+      "gitPath": "src/main/java/scala/tools/asm/TypePath.java",
+      "gitBlobSha1": "428a8ef95b145b6c381f3853d816a054cb7415f1",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/TypeReference.java",
+      "bytes": 17322,
+      "sha256": "15be5e3ef7e0d1f3f7d6bc3f1704697044779938e04f0cc5eea8430c3de069b7",
+      "gitPath": "src/main/java/scala/tools/asm/TypeReference.java",
+      "gitBlobSha1": "653b9596d15e90c093ca64d5ebdf8ce9b5d76af3",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/commons/CodeSizeEvaluator.java",
+      "bytes": 6361,
+      "sha256": "662451b930a10107794bafc94044cb1217147da68ebb24fc710219d6d5fc26f3",
+      "gitPath": "src/main/java/scala/tools/asm/commons/CodeSizeEvaluator.java",
+      "gitBlobSha1": "9d9625bb3428a7474a43301cb4aaeddfd7f698cf",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/signature/SignatureReader.java",
+      "bytes": 11920,
+      "sha256": "5f79708106820fd0cdee11326a07419c4ea9e27d0146ffceaa0fae21e8dd1ff2",
+      "gitPath": "src/main/java/scala/tools/asm/signature/SignatureReader.java",
+      "gitBlobSha1": "8cc8806fc0dd16463af8886f5fd59aac0a23864f",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/signature/SignatureVisitor.java",
+      "bytes": 7094,
+      "sha256": "911c003b021531a635d81814f9bcbf0840a8f1481bddcf1b8031f9a44058ffdc",
+      "gitPath": "src/main/java/scala/tools/asm/signature/SignatureVisitor.java",
+      "gitBlobSha1": "c19a7312a669d4ecf9fa4523ebf4bfca35d12cbb",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/signature/SignatureWriter.java",
+      "bytes": 8392,
+      "sha256": "aec36bb03534ef915712ce3d67230a121159450b0ad360bd1cbb21f09a48b28d",
+      "gitPath": "src/main/java/scala/tools/asm/signature/SignatureWriter.java",
+      "gitBlobSha1": "c252413cb73474dc342dfc26d9e29c3039b0c107",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/AbstractInsnNode.java",
+      "bytes": 9948,
+      "sha256": "c6fdec4e1d20ba2fae8e477eedd487a61a59c82906e39f243ee738330978ff02",
+      "gitPath": "src/main/java/scala/tools/asm/tree/AbstractInsnNode.java",
+      "gitBlobSha1": "2dee3213cfe083467c8fe2339ed98a89b675978c",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/AnnotationNode.java",
+      "bytes": 8579,
+      "sha256": "83e6e4e3c6f98b0b28978b058e3f633ed4ce2d68f33f4b7b695be1a558f0a15b",
+      "gitPath": "src/main/java/scala/tools/asm/tree/AnnotationNode.java",
+      "gitBlobSha1": "1443215a645f88ff2f10844d0b0469426031374b",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/ClassNode.java",
+      "bytes": 16880,
+      "sha256": "57ee82c5fd7a43c65da4d59a3a76376b190cb31b909adb3d8a437da4ac84a956",
+      "gitPath": "src/main/java/scala/tools/asm/tree/ClassNode.java",
+      "gitBlobSha1": "a9d9e75bb42f7da8ac4ae34193f529dd2ca7e417",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/FieldInsnNode.java",
+      "bytes": 3598,
+      "sha256": "99adfabde8f5e91dab06f9c45cad8e237cd2c006e54a4e8764339f46b52d53b1",
+      "gitPath": "src/main/java/scala/tools/asm/tree/FieldInsnNode.java",
+      "gitBlobSha1": "6e0b110cc92fac20fe7b820b5c33040bb77d33de",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/FieldNode.java",
+      "bytes": 9830,
+      "sha256": "6ceb125771b6ceb756a0e0cc83480588f38a422f71f2b356247e477155c676cd",
+      "gitPath": "src/main/java/scala/tools/asm/tree/FieldNode.java",
+      "gitBlobSha1": "3122615f0530ac65de4323363aea9268c0888fce",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/FrameNode.java",
+      "bytes": 7523,
+      "sha256": "c9ef83cbf612c5f43cd68b7e050fb8af61db0aab0568ecac0fd10ea0701ad30a",
+      "gitPath": "src/main/java/scala/tools/asm/tree/FrameNode.java",
+      "gitBlobSha1": "604fe842665c6ebc1af44ec6309ab0ea67256367",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/IincInsnNode.java",
+      "bytes": 2777,
+      "sha256": "8fe0de0fdcab172df7a7415d6e0d37e094f9776a655c7372192c7ec4d0799406",
+      "gitPath": "src/main/java/scala/tools/asm/tree/IincInsnNode.java",
+      "gitBlobSha1": "095f4076f7aae8253aff8ac3798dce21ec4eaeaa",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/InnerClassNode.java",
+      "bytes": 4123,
+      "sha256": "aa698fa351b461ecd9329e063bd65d9972736f3220dad665776e24ba2e3a8432",
+      "gitPath": "src/main/java/scala/tools/asm/tree/InnerClassNode.java",
+      "gitBlobSha1": "7d11541b4180f6c828ecd51115eccaa4ff58e47e",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/InsnList.java",
+      "bytes": 19747,
+      "sha256": "62a28e97ea2e6e1783a1996426da6990080ce8f3c4c9a9e6ef977732d0b87b13",
+      "gitPath": "src/main/java/scala/tools/asm/tree/InsnList.java",
+      "gitBlobSha1": "1bd41a8855a3bc2c04a0b51ee2a40b7923afdbfc",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/InsnNode.java",
+      "bytes": 3320,
+      "sha256": "8943f380349b83a89a56c543fe922efb72dc9b87e5a43de132490387f4cdd65d",
+      "gitPath": "src/main/java/scala/tools/asm/tree/InsnNode.java",
+      "gitBlobSha1": "db28429386540020933170c259831eaf0fc0c0ba",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/IntInsnNode.java",
+      "bytes": 2952,
+      "sha256": "7cd23497c4facccd1953489f3566ece86f18628ee69ab3d93201cbb654c7b363",
+      "gitPath": "src/main/java/scala/tools/asm/tree/IntInsnNode.java",
+      "gitBlobSha1": "ebe1366e80900c20b332d3a654a446ff6aa9d93c",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/InvokeDynamicInsnNode.java",
+      "bytes": 3690,
+      "sha256": "8a1b290698b36e84756f6148c933af32e61d109aafca47bfbdd061f6391d8e64",
+      "gitPath": "src/main/java/scala/tools/asm/tree/InvokeDynamicInsnNode.java",
+      "gitBlobSha1": "8450bcdf0a502d45532bb166aec137732914ebf2",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/JumpInsnNode.java",
+      "bytes": 3542,
+      "sha256": "baf98713353342704af2372a7bae1acd55f3290c0f2010b3966369f005f2c36d",
+      "gitPath": "src/main/java/scala/tools/asm/tree/JumpInsnNode.java",
+      "gitBlobSha1": "b5adcbf5c574447ed306436261c80b940fa2cba9",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/LabelNode.java",
+      "bytes": 2740,
+      "sha256": "265dda355d44436b3936a08b93c01eba02c136e71e7ef5660064719a7b294c74",
+      "gitPath": "src/main/java/scala/tools/asm/tree/LabelNode.java",
+      "gitBlobSha1": "e4396d798d25bb1719dc7acfc6cf105b416d33f9",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/LdcInsnNode.java",
+      "bytes": 3589,
+      "sha256": "a45e7965f4c3b5e82f3a9d271e7580936093d79d3270d68070cd6ebcf74b6050",
+      "gitPath": "src/main/java/scala/tools/asm/tree/LdcInsnNode.java",
+      "gitBlobSha1": "e6d401007b5c9b434ce4e55ea42fb89030999e8f",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/LineNumberNode.java",
+      "bytes": 2929,
+      "sha256": "4aaff6dc3cde8375d47a284d41d4f4225439c9fd5a46375b9598546281857e13",
+      "gitPath": "src/main/java/scala/tools/asm/tree/LineNumberNode.java",
+      "gitBlobSha1": "cd3b70c26018ebfa30d9b8a3742691fbdc3aabce",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/LocalVariableAnnotationNode.java",
+      "bytes": 6398,
+      "sha256": "79bfc0a4ae6a954a7a9170711ddb836bac57ed8f74b88a980f1ecb28e1282b9e",
+      "gitPath": "src/main/java/scala/tools/asm/tree/LocalVariableAnnotationNode.java",
+      "gitBlobSha1": "8dd272bd227360e41bef5b326d02efd33c7c3364",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/LocalVariableNode.java",
+      "bytes": 3557,
+      "sha256": "cd735fa8f7c1ae0210ad09255ea8b09adbc2be2f58a3201b34ea8938ea197a5f",
+      "gitPath": "src/main/java/scala/tools/asm/tree/LocalVariableNode.java",
+      "gitBlobSha1": "a26803aae0a7059b614eb8524583c49b1e70e509",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/LookupSwitchInsnNode.java",
+      "bytes": 3651,
+      "sha256": "b43cc4c1ef4976f4edebf5fcf3cd22684bdd37f003abc0c7c17eaf5d1193f297",
+      "gitPath": "src/main/java/scala/tools/asm/tree/LookupSwitchInsnNode.java",
+      "gitBlobSha1": "ffff5a8abce4211c15e5a848180752d5398f423d",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/MethodInsnNode.java",
+      "bytes": 4647,
+      "sha256": "229c9ec73ebf1375aa84d005169b08a9c97c7e1bd62410ecb11109f962e52991",
+      "gitPath": "src/main/java/scala/tools/asm/tree/MethodInsnNode.java",
+      "gitBlobSha1": "deca738e82feec4518a68d70508898a0f949f7fe",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/MethodNode.java",
+      "bytes": 29201,
+      "sha256": "08e3854d1ed7b0190f68f80b58dd4d00e31d3ff2d667f5738892f21904f76276",
+      "gitPath": "src/main/java/scala/tools/asm/tree/MethodNode.java",
+      "gitBlobSha1": "bb54126cabe9d5f51f8a753b79b10062c0447ebc",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/ModuleExportNode.java",
+      "bytes": 3338,
+      "sha256": "5bc2e2c5b0b4817be5159e7e5bfa771e55b7b9167af1a4c12d33866d09b8e8a8",
+      "gitPath": "src/main/java/scala/tools/asm/tree/ModuleExportNode.java",
+      "gitBlobSha1": "5e6ee55285306ee629feb4c62cc446f2ebc113b4",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/ModuleNode.java",
+      "bytes": 8485,
+      "sha256": "883ec418871824cfc6cac4c89a9a77e2abd5a6e5c0cb2930acc84aa7d8264b65",
+      "gitPath": "src/main/java/scala/tools/asm/tree/ModuleNode.java",
+      "gitBlobSha1": "d68e838b1ae1172266ce7a4563c305276f2d168d",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/ModuleOpenNode.java",
+      "bytes": 3358,
+      "sha256": "b20551a24f7d205d3bc75baed70a076c06490e06d5437a4ba7bd05450f070071",
+      "gitPath": "src/main/java/scala/tools/asm/tree/ModuleOpenNode.java",
+      "gitBlobSha1": "beab66518aa0b6c9dd7c880b2e76e24fd342d631",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/ModuleProvideNode.java",
+      "bytes": 2931,
+      "sha256": "3920a8cd39066cda57f26d127dd52eb7695819633c8cf78be59204edacfe5d03",
+      "gitPath": "src/main/java/scala/tools/asm/tree/ModuleProvideNode.java",
+      "gitBlobSha1": "4aab2f7a3d70d017ac0c259c88210e29d80fcb98",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/ModuleRequireNode.java",
+      "bytes": 3052,
+      "sha256": "e04d55b46d9469eb791465920e2c98b831d167b2fc0f386a35ecd3ee97daab51",
+      "gitPath": "src/main/java/scala/tools/asm/tree/ModuleRequireNode.java",
+      "gitBlobSha1": "5904ee5d9da3f47e7cd838a38383b2072640d522",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/MultiANewArrayInsnNode.java",
+      "bytes": 2929,
+      "sha256": "260652cfe98cc012785d18a6d2c05a752ba5b18ccd12658cddcec291c9d40a61",
+      "gitPath": "src/main/java/scala/tools/asm/tree/MultiANewArrayInsnNode.java",
+      "gitBlobSha1": "85c463d8e85056b5d66ef0aba9f5f0478d371ced",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/ParameterNode.java",
+      "bytes": 2720,
+      "sha256": "254f79f93675217d8c329f4201db8fc9d6e6a0e05172070547f9af1b573d0270",
+      "gitPath": "src/main/java/scala/tools/asm/tree/ParameterNode.java",
+      "gitBlobSha1": "95accf0296cc19b3e2b6f9858a5b2a7f9546f5f6",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/RecordComponentNode.java",
+      "bytes": 8444,
+      "sha256": "50e596ef573b2ab0fc888d6d4d6a6f07e539171d9db5e6df4d70dcfaf644da40",
+      "gitPath": "src/main/java/scala/tools/asm/tree/RecordComponentNode.java",
+      "gitBlobSha1": "45f94b7bacd34c9e7d99e238bad8c6fd8e8eaa13",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/TableSwitchInsnNode.java",
+      "bytes": 3563,
+      "sha256": "412464aa6d69f3c590ea6131734791f7d3b469f0c268a8bc603faae194aabeba",
+      "gitPath": "src/main/java/scala/tools/asm/tree/TableSwitchInsnNode.java",
+      "gitBlobSha1": "638d9dcc0ce526dedb0623aa0138492a5863ffba",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/TryCatchBlockNode.java",
+      "bytes": 5239,
+      "sha256": "b4713d96b2b1f9d8fd5b6354276f69d01fadbe94bfe8b95ed019604f2b025c6d",
+      "gitPath": "src/main/java/scala/tools/asm/tree/TryCatchBlockNode.java",
+      "gitBlobSha1": "05c69359a041a6ac99fb3d9c4430fab33352f446",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/TypeAnnotationNode.java",
+      "bytes": 4009,
+      "sha256": "ce1830c39b37b311cb5fd9151fbd81a859d3c76811da67a687b452024db3d690",
+      "gitPath": "src/main/java/scala/tools/asm/tree/TypeAnnotationNode.java",
+      "gitBlobSha1": "927359f1cdf70fe4b2ed039986e74576b79e53b2",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/TypeInsnNode.java",
+      "bytes": 3339,
+      "sha256": "7895ad0e83d6e0639b4da16f961e6868799fb7aee3109aa6fbc556ff90b95abb",
+      "gitPath": "src/main/java/scala/tools/asm/tree/TypeInsnNode.java",
+      "gitBlobSha1": "5d29a4ff3889ba21cfd213c4bee5bfa486164017",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/UnsupportedClassVersionException.java",
+      "bytes": 518,
+      "sha256": "9c118f09575feca8e6d1acf353b7a6325664112ea41c10fae59a42c91aaffa46",
+      "gitPath": "src/main/java/scala/tools/asm/tree/UnsupportedClassVersionException.java",
+      "gitBlobSha1": "f0416c2d138648d40c5e01a091b22ea389bd72d7",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": false
+    },
+    {
+      "member": "scala/tools/asm/tree/Util.java",
+      "bytes": 5631,
+      "sha256": "5d6a4438d440ea3a1a0dd1eb81909630040ed988331f96f33dc231f79b8acaa0",
+      "gitPath": "src/main/java/scala/tools/asm/tree/Util.java",
+      "gitBlobSha1": "bd1eb40de7e4f1cf8391b5f3e96de187d40f4b43",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/VarInsnNode.java",
+      "bytes": 3264,
+      "sha256": "34631b07d3c3229d9ab5669e4af3a172e9068eb27794184422c3a9ab9fe57498",
+      "gitPath": "src/main/java/scala/tools/asm/tree/VarInsnNode.java",
+      "gitBlobSha1": "5e86a4ce072a813179e496b1dbebb24d6fcb4c75",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/Analyzer.java",
+      "bytes": 31090,
+      "sha256": "5bf7fbdc21fddbbcae3501ac7f96411ed6c37134c69a827343459730acdd6a07",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/Analyzer.java",
+      "gitBlobSha1": "5076ecbe2a71950627f8202d4985d59419cdee79",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/AnalyzerException.java",
+      "bytes": 3448,
+      "sha256": "f3a3580242300349b6d9a0b304b4f6bfdd191739e1664113b50e3ed46edb8f0b",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/AnalyzerException.java",
+      "gitBlobSha1": "0c10765970d9e9835d45b5cf075695e69baa2799",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/BasicInterpreter.java",
+      "bytes": 11441,
+      "sha256": "eef3cd166aea715e49fb6e9d057266da006687ba2adae25efac487388b661766",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/BasicInterpreter.java",
+      "gitBlobSha1": "efb09edcd5180fe9971ff770be16c8711df0de08",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/BasicValue.java",
+      "bytes": 4442,
+      "sha256": "4d4883737bdfc789cac03dd5ddb12484334f021960b5db78880250e0c9abd9a9",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/BasicValue.java",
+      "gitBlobSha1": "d8d148221bbe288d57f5da780c77ff187c51b7d7",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/BasicVerifier.java",
+      "bytes": 14355,
+      "sha256": "fbe207a1c2b7926494e77815aec6f42eeeaa6b07a118645db16e074cf7b78983",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/BasicVerifier.java",
+      "gitBlobSha1": "6784091b5bfb1e0f2a8572a80a3a9b1e090a6f25",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/Frame.java",
+      "bytes": 26083,
+      "sha256": "f90fd1626321c801e80c30a8c493a5e7d4d187365ff0ed591202466603f3b7a7",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/Frame.java",
+      "gitBlobSha1": "66a838a2443858c2beb6663cdf154b09c485e6eb",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/Interpreter.java",
+      "bytes": 12244,
+      "sha256": "4c2ecc6e3f18f0a8f46b3e5afec89130b8cb2684a85a2137d0784daf5acd9e9e",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/Interpreter.java",
+      "gitBlobSha1": "73bc523f0a0da7f87d0537fe983f164677dcd855",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/SimpleVerifier.java",
+      "bytes": 17530,
+      "sha256": "22a786caf7e05d1ef73d2a5eda607960a1329f0a083aa41593cd67cb9087f7c3",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/SimpleVerifier.java",
+      "gitBlobSha1": "1912f9c8599273f826485d1bf8ab73fbee59cdff",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/SmallSet.java",
+      "bytes": 6787,
+      "sha256": "0abe6e4e7000bbfbf978a8dc02abdbf354d62174b93dccb986d10f79a7512299",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/SmallSet.java",
+      "gitBlobSha1": "7910604265cfca740688e68a85646cfcc2b79878",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/SourceInterpreter.java",
+      "bytes": 7538,
+      "sha256": "f842dca88991cd4407876678f92472631d7f2567451579aef1ccb1f101272e91",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/SourceInterpreter.java",
+      "gitBlobSha1": "82795afba7b98e193dc376507c85bc4ce7e278e1",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/SourceValue.java",
+      "bytes": 4316,
+      "sha256": "88e999930e1aa73ac1b87ba6e27a6674d19dde9e7080b6af10d559e8426b8659",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/SourceValue.java",
+      "gitBlobSha1": "4c7058445fa2726298eb8f09be8abf3c22513c95",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/Subroutine.java",
+      "bytes": 4144,
+      "sha256": "6ab57dd0f45572f92038606cc5d38a7dc29d3fda95ee17f51a3e03248e000e60",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/Subroutine.java",
+      "gitBlobSha1": "be21bfe0855ab38d594ffaa1e477cbdf423bbca8",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/tree/analysis/Value.java",
+      "bytes": 2069,
+      "sha256": "c2d3ce99687e192e033e60aae2922acfc5f7cb7224e7e07ae7b4fe34f7605b46",
+      "gitPath": "src/main/java/scala/tools/asm/tree/analysis/Value.java",
+      "gitBlobSha1": "edd2a742830262b3dfe9cfa2f99985b56c7adedd",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/ASMifier.java",
+      "bytes": 56714,
+      "sha256": "07070b5567827336cdad451fd5523abface512d00db2bd48918186d856e1be55",
+      "gitPath": "src/main/java/scala/tools/asm/util/ASMifier.java",
+      "gitBlobSha1": "87485c1cd8d2fb238250b8c47b5e69daf12e4d2f",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/ASMifierSupport.java",
+      "bytes": 2418,
+      "sha256": "ee5f6fa05f9e92394753ba0324762eeef5ce97729a00959d04fae5d2834cb75a",
+      "gitPath": "src/main/java/scala/tools/asm/util/ASMifierSupport.java",
+      "gitBlobSha1": "1d8da131e34926b29972cbd911ea58dcc0416ad7",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/CheckAnnotationAdapter.java",
+      "bytes": 5114,
+      "sha256": "f362c8198a925d9b792c487f68af1dd1e578fef60bf714434b2c0ab51ba17485",
+      "gitPath": "src/main/java/scala/tools/asm/util/CheckAnnotationAdapter.java",
+      "gitBlobSha1": "147356697427a534c10eae625daa522a414055f6",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/CheckClassAdapter.java",
+      "bytes": 42453,
+      "sha256": "3faec44e1372264b148e35aecffb9a71e45aa276c65a7190d19f11ffa737aa98",
+      "gitPath": "src/main/java/scala/tools/asm/util/CheckClassAdapter.java",
+      "gitBlobSha1": "b41d1da06c6654d9d65bbe5fa146e30a85193e31",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/CheckFieldAdapter.java",
+      "bytes": 4709,
+      "sha256": "a1c96f955e9784a5052dbdb21f029a546337e7982132d4803f490f6c8c2aeef5",
+      "gitPath": "src/main/java/scala/tools/asm/util/CheckFieldAdapter.java",
+      "gitBlobSha1": "ca4f4cd0d18d979e1949b52ca919462493eae940",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/CheckFrameAnalyzer.java",
+      "bytes": 22106,
+      "sha256": "6012fd0dd9f101c5c7a2ad172e0b780b6c5904bdabaf18d8288f6cd9b5e66a0f",
+      "gitPath": "src/main/java/scala/tools/asm/util/CheckFrameAnalyzer.java",
+      "gitBlobSha1": "4df0a29494ffd7d98f0fc7e2255c14eaa858c6ba",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/CheckMethodAdapter.java",
+      "bytes": 55956,
+      "sha256": "38bb3fad6849cfd587753eb8091e9f603958cb6b16b2c0cb5f9be21fbaf27066",
+      "gitPath": "src/main/java/scala/tools/asm/util/CheckMethodAdapter.java",
+      "gitBlobSha1": "fe359adea1d01b24ef502f137a0dadb0847227c2",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/CheckModuleAdapter.java",
+      "bytes": 8483,
+      "sha256": "3986e6404babc1c43dbe9a7f088d3e0e07633a8ebe33ca0971a731bd5340e3b1",
+      "gitPath": "src/main/java/scala/tools/asm/util/CheckModuleAdapter.java",
+      "gitBlobSha1": "3fcd57ce047f0e7e06b486b2fd1db5967439dc42",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/CheckRecordComponentAdapter.java",
+      "bytes": 4969,
+      "sha256": "0a67e7446e94ffec5e1eea2911eee842fe9427351e007e927b5f86aaba3e81cb",
+      "gitPath": "src/main/java/scala/tools/asm/util/CheckRecordComponentAdapter.java",
+      "gitBlobSha1": "c5165a917dac83c749aaa95c5f687a2836d5c476",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/CheckSignatureAdapter.java",
+      "bytes": 12832,
+      "sha256": "d324526c62741578a8534b1eb0d0899923d49d46e223f78b660d555c2d9d74a6",
+      "gitPath": "src/main/java/scala/tools/asm/util/CheckSignatureAdapter.java",
+      "gitBlobSha1": "0b121a6fc3eb5fd572ac90b4312e28394c35c587",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/Printer.java",
+      "bytes": 55849,
+      "sha256": "c8e1b98e432c92ffbc99652ce5dc81d47fa294e7f96f55a087ae79194aefeae7",
+      "gitPath": "src/main/java/scala/tools/asm/util/Printer.java",
+      "gitBlobSha1": "821201ebaf1d9fd21c5f8f54d5eeea96c6719969",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/Textifier.java",
+      "bytes": 56617,
+      "sha256": "4c68394e177e443ed48e21ce899dd22d60f6d9f64ac0833018e7b3c4b05c339d",
+      "gitPath": "src/main/java/scala/tools/asm/util/Textifier.java",
+      "gitBlobSha1": "53b24a888946b0a9cc93b59673e251b61ec38699",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/TextifierSupport.java",
+      "bytes": 2194,
+      "sha256": "9f97e68f9cb83c0aa587c2e174dda844cc291aaa2e0f0224790f3709c7335414",
+      "gitPath": "src/main/java/scala/tools/asm/util/TextifierSupport.java",
+      "gitBlobSha1": "b0b64ef2d2640d967b427467f1442d1b1367b168",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/TraceAnnotationVisitor.java",
+      "bytes": 3679,
+      "sha256": "9c029c09bce92e5ed8123e7e711a72a3b8428d2a44e9e0fbbe67e004675ce0b5",
+      "gitPath": "src/main/java/scala/tools/asm/util/TraceAnnotationVisitor.java",
+      "gitBlobSha1": "98ef42405c3fd65a0f31ce482ad3cce9acd25bbc",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/TraceClassVisitor.java",
+      "bytes": 8772,
+      "sha256": "6d117cdbf88dec69e30a17071ddafa548c2ef9ca01e314b81e51c510abff4958",
+      "gitPath": "src/main/java/scala/tools/asm/util/TraceClassVisitor.java",
+      "gitBlobSha1": "7a1ef2e1b1f709f467d79a0a806a3b05dcf13bc9",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/TraceFieldVisitor.java",
+      "bytes": 3771,
+      "sha256": "64bd8cf3e5084965c000a465b1e137c44fe91b1c57474ea30fb133a230c161a1",
+      "gitPath": "src/main/java/scala/tools/asm/util/TraceFieldVisitor.java",
+      "gitBlobSha1": "413b3b7b16de578355fbc125c9b0394281058662",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/TraceMethodVisitor.java",
+      "bytes": 11128,
+      "sha256": "a0768974d74f2521ce3984371b671435cf7670e47c1a191ce0a4825bcc967b18",
+      "gitPath": "src/main/java/scala/tools/asm/util/TraceMethodVisitor.java",
+      "gitBlobSha1": "c04ac0f631f05c55e0966b7e930bc19751be6731",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/TraceModuleVisitor.java",
+      "bytes": 3989,
+      "sha256": "7eab844bbcf6f3aac5004f36f1a6699fe4412a5d4493dbd6b540c9f710888efc",
+      "gitPath": "src/main/java/scala/tools/asm/util/TraceModuleVisitor.java",
+      "gitBlobSha1": "bb83c2c3eb348f4450fbf4366fa7f86367320d96",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/TraceRecordComponentVisitor.java",
+      "bytes": 3964,
+      "sha256": "2d32db85f238b8f366623ebbb9c25e4c3168650233840cdb69400a4cf2a975d7",
+      "gitPath": "src/main/java/scala/tools/asm/util/TraceRecordComponentVisitor.java",
+      "gitBlobSha1": "214af8d23a219d237f659e865948e255fee6614b",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    },
+    {
+      "member": "scala/tools/asm/util/TraceSignatureVisitor.java",
+      "bytes": 10526,
+      "sha256": "4d1579b399b2322c73584b7f8e2572ba1aff3786d0d44ab5d5bd9080e2b51854",
+      "gitPath": "src/main/java/scala/tools/asm/util/TraceSignatureVisitor.java",
+      "gitBlobSha1": "1823596f1254de74e7827ad93b334604a7ee0b8b",
+      "gitMode": "100644",
+      "inlineBsdPreambleObserved": true
+    }
+  ],
+  "allPinnedMainJavaMembersAccountedFor": true,
+  "allJavaBytesAndGitModesMatch": true,
+  "noticePreamblePartition": {
+    "javaMembers": 105,
+    "withObservedBsdTerms": 104,
+    "withoutInlineTerms": 1,
+    "rootScopedMembersWithoutInlineTerms": [
+      "scala/tools/asm/tree/UnsupportedClassVersionException.java"
+    ],
+    "absenceOfInlineTermsDoesNotEstablishDifferentLicense": true,
+    "copiedOrGeneratedAttributionExhaustivelyVerified": false
+  },
+  "manifestProjection": {
+    "member": "META-INF/MANIFEST.MF",
+    "bytes": 141,
+    "sha256": "b6956e7ed0b7ade50865e2a08f5445a38c27287872a242e4dc24fd5c2349c699",
+    "properties": {
+      "version": "9.9.0-scala-1",
+      "name": "scala-asm",
+      "organization": "org.scala-lang.modules"
+    },
+    "encoding": "UTF-8 property strings, declared header order, CRLF, terminal blank line; original byte projection only.",
+    "unchangedArchiveMemberMatched": true,
+    "sbtInvoked": false,
+    "actualProducerOrGeneratorVerified": false
+  },
+  "retainedInputs": [
+    {
+      "gitPath": "build.sbt",
+      "gitBlobSha1": "9f5f676d75bbed1e5639f1ba581a2477de00a22c",
+      "gitMode": "100644",
+      "retainedInput": {
+        "file": "scala-asm-inputs/build.sbt.txt",
+        "bytes": 752,
+        "sha256": "ab9295fee10c45e92abc76ec98318d3e31aa17a57a2e1e41c55a0588cc400a38"
+      }
+    },
+    {
+      "gitPath": ".github/workflows/release.yml",
+      "gitBlobSha1": "bbb6734eb5e847766f2088f34cf88f3ffbf84852",
+      "gitMode": "100644",
+      "retainedInput": {
+        "file": "scala-asm-inputs/release.workflow.txt",
+        "bytes": 570,
+        "sha256": "5875e09733e326de83d90a415f57c9ecca170093fb32b700c45c8016844226ab"
+      }
+    },
+    {
+      "gitPath": "LICENSE.txt",
+      "gitBlobSha1": "4d191851af43ec3857c72aeadb09ae15fabe3cad",
+      "gitMode": "100644",
+      "retainedInput": {
+        "file": "scala-component-notices/293b6af371eee28b0ff16f0334ea19e20a3d5522143faa4b95b346855507879a.txt",
+        "bytes": 1598,
+        "sha256": "293b6af371eee28b0ff16f0334ea19e20a3d5522143faa4b95b346855507879a"
+      }
+    }
+  ],
+  "sourceJarWholeBuildBindingVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "preparationAndReceiptIntegrationVerified": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

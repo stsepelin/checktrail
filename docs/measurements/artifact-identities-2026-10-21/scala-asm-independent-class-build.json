@@ -1,0 +1,2251 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent compilation of exact pinned public ASM sources; compiled upstream library classes are never executed.",
+  "compilerRelease": "jdk8u504-b01",
+  "compilerArchiveSha256": "57b7ed8af9d48542bb49ff7894448040b17bea0a48b41677d11ecaec6129768d",
+  "compilerArchiveBytes": 102617391,
+  "officialReleaseMetadataDigestMatched": true,
+  "officialChecksumMatched": true,
+  "compilerPublisherSignatureIndependentlyVerified": false,
+  "selectedSdkFiles": {
+    "bin/java": "485ff4aa923ae188f01a66165bae8b0f7a1748138831db2ab0a31b4324d0effc",
+    "bin/javac": "820a40f8f660ee5d066828ae54d39a2e6418337b7dd490bb383e779bc5c818d3",
+    "lib/tools.jar": "b9e1bd19974c33ad83a920de130eee329f569762df0294b8885d4e9e7562decc",
+    "jre/lib/rt.jar": "3cb5c00f49a23d0a269d0493a06d6f1c757de104dd4dd0d94d13bb8b81fa2da9",
+    "jre/lib/aarch64/server/libjvm.so": "0ab70983280910f2229fcaf379d3e3b34750583245a96c06328ce2b00bb1c7f8",
+    "release": "d09b286a7002fbea71d9d43e41d22cdecf557c46117332ed54a829323c982558"
+  },
+  "baseImageReference": "docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+  "baseImageId": "sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+  "phases": [
+    {
+      "phase": "baseline",
+      "elapsedSeconds": 1.3893746249999999,
+      "classCount": 117,
+      "expectedClassCount": 117,
+      "byteMatched": 117,
+      "missing": [],
+      "extra": [],
+      "different": [],
+      "classFiles": [
+        {
+          "member": "scala/tools/asm/AnnotationVisitor.class",
+          "bytes": 2298,
+          "sha256": "fe0527c687cc9b40c45149c980e714afcbe438a1e2595845107cfc18abc4193a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/AnnotationWriter.class",
+          "bytes": 9276,
+          "sha256": "ee86c4c1402e5f46971a7e13fd68dd0af8b89611c663461564f62f64ae6f76f2",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Attribute$Set.class",
+          "bytes": 1595,
+          "sha256": "ac33ca36f8b1150b4eaeaff50f1c470dcde1366930d2ffbfb76df5e19dd97d37",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Attribute.class",
+          "bytes": 5450,
+          "sha256": "8abfa2ad0ef508f8103567f664627c3083368932a2dce48e0c2915e9ccc6995e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ByteVector.class",
+          "bytes": 5114,
+          "sha256": "ff6699203db850c1ceb150f9bf0a4f2fd41648ba10a05419468aba7b886a4a01",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassReader.class",
+          "bytes": 50177,
+          "sha256": "7926290a5213dd5de4c94c39cab140e4c1d8cbfa06d6062cacea5a9cd7ed5fe8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassTooLargeException.class",
+          "bytes": 982,
+          "sha256": "b37f9d6297bec65b869b7e9ed0065a21c971503f8dee5fc2fd05de4207015c79",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassVisitor.class",
+          "bytes": 5351,
+          "sha256": "f665555803dffb36ab22bcdc7e3bf2b6969bd314fa68dc5a641014104c4a2c62",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassWriter.class",
+          "bytes": 18696,
+          "sha256": "2721acfc1c7247cbbf3b90accb48175e240cfafddf8d6a58add496c89ab2b210",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ConstantDynamic.class",
+          "bytes": 2649,
+          "sha256": "e93233eea1b15b78ff85d28632946f51d1807dc8f63efe2bd5ddfcc95dfb5605",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Constants.class",
+          "bytes": 6985,
+          "sha256": "60972d6af4e37889f1a794967b9c9fa9e6640545b32256154385f8f2a026480d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Context.class",
+          "bytes": 1086,
+          "sha256": "4503fd8fb3e0a187716b45cf266daeb16abce039923607df2ae3c7c07dd7e2b5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/CurrentFrame.class",
+          "bytes": 931,
+          "sha256": "87264240d73a2ba7d46f812a1c2997c053d9b10cd54dc8fd53050ad6a09e68fd",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Edge.class",
+          "bytes": 611,
+          "sha256": "9af9ae89148749f799b86844095b0a530018d5aabe92659fdd8e2428c95f0a32",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/FieldVisitor.class",
+          "bytes": 2277,
+          "sha256": "2a9e3054b4fb65cb7b617015a104e10bff03064665155969037fe371a6777c86",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/FieldWriter.class",
+          "bytes": 4966,
+          "sha256": "b217841eda7ced92590d37c20c6df26be98102cfa55e25a982bf906c6f4f0680",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Frame.class",
+          "bytes": 19036,
+          "sha256": "b91578f3671c78cc63748a541cc094533b655bcabfb2472ce39e11d599892b37",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Handle.class",
+          "bytes": 2320,
+          "sha256": "7394703681e9d523c8c4bde6d81f6d47838981b635841dfd87c8da8cb80f2d42",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Handler.class",
+          "bytes": 2422,
+          "sha256": "e7a7a92f30c2f9b1bb4ee507650accd9d20b09131be6ad9b32cbb1d0f63f8b31",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Label.class",
+          "bytes": 6415,
+          "sha256": "7bf7f557a64872aa960ede5091d97516c7495f92ff1a0c9a135038d624435c9d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/MethodTooLargeException.class",
+          "bytes": 1299,
+          "sha256": "1391a71cc93afcf5f4b7807fafee604e5189426a3ecbccd8ace37bda8634012e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/MethodVisitor.class",
+          "bytes": 9203,
+          "sha256": "148ddcf3d14ce72bcc1f6b53244cab6bce557a7c1e4e06a33db77b96cb591f01",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/MethodWriter.class",
+          "bytes": 34585,
+          "sha256": "f4e137210f7178396a92a2023e312deba04eb9fe40398a38d7060b86c13531b8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ModuleVisitor.class",
+          "bytes": 2672,
+          "sha256": "abb40bedf34c6459a5ea8dc661e67c5eff000575822eb9cc587804359fd09b97",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ModuleWriter.class",
+          "bytes": 4605,
+          "sha256": "1d46076752620b81626783292ded0a6b72db164cbd9482133a9216e061d21b19",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Opcodes.class",
+          "bytes": 7815,
+          "sha256": "10ef14de6b499b9e221244f3aa3342769a11d40693d7b82a6dc66f01edb59d6a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/RecordComponentVisitor.class",
+          "bytes": 2233,
+          "sha256": "bec392d443d19c9bbfe71592abd810e2b0eabb8ff952e38ec69dd01e69f76b62",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/RecordComponentWriter.class",
+          "bytes": 4306,
+          "sha256": "f37dafbf65fd742ceb9cf62db753bfe3fd2b9575ba2e14775337455bd87a1114",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Symbol.class",
+          "bytes": 1926,
+          "sha256": "4741089d4bcde231ff7fcc48f0f033aec0cdab7f308980301c04dc882c4d7ee2",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/SymbolTable$Entry.class",
+          "bytes": 1481,
+          "sha256": "72a33d6cd3b17ecaac2d2ce668e094dfced69cbbb9ffa6c142fbe7d169dcf8b0",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/SymbolTable$LabelEntry.class",
+          "bytes": 592,
+          "sha256": "a0a28ef60e87182060b020dd8e964615cedcd28d39474c4126b323595b257bda",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/SymbolTable.class",
+          "bytes": 22574,
+          "sha256": "714b8fb4b88a0e7b21b74c91c99bc5b3a3bec363e394cc7ec5d986484cfcec82",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Type.class",
+          "bytes": 12319,
+          "sha256": "9075daaf3b14fb669b1cddd6aaf1f6c7945e837e486aaef8483afed3171c6bde",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/TypePath.class",
+          "bytes": 2791,
+          "sha256": "7535fd29f7c7dd1b7998aae0661ccf18a8694d55934a3c24061f2240b7cc918a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/TypeReference.class",
+          "bytes": 4177,
+          "sha256": "d79621fadf679c2c5973aac5bea3b93a3361a0d55d9e26ee316250a11b7be86c",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/commons/CodeSizeEvaluator.class",
+          "bytes": 4490,
+          "sha256": "02e1b2ba83566626240b067e02f9d831b99d2c5be4329befb73339fcf44735a4",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/signature/SignatureReader.class",
+          "bytes": 3108,
+          "sha256": "57a7791dc954c725cd519c3c63323aad4b7ce63c464caa7ded093e957b1207bd",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/signature/SignatureVisitor.class",
+          "bytes": 2478,
+          "sha256": "2aa6214ac3456f78ea409de013599b1c83dea3b72c7efb5acb679d1b183463c5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/signature/SignatureWriter.class",
+          "bytes": 3348,
+          "sha256": "0ca6e232890b2b63577321e7a358931636bf8b50f5cfab70ebab7550d2dbdbe6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/AbstractInsnNode.class",
+          "bytes": 4727,
+          "sha256": "86955911f9bbaf64b3aee33d37ea81ff54996a7e13e123d07233384bb9480a24",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/AnnotationNode.class",
+          "bytes": 4593,
+          "sha256": "12d0056e2c3db0b462c97a50d78fc3b9027a477e1142b4e06538ef55b014fe4f",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ClassNode.class",
+          "bytes": 9658,
+          "sha256": "76fe8229d585ad2c6952ed1a38174fc9e7ff084a79e99990bf909c66d40ce2ee",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/FieldInsnNode.class",
+          "bytes": 1708,
+          "sha256": "59bbfbd7108e7507b01a2b61f86926c3f477506c581979fb1e4dedcd4c4944d1",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/FieldNode.class",
+          "bytes": 4551,
+          "sha256": "f274b571a5080370a4f020986720a81c6f0a7abec9ddb23c5685dbdd6d3fd6a3",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/FrameNode.class",
+          "bytes": 3280,
+          "sha256": "5a367dd5d054b94fecb933d52e007ec088c6b8ccd2345b6ebe73cc3c2c9e77a4",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/IincInsnNode.class",
+          "bytes": 1461,
+          "sha256": "63795012802eef5191cccfa186653038ad97cbaa40a5326a6ec397976474750d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InnerClassNode.class",
+          "bytes": 887,
+          "sha256": "4fdac03c984e6bc9b838c9f04c28dc1d28d3ef25004a32f880a5785572666fde",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InsnList$InsnListIterator.class",
+          "bytes": 2985,
+          "sha256": "9a7bdb30be91add2dfa562cbd914ebcea4f6e1e7a53439e5b7cde0c79c2e0480",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InsnList.class",
+          "bytes": 6578,
+          "sha256": "937e8284b1f034467a14a13035bda8e21e95277039b967ff96daf4ca5917af04",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InsnNode.class",
+          "bytes": 1319,
+          "sha256": "9af8c5771d6b9a0cff0b00c2896271d5895682f061f31de2060ea5556875f6e9",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/IntInsnNode.class",
+          "bytes": 1502,
+          "sha256": "3ad670922441a6cda31c123d5e8747c284a8172ac67be66cff7b68708e508359",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InvokeDynamicInsnNode.class",
+          "bytes": 1809,
+          "sha256": "3581f41dc468ed66e1cc166ca359781b5fd934b6206c9457c53e5c74326f31a4",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/JumpInsnNode.class",
+          "bytes": 1787,
+          "sha256": "bc933f95c4a464056775a848a9c266ce3ffb75b01dd7de97946dd6fcce8cb9d9",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LabelNode.class",
+          "bytes": 1663,
+          "sha256": "6feec47e349ecae77c9454a9128e961774e14fc719ab7be5cf1d5b05302ee2b8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LdcInsnNode.class",
+          "bytes": 1430,
+          "sha256": "3f5fbc59c485ad9a62765541731a238179df62d3cac84df0e77c87bf6b1dd6a3",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LineNumberNode.class",
+          "bytes": 1556,
+          "sha256": "fd72121de034c0203c275bd3f3312cbcffd7b60dc36ab522935450b5fc229448",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LocalVariableAnnotationNode.class",
+          "bytes": 2648,
+          "sha256": "e95fcd220f8097ed4cbdf6089e14bc6f08f719e06df3df2a1c1bca45c947fe7e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LocalVariableNode.class",
+          "bytes": 1321,
+          "sha256": "31e641c82ce0db0b7f8a9ef5721b845248bc87bd0da460cd906842dd89aa9abb",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LookupSwitchInsnNode.class",
+          "bytes": 2800,
+          "sha256": "3324b7c48038e45d5398693a6d88d4f26bc1e5226e4e292623140993f4388048",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MethodInsnNode.class",
+          "bytes": 2127,
+          "sha256": "42588134089e21ec6b0cd8f8e6bf21cf967526c6f889631441fedd1e954f739b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MethodNode$1.class",
+          "bytes": 897,
+          "sha256": "d74d8f06bf136dd3bc07f2639c7f5c4f1b0a7fff829caec11e169eb578449a7e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MethodNode.class",
+          "bytes": 18208,
+          "sha256": "7ad3904940b60ebf93d752527a7a702a7c145ba21dd7752e629bea0f195da6fa",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleExportNode.class",
+          "bytes": 1287,
+          "sha256": "fb3feeecf39753c9126418a5abda288f3d51d90f7eef9d5bd425daf05ea376e5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleNode.class",
+          "bytes": 5151,
+          "sha256": "6ec318f9a9c42b86b02a9e0137556b56c781a4852dda61131b7c1100c3bbb1c6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleOpenNode.class",
+          "bytes": 1279,
+          "sha256": "d9acf3ca3edc303ac8e7bc3845c147d0d39ae46efc601d6281e14f82210ff340",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleProvideNode.class",
+          "bytes": 1137,
+          "sha256": "2f30f899adb057c71d7e85c4bb661bb027762b421f66f9f8358a99a93b3a0882",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleRequireNode.class",
+          "bytes": 821,
+          "sha256": "e747c777195f3628e08efb7311ef4dc194e10e75e666528c560ebf130d35f1c5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MultiANewArrayInsnNode.class",
+          "bytes": 1558,
+          "sha256": "d3174c80baa5f9cfd3732d409e8291072dfba882084f6fa7857b0d6547f2673b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ParameterNode.class",
+          "bytes": 736,
+          "sha256": "e021deff85a4cff2b6ccbc20aaefc5bdc47661979374cedd03f5ca04fecdd415",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/RecordComponentNode.class",
+          "bytes": 4329,
+          "sha256": "5cdae62c8e7820e8db70a8869da1d1d5643b8f0bc39701ff5c8094a31b6b2a7e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TableSwitchInsnNode.class",
+          "bytes": 2522,
+          "sha256": "78e26f7c6f2d6f4f8ff822273886b95a0764e331710ce0c37236673813ea8d78",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TryCatchBlockNode.class",
+          "bytes": 2566,
+          "sha256": "face489d43da61d08a0ba7b89c88f8c1bb3372dba2eb66d2bf55304baf9643de",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TypeAnnotationNode.class",
+          "bytes": 1101,
+          "sha256": "60aa22a58d32170e287c2f1ca69aa18e81e2f4ebe4358ea5003c4ebb62622a11",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TypeInsnNode.class",
+          "bytes": 1548,
+          "sha256": "2b70a2381f5a8591849a1459f4f87f08c7ec4b1369fbc966685c0e95894d9971",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/UnsupportedClassVersionException.class",
+          "bytes": 437,
+          "sha256": "00ce29db434490ff651657ae0d251ee5d497965b94b0a25d81553568e78a6d99",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/Util.class",
+          "bytes": 5353,
+          "sha256": "4c768f594f5d557e03fd3edfdd00548e79b18e2ceadcade6451881a32aa24e79",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/VarInsnNode.class",
+          "bytes": 1509,
+          "sha256": "7845a793d986d0f4aa3c5295852b96594b5fcb70f6ba53b6cdbcd628009c57ad",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Analyzer.class",
+          "bytes": 16889,
+          "sha256": "2a2a3e22fd2b25f407a37db2265bb41bc63d15cd27f636a1f3590b5147eacf32",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/AnalyzerException.class",
+          "bytes": 1814,
+          "sha256": "1792167fac2826af0e77d3ce26bcd530bc37ff6063e6a657b418f488062354e3",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/BasicInterpreter.class",
+          "bytes": 9388,
+          "sha256": "12973448b8acfc4ae8ea1a1408249955b1f37ab86a30eaa8b489df083047b73f",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/BasicValue.class",
+          "bytes": 2049,
+          "sha256": "eb5f908bcc759ce37e3992c1ff06c9fc2a388a81dadfdbf628368d8e162162cc",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/BasicVerifier.class",
+          "bytes": 10655,
+          "sha256": "b09c0e53e2fff3975ca6b5f74b1cecd84226efab763a5dabfe1f887157373d45",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Frame.class",
+          "bytes": 13682,
+          "sha256": "efe61264aa75b10da4d8f80b24e1bd0e4b94428d2dcf528d51056cd0ff670045",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Interpreter.class",
+          "bytes": 3752,
+          "sha256": "16eb66ffdf36ffbbf5d0b38a51924fb1bc81d182e624bb03dee9a41a374f9031",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SimpleVerifier.class",
+          "bytes": 8276,
+          "sha256": "e62b0fae94372d9bd0c2eb22f29d4d3130e133d79106d558df7af924b502219a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SmallSet$IteratorImpl.class",
+          "bytes": 1439,
+          "sha256": "f15cd0ebef0648f45e281022d8243a5d3a73fb946564af4865ab591f9b748b4d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SmallSet.class",
+          "bytes": 2190,
+          "sha256": "2fe4e7bebe2be91e5392cd8e2b1c886fcc2cfa3557ce0b84cb97da5afa0cca33",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SourceInterpreter.class",
+          "bytes": 8070,
+          "sha256": "2e0152a6d12800321b0604e2fa9edec464799f1757ae0bfc1e7167dd51d24185",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SourceValue.class",
+          "bytes": 1604,
+          "sha256": "51fd0f95fac687eb2252c0f2d96df7df9a1123652eca2cc2852b416117a6536a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Subroutine.class",
+          "bytes": 1695,
+          "sha256": "e1d06d8d4fc6e1193f9ea2ae3060682f1ea56568e15e0eae61df86cfc9cb69bb",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Value.class",
+          "bytes": 145,
+          "sha256": "91ccce24de4ecf86c8af364cba9ad7f0f9145718460498e490bdcd635c9cfe34",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/ASMifier.class",
+          "bytes": 38889,
+          "sha256": "523b2279c76e646ab87d24183590d5465c54a0c94b04c26acd3ed24e93b9d6e1",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/ASMifierSupport.class",
+          "bytes": 429,
+          "sha256": "a31924a28b3bd91aa24bcea5f197a480e6dad745ad8be4c79c8ce74037af218d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckAnnotationAdapter.class",
+          "bytes": 3033,
+          "sha256": "9d13133a7147d171362a5e7beab9601787c2f09c984164ff7e3ebe58e8f7d48b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckClassAdapter$1.class",
+          "bytes": 678,
+          "sha256": "971b668e8dd87488eeca87a13257416a31852c869fceba66cd9e7c33484f1478",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckClassAdapter.class",
+          "bytes": 22668,
+          "sha256": "f33e9de817e46ce6742a0454165f851bf6be8f3944a757dd7b2289a0893a884f",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckFieldAdapter.class",
+          "bytes": 2797,
+          "sha256": "fbf68ea9de5f95d255890707a4af42975014e7ede16e60717b6130c2dc9fecb8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckFrameAnalyzer.class",
+          "bytes": 12883,
+          "sha256": "992adf0b80052d22a3ea9c850ed48c6339fa34c24952343a79bd854ab4c0e38a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter$1.class",
+          "bytes": 3768,
+          "sha256": "0f2348fa566bb7d8e987ad3d3d2738fa7038dc26e0cc44e13df3665f376d98a8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter$Method.class",
+          "bytes": 1590,
+          "sha256": "eae34436a25c7bdc823397712f62b58768677e5d7d338efdc8707ecb5727c757",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter$MethodWriterWrapper.class",
+          "bytes": 1236,
+          "sha256": "621960cbd5cb19cc436e999a150972bd9ae98ccc745df44027fb5ac49464ffab",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter.class",
+          "bytes": 27521,
+          "sha256": "966c06d6d9c529ed4513a92e34d3e9bf6988f713732f8b0e49f217b5d1980a84",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckModuleAdapter$NameSet.class",
+          "bytes": 1164,
+          "sha256": "9bdb09ba00fdeb61b43ac1e5c7e1db9f1f35d349963e92434b6ad14ec1226917",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckModuleAdapter.class",
+          "bytes": 4571,
+          "sha256": "dd48d564b632b6e9829fcaea5c654e64e8f8958c8c5cc253e8a49f85e66431aa",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckRecordComponentAdapter.class",
+          "bytes": 2877,
+          "sha256": "d94ce77bf56e2f507eec278b2444598b88261c35d60c9455e5e85ec9c8768388",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckSignatureAdapter$State.class",
+          "bytes": 1660,
+          "sha256": "4cbaa4b51a643349e12c71c04422e4208d898828bb96aff2532f5dbcaf15e234",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckSignatureAdapter.class",
+          "bytes": 7332,
+          "sha256": "08f0c3221f24c9a271c8eb5c0fe5fa18cb8f42033df2c2ea6c46561add4a7593",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/Printer.class",
+          "bytes": 16698,
+          "sha256": "fa487e510ae6b3673cc8ecf32d01c81fb887071a227d0db77a09e9e3d8f67484",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/Textifier.class",
+          "bytes": 37413,
+          "sha256": "8edbc91939a972308250e1de1b0926338fb64dcfc6fe14b5afefee8bb00266e6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TextifierSupport.class",
+          "bytes": 370,
+          "sha256": "1b6d11352708fee3a892d88bbc9cbef925d6a73201f4e945e27d6df432e87bd7",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceAnnotationVisitor.class",
+          "bytes": 2058,
+          "sha256": "de903e297f841f2134304b23ec2a3ef0263885816461055379bb649fbc565e4b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceClassVisitor.class",
+          "bytes": 6353,
+          "sha256": "cc3301e5956d24af542caff06dca41bbfb3be2608379da498ad3f941962d49db",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceFieldVisitor.class",
+          "bytes": 2148,
+          "sha256": "2d4c60573a322a2050c3cd9e9a4a853553d813c1a0f5468a81ab2a980c6d26d2",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceMethodVisitor.class",
+          "bytes": 8743,
+          "sha256": "266aeedca07fd4b779676925f28ead2751a3d8a7a374b96f2d37e2fab3cc91e6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceModuleVisitor.class",
+          "bytes": 2248,
+          "sha256": "11ded07b657109aa04a7fa9a774f09b6118ddbaf55d7eacb70b7f6f114f57799",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceRecordComponentVisitor.class",
+          "bytes": 2268,
+          "sha256": "fb16f09a055c1aaddb707292cde1c27575bb7b8c75b9b3ec8016ab21caddfe13",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceSignatureVisitor.class",
+          "bytes": 6098,
+          "sha256": "3aae71bb20e229252370b891e1bb2a804a5de3c0feb62fab0f05a9afe963ec8c",
+          "matchesSelectedBinary": true
+        }
+      ]
+    },
+    {
+      "phase": "changed",
+      "elapsedSeconds": 0.9901328330000001,
+      "classCount": 117,
+      "expectedClassCount": 117,
+      "byteMatched": 116,
+      "missing": [],
+      "extra": [],
+      "different": ["scala/tools/asm/ClassReader.class"],
+      "classFiles": [
+        {
+          "member": "scala/tools/asm/AnnotationVisitor.class",
+          "bytes": 2298,
+          "sha256": "fe0527c687cc9b40c45149c980e714afcbe438a1e2595845107cfc18abc4193a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/AnnotationWriter.class",
+          "bytes": 9276,
+          "sha256": "ee86c4c1402e5f46971a7e13fd68dd0af8b89611c663461564f62f64ae6f76f2",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Attribute$Set.class",
+          "bytes": 1595,
+          "sha256": "ac33ca36f8b1150b4eaeaff50f1c470dcde1366930d2ffbfb76df5e19dd97d37",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Attribute.class",
+          "bytes": 5450,
+          "sha256": "8abfa2ad0ef508f8103567f664627c3083368932a2dce48e0c2915e9ccc6995e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ByteVector.class",
+          "bytes": 5114,
+          "sha256": "ff6699203db850c1ceb150f9bf0a4f2fd41648ba10a05419468aba7b886a4a01",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassReader.class",
+          "bytes": 50173,
+          "sha256": "a213995a640a1653d1c4070a8317fd58c9d09f29e484c10147735039cd6b4e4e",
+          "matchesSelectedBinary": false
+        },
+        {
+          "member": "scala/tools/asm/ClassTooLargeException.class",
+          "bytes": 982,
+          "sha256": "b37f9d6297bec65b869b7e9ed0065a21c971503f8dee5fc2fd05de4207015c79",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassVisitor.class",
+          "bytes": 5351,
+          "sha256": "f665555803dffb36ab22bcdc7e3bf2b6969bd314fa68dc5a641014104c4a2c62",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassWriter.class",
+          "bytes": 18696,
+          "sha256": "2721acfc1c7247cbbf3b90accb48175e240cfafddf8d6a58add496c89ab2b210",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ConstantDynamic.class",
+          "bytes": 2649,
+          "sha256": "e93233eea1b15b78ff85d28632946f51d1807dc8f63efe2bd5ddfcc95dfb5605",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Constants.class",
+          "bytes": 6985,
+          "sha256": "60972d6af4e37889f1a794967b9c9fa9e6640545b32256154385f8f2a026480d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Context.class",
+          "bytes": 1086,
+          "sha256": "4503fd8fb3e0a187716b45cf266daeb16abce039923607df2ae3c7c07dd7e2b5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/CurrentFrame.class",
+          "bytes": 931,
+          "sha256": "87264240d73a2ba7d46f812a1c2997c053d9b10cd54dc8fd53050ad6a09e68fd",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Edge.class",
+          "bytes": 611,
+          "sha256": "9af9ae89148749f799b86844095b0a530018d5aabe92659fdd8e2428c95f0a32",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/FieldVisitor.class",
+          "bytes": 2277,
+          "sha256": "2a9e3054b4fb65cb7b617015a104e10bff03064665155969037fe371a6777c86",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/FieldWriter.class",
+          "bytes": 4966,
+          "sha256": "b217841eda7ced92590d37c20c6df26be98102cfa55e25a982bf906c6f4f0680",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Frame.class",
+          "bytes": 19036,
+          "sha256": "b91578f3671c78cc63748a541cc094533b655bcabfb2472ce39e11d599892b37",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Handle.class",
+          "bytes": 2320,
+          "sha256": "7394703681e9d523c8c4bde6d81f6d47838981b635841dfd87c8da8cb80f2d42",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Handler.class",
+          "bytes": 2422,
+          "sha256": "e7a7a92f30c2f9b1bb4ee507650accd9d20b09131be6ad9b32cbb1d0f63f8b31",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Label.class",
+          "bytes": 6415,
+          "sha256": "7bf7f557a64872aa960ede5091d97516c7495f92ff1a0c9a135038d624435c9d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/MethodTooLargeException.class",
+          "bytes": 1299,
+          "sha256": "1391a71cc93afcf5f4b7807fafee604e5189426a3ecbccd8ace37bda8634012e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/MethodVisitor.class",
+          "bytes": 9203,
+          "sha256": "148ddcf3d14ce72bcc1f6b53244cab6bce557a7c1e4e06a33db77b96cb591f01",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/MethodWriter.class",
+          "bytes": 34585,
+          "sha256": "f4e137210f7178396a92a2023e312deba04eb9fe40398a38d7060b86c13531b8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ModuleVisitor.class",
+          "bytes": 2672,
+          "sha256": "abb40bedf34c6459a5ea8dc661e67c5eff000575822eb9cc587804359fd09b97",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ModuleWriter.class",
+          "bytes": 4605,
+          "sha256": "1d46076752620b81626783292ded0a6b72db164cbd9482133a9216e061d21b19",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Opcodes.class",
+          "bytes": 7815,
+          "sha256": "10ef14de6b499b9e221244f3aa3342769a11d40693d7b82a6dc66f01edb59d6a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/RecordComponentVisitor.class",
+          "bytes": 2233,
+          "sha256": "bec392d443d19c9bbfe71592abd810e2b0eabb8ff952e38ec69dd01e69f76b62",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/RecordComponentWriter.class",
+          "bytes": 4306,
+          "sha256": "f37dafbf65fd742ceb9cf62db753bfe3fd2b9575ba2e14775337455bd87a1114",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Symbol.class",
+          "bytes": 1926,
+          "sha256": "4741089d4bcde231ff7fcc48f0f033aec0cdab7f308980301c04dc882c4d7ee2",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/SymbolTable$Entry.class",
+          "bytes": 1481,
+          "sha256": "72a33d6cd3b17ecaac2d2ce668e094dfced69cbbb9ffa6c142fbe7d169dcf8b0",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/SymbolTable$LabelEntry.class",
+          "bytes": 592,
+          "sha256": "a0a28ef60e87182060b020dd8e964615cedcd28d39474c4126b323595b257bda",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/SymbolTable.class",
+          "bytes": 22574,
+          "sha256": "714b8fb4b88a0e7b21b74c91c99bc5b3a3bec363e394cc7ec5d986484cfcec82",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Type.class",
+          "bytes": 12319,
+          "sha256": "9075daaf3b14fb669b1cddd6aaf1f6c7945e837e486aaef8483afed3171c6bde",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/TypePath.class",
+          "bytes": 2791,
+          "sha256": "7535fd29f7c7dd1b7998aae0661ccf18a8694d55934a3c24061f2240b7cc918a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/TypeReference.class",
+          "bytes": 4177,
+          "sha256": "d79621fadf679c2c5973aac5bea3b93a3361a0d55d9e26ee316250a11b7be86c",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/commons/CodeSizeEvaluator.class",
+          "bytes": 4490,
+          "sha256": "02e1b2ba83566626240b067e02f9d831b99d2c5be4329befb73339fcf44735a4",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/signature/SignatureReader.class",
+          "bytes": 3108,
+          "sha256": "57a7791dc954c725cd519c3c63323aad4b7ce63c464caa7ded093e957b1207bd",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/signature/SignatureVisitor.class",
+          "bytes": 2478,
+          "sha256": "2aa6214ac3456f78ea409de013599b1c83dea3b72c7efb5acb679d1b183463c5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/signature/SignatureWriter.class",
+          "bytes": 3348,
+          "sha256": "0ca6e232890b2b63577321e7a358931636bf8b50f5cfab70ebab7550d2dbdbe6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/AbstractInsnNode.class",
+          "bytes": 4727,
+          "sha256": "86955911f9bbaf64b3aee33d37ea81ff54996a7e13e123d07233384bb9480a24",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/AnnotationNode.class",
+          "bytes": 4593,
+          "sha256": "12d0056e2c3db0b462c97a50d78fc3b9027a477e1142b4e06538ef55b014fe4f",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ClassNode.class",
+          "bytes": 9658,
+          "sha256": "76fe8229d585ad2c6952ed1a38174fc9e7ff084a79e99990bf909c66d40ce2ee",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/FieldInsnNode.class",
+          "bytes": 1708,
+          "sha256": "59bbfbd7108e7507b01a2b61f86926c3f477506c581979fb1e4dedcd4c4944d1",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/FieldNode.class",
+          "bytes": 4551,
+          "sha256": "f274b571a5080370a4f020986720a81c6f0a7abec9ddb23c5685dbdd6d3fd6a3",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/FrameNode.class",
+          "bytes": 3280,
+          "sha256": "5a367dd5d054b94fecb933d52e007ec088c6b8ccd2345b6ebe73cc3c2c9e77a4",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/IincInsnNode.class",
+          "bytes": 1461,
+          "sha256": "63795012802eef5191cccfa186653038ad97cbaa40a5326a6ec397976474750d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InnerClassNode.class",
+          "bytes": 887,
+          "sha256": "4fdac03c984e6bc9b838c9f04c28dc1d28d3ef25004a32f880a5785572666fde",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InsnList$InsnListIterator.class",
+          "bytes": 2985,
+          "sha256": "9a7bdb30be91add2dfa562cbd914ebcea4f6e1e7a53439e5b7cde0c79c2e0480",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InsnList.class",
+          "bytes": 6578,
+          "sha256": "937e8284b1f034467a14a13035bda8e21e95277039b967ff96daf4ca5917af04",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InsnNode.class",
+          "bytes": 1319,
+          "sha256": "9af8c5771d6b9a0cff0b00c2896271d5895682f061f31de2060ea5556875f6e9",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/IntInsnNode.class",
+          "bytes": 1502,
+          "sha256": "3ad670922441a6cda31c123d5e8747c284a8172ac67be66cff7b68708e508359",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InvokeDynamicInsnNode.class",
+          "bytes": 1809,
+          "sha256": "3581f41dc468ed66e1cc166ca359781b5fd934b6206c9457c53e5c74326f31a4",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/JumpInsnNode.class",
+          "bytes": 1787,
+          "sha256": "bc933f95c4a464056775a848a9c266ce3ffb75b01dd7de97946dd6fcce8cb9d9",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LabelNode.class",
+          "bytes": 1663,
+          "sha256": "6feec47e349ecae77c9454a9128e961774e14fc719ab7be5cf1d5b05302ee2b8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LdcInsnNode.class",
+          "bytes": 1430,
+          "sha256": "3f5fbc59c485ad9a62765541731a238179df62d3cac84df0e77c87bf6b1dd6a3",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LineNumberNode.class",
+          "bytes": 1556,
+          "sha256": "fd72121de034c0203c275bd3f3312cbcffd7b60dc36ab522935450b5fc229448",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LocalVariableAnnotationNode.class",
+          "bytes": 2648,
+          "sha256": "e95fcd220f8097ed4cbdf6089e14bc6f08f719e06df3df2a1c1bca45c947fe7e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LocalVariableNode.class",
+          "bytes": 1321,
+          "sha256": "31e641c82ce0db0b7f8a9ef5721b845248bc87bd0da460cd906842dd89aa9abb",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LookupSwitchInsnNode.class",
+          "bytes": 2800,
+          "sha256": "3324b7c48038e45d5398693a6d88d4f26bc1e5226e4e292623140993f4388048",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MethodInsnNode.class",
+          "bytes": 2127,
+          "sha256": "42588134089e21ec6b0cd8f8e6bf21cf967526c6f889631441fedd1e954f739b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MethodNode$1.class",
+          "bytes": 897,
+          "sha256": "d74d8f06bf136dd3bc07f2639c7f5c4f1b0a7fff829caec11e169eb578449a7e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MethodNode.class",
+          "bytes": 18208,
+          "sha256": "7ad3904940b60ebf93d752527a7a702a7c145ba21dd7752e629bea0f195da6fa",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleExportNode.class",
+          "bytes": 1287,
+          "sha256": "fb3feeecf39753c9126418a5abda288f3d51d90f7eef9d5bd425daf05ea376e5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleNode.class",
+          "bytes": 5151,
+          "sha256": "6ec318f9a9c42b86b02a9e0137556b56c781a4852dda61131b7c1100c3bbb1c6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleOpenNode.class",
+          "bytes": 1279,
+          "sha256": "d9acf3ca3edc303ac8e7bc3845c147d0d39ae46efc601d6281e14f82210ff340",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleProvideNode.class",
+          "bytes": 1137,
+          "sha256": "2f30f899adb057c71d7e85c4bb661bb027762b421f66f9f8358a99a93b3a0882",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleRequireNode.class",
+          "bytes": 821,
+          "sha256": "e747c777195f3628e08efb7311ef4dc194e10e75e666528c560ebf130d35f1c5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MultiANewArrayInsnNode.class",
+          "bytes": 1558,
+          "sha256": "d3174c80baa5f9cfd3732d409e8291072dfba882084f6fa7857b0d6547f2673b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ParameterNode.class",
+          "bytes": 736,
+          "sha256": "e021deff85a4cff2b6ccbc20aaefc5bdc47661979374cedd03f5ca04fecdd415",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/RecordComponentNode.class",
+          "bytes": 4329,
+          "sha256": "5cdae62c8e7820e8db70a8869da1d1d5643b8f0bc39701ff5c8094a31b6b2a7e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TableSwitchInsnNode.class",
+          "bytes": 2522,
+          "sha256": "78e26f7c6f2d6f4f8ff822273886b95a0764e331710ce0c37236673813ea8d78",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TryCatchBlockNode.class",
+          "bytes": 2566,
+          "sha256": "face489d43da61d08a0ba7b89c88f8c1bb3372dba2eb66d2bf55304baf9643de",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TypeAnnotationNode.class",
+          "bytes": 1101,
+          "sha256": "60aa22a58d32170e287c2f1ca69aa18e81e2f4ebe4358ea5003c4ebb62622a11",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TypeInsnNode.class",
+          "bytes": 1548,
+          "sha256": "2b70a2381f5a8591849a1459f4f87f08c7ec4b1369fbc966685c0e95894d9971",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/UnsupportedClassVersionException.class",
+          "bytes": 437,
+          "sha256": "00ce29db434490ff651657ae0d251ee5d497965b94b0a25d81553568e78a6d99",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/Util.class",
+          "bytes": 5353,
+          "sha256": "4c768f594f5d557e03fd3edfdd00548e79b18e2ceadcade6451881a32aa24e79",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/VarInsnNode.class",
+          "bytes": 1509,
+          "sha256": "7845a793d986d0f4aa3c5295852b96594b5fcb70f6ba53b6cdbcd628009c57ad",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Analyzer.class",
+          "bytes": 16889,
+          "sha256": "2a2a3e22fd2b25f407a37db2265bb41bc63d15cd27f636a1f3590b5147eacf32",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/AnalyzerException.class",
+          "bytes": 1814,
+          "sha256": "1792167fac2826af0e77d3ce26bcd530bc37ff6063e6a657b418f488062354e3",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/BasicInterpreter.class",
+          "bytes": 9388,
+          "sha256": "12973448b8acfc4ae8ea1a1408249955b1f37ab86a30eaa8b489df083047b73f",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/BasicValue.class",
+          "bytes": 2049,
+          "sha256": "eb5f908bcc759ce37e3992c1ff06c9fc2a388a81dadfdbf628368d8e162162cc",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/BasicVerifier.class",
+          "bytes": 10655,
+          "sha256": "b09c0e53e2fff3975ca6b5f74b1cecd84226efab763a5dabfe1f887157373d45",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Frame.class",
+          "bytes": 13682,
+          "sha256": "efe61264aa75b10da4d8f80b24e1bd0e4b94428d2dcf528d51056cd0ff670045",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Interpreter.class",
+          "bytes": 3752,
+          "sha256": "16eb66ffdf36ffbbf5d0b38a51924fb1bc81d182e624bb03dee9a41a374f9031",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SimpleVerifier.class",
+          "bytes": 8276,
+          "sha256": "e62b0fae94372d9bd0c2eb22f29d4d3130e133d79106d558df7af924b502219a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SmallSet$IteratorImpl.class",
+          "bytes": 1439,
+          "sha256": "f15cd0ebef0648f45e281022d8243a5d3a73fb946564af4865ab591f9b748b4d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SmallSet.class",
+          "bytes": 2190,
+          "sha256": "2fe4e7bebe2be91e5392cd8e2b1c886fcc2cfa3557ce0b84cb97da5afa0cca33",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SourceInterpreter.class",
+          "bytes": 8070,
+          "sha256": "2e0152a6d12800321b0604e2fa9edec464799f1757ae0bfc1e7167dd51d24185",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SourceValue.class",
+          "bytes": 1604,
+          "sha256": "51fd0f95fac687eb2252c0f2d96df7df9a1123652eca2cc2852b416117a6536a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Subroutine.class",
+          "bytes": 1695,
+          "sha256": "e1d06d8d4fc6e1193f9ea2ae3060682f1ea56568e15e0eae61df86cfc9cb69bb",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Value.class",
+          "bytes": 145,
+          "sha256": "91ccce24de4ecf86c8af364cba9ad7f0f9145718460498e490bdcd635c9cfe34",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/ASMifier.class",
+          "bytes": 38889,
+          "sha256": "523b2279c76e646ab87d24183590d5465c54a0c94b04c26acd3ed24e93b9d6e1",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/ASMifierSupport.class",
+          "bytes": 429,
+          "sha256": "a31924a28b3bd91aa24bcea5f197a480e6dad745ad8be4c79c8ce74037af218d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckAnnotationAdapter.class",
+          "bytes": 3033,
+          "sha256": "9d13133a7147d171362a5e7beab9601787c2f09c984164ff7e3ebe58e8f7d48b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckClassAdapter$1.class",
+          "bytes": 678,
+          "sha256": "971b668e8dd87488eeca87a13257416a31852c869fceba66cd9e7c33484f1478",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckClassAdapter.class",
+          "bytes": 22668,
+          "sha256": "f33e9de817e46ce6742a0454165f851bf6be8f3944a757dd7b2289a0893a884f",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckFieldAdapter.class",
+          "bytes": 2797,
+          "sha256": "fbf68ea9de5f95d255890707a4af42975014e7ede16e60717b6130c2dc9fecb8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckFrameAnalyzer.class",
+          "bytes": 12883,
+          "sha256": "992adf0b80052d22a3ea9c850ed48c6339fa34c24952343a79bd854ab4c0e38a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter$1.class",
+          "bytes": 3768,
+          "sha256": "0f2348fa566bb7d8e987ad3d3d2738fa7038dc26e0cc44e13df3665f376d98a8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter$Method.class",
+          "bytes": 1590,
+          "sha256": "eae34436a25c7bdc823397712f62b58768677e5d7d338efdc8707ecb5727c757",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter$MethodWriterWrapper.class",
+          "bytes": 1236,
+          "sha256": "621960cbd5cb19cc436e999a150972bd9ae98ccc745df44027fb5ac49464ffab",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter.class",
+          "bytes": 27521,
+          "sha256": "966c06d6d9c529ed4513a92e34d3e9bf6988f713732f8b0e49f217b5d1980a84",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckModuleAdapter$NameSet.class",
+          "bytes": 1164,
+          "sha256": "9bdb09ba00fdeb61b43ac1e5c7e1db9f1f35d349963e92434b6ad14ec1226917",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckModuleAdapter.class",
+          "bytes": 4571,
+          "sha256": "dd48d564b632b6e9829fcaea5c654e64e8f8958c8c5cc253e8a49f85e66431aa",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckRecordComponentAdapter.class",
+          "bytes": 2877,
+          "sha256": "d94ce77bf56e2f507eec278b2444598b88261c35d60c9455e5e85ec9c8768388",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckSignatureAdapter$State.class",
+          "bytes": 1660,
+          "sha256": "4cbaa4b51a643349e12c71c04422e4208d898828bb96aff2532f5dbcaf15e234",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckSignatureAdapter.class",
+          "bytes": 7332,
+          "sha256": "08f0c3221f24c9a271c8eb5c0fe5fa18cb8f42033df2c2ea6c46561add4a7593",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/Printer.class",
+          "bytes": 16698,
+          "sha256": "fa487e510ae6b3673cc8ecf32d01c81fb887071a227d0db77a09e9e3d8f67484",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/Textifier.class",
+          "bytes": 37413,
+          "sha256": "8edbc91939a972308250e1de1b0926338fb64dcfc6fe14b5afefee8bb00266e6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TextifierSupport.class",
+          "bytes": 370,
+          "sha256": "1b6d11352708fee3a892d88bbc9cbef925d6a73201f4e945e27d6df432e87bd7",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceAnnotationVisitor.class",
+          "bytes": 2058,
+          "sha256": "de903e297f841f2134304b23ec2a3ef0263885816461055379bb649fbc565e4b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceClassVisitor.class",
+          "bytes": 6353,
+          "sha256": "cc3301e5956d24af542caff06dca41bbfb3be2608379da498ad3f941962d49db",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceFieldVisitor.class",
+          "bytes": 2148,
+          "sha256": "2d4c60573a322a2050c3cd9e9a4a853553d813c1a0f5468a81ab2a980c6d26d2",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceMethodVisitor.class",
+          "bytes": 8743,
+          "sha256": "266aeedca07fd4b779676925f28ead2751a3d8a7a374b96f2d37e2fab3cc91e6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceModuleVisitor.class",
+          "bytes": 2248,
+          "sha256": "11ded07b657109aa04a7fa9a774f09b6118ddbaf55d7eacb70b7f6f114f57799",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceRecordComponentVisitor.class",
+          "bytes": 2268,
+          "sha256": "fb16f09a055c1aaddb707292cde1c27575bb7b8c75b9b3ec8016ab21caddfe13",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceSignatureVisitor.class",
+          "bytes": 6098,
+          "sha256": "3aae71bb20e229252370b891e1bb2a804a5de3c0feb62fab0f05a9afe963ec8c",
+          "matchesSelectedBinary": true
+        }
+      ]
+    },
+    {
+      "phase": "restored",
+      "elapsedSeconds": 0.9522812090000001,
+      "classCount": 117,
+      "expectedClassCount": 117,
+      "byteMatched": 117,
+      "missing": [],
+      "extra": [],
+      "different": [],
+      "classFiles": [
+        {
+          "member": "scala/tools/asm/AnnotationVisitor.class",
+          "bytes": 2298,
+          "sha256": "fe0527c687cc9b40c45149c980e714afcbe438a1e2595845107cfc18abc4193a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/AnnotationWriter.class",
+          "bytes": 9276,
+          "sha256": "ee86c4c1402e5f46971a7e13fd68dd0af8b89611c663461564f62f64ae6f76f2",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Attribute$Set.class",
+          "bytes": 1595,
+          "sha256": "ac33ca36f8b1150b4eaeaff50f1c470dcde1366930d2ffbfb76df5e19dd97d37",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Attribute.class",
+          "bytes": 5450,
+          "sha256": "8abfa2ad0ef508f8103567f664627c3083368932a2dce48e0c2915e9ccc6995e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ByteVector.class",
+          "bytes": 5114,
+          "sha256": "ff6699203db850c1ceb150f9bf0a4f2fd41648ba10a05419468aba7b886a4a01",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassReader.class",
+          "bytes": 50177,
+          "sha256": "7926290a5213dd5de4c94c39cab140e4c1d8cbfa06d6062cacea5a9cd7ed5fe8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassTooLargeException.class",
+          "bytes": 982,
+          "sha256": "b37f9d6297bec65b869b7e9ed0065a21c971503f8dee5fc2fd05de4207015c79",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassVisitor.class",
+          "bytes": 5351,
+          "sha256": "f665555803dffb36ab22bcdc7e3bf2b6969bd314fa68dc5a641014104c4a2c62",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ClassWriter.class",
+          "bytes": 18696,
+          "sha256": "2721acfc1c7247cbbf3b90accb48175e240cfafddf8d6a58add496c89ab2b210",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ConstantDynamic.class",
+          "bytes": 2649,
+          "sha256": "e93233eea1b15b78ff85d28632946f51d1807dc8f63efe2bd5ddfcc95dfb5605",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Constants.class",
+          "bytes": 6985,
+          "sha256": "60972d6af4e37889f1a794967b9c9fa9e6640545b32256154385f8f2a026480d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Context.class",
+          "bytes": 1086,
+          "sha256": "4503fd8fb3e0a187716b45cf266daeb16abce039923607df2ae3c7c07dd7e2b5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/CurrentFrame.class",
+          "bytes": 931,
+          "sha256": "87264240d73a2ba7d46f812a1c2997c053d9b10cd54dc8fd53050ad6a09e68fd",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Edge.class",
+          "bytes": 611,
+          "sha256": "9af9ae89148749f799b86844095b0a530018d5aabe92659fdd8e2428c95f0a32",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/FieldVisitor.class",
+          "bytes": 2277,
+          "sha256": "2a9e3054b4fb65cb7b617015a104e10bff03064665155969037fe371a6777c86",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/FieldWriter.class",
+          "bytes": 4966,
+          "sha256": "b217841eda7ced92590d37c20c6df26be98102cfa55e25a982bf906c6f4f0680",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Frame.class",
+          "bytes": 19036,
+          "sha256": "b91578f3671c78cc63748a541cc094533b655bcabfb2472ce39e11d599892b37",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Handle.class",
+          "bytes": 2320,
+          "sha256": "7394703681e9d523c8c4bde6d81f6d47838981b635841dfd87c8da8cb80f2d42",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Handler.class",
+          "bytes": 2422,
+          "sha256": "e7a7a92f30c2f9b1bb4ee507650accd9d20b09131be6ad9b32cbb1d0f63f8b31",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Label.class",
+          "bytes": 6415,
+          "sha256": "7bf7f557a64872aa960ede5091d97516c7495f92ff1a0c9a135038d624435c9d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/MethodTooLargeException.class",
+          "bytes": 1299,
+          "sha256": "1391a71cc93afcf5f4b7807fafee604e5189426a3ecbccd8ace37bda8634012e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/MethodVisitor.class",
+          "bytes": 9203,
+          "sha256": "148ddcf3d14ce72bcc1f6b53244cab6bce557a7c1e4e06a33db77b96cb591f01",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/MethodWriter.class",
+          "bytes": 34585,
+          "sha256": "f4e137210f7178396a92a2023e312deba04eb9fe40398a38d7060b86c13531b8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ModuleVisitor.class",
+          "bytes": 2672,
+          "sha256": "abb40bedf34c6459a5ea8dc661e67c5eff000575822eb9cc587804359fd09b97",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/ModuleWriter.class",
+          "bytes": 4605,
+          "sha256": "1d46076752620b81626783292ded0a6b72db164cbd9482133a9216e061d21b19",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Opcodes.class",
+          "bytes": 7815,
+          "sha256": "10ef14de6b499b9e221244f3aa3342769a11d40693d7b82a6dc66f01edb59d6a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/RecordComponentVisitor.class",
+          "bytes": 2233,
+          "sha256": "bec392d443d19c9bbfe71592abd810e2b0eabb8ff952e38ec69dd01e69f76b62",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/RecordComponentWriter.class",
+          "bytes": 4306,
+          "sha256": "f37dafbf65fd742ceb9cf62db753bfe3fd2b9575ba2e14775337455bd87a1114",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Symbol.class",
+          "bytes": 1926,
+          "sha256": "4741089d4bcde231ff7fcc48f0f033aec0cdab7f308980301c04dc882c4d7ee2",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/SymbolTable$Entry.class",
+          "bytes": 1481,
+          "sha256": "72a33d6cd3b17ecaac2d2ce668e094dfced69cbbb9ffa6c142fbe7d169dcf8b0",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/SymbolTable$LabelEntry.class",
+          "bytes": 592,
+          "sha256": "a0a28ef60e87182060b020dd8e964615cedcd28d39474c4126b323595b257bda",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/SymbolTable.class",
+          "bytes": 22574,
+          "sha256": "714b8fb4b88a0e7b21b74c91c99bc5b3a3bec363e394cc7ec5d986484cfcec82",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/Type.class",
+          "bytes": 12319,
+          "sha256": "9075daaf3b14fb669b1cddd6aaf1f6c7945e837e486aaef8483afed3171c6bde",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/TypePath.class",
+          "bytes": 2791,
+          "sha256": "7535fd29f7c7dd1b7998aae0661ccf18a8694d55934a3c24061f2240b7cc918a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/TypeReference.class",
+          "bytes": 4177,
+          "sha256": "d79621fadf679c2c5973aac5bea3b93a3361a0d55d9e26ee316250a11b7be86c",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/commons/CodeSizeEvaluator.class",
+          "bytes": 4490,
+          "sha256": "02e1b2ba83566626240b067e02f9d831b99d2c5be4329befb73339fcf44735a4",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/signature/SignatureReader.class",
+          "bytes": 3108,
+          "sha256": "57a7791dc954c725cd519c3c63323aad4b7ce63c464caa7ded093e957b1207bd",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/signature/SignatureVisitor.class",
+          "bytes": 2478,
+          "sha256": "2aa6214ac3456f78ea409de013599b1c83dea3b72c7efb5acb679d1b183463c5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/signature/SignatureWriter.class",
+          "bytes": 3348,
+          "sha256": "0ca6e232890b2b63577321e7a358931636bf8b50f5cfab70ebab7550d2dbdbe6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/AbstractInsnNode.class",
+          "bytes": 4727,
+          "sha256": "86955911f9bbaf64b3aee33d37ea81ff54996a7e13e123d07233384bb9480a24",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/AnnotationNode.class",
+          "bytes": 4593,
+          "sha256": "12d0056e2c3db0b462c97a50d78fc3b9027a477e1142b4e06538ef55b014fe4f",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ClassNode.class",
+          "bytes": 9658,
+          "sha256": "76fe8229d585ad2c6952ed1a38174fc9e7ff084a79e99990bf909c66d40ce2ee",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/FieldInsnNode.class",
+          "bytes": 1708,
+          "sha256": "59bbfbd7108e7507b01a2b61f86926c3f477506c581979fb1e4dedcd4c4944d1",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/FieldNode.class",
+          "bytes": 4551,
+          "sha256": "f274b571a5080370a4f020986720a81c6f0a7abec9ddb23c5685dbdd6d3fd6a3",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/FrameNode.class",
+          "bytes": 3280,
+          "sha256": "5a367dd5d054b94fecb933d52e007ec088c6b8ccd2345b6ebe73cc3c2c9e77a4",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/IincInsnNode.class",
+          "bytes": 1461,
+          "sha256": "63795012802eef5191cccfa186653038ad97cbaa40a5326a6ec397976474750d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InnerClassNode.class",
+          "bytes": 887,
+          "sha256": "4fdac03c984e6bc9b838c9f04c28dc1d28d3ef25004a32f880a5785572666fde",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InsnList$InsnListIterator.class",
+          "bytes": 2985,
+          "sha256": "9a7bdb30be91add2dfa562cbd914ebcea4f6e1e7a53439e5b7cde0c79c2e0480",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InsnList.class",
+          "bytes": 6578,
+          "sha256": "937e8284b1f034467a14a13035bda8e21e95277039b967ff96daf4ca5917af04",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InsnNode.class",
+          "bytes": 1319,
+          "sha256": "9af8c5771d6b9a0cff0b00c2896271d5895682f061f31de2060ea5556875f6e9",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/IntInsnNode.class",
+          "bytes": 1502,
+          "sha256": "3ad670922441a6cda31c123d5e8747c284a8172ac67be66cff7b68708e508359",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/InvokeDynamicInsnNode.class",
+          "bytes": 1809,
+          "sha256": "3581f41dc468ed66e1cc166ca359781b5fd934b6206c9457c53e5c74326f31a4",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/JumpInsnNode.class",
+          "bytes": 1787,
+          "sha256": "bc933f95c4a464056775a848a9c266ce3ffb75b01dd7de97946dd6fcce8cb9d9",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LabelNode.class",
+          "bytes": 1663,
+          "sha256": "6feec47e349ecae77c9454a9128e961774e14fc719ab7be5cf1d5b05302ee2b8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LdcInsnNode.class",
+          "bytes": 1430,
+          "sha256": "3f5fbc59c485ad9a62765541731a238179df62d3cac84df0e77c87bf6b1dd6a3",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LineNumberNode.class",
+          "bytes": 1556,
+          "sha256": "fd72121de034c0203c275bd3f3312cbcffd7b60dc36ab522935450b5fc229448",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LocalVariableAnnotationNode.class",
+          "bytes": 2648,
+          "sha256": "e95fcd220f8097ed4cbdf6089e14bc6f08f719e06df3df2a1c1bca45c947fe7e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LocalVariableNode.class",
+          "bytes": 1321,
+          "sha256": "31e641c82ce0db0b7f8a9ef5721b845248bc87bd0da460cd906842dd89aa9abb",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/LookupSwitchInsnNode.class",
+          "bytes": 2800,
+          "sha256": "3324b7c48038e45d5398693a6d88d4f26bc1e5226e4e292623140993f4388048",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MethodInsnNode.class",
+          "bytes": 2127,
+          "sha256": "42588134089e21ec6b0cd8f8e6bf21cf967526c6f889631441fedd1e954f739b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MethodNode$1.class",
+          "bytes": 897,
+          "sha256": "d74d8f06bf136dd3bc07f2639c7f5c4f1b0a7fff829caec11e169eb578449a7e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MethodNode.class",
+          "bytes": 18208,
+          "sha256": "7ad3904940b60ebf93d752527a7a702a7c145ba21dd7752e629bea0f195da6fa",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleExportNode.class",
+          "bytes": 1287,
+          "sha256": "fb3feeecf39753c9126418a5abda288f3d51d90f7eef9d5bd425daf05ea376e5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleNode.class",
+          "bytes": 5151,
+          "sha256": "6ec318f9a9c42b86b02a9e0137556b56c781a4852dda61131b7c1100c3bbb1c6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleOpenNode.class",
+          "bytes": 1279,
+          "sha256": "d9acf3ca3edc303ac8e7bc3845c147d0d39ae46efc601d6281e14f82210ff340",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleProvideNode.class",
+          "bytes": 1137,
+          "sha256": "2f30f899adb057c71d7e85c4bb661bb027762b421f66f9f8358a99a93b3a0882",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ModuleRequireNode.class",
+          "bytes": 821,
+          "sha256": "e747c777195f3628e08efb7311ef4dc194e10e75e666528c560ebf130d35f1c5",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/MultiANewArrayInsnNode.class",
+          "bytes": 1558,
+          "sha256": "d3174c80baa5f9cfd3732d409e8291072dfba882084f6fa7857b0d6547f2673b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/ParameterNode.class",
+          "bytes": 736,
+          "sha256": "e021deff85a4cff2b6ccbc20aaefc5bdc47661979374cedd03f5ca04fecdd415",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/RecordComponentNode.class",
+          "bytes": 4329,
+          "sha256": "5cdae62c8e7820e8db70a8869da1d1d5643b8f0bc39701ff5c8094a31b6b2a7e",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TableSwitchInsnNode.class",
+          "bytes": 2522,
+          "sha256": "78e26f7c6f2d6f4f8ff822273886b95a0764e331710ce0c37236673813ea8d78",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TryCatchBlockNode.class",
+          "bytes": 2566,
+          "sha256": "face489d43da61d08a0ba7b89c88f8c1bb3372dba2eb66d2bf55304baf9643de",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TypeAnnotationNode.class",
+          "bytes": 1101,
+          "sha256": "60aa22a58d32170e287c2f1ca69aa18e81e2f4ebe4358ea5003c4ebb62622a11",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/TypeInsnNode.class",
+          "bytes": 1548,
+          "sha256": "2b70a2381f5a8591849a1459f4f87f08c7ec4b1369fbc966685c0e95894d9971",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/UnsupportedClassVersionException.class",
+          "bytes": 437,
+          "sha256": "00ce29db434490ff651657ae0d251ee5d497965b94b0a25d81553568e78a6d99",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/Util.class",
+          "bytes": 5353,
+          "sha256": "4c768f594f5d557e03fd3edfdd00548e79b18e2ceadcade6451881a32aa24e79",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/VarInsnNode.class",
+          "bytes": 1509,
+          "sha256": "7845a793d986d0f4aa3c5295852b96594b5fcb70f6ba53b6cdbcd628009c57ad",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Analyzer.class",
+          "bytes": 16889,
+          "sha256": "2a2a3e22fd2b25f407a37db2265bb41bc63d15cd27f636a1f3590b5147eacf32",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/AnalyzerException.class",
+          "bytes": 1814,
+          "sha256": "1792167fac2826af0e77d3ce26bcd530bc37ff6063e6a657b418f488062354e3",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/BasicInterpreter.class",
+          "bytes": 9388,
+          "sha256": "12973448b8acfc4ae8ea1a1408249955b1f37ab86a30eaa8b489df083047b73f",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/BasicValue.class",
+          "bytes": 2049,
+          "sha256": "eb5f908bcc759ce37e3992c1ff06c9fc2a388a81dadfdbf628368d8e162162cc",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/BasicVerifier.class",
+          "bytes": 10655,
+          "sha256": "b09c0e53e2fff3975ca6b5f74b1cecd84226efab763a5dabfe1f887157373d45",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Frame.class",
+          "bytes": 13682,
+          "sha256": "efe61264aa75b10da4d8f80b24e1bd0e4b94428d2dcf528d51056cd0ff670045",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Interpreter.class",
+          "bytes": 3752,
+          "sha256": "16eb66ffdf36ffbbf5d0b38a51924fb1bc81d182e624bb03dee9a41a374f9031",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SimpleVerifier.class",
+          "bytes": 8276,
+          "sha256": "e62b0fae94372d9bd0c2eb22f29d4d3130e133d79106d558df7af924b502219a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SmallSet$IteratorImpl.class",
+          "bytes": 1439,
+          "sha256": "f15cd0ebef0648f45e281022d8243a5d3a73fb946564af4865ab591f9b748b4d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SmallSet.class",
+          "bytes": 2190,
+          "sha256": "2fe4e7bebe2be91e5392cd8e2b1c886fcc2cfa3557ce0b84cb97da5afa0cca33",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SourceInterpreter.class",
+          "bytes": 8070,
+          "sha256": "2e0152a6d12800321b0604e2fa9edec464799f1757ae0bfc1e7167dd51d24185",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/SourceValue.class",
+          "bytes": 1604,
+          "sha256": "51fd0f95fac687eb2252c0f2d96df7df9a1123652eca2cc2852b416117a6536a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Subroutine.class",
+          "bytes": 1695,
+          "sha256": "e1d06d8d4fc6e1193f9ea2ae3060682f1ea56568e15e0eae61df86cfc9cb69bb",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/tree/analysis/Value.class",
+          "bytes": 145,
+          "sha256": "91ccce24de4ecf86c8af364cba9ad7f0f9145718460498e490bdcd635c9cfe34",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/ASMifier.class",
+          "bytes": 38889,
+          "sha256": "523b2279c76e646ab87d24183590d5465c54a0c94b04c26acd3ed24e93b9d6e1",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/ASMifierSupport.class",
+          "bytes": 429,
+          "sha256": "a31924a28b3bd91aa24bcea5f197a480e6dad745ad8be4c79c8ce74037af218d",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckAnnotationAdapter.class",
+          "bytes": 3033,
+          "sha256": "9d13133a7147d171362a5e7beab9601787c2f09c984164ff7e3ebe58e8f7d48b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckClassAdapter$1.class",
+          "bytes": 678,
+          "sha256": "971b668e8dd87488eeca87a13257416a31852c869fceba66cd9e7c33484f1478",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckClassAdapter.class",
+          "bytes": 22668,
+          "sha256": "f33e9de817e46ce6742a0454165f851bf6be8f3944a757dd7b2289a0893a884f",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckFieldAdapter.class",
+          "bytes": 2797,
+          "sha256": "fbf68ea9de5f95d255890707a4af42975014e7ede16e60717b6130c2dc9fecb8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckFrameAnalyzer.class",
+          "bytes": 12883,
+          "sha256": "992adf0b80052d22a3ea9c850ed48c6339fa34c24952343a79bd854ab4c0e38a",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter$1.class",
+          "bytes": 3768,
+          "sha256": "0f2348fa566bb7d8e987ad3d3d2738fa7038dc26e0cc44e13df3665f376d98a8",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter$Method.class",
+          "bytes": 1590,
+          "sha256": "eae34436a25c7bdc823397712f62b58768677e5d7d338efdc8707ecb5727c757",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter$MethodWriterWrapper.class",
+          "bytes": 1236,
+          "sha256": "621960cbd5cb19cc436e999a150972bd9ae98ccc745df44027fb5ac49464ffab",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckMethodAdapter.class",
+          "bytes": 27521,
+          "sha256": "966c06d6d9c529ed4513a92e34d3e9bf6988f713732f8b0e49f217b5d1980a84",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckModuleAdapter$NameSet.class",
+          "bytes": 1164,
+          "sha256": "9bdb09ba00fdeb61b43ac1e5c7e1db9f1f35d349963e92434b6ad14ec1226917",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckModuleAdapter.class",
+          "bytes": 4571,
+          "sha256": "dd48d564b632b6e9829fcaea5c654e64e8f8958c8c5cc253e8a49f85e66431aa",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckRecordComponentAdapter.class",
+          "bytes": 2877,
+          "sha256": "d94ce77bf56e2f507eec278b2444598b88261c35d60c9455e5e85ec9c8768388",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckSignatureAdapter$State.class",
+          "bytes": 1660,
+          "sha256": "4cbaa4b51a643349e12c71c04422e4208d898828bb96aff2532f5dbcaf15e234",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/CheckSignatureAdapter.class",
+          "bytes": 7332,
+          "sha256": "08f0c3221f24c9a271c8eb5c0fe5fa18cb8f42033df2c2ea6c46561add4a7593",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/Printer.class",
+          "bytes": 16698,
+          "sha256": "fa487e510ae6b3673cc8ecf32d01c81fb887071a227d0db77a09e9e3d8f67484",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/Textifier.class",
+          "bytes": 37413,
+          "sha256": "8edbc91939a972308250e1de1b0926338fb64dcfc6fe14b5afefee8bb00266e6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TextifierSupport.class",
+          "bytes": 370,
+          "sha256": "1b6d11352708fee3a892d88bbc9cbef925d6a73201f4e945e27d6df432e87bd7",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceAnnotationVisitor.class",
+          "bytes": 2058,
+          "sha256": "de903e297f841f2134304b23ec2a3ef0263885816461055379bb649fbc565e4b",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceClassVisitor.class",
+          "bytes": 6353,
+          "sha256": "cc3301e5956d24af542caff06dca41bbfb3be2608379da498ad3f941962d49db",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceFieldVisitor.class",
+          "bytes": 2148,
+          "sha256": "2d4c60573a322a2050c3cd9e9a4a853553d813c1a0f5468a81ab2a980c6d26d2",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceMethodVisitor.class",
+          "bytes": 8743,
+          "sha256": "266aeedca07fd4b779676925f28ead2751a3d8a7a374b96f2d37e2fab3cc91e6",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceModuleVisitor.class",
+          "bytes": 2248,
+          "sha256": "11ded07b657109aa04a7fa9a774f09b6118ddbaf55d7eacb70b7f6f114f57799",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceRecordComponentVisitor.class",
+          "bytes": 2268,
+          "sha256": "fb16f09a055c1aaddb707292cde1c27575bb7b8c75b9b3ec8016ab21caddfe13",
+          "matchesSelectedBinary": true
+        },
+        {
+          "member": "scala/tools/asm/util/TraceSignatureVisitor.class",
+          "bytes": 6098,
+          "sha256": "3aae71bb20e229252370b891e1bb2a804a5de3c0feb62fab0f05a9afe963ec8c",
+          "matchesSelectedBinary": true
+        }
+      ]
+    }
+  ],
+  "originalSourceAndSdkInputsUnchanged": true,
+  "baselineRestoredClassesIdentical": true,
+  "wholeJarPackagingReproduced": false,
+  "sourceBuildJvmIsActualProducerVerified": false,
+  "completeCompilerSdkNoticeClosureVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "compilerArchiveUrl": "https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u504-b01/OpenJDK8U-jdk_aarch64_linux_hotspot_8u504b01.tar.gz",
+  "compilerReleaseMetadataUrl": "https://api.github.com/repos/adoptium/temurin8-binaries/releases/tags/jdk8u504-b01",
+  "retainedInputs": [
+    {
+      "file": "scala-asm-inputs/jdk8-release.sha256.txt",
+      "bytes": 118,
+      "sha256": "71a262a88c8bace3bc9389b2ef126665a12b152790988174b66525b54d1328d9"
+    }
+  ],
+  "retainedNoticeInputs": [
+    {
+      "sdkArchiveMember": "jdk8u504-b01/LICENSE",
+      "retainedInput": {
+        "file": "scala-asm-compiler-notices/4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726.txt",
+        "bytes": 19274,
+        "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726"
+      }
+    },
+    {
+      "sdkArchiveMember": "jdk8u504-b01/ASSEMBLY_EXCEPTION",
+      "retainedInput": {
+        "file": "scala-asm-compiler-notices/a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb.txt",
+        "bytes": 1522,
+        "sha256": "a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb"
+      }
+    },
+    {
+      "sdkArchiveMember": "jdk8u504-b01/NOTICE",
+      "retainedInput": {
+        "file": "scala-asm-compiler-notices/c02756bcd9fa8191bf0fda4451bc018414dd44ee35bf09922c24377a475e4b5a.txt",
+        "bytes": 2400,
+        "sha256": "c02756bcd9fa8191bf0fda4451bc018414dd44ee35bf09922c24377a475e4b5a"
+      }
+    },
+    {
+      "sdkArchiveMember": "jdk8u504-b01/THIRD_PARTY_README",
+      "retainedInput": {
+        "file": "scala-asm-compiler-notices/6e8a224193a89759f9fe936ed405c91753f849640f7e8a8e5813f492a865bcbe.txt",
+        "bytes": 191611,
+        "sha256": "6e8a224193a89759f9fe936ed405c91753f849640f7e8a8e5813f492a865bcbe"
+      }
+    }
+  ],
+  "noticeFilesAreCandidatesNotCompleteAttribution": true,
+  "javaVersion": [
+    "openjdk version \"1.8.0_504\"",
+    "OpenJDK Runtime Environment (Temurin)(build 1.8.0_504-b01)",
+    "OpenJDK 64-Bit Server VM (Temurin)(build 25.504-b01, mixed mode)"
+  ],
+  "javacVersion": ["javac 1.8.0_504"],
+  "compilerOptions": [
+    "-proc:none",
+    "-g",
+    "-parameters",
+    "-encoding",
+    "UTF-8",
+    "-classpath <fresh-empty-directory>",
+    "-d <fresh-output-directory>",
+    "@<all-105-pinned-java-members>"
+  ],
+  "execution": {
+    "network": "none",
+    "readOnlyRoot": true,
+    "sdkReadOnly": true,
+    "sourceReadOnly": true,
+    "unprivilegedCaller": true,
+    "cpuLimit": 2,
+    "memoryLimitBytes": 1073741824,
+    "pidLimit": 64,
+    "freshWritableTmpfsBytes": 536870912,
+    "selectedBinaryJarMounted": false,
+    "priorCompilationCacheMounted": false,
+    "upstreamBuildScriptsExecuted": false,
+    "upstreamLibraryClassesExecuted": false,
+    "ownedContainersRemoved": true,
+    "baseImagePreserved": true
+  },
+  "observedAt": "2026-10-27"
+}
