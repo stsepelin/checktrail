@@ -394,7 +394,10 @@ test("selected syntax accepts exact runtime bytes and refuses changed JavaScript
         { recursive: true, dereference: true },
       );
       await cp(
-        path.join(repository, "assets/context-grammars"),
+        path.join(
+          await realpath(path.join(repository, "dist/src")),
+          "../../assets/context-grammars",
+        ),
         path.join(copied, "assets/context-grammars"),
         { recursive: true },
       );
