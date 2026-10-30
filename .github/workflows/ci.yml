@@ -22,6 +22,10 @@ concurrency:
 permissions:
   contents: read
 
+# Fall back sooner when an optional cache segment stalls.
+env:
+  SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
+
 jobs:
   ci-plan:
     runs-on: ubuntu-latest
