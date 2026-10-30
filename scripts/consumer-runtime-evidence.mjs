@@ -34,6 +34,7 @@ export const consumerRuntimeHarnessFiles = Object.freeze([
   "scripts/consumer-runtime-evidence.mjs",
   "scripts/consumer-runtime-selection.mjs",
   "scripts/consumer-witness-collection.mjs",
+  "scripts/consumer-native-capture-registry.mjs",
   "scripts/consumer-witness-controller.mjs",
   "scripts/consumer-witness-evidence.mjs",
   "scripts/consumer-witness-project-controller.mjs",
