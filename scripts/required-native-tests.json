@@ -5789,6 +5789,26 @@
     {
       "file": "dist/test/artifact-evidence.test.js",
       "name": "artifact evidence bounds cumulative decompressed notice bytes separately from indexed bytes"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact evidence verifies exact uncompressed original notice bytes without normalizing text"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact evidence refuses reindexed uncompressed notices with wrong bytes hashes sizes or encoding"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact evidence shares one original notice budget across plain and compressed bytes"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact evidence rederives literal shared license references from exact original notice offsets and filenames"
+    },
+    {
+      "file": "dist/test/artifact-evidence.test.js",
+      "name": "artifact evidence refuses reindexed omitted duplicated shifted or prefix-guessed shared license references"
     }
   ],
   "consumer-impact": [

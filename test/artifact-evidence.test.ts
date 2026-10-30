@@ -375,7 +375,7 @@ function compressedNotice(bytes: Uint8Array) {
     originalBytesGzipBase64: compressed.toString("base64"),
   };
 }
-async function compressedSource(t: TestContext, notices: unknown[]) {
+async function noticeSource(t: TestContext, notices: unknown[]) {
   const root = await source(t);
   const name = "random-provider.json";
   const target = path.join(root, directory, name);
@@ -393,7 +393,7 @@ test("artifact evidence verifies lossless compressed original notices while reta
   const baseline = await audit(repository);
   assert.equal(baseline.code, 0, baseline.stderr);
   const before = JSON.parse(baseline.stdout);
-  const root = await compressedSource(t, [compressedNotice(bytes)]);
+  const root = await noticeSource(t, [compressedNotice(bytes)]);
   const result = await audit(root);
   assert.equal(result.code, 0, result.stderr);
   const report = JSON.parse(result.stdout);
@@ -432,7 +432,7 @@ test("artifact evidence refuses malformed ambiguous and altered compressed origi
       changed.gzipSha256 = digest(invalid);
       changed.gzipBytes = invalid.length;
     }
-    const result = await audit(await compressedSource(t, [changed]));
+    const result = await audit(await noticeSource(t, [changed]));
     assert.equal(result.code, 2, mode);
     assert.match(result.stderr, /original notice/i, mode);
   }
@@ -440,21 +440,196 @@ test("artifact evidence refuses malformed ambiguous and altered compressed origi
 test("artifact evidence stops compressed expansion at its declared output boundary", async (t) => {
   const oversized = compressedNotice(Buffer.alloc(65536, "x"));
   oversized.bytes = 1;
-  const result = await audit(await compressedSource(t, [oversized]));
+  const result = await audit(await noticeSource(t, [oversized]));
   assert.equal(result.code, 2);
   assert.match(result.stderr, /exceeds its declared expansion bound/);
 });
 test("artifact evidence bounds cumulative decompressed notice bytes separately from indexed bytes", async (t) => {
   const notice = compressedNotice(Buffer.alloc(2 * 1024 * 1024, "x"));
   const result = await audit(
-    await compressedSource(
+    await noticeSource(
       t,
       Array.from({ length: 5 }, () => ({ ...notice })),
     ),
   );
   assert.equal(result.code, 2);
-  assert.match(
-    result.stderr,
-    /Total decompressed original notice byte bound exceeded/,
+  assert.match(result.stderr, /Total original notice byte bound exceeded/);
+});
+
+function uncompressedNotice(bytes: Uint8Array) {
+  return {
+    bytes: bytes.length,
+    sha256: digest(bytes),
+    originalBytesBase64: Buffer.from(bytes).toString("base64"),
+  };
+}
+test("artifact evidence verifies exact uncompressed original notice bytes without normalizing text", async (t) => {
+  const bytes = Buffer.from("Original synthetic notice\r\n", "utf8");
+  const baseline = await audit(repository);
+  assert.equal(baseline.code, 0, baseline.stderr);
+  const before = JSON.parse(baseline.stdout);
+  const result = await audit(
+    await noticeSource(t, [uncompressedNotice(bytes)]),
   );
+  assert.equal(result.code, 0, result.stderr);
+  const report = JSON.parse(result.stdout);
+  assert.equal(
+    report.uncompressedOriginalNoticeObjects,
+    before.uncompressedOriginalNoticeObjects + 1,
+  );
+  assert.equal(
+    report.compressedOriginalNoticeObjects,
+    before.compressedOriginalNoticeObjects,
+  );
+  assert.equal(
+    report.originalNoticeBytes,
+    before.originalNoticeBytes + bytes.length,
+  );
+  assert.equal(report.gateAComplete, false);
+  assert.equal(report.qualityAssessed, false);
+  assert.equal(report.nativeAcceptanceAssessed, false);
+});
+test("artifact evidence refuses reindexed uncompressed notices with wrong bytes hashes sizes or encoding", async (t) => {
+  const bytes = Buffer.from("Original synthetic notice\r\n");
+  const original = uncompressedNotice(bytes);
+  for (const mode of [
+    "changed-bytes",
+    "normalized-text",
+    "digest",
+    "size",
+    "encoding",
+    "empty",
+    "ambiguous",
+  ]) {
+    const changed = { ...original } as Record<string, unknown>;
+    if (mode === "changed-bytes")
+      changed.originalBytesBase64 = Buffer.alloc(bytes.length, "x").toString(
+        "base64",
+      );
+    if (mode === "normalized-text")
+      changed.originalBytesBase64 = Buffer.from(
+        bytes.toString().replaceAll("\r\n", "\n"),
+      ).toString("base64");
+    if (mode === "digest") changed.sha256 = "f".repeat(64);
+    if (mode === "size") changed.bytes = bytes.length + 1;
+    if (mode === "encoding")
+      changed.originalBytesBase64 = original.originalBytesBase64 + " ";
+    if (mode === "empty") changed.originalBytesBase64 = "";
+    if (mode === "ambiguous") Object.assign(changed, compressedNotice(bytes));
+    const result = await audit(await noticeSource(t, [changed]));
+    assert.equal(result.code, 2, mode);
+    assert.match(result.stderr, /original notice/i, mode);
+  }
+});
+test("artifact evidence shares one original notice budget across plain and compressed bytes", async (t) => {
+  const bytes = Buffer.alloc(32 * 1024, "x");
+  const baseline = await audit(repository);
+  assert.equal(baseline.code, 0, baseline.stderr);
+  const before = JSON.parse(baseline.stdout);
+  let fill = 8 * 1024 * 1024 - before.originalNoticeBytes - bytes.length + 1;
+  assert.ok(fill > 0);
+  const encoded: ReturnType<typeof compressedNotice>[] = [];
+  while (fill > 0) {
+    const length = Math.min(fill, 2 * 1024 * 1024);
+    encoded.push(compressedNotice(Buffer.alloc(length, "x")));
+    fill -= length;
+  }
+  const root = await noticeSource(t, [
+    ...encoded,
+    uncompressedNotice(Buffer.from("Original synthetic near miss\n")),
+  ]);
+  const nearMiss = await audit(root);
+  assert.equal(nearMiss.code, 0, nearMiss.stderr);
+  const refused = await audit(
+    await noticeSource(t, [...encoded, uncompressedNotice(bytes)]),
+  );
+  assert.equal(refused.code, 2);
+  assert.match(refused.stderr, /Total original notice byte bound exceeded/);
+});
+
+async function changedLicenseReferences(t: TestContext, mode: string) {
+  const root = await source(t);
+  const name = "provider-c-root-sdk-and-generator-replays.json";
+  const file = path.join(root, directory, name);
+  const value = JSON.parse(await readFile(file, "utf8"));
+  const references =
+    value.cBuildDependencyNotices.literalCommonLicenseReferences;
+  if (mode === "offset") references.references[0][1]++;
+  if (mode === "omission") references.references.pop();
+  if (mode === "duplicate")
+    references.references.push([...references.references[0]]);
+  if (mode === "counts")
+    references.counts["resolved-captured-shared-license-bytes"]++;
+  if (mode === "denominator") references.noticeObjectsScanned++;
+  if (mode === "prefix") {
+    const missing = references.references.find(
+      (row: unknown[]) => row[5] === "unresolved-literal-reference",
+    );
+    assert.ok(missing);
+    const captured =
+      value.cBuildDependencyNotices.pinnedBaselineSharedLicenseFiles.find(
+        (row: { imagePath: string }) =>
+          row.imagePath === "/usr/share/common-licenses/GPL-2",
+      );
+    assert.ok(captured);
+    missing[3] = captured.imagePath;
+    missing[5] = "resolved-captured-shared-license-bytes";
+    missing[6] = captured.sha256;
+    missing[7] = captured.bytes;
+  }
+  await writeFile(file, JSON.stringify(value));
+  await reindex(root, name);
+  const wrapperName = "provider-fiat-wrapper-source-rebuilds.json";
+  const wrapperFile = path.join(root, directory, wrapperName);
+  const wrapper = JSON.parse(await readFile(wrapperFile, "utf8"));
+  const reference =
+    wrapper.cRootCompilerAndWholeGeneratorFollowUp.retainedInputs.find(
+      (entry: Entry) => entry.file === name,
+    );
+  assert.ok(reference);
+  const changedBytes = await readFile(file);
+  reference.bytes = changedBytes.length;
+  reference.sha256 = digest(changedBytes);
+  await writeFile(wrapperFile, JSON.stringify(wrapper));
+  await reindex(root, wrapperName);
+  return root;
+}
+test("artifact evidence rederives literal shared license references from exact original notice offsets and filenames", async () => {
+  const result = await audit(repository);
+  assert.equal(result.code, 0, result.stderr);
+  const report = JSON.parse(result.stdout).literalCommonLicenseReferences;
+  const record = JSON.parse(
+    await readFile(
+      path.join(
+        repository,
+        directory,
+        "provider-c-root-sdk-and-generator-replays.json",
+      ),
+      "utf8",
+    ),
+  ).cBuildDependencyNotices.literalCommonLicenseReferences;
+  assert.equal(report.references, record.references.length);
+  assert.deepEqual(report.counts, record.counts);
+  assert.equal(report.noticeObjectsScanned, record.noticeObjectsScanned);
+  assert.ok(
+    record.references.some(
+      (row: unknown[]) =>
+        row[2] === "/usr/share/common-licenses/GPL-2.0" &&
+        row[5] === "unresolved-literal-reference",
+    ),
+  );
+});
+test("artifact evidence refuses reindexed omitted duplicated shifted or prefix-guessed shared license references", async (t) => {
+  for (const mode of [
+    "offset",
+    "omission",
+    "duplicate",
+    "counts",
+    "denominator",
+    "prefix",
+  ]) {
+    const result = await audit(await changedLicenseReferences(t, mode));
+    assert.equal(result.code, 2, mode);
+    assert.match(result.stderr, /Literal license/, mode);
+  }
 });

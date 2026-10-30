@@ -235,3 +235,18 @@ indexed-file limits. A literal upstream shared-license filename discrepancy stay
 unresolved. Embedded source notices, legal obligations and complete compiler,
 SDK, bootstrap and base-image build closure remain open; this is scoped notice
 retention rather than a completed attribution or Gate A claim.
+
+The retained-evidence audit validates canonical Base64, declared byte counts and
+SHA-256 for both plain and gzip-encoded original notice objects. Both encodings
+share one expanded-byte allowance; compressed input also retains its separate
+compressed-byte and digest checks. Rehashing an outer evidence record cannot
+make an altered inner notice valid. These checks establish retained-byte
+consistency; source attribution and full original-notice closure remain separate.
+
+Literal shared-license references are rederived from the retained original notice
+bytes, including byte offsets, exact captured filenames, reference counts and
+scanned-notice denominators. The declared pattern covers only literal absolute
+references. A terminal full stop is recorded separately as punctuation; filename
+prefixes do not resolve missing files. The original `GPL-2.0` reference remains
+unresolved even though captured `GPL-2` text is available. These observations do
+not infer a license choice or close embedded-source notice obligations.
