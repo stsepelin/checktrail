@@ -25,10 +25,19 @@ original developer source-signing keyring package and member. The developer
 keyring is distinct from the image-provided APT archive keyring. Empty generated
 lock files are classified separately from downloaded archives.
 
-These locations do not establish current remote availability. Exact signed
-metadata reacquisition and regeneration of the retained APT-compressed indexes
-remain unverified; arranging a bundle still requires its exact pinned bytes. The
-controller does not replace an expired or missing snapshot with current packages,
+The retained [APT preparation record](../scripts/producer-qualification/binutils-apt-index-preparation.v1.json)
+binds fresh content-addressed Packages downloads to the signed canonical payloads
+and exactly reconstructs the retained compressed indexes through the original
+image-provided APT store method. It retains the exact control bytes and original
+archive-keyring identities. Original release signatures verify with that archive
+keyring; changed signed text fails and the unchanged original verifies again. An
+earlier helper-based compression attempt did not reproduce every pinned compressed
+file and remains a failed attempt. No compiler build ran and no pin was replaced.
+
+These locations do not establish current availability of every bundle input.
+Complete bundle reacquisition remains unverified; arranging a bundle still requires
+its exact pinned bytes. The controller does not replace an expired or missing
+snapshot with current packages,
 disable authentication/freshness, or install on the host. Changed pins require a
 reviewable recipe revision. Extra bundle files are not staged or executed.
 
