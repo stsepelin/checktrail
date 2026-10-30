@@ -13,6 +13,7 @@ const requirements = await nativeEngineJournalRequirements(repository);
 const inputs = [
   ...requirements.map((x) => path.relative(repository, x.file)),
   "dist/test/helpers.js",
+  "dist/test/native-storage-fixture.js",
   "dist/test/tasks-wire-fixture.js",
   "scripts/native-attempt-journal-evidence.mjs",
   "scripts/attempt-output-evidence.mjs",
