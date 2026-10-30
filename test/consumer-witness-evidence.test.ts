@@ -60,6 +60,8 @@ const paths = {
   php: ["policy/policy.php", "consumer/consumer.php"],
   rust: ["src/policy.rs", "src/consumer.rs", "src/lib.rs"],
   ruby: ["src/policy/Policy.rb", "src/consumer/Consumer.rb"],
+  c: ["src/policy/rules.h", "src/consumer/use.c"],
+  cpp: ["src/policy/rules.h", "src/consumer/use.cpp"],
 };
 type Family = keyof typeof paths;
 const retainedAttempts = new Map<
@@ -76,7 +78,7 @@ const output = (bytes: Buffer) => ({
   bytes: bytes.length,
   sha256: hash(bytes),
 });
-/** Deliberately synthetic packet controls, never evidence of an actual Go/Python/PHP/Rust run. */
+/** Deliberately synthetic packet controls, never evidence of actual native execution. */
 function packet(family: Family = "go", variant = "broken", origin = "source") {
   const before = paths[family].map((path) => ({
     path,
@@ -98,13 +100,18 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
   const sources = Object.fromEntries(
     before.map((file) => [
       family === "python" ? file.path.split("/").at(-1)! : file.path,
-      family === "rust" || family === "ruby"
+      ["rust", "ruby", "c", "cpp"].includes(family)
         ? [...Buffer.from("Original synthetic source:" + file.path)]
         : file.sha256,
     ]),
   );
-  const cases =
-    variant === "broken"
+  const cases = ["c", "cpp"].includes(family)
+    ? variant === "broken"
+      ? [true, true, true, false, true, true, false]
+      : variant === "near-miss"
+        ? [true, false, false, false, false, true, false]
+        : [true, false, false, false, true, true, false]
+    : variant === "broken"
       ? [true, true, true, false]
       : [true, false, false, false];
   const body =
@@ -141,7 +148,11 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
     phase: "canonical",
     before,
     after: structuredClone(before),
-    tool: { name: family, sha256: hex("1"), afterSha256: hex("1") },
+    tool: {
+      name: family === "c" ? "gcc" : family === "cpp" ? "g++" : family,
+      sha256: hex("1"),
+      afterSha256: hex("1"),
+    },
     invocation: {
       commandSha256: hex("e"),
       executableSha256: hex("2"),
@@ -156,27 +167,26 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
       cleanupComplete: true,
     },
     output: stream,
-    compiler:
-      family === "rust"
-        ? {
-            commandSha256: hex("e"),
-            argvSha256: hex("3"),
-            executableSha256: hex("1"),
-            executableAfterSha256: hex("1"),
-            exitCode: 0,
-            signal: null,
-            errorCode: null,
-            timedOut: false,
-            cancelled: false,
-            truncated: false,
-            cleanupComplete: true,
-            output: {
-              ...stream,
-              stdout: output(Buffer.alloc(0)),
-              observedBytes: 0,
-            },
-          }
-        : null,
+    compiler: ["rust", "c", "cpp"].includes(family)
+      ? {
+          commandSha256: hex("e"),
+          argvSha256: hex("3"),
+          executableSha256: hex("1"),
+          executableAfterSha256: hex("1"),
+          exitCode: 0,
+          signal: null,
+          errorCode: null,
+          timedOut: false,
+          cancelled: false,
+          truncated: false,
+          cleanupComplete: true,
+          output: {
+            ...stream,
+            stdout: output(Buffer.alloc(0)),
+            observedBytes: 0,
+          },
+        }
+      : null,
     nativeResult: {
       consumers,
       sources: Object.fromEntries(
@@ -203,7 +213,7 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
     gateAComplete: false,
   };
   const records = [];
-  for (const stage of family === "rust"
+  for (const stage of ["rust", "c", "cpp"].includes(family)
     ? ["compiler", "consumer"]
     : ["consumer"]) {
     const invocation = stage === "compiler" ? row.compiler! : row.invocation;
@@ -274,6 +284,16 @@ function binding(row: ReturnType<typeof packet>) {
     toolInputsSha256: hex("9"),
     toolExecutableSha256: row.tool.sha256,
     toolVersionMatched: true,
+    nativeTool: ["c", "cpp"].includes(row.family)
+      ? {
+          name: row.family === "c" ? "gcc" : "g++",
+          role: "supplementary-native-compiler",
+          version: "14.2.0",
+          target: "aarch64-linux-gnu",
+          identity: "Original synthetic compiler (Debian 14.2.0-19)",
+          qualifiesSelectedClang: false,
+        }
+      : null,
     runtimeImage: {
       kind: "oci-image-observation",
       id: "sha256:" + hex("c"),
@@ -529,6 +549,80 @@ test("synthetic Ruby consumer witnesses bind native source bytes and every alias
       mode === "alias"
         ? /Native consumer result differs/
         : /Physical native source/,
+    );
+  }
+});
+test("synthetic C and C++ witnesses retain every native producer case and separate supplementary compiler failures from executable results", () => {
+  for (const family of ["c", "cpp"] as const) {
+    const rows = ["broken", "fixed", "near-miss"].flatMap((variant) =>
+      ["source", "installed"].map((origin) => packet(family, variant, origin)),
+    );
+    const bindings = rows.map(binding);
+    const coverage = inspect(rows, bindings);
+    assert.equal(
+      requireQualifiedConsumerWitnessFamily(coverage, family).complete,
+      true,
+    );
+    assert.equal(coverage.complete, false);
+    assert.deepEqual(
+      rows[0]!.attempts.map((attempt) => attempt.stage),
+      ["compiler", "consumer"],
+    );
+    assert.notEqual(
+      rows[0]!.compiler!.executableSha256,
+      rows[0]!.invocation.executableSha256,
+    );
+    assert.deepEqual(
+      JSON.parse(
+        Buffer.from(rows[4]!.output.stdout.base64, "base64").toString(),
+      ).cases,
+      [true, false, false, false, false, true, false],
+    );
+    assert.equal(bindings[0]!.nativeTool!.qualifiesSelectedClang, false);
+    const mislabeled = structuredClone(bindings);
+    mislabeled[0]!.nativeTool!.name = "clang";
+    assert.throws(() => inspect(rows, mislabeled));
+    const promoted = structuredClone(bindings);
+    promoted[0]!.nativeTool!.qualifiesSelectedClang = true;
+    assert.throws(() => inspect(rows, promoted));
+    const missingCompiler = packet(family);
+    missingCompiler.attempts.shift();
+    assert.throws(
+      () => inspect([missingCompiler]),
+      /Consumer attempt stage inventory differs/,
+    );
+    const failedCompiler = packet(family);
+    const attempts = retainedAttempts.get(failedCompiler.witnessId)!;
+    (attempts[0]!.value.result as { exitCode: number }).exitCode = 1;
+    attempts[0]!.value.state = "failed";
+    const bytes = Buffer.from(JSON.stringify(attempts[0]!.value) + "\n");
+    attempts[0]!.bytes = bytes.length;
+    attempts[0]!.sha256 = hash(bytes);
+    failedCompiler.attempts[0]!.bytes = bytes.length;
+    failedCompiler.attempts[0]!.sha256 = hash(bytes);
+    assert.throws(
+      () => inspect([failedCompiler]),
+      /Failed or unavailable native attempt/,
+    );
+    const staleFailure = inspectConsumerWitnesses(
+      manifest,
+      inventory,
+      profiles,
+      rows,
+      bindings,
+      [
+        ...rows.flatMap((row) => retainedAttempts.get(row.witnessId)!),
+        attempts[0]!,
+      ],
+    );
+    assert.ok(
+      staleFailure.issues.includes("failed-or-unavailable-consumer-attempt"),
+    );
+    assert.equal(
+      staleFailure.families.find(
+        (row: { family: string }) => row.family === family,
+      ).complete,
+      false,
     );
   }
 });
@@ -847,6 +941,10 @@ test("consumer controller captures a container family without depending on unrel
       "Original synthetic acceptance bytes\n",
     "dist/test/gate-context-ruby.test.js":
       "Original synthetic Ruby acceptance bytes\n",
+    "dist/test/gate-context-c.test.js":
+      "Original synthetic C acceptance bytes\n",
+    "dist/test/gate-context-cpp.test.js":
+      "Original synthetic C++ acceptance bytes\n",
     "scripts/compiled-engine-evidence.mjs":
       "Original synthetic engine observer bytes\n",
     "scripts/consumer-witness-attempts.mjs":
@@ -854,10 +952,16 @@ test("consumer controller captures a container family without depending on unrel
     "scripts/required-native-tests.json": JSON.stringify({
       "context-php": profiles["context-php"],
       "context-ruby": profiles["context-ruby"],
+      "context-c": profiles["context-c"],
+      "context-cpp": profiles["context-cpp"],
     }),
     "scripts/php-context-tools.Dockerfile":
       "Original synthetic pinned Dockerfile bytes\n",
     "scripts/ruby-context-tools.Dockerfile":
+      "Original synthetic pinned Dockerfile bytes\n",
+    "scripts/c-context-tools.Dockerfile":
+      "Original synthetic pinned Dockerfile bytes\n",
+    "scripts/cpp-context-tools.Dockerfile":
       "Original synthetic pinned Dockerfile bytes\n",
     "docs/gate-a-profiles.v1.json": JSON.stringify(inventory),
   });
@@ -866,14 +970,19 @@ test("consumer controller captures a container family without depending on unrel
     id: "sha256:" + hex("c"),
   };
   const tool = { bytes: 1, sha256: hex("1") };
-  for (const family of ["php", "ruby"]) {
-    const runtime = {
-      toolVersion:
-        family === "php"
-          ? inventory.toolVersions.php
-          : "ruby " +
+  for (const family of ["php", "ruby", "c", "cpp"]) {
+    const version =
+      family === "php"
+        ? inventory.toolVersions.php
+        : family === "ruby"
+          ? "ruby " +
             inventory.toolVersions.ruby +
-            " (original synthetic version)",
+            " (original synthetic version)"
+          : "14.2.0";
+    const runtime = {
+      toolVersion: version,
+      compilerTarget: "aarch64-linux-gnu",
+      compilerIdentity: "Original synthetic compiler (Debian 14.2.0-19)",
     };
     const received = await captureConsumerWitnessController(
       root,
@@ -889,17 +998,31 @@ test("consumer controller captures a container family without depending on unrel
       received.runtimeImage.definitionSha256,
       hash("Original synthetic pinned Dockerfile bytes\n"),
     );
+    if (["c", "cpp"].includes(family)) {
+      assert.equal(received.nativeTool.role, "supplementary-native-compiler");
+      assert.equal(received.nativeTool.name, family === "c" ? "gcc" : "g++");
+      assert.equal(received.nativeTool.qualifiesSelectedClang, false);
+      const foreignTarget = await captureConsumerWitnessController(
+        root,
+        family,
+        runtimeImage,
+        { ...runtime, compilerTarget: "x86_64-linux-gnu" },
+        tool,
+      );
+      assert.equal(foreignTarget.toolVersionMatched, false);
+    }
     const wrongTool = await captureConsumerWitnessController(
       root,
       family,
       runtimeImage,
       {
+        ...runtime,
         toolVersion:
-          family === "php"
-            ? inventory.toolVersions.php + ".adjacent"
-            : "ruby " +
+          family === "ruby"
+            ? "ruby " +
               inventory.toolVersions.ruby +
-              ".adjacent (original synthetic version)",
+              ".adjacent (original synthetic version)"
+            : version + ".adjacent",
       },
       tool,
     );

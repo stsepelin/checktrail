@@ -57,7 +57,11 @@ export function inspectConsumerAttemptRecords(records) {
       false,
       "Duplicate consumer attempt identity",
     );
-    assert.ok(["go", "python", "php", "rust", "ruby"].includes(value.family));
+    assert.ok(
+      ["go", "python", "php", "rust", "ruby", "c", "cpp"].includes(
+        value.family,
+      ),
+    );
     assert.ok(["broken", "fixed", "near-miss"].includes(value.variant));
     assert.ok(["source", "installed"].includes(value.origin));
     assert.ok(
@@ -67,7 +71,8 @@ export function inspectConsumerAttemptRecords(records) {
     );
     assert.ok(
       value.stage === "consumer" ||
-        (value.stage === "compiler" && value.family === "rust"),
+        (value.stage === "compiler" &&
+          ["rust", "c", "cpp"].includes(value.family)),
     );
     assert.equal(value.processStartAcknowledgementRetained, false);
     assert.equal(value.gateAComplete, false);
@@ -175,8 +180,9 @@ export function inspectConsumerAttemptRecords(records) {
 }
 export function requireConsumerWitnessAttempts(witness, records, used) {
   assert.ok(uuid(witness.witnessId), "Missing consumer witness identity");
-  const stages =
-    witness.family === "rust" ? ["compiler", "consumer"] : ["consumer"];
+  const stages = ["rust", "c", "cpp"].includes(witness.family)
+    ? ["compiler", "consumer"]
+    : ["consumer"];
   assert.ok(Array.isArray(witness.attempts));
   assert.deepEqual(
     witness.attempts.map((item) => item.stage),

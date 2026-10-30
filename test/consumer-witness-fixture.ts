@@ -20,7 +20,8 @@ import { nativeOuterCommandSha256 } from "../src/native-journal-engine.js";
 export type ConsumerVariant = "broken" | "fixed" | "near-miss";
 export type ConsumerPhase =
   "canonical" | "caller-change" | "restored" | "repeat";
-export type ConsumerFamily = "go" | "python" | "php" | "rust" | "ruby";
+export type ConsumerFamily =
+  "go" | "python" | "php" | "rust" | "ruby" | "c" | "cpp";
 const hash = (bytes: Uint8Array | string) =>
   createHash("sha256").update(bytes).digest("hex");
 const filesByFamily = {
@@ -29,6 +30,8 @@ const filesByFamily = {
   php: ["policy/policy.php", "consumer/consumer.php"],
   rust: ["src/policy.rs", "src/consumer.rs", "src/lib.rs"],
   ruby: ["src/policy/Policy.rb", "src/consumer/Consumer.rb"],
+  c: ["src/policy/rules.h", "src/consumer/use.c"],
+  cpp: ["src/policy/rules.h", "src/consumer/use.cpp"],
 } as const;
 async function bytesIdentity(
   filename: string,
@@ -196,9 +199,15 @@ async function codeMetadata(family: ConsumerFamily) {
 export async function observeConsumerWitnessTool(family: ConsumerFamily) {
   assert.ok(Object.hasOwn(filesByFamily, family));
   const observed = await tool(
-    { go: "go", python: "python3", php: "php", rust: "rustc", ruby: "ruby" }[
-      family
-    ],
+    {
+      go: "go",
+      python: "python3",
+      php: "php",
+      rust: "rustc",
+      ruby: "ruby",
+      c: "gcc",
+      cpp: "g++",
+    }[family],
   );
   return { bytes: observed.bytes, sha256: observed.sha256 };
 }
@@ -222,9 +231,15 @@ export async function beginConsumerWitness(
   const canonical = await realpath(root);
   const storageIdentity = await privateDirectory(destination, canonical);
   const selected = await tool(
-    { go: "go", python: "python3", php: "php", rust: "rustc", ruby: "ruby" }[
-      family
-    ],
+    {
+      go: "go",
+      python: "python3",
+      php: "php",
+      rust: "rustc",
+      ruby: "ruby",
+      c: "gcc",
+      cpp: "g++",
+    }[family],
   );
   return {
     root: canonical,
@@ -328,7 +343,9 @@ export async function recordConsumerWitnessAttempt(
     assert.equal(previous.stage, stage);
     return previous;
   }
-  assert.ok(stage === "consumer" || capture.family === "rust");
+  assert.ok(
+    stage === "consumer" || ["rust", "c", "cpp"].includes(capture.family),
+  );
   try {
     const { consumerAttemptState } = await import(
       new URL("../../scripts/consumer-witness-attempts.mjs", import.meta.url)
@@ -452,7 +469,9 @@ export async function finishConsumerWitness(
   await recordConsumerWitnessAttempt(capture, result);
   assert.deepEqual(
     capture.attempts.map((item) => item.stage),
-    capture.family === "rust" ? ["compiler", "consumer"] : ["consumer"],
+    ["rust", "c", "cpp"].includes(capture.family)
+      ? ["compiler", "consumer"]
+      : ["consumer"],
     "Consumer native attempt inventory differs",
   );
   const output = completeInvocation(result);
@@ -506,10 +525,11 @@ export async function finishConsumerWitness(
       native.sources[
         capture.family === "python" ? path.basename(file.path) : file.path
       ];
-    const observed: string =
-      capture.family === "rust" || capture.family === "ruby"
-        ? hash(Buffer.from(raw))
-        : raw;
+    const observed: string = ["rust", "ruby", "c", "cpp"].includes(
+      capture.family,
+    )
+      ? hash(Buffer.from(raw))
+      : raw;
     assert.equal(observed, file.sha256);
     sources[file.path] = observed;
   }
@@ -545,10 +565,10 @@ export async function finishConsumerWitness(
         cleanupComplete: true,
       }
     : null;
-  if (capture.family === "rust")
+  if (["rust", "c", "cpp"].includes(capture.family))
     assert.ok(
       compiler,
-      "Compiled Rust witness requires its reached compiler invocation",
+      "Compiled consumer witness requires its reached compiler invocation",
     );
   const row = {
     schemaVersion: 1,

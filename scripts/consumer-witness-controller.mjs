@@ -13,7 +13,9 @@ export async function captureConsumerWitnessController(
   runtime,
   tool,
 ) {
-  assert.ok(["go", "python", "php", "rust", "ruby"].includes(family));
+  assert.ok(
+    ["go", "python", "php", "rust", "ruby", "c", "cpp"].includes(family),
+  );
   const profile = "context-" + family;
   const required = JSON.parse(
     await readFile(
@@ -38,7 +40,7 @@ export async function captureConsumerWitnessController(
     }),
   );
   const engine = await captureCompiledEngine(path.join(root, "dist/src"));
-  const definition = ["php", "rust", "ruby"].includes(family)
+  const definition = ["php", "rust", "ruby", "c", "cpp"].includes(family)
     ? "scripts/" + family + "-context-tools.Dockerfile"
     : ".github/workflows/ci.yml";
   const definitionSha256 = hash(await readFile(path.join(root, definition)));
@@ -78,18 +80,34 @@ export async function captureConsumerWitnessController(
           ? version.startsWith("rustc " + inventory.toolVersions.rust + " ")
           : family === "ruby"
             ? version.startsWith("ruby " + inventory.toolVersions.ruby + " ")
-            : version === "Python " + pythonVersion;
+            : ["c", "cpp"].includes(family)
+              ? version === "14.2.0" &&
+                runtime.compilerTarget === "aarch64-linux-gnu" &&
+                /Debian 14\.2\.0-19/.test(runtime.compilerIdentity ?? "")
+              : version === "Python " + pythonVersion;
+  const nativeTool = ["c", "cpp"].includes(family)
+    ? {
+        name: family === "c" ? "gcc" : "g++",
+        role: "supplementary-native-compiler",
+        version,
+        target: runtime.compilerTarget,
+        identity: runtime.compilerIdentity,
+        qualifiesSelectedClang: false,
+      }
+    : null;
   const toolInputsSha256 = hash(
     JSON.stringify({
       definitionSha256,
       runtimeImage: observedImage,
       tool,
       runtimeVersion: runtime.toolVersion,
+      nativeTool,
     }),
   );
   return {
     family,
     toolVersionMatched,
+    nativeTool,
     requirements: required,
     engineSha256: engine.treeSha256,
     harnessSha256: hash(

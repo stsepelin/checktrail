@@ -162,18 +162,24 @@
     "tasks-runtime-arm64"
   ],
   "scripts/consumer-witness-attempts.mjs": [
+    "c-context-arm64",
+    "cpp-context-arm64",
     "go-workspaces-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64"
   ],
   "scripts/consumer-witness-controller.mjs": [
+    "c-context-arm64",
+    "cpp-context-arm64",
     "go-workspaces-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64"
   ],
   "scripts/consumer-witness-evidence.mjs": [
+    "c-context-arm64",
+    "cpp-context-arm64",
     "go-workspaces-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
@@ -1036,6 +1042,8 @@
     "tasks-runtime-arm64"
   ],
   "scripts/verify-consumer-witness-profile.mjs": [
+    "c-context-arm64",
+    "cpp-context-arm64",
     "go-workspaces-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
@@ -1447,6 +1455,8 @@
   "test/consumer-imports.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/consumer-runtime-evidence.test.ts": ["tasks-runtime"],
   "test/consumer-witness-fixture.ts": [
+    "c-context-arm64",
+    "cpp-context-arm64",
     "go-workspaces-arm64",
     "php-context-arm64",
     "ruby-context-arm64",

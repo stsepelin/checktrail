@@ -345,9 +345,9 @@
           "name": "context-c near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["src/policy/rules.h", "src/consumer/use.c"]
     },
     {
       "id": "cpp",
@@ -368,9 +368,9 @@
           "name": "context-cpp near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["src/policy/rules.h", "src/consumer/use.cpp"]
     },
     {
       "id": "hcl",

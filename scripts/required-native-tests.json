@@ -5975,6 +5975,10 @@
     {
       "file": "dist/test/consumer-witness-evidence.test.js",
       "name": "synthetic Ruby consumer witnesses bind native source bytes and every alias result across source and installed variants"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "synthetic C and C++ witnesses retain every native producer case and separate supplementary compiler failures from executable results"
     }
   ]
 }

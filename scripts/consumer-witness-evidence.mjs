@@ -37,6 +37,8 @@ const sourcePaths = Object.freeze({
   php: ["policy/policy.php", "consumer/consumer.php"],
   rust: ["src/policy.rs", "src/consumer.rs", "src/lib.rs"],
   ruby: ["src/policy/Policy.rb", "src/consumer/Consumer.rb"],
+  c: ["src/policy/rules.h", "src/consumer/use.c"],
+  cpp: ["src/policy/rules.h", "src/consumer/use.cpp"],
 });
 /** Selected declarations are checked against the inventory, never treated as executions. */
 export function selectConsumerWitnessRequirements(
@@ -255,8 +257,13 @@ export function inspectConsumerWitnesses(
       expectedConsumers,
       "Native consumer result differs from its original variant",
     );
-    const expectedCases =
-      row.variant === "broken"
+    const expectedCases = ["c", "cpp"].includes(row.family)
+      ? row.variant === "broken"
+        ? [true, true, true, false, true, true, false]
+        : row.variant === "near-miss"
+          ? [true, false, false, false, false, true, false]
+          : [true, false, false, false, true, true, false]
+      : row.variant === "broken"
         ? [true, true, true, false]
         : [true, false, false, false];
     const actualCases =
@@ -289,7 +296,7 @@ export function inspectConsumerWitnesses(
         native.sources?.[
           row.family === "python" ? file.path.split("/").at(-1) : file.path
         ];
-      const retainedSource = row.family === "rust" || row.family === "ruby";
+      const retainedSource = ["rust", "ruby", "c", "cpp"].includes(row.family);
       if (retainedSource) {
         assert.ok(
           Array.isArray(raw) &&
@@ -315,10 +322,10 @@ export function inspectConsumerWitnesses(
         "Derived native source identity differs",
       );
     }
-    if (row.family === "rust") {
+    if (["rust", "c", "cpp"].includes(row.family)) {
       assert.ok(
         row.compiler,
-        "Rust consumer lacks its reached compiler observation",
+        "Compiled consumer lacks its reached compiler observation",
       );
       assert.ok(sha(row.compiler.argvSha256));
       assert.equal(row.compiler.exitCode, 0);
@@ -478,6 +485,16 @@ export function inspectConsumerWitnesses(
           row.tool.sha256,
           "Native tool observation differs",
         );
+        if (["c", "cpp"].includes(row.family)) {
+          const nativeTool = binding.nativeTool;
+          assert.equal(row.tool.name, row.family === "c" ? "gcc" : "g++");
+          assert.equal(nativeTool?.name, row.tool.name);
+          assert.equal(nativeTool.role, "supplementary-native-compiler");
+          assert.equal(nativeTool.version, "14.2.0");
+          assert.equal(nativeTool.target, "aarch64-linux-gnu");
+          assert.match(nativeTool.identity, /Debian 14\.2\.0-19/);
+          assert.equal(nativeTool.qualifiesSelectedClang, false);
+        }
         assert.equal(binding.complete, true);
         assert.equal(binding.skipped, false);
         assert.equal(binding.installedOutsidePackage, origin === "installed");
@@ -690,6 +707,7 @@ export function bindConsumerWitnessController(collection, expected) {
         toolInputsSha256: expected.toolInputsSha256,
         toolExecutableSha256: expected.tool.sha256,
         toolVersionMatched: expected.toolVersionMatched,
+        nativeTool: expected.nativeTool,
         observationSha256: hash(JSON.stringify(row)),
         runtimeImage: expected.runtimeImage,
         complete: true,
