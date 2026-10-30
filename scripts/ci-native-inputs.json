@@ -167,13 +167,15 @@
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
+    "hcl-context-arm64",
     "java-context-arm64",
     "kotlin-context-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
-    "vb-context-arm64"
+    "vb-context-arm64",
+    "yaml-context-arm64"
   ],
   "scripts/consumer-witness-controller.mjs": [
     "c-context-arm64",
@@ -181,13 +183,15 @@
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
+    "hcl-context-arm64",
     "java-context-arm64",
     "kotlin-context-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
-    "vb-context-arm64"
+    "vb-context-arm64",
+    "yaml-context-arm64"
   ],
   "scripts/consumer-witness-data.mjs": [
     "c-context-arm64",
@@ -195,13 +199,15 @@
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
+    "hcl-context-arm64",
     "java-context-arm64",
     "kotlin-context-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
-    "vb-context-arm64"
+    "vb-context-arm64",
+    "yaml-context-arm64"
   ],
   "scripts/consumer-witness-evidence.mjs": [
     "c-context-arm64",
@@ -209,13 +215,15 @@
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
+    "hcl-context-arm64",
     "java-context-arm64",
     "kotlin-context-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
-    "vb-context-arm64"
+    "vb-context-arm64",
+    "yaml-context-arm64"
   ],
   "scripts/consumer-witness-jvm.mjs": [
     "c-context-arm64",
@@ -223,13 +231,15 @@
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
+    "hcl-context-arm64",
     "java-context-arm64",
     "kotlin-context-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
-    "vb-context-arm64"
+    "vb-context-arm64",
+    "yaml-context-arm64"
   ],
   "scripts/consumer-witness-managed.mjs": [
     "c-context-arm64",
@@ -237,13 +247,15 @@
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
+    "hcl-context-arm64",
     "java-context-arm64",
     "kotlin-context-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
-    "vb-context-arm64"
+    "vb-context-arm64",
+    "yaml-context-arm64"
   ],
   "scripts/cpp-archive-fallbacks/libexpat-2.8.5-r0.apk": [
     "cpp-extensions-arm64",
@@ -1107,13 +1119,15 @@
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
+    "hcl-context-arm64",
     "java-context-arm64",
     "kotlin-context-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
-    "vb-context-arm64"
+    "vb-context-arm64",
+    "yaml-context-arm64"
   ],
   "scripts/verify-cpp-context-container.mjs": ["cpp-context-arm64"],
   "scripts/verify-cpp-context-guards.mjs": ["cpp-context-arm64"],
@@ -1526,13 +1540,15 @@
     "csharp-context-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
+    "hcl-context-arm64",
     "java-context-arm64",
     "kotlin-context-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
-    "vb-context-arm64"
+    "vb-context-arm64",
+    "yaml-context-arm64"
   ],
   "test/cpp-controls.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
   "test/cpp-extensions-cancel.test.ts": ["cpp-extensions-arm64"],

@@ -391,9 +391,9 @@
           "name": "context-hcl near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["policy/rules.tf", "main.tf"]
     },
     {
       "id": "yaml",
@@ -414,9 +414,9 @@
           "name": "context-yaml near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["policy.yaml", "extra.yaml"]
     },
     {
       "id": "shared-json",
