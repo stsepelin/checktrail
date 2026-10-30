@@ -5971,6 +5971,10 @@
     {
       "file": "dist/test/consumer-witness-evidence.test.js",
       "name": "final native consumer controllers refuse unqualified families even when all six observations exist"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "synthetic Ruby consumer witnesses bind native source bytes and every alias result across source and installed variants"
     }
   ]
 }

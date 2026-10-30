@@ -13,7 +13,7 @@ export async function captureConsumerWitnessController(
   runtime,
   tool,
 ) {
-  assert.ok(["go", "python", "php", "rust"].includes(family));
+  assert.ok(["go", "python", "php", "rust", "ruby"].includes(family));
   const profile = "context-" + family;
   const required = JSON.parse(
     await readFile(
@@ -38,12 +38,9 @@ export async function captureConsumerWitnessController(
     }),
   );
   const engine = await captureCompiledEngine(path.join(root, "dist/src"));
-  const definition =
-    family === "php"
-      ? "scripts/php-context-tools.Dockerfile"
-      : family === "rust"
-        ? "scripts/rust-context-tools.Dockerfile"
-        : ".github/workflows/ci.yml";
+  const definition = ["php", "rust", "ruby"].includes(family)
+    ? "scripts/" + family + "-context-tools.Dockerfile"
+    : ".github/workflows/ci.yml";
   const definitionSha256 = hash(await readFile(path.join(root, definition)));
   const observedImage =
     runtimeImage.kind === "oci-image-observation"
@@ -79,7 +76,9 @@ export async function captureConsumerWitnessController(
         ? version === inventory.toolVersions.php
         : family === "rust"
           ? version.startsWith("rustc " + inventory.toolVersions.rust + " ")
-          : version === "Python " + pythonVersion;
+          : family === "ruby"
+            ? version.startsWith("ruby " + inventory.toolVersions.ruby + " ")
+            : version === "Python " + pythonVersion;
   const toolInputsSha256 = hash(
     JSON.stringify({
       definitionSha256,

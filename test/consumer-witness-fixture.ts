@@ -20,7 +20,7 @@ import { nativeOuterCommandSha256 } from "../src/native-journal-engine.js";
 export type ConsumerVariant = "broken" | "fixed" | "near-miss";
 export type ConsumerPhase =
   "canonical" | "caller-change" | "restored" | "repeat";
-export type ConsumerFamily = "go" | "python" | "php" | "rust";
+export type ConsumerFamily = "go" | "python" | "php" | "rust" | "ruby";
 const hash = (bytes: Uint8Array | string) =>
   createHash("sha256").update(bytes).digest("hex");
 const filesByFamily = {
@@ -28,6 +28,7 @@ const filesByFamily = {
   python: ["pkg/policy.py", "pkg/consumer.py"],
   php: ["policy/policy.php", "consumer/consumer.php"],
   rust: ["src/policy.rs", "src/consumer.rs", "src/lib.rs"],
+  ruby: ["src/policy/Policy.rb", "src/consumer/Consumer.rb"],
 } as const;
 async function bytesIdentity(
   filename: string,
@@ -195,7 +196,9 @@ async function codeMetadata(family: ConsumerFamily) {
 export async function observeConsumerWitnessTool(family: ConsumerFamily) {
   assert.ok(Object.hasOwn(filesByFamily, family));
   const observed = await tool(
-    { go: "go", python: "python3", php: "php", rust: "rustc" }[family],
+    { go: "go", python: "python3", php: "php", rust: "rustc", ruby: "ruby" }[
+      family
+    ],
   );
   return { bytes: observed.bytes, sha256: observed.sha256 };
 }
@@ -219,7 +222,9 @@ export async function beginConsumerWitness(
   const canonical = await realpath(root);
   const storageIdentity = await privateDirectory(destination, canonical);
   const selected = await tool(
-    { go: "go", python: "python3", php: "php", rust: "rustc" }[family],
+    { go: "go", python: "python3", php: "php", rust: "rustc", ruby: "ruby" }[
+      family
+    ],
   );
   return {
     root: canonical,
@@ -483,11 +488,17 @@ export async function finishConsumerWitness(
   const expected =
     capture.phase === "caller-change"
       ? [false, true]
-      : capture.variant === "broken"
-        ? [true, true]
-        : capture.family === "rust" && capture.variant === "near-miss"
-          ? [false, false]
-          : [false, true];
+      : capture.family === "ruby"
+        ? capture.variant === "broken"
+          ? [true, true, true]
+          : capture.variant === "near-miss"
+            ? [false, false, false]
+            : [false, true, false]
+        : capture.variant === "broken"
+          ? [true, true]
+          : capture.family === "rust" && capture.variant === "near-miss"
+            ? [false, false]
+            : [false, true];
   assert.deepEqual(consumers, expected);
   const sources: Record<string, string> = {};
   for (const file of capture.before) {
@@ -496,7 +507,9 @@ export async function finishConsumerWitness(
         capture.family === "python" ? path.basename(file.path) : file.path
       ];
     const observed: string =
-      capture.family === "rust" ? hash(Buffer.from(raw)) : raw;
+      capture.family === "rust" || capture.family === "ruby"
+        ? hash(Buffer.from(raw))
+        : raw;
     assert.equal(observed, file.sha256);
     sources[file.path] = observed;
   }

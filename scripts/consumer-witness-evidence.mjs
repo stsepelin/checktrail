@@ -36,6 +36,7 @@ const sourcePaths = Object.freeze({
   python: ["pkg/policy.py", "pkg/consumer.py"],
   php: ["policy/policy.php", "consumer/consumer.php"],
   rust: ["src/policy.rs", "src/consumer.rs", "src/lib.rs"],
+  ruby: ["src/policy/Policy.rb", "src/consumer/Consumer.rb"],
 });
 /** Selected declarations are checked against the inventory, never treated as executions. */
 export function selectConsumerWitnessRequirements(
@@ -228,7 +229,7 @@ export function inspectConsumerWitnesses(
     assert.ok(
       row.nativeResult &&
         Array.isArray(row.nativeResult.consumers) &&
-        row.nativeResult.consumers.length === 2 &&
+        row.nativeResult.consumers.length === (row.family === "ruby" ? 3 : 2) &&
         row.nativeResult.consumers.every((v) => typeof v === "boolean"),
     );
     const native = JSON.parse(stdout.toString("utf8"));
@@ -238,11 +239,17 @@ export function inspectConsumerWitnesses(
     const expectedConsumers =
       row.phase === "caller-change"
         ? [false, true]
-        : row.variant === "broken"
-          ? [true, true]
-          : row.family === "rust" && row.variant === "near-miss"
-            ? [false, false]
-            : [false, true];
+        : row.family === "ruby"
+          ? row.variant === "broken"
+            ? [true, true, true]
+            : row.variant === "near-miss"
+              ? [false, false, false]
+              : [false, true, false]
+          : row.variant === "broken"
+            ? [true, true]
+            : row.family === "rust" && row.variant === "near-miss"
+              ? [false, false]
+              : [false, true];
     assert.deepEqual(
       consumers,
       expectedConsumers,
@@ -282,7 +289,21 @@ export function inspectConsumerWitnesses(
         native.sources?.[
           row.family === "python" ? file.path.split("/").at(-1) : file.path
         ];
-      const actual = row.family === "rust" ? hash(Buffer.from(raw)) : raw;
+      const retainedSource = row.family === "rust" || row.family === "ruby";
+      if (retainedSource) {
+        assert.ok(
+          Array.isArray(raw) &&
+            raw.every(
+              (value) => Number.isInteger(value) && value >= 0 && value <= 255,
+            ),
+        );
+        assert.equal(
+          raw.length,
+          file.bytes,
+          "Physical native source byte count differs",
+        );
+      }
+      const actual = retainedSource ? hash(Buffer.from(raw)) : raw;
       assert.equal(
         actual,
         file.sha256,

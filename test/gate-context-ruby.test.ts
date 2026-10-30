@@ -30,6 +30,12 @@ import { runProcess } from "../src/runner.js";
 import { fixture } from "./helpers.js";
 import { fixtureGit, syntheticCommit } from "./git-fixture.js";
 import { rubyBoundariesFixture } from "./review-ruby-boundaries-fixture.js";
+import {
+  beginConsumerWitness,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerVariant,
+} from "./consumer-witness-fixture.js";
 
 const broken =
   'module Policy\n  FALLBACK = "grant"\n  def self.decision(value = FALLBACK)\n    value.start_with?(FALLBACK)\n  end\nend\n';
@@ -99,18 +105,34 @@ async function execute(root: string, file: string, args: string[] = []) {
   assert.equal(result.truncated, false);
   return result.stdout;
 }
-async function witness(root: string) {
+async function witness(root: string, variant: ConsumerVariant) {
+  const capture = await beginConsumerWitness(root, "ruby", variant);
   await writeFile(
     path.join(root, "Witness.rb"),
-    'require_relative "./src/policy/Policy"\nrequire_relative "./src/consumer/Consumer"\n["grant:read","grantToken","grant2","other"].each { |value| puts Policy.decision(value) }\nputs Consumer.submit\nputs Consumer.route\nputs Consumer.alias\n',
+    'require_relative "./src/policy/Policy"\nrequire_relative "./src/consumer/Consumer"\ncases = ["grant:read","grantToken","grant2","other"].map { |value| Policy.decision(value) }\nconsumers = [Consumer.submit, Consumer.route, Consumer.alias]\nsources = ["src/policy/Policy.rb", "src/consumer/Consumer.rb"].map { |file| \'"\' + file + \'":\' + File.binread(File.join(__dir__, file)).bytes.inspect }.join(",")\nputs \'{"cases":\' + cases.inspect + \',"consumers":\' + consumers.inspect + \',"sources":{\' + sources + \'}}\'\n',
   );
-  return (await execute(root, "Witness.rb"))
-    .trim()
-    .split("\n")
-    .map((value) => {
-      assert.ok(value === "true" || value === "false");
-      return value === "true";
-    });
+  const result = await runProcess(
+    root,
+    {
+      executable: capture?.executable ?? "ruby",
+      args: ["--disable-gems", "Witness.rb"],
+      cwd: ".",
+    },
+    { timeoutMs: 10000, maxOutputBytes: 65536, captureRawOutput: true },
+  );
+  await recordConsumerWitnessAttempt(capture, result);
+  assert.equal(result.exitCode, 0, result.stdout + result.stderr);
+  assert.equal(result.errorCode, undefined);
+  assert.equal(result.timedOut, false);
+  assert.equal(result.cancelled, false);
+  assert.equal(result.truncated, false);
+  await finishConsumerWitness(capture, result);
+  const observed = JSON.parse(result.stdout);
+  assert.equal(observed.cases.length, 4);
+  assert.equal(observed.consumers.length, 3);
+  const answers = [...observed.cases, ...observed.consumers];
+  assert.ok(answers.every((value) => typeof value === "boolean"));
+  return answers;
 }
 function bindings(result: ReturnType<typeof analysis>) {
   const policy = result.functions.find(
@@ -157,7 +179,7 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-ruby broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "broken"), [
     true,
     true,
     true,
@@ -245,7 +267,7 @@ test("context-ruby broken acceptance", native, async (t) => {
 test("context-ruby fixed acceptance", native, async (t) => {
   const { root, result } = await original(t, fixed);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "fixed"), [
     true,
     false,
     false,
@@ -263,7 +285,7 @@ test("context-ruby fixed acceptance", native, async (t) => {
 test("context-ruby near-miss acceptance", native, async (t) => {
   const { root, result } = await original(t, near);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "near-miss"), [
     true,
     false,
     false,

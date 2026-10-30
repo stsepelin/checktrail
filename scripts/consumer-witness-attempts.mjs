@@ -57,7 +57,7 @@ export function inspectConsumerAttemptRecords(records) {
       false,
       "Duplicate consumer attempt identity",
     );
-    assert.ok(["go", "python", "php", "rust"].includes(value.family));
+    assert.ok(["go", "python", "php", "rust", "ruby"].includes(value.family));
     assert.ok(["broken", "fixed", "near-miss"].includes(value.variant));
     assert.ok(["source", "installed"].includes(value.origin));
     assert.ok(

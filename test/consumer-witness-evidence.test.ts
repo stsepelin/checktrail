@@ -59,6 +59,7 @@ const paths = {
   python: ["pkg/policy.py", "pkg/consumer.py"],
   php: ["policy/policy.php", "consumer/consumer.php"],
   rust: ["src/policy.rs", "src/consumer.rs", "src/lib.rs"],
+  ruby: ["src/policy/Policy.rb", "src/consumer/Consumer.rb"],
 };
 type Family = keyof typeof paths;
 const retainedAttempts = new Map<
@@ -83,15 +84,21 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
     sha256: hash("Original synthetic source:" + path),
   }));
   const consumers =
-    variant === "broken"
-      ? [true, true]
-      : family === "rust" && variant === "near-miss"
-        ? [false, false]
-        : [false, true];
+    family === "ruby"
+      ? variant === "broken"
+        ? [true, true, true]
+        : variant === "near-miss"
+          ? [false, false, false]
+          : [false, true, false]
+      : variant === "broken"
+        ? [true, true]
+        : family === "rust" && variant === "near-miss"
+          ? [false, false]
+          : [false, true];
   const sources = Object.fromEntries(
     before.map((file) => [
       family === "python" ? file.path.split("/").at(-1)! : file.path,
-      family === "rust"
+      family === "rust" || family === "ruby"
         ? [...Buffer.from("Original synthetic source:" + file.path)]
         : file.sha256,
     ]),
@@ -351,16 +358,16 @@ test("synthetic consumer witness reconciliation keeps all unobserved families pe
       for (const origin of ["source", "installed"])
         rows.push(packet(family, variant, origin));
   const result = inspect(rows, rows.map(binding));
-  assert.equal(result.observedFamilies, 4);
+  assert.equal(result.observedFamilies, Object.keys(paths).length);
   assert.equal(
     result.families.filter((r: { complete: boolean }) => r.complete).length,
-    4,
+    Object.keys(paths).length,
   );
   assert.equal(
     result.families.filter(
       (r: { observedWitnesses: number }) => r.observedWitnesses === 0,
     ).length,
-    15,
+    19 - Object.keys(paths).length,
   );
   assert.equal(result.complete, false);
   assert.equal(result.gateAComplete, false);
@@ -480,6 +487,50 @@ test("synthetic native controller bindings cannot hide missing skipped duplicate
     ).unqualified[0].reason,
     "unselected-runtime",
   );
+});
+test("synthetic Ruby consumer witnesses bind native source bytes and every alias result across source and installed variants", () => {
+  const rows = ["broken", "fixed", "near-miss"].flatMap((variant) =>
+    ["source", "installed"].map((origin) => packet("ruby", variant, origin)),
+  );
+  const result = inspect(rows, rows.map(binding));
+  assert.equal(
+    requireQualifiedConsumerWitnessFamily(result, "ruby").complete,
+    true,
+  );
+  assert.equal(result.complete, false);
+  assert.deepEqual(rows[0]!.nativeResult.consumers, [true, true, true]);
+  assert.deepEqual(rows[2]!.nativeResult.consumers, [false, true, false]);
+  assert.deepEqual(rows[4]!.nativeResult.consumers, [false, false, false]);
+  for (const mode of ["alias", "source-bytes", "source-length"]) {
+    const row = packet("ruby", "near-miss");
+    const body = JSON.parse(
+      Buffer.from(row.output.stdout.base64, "base64").toString(),
+    );
+    if (mode === "alias") {
+      body.consumers[2] = true;
+      row.nativeResult.consumers[2] = true;
+    }
+    if (mode === "source-bytes") body.sources[paths.ruby[0]!][0] ^= 1;
+    if (mode === "source-length") body.sources[paths.ruby[0]!].push(32);
+    const stdout = Buffer.from(JSON.stringify(body));
+    row.output.stdout = output(stdout);
+    row.output.observedBytes = stdout.length;
+    const attempts = retainedAttempts.get(row.witnessId)!;
+    for (const [index, attempt] of attempts.entries()) {
+      attempt.value.output = row.output;
+      const bytes = Buffer.from(JSON.stringify(attempt.value) + "\n");
+      attempt.bytes = bytes.length;
+      attempt.sha256 = hash(bytes);
+      row.attempts[index]!.bytes = attempt.bytes;
+      row.attempts[index]!.sha256 = attempt.sha256;
+    }
+    assert.throws(
+      () => inspect([row]),
+      mode === "alias"
+        ? /Native consumer result differs/
+        : /Physical native source/,
+    );
+  }
 });
 test("final native consumer controllers refuse unqualified families even when all six observations exist", () => {
   const rows = ["broken", "fixed", "near-miss"].flatMap((variant) =>
@@ -794,14 +845,19 @@ test("consumer controller captures a container family without depending on unrel
       "Original synthetic helper bytes\n",
     "dist/test/gate-context-php.test.js":
       "Original synthetic acceptance bytes\n",
+    "dist/test/gate-context-ruby.test.js":
+      "Original synthetic Ruby acceptance bytes\n",
     "scripts/compiled-engine-evidence.mjs":
       "Original synthetic engine observer bytes\n",
     "scripts/consumer-witness-attempts.mjs":
       "Original synthetic attempt observer bytes\n",
     "scripts/required-native-tests.json": JSON.stringify({
       "context-php": profiles["context-php"],
+      "context-ruby": profiles["context-ruby"],
     }),
     "scripts/php-context-tools.Dockerfile":
+      "Original synthetic pinned Dockerfile bytes\n",
+    "scripts/ruby-context-tools.Dockerfile":
       "Original synthetic pinned Dockerfile bytes\n",
     "docs/gate-a-profiles.v1.json": JSON.stringify(inventory),
   });
@@ -809,30 +865,46 @@ test("consumer controller captures a container family without depending on unrel
     kind: "oci-image-observation",
     id: "sha256:" + hex("c"),
   };
-  const runtime = { toolVersion: inventory.toolVersions.php };
   const tool = { bytes: 1, sha256: hex("1") };
-  const received = await captureConsumerWitnessController(
-    root,
-    "php",
-    runtimeImage,
-    runtime,
-    tool,
-  );
-  assert.equal(received.toolVersionMatched, true);
-  assert.equal(received.runtimeImage.id, runtimeImage.id);
-  assert.equal(received.runtimeImage.kind, "oci-image-observation");
-  assert.equal(
-    received.runtimeImage.definitionSha256,
-    hash("Original synthetic pinned Dockerfile bytes\n"),
-  );
-  const wrongTool = await captureConsumerWitnessController(
-    root,
-    "php",
-    runtimeImage,
-    { toolVersion: runtime.toolVersion + ".adjacent" },
-    tool,
-  );
-  assert.equal(wrongTool.toolVersionMatched, false);
+  for (const family of ["php", "ruby"]) {
+    const runtime = {
+      toolVersion:
+        family === "php"
+          ? inventory.toolVersions.php
+          : "ruby " +
+            inventory.toolVersions.ruby +
+            " (original synthetic version)",
+    };
+    const received = await captureConsumerWitnessController(
+      root,
+      family,
+      runtimeImage,
+      runtime,
+      tool,
+    );
+    assert.equal(received.toolVersionMatched, true);
+    assert.equal(received.runtimeImage.id, runtimeImage.id);
+    assert.equal(received.runtimeImage.kind, "oci-image-observation");
+    assert.equal(
+      received.runtimeImage.definitionSha256,
+      hash("Original synthetic pinned Dockerfile bytes\n"),
+    );
+    const wrongTool = await captureConsumerWitnessController(
+      root,
+      family,
+      runtimeImage,
+      {
+        toolVersion:
+          family === "php"
+            ? inventory.toolVersions.php + ".adjacent"
+            : "ruby " +
+              inventory.toolVersions.ruby +
+              ".adjacent (original synthetic version)",
+      },
+      tool,
+    );
+    assert.equal(wrongTool.toolVersionMatched, false);
+  }
 });
 
 test("consumer witness attempt bindings reject missing altered duplicate reused and failed retained records", () => {

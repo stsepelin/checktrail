@@ -299,9 +299,9 @@
           "name": "context-ruby near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["src/policy/Policy.rb", "src/consumer/Consumer.rb"]
     },
     {
       "id": "swift",

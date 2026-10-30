@@ -1,8 +1,8 @@
 # Native consumer witness evidence
 
 The selected consumer-family manifest keeps nineteen required family boundaries
-visible. The first collector implementation covers the existing Go, Python, PHP
-and Rust producer/consumer witness functions. Other families remain required and
+visible. The first collector implementation covers the existing Go, Python, PHP,
+Rust and Ruby producer/consumer witness functions. Other families remain required and
 pending. This is development acceptance tooling, not a review-quality result or
 complete consumer-family qualification.
 
@@ -22,7 +22,7 @@ capture unless the operator provides private storage.
 
 `node scripts/verify-consumer-witness-profile.mjs PROFILE` runs the existing nine
 required callbacks, including the fresh offline installation, for one of
-`context-go`, `context-python`, `context-php` or `context-rust`. It requires an operator-prepared native environment and
+`context-go`, `context-python`, `context-php`, `context-rust` or `context-ruby`. It requires an operator-prepared native environment and
 executes original synthetic fixture code. These execution constraints are not an
 OS security sandbox. CLI/MCP project discovery does not call this controller.
 
@@ -35,7 +35,7 @@ The existing offline installed acceptance remains separately required. Dependenc
 whole-package archive, hardware and complete producer-build attribution are not
 inferred from these witness packets.
 
-Existing PHP and Rust container controllers bind their observed image IDs and
+Existing PHP, Rust and Ruby container controllers bind their observed image IDs and
 native runtime probes. The Go/Python hosted-runtime controller records OS release
 and runner-image metadata without claiming host attestation. Unselected development
 hosts remain unqualified. Each selected variant must have one source and one
@@ -49,7 +49,13 @@ complete upstream build/license closure and independent evaluation remain open.
 No model inference, comparison trial or field evaluation is invoked here.
 
 The Go/Python entry point is the final hosted controller and refuses unqualified
-family reports, even when all six native observations exist. PHP/Rust inner
+family reports, even when all six native observations exist. PHP/Rust/Ruby inner
 collection stays unqualified until the outer controller binds the observed OCI
 image identity and requires the complete family report. Completion of these
 individual families does not complete the nineteen-family aggregate or Gate A.
+
+Ruby reuses its original interpreter witness and source/fresh acceptance callbacks.
+The physical response includes all three consumer calls, including the alias,
+and original producer/caller byte arrays read by the Ruby process. No optional
+JSON or digest gem is needed by this witness. Native Ruby qualification remains
+pending until the selected OCI controller actually runs and binds its results.

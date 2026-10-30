@@ -36,12 +36,16 @@ const profile = process.argv[2];
 assert.equal(
   process.argv.length,
   3,
-  "Usage: verify-consumer-witness-profile.mjs context-go|context-python|context-php|context-rust",
+  "Usage: verify-consumer-witness-profile.mjs context-go|context-python|context-php|context-rust|context-ruby",
 );
 assert.ok(
-  ["context-go", "context-python", "context-php", "context-rust"].includes(
-    profile,
-  ),
+  [
+    "context-go",
+    "context-python",
+    "context-php",
+    "context-rust",
+    "context-ruby",
+  ].includes(profile),
 );
 const family = profile.slice("context-".length);
 const parse = async (name) =>
@@ -63,11 +67,9 @@ const files = [
   "scripts/consumer-witness-controller.mjs",
   "scripts/consumer-witness-attempts.mjs",
   ".github/workflows/ci.yml",
-  ...(family === "php"
-    ? ["scripts/php-context-tools.Dockerfile"]
-    : family === "rust"
-      ? ["scripts/rust-context-tools.Dockerfile"]
-      : []),
+  ...(["php", "rust", "ruby"].includes(family)
+    ? ["scripts/" + family + "-context-tools.Dockerfile"]
+    : []),
   "scripts/required-test-evidence.mjs",
   "scripts/required-native-tests.json",
   "scripts/compiled-engine-evidence.mjs",
@@ -101,12 +103,15 @@ const runtime = {
   imageVersion: process.env.ImageVersion ?? null,
   hostAttestationPerformed: false,
   toolVersion: execFileSync(
-    { go: "go", python: "python3", php: "php", rust: "rustc" }[family],
+    { go: "go", python: "python3", php: "php", rust: "rustc", ruby: "ruby" }[
+      family
+    ],
     {
       go: ["version"],
       python: ["--version"],
       php: ["-r", "echo PHP_VERSION;"],
       rust: ["--version"],
+      ruby: ["--disable-gems", "--version"],
     }[family],
     {
       encoding: "utf8",
@@ -160,7 +165,7 @@ try {
   for (const name of names) {
     assert.match(
       name,
-      /^(?:(?:go|python|php|rust)-(?:broken|fixed|near-miss)-(?:canonical|caller-change|restored|repeat)|attempt)-[a-f0-9-]{36}\.json$/,
+      /^(?:(?:go|python|php|rust|ruby)-(?:broken|fixed|near-miss)-(?:canonical|caller-change|restored|repeat)|attempt)-[a-f0-9-]{36}\.json$/,
     );
     const file = path.join(namespace, name),
       stat = await lstat(file, { bigint: true });
