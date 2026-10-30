@@ -7,6 +7,7 @@ import {
   consumerNativeScopeJob,
   consumerNativeCapsuleFilename,
 } from "./consumer-native-acceptance-capsule.mjs";
+import { consumerNativeArtifactName } from "./consumer-native-job-claims.mjs";
 async function directory(filename) {
   assert.equal(await realpath(filename), filename);
   const stat = await lstat(filename);
@@ -57,35 +58,72 @@ async function artifact(filename) {
 export async function readConsumerNativeCapsuleArtifacts(
   root,
   selected,
-  runAttempt,
+  producerBindings,
 ) {
   assert.ok(path.isAbsolute(root));
-  assert.match(runAttempt, /^[1-9][0-9]{0,8}$/);
+  assert.ok(
+    Array.isArray(producerBindings) &&
+      producerBindings.length > 0 &&
+      producerBindings.length <= selected.length,
+  );
   assert.ok(
     Array.isArray(selected) && selected.length > 0 && selected.length <= 26,
   );
   await directory(root);
   const names = await readdir(root),
-    capsules = [];
-  assert.ok(names.length > 0 && names.length <= selected.length);
-  for (const name of names) {
-    assert.match(name, /^native-consumer-[a-z0-9-]+$/);
-    const parent = path.join(root, name);
-    await directory(parent);
+    capsules = [],
+    containers = [];
+  for (const binding of producerBindings)
+    assert.equal(
+      binding.finish.artifact.name,
+      consumerNativeArtifactName(
+        binding.job,
+        binding.lane,
+        binding.start.runAttempt,
+      ),
+    );
+  // Pinned download-artifact v8 writes one matched artifact directly to root, even with merge-multiple:false; multiple matches use named directories. Require that exact known layout, never guess a fallback.
+  if (producerBindings.length === 1)
+    containers.push({ parent: root, binding: producerBindings[0] });
+  else {
+    assert.deepEqual(
+      names.sort(),
+      producerBindings.map((row) => row.finish.artifact.name).sort(),
+      "Selected immutable native artifact is missing or foreign",
+    );
+    for (const name of names) {
+      assert.match(name, /^native-consumer-[a-z0-9-]+$/);
+      const binding = producerBindings.find(
+        (row) => row.finish.artifact.name === name,
+      );
+      assert.ok(binding);
+      const parent = path.join(root, name);
+      await directory(parent);
+      containers.push({ parent, binding });
+    }
+  }
+  for (const { parent, binding } of containers) {
     const files = await readdir(parent);
-    assert.ok(files.length > 0 && files.length <= selected.length);
+    assert.equal(files.length, binding.finish.capsules.length);
     for (const filename of files) {
       assert.match(filename, /^[a-z-]+--[a-z0-9-]+\.json$/);
       const capsule = await artifact(path.join(parent, filename)),
         scope = selected.find((scope) => scope.id === capsule.scope?.id);
       assert.ok(scope, "Foreign native capsule artifact");
       assert.equal(filename, consumerNativeCapsuleFilename(scope));
-      const job = consumerNativeScopeJob(scope),
-        lane = job === "tasks-runtime" ? scope.runtime.id : "single";
-      assert.equal(
-        name,
-        "native-consumer-" + job + "-" + lane + "-" + runAttempt,
+      assert.equal(consumerNativeScopeJob(scope), binding.job);
+      const expected = binding.finish.capsules.find(
+        (row) => row.scopeId === scope.id,
       );
+      assert.ok(
+        expected,
+        "Foreign scope in selected immutable native artifact",
+      );
+      assert.equal(capsule.capsuleSha256, expected.sha256);
+      assert.equal(capsule.attemptId, expected.attemptId);
+      assert.equal(capsule.ci.runId, binding.start.runId);
+      assert.equal(capsule.ci.runAttempt, binding.start.runAttempt);
+
       capsules.push(capsule);
       assert.ok(capsules.length <= selected.length);
     }

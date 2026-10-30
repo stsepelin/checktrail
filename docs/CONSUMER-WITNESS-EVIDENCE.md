@@ -124,7 +124,7 @@ capsule records controller module completion without claiming that the same
 process observed its own exit or a native process-start acknowledgement.
 
 The CI completion step independently requires successful outer jobs and exact
-current-run/attempt artifact names. It rejects missing or duplicate scopes,
+immutable artifact IDs selected by retained per-lane job outputs. It rejects missing or duplicate scopes,
 foreign source/engine/lockfile identities, omitted source/fresh scenarios and
 reused witness, process-attempt or registry identities. Artifacts remain separate
 rather than overwriting one another during download. Related-scope CI may qualify
@@ -138,3 +138,26 @@ matrix. The manifest's native acceptance remains pending until actual exact-sour
 source/fresh execution and complete aggregation. Whole upstream build/license
 closure, host/client isolation and independent evaluation remain separate Gate A
 requirements. No model or field trial runs through these entrypoints.
+
+Failed-job-only retries can retain an earlier successful producer execution.
+After the pinned Node setup, each consumer lane emits an early metadata START
+with a fresh nonce. FINISH is emitted only after the original controls and
+successful artifact upload, binding that START, the producer's actual workflow
+attempt, current source frame, immutable artifact ID/name/digest and every scope
+capsule hash. Matrix output keys are distinct for each closed lane, following
+[GitHub's matrix-output contract](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#using-job-outputs-in-a-matrix-job).
+
+The aggregate reads these actual retained outputs through `needs`. Same-run
+successful producers may precede the aggregate attempt. A new START with an old
+or missing FINISH is refused; failed, skipped, future, foreign or duplicated
+claims cannot select an artifact. Download uses only the claimed immutable IDs,
+with separate directories for multiple claimed artifacts and the pinned flat
+layout for exactly one. Missing artifacts cannot select an older fallback.
+Replay-cloned job IDs and their attempt labels do not identify when native code
+ran. These platform metadata bindings do not claim host attestation.
+
+FINISH retains the pinned upload action's digest output. The download action
+checks its service-provided artifact digest, and the local aggregator checks each
+capsule's canonical JSON-body digest and attempt identity against FINISH. The
+original uploaded ZIP is not retained and independently rehashed here; workflow
+metadata does not establish host or artifact-service attestation.

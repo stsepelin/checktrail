@@ -1341,8 +1341,10 @@ test("CI Windows lanes preserve frozen runtime pins and partition every original
     "node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}",
   ]);
   assert.deepEqual(commands("matrix.consumer"), [
+    "node scripts/consumer-native-job-claims.mjs start ${{ matrix.slot }}",
     "node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings &&",
     "node scripts/verify-consumer-native-acceptance.mjs consumer-impact ${{ matrix.slot }}",
+    "node scripts/check-consumer-native-ci.mjs --publish ${{ matrix.slot }}",
   ]);
   const names = workflowJobNames(workflow);
   for (const entry of windows)
@@ -1595,7 +1597,7 @@ test("native capsule CI preserves every frozen controller scope and finalizes on
       run.env.CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY,
       "${{ runner.temp }}/checktrail-native-capsules",
     );
-    const upload = steps.at(-1);
+    const upload = steps.at(-2);
     assert.equal(
       upload.uses,
       "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
@@ -1626,8 +1628,8 @@ test("native capsule CI preserves every frozen controller scope and finalizes on
     "actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
   );
   assert.equal(
-    download.with.pattern,
-    "native-consumer-*-${{ github.run_attempt }}",
+    download.with["artifact-ids"],
+    "${{ steps.native-capsules.outputs.artifact_ids }}",
   );
   assert.equal(download.with["merge-multiple"], false);
   assert.equal(download.with["digest-mismatch"], "error");
@@ -1811,4 +1813,114 @@ test("CI attempt archive lanes retain every frozen runtime, prerequisite and com
       ),
       false,
     );
+});
+
+test("native retry outputs use unique static closed-lane keys with pinned-Node START before producers and FINISH after upload", async () => {
+  const { consumerNativeAcceptanceScopes } = await import(
+      new URL(
+        "../../scripts/consumer-native-acceptance-scope.mjs",
+        import.meta.url,
+      ).href
+    ),
+    { consumerNativeScopeJob, consumerNativeScopeLane } = await import(
+      new URL(
+        "../../scripts/consumer-native-acceptance-capsule.mjs",
+        import.meta.url,
+      ).href
+    ),
+    { consumerNativeJobOutputKeys } = await import(
+      new URL("../../scripts/consumer-native-job-claims.mjs", import.meta.url)
+        .href
+    ),
+    read = async (file: string) =>
+      JSON.parse(await readFile(new URL(file, root), "utf8")),
+    scopes = consumerNativeAcceptanceScopes(
+      await read("docs/gate-a-consumer-witnesses.v1.json"),
+      await read("docs/gate-a-profiles.v1.json"),
+      await read("scripts/required-native-tests.json"),
+    );
+  const visited = new Set();
+  for (const scope of scopes) {
+    const job = consumerNativeScopeJob(scope),
+      lane = consumerNativeScopeLane(scope),
+      key = job + ":" + lane;
+    if (visited.has(key)) continue;
+    visited.add(key);
+    const selected = workflow.jobs[job],
+      steps = selected.steps,
+      start = steps.findIndex(
+        (step: { id?: string }) => step.id === "native-start",
+      ),
+      node = steps.findIndex((step: { uses?: string }) =>
+        step.uses?.startsWith("actions/setup-node@"),
+      ),
+      upload = steps.findIndex(
+        (step: { id?: string }) => step.id === "native-upload",
+      ),
+      finish = steps.findIndex(
+        (step: { id?: string }) => step.id === "native-finish",
+      );
+    assert.equal(start, node + 1);
+    assert.equal(finish, upload + 1);
+    assert.equal(finish, steps.length - 1);
+    for (const index of [start, upload, finish])
+      assert.equal(steps[index]["continue-on-error"], undefined);
+    assert.equal(
+      steps[finish].env.CHECKTRAIL_NATIVE_ARTIFACT_DIGEST,
+      "${{ steps.native-upload.outputs.artifact-digest }}",
+    );
+    const names = consumerNativeJobOutputKeys(job, lane);
+    assert.equal(
+      selected.outputs[names.start],
+      "${{ steps.native-start.outputs." + names.start + " }}",
+    );
+    assert.equal(
+      selected.outputs[names.finish],
+      "${{ steps.native-finish.outputs." + names.finish + " }}",
+    );
+    assert.equal(
+      steps[finish].env.CHECKTRAIL_NATIVE_ARTIFACT_ID,
+      "${{ steps.native-upload.outputs.artifact-id }}",
+    );
+    assert.equal(
+      steps[finish].env.CHECKTRAIL_NATIVE_ARTIFACT_NAME,
+      steps[upload].with.name,
+    );
+    assert.equal(
+      steps[finish].env.CHECKTRAIL_NATIVE_JOB_START,
+      "${{ steps.native-start.outputs.claim }}",
+    );
+    if (job === "tasks-runtime") {
+      assert.equal(steps[start].if, "matrix.consumer");
+      assert.equal(steps[finish].if, "matrix.consumer");
+    } else if (job === "cpp-extensions-arm64") {
+      assert.equal(steps[start].if, "matrix.phase == 'acceptance'");
+      assert.equal(steps[finish].if, "matrix.phase == 'acceptance'");
+    } else {
+      assert.equal(steps[start].if, undefined);
+      assert.equal(steps[finish].if, undefined);
+    }
+  }
+  assert.equal(visited.size, 25);
+  const steps = workflow.jobs["ci-complete"].steps,
+    gate = steps.findIndex(
+      (step: { run?: string }) =>
+        step.run === "node scripts/check-ci-completion.mjs",
+    ),
+    selection = steps.findIndex(
+      (step: { id?: string }) => step.id === "native-capsules",
+    );
+  assert.ok(gate < selection);
+  assert.equal(
+    steps[selection].env.CHECKTRAIL_CI_NEEDS,
+    "${{ toJSON(needs) }}",
+  );
+  const download = steps.find((step: { uses?: string }) =>
+    step.uses?.startsWith("actions/download-artifact@"),
+  );
+  assert.equal(download.with.pattern, undefined);
+  assert.equal(
+    download.with["artifact-ids"],
+    "${{ steps.native-capsules.outputs.artifact_ids }}",
+  );
 });

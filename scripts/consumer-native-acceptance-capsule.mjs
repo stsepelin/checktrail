@@ -27,6 +27,11 @@ import {
   reconcileConsumerNativeJournals,
   requireConsumerNativeJournalCollection,
 } from "./consumer-native-acceptance-journals.mjs";
+import {
+  consumerNativeJobLanes,
+  consumerNativeJobOutputKeys,
+  requireConsumerNativeProducerClaims,
+} from "./consumer-native-job-claims.mjs";
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex"),
   sha = (value) => typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
 const project = new Set(["javascript", "typescript", "shared-json"]);
@@ -506,6 +511,108 @@ export function consumerNativeScopeJob(scope) {
           ? "go-workspaces-arm64"
           : scope.families[0] + "-context-arm64";
 }
+export const consumerNativeScopeLane = (scope) =>
+  consumerNativeScopeJob(scope) === "tasks-runtime"
+    ? scope.runtime.id
+    : "single";
+/** Actual retained platform outputs select producer executions; artifact age, replay-cloned job IDs and aggregate attempt numbers do not. */
+export function selectConsumerNativeProducerClaims({
+  scopes,
+  selectedJobs,
+  completedJobs,
+  source,
+  ci,
+}) {
+  validateConsumerNativeSourceFrame(source);
+  requireCI(ci, true);
+  const selected = scopes.filter(
+      (scope) => selectedJobs[consumerNativeScopeJob(scope)] === true,
+    ),
+    groups = new Map();
+  for (const scope of selected) {
+    const job = consumerNativeScopeJob(scope),
+      lane = consumerNativeScopeLane(scope),
+      key = job + ":" + lane;
+    if (!groups.has(key)) groups.set(key, { job, lane, scopes: [] });
+    groups.get(key).scopes.push(scope);
+  }
+  const checkedJobs = new Set(),
+    artifacts = new Set(),
+    nonces = new Set(),
+    bindings = [];
+  for (const group of groups.values()) {
+    const { job, lane } = group,
+      completed = completedJobs[job];
+    assert.equal(
+      completed?.result,
+      "success",
+      "Native scope outer job is failed skipped unavailable or incomplete",
+    );
+    if (!checkedJobs.has(job)) {
+      const lanes = [...groups.values()]
+        .filter((row) => row.job === job)
+        .map((row) => row.lane)
+        .sort();
+      assert.deepEqual(
+        lanes,
+        consumerNativeJobLanes(job).sort(),
+        "Frozen native job lane inventory differs",
+      );
+      const expected = lanes
+        .flatMap((lane) =>
+          Object.values(consumerNativeJobOutputKeys(job, lane)),
+        )
+        .sort();
+      assert.ok(completed.outputs && typeof completed.outputs === "object");
+      assert.deepEqual(
+        Object.keys(completed.outputs).sort(),
+        expected,
+        "Native START or FINISH output is missing foreign or duplicated",
+      );
+      checkedJobs.add(job);
+    }
+    const names = consumerNativeJobOutputKeys(job, lane),
+      decode = (name) => {
+        const raw = completed.outputs[name];
+        assert.ok(
+          typeof raw === "string" &&
+            Buffer.byteLength(raw) > 0 &&
+            Buffer.byteLength(raw) <= 16384,
+          "Native producer output missing or oversized",
+        );
+        const value = JSON.parse(raw);
+        assert.equal(
+          JSON.stringify(value),
+          raw,
+          "Native producer output is not canonical",
+        );
+        return value;
+      },
+      start = decode(names.start),
+      finish = decode(names.finish);
+    requireConsumerNativeProducerClaims(start, finish, {
+      ci,
+      source,
+      job,
+      lane,
+      scopes: group.scopes,
+    });
+    assert.equal(
+      artifacts.has(finish.artifact.id),
+      false,
+      "Reused native artifact ID",
+    );
+    assert.equal(
+      nonces.has(start.nonce),
+      false,
+      "Reused native producer START nonce",
+    );
+    artifacts.add(finish.artifact.id);
+    nonces.add(start.nonce);
+    bindings.push({ ...group, start, finish });
+  }
+  return bindings;
+}
 /** Only a complete selected inventory plus independently successful outer jobs can close this consumer matrix. */
 export function aggregateConsumerNativeCapsules({
   manifest,
@@ -528,6 +635,13 @@ export function aggregateConsumerNativeCapsules({
     witnessIds = new Set(),
     nativeAttemptIds = new Set(),
     registryHashes = new Set();
+  const producerBindings = selectConsumerNativeProducerClaims({
+    scopes: all,
+    selectedJobs,
+    completedJobs,
+    source,
+    ci,
+  });
   assert.ok(Array.isArray(capsules) && capsules.length <= all.length);
   for (const capsule of capsules) {
     const scope = selected.find((scope) => scope.id === capsule.scope?.id);
@@ -564,7 +678,21 @@ export function aggregateConsumerNativeCapsules({
     assert.equal(capsule.ci.kind, "github-actions-run-metadata");
     assert.equal(capsule.ci.metadataAttested, false);
     assert.equal(capsule.ci.runId, ci.runId);
-    assert.equal(capsule.ci.runAttempt, ci.runAttempt);
+    const producer = producerBindings.find((row) =>
+      row.scopes.some((candidate) => candidate.id === scope.id),
+    );
+    assert.ok(producer);
+    const bound = producer.finish.capsules.find(
+      (row) => row.scopeId === scope.id,
+    );
+    assert.equal(capsule.ci.runAttempt, producer.start.runAttempt);
+    assert.equal(
+      capsule.capsuleSha256,
+      bound.sha256,
+      "Native capsule does not match its selected immutable artifact claim",
+    );
+    assert.equal(capsule.attemptId, bound.attemptId);
+
     assert.equal(capsule.ci.job, consumerNativeScopeJob(scope));
     assert.equal(
       completedJobs[capsule.ci.job]?.result,
@@ -588,6 +716,12 @@ export function aggregateConsumerNativeCapsules({
     scopeCapsules: selected.map((scope) => ({
       id: scope.id,
       sha256: seen.get(scope.id).capsuleSha256,
+    })),
+    producerArtifacts: producerBindings.map((row) => ({
+      job: row.job,
+      lane: row.lane,
+      producerAttempt: row.start.runAttempt,
+      ...row.finish.artifact,
     })),
     allDeclaredScopesComplete: selected.length === all.length,
     consumerProfileComplete: selected.length === all.length,

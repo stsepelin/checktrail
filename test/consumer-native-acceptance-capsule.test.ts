@@ -12,11 +12,21 @@ const {
   aggregateConsumerNativeCapsules,
   consumerNativeScopeJob,
   requireConsumerNativeCaseLedger,
+  selectConsumerNativeProducerClaims,
+  consumerNativeScopeLane,
 } = await import(
   new URL(
     "../../scripts/consumer-native-acceptance-capsule.mjs",
     import.meta.url,
   ).href
+);
+const {
+  createConsumerNativeJobStart,
+  createConsumerNativeJobFinish,
+  consumerNativeArtifactName,
+  consumerNativeJobOutputKeys,
+} = await import(
+  new URL("../../scripts/consumer-native-job-claims.mjs", import.meta.url).href
 );
 const manifest = JSON.parse(
     await readFile(
@@ -112,28 +122,69 @@ function sign<T extends { capsuleSha256: string }>(value: T) {
   assert.equal(typeof capsuleSha256, "string");
   return { ...body, capsuleSha256: hash(JSON.stringify(body)) };
 }
+function producerOutputs(capsules: ReturnType<typeof capsule>[]) {
+  const groups = new Map<string, ReturnType<typeof capsule>[]>();
+  for (const row of capsules) {
+    const scope = scopes.find(
+        (scope: (typeof scopes)[number]) => scope.id === row.scope.id,
+      )!,
+      job = consumerNativeScopeJob(scope),
+      lane = consumerNativeScopeLane(scope),
+      key = job + ":" + lane;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(row);
+  }
+  const completed: Record<
+    string,
+    { result: string | undefined; outputs: Record<string, string> }
+  > = {};
+  let artifact = 100;
+  for (const [key, rows] of groups) {
+    const parts = key.split(":");
+    assert.equal(parts.length, 2);
+    const job = parts[0]!,
+      lane = parts[1]!,
+      start = createConsumerNativeJobStart(
+        {
+          GITHUB_ACTIONS: "true",
+          GITHUB_RUN_ID: ci.runId,
+          GITHUB_RUN_ATTEMPT: rows[0]!.ci.runAttempt,
+          GITHUB_SHA: frame().commit,
+          GITHUB_JOB: job,
+        },
+        lane,
+      ),
+      finish = createConsumerNativeJobFinish(start, frame(), rows, {
+        id: String(++artifact),
+        name: consumerNativeArtifactName(job, lane, start.runAttempt),
+        digest: hash(key + artifact),
+      }),
+      names = consumerNativeJobOutputKeys(job, lane);
+    completed[job] ??= { result: "success", outputs: {} };
+    completed[job]!.outputs[names.start] = JSON.stringify(start);
+    completed[job]!.outputs[names.finish] = JSON.stringify(finish);
+  }
+  return completed;
+}
 function inputs() {
+  const capsules: ReturnType<typeof capsule>[] = scopes.map(capsule);
   return {
     manifest,
     inventory,
     profiles,
     source: frame(),
-    capsules: scopes.map(capsule),
+    capsules,
     selectedJobs: Object.fromEntries(
       scopes.map((scope: (typeof scopes)[number]) => [
         consumerNativeScopeJob(scope),
         true,
       ]),
     ),
-    completedJobs: Object.fromEntries(
-      scopes.map((scope: (typeof scopes)[number]) => [
-        consumerNativeScopeJob(scope),
-        { result: "success" },
-      ]),
-    ),
+    completedJobs: producerOutputs(capsules),
     ci,
   };
 }
+
 test("synthetic native capsule transport requires every declared family runtime scenario and completed outer job before matrix closure while retaining other Gate A obligations", () => {
   assert.equal(scopes.length, 26);
   const selected = inputs(),
@@ -150,9 +201,18 @@ test("synthetic native capsule transport requires every declared family runtime 
     )!,
     partial = aggregateConsumerNativeCapsules({
       ...selected,
-      capsules: [capsule(php)],
+      capsules: selected.capsules.filter((row) => row.scope.id === php.id),
       selectedJobs: { [consumerNativeScopeJob(php)]: true },
     });
+  assert.throws(
+    () =>
+      aggregateConsumerNativeCapsules({
+        ...selected,
+        capsules: [capsule(php)],
+        selectedJobs: { [consumerNativeScopeJob(php)]: true },
+      }),
+    /selected immutable artifact claim/,
+  );
   assert.equal(partial.consumerProfileComplete, false);
   assert.equal(partial.unselectedScopes.length, scopes.length - 1);
   const empty = aggregateConsumerNativeCapsules({
@@ -190,7 +250,10 @@ test("native capsule aggregation refuses missing duplicate stale failed skipped 
   );
   for (const result of ["failure", "cancelled", "skipped", undefined]) {
     const changed = structuredClone(selected);
-    changed.completedJobs[consumerNativeScopeJob(scopes[0])] = { result };
+    changed.completedJobs[consumerNativeScopeJob(scopes[0])] = {
+      ...changed.completedJobs[consumerNativeScopeJob(scopes[0])]!,
+      result,
+    };
     assert.throws(() => aggregateConsumerNativeCapsules(changed), /outer job/);
   }
   for (const field of ["runId", "runAttempt", "job"] as const) {
@@ -344,4 +407,155 @@ test("native matrix rejects cross-scope reuse of original witness process and re
     aggregateConsumerNativeCapsules(selected).consumerProfileComplete,
     true,
   );
+});
+
+test("native matrix accepts exact same-run retained successful producer outputs alongside newer attempts including independent retained matrix lanes", () => {
+  const selected = inputs();
+  for (const row of selected.capsules) {
+    if (
+      row.scope.acceptanceProfile !== "context-rust" &&
+      row.scope.slot !== "ci-linux-node24"
+    ) {
+      row.ci.runAttempt = "1";
+    }
+    Object.assign(row, sign(row));
+  }
+  selected.completedJobs = producerOutputs(selected.capsules);
+  const report = aggregateConsumerNativeCapsules(selected);
+  assert.equal(report.consumerProfileComplete, true);
+  assert.ok(
+    report.producerArtifacts.some(
+      (row: { producerAttempt: string }) => row.producerAttempt === "1",
+    ),
+  );
+  assert.ok(
+    report.producerArtifacts.some(
+      (row: { producerAttempt: string }) => row.producerAttempt === "2",
+    ),
+  );
+  const php = scopes.find(
+      (scope: (typeof scopes)[number]) =>
+        scope.acceptanceProfile === "context-php",
+    )!,
+    rust = scopes.find(
+      (scope: (typeof scopes)[number]) =>
+        scope.acceptanceProfile === "context-rust",
+    )!,
+    partial = {
+      ...selected,
+      capsules: selected.capsules.filter((row) =>
+        [php.id, rust.id].includes(row.scope.id),
+      ),
+      selectedJobs: {
+        [consumerNativeScopeJob(php)]: true,
+        [consumerNativeScopeJob(rust)]: true,
+      },
+    };
+  assert.equal(
+    aggregateConsumerNativeCapsules(partial).selectedScopes.length,
+    2,
+  );
+});
+
+test("native producer claims reject missing or mismatched latest starts finishes foreign future failed skipped and reused immutable artifacts without falling back", () => {
+  const selected = inputs(),
+    php = scopes.find(
+      (scope: (typeof scopes)[number]) =>
+        scope.acceptanceProfile === "context-php",
+    )!,
+    job = consumerNativeScopeJob(php),
+    names = consumerNativeJobOutputKeys(job, "single"),
+    check = (changed: ReturnType<typeof inputs>) =>
+      selectConsumerNativeProducerClaims({
+        scopes,
+        selectedJobs: changed.selectedJobs,
+        completedJobs: changed.completedJobs,
+        source: changed.source,
+        ci: changed.ci,
+      });
+  for (const kind of [
+    "missing-start",
+    "missing-finish",
+    "new-start-old-finish",
+    "changed-nonce",
+    "altered-finish-producer",
+    "changed-start-digest",
+    "foreign-artifact-name",
+    "missing-artifact-digest",
+    "foreign-run",
+    "future",
+    "foreign-source",
+    "failed",
+    "skipped",
+    "duplicate-artifact",
+    "missing-capsule-hash",
+  ]) {
+    const changed = structuredClone(selected),
+      outputs = changed.completedJobs[job]!.outputs,
+      start = JSON.parse(outputs[names.start]!),
+      finish = JSON.parse(outputs[names.finish]!);
+    if (kind === "missing-start") delete outputs[names.start];
+    else if (kind === "missing-finish") delete outputs[names.finish];
+    else if (kind === "new-start-old-finish") {
+      start.runAttempt = "3";
+      changed.ci.runAttempt = "3";
+      outputs[names.start] = JSON.stringify(start);
+    } else if (kind === "changed-nonce") {
+      start.nonce = randomUUID();
+      outputs[names.start] = JSON.stringify(start);
+    } else if (kind === "altered-finish-producer") {
+      finish.producer.nonce = randomUUID();
+      outputs[names.finish] = JSON.stringify(finish);
+    } else if (kind === "changed-start-digest") {
+      finish.startSha256 = "0".repeat(64);
+      outputs[names.finish] = JSON.stringify(finish);
+    } else if (kind === "foreign-artifact-name") {
+      finish.artifact.name = "native-consumer-rust-context-arm64-single-2";
+      outputs[names.finish] = JSON.stringify(finish);
+    } else if (kind === "missing-artifact-digest") {
+      finish.artifact.digest = "";
+      outputs[names.finish] = JSON.stringify(finish);
+    } else if (kind === "foreign-run") {
+      start.runId = "999";
+      outputs[names.start] = JSON.stringify(start);
+    } else if (kind === "future") {
+      start.runAttempt = "3";
+      outputs[names.start] = JSON.stringify(start);
+    } else if (kind === "foreign-source") {
+      finish.sourceFrameSha256 = "0".repeat(64);
+      outputs[names.finish] = JSON.stringify(finish);
+    } else if (kind === "failed" || kind === "skipped")
+      changed.completedJobs[job]!.result =
+        kind === "failed" ? "failure" : "skipped";
+    else if (kind === "missing-capsule-hash") {
+      finish.capsules = [];
+      outputs[names.finish] = JSON.stringify(finish);
+    } else {
+      const other = Object.values(changed.completedJobs).find(
+          (row) => row !== changed.completedJobs[job]!,
+        )!,
+        key = Object.keys(other.outputs).find((key) =>
+          key.startsWith("native_finish_"),
+        )!,
+        prior = JSON.parse(other.outputs[key]!);
+      finish.artifact.id = prior.artifact.id;
+      outputs[names.finish] = JSON.stringify(finish);
+    }
+    assert.throws(() => check(changed), kind);
+  }
+  const future = inputs();
+  for (const row of future.capsules) {
+    row.ci.runAttempt = "3";
+    Object.assign(row, sign(row));
+  }
+  future.completedJobs = producerOutputs(future.capsules);
+  assert.throws(() => check(future), /future/);
+  const altered = structuredClone(selected);
+  altered.capsules[0]!.controller.stdoutBytes++;
+  altered.capsules[0] = sign(altered.capsules[0]!);
+  assert.throws(
+    () => aggregateConsumerNativeCapsules(altered),
+    /selected immutable artifact claim/,
+  );
+  assert.equal(check(selected).length, 25);
 });

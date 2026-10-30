@@ -899,8 +899,8 @@ native profiles, upstream producer closure or Gate A.
 
 Native consumer acceptance preserves each existing selected controller behind a
 fixed internal entrypoint. Successful jobs upload only sanitized current-source
-capsules; `ci-complete` downloads separate artifacts from the current workflow
-attempt and reconciles the complete selected inventory after requiring every
+capsules; `ci-complete` downloads the exact retained producer artifacts from the same
+workflow run and reconciles the complete selected inventory after requiring every
 selected outer job to succeed. Unselected scopes remain visible and cannot close
 the consumer profile. Full native qualification still requires every frozen
 family/runtime scope, including the selected Clang witness; transport wiring and
