@@ -172,6 +172,7 @@ const isolatedCaseWorkers =
         "terraform-extensions",
         "helm-extensions",
         "assembly-laravel",
+        "assembly-fastapi",
         ...mutationProfiles,
       ].includes(selection[0])))
     ? 1

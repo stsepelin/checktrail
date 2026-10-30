@@ -1,3 +1,4 @@
+import { nativeAcceptanceFailure } from "./native-acceptance-diagnostics.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
@@ -40,12 +41,18 @@ const base = [
   "npm_config_cache=/tmp/npm-cache",
   image,
 ];
-const run = (args) =>
-  execFileSync("docker", [...base, ...args], {
-    encoding: "utf8",
-    maxBuffer: 4 * 1048576,
-    timeout: 300000,
-  });
+const run = (args) => {
+  try {
+    return execFileSync("docker", [...base, ...args], {
+      encoding: "utf8",
+      maxBuffer: 4 * 1048576,
+      timeout: 300000,
+    });
+  } catch (error) {
+    process.stderr.write(nativeAcceptanceFailure(error) + "\n");
+    throw error;
+  }
+};
 const runtime = JSON.parse(
   run([
     "python3",

@@ -2421,6 +2421,10 @@
     {
       "file": "dist/test/compiled-engine-evidence.test.js",
       "name": "compiled engine observations arm file-change guards before and during reads and close owned handles"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "named callback isolation preserves complete cohorts beyond one file window with a physical process per case"
     }
   ],
   "review-paired-scoring": [

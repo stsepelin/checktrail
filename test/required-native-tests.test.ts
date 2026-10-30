@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
-import { access, mkdir, writeFile, realpath } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile, realpath } from "node:fs/promises";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
 
@@ -128,6 +128,7 @@ type TerminalReceipt = {
       nameTruncated: boolean;
       kind: string;
       outcome: string;
+      durationMs: number | null;
       required: boolean;
     }[];
     cases: {
@@ -621,6 +622,14 @@ test("required profile batches execute shared files once and preserve all obliga
         requirement("isolated-profile.mjs", "alpha"),
         requirement("isolated-profile.mjs", "beta"),
       ],
+      "assembly-fastapi": [
+        requirement("isolated-profile.mjs", "alpha"),
+        requirement("isolated-profile.mjs", "beta"),
+      ],
+      "assembly-fastapi-extra": [
+        requirement("isolated-profile.mjs", "alpha"),
+        requirement("isolated-profile.mjs", "beta"),
+      ],
     }),
   );
   await mkdir(path.join(root, "dist/test"), { recursive: true });
@@ -677,12 +686,19 @@ test("required profile batches execute shared files once and preserve all obliga
   const rubyRubocop = cli("ruby-tools-rubocop");
   assert.equal(rubyRubocop.status, 0, rubyRubocop.stderr);
   assert.equal(JSON.parse(rubyRubocop.stdout).timeoutMs, 300000);
-  for (const profile of ["consumer-impact", "attempt-archives"]) {
+  for (const profile of [
+    "consumer-impact",
+    "attempt-archives",
+    "assembly-fastapi",
+  ]) {
     await writeFile(marker, "");
     const whole = cli(profile);
     assert.equal(whole.status, 0, whole.stdout + whole.stderr);
     const wholeReport = JSON.parse(whole.stdout);
-    assert.equal(wholeReport.timeoutMs, 600000);
+    assert.equal(
+      wholeReport.timeoutMs,
+      profile === "assembly-fastapi" ? 120000 : 600000,
+    );
     assert.equal(wholeReport.requiredCaseWorkerLimit, 1);
     assert.equal(wholeReport.required, 2);
     assert.equal(wholeReport.passed, 2);
@@ -702,6 +718,30 @@ test("required profile batches execute shared files once and preserve all obliga
       "whole-profile callbacks must execute in separate real processes",
     );
   }
+  const adjacent = cli("assembly-fastapi-extra");
+  assert.equal(adjacent.status, 1, adjacent.stdout + adjacent.stderr);
+  const adjacentReport = JSON.parse(adjacent.stdout);
+  assert.equal(adjacentReport.timeoutMs, 120000);
+  assert.equal(Object.hasOwn(adjacentReport, "requiredCaseWorkerLimit"), false);
+  assert.ok(
+    adjacentReport.problems.some((p: { message?: string }) =>
+      p.message?.includes(
+        "each selected callback must have fresh module state",
+      ),
+    ),
+  );
+  const fullFastapi = cli("--full-suite", "assembly-fastapi");
+  assert.equal(fullFastapi.status, 1, fullFastapi.stdout + fullFastapi.stderr);
+  const fullFastapiReport = JSON.parse(fullFastapi.stdout);
+  assert.equal(
+    Object.hasOwn(fullFastapiReport, "requiredCaseWorkerLimit"),
+    false,
+  );
+  assert.ok(
+    fullFastapiReport.problems.some((p: { message?: string }) =>
+      p.message?.includes("unselected callback must not execute"),
+    ),
+  );
   assert.equal(cli("first", "absent").status, 1);
   const suite = cli("--full-suite", "first", "second");
   assert.equal(suite.status, 0, suite.stderr);
@@ -1192,6 +1232,52 @@ test("named native acceptance gives each exact callback a fresh bounded process 
     "Every selected callback must run in a different process",
   );
   assert.ok(witnesses.every((value) => value.pid !== process.pid));
+});
+
+test("named callback isolation preserves complete cohorts beyond one file window with a physical process per case", async (t) => {
+  const { root, execute } = await ledgerFixture(t);
+  const file = path.join(root, "aggregate-window.test.mjs");
+  const marker = path.join(root, "reached.jsonl");
+  await writeFile(
+    file,
+    `import {test} from 'node:test';import {appendFileSync} from 'node:fs';import {setTimeout} from 'node:timers/promises';for(let i=0;i<9;i++)test('original-'+i,{timeout:1000},async()=>{appendFileSync(${JSON.stringify(marker)},JSON.stringify({name:'original-'+i,pid:process.pid})+'\\n');await setTimeout(300)});`,
+  );
+  const required = Array.from({ length: 9 }, (_, i) => ({
+    file,
+    name: "original-" + i,
+  }));
+  // Node 22 applies the run timeout to the file; newer Node versions can give
+  // FileTest no timeout. Process identity defends isolation on every version.
+  const isolated = execute(required, {
+    timeoutMs: 2000,
+    isolatedCaseWorkers: 1,
+  });
+  assert.equal(isolated.complete, true, JSON.stringify(isolated));
+  assert.equal(isolated.required, 9);
+  assert.equal(isolated.passed, 9);
+  assert.equal(isolated.ledger.terminalEventCount, 9);
+  assert.ok(isolated.ledger.cases.every((c) => c.outcome === "passed"));
+  const reached = (await readFile(marker, "utf8"))
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line) as { name: string; pid: number });
+  assert.deepEqual(
+    reached.map((row) => row.name).sort(),
+    required.map((row) => row.name).sort(),
+  );
+  assert.equal(new Set(reached.map((row) => row.pid)).size, 9);
+  assert.ok(
+    reached.every(
+      (row) =>
+        Number.isSafeInteger(row.pid) && row.pid > 1 && row.pid !== process.pid,
+    ),
+  );
+  assert.ok(
+    isolated.ledger.events.reduce(
+      (sum, event) => sum + (event.durationMs ?? 0),
+      0,
+    ) > 2000,
+  );
 });
 
 test("named native acceptance still rejects skipped missing duplicate changed and timed-out cases", async (t) => {
