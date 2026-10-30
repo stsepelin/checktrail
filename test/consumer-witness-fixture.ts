@@ -21,7 +21,16 @@ export type ConsumerVariant = "broken" | "fixed" | "near-miss";
 export type ConsumerPhase =
   "canonical" | "caller-change" | "restored" | "repeat";
 export type ConsumerFamily =
-  "go" | "python" | "php" | "rust" | "ruby" | "c" | "cpp";
+  | "go"
+  | "python"
+  | "php"
+  | "rust"
+  | "ruby"
+  | "c"
+  | "cpp"
+  | "java"
+  | "kotlin"
+  | "scala";
 const hash = (bytes: Uint8Array | string) =>
   createHash("sha256").update(bytes).digest("hex");
 const filesByFamily = {
@@ -32,6 +41,9 @@ const filesByFamily = {
   ruby: ["src/policy/Policy.rb", "src/consumer/Consumer.rb"],
   c: ["src/policy/rules.h", "src/consumer/use.c"],
   cpp: ["src/policy/rules.h", "src/consumer/use.cpp"],
+  java: ["src/policy/Policy.java", "src/consumer/Consumer.java"],
+  kotlin: ["src/policy/Policy.kt", "src/consumer/Consumer.kt"],
+  scala: ["src/policy/Policy.scala", "src/consumer/Consumer.scala"],
 } as const;
 async function bytesIdentity(
   filename: string,
@@ -145,6 +157,96 @@ async function tool(executable: string) {
   }
   throw Error("Native consumer tool unavailable before invocation");
 }
+type ConsumerDirectory = {
+  profile: "bounded-consumer-directory-v1";
+  directorySha256: string;
+  files: { path: string; bytes: number; sha256: string }[];
+  bytes: number;
+  manifestSha256: string;
+};
+export async function observeConsumerWitnessDirectory(
+  directory: string,
+  jarsOnly = false,
+): Promise<ConsumerDirectory> {
+  assert.equal(await realpath(directory), directory);
+  const files: ConsumerDirectory["files"] = [];
+  let bytes = 0;
+  async function visit(current: string) {
+    const before = await lstat(current, { bigint: true });
+    assert.ok(before.isDirectory() && !before.isSymbolicLink());
+    for (const name of (await readdir(current)).sort()) {
+      const filename = path.join(current, name),
+        stat = await lstat(filename);
+      assert.equal(stat.isSymbolicLink(), false);
+      if (stat.isDirectory()) {
+        if (jarsOnly)
+          assert.ok(
+            !name.endsWith(".jar") && !name.endsWith(".JAR"),
+            "Unsupported directory selected by JVM classpath wildcard",
+          );
+        else await visit(filename);
+      } else {
+        assert.ok(stat.isFile());
+        if (jarsOnly && !name.endsWith(".jar") && !name.endsWith(".JAR"))
+          continue;
+        const value = await bytesIdentity(filename, 128 * 1048576, true);
+        bytes += value.bytes;
+        assert.ok(files.length < 256 && bytes <= 512 * 1048576);
+        files.push({
+          path: path.relative(directory, filename).split(path.sep).join("/"),
+          ...value,
+        });
+      }
+    }
+    const after = await lstat(current, { bigint: true });
+    for (const key of ["dev", "ino", "mtimeNs", "ctimeNs"] as const)
+      assert.equal(after[key], before[key]);
+  }
+  await visit(directory);
+  files.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+  return {
+    profile: "bounded-consumer-directory-v1",
+    directorySha256: hash(directory),
+    files,
+    bytes,
+    manifestSha256: hash(JSON.stringify(files)),
+  };
+}
+export async function observeConsumerWitnessJvmInputs(family: ConsumerFamily) {
+  assert.ok(["java", "kotlin", "scala"].includes(family));
+  const compiler = await tool(family === "java" ? "javac" : "java"),
+    runtime = await tool("java");
+  const jdk = path.dirname(path.dirname(await realpath(runtime.launch)));
+  return {
+    profile: "consumer-jvm-inputs-v1",
+    family,
+    compiler: { bytes: compiler.bytes, sha256: compiler.sha256 },
+    runtime: { bytes: runtime.bytes, sha256: runtime.sha256 },
+    modules: await bytesIdentity(path.join(jdk, "lib/modules"), 1024 * 1048576),
+    libraries:
+      family === "java"
+        ? null
+        : await observeConsumerWitnessDirectory(
+            family === "kotlin"
+              ? "/opt/checktrail/kotlinc/lib"
+              : "/opt/checktrail/scala/lib",
+            true,
+          ),
+  };
+}
+export async function bindConsumerWitnessClassDirectory(
+  capture: ConsumerCapture | null,
+  directory: string,
+) {
+  if (!capture) return;
+  assert.ok(capture.jvm);
+  assert.equal(await realpath(directory), directory);
+  assert.equal(outside(capture.root, directory), false);
+  const before = await observeConsumerWitnessDirectory(directory);
+  assert.deepEqual(before.files, []);
+  capture.jvm.directory = directory;
+  capture.jvm.generated = before;
+}
 async function codeMetadata(family: ConsumerFamily) {
   const enginePath = await realpath(
     fileURLToPath(new URL("../src/", import.meta.url)),
@@ -165,6 +267,7 @@ async function codeMetadata(family: ConsumerFamily) {
     path.join(harnessRoot, "scripts/required-native-tests.json"),
     path.join(harnessRoot, "scripts/compiled-engine-evidence.mjs"),
     path.join(harnessRoot, "scripts/consumer-witness-attempts.mjs"),
+    path.join(harnessRoot, "scripts/consumer-witness-jvm.mjs"),
   ];
   const identities = await Promise.all(
     inputs.map((filename) => bytesIdentity(filename)),
@@ -186,6 +289,7 @@ async function codeMetadata(family: ConsumerFamily) {
         identities[1],
         identities[3],
         identities[4],
+        identities[5],
       ]),
     ),
     acceptanceSha256: identities[1]!.sha256,
@@ -207,6 +311,9 @@ export async function observeConsumerWitnessTool(family: ConsumerFamily) {
       ruby: "ruby",
       c: "gcc",
       cpp: "g++",
+      java: "javac",
+      kotlin: "java",
+      scala: "java",
     }[family],
   );
   return { bytes: observed.bytes, sha256: observed.sha256 };
@@ -239,8 +346,19 @@ export async function beginConsumerWitness(
       ruby: "ruby",
       c: "gcc",
       cpp: "g++",
+      java: "javac",
+      kotlin: "java",
+      scala: "java",
     }[family],
   );
+  const jvm = ["java", "kotlin", "scala"].includes(family)
+    ? {
+        inputs: await observeConsumerWitnessJvmInputs(family),
+        directory: null as string | null,
+        generated: null as ConsumerDirectory | null,
+        runtime: await tool("java"),
+      }
+    : null;
   return {
     root: canonical,
     destination,
@@ -274,7 +392,8 @@ export async function beginConsumerWitness(
     before: await snapshot(canonical, family),
     tool: selected,
     executable: selected.launch,
-    runtimeExecutable: selected,
+    runtimeExecutable: jvm?.runtime ?? selected,
+    jvm,
     compiler: null as ProcessResult | null,
     code: await codeMetadata(family),
   };
@@ -344,7 +463,8 @@ export async function recordConsumerWitnessAttempt(
     return previous;
   }
   assert.ok(
-    stage === "consumer" || ["rust", "c", "cpp"].includes(capture.family),
+    stage === "consumer" ||
+      ["rust", "c", "cpp", "java", "kotlin", "scala"].includes(capture.family),
   );
   try {
     const { consumerAttemptState } = await import(
@@ -371,6 +491,50 @@ export async function recordConsumerWitnessAttempt(
     } catch (error) {
       identityError ??= String(error).slice(0, 1024);
     }
+    let jvm = null;
+    if (capture.jvm) {
+      let inputsAfter = null,
+        generatedAfter = null;
+      try {
+        inputsAfter = await observeConsumerWitnessJvmInputs(capture.family);
+        assert.ok(capture.jvm.directory);
+        generatedAfter = await observeConsumerWitnessDirectory(
+          capture.jvm.directory,
+        );
+      } catch (error) {
+        identityError ??= String(error).slice(0, 1024);
+      }
+      const argument = stage === "compiler" ? "-d" : "-cp";
+      const index = result.command.args.indexOf(argument);
+      const selected = index < 0 ? null : result.command.args[index + 1];
+      const directory = selected
+        ? stage === "compiler"
+          ? selected
+          : selected.split(path.delimiter)[0]
+        : null;
+      const { consumerJvmClasspaths } = await import(
+        new URL("../../scripts/consumer-witness-jvm.mjs", import.meta.url).href
+      );
+      const classpaths = consumerJvmClasspaths(
+        result.command.args,
+        capture.root,
+      );
+
+      jvm = {
+        classpaths,
+        inputsBefore: capture.jvm.inputs,
+        inputsAfter,
+        generatedBefore: capture.jvm.generated,
+        generatedAfter,
+        commandDirectorySha256:
+          stage === "consumer"
+            ? (classpaths[0]?.[0]?.directorySha256 ?? null)
+            : directory
+              ? hash(path.resolve(capture.root, directory))
+              : null,
+      };
+      if (stage === "compiler") capture.jvm.generated = generatedAfter;
+    }
     const value = {
       schemaVersion: 1,
       profile: "consumer-process-result-observation-v1",
@@ -393,6 +557,7 @@ export async function recordConsumerWitnessAttempt(
       executableSha256: executable.sha256,
       executableAfterSha256,
       identityError,
+      jvm,
       output,
       outputState:
         output === null
@@ -469,7 +634,7 @@ export async function finishConsumerWitness(
   await recordConsumerWitnessAttempt(capture, result);
   assert.deepEqual(
     capture.attempts.map((item) => item.stage),
-    ["rust", "c", "cpp"].includes(capture.family)
+    ["rust", "c", "cpp", "java", "kotlin", "scala"].includes(capture.family)
       ? ["compiler", "consumer"]
       : ["consumer"],
     "Consumer native attempt inventory differs",
@@ -515,7 +680,8 @@ export async function finishConsumerWitness(
             : [false, true, false]
         : capture.variant === "broken"
           ? [true, true]
-          : capture.family === "rust" && capture.variant === "near-miss"
+          : ["rust", "java", "kotlin", "scala"].includes(capture.family) &&
+              capture.variant === "near-miss"
             ? [false, false]
             : [false, true];
   assert.deepEqual(consumers, expected);
@@ -565,7 +731,7 @@ export async function finishConsumerWitness(
         cleanupComplete: true,
       }
     : null;
-  if (["rust", "c", "cpp"].includes(capture.family))
+  if (["rust", "c", "cpp", "java", "kotlin", "scala"].includes(capture.family))
     assert.ok(
       compiler,
       "Compiled consumer witness requires its reached compiler invocation",
@@ -607,6 +773,13 @@ export async function finishConsumerWitness(
     },
     output,
     compiler,
+    jvm: capture.jvm
+      ? {
+          inputs: capture.jvm.inputs,
+          afterInputs: await observeConsumerWitnessJvmInputs(capture.family),
+          generated: capture.jvm.generated,
+        }
+      : null,
     nativeResult: { consumers, sources },
     code: {
       engineSha256: capture.code.engineSha256,

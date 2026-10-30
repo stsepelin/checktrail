@@ -161,9 +161,9 @@
           "name": "context-java near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["src/policy/Policy.java", "src/consumer/Consumer.java"]
     },
     {
       "id": "kotlin",
@@ -184,9 +184,9 @@
           "name": "context-kotlin near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["src/policy/Policy.kt", "src/consumer/Consumer.kt"]
     },
     {
       "id": "scala",
@@ -207,9 +207,9 @@
           "name": "context-scala near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["src/policy/Policy.scala", "src/consumer/Consumer.scala"]
     },
     {
       "id": "csharp",

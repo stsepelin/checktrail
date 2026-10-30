@@ -31,6 +31,15 @@ import { fixture } from "./helpers.js";
 import { fixtureGit, syntheticCommit } from "./git-fixture.js";
 import { scalaBoundaryFixtures } from "./review-scala-boundaries-fixture.js";
 
+import {
+  beginConsumerWitness,
+  bindConsumerWitnessClassDirectory,
+  bindConsumerWitnessCompiler,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerCapture,
+  type ConsumerVariant,
+} from "./consumer-witness-fixture.js";
 const broken =
   'package policy\nval FALLBACK = "grant"\ndef decision(value: String = FALLBACK): Boolean = { return value.startsWith(FALLBACK) }\n';
 const fixed =
@@ -97,14 +106,16 @@ async function compile(
   files: string[],
   witness: string,
   name = "original-classes",
+  capture: ConsumerCapture | null = null,
 ) {
   await writeFile(path.join(root, "Witness.scala"), witness);
   const classes = path.join(root, name);
   await mkdir(classes);
+  await bindConsumerWitnessClassDirectory(capture, classes);
   const result = await runProcess(
     root,
     {
-      executable: "java",
+      executable: capture?.executable ?? "java",
       args: [
         "-Xmx256m",
         "-cp",
@@ -125,8 +136,10 @@ async function compile(
       ],
       cwd: ".",
     },
-    { timeoutMs: 60000, maxOutputBytes: 65536 },
+    { timeoutMs: 60000, maxOutputBytes: 65536, captureRawOutput: true },
   );
+  await recordConsumerWitnessAttempt(capture, result, "compiler");
+  bindConsumerWitnessCompiler(capture, result);
   assert.equal(result.exitCode, 0, result.stderr);
   assert.equal(result.errorCode, undefined);
   assert.equal(result.timedOut, false);
@@ -134,11 +147,15 @@ async function compile(
   assert.equal(result.truncated, false);
   return classes;
 }
-async function execute(root: string, classes: string) {
+async function execute(
+  root: string,
+  classes: string,
+  capture: ConsumerCapture | null = null,
+) {
   const result = await runProcess(
     root,
     {
-      executable: "java",
+      executable: capture?.runtimeExecutable.launch ?? "java",
       args: [
         "-Xmx64m",
         "-cp",
@@ -147,27 +164,31 @@ async function execute(root: string, classes: string) {
       ],
       cwd: ".",
     },
-    { timeoutMs: 30000, maxOutputBytes: 65536 },
+    { timeoutMs: 30000, maxOutputBytes: 65536, captureRawOutput: true },
   );
+  await recordConsumerWitnessAttempt(capture, result);
   assert.equal(result.exitCode, 0, result.stderr);
   assert.equal(result.errorCode, undefined);
   assert.equal(result.truncated, false);
   assert.equal(result.timedOut, false);
+  await finishConsumerWitness(capture, result);
   return result.stdout;
 }
-async function witness(root: string) {
+async function witness(root: string, variant: ConsumerVariant) {
+  const capture = await beginConsumerWitness(root, "scala", variant);
   const classes = await compile(
     root,
     ["src/policy/Policy.scala", "src/consumer/Consumer.scala"],
-    'object Witness { def main(args: Array[String]): Unit = { for (value <- Array("grant:read", "grantToken", "grant2", "other")) println(policy.decision(value)); println(consumer.submit()); println(consumer.route()) } }',
+    'object Witness {\n def main(args: Array[String]): Unit = {\n  val values = Array("grant:read", "grantToken", "grant2", "other")\n  val files = Array("src/policy/Policy.scala", "src/consumer/Consumer.scala")\n  print("{\\"cases\\":[")\n  for ((value, i) <- values.zipWithIndex) { if (i > 0) print(","); print(policy.decision(value)) }\n  print("],\\"consumers\\":[" + consumer.submit() + "," + consumer.route() + "],\\"sources\\":{")\n  for ((file, i) <- files.zipWithIndex) {\n   if (i > 0) print(","); print("\\"" + file + "\\":[")\n   val bytes = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(file))\n   for ((byte, j) <- bytes.zipWithIndex) { if (j > 0) print(","); print(byte.toInt & 255) }\n   print("]")\n  }\n  println("}}")\n }\n}\n',
+    "original-classes",
+    capture,
   );
-  return (await execute(root, classes))
-    .trim()
-    .split("\n")
-    .map((value) => {
-      assert.ok(value === "true" || value === "false");
-      return value === "true";
-    });
+  const observed = JSON.parse(await execute(root, classes, capture));
+  assert.equal(observed.cases.length, 4);
+  assert.equal(observed.consumers.length, 2);
+  const answers = [...observed.cases, ...observed.consumers];
+  assert.ok(answers.every((value) => typeof value === "boolean"));
+  return answers;
 }
 function bindings(result: ReturnType<typeof analysis>) {
   const policy = result.functions.find(
@@ -212,7 +233,14 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-scala broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [true, true, true, false, true, true]);
+  assert.deepEqual(await witness(root, "broken"), [
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+  ]);
   const fn = result.functions.find((fn) => fn.name === "decision")!,
     source = context.files.find((file) => file.path === fn.file)!;
   assert.equal(
@@ -302,7 +330,7 @@ test("context-scala broken acceptance", native, async (t) => {
 test("context-scala fixed acceptance", native, async (t) => {
   const { root, result } = await original(t, fixed);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "fixed"), [
     true,
     false,
     false,
@@ -320,7 +348,7 @@ test("context-scala near-miss acceptance", native, async (t) => {
   await scalaBoundaryFixtures(t);
   const { root, result } = await original(t, near);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "near-miss"), [
     true,
     false,
     false,

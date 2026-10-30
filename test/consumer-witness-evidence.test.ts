@@ -16,6 +16,7 @@ import {
   beginConsumerWitness,
   recordConsumerWitnessAttempt,
   finishConsumerWitness,
+  observeConsumerWitnessDirectory,
 } from "./consumer-witness-fixture.js";
 import { runProcess } from "../src/runner.js";
 import { fixture } from "./helpers.js";
@@ -29,6 +30,9 @@ const {
   requireQualifiedConsumerWitnessFamily,
 } = await import(
   new URL("../../scripts/consumer-witness-evidence.mjs", import.meta.url).href
+);
+const { consumerJvmClasspaths } = await import(
+  new URL("../../scripts/consumer-witness-jvm.mjs", import.meta.url).href
 );
 const { inspectConsumerAttemptRecords } = await import(
   new URL("../../scripts/consumer-witness-attempts.mjs", import.meta.url).href
@@ -62,6 +66,9 @@ const paths = {
   ruby: ["src/policy/Policy.rb", "src/consumer/Consumer.rb"],
   c: ["src/policy/rules.h", "src/consumer/use.c"],
   cpp: ["src/policy/rules.h", "src/consumer/use.cpp"],
+  java: ["src/policy/Policy.java", "src/consumer/Consumer.java"],
+  kotlin: ["src/policy/Policy.kt", "src/consumer/Consumer.kt"],
+  scala: ["src/policy/Policy.scala", "src/consumer/Consumer.scala"],
 };
 type Family = keyof typeof paths;
 const retainedAttempts = new Map<
@@ -78,8 +85,39 @@ const output = (bytes: Buffer) => ({
   bytes: bytes.length,
   sha256: hash(bytes),
 });
+function syntheticJvmDirectory(names: string[], directorySha256 = hex("d")) {
+  const files = [...names]
+    .sort()
+    .map((name) => ({ path: name, bytes: 32, sha256: hex("a") }));
+  return {
+    profile: "bounded-consumer-directory-v1",
+    directorySha256,
+    files,
+    bytes: files.length * 32,
+    manifestSha256: hash(JSON.stringify(files)),
+  };
+}
+function syntheticJvmInputs(family: string) {
+  return {
+    profile: "consumer-jvm-inputs-v1",
+    family,
+    compiler: { bytes: 32, sha256: family === "java" ? hex("1") : hex("2") },
+    runtime: { bytes: 32, sha256: hex("2") },
+    modules: { bytes: 64, sha256: hex("c") },
+    libraries:
+      family === "java"
+        ? null
+        : syntheticJvmDirectory(
+            family === "kotlin"
+              ? ["kotlin-compiler.jar", "kotlin-stdlib.jar"]
+              : ["scala3-compiler_3-3.9.0.jar", "scala3-library_3-3.9.0.jar"],
+          ),
+  };
+}
 /** Deliberately synthetic packet controls, never evidence of actual native execution. */
 function packet(family: Family = "go", variant = "broken", origin = "source") {
+  const isJvm = ["java", "kotlin", "scala"].includes(family);
+  const compilerSha256 = isJvm && family !== "java" ? hex("2") : hex("1");
   const before = paths[family].map((path) => ({
     path,
     bytes: Buffer.byteLength("Original synthetic source:" + path),
@@ -94,13 +132,14 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
           : [false, true, false]
       : variant === "broken"
         ? [true, true]
-        : family === "rust" && variant === "near-miss"
+        : ["rust", "java", "kotlin", "scala"].includes(family) &&
+            variant === "near-miss"
           ? [false, false]
           : [false, true];
   const sources = Object.fromEntries(
     before.map((file) => [
       family === "python" ? file.path.split("/").at(-1)! : file.path,
-      ["rust", "ruby", "c", "cpp"].includes(family)
+      ["rust", "ruby", "c", "cpp", "java", "kotlin", "scala"].includes(family)
         ? [...Buffer.from("Original synthetic source:" + file.path)]
         : file.sha256,
     ]),
@@ -150,8 +189,8 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
     after: structuredClone(before),
     tool: {
       name: family === "c" ? "gcc" : family === "cpp" ? "g++" : family,
-      sha256: hex("1"),
-      afterSha256: hex("1"),
+      sha256: compilerSha256,
+      afterSha256: compilerSha256,
     },
     invocation: {
       commandSha256: hex("e"),
@@ -167,12 +206,12 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
       cleanupComplete: true,
     },
     output: stream,
-    compiler: ["rust", "c", "cpp"].includes(family)
+    compiler: ["rust", "c", "cpp", "java", "kotlin", "scala"].includes(family)
       ? {
           commandSha256: hex("e"),
           argvSha256: hex("3"),
-          executableSha256: hex("1"),
-          executableAfterSha256: hex("1"),
+          executableSha256: compilerSha256,
+          executableAfterSha256: compilerSha256,
           exitCode: 0,
           signal: null,
           errorCode: null,
@@ -185,6 +224,17 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
             stdout: output(Buffer.alloc(0)),
             observedBytes: 0,
           },
+        }
+      : null,
+    jvm: isJvm
+      ? {
+          inputs: syntheticJvmInputs(family),
+          afterInputs: syntheticJvmInputs(family),
+          generated: syntheticJvmDirectory([
+            family === "kotlin" ? "WitnessKt.class" : "Witness.class",
+            "policy/Policy.class",
+            "consumer/Consumer.class",
+          ]),
         }
       : null,
     nativeResult: {
@@ -213,7 +263,9 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
     gateAComplete: false,
   };
   const records = [];
-  for (const stage of ["rust", "c", "cpp"].includes(family)
+  for (const stage of ["rust", "c", "cpp", "java", "kotlin", "scala"].includes(
+    family,
+  )
     ? ["compiler", "consumer"]
     : ["consumer"]) {
     const invocation = stage === "compiler" ? row.compiler! : row.invocation;
@@ -234,6 +286,57 @@ function packet(family: Family = "go", variant = "broken", origin = "source") {
       executableSha256: invocation.executableSha256,
       executableAfterSha256: invocation.executableAfterSha256,
       identityError: null,
+      jvm: row.jvm
+        ? {
+            classpaths:
+              stage === "compiler"
+                ? family === "java"
+                  ? []
+                  : [
+                      [
+                        {
+                          directorySha256:
+                            row.jvm.inputs.libraries!.directorySha256,
+                          member: "*",
+                        },
+                      ],
+                      [
+                        {
+                          directorySha256:
+                            row.jvm.inputs.libraries!.directorySha256,
+                          member:
+                            family === "kotlin" ? "kotlin-stdlib.jar" : "*",
+                        },
+                      ],
+                    ]
+                : [
+                    [
+                      {
+                        directorySha256: row.jvm.generated.directorySha256,
+                        member: null,
+                      },
+                      ...(family === "java"
+                        ? []
+                        : [
+                            {
+                              directorySha256:
+                                row.jvm.inputs.libraries!.directorySha256,
+                              member:
+                                family === "kotlin" ? "kotlin-stdlib.jar" : "*",
+                            },
+                          ]),
+                    ],
+                  ],
+            inputsBefore: structuredClone(row.jvm.inputs),
+            inputsAfter: structuredClone(row.jvm.inputs),
+            generatedBefore:
+              stage === "compiler"
+                ? syntheticJvmDirectory([])
+                : structuredClone(row.jvm.generated),
+            generatedAfter: structuredClone(row.jvm.generated),
+            commandDirectorySha256: row.jvm.generated.directorySha256,
+          }
+        : null,
       output: stage === "compiler" ? row.compiler!.output : row.output,
       outputState: "complete",
       decodedDiagnostics: null,
@@ -284,6 +387,8 @@ function binding(row: ReturnType<typeof packet>) {
     toolInputsSha256: hex("9"),
     toolExecutableSha256: row.tool.sha256,
     toolVersionMatched: true,
+    jvmInputsSha256: row.jvm ? hash(JSON.stringify(row.jvm.inputs)) : null,
+    generatedManifestSha256: row.jvm?.generated.manifestSha256 ?? null,
     nativeTool: ["c", "cpp"].includes(row.family)
       ? {
           name: row.family === "c" ? "gcc" : "g++",
@@ -626,6 +731,186 @@ test("synthetic C and C++ witnesses retain every native producer case and separa
     );
   }
 });
+test("synthetic JVM witnesses refuse missing compiler jars changed class artifacts and mismatched actual classpaths", () => {
+  for (const family of ["java", "kotlin", "scala"] as const) {
+    const rows = ["broken", "fixed", "near-miss"].flatMap((variant) =>
+      ["source", "installed"].map((origin) => packet(family, variant, origin)),
+    );
+    const coverage = inspect(rows, rows.map(binding));
+    assert.equal(
+      requireQualifiedConsumerWitnessFamily(coverage, family).complete,
+      true,
+    );
+    assert.equal(coverage.complete, false);
+    assert.deepEqual(rows[4]!.nativeResult.consumers, [false, false]);
+    for (const mode of [
+      "classpath",
+      "foreign-library-classpath",
+      "changed-artifact",
+      "missing-producer",
+      "missing-library",
+    ]) {
+      if (mode === "missing-library" && family === "java") continue;
+      const row = packet(family);
+      const attempts = retainedAttempts.get(row.witnessId)!;
+      const compiler = attempts[0]!.value.jvm as NonNullable<typeof row.jvm> & {
+        generatedAfter: NonNullable<typeof row.jvm>["generated"];
+        inputsBefore: NonNullable<typeof row.jvm>["inputs"];
+        inputsAfter: NonNullable<typeof row.jvm>["inputs"];
+      };
+      const runtime = attempts[1]!.value.jvm as typeof compiler & {
+        commandDirectorySha256: string;
+        generatedBefore: typeof compiler.generatedAfter;
+      };
+      if (mode === "classpath") runtime.commandDirectorySha256 = hex("f");
+      if (mode === "foreign-library-classpath") {
+        (
+          runtime as unknown as {
+            classpaths: { directorySha256: string; member: string | null }[][];
+          }
+        ).classpaths[0]!.push({
+          directorySha256: hex("f"),
+          member: "unobserved.jar",
+        });
+      }
+      if (mode === "changed-artifact") {
+        runtime.generatedAfter.files[0]!.sha256 = hex("f");
+        runtime.generatedAfter.manifestSha256 = hash(
+          JSON.stringify(runtime.generatedAfter.files),
+        );
+      }
+      if (mode === "missing-producer") {
+        row.jvm!.generated.files = row.jvm!.generated.files.filter(
+          (file) => !file.path.startsWith("policy/"),
+        );
+        row.jvm!.generated.bytes = row.jvm!.generated.files.reduce(
+          (n, file) => n + file.bytes,
+          0,
+        );
+        row.jvm!.generated.manifestSha256 = hash(
+          JSON.stringify(row.jvm!.generated.files),
+        );
+        compiler.generatedAfter = structuredClone(row.jvm!.generated);
+        runtime.generatedBefore = structuredClone(row.jvm!.generated);
+        runtime.generatedAfter = structuredClone(row.jvm!.generated);
+      }
+      if (mode === "missing-library") {
+        row.jvm!.inputs.libraries!.files = [];
+        row.jvm!.inputs.libraries!.bytes = 0;
+        row.jvm!.inputs.libraries!.manifestSha256 = hash("[]");
+        row.jvm!.afterInputs = structuredClone(row.jvm!.inputs);
+        compiler.inputsBefore = structuredClone(row.jvm!.inputs);
+        compiler.inputsAfter = structuredClone(row.jvm!.inputs);
+        runtime.inputsBefore = structuredClone(row.jvm!.inputs);
+        runtime.inputsAfter = structuredClone(row.jvm!.inputs);
+      }
+      for (const [index, attempt] of attempts.entries()) {
+        const bytes = Buffer.from(JSON.stringify(attempt.value) + "\n");
+        attempt.bytes = bytes.length;
+        attempt.sha256 = hash(bytes);
+        row.attempts[index]!.bytes = attempt.bytes;
+        row.attempts[index]!.sha256 = attempt.sha256;
+      }
+      assert.throws(() => inspect([row]), mode);
+    }
+  }
+});
+test("JVM command observation retains short long joined and repeated classpath options without matching adjacent flags", () => {
+  const expected = [
+    [
+      { directorySha256: hash("/original/classes"), member: null },
+      { directorySha256: hash("/sdk/lib"), member: "*" },
+    ],
+  ];
+  for (const args of [
+    ["-cp", "/original/classes:/sdk/lib/*"],
+    ["-classpath", "/original/classes:/sdk/lib/*"],
+    ["--class-path", "/original/classes:/sdk/lib/*"],
+    ["--class-path=/original/classes:/sdk/lib/*"],
+  ])
+    assert.deepEqual(consumerJvmClasspaths(args, "/original"), expected);
+  assert.deepEqual(
+    consumerJvmClasspaths(
+      ["-cp-adjacent", "/foreign", "--class-path-extra=/foreign"],
+      "/original",
+    ),
+    [],
+  );
+  assert.deepEqual(
+    consumerJvmClasspaths(
+      ["-cp", "/original/classes", "--class-path=/foreign/unobserved.jar"],
+      "/original",
+    ),
+    [
+      [expected[0]![0]!],
+      [{ directorySha256: hash("/foreign"), member: "unobserved.jar" }],
+    ],
+  );
+});
+test("controlled JVM class directory observation hashes every produced file and refuses links without executing bytecode", async (t) => {
+  const root = await realpath(
+    await fixture(t, {
+      "Witness.class": "Original synthetic witness bytes",
+      "policy/Policy.class": "Original synthetic producer bytes",
+      "consumer/Consumer.class": "Original synthetic consumer bytes",
+    }),
+  );
+  const observed = await observeConsumerWitnessDirectory(root);
+  assert.deepEqual(
+    observed.files.map((file) => file.path),
+    ["Witness.class", "consumer/Consumer.class", "policy/Policy.class"],
+  );
+  assert.equal(
+    observed.files[0]!.sha256,
+    hash("Original synthetic witness bytes"),
+  );
+  await writeFile(
+    path.join(root, "policy/Policy.class"),
+    "Changed synthetic producer bytes",
+  );
+  assert.notEqual(
+    (await observeConsumerWitnessDirectory(root)).manifestSha256,
+    observed.manifestSha256,
+  );
+  const jars = await realpath(
+    await fixture(t, {
+      "lower.jar": "Original lower jar",
+      "UPPER.JAR": "Original upper jar",
+      "mixed.Jar": "Not selected by Java wildcard",
+      "notes.txt": "Not a classpath jar",
+      "nested/ignored.jar": "Not selected recursively",
+    }),
+  );
+  const selectedJars = await observeConsumerWitnessDirectory(jars, true);
+  assert.deepEqual(
+    selectedJars.files.map((file) => file.path),
+    ["UPPER.JAR", "lower.jar"],
+  );
+  await writeFile(
+    path.join(jars, "nested/ignored.jar"),
+    "Still ignored by non-recursive wildcard",
+  );
+  assert.equal(
+    (await observeConsumerWitnessDirectory(jars, true)).manifestSha256,
+    selectedJars.manifestSha256,
+  );
+  const jarDirectory = await realpath(
+    await fixture(t, {
+      "unexpected.jar/Hidden.class": "Synthetic wildcard directory class",
+    }),
+  );
+  await assert.rejects(
+    () => observeConsumerWitnessDirectory(jarDirectory, true),
+    /Unsupported directory selected by JVM classpath wildcard/,
+  );
+  if (process.platform !== "win32") {
+    await symlink(
+      path.join(root, "Witness.class"),
+      path.join(root, "linked.class"),
+    );
+    await assert.rejects(() => observeConsumerWitnessDirectory(root));
+  }
+});
 test("final native consumer controllers refuse unqualified families even when all six observations exist", () => {
   const rows = ["broken", "fixed", "near-miss"].flatMap((variant) =>
     ["source", "installed"].map((origin) => packet("go", variant, origin)),
@@ -845,6 +1130,8 @@ test("consumer controller code identity binds selected requirements equally from
       "Original synthetic helper bytes\n",
     "scripts/compiled-engine-evidence.mjs":
       "Original synthetic engine observer bytes\n",
+    "scripts/consumer-witness-jvm.mjs":
+      "Original synthetic JVM observer bytes\n",
     "scripts/consumer-witness-attempts.mjs":
       "Original synthetic attempt observer bytes\n",
     "dist/test/gate-context-go.test.js":
@@ -945,8 +1232,15 @@ test("consumer controller captures a container family without depending on unrel
       "Original synthetic C acceptance bytes\n",
     "dist/test/gate-context-cpp.test.js":
       "Original synthetic C++ acceptance bytes\n",
+    "dist/test/gate-context-java.test.js": "Synthetic Java acceptance bytes\n",
+    "dist/test/gate-context-kotlin.test.js":
+      "Synthetic Kotlin acceptance bytes\n",
+    "dist/test/gate-context-scala.test.js":
+      "Synthetic Scala acceptance bytes\n",
     "scripts/compiled-engine-evidence.mjs":
       "Original synthetic engine observer bytes\n",
+    "scripts/consumer-witness-jvm.mjs":
+      "Original synthetic JVM observer bytes\n",
     "scripts/consumer-witness-attempts.mjs":
       "Original synthetic attempt observer bytes\n",
     "scripts/required-native-tests.json": JSON.stringify({
@@ -954,6 +1248,9 @@ test("consumer controller captures a container family without depending on unrel
       "context-ruby": profiles["context-ruby"],
       "context-c": profiles["context-c"],
       "context-cpp": profiles["context-cpp"],
+      "context-java": profiles["context-java"],
+      "context-kotlin": profiles["context-kotlin"],
+      "context-scala": profiles["context-scala"],
     }),
     "scripts/php-context-tools.Dockerfile":
       "Original synthetic pinned Dockerfile bytes\n",
@@ -963,14 +1260,23 @@ test("consumer controller captures a container family without depending on unrel
       "Original synthetic pinned Dockerfile bytes\n",
     "scripts/cpp-context-tools.Dockerfile":
       "Original synthetic pinned Dockerfile bytes\n",
+    "scripts/java-context-tools.Dockerfile":
+      "Original synthetic pinned Dockerfile bytes\n",
+    "scripts/kotlin-context-tools.Dockerfile":
+      "Original synthetic pinned Dockerfile bytes\n",
+    "scripts/scala-context-tools.Dockerfile":
+      "Original synthetic pinned Dockerfile bytes\n",
     "docs/gate-a-profiles.v1.json": JSON.stringify(inventory),
   });
   const runtimeImage = {
     kind: "oci-image-observation",
     id: "sha256:" + hex("c"),
   };
-  const tool = { bytes: 1, sha256: hex("1") };
-  for (const family of ["php", "ruby", "c", "cpp"]) {
+  for (const family of ["php", "ruby", "c", "cpp", "java", "kotlin", "scala"]) {
+    const jvmInputs = ["java", "kotlin", "scala"].includes(family)
+      ? syntheticJvmInputs(family)
+      : null;
+    const tool = jvmInputs?.compiler ?? { bytes: 1, sha256: hex("1") };
     const version =
       family === "php"
         ? inventory.toolVersions.php
@@ -983,6 +1289,11 @@ test("consumer controller captures a container family without depending on unrel
       toolVersion: version,
       compilerTarget: "aarch64-linux-gnu",
       compilerIdentity: "Original synthetic compiler (Debian 14.2.0-19)",
+      jvmInputs,
+      javac: "javac 25.0.4",
+      java: "openjdk 25.0.4 original synthetic runtime",
+      kotlinVersion: "kotlinc-jvm 2.4.10 original synthetic version",
+      scalaVersion: "Scala compiler version 3.9.0 original synthetic version",
     };
     const received = await captureConsumerWitnessController(
       root,
@@ -1011,12 +1322,25 @@ test("consumer controller captures a container family without depending on unrel
       );
       assert.equal(foreignTarget.toolVersionMatched, false);
     }
+    if (jvmInputs) {
+      assert.deepEqual(received.jvmInputs, jvmInputs);
+      await assert.rejects(() =>
+        captureConsumerWitnessController(
+          root,
+          family,
+          runtimeImage,
+          { ...runtime, jvmInputs: { ...jvmInputs, modules: null } },
+          tool,
+        ),
+      );
+    }
     const wrongTool = await captureConsumerWitnessController(
       root,
       family,
       runtimeImage,
       {
         ...runtime,
+        javac: jvmInputs ? "javac 25.0.4.adjacent" : runtime.javac,
         toolVersion:
           family === "ruby"
             ? "ruby " +

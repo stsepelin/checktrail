@@ -2,7 +2,7 @@
 
 The selected consumer-family manifest keeps nineteen required family boundaries
 visible. The first collector implementation covers the existing Go, Python, PHP,
-Rust, Ruby, C and C++ producer/consumer witness functions. Other families remain required and
+Rust, Ruby, C, C++, Java, Kotlin and Scala producer/consumer witness functions. Other families remain required and
 pending. This is development acceptance tooling, not a review-quality result or
 complete consumer-family qualification.
 
@@ -22,7 +22,7 @@ capture unless the operator provides private storage.
 
 `node scripts/verify-consumer-witness-profile.mjs PROFILE` runs the existing nine
 required callbacks, including the fresh offline installation, for one of
-`context-go`, `context-python`, `context-php`, `context-rust`, `context-ruby`, `context-c` or `context-cpp`. It requires an operator-prepared native environment and
+`context-go`, `context-python`, `context-php`, `context-rust`, `context-ruby`, `context-c`, `context-cpp`, `context-java`, `context-kotlin` or `context-scala`. It requires an operator-prepared native environment and
 executes original synthetic fixture code. These execution constraints are not an
 OS security sandbox. CLI/MCP project discovery does not call this controller.
 
@@ -35,7 +35,7 @@ The existing offline installed acceptance remains separately required. Dependenc
 whole-package archive, hardware and complete producer-build attribution are not
 inferred from these witness packets.
 
-Existing PHP, Rust, Ruby, C and C++ container controllers bind their observed image IDs and
+Existing PHP, Rust, Ruby, C, C++, Java, Kotlin and Scala container controllers bind their observed image IDs and
 native runtime probes. The Go/Python hosted-runtime controller records OS release
 and runner-image metadata without claiming host attestation. Unselected development
 hosts remain unqualified. Each selected variant must have one source and one
@@ -49,7 +49,7 @@ complete upstream build/license closure and independent evaluation remain open.
 No model inference, comparison trial or field evaluation is invoked here.
 
 The Go/Python entry point is the final hosted controller and refuses unqualified
-family reports, even when all six native observations exist. PHP/Rust/Ruby/C/C++ inner
+family reports, even when all six native observations exist. PHP/Rust/Ruby/C/C++/JVM inner
 collection stays unqualified until the outer controller binds the observed OCI
 image identity and requires the complete family report. Completion of these
 individual families does not complete the nineteen-family aggregate or Gate A.
@@ -66,3 +66,22 @@ identities; a missing or failed compiler attempt cannot be replaced by a success
 executable result. The existing controller observes supplementary GCC/G++ 14.2.0,
 its Debian identity and aarch64 target. These observations explicitly do not
 qualify the selected Clang toolchain. Native source/fresh qualification is pending.
+
+Java/Kotlin/Scala keep compiler and runtime attempts separate. The collector
+observes the actual Java runtime, compiler launcher, JDK module image and every
+JAR selected by the original compiler/runtime classpaths. Version or archive
+labels cannot fill missing dependency observations. The complete generated class
+directory is observed after compilation and after execution; the actual compiler
+output argument and runtime classpath must bind that same directory. Missing
+producer/caller classes, changed artifacts, changed dependencies and foreign
+classpaths refuse qualification. These collectors are prepared; native JVM
+source/fresh acceptance and the final selected matrix remain pending.
+
+Classpath observation includes both `.jar` and `.JAR` names, ignores ordinary
+non-recursive subdirectories, and refuses a directory whose name itself matches
+the wildcard. Such an unsupported directory cannot disappear from qualification.
+
+Every compiler/runtime classpath entry is derived from the actual command vector
+and must match the observed output directory and selected JAR directory or
+runtime JAR. An additional or redirected dependency cannot be qualified by an
+unrelated library observation.

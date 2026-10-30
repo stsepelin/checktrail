@@ -1,3 +1,7 @@
+import {
+  inspectJvmInputs,
+  jvmConsumerFamilies,
+} from "./consumer-witness-jvm.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
@@ -14,7 +18,18 @@ export async function captureConsumerWitnessController(
   tool,
 ) {
   assert.ok(
-    ["go", "python", "php", "rust", "ruby", "c", "cpp"].includes(family),
+    [
+      "go",
+      "python",
+      "php",
+      "rust",
+      "ruby",
+      "c",
+      "cpp",
+      "java",
+      "kotlin",
+      "scala",
+    ].includes(family),
   );
   const profile = "context-" + family;
   const required = JSON.parse(
@@ -32,6 +47,7 @@ export async function captureConsumerWitnessController(
     "scripts/required-native-tests.json",
     "scripts/compiled-engine-evidence.mjs",
     "scripts/consumer-witness-attempts.mjs",
+    "scripts/consumer-witness-jvm.mjs",
   ];
   const identities = await Promise.all(
     files.map(async (file) => {
@@ -40,7 +56,16 @@ export async function captureConsumerWitnessController(
     }),
   );
   const engine = await captureCompiledEngine(path.join(root, "dist/src"));
-  const definition = ["php", "rust", "ruby", "c", "cpp"].includes(family)
+  const definition = [
+    "php",
+    "rust",
+    "ruby",
+    "c",
+    "cpp",
+    "java",
+    "kotlin",
+    "scala",
+  ].includes(family)
     ? "scripts/" + family + "-context-tools.Dockerfile"
     : ".github/workflows/ci.yml";
   const definitionSha256 = hash(await readFile(path.join(root, definition)));
@@ -71,7 +96,7 @@ export async function captureConsumerWitnessController(
     pythonVersion = pythonSteps[0].with["python-version"];
   }
   const version = runtime.toolVersion;
-  const toolVersionMatched =
+  let toolVersionMatched =
     family === "go"
       ? version.startsWith("go version go" + inventory.toolVersions.go + " ")
       : family === "php"
@@ -85,6 +110,21 @@ export async function captureConsumerWitnessController(
                 runtime.compilerTarget === "aarch64-linux-gnu" &&
                 /Debian 14\.2\.0-19/.test(runtime.compilerIdentity ?? "")
               : version === "Python " + pythonVersion;
+  const jvmInputs = jvmConsumerFamilies.includes(family)
+    ? inspectJvmInputs(runtime.jvmInputs, family)
+    : null;
+  if (jvmInputs) {
+    assert.deepEqual(jvmInputs.compiler, tool);
+    const selectedJava =
+      runtime.javac === "javac 25.0.4" &&
+      /^openjdk 25\.0\.4 /.test(runtime.java ?? "");
+    toolVersionMatched =
+      selectedJava &&
+      (family === "java" ||
+        (family === "kotlin"
+          ? /kotlinc-jvm 2\.4\.10 /.test(runtime.kotlinVersion ?? "")
+          : /Scala compiler version 3\.9\.0/.test(runtime.scalaVersion ?? "")));
+  }
   const nativeTool = ["c", "cpp"].includes(family)
     ? {
         name: family === "c" ? "gcc" : "g++",
@@ -102,12 +142,14 @@ export async function captureConsumerWitnessController(
       tool,
       runtimeVersion: runtime.toolVersion,
       nativeTool,
+      jvmInputs,
     }),
   );
   return {
     family,
     toolVersionMatched,
     nativeTool,
+    jvmInputs,
     requirements: required,
     engineSha256: engine.treeSha256,
     harnessSha256: hash(
@@ -116,6 +158,7 @@ export async function captureConsumerWitnessController(
         identities[1],
         identities[3],
         identities[4],
+        identities[5],
       ]),
     ),
     requirementsSha256: hash(JSON.stringify(required)),

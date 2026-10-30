@@ -515,6 +515,7 @@ try {
     "required-test-evidence.mjs",
     "compiled-engine-evidence.mjs",
     "consumer-witness-attempts.mjs",
+    "consumer-witness-jvm.mjs",
     ...(rubyAcceptanceShard === undefined
       ? []
       : [

@@ -1,3 +1,7 @@
+import {
+  inspectJvmAttempt,
+  requireJvmAttemptBinding,
+} from "./consumer-witness-jvm.mjs";
 import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
@@ -58,9 +62,18 @@ export function inspectConsumerAttemptRecords(records) {
       "Duplicate consumer attempt identity",
     );
     assert.ok(
-      ["go", "python", "php", "rust", "ruby", "c", "cpp"].includes(
-        value.family,
-      ),
+      [
+        "go",
+        "python",
+        "php",
+        "rust",
+        "ruby",
+        "c",
+        "cpp",
+        "java",
+        "kotlin",
+        "scala",
+      ].includes(value.family),
     );
     assert.ok(["broken", "fixed", "near-miss"].includes(value.variant));
     assert.ok(["source", "installed"].includes(value.origin));
@@ -72,8 +85,11 @@ export function inspectConsumerAttemptRecords(records) {
     assert.ok(
       value.stage === "consumer" ||
         (value.stage === "compiler" &&
-          ["rust", "c", "cpp"].includes(value.family)),
+          ["rust", "c", "cpp", "java", "kotlin", "scala"].includes(
+            value.family,
+          )),
     );
+    inspectJvmAttempt(value);
     assert.equal(value.processStartAcknowledgementRetained, false);
     assert.equal(value.gateAComplete, false);
     assert.ok(
@@ -180,7 +196,9 @@ export function inspectConsumerAttemptRecords(records) {
 }
 export function requireConsumerWitnessAttempts(witness, records, used) {
   assert.ok(uuid(witness.witnessId), "Missing consumer witness identity");
-  const stages = ["rust", "c", "cpp"].includes(witness.family)
+  const stages = ["rust", "c", "cpp", "java", "kotlin", "scala"].includes(
+    witness.family,
+  )
     ? ["compiler", "consumer"]
     : ["consumer"];
   assert.ok(Array.isArray(witness.attempts));
@@ -256,6 +274,7 @@ export function requireConsumerWitnessAttempts(witness, records, used) {
       ),
       "Consumer attempt physical output differs",
     );
+    requireJvmAttemptBinding(witness, value);
     used.add(reference.attemptId);
   }
 }

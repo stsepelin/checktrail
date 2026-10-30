@@ -1,3 +1,7 @@
+import {
+  jvmConsumerFamilies,
+  inspectJvmWitness,
+} from "./consumer-witness-jvm.mjs";
 import { Buffer } from "node:buffer";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -39,6 +43,9 @@ const sourcePaths = Object.freeze({
   ruby: ["src/policy/Policy.rb", "src/consumer/Consumer.rb"],
   c: ["src/policy/rules.h", "src/consumer/use.c"],
   cpp: ["src/policy/rules.h", "src/consumer/use.cpp"],
+  java: ["src/policy/Policy.java", "src/consumer/Consumer.java"],
+  kotlin: ["src/policy/Policy.kt", "src/consumer/Consumer.kt"],
+  scala: ["src/policy/Policy.scala", "src/consumer/Consumer.scala"],
 });
 /** Selected declarations are checked against the inventory, never treated as executions. */
 export function selectConsumerWitnessRequirements(
@@ -249,7 +256,8 @@ export function inspectConsumerWitnesses(
               : [false, true, false]
           : row.variant === "broken"
             ? [true, true]
-            : row.family === "rust" && row.variant === "near-miss"
+            : ["rust", "java", "kotlin", "scala"].includes(row.family) &&
+                row.variant === "near-miss"
               ? [false, false]
               : [false, true];
     assert.deepEqual(
@@ -296,7 +304,15 @@ export function inspectConsumerWitnesses(
         native.sources?.[
           row.family === "python" ? file.path.split("/").at(-1) : file.path
         ];
-      const retainedSource = ["rust", "ruby", "c", "cpp"].includes(row.family);
+      const retainedSource = [
+        "rust",
+        "ruby",
+        "c",
+        "cpp",
+        "java",
+        "kotlin",
+        "scala",
+      ].includes(row.family);
       if (retainedSource) {
         assert.ok(
           Array.isArray(raw) &&
@@ -322,7 +338,7 @@ export function inspectConsumerWitnesses(
         "Derived native source identity differs",
       );
     }
-    if (["rust", "c", "cpp"].includes(row.family)) {
+    if (["rust", "c", "cpp", "java", "kotlin", "scala"].includes(row.family)) {
       assert.ok(
         row.compiler,
         "Compiled consumer lacks its reached compiler observation",
@@ -348,6 +364,8 @@ export function inspectConsumerWitnesses(
       retainedBytes += compiledOut.length + compiledErr.length;
       assert.ok(retainedBytes <= 16 * 1048576);
     } else assert.equal(row.compiler, null);
+    if (jvmConsumerFamilies.includes(row.family)) inspectJvmWitness(row);
+    else assert.ok(row.jvm === undefined || row.jvm === null);
     if (row.phase !== "canonical") continue;
     const address = JSON.stringify([row.family, row.variant, row.origin]);
     if (reached.has(address)) {
@@ -485,6 +503,16 @@ export function inspectConsumerWitnesses(
           row.tool.sha256,
           "Native tool observation differs",
         );
+        if (jvmConsumerFamilies.includes(row.family)) {
+          assert.equal(
+            binding.jvmInputsSha256,
+            hash(JSON.stringify(row.jvm.inputs)),
+          );
+          assert.equal(
+            binding.generatedManifestSha256,
+            row.jvm.generated.manifestSha256,
+          );
+        }
         if (["c", "cpp"].includes(row.family)) {
           const nativeTool = binding.nativeTool;
           assert.equal(row.tool.name, row.family === "c" ? "gcc" : "g++");
@@ -694,6 +722,12 @@ export function bindConsumerWitnessController(collection, expected) {
           expected.runtime[field],
           "Native consumer runtime differs: " + field,
         );
+      if (jvmConsumerFamilies.includes(row.family))
+        assert.deepEqual(
+          row.jvm.inputs,
+          expected.jvmInputs,
+          "JVM dependency bytes differ from the observed native controller",
+        );
       return {
         family: row.family,
         variant: row.variant,
@@ -708,6 +742,8 @@ export function bindConsumerWitnessController(collection, expected) {
         toolExecutableSha256: expected.tool.sha256,
         toolVersionMatched: expected.toolVersionMatched,
         nativeTool: expected.nativeTool,
+        jvmInputsSha256: row.jvm ? hash(JSON.stringify(row.jvm.inputs)) : null,
+        generatedManifestSha256: row.jvm?.generated.manifestSha256 ?? null,
         observationSha256: hash(JSON.stringify(row)),
         runtimeImage: expected.runtimeImage,
         complete: true,

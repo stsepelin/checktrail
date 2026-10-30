@@ -1,3 +1,10 @@
+import { readFile } from "node:fs/promises";
+import { captureConsumerWitnessController } from "./consumer-witness-controller.mjs";
+import {
+  bindConsumerWitnessController,
+  inspectConsumerWitnesses,
+  requireQualifiedConsumerWitnessFamily,
+} from "./consumer-witness-evidence.mjs";
 import { scalaArtifacts } from "../dist/src/scala-artifacts.js";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -57,7 +64,7 @@ const runtime = JSON.parse(
     "node",
     "--input-type=module",
     "-e",
-    'import {execFileSync} from "node:child_process"; import {readFileSync,readdirSync} from "node:fs"; import {createHash} from "node:crypto"; console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,scalaArchiveBytes:readFileSync("/opt/checktrail/scala3-3.9.0.zip").length,scalaArchiveSha256:createHash("sha256").update(readFileSync("/opt/checktrail/scala3-3.9.0.zip")).digest("hex"),scalaLibraries:readdirSync("/opt/checktrail/scala/lib").sort().map(name=>({name,bytes:readFileSync("/opt/checktrail/scala/lib/"+name).length,sha256:createHash("sha256").update(readFileSync("/opt/checktrail/scala/lib/"+name)).digest("hex")})),scalaVersion:execFileSync("java",["-Xmx256m","-cp","/opt/checktrail/scala/lib/*","dotty.tools.dotc.Main","-version"],{encoding:"utf8"}).trim(),java:execFileSync("java",["--version"],{encoding:"utf8"}).trim(),javac:execFileSync("javac",["--version"],{encoding:"utf8"}).trim(),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8")}));',
+    'import {execFileSync} from "node:child_process"; import {readFileSync,readdirSync} from "node:fs"; import {createHash} from "node:crypto"; import {observeConsumerWitnessTool,observeConsumerWitnessJvmInputs} from "./dist/test/consumer-witness-fixture.js";import{createHash as consumerHash}from"node:crypto";console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,scalaArchiveBytes:readFileSync("/opt/checktrail/scala3-3.9.0.zip").length,scalaArchiveSha256:createHash("sha256").update(readFileSync("/opt/checktrail/scala3-3.9.0.zip")).digest("hex"),scalaLibraries:readdirSync("/opt/checktrail/scala/lib").sort().map(name=>({name,bytes:readFileSync("/opt/checktrail/scala/lib/"+name).length,sha256:createHash("sha256").update(readFileSync("/opt/checktrail/scala/lib/"+name)).digest("hex")})),scalaVersion:execFileSync("java",["-Xmx256m","-cp","/opt/checktrail/scala/lib/*","dotty.tools.dotc.Main","-version"],{encoding:"utf8"}).trim(),java:execFileSync("java",["--version"],{encoding:"utf8"}).trim(),javac:execFileSync("javac",["--version"],{encoding:"utf8"}).trim(),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8"),nodeExecutableSha256:consumerHash("sha256").update(readFileSync(process.execPath)).digest("hex"),distributionSha256:consumerHash("sha256").update(readFileSync("/etc/os-release")).digest("hex"),tool:await observeConsumerWitnessTool("scala"),jvmInputs:await observeConsumerWitnessJvmInputs("scala")}));',
   ]),
 );
 assert.equal(runtime.node, "v22.23.2");
@@ -77,13 +84,56 @@ assert.deepEqual(
     .map(({ name, bytes, sha256 }) => ({ name, bytes, sha256 }))
     .sort((a, b) => a.name.localeCompare(b.name, "en")),
 );
-const source = JSON.parse(
+const consumerRuntime = {
+  ...runtime,
+  node: runtime.node.slice(1),
+  architecture: runtime.arch,
+  hostAttestationPerformed: false,
+  toolVersion: runtime.javac,
+};
+const consumerExpected = await captureConsumerWitnessController(
+  repository,
+  "scala",
+  { kind: "oci-image-observation", id: image },
+  consumerRuntime,
+  runtime.tool,
+);
+const consumerCollection = JSON.parse(
   run([
     "/bin/sh",
     "-c",
-    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs context-scala",
+    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-consumer-witness-profile.mjs context-scala",
   ]),
 );
+const source = consumerCollection.evidence;
+consumerCollection.bindings = bindConsumerWitnessController(
+  consumerCollection,
+  consumerExpected,
+);
+consumerCollection.coverage = inspectConsumerWitnesses(
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-consumer-witnesses.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-profiles.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "scripts/required-native-tests.json"),
+      "utf8",
+    ),
+  ),
+  consumerCollection.observations,
+  consumerCollection.bindings,
+  consumerCollection.attemptRecords,
+);
+requireQualifiedConsumerWitnessFamily(consumerCollection.coverage, "scala");
 assert.equal(source.complete, true);
 assert.equal(source.passed, 9);
 // Guard mutations operate only on an owned compiled copy; the source mount stays read-only.
@@ -130,6 +180,7 @@ process.stdout.write(
     runtime,
     image,
     source,
+    consumerWitnesses: consumerCollection,
     guards,
     installed,
     environment: {

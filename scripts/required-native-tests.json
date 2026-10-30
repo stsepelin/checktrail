@@ -5979,6 +5979,18 @@
     {
       "file": "dist/test/consumer-witness-evidence.test.js",
       "name": "synthetic C and C++ witnesses retain every native producer case and separate supplementary compiler failures from executable results"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "synthetic JVM witnesses refuse missing compiler jars changed class artifacts and mismatched actual classpaths"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "controlled JVM class directory observation hashes every produced file and refuses links without executing bytecode"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "JVM command observation retains short long joined and repeated classpath options without matching adjacent flags"
     }
   ]
 }

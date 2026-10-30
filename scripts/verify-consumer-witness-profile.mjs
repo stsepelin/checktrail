@@ -30,13 +30,16 @@ import {
   requireQualifiedConsumerWitnessFamily,
 } from "./consumer-witness-evidence.mjs";
 import { captureConsumerWitnessController } from "./consumer-witness-controller.mjs";
-import { observeConsumerWitnessTool } from "../dist/test/consumer-witness-fixture.js";
+import {
+  observeConsumerWitnessTool,
+  observeConsumerWitnessJvmInputs,
+} from "../dist/test/consumer-witness-fixture.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const profile = process.argv[2];
 assert.equal(
   process.argv.length,
   3,
-  "Usage: verify-consumer-witness-profile.mjs context-go|context-python|context-php|context-rust|context-ruby|context-c|context-cpp",
+  "Usage: verify-consumer-witness-profile.mjs context-go|context-python|context-php|context-rust|context-ruby|context-c|context-cpp|context-java|context-kotlin|context-scala",
 );
 assert.ok(
   [
@@ -47,6 +50,9 @@ assert.ok(
     "context-ruby",
     "context-c",
     "context-cpp",
+    "context-java",
+    "context-kotlin",
+    "context-scala",
   ].includes(profile),
 );
 const family = profile.slice("context-".length);
@@ -68,8 +74,11 @@ const files = [
   "scripts/consumer-witness-evidence.mjs",
   "scripts/consumer-witness-controller.mjs",
   "scripts/consumer-witness-attempts.mjs",
+  "scripts/consumer-witness-jvm.mjs",
   ".github/workflows/ci.yml",
-  ...(["php", "rust", "ruby", "c", "cpp"].includes(family)
+  ...(["php", "rust", "ruby", "c", "cpp", "java", "kotlin", "scala"].includes(
+    family,
+  )
     ? ["scripts/" + family + "-context-tools.Dockerfile"]
     : []),
   "scripts/required-test-evidence.mjs",
@@ -113,6 +122,9 @@ const runtime = {
       ruby: "ruby",
       c: "gcc",
       cpp: "g++",
+      java: "javac",
+      kotlin: "java",
+      scala: "java",
     }[family],
     {
       go: ["version"],
@@ -122,6 +134,9 @@ const runtime = {
       ruby: ["--disable-gems", "--version"],
       c: ["-dumpfullversion"],
       cpp: ["-dumpfullversion"],
+      java: ["--version"],
+      kotlin: ["--version"],
+      scala: ["--version"],
     }[family],
     {
       encoding: "utf8",
@@ -137,6 +152,17 @@ if (["c", "cpp"].includes(family)) {
     timeout: 10000,
   }).trim();
   runtime.compilerIdentity = execFileSync(compiler, ["--version"], {
+    encoding: "utf8",
+    timeout: 10000,
+  }).trim();
+}
+if (["java", "kotlin", "scala"].includes(family)) {
+  runtime.jvmInputs = await observeConsumerWitnessJvmInputs(family);
+  runtime.java = execFileSync("java", ["--version"], {
+    encoding: "utf8",
+    timeout: 10000,
+  }).trim();
+  runtime.javac = execFileSync("javac", ["--version"], {
     encoding: "utf8",
     timeout: 10000,
   }).trim();
@@ -186,7 +212,7 @@ try {
   for (const name of names) {
     assert.match(
       name,
-      /^(?:(?:go|python|php|rust|ruby|c|cpp)-(?:broken|fixed|near-miss)-(?:canonical|caller-change|restored|repeat)|attempt)-[a-f0-9-]{36}\.json$/,
+      /^(?:(?:go|python|php|rust|ruby|c|cpp|java|kotlin|scala)-(?:broken|fixed|near-miss)-(?:canonical|caller-change|restored|repeat)|attempt)-[a-f0-9-]{36}\.json$/,
     );
     const file = path.join(namespace, name),
       stat = await lstat(file, { bigint: true });
