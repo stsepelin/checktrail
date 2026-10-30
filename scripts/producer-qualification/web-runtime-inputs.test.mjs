@@ -332,6 +332,35 @@ for bad in [False,True]:
   except AssertionError:count+=1
   else:raise AssertionError('Mixed package roots admitted')
  else:assert m.package_data(archive)=={'name':'synthetic','version':'1.0.0'};count+=1
+# Real TAR members exercise the unchanged default and the exact large-notice exception.
+def notice(archive_name, member_name, body, link=False):
+ stream=io.BytesIO()
+ with tarfile.open(fileobj=stream,mode='w') as out:
+  entry=tarfile.TarInfo(member_name)
+  if link:entry.type=tarfile.SYMTYPE;entry.linkname='other'
+  else:entry.size=len(body)
+  out.addfile(entry,None if link else io.BytesIO(body))
+ stream.seek(0)
+ with tarfile.open(fileobj=stream,mode='r:') as opened:
+  return m.read_notice(opened,opened.next(),archive_name)
+known_archive='components/rustc-1.98.1-x86_64-unknown-linux-gnu.tar.xz'
+known_member='rustc-1.98.1-x86_64-unknown-linux-gnu/rustc/share/doc/rust/COPYRIGHT.html'
+assert m.MAX_NOTICE==4194304 and len(m.LARGE_ORIGINAL_NOTICES)==1
+assert m.LARGE_ORIGINAL_NOTICES[(known_archive,known_member)]=={'bytes':15380909,'sha256':'5b0c93fc4e6d4b072eaa521b1762d1e746f4c368f65e81a0e5308e2772dac85e'}
+assert notice('synthetic.tgz','LICENSE',b'x'*m.MAX_NOTICE)==b'x'*m.MAX_NOTICE;count+=1
+for archive_name,member_name,body,link,reason in [
+ ('synthetic.tgz','LICENSE',b'x'*(m.MAX_NOTICE+1),False,'Unregistered oversized original notice'),
+ ('components/rustc-1.98.2-x86_64-unknown-linux-gnu.tar.xz',known_member,b'x'*(m.MAX_NOTICE+1),False,'Unregistered oversized original notice'),
+ (known_archive,known_member+'.other',b'x'*(m.MAX_NOTICE+1),False,'Unregistered oversized original notice'),
+ (known_archive,known_member,b'x'*m.MAX_NOTICE,False,'Pinned original notice size differs'),
+ (known_archive,known_member,b'x'*15380909,False,'Pinned original notice bytes differ'),
+ ('synthetic.tgz','LICENSE',b'',True,'Only regular original notice bytes are retained'),
+]:
+ try:notice(archive_name,member_name,body,link)
+ except AssertionError as error:
+  assert str(error)==reason,'Notice refusal reason differs: '+str(error)+' expected '+reason
+  count+=1
+ else:raise AssertionError('Unqualified original notice admitted: '+archive_name+'/'+member_name)
 print(json.dumps({'passed':count,'compilerExecuted':False,'projectCodeExecuted':False}))`;
     const child = spawnSync(
       python,
@@ -341,7 +370,7 @@ print(json.dumps({'passed':count,'compilerExecuted':False,'projectCodeExecuted':
     assert.equal(child.error, undefined, diagnostic(child));
     assert.equal(child.status, 0, diagnostic(child));
     assert.deepEqual(JSON.parse(child.stdout), {
-      passed: 22,
+      passed: 29,
       compilerExecuted: false,
       projectCodeExecuted: false,
     });

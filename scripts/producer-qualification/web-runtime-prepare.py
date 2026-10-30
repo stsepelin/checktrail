@@ -84,6 +84,32 @@ def package_data(file):
     assert package is not None
     return package
 
+# One original signed Rust component carries a larger complete copyright notice.
+# Every other notice keeps the general limit; this is an exact byte identity.
+MAX_NOTICE = 4 * 1024**2
+LARGE_ORIGINAL_NOTICES = {
+    ("components/rustc-1.98.1-x86_64-unknown-linux-gnu.tar.xz",
+     "rustc-1.98.1-x86_64-unknown-linux-gnu/rustc/share/doc/rust/COPYRIGHT.html"):
+        {"bytes": 15380909,
+         "sha256": "5b0c93fc4e6d4b072eaa521b1762d1e746f4c368f65e81a0e5308e2772dac85e"}
+}
+
+
+def read_notice(opened, member, archive_name):
+    assert member.isfile(), "Only regular original notice bytes are retained"
+    exact = LARGE_ORIGINAL_NOTICES.get((archive_name, member.name))
+    if exact is None:
+        assert 0 <= member.size <= MAX_NOTICE, "Unregistered oversized original notice"
+    else:
+        assert member.size == exact["bytes"], "Pinned original notice size differs"
+    with opened.extractfile(member) as handle:
+        data = handle.read(member.size + 1)
+    assert len(data) == member.size, "Original notice member was incomplete"
+    if exact is not None:
+        assert sha(data) == exact["sha256"], "Pinned original notice bytes differ"
+    return data
+
+
 def prepare(directory, catalog, frozen):
     import tomllib
     assert directory.is_absolute() and directory.resolve() == directory
@@ -210,8 +236,7 @@ def prepare(directory, catalog, frozen):
             continue
         for opened, member, parts in archive(file):
             if member.isfile() and NOTICE.search(parts[-1]):
-                assert member.size <= 4 * 1024**2
-                data = opened.extractfile(member).read()
+                data = read_notice(opened, member, str(file.relative_to(downloads)))
                 key = sha(str(file.relative_to(downloads)).encode())
                 dest = directory / "notices" / key / Path(*parts)
                 write(dest, data)
