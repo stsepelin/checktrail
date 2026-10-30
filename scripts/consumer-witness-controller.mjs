@@ -1,4 +1,9 @@
 import {
+  dataConsumerFamilies,
+  inspectDataInputs,
+  normalizeDataInputs,
+} from "./consumer-witness-data.mjs";
+import {
   inspectManagedInputs,
   managedConsumerFamilies,
 } from "./consumer-witness-managed.mjs";
@@ -36,6 +41,8 @@ export async function captureConsumerWitnessController(
       "csharp",
       "fsharp",
       "vb",
+      "hcl",
+      "yaml",
     ].includes(family),
   );
   const profile = "context-" + family;
@@ -56,6 +63,7 @@ export async function captureConsumerWitnessController(
     "scripts/consumer-witness-attempts.mjs",
     "scripts/consumer-witness-jvm.mjs",
     "scripts/consumer-witness-managed.mjs",
+    "scripts/consumer-witness-data.mjs",
   ];
   const identities = await Promise.all(
     files.map(async (file) => {
@@ -73,6 +81,11 @@ export async function captureConsumerWitnessController(
     "java",
     "kotlin",
     "scala",
+    "csharp",
+    "fsharp",
+    "vb",
+    "hcl",
+    "yaml",
   ].includes(family)
     ? "scripts/" + family + "-context-tools.Dockerfile"
     : ".github/workflows/ci.yml";
@@ -147,6 +160,19 @@ export async function captureConsumerWitnessController(
       runtime.compiler === compiler &&
       /Microsoft.NETCore.App 10\.0\.12(?: |$)/.test(runtime.runtimes ?? "");
   }
+  const dataInputs = dataConsumerFamilies.includes(family)
+    ? inspectDataInputs(runtime.dataInputs, family)
+    : null;
+  if (dataInputs) {
+    assert.deepEqual(dataInputs.tool, tool);
+    toolVersionMatched =
+      family === "hcl"
+        ? runtime.terraform?.terraform_version ===
+            inventory.toolVersions.terraform &&
+          tool.sha256 ===
+            "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c"
+        : dataInputs.package.version === inventory.toolVersions.yaml;
+  }
   const nativeTool = ["c", "cpp"].includes(family)
     ? {
         name: family === "c" ? "gcc" : "g++",
@@ -166,6 +192,7 @@ export async function captureConsumerWitnessController(
       nativeTool,
       jvmInputs,
       managedInputs,
+      dataInputs: dataInputs ? normalizeDataInputs(dataInputs) : null,
     }),
   );
   return {
@@ -174,6 +201,7 @@ export async function captureConsumerWitnessController(
     nativeTool,
     jvmInputs,
     managedInputs,
+    dataInputs,
     requirements: required,
     engineSha256: engine.treeSha256,
     harnessSha256: hash(
@@ -184,6 +212,7 @@ export async function captureConsumerWitnessController(
         identities[4],
         identities[5],
         identities[6],
+        identities[7],
       ]),
     ),
     requirementsSha256: hash(JSON.stringify(required)),

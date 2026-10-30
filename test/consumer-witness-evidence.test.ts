@@ -1130,6 +1130,8 @@ test("consumer controller code identity binds selected requirements equally from
       "Original synthetic helper bytes\n",
     "scripts/compiled-engine-evidence.mjs":
       "Original synthetic engine observer bytes\n",
+    "scripts/consumer-witness-data.mjs":
+      "Original synthetic data observer bytes\n",
     "scripts/consumer-witness-managed.mjs":
       "Original synthetic managed observer bytes\n",
     "scripts/consumer-witness-jvm.mjs":
@@ -1241,6 +1243,8 @@ test("consumer controller captures a container family without depending on unrel
       "Synthetic Scala acceptance bytes\n",
     "scripts/compiled-engine-evidence.mjs":
       "Original synthetic engine observer bytes\n",
+    "scripts/consumer-witness-data.mjs":
+      "Original synthetic data observer bytes\n",
     "scripts/consumer-witness-managed.mjs":
       "Original synthetic managed observer bytes\n",
     "scripts/consumer-witness-jvm.mjs":

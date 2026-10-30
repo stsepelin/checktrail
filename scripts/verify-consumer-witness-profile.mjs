@@ -34,13 +34,14 @@ import {
   observeConsumerWitnessTool,
   observeConsumerWitnessJvmInputs,
   observeConsumerWitnessManagedInputs,
+  observeConsumerWitnessDataInputs,
 } from "../dist/test/consumer-witness-fixture.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const profile = process.argv[2];
 assert.equal(
   process.argv.length,
   3,
-  "Usage: verify-consumer-witness-profile.mjs context-go|context-python|context-php|context-rust|context-ruby|context-c|context-cpp|context-java|context-kotlin|context-scala|context-csharp|context-fsharp|context-vb",
+  "Usage: verify-consumer-witness-profile.mjs context-go|context-python|context-php|context-rust|context-ruby|context-c|context-cpp|context-java|context-kotlin|context-scala|context-csharp|context-fsharp|context-vb|context-hcl|context-yaml",
 );
 assert.ok(
   [
@@ -57,6 +58,8 @@ assert.ok(
     "context-csharp",
     "context-fsharp",
     "context-vb",
+    "context-hcl",
+    "context-yaml",
   ].includes(profile),
 );
 const family = profile.slice("context-".length);
@@ -85,6 +88,7 @@ const files = [
   "scripts/consumer-witness-attempts.mjs",
   "scripts/consumer-witness-jvm.mjs",
   "scripts/consumer-witness-managed.mjs",
+  "scripts/consumer-witness-data.mjs",
   ".github/workflows/ci.yml",
   ...([
     "php",
@@ -98,6 +102,8 @@ const files = [
     "csharp",
     "fsharp",
     "vb",
+    "hcl",
+    "yaml",
   ].includes(family)
     ? ["scripts/" + family + "-context-tools.Dockerfile"]
     : []),
@@ -148,6 +154,8 @@ const runtime = {
       csharp: "dotnet",
       fsharp: "dotnet",
       vb: "dotnet",
+      hcl: "terraform",
+      yaml: process.execPath,
     }[family],
     {
       go: ["version"],
@@ -163,6 +171,8 @@ const runtime = {
       csharp: ["--version"],
       fsharp: ["--version"],
       vb: ["--version"],
+      hcl: ["version", "-json"],
+      yaml: ["--version"],
     }[family],
     {
       encoding: "utf8",
@@ -203,6 +213,13 @@ if (["csharp", "fsharp", "vb"].includes(family)) {
     encoding: "utf8",
     timeout: 10000,
   }).trim();
+}
+if (["hcl", "yaml"].includes(family)) {
+  runtime.dataInputs = await observeConsumerWitnessDataInputs(family);
+  if (family === "hcl") {
+    runtime.terraform = JSON.parse(runtime.toolVersion);
+    runtime.toolVersion = runtime.terraform.terraform_version;
+  } else runtime.toolVersion = runtime.dataInputs.package.version;
 }
 const expectedController = await captureConsumerWitnessController(
   root,
@@ -249,7 +266,7 @@ try {
   for (const name of names) {
     assert.match(
       name,
-      /^(?:(?:go|python|php|rust|ruby|c|cpp|java|kotlin|scala|csharp|fsharp|vb)-(?:broken|fixed|near-miss)-(?:canonical|caller-change|restored|repeat)|attempt)-[a-f0-9-]{36}\.json$/,
+      /^(?:(?:go|python|php|rust|ruby|c|cpp|java|kotlin|scala|csharp|fsharp|vb|hcl|yaml)-(?:broken|fixed|near-miss)-(?:canonical|caller-change|restored|repeat)|attempt)-[a-f0-9-]{36}\.json$/,
     );
     const file = path.join(namespace, name),
       stat = await lstat(file, { bigint: true });
@@ -259,7 +276,7 @@ try {
         stat.nlink === 1n &&
         stat.uid === BigInt(process.getuid()) &&
         (stat.mode & 0o777n) === 0o600n &&
-        stat.size <= 262144n,
+        stat.size <= 2097152n,
     );
     const fd = await open(file, constants.O_RDONLY | constants.O_NOFOLLOW);
     let bytes;
@@ -270,11 +287,11 @@ try {
       const chunks = [];
       let count = 0;
       while (true) {
-        const chunk = Buffer.alloc(Math.min(65536, 262145 - count));
+        const chunk = Buffer.alloc(Math.min(65536, 2097153 - count));
         const { bytesRead } = await fd.read(chunk, 0, chunk.length, null);
         if (bytesRead === 0) break;
         count += bytesRead;
-        assert.ok(count <= 262144, "Consumer capture grew beyond byte bound");
+        assert.ok(count <= 2097152, "Consumer capture grew beyond byte bound");
         chunks.push(chunk.subarray(0, bytesRead));
       }
       bytes = Buffer.concat(chunks, count);
@@ -296,6 +313,7 @@ try {
     retainedBytes += bytes.length;
     assert.ok(retainedBytes <= 32 * 1048576);
     const value = JSON.parse(bytes.toString("utf8"));
+    assert.ok(bytes.length <= (value.family === "hcl" ? 2097152 : 262144));
     if (name.startsWith("attempt-"))
       attemptRecords.push({
         file: name,

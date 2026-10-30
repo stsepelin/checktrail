@@ -20,6 +20,12 @@ import { nativeOuterCommandSha256 } from "../src/native-journal-engine.js";
 export type ConsumerVariant = "broken" | "fixed" | "near-miss";
 export type ConsumerPhase =
   "canonical" | "caller-change" | "restored" | "repeat";
+export type ConsumerStage =
+  | "compiler"
+  | "consumer"
+  | "hcl-init"
+  | `hcl-plan-${0 | 1 | 2 | 3 | 4 | 5 | 6}`
+  | `hcl-show-${0 | 1 | 2 | 3 | 4 | 5 | 6}`;
 export type ConsumerFamily =
   | "go"
   | "python"
@@ -33,7 +39,9 @@ export type ConsumerFamily =
   | "scala"
   | "csharp"
   | "fsharp"
-  | "vb";
+  | "vb"
+  | "hcl"
+  | "yaml";
 const hash = (bytes: Uint8Array | string) =>
   createHash("sha256").update(bytes).digest("hex");
 const filesByFamily = {
@@ -50,6 +58,8 @@ const filesByFamily = {
   csharp: ["src/policy/Policy.cs", "src/consumer/Consumer.cs"],
   fsharp: ["src/policy/Policy.fs", "src/consumer/Consumer.fs"],
   vb: ["src/policy/Policy.vb", "src/consumer/Consumer.vb"],
+  hcl: ["policy/rules.tf", "main.tf"],
+  yaml: ["policy.yaml", "extra.yaml"],
 } as const;
 async function bytesIdentity(
   filename: string,
@@ -173,6 +183,7 @@ type ConsumerDirectory = {
 export async function observeConsumerWitnessDirectory(
   directory: string,
   jarsOnly: boolean | "dlls" = false,
+  maximumFiles = 256,
 ): Promise<ConsumerDirectory> {
   assert.equal(await realpath(directory), directory);
   const files: ConsumerDirectory["files"] = [];
@@ -202,7 +213,7 @@ export async function observeConsumerWitnessDirectory(
         if (jarsOnly === "dlls" && !name.endsWith(".dll")) continue;
         const value = await bytesIdentity(filename, 128 * 1048576, true);
         bytes += value.bytes;
-        assert.ok(files.length < 256 && bytes <= 512 * 1048576);
+        assert.ok(files.length < maximumFiles && bytes <= 512 * 1048576);
         files.push({
           path: path.relative(directory, filename).split(path.sep).join("/"),
           ...value,
@@ -244,6 +255,72 @@ export async function observeConsumerWitnessJvmInputs(family: ConsumerFamily) {
             true,
           ),
   };
+}
+export async function observeConsumerWitnessDataInputs(family: ConsumerFamily) {
+  assert.ok(["hcl", "yaml"].includes(family));
+  const executable = await tool(
+    family === "hcl" ? "terraform" : process.execPath,
+  );
+  const base = {
+    profile: "consumer-data-inputs-v1",
+    family,
+    tool: { bytes: executable.bytes, sha256: executable.sha256 },
+  };
+  if (family === "hcl") return base;
+  const url = import.meta.resolve("yaml"),
+    entry = await realpath(fileURLToPath(url));
+  let directory = path.dirname(entry),
+    pkg: { name?: string; version?: string } | null = null;
+  for (let level = 0; level < 5; level++) {
+    try {
+      const value = JSON.parse(
+        await readFile(path.join(directory, "package.json"), "utf8"),
+      );
+      if (value.name === "yaml") {
+        pkg = value;
+        break;
+      }
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    }
+    directory = path.dirname(directory);
+  }
+  assert.ok(pkg);
+  return {
+    ...base,
+    package: {
+      name: pkg.name,
+      version: pkg.version,
+      entry: path.relative(directory, entry).split(path.sep).join("/"),
+      importUrlSha256: hash(url),
+      inventory: await observeConsumerWitnessDirectory(directory, false, 2048),
+    },
+  };
+}
+async function optionalConsumerFile(filename: string, maximum = 33554432) {
+  try {
+    return await bytesIdentity(filename, maximum, true);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
+}
+async function consumerModuleMap(root: string) {
+  const filename = path.join(root, ".terraform/modules/modules.json");
+  try {
+    const before = await bytesIdentity(filename, 65536, true);
+    const bytes = await readFile(filename);
+    assert.ok(
+      bytes.length <= 65536 &&
+        bytes.length === before.bytes &&
+        hash(bytes) === before.sha256,
+    );
+    assert.deepEqual(await bytesIdentity(filename, 65536, true), before);
+    return { ...before, text: bytes.toString("utf8") };
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
 }
 export async function observeConsumerWitnessManagedInputs(
   family: ConsumerFamily,
@@ -364,6 +441,7 @@ async function codeMetadata(family: ConsumerFamily) {
     path.join(harnessRoot, "scripts/consumer-witness-attempts.mjs"),
     path.join(harnessRoot, "scripts/consumer-witness-jvm.mjs"),
     path.join(harnessRoot, "scripts/consumer-witness-managed.mjs"),
+    path.join(harnessRoot, "scripts/consumer-witness-data.mjs"),
   ];
   const identities = await Promise.all(
     inputs.map((filename) => bytesIdentity(filename)),
@@ -387,6 +465,7 @@ async function codeMetadata(family: ConsumerFamily) {
         identities[4],
         identities[5],
         identities[6],
+        identities[7],
       ]),
     ),
     acceptanceSha256: identities[1]!.sha256,
@@ -414,6 +493,8 @@ export async function observeConsumerWitnessTool(family: ConsumerFamily) {
       csharp: "dotnet",
       fsharp: "dotnet",
       vb: "dotnet",
+      hcl: "terraform",
+      yaml: process.execPath,
     }[family],
   );
   return { bytes: observed.bytes, sha256: observed.sha256 };
@@ -452,6 +533,8 @@ export async function beginConsumerWitness(
       csharp: "dotnet",
       fsharp: "dotnet",
       vb: "dotnet",
+      hcl: "terraform",
+      yaml: process.execPath,
     }[family],
   );
   const jvm = ["java", "kotlin", "scala"].includes(family)
@@ -475,6 +558,16 @@ export async function beginConsumerWitness(
         } | null,
       }
     : null;
+  const data = ["hcl", "yaml"].includes(family)
+    ? {
+        inputs: await observeConsumerWitnessDataInputs(family),
+        plan: null as Awaited<ReturnType<typeof optionalConsumerFile>>,
+        plans: [] as NonNullable<
+          Awaited<ReturnType<typeof optionalConsumerFile>>
+        >[],
+        results: [] as boolean[],
+      }
+    : null;
   return {
     root: canonical,
     destination,
@@ -482,7 +575,7 @@ export async function beginConsumerWitness(
     witnessId: randomUUID(),
     storageFailure: null as string | null,
     attempts: [] as {
-      stage: "compiler" | "consumer";
+      stage: ConsumerStage;
       attemptId: string;
       file: string;
       bytes: number;
@@ -491,9 +584,9 @@ export async function beginConsumerWitness(
     resultRecords: new WeakMap<
       ProcessResult,
       {
-        stage: "compiler" | "consumer";
+        stage: ConsumerStage;
         reference: {
-          stage: "compiler" | "consumer";
+          stage: ConsumerStage;
           attemptId: string;
           file: string;
           bytes: number;
@@ -511,6 +604,7 @@ export async function beginConsumerWitness(
     runtimeExecutable: jvm?.runtime ?? selected,
     jvm,
     managed,
+    data,
     compiler: null as ProcessResult | null,
     code: await codeMetadata(family),
   };
@@ -538,7 +632,10 @@ async function publishConsumerCapture(
     "Earlier consumer capture storage failure leaves the witness incomplete",
   );
   const bytes = Buffer.from(JSON.stringify(row) + "\n");
-  assert.ok(bytes.length <= 262144, "Consumer capture byte bound exceeded");
+  assert.ok(
+    bytes.length <= (capture.family === "hcl" ? 2097152 : 262144),
+    "Consumer capture byte bound exceeded",
+  );
   assert.deepEqual(
     await privateDirectory(capture.destination, capture.root),
     capture.storageIdentity,
@@ -571,7 +668,7 @@ async function publishConsumerCapture(
 export async function recordConsumerWitnessAttempt(
   capture: ConsumerCapture | null,
   result: ProcessResult,
-  stage: "compiler" | "consumer" = "consumer",
+  stage: ConsumerStage = "consumer",
 ) {
   if (!capture) return null;
   const previous = capture.resultRecords.get(result);
@@ -580,7 +677,9 @@ export async function recordConsumerWitnessAttempt(
     return previous;
   }
   assert.ok(
-    stage === "consumer" ||
+    (capture.family === "hcl" &&
+      /^hcl-(?:init|(?:plan|show)-[0-6])$/.test(stage)) ||
+      stage === "consumer" ||
       [
         "rust",
         "c",
@@ -692,6 +791,50 @@ export async function recordConsumerWitnessAttempt(
       };
       if (stage === "compiler") capture.managed.generated = generatedAfter;
     }
+    let data = null;
+    if (capture.data) {
+      let inputsAfterSha256 = null,
+        planAfter = null,
+        moduleMap = null;
+      try {
+        inputsAfterSha256 = hash(
+          JSON.stringify(
+            await observeConsumerWitnessDataInputs(capture.family),
+          ),
+        );
+        if (capture.family === "hcl") {
+          planAfter = await optionalConsumerFile(
+            path.join(capture.root, "original.plan"),
+          );
+          moduleMap = await consumerModuleMap(capture.root);
+        }
+      } catch (error) {
+        identityError ??= String(error).slice(0, 1024);
+      }
+      data = {
+        inputsBefore: capture.data.inputs,
+        inputsAfterSha256,
+        planBefore: capture.data.plan,
+        planAfter,
+        moduleMap,
+        args: capture.family === "hcl" ? result.command.args : [],
+        cwd: result.command.cwd,
+      };
+      if (capture.family === "hcl") {
+        capture.data.plan = planAfter;
+        if (/^hcl-plan-[0-6]$/.test(stage) && planAfter)
+          capture.data.plans[Number(stage.at(-1))] = planAfter;
+        if (/^hcl-show-[0-6]$/.test(stage) && result.exitCode === 0) {
+          try {
+            const parsed = JSON.parse(result.stdout);
+            capture.data.results[Number(stage.at(-1))] =
+              parsed.planned_values?.outputs?.result?.value;
+          } catch (error) {
+            identityError ??= String(error).slice(0, 1024);
+          }
+        }
+      }
+    }
     const value = {
       schemaVersion: 1,
       profile: "consumer-process-result-observation-v1",
@@ -716,6 +859,7 @@ export async function recordConsumerWitnessAttempt(
       identityError,
       jvm,
       managed,
+      data,
       output,
       outputState:
         output === null
@@ -784,6 +928,7 @@ export async function finishConsumerWitness(
   result: ProcessResult,
 ) {
   if (!capture) return;
+  if (capture.data) return finishConsumerDataWitness(capture, result);
   assert.equal(
     capture.storageFailure,
     null,
@@ -1016,6 +1161,149 @@ export async function finishConsumerWitness(
     capture.witnessId;
   try {
     await publishConsumerCapture(capture, row, id + ".json");
+  } catch (error) {
+    capture.storageFailure = String(error).slice(0, 1024);
+    throw error;
+  }
+}
+
+async function finishConsumerDataWitness(
+  capture: ConsumerCapture,
+  result: ProcessResult,
+) {
+  assert.ok(capture.data);
+  assert.equal(capture.storageFailure, null);
+  const {
+    dataConsumerRoles,
+    dataConsumerStages,
+    dataConsumerClass,
+    inspectDataWitness,
+  } = await import(
+    new URL("../../scripts/consumer-witness-data.mjs", import.meta.url).href
+  );
+  assert.deepEqual(
+    capture.attempts.map((item) => item.stage),
+    dataConsumerStages(capture.family),
+  );
+  const terminal = capture.resultRecords.get(result);
+  assert.ok(terminal);
+  assert.equal(
+    terminal.reference.attemptId,
+    capture.attempts.at(-1)?.attemptId,
+    "Final data result is not the retained terminal attempt",
+  );
+  const output = completeInvocation(result),
+    after = await snapshot(capture.root, capture.family);
+  assert.deepEqual(after, capture.before);
+  const selected = await bytesIdentity(capture.tool.launch, 256 * 1048576);
+  assert.deepEqual(selected, {
+    bytes: capture.tool.bytes,
+    sha256: capture.tool.sha256,
+  });
+  const current = await codeMetadata(capture.family);
+  for (const field of [
+    "engineSha256",
+    "harnessSha256",
+    "acceptanceSha256",
+    "requirementsSha256",
+    "packageManifestSha256",
+  ] as const)
+    assert.equal(current[field], capture.code[field]);
+  const native = capture.family === "yaml" ? JSON.parse(result.stdout) : null;
+  const row = {
+    schemaVersion: 1,
+    profile: "native-data-consumer-witness-observation-v1",
+    witnessId: capture.witnessId,
+    attempts: capture.attempts,
+    family: capture.family,
+    variant: capture.variant,
+    phase: capture.phase,
+    origin:
+      process.env[
+        "CHECKTRAIL_CONTEXT_" + capture.family.toUpperCase() + "_INSTALLED"
+      ] === "1"
+        ? "installed"
+        : "source",
+    before: capture.before,
+    after,
+    tool: {
+      name: path.basename(capture.tool.launch),
+      bytes: capture.tool.bytes,
+      sha256: capture.tool.sha256,
+      afterSha256: selected.sha256,
+    },
+    invocation: {
+      commandSha256: nativeOuterCommandSha256(result.command),
+      executableSha256: capture.runtimeExecutable.sha256,
+      executableAfterSha256: selected.sha256,
+      argvSha256: hash(JSON.stringify(result.command.args)),
+      exitCode: result.exitCode,
+      errorCode: result.errorCode ?? null,
+      signal: result.signal,
+      timedOut: result.timedOut,
+      cancelled: result.cancelled,
+      truncated: result.truncated,
+      cleanupComplete: true,
+    },
+    output,
+    compiler: null,
+    jvm: null,
+    managed: null,
+    data: {
+      inputs: capture.data.inputs,
+      inputsAfterSha256: hash(
+        JSON.stringify(await observeConsumerWitnessDataInputs(capture.family)),
+      ),
+      evidenceClass: dataConsumerClass(capture.family),
+      roles: dataConsumerRoles,
+      results: capture.family === "hcl" ? capture.data.results : native.roles,
+      plans: capture.family === "hcl" ? capture.data.plans : [],
+      moduleMap:
+        capture.family === "hcl" ? await consumerModuleMap(capture.root) : null,
+      sourceBinding:
+        capture.family === "hcl"
+          ? "controller-filesystem-and-native-plan"
+          : "native-data-source-byte-echo",
+      fullImpactFallback: true,
+      applicationSemanticsVerified: false,
+    },
+    code: {
+      engineSha256: capture.code.engineSha256,
+      harnessSha256: capture.code.harnessSha256,
+      acceptanceSha256: capture.code.acceptanceSha256,
+      requirementsSha256: capture.code.requirementsSha256,
+      packageManifestSha256: capture.code.packageManifestSha256,
+      installedOutsidePackage: capture.code.installedOutsidePackage,
+    },
+    runtime: {
+      osRelease: os.release(),
+      distributionSha256:
+        process.platform === "linux"
+          ? hash(await readFile("/etc/os-release"))
+          : null,
+      imageOS: process.env.ImageOS ?? null,
+      imageVersion: process.env.ImageVersion ?? null,
+      imageLabelsAttested: false,
+      node: process.versions.node,
+      platform: process.platform,
+      architecture: process.arch,
+      nodeExecutableSha256: (
+        await bytesIdentity(process.execPath, 256 * 1048576)
+      ).sha256,
+    },
+    nativeInvoked: true,
+    hostAttestationPerformed: false,
+    gateAComplete: false,
+  };
+  inspectDataWitness(row);
+  try {
+    await publishConsumerCapture(
+      capture,
+      row,
+      [capture.family, capture.variant, capture.phase, capture.witnessId].join(
+        "-",
+      ) + ".json",
+    );
   } catch (error) {
     capture.storageFailure = String(error).slice(0, 1024);
     throw error;

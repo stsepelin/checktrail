@@ -1,4 +1,10 @@
 import {
+  dataConsumerFamilies,
+  dataConsumerClass,
+  normalizeDataInputs,
+  inspectDataWitness,
+} from "./consumer-witness-data.mjs";
+import {
   managedConsumerFamilies,
   inspectManagedWitness,
 } from "./consumer-witness-managed.mjs";
@@ -54,6 +60,8 @@ const sourcePaths = Object.freeze({
   csharp: ["src/policy/Policy.cs", "src/consumer/Consumer.cs"],
   fsharp: ["src/policy/Policy.fs", "src/consumer/Consumer.fs"],
   vb: ["src/policy/Policy.vb", "src/consumer/Consumer.vb"],
+  hcl: ["policy/rules.tf", "main.tf"],
+  yaml: ["policy.yaml", "extra.yaml"],
 });
 /** Selected declarations are checked against the inventory, never treated as executions. */
 export function selectConsumerWitnessRequirements(
@@ -133,16 +141,16 @@ const fileDescriptor = (value) => {
   );
   assert.ok(sha(value.sha256));
 };
-function stream(value) {
+function stream(value, maximum = 65536) {
   assert.ok(
     value &&
       typeof value.base64 === "string" &&
-      value.base64.length <= 4 * Math.ceil(65536 / 3),
+      value.base64.length <= 4 * Math.ceil(maximum / 3),
   );
   assert.ok(
     Number.isSafeInteger(value.bytes) &&
       value.bytes >= 0 &&
-      value.bytes <= 65536,
+      value.bytes <= maximum,
   );
   assert.ok(sha(value.sha256));
   const bytes = Buffer.from(value.base64, "base64");
@@ -177,7 +185,12 @@ export function inspectConsumerWitnesses(
   let retainedBytes = 0;
   for (const row of observations) {
     assert.equal(row?.schemaVersion, 1);
-    assert.equal(row.profile, "original-consumer-witness-observation-v1");
+    assert.equal(
+      row.profile,
+      dataConsumerFamilies.includes(row.family)
+        ? "native-data-consumer-witness-observation-v1"
+        : "original-consumer-witness-observation-v1",
+    );
     const selected = expected.get(row.family);
     assert.ok(selected, "Foreign consumer witness family");
     assert.equal(
@@ -237,10 +250,12 @@ export function inspectConsumerWitnesses(
     const output = row.output;
     assert.equal(output?.profile, "bounded-physical-process-output-v1");
     assert.equal(output.completeForObservedStreams, true);
-    const stdout = stream(output.stdout),
-      stderr = stream(output.stderr);
+    const maximum = row.family === "hcl" ? 1048576 : 65536;
+    const stdout = stream(output.stdout, maximum),
+      stderr = stream(output.stderr, maximum);
     assert.equal(output.observedBytes, stdout.length + stderr.length);
-    assert.equal(stderr.length, 0);
+    if (!dataConsumerFamilies.includes(row.family))
+      assert.equal(stderr.length, 0);
     retainedBytes += stdout.length + stderr.length;
     assert.ok(
       retainedBytes <= 16 * 1048576,
@@ -252,6 +267,20 @@ export function inspectConsumerWitnesses(
         typeof row.runtime.architecture === "string" &&
         typeof row.runtime.node === "string",
     );
+    if (dataConsumerFamilies.includes(row.family)) {
+      inspectDataWitness(row);
+      assert.equal(row.compiler, null);
+      assert.ok(row.jvm === null || row.jvm === undefined);
+      assert.ok(row.managed === null || row.managed === undefined);
+      if (row.phase === "canonical") {
+        const address = JSON.stringify([row.family, row.variant, row.origin]);
+        if (reached.has(address)) {
+          issues.add("duplicate-canonical-witness");
+          duplicates.add(row.family);
+        } else reached.set(address, row);
+      }
+      continue;
+    }
     // Output proof is computed from the actual witness response and independently
     // source-bound by each finite collector; an arbitrary caller label is not proof.
     assert.ok(
@@ -516,6 +545,11 @@ export function inspectConsumerWitnesses(
           row.tool.sha256,
           "Native tool observation differs",
         );
+        if (dataConsumerFamilies.includes(row.family))
+          assert.equal(
+            binding.dataInputsSha256,
+            hash(JSON.stringify(normalizeDataInputs(row.data.inputs))),
+          );
         if (managedConsumerFamilies.includes(row.family)) {
           assert.equal(
             binding.managedInputsSha256,
@@ -554,6 +588,15 @@ export function inspectConsumerWitnesses(
     return {
       family: family.id,
       profile: family.profile,
+      evidenceClass: dataConsumerFamilies.includes(family.id)
+        ? dataConsumerClass(family.id)
+        : "original-native-code-consumer",
+      requiredRoleCount: dataConsumerFamilies.includes(family.id) ? 7 : null,
+      requiredProcessCountPerWitness:
+        family.id === "hcl" ? 15 : family.id === "yaml" ? 1 : null,
+      ...(dataConsumerFamilies.includes(family.id)
+        ? { applicationSemanticsVerified: false, fullImpactFallback: true }
+        : {}),
       requiredWitnesses: variants.length * 2,
       observedWitnesses: variants.length * 2 - missing.length,
       missing,
@@ -751,6 +794,12 @@ export function bindConsumerWitnessController(collection, expected) {
           expected.jvmInputs,
           "JVM dependency bytes differ from the observed native controller",
         );
+      if (dataConsumerFamilies.includes(row.family))
+        assert.deepEqual(
+          normalizeDataInputs(row.data.inputs),
+          normalizeDataInputs(expected.dataInputs),
+          "Actual data tool/parser bytes differ from native controller",
+        );
       if (managedConsumerFamilies.includes(row.family))
         assert.deepEqual(
           row.managed.inputs,
@@ -772,6 +821,9 @@ export function bindConsumerWitnessController(collection, expected) {
         toolVersionMatched: expected.toolVersionMatched,
         nativeTool: expected.nativeTool,
         jvmInputsSha256: row.jvm ? hash(JSON.stringify(row.jvm.inputs)) : null,
+        dataInputsSha256: row.data
+          ? hash(JSON.stringify(normalizeDataInputs(row.data.inputs)))
+          : null,
         managedInputsSha256: row.managed
           ? hash(JSON.stringify(row.managed.inputs))
           : null,

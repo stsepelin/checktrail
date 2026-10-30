@@ -15,10 +15,14 @@ function identity(value, maximum = 1073741824) {
   );
   assert.ok(sha(value.sha256));
 }
-export function inspectJvmDirectory(value, allowEmpty = false) {
+export function inspectJvmDirectory(
+  value,
+  allowEmpty = false,
+  maximumFiles = 256,
+) {
   assert.equal(value?.profile, "bounded-consumer-directory-v1");
   assert.ok(sha(value.directorySha256));
-  assert.ok(Array.isArray(value.files) && value.files.length <= 256);
+  assert.ok(Array.isArray(value.files) && value.files.length <= maximumFiles);
   assert.ok(
     allowEmpty || value.files.length > 0,
     "Generated JVM artifacts are empty",

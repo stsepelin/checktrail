@@ -1,4 +1,10 @@
 import {
+  dataConsumerFamilies,
+  dataConsumerStages,
+  inspectDataAttempt,
+  requireDataAttemptBinding,
+} from "./consumer-witness-data.mjs";
+import {
   inspectManagedAttempt,
   requireManagedAttemptBinding,
 } from "./consumer-witness-managed.mjs";
@@ -118,6 +124,8 @@ export function inspectConsumerAttemptRecords(records) {
         "csharp",
         "fsharp",
         "vb",
+        "hcl",
+        "yaml",
       ].includes(value.family),
     );
     assert.ok(["broken", "fixed", "near-miss"].includes(value.variant));
@@ -128,7 +136,9 @@ export function inspectConsumerAttemptRecords(records) {
       ),
     );
     assert.ok(
-      value.stage === "consumer" ||
+      (value.family === "hcl" &&
+        dataConsumerStages("hcl").includes(value.stage)) ||
+        value.stage === "consumer" ||
         (value.stage === "compiler" &&
           [
             "rust",
@@ -144,6 +154,7 @@ export function inspectConsumerAttemptRecords(records) {
     );
     inspectJvmAttempt(value);
     inspectManagedAttempt(value);
+    inspectDataAttempt(value);
     assert.equal(value.processStartAcknowledgementRetained, false);
     assert.equal(value.gateAComplete, false);
     assert.ok(
@@ -214,7 +225,8 @@ export function inspectConsumerAttemptRecords(records) {
     if (value.output !== null) {
       const output = parseCapturedProcessOutput(value.output);
       assert.ok(
-        output.stdout.bytes <= 65536 && output.stderr.bytes <= 65536,
+        output.stdout.bytes <= (value.family === "hcl" ? 1048576 : 65536) &&
+          output.stderr.bytes <= (value.family === "hcl" ? 1048576 : 65536),
         "Consumer attempt stream exceeds bound",
       );
       assert.equal(
@@ -228,7 +240,7 @@ export function inspectConsumerAttemptRecords(records) {
       "Consumer attempt state differs from native result",
     );
     const bytes = Buffer.from(JSON.stringify(value) + "\n");
-    assert.ok(bytes.length <= 262144);
+    assert.ok(bytes.length <= (value.family === "hcl" ? 2097152 : 262144));
     assert.equal(
       item.bytes,
       bytes.length,
@@ -250,19 +262,22 @@ export function inspectConsumerAttemptRecords(records) {
 }
 export function requireConsumerWitnessAttempts(witness, records, used) {
   assert.ok(uuid(witness.witnessId), "Missing consumer witness identity");
-  const stages = [
-    "rust",
-    "c",
-    "cpp",
-    "java",
-    "kotlin",
-    "scala",
-    "csharp",
-    "fsharp",
-    "vb",
-  ].includes(witness.family)
-    ? ["compiler", "consumer"]
-    : ["consumer"];
+  const stages =
+    witness.family === "hcl"
+      ? dataConsumerStages("hcl")
+      : [
+            "rust",
+            "c",
+            "cpp",
+            "java",
+            "kotlin",
+            "scala",
+            "csharp",
+            "fsharp",
+            "vb",
+          ].includes(witness.family)
+        ? ["compiler", "consumer"]
+        : ["consumer"];
   assert.ok(Array.isArray(witness.attempts));
   assert.deepEqual(
     witness.attempts.map((item) => item.stage),
@@ -302,6 +317,16 @@ export function requireConsumerWitnessAttempts(witness, records, used) {
     assert.equal(value.outputState, "complete");
     assert.equal(value.cleanupComplete, true);
     assert.equal(value.executableAfterSha256, value.executableSha256);
+    if (dataConsumerFamilies.includes(witness.family)) {
+      requireDataAttemptBinding(witness, value);
+      assert.equal(value.executableSha256, witness.tool.sha256);
+      if (witness.family === "hcl")
+        assert.equal(value.argvSha256, hash(JSON.stringify(value.data.args)));
+      if (witness.family === "hcl" && value.stage !== "hcl-show-6") {
+        used.add(reference.attemptId);
+        continue;
+      }
+    }
     const invocation =
       value.stage === "compiler" ? witness.compiler : witness.invocation;
     assert.ok(invocation);
