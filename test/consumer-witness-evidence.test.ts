@@ -1132,6 +1132,10 @@ test("consumer controller code identity binds selected requirements equally from
       "Original synthetic helper bytes\n",
     "scripts/compiled-engine-evidence.mjs":
       "Original synthetic engine observer bytes\n",
+    "scripts/consumer-runtime-selection.mjs":
+      "Synthetic read-only selected-runtime observer\n",
+    "scripts/consumer-witness-project.mjs":
+      "Synthetic project observer bytes\n",
     "scripts/consumer-witness-swift.mjs": "Synthetic Swift observer bytes\n",
     "scripts/consumer-witness-data.mjs":
       "Original synthetic data observer bytes\n",
@@ -1246,6 +1250,10 @@ test("consumer controller captures a container family without depending on unrel
       "Synthetic Scala acceptance bytes\n",
     "scripts/compiled-engine-evidence.mjs":
       "Original synthetic engine observer bytes\n",
+    "scripts/consumer-runtime-selection.mjs":
+      "Synthetic read-only selected-runtime observer\n",
+    "scripts/consumer-witness-project.mjs":
+      "Synthetic project observer bytes\n",
     "scripts/consumer-witness-swift.mjs": "Synthetic Swift observer bytes\n",
     "scripts/consumer-witness-data.mjs":
       "Original synthetic data observer bytes\n",
@@ -1512,6 +1520,24 @@ test(
     assert.equal(
       (await recordConsumerWitnessAttempt(capture, result))!.reference.file,
       files[0],
+    );
+    assert.equal((await readdir(destination)).length, 1);
+    let independent: Awaited<ReturnType<typeof beginConsumerWitness>>;
+    try {
+      process.env.PATH = binaries + path.delimiter + (previousPath ?? "");
+      process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR = destination;
+      independent = await beginConsumerWitness(root, "go", "fixed");
+    } finally {
+      if (previousPath === undefined) delete process.env.PATH;
+      else process.env.PATH = previousPath;
+      if (previousDestination === undefined)
+        delete process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR;
+      else process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR = previousDestination;
+    }
+    assert.ok(independent);
+    await assert.rejects(
+      () => recordConsumerWitnessAttempt(independent, result),
+      /Actual ProcessResult cannot be reused across consumer witness captures/,
     );
     assert.equal((await readdir(destination)).length, 1);
     await assert.rejects(() => finishConsumerWitness(capture, result));

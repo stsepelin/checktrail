@@ -1364,6 +1364,10 @@ test("CI shared consumer observers retain imports and exact selected context pro
     "consumer-witness-managed",
     "consumer-witness-data",
     "consumer-witness-swift",
+    "consumer-witness-project",
+    "consumer-witness-project-controller",
+    "consumer-witness-collection",
+    "consumer-runtime-selection",
   ];
   const actual = await buildNativeInputs({
     workflow: {
@@ -1414,4 +1418,45 @@ test("CI shared consumer observers retain imports and exact selected context pro
     );
   for (const observer of observers)
     assert.deepEqual(actual["scripts/" + observer + ".mjs"], [observer]);
+});
+
+test("CI consumer profile aliases in the shared read-only fixture observer preserve imports without selecting unrelated native profile executions", async () => {
+  const inputs = await buildNativeInputs({
+    workflow: {
+      jobs: {
+        selected: { steps: [{ run: "node scripts/observer.mjs context-go" }] },
+      },
+    },
+    requirements: {
+      "context-go": [{ file: "dist/test/selected.test.js" }],
+      "consumer-impact": [{ file: "dist/test/unrelated-consumer.test.js" }],
+      "javascript-extensions": [
+        { file: "dist/test/unrelated-typescript.test.js" },
+      ],
+    },
+    files: [
+      "scripts/observer.mjs",
+      "test/consumer-witness-fixture.ts",
+      "scripts/consumer-witness-project.mjs",
+      "test/selected.test.ts",
+      "test/unrelated-consumer.test.ts",
+      "test/unrelated-typescript.test.ts",
+    ],
+    readText: async (file: string) =>
+      file === "scripts/observer.mjs"
+        ? 'import "../dist/test/consumer-witness-fixture.js";'
+        : file === "test/consumer-witness-fixture.ts"
+          ? 'const selected=["consumer-impact","javascript-extensions"];import "../scripts/consumer-witness-project.mjs";'
+          : "",
+  });
+  assert.deepEqual(inputs["test/consumer-witness-fixture.ts"], ["selected"]);
+  assert.deepEqual(inputs["scripts/consumer-witness-project.mjs"], [
+    "selected",
+  ]);
+  assert.deepEqual(inputs["test/selected.test.ts"], ["selected"]);
+  assert.equal(Object.hasOwn(inputs, "test/unrelated-consumer.test.ts"), false);
+  assert.equal(
+    Object.hasOwn(inputs, "test/unrelated-typescript.test.ts"),
+    false,
+  );
 });

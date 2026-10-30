@@ -1,3 +1,8 @@
+import { checkConsumerRuntimeSelection } from "./consumer-runtime-selection.mjs";
+import {
+  projectConsumerFamilies,
+  projectConsumerProfiles,
+} from "./consumer-witness-project.mjs";
 import { inspectSwiftInputs } from "./consumer-witness-swift.mjs";
 import {
   dataConsumerFamilies,
@@ -45,9 +50,12 @@ export async function captureConsumerWitnessController(
       "hcl",
       "yaml",
       "swift",
+      "javascript",
+      "typescript",
+      "shared-json",
     ].includes(family),
   );
-  const profile = "context-" + family;
+  const profile = projectConsumerProfiles[family] ?? "context-" + family;
   const required = JSON.parse(
     await readFile(
       path.join(root, "scripts/required-native-tests.json"),
@@ -55,7 +63,12 @@ export async function captureConsumerWitnessController(
     ),
   )[profile];
   assert.equal(required.length, 9);
-  const acceptanceFile = "dist/test/gate-context-" + family + ".test.js";
+  const acceptanceFile =
+    family === "typescript"
+      ? "dist/test/gate-javascript-extensions.test.js"
+      : family === "javascript" || family === "shared-json"
+        ? "dist/test/gate-consumer-impact.test.js"
+        : "dist/test/gate-context-" + family + ".test.js";
   assert.ok(required.every((row) => row.file === acceptanceFile));
   const files = [
     "dist/test/consumer-witness-fixture.js",
@@ -67,6 +80,8 @@ export async function captureConsumerWitnessController(
     "scripts/consumer-witness-managed.mjs",
     "scripts/consumer-witness-data.mjs",
     "scripts/consumer-witness-swift.mjs",
+    "scripts/consumer-witness-project.mjs",
+    "scripts/consumer-runtime-selection.mjs",
   ];
   const identities = await Promise.all(
     files.map(async (file) => {
@@ -75,24 +90,29 @@ export async function captureConsumerWitnessController(
     }),
   );
   const engine = await captureCompiledEngine(path.join(root, "dist/src"));
-  const definition = [
-    "php",
-    "rust",
-    "ruby",
-    "c",
-    "cpp",
-    "java",
-    "kotlin",
-    "scala",
-    "csharp",
-    "fsharp",
-    "vb",
-    "hcl",
-    "yaml",
-    "swift",
-  ].includes(family)
-    ? "scripts/" + family + "-context-tools.Dockerfile"
-    : ".github/workflows/ci.yml";
+  const definition =
+    family === "javascript" || family === "shared-json"
+      ? "scripts/consumer-runtime-tools.Dockerfile"
+      : family === "typescript"
+        ? "scripts/verify-javascript-extensions-container.mjs"
+        : [
+              "php",
+              "rust",
+              "ruby",
+              "c",
+              "cpp",
+              "java",
+              "kotlin",
+              "scala",
+              "csharp",
+              "fsharp",
+              "vb",
+              "hcl",
+              "yaml",
+              "swift",
+            ].includes(family)
+          ? "scripts/" + family + "-context-tools.Dockerfile"
+          : ".github/workflows/ci.yml";
   const definitionSha256 = hash(await readFile(path.join(root, definition)));
   const observedImage =
     runtimeImage.kind === "oci-image-observation"
@@ -186,6 +206,30 @@ export async function captureConsumerWitnessController(
       runtime.swift ===
         "Swift version 6.2 (swift-6.2-RELEASE)\nTarget: aarch64-unknown-linux-gnu";
   }
+  let selectedRuntimeSlot = null;
+  if (projectConsumerFamilies.includes(family)) {
+    if (family === "typescript") {
+      const selected = inventory.runtimeProfiles.find(
+        (value) => value.id === "native-linux-arm64-node22",
+      );
+      toolVersionMatched =
+        runtime.node === selected.node &&
+        runtime.platform === selected.platform &&
+        runtime.architecture === selected.architecture &&
+        runtime.eslint?.available === true &&
+        runtime.library?.available === true;
+      selectedRuntimeSlot = toolVersionMatched ? selected.id : null;
+    } else if (runtime.slot !== null && runtime.slot !== undefined) {
+      selectedRuntimeSlot = checkConsumerRuntimeSelection(
+        inventory,
+        runtime.slot,
+        runtime,
+        runtime.hosted ?? false,
+      ).id;
+      toolVersionMatched = true;
+    } else toolVersionMatched = false;
+    assert.equal(runtime.nodeExecutableSha256, tool.sha256);
+  }
   const nativeTool = ["c", "cpp"].includes(family)
     ? {
         name: family === "c" ? "gcc" : "g++",
@@ -211,6 +255,7 @@ export async function captureConsumerWitnessController(
   );
   return {
     family,
+    selectedRuntimeSlot,
     toolVersionMatched,
     nativeTool,
     jvmInputs,
@@ -229,6 +274,8 @@ export async function captureConsumerWitnessController(
         identities[6],
         identities[7],
         identities[8],
+        identities[9],
+        identities[10],
       ]),
     ),
     requirementsSha256: hash(JSON.stringify(required)),

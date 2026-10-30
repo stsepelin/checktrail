@@ -519,6 +519,8 @@ try {
     "consumer-witness-managed.mjs",
     "consumer-witness-data.mjs",
     "consumer-witness-swift.mjs",
+    "consumer-witness-project.mjs",
+    "consumer-runtime-selection.mjs",
     ...(rubyAcceptanceShard === undefined
       ? []
       : [

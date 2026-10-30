@@ -15,7 +15,8 @@ import path from "node:path";
 import os from "node:os";
 import { fileURLToPath } from "node:url";
 import { parseCapturedProcessOutput } from "../src/process-output.js";
-import type { ProcessResult } from "../src/types.js";
+import type { ProcessResult, Report } from "../src/types.js";
+import { ensureWindowsTaskAccess } from "../src/windows-task-access.js";
 import { nativeOuterCommandSha256 } from "../src/native-journal-engine.js";
 export type ConsumerVariant = "broken" | "fixed" | "near-miss";
 export type ConsumerPhase =
@@ -43,7 +44,11 @@ export type ConsumerFamily =
   | "vb"
   | "hcl"
   | "yaml"
-  | "swift";
+  | "swift"
+  | "javascript"
+  | "typescript"
+  | "shared-json";
+const recordedConsumerResults = new WeakSet<ProcessResult>();
 const hash = (bytes: Uint8Array | string) =>
   createHash("sha256").update(bytes).digest("hex");
 const filesByFamily = {
@@ -63,7 +68,74 @@ const filesByFamily = {
   hcl: ["policy/rules.tf", "main.tf"],
   yaml: ["policy.yaml", "extra.yaml"],
   swift: ["src/policy/Policy.swift", "src/consumer/Consumer.swift"],
+  javascript: [
+    "checktrail.json",
+    "lib/policy.json",
+    "lib/value.js",
+    "lib/value.test.js",
+    "other/value.test.js",
+    "app/value.test.js",
+    "site/value.test.js",
+    "app/package.json",
+    "lib/package.json",
+    "other/package.json",
+    "site/package.json",
+  ],
+  "shared-json": [
+    "checktrail.json",
+    "lib/policy.json",
+    "lib/value.js",
+    "lib/value.test.js",
+    "other/value.test.js",
+    "app/value.test.js",
+    "site/value.test.js",
+    "app/package.json",
+    "lib/package.json",
+    "other/package.json",
+    "site/package.json",
+  ],
+  typescript: [
+    "package.json",
+    "checktrail.json",
+    "checktrail.javascript.json",
+    "esm hook.mjs",
+    "cjs hook.cjs",
+    "esm.test.mts",
+    "cjs.test.cts",
+    "lib/index.ts",
+    "lib/value.ts",
+    "use.ts",
+    "processed.js",
+    "eslint.config.mjs",
+  ],
 } as const;
+const isProjectConsumer = (family: ConsumerFamily) =>
+  ["javascript", "typescript", "shared-json"].includes(family);
+const consumerProfile = (family: ConsumerFamily) =>
+  family === "typescript"
+    ? "javascript-extensions"
+    : family === "javascript" || family === "shared-json"
+      ? "consumer-impact"
+      : "context-" + family;
+const consumerAcceptanceFile = (family: ConsumerFamily) =>
+  family === "typescript"
+    ? "gate-javascript-extensions.test.js"
+    : family === "javascript" || family === "shared-json"
+      ? "gate-consumer-impact.test.js"
+      : "gate-context-" + family + ".test.js";
+function consumerOrigin(family: ConsumerFamily) {
+  return (
+    family === "javascript" || family === "shared-json"
+      ? process.env.CHECKTRAIL_CONSUMER_WHOLE_INSTALLED === "1"
+      : family === "typescript"
+        ? process.env.CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED === "1"
+        : process.env[
+            "CHECKTRAIL_CONTEXT_" + family.toUpperCase() + "_INSTALLED"
+          ] === "1"
+  )
+    ? "installed"
+    : "source";
+}
 async function bytesIdentity(
   filename: string,
   maximum = 1048576,
@@ -161,10 +233,12 @@ async function privateDirectory(filename: string, root: string) {
   assert.ok(
     stat.isDirectory() &&
       !stat.isSymbolicLink() &&
-      stat.uid === process.getuid?.() &&
-      (stat.mode & 0o777) === 0o700,
+      (process.platform === "win32" ||
+        (stat.uid === process.getuid?.() && (stat.mode & 0o777) === 0o700)),
     "Witness capture requires existing private operator storage",
   );
+  if (process.platform === "win32")
+    ensureWindowsTaskAccess(filename, "directory", false);
   assert.ok(outside(root, filename));
   assert.ok(
     outside(
@@ -181,7 +255,7 @@ async function privateDirectory(filename: string, root: string) {
 }
 async function tool(executable: string) {
   assert.ok(
-    process.platform !== "win32",
+    process.platform !== "win32" || executable === process.execPath,
     "Selected native consumer collector requires a POSIX tool runtime",
   );
   const candidates = path.isAbsolute(executable)
@@ -499,9 +573,7 @@ async function codeMetadata(family: ConsumerFamily) {
   const packageRoot = path.dirname(path.dirname(enginePath));
   const inputs = [
     fileURLToPath(import.meta.url),
-    fileURLToPath(
-      new URL("gate-context-" + family + ".test.js", import.meta.url),
-    ),
+    fileURLToPath(new URL(consumerAcceptanceFile(family), import.meta.url)),
     path.join(harnessRoot, "scripts/required-native-tests.json"),
     path.join(harnessRoot, "scripts/compiled-engine-evidence.mjs"),
     path.join(harnessRoot, "scripts/consumer-witness-attempts.mjs"),
@@ -509,12 +581,14 @@ async function codeMetadata(family: ConsumerFamily) {
     path.join(harnessRoot, "scripts/consumer-witness-managed.mjs"),
     path.join(harnessRoot, "scripts/consumer-witness-data.mjs"),
     path.join(harnessRoot, "scripts/consumer-witness-swift.mjs"),
+    path.join(harnessRoot, "scripts/consumer-witness-project.mjs"),
+    path.join(harnessRoot, "scripts/consumer-runtime-selection.mjs"),
   ];
   const identities = await Promise.all(
     inputs.map((filename) => bytesIdentity(filename)),
   );
   const requirements = JSON.parse(await readFile(inputs[2]!, "utf8"))[
-    "context-" + family
+    consumerProfile(family)
   ];
   return {
     engine,
@@ -534,6 +608,8 @@ async function codeMetadata(family: ConsumerFamily) {
         identities[6],
         identities[7],
         identities[8],
+        identities[9],
+        identities[10],
       ]),
     ),
     acceptanceSha256: identities[1]!.sha256,
@@ -564,6 +640,9 @@ export async function observeConsumerWitnessTool(family: ConsumerFamily) {
       hcl: "terraform",
       yaml: process.execPath,
       swift: "swiftc",
+      javascript: process.execPath,
+      typescript: process.execPath,
+      "shared-json": process.execPath,
     }[family],
   );
   return { bytes: observed.bytes, sha256: observed.sha256 };
@@ -605,6 +684,9 @@ export async function beginConsumerWitness(
       hcl: "terraform",
       yaml: process.execPath,
       swift: "swiftc",
+      javascript: process.execPath,
+      typescript: process.execPath,
+      "shared-json": process.execPath,
     }[family],
   );
   const jvm = ["java", "kotlin", "scala"].includes(family)
@@ -720,7 +802,10 @@ async function publishConsumerCapture(
   );
   const bytes = Buffer.from(JSON.stringify(row) + "\n");
   assert.ok(
-    bytes.length <= (capture.family === "hcl" ? 2097152 : 262144),
+    bytes.length <=
+      (capture.family === "hcl" || isProjectConsumer(capture.family)
+        ? 2097152
+        : 262144),
     "Consumer capture byte bound exceeded",
   );
   assert.deepEqual(
@@ -733,6 +818,8 @@ async function publishConsumerCapture(
   let fd;
   try {
     fd = await open(pending, "wx", 0o600);
+    if (process.platform === "win32")
+      ensureWindowsTaskAccess(pending, "file", true);
     await fd.writeFile(bytes);
     await fd.sync();
     await fd.close();
@@ -756,6 +843,11 @@ export async function recordConsumerWitnessAttempt(
   capture: ConsumerCapture | null,
   result: ProcessResult,
   stage: ConsumerStage = "consumer",
+  project: {
+    scenario: string;
+    checkIndex: number;
+    reportSha256: string;
+  } | null = null,
 ) {
   if (!capture) return null;
   const previous = capture.resultRecords.get(result);
@@ -782,6 +874,11 @@ export async function recordConsumerWitnessAttempt(
       ].includes(capture.family),
   );
   try {
+    assert.equal(
+      recordedConsumerResults.has(result),
+      false,
+      "Actual ProcessResult cannot be reused across consumer witness captures",
+    );
     const { consumerAttemptState } = await import(
       new URL("../../scripts/consumer-witness-attempts.mjs", import.meta.url)
         .href
@@ -796,10 +893,19 @@ export async function recordConsumerWitnessAttempt(
     }
     let after: Awaited<ReturnType<typeof snapshot>> | null = null;
     let executableAfterSha256: string | null = null;
-    const executable =
+    let executable =
       stage === "compiler" || stage === "compiler-link"
         ? capture.tool
         : capture.runtimeExecutable;
+    if (isProjectConsumer(capture.family)) {
+      try {
+        assert.ok(path.isAbsolute(result.command.executable));
+        executable = await tool(result.command.executable);
+      } catch (error) {
+        identityError ??= String(error).slice(0, 1024);
+      }
+    }
+
     try {
       after = await snapshot(capture.root, capture.family);
       executableAfterSha256 = (
@@ -975,12 +1081,7 @@ export async function recordConsumerWitnessAttempt(
       witnessId: capture.witnessId,
       family: capture.family,
       variant: capture.variant,
-      origin:
-        process.env[
-          "CHECKTRAIL_CONTEXT_" + capture.family.toUpperCase() + "_INSTALLED"
-        ] === "1"
-          ? "installed"
-          : "source",
+      origin: consumerOrigin(capture.family),
       phase: capture.phase,
       stage,
       before: capture.before,
@@ -994,6 +1095,7 @@ export async function recordConsumerWitnessAttempt(
       managed,
       swift,
       data,
+      project,
       output,
       outputState:
         output === null
@@ -1037,6 +1139,7 @@ export async function recordConsumerWitnessAttempt(
     capture.attempts.push(reference);
     const observed = { stage, reference, value };
     capture.resultRecords.set(result, observed);
+    recordedConsumerResults.add(result);
     return observed;
   } catch (error) {
     capture.storageFailure = String(error).slice(0, 1024);
@@ -1226,12 +1329,7 @@ export async function finishConsumerWitness(
     family: capture.family,
     variant: capture.variant,
     phase: capture.phase,
-    origin:
-      process.env[
-        "CHECKTRAIL_CONTEXT_" + capture.family.toUpperCase() + "_INSTALLED"
-      ] === "1"
-        ? "installed"
-        : "source",
+    origin: consumerOrigin(capture.family),
     before: capture.before,
     after,
     tool: {
@@ -1390,12 +1488,7 @@ async function finishConsumerDataWitness(
     family: capture.family,
     variant: capture.variant,
     phase: capture.phase,
-    origin:
-      process.env[
-        "CHECKTRAIL_CONTEXT_" + capture.family.toUpperCase() + "_INSTALLED"
-      ] === "1"
-        ? "installed"
-        : "source",
+    origin: consumerOrigin(capture.family),
     before: capture.before,
     after,
     tool: {
@@ -1468,6 +1561,186 @@ async function finishConsumerDataWitness(
     gateAComplete: false,
   };
   inspectDataWitness(row);
+  try {
+    await publishConsumerCapture(
+      capture,
+      row,
+      [capture.family, capture.variant, capture.phase, capture.witnessId].join(
+        "-",
+      ) + ".json",
+    );
+  } catch (error) {
+    capture.storageFailure = String(error).slice(0, 1024);
+    throw error;
+  }
+}
+
+/** Retain every actual report process before the original callback can assert an outcome. */
+export async function finishConsumerProjectWitness(
+  capture: ConsumerCapture | null,
+  report: Report,
+  scenario: string,
+) {
+  if (!capture) return;
+  assert.ok(isProjectConsumer(capture.family));
+  assert.equal(capture.storageFailure, null);
+  const project = {
+    scenario,
+    evidenceClass: "controller-source-bound-native-project-reports",
+    applicationSemanticsVerified: false,
+    nativeModuleLoadsTraced: false,
+    sourceBinding: "actual-controller-files-and-native-report",
+    sourceFingerprint: report.sourceFingerprint,
+    finalSourceFingerprint: report.finalSourceFingerprint,
+    sourceChanged: report.sourceChanged,
+    sourceError: report.sourceError,
+    outcome: report.outcome,
+    selectionMode: report.selection?.mode ?? null,
+    checks: report.checks.map((check) => ({
+      project: check.project,
+      id: check.id,
+      status: check.status,
+      scope: check.scope,
+      tests: check.tests ?? null,
+    })),
+  };
+  const retained = [];
+  let terminal: ProcessResult | null = null;
+  for (const [index, check] of report.checks.entries())
+    for (const result of check.processes) {
+      const observed = await recordConsumerWitnessAttempt(
+        capture,
+        result,
+        "consumer",
+        {
+          scenario,
+          checkIndex: index,
+          reportSha256: hash(JSON.stringify(project)),
+        },
+      );
+      assert.ok(observed);
+      retained.push(observed.value);
+      terminal = result;
+    }
+  assert.ok(
+    terminal,
+    "Native project validation returned no physical process results",
+  );
+  const output = parseCapturedProcessOutput(terminal.capturedOutput);
+  assert.equal(hash(terminal.stdout), output.stdout.sha256);
+  assert.equal(hash(terminal.stderr), output.stderr.sha256);
+  const after = await snapshot(capture.root, capture.family);
+  assert.deepEqual(after, capture.before);
+  const selected = await bytesIdentity(capture.tool.launch, 256 * 1048576);
+  assert.deepEqual(selected, {
+    bytes: capture.tool.bytes,
+    sha256: capture.tool.sha256,
+  });
+  const current = await codeMetadata(capture.family);
+  for (const field of [
+    "engineSha256",
+    "harnessSha256",
+    "acceptanceSha256",
+    "requirementsSha256",
+    "packageManifestSha256",
+  ] as const)
+    assert.equal(current[field], capture.code[field]);
+  const scope = JSON.parse(
+    await readFile(
+      path.join(current.harnessRoot, "docs/gate-a-profiles.v1.json"),
+      "utf8",
+    ),
+  );
+  const slots = scope.runtimeProfiles.filter(
+    (value: { node: string; platform: string; architecture: string }) =>
+      value.node === process.versions.node &&
+      value.platform === process.platform &&
+      value.architecture === process.arch,
+  );
+  assert.ok(slots.length <= 1);
+  const selectedSlot =
+    capture.family === "typescript"
+      ? (slots[0]?.id ?? null)
+      : process.env.CHECKTRAIL_CONSUMER_RUNTIME_SLOT || null;
+  if (selectedSlot !== null)
+    assert.equal(
+      slots[0]?.id,
+      selectedSlot,
+      "Selected project runtime differs from actual process",
+    );
+
+  const row = {
+    schemaVersion: 1,
+    profile: "native-project-consumer-witness-observation-v1",
+    witnessId: capture.witnessId,
+    attempts: capture.attempts,
+    family: capture.family,
+    variant: capture.variant,
+    phase: capture.phase,
+    origin: consumerOrigin(capture.family),
+    before: capture.before,
+    after,
+    tool: {
+      name: path.basename(capture.tool.launch),
+      bytes: capture.tool.bytes,
+      sha256: capture.tool.sha256,
+      afterSha256: selected.sha256,
+    },
+    invocation: {
+      commandSha256: nativeOuterCommandSha256(terminal.command),
+      executableSha256: capture.tool.sha256,
+      executableAfterSha256: selected.sha256,
+      argvSha256: hash(JSON.stringify(terminal.command.args)),
+      exitCode: terminal.exitCode,
+      errorCode: terminal.errorCode ?? null,
+      signal: terminal.signal,
+      timedOut: terminal.timedOut,
+      cancelled: terminal.cancelled,
+      truncated: terminal.truncated,
+      cleanupComplete:
+        terminal.errorCode === undefined &&
+        (terminal.exitCode !== null || terminal.signal !== null),
+    },
+    output,
+    compiler: null,
+    compilerLink: null,
+    jvm: null,
+    managed: null,
+    swift: null,
+    project,
+    code: {
+      engineSha256: capture.code.engineSha256,
+      harnessSha256: capture.code.harnessSha256,
+      acceptanceSha256: capture.code.acceptanceSha256,
+      requirementsSha256: capture.code.requirementsSha256,
+      packageManifestSha256: capture.code.packageManifestSha256,
+      installedOutsidePackage: capture.code.installedOutsidePackage,
+    },
+    runtime: {
+      slot: selectedSlot,
+      osRelease: os.release(),
+      distributionSha256:
+        process.platform === "linux"
+          ? hash(await readFile("/etc/os-release"))
+          : null,
+      imageOS: process.env.ImageOS ?? null,
+      imageVersion: process.env.ImageVersion ?? null,
+      imageLabelsAttested: false,
+      node: process.versions.node,
+      platform: process.platform,
+      architecture: process.arch,
+      nodeExecutableSha256: (
+        await bytesIdentity(process.execPath, 256 * 1048576)
+      ).sha256,
+    },
+    nativeInvoked: true,
+    hostAttestationPerformed: false,
+    gateAComplete: false,
+  };
+  const { inspectProjectWitness } = await import(
+    new URL("../../scripts/consumer-witness-project.mjs", import.meta.url).href
+  );
+  inspectProjectWitness(row, retained);
   try {
     await publishConsumerCapture(
       capture,

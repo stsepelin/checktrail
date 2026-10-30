@@ -26,6 +26,10 @@ import {
   assertConsumerExecution,
   assertNoConsumerMarker,
 } from "./consumer-impact-fixture.js";
+import {
+  beginConsumerWitness,
+  finishConsumerProjectWitness,
+} from "./consumer-witness-fixture.js";
 const cli = fileURLToPath(new URL("../src/cli.js", import.meta.url));
 const executionTimeout = process.platform === "win32" ? 30000 : 10000;
 
@@ -36,15 +40,37 @@ test("consumer-impact broken acceptance", async (t) => {
   ]) {
     const { root, base } = await consumerFixture(t, dependencies);
     await changeConsumerPolicy(root, "prefix");
+    const fullCapture = await beginConsumerWitness(
+      root,
+      "javascript",
+      "broken",
+      dependencies.length === 2 ? "canonical" : "repeat",
+    );
     const full = await validate(root, {
       trusted: true,
       timeoutMs: executionTimeout,
     });
+    await finishConsumerProjectWitness(
+      fullCapture,
+      full,
+      dependencies.length === 2 ? "workspace" : "unknown-map",
+    );
+    const selectedCapture = await beginConsumerWitness(
+      root,
+      "shared-json",
+      "broken",
+      dependencies.length === 2 ? "canonical" : "repeat",
+    );
     const selected = await validate(root, {
       trusted: true,
       base,
       timeoutMs: executionTimeout,
     });
+    await finishConsumerProjectWitness(
+      selectedCapture,
+      selected,
+      dependencies.length === 2 ? "workspace" : "unknown-map",
+    );
     assertConsumerExecution(full, "failed", consumerProjects);
     assertConsumerExecution(
       selected,
@@ -76,15 +102,23 @@ test("consumer-impact broken acceptance", async (t) => {
 test("consumer-impact fixed acceptance", async (t) => {
   const { root, base } = await consumerFixture(t);
   await changeConsumerPolicy(root, "fixed", "equivalent repair");
+  const fullCapture = await beginConsumerWitness(root, "javascript", "fixed");
   const full = await validate(root, {
     trusted: true,
     timeoutMs: executionTimeout,
   });
+  await finishConsumerProjectWitness(fullCapture, full, "workspace");
+  const selectedCapture = await beginConsumerWitness(
+    root,
+    "shared-json",
+    "fixed",
+  );
   const selected = await validate(root, {
     trusted: true,
     base,
     timeoutMs: executionTimeout,
   });
+  await finishConsumerProjectWitness(selectedCapture, selected, "workspace");
   assertConsumerExecution(full, "passed", consumerProjects);
   assertConsumerExecution(selected, "passed", ["app", "lib", "site"]);
   assert.ok(selected.checks.length < full.checks.length);
@@ -105,15 +139,27 @@ test("consumer-impact near-miss acceptance", async (t) => {
     "fixed",
     "grantToken is outside the grant family",
   );
+  const fullCapture = await beginConsumerWitness(
+    root,
+    "javascript",
+    "near-miss",
+  );
   const full = await validate(root, {
     trusted: true,
     timeoutMs: executionTimeout,
   });
+  await finishConsumerProjectWitness(fullCapture, full, "workspace");
+  const selectedCapture = await beginConsumerWitness(
+    root,
+    "shared-json",
+    "near-miss",
+  );
   const selected = await validate(root, {
     trusted: true,
     base,
     timeoutMs: executionTimeout,
   });
+  await finishConsumerProjectWitness(selectedCapture, selected, "workspace");
   assertConsumerExecution(full, "passed", consumerProjects);
   assertConsumerExecution(selected, "passed", ["app", "lib", "site"]);
   for (const suffix of [

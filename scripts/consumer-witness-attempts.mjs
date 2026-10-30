@@ -1,4 +1,10 @@
 import {
+  projectConsumerFamilies,
+  projectConsumerChecks,
+  inspectProjectAttempt,
+  inspectProjectNativeCheck,
+} from "./consumer-witness-project.mjs";
+import {
   inspectSwiftAttempt,
   requireSwiftAttemptBinding,
 } from "./consumer-witness-swift.mjs";
@@ -95,7 +101,7 @@ export function consumerAttemptState(value) {
 /** Validate retained ProcessResult observations, without manufacturing PID or stream-order evidence. */
 export function inspectConsumerAttemptRecords(records) {
   assert.ok(
-    Array.isArray(records) && records.length <= 512,
+    Array.isArray(records) && records.length <= 2048,
     "Consumer attempt inventory exceeds bound",
   );
   const found = new Map();
@@ -132,6 +138,9 @@ export function inspectConsumerAttemptRecords(records) {
         "hcl",
         "yaml",
         "swift",
+        "javascript",
+        "typescript",
+        "shared-json",
       ].includes(value.family),
     );
     assert.ok(["broken", "fixed", "near-miss"].includes(value.variant));
@@ -164,6 +173,7 @@ export function inspectConsumerAttemptRecords(records) {
     inspectManagedAttempt(value);
     inspectDataAttempt(value);
     inspectSwiftAttempt(value);
+    inspectProjectAttempt(value);
     assert.equal(value.processStartAcknowledgementRetained, false);
     assert.equal(value.gateAComplete, false);
     assert.ok(
@@ -234,8 +244,16 @@ export function inspectConsumerAttemptRecords(records) {
     if (value.output !== null) {
       const output = parseCapturedProcessOutput(value.output);
       assert.ok(
-        output.stdout.bytes <= (value.family === "hcl" ? 1048576 : 65536) &&
-          output.stderr.bytes <= (value.family === "hcl" ? 1048576 : 65536),
+        output.stdout.bytes <=
+          (value.family === "hcl" ||
+          projectConsumerFamilies.includes(value.family)
+            ? 1048576
+            : 65536) &&
+          output.stderr.bytes <=
+            (value.family === "hcl" ||
+            projectConsumerFamilies.includes(value.family)
+              ? 1048576
+              : 65536),
         "Consumer attempt stream exceeds bound",
       );
       assert.equal(
@@ -249,7 +267,13 @@ export function inspectConsumerAttemptRecords(records) {
       "Consumer attempt state differs from native result",
     );
     const bytes = Buffer.from(JSON.stringify(value) + "\n");
-    assert.ok(bytes.length <= (value.family === "hcl" ? 2097152 : 262144));
+    assert.ok(
+      bytes.length <=
+        (value.family === "hcl" ||
+        projectConsumerFamilies.includes(value.family)
+          ? 2097152
+          : 262144),
+    );
     assert.equal(
       item.bytes,
       bytes.length,
@@ -271,8 +295,14 @@ export function inspectConsumerAttemptRecords(records) {
 }
 export function requireConsumerWitnessAttempts(witness, records, used) {
   assert.ok(uuid(witness.witnessId), "Missing consumer witness identity");
-  const stages =
-    witness.family === "swift"
+  const stages = projectConsumerFamilies.includes(witness.family)
+    ? projectConsumerChecks(
+        witness.family,
+        witness.variant,
+        witness.project.scenario,
+        witness.phase,
+      ).map(() => "consumer")
+    : witness.family === "swift"
       ? ["compiler", "compiler-link", "consumer"]
       : witness.family === "hcl"
         ? dataConsumerStages("hcl")
@@ -295,7 +325,7 @@ export function requireConsumerWitnessAttempts(witness, records, used) {
     stages,
     "Consumer attempt stage inventory differs",
   );
-  for (const reference of witness.attempts) {
+  for (const [checkIndex, reference] of witness.attempts.entries()) {
     const item = records.get(reference.attemptId);
     assert.ok(item, "Missing private consumer attempt record");
     assert.equal(
@@ -320,11 +350,20 @@ export function requireConsumerWitnessAttempts(witness, records, used) {
     assert.deepEqual(value.before, witness.before);
     assert.deepEqual(value.after, witness.after);
     assert.equal(value.identityError, null);
-    assert.equal(
-      value.state,
-      "passed",
-      "Failed or unavailable native attempt cannot qualify a witness",
-    );
+    if (projectConsumerFamilies.includes(witness.family))
+      inspectProjectNativeCheck(
+        witness,
+        checkIndex,
+        witness.project.checks[checkIndex],
+        value,
+      );
+    else {
+      assert.equal(
+        value.state,
+        "passed",
+        "Failed or unavailable native attempt cannot qualify a witness",
+      );
+    }
     assert.equal(value.outputState, "complete");
     assert.equal(value.cleanupComplete, true);
     assert.equal(value.executableAfterSha256, value.executableSha256);
@@ -337,6 +376,13 @@ export function requireConsumerWitnessAttempts(witness, records, used) {
         used.add(reference.attemptId);
         continue;
       }
+    }
+    if (
+      projectConsumerFamilies.includes(witness.family) &&
+      checkIndex !== witness.attempts.length - 1
+    ) {
+      used.add(reference.attemptId);
+      continue;
     }
     requireSwiftAttemptBinding(witness, value);
     const invocation =

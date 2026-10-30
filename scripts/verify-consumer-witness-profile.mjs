@@ -92,6 +92,8 @@ const files = [
   "scripts/consumer-witness-managed.mjs",
   "scripts/consumer-witness-data.mjs",
   "scripts/consumer-witness-swift.mjs",
+  "scripts/consumer-witness-project.mjs",
+  "scripts/consumer-runtime-selection.mjs",
   ".github/workflows/ci.yml",
   ...([
     "php",

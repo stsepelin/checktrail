@@ -23,9 +23,21 @@
           "name": "consumer-impact near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": [
+        "checktrail.json",
+        "lib/policy.json",
+        "lib/value.js",
+        "lib/value.test.js",
+        "other/value.test.js",
+        "app/value.test.js",
+        "site/value.test.js",
+        "app/package.json",
+        "lib/package.json",
+        "other/package.json",
+        "site/package.json"
+      ]
     },
     {
       "id": "typescript",
@@ -46,9 +58,22 @@
           "name": "javascript-extensions near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": [
+        "package.json",
+        "checktrail.json",
+        "checktrail.javascript.json",
+        "esm hook.mjs",
+        "cjs hook.cjs",
+        "esm.test.mts",
+        "cjs.test.cts",
+        "lib/index.ts",
+        "lib/value.ts",
+        "use.ts",
+        "processed.js",
+        "eslint.config.mjs"
+      ]
     },
     {
       "id": "python",
@@ -437,9 +462,21 @@
           "name": "consumer-impact near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": [
+        "checktrail.json",
+        "lib/policy.json",
+        "lib/value.js",
+        "lib/value.test.js",
+        "other/value.test.js",
+        "app/value.test.js",
+        "site/value.test.js",
+        "app/package.json",
+        "lib/package.json",
+        "other/package.json",
+        "site/package.json"
+      ]
     }
   ],
   "gateAComplete": false,

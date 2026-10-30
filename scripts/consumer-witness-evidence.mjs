@@ -1,3 +1,11 @@
+import {
+  projectConsumerFamilies,
+  projectConsumerPaths,
+  projectConsumerScenarios,
+  projectConsumerLogicalWitnesses,
+  projectConsumerObservationKey,
+  inspectProjectWitness,
+} from "./consumer-witness-project.mjs";
 import { inspectSwiftWitness } from "./consumer-witness-swift.mjs";
 import {
   dataConsumerFamilies,
@@ -64,6 +72,7 @@ const sourcePaths = Object.freeze({
   hcl: ["policy/rules.tf", "main.tf"],
   yaml: ["policy.yaml", "extra.yaml"],
   swift: ["src/policy/Policy.swift", "src/consumer/Consumer.swift"],
+  ...projectConsumerPaths,
 });
 /** Selected declarations are checked against the inventory, never treated as executions. */
 export function selectConsumerWitnessRequirements(
@@ -161,6 +170,126 @@ function stream(value, maximum = 65536) {
   assert.equal(hash(bytes), value.sha256);
   return bytes;
 }
+function consumerBindingReason(row, binding, family, inventory) {
+  const origin = row.origin;
+  // These are observations from the trusted native controller, not host
+  // attestations. Neither a version label nor an environment slot can fill them.
+  const observed = row.runtime;
+  const declared = inventory.runtimeProfiles.find(
+    (runtime) => runtime.id === binding.slot,
+  );
+  if (
+    !declared ||
+    (family.runtime !== "engine-matrix" && family.runtime !== binding.slot) ||
+    !isDeepStrictEqual(
+      [observed.node, observed.platform, observed.architecture],
+      [declared.node, declared.platform, declared.architecture],
+    )
+  ) {
+    return "unselected-runtime";
+  }
+  if (binding.toolVersionMatched !== true) {
+    return "unselected-tool-version";
+  }
+  const image = binding.runtimeImage;
+  if (
+    !image ||
+    (image.kind === "oci-image-observation"
+      ? !/^sha256:[a-f0-9]{64}$/.test(image.id ?? "") ||
+        !sha(image.definitionSha256)
+      : image.kind === "hosted-runner-metadata"
+        ? (projectConsumerFamilies.includes(row.family)
+            ? observed.platform === "darwin"
+              ? image.imageOS !== "macos26"
+              : observed.platform === "win32"
+                ? !/^win25(?:-vs2026)?$/.test(image.imageOS ?? "")
+                : image.imageOS !== "ubuntu24"
+            : image.imageOS !== "ubuntu24") ||
+          !/^20[0-9]{6}\.[0-9]+\.[0-9]+$/.test(image.imageVersion ?? "") ||
+          (observed.platform === "linux"
+            ? !sha(image.distributionSha256)
+            : image.distributionSha256 !== null) ||
+          image.metadataAttested !== false
+        : true)
+  ) {
+    return "native-image-unobserved";
+  }
+  for (const key of [
+    "engineSha256",
+    "harnessSha256",
+    "requirementsSha256",
+    "acceptanceSha256",
+    "toolInputsSha256",
+    "packageManifestSha256",
+  ])
+    assert.ok(sha(binding[key]), "Missing native controller identity: " + key);
+  assert.equal(
+    binding.observationSha256,
+    hash(JSON.stringify(row)),
+    "Foreign witness controller binding",
+  );
+  for (const field of [
+    "engineSha256",
+    "harnessSha256",
+    "requirementsSha256",
+    "acceptanceSha256",
+    "packageManifestSha256",
+  ])
+    assert.equal(
+      binding[field],
+      row.code?.[field],
+      "Source/installed witness code binding differs: " + field,
+    );
+  assert.equal(row.code.installedOutsidePackage, origin === "installed");
+  assert.equal(
+    binding.toolExecutableSha256,
+    row.tool.sha256,
+    "Native tool observation differs",
+  );
+  if (dataConsumerFamilies.includes(row.family))
+    assert.equal(
+      binding.dataInputsSha256,
+      hash(JSON.stringify(normalizeDataInputs(row.data.inputs))),
+    );
+  if (row.family === "swift")
+    assert.equal(
+      binding.swiftInputsSha256,
+      hash(JSON.stringify(row.swift.inputs)),
+    );
+  if (managedConsumerFamilies.includes(row.family)) {
+    assert.equal(
+      binding.managedInputsSha256,
+      hash(JSON.stringify(row.managed.inputs)),
+    );
+    assert.equal(
+      binding.generatedManifestSha256,
+      row.managed.generated.manifestSha256,
+    );
+  }
+  if (jvmConsumerFamilies.includes(row.family)) {
+    assert.equal(binding.jvmInputsSha256, hash(JSON.stringify(row.jvm.inputs)));
+    assert.equal(
+      binding.generatedManifestSha256,
+      row.jvm.generated.manifestSha256,
+    );
+  }
+  if (["c", "cpp"].includes(row.family)) {
+    const nativeTool = binding.nativeTool;
+    assert.equal(row.tool.name, row.family === "c" ? "gcc" : "g++");
+    assert.equal(nativeTool?.name, row.tool.name);
+    assert.equal(nativeTool.role, "supplementary-native-compiler");
+    assert.equal(nativeTool.version, "14.2.0");
+    assert.equal(nativeTool.target, "aarch64-linux-gnu");
+    assert.match(nativeTool.identity, /Debian 14\.2\.0-19/);
+    assert.equal(nativeTool.qualifiesSelectedClang, false);
+  }
+  assert.equal(binding.complete, true);
+  assert.equal(binding.skipped, false);
+  assert.equal(binding.installedOutsidePackage, origin === "installed");
+  assert.equal(binding.hostAttestationPerformed, false);
+  return null;
+}
+
 /** Reconcile retained native output; never infer a reached consumer from a passed callback name. */
 export function inspectConsumerWitnesses(
   manifest,
@@ -182,6 +311,8 @@ export function inspectConsumerWitnesses(
   const usedAttempts = new Set();
   const incompleteAttemptFamilies = new Set();
   const reached = new Map();
+  const projectReached = new Map();
+  const projectDuplicateSlots = new Set();
   const duplicates = new Set();
   const issues = new Set();
   let retainedBytes = 0;
@@ -189,9 +320,11 @@ export function inspectConsumerWitnesses(
     assert.equal(row?.schemaVersion, 1);
     assert.equal(
       row.profile,
-      dataConsumerFamilies.includes(row.family)
-        ? "native-data-consumer-witness-observation-v1"
-        : "original-consumer-witness-observation-v1",
+      projectConsumerFamilies.includes(row.family)
+        ? "native-project-consumer-witness-observation-v1"
+        : dataConsumerFamilies.includes(row.family)
+          ? "native-data-consumer-witness-observation-v1"
+          : "original-consumer-witness-observation-v1",
     );
     const selected = expected.get(row.family);
     assert.ok(selected, "Foreign consumer witness family");
@@ -237,6 +370,36 @@ export function inspectConsumerWitnesses(
       fileDescriptor(file);
       assert.equal(names.has(file.path), false);
       names.add(file.path);
+    }
+    if (projectConsumerFamilies.includes(row.family)) {
+      const values = row.attempts.map(
+        (reference) => attempts.records.get(reference.attemptId).value,
+      );
+      inspectProjectWitness(row, values);
+      assert.equal(row.compiler, null);
+      assert.ok(row.compilerLink === null || row.compilerLink === undefined);
+      assert.ok(row.jvm === null || row.jvm === undefined);
+      assert.ok(row.managed === null || row.managed === undefined);
+      assert.ok(row.swift === null || row.swift === undefined);
+      assert.equal(row.output.profile, "bounded-physical-process-output-v1");
+      const out = stream(row.output.stdout, 1048576),
+        err = stream(row.output.stderr, 1048576);
+      assert.equal(row.output.observedBytes, out.length + err.length);
+      assert.equal(row.output.completeForObservedStreams, true);
+      retainedBytes += out.length + err.length;
+      assert.ok(retainedBytes <= 16 * 1048576);
+      assert.ok(sha(row.runtime.nodeExecutableSha256));
+      if (row.phase === "canonical") {
+        const address = projectConsumerObservationKey(row);
+        if (projectReached.has(address)) {
+          issues.add("duplicate-canonical-witness");
+          duplicates.add(row.family);
+          projectDuplicateSlots.add(
+            JSON.stringify([row.family, row.runtime.slot]),
+          );
+        } else projectReached.set(address, row);
+      }
+      continue;
     }
     const invocation = row.invocation;
     assert.ok(invocation && sha(invocation.executableSha256));
@@ -440,9 +603,19 @@ export function inspectConsumerWitnesses(
     assert.ok(variants.includes(binding.variant));
     assert.ok(["source", "installed"].includes(binding.origin));
     if (
-      !reached.has(
-        JSON.stringify([binding.family, binding.variant, binding.origin]),
-      )
+      !(projectConsumerFamilies.includes(binding.family)
+        ? projectReached.has(
+            JSON.stringify([
+              binding.family,
+              binding.variant,
+              binding.origin,
+              binding.slot,
+              binding.scenario,
+            ]),
+          )
+        : reached.has(
+            JSON.stringify([binding.family, binding.variant, binding.origin]),
+          ))
     )
       issues.add("unmatched-controller-binding");
   }
@@ -457,6 +630,17 @@ export function inspectConsumerWitnesses(
     }
   }
   const reports = required.map((family) => {
+    if (projectConsumerFamilies.includes(family.id))
+      return reconcileProjectFamily(
+        family,
+        inventory,
+        projectReached,
+        projectDuplicateSlots,
+        bindings,
+        incompleteAttemptFamilies,
+        issues,
+      );
+
     const missing = [];
     const unqualified = [];
     for (const variant of variants)
@@ -482,133 +666,8 @@ export function inspectConsumerWitnesses(
           continue;
         }
         const binding = linked[0];
-        // These are observations from the trusted native controller, not host
-        // attestations. Neither a version label nor an environment slot can fill them.
-        const observed = row.runtime;
-        const declared = inventory.runtimeProfiles.find(
-          (runtime) => runtime.id === binding.slot,
-        );
-        if (
-          !declared ||
-          (family.runtime !== "engine-matrix" &&
-            family.runtime !== binding.slot) ||
-          !isDeepStrictEqual(
-            [observed.node, observed.platform, observed.architecture],
-            [declared.node, declared.platform, declared.architecture],
-          )
-        ) {
-          unqualified.push({ variant, origin, reason: "unselected-runtime" });
-          continue;
-        }
-        if (binding.toolVersionMatched !== true) {
-          unqualified.push({
-            variant,
-            origin,
-            reason: "unselected-tool-version",
-          });
-          continue;
-        }
-        const image = binding.runtimeImage;
-        if (
-          !image ||
-          (image.kind === "oci-image-observation"
-            ? !/^sha256:[a-f0-9]{64}$/.test(image.id ?? "") ||
-              !sha(image.definitionSha256)
-            : image.kind === "hosted-runner-metadata"
-              ? image.imageOS !== "ubuntu24" ||
-                !/^20[0-9]{6}\.[0-9]+\.[0-9]+$/.test(
-                  image.imageVersion ?? "",
-                ) ||
-                !sha(image.distributionSha256) ||
-                image.metadataAttested !== false
-              : true)
-        ) {
-          unqualified.push({
-            variant,
-            origin,
-            reason: "native-image-unobserved",
-          });
-          continue;
-        }
-        for (const key of [
-          "engineSha256",
-          "harnessSha256",
-          "requirementsSha256",
-          "acceptanceSha256",
-          "toolInputsSha256",
-          "packageManifestSha256",
-        ])
-          assert.ok(
-            sha(binding[key]),
-            "Missing native controller identity: " + key,
-          );
-        assert.equal(
-          binding.observationSha256,
-          hash(JSON.stringify(row)),
-          "Foreign witness controller binding",
-        );
-        for (const field of [
-          "engineSha256",
-          "harnessSha256",
-          "requirementsSha256",
-          "acceptanceSha256",
-          "packageManifestSha256",
-        ])
-          assert.equal(
-            binding[field],
-            row.code?.[field],
-            "Source/installed witness code binding differs: " + field,
-          );
-        assert.equal(row.code.installedOutsidePackage, origin === "installed");
-        assert.equal(
-          binding.toolExecutableSha256,
-          row.tool.sha256,
-          "Native tool observation differs",
-        );
-        if (dataConsumerFamilies.includes(row.family))
-          assert.equal(
-            binding.dataInputsSha256,
-            hash(JSON.stringify(normalizeDataInputs(row.data.inputs))),
-          );
-        if (row.family === "swift")
-          assert.equal(
-            binding.swiftInputsSha256,
-            hash(JSON.stringify(row.swift.inputs)),
-          );
-        if (managedConsumerFamilies.includes(row.family)) {
-          assert.equal(
-            binding.managedInputsSha256,
-            hash(JSON.stringify(row.managed.inputs)),
-          );
-          assert.equal(
-            binding.generatedManifestSha256,
-            row.managed.generated.manifestSha256,
-          );
-        }
-        if (jvmConsumerFamilies.includes(row.family)) {
-          assert.equal(
-            binding.jvmInputsSha256,
-            hash(JSON.stringify(row.jvm.inputs)),
-          );
-          assert.equal(
-            binding.generatedManifestSha256,
-            row.jvm.generated.manifestSha256,
-          );
-        }
-        if (["c", "cpp"].includes(row.family)) {
-          const nativeTool = binding.nativeTool;
-          assert.equal(row.tool.name, row.family === "c" ? "gcc" : "g++");
-          assert.equal(nativeTool?.name, row.tool.name);
-          assert.equal(nativeTool.role, "supplementary-native-compiler");
-          assert.equal(nativeTool.version, "14.2.0");
-          assert.equal(nativeTool.target, "aarch64-linux-gnu");
-          assert.match(nativeTool.identity, /Debian 14\.2\.0-19/);
-          assert.equal(nativeTool.qualifiesSelectedClang, false);
-        }
-        assert.equal(binding.complete, true);
-        assert.equal(binding.skipped, false);
-        assert.equal(binding.installedOutsidePackage, origin === "installed");
-        assert.equal(binding.hostAttestationPerformed, false);
+        const reason = consumerBindingReason(row, binding, family, inventory);
+        if (reason) unqualified.push({ variant, origin, reason });
       }
     return {
       family: family.id,
@@ -636,6 +695,7 @@ export function inspectConsumerWitnesses(
   // Source and installed execution must use the identical declared tool/engine/harness.
   for (const family of required)
     for (const variant of variants) {
+      if (projectConsumerFamilies.includes(family.id)) continue;
       const pair = bindings.filter(
         (binding) =>
           binding.family === family.id && binding.variant === variant,
@@ -773,17 +833,26 @@ export function bindConsumerWitnessController(collection, expected) {
   assert.deepEqual(collection.observedTool, expected.tool);
   assert.equal(expected.runtime.hostAttestationPerformed, false);
   assert.ok(sha(expected.toolInputsSha256));
-  const candidate =
-    expected.toolVersionMatched === true &&
-    expected.runtime.node === "22.23.2" &&
-    expected.runtime.platform === "linux" &&
-    expected.runtime.architecture === "arm64"
+  const candidate = projectConsumerFamilies.includes(expected.family)
+    ? expected.toolVersionMatched
+      ? expected.selectedRuntimeSlot
+      : null
+    : expected.toolVersionMatched === true &&
+        expected.runtime.node === "22.23.2" &&
+        expected.runtime.platform === "linux" &&
+        expected.runtime.architecture === "arm64"
       ? "native-linux-arm64-node22"
       : null;
   return collection.observations
     .filter((row) => row.phase === "canonical")
     .map((row) => {
       assert.equal(row.family, expected.family);
+      if (projectConsumerFamilies.includes(row.family))
+        assert.equal(
+          row.runtime.slot,
+          candidate,
+          "Project witness selected runtime differs from trusted controller",
+        );
       for (const field of [
         "engineSha256",
         "harnessSha256",
@@ -842,6 +911,9 @@ export function bindConsumerWitnessController(collection, expected) {
         variant: row.variant,
         origin: row.origin,
         slot: candidate,
+        ...(projectConsumerFamilies.includes(row.family)
+          ? { scenario: row.project.scenario }
+          : {}),
         engineSha256: expected.engineSha256,
         harnessSha256: expected.harnessSha256,
         requirementsSha256: expected.requirementsSha256,
@@ -873,4 +945,163 @@ export function bindConsumerWitnessController(collection, expected) {
         hostAttestationPerformed: false,
       };
     });
+}
+
+function reconcileProjectFamily(
+  family,
+  inventory,
+  reached,
+  duplicateSlots,
+  bindings,
+  incompleteFamilies,
+  issues,
+) {
+  const logical = projectConsumerLogicalWitnesses(inventory, family.id),
+    missing = [],
+    unqualified = [],
+    slots = new Map(),
+    observed = [];
+  for (const scope of logical) {
+    const address = {
+        variant: scope.variant,
+        origin: scope.origin,
+        slot: scope.slot,
+      },
+      absent = [];
+    if (!slots.has(scope.slot))
+      slots.set(scope.slot, {
+        slot: scope.slot,
+        requiredWitnesses: 6,
+        observedWitnesses: 0,
+        missing: [],
+        unqualified: [],
+        complete: false,
+      });
+    const report = slots.get(scope.slot);
+    for (const scenario of scope.scenarios) {
+      const key = JSON.stringify([
+          family.id,
+          scope.variant,
+          scope.origin,
+          scope.slot,
+          scenario,
+        ]),
+        row = reached.get(key);
+      if (!row) {
+        absent.push(scenario);
+        continue;
+      }
+      observed.push(row);
+      const linked = bindings.filter(
+        (binding) =>
+          binding.family === family.id &&
+          binding.variant === scope.variant &&
+          binding.origin === scope.origin &&
+          binding.slot === scope.slot &&
+          binding.scenario === scenario,
+      );
+      const reason =
+        linked.length === 1
+          ? consumerBindingReason(row, linked[0], family, inventory)
+          : "missing-or-duplicate-controller-binding";
+      if (reason) {
+        const entry = { ...address, scenario, reason };
+        unqualified.push(entry);
+        report.unqualified.push(entry);
+      }
+    }
+    if (absent.length) {
+      const entry = { ...address, scenarios: absent };
+      missing.push(entry);
+      report.missing.push(entry);
+    } else report.observedWitnesses++;
+  }
+  for (const [slot, report] of slots) {
+    for (const variant of variants)
+      for (const scenario of projectConsumerScenarios(family.id, variant)) {
+        const pair = bindings.filter(
+          (binding) =>
+            binding.family === family.id &&
+            binding.variant === variant &&
+            binding.slot === slot &&
+            binding.scenario === scenario,
+        );
+        if (
+          pair.length === 2 &&
+          new Set(pair.map((binding) => binding.origin)).size === 2
+        )
+          for (const key of [
+            "slot",
+            "engineSha256",
+            "harnessSha256",
+            "requirementsSha256",
+            "acceptanceSha256",
+            "toolInputsSha256",
+            "packageManifestSha256",
+          ])
+            if (pair[0][key] !== pair[1][key]) {
+              issues.add("source-installed-identity-mismatch");
+              report.unqualified.push({
+                variant,
+                scenario,
+                reason: "source-installed-identity-mismatch",
+              });
+            }
+      }
+    report.complete =
+      report.missing.length === 0 &&
+      report.unqualified.length === 0 &&
+      !duplicateSlots.has(JSON.stringify([family.id, slot])) &&
+      !incompleteFamilies.has(family.id);
+  }
+  for (const row of reached.values())
+    if (row.family === family.id && !slots.has(row.runtime.slot))
+      unqualified.push({
+        variant: row.variant,
+        origin: row.origin,
+        slot: row.runtime.slot,
+        scenario: row.project.scenario,
+        reason: "unselected-native-runtime",
+      });
+  const summaries = [...slots.values()];
+  return {
+    family: family.id,
+    profile: family.profile,
+    evidenceClass: "controller-source-bound-native-project-reports",
+    applicationSemanticsVerified: false,
+    nativeModuleLoadsTraced: false,
+    requiredRuntimeSlots: summaries.map((row) => row.slot),
+    slotSummaries: summaries,
+    requiredWitnesses: logical.length,
+    observedWitnesses: summaries.reduce(
+      (count, row) => count + row.observedWitnesses,
+      0,
+    ),
+    requiredObservations: logical.reduce(
+      (count, row) => count + row.scenarios.length,
+      0,
+    ),
+    observedObservations: observed.length,
+    missing,
+    unqualified,
+    complete:
+      unqualified.length === 0 && summaries.every((row) => row.complete),
+  };
+}
+export function requireQualifiedConsumerWitnessSlot(report, family, slot) {
+  assert.deepEqual(
+    report.issues,
+    [],
+    "Consumer witness reconciliation issues remain",
+  );
+  const selected = report.families.find((row) => row.family === family);
+  assert.ok(selected && Array.isArray(selected.slotSummaries));
+  const runtime = selected.slotSummaries.find((row) => row.slot === slot);
+  assert.ok(runtime, "Consumer slot is not part of frozen family scope");
+  assert.equal(
+    runtime.complete,
+    true,
+    "Selected consumer slot remains incomplete or unqualified",
+  );
+  return runtime;
 }
