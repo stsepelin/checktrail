@@ -17,6 +17,12 @@ const generic = new Set([
   "scripts/required-test-evidence.mjs",
   "scripts/verify-import-context-package.mjs",
   "scripts/verify-mutation-guards.mjs",
+  // The consumer entry point uses the workflow's exact context-* argument.
+  // Shared observer family labels are data, not separate native invocations.
+  "scripts/verify-consumer-witness-profile.mjs",
+  "scripts/consumer-witness-controller.mjs",
+  "scripts/consumer-witness-evidence.mjs",
+  "scripts/consumer-witness-attempts.mjs",
 ]);
 const compiledSource = (file) =>
   file.startsWith("dist/") ? file.slice(5).replace(/\.js$/, ".ts") : file;

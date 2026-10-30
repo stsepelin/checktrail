@@ -1,3 +1,10 @@
+import {
+  beginConsumerWitness,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerVariant,
+  type ConsumerPhase,
+} from "./consumer-witness-fixture.js";
 import assert from "node:assert/strict";
 import { test, type TestContext } from "node:test";
 import { createHash } from "node:crypto";
@@ -75,18 +82,24 @@ async function original(t: TestContext, policy = broken) {
   const context = await createReviewContext(root, input());
   return { root, context, result: analysis(context) };
 }
-async function witness(root: string) {
+async function witness(
+  root: string,
+  variant: ConsumerVariant,
+  phase: ConsumerPhase = "canonical",
+) {
+  const capture = await beginConsumerWitness(root, "python", variant, phase);
   const program =
     'import importlib.util,json,sys,types,pathlib,hashlib; directory=pathlib.Path(sys.argv[1]).parent; package=types.ModuleType("pkg"); package.__path__=[str(directory)]; sys.modules["pkg"]=package; spec=importlib.util.spec_from_file_location("pkg.policy",sys.argv[1]); unit=importlib.util.module_from_spec(spec); sys.modules[spec.name]=unit; spec.loader.exec_module(unit); package.policy=unit; callerSpec=importlib.util.spec_from_file_location("pkg.consumer",str(directory/"consumer.py")); caller=importlib.util.module_from_spec(callerSpec); sys.modules[callerSpec.name]=caller; callerSpec.loader.exec_module(caller); values=["grant:read","grantToken","grant2","other"]; print(json.dumps({"python":list(sys.version_info[:3]),"cases":[{"input":value,"actual":unit.decision(value)} for value in values],"consumers":[caller.submit(),caller.route()],"sources":{name:hashlib.sha256((directory/name).read_bytes()).hexdigest() for name in ["policy.py","consumer.py"]}}))';
   const native = await runProcess(
     root,
     {
-      executable: "python3",
+      executable: capture?.executable ?? "python3",
       args: ["-I", "-B", "-c", program, path.join(root, "pkg/policy.py")],
       cwd: ".",
     },
     { timeoutMs: 5000, maxOutputBytes: 65536, captureRawOutput: true },
   );
+  await recordConsumerWitnessAttempt(capture, native);
   assert.equal(native.exitCode, 0, native.stderr);
   assert.equal(native.errorCode, undefined);
   assert.equal(native.timedOut, false);
@@ -103,6 +116,7 @@ async function witness(root: string) {
       receipt.sources[name],
       hash(await readFile(path.join(root, "pkg", name), "utf8")),
     );
+  await finishConsumerWitness(capture, native);
   return receipt;
 }
 function bindings(result: ReturnType<typeof analysis>) {
@@ -159,7 +173,7 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-python broken acceptance", async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  const live = await witness(root);
+  const live = await witness(root, "broken", "canonical");
   assert.deepEqual(
     live.cases.map((item: { actual: boolean }) => item.actual),
     [true, true, true, false],
@@ -169,7 +183,10 @@ test("context-python broken acceptance", async (t) => {
     callerBytes = await readFile(callerPath, "utf8");
   try {
     await writeFile(callerPath, callerBytes.replace('"grantToken"', '"other"'));
-    assert.deepEqual((await witness(root)).consumers, [false, true]);
+    assert.deepEqual(
+      (await witness(root, "broken", "caller-change")).consumers,
+      [false, true],
+    );
   } finally {
     await writeFile(callerPath, callerBytes);
   }
@@ -267,7 +284,7 @@ test("context-python broken acceptance", async (t) => {
 test("context-python fixed acceptance", async (t) => {
   const { root, result } = await original(t, fixed);
   bindings(result);
-  const live = await witness(root);
+  const live = await witness(root, "fixed", "canonical");
   assert.deepEqual(live.consumers, [false, true]);
   assert.deepEqual(
     live.cases.map((item: { actual: boolean }) => item.actual),
@@ -281,9 +298,14 @@ test("context-python near-miss acceptance", async (t) => {
   await callIdentityFixture(t, "python", true);
   const { root, result } = await original(t, near);
   bindings(result);
-  assert.deepEqual((await witness(root)).consumers, [false, true]);
+  assert.deepEqual((await witness(root, "near-miss", "canonical")).consumers, [
+    false,
+    true,
+  ]);
   assert.deepEqual(
-    (await witness(root)).cases.map((item: { actual: boolean }) => item.actual),
+    (await witness(root, "near-miss", "repeat")).cases.map(
+      (item: { actual: boolean }) => item.actual,
+    ),
     [true, false, false, false],
   );
   const sources = [

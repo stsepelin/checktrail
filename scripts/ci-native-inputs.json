@@ -161,6 +161,21 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
+  "scripts/consumer-witness-attempts.mjs": [
+    "go-workspaces-arm64",
+    "php-context-arm64",
+    "rust-context-arm64"
+  ],
+  "scripts/consumer-witness-controller.mjs": [
+    "go-workspaces-arm64",
+    "php-context-arm64",
+    "rust-context-arm64"
+  ],
+  "scripts/consumer-witness-evidence.mjs": [
+    "go-workspaces-arm64",
+    "php-context-arm64",
+    "rust-context-arm64"
+  ],
   "scripts/cpp-archive-fallbacks/libexpat-2.8.5-r0.apk": [
     "cpp-extensions-arm64",
     "cpp-tools"
@@ -436,10 +451,12 @@
     "resource-release-arm64"
   ],
   "scripts/php-context-tools.Dockerfile": [
+    "go-workspaces-arm64",
     "laravel-assembly-arm64",
     "mutation-native-arm64",
     "php-context-arm64",
-    "php-extensions-arm64"
+    "php-extensions-arm64",
+    "rust-context-arm64"
   ],
   "scripts/php-review-tools.Dockerfile": ["php-review"],
   "scripts/php-review-tools/composer.json": ["php-review"],
@@ -981,7 +998,11 @@
     "tasks-runtime-arm64",
     "windows"
   ],
-  "scripts/rust-context-tools.Dockerfile": ["rust-context-arm64"],
+  "scripts/rust-context-tools.Dockerfile": [
+    "go-workspaces-arm64",
+    "php-context-arm64",
+    "rust-context-arm64"
+  ],
   "scripts/rust-extension-components.json": ["rust-extensions-arm64"],
   "scripts/rust-extension-tools.Dockerfile": ["rust-extensions-arm64"],
   "scripts/scala-ci-phases.mjs": ["scala"],
@@ -1016,6 +1037,11 @@
   "scripts/verify-consumer-runtime.mjs": [
     "tasks-runtime",
     "tasks-runtime-arm64"
+  ],
+  "scripts/verify-consumer-witness-profile.mjs": [
+    "go-workspaces-arm64",
+    "php-context-arm64",
+    "rust-context-arm64"
   ],
   "scripts/verify-cpp-context-container.mjs": ["cpp-context-arm64"],
   "scripts/verify-cpp-context-guards.mjs": ["cpp-context-arm64"],
@@ -1422,6 +1448,11 @@
   "test/consumer-impact-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/consumer-imports.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/consumer-runtime-evidence.test.ts": ["tasks-runtime"],
+  "test/consumer-witness-fixture.ts": [
+    "go-workspaces-arm64",
+    "php-context-arm64",
+    "rust-context-arm64"
+  ],
   "test/cpp-controls.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
   "test/cpp-extensions-cancel.test.ts": ["cpp-extensions-arm64"],
   "test/cpp-extensions-fixture.ts": ["cpp-extensions-arm64"],

@@ -1353,3 +1353,61 @@ test("CI Windows lanes preserve frozen runtime pins and partition every original
     );
   assert.ok(workflow.jobs["ci-complete"].needs.includes("tasks-runtime"));
 });
+
+test("CI shared consumer observers retain imports and exact selected context profiles without expanding family labels", async () => {
+  const observers = [
+    "verify-consumer-witness-profile",
+    "consumer-witness-controller",
+    "consumer-witness-evidence",
+    "consumer-witness-attempts",
+  ];
+  const actual = await buildNativeInputs({
+    workflow: {
+      jobs: {
+        ...Object.fromEntries(
+          observers.map((name) => [
+            name,
+            { steps: [{ run: "node scripts/" + name + ".mjs context-go" }] },
+          ]),
+        ),
+        "actual-native": { steps: [{ run: "node scripts/actual-native.mjs" }] },
+      },
+    },
+    requirements: {
+      "context-go": [{ file: "dist/test/selected-context.test.js" }],
+      go: [{ file: "dist/test/unrelated-go.test.js" }],
+      rust: [{ file: "dist/test/unrelated-rust.test.js" }],
+      python: [{ file: "dist/test/unrelated-python.test.js" }],
+    },
+    files: [
+      ...observers.map((name) => "scripts/" + name + ".mjs"),
+      "scripts/actual-native.mjs",
+      "test/selected-context.test.ts",
+      "test/observer-helper.ts",
+      "test/unrelated-go.test.ts",
+      "test/unrelated-rust.test.ts",
+      "test/unrelated-python.test.ts",
+    ],
+    readText: (file: string) =>
+      Promise.resolve(
+        file === "scripts/actual-native.mjs"
+          ? 'const profile = "rust"; runRequiredTests(requirements[profile]);'
+          : file.startsWith("scripts/")
+            ? 'import "../test/observer-helper.js"; const families = ["go", "rust", "python"];'
+            : "",
+      ),
+  });
+  assert.deepEqual(
+    actual["test/selected-context.test.ts"],
+    [...observers].sort(),
+  );
+  assert.deepEqual(actual["test/observer-helper.ts"], [...observers].sort());
+  assert.deepEqual(actual["test/unrelated-rust.test.ts"], ["actual-native"]);
+  for (const family of ["go", "python"])
+    assert.equal(
+      Object.hasOwn(actual, "test/unrelated-" + family + ".test.ts"),
+      false,
+    );
+  for (const observer of observers)
+    assert.deepEqual(actual["scripts/" + observer + ".mjs"], [observer]);
+});

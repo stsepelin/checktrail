@@ -163,7 +163,7 @@ jobs:
         if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory selected-artifact-evidence probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings consumer-impact consumer-runtime-bindings consumer-foundation-bindings
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory selected-artifact-evidence probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings consumer-impact consumer-runtime-bindings consumer-foundation-bindings consumer-witness-bindings
           node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
         if: env.CHECKTRAIL_CI_MODE == 'full'
@@ -1855,7 +1855,11 @@ jobs:
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
       - name: Verify required original Go and context controls
-        run: node scripts/verify-required-native-tests.mjs go-extensions go-installed-harness review-context-limits host-session-readiness context-python context-go
+        run: node scripts/verify-required-native-tests.mjs go-extensions go-installed-harness review-context-limits host-session-readiness
+      - name: Observe actual selected Python producer and consumer source and fresh-package witnesses
+        run: node scripts/verify-consumer-witness-profile.mjs context-python
+      - name: Observe actual selected Go producer and consumer source and fresh-package witnesses
+        run: node scripts/verify-consumer-witness-profile.mjs context-go
       - name: Verify installed original Go workspace controls
         run: node scripts/verify-go-workspace-package.mjs
       - name: Verify installed original expanded context controls

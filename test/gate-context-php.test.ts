@@ -1,3 +1,10 @@
+import {
+  beginConsumerWitness,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerVariant,
+  type ConsumerPhase,
+} from "./consumer-witness-fixture.js";
 import assert from "node:assert/strict";
 import { test, type TestContext } from "node:test";
 import { createHash } from "node:crypto";
@@ -82,12 +89,17 @@ async function original(t: TestContext, policy = broken) {
   const context = await createReviewContext(root, input());
   return { root, context, result: analysis(context) };
 }
-async function php(root: string, code: string) {
+async function php(
+  root: string,
+  code: string,
+  capture?: Awaited<ReturnType<typeof beginConsumerWitness>>,
+) {
   const result = await runProcess(
     root,
-    { executable: "php", args: ["-r", code], cwd: "." },
+    { executable: capture?.executable ?? "php", args: ["-r", code], cwd: "." },
     { timeoutMs: 10000, maxOutputBytes: 65536, captureRawOutput: true },
   );
+  await recordConsumerWitnessAttempt(capture ?? null, result);
   assert.equal(result.exitCode, 0, result.stderr);
   assert.equal(result.errorCode, undefined);
   assert.equal(result.cancelled, false);
@@ -96,12 +108,19 @@ async function php(root: string, code: string) {
   assert.equal(result.stderr, "");
   assert.equal(result.capturedOutput?.completeForObservedStreams, true);
   assert.equal(result.capturedOutput?.stdout.sha256, hash(result.stdout));
+  await finishConsumerWitness(capture ?? null, result);
   return JSON.parse(result.stdout);
 }
-async function witness(root: string) {
+async function witness(
+  root: string,
+  variant: ConsumerVariant,
+  phase: ConsumerPhase = "canonical",
+) {
+  const capture = await beginConsumerWitness(root, "php", variant, phase);
   const receipt = await php(
     root,
     "require 'consumer/consumer.php'; echo json_encode(['cases'=>array_map('Rules\\\\Decision', ['grant:read','grantToken','grant2','other']),'consumers'=>[Consumer\\Submit(),Consumer\\Route()],'sources'=>['policy/policy.php'=>hash_file('sha256','policy/policy.php'),'consumer/consumer.php'=>hash_file('sha256','consumer/consumer.php')]]);",
+    capture,
   );
   assert.equal(receipt.cases.length, 4);
   assert.equal(receipt.consumers.length, 2);
@@ -164,7 +183,7 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-php broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  const live = await witness(root);
+  const live = await witness(root, "broken", "canonical");
   assert.deepEqual(live.cases, [true, true, true, false]);
   assert.deepEqual(live.consumers, [true, true]);
   const callerPath = path.join(root, "consumer/consumer.php"),
@@ -174,7 +193,7 @@ test("context-php broken acceptance", native, async (t) => {
       callerPath,
       callerBytes.replace("choose('grantToken')", "choose('other')"),
     );
-    const changed = await witness(root);
+    const changed = await witness(root, "broken", "caller-change");
     assert.deepEqual(changed.cases, live.cases);
     assert.deepEqual(changed.consumers, [false, true]);
     assert.notEqual(
@@ -188,7 +207,7 @@ test("context-php broken acceptance", native, async (t) => {
   } finally {
     await writeFile(callerPath, callerBytes);
   }
-  assert.deepEqual(await witness(root), live);
+  assert.deepEqual(await witness(root, "broken", "restored"), live);
   const fn = result.functions.find((fn) => fn.name === "Decision")!,
     file = context.files.find((file) => file.path === fn.file)!;
   assert.equal(
@@ -274,7 +293,7 @@ test("context-php broken acceptance", native, async (t) => {
 test("context-php fixed acceptance", native, async (t) => {
   const { root, context, result } = await original(t, fixed);
   bindings(result);
-  const live = await witness(root);
+  const live = await witness(root, "fixed", "canonical");
   assert.deepEqual(live.cases, [true, false, false, false]);
   assert.deepEqual(live.consumers, [false, true]);
   assert.equal(
@@ -294,7 +313,7 @@ test("context-php fixed acceptance", native, async (t) => {
 test("context-php near-miss acceptance", native, async (t) => {
   await callIdentityFixture(t, "php", true);
   const { root } = await original(t, near);
-  const live = await witness(root);
+  const live = await witness(root, "near-miss", "canonical");
   assert.deepEqual(live.cases, [true, false, false, false]);
   assert.deepEqual(live.consumers, [false, true]);
   const cases: [string, string][] = [

@@ -273,6 +273,7 @@ try {
     "gate-multi-candidate-workflow.test.js",
     "review-findings-fixture.js",
     "native-process-observer.js",
+    "consumer-witness-fixture.js",
     "spotbugs-extensions-fixture.js",
     "spotbugs-fixture.js",
     "detekt-extensions-fixture.js",
@@ -513,6 +514,7 @@ try {
     "verify-required-native-tests.mjs",
     "required-test-evidence.mjs",
     "compiled-engine-evidence.mjs",
+    "consumer-witness-attempts.mjs",
     ...(rubyAcceptanceShard === undefined
       ? []
       : [

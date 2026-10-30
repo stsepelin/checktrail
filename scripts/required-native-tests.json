@@ -5922,5 +5922,55 @@
       "file": "dist/test/consumer-runtime-evidence.test.js",
       "name": "consumer installation requires the matching foundation even when all whole-feature callbacks pass"
     }
+  ],
+  "consumer-witness-bindings": [
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "consumer witness requirements retain every selected family and its frozen native runtime without promoting declarations"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "synthetic consumer witness reconciliation keeps all unobserved families pending and unbound native observations unqualified"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "synthetic consumer witnesses reject mismatched physical streams source bytes invocation cleanup and false derived labels"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "synthetic native controller bindings cannot hide missing skipped duplicate foreign or mismatched source and installed evidence"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "optional consumer witness capture stays inert without an operator namespace"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "consumer witness controller refuses missing unknown or extra family arguments before capture or execution"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "synthetic consumer controller binding requires actual source installed code tools runtime and terminal identities"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "consumer controller code identity binds selected requirements equally from source and a reduced installed manifest"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "consumer controller captures a container family without depending on unrelated hosted Python setup"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "consumer witness attempt bindings reject missing altered duplicate reused and failed retained records"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "controlled failed native Node results remain physically retained before assertions and storage failures stay incomplete"
+    },
+    {
+      "file": "dist/test/consumer-witness-evidence.test.js",
+      "name": "final native consumer controllers refuse unqualified families even when all six observations exist"
+    }
   ]
 }

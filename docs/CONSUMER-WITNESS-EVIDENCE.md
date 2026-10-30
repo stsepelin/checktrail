@@ -1,0 +1,55 @@
+# Native consumer witness evidence
+
+The selected consumer-family manifest keeps nineteen required family boundaries
+visible. The first collector implementation covers the existing Go, Python, PHP
+and Rust producer/consumer witness functions. Other families remain required and
+pending. This is development acceptance tooling, not a review-quality result or
+complete consumer-family qualification.
+
+The optional test helper captures source bytes before and after the native
+invocation, the observed compiler/interpreter and executable bytes, bounded
+physical stdout/stderr, and the actual producer/consumer answers and source
+observations returned by the original witness. Each actual returned process result
+is atomically retained before success assertions, including failed, unavailable,
+timed-out, cancelled and truncated results. These observations reuse the shared
+bounded physical output contract; they do not invent a process-start PID or
+interleaved stream order after the process has exited. Successful witness rows
+reference the exact private attempt bytes, source, variant and stage. Missing,
+altered, duplicate, reused, unmatched or failed attempts leave qualification
+incomplete. Storage failure remains sticky and cannot be turned into success. Raw observations do not qualify
+through a callback name or a runtime label. The normal tests do not enable this
+capture unless the operator provides private storage.
+
+`node scripts/verify-consumer-witness-profile.mjs PROFILE` runs the existing nine
+required callbacks, including the fresh offline installation, for one of
+`context-go`, `context-python`, `context-php` or `context-rust`. It requires an operator-prepared native environment and
+executes original synthetic fixture code. These execution constraints are not an
+OS security sandbox. CLI/MCP project discovery does not call this controller.
+
+A controller binding reconciles the actual terminal test file and event ledger,
+engine and observer/helper bytes, selected requirement identities, tool bytes and
+runtime observations. The installed harness deliberately contains only its selected
+requirements; unrelated profile declarations do not change the selected helper
+identity. Package-manifest hashes identify `package.json`, not a package archive.
+The existing offline installed acceptance remains separately required. Dependency,
+whole-package archive, hardware and complete producer-build attribution are not
+inferred from these witness packets.
+
+Existing PHP and Rust container controllers bind their observed image IDs and
+native runtime probes. The Go/Python hosted-runtime controller records OS release
+and runner-image metadata without claiming host attestation. Unselected development
+hosts remain unqualified. Each selected variant must have one source and one
+installed canonical observation; missing, duplicate, skipped, changed or foreign
+bindings cannot complete a family. Every unobserved family keeps the aggregate
+incomplete.
+
+The current implementation has pure synthetic packet controls. Source/fresh native
+collection and the complete required runtime acceptance remain pending. Gate A,
+complete upstream build/license closure and independent evaluation remain open.
+No model inference, comparison trial or field evaluation is invoked here.
+
+The Go/Python entry point is the final hosted controller and refuses unqualified
+family reports, even when all six native observations exist. PHP/Rust inner
+collection stays unqualified until the outer controller binds the observed OCI
+image identity and requires the complete family report. Completion of these
+individual families does not complete the nineteen-family aggregate or Gate A.

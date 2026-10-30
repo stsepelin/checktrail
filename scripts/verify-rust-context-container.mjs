@@ -1,3 +1,10 @@
+import { readFile } from "node:fs/promises";
+import { captureConsumerWitnessController } from "./consumer-witness-controller.mjs";
+import {
+  bindConsumerWitnessController,
+  inspectConsumerWitnesses,
+  requireQualifiedConsumerWitnessFamily,
+} from "./consumer-witness-evidence.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import process from "node:process";
@@ -56,20 +63,63 @@ const runtime = JSON.parse(
     "node",
     "--input-type=module",
     "-e",
-    'import {execFileSync} from "node:child_process"; import {readFileSync} from "node:fs"; console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,rust:execFileSync("rustc",["--version"],{encoding:"utf8"}).trim(),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8")}));',
+    'import {execFileSync} from "node:child_process"; import {readFileSync} from "node:fs"; import {createHash} from "node:crypto"; import {observeConsumerWitnessTool} from "./dist/test/consumer-witness-fixture.js"; console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,rust:execFileSync("rustc",["--version"],{encoding:"utf8"}).trim(),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8"),nodeExecutableSha256:createHash("sha256").update(readFileSync(process.execPath)).digest("hex"),distributionSha256:createHash("sha256").update(readFileSync("/etc/os-release")).digest("hex"),tool:await observeConsumerWitnessTool("rust")}));',
   ]),
 );
 assert.equal(runtime.node, "v22.23.2");
 assert.equal(runtime.platform, "linux");
 assert.equal(runtime.arch, "arm64");
 assert.equal(runtime.rust, "rustc 1.98.1 (48a229cea 2026-09-01)");
-const source = JSON.parse(
+const consumerRuntime = {
+  ...runtime,
+  node: runtime.node.slice(1),
+  architecture: runtime.arch,
+  hostAttestationPerformed: false,
+  toolVersion: runtime.rust,
+};
+const consumerExpected = await captureConsumerWitnessController(
+  repository,
+  "rust",
+  { kind: "oci-image-observation", id: image },
+  consumerRuntime,
+  runtime.tool,
+);
+const consumerCollection = JSON.parse(
   run([
     "/bin/sh",
     "-c",
-    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs context-rust",
+    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-consumer-witness-profile.mjs context-rust",
   ]),
 );
+const source = consumerCollection.evidence;
+consumerCollection.bindings = bindConsumerWitnessController(
+  consumerCollection,
+  consumerExpected,
+);
+consumerCollection.coverage = inspectConsumerWitnesses(
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-consumer-witnesses.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-profiles.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "scripts/required-native-tests.json"),
+      "utf8",
+    ),
+  ),
+  consumerCollection.observations,
+  consumerCollection.bindings,
+  consumerCollection.attemptRecords,
+);
+requireQualifiedConsumerWitnessFamily(consumerCollection.coverage, "rust");
 assert.equal(source.complete, true);
 assert.equal(source.passed, 9);
 // Guard mutations operate only on an owned compiled copy; the source mount stays read-only.
@@ -116,6 +166,7 @@ process.stdout.write(
     runtime,
     image,
     source,
+    consumerWitnesses: consumerCollection,
     guards,
     installed,
     environment: {

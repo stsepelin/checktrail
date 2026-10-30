@@ -1,3 +1,10 @@
+import {
+  beginConsumerWitness,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerVariant,
+  type ConsumerPhase,
+} from "./consumer-witness-fixture.js";
 import assert from "node:assert/strict";
 import { after, test, type TestContext } from "node:test";
 import { createHash } from "node:crypto";
@@ -100,7 +107,12 @@ async function original(t: TestContext, policy = broken) {
   const context = await createReviewContext(root, input());
   return { root, context, result: analysis(context) };
 }
-async function witness(root: string) {
+async function witness(
+  root: string,
+  variant: ConsumerVariant,
+  phase: ConsumerPhase = "canonical",
+) {
+  const capture = await beginConsumerWitness(root, "go", variant, phase);
   await mkdir(path.join(root, "witness"), { recursive: true });
   await writeFile(
     path.join(root, "witness/main.go"),
@@ -108,9 +120,15 @@ async function witness(root: string) {
   );
   const result = await runProcess(
     root,
-    { executable: "go", args: ["run", "./witness"], cwd: ".", env: goEnv },
+    {
+      executable: capture?.executable ?? "go",
+      args: ["run", "./witness"],
+      cwd: ".",
+      env: goEnv,
+    },
     { timeoutMs: 60000, maxOutputBytes: 65536, captureRawOutput: true },
   );
+  await recordConsumerWitnessAttempt(capture, result);
   assert.equal(result.exitCode, 0, result.stderr);
   assert.equal(result.errorCode, undefined);
   assert.equal(result.cancelled, false);
@@ -127,6 +145,7 @@ async function witness(root: string) {
       hash(await readFile(path.join(root, name), "utf8")),
     );
   assert.match(value.go, /^go1\./);
+  await finishConsumerWitness(capture, result);
   return value.answers as boolean[];
 }
 function bindings(result: ReturnType<typeof analysis>) {
@@ -190,12 +209,19 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-go broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [true, true, true, false, true, true]);
+  assert.deepEqual(await witness(root, "broken", "canonical"), [
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+  ]);
   const callerPath = path.join(root, "consumer/consumer.go"),
     callerBytes = await readFile(callerPath, "utf8");
   try {
     await writeFile(callerPath, callerBytes.replace('"grantToken"', '"other"'));
-    assert.deepEqual(await witness(root), [
+    assert.deepEqual(await witness(root, "broken", "caller-change"), [
       true,
       true,
       true,
@@ -288,7 +314,7 @@ test("context-go broken acceptance", native, async (t) => {
 test("context-go fixed acceptance", native, async (t) => {
   const { root, context, result } = await original(t, fixed);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "fixed", "canonical"), [
     true,
     false,
     false,
@@ -313,7 +339,7 @@ test("context-go fixed acceptance", native, async (t) => {
 test("context-go near-miss acceptance", native, async (t) => {
   await callIdentityFixture(t, "go", true, goEnv);
   const { root } = await original(t, near);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "near-miss", "canonical"), [
     true,
     false,
     false,
