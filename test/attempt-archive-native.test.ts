@@ -8,8 +8,17 @@ import { validate } from "../src/engine.js";
 import { projectReport } from "../src/output.js";
 import type { ProcessResult } from "../src/types.js";
 import { fixture } from "./helpers.js";
+import { ensureWindowsTaskAccess } from "../src/windows-task-access.js";
 const go = spawnSync("go", ["version"], { encoding: "utf8" });
 const available = go.status === 0;
+const goRoot = available
+  ? spawnSync("go", ["env", "GOROOT"], {
+      encoding: "utf8",
+      env: { ...process.env, GOTOOLCHAIN: "local" },
+    })
+  : undefined;
+if (goRoot) assert.equal(goRoot.status, 0, goRoot.stderr);
+const nativePath = goRoot ? path.join(goRoot.stdout.trim(), "bin") : "";
 const digest = (bytes: string) =>
   createHash("sha256").update(bytes).digest("hex");
 function physical(result: ProcessResult) {
@@ -38,6 +47,14 @@ test(
   async (t) => {
     const source =
       'package original\nimport "testing"\nfunc TestBoundary(t *testing.T){if Value("grant")!=true{t.Fatal("exact identifier")}}\nfunc TestAdjacent(t *testing.T){if Value("granting")!=false{t.Fatal("adjacent identifier")}}\n';
+    const environment: Record<string, string> = { PATH: nativePath };
+    if (process.platform === "win32") {
+      // The runner deliberately omits ambient LocalAppData. Select an operator
+      // cache outside project source, so Go can compile without changing it.
+      const cache = await fixture(t, {});
+      ensureWindowsTaskAccess(cache, "directory", true);
+      environment.GOCACHE = path.join(cache, "go-build");
+    }
     const root = await fixture(t, {
       "go.mod": "module example.invalid/original-archive\n\ngo 1.23\n",
       "value.go":
@@ -45,7 +62,13 @@ test(
       "value_test.go": source,
       "checktrail.json": JSON.stringify({
         schemaVersion: 1,
-        projects: [{ path: ".", checks: ["go.test"] }],
+        projects: [
+          {
+            path: ".",
+            checks: ["go.test"],
+            environment: Object.keys(environment),
+          },
+        ],
       }),
     });
     for (const fixed of [false, true]) {
@@ -54,7 +77,11 @@ test(
           path.join(root, "value.go"),
           'package original\nfunc Value(s string) bool{return s=="grant"}\n',
         );
-      const report = await validate(root, { trusted: true, timeoutMs: 120000 });
+      const report = await validate(root, {
+        trusted: true,
+        timeoutMs: 120000,
+        environment,
+      });
       assert.equal(
         report.outcome,
         fixed ? "passed" : "failed",
@@ -62,9 +89,9 @@ test(
       );
       assert.equal(report.checks.length, 1);
       const check = report.checks[0]!;
-      assert.equal(check.tests?.total, 2);
-      assert.equal(check.tests?.failed, fixed ? 0 : 1);
-      assert.equal(check.tests?.passed, fixed ? 2 : 1);
+      assert.equal(check.tests?.total, 2, JSON.stringify(check));
+      assert.equal(check.tests?.failed, fixed ? 0 : 1, JSON.stringify(check));
+      assert.equal(check.tests?.passed, fixed ? 2 : 1, JSON.stringify(check));
       const identity = check.tools!.find((tool) => tool.name === "go")!;
       assert.equal(identity.source, "version-command");
       assert.equal(identity.status, "identified");

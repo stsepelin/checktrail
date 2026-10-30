@@ -1353,3 +1353,66 @@ test("CI Windows lanes preserve frozen runtime pins and partition every original
     );
   assert.ok(workflow.jobs["ci-complete"].needs.includes("tasks-runtime"));
 });
+
+test("CI attempt archive lanes retain every frozen runtime, prerequisite and completion dependency", () => {
+  const hosted = workflow.jobs["attempt-runtime"];
+  assert.deepEqual(
+    hosted.strategy.matrix.include,
+    workflow.jobs["resource-release"].strategy.matrix.include,
+  );
+  assert.equal(hosted.name, "attempt-runtime (${{ matrix.slot }})");
+  assert.equal(hosted.strategy["fail-fast"], false);
+  for (const [id, command] of [
+    [
+      "attempt-runtime",
+      "node scripts/verify-attempt-runtime.mjs ${{ matrix.slot }}",
+    ],
+    ["attempt-runtime-arm64", "node scripts/verify-attempt-runtime-arm64.mjs"],
+  ] as const) {
+    const job = workflow.jobs[id];
+    const go = job.steps.filter((step: { uses?: string }) =>
+      step.uses?.startsWith("actions/setup-go@"),
+    );
+    assert.equal(go.length, 1);
+    assert.equal(
+      go[0].uses,
+      "actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e",
+    );
+    assert.deepEqual(go[0].with, { "go-version": "1.27.1", cache: false });
+
+    assert.deepEqual(job.needs, ["ci-plan", "actionlint"]);
+    assert.equal(
+      job.if,
+      "${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['" +
+        id +
+        "']) }}",
+    );
+    assert.ok(workflow.jobs["ci-complete"].needs.includes(id));
+    const gate = job.steps.find((step: { run?: string }) =>
+      step.run?.includes(command),
+    );
+    assert.ok(gate);
+    assert.equal(
+      gate.run.trim(),
+      "node scripts/verify-required-native-tests.mjs attempt-runtime-bindings attempt-foundation-bindings &&\n" +
+        command,
+    );
+    assert.equal(gate.if, undefined);
+    assert.equal(gate["continue-on-error"], undefined);
+    assert.equal(
+      plan(["test/gate-attempt-archives.test.ts"]).selected[id],
+      true,
+    );
+  }
+  assert.equal(
+    workflow.jobs["attempt-runtime-arm64"]["runs-on"],
+    "ubuntu-24.04-arm",
+  );
+  for (const id of ["tasks-runtime", "tasks-runtime-arm64"])
+    assert.equal(
+      workflow.jobs[id].steps.some((step: { run?: string }) =>
+        step.run?.includes("verify-attempt-runtime"),
+      ),
+      false,
+    );
+});
