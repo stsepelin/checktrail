@@ -211,6 +211,33 @@ test("native ESLint participation checks selected runtime bytes before importing
   await assert.rejects(access(path.join(root, "imported")));
 });
 
+test("native ESLint participation rejects adjacent and prerelease versions before importing configuration", async (t) => {
+  const root = await fixture(t, {
+    "package.json": '{"type":"module"}',
+    "checktrail.json": eslintPolicy(),
+    "checktrail.javascript.json":
+      '{"schemaVersion":1,"eslint":{"sourceParticipation":true}}',
+    "input.js": "export const value=7;\n",
+    "eslint.config.mjs":
+      "import fs from 'node:fs';fs.writeFileSync('imported','ran');export default [{rules:{'no-debugger':'error'}}];\n",
+  });
+  await copyESLint(root);
+  const target = path.join(root, "node_modules/eslint/package.json");
+  const metadata = JSON.parse(await readFile(target, "utf8"));
+  for (const version of ["10.13.1", "10.13.0-next.1", "110.13.0", "10.12.0"]) {
+    await writeFile(target, JSON.stringify({ ...metadata, version }));
+    const report = await validate(root, { trusted: true });
+    assert.equal(report.outcome, "incomplete", version);
+    assert.equal(report.checks[0]!.status, "unavailable", version);
+    assert.equal(
+      JSON.parse(report.checks[0]!.processes[0]!.stdout).reason,
+      "unsupported-version",
+      version,
+    );
+    await assert.rejects(access(path.join(root, "imported")));
+  }
+});
+
 test("native ESLint participation does not evaluate opaque generated-block getters while describing source", async (t) => {
   const root = await fixture(t, {
     "package.json": '{"type":"module"}',
