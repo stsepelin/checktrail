@@ -25,6 +25,13 @@ import {
   type ReviewContext,
 } from "../src/review.js";
 import { runProcess } from "../src/runner.js";
+import {
+  beginConsumerWitness,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerVariant,
+  type ConsumerCapture,
+} from "./consumer-witness-fixture.js";
 import { fixture } from "./helpers.js";
 import { fixtureGit, syntheticCommit } from "./git-fixture.js";
 import { hclBoundariesFixture } from "./review-hcl-boundaries-fixture.js";
@@ -100,31 +107,37 @@ async function terraform(root: string, args: string[]) {
     },
   );
 }
-async function initialize(root: string) {
+async function initialize(
+  root: string,
+  capture: ConsumerCapture | null = null,
+) {
   const ran = await terraform(root, [
     "init",
     "-backend=false",
     "-input=false",
     "-no-color",
   ]);
+  await recordConsumerWitnessAttempt(capture, ran, "hcl-init");
   assert.equal(ran.exitCode, 0, ran.stdout + ran.stderr);
   assert.equal(ran.errorCode, undefined);
   assert.equal(ran.truncated, false);
   assert.equal(ran.timedOut, false);
 }
-async function witness(root: string) {
-  await initialize(root);
+async function witness(root: string, variant: ConsumerVariant) {
+  const capture = await beginConsumerWitness(root, "hcl", variant);
+  await initialize(root, capture);
   const values: boolean[] = [];
+  let lastShowResult: Awaited<ReturnType<typeof terraform>> | null = null;
   try {
-    for (const role of [
-      "grant:read",
-      "grantToken",
-      "grant2",
-      "other",
-      "grant",
-      "grant:write",
-      "g",
-    ]) {
+    for (const [index, role] of [
+      [0, "grant:read"],
+      [1, "grantToken"],
+      [2, "grant2"],
+      [3, "other"],
+      [4, "grant"],
+      [5, "grant:write"],
+      [6, "g"],
+    ] as const) {
       const ran = await terraform(root, [
         "plan",
         "-input=false",
@@ -134,18 +147,23 @@ async function witness(root: string) {
         "role=" + role,
         "-out=original.plan",
       ]);
+      await recordConsumerWitnessAttempt(capture, ran, `hcl-plan-${index}`);
       assert.equal(ran.exitCode, 0, ran.stdout + ran.stderr);
       assert.equal(ran.errorCode, undefined);
       assert.equal(ran.truncated, false);
       assert.equal(ran.timedOut, false);
       const shown = await terraform(root, ["show", "-json", "original.plan"]);
+      await recordConsumerWitnessAttempt(capture, shown, `hcl-show-${index}`);
       assert.equal(shown.exitCode, 0, shown.stderr);
       assert.equal(shown.truncated, false);
       const parsed = JSON.parse(shown.stdout);
       const value = parsed.planned_values.outputs.result.value;
       assert.equal(typeof value, "boolean");
       values.push(value);
+      lastShowResult = shown;
     }
+    assert.ok(lastShowResult);
+    await finishConsumerWitness(capture, lastShowResult);
     return values;
   } finally {
     await rm(path.join(root, "original.plan"), { force: true });
@@ -193,7 +211,7 @@ function bindings(result: ReturnType<typeof analysis>, expectedReferences = 4) {
 test("context-hcl broken acceptance", native, async (t) => {
   const { root, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "broken"), [
     true,
     true,
     true,
@@ -256,7 +274,7 @@ test("context-hcl broken acceptance", native, async (t) => {
 test("context-hcl fixed acceptance", native, async (t) => {
   const { root, result } = await original(t, fixed);
   bindings(result, 5);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "fixed"), [
     true,
     false,
     false,
@@ -287,7 +305,7 @@ test("context-hcl fixed acceptance", native, async (t) => {
 test("context-hcl near-miss acceptance", native, async (t) => {
   const { root, result } = await original(t, near);
   bindings(result, 5);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "near-miss"), [
     true,
     false,
     false,
