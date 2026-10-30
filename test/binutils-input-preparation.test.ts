@@ -144,6 +144,16 @@ with tempfile.TemporaryDirectory() as temporary:
  except AssertionError:pass
  else:raise AssertionError('Existing output was overwritten')
  assert output.read_bytes()==before
+ admission=root/'admission.log';admission.write_bytes(b'Original synthetic admission refusal\n')
+ controller=root/'controller.log';controller.write_bytes(b'Original synthetic controller preflight refusal\n')
+ only_logs=root/'admission-only.zip'
+ missing_inputs=root/'never-created-inputs';missing_result=root/'never-created-result'
+ exported=module.export(missing_inputs,missing_result,only_logs,admission,controller)
+ assert exported['files']==2
+ with zipfile.ZipFile(only_logs) as archive:
+  assert archive.read('inputs/admission.log')==admission.read_bytes()
+  assert archive.read('result/controller.log')==controller.read_bytes()
+  assert len(json.loads(archive.read('manifest.json'))['rawFiles'])==2
  empty=root/'empty';empty.mkdir()
  try:module.export(empty,empty,root/'missing.zip')
  except AssertionError:pass

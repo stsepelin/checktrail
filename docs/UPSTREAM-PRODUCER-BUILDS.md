@@ -70,6 +70,11 @@ node scripts/acquire-binutils-inputs.mjs --output /absolute/new-input-attempt \
 ```
 
 It requires a POSIX host and the exact selected image already acquired locally.
+[Raw registry metadata](../scripts/producer-qualification/binutils-image-identity.v1.json)
+binds the selected manifest to its config and filesystem layers. Admission accepts
+the manifest-ID and config-ID forms observed from Docker only with that same
+pinned filesystem and exact repository reference. The older preparation record's
+local image ID remains a historical observation, not a portable ID assertion.
 Four workers download fixed Snapshot objects with exact SHA-256 and byte counts;
 a failed or interrupted download cannot publish its final file. The original
 image's APT store method regenerates the indexes without network access or package
@@ -181,7 +186,8 @@ authentication and default upstream checks are preserved.
 
 Standard [hosted-runner storage](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
 is smaller than this producer's frozen work-retention ceiling. This dedicated job
-reclaims a fixed list of unrelated preinstalled SDK directories only after checking
+reclaims a fixed list of unrelated preinstalled SDK directories only when measured
+capacity is insufficient, and only after checking
 that it runs on a disposable GitHub-hosted Linux x64 VM. It refuses linked roots
 and does not prune shared Docker storage. The original producer still checks
 actual available capacity before starting; its resource and retention limits are
@@ -198,7 +204,9 @@ remain visible and do not become passing tests. Full compiler/SDK/bootstrap,
 complete test-configuration and original-notice qualification remain incomplete.
 
 The workflow retains a bounded archive of original metadata, test reports and
-associated logs for one day, including failed attempts. Its manifest records each
+associated logs for one day, including failed attempts. Input-admission and
+producer-controller diagnostics are retained even when a preflight refusal
+occurs before either result directory exists. Its manifest records each
 raw file's length and SHA-256. The collector rereads the actual ZIP members before
 publication. Native worktree archives and binary packages are hashed by the build
 controller and retained during the job; they are not uploaded in this bounded

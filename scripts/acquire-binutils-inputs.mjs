@@ -34,6 +34,7 @@ import {
   validateInputs,
 } from "./qualify-binutils-producer.mjs";
 
+import { validateObservedImage } from "./producer-qualification/binutils-image-identity.mjs";
 const exec = promisify(execFile);
 const sourceDirectory = fileURLToPath(
   new URL("producer-qualification/", import.meta.url),
@@ -228,15 +229,7 @@ async function imageObservation(plan) {
   const images = JSON.parse(result.stdout);
   assert.equal(images.length, 1);
   const image = images[0];
-  assert.equal(image.Id, plan.transform.observedImageId);
-  assert.equal(image.Os, "linux");
-  assert.equal(image.Architecture, "amd64");
-  assert.ok(
-    image.RepoDigests.some(
-      (ref) => ref.split("@")[1] === plan.transform.image.split("@")[1],
-    ),
-  );
-  return { id: image.Id, os: image.Os, architecture: image.Architecture };
+  return validateObservedImage(image, plan.transform.registryIdentity);
 }
 async function cleanup(name, attempt) {
   const ids = (

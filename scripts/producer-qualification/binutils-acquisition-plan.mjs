@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
+import { registryImageIdentity } from "./binutils-image-identity.mjs";
 
 const emptySha = createHash("sha256").update("").digest("hex");
 const hash = (value) => createHash("sha256").update(value).digest("hex");
@@ -238,6 +239,8 @@ export async function loadAcquisitionPlan() {
     path.join(directory, "binutils.v1.json"),
     path.join(directory, "binutils-apt-index-preparation.v1.json"),
     path.join(directory, "../qualify-binutils-producer.mjs"),
+    path.join(directory, "binutils-image-identity.v1.json"),
+    path.join(directory, "binutils-image-identity.mjs"),
   ].map((file) => path.resolve(file));
   const before = await Promise.all(
     sources.map((file) => identifyFile(file, 1048576)),
@@ -250,6 +253,11 @@ export async function loadAcquisitionPlan() {
   const preparation = JSON.parse(preparationBytes.toString("utf8"));
   await validateInputs(directory, recipe.controllerFiles);
   const plan = acquisitionPlan(recipe, preparation);
+  const imageRecord = JSON.parse(await readFile(sources[4], "utf8"));
+  plan.transform.registryIdentity = registryImageIdentity(
+    imageRecord,
+    recipe.image,
+  );
   const after = await Promise.all(
     sources.map((file) => identifyFile(file, 1048576)),
   );

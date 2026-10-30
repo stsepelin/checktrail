@@ -42,7 +42,18 @@ jobs:
           test "$RUNNER_ENVIRONMENT" = "github-hosted"
           test "$RUNNER_OS" = "Linux"
           test "$RUNNER_ARCH" = "X64"
+          producer_needed=$(node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const recipe = JSON.parse(readFileSync('scripts/producer-qualification/binutils.v1.json', 'utf8'));
+          console.log(recipe.limits.workByteLimit + recipe.limits.logByteLimit + 3 * recipe.files.reduce((sum, row) => sum + row.bytes, 0) + 8 * 1024 ** 3);
+          NODE
+          )
           for producer_sdk in /usr/local/lib/android /usr/share/dotnet /usr/local/.ghcup /opt/hostedtoolcache/CodeQL; do
+            producer_free=$(node --input-type=module -e 'import {statfsSync} from "node:fs"; const value=statfsSync(process.env.RUNNER_TEMP); console.log(value.bavail * value.bsize);')
+            if test "$producer_free" -ge "$producer_needed"; then
+              echo "Available capacity already covers frozen producer preparation and retention."
+              break
+            fi
             if test -L "$producer_sdk"; then
               echo "Refusing a linked SDK directory: $producer_sdk" >&2
               exit 1
@@ -62,17 +73,22 @@ jobs:
           execFileSync('docker', ['pull', '--platform', 'linux/amd64', recipe.image], {stdio: 'inherit'});
           NODE
       - name: Acquire and authenticate every original input
-        run: >-
-          node scripts/acquire-binutils-inputs.mjs
-          --output "$RUNNER_TEMP/binutils-inputs"
-          --operator-trust-execution
+        shell: bash
+        run: |
+          set +e
+          node scripts/acquire-binutils-inputs.mjs --output "$RUNNER_TEMP/binutils-inputs" --operator-trust-execution > "$RUNNER_TEMP/binutils-input-admission.log" 2>&1
+          producer_input_status=$?
+          set -e
+          cat "$RUNNER_TEMP/binutils-input-admission.log"
+          exit "$producer_input_status"
       - name: Run the original package defaults and reconcile their observations
         shell: bash
         run: |
           set +e
-          node scripts/qualify-binutils-producer.mjs --inputs "$RUNNER_TEMP/binutils-inputs/bundle" --output "$RUNNER_TEMP/binutils-result"
+          node scripts/qualify-binutils-producer.mjs --inputs "$RUNNER_TEMP/binutils-inputs/bundle" --output "$RUNNER_TEMP/binutils-result" > "$RUNNER_TEMP/binutils-build-controller.log" 2>&1
           producer_status=$?
           set -e
+          cat "$RUNNER_TEMP/binutils-build-controller.log"
           node scripts/verify-binutils-build-observation.mjs --result "$RUNNER_TEMP/binutils-result" --controller-exit "$producer_status"
       - name: Retain bounded original receipts and test logs
         if: always()
@@ -81,6 +97,8 @@ jobs:
           --inputs "$RUNNER_TEMP/binutils-inputs"
           --result "$RUNNER_TEMP/binutils-result"
           --output "$RUNNER_TEMP/binutils-evidence.zip"
+          --admission-log "$RUNNER_TEMP/binutils-input-admission.log"
+          --controller-log "$RUNNER_TEMP/binutils-build-controller.log"
       - name: Upload original observation archive
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

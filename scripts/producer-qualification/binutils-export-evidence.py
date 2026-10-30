@@ -29,7 +29,7 @@ def physical(file):
     return file
 
 
-def export(inputs, result, output):
+def export(inputs, result, output, admission_log=None, controller_log=None):
     inputs, result, output = map(lambda value: Path(value).absolute(), [inputs, result, output])
     physical(output.parent)
     assert output.parent.is_dir() and not output.exists()
@@ -49,6 +49,10 @@ def export(inputs, result, output):
         total += info.st_size
         assert len(rows) <= 2200 and total <= 2 * 1024**3, 'Evidence inventory exceeded bound'
 
+    if admission_log is not None:
+        add(Path(admission_log).absolute(), 'inputs/admission.log', 8 * 1024**2)
+    if controller_log is not None:
+        add(Path(controller_log).absolute(), 'result/controller.log', 8 * 1024**2)
     add(inputs / 'receipt.json', 'inputs/receipt.json', 2 * 1024**2)
     add(inputs / 'transform.log', 'inputs/transform.log', 8 * 1024**2)
     if (inputs / 'transform').exists():
@@ -119,5 +123,7 @@ if __name__ == '__main__':
     parser.add_argument('--inputs', required=True)
     parser.add_argument('--result', required=True)
     parser.add_argument('--output', required=True)
+    parser.add_argument('--admission-log')
+    parser.add_argument('--controller-log')
     args = parser.parse_args()
-    print(json.dumps(export(args.inputs, args.result, args.output)))
+    print(json.dumps(export(args.inputs, args.result, args.output, args.admission_log, args.controller_log)))
