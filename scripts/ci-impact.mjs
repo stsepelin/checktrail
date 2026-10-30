@@ -24,6 +24,7 @@ const generic = new Set([
   "scripts/consumer-witness-evidence.mjs",
   "scripts/consumer-witness-attempts.mjs",
   "scripts/consumer-witness-jvm.mjs",
+  "scripts/consumer-witness-managed.mjs",
 ]);
 const compiledSource = (file) =>
   file.startsWith("dist/") ? file.slice(5).replace(/\.js$/, ".ts") : file;

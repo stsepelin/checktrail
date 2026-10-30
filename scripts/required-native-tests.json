@@ -5991,6 +5991,22 @@
     {
       "file": "dist/test/consumer-witness-evidence.test.js",
       "name": "JVM command observation retains short long joined and repeated classpath options without matching adjacent flags"
+    },
+    {
+      "file": "dist/test/consumer-witness-managed.test.js",
+      "name": "synthetic managed witnesses require observed SDK runtime references seeded configuration and copied FSharp dependency"
+    },
+    {
+      "file": "dist/test/consumer-witness-managed.test.js",
+      "name": "managed actual command observation retains selected compiler output and all reference spellings without adjacent flag matches"
+    },
+    {
+      "file": "dist/test/consumer-witness-managed.test.js",
+      "name": "managed seeded output observation retains configuration and copied library bytes while reference inventory ignores unrelated files"
+    },
+    {
+      "file": "dist/test/consumer-witness-managed.test.js",
+      "name": "native source echo decoding covers every prepared and managed collector format with exact byte counts"
     }
   ]
 }

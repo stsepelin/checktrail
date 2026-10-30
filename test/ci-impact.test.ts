@@ -1361,6 +1361,7 @@ test("CI shared consumer observers retain imports and exact selected context pro
     "consumer-witness-evidence",
     "consumer-witness-attempts",
     "consumer-witness-jvm",
+    "consumer-witness-managed",
   ];
   const actual = await buildNativeInputs({
     workflow: {

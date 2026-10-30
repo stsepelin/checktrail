@@ -1,4 +1,8 @@
 import {
+  inspectManagedInputs,
+  managedConsumerFamilies,
+} from "./consumer-witness-managed.mjs";
+import {
   inspectJvmInputs,
   jvmConsumerFamilies,
 } from "./consumer-witness-jvm.mjs";
@@ -29,6 +33,9 @@ export async function captureConsumerWitnessController(
       "java",
       "kotlin",
       "scala",
+      "csharp",
+      "fsharp",
+      "vb",
     ].includes(family),
   );
   const profile = "context-" + family;
@@ -48,6 +55,7 @@ export async function captureConsumerWitnessController(
     "scripts/compiled-engine-evidence.mjs",
     "scripts/consumer-witness-attempts.mjs",
     "scripts/consumer-witness-jvm.mjs",
+    "scripts/consumer-witness-managed.mjs",
   ];
   const identities = await Promise.all(
     files.map(async (file) => {
@@ -125,6 +133,20 @@ export async function captureConsumerWitnessController(
           ? /kotlinc-jvm 2\.4\.10 /.test(runtime.kotlinVersion ?? "")
           : /Scala compiler version 3\.9\.0/.test(runtime.scalaVersion ?? "")));
   }
+  const managedInputs = managedConsumerFamilies.includes(family)
+    ? inspectManagedInputs(runtime.managedInputs, family)
+    : null;
+  if (managedInputs) {
+    assert.deepEqual(managedInputs.dotnet, tool);
+    const compiler =
+      family === "fsharp"
+        ? "Microsoft (R) F# Compiler version 15.2.401.0 for F# 10.0"
+        : "5.9.0-1.26423.113 (e34a38d2ae1fc26406a317517196e55c68ff83ab)";
+    toolVersionMatched =
+      runtime.dotnet === inventory.toolVersions.dotnet &&
+      runtime.compiler === compiler &&
+      /Microsoft.NETCore.App 10\.0\.12(?: |$)/.test(runtime.runtimes ?? "");
+  }
   const nativeTool = ["c", "cpp"].includes(family)
     ? {
         name: family === "c" ? "gcc" : "g++",
@@ -143,6 +165,7 @@ export async function captureConsumerWitnessController(
       runtimeVersion: runtime.toolVersion,
       nativeTool,
       jvmInputs,
+      managedInputs,
     }),
   );
   return {
@@ -150,6 +173,7 @@ export async function captureConsumerWitnessController(
     toolVersionMatched,
     nativeTool,
     jvmInputs,
+    managedInputs,
     requirements: required,
     engineSha256: engine.treeSha256,
     harnessSha256: hash(
@@ -159,6 +183,7 @@ export async function captureConsumerWitnessController(
         identities[3],
         identities[4],
         identities[5],
+        identities[6],
       ]),
     ),
     requirementsSha256: hash(JSON.stringify(required)),

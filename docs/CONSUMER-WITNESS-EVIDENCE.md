@@ -85,3 +85,12 @@ Every compiler/runtime classpath entry is derived from the actual command vector
 and must match the observed output directory and selected JAR directory or
 runtime JAR. An additional or redirected dependency cannot be qualified by an
 unrelated library observation.
+
+The shared managed adapter prepares C#/F#/VB observations without marking their
+fixture hooks prepared before integration. It observes the actual dotnet host,
+compiler directory/deps/configuration, complete selected reference DLL set, CLR
+runtime and hostfxr payloads. Runtime and hostfxr version-directory inventories
+must each contain the frozen version alone; additional versions cannot hide
+roll-forward selection. The pre-compiler seed contains the exact runtimeconfig
+and, for F#, its byte-matching copied FSharp.Core. Witness.dll must be produced
+after that seed and stay unchanged through the actual consumer invocation.

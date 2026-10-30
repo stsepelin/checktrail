@@ -1,4 +1,8 @@
 import {
+  inspectManagedAttempt,
+  requireManagedAttemptBinding,
+} from "./consumer-witness-managed.mjs";
+import {
   inspectJvmAttempt,
   requireJvmAttemptBinding,
 } from "./consumer-witness-jvm.mjs";
@@ -15,6 +19,44 @@ const uuid = (value) =>
   /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(
     value,
   );
+/** Decode the original native source echo, without guessing from runtime labels. */
+export function consumerWitnessSourceSha256(family, raw, expectedBytes) {
+  assert.ok(
+    Number.isSafeInteger(expectedBytes) &&
+      expectedBytes >= 0 &&
+      expectedBytes <= 1048576,
+  );
+  if (
+    [
+      "rust",
+      "ruby",
+      "c",
+      "cpp",
+      "java",
+      "kotlin",
+      "scala",
+      "csharp",
+      "fsharp",
+      "vb",
+    ].includes(family)
+  ) {
+    assert.ok(
+      Array.isArray(raw) &&
+        raw.every(
+          (value) => Number.isInteger(value) && value >= 0 && value <= 255,
+        ),
+    );
+    assert.equal(
+      raw.length,
+      expectedBytes,
+      "Physical native source byte count differs",
+    );
+    return hash(Buffer.from(raw));
+  }
+  assert.ok(["go", "python", "php"].includes(family));
+  assert.ok(digest(raw), "Native source hash is malformed");
+  return raw;
+}
 export function consumerAttemptState(value) {
   const result = value.result;
   if (
@@ -73,6 +115,9 @@ export function inspectConsumerAttemptRecords(records) {
         "java",
         "kotlin",
         "scala",
+        "csharp",
+        "fsharp",
+        "vb",
       ].includes(value.family),
     );
     assert.ok(["broken", "fixed", "near-miss"].includes(value.variant));
@@ -85,11 +130,20 @@ export function inspectConsumerAttemptRecords(records) {
     assert.ok(
       value.stage === "consumer" ||
         (value.stage === "compiler" &&
-          ["rust", "c", "cpp", "java", "kotlin", "scala"].includes(
-            value.family,
-          )),
+          [
+            "rust",
+            "c",
+            "cpp",
+            "java",
+            "kotlin",
+            "scala",
+            "csharp",
+            "fsharp",
+            "vb",
+          ].includes(value.family)),
     );
     inspectJvmAttempt(value);
+    inspectManagedAttempt(value);
     assert.equal(value.processStartAcknowledgementRetained, false);
     assert.equal(value.gateAComplete, false);
     assert.ok(
@@ -196,9 +250,17 @@ export function inspectConsumerAttemptRecords(records) {
 }
 export function requireConsumerWitnessAttempts(witness, records, used) {
   assert.ok(uuid(witness.witnessId), "Missing consumer witness identity");
-  const stages = ["rust", "c", "cpp", "java", "kotlin", "scala"].includes(
-    witness.family,
-  )
+  const stages = [
+    "rust",
+    "c",
+    "cpp",
+    "java",
+    "kotlin",
+    "scala",
+    "csharp",
+    "fsharp",
+    "vb",
+  ].includes(witness.family)
     ? ["compiler", "consumer"]
     : ["consumer"];
   assert.ok(Array.isArray(witness.attempts));
@@ -275,6 +337,7 @@ export function requireConsumerWitnessAttempts(witness, records, used) {
       "Consumer attempt physical output differs",
     );
     requireJvmAttemptBinding(witness, value);
+    requireManagedAttemptBinding(witness, value);
     used.add(reference.attemptId);
   }
 }

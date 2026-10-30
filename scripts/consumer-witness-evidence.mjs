@@ -1,4 +1,8 @@
 import {
+  managedConsumerFamilies,
+  inspectManagedWitness,
+} from "./consumer-witness-managed.mjs";
+import {
   jvmConsumerFamilies,
   inspectJvmWitness,
 } from "./consumer-witness-jvm.mjs";
@@ -8,6 +12,7 @@ import { createHash } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 import {
   inspectConsumerAttemptRecords,
+  consumerWitnessSourceSha256,
   requireConsumerWitnessAttempts,
 } from "./consumer-witness-attempts.mjs";
 const hash = (value) => createHash("sha256").update(value).digest("hex");
@@ -46,6 +51,9 @@ const sourcePaths = Object.freeze({
   java: ["src/policy/Policy.java", "src/consumer/Consumer.java"],
   kotlin: ["src/policy/Policy.kt", "src/consumer/Consumer.kt"],
   scala: ["src/policy/Policy.scala", "src/consumer/Consumer.scala"],
+  csharp: ["src/policy/Policy.cs", "src/consumer/Consumer.cs"],
+  fsharp: ["src/policy/Policy.fs", "src/consumer/Consumer.fs"],
+  vb: ["src/policy/Policy.vb", "src/consumer/Consumer.vb"],
 });
 /** Selected declarations are checked against the inventory, never treated as executions. */
 export function selectConsumerWitnessRequirements(
@@ -97,7 +105,13 @@ export function selectConsumerWitnessRequirements(
     assert.deepEqual(row.cases, expected);
     assert.ok(["prepared", "pending"].includes(row.collectorImplementation));
     assert.equal(row.nativeAcceptance, "pending");
-    assert.deepEqual(row.sourcePaths, sourcePaths[row.id] ?? null);
+    if (row.collectorImplementation === "prepared") {
+      assert.ok(
+        Object.hasOwn(sourcePaths, row.id),
+        "Consumer collector implementation is unavailable",
+      );
+      assert.deepEqual(row.sourcePaths, sourcePaths[row.id]);
+    } else assert.equal(row.sourcePaths, null);
     return { ...row, cases: expected };
   });
 }
@@ -166,6 +180,11 @@ export function inspectConsumerWitnesses(
     assert.equal(row.profile, "original-consumer-witness-observation-v1");
     const selected = expected.get(row.family);
     assert.ok(selected, "Foreign consumer witness family");
+    assert.equal(
+      selected.collectorImplementation,
+      "prepared",
+      "Consumer family collector remains pending",
+    );
     assert.ok(
       Object.hasOwn(sourcePaths, row.family),
       "Consumer family collector remains pending",
@@ -238,7 +257,8 @@ export function inspectConsumerWitnesses(
     assert.ok(
       row.nativeResult &&
         Array.isArray(row.nativeResult.consumers) &&
-        row.nativeResult.consumers.length === (row.family === "ruby" ? 3 : 2) &&
+        row.nativeResult.consumers.length ===
+          (["ruby", "csharp", "fsharp", "vb"].includes(row.family) ? 3 : 2) &&
         row.nativeResult.consumers.every((v) => typeof v === "boolean"),
     );
     const native = JSON.parse(stdout.toString("utf8"));
@@ -248,7 +268,7 @@ export function inspectConsumerWitnesses(
     const expectedConsumers =
       row.phase === "caller-change"
         ? [false, true]
-        : row.family === "ruby"
+        : ["ruby", "csharp", "fsharp", "vb"].includes(row.family)
           ? row.variant === "broken"
             ? [true, true, true]
             : row.variant === "near-miss"
@@ -304,29 +324,7 @@ export function inspectConsumerWitnesses(
         native.sources?.[
           row.family === "python" ? file.path.split("/").at(-1) : file.path
         ];
-      const retainedSource = [
-        "rust",
-        "ruby",
-        "c",
-        "cpp",
-        "java",
-        "kotlin",
-        "scala",
-      ].includes(row.family);
-      if (retainedSource) {
-        assert.ok(
-          Array.isArray(raw) &&
-            raw.every(
-              (value) => Number.isInteger(value) && value >= 0 && value <= 255,
-            ),
-        );
-        assert.equal(
-          raw.length,
-          file.bytes,
-          "Physical native source byte count differs",
-        );
-      }
-      const actual = retainedSource ? hash(Buffer.from(raw)) : raw;
+      const actual = consumerWitnessSourceSha256(row.family, raw, file.bytes);
       assert.equal(
         actual,
         file.sha256,
@@ -338,7 +336,19 @@ export function inspectConsumerWitnesses(
         "Derived native source identity differs",
       );
     }
-    if (["rust", "c", "cpp", "java", "kotlin", "scala"].includes(row.family)) {
+    if (
+      [
+        "rust",
+        "c",
+        "cpp",
+        "java",
+        "kotlin",
+        "scala",
+        "csharp",
+        "fsharp",
+        "vb",
+      ].includes(row.family)
+    ) {
       assert.ok(
         row.compiler,
         "Compiled consumer lacks its reached compiler observation",
@@ -366,6 +376,9 @@ export function inspectConsumerWitnesses(
     } else assert.equal(row.compiler, null);
     if (jvmConsumerFamilies.includes(row.family)) inspectJvmWitness(row);
     else assert.ok(row.jvm === undefined || row.jvm === null);
+    if (managedConsumerFamilies.includes(row.family))
+      inspectManagedWitness(row);
+    else assert.ok(row.managed === undefined || row.managed === null);
     if (row.phase !== "canonical") continue;
     const address = JSON.stringify([row.family, row.variant, row.origin]);
     if (reached.has(address)) {
@@ -503,6 +516,16 @@ export function inspectConsumerWitnesses(
           row.tool.sha256,
           "Native tool observation differs",
         );
+        if (managedConsumerFamilies.includes(row.family)) {
+          assert.equal(
+            binding.managedInputsSha256,
+            hash(JSON.stringify(row.managed.inputs)),
+          );
+          assert.equal(
+            binding.generatedManifestSha256,
+            row.managed.generated.manifestSha256,
+          );
+        }
         if (jvmConsumerFamilies.includes(row.family)) {
           assert.equal(
             binding.jvmInputsSha256,
@@ -728,6 +751,12 @@ export function bindConsumerWitnessController(collection, expected) {
           expected.jvmInputs,
           "JVM dependency bytes differ from the observed native controller",
         );
+      if (managedConsumerFamilies.includes(row.family))
+        assert.deepEqual(
+          row.managed.inputs,
+          expected.managedInputs,
+          "Managed SDK/runtime bytes differ from the observed native controller",
+        );
       return {
         family: row.family,
         variant: row.variant,
@@ -743,7 +772,13 @@ export function bindConsumerWitnessController(collection, expected) {
         toolVersionMatched: expected.toolVersionMatched,
         nativeTool: expected.nativeTool,
         jvmInputsSha256: row.jvm ? hash(JSON.stringify(row.jvm.inputs)) : null,
-        generatedManifestSha256: row.jvm?.generated.manifestSha256 ?? null,
+        managedInputsSha256: row.managed
+          ? hash(JSON.stringify(row.managed.inputs))
+          : null,
+        generatedManifestSha256:
+          row.jvm?.generated.manifestSha256 ??
+          row.managed?.generated.manifestSha256 ??
+          null,
         observationSha256: hash(JSON.stringify(row)),
         runtimeImage: expected.runtimeImage,
         complete: true,

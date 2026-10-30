@@ -205,6 +205,17 @@
     "rust-context-arm64",
     "scala-context-arm64"
   ],
+  "scripts/consumer-witness-managed.mjs": [
+    "c-context-arm64",
+    "cpp-context-arm64",
+    "go-workspaces-arm64",
+    "java-context-arm64",
+    "kotlin-context-arm64",
+    "php-context-arm64",
+    "ruby-context-arm64",
+    "rust-context-arm64",
+    "scala-context-arm64"
+  ],
   "scripts/cpp-archive-fallbacks/libexpat-2.8.5-r0.apk": [
     "cpp-extensions-arm64",
     "cpp-tools"
