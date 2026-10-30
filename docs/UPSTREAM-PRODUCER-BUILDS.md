@@ -34,9 +34,18 @@ keyring; changed signed text fails and the unchanged original verifies again. An
 earlier helper-based compression attempt did not reproduce every pinned compressed
 file and remains a failed attempt. No compiler build ran and no pin was replaced.
 
-These locations do not establish current availability of every bundle input.
-Complete bundle reacquisition remains unverified; arranging a bundle still requires
-its exact pinned bytes. The controller does not replace an expired or missing
+The retained [input reacquisition record](../scripts/producer-qualification/binutils-input-reacquisition.v1.json)
+records a fresh download of every required public object through the official
+Debian Snapshot file API, followed by exact index regeneration, bounded regular
+keyring-member extraction and an independent full bundle check. Each recipe
+download records its immutable Snapshot location. SHA-1 selects the server object;
+the frozen SHA-256, byte count and original signatures remain the integrity checks.
+The two empty locks are generated locally. Downloaded-object and final-bundle
+partitions are recorded separately because compressed index inputs and the
+developer-keyring package become different final files.
+
+Availability was observed at that record's timestamp; future execution still
+requires all exact pinned bytes. The controller does not replace an expired or missing
 snapshot with current packages,
 disable authentication/freshness, or install on the host. Changed pins require a
 reviewable recipe revision. Extra bundle files are not staged or executed.
@@ -109,7 +118,10 @@ Preparation exits zero on successful data validation. Actual execution currently
 returns a nonzero, explicitly incomplete qualification status even when the
 original package command succeeds: the independent expected configuration/test
 inventory is not yet closed. That limitation cannot be converted to passing
-qualification by an observed report list alone.
+qualification by an observed report list alone. Original Debian rules can complete
+the package build while retaining upstream test failures or skips. The receipt
+preserves those test outcomes separately from package-command completion; it does
+not turn them into passing tests or impose a different upstream test policy.
 
 A completed original package command is distinct from publisher binary equality,
 which is not assessed by this controller. Compiler/bootstrap/base-image ancestry

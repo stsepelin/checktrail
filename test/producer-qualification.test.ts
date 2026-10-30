@@ -780,3 +780,64 @@ test("producer retains bounded multi-megabyte native logs without admitting over
     }
   }
 });
+
+test("producer original package completion preserves failed and unavailable test evidence without claiming qualification", async (t) => {
+  const complete = { commandCompleted: true };
+  const outputs = { files: [{ file: "binutils_2.40-2_amd64.deb" }] };
+  const original = await reportFixture(t, true);
+  const failed = await api.summarizeReports(original.value, original.root);
+  assert.equal(failed.state, "failed");
+  const failedBefore = structuredClone(failed);
+  assert.deepEqual(api.summarizeBuildCompletion(complete, failed, outputs), {
+    state: "build-completed-qualification-incomplete",
+    testEvidenceState: "failed",
+    qualificationComplete: false,
+  });
+  assert.deepEqual(
+    failed,
+    failedBefore,
+    "Original failures must remain unchanged",
+  );
+
+  const collected = await collectProducerReports(t, {
+    "source/builddir-single/gold/testsuite/skip.trs": automakeReport("SKIP"),
+    "source/builddir-single/gold/testsuite/skip.log":
+      "Original unavailable test\n",
+  });
+  assert.equal(collected.result.status, 0, collected.result.stderr);
+  const unavailable = await api.summarizeReports(
+    JSON.parse(await readFile(collected.output, "utf8")),
+    collected.retained,
+  );
+  assert.equal(unavailable.state, "unavailable");
+  const unavailableBefore = structuredClone(unavailable);
+  assert.deepEqual(
+    api.summarizeBuildCompletion(complete, unavailable, outputs),
+    {
+      state: "build-completed-qualification-incomplete",
+      testEvidenceState: "unavailable",
+      qualificationComplete: false,
+    },
+  );
+  assert.deepEqual(unavailable, unavailableBefore);
+  assert.throws(
+    () =>
+      api.summarizeBuildCompletion(
+        { commandCompleted: false },
+        failed,
+        outputs,
+      ),
+    /Original package command did not complete successfully/,
+  );
+  assert.throws(
+    () =>
+      api.summarizeBuildCompletion(complete, failed, {
+        files: [{ file: "results.txt" }],
+      }),
+    /No original binary package produced/,
+  );
+  assert.throws(
+    () => api.summarizeBuildCompletion(complete, { state: "passed" }, outputs),
+    /Unknown original test evidence state/,
+  );
+});

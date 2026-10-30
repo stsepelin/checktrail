@@ -446,6 +446,27 @@ export async function summarizeReports(value, root, minimum) {
     repeatedConfigurationsPooled: false,
   };
 }
+// Original package defaults may retain failed/skipped tests and still exit zero.
+// Preserve that distinction; neither observation closes producer qualification.
+export function summarizeBuildCompletion(originalBuild, testEvidence, outputs) {
+  assert.ok(
+    originalBuild.commandCompleted,
+    "Original package command did not complete successfully",
+  );
+  assert.ok(
+    ["reported", "failed", "unavailable"].includes(testEvidence.state),
+    "Unknown original test evidence state",
+  );
+  assert.ok(
+    outputs.files.some((row) => row.file.endsWith(".deb")),
+    "No original binary package produced",
+  );
+  return {
+    state: "build-completed-qualification-incomplete",
+    testEvidenceState: testEvidence.state,
+    qualificationComplete: false,
+  };
+}
 // A fixed synchronous child factory is invoked only after raw-log admission.
 export async function observeForeground(
   startChild,
@@ -1008,24 +1029,16 @@ async function main(args) {
       "Retained work exceeded bound",
     );
     await validateInputs(inputs, recipe.files);
-    assert.ok(
-      state.originalBuild.commandCompleted,
-      "Original package command did not complete successfully",
-    );
-    assert.equal(
-      state.testEvidence.state,
-      "reported",
-      "Original upstream tests failed or evidence is empty",
-    );
-    assert.ok(
-      state.outputs.files.some((row) => row.file.endsWith(".deb")),
-      "No original binary package produced",
+    state.buildCompletion = summarizeBuildCompletion(
+      state.originalBuild,
+      state.testEvidence,
+      state.outputs,
     );
     assert.ok(
       !controller.signal.aborted,
       "Interrupted during result collection",
     );
-    state.state = "build-completed-qualification-incomplete";
+    state.state = state.buildCompletion.state;
   } catch (error) {
     state.stopTrigger = controller.signal.aborted
       ? controller.signal.reason
