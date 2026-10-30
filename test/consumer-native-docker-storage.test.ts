@@ -11,6 +11,7 @@ import {
   lstat,
   writeFile,
   mkdir,
+  symlink,
 } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -226,6 +227,71 @@ test(
       assert.throws(() => readConsumerDockerCaptureContext(created.path));
     } finally {
       await rm(created.directory, { recursive: true, force: true });
+    }
+  },
+);
+
+test(
+  "operator CLI storage binds the canonical binary while preserving a real symlink invocation argv0 for multicall clients",
+  { skip: process.platform === "win32" },
+  async () => {
+    const directory = await realpath(
+      await mkdtemp(
+        path.join(os.tmpdir(), "checktrail-multicall-storage-control-"),
+      ),
+    );
+    try {
+      const invocation = path.join(directory, "original-synthetic-cli-name");
+      await symlink(process.execPath, invocation);
+      const created = createConsumerDockerCaptureContext(
+        directory,
+        {
+          attemptId: randomUUID(),
+          scopeId: "synthetic:multicall-storage",
+          captureKind: "native-consumer",
+          sourceFrameSha256: "d".repeat(64),
+        },
+        invocation,
+        "synthetic-multicall-control",
+      );
+      assert.equal(
+        created.context.realDocker,
+        await realpath(process.execPath),
+      );
+      assert.equal(created.context.dockerInvocation, invocation);
+      const result = spawnSync(
+        process.execPath,
+        [
+          wrapper,
+          "--input-type=module",
+          "-e",
+          "process.stdout.write(process.argv0+'\\n');",
+        ],
+        {
+          env: {
+            ...process.env,
+            CHECKTRAIL_CONSUMER_DOCKER_CONTEXT: created.path,
+          },
+          encoding: "utf8",
+          timeout: 10000,
+        },
+      );
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(result.stdout, invocation + "\n");
+      const { receipt } = await capture(directory);
+      assert.equal(receipt.body.status, 0);
+      assert.equal(
+        (await readFile(receipt.operations[0].stdout.path)).toString("utf8"),
+        result.stdout,
+      );
+      await rm(invocation);
+      await symlink(wrapper, invocation);
+      assert.throws(
+        () => readConsumerDockerCaptureContext(created.path),
+        /Native Docker invocation target changed/,
+      );
+    } finally {
+      await rm(directory, { recursive: true, force: true });
     }
   },
 );

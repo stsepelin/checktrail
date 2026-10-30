@@ -109,7 +109,9 @@ export function createConsumerDockerCaptureContext(
   task,
 ) {
   ownedDirectory(directory);
-  const executable = realpathSync(realDocker);
+  assert.ok(path.isAbsolute(realDocker));
+  const invocation = path.resolve(realDocker),
+    executable = realpathSync(invocation);
   assert.ok(lstatSync(executable).isFile());
   const context = {
     schemaVersion: 1,
@@ -118,6 +120,7 @@ export function createConsumerDockerCaptureContext(
     task,
     directory,
     realDocker: executable,
+    dockerInvocation: invocation,
     registryContext,
   };
   consumerCaptureLabels(context);
@@ -138,6 +141,13 @@ export function readConsumerDockerCaptureContext(filename) {
   assert.ok(path.isAbsolute(value.realDocker));
   assert.equal(realpathSync(value.realDocker), value.realDocker);
   assert.ok(lstatSync(value.realDocker).isFile());
+  assert.equal(typeof value.dockerInvocation, "string");
+  assert.ok(path.isAbsolute(value.dockerInvocation));
+  assert.equal(
+    realpathSync(value.dockerInvocation),
+    value.realDocker,
+    "Native Docker invocation target changed",
+  );
   assert.deepEqual(
     Object.keys(value.registryContext).sort(),
     ["attemptId", "captureKind", "scopeId", "sourceFrameSha256"].sort(),
@@ -235,6 +245,7 @@ export async function runCapturedConsumerDocker(args, context) {
       spawned = false;
     try {
       const child = spawn(context.realDocker, commandArgs, {
+        argv0: context.dockerInvocation,
         stdio: ["inherit", "pipe", "pipe"],
         detached: true,
       });
