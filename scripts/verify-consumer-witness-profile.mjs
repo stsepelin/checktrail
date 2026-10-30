@@ -35,13 +35,14 @@ import {
   observeConsumerWitnessJvmInputs,
   observeConsumerWitnessManagedInputs,
   observeConsumerWitnessDataInputs,
+  observeConsumerWitnessSwiftInputs,
 } from "../dist/test/consumer-witness-fixture.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const profile = process.argv[2];
 assert.equal(
   process.argv.length,
   3,
-  "Usage: verify-consumer-witness-profile.mjs context-go|context-python|context-php|context-rust|context-ruby|context-c|context-cpp|context-java|context-kotlin|context-scala|context-csharp|context-fsharp|context-vb|context-hcl|context-yaml",
+  "Usage: verify-consumer-witness-profile.mjs context-go|context-python|context-php|context-rust|context-ruby|context-c|context-cpp|context-java|context-kotlin|context-scala|context-csharp|context-fsharp|context-vb|context-hcl|context-yaml|context-swift",
 );
 assert.ok(
   [
@@ -60,6 +61,7 @@ assert.ok(
     "context-vb",
     "context-hcl",
     "context-yaml",
+    "context-swift",
   ].includes(profile),
 );
 const family = profile.slice("context-".length);
@@ -89,6 +91,7 @@ const files = [
   "scripts/consumer-witness-jvm.mjs",
   "scripts/consumer-witness-managed.mjs",
   "scripts/consumer-witness-data.mjs",
+  "scripts/consumer-witness-swift.mjs",
   ".github/workflows/ci.yml",
   ...([
     "php",
@@ -104,6 +107,7 @@ const files = [
     "vb",
     "hcl",
     "yaml",
+    "swift",
   ].includes(family)
     ? ["scripts/" + family + "-context-tools.Dockerfile"]
     : []),
@@ -156,6 +160,7 @@ const runtime = {
       vb: "dotnet",
       hcl: "terraform",
       yaml: process.execPath,
+      swift: "swiftc",
     }[family],
     {
       go: ["version"],
@@ -173,6 +178,7 @@ const runtime = {
       vb: ["--version"],
       hcl: ["version", "-json"],
       yaml: ["--version"],
+      swift: ["--version"],
     }[family],
     {
       encoding: "utf8",
@@ -221,6 +227,10 @@ if (["hcl", "yaml"].includes(family)) {
     runtime.toolVersion = runtime.terraform.terraform_version;
   } else runtime.toolVersion = runtime.dataInputs.package.version;
 }
+if (family === "swift") {
+  runtime.swiftInputs = await observeConsumerWitnessSwiftInputs();
+  runtime.swift = runtime.toolVersion;
+}
 const expectedController = await captureConsumerWitnessController(
   root,
   family,
@@ -266,7 +276,7 @@ try {
   for (const name of names) {
     assert.match(
       name,
-      /^(?:(?:go|python|php|rust|ruby|c|cpp|java|kotlin|scala|csharp|fsharp|vb|hcl|yaml)-(?:broken|fixed|near-miss)-(?:canonical|caller-change|restored|repeat)|attempt)-[a-f0-9-]{36}\.json$/,
+      /^(?:(?:go|python|php|rust|ruby|c|cpp|java|kotlin|scala|csharp|fsharp|vb|hcl|yaml|swift)-(?:broken|fixed|near-miss)-(?:canonical|caller-change|restored|repeat)|attempt)-[a-f0-9-]{36}\.json$/,
     );
     const file = path.join(namespace, name),
       stat = await lstat(file, { bigint: true });

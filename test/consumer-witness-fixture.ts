@@ -21,6 +21,7 @@ export type ConsumerVariant = "broken" | "fixed" | "near-miss";
 export type ConsumerPhase =
   "canonical" | "caller-change" | "restored" | "repeat";
 export type ConsumerStage =
+  | "compiler-link"
   | "compiler"
   | "consumer"
   | "hcl-init"
@@ -41,7 +42,8 @@ export type ConsumerFamily =
   | "fsharp"
   | "vb"
   | "hcl"
-  | "yaml";
+  | "yaml"
+  | "swift";
 const hash = (bytes: Uint8Array | string) =>
   createHash("sha256").update(bytes).digest("hex");
 const filesByFamily = {
@@ -60,6 +62,7 @@ const filesByFamily = {
   vb: ["src/policy/Policy.vb", "src/consumer/Consumer.vb"],
   hcl: ["policy/rules.tf", "main.tf"],
   yaml: ["policy.yaml", "extra.yaml"],
+  swift: ["src/policy/Policy.swift", "src/consumer/Consumer.swift"],
 } as const;
 async function bytesIdentity(
   filename: string,
@@ -256,6 +259,39 @@ export async function observeConsumerWitnessJvmInputs(family: ConsumerFamily) {
           ),
   };
 }
+export async function observeConsumerWitnessSwiftInputs() {
+  const driver = await tool("swiftc"),
+    frontend = await tool("swift-frontend");
+  return {
+    profile: "consumer-swift-inputs-v1",
+    scope: "observed-driver-and-frontend",
+    otherDependenciesAttested: false,
+    driver: { bytes: driver.bytes, sha256: driver.sha256 },
+    frontend: { bytes: frontend.bytes, sha256: frontend.sha256 },
+  };
+}
+export async function bindConsumerWitnessSwiftDirectory(
+  capture: ConsumerCapture | null,
+  directory: string,
+) {
+  if (!capture) return;
+  assert.ok(capture.swift);
+  assert.equal(await realpath(directory), directory);
+  assert.equal(outside(capture.root, directory), false);
+  capture.swift.directory = directory;
+  capture.swift.seed = await observeConsumerWitnessDirectory(directory);
+  assert.equal(capture.swift.seed.files.length, 0);
+  capture.swift.generated = capture.swift.seed;
+}
+export async function bindConsumerWitnessSwiftMain(
+  capture: ConsumerCapture | null,
+  filename: string,
+) {
+  if (!capture) return;
+  assert.ok(capture.swift);
+  assert.equal(filename, path.join(capture.root, "main.swift"));
+  capture.swift.main = await bytesIdentity(filename, 1048576, true);
+}
 export async function observeConsumerWitnessDataInputs(family: ConsumerFamily) {
   assert.ok(["hcl", "yaml"].includes(family));
   const executable = await tool(
@@ -442,6 +478,7 @@ async function codeMetadata(family: ConsumerFamily) {
     path.join(harnessRoot, "scripts/consumer-witness-jvm.mjs"),
     path.join(harnessRoot, "scripts/consumer-witness-managed.mjs"),
     path.join(harnessRoot, "scripts/consumer-witness-data.mjs"),
+    path.join(harnessRoot, "scripts/consumer-witness-swift.mjs"),
   ];
   const identities = await Promise.all(
     inputs.map((filename) => bytesIdentity(filename)),
@@ -466,6 +503,7 @@ async function codeMetadata(family: ConsumerFamily) {
         identities[5],
         identities[6],
         identities[7],
+        identities[8],
       ]),
     ),
     acceptanceSha256: identities[1]!.sha256,
@@ -495,6 +533,7 @@ export async function observeConsumerWitnessTool(family: ConsumerFamily) {
       vb: "dotnet",
       hcl: "terraform",
       yaml: process.execPath,
+      swift: "swiftc",
     }[family],
   );
   return { bytes: observed.bytes, sha256: observed.sha256 };
@@ -535,6 +574,7 @@ export async function beginConsumerWitness(
       vb: "dotnet",
       hcl: "terraform",
       yaml: process.execPath,
+      swift: "swiftc",
     }[family],
   );
   const jvm = ["java", "kotlin", "scala"].includes(family)
@@ -558,6 +598,17 @@ export async function beginConsumerWitness(
         } | null,
       }
     : null;
+  const swift =
+    family === "swift"
+      ? {
+          inputs: await observeConsumerWitnessSwiftInputs(),
+          directory: null as string | null,
+          seed: null as ConsumerDirectory | null,
+          produced: null as ConsumerDirectory | null,
+          generated: null as ConsumerDirectory | null,
+          main: null as { bytes: number; sha256: string } | null,
+        }
+      : null;
   const data = ["hcl", "yaml"].includes(family)
     ? {
         inputs: await observeConsumerWitnessDataInputs(family),
@@ -604,8 +655,10 @@ export async function beginConsumerWitness(
     runtimeExecutable: jvm?.runtime ?? selected,
     jvm,
     managed,
+    swift,
     data,
     compiler: null as ProcessResult | null,
+    compilerLink: null as ProcessResult | null,
     code: await codeMetadata(family),
   };
 }
@@ -618,8 +671,12 @@ export async function bindConsumerWitnessExecutable(
 export function bindConsumerWitnessCompiler(
   capture: ConsumerCapture | null,
   result: ProcessResult,
+  stage: "compiler" | "compiler-link" = "compiler",
 ) {
-  if (capture) capture.compiler = result;
+  if (capture) {
+    if (stage === "compiler-link") capture.compilerLink = result;
+    else capture.compiler = result;
+  }
 }
 async function publishConsumerCapture(
   capture: ConsumerCapture,
@@ -680,6 +737,8 @@ export async function recordConsumerWitnessAttempt(
     (capture.family === "hcl" &&
       /^hcl-(?:init|(?:plan|show)-[0-6])$/.test(stage)) ||
       stage === "consumer" ||
+      (capture.family === "swift" &&
+        (stage === "compiler" || stage === "compiler-link")) ||
       [
         "rust",
         "c",
@@ -708,7 +767,9 @@ export async function recordConsumerWitnessAttempt(
     let after: Awaited<ReturnType<typeof snapshot>> | null = null;
     let executableAfterSha256: string | null = null;
     const executable =
-      stage === "compiler" ? capture.tool : capture.runtimeExecutable;
+      stage === "compiler" || stage === "compiler-link"
+        ? capture.tool
+        : capture.runtimeExecutable;
     try {
       after = await snapshot(capture.root, capture.family);
       executableAfterSha256 = (
@@ -791,6 +852,48 @@ export async function recordConsumerWitnessAttempt(
       };
       if (stage === "compiler") capture.managed.generated = generatedAfter;
     }
+    let swift = null;
+    if (capture.swift) {
+      let inputsAfterSha256 = null,
+        generatedAfter = null,
+        mainAfter = null;
+      try {
+        inputsAfterSha256 = hash(
+          JSON.stringify(await observeConsumerWitnessSwiftInputs()),
+        );
+        assert.ok(capture.swift.directory);
+        generatedAfter = await observeConsumerWitnessDirectory(
+          capture.swift.directory,
+        );
+        if (stage !== "compiler")
+          mainAfter = await bytesIdentity(
+            path.join(capture.root, "main.swift"),
+            1048576,
+            true,
+          );
+      } catch (error) {
+        identityError ??= String(error).slice(0, 1024);
+      }
+      const { swiftCommandBindings } = await import(
+        new URL("../../scripts/consumer-witness-swift.mjs", import.meta.url)
+          .href
+      );
+      swift = {
+        inputsBefore: capture.swift.inputs,
+        inputsAfterSha256,
+        generatedBefore: capture.swift.generated,
+        generatedAfter,
+        main: mainAfter,
+        command: swiftCommandBindings(
+          result.command.args,
+          capture.root,
+          result.command.env,
+        ),
+      };
+      if (stage === "compiler") capture.swift.produced = generatedAfter;
+      if (stage === "compiler" || stage === "compiler-link")
+        capture.swift.generated = generatedAfter;
+    }
     let data = null;
     if (capture.data) {
       let inputsAfterSha256 = null,
@@ -859,6 +962,7 @@ export async function recordConsumerWitnessAttempt(
       identityError,
       jvm,
       managed,
+      swift,
       data,
       output,
       outputState:
@@ -937,19 +1041,21 @@ export async function finishConsumerWitness(
   await recordConsumerWitnessAttempt(capture, result);
   assert.deepEqual(
     capture.attempts.map((item) => item.stage),
-    [
-      "rust",
-      "c",
-      "cpp",
-      "java",
-      "kotlin",
-      "scala",
-      "csharp",
-      "fsharp",
-      "vb",
-    ].includes(capture.family)
-      ? ["compiler", "consumer"]
-      : ["consumer"],
+    capture.family === "swift"
+      ? ["compiler", "compiler-link", "consumer"]
+      : [
+            "rust",
+            "c",
+            "cpp",
+            "java",
+            "kotlin",
+            "scala",
+            "csharp",
+            "fsharp",
+            "vb",
+          ].includes(capture.family)
+        ? ["compiler", "consumer"]
+        : ["consumer"],
     "Consumer native attempt inventory differs",
   );
   const output = completeInvocation(result);
@@ -985,7 +1091,7 @@ export async function finishConsumerWitness(
   const expected =
     capture.phase === "caller-change"
       ? [false, true]
-      : ["ruby", "csharp", "fsharp", "vb"].includes(capture.family)
+      : ["ruby", "csharp", "fsharp", "vb", "swift"].includes(capture.family)
         ? capture.variant === "broken"
           ? [true, true, true]
           : capture.variant === "near-miss"
@@ -1048,6 +1154,22 @@ export async function finishConsumerWitness(
         cleanupComplete: true,
       }
     : null;
+  const compilerLink = capture.compilerLink
+    ? {
+        output: completeInvocation(capture.compilerLink),
+        commandSha256: nativeOuterCommandSha256(capture.compilerLink.command),
+        argvSha256: hash(JSON.stringify(capture.compilerLink.command.args)),
+        executableSha256: capture.tool.sha256,
+        executableAfterSha256: compilerToolAfter.sha256,
+        exitCode: capture.compilerLink.exitCode,
+        signal: capture.compilerLink.signal,
+        errorCode: capture.compilerLink.errorCode ?? null,
+        timedOut: capture.compilerLink.timedOut,
+        cancelled: capture.compilerLink.cancelled,
+        truncated: capture.compilerLink.truncated,
+        cleanupComplete: true,
+      }
+    : null;
   if (
     [
       "rust",
@@ -1059,6 +1181,7 @@ export async function finishConsumerWitness(
       "csharp",
       "fsharp",
       "vb",
+      "swift",
     ].includes(capture.family)
   )
     assert.ok(
@@ -1102,6 +1225,19 @@ export async function finishConsumerWitness(
     },
     output,
     compiler,
+    compilerLink,
+    swift: capture.swift
+      ? {
+          inputs: capture.swift.inputs,
+          inputsAfterSha256: hash(
+            JSON.stringify(await observeConsumerWitnessSwiftInputs()),
+          ),
+          seed: capture.swift.seed,
+          produced: capture.swift.produced,
+          generated: capture.swift.generated,
+          main: capture.swift.main,
+        }
+      : null,
     jvm: capture.jvm
       ? {
           inputs: capture.jvm.inputs,
@@ -1151,6 +1287,12 @@ export async function finishConsumerWitness(
     hostAttestationPerformed: false,
     gateAComplete: false,
   };
+  if (capture.swift) {
+    const { inspectSwiftWitness } = await import(
+      new URL("../../scripts/consumer-witness-swift.mjs", import.meta.url).href
+    );
+    inspectSwiftWitness(row);
+  }
   const id =
     capture.family +
     "-" +

@@ -1,3 +1,4 @@
+import { inspectSwiftWitness } from "./consumer-witness-swift.mjs";
 import {
   dataConsumerFamilies,
   dataConsumerClass,
@@ -62,6 +63,7 @@ const sourcePaths = Object.freeze({
   vb: ["src/policy/Policy.vb", "src/consumer/Consumer.vb"],
   hcl: ["policy/rules.tf", "main.tf"],
   yaml: ["policy.yaml", "extra.yaml"],
+  swift: ["src/policy/Policy.swift", "src/consumer/Consumer.swift"],
 });
 /** Selected declarations are checked against the inventory, never treated as executions. */
 export function selectConsumerWitnessRequirements(
@@ -287,7 +289,9 @@ export function inspectConsumerWitnesses(
       row.nativeResult &&
         Array.isArray(row.nativeResult.consumers) &&
         row.nativeResult.consumers.length ===
-          (["ruby", "csharp", "fsharp", "vb"].includes(row.family) ? 3 : 2) &&
+          (["ruby", "csharp", "fsharp", "vb", "swift"].includes(row.family)
+            ? 3
+            : 2) &&
         row.nativeResult.consumers.every((v) => typeof v === "boolean"),
     );
     const native = JSON.parse(stdout.toString("utf8"));
@@ -297,7 +301,7 @@ export function inspectConsumerWitnesses(
     const expectedConsumers =
       row.phase === "caller-change"
         ? [false, true]
-        : ["ruby", "csharp", "fsharp", "vb"].includes(row.family)
+        : ["ruby", "csharp", "fsharp", "vb", "swift"].includes(row.family)
           ? row.variant === "broken"
             ? [true, true, true]
             : row.variant === "near-miss"
@@ -376,6 +380,7 @@ export function inspectConsumerWitnesses(
         "csharp",
         "fsharp",
         "vb",
+        "swift",
       ].includes(row.family)
     ) {
       assert.ok(
@@ -403,6 +408,21 @@ export function inspectConsumerWitnesses(
       retainedBytes += compiledOut.length + compiledErr.length;
       assert.ok(retainedBytes <= 16 * 1048576);
     } else assert.equal(row.compiler, null);
+    if (row.family === "swift") {
+      inspectSwiftWitness(row);
+      const linkedOut = stream(row.compilerLink.output.stdout),
+        linkedErr = stream(row.compilerLink.output.stderr);
+      assert.equal(row.compilerLink.output.completeForObservedStreams, true);
+      assert.equal(
+        row.compilerLink.output.observedBytes,
+        linkedOut.length + linkedErr.length,
+      );
+      retainedBytes += linkedOut.length + linkedErr.length;
+      assert.ok(retainedBytes <= 16 * 1048576);
+    } else {
+      assert.ok(row.swift === undefined || row.swift === null);
+      assert.ok(row.compilerLink === undefined || row.compilerLink === null);
+    }
     if (jvmConsumerFamilies.includes(row.family)) inspectJvmWitness(row);
     else assert.ok(row.jvm === undefined || row.jvm === null);
     if (managedConsumerFamilies.includes(row.family))
@@ -549,6 +569,11 @@ export function inspectConsumerWitnesses(
           assert.equal(
             binding.dataInputsSha256,
             hash(JSON.stringify(normalizeDataInputs(row.data.inputs))),
+          );
+        if (row.family === "swift")
+          assert.equal(
+            binding.swiftInputsSha256,
+            hash(JSON.stringify(row.swift.inputs)),
           );
         if (managedConsumerFamilies.includes(row.family)) {
           assert.equal(
@@ -800,6 +825,12 @@ export function bindConsumerWitnessController(collection, expected) {
           normalizeDataInputs(expected.dataInputs),
           "Actual data tool/parser bytes differ from native controller",
         );
+      if (row.family === "swift")
+        assert.deepEqual(
+          row.swift.inputs,
+          expected.swiftInputs,
+          "Observed Swift driver/frontend differ from native controller",
+        );
       if (managedConsumerFamilies.includes(row.family))
         assert.deepEqual(
           row.managed.inputs,
@@ -823,6 +854,9 @@ export function bindConsumerWitnessController(collection, expected) {
         jvmInputsSha256: row.jvm ? hash(JSON.stringify(row.jvm.inputs)) : null,
         dataInputsSha256: row.data
           ? hash(JSON.stringify(normalizeDataInputs(row.data.inputs)))
+          : null,
+        swiftInputsSha256: row.swift
+          ? hash(JSON.stringify(row.swift.inputs))
           : null,
         managedInputsSha256: row.managed
           ? hash(JSON.stringify(row.managed.inputs))

@@ -1,3 +1,4 @@
+import { inspectSwiftInputs } from "./consumer-witness-swift.mjs";
 import {
   dataConsumerFamilies,
   inspectDataInputs,
@@ -43,6 +44,7 @@ export async function captureConsumerWitnessController(
       "vb",
       "hcl",
       "yaml",
+      "swift",
     ].includes(family),
   );
   const profile = "context-" + family;
@@ -64,6 +66,7 @@ export async function captureConsumerWitnessController(
     "scripts/consumer-witness-jvm.mjs",
     "scripts/consumer-witness-managed.mjs",
     "scripts/consumer-witness-data.mjs",
+    "scripts/consumer-witness-swift.mjs",
   ];
   const identities = await Promise.all(
     files.map(async (file) => {
@@ -86,6 +89,7 @@ export async function captureConsumerWitnessController(
     "vb",
     "hcl",
     "yaml",
+    "swift",
   ].includes(family)
     ? "scripts/" + family + "-context-tools.Dockerfile"
     : ".github/workflows/ci.yml";
@@ -173,6 +177,15 @@ export async function captureConsumerWitnessController(
             "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c"
         : dataInputs.package.version === inventory.toolVersions.yaml;
   }
+  const swiftInputs = family === "swift" ? runtime.swiftInputs : null;
+  if (swiftInputs) {
+    inspectSwiftInputs(swiftInputs);
+    assert.deepEqual(swiftInputs.driver, tool);
+    toolVersionMatched =
+      inventory.toolVersions.swift === "6.2.0" &&
+      runtime.swift ===
+        "Swift version 6.2 (swift-6.2-RELEASE)\nTarget: aarch64-unknown-linux-gnu";
+  }
   const nativeTool = ["c", "cpp"].includes(family)
     ? {
         name: family === "c" ? "gcc" : "g++",
@@ -192,6 +205,7 @@ export async function captureConsumerWitnessController(
       nativeTool,
       jvmInputs,
       managedInputs,
+      swiftInputs,
       dataInputs: dataInputs ? normalizeDataInputs(dataInputs) : null,
     }),
   );
@@ -201,6 +215,7 @@ export async function captureConsumerWitnessController(
     nativeTool,
     jvmInputs,
     managedInputs,
+    swiftInputs,
     dataInputs,
     requirements: required,
     engineSha256: engine.treeSha256,
@@ -213,6 +228,7 @@ export async function captureConsumerWitnessController(
         identities[5],
         identities[6],
         identities[7],
+        identities[8],
       ]),
     ),
     requirementsSha256: hash(JSON.stringify(required)),

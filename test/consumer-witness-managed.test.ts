@@ -381,6 +381,7 @@ test("native source echo decoding covers every prepared and managed collector fo
     "csharp",
     "fsharp",
     "vb",
+    "swift",
   ]) {
     assert.equal(
       consumerWitnessSourceSha256(family, bytes, bytes.length),

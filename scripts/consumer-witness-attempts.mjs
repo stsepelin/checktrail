@@ -1,4 +1,8 @@
 import {
+  inspectSwiftAttempt,
+  requireSwiftAttemptBinding,
+} from "./consumer-witness-swift.mjs";
+import {
   dataConsumerFamilies,
   dataConsumerStages,
   inspectDataAttempt,
@@ -44,6 +48,7 @@ export function consumerWitnessSourceSha256(family, raw, expectedBytes) {
       "csharp",
       "fsharp",
       "vb",
+      "swift",
     ].includes(family)
   ) {
     assert.ok(
@@ -126,6 +131,7 @@ export function inspectConsumerAttemptRecords(records) {
         "vb",
         "hcl",
         "yaml",
+        "swift",
       ].includes(value.family),
     );
     assert.ok(["broken", "fixed", "near-miss"].includes(value.variant));
@@ -138,6 +144,8 @@ export function inspectConsumerAttemptRecords(records) {
     assert.ok(
       (value.family === "hcl" &&
         dataConsumerStages("hcl").includes(value.stage)) ||
+        (value.family === "swift" &&
+          ["compiler", "compiler-link"].includes(value.stage)) ||
         value.stage === "consumer" ||
         (value.stage === "compiler" &&
           [
@@ -155,6 +163,7 @@ export function inspectConsumerAttemptRecords(records) {
     inspectJvmAttempt(value);
     inspectManagedAttempt(value);
     inspectDataAttempt(value);
+    inspectSwiftAttempt(value);
     assert.equal(value.processStartAcknowledgementRetained, false);
     assert.equal(value.gateAComplete, false);
     assert.ok(
@@ -263,21 +272,23 @@ export function inspectConsumerAttemptRecords(records) {
 export function requireConsumerWitnessAttempts(witness, records, used) {
   assert.ok(uuid(witness.witnessId), "Missing consumer witness identity");
   const stages =
-    witness.family === "hcl"
-      ? dataConsumerStages("hcl")
-      : [
-            "rust",
-            "c",
-            "cpp",
-            "java",
-            "kotlin",
-            "scala",
-            "csharp",
-            "fsharp",
-            "vb",
-          ].includes(witness.family)
-        ? ["compiler", "consumer"]
-        : ["consumer"];
+    witness.family === "swift"
+      ? ["compiler", "compiler-link", "consumer"]
+      : witness.family === "hcl"
+        ? dataConsumerStages("hcl")
+        : [
+              "rust",
+              "c",
+              "cpp",
+              "java",
+              "kotlin",
+              "scala",
+              "csharp",
+              "fsharp",
+              "vb",
+            ].includes(witness.family)
+          ? ["compiler", "consumer"]
+          : ["consumer"];
   assert.ok(Array.isArray(witness.attempts));
   assert.deepEqual(
     witness.attempts.map((item) => item.stage),
@@ -327,8 +338,13 @@ export function requireConsumerWitnessAttempts(witness, records, used) {
         continue;
       }
     }
+    requireSwiftAttemptBinding(witness, value);
     const invocation =
-      value.stage === "compiler" ? witness.compiler : witness.invocation;
+      value.stage === "compiler-link"
+        ? witness.compilerLink
+        : value.stage === "compiler"
+          ? witness.compiler
+          : witness.invocation;
     assert.ok(invocation);
     for (const key of [
       "exitCode",
@@ -357,7 +373,11 @@ export function requireConsumerWitnessAttempts(witness, records, used) {
     assert.ok(
       isDeepStrictEqual(
         value.output,
-        value.stage === "compiler" ? witness.compiler.output : witness.output,
+        value.stage === "compiler-link"
+          ? witness.compilerLink.output
+          : value.stage === "compiler"
+            ? witness.compiler.output
+            : witness.output,
       ),
       "Consumer attempt physical output differs",
     );

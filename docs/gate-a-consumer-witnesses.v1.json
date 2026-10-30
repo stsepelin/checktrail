@@ -322,9 +322,9 @@
           "name": "context-swift near-miss acceptance"
         }
       ],
-      "collectorImplementation": "pending",
+      "collectorImplementation": "prepared",
       "nativeAcceptance": "pending",
-      "sourcePaths": null
+      "sourcePaths": ["src/policy/Policy.swift", "src/consumer/Consumer.swift"]
     },
     {
       "id": "c",

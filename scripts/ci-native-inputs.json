@@ -174,6 +174,7 @@
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
+    "swift-context-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -190,6 +191,7 @@
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
+    "swift-context-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -206,6 +208,7 @@
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
+    "swift-context-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -222,6 +225,7 @@
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
+    "swift-context-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -238,6 +242,7 @@
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
+    "swift-context-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -254,6 +259,24 @@
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
+    "swift-context-arm64",
+    "vb-context-arm64",
+    "yaml-context-arm64"
+  ],
+  "scripts/consumer-witness-swift.mjs": [
+    "c-context-arm64",
+    "cpp-context-arm64",
+    "csharp-context-arm64",
+    "fsharp-context-arm64",
+    "go-workspaces-arm64",
+    "hcl-context-arm64",
+    "java-context-arm64",
+    "kotlin-context-arm64",
+    "php-context-arm64",
+    "ruby-context-arm64",
+    "rust-context-arm64",
+    "scala-context-arm64",
+    "swift-context-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -1126,6 +1149,7 @@
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
+    "swift-context-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -1547,6 +1571,7 @@
     "ruby-context-arm64",
     "rust-context-arm64",
     "scala-context-arm64",
+    "swift-context-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
