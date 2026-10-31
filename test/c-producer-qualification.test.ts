@@ -11,8 +11,10 @@ import {
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
+import { isBuiltin } from "node:module";
 import { test } from "node:test";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import ts from "typescript";
 import { fixture as sourceFixture } from "./helpers.js";
 
 const repository = fileURLToPath(new URL("../../", import.meta.url));
@@ -57,6 +59,57 @@ const sameUidControl = {
     ? false
     : "POSIX sameUID copy custody is unavailable on this host",
 };
+
+test("C producer selected source frames bind every actual static helper import for both profiles", async () => {
+  for (const name of ["gcc-12", "glibc"]) {
+    const { profile } = await profiles.loadCProducerProfile(name);
+    const bound = new Set<string>([
+      "scripts/qualify-c-producer.mjs",
+      "scripts/qualify-binutils-producer.mjs",
+      ...api
+        .cProducerSourceFiles(profile)
+        .map((file: string) => "scripts/producer-qualification/" + file),
+    ]);
+    for (const file of bound) {
+      if (!file.endsWith(".mjs")) continue;
+      const source = ts.createSourceFile(
+        file,
+        await readFile(path.join(repository, file), "utf8"),
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.JS,
+      );
+      for (const statement of source.statements) {
+        if (
+          !(
+            ts.isImportDeclaration(statement) ||
+            ts.isExportDeclaration(statement)
+          ) ||
+          !statement.moduleSpecifier ||
+          !ts.isStringLiteral(statement.moduleSpecifier)
+        )
+          continue;
+        const specifier = statement.moduleSpecifier.text;
+        if (isBuiltin(specifier)) continue;
+        assert.ok(
+          specifier.startsWith("."),
+          "Unbound non-builtin producer runtime dependency: " + specifier,
+        );
+        const target = path.posix.normalize(
+          path.posix.join(path.posix.dirname(file), specifier),
+        );
+        assert.ok(
+          bound.has(target),
+          name +
+            " selected source frame omits actual static import: " +
+            file +
+            " -> " +
+            target,
+        );
+      }
+    }
+  }
+});
 
 test("C producer caller IDs admit root and exact near-bound values without coercing malformed identities", () => {
   assert.deepEqual(api.validateCProducerCallerIdentity(0, 0), {

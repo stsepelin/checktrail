@@ -240,7 +240,7 @@ test("GLIBC-only compiler and fixed probe vectors keep capabilities, budgets and
     assert.ok(!argv.some((v) => /privileged|cap-add|unconfined/u.test(v)));
     assert.equal(
       controller.cProducerSourceFiles(profile).length,
-      name === "glibc" ? 15 : 8,
+      name === "glibc" ? 15 : 9,
     );
     for (const mode of ["baseline", "derived"]) {
       const args: string[] = controller.cProducerSyscallPreflightArguments(

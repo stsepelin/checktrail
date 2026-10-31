@@ -69,6 +69,7 @@ const sourceFiles = [
   "binutils-retention-observer.mjs",
   "binutils-image-identity.mjs",
   "binutils-image-identity.v1.json",
+  "glibc-seccomp.mjs",
 ];
 const controlFiles = [
   "c-producer-build.sh",
@@ -77,7 +78,9 @@ const controlFiles = [
 ];
 export const cProducerSourceFiles = (profile) => [
   ...sourceFiles,
-  ...(profile.sourcePackage === "glibc" ? glibcSeccompSourceFiles : []),
+  ...(profile.sourcePackage === "glibc"
+    ? glibcSeccompSourceFiles.filter((file) => file !== "glibc-seccomp.mjs")
+    : []),
 ];
 
 export function validateCProducerCallerIdentity(uid, gid) {
