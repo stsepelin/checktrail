@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "scope": "selected-context-runtime-upgrade",
+  "runtimeManifestSHA256": "4ee75652c2631dd228e143eb0f012afad337e8477f49f2581fbea58048990a9e",
+  "grammarBuildManifestSHA256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb",
+  "grammarBinariesRebuilt": false,
+  "previousRuntimeVersion": "0.27.0",
+  "runtimeVersion": "0.27.1",
+  "npm": {
+    "url": "https://registry.npmjs.org/web-tree-sitter/-/web-tree-sitter-0.27.1.tgz",
+    "integrity": "sha512-qtx0VyUyNRHtL3ze7+v0hCKB/sLcAmY7ZAVp/ZK/bCj0yED8ptvNrr7Vd7DwDyKDWN9baqcUx4uaD2r2ql+6IA=="
+  },
+  "releaseArchive": {
+    "url": "https://github.com/tree-sitter/tree-sitter/releases/download/v0.27.1/web-tree-sitter.tar.gz",
+    "bytes": 1176564,
+    "sha256": "0a1c8c6a369c5483bbc5385ef1ae9a0d68793553c59f83458fa5973f5de0568a",
+    "runtimeMembersMatchInstalledNpm": true
+  },
+  "sourceArchive": {
+    "url": "https://codeload.github.com/tree-sitter/tree-sitter/tar.gz/10eb5ac119eec9cb4267a8e035066473983f5f3a",
+    "bytes": 1025988,
+    "sha256": "71bbc0a7a98013b519b104e281e6ad98524a438c8c822a095e6f27de05d15562",
+    "commit": "10eb5ac119eec9cb4267a8e035066473983f5f3a"
+  },
+  "notices": [
+    {
+      "sourceMember": "LICENSE",
+      "retainedFile": "docs/measurements/artifact-identities-2026-10-21/tree-sitter-LICENSE.txt",
+      "bytes": 1080,
+      "sha256": "c5cfb43042b6b72045f4ba997834d0a7786d2793d91680868b5815b39f14fc78"
+    },
+    {
+      "sourceMember": "lib/src/unicode/LICENSE",
+      "retainedFile": "docs/measurements/artifact-identities-2026-10-21/tree-sitter-Unicode-LICENSE.txt",
+      "bytes": 21001,
+      "sha256": "6a18c5fac70d7860b57f5b72b4e2c9a1ba6b3d2741eef7ff9767c5379364f10d"
+    },
+    {
+      "sourceMember": "lib/src/wasm-stdlib/libc/LICENSE",
+      "retainedFile": "docs/measurements/artifact-identities-2026-10-21/tree-sitter-conditional-musl-LICENSE.txt",
+      "bytes": 6204,
+      "sha256": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af"
+    }
+  ],
+  "attestation": {
+    "verificationFile": "attestation-verified.json",
+    "bytes": 23044,
+    "sha256": "dfc4bdbbdc257bb7b7b4b4d19c61eadc933b45dc1ff38eea037de6139268eeec",
+    "repository": "tree-sitter/tree-sitter",
+    "signerWorkflow": "tree-sitter/tree-sitter/.github/workflows/release.yml",
+    "sourceDigest": "10eb5ac119eec9cb4267a8e035066473983f5f3a",
+    "sourceRef": "refs/tags/v0.27.1",
+    "selfHostedRunnersDenied": true,
+    "signatureIdentityAndTransparencyVerified": true
+  },
+  "runtimeProducerBuildClosureVerified": false,
+  "conditionalMuslOutputMembershipVerified": false,
+  "completeArtifactAndNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false
+}
