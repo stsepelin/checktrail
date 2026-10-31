@@ -4,11 +4,14 @@ import base64
 import hashlib
 import json
 import math
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 import re
 import stat
 import subprocess
+import threading
+import time
 import zipfile
 
 MIB = 1024 ** 2
@@ -201,6 +204,8 @@ def gcc_carrier(packet, startup_raw, receipt, profile, observed):
     require(seconds(value['controllerTerminalSeconds']) and value['controllerTerminalSeconds']<=14700 and seconds(value['elapsedSeconds']) and value['controllerTerminalSeconds']<=value['elapsedSeconds']<=15300,'Carrier monotonic terminal outside independent window')
     require(seconds(value['cleanupStartedSeconds']) and value['controllerTerminalSeconds']<=value['cleanupStartedSeconds']<=value['elapsedSeconds'] and seconds(value['cleanupDeadlineSeconds']) and value['cleanupStartedSeconds']<=value['cleanupDeadlineSeconds']<=min(15300,value['cleanupStartedSeconds']+600) and value['elapsedSeconds']<=value['cleanupDeadlineSeconds'],'Carrier cleanup clock reset or exceeded')
     stop=value['stopObservation']
+    if 'pendingGroupProbes' in stop:
+        pending_group_probes(stop['pendingGroupProbes'])
     require(stop['ownerAdmissionError'] is None and all(stop[flag] is True for flag in ['childTerminalObserved','childReaped','familyAbsent','softFamilyAbsent']) and integer(stop['processGroupId'],1),'Carrier owned process-family quiescence incomplete')
     def instant(text):
         require(type(text) is str and re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z',text),'Carrier UTC framing')
@@ -341,20 +346,185 @@ def reports(packet, prefix, value, caller, expected_producer_uid, profile_name='
     return {'reports':len(value['reports']),'observedOutcomeLines':outcome_count,**outcome_availability(value['reports']),'originalOutcomesPreserved':True,'reportsPooledAsIndependentEvidence':False}
 
 
+def pending_group_probes(value):
+    require(isinstance(value,dict) and set(value)=={'operation','code','count','absenceInferred','signallingAuthorized'} and
+            exact_json([value['operation'],value['code'],value['absenceInferred'],value['signallingAuthorized']],
+                       ['signal-zero','EPERM',False,False]) and integer(value['count'],1,20000),
+            'Invalid pending carrier process-group observation')
+
+
+def bounded_git_output(repository, argv, request, stdout_limit, timeout=5):
+    """One read-only Git operation, bounded while pipes are being collected."""
+    require(type(request) is bytes and len(request)<=65536 and integer(stdout_limit,1,128*MIB) and
+            type(timeout) in [int,float] and 0<timeout<=5,'Invalid Git source metadata bounds')
+    deadline=time.monotonic()+timeout
+    process=None
+    threads=[]
+    buffers={'stdout':bytearray(),'stderr':bytearray()}
+    eof={'stdout':False,'stderr':False}
+    failures=[]
+    lock=threading.Lock()
+    wake=threading.Event()
+    def failed(error):
+        with lock:
+            failures.append(error)
+        wake.set()
+    def collect(name, stream, limit):
+        try:
+            while True:
+                chunk=os.read(stream.fileno(),min(65536,limit+1-len(buffers[name])))
+                if not chunk:
+                    eof[name]=True
+                    break
+                remaining=limit-len(buffers[name])
+                buffers[name].extend(chunk[:remaining])
+                require(len(chunk)<=remaining,'Git source metadata '+name+' byte limit exceeded')
+        except BaseException as error:
+            failed(error)
+        finally:
+            wake.set()
+    def send():
+        try:
+            at=0
+            while at<len(request):
+                count=os.write(process.stdin.fileno(),request[at:])
+                require(type(count) is int and count>0,'Git source metadata stdin made no progress')
+                at+=count
+        except BaseException as error:
+            failed(error)
+        finally:
+            try:
+                process.stdin.close()
+            except BaseException as error:
+                failed(error)
+            wake.set()
+    try:
+        process=subprocess.Popen(argv,cwd=repository,stdin=subprocess.PIPE,stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,bufsize=0)
+        threads=[threading.Thread(target=collect,args=('stdout',process.stdout,stdout_limit),daemon=True),
+                 threading.Thread(target=collect,args=('stderr',process.stderr,65536),daemon=True),
+                 threading.Thread(target=send,daemon=True)]
+        for thread in threads:
+            thread.start()
+        while process.poll() is None or any(thread.is_alive() for thread in threads):
+            if failures:
+                break
+            remaining=deadline-time.monotonic()
+            require(remaining>0,'Git source metadata operation deadline exceeded')
+            wake.wait(min(0.01,remaining))
+            wake.clear()
+        require(time.monotonic()<=deadline,'Git source metadata operation deadline exceeded')
+        require(not failures and eof['stdout'] and eof['stderr'],'Git source metadata pipe observation incomplete')
+        require(process.returncode==0,'Git source metadata command failed: '+bytes(buffers['stderr']).decode('utf8','replace')[:4096])
+    except BaseException as error:
+        failed(error)
+    finally:
+        # A failed operation never passes merely because kill/reap later succeeds.
+        cleanup_deadline=time.monotonic()+1
+        if process is not None:
+            if process.poll() is None:
+                try:
+                    process.kill()
+                except ProcessLookupError:
+                    pass
+                except BaseException as error:
+                    failed(error)
+            try:
+                process.wait(timeout=max(0.001,cleanup_deadline-time.monotonic()))
+            except BaseException as error:
+                failed(error)
+            for stream in [process.stdin,process.stdout,process.stderr]:
+                if stream is not None:
+                    try:
+                        stream.close()
+                    except BaseException as error:
+                        failed(error)
+            for thread in threads:
+                if thread.ident is not None:
+                    thread.join(timeout=max(0,cleanup_deadline-time.monotonic()))
+            if process.returncode is None or any(thread.is_alive() for thread in threads):
+                failed(ValueError('Git source metadata child or pipe worker not reaped'))
+    if failures:
+        if len(failures)>1:
+            secondary='; '.join(type(error).__name__+': '+str(error)[:512] for error in failures[1:])
+            raise failures[0] from RuntimeError('Git source metadata secondary failures: '+secondary)
+        raise failures[0]
+    return bytes(buffers['stdout'])
+
+
+def source_file_bytes(file, expected):
+    """Read at most the expected source length plus one overflow sentinel."""
+    require(file.resolve(strict=True)==file and file.is_file() and file.stat().st_size<=2*MIB,'Nonphysical current harness')
+    before=file.stat()
+    def identity(value):
+        return(value.st_dev,value.st_ino,value.st_mode,value.st_nlink,value.st_size,value.st_mtime_ns,value.st_ctime_ns)
+    fd=None
+    primary=None
+    try:
+        fd=os.open(file,os.O_RDONLY|getattr(os,'O_NOFOLLOW',0))
+        require(stat.S_ISREG(os.fstat(fd).st_mode) and identity(before)==identity(os.fstat(fd)),'Nonphysical current harness')
+        raw=bytearray()
+        while len(raw)<=len(expected):
+            chunk=os.read(fd,min(65536,len(expected)+1-len(raw)))
+            if not chunk:
+                break
+            raw.extend(chunk)
+        require(bytes(raw)==expected,'Stale or changed original source/harness bytes')
+        require(file.resolve(strict=True)==file and identity(before)==identity(os.fstat(fd))==identity(file.stat()),
+                'Stale or changed original source/harness identity')
+    except BaseException as error:
+        primary=error
+    finally:
+        if fd is not None:
+            try:
+                os.close(fd)
+            except BaseException as error:
+                if primary is not None:
+                    raise primary from error
+                raise
+    if primary is not None:
+        raise primary
+
+
+def source_batch_frames(raw, expected):
+    at=0
+    for body in expected:
+        newline=raw.find(b'\n',at,at+128)
+        require(newline>=at,'Original source batch header is incomplete or over bound')
+        header=raw[at:newline]
+        match=re.fullmatch(rb'([a-f0-9]{40}) blob (0|[1-9][0-9]{0,6})',header)
+        require(match is not None,'Original source batch header type/framing differs')
+        size=int(match[2])
+        require(size<=2*MIB and size==len(body),'Original source object is absent or over bound')
+        expected_oid=hashlib.sha1(b'blob '+str(len(body)).encode()+b'\0'+body).hexdigest().encode()
+        require(match[1]==expected_oid,'Original source batch object identity/order differs')
+        start=newline+1
+        require(raw[start:start+size]==body,'Source/harness bytes are not the original committed object')
+        at=start+size
+        require(raw[at:at+1]==b'\n','Original source batch body separator differs')
+        at+=1
+    require(at==len(raw),'Original source batch has trailing or extra objects')
+
+
 def source_frame(packet, repository, startup):
     require([row['file'] for row in startup['sourcePins']]==SOURCE_FILES,'Incomplete source/harness inventory')
     git_args=['git','--no-optional-locks','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null']
-    git=subprocess.run(git_args+['rev-parse','HEAD'],cwd=repository,capture_output=True,timeout=5)
-    require(git.returncode==0 and re.fullmatch(r'[a-f0-9]{40}',startup['gitHead']) and git.stdout.decode().strip()==startup['gitHead'],'Replay checkout does not match original source revision')
+    head=bounded_git_output(repository,git_args+['rev-parse','HEAD'],b'',128)
+    require(re.fullmatch(r'[a-f0-9]{40}',startup['gitHead']) and head.decode().strip()==startup['gitHead'],'Replay checkout does not match original source revision')
+    expected=[]
+    selectors=[]
     for row in startup['sourcePins']:
         raw=packet.read('source/'+row['file'],2*MIB)
-        file=repository/row['file'];require(file.resolve(strict=True)==file and file.is_file() and file.stat().st_size<=2*MIB,'Nonphysical current harness')
-        require(pin(raw)=={key:row[key] for key in ['bytes','sha256']} and file.read_bytes()==raw,'Stale or changed original source/harness bytes')
-        object_name=startup['gitHead']+':'+row['file']
-        size=subprocess.run(git_args+['cat-file','-s',object_name],cwd=repository,capture_output=True,timeout=5)
-        require(size.returncode==0 and size.stdout.strip().isdigit() and int(size.stdout)<=2*MIB and int(size.stdout)==len(raw),'Original source object is absent or over bound')
-        committed=subprocess.run(git_args+['cat-file','blob',object_name],cwd=repository,capture_output=True,timeout=5)
-        require(committed.returncode==0 and committed.stdout==raw,'Source/harness bytes are not the original committed object')
+        require(pin(raw)=={key:row[key] for key in ['bytes','sha256']},'Stale or changed original source/harness bytes')
+        source_file_bytes(repository/row['file'],raw)
+        selector=(startup['gitHead']+':'+row['file']).encode('ascii')
+        require(b'\n' not in selector and b'\0' not in selector and len(selector)<=512,'Invalid original source selector')
+        selectors.append(selector+b'\n')
+        expected.append(raw)
+    request=b''.join(selectors)
+    committed=bounded_git_output(repository,git_args+['cat-file','--batch'],request,
+                                 sum(len(body)+129 for body in expected))
+    source_batch_frames(committed,expected)
     return {'exactOriginalGitSourcePins':len(startup['sourcePins']),'archiveCodeExecuted':False}
 
 
