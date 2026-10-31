@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import path from "node:path";
 import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import { parseCapturedProcessOutput } from "../dist/src/process-output.js";
@@ -167,6 +168,19 @@ function source(row, identity) {
   assert.equal(identity.bytes, value.bytes);
   assert.equal(identity.sha256, value.sha256);
 }
+function typeScriptSourceRoot(row) {
+  const root = row.project.sourceRoot;
+  assert.ok(
+    typeof root === "string" &&
+      ["linux", "darwin"].includes(row.runtime.platform),
+    "Native TypeScript source root and platform are required",
+  );
+  assert.ok(
+    path.posix.isAbsolute(root) && path.posix.normalize(root) === root,
+    "Native TypeScript source root must be canonical and absolute",
+  );
+  return root;
+}
 /** Accept the observed one-level Node callback wrapper; unrelated test-runner failures never qualify. */
 export function requireProjectAssertionFailure(error) {
   const direct =
@@ -298,6 +312,9 @@ export function inspectProjectNativeCheck(row, index, check, attempt) {
       scenario: row.project.scenario,
       checkIndex: index,
       reportSha256: hash(JSON.stringify(row.project)),
+      ...(row.family === "typescript"
+        ? { workingDirectorySha256: hash(typeScriptSourceRoot(row)) }
+        : {}),
     },
     "Native project attempt belongs to another report/scenario/check",
   );
@@ -414,7 +431,12 @@ export function inspectProjectNativeCheck(row, index, check, attempt) {
       [...check.scope].sort(),
     );
     for (const file of native.files) {
-      source(row, file.source);
+      assert.equal(
+        file.source.path,
+        path.posix.join(typeScriptSourceRoot(row), file.path),
+        "Native ESLint source belongs to another captured project root",
+      );
+      source(row, { ...file.source, path: file.path });
       assert.equal(file.configured, true);
       assert.ok(file.activeRules > 0);
       assert.equal(

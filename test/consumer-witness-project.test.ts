@@ -75,9 +75,14 @@ function sample(
     phase,
     before,
     after: structuredClone(before),
-    runtime: { node: "22.23.2", slot: "native-linux-arm64-node22" },
+    runtime: {
+      node: "22.23.2",
+      slot: "native-linux-arm64-node22",
+      ...(family === "typescript" ? { platform: "linux" } : {}),
+    },
     tool: { sha256: hash("synthetic-node-binary") },
     project: {
+      ...(family === "typescript" ? { sourceRoot: "/synthetic" } : {}),
       evidenceClass: "controller-source-bound-native-project-reports",
       applicationSemanticsVerified: false,
       nativeModuleLoadsTraced: false,
@@ -224,7 +229,7 @@ function sample(
         stdout = events.map((event) => JSON.stringify(event)).join("\n") + "\n";
     } else if (check.id === "javascript.eslint") {
       const files = check.scope.map((path) => {
-        const source = identity(path),
+        const source = { ...identity(path), path: "/synthetic/" + path },
           processed = path === "processed.js",
           failed = processed && check.status === "failed",
           parse = (input: typeof source) => ({
@@ -234,8 +239,16 @@ function sample(
             activeRules: 1,
           });
         const children = [
-          { path: "synthetic-first.ts", bytes: 1, sha256: hash("a") },
-          { path: "synthetic-second.ts", bytes: 1, sha256: hash("b") },
+          {
+            path: "/synthetic/processed.js/0_first.ts",
+            bytes: 1,
+            sha256: hash("a"),
+          },
+          {
+            path: "/synthetic/processed.js/1_second.ts",
+            bytes: 1,
+            sha256: hash("b"),
+          },
         ];
         return {
           path,
@@ -356,6 +369,9 @@ function sample(
         scenario,
         checkIndex: index,
         reportSha256: hash(JSON.stringify(row.project)),
+        ...(family === "typescript"
+          ? { workingDirectorySha256: hash("/synthetic") }
+          : {}),
       },
       output: output(stdout),
     };
@@ -1348,3 +1364,194 @@ test("native project witnesses reconcile check identities in every order while r
   );
   inspectProjectWitness(actualOrder.row, actualOrder.attempts);
 });
+
+test("TypeScript ESLint source paths require the captured root and actual working directory even when bytes match", () => {
+  const original = sample("typescript", "fixed", "library");
+  inspectProjectWitness(original.row, original.attempts);
+  type Identity = { path: string };
+  const relocateFile = (
+    file: {
+      source: Identity;
+      participation: { events: { input?: Identity; outputs?: Identity[] }[] };
+    },
+    previous: string,
+    next: string,
+  ): void => {
+    const relocate = (identity: Identity): void => {
+      assert.ok(
+        identity.path === previous || identity.path.startsWith(previous + "/"),
+      );
+      identity.path = next + identity.path.slice(previous.length);
+    };
+    relocate(file.source);
+    for (const event of file.participation.events) {
+      if (event.input) relocate(event.input);
+      for (const identity of event.outputs ?? []) relocate(identity);
+    }
+  };
+  const lintIndex = original.row.project.checks.findIndex(
+    (check) => check.id === "javascript.eslint",
+  );
+  for (const defect of [
+    "relative",
+    "foreign",
+    "adjacent",
+    "wrong-cwd",
+    "forged-root",
+    "missing-root",
+    "dotted-root",
+  ] as const) {
+    const changed = structuredClone(original);
+    const native = JSON.parse(
+      Buffer.from(
+        changed.attempts[lintIndex]!.output.stdout.base64,
+        "base64",
+      ).toString("utf8"),
+    );
+    let expected: RegExp;
+    if (
+      defect === "relative" ||
+      defect === "foreign" ||
+      defect === "adjacent"
+    ) {
+      const file = native.files[0],
+        previous = file.source.path;
+      const next =
+        defect === "relative"
+          ? file.path
+          : (defect === "foreign" ? "/foreign/" : "/synthetic-adjacent/") +
+            file.path;
+      relocateFile(file, previous, next);
+      changed.attempts[lintIndex]!.output = output(JSON.stringify(native));
+      expected = /ESLint source belongs to another captured project root/;
+    } else if (defect === "wrong-cwd") {
+      Object.assign(changed.attempts[lintIndex]!.project, {
+        workingDirectorySha256: hash("/foreign"),
+      });
+      expected = /another report\/scenario\/check/;
+    } else {
+      if (defect === "missing-root") delete changed.row.project.sourceRoot;
+      else
+        changed.row.project.sourceRoot =
+          defect === "dotted-root" ? "/synthetic/../synthetic" : "/foreign";
+      if (defect === "forged-root") {
+        for (const file of native.files)
+          relocateFile(file, "/synthetic", "/foreign");
+        changed.attempts[lintIndex]!.output = output(JSON.stringify(native));
+      }
+      for (const attempt of changed.attempts) {
+        attempt.project.reportSha256 = hash(
+          JSON.stringify(changed.row.project),
+        );
+        if (defect === "dotted-root")
+          Object.assign(attempt.project, {
+            workingDirectorySha256: hash(changed.row.project.sourceRoot!),
+          });
+      }
+      expected =
+        defect === "forged-root"
+          ? /another report\/scenario\/check/
+          : /TypeScript source root/;
+    }
+    assert.throws(
+      () => inspectProjectWitness(changed.row, changed.attempts),
+      expected,
+      defect,
+    );
+  }
+  const near = structuredClone(original),
+    previous = near.row.project.sourceRoot!;
+  near.row.project.sourceRoot = "/synthetic literal-'[λ]";
+  const native = JSON.parse(
+    Buffer.from(
+      near.attempts[lintIndex]!.output.stdout.base64,
+      "base64",
+    ).toString("utf8"),
+  );
+  for (const file of native.files)
+    relocateFile(file, previous, near.row.project.sourceRoot);
+  near.attempts[lintIndex]!.output = output(JSON.stringify(native));
+  for (const attempt of near.attempts) {
+    attempt.project.reportSha256 = hash(JSON.stringify(near.row.project));
+    Object.assign(attempt.project, {
+      workingDirectorySha256: hash(near.row.project.sourceRoot),
+    });
+  }
+  inspectProjectWitness(near.row, near.attempts);
+});
+
+test(
+  "TypeScript attempt capture hashes the actual contained working directory and retains a different child cwd",
+  {
+    skip:
+      process.platform === "win32"
+        ? "Selected TypeScript capture uses the Linux/Darwin storage profile"
+        : false,
+  },
+  async (t) => {
+    const { beginConsumerWitness, recordConsumerWitnessAttempt } =
+      await import("./consumer-witness-fixture.js");
+    const { runProcess } = await import("../src/runner.js");
+    const { realpath, mkdir } = await import("node:fs/promises");
+    const root = await realpath(
+      await fixture(
+        t,
+        Object.fromEntries(
+          projectConsumerPaths.typescript.map((file: string) => [
+            file,
+            "Original synthetic captured bytes",
+          ]),
+        ),
+      ),
+    );
+    const destination = await realpath(await fixture(t, {}));
+    await mkdir(path.join(root, "nested"));
+    const previous = process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR;
+    let capture: Awaited<ReturnType<typeof beginConsumerWitness>>;
+    try {
+      process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR = destination;
+      capture = await beginConsumerWitness(root, "typescript", "fixed");
+    } finally {
+      if (previous === undefined)
+        delete process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR;
+      else process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR = previous;
+    }
+    assert.ok(capture);
+    for (const cwd of [".", "nested"]) {
+      const result = await runProcess(
+        root,
+        {
+          executable: process.execPath,
+          args: [
+            "-e",
+            "process.stdout.write('original contained-cwd metadata')",
+          ],
+          cwd,
+        },
+        { timeoutMs: 10000, maxOutputBytes: 65536, captureRawOutput: true },
+      );
+      assert.equal(result.exitCode, 0, result.stderr);
+      const record = await recordConsumerWitnessAttempt(
+        capture,
+        result,
+        "consumer",
+        {
+          scenario: "library",
+          checkIndex: 0,
+          reportSha256: hash("original synthetic report"),
+        },
+      );
+      assert.ok(record);
+      const observed = record.value as {
+        project: { workingDirectorySha256: string };
+        gateAComplete: boolean;
+      };
+      assert.equal(
+        observed.project.workingDirectorySha256,
+        hash(await realpath(path.join(root, cwd))),
+      );
+      assert.notEqual(observed.project.workingDirectorySha256, hash(cwd));
+      assert.equal(observed.gateAComplete, false);
+    }
+  },
+);
