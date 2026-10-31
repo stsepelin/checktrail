@@ -1,4 +1,5 @@
 """Retain original result files and logs; this is not full build qualification."""
+import base64
 import hashlib
 import json
 import os
@@ -9,6 +10,8 @@ import sys
 
 source, destination = map(Path, sys.argv[1:])
 rows = []
+untraversed_links = []
+link_metadata_bytes = 0
 retained = destination.parent / "original-test-reports"
 retained.mkdir()
 limit = 1024 * 1024
@@ -82,8 +85,29 @@ for directory in sorted(source.glob("builddir-*")):
     (retained / directory.name).mkdir()
     for current, directories, files in os.walk(directory, followlinks=False):
         base = Path(current)
-        if any((base / name).is_symlink() for name in directories):
-            raise RuntimeError("Linked build-report directory")
+        for name in sorted(directories):
+            file = base / name
+            before = file.lstat()
+            if not stat.S_ISLNK(before.st_mode):
+                continue
+            if name.endswith((".sum", ".trs")):
+                raise RuntimeError("Linked original test-report path: " + str(file.relative_to(source)))
+            target = os.readlink(os.fsencode(file))
+            after = file.lstat()
+            identity = lambda value: (value.st_dev, value.st_ino, value.st_mode,
+                                      value.st_size, value.st_mtime_ns, value.st_ctime_ns)
+            relative = file.relative_to(source).as_posix()
+            path_bytes = relative.encode("utf-8", errors="strict")
+            link_metadata_bytes += len(path_bytes) + len(target)
+            if (identity(before) != identity(after)
+                    or not 0 < len(target) <= 4096 or len(path_bytes) > 4096
+                    or len(untraversed_links) >= 8192 or link_metadata_bytes > 1024 * 1024):
+                raise RuntimeError("Changed or over-bound untraversed directory-link metadata")
+            untraversed_links.append({"file": relative, "targetBytes": len(target),
+                                      "targetSha256": hashlib.sha256(target).hexdigest(),
+                                      "targetBase64": base64.b64encode(target).decode("ascii")})
+            # Never traverse or copy a link target. Its contents are unknown evidence.
+            directories.remove(name)
         for name in sorted(files):
             if not name.endswith((".sum", ".trs")):
                 continue
@@ -103,7 +127,9 @@ for directory in sorted(source.glob("builddir-*")):
             if len(rows) > 1024:
                 raise RuntimeError("Original report inventory exceeded bound")
 report = {"schemaVersion": 1, "scope": "Original DejaGNU .sum and Automake .trs files with associated logs under generated builddir-* configurations; repeated reports are not independent evidence.",
-          "reports": rows, "completeConfigurationInventoryAssessed": False,
+          "reports": rows, "untraversedDirectoryLinks": untraversed_links,
+          "directoryLinkTargetsAssessed": False,
+          "completeConfigurationInventoryAssessed": False,
           "fullCompilerSdkBootstrapClosureVerified": False, "completeOriginalNoticeClosureVerified": False, "gateAComplete": False}
 with destination.open("x", encoding="utf-8") as handle:
     json.dump(report, handle, indent=2)

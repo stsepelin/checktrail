@@ -629,8 +629,10 @@ async function automakeReaderFixture(
 async function collectProducerReports(
   t: TestContext,
   files: Record<string, string>,
+  prepare?: (root: string) => Promise<void>,
 ) {
   const root = await fixture(t, { ...files, "output/.keep": "" });
+  await prepare?.(root);
   assert.ok(
     verifiedPython,
     "Python collector requires a verified Python 3 interpreter",
@@ -960,3 +962,156 @@ test("producer original package completion preserves failed and unavailable test
     /Unknown original test evidence state/,
   );
 });
+
+test(
+  "producer collection retains inert directory-link omissions without treating target reports as passing evidence",
+  {
+    ...pythonCollector,
+    skip:
+      process.platform === "win32"
+        ? "POSIX directory-link control"
+        : pythonCollector.skip,
+  },
+  async (t) => {
+    const f = await collectProducerReports(
+      t,
+      {
+        "source/builddir-single/ld/ld.sum": "PASS: physical linker report\n",
+        "source/builddir-single/nested/real.sum":
+          "PASS: physical nested report\n",
+        "outside/hidden.sum": "FAIL: outside target must remain unexamined\n",
+      },
+      async (root) => {
+        await symlink(
+          "../../../outside",
+          path.join(root, "source/builddir-single/ld/external"),
+        );
+        await symlink("..", path.join(root, "source/builddir-single/ld/cycle"));
+      },
+    );
+    assert.equal(f.result.status, 0, childDiagnostic(f.result));
+    const report = JSON.parse(await readFile(f.output, "utf8"));
+    assert.deepEqual(
+      report.reports.map((row: { file: string }) => row.file).sort(),
+      ["builddir-single/ld/ld.sum", "builddir-single/nested/real.sum"],
+    );
+    assert.equal(report.untraversedDirectoryLinks.length, 2);
+    assert.equal(report.directoryLinkTargetsAssessed, false);
+    for (const [file, target] of [
+      ["cycle", ".."],
+      ["external", "../../../outside"],
+    ] as const) {
+      const row = report.untraversedDirectoryLinks.find(
+        (row: { file: string }) => row.file === "builddir-single/ld/" + file,
+      );
+      assert.deepEqual(row, {
+        file: "builddir-single/ld/" + file,
+        targetBytes: Buffer.byteLength(target),
+        targetBase64: Buffer.from(target).toString("base64"),
+        targetSha256: digest(target),
+      });
+    }
+    const observed = await api.summarizeReports(report, f.retained, {
+      completeUpstreamTestInventoryAssessed: false,
+      buildConfigurations: ["builddir-single"],
+      minimumExplicitPackageCheckReports: ["builddir-single/ld/ld.sum"],
+    });
+    assert.equal(
+      observed.state,
+      "unavailable",
+      "Unexamined link targets cannot produce passing test evidence",
+    );
+    assert.equal(observed.minimumSourceObligationsSatisfied, true);
+    assert.equal(observed.untraversedDirectoryLinks.length, 2);
+    assert.equal(observed.completeConfigurationInventoryAssessed, false);
+    for (const change of [
+      (v: typeof report) => {
+        v.directoryLinkTargetsAssessed = true;
+      },
+      (v: typeof report) => {
+        v.untraversedDirectoryLinks[0].targetBytes = 0;
+      },
+      (v: typeof report) => {
+        v.untraversedDirectoryLinks[0].targetSha256 = "0".repeat(64);
+      },
+      (v: typeof report) => {
+        v.untraversedDirectoryLinks[0].targetBase64 += "!";
+      },
+      (v: typeof report) => {
+        v.untraversedDirectoryLinks.push(v.untraversedDirectoryLinks[0]);
+      },
+      (v: typeof report) => {
+        v.untraversedDirectoryLinks[0].file = "../outside";
+      },
+      (v: typeof report) => {
+        v.untraversedDirectoryLinks[0].file = "builddir-single/ld";
+      },
+    ]) {
+      const forged = structuredClone(report);
+      change(forged);
+      await assert.rejects(api.summarizeReports(forged, f.retained));
+    }
+    const failed = structuredClone(report);
+    const file = failed.reports[0];
+    const raw = "FAIL: original failure remains a failure\n";
+    await writeFile(path.join(f.retained, file.file), raw);
+    Object.assign(file, pin(file.file, raw), {
+      counts: {
+        PASS: 0,
+        FAIL: 1,
+        XFAIL: 0,
+        XPASS: 0,
+        UNSUPPORTED: 0,
+        UNRESOLVED: 0,
+        UNTESTED: 0,
+        ERROR: 0,
+      },
+      otherLines: 0,
+      totalLines: 1,
+    });
+    assert.equal(
+      (await api.summarizeReports(failed, f.retained)).state,
+      "failed",
+    );
+  },
+);
+
+test(
+  "producer directory-link handling still refuses linked selected reports and linked build configurations",
+  {
+    ...pythonCollector,
+    skip:
+      process.platform === "win32"
+        ? "POSIX report-link controls"
+        : pythonCollector.skip,
+  },
+  async (t) => {
+    for (const kind of ["report-file", "report-directory", "configuration"]) {
+      const f = await collectProducerReports(
+        t,
+        {
+          "source/builddir-single/ld/ld.sum": "PASS: physical report\n",
+          "outside/hidden.sum":
+            "PASS: linked evidence is not physical evidence\n",
+        },
+        async (root) => {
+          const target =
+            kind === "report-file"
+              ? path.join(root, "outside/hidden.sum")
+              : path.join(root, "outside");
+          const name =
+            kind === "configuration"
+              ? "source/builddir-linked"
+              : "source/builddir-single/ld/linked.sum";
+          await symlink(target, path.join(root, name));
+        },
+      );
+      assert.notEqual(
+        f.result.status,
+        0,
+        kind + ": " + childDiagnostic(f.result),
+      );
+      await assert.rejects(readFile(f.output), { code: "ENOENT" });
+    }
+  },
+);

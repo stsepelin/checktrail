@@ -153,7 +153,13 @@ output, exact output-package identities, the original case-preserving build tree
 and per-file DejaGNU `.sum` and Automake `.trs` identities/counts. Associated
 logs are retained and byte-bound separately; an Automake result requires its log.
 Result files are limited to 1 MiB each and logs to 8 MiB each, beneath the aggregate
-retention bound. The reader independently rederives all status/metadata fields
+retention bound. Directory links below a physical build configuration are recorded as
+bounded original link bytes and never traversed. Their targets remain unexamined;
+even passing physical reports produce unavailable test evidence while such links
+exist. Original failed physical reports remain failed. Linked report files,
+report-named directories and top-level build configurations are still refused.
+The complete upstream report inventory remains open; this metadata does not
+establish which linked targets contain reports. The reader independently rederives all status/metadata fields
 from physical bytes, including Automake skip, unexpected-pass and error outcomes.
 A passed report cannot cover for another report with no executed non-skipped test.
 Repeated configurations are not pooled into independent tests. Missing/empty

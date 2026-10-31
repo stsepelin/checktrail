@@ -319,6 +319,47 @@ export async function summarizeReports(value, root, minimum) {
   assert.equal(value.schemaVersion, 1);
   assert.equal(value.completeConfigurationInventoryAssessed, false);
   assert.ok(Array.isArray(value.reports) && value.reports.length <= 1024);
+  const untraversedDirectoryLinks = value.untraversedDirectoryLinks ?? [];
+  assert.ok(
+    Array.isArray(untraversedDirectoryLinks) &&
+      untraversedDirectoryLinks.length <= 8192,
+  );
+  const linkNames = new Set();
+  let linkMetadataBytes = 0;
+  for (const row of untraversedDirectoryLinks) {
+    assert.equal(value.directoryLinkTargetsAssessed, false);
+    assert.ok(
+      relative(row.file) &&
+        /^builddir-[A-Za-z0-9_-]+\//u.test(row.file) &&
+        !linkNames.has(row.file),
+    );
+    assert.equal(typeof row.targetBase64, "string");
+    const target = Buffer.from(row.targetBase64, "base64");
+    assert.equal(
+      target.toString("base64"),
+      row.targetBase64,
+      "Noncanonical original directory-link bytes",
+    );
+    assert.ok(
+      Number.isSafeInteger(row.targetBytes) &&
+        row.targetBytes > 0 &&
+        row.targetBytes <= 4096,
+    );
+    assert.equal(target.length, row.targetBytes);
+    assert.equal(
+      sha(target),
+      row.targetSha256,
+      "Original directory-link byte identity mismatch",
+    );
+    const pathBytes = Buffer.byteLength(row.file);
+    assert.ok(pathBytes <= 4096);
+    linkMetadataBytes += pathBytes + target.length;
+    assert.ok(
+      linkMetadataBytes <= 1048576,
+      "Original directory-link metadata exceeded bound",
+    );
+    linkNames.add(row.file);
+  }
   const names = new Set();
   let failing = false;
   let observed = false;
@@ -332,6 +373,12 @@ export async function summarizeReports(value, root, minimum) {
         ((format === "dejagnu" && row.file.endsWith(".sum")) ||
           (format === "automake-trs" && row.file.endsWith(".trs"))) &&
         !names.has(row.file),
+    );
+    assert.ok(
+      ![...linkNames].some(
+        (name) => row.file === name || row.file.startsWith(name + "/"),
+      ),
+      "Report declared beneath an untraversed directory link",
     );
     names.add(row.file);
     const raw = await boundedPhysicalBytes(path.join(root, row.file), 1048576);
@@ -442,10 +489,14 @@ export async function summarizeReports(value, root, minimum) {
   return {
     state: failing
       ? "failed"
-      : observed && everyReportObserved
+      : observed &&
+          everyReportObserved &&
+          untraversedDirectoryLinks.length === 0
         ? "reported"
         : "unavailable",
     reports: value.reports,
+    untraversedDirectoryLinks,
+    directoryLinkTargetsAssessed: false,
     minimumSourceObligationsSatisfied,
     completeConfigurationInventoryAssessed: false,
     repeatedConfigurationsPooled: false,

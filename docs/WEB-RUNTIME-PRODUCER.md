@@ -95,9 +95,11 @@ remain incomplete. Cleanup removes only the observed owned derived image, withou
 force or global pruning; shared base images are retained.
 
 The bounded observation archive includes receipts and logs, including failures.
-Raw SDK/source trees, archive inputs and binary products are hashed and retained
-during the job; this upload does not promise indefinite availability of those
-bodies. A complete runtime recipe can establish runtime reproduction and byte
+The two fixed release/debug WASM products are retained as physical bytes beneath
+16 MiB per product and the existing aggregate export bound, so a mismatch can be
+examined without changing an expected hash. Other raw SDK/source trees, archive
+inputs and binary products are hashed and retained during the job; this upload
+does not promise indefinite availability of those bodies. A complete runtime recipe can establish runtime reproduction and byte
 agreement only. SDK/compiler/bootstrap producer builds and complete notice closure
 remain unfinished. Historical publisher consumption is unproven; runtime byte
 agreement does not establish it. Gate A remains incomplete.

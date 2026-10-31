@@ -453,3 +453,50 @@ test("local-derived metadata requires the exact shared cryptographic base and CO
     "/synthetic/context",
   ]);
 });
+
+test(
+  "actual original-runtime exporter retains only the two bounded physical WASM products and rehashes their exact bytes",
+  {
+    skip: python
+      ? false
+      : "Verified Python 3 unavailable: " + failures.join("; "),
+  },
+  async (t) => {
+    const root = await temp(t);
+    const program = String.raw`import pathlib,sys,subprocess,json,zipfile,hashlib,os
+root=pathlib.Path(sys.argv[2]); script=sys.argv[1]; passed=0
+
+def invoke(name,kind):
+ d=root/name;inputs=d/'inputs';result=d/'result';inputs.mkdir(parents=True);result.mkdir();(result/'result.json').write_text('{"runtimeBuildVerified":false}');folder=result/'work/source/lib/binding_web';folder.mkdir(parents=True);(folder/'debug').mkdir();(folder/'web-tree-sitter.wasm').write_bytes(b'\x00asmrelease');(folder/'debug/web-tree-sitter.wasm').write_bytes(b'\x00asmdebug');(folder/'unselected.wasm').write_bytes(b'not selected');(folder/'private-source.c').write_bytes(b'not exported');(folder/'debug/ignored.wasm').write_bytes(b'not selected')
+ selected=folder/'debug/web-tree-sitter.wasm'
+ if kind=='oversize':
+  with selected.open('wb') as f:f.truncate(16*1024**2+1)
+ if kind=='linked-file':
+  selected.unlink();selected.symlink_to(folder/'unselected.wasm')
+ if kind=='linked-parent':
+  selected.unlink();(folder/'debug/ignored.wasm').unlink();(folder/'debug').rmdir();(folder/'elsewhere').mkdir();(folder/'elsewhere/web-tree-sitter.wasm').write_bytes(b'linked');(folder/'debug').symlink_to(folder/'elsewhere',target_is_directory=True)
+ target=d/'evidence.zip';q=subprocess.run([sys.executable,script,str(inputs),str(result),str(target)],capture_output=True,timeout=5)
+ if kind!='good':assert q.returncode!=0 and not target.exists(),kind;return
+ assert q.returncode==0,q.stderr
+ with zipfile.ZipFile(target) as z:
+  index=json.loads(z.read('observations-index.json'));names=['recipe/compiled-products/web-tree-sitter.wasm','recipe/compiled-products/debug/web-tree-sitter.wasm'];assert index['fixedCompiledWasmProductsExported']==names;assert set(z.namelist())==set(names+['recipe/result.json','observations-index.json']);assert index['rawSourceAndArchiveBodiesExported'] is False and index['nativeQualificationClaimedByExporter'] is False
+  for row in index['files']:
+   raw=z.read(row['file']);assert len(raw)==row['bytes'] and hashlib.sha256(raw).hexdigest()==row['sha256']
+  assert z.read(names[0])==b'\x00asmrelease' and z.read(names[1])==b'\x00asmdebug'
+for kind in ['good','oversize']+([] if os.name=='nt' else ['linked-file','linked-parent']):
+ invoke(kind,kind);passed+=1
+print(json.dumps({'passed':passed,'compilerExecuted':False,'expectedOutputPinsChanged':False}))`;
+    const child = spawnSync(
+      python,
+      ["-c", program, path.join(here, "web-runtime-export.py"), root],
+      { encoding: "utf8", timeout: 10000, maxBuffer: 1048576 },
+    );
+    assert.equal(child.error, undefined, diagnostic(child));
+    assert.equal(child.status, 0, diagnostic(child));
+    assert.deepEqual(JSON.parse(child.stdout), {
+      passed: process.platform === "win32" ? 2 : 4,
+      compilerExecuted: false,
+      expectedOutputPinsChanged: false,
+    });
+  },
+);
