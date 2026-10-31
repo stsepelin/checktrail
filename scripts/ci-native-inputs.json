@@ -1,6 +1,6 @@
 {
-  "assets/context-grammars/tree-sitter-c.wasm": ["c-context-arm64"],
   "assets/context-grammars/tree-sitter-c_sharp.wasm": ["csharp-context-arm64"],
+  "assets/context-grammars/tree-sitter-c.wasm": ["c-context-arm64"],
   "assets/context-grammars/tree-sitter-cpp.wasm": ["cpp-context-arm64"],
   "assets/context-grammars/tree-sitter-fsharp.wasm": ["fsharp-context-arm64"],
   "assets/context-grammars/tree-sitter-go.wasm": ["go-workspaces-arm64"],
@@ -4675,9 +4675,14 @@
     "tasks-runtime-arm64",
     "windows"
   ],
-  "test/windows-task-access.test.ts": [
+  "test/windows-task-access-batch-contract.test.ts": [
     "resource-release",
     "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/windows-task-access.test.ts": [
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"

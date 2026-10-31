@@ -467,6 +467,7 @@ test("CI completion YAML policy admits failed dependencies and skips a canceled 
 test("CI managed pull-request branch prefixes avoid duplicate push workflows while tags retain verification", () => {
   assert.deepEqual(workflow.on.push["branches-ignore"], [
     "pr/**",
+    "agent/**",
     "dependabot/**",
     "fix/**",
   ]);
@@ -1986,4 +1987,91 @@ test("native retry outputs use unique static closed-lane keys with pinned-Node S
     download.with["artifact-ids"],
     "${{ steps.native-capsules.outputs.artifact_ids }}",
   );
+});
+
+test("native failure diagnostic uploads preserve the capsule publication order and cannot supply completion outputs", async () => {
+  const { consumerNativeAcceptanceScopes } = await import(
+    new URL(
+      "../../scripts/consumer-native-acceptance-scope.mjs",
+      import.meta.url,
+    ).href
+  );
+  const { consumerNativeScopeJob } = await import(
+    new URL(
+      "../../scripts/consumer-native-acceptance-capsule.mjs",
+      import.meta.url,
+    ).href
+  );
+  const data = async (file: string) =>
+    JSON.parse(await readFile(new URL(file, root), "utf8"));
+  const scopes = consumerNativeAcceptanceScopes(
+    await data("docs/gate-a-consumer-witnesses.v1.json"),
+    await data("docs/gate-a-profiles.v1.json"),
+    await data("scripts/required-native-tests.json"),
+  );
+  const owners = new Set(scopes.map(consumerNativeScopeJob));
+  for (const [id, job] of Object.entries(workflow.jobs) as Array<
+    [
+      string,
+      {
+        steps: Array<{
+          name?: string;
+          id?: string;
+          run?: string;
+          env?: Record<string, string>;
+        }>;
+      },
+    ]
+  >) {
+    const diagnostics = job.steps.filter(
+      (step) =>
+        step.name === "Retain sanitized incomplete native consumer diagnostics",
+    );
+    assert.equal(diagnostics.length, owners.has(id) ? 1 : 0, id);
+    if (!owners.has(id)) continue;
+    const diagnostic = diagnostics[0]!;
+    assert.deepEqual(diagnostic, {
+      name: "Retain sanitized incomplete native consumer diagnostics",
+      if:
+        id === "tasks-runtime"
+          ? "${{ failure() && !cancelled() && matrix.consumer }}"
+          : "${{ failure() && !cancelled() }}",
+      uses: "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+      with: {
+        name:
+          "consumer-attempt-diagnostics-" +
+          id +
+          (id === "tasks-runtime"
+            ? "-${{ matrix.slot }}-${{ github.run_attempt }}"
+            : "-single-${{ github.run_attempt }}"),
+        path: "${{ runner.temp }}/checktrail-native-diagnostics/*.json",
+        "if-no-files-found": "ignore",
+        "retention-days": 7,
+        "include-hidden-files": false,
+      },
+    });
+    const upload = job.steps.findIndex((step) => step.id === "native-upload"),
+      finish = job.steps.findIndex((step) => step.id === "native-finish");
+    assert.equal(job.steps.indexOf(diagnostic) + 1, upload);
+    assert.equal(upload + 1, finish);
+    assert.equal(finish, job.steps.length - 1);
+    const captures = job.steps.filter((step) =>
+      /(?:^|\n)\s*node scripts\/verify-consumer-native-acceptance\.mjs /.test(
+        step.run ?? "",
+      ),
+    );
+    assert.ok(captures.length > 0, id);
+    for (const capture of captures) {
+      assert.equal(
+        capture.env?.CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY,
+        "${{ runner.temp }}/checktrail-native-diagnostics",
+        id,
+      );
+      assert.equal(
+        capture.env?.CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY,
+        "${{ runner.temp }}/checktrail-native-capsules",
+        id,
+      );
+    }
+  }
 });
