@@ -19,6 +19,10 @@ SOURCE_FILES = [
     'scripts/producer-qualification/c-producer-replay-evidence.py', '.github/workflows/upstream-glibc.yml',
   'scripts/verify-binutils-retention-observer.mjs', 'scripts/acquire-binutils-inputs.mjs', 'scripts/acquire-c-producer-inputs.mjs', 'scripts/producer-qualification/binutils.v1.json', 'scripts/producer-qualification/binutils-acquisition-plan.mjs', 'scripts/producer-qualification/binutils-prepare-inputs.py', 'scripts/producer-qualification/binutils-apt-index-preparation.v1.json', 'scripts/producer-qualification/binutils-input-reacquisition.v1.json',
 ]
+SOURCE_FILES += ['scripts/producer-qualification/' + name for name in [
+    'glibc-seccomp.mjs', 'glibc-seccomp.v1.json', 'glibc-seccomp-probe.py',
+    'moby-28.0.4/default.json', 'moby-28.0.4/LICENSE', 'moby-28.0.4/NOTICE', 'moby-28.0.4/AUTHORS',
+]]
 
 
 def physical(file):
@@ -111,6 +115,8 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
     for file, maximum in [
         ('receipt.json', 16 * MIB), ('build-observation.json', 2 * MIB), ('build.log', 512 * MIB),
         ('retention-observer.jsonl', 16 * MIB), ('custody-preflight.log', 65536),
+        ('seccomp-baseline.log', 65536), ('seccomp-derived.log', 65536),
+        ('controls/glibc-native-seccomp.json', 65536),
         ('custody-preflight/test-reports.json', 65536), ('work/original-command.json', 4096),
         ('work/test-reports.json', 8 * MIB), ('work/installed-build-package-identities.txt', MIB),
     ]:

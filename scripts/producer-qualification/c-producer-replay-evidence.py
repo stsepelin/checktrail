@@ -3,6 +3,7 @@ import argparse
 import base64
 import hashlib
 import json
+import math
 from pathlib import Path
 import re
 import stat
@@ -22,6 +23,11 @@ SOURCE_FILES = [
     'scripts/producer-qualification/c-producer-replay-evidence.py', '.github/workflows/upstream-glibc.yml',
   'scripts/verify-binutils-retention-observer.mjs', 'scripts/acquire-binutils-inputs.mjs', 'scripts/acquire-c-producer-inputs.mjs', 'scripts/producer-qualification/binutils.v1.json', 'scripts/producer-qualification/binutils-acquisition-plan.mjs', 'scripts/producer-qualification/binutils-prepare-inputs.py', 'scripts/producer-qualification/binutils-apt-index-preparation.v1.json', 'scripts/producer-qualification/binutils-input-reacquisition.v1.json',
 ]
+GLIBC_POLICY_FILES = [
+    'glibc-seccomp.mjs', 'glibc-seccomp.v1.json', 'glibc-seccomp-probe.py',
+    'moby-28.0.4/default.json', 'moby-28.0.4/LICENSE', 'moby-28.0.4/NOTICE', 'moby-28.0.4/AUTHORS',
+]
+SOURCE_FILES += ['scripts/producer-qualification/' + name for name in GLIBC_POLICY_FILES]
 
 
 def require(condition, message):
@@ -55,6 +61,22 @@ def strict_json(raw):
             result[key] = value
         return result
     return json.loads(raw, object_pairs_hook=pairs)
+
+
+def exact_json(left, right, depth=0):
+    """Compare bounded decoded JSON without Python's bool/int coercion."""
+    if depth > 64 or type(left) is not type(right):
+        return False
+    if type(left) is dict:
+        return (all(type(key) is str for key in left) and
+                all(type(key) is str for key in right) and
+                left.keys() == right.keys() and
+                all(exact_json(left[key], right[key], depth+1) for key in left))
+    if type(left) is list:
+        return len(left) == len(right) and all(exact_json(a,b,depth+1) for a,b in zip(left,right))
+    if type(left) is float:
+        return math.isfinite(left) and math.isfinite(right) and left == right
+    return type(left) in [str,int,bool,type(None)] and left == right
 
 
 def terminal(value, limit=512*MIB):
@@ -96,6 +118,58 @@ def retention(raw, receipt):
                 last, samples, waiting = value, samples+1, False
     require(ready and samples>0 and not waiting and not buffer and samples==receipt['samples'] and last==receipt['lastSample'], 'Incomplete observer request/response lifecycle')
     return last
+
+
+def syscall_probe(value, mode):
+    require(type(mode) is str and mode in ['baseline','derived'] and exact_json([value['schemaVersion'],value['mode'],value['machine']],[1,mode,'x86_64']), 'Wrong native syscall probe frame')
+    caps=value['capabilities']
+    require(set(caps)=={'effective','permitted','bounding'},'Incomplete native capabilities')
+    for bits in caps.values():
+        require(isinstance(bits,str) and re.fullmatch(r'[a-f0-9]{16}',bits) and int(bits,16)&((1<<25)|(1<<21))==0,'Clock/admin capability forbidden')
+    sentinel=0xdefaced
+    persona=value['personality'];saved=persona['saved']['result']
+    require(type(saved) is int and saved!=-1 and exact_json(persona['saved'],{'result':saved,'errno':sentinel}),'Original personality query failed')
+    require(exact_json(persona['near'],{'result':-1,'errno':1}) and exact_json(persona['linuxQuery'],{'result':0,'errno':sentinel}),'Personality near/default predicate changed')
+    if mode=='baseline':
+        expected=[{'result':-1,'errno':1},{'result':saved,'errno':sentinel},{'result':saved,'errno':sentinel}]
+        clock_errno=1
+    else:
+        expected=[{'result':saved,'errno':sentinel},{'result':-22,'errno':sentinel},{'result':-22,'errno':sentinel}]
+        clock_errno=22
+    require(exact_json([persona[key] for key in ['negativeSet','negativeQuery','linuxSet']],expected),'BZ19408 personality/errno semantics changed')
+    require(exact_json(value['clock'],{'monotonicRead':0,'monotonicSet':{'result':-1,'errno':clock_errno},'realtimeInvalidSet':{'result':-1,'errno':1}}),'Clock exact/near predicate differs')
+    require(value['restored'] is True and value['projectOrCompilerExecuted'] is False and value['clockChangeAttemptedWithValidRealtimeArgument'] is False,'Probe body/restoration scope changed')
+
+
+def syscall_preflight(packet, receipt):
+    metadata_raw=packet.read('source/scripts/producer-qualification/glibc-seccomp.v1.json',65536)
+    require(sha(metadata_raw)=='1dd74d0956dd3a06837a43afd61c3b1150d3bfc43c9b7d6b40c3acb3e9f202ac','Unknown policy provenance metadata')
+    metadata=strict_json(metadata_raw)
+    for row in metadata['inputs']:
+        require(exact_json(pin(packet.read('source/scripts/producer-qualification/'+row['file'],2*MIB)),{key:row[key] for key in ['bytes','sha256']}),'Original Moby policy/notice bytes differ')
+    base=packet.json('source/scripts/producer-qualification/moby-28.0.4/default.json',65536)
+    additions=[{'names':['clock_settime'],'action':'SCMP_ACT_ALLOW','args':[{'index':0,'value':1,'op':'SCMP_CMP_EQ'}]}, {'names':['personality'],'action':'SCMP_ACT_ALLOW','args':[{'index':0,'value':4294967274,'op':'SCMP_CMP_EQ'}]}]
+    require(exact_json([base['defaultAction'],base['defaultErrnoRet'],metadata['additions']],['SCMP_ACT_ERRNO',1,additions]),'Default policy or exact predicates changed')
+    derived=packet.read('result/controls/glibc-native-seccomp.json',65536)
+    expected={**base,'syscalls':base['syscalls']+additions}
+    require(exact_json(strict_json(derived),expected),'GLIBC carrier must retain default profile plus exactly two argument predicates')
+    policy={'file':'glibc-native-seccomp.json',**pin(derived)}
+    require(exact_json(receipt['generatedControlPins'],[policy]),'Generated policy pin changed')
+    proof=receipt['syscallPreflight']
+    require(exact_json(proof['schemaVersion'],1) and proof['state']=='exact-kernel-predicates-observed-original-body-not-invoked' and exact_json(proof['policy'],policy) and set(proof['modes'])=={'baseline','derived'},'Incomplete native syscall preflight')
+    for key in ['originalBodyInvoked','fullCompilerSdkBootstrapClosureVerified','historicalPublisherConsumptionVerified','gateAComplete']:
+        require(proof[key] is False,'Syscall probe overclaims qualification')
+    runtime=receipt['syscallRuntime'];commit=runtime['serverGitCommit']
+    require(commit in ['6430e49','6430e49a55babd9b8f4d08e70ecb2b68900770fe'] and exact_json(runtime,{'serverVersion':'28.0.4','serverGitCommit':commit,'sourceCommit':'6430e49a55babd9b8f4d08e70ecb2b68900770fe','platform':'linux/amd64','defaultProfile':'builtin','reportedMetadataOnly':True,'defaultProfileBytesIndependentlyAttestedFromDaemon':False,'historicalPublisherConsumptionVerified':False}),'Unknown Docker default profile/build')
+    require(type(receipt['image']['id']) is str and re.fullmatch(r'sha256:[a-f0-9]{64}',receipt['image']['id']),'Invalid native syscall image identity')
+    for mode in ['baseline','derived']:
+        row=proof['modes'][mode]
+        terminal(row['observer'],65536)
+        raw=packet.read('result/seccomp-'+mode+'.log',65536)
+        require(len(raw)>0 and exact_json(pin(raw),row['log']) and exact_json(len(raw),row['observer']['retainedBytes']) and exact_json(strict_json(raw),row['record']),'Syscall raw terminal/log binding differs')
+        syscall_probe(row['record'],mode)
+        require(exact_json(row['predicates'],{'mode':mode,'exactPredicatesObserved':True,'originalBodyInvoked':False}) and exact_json(row['imageId'],receipt['image']['id']) and row['cleanup']['state'] in ['absent','removed'],'Syscall probe identity/cleanup incomplete')
+    require(exact_json(proof['modes']['baseline']['record']['capabilities'],proof['modes']['derived']['record']['capabilities']),'Derived policy increased observed capabilities')
 
 
 class Packet:
@@ -293,16 +367,17 @@ def replay(archive,repository):
         command=packet.json('result/work/original-command.json',4096)
         require(command==receipt['originalBuild'] and command=={'schemaVersion':1,'command':profile['command'],'invoked':True,'exitCode':0,'wrapperExitCode':0},'Original default command terminal unavailable')
         require(packet.files['result/build.log']['bytes']==receipt['executionObserver']['retainedBytes'] and {key:packet.files['result/build.log'][key] for key in ['bytes','sha256']}==receipt['log'],'Original process log binding differs')
-        require([row['file'] for row in receipt['sourcePins']]==['c-producer-profiles.v1.json','c-producer-profile.mjs','c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','binutils-retention-observer.mjs','binutils-image-identity.mjs','binutils-image-identity.v1.json'] and [row['file'] for row in receipt['harnessPins']]==['qualify-c-producer.mjs','qualify-binutils-producer.mjs'],'Incomplete original source/harness pin inventory')
+        require([row['file'] for row in receipt['sourcePins']]==['c-producer-profiles.v1.json','c-producer-profile.mjs','c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','binutils-retention-observer.mjs','binutils-image-identity.mjs','binutils-image-identity.v1.json',*GLIBC_POLICY_FILES] and [row['file'] for row in receipt['harnessPins']]==['qualify-c-producer.mjs','qualify-binutils-producer.mjs'],'Incomplete original source/harness pin inventory')
         for row in receipt['sourcePins']:
             require(pin(packet.read('source/scripts/producer-qualification/'+row['file'],2*MIB))=={key:row[key] for key in ['bytes','sha256']},'Original source pin differs')
         for row in receipt['harnessPins']:
             require(pin(packet.read('source/scripts/'+row['file'],2*MIB))=={key:row[key] for key in ['bytes','sha256']},'Original harness pin differs')
+        syscall_preflight(packet,receipt)
         observer=receipt['retentionObserver'];require(observer['state']=='completed' and observer['independentImage']==catalog['image'] and observer['readOnly'] is True and observer['network']=='none' and observer['capability']=='DAC_READ_SEARCH' and observer['terminal']=={'exitCode':0,'signal':None},'Independent observer unavailable or altered')
         require(observer['nativeFilesystemQuotaEnforced'] is False,'Unproven native quota')
         last=retention(packet.read('result/retention-observer.jsonl',16*MIB),observer)
         require(last==receipt['finalRetention'],'Final observer sample differs')
-        allowance=sum(row['bytes'] for row in profile['files'])+sum(row['bytes'] for row in receipt['sourcePins'] if row['file'] in ['c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py'])
+        allowance=sum(row['bytes'] for row in profile['files'])+sum(row['bytes'] for row in receipt['sourcePins'] if row['file'] in ['c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','glibc-seccomp-probe.py'])+sum(row['bytes'] for row in receipt['generatedControlPins'])
         require(last['bytes']<=profile['limits']['workByteLimit']+allowance,'Retained work allowance exceeded')
         for key in ['cleanup','retentionObserverCleanup']:require(receipt[key]['state'] in ['absent','removed'],'Incomplete original owned cleanup')
         preflight=receipt['custodyPreflight'];require(preflight['capturedCaller']==caller and preflight['state']=='selected-nonroot-caller-export-verified' and preflight['nativeLinuxCrossUidAcceptanceVerified'] is True and preflight['sourceOrCompilerInvoked'] is False and preflight['cleanup']['state'] in ['absent','removed'],'Native caller custody preflight incomplete')

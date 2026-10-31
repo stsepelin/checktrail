@@ -14,7 +14,13 @@ import {
   readCProducerCopyManifest,
   verifyCProducerReports,
   cProducerCompletion,
+  cProducerSourceFiles,
 } from "./qualify-c-producer.mjs";
+import {
+  glibcSeccompSourceFiles,
+  loadGlibcSeccomp,
+  validateGlibcSyscallPreflight,
+} from "./producer-qualification/glibc-seccomp.mjs";
 import {
   identifyFile,
   validateInputs,
@@ -55,6 +61,9 @@ export const cObservationSources = [
   "scripts/producer-qualification/binutils-prepare-inputs.py",
   "scripts/producer-qualification/binutils-apt-index-preparation.v1.json",
   "scripts/producer-qualification/binutils-input-reacquisition.v1.json",
+  ...glibcSeccompSourceFiles.map(
+    (file) => "scripts/producer-qualification/" + file,
+  ),
 ];
 const metadataGit = async (args) =>
   (
@@ -286,16 +295,7 @@ export async function verifyCLiveObservation(
   assert.equal(receipt.retentionObserver.independentImage, catalog.image);
   assert.deepEqual(
     receipt.sourcePins.map((row) => row.file),
-    [
-      "c-producer-profiles.v1.json",
-      "c-producer-profile.mjs",
-      "c-producer-build.sh",
-      "c-producer-test-reports.py",
-      "binutils-retention-observer.py",
-      "binutils-retention-observer.mjs",
-      "binutils-image-identity.mjs",
-      "binutils-image-identity.v1.json",
-    ],
+    cProducerSourceFiles(profile),
   );
   assert.deepEqual(
     receipt.harnessPins.map((row) => row.file),
@@ -348,9 +348,30 @@ export async function verifyCLiveObservation(
         "c-producer-build.sh",
         "c-producer-test-reports.py",
         "binutils-retention-observer.py",
+        "glibc-seccomp-probe.py",
       ].includes(row.file),
     ),
   );
+  const syscall = validateGlibcSyscallPreflight(
+    receipt,
+    await loadGlibcSeccomp(),
+    observedCProducerTerminal,
+  );
+  await validateInputs(
+    path.join(result, "controls"),
+    receipt.generatedControlPins,
+  );
+  for (const mode of ["baseline", "derived"]) {
+    const raw = await boundedCProducerBytes(
+      path.join(result, "seccomp-" + mode + ".log"),
+      65536,
+    );
+    assert.deepEqual(
+      { bytes: raw.length, sha256: sha256(raw) },
+      syscall.modes[mode].log,
+    );
+    assert.deepEqual(JSON.parse(raw), syscall.modes[mode].record);
+  }
   assert.deepEqual(
     await identifyFile(
       path.join(result, "build.log"),
@@ -380,9 +401,11 @@ export async function verifyCLiveObservation(
           "c-producer-build.sh",
           "c-producer-test-reports.py",
           "binutils-retention-observer.py",
+          "glibc-seccomp-probe.py",
         ].includes(row.file),
       )
-      .reduce((sum, row) => sum + row.bytes, 0);
+      .reduce((sum, row) => sum + row.bytes, 0) +
+    receipt.generatedControlPins.reduce((sum, row) => sum + row.bytes, 0);
   assert.ok(
     receipt.finalRetention.bytes <= profile.limits.workByteLimit + allowance,
   );
