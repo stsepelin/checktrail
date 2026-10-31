@@ -6,11 +6,23 @@ import { realpath } from "node:fs/promises";
 import { pathToFileURL, fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import path from "node:path";
+import {
+  consumerNativeProfiles,
+  consumerNativeEntrypoint,
+} from "./consumer-native-entrypoints.mjs";
 import { ensureWindowsTaskAccess } from "../dist/src/windows-task-access.js";
 import {
   requireConsumerPrivateDirectory,
   writeConsumerPrivateFile,
 } from "./consumer-native-host-storage.mjs";
+const controllerFiles = new Set(
+  consumerNativeProfiles
+    .map(
+      (profile) =>
+        consumerNativeEntrypoint(profile, "native-linux-arm64-node22")[0],
+    )
+    .concat(consumerNativeEntrypoint("consumer-impact", "ci-linux-node22")[0]),
+);
 let active = false;
 /** Await one existing entrypoint in this fresh operator CLI. Its own native fences/timeouts remain authoritative. */
 export async function captureConsumerControllerEntry(
@@ -32,7 +44,10 @@ export async function captureConsumerControllerEntry(
         (arg) => typeof arg === "string" && !arg.includes("\0"),
       ),
   );
-  assert.match(command.args[0], /^scripts\/verify-[a-z-]+\.mjs$/);
+  assert.ok(
+    controllerFiles.has(command.args[0]),
+    "Selected fixed native controller filename is required",
+  );
   assert.ok(
     Number.isSafeInteger(maximum) && maximum >= 0 && maximum <= 32 * 1048576,
   );
