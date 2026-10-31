@@ -1,6 +1,6 @@
 {
-  "assets/context-grammars/tree-sitter-c_sharp.wasm": ["csharp-context-arm64"],
   "assets/context-grammars/tree-sitter-c.wasm": ["c-context-arm64"],
+  "assets/context-grammars/tree-sitter-c_sharp.wasm": ["csharp-context-arm64"],
   "assets/context-grammars/tree-sitter-cpp.wasm": ["cpp-context-arm64"],
   "assets/context-grammars/tree-sitter-fsharp.wasm": ["fsharp-context-arm64"],
   "assets/context-grammars/tree-sitter-go.wasm": ["go-workspaces-arm64"],
@@ -50,7 +50,11 @@
     "attempt-runtime",
     "attempt-runtime-arm64"
   ],
-  "scripts/attempt-output-evidence.mjs": ["jvm-wrappers-arm64"],
+  "scripts/attempt-output-evidence.mjs": [
+    "jvm-wrappers-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/attempt-runtime-evidence.mjs": [
     "attempt-runtime",
     "attempt-runtime-arm64"
@@ -86,6 +90,18 @@
     "tasks-runtime-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
+  ],
+  "scripts/check-evaluation-captures.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/check-evaluation-metering.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/check-evaluation-protocol.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "scripts/clang-tools.Dockerfile": ["clang"],
   "scripts/cleanup-cpp-tools-runtime.mjs": [
@@ -840,6 +856,12 @@
     "yaml-context-arm64"
   ],
   "scripts/dotnet-tools.Dockerfile": ["dotnet"],
+  "scripts/evaluation-judgments.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
+  "scripts/evaluation-matching.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
+  "scripts/evaluation-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/executable-bundle-tools.Dockerfile": ["external-adapters"],
   "scripts/external-tools.Dockerfile": ["external-adapters"],
   "scripts/extract-rust-extension-components.py": ["rust-extensions-arm64"],
@@ -1878,6 +1900,14 @@
   ],
   "scripts/verify-dotnet-method-container.mjs": ["dotnet"],
   "scripts/verify-dotnet-test-container.mjs": ["dotnet"],
+  "scripts/verify-evaluation-protocol-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-evaluation-runtime.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/verify-executable-bundle-package.mjs": ["external-adapters"],
   "scripts/verify-external-container.mjs": ["external-adapters"],
   "scripts/verify-fastapi-assembly-container.mjs": ["fastapi-assembly-arm64"],
@@ -2768,6 +2798,10 @@
   "test/gate-go-extensions.test.ts": ["go-workspaces-arm64"],
   "test/gate-helm-extensions.test.ts": ["helm-extensions-arm64"],
   "test/gate-host-session-readiness.test.ts": ["go-workspaces-arm64"],
+  "test/gate-independent-evaluation-protocol.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/gate-javascript-extensions.test.ts": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -3837,6 +3871,54 @@
   "test/review-csharp-boundaries-fixture.ts": ["csharp-context-arm64"],
   "test/review-django-assembly-fixture.ts": ["django-assembly-arm64"],
   "test/review-django-assembly-guards.test.ts": ["django-assembly-arm64"],
+  "test/review-evaluation-artifacts-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-artifacts.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-captures-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-captures.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-judging-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-judging.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-matching-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-matching.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-metering-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-metering.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-protocol-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-protocol.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/review-fastapi-assembly-fixture.ts": [
     "fastapi-assembly-arm64",
     "jvm-wrappers-arm64",
@@ -4562,6 +4644,7 @@
     "tasks-runtime-arm64",
     "windows"
   ],
+  "test/windows-private-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/windows-process.test.ts": [
     "attempt-runtime",
     "resource-release",
@@ -4593,6 +4676,8 @@
     "windows"
   ],
   "test/windows-task-access.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
     "windows"

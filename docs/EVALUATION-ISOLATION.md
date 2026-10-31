@@ -176,6 +176,32 @@ and protocol environment override did not change its initialization version.
 Do not confuse these client connections with the worker's separately pinned
 `2026-07-28` connection to Checktrail.
 
+## Memory controls for new comparison configurations
+
+The comparison baseline remains plain Codex/Claude review with the same captured
+repository instructions. Each arm and repetition starts a new process and session,
+without resuming or forking earlier reviews or receiving their output or judgments.
+
+Supply `memories.use_memories=false` and `memories.generate_memories=false` in the
+Codex configuration. These separately disable saved-memory injection and the use
+of new threads as memory-generation inputs. `--ephemeral` controls session-file
+persistence. See the [OpenAI configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference)
+and [non-interactive mode](https://learn.chatgpt.com/docs/non-interactive-mode).
+
+For Claude, supply `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` to the child process and
+`autoMemoryEnabled: false` in its explicit settings. Retain the captured repository
+instructions. Claude worktrees in the same Git repository share automatic memory,
+so separate worktree paths alone do not establish this boundary. See
+[Claude memory settings](https://code.claude.com/docs/en/memory) and the
+[environment reference](https://code.claude.com/docs/en/env-vars).
+
+Retain the exact client version, configuration bytes, effective initial prompt
+and actual tool inventory for each new configuration. The historical client
+captures above do not verify later versions or these new settings. Declared
+memory controls do not establish provider-side isolation or independent review
+quality. Renew non-inference capability captures before freezing the comparison;
+review trials still wait for Gate A completion.
+
 ## Repeatable boundary checks
 
 After building, run the synthetic live-container verification with prepared public

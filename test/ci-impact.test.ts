@@ -1363,7 +1363,7 @@ test("CI resource readiness jobs retain every dynamic native harness input and t
   }
 });
 
-test("CI Windows lanes preserve frozen runtime pins and partition every original runtime cohort behind the completion gate", () => {
+test("CI Windows lanes preserve frozen runtime pins and partition every required runtime cohort behind the completion gate", () => {
   const job = workflow.jobs["tasks-runtime"];
   const entries = job.strategy.matrix.include;
   const windows = entries.filter(
@@ -1401,6 +1401,7 @@ test("CI Windows lanes preserve frozen runtime pins and partition every original
     "node scripts/verify-review-runtime.mjs ${{ matrix.slot }}",
     "node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings &&",
     "node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}",
+    "node scripts/verify-evaluation-runtime.mjs ${{ matrix.slot }}",
   ]);
   assert.deepEqual(commands("matrix.consumer"), [
     "node scripts/consumer-native-job-claims.mjs start ${{ matrix.slot }}",

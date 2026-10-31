@@ -1,3 +1,12 @@
+export {
+  reviewEvaluationCaptureAssignments,
+  inspectReviewEvaluationCaptures,
+  reviewEvaluationCaptureInputSchema,
+} from "./review-evaluation-captures.js";
+export type {
+  ReviewEvaluationCaptureInput,
+  ReviewEvaluationCaptureReport,
+} from "./review-evaluation-captures.js";
 export { createPlan, validate, aggregate } from "./engine.js";
 export {
   inspectReviewCohortDeclaration,
@@ -8,6 +17,24 @@ export type {
   ReviewCohortDeclaration,
   ReviewCohortDeclarationReport,
 } from "./review-cohort.js";
+export {
+  inspectReviewEvaluationProtocol,
+  projectReviewEvaluationProtocol,
+  reviewEvaluationProtocolSchema,
+  reviewEvaluationProtocolInputSchema,
+} from "./review-evaluation-protocol.js";
+export type {
+  ReviewEvaluationProtocol,
+  ReviewEvaluationProtocolReport,
+} from "./review-evaluation-protocol.js";
+export {
+  inspectReviewEvaluationMetering,
+  reviewEvaluationMeteringInputSchema,
+} from "./review-evaluation-metering.js";
+export type {
+  ReviewEvaluationMeteringInput,
+  ReviewEvaluationMeteringReport,
+} from "./review-evaluation-metering.js";
 export { validateContracts } from "./contracts.js";
 export type { ContractBundle, ContractReport } from "./contract-schema.js";
 export type { PlanOptions, ValidationOptions } from "./engine.js";
@@ -344,6 +371,42 @@ export type { SwiftExtensionsConfig } from "./swift-extensions-contract.js";
 export { cppExtensionsConfigSchema } from "./cpp-extensions-contract.js";
 export type { CppExtensionsConfig } from "./cpp-extensions-contract.js";
 export { cppExtensionsInvocationSchema } from "./cpp-extensions.js";
+
+export {
+  initializeReviewEvaluationStorage,
+  encodeReviewEvaluationArtifact,
+  reviewEvaluationAttemptArtifactSchema,
+  reviewEvaluationCaptureArtifactSchema,
+  sealReviewEvaluationCaptures,
+  inspectSealedReviewEvaluationCaptures,
+} from "./review-evaluation-artifacts.js";
+export type { ReviewEvaluationSealedCaptureReport } from "./review-evaluation-artifacts.js";
+
+export {
+  reviewEvaluationSourcePacketSchema,
+  reviewEvaluationReviewOutputSchema,
+  reviewEvaluationJudgmentResponseSchema,
+  prepareReviewEvaluationJudging,
+  reviewEvaluationJudgmentPacket,
+  sealReviewEvaluationJudgments,
+  inspectSealedReviewEvaluationJudgments,
+} from "./review-evaluation-judging.js";
+export type { ReviewEvaluationJudgmentsReport } from "./review-evaluation-judging.js";
+
+export {
+  reviewEvaluationCommonDefectsSchema,
+  reviewEvaluationMappingResponseSchema,
+  freezeReviewEvaluationCommonDefects,
+  prepareReviewEvaluationMatching,
+  reviewEvaluationMatchingPacket,
+  sealReviewEvaluationMappings,
+  inspectSealedReviewEvaluationMappings,
+  scoreReviewEvaluationArtifacts,
+} from "./review-evaluation-matching.js";
+export type {
+  ReviewEvaluationMappingsReport,
+  ReviewEvaluationArtifactScores,
+} from "./review-evaluation-matching.js";
 
 export {
   inspectReviewFindings,
