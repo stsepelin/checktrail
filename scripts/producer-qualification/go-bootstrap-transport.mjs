@@ -9,6 +9,11 @@ const inside = (parent, child) =>
   child === parent || child.startsWith(parent + path.sep);
 const id = (value) =>
   typeof value === "string" && /^[a-f0-9]{64}$/u.test(value);
+// The two fixed CLI spellings project to Docker's canonical API tokens.
+const observerCapabilityApiTokens = new Map([
+  ["DAC_OVERRIDE", "CAP_DAC_OVERRIDE"],
+  ["DAC_READ_SEARCH", "CAP_DAC_READ_SEARCH"],
+]);
 const succeeded = (row) =>
   row.exitCode === 0 &&
   row.signal === null &&
@@ -73,11 +78,20 @@ export function goContainerSpec(args, imageConfig, imageId) {
       continue;
     }
     if (option.startsWith("--cap-add=")) {
-      spec.capAdd.push(option.slice(10));
+      const token = option.slice(10);
+      assert.ok(
+        observerCapabilityApiTokens.has(token) && spec.capAdd.length === 0,
+        "Unqualified Go observer capability",
+      );
+      spec.capAdd.push(observerCapabilityApiTokens.get(token));
       continue;
     }
     if (option.startsWith("--cap-drop=")) {
-      spec.capDrop.push(option.slice(11));
+      assert.ok(
+        option.slice(11) === "ALL" && spec.capDrop.length === 0,
+        "Unqualified Go observer capability drop",
+      );
+      spec.capDrop.push("ALL");
       continue;
     }
     if (option.startsWith("--security-opt=")) {

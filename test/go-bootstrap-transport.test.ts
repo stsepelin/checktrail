@@ -218,7 +218,7 @@ test("Go actual daemon projection requires exact closed command environment budg
       destination: "/synthetic/dest",
     });
   const prepSpec = goContainerSpec(prep, imageConfig, imageId);
-  assert.deepEqual(prepSpec.capAdd, ["DAC_OVERRIDE"]);
+  assert.deepEqual(prepSpec.capAdd, ["CAP_DAC_OVERRIDE"]);
   assert.ok(
     prepSpec.mounts
       .filter((row: { RW: boolean }) => row.RW)
@@ -516,4 +516,113 @@ test("Go nonzero actual command remains failed and all inspect metadata is recor
   assert.deepEqual(result.terminal, failed);
   assert.equal(result.nativeState.ExitCode, 3);
   assert.equal(observations.length, 2);
+});
+
+test("Go observed Docker API capability tokens stay distinct from fixed CLI aliases and reject every widening or malformed projection", () => {
+  const observations = [
+    { mode: "prepare", cli: "DAC_OVERRIDE", api: "CAP_DAC_OVERRIDE" },
+    { mode: "observe", cli: "DAC_READ_SEARCH", api: "CAP_DAC_READ_SEARCH" },
+  ];
+  for (const id of catalog.requiredStages)
+    for (const observed of observations) {
+      const profile = goProfile(catalog, id);
+      const args = goObserverArguments(profile, observed.mode, {
+        attempt: randomUUID(),
+        cid: "/synthetic/owned/cid",
+        stageWork: "/synthetic/stages/current",
+        predecessorRoot:
+          profile.predecessor && observed.mode === "observe"
+            ? "/synthetic/stages/parent/go"
+            : null,
+        destination: "/synthetic/owned",
+      });
+      const spec = goContainerSpec(args, imageConfig, imageId),
+        raw = inspection(spec);
+      // Synthetic data with the actual API shape/tokens; no private Docker paths or reports.
+      raw.HostConfig.CapAdd = [observed.api];
+      raw.HostConfig.CapDrop = ["ALL"];
+      raw.HostConfig.SecurityOpt = ["no-new-privileges"];
+      assert.ok(args.includes("--cap-add=" + observed.cli));
+      assert.ok(args.includes("--cap-drop=ALL"));
+      assert.doesNotThrow(() => requireGoContainerConfiguration(raw, spec));
+      for (const capabilities of [
+        [],
+        [observed.cli],
+        [observed.api + "_EXTRA"],
+        [observed.api.toLowerCase()],
+        [observed.api, "CAP_SYS_ADMIN"],
+        [observed.api, "CAP_SYS_TIME"],
+        [observed.api, observed.api],
+        ["CAP_DAC_OVERRIDE", "CAP_DAC_READ_SEARCH"],
+        ["CAP_ALL"],
+      ]) {
+        const changed = structuredClone(raw);
+        changed.HostConfig.CapAdd = capabilities;
+        assert.throws(() => requireGoContainerConfiguration(changed, spec), {
+          name: "AssertionError",
+        });
+      }
+      for (const drop of [
+        [],
+        ["CAP_ALL"],
+        ["ALL", "ALL"],
+        ["ALL", "CAP_SYS_ADMIN"],
+      ]) {
+        const changed = structuredClone(raw);
+        changed.HostConfig.CapDrop = drop;
+        assert.throws(() => requireGoContainerConfiguration(changed, spec), {
+          name: "AssertionError",
+        });
+      }
+      for (const token of [
+        "SYS_ADMIN",
+        "SYS_TIME",
+        "ALL",
+        "CAP_DAC_OVERRIDE",
+        "DAC_OVERRIDE_EXTRA",
+        "dac_override",
+        "",
+      ]) {
+        const changed = args.map((value: string) =>
+          value === "--cap-add=" + observed.cli ? "--cap-add=" + token : value,
+        );
+        assert.throws(
+          () => goContainerSpec(changed, imageConfig, imageId),
+          /Unqualified Go observer capability/,
+        );
+      }
+      const capabilityAt = args.indexOf("--cap-add=" + observed.cli);
+      assert.throws(
+        () =>
+          goContainerSpec(
+            [
+              ...args.slice(0, capabilityAt),
+              args[capabilityAt],
+              ...args.slice(capabilityAt),
+            ],
+            imageConfig,
+            imageId,
+          ),
+        /Unqualified Go observer capability/,
+      );
+      const dropAt = args.indexOf("--cap-drop=ALL");
+      assert.throws(
+        () =>
+          goContainerSpec(
+            [...args.slice(0, dropAt), args[dropAt], ...args.slice(dropAt)],
+            imageConfig,
+            imageId,
+          ),
+        /Unqualified Go observer capability drop/,
+      );
+      for (const token of ["all", "CAP_ALL", "SYS_TIME", ""]) {
+        const changed = args.map((value: string) =>
+          value === "--cap-drop=ALL" ? "--cap-drop=" + token : value,
+        );
+        assert.throws(
+          () => goContainerSpec(changed, imageConfig, imageId),
+          /Unqualified Go observer capability drop/,
+        );
+      }
+    }
 });
