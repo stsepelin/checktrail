@@ -390,12 +390,14 @@ test(
       assert.equal(observed.familyAbsent, true);
       assert.equal(cleaned, 1);
     } finally {
-      try {
-        process.kill(-child.pid, "SIGKILL");
-      } catch (error) {
-        assert.ok(
-          error instanceof Error && "code" in error && error.code === "ESRCH",
-        );
+      if (!wrapper.carrierFamilyAbsent(family)) {
+        try {
+          process.kill(-child.pid, "SIGKILL");
+        } catch (error) {
+          assert.ok(
+            error instanceof Error && "code" in error && error.code === "ESRCH",
+          );
+        }
       }
       await terminal;
       const cleanupUntil = performance.now() + 3000;
@@ -716,7 +718,9 @@ try:r.replay(cutoff_archive,reviewed,'gcc-12')
 except ValueError as error:assert 'Incomplete raw C export' in str(error),str(error)
 else:raise AssertionError('Actual incomplete cutoff export qualified')
 (carrier/'.owner-frame.part').unlink();(result/'build-observation.json').write_bytes(complete_observation);(carrier/'receipt.json').write_bytes(complete_carrier)
+rejected_labels=[]
 def mutant(label,change,expected_error):
+ assert label not in rejected_labels,'Duplicate rejected packet label'
  with zipfile.ZipFile(archive) as z:members={name:z.read(name) for name in z.namelist()}
  manifest=json.loads(members['manifest.json']);change(members,manifest)
  # Repair all dependent byte links so the named behavior, not an earlier hash,
@@ -731,7 +735,7 @@ def mutant(label,change,expected_error):
   for name,body in members.items():z.writestr(name,body)
  try:r.replay(target,reviewed,'gcc-12')
  except ValueError as error:
-  assert expected_error in str(error),(label,str(error));return
+  assert expected_error in str(error),(label,str(error));rejected_labels.append(label);return
  raise AssertionError('Invalid coherently rehashed GCC protocol packet accepted: '+label)
 def edit_member(members,name,update):
  value=json.loads(members[name]);update(value);members[name]=json.dumps(value).encode()
@@ -757,7 +761,17 @@ mutant('empty-package',lambda m,v:edit_member(m,'result/receipt.json',lambda x:x
 def failed_original(members,manifest):
  edit_member(members,'result/work/original-command.json',lambda x:x.update(exitCode=2));edit_member(members,'result/receipt.json',lambda x:x['originalBuild'].update(exitCode=2))
 mutant('failed-original',failed_original,'Original default command terminal')
-print(json.dumps({'positivePhysicalGccProtocolReplay':True,'preservedFailedOriginalOutcomes':True,'incompleteCutoffBytesRetained':True,'coherentNegativePacketsRejected':17,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
+mutant('bool-observed-zero',lambda m,v:edit_member(m,'result/build-observation.json',lambda x:x.update(originalCommandExitCode=False)),'Live original observation scope differs')
+mutant('bool-observer-zero',lambda m,v:edit_member(m,'result/receipt.json',lambda x:x['retentionObserver']['terminal'].update(exitCode=False)),'Independent observer unavailable or altered')
+mutant('integer-command-completed',lambda m,v:edit_member(m,'result/receipt.json',lambda x:x['buildCompletion'].update(originalCommandCompleted=1)),'Live completion scope differs')
+def weak_signature_restore(members,manifest,key):
+ edit_member(members,'common-inputs/transform/preparation.json',lambda x:x[key].update(restoredExitCode=False))
+ edit_member(members,'common-inputs/receipt.json',lambda x:x['preparation'][key].update(restoredExitCode=False))
+mutant('bool-source-signature-zero',lambda m,v:weak_signature_restore(m,v,'sourceSignatureFaultControl'),'Original signature fault/restoration control missing')
+mutant('bool-release-signature-zero',lambda m,v:weak_signature_restore(m,v,'releaseSignatureFaultControl'),'Original signature fault/restoration control missing')
+mutant('common-only-restored-bool',lambda m,v:edit_member(m,'common-inputs/receipt.json',lambda x:x['preparation']['sourceSignatureFaultControl'].update(restoredExitCode=False)),'Original signed APT/source preparation differs')
+assert len(set(rejected_labels))==len(rejected_labels)
+print(json.dumps({'positivePhysicalGccProtocolReplay':True,'preservedFailedOriginalOutcomes':True,'incompleteCutoffBytesRetained':True,'coherentNegativePacketsRejected':len(rejected_labels),'rejectedPacketLabels':rejected_labels,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
 `;
     const result = spawnSync(
       python!,
@@ -774,11 +788,41 @@ print(json.dumps({'positivePhysicalGccProtocolReplay':True,'preservedFailedOrigi
       { encoding: "utf8", timeout: 45000, maxBuffer: 65536 },
     );
     assert.equal(result.status, 0, diagnostic(result));
+    const rejectedPacketLabels = [
+      "wrong-archive-profile",
+      "cross-startup-profile",
+      "external-cutoff",
+      "carrier-bool-exit",
+      "carrier-unobserved-terminal",
+      "carrier-bool-elapsed",
+      "reset-cleanup-clock",
+      "cleanup-after-elapsed",
+      "unobserved-family",
+      "bool-family-identity",
+      "short-original-budget",
+      "unobserved-cleanup",
+      "scope-promoted",
+      "different-owner",
+      "cross-preflight-profile",
+      "empty-package",
+      "failed-original",
+      "bool-observed-zero",
+      "bool-observer-zero",
+      "integer-command-completed",
+      "bool-source-signature-zero",
+      "bool-release-signature-zero",
+      "common-only-restored-bool",
+    ];
+    assert.equal(
+      new Set(rejectedPacketLabels).size,
+      rejectedPacketLabels.length,
+    );
     assert.deepEqual(JSON.parse(result.stdout), {
       positivePhysicalGccProtocolReplay: true,
       preservedFailedOriginalOutcomes: true,
       incompleteCutoffBytesRetained: true,
-      coherentNegativePacketsRejected: 17,
+      coherentNegativePacketsRejected: rejectedPacketLabels.length,
+      rejectedPacketLabels,
       nativeCompilerOrRootContainerQualificationPerformed: false,
       gateAComplete: false,
     });
