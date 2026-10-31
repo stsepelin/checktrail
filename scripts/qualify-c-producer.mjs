@@ -222,19 +222,36 @@ export function cProducerCompletion(command, result, outputs, reports) {
       command.wrapperExitCode >= 0 &&
       command.wrapperExitCode <= 255,
   );
+  const positiveCount = (row, key) =>
+    Number.isSafeInteger(row.counts[key]) && row.counts[key] > 0;
   const executedOutcomes = reports.reports.some((row) =>
-    Object.values(row.counts).some((count) => count > 0),
+    ["PASS", "FAIL", "XFAIL", "XPASS"].some((key) => positiveCount(row, key)),
   );
+  const testEvidenceState = !executedOutcomes
+    ? "unavailable"
+    : reports.reports.some((row) =>
+          ["FAIL", "XPASS", "ERROR", "UNRESOLVED"].some((key) =>
+            positiveCount(row, key),
+          ),
+        )
+      ? "failed"
+      : "reported";
   const complete =
     command.invoked &&
     command.exitCode === 0 &&
     command.wrapperExitCode === 0 &&
     observedCProducerTerminal(result) &&
     result.exitCode === 0 &&
-    outputs.some((row) => /\.(deb|udeb)$/u.test(row.file)) &&
+    outputs.some(
+      (row) =>
+        /^[A-Za-z0-9][A-Za-z0-9.+_~-]*\.(deb|udeb)$/u.test(row.file) &&
+        Number.isSafeInteger(row.bytes) &&
+        row.bytes > 0,
+    ) &&
     executedOutcomes;
   return {
     originalCommandCompleted: complete,
+    testEvidenceState,
     state: complete
       ? "original-command-completed-qualification-incomplete"
       : command.invoked && command.exitCode !== null

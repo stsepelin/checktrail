@@ -228,7 +228,7 @@ test("C producer completion requires physical terminal observation and keeps ori
   const reports = {
     reports: [{ counts: { PASS: 3, FAIL: 1, UNSUPPORTED: 2 } }],
   };
-  const outputs = [{ file: "synthetic_1_amd64.deb" }];
+  const outputs = [{ file: "synthetic_1_amd64.deb", bytes: 16 }];
   assert.equal(
     api.cProducerCompletion(command, terminal, outputs, reports)
       .originalCommandCompleted,
@@ -238,6 +238,67 @@ test("C producer completion requires physical terminal observation and keeps ori
     api.cProducerCompletion(command, terminal, outputs, reports).gateAComplete,
     false,
   );
+  assert.equal(
+    api.cProducerCompletion(command, terminal, outputs, reports)
+      .testEvidenceState,
+    "failed",
+  );
+  for (const outcome of [
+    "SKIP",
+    "UNSUPPORTED",
+    "UNTESTED",
+    "UNRESOLVED",
+    "ERROR",
+  ]) {
+    const onlyUnavailable = api.cProducerCompletion(
+      command,
+      terminal,
+      outputs,
+      { reports: [{ counts: { [outcome]: 1 } }] },
+    );
+    assert.equal(onlyUnavailable.originalCommandCompleted, false, outcome);
+    assert.equal(onlyUnavailable.testEvidenceState, "unavailable", outcome);
+  }
+  const resolvedOutcomes: readonly (readonly [string, string])[] = [
+    ["PASS", "reported"],
+    ["FAIL", "failed"],
+    ["XFAIL", "reported"],
+    ["XPASS", "failed"],
+  ];
+  for (const [outcome, state] of resolvedOutcomes) {
+    const observed = api.cProducerCompletion(command, terminal, outputs, {
+      reports: [{ counts: { [outcome]: 1 } }],
+    });
+    assert.equal(observed.originalCommandCompleted, true, outcome);
+    assert.equal(observed.testEvidenceState, state, outcome);
+    assert.equal(observed.gateAComplete, false);
+  }
+  const mixedOutcomes: readonly (readonly [string, string])[] = [
+    ["UNRESOLVED", "failed"],
+    ["UNSUPPORTED", "reported"],
+    ["SKIP", "reported"],
+  ];
+  for (const [outcome, state] of mixedOutcomes) {
+    const mixed = api.cProducerCompletion(command, terminal, outputs, {
+      reports: [{ counts: { PASS: 1, [outcome]: 1 } }],
+    });
+    assert.equal(mixed.originalCommandCompleted, true, outcome);
+    assert.equal(mixed.testEvidenceState, state, outcome);
+    assert.equal(mixed.gateAComplete, false);
+  }
+  for (const output of [
+    { file: "synthetic.deb", bytes: 0 },
+    { file: "synthetic.deb", bytes: -1 },
+    { file: "synthetic.deb", bytes: undefined },
+    { file: "synthetic.deb.old", bytes: 1 },
+    { file: "synthetic.udeb.log", bytes: 1 },
+    { file: "../synthetic.deb", bytes: 1 },
+  ])
+    assert.equal(
+      api.cProducerCompletion(command, terminal, [output], reports)
+        .originalCommandCompleted,
+      false,
+    );
   for (const changed of [
     { ...terminal, exitCode: null },
     { ...terminal, signal: "SIGTERM" },
