@@ -3574,5 +3574,19 @@
       "lib/web-tree-sitter.d.ts in the GitHub archive is an unchanged original source file, retained in both immutable source and published-byte inventories."
     ],
     "broaderSourceExemptions": false
+  },
+  "originalSourceDirectories": {
+    "github": {
+      "directory": "/home/runner/work/tree-sitter/tree-sitter",
+      "bytes": 41,
+      "sha256": "6c3091674a910754091c1c2bfc3e45ccc14ea36669101a1ac75c9a7db0f95e22",
+      "evidence": "Original published debug WASM .debug_str compilation directory; not proof of the complete historical publisher environment."
+    },
+    "npm": {
+      "directory": "/src",
+      "bytes": 4,
+      "sha256": "56c9e1c4b5360a5b089004396ed37fe3a20f7c4f5954072098039789ba3ab68a",
+      "evidence": "Original published debug WASM .debug_str compilation directory; not proof of the complete historical publisher environment."
+    }
   }
 }

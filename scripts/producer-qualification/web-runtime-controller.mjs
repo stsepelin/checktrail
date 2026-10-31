@@ -43,6 +43,48 @@ const frozen = JSON.parse(
   await readFile(new URL("./web-runtime.v1.json", import.meta.url), "utf8"),
 );
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+export function originalSourceDirectory(recipe) {
+  assert.ok(recipe === "github" || recipe === "npm");
+  const row = frozen.originalSourceDirectories[recipe];
+  assert.equal(typeof row.directory, "string");
+  assert.ok(
+    path.posix.isAbsolute(row.directory) &&
+      row.directory !== "/" &&
+      !/[\\\0,\n]/u.test(row.directory),
+  );
+  assert.ok(
+    row.directory
+      .slice(1)
+      .split("/")
+      .every((part) => part && part !== "." && part !== ".."),
+  );
+  assert.equal(Buffer.byteLength(row.directory), row.bytes);
+  assert.equal(hash(row.directory), row.sha256);
+  for (const protectedRoot of [
+    "/controller",
+    "/inputs",
+    "/npm-cache",
+    "/cargo-cache",
+    "/work",
+    "/receipts",
+    "/tmp",
+    "/proc",
+    "/sys",
+    "/dev",
+    "/etc",
+    "/bin",
+    "/usr",
+    "/run",
+    "/var",
+  ])
+    assert.ok(
+      row.directory !== protectedRoot &&
+        !row.directory.startsWith(protectedRoot + "/") &&
+        !protectedRoot.startsWith(row.directory + "/"),
+    );
+  return row.directory;
+}
+
 const sha = (value) =>
   typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
 const image = (value) =>
@@ -345,6 +387,7 @@ export async function prepare(config) {
     profile: "original-web-runtime-reproduction-v1",
     task: config.task,
     recipe: config.recipe,
+    originalSourceDirectory: originalSourceDirectory(config.recipe),
     limits: LIMITS,
     sourceCommit: frozen.sourceCommit,
     sdkVersion: frozen.sdkVersion,
@@ -414,6 +457,11 @@ export function dockerArguments(
     [config.offlineInputs.npm.directory, "/npm-cache", true],
     [config.offlineInputs.cargo.directory, "/cargo-cache", true],
     [paths.work, "/work", false],
+    [
+      path.join(paths.work, "source"),
+      originalSourceDirectory(config.recipe),
+      false,
+    ],
     [paths.receipts, "/receipts", false],
   ]) {
     assert.ok(path.isAbsolute(source) && !/[\0,\n]/.test(source));
@@ -532,6 +580,14 @@ export function qualification(receipt) {
   assert.equal(receipt.originalSourceRechecked, true);
   assert.equal(receipt.runtimeToolsRechecked, true);
   assert.equal(receipt.sdkToolsRechecked, true);
+  assert.equal(
+    receipt.originalSourceDirectory,
+    originalSourceDirectory(receipt.recipe),
+  );
+  assert.equal(
+    receipt.observedSourceDirectory,
+    receipt.originalSourceDirectory,
+  );
   validateNativeHost(receipt.host);
   assert.equal(receipt.imageReinspected, true);
   assert.equal(receipt.stages.length, expected.length);
@@ -611,6 +667,7 @@ export async function run(config, receiptDirectory, { signal } = {}) {
     workerReceipts = path.join(receiptDirectory, "worker-receipts");
   await mkdir(inputs, { mode: 0o700 });
   await mkdir(work, { mode: 0o700 });
+  await mkdir(path.join(work, "source"), { mode: 0o700 });
   await mkdir(harness, { mode: 0o700 });
   await mkdir(workerReceipts, { mode: 0o700 });
   for (const row of plan.codeInputs) {
@@ -718,6 +775,7 @@ export async function run(config, receiptDirectory, { signal } = {}) {
       receipt.runtimeToolsRechecked = worker.runtimeToolsRechecked === true;
       receipt.sdkToolsRechecked = worker.sdkToolsRechecked === true;
       receipt.stages = worker.stages;
+      receipt.observedSourceDirectory = worker.observedSourceDirectory;
       for (const stage of receipt.stages)
         for (const stream of ["stdout", "stderr"]) {
           const output = stage[stream];

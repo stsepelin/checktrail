@@ -13,6 +13,7 @@ import {
   access,
   open,
   lstat,
+  readdir,
   unlink,
 } from "node:fs/promises";
 import { constants } from "node:fs";
@@ -22,10 +23,27 @@ import {
   LIMITS,
   identify,
   originalRecipe,
+  originalSourceDirectory,
   validateArtifacts,
   verifyCache,
   completeProcessObservation,
 } from "./web-runtime-controller.mjs";
+
+export async function verifyColdSourceDirectory(directory) {
+  assert.equal(
+    await realpath(directory),
+    directory,
+    "Source directory crosses a link",
+  );
+  const info = await lstat(directory);
+  assert.ok(info.isDirectory() && !info.isSymbolicLink());
+  assert.deepEqual(
+    await readdir(directory),
+    [],
+    "Original source must start empty",
+  );
+  return directory;
+}
 
 export async function verifyRuntimeTools(runtime) {
   const names = {
@@ -424,11 +442,14 @@ async function main(filename) {
       });
     await mkdir("/work/home", { mode: 0o700 });
     for (const [id, destination] of [
-      ["tree-sitter-source", "/work/source"],
+      ["tree-sitter-source", originalSourceDirectory(config.recipe)],
       ["emscripten-sdk", "/work/sdk"],
       ["node-bootstrap", "/work/sdk-node"],
     ]) {
-      await mkdir(destination, { mode: 0o700 });
+      if (id === "tree-sitter-source")
+        result.observedSourceDirectory =
+          await verifyColdSourceDirectory(destination);
+      else await mkdir(destination, { mode: 0o700 });
       const artifact = config.artifacts.find((row) => row.id === id);
       const attempt = await boundedProcess(
         "tar",
@@ -510,7 +531,7 @@ async function main(filename) {
       await publish();
       // Each reached attempt is journaled before the success assertion; later stages remain explicitly not-run on failure.
       const attempt = await boundedProcess(stage.executable, stage.args, {
-        cwd: "/work/source/" + stage.cwd,
+        cwd: path.posix.join(originalSourceDirectory(config.recipe), stage.cwd),
         env: environment,
         deadline,
         prefix: "/receipts/stage-" + stage.id,

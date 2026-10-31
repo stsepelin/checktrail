@@ -23,6 +23,13 @@ scripts are preserved. The [translated compiler vectors](../scripts/producer-qua
 are source-derived reference metadata, not observations of compiler invocation.
 Execution uses the original npm scripts and Cargo xtask.
 
+The source tree is mounted at the corresponding original compilation directory
+retained in each published debug WASM. This preserves original debug metadata
+without adding a debug-prefix flag or changing an expected product hash. The
+owned source directory starts empty; SDK, cache, resource and original command
+requirements remain the same. These observed paths do not identify the entire
+historical publisher environment.
+
 ## Acquisition and preparation
 
 The [acquisition catalog](../scripts/producer-qualification/web-runtime-acquisition.v1.json)
@@ -66,7 +73,10 @@ The [dedicated workflow](../.github/workflows/upstream-web-runtime.yml) runs on
 `pr/upstream-runtime/web-tree-sitter-*`. That namespace does not match the Binutils
 workflow. Push-trigger admission allows pre-merge native qualification without
 assuming that dispatch is available before the workflow reaches the default branch.
-Only synthetic controller controls run in the ordinary test suite.
+Only synthetic controller controls run in the ordinary test suite. The finite
+`pr/upstream-runtime/web-tree-sitter-npm-*` push namespace selects the npm recipe;
+other allowed runtime branches select the GitHub recipe. Explicit dispatch keeps
+its declared recipe choice.
 
 A local operator can use a fresh canonical private output directory:
 

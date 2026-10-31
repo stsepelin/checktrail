@@ -10,7 +10,7 @@ const cohortEnvironment = { ...process.env };
 // A real independent Node test process must not inherit the parent runner context.
 delete cohortEnvironment.NODE_TEST_CONTEXT;
 for (const [file, count, maximumSkips] of [
-  ["web-runtime-controller.test.mjs", 22, process.platform === "win32" ? 2 : 0],
+  ["web-runtime-controller.test.mjs", 23, process.platform === "win32" ? 3 : 0],
   ["web-runtime-inputs.test.mjs", 11, 2],
 ] as const) {
   test(
@@ -57,7 +57,7 @@ for (const [file, count, maximumSkips] of [
       if (skipped > 0) {
         assert.match(
           result.stdout,
-          /SKIP (?:POSIX group cancellation|Verified Python 3 unavailable)/u,
+          /SKIP (?:POSIX group cancellation|POSIX source directory control|Verified Python 3 unavailable)/u,
           diagnostic,
         );
         const reason = /# SKIP ([^\n]+)/u.exec(result.stdout)?.[1];
@@ -80,6 +80,12 @@ test("runtime native workflow stays in its exclusive push namespace and preserve
   assert.doesNotMatch(text, /pr\/upstream-producer\/binutils/u);
   assert.match(text, /runs-on: ubuntu-24\.04/u);
   assert.match(text, /workflow_dispatch:/u);
+  assert.ok(
+    text.includes(
+      "startsWith(github.ref_name, 'pr/upstream-runtime/web-tree-sitter-npm-') && 'npm'",
+    ),
+  );
+
   assert.match(text, /--operator-trust-execution --coordinated-heavy-slot/u);
   assert.match(text, /permissions:\n {2}contents: read/u);
   const binutils = readFileSync(

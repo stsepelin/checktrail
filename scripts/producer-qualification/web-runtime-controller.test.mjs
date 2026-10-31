@@ -22,6 +22,7 @@ import {
   identify,
   validateArtifacts,
   originalRecipe,
+  originalSourceDirectory,
   inspectRuntime,
   inspectCache,
   verifyCache,
@@ -35,6 +36,7 @@ import {
 } from "./web-runtime-controller.mjs";
 import {
   boundedBytes,
+  verifyColdSourceDirectory,
   versionProbeMatches,
   runtimeVersionProbes,
   inspectResourceObservation,
@@ -79,6 +81,8 @@ const temp = async (t) => {
 };
 const syntheticReceipt = () => ({
   recipe: "github",
+  originalSourceDirectory: originalSourceDirectory("github"),
+  observedSourceDirectory: originalSourceDirectory("github"),
   host: {
     platform: "linux",
     arch: "x64",
@@ -349,6 +353,7 @@ test("fixed resource policy and container command cannot pull images or expand b
   });
   const config = {
     task: "checktrail-runtime-controller-pure",
+    recipe: "github",
     runtime: runtime(),
     offlineInputs: {
       npm: { directory: "/synthetic/npm" },
@@ -377,6 +382,26 @@ test("fixed resource policy and container command cannot pull images or expand b
   assert.ok(
     args.includes("type=bind,src=/synthetic/inputs,target=/inputs,readonly"),
   );
+  for (const recipe of ["github", "npm"]) {
+    const source = originalSourceDirectory(recipe);
+    assert.equal(hash(source), frozen.originalSourceDirectories[recipe].sha256);
+    const selected = dockerArguments(
+      { ...config, recipe },
+      {
+        controller: "/synthetic/controller",
+        inputs: "/synthetic/inputs",
+        work: "/synthetic/work",
+        receipts: "/synthetic/receipts",
+      },
+      "checktrail-runtime-00000000-0000-0000-0000-000000000000",
+    );
+    assert.ok(
+      selected.includes(
+        `type=bind,src=/synthetic/work/source,target=${source}`,
+      ),
+    );
+  }
+  assert.throws(() => originalSourceDirectory("github-near-miss"));
   assert.throws(() =>
     dockerArguments(
       config,
@@ -705,5 +730,31 @@ test(
     falseSuccess.dockerAttempt.interrupted = true;
     assert.equal(falseSuccess.dockerAttempt.exitCode, 0);
     assert.throws(() => qualification(falseSuccess));
+  },
+);
+
+test(
+  "original source directory admission requires a new empty physical tree and preserves evidence on refusal",
+  {
+    skip:
+      process.platform === "win32" ? "POSIX source directory control" : false,
+  },
+  async (t) => {
+    const directory = await temp(t);
+    assert.equal(await verifyColdSourceDirectory(directory), directory);
+    const file = path.join(directory, "existing");
+    await writeFile(file, "original evidence");
+    await assert.rejects(
+      verifyColdSourceDirectory(directory),
+      /must start empty/u,
+    );
+    assert.equal(await readFile(file, "utf8"), "original evidence");
+    await assert.rejects(verifyColdSourceDirectory(file));
+    const link = path.join(await temp(t), "alias");
+    await symlink(directory, link);
+    await assert.rejects(verifyColdSourceDirectory(link), /crosses a link/u);
+    const valid = syntheticReceipt();
+    valid.observedSourceDirectory = originalSourceDirectory("npm");
+    assert.throws(() => qualification(valid));
   },
 );
