@@ -12,7 +12,7 @@ export const goBootstrapDirectory = fileURLToPath(
   new URL("./", import.meta.url),
 );
 export const goBootstrapCatalogSha256 =
-  "f14156357063f8bde18eb3970d41cc75aea60c1b122b2368ae8f1071c9d36456";
+  "1ef7849aa70199aa50c7182f1fff7ea754b344ad1d9a0f8efc816f129d33a18b";
 export const sha256 = (value) =>
   createHash("sha256").update(value).digest("hex");
 const catalogPath = new URL("go-bootstrap.v1.json", import.meta.url);
@@ -334,8 +334,9 @@ export function requireOriginalGoPhase(profile, phase, result, text) {
     "Original Go command did not complete",
   );
   if (phase.phase === "bootstrap-preflight")
-    assert.ok(
-      text.includes(profile.predecessor.version),
+    assert.equal(
+      text,
+      "go version " + profile.predecessor.version + " linux/amd64\n",
       "Original Go bootstrap version check failed",
     );
   if (phase.phase === "built-version")
@@ -439,9 +440,11 @@ export function completeGoStage({
     phases,
     originalSourceTree: before,
     freshNativeUpstreamSourceAncestryComplete: true,
-    exactHistoricalPrivateInputReplay:
-      predecessor === null ||
-      predecessor.historicalRegularManifestComparison === "match",
+    exactHistoricalPrivateInputReplay: false,
+    historicalBootstrapRegularInputsMatched:
+      predecessor === null
+        ? null
+        : predecessor.historicalRegularManifestComparison === "match",
     historicalRegularOutputComparison:
       seal.regularManifestSha256 === profile.historicalOutputManifest.sha256
         ? "match"
@@ -502,9 +505,10 @@ export function completeGoChain(rows, sourceFrameSha256, chainAttempt) {
     freshNativeUpstreamSourceAncestryComplete: true,
     originalStages: rows.length,
     originalCommands: expected.originalCommands,
-    exactHistoricalPrivateInputReplay: rows.every(
-      (row) => row.exactHistoricalPrivateInputReplay,
-    ),
+    exactHistoricalPrivateInputReplay: false,
+    historicalBootstrapRegularInputsMatched: rows
+      .filter((row) => row.predecessor !== null)
+      .every((row) => row.historicalBootstrapRegularInputsMatched === true),
     historicalRegularOutputComparisons: rows.map((row) => ({
       stage: row.stage,
       state: row.historicalRegularOutputComparison,

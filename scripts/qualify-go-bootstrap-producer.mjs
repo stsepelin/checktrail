@@ -601,6 +601,7 @@ export async function runGoBootstrap(plan, startupFile) {
     storageError: null,
     freshNativeUpstreamSourceAncestryComplete: false,
     exactHistoricalPrivateInputReplay: false,
+    historicalBootstrapRegularInputsMatched: null,
     fullCompilerSdkBootstrapClosureVerified: false,
     completeOriginalNoticeClosureVerified: false,
     gateAComplete: false,
@@ -1025,6 +1026,8 @@ export async function runGoBootstrap(plan, startupFile) {
         freshNativeUpstreamSourceAncestryComplete: true,
         exactHistoricalPrivateInputReplay:
           sealed.exactHistoricalPrivateInputReplay,
+        historicalBootstrapRegularInputsMatched:
+          sealed.historicalBootstrapRegularInputsMatched,
         historicalRegularOutputComparison:
           sealed.historicalRegularOutputComparison,
       });
@@ -1139,6 +1142,8 @@ export async function runGoBootstrap(plan, startupFile) {
       state.freshNativeUpstreamSourceAncestryComplete = true;
       state.exactHistoricalPrivateInputReplay =
         state.summary.exactHistoricalPrivateInputReplay;
+      state.historicalBootstrapRegularInputsMatched =
+        state.summary.historicalBootstrapRegularInputsMatched;
     }
     await save();
     process.off("SIGINT", interrupt);

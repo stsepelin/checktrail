@@ -36,7 +36,7 @@ jobs:
         timeout-minutes: 30
         run: docker pull --platform linux/amd64 docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c
       - name: Observe the closed original source chain within its startup window
-        timeout-minutes: 350
+        timeout-minutes: 275
         run: >-
           node scripts/qualify-go-bootstrap-producer.mjs --run
           "$RUNNER_TEMP/go-bootstrap-inputs" "$RUNNER_TEMP/go-bootstrap-observation"

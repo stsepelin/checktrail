@@ -1693,17 +1693,28 @@
   "gateAComplete": false,
   "profile": "original-go-c-root-source-chain-v1",
   "ancestryAuthority": "successful-current-source-predecessor-with-complete-physical-seal",
-  "historicalManifestAuthority": "comparison-only; a mismatch forbids exact historical private-input replay, without replacing current-source ancestry",
+  "historicalManifestAuthority": "Regular-file comparison only; equality does not establish exact historical replay or full old-input identity",
   "observationLimits": {
     "workBytes": 17179869184,
     "commandOutputBytes": 67108864,
     "aggregateOutputBytes": 536870912,
     "regularLeafBytes": 536870912,
-    "observationSeconds": 21000,
+    "observationSeconds": 16200,
     "hostedJobMinutes": 360,
     "sdkEntries": 200000,
     "sdkDepth": 64,
-    "sdkPathBytes": 4096
+    "sdkPathBytes": 4096,
+    "hostedCleanupReserveMinutes": 5,
+    "hostedJobSlackMinutes": 5,
+    "hostedStepMinutes": {
+      "checkout": 5,
+      "nodeSetup": 5,
+      "startupCapture": 2,
+      "sourceAcquisition": 30,
+      "imageDelivery": 30,
+      "nativeObservationAndCleanup": 275,
+      "artifactUpload": 8
+    }
   },
   "fullNativeChainObservationComplete": false
 }

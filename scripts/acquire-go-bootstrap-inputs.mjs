@@ -1,7 +1,15 @@
 // Data-only official archive acquisition. It never runs Go or project code.
 import assert from "node:assert/strict";
 import { constants } from "node:fs";
-import { lstat, mkdir, open, rename, writeFile } from "node:fs/promises";
+import {
+  lstat,
+  mkdir,
+  open,
+  rename,
+  writeFile,
+  link,
+  unlink,
+} from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import process from "node:process";
@@ -127,7 +135,10 @@ export async function downloadGoArchive(
     (error) => error.code === "ENOENT",
     "Existing archive destination refused",
   );
-  await rename(partial, target);
+  // Exclusive publication must refuse a target that appeared after the check.
+  // A refused publication retains this completed partial for the failed receipt.
+  await link(partial, target);
+  await unlink(partial);
   return {
     file: row.file,
     bytes,

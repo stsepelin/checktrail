@@ -2,18 +2,22 @@ import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { execFile, spawn } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
+import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
 import {
   copyFile,
   lstat,
   mkdir,
   readFile,
+  readlink,
   realpath,
   rm,
+  symlink,
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { parse } from "yaml";
 import ts from "typescript";
@@ -33,7 +37,6 @@ const {
   originalGoStageIds,
   inspectGoPhysicalTree,
   compareGoPaths,
-  completeGoStage,
   completeGoChain,
   requireCurrentGoPredecessor,
   requireGoPredecessorUnchanged,
@@ -49,7 +52,7 @@ const {
   new URL("../../scripts/qualify-go-bootstrap-producer.mjs", import.meta.url)
     .href
 );
-const { downloadGoArchive } = await import(
+const { downloadGoArchive, acquireGoBootstrapInputs } = await import(
   new URL("../../scripts/acquire-go-bootstrap-inputs.mjs", import.meta.url).href
 );
 const { observeForeground } = await import(
@@ -132,13 +135,14 @@ function syntheticStageTrees(id: string) {
     files[file] = "Original synthetic artifact " + id + " " + file;
   return { before, sdk: tree(files) };
 }
-function syntheticChain() {
+function syntheticChain(api = profileModule, fixtureCatalog = catalog) {
+  const { goProfile, requireCurrentGoPredecessor, completeGoStage } = api;
   const completed = new Map();
   const source = "a".repeat(64),
     chainAttempt = randomUUID(),
     rows = [];
   for (const id of originalGoStageIds) {
-    const profile = goProfile(catalog, id),
+    const profile = goProfile(fixtureCatalog, id),
       { before, sdk } = syntheticStageTrees(id),
       parent = requireCurrentGoPredecessor(
         profile,
@@ -208,7 +212,7 @@ test("Go source catalog freezes eight original stages thirty commands and exact 
   }
   assert.equal(catalog.observationLimits.workBytes, 16 * 1024 ** 3);
   assert.equal(catalog.theoreticalSumOriginalCommandTimeoutSeconds, 205260);
-  assert.equal(catalog.observationLimits.observationSeconds, 350 * 60);
+  assert.equal(catalog.observationLimits.observationSeconds, 270 * 60);
   assert.equal(catalog.observationLimits.hostedJobMinutes, 360);
   for (const change of [
     "stage",
@@ -448,6 +452,7 @@ test("Go current ancestry accepts separately recorded historical mismatches and 
     "foreign-frame",
     "claim",
     "source",
+    "historical-replay-claim",
   ]) {
     const bad = structuredClone(rows);
     if (change === "leaf") bad.splice(1, 1);
@@ -457,6 +462,8 @@ test("Go current ancestry accepts separately recorded historical mismatches and 
     else if (change === "foreign-frame")
       bad[3].sourceFrameSha256 = "e".repeat(64);
     else if (change === "claim") bad[7].gateAComplete = true;
+    else if (change === "historical-replay-claim")
+      bad[0].exactHistoricalPrivateInputReplay = true;
     else
       bad[5].sdkTree.entries.find((row: Row) => row.file === "VERSION").sha256 =
         "e".repeat(64);
@@ -677,6 +684,10 @@ test("Go archive acquisition is data-only bounded and exact with closed redirect
   assert.equal(good.sha256, row.sha256);
   assert.deepEqual(calls, [row.url, "https://dl.google.com/go/" + row.file]);
   assert.deepEqual(await readFile(path.join(directory, row.file)), payload);
+  await assert.rejects(
+    lstat(path.join(directory, row.file + ".partial")),
+    (error) => (error as NodeJS.ErrnoException).code === "ENOENT",
+  );
   for (const mode of [
     "hash",
     "large",
@@ -990,4 +1001,296 @@ print(json.dumps({'boundaryBytes':512*1024**2,'oversizedCacheRefused':True,'link
     linkRefused: true,
     nativeExecuted: false,
   });
+});
+
+test("Go bootstrap preflight requires the complete selected version line and rejects adjacent conflicting or irrelevant output", () => {
+  const terminal = { exitCode: 0, signal: null, reason: null, stopError: null };
+  for (const id of originalGoStageIds.slice(1)) {
+    const profile = goProfile(catalog, id),
+      phase = profile.originalCommands[0];
+    assert.equal(phase.phase, "bootstrap-preflight");
+    // The original bash -c preflight is not traced and invokes exactly go version.
+    const line = "go version " + profile.predecessor.version + " linux/amd64";
+    requireOriginalGoPhase(profile, phase, terminal, line + "\n");
+    for (const output of [
+      "go version " + profile.predecessor.version + "0 linux/amd64\n",
+      "go version synthetic-adjacent linux/amd64\n" + line + "\n",
+      line + "\ngo version synthetic-conflicting linux/amd64\n",
+      "irrelevant diagnostic mentions " + profile.predecessor.version + "\n",
+      "go version " + profile.predecessor.version + " darwin/arm64\n",
+      line + "\n" + line + "\n",
+      "",
+      line,
+      "\n" + line + "\n",
+      "go version synthetic-other linux/amd64\n",
+    ])
+      assert.throws(
+        () => requireOriginalGoPhase(profile, phase, terminal, output),
+        /bootstrap version check failed/,
+      );
+  }
+});
+
+test("Go hosted carrier declared setup observation cleanup and export bounds fit its job ceiling", async () => {
+  const workflow = parse(
+    await readFile(
+      path.join(root, ".github/workflows/upstream-go-bootstrap.yml"),
+      "utf8",
+    ),
+  );
+  const job = workflow.jobs["original-go-bootstrap-observation"];
+  const declared = job.steps.map(
+    (step: { "timeout-minutes": number }) => step["timeout-minutes"],
+  );
+  assert.ok(
+    declared.every(
+      (minutes: number) => Number.isSafeInteger(minutes) && minutes > 0,
+    ),
+  );
+  const total = declared.reduce(
+    (sum: number, minutes: number) => sum + minutes,
+    0,
+  );
+  assert.equal(total, 355, "Declared carrier steps must total 355 minutes");
+  assert.deepEqual(
+    declared,
+    Object.values(catalog.observationLimits.hostedStepMinutes),
+  );
+  assert.equal(catalog.observationLimits.hostedJobSlackMinutes, 5);
+  assert.equal(catalog.observationLimits.hostedCleanupReserveMinutes, 5);
+  assert.ok(
+    total <=
+      job["timeout-minutes"] - catalog.observationLimits.hostedJobSlackMinutes,
+    "Declared carrier steps must leave a five-minute job margin",
+  );
+  const native = job.steps.find((step: { run?: string }) =>
+    step.run?.includes("--run"),
+  );
+  assert.ok(
+    catalog.observationLimits.observationSeconds / 60 +
+      catalog.observationLimits.hostedCleanupReserveMinutes <=
+      native["timeout-minutes"],
+    "Native step must reserve five minutes after its startup observation window",
+  );
+});
+
+test("Go archive exclusive publication preserves a real target that appears after the ENOENT check", async (t) => {
+  const parent = await realpath(await fixture(t, {}));
+  for (const kind of ["file", "symlink", "directory"]) {
+    const directory = path.join(parent, kind);
+    await mkdir(directory);
+    const payload = Buffer.from("Original synthetic downloaded archive"),
+      incumbent = Buffer.from("Original synthetic incumbent must survive");
+    const row = {
+      file: "go1.17.2.src.tar.gz",
+      url: "https://go.dev/dl/go1.17.2.src.tar.gz",
+      bytes: payload.length,
+      sha256: hash(payload),
+    };
+    const target = path.join(directory, row.file),
+      sentinel = path.join(directory, "original-target"),
+      originalLstat = fs.promises.lstat;
+    await writeFile(sentinel, incumbent);
+    const descriptor = Object.getOwnPropertyDescriptor(fs.promises, "lstat");
+    assert.ok(descriptor);
+    let inserted = false;
+    const outcome = await (async () => {
+      try {
+        // Preserve the real syscall result, while another real writer wins publication.
+        Object.defineProperty(fs.promises, "lstat", {
+          ...descriptor,
+          value: async (...args: Parameters<typeof originalLstat>) => {
+            try {
+              return await Reflect.apply(originalLstat, fs.promises, args);
+            } catch (error) {
+              if (
+                args[0] === target &&
+                !inserted &&
+                (error as NodeJS.ErrnoException).code === "ENOENT"
+              ) {
+                inserted = true;
+                if (kind === "file")
+                  await writeFile(target, incumbent, {
+                    flag: "wx",
+                    mode: 0o600,
+                  });
+                else if (kind === "symlink")
+                  await symlink("original-target", target);
+                else {
+                  await mkdir(target);
+                  await writeFile(path.join(target, "sentinel"), incumbent);
+                }
+              }
+              throw error;
+            }
+          },
+        });
+        syncBuiltinESMExports();
+        return await downloadGoArchive(
+          row,
+          directory,
+          async () =>
+            new Response(payload, {
+              status: 200,
+              headers: { "content-length": String(payload.length) },
+            }),
+        ).then(
+          () => ({ published: true, error: null }),
+          (error: NodeJS.ErrnoException) => ({ published: false, error }),
+        );
+      } finally {
+        Object.defineProperty(fs.promises, "lstat", descriptor);
+        syncBuiltinESMExports();
+      }
+    })();
+    assert.equal(inserted, true, "Real ENOENT race fixture did not arm");
+    if (kind === "directory") {
+      assert.equal((await lstat(target)).isDirectory(), true);
+      assert.deepEqual(
+        await readFile(path.join(target, "sentinel")),
+        incumbent,
+      );
+    } else {
+      assert.deepEqual(
+        await readFile(target),
+        incumbent,
+        "Publication must preserve the target that won the real race",
+      );
+      if (kind === "symlink") {
+        assert.equal((await lstat(target)).isSymbolicLink(), true);
+        assert.equal(await readlink(target), "original-target");
+      }
+    }
+    assert.deepEqual(await readFile(sentinel), incumbent);
+    assert.equal(outcome.published, false);
+    assert.equal(outcome.error?.code, "EEXIST");
+    assert.deepEqual(
+      await readFile(target + ".partial"),
+      payload,
+      "Failed publication retains the completed partial as evidence",
+    );
+  }
+});
+
+test("Go failed acquisition retains its actual incomplete partial and failed receipt without a ready artifact claim", async (t) => {
+  const parent = await realpath(await fixture(t, {})),
+    directory = path.join(parent, "acquisition");
+  const original = catalog.profiles[0].sourceArchive,
+    filename = original.url.split("/").at(-1);
+  const payload = Buffer.from([0]);
+  await assert.rejects(
+    acquireGoBootstrapInputs(
+      directory,
+      async () =>
+        new Response(payload, {
+          status: 200,
+          headers: { "content-length": String(original.bytes) },
+        }),
+    ),
+    /archive is incomplete/,
+  );
+  const receipt = JSON.parse(
+    await readFile(path.join(directory, "acquisition.json"), "utf8"),
+  );
+  assert.equal(receipt.state, "failed");
+  assert.deepEqual(receipt.archives, []);
+  assert.match(receipt.failure, /archive is incomplete/);
+  for (const field of [
+    "buildExecuted",
+    "projectCodeExecuted",
+    "inferenceInvoked",
+    "gateAComplete",
+  ])
+    assert.equal(receipt[field], false);
+  assert.deepEqual(
+    await readFile(path.join(directory, "archives", filename + ".partial")),
+    payload,
+  );
+  await assert.rejects(
+    lstat(path.join(directory, "archives", filename)),
+    (error) => (error as NodeJS.ErrnoException).code === "ENOENT",
+  );
+});
+
+test("Go all matching historical regular manifests cannot promote exact historical replay or full closure", async (t) => {
+  const directory = await realpath(await fixture(t, {})),
+    controls = path.join(directory, "scripts", "producer-qualification");
+  await mkdir(controls, { recursive: true });
+  const synthetic = structuredClone(catalog);
+  for (const profile of synthetic.profiles) {
+    const own = inspectGoPhysicalTree(syntheticStageTrees(profile.id).sdk);
+    profile.historicalOutputManifest.sha256 = own.regularManifestSha256;
+    if (profile.predecessor)
+      profile.predecessor.historicalSdkManifestSha256 = inspectGoPhysicalTree(
+        syntheticStageTrees(profile.predecessor.stage).sdk,
+      ).regularManifestSha256;
+  }
+  // This separate closed synthetic source fixture has no original/private SDK bytes.
+  const raw = JSON.stringify(synthetic, null, 2) + "\n";
+  await writeFile(path.join(controls, "go-bootstrap.v1.json"), raw);
+  const source = await readFile(
+    path.join(root, "scripts/producer-qualification/go-bootstrap-profile.mjs"),
+    "utf8",
+  );
+  const bound = source.replace(
+    /(export const goBootstrapCatalogSha256\s*=\s*)"[a-f0-9]{64}"/u,
+    '$1"' + hash(raw) + '"',
+  );
+  assert.notEqual(bound, source);
+  await writeFile(path.join(controls, "go-bootstrap-profile.mjs"), bound);
+  await copyFile(
+    path.join(root, "scripts/qualify-binutils-producer.mjs"),
+    path.join(directory, "scripts/qualify-binutils-producer.mjs"),
+  );
+  await copyFile(
+    path.join(
+      root,
+      "scripts/producer-qualification/binutils-retention-observer.mjs",
+    ),
+    path.join(controls, "binutils-retention-observer.mjs"),
+  );
+  const api = await import(
+    pathToFileURL(path.join(controls, "go-bootstrap-profile.mjs")).href
+  );
+  const {
+    rows,
+    source: frame,
+    chainAttempt,
+  } = syntheticChain(api, await api.loadGoBootstrapCatalog());
+  const summary = api.completeGoChain(rows, frame, chainAttempt);
+  assert.equal(
+    summary.exactHistoricalPrivateInputReplay,
+    false,
+    "Regular-only matching cannot establish exact historical input replay",
+  );
+  assert.equal(summary.freshNativeUpstreamSourceAncestryComplete, true);
+  assert.equal(summary.historicalBootstrapRegularInputsMatched, true);
+  assert.equal(rows[0].historicalBootstrapRegularInputsMatched, null);
+  assert.ok(
+    rows
+      .slice(1)
+      .every((row) => row.historicalBootstrapRegularInputsMatched === true),
+  );
+  assert.ok(
+    rows.every((row) => row.historicalRegularOutputComparison === "match"),
+  );
+  for (const row of [...rows, summary])
+    for (const flag of [
+      "exactHistoricalPrivateInputReplay",
+      "fullCompilerSdkBootstrapClosureVerified",
+      "completeOriginalNoticeClosureVerified",
+      "gateAComplete",
+    ])
+      assert.equal(row[flag], false, flag);
+  const before = rows[3].sdkTree,
+    changedMode = structuredClone(before);
+  changedMode.root.uid++;
+  assert.equal(
+    inspectGoPhysicalTree(before).regularManifestSha256,
+    inspectGoPhysicalTree(changedMode).regularManifestSha256,
+  );
+  assert.notEqual(
+    inspectGoPhysicalTree(before).fullManifestSha256,
+    inspectGoPhysicalTree(changedMode).fullManifestSha256,
+  );
 });

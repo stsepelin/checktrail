@@ -9,9 +9,13 @@ pending. Source code, pure controls and a hosted wrapper do not qualify a build.
 
 The default child input is the sealed SDK produced by its successful current
 predecessor. Full physical inventories bind regular bytes, modes, ownership and
-contained link targets before and after child execution. Historical regular-file
-manifest hashes are comparison evidence. A mismatch prevents an exact historical
-private-input replay claim; it does not supply a prebuilt replacement or veto a
+contained link targets before and after child execution. Historical manifest
+comparisons bind only the recorded regular-file paths, lengths and byte hashes.
+They do not bind old modes, ownership, links or all historical host inputs.
+`historicalBootstrapRegularInputsMatched` records that limited comparison, with
+no SDK predecessor comparison for the C-root stage. Even matching every regular
+manifest cannot establish exact historical replay; that broader flag remains
+false/unassessed. A mismatch does not supply a prebuilt replacement or veto
 separately proven current-source ancestry. The current controller does not import
 SDKs or phase results supplied by a model/operator as alternate parents.
 
@@ -42,10 +46,18 @@ attestation.
 
 The new observation caps are 16 GiB owned work, 512 MiB per regular retained leaf,
 64 MiB per command output and 512 MiB aggregate output. The external window ends
-350 minutes after startup, including data preparation. The hosted job has a
-360-minute ceiling for final owned cleanup/export. These caps can interrupt an
-original command and leave remaining work not run. They do not replace its
-original timeout or promise support for the sum of all original maximum budgets.
+270 minutes after startup, including data preparation. This is the new carrier's
+observation cutoff, separate from every original command timeout. The native step
+allows 275 minutes, reserving five minutes beyond its maximum observation window
+for owned cleanup. Declared checkout, Node setup, startup capture, acquisition,
+image delivery, native execution/cleanup and upload limits total 355 minutes
+(5 + 5 + 2 + 30 + 30 + 275 + 8). The 360-minute job ceiling leaves a further
+five-minute margin. Preparation also consumes the startup observation clock, so
+slower acquisition reduces the remaining source-build time. These bounds can
+interrupt an original command and leave remaining work not run. All eight stages
+and 30 original commands remain required; an interrupted chain is incomplete.
+This carrier does not replace an original timeout or promise capacity for their
+combined 57-hour-and-one-minute maximum.
 Failed/canceled/raw output is retained before original semantic assertions.
 Docker-client stdout/stderr are combined in the parent's observed event order;
 native cross-stream interleaving is not inferred.
