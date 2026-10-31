@@ -1,0 +1,58 @@
+name: Original Go C-root source chain observation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "pr/upstream-producer/go-bootstrap-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: original-go-bootstrap-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  original-go-bootstrap-observation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        timeout-minutes: 5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        timeout-minutes: 5
+        with:
+          node-version: "24"
+      - name: Freeze original-source scope, caller and source before acquisition
+        timeout-minutes: 2
+        run: node scripts/qualify-go-bootstrap-producer.mjs --capture-startup "$RUNNER_TEMP/go-bootstrap-startup.json"
+      - name: Acquire the eight pinned official source archives without compilation
+        timeout-minutes: 30
+        run: node scripts/acquire-go-bootstrap-inputs.mjs "$RUNNER_TEMP/go-bootstrap-inputs"
+      - name: Deliver the exact original pinned image
+        timeout-minutes: 30
+        run: docker pull --platform linux/amd64 docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c
+      - name: Observe the closed original source chain within its startup window
+        timeout-minutes: 350
+        run: >-
+          node scripts/qualify-go-bootstrap-producer.mjs --run
+          "$RUNNER_TEMP/go-bootstrap-inputs" "$RUNNER_TEMP/go-bootstrap-observation"
+          "$RUNNER_TEMP/go-bootstrap-startup.json"
+      - name: Retain bounded original results and physical SDK seals
+        if: always()
+        timeout-minutes: 8
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: original-go-bootstrap-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/go-bootstrap-startup.json
+            ${{ runner.temp }}/go-bootstrap-inputs/acquisition.json
+            ${{ runner.temp }}/go-bootstrap-observation/receipt.json
+            ${{ runner.temp }}/go-bootstrap-observation/retention-observer.jsonl
+            ${{ runner.temp }}/go-bootstrap-observation/work/evidence/*
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0

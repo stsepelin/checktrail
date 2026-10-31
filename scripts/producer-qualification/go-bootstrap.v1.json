@@ -1,0 +1,1709 @@
+{
+  "schemaVersion": 1,
+  "state": "frozen-development-profile",
+  "scope": "Closed8stage original maintained-C-root LinuxAMD64 compiler/SDK development replay; not release distpack, source-independent hardware attestation or complete GateA qualification.",
+  "requiredStages": [
+    "supported-c-bootstrap",
+    "go1.17.2",
+    "go1.17.13",
+    "go1.20.14",
+    "go1.22.12",
+    "go1.24.13",
+    "go1.26.8",
+    "go1.27.1"
+  ],
+  "profiles": [
+    {
+      "id": "supported-c-bootstrap",
+      "sourceArchive": {
+        "url": "https://dl.google.com/go/go1.4-bootstrap-20171003.tar.gz",
+        "bytes": 11009739,
+        "sha256": "f4ff5b5eb3a3cae1c993723f3eab519c5bae18866b5e5f96fe1102f0cb5c3e52"
+      },
+      "internalVersionFile": "go1.4-bootstrap-20170531",
+      "originalDriverSha256": "fe5a4f7ed4fd65da06fd50c71fe8a958f6878477655781261c96c9cf41cb2af1",
+      "historicalRecipeSha256": "40bea5f936a58667f06f835a4fa7b7f39abf3c6e891dc2c53359754dcfd2d9cb",
+      "historicalConfigurationSha256": null,
+      "historicalSourceManifestSha256": "2f677ae462cb597271a6adbf5305ec3d10351da6d4d32141a7d61388ce743b85",
+      "sourceFiles": 4392,
+      "predecessor": null,
+      "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+      "platform": "linux/amd64",
+      "entrypoint": "/bin/bash",
+      "network": "none",
+      "user": "0:0",
+      "environment": {
+        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "GOHOSTOS": "linux",
+        "GOHOSTARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "CC": "gcc",
+        "GOMAXPROCS": "2",
+        "GO_DISTFLAGS": "-v",
+        "GOROOT_FINAL": "/work/go"
+      },
+      "limits": {
+        "cpus": 4,
+        "memoryBytes": 6442450944,
+        "pidsLimit": 512
+      },
+      "originalCommands": [
+        {
+          "phase": "build",
+          "cwd": "/work/go/src",
+          "argv": ["-x", "make.bash", "--no-banner"],
+          "timeoutSeconds": 3600
+        },
+        {
+          "phase": "built-version",
+          "cwd": "/work/go",
+          "argv": ["-c", "/work/go/bin/go version"],
+          "timeoutSeconds": 60
+        }
+      ],
+      "historicalOutputManifest": {
+        "sha256": "a74eb40b9953624c4c9263a4fcf044ac454a74c84631114330f0c122c4fd5eab",
+        "regularFiles": 4577,
+        "regularBytes": 138471850,
+        "largestRegularFileBytes": 9986384,
+        "scope": "Historical regular-file byte inventory only; current/native modes, symlinks and whole ancestry require separate observations."
+      },
+      "sourceCanonicalProjection": {
+        "canonicalCommit": "4d5426a570c2820c5894a61b52e3dc147e4e7925",
+        "exactCompleteArchiveMerkleRootMatchesCanonical": true,
+        "omittedCanonicalFiles": [],
+        "modeOnlyDifferences": [],
+        "sourcePayloadDifferences": []
+      },
+      "sourceFilesPatched": false,
+      "originalRuntimeSuiteExecuted": false,
+      "nativeReplayImplemented": true,
+      "sourceBuildQualified": false,
+      "fullCompilerSdkBootstrapClosureVerified": false,
+      "completeOriginalNoticeClosureVerified": false,
+      "gateAComplete": false
+    },
+    {
+      "id": "go1.17.2",
+      "sourceArchive": {
+        "url": "https://go.dev/dl/go1.17.2.src.tar.gz",
+        "bytes": 22182111,
+        "sha256": "2255eb3e4e824dd7d5fcdc2e7f84534371c186312e546fb1086a34c17752f431"
+      },
+      "internalVersionFile": "go1.17.2",
+      "originalDriverSha256": "cbeb8d0af66f5d427b2e6dc32170b7fd6d1dca22f13f840e0782508618766502",
+      "historicalRecipeSha256": "41c826cce1293035a7f2aaa2ff5b7b6e529dfd096ebbf68ef66f617c6362d38f",
+      "historicalConfigurationSha256": "23ca02c52f0f590efe4caa06d82edc7f40bc7b5f799921f6c2c081db601f4743",
+      "historicalSourceManifestSha256": "b6883a323bddd4b56a3a00ed07235fa58ce9f08250f6e7d8db093d2b60a70948",
+      "sourceFiles": 10165,
+      "predecessor": {
+        "stage": "supported-c-bootstrap",
+        "version": "go1.4-bootstrap-20170531",
+        "historicalSdkManifestSha256": "a74eb40b9953624c4c9263a4fcf044ac454a74c84631114330f0c122c4fd5eab",
+        "currentSealedStageArtifactRequired": true
+      },
+      "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+      "platform": "linux/amd64",
+      "entrypoint": "/bin/bash",
+      "network": "none",
+      "user": "0:0",
+      "environment": {
+        "HOME": "/work/home",
+        "PATH": "/bootstrap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "GOROOT_BOOTSTRAP": "/bootstrap",
+        "GOROOT_FINAL": "/work/go",
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "GOHOSTOS": "linux",
+        "GOHOSTARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOMAXPROCS": "4",
+        "GOENV": "off",
+        "GOTOOLCHAIN": "local",
+        "GOPROXY": "off",
+        "GOSUMDB": "sum.golang.org",
+        "GOTELEMETRY": "off",
+        "LANG": "C",
+        "LC_ALL": "C"
+      },
+      "limits": {
+        "cpus": 4,
+        "memoryBytes": 8589934592,
+        "pidsLimit": 512
+      },
+      "originalCommands": [
+        {
+          "phase": "bootstrap-preflight",
+          "cwd": "/work",
+          "argv": [
+            "-c",
+            "set -eu\ntest \"$(command -v go)\" = /bootstrap/bin/go\nGOROOT=/bootstrap /bootstrap/bin/go version\n"
+          ],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "build-compiler-and-sdk",
+          "cwd": "/work/go/src",
+          "argv": ["-x", "make.bash", "--no-banner"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-version",
+          "cwd": "/work/go",
+          "argv": ["-c", "GOROOT=/work/go /work/go/bin/go version"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-sdk-config",
+          "cwd": "/work/go",
+          "argv": [
+            "-c",
+            "GOROOT=/work/go /work/go/bin/go env -json GOROOT GOHOSTOS GOHOSTARCH GOOS GOARCH GOVERSION GOTOOLDIR CGO_ENABLED"
+          ],
+          "timeoutSeconds": 7200
+        }
+      ],
+      "historicalOutputManifest": {
+        "sha256": "ef16edafba595658dc3ce0e8f6171a9d8684966a4efc7f145afa0b85ad21537d",
+        "regularFiles": 10618,
+        "regularBytes": 452598668,
+        "largestRegularFileBytes": 31330932,
+        "scope": "Historical regular-file byte inventory only; current/native modes, symlinks and whole ancestry require separate observations."
+      },
+      "sourceCanonicalProjection": {
+        "canonicalCommit": "2ac3bdf378ae408ad8c993084c1c6f7d05b7dff8",
+        "exactCompleteArchiveMerkleRootMatchesCanonical": false,
+        "omittedCanonicalFiles": [
+          ".gitattributes",
+          ".github/CODE_OF_CONDUCT.md",
+          ".github/ISSUE_TEMPLATE",
+          ".github/PULL_REQUEST_TEMPLATE",
+          ".github/SUPPORT.md",
+          ".gitignore"
+        ],
+        "modeOnlyDifferences": [],
+        "sourcePayloadDifferences": []
+      },
+      "sourceFilesPatched": false,
+      "originalRuntimeSuiteExecuted": false,
+      "nativeReplayImplemented": true,
+      "sourceBuildQualified": false,
+      "fullCompilerSdkBootstrapClosureVerified": false,
+      "completeOriginalNoticeClosureVerified": false,
+      "gateAComplete": false
+    },
+    {
+      "id": "go1.17.13",
+      "sourceArchive": {
+        "url": "https://go.dev/dl/go1.17.13.src.tar.gz",
+        "bytes": 22206518,
+        "sha256": "a1a48b23afb206f95e7bbaa9b898d965f90826f6f1d1fc0c1d784ada0cd300fd"
+      },
+      "internalVersionFile": "go1.17.13",
+      "originalDriverSha256": "cbeb8d0af66f5d427b2e6dc32170b7fd6d1dca22f13f840e0782508618766502",
+      "historicalRecipeSha256": "69b353fd96b02551f6ed83e8f305bae5927a3859f436750e7353c3e876456f2c",
+      "historicalConfigurationSha256": "6345d6fad54b583252f029961a07a55d683e4ff5b5dc5fdfc57c7469be5c6064",
+      "historicalSourceManifestSha256": "0eaafdd01f3d4efedd609e3ec689574ef3f951c210f19ff311c1790d063854b7",
+      "sourceFiles": 10191,
+      "predecessor": {
+        "stage": "supported-c-bootstrap",
+        "version": "go1.4-bootstrap-20170531",
+        "historicalSdkManifestSha256": "a74eb40b9953624c4c9263a4fcf044ac454a74c84631114330f0c122c4fd5eab",
+        "currentSealedStageArtifactRequired": true
+      },
+      "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+      "platform": "linux/amd64",
+      "entrypoint": "/bin/bash",
+      "network": "none",
+      "user": "0:0",
+      "environment": {
+        "HOME": "/work/home",
+        "PATH": "/bootstrap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "GOROOT_BOOTSTRAP": "/bootstrap",
+        "GOROOT_FINAL": "/work/go",
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "GOHOSTOS": "linux",
+        "GOHOSTARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOMAXPROCS": "4",
+        "GOENV": "off",
+        "GOTOOLCHAIN": "local",
+        "GOPROXY": "off",
+        "GOSUMDB": "sum.golang.org",
+        "GOTELEMETRY": "off",
+        "LANG": "C",
+        "LC_ALL": "C"
+      },
+      "limits": {
+        "cpus": 4,
+        "memoryBytes": 8589934592,
+        "pidsLimit": 512
+      },
+      "originalCommands": [
+        {
+          "phase": "bootstrap-preflight",
+          "cwd": "/work",
+          "argv": [
+            "-c",
+            "set -eu\ntest \"$(command -v go)\" = /bootstrap/bin/go\nGOROOT=/bootstrap /bootstrap/bin/go version\n"
+          ],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "build-compiler-and-sdk",
+          "cwd": "/work/go/src",
+          "argv": ["-x", "make.bash", "--no-banner"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-version",
+          "cwd": "/work/go",
+          "argv": ["-c", "GOROOT=/work/go /work/go/bin/go version"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-sdk-config",
+          "cwd": "/work/go",
+          "argv": [
+            "-c",
+            "GOROOT=/work/go /work/go/bin/go env -json GOROOT GOHOSTOS GOHOSTARCH GOOS GOARCH GOVERSION GOTOOLDIR CGO_ENABLED"
+          ],
+          "timeoutSeconds": 7200
+        }
+      ],
+      "historicalOutputManifest": {
+        "sha256": "1ce1861848b62f5d91b6d55c03af00c1bca4b8150c72cf80933be4beb00b34fb",
+        "regularFiles": 10644,
+        "regularBytes": 453051423,
+        "largestRegularFileBytes": 31304384,
+        "scope": "Historical regular-file byte inventory only; current/native modes, symlinks and whole ancestry require separate observations."
+      },
+      "sourceCanonicalProjection": {
+        "canonicalCommit": "15da892a4950a4caac987ee72c632436329f62d5",
+        "exactCompleteArchiveMerkleRootMatchesCanonical": false,
+        "omittedCanonicalFiles": [
+          ".gitattributes",
+          ".github/CODE_OF_CONDUCT.md",
+          ".github/ISSUE_TEMPLATE",
+          ".github/PULL_REQUEST_TEMPLATE",
+          ".github/SUPPORT.md",
+          ".gitignore"
+        ],
+        "modeOnlyDifferences": [],
+        "sourcePayloadDifferences": []
+      },
+      "sourceFilesPatched": false,
+      "originalRuntimeSuiteExecuted": false,
+      "nativeReplayImplemented": true,
+      "sourceBuildQualified": false,
+      "fullCompilerSdkBootstrapClosureVerified": false,
+      "completeOriginalNoticeClosureVerified": false,
+      "gateAComplete": false
+    },
+    {
+      "id": "go1.20.14",
+      "sourceArchive": {
+        "url": "https://go.dev/dl/go1.20.14.src.tar.gz",
+        "bytes": 26202564,
+        "sha256": "1aef321a0e3e38b7e91d2d7eb64040666cabdcc77d383de3c9522d0d69b67f4e"
+      },
+      "internalVersionFile": "go1.20.14",
+      "originalDriverSha256": "cbeb8d0af66f5d427b2e6dc32170b7fd6d1dca22f13f840e0782508618766502",
+      "historicalRecipeSha256": "f13b09b5d7711f23358d905f6a0d00e569b51a0efe77b3eaa6087c38e1fd9214",
+      "historicalConfigurationSha256": "94c5d7e4478ff373e11e93c14014e43e551c184a8bbd2d34481cfa435c78513d",
+      "historicalSourceManifestSha256": "ddb4219149784812e655d8a86c9a6fc42b0561044bae6ce57124aaaec890afd4",
+      "sourceFiles": 12001,
+      "predecessor": {
+        "stage": "go1.17.13",
+        "version": "go1.17.13",
+        "historicalSdkManifestSha256": "1ce1861848b62f5d91b6d55c03af00c1bca4b8150c72cf80933be4beb00b34fb",
+        "currentSealedStageArtifactRequired": true
+      },
+      "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+      "platform": "linux/amd64",
+      "entrypoint": "/bin/bash",
+      "network": "none",
+      "user": "0:0",
+      "environment": {
+        "HOME": "/work/home",
+        "PATH": "/bootstrap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "GOROOT_BOOTSTRAP": "/bootstrap",
+        "GOROOT_FINAL": "/work/go",
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "GOHOSTOS": "linux",
+        "GOHOSTARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOMAXPROCS": "4",
+        "GOENV": "off",
+        "GOTOOLCHAIN": "local",
+        "GOPROXY": "off",
+        "GOSUMDB": "sum.golang.org",
+        "GOTELEMETRY": "off",
+        "LANG": "C",
+        "LC_ALL": "C"
+      },
+      "limits": {
+        "cpus": 4,
+        "memoryBytes": 8589934592,
+        "pidsLimit": 512
+      },
+      "originalCommands": [
+        {
+          "phase": "bootstrap-preflight",
+          "cwd": "/work",
+          "argv": [
+            "-c",
+            "set -eu\ntest \"$(command -v go)\" = /bootstrap/bin/go\nGOROOT=/bootstrap /bootstrap/bin/go version\n"
+          ],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "build-compiler-and-sdk",
+          "cwd": "/work/go/src",
+          "argv": ["-x", "make.bash", "--no-banner"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-version",
+          "cwd": "/work/go",
+          "argv": ["-c", "GOROOT=/work/go /work/go/bin/go version"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-sdk-config",
+          "cwd": "/work/go",
+          "argv": [
+            "-c",
+            "GOROOT=/work/go /work/go/bin/go env -json GOROOT GOHOSTOS GOHOSTARCH GOOS GOARCH GOVERSION GOTOOLDIR CGO_ENABLED"
+          ],
+          "timeoutSeconds": 7200
+        }
+      ],
+      "historicalOutputManifest": {
+        "sha256": "6199b9eea79272c1aabd687b03b2d5764d43772903a3403797535640e2c96fe9",
+        "regularFiles": 12032,
+        "regularBytes": 246824495,
+        "largestRegularFileBytes": 24944339,
+        "scope": "Historical regular-file byte inventory only; current/native modes, symlinks and whole ancestry require separate observations."
+      },
+      "sourceCanonicalProjection": {
+        "canonicalCommit": "90a870f1dc49bfcc6ffe95f80fbaf21875198e7a",
+        "exactCompleteArchiveMerkleRootMatchesCanonical": false,
+        "omittedCanonicalFiles": [
+          ".gitattributes",
+          ".github/CODE_OF_CONDUCT.md",
+          ".github/ISSUE_TEMPLATE/00-bug.md",
+          ".github/ISSUE_TEMPLATE/01-pkgsite.md",
+          ".github/ISSUE_TEMPLATE/02-pkgsite-removal.md",
+          ".github/ISSUE_TEMPLATE/03-gopls.md",
+          ".github/ISSUE_TEMPLATE/04-vuln.md",
+          ".github/ISSUE_TEMPLATE/10-proposal.md",
+          ".github/ISSUE_TEMPLATE/11-language-change.md",
+          ".github/ISSUE_TEMPLATE/config.yml",
+          ".github/PULL_REQUEST_TEMPLATE",
+          ".github/SUPPORT.md",
+          ".gitignore"
+        ],
+        "modeOnlyDifferences": [],
+        "sourcePayloadDifferences": []
+      },
+      "sourceFilesPatched": false,
+      "originalRuntimeSuiteExecuted": false,
+      "nativeReplayImplemented": true,
+      "sourceBuildQualified": false,
+      "fullCompilerSdkBootstrapClosureVerified": false,
+      "completeOriginalNoticeClosureVerified": false,
+      "gateAComplete": false
+    },
+    {
+      "id": "go1.22.12",
+      "sourceArchive": {
+        "url": "https://go.dev/dl/go1.22.12.src.tar.gz",
+        "bytes": 27566409,
+        "sha256": "012a7e1f37f362c0918c1dfa3334458ac2da1628c4b9cf4d9ca02db986e17d71"
+      },
+      "internalVersionFile": "go1.22.12\ntime 2025-01-31T18:38:03Z",
+      "originalDriverSha256": "cbeb8d0af66f5d427b2e6dc32170b7fd6d1dca22f13f840e0782508618766502",
+      "historicalRecipeSha256": "42af6b562606fd34e327a17df406a271e99f0ca5b7b70edbb66af1a0c8764651",
+      "historicalConfigurationSha256": "d54119c60556c35d8d6eb2276ad2766ba4f18a2c6b33ca459970ee51dddac9c4",
+      "historicalSourceManifestSha256": "cbf4a39b75f2ffb0e706f95cdf83eb18a5fbd488b0e72d4c38d2f79f2937a581",
+      "sourceFiles": 12870,
+      "predecessor": {
+        "stage": "go1.20.14",
+        "version": "go1.20.14",
+        "historicalSdkManifestSha256": "6199b9eea79272c1aabd687b03b2d5764d43772903a3403797535640e2c96fe9",
+        "currentSealedStageArtifactRequired": true
+      },
+      "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+      "platform": "linux/amd64",
+      "entrypoint": "/bin/bash",
+      "network": "none",
+      "user": "0:0",
+      "environment": {
+        "HOME": "/work/home",
+        "PATH": "/bootstrap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "GOROOT_BOOTSTRAP": "/bootstrap",
+        "GOROOT_FINAL": "/work/go",
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "GOHOSTOS": "linux",
+        "GOHOSTARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOMAXPROCS": "4",
+        "GOENV": "off",
+        "GOTOOLCHAIN": "local",
+        "GOPROXY": "off",
+        "GOSUMDB": "sum.golang.org",
+        "GOTELEMETRY": "off",
+        "LANG": "C",
+        "LC_ALL": "C"
+      },
+      "limits": {
+        "cpus": 4,
+        "memoryBytes": 8589934592,
+        "pidsLimit": 512
+      },
+      "originalCommands": [
+        {
+          "phase": "bootstrap-preflight",
+          "cwd": "/work",
+          "argv": [
+            "-c",
+            "set -eu\ntest \"$(command -v go)\" = /bootstrap/bin/go\nGOROOT=/bootstrap /bootstrap/bin/go version\n"
+          ],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "build-compiler-and-sdk",
+          "cwd": "/work/go/src",
+          "argv": ["-x", "make.bash", "--no-banner"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-version",
+          "cwd": "/work/go",
+          "argv": ["-c", "GOROOT=/work/go /work/go/bin/go version"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-sdk-config",
+          "cwd": "/work/go",
+          "argv": [
+            "-c",
+            "GOROOT=/work/go /work/go/bin/go env -json GOROOT GOHOSTOS GOHOSTARCH GOOS GOARCH GOVERSION GOTOOLDIR CGO_ENABLED"
+          ],
+          "timeoutSeconds": 7200
+        }
+      ],
+      "historicalOutputManifest": {
+        "sha256": "77aa15615ccbb67f67077b9c39951522f25944705ada5cbfe59c6dc0e3470cd8",
+        "regularFiles": 12902,
+        "regularBytes": 227316335,
+        "largestRegularFileBytes": 19353134,
+        "scope": "Historical regular-file byte inventory only; current/native modes, symlinks and whole ancestry require separate observations."
+      },
+      "sourceCanonicalProjection": {
+        "canonicalCommit": "5817e650946aaa0ac28956de96b3f9aa1de4b299",
+        "exactCompleteArchiveMerkleRootMatchesCanonical": false,
+        "omittedCanonicalFiles": [
+          ".gitattributes",
+          ".github/CODE_OF_CONDUCT.md",
+          ".github/ISSUE_TEMPLATE/00-bug.yml",
+          ".github/ISSUE_TEMPLATE/01-pkgsite.yml",
+          ".github/ISSUE_TEMPLATE/02-pkgsite-removal.yml",
+          ".github/ISSUE_TEMPLATE/03-gopls.yml",
+          ".github/ISSUE_TEMPLATE/04-vuln.yml",
+          ".github/ISSUE_TEMPLATE/10-proposal.yml",
+          ".github/ISSUE_TEMPLATE/11-language-change.yml",
+          ".github/ISSUE_TEMPLATE/12-telemetry.yml",
+          ".github/ISSUE_TEMPLATE/config.yml",
+          ".github/PULL_REQUEST_TEMPLATE",
+          ".github/SUPPORT.md",
+          ".gitignore"
+        ],
+        "modeOnlyDifferences": [
+          {
+            "file": "src/cmd/compile/profile.sh",
+            "archive": {
+              "sha": "37d65d84942b58739624dc4b50ae64d0dd057159",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "37d65d84942b58739624dc4b50ae64d0dd057159",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/github.com/google/pprof/third_party/d3flamegraph/update.sh",
+            "archive": {
+              "sha": "7076c66673c2aeb35fc2182abc0d0fcc83f878be",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "7076c66673c2aeb35fc2182abc0d0fcc83f878be",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mkall.sh",
+            "archive": {
+              "sha": "1650fbcc7452eb70ad37a9b8cdf254f0f27422b5",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "1650fbcc7452eb70ad37a9b8cdf254f0f27422b5",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mkerrors.sh",
+            "archive": {
+              "sha": "526d04ab68cdb59c78a013c007d98367e4a8c533",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "526d04ab68cdb59c78a013c007d98367e4a8c533",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mksysnum_plan9.sh",
+            "archive": {
+              "sha": "3c3ab05810ee1203c0d578654dc3069587ba4e94",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "3c3ab05810ee1203c0d578654dc3069587ba4e94",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/unix/mkall.sh",
+            "archive": {
+              "sha": "e6f31d374df52cc72d798a871ec05b95d4f7e4f2",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "e6f31d374df52cc72d798a871ec05b95d4f7e4f2",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/unix/mkerrors.sh",
+            "archive": {
+              "sha": "6202638bae86f749c1019790001c8be3fba75428",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "6202638bae86f749c1019790001c8be3fba75428",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/windows/mkerrors.bash",
+            "archive": {
+              "sha": "58e0188fb71f802180ea330dd13828884e4d3001",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "58e0188fb71f802180ea330dd13828884e4d3001",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/windows/mkknownfolderids.bash",
+            "archive": {
+              "sha": "ab8924e936f5c79b1b15c27150bf3239672dc115",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "ab8924e936f5c79b1b15c27150bf3239672dc115",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmp.bash",
+            "archive": {
+              "sha": "5bca266c404e4eb0dd8b88d56e569ff235e154ad",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "5bca266c404e4eb0dd8b88d56e569ff235e154ad",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/ranges.elf",
+            "archive": {
+              "sha": "7f54138cffb3bc61a8e537a5becdfc913a41da3a",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "7f54138cffb3bc61a8e537a5becdfc913a41da3a",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/rnglistx.elf",
+            "archive": {
+              "sha": "c2d7f55479125b2bde8d3889945737fb58c49896",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "c2d7f55479125b2bde8d3889945737fb58c49896",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/typedef.elf",
+            "archive": {
+              "sha": "b2062d2c4bb828dcb229f12869f77fd5d9522278",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "b2062d2c4bb828dcb229f12869f77fd5d9522278",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test32",
+            "archive": {
+              "sha": "ce594720dbfd23f48bf6a78b12d638d782f034d0",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "ce594720dbfd23f48bf6a78b12d638d782f034d0",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test32be",
+            "archive": {
+              "sha": "f13a732203fa6226ae05357c35892cfc7a7a7e6c",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "f13a732203fa6226ae05357c35892cfc7a7a7e6c",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test64",
+            "archive": {
+              "sha": "3fb42fb3bf436bccae8cae038eaefc803cf13c2a",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "3fb42fb3bf436bccae8cae038eaefc803cf13c2a",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test64be",
+            "archive": {
+              "sha": "09b4b0189445c563721140f5b030e869d34b3a47",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "09b4b0189445c563721140f5b030e869d34b3a47",
+              "mode": "100755"
+            }
+          }
+        ],
+        "sourcePayloadDifferences": []
+      },
+      "sourceFilesPatched": false,
+      "originalRuntimeSuiteExecuted": false,
+      "nativeReplayImplemented": true,
+      "sourceBuildQualified": false,
+      "fullCompilerSdkBootstrapClosureVerified": false,
+      "completeOriginalNoticeClosureVerified": false,
+      "gateAComplete": false
+    },
+    {
+      "id": "go1.24.13",
+      "sourceArchive": {
+        "url": "https://go.dev/dl/go1.24.13.src.tar.gz",
+        "bytes": 30802752,
+        "sha256": "639a6204c2486b137df1eb6e78ee3ed038f9877d0e4b5a465e796a2153f858d7"
+      },
+      "internalVersionFile": "go1.24.13\ntime 2026-02-03T20:02:30Z",
+      "originalDriverSha256": "cbeb8d0af66f5d427b2e6dc32170b7fd6d1dca22f13f840e0782508618766502",
+      "historicalRecipeSha256": "ccf8f71ba16b45733207fb9681d9fe4c5396ed2a3286758cc6bc0bfa9d52cf1a",
+      "historicalConfigurationSha256": "3954e925d2f738a2f26a1e1394863acf7cdb7dcbd3aaeab8785b4b32d1d55d0e",
+      "historicalSourceManifestSha256": "10faf1ff6c0955a7acd3ac6f14aebf6e91a8a6f1aa7dd24ea26fe95708707806",
+      "sourceFiles": 14147,
+      "predecessor": {
+        "stage": "go1.22.12",
+        "version": "go1.22.12",
+        "historicalSdkManifestSha256": "77aa15615ccbb67f67077b9c39951522f25944705ada5cbfe59c6dc0e3470cd8",
+        "currentSealedStageArtifactRequired": true
+      },
+      "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+      "platform": "linux/amd64",
+      "entrypoint": "/bin/bash",
+      "network": "none",
+      "user": "0:0",
+      "environment": {
+        "HOME": "/work/home",
+        "PATH": "/bootstrap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "GOROOT_BOOTSTRAP": "/bootstrap",
+        "GOROOT_FINAL": "/work/go",
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "GOHOSTOS": "linux",
+        "GOHOSTARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOMAXPROCS": "4",
+        "GOENV": "off",
+        "GOTOOLCHAIN": "local",
+        "GOPROXY": "off",
+        "GOSUMDB": "sum.golang.org",
+        "GOTELEMETRY": "off",
+        "LANG": "C",
+        "LC_ALL": "C"
+      },
+      "limits": {
+        "cpus": 4,
+        "memoryBytes": 8589934592,
+        "pidsLimit": 512
+      },
+      "originalCommands": [
+        {
+          "phase": "bootstrap-preflight",
+          "cwd": "/work",
+          "argv": [
+            "-c",
+            "set -eu\ntest \"$(command -v go)\" = /bootstrap/bin/go\nGOROOT=/bootstrap /bootstrap/bin/go version\n"
+          ],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "build-compiler-and-sdk",
+          "cwd": "/work/go/src",
+          "argv": ["-x", "make.bash", "--no-banner"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-version",
+          "cwd": "/work/go",
+          "argv": ["-c", "GOROOT=/work/go /work/go/bin/go version"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-sdk-config",
+          "cwd": "/work/go",
+          "argv": [
+            "-c",
+            "GOROOT=/work/go /work/go/bin/go env -json GOROOT GOHOSTOS GOHOSTARCH GOOS GOARCH GOVERSION GOTOOLDIR CGO_ENABLED"
+          ],
+          "timeoutSeconds": 7200
+        }
+      ],
+      "historicalOutputManifest": {
+        "sha256": "8af7893f62f9c5b1f1822242eb4dc49a5354265da9edfb610ab6f2fc66e3993f",
+        "regularFiles": 14181,
+        "regularBytes": 259079833,
+        "largestRegularFileBytes": 21165764,
+        "scope": "Historical regular-file byte inventory only; current/native modes, symlinks and whole ancestry require separate observations."
+      },
+      "sourceCanonicalProjection": {
+        "canonicalCommit": "96e4e2b1616c3c59577d48abcf2823bf1fdcd2e2",
+        "exactCompleteArchiveMerkleRootMatchesCanonical": false,
+        "omittedCanonicalFiles": [
+          ".gitattributes",
+          ".github/CODE_OF_CONDUCT.md",
+          ".github/ISSUE_TEMPLATE/00-bug.yml",
+          ".github/ISSUE_TEMPLATE/01-pkgsite.yml",
+          ".github/ISSUE_TEMPLATE/02-pkgsite-removal.yml",
+          ".github/ISSUE_TEMPLATE/03-gopls.yml",
+          ".github/ISSUE_TEMPLATE/04-vuln.yml",
+          ".github/ISSUE_TEMPLATE/10-proposal.yml",
+          ".github/ISSUE_TEMPLATE/11-language-change.yml",
+          ".github/ISSUE_TEMPLATE/12-telemetry.yml",
+          ".github/ISSUE_TEMPLATE/config.yml",
+          ".github/PULL_REQUEST_TEMPLATE",
+          ".github/SUPPORT.md",
+          ".gitignore"
+        ],
+        "modeOnlyDifferences": [
+          {
+            "file": "src/cmd/compile/profile.sh",
+            "archive": {
+              "sha": "37d65d84942b58739624dc4b50ae64d0dd057159",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "37d65d84942b58739624dc4b50ae64d0dd057159",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mkall.sh",
+            "archive": {
+              "sha": "1650fbcc7452eb70ad37a9b8cdf254f0f27422b5",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "1650fbcc7452eb70ad37a9b8cdf254f0f27422b5",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mkerrors.sh",
+            "archive": {
+              "sha": "526d04ab68cdb59c78a013c007d98367e4a8c533",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "526d04ab68cdb59c78a013c007d98367e4a8c533",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mksysnum_plan9.sh",
+            "archive": {
+              "sha": "3c3ab05810ee1203c0d578654dc3069587ba4e94",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "3c3ab05810ee1203c0d578654dc3069587ba4e94",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/unix/mkall.sh",
+            "archive": {
+              "sha": "e6f31d374df52cc72d798a871ec05b95d4f7e4f2",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "e6f31d374df52cc72d798a871ec05b95d4f7e4f2",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/unix/mkerrors.sh",
+            "archive": {
+              "sha": "6ab02b6c3122afd5e2ea1a7cf7f31a43342746fb",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "6ab02b6c3122afd5e2ea1a7cf7f31a43342746fb",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/windows/mkerrors.bash",
+            "archive": {
+              "sha": "58e0188fb71f802180ea330dd13828884e4d3001",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "58e0188fb71f802180ea330dd13828884e4d3001",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/windows/mkknownfolderids.bash",
+            "archive": {
+              "sha": "ab8924e936f5c79b1b15c27150bf3239672dc115",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "ab8924e936f5c79b1b15c27150bf3239672dc115",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmp.bash",
+            "archive": {
+              "sha": "5bca266c404e4eb0dd8b88d56e569ff235e154ad",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "5bca266c404e4eb0dd8b88d56e569ff235e154ad",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/ranges.elf",
+            "archive": {
+              "sha": "7f54138cffb3bc61a8e537a5becdfc913a41da3a",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "7f54138cffb3bc61a8e537a5becdfc913a41da3a",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/rnglistx.elf",
+            "archive": {
+              "sha": "c2d7f55479125b2bde8d3889945737fb58c49896",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "c2d7f55479125b2bde8d3889945737fb58c49896",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/typedef.elf",
+            "archive": {
+              "sha": "b2062d2c4bb828dcb229f12869f77fd5d9522278",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "b2062d2c4bb828dcb229f12869f77fd5d9522278",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/os/testdata/dirfs/dir/x",
+            "archive": {
+              "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test32",
+            "archive": {
+              "sha": "ce594720dbfd23f48bf6a78b12d638d782f034d0",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "ce594720dbfd23f48bf6a78b12d638d782f034d0",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test32be",
+            "archive": {
+              "sha": "f13a732203fa6226ae05357c35892cfc7a7a7e6c",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "f13a732203fa6226ae05357c35892cfc7a7a7e6c",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test64",
+            "archive": {
+              "sha": "3fb42fb3bf436bccae8cae038eaefc803cf13c2a",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "3fb42fb3bf436bccae8cae038eaefc803cf13c2a",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test64be",
+            "archive": {
+              "sha": "09b4b0189445c563721140f5b030e869d34b3a47",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "09b4b0189445c563721140f5b030e869d34b3a47",
+              "mode": "100755"
+            }
+          }
+        ],
+        "sourcePayloadDifferences": []
+      },
+      "sourceFilesPatched": false,
+      "originalRuntimeSuiteExecuted": false,
+      "nativeReplayImplemented": true,
+      "sourceBuildQualified": false,
+      "fullCompilerSdkBootstrapClosureVerified": false,
+      "completeOriginalNoticeClosureVerified": false,
+      "gateAComplete": false
+    },
+    {
+      "id": "go1.26.8",
+      "sourceArchive": {
+        "url": "https://go.dev/dl/go1.26.8.src.tar.gz",
+        "bytes": 34150120,
+        "sha256": "4e39b98e42f946fa05ac8bc5b71877df97dbdb7cbb1a777b541667ad7117fd2e"
+      },
+      "internalVersionFile": "go1.26.8\ntime 2026-08-28T16:20:06Z",
+      "originalDriverSha256": "cbeb8d0af66f5d427b2e6dc32170b7fd6d1dca22f13f840e0782508618766502",
+      "historicalRecipeSha256": "a7eec34f9e6c831855b3c3e1cd04d5ee55af24ab2a632252f73374e4dc7009fd",
+      "historicalConfigurationSha256": "d608532d895e26cdbf86153c746cef455b2da55ed1cc3f52318bf12a111feb4e",
+      "historicalSourceManifestSha256": "5e36a04a7eb67fcdec2081747d030cfb82a7e76b5eeda5787fd8a95bc7ac63a2",
+      "sourceFiles": 15015,
+      "predecessor": {
+        "stage": "go1.24.13",
+        "version": "go1.24.13",
+        "historicalSdkManifestSha256": "8af7893f62f9c5b1f1822242eb4dc49a5354265da9edfb610ab6f2fc66e3993f",
+        "currentSealedStageArtifactRequired": true
+      },
+      "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+      "platform": "linux/amd64",
+      "entrypoint": "/bin/bash",
+      "network": "none",
+      "user": "0:0",
+      "environment": {
+        "HOME": "/work/home",
+        "PATH": "/bootstrap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "GOROOT_BOOTSTRAP": "/bootstrap",
+        "GOROOT_FINAL": "/work/go",
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "GOHOSTOS": "linux",
+        "GOHOSTARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOMAXPROCS": "4",
+        "GOENV": "off",
+        "GOTOOLCHAIN": "local",
+        "GOPROXY": "off",
+        "GOSUMDB": "sum.golang.org",
+        "GOTELEMETRY": "off",
+        "LANG": "C",
+        "LC_ALL": "C"
+      },
+      "limits": {
+        "cpus": 4,
+        "memoryBytes": 8589934592,
+        "pidsLimit": 512
+      },
+      "originalCommands": [
+        {
+          "phase": "bootstrap-preflight",
+          "cwd": "/work",
+          "argv": [
+            "-c",
+            "set -eu\ntest \"$(command -v go)\" = /bootstrap/bin/go\nGOROOT=/bootstrap /bootstrap/bin/go version\n"
+          ],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "build-compiler-and-sdk",
+          "cwd": "/work/go/src",
+          "argv": ["-x", "make.bash", "--no-banner"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-version",
+          "cwd": "/work/go",
+          "argv": ["-c", "GOROOT=/work/go /work/go/bin/go version"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-sdk-config",
+          "cwd": "/work/go",
+          "argv": [
+            "-c",
+            "GOROOT=/work/go /work/go/bin/go env -json GOROOT GOHOSTOS GOHOSTARCH GOOS GOARCH GOVERSION GOTOOLDIR CGO_ENABLED"
+          ],
+          "timeoutSeconds": 7200
+        }
+      ],
+      "historicalOutputManifest": {
+        "sha256": "3b05510d2f81c2419eba05e45e1fd0df2b04c950097837c683bce9f6590f7d25",
+        "regularFiles": 15036,
+        "regularBytes": 232512887,
+        "largestRegularFileBytes": 25779081,
+        "scope": "Historical regular-file byte inventory only; current/native modes, symlinks and whole ancestry require separate observations."
+      },
+      "sourceCanonicalProjection": {
+        "canonicalCommit": "c293dd49cbe25e1fe8d97d94a5cb618e7b6d831e",
+        "exactCompleteArchiveMerkleRootMatchesCanonical": false,
+        "omittedCanonicalFiles": [
+          ".gitattributes",
+          ".github/CODE_OF_CONDUCT.md",
+          ".github/ISSUE_TEMPLATE/00-bug.yml",
+          ".github/ISSUE_TEMPLATE/01-pkgsite.yml",
+          ".github/ISSUE_TEMPLATE/02-pkgsite-removal.yml",
+          ".github/ISSUE_TEMPLATE/03-gopls.yml",
+          ".github/ISSUE_TEMPLATE/04-vuln.yml",
+          ".github/ISSUE_TEMPLATE/10-proposal.yml",
+          ".github/ISSUE_TEMPLATE/11-language-change.yml",
+          ".github/ISSUE_TEMPLATE/12-telemetry.yml",
+          ".github/ISSUE_TEMPLATE/config.yml",
+          ".github/PULL_REQUEST_TEMPLATE",
+          ".github/SUPPORT.md",
+          ".gitignore"
+        ],
+        "modeOnlyDifferences": [
+          {
+            "file": "src/cmd/compile/profile.sh",
+            "archive": {
+              "sha": "37d65d84942b58739624dc4b50ae64d0dd057159",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "37d65d84942b58739624dc4b50ae64d0dd057159",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mkall.sh",
+            "archive": {
+              "sha": "1650fbcc7452eb70ad37a9b8cdf254f0f27422b5",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "1650fbcc7452eb70ad37a9b8cdf254f0f27422b5",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mkerrors.sh",
+            "archive": {
+              "sha": "526d04ab68cdb59c78a013c007d98367e4a8c533",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "526d04ab68cdb59c78a013c007d98367e4a8c533",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mksysnum_plan9.sh",
+            "archive": {
+              "sha": "3c3ab05810ee1203c0d578654dc3069587ba4e94",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "3c3ab05810ee1203c0d578654dc3069587ba4e94",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/unix/mkall.sh",
+            "archive": {
+              "sha": "d0ed611912929614c971e6bd6bda89f225bd00fc",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "d0ed611912929614c971e6bd6bda89f225bd00fc",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/unix/mkerrors.sh",
+            "archive": {
+              "sha": "fd39be4efdc6af184f37d133c320c4cec82090f7",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "fd39be4efdc6af184f37d133c320c4cec82090f7",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/windows/mkerrors.bash",
+            "archive": {
+              "sha": "58e0188fb71f802180ea330dd13828884e4d3001",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "58e0188fb71f802180ea330dd13828884e4d3001",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/windows/mkknownfolderids.bash",
+            "archive": {
+              "sha": "ab8924e936f5c79b1b15c27150bf3239672dc115",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "ab8924e936f5c79b1b15c27150bf3239672dc115",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/tools/internal/diff/lcs/git.sh",
+            "archive": {
+              "sha": "b25ba4aac74b81173bdcd78fc7d5e609163421b8",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "b25ba4aac74b81173bdcd78fc7d5e609163421b8",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmp.bash",
+            "archive": {
+              "sha": "5bca266c404e4eb0dd8b88d56e569ff235e154ad",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "5bca266c404e4eb0dd8b88d56e569ff235e154ad",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/issue57046-clang.elf5",
+            "archive": {
+              "sha": "009af83135a100b61f38496b973b84171c829757",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "009af83135a100b61f38496b973b84171c829757",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/ranges.elf",
+            "archive": {
+              "sha": "7f54138cffb3bc61a8e537a5becdfc913a41da3a",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "7f54138cffb3bc61a8e537a5becdfc913a41da3a",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/rnglistx.elf",
+            "archive": {
+              "sha": "c2d7f55479125b2bde8d3889945737fb58c49896",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "c2d7f55479125b2bde8d3889945737fb58c49896",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/typedef.elf",
+            "archive": {
+              "sha": "b2062d2c4bb828dcb229f12869f77fd5d9522278",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "b2062d2c4bb828dcb229f12869f77fd5d9522278",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/os/testdata/dirfs/dir/x",
+            "archive": {
+              "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test32",
+            "archive": {
+              "sha": "ce594720dbfd23f48bf6a78b12d638d782f034d0",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "ce594720dbfd23f48bf6a78b12d638d782f034d0",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test32be",
+            "archive": {
+              "sha": "f13a732203fa6226ae05357c35892cfc7a7a7e6c",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "f13a732203fa6226ae05357c35892cfc7a7a7e6c",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test64",
+            "archive": {
+              "sha": "3fb42fb3bf436bccae8cae038eaefc803cf13c2a",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "3fb42fb3bf436bccae8cae038eaefc803cf13c2a",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test64be",
+            "archive": {
+              "sha": "09b4b0189445c563721140f5b030e869d34b3a47",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "09b4b0189445c563721140f5b030e869d34b3a47",
+              "mode": "100755"
+            }
+          }
+        ],
+        "sourcePayloadDifferences": []
+      },
+      "sourceFilesPatched": false,
+      "originalRuntimeSuiteExecuted": false,
+      "nativeReplayImplemented": true,
+      "sourceBuildQualified": false,
+      "fullCompilerSdkBootstrapClosureVerified": false,
+      "completeOriginalNoticeClosureVerified": false,
+      "gateAComplete": false
+    },
+    {
+      "id": "go1.27.1",
+      "sourceArchive": {
+        "url": "https://go.dev/dl/go1.27.1.src.tar.gz",
+        "bytes": 35109201,
+        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1"
+      },
+      "internalVersionFile": "go1.27.1\ntime 2026-08-28T16:20:06Z",
+      "originalDriverSha256": "cbeb8d0af66f5d427b2e6dc32170b7fd6d1dca22f13f840e0782508618766502",
+      "historicalRecipeSha256": "c8ccf98c23231a26f8bae029a5ec6cd7986c9e53e270277091a291dd1f184b0a",
+      "historicalConfigurationSha256": "8eb14db660957618c6e9d17d7c3745875cb7cc05959e95c904886875d5b5552e",
+      "historicalSourceManifestSha256": "42641a7c98c1f042dcd28417a3d5549a8e5f1e06ef8e236e24f426d441150870",
+      "sourceFiles": 15618,
+      "predecessor": {
+        "stage": "go1.24.13",
+        "version": "go1.24.13",
+        "historicalSdkManifestSha256": "8af7893f62f9c5b1f1822242eb4dc49a5354265da9edfb610ab6f2fc66e3993f",
+        "currentSealedStageArtifactRequired": true
+      },
+      "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+      "platform": "linux/amd64",
+      "entrypoint": "/bin/bash",
+      "network": "none",
+      "user": "0:0",
+      "environment": {
+        "HOME": "/work/home",
+        "PATH": "/bootstrap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "GOROOT_BOOTSTRAP": "/bootstrap",
+        "GOROOT_FINAL": "/work/go",
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "GOHOSTOS": "linux",
+        "GOHOSTARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOMAXPROCS": "4",
+        "GOENV": "off",
+        "GOTOOLCHAIN": "local",
+        "GOPROXY": "off",
+        "GOSUMDB": "sum.golang.org",
+        "GOTELEMETRY": "off",
+        "LANG": "C",
+        "LC_ALL": "C"
+      },
+      "limits": {
+        "cpus": 4,
+        "memoryBytes": 8589934592,
+        "pidsLimit": 512
+      },
+      "originalCommands": [
+        {
+          "phase": "bootstrap-preflight",
+          "cwd": "/work",
+          "argv": [
+            "-c",
+            "set -eu\ntest \"$(command -v go)\" = /bootstrap/bin/go\nGOROOT=/bootstrap /bootstrap/bin/go version\n"
+          ],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "build-compiler-and-sdk",
+          "cwd": "/work/go/src",
+          "argv": ["-x", "make.bash", "--no-banner"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-version",
+          "cwd": "/work/go",
+          "argv": ["-c", "GOROOT=/work/go /work/go/bin/go version"],
+          "timeoutSeconds": 7200
+        },
+        {
+          "phase": "built-sdk-config",
+          "cwd": "/work/go",
+          "argv": [
+            "-c",
+            "GOROOT=/work/go /work/go/bin/go env -json GOROOT GOHOSTOS GOHOSTARCH GOOS GOARCH GOVERSION GOTOOLDIR CGO_ENABLED"
+          ],
+          "timeoutSeconds": 7200
+        }
+      ],
+      "historicalOutputManifest": {
+        "sha256": "dd9660302763dd8154b875ba7338963d61cfce257bf3e64f7ebc998e8af95daf",
+        "regularFiles": 15639,
+        "regularBytes": 243910740,
+        "largestRegularFileBytes": 28238898,
+        "scope": "Historical regular-file byte inventory only; current/native modes, symlinks and whole ancestry require separate observations."
+      },
+      "sourceCanonicalProjection": {
+        "canonicalCommit": "862c888e612ac346c7c4d99c9392bdfd265f33b0",
+        "exactCompleteArchiveMerkleRootMatchesCanonical": false,
+        "omittedCanonicalFiles": [
+          ".gitattributes",
+          ".github/CODE_OF_CONDUCT.md",
+          ".github/ISSUE_TEMPLATE/00-bug.yml",
+          ".github/ISSUE_TEMPLATE/01-pkgsite.yml",
+          ".github/ISSUE_TEMPLATE/02-pkgsite-removal.yml",
+          ".github/ISSUE_TEMPLATE/03-gopls.yml",
+          ".github/ISSUE_TEMPLATE/04-vuln.yml",
+          ".github/ISSUE_TEMPLATE/10-proposal.yml",
+          ".github/ISSUE_TEMPLATE/11-language-change.yml",
+          ".github/ISSUE_TEMPLATE/12-telemetry.yml",
+          ".github/ISSUE_TEMPLATE/config.yml",
+          ".github/PULL_REQUEST_TEMPLATE",
+          ".github/SUPPORT.md",
+          ".gitignore"
+        ],
+        "modeOnlyDifferences": [
+          {
+            "file": "src/cmd/compile/profile.sh",
+            "archive": {
+              "sha": "37d65d84942b58739624dc4b50ae64d0dd057159",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "37d65d84942b58739624dc4b50ae64d0dd057159",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mkall.sh",
+            "archive": {
+              "sha": "1650fbcc7452eb70ad37a9b8cdf254f0f27422b5",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "1650fbcc7452eb70ad37a9b8cdf254f0f27422b5",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mkerrors.sh",
+            "archive": {
+              "sha": "526d04ab68cdb59c78a013c007d98367e4a8c533",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "526d04ab68cdb59c78a013c007d98367e4a8c533",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/plan9/mksysnum_plan9.sh",
+            "archive": {
+              "sha": "3c3ab05810ee1203c0d578654dc3069587ba4e94",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "3c3ab05810ee1203c0d578654dc3069587ba4e94",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/unix/mkall.sh",
+            "archive": {
+              "sha": "f6ddee1aef6b03b92d69681d213c0947f948f1ed",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "f6ddee1aef6b03b92d69681d213c0947f948f1ed",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/unix/mkerrors.sh",
+            "archive": {
+              "sha": "fa74cfe9e8a485ce4c1e5012c6b78332bc858f32",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "fa74cfe9e8a485ce4c1e5012c6b78332bc858f32",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/windows/mkerrors.bash",
+            "archive": {
+              "sha": "58e0188fb71f802180ea330dd13828884e4d3001",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "58e0188fb71f802180ea330dd13828884e4d3001",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/sys/windows/mkknownfolderids.bash",
+            "archive": {
+              "sha": "ab8924e936f5c79b1b15c27150bf3239672dc115",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "ab8924e936f5c79b1b15c27150bf3239672dc115",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmd/vendor/golang.org/x/tools/internal/diff/lcs/git.sh",
+            "archive": {
+              "sha": "b25ba4aac74b81173bdcd78fc7d5e609163421b8",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "b25ba4aac74b81173bdcd78fc7d5e609163421b8",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/cmp.bash",
+            "archive": {
+              "sha": "5bca266c404e4eb0dd8b88d56e569ff235e154ad",
+              "mode": "100755"
+            },
+            "canonical": {
+              "sha": "5bca266c404e4eb0dd8b88d56e569ff235e154ad",
+              "mode": "100644"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/issue57046-clang.elf5",
+            "archive": {
+              "sha": "009af83135a100b61f38496b973b84171c829757",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "009af83135a100b61f38496b973b84171c829757",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/ranges.elf",
+            "archive": {
+              "sha": "7f54138cffb3bc61a8e537a5becdfc913a41da3a",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "7f54138cffb3bc61a8e537a5becdfc913a41da3a",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/rnglistx.elf",
+            "archive": {
+              "sha": "c2d7f55479125b2bde8d3889945737fb58c49896",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "c2d7f55479125b2bde8d3889945737fb58c49896",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/debug/dwarf/testdata/typedef.elf",
+            "archive": {
+              "sha": "b2062d2c4bb828dcb229f12869f77fd5d9522278",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "b2062d2c4bb828dcb229f12869f77fd5d9522278",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/os/testdata/dirfs/dir/x",
+            "archive": {
+              "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test32",
+            "archive": {
+              "sha": "ce594720dbfd23f48bf6a78b12d638d782f034d0",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "ce594720dbfd23f48bf6a78b12d638d782f034d0",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test32be",
+            "archive": {
+              "sha": "f13a732203fa6226ae05357c35892cfc7a7a7e6c",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "f13a732203fa6226ae05357c35892cfc7a7a7e6c",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test64",
+            "archive": {
+              "sha": "3fb42fb3bf436bccae8cae038eaefc803cf13c2a",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "3fb42fb3bf436bccae8cae038eaefc803cf13c2a",
+              "mode": "100755"
+            }
+          },
+          {
+            "file": "src/runtime/pprof/testdata/test64be",
+            "archive": {
+              "sha": "09b4b0189445c563721140f5b030e869d34b3a47",
+              "mode": "100644"
+            },
+            "canonical": {
+              "sha": "09b4b0189445c563721140f5b030e869d34b3a47",
+              "mode": "100755"
+            }
+          }
+        ],
+        "sourcePayloadDifferences": []
+      },
+      "sourceFilesPatched": false,
+      "originalRuntimeSuiteExecuted": false,
+      "nativeReplayImplemented": true,
+      "sourceBuildQualified": false,
+      "fullCompilerSdkBootstrapClosureVerified": false,
+      "completeOriginalNoticeClosureVerified": false,
+      "gateAComplete": false
+    }
+  ],
+  "originalCommands": 30,
+  "theoreticalSumOriginalCommandTimeoutSeconds": 205260,
+  "fieldEvaluationExecuted": false,
+  "inferenceInvoked": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "fullUpstreamCompilerSdkAndBootstrapClosureVerified": false,
+  "gateAComplete": false,
+  "profile": "original-go-c-root-source-chain-v1",
+  "ancestryAuthority": "successful-current-source-predecessor-with-complete-physical-seal",
+  "historicalManifestAuthority": "comparison-only; a mismatch forbids exact historical private-input replay, without replacing current-source ancestry",
+  "observationLimits": {
+    "workBytes": 17179869184,
+    "commandOutputBytes": 67108864,
+    "aggregateOutputBytes": 536870912,
+    "regularLeafBytes": 536870912,
+    "observationSeconds": 21000,
+    "hostedJobMinutes": 360,
+    "sdkEntries": 200000,
+    "sdkDepth": 64,
+    "sdkPathBytes": 4096
+  },
+  "fullNativeChainObservationComplete": false
+}

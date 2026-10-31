@@ -274,3 +274,9 @@ The shared native manifest now exposes the original resource acceptance names;
 its controller also requires fresh offline package evidence. These declarations
 and development receipts leave selected current-source matrix acceptance,
 artifact/license closure and the private evaluation freeze separate and open.
+
+The closed original Go C-root source carrier is prepared as development tooling;
+[UPSTREAM-GO-BOOTSTRAP.md](UPSTREAM-GO-BOOTSTRAP.md) keeps its native execution,
+current sealed predecessor authority and historical byte comparisons separate.
+Its source/pure controls do not close compiler/SDK ancestry, complete original
+notices, copied generators, other platforms or Gate A.
