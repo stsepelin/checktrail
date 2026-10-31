@@ -167,6 +167,21 @@ function source(row, identity) {
   assert.equal(identity.bytes, value.bytes);
   assert.equal(identity.sha256, value.sha256);
 }
+/** Accept the observed one-level Node callback wrapper; unrelated test-runner failures never qualify. */
+export function requireProjectAssertionFailure(error) {
+  const direct =
+    error?.name === "AssertionError" && error?.code === "ERR_ASSERTION";
+  const wrapped =
+    error?.name === "Error" &&
+    error?.code === "ERR_TEST_FAILURE" &&
+    error?.failureType === "testCodeFailure" &&
+    error?.cause?.name === "AssertionError" &&
+    error?.cause?.code === "ERR_ASSERTION";
+  assert.ok(
+    direct || wrapped,
+    "Expected boundary failure was replaced by another runtime failure",
+  );
+}
 function nativeNodeSummary(stdout, expectedFileCount) {
   const events = stdout
     .split("\n")
@@ -359,11 +374,7 @@ export function inspectProjectNativeCheck(row, index, check, attempt) {
           "Original native consumer assertion was not reached exactly once",
         );
         if (failed)
-          assert.equal(
-            outcomes[0].data.details?.error?.code,
-            "ERR_ASSERTION",
-            "Expected boundary failure was replaced by another runtime failure",
-          );
+          requireProjectAssertionFailure(outcomes[0].data.details?.error);
       }
   } else if (check.id === "javascript.eslint") {
     const native = JSON.parse(stdout);

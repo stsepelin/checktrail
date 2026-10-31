@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { fixture } from "./helpers.js";
 import { test } from "node:test";
 const {
   projectConsumerPaths,
@@ -11,6 +15,7 @@ const {
   projectConsumerLogicalWitnesses,
   inspectProjectWitness,
   inspectProjectNativeCheck,
+  requireProjectAssertionFailure,
 } = await import(
   new URL("../../scripts/consumer-witness-project.mjs", import.meta.url).href
 );
@@ -125,7 +130,16 @@ function sample(
           type: failed ? "test:fail" : "test:pass",
           data: {
             name,
-            details: { error: failed ? { code: "ERR_ASSERTION" } : null },
+            details: {
+              error: failed
+                ? {
+                    name: "Error",
+                    code: "ERR_TEST_FAILURE",
+                    failureType: "testCodeFailure",
+                    cause: { name: "AssertionError", code: "ERR_ASSERTION" },
+                  }
+                : null,
+            },
           },
         };
       });
@@ -892,4 +906,158 @@ test("unselected native project runtime observations remain explicitly unqualifi
       reason: "unselected-native-runtime",
     },
   ]);
+});
+
+test("native assertion callbacks qualify only direct assertions or the precise one-level Node wrapper across consumer and ESM CJS scenarios", () => {
+  requireProjectAssertionFailure({
+    name: "AssertionError",
+    code: "ERR_ASSERTION",
+  });
+  for (const [family, scenario] of [
+    ["javascript", "workspace"],
+    ["shared-json", "workspace"],
+    ["typescript", "esm-sentinel"],
+    ["typescript", "cjs-sentinel"],
+  ] as const) {
+    const { row, attempts } = sample(family, "broken", scenario);
+    inspectProjectNativeCheck(row, 0, row.project.checks[0], attempts[0]);
+    for (const error of [
+      {
+        name: "Error",
+        code: "ERR_TEST_FAILURE",
+        failureType: "testCodeFailure",
+      },
+      {
+        name: "Error",
+        code: "ERR_TEST_FAILURE",
+        failureType: "subtestsFailed",
+        cause: { name: "AssertionError", code: "ERR_ASSERTION" },
+      },
+      {
+        name: "Error",
+        code: "ERR_TEST_FAILURE",
+        failureType: "testCodeFailure",
+        cause: { name: "SyntaxError" },
+      },
+      {
+        name: "Error",
+        code: "ERR_TEST_FAILURE",
+        failureType: "testCodeFailure",
+        cause: { name: "Error", code: "ERR_MODULE_NOT_FOUND" },
+      },
+      {
+        name: "Error",
+        code: "ERR_TEST_FAILURE",
+        failureType: "testCodeFailure",
+        cause: {
+          name: "Error",
+          cause: { name: "AssertionError", code: "ERR_ASSERTION" },
+        },
+      },
+      {
+        name: "Error",
+        code: "ERR_TEST_FAILURE",
+        failureType: "testCodeFailure",
+        cause: { name: "AssertionError", code: "ERR_ASSERTION_SUFFIX" },
+      },
+      {
+        name: "Error",
+        code: "ERR_TEST_FAILURE",
+        failureType: "testCodeFailure",
+        cause: { name: "Error", code: "ERR_ASSERTION" },
+      },
+      {
+        name: "TypeError",
+        code: "ERR_TEST_FAILURE",
+        failureType: "testCodeFailure",
+        cause: { name: "AssertionError", code: "ERR_ASSERTION" },
+      },
+      { name: "AssertionError", code: "ERR_SYNTAX" },
+      { name: "Error", code: "ERR_ASSERTION" },
+    ]) {
+      const original = attempts[0];
+      assert.ok(original);
+      const changed = structuredClone(original);
+      const events = Buffer.from(changed.output.stdout.base64, "base64")
+        .toString()
+        .trim()
+        .split("\n")
+        .map((line) => JSON.parse(line));
+      const failed = events.find((event) => event.type === "test:fail");
+      assert.ok(failed);
+      failed.data.details.error = error;
+      changed.output = output(
+        events.map((event) => JSON.stringify(event)).join("\n") + "\n",
+      );
+      assert.throws(
+        () => inspectProjectNativeCheck(row, 0, row.project.checks[0], changed),
+        /replaced by another runtime failure/,
+      );
+    }
+  }
+});
+test("original Node assertion import and runtime failures retain distinct causes through the actual Checktrail reporter", async (t) => {
+  const root = await fixture(t, {}),
+    reporter = fileURLToPath(
+      new URL("../src/node-reporter.js", import.meta.url),
+    );
+  for (const [name, body, accepted] of [
+    ["assertion", "assert.equal(true,false)", true],
+    [
+      "runtime",
+      "(()=>{throw new TypeError('synthetic runtime error')})()",
+      false,
+    ],
+    ["loader", "await import('./missing-synthetic-module.mjs')", false],
+  ] as const) {
+    const filename = path.join(root, name + ".test.mjs");
+    const { writeFile } = await import("node:fs/promises");
+    await writeFile(
+      filename,
+      "import{test}from'node:test';import assert from'node:assert/strict';test('original named boundary',async()=>{" +
+        body +
+        ";});test('original valid near miss',()=>assert.equal(true,true));",
+    );
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    delete env.NODE_OPTIONS;
+    const actual = spawnSync(
+      process.execPath,
+      ["--test", "--test-reporter", reporter, filename],
+      { env, encoding: "utf8", timeout: 10000, maxBuffer: 1048576 },
+    );
+    assert.equal(actual.error, undefined);
+    assert.equal(actual.status, 1);
+    assert.equal(actual.stderr, "");
+    const events = actual.stdout
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line));
+    const failed = events.filter(
+      (event) =>
+        event.type === "test:fail" &&
+        event.data.name === "original named boundary",
+    );
+    assert.equal(failed.length, 1);
+    assert.equal(
+      events.filter(
+        (event) =>
+          event.type === "test:pass" &&
+          event.data.name === "original valid near miss",
+      ).length,
+      1,
+    );
+    const error = failed[0].data.details.error;
+    if (accepted) {
+      assert.equal(error.code, "ERR_TEST_FAILURE");
+      assert.equal(error.cause.code, "ERR_ASSERTION");
+      requireProjectAssertionFailure(error);
+    } else {
+      assert.throws(
+        () => requireProjectAssertionFailure(error),
+        /replaced by another runtime failure/,
+      );
+      assert.notEqual(error.cause?.code, "ERR_ASSERTION");
+    }
+  }
 });
