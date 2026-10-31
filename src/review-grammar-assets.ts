@@ -114,14 +114,17 @@ export const grammarAssets = [
     sourceCommit: "171fa3bc343233fe07f5e17205aaada33d778825",
   },
 ] as const;
+export const grammarRuntimeVersion = "0.27.1";
+export const grammarRuntimeManifestDigest =
+  "4ee75652c2631dd228e143eb0f012afad337e8477f49f2581fbea58048990a9e";
 export const grammarRuntimeAssets = {
   "web-tree-sitter.js": {
     sha256: "7c49e3c1d87e24e0bb4c2def909d17154dfde281f5f8280225450090bb4b8110",
     bytes: 156132,
   },
   "web-tree-sitter.wasm": {
-    sha256: "c03bccdc3b448a32848f5ae327e209c982bbb0840d43eec8bc2d5759544a1ed3",
-    bytes: 209613,
+    sha256: "beca80e44cccbf2299ed4d1e3fa6462a9a6fe818aeebf847547a392227ce4acc",
+    bytes: 210415,
   },
   LICENSE: {
     sha256: "c5cfb43042b6b72045f4ba997834d0a7786d2793d91680868b5815b39f14fc78",

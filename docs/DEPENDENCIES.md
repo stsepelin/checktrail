@@ -58,7 +58,9 @@ closure remain unverified E6 obligations; the npm metadata audit does not cover 
 
 ## Fixed context grammar assets
 
-Context version 6 adds the exact `web-tree-sitter@0.27.0` production dependency.
+The selected context parser uses the exact `web-tree-sitter@0.27.1` production dependency.
+The original grammar build records retain their `0.27.0` runtime identity; the
+current runtime manifest and upgrade record bind the new bytes separately.
 Its installed MIT notice is retained by the existing npm audit. The package also
 ships the selected compiled grammar assets with their upstream notices under
 `assets/context-grammars/`; the source/archive/generated-file and WASM identities

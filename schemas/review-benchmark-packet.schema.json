@@ -4668,7 +4668,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -5891,7 +5891,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -7149,7 +7149,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -8556,7 +8556,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -10029,7 +10029,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -11436,7 +11436,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -12859,7 +12859,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -14282,7 +14282,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -15705,7 +15705,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -17128,7 +17128,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -18553,7 +18553,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -19976,7 +19976,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -21416,7 +21416,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -22852,7 +22852,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -24285,7 +24285,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -25711,7 +25711,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -27141,7 +27141,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
@@ -28686,7 +28686,7 @@
                   "type": "string",
                   "const": "typescript-and-tree-sitter-wasm"
                 },
-                "parserVersion": { "type": "string", "const": "6.0.3/0.27.0" },
+                "parserVersion": { "type": "string", "const": "6.0.3/0.27.1" },
                 "state": { "type": "string", "enum": ["collected", "partial"] },
                 "reachabilityVerified": { "type": "boolean", "const": false },
                 "files": {
