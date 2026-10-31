@@ -169,7 +169,7 @@ class Packet:
 def outcome_availability(rows):
     positive=lambda row,key:integer(row['counts'].get(key),1)
     resolved=any(any(positive(row,key) for key in ['PASS','FAIL','XFAIL','XPASS']) for row in rows)
-    failed=any(any(positive(row,key) for key in ['FAIL','XPASS','ERROR']) for row in rows)
+    failed=any(any(positive(row,key) for key in ['FAIL','XPASS','ERROR','UNRESOLVED']) for row in rows)
     return {'resolvedTestOutcomesObserved':resolved,'testEvidenceState':'unavailable' if not resolved else 'failed' if failed else 'reported'}
 
 

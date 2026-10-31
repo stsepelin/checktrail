@@ -340,6 +340,8 @@ for family in ['SKIP','UNSUPPORTED','UNTESTED','UNRESOLVED','ERROR']:
  unavailable=replayer.outcome_availability([{'counts':{family:1}}]);assert not unavailable['resolvedTestOutcomesObserved'] and unavailable['testEvidenceState']=='unavailable','Unavailable-only outcome was relabeled resolved: '+family
 for family,state in [('PASS','reported'),('FAIL','failed'),('XFAIL','reported'),('XPASS','failed')]:
  resolved=replayer.outcome_availability([{'counts':{family:1}}]);assert resolved['resolvedTestOutcomesObserved'] and resolved['testEvidenceState']==state,'Resolved outcome state differed: '+family
+for family,state in [('UNRESOLVED','failed'),('UNSUPPORTED','reported'),('SKIP','reported')]:
+ mixed=replayer.outcome_availability([{'counts':{'PASS':1,family:1}}]);assert mixed['resolvedTestOutcomesObserved'] and mixed['testEvidenceState']==state,'Mixed resolved outcome state differed: '+family
 for field,value in [('exitCode',None),('signal','SIGTERM'),('error','synthetic'),('reason','deadline'),('stopError','cleanup'),('retainedBytes',-1),('truncated',True)]:
  bad=dict(actual);bad[field]=value
  try:replayer.terminal(bad)

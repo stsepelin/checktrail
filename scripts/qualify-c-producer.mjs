@@ -230,7 +230,9 @@ export function cProducerCompletion(command, result, outputs, reports) {
   const testEvidenceState = !executedOutcomes
     ? "unavailable"
     : reports.reports.some((row) =>
-          ["FAIL", "XPASS", "ERROR"].some((key) => positiveCount(row, key)),
+          ["FAIL", "XPASS", "ERROR", "UNRESOLVED"].some((key) =>
+            positiveCount(row, key),
+          ),
         )
       ? "failed"
       : "reported";

@@ -273,6 +273,19 @@ test("C producer completion requires physical terminal observation and keeps ori
     assert.equal(observed.testEvidenceState, state, outcome);
     assert.equal(observed.gateAComplete, false);
   }
+  const mixedOutcomes: readonly (readonly [string, string])[] = [
+    ["UNRESOLVED", "failed"],
+    ["UNSUPPORTED", "reported"],
+    ["SKIP", "reported"],
+  ];
+  for (const [outcome, state] of mixedOutcomes) {
+    const mixed = api.cProducerCompletion(command, terminal, outputs, {
+      reports: [{ counts: { PASS: 1, [outcome]: 1 } }],
+    });
+    assert.equal(mixed.originalCommandCompleted, true, outcome);
+    assert.equal(mixed.testEvidenceState, state, outcome);
+    assert.equal(mixed.gateAComplete, false);
+  }
   for (const output of [
     { file: "synthetic.deb", bytes: 0 },
     { file: "synthetic.deb", bytes: -1 },
