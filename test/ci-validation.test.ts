@@ -386,7 +386,7 @@ test("CI rejects an added mutation input even when all original bytes were resto
 test("CI lane deadline terminates both physically started commands and cannot report complete", async (t) => {
   const { root, outer } = await repository(t, {
     "deadline.mjs":
-      "import{writeFile}from'node:fs/promises';await writeFile(process.argv[2],JSON.stringify({pid:process.pid,tmp:process.env.TMPDIR}));setInterval(()=>{},1000);",
+      "import{writeFile,link}from'node:fs/promises';const marker=process.argv[2],partial=marker+'.partial';await writeFile(partial,JSON.stringify({pid:process.pid,tmp:process.env.TMPDIR}),{flag:'wx'});await link(partial,marker);setInterval(()=>{},1000);",
   });
   const markers = [path.join(outer, "mutation"), path.join(outer, "package")];
   await assert.rejects(
@@ -568,7 +568,7 @@ test("CI cancellation after mutation completion stops both reached package worke
     "mutation.mjs": prelude,
     "hang.mjs":
       prelude +
-      `const marker=process.argv[2];await fs.writeFile(marker,JSON.stringify({pid:process.pid,tmp:process.env.TMPDIR,root:process.cwd()}));setInterval(()=>{},1000);`,
+      `const marker=process.argv[2],partial=marker+'.partial';await fs.writeFile(partial,'',{flag:'wx'});await fs.writeFile(marker+'.opened','opened',{flag:'wx'});while(!await fs.access(marker+'.release').then(()=>true,e=>{if(e.code!=='ENOENT')throw e;return false;}))await delay(5);await fs.writeFile(partial,JSON.stringify({pid:process.pid,tmp:process.env.TMPDIR,root:process.cwd()}));await fs.link(partial,marker);setInterval(()=>{},1000);`,
     "unrun.mjs":
       prelude + `await fs.writeFile(process.argv[2],'incorrect admission');`,
   });
@@ -604,6 +604,34 @@ test("CI cancellation after mutation completion stops both reached package worke
     failure = error as typeof failure;
   });
   try {
+    for (const marker of markers) {
+      let opened = false;
+      for (let attempt = 0; attempt < 300; attempt++) {
+        opened = await access(marker + ".opened").then(
+          () => true,
+          (error: NodeJS.ErrnoException) => {
+            if (error.code !== "ENOENT") throw error;
+            return false;
+          },
+        );
+        if (opened) break;
+        await delay(10);
+      }
+      assert.equal(
+        opened,
+        true,
+        "Both actual package writers must open their partial start record",
+      );
+      await assert.rejects(
+        access(marker),
+        { code: "ENOENT" },
+        "An opened but incomplete JSON record must not signal readiness",
+      );
+      assert.equal(await readFile(marker + ".partial", "utf8"), "");
+    }
+    await Promise.all(
+      markers.map((marker) => writeFile(marker + ".release", "publish")),
+    );
     for (const marker of markers) {
       let reached = false;
       for (let attempt = 0; attempt < 300; attempt++) {

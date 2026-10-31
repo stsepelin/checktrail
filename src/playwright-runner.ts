@@ -22,10 +22,12 @@ async function main(): Promise<void> {
   const metadata = require(tool) as { name?: string; version?: string };
   if (
     metadata.name !== "playwright" ||
-    (metadata.version !== "1.63.0" && metadata.version !== "1.64.0")
+    (metadata.version !== "1.63.0" &&
+      metadata.version !== "1.64.0" &&
+      metadata.version !== "1.64.1")
   )
     throw new Error(
-      "Playwright native configuration integration requires verified versions 1.63.0 or 1.64.0",
+      "Playwright native configuration integration requires verified versions 1.63.0, 1.64.0 or 1.64.1",
     );
   const { configLoader } = require("playwright/lib/common") as {
     configLoader: {
