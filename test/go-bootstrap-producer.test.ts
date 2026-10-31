@@ -941,24 +941,39 @@ test("Go source-chain caller passes the current attempt and retains the closed p
       "scripts/producer-qualification/go-bootstrap-transport.mjs",
     ),
   );
-  const imports: string[] = [];
-  const importVisit = (node: ts.Node) => {
-    if (
-      ts.isImportDeclaration(node) &&
-      ts.isStringLiteral(node.moduleSpecifier) &&
-      node.moduleSpecifier.text.startsWith(".")
-    )
-      imports.push(node.moduleSpecifier.text);
-    ts.forEachChild(node, importVisit);
-  };
-  importVisit(source);
-  for (const specifier of imports)
-    assert.ok(
-      goBootstrapSourceFiles.includes(
-        path.posix.normalize("scripts/" + specifier),
-      ),
-      "Unbound actual controller import: " + specifier,
+  for (const helperFile of goBootstrapSourceFiles.filter((file: string) =>
+    file.endsWith(".mjs"),
+  )) {
+    const helper = ts.createSourceFile(
+      helperFile,
+      await readFile(path.join(root, helperFile), "utf8"),
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.JS,
     );
+    for (const statement of helper.statements) {
+      if (
+        !(
+          ts.isImportDeclaration(statement) || ts.isExportDeclaration(statement)
+        ) ||
+        !statement.moduleSpecifier ||
+        !ts.isStringLiteral(statement.moduleSpecifier)
+      )
+        continue;
+      const specifier = statement.moduleSpecifier.text;
+      if (!specifier.startsWith(".")) continue;
+      const target = path.posix.normalize(
+        path.posix.join(path.posix.dirname(helperFile), specifier),
+      );
+      assert.ok(
+        goBootstrapSourceFiles.includes(target),
+        "Unbound actual controller helper import: " +
+          helperFile +
+          " -> " +
+          target,
+      );
+    }
+  }
 });
 
 test("Go independent read-only retention observes the actual leaf boundary across cache roots and preserves link refusal", async (t) => {

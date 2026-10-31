@@ -80,6 +80,7 @@ export const goBootstrapSourceFiles = Object.freeze([
   "scripts/producer-qualification/go-bootstrap-transport.mjs",
   "scripts/qualify-binutils-producer.mjs",
   "scripts/qualify-c-producer.mjs",
+  "scripts/producer-qualification/glibc-seccomp.mjs",
   "scripts/producer-qualification/c-producer-profile.mjs",
   "scripts/producer-qualification/c-producer-profiles.v1.json",
   ...goWorkerFiles.map((file) => "scripts/producer-qualification/" + file),
