@@ -241,13 +241,27 @@ function nativeNodeSummary(stdout, expectedFileCount) {
 }
 /** Preserve expected native assertion failures as failed processes; only the enclosing frozen callback passes. */
 export function inspectProjectNativeCheck(row, index, check, attempt) {
-  const expected = projectConsumerChecks(
+  assert.ok(Number.isSafeInteger(index) && index >= 0);
+  assert.deepEqual(
+    row.project.checks[index],
+    check,
+    "Native check differs from its actual report position",
+  );
+  const matches = projectConsumerChecks(
     row.family,
     row.variant,
     row.project.scenario,
     row.phase,
-  )[index];
-  assert.ok(expected);
+  ).filter(
+    (expected) =>
+      expected.project === check.project && expected.id === check.id,
+  );
+  assert.equal(
+    matches.length,
+    1,
+    "Native project check identity is missing or ambiguous",
+  );
+  const expected = matches[0];
   assert.equal(check.project, expected.project);
   assert.equal(check.id, expected.id);
   assert.equal(check.status, expected.status);
@@ -544,6 +558,12 @@ export function inspectProjectWitness(row, attemptValues) {
   );
   assert.equal(value.outcome, row.variant === "broken" ? "failed" : "passed");
   assert.equal(value.checks.length, expected.length);
+  const identity = (check) => JSON.stringify([check.project, check.id]);
+  assert.deepEqual(
+    value.checks.map(identity).sort(),
+    expected.map(identity).sort(),
+    "Native project check identities differ from the complete required set",
+  );
   assert.equal(attemptValues.length, expected.length);
   assert.equal(
     new Set(attemptValues.map((value) => value.attemptId)).size,

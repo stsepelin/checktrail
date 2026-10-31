@@ -1264,3 +1264,87 @@ test("TypeScript project witnesses reconcile the exact locked tool versions and 
   }
   inspectProjectWitness(row, attempts);
 });
+
+test("native project witnesses reconcile check identities in every order while retaining actual report and attempt positions", () => {
+  const permutations = (values: number[]): number[][] =>
+    values.length === 0
+      ? [[]]
+      : values.flatMap((value, index) =>
+          permutations(values.filter((_, position) => position !== index)).map(
+            (rest) => [value, ...rest],
+          ),
+        );
+  const bindPositions = (value: ReturnType<typeof sample>): void => {
+    for (const [index, attempt] of value.attempts.entries()) {
+      attempt.project.checkIndex = index;
+      attempt.project.reportSha256 = hash(JSON.stringify(value.row.project));
+    }
+  };
+  const reorder = (
+    value: ReturnType<typeof sample>,
+    order: number[],
+  ): ReturnType<typeof sample> => {
+    const result = {
+      row: structuredClone(value.row),
+      attempts: order.map((index) => structuredClone(value.attempts[index]!)),
+    };
+    result.row.project.checks = order.map((index) =>
+      structuredClone(value.row.project.checks[index]!),
+    );
+    bindPositions(result);
+    return result;
+  };
+  let inspected = 0;
+  for (const family of ["javascript", "shared-json", "typescript"] as const)
+    for (const variant of ["broken", "fixed", "near-miss"])
+      for (const scenario of projectConsumerScenarios(family, variant)) {
+        const original = sample(family, variant, scenario);
+        for (const order of permutations(
+          original.attempts.map((_, index) => index),
+        )) {
+          const value = reorder(original, order);
+          inspectProjectWitness(value.row, value.attempts);
+          inspected++;
+        }
+      }
+  assert.equal(inspected, 132);
+  const actualOrder = reorder(
+    sample("typescript", "fixed", "library"),
+    [0, 2, 1],
+  );
+  for (const defect of ["duplicate", "foreign"] as const) {
+    const changed = structuredClone(actualOrder);
+    if (defect === "duplicate") {
+      changed.row.project.checks[2] = structuredClone(
+        changed.row.project.checks[1]!,
+      );
+      changed.attempts[2] = structuredClone(changed.attempts[1]!);
+      changed.attempts[2]!.attemptId = randomUUID();
+    } else changed.row.project.checks[1]!.project = "foreign";
+    bindPositions(changed);
+    assert.throws(
+      () => inspectProjectWitness(changed.row, changed.attempts),
+      /check identities/,
+    );
+  }
+  const wrongPosition = structuredClone(actualOrder);
+  [wrongPosition.attempts[0], wrongPosition.attempts[1]] = [
+    wrongPosition.attempts[1]!,
+    wrongPosition.attempts[0]!,
+  ];
+  assert.throws(
+    () => inspectProjectWitness(wrongPosition.row, wrongPosition.attempts),
+    /another report\/scenario\/check/,
+  );
+  assert.throws(
+    () =>
+      inspectProjectNativeCheck(
+        actualOrder.row,
+        0,
+        actualOrder.row.project.checks[1],
+        actualOrder.attempts[0],
+      ),
+    /actual report position/,
+  );
+  inspectProjectWitness(actualOrder.row, actualOrder.attempts);
+});
