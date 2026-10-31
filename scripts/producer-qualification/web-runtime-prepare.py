@@ -56,7 +56,7 @@ def encode_index(entries):
         body += version.encode() + b"\x00" + line.encode() + b"\x00"
     return body
 
-def archive(file):
+def archive(file, notice_only=False):
     """Enumerate data without executing extractors or honoring archive ownership."""
     with tarfile.open(file, "r|*") as opened:
         count = 0
@@ -65,9 +65,13 @@ def archive(file):
             assert count <= 2000000
             if member.isdir() and member.name.rstrip("/") == ".":
                 continue
+            assert member.isdir() or member.isfile() or member.issym() or member.islnk()
+            # Unselected members remain inert archive data. Only retained notice
+            # paths are materialized by this caller; extraction stays strict.
+            if notice_only and not (member.isfile() and NOTICE.search(PurePosixPath(member.name).name)):
+                continue
             name = member.name[2:] if member.name.startswith("./") else member.name
             parts = safe_parts(name)
-            assert member.isdir() or member.isfile() or member.issym() or member.islnk()
             if member.isfile():
                 assert 0 <= member.size <= MAX_FILE
             yield opened, member, parts
@@ -234,7 +238,7 @@ def prepare(directory, catalog, frozen):
             continue
         if zipfile.is_zipfile(file):
             continue
-        for opened, member, parts in archive(file):
+        for opened, member, parts in archive(file, notice_only=True):
             if member.isfile() and NOTICE.search(parts[-1]):
                 data = read_notice(opened, member, str(file.relative_to(downloads)))
                 key = sha(str(file.relative_to(downloads)).encode())

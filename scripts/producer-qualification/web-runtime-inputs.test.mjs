@@ -361,6 +361,24 @@ for archive_name,member_name,body,link,reason in [
   assert str(error)==reason,'Notice refusal reason differs: '+str(error)+' expected '+reason
   count+=1
  else:raise AssertionError('Unqualified original notice admitted: '+archive_name+'/'+member_name)
+# Notice enumeration must not materialize unrelated POSIX-only archive names.
+archive=r/'notice-view.tgz'
+with tarfile.open(archive,'w:gz') as out:
+ for name,body in [('usr/share/man/man3/Synthetic::Module.3pm.gz',b'inert'),('usr/share/doc/synthetic/copyright',b'original notice')]:
+  member=tarfile.TarInfo(name);member.size=len(body);out.addfile(member,io.BytesIO(body))
+selected=list(parts for opened,member,parts in m.archive(archive,notice_only=True))
+assert selected==[['usr','share','doc','synthetic','copyright']];count+=1
+try:list(m.archive(archive))
+except AssertionError:count+=1
+else:raise AssertionError('General extraction path guard was broadened')
+for unsafe in ['C:/LICENSE','../COPYING','a/../NOTICE']:
+ archive=r/('notice-invalid-'+str(count)+'.tgz')
+ with tarfile.open(archive,'w:gz') as out:
+  member=tarfile.TarInfo(unsafe);member.size=1;out.addfile(member,io.BytesIO(b'x'))
+ try:list(m.archive(archive,notice_only=True))
+ except AssertionError:count+=1
+ else:raise AssertionError('Unsafe retained notice path admitted: '+unsafe)
+assert not (r/'usr').exists() and not (r/'C:').exists()
 print(json.dumps({'passed':count,'compilerExecuted':False,'projectCodeExecuted':False}))`;
     const child = spawnSync(
       python,
@@ -370,7 +388,7 @@ print(json.dumps({'passed':count,'compilerExecuted':False,'projectCodeExecuted':
     assert.equal(child.error, undefined, diagnostic(child));
     assert.equal(child.status, 0, diagnostic(child));
     assert.deepEqual(JSON.parse(child.stdout), {
-      passed: 29,
+      passed: 34,
       compilerExecuted: false,
       projectCodeExecuted: false,
     });
