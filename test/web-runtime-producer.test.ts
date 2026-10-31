@@ -10,7 +10,7 @@ const cohortEnvironment = { ...process.env };
 // A real independent Node test process must not inherit the parent runner context.
 delete cohortEnvironment.NODE_TEST_CONTEXT;
 for (const [file, count, maximumSkips] of [
-  ["web-runtime-controller.test.mjs", 23, process.platform === "win32" ? 3 : 0],
+  ["web-runtime-controller.test.mjs", 25, process.platform === "win32" ? 4 : 0],
   ["web-runtime-inputs.test.mjs", 11, 2],
 ] as const) {
   test(

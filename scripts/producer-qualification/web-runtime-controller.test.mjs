@@ -23,6 +23,7 @@ import {
   validateArtifacts,
   originalRecipe,
   originalSourceDirectory,
+  originalSdkDirectory,
   inspectRuntime,
   inspectCache,
   verifyCache,
@@ -37,8 +38,10 @@ import {
 import {
   boundedBytes,
   verifyColdSourceDirectory,
+  prepareColdSdkDirectory,
   versionProbeMatches,
   runtimeVersionProbes,
+  sdkRelocation,
   inspectResourceObservation,
   boundedProcess,
 } from "./web-runtime-worker.mjs";
@@ -83,6 +86,8 @@ const syntheticReceipt = () => ({
   recipe: "github",
   originalSourceDirectory: originalSourceDirectory("github"),
   observedSourceDirectory: originalSourceDirectory("github"),
+  originalSdkDirectory: originalSdkDirectory("github"),
+  observedSdkDirectory: originalSdkDirectory("github"),
   host: {
     platform: "linux",
     arch: "x64",
@@ -652,15 +657,22 @@ test("pinned SDK banner requires its exact git version and physical source revis
   const expected =
     "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 4.0.15-git (09f52557f0d48b65b8c724853ed8f4e8bf80e669)";
   const actual = expected + "\nCopyright (C) the Emscripten authors\n";
-  const probes = runtimeVersionProbes({
-    npmVersion: "11.19.1",
-    rustVersion: "1.98.1",
-  });
+  const probes = runtimeVersionProbes(
+    {
+      npmVersion: "11.19.1",
+      rustVersion: "1.98.1",
+    },
+    "github",
+  );
   assert.deepEqual(probes, [
     ["npm", ["--version"], "11.19.1"],
     ["rustc", ["--version"], "rustc 1.98.1 "],
     ["/work/sdk-node/bin/node", ["--version"], "v22.16.0"],
-    ["/work/sdk/emscripten/emcc", ["--version"], expected],
+    [
+      originalSdkDirectory("github") + "/emscripten/emcc",
+      ["--version"],
+      expected,
+    ],
   ]);
   assert.equal(versionProbeMatches(probes[3][0], actual, probes[3][2]), true);
   for (const invalid of [
@@ -756,5 +768,118 @@ test(
     const valid = syntheticReceipt();
     valid.observedSourceDirectory = originalSourceDirectory("npm");
     assert.throws(() => qualification(valid));
+  },
+);
+
+test("original SDK layout binds exact publisher directories probes and the sole external writable mount", () => {
+  for (const recipe of ["github", "npm"]) {
+    const sdk = originalSdkDirectory(recipe);
+    assert.equal(
+      sdk,
+      recipe === "github"
+        ? originalSourceDirectory(recipe) + "/emsdk/upstream"
+        : "/emsdk/upstream",
+    );
+    assert.equal(hash(sdk), frozen.originalSdkDirectories[recipe].sha256);
+    assert.equal(
+      Buffer.byteLength(sdk),
+      frozen.originalSdkDirectories[recipe].bytes,
+    );
+    const probes = runtimeVersionProbes(
+      { npmVersion: "synthetic", rustVersion: "synthetic" },
+      recipe,
+    );
+    assert.equal(probes[3][0], sdk + "/emscripten/emcc");
+    const relocated = sdkRelocation(recipe, "/original/runtime/bin:/usr/bin");
+    assert.deepEqual(relocated, {
+      configuration:
+        "LLVM_ROOT = " +
+        JSON.stringify(sdk + "/bin") +
+        "\nBINARYEN_ROOT = " +
+        JSON.stringify(sdk) +
+        "\nNODE_JS = ['/work/sdk-node/bin/node']\n",
+      path: sdk + "/emscripten:/original/runtime/bin:/usr/bin",
+    });
+    const config = {
+      task: "checktrail-runtime-synthetic",
+      recipe,
+      runtime: runtime(),
+      offlineInputs: {
+        npm: { directory: "/synthetic/npm" },
+        cargo: { directory: "/synthetic/cargo" },
+      },
+    };
+    const args = dockerArguments(
+      config,
+      {
+        controller: "/synthetic/controller",
+        inputs: "/synthetic/inputs",
+        work: "/synthetic/work",
+        receipts: "/synthetic/receipts",
+      },
+      "checktrail-runtime-00000000-0000-0000-0000-000000000000",
+    );
+    const mounts = args.filter((value, i) => args[i - 1] === "--mount");
+    assert.equal(mounts.length, recipe === "github" ? 7 : 8);
+    assert.equal(
+      mounts.includes(`type=bind,src=/synthetic/work/sdk,target=${sdk}`),
+      recipe === "npm",
+    );
+  }
+  assert.throws(() => originalSdkDirectory("npm-near-miss"));
+  for (const changed of ["/work/sdk", originalSdkDirectory("npm"), null]) {
+    const receipt = syntheticReceipt();
+    receipt.observedSdkDirectory = changed;
+    assert.throws(() => qualification(receipt));
+  }
+});
+
+test(
+  "cold SDK staging refuses preexisting redirected or populated targets and preserves their bytes",
+  {
+    skip:
+      process.platform === "win32" ? "POSIX source directory control" : false,
+  },
+  async (t) => {
+    const directory = await realpath(
+      await mkdtemp(path.join(os.tmpdir(), "checktrail-sdk-layout-")),
+    );
+    t.after(() => rm(directory, { recursive: true, force: true }));
+    const source = path.join(directory, "source");
+    await mkdir(source);
+    const sdk = path.join(source, "emsdk/upstream");
+    assert.equal(await prepareColdSdkDirectory(sdk, source), sdk);
+    await writeFile(path.join(sdk, "sentinel"), "Original synthetic bytes");
+    await assert.rejects(prepareColdSdkDirectory(sdk, source), /EEXIST/u);
+    assert.equal(
+      await readFile(path.join(sdk, "sentinel"), "utf8"),
+      "Original synthetic bytes",
+    );
+    const linkedSource = path.join(directory, "linked-source");
+    await mkdir(linkedSource);
+    await symlink(source, path.join(linkedSource, "emsdk"));
+    await assert.rejects(
+      prepareColdSdkDirectory(
+        path.join(linkedSource, "emsdk/upstream"),
+        linkedSource,
+      ),
+      /EEXIST/u,
+    );
+    assert.equal(
+      await readFile(path.join(sdk, "sentinel"), "utf8"),
+      "Original synthetic bytes",
+    );
+    const outside = path.join(directory, "outside");
+    await mkdir(outside);
+    assert.equal(await prepareColdSdkDirectory(outside, source), outside);
+    await writeFile(path.join(outside, "sentinel"), "Original external bytes");
+    await assert.rejects(
+      prepareColdSdkDirectory(outside, source),
+      /must start empty/u,
+    );
+    assert.equal(
+      await readFile(path.join(outside, "sentinel"), "utf8"),
+      "Original external bytes",
+    );
   },
 );

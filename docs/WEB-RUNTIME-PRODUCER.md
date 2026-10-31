@@ -113,3 +113,13 @@ does not promise indefinite availability of those bodies. A complete runtime rec
 agreement only. SDK/compiler/bootstrap producer builds and complete notice closure
 remain unfinished. Historical publisher consumption is unproven; runtime byte
 agreement does not establish it. Gate A remains incomplete.
+
+The original SDK directory is also bound to the published debug metadata. The
+GitHub recipe extracts its cold SDK beneath the source at `emsdk/upstream`;
+the npm recipe uses `/emsdk/upstream` through a second empty owned bind. Source
+and SDK directories, probes, generated relocation configuration and before/after
+tool identities are bound separately. A preexisting SDK subtree, linked parent or
+populated external target is refused before extraction. Every original command,
+compiler flag, resource limit and expected output hash remains unchanged. Native
+byte equality for this revised layout remains pending; debug-section inspection
+alone does not qualify a producer build or close broader SDK ancestry.

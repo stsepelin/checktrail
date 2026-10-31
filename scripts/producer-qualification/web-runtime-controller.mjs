@@ -85,6 +85,17 @@ export function originalSourceDirectory(recipe) {
   return row.directory;
 }
 
+export function originalSdkDirectory(recipe) {
+  const source = originalSourceDirectory(recipe);
+  const row = frozen.originalSdkDirectories[recipe];
+  const expected =
+    recipe === "github" ? source + "/emsdk/upstream" : "/emsdk/upstream";
+  assert.equal(row.directory, expected, "Original SDK directory differs");
+  assert.equal(Buffer.byteLength(row.directory), row.bytes);
+  assert.equal(hash(row.directory), row.sha256);
+  return row.directory;
+}
+
 const sha = (value) =>
   typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
 const image = (value) =>
@@ -388,6 +399,7 @@ export async function prepare(config) {
     task: config.task,
     recipe: config.recipe,
     originalSourceDirectory: originalSourceDirectory(config.recipe),
+    originalSdkDirectory: originalSdkDirectory(config.recipe),
     limits: LIMITS,
     sourceCommit: frozen.sourceCommit,
     sdkVersion: frozen.sdkVersion,
@@ -462,6 +474,15 @@ export function dockerArguments(
       originalSourceDirectory(config.recipe),
       false,
     ],
+    ...(config.recipe === "npm"
+      ? [
+          [
+            path.join(paths.work, "sdk"),
+            originalSdkDirectory(config.recipe),
+            false,
+          ],
+        ]
+      : []),
     [paths.receipts, "/receipts", false],
   ]) {
     assert.ok(path.isAbsolute(source) && !/[\0,\n]/.test(source));
@@ -588,6 +609,11 @@ export function qualification(receipt) {
     receipt.observedSourceDirectory,
     receipt.originalSourceDirectory,
   );
+  assert.equal(
+    receipt.originalSdkDirectory,
+    originalSdkDirectory(receipt.recipe),
+  );
+  assert.equal(receipt.observedSdkDirectory, receipt.originalSdkDirectory);
   validateNativeHost(receipt.host);
   assert.equal(receipt.imageReinspected, true);
   assert.equal(receipt.stages.length, expected.length);
@@ -668,6 +694,8 @@ export async function run(config, receiptDirectory, { signal } = {}) {
   await mkdir(inputs, { mode: 0o700 });
   await mkdir(work, { mode: 0o700 });
   await mkdir(path.join(work, "source"), { mode: 0o700 });
+  if (config.recipe === "npm")
+    await mkdir(path.join(work, "sdk"), { mode: 0o700 });
   await mkdir(harness, { mode: 0o700 });
   await mkdir(workerReceipts, { mode: 0o700 });
   for (const row of plan.codeInputs) {
@@ -776,6 +804,7 @@ export async function run(config, receiptDirectory, { signal } = {}) {
       receipt.sdkToolsRechecked = worker.sdkToolsRechecked === true;
       receipt.stages = worker.stages;
       receipt.observedSourceDirectory = worker.observedSourceDirectory;
+      receipt.observedSdkDirectory = worker.observedSdkDirectory;
       for (const stage of receipt.stages)
         for (const stream of ["stdout", "stderr"]) {
           const output = stage[stream];

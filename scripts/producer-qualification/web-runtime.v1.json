@@ -3588,5 +3588,19 @@
       "sha256": "56c9e1c4b5360a5b089004396ed37fe3a20f7c4f5954072098039789ba3ab68a",
       "evidence": "Original published debug WASM .debug_str compilation directory; not proof of the complete historical publisher environment."
     }
+  },
+  "originalSdkDirectories": {
+    "github": {
+      "directory": "/home/runner/work/tree-sitter/tree-sitter/emsdk/upstream",
+      "bytes": 56,
+      "sha256": "0734577570d0540c8a92cd6bba44772b33f7b9ac1d75b61588a8d5ed13661a73",
+      "evidence": "Original published debug WASM DWARF v4 include-directory tables; all 74 line programs compared without normalizing published bytes"
+    },
+    "npm": {
+      "directory": "/emsdk/upstream",
+      "bytes": 15,
+      "sha256": "9015730864d4fbc24bc10675108fbf6a8b6dc977fa45f167cd5fca9ea956a740",
+      "evidence": "Original published debug WASM DWARF v4 include-directory tables; all 74 line programs compared without normalizing published bytes"
+    }
   }
 }

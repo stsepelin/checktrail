@@ -24,6 +24,7 @@ import {
   identify,
   originalRecipe,
   originalSourceDirectory,
+  originalSdkDirectory,
   validateArtifacts,
   verifyCache,
   completeProcessObservation,
@@ -43,6 +44,17 @@ export async function verifyColdSourceDirectory(directory) {
     "Original source must start empty",
   );
   return directory;
+}
+
+export async function prepareColdSdkDirectory(directory, source) {
+  if (directory.startsWith(source + "/")) {
+    assert.equal(directory, source + "/emsdk/upstream");
+    assert.equal(await realpath(source), source, "SDK parent crosses a link");
+    // Neither mkdir is recursive: original source cannot redirect this new subtree.
+    await mkdir(path.posix.join(source, "emsdk"), { mode: 0o700 });
+    await mkdir(directory, { mode: 0o700 });
+  }
+  return verifyColdSourceDirectory(directory);
 }
 
 export async function verifyRuntimeTools(runtime) {
@@ -95,13 +107,27 @@ export function boundedBytes(chunks, maximum = LIMITS.streamBytes) {
     truncated: observedBytes > maximum,
   };
 }
-export function runtimeVersionProbes(runtime) {
+export function sdkRelocation(recipe, inheritedPath) {
+  assert.equal(typeof inheritedPath, "string");
+  const sdk = originalSdkDirectory(recipe);
+  return {
+    configuration:
+      "LLVM_ROOT = " +
+      JSON.stringify(path.posix.join(sdk, "bin")) +
+      "\nBINARYEN_ROOT = " +
+      JSON.stringify(sdk) +
+      "\nNODE_JS = ['/work/sdk-node/bin/node']\n",
+    path: path.posix.join(sdk, "emscripten") + ":" + inheritedPath,
+  };
+}
+
+export function runtimeVersionProbes(runtime, recipe) {
   return [
     ["npm", ["--version"], runtime.npmVersion],
     ["rustc", ["--version"], "rustc " + runtime.rustVersion + " "],
     ["/work/sdk-node/bin/node", ["--version"], "v22.16.0"],
     [
-      "/work/sdk/emscripten/emcc",
+      originalSdkDirectory(recipe) + "/emscripten/emcc",
       ["--version"],
       "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 4.0.15-git (09f52557f0d48b65b8c724853ed8f4e8bf80e669)",
     ],
@@ -441,14 +467,21 @@ async function main(filename) {
         sha256: row.sha256,
       });
     await mkdir("/work/home", { mode: 0o700 });
+    const sdk = originalSdkDirectory(config.recipe);
+    const source = originalSourceDirectory(config.recipe);
     for (const [id, destination] of [
       ["tree-sitter-source", originalSourceDirectory(config.recipe)],
-      ["emscripten-sdk", "/work/sdk"],
+      ["emscripten-sdk", sdk],
       ["node-bootstrap", "/work/sdk-node"],
     ]) {
       if (id === "tree-sitter-source")
         result.observedSourceDirectory =
           await verifyColdSourceDirectory(destination);
+      else if (id === "emscripten-sdk")
+        result.observedSdkDirectory = await prepareColdSdkDirectory(
+          destination,
+          source,
+        );
       else await mkdir(destination, { mode: 0o700 });
       const artifact = config.artifacts.find((row) => row.id === id);
       const attempt = await boundedProcess(
@@ -466,7 +499,7 @@ async function main(filename) {
       requireSuccess(attempt);
     }
     for (const row of frozen.sdkToolFiles)
-      assert.deepEqual(await identify("/work/sdk/" + row.path), {
+      assert.deepEqual(await identify(path.posix.join(sdk, row.path)), {
         bytes: row.bytes,
         sha256: row.sha256,
       });
@@ -493,13 +526,13 @@ async function main(filename) {
       directory: "/work/cargo-cache",
     });
     // Only relocation values are written. Compiler flags and upstream build defaults remain in original scripts.
-    await writeFile(
-      "/work/emscripten-config.py",
-      "LLVM_ROOT = '/work/sdk/bin'\nBINARYEN_ROOT = '/work/sdk'\nNODE_JS = ['/work/sdk-node/bin/node']\n",
-      { mode: 0o600, flag: "wx" },
-    );
+    const relocation = sdkRelocation(config.recipe, process.env.PATH);
+    await writeFile("/work/emscripten-config.py", relocation.configuration, {
+      mode: 0o600,
+      flag: "wx",
+    });
     const env = {
-      PATH: "/work/sdk/emscripten:" + process.env.PATH,
+      PATH: relocation.path,
       HOME: "/work/home",
       TMPDIR: "/tmp",
       EM_CONFIG: "/work/emscripten-config.py",
@@ -510,7 +543,7 @@ async function main(filename) {
       npm_config_offline: "true",
     };
     if (process.env.RUSTUP_HOME) env.RUSTUP_HOME = process.env.RUSTUP_HOME;
-    const probes = runtimeVersionProbes(config.runtime);
+    const probes = runtimeVersionProbes(config.runtime, config.recipe);
     for (const [i, [executable, args, expected]] of probes.entries()) {
       const attempt = await boundedProcess(executable, args, {
         cwd: "/work",
@@ -565,7 +598,7 @@ async function main(filename) {
     for (const row of [
       ...frozen.sdkToolFiles.map((row) => ({
         ...row,
-        file: "/work/sdk/" + row.path,
+        file: path.posix.join(sdk, row.path),
       })),
       { ...frozen.sdkNodeTool, file: "/work/sdk-node/bin/node" },
     ]) {
