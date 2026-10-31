@@ -4,6 +4,7 @@ on:
   push:
     branches-ignore:
       - "pr/**"
+      - "agent/**"
       - "dependabot/**"
       - "fix/**"
     tags:
