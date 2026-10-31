@@ -1611,3 +1611,177 @@ test("operator consumer capture parent requires an explicit canonical private di
   await chmod(root, 0o700);
   assert.ok(path.isAbsolute(await consumerWitnessCaptureParent(undefined)));
 });
+
+test("hosted ARM consumer witnesses require the exact architecture image label and retain every metadata boundary", () => {
+  const image = {
+    kind: "hosted-runner-metadata",
+    imageOS: "ubuntu24-arm64",
+    imageVersion: "20261026.166.1",
+    distributionSha256: hex("b"),
+    metadataAttested: false,
+  };
+  for (const family of ["go", "python"] as const) {
+    const rows = ["broken", "fixed", "near-miss"].flatMap((variant) =>
+      ["source", "installed"].map((origin) => packet(family, variant, origin)),
+    );
+    const bindings = (value: typeof image) =>
+      rows.map((row) => {
+        const current = binding(row);
+        Object.assign(current, { runtimeImage: value });
+        return current;
+      });
+    const complete = inspect(rows, bindings(image));
+    assert.equal(
+      requireQualifiedConsumerWitnessFamily(complete, family).complete,
+      true,
+    );
+    for (const changed of [
+      { imageOS: "ubuntu24" },
+      { imageOS: "ubuntu24-arm64-extra" },
+      { imageOS: "prefix-ubuntu24-arm64" },
+      { imageVersion: "20261026.166.1-extra" },
+      { distributionSha256: "invalid" },
+      { metadataAttested: true },
+    ]) {
+      const rejected = inspect(rows, bindings({ ...image, ...changed }));
+      const current = rejected.families.find(
+        (row: { family: string }) => row.family === family,
+      );
+      assert.equal(current.observedWitnesses, 6);
+      assert.deepEqual(current.missing, []);
+      assert.equal(current.unqualified.length, 6);
+      assert.ok(
+        current.unqualified.every(
+          (row: { reason: string }) => row.reason === "native-image-unobserved",
+        ),
+      );
+      assert.throws(() =>
+        requireQualifiedConsumerWitnessFamily(rejected, family),
+      );
+    }
+    assert.equal(
+      requireQualifiedConsumerWitnessFamily(
+        inspect(rows, bindings(image)),
+        family,
+      ).complete,
+      true,
+    );
+  }
+});
+
+test("YAML controller qualification binds the exact production manifest and lock pin without inventing an inventory version", async (t) => {
+  const syntheticInventory = structuredClone(inventory);
+  Reflect.deleteProperty(syntheticInventory.toolVersions, "yaml");
+  const selectedManifest = {
+    name: "original-synthetic-yaml-controller",
+    version: "1.0.0",
+    dependencies: { yaml: "2.9.1" },
+  };
+  const selectedLock = {
+    lockfileVersion: 3,
+    packages: {
+      "": { dependencies: { yaml: "2.9.1" } },
+      "node_modules/yaml": { version: "2.9.1" },
+    },
+  };
+  const root = await fixture(t, {
+    "package.json": JSON.stringify(selectedManifest),
+    "package-lock.json": JSON.stringify(selectedLock),
+    "dist/src/original.js": "export const original = 1;\n",
+    "dist/test/consumer-witness-fixture.js":
+      "Original synthetic witness fixture bytes\n",
+    "dist/test/gate-context-yaml.test.js":
+      "Original synthetic YAML acceptance bytes\n",
+    "scripts/required-native-tests.json": JSON.stringify({
+      "context-yaml": profiles["context-yaml"],
+    }),
+    "scripts/compiled-engine-evidence.mjs":
+      "Original synthetic engine observer bytes\n",
+    "scripts/consumer-witness-attempts.mjs":
+      "Original synthetic attempt observer bytes\n",
+    "scripts/consumer-witness-jvm.mjs":
+      "Original synthetic JVM observer bytes\n",
+    "scripts/consumer-witness-managed.mjs":
+      "Original synthetic managed observer bytes\n",
+    "scripts/consumer-witness-data.mjs":
+      "Original synthetic data observer bytes\n",
+    "scripts/consumer-witness-swift.mjs":
+      "Original synthetic Swift observer bytes\n",
+    "scripts/consumer-witness-project.mjs":
+      "Original synthetic project observer bytes\n",
+    "scripts/consumer-runtime-selection.mjs":
+      "Original synthetic runtime selector bytes\n",
+    "scripts/yaml-context-tools.Dockerfile":
+      "Original synthetic YAML container definition\n",
+    "docs/gate-a-profiles.v1.json": JSON.stringify(syntheticInventory),
+  });
+  assert.equal(Object.hasOwn(syntheticInventory.toolVersions, "yaml"), false);
+  const tool = { bytes: 32, sha256: hex("2") };
+  const runtime = {
+    node: "22.23.2",
+    platform: "linux",
+    architecture: "arm64",
+    toolVersion: "2.9.1",
+    dataInputs: {
+      profile: "consumer-data-inputs-v1",
+      family: "yaml",
+      tool,
+      package: {
+        name: "yaml",
+        version: "2.9.1",
+        entry: "dist/index.js",
+        importUrlSha256: hex("e"),
+        inventory: syntheticJvmDirectory([
+          "dist/index.js",
+          "dist/parse.js",
+          "package.json",
+        ]),
+      },
+    },
+  };
+  const image = { kind: "oci-image-observation", id: "sha256:" + hex("c") };
+  const capture = (observed = runtime) =>
+    captureConsumerWitnessController(root, "yaml", image, observed, tool);
+  assert.equal((await capture()).toolVersionMatched, true);
+  assert.equal(
+    (await capture({ ...runtime, toolVersion: "2.9.0" })).toolVersionMatched,
+    false,
+  );
+  const foreign = structuredClone(runtime);
+  foreign.dataInputs.package.version = "2.9.0";
+  await assert.rejects(() => capture(foreign));
+  for (const mode of [
+    "missing",
+    "range",
+    "lock-root-missing",
+    "lock-root-differs",
+    "lock-package-missing",
+    "lock-package-differs",
+  ]) {
+    const manifest = structuredClone(selectedManifest),
+      lock = structuredClone(selectedLock);
+    if (mode === "missing")
+      Reflect.deleteProperty(manifest.dependencies, "yaml");
+    if (mode === "range") manifest.dependencies.yaml = "^2.9.1";
+    if (mode === "lock-root-missing")
+      Reflect.deleteProperty(lock.packages[""].dependencies, "yaml");
+    if (mode === "lock-root-differs")
+      lock.packages[""].dependencies.yaml = "2.9.0";
+    if (mode === "lock-package-missing")
+      Reflect.deleteProperty(lock.packages, "node_modules/yaml");
+    if (mode === "lock-package-differs")
+      lock.packages["node_modules/yaml"].version = "2.9.0";
+    await writeFile(path.join(root, "package.json"), JSON.stringify(manifest));
+    await writeFile(path.join(root, "package-lock.json"), JSON.stringify(lock));
+    await assert.rejects(() => capture(), /YAML/, mode);
+  }
+  await writeFile(
+    path.join(root, "package.json"),
+    JSON.stringify(selectedManifest),
+  );
+  await writeFile(
+    path.join(root, "package-lock.json"),
+    JSON.stringify(selectedLock),
+  );
+  assert.equal((await capture()).toolVersionMatched, true);
+});

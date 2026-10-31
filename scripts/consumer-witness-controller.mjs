@@ -220,13 +220,44 @@ export async function captureConsumerWitnessController(
     : null;
   if (dataInputs) {
     assert.deepEqual(dataInputs.tool, tool);
-    toolVersionMatched =
-      family === "hcl"
-        ? runtime.terraform?.terraform_version ===
-            inventory.toolVersions.terraform &&
-          tool.sha256 ===
-            "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c"
-        : dataInputs.package.version === inventory.toolVersions.yaml;
+    if (family === "hcl")
+      toolVersionMatched =
+        runtime.terraform?.terraform_version ===
+          inventory.toolVersions.terraform &&
+        tool.sha256 ===
+          "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c";
+    else {
+      const [manifestBytes, lockBytes] = await Promise.all(
+        ["package.json", "package-lock.json"].map((file) =>
+          readFile(path.join(root, file)),
+        ),
+      );
+      const manifest = JSON.parse(manifestBytes),
+        lock = JSON.parse(lockBytes);
+      const selected = manifest.dependencies?.yaml;
+      assert.ok(
+        typeof selected === "string" &&
+          /^[0-9]+\.[0-9]+\.[0-9]+$/.test(selected),
+        "Selected YAML dependency must be one exact production version",
+      );
+      assert.equal(
+        hash(manifestBytes),
+        code.packageManifestSha256,
+        "Selected YAML manifest changed after source capture",
+      );
+      assert.equal(
+        lock.packages?.[""]?.dependencies?.yaml,
+        selected,
+        "Selected YAML root lock declaration differs from the production manifest",
+      );
+      assert.equal(
+        lock.packages?.["node_modules/yaml"]?.version,
+        selected,
+        "Selected YAML resolved lock version differs from the production manifest",
+      );
+      toolVersionMatched =
+        version === selected && dataInputs.package.version === selected;
+    }
   }
   const swiftInputs = family === "swift" ? runtime.swiftInputs : null;
   if (swiftInputs) {
