@@ -23,6 +23,7 @@ SOURCE_FILES += ['scripts/producer-qualification/' + name for name in [
     'glibc-seccomp.mjs', 'glibc-seccomp.v1.json', 'glibc-seccomp-probe.py',
     'moby-28.0.4/default.json', 'moby-28.0.4/LICENSE', 'moby-28.0.4/NOTICE', 'moby-28.0.4/AUTHORS',
 ]]
+SOURCE_FILES += ['scripts/producer-qualification/gcc-job-envelope.mjs', 'scripts/producer-qualification/gcc-github-job-clock.mjs', 'scripts/producer-qualification/emsdk-metadata-values.mjs']
 SOURCE_FILES += ['scripts/producer-qualification/c-carrier-observation.mjs','scripts/observe-c-producer-carrier.mjs','.github/workflows/upstream-gcc.yml']
 
 
@@ -129,6 +130,9 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
         carrier = Path(carrier).absolute() if carrier is not None else Path(str(result) + '-carrier')
         for file,maximum in [('receipt.json',MIB),('controller.log',8*MIB),('owner-frame.json',16*MIB)]:
             add(carrier / file,'carrier/' + file,maximum)
+        for file,maximum in [('github-job-response.json',128*1024),('github-job-capture.json',256*1024),('.github-job-response.part',128*1024),('.github-job-capture.part',256*1024)]:
+            if os.path.lexists(carrier / file):
+                add(carrier / file,'carrier/' + file,maximum)
         for file,maximum in [('.receipt.part',MIB),('.owner-frame.part',16*MIB)]:
             if os.path.lexists(carrier / file):
                 add(carrier / file,'carrier/failed-' + file[1:],maximum)

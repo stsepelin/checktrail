@@ -1,5 +1,6 @@
 // Operator observation limits are independent of the original producer profile.
 import assert from "node:assert/strict";
+import { replayGccJobEnvelope } from "./gcc-job-envelope.mjs";
 import { observedCProducerTerminal } from "../qualify-c-producer.mjs";
 
 export const gccCarrierLimits = Object.freeze({
@@ -31,7 +32,12 @@ export function validateCStartupProfile(startup, name, profile, catalogSha256) {
   );
 }
 
-export function validateGccCarrierReceipt(receipt, profile, catalogSha256) {
+export function validateGccCarrierReceipt(
+  receipt,
+  profile,
+  catalogSha256,
+  jobResponse = null,
+) {
   assert.equal(profile.sourcePackage, "gcc-12");
   assert.equal(receipt.schemaVersion, 1);
   assert.deepEqual(receipt.selectedProfile, {
@@ -45,7 +51,21 @@ export function validateGccCarrierReceipt(receipt, profile, catalogSha256) {
     profile.limits.deadlineSeconds,
   );
   assert.equal(receipt.originalCommandDeadlineSeconds, 28800);
-  assert.deepEqual(receipt.carrierLimits, gccCarrierLimits);
+  let selectedLimits = gccCarrierLimits;
+  if (Object.hasOwn(receipt, "githubJobEnvelope")) {
+    assert.ok(jobResponse, "Retained fresh source-job response required");
+    const admitted = replayGccJobEnvelope(
+      receipt.githubJobEnvelope,
+      jobResponse,
+    );
+    assert.equal(admitted.carrierStartedAt, receipt.startedAt);
+    assert.equal(admitted.cutoffAt, receipt.cutoffAt);
+    selectedLimits = {
+      ...gccCarrierLimits,
+      observationSeconds: admitted.observationSeconds,
+    };
+  } else assert.equal(jobResponse, null, "Unbound source-job response");
+  assert.deepEqual(receipt.carrierLimits, selectedLimits);
   assert.equal(receipt.state, "original-controller-terminal-observed");
   assert.equal(
     receipt.stopCause,
@@ -75,13 +95,13 @@ export function validateGccCarrierReceipt(receipt, profile, catalogSha256) {
   assert.ok(
     Number.isFinite(receipt.controllerTerminalSeconds) &&
       receipt.controllerTerminalSeconds >= 0 &&
-      receipt.controllerTerminalSeconds <= gccCarrierLimits.observationSeconds,
+      receipt.controllerTerminalSeconds <= selectedLimits.observationSeconds,
   );
   assert.ok(
     Number.isFinite(receipt.elapsedSeconds) &&
       receipt.elapsedSeconds >= receipt.controllerTerminalSeconds &&
       receipt.elapsedSeconds <=
-        gccCarrierLimits.observationSeconds + gccCarrierLimits.cleanupSeconds,
+        selectedLimits.observationSeconds + gccCarrierLimits.cleanupSeconds,
   );
   assert.ok(
     Number.isFinite(receipt.cleanupStartedSeconds) &&
@@ -94,7 +114,7 @@ export function validateGccCarrierReceipt(receipt, profile, catalogSha256) {
       receipt.cleanupDeadlineSeconds <=
         receipt.cleanupStartedSeconds + gccCarrierLimits.cleanupSeconds &&
       receipt.cleanupDeadlineSeconds <=
-        gccCarrierLimits.observationSeconds + gccCarrierLimits.cleanupSeconds &&
+        selectedLimits.observationSeconds + gccCarrierLimits.cleanupSeconds &&
       receipt.elapsedSeconds <= receipt.cleanupDeadlineSeconds,
     "Carrier cleanup clock was reset or exceeded",
   );
@@ -138,7 +158,7 @@ export function validateGccCarrierReceipt(receipt, profile, catalogSha256) {
     );
   assert.equal(
     Date.parse(receipt.cutoffAt),
-    Date.parse(receipt.startedAt) + gccCarrierLimits.observationSeconds * 1000,
+    Date.parse(receipt.startedAt) + selectedLimits.observationSeconds * 1000,
   );
   for (const flag of [
     "originalProducerDefaultsOrBudgetChanged",

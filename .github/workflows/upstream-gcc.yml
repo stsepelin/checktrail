@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: original-gcc-${{ github.ref }}
@@ -16,7 +17,7 @@ concurrency:
 jobs:
   original-gcc-observation:
     runs-on: ubuntu-24.04
-    timeout-minutes: 360
+    timeout-minutes: 355
     env:
       SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
     steps:
@@ -65,11 +66,13 @@ jobs:
           cat "$RUNNER_TEMP/gcc-input-admission.log"
           node scripts/qualify-c-producer.mjs --profile gcc-12 --inputs "$RUNNER_TEMP/gcc-inputs/bundle" --output "$RUNNER_TEMP/gcc-result" --prepare-only
       - name: Observe the unchanged eight-hour GCC profile within a shorter hosted window
-        timeout-minutes: 260
+        timeout-minutes: 345
         shell: bash
+        env:
+          CHECKTRAIL_GITHUB_JOB_TOKEN: ${{ github.token }}
         run: |
           set +e
-          node scripts/observe-c-producer-carrier.mjs --profile gcc-12 --inputs "$RUNNER_TEMP/gcc-inputs/bundle" --output "$RUNNER_TEMP/gcc-result" --startup "$RUNNER_TEMP/gcc-operator-startup.json" --operator-trust-execution --coordinated-heavy-slot > "$RUNNER_TEMP/gcc-controller.log" 2>&1
+          node scripts/observe-c-producer-carrier.mjs --profile gcc-12 --inputs "$RUNNER_TEMP/gcc-inputs/bundle" --output "$RUNNER_TEMP/gcc-result" --startup "$RUNNER_TEMP/gcc-operator-startup.json" --operator-trust-execution --coordinated-heavy-slot --github-job-envelope > "$RUNNER_TEMP/gcc-controller.log" 2>&1
           gcc_carrier_status=$?
           set -e
           cat "$RUNNER_TEMP/gcc-controller.log"

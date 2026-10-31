@@ -32,6 +32,7 @@ import {
   cProducerCatalogSha256,
   sha256,
 } from "./producer-qualification/c-producer-profile.mjs";
+import { admitGccJobEnvelope } from "./producer-qualification/gcc-job-envelope.mjs";
 import { registryImageIdentity } from "./producer-qualification/binutils-image-identity.mjs";
 import {
   requireCObservationProfile,
@@ -70,6 +71,9 @@ export const cObservationSources = [
   ...glibcSeccompSourceFiles.map(
     (file) => "scripts/producer-qualification/" + file,
   ),
+  "scripts/producer-qualification/gcc-job-envelope.mjs",
+  "scripts/producer-qualification/gcc-github-job-clock.mjs",
+  "scripts/producer-qualification/emsdk-metadata-values.mjs",
   "scripts/producer-qualification/c-carrier-observation.mjs",
   "scripts/observe-c-producer-carrier.mjs",
   ".github/workflows/upstream-gcc.yml",
@@ -425,7 +429,34 @@ export async function verifyCLiveObservation(
       1024 ** 2,
     );
     const carrier = JSON.parse(carrierRaw);
-    validateGccCarrierReceipt(carrier, profile, catalogSha256);
+    let jobResponse = null,
+      jobCapturePin = null;
+    if (Object.hasOwn(carrier, "githubJobEnvelope")) {
+      jobResponse = await boundedCProducerBytes(
+        path.join(carrierDirectory, "github-job-response.json"),
+        128 * 1024,
+      );
+      const captureRaw = await boundedCProducerBytes(
+        path.join(carrierDirectory, "github-job-capture.json"),
+        256 * 1024,
+      );
+      const captured = JSON.parse(captureRaw);
+      assert.deepEqual(captured.response, {
+        bytes: jobResponse.length,
+        sha256: sha256(jobResponse),
+      });
+      assert.equal(captured.requestAuthenticationHeadersRetained, false);
+      const { response, ...metadata } = captured;
+      assert.deepEqual(
+        admitGccJobEnvelope({ ...metadata, responseBytes: jobResponse }),
+        carrier.githubJobEnvelope,
+      );
+      jobCapturePin = {
+        response,
+        capture: { bytes: captureRaw.length, sha256: sha256(captureRaw) },
+      };
+    }
+    validateGccCarrierReceipt(carrier, profile, catalogSha256, jobResponse);
     assert.deepEqual(carrier.startupInput, {
       bytes: startupRaw.length,
       sha256: sha256(startupRaw),
@@ -464,6 +495,7 @@ export async function verifyCLiveObservation(
       receipt: { bytes: carrierRaw.length, sha256: sha256(carrierRaw) },
       ownerFrame: carrier.ownerFrame,
       controllerLog: carrier.log,
+      ...(jobCapturePin ? { githubJobClock: jobCapturePin } : {}),
     };
   }
   assert.deepEqual(
