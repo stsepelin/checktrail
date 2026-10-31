@@ -11,7 +11,7 @@ const cohortEnvironment = { ...process.env };
 delete cohortEnvironment.NODE_TEST_CONTEXT;
 for (const [file, count, maximumSkips] of [
   ["web-runtime-controller.test.mjs", 22, process.platform === "win32" ? 2 : 0],
-  ["web-runtime-inputs.test.mjs", 10, 1],
+  ["web-runtime-inputs.test.mjs", 11, 2],
 ] as const) {
   test(
     `public runtime producer synthetic cohort: ${file}`,
