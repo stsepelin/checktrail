@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { ZodError } from "zod";
 import { createHash, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
@@ -274,7 +275,7 @@ function sample(
       });
       stdout = JSON.stringify({
         schemaVersion: 2,
-        toolVersion: "10.11.0",
+        toolVersion: "10.13.0",
         sourceFingerprint: row.project.sourceFingerprint,
         configuration: identity("eslint.config.mjs"),
         files,
@@ -1195,4 +1196,71 @@ test("shared project controller bindings project both families and their complet
     report.issues.includes("failed-or-unavailable-consumer-attempt"),
     true,
   );
+});
+
+test("TypeScript project witnesses reconcile the exact locked tool versions and reject stale pins", async () => {
+  const { selectJavaScriptToolsLock } = await import(
+    new URL("../../scripts/prepare-javascript-tools.mjs", import.meta.url).href
+  );
+  const [manifest, lock] = await Promise.all(
+    ["package.json", "package-lock.json"].map(async (file) =>
+      JSON.parse(
+        await readFile(new URL("../../" + file, import.meta.url), "utf8"),
+      ),
+    ),
+  );
+  const selected = selectJavaScriptToolsLock(manifest, lock);
+  const versions = {
+    eslint: selected.manifest.dependencies.eslint,
+    vite: selected.manifest.dependencies.vite,
+    rolldown: selected.lock.packages["node_modules/rolldown"].version,
+    typescript: selected.manifest.dependencies.typescript,
+  };
+  const { row, attempts } = sample("typescript", "fixed", "library");
+  const native = [
+    null,
+    ...attempts
+      .slice(1)
+      .map((attempt) =>
+        JSON.parse(
+          Buffer.from(attempt.output.stdout.base64, "base64").toString("utf8"),
+        ),
+      ),
+  ];
+  native[1].toolVersion = versions.eslint;
+  native[2].versions = {
+    vite: versions.vite,
+    rolldown: versions.rolldown,
+    typescript: versions.typescript,
+  };
+  attempts[1]!.output = output(JSON.stringify(native[1]));
+  attempts[2]!.output = output(JSON.stringify(native[2]));
+  inspectProjectWitness(row, attempts);
+  for (const tool of ["eslint", "vite", "rolldown", "typescript"] as const) {
+    const changed = structuredClone(attempts);
+    const index = tool === "eslint" ? 1 : 2;
+    const value = structuredClone(native[index]);
+    if (tool === "eslint") value.toolVersion = "10.11.0";
+    else value.versions[tool] = "0.0.0";
+    changed[index]!.output = output(JSON.stringify(value));
+    if (tool === "eslint") {
+      assert.throws(() => inspectProjectWitness(row, changed), {
+        name: "AssertionError",
+        code: "ERR_ASSERTION",
+      });
+    } else {
+      assert.throws(
+        () => inspectProjectWitness(row, changed),
+        (error: unknown) => {
+          assert.ok(error instanceof ZodError);
+          assert.deepEqual(
+            error.issues.map(({ code, path }) => ({ code, path })),
+            [{ code: "invalid_value", path: ["versions", tool] }],
+          );
+          return true;
+        },
+      );
+    }
+  }
+  inspectProjectWitness(row, attempts);
 });

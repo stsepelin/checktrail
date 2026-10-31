@@ -379,7 +379,7 @@ export function inspectProjectNativeCheck(row, index, check, attempt) {
   } else if (check.id === "javascript.eslint") {
     const native = JSON.parse(stdout);
     assert.equal(native.schemaVersion, 2);
-    assert.equal(native.toolVersion, "10.11.0");
+    assert.equal(native.toolVersion, "10.13.0");
     assert.equal(native.sourceFingerprint, row.project.sourceFingerprint);
     source(row, native.configuration);
     assert.ok(Array.isArray(native.files) && native.files.length > 0);
