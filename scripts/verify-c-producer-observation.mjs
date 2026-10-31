@@ -1,0 +1,530 @@
+// Development-only live observer. It never promotes complete SDK/Gate A closure.
+import assert from "node:assert/strict";
+import { execFile } from "node:child_process";
+import { readdir, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
+import {
+  captureCProducerCallerIdentity,
+  boundedCProducerBytes,
+  observedCProducerTerminal,
+  readCProducerCopyManifest,
+  verifyCProducerReports,
+  cProducerCompletion,
+} from "./qualify-c-producer.mjs";
+import {
+  identifyFile,
+  validateInputs,
+  physicalPath,
+} from "./qualify-binutils-producer.mjs";
+import { reconcileRetentionLog } from "./producer-qualification/binutils-retention-observer.mjs";
+import {
+  loadCProducerProfile,
+  sha256,
+} from "./producer-qualification/c-producer-profile.mjs";
+import { registryImageIdentity } from "./producer-qualification/binutils-image-identity.mjs";
+
+const exec = promisify(execFile);
+const repository = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+);
+export const cObservationSources = [
+  "scripts/qualify-c-producer.mjs",
+  "scripts/qualify-binutils-producer.mjs",
+  "scripts/producer-qualification/c-producer-profile.mjs",
+  "scripts/producer-qualification/c-producer-profiles.v1.json",
+  "scripts/producer-qualification/c-producer-build.sh",
+  "scripts/producer-qualification/c-producer-test-reports.py",
+  "scripts/producer-qualification/binutils-retention-observer.mjs",
+  "scripts/producer-qualification/binutils-retention-observer.py",
+  "scripts/producer-qualification/binutils-image-identity.mjs",
+  "scripts/producer-qualification/binutils-image-identity.v1.json",
+  "scripts/verify-c-producer-observation.mjs",
+  "scripts/producer-qualification/c-producer-export-evidence.py",
+  "scripts/producer-qualification/c-producer-replay-evidence.py",
+  ".github/workflows/upstream-glibc.yml",
+  "scripts/verify-binutils-retention-observer.mjs",
+  "scripts/acquire-binutils-inputs.mjs",
+  "scripts/acquire-c-producer-inputs.mjs",
+  "scripts/producer-qualification/binutils.v1.json",
+  "scripts/producer-qualification/binutils-acquisition-plan.mjs",
+  "scripts/producer-qualification/binutils-prepare-inputs.py",
+  "scripts/producer-qualification/binutils-apt-index-preparation.v1.json",
+  "scripts/producer-qualification/binutils-input-reacquisition.v1.json",
+];
+const metadataGit = async (args) =>
+  (
+    await exec(
+      "git",
+      [
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        ...args,
+      ],
+      {
+        cwd: repository,
+        timeout: 5000,
+        maxBuffer: 2 * 1024 ** 2,
+        encoding: "buffer",
+      },
+    )
+  ).stdout;
+async function json(file, maximum = 16 * 1024 ** 2) {
+  return JSON.parse(await boundedCProducerBytes(file, maximum));
+}
+
+export function validateCObservationHeader(
+  receipt,
+  profile,
+  startup,
+  controllerExit,
+) {
+  assert.equal(controllerExit, 2, "Unexpected original controller exit");
+  assert.equal(
+    receipt.state,
+    "original-command-completed-qualification-incomplete",
+  );
+  assert.equal(receipt.profile, profile.profile);
+  assert.equal(receipt.sourceVersion, profile.sourceVersion);
+  assert.deepEqual(receipt.limits, profile.limits);
+  assert.equal(receipt.buildExecuted, true);
+  assert.equal(receipt.originalExecutionInvoked, true);
+  assert.ok(
+    observedCProducerTerminal(receipt.executionObserver) &&
+      receipt.executionObserver.exitCode === 0,
+    "Incomplete original foreground terminal",
+  );
+  assert.deepEqual(receipt.originalBuild, {
+    schemaVersion: 1,
+    command: profile.command,
+    invoked: true,
+    exitCode: 0,
+    wrapperExitCode: 0,
+  });
+  assert.equal(startup.schemaVersion, 1);
+  assert.equal(startup.state, "operator-source-and-caller-frame");
+  for (const key of [
+    "sourceOrCompilerExecuted",
+    "hardwareHostAttestationPerformed",
+    "gateAComplete",
+  ])
+    assert.equal(startup[key], false);
+  assert.deepEqual(receipt.host.capturedCaller, startup.caller);
+  assert.ok(
+    startup.caller.uid > 0,
+    "Hosted observation requires actual nonroot caller proof",
+  );
+  assert.deepEqual(
+    [
+      receipt.host.platform,
+      receipt.host.architecture,
+      receipt.host.kernelMachine,
+    ],
+    ["linux", "x64", "x86_64"],
+  );
+  assert.deepEqual(startup.host, {
+    platform: "linux",
+    architecture: "x64",
+    kernelMachine: "x86_64",
+  });
+  const preflight = receipt.custodyPreflight;
+  assert.equal(preflight.state, "selected-nonroot-caller-export-verified");
+  assert.deepEqual(preflight.capturedCaller, startup.caller);
+  assert.equal(preflight.nativeLinuxCrossUidAcceptanceVerified, true);
+  assert.equal(preflight.sourceOrCompilerInvoked, false);
+  assert.ok(
+    observedCProducerTerminal(preflight.observer) &&
+      preflight.observer.exitCode === 0,
+  );
+  assert.ok(["absent", "removed"].includes(preflight.cleanup.state));
+  assert.ok(["absent", "removed"].includes(receipt.cleanup.state));
+  assert.ok(
+    ["absent", "removed"].includes(receipt.retentionObserverCleanup.state),
+  );
+  assert.equal(receipt.retentionObserver.state, "completed");
+  assert.deepEqual(receipt.retentionObserver.terminal, {
+    exitCode: 0,
+    signal: null,
+  });
+  assert.equal(receipt.retentionObserver.readOnly, true);
+  assert.equal(receipt.retentionObserver.network, "none");
+  assert.equal(receipt.retentionObserver.capability, "DAC_READ_SEARCH");
+  assert.equal(receipt.retentionObserver.nativeFilesystemQuotaEnforced, false);
+  for (const key of [
+    "fullCompilerSdkBootstrapClosureVerified",
+    "completeOriginalNoticeClosureVerified",
+    "historicalPublisherConsumptionVerified",
+    "gateAComplete",
+    "originalBuildChecksDisabled",
+    "originalDefaultTargetsDisabled",
+    "inputAuthenticationAndFreshnessDisabled",
+  ])
+    assert.equal(receipt[key], false);
+  assert.equal(receipt.nativeFilesystemQuotaEnforced, false);
+  assert.ok(
+    Array.isArray(receipt.outputs) &&
+      receipt.outputs.length <= 1024 &&
+      receipt.outputs.some(
+        (row) =>
+          /^[A-Za-z0-9][A-Za-z0-9.+_~-]*\.(deb|udeb)$/u.test(row.file) &&
+          Number.isSafeInteger(row.bytes) &&
+          row.bytes > 0,
+      ),
+    "Nonempty physical package output is required",
+  );
+  return {
+    originalCommandExitCode: 0,
+    originalTestOutcomesPreserved: true,
+    fullCompilerSdkBootstrapClosureVerified: false,
+    completeOriginalNoticeClosureVerified: false,
+    historicalPublisherConsumptionVerified: false,
+    gateAComplete: false,
+  };
+}
+
+export async function captureCObservationStartup(output) {
+  assert.deepEqual(
+    [process.platform, process.arch, os.machine()],
+    ["linux", "x64", "x86_64"],
+  );
+  const caller = captureCProducerCallerIdentity();
+  assert.ok(
+    caller.uid > 0,
+    "Hosted native custody requires a nonroot operator",
+  );
+  const gitHead = (await metadataGit(["rev-parse", "HEAD"]))
+    .toString("utf8")
+    .trim();
+  assert.match(gitHead, /^[a-f0-9]{40}$/u);
+  const sourcePins = [];
+  for (const file of cObservationSources) {
+    const raw = await boundedCProducerBytes(
+      path.join(repository, file),
+      2 * 1024 ** 2,
+    );
+    const committed = await metadataGit([
+      "cat-file",
+      "blob",
+      gitHead + ":" + file,
+    ]);
+    assert.deepEqual(
+      raw,
+      committed,
+      "Observation harness differs from exact Git source: " + file,
+    );
+    sourcePins.push({ file, bytes: raw.length, sha256: sha256(raw) });
+  }
+  const value = {
+    schemaVersion: 1,
+    state: "operator-source-and-caller-frame",
+    gitHead,
+    caller,
+    host: {
+      platform: process.platform,
+      architecture: process.arch,
+      kernelMachine: os.machine(),
+    },
+    sourcePins,
+    sourceOrCompilerExecuted: false,
+    hardwareHostAttestationPerformed: false,
+    gateAComplete: false,
+  };
+  await physicalPath(path.dirname(path.resolve(output)), true);
+  await writeFile(output, JSON.stringify(value, null, 2) + "\n", {
+    flag: "wx",
+    mode: 0o600,
+  });
+  return {
+    state: value.state,
+    gitHead,
+    sourceFiles: sourcePins.length,
+    gateAComplete: false,
+  };
+}
+
+export async function verifyCLiveObservation(
+  result,
+  startupFile,
+  controllerExit,
+) {
+  const { catalog, profile, catalogSha256 } =
+    await loadCProducerProfile("glibc");
+  const startupRaw = await boundedCProducerBytes(
+    startupFile,
+    1024 ** 2,
+    captureCProducerCallerIdentity(),
+  );
+  const startup = JSON.parse(startupRaw);
+  assert.deepEqual(startup.caller, captureCProducerCallerIdentity());
+  assert.deepEqual(
+    startup.sourcePins.map((row) => row.file),
+    cObservationSources,
+  );
+  await validateInputs(repository, startup.sourcePins);
+  assert.equal(
+    (await metadataGit(["rev-parse", "HEAD"])).toString("utf8").trim(),
+    startup.gitHead,
+    "Source revision changed during original execution",
+  );
+  const receiptFile = path.join(result, "receipt.json");
+  const receiptRaw = await boundedCProducerBytes(receiptFile, 16 * 1024 ** 2);
+  const receipt = JSON.parse(receiptRaw);
+  const summary = validateCObservationHeader(
+    receipt,
+    profile,
+    startup,
+    controllerExit,
+  );
+  assert.equal(receipt.catalogSha256, catalogSha256);
+  assert.equal(receipt.retentionObserver.independentImage, catalog.image);
+  assert.deepEqual(
+    receipt.sourcePins.map((row) => row.file),
+    [
+      "c-producer-profiles.v1.json",
+      "c-producer-profile.mjs",
+      "c-producer-build.sh",
+      "c-producer-test-reports.py",
+      "binutils-retention-observer.py",
+      "binutils-retention-observer.mjs",
+      "binutils-image-identity.mjs",
+      "binutils-image-identity.v1.json",
+    ],
+  );
+  assert.deepEqual(
+    receipt.harnessPins.map((row) => row.file),
+    ["qualify-c-producer.mjs", "qualify-binutils-producer.mjs"],
+  );
+  const selectedImage = registryImageIdentity(
+    await json(
+      path.join(
+        repository,
+        "scripts/producer-qualification/binutils-image-identity.v1.json",
+      ),
+      1024 ** 2,
+    ),
+    catalog.image,
+  );
+  assert.ok(
+    [selectedImage.configDigest, selectedImage.manifestDigest].includes(
+      receipt.image.id,
+    ),
+  );
+  assert.deepEqual(receipt.image, {
+    id: receipt.image.id,
+    os: "linux",
+    architecture: "amd64",
+    manifestDigest: selectedImage.manifestDigest,
+    configDigest: selectedImage.configDigest,
+    rootfsDiffIds: selectedImage.rootfsDiffIds,
+  });
+  for (const row of receipt.sourcePins)
+    assert.deepEqual(
+      await identifyFile(
+        path.join(repository, "scripts/producer-qualification", row.file),
+        2 * 1024 ** 2,
+      ),
+      { bytes: row.bytes, sha256: row.sha256 },
+    );
+  for (const row of receipt.harnessPins)
+    assert.deepEqual(
+      await identifyFile(
+        path.join(repository, "scripts", row.file),
+        2 * 1024 ** 2,
+      ),
+      { bytes: row.bytes, sha256: row.sha256 },
+    );
+  await validateInputs(path.join(result, "bundle"), profile.files);
+  await validateInputs(
+    path.join(result, "controls"),
+    receipt.sourcePins.filter((row) =>
+      [
+        "c-producer-build.sh",
+        "c-producer-test-reports.py",
+        "binutils-retention-observer.py",
+      ].includes(row.file),
+    ),
+  );
+  assert.deepEqual(
+    await identifyFile(
+      path.join(result, "build.log"),
+      profile.limits.logByteLimit,
+    ),
+    receipt.log,
+  );
+  assert.equal(receipt.executionObserver.retainedBytes, receipt.log.bytes);
+  const observer = await boundedCProducerBytes(
+    path.join(result, "retention-observer.jsonl"),
+    16 * 1024 ** 2,
+  );
+  assert.deepEqual(
+    { bytes: observer.length, sha256: sha256(observer) },
+    receipt.retentionObserver.log,
+  );
+  reconcileRetentionLog(observer, receipt.retentionObserver);
+  assert.deepEqual(
+    receipt.finalRetention,
+    receipt.retentionObserver.lastSample,
+  );
+  const allowance =
+    profile.files.reduce((sum, row) => sum + row.bytes, 0) +
+    receipt.sourcePins
+      .filter((row) =>
+        [
+          "c-producer-build.sh",
+          "c-producer-test-reports.py",
+          "binutils-retention-observer.py",
+        ].includes(row.file),
+      )
+      .reduce((sum, row) => sum + row.bytes, 0);
+  assert.ok(
+    receipt.finalRetention.bytes <= profile.limits.workByteLimit + allowance,
+  );
+  const command = await json(
+    path.join(result, "work/original-command.json"),
+    4096,
+  );
+  assert.deepEqual(command, receipt.originalBuild);
+  const reports = await readCProducerCopyManifest(
+    path.join(result, "work/test-reports.json"),
+    startup.caller,
+  );
+  assert.deepEqual(
+    await verifyCProducerReports(
+      reports,
+      path.join(result, "work/original-test-reports"),
+      profile,
+      startup.caller,
+    ),
+    receipt.testEvidence,
+  );
+  assert.equal(reports.exportCustody.producerEffectiveUid, 0);
+  const preflightRoot = path.join(result, "custody-preflight");
+  const preflight = await readCProducerCopyManifest(
+    path.join(preflightRoot, "test-reports.json"),
+    startup.caller,
+  );
+  assert.equal(preflight.exportCustody.producerEffectiveUid, 0);
+  await verifyCProducerReports(
+    preflight,
+    path.join(preflightRoot, "original-test-reports"),
+    profile,
+    startup.caller,
+  );
+  assert.deepEqual(
+    await identifyFile(path.join(preflightRoot, "test-reports.json"), 65536),
+    receipt.custodyPreflight.manifest,
+  );
+  assert.deepEqual(
+    await identifyFile(path.join(result, "custody-preflight.log"), 65536),
+    receipt.custodyPreflight.log,
+  );
+  assert.deepEqual(
+    await identifyFile(
+      path.join(result, "work/installed-build-package-identities.txt"),
+      1024 ** 2,
+    ),
+    receipt.installedPackageIdentities,
+  );
+  const outputs = await readdir(path.join(result, "work/output"));
+  assert.deepEqual(
+    outputs.sort(),
+    receipt.outputs.map((row) => row.file).sort(),
+  );
+  for (const row of receipt.outputs) {
+    assert.match(
+      row.file,
+      /^[A-Za-z0-9][A-Za-z0-9.+_~-]*\.(deb|udeb|changes|buildinfo)$/u,
+    );
+    assert.deepEqual(
+      await identifyFile(
+        path.join(result, "work/output", row.file),
+        profile.limits.workByteLimit,
+      ),
+      { bytes: row.bytes, sha256: row.sha256 },
+    );
+  }
+  assert.deepEqual(
+    await identifyFile(
+      path.join(result, "work/native-build-worktree.tar"),
+      profile.limits.workByteLimit,
+    ),
+    receipt.nativeBuildWorktree,
+  );
+  assert.deepEqual(
+    cProducerCompletion(
+      command,
+      receipt.executionObserver,
+      receipt.outputs,
+      receipt.testEvidence,
+    ),
+    receipt.buildCompletion,
+  );
+  const value = {
+    schemaVersion: 1,
+    state: "original-glibc-command-observed-qualification-incomplete",
+    ...summary,
+    originalTestEvidenceState: receipt.buildCompletion.testEvidenceState,
+    controllerExit,
+    startup: { bytes: startupRaw.length, sha256: sha256(startupRaw) },
+    originalReceipt: { bytes: receiptRaw.length, sha256: sha256(receiptRaw) },
+    physicallyRecheckedPackageOutputs: receipt.outputs,
+    physicallyRecheckedNativeArchive: receipt.nativeBuildWorktree,
+    packagePayloadAndNativeArchiveTransported: false,
+    completeConfigurationInventoryAssessed: false,
+  };
+  await writeFile(
+    path.join(result, "build-observation.json"),
+    JSON.stringify(value, null, 2) + "\n",
+    { flag: "wx", mode: 0o600 },
+  );
+  return {
+    state: value.state,
+    packages: receipt.outputs.length,
+    reports: receipt.testEvidence.reports.length,
+    gateAComplete: false,
+  };
+}
+
+if (
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+) {
+  try {
+    const args = process.argv.slice(2);
+    if (args.length === 2 && args[0] === "--capture-startup")
+      process.stdout.write(
+        JSON.stringify(
+          await captureCObservationStartup(path.resolve(args[1])),
+        ) + "\n",
+      );
+    else {
+      assert.ok(
+        args.length === 6 &&
+          args[0] === "--result" &&
+          args[2] === "--startup" &&
+          args[4] === "--controller-exit" &&
+          /^[0-9]{1,3}$/u.test(args[5]),
+        "Usage: --capture-startup NEW_FILE | --result RESULT --startup FILE --controller-exit STATUS",
+      );
+      process.stdout.write(
+        JSON.stringify(
+          await verifyCLiveObservation(
+            path.resolve(args[1]),
+            path.resolve(args[3]),
+            Number(args[5]),
+          ),
+        ) + "\n",
+      );
+    }
+  } catch (error) {
+    process.stderr.write(String(error) + "\n");
+    process.exitCode = 2;
+  }
+}
