@@ -48,7 +48,10 @@ test(
     );
     const partial = await validate(root, { trusted: true, timeoutMs: 120_000 });
     assert.equal(partial.outcome, "incomplete", JSON.stringify(partial.checks));
-    assert.ok(partial.checks.every((check) => check.status === "inconclusive"));
+    assert.ok(
+      partial.checks.every((check) => check.status === "inconclusive"),
+      JSON.stringify(partial.checks),
+    );
     assert.ok(
       partial.checks.every((check) =>
         check.processes.every((process) => process.exitCode === 0),
@@ -71,7 +74,11 @@ test(
       trusted: true,
       timeoutMs: 120_000,
     });
-    assert.equal(untested.checks[0]!.status, "passed");
+    assert.equal(
+      untested.checks[0]!.status,
+      "passed",
+      JSON.stringify(untested.checks),
+    );
     assert.equal(untested.checks[1]!.status, "inconclusive");
     await writeFile(path.join(root, "untested/value_test.go"), assertion);
     assert.equal(

@@ -37,7 +37,7 @@ function exercise(body: string) {
           reviewerProfile: {provider: 'synthetic', model: 'fixture', version: 'test', settings: 'No model invocation'},
           environment: {platform: 'synthetic', runtime: 'test', dependencies: 'No external dependencies'},
           isolation: 'procedural', isolationEvidence: 'Shared test process; no inference or model isolation',
-          budget: {wallSeconds: 1, maxToolCalls: 8, maxInputTokens: null, maxOutputTokens: 1000, repetitions: 1},
+          budget: {wallSeconds: options.wallSeconds ?? 5, maxToolCalls: 8, maxInputTokens: null, maxOutputTokens: 1000, repetitions: 1},
           cases: [{id: 'case-one', family: 'synthetic', group: 'private-group-marker', split: 'development', root: source, files: ['value.mjs'], task: 'Inspect the supplied source',
             source: {repository: 'https://example.org/original-fixture', revision: 'a'.repeat(40), license: 'MIT'}, reviewCommands: [], validators: options.validators ?? [], exclusion: null}],
         };
@@ -241,8 +241,12 @@ test("agent reference execution records source deletion as incomplete terminal e
   exercise(String.raw`
     const {run, frozen} = await setup('deleted', {validators: [{id: 'deleting-check', kind: 'reproduction', version: 'synthetic', command: [process.execPath, '-e', 'require("node:fs").unlinkSync("value.mjs")'], required: true, assets: []}]});
     const result = await api.reference(run, 'case-one', 'deleting-check', true);
-    assert.equal(result.status, 'incomplete');
-    assert.equal(result.sourceUnchanged, false);
+    assert.equal(result.exitCode, 0, JSON.stringify(result));
+    assert.equal(result.error, null, JSON.stringify(result));
+    assert.equal(result.signal, null, JSON.stringify(result));
+    assert.equal(result.timedOut, false, JSON.stringify(result));
+    assert.equal(result.status, 'incomplete', JSON.stringify(result));
+    assert.equal(result.sourceUnchanged, false, JSON.stringify(result));
     const saved = await read(path.join(run, 'references/case-one/deleting-check.json'));
     assert.equal(saved.record.sourceSha256, frozen.manifest.cases[0].captured.sha256);
     assert.equal(saved.record.status, 'incomplete');
@@ -251,7 +255,7 @@ test("agent reference execution records source deletion as incomplete terminal e
 
 test("agent scoring does not accept a declared over-budget review as complete", () => {
   exercise(String.raw`
-    const {run, frozen} = await setup('budget', {valid: true});
+    const {run, frozen} = await setup('budget', {valid: true, wallSeconds: 1});
     const first = receipt(frozen, 0);
     first.usage = {...usage, outputTokens: 1001};
     await api.seal(run, first.assignmentId, first);
