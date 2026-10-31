@@ -117,6 +117,16 @@ export function validateGlibcDockerMetadata(version, info) {
   };
 }
 
+export function validateGlibcDockerSecurityOptions(value, mode, policy) {
+  assert.ok(["baseline", "derived"].includes(mode));
+  assert.deepEqual(
+    value ?? [],
+    mode === "derived" ? ["seccomp=" + JSON.stringify(policy)] : [],
+    "Docker must retain exactly the client-loaded generated seccomp policy",
+  );
+  return true;
+}
+
 export function validateGlibcSyscallProbe(value, mode) {
   assert.ok(["baseline", "derived"].includes(mode));
   assert.equal(value.schemaVersion, 1);

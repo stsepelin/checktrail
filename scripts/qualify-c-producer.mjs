@@ -49,6 +49,7 @@ import {
   loadGlibcSeccomp,
   validateGlibcDockerMetadata,
   validateGlibcSyscallProbe,
+  validateGlibcDockerSecurityOptions,
 } from "./producer-qualification/glibc-seccomp.mjs";
 
 const { AbortController } = globalThis;
@@ -735,18 +736,10 @@ async function verifySyscallPreflight(plan, signal, state) {
       assert.deepEqual(inspected.HostConfig.CapAdd ?? [], []);
       assert.deepEqual(inspected.HostConfig.CapDrop ?? [], []);
       assert.equal(inspected.HostConfig.Privileged, false);
-      assert.deepEqual(
-        inspected.HostConfig.SecurityOpt ?? [],
-        mode === "derived"
-          ? [
-              "seccomp=" +
-                path.join(
-                  plan.destination,
-                  "controls",
-                  glibcSeccompGeneratedFile,
-                ),
-            ]
-          : [],
+      validateGlibcDockerSecurityOptions(
+        inspected.HostConfig.SecurityOpt,
+        mode,
+        plan.syscallPolicy.policy,
       );
       row.log = await identifyFile(log, 65536);
       assert.equal(row.log.bytes, row.observer.retainedBytes);

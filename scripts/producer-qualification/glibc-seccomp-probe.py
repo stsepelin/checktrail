@@ -10,6 +10,8 @@ import sys
 
 assert sys.argv[1:] in [["baseline"], ["derived"]]
 mode = sys.argv[1]
+assert sys.platform == 'linux' and os.uname().machine == 'x86_64'
+assert ctypes.sizeof(ctypes.c_long) == 8 and ctypes.sizeof(ctypes.c_void_p) == 8
 status = {}
 with open("/proc/self/status", "r", encoding="ascii") as handle:
     for line in handle:
@@ -27,6 +29,10 @@ libc.personality.restype = ctypes.c_int
 class Timespec(ctypes.Structure):
     _fields_ = [("tv_sec", ctypes.c_long), ("tv_nsec", ctypes.c_long)]
 
+
+assert ctypes.sizeof(Timespec) == 16
+libc.syscall.argtypes = [ctypes.c_long, ctypes.c_long, ctypes.POINTER(Timespec)]
+libc.syscall.restype = ctypes.c_long
 
 libc.clock_gettime.argtypes = [ctypes.c_int, ctypes.POINTER(Timespec)]
 libc.clock_gettime.restype = ctypes.c_int
@@ -61,7 +67,9 @@ result = libc.clock_settime(1, ctypes.byref(now))
 monotonic = {"result": result, "errno": ctypes.get_errno()}
 invalid = Timespec(0, -1)
 ctypes.set_errno(sentinel)
-result = libc.clock_settime(0, ctypes.byref(invalid))
+# Linux v6.14 arch/x86/entry/syscalls/syscall_64.tbl: clock_settime is 227.
+# The libc clock_settime wrapper rejects -1 before the kernel seccomp check.
+result = libc.syscall(227, 0, ctypes.byref(invalid))
 realtime = {"result": result, "errno": ctypes.get_errno()}
 print(json.dumps({
     "schemaVersion": 1,

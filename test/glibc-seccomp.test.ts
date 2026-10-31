@@ -519,3 +519,203 @@ print(json.dumps({'syntheticPureReplayControls':True,'probeSyntaxParsedWithoutEx
     });
   },
 );
+
+test("GLIBC Docker inspection requires the exact client-loaded policy and rejects neighboring security options", async () => {
+  const { policy } = await api.loadGlibcSeccomp();
+  const exact = "seccomp=" + JSON.stringify(policy);
+  assert.equal(
+    api.validateGlibcDockerSecurityOptions([], "baseline", policy),
+    true,
+  );
+  assert.equal(
+    api.validateGlibcDockerSecurityOptions(null, "baseline", policy),
+    true,
+  );
+  assert.equal(
+    api.validateGlibcDockerSecurityOptions([exact], "derived", policy),
+    true,
+  );
+  for (const value of [
+    [],
+    null,
+    ["seccomp=/synthetic/glibc-native-seccomp.json"],
+    ["seccomp=unconfined"],
+    ["x" + exact],
+    [exact + " "],
+    [exact, exact],
+    [exact, "no-new-privileges"],
+    ["no-new-privileges"],
+  ])
+    assert.throws(() =>
+      api.validateGlibcDockerSecurityOptions(value, "derived", policy),
+    );
+  assert.throws(() =>
+    api.validateGlibcDockerSecurityOptions([exact], "baseline", policy),
+  );
+  assert.throws(() =>
+    api.validateGlibcDockerSecurityOptions([], "derived-near", policy),
+  );
+  for (const change of [
+    (value: typeof policy) => {
+      value.defaultAction = "SCMP_ACT_ALLOW";
+    },
+    (value: typeof policy) => {
+      value.syscalls.at(-2).args = [];
+    },
+    (value: typeof policy) => {
+      value.syscalls.at(-2).args[0].value = 0;
+    },
+    (value: typeof policy) => {
+      value.syscalls.at(-1).args[0].value = 4294967275;
+    },
+  ]) {
+    const changed = structuredClone(policy);
+    change(changed);
+    assert.throws(() =>
+      api.validateGlibcDockerSecurityOptions(
+        ["seccomp=" + JSON.stringify(changed)],
+        "derived",
+        policy,
+      ),
+    );
+  }
+});
+
+test(
+  "GLIBC probe uses the raw invalid-realtime syscall and refuses foreign ABIs or capabilities with synthetic C calls",
+  {
+    skip: python
+      ? false
+      : "Verified Python3 pure probe model unavailable: " +
+        unavailable.join("; "),
+  },
+  () => {
+    const program = String.raw`"""Synthetic libc calls only. No actual clock/personality/syscall function is loaded."""
+import builtins,contextlib,ctypes,io,json,pathlib,sys,types
+source=pathlib.Path(sys.argv[1]).read_bytes()
+original_open,original_cdll,original_uname,original_sizeof=builtins.open,ctypes.CDLL,__import__('os').uname,ctypes.sizeof
+original_argv=sys.argv[:];original_platform=sys.platform;original_long=ctypes.c_long;original_ulong=ctypes.c_ulong
+results=[]
+def run(mode,machine='x86_64',bad_size=False,bad_pointer=False,bad_timespec=False,platform='linux',capfield=None,capbit=None):
+ ctypes.c_long=ctypes.c_int64;ctypes.c_ulong=ctypes.c_uint64
+ state={'current':0,'cdll':0,'raw':[],'realtimeWrapper':0,'monotonicWrapper':0,'functions':[]}
+ caps=dict.fromkeys(['CapEff','CapPrm','CapBnd'],'00000000a80425fb')
+ if capfield:caps[capfield]=format(int(caps[capfield],16)|(1<<capbit),'016x')
+ status=''.join(k+':\t'+v+'\n' for k,v in caps.items())
+ def scalar(value):return value.value if hasattr(value,'value') else value
+ class Function:
+  def __init__(self,name):self.name=name;self.argtypes=None;self.restype=None
+  def __call__(self,*args):
+   state['functions'].append(self.name)
+   if self.name=='personality':
+    value=scalar(args[0])
+    if value==0xffffffff:return state['current']
+    if value==0xffffffeb or (value==0xffffffea and mode=='baseline'):ctypes.set_errno(1);return -1
+    old=state['current'];state['current']=-22 if value==0xffffffea else value;return old
+   if self.name=='clock_gettime':
+    assert scalar(args[0])==1;args[1]._obj.tv_sec=100;args[1]._obj.tv_nsec=1;return 0
+   if self.name=='clock_settime':
+    clock=scalar(args[0]);ts=args[1]._obj
+    if clock==0:
+     state['realtimeWrapper']+=1;assert (ts.tv_sec,ts.tv_nsec)==(0,-1);ctypes.set_errno(22);return -1
+    assert clock==1 and (ts.tv_sec,ts.tv_nsec)==(100,1);state['monotonicWrapper']+=1;ctypes.set_errno(1 if mode=='baseline' else 22);return -1
+   assert self.name=='syscall'
+   assert self.restype is ctypes.c_long and self.argtypes[0] is ctypes.c_long and self.argtypes[1] is ctypes.c_long
+   number,clock=map(scalar,args[:2]);ts=args[2]._obj
+   assert number==227 and clock==0 and (ts.tv_sec,ts.tv_nsec)==(0,-1),'Raw ABI or invalid realtime near miss changed'
+   state['raw'].append({'number':number,'clock':clock,'seconds':ts.tv_sec,'nanoseconds':ts.tv_nsec});ctypes.set_errno(1);return -1
+ class Libc:
+  personality=Function('personality');clock_gettime=Function('clock_gettime');clock_settime=Function('clock_settime');syscall=Function('syscall')
+ def cdll(*args,**kwargs):state['cdll']+=1;assert args==(None,) and kwargs=={'use_errno':True};return Libc()
+ def opened(name,*args,**kwargs):
+  if name=='/proc/self/status':return io.StringIO(status)
+  return original_open(name,*args,**kwargs)
+ import os
+ def sized(kind):
+  if bad_size and kind is ctypes.c_long:return 4
+  if bad_pointer and kind is ctypes.c_void_p:return 4
+  if bad_timespec and isinstance(kind,type) and issubclass(kind,ctypes.Structure):return 8
+  return original_sizeof(kind)
+ builtins.open=opened;ctypes.CDLL=cdll;os.uname=lambda:types.SimpleNamespace(machine=machine);ctypes.sizeof=sized;sys.argv=['synthetic-probe.py',mode];sys.platform=platform
+ rejected=machine!='x86_64' or platform!='linux' or bad_size or bad_pointer or bad_timespec or capfield is not None
+ try:
+  captured=io.StringIO();refused=False
+  try:
+   with contextlib.redirect_stdout(captured):exec(compile(source,'synthetic-probe.py','exec'),{'__name__':'__main__'})
+  except AssertionError:
+   if not rejected:raise
+   refused=True
+  if rejected:
+   assert refused and state['functions']==[] and state['raw']==[],'Admission guard failed before native-function access'
+   if not bad_timespec:assert state['cdll']==0
+   return {'refusedBeforeNativeFunction':True,'machine':machine,'platform':platform,'badLongSize':bad_size,'badPointerSize':bad_pointer,'badTimespecSize':bad_timespec,'capabilityField':capfield,'capabilityBit':capbit}
+  record=json.loads(captured.getvalue());assert state['raw']==[{'number':227,'clock':0,'seconds':0,'nanoseconds':-1}],f"Expected one raw invalid realtime syscall; raw={state['raw']}, libc realtime calls={state['realtimeWrapper']}"
+  assert state['realtimeWrapper']==0 and state['monotonicWrapper']==1
+  assert record['clock']['realtimeInvalidSet']=={'result':-1,'errno':1};assert record['restored'] is True
+  return {'mode':mode,'rawRealtimeCalls':1,'libcRealtimeCalls':0,'record':record,'nativeKernelInvoked':False}
+ finally:
+  builtins.open=original_open;ctypes.CDLL=original_cdll;os.uname=original_uname;ctypes.sizeof=original_sizeof;sys.argv=original_argv[:];sys.platform=original_platform;ctypes.c_long=original_long;ctypes.c_ulong=original_ulong
+for mode in ['baseline','derived']:results.append(run(mode))
+refusals=[run('baseline',machine='aarch64'),run('baseline',platform='darwin'),run('baseline',bad_size=True),run('baseline',bad_pointer=True),run('baseline',bad_timespec=True)]
+for field in ['CapEff','CapPrm','CapBnd']:
+ for bit in [21,25]:refusals.append(run('derived',capfield=field,capbit=bit))
+print(json.dumps({'profiles':results,'refusals':refusals,'allCFunctionsSynthetic':True,'nativeKernelInvoked':False,'originalBodyInvoked':False}))
+`;
+    const result = spawnSync(
+      python!,
+      [
+        "-I",
+        "-S",
+        "-B",
+        "-c",
+        program,
+        path.join(
+          repository,
+          "scripts/producer-qualification/glibc-seccomp-probe.py",
+        ),
+      ],
+      { encoding: "utf8", timeout: 10000, maxBuffer: 65536 },
+    );
+    assert.equal(result.status, 0, diagnostic(result));
+    assert.equal(result.signal, null, diagnostic(result));
+    const report = JSON.parse(result.stdout) as {
+      profiles: Array<{
+        mode: "baseline" | "derived";
+        rawRealtimeCalls: number;
+        libcRealtimeCalls: number;
+        record: unknown;
+        nativeKernelInvoked: boolean;
+      }>;
+      refusals: Array<{ refusedBeforeNativeFunction: boolean }>;
+      allCFunctionsSynthetic: boolean;
+      nativeKernelInvoked: boolean;
+      originalBodyInvoked: boolean;
+    };
+    assert.deepEqual(
+      report.profiles.map((row) => ({
+        mode: row.mode,
+        raw: row.rawRealtimeCalls,
+        wrapper: row.libcRealtimeCalls,
+      })),
+      [
+        { mode: "baseline", raw: 1, wrapper: 0 },
+        { mode: "derived", raw: 1, wrapper: 0 },
+      ],
+    );
+    for (const row of report.profiles) {
+      assert.equal(row.nativeKernelInvoked, false);
+      assert.deepEqual(api.validateGlibcSyscallProbe(row.record, row.mode), {
+        mode: row.mode,
+        exactPredicatesObserved: true,
+        originalBodyInvoked: false,
+      });
+    }
+    assert.equal(report.refusals.length, 11);
+    assert.ok(
+      report.refusals.every((row) => row.refusedBeforeNativeFunction === true),
+    );
+    assert.equal(report.allCFunctionsSynthetic, true);
+    assert.equal(report.nativeKernelInvoked, false);
+    assert.equal(report.originalBodyInvoked, false);
+  },
+);

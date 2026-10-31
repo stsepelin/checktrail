@@ -134,6 +134,15 @@ SYS_TIME and SYS_ADMIN must be absent from the effective, permitted and bounding
 sets before the fixed probe can call either setter. The realtime near-miss uses
 an invalid nanosecond argument, never a valid time-changing argument.
 
+The invalid realtime control calls raw Linux x86_64 syscall 227 after checking
+Linux, machine and LP64 timespec layout. The
+[libc wrapper validates nanoseconds before its syscall](https://github.com/bminor/glibc/blob/glibc-2.36/sysdeps/unix/sysv/linux/clock_settime.c),
+so its local EINVAL cannot witness kernel-policy denial. The
+[x86_64 syscall table fixes the raw number](https://github.com/torvalds/linux/blob/v6.14/arch/x86/entry/syscalls/syscall_64.tbl).
+Docker inspection also compares the exact compact generated policy body that
+the [Docker client sends for `seccomp=file`](https://github.com/docker/cli/blob/v28.0.4/cli/command/container/opts.go),
+while the original command vector retains the pinned file argument.
+
 Before the unchanged upstream command, separate default-policy and derived-policy
 containers must complete the fixed operator probe. The probe preserves the
 original BZ19408 errno sentinel and legitimate negative persona return, checks
