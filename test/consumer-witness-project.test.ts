@@ -1061,3 +1061,138 @@ test("original Node assertion import and runtime failures retain distinct causes
     }
   }
 });
+
+test("shared project controller bindings project both families and their complete attempt records while global reconciliation retains unmatched failures", async () => {
+  const { projectConsumerFamilyCollection } = await import(
+    new URL(
+      "../../scripts/consumer-witness-project-controller.mjs",
+      import.meta.url,
+    ).href
+  );
+  const { bindConsumerWitnessController } = await import(
+    new URL("../../scripts/consumer-witness-evidence.mjs", import.meta.url).href
+  );
+  const { manifest, inventory, profiles } = await projectScope();
+  const slot = inventory.runtimeProfiles.find(
+    (value: { id: string }) => value.id === "native-linux-arm64-node22",
+  );
+  assert.ok(slot);
+  const packets = (["javascript", "shared-json"] as const).flatMap((family) =>
+    ["broken", "fixed", "near-miss"].flatMap((variant) =>
+      ["source", "installed"].map((origin) =>
+        envelope(family, variant, origin, slot, "workspace"),
+      ),
+    ),
+  );
+  const first = packets[0];
+  assert.ok(first);
+  const wanted = profiles["consumer-impact"];
+  const events = wanted.map((item: { name: string }, i: number) => ({
+    sequence: i + 1,
+    fileId: "file-1",
+    name: item.name,
+    outcome: "passed",
+    required: true,
+    nameTruncated: false,
+    kind: "test",
+    durationMs: 1,
+  }));
+  const file = { state: "present", sha256: first.row.code.acceptanceSha256 };
+  const collection = {
+    profile: "native-consumer-witness-collection-v1",
+    family: "javascript",
+    observations: packets.map((packet) => packet.row),
+    attemptRecords: packets.flatMap((packet) => packet.attempts),
+    observedTool: first.row.tool,
+    compiledEngine: {
+      treeSha256: first.row.code.engineSha256,
+      beforeAfterByteIdentitiesMatch: true,
+    },
+    evidence: {
+      complete: true,
+      required: 9,
+      passed: 9,
+      problems: [],
+      ledger: {
+        schemaVersion: 1,
+        files: [{ id: "file-1", stable: true, before: file, after: file }],
+        truncated: false,
+        terminalEventCount: 9,
+        events,
+        cases: events.map((event: { name: string; sequence: number }) => ({
+          fileId: "file-1",
+          name: event.name,
+          outcome: "passed",
+          terminalSequences: [event.sequence],
+        })),
+      },
+    },
+  };
+  const bind = (family: Family, current = collection) => {
+    const subset = projectConsumerFamilyCollection(current, family);
+    assert.equal(subset.family, family);
+    assert.ok(
+      subset.observations.every(
+        (row: { family: string }) => row.family === family,
+      ),
+    );
+    assert.ok(
+      subset.attemptRecords.every(
+        (row: { value: { family: string } }) => row.value.family === family,
+      ),
+    );
+    return bindConsumerWitnessController(subset, {
+      family,
+      requirements: wanted,
+      ...first.row.code,
+      toolVersionMatched: true,
+      selectedRuntimeSlot: slot.id,
+      tool: collection.observedTool,
+      toolInputsSha256: first.binding.toolInputsSha256,
+      runtime: { ...first.row.runtime, hostAttestationPerformed: false },
+      runtimeImage: first.binding.runtimeImage,
+    });
+  };
+  const bindings = [...bind("javascript"), ...bind("shared-json")];
+  assert.equal(bindings.length, collection.observations.length);
+  assert.equal(
+    collection.attemptRecords.length,
+    packets.flatMap((packet) => packet.attempts).length,
+  );
+  const coverage = inspectConsumerWitnesses(
+    manifest,
+    inventory,
+    profiles,
+    collection.observations,
+    bindings,
+    collection.attemptRecords,
+  );
+  assert.deepEqual(coverage.issues, []);
+  const broken = structuredClone(collection),
+    original = broken.attemptRecords[0];
+  assert.ok(original);
+  assert.equal(original.value.state, "failed");
+  const extra = structuredClone(original);
+  extra.value.attemptId = randomUUID();
+  const bytes = JSON.stringify(extra.value) + "\n";
+  extra.file = "attempt-" + extra.value.attemptId + ".json";
+  extra.bytes = Buffer.byteLength(bytes);
+  extra.sha256 = hash(bytes);
+  broken.attemptRecords.push(extra);
+  assert.throws(
+    () => bind("javascript", broken),
+    /Unmatched or failed consumer attempts/,
+  );
+  const report = inspectConsumerWitnesses(
+    manifest,
+    inventory,
+    profiles,
+    broken.observations,
+    bindings,
+    broken.attemptRecords,
+  );
+  assert.equal(
+    report.issues.includes("failed-or-unavailable-consumer-attempt"),
+    true,
+  );
+});

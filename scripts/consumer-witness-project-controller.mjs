@@ -7,10 +7,28 @@ import {
   inspectConsumerWitnesses,
   requireQualifiedConsumerWitnessSlot,
 } from "./consumer-witness-evidence.mjs";
-import { projectConsumerScenarios } from "./consumer-witness-project.mjs";
+import {
+  projectConsumerScenarios,
+  projectConsumerFamilies,
+} from "./consumer-witness-project.mjs";
 import { observeConsumerWitnessTool } from "../dist/test/consumer-witness-fixture.js";
 const data = async (root, file) =>
   JSON.parse(await readFile(path.join(root, file), "utf8"));
+/** Per-family binding is a projection; the caller still reconciles the complete shared collection. */
+export function projectConsumerFamilyCollection(collection, family) {
+  assert.equal(collection?.profile, "native-consumer-witness-collection-v1");
+  assert.ok(projectConsumerFamilies.includes(family));
+  return {
+    ...collection,
+    family,
+    observations: collection.observations.filter(
+      (row) => row.family === family,
+    ),
+    attemptRecords: collection.attemptRecords.filter(
+      (row) => row.value?.family === family,
+    ),
+  };
+}
 /** Existing trusted runtime/OCI controllers provide real observations, never a project label or tool argument. */
 export async function bindProjectConsumerCollection(
   root,
@@ -32,12 +50,7 @@ export async function bindProjectConsumerCollection(
     );
     bindings.push(
       ...bindConsumerWitnessController(
-        {
-          ...collection,
-          observations: collection.observations.filter(
-            (row) => row.family === family,
-          ),
-        },
+        projectConsumerFamilyCollection(collection, family),
         expected,
       ),
     );
