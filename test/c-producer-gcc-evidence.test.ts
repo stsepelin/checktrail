@@ -828,3 +828,183 @@ print(json.dumps({'positivePhysicalGccProtocolReplay':True,'preservedFailedOrigi
     });
   },
 );
+
+test(
+  "GCC owned signal-zero permission transients remain pending until strict absence within the original deadline",
+  posixFamilyControl,
+  async () => {
+    const { child, family } = wrapper.spawnCarrierNode([
+      "-e",
+      'process.on("SIGTERM",()=>setTimeout(()=>process.exit(2),80));process.stdout.write("armed");setInterval(()=>{},1000)',
+    ]);
+    const terminal = new Promise<void>((resolve) => {
+      child.once("close", resolve);
+      child.once("error", resolve);
+    });
+    const originalKill = process.kill;
+    const pending = Object.assign(
+      new Error("synthetic owned signal-zero permission transient"),
+      { code: "EPERM" },
+    );
+    const groupSignals: (string | number | undefined)[] = [];
+    let termSent = false,
+      injected = 0,
+      cleaned = 0;
+    try {
+      await new Promise<void>((resolve, reject) => {
+        child.stdout.once("data", () => resolve());
+        child.once("error", reject);
+      });
+      process.kill = (pid, signal) => {
+        if (pid === -child.pid) {
+          if (signal === 0 && termSent && injected === 0) {
+            injected++;
+            throw pending;
+          }
+          if (signal !== 0) {
+            groupSignals.push(signal);
+            if (signal === "SIGTERM") termSent = true;
+          }
+        }
+        return originalKill(pid, signal);
+      };
+      const deadline = performance.now() + 15000;
+      const result = await wrapper.stopCarrierChild(
+        child,
+        terminal,
+        async () => {},
+        async (actual: number) => {
+          assert.equal(actual, deadline);
+          cleaned++;
+        },
+        { softStopMs: 3000, deadline, family },
+      );
+      assert.equal(result.familyAbsent, true);
+      assert.equal(result.childReaped, true);
+      assert.equal(result.softFamilyAbsent, true);
+      assert.deepEqual(result.pendingGroupProbes, {
+        operation: "signal-zero",
+        code: "EPERM",
+        count: 1,
+        absenceInferred: false,
+        signallingAuthorized: false,
+      });
+      assert.deepEqual(groupSignals, ["SIGTERM"]);
+      assert.equal(injected, 1);
+      assert.equal(cleaned, 1);
+      assert.equal(child.exitCode, 2);
+    } finally {
+      process.kill = originalKill;
+      if (child.exitCode === null && child.signalCode === null)
+        child.kill("SIGKILL");
+      await terminal;
+      assert.equal(wrapper.carrierFamilyAbsent(family), true);
+    }
+  },
+);
+
+test(
+  "GCC unknown group probes never authorize forced signalling with persistent errors or later live observations",
+  posixFamilyControl,
+  async () => {
+    for (const mode of ["persistent-error", "later-live"] as const) {
+      const { child, family } = wrapper.spawnCarrierNode([
+        "-e",
+        'process.on("SIGTERM",()=>{});process.stdout.write("armed");setInterval(()=>{},1000)',
+      ]);
+      const terminal = new Promise<void>((resolve) => {
+        child.once("close", resolve);
+        child.once("error", resolve);
+      });
+      const originalKill = process.kill;
+      const pending = Object.assign(
+        new Error("synthetic owned signal-zero permission failure: " + mode),
+        { code: "EPERM" },
+      );
+      const signals: (string | number | undefined)[] = [];
+      let termSent = false,
+        probes = 0,
+        cleaned = 0;
+      try {
+        await new Promise<void>((resolve, reject) => {
+          child.stdout.once("data", () => resolve());
+          child.once("error", reject);
+        });
+        process.kill = (pid, signal) => {
+          if (pid === -child.pid) {
+            if (signal === 0 && termSent) {
+              probes++;
+              if (mode === "persistent-error" || probes === 1) throw pending;
+            }
+            if (signal !== 0) {
+              signals.push(signal);
+              if (signal === "SIGTERM") termSent = true;
+            }
+          }
+          return originalKill(pid, signal);
+        };
+        await assert.rejects(
+          wrapper.stopCarrierChild(
+            child,
+            terminal,
+            async () => {},
+            async () => {
+              cleaned++;
+            },
+            { softStopMs: 30, deadline: performance.now() + 15000, family },
+          ),
+          (error: unknown) => error === pending,
+        );
+        assert.ok(
+          probes >= 2,
+          "Unknown permission must be observed within the original polling window",
+        );
+        assert.deepEqual(signals, ["SIGTERM"]);
+        assert.equal(cleaned, 0);
+      } finally {
+        process.kill = originalKill;
+        if (child.exitCode === null && child.signalCode === null)
+          child.kill("SIGKILL");
+        await terminal;
+        assert.equal(wrapper.carrierFamilyAbsent(family), true);
+      }
+    }
+  },
+);
+
+test("GCC pending group observations remain explicit unavailable probes rather than absence or signal authority", () => {
+  const value = {
+    ...schemaCarrier(),
+    stopObservation: {
+      ...schemaCarrier().stopObservation,
+      pendingGroupProbes: {
+        operation: "signal-zero",
+        code: "EPERM",
+        count: 1,
+        absenceInferred: false,
+        signallingAuthorized: false,
+      },
+    },
+  };
+  assert.equal(
+    carrier.validateGccCarrierReceipt(value, profile, catalogSha256)
+      .gateAComplete,
+    false,
+  );
+  for (const edit of [
+    { code: "EPERM-extra" },
+    { operation: "SIGKILL" },
+    { count: 0 },
+    { count: true },
+    { count: 20001 },
+    { absenceInferred: true },
+    { signallingAuthorized: true },
+    { extra: true },
+  ]) {
+    const changed = structuredClone(value);
+    Object.assign(changed.stopObservation.pendingGroupProbes, edit);
+    assert.throws(() =>
+      carrier.validateGccCarrierReceipt(changed, profile, catalogSha256),
+    );
+  }
+});

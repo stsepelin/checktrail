@@ -114,6 +114,21 @@ export function validateGccCarrierReceipt(receipt, profile, catalogSha256) {
   assert.ok(
     Number.isSafeInteger(stop.processGroupId) && stop.processGroupId > 0,
   );
+  if (Object.hasOwn(stop, "pendingGroupProbes")) {
+    const pending = stop.pendingGroupProbes;
+    assert.ok(
+      Number.isSafeInteger(pending.count) &&
+        pending.count > 0 &&
+        pending.count <= 20000,
+    );
+    assert.deepEqual(pending, {
+      operation: "signal-zero",
+      code: "EPERM",
+      count: pending.count,
+      absenceInferred: false,
+      signallingAuthorized: false,
+    });
+  }
   for (const name of ["startedAt", "cutoffAt"])
     assert.ok(
       typeof receipt[name] === "string" &&

@@ -63,6 +63,17 @@ export function carrierFamilyAbsent(family) {
 }
 
 function signalFamily(family, signal) {
+  const state = ownedFamilies.get(family);
+  assert.ok(state, "Unowned carrier process group");
+  if (state.pendingProbeError) {
+    // An unknown signal-zero result never becomes authority for another group signal.
+    try {
+      if (carrierFamilyAbsent(family)) return;
+    } catch (error) {
+      if (error.code !== "EPERM") throw error;
+    }
+    throw state.pendingProbeError;
+  }
   if (carrierFamilyAbsent(family)) return;
   try {
     process.kill(-family.pid, signal);
@@ -72,14 +83,24 @@ function signalFamily(family, signal) {
 }
 
 async function waitFamily(family, deadline) {
-  while (!carrierFamilyAbsent(family)) {
+  const state = ownedFamilies.get(family);
+  assert.ok(state, "Unowned carrier process group");
+  for (;;) {
+    try {
+      if (carrierFamilyAbsent(family)) return true;
+    } catch (error) {
+      if (error.code !== "EPERM") throw error;
+      // Darwin may retain a zombie-only group briefly. This is pending/unknown,
+      // never absence: keep the original deadline and require a later ESRCH.
+      state.pendingProbeError ??= error;
+      state.pendingProbeCount = (state.pendingProbeCount ?? 0) + 1;
+    }
     const remaining = deadline - performance.now();
     if (remaining <= 0) return false;
     await new Promise((resolve) =>
       setTimeout(resolve, Math.min(25, remaining)),
     );
   }
-  return true;
 }
 
 export function onceCarrierStop(operation) {
@@ -173,6 +194,15 @@ export async function stopCarrierChild(
     familyAbsent,
     processGroupId: family.pid,
   };
+  const pending = ownedFamilies.get(family).pendingProbeCount ?? 0;
+  if (pending)
+    observation.pendingGroupProbes = {
+      operation: "signal-zero",
+      code: "EPERM",
+      count: pending,
+      absenceInferred: false,
+      signallingAuthorized: false,
+    };
   if (!familyAbsent || !childReaped) {
     const error = new Error(
       "Carrier process-family terminal remained unobserved after forced stop",
