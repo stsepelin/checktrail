@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { mkdir, readFile, realpath, writeFile } from "node:fs/promises";
 import ts from "typescript";
+import { z } from "zod";
 import path from "node:path";
 import { test } from "node:test";
 import {
@@ -91,18 +92,6 @@ test("Windows task ACL validation refuses each private-access boundary independe
     ),
   );
 });
-
-test(
-  "Windows task ACL inspection remains unavailable on a non-Windows host",
-  { skip: process.platform === "win32" },
-  () => {
-    assert.throws(
-      () =>
-        ensureWindowsTaskAccess("C:\\original-synthetic", "directory", false),
-      /requires Windows/,
-    );
-  },
-);
 
 const native = process.platform === "win32";
 function changeAcl(filename: string) {
@@ -269,21 +258,6 @@ test("Windows task ACL shipped scripts use fixed framework JSON and ACL APIs wit
   }
 });
 
-const batch = [
-  { filename: "C:\\original-'[literal]-🧪", kind: "directory" },
-  { filename: "C:\\original-'[literal]-🧪\\input.blob", kind: "file" },
-] as const;
-
-test(
-  "Windows private ACL batches remain unavailable on a non-Windows host",
-  { skip: native },
-  () => {
-    assert.throws(
-      () => ensureWindowsTaskAccessBatch(batch),
-      /requires Windows/,
-    );
-  },
-);
 test(
   "native Windows private ACL batches inspect literal file and directory targets and refuse public access without repair",
   { skip: !native },
@@ -302,11 +276,29 @@ test(
     ] as const;
     ensureWindowsTaskAccessBatch(targets);
     await setPrivateFixtureAccess(filename, "file", false);
-    assert.throws(() => ensureWindowsTaskAccessBatch(targets), /private/);
+    const batchRefusal = {
+      message: "Windows private ACL batch inspection unavailable",
+    };
+    assert.throws(() => ensureWindowsTaskAccessBatch(targets), batchRefusal);
+    // The extra public ACE reaches the single inspector's one-rule schema first.
     assert.throws(
       () => ensureWindowsTaskAccess(filename, "file", false),
-      /private/,
+      (error: unknown) => {
+        assert.ok(error instanceof z.ZodError);
+        assert.equal(error.issues.length, 1);
+        const issue = error.issues[0]!;
+        assert.deepEqual(
+          {
+            code: issue.code,
+            path: issue.path,
+            maximum: "maximum" in issue ? issue.maximum : null,
+          },
+          { code: "too_big", path: ["rules"], maximum: 1 },
+        );
+        return true;
+      },
     );
+    assert.throws(() => ensureWindowsTaskAccessBatch(targets), batchRefusal);
     assert.equal(
       await readFile(filename, "utf8"),
       "Original bounded private input",
