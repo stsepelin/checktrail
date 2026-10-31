@@ -1758,6 +1758,12 @@ jobs:
         run: |
           node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings &&
           node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}
+      - name: Require literal native Windows private access batches
+        if: matrix.core && matrix.slot == 'windows-node22'
+        run: node scripts/verify-required-native-tests.mjs windows-private-access-batch
+      - name: Require whole independent setup from source and a fresh offline package
+        if: matrix.core
+        run: node scripts/verify-evaluation-runtime.mjs ${{ matrix.slot }}
       - name: Require whole consumer impact from source and a fresh offline package
         if: matrix.consumer
         run: |
@@ -1788,13 +1794,6 @@ jobs:
           CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
           CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}
           CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
-
-      - name: Require literal native Windows private access batches
-        if: matrix.core && matrix.slot == 'windows-node22'
-        run: node scripts/verify-required-native-tests.mjs windows-private-access-batch
-      - name: Require whole independent setup from source and a fresh offline package
-        if: matrix.core
-        run: node scripts/verify-evaluation-runtime.mjs ${{ matrix.slot }}
 
   tasks-runtime-arm64:
     needs: [ci-plan, actionlint]
