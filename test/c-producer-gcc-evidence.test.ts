@@ -294,50 +294,95 @@ test(
   "GCC carrier cleanup failure retains its actual stopped-child and owner-admission diagnostics",
   posixFamilyControl,
   async () => {
-    const { child, family } = wrapper.spawnCarrierNode([
-      "-e",
-      'process.on("SIGTERM",()=>process.exit(2));process.stdout.write("ready\\n");setInterval(()=>{},1000)',
-    ]);
-    const terminal = new Promise<void>((resolve) =>
-      child.once("close", () => resolve()),
-    );
-    try {
-      await new Promise<void>((resolve, reject) => {
-        child.stdout.once("data", () => resolve());
-        child.once("error", reject);
-      });
-      await assert.rejects(
-        wrapper.stopCarrierChild(
-          child,
-          terminal,
-          async () => {
-            throw new Error("synthetic owner refusal");
-          },
-          async () => {
-            throw new Error("synthetic cleanup refusal");
-          },
-          { softStopMs: 3000, deadline: performance.now() + 15000, family },
-        ),
-        (error: unknown) => {
-          assert.ok(error instanceof Error && error.cause instanceof Error);
-          assert.equal(error.cause.message, "synthetic cleanup refusal");
-          assert.ok("stopObservation" in error);
-          assert.deepEqual(error.stopObservation, {
-            ownerAdmissionError: "Error: synthetic owner refusal",
-            childTerminalObserved: true,
-            childReaped: true,
-            softFamilyAbsent: true,
-            familyAbsent: true,
-            processGroupId: child.pid,
-          });
-          assert.equal(child.exitCode, 2);
-          return true;
-        },
+    for (const injectPending of [false, true]) {
+      const { child, family } = wrapper.spawnCarrierNode([
+        "-e",
+        'process.on("SIGTERM",()=>process.exit(2));process.stdout.write("ready\\n");setInterval(()=>{},1000)',
+      ]);
+      const terminal = new Promise<void>((resolve) =>
+        child.once("close", () => resolve()),
       );
-    } finally {
-      if (child.exitCode === null) {
-        child.kill("SIGKILL");
+      const originalKill = process.kill;
+      let termSent = false,
+        injected = 0;
+      try {
+        await new Promise<void>((resolve, reject) => {
+          child.stdout.once("data", () => resolve());
+          child.once("error", reject);
+        });
+        if (injectPending)
+          process.kill = (pid, signal) => {
+            if (pid === -child.pid) {
+              if (signal === 0 && termSent && injected === 0) {
+                injected++;
+                throw Object.assign(
+                  new Error("synthetic cleanup pending existence probe"),
+                  { code: "EPERM" },
+                );
+              }
+              if (signal === "SIGTERM") termSent = true;
+            }
+            return originalKill(pid, signal);
+          };
+        await assert.rejects(
+          wrapper.stopCarrierChild(
+            child,
+            terminal,
+            async () => {
+              throw new Error("synthetic owner refusal");
+            },
+            async () => {
+              throw new Error("synthetic cleanup refusal");
+            },
+            { softStopMs: 3000, deadline: performance.now() + 15000, family },
+          ),
+          (error: unknown) => {
+            assert.ok(error instanceof Error && error.cause instanceof Error);
+            assert.equal(error.cause.message, "synthetic cleanup refusal");
+            assert.ok("stopObservation" in error);
+            const { pendingGroupProbes, ...stopped } =
+              error.stopObservation as Record<string, unknown>;
+            assert.deepEqual(stopped, {
+              ownerAdmissionError: "Error: synthetic owner refusal",
+              childTerminalObserved: true,
+              childReaped: true,
+              softFamilyAbsent: true,
+              familyAbsent: true,
+              processGroupId: child.pid,
+            });
+            if (pendingGroupProbes !== undefined) {
+              assert.ok(
+                pendingGroupProbes !== null &&
+                  typeof pendingGroupProbes === "object",
+              );
+              const pending = pendingGroupProbes as { count: number };
+              assert.ok(
+                Number.isSafeInteger(pending.count) &&
+                  pending.count >= 1 &&
+                  pending.count <= 20000,
+              );
+              assert.deepEqual(pending, {
+                operation: "signal-zero",
+                code: "EPERM",
+                count: pending.count,
+                absenceInferred: false,
+                signallingAuthorized: false,
+              });
+            }
+            if (injectPending) {
+              assert.equal(injected, 1);
+              assert.notEqual(pendingGroupProbes, undefined);
+            }
+            assert.equal(child.exitCode, 2);
+            return true;
+          },
+        );
+      } finally {
+        process.kill = originalKill;
+        if (child.exitCode === null && child.signalCode === null)
+          child.kill("SIGKILL");
         await terminal;
+        assert.equal(wrapper.carrierFamilyAbsent(family), true);
       }
     }
   },
@@ -882,10 +927,15 @@ test(
       assert.equal(result.familyAbsent, true);
       assert.equal(result.childReaped, true);
       assert.equal(result.softFamilyAbsent, true);
+      assert.ok(
+        Number.isSafeInteger(result.pendingGroupProbes.count) &&
+          result.pendingGroupProbes.count >= 1 &&
+          result.pendingGroupProbes.count <= 20000,
+      );
       assert.deepEqual(result.pendingGroupProbes, {
         operation: "signal-zero",
         code: "EPERM",
-        count: 1,
+        count: result.pendingGroupProbes.count,
         absenceInferred: false,
         signallingAuthorized: false,
       });
