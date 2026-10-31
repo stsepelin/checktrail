@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "scope": "Exact original APT metadata input preparation; independent from native compiler builds and full ancestry/notice closure.",
+  "finishedAt": "2026-10-30T14:26:08.713557+00:00",
+  "inputProfile": "original-debian-binutils-2.40-2-build-v1",
+  "inputPinSerialization": "SHA-256 of compact JSON array in recipe file order, each object containing file, bytes, sha256 in that key order; ASCII encoding and no trailing newline.",
+  "selectedInputPinsSha256": "60809394f79e23c3f6ca149e993044474da1e3f9475870ed016b6d43ee73db1f",
+  "selectedImage": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+  "observedImageId": "sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+  "observedImageArchitecture": "amd64",
+  "observedImageOperatingSystem": "linux",
+  "operatorHost": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "nativeLinuxX86CompilerBuildQualified": false
+  },
+  "method": {
+    "name": "Original APT 2.6.1 store method protocol",
+    "sourceUrl": "https://github.com/Debian/apt/blob/2.6.1/methods/store.cc",
+    "inspectedSourceSha256": "6e54e87244ba07f91d59c63a4784be059ae0d0c6500a7fdcc81ee2f415e1751f",
+    "sourceCodeCompiled": false,
+    "unchangedImageProvidedMethodExecuted": true
+  },
+  "execution": {
+    "foreground": true,
+    "network": "none",
+    "rootFilesystemReadonly": true,
+    "inputsReadonly": true,
+    "cpus": 1,
+    "memoryMiB": 512,
+    "pidsLimit": 64,
+    "deadlineSeconds": 120,
+    "outputByteLimit": 67108864,
+    "exitCode": 0,
+    "ownedContainerAbsent": true,
+    "networkAcquisitionInStoreAttempt": false
+  },
+  "controls": [
+    {
+      "file": "regenerate.sh",
+      "bytes": 192,
+      "sha256": "5fd59a9c350b51b56012a7e61dd0239e0b9313f379a2346a7fb63ffadadf4612",
+      "sourceUtf8": "#!/bin/sh\nset -eu\n/usr/lib/apt/apt-helper --version > /output/apt-version.txt\npython3 /controller/store.py\ncp /usr/share/keyrings/debian-archive-keyring.gpg /output/debian-archive-keyring.gpg\n"
+    },
+    {
+      "file": "store.py",
+      "bytes": 1423,
+      "sha256": "94aa66dc1d97bc1a568b0f577ae8f6742ceb97908a251d942ef907301ab17a76",
+      "sourceUtf8": "import json,hashlib,subprocess,os\nfrom pathlib import Path\nrows=json.loads(Path('/controller/expected.json').read_text())\nfor i,row in enumerate(rows):\n uri=f'store:/inputs/index-{i}.xz';filename=f'/output/index-{i}.lz4'\n packet=f'600 URI Acquire\\nURI: {uri}\\nFilename: {filename}\\nExpected-SHA256: {row[\"sha256\"]}\\nExpected-Checksum-FileSize: {row[\"bytes\"]}\\n\\n'.encode()\n p=subprocess.run(['/usr/lib/apt/methods/store'],input=packet,capture_output=True,timeout=30)\n Path(f'/output/store-{i}.stdout').write_bytes(p.stdout);Path(f'/output/store-{i}.stderr').write_bytes(p.stderr)\n assert p.returncode==0,(p.returncode,p.stderr.decode(errors='replace'))\n responses=[part for part in p.stdout.split(b'\\n\\n') if part.startswith(b'201 URI Done\\n')]\n assert len(responses)==1,(i,p.stdout.decode(errors='replace'))\n fields=dict(line.split(b': ',1) for line in responses[0].splitlines()[1:] if b': ' in line)\n assert fields[b'URI']==uri.encode() and fields[b'Filename']==filename.encode()\nfiles=['/usr/lib/apt/apt-helper','/usr/lib/apt/methods/store','/usr/lib/x86_64-linux-gnu/libapt-pkg.so.6.0','/usr/share/keyrings/debian-archive-keyring.gpg']\nidentities=[]\nfor name in files:\n p=Path(os.path.realpath(name));raw=p.read_bytes();identities.append({'file':name,'physicalFile':str(p),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()})\nPath('/output/tool-identities.json').write_text(json.dumps(identities,indent=2)+'\\n')\n"
+    },
+    {
+      "file": "expected.json",
+      "bytes": 338,
+      "sha256": "e97e23cd4cfa4b12b128a8035a10684304e8124d96a989e8fb4e66febe744f18",
+      "sourceUtf8": "[\n  {\n    \"bytes\": 2375438,\n    \"sha256\": \"728633784353f81963552499e106b0339be78557c0269630175e61f9f3ad9b4d\"\n  },\n  {\n    \"bytes\": 32757,\n    \"sha256\": \"80a1f6ee524222c49f230fc5700d00f946d0a47eb5258180106dd03df126e16a\"\n  },\n  {\n    \"bytes\": 50060337,\n    \"sha256\": \"515e692f2c4121c6fcec444ef100cc18f79a991910615f3a88c8b7becfc94d2f\"\n  }\n]\n"
+    }
+  ],
+  "freshCompressedInputs": [
+    {
+      "file": "index-0.xz",
+      "sourceUrl": "https://deb.debian.org/debian-security/dists/bookworm-security/main/binary-amd64/by-hash/SHA256/bc0b42b62aff5a279620a424603b67a2d727280bb4287e37711675dfb02d3085",
+      "canonicalOriginUrl": "https://deb.debian.org/debian-security/dists/bookworm-security/main/binary-amd64/Packages.xz",
+      "bytes": 358092,
+      "sha256": "bc0b42b62aff5a279620a424603b67a2d727280bb4287e37711675dfb02d3085",
+      "inReleaseFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_InRelease",
+      "alreadyDownloadedAndVerifiedBeforeStoreAttempt": true
+    },
+    {
+      "file": "index-1.xz",
+      "sourceUrl": "https://deb.debian.org/debian/dists/bookworm-updates/main/binary-amd64/by-hash/SHA256/87e7e94047fb7fb6f4ceecc7022d4bee55b66031cc2a7666d3196f3e0aabb846",
+      "canonicalOriginUrl": "https://deb.debian.org/debian/dists/bookworm-updates/main/binary-amd64/Packages.xz",
+      "bytes": 6924,
+      "sha256": "87e7e94047fb7fb6f4ceecc7022d4bee55b66031cc2a7666d3196f3e0aabb846",
+      "inReleaseFile": "apt-lists/deb.debian.org_debian_dists_bookworm-updates_InRelease",
+      "alreadyDownloadedAndVerifiedBeforeStoreAttempt": true
+    },
+    {
+      "file": "index-2.xz",
+      "sourceUrl": "https://deb.debian.org/debian/dists/bookworm/main/binary-amd64/by-hash/SHA256/9e0b5aabb2465b3d2e7a7fe27f9913846277833f7a2826e7767acccff5b588c5",
+      "canonicalOriginUrl": "https://deb.debian.org/debian/dists/bookworm/main/binary-amd64/Packages.xz",
+      "bytes": 8790396,
+      "sha256": "9e0b5aabb2465b3d2e7a7fe27f9913846277833f7a2826e7767acccff5b588c5",
+      "inReleaseFile": "apt-lists/deb.debian.org_debian_dists_bookworm_InRelease",
+      "alreadyDownloadedAndVerifiedBeforeStoreAttempt": true
+    }
+  ],
+  "canonicalPayloads": [
+    {
+      "file": "index-0.xz",
+      "bytes": 2375438,
+      "sha256": "728633784353f81963552499e106b0339be78557c0269630175e61f9f3ad9b4d",
+      "matchesFrozenSignedPayload": true
+    },
+    {
+      "file": "index-1.xz",
+      "bytes": 32757,
+      "sha256": "80a1f6ee524222c49f230fc5700d00f946d0a47eb5258180106dd03df126e16a",
+      "matchesFrozenSignedPayload": true
+    },
+    {
+      "file": "index-2.xz",
+      "bytes": 50060337,
+      "sha256": "515e692f2c4121c6fcec444ef100cc18f79a991910615f3a88c8b7becfc94d2f",
+      "matchesFrozenSignedPayload": true
+    }
+  ],
+  "regeneratedPinnedIndexes": [
+    {
+      "file": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+      "bytes": 719305,
+      "sha256": "b6d3d934e5c9c0a6a94fa8b8fe73119c6f3ab45e79cdc65520b3d0f4bbd5550d",
+      "matchesFrozenPin": true
+    },
+    {
+      "file": "apt-lists/deb.debian.org_debian_dists_bookworm-updates_main_binary-amd64_Packages.lz4",
+      "bytes": 11648,
+      "sha256": "8ae7b65cb4858ac692572b6989be68da6505ae90fe4a3b4e0bf842d266209e53",
+      "matchesFrozenPin": true
+    },
+    {
+      "file": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+      "bytes": 18840233,
+      "sha256": "38163a87d0269f1af22bdddc092bf8e6c605f981642a09561e60565358f15e07",
+      "matchesFrozenPin": true
+    }
+  ],
+  "imageProvidedToolAndArchiveKeyringIdentities": [
+    {
+      "file": "/usr/lib/apt/apt-helper",
+      "physicalFile": "/usr/lib/apt/apt-helper",
+      "bytes": 39472,
+      "sha256": "8e537ce90c872a6c41155300a19e3194d2a1216dc4b2ecefef09ee3985b4c7a4"
+    },
+    {
+      "file": "/usr/lib/apt/methods/store",
+      "physicalFile": "/usr/lib/apt/methods/store",
+      "bytes": 63880,
+      "sha256": "46af945f0abb54a1a152dd7896850784e4578ad652edbe9a09aa65fe9ffc85ab"
+    },
+    {
+      "file": "/usr/lib/x86_64-linux-gnu/libapt-pkg.so.6.0",
+      "physicalFile": "/usr/lib/x86_64-linux-gnu/libapt-pkg.so.6.0.0",
+      "bytes": 2067760,
+      "sha256": "12d1d6a5980e70084f464de916512da8f295a78dfd8bfb09b65ce178a48edf11"
+    },
+    {
+      "file": "/usr/share/keyrings/debian-archive-keyring.gpg",
+      "physicalFile": "/usr/share/keyrings/debian-archive-keyring.gpg",
+      "bytes": 55918,
+      "sha256": "506b815cbb32d9b6066b4a2aa524071e071761e7e7f68c3ac74f3061ba852017"
+    }
+  ],
+  "originalInReleaseSignatures": [
+    {
+      "file": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_InRelease",
+      "exitCode": 0,
+      "validSignatureFingerprints": [
+        "ED541312A33F1128F10B1C6C54404762BBB6E853",
+        "B0CAB9266E8C3929798B3EEEBDE6D2B9216EC7A8"
+      ]
+    },
+    {
+      "file": "apt-lists/deb.debian.org_debian_dists_bookworm-updates_InRelease",
+      "exitCode": 0,
+      "validSignatureFingerprints": [
+        "4CB50190207B4758A3F73A796ED0E7B82643E131",
+        "B8E5F13176D2A7A75220028078DBA3BC47EF2265"
+      ]
+    },
+    {
+      "file": "apt-lists/deb.debian.org_debian_dists_bookworm_InRelease",
+      "exitCode": 0,
+      "validSignatureFingerprints": [
+        "4CB50190207B4758A3F73A796ED0E7B82643E131",
+        "B8E5F13176D2A7A75220028078DBA3BC47EF2265",
+        "4D64FEC119C2029067D6E791F8D2585B8783D481"
+      ]
+    }
+  ],
+  "sourceSignerDeveloperKeyringSubstitutedForArchiveKeyring": false,
+  "signatureMutationControl": {
+    "changedCleartextExitCode": 1,
+    "unchangedOriginalRestorationExitCode": 0
+  },
+  "earlierHelperAttempt": {
+    "method": "APT 2.6.1 apt-helper cat-file with LZ4 compression",
+    "outcome": "did-not-reproduce-all-pinned-compressed-bytes",
+    "exactMatchedIndexes": 1,
+    "requiredIndexes": 3,
+    "canonicalInputPayloadsMatched": 3,
+    "frozenPinsChanged": false,
+    "retainedAsFailedAttempt": true
+  },
+  "allPinnedCompressedIndexesExactlyRegenerated": true,
+  "allPinnedOriginalInReleaseSignaturesVerified": true,
+  "completeInputBundleReacquisitionVerified": false,
+  "nativeCompilerBuildExecuted": false,
+  "fullCompilerSdkBootstrapClosureVerified": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

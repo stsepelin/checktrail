@@ -1,0 +1,116 @@
+name: Original GLIBC producer observation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "pr/upstream-producer/glibc-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: original-glibc-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  original-glibc-observation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        timeout-minutes: 5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        timeout-minutes: 5
+        with:
+          node-version: "24"
+      - name: Freeze the exact operator caller and source frame
+        timeout-minutes: 2
+        run: >-
+          node scripts/verify-c-producer-observation.mjs --profile glibc
+          --capture-startup "$RUNNER_TEMP/glibc-operator-startup.json"
+      - name: Prepare the exact original GLIBC inputs without compilation
+        timeout-minutes: 55
+        shell: bash
+        run: |
+          test "$GITHUB_ACTIONS" = "true"
+          test "$RUNNER_ENVIRONMENT" = "github-hosted"
+          test "$RUNNER_OS" = "Linux"
+          test "$RUNNER_ARCH" = "X64"
+          node --version
+          python3 --version
+          uname -m
+          free -h
+          df -h "$RUNNER_TEMP"
+          glibc_needed=$(node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          const c=JSON.parse(readFileSync('scripts/producer-qualification/c-producer-profiles.v1.json','utf8')).profiles.glibc;
+          const b=JSON.parse(readFileSync('scripts/producer-qualification/binutils.v1.json','utf8'));
+          console.log(c.limits.workByteLimit+c.limits.logByteLimit+2*c.files.reduce((a,r)=>a+r.bytes,0)+3*b.files.reduce((a,r)=>a+r.bytes,0)+8*1024**3);
+          NODE
+          )
+          for glibc_sdk in /usr/local/lib/android /usr/share/dotnet /usr/local/.ghcup /opt/hostedtoolcache/CodeQL; do
+            glibc_free=$(node --input-type=module -e 'import {statfsSync} from "node:fs";const s=statfsSync(process.env.RUNNER_TEMP);console.log(s.bavail*s.bsize);')
+            if test "$glibc_free" -ge "$glibc_needed"; then break; fi
+            test ! -L "$glibc_sdk"
+            if test -d "$glibc_sdk"; then
+              sudo du -s -- "$glibc_sdk"
+              sudo rm -rf --one-file-system -- "$glibc_sdk"
+            fi
+          done
+          glibc_free=$(node --input-type=module -e 'import {statfsSync} from "node:fs";const s=statfsSync(process.env.RUNNER_TEMP);console.log(s.bavail*s.bsize);')
+          echo "Observed available bytes: $glibc_free; preparation/retention admission bytes: $glibc_needed"
+          test "$glibc_free" -ge "$glibc_needed"
+          docker info --format '{{json .}}'
+          docker pull --platform linux/amd64 docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c
+          node scripts/verify-binutils-retention-observer.mjs --output "$RUNNER_TEMP/glibc-observer-check"
+          node scripts/acquire-binutils-inputs.mjs --output "$RUNNER_TEMP/glibc-common-inputs" --operator-trust-execution > "$RUNNER_TEMP/glibc-common-admission.log" 2>&1
+          cat "$RUNNER_TEMP/glibc-common-admission.log"
+          node scripts/acquire-c-producer-inputs.mjs --profile glibc --common-inputs "$RUNNER_TEMP/glibc-common-inputs/bundle" --output "$RUNNER_TEMP/glibc-inputs" > "$RUNNER_TEMP/glibc-input-admission.log" 2>&1
+          cat "$RUNNER_TEMP/glibc-input-admission.log"
+          node scripts/qualify-c-producer.mjs --profile glibc --inputs "$RUNNER_TEMP/glibc-inputs/bundle" --output "$RUNNER_TEMP/glibc-result" --prepare-only
+      - name: Observe the original four-hour GLIBC profile and physical outputs
+        timeout-minutes: 255
+        shell: bash
+        run: |
+          set +e
+          node scripts/qualify-c-producer.mjs --profile glibc --inputs "$RUNNER_TEMP/glibc-inputs/bundle" --output "$RUNNER_TEMP/glibc-result" --operator-trust-execution --coordinated-heavy-slot > "$RUNNER_TEMP/glibc-controller.log" 2>&1
+          glibc_controller_status=$?
+          set -e
+          cat "$RUNNER_TEMP/glibc-controller.log"
+          node scripts/verify-c-producer-observation.mjs --profile glibc --result "$RUNNER_TEMP/glibc-result" --startup "$RUNNER_TEMP/glibc-operator-startup.json" --controller-exit "$glibc_controller_status"
+      - name: Retain full bounded original reports and failed-attempt diagnostics
+        if: always()
+        timeout-minutes: 20
+        run: >-
+          python3 -I -S -B scripts/producer-qualification/c-producer-export-evidence.py --profile glibc
+          --repository "$GITHUB_WORKSPACE"
+          --inputs "$RUNNER_TEMP/glibc-inputs"
+          --common-inputs "$RUNNER_TEMP/glibc-common-inputs"
+          --result "$RUNNER_TEMP/glibc-result"
+          --startup "$RUNNER_TEMP/glibc-operator-startup.json"
+          --output "$RUNNER_TEMP/glibc-evidence.zip"
+          --common-admission-log "$RUNNER_TEMP/glibc-common-admission.log"
+          --input-admission-log "$RUNNER_TEMP/glibc-input-admission.log"
+          --controller-log "$RUNNER_TEMP/glibc-controller.log"
+          --observer-check "$RUNNER_TEMP/glibc-observer-check"
+      - name: Independently replay transported original bytes and observations
+        if: always()
+        timeout-minutes: 3
+        run: >-
+          python3 -I -S -B scripts/producer-qualification/c-producer-replay-evidence.py --profile glibc
+          --repository "$GITHUB_WORKSPACE" --archive "$RUNNER_TEMP/glibc-evidence.zip"
+      - name: Upload the original observation archive
+        if: always()
+        timeout-minutes: 5
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: original-glibc-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/glibc-evidence.zip
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
