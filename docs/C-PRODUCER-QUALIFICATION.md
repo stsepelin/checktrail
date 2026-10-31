@@ -123,3 +123,23 @@ refuses a completed-build observation. A valid raw failure archive remains
 incomplete. Complete configuration, original notices, publisher consumption,
 compiler/SDK ancestry and Gate A flags remain false. The hosted carrier and its
 native custody acceptance have not yet been executed for this source slice.
+
+The GLIBC carrier admits only the reported Linux/amd64 Docker28.0.4 Engine
+build6430e49 with its builtin seccomp profile. The original Moby profile,
+LICENSE, NOTICE and AUTHORS bytes are pinned under
+`scripts/producer-qualification/moby-28.0.4/`. The derived GLIBC-only policy
+retains every original rule and adds exactly two argument predicates:
+`clock_settime(1, ...)` and `personality(0xffffffea)`. No capability is added;
+SYS_TIME and SYS_ADMIN must be absent from the effective, permitted and bounding
+sets before the fixed probe can call either setter. The realtime near-miss uses
+an invalid nanosecond argument, never a valid time-changing argument.
+
+Before the unchanged upstream command, separate default-policy and derived-policy
+containers must complete the fixed operator probe. The probe preserves the
+original BZ19408 errno sentinel and legitimate negative persona return, checks
+the monotonic EINVAL behavior, and requires the neighboring persona and realtime
+arguments to remain denied. Both raw logs, complete terminals, image identities,
+unchanged capability sets and cleanup are bound into the receipt and independently
+replayed. An unknown Docker build/profile or failed probe refuses the original
+build. Native acceptance of this revised carrier remains pending; reported Engine
+metadata does not attest the daemon's profile bytes or historical consumption.

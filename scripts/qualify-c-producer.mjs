@@ -4,7 +4,14 @@ import { spawn, execFile } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { Buffer } from "node:buffer";
 import { constants } from "node:fs";
-import { lstat, mkdir, open, readdir, statfs } from "node:fs/promises";
+import {
+  lstat,
+  mkdir,
+  open,
+  readdir,
+  statfs,
+  writeFile,
+} from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -36,6 +43,13 @@ import {
   safeRelative,
   sha256,
 } from "./producer-qualification/c-producer-profile.mjs";
+import {
+  glibcSeccompGeneratedFile,
+  glibcSeccompSourceFiles,
+  loadGlibcSeccomp,
+  validateGlibcDockerMetadata,
+  validateGlibcSyscallProbe,
+} from "./producer-qualification/glibc-seccomp.mjs";
 
 const { AbortController } = globalThis;
 const exec = promisify(execFile);
@@ -60,6 +74,10 @@ const controlFiles = [
   "c-producer-build.sh",
   "c-producer-test-reports.py",
   "binutils-retention-observer.py",
+];
+export const cProducerSourceFiles = (profile) => [
+  ...sourceFiles,
+  ...(profile.sourcePackage === "glibc" ? glibcSeccompSourceFiles : []),
 ];
 
 export function validateCProducerCallerIdentity(uid, gid) {
@@ -302,6 +320,13 @@ export function cProducerArguments(
     String(profile.limits.pidsLimit),
     "--label",
     "io.checktrail.producer-attempt=" + attempt,
+    ...(profile.sourcePackage === "glibc"
+      ? [
+          "--security-opt",
+          "seccomp=" +
+            path.join(destination, "controls", glibcSeccompGeneratedFile),
+        ]
+      : []),
     "--entrypoint",
     "/usr/bin/env",
     ...mount("source", "/inputs", true),
@@ -542,7 +567,7 @@ export async function prepareCProducer(name, inputs, output) {
   await validateInputs(inputs, selected.profile.files);
   const { destination, parent } = await validateDestination(inputs, output);
   const sources = [];
-  for (const file of sourceFiles)
+  for (const file of cProducerSourceFiles(selected.profile))
     sources.push({
       file,
       ...(await identifyFile(
@@ -580,10 +605,173 @@ export async function prepareCProducer(name, inputs, output) {
     sources,
     harness,
     imageIdentity,
+    syscallPolicy:
+      selected.profile.sourcePackage === "glibc"
+        ? await loadGlibcSeccomp()
+        : null,
     buildExecuted: false,
     fullCompilerSdkBootstrapClosureVerified: false,
     gateAComplete: false,
   };
+}
+
+export function cProducerSyscallPreflightArguments(
+  catalog,
+  destination,
+  attempt,
+  mode,
+) {
+  assert.ok(["baseline", "derived"].includes(mode));
+  assert.match(attempt, /^[a-f0-9-]{36}$/u);
+  assert.equal(path.resolve(destination), destination);
+  assert.ok(!/[\r\n,]/u.test(destination));
+  return [
+    "run",
+    "--init",
+    "--pull=never",
+    "--platform",
+    catalog.platform,
+    "--user",
+    "0:0",
+    "--cidfile",
+    path.join(destination, "seccomp-" + mode + ".id"),
+    "--name",
+    "checktrail-producer-" + attempt,
+    "--network",
+    "none",
+    "--cpus",
+    "1",
+    "--memory",
+    "256m",
+    "--pids-limit",
+    "32",
+    "--read-only",
+    "--label",
+    "io.checktrail.producer-attempt=" + attempt,
+    ...(mode === "derived"
+      ? [
+          "--security-opt",
+          "seccomp=" +
+            path.join(destination, "controls", glibcSeccompGeneratedFile),
+        ]
+      : []),
+    "--mount",
+    `type=bind,src=${path.join(destination, "controls")},target=/controller,readonly`,
+    "--entrypoint",
+    "/usr/bin/python3",
+    catalog.image,
+    "-I",
+    "-S",
+    "-B",
+    "/controller/glibc-seccomp-probe.py",
+    mode,
+  ];
+}
+
+async function verifySyscallPreflight(plan, signal, state) {
+  const proof = {
+    schemaVersion: 1,
+    state: "preparing-original-compiler-body-refused",
+    policy: plan.syscallPolicy.generated,
+    modes: {},
+    originalBodyInvoked: false,
+    fullCompilerSdkBootstrapClosureVerified: false,
+    historicalPublisherConsumptionVerified: false,
+    gateAComplete: false,
+  };
+  state.syscallPreflight = proof;
+  for (const mode of ["baseline", "derived"]) {
+    const attempt = randomUUID();
+    const cid = path.join(plan.destination, "seccomp-" + mode + ".id");
+    const log = path.join(plan.destination, "seccomp-" + mode + ".log");
+    const row = { attempt, cleanup: { state: "pending" } };
+    proof.modes[mode] = row;
+    const errors = [];
+    try {
+      row.observer = await observeForeground(
+        () =>
+          spawn(
+            "docker",
+            cProducerSyscallPreflightArguments(
+              plan.catalog,
+              plan.destination,
+              attempt,
+              mode,
+            ),
+            {
+              env: environment,
+              stdio: ["ignore", "pipe", "pipe"],
+            },
+          ),
+        log,
+        {
+          timeoutMs: 30000,
+          maxBytes: 65536,
+          signal,
+          stop: () => cleanupContainer(cid, attempt),
+        },
+      );
+      assert.ok(
+        observedCProducerTerminal(row.observer) && row.observer.exitCode === 0,
+        "GLIBC syscall carrier probe did not complete",
+      );
+      row.record = await checkedJson(log, 65536);
+      row.predicates = validateGlibcSyscallProbe(row.record, mode);
+      const id = (await boundedCProducerBytes(cid, 1024))
+        .toString("utf8")
+        .trim();
+      assert.match(id, /^[a-f0-9]{64}$/u);
+      const inspected = JSON.parse((await docker(["inspect", id])).stdout)[0];
+      assert.equal(inspected.Image, state.image.id);
+      row.imageId = inspected.Image;
+      assert.equal(
+        inspected.Config.Labels["io.checktrail.producer-attempt"],
+        attempt,
+      );
+      assert.equal(inspected.HostConfig.NetworkMode, "none");
+      assert.deepEqual(inspected.HostConfig.CapAdd ?? [], []);
+      assert.deepEqual(inspected.HostConfig.CapDrop ?? [], []);
+      assert.equal(inspected.HostConfig.Privileged, false);
+      assert.deepEqual(
+        inspected.HostConfig.SecurityOpt ?? [],
+        mode === "derived"
+          ? [
+              "seccomp=" +
+                path.join(
+                  plan.destination,
+                  "controls",
+                  glibcSeccompGeneratedFile,
+                ),
+            ]
+          : [],
+      );
+      row.log = await identifyFile(log, 65536);
+      assert.equal(row.log.bytes, row.observer.retainedBytes);
+    } catch (error) {
+      errors.push(error);
+      proof.state = "failed-original-compiler-body-refused";
+    } finally {
+      try {
+        row.cleanup = await cleanupContainer(cid, attempt);
+      } catch (error) {
+        row.cleanup = { state: "unavailable", error: String(error) };
+        proof.state = "cleanup-failed-original-compiler-body-refused";
+        errors.push(error);
+      }
+    }
+    if (errors.length === 1) throw errors[0];
+    if (errors.length > 1)
+      throw new AggregateError(errors, "Syscall preflight and cleanup failed", {
+        cause: errors.at(-1),
+      });
+  }
+  assert.deepEqual(
+    proof.modes.baseline.record.capabilities,
+    proof.modes.derived.record.capabilities,
+    "Derived GLIBC policy changed observed default capabilities",
+  );
+  proof.state = "exact-kernel-predicates-observed-original-body-not-invoked";
+  return proof;
 }
 
 export function cProducerCustodyPreflightArguments(
@@ -802,6 +990,14 @@ async function run(plan) {
   );
   assert.equal(daemon.OSType, "linux");
   assert.match(daemon.Architecture, /^(x86_64|amd64)$/u);
+  const syscallRuntime = plan.syscallPolicy
+    ? validateGlibcDockerMetadata(
+        JSON.parse(
+          (await docker(["version", "--format", "{{json .}}"])).stdout,
+        ),
+        daemon,
+      )
+    : null;
   const image = async () =>
     validateObservedImage(
       JSON.parse((await docker(["image", "inspect", catalog.image])).stdout)[0],
@@ -825,6 +1021,7 @@ async function run(plan) {
     sourcePins: plan.sources,
     harnessPins: plan.harness,
     image: initialImage,
+    syscallRuntime,
     limits: profile.limits,
     attempt,
     state: "preparing",
@@ -863,8 +1060,10 @@ async function run(plan) {
       await mkdir(path.dirname(target), { recursive: true, mode: 0o700 });
       await copyPinnedInput(path.join(inputs, row.file), target, row);
     }
-    const selectedControls = plan.sources.filter((row) =>
-      controlFiles.includes(row.file),
+    const selectedControls = plan.sources.filter(
+      (row) =>
+        controlFiles.includes(row.file) ||
+        (plan.syscallPolicy && row.file === "glibc-seccomp-probe.py"),
     );
     for (const row of selectedControls)
       await copyPinnedInput(
@@ -872,7 +1071,23 @@ async function run(plan) {
         path.join(controls, row.file),
         row,
       );
+    if (plan.syscallPolicy) {
+      await writeFile(
+        path.join(controls, glibcSeccompGeneratedFile),
+        plan.syscallPolicy.bytes,
+        { flag: "wx", mode: 0o600 },
+      );
+      selectedControls.push(plan.syscallPolicy.generated);
+      state.generatedControlPins = [plan.syscallPolicy.generated];
+    }
     await validateInputs(bundle, profile.files);
+    await validateInputs(controls, selectedControls);
+    if (plan.syscallPolicy)
+      await verifySyscallPreflight(plan, controller.signal, state);
+    // The fixed probes execute trusted operator code; re-admit all original bytes
+    // before the much longer unchanged upstream build is allowed to start.
+    await validateInputs(cProducerDirectory, plan.sources);
+    await validateInputs(path.dirname(self), plan.harness);
     await validateInputs(controls, selectedControls);
     await verifyCustodyPreflight(plan, caller, controller.signal, state);
     assert.ok(
@@ -979,6 +1194,27 @@ async function run(plan) {
     await validateInputs(cProducerDirectory, plan.sources);
     await validateInputs(path.dirname(self), plan.harness);
     await validateInputs(controls, selectedControls);
+    if (plan.syscallPolicy) {
+      assert.deepEqual(
+        validateGlibcDockerMetadata(
+          JSON.parse(
+            (await docker(["version", "--format", "{{json .}}"])).stdout,
+          ),
+          JSON.parse((await docker(["info", "--format", "{{json .}}"])).stdout),
+        ),
+        syscallRuntime,
+        "Qualified Docker metadata changed during original execution",
+      );
+      for (const mode of ["baseline", "derived"])
+        assert.deepEqual(
+          await identifyFile(
+            path.join(destination, "seccomp-" + mode + ".log"),
+            65536,
+          ),
+          state.syscallPreflight.modes[mode].log,
+          "Original syscall preflight log changed",
+        );
+    }
     assert.deepEqual(
       await identifyFile(
         path.join(destination, "custody-preflight/test-reports.json"),
