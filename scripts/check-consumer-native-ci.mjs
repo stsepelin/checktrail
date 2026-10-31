@@ -25,7 +25,10 @@ import {
   requireConsumerPrivateDirectory,
   readConsumerPrivateFile,
 } from "./consumer-native-host-storage.mjs";
-import { readConsumerNativeCapsuleArtifacts } from "./consumer-native-ci-artifacts.mjs";
+import {
+  consumerNativeCIDirectory,
+  readConsumerNativeCapsuleArtifacts,
+} from "./consumer-native-ci-artifacts.mjs";
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url))),
   [manifest, inventory, profiles] = await Promise.all(
     [
@@ -54,8 +57,9 @@ if (process.argv.length === 4 && process.argv[2] === "--publish") {
     ci.runAttempt,
     "New publisher cannot reuse an earlier job START",
   );
-  const directory = process.env.CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY;
-  assert.ok(directory && path.isAbsolute(directory));
+  const directory = consumerNativeCIDirectory(
+    process.env.CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY,
+  );
   await requireConsumerPrivateDirectory(directory);
   assert.deepEqual(
     (await readdir(directory)).sort(),
@@ -140,7 +144,9 @@ if (process.argv.length === 4 && process.argv[2] === "--publish") {
   } else {
     const capsules = selected.length
         ? await readConsumerNativeCapsuleArtifacts(
-            process.env.CHECKTRAIL_NATIVE_CAPSULE_ARTIFACTS,
+            consumerNativeCIDirectory(
+              process.env.CHECKTRAIL_NATIVE_CAPSULE_ARTIFACTS,
+            ),
             selected,
             bindings,
           )

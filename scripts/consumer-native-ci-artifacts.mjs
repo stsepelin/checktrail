@@ -8,6 +8,14 @@ import {
   consumerNativeCapsuleFilename,
 } from "./consumer-native-acceptance-capsule.mjs";
 import { consumerNativeArtifactName } from "./consumer-native-job-claims.mjs";
+/** Convert only Windows separator spelling; physical/link/ACL admission stays strict. */
+export function consumerNativeCIDirectory(value, paths = path) {
+  assert.ok(
+    typeof value === "string" && paths.isAbsolute(value),
+    "Native CI directory must be absolute",
+  );
+  return paths.sep === "\\" ? value.replaceAll("/", "\\") : value;
+}
 async function directory(filename) {
   assert.equal(await realpath(filename), filename);
   const stat = await lstat(filename);
