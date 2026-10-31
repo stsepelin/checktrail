@@ -47,6 +47,7 @@ const {
   originalGoArguments,
   goObserverArguments,
   captureGoSourceFrame,
+  reconcileGoRetentionRaces,
   goBootstrapSourceFiles,
 } = await import(
   new URL("../../scripts/qualify-go-bootstrap-producer.mjs", import.meta.url)
@@ -1016,6 +1017,245 @@ print(json.dumps({'boundaryBytes':512*1024**2,'oversizedCacheRefused':True,'link
     linkRefused: true,
     nativeExecuted: false,
   });
+});
+
+test("Go retention restarts only disappearing mutable work scans and retains strict physical refusals", async (t) => {
+  const directory = await realpath(await fixture(t, {}));
+  const program = String.raw`import contextlib,errno,importlib.util,io,json,os,sys
+from pathlib import Path
+spec=importlib.util.spec_from_file_location('observer',sys.argv[1]);w=importlib.util.module_from_spec(spec);spec.loader.exec_module(w);base=Path(sys.argv[2]);original_scan=os.scandir;original_clock=w.time.monotonic;cases=[]
+for mode in ['stable','stat','open','repeat','deadline','bundle','controls','replacement','root-replacement','oversized','link','missing-root']:
+ case=base/mode;case.mkdir();roots=[case/name for name in ['bundle','controls','work']]
+ for p in roots:p.mkdir()
+ cache=roots[2]/'cache';cache.mkdir();(cache/'keep').write_bytes(b'1234567');target_root=roots[0]if mode=='bundle'else roots[1]if mode=='controls'else roots[2]
+ target=target_root/'cache'
+ if target!=cache:target.mkdir()
+ if mode in ['stat','repeat','deadline','bundle','controls']:(target/'volatile').write_bytes(b'volatile')
+ if mode in ['open','replacement']:(target/'volatile').mkdir()
+ if mode=='oversized':
+  with(cache/'large').open('wb')as f:f.truncate(w.MAX_LEAF_BYTES+1)
+ if mode=='link':(cache/'link').symlink_to(case)
+ if mode=='missing-root':roots[1].rmdir()
+ target_identity=(target.stat().st_dev,target.stat().st_ino);root_identity=(roots[2].stat().st_dev,roots[2].stat().st_ino);state={'hits':0,'clock':0,'fds':set()}
+ class Proxy:
+  def __init__(self,entry,fd):self.entry=entry;self.name=entry.name;self.fd=fd
+  def stat(self,follow_symlinks):
+   try:info=self.entry.stat(follow_symlinks=follow_symlinks)
+   except FileNotFoundError:
+    if mode=='deadline':state['clock']=w.MAX_SECONDS+1
+    raise
+   if self.name=='volatile'and mode in ['open','replacement']and state['hits']==0:
+    os.rmdir(self.name,dir_fd=self.fd);state['hits']+=1
+    if mode=='replacement':os.symlink(str(case),self.name,dir_fd=self.fd)
+   return info
+ class Scan:
+  def __init__(self,fd):self.fd=fd
+  def __enter__(self):
+   identity=os.fstat(self.fd);state['fds'].add(self.fd)
+   is_target=(identity.st_dev,identity.st_ino)==target_identity
+   if is_target and mode=='repeat':
+    fd=os.open('volatile',os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600,dir_fd=self.fd)if state['hits']else None
+    if fd is not None:os.close(fd)
+   with original_scan(self.fd)as scan:entries=list(scan)
+   if is_target and mode in ['stat','repeat','deadline','bundle','controls']and(mode=='repeat'or state['hits']==0):
+    assert any(e.name=='volatile'for e in entries);os.unlink('volatile',dir_fd=self.fd);state['hits']+=1
+   if mode=='root-replacement'and(identity.st_dev,identity.st_ino)==root_identity and state['hits']==0:
+    roots[2].rename(case/'old-work');roots[2].symlink_to(case/'old-work');state['hits']+=1
+   return iter([Proxy(entry,self.fd)for entry in entries])
+  def __exit__(self,*args):return False
+ os.scandir=lambda fd:Scan(fd);w.time.monotonic=lambda:original_clock()+state['clock'];errors=io.StringIO();answer=None;failure=None
+ try:
+  with contextlib.redirect_stderr(errors):
+   try:answer=w.count_roots(roots)
+   except Exception as error:failure=error
+ finally:os.scandir=original_scan;w.time.monotonic=original_clock
+ diagnostics=[json.loads(line)for line in errors.getvalue().splitlines()]
+ if mode in ['stable','stat','open']:
+  assert failure is None,(mode,repr(failure));assert answer=={'bytes':7,'files':1,'directories':4},(mode,answer)
+  assert len(diagnostics)==(0 if mode=='stable'else 1)
+ elif mode in ['repeat','bundle','controls','missing-root']:
+  assert type(failure)is FileNotFoundError,(mode,repr(failure));assert answer is None
+  assert state['hits']==(3 if mode=='repeat'else 0 if mode=='missing-root'else 1)
+  assert len(diagnostics)==(2 if mode=='repeat'else 0)
+ elif mode in ['deadline','oversized','link','root-replacement']:
+  assert type(failure)is ValueError,(mode,repr(failure));assert answer is None
+  reason={'deadline':'deadline','oversized':'regular-leaf','link':'linked or nonregular','root-replacement':'root identity'}[mode];assert reason in str(failure),(mode,repr(failure))
+  assert len(diagnostics)==(1 if mode=='deadline'else 0),(mode,diagnostics)
+ elif mode=='replacement':
+  assert isinstance(failure,OSError)and failure.errno in [errno.ENOTDIR,errno.ELOOP],repr(failure);assert answer is None and not diagnostics
+ for index,event in enumerate(diagnostics,1):
+  assert event=={'schemaVersion':1,'kind':'mutable-work-scan-retry','sequence':1,'discardedAttempt':index,'maximumAttempts':3,'errno':errno.ENOENT}
+ for fd in state['fds']:
+  try:os.fstat(fd)
+  except OSError as error:assert error.errno==errno.EBADF
+  else:raise AssertionError('observer directory fd leaked')
+ cases.append(mode)
+print(json.dumps({'cases':cases,'actualFilesystemDeletion':True,'sdkCompilerOrDockerExecuted':False}))`;
+  const { stdout } = await exec(
+    "python3",
+    [
+      "-I",
+      "-S",
+      "-B",
+      "-c",
+      program,
+      path.join(
+        root,
+        "scripts/producer-qualification/go-bootstrap-retention-observer.py",
+      ),
+      directory,
+    ],
+    { timeout: 10000, maxBuffer: 1024 ** 2 },
+  );
+  assert.deepEqual(JSON.parse(stdout), {
+    cases: [
+      "stable",
+      "stat",
+      "open",
+      "repeat",
+      "deadline",
+      "bundle",
+      "controls",
+      "replacement",
+      "root-replacement",
+      "oversized",
+      "link",
+      "missing-root",
+    ],
+    actualFilesystemDeletion: true,
+    sdkCompilerOrDockerExecuted: false,
+  });
+});
+
+test("Go retention retry diagnostics bind complete sample sequences and exact bounded attempt identities", () => {
+  const event = {
+    schemaVersion: 1,
+    kind: "mutable-work-scan-retry",
+    sequence: 1,
+    discardedAttempt: 1,
+    maximumAttempts: 3,
+    errno: 2,
+  };
+  const lastSample = {
+    schemaVersion: 1,
+    kind: "sample",
+    sequence: 3,
+    bytes: 7,
+    files: 1,
+    directories: 4,
+  };
+  const completed = {
+    state: "completed",
+    samples: 3,
+    retainedLogBytes: 0,
+    lastSample,
+  };
+  const encode = (chunks: Uint8Array[]) => {
+    const message = (stream: string, value: unknown) => ({
+      stream,
+      base64: Buffer.from(JSON.stringify(value) + "\n").toString("base64"),
+    });
+    const records = [
+      message("stdout", {
+        schemaVersion: 1,
+        kind: "ready",
+        roots: ["/observed/bundle", "/observed/controls", "/observed/work"],
+      }),
+    ];
+    for (let sequence = 1; sequence <= 3; sequence++) {
+      records.push(
+        message("stdin", { schemaVersion: 1, kind: "sample", sequence }),
+      );
+      records.push(message("stdout", { ...lastSample, sequence }));
+    }
+    records.push(
+      ...chunks.map((bytes) => ({
+        stream: "stderr",
+        base64: Buffer.from(bytes).toString("base64"),
+      })),
+    );
+    const raw = Buffer.from(
+      records.map((row) => JSON.stringify(row) + "\n").join(""),
+    );
+    completed.retainedLogBytes = raw.length;
+    return raw;
+  };
+  const rows = (values: unknown[]) =>
+    encode([
+      Buffer.from(values.map((value) => JSON.stringify(value) + "\n").join("")),
+    ]);
+  const events = [
+    event,
+    { ...event, discardedAttempt: 2 },
+    { ...event, sequence: 3 },
+  ];
+  const bytes = Buffer.from(
+    events.map((value) => JSON.stringify(value) + "\n").join(""),
+  );
+  const value = reconcileGoRetentionRaces(
+    encode([bytes.subarray(0, 7), bytes.subarray(7, 101), bytes.subarray(101)]),
+    completed,
+  );
+  assert.equal(value.discardedScanAttempts, 3);
+  assert.deepEqual(value.samplesWithDisappearance, [1, 3]);
+  assert.deepEqual(value.events, events);
+  assert.equal(value.completeScanRequired, true);
+  assert.equal(value.nativeFilesystemQuotaEnforced, false);
+  assert.equal(value.coherentInstantaneousSnapshotClaimed, false);
+  assert.deepEqual(reconcileGoRetentionRaces(encode([]), completed).events, []);
+  assert.throws(() => reconcileGoRetentionRaces(Buffer.alloc(0), completed));
+  const corrupt: unknown[][] = [
+    [{ ...event, kind: "immutable-root-retry" }],
+    [{ ...event, schemaVersion: true }],
+    [{ ...event, sequence: 0 }],
+    [{ ...event, sequence: 4 }],
+    [{ ...event, sequence: true }],
+    [{ ...event, discardedAttempt: 0 }],
+    [{ ...event, discardedAttempt: 2 }],
+    [{ ...event, discardedAttempt: 3 }],
+    [{ ...event, maximumAttempts: 4 }],
+    [{ ...event, errno: "2" }],
+    [{ ...event, extra: "unknown" }],
+    [event, event],
+    [
+      event,
+      { ...event, discardedAttempt: 2 },
+      { ...event, discardedAttempt: 2 },
+    ],
+    [{ ...event, sequence: 3 }, event],
+  ];
+  for (const input of corrupt)
+    assert.throws(() => reconcileGoRetentionRaces(rows(input), completed));
+  assert.throws(
+    () =>
+      reconcileGoRetentionRaces(
+        encode([Buffer.from(JSON.stringify(event))]),
+        completed,
+      ),
+    /Partial/,
+  );
+  assert.throws(
+    () =>
+      reconcileGoRetentionRaces(encode([Buffer.from([0xff, 10])]), completed),
+    /Malformed/,
+  );
+  assert.throws(
+    () =>
+      reconcileGoRetentionRaces(
+        encode([Buffer.from("Traceback: observer failed\n")]),
+        completed,
+      ),
+    SyntaxError,
+  );
+  assert.throws(() =>
+    reconcileGoRetentionRaces(
+      Buffer.from('{"stream":"stderr","base64":"%%%"}\n'),
+      completed,
+    ),
+  );
+  assert.throws(() =>
+    reconcileGoRetentionRaces(rows([event]), { ...completed, state: "failed" }),
+  );
 });
 
 test("Go bootstrap preflight requires the complete selected version line and rejects adjacent conflicting or irrelevant output", () => {

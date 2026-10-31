@@ -487,6 +487,85 @@ function terminalSucceeded(result) {
     result.stopError === null
   );
 }
+export function reconcileGoRetentionRaces(raw, retention) {
+  assert.equal(retention.state, "completed");
+  reconcileRetentionLog(raw, retention);
+  assert.ok(Buffer.isBuffer(raw) && raw.length <= 16 * 1024 ** 2);
+  assert.ok(Number.isSafeInteger(retention.samples) && retention.samples >= 0);
+  const chunks = [];
+  for (const line of raw.toString("utf8").split("\n")) {
+    if (!line) continue;
+    const row = JSON.parse(line);
+    assert.deepEqual(Object.keys(row).sort(), ["base64", "stream"]);
+    assert.ok(["stdin", "stdout", "stderr"].includes(row.stream));
+    assert.equal(typeof row.base64, "string");
+    const bytes = Buffer.from(row.base64, "base64");
+    assert.equal(bytes.toString("base64"), row.base64);
+    if (row.stream === "stderr") chunks.push(bytes);
+  }
+  const stderr = Buffer.concat(chunks),
+    text = stderr.toString("utf8");
+  assert.deepEqual(
+    Buffer.from(text),
+    stderr,
+    "Malformed Go retention diagnostic bytes",
+  );
+  assert.ok(
+    !text || text.endsWith("\n"),
+    "Partial Go retention retry diagnostic",
+  );
+  const events = [],
+    attempts = new Map();
+  for (const line of text.split("\n").filter(Boolean)) {
+    const row = JSON.parse(line);
+    assert.deepEqual(Object.keys(row).sort(), [
+      "discardedAttempt",
+      "errno",
+      "kind",
+      "maximumAttempts",
+      "schemaVersion",
+      "sequence",
+    ]);
+    assert.equal(row.schemaVersion, 1);
+    assert.equal(row.kind, "mutable-work-scan-retry");
+    assert.equal(row.maximumAttempts, 3);
+    assert.equal(row.errno, 2);
+    assert.ok(
+      Number.isSafeInteger(row.sequence) &&
+        row.sequence > 0 &&
+        row.sequence <= retention.samples,
+      "Foreign Go retention retry sample",
+    );
+    assert.ok(
+      Number.isSafeInteger(row.discardedAttempt) &&
+        row.discardedAttempt > 0 &&
+        row.discardedAttempt < 3,
+    );
+    assert.ok(
+      !events.length || row.sequence >= events.at(-1).sequence,
+      "Reordered Go retention retry sample",
+    );
+    assert.equal(
+      row.discardedAttempt,
+      (attempts.get(row.sequence) ?? 0) + 1,
+      "Missing or duplicate Go retention retry attempt",
+    );
+    attempts.set(row.sequence, row.discardedAttempt);
+    events.push(row);
+    assert.ok(events.length <= 2 * retention.samples);
+  }
+  return {
+    scope:
+      "Disappearing entries in owned mutable work only; immutable roots never retried",
+    discardedScanAttempts: events.length,
+    samplesWithDisappearance: [...attempts.keys()],
+    events,
+    completeScanRequired: true,
+    nativeFilesystemQuotaEnforced: false,
+    coherentInstantaneousSnapshotClaimed: false,
+  };
+}
+
 export async function runGoBootstrap(plan, startupFile) {
   assert.equal(
     process.platform,
@@ -1115,7 +1194,10 @@ export async function runGoBootstrap(plan, startupFile) {
           16 * 1024 ** 2,
           caller,
         );
-        reconcileRetentionLog(raw, state.retention);
+        state.retentionRaceObservations = reconcileGoRetentionRaces(
+          raw,
+          state.retention,
+        );
       } catch (error) {
         state.retentionError ??= String(error);
       }

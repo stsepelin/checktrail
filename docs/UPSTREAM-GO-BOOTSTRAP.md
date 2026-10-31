@@ -26,6 +26,17 @@ An unexpected link therefore leaves this finite observation incomplete even when
 the SDK inventory can describe it; general linked SDK output qualification is not
 claimed. No links are followed or silently excluded from the SDK seal.
 
+Concurrent removal of entries in mutable owned work can invalidate a retention
+scan. The observer discards its partial work counters and retries that whole
+work scan at most three times under the same 30-second sample clock and opened
+root identities. Immutable archive/control scans, missing or replaced roots,
+links, unexpected types, unreadable entries and size violations still refuse.
+Repeated disappearance also refuses. Bounded retry diagnostics are retained on
+stderr and reconciled by sample sequence and discarded-attempt identity; the
+shared stdout counter protocol is unchanged. A successful counter comes from a
+completed scan, without claiming a coherent instantaneous filesystem snapshot
+or a native filesystem quota. SDK seals retain their separate strict inventories.
+
 Each original command keeps its CPU, RAM, PID and per-call timeout policy. The
 maintained bootstrap's version call is 60 seconds. Later source stages preserve
 CGO_ENABLED=0 and their original environment; release `-distpack` builds with CGO
