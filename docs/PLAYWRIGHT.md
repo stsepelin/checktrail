@@ -6,8 +6,8 @@ files. It loads native configuration only after execution trust is granted.
 Framework setup files with other names need a future scope contract; unexpected
 test files cannot silently extend the claimed scope.
 
-The native configuration integration accepts exactly Playwright 1.63.0 and
-1.64.0. Other versions are incomplete until this internal API and its lifecycle
+The native configuration integration accepts exactly Playwright 1.63.0,
+1.64.0 and 1.64.1. Other versions are incomplete until this internal API and its lifecycle
 are verified. The public
 reporter API supplies collected tests, project names, expected statuses, retry
 attempts, errors and terminal outcomes. The report identifies Playwright from its
@@ -59,7 +59,10 @@ Playwright 1.63.0 and Chromium headless shell revision 1243. The development sui
 now also passes all four native controls on macOS arm64 with Playwright 1.64.0
 and its Chromium headless shell revision 1248. The preserved Gate A selection
 remains 1.63.0; this additional supported version does not close that gate.
-Fresh hosted acceptance for the dependency update remains required.
+The 1.64.1 update retains identical native configuration and runner bundle bytes
+and Chromium revision 1248. The development native controls also pass with
+1.64.1 and that prepared Chromium revision, including actual DOM assertion
+failures and absent-browser detection. Fresh hosted acceptance remains required.
 
 Prepare development browsers explicitly after installing the locked npm tools:
 
