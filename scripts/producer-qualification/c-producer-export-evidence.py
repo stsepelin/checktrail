@@ -23,6 +23,7 @@ SOURCE_FILES += ['scripts/producer-qualification/' + name for name in [
     'glibc-seccomp.mjs', 'glibc-seccomp.v1.json', 'glibc-seccomp-probe.py',
     'moby-28.0.4/default.json', 'moby-28.0.4/LICENSE', 'moby-28.0.4/NOTICE', 'moby-28.0.4/AUTHORS',
 ]]
+SOURCE_FILES += ['scripts/producer-qualification/c-carrier-observation.mjs','scripts/observe-c-producer-carrier.mjs','.github/workflows/upstream-gcc.yml']
 
 
 def physical(file):
@@ -48,7 +49,9 @@ class BoundedWriter:
         return getattr(self.handle, name)
 
 
-def export(repository, inputs, common, result, startup, output, logs=(), observer_check=None):
+def export(repository, inputs, common, result, startup, output, logs=(), observer_check=None, profile_name='glibc', carrier=None):
+    if profile_name not in ['gcc-12','glibc']:
+        raise RuntimeError('Unknown selected original C profile')
     repository, inputs, common, result, startup, output = [Path(value).absolute() for value in [repository, inputs, common, result, startup, output]]
     physical(output.parent)
     if output.exists() or Path(str(output) + '.part').exists():
@@ -115,12 +118,20 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
     for file, maximum in [
         ('receipt.json', 16 * MIB), ('build-observation.json', 2 * MIB), ('build.log', 512 * MIB),
         ('retention-observer.jsonl', 16 * MIB), ('custody-preflight.log', 65536),
-        ('seccomp-baseline.log', 65536), ('seccomp-derived.log', 65536),
-        ('controls/glibc-native-seccomp.json', 65536),
         ('custody-preflight/test-reports.json', 65536), ('work/original-command.json', 4096),
         ('work/test-reports.json', 8 * MIB), ('work/installed-build-package-identities.txt', MIB),
     ]:
         add(result / file, 'result/' + file, maximum)
+    if profile_name == 'glibc':
+        for file in ['seccomp-baseline.log','seccomp-derived.log','controls/glibc-native-seccomp.json']:
+            add(result / file, 'result/' + file, 65536)
+    else:
+        carrier = Path(carrier).absolute() if carrier is not None else Path(str(result) + '-carrier')
+        for file,maximum in [('receipt.json',MIB),('controller.log',8*MIB),('owner-frame.json',16*MIB)]:
+            add(carrier / file,'carrier/' + file,maximum)
+        for file,maximum in [('.receipt.part',MIB),('.owner-frame.part',16*MIB)]:
+            if os.path.lexists(carrier / file):
+                add(carrier / file,'carrier/failed-' + file[1:],maximum)
     for prefix in ['work/original-test-reports', 'custody-preflight/original-test-reports']:
         source = result / prefix
         if source.exists():
@@ -147,7 +158,7 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
                 add(file, 'result/work/output/' + file.name, 4 * MIB)
     if not rows:
         raise RuntimeError('No raw C attempt observations available')
-    manifest = {'schemaVersion': 1, 'scope': 'Bounded original C receipts, reports and logs; failed attempts retained without promotion.', 'rawFiles': [], 'nativeDirectories': list(directories.values()), 'unavailable': unavailable, 'uncompressedBytes': total, 'originalReportLogBytes': report_total, 'originalReportMemberByteLimit': 64 * MIB, 'originalReportAggregateByteLimit': 512 * MIB, 'binaryPackagePayloadsUploaded': False, 'nativeWorktreeArchiveUploaded': False, 'originalInputPayloadsUploaded': False, 'qualificationComplete': False, 'gateAComplete': False}
+    manifest = {'schemaVersion': 1, 'selectedProfile': profile_name, 'scope': 'Bounded original C receipts, reports and logs; failed attempts retained without promotion.', 'rawFiles': [], 'nativeDirectories': list(directories.values()), 'unavailable': unavailable, 'uncompressedBytes': total, 'originalReportLogBytes': report_total, 'originalReportMemberByteLimit': 64 * MIB, 'originalReportAggregateByteLimit': 512 * MIB, 'binaryPackagePayloadsUploaded': False, 'nativeWorktreeArchiveUploaded': False, 'originalInputPayloadsUploaded': False, 'qualificationComplete': False, 'gateAComplete': False}
     partial = Path(str(output) + '.part')
     with os.fdopen(os.open(partial, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600), 'wb') as handle:
         with zipfile.ZipFile(BoundedWriter(handle), 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=6, allowZip64=True) as archive:
@@ -198,6 +209,8 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--profile',choices=['gcc-12','glibc'],required=True)
+    parser.add_argument('--carrier')
     for name in ['repository', 'inputs', 'common-inputs', 'result', 'startup', 'output']:
         parser.add_argument('--' + name, required=True)
     parser.add_argument('--common-admission-log')
@@ -206,4 +219,4 @@ if __name__ == '__main__':
     parser.add_argument('--observer-check')
     args = parser.parse_args()
     logs = [(label, file) for label, file in [('common-admission', args.common_admission_log), ('input-admission', args.input_admission_log), ('controller', args.controller_log)] if file]
-    print(json.dumps(export(args.repository, args.inputs, args.common_inputs, args.result, args.startup, args.output, logs, args.observer_check)))
+    print(json.dumps(export(args.repository, args.inputs, args.common_inputs, args.result, args.startup, args.output, logs, args.observer_check,args.profile,args.carrier)))

@@ -1,0 +1,108 @@
+name: Original GCC producer observation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "pr/upstream-producer/gcc-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: original-gcc-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-gcc-observation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        timeout-minutes: 5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        timeout-minutes: 5
+        with:
+          node-version: "24"
+      - name: Freeze the selected original GCC source and caller frame
+        timeout-minutes: 2
+        run: >-
+          node scripts/verify-c-producer-observation.mjs --profile gcc-12
+          --capture-startup "$RUNNER_TEMP/gcc-operator-startup.json"
+      - name: Prepare the exact original GCC inputs without compilation
+        timeout-minutes: 55
+        shell: bash
+        run: |
+          test "$GITHUB_ACTIONS" = "true"
+          test "$RUNNER_ENVIRONMENT" = "github-hosted"
+          test "$RUNNER_OS" = "Linux"
+          test "$RUNNER_ARCH" = "X64"
+          node --version
+          python3 --version
+          uname -m
+          free -h
+          df -h "$RUNNER_TEMP"
+          gcc_needed=$(node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          const c=JSON.parse(readFileSync('scripts/producer-qualification/c-producer-profiles.v1.json','utf8')).profiles['gcc-12'];
+          const b=JSON.parse(readFileSync('scripts/producer-qualification/binutils.v1.json','utf8'));
+          console.log(c.limits.workByteLimit+c.limits.logByteLimit+2*c.files.reduce((a,r)=>a+r.bytes,0)+3*b.files.reduce((a,r)=>a+r.bytes,0)+8*1024**3);
+          NODE
+          )
+          gcc_free=$(node --input-type=module -e 'import {statfsSync} from "node:fs";const s=statfsSync(process.env.RUNNER_TEMP);console.log(s.bavail*s.bsize);')
+          echo "Observed available bytes: $gcc_free; preparation/retention admission bytes: $gcc_needed"
+          test "$gcc_free" -ge "$gcc_needed"
+          docker info --format '{{json .}}'
+          docker pull --platform linux/amd64 docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c
+          node scripts/verify-binutils-retention-observer.mjs --output "$RUNNER_TEMP/gcc-observer-check"
+          node scripts/acquire-binutils-inputs.mjs --output "$RUNNER_TEMP/gcc-common-inputs" --operator-trust-execution > "$RUNNER_TEMP/gcc-common-admission.log" 2>&1
+          cat "$RUNNER_TEMP/gcc-common-admission.log"
+          node scripts/acquire-c-producer-inputs.mjs --profile gcc-12 --common-inputs "$RUNNER_TEMP/gcc-common-inputs/bundle" --output "$RUNNER_TEMP/gcc-inputs" > "$RUNNER_TEMP/gcc-input-admission.log" 2>&1
+          cat "$RUNNER_TEMP/gcc-input-admission.log"
+          node scripts/qualify-c-producer.mjs --profile gcc-12 --inputs "$RUNNER_TEMP/gcc-inputs/bundle" --output "$RUNNER_TEMP/gcc-result" --prepare-only
+      - name: Observe the unchanged eight-hour GCC profile within a shorter hosted window
+        timeout-minutes: 260
+        shell: bash
+        run: |
+          set +e
+          node scripts/observe-c-producer-carrier.mjs --profile gcc-12 --inputs "$RUNNER_TEMP/gcc-inputs/bundle" --output "$RUNNER_TEMP/gcc-result" --startup "$RUNNER_TEMP/gcc-operator-startup.json" --operator-trust-execution --coordinated-heavy-slot > "$RUNNER_TEMP/gcc-controller.log" 2>&1
+          gcc_carrier_status=$?
+          set -e
+          cat "$RUNNER_TEMP/gcc-controller.log"
+          node scripts/verify-c-producer-observation.mjs --profile gcc-12 --result "$RUNNER_TEMP/gcc-result" --startup "$RUNNER_TEMP/gcc-operator-startup.json" --controller-exit "$gcc_carrier_status" --carrier "$RUNNER_TEMP/gcc-result-carrier"
+      - name: Retain complete bounded original reports and failed-attempt diagnostics
+        if: always()
+        timeout-minutes: 20
+        run: >-
+          python3 -I -S -B scripts/producer-qualification/c-producer-export-evidence.py --profile gcc-12
+          --repository "$GITHUB_WORKSPACE"
+          --inputs "$RUNNER_TEMP/gcc-inputs"
+          --common-inputs "$RUNNER_TEMP/gcc-common-inputs"
+          --result "$RUNNER_TEMP/gcc-result"
+          --carrier "$RUNNER_TEMP/gcc-result-carrier"
+          --startup "$RUNNER_TEMP/gcc-operator-startup.json"
+          --output "$RUNNER_TEMP/gcc-evidence.zip"
+          --common-admission-log "$RUNNER_TEMP/gcc-common-admission.log"
+          --input-admission-log "$RUNNER_TEMP/gcc-input-admission.log"
+          --controller-log "$RUNNER_TEMP/gcc-controller.log"
+          --observer-check "$RUNNER_TEMP/gcc-observer-check"
+      - name: Independently replay the selected original GCC evidence
+        if: always()
+        timeout-minutes: 3
+        run: >-
+          python3 -I -S -B scripts/producer-qualification/c-producer-replay-evidence.py --profile gcc-12
+          --repository "$GITHUB_WORKSPACE" --archive "$RUNNER_TEMP/gcc-evidence.zip"
+      - name: Upload original GCC observation bytes
+        if: always()
+        timeout-minutes: 5
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: original-gcc-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/gcc-evidence.zip
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0

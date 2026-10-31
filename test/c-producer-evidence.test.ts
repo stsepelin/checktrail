@@ -23,6 +23,8 @@ const catalog = JSON.parse(
   ),
 );
 const profile = catalog.profiles.glibc;
+const catalogSha256 =
+  "0309dcd61b505020cc19bb67beeca7b6a62103c8194784c9eb224bb75466dbc6";
 const terminal = {
   exitCode: 0,
   signal: null,
@@ -39,8 +41,15 @@ const startup = {
   sourceOrCompilerExecuted: false,
   hardwareHostAttestationPerformed: false,
   gateAComplete: false,
+  selectedProfile: {
+    name: "glibc",
+    profile: profile.profile,
+    sourceVersion: profile.sourceVersion,
+    catalogSha256,
+  },
 };
 const syntheticHeader = () => ({
+  catalogSha256,
   state: "original-command-completed-qualification-incomplete",
   profile: profile.profile,
   sourceVersion: profile.sourceVersion,
@@ -107,6 +116,48 @@ test("C observation header schema keeps synthetic protocol controls separate fro
         ),
       /Unexpected original controller exit/,
     );
+});
+
+test("GCC live header binds its closed startup profile and preserves the GLIBC custody fixture separately", () => {
+  const gcc = catalog.profiles["gcc-12"];
+  const header = {
+    ...syntheticHeader(),
+    profile: gcc.profile,
+    sourceVersion: gcc.sourceVersion,
+    limits: gcc.limits,
+  };
+  const gccStartup = {
+    ...startup,
+    selectedProfile: {
+      name: "gcc-12",
+      profile: gcc.profile,
+      sourceVersion: gcc.sourceVersion,
+      catalogSha256,
+    },
+  };
+  assert.equal(
+    validateCObservationHeader(header, gcc, gccStartup, 2).gateAComplete,
+    false,
+  );
+  assert.throws(
+    () => validateCObservationHeader(header, gcc, startup, 2),
+    /Startup/u,
+  );
+  assert.throws(
+    () => validateCObservationHeader(header, profile, gccStartup, 2),
+    /Startup/u,
+  );
+  const changed = {
+    ...gccStartup,
+    selectedProfile: {
+      ...gccStartup.selectedProfile,
+      catalogSha256: "0".repeat(64),
+    },
+  };
+  assert.throws(
+    () => validateCObservationHeader(header, gcc, changed, 2),
+    /Startup/u,
+  );
 });
 test("C observation refuses incomplete terminal, stale profile, wrong caller and empty physical output declarations", () => {
   const changes: ((value: ReturnType<typeof syntheticHeader>) => void)[] = [

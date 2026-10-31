@@ -29,9 +29,15 @@ import {
 import { reconcileRetentionLog } from "./producer-qualification/binutils-retention-observer.mjs";
 import {
   loadCProducerProfile,
+  cProducerCatalogSha256,
   sha256,
 } from "./producer-qualification/c-producer-profile.mjs";
 import { registryImageIdentity } from "./producer-qualification/binutils-image-identity.mjs";
+import {
+  requireCObservationProfile,
+  validateCStartupProfile,
+  validateGccCarrierReceipt,
+} from "./producer-qualification/c-carrier-observation.mjs";
 
 const exec = promisify(execFile);
 const repository = path.resolve(
@@ -64,6 +70,9 @@ export const cObservationSources = [
   ...glibcSeccompSourceFiles.map(
     (file) => "scripts/producer-qualification/" + file,
   ),
+  "scripts/producer-qualification/c-carrier-observation.mjs",
+  "scripts/observe-c-producer-carrier.mjs",
+  ".github/workflows/upstream-gcc.yml",
 ];
 const metadataGit = async (args) =>
   (
@@ -95,6 +104,9 @@ export function validateCObservationHeader(
   startup,
   controllerExit,
 ) {
+  const name = requireCObservationProfile(profile.sourcePackage);
+  validateCStartupProfile(startup, name, profile, cProducerCatalogSha256);
+  assert.equal(receipt.catalogSha256, cProducerCatalogSha256);
   assert.equal(controllerExit, 2, "Unexpected original controller exit");
   assert.equal(
     receipt.state,
@@ -198,7 +210,9 @@ export function validateCObservationHeader(
   };
 }
 
-export async function captureCObservationStartup(output) {
+export async function captureCObservationStartup(name, output) {
+  requireCObservationProfile(name);
+  const { profile, catalogSha256 } = await loadCProducerProfile(name);
   assert.deepEqual(
     [process.platform, process.arch, os.machine()],
     ["linux", "x64", "x86_64"],
@@ -234,6 +248,12 @@ export async function captureCObservationStartup(output) {
     schemaVersion: 1,
     state: "operator-source-and-caller-frame",
     gitHead,
+    selectedProfile: {
+      name,
+      profile: profile.profile,
+      sourceVersion: profile.sourceVersion,
+      catalogSha256,
+    },
     caller,
     host: {
       platform: process.platform,
@@ -258,19 +278,20 @@ export async function captureCObservationStartup(output) {
   };
 }
 
-export async function verifyCLiveObservation(
-  result,
-  startupFile,
-  controllerExit,
-) {
-  const { catalog, profile, catalogSha256 } =
-    await loadCProducerProfile("glibc");
+export async function verifyCObservationStartup(name, startupFile) {
+  requireCObservationProfile(name);
+  assert.deepEqual(
+    [process.platform, process.arch, os.machine()],
+    ["linux", "x64", "x86_64"],
+  );
+  const { profile, catalogSha256 } = await loadCProducerProfile(name);
   const startupRaw = await boundedCProducerBytes(
     startupFile,
     1024 ** 2,
     captureCProducerCallerIdentity(),
   );
   const startup = JSON.parse(startupRaw);
+  validateCStartupProfile(startup, name, profile, catalogSha256);
   assert.deepEqual(startup.caller, captureCProducerCallerIdentity());
   assert.deepEqual(
     startup.sourcePins.map((row) => row.file),
@@ -281,6 +302,22 @@ export async function verifyCLiveObservation(
     (await metadataGit(["rev-parse", "HEAD"])).toString("utf8").trim(),
     startup.gitHead,
     "Source revision changed during original execution",
+  );
+  return { startupRaw, startup };
+}
+
+export async function verifyCLiveObservation(
+  name,
+  result,
+  startupFile,
+  controllerExit,
+  carrierDirectory = null,
+) {
+  requireCObservationProfile(name);
+  const { catalog, profile, catalogSha256 } = await loadCProducerProfile(name);
+  const { startupRaw, startup } = await verifyCObservationStartup(
+    name,
+    startupFile,
   );
   const receiptFile = path.join(result, "receipt.json");
   const receiptRaw = await boundedCProducerBytes(receiptFile, 16 * 1024 ** 2);
@@ -352,25 +389,82 @@ export async function verifyCLiveObservation(
       ].includes(row.file),
     ),
   );
-  const syscall = validateGlibcSyscallPreflight(
-    receipt,
-    await loadGlibcSeccomp(),
-    observedCProducerTerminal,
-  );
-  await validateInputs(
-    path.join(result, "controls"),
-    receipt.generatedControlPins,
-  );
-  for (const mode of ["baseline", "derived"]) {
-    const raw = await boundedCProducerBytes(
-      path.join(result, "seccomp-" + mode + ".log"),
-      65536,
+  let carrierObservation = null;
+  if (name === "glibc") {
+    const syscall = validateGlibcSyscallPreflight(
+      receipt,
+      await loadGlibcSeccomp(),
+      observedCProducerTerminal,
+    );
+    await validateInputs(
+      path.join(result, "controls"),
+      receipt.generatedControlPins,
+    );
+    for (const mode of ["baseline", "derived"]) {
+      const raw = await boundedCProducerBytes(
+        path.join(result, "seccomp-" + mode + ".log"),
+        65536,
+      );
+      assert.deepEqual(
+        { bytes: raw.length, sha256: sha256(raw) },
+        syscall.modes[mode].log,
+      );
+      assert.deepEqual(JSON.parse(raw), syscall.modes[mode].record);
+    }
+    assert.equal(carrierDirectory, null);
+  } else {
+    assert.equal(receipt.syscallRuntime, null);
+    assert.ok(
+      !Object.hasOwn(receipt, "syscallPreflight") &&
+        !Object.hasOwn(receipt, "generatedControlPins"),
+      "GCC must retain its original carrier policy",
+    );
+    assert.ok(typeof carrierDirectory === "string");
+    const carrierRaw = await boundedCProducerBytes(
+      path.join(carrierDirectory, "receipt.json"),
+      1024 ** 2,
+    );
+    const carrier = JSON.parse(carrierRaw);
+    validateGccCarrierReceipt(carrier, profile, catalogSha256);
+    assert.deepEqual(carrier.startupInput, {
+      bytes: startupRaw.length,
+      sha256: sha256(startupRaw),
+    });
+    assert.deepEqual(
+      await identifyFile(
+        path.join(carrierDirectory, "controller.log"),
+        8 * 1024 ** 2,
+      ),
+      carrier.log,
+    );
+    const ownerRaw = await boundedCProducerBytes(
+      path.join(carrierDirectory, "owner-frame.json"),
+      16 * 1024 ** 2,
     );
     assert.deepEqual(
-      { bytes: raw.length, sha256: sha256(raw) },
-      syscall.modes[mode].log,
+      { bytes: ownerRaw.length, sha256: sha256(ownerRaw) },
+      carrier.ownerFrame,
     );
-    assert.deepEqual(JSON.parse(raw), syscall.modes[mode].record);
+    const owner = JSON.parse(ownerRaw);
+    assert.equal(owner.attempt, receipt.attempt);
+    assert.equal(owner.attempt, carrier.ownerAttempt);
+    assert.equal(owner.profile, receipt.profile);
+    assert.equal(owner.sourceVersion, receipt.sourceVersion);
+    assert.equal(owner.catalogSha256, receipt.catalogSha256);
+    assert.deepEqual(owner.limits, receipt.limits);
+    assert.deepEqual(owner.sourcePins, receipt.sourcePins);
+    assert.deepEqual(owner.harnessPins, receipt.harnessPins);
+    assert.deepEqual(owner.host.capturedCaller, startup.caller);
+    assert.equal(carrier.cleanup.producer.id, receipt.cleanup.id);
+    assert.equal(
+      carrier.cleanup.retention.id,
+      receipt.retentionObserverCleanup.id,
+    );
+    carrierObservation = {
+      receipt: { bytes: carrierRaw.length, sha256: sha256(carrierRaw) },
+      ownerFrame: carrier.ownerFrame,
+      controllerLog: carrier.log,
+    };
   }
   assert.deepEqual(
     await identifyFile(
@@ -405,7 +499,10 @@ export async function verifyCLiveObservation(
         ].includes(row.file),
       )
       .reduce((sum, row) => sum + row.bytes, 0) +
-    receipt.generatedControlPins.reduce((sum, row) => sum + row.bytes, 0);
+    (receipt.generatedControlPins ?? []).reduce(
+      (sum, row) => sum + row.bytes,
+      0,
+    );
   assert.ok(
     receipt.finalRetention.bytes <= profile.limits.workByteLimit + allowance,
   );
@@ -437,7 +534,7 @@ export async function verifyCLiveObservation(
   await verifyCProducerReports(
     preflight,
     path.join(preflightRoot, "original-test-reports"),
-    profile,
+    (await loadCProducerProfile("glibc")).profile,
     startup.caller,
   );
   assert.deepEqual(
@@ -491,7 +588,9 @@ export async function verifyCLiveObservation(
   );
   const value = {
     schemaVersion: 1,
-    state: "original-glibc-command-observed-qualification-incomplete",
+    state: "original-" + name + "-command-observed-qualification-incomplete",
+    selectedProfile: startup.selectedProfile,
+    carrier: carrierObservation,
     ...summary,
     originalTestEvidenceState: receipt.buildCompletion.testEvidenceState,
     controllerExit,
@@ -521,27 +620,32 @@ if (
 ) {
   try {
     const args = process.argv.slice(2);
-    if (args.length === 2 && args[0] === "--capture-startup")
+    assert.equal(args[0], "--profile");
+    const name = requireCObservationProfile(args[1]);
+    if (args.length === 4 && args[2] === "--capture-startup")
       process.stdout.write(
         JSON.stringify(
-          await captureCObservationStartup(path.resolve(args[1])),
+          await captureCObservationStartup(name, path.resolve(args[3])),
         ) + "\n",
       );
     else {
       assert.ok(
-        args.length === 6 &&
-          args[0] === "--result" &&
-          args[2] === "--startup" &&
-          args[4] === "--controller-exit" &&
-          /^[0-9]{1,3}$/u.test(args[5]),
-        "Usage: --capture-startup NEW_FILE | --result RESULT --startup FILE --controller-exit STATUS",
+        args.length === (name === "gcc-12" ? 10 : 8) &&
+          args[2] === "--result" &&
+          args[4] === "--startup" &&
+          args[6] === "--controller-exit" &&
+          /^[0-9]{1,3}$/u.test(args[7]) &&
+          (name !== "gcc-12" || args[8] === "--carrier"),
+        "Usage: --profile gcc-12|glibc --capture-startup NEW_FILE | --profile gcc-12|glibc --result RESULT --startup FILE --controller-exit STATUS [--carrier GCC_CARRIER]",
       );
       process.stdout.write(
         JSON.stringify(
           await verifyCLiveObservation(
-            path.resolve(args[1]),
+            name,
             path.resolve(args[3]),
-            Number(args[5]),
+            path.resolve(args[5]),
+            Number(args[7]),
+            name === "gcc-12" ? path.resolve(args[9]) : null,
           ),
         ) + "\n",
       );

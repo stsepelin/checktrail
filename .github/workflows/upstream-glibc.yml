@@ -31,7 +31,7 @@ jobs:
       - name: Freeze the exact operator caller and source frame
         timeout-minutes: 2
         run: >-
-          node scripts/verify-c-producer-observation.mjs
+          node scripts/verify-c-producer-observation.mjs --profile glibc
           --capture-startup "$RUNNER_TEMP/glibc-operator-startup.json"
       - name: Prepare the exact original GLIBC inputs without compilation
         timeout-minutes: 55
@@ -82,12 +82,12 @@ jobs:
           glibc_controller_status=$?
           set -e
           cat "$RUNNER_TEMP/glibc-controller.log"
-          node scripts/verify-c-producer-observation.mjs --result "$RUNNER_TEMP/glibc-result" --startup "$RUNNER_TEMP/glibc-operator-startup.json" --controller-exit "$glibc_controller_status"
+          node scripts/verify-c-producer-observation.mjs --profile glibc --result "$RUNNER_TEMP/glibc-result" --startup "$RUNNER_TEMP/glibc-operator-startup.json" --controller-exit "$glibc_controller_status"
       - name: Retain full bounded original reports and failed-attempt diagnostics
         if: always()
         timeout-minutes: 20
         run: >-
-          python3 -I -S -B scripts/producer-qualification/c-producer-export-evidence.py
+          python3 -I -S -B scripts/producer-qualification/c-producer-export-evidence.py --profile glibc
           --repository "$GITHUB_WORKSPACE"
           --inputs "$RUNNER_TEMP/glibc-inputs"
           --common-inputs "$RUNNER_TEMP/glibc-common-inputs"
@@ -102,7 +102,7 @@ jobs:
         if: always()
         timeout-minutes: 3
         run: >-
-          python3 -I -S -B scripts/producer-qualification/c-producer-replay-evidence.py
+          python3 -I -S -B scripts/producer-qualification/c-producer-replay-evidence.py --profile glibc
           --repository "$GITHUB_WORKSPACE" --archive "$RUNNER_TEMP/glibc-evidence.zip"
       - name: Upload the original observation archive
         if: always()

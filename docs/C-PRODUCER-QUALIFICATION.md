@@ -58,8 +58,9 @@ jobs have a [shorter platform limit](https://docs.github.com/en/actions/referenc
 command before its cutoff, but cannot establish full eight-hour platform
 support. A cutoff is incomplete external-platform evidence. An existing
 operator-provided native Linux x64 carrier is needed to support the full
-profile. No workflow, new infrastructure, or native acceptance is supplied by
-this source-only slice.
+profile. The hosted observer does not provision infrastructure or establish
+full eight-hour platform support. Native acceptance remains separate from
+source and synthetic protocol controls.
 
 Original result bytes and each report's outcomes remain separate by generated
 path. Repeated top-level/subdirectory outcomes are not independent evidence.
@@ -112,7 +113,7 @@ Offline replay never executes transported code. Use the reviewed checkout of
 the exact original operator source revision:
 
 ```sh
-python3 -I -S -B scripts/producer-qualification/c-producer-replay-evidence.py --repository REVIEWED_SOURCE_CHECKOUT --archive glibc-evidence.zip
+python3 -I -S -B scripts/producer-qualification/c-producer-replay-evidence.py --profile glibc --repository REVIEWED_SOURCE_CHECKOUT --archive glibc-evidence.zip
 ```
 
 Replay checks every exported raw hash, actual recorded native copy ownership,
@@ -152,3 +153,35 @@ unchanged capability sets and cleanup are bound into the receipt and independent
 replayed. An unknown Docker build/profile or failed probe refuses the original
 build. Native acceptance of this revised carrier remains pending; reported Engine
 metadata does not attest the daemon's profile bytes or historical consumption.
+
+## Opt-in hosted GCC observation
+
+`upstream-gcc.yml` uses only `pr/upstream-producer/gcc-*` pushes or operator
+dispatch after default-branch merge. Startup, live observation, export and replay
+all bind an explicit closed profile name to the frozen source/version/catalog.
+GCC's original command, eight-hour timeout, CPU, memory, targets and checks remain
+unchanged. The separate `gccCarrierLimits` controller window leaves time for
+bounded cleanup and transport within the hosted job. Fresh capacity admission
+is read-only and refuses insufficient observed storage before original execution.
+
+The carrier uses the original controller's early atomic owner receipt to bind
+its UUID and source frame before signaling or cleaning any container. Original
+controller terminals, carrier logs, cleanup and owner snapshots remain separate
+from the original package command. A carrier cutoff, interrupted observer,
+missing original terminal, empty package or failed command cannot become a
+completed-build observation. Raw logs and any available reports/partial files
+are exported with missing members explicit; force-removal can preempt the
+retention trap and does not prove that complete reports were retained.
+The Node controller has its own POSIX process group. The carrier must observe
+that group absent and reap the controller before owned container cleanup;
+stopping only the direct child is insufficient. Both exit paths share one
+cleanup attempt and a single monotonic deadline within the ten-minute reserve.
+Unknown family absence or an exhausted reserve remains incomplete.
+
+Real GCC reports use their selected `build` and `build-cross` configurations.
+The fixed synthetic custody preflight still uses its separate GLIBC fixture;
+it is not relabeled as a GCC upstream test. GCC does not select the GLIBC syscall
+policy or its native predicate probes. A successful original command may retain
+failed or unsupported test outcomes under its unchanged defaults. Full producer
+ancestry, original notice closure, historical consumption and Gate A remain
+unverified by the observer. Earlier GLIBC source revisions remain separate.
