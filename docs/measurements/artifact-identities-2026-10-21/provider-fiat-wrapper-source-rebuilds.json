@@ -12201,5 +12201,19 @@
       "byteIdenticalNoticeTextSharedAcrossRevisions": true,
       "existingBundleLabelRetained": true
     }
+  },
+  "cRootCompilerAndWholeGeneratorFollowUp": {
+    "observedAt": "2026-10-29",
+    "scope": "Separately identified maintained C bootstrap, source-built Go SDK chain and isolated whole-generator replay; historical failures and full upstream closure remain open.",
+    "retainedInputs": [
+      {
+        "file": "provider-c-root-sdk-and-generator-replays.json",
+        "bytes": 2001364,
+        "sha256": "4302a42410111efd3d132c2d6e0929a61577db9a3eb36614931408ceac1a8a95"
+      }
+    ],
+    "fullUpstreamCompilerSdkAndBootstrapClosureVerified": false,
+    "completeOriginalNoticeClosureVerified": false,
+    "gateAComplete": false
   }
 }

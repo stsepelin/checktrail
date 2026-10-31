@@ -209,3 +209,52 @@ The offline audit rejects whole-gate completion, review-quality, inference and
 field-evaluation claims at every JSON depth, including rehashed nested records.
 Scoped successful payload reconstructions remain allowed. This consistency check
 does not replay the recorded native builds or authenticate their publishers.
+
+## C-root SDK contribution replay observed 2026-10-29
+
+`provider-c-root-sdk-and-generator-replays.json` retains a separately identified
+maintained official C bootstrap and the selected source-built Go SDK stages.
+Original historical Go 1.4.2 failures remain failures. The record keeps canonical
+archive payload/mode distinctions, exact SDK byte-manifest deltas and captured
+original notice bytes; those captures do not claim complete notice ancestry.
+
+The complete original Fiat generators were compiled with the rebuilt Linux SDK
+and executed in separate offline containers without the full SDK, original source
+archives or selected expected output files mounted. The selected generated files
+matched in that cohort. C compiler, assembler/linker, C SDK, base-image and wider
+producer/bootstrap/license closure remain open. No Gate A, quality, inference or
+field-evaluation acceptance is implied by this observation.
+
+The C-root record also retains the original recognized binary-package document
+notices from the selected original C producer dependency transactions. Its explicit
+column tables preserve archive identity, document links, exact-version baseline
+providers and copyright reference reconciliation. Lossless gzip objects retain
+independent compressed and original byte counts and SHA-256 digests; the audit
+bounds each expansion and cumulative decoded bytes separately from the unchanged
+indexed-file limits. A literal upstream shared-license filename discrepancy stays
+unresolved. Embedded source notices, legal obligations and complete compiler,
+SDK, bootstrap and base-image build closure remain open; this is scoped notice
+retention rather than a completed attribution or Gate A claim.
+
+The retained-evidence audit validates canonical Base64, declared byte counts and
+SHA-256 for both plain and gzip-encoded original notice objects. Both encodings
+share one expanded-byte allowance; compressed input also retains its separate
+compressed-byte and digest checks. Rehashing an outer evidence record cannot
+make an altered inner notice valid. These checks establish retained-byte
+consistency; source attribution and full original-notice closure remain separate.
+
+Literal shared-license references are rederived from the retained original notice
+bytes, including byte offsets, exact captured filenames, reference counts and
+scanned-notice denominators. The declared pattern covers only literal absolute
+references. A terminal full stop is recorded separately as punctuation; filename
+prefixes do not resolve missing files. The original `GPL-2.0` reference remains
+unresolved even though captured `GPL-2` text is available. These observations do
+not infer a license choice or close embedded-source notice obligations.
+
+The Pango notice has one separately declared alternative complete-text binding.
+It names the exact original notice digest, byte offset, literal path and containing
+paragraph digest, together with the captured GPL-2 document's own byte identity.
+The original GPL-2.0 path remains unresolved; no alias or normalized-text equality
+is recorded. The three exact archive associations retain one original document
+and one literal-reference denominator. This binds retained bytes and preserves
+all broader notice/build closure, legal interpretation and source-coverage limits.
