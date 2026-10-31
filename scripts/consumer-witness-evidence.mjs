@@ -192,6 +192,8 @@ function consumerBindingReason(row, binding, family, inventory) {
     return "unselected-tool-version";
   }
   const image = binding.runtimeImage;
+  const hostedLinuxImageOS =
+    observed.architecture === "arm64" ? "ubuntu24-arm64" : "ubuntu24";
   if (
     !image ||
     (image.kind === "oci-image-observation"
@@ -203,8 +205,8 @@ function consumerBindingReason(row, binding, family, inventory) {
               ? image.imageOS !== "macos26"
               : observed.platform === "win32"
                 ? !/^win25(?:-vs2026)?$/.test(image.imageOS ?? "")
-                : image.imageOS !== "ubuntu24"
-            : image.imageOS !== "ubuntu24") ||
+                : image.imageOS !== hostedLinuxImageOS
+            : image.imageOS !== hostedLinuxImageOS) ||
           !/^20[0-9]{6}\.[0-9]+\.[0-9]+$/.test(image.imageVersion ?? "") ||
           (observed.platform === "linux"
             ? !sha(image.distributionSha256)

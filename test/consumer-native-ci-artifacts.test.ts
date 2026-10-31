@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
   mkdtemp,
   realpath,
+  readFile,
   mkdir,
   writeFile,
   rm,
@@ -13,8 +14,15 @@ import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { randomUUID } from "node:crypto";
-const { readConsumerNativeCapsuleArtifacts } = await import(
-  new URL("../../scripts/consumer-native-ci-artifacts.mjs", import.meta.url)
+import ts from "typescript";
+import { ensureWindowsTaskAccess } from "../src/windows-task-access.js";
+const { consumerNativeCIDirectory, readConsumerNativeCapsuleArtifacts } =
+  await import(
+    new URL("../../scripts/consumer-native-ci-artifacts.mjs", import.meta.url)
+      .href
+  );
+const { requireConsumerPrivateDirectory } = await import(
+  new URL("../../scripts/consumer-native-host-storage.mjs", import.meta.url)
     .href
 );
 const scope = {
@@ -265,6 +273,128 @@ test("one shared Go producer artifact keeps both exact context scope files in th
     await assert.rejects(
       readConsumerNativeCapsuleArtifacts(f.root, scopes, [binding]),
     );
+  } finally {
+    await rm(f.base, { recursive: true, force: true });
+  }
+});
+
+test("native CI directory spelling converts Windows separators while preserving literal names and physical alias checks", () => {
+  for (const [input, expected] of [
+    [
+      "D:\\a\\_temp/checktrail-native-capsules",
+      "D:\\a\\_temp\\checktrail-native-capsules",
+    ],
+    [
+      "D:\\a\\_temp\\checktrail-native-capsules",
+      "D:\\a\\_temp\\checktrail-native-capsules",
+    ],
+    ["D:\\a\\_temp/quote-'[literal]-🧪", "D:\\a\\_temp\\quote-'[literal]-🧪"],
+    ["\\\\server\\share/capsules", "\\\\server\\share\\capsules"],
+    ["D:\\a\\..\\capsules", "D:\\a\\..\\capsules"],
+  ])
+    assert.equal(consumerNativeCIDirectory(input, path.win32), expected);
+  for (const value of ["/tmp/capsules", "/tmp/../capsules", "/tmp//capsules"])
+    assert.equal(consumerNativeCIDirectory(value, path.posix), value);
+  for (const paths of [path.win32, path.posix])
+    for (const value of [
+      undefined,
+      null,
+      "",
+      "relative/capsules",
+      "D:relative",
+    ])
+      assert.throws(
+        () => consumerNativeCIDirectory(value, paths),
+        /must be absolute/,
+      );
+});
+
+test("native CI publisher and aggregate normalize both configured directory boundaries before their strict readers", async () => {
+  const text = await readFile(
+    new URL("../../scripts/check-consumer-native-ci.mjs", import.meta.url),
+    "utf8",
+  );
+  const file = ts.createSourceFile(
+    "check-consumer-native-ci.mjs",
+    text,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.JS,
+  );
+  const normalizers: ts.CallExpression[] = [],
+    guards: ts.CallExpression[] = [];
+  const walk = (node: ts.Node): void => {
+    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) {
+      if (node.expression.text === "consumerNativeCIDirectory")
+        normalizers.push(node);
+      if (node.expression.text === "requireConsumerPrivateDirectory")
+        guards.push(node);
+    }
+    ts.forEachChild(node, walk);
+  };
+  walk(file);
+  assert.deepEqual(
+    normalizers.map((call) => call.arguments[0]!.getText(file)),
+    [
+      "process.env.CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY",
+      "process.env.CHECKTRAIL_NATIVE_CAPSULE_ARTIFACTS",
+    ],
+  );
+  const publisher = normalizers[0]!,
+    aggregate = normalizers[1]!;
+  assert.ok(ts.isVariableDeclaration(publisher.parent));
+  assert.equal(publisher.parent.name.getText(file), "directory");
+  assert.equal(guards.length, 1);
+  assert.equal(guards[0]!.arguments[0]!.getText(file), "directory");
+  assert.ok(guards[0]!.pos > publisher.pos);
+  assert.ok(ts.isCallExpression(aggregate.parent));
+  assert.equal(
+    aggregate.parent.expression.getText(file),
+    "readConsumerNativeCapsuleArtifacts",
+  );
+  assert.equal(aggregate.parent.arguments[0], aggregate);
+  const imports = file.statements
+    .filter(ts.isImportDeclaration)
+    .filter(
+      (item) =>
+        ts.isStringLiteral(item.moduleSpecifier) &&
+        item.moduleSpecifier.text === "./consumer-native-ci-artifacts.mjs",
+    );
+  assert.equal(imports.length, 1);
+  const named = imports[0]!.importClause?.namedBindings;
+  assert.ok(named && ts.isNamedImports(named));
+  assert.ok(
+    named.elements.some(
+      (item) => item.name.text === "consumerNativeCIDirectory",
+    ),
+  );
+});
+
+test("configured native CI directories retain strict linked and dot-segment refusal with a restored private near miss", async () => {
+  const f = await fixture();
+  try {
+    const directory = path.join(f.base, "private-capsules");
+    await mkdir(directory, { mode: 0o700 });
+    if (process.platform === "win32")
+      ensureWindowsTaskAccess(directory, "directory", true);
+    await requireConsumerPrivateDirectory(consumerNativeCIDirectory(directory));
+    const alias = path.join(f.base, "private-alias");
+    await symlink(
+      directory,
+      alias,
+      process.platform === "win32" ? "junction" : "dir",
+    );
+    await assert.rejects(
+      requireConsumerPrivateDirectory(consumerNativeCIDirectory(alias)),
+      /Host native storage crosses a linked path/,
+    );
+    const dotted = directory + path.sep + ".." + path.sep + "private-capsules";
+    assert.equal(consumerNativeCIDirectory(dotted), dotted);
+    await assert.rejects(
+      requireConsumerPrivateDirectory(consumerNativeCIDirectory(dotted)),
+      /Host native storage crosses a linked path/,
+    );
+    await requireConsumerPrivateDirectory(consumerNativeCIDirectory(directory));
   } finally {
     await rm(f.base, { recursive: true, force: true });
   }

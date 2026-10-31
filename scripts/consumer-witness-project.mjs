@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import path from "node:path";
 import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import { parseCapturedProcessOutput } from "../dist/src/process-output.js";
@@ -167,6 +168,19 @@ function source(row, identity) {
   assert.equal(identity.bytes, value.bytes);
   assert.equal(identity.sha256, value.sha256);
 }
+function typeScriptSourceRoot(row) {
+  const root = row.project.sourceRoot;
+  assert.ok(
+    typeof root === "string" &&
+      ["linux", "darwin"].includes(row.runtime.platform),
+    "Native TypeScript source root and platform are required",
+  );
+  assert.ok(
+    path.posix.isAbsolute(root) && path.posix.normalize(root) === root,
+    "Native TypeScript source root must be canonical and absolute",
+  );
+  return root;
+}
 /** Accept the observed one-level Node callback wrapper; unrelated test-runner failures never qualify. */
 export function requireProjectAssertionFailure(error) {
   const direct =
@@ -241,13 +255,27 @@ function nativeNodeSummary(stdout, expectedFileCount) {
 }
 /** Preserve expected native assertion failures as failed processes; only the enclosing frozen callback passes. */
 export function inspectProjectNativeCheck(row, index, check, attempt) {
-  const expected = projectConsumerChecks(
+  assert.ok(Number.isSafeInteger(index) && index >= 0);
+  assert.deepEqual(
+    row.project.checks[index],
+    check,
+    "Native check differs from its actual report position",
+  );
+  const matches = projectConsumerChecks(
     row.family,
     row.variant,
     row.project.scenario,
     row.phase,
-  )[index];
-  assert.ok(expected);
+  ).filter(
+    (expected) =>
+      expected.project === check.project && expected.id === check.id,
+  );
+  assert.equal(
+    matches.length,
+    1,
+    "Native project check identity is missing or ambiguous",
+  );
+  const expected = matches[0];
   assert.equal(check.project, expected.project);
   assert.equal(check.id, expected.id);
   assert.equal(check.status, expected.status);
@@ -284,6 +312,9 @@ export function inspectProjectNativeCheck(row, index, check, attempt) {
       scenario: row.project.scenario,
       checkIndex: index,
       reportSha256: hash(JSON.stringify(row.project)),
+      ...(row.family === "typescript"
+        ? { workingDirectorySha256: hash(typeScriptSourceRoot(row)) }
+        : {}),
     },
     "Native project attempt belongs to another report/scenario/check",
   );
@@ -379,7 +410,7 @@ export function inspectProjectNativeCheck(row, index, check, attempt) {
   } else if (check.id === "javascript.eslint") {
     const native = JSON.parse(stdout);
     assert.equal(native.schemaVersion, 2);
-    assert.equal(native.toolVersion, "10.11.0");
+    assert.equal(native.toolVersion, "10.13.0");
     assert.equal(native.sourceFingerprint, row.project.sourceFingerprint);
     source(row, native.configuration);
     assert.ok(Array.isArray(native.files) && native.files.length > 0);
@@ -400,7 +431,12 @@ export function inspectProjectNativeCheck(row, index, check, attempt) {
       [...check.scope].sort(),
     );
     for (const file of native.files) {
-      source(row, file.source);
+      assert.equal(
+        file.source.path,
+        path.posix.join(typeScriptSourceRoot(row), file.path),
+        "Native ESLint source belongs to another captured project root",
+      );
+      source(row, { ...file.source, path: file.path });
       assert.equal(file.configured, true);
       assert.ok(file.activeRules > 0);
       assert.equal(
@@ -544,6 +580,12 @@ export function inspectProjectWitness(row, attemptValues) {
   );
   assert.equal(value.outcome, row.variant === "broken" ? "failed" : "passed");
   assert.equal(value.checks.length, expected.length);
+  const identity = (check) => JSON.stringify([check.project, check.id]);
+  assert.deepEqual(
+    value.checks.map(identity).sort(),
+    expected.map(identity).sort(),
+    "Native project check identities differ from the complete required set",
+  );
   assert.equal(attemptValues.length, expected.length);
   assert.equal(
     new Set(attemptValues.map((value) => value.attemptId)).size,

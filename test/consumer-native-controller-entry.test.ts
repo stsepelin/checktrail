@@ -16,11 +16,12 @@ async function run(
   t: Parameters<typeof fixture>[0],
   program: string,
   maximum = 65536,
+  file = "scripts/verify-consumer-runtime-arm64.mjs",
 ) {
   const root = await realpath(
       await fixture(t, {
-        "scripts/verify-synthetic-controller.mjs": program,
-        "run.mjs": `import{captureConsumerControllerEntry}from${JSON.stringify(helper)};const result=await captureConsumerControllerEntry(process.cwd(),{executable:process.execPath,args:['scripts/verify-synthetic-controller.mjs','original-argument']},process.cwd()+'/capture',${maximum});process.stdout.write(JSON.stringify(result)+'\\n');`,
+        [file]: program,
+        "run.mjs": `import{captureConsumerControllerEntry}from${JSON.stringify(helper)};const result=await captureConsumerControllerEntry(process.cwd(),{executable:process.execPath,args:[${JSON.stringify(file)},'original-argument']},process.cwd()+'/capture',${maximum});process.stdout.write(JSON.stringify(result)+'\\n');`,
       }),
     ),
     directory = path.join(root, "capture");
@@ -301,4 +302,73 @@ test("native diagnostic limits refuse late oversized or excessive stack candidat
     assert.deepEqual(diagnostic.errorLocations, []);
     assert.equal(diagnostic.sourceBeforeSha256, null);
   }
+});
+
+test("fixed controller capture admits every exact mapped filename including the ARM64 runtime without broadening its native authority", async (t) => {
+  const { consumerNativeProfiles, consumerNativeEntrypoint } = await import(
+    new URL("../../scripts/consumer-native-entrypoints.mjs", import.meta.url)
+      .href
+  );
+  const files = new Set<string>(
+    consumerNativeProfiles
+      .map(
+        (profile: string) =>
+          consumerNativeEntrypoint(profile, "native-linux-arm64-node22")[0],
+      )
+      .concat(
+        consumerNativeEntrypoint("consumer-impact", "ci-linux-node22")[0],
+      ),
+  );
+  assert.ok(files.has("scripts/verify-consumer-runtime-arm64.mjs"));
+  assert.ok(files.has("scripts/verify-consumer-runtime.mjs"));
+  for (const file of files) {
+    const current = await run(
+      t,
+      "process.stdout.write('original-mapped-synthetic-controller');",
+      65536,
+      file,
+    );
+    assert.equal(current.record.complete, true, file);
+    assert.equal(
+      (await readFile(current.record.stdout.path)).toString(),
+      "original-mapped-synthetic-controller",
+    );
+    assert.equal(current.record.processExitObserved, false);
+  }
+});
+
+test("fixed controller capture refuses unmapped adjacent and noncanonical filenames before opening outputs or loading a module", async (t) => {
+  const names = [
+    "scripts/verify-unmapped-controller.mjs",
+    "scripts/verify-consumer-runtime-arm65.mjs",
+    "scripts/verify-consumer-runtime-arm64x.mjs",
+    "scripts/verify-consumer-runtime-arm64.mjs-extra",
+    "scripts/prefix-verify-consumer-runtime-arm64.mjs",
+    "scripts/./verify-consumer-runtime-arm64.mjs",
+    "scripts/other/../verify-consumer-runtime-arm64.mjs",
+    "scripts\\verify-consumer-runtime-arm64.mjs",
+    "/scripts/verify-consumer-runtime-arm64.mjs",
+    "scripts/../scripts/verify-consumer-runtime-arm64.mjs",
+  ];
+  const root = await realpath(
+    await fixture(t, {
+      "scripts/verify-unmapped-controller.mjs":
+        "import{writeFileSync}from'node:fs';writeFileSync('module-started','must-not-run');",
+      "run.mjs": `import assert from'node:assert/strict';import{readdir,access}from'node:fs/promises';import{captureConsumerControllerEntry}from${JSON.stringify(helper)};for(const file of ${JSON.stringify(names)}){await assert.rejects(()=>captureConsumerControllerEntry(process.cwd(),{executable:process.execPath,args:[file]},process.cwd()+'/capture'),/Selected fixed native controller/);assert.deepEqual(await readdir('capture'),[]);}await assert.rejects(access('module-started'),{code:'ENOENT'});`,
+    }),
+  );
+  const directory = path.join(root, "capture");
+  await mkdir(directory, { mode: 0o700 });
+  if (process.platform === "win32")
+    ensureWindowsTaskAccess(directory, "directory", true);
+  const result = spawnSync(process.execPath, [path.join(root, "run.mjs")], {
+    cwd: root,
+    encoding: "utf8",
+    timeout: 30000,
+    maxBuffer: 1048576,
+  });
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stdout, "");
+  assert.equal(result.stderr, "");
 });

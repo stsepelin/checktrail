@@ -18,6 +18,7 @@ import { parseCapturedProcessOutput } from "../src/process-output.js";
 import type { ProcessResult, Report } from "../src/types.js";
 import { ensureWindowsTaskAccess } from "../src/windows-task-access.js";
 import { nativeOuterCommandSha256 } from "../src/native-journal-engine.js";
+import { withinRoot } from "../src/inventory.js";
 export type ConsumerVariant = "broken" | "fixed" | "near-miss";
 export type ConsumerPhase =
   "canonical" | "caller-change" | "restored" | "repeat";
@@ -893,6 +894,7 @@ export async function recordConsumerWitnessAttempt(
     }
     let after: Awaited<ReturnType<typeof snapshot>> | null = null;
     let executableAfterSha256: string | null = null;
+    let projectWorkingDirectorySha256: string | null = null;
     let executable =
       stage === "compiler" || stage === "compiler-link"
         ? capture.tool
@@ -901,6 +903,10 @@ export async function recordConsumerWitnessAttempt(
       try {
         assert.ok(path.isAbsolute(result.command.executable));
         executable = await tool(result.command.executable);
+        if (capture.family === "typescript")
+          projectWorkingDirectorySha256 = hash(
+            await withinRoot(capture.root, result.command.cwd),
+          );
       } catch (error) {
         identityError ??= String(error).slice(0, 1024);
       }
@@ -1095,7 +1101,13 @@ export async function recordConsumerWitnessAttempt(
       managed,
       swift,
       data,
-      project,
+      project:
+        capture.family === "typescript" && project !== null
+          ? {
+              ...project,
+              workingDirectorySha256: projectWorkingDirectorySha256,
+            }
+          : project,
       output,
       outputState:
         output === null
@@ -1586,6 +1598,7 @@ export async function finishConsumerProjectWitness(
   assert.equal(capture.storageFailure, null);
   const project = {
     scenario,
+    ...(capture.family === "typescript" ? { sourceRoot: capture.root } : {}),
     evidenceClass: "controller-source-bound-native-project-reports",
     applicationSemanticsVerified: false,
     nativeModuleLoadsTraced: false,

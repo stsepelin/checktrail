@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { ZodError } from "zod";
 import { createHash, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
@@ -74,9 +75,14 @@ function sample(
     phase,
     before,
     after: structuredClone(before),
-    runtime: { node: "22.23.2", slot: "native-linux-arm64-node22" },
+    runtime: {
+      node: "22.23.2",
+      slot: "native-linux-arm64-node22",
+      ...(family === "typescript" ? { platform: "linux" } : {}),
+    },
     tool: { sha256: hash("synthetic-node-binary") },
     project: {
+      ...(family === "typescript" ? { sourceRoot: "/synthetic" } : {}),
       evidenceClass: "controller-source-bound-native-project-reports",
       applicationSemanticsVerified: false,
       nativeModuleLoadsTraced: false,
@@ -223,7 +229,7 @@ function sample(
         stdout = events.map((event) => JSON.stringify(event)).join("\n") + "\n";
     } else if (check.id === "javascript.eslint") {
       const files = check.scope.map((path) => {
-        const source = identity(path),
+        const source = { ...identity(path), path: "/synthetic/" + path },
           processed = path === "processed.js",
           failed = processed && check.status === "failed",
           parse = (input: typeof source) => ({
@@ -233,8 +239,16 @@ function sample(
             activeRules: 1,
           });
         const children = [
-          { path: "synthetic-first.ts", bytes: 1, sha256: hash("a") },
-          { path: "synthetic-second.ts", bytes: 1, sha256: hash("b") },
+          {
+            path: "/synthetic/processed.js/0_first.ts",
+            bytes: 1,
+            sha256: hash("a"),
+          },
+          {
+            path: "/synthetic/processed.js/1_second.ts",
+            bytes: 1,
+            sha256: hash("b"),
+          },
         ];
         return {
           path,
@@ -274,7 +288,7 @@ function sample(
       });
       stdout = JSON.stringify({
         schemaVersion: 2,
-        toolVersion: "10.11.0",
+        toolVersion: "10.13.0",
         sourceFingerprint: row.project.sourceFingerprint,
         configuration: identity("eslint.config.mjs"),
         files,
@@ -355,6 +369,9 @@ function sample(
         scenario,
         checkIndex: index,
         reportSha256: hash(JSON.stringify(row.project)),
+        ...(family === "typescript"
+          ? { workingDirectorySha256: hash("/synthetic") }
+          : {}),
       },
       output: output(stdout),
     };
@@ -1196,3 +1213,345 @@ test("shared project controller bindings project both families and their complet
     true,
   );
 });
+
+test("TypeScript project witnesses reconcile the exact locked tool versions and reject stale pins", async () => {
+  const { selectJavaScriptToolsLock } = await import(
+    new URL("../../scripts/prepare-javascript-tools.mjs", import.meta.url).href
+  );
+  const [manifest, lock] = await Promise.all(
+    ["package.json", "package-lock.json"].map(async (file) =>
+      JSON.parse(
+        await readFile(new URL("../../" + file, import.meta.url), "utf8"),
+      ),
+    ),
+  );
+  const selected = selectJavaScriptToolsLock(manifest, lock);
+  const versions = {
+    eslint: selected.manifest.dependencies.eslint,
+    vite: selected.manifest.dependencies.vite,
+    rolldown: selected.lock.packages["node_modules/rolldown"].version,
+    typescript: selected.manifest.dependencies.typescript,
+  };
+  const { row, attempts } = sample("typescript", "fixed", "library");
+  const native = [
+    null,
+    ...attempts
+      .slice(1)
+      .map((attempt) =>
+        JSON.parse(
+          Buffer.from(attempt.output.stdout.base64, "base64").toString("utf8"),
+        ),
+      ),
+  ];
+  native[1].toolVersion = versions.eslint;
+  native[2].versions = {
+    vite: versions.vite,
+    rolldown: versions.rolldown,
+    typescript: versions.typescript,
+  };
+  attempts[1]!.output = output(JSON.stringify(native[1]));
+  attempts[2]!.output = output(JSON.stringify(native[2]));
+  inspectProjectWitness(row, attempts);
+  for (const tool of ["eslint", "vite", "rolldown", "typescript"] as const) {
+    const changed = structuredClone(attempts);
+    const index = tool === "eslint" ? 1 : 2;
+    const value = structuredClone(native[index]);
+    if (tool === "eslint") value.toolVersion = "10.11.0";
+    else value.versions[tool] = "0.0.0";
+    changed[index]!.output = output(JSON.stringify(value));
+    if (tool === "eslint") {
+      assert.throws(() => inspectProjectWitness(row, changed), {
+        name: "AssertionError",
+        code: "ERR_ASSERTION",
+      });
+    } else {
+      assert.throws(
+        () => inspectProjectWitness(row, changed),
+        (error: unknown) => {
+          assert.ok(error instanceof ZodError);
+          assert.deepEqual(
+            error.issues.map(({ code, path }) => ({ code, path })),
+            [{ code: "invalid_value", path: ["versions", tool] }],
+          );
+          return true;
+        },
+      );
+    }
+  }
+  inspectProjectWitness(row, attempts);
+});
+
+test("native project witnesses reconcile check identities in every order while retaining actual report and attempt positions", () => {
+  const permutations = (values: number[]): number[][] =>
+    values.length === 0
+      ? [[]]
+      : values.flatMap((value, index) =>
+          permutations(values.filter((_, position) => position !== index)).map(
+            (rest) => [value, ...rest],
+          ),
+        );
+  const bindPositions = (value: ReturnType<typeof sample>): void => {
+    for (const [index, attempt] of value.attempts.entries()) {
+      attempt.project.checkIndex = index;
+      attempt.project.reportSha256 = hash(JSON.stringify(value.row.project));
+    }
+  };
+  const reorder = (
+    value: ReturnType<typeof sample>,
+    order: number[],
+  ): ReturnType<typeof sample> => {
+    const result = {
+      row: structuredClone(value.row),
+      attempts: order.map((index) => structuredClone(value.attempts[index]!)),
+    };
+    result.row.project.checks = order.map((index) =>
+      structuredClone(value.row.project.checks[index]!),
+    );
+    bindPositions(result);
+    return result;
+  };
+  let inspected = 0;
+  for (const family of ["javascript", "shared-json", "typescript"] as const)
+    for (const variant of ["broken", "fixed", "near-miss"])
+      for (const scenario of projectConsumerScenarios(family, variant)) {
+        const original = sample(family, variant, scenario);
+        for (const order of permutations(
+          original.attempts.map((_, index) => index),
+        )) {
+          const value = reorder(original, order);
+          inspectProjectWitness(value.row, value.attempts);
+          inspected++;
+        }
+      }
+  assert.equal(inspected, 132);
+  const actualOrder = reorder(
+    sample("typescript", "fixed", "library"),
+    [0, 2, 1],
+  );
+  for (const defect of ["duplicate", "foreign"] as const) {
+    const changed = structuredClone(actualOrder);
+    if (defect === "duplicate") {
+      changed.row.project.checks[2] = structuredClone(
+        changed.row.project.checks[1]!,
+      );
+      changed.attempts[2] = structuredClone(changed.attempts[1]!);
+      changed.attempts[2]!.attemptId = randomUUID();
+    } else changed.row.project.checks[1]!.project = "foreign";
+    bindPositions(changed);
+    assert.throws(
+      () => inspectProjectWitness(changed.row, changed.attempts),
+      /check identities/,
+    );
+  }
+  const wrongPosition = structuredClone(actualOrder);
+  [wrongPosition.attempts[0], wrongPosition.attempts[1]] = [
+    wrongPosition.attempts[1]!,
+    wrongPosition.attempts[0]!,
+  ];
+  assert.throws(
+    () => inspectProjectWitness(wrongPosition.row, wrongPosition.attempts),
+    /another report\/scenario\/check/,
+  );
+  assert.throws(
+    () =>
+      inspectProjectNativeCheck(
+        actualOrder.row,
+        0,
+        actualOrder.row.project.checks[1],
+        actualOrder.attempts[0],
+      ),
+    /actual report position/,
+  );
+  inspectProjectWitness(actualOrder.row, actualOrder.attempts);
+});
+
+test("TypeScript ESLint source paths require the captured root and actual working directory even when bytes match", () => {
+  const original = sample("typescript", "fixed", "library");
+  inspectProjectWitness(original.row, original.attempts);
+  type Identity = { path: string };
+  const relocateFile = (
+    file: {
+      source: Identity;
+      participation: { events: { input?: Identity; outputs?: Identity[] }[] };
+    },
+    previous: string,
+    next: string,
+  ): void => {
+    const relocate = (identity: Identity): void => {
+      assert.ok(
+        identity.path === previous || identity.path.startsWith(previous + "/"),
+      );
+      identity.path = next + identity.path.slice(previous.length);
+    };
+    relocate(file.source);
+    for (const event of file.participation.events) {
+      if (event.input) relocate(event.input);
+      for (const identity of event.outputs ?? []) relocate(identity);
+    }
+  };
+  const lintIndex = original.row.project.checks.findIndex(
+    (check) => check.id === "javascript.eslint",
+  );
+  for (const defect of [
+    "relative",
+    "foreign",
+    "adjacent",
+    "wrong-cwd",
+    "forged-root",
+    "missing-root",
+    "dotted-root",
+  ] as const) {
+    const changed = structuredClone(original);
+    const native = JSON.parse(
+      Buffer.from(
+        changed.attempts[lintIndex]!.output.stdout.base64,
+        "base64",
+      ).toString("utf8"),
+    );
+    let expected: RegExp;
+    if (
+      defect === "relative" ||
+      defect === "foreign" ||
+      defect === "adjacent"
+    ) {
+      const file = native.files[0],
+        previous = file.source.path;
+      const next =
+        defect === "relative"
+          ? file.path
+          : (defect === "foreign" ? "/foreign/" : "/synthetic-adjacent/") +
+            file.path;
+      relocateFile(file, previous, next);
+      changed.attempts[lintIndex]!.output = output(JSON.stringify(native));
+      expected = /ESLint source belongs to another captured project root/;
+    } else if (defect === "wrong-cwd") {
+      Object.assign(changed.attempts[lintIndex]!.project, {
+        workingDirectorySha256: hash("/foreign"),
+      });
+      expected = /another report\/scenario\/check/;
+    } else {
+      if (defect === "missing-root") delete changed.row.project.sourceRoot;
+      else
+        changed.row.project.sourceRoot =
+          defect === "dotted-root" ? "/synthetic/../synthetic" : "/foreign";
+      if (defect === "forged-root") {
+        for (const file of native.files)
+          relocateFile(file, "/synthetic", "/foreign");
+        changed.attempts[lintIndex]!.output = output(JSON.stringify(native));
+      }
+      for (const attempt of changed.attempts) {
+        attempt.project.reportSha256 = hash(
+          JSON.stringify(changed.row.project),
+        );
+        if (defect === "dotted-root")
+          Object.assign(attempt.project, {
+            workingDirectorySha256: hash(changed.row.project.sourceRoot!),
+          });
+      }
+      expected =
+        defect === "forged-root"
+          ? /another report\/scenario\/check/
+          : /TypeScript source root/;
+    }
+    assert.throws(
+      () => inspectProjectWitness(changed.row, changed.attempts),
+      expected,
+      defect,
+    );
+  }
+  const near = structuredClone(original),
+    previous = near.row.project.sourceRoot!;
+  near.row.project.sourceRoot = "/synthetic literal-'[λ]";
+  const native = JSON.parse(
+    Buffer.from(
+      near.attempts[lintIndex]!.output.stdout.base64,
+      "base64",
+    ).toString("utf8"),
+  );
+  for (const file of native.files)
+    relocateFile(file, previous, near.row.project.sourceRoot);
+  near.attempts[lintIndex]!.output = output(JSON.stringify(native));
+  for (const attempt of near.attempts) {
+    attempt.project.reportSha256 = hash(JSON.stringify(near.row.project));
+    Object.assign(attempt.project, {
+      workingDirectorySha256: hash(near.row.project.sourceRoot),
+    });
+  }
+  inspectProjectWitness(near.row, near.attempts);
+});
+
+test(
+  "TypeScript attempt capture hashes the actual contained working directory and retains a different child cwd",
+  {
+    skip:
+      process.platform === "win32"
+        ? "Selected TypeScript capture uses the Linux/Darwin storage profile"
+        : false,
+  },
+  async (t) => {
+    const { beginConsumerWitness, recordConsumerWitnessAttempt } =
+      await import("./consumer-witness-fixture.js");
+    const { runProcess } = await import("../src/runner.js");
+    const { realpath, mkdir } = await import("node:fs/promises");
+    const root = await realpath(
+      await fixture(
+        t,
+        Object.fromEntries(
+          projectConsumerPaths.typescript.map((file: string) => [
+            file,
+            "Original synthetic captured bytes",
+          ]),
+        ),
+      ),
+    );
+    const destination = await realpath(await fixture(t, {}));
+    await mkdir(path.join(root, "nested"));
+    const previous = process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR;
+    let capture: Awaited<ReturnType<typeof beginConsumerWitness>>;
+    try {
+      process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR = destination;
+      capture = await beginConsumerWitness(root, "typescript", "fixed");
+    } finally {
+      if (previous === undefined)
+        delete process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR;
+      else process.env.CHECKTRAIL_CONSUMER_WITNESS_DIR = previous;
+    }
+    assert.ok(capture);
+    for (const cwd of [".", "nested"]) {
+      const result = await runProcess(
+        root,
+        {
+          executable: process.execPath,
+          args: [
+            "-e",
+            "process.stdout.write('original contained-cwd metadata')",
+          ],
+          cwd,
+        },
+        { timeoutMs: 10000, maxOutputBytes: 65536, captureRawOutput: true },
+      );
+      assert.equal(result.exitCode, 0, result.stderr);
+      const record = await recordConsumerWitnessAttempt(
+        capture,
+        result,
+        "consumer",
+        {
+          scenario: "library",
+          checkIndex: 0,
+          reportSha256: hash("original synthetic report"),
+        },
+      );
+      assert.ok(record);
+      const observed = record.value as {
+        project: { workingDirectorySha256: string };
+        gateAComplete: boolean;
+      };
+      assert.equal(
+        observed.project.workingDirectorySha256,
+        hash(await realpath(path.join(root, cwd))),
+      );
+      assert.notEqual(observed.project.workingDirectorySha256, hash(cwd));
+      assert.equal(observed.gateAComplete, false);
+    }
+  },
+);
