@@ -18,6 +18,8 @@ import {
   writeFile,
 } from "node:fs/promises";
 import os from "node:os";
+import { performance } from "node:perf_hooks";
+import { setTimeout as pause } from "node:timers/promises";
 import { finished } from "node:stream/promises";
 import {
   setTimeout,
@@ -719,15 +721,51 @@ export async function atomicReceipt(output, value) {
   });
   await rename(temporary, path.join(output, "receipt.json"));
 }
-async function docker(args) {
+async function docker(args, timeout = 15000) {
+  assert.ok(Number.isSafeInteger(timeout) && timeout > 0 && timeout <= 15000);
   return exec("docker", args, {
     env: dockerEnvironment,
-    timeout: 15000,
+    timeout,
     maxBuffer: 65536,
   });
 }
+function missingContainer(error, reference) {
+  return (
+    error.code === 1 &&
+    !error.killed &&
+    error.signal == null &&
+    [
+      "Error: No such object: " + reference + "\n",
+      "Error: No such container: " + reference + "\n",
+      "Error response from daemon: No such object: " + reference + "\n",
+      "Error response from daemon: No such container: " + reference + "\n",
+    ].includes(error.stderr)
+  );
+}
 export async function cleanupContainer(cidFile, attempt, role = "producer") {
   assert.ok(["producer", "retention"].includes(role));
+  const deadline = performance.now() + 45000;
+  const remaining = () => {
+    const milliseconds = Math.floor(deadline - performance.now());
+    assert.ok(milliseconds > 0, "Owned producer cleanup deadline exhausted");
+    return milliseconds;
+  };
+  const call = async (args) => {
+    try {
+      const result = await docker(args, Math.min(15000, remaining()));
+      assert.ok(
+        performance.now() <= deadline,
+        "Owned producer cleanup deadline exceeded",
+      );
+      return result;
+    } catch (error) {
+      if (performance.now() > deadline)
+        throw new Error("Owned producer cleanup deadline exceeded", {
+          cause: error,
+        });
+      throw error;
+    }
+  };
   const name = "checktrail-" + role + "-" + attempt;
   let id = name;
   try {
@@ -736,31 +774,61 @@ export async function cleanupContainer(cidFile, attempt, role = "producer") {
     if (error.code !== "ENOENT") throw error;
   }
   assert.ok(/^[a-f0-9]{64}$/.test(id) || id === name);
-  let inspected;
-  try {
-    inspected = JSON.parse((await docker(["inspect", id])).stdout)[0];
-  } catch (error) {
-    if (/No such (object|container)/i.test(error.stderr ?? ""))
-      return { state: "absent", id };
-    throw error;
-  }
-  assert.equal(
-    inspected.Config.Labels["io.checktrail.producer-attempt"],
-    attempt,
-    "Refuse cleanup of a different owner",
-  );
-  if (role === "retention")
-    assert.equal(
-      inspected.Config.Labels["io.checktrail.producer-role"],
-      "retention-observer",
+  const inspect = async () => {
+    let rows;
+    try {
+      rows = JSON.parse((await call(["inspect", id])).stdout);
+    } catch (error) {
+      if (missingContainer(error, id)) return undefined;
+      throw error;
+    }
+    assert.ok(
+      Array.isArray(rows) && rows.length === 1,
+      "Incomplete owned container inspection",
     );
-  await docker(["rm", "--force", id]);
+    const inspected = rows[0];
+    assert.ok(
+      /^[a-f0-9]{64}$/.test(inspected.Id),
+      "Owned container identity is invalid",
+    );
+    assert.ok(
+      (id === name || inspected.Id === id) && inspected.Name === "/" + name,
+      "Owned container identity differs",
+    );
+    assert.equal(
+      inspected.Config.Labels["io.checktrail.producer-attempt"],
+      attempt,
+      "Refuse cleanup of a different owner",
+    );
+    if (role === "retention")
+      assert.equal(
+        inspected.Config.Labels["io.checktrail.producer-role"],
+        "retention-observer",
+        "Refuse cleanup of a different retention role",
+      );
+    return inspected;
+  };
+  const first = await inspect();
+  if (!first) return { state: "absent", id };
+  // Bind removal and all later observations to the inspected immutable ID.
+  // A name disappearing/rebinding must never redirect the cleanup operation.
+  id = first.Id;
   try {
-    await docker(["inspect", id]);
-    throw Error("Owned producer container survived cleanup");
+    await call(["rm", "--force", id]);
   } catch (error) {
-    assert.match(error.stderr ?? "", /No such (object|container)/i);
+    const concurrent =
+      error.code === 1 &&
+      !error.killed &&
+      error.signal == null &&
+      error.stderr ===
+        "Error response from daemon: removal of container " +
+          id +
+          " is already in progress\n";
+    if (!concurrent && !missingContainer(error, id)) throw error;
   }
+  // Another owned stop path may already be removing this ID. Its diagnostic is
+  // not absence: independently observe disappearance under the original bound.
+  while (await inspect()) await pause(Math.min(100, remaining()));
   return { state: "removed", id };
 }
 async function outputIdentities(work) {
