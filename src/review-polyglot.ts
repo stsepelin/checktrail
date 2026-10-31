@@ -440,7 +440,7 @@ async function collectReviewPolyglotCore(
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
     profile: "selected-syntax-v1",
     parser: "typescript-and-tree-sitter-wasm",
-    parserVersion: "6.0.3/0.27.0",
+    parserVersion: "6.0.3/0.27.1",
     grammarManifestDigest,
     grammarBindings: [],
     decisions: [],

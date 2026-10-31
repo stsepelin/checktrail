@@ -49,8 +49,10 @@ partial. No empty function list implies a clean repository.
 
 ## Artifact identities and build record
 
-`assets/context-grammars/manifest.json` binds the distributed binaries and the
-`web-tree-sitter@0.27.0` runtime bytes. The engine checks fixed runtime and language
+`assets/context-grammars/manifest.json` retains the distributed grammar build
+identities and the original `web-tree-sitter@0.27.0` build-time runtime.
+`assets/context-grammars/runtime-manifest.json` binds the selected
+`web-tree-sitter@0.27.1` runtime bytes to that unchanged grammar build manifest. The engine checks fixed runtime and language
 bytes before initialization/loading and supplies the verified runtime WASM bytes
 directly. Loaded language objects are retained in process memory; replacing a disk
 asset does not replace an already loaded parser. Contexts record the immutable
@@ -80,6 +82,13 @@ No upstream JavaScript grammar was evaluated for this preparation.
 The runtime API and build mechanism are documented in the pinned
 [Tree-sitter web binding documentation](https://github.com/tree-sitter/tree-sitter/blob/v0.27.0/lib/binding_web/README.md).
 Normal context collection performs no download or compilation.
+
+The [runtime upgrade record](measurements/context-runtime-0.27.1-2026-10-30/observation.json)
+binds the new WASM bytes to the pinned upstream release, tagged source and verified
+release attestation. Its JavaScript and original MIT, Unicode and conditional musl
+notices match the retained bytes. This is a runtime update; the existing grammar
+binaries and their historical build records are unchanged. Full producer-build
+closure for the new runtime remains a separate, open Gate A obligation.
 
 ## Acceptance and remaining work
 
