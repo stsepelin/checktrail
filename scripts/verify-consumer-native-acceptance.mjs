@@ -26,7 +26,10 @@ import {
   requireConsumerNativeSourceFrame,
   consumerNativeCIRunObservation,
 } from "./consumer-native-acceptance-frame.mjs";
-import { captureConsumerControllerEntry } from "./consumer-native-controller-entry.mjs";
+import {
+  captureConsumerControllerEntry,
+  consumerNativeFailureDiagnostic,
+} from "./consumer-native-controller-entry.mjs";
 import { createConsumerCaptureRegistry } from "./consumer-native-capture-registry.mjs";
 import {
   requireConsumerPrivateDirectory,
@@ -90,7 +93,11 @@ async function dockerInvocation() {
 let attemptId = null,
   directory = null,
   scope = null,
-  hostAcquisition = null;
+  hostAcquisition = null,
+  capturedEntry = null,
+  diagnosticDirectory = null,
+  sourceBeforeSha256 = null,
+  failureStage = "admission";
 try {
   const [manifest, inventory, profiles] = await Promise.all(
     [
@@ -149,19 +156,26 @@ try {
         { code: "ENOENT" },
       );
     }
+    if (process.env.CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY)
+      diagnosticDirectory = await outputDirectory(
+        process.env.CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY,
+      );
+    failureStage = "source-before";
     const frameBefore = await captureConsumerNativeSourceFrame(root);
+    sourceBeforeSha256 = hash(JSON.stringify(frameBefore));
     attemptId = randomUUID();
     directory = await privateDirectory(
       await realpath(os.tmpdir()),
       "checktrail-native-acceptance-" + attemptId,
     );
+    failureStage = "registry";
     const context = {
         attemptId,
         scopeId: scope.id,
         captureKind: scope.selectedClang
           ? "selected-clang-producer-consumer"
           : "native-consumer",
-        sourceFrameSha256: hash(JSON.stringify(frameBefore)),
+        sourceFrameSha256: sourceBeforeSha256,
       },
       hostRegistry = await createConsumerCaptureRegistry(directory, context),
       before = {
@@ -182,6 +196,7 @@ try {
       entry;
     try {
       process.env.CHECKTRAIL_CONSUMER_CAPTURE_REGISTRY = hostRegistry.path;
+      failureStage = scope.docker ? "docker-capture" : "controller-entry";
       if (scope.docker) {
         assert.notEqual(process.platform, "win32");
         const original = await dockerInvocation();
@@ -210,7 +225,8 @@ try {
         if (before.task === undefined)
           process.env.CHECKTRAIL_TEST_TASK = capture.context.task;
       }
-      entry = await captureConsumerControllerEntry(
+      failureStage = "controller-entry";
+      entry = capturedEntry = await captureConsumerControllerEntry(
         root,
         scope.command,
         directory,
@@ -226,16 +242,19 @@ try {
         else process.env[key] = value;
       }
     }
+    failureStage = "host-capture";
     hostAcquisition = await acquireConsumerHostCapture(
       hostRegistry.path,
       directory,
       context,
     );
+    failureStage = "controller-result";
     assert.equal(
       entry.complete,
       true,
       "Original controller failed; raw attempts remain retained",
     );
+    failureStage = dockerDirectory ? "docker-capture" : "controller-result";
     const docker = dockerDirectory
         ? await acquireConsumerDockerCaptures(dockerDirectory, context)
         : { transports: [], captures: [] },
@@ -268,8 +287,10 @@ try {
       );
       selectedClangPacket = JSON.parse(raw.bytes.toString("utf8"));
     }
+    failureStage = "source-after";
     const frameAfter = await captureConsumerNativeSourceFrame(root);
     requireConsumerNativeSourceFrame(frameAfter, frameBefore);
+    failureStage = "normalize-capsule";
     const capsule = await normalizeConsumerNativeCapsule({
       repository: root,
       scope,
@@ -283,10 +304,12 @@ try {
       ci: consumerNativeCIRunObservation(),
       selectedClangPacket,
     });
+    failureStage = "persist-capsule";
     await writeConsumerPrivateFile(
       path.join(directory, "scope-capsule.json"),
       Buffer.from(JSON.stringify(capsule) + "\n"),
     );
+    failureStage = "release-captures";
     await releaseConsumerHostCapture(hostAcquisition);
     if (retainedParent) {
       await requireConsumerPrivateDirectory(retainedParent);
@@ -301,6 +324,7 @@ try {
       assert.equal(current.sha256, retained.sha256);
       await rm(retainedParent, { recursive: true, force: false });
     }
+    failureStage = "publish-capsule";
     if (capsuleDirectory)
       await writeConsumerPrivateFile(
         path.join(capsuleDirectory, consumerNativeCapsuleFilename(scope)),
@@ -318,6 +342,22 @@ try {
     );
   }
 } catch (error) {
+  let diagnostic = null,
+    diagnosticRetained = false;
+  if (scope)
+    try {
+      diagnostic = consumerNativeFailureDiagnostic({
+        stage: failureStage,
+        scopeId: scope.id,
+        attemptId,
+        error,
+        entry: capturedEntry,
+        repository: root,
+        sourceBeforeSha256,
+      });
+    } catch {
+      /* Diagnostics never replace the original refusal. */
+    }
   if (directory)
     try {
       await writeConsumerPrivateFile(
@@ -335,11 +375,25 @@ try {
     } catch {
       /* Preserve the original failure if diagnostic storage also refuses. */
     }
+  if (diagnosticDirectory && attemptId && diagnostic)
+    try {
+      await writeConsumerPrivateFile(
+        path.join(diagnosticDirectory, attemptId + ".json"),
+        Buffer.from(JSON.stringify(diagnostic) + "\n"),
+      );
+      diagnosticRetained = true;
+    } catch {
+      /* The private original failure remains authoritative. */
+    }
   process.stderr.write(
     "Native consumer acceptance refused" +
       (scope ? " for " + scope.id : "") +
       (attemptId ? "; private attempt " + attemptId : "") +
       "\n",
   );
+  if (diagnostic)
+    process.stderr.write(
+      JSON.stringify({ ...diagnostic, diagnosticRetained }) + "\n",
+    );
   process.exitCode = 1;
 }

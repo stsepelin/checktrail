@@ -3,7 +3,7 @@ import process from "node:process";
 import { Buffer } from "node:buffer";
 import { openSync, writeSync, fsyncSync, closeSync } from "node:fs";
 import { realpath } from "node:fs/promises";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL, fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { ensureWindowsTaskAccess } from "../dist/src/windows-task-access.js";
@@ -209,4 +209,166 @@ export async function captureConsumerControllerEntry(
     Buffer.from(JSON.stringify(record) + "\n"),
   );
   return record;
+}
+
+/** Bounded metadata only. Never publish native messages, raw output or absolute stack paths. */
+export function consumerNativeFailureDiagnostic({
+  stage,
+  scopeId,
+  attemptId,
+  error,
+  entry,
+  repository,
+  sourceBeforeSha256,
+}) {
+  const stages = new Set([
+    "admission",
+    "source-before",
+    "registry",
+    "controller-entry",
+    "host-capture",
+    "controller-result",
+    "docker-capture",
+    "source-after",
+    "normalize-capsule",
+    "persist-capsule",
+    "release-captures",
+    "publish-capsule",
+  ]);
+  const names = new Set([
+    "AssertionError",
+    "Error",
+    "TypeError",
+    "SyntaxError",
+    "RangeError",
+    "AggregateError",
+  ]);
+  const codes = new Set([
+    "ERR_ASSERTION",
+    "ENOENT",
+    "ENOTDIR",
+    "EACCES",
+    "EPERM",
+    "EIO",
+    "ENOSPC",
+    "EEXIST",
+    "EMFILE",
+    "ENFILE",
+    "ETIMEDOUT",
+    "ERR_MODULE_NOT_FOUND",
+    "ERR_UNKNOWN_FILE_EXTENSION",
+  ]);
+  const number = (value) =>
+    Number.isSafeInteger(value) && Math.abs(value) <= 2 ** 40 ? value : null;
+  const boolean = (value) => (typeof value === "boolean" ? value : null);
+  function locations(stack) {
+    if (typeof stack !== "string") return [];
+    const selected = [];
+    for (const line of stack.slice(0, 32768).split("\n").slice(0, 64)) {
+      if (!/^\s+at /.test(line) || line.length > 4096) continue;
+      const match = line.match(
+        /(?:\()?(file:\/\/[^\s()]+|[A-Za-z]:[^\r\n()]+|\/[^\r\n()]+):(\d+):(\d+)\)?$/,
+      );
+      if (!match) continue;
+      let filename;
+      try {
+        filename = match[1].startsWith("file:")
+          ? fileURLToPath(match[1])
+          : match[1];
+      } catch {
+        continue;
+      }
+      const relative = path
+        .relative(repository, filename)
+        .split(path.sep)
+        .join("/");
+      if (
+        !/^(?:scripts|dist\/(?:src|test))\/[A-Za-z0-9_/-]+\.(?:mjs|js)$/.test(
+          relative,
+        )
+      )
+        continue;
+      const row = {
+        file: relative,
+        line: Number(match[2]),
+        column: Number(match[3]),
+      };
+      if (
+        !Number.isSafeInteger(row.line) ||
+        row.line < 1 ||
+        row.line > 10000000 ||
+        !Number.isSafeInteger(row.column) ||
+        row.column < 1 ||
+        row.column > 10000000
+      )
+        continue;
+      if (
+        !selected.some(
+          (value) =>
+            value.file === row.file &&
+            value.line === row.line &&
+            value.column === row.column,
+        )
+      )
+        selected.push(row);
+      if (selected.length === 8) break;
+    }
+    return selected;
+  }
+  let errorName = "other",
+    errorCode = null,
+    errorLocations = [];
+  try {
+    if (names.has(error?.name)) errorName = error.name;
+    if (codes.has(error?.code)) errorCode = error.code;
+    errorLocations = locations(error?.stack);
+  } catch {
+    /* A diagnostic getter cannot replace the original failure. */
+  }
+  return {
+    schemaVersion: 1,
+    profile: "native-consumer-incomplete-diagnostic-v1",
+    state: "incomplete",
+    scope:
+      typeof scopeId === "string" && /^[a-z-]+:[a-z0-9-]{1,64}$/.test(scopeId)
+        ? scopeId
+        : null,
+    attemptId:
+      typeof attemptId === "string" &&
+      /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(
+        attemptId,
+      )
+        ? attemptId
+        : null,
+    stage: stages.has(stage) ? stage : "unknown",
+    errorName,
+    errorCode,
+    errorLocations,
+    sourceBeforeSha256:
+      typeof sourceBeforeSha256 === "string" &&
+      /^[a-f0-9]{64}$/.test(sourceBeforeSha256)
+        ? sourceBeforeSha256
+        : null,
+    controller: entry
+      ? {
+          complete: boolean(entry.complete),
+          moduleCompleted: boolean(entry.moduleCompleted),
+          exitRequested: number(entry.exitRequested),
+          exitCodeRequested: number(entry.exitCodeRequested),
+          truncated: boolean(entry.truncated),
+          captureErrorPresent:
+            typeof entry.captureError === "string"
+              ? true
+              : entry.captureError === null
+                ? false
+                : null,
+          errorLocations: locations(entry.error),
+          stdoutBytes: number(entry.stdout?.bytes),
+          stderrBytes: number(entry.stderr?.bytes),
+        }
+      : null,
+    sourceOrRawOutputIncluded: false,
+    qualifiesNativeAcceptance: false,
+    gateAComplete: false,
+  };
 }

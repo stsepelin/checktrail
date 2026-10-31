@@ -112,3 +112,193 @@ test("fixed controller output exhaustion stays sticky after a source catch and p
   assert.equal(f.record.stdout.bytes, 64);
   assert.deepEqual(await readFile(f.record.stdout.path), Buffer.alloc(64, 97));
 });
+
+test("native failure diagnostics retain bounded source-relative locations and controller status without raw native messages", async () => {
+  const { consumerNativeFailureDiagnostic } = await import(helper);
+  const root = path.resolve("/synthetic/operator"),
+    secret = "synthetic-private-source-and-output";
+  const error = Object.assign(new Error(secret), { code: "ERR_ASSERTION" });
+  error.stack =
+    secret +
+    "\n    at check (" +
+    path.join(root, "scripts/verify-synthetic-controller.mjs") +
+    ":12:3)\n    at native (/outside/private-root/secret.js:1:2)";
+  const diagnostic = consumerNativeFailureDiagnostic({
+    stage: "controller-result",
+    scopeId: "consumer-impact:ci-macos-node22",
+    attemptId: "11111111-1111-4111-8111-111111111111",
+    error,
+    entry: {
+      complete: false,
+      moduleCompleted: false,
+      error: error.stack,
+      captureError: null,
+      exitRequested: null,
+      exitCodeRequested: 1,
+      truncated: false,
+      stdout: { bytes: 0 },
+      stderr: { bytes: 1024 },
+    },
+    repository: root,
+  });
+  assert.equal(diagnostic.profile, "native-consumer-incomplete-diagnostic-v1");
+  assert.equal(diagnostic.stage, "controller-result");
+  assert.equal(diagnostic.errorCode, "ERR_ASSERTION");
+  assert.deepEqual(diagnostic.errorLocations, [
+    { file: "scripts/verify-synthetic-controller.mjs", line: 12, column: 3 },
+  ]);
+  assert.equal(diagnostic.controller.stderrBytes, 1024);
+  assert.equal(diagnostic.controller.captureErrorPresent, false);
+  for (const key of [
+    "sourceOrRawOutputIncluded",
+    "qualifiesNativeAcceptance",
+    "gateAComplete",
+  ])
+    assert.equal(diagnostic[key], false);
+  const raw = JSON.stringify(diagnostic);
+  for (const hidden of [secret, root, "outside", "private-root"])
+    assert.equal(raw.includes(hidden), false, hidden);
+});
+test("native diagnostic projection refuses arbitrary stages identifiers codes paths and nested private output", async () => {
+  const { consumerNativeFailureDiagnostic } = await import(helper);
+  const root = path.resolve("/synthetic/operator");
+  const error = {
+    name: "PrivateClass",
+    code: "PRIVATE_CODE",
+    message: "do-not-publish",
+    stack:
+      "do-not-publish\n    at x (" +
+      path.join(root, "../other/scripts/private.mjs") +
+      ":1:1)\n    at x (" +
+      path.join(root, "scripts/../private.mjs") +
+      ":1:1)\n    at x (" +
+      path.join(root, "scripts/sentinel with spaces.mjs") +
+      ":1:1)",
+  };
+  const result = consumerNativeFailureDiagnostic({
+    stage: "private-stage",
+    scopeId: "private/source:secret",
+    attemptId: "secret",
+    error,
+    entry: {
+      error: "source-do-not-publish",
+      stdout: { bytes: "source-do-not-publish" },
+    },
+    repository: root,
+  });
+  assert.equal(result.stage, "unknown");
+  assert.equal(result.scope, null);
+  assert.equal(result.attemptId, null);
+  assert.equal(result.errorName, "other");
+  assert.equal(result.errorCode, null);
+  assert.deepEqual(result.errorLocations, []);
+  assert.equal(result.controller.stdoutBytes, null);
+  assert.equal(result.controller.moduleCompleted, null);
+  assert.equal(result.controller.captureErrorPresent, null);
+  assert.equal(JSON.stringify(result).includes("do-not-publish"), false);
+});
+test("native diagnostic stack and frame ceilings remain bounded and diagnostic getters cannot replace a failure", async () => {
+  const { consumerNativeFailureDiagnostic } = await import(helper),
+    root = path.resolve("/synthetic/operator");
+  const stack =
+    "private-message\n" +
+    Array.from(
+      { length: 100 },
+      (_, i) =>
+        "    at check (" +
+        path.join(root, "scripts/module-" + i + ".mjs") +
+        ":" +
+        (i + 1) +
+        ":2)",
+    ).join("\n");
+  const result = consumerNativeFailureDiagnostic({
+    stage: "normalize-capsule",
+    scopeId: "consumer-impact:ci-macos-node22",
+    attemptId: "11111111-1111-4111-8111-111111111111",
+    error: { name: "Error", stack },
+    entry: null,
+    repository: root,
+  });
+  assert.equal(result.errorLocations.length, 8);
+  assert.equal(Buffer.byteLength(JSON.stringify(result)) < 4096, true);
+  const broken = Object.defineProperty({}, "stack", {
+    get() {
+      throw Error("private getter failure");
+    },
+  });
+  const safe = consumerNativeFailureDiagnostic({
+    stage: "normalize-capsule",
+    error: broken,
+    repository: root,
+  });
+  assert.deepEqual(safe.errorLocations, []);
+  assert.equal(JSON.stringify(safe).includes("getter failure"), false);
+});
+
+test("failure diagnostics cannot become a successful native capsule even with a valid local transport envelope", async () => {
+  const { consumerNativeFailureDiagnostic } = await import(helper);
+  const { validateConsumerNativeCapsule } = await import(
+    new URL(
+      "../../scripts/consumer-native-acceptance-capsule.mjs",
+      import.meta.url,
+    ).href
+  );
+  const diagnostic = consumerNativeFailureDiagnostic({
+    stage: "normalize-capsule",
+    scopeId: "consumer-impact:ci-macos-node22",
+    attemptId: "11111111-1111-4111-8111-111111111111",
+    error: Error("synthetic failure"),
+    repository: path.resolve("/synthetic/operator"),
+    sourceBeforeSha256: "a".repeat(64),
+  });
+  assert.equal(diagnostic.sourceBeforeSha256, "a".repeat(64));
+  assert.throws(
+    () =>
+      validateConsumerNativeCapsule(
+        {
+          ...diagnostic,
+          ci: {
+            kind: "local-operator-metadata",
+            runId: null,
+            runAttempt: null,
+            job: null,
+            metadataAttested: false,
+          },
+        },
+        {},
+        {},
+      ),
+    /native-consumer-scope-capsule-v1/,
+  );
+});
+test("native diagnostic limits refuse late oversized or excessive stack candidates instead of leaking a private tail", async () => {
+  const { consumerNativeFailureDiagnostic } = await import(helper),
+    root = path.resolve("/synthetic/operator");
+  const good =
+    "    at check (" +
+    path.join(root, "scripts/verify-synthetic-controller.mjs") +
+    ":1:2)";
+  for (const stack of [
+    "x".repeat(32768) + "\n" + good,
+    Array.from(
+      { length: 64 },
+      () => "    at outside (/foreign/private.mjs:1:2)",
+    ).join("\n") +
+      "\n" +
+      good,
+    "    at " +
+      "x".repeat(4096) +
+      " (" +
+      path.join(root, "scripts/verify-synthetic-controller.mjs") +
+      ":1:2)",
+  ]) {
+    const diagnostic = consumerNativeFailureDiagnostic({
+      stage: "controller-result",
+      error: { name: "Error", stack },
+      repository: root,
+      sourceBeforeSha256: "a".repeat(65),
+    });
+    assert.deepEqual(diagnostic.errorLocations, []);
+    assert.equal(diagnostic.sourceBeforeSha256, null);
+  }
+});
