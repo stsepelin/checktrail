@@ -2615,11 +2615,11 @@
       "name": "Windows process workspace refuses private-access failure before every data write or process launch"
     },
     {
-      "file": "dist/test/windows-task-access.test.js",
+      "file": "dist/test/windows-task-access-batch-contract.test.js",
       "name": "Windows private ACL batches bind every indexed literal target and each permission boundary"
     },
     {
-      "file": "dist/test/windows-task-access.test.js",
+      "file": "dist/test/windows-task-access-batch-contract.test.js",
       "name": "Windows private ACL batching ships one fixed read-only OS program"
     }
   ],
@@ -6751,7 +6751,7 @@
   ],
   "windows-private-access-batch": [
     {
-      "file": "dist/test/windows-task-access.test.js",
+      "file": "dist/test/windows-task-access-batch-contract.test.js",
       "name": "Windows private ACL batches bind every indexed literal target and each permission boundary"
     },
     {
@@ -6759,7 +6759,7 @@
       "name": "native Windows private ACL batches inspect literal file and directory targets and refuse public access without repair"
     },
     {
-      "file": "dist/test/windows-task-access.test.js",
+      "file": "dist/test/windows-task-access-batch-contract.test.js",
       "name": "Windows private ACL batching ships one fixed read-only OS program"
     }
   ]
