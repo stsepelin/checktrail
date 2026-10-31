@@ -302,6 +302,14 @@ Windows release's explicit unsupported backend remains unavailable; the candidat
 must execute its native test bodies. Acquisition and preparation are explicit
 operator commands; imports, discovery and planning install nothing.
 
+The Windows composite upgrade callback has a five-minute observation allowance
+for its three offline installations and fresh process phases. POSIX retains its
+three-minute allowance. Individual upgrade command/installation ceilings,
+required native body counts and assertions stay unchanged. The Windows source
+and fresh-install CI job has a 45-minute observation allowance; other matrix
+jobs retain 30 minutes. These harness deadlines do not change resource policies
+or production execution limits.
+
 Preparation checks the older archive, original manifest/license bytes, lock and
 actual prepared dependency snapshot. A held startup snapshot rejects a coherently
 rewritten receipt. Missing, changed and linked public cache artifacts are refused

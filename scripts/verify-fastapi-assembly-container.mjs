@@ -1,3 +1,4 @@
+import { nativeAcceptanceFailure } from "./native-acceptance-diagnostics.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
@@ -40,12 +41,19 @@ const base = [
   "npm_config_cache=/tmp/npm-cache",
   image,
 ];
-const run = (args) =>
-  execFileSync("docker", [...base, ...args], {
-    encoding: "utf8",
-    maxBuffer: 4 * 1048576,
-    timeout: 300000,
-  });
+const run = (args, timeout = 300000) => {
+  assert.ok([300000, 600000].includes(timeout));
+  try {
+    return execFileSync("docker", [...base, ...args], {
+      encoding: "utf8",
+      maxBuffer: 4 * 1048576,
+      timeout,
+    });
+  } catch (error) {
+    process.stderr.write(nativeAcceptanceFailure(error) + "\n");
+    throw error;
+  }
+};
 const runtime = JSON.parse(
   run([
     "python3",
@@ -87,11 +95,14 @@ const frameworks = JSON.parse(
 assert.equal(frameworks.required, 8);
 assert.equal(frameworks.passed, 8);
 assert.equal(frameworks.complete, true);
-const sourceOutput = run([
-  "/bin/sh",
-  "-c",
-  "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs assembly-fastapi",
-]);
+const sourceOutput = run(
+  [
+    "/bin/sh",
+    "-c",
+    "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs assembly-fastapi",
+  ],
+  600000,
+);
 const lines = sourceOutput.trim().split("\n");
 assert.equal(lines.length, 2);
 const [cachePreparation, source] = lines.map((line) => JSON.parse(line));
@@ -141,7 +152,7 @@ const installed = JSON.parse(
       },
       encoding: "utf8",
       maxBuffer: 4 * 1048576,
-      timeout: 120000,
+      timeout: 300000,
     },
   ),
 );

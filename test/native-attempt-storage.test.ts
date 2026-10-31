@@ -20,6 +20,8 @@ import {
   NativeAttemptWriter,
 } from "../src/native-attempt-storage.js";
 import type { NativeJournalHeader } from "../src/native-attempt-frames.js";
+import { ensureWindowsTaskAccess } from "../src/windows-task-access.js";
+import { renameNativeStorageDirectory } from "./native-storage-fixture.js";
 const hash = (bytes: Uint8Array | string) =>
   createHash("sha256").update(bytes).digest("hex");
 const header = (maxOutputBytes = 1024): NativeJournalHeader => ({
@@ -247,8 +249,10 @@ test("native journal directory replacement cannot redirect cleanup and weak POSI
     root = storage.context.directory,
     moved = root + "-original";
   try {
-    await rename(root, moved);
+    await renameNativeStorageDirectory(storage, moved);
     await mkdir(root, { mode: 0o700 });
+    if (process.platform === "win32")
+      ensureWindowsTaskAccess(root, "directory", true);
     const marker = path.join(root, "original-replacement.txt");
     await writeFile(marker, "replacement must survive rejected cleanup");
     assert.throws(() => storage.destroy(), /directory changed before cleanup/);

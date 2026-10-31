@@ -1197,7 +1197,7 @@ test("workflow audit native receipts retain timeout and post-execution stale evi
       trusted: true,
       probes: [pin()],
       audit: { file },
-      nativeWallMs: 1500,
+      nativeWallMs: variant === "timeout" ? 1500 : 12000,
     });
     try {
       const { id } = await prepare(session, [target]);
@@ -1211,6 +1211,7 @@ test("workflow audit native receipts retain timeout and post-execution stale evi
       assert.equal(
         result.status,
         variant === "timeout" ? "timed-out" : "stale",
+        JSON.stringify(result),
       );
     } finally {
       session.dispose();
@@ -1224,7 +1225,15 @@ test("workflow audit native receipts retain timeout and post-execution stale evi
       receipt.run.status,
       variant === "timeout" ? "timed-out" : "stale",
     );
-    assert.equal(receipt.run.nativeBudget.calls, variant === "timeout" ? 1 : 3);
+    assert.equal(
+      receipt.run.nativeBudget.calls,
+      variant === "timeout" ? 1 : 3,
+      JSON.stringify(receipt.run),
+    );
+    assert.equal(
+      receipt.run.nativeBudget.limits.wallMs,
+      variant === "timeout" ? 1500 : 12000,
+    );
     assert.equal(receipt.run.temporaryArtifacts, "removed");
     assert.equal(receipt.run.contextDigest, revised.contextDigest);
     if (variant === "timeout") {

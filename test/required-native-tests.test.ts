@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
-import { access, mkdir, writeFile, realpath } from "node:fs/promises";
+import { fileURLToPath, URL } from "node:url";
+import { access, mkdir, readFile, writeFile, realpath } from "node:fs/promises";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
 
@@ -128,6 +129,7 @@ type TerminalReceipt = {
       nameTruncated: boolean;
       kind: string;
       outcome: string;
+      durationMs: number | null;
       required: boolean;
     }[];
     cases: {
@@ -613,7 +615,27 @@ test("required profile batches execute shared files once and preserve all obliga
       absent: [requirement("other.mjs", "beta")],
       "ruby-tools-lifecycle": [alpha, beta],
       "ruby-tools-rubocop": [alpha],
+      "attempt-archives": [
+        requirement("isolated-profile.mjs", "alpha"),
+        requirement("isolated-profile.mjs", "beta"),
+      ],
       "consumer-impact": [
+        requirement("isolated-profile.mjs", "alpha"),
+        requirement("isolated-profile.mjs", "beta"),
+      ],
+      "assembly-fastapi": [
+        requirement("isolated-profile.mjs", "alpha"),
+        requirement("isolated-profile.mjs", "beta"),
+      ],
+      "assembly-fastapi-extra": [
+        requirement("isolated-profile.mjs", "alpha"),
+        requirement("isolated-profile.mjs", "beta"),
+      ],
+      "jvm-analyzer-extensions": [
+        requirement("isolated-profile.mjs", "alpha"),
+        requirement("isolated-profile.mjs", "beta"),
+      ],
+      "jvm-analyzer-extensions-extra": [
         requirement("isolated-profile.mjs", "alpha"),
         requirement("isolated-profile.mjs", "beta"),
       ],
@@ -673,25 +695,76 @@ test("required profile batches execute shared files once and preserve all obliga
   const rubyRubocop = cli("ruby-tools-rubocop");
   assert.equal(rubyRubocop.status, 0, rubyRubocop.stderr);
   assert.equal(JSON.parse(rubyRubocop.stdout).timeoutMs, 300000);
-  await writeFile(marker, "");
-  const whole = cli("consumer-impact");
-  assert.equal(whole.status, 0, whole.stdout + whole.stderr);
-  const wholeReport = JSON.parse(whole.stdout);
-  assert.equal(wholeReport.timeoutMs, 600000);
-  assert.equal(wholeReport.requiredCaseWorkerLimit, 1);
-  assert.equal(wholeReport.required, 2);
-  assert.equal(wholeReport.passed, 2);
-  const executions: { pid: number; name: string }[] = (
-    await readFile(marker, "utf8")
-  )
-    .trim()
-    .split("\n")
-    .map((line) => JSON.parse(line));
-  assert.deepEqual(executions.map((row) => row.name).sort(), ["alpha", "beta"]);
-  assert.equal(
-    new Set(executions.map((row) => row.pid)).size,
-    2,
-    "whole-profile callbacks must execute in separate real processes",
+  for (const profile of [
+    "consumer-impact",
+    "attempt-archives",
+    "assembly-fastapi",
+    "jvm-analyzer-extensions",
+  ]) {
+    await writeFile(marker, "");
+    const whole = cli(profile);
+    assert.equal(whole.status, 0, whole.stdout + whole.stderr);
+    const wholeReport = JSON.parse(whole.stdout);
+    assert.equal(
+      wholeReport.timeoutMs,
+      profile === "assembly-fastapi" ? 120000 : 600000,
+    );
+    assert.equal(wholeReport.requiredCaseWorkerLimit, 1);
+    assert.equal(wholeReport.required, 2);
+    assert.equal(wholeReport.passed, 2);
+    const executions: { pid: number; name: string }[] = (
+      await readFile(marker, "utf8")
+    )
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line));
+    assert.deepEqual(executions.map((row) => row.name).sort(), [
+      "alpha",
+      "beta",
+    ]);
+    assert.equal(
+      new Set(executions.map((row) => row.pid)).size,
+      2,
+      "whole-profile callbacks must execute in separate real processes",
+    );
+  }
+  for (const profile of ["assembly-fastapi", "jvm-analyzer-extensions"]) {
+    const adjacent = cli(profile + "-extra");
+    assert.equal(adjacent.status, 1, adjacent.stdout + adjacent.stderr);
+    const adjacentReport = JSON.parse(adjacent.stdout);
+    assert.equal(adjacentReport.timeoutMs, 120000);
+    assert.equal(
+      Object.hasOwn(adjacentReport, "requiredCaseWorkerLimit"),
+      false,
+    );
+    assert.ok(
+      adjacentReport.problems.some((p: { message?: string }) =>
+        p.message?.includes(
+          "each selected callback must have fresh module state",
+        ),
+      ),
+    );
+    const full = cli("--full-suite", profile);
+    assert.equal(full.status, 1, full.stdout + full.stderr);
+    const fullReport = JSON.parse(full.stdout);
+    assert.equal(Object.hasOwn(fullReport, "requiredCaseWorkerLimit"), false);
+    assert.ok(
+      fullReport.problems.some((p: { message?: string }) =>
+        p.message?.includes("unselected callback must not execute"),
+      ),
+    );
+  }
+  const compound = cli("jvm-analyzer-extensions", "first");
+  assert.equal(compound.status, 1, compound.stdout + compound.stderr);
+  const compoundReport = JSON.parse(compound.stdout);
+  assert.equal(compoundReport.timeoutMs, 600000);
+  assert.equal(Object.hasOwn(compoundReport, "requiredCaseWorkerLimit"), false);
+  assert.ok(
+    compoundReport.problems.some((p: { message?: string }) =>
+      p.message?.includes(
+        "each selected callback must have fresh module state",
+      ),
+    ),
   );
   assert.equal(cli("first", "absent").status, 1);
   const suite = cli("--full-suite", "first", "second");
@@ -1185,6 +1258,52 @@ test("named native acceptance gives each exact callback a fresh bounded process 
   assert.ok(witnesses.every((value) => value.pid !== process.pid));
 });
 
+test("named callback isolation preserves complete cohorts beyond one file window with a physical process per case", async (t) => {
+  const { root, execute } = await ledgerFixture(t);
+  const file = path.join(root, "aggregate-window.test.mjs");
+  const marker = path.join(root, "reached.jsonl");
+  await writeFile(
+    file,
+    `import {test} from 'node:test';import {appendFileSync} from 'node:fs';import {setTimeout} from 'node:timers/promises';for(let i=0;i<9;i++)test('original-'+i,{timeout:1000},async()=>{appendFileSync(${JSON.stringify(marker)},JSON.stringify({name:'original-'+i,pid:process.pid})+'\\n');await setTimeout(300)});`,
+  );
+  const required = Array.from({ length: 9 }, (_, i) => ({
+    file,
+    name: "original-" + i,
+  }));
+  // Node 22 applies the run timeout to the file; newer Node versions can give
+  // FileTest no timeout. Process identity defends isolation on every version.
+  const isolated = execute(required, {
+    timeoutMs: 2000,
+    isolatedCaseWorkers: 1,
+  });
+  assert.equal(isolated.complete, true, JSON.stringify(isolated));
+  assert.equal(isolated.required, 9);
+  assert.equal(isolated.passed, 9);
+  assert.equal(isolated.ledger.terminalEventCount, 9);
+  assert.ok(isolated.ledger.cases.every((c) => c.outcome === "passed"));
+  const reached = (await readFile(marker, "utf8"))
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line) as { name: string; pid: number });
+  assert.deepEqual(
+    reached.map((row) => row.name).sort(),
+    required.map((row) => row.name).sort(),
+  );
+  assert.equal(new Set(reached.map((row) => row.pid)).size, 9);
+  assert.ok(
+    reached.every(
+      (row) =>
+        Number.isSafeInteger(row.pid) && row.pid > 1 && row.pid !== process.pid,
+    ),
+  );
+  assert.ok(
+    isolated.ledger.events.reduce(
+      (sum, event) => sum + (event.durationMs ?? 0),
+      0,
+    ) > 2000,
+  );
+});
+
 test("named native acceptance still rejects skipped missing duplicate changed and timed-out cases", async (t) => {
   const { execute, required } = await ledgerFixture(t);
   for (const file of [
@@ -1338,7 +1457,7 @@ test("formatting acceptance CLI isolates exact callbacks without admitting an ad
   );
 });
 
-test("required native runner grants the installation budget only to exact isolated generator Ruby Swift and mutation installed callbacks", async (t) => {
+async function timerAdmissionFixture(t: import("node:test").TestContext) {
   const root = await realpath(await fixture(t, {}));
   const helper = path.join(root, "scripts/required-test-evidence.mjs");
   await mkdir(path.dirname(helper), { recursive: true });
@@ -1350,30 +1469,6 @@ test("required native runner grants the installation budget only to exact isolat
       new URL("../../scripts/required-test-evidence.mjs", import.meta.url),
     ),
   );
-  const profiles = [
-    "dotnet-generator-extensions",
-    "ruby-extensions",
-    "swift-extensions",
-    "mutation-runners",
-  ];
-  const requirements = profiles.flatMap((profile) => {
-    const exact = path.join(root, "dist/test", `gate-${profile}.test.js`);
-    const adjacent = path.join(root, "other", `gate-${profile}.test.js`);
-    const installed = `${profile} installed acceptance`;
-    return [
-      { file: exact, name: installed },
-      { file: exact, name: `${profile} broken acceptance` },
-      { file: exact, name: installed + "-extra" },
-      { file: adjacent, name: installed },
-    ];
-  });
-  for (const file of new Set(requirements.map((item) => item.file))) {
-    await mkdir(path.dirname(file), { recursive: true });
-    await writeFile(
-      file,
-      "// Synthetic timer-admission fixture; no native acceptance.\n",
-    );
-  }
   const runner = path.join(root, "timer-admission.mjs");
   // Observe options at the actual node:test boundary without waiting twenty minutes.
   // Synthetic terminal events exercise harness accounting, not native acceptance.
@@ -1411,6 +1506,39 @@ const{runRequiredTests}=await import(helper);const report=await runRequiredTests
       calls: { files: string[]; timeout: number; patterns?: string[] }[];
     };
   };
+  const prepare = async (requirements: { file: string; name: string }[]) => {
+    for (const file of new Set(requirements.map((item) => item.file))) {
+      await mkdir(path.dirname(file), { recursive: true });
+      await writeFile(
+        file,
+        "// Synthetic timer-admission fixture; no native acceptance.\n",
+      );
+    }
+  };
+  return { root, invoke, prepare };
+}
+
+test("required native runner grants the installation budget only to exact isolated generator Ruby Swift mutation and archive installed callbacks", async (t) => {
+  const { root, invoke, prepare } = await timerAdmissionFixture(t);
+  const profiles = [
+    "dotnet-generator-extensions",
+    "ruby-extensions",
+    "swift-extensions",
+    "mutation-runners",
+    "attempt-archives",
+  ];
+  const requirements = profiles.flatMap((profile) => {
+    const exact = path.join(root, "dist/test", `gate-${profile}.test.js`);
+    const adjacent = path.join(root, "other", `gate-${profile}.test.js`);
+    const installed = `${profile} installed acceptance`;
+    return [
+      { file: exact, name: installed },
+      { file: exact, name: `${profile} broken acceptance` },
+      { file: exact, name: installed + "-extra" },
+      { file: adjacent, name: installed },
+    ];
+  });
+  await prepare(requirements);
   const admitted = invoke(requirements);
   assert.equal(admitted.report.complete, true, JSON.stringify(admitted));
   assert.equal(admitted.report.required, requirements.length);
@@ -1426,17 +1554,51 @@ const{runRequiredTests}=await import(helper);const report=await runRequiredTests
   assert.ok(admitted.calls.every((call) => call.patterns?.length === 1));
   for (const budget of [1000, 599999]) {
     const custom = invoke(
-      [requirements[0]!, requirements[4]!, requirements[8]!, requirements[12]!],
+      profiles.map((_, index) => requirements[index * 4]!),
       budget,
     );
     assert.deepEqual(
       custom.calls.map((call) => call.timeout),
-      [budget, budget, budget, budget],
+      profiles.map(() => budget),
     );
   }
   const batch = invoke(requirements, 600000, 0);
   assert.equal(batch.calls.length, 1);
   assert.equal(batch.calls[0]!.timeout, 600000);
+});
+
+test("FastAPI installed observer admission preserves exact paths names isolation and caller budgets", async (t) => {
+  const { root, invoke, prepare } = await timerAdmissionFixture(t);
+  const exact = path.join(root, "dist/test/gate-assembly-fastapi.test.js");
+  const foreign = path.join(root, "other/gate-assembly-fastapi.test.js");
+  const installed = "assembly-fastapi installed acceptance";
+  const requirements = [
+    { file: exact, name: installed },
+    { file: exact, name: "assembly-fastapi broken acceptance" },
+    { file: exact, name: installed + "-extra" },
+    { file: foreign, name: installed },
+  ];
+  await prepare(requirements);
+  const admitted = invoke(requirements, 120000);
+  assert.equal(admitted.report.complete, true, JSON.stringify(admitted));
+  assert.equal(admitted.report.required, 4);
+  assert.equal(admitted.report.passed, 4);
+  assert.deepEqual(
+    admitted.calls.map((call) => call.timeout),
+    [300000, 120000, 120000, 120000],
+  );
+  assert.ok(admitted.calls.every((call) => call.patterns?.length === 1));
+  for (const budget of [1000, 119999, 120001, 600000]) {
+    const custom = invoke(requirements, budget);
+    assert.deepEqual(
+      custom.calls.map((call) => call.timeout),
+      requirements.map(() => budget),
+    );
+  }
+  const batch = invoke(requirements, 120000, 0);
+  assert.equal(batch.report.complete, true);
+  assert.equal(batch.calls.length, 1);
+  assert.equal(batch.calls[0]!.timeout, 120000);
 });
 
 test("named required case progress identifies starts and terminal failures without crediting absent or skipped cases", async (t) => {
@@ -1566,3 +1728,56 @@ else {console.log(${JSON.stringify(JSON.stringify(ledger))});process.exitCode=7;
     assert.deepEqual(JSON.parse(result.stdout), ledger);
   },
 );
+
+test("FastAPI controller admits the source and installed composite windows while keeping other phases bounded", async (t) => {
+  const root = await fixture(t, {
+    "observe-controller.mjs": `
+import{registerHooks}from'node:module';import{pathToFileURL}from'node:url';
+const target=pathToFileURL(process.argv[2]).href;globalThis.originalObserverCalls=[];
+// Observe fixed subprocess arguments only. These synthetic results are not native receipts.
+const stub=String.raw\`export function execFileSync(command,args,options){globalThis.originalObserverCalls.push({command,args,timeout:options?.timeout??null});if(command==='npm')return '/synthetic/cache';if(command==='docker'){const text=args.join(' ');if(text.includes('from importlib.metadata import version'))return JSON.stringify({python:'3.12.13',packages:{fastapi:'0.141.1',starlette:'1.6.0',pydantic:'2.13.5'}});if(text.includes('readFileSync(process.execPath)'))return JSON.stringify({version:'v22.23.2',platform:'linux',arch:'arm64'});if(text.includes('prepare-acceptance-cache-subset'))return JSON.stringify({lockedRegistryTarballs:1,bytes:1,registryMetadataCopied:false,historicalLocalPackageTarballsCopied:false})+'\\n'+JSON.stringify({complete:true,passed:9});if(text.includes('verify-fastapi-assembly-guards.mjs'))return JSON.stringify({controls:Array.from({length:37},()=>({originalPassed:true,mutantCompiled:true,mutantFailedAssertion:true,restoredPassed:true}))});if(text.includes('frameworks'))return JSON.stringify({required:8,passed:8,complete:true});if(text.includes('review-fastapi-assembly-guards.test.js'))return '# pass 10\\n# fail 0\\n# skipped 0\\n';if(text.includes('fastapi.test.js'))return '# pass 1\\n# fail 0\\n# skipped 0\\n';}if(command===process.execPath&&args[0]==='scripts/verify-import-context-package.mjs')return JSON.stringify({profile:{complete:true,passed:9}});throw Error('Unexpected fixed controller command');}\`;
+registerHooks({resolve(specifier,context,next){return specifier==='node:child_process'&&context.parentURL===target?{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true}:next(specifier,context)}});
+process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_IMAGE='synthetic-operator-image';process.env.CHECKTRAIL_TEST_TASK='synthetic-observer-control';await import(target);console.log(JSON.stringify({calls:globalThis.originalObserverCalls}));
+`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const observed = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "observe-controller.mjs"),
+      fileURLToPath(
+        new URL(
+          "../../scripts/verify-fastapi-assembly-container.mjs",
+          import.meta.url,
+        ),
+      ),
+    ],
+    { env, encoding: "utf8", timeout: 10000 },
+  );
+  assert.equal(observed.status, 0, observed.stdout + observed.stderr);
+  const last = JSON.parse(observed.stdout.trim().split("\n").at(-1)!) as {
+    calls: { command: string; args: string[]; timeout: number | null }[];
+  };
+  const docker = last.calls.filter((call) => call.command === "docker");
+  assert.equal(docker.length, 7);
+  const source = docker.filter((call) =>
+    call.args.some((value) =>
+      value.includes("prepare-acceptance-cache-subset"),
+    ),
+  );
+  assert.equal(source.length, 1);
+  assert.equal(source[0]!.timeout, 600000);
+  assert.ok(
+    docker
+      .filter((call) => call !== source[0])
+      .every((call) => call.timeout === 300000),
+  );
+  const installed = last.calls.filter(
+    (call) =>
+      call.command === process.execPath &&
+      call.args[0] === "scripts/verify-import-context-package.mjs",
+  );
+  assert.equal(installed.length, 1);
+  assert.equal(installed[0]!.timeout, 300000);
+});

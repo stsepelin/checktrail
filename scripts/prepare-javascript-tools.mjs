@@ -16,7 +16,7 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
   assert.equal(source.lockfileVersion, 3);
   const dependencies = {
     ...rootManifest.dependencies,
-    eslint: "10.11.0",
+    eslint: "10.13.0",
     "@typescript-eslint/parser": "8.71.1",
     "@types/node": "26.6.4",
     vite: "8.3.0",
