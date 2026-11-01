@@ -366,3 +366,114 @@ test(
     );
   },
 );
+
+test(
+  "Original Node canonical empty command accepts captured null and exact array while rejecting missing or foreign arguments",
+  { skip: process.platform === "win32" },
+  () => {
+    const { spec } = setup("original", "configure");
+    assert.deepEqual(spec.cmd, []);
+    const capturedShape = inspection(spec);
+    capturedShape.Config.Cmd = null;
+    const result = transport.requireNodeContainerConfiguration(
+      capturedShape,
+      spec,
+    );
+    assert.equal(result.emptyCommandProjectionApplied, true);
+    assert.equal(result.containerConfiguration, capturedShape.Config);
+    assert.equal(result.containerConfiguration.Cmd, null);
+    assert.equal(
+      result.configurationSha256,
+      createHash("sha256").update(JSON.stringify(capturedShape)).digest("hex"),
+    );
+    const arrayNearMiss = transport.requireNodeContainerConfiguration(
+      inspection(spec),
+      spec,
+    );
+    assert.equal(arrayNearMiss.emptyCommandProjectionApplied, false);
+    assert.deepEqual(arrayNearMiss.containerConfiguration.Cmd, []);
+    for (const value of [undefined, [""], ["--help"], "", {}]) {
+      const wrong = inspection(spec);
+      wrong.Config.Cmd = value;
+      assert.throws(() =>
+        transport.requireNodeContainerConfiguration(wrong, spec),
+      );
+    }
+    const missing = inspection(spec);
+    Reflect.deleteProperty(missing.Config, "Cmd");
+    assert.throws(() =>
+      transport.requireNodeContainerConfiguration(missing, spec),
+    );
+    const nonempty = setup("original", "build"),
+      nullForBuild = inspection(nonempty.spec);
+    nullForBuild.Config.Cmd = null;
+    assert.throws(() =>
+      transport.requireNodeContainerConfiguration(nullForBuild, nonempty.spec),
+    );
+    const foreignEntry = inspection(spec);
+    foreignEntry.Config.Cmd = null;
+    foreignEntry.Config.Entrypoint = ["/foreign/configure"];
+    assert.throws(() =>
+      transport.requireNodeContainerConfiguration(foreignEntry, spec),
+    );
+  },
+);
+
+test(
+  "Original Node canonical empty command preserves null through prestart transport and actual terminal admission",
+  { skip: process.platform === "win32" },
+  async () => {
+    const { args, spec } = setup("original", "configure"),
+      before = inspection(spec),
+      after = inspection(spec, true);
+    before.Config.Cmd = null;
+    after.Config.Cmd = null;
+    const operations: string[] = [],
+      records: { phase: string; containerConfiguration?: { Cmd: unknown } }[] =
+        [];
+    const result = await transport.runNodeContainerTransport({
+      args,
+      spec,
+      deadline: 100,
+      now: () => 0,
+      custody: async () => {
+        operations.push("custody");
+      },
+      cleanup: async () => {
+        operations.push("cleanup");
+      },
+      record: async (row: {
+        phase: string;
+        containerConfiguration?: { Cmd: unknown };
+      }) => {
+        records.push(row);
+      },
+      invoke: async (operation: string) => {
+        operations.push(operation);
+        return {
+          terminal,
+          text:
+            operation === "create"
+              ? containerId
+              : operation === "inspect-before-start"
+                ? JSON.stringify([before])
+                : operation === "inspect-after-terminal"
+                  ? JSON.stringify([after])
+                  : "retained original command output",
+        };
+      },
+    });
+    assert.equal(result.nativeState.ExitCode, 0);
+    assert.equal(result.prestartConfiguration.containerConfiguration.Cmd, null);
+    assert.equal(records[0]!.containerConfiguration!.Cmd, null);
+    assert.deepEqual(operations, [
+      "create",
+      "inspect-before-start",
+      "custody",
+      "start-attached",
+      "inspect-after-terminal",
+      "custody",
+      "cleanup",
+    ]);
+  },
+);

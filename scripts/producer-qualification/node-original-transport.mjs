@@ -56,8 +56,15 @@ export function requireNodeContainerConfiguration(
     spec.networkMode,
     "Actual Node stage network policy differs",
   );
+  const emptyCommandProjectionApplied =
+    Array.isArray(spec.cmd) &&
+    spec.cmd.length === 0 &&
+    value.Config?.Cmd === null;
   const projected = {
     ...value,
+    Config: emptyCommandProjectionApplied
+      ? { ...value.Config, Cmd: [] }
+      : value.Config,
     HostConfig: { ...value.HostConfig, NetworkMode: "none" },
   };
   const result = requireGoContainerConfiguration(
@@ -71,6 +78,8 @@ export function requireNodeContainerConfiguration(
     ...result,
     configurationSha256: sha256(JSON.stringify(value)),
     hostConfiguration: value.HostConfig,
+    containerConfiguration: value.Config,
+    emptyCommandProjectionApplied,
     networkMode: spec.networkMode,
     originalNpmNetworkFallbackAvailable: spec.networkMode === "bridge",
   };
