@@ -235,3 +235,8 @@ The separate [original web runtime controller](WEB-RUNTIME-PRODUCER.md) prepares
 the pinned GitHub and npm publisher recipes through its own operator-only native
 workflow. Its native acceptance, SDK/bootstrap ancestry and complete notice
 closure remain pending; no existing producer completion flag is changed.
+
+The separate [original Node source profile](NODE-ORIGINAL-PRODUCER.md) prepares
+the pinned official Node source archive and unchanged configure/build/test-only
+sequence through its own opt-in hosted workflow. This is a prospective producer
+profile; generated controls do not establish native build or ancestry closure.
