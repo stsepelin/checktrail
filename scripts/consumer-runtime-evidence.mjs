@@ -7,6 +7,7 @@ import os from "node:os";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import { runRequiredTests } from "./required-test-evidence.mjs";
+import { projectConsumerTerminalDiagnostic } from "./consumer-runtime-diagnostics.mjs";
 import {
   captureCompiledEngine,
   requireUnchangedCompiledEngine,
@@ -32,6 +33,7 @@ export const consumerRuntimeHarnessFiles = Object.freeze([
   "package-lock.json",
   "docs/gate-a-profiles.v1.json",
   "scripts/consumer-runtime-evidence.mjs",
+  "scripts/consumer-runtime-diagnostics.mjs",
   "scripts/consumer-runtime-selection.mjs",
   "scripts/consumer-witness-collection.mjs",
   "scripts/consumer-native-capture-registry.mjs",
@@ -211,7 +213,20 @@ export function requireConsumerTerminalCases(
   acceptanceSha256,
 ) {
   assert.match(acceptanceSha256 ?? "", /^[a-f0-9]{64}$/);
-  assert.equal(p.complete, true, JSON.stringify(p.problems));
+  try {
+    assert.equal(p.complete, true, JSON.stringify(p.problems));
+  } catch (error) {
+    try {
+      error.consumerTerminalDiagnostic = projectConsumerTerminalDiagnostic(
+        p,
+        requirements,
+        acceptanceSha256,
+      );
+    } catch {
+      /* Preserve the original profile refusal. */
+    }
+    throw error;
+  }
   assert.equal(p.required, 9);
   assert.equal(p.passed, 9);
   assert.equal(p.ledger.truncated, false);

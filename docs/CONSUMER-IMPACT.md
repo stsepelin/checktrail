@@ -70,5 +70,11 @@ review-quality claim.
 
 The [consumer witness evidence tooling](CONSUMER-WITNESS-EVIDENCE.md) prepares
 physical cross-family receipt collection from existing native witness bodies.
-Its finite manifest retains every required family; native qualification is still
-pending and unknown imports continue to retain the full validation plan.
+Its finite manifest retains every required family. The [historical hosted
+measurement](measurements/consumer-impact-hosted-2026-11-01.json) records the
+qualified c25 source and its different, byte-matching hosted checkout. It binds
+26 native consumer scopes and 25 producer artifacts through the exact
+controller/capsule mechanism; it does not claim independent inspection of 144 raw
+consumer runtime callback events. The follow-up changes the compiled harness,
+so its current native qualification remains pending. Unknown imports continue to
+retain the full validation plan.
