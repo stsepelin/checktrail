@@ -15,7 +15,7 @@ import time
 import zipfile
 
 MIB = 1024 ** 2
-CATALOG_SHA256 = '0309dcd61b505020cc19bb67beeca7b6a62103c8194784c9eb224bb75466dbc6'
+CATALOG_SHA256 = 'a2cd4b6647bfccab800576b5de4b6bb47d04edb3746a5467f2176daa207dee4f'
 KEYS = ['PASS','FAIL','XFAIL','XPASS','UNSUPPORTED','UNRESOLVED','UNTESTED','ERROR','SKIP']
 SOURCE_FILES = [
     'scripts/qualify-c-producer.mjs', 'scripts/qualify-binutils-producer.mjs',
@@ -24,7 +24,7 @@ SOURCE_FILES = [
     'scripts/producer-qualification/binutils-retention-observer.mjs', 'scripts/producer-qualification/binutils-retention-observer.py',
     'scripts/producer-qualification/binutils-image-identity.mjs', 'scripts/producer-qualification/binutils-image-identity.v1.json',
     'scripts/verify-c-producer-observation.mjs', 'scripts/producer-qualification/c-producer-export-evidence.py',
-    'scripts/producer-qualification/c-producer-replay-evidence.py', '.github/workflows/upstream-glibc.yml',
+    'scripts/producer-qualification/c-producer-replay-evidence.py', '.github/workflows/upstream-glibc.yml', '.github/workflows/upstream-glibc-u13.yml',
   'scripts/verify-binutils-retention-observer.mjs', 'scripts/acquire-binutils-inputs.mjs', 'scripts/acquire-c-producer-inputs.mjs', 'scripts/producer-qualification/binutils.v1.json', 'scripts/producer-qualification/binutils-acquisition-plan.mjs', 'scripts/producer-qualification/binutils-prepare-inputs.py', 'scripts/producer-qualification/binutils-apt-index-preparation.v1.json', 'scripts/producer-qualification/binutils-input-reacquisition.v1.json',
 ]
 GLIBC_POLICY_FILES = [
@@ -235,7 +235,7 @@ class Packet:
             require(not item.is_dir() and not item.flag_bits&1 and stat.S_IFMT(item.external_attr>>16) in [0,stat.S_IFREG], 'Linked/encrypted/nonregular ZIP member refused')
         require('manifest.json' in names and self.archive.getinfo('manifest.json').file_size<=16*MIB, 'Missing bounded export manifest')
         self.manifest = strict_json(self.archive.read('manifest.json'))
-        require(type(self.manifest.get('selectedProfile')) is str and self.manifest['selectedProfile'] in ['gcc-12','glibc'],'Unknown archive original profile')
+        require(type(self.manifest.get('selectedProfile')) is str and self.manifest['selectedProfile'] in ['gcc-12','glibc','glibc-u13'],'Unknown archive original profile')
         require(self.manifest['schemaVersion']==1 and self.manifest['qualificationComplete'] is False and self.manifest['gateAComplete'] is False, 'Unproven export qualification')
         require(self.manifest['originalReportMemberByteLimit']==64*MIB and self.manifest['originalReportAggregateByteLimit']==512*MIB, 'Wrong C report export contract')
         for key in ['binaryPackagePayloadsUploaded','nativeWorktreeArchiveUploaded','originalInputPayloadsUploaded']:
@@ -297,8 +297,8 @@ def nonempty_package_outputs(rows, maximum):
 
 
 def reports(packet, prefix, value, caller, expected_producer_uid, profile_name='glibc'):
-    require(profile_name in ['gcc-12','glibc'],'Unknown original report profile')
-    roots={'gcc-12':['build','build-cross'],'glibc':['build-tree']}[profile_name]
+    require(profile_name in ['gcc-12','glibc','glibc-u13'],'Unknown original report profile')
+    roots={'gcc-12':['build','build-cross'],'glibc':['build-tree'],'glibc-u13':['build-tree']}[profile_name]
     require(exact_json([value['schemaVersion'],value['profile'],value['generatedBuildRoots']],[1,profile_name,roots]), 'Wrong original report profile')
     for key in ['completeConfigurationInventoryAssessed','duplicateReportsAreIndependentEvidence','allOriginalTestsPassRequired','fullCompilerSdkBootstrapClosureVerified','gateAComplete']:
         require(value[key] is False, 'Unproven original report promotion')
@@ -529,7 +529,7 @@ def source_frame(packet, repository, startup):
 
 
 def replay(archive,repository,expected_profile='glibc'):
-    require(type(expected_profile) is str and expected_profile in ['gcc-12','glibc'],'Unknown requested original profile')
+    require(type(expected_profile) is str and expected_profile in ['gcc-12','glibc','glibc-u13'],'Unknown requested original profile')
     repository=Path(repository).absolute()
     packet=Packet(archive)
     try:
@@ -583,13 +583,13 @@ def replay(archive,repository,expected_profile='glibc'):
         command=packet.json('result/work/original-command.json',4096)
         require(exact_json(command,receipt['originalBuild']) and exact_json(command,{'schemaVersion':1,'command':profile['command'],'invoked':True,'exitCode':0,'wrapperExitCode':0}),'Original default command terminal unavailable')
         require(packet.files['result/build.log']['bytes']==receipt['executionObserver']['retainedBytes'] and {key:packet.files['result/build.log'][key] for key in ['bytes','sha256']}==receipt['log'],'Original process log binding differs')
-        selected_sources=['c-producer-profiles.v1.json','c-producer-profile.mjs','c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','binutils-retention-observer.mjs','binutils-image-identity.mjs','binutils-image-identity.v1.json',*(GLIBC_POLICY_FILES if expected_profile=='glibc' else ['glibc-seccomp.mjs'])]
+        selected_sources=['c-producer-profiles.v1.json','c-producer-profile.mjs','c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','binutils-retention-observer.mjs','binutils-image-identity.mjs','binutils-image-identity.v1.json',*(GLIBC_POLICY_FILES if expected_profile in ['glibc','glibc-u13'] else ['glibc-seccomp.mjs'])]
         require(exact_json([row['file'] for row in receipt['sourcePins']],selected_sources) and exact_json([row['file'] for row in receipt['harnessPins']],['qualify-c-producer.mjs','qualify-binutils-producer.mjs']),'Incomplete original source/harness pin inventory')
         for row in receipt['sourcePins']:
             require(pin(packet.read('source/scripts/producer-qualification/'+row['file'],2*MIB))=={key:row[key] for key in ['bytes','sha256']},'Original source pin differs')
         for row in receipt['harnessPins']:
             require(pin(packet.read('source/scripts/'+row['file'],2*MIB))=={key:row[key] for key in ['bytes','sha256']},'Original harness pin differs')
-        if expected_profile=='glibc':
+        if expected_profile in ['glibc','glibc-u13']:
             require(observed['carrier'] is None,'GLIBC selected an external GCC carrier')
             syscall_preflight(packet,receipt)
         else:gcc_carrier(packet,packet.read('operator-startup.json',MIB),receipt,profile,observed)
@@ -632,7 +632,7 @@ def replay(archive,repository,expected_profile='glibc'):
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--profile',choices=['gcc-12','glibc'],required=True)
+    parser.add_argument('--profile',choices=['gcc-12','glibc','glibc-u13'],required=True)
     parser.add_argument('--archive',required=True)
     parser.add_argument('--repository',required=True)
     args=parser.parse_args()

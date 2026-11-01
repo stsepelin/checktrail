@@ -16,7 +16,7 @@ SOURCE_FILES = [
     'scripts/producer-qualification/binutils-retention-observer.mjs', 'scripts/producer-qualification/binutils-retention-observer.py',
     'scripts/producer-qualification/binutils-image-identity.mjs', 'scripts/producer-qualification/binutils-image-identity.v1.json',
     'scripts/verify-c-producer-observation.mjs', 'scripts/producer-qualification/c-producer-export-evidence.py',
-    'scripts/producer-qualification/c-producer-replay-evidence.py', '.github/workflows/upstream-glibc.yml',
+    'scripts/producer-qualification/c-producer-replay-evidence.py', '.github/workflows/upstream-glibc.yml', '.github/workflows/upstream-glibc-u13.yml',
   'scripts/verify-binutils-retention-observer.mjs', 'scripts/acquire-binutils-inputs.mjs', 'scripts/acquire-c-producer-inputs.mjs', 'scripts/producer-qualification/binutils.v1.json', 'scripts/producer-qualification/binutils-acquisition-plan.mjs', 'scripts/producer-qualification/binutils-prepare-inputs.py', 'scripts/producer-qualification/binutils-apt-index-preparation.v1.json', 'scripts/producer-qualification/binutils-input-reacquisition.v1.json',
 ]
 SOURCE_FILES += ['scripts/producer-qualification/' + name for name in [
@@ -50,7 +50,7 @@ class BoundedWriter:
 
 
 def export(repository, inputs, common, result, startup, output, logs=(), observer_check=None, profile_name='glibc', carrier=None):
-    if profile_name not in ['gcc-12','glibc']:
+    if profile_name not in ['gcc-12','glibc','glibc-u13']:
         raise RuntimeError('Unknown selected original C profile')
     repository, inputs, common, result, startup, output = [Path(value).absolute() for value in [repository, inputs, common, result, startup, output]]
     physical(output.parent)
@@ -209,7 +209,7 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--profile',choices=['gcc-12','glibc'],required=True)
+    parser.add_argument('--profile',choices=['gcc-12','glibc','glibc-u13'],required=True)
     parser.add_argument('--carrier')
     for name in ['repository', 'inputs', 'common-inputs', 'result', 'startup', 'output']:
         parser.add_argument('--' + name, required=True)

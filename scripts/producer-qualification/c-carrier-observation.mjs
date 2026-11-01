@@ -1,6 +1,7 @@
 // Operator observation limits are independent of the original producer profile.
 import assert from "node:assert/strict";
 import { observedCProducerTerminal } from "../qualify-c-producer.mjs";
+import { cProducerProfileKey } from "./c-producer-profile.mjs";
 
 export const gccCarrierLimits = Object.freeze({
   observationSeconds: 14700,
@@ -11,7 +12,7 @@ export const gccCarrierLimits = Object.freeze({
 
 export function requireCObservationProfile(name) {
   assert.ok(
-    ["gcc-12", "glibc"].includes(name),
+    ["gcc-12", "glibc", "glibc-u13"].includes(name),
     "Unknown C observation profile",
   );
   return name;
@@ -19,6 +20,11 @@ export function requireCObservationProfile(name) {
 
 export function validateCStartupProfile(startup, name, profile, catalogSha256) {
   requireCObservationProfile(name);
+  assert.equal(
+    name,
+    cProducerProfileKey(profile),
+    "Startup key/source tuple differs",
+  );
   assert.deepEqual(
     startup.selectedProfile,
     {

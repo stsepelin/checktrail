@@ -41,7 +41,7 @@ const catalog = JSON.parse(
 );
 const profile = catalog.profiles["gcc-12"];
 const catalogSha256 =
-  "0309dcd61b505020cc19bb67beeca7b6a62103c8194784c9eb224bb75466dbc6";
+  "a2cd4b6647bfccab800576b5de4b6bb47d04edb3746a5467f2176daa207dee4f";
 const attempt = "12345678-1234-4234-8234-123456789012";
 const posixFamilyControl = {
   skip:

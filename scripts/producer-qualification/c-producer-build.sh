@@ -2,8 +2,9 @@
 # Operator controller only; original source rules/default checks are unchanged.
 set -eu
 case "$1" in
-  gcc-12) descriptor=/inputs/gcc-12/gcc-12_12.2.0-14+deb12u1.dsc ;;
-  glibc) descriptor=/inputs/glibc/glibc_2.36-9+deb12u14.dsc ;;
+  gcc-12) descriptor=/inputs/gcc-12/gcc-12_12.2.0-14+deb12u1.dsc ; apt_cache=gcc-12 ;;
+  glibc) descriptor=/inputs/glibc/glibc_2.36-9+deb12u14.dsc ; apt_cache=glibc ;;
+  glibc-u13) descriptor=/inputs/glibc/glibc_2.36-9+deb12u13.dsc ; apt_cache=glibc ;;
   *) exit 2 ;;
 esac
 mkdir -p /build /work/output
@@ -33,12 +34,12 @@ RECEIPT
 checktrail_caller_uid=$2
 checktrail_caller_gid=$3
 trap 'retain_native_build "$1"' EXIT
-apt-get -o APT::Get::AllowUnauthenticated=false -o Acquire::AllowInsecureRepositories=false -o Acquire::AllowDowngradeToInsecureRepositories=false -o Acquire::Check-Valid-Until=true -o "Dir::Cache::archives=/var/cache/apt/archives/$1" --yes --no-download --no-install-recommends build-dep "$descriptor"
+apt-get -o APT::Get::AllowUnauthenticated=false -o Acquire::AllowInsecureRepositories=false -o Acquire::AllowDowngradeToInsecureRepositories=false -o Acquire::Check-Valid-Until=true -o "Dir::Cache::archives=/var/cache/apt/archives/$apt_cache" --yes --no-download --no-install-recommends build-dep "$descriptor"
 dpkg-query -W -f='${Package}\t${Version}\t${Architecture}\n' > /work/installed-build-package-identities.txt
 dpkg-source --require-valid-signature --require-strong-checksums --extract "$descriptor" /build/source
 case "$1" in
   gcc-12) test -f /build/source/gcc-12.2.0-dfsg.tar.xz ;;
-  glibc) test -f /build/source/configure ;;
+  glibc|glibc-u13) test -f /build/source/configure ;;
 esac
 test -f /build/source/debian/control
 cd /build/source

@@ -235,3 +235,38 @@ The separate [original web runtime controller](WEB-RUNTIME-PRODUCER.md) prepares
 the pinned GitHub and npm publisher recipes through its own operator-only native
 workflow. Its native acceptance, SDK/bootstrap ancestry and complete notice
 closure remain pending; no existing producer completion flag is changed.
+
+## Selected u13 GLIBC source variant
+
+The closed producer key `glibc-u13` selects Debian GLIBC
+`2.36-9+deb12u13`. Its source package and APT archive directory remain
+`glibc`; the existing `glibc` key continues to select u14. The u13
+catalog preserves 159 existing bootstrap and metadata input rows and replaces
+the descriptor and Debian source archive with their exact u13 pins. The original
+upstream source archive is shared by byte identity. Reused u14 bootstrap package
+identities remain explicit; this is not an exact historical private-input replay.
+
+Default u13 data preparation uses the previously observed fixed Debian source
+URLs with the same pinned download/verification flow as the other profiles.
+Those old observations do not establish current URL availability or independent
+signer trust. An optional `--source-inputs DIRECTORY` reuses the three exact
+catalogued source basenames from an operator-selected offline cache. All three
+hashes are checked before output or network admission and again afterward; no
+arbitrary descriptor can be selected. An admitted local source is copied with
+exclusive publication and has no silent network fallback. Existing GCC and u14
+preparation arguments are unchanged.
+
+The u13 signer identity and fresh source-signature result remain unverified.
+The original native `dpkg-source --require-valid-signature
+--require-strong-checksums` and offline build-dependency checks remain required.
+The prepared variant does not establish a completed original u13 build, passing
+upstream tests, exhaustive notices, or Gate A completion. Original unexpected-pass
+and unavailable test outcomes remain separate from package-command completion.
+
+The dedicated [u13 workflow](../.github/workflows/upstream-glibc-u13.yml) fixes
+every producer, startup, acquisition, export and replay selector to `glibc-u13`.
+Its push namespace is `pr/upstream-producer/glibc-u13-*`; the u14 workflow
+excludes that namespace. The u13 concurrency group does not cancel an existing
+original observation. Its job and step budgets preserve the u14 carrier's
+original four-hour command and bounded export/replay envelope. This prepared
+workflow is not a successful native u13 observation.

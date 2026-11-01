@@ -30,6 +30,7 @@ import { reconcileRetentionLog } from "./producer-qualification/binutils-retenti
 import {
   loadCProducerProfile,
   cProducerCatalogSha256,
+  cProducerProfileKey,
   sha256,
 } from "./producer-qualification/c-producer-profile.mjs";
 import { registryImageIdentity } from "./producer-qualification/binutils-image-identity.mjs";
@@ -59,6 +60,7 @@ export const cObservationSources = [
   "scripts/producer-qualification/c-producer-export-evidence.py",
   "scripts/producer-qualification/c-producer-replay-evidence.py",
   ".github/workflows/upstream-glibc.yml",
+  ".github/workflows/upstream-glibc-u13.yml",
   "scripts/verify-binutils-retention-observer.mjs",
   "scripts/acquire-binutils-inputs.mjs",
   "scripts/acquire-c-producer-inputs.mjs",
@@ -104,7 +106,7 @@ export function validateCObservationHeader(
   startup,
   controllerExit,
 ) {
-  const name = requireCObservationProfile(profile.sourcePackage);
+  const name = requireCObservationProfile(cProducerProfileKey(profile));
   validateCStartupProfile(startup, name, profile, cProducerCatalogSha256);
   assert.equal(receipt.catalogSha256, cProducerCatalogSha256);
   assert.equal(controllerExit, 2, "Unexpected original controller exit");
@@ -390,7 +392,7 @@ export async function verifyCLiveObservation(
     ),
   );
   let carrierObservation = null;
-  if (name === "glibc") {
+  if (profile.sourcePackage === "glibc") {
     const syscall = validateGlibcSyscallPreflight(
       receipt,
       await loadGlibcSeccomp(),
@@ -636,7 +638,7 @@ if (
           args[6] === "--controller-exit" &&
           /^[0-9]{1,3}$/u.test(args[7]) &&
           (name !== "gcc-12" || args[8] === "--carrier"),
-        "Usage: --profile gcc-12|glibc --capture-startup NEW_FILE | --profile gcc-12|glibc --result RESULT --startup FILE --controller-exit STATUS [--carrier GCC_CARRIER]",
+        "Usage: --profile gcc-12|glibc|glibc-u13 --capture-startup NEW_FILE | --profile gcc-12|glibc|glibc-u13 --result RESULT --startup FILE --controller-exit STATUS [--carrier GCC_CARRIER]",
       );
       process.stdout.write(
         JSON.stringify(

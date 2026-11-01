@@ -60,8 +60,8 @@ const sameUidControl = {
     : "POSIX sameUID copy custody is unavailable on this host",
 };
 
-test("C producer selected source frames bind every actual static helper import for both profiles", async () => {
-  for (const name of ["gcc-12", "glibc"]) {
+test("C producer selected source frames bind every actual static helper import for all three profiles", async () => {
+  for (const name of ["gcc-12", "glibc", "glibc-u13"]) {
     const { profile } = await profiles.loadCProducerProfile(name);
     const bound = new Set<string>([
       "scripts/qualify-c-producer.mjs",
@@ -196,7 +196,7 @@ test("C producer catalog binds both exact source revisions and original finite p
 });
 
 test("C producer Docker vector preserves original command time, resource and authentication context", async () => {
-  for (const name of ["gcc-12", "glibc"]) {
+  for (const name of ["gcc-12", "glibc", "glibc-u13"]) {
     const { catalog, profile } = await profiles.loadCProducerProfile(name);
     const destination = path.resolve("synthetic-producer-attempt");
     const argv: string[] = api.cProducerArguments(
