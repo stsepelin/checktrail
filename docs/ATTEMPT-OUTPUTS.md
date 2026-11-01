@@ -67,8 +67,10 @@ Detailed Tasks can retain oversized captured reports through the bounded hashed
 chunks described in [task storage](TASK-STORAGE.md). This retains existing report
 bytes and incomplete flags; it supplies no missing producer or host-model output.
 
-The frozen `attempt-archives` profile remains pending. Complete individually
-addressed artifacts for every inner compiler/framework/bootstrap attempt,
-interrupted-attempt journals, durable replay, the remaining native matrix and
-independently supplied host-cost evidence are still required. No model inference,
+The `attempt-archives` implementation is integrated. Its [historical hosted
+measurement](measurements/attempt-archives-hosted-2026-11-01.json) binds the frozen
+source/fresh runtime matrix at the recorded c25 engine and harness. The follow-up
+changes the harness, so current-head native acceptance remains `not-measured`.
+Complete upstream artifact/build/notice closure and independently supplied
+external host-cost evidence remain separate requirements. No model inference,
 held-out scoring or real-project MCP field evaluation was performed.

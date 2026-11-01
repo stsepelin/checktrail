@@ -1,0 +1,413 @@
+{
+  "schemaVersion": 1,
+  "state": "historical-hosted-measurement-qualified-only-at-recorded-source",
+  "sourceHead": "c25abae082ab0d33f673b41a61b9d1c7b2c34708",
+  "hostedActualCheckout": "cd2f7147d86e04f14d60888522264ed5474d1695",
+  "hostedGitTree": "86acdc69e12d97d0c26822b2d96391d845fbecbb",
+  "sourceCommitIdentityClaimedEqual": false,
+  "run": 41228582798,
+  "aggregateAttempt": 2,
+  "compiledEngineTreeSha256": "43d38e516cc7df5504477d2b5ab20f2c7a06ea0a8f585d884f5422f088b3fd2e",
+  "newExecutionPerformed": false,
+  "newHttpPerformed": false,
+  "gateAComplete": false,
+  "producerBuildClosureVerified": false,
+  "licenseClosureVerified": false,
+  "licensedCohortAdmitted": false,
+  "independentEvaluationProtocolPromoted": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "profile": "consumer-impact",
+  "fullSuiteEvidence": {
+    "independentLedgers": 4,
+    "exactRequiredCallbacksPerLedger": 703,
+    "consumerProfileCallbacksIncludedPerLedger": 9,
+    "unboundOptionalAddressesQualified": false
+  },
+  "nativeConsumerEvidence": {
+    "sourceFrame": {
+      "schemaVersion": 1,
+      "profile": "native-consumer-current-source-frame-v1",
+      "commit": "cd2f7147d86e04f14d60888522264ed5474d1695",
+      "gitTree": "86acdc69e12d97d0c26822b2d96391d845fbecbb",
+      "sourceManifestSha256": "11e598f972ba044660cb781e7a8922a806f07f65ebda24fa6c4bca4e036e0318",
+      "sourceFiles": 2776,
+      "sourceBytes": 111604303,
+      "engineSha256": "43d38e516cc7df5504477d2b5ab20f2c7a06ea0a8f585d884f5422f088b3fd2e",
+      "engineManifestSha256": "f8dcc8412aa755bdfb2dc6dc191a95929543038bb9b3b14fc306a6b6353dd65a",
+      "harnessSha256": "806838eeae8c59e1db349cd02ba8d77fa8891c92e1c0bd8fbcfaf3539f16c4e1",
+      "harnessManifestSha256": "265aa25bd421fbc4729cf38d2910dfde99fac28b072b62fdda4f89a2bc975053",
+      "inventorySha256": "51874fa03a4cb3ccfa1d11389c85a8f0fadb5e9f4a9a40453dfb72c9af7f4ba1",
+      "inventoryScopeSha256": "0fa142f57822a015c322e2428d657b4bb5d00a543913dee0e401c9945c44568a",
+      "requirementsSha256": "819ecd0ee154008415d0b86c5efd431f136bf7603f0ef931fa7b8c5f66766db1",
+      "packageManifestSha256": "1cafbc99926187db1085eacf4367a79a424b906dc6b9587d93ed026bc4512ee1",
+      "packageLockSha256": "98105c6704c9da723f9e8492e2359cea0d5a824cf3f4826f2eda528e78faf726",
+      "clean": true,
+      "hostAttestationPerformed": false,
+      "gateAComplete": false
+    },
+    "selectedScopes": [
+      "consumer-impact:ci-linux-node22",
+      "consumer-impact:ci-linux-node24",
+      "consumer-impact:ci-linux-node26",
+      "consumer-impact:ci-macos-node22",
+      "consumer-impact:ci-macos-node24",
+      "consumer-impact:ci-macos-node26",
+      "consumer-impact:native-linux-arm64-node22",
+      "consumer-impact:windows-node22",
+      "javascript-extensions:native-linux-arm64-node22",
+      "context-python:native-linux-arm64-node22",
+      "context-go:native-linux-arm64-node22",
+      "context-php:native-linux-arm64-node22",
+      "context-rust:native-linux-arm64-node22",
+      "context-java:native-linux-arm64-node22",
+      "context-kotlin:native-linux-arm64-node22",
+      "context-scala:native-linux-arm64-node22",
+      "context-csharp:native-linux-arm64-node22",
+      "context-fsharp:native-linux-arm64-node22",
+      "context-vb:native-linux-arm64-node22",
+      "context-ruby:native-linux-arm64-node22",
+      "context-swift:native-linux-arm64-node22",
+      "context-c:native-linux-arm64-node22",
+      "context-cpp:native-linux-arm64-node22",
+      "context-hcl:native-linux-arm64-node22",
+      "context-yaml:native-linux-arm64-node22",
+      "selected-clang:native-linux-arm64-node22"
+    ],
+    "scopeCapsules": [
+      {
+        "id": "consumer-impact:ci-linux-node22",
+        "sha256": "cacff565a65c51ad862c34a468f98f72c2c13980a3a9408e86cb7e678177f84d"
+      },
+      {
+        "id": "consumer-impact:ci-linux-node24",
+        "sha256": "0d967741b8d85a1046aed5f15477e15e73f9f0ade89e639d0400cccabd69c577"
+      },
+      {
+        "id": "consumer-impact:ci-linux-node26",
+        "sha256": "55fbfabf70039f829f2baf943b44f5c04bc1b95163c262fba6564761dec43dcd"
+      },
+      {
+        "id": "consumer-impact:ci-macos-node22",
+        "sha256": "27b971d8345c81c08c9f23e3b5f01a747093bb47bbcaaa467ddae19aa68eb4da"
+      },
+      {
+        "id": "consumer-impact:ci-macos-node24",
+        "sha256": "7151392c39b5f2d33524440bd99bf436a67201e8739e665b561ea51b7eb41985"
+      },
+      {
+        "id": "consumer-impact:ci-macos-node26",
+        "sha256": "aa350acfde29df5831b57a96b1589d9e4dc5a0f166876524275a5d6698d24005"
+      },
+      {
+        "id": "consumer-impact:native-linux-arm64-node22",
+        "sha256": "747e0fb1bd79dc3866371a42178e7194b805f4b5b6345e2f4369aa9a566b3672"
+      },
+      {
+        "id": "consumer-impact:windows-node22",
+        "sha256": "4a87d17ece4c69c6e7ea650b1659f2435c4552db27b0ce5d8a43e43b8040ca27"
+      },
+      {
+        "id": "javascript-extensions:native-linux-arm64-node22",
+        "sha256": "8977b91a8db51089326bdbb4ad91e27c7b98d2632cb9871e068c5ab9a95997b2"
+      },
+      {
+        "id": "context-python:native-linux-arm64-node22",
+        "sha256": "42551b72529ac4036a0f7e53a1e4bfe2da7b8b436e4d2091fa6c771f807c8c1f"
+      },
+      {
+        "id": "context-go:native-linux-arm64-node22",
+        "sha256": "9bafa91062bbc36a58b54761ffd45d07737fb898347af165fd8f7c1c04ca2336"
+      },
+      {
+        "id": "context-php:native-linux-arm64-node22",
+        "sha256": "0a77a06a0a90b1e887fd747ff5010c491c195947dde12d64e9310191f45218e9"
+      },
+      {
+        "id": "context-rust:native-linux-arm64-node22",
+        "sha256": "23d48a18f7bc6fc6a805cba6eca610b8ab38417a4e10d11bfb46f5f8c639f180"
+      },
+      {
+        "id": "context-java:native-linux-arm64-node22",
+        "sha256": "ebaaa823e152518a49c49833bc7530ffda9a0282d94bfc17f9b9d1688071b73f"
+      },
+      {
+        "id": "context-kotlin:native-linux-arm64-node22",
+        "sha256": "12213b264d23452c0f53de1aa50e08c5cbbf10fb4f7510b2f2429c5fce2def47"
+      },
+      {
+        "id": "context-scala:native-linux-arm64-node22",
+        "sha256": "93b87cd3c7ff96b99a50f12cc7f195c2dcff1b424642dbc1a223e263a3ce8c27"
+      },
+      {
+        "id": "context-csharp:native-linux-arm64-node22",
+        "sha256": "5eda1012fbff269594b98e95393be1cddb0f610c16094486512a3f349460ed03"
+      },
+      {
+        "id": "context-fsharp:native-linux-arm64-node22",
+        "sha256": "657270cf86beea78d354b7f0410a35a3c874d7c68605221391bfe5432f5fe6df"
+      },
+      {
+        "id": "context-vb:native-linux-arm64-node22",
+        "sha256": "4490794039b9d8f006d351bc8511c1d4d554bde4459b7b405c21bbd978ba26d7"
+      },
+      {
+        "id": "context-ruby:native-linux-arm64-node22",
+        "sha256": "c4d866f8a08d9f67a6a0e4354b61f61019bed2549d9f7354759d25780a61b9b9"
+      },
+      {
+        "id": "context-swift:native-linux-arm64-node22",
+        "sha256": "60a83f2a82815b1161c1eecc22e8877c733ef0a7f9480abc67f8e40cad6f7a68"
+      },
+      {
+        "id": "context-c:native-linux-arm64-node22",
+        "sha256": "cddd018980b6b565418e259ab1380085cf1f79e73f847db7ad2260db65a5be41"
+      },
+      {
+        "id": "context-cpp:native-linux-arm64-node22",
+        "sha256": "e928e7968c651544ca7997f62a24df07b0a8ef88e9786fbb5152ecaf64327461"
+      },
+      {
+        "id": "context-hcl:native-linux-arm64-node22",
+        "sha256": "92050e35663b798ccd0d588f6a7fc95830595fe57fd74d9e4abd11619beb89a5"
+      },
+      {
+        "id": "context-yaml:native-linux-arm64-node22",
+        "sha256": "da96e649f07fb58603d1719d6643a7ca821aa4a20f3b651a353d6ba2c425c6d4"
+      },
+      {
+        "id": "selected-clang:native-linux-arm64-node22",
+        "sha256": "8ba8d56dd3816630bbd156f7d6137fe5775e50204f292f94c9293348283f6f85"
+      }
+    ],
+    "producerArtifacts": [
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-linux-node22",
+        "producerAttempt": "1",
+        "id": "13053022819",
+        "name": "native-consumer-tasks-runtime-ci-linux-node22-1",
+        "digest": "f5ae35d36c597d9ec48294c7cc097fc3b6f44f12ea683da6ca832784a320ff54"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-linux-node24",
+        "producerAttempt": "1",
+        "id": "13053536771",
+        "name": "native-consumer-tasks-runtime-ci-linux-node24-1",
+        "digest": "354ce21f8805ca6a85913639ef62e19e84eb4b2dde96a2307a03c8e6163f138b"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-linux-node26",
+        "producerAttempt": "1",
+        "id": "13053626500",
+        "name": "native-consumer-tasks-runtime-ci-linux-node26-1",
+        "digest": "a77a45911696ae047b9f4bf02fc16100e46fa39038e7ddc8a956d3b0e13a0ea3"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-macos-node22",
+        "producerAttempt": "1",
+        "id": "13054402288",
+        "name": "native-consumer-tasks-runtime-ci-macos-node22-1",
+        "digest": "c1858257fb7fcdd9515f1b58437c7f352c6ad2f841ba4e054580c94d1fca4946"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-macos-node24",
+        "producerAttempt": "1",
+        "id": "13054115928",
+        "name": "native-consumer-tasks-runtime-ci-macos-node24-1",
+        "digest": "207209eba03feb8cd42088eec72bfbe69bd76f313d8813a140218d85570c25d2"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-macos-node26",
+        "producerAttempt": "1",
+        "id": "13053583688",
+        "name": "native-consumer-tasks-runtime-ci-macos-node26-1",
+        "digest": "17cd798deb05e2d19fba969360afaebaf2d769401c98aa92286cdb81afd73245"
+      },
+      {
+        "job": "tasks-runtime-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054457157",
+        "name": "native-consumer-tasks-runtime-arm64-single-1",
+        "digest": "89b31b3f8d9f64989b71dafdbab02039c2db3738fc980d5e591a95d2183aca2e"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "windows-node22",
+        "producerAttempt": "2",
+        "id": "13056099225",
+        "name": "native-consumer-tasks-runtime-windows-node22-2",
+        "digest": "cce9b00546ba7ccae39c57c59d7239c664a72f48b82317aac667b28092461901"
+      },
+      {
+        "job": "javascript-extensions-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13053378292",
+        "name": "native-consumer-javascript-extensions-arm64-single-1",
+        "digest": "fb790349af1ddd4b877231342bf88d949a19927bc0d09d7573717f3f68907f0c"
+      },
+      {
+        "job": "go-workspaces-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054128176",
+        "name": "native-consumer-go-workspaces-arm64-single-1",
+        "digest": "603887bc16e55014e79ec5a3c1b419ba70bc3cd6cb94c50791fe40a92e8ffcaa"
+      },
+      {
+        "job": "php-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054768232",
+        "name": "native-consumer-php-context-arm64-single-1",
+        "digest": "ca24eb1176fe94c972a6c74463c0fe8bd0c7b3c336b4baa3d0fde8cddac16826"
+      },
+      {
+        "job": "rust-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054258599",
+        "name": "native-consumer-rust-context-arm64-single-1",
+        "digest": "d0cc135c59b4623d8a6df0ad2f1e02c5b9ce225bdd22391ca16113b57345d690"
+      },
+      {
+        "job": "java-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054318525",
+        "name": "native-consumer-java-context-arm64-single-1",
+        "digest": "0ddda99329c50cc8c94a3d7c76282e910ba8bf7f681f95625ec5dd0685a680b5"
+      },
+      {
+        "job": "kotlin-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054838436",
+        "name": "native-consumer-kotlin-context-arm64-single-1",
+        "digest": "39c1ca591d6b675d2757970d65b2b5b13b122fad4cad5769e6282b5d5faea717"
+      },
+      {
+        "job": "scala-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13055050364",
+        "name": "native-consumer-scala-context-arm64-single-1",
+        "digest": "70c97c493fedffb9b609fcf34e3c009494bd448ea490ca7e35ca6f852bd07894"
+      },
+      {
+        "job": "csharp-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054781254",
+        "name": "native-consumer-csharp-context-arm64-single-1",
+        "digest": "9dc1ce264e73f40414c33fe1cad4102ac17b7ca27e4dee9431f6ec99e6fdcdc7"
+      },
+      {
+        "job": "fsharp-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054207995",
+        "name": "native-consumer-fsharp-context-arm64-single-1",
+        "digest": "11b3de73bfdbfae8dcc63e6966131ceeff48f6b324d52f0915807ec61c8c8f94"
+      },
+      {
+        "job": "vb-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054378577",
+        "name": "native-consumer-vb-context-arm64-single-1",
+        "digest": "1b49e39df352f1feefe4669552ce9dd5b7f54d449e770ceea37704700e1de628"
+      },
+      {
+        "job": "ruby-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054669110",
+        "name": "native-consumer-ruby-context-arm64-single-1",
+        "digest": "977cb8918b466deb8f18a82c998c18bb80cbc3d22afb55f8e1b3696f8d6bdfd7"
+      },
+      {
+        "job": "swift-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13053914471",
+        "name": "native-consumer-swift-context-arm64-single-1",
+        "digest": "9eee47b8088d8ca810bcc05f0456b833e44674adfae1c1044ec896020da4783a"
+      },
+      {
+        "job": "c-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054862711",
+        "name": "native-consumer-c-context-arm64-single-1",
+        "digest": "acd0c21b5cfa50c020a6bc3d90cd5a59fee902931710335ca24279f69b7c75c8"
+      },
+      {
+        "job": "cpp-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054512900",
+        "name": "native-consumer-cpp-context-arm64-single-1",
+        "digest": "cbff5bc156a45a484f8a619a5e54848dbb5d69bfede3275c69b4b0a80d6b5e9e"
+      },
+      {
+        "job": "hcl-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054511712",
+        "name": "native-consumer-hcl-context-arm64-single-1",
+        "digest": "34818d8539e8e04726e4f6508832ec5d543270ba413f4b23868bc65951a836e9"
+      },
+      {
+        "job": "yaml-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13055107078",
+        "name": "native-consumer-yaml-context-arm64-single-1",
+        "digest": "fdd6c542cb650118ccc6ebc63ad6bce07cbec9cc276035e662537c57e4871a13"
+      },
+      {
+        "job": "cpp-extensions-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "13054756687",
+        "name": "native-consumer-cpp-extensions-arm64-single-1",
+        "digest": "db32c8a0e62ecb61e06808d82185f5ad6728251979362e8547c294bb88121039"
+      }
+    ],
+    "allDeclaredScopesComplete": true,
+    "consumerProfileComplete": true
+  },
+  "eightRuntimeEvidenceClassification": {
+    "controllerAdmittedSourceAndFreshProfile": true,
+    "sourceProfileCallbacksRequiredPerSlot": 9,
+    "freshProfileCallbacksRequiredPerSlot": 9,
+    "freshInstallationAndFoundationInternallyRequired": true,
+    "independentlyInspectedEightRawRuntimeLedgerPairs": false,
+    "reason": "The source-bound controller requires both9-case ledgers and foundation/installation equality before successful return. The native outer normalizes source ledger and physical source/fresh native witnesses, publishes only sanitized capsules, and aggregate binds successful original outer job+artifact claims. Remote logs contain capsule summaries rather than the private raw runtime stdout."
+  },
+  "promotionScope": "Can describe admitted whole consumer controller plus exact complete native matrix. Do not label144 profile terminal events independently inspected from8 raw runtime receipts.",
+  "remainingBodiesRequiredForThisMeasuredScope": [],
+  "separateOpenGates": [
+    "Original selected producer builds and notice/license closure",
+    "Reserved licensed cohort/prospective evaluation freeze",
+    "Any later source/harness changes require byte-binding recheck"
+  ],
+  "retainedQualificationMetadataSha256": "f878bea72e813d2058cec07bfb3910696212d399c8a93cb83851ab8ec0bc1a5d",
+  "publicationScope": {
+    "recordedSourceAndHarnessOnly": true,
+    "freshMainBeforeFollowup": "79bfc9192a31bc91c4a3c34d306ba2dc5bda1b7e",
+    "freshMainTreeWasByteIdenticalToRecordedSource": true,
+    "followupChangesHarness": true,
+    "changedHeadNativeQualificationVerified": false,
+    "currentProfileAcceptanceState": "not-measured",
+    "rawConsumerRuntimeCallbackEventsIndependentlyInspected": false
+  }
+}

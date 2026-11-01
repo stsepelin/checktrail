@@ -11,10 +11,14 @@ import { createHash } from "node:crypto";
 import {
   atomicReceipt,
   copyPinnedInput,
+  physicalPath,
   validateDestination,
   validateInputs,
 } from "./qualify-binutils-producer.mjs";
-import { loadCProducerProfile } from "./producer-qualification/c-producer-profile.mjs";
+import {
+  loadCProducerProfile,
+  cProducerProfileKey,
+} from "./producer-qualification/c-producer-profile.mjs";
 const { AbortController, fetch } = globalThis;
 
 export function validateCProducerDownloadUrl(address) {
@@ -137,8 +141,70 @@ async function download(row, target, signal) {
   });
 }
 
-export async function acquireCProducerInputs(name, commonRoot, output) {
+export async function validateRetainedU13SourceInputs(
+  profile,
+  sourceRoot,
+  output,
+) {
+  assert.equal(
+    cProducerProfileKey(profile),
+    "glibc-u13",
+    "Retained-source input is only for the exact u13 tuple",
+  );
+  const sourceRows = profile.files.filter((row) =>
+    ["signed-source-descriptor", "original-source-archive"].includes(row.kind),
+  );
+  assert.deepEqual(
+    sourceRows.map((row) => row.file).sort(),
+    [
+      "source/glibc/glibc_2.36-9+deb12u13.debian.tar.xz",
+      "source/glibc/glibc_2.36-9+deb12u13.dsc",
+      "source/glibc/glibc_2.36.orig.tar.xz",
+    ],
+    "Exactly three closed u13 source input names",
+  );
+  const retainedSource = await physicalPath(path.resolve(sourceRoot), true);
+  const retainedRows = sourceRows.map((row) => ({
+    ...row,
+    file: path.basename(row.file),
+  }));
+  await validateInputs(retainedSource, retainedRows);
+  await validateDestination(retainedSource, output);
+  return { retainedSource, sourceRows, retainedRows };
+}
+
+export async function copyRetainedU13SourceInput(retained, row, target) {
+  assert.ok(retained.retainedSource && retained.sourceRows.length === 3);
+  assert.deepEqual(
+    row,
+    retained.sourceRows.find((source) => source.file === row.file),
+    "Only a preflight-admitted u13 source row can be copied",
+  );
+  await copyPinnedInput(
+    path.join(retained.retainedSource, path.basename(row.file)),
+    target,
+    row,
+  );
+  return { kind: "exact-retained-u13-source-copy" };
+}
+
+export async function acquireCProducerInputs(
+  name,
+  commonRoot,
+  output,
+  sourceRoot,
+) {
   const { catalog, profile, catalogSha256 } = await loadCProducerProfile(name);
+  assert.ok(
+    sourceRoot === undefined ||
+      (name === "glibc-u13" && typeof sourceRoot === "string"),
+    "Only glibc-u13 accepts the optional fixed retained-source input directory",
+  );
+  const retained =
+    name === "glibc-u13" && sourceRoot !== undefined
+      ? await validateRetainedU13SourceInputs(profile, sourceRoot, output)
+      : { retainedSource: null, sourceRows: [], retainedRows: [] };
+  const { retainedSource, sourceRows, retainedRows } = retained;
   await validateInputs(commonRoot, catalog.commonInputs);
   const { destination } = await validateDestination(commonRoot, output);
   await mkdir(destination, { mode: 0o700 });
@@ -177,6 +243,11 @@ export async function acquireCProducerInputs(name, commonRoot, output) {
       if (common) {
         await copyPinnedInput(path.join(commonRoot, row.file), target, row);
         origin = { kind: "exact-shared-authenticated-metadata-copy" };
+      } else if (
+        retainedSource &&
+        sourceRows.some((source) => source.file === row.file)
+      ) {
+        origin = await copyRetainedU13SourceInput(retained, row, target);
       } else if (row.bytes === 0) {
         await writeFile(target, "", { mode: 0o600, flag: "wx" });
         origin = { kind: "exact-empty-cache-lock" };
@@ -191,6 +262,7 @@ export async function acquireCProducerInputs(name, commonRoot, output) {
     }
     await validateInputs(bundle, profile.files);
     await validateInputs(commonRoot, catalog.commonInputs);
+    if (retainedSource) await validateInputs(retainedSource, retainedRows);
     assert.ok(
       !controller.signal.aborted,
       "Data acquisition stopped before final qualification",
@@ -221,11 +293,14 @@ if (
   try {
     const args = process.argv.slice(2);
     assert.ok(
-      args.length === 6 &&
+      (args.length === 6 ||
+        (args[1] === "glibc-u13" &&
+          args.length === 8 &&
+          args[6] === "--source-inputs")) &&
         args[0] === "--profile" &&
         args[2] === "--common-inputs" &&
         args[4] === "--output",
-      "Usage: node scripts/acquire-c-producer-inputs.mjs --profile gcc-12|glibc --common-inputs AUTHENTICATED_BINUTILS_BUNDLE --output NEW_DIRECTORY",
+      "Usage: --profile gcc-12|glibc|glibc-u13 --common-inputs BUNDLE --output NEW_DIRECTORY [--source-inputs RETAINED_THREE_SOURCE_FILES (glibc-u13 only)]",
     );
     process.stdout.write(
       JSON.stringify(
@@ -233,6 +308,9 @@ if (
           args[1],
           path.resolve(args[3]),
           path.resolve(args[5]),
+          args[1] === "glibc-u13" && args.length === 8
+            ? path.resolve(args[7])
+            : undefined,
         ),
       ) + "\n",
     );

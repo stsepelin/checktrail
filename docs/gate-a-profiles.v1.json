@@ -2614,7 +2614,7 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
+      "implementationState": "implemented",
       "acceptanceState": "not-measured"
     },
     {
@@ -2899,7 +2899,7 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
+      "implementationState": "implemented",
       "acceptanceState": "not-measured"
     },
     {

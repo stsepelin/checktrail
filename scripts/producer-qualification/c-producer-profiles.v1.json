@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scope": "Two exact original Debian compiler/runtime producer profiles; data-only preparation is separate from explicit operator execution.",
+  "scope": "Three exact original Debian compiler/runtime producer variants; data-only preparation is separate from explicit operator execution.",
   "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
   "platform": "linux/amd64",
   "environment": {
@@ -7034,6 +7034,2875 @@
         "descriptorSha256": "c034e180a28197c8a9d2b378bcf621d87766a49b3d1bb2d82cc25068ba398cac",
         "crossRevisionProducerClosureClaimed": false
       }
+    },
+    "glibc-u13": {
+      "profile": "original-debian-glibc-2.36-9+deb12u13-build-v1",
+      "sourcePackage": "glibc",
+      "sourceVersion": "2.36-9+deb12u13",
+      "descriptor": "source/glibc/glibc_2.36-9+deb12u13.dsc",
+      "command": ["dpkg-buildpackage", "-b", "-us", "-uc", "--jobs=4"],
+      "limits": {
+        "cpuLimit": 4,
+        "memory": "6g",
+        "pidsLimit": 1024,
+        "deadlineSeconds": 14400,
+        "logByteLimit": 536870912,
+        "workByteLimit": 34359738368,
+        "inputFileByteLimit": 134217728
+      },
+      "generatedBuildRoots": ["build-tree"],
+      "reportFileByteLimit": 67108864,
+      "reportAggregateByteLimit": 536870912,
+      "files": [
+        {
+          "file": "apt-archives/glibc/autopoint_0.21-12_all.deb",
+          "bytes": 495488,
+          "sha256": "9864777e777f1f641858e27396bf7dd53c9b38197b7ac47388995ec60bb9789f",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/1cc8744489f843bd038a3bfe886ba499368c2188",
+            "https://deb.debian.org/debian/pool/main/g/gettext/autopoint_0.21-12_all.deb"
+          ],
+          "package": "autopoint",
+          "version": "0.21-12",
+          "architecture": "all",
+          "sourceDeclaration": "gettext",
+          "packageRecordSha256": "aeef721f73f17dddd284b85ef9b8eef10e91e2b4181d229c6d4a5ac1b91ad14a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/binutils-for-host_2.40-2_amd64.deb",
+          "bytes": 1104,
+          "sha256": "f7e79af2ac814ff4f0c51c5533d54fbb3ae1f861acd5f60dd3381dc4a7c9416d",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/2bfa6d08dc3ac33092eff006a2ef6fb6a206af11",
+            "https://deb.debian.org/debian/pool/main/b/binutils/binutils-for-host_2.40-2_amd64.deb"
+          ],
+          "package": "binutils-for-host",
+          "version": "2.40-2",
+          "architecture": "amd64",
+          "sourceDeclaration": "binutils",
+          "packageRecordSha256": "8ca3d5ab0135d8568da07ca115b3c197c5e7c7d4b91276c2f8c1fa912ea67a1a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/bison_2%3a3.8.2+dfsg-1+b1_amd64.deb",
+          "bytes": 1174528,
+          "sha256": "a414afd7519c53bfa33415ba5b951bc8b4906877004c49723ffda50a6033c3e8",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/101119d2db16d18d8cc471fc2f71b23702001c92",
+            "https://deb.debian.org/debian/pool/main/b/bison/bison_3.8.2+dfsg-1+b1_amd64.deb"
+          ],
+          "package": "bison",
+          "version": "2:3.8.2+dfsg-1+b1",
+          "architecture": "amd64",
+          "sourceDeclaration": "bison (2:3.8.2+dfsg-1)",
+          "packageRecordSha256": "ab2d60d6c87bdf6816b1a680f2c2d29235d1d3a2512a08c274dd1842058bba61",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/bsdextrautils_2.38.1-5+deb12u3_amd64.deb",
+          "bytes": 86968,
+          "sha256": "c949c638bc238b51030bd4758ae310feab9a535c06328934e2f643b0e6e5ac82",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/d29dc6269ad60c24f45d2624d9b88c8a78f367b8",
+            "https://deb.debian.org/debian/pool/main/u/util-linux/bsdextrautils_2.38.1-5+deb12u3_amd64.deb"
+          ],
+          "package": "bsdextrautils",
+          "version": "2.38.1-5+deb12u3",
+          "architecture": "amd64",
+          "sourceDeclaration": "util-linux",
+          "packageRecordSha256": "ee625674784ff5a53495b12878731bc4002ff93812bd684fc36cfa8859936783",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/debhelper_13.11.4_all.deb",
+          "bytes": 941736,
+          "sha256": "bd764e98a9204a4b6b2d9e7b461c50fdae579314309804baff93d21e0498b64b",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/9e268fa658a55689e7efa33de99aabccca853837",
+            "https://deb.debian.org/debian/pool/main/d/debhelper/debhelper_13.11.4_all.deb"
+          ],
+          "package": "debhelper",
+          "version": "13.11.4",
+          "architecture": "all",
+          "sourceDeclaration": "debhelper",
+          "packageRecordSha256": "b261a4527da9490070bddeecd89f002b871fb4c8e45c706fed032789e5de286c",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/dh-autoreconf_20_all.deb",
+          "bytes": 17108,
+          "sha256": "9527d06ee13195c48718a2580d7262883344a5ecc7a77b48c3b7aa70086a0125",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/58218d5fd111e985646c0d8d109cf64162796716",
+            "https://deb.debian.org/debian/pool/main/d/dh-autoreconf/dh-autoreconf_20_all.deb"
+          ],
+          "package": "dh-autoreconf",
+          "version": "20",
+          "architecture": "all",
+          "sourceDeclaration": "dh-autoreconf",
+          "packageRecordSha256": "51b4f4cf4ad4e75b6401bed261528b16442b28db4dd31c367fd1c0dd7c6248a3",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/dh-strip-nondeterminism_1.13.1-1_all.deb",
+          "bytes": 8620,
+          "sha256": "2ad85a7460bd4238acc50569d8e55cfb30ffa9f28925ae5352728e6a54cd5d84",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/84a3f08d7796f71caf81402c1d13020f74c9ae75",
+            "https://deb.debian.org/debian/pool/main/s/strip-nondeterminism/dh-strip-nondeterminism_1.13.1-1_all.deb"
+          ],
+          "package": "dh-strip-nondeterminism",
+          "version": "1.13.1-1",
+          "architecture": "all",
+          "sourceDeclaration": "strip-nondeterminism",
+          "packageRecordSha256": "a09825932e4c5195c5541583a3fbd9f3d450a7e3d9827917a919c719127f60a2",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/diffstat_1.65-1_amd64.deb",
+          "bytes": 33292,
+          "sha256": "6a8c8f3b34d536dbf54ffd9d016d2aab8080323d10915f164344d9f0515ed418",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/3d36927df6a46fd22ee8eb622b209325ce95a548",
+            "https://deb.debian.org/debian/pool/main/d/diffstat/diffstat_1.65-1_amd64.deb"
+          ],
+          "package": "diffstat",
+          "version": "1.65-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "diffstat",
+          "packageRecordSha256": "cb2f29140c06b0988fc6361b890a6ed7dbd897579d33c035f3e726e9c00b4ed8",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/dwz_0.15-1_amd64.deb",
+          "bytes": 109164,
+          "sha256": "f0195c15a88006df2b64e027a33a9b63b51d4c0d19b59a557d5694ab4f7f0cd7",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/849e2f33faf43ce9824de61ef67def656a2342b9",
+            "https://deb.debian.org/debian/pool/main/d/dwz/dwz_0.15-1_amd64.deb"
+          ],
+          "package": "dwz",
+          "version": "0.15-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "dwz",
+          "packageRecordSha256": "54ba238c7f912db2520c05e9973d96e859f5340e5e821b140b2aa83e05077953",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/ed_1.19-1_amd64.deb",
+          "bytes": 58056,
+          "sha256": "eb009104f25267f6bddbf936afbfa2cb23b6c1685b2d4c60027c4513feb17745",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/db8715dec885371bf09e33581b9436bbaaeea752",
+            "https://deb.debian.org/debian/pool/main/e/ed/ed_1.19-1_amd64.deb"
+          ],
+          "package": "ed",
+          "version": "1.19-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "ed",
+          "packageRecordSha256": "04879bf59c0152ef8f1ec8287f6c2e9326d6fd5f4c48b2190ad5a394e2b32f7c",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/file_1%3a5.44-3_amd64.deb",
+          "bytes": 42472,
+          "sha256": "2c57221bf8cc0ff5d2295ececb9215cc1b9ff9040dacb152c385bba3087ab1df",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/0788621543840dc2577be64f5e781e9aa246eda6",
+            "https://deb.debian.org/debian/pool/main/f/file/file_5.44-3_amd64.deb"
+          ],
+          "package": "file",
+          "version": "1:5.44-3",
+          "architecture": "amd64",
+          "sourceDeclaration": "file",
+          "packageRecordSha256": "b1604a2fbc9c5a21a6bd153f66f9bc2daed6ff2937a1c89271c9da8d40e25eff",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/fontconfig-config_2.14.1-4_amd64.deb",
+          "bytes": 314864,
+          "sha256": "281c66e46b95f045a0282a6c7a03b33de0e9a08d016897a759aaf4a04adfddbe",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/fd4496b756a8b1c2f5b2c417c93104feb90e56f8",
+            "https://deb.debian.org/debian/pool/main/f/fontconfig/fontconfig-config_2.14.1-4_amd64.deb"
+          ],
+          "package": "fontconfig-config",
+          "version": "2.14.1-4",
+          "architecture": "amd64",
+          "sourceDeclaration": "fontconfig",
+          "packageRecordSha256": "8d3036ca73f7efec258d230a64ad0852f29b8d437a93e273a951e207e3bf68fe",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/fonts-dejavu-core_2.37-6_all.deb",
+          "bytes": 1067728,
+          "sha256": "8892669e51aab4dc56682c8e39d8ddb7d70fad83c369344e1e240bf3ca22bb76",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/b2204a626ea3aa2d4fa0f52a09b6e4c38a3ba180",
+            "https://deb.debian.org/debian/pool/main/f/fonts-dejavu/fonts-dejavu-core_2.37-6_all.deb"
+          ],
+          "package": "fonts-dejavu-core",
+          "version": "2.37-6",
+          "architecture": "all",
+          "sourceDeclaration": "fonts-dejavu",
+          "packageRecordSha256": "0734f770153b51849bc2e99b82d7732d85e62acc4006e5f5c65db8dfa8316a87",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/g++-12-multilib_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 1044,
+          "sha256": "d7df557e386421f29182458d0beeae9ed9896f8f07780e11b13dc9d401472019",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/0058fc7561b358add405d2b9a8fced73cd418d6c",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/g++-12-multilib_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "g++-12-multilib",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "b18ca73c5824c972ceaf3ab3565d6933d2ed96b739c0bcf9d079555426fbdbdd",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/gawk_1%3a5.2.1-2_amd64.deb",
+          "bytes": 672772,
+          "sha256": "9cd63c1b35ff082092c221a23dcb167f72c4d1c3de3a42e11f16181f42ab3b55",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/77d487f007d03e0706b2ff786e361cd1ebd4145d",
+            "https://deb.debian.org/debian/pool/main/g/gawk/gawk_5.2.1-2_amd64.deb"
+          ],
+          "package": "gawk",
+          "version": "1:5.2.1-2",
+          "architecture": "amd64",
+          "sourceDeclaration": "gawk",
+          "packageRecordSha256": "7ecb9b94dcbac43424e11631bb40be058c1430dcfb5ca73d02e7a4baae9a1510",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/gcc-12-multilib_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 1032,
+          "sha256": "a8ca3eebaa05b6c82413599a46dc1320afb0646cf024fe291beb02a6d7755932",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/c8a263d3dc75e731b4c02e44ad96557a33e4140d",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/gcc-12-multilib_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "gcc-12-multilib",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "a7a538703ed59becab9fe6e85647dbe70a05d7f93223745f21027decd492c6fc",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/gettext-base_0.21-12_amd64.deb",
+          "bytes": 160164,
+          "sha256": "5cb39c7acc7125e677ec98d0426a987daf0ce062f749f2a9421b2511f6dd5ab7",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/ed63a2851f8b8be0d3c1e1c349d13cf642d38c63",
+            "https://deb.debian.org/debian/pool/main/g/gettext/gettext-base_0.21-12_amd64.deb"
+          ],
+          "package": "gettext-base",
+          "version": "0.21-12",
+          "architecture": "amd64",
+          "sourceDeclaration": "gettext",
+          "packageRecordSha256": "0b16ba95a943d5dc2d6ff18d0545dcd8223a6d0436db2b90c49c0ad67fa80896",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/gettext_0.21-12_amd64.deb",
+          "bytes": 1300056,
+          "sha256": "8c1f9d43575373ce311f51d00a13afbb4888d63aa559a93a3472f5d77513b60c",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/0c5651ccf96e229e6b29388cea28da779d5be258",
+            "https://deb.debian.org/debian/pool/main/g/gettext/gettext_0.21-12_amd64.deb"
+          ],
+          "package": "gettext",
+          "version": "0.21-12",
+          "architecture": "amd64",
+          "sourceDeclaration": "gettext",
+          "packageRecordSha256": "ea50fa9fe20634db11788838ae5f1bb2c0f3410c4bda60b1df460c08018da9f9",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/gperf_3.1-1_amd64.deb",
+          "bytes": 147388,
+          "sha256": "874667dd12145497e8227e6652fab8463a896a272fc6626428690525db746959",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/8e23c54eb3bd89a037cecefd15171cbf9b8670f7",
+            "https://deb.debian.org/debian/pool/main/g/gperf/gperf_3.1-1_amd64.deb"
+          ],
+          "package": "gperf",
+          "version": "3.1-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gperf",
+          "packageRecordSha256": "1a3cbfe2f3dffeeabe31c8c2d6d64dd59f402e990503d71c51d36996d5d77743",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/groff-base_1.22.4-10_amd64.deb",
+          "bytes": 915864,
+          "sha256": "3de38b55bcccbdaf56c030d5011c6afc76bf6fdc8986ae4f1b2087eef0ddcad0",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/6c287e6809070df13223a031cf0425f3310f29f6",
+            "https://deb.debian.org/debian/pool/main/g/groff/groff-base_1.22.4-10_amd64.deb"
+          ],
+          "package": "groff-base",
+          "version": "1.22.4-10",
+          "architecture": "amd64",
+          "sourceDeclaration": "groff",
+          "packageRecordSha256": "3cbeb584a867ae53e5dcff21c5ea3324f46c4a0574d4e35c0f8ecfa8077d90b7",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/intltool-debian_0.35.0+20060710.6_all.deb",
+          "bytes": 22884,
+          "sha256": "058900c66cbc0d8b60139bdecc9a06cb9c3b479a03117354a78e5fa72aecd90c",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/ed449d06d1e84c56deb2487977971e46ba5cf699",
+            "https://deb.debian.org/debian/pool/main/i/intltool-debian/intltool-debian_0.35.0+20060710.6_all.deb"
+          ],
+          "package": "intltool-debian",
+          "version": "0.35.0+20060710.6",
+          "architecture": "all",
+          "sourceDeclaration": "intltool-debian",
+          "packageRecordSha256": "85c50c5cac120314fbf72ed77a5862ca5095bc40b236d1ee1010cd8e5f2918fa",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lib32asan8_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 2080676,
+          "sha256": "71cf5e5c95f8773b5e1b2254a7c5397c6c0693625efd5c8172368405fd868aba",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/ed2baf8a13eac31f3ba8cc8ed5ba1f5826bed8c0",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/lib32asan8_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "lib32asan8",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "0a93b5d49360093445b9fe1f77c70566e6ffe3fb81f9948519ee5170fa1c1acd",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lib32atomic1_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 7732,
+          "sha256": "7de7b79a4ae8891a0c0dc2a116d27be878bbb7e3048c1ded5134f8e2c3eda57b",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/34b941f36739c96c22029219c34d614779435a01",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/lib32atomic1_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "lib32atomic1",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "8c7b2390f3c4092b66a4a42d468aef72182f293a2ed1073165b537151d04e30a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lib32gcc-12-dev_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 2269428,
+          "sha256": "d0676d8c516226ce533d1ef721a13ecd9a57a97f58264bdb6c843a546d5c9f33",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/a1883911c2d1e8acc66f7eb0487e76bac9d405e3",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/lib32gcc-12-dev_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "lib32gcc-12-dev",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "321793c3753474ac8faffaf897f773396a19362d7524d28f7009c663729a2cfd",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lib32gcc-s1_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 59728,
+          "sha256": "444f5cfe376116b029bcdb768290b8f7b934970f17c4a3ec85a46073413b2588",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/6852d7daf701517767c38c63ff8c3e1e4af40177",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/lib32gcc-s1_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "lib32gcc-s1",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "e53276f34004eeae4142953d5cd932f24194793d8989aa7ef59776bc6787deda",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lib32gomp1_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 120632,
+          "sha256": "58fd80ec5ab2f0bac0dbf6d720926c5663f1bf13fb0da3da92da712c7c9c6ee9",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/8e455698db8d7fe08df7abdbe9dbe378df28b18a",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/lib32gomp1_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "lib32gomp1",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "7d9a37bf7603af390b26a7b0da72fe39c04fe889812c343d511ba4a87cade0c6",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lib32itm1_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 27740,
+          "sha256": "40d39d3832aa052517a986926d2de51341cc213985eb7a8a5fcd8f85ff9843e1",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/78a490fa9178cad6236b67788ef72573d31b9854",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/lib32itm1_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "lib32itm1",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "31dc506bf2ab491fe0d4dc327f269fa0cd89b0a40d1edfe4d1acd13d707796b3",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lib32quadmath0_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 226572,
+          "sha256": "bbb234ed2085e43f9504f3dc214b523423691348c49104b91da8cd5cc71f9e64",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/d6e90d4c380469fbd46af6c4c72547016ce22b1f",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/lib32quadmath0_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "lib32quadmath0",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "6381864e911a09636efb9b95637464b22a4f668a98509a39b7ee2337ce3a9be9",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lib32stdc++-12-dev_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 881320,
+          "sha256": "e1f60acc20cef860413475d2fdf71b22d0dfbf209b0af22bd92b76f3e366ef4e",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/f57203f21be09ad0a7a0a759bb1220ca04e5e833",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/lib32stdc++-12-dev_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "lib32stdc++-12-dev",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "c75099f29bd34b036986892a081731a172fcaf421555f1ae38bd3429bacf0bf4",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lib32stdc++6_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 643184,
+          "sha256": "166e95ede55760377aeff52aece71d18bd1fc319df1642d6746c5b55ad89dfaa",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/0ffe9436e028bb3b046a4236606bb4edea4cedea",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/lib32stdc++6_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "lib32stdc++6",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "b557b729a01c78fab5449e0a43589922796db25177661e4867dbb099c5e6bd5b",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lib32ubsan1_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 869744,
+          "sha256": "4164b3c6e2108e9ce1bed0dbbdbf73fef9dbab21815d4fdd1a5d275720c44ded",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/ef555a35a2df3fc24460a1f2301d2a1e15f3aaf1",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/lib32ubsan1_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "lib32ubsan1",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "137fb06a2fd2154cb9494805616e24a2ebf2b3cef4077a52aba46d7e78e2b034",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libabsl20220623_20220623.1-1+deb12u2_amd64.deb",
+          "bytes": 390704,
+          "sha256": "3fb1a98ff3a1b7b27cd3b2544e033af3bc3419d82f33bbe3f3d5faa07b400eb5",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/4365a18c84fc0a5d35df3d0d383b8c2e704a110b",
+            "https://deb.debian.org/debian/pool/main/a/abseil/libabsl20220623_20220623.1-1+deb12u2_amd64.deb"
+          ],
+          "package": "libabsl20220623",
+          "version": "20220623.1-1+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "abseil",
+          "packageRecordSha256": "9c01f2851d0b852d0cd61196a46549d3435c6fcbe7fe9905b4d18511988a65cc",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libaom-dev_3.6.0-1+deb12u3_amd64.deb",
+          "bytes": 2092252,
+          "sha256": "03db70a94d5fe432069fe168d9a09d05af8885bf4d6cedfa60223871d50d96e5",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/ef5b3d8cdec096ad51808d7167e8be58b9b2d5ee",
+            "https://deb.debian.org/debian-security/pool/updates/main/a/aom/libaom-dev_3.6.0-1+deb12u3_amd64.deb"
+          ],
+          "package": "libaom-dev",
+          "version": "3.6.0-1+deb12u3",
+          "architecture": "amd64",
+          "sourceDeclaration": "aom",
+          "packageRecordSha256": "eac768f41c22445e572150cd2865c86df1132358fbf24c4627a7f255d3322d2a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libaom3_3.6.0-1+deb12u3_amd64.deb",
+          "bytes": 1851316,
+          "sha256": "0d306f250a365d5309f0f616c5327ebe7cb80cc48332dd3a7fe18c036056f874",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/33a739666581f021745ada18b64173d24d929c43",
+            "https://deb.debian.org/debian-security/pool/updates/main/a/aom/libaom3_3.6.0-1+deb12u3_amd64.deb"
+          ],
+          "package": "libaom3",
+          "version": "3.6.0-1+deb12u3",
+          "architecture": "amd64",
+          "sourceDeclaration": "aom",
+          "packageRecordSha256": "e2692fc5e041b1d95cae010cca7d72b8a3bff2dc148098c5836e5ada654011c1",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libarchive-zip-perl_1.68-1_all.deb",
+          "bytes": 103940,
+          "sha256": "d1006344c2b897e2ffd1a60c5423f60e9d5c15f701e72c3d60b08b684608cff8",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/69db96c0518c282551e49d67e29819941fa4f7c4",
+            "https://deb.debian.org/debian/pool/main/liba/libarchive-zip-perl/libarchive-zip-perl_1.68-1_all.deb"
+          ],
+          "package": "libarchive-zip-perl",
+          "version": "1.68-1",
+          "architecture": "all",
+          "sourceDeclaration": "libarchive-zip-perl",
+          "packageRecordSha256": "d49e885f2e99f22ad728d6ec610422f309ab68968e6b2fc1947ead917799ba12",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libaudit-dev_1%3a3.0.9-1_amd64.deb",
+          "bytes": 81208,
+          "sha256": "9da2bfd3a93c8f60341f3a94a9d0567ece908bd09a9d48d43d7f6046133e812d",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/84f7ddda9743864dc1f6412ca85edba52f12821c",
+            "https://deb.debian.org/debian/pool/main/a/audit/libaudit-dev_3.0.9-1_amd64.deb"
+          ],
+          "package": "libaudit-dev",
+          "version": "1:3.0.9-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "audit",
+          "packageRecordSha256": "544d3648dedc00f9df876292bf26cfd8e7bf43562b6d7e43c33a9c30cb1cd9fc",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libavif-dev_0.11.1-1+deb12u1_amd64.deb",
+          "bytes": 41868,
+          "sha256": "6fb8b2e351b8f4a8ff1e84fcdba59176597dc6c785b517360674ea5c54393477",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/3e662a21e3bbd12df90cc70a5fbde17a5d97c165",
+            "https://deb.debian.org/debian-security/pool/updates/main/liba/libavif/libavif-dev_0.11.1-1+deb12u1_amd64.deb"
+          ],
+          "package": "libavif-dev",
+          "version": "0.11.1-1+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libavif",
+          "packageRecordSha256": "bf0051aae2defd5768f0e90f8ce2651c5d1fbb0cf44fdfb2e743ef4085a3369b",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libavif15_0.11.1-1+deb12u1_amd64.deb",
+          "bytes": 94396,
+          "sha256": "c79d57f0f62d67d2353765592fb4f519119392befa53d27a34c9d0348cd580a3",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/e11e291822e9e7ba326c7ba45e68676dfacaffd4",
+            "https://deb.debian.org/debian-security/pool/updates/main/liba/libavif/libavif15_0.11.1-1+deb12u1_amd64.deb"
+          ],
+          "package": "libavif15",
+          "version": "0.11.1-1+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libavif",
+          "packageRecordSha256": "d35627c14efd6ccb1e63addc00ee2ab99293d88210bb0bd6bd660ccc47d40608",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libbrotli-dev_1.0.9-2+deb12u1_amd64.deb",
+          "bytes": 287396,
+          "sha256": "8a206241fcf5760a9eb28a5a433ff773415bab8c33c9b9af4cc087edd88f3c53",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/1fe5ff7be12c2d8171d538f7c43a3d25e7faabd8",
+            "https://deb.debian.org/debian-security/pool/updates/main/b/brotli/libbrotli-dev_1.0.9-2+deb12u1_amd64.deb"
+          ],
+          "package": "libbrotli-dev",
+          "version": "1.0.9-2+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "brotli",
+          "packageRecordSha256": "fbee4b28e9092b7c324bc63bad4f4a961b046e32ffb60e78de528babcab33196",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libbrotli1_1.0.9-2+deb12u1_amd64.deb",
+          "bytes": 274704,
+          "sha256": "e27b3d655fa6fadd7a56f706687e94573c0af68b7d6df394a32a381a3a6c6d8b",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/748f5d0796d7560856e9597bcf7e9a392a729711",
+            "https://deb.debian.org/debian-security/pool/updates/main/b/brotli/libbrotli1_1.0.9-2+deb12u1_amd64.deb"
+          ],
+          "package": "libbrotli1",
+          "version": "1.0.9-2+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "brotli",
+          "packageRecordSha256": "c1db1382acf8d2814ff1c77d7371e3bfb676458c48ab84352be51afbd3c816ec",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libc-bin_2.36-9+deb12u14_amd64.deb",
+          "bytes": 609144,
+          "sha256": "e667401af91fad95f15b3ebd25d1abd8373fd18b00dc32219678413170544e84",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/2b3d6ee6b798b30a8b52ab719dc9cd59e79584e3",
+            "https://deb.debian.org/debian/pool/main/g/glibc/libc-bin_2.36-9+deb12u14_amd64.deb"
+          ],
+          "package": "libc-bin",
+          "version": "2.36-9+deb12u14",
+          "architecture": "amd64",
+          "sourceDeclaration": "glibc",
+          "packageRecordSha256": "9d9763cc3aa15cafb33301a580bc6c7f112ad53a25299ed39ad28e243eefa5a2",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libc-dev-bin_2.36-9+deb12u14_amd64.deb",
+          "bytes": 48056,
+          "sha256": "f61d923b703401023bec2ac3d9d1c9ad7341930fbe11736f7f5ef64b489d03c4",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/0211dbd54d99f71c51b1cd56aab24bc991ecdd53",
+            "https://deb.debian.org/debian/pool/main/g/glibc/libc-dev-bin_2.36-9+deb12u14_amd64.deb"
+          ],
+          "package": "libc-dev-bin",
+          "version": "2.36-9+deb12u14",
+          "architecture": "amd64",
+          "sourceDeclaration": "glibc",
+          "packageRecordSha256": "96447c74533a985aa6b201198647d70bf7b04db998742ea3c350152633ad030a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libc6-dev-i386_2.36-9+deb12u14_amd64.deb",
+          "bytes": 1354596,
+          "sha256": "4850a442d15f4683daa529ab773a429cafcec749782ea6d56ef0d35290380180",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/978bfc0dae7ca246e46f45f54f9e79a17063a81e",
+            "https://deb.debian.org/debian/pool/main/g/glibc/libc6-dev-i386_2.36-9+deb12u14_amd64.deb"
+          ],
+          "package": "libc6-dev-i386",
+          "version": "2.36-9+deb12u14",
+          "architecture": "amd64",
+          "sourceDeclaration": "glibc",
+          "packageRecordSha256": "dd20b87e30e05c8cab870e8e56c071161184862e17b9712f68f6433bf4d8c210",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libc6-dev-x32_2.36-9+deb12u14_amd64.deb",
+          "bytes": 1521392,
+          "sha256": "042894bfdd06e00d6391a31a43734b66dc84347ecbccddac7c3d29d428cf23d0",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/caa080a4558ca30387e053c75f70463e0abb220e",
+            "https://deb.debian.org/debian/pool/main/g/glibc/libc6-dev-x32_2.36-9+deb12u14_amd64.deb"
+          ],
+          "package": "libc6-dev-x32",
+          "version": "2.36-9+deb12u14",
+          "architecture": "amd64",
+          "sourceDeclaration": "glibc",
+          "packageRecordSha256": "c5292f7110438f4fa8ad89677ca7a90a0e52cf3e8f96a2d5fe4df3f37c635f6c",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libc6-dev_2.36-9+deb12u14_amd64.deb",
+          "bytes": 1903668,
+          "sha256": "0218fc2befcd784c1b0c6292c0a137ce89fad054efaa579ad083bee0f2c01aae",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/d609b4707ac7cb95b042958e54fec4d78596ecfc",
+            "https://deb.debian.org/debian/pool/main/g/glibc/libc6-dev_2.36-9+deb12u14_amd64.deb"
+          ],
+          "package": "libc6-dev",
+          "version": "2.36-9+deb12u14",
+          "architecture": "amd64",
+          "sourceDeclaration": "glibc",
+          "packageRecordSha256": "19cec80778a791593e22669028f1373bdac69276c0d38d702819362a7467b921",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libc6-i386_2.36-9+deb12u14_amd64.deb",
+          "bytes": 2458148,
+          "sha256": "2af9a760c2b3dce0a432d78076ca98d3ba8f8070cadb3e5898aa0368ba1fceef",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/e10c7b0e68813fdd6e69f14693a9947b7ddb2e43",
+            "https://deb.debian.org/debian/pool/main/g/glibc/libc6-i386_2.36-9+deb12u14_amd64.deb"
+          ],
+          "package": "libc6-i386",
+          "version": "2.36-9+deb12u14",
+          "architecture": "amd64",
+          "sourceDeclaration": "glibc",
+          "packageRecordSha256": "c7c9277435bc23c229b71e9e41e5c582880d83c5f27c0f9eb4dad4fe2764a3d2",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libc6-x32_2.36-9+deb12u14_amd64.deb",
+          "bytes": 2588160,
+          "sha256": "81e46e6ec3ca971bad24ef7049838de1ae695b1c4c942995a909594af75a048f",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/bfd5d7477095b23287bc067124ed54dd089d70ca",
+            "https://deb.debian.org/debian/pool/main/g/glibc/libc6-x32_2.36-9+deb12u14_amd64.deb"
+          ],
+          "package": "libc6-x32",
+          "version": "2.36-9+deb12u14",
+          "architecture": "amd64",
+          "sourceDeclaration": "glibc",
+          "packageRecordSha256": "2553dee344ae67f03ae712a2580cccfc06655e4445147d12dce8ecbf8e7af527",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libc6_2.36-9+deb12u14_amd64.deb",
+          "bytes": 2759320,
+          "sha256": "ba4f88f73dbc3ae9055f3c20f4523bfdbaf1ad13ff95e258924f77d20b4fbedf",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/c534c6c7f912b61ca26b7cf4082235a0343b8751",
+            "https://deb.debian.org/debian/pool/main/g/glibc/libc6_2.36-9+deb12u14_amd64.deb"
+          ],
+          "package": "libc6",
+          "version": "2.36-9+deb12u14",
+          "architecture": "amd64",
+          "sourceDeclaration": "glibc",
+          "packageRecordSha256": "be1156f4fda174d350a55fe738cb7bb0aee80a11e8a65c9ca6e77609466929c5",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libcap-dev_1%3a2.66-4+deb12u3+b1_amd64.deb",
+          "bytes": 523904,
+          "sha256": "897ee64c93b04c4c8eb46551df2277673c1ab95584c765d8d07e3528a6a1c689",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/2d8c6b1e5c9688f98ca9cfd03e6109caf649de8b",
+            "https://deb.debian.org/debian/pool/main/libc/libcap2/libcap-dev_2.66-4+deb12u3+b1_amd64.deb"
+          ],
+          "package": "libcap-dev",
+          "version": "1:2.66-4+deb12u3+b1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libcap2 (1:2.66-4+deb12u3)",
+          "packageRecordSha256": "9fef6ebb32d21cb1c4247d81ebcf764b8dbc1b60601d3a20203350eee788c862",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libcap-ng-dev_0.8.3-1+b3_amd64.deb",
+          "bytes": 31276,
+          "sha256": "50674ccc126009f8d640a9230db4600d6fe552b68077193f234ea892784db5d5",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/aaaa49faa5ae4243d2d6080df31c9f2f6fa04490",
+            "https://deb.debian.org/debian/pool/main/libc/libcap-ng/libcap-ng-dev_0.8.3-1+b3_amd64.deb"
+          ],
+          "package": "libcap-ng-dev",
+          "version": "0.8.3-1+b3",
+          "architecture": "amd64",
+          "sourceDeclaration": "libcap-ng (0.8.3-1)",
+          "packageRecordSha256": "672529da4125fad5e3384817e4cf1c3431ca57856cd6c5bb446d44e28cf910bc",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libcap2_1%3a2.66-4+deb12u3+b1_amd64.deb",
+          "bytes": 27708,
+          "sha256": "8d684c673e7483802a5c447834b0df6fce006eb3a7109e1be412f5ad425bb24f",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/922c4a3d0f28f58b2d8787bb5491440193552231",
+            "https://deb.debian.org/debian/pool/main/libc/libcap2/libcap2_2.66-4+deb12u3+b1_amd64.deb"
+          ],
+          "package": "libcap2",
+          "version": "1:2.66-4+deb12u3+b1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libcap2 (1:2.66-4+deb12u3)",
+          "packageRecordSha256": "4279840e3a0c7cd4e08ced9b4b48c1ab972eed73a15db2d565f2f331ab789a3a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libdav1d-dev_1.0.0-2+deb12u1_amd64.deb",
+          "bytes": 25584,
+          "sha256": "704f138bb24423e5c9f5734ef54be52281e67bc0f0674559cf31ed46f200e5f9",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/203a094f9b8243cfe6f9274f304574635742c24a",
+            "https://deb.debian.org/debian-security/pool/updates/main/d/dav1d/libdav1d-dev_1.0.0-2+deb12u1_amd64.deb"
+          ],
+          "package": "libdav1d-dev",
+          "version": "1.0.0-2+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "dav1d",
+          "packageRecordSha256": "0f409c2a04c94c5880ebaf3c38ece26fc8dc1ab56ee44b97566d100c9efa2c42",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libdav1d6_1.0.0-2+deb12u1_amd64.deb",
+          "bytes": 513432,
+          "sha256": "197f08108242177aeae4c04aac11825c39b7d18598191ab769f910687ccb387f",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/8dfb24f9abf4939e3d3fb0ea2fe5bf9983483525",
+            "https://deb.debian.org/debian-security/pool/updates/main/d/dav1d/libdav1d6_1.0.0-2+deb12u1_amd64.deb"
+          ],
+          "package": "libdav1d6",
+          "version": "1.0.0-2+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "dav1d",
+          "packageRecordSha256": "b26b1ecd6c5676479a908a3f49a1caf6419d8bd5e8b76bf10e4ceaa86687bcbf",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libde265-0_1.0.11-1+deb12u3_amd64.deb",
+          "bytes": 186436,
+          "sha256": "72c3edb400c3494974181e9ca75a11d859c715c9685c38fb251783c7c8841afe",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/e147c32709a1324292559d0017a0d8c0d5207591",
+            "https://deb.debian.org/debian-security/pool/updates/main/libd/libde265/libde265-0_1.0.11-1+deb12u3_amd64.deb"
+          ],
+          "package": "libde265-0",
+          "version": "1.0.11-1+deb12u3",
+          "architecture": "amd64",
+          "sourceDeclaration": "libde265",
+          "packageRecordSha256": "338aa18f9d64e47b17641e77e66db96858934d37ac480deb3a067b989b5d389c",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libde265-dev_1.0.11-1+deb12u3_amd64.deb",
+          "bytes": 14404,
+          "sha256": "2697054bcd6c8c4ef208ec0f0d3b03e2a536caeaa4379095c13c11f0ae27bf6a",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/344cc118c58d2359dc7808c9acfa33ef8a8c349c",
+            "https://deb.debian.org/debian-security/pool/updates/main/libd/libde265/libde265-dev_1.0.11-1+deb12u3_amd64.deb"
+          ],
+          "package": "libde265-dev",
+          "version": "1.0.11-1+deb12u3",
+          "architecture": "amd64",
+          "sourceDeclaration": "libde265",
+          "packageRecordSha256": "ef4da97f5929faa2b1728a9ee0af432996dc3fd5a96a75cf0461caeb68c3893b",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libdebhelper-perl_13.11.4_all.deb",
+          "bytes": 81164,
+          "sha256": "105b26fc95776db8928fe1442cc2485a969a29ea395a7639c19199a1442ef50f",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/cd33729589952bf115d5eccfc291bb3516df156f",
+            "https://deb.debian.org/debian/pool/main/d/debhelper/libdebhelper-perl_13.11.4_all.deb"
+          ],
+          "package": "libdebhelper-perl",
+          "version": "13.11.4",
+          "architecture": "all",
+          "sourceDeclaration": "debhelper",
+          "packageRecordSha256": "4d4b9f87c4130244fca614701b6e188ed155cabf1487c0e89b4444ad3f5eef8e",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libdeflate-dev_1.14-1_amd64.deb",
+          "bytes": 53348,
+          "sha256": "8b3fd9dc5a942a8b4bf4f91e618575842a4e9112970eebfed3c4d8bfb40b1ef5",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/313d2a2d41eca93b34f65963ae252f36663e8cd4",
+            "https://deb.debian.org/debian/pool/main/libd/libdeflate/libdeflate-dev_1.14-1_amd64.deb"
+          ],
+          "package": "libdeflate-dev",
+          "version": "1.14-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libdeflate",
+          "packageRecordSha256": "7f264728a6ee7e6d2bc6b40fd212ca3a6a4df55b0da3ac22e13972d4e87da185",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libdeflate0_1.14-1_amd64.deb",
+          "bytes": 61416,
+          "sha256": "3d4b39f94317b64a860db8a7a8b581b555124cd461fe07ec0d347edbdb9f6683",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/f070bd4accd77c08aeb826591854843acdcb2e10",
+            "https://deb.debian.org/debian/pool/main/libd/libdeflate/libdeflate0_1.14-1_amd64.deb"
+          ],
+          "package": "libdeflate0",
+          "version": "1.14-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libdeflate",
+          "packageRecordSha256": "31e6fac679f4ec8b9402ae673d77ca2b30f6b3383641f6f54f7a6ac5fff329ed",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libelf1_0.188-2.1_amd64.deb",
+          "bytes": 173796,
+          "sha256": "619add379c606b3ac6c1a175853b918e6939598a83d8ebadf3bdfd50d10b3c8c",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/2b472dcc19523688c765d771b40d24c67586e362",
+            "https://deb.debian.org/debian/pool/main/e/elfutils/libelf1_0.188-2.1_amd64.deb"
+          ],
+          "package": "libelf1",
+          "version": "0.188-2.1",
+          "architecture": "amd64",
+          "sourceDeclaration": "elfutils",
+          "packageRecordSha256": "3b5eb3ef77cf80c7db4772bf6d3792c0cc117078f69e62d798b9151d8f8c1ea9",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libexpat1-dev_2.5.0-1+deb12u5_amd64.deb",
+          "bytes": 159408,
+          "sha256": "745288d31c0819f391312c953508c234a81e5bbde1d4609be397c308a489112c",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/9bed5dd16af8f519d86551cab9d0ec9db8ddd394",
+            "https://deb.debian.org/debian-security/pool/updates/main/e/expat/libexpat1-dev_2.5.0-1+deb12u5_amd64.deb"
+          ],
+          "package": "libexpat1-dev",
+          "version": "2.5.0-1+deb12u5",
+          "architecture": "amd64",
+          "sourceDeclaration": "expat",
+          "packageRecordSha256": "cbfc4e4d3822c94361580ec00386fb1a97df94c66d83e850d777adc4960a72f2",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libexpat1_2.5.0-1+deb12u5_amd64.deb",
+          "bytes": 107940,
+          "sha256": "cae5ded666d8573dd33060bc66fbac21eea8b101a6b56e2af8bd590fcfa65d79",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/8970d5d8442de89fdf973b9c214299790b6726bb",
+            "https://deb.debian.org/debian-security/pool/updates/main/e/expat/libexpat1_2.5.0-1+deb12u5_amd64.deb"
+          ],
+          "package": "libexpat1",
+          "version": "2.5.0-1+deb12u5",
+          "architecture": "amd64",
+          "sourceDeclaration": "expat",
+          "packageRecordSha256": "3a123ce3e3d42533652616a43053b5529e7cb8c51c5298e284c8ad96fead4b49",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libfile-stripnondeterminism-perl_1.13.1-1_all.deb",
+          "bytes": 19420,
+          "sha256": "485fc277f55c10efd5759918b09e8599066cbfb4b47043840c477d6a73ad819a",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/2e151cf41c9c58ee2fd7ef19424656a128b7203a",
+            "https://deb.debian.org/debian/pool/main/s/strip-nondeterminism/libfile-stripnondeterminism-perl_1.13.1-1_all.deb"
+          ],
+          "package": "libfile-stripnondeterminism-perl",
+          "version": "1.13.1-1",
+          "architecture": "all",
+          "sourceDeclaration": "strip-nondeterminism",
+          "packageRecordSha256": "18d171c8113dbf7c608c06db4de3927ed3b7795c0e389cde44fa2f97f6eb5a7a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libfontconfig-dev_2.14.1-4_amd64.deb",
+          "bytes": 408964,
+          "sha256": "74f4bbde5795e4fb4c453308bd0eb8ef45d7ade3cf11b3c18394f9e2c15d28df",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/b7a54a5c04c9f1fbacb08af9ed1f3ddeff1cbe1d",
+            "https://deb.debian.org/debian/pool/main/f/fontconfig/libfontconfig-dev_2.14.1-4_amd64.deb"
+          ],
+          "package": "libfontconfig-dev",
+          "version": "2.14.1-4",
+          "architecture": "amd64",
+          "sourceDeclaration": "fontconfig",
+          "packageRecordSha256": "012bba2caac4134cd4ec364f41d33f6485a25151cda821ab5f602e064a82b93f",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libfontconfig1_2.14.1-4_amd64.deb",
+          "bytes": 385664,
+          "sha256": "16ee38d374e064f534116dc442b086ef26f9831f1c0af7e5fb4fe4512e700649",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/c5a8afa622f1885bd515879720392f746f16d77c",
+            "https://deb.debian.org/debian/pool/main/f/fontconfig/libfontconfig1_2.14.1-4_amd64.deb"
+          ],
+          "package": "libfontconfig1",
+          "version": "2.14.1-4",
+          "architecture": "amd64",
+          "sourceDeclaration": "fontconfig",
+          "packageRecordSha256": "9040844c58f2a00c0218ae2e392cfa34222a690ae3bebc06bd35739410752724",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libfreetype-dev_2.12.1+dfsg-5+deb12u4_amd64.deb",
+          "bytes": 566284,
+          "sha256": "5fa327ae78e645cff5a2aadad92ca3640abc5cee7ad5368d7551bea8930202af",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/e7d411f66a28ced9e00428e226018ecbb3fbb086",
+            "https://deb.debian.org/debian-security/pool/updates/main/f/freetype/libfreetype-dev_2.12.1+dfsg-5+deb12u4_amd64.deb"
+          ],
+          "package": "libfreetype-dev",
+          "version": "2.12.1+dfsg-5+deb12u4",
+          "architecture": "amd64",
+          "sourceDeclaration": "freetype",
+          "packageRecordSha256": "48d19c0c29c517bc4df8baa2df7ebbc0a71c0692af7fedb94225561ed2fa30cd",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libfreetype6_2.12.1+dfsg-5+deb12u4_amd64.deb",
+          "bytes": 397736,
+          "sha256": "8043e479f73f29992d652e3f9dfe8b17f9780c7ea6330afe379ec5f9f188ac44",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/e2db3a59fc4b8b04458f11a772f2600d6d5d73ad",
+            "https://deb.debian.org/debian-security/pool/updates/main/f/freetype/libfreetype6_2.12.1+dfsg-5+deb12u4_amd64.deb"
+          ],
+          "package": "libfreetype6",
+          "version": "2.12.1+dfsg-5+deb12u4",
+          "architecture": "amd64",
+          "sourceDeclaration": "freetype",
+          "packageRecordSha256": "7626f4c213d19899ec1219771fa3a269702ca7b99f888a7cef624546595dfca7",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libgav1-1_0.18.0-1+b1_amd64.deb",
+          "bytes": 331664,
+          "sha256": "4cf64c4e1168f3c7e858bb4a71f2c5bea9a36dd448cdcc2154a551ac146e293b",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/bfa08dba3591e4be931b35e88d2385de1193e2ae",
+            "https://deb.debian.org/debian/pool/main/libg/libgav1/libgav1-1_0.18.0-1+b1_amd64.deb"
+          ],
+          "package": "libgav1-1",
+          "version": "0.18.0-1+b1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libgav1 (0.18.0-1)",
+          "packageRecordSha256": "b2279669230a17071ebbbd6e5f9c1adda0bd230d02289d2a560bee065b88a936",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libgd-dev_2.3.3-9+deb12u1_amd64.deb",
+          "bytes": 259712,
+          "sha256": "96086dce31043d765a08a5f4843634d2f6c2dfa1ed580e0909873c4051de9a02",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/213373d05d7427b39183f3c44349af069adf087b",
+            "https://deb.debian.org/debian-security/pool/updates/main/libg/libgd2/libgd-dev_2.3.3-9+deb12u1_amd64.deb"
+          ],
+          "package": "libgd-dev",
+          "version": "2.3.3-9+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libgd2",
+          "packageRecordSha256": "df3b3aa44cfe67f1ec13776a386f09d946910d55bc0384ce675fdc59d91f1121",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libgd3_2.3.3-9+deb12u1_amd64.deb",
+          "bytes": 123972,
+          "sha256": "5f0eb24030d8b0ac89cee47925d11264bfd3de593ae17950a7265148fa576b27",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/0d3c17c5fa0ab4ce6f50b88c40a5adad92cad0ab",
+            "https://deb.debian.org/debian-security/pool/updates/main/libg/libgd2/libgd3_2.3.3-9+deb12u1_amd64.deb"
+          ],
+          "package": "libgd3",
+          "version": "2.3.3-9+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libgd2",
+          "packageRecordSha256": "efdf6de4f0970806bc0f16269db36b5292959554d8b02a5bc6144699048c6f07",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libheif-dev_1.15.1-1+deb12u1_amd64.deb",
+          "bytes": 33576,
+          "sha256": "0718605184afb1573b06861f5e517fa4ecb9d2c42bdf9dd1ea857b95476ee8c9",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/4fc9bc517b28ffe6f1c2cc0a27c59dd8c4587ac2",
+            "https://deb.debian.org/debian-security/pool/updates/main/libh/libheif/libheif-dev_1.15.1-1+deb12u1_amd64.deb"
+          ],
+          "package": "libheif-dev",
+          "version": "1.15.1-1+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libheif",
+          "packageRecordSha256": "4b05f5796b706f4e3eef2df99acad94f7e9ae7f645ed96d69858a8247af953cc",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libheif1_1.15.1-1+deb12u1_amd64.deb",
+          "bytes": 215348,
+          "sha256": "13a0a3a6e22ddf5eb891b7c7873ace79f13f2c96473576e5f7da2ae3228a2113",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/6d8d291dcec1f05a59d9712b46946e1c6c73ec1a",
+            "https://deb.debian.org/debian-security/pool/updates/main/libh/libheif/libheif1_1.15.1-1+deb12u1_amd64.deb"
+          ],
+          "package": "libheif1",
+          "version": "1.15.1-1+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libheif",
+          "packageRecordSha256": "d2cfcbccbfcd737e1e08c78d4852263933fb11315cd21a508ca0b4a6388129d8",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libicu72_72.1-3+deb12u1_amd64.deb",
+          "bytes": 9376124,
+          "sha256": "f7f6f99c6d7b025914df2447fc93e11d22c44c0c8bdd8b6f36691c9e7ddcef88",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/33fdfc4e0715648c57182b80bcaf0254a0372776",
+            "https://deb.debian.org/debian-security/pool/updates/main/i/icu/libicu72_72.1-3+deb12u1_amd64.deb"
+          ],
+          "package": "libicu72",
+          "version": "72.1-3+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "icu",
+          "packageRecordSha256": "b7c700cb87cbca72b67a00f3f4645b4e089d9740563e1feca933658ee5a9758d",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libjbig-dev_2.1-6.1_amd64.deb",
+          "bytes": 31040,
+          "sha256": "63e010c2f90fffe55eb813dba8c3f5dc6b7294667aa26e7058deaf978bb030e9",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/bae7407a2bd81312ec7da3bc2cea0251e00fb282",
+            "https://deb.debian.org/debian/pool/main/j/jbigkit/libjbig-dev_2.1-6.1_amd64.deb"
+          ],
+          "package": "libjbig-dev",
+          "version": "2.1-6.1",
+          "architecture": "amd64",
+          "sourceDeclaration": "jbigkit",
+          "packageRecordSha256": "57e67e108a835d2c80b3df0034d9fde2a8a945574c331c05fc7cd7327fbb6cac",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libjbig0_2.1-6.1_amd64.deb",
+          "bytes": 31704,
+          "sha256": "6b07c77b700a615642888a82ba92a7e7c429d04b9c8669c62b2263f15c4c4059",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/12237947d9d9f8ad8228385510f5c38c3635201b",
+            "https://deb.debian.org/debian/pool/main/j/jbigkit/libjbig0_2.1-6.1_amd64.deb"
+          ],
+          "package": "libjbig0",
+          "version": "2.1-6.1",
+          "architecture": "amd64",
+          "sourceDeclaration": "jbigkit",
+          "packageRecordSha256": "8810c8bc789942711884ef0a27e36602c41d44650e92123672e95b08cf08740f",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libjpeg-dev_1%3a2.1.5-2_amd64.deb",
+          "bytes": 71768,
+          "sha256": "cadbddf4dfda48a7198a0ee7f5d0e95283b4bf3cd41c2b1edf6375cc86e46ffe",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/46f60f5291faefb9b5b88273843bd0926f6d4070",
+            "https://deb.debian.org/debian/pool/main/libj/libjpeg-turbo/libjpeg-dev_2.1.5-2_amd64.deb"
+          ],
+          "package": "libjpeg-dev",
+          "version": "1:2.1.5-2",
+          "architecture": "amd64",
+          "sourceDeclaration": "libjpeg-turbo",
+          "packageRecordSha256": "debc0d965ff48df0aa99ae8549eb0bbf7ba83839a6a2209a136a927da5ac2036",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libjpeg62-turbo-dev_1%3a2.1.5-2_amd64.deb",
+          "bytes": 289644,
+          "sha256": "10485411f751c24472c43b28fe24ab6389fedb027d496bbc2c831496f750ab01",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/924e6b4095d8195b7b321b5ff675715440f79afe",
+            "https://deb.debian.org/debian/pool/main/libj/libjpeg-turbo/libjpeg62-turbo-dev_2.1.5-2_amd64.deb"
+          ],
+          "package": "libjpeg62-turbo-dev",
+          "version": "1:2.1.5-2",
+          "architecture": "amd64",
+          "sourceDeclaration": "libjpeg-turbo",
+          "packageRecordSha256": "abb06567f6222ec7327e87d4d47c8947b51e10cb46916e5cb0ba104235d5e94a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libjpeg62-turbo_1%3a2.1.5-2_amd64.deb",
+          "bytes": 166332,
+          "sha256": "95ec30140789a342add8f8371ed018924de51b539056522b66f207b25cba9cad",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/c3ae9bbc1795b588c8a05738e35b1b56f67ab7f4",
+            "https://deb.debian.org/debian/pool/main/libj/libjpeg-turbo/libjpeg62-turbo_2.1.5-2_amd64.deb"
+          ],
+          "package": "libjpeg62-turbo",
+          "version": "1:2.1.5-2",
+          "architecture": "amd64",
+          "sourceDeclaration": "libjpeg-turbo",
+          "packageRecordSha256": "76e244c515475b8f592b7a5ee8732849cbe63a1bfd666dbdefda529201600a17",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/liblerc-dev_4.0.0+ds-2_amd64.deb",
+          "bytes": 174732,
+          "sha256": "4071e713e4d856bcaceb9cb8a8a00de65edcad1153470bd012ab9f3ce0df1140",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/467ceef34e9ad81952a9c075a0971457abc52dcc",
+            "https://deb.debian.org/debian/pool/main/l/lerc/liblerc-dev_4.0.0+ds-2_amd64.deb"
+          ],
+          "package": "liblerc-dev",
+          "version": "4.0.0+ds-2",
+          "architecture": "amd64",
+          "sourceDeclaration": "lerc",
+          "packageRecordSha256": "879399e279f13f693d8a22bf08c55294c857e69eaa079720c6ba54d4543cfab2",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/liblerc4_4.0.0+ds-2_amd64.deb",
+          "bytes": 170368,
+          "sha256": "771f5c47ca69f24ca61e4be0c98c5912b182ce442f921697d17a472f3ded5c9c",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/5ea64fe5182ce33fc1cfbf887b5d0606492d6070",
+            "https://deb.debian.org/debian/pool/main/l/lerc/liblerc4_4.0.0+ds-2_amd64.deb"
+          ],
+          "package": "liblerc4",
+          "version": "4.0.0+ds-2",
+          "architecture": "amd64",
+          "sourceDeclaration": "lerc",
+          "packageRecordSha256": "e0a699502b414eb1b4bd268eda7791175b8f290b578f7d98b32943e11f7c5205",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/liblzma-dev_5.4.1-1+deb12u2_amd64.deb",
+          "bytes": 260400,
+          "sha256": "8fba549e7a6819bb5758fc9b7d601a82963e6cdc222043d06a989312604bbc55",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/b9de10e97bd4cc4b59fce24e5a24861dd1ef4986",
+            "https://deb.debian.org/debian-security/pool/updates/main/x/xz-utils/liblzma-dev_5.4.1-1+deb12u2_amd64.deb"
+          ],
+          "package": "liblzma-dev",
+          "version": "5.4.1-1+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "xz-utils",
+          "packageRecordSha256": "a835b28fa886d6d284c809b37724e9c0d6f362ae3a5d85b5316bebddc9aeacc3",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/liblzma5_5.4.1-1+deb12u2_amd64.deb",
+          "bytes": 205796,
+          "sha256": "3d8c29c8c21ec6007635e1b2591edf98b771c9572a085968f47452b33040f384",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/4ca1ab3d93562d042e76186b20476ceded4446a7",
+            "https://deb.debian.org/debian-security/pool/updates/main/x/xz-utils/liblzma5_5.4.1-1+deb12u2_amd64.deb"
+          ],
+          "package": "liblzma5",
+          "version": "5.4.1-1+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "xz-utils",
+          "packageRecordSha256": "0fcf95f5c751cf42d71b12018584cec0c94904a68752bce574757e5cd39396e1",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libmagic-mgc_1%3a5.44-3_amd64.deb",
+          "bytes": 304888,
+          "sha256": "bad01673ba5dfb9b5db4f3ae6a71f18d492cb6801eab45ad3c7d483c0a1f6ad2",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/f16352eb8fa74aab5edbcba2532feb42e88b3c91",
+            "https://deb.debian.org/debian/pool/main/f/file/libmagic-mgc_5.44-3_amd64.deb"
+          ],
+          "package": "libmagic-mgc",
+          "version": "1:5.44-3",
+          "architecture": "amd64",
+          "sourceDeclaration": "file",
+          "packageRecordSha256": "651f8447cf9878f70104624b00529f0e62846a36da10fb410441bc00f17287e7",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libmagic1_1%3a5.44-3_amd64.deb",
+          "bytes": 103752,
+          "sha256": "a241c2adc7438a7e217f32544028489981768a349d3e48673392703255c7b88e",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/ccfa80221a5dd175450a1b2be4962f8e13a94283",
+            "https://deb.debian.org/debian/pool/main/f/file/libmagic1_5.44-3_amd64.deb"
+          ],
+          "package": "libmagic1",
+          "version": "1:5.44-3",
+          "architecture": "amd64",
+          "sourceDeclaration": "file",
+          "packageRecordSha256": "510328126ae43e44ecd7df327c8d5780dca66f123639f3f55aebe263dc423506",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libnuma1_2.0.16-1_amd64.deb",
+          "bytes": 20964,
+          "sha256": "639e1ab6bd66ead40db8a22c332d7199679fa22db261cac34444eb8eb4c17dda",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/bc10a217f361f79895ffc080aae70d8ba2056a17",
+            "https://deb.debian.org/debian/pool/main/n/numactl/libnuma1_2.0.16-1_amd64.deb"
+          ],
+          "package": "libnuma1",
+          "version": "2.0.16-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "numactl",
+          "packageRecordSha256": "da6804694cf8b7e3eca3a07eb564f640e1a3c4f78fa9d231fee044bbd0ea99ac",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libpcre2-16-0_10.42-1+deb12u2_amd64.deb",
+          "bytes": 245456,
+          "sha256": "466b6ef0a7788ac6a754e727ec43e3e1c45602baa0ecf103af6ba8a2665b7c4f",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/f4a24e1032ff4ebf0408df8f53226859eb8d76d6",
+            "https://deb.debian.org/debian-security/pool/updates/main/p/pcre2/libpcre2-16-0_10.42-1+deb12u2_amd64.deb"
+          ],
+          "package": "libpcre2-16-0",
+          "version": "10.42-1+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "pcre2",
+          "packageRecordSha256": "8a5744229fa7da31b1ffdf4924cb831445cf671c8c92926036bb8e8e0fd284f8",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libpcre2-32-0_10.42-1+deb12u2_amd64.deb",
+          "bytes": 234736,
+          "sha256": "159c10b6a650cac30de79f93189e7bfdcbc42088ec1e7049a08477e4e93be223",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/4f1e8d51fc514d05f80f6b4c9f031546a8fbe2c2",
+            "https://deb.debian.org/debian-security/pool/updates/main/p/pcre2/libpcre2-32-0_10.42-1+deb12u2_amd64.deb"
+          ],
+          "package": "libpcre2-32-0",
+          "version": "10.42-1+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "pcre2",
+          "packageRecordSha256": "8f9239361c1e8771bd4f46d0a8bde274c59539722d23615da927e3738c2177f6",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libpcre2-8-0_10.42-1+deb12u2_amd64.deb",
+          "bytes": 261628,
+          "sha256": "d2f7edfcc7689b9e0761c2742cc824ac86a20768bc5e8057818dc6875291fe76",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/af87568214042f8871982dcab9a3c5c32f789e60",
+            "https://deb.debian.org/debian-security/pool/updates/main/p/pcre2/libpcre2-8-0_10.42-1+deb12u2_amd64.deb"
+          ],
+          "package": "libpcre2-8-0",
+          "version": "10.42-1+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "pcre2",
+          "packageRecordSha256": "81d27e5db30e9aeb92aa671d84742ab864b6e70b3176a5c88e142d7050a3b7fa",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libpcre2-dev_10.42-1+deb12u2_amd64.deb",
+          "bytes": 752192,
+          "sha256": "420595d97c946994ea72f38ac1103d8bcc1b10385f3d2a2fe2627c52d2beed6e",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/b0164627055b827abb10ce63e76ddefefb4a730e",
+            "https://deb.debian.org/debian-security/pool/updates/main/p/pcre2/libpcre2-dev_10.42-1+deb12u2_amd64.deb"
+          ],
+          "package": "libpcre2-dev",
+          "version": "10.42-1+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "pcre2",
+          "packageRecordSha256": "c7ac274d7c7b6e88575891af97130e9c32034d57979f9939c8f21cf4ff8aa157",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libpcre2-posix3_10.42-1+deb12u2_amd64.deb",
+          "bytes": 55620,
+          "sha256": "54592f2ac58497ed96dfdac341a05473fcd29296320b0910dc21a8c73f5947bd",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/6165fcdd07bd9dc1739728707cc1e03e54a72362",
+            "https://deb.debian.org/debian-security/pool/updates/main/p/pcre2/libpcre2-posix3_10.42-1+deb12u2_amd64.deb"
+          ],
+          "package": "libpcre2-posix3",
+          "version": "10.42-1+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "pcre2",
+          "packageRecordSha256": "7870b3d92d1769af8a5dd86505634a9158a6b19064a0cca85fde7a7f7c8cb290",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libpipeline1_1.5.7-1_amd64.deb",
+          "bytes": 38540,
+          "sha256": "e09c46ef83dddc7906ee2bcbd526f3a0af92622dca724ec433409b131c3ed41c",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/db09149ad4e7fde0b0b47305928e241338d32bad",
+            "https://deb.debian.org/debian/pool/main/libp/libpipeline/libpipeline1_1.5.7-1_amd64.deb"
+          ],
+          "package": "libpipeline1",
+          "version": "1.5.7-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libpipeline",
+          "packageRecordSha256": "e5504d8ddb8a3d692f6eadb7999cd00cbf11d0cf1ec7f11c827d75e2c4f751ad",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libpng-dev_1.6.39-2+deb12u6_amd64.deb",
+          "bytes": 360564,
+          "sha256": "229112e7be58431e38e9c536a646bdeccc470d705b71e3286a97e567182e2643",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/e26d5bfb2b0379eb6eb6d5996645c83d841e2111",
+            "https://deb.debian.org/debian-security/pool/updates/main/libp/libpng1.6/libpng-dev_1.6.39-2+deb12u6_amd64.deb"
+          ],
+          "package": "libpng-dev",
+          "version": "1.6.39-2+deb12u6",
+          "architecture": "amd64",
+          "sourceDeclaration": "libpng1.6",
+          "packageRecordSha256": "ab7c158b236a062ad4b9270c108ebcdd368548175b3cf541398110c2276349e2",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libpng16-16_1.6.39-2+deb12u6_amd64.deb",
+          "bytes": 277048,
+          "sha256": "940b91d40d51c825de7f7aa133aecff1ffa25a91f12cb6aa6926c9ad55cd640c",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/7e50503e6d372276727be2915fd404c91b478b17",
+            "https://deb.debian.org/debian-security/pool/updates/main/libp/libpng1.6/libpng16-16_1.6.39-2+deb12u6_amd64.deb"
+          ],
+          "package": "libpng16-16",
+          "version": "1.6.39-2+deb12u6",
+          "architecture": "amd64",
+          "sourceDeclaration": "libpng1.6",
+          "packageRecordSha256": "b32ab0196d9c6a5e858a7e6f7bfb240a88c2e39b34c1334362fe7dcd7e00ae56",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libpthread-stubs0-dev_0.4-1_amd64.deb",
+          "bytes": 5344,
+          "sha256": "54632f160e1e8a43656a87195a547391038c4ca0f53291b849cd4457ba5dfde9",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/851a6202144a55dad0686b14d7116ee4b3edd2f7",
+            "https://deb.debian.org/debian/pool/main/libp/libpthread-stubs/libpthread-stubs0-dev_0.4-1_amd64.deb"
+          ],
+          "package": "libpthread-stubs0-dev",
+          "version": "0.4-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libpthread-stubs",
+          "packageRecordSha256": "23c80eccc309d4688eda38ffb3302db66df8e27829097187c047b7e8cea145f9",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/librav1e0_0.5.1-6_amd64.deb",
+          "bytes": 763348,
+          "sha256": "c266adb3545b0b8ff6450dbd09f85f19361bf5bc9290ddf2e869f040cb9725b7",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/46168a4bea1fc49c4b2f4214c6e9b6154b2a4e92",
+            "https://deb.debian.org/debian/pool/main/r/rust-rav1e/librav1e0_0.5.1-6_amd64.deb"
+          ],
+          "package": "librav1e0",
+          "version": "0.5.1-6",
+          "architecture": "amd64",
+          "sourceDeclaration": "rust-rav1e",
+          "packageRecordSha256": "8483d13ae5552f4f3ab6b3d047526d153b8f0c013c6b359a767494ef70e45796",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libselinux1-dev_3.4-1+b6_amd64.deb",
+          "bytes": 156780,
+          "sha256": "efd67cd1c09a19bb1f33a53bfa30e703cecee0345f66ba727a7cc64c34656206",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/60042a6f5b5b111e0b763668f5bd0456bd3d0942",
+            "https://deb.debian.org/debian/pool/main/libs/libselinux/libselinux1-dev_3.4-1+b6_amd64.deb"
+          ],
+          "package": "libselinux1-dev",
+          "version": "3.4-1+b6",
+          "architecture": "amd64",
+          "sourceDeclaration": "libselinux (3.4-1)",
+          "packageRecordSha256": "9141850f3ca5ccb6a7603c4dc4d55384d24fc567ef02af14eccce335a74a1ea1",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libsepol-dev_3.4-2.1_amd64.deb",
+          "bytes": 351496,
+          "sha256": "c3822443d3c829727813f8c84746506944deff1f5f2dd4fb00f90bb5929ffa89",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/7f637a11ec46a604e493db48ab402e5064e0d412",
+            "https://deb.debian.org/debian/pool/main/libs/libsepol/libsepol-dev_3.4-2.1_amd64.deb"
+          ],
+          "package": "libsepol-dev",
+          "version": "3.4-2.1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libsepol",
+          "packageRecordSha256": "96d107ddd0b1c8e14f18f2769c82bbe912b4994583eaed315d62b4b04bda4a7f",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libsigsegv2_2.14-1_amd64.deb",
+          "bytes": 37152,
+          "sha256": "92336a5c47989b82ba4c778adc0ea22fc84450773f2d8428fca4448b0789cfe6",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/0e3c00dca3c2cdb2ce7e82c470da95c8bac7307e",
+            "https://deb.debian.org/debian/pool/main/libs/libsigsegv/libsigsegv2_2.14-1_amd64.deb"
+          ],
+          "package": "libsigsegv2",
+          "version": "2.14-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libsigsegv",
+          "packageRecordSha256": "07815fd70e9f778c581cf2d46a045f543aa104740de319ef2455691c2f74fe3f",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libsub-override-perl_0.09-4_all.deb",
+          "bytes": 9304,
+          "sha256": "4692e253973ec660f55047814f68415af192941f5e42c9fc528e768831552882",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/8742aa109014800ea99b1744d6715a209b518c0c",
+            "https://deb.debian.org/debian/pool/main/libs/libsub-override-perl/libsub-override-perl_0.09-4_all.deb"
+          ],
+          "package": "libsub-override-perl",
+          "version": "0.09-4",
+          "architecture": "all",
+          "sourceDeclaration": "libsub-override-perl",
+          "packageRecordSha256": "c797808bc56529c7c0f10de3867d943434efad5dd408b4eb63c7b5075487aca2",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libsvtav1enc1_1.4.1+dfsg-1_amd64.deb",
+          "bytes": 2121284,
+          "sha256": "e0f6e357f327e80f26438dcda9c9304c43e2f3343359c6a5075d0b10ddfdb05d",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/499e249d67a1f8bdaf540dbcabe495a17288208e",
+            "https://deb.debian.org/debian/pool/main/s/svt-av1/libsvtav1enc1_1.4.1+dfsg-1_amd64.deb"
+          ],
+          "package": "libsvtav1enc1",
+          "version": "1.4.1+dfsg-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "svt-av1",
+          "packageRecordSha256": "5392952f48bdd61b9923fdb918bb9cc3ee981fb9a9fa419b616bea281650a63e",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libtiff-dev_4.5.0-6+deb12u4_amd64.deb",
+          "bytes": 456336,
+          "sha256": "3872494f724cfd3cef0f99377629ca4057c59b15e5699f1612ad78591aa6a6a2",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/1228244765454621e75cbe5c0b7dd85054a43e40",
+            "https://deb.debian.org/debian-security/pool/updates/main/t/tiff/libtiff-dev_4.5.0-6+deb12u4_amd64.deb"
+          ],
+          "package": "libtiff-dev",
+          "version": "4.5.0-6+deb12u4",
+          "architecture": "amd64",
+          "sourceDeclaration": "tiff",
+          "packageRecordSha256": "4619f743d35f84d59c24c60a2243f9d1d32b3050b85c9d8186cde467f2996972",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libtiff6_4.5.0-6+deb12u4_amd64.deb",
+          "bytes": 316172,
+          "sha256": "255cd1d9f204355c366638ee21756234a8d43c03a3de18a5af6cdd94765b5053",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/616cf4a2bdc1eb2264ba2d2fbc9d08d503eeb565",
+            "https://deb.debian.org/debian-security/pool/updates/main/t/tiff/libtiff6_4.5.0-6+deb12u4_amd64.deb"
+          ],
+          "package": "libtiff6",
+          "version": "4.5.0-6+deb12u4",
+          "architecture": "amd64",
+          "sourceDeclaration": "tiff",
+          "packageRecordSha256": "f758e06402978db306cef15adc94fce4d4fd896f589565c433e597a58d08c65a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libtiffxx6_4.5.0-6+deb12u4_amd64.deb",
+          "bytes": 144124,
+          "sha256": "ecd8e86d689b21c6e9ab435fd81962a1cebb02161f3d37066aea57b33846205d",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/3dfaea630486027143057f5c264515df7552eab9",
+            "https://deb.debian.org/debian-security/pool/updates/main/t/tiff/libtiffxx6_4.5.0-6+deb12u4_amd64.deb"
+          ],
+          "package": "libtiffxx6",
+          "version": "4.5.0-6+deb12u4",
+          "architecture": "amd64",
+          "sourceDeclaration": "tiff",
+          "packageRecordSha256": "32ef198b385cad95567b924dab4b138abb4976840608c08b022b31a87bdb2a44",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libtool_2.4.7-7~deb12u1_all.deb",
+          "bytes": 517256,
+          "sha256": "1c2e74f06b1d5d9a2c75e04ce87a99a8633058684439504ae8d715a4a088926c",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/09b76c250efb0a9bb679add73e491d018e1e1dca",
+            "https://deb.debian.org/debian/pool/main/libt/libtool/libtool_2.4.7-7~deb12u1_all.deb"
+          ],
+          "package": "libtool",
+          "version": "2.4.7-7~deb12u1",
+          "architecture": "all",
+          "sourceDeclaration": "libtool",
+          "packageRecordSha256": "62c448bc44f85486be36e43a0becc325a07b919a79d5b2e0d641c6e7658988ae",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libuchardet0_0.0.7-1_amd64.deb",
+          "bytes": 67816,
+          "sha256": "591583ce7cf452ff81b05a9b94e663cca390a02376f6fc2a072a4e9524c35a8c",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/869a6fb99867e66ac4a167b0494f5edd0a11bea5",
+            "https://deb.debian.org/debian/pool/main/u/uchardet/libuchardet0_0.0.7-1_amd64.deb"
+          ],
+          "package": "libuchardet0",
+          "version": "0.0.7-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "uchardet",
+          "packageRecordSha256": "16f2ad08715faa674c1e6621d5872949aad0e94da4142b50ebe02c6f753e6f74",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libvpx-dev_1.12.0-1+deb12u5_amd64.deb",
+          "bytes": 1154936,
+          "sha256": "81c2dee7f5264ca17819a33e9668ff7fcaee8209079951db9d028aa6580a5166",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/9d5a143a41b20cd9fa17b70e25cc4761df4efc67",
+            "https://deb.debian.org/debian-security/pool/updates/main/libv/libvpx/libvpx-dev_1.12.0-1+deb12u5_amd64.deb"
+          ],
+          "package": "libvpx-dev",
+          "version": "1.12.0-1+deb12u5",
+          "architecture": "amd64",
+          "sourceDeclaration": "libvpx",
+          "packageRecordSha256": "a0261a6fb50a69409f4d12e08afd4cb100de63b4a3ba533429c89c6bab5e8c3a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libvpx7_1.12.0-1+deb12u5_amd64.deb",
+          "bytes": 1003444,
+          "sha256": "7d8fada67fc9e11a08304499fe5beb7f809194d284202b9c9f1a0b8e54b90db4",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/90efdcbc2744f5b997a11bd760b54c7744909d2d",
+            "https://deb.debian.org/debian-security/pool/updates/main/libv/libvpx/libvpx7_1.12.0-1+deb12u5_amd64.deb"
+          ],
+          "package": "libvpx7",
+          "version": "1.12.0-1+deb12u5",
+          "architecture": "amd64",
+          "sourceDeclaration": "libvpx",
+          "packageRecordSha256": "23d64eb4ed00c8f8bb14de6d15dbf28453a221c7c05e6623fa59442e47b04512",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libwebp-dev_1.2.4-0.2+deb12u1_amd64.deb",
+          "bytes": 400448,
+          "sha256": "a9d07a8423e462babc947dd5745875a58c450fd5ca5c4493dbabe17387f97d89",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/e9dd220285a5249fe20d94e88ffc59d387f3199f",
+            "https://deb.debian.org/debian-security/pool/updates/main/libw/libwebp/libwebp-dev_1.2.4-0.2+deb12u1_amd64.deb"
+          ],
+          "package": "libwebp-dev",
+          "version": "1.2.4-0.2+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libwebp",
+          "packageRecordSha256": "132ebfa0aca4e4a5022a1bd1226c0141ba42b73d6c5db41167f747ab1b781844",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libwebp7_1.2.4-0.2+deb12u1_amd64.deb",
+          "bytes": 285512,
+          "sha256": "7259b7ce46444694ce536360ad53acb68eb3b47a7ff81d7b1b8a3939b2ac9918",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/e77b76c0aa646ea7f1b9c702929a72376ea54379",
+            "https://deb.debian.org/debian-security/pool/updates/main/libw/libwebp/libwebp7_1.2.4-0.2+deb12u1_amd64.deb"
+          ],
+          "package": "libwebp7",
+          "version": "1.2.4-0.2+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libwebp",
+          "packageRecordSha256": "0c45ae9776b433e0f9c5ac6c663bb52b5e01ff8d9ce21cf2d62877fc4a83ed79",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libwebpdemux2_1.2.4-0.2+deb12u1_amd64.deb",
+          "bytes": 99408,
+          "sha256": "7d622d3cd1413fe55a2d3baaa32e0dfeba88bc511b1058dbe64562e2a9d7c176",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/ec807f286171d48df61233f8f44bc04ec108d3ce",
+            "https://deb.debian.org/debian-security/pool/updates/main/libw/libwebp/libwebpdemux2_1.2.4-0.2+deb12u1_amd64.deb"
+          ],
+          "package": "libwebpdemux2",
+          "version": "1.2.4-0.2+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libwebp",
+          "packageRecordSha256": "accafc3b59c56d314a1e517ee1e5312fe439bdb8d9ec92fd13040b5cb0d11957",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libwebpmux3_1.2.4-0.2+deb12u1_amd64.deb",
+          "bytes": 109492,
+          "sha256": "cc7d04d56ff8112ef5ed94050b0a440a9b4cea9d1d6f97e2a4016c8cc042c2f1",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/e9d5f32c69839494332df25be583a1039f6413af",
+            "https://deb.debian.org/debian-security/pool/updates/main/libw/libwebp/libwebpmux3_1.2.4-0.2+deb12u1_amd64.deb"
+          ],
+          "package": "libwebpmux3",
+          "version": "1.2.4-0.2+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libwebp",
+          "packageRecordSha256": "182785ebe792b232f8520a484c7bd13fc9039bad66457fd5a2ddb2fe3e156633",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx11-6_2%3a1.8.4-2+deb12u2_amd64.deb",
+          "bytes": 759544,
+          "sha256": "d88c973e79fd9b65838d77624142952757e47a6eb1a58602acf0911cf35989f4",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/05e5afb3b9a31e783e919853793c71e0bcc4cd7c",
+            "https://deb.debian.org/debian-security/pool/updates/main/libx/libx11/libx11-6_1.8.4-2+deb12u2_amd64.deb"
+          ],
+          "package": "libx11-6",
+          "version": "2:1.8.4-2+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "libx11",
+          "packageRecordSha256": "56c1f5ec240a6abd32f07bcc0ece4a8b5856d29c11448f88dd9b090af7d89b10",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx11-data_2%3a1.8.4-2+deb12u2_all.deb",
+          "bytes": 291884,
+          "sha256": "987a848aeb1c358e4186368871b0526f10bb14c6b53214ab3bf8b69abb830191",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/af3a6ad140e2cadac63689e99793e8662e092e97",
+            "https://deb.debian.org/debian-security/pool/updates/main/libx/libx11/libx11-data_1.8.4-2+deb12u2_all.deb"
+          ],
+          "package": "libx11-data",
+          "version": "2:1.8.4-2+deb12u2",
+          "architecture": "all",
+          "sourceDeclaration": "libx11",
+          "packageRecordSha256": "6239337d3bbad79011ac176bd20cabe507f51b550a6135e57047e45543617a2e",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx11-dev_2%3a1.8.4-2+deb12u2_amd64.deb",
+          "bytes": 836976,
+          "sha256": "8493220d4309af1907a1f2f6eeb204c8103dafcc368394fbc4a0858c28612ff9",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/b708930db76b3bbab542ae1b397b9dce52b27eec",
+            "https://deb.debian.org/debian-security/pool/updates/main/libx/libx11/libx11-dev_1.8.4-2+deb12u2_amd64.deb"
+          ],
+          "package": "libx11-dev",
+          "version": "2:1.8.4-2+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "libx11",
+          "packageRecordSha256": "91135fea39e534a3afdf7663902a24e3b7b0d886c5cac2423eb9068726015bfa",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx265-199_3.5-2+b1_amd64.deb",
+          "bytes": 1150056,
+          "sha256": "9cd87d1b0c56f34f51bcbe8bdb55ebb45dd08ce6c0c6ff2dc77378bac3f64cc0",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/2674530780fe6c42e0a1355888ae4d3c616f95ff",
+            "https://deb.debian.org/debian/pool/main/x/x265/libx265-199_3.5-2+b1_amd64.deb"
+          ],
+          "package": "libx265-199",
+          "version": "3.5-2+b1",
+          "architecture": "amd64",
+          "sourceDeclaration": "x265 (3.5-2)",
+          "packageRecordSha256": "6792ebd3c367125cf1114c0cb69647ecbeee6b660c8a4f9f3c2e140ac3c1a2ba",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx265-dev_3.5-2+b1_amd64.deb",
+          "bytes": 1171416,
+          "sha256": "f23c7797a85fac88b7e894898e7137d2b452e9a1226f2b5ad2ee55bef8056b7d",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/0b3d6be2ed4e94e4221ff90b3e3f81f9003055e6",
+            "https://deb.debian.org/debian/pool/main/x/x265/libx265-dev_3.5-2+b1_amd64.deb"
+          ],
+          "package": "libx265-dev",
+          "version": "3.5-2+b1",
+          "architecture": "amd64",
+          "sourceDeclaration": "x265 (3.5-2)",
+          "packageRecordSha256": "e78c33b18dbf25b1d508f3ee9e7127acfbe7bfcf7aeb87b6eed8459e3ffbbf17",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx32asan8_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 2063116,
+          "sha256": "ab331e4dcb6e86c6b3480ce3061ce48c56940eec2569a29e90f14fea09fb2639",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/20431e95e7eecd14019698124e054093640779f6",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/libx32asan8_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "libx32asan8",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "89a5ed905ac3b7b5f189d359704ed1c929d0214c20721471f1e56827f1ca6686",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx32atomic1_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 9288,
+          "sha256": "a34b1f6a7ecee695e4855786e72d30ae02639464ac6d0dc814c9ee2f0b50fe46",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/f436a4bc64d6f200c58806eb8daec2e26a9623da",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/libx32atomic1_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "libx32atomic1",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "08962556822975fcb7c64e3a12c46983eefe0921d92060e6b3fc83f82b6076e9",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx32gcc-12-dev_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 2042380,
+          "sha256": "2c94438e612ec21d174ce28382322c740b0eec6ed42e4c3179a4a5ed341fe168",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/a4d8ae75adaa7664140af41a50da7c51736e789d",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/libx32gcc-12-dev_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "libx32gcc-12-dev",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "3113788fcba9764bccac22bf289732a16226c8e8e9ae1b299db5656a035cc60f",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx32gcc-s1_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 50116,
+          "sha256": "029b032bffcd914c4060ba69eae9af5f3b95df4d7c9dd0a1b94616fa383433ea",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/d24056e52b5c0fe2d595a7c4b63b3aca3228122d",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/libx32gcc-s1_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "libx32gcc-s1",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "05d08cfbb82976ac1c01d653ce03ebb0bc30aec5e80b968e6159c71512adfbde",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx32gomp1_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 116020,
+          "sha256": "527ad2755cb1e2bd181d0b5f994f58d1f29e9ae41743af46edf4bb02d96de4c7",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/4ef58c23921f5277afec09ba5e229027cd0cc1b5",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/libx32gomp1_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "libx32gomp1",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "b28c20a05cbd0689fdda4464b9fc0914174118e8ef2ed839f06fc3ed65f8c1db",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx32itm1_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 26444,
+          "sha256": "367375114ff30be6ff2ed9475bae57b19dbdfedee54ceca41527afae1618953a",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/3fc22b7bbebeb827c3e1025e7e9ef058ce0425b6",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/libx32itm1_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "libx32itm1",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "5fca66ada8deafdfbc2192bed2c9f2d350ec788da98f22631d3ba6696b0eda35",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx32quadmath0_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 146688,
+          "sha256": "2d2b982a0024a42ca6c0a14cb6b40ee20ded04ea9b22791e15a2c1b18320cb29",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/7b608bf87552277277ce95b21477f834215c75cc",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/libx32quadmath0_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "libx32quadmath0",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "e098d5caa42a9c6b43abcd5ef4928c670b56ca8efb2eb6f3262516f1426fca11",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx32stdc++-12-dev_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 819932,
+          "sha256": "06be6c43ea38774cde5c28234ea42c6378645b0818049e142b7f483ba3f7e0ce",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/171db1a590befc4e7890720909607dea90c34b02",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/libx32stdc++-12-dev_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "libx32stdc++-12-dev",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "6e7afb57cb5abe50a3d7a5c9f3f8d9a2dc4d5e5bf5d3fe37060cbd052329be28",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx32stdc++6_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 598712,
+          "sha256": "7d15dfc3ce8d8bf04fa92b5de2a2fb8845ed0db06308b1c115190af98ae57628",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/3c9f7f16b7f71ecf586e529d9a70bf685a96cc42",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/libx32stdc++6_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "libx32stdc++6",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "ca84b5c8732f8a56b9e705491270b4e977cbe25d5fc213bfd0ef8f16b8188d9a",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libx32ubsan1_12.2.0-14+deb12u1_amd64.deb",
+          "bytes": 874400,
+          "sha256": "b3994ff85c127b75176e7a5a3326a63ef099cb150823748687ac100a7583754f",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/af17bb98dbbd7312c75ad166523bf1a08457c032",
+            "https://deb.debian.org/debian/pool/main/g/gcc-12/libx32ubsan1_12.2.0-14+deb12u1_amd64.deb"
+          ],
+          "package": "libx32ubsan1",
+          "version": "12.2.0-14+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "gcc-12",
+          "packageRecordSha256": "86c6faf3d1e7aaee10b3e1319f93188e433f636d5a55f4930fe8e4f46ccdd068",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libxau-dev_1%3a1.0.9-1_amd64.deb",
+          "bytes": 22912,
+          "sha256": "d1a7f5d484e0879b3b2e8d512894744505e53d078712ce65903fef2ecfd824bb",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/818f5bb350e473d4282cfa211fa8c3f41254a733",
+            "https://deb.debian.org/debian/pool/main/libx/libxau/libxau-dev_1.0.9-1_amd64.deb"
+          ],
+          "package": "libxau-dev",
+          "version": "1:1.0.9-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libxau",
+          "packageRecordSha256": "f46e3cec0f36e5f37d3c55e8e51daf29a92b10154a12691827f8a494b23578a0",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libxau6_1%3a1.0.9-1_amd64.deb",
+          "bytes": 19720,
+          "sha256": "679db1c4579ec7c61079adeaae8528adeb2e4bf5465baa6c56233b995d714750",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/51a5b4ec514a31b3192c9e6614988828277b5f52",
+            "https://deb.debian.org/debian/pool/main/libx/libxau/libxau6_1.0.9-1_amd64.deb"
+          ],
+          "package": "libxau6",
+          "version": "1:1.0.9-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libxau",
+          "packageRecordSha256": "17af9cba5cfa77aee3e2ef69b298fcb52e9f55a39cde3c6deda60259840676dc",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libxcb1-dev_1.15-1_amd64.deb",
+          "bytes": 180776,
+          "sha256": "c078c024114fdada06d3158af1771d7ed8763ab434cfbcbe6a334aa8a9cae358",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/247d86707acc68b918d20746a95d44300ed6c2bb",
+            "https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb1-dev_1.15-1_amd64.deb"
+          ],
+          "package": "libxcb1-dev",
+          "version": "1.15-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libxcb",
+          "packageRecordSha256": "7ccc3e0e9ad3e8bb3a619db6d2584f6e9b52cd297bc8efb089170485c9df88b6",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libxcb1_1.15-1_amd64.deb",
+          "bytes": 144052,
+          "sha256": "fdc61332a3892168f3cc9cfa1fe9cf11a91dc3e0acacbc47cbc50ebaa234cc71",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/8c57257750c7706504cd33672748414c768faa1d",
+            "https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb1_1.15-1_amd64.deb"
+          ],
+          "package": "libxcb1",
+          "version": "1.15-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libxcb",
+          "packageRecordSha256": "54e0ba08cc37eef35e551600696eda00169fcead95f4244967ba8fe5017624f7",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libxdmcp-dev_1%3a1.1.2-3_amd64.deb",
+          "bytes": 42158,
+          "sha256": "c6733e5f6463afd261998e408be6eb37f24ce0a64b63bed50a87ddb18ebc1699",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/a4ceed947eae368f74cf107f2c81969e08f44560",
+            "https://deb.debian.org/debian/pool/main/libx/libxdmcp/libxdmcp-dev_1.1.2-3_amd64.deb"
+          ],
+          "package": "libxdmcp-dev",
+          "version": "1:1.1.2-3",
+          "architecture": "amd64",
+          "sourceDeclaration": "libxdmcp",
+          "packageRecordSha256": "c67550de77b2e60e86a0e97fa54fba2e71bdda96168a4d66a56047734bb6d181",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libxdmcp6_1%3a1.1.2-3_amd64.deb",
+          "bytes": 26344,
+          "sha256": "ecb8536f5fb34543b55bb9dc5f5b14c9dbb4150a7bddb3f2287b7cab6e9d25ef",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/46efd52e51c3e4ed033317620273ece367d4e700",
+            "https://deb.debian.org/debian/pool/main/libx/libxdmcp/libxdmcp6_1.1.2-3_amd64.deb"
+          ],
+          "package": "libxdmcp6",
+          "version": "1:1.1.2-3",
+          "architecture": "amd64",
+          "sourceDeclaration": "libxdmcp",
+          "packageRecordSha256": "a17a3a4788cf44d26a2573faa5fb45411528cd807184eee6d0fee0efb036b865",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libxml2_2.9.14+dfsg-1.3~deb12u6_amd64.deb",
+          "bytes": 688760,
+          "sha256": "4460e39dda10a815881374217cde08474747cfa018358cd8612c14b390eff53b",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/6a16bb0c777264fdbaef83273f581dc658af18ba",
+            "https://deb.debian.org/debian/pool/main/libx/libxml2/libxml2_2.9.14+dfsg-1.3~deb12u6_amd64.deb"
+          ],
+          "package": "libxml2",
+          "version": "2.9.14+dfsg-1.3~deb12u6",
+          "architecture": "amd64",
+          "sourceDeclaration": "libxml2",
+          "packageRecordSha256": "ee6a898fc5e859b60ec4fd6ddd29733887b839ae8d1c3fa691e72f9cde412929",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libxpm-dev_1%3a3.5.12-1.1+deb12u1_amd64.deb",
+          "bytes": 103912,
+          "sha256": "2e4a2f06a92f1c0f8ff6bd0da567819d56b1c5afd8e66f978b67eccd485a2b12",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/8c13601f7ab0cc09ba0f793c9a747dac77336e81",
+            "https://deb.debian.org/debian-security/pool/updates/main/libx/libxpm/libxpm-dev_3.5.12-1.1+deb12u1_amd64.deb"
+          ],
+          "package": "libxpm-dev",
+          "version": "1:3.5.12-1.1+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libxpm",
+          "packageRecordSha256": "a59a3e2741fa4a188f9452c657624700247cd548f676d55b3222b2ce6d4beab3",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libxpm4_1%3a3.5.12-1.1+deb12u1_amd64.deb",
+          "bytes": 48608,
+          "sha256": "505400598dcda712380f2e4a73b09b015a3fedf78bd874f6429622c448e249f9",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/8b2d218f6d2430bc99124e37d86e5079a0d69c9c",
+            "https://deb.debian.org/debian-security/pool/updates/main/libx/libxpm/libxpm4_3.5.12-1.1+deb12u1_amd64.deb"
+          ],
+          "package": "libxpm4",
+          "version": "1:3.5.12-1.1+deb12u1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libxpm",
+          "packageRecordSha256": "a3079a85ff12b062351cec291128bedab5302f6e4d4eb67458fb3c31510ee60b",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libyuv0_0.0~git20230123.b2528b0-1_amd64.deb",
+          "bytes": 168120,
+          "sha256": "48225793c486310600459d08a417dca0c28cbaf184047c09c82aff19107aa6f2",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/dc2a73281a33a0abbd332dbbe876c9558cc4361d",
+            "https://deb.debian.org/debian/pool/main/liby/libyuv/libyuv0_0.0~git20230123.b2528b0-1_amd64.deb"
+          ],
+          "package": "libyuv0",
+          "version": "0.0~git20230123.b2528b0-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "libyuv",
+          "packageRecordSha256": "59d79e979c58244dfcb2b9b22d6580674cf272b4707dc4f869e12bdc3f530e71",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/libzstd-dev_1.5.4+dfsg2-5_amd64.deb",
+          "bytes": 353844,
+          "sha256": "5d079cf5f96b724c97a611630ea428a1ebe793746db7bbf6e1455803b962b4ea",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/09f9ef5439452db9afeb0126c1402447720a118f",
+            "https://deb.debian.org/debian/pool/main/libz/libzstd/libzstd-dev_1.5.4+dfsg2-5_amd64.deb"
+          ],
+          "package": "libzstd-dev",
+          "version": "1.5.4+dfsg2-5",
+          "architecture": "amd64",
+          "sourceDeclaration": "libzstd",
+          "packageRecordSha256": "0544c5a56924136f00ed13d226af226dfc6bd35f82a91dce726e4b3d0ed26588",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/lock",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "kind": "locally-generated-empty-apt-lock"
+        },
+        {
+          "file": "apt-archives/glibc/man-db_2.11.2-2_amd64.deb",
+          "bytes": 1385848,
+          "sha256": "4134d16ea0233ebe78b2d1d271194fcf49a69eb2850421b0f3d76055e221fcea",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/da393c4270389130eb2d0c96cad67d3e448d620f",
+            "https://deb.debian.org/debian/pool/main/m/man-db/man-db_2.11.2-2_amd64.deb"
+          ],
+          "package": "man-db",
+          "version": "2.11.2-2",
+          "architecture": "amd64",
+          "sourceDeclaration": "man-db",
+          "packageRecordSha256": "233cb0e8fbd7f91e8ea38c81d1f6646f1efb8466870830366600e4edb55f7fd6",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/netbase_6.4_all.deb",
+          "bytes": 12800,
+          "sha256": "29b23c48c0fe6f878e56c5ddc9f65d1c05d729360f3690a593a8c795031cd867",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/38aa7bd1f2f7015c251713414ffe1ad5965678fd",
+            "https://deb.debian.org/debian/pool/main/n/netbase/netbase_6.4_all.deb"
+          ],
+          "package": "netbase",
+          "version": "6.4",
+          "architecture": "all",
+          "sourceDeclaration": "netbase",
+          "packageRecordSha256": "d704a8c581ea98560440d93820be38fe7d46e7ce6306a5b7b0e8297a9cdee429",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/po-debconf_1.0.21+nmu1_all.deb",
+          "bytes": 247668,
+          "sha256": "613e31942c17b582e8c76db1077240f177f2f67bad22e5f4f8e5bee523d6f54b",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/c985dc67d0596293d22a6c050b33fcb78d30326f",
+            "https://deb.debian.org/debian/pool/main/p/po-debconf/po-debconf_1.0.21+nmu1_all.deb"
+          ],
+          "package": "po-debconf",
+          "version": "1.0.21+nmu1",
+          "architecture": "all",
+          "sourceDeclaration": "po-debconf",
+          "packageRecordSha256": "e0af07d513a174c2e7f35cf0a074c371ac8d93eea14767ef3876c949dd318125",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/quilt_0.67+really0.66-1_all.deb",
+          "bytes": 303104,
+          "sha256": "a540ed782849c6f175eabc8551a5c365bfda1b7a52d836b7f0c7ef05ecccc4eb",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/3e7b41c755b5224005a9a57a34cda2cde3909bb8",
+            "https://deb.debian.org/debian/pool/main/q/quilt/quilt_0.67+really0.66-1_all.deb"
+          ],
+          "package": "quilt",
+          "version": "0.67+really0.66-1",
+          "architecture": "all",
+          "sourceDeclaration": "quilt",
+          "packageRecordSha256": "d9c9ac1bf6c6cb8fc607c27d5166d3afa23350bc1ed52ac06d9e54bafaf25258",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/rdfind_1.5.0-1.1+b1_amd64.deb",
+          "bytes": 41344,
+          "sha256": "b1ffdf155ff6fce499e228b5e601f915de0b4090dfbca687b630fe56e7e04422",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/09a889500eaf4ce3364dcd22198f041ca81fc36f",
+            "https://deb.debian.org/debian/pool/main/r/rdfind/rdfind_1.5.0-1.1+b1_amd64.deb"
+          ],
+          "package": "rdfind",
+          "version": "1.5.0-1.1+b1",
+          "architecture": "amd64",
+          "sourceDeclaration": "rdfind (1.5.0-1.1)",
+          "packageRecordSha256": "79c1e075dbff15b111368d78d464276951f35f36e97603d8c07bdbd25e41a22c",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/sensible-utils_0.0.17+nmu1_all.deb",
+          "bytes": 19020,
+          "sha256": "e0e66f783996ec4670ed5041c446160ec671c723d4be47d3bc27af93c2958a76",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/68c13e6034cda1cd2563c0ef93cda3fe8f493e45",
+            "https://deb.debian.org/debian/pool/main/s/sensible-utils/sensible-utils_0.0.17+nmu1_all.deb"
+          ],
+          "package": "sensible-utils",
+          "version": "0.0.17+nmu1",
+          "architecture": "all",
+          "sourceDeclaration": "sensible-utils",
+          "packageRecordSha256": "72fd443b401a6b01e920d54ea660f73d70dec239cc0c120216fdc46007695073",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/symlinks_1.4-4_amd64.deb",
+          "bytes": 11256,
+          "sha256": "40529e85c2981586f5ad9807e74d73d9fb0a1d517b4a32f37bc2d7944127765b",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/6f683727bb30f050f34b417bd92ffd56dfdf56a5",
+            "https://deb.debian.org/debian/pool/main/s/symlinks/symlinks_1.4-4_amd64.deb"
+          ],
+          "package": "symlinks",
+          "version": "1.4-4",
+          "architecture": "amd64",
+          "sourceDeclaration": "symlinks",
+          "packageRecordSha256": "3f841c52afcab69f78f0a4c4f20002d79317f9fe71c7bf1a4e71a2d49e4efb5d",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/uuid-dev_2.38.1-5+deb12u3_amd64.deb",
+          "bytes": 39972,
+          "sha256": "d66c5719adc05b6f5cbac926e093846c865f0b1a2095e6d781df8a7ce1f34cbf",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/ab8ae9ca8750ddb59b88b2edae60e0e02774a911",
+            "https://deb.debian.org/debian/pool/main/u/util-linux/uuid-dev_2.38.1-5+deb12u3_amd64.deb"
+          ],
+          "package": "uuid-dev",
+          "version": "2.38.1-5+deb12u3",
+          "architecture": "amd64",
+          "sourceDeclaration": "util-linux",
+          "packageRecordSha256": "9080abf1c5d08278fbb280a0442efef1ac7801319c52d719202efee62161e281",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/x11proto-dev_2022.1-1_all.deb",
+          "bytes": 598924,
+          "sha256": "3cab66a6591774188a568f9b54c4e7956f18da76e0e0fc4a779db5f6bcc3f148",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/c74c97a45aece8f62f809e62a652246bbf90d262",
+            "https://deb.debian.org/debian/pool/main/x/xorgproto/x11proto-dev_2022.1-1_all.deb"
+          ],
+          "package": "x11proto-dev",
+          "version": "2022.1-1",
+          "architecture": "all",
+          "sourceDeclaration": "xorgproto",
+          "packageRecordSha256": "6a2e68984cead88b09cb8f751832deab40f3fa7002cd21490eff5e5859dcbc88",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/xorg-sgml-doctools_1%3a1.11-1.1_all.deb",
+          "bytes": 22064,
+          "sha256": "168345058319094e475a87ace66f5fb6ae802109650ea8434d672117982b5d0a",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/d469d86db695296d17af345849d5aab2231290a4",
+            "https://deb.debian.org/debian/pool/main/x/xorg-sgml-doctools/xorg-sgml-doctools_1.11-1.1_all.deb"
+          ],
+          "package": "xorg-sgml-doctools",
+          "version": "1:1.11-1.1",
+          "architecture": "all",
+          "sourceDeclaration": "xorg-sgml-doctools",
+          "packageRecordSha256": "e77f27cbc232c93a02531405ab6ec26a4d15c2aecc1644d68f1213cd3993c969",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/xtrans-dev_1.4.0-1_all.deb",
+          "bytes": 98740,
+          "sha256": "9ce1af9464faee0c679348dd11cdf63934c12e734a64e0903692b0cb5af38e06",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/8a2f6eeedfdcb942de8ebc2495c055e9c2266080",
+            "https://deb.debian.org/debian/pool/main/x/xtrans/xtrans-dev_1.4.0-1_all.deb"
+          ],
+          "package": "xtrans-dev",
+          "version": "1.4.0-1",
+          "architecture": "all",
+          "sourceDeclaration": "xtrans",
+          "packageRecordSha256": "571d1963b2d77eb688b3688ac0a16703e853a95068ad0186fc41bf065321cb7b",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/xz-utils_5.4.1-1+deb12u2_amd64.deb",
+          "bytes": 471448,
+          "sha256": "f99fc3fe4b4e5baecf5fd8b53853a82e1e71cb5ec187b36b0ddcf227a8961c8f",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/a9a34d732df100e894ff6546da3bfe1656e69563",
+            "https://deb.debian.org/debian-security/pool/updates/main/x/xz-utils/xz-utils_5.4.1-1+deb12u2_amd64.deb"
+          ],
+          "package": "xz-utils",
+          "version": "5.4.1-1+deb12u2",
+          "architecture": "amd64",
+          "sourceDeclaration": "xz-utils",
+          "packageRecordSha256": "30690a45d6e9ca3b351f7f4bb289d77e9b6c0e99279d481ebbeca707db241c37",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-archives/glibc/zlib1g-dev_1%3a1.2.13.dfsg-1_amd64.deb",
+          "bytes": 916272,
+          "sha256": "f9ce531f60cbd5df37996af9370e0171be96902a17ec2bdbd8d62038c354094f",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/567a7afe8a9399ebe3668f97581311582ade6d6f",
+            "https://deb.debian.org/debian/pool/main/z/zlib/zlib1g-dev_1.2.13.dfsg-1_amd64.deb"
+          ],
+          "package": "zlib1g-dev",
+          "version": "1:1.2.13.dfsg-1",
+          "architecture": "amd64",
+          "sourceDeclaration": "zlib",
+          "packageRecordSha256": "fd4cd48eae0067574e53a8c0cacf993ba6f8120338202a09f147b8c5e56938f9",
+          "signedIndexFile": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "kind": "authenticated-package-archive"
+        },
+        {
+          "file": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_InRelease",
+          "bytes": 34770,
+          "sha256": "1a6375632d9d8cbfd9665858174b6abaf50e046eacfd15a160226c4ac2188af7"
+        },
+        {
+          "file": "apt-lists/deb.debian.org_debian-security_dists_bookworm-security_main_binary-amd64_Packages.lz4",
+          "bytes": 719305,
+          "sha256": "b6d3d934e5c9c0a6a94fa8b8fe73119c6f3ab45e79cdc65520b3d0f4bbd5550d"
+        },
+        {
+          "file": "apt-lists/deb.debian.org_debian_dists_bookworm-updates_InRelease",
+          "bytes": 55403,
+          "sha256": "f805c7af2f793f5647abb73884264b508089ae34310bba99da40b10cff275ede"
+        },
+        {
+          "file": "apt-lists/deb.debian.org_debian_dists_bookworm-updates_main_binary-amd64_Packages.lz4",
+          "bytes": 11648,
+          "sha256": "8ae7b65cb4858ac692572b6989be68da6505ae90fe4a3b4e0bf842d266209e53"
+        },
+        {
+          "file": "apt-lists/deb.debian.org_debian_dists_bookworm_InRelease",
+          "bytes": 151075,
+          "sha256": "77737fa4b34f2693e982cc9ee35736816c35a7778fc2d326cc1bbf5b301fe1aa"
+        },
+        {
+          "file": "apt-lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages.lz4",
+          "bytes": 18840233,
+          "sha256": "38163a87d0269f1af22bdddc092bf8e6c605f981642a09561e60565358f15e07"
+        },
+        {
+          "file": "apt-lists/lock",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "keyrings/debian-keyring.gpg",
+          "bytes": 28549145,
+          "sha256": "115140a66a82e8aff366b5f322e1b2ff0aea610b88b02474e1a27dcd600aabe5"
+        },
+        {
+          "file": "source/glibc/glibc_2.36-9+deb12u13.debian.tar.xz",
+          "bytes": 908524,
+          "sha256": "728086077548b13c37a348a99f74b9c7a437d6a8aed4aab5e2ed86b3a5ff6df6",
+          "kind": "original-source-archive",
+          "sourceUrls": [
+            "https://deb.debian.org/debian/pool/main/g/glibc/glibc_2.36-9+deb12u13.debian.tar.xz"
+          ]
+        },
+        {
+          "file": "source/glibc/glibc_2.36-9+deb12u13.dsc",
+          "bytes": 9765,
+          "sha256": "c034e180a28197c8a9d2b378bcf621d87766a49b3d1bb2d82cc25068ba398cac",
+          "kind": "signed-source-descriptor",
+          "sourceUrls": [
+            "https://deb.debian.org/debian/pool/main/g/glibc/glibc_2.36-9+deb12u13.dsc"
+          ]
+        },
+        {
+          "file": "source/glibc/glibc_2.36.orig.tar.xz",
+          "bytes": 19363988,
+          "sha256": "a543c02070d46ccaf866957efd13f10c924daa74c86a90a0254db09a92a708ee",
+          "sourceUrls": [
+            "https://snapshot.debian.org/file/d034128a6116dcf9e76c92f898ec63f4f4e65786",
+            "https://deb.debian.org/debian/pool/main/g/glibc/glibc_2.36.orig.tar.xz"
+          ],
+          "kind": "original-source-archive"
+        }
+      ],
+      "expectedInputs": 161,
+      "originalProducerRules": [
+        {
+          "archive": "glibc_2.36.orig.tar.xz",
+          "member": "glibc-2.36/Makeconfig",
+          "bytes": 52058,
+          "sha256": "f37dbaa8219318186156347bbec944eeb8153ed3c51edfe5a1a8bfb862a6886c",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36.orig.tar.xz",
+          "member": "glibc-2.36/INSTALL",
+          "bytes": 35595,
+          "sha256": "708bc5b8b741f7ad6137f4868a8121e3ef9c25ee7f807ef330d5224d263f176e",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/changelog",
+          "bytes": 886247,
+          "sha256": "37c9b25e9da1b5cff32a8924c25a29582b1ee361a0d1f26847013f3bc57cbae3",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/control",
+          "bytes": 59629,
+          "sha256": "d085faf9b93e2e171e534b7e96652a25700e0b4bd7402928dd04b807a94f6d20",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/patches/series",
+          "bytes": 3545,
+          "sha256": "7c4415bf7f12720ac79895ff050909846bf84872db86be4fd2114dbe2ab9512d",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/rules",
+          "bytes": 7285,
+          "sha256": "338013799d87178321015fbd1ccba88cbf37dc3c581849ed148f6fe5a1292920",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/rules.d/build.mk",
+          "bytes": 17814,
+          "sha256": "0cd02a77da6fd4d18003b2da8bdb987d5f42b86eb8fc02649c7e07b1f90b01f1",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/rules.d/control.mk",
+          "bytes": 2354,
+          "sha256": "06d1bfa23ae4cc109b270f1f4d6546d11389c976a311360cb7f9c3892a6ef853",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/rules.d/debhelper.mk",
+          "bytes": 8702,
+          "sha256": "729a8025ff3dba73b4033ffead52ab050cd6ccdfe1fd0785049b92133d9633c8",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/rules.d/info.mk",
+          "bytes": 298,
+          "sha256": "8f209cab540c375b684ec17dd525bf17a795ad2c0ee53749cbc00b37b656e63f",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/rules.d/quilt.mk",
+          "bytes": 1289,
+          "sha256": "276c2718a4a14a545134d7aa819d270cbf6342e17b3e4bd7f077af2d67a39ae1",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/rules.d/tarball.mk",
+          "bytes": 1065,
+          "sha256": "653169d1003529ef4ba495d70054729c5b753c9dfcd64b5f240af50fe1418c25",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/alpha.mk",
+          "bytes": 418,
+          "sha256": "1ba4785831cdaa833193006b0d434d9a7ff93f4253266fca74b6ff1299b41e2a",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/amd64.mk",
+          "bytes": 1622,
+          "sha256": "0764a610656e5dd4cc2cad71207d36739f6355eff75055fd174529bbc056a8f0",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/arm64.mk",
+          "bytes": 108,
+          "sha256": "fc29262da66e13b6eff6d433aaa91397adb94f2b41611e0da8466e14cd0e6075",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/armel.mk",
+          "bytes": 1092,
+          "sha256": "e17f286adbc1d113a8ca2a6bb51f9fb53967ba16cac0d563851b718f533a8df5",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/armhf.mk",
+          "bytes": 858,
+          "sha256": "e261676cc8cd31d7eab20c7d6ee456c490b84740e686388d01276f66e136798f",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/hppa.mk",
+          "bytes": 488,
+          "sha256": "e9d89c3685c28b3bf30391e766540a678663d7d79b8089535f280910c5c271f9",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/hurd-i386.mk",
+          "bytes": 378,
+          "sha256": "54647921135a1285f812157510404458b70841ad1acf9f34848dfa92c8d4f64d",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/hurd.mk",
+          "bytes": 1354,
+          "sha256": "011db4fd7335a57aa237494faf942d4cd5ed894d6f10c3828aa2a79512af35c1",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/i386.mk",
+          "bytes": 1846,
+          "sha256": "78d74be20b7f324fc22988c40408137af64ebbaca6c809ce6bc386f64bbbc047",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/ia64.mk",
+          "bytes": 56,
+          "sha256": "861fa8bd97c4eab0e00d508cd918b65390b77ce1ed920eee01189d4bb513ce3c",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/kfreebsd-amd64.mk",
+          "bytes": 939,
+          "sha256": "b2a6f2164c98ab90a501ab49155ea4789797f4a980f36ad56c0066cb97f52403",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/kfreebsd.mk",
+          "bytes": 2524,
+          "sha256": "2a860e3f5706fc54d567916710d879b43b4b7538660c0f462d67112fef05bac6",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/linux.mk",
+          "bytes": 2239,
+          "sha256": "8cca2c0d32c619b9204e39c6fbd082ee8f6e6e507a130fa951668284240d0c65",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/loong64.mk",
+          "bytes": 122,
+          "sha256": "902dca799f8dbdbb76b23359fce57c52717ed41c90302f1af792e59e94b94a78",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mips.mk",
+          "bytes": 1621,
+          "sha256": "808b8c73e2b85192ffbd33ba8a9d0731bf504a7b41318818ddfe582985bd319a",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mips64.mk",
+          "bytes": 1532,
+          "sha256": "8d9b418c8b0f3c68acae0ff526ae145efc3ba99be4233e35178ae5ab326e8ba6",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mips64el.mk",
+          "bytes": 1544,
+          "sha256": "6f2ce78b5b1543e8491de746ffe72a40ef120d388df916e98fdbeb9cdf4b2234",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mips64r6.mk",
+          "bytes": 1584,
+          "sha256": "29a145b9ac4598d7db139443d214f443c79d619ec17623830f7504c2ea9a748c",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mips64r6el.mk",
+          "bytes": 1596,
+          "sha256": "bf73ef14dfe32bf96e88d298168afe6ae4a1086621ab0c382acb6443284c1e32",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mipsel.mk",
+          "bytes": 1633,
+          "sha256": "0c9723d352d6ff9a6df3263fe82d128b43b0885251336422bd9abfd7ab1b151a",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mipsn32.mk",
+          "bytes": 1510,
+          "sha256": "dacadc29e34f5ddbfc2683036158382e65649727fb6ec9ed8fbdc3d7263edafc",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mipsn32el.mk",
+          "bytes": 1522,
+          "sha256": "7232a2ab4c6b4cd7c0e7e58a20cb8573719f7715b6f2baa41734b97a9b88a5ec",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mipsn32r6.mk",
+          "bytes": 1562,
+          "sha256": "88af22e932403ce8a039ff8b40f2fae432c7c053cb661e00e9c676accabf58a1",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mipsn32r6el.mk",
+          "bytes": 1574,
+          "sha256": "28992aece32bb8340e150fdec10a8539b9d0770ebdebdf83aa43d3a670df699e",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mipsr6.mk",
+          "bytes": 1679,
+          "sha256": "8134c6a8fc4b37851d317692100ffc330f606a12a016a49a26c25903db8784f9",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/mipsr6el.mk",
+          "bytes": 1691,
+          "sha256": "f8151ff6e8ea420cd8f9db6f2aa5bf3f15c015364695cbad72c86311863be39b",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/powerpc.mk",
+          "bytes": 861,
+          "sha256": "4a8b21c446a408d32cfa6ee1ead46a5970da535b2ac5c42fb4bd721194ddcdf2",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/ppc64.mk",
+          "bytes": 906,
+          "sha256": "82da8cbc730bd55b2334cbe5a47a31d84c494830cb6a6b0c932809fa8603bf37",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/ppc64el.mk",
+          "bytes": 140,
+          "sha256": "5c2e8f480aa97e7ddfa09013bd4504d03759d3e43c0821c6cb76fdcac62b802d",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/riscv64.mk",
+          "bytes": 69,
+          "sha256": "dc80d9cce6a91a75d3d18a9fa4c1ee93a898a38e8c1734f73b1c880bd36c48d5",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/s390x.mk",
+          "bytes": 806,
+          "sha256": "392a8f8e06f6e6ec8235009694b0317bc854bdb432b773fbc141342e682bbc9e",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/sh3.mk",
+          "bytes": 427,
+          "sha256": "4e09886b588b429a8c386b3d7a128c79be50849f45c543da3e6e630bf7de1523",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/sh4.mk",
+          "bytes": 427,
+          "sha256": "4e09886b588b429a8c386b3d7a128c79be50849f45c543da3e6e630bf7de1523",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/sparc.mk",
+          "bytes": 940,
+          "sha256": "55aacffe53d8e8c1ecea5c75a8bbf80108c60c68dc6f90fbaa80b6ca9cd8b3e8",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/sparc64.mk",
+          "bytes": 1056,
+          "sha256": "2c921339f22f3fc71e849b321dcd92c212c49343b5041031c8a7ee9c60418b26",
+          "kind": "rule"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/sysdeps/x32.mk",
+          "bytes": 1681,
+          "sha256": "3b4328813c740ae8215e6a80ad2d28f39f5a66092edc4db9f2e6b82f8c2f20dd",
+          "kind": "rule"
+        }
+      ],
+      "capturedOriginalNotices": [
+        {
+          "archive": "glibc_2.36.orig.tar.xz",
+          "member": "glibc-2.36/posix/rxspencer/COPYRIGHT",
+          "bytes": 956,
+          "sha256": "66994e75c03e014b084b4f4fdca49f37882bb3da8b0736b237c074c33d4b212a",
+          "kind": "notice"
+        },
+        {
+          "archive": "glibc_2.36.orig.tar.xz",
+          "member": "glibc-2.36/localedata/unicode-gen/unicode-license.txt",
+          "bytes": 2933,
+          "sha256": "72a95a3930bf6fc1961c08c3011321d294c5d9ee9c5d10b535c1afca15287fba",
+          "kind": "notice"
+        },
+        {
+          "archive": "glibc_2.36.orig.tar.xz",
+          "member": "glibc-2.36/COPYING",
+          "bytes": 18092,
+          "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+          "kind": "notice"
+        },
+        {
+          "archive": "glibc_2.36.orig.tar.xz",
+          "member": "glibc-2.36/COPYING.LIB",
+          "bytes": 26530,
+          "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+          "kind": "notice"
+        },
+        {
+          "archive": "glibc_2.36-9+deb12u13.debian.tar.xz",
+          "member": "debian/copyright",
+          "bytes": 25467,
+          "sha256": "40c7e1f2118531f038ca22999bd976901254e1bc5cd1b0f0211bdd064c599987",
+          "kind": "notice"
+        }
+      ],
+      "noticeCaptureIsExhaustive": false,
+      "sourceDescriptorSigner": null,
+      "sourceSignerKeyringSha256": "115140a66a82e8aff366b5f322e1b2ff0aea610b88b02474e1a27dcd600aabe5",
+      "sourceFilesPatched": false,
+      "originalBuildChecksDisabled": false,
+      "originalDefaultTargetsDisabled": false,
+      "inputAuthenticationDisabled": false,
+      "sourceBuildQualified": false,
+      "completeOriginalNoticeClosureVerified": false,
+      "historicalPublisherConsumptionVerified": false,
+      "gateAComplete": false,
+      "freshSourceDescriptorSignatureVerified": false,
+      "reusedBootstrapInputProfile": "original-debian-glibc-2.36-9+deb12u14-build-v1",
+      "historicalPrivateInputReplayVerified": false
     }
   }
 }

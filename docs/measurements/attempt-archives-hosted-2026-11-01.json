@@ -1,0 +1,425 @@
+{
+  "schemaVersion": 1,
+  "state": "historical-hosted-measurement-qualified-only-at-recorded-source",
+  "sourceHead": "c25abae082ab0d33f673b41a61b9d1c7b2c34708",
+  "hostedActualCheckout": "cd2f7147d86e04f14d60888522264ed5474d1695",
+  "hostedGitTree": "86acdc69e12d97d0c26822b2d96391d845fbecbb",
+  "sourceCommitIdentityClaimedEqual": false,
+  "run": 41228582798,
+  "aggregateAttempt": 2,
+  "compiledEngineTreeSha256": "43d38e516cc7df5504477d2b5ab20f2c7a06ea0a8f585d884f5422f088b3fd2e",
+  "newExecutionPerformed": false,
+  "newHttpPerformed": false,
+  "gateAComplete": false,
+  "producerBuildClosureVerified": false,
+  "licenseClosureVerified": false,
+  "licensedCohortAdmitted": false,
+  "independentEvaluationProtocolPromoted": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "profile": "attempt-archives",
+  "runtimeSlots": [
+    {
+      "slot": "windows-node22",
+      "selectedRuntime": {
+        "id": "windows-node22",
+        "platform": "win32",
+        "architecture": "x64",
+        "osFamily": "Windows Server 2025",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "job": 124640791130,
+      "rawLogSha256": "4fef51d0004d087d71fa87196330a652b5764de277d1250d2df486aee87d24d8",
+      "counts": {
+        "source": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 44,
+            "passed": 44,
+            "complete": true
+          }
+        },
+        "installed": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 44,
+            "passed": 44,
+            "complete": true
+          }
+        }
+      },
+      "foundationExclusions": [
+        {
+          "file": "dist/test/native-invoke.test.js",
+          "name": "native invocation closes ordinary descendants retaining output pipes after root exit without inventing a successful timeout",
+          "reason": "POSIX descendant ownership requires a native POSIX runtime"
+        }
+      ],
+      "harnessSha256": "2450a07409fd33db8a19c7fa150ffa293363d76b203406fd1edba26d80538f2f",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "1cafbc99926187db1085eacf4367a79a424b906dc6b9587d93ed026bc4512ee1",
+      "packedArchiveSha256": "eb666e3df89ea50b15fa254367eb78f4cd3512f1115df3518102b40850647054",
+      "productionDependencyLockSha256": "dd595ccfa7ff341e58a63de7509a1794650a2727873277366df6bccb67d4ddcb",
+      "nodeExecutableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+      "goExecutableSha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+    },
+    {
+      "slot": "ci-macos-node24",
+      "selectedRuntime": {
+        "id": "ci-macos-node24",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "24.20.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "job": 124640791023,
+      "rawLogSha256": "8a49ce3655a3401238a93dc52805bef912edc50d906c67df2bb9d7c4b5c4010f",
+      "counts": {
+        "source": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        },
+        "installed": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "2450a07409fd33db8a19c7fa150ffa293363d76b203406fd1edba26d80538f2f",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "1cafbc99926187db1085eacf4367a79a424b906dc6b9587d93ed026bc4512ee1",
+      "packedArchiveSha256": "eb666e3df89ea50b15fa254367eb78f4cd3512f1115df3518102b40850647054",
+      "productionDependencyLockSha256": "d0bfe132784f6a9e0b08f81b0670b74a2d49767d61c607ac8df915dd321c095f",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "goExecutableSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598"
+    },
+    {
+      "slot": "ci-macos-node26",
+      "selectedRuntime": {
+        "id": "ci-macos-node26",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "26.9.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "job": 124640790997,
+      "rawLogSha256": "11fae55567372bf3119c4c19d28791668740e37cdf8778bf0b6834a3e1b4c764",
+      "counts": {
+        "source": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        },
+        "installed": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "2450a07409fd33db8a19c7fa150ffa293363d76b203406fd1edba26d80538f2f",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "1cafbc99926187db1085eacf4367a79a424b906dc6b9587d93ed026bc4512ee1",
+      "packedArchiveSha256": "eb666e3df89ea50b15fa254367eb78f4cd3512f1115df3518102b40850647054",
+      "productionDependencyLockSha256": "d192fb01ab3e844345948ae8201055d2f068031092563df756021fa78d5afb0f",
+      "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+      "goExecutableSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598"
+    },
+    {
+      "slot": "ci-macos-node22",
+      "selectedRuntime": {
+        "id": "ci-macos-node22",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "job": 124640790643,
+      "rawLogSha256": "7483d30a8f2ec716683b117a6081e4d5b4ba36e538ff08c802334307a17049b2",
+      "counts": {
+        "source": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        },
+        "installed": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "2450a07409fd33db8a19c7fa150ffa293363d76b203406fd1edba26d80538f2f",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "1cafbc99926187db1085eacf4367a79a424b906dc6b9587d93ed026bc4512ee1",
+      "packedArchiveSha256": "eb666e3df89ea50b15fa254367eb78f4cd3512f1115df3518102b40850647054",
+      "productionDependencyLockSha256": "31b9943a5f6118b222c4dbeb1f467fcf2db002cbc66168bd88b01961b1e1a0ea",
+      "nodeExecutableSha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+      "goExecutableSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598"
+    },
+    {
+      "slot": "ci-linux-node26",
+      "selectedRuntime": {
+        "id": "ci-linux-node26",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "26.10.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "job": 124640790607,
+      "rawLogSha256": "a9d8b1f09f733848edaf6851a890744257e60ea070cae5e99f90c3255b263676",
+      "counts": {
+        "source": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        },
+        "installed": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "2450a07409fd33db8a19c7fa150ffa293363d76b203406fd1edba26d80538f2f",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "1cafbc99926187db1085eacf4367a79a424b906dc6b9587d93ed026bc4512ee1",
+      "packedArchiveSha256": "eb666e3df89ea50b15fa254367eb78f4cd3512f1115df3518102b40850647054",
+      "productionDependencyLockSha256": "f3fbd659d52cd2f2572109a6809490b941840bf896b76fc32f42123cfc4a8fb9",
+      "nodeExecutableSha256": "ab9c8eecf9f82d6693cdc3accced17034065c8d96213b0aa76a7e803d20ae1da",
+      "goExecutableSha256": "30969f97169d7f43fe6a085873d75613adc21e30818a8c61d95bd27275df4624"
+    },
+    {
+      "slot": "ci-linux-node24",
+      "selectedRuntime": {
+        "id": "ci-linux-node24",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "24.21.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "job": 124640790431,
+      "rawLogSha256": "272851791147e403a2ce2273d5fa9af560863897aab02a5403d43b9866fd228a",
+      "counts": {
+        "source": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        },
+        "installed": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "2450a07409fd33db8a19c7fa150ffa293363d76b203406fd1edba26d80538f2f",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "1cafbc99926187db1085eacf4367a79a424b906dc6b9587d93ed026bc4512ee1",
+      "packedArchiveSha256": "eb666e3df89ea50b15fa254367eb78f4cd3512f1115df3518102b40850647054",
+      "productionDependencyLockSha256": "e988276438be70c5e39b9c5199231f96422e86c1de52688e75ee72b0cb177a7e",
+      "nodeExecutableSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "goExecutableSha256": "30969f97169d7f43fe6a085873d75613adc21e30818a8c61d95bd27275df4624"
+    },
+    {
+      "slot": "ci-linux-node22",
+      "selectedRuntime": {
+        "id": "ci-linux-node22",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "job": 124640790352,
+      "rawLogSha256": "9d2aab05b698e0dd32cdd0e3a16cf1e516f0b1c90ffc1878867dbb992f61aa63",
+      "counts": {
+        "source": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        },
+        "installed": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "2450a07409fd33db8a19c7fa150ffa293363d76b203406fd1edba26d80538f2f",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "1cafbc99926187db1085eacf4367a79a424b906dc6b9587d93ed026bc4512ee1",
+      "packedArchiveSha256": "eb666e3df89ea50b15fa254367eb78f4cd3512f1115df3518102b40850647054",
+      "productionDependencyLockSha256": "4b4f4ecba2f4a5199e1056439e815cfa3ede765a79aea50eaeaf726307db1c1d",
+      "nodeExecutableSha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
+      "goExecutableSha256": "30969f97169d7f43fe6a085873d75613adc21e30818a8c61d95bd27275df4624"
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "selectedRuntime": {
+        "id": "native-linux-arm64-node22",
+        "platform": "linux",
+        "architecture": "arm64",
+        "node": "22.23.2",
+        "exactOsImageIdentityRequired": true
+      },
+      "job": 124640790235,
+      "rawLogSha256": "cc0d784dc513205e0ad362aa4c6bafb214767c7b6ad5f68a87f3c8f89349b823",
+      "counts": {
+        "source": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        },
+        "installed": {
+          "profileEvidence": {
+            "required": 9,
+            "passed": 9,
+            "complete": true
+          },
+          "foundationEvidence": {
+            "required": 45,
+            "passed": 45,
+            "complete": true
+          }
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "2450a07409fd33db8a19c7fa150ffa293363d76b203406fd1edba26d80538f2f",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "1cafbc99926187db1085eacf4367a79a424b906dc6b9587d93ed026bc4512ee1",
+      "packedArchiveSha256": "eb666e3df89ea50b15fa254367eb78f4cd3512f1115df3518102b40850647054",
+      "productionDependencyLockSha256": "078e8f8106ee624b88cc199ee31557876f7dd5e2f0307d9c8dc92f971894f4b8",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "goExecutableSha256": "1675694ef690db0f18fbe7046a886170904bede1d9db6ec96ae27945c1705c64"
+    }
+  ],
+  "directlyRetainedProfileCallbacks": 144,
+  "directlyRetainedFoundationCallbacks": 718,
+  "foundationExclusionNote": "Windows excludes the sole ordinary POSIX descendant case;44 required Windows controls remain passed. Seven POSIX slots retain45.",
+  "existingQualificationMechanism": "Existing inspect-ci.py exact ledger/file-hash/runtime/install qualification; no new collector or rerun required.",
+  "allEightRuntimeBindingsPresent": true,
+  "limits": [
+    "No host attestation",
+    "No complete upstream producer or license closure",
+    "Scripted API controls do not claim live provider/model usage",
+    "External host AI usage remains unknown"
+  ],
+  "retainedQualificationMetadataSha256": "83d926f02b348110b5cb2ca6239ed87137689c1af2e263bd0a061ae2fb08d20e",
+  "publicationScope": {
+    "recordedSourceAndHarnessOnly": true,
+    "freshMainBeforeFollowup": "79bfc9192a31bc91c4a3c34d306ba2dc5bda1b7e",
+    "freshMainTreeWasByteIdenticalToRecordedSource": true,
+    "followupChangesHarness": true,
+    "changedHeadNativeQualificationVerified": false,
+    "currentProfileAcceptanceState": "not-measured",
+    "rawConsumerRuntimeCallbackEventsIndependentlyInspected": false
+  }
+}
