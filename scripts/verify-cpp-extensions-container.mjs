@@ -1,3 +1,9 @@
+import {
+  inspectSelectedClangConsumerWitnesses,
+  selectedClangControllerBinding,
+  requireSelectedClangConsumerWitnesses,
+  persistSelectedClangConsumerPacket,
+} from "./selected-clang-consumer-witness.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -25,6 +31,7 @@ const [image] = JSON.parse(
   }),
 );
 assert.equal(image.Config.Labels["checktrail.task"], prepared.task);
+assert.equal(image.Id, prepared.image);
 const cache = execFileSync("npm", ["config", "get", "cache"], {
   encoding: "utf8",
 }).trim();
@@ -72,11 +79,11 @@ const started = performance.now(),
       "utf8",
     ),
   );
-const run = (command) =>
+const run = (command, maxBuffer = 16 * 1048576) =>
   execFileSync("docker", [...base, "sh", "-c", command], {
     encoding: "utf8",
     timeout: 1200000,
-    maxBuffer: 16 * 1048576,
+    maxBuffer,
   });
 const measured = (name, fn) => {
   process.stderr.write(JSON.stringify({ stage: name }) + "\n");
@@ -144,21 +151,63 @@ if (phase === "all" || phase === "acceptance")
     "source-and-fresh-production-installation",
     () => {
       const lines = run(
-        "set -eu; node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache; CHECKTRAIL_CPP_EXTENSIONS_INSTALL_RECEIPT=/tmp/installed.json node scripts/verify-required-native-tests.mjs cpp-extensions; cat /tmp/installed.json",
+        "set -eu; node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache; CHECKTRAIL_CPP_EXTENSIONS_INSTALL_RECEIPT=/tmp/installed.json node scripts/verify-selected-clang-consumers.mjs; cat /tmp/installed.json",
+        288 * 1048576,
       )
         .trim()
         .split("\n");
       assert.equal(lines.length, 3);
       const cache = JSON.parse(lines[0]),
-        source = JSON.parse(lines[1]),
+        consumerWitnesses = JSON.parse(lines[1]),
+        source = consumerWitnesses.evidence,
         installed = JSON.parse(lines[2]);
       complete(source, "cpp-extensions");
       complete(installed.profile, "cpp-extensions");
       assert.equal(installed.offlineProductionInstall, true);
       assert.equal(installed.harnessOutsideInstalledPackage, true);
-      return { cache, source, installed };
+      return { cache, source, installed, consumerWitnesses };
     },
   );
+if (result.acceptance) {
+  const runtime = JSON.parse(
+    execFileSync(
+      "docker",
+      [
+        ...base,
+        "node",
+        "--input-type=module",
+        "-e",
+        "import{readFileSync}from'node:fs';import{createHash}from'node:crypto';console.log(JSON.stringify({node:process.versions.node,platform:process.platform,architecture:process.arch,nodeSha256:createHash('sha256').update(readFileSync(process.execPath)).digest('hex')}));",
+      ],
+      { encoding: "utf8", timeout: 30000, maxBuffer: 1048576 },
+    ),
+  );
+  const binding = await selectedClangControllerBinding(
+    root,
+    image.Id,
+    prepared,
+    runtime,
+  );
+  const coverage = await inspectSelectedClangConsumerWitnesses(
+    result.acceptance.consumerWitnesses,
+    binding,
+  );
+  requireSelectedClangConsumerWitnesses(coverage);
+  const retainedReceipt = await persistSelectedClangConsumerPacket({
+    ...result.acceptance.consumerWitnesses,
+    binding,
+    coverage,
+  });
+  result.acceptance.consumerWitnesses = {
+    profile: result.acceptance.consumerWitnesses.profile,
+    binding,
+    coverage,
+    retainedReceipt,
+    wholeRuntimeClosureVerified: false,
+    hostAttestationPerformed: false,
+    gateAComplete: false,
+  };
+}
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 const controls = JSON.parse(
   await readFile(

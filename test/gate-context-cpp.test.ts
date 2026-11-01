@@ -29,6 +29,15 @@ import { runProcess } from "../src/runner.js";
 import { fixture } from "./helpers.js";
 import { fixtureGit, syntheticCommit } from "./git-fixture.js";
 import { cppBoundariesFixture } from "./review-cpp-boundaries-fixture.js";
+import {
+  beginConsumerWitness,
+  bindConsumerWitnessExecutable,
+  bindConsumerWitnessCompiler,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerCapture,
+  type ConsumerVariant,
+} from "./consumer-witness-fixture.js";
 const prefix =
   "value[0]=='g' && value[1]=='r' && value[2]=='a' && value[3]=='n' && value[4]=='t'";
 const broken =
@@ -92,12 +101,17 @@ async function original(t: TestContext, policy = broken) {
   const context = await createReviewContext(root, input());
   return { root, context, result: analysis(context) };
 }
-async function compile(root: string, source: string, name = "witness") {
+async function compile(
+  root: string,
+  source: string,
+  name = "witness",
+  capture: ConsumerCapture | null = null,
+) {
   await writeFile(path.join(root, name + ".cpp"), source);
   const result = await runProcess(
     root,
     {
-      executable: "g++",
+      executable: capture?.executable ?? "g++",
       args: [
         "-std=c++20",
         "-Wall",
@@ -111,8 +125,10 @@ async function compile(root: string, source: string, name = "witness") {
       ],
       cwd: ".",
     },
-    { timeoutMs: 30000, maxOutputBytes: 65536 },
+    { timeoutMs: 30000, maxOutputBytes: 65536, captureRawOutput: true },
   );
+  await recordConsumerWitnessAttempt(capture, result, "compiler");
+  bindConsumerWitnessCompiler(capture, result);
   assert.equal(result.exitCode, 0, result.stdout + result.stderr);
   assert.equal(result.errorCode, undefined);
   assert.equal(result.cancelled, false);
@@ -120,28 +136,33 @@ async function compile(root: string, source: string, name = "witness") {
   assert.equal(result.truncated, false);
   return path.join(root, name);
 }
-async function witness(root: string) {
+async function witness(root: string, variant: ConsumerVariant) {
+  const capture = await beginConsumerWitness(root, "cpp", variant);
   const executable = await compile(
     root,
-    '#include <stdio.h>\n#include "src/consumer/use.cpp"\nint main(void){const char *values[]={"grant:read","grantToken","grant2","other","grant","grant:write","g"};for(int i=0;i<7;i++)printf("%d\\n",Decision(values[i]));printf("%d\\n%d\\n",Submit(),Route());return LIMIT==5?0:1;}\n',
+    '#include <stdio.h>\n#include "src/consumer/use.cpp"\nstatic int PrintSource(const char *filename){\n FILE *source=fopen(filename,"rb");\n if(!source)return 2;\n int first=1;\n int byte;\n while((byte=fgetc(source))!=EOF){\n  if(!first)printf(",");\n  printf("%d",byte);\n  first=0;\n }\n int failed=ferror(source);\n if(fclose(source)!=0)failed=1;\n return failed?3:0;\n}\nint main(void){\n const char *values[]={"grant:read","grantToken","grant2","other","grant","grant:write","g"};\n const char *sources[]={"src/policy/rules.h","src/consumer/use.cpp"};\n printf("{\\"cases\\":[");\n for(int i=0;i<7;i++){\n  if(i)printf(",");\n  printf("%s",Decision(values[i])?"true":"false");\n }\n printf("],\\"consumers\\":[%s,%s],\\"sources\\":{",Submit()?"true":"false",Route()?"true":"false");\n for(int i=0;i<2;i++){\n  if(i)printf(",");\n  printf("\\"%s\\":[",sources[i]);\n  if(PrintSource(sources[i])!=0)return 3;\n  printf("]");\n }\n printf("}}\\n");\n return LIMIT==5?0:1;\n}\n',
+    "witness",
+    capture,
   );
   try {
+    await bindConsumerWitnessExecutable(capture, executable);
     const result = await runProcess(
       root,
       { executable, args: [], cwd: "." },
-      { timeoutMs: 10000, maxOutputBytes: 65536 },
+      { timeoutMs: 10000, maxOutputBytes: 65536, captureRawOutput: true },
     );
+    await recordConsumerWitnessAttempt(capture, result);
     assert.equal(result.exitCode, 0, result.stderr);
     assert.equal(result.errorCode, undefined);
     assert.equal(result.truncated, false);
     assert.equal(result.timedOut, false);
-    return result.stdout
-      .trim()
-      .split("\n")
-      .map((value) => {
-        assert.ok(value === "0" || value === "1");
-        return value === "1";
-      });
+    await finishConsumerWitness(capture, result);
+    const observed = JSON.parse(result.stdout);
+    assert.equal(observed.cases.length, 7);
+    assert.equal(observed.consumers.length, 2);
+    const answers = [...observed.cases, ...observed.consumers];
+    assert.ok(answers.every((value) => typeof value === "boolean"));
+    return answers;
   } finally {
     await rm(executable, { force: true });
     await rm(path.join(root, "witness.cpp"), { force: true });
@@ -183,7 +204,7 @@ function bindings(value: ReturnType<typeof analysis>) {
 test("context-cpp broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "broken"), [
     true,
     true,
     true,
@@ -260,7 +281,7 @@ test("context-cpp broken acceptance", native, async (t) => {
 test("context-cpp fixed acceptance", native, async (t) => {
   const { root, context, result } = await original(t, fixed);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "fixed"), [
     true,
     false,
     false,
@@ -294,7 +315,7 @@ test("context-cpp fixed acceptance", native, async (t) => {
 test("context-cpp near-miss acceptance", native, async (t) => {
   const { root, result } = await original(t, near);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "near-miss"), [
     true,
     false,
     false,

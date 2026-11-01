@@ -4,6 +4,7 @@ on:
   push:
     branches-ignore:
       - "pr/**"
+      - "agent/**"
       - "dependabot/**"
       - "fix/**"
     tags:
@@ -167,10 +168,13 @@ jobs:
         if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory selected-artifact-evidence probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings consumer-impact consumer-runtime-bindings consumer-foundation-bindings attempt-archives attempt-runtime-bindings attempt-foundation-bindings
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory selected-artifact-evidence probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings consumer-impact consumer-runtime-bindings consumer-foundation-bindings attempt-archives attempt-runtime-bindings attempt-foundation-bindings consumer-witness-bindings evaluation-protocol-declarations evaluation-protocol-metering evaluation-capture-declarations evaluation-physical-captures evaluation-independent-judging evaluation-common-matching independent-evaluation-protocol evaluation-runtime-bindings
           node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
         if: env.CHECKTRAIL_CI_MODE == 'full'
+      - name: Verify fresh installed external usage intake
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+        run: node scripts/verify-evaluation-protocol-package.mjs --metering
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
       - run: node scripts/audit-context-grammars.mjs
@@ -1053,6 +1057,9 @@ jobs:
     timeout-minutes: 15
     env:
       CHECKTRAIL_TEST_TASK: ci-javascript-extensions
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -1061,6 +1068,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - name: Derive exact locked native acceptance tools
@@ -1072,7 +1082,37 @@ jobs:
         run: docker run --rm --mount "type=bind,src=$PWD/.checktrail/javascript-tools,target=/tools" --workdir /tools docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
       - run: node scripts/prepare-package-cache.mjs
       - name: Require native source, compiling controls and fresh offline installed acceptance
-        run: node scripts/verify-javascript-extensions-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs javascript-extensions native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-javascript-extensions-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-javascript-extensions-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-javascript-extensions-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   laravel-assembly-arm64:
     needs: [ci-plan, actionlint]
@@ -1347,6 +1387,9 @@ jobs:
         phase: [baseline, acceptance, guards-1, guards-2]
     env:
       CHECKTRAIL_TEST_TASK: ci-cpp-extensions-${{ matrix.phase }}
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -1355,14 +1398,54 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        if: matrix.phase == 'acceptance'
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-cpp-extensions-runtime.mjs
       - run: node scripts/prepare-package-cache.mjs
       - name: Require native originals, paired controls and fresh offline installed acceptance
+        if: matrix.phase != 'acceptance'
         run: node scripts/verify-cpp-extensions-container.mjs ${{ matrix.phase }}
+      - name: Reconcile selected Clang source and fresh consumer witnesses
+        if: matrix.phase == 'acceptance'
+        run: node scripts/verify-consumer-native-acceptance.mjs selected-clang native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
       - if: always()
         run: node scripts/cleanup-cpp-tools-runtime.mjs
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-cpp-extensions-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        if: matrix.phase == 'acceptance'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-cpp-extensions-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        if: matrix.phase == 'acceptance'
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-cpp-extensions-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   cpp-tools:
     needs: [ci-plan, actionlint]
@@ -1647,6 +1730,21 @@ jobs:
             node: "22.23.3"
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.slot == 'windows-node22' && 45 || 30 }}
+    outputs:
+      native_start_ci_linux_node22: ${{ steps.native-start.outputs.native_start_ci_linux_node22 }}
+      native_finish_ci_linux_node22: ${{ steps.native-finish.outputs.native_finish_ci_linux_node22 }}
+      native_start_ci_linux_node24: ${{ steps.native-start.outputs.native_start_ci_linux_node24 }}
+      native_finish_ci_linux_node24: ${{ steps.native-finish.outputs.native_finish_ci_linux_node24 }}
+      native_start_ci_linux_node26: ${{ steps.native-start.outputs.native_start_ci_linux_node26 }}
+      native_finish_ci_linux_node26: ${{ steps.native-finish.outputs.native_finish_ci_linux_node26 }}
+      native_start_ci_macos_node22: ${{ steps.native-start.outputs.native_start_ci_macos_node22 }}
+      native_finish_ci_macos_node22: ${{ steps.native-finish.outputs.native_finish_ci_macos_node22 }}
+      native_start_ci_macos_node24: ${{ steps.native-start.outputs.native_start_ci_macos_node24 }}
+      native_finish_ci_macos_node24: ${{ steps.native-finish.outputs.native_finish_ci_macos_node24 }}
+      native_start_ci_macos_node26: ${{ steps.native-start.outputs.native_start_ci_macos_node26 }}
+      native_finish_ci_macos_node26: ${{ steps.native-finish.outputs.native_finish_ci_macos_node26 }}
+      native_start_windows_node22: ${{ steps.native-start.outputs.native_start_windows_node22 }}
+      native_finish_windows_node22: ${{ steps.native-finish.outputs.native_finish_windows_node22 }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -1655,6 +1753,10 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        if: matrix.consumer
+        run: node scripts/consumer-native-job-claims.mjs start ${{ matrix.slot }}
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run build
@@ -1677,17 +1779,61 @@ jobs:
         run: |
           node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings &&
           node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}
+      - name: Require literal native Windows private access batches
+        if: matrix.core && matrix.slot == 'windows-node22'
+        run: node scripts/verify-required-native-tests.mjs windows-private-access-batch
+      - name: Require whole independent setup from source and a fresh offline package
+        if: matrix.core
+        run: node scripts/verify-evaluation-runtime.mjs ${{ matrix.slot }}
       - name: Require whole consumer impact from source and a fresh offline package
         if: matrix.consumer
         run: |
           node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings &&
-          node scripts/verify-consumer-runtime.mjs ${{ matrix.slot }}
+          node scripts/verify-consumer-native-acceptance.mjs consumer-impact ${{ matrix.slot }}
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Require actual Windows registry ACL and host-custody controls
+        if: matrix.consumer && matrix.slot == 'windows-node22'
+        run: node scripts/verify-required-native-tests.mjs consumer-native-windows-capture
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() && matrix.consumer }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        if: matrix.consumer
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        if: matrix.consumer
+        run: node scripts/check-consumer-native-ci.mjs --publish ${{ matrix.slot }}
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   tasks-runtime-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['tasks-runtime-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 30
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -1696,6 +1842,9 @@ jobs:
         with:
           node-version: "22.23.3"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run build
       - name: Prepare pinned production installation cache
@@ -1703,7 +1852,37 @@ jobs:
       - name: Require source and offline installed controls in the pinned native runtime
         run: node scripts/verify-tasks-runtime-arm64.mjs
       - name: Require whole consumer impact with pinned native Git prerequisites
-        run: node scripts/verify-consumer-runtime-arm64.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs consumer-impact native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-tasks-runtime-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-tasks-runtime-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-tasks-runtime-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   attempt-runtime:
     needs: [ci-plan, actionlint]
@@ -1918,6 +2097,9 @@ jobs:
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['go-workspaces-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 30
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -1926,6 +2108,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: "1.27.1"
@@ -1941,7 +2126,17 @@ jobs:
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
       - name: Verify required original Go and context controls
-        run: node scripts/verify-required-native-tests.mjs go-extensions go-installed-harness review-context-limits host-session-readiness context-python context-go
+        run: node scripts/verify-required-native-tests.mjs go-extensions go-installed-harness review-context-limits host-session-readiness
+      - name: Observe actual selected Python producer and consumer source and fresh-package witnesses
+        run: node scripts/verify-consumer-native-acceptance.mjs context-python native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Observe actual selected Go producer and consumer source and fresh-package witnesses
+        run: node scripts/verify-consumer-native-acceptance.mjs context-go native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
       - name: Verify installed original Go workspace controls
         run: node scripts/verify-go-workspace-package.mjs
       - name: Verify installed original expanded context controls
@@ -1956,12 +2151,42 @@ jobs:
         if: always()
         run: |
           node --input-type=module -e 'import {execFileSync} from "node:child_process"; console.log(JSON.stringify({sourceCommit:process.env.GITHUB_SHA,node:process.version,platform:process.platform,arch:process.arch,imageOS:process.env.ImageOS,imageVersion:process.env.ImageVersion,go:execFileSync("go",["version"],{encoding:"utf8"}).trim(),staticcheck:execFileSync("staticcheck",["-version"],{encoding:"utf8"}).trim(),golangciLint:execFileSync("golangci-lint",["version","--short"],{encoding:"utf8"}).trim(),python:execFileSync("python3",["--version"],{encoding:"utf8"}).trim(),inferenceInvoked:false},null,2))'
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-go-workspaces-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-go-workspaces-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-go-workspaces-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   php-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['php-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -1970,6 +2195,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -1980,13 +2208,46 @@ jobs:
       - name: Prepare pinned PHP context runtime
         run: docker build --file scripts/php-context-tools.Dockerfile --tag checktrail-php-context:synthetic-v1 scripts
       - name: Verify original selected PHP bindings and compiling guards
-        run: node scripts/verify-php-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-php native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-php-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-php-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-php-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   rust-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['rust-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -1995,6 +2256,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2006,13 +2270,46 @@ jobs:
       - name: Prepare pinned Rust context runtime
         run: docker build --file scripts/rust-context-tools.Dockerfile --tag checktrail-rust-context:synthetic-v1 scripts
       - name: Verify original selected Rust bindings and compiling guards
-        run: node scripts/verify-rust-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-rust native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-rust-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-rust-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-rust-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   java-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['java-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2021,6 +2318,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2032,13 +2332,46 @@ jobs:
       - name: Prepare pinned Java context runtime
         run: docker build --file scripts/java-context-tools.Dockerfile --tag checktrail-java-context:synthetic-v1 scripts
       - name: Verify original selected Java bindings and compiling guards
-        run: node scripts/verify-java-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-java native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-java-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-java-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-java-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   kotlin-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['kotlin-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2047,6 +2380,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2059,13 +2395,46 @@ jobs:
       - name: Prepare pinned Kotlin context runtime
         run: docker build --file scripts/kotlin-context-tools.Dockerfile --tag checktrail-kotlin-context:synthetic-v1 .checktrail/kotlin-tools
       - name: Verify original selected Kotlin bindings and compiling guards
-        run: node scripts/verify-kotlin-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-kotlin native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-kotlin-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-kotlin-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-kotlin-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   scala-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['scala-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2074,6 +2443,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2087,13 +2459,46 @@ jobs:
       - name: Prepare pinned Scala context runtime
         run: docker build --file scripts/scala-context-tools.Dockerfile --tag checktrail-scala-context:synthetic-v1 .checktrail/scala-tools
       - name: Verify original selected Scala bindings and compiling guards
-        run: node scripts/verify-scala-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-scala native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-scala-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-scala-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-scala-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   csharp-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['csharp-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2102,6 +2507,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2112,13 +2520,46 @@ jobs:
       - name: Prepare pinned C# context runtime
         run: docker build --network none --file scripts/csharp-context-tools.Dockerfile --tag checktrail-csharp-context:synthetic-v1 scripts
       - name: Verify original selected C# bindings and compiling guards
-        run: node scripts/verify-csharp-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-csharp native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-csharp-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-csharp-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-csharp-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   fsharp-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['fsharp-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2127,6 +2568,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2137,13 +2581,46 @@ jobs:
       - name: Prepare pinned F# context runtime
         run: docker build --network none --file scripts/fsharp-context-tools.Dockerfile --tag checktrail-fsharp-context:synthetic-v1 scripts
       - name: Verify original selected F# bindings and compiling guards
-        run: node scripts/verify-fsharp-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-fsharp native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-fsharp-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-fsharp-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-fsharp-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   ruby-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['ruby-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2152,6 +2629,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2163,13 +2643,46 @@ jobs:
       - name: Prepare pinned Ruby context runtime
         run: docker build --network none --file scripts/ruby-context-tools.Dockerfile --tag checktrail-ruby-context:synthetic-v1 scripts
       - name: Verify original selected Ruby bindings and compiling guards
-        run: node scripts/verify-ruby-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-ruby native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-ruby-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-ruby-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-ruby-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   swift-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['swift-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2178,6 +2691,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2188,13 +2704,46 @@ jobs:
       - name: Prepare pinned Swift context runtime
         run: docker build --file scripts/swift-context-tools.Dockerfile --tag checktrail-swift-context:synthetic-v1 scripts
       - name: Verify original selected Swift bindings and compiling guards
-        run: node scripts/verify-swift-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-swift native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-swift-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-swift-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-swift-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   vb-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['vb-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2203,6 +2752,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2213,13 +2765,46 @@ jobs:
       - name: Prepare pinned Visual Basic context runtime
         run: docker build --network none --file scripts/vb-context-tools.Dockerfile --tag checktrail-vb-context:synthetic-v1 scripts
       - name: Verify original selected Visual Basic bindings and compiling guards
-        run: node scripts/verify-vb-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-vb native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-vb-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-vb-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-vb-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   c-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['c-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2228,6 +2813,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2238,13 +2826,46 @@ jobs:
       - name: Prepare pinned C context runtime
         run: docker build --file scripts/c-context-tools.Dockerfile --tag checktrail-c-context:synthetic-v1 scripts
       - name: Verify original selected C bindings and compiling guards
-        run: node scripts/verify-c-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-c native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-c-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-c-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-c-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   cpp-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['cpp-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2253,6 +2874,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2263,13 +2887,46 @@ jobs:
       - name: Prepare pinned C++ context runtime
         run: docker build --file scripts/cpp-context-tools.Dockerfile --tag checktrail-cpp-context:synthetic-v1 scripts
       - name: Verify original selected C++ bindings and compiling guards
-        run: node scripts/verify-cpp-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-cpp native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-cpp-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-cpp-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-cpp-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   hcl-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['hcl-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2278,6 +2935,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2288,16 +2948,49 @@ jobs:
       - name: Prepare pinned HCL witness runtime
         run: node scripts/prepare-hcl-context-runtime.mjs
       - name: Verify original selected HCL bindings and compiling guards
-        run: node scripts/verify-hcl-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-hcl native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
       - name: Release owned HCL runtime image
         if: always()
         run: node scripts/cleanup-hcl-context-runtime.mjs
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-hcl-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-hcl-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-hcl-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   yaml-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['yaml-context-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
+    outputs:
+      native_start_single: ${{ steps.native-start.outputs.native_start_single }}
+      native_finish_single: ${{ steps.native-finish.outputs.native_finish_single }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -2306,6 +2999,9 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+      - name: Mark native consumer producer execution
+        id: native-start
+        run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2316,10 +3012,40 @@ jobs:
       - name: Prepare pinned YAML witness runtime
         run: node scripts/prepare-yaml-context-runtime.mjs
       - name: Verify original selected YAML bindings and compiling guards
-        run: node scripts/verify-yaml-context-container.mjs
+        run: node scripts/verify-consumer-native-acceptance.mjs context-yaml native-linux-arm64-node22
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
       - name: Release owned YAML runtime image
         if: always()
         run: node scripts/cleanup-yaml-context-runtime.mjs
+      - name: Retain sanitized incomplete native consumer diagnostics
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-attempt-diagnostics-yaml-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-diagnostics/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          include-hidden-files: false
+      - name: Retain current-source sanitized native consumer capsule
+        id: native-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-consumer-yaml-context-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-capsules/*.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful native consumer artifact claim
+        id: native-finish
+        run: node scripts/check-consumer-native-ci.mjs --publish single
+        env:
+          CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_JOB_START: ${{ steps.native-start.outputs.claim }}
+          CHECKTRAIL_NATIVE_ARTIFACT_ID: ${{ steps.native-upload.outputs.artifact-id }}
+          CHECKTRAIL_NATIVE_ARTIFACT_NAME: native-consumer-yaml-context-arm64-single-${{ github.run_attempt }}
+          CHECKTRAIL_NATIVE_ARTIFACT_DIGEST: ${{ steps.native-upload.outputs.artifact-digest }}
 
   fsharp-format-arm64:
     needs: [ci-plan, actionlint]
@@ -2391,7 +3117,7 @@ jobs:
   ci-complete:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     needs:
       - ci-plan
       - checks
@@ -2476,11 +3202,32 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci --ignore-scripts
+      - run: npm run build
       - name: Require every selected job and account for every unselected job
         run: node scripts/check-ci-completion.mjs
         env:
           CHECKTRAIL_CI_PLAN: ${{ needs.ci-plan.outputs.plan }}
           CHECKTRAIL_CI_NEEDS: ${{ toJSON(needs) }}
+      - name: Select required native capsule inventory
+        id: native-capsules
+        run: node scripts/check-consumer-native-ci.mjs --selection
+        env:
+          CHECKTRAIL_CI_PLAN: ${{ needs.ci-plan.outputs.plan }}
+          CHECKTRAIL_CI_NEEDS: ${{ toJSON(needs) }}
+      - name: Acquire exact retained producer native artifacts
+        if: steps.native-capsules.outputs.selected == 'true'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          artifact-ids: ${{ steps.native-capsules.outputs.artifact_ids }}
+          path: ${{ runner.temp }}/checktrail-native-capsule-artifacts
+          merge-multiple: false
+          digest-mismatch: error
+      - name: Reconcile selected current-source native consumer matrix
+        run: node scripts/check-consumer-native-ci.mjs
+        env:
+          CHECKTRAIL_CI_PLAN: ${{ needs.ci-plan.outputs.plan }}
+          CHECKTRAIL_CI_NEEDS: ${{ toJSON(needs) }}
+          CHECKTRAIL_NATIVE_CAPSULE_ARTIFACTS: ${{ runner.temp }}/checktrail-native-capsule-artifacts
 
   dotnet-generator-extensions-arm64:
     needs: [ci-plan]

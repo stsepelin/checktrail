@@ -1,5 +1,7 @@
+import { bindProjectConsumerCollection } from "./consumer-witness-project-controller.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -7,6 +9,12 @@ import { fileURLToPath, URL } from "node:url";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const image =
   "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
+const observedImageId = execFileSync(
+  "docker",
+  ["image", "inspect", image, "--format", "{{.Id}}"],
+  { encoding: "utf8" },
+).trim();
+assert.match(observedImageId, /^sha256:[a-f0-9]{64}$/);
 const task =
   process.env.CHECKTRAIL_TEST_TASK ?? `javascript-extensions-${process.pid}`;
 assert.match(task, /^[a-z][a-z0-9-]{0,80}$/);
@@ -80,13 +88,31 @@ stage("source");
 const lines = run([
   "/bin/sh",
   "-c",
-  "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs javascript-extensions",
+  "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache && node scripts/verify-consumer-project-profile.mjs javascript-extensions",
 ])
   .trim()
   .split("\n");
 assert.equal(lines.length, 2);
 const preparedCache = JSON.parse(lines[0]);
-const source = JSON.parse(lines[1]);
+const consumerCollection = JSON.parse(lines[1]);
+const consumerRuntime = {
+  ...runtime,
+  node: runtime.node.slice(1),
+  architecture: runtime.arch,
+  hostAttestationPerformed: false,
+  toolVersion: runtime.node,
+  nodeExecutableSha256: runtime.nodeBinary.sha256,
+  distributionSha256: createHash("sha256").update(runtime.os).digest("hex"),
+};
+const boundConsumerCollection = await bindProjectConsumerCollection(
+  repository,
+  ["typescript"],
+  consumerCollection,
+  { kind: "oci-image-observation", id: observedImageId },
+  consumerRuntime,
+  { requireSelectedSlot: true },
+);
+const source = boundConsumerCollection.evidence;
 assert.equal(source.required, 9);
 assert.equal(source.passed, 9);
 assert.equal(source.complete, true);
@@ -156,6 +182,8 @@ process.stdout.write(
     image,
     preparedCache,
     source,
+    consumerWitnesses: boundConsumerCollection,
+    observedImageId,
     guards,
     regressions: { passed: Number(match[1]), failed: 0, skipped: 0 },
     installed,

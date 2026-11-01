@@ -39,6 +39,15 @@ import {
   javaUnicodeEscapeFixture,
 } from "./review-java-boundaries-fixture.js";
 
+import {
+  beginConsumerWitness,
+  bindConsumerWitnessClassDirectory,
+  bindConsumerWitnessCompiler,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerCapture,
+  type ConsumerVariant,
+} from "./consumer-witness-fixture.js";
 const broken =
   'package policy;public class Policy{public static final String FALLBACK="grant";public static boolean decision(String value){return value.startsWith(FALLBACK);}}\n';
 const fixed =
@@ -99,14 +108,16 @@ async function compile(
   files: string[],
   witness: string,
   name = "original-classes",
+  capture: ConsumerCapture | null = null,
 ) {
   await writeFile(path.join(root, "Witness.java"), witness);
   const classes = path.join(root, name);
   await mkdir(classes);
+  await bindConsumerWitnessClassDirectory(capture, classes);
   const result = await runProcess(
     root,
     {
-      executable: "javac",
+      executable: capture?.executable ?? "javac",
       args: [
         "-J-Xmx256m",
         "-proc:none",
@@ -119,8 +130,10 @@ async function compile(
       ],
       cwd: ".",
     },
-    { timeoutMs: 30000, maxOutputBytes: 65536 },
+    { timeoutMs: 30000, maxOutputBytes: 65536, captureRawOutput: true },
   );
+  await recordConsumerWitnessAttempt(capture, result, "compiler");
+  bindConsumerWitnessCompiler(capture, result);
   assert.equal(result.exitCode, 0, result.stderr);
   assert.equal(result.errorCode, undefined);
   assert.equal(result.timedOut, false);
@@ -145,36 +158,44 @@ async function compilerRejects(root: string, files: string[], pattern: RegExp) {
   assert.equal(result.truncated, false);
   assert.match(result.stderr, pattern);
 }
-async function execute(root: string, classes: string) {
+async function execute(
+  root: string,
+  classes: string,
+  capture: ConsumerCapture | null = null,
+) {
   const result = await runProcess(
     root,
     {
-      executable: "java",
+      executable: capture?.runtimeExecutable.launch ?? "java",
       args: ["-Xmx256m", "-cp", classes, "Witness"],
       cwd: ".",
     },
-    { timeoutMs: 10000, maxOutputBytes: 65536 },
+    { timeoutMs: 10000, maxOutputBytes: 65536, captureRawOutput: true },
   );
+  await recordConsumerWitnessAttempt(capture, result);
   assert.equal(result.exitCode, 0, result.stderr);
   assert.equal(result.errorCode, undefined);
   assert.equal(result.timedOut, false);
   assert.equal(result.cancelled, false);
   assert.equal(result.truncated, false);
+  await finishConsumerWitness(capture, result);
   return result.stdout;
 }
-async function witness(root: string) {
+async function witness(root: string, variant: ConsumerVariant) {
+  const capture = await beginConsumerWitness(root, "java", variant);
   const classes = await compile(
     root,
     ["src/policy/Policy.java", "src/consumer/Consumer.java"],
-    'class Witness{public static void main(String[] args){for(String value:new String[]{"grant:read","grantToken","grant2","other"})System.out.println(policy.Policy.decision(value));System.out.println(consumer.Consumer.submit());System.out.println(consumer.Consumer.route());}}',
+    'class Witness {\n public static void main(String[] args) throws Exception {\n  String[] values={"grant:read","grantToken","grant2","other"};\n  String[] files={"src/policy/Policy.java","src/consumer/Consumer.java"};\n  System.out.print("{\\"cases\\":[");\n  for(int i=0;i<values.length;i++){if(i>0)System.out.print(",");System.out.print(policy.Policy.decision(values[i]));}\n  System.out.print("],\\"consumers\\":["+consumer.Consumer.submit()+","+consumer.Consumer.route()+"],\\"sources\\":{");\n  for(int i=0;i<files.length;i++){\n   if(i>0)System.out.print(",");System.out.print("\\""+files[i]+"\\":[");\n   byte[] bytes=java.nio.file.Files.readAllBytes(java.nio.file.Path.of(files[i]));\n   for(int j=0;j<bytes.length;j++){if(j>0)System.out.print(",");System.out.print(Byte.toUnsignedInt(bytes[j]));}\n   System.out.print("]");\n  }\n  System.out.println("}}");\n }\n}\n',
+    "original-classes",
+    capture,
   );
-  return (await execute(root, classes))
-    .trim()
-    .split("\n")
-    .map((value) => {
-      assert.ok(value === "true" || value === "false");
-      return value === "true";
-    });
+  const observed = JSON.parse(await execute(root, classes, capture));
+  assert.equal(observed.cases.length, 4);
+  assert.equal(observed.consumers.length, 2);
+  const answers = [...observed.cases, ...observed.consumers];
+  assert.ok(answers.every((value) => typeof value === "boolean"));
+  return answers;
 }
 function bindings(result: ReturnType<typeof analysis>) {
   const policy = result.functions.find(
@@ -219,7 +240,14 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-java broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [true, true, true, false, true, true]);
+  assert.deepEqual(await witness(root, "broken"), [
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+  ]);
   const fn = result.functions.find((fn) => fn.name === "decision")!,
     source = context.files.find((file) => file.path === fn.file)!;
   assert.equal(
@@ -298,7 +326,7 @@ test("context-java broken acceptance", native, async (t) => {
 test("context-java fixed acceptance", native, async (t) => {
   const { root, result } = await original(t, fixed);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "fixed"), [
     true,
     false,
     false,
@@ -315,7 +343,7 @@ test("context-java fixed acceptance", native, async (t) => {
 test("context-java near-miss acceptance", native, async (t) => {
   const { root, result } = await original(t, near);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "near-miss"), [
     true,
     false,
     false,

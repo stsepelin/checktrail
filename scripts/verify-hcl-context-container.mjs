@@ -1,4 +1,10 @@
 import assert from "node:assert/strict";
+import { captureConsumerWitnessController } from "./consumer-witness-controller.mjs";
+import {
+  bindConsumerWitnessController,
+  inspectConsumerWitnesses,
+  requireQualifiedConsumerWitnessFamily,
+} from "./consumer-witness-evidence.mjs";
 import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath, URL } from "node:url";
@@ -63,7 +69,7 @@ const runtime = JSON.parse(
     "node",
     "--input-type=module",
     "-e",
-    'import{execFileSync}from"node:child_process";import{readFileSync}from"node:fs";import{createHash}from"node:crypto";const files=["/usr/local/bin/terraform","/usr/local/bin/node","/usr/bin/git"];console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,terraform:JSON.parse(execFileSync("terraform",["version","-json"],{encoding:"utf8"})),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8"),toolBytes:files.map(file=>{const bytes=readFileSync(file);return{file,bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex")};})}));',
+    'import{execFileSync}from"node:child_process";import{readFileSync}from"node:fs";import{createHash}from"node:crypto";import{observeConsumerWitnessTool,observeConsumerWitnessDataInputs}from"./dist/test/consumer-witness-fixture.js";const files=["/usr/local/bin/terraform","/usr/local/bin/node","/usr/bin/git"];console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,terraform:JSON.parse(execFileSync("terraform",["version","-json"],{encoding:"utf8"})),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8"),nodeExecutableSha256:createHash("sha256").update(readFileSync(process.execPath)).digest("hex"),distributionSha256:createHash("sha256").update(readFileSync("/etc/os-release")).digest("hex"),tool:await observeConsumerWitnessTool("hcl"),dataInputs:await observeConsumerWitnessDataInputs("hcl"),toolBytes:files.map(file=>{const bytes=readFileSync(file);return{file,bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex")};})}));',
   ]),
 );
 assert.equal(runtime.node, "v22.23.2");
@@ -74,13 +80,56 @@ assert.equal(
   runtime.toolBytes[0].sha256,
   "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c",
 );
-const source = JSON.parse(
+const consumerRuntime = {
+  ...runtime,
+  node: runtime.node.slice(1),
+  architecture: runtime.arch,
+  hostAttestationPerformed: false,
+  toolVersion: runtime.terraform.terraform_version,
+};
+const consumerExpected = await captureConsumerWitnessController(
+  repository,
+  "hcl",
+  { kind: "oci-image-observation", id: image },
+  consumerRuntime,
+  runtime.tool,
+);
+const consumerCollection = JSON.parse(
   run([
     "/bin/sh",
     "-c",
-    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs context-hcl",
+    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-consumer-witness-profile.mjs context-hcl",
   ]),
 );
+const source = consumerCollection.evidence;
+consumerCollection.bindings = bindConsumerWitnessController(
+  consumerCollection,
+  consumerExpected,
+);
+consumerCollection.coverage = inspectConsumerWitnesses(
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-consumer-witnesses.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-profiles.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "scripts/required-native-tests.json"),
+      "utf8",
+    ),
+  ),
+  consumerCollection.observations,
+  consumerCollection.bindings,
+  consumerCollection.attemptRecords,
+);
+requireQualifiedConsumerWitnessFamily(consumerCollection.coverage, "hcl");
 assert.equal(source.complete, true);
 assert.equal(source.passed, 9);
 // Mutations run on an owned compiled copy; captured source stays read-only.
@@ -125,6 +174,7 @@ process.stdout.write(
     runtime,
     image,
     source,
+    consumerWitnesses: consumerCollection,
     guards,
     installed,
     environment: {

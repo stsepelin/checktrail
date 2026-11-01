@@ -9,3 +9,6 @@ examples/helm/templates/*.yaml
 
 # Preserve the measured native JSON packet bodies byte-for-byte.
 docs/measurements/tasks-runtime-matrix-2026-10-21/receipts/*.json
+
+# Preserve the byte-pinned original Moby seccomp profile.
+scripts/producer-qualification/moby-28.0.4/default.json

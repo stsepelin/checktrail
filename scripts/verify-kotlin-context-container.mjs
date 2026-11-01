@@ -1,3 +1,10 @@
+import { readFile } from "node:fs/promises";
+import { captureConsumerWitnessController } from "./consumer-witness-controller.mjs";
+import {
+  bindConsumerWitnessController,
+  inspectConsumerWitnesses,
+  requireQualifiedConsumerWitnessFamily,
+} from "./consumer-witness-evidence.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import process from "node:process";
@@ -56,7 +63,7 @@ const runtime = JSON.parse(
     "node",
     "--input-type=module",
     "-e",
-    'import {execFileSync} from "node:child_process"; import {readFileSync} from "node:fs"; import {createHash} from "node:crypto"; import {spawnSync} from "node:child_process"; console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,kotlinArchiveBytes:readFileSync("/opt/checktrail/kotlin-compiler-2.4.10.zip").length,kotlinArchiveSha256:createHash("sha256").update(readFileSync("/opt/checktrail/kotlin-compiler-2.4.10.zip")).digest("hex"),kotlinVersion:spawnSync("java",["-Xmx256m","-cp","/opt/checktrail/kotlinc/lib/*","org.jetbrains.kotlin.cli.jvm.K2JVMCompiler","-version"],{encoding:"utf8"}).stderr,java:execFileSync("java",["--version"],{encoding:"utf8"}).trim(),javac:execFileSync("javac",["--version"],{encoding:"utf8"}).trim(),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8")}));',
+    'import {execFileSync} from "node:child_process"; import {readFileSync} from "node:fs"; import {createHash} from "node:crypto"; import {spawnSync} from "node:child_process"; import {observeConsumerWitnessTool,observeConsumerWitnessJvmInputs} from "./dist/test/consumer-witness-fixture.js";import{createHash as consumerHash}from"node:crypto";console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,kotlinArchiveBytes:readFileSync("/opt/checktrail/kotlin-compiler-2.4.10.zip").length,kotlinArchiveSha256:createHash("sha256").update(readFileSync("/opt/checktrail/kotlin-compiler-2.4.10.zip")).digest("hex"),kotlinVersion:spawnSync("java",["-Xmx256m","-cp","/opt/checktrail/kotlinc/lib/*","org.jetbrains.kotlin.cli.jvm.K2JVMCompiler","-version"],{encoding:"utf8"}).stderr,java:execFileSync("java",["--version"],{encoding:"utf8"}).trim(),javac:execFileSync("javac",["--version"],{encoding:"utf8"}).trim(),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8"),nodeExecutableSha256:consumerHash("sha256").update(readFileSync(process.execPath)).digest("hex"),distributionSha256:consumerHash("sha256").update(readFileSync("/etc/os-release")).digest("hex"),tool:await observeConsumerWitnessTool("kotlin"),jvmInputs:await observeConsumerWitnessJvmInputs("kotlin")}));',
   ]),
 );
 assert.equal(runtime.node, "v22.23.2");
@@ -70,13 +77,56 @@ assert.equal(
 );
 assert.match(runtime.kotlinVersion, /kotlinc-jvm 2\.4\.10 /);
 assert.match(runtime.java, /^openjdk 25\.0\.4 /);
-const source = JSON.parse(
+const consumerRuntime = {
+  ...runtime,
+  node: runtime.node.slice(1),
+  architecture: runtime.arch,
+  hostAttestationPerformed: false,
+  toolVersion: runtime.javac,
+};
+const consumerExpected = await captureConsumerWitnessController(
+  repository,
+  "kotlin",
+  { kind: "oci-image-observation", id: image },
+  consumerRuntime,
+  runtime.tool,
+);
+const consumerCollection = JSON.parse(
   run([
     "/bin/sh",
     "-c",
-    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs context-kotlin",
+    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-consumer-witness-profile.mjs context-kotlin",
   ]),
 );
+const source = consumerCollection.evidence;
+consumerCollection.bindings = bindConsumerWitnessController(
+  consumerCollection,
+  consumerExpected,
+);
+consumerCollection.coverage = inspectConsumerWitnesses(
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-consumer-witnesses.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-profiles.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "scripts/required-native-tests.json"),
+      "utf8",
+    ),
+  ),
+  consumerCollection.observations,
+  consumerCollection.bindings,
+  consumerCollection.attemptRecords,
+);
+requireQualifiedConsumerWitnessFamily(consumerCollection.coverage, "kotlin");
 assert.equal(source.complete, true);
 assert.equal(source.passed, 9);
 // Guard mutations operate only on an owned compiled copy; the source mount stays read-only.
@@ -123,6 +173,7 @@ process.stdout.write(
     runtime,
     image,
     source,
+    consumerWitnesses: consumerCollection,
     guards,
     installed,
     environment: {

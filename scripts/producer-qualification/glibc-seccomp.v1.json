@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-glibc-docker-28.0.4-kernel-predicates-v1",
+  "upstream": {
+    "repository": "https://github.com/moby/moby",
+    "tag": "v28.0.4",
+    "sourceCommit": "6430e49a55babd9b8f4d08e70ecb2b68900770fe",
+    "tagObject": "3bfe60f8c91fca3ea00d87273756372fae7e1f5d",
+    "tagSignatureVerified": false
+  },
+  "supportedDocker": {
+    "serverVersion": "28.0.4",
+    "serverGitCommits": ["6430e49", "6430e49a55babd9b8f4d08e70ecb2b68900770fe"],
+    "os": "linux",
+    "architecture": "amd64",
+    "seccompSecurityOption": "name=seccomp,profile=builtin"
+  },
+  "inputs": [
+    {
+      "file": "moby-28.0.4/default.json",
+      "bytes": 12828,
+      "sha256": "9c1025c88ccaa517b648da571961838744ea2137f176bfe6a48b21294cae9c76",
+      "gitBlobSha1": "c4d91109c3a5b9be1a89d8fc8b0e820c9558c365",
+      "sourcePath": "profiles/seccomp/default.json",
+      "sourceUrl": "https://raw.githubusercontent.com/moby/moby/6430e49a55babd9b8f4d08e70ecb2b68900770fe/profiles/seccomp/default.json"
+    },
+    {
+      "file": "moby-28.0.4/LICENSE",
+      "bytes": 10765,
+      "sha256": "7c87873291f289713ac5df48b1f2010eb6963752bbd6b530416ab99fc37914a8",
+      "gitBlobSha1": "6d8d58fb676bbbcc9b4432da4951e4b438478306",
+      "sourcePath": "LICENSE",
+      "sourceUrl": "https://raw.githubusercontent.com/moby/moby/6430e49a55babd9b8f4d08e70ecb2b68900770fe/LICENSE"
+    },
+    {
+      "file": "moby-28.0.4/NOTICE",
+      "bytes": 642,
+      "sha256": "b40ec5b16182103ef1cd69d42a21c98369e35bd483b3973902da4807c0755446",
+      "gitBlobSha1": "58b19b6d15b999d4e92ecf18219b04eb0a54aea9",
+      "sourcePath": "NOTICE",
+      "sourceUrl": "https://raw.githubusercontent.com/moby/moby/6430e49a55babd9b8f4d08e70ecb2b68900770fe/NOTICE"
+    },
+    {
+      "file": "moby-28.0.4/AUTHORS",
+      "bytes": 93487,
+      "sha256": "fcef2638617edecb23bb93375d728fca77bd45ebbc08c5a57d532cee64d9ee80",
+      "gitBlobSha1": "88032defe71def93368e9edbef9d389ebbf125cf",
+      "sourcePath": "AUTHORS",
+      "sourceUrl": "https://raw.githubusercontent.com/moby/moby/6430e49a55babd9b8f4d08e70ecb2b68900770fe/AUTHORS"
+    }
+  ],
+  "additions": [
+    {
+      "names": ["clock_settime"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [
+        {
+          "index": 0,
+          "value": 1,
+          "op": "SCMP_CMP_EQ"
+        }
+      ]
+    },
+    {
+      "names": ["personality"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [
+        {
+          "index": 0,
+          "value": 4294967274,
+          "op": "SCMP_CMP_EQ"
+        }
+      ]
+    }
+  ],
+  "originalNoticesRetained": [
+    "moby-28.0.4/LICENSE",
+    "moby-28.0.4/NOTICE",
+    "moby-28.0.4/AUTHORS"
+  ],
+  "sourceGenerationEvidence": [
+    {
+      "sourcePath": "profiles/seccomp/default_linux.go",
+      "bytes": 15905,
+      "sha256": "4529ff8a038f4365ba865d30be2468f6c64b80c832567d978e91906999cc632b",
+      "gitBlobSha1": "09fb33765d4a2d87ad93fd7287c14781a688cf7a",
+      "url": "https://raw.githubusercontent.com/moby/moby/6430e49a55babd9b8f4d08e70ecb2b68900770fe/profiles/seccomp/default_linux.go"
+    },
+    {
+      "sourcePath": "profiles/seccomp/generate.go",
+      "bytes": 569,
+      "sha256": "b062504acf993cf85953040cc4e5eb4829251c6c6383660dc6c1c0a62cb675c5",
+      "gitBlobSha1": "8381544596878522b3dd82c916cca055d880b6c4",
+      "url": "https://raw.githubusercontent.com/moby/moby/6430e49a55babd9b8f4d08e70ecb2b68900770fe/profiles/seccomp/generate.go"
+    },
+    {
+      "sourcePath": "profiles/seccomp/seccomp_linux.go",
+      "bytes": 4742,
+      "sha256": "b95bbcb005cd7f049b033e4f64d91a7f35c2faf707198bf2218075298d5c465e",
+      "gitBlobSha1": "0d32f093586a7c80b89a92667b094d43a9f744e1",
+      "url": "https://raw.githubusercontent.com/moby/moby/6430e49a55babd9b8f4d08e70ecb2b68900770fe/profiles/seccomp/seccomp_linux.go"
+    },
+    {
+      "sourcePath": "profiles/seccomp/seccomp_test.go",
+      "bytes": 8328,
+      "sha256": "a1ae21a8ccb727231012635de9e9de01d8349453dddf9d75ef2876c1401b4914",
+      "gitBlobSha1": "39b69d688404016389f55e2c81e64081615a7813",
+      "url": "https://raw.githubusercontent.com/moby/moby/6430e49a55babd9b8f4d08e70ecb2b68900770fe/profiles/seccomp/seccomp_test.go"
+    }
+  ],
+  "nativeCompatibilityVerified": false,
+  "defaultProfileBytesIndependentlyAttestedFromDaemon": false,
+  "historicalPublisherConsumptionVerified": false,
+  "fullCompilerSdkBootstrapClosureVerified": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "gateAComplete": false
+}

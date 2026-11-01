@@ -1,3 +1,13 @@
+import {
+  beginConsumerWitness,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerVariant,
+  type ConsumerPhase,
+  bindConsumerWitnessCompiler,
+  bindConsumerWitnessExecutable,
+  type ConsumerCapture,
+} from "./consumer-witness-fixture.js";
 import assert from "node:assert/strict";
 import { test, type TestContext } from "node:test";
 import { createHash } from "node:crypto";
@@ -86,13 +96,18 @@ async function original(t: TestContext, policy = broken) {
   const context = await createReviewContext(root, input());
   return { root, context, result: analysis(context) };
 }
-async function compile(root: string, source: string, name = "native-witness") {
+async function compile(
+  root: string,
+  source: string,
+  name = "native-witness",
+  capture: ConsumerCapture | null = null,
+) {
   await writeFile(path.join(root, name + ".rs"), source);
   const executable = path.join(root, name);
   const result = await runProcess(
     root,
     {
-      executable: "rustc",
+      executable: capture?.executable ?? "rustc",
       args: [
         "--edition=2024",
         "--crate-name",
@@ -105,26 +120,41 @@ async function compile(root: string, source: string, name = "native-witness") {
       ],
       cwd: ".",
     },
-    { timeoutMs: 30000, maxOutputBytes: 65536 },
+    {
+      timeoutMs: 30000,
+      maxOutputBytes: 65536,
+      captureRawOutput: Boolean(capture),
+    },
   );
+  await recordConsumerWitnessAttempt(capture, result, "compiler");
   assert.equal(result.exitCode, 0, result.stderr);
   assert.equal(result.errorCode, undefined);
   assert.equal(result.timedOut, false);
   assert.equal(result.cancelled, false);
   assert.equal(result.truncated, false);
+  bindConsumerWitnessCompiler(capture, result);
   return executable;
 }
-async function witness(root: string) {
+async function witness(
+  root: string,
+  variant: ConsumerVariant,
+  phase: ConsumerPhase = "canonical",
+) {
+  const capture = await beginConsumerWitness(root, "rust", variant, phase);
   const executable = await compile(
     root,
     'include!("src/lib.rs"); fn main(){let values=["grant:read","grantToken","grant2","other"]; let answers:Vec<bool>=values.iter().map(|value|policy::decision(value)).collect();println!("{{\\"cases\\":{:?},\\"consumers\\":{:?},\\"sources\\":{{\\"src/policy.rs\\":{:?},\\"src/consumer.rs\\":{:?},\\"src/lib.rs\\":{:?}}}}}",answers,[consumer::submit(),consumer::route()],std::fs::read("src/policy.rs").unwrap(),std::fs::read("src/consumer.rs").unwrap(),std::fs::read("src/lib.rs").unwrap());}',
+    "native-witness",
+    capture,
   );
+  await bindConsumerWitnessExecutable(capture, executable);
   try {
     const result = await runProcess(
       root,
       { executable, args: [], cwd: "." },
       { timeoutMs: 10000, maxOutputBytes: 65536, captureRawOutput: true },
     );
+    await recordConsumerWitnessAttempt(capture, result);
     assert.equal(result.exitCode, 0, result.stderr);
     assert.equal(result.errorCode, undefined);
     assert.equal(result.stderr, "");
@@ -141,6 +171,7 @@ async function witness(root: string) {
       assert.deepEqual(Buffer.from(receipt.sources[name]), bytes);
       receipt.sources[name] = createHash("sha256").update(bytes).digest("hex");
     }
+    await finishConsumerWitness(capture, result);
     return receipt;
   } finally {
     await rm(executable);
@@ -189,7 +220,7 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-rust broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  const live = await witness(root);
+  const live = await witness(root, "broken", "canonical");
   assert.deepEqual(live.cases, [true, true, true, false]);
   assert.deepEqual(live.consumers, [true, true]);
   const callerPath = path.join(root, "src/consumer.rs"),
@@ -199,7 +230,7 @@ test("context-rust broken acceptance", native, async (t) => {
       callerPath,
       callerBytes.replace('choose("grantToken")', 'choose("other")'),
     );
-    const changed = await witness(root);
+    const changed = await witness(root, "broken", "caller-change");
     assert.deepEqual(changed.cases, live.cases);
     assert.deepEqual(changed.consumers, [false, true]);
     assert.notEqual(
@@ -214,7 +245,7 @@ test("context-rust broken acceptance", native, async (t) => {
   } finally {
     await writeFile(callerPath, callerBytes);
   }
-  assert.deepEqual(await witness(root), live);
+  assert.deepEqual(await witness(root, "broken", "restored"), live);
   const fn = result.functions.find((fn) => fn.name === "decision")!,
     file = context.files.find((file) => file.path === fn.file)!;
   assert.equal(
@@ -291,7 +322,7 @@ test("context-rust broken acceptance", native, async (t) => {
 test("context-rust fixed acceptance", native, async (t) => {
   const { root, context, result } = await original(t, fixed);
   bindings(result);
-  const live = await witness(root);
+  const live = await witness(root, "fixed", "canonical");
   assert.deepEqual(live.cases, [true, false, false, false]);
   assert.deepEqual(live.consumers, [false, true]);
   assert.equal(
@@ -308,7 +339,7 @@ test("context-rust fixed acceptance", native, async (t) => {
 test("context-rust near-miss acceptance", native, async (t) => {
   await callIdentityFixture(t, "rust", true);
   const { root } = await original(t, near);
-  const live = await witness(root);
+  const live = await witness(root, "near-miss", "canonical");
   assert.deepEqual(live.cases, [true, false, false, false]);
   assert.deepEqual(live.consumers, [false, false]);
   const cases: [string, string][] = [

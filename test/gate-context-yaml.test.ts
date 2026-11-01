@@ -24,6 +24,12 @@ import {
   type ReviewContext,
 } from "../src/review.js";
 import { runProcess } from "../src/runner.js";
+import {
+  beginConsumerWitness,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerVariant,
+} from "./consumer-witness-fixture.js";
 import { fixture } from "./helpers.js";
 import { fixtureGit, syntheticCommit } from "./git-fixture.js";
 import { yamlBoundariesFixture } from "./review-yaml-boundaries-fixture.js";
@@ -82,8 +88,9 @@ async function original(t: TestContext, policy = broken) {
     context = await createReviewContext(root, input());
   return { root, context, result: analysis(context) };
 }
-async function witness(root: string) {
-  const program = `import{parse}from${JSON.stringify(yamlRuntime)};import{readFile}from'node:fs/promises';const data=parse(await readFile('policy.yaml','utf8'));if(data.result!==data.rules||data.mirror!==data.rules)throw Error('Original alias identity required');const values=['grant:read','grantToken','grant2','other','grant','grant:write','g'].map(role=>data.rules.mode==='prefix'?role.startsWith(data.rules.token):data.rules.mode==='exact-or-colon'?role===data.rules.token||role.startsWith(data.rules.token+':'):role.startsWith(data.rules.token+':'));console.log(JSON.stringify(values));`;
+async function witness(root: string, variant: ConsumerVariant) {
+  const capture = await beginConsumerWitness(root, "yaml", variant);
+  const program = `import{parse}from${JSON.stringify(yamlRuntime)};import{readFile}from'node:fs/promises';import{createHash}from'node:crypto';const policy=await readFile('policy.yaml'),extra=await readFile('extra.yaml'),data=parse(policy.toString('utf8'));if(data.result!==data.rules||data.mirror!==data.rules)throw Error('Original alias identity required');const values=['grant:read','grantToken','grant2','other','grant','grant:write','g'].map(role=>data.rules.mode==='prefix'?role.startsWith(data.rules.token):data.rules.mode==='exact-or-colon'?role===data.rules.token||role.startsWith(data.rules.token+':'):role.startsWith(data.rules.token+':'));console.log(JSON.stringify({roles:values,aliases:{resultIsRules:data.result===data.rules,mirrorIsRules:data.mirror===data.rules},sources:{'policy.yaml':[...policy],'extra.yaml':[...extra]},moduleUrlSha256:createHash('sha256').update(${JSON.stringify(yamlRuntime)}).digest('hex')}));`;
   const ran = await runProcess(
     root,
     {
@@ -91,14 +98,21 @@ async function witness(root: string) {
       args: ["--input-type=module", "-e", program],
       cwd: ".",
     },
-    { timeoutMs: 10000, maxOutputBytes: 65536 },
+    {
+      timeoutMs: 10000,
+      maxOutputBytes: 65536,
+      captureRawOutput: Boolean(capture),
+    },
   );
+  await recordConsumerWitnessAttempt(capture, ran, "consumer");
   assert.equal(ran.exitCode, 0, ran.stdout + ran.stderr);
   assert.equal(ran.errorCode, undefined);
   assert.equal(ran.truncated, false);
   assert.equal(ran.timedOut, false);
-  return JSON.parse(ran.stdout);
+  await finishConsumerWitness(capture, ran);
+  return JSON.parse(ran.stdout).roles;
 }
+
 function bindings(result: ReturnType<typeof analysis>) {
   assert.equal(result.yamlBindings.counts.anchors, 1);
   assert.equal(result.yamlBindings.counts.aliases, 2);
@@ -125,7 +139,7 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-yaml broken acceptance", native, async (t) => {
   const { root, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "broken"), [
     true,
     true,
     true,
@@ -187,7 +201,7 @@ test("context-yaml broken acceptance", native, async (t) => {
 test("context-yaml fixed acceptance", native, async (t) => {
   const { root, result } = await original(t, fixed);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "fixed"), [
     true,
     false,
     false,
@@ -216,7 +230,7 @@ test("context-yaml fixed acceptance", native, async (t) => {
 test("context-yaml near-miss acceptance", native, async (t) => {
   const { root, result } = await original(t, near);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "near-miss"), [
     true,
     false,
     false,

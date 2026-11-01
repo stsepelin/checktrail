@@ -1,0 +1,486 @@
+{
+  "schemaVersion": 1,
+  "profile": "selected-native-consumer-witnesses-v1",
+  "inventoryScopeSha256": "0fa142f57822a015c322e2428d657b4bb5d00a543913dee0e401c9945c44568a",
+  "scope": "Required selected consumer witness families. Prepared collectors and declared callback identities are not native acceptance. Unknown semantics keep full impact selection.",
+  "families": [
+    {
+      "id": "javascript",
+      "profile": "consumer-impact",
+      "runtime": "engine-matrix",
+      "acceptanceFile": "dist/test/gate-consumer-impact.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "consumer-impact broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "consumer-impact fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "consumer-impact near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": [
+        "checktrail.json",
+        "lib/policy.json",
+        "lib/value.js",
+        "lib/value.test.js",
+        "other/value.test.js",
+        "app/value.test.js",
+        "site/value.test.js",
+        "app/package.json",
+        "lib/package.json",
+        "other/package.json",
+        "site/package.json"
+      ]
+    },
+    {
+      "id": "typescript",
+      "profile": "javascript-extensions",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-javascript-extensions.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "javascript-extensions broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "javascript-extensions fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "javascript-extensions near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": [
+        "package.json",
+        "checktrail.json",
+        "checktrail.javascript.json",
+        "esm hook.mjs",
+        "cjs hook.cjs",
+        "esm.test.mts",
+        "cjs.test.cts",
+        "lib/index.ts",
+        "lib/value.ts",
+        "use.ts",
+        "processed.js",
+        "eslint.config.mjs"
+      ]
+    },
+    {
+      "id": "python",
+      "profile": "context-python",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-python.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-python broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-python fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-python near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["pkg/policy.py", "pkg/consumer.py"]
+    },
+    {
+      "id": "go",
+      "profile": "context-go",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-go.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-go broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-go fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-go near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["policy/policy.go", "consumer/consumer.go"]
+    },
+    {
+      "id": "php",
+      "profile": "context-php",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-php.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-php broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-php fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-php near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["policy/policy.php", "consumer/consumer.php"]
+    },
+    {
+      "id": "rust",
+      "profile": "context-rust",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-rust.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-rust broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-rust fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-rust near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy.rs", "src/consumer.rs", "src/lib.rs"]
+    },
+    {
+      "id": "java",
+      "profile": "context-java",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-java.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-java broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-java fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-java near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy/Policy.java", "src/consumer/Consumer.java"]
+    },
+    {
+      "id": "kotlin",
+      "profile": "context-kotlin",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-kotlin.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-kotlin broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-kotlin fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-kotlin near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy/Policy.kt", "src/consumer/Consumer.kt"]
+    },
+    {
+      "id": "scala",
+      "profile": "context-scala",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-scala.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-scala broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-scala fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-scala near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy/Policy.scala", "src/consumer/Consumer.scala"]
+    },
+    {
+      "id": "csharp",
+      "profile": "context-csharp",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-csharp.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-csharp broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-csharp fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-csharp near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy/Policy.cs", "src/consumer/Consumer.cs"]
+    },
+    {
+      "id": "fsharp",
+      "profile": "context-fsharp",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-fsharp.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-fsharp broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-fsharp fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-fsharp near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy/Policy.fs", "src/consumer/Consumer.fs"]
+    },
+    {
+      "id": "vb",
+      "profile": "context-vb",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-vb.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-vb broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-vb fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-vb near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy/Policy.vb", "src/consumer/Consumer.vb"]
+    },
+    {
+      "id": "ruby",
+      "profile": "context-ruby",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-ruby.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-ruby broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-ruby fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-ruby near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy/Policy.rb", "src/consumer/Consumer.rb"]
+    },
+    {
+      "id": "swift",
+      "profile": "context-swift",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-swift.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-swift broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-swift fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-swift near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy/Policy.swift", "src/consumer/Consumer.swift"]
+    },
+    {
+      "id": "c",
+      "profile": "context-c",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-c.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-c broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-c fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-c near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy/rules.h", "src/consumer/use.c"]
+    },
+    {
+      "id": "cpp",
+      "profile": "context-cpp",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-cpp.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-cpp broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-cpp fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-cpp near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["src/policy/rules.h", "src/consumer/use.cpp"]
+    },
+    {
+      "id": "hcl",
+      "profile": "context-hcl",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-hcl.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-hcl broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-hcl fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-hcl near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["policy/rules.tf", "main.tf"]
+    },
+    {
+      "id": "yaml",
+      "profile": "context-yaml",
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-yaml.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "context-yaml broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "context-yaml fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "context-yaml near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": ["policy.yaml", "extra.yaml"]
+    },
+    {
+      "id": "shared-json",
+      "profile": "consumer-impact",
+      "runtime": "engine-matrix",
+      "acceptanceFile": "dist/test/gate-consumer-impact.test.js",
+      "cases": [
+        {
+          "id": "broken",
+          "name": "consumer-impact broken acceptance"
+        },
+        {
+          "id": "fixed",
+          "name": "consumer-impact fixed acceptance"
+        },
+        {
+          "id": "near-miss",
+          "name": "consumer-impact near-miss acceptance"
+        }
+      ],
+      "collectorImplementation": "prepared",
+      "nativeAcceptance": "pending",
+      "sourcePaths": [
+        "checktrail.json",
+        "lib/policy.json",
+        "lib/value.js",
+        "lib/value.test.js",
+        "other/value.test.js",
+        "app/value.test.js",
+        "site/value.test.js",
+        "app/package.json",
+        "lib/package.json",
+        "other/package.json",
+        "site/package.json"
+      ]
+    }
+  ],
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

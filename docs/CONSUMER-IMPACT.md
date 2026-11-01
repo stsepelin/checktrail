@@ -67,3 +67,8 @@ and broader native language/framework producer-consumer chains remain open.
 Unsupported import families continue to retain full validation. These
 observations do not authorize inference or field evaluation and make no
 review-quality claim.
+
+The [consumer witness evidence tooling](CONSUMER-WITNESS-EVIDENCE.md) prepares
+physical cross-family receipt collection from existing native witness bodies.
+Its finite manifest retains every required family; native qualification is still
+pending and unknown imports continue to retain the full validation plan.

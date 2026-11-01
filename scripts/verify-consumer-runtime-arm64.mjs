@@ -1,3 +1,4 @@
+import { bindProjectConsumerCollection } from "./consumer-witness-project-controller.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
@@ -139,6 +140,19 @@ try {
   const consumerRuntime = JSON.parse(output);
   assert.equal(consumerRuntime.profileEvidence.passed, 9);
   assert.equal(consumerRuntime.installedEvidence.profileEvidence.passed, 9);
+  consumerRuntime.consumerWitnesses = await bindProjectConsumerCollection(
+    root,
+    ["javascript", "shared-json"],
+    consumerRuntime.consumerWitnesses,
+    { kind: "oci-image-observation", id: image.Id },
+    {
+      ...consumerRuntime.runtime,
+      hosted: false,
+      hostAttestationPerformed: false,
+      toolVersion: "v" + consumerRuntime.runtime.node,
+    },
+    { requireSelectedSlot: true },
+  );
   assert.equal(consumerRuntime.runtime.containerImageId, image.Id);
   assert.equal(consumerRuntime.runtime.containerReference, image.Id);
   assert.equal(

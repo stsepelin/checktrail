@@ -3,6 +3,8 @@ import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
+import path from "node:path";
+import ts from "typescript";
 const moduleUrl = new URL(
   "../../scripts/consumer-runtime-evidence.mjs",
   import.meta.url,
@@ -741,4 +743,56 @@ await import(gate);const installed=cases.find(row=>row.name==='consumer-impact i
       platform,
     );
   }
+});
+
+test("consumer runtime installed runnable script entrypoints retain every static sibling module import", async () => {
+  const present = new Set<string>(consumerRuntimeHarnessFiles),
+    visited = new Set<string>(),
+    pending = [
+      "scripts/verify-consumer-runtime.mjs",
+      "scripts/verify-consumer-impact-whole-package.mjs",
+    ];
+  while (pending.length) {
+    const file = pending.shift()!;
+    if (visited.has(file)) continue;
+    visited.add(file);
+    assert.ok(
+      present.has(file),
+      "Missing installed runnable entrypoint " + file,
+    );
+    const text = await readFile(
+        new URL("../../" + file, import.meta.url),
+        "utf8",
+      ),
+      source = ts.createSourceFile(
+        file,
+        text,
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.JS,
+      );
+    for (const statement of source.statements) {
+      if (
+        !(
+          ts.isImportDeclaration(statement) || ts.isExportDeclaration(statement)
+        ) ||
+        !statement.moduleSpecifier ||
+        !ts.isStringLiteral(statement.moduleSpecifier)
+      )
+        continue;
+      const specifier = statement.moduleSpecifier.text;
+      if (!specifier.startsWith(".") || !specifier.endsWith(".mjs")) continue;
+      const target = path.posix.normalize(
+        path.posix.join(path.posix.dirname(file), specifier),
+      );
+      assert.ok(target.startsWith("scripts/"));
+      assert.ok(
+        present.has(target),
+        file + " imports missing installed harness " + target,
+      );
+      pending.push(target);
+    }
+  }
+  assert.ok(visited.has("scripts/consumer-witness-collection.mjs"));
+  assert.ok(visited.has("scripts/consumer-native-capture-registry.mjs"));
 });

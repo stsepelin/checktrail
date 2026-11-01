@@ -150,6 +150,8 @@ const isolatedCaseWorkers =
     [
       "tasks-matrix",
       "consumer-impact",
+      "consumer-native-windows-capture",
+
       "attempt-archives",
       "windows-resource-workloads",
       "resource-release-readiness",

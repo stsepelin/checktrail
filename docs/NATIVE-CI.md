@@ -897,6 +897,16 @@ prerequisite. Local development evidence is recorded separately in
 complete source and fresh-install receipts. This wiring does not qualify omitted
 native profiles, upstream producer closure or Gate A.
 
+Native consumer acceptance preserves each existing selected controller behind a
+fixed internal entrypoint. Successful jobs upload only sanitized current-source
+capsules; `ci-complete` downloads the exact retained producer artifacts from the same
+workflow run and reconciles the complete selected inventory after requiring every
+selected outer job to succeed. Unselected scopes remain visible and cannot close
+the consumer profile. Full native qualification still requires every frozen
+family/runtime scope, including the selected Clang witness; transport wiring and
+synthetic controls are not native qualification. See
+[CONSUMER-WITNESS-EVIDENCE.md](CONSUMER-WITNESS-EVIDENCE.md).
+
 ## Prepared whole attempt-archive cohort
 
 Separate `attempt-runtime` jobs require `verify-attempt-runtime.mjs`, with Go
@@ -928,3 +938,18 @@ observation has ten minutes and the final fresh-package host observation five.
 Lifecycle cancellation and output controls keep their fifteen-second native
 command limits, and the intentional timeout keeps four seconds. These are harness observation
 allowances, separate from project execution permission and native command limits.
+
+## Prepared independent evaluation setup
+
+The selected Tasks hosted jobs and existing pinned ARM64 controller now collect
+whole `independent-evaluation-protocol` source and fresh offline installed
+receipts. Shared full verification also requires the synthetic declaration,
+usage, capture, physical-storage, judgment, matching and runtime-binding controls;
+fresh installed usage intake runs separately. Native Windows requires the new
+literal private ACL batch profile, with read-only inspection and explicit public
+access refusal. No new CI jobs are introduced by this wiring.
+
+See [EVALUATION-ACCEPTANCE.md](EVALUATION-ACCEPTANCE.md) for the development
+observation and remaining qualification. The selected hosted runs, private
+prospective comparison freeze and full upstream build/license closure remain
+open. These controls invoke no model or field trial and do not measure quality.

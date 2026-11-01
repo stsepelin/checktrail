@@ -152,3 +152,161 @@ export function ensureWindowsTaskAccess(
   }
   validateWindowsTaskAccess(observed, kind);
 }
+
+export type WindowsTaskAccessTarget = {
+  filename: string;
+  kind: "file" | "directory";
+};
+const batchTargets = z
+  .array(
+    z.strictObject({
+      filename: z.string().min(4).max(32767),
+      kind: z.enum(["file", "directory"]),
+    }),
+  )
+  .min(1)
+  .max(8192);
+function checkedTargets(targets: readonly WindowsTaskAccessTarget[]) {
+  const parsed = batchTargets.parse(targets);
+  const seen = new Set<string>();
+  for (const target of parsed) {
+    const normalized = path.win32.normalize(target.filename).toLowerCase();
+    if (
+      !/^[A-Za-z]:\\/.test(target.filename) ||
+      /[\0\r\n:]/.test(target.filename.slice(2)) ||
+      normalized !== target.filename.toLowerCase() ||
+      seen.has(normalized)
+    )
+      throw Error(
+        "Windows ACL batch requires unique canonical local-drive paths",
+      );
+    seen.add(normalized);
+  }
+  return parsed;
+}
+/** Only consumes data observed by the fixed native inspector, never project declarations. */
+export function validateWindowsTaskAccessBatch(
+  value: unknown,
+  targets: readonly WindowsTaskAccessTarget[],
+) {
+  const expected = checkedTargets(targets);
+  const rows = z
+    .array(
+      z.strictObject({
+        index: z.number().int().min(0).max(8191),
+        filename: z.string().min(4).max(32767),
+        kind: z.enum(["file", "directory"]),
+        access: accessSchema,
+      }),
+    )
+    .length(expected.length)
+    .parse(value);
+  rows.forEach((row, index) => {
+    const target = expected[index]!;
+    if (
+      row.index !== index ||
+      row.filename !== target.filename ||
+      row.kind !== target.kind
+    )
+      throw Error("Windows ACL batch observation does not match its target");
+    validateWindowsTaskAccess(row.access, row.kind);
+  });
+}
+
+// Read-only batching amortizes the OS process without retaining permission decisions
+// between synchronous operator operations. This script cannot repair existing ACLs.
+const accessBatchScript = String.raw`
+$ErrorActionPreference = 'Stop'
+[Console]::InputEncoding = [Text.UTF8Encoding]::new($false)
+[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
+try {
+  [void][System.Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35')
+  $serializer = [System.Web.Script.Serialization.JavaScriptSerializer]::new()
+  $serializer.MaxJsonLength = 8388608
+  $serializer.RecursionLimit = 8
+  $request = $serializer.DeserializeObject([Console]::In.ReadToEnd())
+  if ($request.Count -lt 1 -or $request.Count -gt 8192) { throw 'invalid count' }
+  $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+  $rows = [System.Collections.Generic.List[object]]::new()
+  for ($index = 0; $index -lt $request.Count; $index++) {
+    $target = $request[$index]
+    if ($target.kind -eq 'directory') { $item = [System.IO.DirectoryInfo]::new($target.filename) }
+    elseif ($target.kind -eq 'file') { $item = [System.IO.FileInfo]::new($target.filename) }
+    else { throw 'invalid kind' }
+    if (!$item.Exists) { throw 'missing object' }
+    if (($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'reparse point' }
+    if ([bool]($item.Attributes -band [System.IO.FileAttributes]::Directory) -ne ($target.kind -eq 'directory')) { throw 'wrong type' }
+    $acl = $item.GetAccessControl()
+    $nativeRules = $acl.GetAccessRules($true, $true, [System.Security.Principal.SecurityIdentifier])
+    if ($nativeRules.Count -ne 1) { throw 'non-private rule count' }
+    $rules = [System.Collections.Generic.List[object]]::new()
+    foreach ($rule in $nativeRules) {
+      $rules.Add([ordered]@{sid=$rule.IdentityReference.Value;rights=[int]$rule.FileSystemRights;inheritance=[int]$rule.InheritanceFlags;propagation=[int]$rule.PropagationFlags;type=$rule.AccessControlType.ToString()})
+    }
+    $observed = [ordered]@{userSid=$identity.User.Value;tokenOwnerSid=$identity.Owner.Value;ownerSid=$acl.GetOwner([System.Security.Principal.SecurityIdentifier]).Value;protected=$acl.AreAccessRulesProtected;canonical=$acl.AreAccessRulesCanonical;rules=$rules.ToArray()}
+    $rows.Add([ordered]@{index=$index;filename=$target.filename;kind=$target.kind;access=$observed})
+  }
+  [Console]::Out.WriteLine($serializer.Serialize($rows.ToArray()))
+} catch {
+  [Console]::Error.WriteLine('Windows private ACL batch inspection unavailable')
+  exit 1
+}
+`;
+
+export function ensureWindowsTaskAccessBatch(
+  targets: readonly WindowsTaskAccessTarget[],
+): void {
+  if (process.platform !== "win32")
+    throw Error("Windows task ACL inspection requires Windows");
+  const selected = checkedTargets(targets);
+  for (const target of selected) {
+    const stat = lstatSync(target.filename);
+    if (
+      stat.isSymbolicLink() ||
+      (target.kind === "directory" ? !stat.isDirectory() : !stat.isFile()) ||
+      realpathSync(target.filename).toLowerCase() !==
+        target.filename.toLowerCase()
+    )
+      throw Error("Windows private storage rejects linked or mistyped paths");
+  }
+  const systemRoot = windowsEnvironment(process.env).SYSTEMROOT;
+  if (!systemRoot || !/^[A-Za-z]:\\/.test(systemRoot))
+    throw Error("Windows task ACL inspector unavailable");
+  const executable = path.win32.join(
+    systemRoot,
+    "System32/WindowsPowerShell/v1.0/powershell.exe",
+  );
+  if (
+    realpathSync(executable).toLowerCase() !== executable.toLowerCase() ||
+    !lstatSync(executable).isFile()
+  )
+    throw Error("Windows task ACL inspector unavailable");
+  const input = JSON.stringify(selected);
+  if (Buffer.byteLength(input) > 8388608)
+    throw Error("Windows ACL batch input exceeds byte bound");
+  let observed: unknown;
+  try {
+    const output = execFileSync(
+      executable,
+      [
+        "-NoProfile",
+        "-NonInteractive",
+        "-EncodedCommand",
+        Buffer.from(accessBatchScript, "utf16le").toString("base64"),
+      ],
+      {
+        encoding: "utf8",
+        input,
+        env: { SYSTEMROOT: systemRoot },
+        cwd: path.win32.dirname(executable),
+        windowsHide: true,
+        timeout: 60000,
+        maxBuffer: 8388608,
+      },
+    );
+    observed = JSON.parse(output.replace(/^\uFEFF/, ""));
+  } catch {
+    throw Error("Windows private ACL batch inspection unavailable");
+  }
+  validateWindowsTaskAccessBatch(observed, selected);
+}

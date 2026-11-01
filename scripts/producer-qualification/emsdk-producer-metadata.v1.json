@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "state": "source-only-metadata-catalog-pending-network-review",
+  "catalogId": "emsdk-upstream-metadata-v1",
+  "emscriptenReleasesSourceCommit": "b412b6307e541b93dd93f01b61181e15c17302ec",
+  "roots": [
+    {
+      "id": "v8",
+      "repository": "https://chromium.googlesource.com/v8/v8",
+      "commit": "b74cc9a7cf395b7ab032986afebc9220fe7f4b20"
+    },
+    {
+      "id": "binaryen",
+      "repository": "https://chromium.googlesource.com/external/github.com/WebAssembly/binaryen",
+      "commit": "cf756c92997182276122c2f0a9ac567d2d39ef42"
+    }
+  ],
+  "roles": [
+    {
+      "id": "v8-commit",
+      "root": "v8",
+      "kind": "commit",
+      "url": "https://chromium.googlesource.com/v8/v8/+/b74cc9a7cf395b7ab032986afebc9220fe7f4b20?format=JSON",
+      "maximumWireBytes": 1048576
+    },
+    {
+      "id": "v8-root",
+      "root": "v8",
+      "kind": "tree",
+      "url": "https://chromium.googlesource.com/v8/v8/+/b74cc9a7cf395b7ab032986afebc9220fe7f4b20/?format=JSON",
+      "maximumWireBytes": 1048576
+    },
+    {
+      "id": "v8-license",
+      "root": "v8",
+      "kind": "blob",
+      "path": "LICENSE",
+      "url": "https://chromium.googlesource.com/v8/v8/+/b74cc9a7cf395b7ab032986afebc9220fe7f4b20/LICENSE?format=TEXT",
+      "requiredTreeEntry": true,
+      "maximumWireBytes": 2097152
+    },
+    {
+      "id": "v8-deps",
+      "root": "v8",
+      "kind": "blob",
+      "path": "DEPS",
+      "url": "https://chromium.googlesource.com/v8/v8/+/b74cc9a7cf395b7ab032986afebc9220fe7f4b20/DEPS?format=TEXT",
+      "requiredTreeEntry": true,
+      "maximumWireBytes": 2097152
+    },
+    {
+      "id": "binaryen-commit",
+      "root": "binaryen",
+      "kind": "commit",
+      "url": "https://chromium.googlesource.com/external/github.com/WebAssembly/binaryen/+/cf756c92997182276122c2f0a9ac567d2d39ef42?format=JSON",
+      "maximumWireBytes": 1048576
+    },
+    {
+      "id": "binaryen-root",
+      "root": "binaryen",
+      "kind": "tree",
+      "url": "https://chromium.googlesource.com/external/github.com/WebAssembly/binaryen/+/cf756c92997182276122c2f0a9ac567d2d39ef42/?format=JSON",
+      "maximumWireBytes": 1048576
+    },
+    {
+      "id": "binaryen-license",
+      "root": "binaryen",
+      "kind": "blob",
+      "path": "LICENSE",
+      "url": "https://chromium.googlesource.com/external/github.com/WebAssembly/binaryen/+/cf756c92997182276122c2f0a9ac567d2d39ef42/LICENSE?format=TEXT",
+      "requiredTreeEntry": true,
+      "maximumWireBytes": 2097152
+    },
+    {
+      "id": "binaryen-gitmodules",
+      "root": "binaryen",
+      "kind": "blob",
+      "path": ".gitmodules",
+      "url": "https://chromium.googlesource.com/external/github.com/WebAssembly/binaryen/+/cf756c92997182276122c2f0a9ac567d2d39ef42/.gitmodules?format=TEXT",
+      "requiredTreeEntry": false,
+      "maximumWireBytes": 2097152
+    }
+  ],
+  "allowedHost": "chromium.googlesource.com",
+  "allowedRedirects": 0,
+  "limits": {
+    "phaseMs": 120000,
+    "requestMs": 15000,
+    "writeReserveMs": 10000,
+    "wireBytes": 16777216,
+    "retainedBytes": 33554432,
+    "reserveDiskBytes": 33554432,
+    "jsonDepth": 64,
+    "jsonNodes": 32768,
+    "treeEntries": 2048,
+    "decodedBlobBytes": 1572864
+  },
+  "localArchiveMetadata": {
+    "artifactId": "emscripten-source",
+    "sourceCommit": "09f52557f0d48b65b8c724853ed8f4e8bf80e669",
+    "bytes": 34344232,
+    "sha256": "f34167d75a3ae556d0a8cf4803c4e78c347e6f39d3afcc93cb201201afa3e2e3",
+    "maximumSelectedFileBytes": 4194304,
+    "selectedPaths": [
+      "bootstrap.py",
+      "tools/install.py",
+      "package-lock.json",
+      "package.json",
+      "LICENSE"
+    ],
+    "executeContents": false
+  },
+  "reusedOriginalArtifacts": [
+    {
+      "id": "tree-sitter-source",
+      "file": "original/tree-sitter-source.archive",
+      "bytes": 1025988,
+      "sha256": "71bbc0a7a98013b519b104e281e6ad98524a438c8c822a095e6f27de05d15562",
+      "url": "https://codeload.github.com/tree-sitter/tree-sitter/tar.gz/10eb5ac119eec9cb4267a8e035066473983f5f3a"
+    },
+    {
+      "id": "github-runtime-release",
+      "file": "original/github-runtime-release.archive",
+      "bytes": 1176564,
+      "sha256": "0a1c8c6a369c5483bbc5385ef1ae9a0d68793553c59f83458fa5973f5de0568a",
+      "url": "https://github.com/tree-sitter/tree-sitter/releases/download/v0.27.1/web-tree-sitter.tar.gz"
+    },
+    {
+      "id": "npm-runtime-package",
+      "file": "original/npm-runtime-package.archive",
+      "bytes": 1162725,
+      "sha256": "7346db659eb870a5284242851ab7aedea41d7397b8c7e95ff8d9ec5b5a80270f",
+      "url": "https://registry.npmjs.org/web-tree-sitter/-/web-tree-sitter-0.27.1.tgz"
+    },
+    {
+      "id": "emscripten-sdk",
+      "file": "original/emscripten-sdk.archive",
+      "bytes": 353229388,
+      "sha256": "c0ed25c30e1d747072de0c9053cde27ca83a8d2424e8bc6b7d39dccf42fcba35",
+      "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/linux/b412b6307e541b93dd93f01b61181e15c17302ec/wasm-binaries.tar.xz"
+    },
+    {
+      "id": "bootstrap-clang",
+      "file": "original/bootstrap-clang.archive",
+      "bytes": 55581368,
+      "sha256": "50e91dcfe35b3c2bd1b16c03a17d6d144bcde9d0936d3c54c5a3b9ccedce2583",
+      "url": "https://commondatastorage.googleapis.com/chromium-browser-clang/Linux_x64/clang-llvmorg-22-init-6852-g2384a6a2-1.tar.xz"
+    },
+    {
+      "id": "emscripten-source",
+      "file": "original/emscripten-source.archive",
+      "bytes": 34344232,
+      "sha256": "f34167d75a3ae556d0a8cf4803c4e78c347e6f39d3afcc93cb201201afa3e2e3",
+      "url": "https://codeload.github.com/emscripten-core/emscripten/tar.gz/09f52557f0d48b65b8c724853ed8f4e8bf80e669"
+    },
+    {
+      "id": "binaryen-source",
+      "file": "original/binaryen-source.archive",
+      "bytes": 5635344,
+      "sha256": "ae68318b0a6127a0684a534c5563397ab04f18d9e8b9db84e6b830f3a0ccffff",
+      "url": "https://codeload.github.com/WebAssembly/binaryen/tar.gz/cf756c92997182276122c2f0a9ac567d2d39ef42"
+    },
+    {
+      "id": "llvm-source",
+      "file": "original/llvm-source.archive",
+      "bytes": 249946873,
+      "sha256": "155db3c79fd849ff0965e36ed7397974604ec5e8656489d97653aa3fd9bcac3a",
+      "url": "https://codeload.github.com/llvm/llvm-project/tar.gz/3388d40684742e950b3c5d1d2dafe5a40695cfc1"
+    },
+    {
+      "id": "node-bootstrap",
+      "file": "original/node-bootstrap.archive",
+      "bytes": 30425588,
+      "sha256": "f4cb75bb036f0d0eddf6b79d9596df1aaab9ddccd6a20bf489be5abe9467e84e",
+      "url": "https://webassembly.storage.googleapis.com/emscripten-releases-builds/deps/node-v22.16.0-linux-x64.tar.xz"
+    },
+    {
+      "id": "cmake-bootstrap",
+      "file": "original/cmake-bootstrap.archive",
+      "bytes": 44689957,
+      "sha256": "a19aa9fcf368e9d923cdb29189528f0fe00a0d08e752ba4e547af91817518696",
+      "url": "https://wasm.storage.googleapis.com/cmake-3.21.3-linux-x86_64.tar.gz"
+    },
+    {
+      "id": "linux-sysroot",
+      "file": "original/linux-sysroot.archive",
+      "bytes": 57245972,
+      "sha256": "01cffcc3263e8372ba07864d3475612dea03eb708f1d899ce8caae72a357d110",
+      "url": "https://wasm.storage.googleapis.com/sysroot_debian_stretch_amd64_v2.tar.xz"
+    },
+    {
+      "id": "ninja-bootstrap",
+      "file": "original/ninja-bootstrap.archive",
+      "bytes": 182403,
+      "sha256": "3f1f1cc0f69a1bcfdf67fb6c2bc7419b1dd812bb8d0e79afa9bfa8a3553b5082",
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/ninja/linux-amd64/+/version:2@1.12.1.chromium.4"
+    }
+  ],
+  "retainedIdentityDoesNotImplySignerOrProducerBuildClosure": true,
+  "unresolvedRoles": [
+    {
+      "id": "v8-clang-updater-and-helper-closure",
+      "authority": "Only resolve from admitted fixed V8 DEPS/tree metadata; add exact source URLs in a separately reviewed catalog revision",
+      "state": "unresolved-no-request-authorized"
+    },
+    {
+      "id": "binaryen-nested-gitlinks",
+      "authority": "Bind .gitmodules paths/URLs to exact observed tree Gitlink commits; no latest/branch substitution",
+      "state": "unresolved-no-request-authorized"
+    },
+    {
+      "id": "depot-tools-history-and-bootstrap",
+      "authority": "Historical recipe/caller pin or explicit prospective operator freeze still needed",
+      "state": "unknown-no-request-authorized"
+    }
+  ],
+  "realGitCheckoutIndexAndHistoryVerified": false,
+  "originalDepsTransitionExecuted": false,
+  "upstreamCodeExecuted": false,
+  "networkAcquisitionPerformed": false,
+  "producerBuildReproduced": false,
+  "gateAComplete": false
+}

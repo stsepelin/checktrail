@@ -1,4 +1,10 @@
 import assert from "node:assert/strict";
+import { captureConsumerWitnessController } from "./consumer-witness-controller.mjs";
+import {
+  bindConsumerWitnessController,
+  inspectConsumerWitnesses,
+  requireQualifiedConsumerWitnessFamily,
+} from "./consumer-witness-evidence.mjs";
 import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath, URL } from "node:url";
@@ -61,20 +67,63 @@ const runtime = JSON.parse(
     "node",
     "--input-type=module",
     "-e",
-    'import{execFileSync}from"node:child_process";import{readFileSync}from"node:fs";import{createHash}from"node:crypto";const yamlURL=import.meta.resolve("yaml"),pkg=JSON.parse(readFileSync(new URL("../package.json",yamlURL),"utf8")),files=["/usr/local/bin/node","/usr/bin/git"];console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,yamlVersion:pkg.version,git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8"),toolBytes:files.map(file=>{const bytes=readFileSync(file);return{file,bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex")};}),yamlEntry:{file:"node_modules/yaml/dist/index.js",bytes:readFileSync(new URL(yamlURL)).length,sha256:createHash("sha256").update(readFileSync(new URL(yamlURL))).digest("hex")}}));',
+    'import{execFileSync}from"node:child_process";import{readFileSync}from"node:fs";import{createHash}from"node:crypto";import{observeConsumerWitnessTool,observeConsumerWitnessDataInputs}from"./dist/test/consumer-witness-fixture.js";const yamlURL=import.meta.resolve("yaml"),pkg=JSON.parse(readFileSync(new URL("../package.json",yamlURL),"utf8")),files=["/usr/local/bin/node","/usr/bin/git"];console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,yamlVersion:pkg.version,git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8"),nodeExecutableSha256:createHash("sha256").update(readFileSync(process.execPath)).digest("hex"),distributionSha256:createHash("sha256").update(readFileSync("/etc/os-release")).digest("hex"),tool:await observeConsumerWitnessTool("yaml"),dataInputs:await observeConsumerWitnessDataInputs("yaml"),toolBytes:files.map(file=>{const bytes=readFileSync(file);return{file,bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex")};}),yamlEntry:{file:"node_modules/yaml/dist/index.js",bytes:readFileSync(new URL(yamlURL)).length,sha256:createHash("sha256").update(readFileSync(new URL(yamlURL))).digest("hex")}}));',
   ]),
 );
 assert.equal(runtime.node, "v22.23.2");
 assert.equal(runtime.platform, "linux");
 assert.equal(runtime.arch, "arm64");
 assert.equal(runtime.yamlVersion, "2.9.1");
-const source = JSON.parse(
+const consumerRuntime = {
+  ...runtime,
+  node: runtime.node.slice(1),
+  architecture: runtime.arch,
+  hostAttestationPerformed: false,
+  toolVersion: runtime.yamlVersion,
+};
+const consumerExpected = await captureConsumerWitnessController(
+  repository,
+  "yaml",
+  { kind: "oci-image-observation", id: image },
+  consumerRuntime,
+  runtime.tool,
+);
+const consumerCollection = JSON.parse(
   run([
     "/bin/sh",
     "-c",
-    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs context-yaml",
+    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-consumer-witness-profile.mjs context-yaml",
   ]),
 );
+const source = consumerCollection.evidence;
+consumerCollection.bindings = bindConsumerWitnessController(
+  consumerCollection,
+  consumerExpected,
+);
+consumerCollection.coverage = inspectConsumerWitnesses(
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-consumer-witnesses.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "docs/gate-a-profiles.v1.json"),
+      "utf8",
+    ),
+  ),
+  JSON.parse(
+    await readFile(
+      path.join(repository, "scripts/required-native-tests.json"),
+      "utf8",
+    ),
+  ),
+  consumerCollection.observations,
+  consumerCollection.bindings,
+  consumerCollection.attemptRecords,
+);
+requireQualifiedConsumerWitnessFamily(consumerCollection.coverage, "yaml");
 assert.equal(source.complete, true);
 assert.equal(source.passed, 9);
 // Mutations operate only on an owned compiled copy, preserving captured source bytes.
@@ -119,6 +168,7 @@ process.stdout.write(
     runtime,
     image,
     source,
+    consumerWitnesses: consumerCollection,
     guards,
     installed,
     environment: {

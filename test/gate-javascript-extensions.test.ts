@@ -26,6 +26,10 @@ import {
   source,
   loaderFiles,
 } from "./javascript-extensions-fixture.js";
+import {
+  beginConsumerWitness,
+  finishConsumerProjectWitness,
+} from "./consumer-witness-fixture.js";
 const skip = available
   ? false
   : "Selected native JavaScript extension platform unavailable";
@@ -35,31 +39,42 @@ const raw = (report: Awaited<ReturnType<typeof validate>>, id: string) =>
 const policy = (checks: string[]) =>
   JSON.stringify({ schemaVersion: 1, projects: [{ path: ".", checks }] });
 test("javascript-extensions broken acceptance", { skip }, async (t) => {
-  for (const [file, text, id] of [
-    ["processed.js", source["processed.js"] + "debugger;", "javascript.eslint"],
+  for (const [file, text, id, scenario] of [
+    [
+      "processed.js",
+      source["processed.js"] + "debugger;",
+      "javascript.eslint",
+      "eslint-debugger",
+    ],
     [
       "esm.test.mts",
       loaderFiles["esm.test.mts"].replace("actual,42", "actual,43"),
       "javascript.node-test",
+      "esm-sentinel",
     ],
     [
       "cjs.test.cts",
       loaderFiles["cjs.test.cts"].replace("actual,42", "actual,43"),
       "javascript.node-test",
+      "cjs-sentinel",
     ],
     [
       "lib/value.ts",
       'export const value: number="wrong";',
       "javascript.vite-library",
+      "producer-type",
     ],
     [
       "lib/value.ts",
       'export const value: string="producer changed";',
       "javascript.vite-library",
+      "consumer-type",
     ],
   ]) {
     const root = await project(t, { ...source, [file!]: text! });
+    const capture = await beginConsumerWitness(root, "typescript", "broken");
     const report = await validate(root, { trusted: true });
+    await finishConsumerProjectWitness(capture, report, scenario!);
     assert.equal(report.outcome, "failed");
     assert.equal(report.checks.find((c) => c.id === id)!.status, "failed");
     if (id === "javascript.eslint") {
@@ -86,7 +101,9 @@ test("javascript-extensions broken acceptance", { skip }, async (t) => {
 });
 test("javascript-extensions fixed acceptance", { skip }, async (t) => {
   const root = await project(t);
+  const capture = await beginConsumerWitness(root, "typescript", "fixed");
   const report = await validate(root, { trusted: true });
+  await finishConsumerProjectWitness(capture, report, "library");
   assert.equal(
     report.outcome,
     "passed",
@@ -144,7 +161,10 @@ test("javascript-extensions near-miss acceptance", { skip }, async (t) => {
     "lib/value.ts":
       "// Original valid adjacent label.\nexport const value: number=42;",
   });
-  assert.equal((await validate(root, { trusted: true })).outcome, "passed");
+  const capture = await beginConsumerWitness(root, "typescript", "near-miss");
+  const report = await validate(root, { trusted: true });
+  await finishConsumerProjectWitness(capture, report, "library");
+  assert.equal(report.outcome, "passed");
   await writeFile(
     path.join(root, "lib/unreachable.ts"),
     "export const unrelated=7;",

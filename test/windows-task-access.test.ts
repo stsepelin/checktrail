@@ -2,10 +2,12 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { mkdir, readFile, realpath, writeFile } from "node:fs/promises";
 import ts from "typescript";
+import { z } from "zod";
 import path from "node:path";
 import { test } from "node:test";
 import {
   ensureWindowsTaskAccess,
+  ensureWindowsTaskAccessBatch,
   validateWindowsTaskAccess,
 } from "../src/windows-task-access.js";
 import { openTaskStore } from "../src/task-store.js";
@@ -90,18 +92,6 @@ test("Windows task ACL validation refuses each private-access boundary independe
     ),
   );
 });
-
-test(
-  "Windows task ACL inspection remains unavailable on a non-Windows host",
-  { skip: process.platform === "win32" },
-  () => {
-    assert.throws(
-      () =>
-        ensureWindowsTaskAccess("C:\\original-synthetic", "directory", false),
-      /requires Windows/,
-    );
-  },
-);
 
 const native = process.platform === "win32";
 function changeAcl(filename: string) {
@@ -267,3 +257,53 @@ test("Windows task ACL shipped scripts use fixed framework JSON and ACL APIs wit
     assert.ok(scripts[0]!.includes("$item.SetAccessControl($acl)"));
   }
 });
+
+test(
+  "native Windows private ACL batches inspect literal file and directory targets and refuse public access without repair",
+  { skip: !native },
+  async (t) => {
+    const { setPrivateFixtureAccess } =
+      await import("./windows-private-fixture.js");
+    const parent = await realpath(await fixture(t, {}));
+    const directory = path.join(parent, "original-'[literal]-🧪");
+    await mkdir(directory);
+    await setPrivateFixtureAccess(directory, "directory");
+    const filename = path.join(directory, "input.blob");
+    await writeFile(filename, "Original bounded private input");
+    const targets = [
+      { filename: directory, kind: "directory" },
+      { filename, kind: "file" },
+    ] as const;
+    ensureWindowsTaskAccessBatch(targets);
+    await setPrivateFixtureAccess(filename, "file", false);
+    const batchRefusal = {
+      message: "Windows private ACL batch inspection unavailable",
+    };
+    assert.throws(() => ensureWindowsTaskAccessBatch(targets), batchRefusal);
+    // The extra public ACE reaches the single inspector's one-rule schema first.
+    assert.throws(
+      () => ensureWindowsTaskAccess(filename, "file", false),
+      (error: unknown) => {
+        assert.ok(error instanceof z.ZodError);
+        assert.equal(error.issues.length, 1);
+        const issue = error.issues[0]!;
+        assert.deepEqual(
+          {
+            code: issue.code,
+            path: issue.path,
+            maximum: "maximum" in issue ? issue.maximum : null,
+          },
+          { code: "too_big", path: ["rules"], maximum: 1 },
+        );
+        return true;
+      },
+    );
+    assert.throws(() => ensureWindowsTaskAccessBatch(targets), batchRefusal);
+    assert.equal(
+      await readFile(filename, "utf8"),
+      "Original bounded private input",
+    );
+    await setPrivateFixtureAccess(filename, "file");
+    ensureWindowsTaskAccessBatch(targets);
+  },
+);

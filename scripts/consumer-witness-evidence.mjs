@@ -1,0 +1,1109 @@
+import {
+  projectConsumerFamilies,
+  projectConsumerPaths,
+  projectConsumerScenarios,
+  projectConsumerLogicalWitnesses,
+  projectConsumerObservationKey,
+  inspectProjectWitness,
+} from "./consumer-witness-project.mjs";
+import { inspectSwiftWitness } from "./consumer-witness-swift.mjs";
+import {
+  dataConsumerFamilies,
+  dataConsumerClass,
+  normalizeDataInputs,
+  inspectDataWitness,
+} from "./consumer-witness-data.mjs";
+import {
+  managedConsumerFamilies,
+  inspectManagedWitness,
+} from "./consumer-witness-managed.mjs";
+import {
+  jvmConsumerFamilies,
+  inspectJvmWitness,
+} from "./consumer-witness-jvm.mjs";
+import { Buffer } from "node:buffer";
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { isDeepStrictEqual } from "node:util";
+import {
+  inspectConsumerAttemptRecords,
+  consumerWitnessSourceSha256,
+  requireConsumerWitnessAttempts,
+} from "./consumer-witness-attempts.mjs";
+const hash = (value) => createHash("sha256").update(value).digest("hex");
+const sha = (value) =>
+  typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
+const families = Object.freeze([
+  "javascript",
+  "typescript",
+  "python",
+  "go",
+  "php",
+  "rust",
+  "java",
+  "kotlin",
+  "scala",
+  "csharp",
+  "fsharp",
+  "vb",
+  "ruby",
+  "swift",
+  "c",
+  "cpp",
+  "hcl",
+  "yaml",
+  "shared-json",
+]);
+const variants = Object.freeze(["broken", "fixed", "near-miss"]);
+const sourcePaths = Object.freeze({
+  go: ["policy/policy.go", "consumer/consumer.go"],
+  python: ["pkg/policy.py", "pkg/consumer.py"],
+  php: ["policy/policy.php", "consumer/consumer.php"],
+  rust: ["src/policy.rs", "src/consumer.rs", "src/lib.rs"],
+  ruby: ["src/policy/Policy.rb", "src/consumer/Consumer.rb"],
+  c: ["src/policy/rules.h", "src/consumer/use.c"],
+  cpp: ["src/policy/rules.h", "src/consumer/use.cpp"],
+  java: ["src/policy/Policy.java", "src/consumer/Consumer.java"],
+  kotlin: ["src/policy/Policy.kt", "src/consumer/Consumer.kt"],
+  scala: ["src/policy/Policy.scala", "src/consumer/Consumer.scala"],
+  csharp: ["src/policy/Policy.cs", "src/consumer/Consumer.cs"],
+  fsharp: ["src/policy/Policy.fs", "src/consumer/Consumer.fs"],
+  vb: ["src/policy/Policy.vb", "src/consumer/Consumer.vb"],
+  hcl: ["policy/rules.tf", "main.tf"],
+  yaml: ["policy.yaml", "extra.yaml"],
+  swift: ["src/policy/Policy.swift", "src/consumer/Consumer.swift"],
+  ...projectConsumerPaths,
+});
+/** Selected declarations are checked against the inventory, never treated as executions. */
+export function selectConsumerWitnessRequirements(
+  manifest,
+  inventory,
+  profiles,
+) {
+  assert.equal(manifest?.schemaVersion, 1);
+  assert.equal(manifest.profile, "selected-native-consumer-witnesses-v1");
+  assert.equal(manifest.inventoryScopeSha256, inventory.scopeSha256);
+  assert.deepEqual(
+    manifest.families.map((row) => row.id),
+    families,
+  );
+  for (const flag of [
+    "gateAComplete",
+    "qualityAssessed",
+    "inferenceInvoked",
+    "fieldEvaluationExecuted",
+  ])
+    assert.equal(manifest[flag], false);
+  return manifest.families.map((row) => {
+    const id =
+      row.id === "javascript" || row.id === "shared-json"
+        ? "consumer-impact"
+        : row.id === "typescript"
+          ? "javascript-extensions"
+          : "context-" + row.id;
+    assert.equal(row.profile, id);
+    const found = inventory.extensionProfiles.filter(
+      (profile) => profile.id === id,
+    );
+    assert.equal(found.length, 1);
+    const profile = found[0];
+    assert.equal(row.runtime, profile.runtime);
+    assert.equal(row.acceptanceFile, profile.acceptanceFile);
+    const expected = variants.map((id) => {
+      const cases = profile.acceptanceCases.filter((entry) => entry.id === id);
+      assert.equal(cases.length, 1);
+      const item = { id, name: cases[0].name };
+      assert.ok(
+        profiles[row.profile].some(
+          (entry) =>
+            entry.file === row.acceptanceFile && entry.name === item.name,
+        ),
+      );
+      return item;
+    });
+    assert.deepEqual(row.cases, expected);
+    assert.ok(["prepared", "pending"].includes(row.collectorImplementation));
+    assert.equal(row.nativeAcceptance, "pending");
+    if (row.collectorImplementation === "prepared") {
+      assert.ok(
+        Object.hasOwn(sourcePaths, row.id),
+        "Consumer collector implementation is unavailable",
+      );
+      assert.deepEqual(row.sourcePaths, sourcePaths[row.id]);
+    } else assert.equal(row.sourcePaths, null);
+    return { ...row, cases: expected };
+  });
+}
+const fileDescriptor = (value) => {
+  assert.ok(
+    value && typeof value.path === "string" && value.path.length <= 512,
+  );
+  assert.ok(
+    !value.path.startsWith("/") &&
+      !/[\\\0:]/.test(value.path) &&
+      value.path
+        .split("/")
+        .every((part) => part && part !== "." && part !== ".."),
+  );
+  assert.ok(
+    Number.isSafeInteger(value.bytes) &&
+      value.bytes >= 0 &&
+      value.bytes <= 1048576,
+  );
+  assert.ok(sha(value.sha256));
+};
+function stream(value, maximum = 65536) {
+  assert.ok(
+    value &&
+      typeof value.base64 === "string" &&
+      value.base64.length <= 4 * Math.ceil(maximum / 3),
+  );
+  assert.ok(
+    Number.isSafeInteger(value.bytes) &&
+      value.bytes >= 0 &&
+      value.bytes <= maximum,
+  );
+  assert.ok(sha(value.sha256));
+  const bytes = Buffer.from(value.base64, "base64");
+  assert.equal(bytes.toString("base64"), value.base64);
+  assert.equal(bytes.length, value.bytes);
+  assert.equal(hash(bytes), value.sha256);
+  return bytes;
+}
+function consumerBindingReason(row, binding, family, inventory) {
+  const origin = row.origin;
+  // These are observations from the trusted native controller, not host
+  // attestations. Neither a version label nor an environment slot can fill them.
+  const observed = row.runtime;
+  const declared = inventory.runtimeProfiles.find(
+    (runtime) => runtime.id === binding.slot,
+  );
+  if (
+    !declared ||
+    (family.runtime !== "engine-matrix" && family.runtime !== binding.slot) ||
+    !isDeepStrictEqual(
+      [observed.node, observed.platform, observed.architecture],
+      [declared.node, declared.platform, declared.architecture],
+    )
+  ) {
+    return "unselected-runtime";
+  }
+  if (binding.toolVersionMatched !== true) {
+    return "unselected-tool-version";
+  }
+  const image = binding.runtimeImage;
+  const hostedLinuxImageOS =
+    observed.architecture === "arm64" ? "ubuntu24-arm64" : "ubuntu24";
+  if (
+    !image ||
+    (image.kind === "oci-image-observation"
+      ? !/^sha256:[a-f0-9]{64}$/.test(image.id ?? "") ||
+        !sha(image.definitionSha256)
+      : image.kind === "hosted-runner-metadata"
+        ? (projectConsumerFamilies.includes(row.family)
+            ? observed.platform === "darwin"
+              ? image.imageOS !== "macos26"
+              : observed.platform === "win32"
+                ? !/^win25(?:-vs2026)?$/.test(image.imageOS ?? "")
+                : image.imageOS !== hostedLinuxImageOS
+            : image.imageOS !== hostedLinuxImageOS) ||
+          !/^20[0-9]{6}\.[0-9]+\.[0-9]+$/.test(image.imageVersion ?? "") ||
+          (observed.platform === "linux"
+            ? !sha(image.distributionSha256)
+            : image.distributionSha256 !== null) ||
+          image.metadataAttested !== false
+        : true)
+  ) {
+    return "native-image-unobserved";
+  }
+  for (const key of [
+    "engineSha256",
+    "harnessSha256",
+    "requirementsSha256",
+    "acceptanceSha256",
+    "toolInputsSha256",
+    "packageManifestSha256",
+  ])
+    assert.ok(sha(binding[key]), "Missing native controller identity: " + key);
+  assert.equal(
+    binding.observationSha256,
+    hash(JSON.stringify(row)),
+    "Foreign witness controller binding",
+  );
+  for (const field of [
+    "engineSha256",
+    "harnessSha256",
+    "requirementsSha256",
+    "acceptanceSha256",
+    "packageManifestSha256",
+  ])
+    assert.equal(
+      binding[field],
+      row.code?.[field],
+      "Source/installed witness code binding differs: " + field,
+    );
+  assert.equal(row.code.installedOutsidePackage, origin === "installed");
+  assert.equal(
+    binding.toolExecutableSha256,
+    row.tool.sha256,
+    "Native tool observation differs",
+  );
+  if (dataConsumerFamilies.includes(row.family))
+    assert.equal(
+      binding.dataInputsSha256,
+      hash(JSON.stringify(normalizeDataInputs(row.data.inputs))),
+    );
+  if (row.family === "swift")
+    assert.equal(
+      binding.swiftInputsSha256,
+      hash(JSON.stringify(row.swift.inputs)),
+    );
+  if (managedConsumerFamilies.includes(row.family)) {
+    assert.equal(
+      binding.managedInputsSha256,
+      hash(JSON.stringify(row.managed.inputs)),
+    );
+    assert.equal(
+      binding.generatedManifestSha256,
+      row.managed.generated.manifestSha256,
+    );
+  }
+  if (jvmConsumerFamilies.includes(row.family)) {
+    assert.equal(binding.jvmInputsSha256, hash(JSON.stringify(row.jvm.inputs)));
+    assert.equal(
+      binding.generatedManifestSha256,
+      row.jvm.generated.manifestSha256,
+    );
+  }
+  if (["c", "cpp"].includes(row.family)) {
+    const nativeTool = binding.nativeTool;
+    assert.equal(row.tool.name, row.family === "c" ? "gcc" : "g++");
+    assert.equal(nativeTool?.name, row.tool.name);
+    assert.equal(nativeTool.role, "supplementary-native-compiler");
+    assert.equal(nativeTool.version, "14.2.0");
+    assert.equal(nativeTool.target, "aarch64-linux-gnu");
+    assert.match(nativeTool.identity, /Debian 14\.2\.0-19/);
+    assert.equal(nativeTool.qualifiesSelectedClang, false);
+  }
+  assert.equal(binding.complete, true);
+  assert.equal(binding.skipped, false);
+  assert.equal(binding.installedOutsidePackage, origin === "installed");
+  assert.equal(binding.hostAttestationPerformed, false);
+  return null;
+}
+
+/** Reconcile retained native output; never infer a reached consumer from a passed callback name. */
+export function inspectConsumerWitnesses(
+  manifest,
+  inventory,
+  profiles,
+  observations,
+  bindings = [],
+  attemptRecords = [],
+) {
+  const required = selectConsumerWitnessRequirements(
+    manifest,
+    inventory,
+    profiles,
+  );
+  assert.ok(Array.isArray(observations) && observations.length <= 512);
+  assert.ok(Array.isArray(bindings) && bindings.length <= 256);
+  const expected = new Map(required.map((row) => [row.id, row]));
+  const attempts = inspectConsumerAttemptRecords(attemptRecords);
+  const usedAttempts = new Set();
+  const incompleteAttemptFamilies = new Set();
+  const reached = new Map();
+  const projectReached = new Map();
+  const projectDuplicateSlots = new Set();
+  const duplicates = new Set();
+  const issues = new Set();
+  let retainedBytes = 0;
+  for (const row of observations) {
+    assert.equal(row?.schemaVersion, 1);
+    assert.equal(
+      row.profile,
+      projectConsumerFamilies.includes(row.family)
+        ? "native-project-consumer-witness-observation-v1"
+        : dataConsumerFamilies.includes(row.family)
+          ? "native-data-consumer-witness-observation-v1"
+          : "original-consumer-witness-observation-v1",
+    );
+    const selected = expected.get(row.family);
+    assert.ok(selected, "Foreign consumer witness family");
+    assert.equal(
+      selected.collectorImplementation,
+      "prepared",
+      "Consumer family collector remains pending",
+    );
+    assert.ok(
+      Object.hasOwn(sourcePaths, row.family),
+      "Consumer family collector remains pending",
+    );
+    assert.ok(
+      variants.includes(row.variant),
+      "Foreign consumer witness variant",
+    );
+    assert.ok(["source", "installed"].includes(row.origin));
+    assert.ok(
+      ["canonical", "caller-change", "restored", "repeat"].includes(row.phase),
+    );
+    requireConsumerWitnessAttempts(row, attempts.records, usedAttempts);
+    assert.equal(row.nativeInvoked, true);
+    assert.equal(row.hostAttestationPerformed, false);
+    assert.equal(row.gateAComplete, false);
+    assert.ok(
+      Array.isArray(row.before) &&
+        row.before.length >= 2 &&
+        row.before.length <= 32,
+    );
+    assert.deepEqual(
+      row.after,
+      row.before,
+      "Consumer witness source changed during execution",
+    );
+    assert.deepEqual(
+      row.before.map((file) => file.path),
+      sourcePaths[row.family],
+    );
+    assert.ok(row.tool && sha(row.tool.sha256));
+    assert.equal(row.tool.afterSha256, row.tool.sha256);
+    const names = new Set();
+    for (const file of row.before) {
+      fileDescriptor(file);
+      assert.equal(names.has(file.path), false);
+      names.add(file.path);
+    }
+    if (projectConsumerFamilies.includes(row.family)) {
+      const values = row.attempts.map(
+        (reference) => attempts.records.get(reference.attemptId).value,
+      );
+      inspectProjectWitness(row, values);
+      assert.equal(row.compiler, null);
+      assert.ok(row.compilerLink === null || row.compilerLink === undefined);
+      assert.ok(row.jvm === null || row.jvm === undefined);
+      assert.ok(row.managed === null || row.managed === undefined);
+      assert.ok(row.swift === null || row.swift === undefined);
+      assert.equal(row.output.profile, "bounded-physical-process-output-v1");
+      const out = stream(row.output.stdout, 1048576),
+        err = stream(row.output.stderr, 1048576);
+      assert.equal(row.output.observedBytes, out.length + err.length);
+      assert.equal(row.output.completeForObservedStreams, true);
+      retainedBytes += out.length + err.length;
+      assert.ok(retainedBytes <= 16 * 1048576);
+      assert.ok(sha(row.runtime.nodeExecutableSha256));
+      if (row.phase === "canonical") {
+        const address = projectConsumerObservationKey(row);
+        if (projectReached.has(address)) {
+          issues.add("duplicate-canonical-witness");
+          duplicates.add(row.family);
+          projectDuplicateSlots.add(
+            JSON.stringify([row.family, row.runtime.slot]),
+          );
+        } else projectReached.set(address, row);
+      }
+      continue;
+    }
+    const invocation = row.invocation;
+    assert.ok(invocation && sha(invocation.executableSha256));
+    assert.ok(sha(invocation.argvSha256));
+    assert.equal(invocation.executableAfterSha256, invocation.executableSha256);
+    assert.equal(invocation.exitCode, 0);
+    assert.equal(invocation.errorCode, null);
+    assert.equal(invocation.signal, null);
+    assert.equal(invocation.timedOut, false);
+    assert.equal(invocation.cancelled, false);
+    assert.equal(invocation.truncated, false);
+    assert.equal(invocation.cleanupComplete, true);
+    const output = row.output;
+    assert.equal(output?.profile, "bounded-physical-process-output-v1");
+    assert.equal(output.completeForObservedStreams, true);
+    const maximum = row.family === "hcl" ? 1048576 : 65536;
+    const stdout = stream(output.stdout, maximum),
+      stderr = stream(output.stderr, maximum);
+    assert.equal(output.observedBytes, stdout.length + stderr.length);
+    if (!dataConsumerFamilies.includes(row.family))
+      assert.equal(stderr.length, 0);
+    retainedBytes += stdout.length + stderr.length;
+    assert.ok(
+      retainedBytes <= 16 * 1048576,
+      "Consumer witness aggregate output bound exceeded",
+    );
+    assert.ok(sha(row.runtime.nodeExecutableSha256));
+    assert.ok(
+      typeof row.runtime.platform === "string" &&
+        typeof row.runtime.architecture === "string" &&
+        typeof row.runtime.node === "string",
+    );
+    if (dataConsumerFamilies.includes(row.family)) {
+      inspectDataWitness(row);
+      assert.equal(row.compiler, null);
+      assert.ok(row.jvm === null || row.jvm === undefined);
+      assert.ok(row.managed === null || row.managed === undefined);
+      if (row.phase === "canonical") {
+        const address = JSON.stringify([row.family, row.variant, row.origin]);
+        if (reached.has(address)) {
+          issues.add("duplicate-canonical-witness");
+          duplicates.add(row.family);
+        } else reached.set(address, row);
+      }
+      continue;
+    }
+    // Output proof is computed from the actual witness response and independently
+    // source-bound by each finite collector; an arbitrary caller label is not proof.
+    assert.ok(
+      row.nativeResult &&
+        Array.isArray(row.nativeResult.consumers) &&
+        row.nativeResult.consumers.length ===
+          (["ruby", "csharp", "fsharp", "vb", "swift"].includes(row.family)
+            ? 3
+            : 2) &&
+        row.nativeResult.consumers.every((v) => typeof v === "boolean"),
+    );
+    const native = JSON.parse(stdout.toString("utf8"));
+    const consumers =
+      row.family === "go" ? native.answers?.slice(-2) : native.consumers;
+    assert.deepEqual(consumers, row.nativeResult.consumers);
+    const expectedConsumers =
+      row.phase === "caller-change"
+        ? [false, true]
+        : ["ruby", "csharp", "fsharp", "vb", "swift"].includes(row.family)
+          ? row.variant === "broken"
+            ? [true, true, true]
+            : row.variant === "near-miss"
+              ? [false, false, false]
+              : [false, true, false]
+          : row.variant === "broken"
+            ? [true, true]
+            : ["rust", "java", "kotlin", "scala"].includes(row.family) &&
+                row.variant === "near-miss"
+              ? [false, false]
+              : [false, true];
+    assert.deepEqual(
+      consumers,
+      expectedConsumers,
+      "Native consumer result differs from its original variant",
+    );
+    const expectedCases = ["c", "cpp"].includes(row.family)
+      ? row.variant === "broken"
+        ? [true, true, true, false, true, true, false]
+        : row.variant === "near-miss"
+          ? [true, false, false, false, false, true, false]
+          : [true, false, false, false, true, true, false]
+      : row.variant === "broken"
+        ? [true, true, true, false]
+        : [true, false, false, false];
+    const actualCases =
+      row.family === "go"
+        ? native.answers.slice(0, 4)
+        : row.family === "python"
+          ? native.cases?.map((item) => item.actual)
+          : native.cases;
+    assert.deepEqual(
+      actualCases,
+      expectedCases,
+      "Native producer result differs from its original variant",
+    );
+    const source = row.nativeResult.sources;
+    assert.ok(source && typeof source === "object");
+    assert.deepEqual(
+      Object.keys(source).sort(),
+      row.before.map((file) => file.path).sort(),
+    );
+    assert.deepEqual(
+      Object.keys(native.sources).sort(),
+      row.before
+        .map((file) =>
+          row.family === "python" ? file.path.split("/").at(-1) : file.path,
+        )
+        .sort(),
+    );
+    for (const file of row.before) {
+      const raw =
+        native.sources?.[
+          row.family === "python" ? file.path.split("/").at(-1) : file.path
+        ];
+      const actual = consumerWitnessSourceSha256(row.family, raw, file.bytes);
+      assert.equal(
+        actual,
+        file.sha256,
+        "Physical native source observation differs",
+      );
+      assert.equal(
+        source[file.path],
+        actual,
+        "Derived native source identity differs",
+      );
+    }
+    if (
+      [
+        "rust",
+        "c",
+        "cpp",
+        "java",
+        "kotlin",
+        "scala",
+        "csharp",
+        "fsharp",
+        "vb",
+        "swift",
+      ].includes(row.family)
+    ) {
+      assert.ok(
+        row.compiler,
+        "Compiled consumer lacks its reached compiler observation",
+      );
+      assert.ok(sha(row.compiler.argvSha256));
+      assert.equal(row.compiler.exitCode, 0);
+      assert.equal(row.compiler.signal, null);
+      assert.equal(row.compiler.errorCode, null);
+      assert.equal(row.compiler.timedOut, false);
+      assert.equal(row.compiler.cancelled, false);
+      assert.equal(row.compiler.truncated, false);
+      assert.equal(row.compiler.cleanupComplete, true);
+      assert.equal(row.compiler.executableSha256, row.tool.sha256);
+      assert.equal(row.compiler.executableAfterSha256, row.tool.afterSha256);
+      const compiled = row.compiler.output;
+      assert.equal(compiled?.completeForObservedStreams, true);
+      const compiledOut = stream(compiled.stdout),
+        compiledErr = stream(compiled.stderr);
+      assert.equal(
+        compiled.observedBytes,
+        compiledOut.length + compiledErr.length,
+      );
+      retainedBytes += compiledOut.length + compiledErr.length;
+      assert.ok(retainedBytes <= 16 * 1048576);
+    } else assert.equal(row.compiler, null);
+    if (row.family === "swift") {
+      inspectSwiftWitness(row);
+      const linkedOut = stream(row.compilerLink.output.stdout),
+        linkedErr = stream(row.compilerLink.output.stderr);
+      assert.equal(row.compilerLink.output.completeForObservedStreams, true);
+      assert.equal(
+        row.compilerLink.output.observedBytes,
+        linkedOut.length + linkedErr.length,
+      );
+      retainedBytes += linkedOut.length + linkedErr.length;
+      assert.ok(retainedBytes <= 16 * 1048576);
+    } else {
+      assert.ok(row.swift === undefined || row.swift === null);
+      assert.ok(row.compilerLink === undefined || row.compilerLink === null);
+    }
+    if (jvmConsumerFamilies.includes(row.family)) inspectJvmWitness(row);
+    else assert.ok(row.jvm === undefined || row.jvm === null);
+    if (managedConsumerFamilies.includes(row.family))
+      inspectManagedWitness(row);
+    else assert.ok(row.managed === undefined || row.managed === null);
+    if (row.phase !== "canonical") continue;
+    const address = JSON.stringify([row.family, row.variant, row.origin]);
+    if (reached.has(address)) {
+      issues.add("duplicate-canonical-witness");
+      duplicates.add(row.family);
+    } else reached.set(address, row);
+  }
+  for (const binding of bindings) {
+    assert.ok(expected.has(binding.family), "Foreign native controller family");
+    assert.ok(variants.includes(binding.variant));
+    assert.ok(["source", "installed"].includes(binding.origin));
+    if (
+      !(projectConsumerFamilies.includes(binding.family)
+        ? projectReached.has(
+            JSON.stringify([
+              binding.family,
+              binding.variant,
+              binding.origin,
+              binding.slot,
+              binding.scenario,
+            ]),
+          )
+        : reached.has(
+            JSON.stringify([binding.family, binding.variant, binding.origin]),
+          ))
+    )
+      issues.add("unmatched-controller-binding");
+  }
+  for (const [id, item] of attempts.records) {
+    if (!usedAttempts.has(id)) {
+      issues.add(
+        item.value.state === "passed"
+          ? "unmatched-consumer-attempt"
+          : "failed-or-unavailable-consumer-attempt",
+      );
+      incompleteAttemptFamilies.add(item.value.family);
+    }
+  }
+  const reports = required.map((family) => {
+    if (projectConsumerFamilies.includes(family.id))
+      return reconcileProjectFamily(
+        family,
+        inventory,
+        projectReached,
+        projectDuplicateSlots,
+        bindings,
+        incompleteAttemptFamilies,
+        issues,
+      );
+
+    const missing = [];
+    const unqualified = [];
+    for (const variant of variants)
+      for (const origin of ["source", "installed"]) {
+        const address = JSON.stringify([family.id, variant, origin]);
+        const row = reached.get(address);
+        if (!row) {
+          missing.push({ variant, origin });
+          continue;
+        }
+        const linked = bindings.filter(
+          (binding) =>
+            binding.family === family.id &&
+            binding.variant === variant &&
+            binding.origin === origin,
+        );
+        if (linked.length !== 1) {
+          unqualified.push({
+            variant,
+            origin,
+            reason: "missing-or-duplicate-controller-binding",
+          });
+          continue;
+        }
+        const binding = linked[0];
+        const reason = consumerBindingReason(row, binding, family, inventory);
+        if (reason) unqualified.push({ variant, origin, reason });
+      }
+    return {
+      family: family.id,
+      profile: family.profile,
+      evidenceClass: dataConsumerFamilies.includes(family.id)
+        ? dataConsumerClass(family.id)
+        : "original-native-code-consumer",
+      requiredRoleCount: dataConsumerFamilies.includes(family.id) ? 7 : null,
+      requiredProcessCountPerWitness:
+        family.id === "hcl" ? 15 : family.id === "yaml" ? 1 : null,
+      ...(dataConsumerFamilies.includes(family.id)
+        ? { applicationSemanticsVerified: false, fullImpactFallback: true }
+        : {}),
+      requiredWitnesses: variants.length * 2,
+      observedWitnesses: variants.length * 2 - missing.length,
+      missing,
+      unqualified,
+      complete:
+        missing.length === 0 &&
+        unqualified.length === 0 &&
+        !duplicates.has(family.id) &&
+        !incompleteAttemptFamilies.has(family.id),
+    };
+  });
+  // Source and installed execution must use the identical declared tool/engine/harness.
+  for (const family of required)
+    for (const variant of variants) {
+      if (projectConsumerFamilies.includes(family.id)) continue;
+      const pair = bindings.filter(
+        (binding) =>
+          binding.family === family.id && binding.variant === variant,
+      );
+      if (pair.length === 2)
+        for (const key of [
+          "slot",
+          "engineSha256",
+          "harnessSha256",
+          "requirementsSha256",
+          "acceptanceSha256",
+          "toolInputsSha256",
+          "packageManifestSha256",
+        ])
+          if (pair[0][key] !== pair[1][key])
+            issues.add("source-installed-identity-mismatch");
+    }
+  return {
+    schemaVersion: 1,
+    profile: "selected-native-consumer-witnesses-v1",
+    inventoryScopeSha256: manifest.inventoryScopeSha256,
+    requiredFamilies: required.length,
+    observedFamilies: reports.filter((row) => row.observedWitnesses > 0).length,
+    complete: reports.every((row) => row.complete) && issues.size === 0,
+    observations: observations.length,
+    retainedBytes,
+    attemptRecords: attempts.records.size,
+    retainedAttemptBytes: attempts.retainedBytes,
+    families: reports,
+    issues: [...issues].sort(),
+    nativeHostAttestationPerformed: false,
+    qualityAssessed: false,
+    gateAComplete: false,
+    inferenceInvoked: false,
+    fieldEvaluationExecuted: false,
+  };
+}
+
+/** A final native controller must refuse observations that remain unqualified. */
+export function requireQualifiedConsumerWitnessFamily(coverage, family) {
+  assert.deepEqual(
+    coverage.issues,
+    [],
+    "Consumer witness reconciliation issues remain",
+  );
+  const matches = coverage.families.filter((row) => row.family === family);
+  assert.equal(
+    matches.length,
+    1,
+    "Missing or duplicate consumer family report",
+  );
+  const current = matches[0];
+  assert.equal(current.observedWitnesses, 6);
+  assert.deepEqual(current.missing, []);
+  assert.deepEqual(current.unqualified, []);
+  assert.equal(
+    current.complete,
+    true,
+    "Required source and installed consumer witnesses remain incomplete",
+  );
+  return current;
+}
+
+/** Bind a trusted per-tool controller's observed inputs to each reached witness. */
+export function bindConsumerWitnessController(collection, expected) {
+  assert.equal(collection?.profile, "native-consumer-witness-collection-v1");
+  assert.equal(collection.family, expected.family);
+  const attempts = inspectConsumerAttemptRecords(collection.attemptRecords);
+  const usedAttempts = new Set();
+  for (const row of collection.observations)
+    requireConsumerWitnessAttempts(row, attempts.records, usedAttempts);
+  assert.equal(
+    usedAttempts.size,
+    attempts.records.size,
+    "Unmatched or failed consumer attempts leave collection incomplete",
+  );
+  assert.equal(collection.evidence.complete, true);
+  assert.equal(collection.evidence.required, 9);
+  assert.equal(collection.evidence.passed, 9);
+  assert.deepEqual(collection.evidence.problems, []);
+  assert.equal(collection.evidence.ledger.schemaVersion, 1);
+  assert.equal(collection.evidence.ledger.terminalEventCount, 9);
+  assert.equal(collection.evidence.ledger.events.length, 9);
+  const files = collection.evidence.ledger.files;
+  assert.equal(files.length, 1);
+  assert.ok(
+    typeof files[0].id === "string" &&
+      files[0].id.length > 0 &&
+      files[0].id.length <= 64,
+    "Missing consumer acceptance file identity",
+  );
+  assert.equal(files[0].stable, true);
+  assert.deepEqual(files[0].before, {
+    state: "present",
+    sha256: expected.acceptanceSha256,
+  });
+  assert.deepEqual(files[0].after, files[0].before);
+  assert.equal(collection.evidence.ledger.truncated, false);
+  const events = new Map();
+  for (const event of collection.evidence.ledger.events) {
+    assert.equal(event.fileId, files[0].id);
+    assert.equal(event.outcome, "passed");
+    assert.equal(event.required, true);
+    assert.equal(event.nameTruncated, false);
+    assert.equal(event.kind, "test");
+    assert.ok(
+      Number.isFinite(event.durationMs) && event.durationMs >= 0,
+      "Invalid consumer terminal duration",
+    );
+    assert.equal(events.has(event.name), false);
+    assert.ok(
+      Number.isSafeInteger(event.sequence) &&
+        event.sequence >= 1 &&
+        event.sequence <= 9,
+    );
+    events.set(event.name, event);
+  }
+  assert.equal(
+    new Set([...events.values()].map((event) => event.sequence)).size,
+    9,
+  );
+  assert.deepEqual(
+    collection.evidence.ledger.cases
+      .map((item) => [item.name, item.outcome])
+      .sort(),
+    expected.requirements.map((item) => [item.name, "passed"]).sort(),
+  );
+  for (const item of collection.evidence.ledger.cases) {
+    assert.equal(item.fileId, files[0].id);
+    assert.ok(events.has(item.name));
+    assert.deepEqual(item.terminalSequences, [events.get(item.name).sequence]);
+  }
+  assert.equal(collection.compiledEngine.treeSha256, expected.engineSha256);
+  assert.equal(collection.compiledEngine.beforeAfterByteIdentitiesMatch, true);
+  assert.deepEqual(collection.observedTool, expected.tool);
+  assert.equal(expected.runtime.hostAttestationPerformed, false);
+  assert.ok(sha(expected.toolInputsSha256));
+  const candidate = projectConsumerFamilies.includes(expected.family)
+    ? expected.toolVersionMatched
+      ? expected.selectedRuntimeSlot
+      : null
+    : expected.toolVersionMatched === true &&
+        expected.runtime.node === "22.23.2" &&
+        expected.runtime.platform === "linux" &&
+        expected.runtime.architecture === "arm64"
+      ? "native-linux-arm64-node22"
+      : null;
+  return collection.observations
+    .filter((row) => row.phase === "canonical")
+    .map((row) => {
+      assert.equal(row.family, expected.family);
+      if (projectConsumerFamilies.includes(row.family))
+        assert.equal(
+          row.runtime.slot,
+          candidate,
+          "Project witness selected runtime differs from trusted controller",
+        );
+      for (const field of [
+        "engineSha256",
+        "harnessSha256",
+        "requirementsSha256",
+        "acceptanceSha256",
+        "packageManifestSha256",
+      ])
+        assert.equal(
+          row.code?.[field],
+          expected[field],
+          "Foreign source/installed consumer " + field,
+        );
+      assert.equal(
+        row.code.installedOutsidePackage,
+        row.origin === "installed",
+      );
+      assert.equal(row.tool.sha256, expected.tool.sha256);
+      for (const field of [
+        "node",
+        "platform",
+        "architecture",
+        "nodeExecutableSha256",
+        "distributionSha256",
+      ])
+        assert.equal(
+          row.runtime[field],
+          expected.runtime[field],
+          "Native consumer runtime differs: " + field,
+        );
+      if (jvmConsumerFamilies.includes(row.family))
+        assert.deepEqual(
+          row.jvm.inputs,
+          expected.jvmInputs,
+          "JVM dependency bytes differ from the observed native controller",
+        );
+      if (dataConsumerFamilies.includes(row.family))
+        assert.deepEqual(
+          normalizeDataInputs(row.data.inputs),
+          normalizeDataInputs(expected.dataInputs),
+          "Actual data tool/parser bytes differ from native controller",
+        );
+      if (row.family === "swift")
+        assert.deepEqual(
+          row.swift.inputs,
+          expected.swiftInputs,
+          "Observed Swift driver/frontend differ from native controller",
+        );
+      if (managedConsumerFamilies.includes(row.family))
+        assert.deepEqual(
+          row.managed.inputs,
+          expected.managedInputs,
+          "Managed SDK/runtime bytes differ from the observed native controller",
+        );
+      return {
+        family: row.family,
+        variant: row.variant,
+        origin: row.origin,
+        slot: candidate,
+        ...(projectConsumerFamilies.includes(row.family)
+          ? { scenario: row.project.scenario }
+          : {}),
+        engineSha256: expected.engineSha256,
+        harnessSha256: expected.harnessSha256,
+        requirementsSha256: expected.requirementsSha256,
+        acceptanceSha256: expected.acceptanceSha256,
+        packageManifestSha256: expected.packageManifestSha256,
+        toolInputsSha256: expected.toolInputsSha256,
+        toolExecutableSha256: expected.tool.sha256,
+        toolVersionMatched: expected.toolVersionMatched,
+        nativeTool: expected.nativeTool,
+        jvmInputsSha256: row.jvm ? hash(JSON.stringify(row.jvm.inputs)) : null,
+        dataInputsSha256: row.data
+          ? hash(JSON.stringify(normalizeDataInputs(row.data.inputs)))
+          : null,
+        swiftInputsSha256: row.swift
+          ? hash(JSON.stringify(row.swift.inputs))
+          : null,
+        managedInputsSha256: row.managed
+          ? hash(JSON.stringify(row.managed.inputs))
+          : null,
+        generatedManifestSha256:
+          row.jvm?.generated.manifestSha256 ??
+          row.managed?.generated.manifestSha256 ??
+          null,
+        observationSha256: hash(JSON.stringify(row)),
+        runtimeImage: expected.runtimeImage,
+        complete: true,
+        skipped: false,
+        installedOutsidePackage: row.code.installedOutsidePackage,
+        hostAttestationPerformed: false,
+      };
+    });
+}
+
+function reconcileProjectFamily(
+  family,
+  inventory,
+  reached,
+  duplicateSlots,
+  bindings,
+  incompleteFamilies,
+  issues,
+) {
+  const logical = projectConsumerLogicalWitnesses(inventory, family.id),
+    missing = [],
+    unqualified = [],
+    slots = new Map(),
+    observed = [];
+  for (const scope of logical) {
+    const address = {
+        variant: scope.variant,
+        origin: scope.origin,
+        slot: scope.slot,
+      },
+      absent = [];
+    if (!slots.has(scope.slot))
+      slots.set(scope.slot, {
+        slot: scope.slot,
+        requiredWitnesses: 6,
+        observedWitnesses: 0,
+        missing: [],
+        unqualified: [],
+        complete: false,
+      });
+    const report = slots.get(scope.slot);
+    for (const scenario of scope.scenarios) {
+      const key = JSON.stringify([
+          family.id,
+          scope.variant,
+          scope.origin,
+          scope.slot,
+          scenario,
+        ]),
+        row = reached.get(key);
+      if (!row) {
+        absent.push(scenario);
+        continue;
+      }
+      observed.push(row);
+      const linked = bindings.filter(
+        (binding) =>
+          binding.family === family.id &&
+          binding.variant === scope.variant &&
+          binding.origin === scope.origin &&
+          binding.slot === scope.slot &&
+          binding.scenario === scenario,
+      );
+      const reason =
+        linked.length === 1
+          ? consumerBindingReason(row, linked[0], family, inventory)
+          : "missing-or-duplicate-controller-binding";
+      if (reason) {
+        const entry = { ...address, scenario, reason };
+        unqualified.push(entry);
+        report.unqualified.push(entry);
+      }
+    }
+    if (absent.length) {
+      const entry = { ...address, scenarios: absent };
+      missing.push(entry);
+      report.missing.push(entry);
+    } else report.observedWitnesses++;
+  }
+  for (const [slot, report] of slots) {
+    for (const variant of variants)
+      for (const scenario of projectConsumerScenarios(family.id, variant)) {
+        const pair = bindings.filter(
+          (binding) =>
+            binding.family === family.id &&
+            binding.variant === variant &&
+            binding.slot === slot &&
+            binding.scenario === scenario,
+        );
+        if (
+          pair.length === 2 &&
+          new Set(pair.map((binding) => binding.origin)).size === 2
+        )
+          for (const key of [
+            "slot",
+            "engineSha256",
+            "harnessSha256",
+            "requirementsSha256",
+            "acceptanceSha256",
+            "toolInputsSha256",
+            "packageManifestSha256",
+          ])
+            if (pair[0][key] !== pair[1][key]) {
+              issues.add("source-installed-identity-mismatch");
+              report.unqualified.push({
+                variant,
+                scenario,
+                reason: "source-installed-identity-mismatch",
+              });
+            }
+      }
+    report.complete =
+      report.missing.length === 0 &&
+      report.unqualified.length === 0 &&
+      !duplicateSlots.has(JSON.stringify([family.id, slot])) &&
+      !incompleteFamilies.has(family.id);
+  }
+  for (const row of reached.values())
+    if (row.family === family.id && !slots.has(row.runtime.slot))
+      unqualified.push({
+        variant: row.variant,
+        origin: row.origin,
+        slot: row.runtime.slot,
+        scenario: row.project.scenario,
+        reason: "unselected-native-runtime",
+      });
+  const summaries = [...slots.values()];
+  return {
+    family: family.id,
+    profile: family.profile,
+    evidenceClass: "controller-source-bound-native-project-reports",
+    applicationSemanticsVerified: false,
+    nativeModuleLoadsTraced: false,
+    requiredRuntimeSlots: summaries.map((row) => row.slot),
+    slotSummaries: summaries,
+    requiredWitnesses: logical.length,
+    observedWitnesses: summaries.reduce(
+      (count, row) => count + row.observedWitnesses,
+      0,
+    ),
+    requiredObservations: logical.reduce(
+      (count, row) => count + row.scenarios.length,
+      0,
+    ),
+    observedObservations: observed.length,
+    missing,
+    unqualified,
+    complete:
+      unqualified.length === 0 && summaries.every((row) => row.complete),
+  };
+}
+export function requireQualifiedConsumerWitnessSlot(report, family, slot) {
+  assert.deepEqual(
+    report.issues,
+    [],
+    "Consumer witness reconciliation issues remain",
+  );
+  const selected = report.families.find((row) => row.family === family);
+  assert.ok(selected && Array.isArray(selected.slotSummaries));
+  const runtime = selected.slotSummaries.find((row) => row.slot === slot);
+  assert.ok(runtime, "Consumer slot is not part of frozen family scope");
+  assert.equal(
+    runtime.complete,
+    true,
+    "Selected consumer slot remains incomplete or unqualified",
+  );
+  return runtime;
+}

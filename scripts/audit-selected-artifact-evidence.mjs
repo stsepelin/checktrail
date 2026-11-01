@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { TextDecoder } from "node:util";
+import { gunzipSync } from "node:zlib";
 import { createHash } from "node:crypto";
 import {
   closeSync,
@@ -15,6 +16,7 @@ import {
 import path from "node:path";
 import process from "node:process";
 
+import { inspectPangoCompleteTextBinding } from "./pango-complete-text-binding.mjs";
 const directory = "docs/measurements/artifact-identities-2026-10-21";
 const indexName = "artifact-evidence-index.v1.json";
 const records = {
@@ -237,12 +239,97 @@ try {
   for (const [name, entry] of sources) read(root, name, entry);
   let references = 0;
   let nodes = 0;
+  let compressedOriginalNoticeObjects = 0;
+  let uncompressedOriginalNoticeObjects = 0;
+  let decompressedOriginalNoticeBytes = 0;
+  let originalNoticeBytes = 0;
+  const originalNotices = new Map();
+  function originalNotice(value) {
+    const compressedEncoding = Object.hasOwn(value, "originalBytesGzipBase64");
+    const plainEncoding = Object.hasOwn(value, "originalBytesBase64");
+    if (!compressedEncoding && !plainEncoding) return;
+    assert.ok(
+      !(compressedEncoding && plainEncoding),
+      "Original notice has ambiguous encodings",
+    );
+    assert.ok(
+      Number.isSafeInteger(value.bytes) &&
+        value.bytes > 0 &&
+        value.bytes <= maximumFile,
+      "Invalid original notice expansion bound",
+    );
+    assert.ok(
+      originalNoticeBytes + value.bytes <= maximumTotal,
+      "Total original notice byte bound exceeded",
+    );
+    const encoded = compressedEncoding
+      ? value.originalBytesGzipBase64
+      : value.originalBytesBase64;
+    assert.ok(
+      typeof encoded === "string" &&
+        encoded.length > 0 &&
+        encoded.length <= 4 * Math.ceil(maximumFile / 3),
+      "Invalid original notice encoding bound",
+    );
+    const encodedBytes = Buffer.from(encoded, "base64");
+    assert.equal(
+      encodedBytes.toString("base64"),
+      encoded,
+      "Noncanonical original notice encoding",
+    );
+    assert.ok(
+      encodedBytes.length > 0 && encodedBytes.length <= maximumFile,
+      "Invalid encoded original notice byte bound",
+    );
+    let bytes = encodedBytes;
+    if (compressedEncoding) {
+      assert.equal(
+        encodedBytes.length,
+        value.gzipBytes,
+        "Compressed original notice byte count mismatch",
+      );
+      assert.match(value.gzipSha256, /^[a-f0-9]{64}$/u);
+      assert.equal(
+        digest(encodedBytes),
+        value.gzipSha256,
+        "Compressed original notice digest mismatch",
+      );
+      try {
+        bytes = gunzipSync(encodedBytes, { maxOutputLength: value.bytes });
+      } catch (error) {
+        throw new Error(
+          error.code === "ERR_BUFFER_TOO_LARGE"
+            ? "Compressed original notice exceeds its declared expansion bound"
+            : "Invalid compressed original notice stream",
+          { cause: error },
+        );
+      }
+    }
+    assert.equal(
+      bytes.length,
+      value.bytes,
+      "Original notice byte count mismatch",
+    );
+    assert.match(value.sha256, /^[a-f0-9]{64}$/u);
+    assert.equal(
+      digest(bytes),
+      value.sha256,
+      "Original notice digest mismatch",
+    );
+    originalNoticeBytes += bytes.length;
+    originalNotices.set(value.sha256, bytes);
+    if (compressedEncoding) {
+      compressedOriginalNoticeObjects += 1;
+      decompressedOriginalNoticeBytes += bytes.length;
+    } else uncompressedOriginalNoticeObjects += 1;
+  }
   function walk(value, label, retained = false, depth = 0) {
     assert.ok(
       ++nodes <= 100000 && depth <= 64,
       "Evidence JSON structural bound exceeded",
     );
     if (!value || typeof value !== "object") return;
+    originalNotice(value);
     for (const flag of [
       "gateAComplete",
       "qualityAssessed",
@@ -282,6 +369,105 @@ try {
     }
   }
   for (const [name, document] of documents) walk(document, name);
+  const cRoot = documents.get("provider-c-root-sdk-and-generator-replays.json");
+  let literalCommonLicenseReferences = null;
+  let explicitAlternativeCompleteTextBindings = null;
+  if (cRoot?.cBuildDependencyNotices) {
+    const notices = cRoot.cBuildDependencyNotices;
+    const declared = notices.literalCommonLicenseReferences;
+    const pattern = "/usr/share/common-licenses/[A-Za-z0-9][A-Za-z0-9.+_-]*";
+    assert.equal(declared.schemaVersion, 1);
+    assert.equal(
+      declared.bytePattern,
+      pattern,
+      "Changed literal license pattern",
+    );
+    const shared = new Map();
+    const selected = new Set();
+    function select(input) {
+      const bytes = originalNotices.get(input.sha256);
+      assert.ok(bytes, "Missing original license or notice bytes");
+      assert.equal(
+        bytes.length,
+        input.bytes,
+        "Original license or notice size mismatch",
+      );
+      selected.add(input.sha256);
+      return bytes;
+    }
+    for (const input of notices.pinnedBaselineSharedLicenseFiles) {
+      assert.match(
+        input.imagePath,
+        /^\/usr\/share\/common-licenses\/[A-Za-z0-9][A-Za-z0-9.+_-]*$/u,
+      );
+      assert.ok(
+        !shared.has(input.imagePath),
+        "Duplicate captured shared license path",
+      );
+      select(input);
+      shared.set(input.imagePath, input);
+    }
+    for (const input of notices.pinnedBaselineCopyrightDocuments) select(input);
+    for (const archive of notices.uniqueArchives) {
+      for (const input of archive[7]) select(input);
+    }
+    const derived = [];
+    const counts = {};
+    for (const sha256 of [...selected].sort()) {
+      const text = originalNotices.get(sha256).toString("latin1");
+      for (const match of text.matchAll(new RegExp(pattern, "gu"))) {
+        const token = match[0];
+        const punctuation = !shared.has(token) && token.endsWith(".");
+        const candidate = punctuation ? token.slice(0, -1) : token;
+        const found = shared.get(candidate);
+        const status = found
+          ? "resolved-captured-shared-license-bytes"
+          : "unresolved-literal-reference";
+        counts[status] = (counts[status] ?? 0) + 1;
+        derived.push([
+          sha256,
+          match.index,
+          token,
+          candidate,
+          punctuation,
+          status,
+          found?.sha256 ?? null,
+          found?.bytes ?? null,
+        ]);
+      }
+    }
+    assert.deepEqual(
+      declared.references,
+      derived,
+      "Literal license references differ from original notice bytes",
+    );
+    assert.deepEqual(
+      declared.counts,
+      counts,
+      "Literal license reference counts differ",
+    );
+    assert.equal(
+      declared.noticeObjectsScanned,
+      selected.size,
+      "Literal license notice denominator differs",
+    );
+    assert.equal(
+      declared.sharedLicenseNamesCaptured,
+      shared.size,
+      "Literal shared license denominator differs",
+    );
+    explicitAlternativeCompleteTextBindings = inspectPangoCompleteTextBinding(
+      notices,
+      originalNotices,
+      derived,
+    );
+    literalCommonLicenseReferences = {
+      noticeObjectsScanned: selected.size,
+      sharedLicenseNamesCaptured: shared.size,
+      references: derived.length,
+      counts,
+    };
+  }
   assert.equal(
     references,
     index.retainedReferences,
@@ -295,6 +481,12 @@ try {
       retainedReferences: references,
       repositoryInputs: sources.size,
       observedBytes: totalBytes,
+      compressedOriginalNoticeObjects,
+      uncompressedOriginalNoticeObjects,
+      decompressedOriginalNoticeBytes,
+      originalNoticeBytes,
+      literalCommonLicenseReferences,
+      explicitAlternativeCompleteTextBindings,
       cryptographicVerificationPerformedByAudit: false,
       nativeAcceptanceAssessed: false,
       gateAComplete: false,

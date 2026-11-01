@@ -6,6 +6,7 @@ import { test, type TestContext } from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { createHash } from "node:crypto";
+import { gzipSync, gunzipSync } from "node:zlib";
 import { fixture } from "./helpers.js";
 
 const exec = promisify(execFile);
@@ -277,11 +278,15 @@ test("artifact audit accepts bounded added data and rejects reached total-byte a
     const value = await index(root);
     const additions: { file: string; bytes: Buffer }[] = [];
     if (mode === "total-bytes") {
-      // Reach the byte ceiling with the fewest new files so this control
-      // does not accidentally hit the independent index-entry ceiling first.
+      // The audit reads the index, retained files and repository inputs once.
+      // Include all three before choosing filler so this control reaches the
+      // byte ceiling without first exceeding the independent file-count limit.
+      // Appending the filler metadata only increases the reached byte total.
       let remaining =
         8 * 1024 * 1024 -
-        value.files.reduce((total, file) => total + file.bytes, 0) +
+        value.files.reduce((total, file) => total + file.bytes, 0) -
+        value.repositoryInputs.reduce((total, file) => total + file.bytes, 0) -
+        Buffer.byteLength(JSON.stringify(value)) +
         1;
       assert.ok(remaining > 0);
       for (let i = 0; remaining > 0; i += 1) {
@@ -358,4 +363,502 @@ test("artifact audit rejects nested completion inference and field-evaluation cl
     const restored = await audit(root);
     assert.equal(restored.code, 0, restored.stderr);
   }
+});
+
+function compressedNotice(bytes: Uint8Array) {
+  const compressed = gzipSync(bytes);
+  return {
+    bytes: bytes.length,
+    sha256: digest(bytes),
+    gzipBytes: compressed.length,
+    gzipSha256: digest(compressed),
+    originalBytesGzipBase64: compressed.toString("base64"),
+  };
+}
+async function noticeSource(t: TestContext, notices: unknown[]) {
+  const root = await source(t);
+  const name = "random-provider.json";
+  const target = path.join(root, directory, name);
+  const record = JSON.parse(await readFile(target, "utf8"));
+  record.syntheticOriginalNoticeControls = notices;
+  await writeFile(target, JSON.stringify(record));
+  await reindex(root, name);
+  return root;
+}
+test("artifact evidence verifies lossless compressed original notices while retaining incomplete attribution", async (t) => {
+  const bytes = Buffer.from(
+    "Original synthetic copyright\nLicense text\n",
+    "utf8",
+  );
+  const baseline = await audit(repository);
+  assert.equal(baseline.code, 0, baseline.stderr);
+  const before = JSON.parse(baseline.stdout);
+  const root = await noticeSource(t, [compressedNotice(bytes)]);
+  const result = await audit(root);
+  assert.equal(result.code, 0, result.stderr);
+  const report = JSON.parse(result.stdout);
+  assert.equal(
+    report.compressedOriginalNoticeObjects,
+    before.compressedOriginalNoticeObjects + 1,
+  );
+  assert.equal(
+    report.decompressedOriginalNoticeBytes,
+    before.decompressedOriginalNoticeBytes + bytes.length,
+  );
+  assert.equal(report.gateAComplete, false);
+  assert.equal(report.qualityAssessed, false);
+  assert.equal(report.nativeAcceptanceAssessed, false);
+});
+test("artifact evidence refuses malformed ambiguous and altered compressed original notices", async (t) => {
+  const original = compressedNotice(Buffer.from("Original synthetic notice\n"));
+  for (const mode of [
+    "encoding",
+    "compressed-digest",
+    "digest",
+    "size",
+    "ambiguous",
+    "stream",
+  ]) {
+    const changed = { ...original } as Record<string, unknown>;
+    if (mode === "encoding")
+      changed.originalBytesGzipBase64 = original.originalBytesGzipBase64 + " ";
+    if (mode === "compressed-digest") changed.gzipSha256 = "f".repeat(64);
+    if (mode === "digest") changed.sha256 = "f".repeat(64);
+    if (mode === "size") changed.gzipBytes = original.gzipBytes + 1;
+    if (mode === "ambiguous") changed.originalBytesBase64 = "eA==";
+    if (mode === "stream") {
+      const invalid = Buffer.from("Original synthetic non-gzip bytes");
+      changed.originalBytesGzipBase64 = invalid.toString("base64");
+      changed.gzipSha256 = digest(invalid);
+      changed.gzipBytes = invalid.length;
+    }
+    const result = await audit(await noticeSource(t, [changed]));
+    assert.equal(result.code, 2, mode);
+    assert.match(result.stderr, /original notice/i, mode);
+  }
+});
+test("artifact evidence stops compressed expansion at its declared output boundary", async (t) => {
+  const oversized = compressedNotice(Buffer.alloc(65536, "x"));
+  oversized.bytes = 1;
+  const result = await audit(await noticeSource(t, [oversized]));
+  assert.equal(result.code, 2);
+  assert.match(result.stderr, /exceeds its declared expansion bound/);
+});
+test("artifact evidence bounds cumulative decompressed notice bytes separately from indexed bytes", async (t) => {
+  const notice = compressedNotice(Buffer.alloc(2 * 1024 * 1024, "x"));
+  const result = await audit(
+    await noticeSource(
+      t,
+      Array.from({ length: 5 }, () => ({ ...notice })),
+    ),
+  );
+  assert.equal(result.code, 2);
+  assert.match(result.stderr, /Total original notice byte bound exceeded/);
+});
+
+function uncompressedNotice(bytes: Uint8Array) {
+  return {
+    bytes: bytes.length,
+    sha256: digest(bytes),
+    originalBytesBase64: Buffer.from(bytes).toString("base64"),
+  };
+}
+test("artifact evidence verifies exact uncompressed original notice bytes without normalizing text", async (t) => {
+  const bytes = Buffer.from("Original synthetic notice\r\n", "utf8");
+  const baseline = await audit(repository);
+  assert.equal(baseline.code, 0, baseline.stderr);
+  const before = JSON.parse(baseline.stdout);
+  const result = await audit(
+    await noticeSource(t, [uncompressedNotice(bytes)]),
+  );
+  assert.equal(result.code, 0, result.stderr);
+  const report = JSON.parse(result.stdout);
+  assert.equal(
+    report.uncompressedOriginalNoticeObjects,
+    before.uncompressedOriginalNoticeObjects + 1,
+  );
+  assert.equal(
+    report.compressedOriginalNoticeObjects,
+    before.compressedOriginalNoticeObjects,
+  );
+  assert.equal(
+    report.originalNoticeBytes,
+    before.originalNoticeBytes + bytes.length,
+  );
+  assert.equal(report.gateAComplete, false);
+  assert.equal(report.qualityAssessed, false);
+  assert.equal(report.nativeAcceptanceAssessed, false);
+});
+test("artifact evidence refuses reindexed uncompressed notices with wrong bytes hashes sizes or encoding", async (t) => {
+  const bytes = Buffer.from("Original synthetic notice\r\n");
+  const original = uncompressedNotice(bytes);
+  for (const mode of [
+    "changed-bytes",
+    "normalized-text",
+    "digest",
+    "size",
+    "encoding",
+    "empty",
+    "ambiguous",
+  ]) {
+    const changed = { ...original } as Record<string, unknown>;
+    if (mode === "changed-bytes")
+      changed.originalBytesBase64 = Buffer.alloc(bytes.length, "x").toString(
+        "base64",
+      );
+    if (mode === "normalized-text")
+      changed.originalBytesBase64 = Buffer.from(
+        bytes.toString().replaceAll("\r\n", "\n"),
+      ).toString("base64");
+    if (mode === "digest") changed.sha256 = "f".repeat(64);
+    if (mode === "size") changed.bytes = bytes.length + 1;
+    if (mode === "encoding")
+      changed.originalBytesBase64 = original.originalBytesBase64 + " ";
+    if (mode === "empty") changed.originalBytesBase64 = "";
+    if (mode === "ambiguous") Object.assign(changed, compressedNotice(bytes));
+    const result = await audit(await noticeSource(t, [changed]));
+    assert.equal(result.code, 2, mode);
+    assert.match(result.stderr, /original notice/i, mode);
+  }
+});
+test("artifact evidence shares one original notice budget across plain and compressed bytes", async (t) => {
+  const bytes = Buffer.alloc(32 * 1024, "x");
+  const baseline = await audit(repository);
+  assert.equal(baseline.code, 0, baseline.stderr);
+  const before = JSON.parse(baseline.stdout);
+  let fill = 8 * 1024 * 1024 - before.originalNoticeBytes - bytes.length + 1;
+  assert.ok(fill > 0);
+  const encoded: ReturnType<typeof compressedNotice>[] = [];
+  while (fill > 0) {
+    const length = Math.min(fill, 2 * 1024 * 1024);
+    encoded.push(compressedNotice(Buffer.alloc(length, "x")));
+    fill -= length;
+  }
+  const root = await noticeSource(t, [
+    ...encoded,
+    uncompressedNotice(Buffer.from("Original synthetic near miss\n")),
+  ]);
+  const nearMiss = await audit(root);
+  assert.equal(nearMiss.code, 0, nearMiss.stderr);
+  const refused = await audit(
+    await noticeSource(t, [...encoded, uncompressedNotice(bytes)]),
+  );
+  assert.equal(refused.code, 2);
+  assert.match(refused.stderr, /Total original notice byte bound exceeded/);
+});
+
+async function changedLicenseReferences(t: TestContext, mode: string) {
+  const root = await source(t);
+  const name = "provider-c-root-sdk-and-generator-replays.json";
+  const file = path.join(root, directory, name);
+  const value = JSON.parse(await readFile(file, "utf8"));
+  const references =
+    value.cBuildDependencyNotices.literalCommonLicenseReferences;
+  if (mode === "offset") references.references[0][1]++;
+  if (mode === "omission") references.references.pop();
+  if (mode === "duplicate")
+    references.references.push([...references.references[0]]);
+  if (mode === "counts")
+    references.counts["resolved-captured-shared-license-bytes"]++;
+  if (mode === "denominator") references.noticeObjectsScanned++;
+  if (mode === "prefix") {
+    const missing = references.references.find(
+      (row: unknown[]) => row[5] === "unresolved-literal-reference",
+    );
+    assert.ok(missing);
+    const captured =
+      value.cBuildDependencyNotices.pinnedBaselineSharedLicenseFiles.find(
+        (row: { imagePath: string }) =>
+          row.imagePath === "/usr/share/common-licenses/GPL-2",
+      );
+    assert.ok(captured);
+    missing[3] = captured.imagePath;
+    missing[5] = "resolved-captured-shared-license-bytes";
+    missing[6] = captured.sha256;
+    missing[7] = captured.bytes;
+  }
+  await writeFile(file, JSON.stringify(value));
+  await reindex(root, name);
+  const wrapperName = "provider-fiat-wrapper-source-rebuilds.json";
+  const wrapperFile = path.join(root, directory, wrapperName);
+  const wrapper = JSON.parse(await readFile(wrapperFile, "utf8"));
+  const reference =
+    wrapper.cRootCompilerAndWholeGeneratorFollowUp.retainedInputs.find(
+      (entry: Entry) => entry.file === name,
+    );
+  assert.ok(reference);
+  const changedBytes = await readFile(file);
+  reference.bytes = changedBytes.length;
+  reference.sha256 = digest(changedBytes);
+  await writeFile(wrapperFile, JSON.stringify(wrapper));
+  await reindex(root, wrapperName);
+  return root;
+}
+test("artifact evidence rederives literal shared license references from exact original notice offsets and filenames", async () => {
+  const result = await audit(repository);
+  assert.equal(result.code, 0, result.stderr);
+  const report = JSON.parse(result.stdout).literalCommonLicenseReferences;
+  const record = JSON.parse(
+    await readFile(
+      path.join(
+        repository,
+        directory,
+        "provider-c-root-sdk-and-generator-replays.json",
+      ),
+      "utf8",
+    ),
+  ).cBuildDependencyNotices.literalCommonLicenseReferences;
+  assert.equal(report.references, record.references.length);
+  assert.deepEqual(report.counts, record.counts);
+  assert.equal(report.noticeObjectsScanned, record.noticeObjectsScanned);
+  assert.ok(
+    record.references.some(
+      (row: unknown[]) =>
+        row[2] === "/usr/share/common-licenses/GPL-2.0" &&
+        row[5] === "unresolved-literal-reference",
+    ),
+  );
+});
+test("artifact evidence refuses reindexed omitted duplicated shifted or prefix-guessed shared license references", async (t) => {
+  for (const mode of [
+    "offset",
+    "omission",
+    "duplicate",
+    "counts",
+    "denominator",
+    "prefix",
+  ]) {
+    const result = await audit(await changedLicenseReferences(t, mode));
+    assert.equal(result.code, 2, mode);
+    assert.match(result.stderr, /Literal license/, mode);
+  }
+});
+
+const { inspectPangoCompleteTextBinding } = await import(
+  new URL("../../scripts/pango-complete-text-binding.mjs", import.meta.url).href
+);
+async function pangoBindingFixture() {
+  const record = JSON.parse(
+      await readFile(
+        path.join(
+          repository,
+          directory,
+          "provider-c-root-sdk-and-generator-replays.json",
+        ),
+        "utf8",
+      ),
+    ),
+    notices = record.cBuildDependencyNotices,
+    bodies = new Map<string, Buffer>();
+  for (const blob of record.originalNoticeByteObjects) {
+    const raw = Buffer.from(
+        blob.originalBytesGzipBase64 ?? blob.originalBytesBase64,
+        "base64",
+      ),
+      bytes = blob.originalBytesGzipBase64 ? gunzipSync(raw) : raw;
+    bodies.set(blob.sha256, bytes);
+  }
+  return {
+    notices,
+    bodies,
+    rows: structuredClone(notices.literalCommonLicenseReferences.references),
+  };
+}
+test("Pango alternative complete text binds one original reference and three exact archives while leaving the literal path unresolved", async () => {
+  const f = await pangoBindingFixture(),
+    result = inspectPangoCompleteTextBinding(f.notices, f.bodies, f.rows);
+  assert.equal(result.bindings, 1);
+  assert.equal(result.sourceNoticeObjects, 1);
+  assert.equal(result.literalReferences, 1);
+  assert.equal(result.associatedArchives, 3);
+  assert.equal(result.completeCapturedTextBytesVerified, true);
+  for (const field of [
+    "originalLiteralReferenceResolved",
+    "pathAliasCreated",
+    "legalInterpretationAssessed",
+    "originalSourceFileCoverageAssessed",
+    "completeOriginalNoticeClosureVerified",
+    "fullCompilerSdkBootstrapClosureVerified",
+    "gateAComplete",
+  ])
+    assert.equal(result[field], false);
+  const baseline = await audit(repository);
+  assert.equal(baseline.code, 0, baseline.stderr);
+  const report = JSON.parse(baseline.stdout);
+  assert.deepEqual(report.explicitAlternativeCompleteTextBindings, result);
+  assert.equal(report.literalCommonLicenseReferences.references, 246);
+  assert.deepEqual(report.literalCommonLicenseReferences.counts, {
+    "resolved-captured-shared-license-bytes": 245,
+    "unresolved-literal-reference": 1,
+  });
+});
+test("Pango alternative declarations reject changed source offsets paragraph targets aliases associations and normalization rather than widening the closed binding", async () => {
+  for (const mode of [
+    "source",
+    "offset",
+    "literal-prefix",
+    "paragraph",
+    "target",
+    "target-size",
+    "alias",
+    "missing-association",
+    "duplicate-association",
+    "wrong-association",
+    "legal-promotion",
+  ]) {
+    const f = await pangoBindingFixture(),
+      b = f.notices.explicitAlternativeCompleteTextBindings[0];
+    if (mode === "source") b.sourceNoticeSha256 = "0".repeat(64);
+    else if (mode === "offset") b.byteOffset++;
+    else if (mode === "literal-prefix")
+      b.literalPath = "/usr/share/common-licenses/GPL-2";
+    else if (mode === "paragraph") b.sourceParagraph.sha256 = "0".repeat(64);
+    else if (mode === "target") b.targetCapture.sha256 = "0".repeat(64);
+    else if (mode === "target-size") b.targetCapture.bytes++;
+    else if (mode === "alias") b.targetCapture.imagePath = b.literalPath;
+    else if (mode === "missing-association") b.archiveAssociations.pop();
+    else if (mode === "duplicate-association")
+      b.archiveAssociations.push({ ...b.archiveAssociations[0] });
+    else if (mode === "wrong-association")
+      b.archiveAssociations[0].architecture = "arm64";
+    else b.legalInterpretationAssessed = true;
+    assert.throws(
+      () => inspectPangoCompleteTextBinding(f.notices, f.bodies, f.rows),
+      /exact closed/,
+      mode,
+    );
+  }
+});
+test("Pango alternative raw bytes literal status capture identity and original archive associations fail closed with adjacent-path near misses", async () => {
+  for (const mode of [
+    "source-bytes",
+    "paragraph-bytes",
+    "target-bytes",
+    "resolved-row",
+    "alias-capture",
+    "association",
+    "closure",
+  ]) {
+    const f = await pangoBindingFixture(),
+      b = f.notices.explicitAlternativeCompleteTextBindings[0];
+    if (mode.endsWith("bytes")) {
+      const key =
+          mode === "target-bytes"
+            ? b.targetCapture.sha256
+            : b.sourceNoticeSha256,
+        raw = Buffer.from(f.bodies.get(key)!);
+      const offset =
+        mode === "paragraph-bytes" ? b.sourceParagraph.startByte + 20 : 0;
+      raw[offset] = raw[offset]! ^ 1;
+      f.bodies.set(key, raw);
+    } else if (mode === "resolved-row") {
+      const row = f.rows.find(
+        (row: unknown[]) =>
+          row[0] === b.sourceNoticeSha256 && row[1] === b.byteOffset,
+      );
+      row[5] = "resolved-captured-shared-license-bytes";
+      row[6] = b.targetCapture.sha256;
+      row[7] = b.targetCapture.bytes;
+    } else if (mode === "alias-capture") {
+      const target = f.notices.pinnedBaselineSharedLicenseFiles.find(
+        (row: { imagePath: string }) =>
+          row.imagePath === b.targetCapture.imagePath,
+      );
+      f.notices.pinnedBaselineSharedLicenseFiles.push({
+        ...target,
+        imagePath: b.literalPath,
+      });
+    } else if (mode === "association") {
+      const archive = f.notices.uniqueArchives.find(
+        (row: unknown[]) => row[0] === b.archiveAssociations[0].archiveSha256,
+      );
+      archive[4] = "arm64";
+    } else f.notices.completeOriginalNoticeClosureVerified = true;
+    assert.throws(
+      () => inspectPangoCompleteTextBinding(f.notices, f.bodies, f.rows),
+      /Pango/,
+      mode,
+    );
+  }
+  const valid = await pangoBindingFixture(),
+    b = valid.notices.explicitAlternativeCompleteTextBindings[0],
+    target = valid.notices.pinnedBaselineSharedLicenseFiles.find(
+      (row: { imagePath: string }) =>
+        row.imagePath === b.targetCapture.imagePath,
+    );
+  valid.notices.pinnedBaselineSharedLicenseFiles.push({
+    ...target,
+    imagePath: "/usr/share/common-licenses/GPL-2.0-extra",
+  });
+  assert.equal(
+    inspectPangoCompleteTextBinding(valid.notices, valid.bodies, valid.rows)
+      .originalLiteralReferenceResolved,
+    false,
+  );
+});
+test("Pango alternative matching refuses a byte-consistent synthetic lookalike document and reindexed paragraph changes", async (t) => {
+  const f = await pangoBindingFixture(),
+    b = f.notices.explicitAlternativeCompleteTextBindings[0],
+    prior = b.sourceNoticeSha256,
+    raw = Buffer.from(
+      "Original synthetic header\n\nLicense: GPL-2+\n Original synthetic context /usr/share/common-licenses/GPL-2.0\n\n",
+    ),
+    sha = digest(raw),
+    offset = raw.indexOf(Buffer.from(b.literalPath)),
+    start = raw.lastIndexOf(Buffer.from("\n\n"), offset) + 2,
+    end = raw.indexOf(Buffer.from("\n\n"), offset) + 1;
+  b.sourceNoticeSha256 = sha;
+  b.sourceNoticeBytes = raw.length;
+  b.byteOffset = offset;
+  b.sourceParagraph = {
+    startByte: start,
+    endByteExclusive: end,
+    bytes: end - start,
+    sha256: digest(raw.subarray(start, end)),
+  };
+  f.bodies.set(sha, raw);
+  for (const archive of f.notices.uniqueArchives)
+    for (const doc of archive[7])
+      if (doc.sha256 === prior) {
+        doc.sha256 = sha;
+        doc.bytes = raw.length;
+      }
+  const rows = [
+    [
+      sha,
+      offset,
+      b.literalPath,
+      b.literalPath,
+      false,
+      "unresolved-literal-reference",
+      null,
+      null,
+    ],
+  ];
+  assert.throws(
+    () => inspectPangoCompleteTextBinding(f.notices, f.bodies, rows),
+    /exact closed/,
+  );
+  const root = await source(t),
+    name = "provider-c-root-sdk-and-generator-replays.json",
+    file = path.join(root, directory, name),
+    record = JSON.parse(await readFile(file, "utf8"));
+  record.cBuildDependencyNotices.explicitAlternativeCompleteTextBindings[0].sourceParagraph.sha256 =
+    "0".repeat(64);
+  await writeFile(file, JSON.stringify(record));
+  await reindex(root, name);
+  const wrapperName = "provider-fiat-wrapper-source-rebuilds.json",
+    wrapperFile = path.join(root, directory, wrapperName),
+    wrapper = JSON.parse(await readFile(wrapperFile, "utf8")),
+    ref = wrapper.cRootCompilerAndWholeGeneratorFollowUp.retainedInputs.find(
+      (row: Entry) => row.file === name,
+    ),
+    bytes = await readFile(file);
+  ref.bytes = bytes.length;
+  ref.sha256 = digest(bytes);
+  await writeFile(wrapperFile, JSON.stringify(wrapper));
+  await reindex(root, wrapperName);
+  const result = await audit(root);
+  assert.equal(result.code, 2);
+  assert.match(result.stderr, /Pango alternative/);
 });

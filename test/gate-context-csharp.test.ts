@@ -29,6 +29,15 @@ import { createHypothesisPlan } from "../src/review-hypotheses.js";
 import { ReviewWorkflowEngine } from "../src/review-workflow.js";
 import { runProcess } from "../src/runner.js";
 import { fixture } from "./helpers.js";
+import {
+  beginConsumerWitness,
+  bindConsumerWitnessManagedDirectory,
+  bindConsumerWitnessCompiler,
+  finishConsumerWitness,
+  recordConsumerWitnessAttempt,
+  type ConsumerCapture,
+  type ConsumerVariant,
+} from "./consumer-witness-fixture.js";
 import { fixtureGit, syntheticCommit } from "./git-fixture.js";
 import { csharpBoundariesFixture } from "./review-csharp-boundaries-fixture.js";
 
@@ -129,14 +138,22 @@ async function compile(
   files: string[],
   witness: string,
   name = "original-assembly",
+  capture: ConsumerCapture | null = null,
 ) {
   await writeFile(path.join(root, "Witness.cs"), witness);
   const configured = await compilerArgs(root, [...files, "Witness.cs"], name);
+  await bindConsumerWitnessManagedDirectory(capture, configured.destination);
   const result = await runProcess(
     root,
-    { executable: "dotnet", args: configured.args, cwd: "." },
-    { timeoutMs: 30000, maxOutputBytes: 65536 },
+    {
+      executable: capture?.executable ?? "dotnet",
+      args: configured.args,
+      cwd: ".",
+    },
+    { timeoutMs: 30000, maxOutputBytes: 65536, captureRawOutput: true },
   );
+  await recordConsumerWitnessAttempt(capture, result, "compiler");
+  bindConsumerWitnessCompiler(capture, result);
   assert.equal(result.exitCode, 0, result.stdout + result.stderr);
   assert.equal(result.errorCode, undefined);
   assert.equal(result.timedOut, false);
@@ -144,32 +161,74 @@ async function compile(
   assert.equal(result.truncated, false);
   return configured.assembly;
 }
-async function execute(root: string, assembly: string) {
+async function execute(
+  root: string,
+  assembly: string,
+  capture: ConsumerCapture | null = null,
+) {
   const result = await runProcess(
     root,
-    { executable: "dotnet", args: [assembly], cwd: "." },
-    { timeoutMs: 10000, maxOutputBytes: 65536 },
+    {
+      executable: capture?.runtimeExecutable.launch ?? "dotnet",
+      args: [assembly],
+      cwd: ".",
+    },
+    { timeoutMs: 10000, maxOutputBytes: 65536, captureRawOutput: true },
   );
+  await recordConsumerWitnessAttempt(capture, result);
   assert.equal(result.exitCode, 0, result.stdout + result.stderr);
   assert.equal(result.errorCode, undefined);
   assert.equal(result.timedOut, false);
   assert.equal(result.cancelled, false);
   assert.equal(result.truncated, false);
+  await finishConsumerWitness(capture, result);
   return result.stdout;
 }
-async function witness(root: string) {
+async function witness(root: string, variant: ConsumerVariant) {
+  const capture = await beginConsumerWitness(root, "csharp", variant);
   const assembly = await compile(
     root,
     ["src/policy/Policy.cs", "src/consumer/Consumer.cs"],
-    'class Witness{static void Main(){foreach(string value in new[]{"grant:read","grantToken","grant2","other"})System.Console.WriteLine(policy.Policy.decision(value));System.Console.WriteLine(consumer.Consumer.submit());System.Console.WriteLine(consumer.Consumer.route());System.Console.WriteLine(consumer.Consumer.alias());}}',
+    String.raw`class Witness {
+  static string bit(bool value) { return value ? "true" : "false"; }
+  static void Main() {
+    string[] values = {"grant:read", "grantToken", "grant2", "other"};
+    string[] files = {"src/policy/Policy.cs", "src/consumer/Consumer.cs"};
+    System.Console.Write("{\"cases\":[");
+    for (int i = 0; i < values.Length; i++) {
+      if (i > 0) System.Console.Write(",");
+      System.Console.Write(bit(policy.Policy.decision(values[i])));
+    }
+    System.Console.Write("],\"consumers\":[" + bit(consumer.Consumer.submit()) + "," + bit(consumer.Consumer.route()) + "," + bit(consumer.Consumer.alias()) + "],\"sources\":{");
+    for (int i = 0; i < files.Length; i++) {
+      if (i > 0) System.Console.Write(",");
+      System.Console.Write("\"" + files[i] + "\":[");
+      byte[] bytes = System.IO.File.ReadAllBytes(files[i]);
+      for (int j = 0; j < bytes.Length; j++) {
+        if (j > 0) System.Console.Write(",");
+        System.Console.Write((int)bytes[j]);
+      }
+      System.Console.Write("]");
+    }
+    System.Console.WriteLine("}}");
+  }
+}`,
+    "original-assembly",
+    capture,
   );
-  return (await execute(root, assembly))
-    .trim()
-    .split("\n")
-    .map((value) => {
-      assert.ok(value === "True" || value === "False");
-      return value === "True";
-    });
+  const observed: unknown = JSON.parse(await execute(root, assembly, capture));
+  assert.ok(observed !== null && typeof observed === "object");
+  assert.ok("cases" in observed && "consumers" in observed);
+  assert.ok(Array.isArray(observed.cases) && observed.cases.length === 4);
+  assert.ok(
+    Array.isArray(observed.consumers) && observed.consumers.length === 3,
+  );
+  const answers: boolean[] = [];
+  for (const answer of [...observed.cases, ...observed.consumers]) {
+    assert.ok(typeof answer === "boolean");
+    answers.push(answer);
+  }
+  return answers;
 }
 function bindings(result: ReturnType<typeof analysis>) {
   const policy = result.functions.find(
@@ -218,7 +277,7 @@ function bindings(result: ReturnType<typeof analysis>) {
 test("context-csharp broken acceptance", native, async (t) => {
   const { root, context, result } = await original(t);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "broken"), [
     true,
     true,
     true,
@@ -305,7 +364,7 @@ test("context-csharp broken acceptance", native, async (t) => {
 test("context-csharp fixed acceptance", native, async (t) => {
   const { root, result } = await original(t, fixed);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "fixed"), [
     true,
     false,
     false,
@@ -323,7 +382,7 @@ test("context-csharp fixed acceptance", native, async (t) => {
 test("context-csharp near-miss acceptance", native, async (t) => {
   const { root, result } = await original(t, near);
   bindings(result);
-  assert.deepEqual(await witness(root), [
+  assert.deepEqual(await witness(root, "near-miss"), [
     true,
     false,
     false,

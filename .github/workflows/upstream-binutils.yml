@@ -1,0 +1,115 @@
+name: Original Binutils producer observation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "pr/upstream-producer/binutils-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: original-binutils-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  original-package-build:
+    name: Original package build and evidence collection
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    env:
+      SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      - name: Observe native host and available capacity
+        run: |
+          node --version
+          python3 --version
+          uname -m
+          df -h "$RUNNER_TEMP"
+          free -h
+          docker info --format '{{json .}}'
+      - name: Reclaim unrelated SDK space on the disposable hosted runner
+        shell: bash
+        run: |
+          test "$GITHUB_ACTIONS" = "true"
+          test "$RUNNER_ENVIRONMENT" = "github-hosted"
+          test "$RUNNER_OS" = "Linux"
+          test "$RUNNER_ARCH" = "X64"
+          producer_needed=$(node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const recipe = JSON.parse(readFileSync('scripts/producer-qualification/binutils.v1.json', 'utf8'));
+          console.log(recipe.limits.workByteLimit + recipe.limits.logByteLimit + 3 * recipe.files.reduce((sum, row) => sum + row.bytes, 0) + 8 * 1024 ** 3);
+          NODE
+          )
+          for producer_sdk in /usr/local/lib/android /usr/share/dotnet /usr/local/.ghcup /opt/hostedtoolcache/CodeQL; do
+            producer_free=$(node --input-type=module -e 'import {statfsSync} from "node:fs"; const value=statfsSync(process.env.RUNNER_TEMP); console.log(value.bavail * value.bsize);')
+            if test "$producer_free" -ge "$producer_needed"; then
+              echo "Available capacity already covers frozen producer preparation and retention."
+              break
+            fi
+            if test -L "$producer_sdk"; then
+              echo "Refusing a linked SDK directory: $producer_sdk" >&2
+              exit 1
+            fi
+            if test -d "$producer_sdk"; then
+              sudo du -s -- "$producer_sdk"
+              sudo rm -rf --one-file-system -- "$producer_sdk"
+            fi
+          done
+          df -h "$RUNNER_TEMP"
+      - name: Acquire the fixed producer image explicitly
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          const recipe = JSON.parse(readFileSync('scripts/producer-qualification/binutils.v1.json', 'utf8'));
+          execFileSync('docker', ['pull', '--platform', 'linux/amd64', recipe.image], {stdio: 'inherit'});
+          NODE
+      - name: Verify private APT directories remain measurable without changing permissions
+        run: >-
+          node scripts/verify-binutils-retention-observer.mjs
+          --output "$RUNNER_TEMP/binutils-observer-check"
+      - name: Acquire and authenticate every original input
+        shell: bash
+        run: |
+          set +e
+          node scripts/acquire-binutils-inputs.mjs --output "$RUNNER_TEMP/binutils-inputs" --operator-trust-execution > "$RUNNER_TEMP/binutils-input-admission.log" 2>&1
+          producer_input_status=$?
+          set -e
+          cat "$RUNNER_TEMP/binutils-input-admission.log"
+          exit "$producer_input_status"
+      - name: Run the original package defaults and reconcile their observations
+        shell: bash
+        run: |
+          set +e
+          node scripts/qualify-binutils-producer.mjs --inputs "$RUNNER_TEMP/binutils-inputs/bundle" --output "$RUNNER_TEMP/binutils-result" > "$RUNNER_TEMP/binutils-build-controller.log" 2>&1
+          producer_status=$?
+          set -e
+          cat "$RUNNER_TEMP/binutils-build-controller.log"
+          node scripts/verify-binutils-build-observation.mjs --result "$RUNNER_TEMP/binutils-result" --controller-exit "$producer_status"
+      - name: Retain bounded original receipts and test logs
+        if: always()
+        run: >-
+          python3 scripts/producer-qualification/binutils-export-evidence.py
+          --inputs "$RUNNER_TEMP/binutils-inputs"
+          --result "$RUNNER_TEMP/binutils-result"
+          --output "$RUNNER_TEMP/binutils-evidence.zip"
+          --admission-log "$RUNNER_TEMP/binutils-input-admission.log"
+          --controller-log "$RUNNER_TEMP/binutils-build-controller.log"
+          --observer-check "$RUNNER_TEMP/binutils-observer-check"
+      - name: Upload original observation archive
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: original-binutils-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/binutils-evidence.zip
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0

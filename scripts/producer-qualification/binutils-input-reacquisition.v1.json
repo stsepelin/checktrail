@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "scope": "Historical exact public-input reacquisition for the fixed original binutils build; independent from native producer execution, compiler/bootstrap ancestry and complete notices.",
+  "finishedAt": "2026-10-30T16:23:55.660447+00:00",
+  "inputProfile": "original-debian-binutils-2.40-2-build-v1",
+  "inputPinSerialization": "SHA-256 of compact JSON array in recipe file order, each object containing file, bytes, sha256 in that key order; ASCII encoding and no trailing newline.",
+  "selectedInputPinsSha256": "60809394f79e23c3f6ca149e993044474da1e3f9475870ed016b6d43ee73db1f",
+  "downloadOrigins": {
+    "documentation": "https://salsa.debian.org/snapshot-team/snapshot/raw/master/API",
+    "origin": "https://snapshot.debian.org",
+    "pathTemplate": "/file/<sha1-server-locator>",
+    "sha1UsedOnlyAsServerLocator": true,
+    "frozenSha256AndByteCountRequired": true,
+    "everyFinalResponseStatus": 200,
+    "finalOriginsAllMatchSelectedOrigin": true,
+    "allInputsDownloadedAfreshWithoutCacheReuse": true,
+    "maximumWorkers": 4,
+    "maximumPerAttemptSeconds": 180,
+    "failedAttempts": 0
+  },
+  "downloadPartition": {
+    "originalSourceDescriptorAndArchives": 3,
+    "originalSignedInReleaseFiles": 3,
+    "signedIndexBoundDependencyArchives": 338,
+    "compressedCanonicalPackagesInputs": 3,
+    "developerKeyringPackage": 1
+  },
+  "downloadedFiles": 348,
+  "downloadedBytes": 798581244,
+  "bundleInputPartition": {
+    "downloadedSourceDescriptorAndArchives": 3,
+    "downloadedOriginalInReleaseFiles": 3,
+    "downloadedDependencyArchives": 338,
+    "exactRegeneratedLz4Indexes": 3,
+    "exactExtractedDeveloperKeyringMember": 1,
+    "emptyGeneratedLocks": 2
+  },
+  "bundleFiles": 350,
+  "bundleBytes": 807041299,
+  "metadataTransform": {
+    "recordFile": "binutils-apt-index-preparation.v1.json",
+    "sameOriginalPinnedImageAndTools": true,
+    "allThreeFreshXzInputsReprocessed": true,
+    "allThreeLz4OutputsMatchFrozenPins": true,
+    "allThreeOriginalSignaturesReverified": true,
+    "ownedContainerAbsent": true,
+    "changedCleartextExitCode": 1,
+    "unchangedOriginalRestorationExitCode": 0
+  },
+  "sourceSignerMember": {
+    "file": "keyrings/debian-keyring.gpg",
+    "bytes": 28549145,
+    "sha256": "115140a66a82e8aff366b5f322e1b2ff0aea610b88b02474e1a27dcd600aabe5",
+    "archiveMember": "usr/share/keyrings/debian-keyring.gpg",
+    "selectedArchiveMemberIsRegular": true,
+    "archiveMembersInspected": 15,
+    "archiveDeclaredBytesInspected": 31984280,
+    "arMembers": ["debian-binary", "control.tar.xz", "data.tar.xz"],
+    "packageInstalled": false
+  },
+  "originalSourceSignature": {
+    "exitCode": 0,
+    "validSignatureFingerprints": ["D56571B88A8BBAF140BF63D6BD7EAA60778FA6F5"]
+  },
+  "allSourceArchivesBoundByOriginalSignedDescriptor": true,
+  "sourceSignatureMutationControl": {
+    "changedSignedSourceExitCode": 1,
+    "unchangedOriginalRestorationExitCode": 0
+  },
+  "strictIndependentControllerPreparation": {
+    "allPinnedInputsValidated": 350,
+    "exitCode": 0,
+    "wouldBeBuildResultAbsent": true
+  },
+  "completeInputBundleReacquisitionVerified": true,
+  "sourceOrDependencyPackagesInstalled": false,
+  "packageManagerAuthenticationOrFreshnessDisabled": false,
+  "nativeCompilerBuildExecuted": false,
+  "fullCompilerSdkBootstrapClosureVerified": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
