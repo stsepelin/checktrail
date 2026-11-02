@@ -75,10 +75,30 @@ are required. Skip-only, unsupported, untested, unresolved or error-only reports
 remain unavailable; FAIL and XPASS results retain an explicit failed-evidence
 state without being discarded or reported as passing tests.
 
-All receipts retain compiler/SDK bootstrap, complete original notices,
-historical publisher consumption and Gate A closure as unverified. Native runs,
-their original configuration completeness, publisher output comparisons and
-upstream producer ancestry remain required follow-up work.
+These receipts keep their compiler/SDK bootstrap, original notice and Gate A
+closure fields unverified. Completion requires the finite selected original
+producer/compiler/SDK builds, source attribution, original notices and intended
+consumer evidence. Published binary equality, historical publisher consumption,
+full repository history, ambient toolchain inventories and hardware certification
+are outside that completion contract; historical unverified fields do not add
+those requirements.
+
+## Local GCC execution with an ARM daemon
+
+The direct GCC qualifier also accepts the additional operator flag
+`--allow-local-arm64-daemon`. It requires both execution flags and the unchanged
+selected GCC12 source, command, eight-hour budget, resources and pinned amd64
+image. The default daemon architecture check remains x64; this opt-in admits
+only the separately observed `aarch64` daemon with sufficient CPU and memory.
+Preparation, GLIBC and unknown option combinations refuse the flag.
+
+The controller must still report an actual Linux x64 Node runtime and x86_64
+kernel view. Receipts retain raw daemon metadata alongside these observations,
+the selected permission and the unknown emulation implementation. They do not
+attest physical CPU architecture. The daemon policy is checked again after the
+original command. A same-path, case-sensitive Linux volume and complete native
+execution evidence remain separate prerequisites; the flag alone establishes
+none of them. No local ARM-daemon GCC build is qualified by these source controls.
 
 ## Opt-in hosted GLIBC observation
 
