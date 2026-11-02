@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { test } from "node:test";
-const { windowsResourceFailureContext } = await import(
-  new URL("../../scripts/measure-windows-resources.mjs", import.meta.url).href
-);
+const { windowsResourceFailureContext, windowsResourceWorkerFailureMessage } =
+  await import(
+    new URL("../../scripts/measure-windows-resources.mjs", import.meta.url).href
+  );
 test("Windows resource diagnostics distinguish a Go spawn failure without exposing executable paths or raw output", () => {
   const secret = "C:/private/synthetic-only/input";
   const result = windowsResourceFailureContext(
@@ -127,4 +128,30 @@ test("Windows resource diagnostics bound structured child failures and reject ar
   assert.throws(() =>
     windowsResourceFailureContext("worker", "../private", {}, 0),
   );
+});
+
+test("Windows resource worker diagnostics preserve both original negative-case failure messages", () => {
+  const context = windowsResourceFailureContext(
+    "worker",
+    "small",
+    { exitCode: 1, stderr: "public synthetic failure" },
+    7000,
+  );
+  for (const original of [
+    "Resource workload validation did not pass",
+    "Resource workload source changed",
+  ]) {
+    const message = windowsResourceWorkerFailureMessage(original, context);
+    assert.ok(message.startsWith(original + "\n"));
+    assert.deepEqual(JSON.parse(message.slice(original.length + 1)), context);
+    assert.throws(
+      () => assert.equal(1, 0, message),
+      (error: unknown) => {
+        assert.ok(error instanceof assert.AssertionError);
+        assert.ok(error.message.includes(original));
+        return true;
+      },
+    );
+    assert.equal(windowsResourceWorkerFailureMessage(original, null), original);
+  }
 });

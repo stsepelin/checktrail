@@ -109,6 +109,9 @@ export function windowsResourceFailureContext(
     diagnostics: diagnostics.slice(0, 2),
   };
 }
+export function windowsResourceWorkerFailureMessage(stderr, context) {
+  return context ? stderr + "\n" + JSON.stringify(context) : stderr;
+}
 async function retainFailure(context) {
   const raw = JSON.stringify(context) + "\n";
   assert.ok(Buffer.byteLength(raw) <= 8192);
@@ -259,7 +262,7 @@ export async function measureWindowsResourceSample({
   assert.equal(
     execution.exitCode,
     0,
-    context ? JSON.stringify(context) : execution.stderr,
+    windowsResourceWorkerFailureMessage(execution.stderr, context),
   );
   assert.ok(
     !execution.errorCode &&
