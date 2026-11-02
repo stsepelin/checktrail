@@ -39,12 +39,17 @@ its complete fresh profile, original foundation and package setup; its child
 collector has ten seconds less. The shared runner grants this allowance only to
 the exact isolated installed callback. Other individual callback deadlines and
 production execution/cleanup limits remain unchanged. CI runs source and installed cohorts in separate required jobs for the selected
-runtime slots and a pinned Linux ARM64 controller. Those hosted runs remain
-unverified until observed.
+runtime slots and a pinned Linux ARM64 controller. The [historical hosted
+measurement](measurements/attempt-archives-hosted-2026-11-01.json) qualifies eight
+source/fresh runtime pairs at the exact recorded c25 source and compiled harness:
+144 direct profile callbacks and 718 foundation callbacks. The follow-up changes
+the harness, so current-head acceptance remains `not-measured` until native CI
+binds that version. Historical receipts are not relabelled.
 
 [The development measurement](measurements/attempt-archives-development-2026-10-28.json)
 records successful source and fresh-install execution on the observed current
 Mac. No final runtime slot was selected, so it does not satisfy the frozen
-runtime matrix. Complete call-family qualification, full artifact/build/license
+runtime matrix. The later hosted measurement supplies that matrix only at its
+recorded source. Current-head native qualification, full artifact/build/license
 closure, independent evaluation and Gate A remain open. No inference or field
 evaluation ran.

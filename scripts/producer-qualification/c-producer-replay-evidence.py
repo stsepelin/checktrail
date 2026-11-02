@@ -15,7 +15,7 @@ import time
 import zipfile
 
 MIB = 1024 ** 2
-CATALOG_SHA256 = '0309dcd61b505020cc19bb67beeca7b6a62103c8194784c9eb224bb75466dbc6'
+CATALOG_SHA256 = 'a2cd4b6647bfccab800576b5de4b6bb47d04edb3746a5467f2176daa207dee4f'
 KEYS = ['PASS','FAIL','XFAIL','XPASS','UNSUPPORTED','UNRESOLVED','UNTESTED','ERROR','SKIP']
 SOURCE_FILES = [
     'scripts/qualify-c-producer.mjs', 'scripts/qualify-binutils-producer.mjs',
@@ -24,7 +24,7 @@ SOURCE_FILES = [
     'scripts/producer-qualification/binutils-retention-observer.mjs', 'scripts/producer-qualification/binutils-retention-observer.py',
     'scripts/producer-qualification/binutils-image-identity.mjs', 'scripts/producer-qualification/binutils-image-identity.v1.json',
     'scripts/verify-c-producer-observation.mjs', 'scripts/producer-qualification/c-producer-export-evidence.py',
-    'scripts/producer-qualification/c-producer-replay-evidence.py', '.github/workflows/upstream-glibc.yml',
+    'scripts/producer-qualification/c-producer-replay-evidence.py', '.github/workflows/upstream-glibc.yml', '.github/workflows/upstream-glibc-u13.yml',
   'scripts/verify-binutils-retention-observer.mjs', 'scripts/acquire-binutils-inputs.mjs', 'scripts/acquire-c-producer-inputs.mjs', 'scripts/producer-qualification/binutils.v1.json', 'scripts/producer-qualification/binutils-acquisition-plan.mjs', 'scripts/producer-qualification/binutils-prepare-inputs.py', 'scripts/producer-qualification/binutils-apt-index-preparation.v1.json', 'scripts/producer-qualification/binutils-input-reacquisition.v1.json',
 ]
 GLIBC_POLICY_FILES = [
@@ -32,6 +32,7 @@ GLIBC_POLICY_FILES = [
     'moby-28.0.4/default.json', 'moby-28.0.4/LICENSE', 'moby-28.0.4/NOTICE', 'moby-28.0.4/AUTHORS',
 ]
 SOURCE_FILES += ['scripts/producer-qualification/' + name for name in GLIBC_POLICY_FILES]
+SOURCE_FILES += ['scripts/producer-qualification/gcc-job-envelope.mjs', 'scripts/producer-qualification/gcc-github-job-clock.mjs', 'scripts/producer-qualification/emsdk-metadata-values.mjs']
 SOURCE_FILES += ['scripts/producer-qualification/c-carrier-observation.mjs','scripts/observe-c-producer-carrier.mjs','.github/workflows/upstream-gcc.yml']
 
 
@@ -177,12 +178,70 @@ def syscall_preflight(packet, receipt):
     require(exact_json(proof['modes']['baseline']['record']['capabilities'],proof['modes']['derived']['record']['capabilities']),'Derived policy increased observed capabilities')
 
 
+def gcc_job_envelope(value, raw, capture_raw):
+    """Independent data-only replay; no Node module, HTTP or producer is executed."""
+    body = strict_json(raw)
+    require(type(raw) is bytes and 0 < len(raw) <= 128*1024, 'Bounded source-job response required')
+    context = value['context']
+    require(type(context) is dict and set(context) == {'repository','runId','runAttempt','jobName','headSha'}, 'Exact source-job context required')
+    parts = context['repository'].split('/') if type(context['repository']) is str else []
+    require(len(parts)==2 and re.fullmatch(r'[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?',parts[0]) and re.fullmatch(r'[A-Za-z0-9_.-]{1,100}',parts[1]) and parts[1] not in ['.','..'], 'Exact source-job repository')
+    for field in ['runId','runAttempt']:
+        require(type(context[field]) is str and re.fullmatch(r'[1-9][0-9]{0,14}',context[field]) and int(context[field])<=9007199254740991, 'Canonical source-job identifier')
+    require(context['jobName']=='original-gcc-observation' and type(context['headSha']) is str and re.fullmatch('[a-f0-9]{40}',context['headSha']), 'Selected GCC job/source differs')
+    url='https://api.github.com/repos/'+context['repository']+'/actions/runs/'+context['runId']+'/attempts/'+context['runAttempt']+'/jobs?per_page=100'
+    request=value['request'];response=value['response']
+    require(request['url']==url and exact_json(request['httpStatus'],200), 'Source-job service URL/status differs')
+    require(type(body) is dict and type(body.get('jobs')) is list and len(body['jobs'])==1 and exact_json(body.get('total_count'),1), 'Singleton source-job response required')
+    job=body['jobs'][0]
+    require(integer(job['id'],1) and job['id']<=9007199254740991 and exact_json(job['run_id'],int(context['runId'])) and job['run_url']=='https://api.github.com/repos/'+context['repository']+'/actions/runs/'+context['runId'], 'Source-job identity differs')
+    require(job['name']==context['jobName'] and job['head_sha']==context['headSha'] and job['status']=='in_progress' and job['conclusion'] is None, 'Source-job selection/status differs')
+    def millis(text):
+        require(type(text) is str and re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z',text), 'Source-job UTC framing')
+        instant=datetime.fromisoformat(text[:-1]+'+00:00')
+        canonical=instant.isoformat(timespec='milliseconds').replace('+00:00','Z')
+        require(canonical==(text if '.' in text else text[:-1]+'.000Z'), 'Noncanonical UTC source-job clock')
+        return round(instant.timestamp()*1000)
+    def utc_text(number):return datetime.fromtimestamp(number/1000,timezone.utc).isoformat(timespec='milliseconds').replace('+00:00','Z')
+    def finite(number):return type(number) in [int,float] and math.isfinite(number) and number>=0
+    started=millis(job['started_at']);request_start=millis(request['startedAt']);received=millis(request['receivedAt']);carrier_start=millis(value['carrierStartedAt'])
+    elapsed=request['elapsedMs'];carrier_elapsed=value['carrierElapsedAtAdmissionMs']
+    require(finite(elapsed) and elapsed<=15000 and finite(carrier_elapsed) and carrier_elapsed>=elapsed, 'Bounded same-process source-job clocks required')
+    require(received>=request_start>=carrier_start and abs(received-request_start-elapsed)<=1000 and abs(received-carrier_start-carrier_elapsed)<=1000, 'Source-job UTC/monotonic drift')
+    date=response['serviceDate']
+    require(type(date) is str, 'Service Date missing')
+    parsed=datetime.strptime(date,'%a, %d %b %Y %H:%M:%S GMT').replace(tzinfo=timezone.utc)
+    require(parsed.strftime('%a, %d %b %Y %H:%M:%S GMT')==date, 'Canonical source-job service Date')
+    service=round(parsed.timestamp()*1000)
+    require(request_start-2000<=service<=received+2000 and started<=service, 'Stale/future source-job service clock')
+    require(response['contentEncoding'] in [None,'identity'] and type(response['contentType']) is str and re.fullmatch(r'application/(?:json|vnd\.github\+json)(?:; charset=utf-8)?',response['contentType'],re.I), 'Encoded/unknown source-job response')
+    reserves={'producerCleanup':600,'observationFinish':300,'export':1200,'independentReplay':180,'artifactUpload':300,'runnerFinalization':300}
+    policy={'schemaVersion':1,'configuredJobSeconds':21300,'requestedMaximumObservationSeconds':19800,'minimumUsefulObservationSeconds':16200,'reservedSeconds':reserves,'totalReservedSeconds':2880,'serviceClockUncertaintyMs':2000,'maximumRequestMs':15000,'maximumResponseBytes':131072}
+    deadline=started+21300*1000;conservative=max(service,received)+2000
+    seconds=math.floor(min(19800,(carrier_elapsed+deadline-conservative-2880*1000)/1000))
+    require(seconds*1000-carrier_elapsed>=16200*1000 and carrier_start+seconds*1000+2880*1000<=deadline, 'Insufficient remaining source-job envelope')
+    expected={'schemaVersion':1,'authority':'fresh-current-run-attempt-GitHub-job-service-observation','context':context,'job':{'id':job['id'],'startedAt':job['started_at'],'status':job['status'],'headSha':job['head_sha']},'request':{'url':url,'startedAt':request['startedAt'],'receivedAt':request['receivedAt'],'elapsedMs':elapsed,'httpStatus':200},'response':{'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'serviceDate':date,'contentType':response['contentType'],'contentEncoding':response['contentEncoding'],'complete':True,'observedBytes':len(raw),'retainedBytes':len(raw)},'policy':policy,'carrierStartedAt':value['carrierStartedAt'],'carrierElapsedAtAdmissionMs':carrier_elapsed,'wholeJobDeadlineAt':utc_text(deadline),'observationSeconds':seconds,'cutoffAt':utc_text(carrier_start+seconds*1000),'fullEightHourHostedCapacityVerified':False,'originalProducerDefaultsOrBudgetChanged':False,'clockScope':'same-carrier-process-monotonic-after-fresh-service-UTC-admission'}
+    require(exact_json(value,expected), 'Independent source-job envelope replay differs')
+    captured=strict_json(capture_raw)
+    for key, selected in [('context',context),('url',url),('carrierStartedAt',value['carrierStartedAt']),('carrierElapsedMs',carrier_elapsed),('requestStartedAt',request['startedAt']),('receivedAt',request['receivedAt']),('requestElapsedMs',elapsed),('httpStatus',200),('serviceDate',date),('contentType',response['contentType']),('contentEncoding',response['contentEncoding']),('response',pin(raw)),('responseComplete',True),('observedResponseBytes',len(raw)),('retainedResponseBytes',len(raw)),('observedUnretainedBytes',0),('unreadResponseRemainderMagnitudeKnown',True),('requestAuthenticationHeadersRetained',False)]:
+        require(exact_json(captured[key],selected), 'Original source-job capture differs: '+key)
+    require(set(captured)=={'context','url','carrierStartedAt','carrierElapsedMs','requestStartedAt','receivedAt','requestElapsedMs','httpStatus','serviceDate','contentType','contentEncoding','requestId','response','responseComplete','observedResponseBytes','retainedResponseBytes','observedUnretainedBytes','unreadResponseRemainderMagnitudeKnown','requestAuthenticationHeadersRetained'}, 'Unknown source-job capture fields')
+    return seconds
+
+
 def gcc_carrier(packet, startup_raw, receipt, profile, observed):
     carrier_raw=packet.read('carrier/receipt.json',MIB);value=strict_json(carrier_raw)
     selected={'name':'gcc-12','profile':profile['profile'],'sourceVersion':profile['sourceVersion'],'catalogSha256':CATALOG_SHA256}
     require(exact_json(value['schemaVersion'],1) and exact_json(value['selectedProfile'],selected),'Wrong GCC carrier original profile')
     require(exact_json(value['originalCommandDeadlineSeconds'],28800) and profile['limits']['deadlineSeconds']==28800,'Original eight-hour deadline changed')
-    limits={'observationSeconds':14700,'cleanupSeconds':600,'softStopSeconds':480,'logBytes':8*MIB}
+    observation_seconds=14700;job_clock=None
+    if 'githubJobEnvelope' in value:
+        response_raw=packet.read('carrier/github-job-response.json',128*1024)
+        capture_raw=packet.read('carrier/github-job-capture.json',256*1024)
+        observation_seconds=gcc_job_envelope(value['githubJobEnvelope'],response_raw,capture_raw)
+        require(value['githubJobEnvelope']['carrierStartedAt']==value['startedAt'] and value['githubJobEnvelope']['cutoffAt']==value['cutoffAt'], 'Carrier source-job clock differs')
+        job_clock={'response':pin(response_raw),'capture':pin(capture_raw)}
+    limits={'observationSeconds':observation_seconds,'cleanupSeconds':600,'softStopSeconds':480,'logBytes':8*MIB}
     require(exact_json(value['carrierLimits'],limits),'Independent carrier limits changed')
     require(value['state']=='original-controller-terminal-observed' and value['stopCause'] is None,'External carrier cutoff or incomplete observation cannot qualify completion')
     terminal(value['controllerObserver'],8*MIB,2)
@@ -191,7 +250,9 @@ def gcc_carrier(packet, startup_raw, receipt, profile, observed):
     require(exact_json(pin(startup_raw),value['startupInput']),'Carrier startup source frame differs')
     owner_raw=packet.read('carrier/owner-frame.json',16*MIB);owner=strict_json(owner_raw)
     require(exact_json(pin(owner_raw),value['ownerFrame']) and isinstance(value['ownerAttempt'],str) and re.fullmatch(r'[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}',value['ownerAttempt']),'Carrier owner frame unavailable')
-    require(exact_json(observed['carrier'],{'receipt':pin(carrier_raw),'ownerFrame':pin(owner_raw),'controllerLog':pin(raw)}),'Live GCC carrier bytes differ from archived proof')
+    expected_carrier={'receipt':pin(carrier_raw),'ownerFrame':pin(owner_raw),'controllerLog':pin(raw)}
+    if job_clock is not None:expected_carrier['githubJobClock']=job_clock
+    require(exact_json(observed['carrier'],expected_carrier),'Live GCC carrier bytes differ from archived proof')
     require(exact_json(owner['attempt'],value['ownerAttempt']) and exact_json(owner['attempt'],receipt['attempt']),'Carrier owner attempt differs')
     for key in ['profile','sourceVersion','catalogSha256','limits','sourcePins','harnessPins']:
         require(exact_json(owner[key],receipt[key]),'Carrier original owner source/profile differs')
@@ -201,8 +262,8 @@ def gcc_carrier(packet, startup_raw, receipt, profile, observed):
         identity=value['cleanup'][role]['id']
         require(type(identity) is str and (re.fullmatch('[a-f0-9]{64}',identity) or identity=='checktrail-'+role+'-'+value['ownerAttempt']),'Carrier cleanup identity is unobserved')
     def seconds(number):return type(number) in [int,float] and math.isfinite(number) and number>=0
-    require(seconds(value['controllerTerminalSeconds']) and value['controllerTerminalSeconds']<=14700 and seconds(value['elapsedSeconds']) and value['controllerTerminalSeconds']<=value['elapsedSeconds']<=15300,'Carrier monotonic terminal outside independent window')
-    require(seconds(value['cleanupStartedSeconds']) and value['controllerTerminalSeconds']<=value['cleanupStartedSeconds']<=value['elapsedSeconds'] and seconds(value['cleanupDeadlineSeconds']) and value['cleanupStartedSeconds']<=value['cleanupDeadlineSeconds']<=min(15300,value['cleanupStartedSeconds']+600) and value['elapsedSeconds']<=value['cleanupDeadlineSeconds'],'Carrier cleanup clock reset or exceeded')
+    require(seconds(value['controllerTerminalSeconds']) and value['controllerTerminalSeconds']<=observation_seconds and seconds(value['elapsedSeconds']) and value['controllerTerminalSeconds']<=value['elapsedSeconds']<=observation_seconds+600,'Carrier monotonic terminal outside independent window')
+    require(seconds(value['cleanupStartedSeconds']) and value['controllerTerminalSeconds']<=value['cleanupStartedSeconds']<=value['elapsedSeconds'] and seconds(value['cleanupDeadlineSeconds']) and value['cleanupStartedSeconds']<=value['cleanupDeadlineSeconds']<=min(observation_seconds+600,value['cleanupStartedSeconds']+600) and value['elapsedSeconds']<=value['cleanupDeadlineSeconds'],'Carrier cleanup clock reset or exceeded')
     stop=value['stopObservation']
     if 'pendingGroupProbes' in stop:
         pending_group_probes(stop['pendingGroupProbes'])
@@ -210,7 +271,7 @@ def gcc_carrier(packet, startup_raw, receipt, profile, observed):
     def instant(text):
         require(type(text) is str and re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z',text),'Carrier UTC framing')
         return datetime.fromisoformat(text[:-1]+'+00:00').astimezone(timezone.utc).timestamp()
-    require(instant(value['cutoffAt'])-instant(value['startedAt'])==14700,'Carrier startup cutoff differs')
+    require(instant(value['cutoffAt'])-instant(value['startedAt'])==observation_seconds,'Carrier startup cutoff differs')
     for flag in ['originalProducerDefaultsOrBudgetChanged','fullEightHourHostedCapacityVerified','originalCommandCompletionClaimed','fullCompilerSdkBootstrapClosureVerified','completeOriginalNoticeClosureVerified','historicalPublisherConsumptionVerified','gateAComplete']:
         require(value[flag] is False,'Carrier overclaims producer or platform closure')
     require(receipt['syscallRuntime'] is None and 'syscallPreflight' not in receipt and 'generatedControlPins' not in receipt,'GCC selected a different syscall carrier policy')
@@ -235,7 +296,7 @@ class Packet:
             require(not item.is_dir() and not item.flag_bits&1 and stat.S_IFMT(item.external_attr>>16) in [0,stat.S_IFREG], 'Linked/encrypted/nonregular ZIP member refused')
         require('manifest.json' in names and self.archive.getinfo('manifest.json').file_size<=16*MIB, 'Missing bounded export manifest')
         self.manifest = strict_json(self.archive.read('manifest.json'))
-        require(type(self.manifest.get('selectedProfile')) is str and self.manifest['selectedProfile'] in ['gcc-12','glibc'],'Unknown archive original profile')
+        require(type(self.manifest.get('selectedProfile')) is str and self.manifest['selectedProfile'] in ['gcc-12','glibc','glibc-u13'],'Unknown archive original profile')
         require(self.manifest['schemaVersion']==1 and self.manifest['qualificationComplete'] is False and self.manifest['gateAComplete'] is False, 'Unproven export qualification')
         require(self.manifest['originalReportMemberByteLimit']==64*MIB and self.manifest['originalReportAggregateByteLimit']==512*MIB, 'Wrong C report export contract')
         for key in ['binaryPackagePayloadsUploaded','nativeWorktreeArchiveUploaded','originalInputPayloadsUploaded']:
@@ -297,8 +358,8 @@ def nonempty_package_outputs(rows, maximum):
 
 
 def reports(packet, prefix, value, caller, expected_producer_uid, profile_name='glibc'):
-    require(profile_name in ['gcc-12','glibc'],'Unknown original report profile')
-    roots={'gcc-12':['build','build-cross'],'glibc':['build-tree']}[profile_name]
+    require(profile_name in ['gcc-12','glibc','glibc-u13'],'Unknown original report profile')
+    roots={'gcc-12':['build','build-cross'],'glibc':['build-tree'],'glibc-u13':['build-tree']}[profile_name]
     require(exact_json([value['schemaVersion'],value['profile'],value['generatedBuildRoots']],[1,profile_name,roots]), 'Wrong original report profile')
     for key in ['completeConfigurationInventoryAssessed','duplicateReportsAreIndependentEvidence','allOriginalTestsPassRequired','fullCompilerSdkBootstrapClosureVerified','gateAComplete']:
         require(value[key] is False, 'Unproven original report promotion')
@@ -529,7 +590,7 @@ def source_frame(packet, repository, startup):
 
 
 def replay(archive,repository,expected_profile='glibc'):
-    require(type(expected_profile) is str and expected_profile in ['gcc-12','glibc'],'Unknown requested original profile')
+    require(type(expected_profile) is str and expected_profile in ['gcc-12','glibc','glibc-u13'],'Unknown requested original profile')
     repository=Path(repository).absolute()
     packet=Packet(archive)
     try:
@@ -583,13 +644,13 @@ def replay(archive,repository,expected_profile='glibc'):
         command=packet.json('result/work/original-command.json',4096)
         require(exact_json(command,receipt['originalBuild']) and exact_json(command,{'schemaVersion':1,'command':profile['command'],'invoked':True,'exitCode':0,'wrapperExitCode':0}),'Original default command terminal unavailable')
         require(packet.files['result/build.log']['bytes']==receipt['executionObserver']['retainedBytes'] and {key:packet.files['result/build.log'][key] for key in ['bytes','sha256']}==receipt['log'],'Original process log binding differs')
-        selected_sources=['c-producer-profiles.v1.json','c-producer-profile.mjs','c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','binutils-retention-observer.mjs','binutils-image-identity.mjs','binutils-image-identity.v1.json',*(GLIBC_POLICY_FILES if expected_profile=='glibc' else ['glibc-seccomp.mjs'])]
+        selected_sources=['c-producer-profiles.v1.json','c-producer-profile.mjs','c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','binutils-retention-observer.mjs','binutils-image-identity.mjs','binutils-image-identity.v1.json',*(GLIBC_POLICY_FILES if expected_profile in ['glibc','glibc-u13'] else ['glibc-seccomp.mjs'])]
         require(exact_json([row['file'] for row in receipt['sourcePins']],selected_sources) and exact_json([row['file'] for row in receipt['harnessPins']],['qualify-c-producer.mjs','qualify-binutils-producer.mjs']),'Incomplete original source/harness pin inventory')
         for row in receipt['sourcePins']:
             require(pin(packet.read('source/scripts/producer-qualification/'+row['file'],2*MIB))=={key:row[key] for key in ['bytes','sha256']},'Original source pin differs')
         for row in receipt['harnessPins']:
             require(pin(packet.read('source/scripts/'+row['file'],2*MIB))=={key:row[key] for key in ['bytes','sha256']},'Original harness pin differs')
-        if expected_profile=='glibc':
+        if expected_profile in ['glibc','glibc-u13']:
             require(observed['carrier'] is None,'GLIBC selected an external GCC carrier')
             syscall_preflight(packet,receipt)
         else:gcc_carrier(packet,packet.read('operator-startup.json',MIB),receipt,profile,observed)
@@ -632,7 +693,7 @@ def replay(archive,repository,expected_profile='glibc'):
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--profile',choices=['gcc-12','glibc'],required=True)
+    parser.add_argument('--profile',choices=['gcc-12','glibc','glibc-u13'],required=True)
     parser.add_argument('--archive',required=True)
     parser.add_argument('--repository',required=True)
     args=parser.parse_args()

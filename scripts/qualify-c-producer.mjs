@@ -40,6 +40,7 @@ import {
 import {
   cProducerDirectory,
   loadCProducerProfile,
+  cProducerProfileKey,
   safeRelative,
   sha256,
 } from "./producer-qualification/c-producer-profile.mjs";
@@ -358,7 +359,7 @@ export function cProducerArguments(
     String(profile.limits.deadlineSeconds),
     "/bin/sh",
     "/controller/c-producer-build.sh",
-    profile.sourcePackage,
+    cProducerProfileKey(profile),
     String(caller.uid),
     String(caller.gid),
   ];
@@ -367,7 +368,7 @@ export function cProducerArguments(
 export async function verifyCProducerReports(value, root, profile, caller) {
   caller = validateCProducerCallerIdentity(caller.uid, caller.gid);
   assert.equal(value.schemaVersion, 1);
-  assert.equal(value.profile, profile.sourcePackage);
+  assert.equal(value.profile, cProducerProfileKey(profile));
   assert.deepEqual(value.generatedBuildRoots, profile.generatedBuildRoots);
   for (const key of [
     "completeConfigurationInventoryAssessed",
@@ -1305,7 +1306,7 @@ async function run(plan) {
 export async function mainCProducer(args) {
   assert.ok(
     args.length === 7 || args.length === 8,
-    "Usage: node scripts/qualify-c-producer.mjs --profile gcc-12|glibc --inputs BUNDLE --output NEW_DIRECTORY --prepare-only | --operator-trust-execution --coordinated-heavy-slot",
+    "Usage: node scripts/qualify-c-producer.mjs --profile gcc-12|glibc|glibc-u13 --inputs BUNDLE --output NEW_DIRECTORY --prepare-only | --operator-trust-execution --coordinated-heavy-slot",
   );
   assert.equal(args[0], "--profile");
   assert.equal(args[2], "--inputs");

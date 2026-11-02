@@ -41,7 +41,7 @@ const catalog = JSON.parse(
 );
 const profile = catalog.profiles["gcc-12"];
 const catalogSha256 =
-  "0309dcd61b505020cc19bb67beeca7b6a62103c8194784c9eb224bb75466dbc6";
+  "a2cd4b6647bfccab800576b5de4b6bb47d04edb3746a5467f2176daa207dee4f";
 const attempt = "12345678-1234-4234-8234-123456789012";
 const posixFamilyControl = {
   skip:
@@ -601,11 +601,10 @@ test("GCC workflow has a narrow operator namespace, read-only capacity checks an
     if?: string;
     "timeout-minutes": number;
   }[];
-  assert.ok(
-    steps.reduce((sum, step) => sum + step["timeout-minutes"], 0) <=
-      job["timeout-minutes"],
-  );
-  assert.equal(job["timeout-minutes"], 360);
+  // Individual maxima cannot be added: the fresh whole-job gate subtracts elapsed preparation.
+  assert.equal(job["timeout-minutes"], 355);
+  assert.equal(workflow.permissions.actions, "read");
+  assert.ok(steps.every((step) => step["timeout-minutes"] <= 355));
   const preparation = steps.find((step) =>
     step.name?.includes("without compilation"),
   )!.run!;
@@ -624,6 +623,11 @@ test("GCC workflow has a narrow operator namespace, read-only capacity checks an
       carrier.gccCarrierLimits.observationSeconds +
         carrier.gccCarrierLimits.cleanupSeconds,
   );
+  assert.equal(observation["timeout-minutes"], 345);
+  assert.ok(observation.run!.includes("--github-job-envelope"));
+  assert.deepEqual((observation as { env?: Record<string, string> }).env, {
+    CHECKTRAIL_GITHUB_JOB_TOKEN: "${{ github.token }}",
+  });
   assert.equal(profile.limits.deadlineSeconds, 28800);
   assert.equal(profile.files.length, 241);
   for (const step of steps.filter((step) =>
@@ -1057,4 +1061,365 @@ test("GCC pending group observations remain explicit unavailable probes rather t
       carrier.validateGccCarrierReceipt(changed, profile, catalogSha256),
     );
   }
+});
+
+test("GCC source-job credential is confined to metadata admission and omitted from the original controller environment", () => {
+  const input = {
+    CHECKTRAIL_GITHUB_JOB_TOKEN: "synthetic-token",
+    GITHUB_RUN_ID: "51",
+    PATH: "synthetic-path",
+  };
+  assert.deepEqual(wrapper.carrierChildEnvironment(input), {
+    GITHUB_RUN_ID: "51",
+    PATH: "synthetic-path",
+  });
+  assert.equal(input.CHECKTRAIL_GITHUB_JOB_TOKEN, "synthetic-token");
+});
+
+test("GCC admitted carrier validates retained source-job bytes and refuses a substituted envelope", async () => {
+  const api = await import(
+    pathToFileURL(
+      path.join(
+        repository,
+        "scripts/producer-qualification/gcc-job-envelope.mjs",
+      ),
+    ).href
+  );
+  const context = {
+    repository: "fixture-owner/fixture-repo",
+    runId: "51",
+    runAttempt: "2",
+    jobName: "original-gcc-observation",
+    headSha: "a".repeat(40),
+  };
+  const responseBytes = Buffer.from(
+    JSON.stringify({
+      total_count: 1,
+      jobs: [
+        {
+          id: 41,
+          run_id: 51,
+          run_url:
+            "https://api.github.com/repos/fixture-owner/fixture-repo/actions/runs/51",
+          name: context.jobName,
+          head_sha: context.headSha,
+          status: "in_progress",
+          conclusion: null,
+          started_at: "2026-01-01T00:00:00Z",
+        },
+      ],
+    }),
+  );
+  const admitted = api.admitGccJobEnvelope({
+    context,
+    url: api.githubGccJobsUrl(context),
+    httpStatus: 200,
+    responseBytes,
+    responseComplete: true,
+    observedResponseBytes: responseBytes.length,
+    retainedResponseBytes: responseBytes.length,
+    observedUnretainedBytes: 0,
+    contentType: "application/json",
+    contentEncoding: null,
+    serviceDate: "Thu, 01 Jan 2026 00:02:01 GMT",
+    requestStartedAt: "2026-01-01T00:02:01.000Z",
+    receivedAt: "2026-01-01T00:02:01.100Z",
+    requestElapsedMs: 100,
+    carrierStartedAt: "2026-01-01T00:02:00.000Z",
+    carrierElapsedMs: 1100,
+  });
+  const value = {
+    ...schemaCarrier(),
+    githubJobEnvelope: admitted,
+    carrierLimits: {
+      ...carrier.gccCarrierLimits,
+      observationSeconds: admitted.observationSeconds,
+    },
+    startedAt: admitted.carrierStartedAt,
+    cutoffAt: admitted.cutoffAt,
+  };
+  assert.equal(
+    carrier.validateGccCarrierReceipt(
+      value,
+      profile,
+      catalogSha256,
+      responseBytes,
+    ).fullEightHourHostedCapacityVerified,
+    false,
+  );
+  assert.throws(() =>
+    carrier.validateGccCarrierReceipt(value, profile, catalogSha256),
+  );
+  assert.throws(() =>
+    carrier.validateGccCarrierReceipt(
+      value,
+      profile,
+      catalogSha256,
+      Buffer.concat([responseBytes, Buffer.from(" ")]),
+    ),
+  );
+  const edited = structuredClone(value);
+  edited.githubJobEnvelope.observationSeconds++;
+  assert.throws(() =>
+    carrier.validateGccCarrierReceipt(
+      edited,
+      profile,
+      catalogSha256,
+      responseBytes,
+    ),
+  );
+});
+
+test("GCC retained clock publication preserves a write failure and closes BOTH reserved handles after raw close fails", async () => {
+  const primary = new Error("synthetic-write-primary"),
+    secondary = new Error("synthetic-raw-close-secondary");
+  const events: string[] = [];
+  const handles = [
+    {
+      writeFile: async () => {
+        throw primary;
+      },
+      close: async () => {
+        events.push("raw.close");
+        throw secondary;
+      },
+    },
+    {
+      close: async () => {
+        events.push("metadata.close");
+      },
+    },
+  ];
+  await assert.rejects(
+    wrapper.retainCarrierJobClock(
+      "synthetic-carrier",
+      { responseBytes: Buffer.from("{}") },
+      {
+        open: async () => handles.shift(),
+        link: async () => assert.fail("no failed bytes may publish"),
+        unlink: async () => assert.fail("no failed bytes may publish"),
+      },
+    ),
+    (error: unknown) => error === primary,
+  );
+  assert.deepEqual(events, ["raw.close", "metadata.close"]);
+  assert.deepEqual(wrapper.carrierPublicationFailureDetails(primary), {
+    primary: String(primary),
+    secondary: [String(secondary)],
+  });
+});
+
+test("GCC reserved publication preserves directory sync failure while retaining directory close failure", async () => {
+  const primary = new Error("synthetic-directory-sync-primary"),
+    secondary = new Error("synthetic-directory-close-secondary");
+  const events: string[] = [];
+  const raw = {
+    writeFile: async () => {
+      events.push("write");
+    },
+    sync: async () => {
+      events.push("file.sync");
+    },
+    close: async () => {
+      events.push("file.close");
+    },
+  };
+  const directory = {
+    sync: async () => {
+      events.push("directory.sync");
+      throw primary;
+    },
+    close: async () => {
+      events.push("directory.close");
+      throw secondary;
+    },
+  };
+  await assert.rejects(
+    wrapper.publishReserved(
+      raw,
+      "synthetic.part",
+      "synthetic.final",
+      Buffer.from("{}"),
+      {
+        link: async () => {
+          events.push("link");
+        },
+        unlink: async () => {
+          events.push("unlink");
+        },
+        open: async () => directory,
+      },
+    ),
+    (error: unknown) => error === primary,
+  );
+  assert.deepEqual(events, [
+    "write",
+    "file.sync",
+    "file.close",
+    "link",
+    "unlink",
+    "directory.sync",
+    "directory.close",
+  ]);
+  assert.deepEqual(wrapper.carrierPublicationFailureDetails(primary), {
+    primary: String(primary),
+    secondary: [String(secondary)],
+  });
+});
+
+test("GCC publication cleanup attempts every handle and retains frozen primary and secondary errors", async () => {
+  const primary = Object.freeze(new Error("synthetic-frozen-primary"));
+  const closes: number[] = [];
+  const failures = [new Error("first-close"), new Error("second-close")];
+  const handles = failures.map((failure, index) => ({
+    close: async () => {
+      closes.push(index);
+      throw failure;
+    },
+  }));
+  const result = await wrapper.closeCarrierPublicationHandles(handles, primary);
+  assert.equal(result.cause, primary);
+  assert.deepEqual(closes, [0, 1]);
+  assert.deepEqual(wrapper.carrierPublicationFailureDetails(result), {
+    primary: String(primary),
+    secondary: failures.map(String),
+  });
+  const first = await wrapper.closeCarrierPublicationHandles(
+    handles,
+    undefined,
+  );
+  assert.equal(first, failures[0]);
+  assert.deepEqual(wrapper.carrierPublicationFailureDetails(first), {
+    primary: String(failures[0]),
+    secondary: [String(failures[1])],
+  });
+});
+
+test("GCC clock metadata reservation failure retains its primary and still closes the raw handle", async () => {
+  const primary = new Error("synthetic-metadata-reservation-primary"),
+    secondary = new Error("synthetic-raw-close-secondary");
+  let opened = 0,
+    closed = 0;
+  await assert.rejects(
+    wrapper.retainCarrierJobClock(
+      "synthetic-carrier",
+      { responseBytes: Buffer.from("{}") },
+      {
+        open: async () => {
+          opened++;
+          if (opened === 2) throw primary;
+          return {
+            close: async () => {
+              closed++;
+              throw secondary;
+            },
+          };
+        },
+        link: async () =>
+          assert.fail("reservation must finish before publication"),
+        unlink: async () =>
+          assert.fail("reservation must finish before publication"),
+      },
+    ),
+    (error: unknown) => error === primary,
+  );
+  assert.equal(opened, 2);
+  assert.equal(closed, 1);
+  assert.deepEqual(wrapper.carrierPublicationFailureDetails(primary), {
+    primary: String(primary),
+    secondary: [String(secondary)],
+  });
+});
+
+test("GCC successful retained clock publication closes each exact reserved file and directory once", async () => {
+  const closes: number[] = [],
+    writes: { file: string; bytes: Buffer }[] = [];
+  const actions: string[] = [];
+  let next = 0;
+  const io = {
+    open: async (file: string) => {
+      const id = next++;
+      actions.push("open:" + path.basename(file));
+      return {
+        writeFile: async (raw: string | Buffer) => {
+          writes.push({ file, bytes: Buffer.from(raw) });
+        },
+        sync: async () => {},
+        close: async () => {
+          closes.push(id);
+        },
+      };
+    },
+    link: async (part: string, target: string) => {
+      actions.push("link:" + path.basename(part) + ":" + path.basename(target));
+    },
+    unlink: async (part: string) => {
+      actions.push("unlink:" + path.basename(part));
+    },
+  };
+  await wrapper.retainCarrierJobClock(
+    "synthetic-carrier",
+    {
+      responseBytes: Buffer.from("{}"),
+      requestAuthenticationHeadersRetained: false,
+    },
+    io,
+  );
+  assert.deepEqual(closes, [0, 2, 1, 3]);
+  assert.deepEqual(actions.slice(0, 2), [
+    "open:.github-job-response.part",
+    "open:.github-job-capture.part",
+  ]);
+  assert.equal(actions.filter((entry) => entry.startsWith("link:")).length, 2);
+  assert.equal(
+    actions.filter((entry) => entry.startsWith("unlink:")).length,
+    2,
+  );
+  assert.equal(writes.length, 2);
+  assert.equal(writes[0]!.bytes.toString(), "{}");
+  assert.deepEqual(JSON.parse(writes[1]!.bytes.toString()), {
+    requestAuthenticationHeadersRetained: false,
+    response: {
+      bytes: 2,
+      sha256:
+        "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    },
+  });
+});
+
+test("GCC final publication preserves an earlier observation failure and all publication cleanup errors", async () => {
+  const observation = new Error("synthetic-observation-primary"),
+    publication = new Error("synthetic-publication-secondary"),
+    close = new Error("synthetic-publication-close-secondary");
+  const failedPublication = await wrapper.closeCarrierPublicationHandles(
+    [
+      {
+        close: async () => {
+          throw close;
+        },
+      },
+    ],
+    publication,
+  );
+  assert.throws(
+    () => wrapper.finishCarrierPublication(observation, failedPublication),
+    (error: unknown) => error === observation,
+  );
+  assert.deepEqual(wrapper.carrierPublicationFailureDetails(observation), {
+    primary: String(observation),
+    secondary: [String(publication), String(close)],
+  });
+  assert.equal(
+    wrapper.finishCarrierPublication(observation, undefined),
+    undefined,
+    "An ordinary recorded observation failure keeps its existing nonthrowing terminal behavior",
+  );
+  assert.equal(
+    wrapper.finishCarrierPublication(undefined, undefined),
+    undefined,
+  );
+  assert.throws(
+    () => wrapper.finishCarrierPublication(undefined, publication),
+    (error: unknown) => error === publication,
+  );
 });

@@ -372,3 +372,95 @@ test("fixed controller capture refuses unmapped adjacent and noncanonical filena
   assert.equal(result.stdout, "");
   assert.equal(result.stderr, "");
 });
+
+test("fixed controller failure carries only an exact sanitized terminal projection into the incomplete artifact", async (t) => {
+  const module = await import(
+    new URL("../../scripts/consumer-runtime-diagnostics.mjs", import.meta.url)
+      .href
+  );
+  const names = [
+    "broken",
+    "fixed",
+    "near-miss",
+    "prerequisite",
+    "stale",
+    "empty",
+    "privacy",
+    "lifecycle",
+    "installed",
+  ].map((kind) => `consumer-impact ${kind} acceptance`);
+  const value = module.readConsumerTerminalDiagnostic({
+    schemaVersion: 1,
+    profile: "native-consumer-terminal-diagnostic-v1",
+    state: "observed",
+    file: "dist/test/gate-consumer-impact.test.js",
+    sourceFileSha256: "a".repeat(64),
+    cases: [
+      {
+        name: names[0],
+        outcome: "failed",
+        durationMs: 1,
+        code: "ERR_TEST_FAILURE",
+        failureType: "testCodeFailure",
+      },
+    ],
+    missingCases: names.slice(1),
+    qualifiesNativeAcceptance: false,
+  });
+  const f = await run(
+    t,
+    `const error=Error('original-private-native-terminal-message');error.consumerTerminalDiagnostic=${JSON.stringify(value)};throw error;`,
+  );
+  assert.equal(f.record.complete, false);
+  assert.deepEqual(f.record.terminalDiagnostic, value);
+  assert.match(f.record.error, /original-private-native-terminal-message/);
+  const { consumerNativeFailureDiagnostic } = await import(helper);
+  const safe = consumerNativeFailureDiagnostic({
+    stage: "controller-result",
+    scopeId: "consumer-impact:windows-node22",
+    attemptId: "00000000-0000-4000-8000-000000000001",
+    error: Error("original-private-outer-message"),
+    entry: f.record,
+    repository: f.root,
+    sourceBeforeSha256: "b".repeat(64),
+  });
+  assert.deepEqual(safe.controller.terminalCases, value);
+  assert.equal(safe.qualifiesNativeAcceptance, false);
+  assert.equal(JSON.stringify(safe).includes("original-private"), false);
+  const absent = consumerNativeFailureDiagnostic({
+    stage: "controller-result",
+    scopeId: "consumer-impact:windows-node22",
+    entry: { ...f.record, terminalDiagnostic: undefined },
+    repository: f.root,
+  });
+  assert.equal(absent.controller.terminalCases.state, "missing");
+});
+
+test("native terminal diagnostic scope selection preserves nullable malformed-scope refusal without invoking attacker methods", async () => {
+  const { consumerNativeFailureDiagnostic } = await import(helper);
+  for (const scopeId of [
+    0,
+    1,
+    true,
+    {},
+    [],
+    Symbol("original-private-scope"),
+    {
+      startsWith() {
+        throw Error("original-private-scope");
+      },
+    },
+  ]) {
+    const value = consumerNativeFailureDiagnostic({
+      scopeId,
+      entry: { complete: false, stderr: { bytes: 0 }, stdout: { bytes: 0 } },
+      repository: process.cwd(),
+    });
+    assert.equal(value.scope, null);
+    assert.equal(value.controller.terminalCases, null);
+    assert.equal(
+      JSON.stringify(value).includes("original-private-scope"),
+      false,
+    );
+  }
+});

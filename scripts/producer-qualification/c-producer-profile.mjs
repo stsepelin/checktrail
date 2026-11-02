@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath, URL } from "node:url";
 
 export const cProducerCatalogSha256 =
-  "0309dcd61b505020cc19bb67beeca7b6a62103c8194784c9eb224bb75466dbc6";
+  "a2cd4b6647bfccab800576b5de4b6bb47d04edb3746a5467f2176daa207dee4f";
 export const cProducerCommand = [
   "dpkg-buildpackage",
   "-b",
@@ -23,6 +23,52 @@ export const safeRelative = (value) =>
 export const sha256 = (bytes) =>
   createHash("sha256").update(bytes).digest("hex");
 
+const profileBindings = [
+  [
+    "gcc-12",
+    "gcc-12",
+    "12.2.0-14+deb12u1",
+    241,
+    8,
+    64,
+    "source/gcc-12/gcc-12_12.2.0-14+deb12u1.dsc",
+  ],
+  [
+    "glibc",
+    "glibc",
+    "2.36-9+deb12u14",
+    161,
+    4,
+    32,
+    "source/glibc/glibc_2.36-9+deb12u14.dsc",
+  ],
+  [
+    "glibc-u13",
+    "glibc",
+    "2.36-9+deb12u13",
+    161,
+    4,
+    32,
+    "source/glibc/glibc_2.36-9+deb12u13.dsc",
+  ],
+];
+
+export function cProducerProfileKey(profile) {
+  const binding = profileBindings.find(
+    ([, sourcePackage, version, , , , descriptor]) =>
+      profile.sourcePackage === sourcePackage &&
+      profile.sourceVersion === version &&
+      profile.profile ===
+        `original-debian-${sourcePackage}-${version}-build-v1` &&
+      profile.descriptor === descriptor,
+  );
+  assert.ok(
+    binding,
+    "Unknown exact C producer key/source/version/descriptor tuple",
+  );
+  return binding[0];
+}
+
 export function validateCProducerCatalog(catalog) {
   assert.equal(catalog.schemaVersion, 1);
   assert.equal(
@@ -37,18 +83,29 @@ export function validateCProducerCatalog(catalog) {
     LC_ALL: "C.UTF-8",
     DEBIAN_FRONTEND: "noninteractive",
   });
-  assert.deepEqual(Object.keys(catalog.profiles).sort(), ["gcc-12", "glibc"]);
+  assert.deepEqual(Object.keys(catalog.profiles).sort(), [
+    "gcc-12",
+    "glibc",
+    "glibc-u13",
+  ]);
   assert.equal(catalog.commonInputs.length, 8);
-  for (const [name, version, count, hours, gib] of [
-    ["gcc-12", "12.2.0-14+deb12u1", 241, 8, 64],
-    ["glibc", "2.36-9+deb12u14", 161, 4, 32],
-  ]) {
+  for (const [
+    name,
+    sourcePackage,
+    version,
+    count,
+    hours,
+    gib,
+    descriptor,
+  ] of profileBindings) {
     const profile = catalog.profiles[name];
-    assert.equal(profile.sourcePackage, name);
+    assert.equal(profile.sourcePackage, sourcePackage);
+    assert.equal(profile.descriptor, descriptor);
+    assert.equal(cProducerProfileKey(profile), name);
     assert.equal(profile.sourceVersion, version);
     assert.equal(
       profile.profile,
-      `original-debian-${name}-${version}-build-v1`,
+      `original-debian-${sourcePackage}-${version}-build-v1`,
     );
     assert.deepEqual(profile.command, cProducerCommand);
     assert.deepEqual(profile.limits, {
@@ -129,12 +186,63 @@ export function validateCProducerCatalog(catalog) {
       "c034e180a28197c8a9d2b378bcf621d87766a49b3d1bb2d82cc25068ba398cac",
     crossRevisionProducerClosureClaimed: false,
   });
+  const u13 = catalog.profiles["glibc-u13"];
+  const u14 = catalog.profiles.glibc;
+  const replacements = [
+    {
+      file: "source/glibc/glibc_2.36-9+deb12u13.debian.tar.xz",
+      bytes: 908524,
+      sha256:
+        "728086077548b13c37a348a99f74b9c7a437d6a8aed4aab5e2ed86b3a5ff6df6",
+      kind: "original-source-archive",
+      sourceUrls: [
+        "https://deb.debian.org/debian/pool/main/g/glibc/glibc_2.36-9+deb12u13.debian.tar.xz",
+      ],
+    },
+    {
+      file: "source/glibc/glibc_2.36-9+deb12u13.dsc",
+      bytes: 9765,
+      sha256:
+        "c034e180a28197c8a9d2b378bcf621d87766a49b3d1bb2d82cc25068ba398cac",
+      kind: "signed-source-descriptor",
+      sourceUrls: [
+        "https://deb.debian.org/debian/pool/main/g/glibc/glibc_2.36-9+deb12u13.dsc",
+      ],
+    },
+  ];
+  assert.deepEqual(
+    u13.files.filter((row) =>
+      replacements.some((replacement) => replacement.file === row.file),
+    ),
+    replacements,
+    "Exact u13 source descriptor/archive pins changed",
+  );
+  const oldSourceNames = new Set([
+    "source/glibc/glibc_2.36-9+deb12u14.debian.tar.xz",
+    "source/glibc/glibc_2.36-9+deb12u14.dsc",
+  ]);
+  const newSourceNames = new Set(replacements.map((row) => row.file));
+  assert.deepEqual(
+    u13.files.filter((row) => !newSourceNames.has(row.file)),
+    u14.files.filter((row) => !oldSourceNames.has(row.file)),
+    "The 159 unchanged u13 bootstrap/metadata inputs changed",
+  );
+  assert.equal(
+    u13.sourceDescriptorSigner,
+    null,
+    "Fresh u13 signer identity is not yet observed",
+  );
+  assert.equal(u13.freshSourceDescriptorSignatureVerified, false);
+  assert.equal(u13.historicalPrivateInputReplayVerified, false);
+  assert.equal(u13.reusedBootstrapInputProfile, u14.profile);
+  assert.equal(u13.originalProducerRules.length, 48);
+  assert.equal(u13.capturedOriginalNotices.length, 5);
   return catalog;
 }
 
 export async function loadCProducerProfile(name) {
   assert.ok(
-    ["gcc-12", "glibc"].includes(name),
+    ["gcc-12", "glibc", "glibc-u13"].includes(name),
     "Unknown closed producer profile",
   );
   const bytes = await readFile(
@@ -152,6 +260,7 @@ export async function loadCProducerProfile(name) {
   const catalog = validateCProducerCatalog(JSON.parse(bytes));
   return {
     catalog,
+    profileKey: name,
     profile: catalog.profiles[name],
     catalogSha256: sha256(bytes),
   };

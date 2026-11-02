@@ -185,3 +185,25 @@ policy or its native predicate probes. A successful original command may retain
 failed or unsupported test outcomes under its unchanged defaults. Full producer
 ancestry, original notice closure, historical consumption and Gate A remain
 unverified by the observer. Earlier GLIBC source revisions remain separate.
+
+### Remaining whole-job envelope for a hosted GCC observation
+
+The dedicated hosted job requests 355 minutes. Its metadata-only admission makes
+one direct, bounded request for the current run attempt's singleton GCC job and
+retains the original response before interpreting it. The job's actual start and
+a fresh service clock determine the remaining envelope after preparation. Unknown,
+stale, truncated or mismatched clocks refuse execution. The same carrier process
+uses its monotonic clock to subtract metadata and retention time before spawning
+the unchanged original controller.
+
+The observation requests at most 330 minutes; this maximum is not a promise of
+330 minutes of compiler time. Admission preserves ten minutes for producer cleanup,
+five for observation completion, twenty for export, three for independent replay,
+five for upload and five for runner finalization. It requires at least 270 useful
+minutes immediately before original execution. Preparation consumes the same job
+clock. The original producer command still has its 28,800-second deadline, original
+resources, checks and export behavior. A carrier cutoff remains incomplete; natural
+original completion can be assessed without claiming eight-hour hosted capacity.
+The job token is used only for metadata admission and is excluded from the original
+controller's environment. No upstream build or new hosted observation is established
+by the synthetic clock and transport controls.

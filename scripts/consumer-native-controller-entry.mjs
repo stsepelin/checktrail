@@ -23,6 +23,7 @@ const controllerFiles = new Set(
     )
     .concat(consumerNativeEntrypoint("consumer-impact", "ci-linux-node22")[0]),
 );
+import { readConsumerTerminalDiagnostic } from "./consumer-runtime-diagnostics.mjs";
 let active = false;
 /** Await one existing entrypoint in this fresh operator CLI. Its own native fences/timeouts remain authoritative. */
 export async function captureConsumerControllerEntry(
@@ -97,6 +98,7 @@ export async function captureConsumerControllerEntry(
   };
   let moduleCompleted = false,
     error = null,
+    terminalDiagnostic = null,
     captureError = null,
     exitRequested = null,
     exitCodeRequested = null,
@@ -167,6 +169,13 @@ export async function captureConsumerControllerEntry(
     exitCodeRequested = process.exitCode ?? 0;
   } catch (failure) {
     error = String(failure?.stack ?? failure);
+    try {
+      terminalDiagnostic = readConsumerTerminalDiagnostic(
+        failure?.consumerTerminalDiagnostic,
+      );
+    } catch {
+      terminalDiagnostic = readConsumerTerminalDiagnostic(null);
+    }
   } finally {
     process.stdout.write = previous.out;
     process.stderr.write = previous.err;
@@ -194,6 +203,7 @@ export async function captureConsumerControllerEntry(
     exitCodeRequested,
     error,
     captureError,
+    terminalDiagnostic,
     truncated,
     stdout: {
       path: streams.stdout.filename,
@@ -340,14 +350,15 @@ export function consumerNativeFailureDiagnostic({
   } catch {
     /* A diagnostic getter cannot replace the original failure. */
   }
+  const safeScope =
+    typeof scopeId === "string" && /^[a-z-]+:[a-z0-9-]{1,64}$/.test(scopeId)
+      ? scopeId
+      : null;
   return {
     schemaVersion: 1,
     profile: "native-consumer-incomplete-diagnostic-v1",
     state: "incomplete",
-    scope:
-      typeof scopeId === "string" && /^[a-z-]+:[a-z0-9-]{1,64}$/.test(scopeId)
-        ? scopeId
-        : null,
+    scope: safeScope,
     attemptId:
       typeof attemptId === "string" &&
       /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(
@@ -380,6 +391,9 @@ export function consumerNativeFailureDiagnostic({
           errorLocations: locations(entry.error),
           stdoutBytes: number(entry.stdout?.bytes),
           stderrBytes: number(entry.stderr?.bytes),
+          terminalCases: safeScope?.startsWith("consumer-impact:")
+            ? readConsumerTerminalDiagnostic(entry.terminalDiagnostic)
+            : null,
         }
       : null,
     sourceOrRawOutputIncluded: false,

@@ -24,10 +24,24 @@ import {
   requireCObservationProfile,
 } from "./producer-qualification/c-carrier-observation.mjs";
 import { sha256 } from "./producer-qualification/c-producer-profile.mjs";
+import {
+  afterGccJobAdmission,
+  remainingGccObservationMs,
+} from "./producer-qualification/gcc-job-envelope.mjs";
+import {
+  captureAndRetainGithubGccJobClock,
+  githubGccContextFromEnvironment,
+} from "./producer-qualification/gcc-github-job-clock.mjs";
 
 const { AbortController } = globalThis;
 const self = fileURLToPath(import.meta.url);
 const ownedFamilies = new WeakMap();
+
+export function carrierChildEnvironment(environment) {
+  const copied = { ...environment };
+  delete copied.CHECKTRAIL_GITHUB_JOB_TOKEN;
+  return copied;
+}
 
 export function spawnCarrierNode(args) {
   assert.notEqual(
@@ -37,6 +51,7 @@ export function spawnCarrierNode(args) {
   );
   const child = spawn(process.execPath, args, {
     detached: true,
+    env: carrierChildEnvironment(process.env),
     stdio: ["ignore", "pipe", "pipe"],
   });
   assert.ok(
@@ -243,30 +258,160 @@ export function validateCarrierOwner(owner, plan, caller) {
   return owner.attempt;
 }
 
-async function publishReserved(handle, part, target, raw) {
-  await handle.writeFile(raw);
-  await handle.sync();
-  await handle.close();
-  await link(part, target);
-  await unlink(part);
-  const directory = await open(path.dirname(target), "r");
+function appendCarrierPublicationFailure(primary, secondary) {
+  if (primary === undefined) return secondary;
+  const failures = [
+    ...(primary?.carrierPublicationSecondaryFailures ?? []),
+    secondary,
+    ...(secondary?.carrierPublicationSecondaryFailures ?? []),
+  ];
   try {
-    await directory.sync();
-  } finally {
-    await directory.close();
+    Object.defineProperty(primary, "carrierPublicationSecondaryFailures", {
+      value: failures,
+      configurable: true,
+    });
+    return primary;
+  } catch {
+    // A frozen primary still remains the cause/first member; cleanup must continue.
+    const failure = new AggregateError(
+      [primary, ...failures],
+      String(primary),
+      { cause: primary },
+    );
+    failure.carrierPublicationSecondaryFailures = failures;
+    failure.carrierPublicationPrimary =
+      primary?.carrierPublicationPrimary ?? primary;
+    return failure;
   }
+}
+
+export function finishCarrierPublication(primary, publicationFailure) {
+  if (publicationFailure !== undefined)
+    throw appendCarrierPublicationFailure(primary, publicationFailure);
+}
+
+export async function closeCarrierPublicationHandles(
+  handles,
+  primary,
+  attempted = new Set(),
+) {
+  let failure = primary;
+  for (const handle of handles) {
+    if (!handle || attempted.has(handle)) continue;
+    attempted.add(handle);
+    try {
+      await handle.close();
+    } catch (error) {
+      failure = appendCarrierPublicationFailure(failure, error);
+    }
+  }
+  return failure;
+}
+
+export function carrierPublicationFailureDetails(error) {
+  return {
+    primary: String(error?.carrierPublicationPrimary ?? error),
+    secondary: (error?.carrierPublicationSecondaryFailures ?? []).map(String),
+  };
+}
+
+export async function publishReserved(
+  handle,
+  part,
+  target,
+  raw,
+  io = { link, unlink, open },
+  attempted = new Set(),
+) {
+  let directory, failure;
+  try {
+    await handle.writeFile(raw);
+    await handle.sync();
+    failure = await closeCarrierPublicationHandles(
+      [handle],
+      undefined,
+      attempted,
+    );
+    if (failure !== undefined) throw failure;
+    await io.link(part, target);
+    await io.unlink(part);
+    directory = await io.open(path.dirname(target), "r");
+    await directory.sync();
+  } catch (error) {
+    failure = error;
+  } finally {
+    failure = await closeCarrierPublicationHandles(
+      [handle, directory],
+      failure,
+      attempted,
+    );
+  }
+  if (failure !== undefined) throw failure;
+}
+
+export async function retainCarrierJobClock(
+  carrier,
+  observed,
+  io = { link, unlink, open },
+) {
+  // Reserve both files before publishing either; never serialize authentication headers.
+  const { responseBytes, ...metadata } = observed;
+  const rawPart = path.join(carrier, ".github-job-response.part");
+  const metadataPart = path.join(carrier, ".github-job-capture.part");
+  const rawHandle = await io.open(rawPart, "wx", 0o600);
+  const attempted = new Set();
+  let metadataHandle, failure;
+  try {
+    metadataHandle = await io.open(metadataPart, "wx", 0o600);
+    await publishReserved(
+      rawHandle,
+      rawPart,
+      path.join(carrier, "github-job-response.json"),
+      responseBytes,
+      io,
+      attempted,
+    );
+    await publishReserved(
+      metadataHandle,
+      metadataPart,
+      path.join(carrier, "github-job-capture.json"),
+      JSON.stringify(
+        {
+          ...metadata,
+          response: {
+            bytes: responseBytes.length,
+            sha256: sha256(responseBytes),
+          },
+        },
+        null,
+        2,
+      ) + "\n",
+      io,
+      attempted,
+    );
+  } catch (error) {
+    failure = error;
+  } finally {
+    failure = await closeCarrierPublicationHandles(
+      [rawHandle, metadataHandle],
+      failure,
+      attempted,
+    );
+  }
+  if (failure !== undefined) throw failure;
 }
 
 export async function mainCProducerCarrier(args) {
   assert.ok(
-    args.length === 10 &&
+    (args.length === 10 ||
+      (args.length === 11 && args[10] === "--github-job-envelope")) &&
       args[0] === "--profile" &&
       args[2] === "--inputs" &&
       args[4] === "--output" &&
       args[6] === "--startup" &&
       args[8] === "--operator-trust-execution" &&
       args[9] === "--coordinated-heavy-slot",
-    "Usage: --profile gcc-12 --inputs BUNDLE --output NEW_RESULT --startup FILE --operator-trust-execution --coordinated-heavy-slot",
+    "Usage: --profile gcc-12 --inputs BUNDLE --output NEW_RESULT --startup FILE --operator-trust-execution --coordinated-heavy-slot [--github-job-envelope]",
   );
   const name = requireCObservationProfile(args[1]);
   assert.equal(
@@ -321,7 +466,9 @@ export async function mainCProducerCarrier(args) {
     historicalPublisherConsumptionVerified: false,
     gateAComplete: false,
   };
-  let failure;
+  let limits = gccCarrierLimits;
+  const useGithubEnvelope = args.length === 11;
+  let failure, finalPublicationFailure;
   const owner = async () => {
     if (ownerAttempt) return;
     ownerRaw = await boundedCProducerBytes(
@@ -374,9 +521,7 @@ export async function mainCProducerCarrier(args) {
     const cleanupStarted = performance.now();
     const deadline = Math.min(
       started +
-        (gccCarrierLimits.observationSeconds +
-          gccCarrierLimits.cleanupSeconds) *
-          1000,
+        (limits.observationSeconds + gccCarrierLimits.cleanupSeconds) * 1000,
       cleanupStarted + gccCarrierLimits.cleanupSeconds * 1000 - 1,
     );
     value.cleanupStartedSeconds = (cleanupStarted - started) / 1000;
@@ -402,42 +547,79 @@ export async function mainCProducerCarrier(args) {
     ownerHandle = await open(ownerPart, "wx", 0o600);
     process.on("SIGINT", abort);
     process.on("SIGTERM", abort);
-    value.controllerObserver = await observeForeground(
-      () => {
-        ({ child, family } = spawnCarrierNode([
-          path.join(path.dirname(self), "qualify-c-producer.mjs"),
-          "--profile",
-          name,
-          "--inputs",
-          inputs,
-          "--output",
-          output,
-          "--operator-trust-execution",
-          "--coordinated-heavy-slot",
-        ]));
-        terminal = new Promise((resolve) => {
-          const observed = () => {
-            value.controllerTerminalSeconds ??=
-              (performance.now() - started) / 1000;
-            resolve();
-          };
-          child.once("close", observed);
-          child.once("error", observed);
-        });
-        return child;
-      },
-      path.join(carrier, "controller.log"),
-      {
-        timeoutMs: gccCarrierLimits.observationSeconds * 1000,
-        maxBytes: gccCarrierLimits.logBytes,
-        signal: controller.signal,
-        stop: async () => {
-          // The initial atomic controller receipt predates every owned container.
-          // Read it before SIGTERM can replace the final snapshot.
-          await stopAndCleanup();
+    const observeOriginal = async (admitted) => {
+      if (admitted) {
+        limits = {
+          ...gccCarrierLimits,
+          observationSeconds: admitted.observationSeconds,
+        };
+        value.githubJobEnvelope = admitted;
+        value.carrierLimits = limits;
+        value.cutoffAt = admitted.cutoffAt;
+      }
+      const remaining = admitted
+        ? remainingGccObservationMs(admitted, started, performance.now())
+        : Math.floor(
+            started + limits.observationSeconds * 1000 - performance.now(),
+          );
+      assert.ok(
+        remaining > 0,
+        "Admitted GCC observation envelope expired before original execution",
+      );
+      return observeForeground(
+        () => {
+          ({ child, family } = spawnCarrierNode([
+            path.join(path.dirname(self), "qualify-c-producer.mjs"),
+            "--profile",
+            name,
+            "--inputs",
+            inputs,
+            "--output",
+            output,
+            "--operator-trust-execution",
+            "--coordinated-heavy-slot",
+          ]));
+          terminal = new Promise((resolve) => {
+            const observed = () => {
+              value.controllerTerminalSeconds ??=
+                (performance.now() - started) / 1000;
+              resolve();
+            };
+            child.once("close", observed);
+            child.once("error", observed);
+          });
+          return child;
         },
-      },
-    );
+        path.join(carrier, "controller.log"),
+        {
+          timeoutMs: remaining,
+          maxBytes: gccCarrierLimits.logBytes,
+          signal: controller.signal,
+          stop: async () => {
+            // The initial atomic controller receipt predates every owned container.
+            // Read it before SIGTERM can replace the final snapshot.
+            await stopAndCleanup();
+          },
+        },
+      );
+    };
+    if (useGithubEnvelope) {
+      const context = githubGccContextFromEnvironment(process.env);
+      const capture = () =>
+        captureAndRetainGithubGccJobClock(
+          context,
+          {
+            carrierStartedAt: startedAt,
+            carrierMonotonicStarted: started,
+            token: process.env.CHECKTRAIL_GITHUB_JOB_TOKEN,
+          },
+          (observed) => retainCarrierJobClock(carrier, observed),
+        );
+      value.controllerObserver = await afterGccJobAdmission(
+        capture,
+        observeOriginal,
+      );
+    } else value.controllerObserver = await observeOriginal(null);
     value.stopCause =
       value.controllerObserver.reason === "deadline"
         ? "external-carrier-cutoff"
@@ -451,6 +633,8 @@ export async function mainCProducerCarrier(args) {
   } catch (error) {
     failure = error;
     value.error = String(error);
+    if (error?.carrierPublicationSecondaryFailures)
+      value.publicationFailure = carrierPublicationFailureDetails(error);
     value.state = "carrier-observation-incomplete";
     value.observedFailedTerminal = error.observedTerminal ?? null;
   } finally {
@@ -475,20 +659,35 @@ export async function mainCProducerCarrier(args) {
     }
     value.elapsedSeconds = (performance.now() - started) / 1000;
     value.finishedAt = new Date().toISOString();
+    const finalCloseAttempts = new Set();
     try {
-      if (ownerHandle) await ownerHandle.close();
-      await publishReserved(
-        receiptHandle,
-        receiptPart,
-        path.join(carrier, "receipt.json"),
-        JSON.stringify(value, null, 2) + "\n",
+      finalPublicationFailure = await closeCarrierPublicationHandles(
+        [ownerHandle],
+        undefined,
+        finalCloseAttempts,
       );
+      if (finalPublicationFailure === undefined)
+        await publishReserved(
+          receiptHandle,
+          receiptPart,
+          path.join(carrier, "receipt.json"),
+          JSON.stringify(value, null, 2) + "\n",
+          { link, unlink, open },
+          finalCloseAttempts,
+        );
+    } catch (error) {
+      finalPublicationFailure = error;
     } finally {
       process.off("SIGINT", abort);
       process.off("SIGTERM", abort);
-      await receiptHandle.close();
+      finalPublicationFailure = await closeCarrierPublicationHandles(
+        [ownerHandle, receiptHandle],
+        finalPublicationFailure,
+        finalCloseAttempts,
+      );
     }
   }
+  finishCarrierPublication(failure, finalPublicationFailure);
   return {
     state: value.state,
     carrierReceipt: path.join(carrier, "receipt.json"),
@@ -505,6 +704,12 @@ if (process.argv[1] && path.resolve(process.argv[1]) === self) {
     );
   } catch (error) {
     process.stderr.write(String(error) + "\n");
+    if (error?.carrierPublicationSecondaryFailures)
+      process.stderr.write(
+        JSON.stringify({
+          publicationFailure: carrierPublicationFailureDetails(error),
+        }) + "\n",
+      );
   }
   process.exitCode = 2; // A carrier terminal alone never closes original producer ancestry.
 }

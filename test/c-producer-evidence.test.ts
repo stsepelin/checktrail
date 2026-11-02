@@ -24,7 +24,7 @@ const catalog = JSON.parse(
 );
 const profile = catalog.profiles.glibc;
 const catalogSha256 =
-  "0309dcd61b505020cc19bb67beeca7b6a62103c8194784c9eb224bb75466dbc6";
+  "a2cd4b6647bfccab800576b5de4b6bb47d04edb3746a5467f2176daa207dee4f";
 const terminal = {
   exitCode: 0,
   signal: null,
@@ -222,7 +222,10 @@ test("GLIBC hosted carrier keeps its original budget, bounded export and a branc
       "utf8",
     ),
   );
-  assert.deepEqual(workflow.on.push.branches, ["pr/upstream-producer/glibc-*"]);
+  assert.deepEqual(workflow.on.push.branches, [
+    "pr/upstream-producer/glibc-*",
+    "!pr/upstream-producer/glibc-u13-*",
+  ]);
   const job = workflow.jobs["original-glibc-observation"];
   assert.ok(job["timeout-minutes"] <= 360);
   assert.equal(profile.limits.deadlineSeconds, 14400);

@@ -572,3 +572,8 @@ scopes and units. The declared selected runtime jobs require fresh exact-input
 receipts; the local development controls and historical Windows observations do
 not certify the final matrix or full artifact/license closure. Gate A remains
 open without model inference or field evaluation.
+
+The opt-in [original Node source producer](NODE-ORIGINAL-PRODUCER.md) has a fixed
+Linux x64 preparation/controller profile and generated refusal controls. Native
+source-build acceptance, compiler/SDK ancestry and complete notice closure remain
+separate; this adds no product discovery or language-adapter execution mode.
