@@ -24,6 +24,10 @@ const { AbortController } = globalThis;
 import { performance } from "node:perf_hooks";
 import { stopDescendants } from "../dist/src/process-tree.js";
 
+// Leave 15 minutes of the 75-minute host job for preparation, the separate
+// installed consumer proof and cleanup; the full package queue can exceed 45.
+export const validationTimeoutMs = 60 * 60 * 1000;
+
 export const validationPhases = JSON.parse(
   await readFile(
     new URL("./ci-validation-phases.json", import.meta.url),
@@ -272,7 +276,7 @@ export async function runValidationLanes(
   repository,
   {
     phases = validationPhases,
-    timeoutMs = 45 * 60 * 1000,
+    timeoutMs = validationTimeoutMs,
     signal,
     logDirectory = path.join(repository, ".checktrail/ci-lanes"),
     progress = () => {},
@@ -284,7 +288,8 @@ export async function runValidationLanes(
   assert.ok(
     Number.isSafeInteger(timeoutMs) &&
       timeoutMs > 0 &&
-      timeoutMs <= 45 * 60 * 1000,
+      timeoutMs <= validationTimeoutMs,
+    "CI lane timeout must be bounded",
   );
   for (const task of Object.values(phases).flat())
     assert.ok((await lstat(path.join(repository, task.script))).isFile());
@@ -491,6 +496,7 @@ export async function runValidationLanes(
     sourceStable,
     mutationsRestored,
     cleanupComplete,
+    timeoutMs,
     maxConcurrentCommands: 2,
     peakConcurrentCommandAdmissions: peak,
     lanes: Object.entries(commands).map(([lane, records]) => ({
