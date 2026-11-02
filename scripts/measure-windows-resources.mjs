@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { spawnSync } from "node:child_process";
-import { readFile, realpath, writeFile } from "node:fs/promises";
+import { mkdir, readFile, realpath, writeFile } from "node:fs/promises";
+import { performance } from "node:perf_hooks";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
@@ -16,7 +17,125 @@ import {
 const worker = fileURLToPath(
   new URL("./windows-resource-workload-worker.mjs", import.meta.url),
 );
-async function observeWindowsGo() {
+const code = (value) =>
+  typeof value === "string" && /^[A-Z0-9_-]{1,64}$/.test(value) ? value : null;
+const integer = (value) =>
+  Number.isSafeInteger(value) && value >= 0 ? value : null;
+const flag = (value) => (typeof value === "boolean" ? value : null);
+export function windowsResourceFailureContext(
+  stage,
+  workload,
+  value,
+  elapsedMs,
+) {
+  assert.ok(["go-before", "go-after", "worker"].includes(stage));
+  assert.ok(nativeResourceCases.some((row) => row.id === workload));
+  const stream = (value) => {
+    if (!Buffer.isBuffer(value) && typeof value !== "string")
+      return { available: false, bytes: null, sha256: null };
+    const bytes = Buffer.isBuffer(value) ? value : Buffer.from(value);
+    return {
+      available: true,
+      bytes: bytes.length,
+      sha256: resourceHash(bytes),
+    };
+  };
+  const native = value.windowsExecution;
+  const diagnostics = [];
+  for (const line of (value.stderr ?? "").toString().split("\n").slice(0, 16)) {
+    if (Buffer.byteLength(line) > 8192) continue;
+    try {
+      const row = JSON.parse(line);
+      if (row.profile !== "windows-workload-incomplete-diagnostic") continue;
+      diagnostics.push({
+        workload: nativeResourceCases.some((item) => item.id === row.workload)
+          ? row.workload
+          : null,
+        outcome: ["passed", "failed", "incomplete", "cancelled"].includes(
+          row.outcome,
+        )
+          ? row.outcome
+          : null,
+        checks: Array.isArray(row.checks)
+          ? row.checks.slice(0, 4).map((check) => ({
+              processes: Array.isArray(check.processes)
+                ? check.processes.slice(0, 4).map((result) => ({
+                    exitCode: integer(result.exitCode),
+                    signal: code(result.signal),
+                    errorCode: code(result.errorCode),
+                    timedOut: flag(result.timedOut),
+                    cancelled: flag(result.cancelled),
+                    truncated: flag(result.truncated),
+                    nativeError: integer(result.windowsNativeError),
+                  }))
+                : [],
+            }))
+          : [],
+      });
+    } catch {
+      // Raw stderr can contain paths; only the enumerated structured fields leave.
+    }
+  }
+  return {
+    profile: "windows-resource-command-failure-v1",
+    stage,
+    workload,
+    timeoutMs: stage === "worker" ? 120000 : 10000,
+    elapsedMs: integer(Math.round(elapsedMs)),
+    exitCode: integer(stage === "worker" ? value.exitCode : value.status),
+    signal: code(value.signal),
+    errorCode: code(value.errorCode ?? value.error?.code),
+    timedOut: flag(value.timedOut),
+    cancelled: flag(value.cancelled),
+    truncated: flag(value.truncated),
+    stdout: stream(value.stdout),
+    stderr: stream(value.stderr),
+    native: native
+      ? {
+          phase: ["assigned", "running", "completed", "failed"].includes(
+            native.phase,
+          )
+            ? native.phase
+            : null,
+          nativeError: integer(native.nativeError),
+          cleanup: ["confirmed", "unavailable", "not-started"].includes(
+            native.cleanup,
+          )
+            ? native.cleanup
+            : null,
+          activeAfterCleanup: integer(native.activeAfterCleanup),
+        }
+      : null,
+    diagnostics: diagnostics.slice(0, 2),
+  };
+}
+async function retainFailure(context) {
+  const raw = JSON.stringify(context) + "\n";
+  assert.ok(Buffer.byteLength(raw) <= 8192);
+  process.stderr.write(raw);
+  const directory =
+    process.env.CHECKTRAIL_WINDOWS_RESOURCE_DIAGNOSTIC_DIRECTORY;
+  if (!directory) return;
+  try {
+    await mkdir(directory, { recursive: true });
+    assert.equal(await realpath(directory), path.resolve(directory));
+    await writeFile(
+      path.join(directory, context.workload + "-" + context.stage + ".json"),
+      raw,
+      { flag: "wx", mode: 0o600 },
+    );
+  } catch (error) {
+    process.stderr.write(
+      JSON.stringify({
+        profile: "windows-resource-diagnostic-retention-failure-v1",
+        stage: context.stage,
+        workload: context.workload,
+        errorCode: code(error.code),
+      }) + "\n",
+    );
+  }
+}
+async function observeWindowsGo(workload, stage) {
   let executable;
   for (const directory of (process.env.PATH ?? "").split(path.delimiter)) {
     if (!directory) continue;
@@ -28,6 +147,7 @@ async function observeWindowsGo() {
     }
   }
   assert.ok(executable, "Pinned Windows Go prerequisite unavailable");
+  const started = performance.now();
   const value = spawnSync(executable, ["version"], {
     encoding: "utf8",
     timeout: 10000,
@@ -35,8 +155,21 @@ async function observeWindowsGo() {
     windowsHide: true,
     env: { ...process.env, GOTOOLCHAIN: "local" },
   });
-  assert.equal(value.status, 0);
-  assert.ok(!value.error && !value.signal);
+  const context =
+    value.status !== 0 || value.error || value.signal
+      ? windowsResourceFailureContext(
+          stage,
+          workload,
+          value,
+          performance.now() - started,
+        )
+      : null;
+  if (context) await retainFailure(context);
+  assert.equal(value.status, 0, context ? JSON.stringify(context) : undefined);
+  assert.ok(
+    !value.error && !value.signal,
+    context ? JSON.stringify(context) : undefined,
+  );
   assert.equal(
     value.stdout.trim(),
     "go version go1.27.1 windows/" +
@@ -68,7 +201,9 @@ export async function measureWindowsResourceSample({
     assert.equal(expected[key], selected[key]);
   assert.equal(expected.checks, selected.go ? 2 : 1);
   assert.equal(expected.executedTests, expected.checks);
-  const go = selected.go ? await observeWindowsGo() : null,
+  const go = selected.go
+      ? await observeWindowsGo(expected.id, "go-before")
+      : null,
     workerBefore = await readFile(worker);
   assert.equal(await realpath(root), root);
   assert.equal(await realpath(directory), directory);
@@ -80,6 +215,7 @@ export async function measureWindowsResourceSample({
   });
   const source = await inventory(root);
   assert.equal(source.files.length, expected.files);
+  const started = performance.now();
   const execution = await runProcess(
     root,
     {
@@ -105,14 +241,33 @@ export async function measureWindowsResourceSample({
         : {}),
     },
   );
-  assert.equal(execution.exitCode, 0, execution.stderr);
+  const context =
+    execution.exitCode !== 0 ||
+    execution.errorCode ||
+    execution.signal ||
+    execution.timedOut ||
+    execution.cancelled ||
+    execution.truncated
+      ? windowsResourceFailureContext(
+          "worker",
+          expected.id,
+          execution,
+          performance.now() - started,
+        )
+      : null;
+  if (context) await retainFailure(context);
+  assert.equal(
+    execution.exitCode,
+    0,
+    context ? JSON.stringify(context) : execution.stderr,
+  );
   assert.ok(
     !execution.errorCode &&
       !execution.signal &&
       !execution.timedOut &&
       !execution.cancelled &&
       !execution.truncated,
-    "Windows resource worker is incomplete",
+    context ? JSON.stringify(context) : "Windows resource worker is incomplete",
   );
   const receipt = windowsExecutionSchema.parse(execution.windowsExecution);
   assert.equal(receipt.phase, "completed");
@@ -151,7 +306,7 @@ export async function measureWindowsResourceSample({
     workerBefore,
     "Windows resource worker changed during sampling",
   );
-  if (go) assert.deepEqual(await observeWindowsGo(), go);
+  if (go) assert.deepEqual(await observeWindowsGo(expected.id, "go-after"), go);
   return {
     ...measurement,
     go: go?.identity ?? null,
