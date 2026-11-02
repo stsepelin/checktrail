@@ -22,6 +22,13 @@ const codes = new Set([
   "ABORT_ERR",
   "ENOENT",
   "ETIMEDOUT",
+  "ENOBUFS",
+]);
+const nativeCauseCodes = new Set([
+  "ETIMEDOUT",
+  "ENOBUFS",
+  "ENOENT",
+  "ABORT_ERR",
 ]);
 const failures = new Set([
   "testCodeFailure",
@@ -205,7 +212,11 @@ export function projectConsumerTerminalDiagnostic(
         name: event.name,
         outcome: event.outcome,
         durationMs: event.durationMs,
-        code: codes.has(problem?.code) ? problem.code : null,
+        code: nativeCauseCodes.has(problem?.causeCode)
+          ? problem.causeCode
+          : codes.has(problem?.code)
+            ? problem.code
+            : null,
         failureType: problem
           ? failures.has(problem.failureType)
             ? problem.failureType

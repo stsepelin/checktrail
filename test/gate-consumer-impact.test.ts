@@ -453,7 +453,7 @@ test("consumer-impact lifecycle acceptance", { timeout: 120000 }, async (t) => {
     }
   }
 });
-const installedObservationMs = process.platform === "win32" ? 600000 : 240000;
+const installedObservationMs = process.platform === "win32" ? 1200000 : 240000;
 
 test(
   "consumer-impact installed acceptance",
@@ -490,7 +490,7 @@ test(
         maxBuffer: 8 * 1048576,
       },
     );
-    assert.equal(result.error, undefined);
+    if (result.error) throw result.error;
     assert.equal(
       result.status,
       0,

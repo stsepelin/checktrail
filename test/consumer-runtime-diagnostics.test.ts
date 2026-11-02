@@ -400,3 +400,71 @@ test("consumer terminal diagnostics reconcile skipped accounting while refusing 
     );
   }
 });
+
+test("consumer terminal diagnostics retain known native spawn causes while discarding foreign cause text", async (t) => {
+  for (const code of ["ETIMEDOUT", "ENOBUFS", "ENOENT", "ABORT_ERR", secret]) {
+    const p = profile();
+    Object.assign(p.problems[0]!, { causeCode: code });
+    const value = diagnostic.projectConsumerTerminalDiagnostic(
+      p,
+      requirements,
+      sha,
+    );
+    assert.equal(value.state, "observed");
+    assert.equal(
+      value.cases[1].code,
+      code === secret ? "ERR_TEST_FAILURE" : code,
+    );
+    assert.equal(JSON.stringify(value).includes(secret), false);
+  }
+  const program =
+    "import {test}from'node:test';import{spawnSync}from'node:child_process';" +
+    names
+      .map(
+        (name, index) =>
+          `test(${JSON.stringify(name)},()=>{${index === 8 ? "const result=spawnSync(process.execPath,['-e','setTimeout(()=>{},1000)'],{timeout:40});if(result.error)throw result.error;" : ""}});`,
+      )
+      .join("");
+  const root = await fixture(t, {
+      "dist/test/gate-consumer-impact.test.js": program,
+    }),
+    file = path.join(root, "dist/test/gate-consumer-impact.test.js"),
+    observer = path.join(root, "observe.mjs"),
+    runner = new URL(
+      "../../scripts/required-test-evidence.mjs",
+      import.meta.url,
+    ).href;
+  await writeFile(
+    observer,
+    `import{runRequiredTests}from${JSON.stringify(runner)};process.stdout.write(JSON.stringify(await runRequiredTests(${JSON.stringify(names.map((name) => ({ file, name })))},{timeoutMs:2000})));`,
+  );
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  delete env.NODE_OPTIONS;
+  const observed = spawnSync(process.execPath, [observer], {
+    env,
+    encoding: "utf8",
+    timeout: 10000,
+    maxBuffer: 1048576,
+  });
+  assert.equal(observed.error, undefined);
+  assert.equal(observed.status, 0, observed.stderr);
+  const actual = JSON.parse(observed.stdout),
+    sourceHash = createHash("sha256")
+      .update(await readFile(file))
+      .digest("hex"),
+    value = diagnostic.projectConsumerTerminalDiagnostic(
+      actual,
+      requirements,
+      sourceHash,
+    );
+  assert.equal(actual.complete, false);
+  assert.equal(actual.passed, 8);
+  assert.equal(actual.required, 9);
+  assert.equal(value.state, "observed");
+  assert.equal(value.cases[8].outcome, "failed");
+  assert.equal(value.cases[8].code, "ETIMEDOUT");
+  assert.equal(value.cases[8].failureType, "testCodeFailure");
+  assert.equal(value.qualifiesNativeAcceptance, false);
+  assert.equal(JSON.stringify(value).includes(root), false);
+});
