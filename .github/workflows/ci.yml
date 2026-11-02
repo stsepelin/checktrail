@@ -54,4 +54,3 @@ jobs:
         run: node scripts/prepare-package-cache.mjs
       - name: Repeat original controls in an offline locked production installation
         run: node scripts/verify-windows-package.mjs
-
