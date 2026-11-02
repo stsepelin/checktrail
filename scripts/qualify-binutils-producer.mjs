@@ -739,6 +739,7 @@ function missingContainer(error, reference) {
       "Error: No such container: " + reference + "\n",
       "Error response from daemon: No such object: " + reference + "\n",
       "Error response from daemon: No such container: " + reference + "\n",
+      "error: no such object: " + reference + "\n",
     ].includes(error.stderr)
   );
 }

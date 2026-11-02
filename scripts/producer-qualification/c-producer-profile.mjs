@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath, URL } from "node:url";
 
 export const cProducerCatalogSha256 =
-  "a2cd4b6647bfccab800576b5de4b6bb47d04edb3746a5467f2176daa207dee4f";
+  "04ff9353fbf0dd18a22d6d6be9480c70c3197a242975498f79a4bf251438f6e2";
 export const cProducerCommand = [
   "dpkg-buildpackage",
   "-b",
@@ -29,7 +29,7 @@ const profileBindings = [
     "gcc-12",
     "12.2.0-14+deb12u1",
     241,
-    8,
+    12,
     64,
     "source/gcc-12/gcc-12_12.2.0-14+deb12u1.dsc",
   ],

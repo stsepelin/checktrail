@@ -15,7 +15,7 @@ import time
 import zipfile
 
 MIB = 1024 ** 2
-CATALOG_SHA256 = 'a2cd4b6647bfccab800576b5de4b6bb47d04edb3746a5467f2176daa207dee4f'
+CATALOG_SHA256 = '04ff9353fbf0dd18a22d6d6be9480c70c3197a242975498f79a4bf251438f6e2'
 KEYS = ['PASS','FAIL','XFAIL','XPASS','UNSUPPORTED','UNRESOLVED','UNTESTED','ERROR','SKIP']
 SOURCE_FILES = [
     'scripts/qualify-c-producer.mjs', 'scripts/qualify-binutils-producer.mjs',
@@ -233,7 +233,7 @@ def gcc_carrier(packet, startup_raw, receipt, profile, observed):
     carrier_raw=packet.read('carrier/receipt.json',MIB);value=strict_json(carrier_raw)
     selected={'name':'gcc-12','profile':profile['profile'],'sourceVersion':profile['sourceVersion'],'catalogSha256':CATALOG_SHA256}
     require(exact_json(value['schemaVersion'],1) and exact_json(value['selectedProfile'],selected),'Wrong GCC carrier original profile')
-    require(exact_json(value['originalCommandDeadlineSeconds'],28800) and profile['limits']['deadlineSeconds']==28800,'Original eight-hour deadline changed')
+    require(exact_json(value['originalCommandDeadlineSeconds'],43200) and profile['limits']['deadlineSeconds']==43200,'Selected twelve-hour operator wall deadline changed')
     observation_seconds=14700;job_clock=None
     if 'githubJobEnvelope' in value:
         response_raw=packet.read('carrier/github-job-response.json',128*1024)

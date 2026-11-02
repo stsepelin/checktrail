@@ -65,7 +65,7 @@ jobs:
           node scripts/acquire-c-producer-inputs.mjs --profile gcc-12 --common-inputs "$RUNNER_TEMP/gcc-common-inputs/bundle" --output "$RUNNER_TEMP/gcc-inputs" > "$RUNNER_TEMP/gcc-input-admission.log" 2>&1
           cat "$RUNNER_TEMP/gcc-input-admission.log"
           node scripts/qualify-c-producer.mjs --profile gcc-12 --inputs "$RUNNER_TEMP/gcc-inputs/bundle" --output "$RUNNER_TEMP/gcc-result" --prepare-only
-      - name: Observe the unchanged eight-hour GCC profile within a shorter hosted window
+      - name: Observe the selected twelve-hour GCC envelope within a shorter hosted window
         timeout-minutes: 345
         shell: bash
         env:

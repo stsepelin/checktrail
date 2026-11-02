@@ -56,7 +56,7 @@ export function validateGccCarrierReceipt(
     receipt.originalCommandDeadlineSeconds,
     profile.limits.deadlineSeconds,
   );
-  assert.equal(receipt.originalCommandDeadlineSeconds, 28800);
+  assert.equal(receipt.originalCommandDeadlineSeconds, 43200);
   let selectedLimits = gccCarrierLimits;
   if (Object.hasOwn(receipt, "githubJobEnvelope")) {
     assert.ok(jobResponse, "Retained fresh source-job response required");

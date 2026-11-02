@@ -958,7 +958,104 @@ async function verifyCustodyPreflight(plan, caller, signal, state) {
   return proof;
 }
 
-async function run(plan) {
+export function cProducerExecutionOptions(args) {
+  assert.ok(
+    Array.isArray(args) && [7, 8, 9].includes(args.length),
+    "Usage: --profile gcc-12|glibc|glibc-u13 --inputs BUNDLE --output NEW_DIRECTORY --prepare-only | --operator-trust-execution --coordinated-heavy-slot [--allow-local-arm64-daemon]",
+  );
+  assert.equal(args[0], "--profile");
+  assert.equal(args[2], "--inputs");
+  assert.equal(args[4], "--output");
+  const prepare = args.length === 7 && args[6] === "--prepare-only";
+  assert.ok(
+    prepare ||
+      (args.length >= 8 &&
+        args[6] === "--operator-trust-execution" &&
+        args[7] === "--coordinated-heavy-slot"),
+    "Execution requires two explicit operator flags",
+  );
+  const allowLocalArm64Daemon = args.length === 9;
+  if (allowLocalArm64Daemon) {
+    assert.equal(
+      args[8],
+      "--allow-local-arm64-daemon",
+      "Unknown execution option",
+    );
+    assert.equal(
+      args[1],
+      "gcc-12",
+      "Local ARM daemon permission is GCC12-only",
+    );
+  }
+  return { prepare, allowLocalArm64Daemon };
+}
+
+export function validateCProducerDaemonMetadata(
+  daemon,
+  plan,
+  allowLocalArm64Daemon = false,
+) {
+  assert.equal(typeof allowLocalArm64Daemon, "boolean");
+  assert.equal(daemon.OSType, "linux");
+  if (allowLocalArm64Daemon) {
+    const { catalog, profile } = plan;
+    assert.equal(
+      profile.profile,
+      "original-debian-gcc-12-12.2.0-14+deb12u1-build-v1",
+    );
+    assert.equal(profile.sourcePackage, "gcc-12");
+    assert.equal(profile.sourceVersion, "12.2.0-14+deb12u1");
+    assert.deepEqual(profile.command, [
+      "dpkg-buildpackage",
+      "-b",
+      "-us",
+      "-uc",
+      "--jobs=4",
+    ]);
+    assert.deepEqual(profile.limits, {
+      cpuLimit: 4,
+      memory: "6g",
+      pidsLimit: 1024,
+      deadlineSeconds: 43200,
+      logByteLimit: 536870912,
+      workByteLimit: 68719476736,
+      inputFileByteLimit: 134217728,
+    });
+    assert.equal(catalog.platform, "linux/amd64");
+    assert.equal(
+      catalog.image,
+      "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+    );
+    assert.equal(
+      plan.syscallPolicy,
+      null,
+      "Local GCC does not select GLIBC syscall policy",
+    );
+    assert.equal(
+      daemon.Architecture,
+      "aarch64",
+      "Local profile requires the observed aarch64 daemon",
+    );
+    assert.ok(
+      Number.isSafeInteger(daemon.NCPU) && daemon.NCPU >= 4,
+      "Local daemon CPU capacity is insufficient",
+    );
+    assert.ok(
+      Number.isSafeInteger(daemon.MemTotal) && daemon.MemTotal >= 6442450944,
+      "Local daemon memory capacity is insufficient",
+    );
+  } else assert.ok(["x86_64", "amd64"].includes(daemon.Architecture));
+  return {
+    targetPlatform: "linux/amd64",
+    observedDaemonArchitecture: daemon.Architecture,
+    localArm64DaemonPermissionUsed: allowLocalArm64Daemon,
+    targetAndDaemonArchitecturesDiffer: allowLocalArm64Daemon,
+    emulationImplementation: "unknown",
+    hardwareHostAttestationPerformed: false,
+  };
+}
+
+async function run(plan, { allowLocalArm64Daemon = false } = {}) {
   const { catalog, profile, destination, inputs } = plan;
   assert.equal(
     process.platform,
@@ -985,8 +1082,11 @@ async function run(plan) {
   const daemon = JSON.parse(
     (await docker(["info", "--format", "{{json .}}"])).stdout,
   );
-  assert.equal(daemon.OSType, "linux");
-  assert.match(daemon.Architecture, /^(x86_64|amd64)$/u);
+  const daemonPolicy = validateCProducerDaemonMetadata(
+    daemon,
+    plan,
+    allowLocalArm64Daemon,
+  );
   const syscallRuntime = plan.syscallPolicy
     ? validateGlibcDockerMetadata(
         JSON.parse(
@@ -1030,6 +1130,8 @@ async function run(plan) {
       kernelMachine: os.machine(),
       node: process.version,
       capturedCaller: caller,
+      daemonMetadata: daemon,
+      daemonPolicy,
       hardwareHostAttestationPerformed: false,
     },
     nativeFilesystemQuotaEnforced: false,
@@ -1237,6 +1339,15 @@ async function run(plan) {
       !controller.signal.aborted,
       "Original build collection interrupted",
     );
+    const finalDaemon = JSON.parse(
+      (await docker(["info", "--format", "{{json .}}"])).stdout,
+    );
+    assert.deepEqual(
+      validateCProducerDaemonMetadata(finalDaemon, plan, allowLocalArm64Daemon),
+      daemonPolicy,
+      "Selected daemon policy changed during original execution",
+    );
+    state.host.finalDaemonMetadata = finalDaemon;
     state.buildCompletion = cProducerCompletion(
       state.originalBuild,
       state.executionObserver,
@@ -1304,20 +1415,7 @@ async function run(plan) {
 }
 
 export async function mainCProducer(args) {
-  assert.ok(
-    args.length === 7 || args.length === 8,
-    "Usage: node scripts/qualify-c-producer.mjs --profile gcc-12|glibc|glibc-u13 --inputs BUNDLE --output NEW_DIRECTORY --prepare-only | --operator-trust-execution --coordinated-heavy-slot",
-  );
-  assert.equal(args[0], "--profile");
-  assert.equal(args[2], "--inputs");
-  assert.equal(args[4], "--output");
-  const prepare = args.length === 7 && args[6] === "--prepare-only";
-  assert.ok(
-    prepare ||
-      (args[6] === "--operator-trust-execution" &&
-        args[7] === "--coordinated-heavy-slot"),
-    "Execution requires two explicit operator flags",
-  );
+  const { prepare, allowLocalArm64Daemon } = cProducerExecutionOptions(args);
   const plan = await prepareCProducer(
     args[1],
     path.resolve(args[3]),
@@ -1337,7 +1435,7 @@ export async function mainCProducer(args) {
       fullCompilerSdkBootstrapClosureVerified: false,
       gateAComplete: false,
     };
-  return run(plan);
+  return run(plan, { allowLocalArm64Daemon });
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === self) {
   try {

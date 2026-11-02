@@ -143,12 +143,155 @@ test("C producer caller IDs admit root and exact near-bound values without coerc
   }
 });
 
+test("C producer local ARM daemon permission preserves exact GCC limits and default x64 refusal", async () => {
+  const selected = await profiles.loadCProducerProfile("gcc-12");
+  const plan = { ...selected, syscallPolicy: null };
+  const daemon = {
+    OSType: "linux",
+    Architecture: "aarch64",
+    NCPU: 18,
+    MemTotal: 16 * 1024 ** 3,
+  };
+  assert.throws(() => api.validateCProducerDaemonMetadata(daemon, plan));
+  const observed = api.validateCProducerDaemonMetadata(daemon, plan, true);
+  assert.equal(observed.observedDaemonArchitecture, "aarch64");
+  assert.equal(observed.localArm64DaemonPermissionUsed, true);
+  assert.equal(observed.targetAndDaemonArchitecturesDiffer, true);
+  assert.equal(observed.emulationImplementation, "unknown");
+  assert.equal(observed.hardwareHostAttestationPerformed, false);
+  for (const architecture of ["x86_64", "amd64"]) {
+    assert.equal(
+      api.validateCProducerDaemonMetadata(
+        { ...daemon, Architecture: architecture },
+        plan,
+      ).localArm64DaemonPermissionUsed,
+      false,
+    );
+    assert.throws(() =>
+      api.validateCProducerDaemonMetadata(
+        { ...daemon, Architecture: architecture },
+        plan,
+        true,
+      ),
+    );
+  }
+  for (const architecture of ["x86_64\n", "amd64\n"])
+    assert.throws(() =>
+      api.validateCProducerDaemonMetadata(
+        { ...daemon, Architecture: architecture },
+        plan,
+      ),
+    );
+  for (const patch of [
+    { OSType: "darwin" },
+    { Architecture: "arm64" },
+    { Architecture: "aarch64-extra" },
+    { NCPU: 3 },
+    { NCPU: "18" },
+    { MemTotal: 6442450943 },
+    { MemTotal: NaN },
+  ])
+    assert.throws(() =>
+      api.validateCProducerDaemonMetadata({ ...daemon, ...patch }, plan, true),
+    );
+  for (const edit of [
+    (v: typeof plan) => {
+      v.profile.sourceVersion = "12.2.0-other";
+    },
+    (v: typeof plan) => {
+      v.profile.sourcePackage = "glibc";
+    },
+    (v: typeof plan) => {
+      v.profile.command = ["dpkg-buildpackage", "-b"];
+    },
+    (v: typeof plan) => {
+      v.profile.limits.deadlineSeconds = 28799;
+    },
+    (v: typeof plan) => {
+      v.profile.limits.deadlineSeconds = 28800;
+    },
+    (v: typeof plan) => {
+      v.profile.limits.deadlineSeconds = 43199;
+    },
+    (v: typeof plan) => {
+      v.profile.limits.deadlineSeconds = 43201;
+    },
+    (v: typeof plan) => {
+      Object.assign(v.profile.limits, { deadlineSeconds: true });
+    },
+    (v: typeof plan) => {
+      v.profile.limits.cpuLimit = 2;
+    },
+    (v: typeof plan) => {
+      v.catalog.platform = "linux/arm64";
+    },
+    (v: typeof plan) => {
+      v.catalog.image = "unselected-image";
+    },
+  ]) {
+    const altered = structuredClone(plan);
+    edit(altered);
+    assert.throws(() =>
+      api.validateCProducerDaemonMetadata(daemon, altered, true),
+    );
+  }
+  const minimum = api.validateCProducerDaemonMetadata(
+    { ...daemon, NCPU: 4, MemTotal: 6442450944 },
+    plan,
+    true,
+  );
+  assert.equal(minimum.observedDaemonArchitecture, "aarch64");
+});
+
+test("C producer local ARM CLI flag cannot grant trust or apply to preparation or GLIBC", () => {
+  const prefix = [
+    "--profile",
+    "gcc-12",
+    "--inputs",
+    "input",
+    "--output",
+    "output",
+  ];
+  assert.deepEqual(
+    api.cProducerExecutionOptions([...prefix, "--prepare-only"]),
+    { prepare: true, allowLocalArm64Daemon: false },
+  );
+  const execute = [
+    ...prefix,
+    "--operator-trust-execution",
+    "--coordinated-heavy-slot",
+  ];
+  assert.deepEqual(api.cProducerExecutionOptions(execute), {
+    prepare: false,
+    allowLocalArm64Daemon: false,
+  });
+  assert.deepEqual(
+    api.cProducerExecutionOptions([...execute, "--allow-local-arm64-daemon"]),
+    { prepare: false, allowLocalArm64Daemon: true },
+  );
+  for (const args of [
+    [...prefix, "--prepare-only", "--allow-local-arm64-daemon"],
+    [...prefix, "--allow-local-arm64-daemon"],
+    [...prefix, "--operator-trust-execution", "--allow-local-arm64-daemon"],
+    [...execute, "--allow-local-arm64-daemon-extra"],
+    [...execute, "--allow-local-arm64-daemon", "extra"],
+    ["--profile", "glibc", ...execute.slice(2), "--allow-local-arm64-daemon"],
+    [
+      "--profile",
+      "glibc-u13",
+      ...execute.slice(2),
+      "--allow-local-arm64-daemon",
+    ],
+  ])
+    assert.throws(() => api.cProducerExecutionOptions(args));
+});
+
 test("C producer catalog binds both exact source revisions and original finite profiles", async () => {
   const gcc = await profiles.loadCProducerProfile("gcc-12");
   const glibc = await profiles.loadCProducerProfile("glibc");
   assert.equal(gcc.profile.files.length, 241);
   assert.equal(glibc.profile.files.length, 161);
-  assert.equal(gcc.profile.limits.deadlineSeconds, 28800);
+  assert.equal(gcc.profile.limits.deadlineSeconds, 43200);
   assert.equal(glibc.profile.limits.deadlineSeconds, 14400);
   assert.equal(
     gcc.profile.files.find((row: { file: string }) =>

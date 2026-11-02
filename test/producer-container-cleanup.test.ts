@@ -4,7 +4,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
-test("producer cleanup confirms exact owned absence through concurrent removal and keeps every failure bounded", () => {
+test("producer cleanup confirms exact owned absence including current CLI diagnostics through concurrent removal and keeps every failure bounded", () => {
   const modulePath = fileURLToPath(
     new URL("../../scripts/qualify-binutils-producer.mjs", import.meta.url),
   );
@@ -37,6 +37,7 @@ test("producer cleanup confirms exact owned absence through concurrent removal a
     const present=(role='producer')=>({stdout:JSON.stringify([{Id:id,Name:'/checktrail-'+role+'-'+owner,Config:{Labels:{'io.checktrail.producer-attempt':owner,...(role==='retention'?{'io.checktrail.producer-role':'retention-observer'}:{})}}}]),stderr:''});
     function failure(message,code=1,extra={}){return Object.assign(new Error(message),{stderr:message,code,signal:null,killed:false,...extra});}
     const missing=(ref=id)=>failure('Error: No such object: '+ref+'\n');
+    const lowercaseMissing=(ref=id)=>failure('error: no such object: '+ref+'\n');
     const progress=()=>failure('Error response from daemon: removal of container '+id+' is already in progress\n');
     const reset=()=>{clock=0;calls=[];};
     try {
@@ -58,8 +59,20 @@ test("producer cleanup confirms exact owned absence through concurrent removal a
       dispatch=async args=>{if(args[0]==='rm')return{stdout:id+'\n',stderr:''};if(++inspects===1)return present();throw missing();};
       assert.deepEqual(await api.cleanupContainer(cid,owner),{state:'removed',id});
 
+      for(const role of ['producer','retention']){
+        reset();dispatch=async()=>{throw lowercaseMissing();};
+        assert.deepEqual(await api.cleanupContainer(cid,owner,role),{state:'absent',id});
+        assert.deepEqual(calls.map(x=>x.args),[['inspect',id]],'Current CLI absence must bind the exact inspected immutable ID');
+        reset();inspects=0;
+        dispatch=async args=>{if(args[0]==='rm')return{stdout:id+'\n',stderr:''};if(++inspects===1)return present(role);throw lowercaseMissing();};
+        assert.deepEqual(await api.cleanupContainer(cid,owner,role),{state:'removed',id});
+        assert.deepEqual(calls.map(x=>x.args),[['inspect',id],['rm','--force',id],['inspect',id]],'Current CLI post-removal absence requires a fresh exact inspect');
+      }
+
       const invalid=[missing(other),failure('diagnostic prefix No such object: '+id+'\n'),missing(id+'suffix'),Object.assign(missing(),{code:2}),Object.assign(missing(),{killed:true,signal:'SIGTERM'})];
       for(const err of invalid){reset();dispatch=async()=>{throw err;};await assert.rejects(api.cleanupContainer(cid,owner),e=>e===err,'Wrong container absence diagnostics must remain failures');assert.equal(calls.length,1);}
+      const lowercaseInvalid=[lowercaseMissing(other),failure('prefix error: no such object: '+id+'\n'),lowercaseMissing(id+'suffix'),failure('error: no such object: '+id+'\nextra\n'),failure('error: no such object: '+id+'\r\n'),failure('error: no such container: '+id+'\n'),Object.assign(lowercaseMissing(),{code:2}),Object.assign(lowercaseMissing(),{killed:true}),Object.assign(lowercaseMissing(),{signal:'SIGTERM'})];
+      for(const err of lowercaseInvalid){reset();dispatch=async()=>{throw err;};await assert.rejects(api.cleanupContainer(cid,owner),e=>e===err,'Adjacent lowercase CLI diagnostics must remain failures');assert.equal(calls.length,1);}
 
       reset();dispatch=async()=>{const v=present();const rows=JSON.parse(v.stdout);rows[0].Config.Labels['io.checktrail.producer-attempt']='foreign';return{...v,stdout:JSON.stringify(rows)};};
       await assert.rejects(api.cleanupContainer(cid,owner),/different owner/,'Foreign owners must remain unavailable');assert.equal(calls.length,1);
@@ -87,7 +100,14 @@ test("producer cleanup confirms exact owned absence through concurrent removal a
       reset();dispatch=async()=>{clock=45001;throw missing();};
       await assert.rejects(api.cleanupContainer(cid,owner),/cleanup deadline/,'Late absence cannot bypass the cleanup deadline');assert.equal(calls.length,1);
 
-      await fs.unlink(cid);reset();inspects=0;
+      await fs.unlink(cid);
+      for(const role of ['producer','retention']){
+        const absentName='checktrail-'+role+'-'+owner;
+        reset();dispatch=async()=>{throw lowercaseMissing(absentName);};
+        assert.deepEqual(await api.cleanupContainer(cid,owner,role),{state:'absent',id:absentName});
+        assert.deepEqual(calls.map(x=>x.args),[['inspect',absentName]],'Current CLI name absence must bind the exact owned fallback name');
+      }
+      reset();inspects=0;
       dispatch=async args=>{if(args[0]==='rm'){assert.deepEqual(args,['rm','--force',id],'Cleanup must remove the inspected immutable ID');return{stdout:'',stderr:''};}if(++inspects===1){assert.equal(args[1],name);return present();}assert.equal(args[1],id);throw missing();};
       assert.deepEqual(await api.cleanupContainer(cid,owner),{state:'removed',id});
       await fs.writeFile(cid,id+'\n');
