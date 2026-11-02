@@ -246,7 +246,10 @@ try {
   console.log(JSON.stringify(row));
 } finally {
   await writeFile(
-    "windows-startup-stages.json",
+    path.join(
+      process.env.RUNNER_TEMP ?? tmpdir(),
+      "windows-startup-stages.json",
+    ),
     JSON.stringify(
       {
         scope:

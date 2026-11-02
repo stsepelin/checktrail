@@ -54,3 +54,9 @@ jobs:
         run: node scripts/prepare-package-cache.mjs
       - name: Repeat original controls in an offline locked production installation
         run: node scripts/verify-windows-package.mjs
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always()
+        with:
+          name: windows-startup-stages-${{ matrix.os }}
+          path: ${{ runner.temp }}/windows-startup-stages.json
+          if-no-files-found: warn
