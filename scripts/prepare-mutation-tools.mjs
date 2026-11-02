@@ -16,8 +16,17 @@ import { selectJavaScriptToolsLock } from "./prepare-javascript-tools.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url)),
   destination = path.join(root, ".checktrail/mutation-javascript-tools");
 const rootLock = await readFile(path.join(root, "package-lock.json"), "utf8"),
+  rootManifest = JSON.parse(
+    await readFile(path.join(root, "package.json"), "utf8"),
+  ),
   { manifest, lock } = selectJavaScriptToolsLock(
-    { dependencies: { vitest: "5.0.5", jest: "30.5.2" } },
+    {
+      ...rootManifest,
+      dependencies: {
+        vitest: rootManifest.devDependencies.vitest,
+        jest: rootManifest.devDependencies.jest,
+      },
+    },
     JSON.parse(rootLock),
   );
 await assert.rejects(lstat(destination), { code: "ENOENT" });

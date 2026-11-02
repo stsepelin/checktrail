@@ -14,13 +14,36 @@ import { fileURLToPath, URL } from "node:url";
 import { createHash } from "node:crypto";
 export function selectJavaScriptToolsLock(rootManifest, source) {
   assert.equal(source.lockfileVersion, 3);
+  function declaredTool(name) {
+    const version = rootManifest.devDependencies?.[name];
+    assert.match(
+      version ?? "",
+      /^\d+\.\d+\.\d+$/,
+      "Tool declaration must be exactly pinned: " + name,
+    );
+    const entry = source.packages["node_modules/" + name];
+    assert.equal(
+      entry?.version,
+      version,
+      "Tool lock must match its declaration: " + name,
+    );
+    return entry;
+  }
+  const linter = declaredTool("typescript-eslint");
+  const parserVersion = linter.dependencies?.["@typescript-eslint/parser"];
+  assert.match(
+    parserVersion ?? "",
+    /^\d+\.\d+\.\d+$/,
+    "TypeScript ESLint parser dependency must be exactly pinned",
+  );
   const dependencies = {
     ...rootManifest.dependencies,
-    eslint: "10.13.0",
-    "@typescript-eslint/parser": "8.71.1",
-    "@types/node": "26.6.4",
+    eslint: declaredTool("eslint").version,
+    "@typescript-eslint/parser": parserVersion,
+    "@types/node": declaredTool("@types/node").version,
     vite: "8.3.0",
-    "@modelcontextprotocol/client": "2.3.1",
+    "@modelcontextprotocol/client": declaredTool("@modelcontextprotocol/client")
+      .version,
   };
   const manifest = {
     name: "checktrail-javascript-acceptance-tools",
