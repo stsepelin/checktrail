@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "pr/upstream-producer/glibc-*"
+      - "!pr/upstream-producer/glibc-u13-*"
 
 permissions:
   contents: read

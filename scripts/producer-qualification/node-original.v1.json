@@ -1,0 +1,1756 @@
+{
+  "schemaVersion": 1,
+  "profile": "fresh-original-node2216-official-source-archive-build",
+  "scope": "Operator-only prospective original Node producer; no CLI/MCP discovery registration.",
+  "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+  "platform": "linux/amd64",
+  "source": {
+    "archive": {
+      "file": "source/node-v22.16.0.tar.xz",
+      "bytes": 48547612,
+      "sha256": "720894f323e5c1ac24968eb2676660c90730d715cb7f090be71a668662a17c37",
+      "url": "https://nodejs.org/dist/v22.16.0/node-v22.16.0.tar.xz"
+    },
+    "root": "node-v22.16.0",
+    "expandedTarBytes": 514457600,
+    "expandedPartReferences": [
+      {
+        "bytes": 268435456,
+        "sha256": "c4516852a1896e34e494bb2497a8efe5d330e10a5743b0b8afc627d5a9f79a3f"
+      },
+      {
+        "bytes": 246022144,
+        "sha256": "d08e268dd5ea8e4dfd7366bddb7d6c84a04a3a776d87619ddb12ce84965f5691"
+      }
+    ],
+    "expectedCounts": {
+      "rawHeaders": 32368,
+      "members": 31437,
+      "regular": 28052,
+      "directories": 3385,
+      "gnuLongNames": 931,
+      "symlinks": 0,
+      "hardlinks": 0
+    },
+    "modePolicy": "Preserve every original indexed mode/executable bit. Record original UID/GID; actual materialized owner follows explicit native custody preflight. No Go755/644 normalization.",
+    "mtimePolicy": "Preserve original regular and directory mtimes from the exact archive; directory timestamps restored after all descendants.",
+    "nativeMemberIdentityScope": "New native derived identities; old local index is not a runtime input and is never relabelled/published.",
+    "maximumNativeMemberMapBytes": 33554432,
+    "decoderMemoryLimitBytes": 268435456,
+    "sourceGitCorrespondenceVerified": false,
+    "selectorSourcePins": [
+      {
+        "file": "configure.py",
+        "bytes": 85567,
+        "sha256": "ad10b1744c4c4cfb33338fd358a4e027b31d43a89268853ec8e6a9946da4a1fe"
+      },
+      {
+        "file": "Makefile",
+        "bytes": 60170,
+        "sha256": "52848a473f4e5b91abe804aad347255e56a01429110c7728828d491697d76e06"
+      }
+    ]
+  },
+  "tools": [
+    {
+      "role": "tool-bash",
+      "invocation": "/bin/bash",
+      "canonicalPath": "/usr/bin/bash",
+      "bytes": 1265648,
+      "sha256": "55b89ab22bee4792a210f493a53fb066accd5d30b69837c28d98be5ff863efcf"
+    },
+    {
+      "role": "tool-gcc",
+      "invocation": "/usr/bin/gcc",
+      "canonicalPath": "/usr/bin/x86_64-linux-gnu-gcc-12",
+      "bytes": 1301496,
+      "sha256": "75e997ec62297a6484f491bae28ab0ccb489daba23e398fd10fe68e9e6f0def8"
+    },
+    {
+      "role": "tool-as",
+      "invocation": "/usr/bin/as",
+      "canonicalPath": "/usr/bin/x86_64-linux-gnu-as",
+      "bytes": 918952,
+      "sha256": "41fe4f5a03389ea5cf7c92d6753fa1ecc69b45b12534fd8713c53bba0e2d7e17"
+    },
+    {
+      "role": "tool-ld",
+      "invocation": "/usr/bin/ld",
+      "canonicalPath": "/usr/bin/x86_64-linux-gnu-ld.bfd",
+      "bytes": 1336592,
+      "sha256": "f6d71a1bcd45764550a42dfaa179bc43b63ee879ec6f875bfd39fca013515da7"
+    },
+    {
+      "role": "tool-python3",
+      "invocation": "/usr/bin/python3.11",
+      "canonicalPath": "/usr/bin/python3.11",
+      "bytes": 6831736,
+      "sha256": "a83c0370d91532c96d4060a0e7c107d1f2889dad8a98e03395e86ef0373fd467"
+    },
+    {
+      "role": "tool-cc1",
+      "invocation": "/usr/lib/gcc/x86_64-linux-gnu/12/cc1",
+      "canonicalPath": "/usr/lib/gcc/x86_64-linux-gnu/12/cc1",
+      "bytes": 33342568,
+      "sha256": "18a3506428fe238a6c14c9a39251a11c7203245d632df40ddb8e9d3bf2d387d8"
+    },
+    {
+      "role": "tool-collect2",
+      "invocation": "/usr/lib/gcc/x86_64-linux-gnu/12/collect2",
+      "canonicalPath": "/usr/lib/gcc/x86_64-linux-gnu/12/collect2",
+      "bytes": 639192,
+      "sha256": "06c070d6b746da665041ea6f2e7d30faf9ef4e1f87cb9c932f963953e32aeec2"
+    },
+    {
+      "role": "tool-loader",
+      "invocation": "/lib64/ld-linux-x86-64.so.2",
+      "canonicalPath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "bytes": 215000,
+      "sha256": "593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4"
+    },
+    {
+      "role": "tool-gxx",
+      "invocation": "/usr/bin/g++",
+      "canonicalPath": "/usr/bin/x86_64-linux-gnu-g++-12",
+      "bytes": 1305592,
+      "sha256": "dd91977c184e327710578363ad93ebb175c3a457b6236b874fd3911b7c055c65"
+    },
+    {
+      "role": "tool-cc1plus",
+      "invocation": "/usr/lib/gcc/x86_64-linux-gnu/12/cc1plus",
+      "canonicalPath": "/usr/lib/gcc/x86_64-linux-gnu/12/cc1plus",
+      "bytes": 35464168,
+      "sha256": "323f308b79cab3005857c1f3a103fd690eb1e8f044159929bad4e8526daee2bf"
+    },
+    {
+      "role": "tool-make",
+      "invocation": "/usr/bin/make",
+      "canonicalPath": "/usr/bin/make",
+      "bytes": 240280,
+      "sha256": "00b2c2071bf57aa52559a91bf8a4ddcd0fcfd4718da2f83100593a45896c1fec"
+    }
+  ],
+  "originalCommands": [
+    {
+      "id": "configure",
+      "argv": ["./configure"]
+    },
+    {
+      "id": "build",
+      "argv": ["make", "-j4"]
+    },
+    {
+      "id": "upstream-tests",
+      "argv": ["make", "test-only"]
+    }
+  ],
+  "originalDefaults": {
+    "BUILDTYPE": "Release",
+    "FLAKY_TESTS": "run",
+    "TEST_CI_ARGS": "",
+    "CI_SKIP_TESTS": "unset",
+    "GTEST_FILTER": "*",
+    "configurationFlags": "none",
+    "releasePackagingTarget": "notselected; makebinary is separate original release/Git packaging recipe",
+    "unsupportedConvenienceChanges": [
+      "sourcepatches",
+      "fake.git/cleanstamps",
+      "testcohorts/filterschanged",
+      "--without-intl",
+      "--ignore-scripts",
+      "manual.docbuildstamp",
+      "globalnpm/cachedexternalnode substitution"
+    ]
+  },
+  "pythonCandidatesInOrder": [
+    "python3.13",
+    "python3.12",
+    "python3.11",
+    "python3.10",
+    "python3.9",
+    "python3.8",
+    "python3",
+    "python"
+  ],
+  "expectedSelectedPython": "/usr/bin/python3.11",
+  "compilerEnvironment": {
+    "CC": "unset",
+    "CXX": "unset"
+  },
+  "additionalBaseUtilityObservation": {
+    "shell": "/bin/sh",
+    "optionalGold": "ld.gold",
+    "policy": "Record fixed-image resolution/body and original outcomes in actual preflight; no inferred bash substitution or new global-host certification prerequisite."
+  },
+  "docCache": {
+    "artifacts": [
+      {
+        "id": "node-doc-artifact-000",
+        "url": "https://registry.npmjs.org/@types/debug/-/debug-4.1.12.tgz",
+        "integrity": "sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==",
+        "sha512Hex": "bc80a159d546dcb1b548cc44bc8fc02be15626d865aea953bbb7dbae5cb04e491a38dc24fd40066942d74657fcbe4cc504b566d3390c742aae84be5a3a38573d",
+        "logicalOccurrences": ["node_modules/@types/debug"],
+        "bytes": 2170,
+        "sha256": "83fbb384612c56bf82794f0e73c36892a988a90a1fab869ec4c535fc5812cdb7"
+      },
+      {
+        "id": "node-doc-artifact-001",
+        "url": "https://registry.npmjs.org/@types/hast/-/hast-3.0.3.tgz",
+        "integrity": "sha512-2fYGlaDy/qyLlhidX42wAH0KBi2TCjKMH8CHmBXgRlJ3Y+OXTiqsPQ6IWarZKwF1JoUcAJdPogv1d4b0COTpmQ==",
+        "sha512Hex": "d9f60695a0f2feac8b96189d5f8db0007d0a062d930a328c1fc0879815e046527763e3974e2aac3d0e8859aad92b017526851c00974fa20bf57786f408e4e999",
+        "logicalOccurrences": ["node_modules/@types/hast"],
+        "bytes": 3179,
+        "sha256": "0cf98f331e88fca4c9edfe761aa91483c0399f0f6290d04dc9d7bfd9a5119c86"
+      },
+      {
+        "id": "node-doc-artifact-002",
+        "url": "https://registry.npmjs.org/@types/mdast/-/mdast-4.0.3.tgz",
+        "integrity": "sha512-LsjtqsyF+d2/yFOYaN22dHZI1Cpwkrj+g06G8+qtUKlhovPW89YhqSnfKtMbkgmEtYpH2gydRNULd6y8mciAFg==",
+        "sha512Hex": "2ec8edaacc85f9ddbfc8539868ddb6747648d42a7092b8fe834e86f3eaad50a961a2f3d6f3d621a929df2ad31b920984b58a47da0c9d44d50b77acbc99c88016",
+        "logicalOccurrences": ["node_modules/@types/mdast"],
+        "bytes": 6117,
+        "sha256": "a5a61f4d0b8eb1730715487810c9bd50bcc14d38347208f334ad92da2da0649d"
+      },
+      {
+        "id": "node-doc-artifact-003",
+        "url": "https://registry.npmjs.org/@types/ms/-/ms-0.7.34.tgz",
+        "integrity": "sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==",
+        "sha512Hex": "9c6f7a1b75a9e9a73202026a19ab233836fe69cac8eca96d3e2471cc73d79cfdcd808dbc6e940346fe77a256ea1976df7201796a288798edf1a701294b92ddf6",
+        "logicalOccurrences": ["node_modules/@types/ms"],
+        "bytes": 1656,
+        "sha256": "257c1b82075575a739fc034d7de5d526fd43e3892152b64d98f0da52fd79fd4d"
+      },
+      {
+        "id": "node-doc-artifact-004",
+        "url": "https://registry.npmjs.org/@types/parse5/-/parse5-6.0.3.tgz",
+        "integrity": "sha512-SuT16Q1K51EAVPz1K29DJ/sXjhSQ0zjvsypYJ6tlwVsRV9jwW5Adq2ch8Dq8kDBCkYnELS7N7VNCSB5nC56t/g==",
+        "sha512Hex": "4ae4f5e90d4ae7510054fcf52b6f4327fb178e1490d338efb32a5827ab65c15b1157d8f05b901dab6721f03abc9030429189c42d2ecded5342481e670b9eadfe",
+        "logicalOccurrences": ["node_modules/@types/parse5"],
+        "bytes": 5531,
+        "sha256": "1a92400cfd6c35213951cf956a67198a5a7c896dc99caf3a015cb198fcfa2167"
+      },
+      {
+        "id": "node-doc-artifact-005",
+        "url": "https://registry.npmjs.org/@types/unist/-/unist-3.0.2.tgz",
+        "integrity": "sha512-dqId9J8K/vGi5Zr7oo212BGii5m3q5Hxlkwy3WpYuKPklmBEvsbMYYyLxAQpSffdLl/gdW0XUpKWFvYmyoWCoQ==",
+        "sha512Hex": "76a21df49f0afef1a2e59afba28db5d811a28b99b7ab91f1964c32dd6a58b8a3e4966044bec6cc618c8bc4042949f7dd2e5fe0756d1752929616f626ca8582a1",
+        "logicalOccurrences": ["node_modules/@types/unist"],
+        "bytes": 2609,
+        "sha256": "aae578b02b4c61780401ec2f3ddd7aef5dd0afc600a64efb2c42038b4fc33e2f"
+      },
+      {
+        "id": "node-doc-artifact-006",
+        "url": "https://registry.npmjs.org/@ungap/structured-clone/-/structured-clone-1.2.0.tgz",
+        "integrity": "sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==",
+        "sha512Hex": "cee55d16b3098ae083414302cd0683e8a2f6f0c8e7aaa37c5e702a884abd3cd9bf8423d34867eb5c239fc23d68c382c56ffb4dca624fc2c35b55e3dcd7116aad",
+        "logicalOccurrences": ["node_modules/@ungap/structured-clone"],
+        "bytes": 7054,
+        "sha256": "9745a55b62b449948a0389b9cbd756cc5688e561c94846b090c88813c5014763"
+      },
+      {
+        "id": "node-doc-artifact-007",
+        "url": "https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz",
+        "integrity": "sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==",
+        "sha512Hex": "f3ef56a9e6db173a57f4e47e59ae8edbd6ac22881e44ccdc1ad00835da4c1c7c80835d1fd3969215505b704a867ff3d7c35123019faadbf6c4060dc3beeacadd",
+        "logicalOccurrences": ["node_modules/argparse"],
+        "bytes": 39740,
+        "sha256": "27903847fc8215e6fc5a33e81490f7baba66403f8aade33771b988cca097728c"
+      },
+      {
+        "id": "node-doc-artifact-008",
+        "url": "https://registry.npmjs.org/bail/-/bail-2.0.2.tgz",
+        "integrity": "sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==",
+        "sha512Hex": "d313ba99877b241d987acc432a995a7d1a6c88eccfb7d574d9d74f08b6d8d716063ce5f6e0d4f2379d2a9d4c6008f712a183212a902e0538d0a1164202450347",
+        "logicalOccurrences": ["node_modules/bail"],
+        "bytes": 2935,
+        "sha256": "11719f7e1f7a31432177dd0cd987e7c967a826426d281c39c0025b474056c88b"
+      },
+      {
+        "id": "node-doc-artifact-009",
+        "url": "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz",
+        "integrity": "sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==",
+        "sha512Hex": "25939203b328f6c34607cf948d283374bb68916024cb5cdbced3375912c26d9ef4ff771300d99098e751ef2da0f89d1ed965f2c32d724b8ebcb58f88aeea84c3",
+        "logicalOccurrences": ["node_modules/boolbase"],
+        "bytes": 851,
+        "sha256": "69628ff8092c5ff940ea4a0f29da98d520615bae138755c9e059033606c6caa8"
+      },
+      {
+        "id": "node-doc-artifact-010",
+        "url": "https://registry.npmjs.org/ccount/-/ccount-2.0.1.tgz",
+        "integrity": "sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==",
+        "sha512Hex": "7b2ac5d23885a58fb776b4fadfcddfd6a8646c6b0b4a27cd02303ad4852366398b0968c8b58e8b07d7edf588680e0c1f99c941db386ee752dcefef796fc35102",
+        "logicalOccurrences": ["node_modules/ccount"],
+        "bytes": 3163,
+        "sha256": "bdda8b4b3c7c3049bb118a9a01e3638033473b90c09f58eee1e9f2dda27984ca"
+      },
+      {
+        "id": "node-doc-artifact-011",
+        "url": "https://registry.npmjs.org/character-entities/-/character-entities-2.0.2.tgz",
+        "integrity": "sha512-shx7oQ0Awen/BRIdkjkvz54PnEEI/EjwXDSIZp86/KKdbafHh1Df/RYGBhn4hbe2+uKC9FnT5UCEdyPz3ai9hQ==",
+        "sha512Hex": "b21c7ba10d00c1e9ff05121d92392fcf9e0f9c4108fc48f05c3488669f3afca29d6da7c78750dffd16060619f885b7b6fae282f459d3e540847723f3dda8bd85",
+        "logicalOccurrences": ["node_modules/character-entities"],
+        "bytes": 15047,
+        "sha256": "0805c120e1147a250a87ed8752265b3bce7a76c44e9728dec1d11380e21fbc3d"
+      },
+      {
+        "id": "node-doc-artifact-012",
+        "url": "https://registry.npmjs.org/character-entities-html4/-/character-entities-html4-2.1.0.tgz",
+        "integrity": "sha512-1v7fgQRj6hnSwFpq1Eu0ynr/CDEw0rXo2B61qXrLNdHZmPKgb7fqS1a2JwF0rISo9q77jDI8VMEHoApn8qDoZA==",
+        "sha512Hex": "d6fedf810463ea19d2c05a6ad44bb4ca7aff083130d2b5e8d81eb5a97acb35d1d998f2a06fb7ea4b56b6270174ac84a8f6aefb8c323c54c107a00a67f2a0e864",
+        "logicalOccurrences": ["node_modules/character-entities-html4"],
+        "bytes": 4613,
+        "sha256": "a1cdca963945f3fbb4ac4932d4b8e54ceb66aba5a9bfc7254fb87a1f17cd04e6"
+      },
+      {
+        "id": "node-doc-artifact-013",
+        "url": "https://registry.npmjs.org/character-entities-legacy/-/character-entities-legacy-3.0.0.tgz",
+        "integrity": "sha512-RpPp0asT/6ufRm//AJVwpViZbGM/MkjQFxJccQRHmISF/22NBtsHqAWmL+/pmkPWoIUJdWyeVleTl1wydHATVQ==",
+        "sha512Hex": "4693e9d1ab13ffab9f466fff009570a558996c633f3248d017125c710447988485ff6d8d06db07a805a62fefe99a43d6a08509756c9e565793975c3274701355",
+        "logicalOccurrences": ["node_modules/character-entities-legacy"],
+        "bytes": 3544,
+        "sha256": "f36404294f0713ab8e3a08f133195d3085d0367816fc6c74136babcf90fdc988"
+      },
+      {
+        "id": "node-doc-artifact-014",
+        "url": "https://registry.npmjs.org/comma-separated-tokens/-/comma-separated-tokens-2.0.3.tgz",
+        "integrity": "sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==",
+        "sha512Hex": "16ee2125dbf37b29427d03e9f5219689da73accb3bb53ae5bba55bf1719a446724f1048d649269e77f16adbeb42dac787cfc11eb8562638ebc3885136d194666",
+        "logicalOccurrences": ["node_modules/comma-separated-tokens"],
+        "bytes": 3822,
+        "sha256": "88123eefbb07a6048efa112653c80f4a0ac2e993bd1388c00273e14de29ec886"
+      },
+      {
+        "id": "node-doc-artifact-015",
+        "url": "https://registry.npmjs.org/css-selector-parser/-/css-selector-parser-3.0.3.tgz",
+        "integrity": "sha512-HAcgYSBFKo1jnglINdHeBPIscPOCOh8vCDCaOV5xkwMSlGPEnfdynxBuWkgZMwXltMKgFbDcr4EPmDpSWi34MA==",
+        "sha512Hex": "1c07206120452a8d639e094835d1de04f22c70f3823a1f2f08309a395e719303129463c49df7729f106e5a48193305e5b4c2a015b0dcaf810f983a525a2df830",
+        "logicalOccurrences": ["node_modules/css-selector-parser"],
+        "bytes": 19002,
+        "sha256": "470e65bcc7d57642fee575ccaaecb2ad5cf440aa9a35455e5d40d0a117ed3065"
+      },
+      {
+        "id": "node-doc-artifact-016",
+        "url": "https://registry.npmjs.org/debug/-/debug-4.3.4.tgz",
+        "integrity": "sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==",
+        "sha512Hex": "3d15851ee494dde0ed4093ef9cd63b25c91eb758f4b793ae3ac1733cfcec7a40f9d9997ca947c520f122b305ea22f1d61951ce817fbb1bfbc234d85e870c5f91",
+        "logicalOccurrences": ["node_modules/debug"],
+        "bytes": 13252,
+        "sha256": "04922c9b2e37a6858df2b870a278d1d3a8aaad7ec4c3bd84427f0d53cbf28bcf"
+      },
+      {
+        "id": "node-doc-artifact-017",
+        "url": "https://registry.npmjs.org/decode-named-character-reference/-/decode-named-character-reference-1.0.2.tgz",
+        "integrity": "sha512-O8x12RzrUF8xyVcY0KJowWsmaJxQbmy0/EtnNtHRpsOcT7dFk5W598coHqBVpmWo1oQQfsCqfCmkZN5DJrZVdg==",
+        "sha512Hex": "3bcc75d91ceb505f31c95718d0a268c16b26689c506e6cb4fc4b6736d1d1a6c39c4fb7459395b9f7c7281ea055a665a8d684107ec0aa7c29a464de4326b65576",
+        "logicalOccurrences": ["node_modules/decode-named-character-reference"],
+        "bytes": 3624,
+        "sha256": "0d7bfd698800f21b894d5581f212a5272bb81760721291d9c0dbf21cd7a962e9"
+      },
+      {
+        "id": "node-doc-artifact-018",
+        "url": "https://registry.npmjs.org/dequal/-/dequal-2.0.3.tgz",
+        "integrity": "sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==",
+        "sha512Hex": "d237bea8f28710ca21bdf453084a370ab3c6e9c033018826ccacb1462612483912e9e1897725499bb59a600e4409a003f702c1d93e0411eca603968555c61708",
+        "logicalOccurrences": ["node_modules/dequal"],
+        "bytes": 4286,
+        "sha256": "941d90d6629878167d10d2a05d8c6df8f8fa13acc826616abb49db63ac6a5c35"
+      },
+      {
+        "id": "node-doc-artifact-019",
+        "url": "https://registry.npmjs.org/devlop/-/devlop-1.1.0.tgz",
+        "integrity": "sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==",
+        "sha512Hex": "456988aa17057f5951601bcd9abeea4cdbb20adffbfe7b368dba69d7e3da96013fac341c053d1f8a848c52927dde2ae55210b986b838718a9ee94fb42265b4ac",
+        "logicalOccurrences": ["node_modules/devlop"],
+        "bytes": 6714,
+        "sha256": "aed0b5ba97cc3aba851946766b1e4804e92a0d3b2051e047eed4e8bf508ecd5f"
+      },
+      {
+        "id": "node-doc-artifact-020",
+        "url": "https://registry.npmjs.org/diff/-/diff-5.1.0.tgz",
+        "integrity": "sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw==",
+        "sha512Hex": "0fe9a4faa13c542fcf014ae5014df837e55f5debf48217b9cb09a9aab6b0a6199565cd5b11f9f9eaea3daa9c86a75a78c69cce1e4496e33b4177a2fb5f1e000b",
+        "logicalOccurrences": ["node_modules/diff"],
+        "bytes": 116978,
+        "sha256": "12aff874d7101f88787522a56781f38240fe668a545ef02d3bc5fa502bda6a4f"
+      },
+      {
+        "id": "node-doc-artifact-021",
+        "url": "https://registry.npmjs.org/entities/-/entities-4.5.0.tgz",
+        "integrity": "sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==",
+        "sha512Hex": "5748631f87463e1f40a39a74328458e8156ab700a3873eaf2392d3f00279e47fb883dff8bdb1f1d48e787d2d17b9c94b8431c0acf40288c8c3c6368bf1f3f187",
+        "logicalOccurrences": ["node_modules/entities"],
+        "bytes": 77368,
+        "sha256": "6b0c60f7351a0b65bb1fc8dbb9299f09e7ecf6d89103d0651bf369e6f463a632"
+      },
+      {
+        "id": "node-doc-artifact-022",
+        "url": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-5.0.0.tgz",
+        "integrity": "sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==",
+        "sha512Hex": "fef798ef925b30ae23d728efb94c6e56c892fe1affe221ecf454d3e9c8137b1c5d1342f2fe095c7010249681ff0e87e48d16d95376e7a23dfc98e9a1919d251f",
+        "logicalOccurrences": ["node_modules/escape-string-regexp"],
+        "bytes": 1964,
+        "sha256": "c8b662afe8aa2b852ecc27d766e584a502f8351fbbd890611f2509bf083d28e6"
+      },
+      {
+        "id": "node-doc-artifact-023",
+        "url": "https://registry.npmjs.org/extend/-/extend-3.0.2.tgz",
+        "integrity": "sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==",
+        "sha512Hex": "7e3aae0b9f5c0fb0b25babab3572b4141b9f9197288861bcd304ee3ee8d7e7dd1c0794ed967db4136501e12fd601156a8577df665d8b3604be81074f2088a6fe",
+        "logicalOccurrences": ["node_modules/extend"],
+        "bytes": 7258,
+        "sha256": "1d91d0b0faa50cba223fa937c7b5a4a662968b1d78b3e59dca5c917dd5cf72b2"
+      },
+      {
+        "id": "node-doc-artifact-024",
+        "url": "https://registry.npmjs.org/fault/-/fault-2.0.1.tgz",
+        "integrity": "sha512-WtySTkS4OKev5JtpHXnib4Gxiurzh5NCGvWrFaZ34m6JehfTUhKZvn9njTfw48t6JumVQOmrKqpmGcdwxnhqBQ==",
+        "sha512Hex": "5adc924e44b838a7afe49b691d79e26f81b18aeaf38793421af5ab15a677e26e897a17d3521299be7f678d37f0e3cb7a26e99540e9ab2aaa6619c770c6786a05",
+        "logicalOccurrences": ["node_modules/fault"],
+        "bytes": 4008,
+        "sha256": "1efd6a9cc6e284cbb7e3c285d15a9d424d930039f6772291457eb143795808e7"
+      },
+      {
+        "id": "node-doc-artifact-025",
+        "url": "https://registry.npmjs.org/format/-/format-0.2.2.tgz",
+        "integrity": "sha512-wzsgA6WOq+09wrU1tsJ09udeR/YZRaeArL9e1wPbFg3GG2yDnC2ldKpxs4xunpFF9DgqCqOIra3bc1HWrJ37Ww==",
+        "sha512Hex": "c33b2003a58eabed3dc2b535b6c274f6e75e47f61945a780acbf5ed703db160dc61b6c839c2da574aa71b38c6e9e9145f4382a0aa388adaddb7351d6ac9dfb5b",
+        "logicalOccurrences": ["node_modules/format"],
+        "bytes": 3259,
+        "sha256": "e3ff125b0cd4f74c3b03b5399d55f1c94d92ffeb706d7483c5ec437c2dc16076"
+      },
+      {
+        "id": "node-doc-artifact-026",
+        "url": "https://registry.npmjs.org/hast-util-from-parse5/-/hast-util-from-parse5-8.0.1.tgz",
+        "integrity": "sha512-Er/Iixbc7IEa7r/XLtuG52zoqn/b3Xng/w6aZQ0xGVxzhw5xUFxcRqdPzP6yFi/4HBYRaifaI5fQ1RH8n0ZeOQ==",
+        "sha512Hex": "12bfc88b16dcec811aeebfd72edb86e76ce8aa7fdbdd79e0ff0e9a650d31195c73870e71505c5c46a74fccfeb2162ff81c16116a27da2397d0d511fc9f465e39",
+        "logicalOccurrences": ["node_modules/hast-util-from-parse5"],
+        "bytes": 8059,
+        "sha256": "5ed6cefa07861e3ef67de82ecdf7884c7bc2c1d8107c5241d221d994920fcdcc"
+      },
+      {
+        "id": "node-doc-artifact-027",
+        "url": "https://registry.npmjs.org/hast-util-parse-selector/-/hast-util-parse-selector-4.0.0.tgz",
+        "integrity": "sha512-wkQCkSYoOGCRKERFWcxMVMOcYE2K1AaNLU8DXS9arxnLOUEWbOXKXiJUNzEpqZ3JOKpnha3jkFrumEjVliDe7A==",
+        "sha512Hex": "c2440291262838609128444559cc4c54c39c604d8ad4068d2d4f035d2f5aaf19cb3941166ce5ca5e2254373129a99dc938aa6785ade3905aee9848d59620deec",
+        "logicalOccurrences": ["node_modules/hast-util-parse-selector"],
+        "bytes": 4475,
+        "sha256": "df79b69d2c5a494758576fe4016f1082aecb7ae1cde7cb908ad539ba4d8d8884"
+      },
+      {
+        "id": "node-doc-artifact-028",
+        "url": "https://registry.npmjs.org/hast-util-raw/-/hast-util-raw-9.0.1.tgz",
+        "integrity": "sha512-5m1gmba658Q+lO5uqL5YNGQWeh1MYWZbZmWrM5lncdcuiXuo5E2HT/CIOp0rLF8ksfSwiCVJ3twlgVRyTGThGA==",
+        "sha512Hex": "e66d6099b6bae7c43e94ee6ea8be583464167a1d4c61665b6665ab33996771d72e897ba8e44d874ff0883a9d2b2c5f24b1f4b0882549dedc258154724c64e118",
+        "logicalOccurrences": ["node_modules/hast-util-raw"],
+        "bytes": 10314,
+        "sha256": "f05756f5d8beb31ec51452971b9a44ed682087ee7683a2a9ffadb27b959c7a17"
+      },
+      {
+        "id": "node-doc-artifact-029",
+        "url": "https://registry.npmjs.org/hast-util-sanitize/-/hast-util-sanitize-4.1.0.tgz",
+        "integrity": "sha512-Hd9tU0ltknMGRDv+d6Ro/4XKzBqQnP/EZrpiTbpFYfXv/uOhWeKc+2uajcbEvAEH98VZd7eII2PiXm13RihnLw==",
+        "sha512Hex": "1ddf6d53496d927306443bfe77a468ff85cacc1a909cffc466ba624dba4561f5effee3a159e29cfb6b9a8dc6c4bc0107f7c55977b7882363e25e6d774628672f",
+        "logicalOccurrences": ["node_modules/hast-util-sanitize"],
+        "bytes": 9910,
+        "sha256": "144eadb5f6d4924f4c8cbd3c954ea715666685074ddb488da01d39d36375d880"
+      },
+      {
+        "id": "node-doc-artifact-030",
+        "url": "https://registry.npmjs.org/@types/hast/-/hast-2.3.8.tgz",
+        "integrity": "sha512-aMIqAlFd2wTIDZuvLbhUT+TGvMxrNC8ECUIVtH6xxy0sQLs3iu6NO8Kp/VT5je7i5ufnebXzdV1dNDMnvaH6IQ==",
+        "sha512Hex": "68c22a02515ddb04c80d9baf2db8544fe4c6bccc6b342f04094215b47eb1c72d2c40bb378aee8d3bc2a9fd54f98deee2e6e7e779b5f3755d5d343327bda1fa21",
+        "logicalOccurrences": [
+          "node_modules/hast-util-sanitize/node_modules/@types/hast",
+          "node_modules/remark-html/node_modules/@types/hast",
+          "node_modules/remark-rehype/node_modules/@types/hast"
+        ],
+        "bytes": 2440,
+        "sha256": "7b1f4a6a16080e7bd9e42321ba04026dfdb3bfde1fa2d0fcbd8f30603d1a5714"
+      },
+      {
+        "id": "node-doc-artifact-031",
+        "url": "https://registry.npmjs.org/@types/unist/-/unist-2.0.10.tgz",
+        "integrity": "sha512-IfYcSBWE3hLpBg8+X2SEa8LVkJdJEkT2Ese2aaLs3ptGdVtABxndrMaxuFlQ1qdFf9Q5rDvDpxI3WwgvKFAsQA==",
+        "sha512Hex": "21f61c481584de12e9060f3e5f64846bc2d59097491244f612c7b669a2ecde9b46755b400719ddacc6b1b85950d6a7457fd439ac3bc3a712375b082f28502c40",
+        "logicalOccurrences": [
+          "node_modules/hast-util-sanitize/node_modules/@types/unist",
+          "node_modules/mdast-util-definitions/node_modules/@types/unist",
+          "node_modules/mdast-util-find-and-replace/node_modules/@types/unist",
+          "node_modules/mdast-util-from-markdown/node_modules/@types/unist",
+          "node_modules/mdast-util-frontmatter/node_modules/@types/unist",
+          "node_modules/mdast-util-gfm-autolink-literal/node_modules/@types/unist",
+          "node_modules/mdast-util-gfm-footnote/node_modules/@types/unist",
+          "node_modules/mdast-util-gfm-strikethrough/node_modules/@types/unist",
+          "node_modules/mdast-util-gfm-table/node_modules/@types/unist",
+          "node_modules/mdast-util-gfm-task-list-item/node_modules/@types/unist",
+          "node_modules/mdast-util-phrasing/node_modules/@types/unist",
+          "node_modules/mdast-util-to-markdown/node_modules/@types/unist",
+          "node_modules/mdast-util-to-string/node_modules/@types/unist",
+          "node_modules/remark-frontmatter/node_modules/@types/unist",
+          "node_modules/remark-gfm/node_modules/@types/unist",
+          "node_modules/remark-html/node_modules/@types/unist",
+          "node_modules/remark-parse/node_modules/@types/unist",
+          "node_modules/remark-rehype/node_modules/@types/unist"
+        ],
+        "bytes": 2556,
+        "sha256": "7fc3b7ef9db1cb8fd0af5b073f3503b9f9427bd08e87fcbbfac7ab510dcf1237"
+      },
+      {
+        "id": "node-doc-artifact-032",
+        "url": "https://registry.npmjs.org/hast-util-to-html/-/hast-util-to-html-9.0.0.tgz",
+        "integrity": "sha512-IVGhNgg7vANuUA2XKrT6sOIIPgaYZnmLx3l/CCOAK0PtgfoHrZwX7jCSYyFxHTrGmC6S9q8aQQekjp4JPZF+cw==",
+        "sha512Hex": "2151a136083bbc036e500d972ab4fab0e2083e069866798bc7797f0823802b43ed81fa07ad9c17ee30926321711d3ac6982e92f6af1a4107a48e9e093d917e73",
+        "logicalOccurrences": ["node_modules/hast-util-to-html"],
+        "bytes": 15119,
+        "sha256": "9ee4f84bb6b7b0fc7db3a84cb78f0b6879f2643a82f7ed3cb934a07ddefb08fd"
+      },
+      {
+        "id": "node-doc-artifact-033",
+        "url": "https://registry.npmjs.org/hast-util-to-parse5/-/hast-util-to-parse5-8.0.0.tgz",
+        "integrity": "sha512-3KKrV5ZVI8if87DVSi1vDeByYrkGzg4mEfeu4alwgmmIeARiBLKCZS2uw5Gb6nU9x9Yufyj3iudm6i7nl52PFw==",
+        "sha512Hex": "dca2ab57965523c89ff3b0d54a2d6f0de07262b906ce0e2611f7aee1a97082698878046204b282652daec3919bea753dc7d62e7f28f78ae766ea2ee7979d8f17",
+        "logicalOccurrences": ["node_modules/hast-util-to-parse5"],
+        "bytes": 6344,
+        "sha256": "58fb5b108e7062fe0bc1cb5753debaaa4d10a72a743993c9b16abb2de8ccf3dc"
+      },
+      {
+        "id": "node-doc-artifact-034",
+        "url": "https://registry.npmjs.org/hast-util-whitespace/-/hast-util-whitespace-3.0.0.tgz",
+        "integrity": "sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==",
+        "sha512Hex": "f3c254374ea2a4bc2c9eff9d567f8e2183af02ebc1332fd0a22e8eee6407c5d3d7a63cbe09deb14645b0bb1ec328efb8b1820bb4b05120a82c7694b681073bab",
+        "logicalOccurrences": ["node_modules/hast-util-whitespace"],
+        "bytes": 4235,
+        "sha256": "673f97f5bba3cac0184726f519a5750273e4434b839a769f4fbf09e4b4da2ceb"
+      },
+      {
+        "id": "node-doc-artifact-035",
+        "url": "https://registry.npmjs.org/hastscript/-/hastscript-8.0.0.tgz",
+        "integrity": "sha512-dMOtzCEd3ABUeSIISmrETiKuyydk1w0pa+gE/uormcTpSYuaNJPbX1NU3JLyscSLjwAQM8bWMhhIlnCqnRvDTw==",
+        "sha512Hex": "74c3adcc211ddc00547922084a6ac44e22aecb2764d70d296be804feea2b99c4e9498b9a3493db5f5354dc92f2b1c48b8f001033c6d63218489670aa9d1bc34f",
+        "logicalOccurrences": ["node_modules/hastscript"],
+        "bytes": 11291,
+        "sha256": "cd11c96dc105135871f2676c7e0556a9547c97a46c1e5ce187766b08ee6a417a"
+      },
+      {
+        "id": "node-doc-artifact-036",
+        "url": "https://registry.npmjs.org/highlight.js/-/highlight.js-11.11.1.tgz",
+        "integrity": "sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==",
+        "sha512Hex": "5f0c28e38c21281542628962050c1a3efb5dff6b58164450b570d68f59da724695d893d7c772f4f89bddf3fa82276a7e30bd3f5d5909daaf8cafe51576924ae7",
+        "logicalOccurrences": ["node_modules/highlight.js"],
+        "bytes": 838069,
+        "sha256": "fbc9443263e976583bd5640e550b77f84d8d7e19fc8408dfe53776a5bae7ed39"
+      },
+      {
+        "id": "node-doc-artifact-037",
+        "url": "https://registry.npmjs.org/html-void-elements/-/html-void-elements-3.0.0.tgz",
+        "integrity": "sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==",
+        "sha512Hex": "6c4aa8eba3115ec506c561d5e483f43d48805b0a048db6b8542ce0d0b8c5241a5c84f6937f27c22931ba6dce45f2e70a79cdeae72eaa39d1b261348112f842ae",
+        "logicalOccurrences": ["node_modules/html-void-elements"],
+        "bytes": 2954,
+        "sha256": "301b6ef51a58d296bb3f837c4840211025a7e541f304d4a379e6062e45373530"
+      },
+      {
+        "id": "node-doc-artifact-038",
+        "url": "https://registry.npmjs.org/is-buffer/-/is-buffer-2.0.5.tgz",
+        "integrity": "sha512-i2R6zNFDwgEHJyQUtJEk0XFi1i0dPFn/oqjK3/vPCcDeJvW5NQ83V8QbicfF1SupOaB0h8ntgBC2YiE7dfyctQ==",
+        "sha512Hex": "8b647accd143c20107272414b49124d17162d62d1d3c59ffa2a8cadffbcf09c0de26f5b9350f3757c41b89c7c5d52ba939a07487c9ed8010b662213b75fc9cb5",
+        "logicalOccurrences": ["node_modules/is-buffer"],
+        "bytes": 2092,
+        "sha256": "2cde04866539c2397671a21d79773d4b95e3a7ae6573ee106c1cd437950fc05e"
+      },
+      {
+        "id": "node-doc-artifact-039",
+        "url": "https://registry.npmjs.org/is-plain-obj/-/is-plain-obj-4.1.0.tgz",
+        "integrity": "sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==",
+        "sha512Hex": "f8f822faf32e50d909c84c62301b792251683322a7af9ce127852ca73e7c58e841179428219905c8d1c86c102d1f0cd502093946d9dd54db0344deb5fe6983aa",
+        "logicalOccurrences": ["node_modules/is-plain-obj"],
+        "bytes": 1961,
+        "sha256": "c71d874f7ab7cd560329b080ce790f9768dea503337fe2e2719a18e28be621f7"
+      },
+      {
+        "id": "node-doc-artifact-040",
+        "url": "https://registry.npmjs.org/js-yaml/-/js-yaml-4.1.0.tgz",
+        "integrity": "sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==",
+        "sha512Hex": "c29c59b3d368c596891122462194f20c4698a65d0529203e141f5a262c9e98a84cc24c5083ade1e13d4a2605061e94ea3c33517269982ee82b46326506d5af44",
+        "logicalOccurrences": ["node_modules/js-yaml"],
+        "bytes": 102356,
+        "sha256": "0dae332559cf22b21c26ea70e732afd8303ff99412f9c3d9d209faa8882cf2ca"
+      },
+      {
+        "id": "node-doc-artifact-041",
+        "url": "https://registry.npmjs.org/kleur/-/kleur-4.1.5.tgz",
+        "integrity": "sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==",
+        "sha512Hex": "a3e34efbc5ab462404138ffb9f044984dd475a9566266e75d690475313cbb69d015084b3941a653916129937250a726f42adad2aefec825df156991ced95ae41",
+        "logicalOccurrences": ["node_modules/kleur"],
+        "bytes": 6153,
+        "sha256": "0d99562acf82fca4afce2a57b687289a524ac6755dcaf1fdf82a147473091469"
+      },
+      {
+        "id": "node-doc-artifact-042",
+        "url": "https://registry.npmjs.org/longest-streak/-/longest-streak-3.1.0.tgz",
+        "integrity": "sha512-9Ri+o0JYgehTaVBBDoMqIl8GXtbWg711O3srftcHhZ0dqnETqLaoIK0x17fUw9rFSlK/0NlsKe0Ahhyl5pXE2g==",
+        "sha512Hex": "f518bea3425881e8536950410e832a225f065ed6d683bd753b7b2b7ed707859d1daa7113a8b6a820ad31d7b7d4c3dac54a52bfd0d96c29ed00861ca5e695c4da",
+        "logicalOccurrences": ["node_modules/longest-streak"],
+        "bytes": 3199,
+        "sha256": "384446c12b28a0f29cd68b22871cff7c1001fdca5c173930e4eeb4811de210f6"
+      },
+      {
+        "id": "node-doc-artifact-043",
+        "url": "https://registry.npmjs.org/markdown-table/-/markdown-table-3.0.3.tgz",
+        "integrity": "sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==",
+        "sha512Hex": "67534bdd36f533dc07e17112b020c492c5a829376551a7ca738a6dd064708d4c97682159f9d7378367aba81eb39b7b330362144a2ed59cf23ea3ff639f187d87",
+        "logicalOccurrences": ["node_modules/markdown-table"],
+        "bytes": 6714,
+        "sha256": "2ec9363dce6864df201beb557e5b94c6016555970024741ac1aed911a1713ba5"
+      },
+      {
+        "id": "node-doc-artifact-044",
+        "url": "https://registry.npmjs.org/mdast-util-definitions/-/mdast-util-definitions-5.1.2.tgz",
+        "integrity": "sha512-8SVPMuHqlPME/z3gqVwWY4zVXn8lqKv/pAhC57FuJ40ImXyBpmO5ukh98zB2v7Blql2FiHjHv9LVztSIqjY+MA==",
+        "sha512Hex": "f1254f32e1ea94f304ff3de0a95c16638cd55e7f25a8abffa40842e7b16e278d08997c81a663b9ba487df33076bfb065aa5d858878c7bfd2d5ced488aa363e30",
+        "logicalOccurrences": ["node_modules/mdast-util-definitions"],
+        "bytes": 4221,
+        "sha256": "eef7f46abe9793361cd5b82f34b5fa9edaa9544a906af13bdaefdc66c97950eb"
+      },
+      {
+        "id": "node-doc-artifact-045",
+        "url": "https://registry.npmjs.org/@types/mdast/-/mdast-3.0.15.tgz",
+        "integrity": "sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==",
+        "sha512Hex": "2e7c03fa65047f158c6b54290eb69ccc89fa93411edd232272e6124b34ba65897680a4b4f440a59c960677c0eeeab7dce6bfc6644939a359916fc4da4e3d37b1",
+        "logicalOccurrences": [
+          "node_modules/mdast-util-definitions/node_modules/@types/mdast",
+          "node_modules/mdast-util-find-and-replace/node_modules/@types/mdast",
+          "node_modules/mdast-util-from-markdown/node_modules/@types/mdast",
+          "node_modules/mdast-util-frontmatter/node_modules/@types/mdast",
+          "node_modules/mdast-util-gfm-autolink-literal/node_modules/@types/mdast",
+          "node_modules/mdast-util-gfm-footnote/node_modules/@types/mdast",
+          "node_modules/mdast-util-gfm-strikethrough/node_modules/@types/mdast",
+          "node_modules/mdast-util-gfm-table/node_modules/@types/mdast",
+          "node_modules/mdast-util-gfm-task-list-item/node_modules/@types/mdast",
+          "node_modules/mdast-util-phrasing/node_modules/@types/mdast",
+          "node_modules/mdast-util-to-markdown/node_modules/@types/mdast",
+          "node_modules/mdast-util-to-string/node_modules/@types/mdast",
+          "node_modules/remark-frontmatter/node_modules/@types/mdast",
+          "node_modules/remark-gfm/node_modules/@types/mdast",
+          "node_modules/remark-html/node_modules/@types/mdast",
+          "node_modules/remark-parse/node_modules/@types/mdast",
+          "node_modules/remark-rehype/node_modules/@types/mdast"
+        ],
+        "bytes": 3197,
+        "sha256": "5062d667aac2a7da642c1a77302ce9595ab4bdd38965a2459cdafbef24629e74"
+      },
+      {
+        "id": "node-doc-artifact-046",
+        "url": "https://registry.npmjs.org/unist-util-is/-/unist-util-is-5.2.1.tgz",
+        "integrity": "sha512-u9njyyfEh43npf1M+yGKDGVPbY/JWEemg5nH05ncKPfi+kBbKBJoTdsogMu33uhytuLlv9y0O7GH7fEdwLdLQw==",
+        "sha512Hex": "bbd9e3cb27c4878de7a5fd4cfb218a0c654f6d8fc95847a68399c7d399dc28f7e2fa405b2812684ddb2880cbb7dee872b6e2e5bfdcb43bb187edf11dc0b74b43",
+        "logicalOccurrences": [
+          "node_modules/mdast-util-definitions/node_modules/unist-util-is",
+          "node_modules/mdast-util-find-and-replace/node_modules/unist-util-is",
+          "node_modules/mdast-util-phrasing/node_modules/unist-util-is",
+          "node_modules/mdast-util-to-markdown/node_modules/unist-util-is",
+          "node_modules/remark-html/node_modules/unist-util-is",
+          "node_modules/remark-rehype/node_modules/unist-util-is"
+        ],
+        "bytes": 6893,
+        "sha256": "09f7c0515a6fcb0801d699bb5843f2899f101708013e6d275263333b900e3e39"
+      },
+      {
+        "id": "node-doc-artifact-047",
+        "url": "https://registry.npmjs.org/unist-util-visit/-/unist-util-visit-4.1.2.tgz",
+        "integrity": "sha512-MSd8OUGISqHdVvfY9TPhyK2VdUrPgxkUtWSuMHF6XAAFuL4LokseigBnZtPnJMu+FbynTkFNnFlyjxpVKujMRg==",
+        "sha512Hex": "31277c3941884aa1dd56f7d8f533e1c8ad95754acf831914b564ae30717a5c0005b8be0ba24b1e8a006766d3e724cbbe15bca74e414d9c59728f1a552ae8cc46",
+        "logicalOccurrences": [
+          "node_modules/mdast-util-definitions/node_modules/unist-util-visit",
+          "node_modules/mdast-util-to-markdown/node_modules/unist-util-visit",
+          "node_modules/remark-html/node_modules/unist-util-visit",
+          "node_modules/remark-rehype/node_modules/unist-util-visit"
+        ],
+        "bytes": 6554,
+        "sha256": "cd3e0496441957f313349420c314b0deebaa7a783ddbd3c96f40633ef25dfdd2"
+      },
+      {
+        "id": "node-doc-artifact-048",
+        "url": "https://registry.npmjs.org/unist-util-visit-parents/-/unist-util-visit-parents-5.1.3.tgz",
+        "integrity": "sha512-x6+y8g7wWMyQhL1iZfhIPhDAs7Xwbn9nRosDXl7qoPTSCy0yNxnKc+hWokFifWQIDGi154rdUqKvbCa4+1kLhg==",
+        "sha512Hex": "c7afb2f20ef058cc9084bd6265f8483e10c0b3b5f06e7f67468b035e5eeaa0f4d20b2d323719ca73e856a241627d64080c68b5e78add52a2af6c26b8fb590b86",
+        "logicalOccurrences": [
+          "node_modules/mdast-util-definitions/node_modules/unist-util-visit-parents",
+          "node_modules/mdast-util-find-and-replace/node_modules/unist-util-visit-parents",
+          "node_modules/mdast-util-to-markdown/node_modules/unist-util-visit-parents",
+          "node_modules/remark-html/node_modules/unist-util-visit-parents",
+          "node_modules/remark-rehype/node_modules/unist-util-visit-parents"
+        ],
+        "bytes": 8105,
+        "sha256": "922b00076ef940ca9daa6bce4aad02a0e137190db6becf17e1daaee76b273af8"
+      },
+      {
+        "id": "node-doc-artifact-049",
+        "url": "https://registry.npmjs.org/mdast-util-find-and-replace/-/mdast-util-find-and-replace-2.2.2.tgz",
+        "integrity": "sha512-MTtdFRz/eMDHXzeK6W3dO7mXUlF82Gom4y0oOgvHhh/HXZAGvIQDUvQ0SuUx+j2tv44b8xTHOm8K/9OoRFnXKw==",
+        "sha512Hex": "313b5d151cff78c0c75f378ae96ddd3bb99752517cd86a26e32d283a0bc7861fc75d9006bc840352f4344ae531fa3dadbf8e1bf314c73a6f0affd3a84459d72b",
+        "logicalOccurrences": ["node_modules/mdast-util-find-and-replace"],
+        "bytes": 7576,
+        "sha256": "6860dd4ffe05c2a0f8437957c780851f3bb591c35a0ab14c07ce9896b981af51"
+      },
+      {
+        "id": "node-doc-artifact-050",
+        "url": "https://registry.npmjs.org/mdast-util-from-markdown/-/mdast-util-from-markdown-1.3.1.tgz",
+        "integrity": "sha512-4xTO/M8c82qBcnQc1tgpNtubGUW/Y1tBQ1B0i5CtSoelOLKFYlElIr3bvgREYYO5iRqbMY1YuqZng0GVOI8Qww==",
+        "sha512Hex": "e314cefccf1cf36a8172741cd6d82936db9b1945bf635b414350748b90ad4a87a538b28562512522bddbbe04446183b9891a9b318d58baa667834195388f10c3",
+        "logicalOccurrences": ["node_modules/mdast-util-from-markdown"],
+        "bytes": 21955,
+        "sha256": "bf465a7f059ef7d69f86bacb7f1121817e892a29dff78907bf2c54ca723cd477"
+      },
+      {
+        "id": "node-doc-artifact-051",
+        "url": "https://registry.npmjs.org/micromark-util-symbol/-/micromark-util-symbol-1.1.0.tgz",
+        "integrity": "sha512-uEjpEYY6KMs1g7QfJ2eX1SQEV+ZT4rUD3UcF6l57acZvLNK7PBZL+ty82Z1qhK1/yXIY4bdx04FKMgR0g4IAag==",
+        "sha512Hex": "b848e911863a28cb3583b41f276797d5240457e653e2b503dd4705ea5e7b69c66f2cd2bb3c164bfadcbcd99d6a84ad7fc97218e1b771d3814a3204748382006a",
+        "logicalOccurrences": [
+          "node_modules/mdast-util-from-markdown/node_modules/micromark-util-symbol",
+          "node_modules/mdast-util-gfm-autolink-literal/node_modules/micromark-util-symbol",
+          "node_modules/micromark-core-commonmark/node_modules/micromark-util-symbol",
+          "node_modules/micromark-extension-frontmatter/node_modules/micromark-util-symbol",
+          "node_modules/micromark-extension-gfm-autolink-literal/node_modules/micromark-util-symbol",
+          "node_modules/micromark-extension-gfm-footnote/node_modules/micromark-util-symbol",
+          "node_modules/micromark-extension-gfm-strikethrough/node_modules/micromark-util-symbol",
+          "node_modules/micromark-extension-gfm-table/node_modules/micromark-util-symbol",
+          "node_modules/micromark-extension-gfm-task-list-item/node_modules/micromark-util-symbol",
+          "node_modules/micromark-factory-destination/node_modules/micromark-util-symbol",
+          "node_modules/micromark-factory-label/node_modules/micromark-util-symbol",
+          "node_modules/micromark-factory-space/node_modules/micromark-util-symbol",
+          "node_modules/micromark-factory-title/node_modules/micromark-util-symbol",
+          "node_modules/micromark-factory-whitespace/node_modules/micromark-util-symbol",
+          "node_modules/micromark-util-chunked/node_modules/micromark-util-symbol",
+          "node_modules/micromark-util-classify-character/node_modules/micromark-util-symbol",
+          "node_modules/micromark-util-decode-numeric-character-reference/node_modules/micromark-util-symbol",
+          "node_modules/micromark-util-decode-string/node_modules/micromark-util-symbol",
+          "node_modules/micromark-util-normalize-identifier/node_modules/micromark-util-symbol",
+          "node_modules/micromark-util-subtokenize/node_modules/micromark-util-symbol",
+          "node_modules/micromark/node_modules/micromark-util-symbol",
+          "node_modules/remark-html/node_modules/micromark-util-symbol",
+          "node_modules/remark-rehype/node_modules/micromark-util-symbol"
+        ],
+        "bytes": 10592,
+        "sha256": "1b30907c7b417a45218202e6eb6bf7e9e6b28e3015ec53b42a1a3154cdf58c30"
+      },
+      {
+        "id": "node-doc-artifact-052",
+        "url": "https://registry.npmjs.org/micromark-util-types/-/micromark-util-types-1.1.0.tgz",
+        "integrity": "sha512-ukRBgie8TIAcacscVHSiddHjO4k/q3pnedmzMQ4iwDcK0FtFCohKOlFbaOL/mPgfnPsL3C1ZyxJa4sbWrBl3jg==",
+        "sha512Hex": "ba44418227bc4c801c69cb1c5474a275d1e33b893fab7a6779d9b3310e22c0370ad05b450a884a3a515b68e2ff98f81f9cfb0bdc2d59cb125ae2c6d6ac19778e",
+        "logicalOccurrences": [
+          "node_modules/mdast-util-from-markdown/node_modules/micromark-util-types",
+          "node_modules/mdast-util-gfm-autolink-literal/node_modules/micromark-util-types",
+          "node_modules/micromark-core-commonmark/node_modules/micromark-util-types",
+          "node_modules/micromark-extension-frontmatter/node_modules/micromark-util-types",
+          "node_modules/micromark-extension-gfm-autolink-literal/node_modules/micromark-util-types",
+          "node_modules/micromark-extension-gfm-footnote/node_modules/micromark-util-types",
+          "node_modules/micromark-extension-gfm-strikethrough/node_modules/micromark-util-types",
+          "node_modules/micromark-extension-gfm-table/node_modules/micromark-util-types",
+          "node_modules/micromark-extension-gfm-tagfilter/node_modules/micromark-util-types",
+          "node_modules/micromark-extension-gfm-task-list-item/node_modules/micromark-util-types",
+          "node_modules/micromark-extension-gfm/node_modules/micromark-util-types",
+          "node_modules/micromark-factory-destination/node_modules/micromark-util-types",
+          "node_modules/micromark-factory-label/node_modules/micromark-util-types",
+          "node_modules/micromark-factory-space/node_modules/micromark-util-types",
+          "node_modules/micromark-factory-title/node_modules/micromark-util-types",
+          "node_modules/micromark-factory-whitespace/node_modules/micromark-util-types",
+          "node_modules/micromark-util-classify-character/node_modules/micromark-util-types",
+          "node_modules/micromark-util-combine-extensions/node_modules/micromark-util-types",
+          "node_modules/micromark-util-decode-string/node_modules/micromark-util-types",
+          "node_modules/micromark-util-resolve-all/node_modules/micromark-util-types",
+          "node_modules/micromark-util-subtokenize/node_modules/micromark-util-types",
+          "node_modules/micromark/node_modules/micromark-util-types",
+          "node_modules/remark-html/node_modules/micromark-util-types",
+          "node_modules/remark-rehype/node_modules/micromark-util-types"
+        ],
+        "bytes": 10740,
+        "sha256": "51d8ba688571e6581f86b98b12cc4e9d6224e0f752c9e957a69c173d30adda64"
+      },
+      {
+        "id": "node-doc-artifact-053",
+        "url": "https://registry.npmjs.org/unist-util-stringify-position/-/unist-util-stringify-position-3.0.3.tgz",
+        "integrity": "sha512-k5GzIBZ/QatR8N5X2y+drfpWG8IDBzdnVj6OInRNWm1oXrzydiaAT2OQiA8DPRRZyAKb9b6I2a6PxYklZD0gKg==",
+        "sha512Hex": "9391b320167f41ab51f0de57db2f9dadfa561bc203073767563e8e22744d5a6d685ebcf27626804f6390880f033d1459c8029bf5be88d9ae8fc58925643d202a",
+        "logicalOccurrences": [
+          "node_modules/mdast-util-from-markdown/node_modules/unist-util-stringify-position",
+          "node_modules/remark-frontmatter/node_modules/unist-util-stringify-position",
+          "node_modules/remark-gfm/node_modules/unist-util-stringify-position",
+          "node_modules/remark-html/node_modules/unist-util-stringify-position",
+          "node_modules/remark-parse/node_modules/unist-util-stringify-position",
+          "node_modules/remark-rehype/node_modules/unist-util-stringify-position"
+        ],
+        "bytes": 4305,
+        "sha256": "60be966c7e35fea057a9c1c4c2304a72fd92de7a472373866ebbc1f94f374b60"
+      },
+      {
+        "id": "node-doc-artifact-054",
+        "url": "https://registry.npmjs.org/mdast-util-frontmatter/-/mdast-util-frontmatter-1.0.1.tgz",
+        "integrity": "sha512-JjA2OjxRqAa8wEG8hloD0uTU0kdn8kbtOWpPP94NBkfAlbxn4S8gCGf/9DwFtEeGPXrDcNXdiDjVaRdUFqYokw==",
+        "sha512Hex": "2630363a3c51a806bcc041bc865a03d2e4d4d24767f246ed396a4f3fde0d0647c095bc67e12f200867fff43c05b447863d7ac370d5dd8838d569175416a62893",
+        "logicalOccurrences": ["node_modules/mdast-util-frontmatter"],
+        "bytes": 6439,
+        "sha256": "a102f4d5119767d092f2f670b6ff7990c09d6a00facaa8ce44de6e4420a98e3b"
+      },
+      {
+        "id": "node-doc-artifact-055",
+        "url": "https://registry.npmjs.org/mdast-util-gfm/-/mdast-util-gfm-2.0.2.tgz",
+        "integrity": "sha512-qvZ608nBppZ4icQlhQQIAdc6S3Ffj9RGmzwUKUWuEICFnd1LVkN3EktF7ZHAgfcEdvZB5owU9tQgt99e2TlLjg==",
+        "sha512Hex": "aaf67ad3c9c1a6967889c42585040801d73a4b715f8fd4469b3c142945ae1080859ddd4b564377124b45ed91c081f70476f641e68c14f6d420b7df5ed9394b8e",
+        "logicalOccurrences": ["node_modules/mdast-util-gfm"],
+        "bytes": 6076,
+        "sha256": "c1325957203445cad5139d40e40ef11af3aa45d924ad34c37422c7775a9375cf"
+      },
+      {
+        "id": "node-doc-artifact-056",
+        "url": "https://registry.npmjs.org/mdast-util-gfm-autolink-literal/-/mdast-util-gfm-autolink-literal-1.0.3.tgz",
+        "integrity": "sha512-My8KJ57FYEy2W2LyNom4n3E7hKTuQk/0SES0u16tjA9Z3oFkF4RrC/hPAPgjlSpezsOvI8ObcXcElo92wn5IGA==",
+        "sha512Hex": "332f0a279ec5604cb65b62f23689b89f713b84a4ee424ff44844b4bb5ead8c0f59de816417846b0bf84f00f823952a5ecec3af23c39b717704968f76c27e4818",
+        "logicalOccurrences": ["node_modules/mdast-util-gfm-autolink-literal"],
+        "bytes": 6568,
+        "sha256": "2d9fac723772b4f6f84c0df57cb9556fc4b277bec03b17e8f4f6fb8e2ba31cef"
+      },
+      {
+        "id": "node-doc-artifact-057",
+        "url": "https://registry.npmjs.org/micromark-util-character/-/micromark-util-character-1.2.0.tgz",
+        "integrity": "sha512-lXraTwcX3yH/vMDaFWCQJP1uIszLVebzUa3ZHdrgxr7KEU/9mL4mVgCpGbyhvNLNlauROiNUq7WN5u7ndbY6xg==",
+        "sha512Hex": "957ada4f0717df21ffbcc0da15609024fd6e22cccb55e6f351add91ddae0c6beca114ffd98be265600a919bca1bcd2cd95ab913a2354abb58de6eee775b63ac6",
+        "logicalOccurrences": [
+          "node_modules/mdast-util-gfm-autolink-literal/node_modules/micromark-util-character",
+          "node_modules/micromark-core-commonmark/node_modules/micromark-util-character",
+          "node_modules/micromark-extension-frontmatter/node_modules/micromark-util-character",
+          "node_modules/micromark-extension-gfm-autolink-literal/node_modules/micromark-util-character",
+          "node_modules/micromark-extension-gfm-footnote/node_modules/micromark-util-character",
+          "node_modules/micromark-extension-gfm-table/node_modules/micromark-util-character",
+          "node_modules/micromark-extension-gfm-task-list-item/node_modules/micromark-util-character",
+          "node_modules/micromark-factory-destination/node_modules/micromark-util-character",
+          "node_modules/micromark-factory-label/node_modules/micromark-util-character",
+          "node_modules/micromark-factory-space/node_modules/micromark-util-character",
+          "node_modules/micromark-factory-title/node_modules/micromark-util-character",
+          "node_modules/micromark-factory-whitespace/node_modules/micromark-util-character",
+          "node_modules/micromark-util-classify-character/node_modules/micromark-util-character",
+          "node_modules/micromark-util-decode-string/node_modules/micromark-util-character",
+          "node_modules/micromark/node_modules/micromark-util-character",
+          "node_modules/remark-html/node_modules/micromark-util-character",
+          "node_modules/remark-rehype/node_modules/micromark-util-character"
+        ],
+        "bytes": 6138,
+        "sha256": "5e78d2a9a98e8da46e2a10a42493921ccd953eac0711baaaf92630bf8f9b77a2"
+      },
+      {
+        "id": "node-doc-artifact-058",
+        "url": "https://registry.npmjs.org/mdast-util-gfm-footnote/-/mdast-util-gfm-footnote-1.0.2.tgz",
+        "integrity": "sha512-56D19KOGbE00uKVj3sgIykpwKL179QsVFwx/DCW0u/0+URsryacI4MAdNJl0dh+u2PSsD9FtxPFbHCzJ78qJFQ==",
+        "sha512Hex": "e7a0f5f4a3866c4d34b8a563dec808ca4a7028bd7bf50b15170c7f0c25b4bbfd3e511b2bc9a708e0c01d349974761faed8f4ac0fd16dc4f15b1c2cc9efca8915",
+        "logicalOccurrences": ["node_modules/mdast-util-gfm-footnote"],
+        "bytes": 6341,
+        "sha256": "340998f65933d1ce4346eef323fefba55a5d775e79f5670ae2063b7762801c5f"
+      },
+      {
+        "id": "node-doc-artifact-059",
+        "url": "https://registry.npmjs.org/mdast-util-gfm-strikethrough/-/mdast-util-gfm-strikethrough-1.0.3.tgz",
+        "integrity": "sha512-DAPhYzTYrRcXdMjUtUjKvW9z/FNAMTdU0ORyMcbmkwYNbKocDpdk+PX1L1dQgOID/+vVs1uBQ7ElrBQfZ0cuiQ==",
+        "sha512Hex": "0c03e16334d8ad171774c8d4b548cabd6f73fc5340313754d0e47231c6e693060d6caa1c0e9764f8f5f52f575080e203ffebd5b35b8143b125ac141f67472e89",
+        "logicalOccurrences": ["node_modules/mdast-util-gfm-strikethrough"],
+        "bytes": 5624,
+        "sha256": "0ca72b1535e3c81f71e5b2cec1e84f8f64b4e9ed9d7daa86561a5a3eaf565c2e"
+      },
+      {
+        "id": "node-doc-artifact-060",
+        "url": "https://registry.npmjs.org/mdast-util-gfm-table/-/mdast-util-gfm-table-1.0.7.tgz",
+        "integrity": "sha512-jjcpmNnQvrmN5Vx7y7lEc2iIOEytYv7rTvu+MeyAsSHTASGCCRA79Igg2uKssgOs1i1po8s3plW0sTu1wkkLGg==",
+        "sha512Hex": "8e372998d9d0beb98de55c7bcbb944736888384cad62feeb4efbbe31ec80b121d301218209103bf48820dae2acb203acd62d69a3cb37a655b4b13bb5c2490b1a",
+        "logicalOccurrences": ["node_modules/mdast-util-gfm-table"],
+        "bytes": 8746,
+        "sha256": "50d13f959a22f80800fa06f973a5e001d213fae127d929c8b4722c10b0a9908a"
+      },
+      {
+        "id": "node-doc-artifact-061",
+        "url": "https://registry.npmjs.org/mdast-util-gfm-task-list-item/-/mdast-util-gfm-task-list-item-1.0.2.tgz",
+        "integrity": "sha512-PFTA1gzfp1B1UaiJVyhJZA1rm0+Tzn690frc/L8vNX1Jop4STZgOE6bxUhnzdVSB+vm2GU1tIsuQcA9bxTQpMQ==",
+        "sha512Hex": "3c54c0d60cdfa7507551a889572849640d6b9b4f93ce7ebdd1fadcfcbf2f357d49a29e124d980e13a6f15219f3755481faf9b6194d6d22cb90700f5bc5342931",
+        "logicalOccurrences": ["node_modules/mdast-util-gfm-task-list-item"],
+        "bytes": 5769,
+        "sha256": "ddc1f8780ec692e05412269f180d9fdbcdcbcfc2921e8a54849a58088f404614"
+      },
+      {
+        "id": "node-doc-artifact-062",
+        "url": "https://registry.npmjs.org/mdast-util-phrasing/-/mdast-util-phrasing-3.0.1.tgz",
+        "integrity": "sha512-WmI1gTXUBJo4/ZmSk79Wcb2HcjPJBzM1nlI/OUWA8yk2X9ik3ffNbBGsU+09BFmXaL1IBb9fiuvq6/KMiNycSg==",
+        "sha512Hex": "5a62358135d4049a38fd999293bf5671bd877233c90733359e523f394580f329365fd8a4ddf7cd6c11ac53ed3d04599768bd4805bf5f8aebeaebf28c88dc9c4a",
+        "logicalOccurrences": ["node_modules/mdast-util-phrasing"],
+        "bytes": 3733,
+        "sha256": "962f5892958701a1b45224894e0b3bd4b12329ae520b947a50883d631ca63602"
+      },
+      {
+        "id": "node-doc-artifact-063",
+        "url": "https://registry.npmjs.org/mdast-util-to-hast/-/mdast-util-to-hast-13.0.2.tgz",
+        "integrity": "sha512-U5I+500EOOw9e3ZrclN3Is3fRpw8c19SMyNZlZ2IS+7vLsNzb2Om11VpIVOR+/0137GhZsFEF6YiKD5+0Hr2Og==",
+        "sha512Hex": "53923ee74d0438ec3d7b766b72537722cddf469c3c735f52332359959d884beeef2ec3736f63a6d75569215391fbfd35dfb1a166c14417a622283e7ed07af63a",
+        "logicalOccurrences": ["node_modules/mdast-util-to-hast"],
+        "bytes": 29335,
+        "sha256": "e94a249c65fd99dfea43cb53cd02b7c67adf4b0eee369ebaca2b340d58cd35c0"
+      },
+      {
+        "id": "node-doc-artifact-064",
+        "url": "https://registry.npmjs.org/mdast-util-to-markdown/-/mdast-util-to-markdown-1.5.0.tgz",
+        "integrity": "sha512-bbv7TPv/WC49thZPg3jXuqzuvI45IL2EVAr/KxF0BSdHsU0ceFHOmwQn6evxAh1GaoK/6GQ1wp4R4oW2+LFL/A==",
+        "sha512Hex": "6dbbfb4cfbff582e3db6164f8378d7baaceebc8e3920bd84540aff2b1174052747b14d1c7851ce9b0427e9ebf1021d466a82bfe86435c29e11e285b6f8b14bfc",
+        "logicalOccurrences": ["node_modules/mdast-util-to-markdown"],
+        "bytes": 34034,
+        "sha256": "0deccd60207f7385e4d09b7e128ceb113e847c1c0b4d4497fcc2f0a15cd38067"
+      },
+      {
+        "id": "node-doc-artifact-065",
+        "url": "https://registry.npmjs.org/mdast-util-to-string/-/mdast-util-to-string-3.2.0.tgz",
+        "integrity": "sha512-V4Zn/ncyN1QNSqSBxTrMOLpjr+IKdHl2v3KVLoWmDPscP4r9GcCi71gjgvUV1SFSKh92AjAG4peFuBl2/YgCJg==",
+        "sha512Hex": "578667fe773237540d4aa481c53acc38ba63afe20a747976bf72952e85a60cfb1c3f8afd19c0a2ef582382f515d521522a1f76023006e29785b81976fd880226",
+        "logicalOccurrences": ["node_modules/mdast-util-to-string"],
+        "bytes": 4517,
+        "sha256": "51f64dd90efc81d9178fc6f9a64879a82f0b6fdfbc3e4eb13050587ffe1ce0a5"
+      },
+      {
+        "id": "node-doc-artifact-066",
+        "url": "https://registry.npmjs.org/micromark/-/micromark-3.2.0.tgz",
+        "integrity": "sha512-uD66tJj54JLYq0De10AhWycZWGQNUvDI55xPgk2sQM5kn1JYlhbCMTtEeT27+vAhW2FBQxLlOmS3pmA7/2z4aA==",
+        "sha512Hex": "b83ebab498f9e092d8ab40ded740215b271958640d52f0c8e79c4f824dac40ce649f52589616c2313b44793dbbfaf0215b61414312e53a64b7a6603bff6cf868",
+        "logicalOccurrences": ["node_modules/micromark"],
+        "bytes": 30277,
+        "sha256": "afe5375e20cb20d9f3ccd3ea99762a618c898b02664cb5a72225895e69e53cf5"
+      },
+      {
+        "id": "node-doc-artifact-067",
+        "url": "https://registry.npmjs.org/micromark-core-commonmark/-/micromark-core-commonmark-1.1.0.tgz",
+        "integrity": "sha512-BgHO1aRbolh2hcrzL2d1La37V0Aoz73ymF8rAcKnohLy93titmv62E0gP8Hrx9PKcKrqCZ1BbLGbP3bEhoXYlw==",
+        "sha512Hex": "0601ced5a45ba2587685caf32f67752dadfb574028cfbdf2985f2b01c2a7a212f2f77b62b66bfad84d203fc1ebc7d3ca70aaea099d416cb19b3f76c48685d897",
+        "logicalOccurrences": ["node_modules/micromark-core-commonmark"],
+        "bytes": 29421,
+        "sha256": "48c6813f8cd7afc54c1c36bd71bce625b245106e5527212a5a3811fbc6f58a75"
+      },
+      {
+        "id": "node-doc-artifact-068",
+        "url": "https://registry.npmjs.org/micromark-extension-frontmatter/-/micromark-extension-frontmatter-1.1.1.tgz",
+        "integrity": "sha512-m2UH9a7n3W8VAH9JO9y01APpPKmNNNs71P0RbknEmYSaZU5Ghogv38BYO94AI5Xw6OYfxZRdHZZ2nYjs/Z+SZQ==",
+        "sha512Hex": "9b6507f5aee7dd6f15007f493bdcb4d403e93ca98d34db3bd4fd116e49c499849a654e4686882fdfc0583bde002395f0e8e61fc5945d1d96769d88ecfd9f9265",
+        "logicalOccurrences": ["node_modules/micromark-extension-frontmatter"],
+        "bytes": 9716,
+        "sha256": "c52e1db51fbb780be6b259ab8ca2df8289a0e09474a268827d7e006a6f85f853"
+      },
+      {
+        "id": "node-doc-artifact-069",
+        "url": "https://registry.npmjs.org/micromark-extension-gfm/-/micromark-extension-gfm-2.0.3.tgz",
+        "integrity": "sha512-vb9OoHqrhCmbRidQv/2+Bc6pkP0FrtlhurxZofvOEy5o8RtuuvTq+RQ1Vw5ZDNrVraQZu3HixESqbG+0iKk/MQ==",
+        "sha512Hex": "bdbf4ea07aab84299b462750bffdbe05cea990fd05aed961babc59a1fbce132e68f11b6ebaf4eaf91435570e590cdad5ada419bb71e2c444aa6c6fb488a93f31",
+        "logicalOccurrences": ["node_modules/micromark-extension-gfm"],
+        "bytes": 5846,
+        "sha256": "9e3051ec0e6be75dcaf2967ab2666f464655d5068055a8dd8e2fc605b00b79fa"
+      },
+      {
+        "id": "node-doc-artifact-070",
+        "url": "https://registry.npmjs.org/micromark-extension-gfm-autolink-literal/-/micromark-extension-gfm-autolink-literal-1.0.5.tgz",
+        "integrity": "sha512-z3wJSLrDf8kRDOh2qBtoTRD53vJ+CWIyo7uyZuxf/JAbNJjiHsOpG1y5wxk8drtv3ETAHutCu6N3thkOOgueWg==",
+        "sha512Hex": "cf7c0948bac37fc9110ce876a81b684d10f9def27e096232a3bbb266ec5ffc901b3498e21ec3a91b5cb9c3193c76bb6fdc44c01eeb42bba377b6190e3a0b9e5a",
+        "logicalOccurrences": [
+          "node_modules/micromark-extension-gfm-autolink-literal"
+        ],
+        "bytes": 12354,
+        "sha256": "128040387fddc6b0ae694501a64525cbee88fa9d83dba375df8a8bed0ac03c98"
+      },
+      {
+        "id": "node-doc-artifact-071",
+        "url": "https://registry.npmjs.org/micromark-util-encode/-/micromark-util-encode-1.1.0.tgz",
+        "integrity": "sha512-EuEzTWSTAj9PA5GOAs992GzNh2dGQO52UvAbtSOMvXTxv3Criqb6IOzJUBCmEqrrXSblJIJBbFFv6zPxpreiJw==",
+        "sha512Hex": "12e1334d6493023f4f03918e02cf7dd86ccd87674640ee7652f01bb5238cbd74f1bf70ab8aa6fa20ecc95010a612aaeb5d26e52482416c516feb33f1a6b7a227",
+        "logicalOccurrences": [
+          "node_modules/micromark-extension-gfm-autolink-literal/node_modules/micromark-util-encode",
+          "node_modules/micromark-extension-gfm-footnote/node_modules/micromark-util-encode",
+          "node_modules/micromark/node_modules/micromark-util-encode",
+          "node_modules/remark-html/node_modules/micromark-util-encode",
+          "node_modules/remark-rehype/node_modules/micromark-util-encode"
+        ],
+        "bytes": 2442,
+        "sha256": "c525c828e5e16c2f8e77a36d45ce4867cc085f583b2a1e88d1518f6dfc8e243f"
+      },
+      {
+        "id": "node-doc-artifact-072",
+        "url": "https://registry.npmjs.org/micromark-util-sanitize-uri/-/micromark-util-sanitize-uri-1.2.0.tgz",
+        "integrity": "sha512-QO4GXv0XZfWey4pYFndLUKEAktKkG5kZTdUNaTAkzbuJxn2tNBOr+QtxR2XpWaMhbImT2dPzyLrPXLlPhph34A==",
+        "sha512Hex": "40ee065efd1765f59ecb8a5816774b50a10092d2a41b99194dd50d693024cdbb89c67dad3413abf90b714765e959a3216c8993d9d3f3c8bacf5cb94f869877e0",
+        "logicalOccurrences": [
+          "node_modules/micromark-extension-gfm-autolink-literal/node_modules/micromark-util-sanitize-uri",
+          "node_modules/micromark-extension-gfm-footnote/node_modules/micromark-util-sanitize-uri",
+          "node_modules/micromark/node_modules/micromark-util-sanitize-uri",
+          "node_modules/remark-html/node_modules/micromark-util-sanitize-uri",
+          "node_modules/remark-rehype/node_modules/micromark-util-sanitize-uri"
+        ],
+        "bytes": 3786,
+        "sha256": "ec390e18f93d0e8b2906f47142492d493cef6c950c445ace956487eb80794f94"
+      },
+      {
+        "id": "node-doc-artifact-073",
+        "url": "https://registry.npmjs.org/micromark-extension-gfm-footnote/-/micromark-extension-gfm-footnote-1.1.2.tgz",
+        "integrity": "sha512-Yxn7z7SxgyGWRNa4wzf8AhYYWNrwl5q1Z8ii+CSTTIqVkmGZF1CElX2JI8g5yGoM3GAman9/PVCUFUSJ0kB/8Q==",
+        "sha512Hex": "6319fbcfb4b183219644d6b8c337fc02161858daf0979ab567c8a2f824934c8a95926199175084957d8923c839c86a0cdc60266a7f7f3d5094154489d2407ff1",
+        "logicalOccurrences": ["node_modules/micromark-extension-gfm-footnote"],
+        "bytes": 16345,
+        "sha256": "e3406692176ad640ae6beea2cde1706d4f407d9703b15bc304c13805a9040a6e"
+      },
+      {
+        "id": "node-doc-artifact-074",
+        "url": "https://registry.npmjs.org/micromark-extension-gfm-strikethrough/-/micromark-extension-gfm-strikethrough-1.0.7.tgz",
+        "integrity": "sha512-sX0FawVE1o3abGk3vRjOH50L5TTLr3b5XMqnP9YDRb34M0v5OoZhG+OHFz1OffZ9dlwgpTBKaT4XW/AsUVnSDw==",
+        "sha512Hex": "b17d056b0544d68dda6c6937bd18ce1f9d0be534cbaf76f95ccaa73fd60345bdf8334bf93a86611be387173d4e7df67d765c20a5304a693e175bf02c5159d20f",
+        "logicalOccurrences": [
+          "node_modules/micromark-extension-gfm-strikethrough"
+        ],
+        "bytes": 6834,
+        "sha256": "ad8e8f05ed7e191fb2504e794fc088409193c558556c394181fdafe634088192"
+      },
+      {
+        "id": "node-doc-artifact-075",
+        "url": "https://registry.npmjs.org/micromark-extension-gfm-table/-/micromark-extension-gfm-table-1.0.7.tgz",
+        "integrity": "sha512-3ZORTHtcSnMQEKtAOsBQ9/oHp9096pI/UvdPtN7ehKvrmZZ2+bbWhi0ln+I9drmwXMt5boocn6OlwQzNXeVeqw==",
+        "sha512Hex": "dd93914c7b5c4a731010ab403ac050f7fa07a7dd3dea923f52f74fb4dede84abeb999676f9b6d6862d259fe23d76b9b05ccb796e8a1c9fa3a5c10ccd5de55eab",
+        "logicalOccurrences": ["node_modules/micromark-extension-gfm-table"],
+        "bytes": 15856,
+        "sha256": "e84d48447bc5459d10b47a669e8e042bc95b8aad35021348dd35ae07e885201d"
+      },
+      {
+        "id": "node-doc-artifact-076",
+        "url": "https://registry.npmjs.org/micromark-extension-gfm-tagfilter/-/micromark-extension-gfm-tagfilter-1.0.2.tgz",
+        "integrity": "sha512-5XWB9GbAUSHTn8VPU8/1DBXMuKYT5uOgEjJb8gN3mW0PNW5OPHpSdojoqf+iq1xo7vWzw/P8bAHY0n6ijpXF7g==",
+        "sha512Hex": "e57581f466c05121d39fc54f53cff50c15ccb8a613e6e3a012325bf20377996d0f356e4e3c7a527688e8a9ffa2ab5c68eef5b3c3f3fc6c01d8d27ea28e95c5ee",
+        "logicalOccurrences": [
+          "node_modules/micromark-extension-gfm-tagfilter"
+        ],
+        "bytes": 4293,
+        "sha256": "b59b037bb280e9ec327e326a8366beb771a7a9eb3653f06a1d0cc280c608b42a"
+      },
+      {
+        "id": "node-doc-artifact-077",
+        "url": "https://registry.npmjs.org/micromark-extension-gfm-task-list-item/-/micromark-extension-gfm-task-list-item-1.0.5.tgz",
+        "integrity": "sha512-RMFXl2uQ0pNQy6Lun2YBYT9g9INXtWJULgbt01D/x8/6yJ2qpKyzdZD3pi6UIkzF++Da49xAelVKUeUMqd5eIQ==",
+        "sha512Hex": "44c157976b90d29350cba2ee9f6601613f60f48357b562542e06edd350ffc7cffac89daaa4acb37590f7a62e94224cc5fbe0dae3dc407a554a51e50ca9de5e21",
+        "logicalOccurrences": [
+          "node_modules/micromark-extension-gfm-task-list-item"
+        ],
+        "bytes": 6330,
+        "sha256": "904cab2543b583b012c4e49c6c9541261327476d3900590c4d96b61db3168670"
+      },
+      {
+        "id": "node-doc-artifact-078",
+        "url": "https://registry.npmjs.org/micromark-factory-destination/-/micromark-factory-destination-1.1.0.tgz",
+        "integrity": "sha512-XaNDROBgx9SgSChd69pjiGKbV+nfHGDPVYFs5dOoDd7ZnMAE+Cuu91BCpsY8RT2NP9vo/B8pds2VQNCLiu0zhg==",
+        "sha512Hex": "5da34344e060c7d4a048285debda6388629b57e9df1c60cf55816ce5d3a80dded99cc004f82baef75042a6c63c453d8d3fdbe8fc1f2976cd9540d08b8aed3386",
+        "logicalOccurrences": ["node_modules/micromark-factory-destination"],
+        "bytes": 3944,
+        "sha256": "ee7f226d7d32ea620d03f978c280bd2b4a8f2b7de4f478341601d052afae7f6b"
+      },
+      {
+        "id": "node-doc-artifact-079",
+        "url": "https://registry.npmjs.org/micromark-factory-label/-/micromark-factory-label-1.1.0.tgz",
+        "integrity": "sha512-OLtyez4vZo/1NjxGhcpDSbHQ+m0IIGnT8BoPamh+7jVlzLJBH98zzuCoUeMxvM6WsNeh8wx8cKvqLiPHEACn0w==",
+        "sha512Hex": "38bb727b3e2f668ff5363c4685ca4349b1d0fa6d082069d3f01a0f6a687eee3565ccb2411fdf33cee0a851e331bcce96b0d7a1f30c7c70abea2e23c71000a7d3",
+        "logicalOccurrences": ["node_modules/micromark-factory-label"],
+        "bytes": 3805,
+        "sha256": "ae45d5f2f48d4c1965a091ff9ee9818094ab17bbcc71840472b4d19e5c0f0d4a"
+      },
+      {
+        "id": "node-doc-artifact-080",
+        "url": "https://registry.npmjs.org/micromark-factory-space/-/micromark-factory-space-1.1.0.tgz",
+        "integrity": "sha512-cRzEj7c0OL4Mw2v6nwzttyOZe8XY/Z8G0rzmWQZTBi/jjwyw/U4uqKtUORXQrR5bAZZnbTI/feRV/R7hc4jQYQ==",
+        "sha512Hex": "711cc48fb73438be0cc36bfa9f0cedb723997bc5d8fd9f06d2bce6590653062fe38f0cb0fd4e2ea8ab543915d0ad1e5b0196676d323f7de455fd1ee17388d061",
+        "logicalOccurrences": ["node_modules/micromark-factory-space"],
+        "bytes": 3306,
+        "sha256": "2360c6dbf2988afef74bf4c0153c42a9aa4f1860fbdabd4fa8c2c9ebdc5bc8f6"
+      },
+      {
+        "id": "node-doc-artifact-081",
+        "url": "https://registry.npmjs.org/micromark-factory-title/-/micromark-factory-title-1.1.0.tgz",
+        "integrity": "sha512-J7n9R3vMmgjDOCY8NPw55jiyaQnH5kBdV2/UXCtZIpnHH3P6nHUKaH7XXEYuWwx/xUJcawa8plLBEjMPU24HzQ==",
+        "sha512Hex": "27b9fd477bcc9a08c338263c34fc39e638b26909c7e6405d576fd45c2b592299c71f73fa9c750a687ed75c462e5b0c7fc5425c6b06bca652c112330f536e07cd",
+        "logicalOccurrences": ["node_modules/micromark-factory-title"],
+        "bytes": 3623,
+        "sha256": "baf6362dcfed49901eb511531f6cc83705c0486b45285c9e290c574345713b40"
+      },
+      {
+        "id": "node-doc-artifact-082",
+        "url": "https://registry.npmjs.org/micromark-factory-whitespace/-/micromark-factory-whitespace-1.1.0.tgz",
+        "integrity": "sha512-v2WlmiymVSp5oMg+1Q0N1Lxmt6pMhIHD457whWM7/GUlEks1hI9xj5w3zbc4uuMKXGisksZk8DzP2UyGbGqNsQ==",
+        "sha512Hex": "bf65a59a2ca6552a79a0c83ed50d0dd4bc66b7aa4c8481c3e39ef085633bfc6525124b35848f718f9c37cdb738bae30a5c68ac92c664f03ccfd94c866c6a8db1",
+        "logicalOccurrences": ["node_modules/micromark-factory-whitespace"],
+        "bytes": 2987,
+        "sha256": "425e7dbbad0fc6ee4a45fea0d45427cb766a30d749e79198d9f0b784690b6b75"
+      },
+      {
+        "id": "node-doc-artifact-083",
+        "url": "https://registry.npmjs.org/micromark-util-character/-/micromark-util-character-2.0.1.tgz",
+        "integrity": "sha512-3wgnrmEAJ4T+mGXAUfMvMAbxU9RDG43XmGce4j6CwPtVxB3vfwXSZ6KhFwDzZ3mZHhmPimMAXg71veiBGzeAZw==",
+        "sha512Hex": "df0827ae61002784fe9865c051f32f3006f153d4431b8dd798671ee23e82c0fb55c41def7f05d267a2a11700f36779991e198f8a63005e0ef5bde8811b378067",
+        "logicalOccurrences": ["node_modules/micromark-util-character"],
+        "bytes": 5142,
+        "sha256": "e847f8b4bc2f36403798f24b1a239c213319c32455595f2743b6eec519e636c7"
+      },
+      {
+        "id": "node-doc-artifact-084",
+        "url": "https://registry.npmjs.org/micromark-util-chunked/-/micromark-util-chunked-1.1.0.tgz",
+        "integrity": "sha512-Ye01HXpkZPNcV6FiyoW2fGZDUw4Yc7vT0E9Sad83+bEDiCJ1uXu0S3mr8WLpsz3HaG3x2q0HM6CTuPdcZcluFQ==",
+        "sha512Hex": "61ed351d7a6464f35c57a162ca85b67c6643530e1873bbd3d04f5269df37f9b103882275b97bb44b79abf162e9b33dc7686df1daad0733a093b8f75c65c96e15",
+        "logicalOccurrences": ["node_modules/micromark-util-chunked"],
+        "bytes": 3452,
+        "sha256": "af9a0784a5680fc35c80e2a426e776a8c487f8658b9d3e3ff9b3637a2aaad0ff"
+      },
+      {
+        "id": "node-doc-artifact-085",
+        "url": "https://registry.npmjs.org/micromark-util-classify-character/-/micromark-util-classify-character-1.1.0.tgz",
+        "integrity": "sha512-SL0wLxtKSnklKSUplok1WQFoGhUdWYKggKUiqhX+Swala+BtptGCu5iPRc+xvzJ4PXE/hwM3FNXsfEVgoZsWbw==",
+        "sha512Hex": "48bd302f1b4a4a79252925299689355901681a151d5982a080a522aa15fe4b06a56be06da6d182bb988f45cfb1bf32783d713f87033714d5ec7c4560a19b166f",
+        "logicalOccurrences": [
+          "node_modules/micromark-util-classify-character"
+        ],
+        "bytes": 2878,
+        "sha256": "c93f3f1095eb6ba10c45e459453ea991103c56112cbbc7da4d039763d4c8df94"
+      },
+      {
+        "id": "node-doc-artifact-086",
+        "url": "https://registry.npmjs.org/micromark-util-combine-extensions/-/micromark-util-combine-extensions-1.1.0.tgz",
+        "integrity": "sha512-Q20sp4mfNf9yEqDL50WwuWZHUrCO4fEyeDCnMGmG5Pr0Cz15Uo7KBs6jq+dq0EgX4DPwwrh9m0X+zPV1ypFvUA==",
+        "sha512Hex": "436d2ca7899f35ff7212a0cbe745b0b9664752b08ee1f1327830a7306986e4faf40b3d79528eca06cea3abe76ad04817e033f0c2b87d9b45feccf575ca916f50",
+        "logicalOccurrences": [
+          "node_modules/micromark-util-combine-extensions"
+        ],
+        "bytes": 3311,
+        "sha256": "c45b808f4fd6e4660def25b648fe03935564abff09d50b9ac7048581e2592ed6"
+      },
+      {
+        "id": "node-doc-artifact-087",
+        "url": "https://registry.npmjs.org/micromark-util-decode-numeric-character-reference/-/micromark-util-decode-numeric-character-reference-1.1.0.tgz",
+        "integrity": "sha512-m9V0ExGv0jB1OT21mrWcuf4QhP46pH1KkfWy9ZEezqHKAxkj4mPCy3nIH1rkbdMlChLHX531eOrymlwyZIf2iw==",
+        "sha512Hex": "9bd5741311afd23075393db59ab59cb9fe1084fe3aa47d4a91f5b2f5911ecea1ca031923e263c2cb79c81f5ae46dd3250a12c75f9df578eaf29a5c326487f68b",
+        "logicalOccurrences": [
+          "node_modules/micromark-util-decode-numeric-character-reference"
+        ],
+        "bytes": 2920,
+        "sha256": "1b93670653cff5fe7ddeca92867fbe94a6e7b3a15b93247e0d35c39c675130c9"
+      },
+      {
+        "id": "node-doc-artifact-088",
+        "url": "https://registry.npmjs.org/micromark-util-decode-string/-/micromark-util-decode-string-1.1.0.tgz",
+        "integrity": "sha512-YphLGCK8gM1tG1bd54azwyrQRjCFcmgj2S2GoJDNnh4vYtnL38JS8M4gpxzOPNyHdNEpheyWXCTnnTDY3N+NVQ==",
+        "sha512Hex": "62984b1822bc80cd6d1b56dde786b3c32ad0463085726823d92d86a090cd9e1e2f62d9cbdfc252f0ce20a71cce3cdc8774d12985ec965c24e79d30d8dcdf8d55",
+        "logicalOccurrences": ["node_modules/micromark-util-decode-string"],
+        "bytes": 2847,
+        "sha256": "673727036cde2a3fd6a82cc04b0cb30ee2bf308d997e90f437f717d0b7920ccd"
+      },
+      {
+        "id": "node-doc-artifact-089",
+        "url": "https://registry.npmjs.org/micromark-util-encode/-/micromark-util-encode-2.0.0.tgz",
+        "integrity": "sha512-pS+ROfCXAGLWCOc8egcBvT0kf27GoWMqtdarNfDcjb6YLuV5cM3ioG45Ys2qOVqeqSbjaKg72vU+Wby3eddPsA==",
+        "sha512Hex": "a52f9139f0970062d608e73c7a0701bd3d247f6ec6a1632ab5d6ab35f0dc8dbe982ee57970cde2a06e3962cdaa395a9ea926e368a83bdaf53e59bcb779d74fb0",
+        "logicalOccurrences": ["node_modules/micromark-util-encode"],
+        "bytes": 2403,
+        "sha256": "77dfdb17f39adf7868ad77a4dab54e7f69adc4e0de3cef70836daea38e09ff50"
+      },
+      {
+        "id": "node-doc-artifact-090",
+        "url": "https://registry.npmjs.org/micromark-util-html-tag-name/-/micromark-util-html-tag-name-1.2.0.tgz",
+        "integrity": "sha512-VTQzcuQgFUD7yYztuQFKXT49KghjtETQ+Wv/zUjGSGBioZnkA4P1XXZPT1FHeJA6RwRXSF47yvJ1tsJdoxwO+Q==",
+        "sha512Hex": "55343372e4201540fbc98cedb9014a5d3e3d2a0863b444d0f96bffcd48c6486062a199e40383f55d764f4f514778903a470457485e3bcaf275b6c25da31c0ef9",
+        "logicalOccurrences": ["node_modules/micromark-util-html-tag-name"],
+        "bytes": 2878,
+        "sha256": "4cddd8a5eaa91034ad63be05c42f6cce11daea635a40866e2c14e6adca59dd08"
+      },
+      {
+        "id": "node-doc-artifact-091",
+        "url": "https://registry.npmjs.org/micromark-util-normalize-identifier/-/micromark-util-normalize-identifier-1.1.0.tgz",
+        "integrity": "sha512-N+w5vhqrBihhjdpM8+5Xsxy71QWqGn7HYNUvch71iV2PM7+E3uWGox1Qp90loa1ephtCxG2ftRV/Conitc6P2Q==",
+        "sha512Hex": "37ec39be1aab0628618dda4cf3ee57b31cbbd505aa1a7ec760d52f721ef5895d8f33bf84dee586a31d50a7dd25a1ad5ea61b42c46d9fb5157f0a89e2b5ce8fd9",
+        "logicalOccurrences": [
+          "node_modules/micromark-util-normalize-identifier"
+        ],
+        "bytes": 2865,
+        "sha256": "3ab60be80f226f0a3c12982cf0052006e7902ff5c896f1824705abd1eff9d23c"
+      },
+      {
+        "id": "node-doc-artifact-092",
+        "url": "https://registry.npmjs.org/micromark-util-resolve-all/-/micromark-util-resolve-all-1.1.0.tgz",
+        "integrity": "sha512-b/G6BTMSg+bX+xVCshPTPyAu2tmA0E4X98NSR7eIbeC6ycCqCeE7wjfDIgzEbkzdEVJXRtOG4FbEm/uGbCRouA==",
+        "sha512Hex": "6ff1ba05331283e6d7fb1542b213d33f202edad980d04e17f7c35247b7886de0bac9c0aa09e13bc237c3220cc46e4cdd11525746d386e056c49bfb866c2468b8",
+        "logicalOccurrences": ["node_modules/micromark-util-resolve-all"],
+        "bytes": 3102,
+        "sha256": "cc3f5a352cd0841a121cf12b9449c547bd97aa7c1bf7fb69701cf8fffd06397c"
+      },
+      {
+        "id": "node-doc-artifact-093",
+        "url": "https://registry.npmjs.org/micromark-util-sanitize-uri/-/micromark-util-sanitize-uri-2.0.0.tgz",
+        "integrity": "sha512-WhYv5UEcZrbAtlsnPuChHUAsu/iBPOVaEVsntLBIdpibO0ddy8OzavZz3iL2xVvBZOpolujSliP65Kq0/7KIYw==",
+        "sha512Hex": "5a162fe5411c66b6c0b65b273ee0a11d402cbbf8813ce55a115b27b4b04876989b3b475dcbc3b36af673de22f6c55bc164ea6896e8d29623fae4aab4ffb28863",
+        "logicalOccurrences": ["node_modules/micromark-util-sanitize-uri"],
+        "bytes": 3753,
+        "sha256": "31d554f6c5761295c1bebc8a4402ce04c10c5650acb6c1ca404438e00bd30eab"
+      },
+      {
+        "id": "node-doc-artifact-094",
+        "url": "https://registry.npmjs.org/micromark-util-subtokenize/-/micromark-util-subtokenize-1.1.0.tgz",
+        "integrity": "sha512-kUQHyzRoxvZO2PuLzMt2P/dwVsTiivCK8icYTeR+3WgbuPqfHgPPy7nFKbeqRivBvn/3N3GBiNC+JRTMSxEC7A==",
+        "sha512Hex": "914407cb3468c6f64ed8fb8bcccb763ff77056c4e28af08af227184de47edd681bb8fa9f1e03cfcbb9c529b7aa462bc1be7ff737718188d0be2514cc4b1102ec",
+        "logicalOccurrences": ["node_modules/micromark-util-subtokenize"],
+        "bytes": 4563,
+        "sha256": "11e2512f4b1312af67e002d7eae557d40f30d362f205bfc65316f2f5867673d3"
+      },
+      {
+        "id": "node-doc-artifact-095",
+        "url": "https://registry.npmjs.org/micromark-util-symbol/-/micromark-util-symbol-2.0.0.tgz",
+        "integrity": "sha512-8JZt9ElZ5kyTnO94muPxIGS8oyElRJaiJO8EzV6ZSyGQ1Is8xwl4Q45qU5UOg+bGH4AikWziz0iN4sFLWs8PGw==",
+        "sha512Hex": "f0966df44959e64c939cef789ae3f12064bca321254496a224ef04cd5e994b2190d48b3cc70978438e6a53950e83e6c61f8022916ce2cf488de2c14b5acf0f1b",
+        "logicalOccurrences": ["node_modules/micromark-util-symbol"],
+        "bytes": 10501,
+        "sha256": "ffdcca925d2e3563a4948e7db21b17626bcb8d6aaa6f9fdf30fa2f7e9d65d185"
+      },
+      {
+        "id": "node-doc-artifact-096",
+        "url": "https://registry.npmjs.org/micromark-util-types/-/micromark-util-types-2.0.0.tgz",
+        "integrity": "sha512-oNh6S2WMHWRZrmutsRmDDfkzKtxF+bc2VxLC9dvtrDIRFln627VsFP6fLMgTryGDljgLPjkrzQSDcPrjPyDJ5w==",
+        "sha512Hex": "a0d87a4b658c1d6459ae6badb119830df9332adc45f9b7365712c2f5dbedac32111659fadbb56c14fe9f2cc813af218396380b3e392bcd048370fae33f20c9e7",
+        "logicalOccurrences": ["node_modules/micromark-util-types"],
+        "bytes": 10713,
+        "sha256": "c8f07bbe913fe17a030ea424095f00661f7b015108a31f32540506628f89992a"
+      },
+      {
+        "id": "node-doc-artifact-097",
+        "url": "https://registry.npmjs.org/mri/-/mri-1.2.0.tgz",
+        "integrity": "sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==",
+        "sha512Hex": "b73cec91bddb1bc2ef606145fe60d3a6ade3a48e90f707372c49816a086ef83742b2c77515a90dec17348553661321aad5bab74607e409bddc9902e934f3aba0",
+        "logicalOccurrences": ["node_modules/mri"],
+        "bytes": 4448,
+        "sha256": "9e383990963c167baa471cc928a02eb1768ee2ffabf8117082a09b5213f9a575"
+      },
+      {
+        "id": "node-doc-artifact-098",
+        "url": "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz",
+        "integrity": "sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==",
+        "sha512Hex": "b0690fc7e56332d980e8c5f6ee80381411442c50996784b85ea7863970afebcb53fa36f7be4fd1c9a2963f43d32b25ad98b48cd1bf9a7544c4bdbb353c4687db",
+        "logicalOccurrences": ["node_modules/ms"],
+        "bytes": 3017,
+        "sha256": "1157a6e30d3ffe1b9fcaf3a39caf159f8dc981199a3380c78ddd89f73bcefb48"
+      },
+      {
+        "id": "node-doc-artifact-099",
+        "url": "https://registry.npmjs.org/nth-check/-/nth-check-2.1.1.tgz",
+        "integrity": "sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==",
+        "sha512Hex": "96a8eb8e668ea009d67cc9813cbf97367ca7661dbeb30c625f7594134b38c841c8ea6f80c2b2b65193a2988465dd7ff841cb55a92f008998c5ab2386acc5dbff",
+        "logicalOccurrences": ["node_modules/nth-check"],
+        "bytes": 8576,
+        "sha256": "45dc0a2bc34205656c0fbe8374c725c04b71b40e739b74c9fc763480c8063642"
+      },
+      {
+        "id": "node-doc-artifact-100",
+        "url": "https://registry.npmjs.org/parse5/-/parse5-7.1.2.tgz",
+        "integrity": "sha512-Czj1WaSVpaoj0wbhMzLmWD69anp2WH7FXMB9n1Sy8/ZFF9jolSQVMu1Ij5WIyGmcBmhk7EOndpO4mIpihVqAXw==",
+        "sha512Hex": "0b38f559a495a5aa23d306e13332e6583ebd6a7a76587ec55cc07d9f54b2f3f64517d8e895241532ed488f9588c8699c066864ec43a77693b8988a62855a805f",
+        "logicalOccurrences": ["node_modules/parse5"],
+        "bytes": 88312,
+        "sha256": "71be0425de25763e8e8224bb142479089bf2ffcf8cf0027a71904af4601085c5"
+      },
+      {
+        "id": "node-doc-artifact-101",
+        "url": "https://registry.npmjs.org/property-information/-/property-information-6.4.0.tgz",
+        "integrity": "sha512-9t5qARVofg2xQqKtytzt+lZ4d1Qvj8t5B8fEwXK6qOfgRLgH/b13QlgEyDh033NOS31nXeFbYv7CLUDG1CeifQ==",
+        "sha512Hex": "f6de6a0115687e0db142a2adcadcedfa567877542f8fcb7907c7c4c172baa8e7e044b807fdbd77425804c83874df734e4b7d675de15b62fec22d40c6d427a27d",
+        "logicalOccurrences": ["node_modules/property-information"],
+        "bytes": 22510,
+        "sha256": "4bd3c497471859050ff0a9a3bed3d1c92aa6fb283843800a02f9d95982b075c4"
+      },
+      {
+        "id": "node-doc-artifact-102",
+        "url": "https://registry.npmjs.org/rehype-raw/-/rehype-raw-7.0.0.tgz",
+        "integrity": "sha512-/aE8hCfKlQeA8LmyeyQvQF3eBiLRGNlfBJEvWH7ivp9sBqs7TNqBL5X3v157rM4IFETqDnIOO+z5M/biZbo9Ww==",
+        "sha512Hex": "fda13c8427ca950780f0b9b27b242f405dde0622d118d95f04912f587ee2be9f6c06ab3b4cda812f95f7bf5e7bacce081444ea0e720e3becf933f6e265ba3d5b",
+        "logicalOccurrences": ["node_modules/rehype-raw"],
+        "bytes": 5099,
+        "sha256": "59f9d5a4ae9894bf1afb0397c686f71301c4504b209866fbf7a6c898b0742b12"
+      },
+      {
+        "id": "node-doc-artifact-103",
+        "url": "https://registry.npmjs.org/rehype-stringify/-/rehype-stringify-10.0.0.tgz",
+        "integrity": "sha512-1TX1i048LooI9QoecrXy7nGFFbFSufxVRAfc6Y9YMRAi56l+oB0zP51mLSV312uRuvVLPV1opSlJmslozR1XHQ==",
+        "sha512Hex": "d535f58b4e3c2e8a08f50a1e72b5f2ee718515b152b9fc554407dce98f58311022e7a97ea01d333f9d662d2577d76b91baf54b3d5d68a529499ac968cd1d571d",
+        "logicalOccurrences": ["node_modules/rehype-stringify"],
+        "bytes": 6337,
+        "sha256": "1d640fc363315f9ab1463815484b172fa94cc29545e2e19b13a9656daa91835a"
+      },
+      {
+        "id": "node-doc-artifact-104",
+        "url": "https://registry.npmjs.org/remark-frontmatter/-/remark-frontmatter-4.0.1.tgz",
+        "integrity": "sha512-38fJrB0KnmD3E33a5jZC/5+gGAC2WKNiPw1/fdXJvijBlhA7RCsvJklrYJakS0HedninvaCYW8lQGf9C918GfA==",
+        "sha512Hex": "dfc7c9ac1d0a9e60f7137ddae63642ff9fa01800b658a3623f0d7f7dd5c9be28c196103b442b2f26496b6096a44b41de7678a7bda0985bc95019ff42f75f067c",
+        "logicalOccurrences": ["node_modules/remark-frontmatter"],
+        "bytes": 5697,
+        "sha256": "89485afd464acd3afb13c00a8c66c2fcdbc9d196129e2f32711ae4fa2d706534"
+      },
+      {
+        "id": "node-doc-artifact-105",
+        "url": "https://registry.npmjs.org/unified/-/unified-10.1.2.tgz",
+        "integrity": "sha512-pUSWAi/RAnVy1Pif2kAoeWNBa3JVrx0MId2LASj8G+7AiHWoKZNTomq6LG326T68U7/e263X6fTdcXIy7XnF7Q==",
+        "sha512Hex": "a54496022fd1027572d4f89fda40287963416b7255af1d0c21dd8b0128fc1beec08875a8299353a26aba2c6df6e93ebc53bfdedbadd7e9f4dd717232ed79c5ed",
+        "logicalOccurrences": [
+          "node_modules/remark-frontmatter/node_modules/unified",
+          "node_modules/remark-gfm/node_modules/unified",
+          "node_modules/remark-html/node_modules/unified",
+          "node_modules/remark-parse/node_modules/unified",
+          "node_modules/remark-rehype/node_modules/unified"
+        ],
+        "bytes": 20484,
+        "sha256": "fe63805f3f115a7beb343763aa89caa3dce04f42ef422dcf130671f0c471516d"
+      },
+      {
+        "id": "node-doc-artifact-106",
+        "url": "https://registry.npmjs.org/vfile/-/vfile-5.3.7.tgz",
+        "integrity": "sha512-r7qlzkgErKjobAmyNIkkSpizsFPYiUPuJb5pNW1RB4JcYVZhs4lIbVqk8XPk033CV/1z8ss5pkax8SuhGpcG8g==",
+        "sha512Hex": "afbaa5ce4804aca8e86c09b23489244a98b3b053d88943ee25be69356d5107825c615661b389486d5aa4f173e4d37dc257fd73f2cb39a646b1f12ba11a9706f2",
+        "logicalOccurrences": [
+          "node_modules/remark-frontmatter/node_modules/vfile",
+          "node_modules/remark-gfm/node_modules/vfile",
+          "node_modules/remark-html/node_modules/vfile",
+          "node_modules/remark-parse/node_modules/vfile",
+          "node_modules/remark-rehype/node_modules/vfile"
+        ],
+        "bytes": 18316,
+        "sha256": "e82955700668f1198443fe90a649c75129b822266da8ddca7d1ac897d2d7b89b"
+      },
+      {
+        "id": "node-doc-artifact-107",
+        "url": "https://registry.npmjs.org/vfile-message/-/vfile-message-3.1.4.tgz",
+        "integrity": "sha512-fa0Z6P8HUrQN4BZaX05SIVXic+7kE3b05PWAtPuYP9QLHsLKYR7/AlLW3NtOrpXRLeawpDLMsVkmk5DG0NXgWw==",
+        "sha512Hex": "7dad19e8ff0752b40de0165a5f4e522155e273eee41376f4e4f580b4fb983fd40b1ec2ca611eff0252d6dcdb4eae95d12de6b0a432ccb159269390c6d0d5e05b",
+        "logicalOccurrences": [
+          "node_modules/remark-frontmatter/node_modules/vfile-message",
+          "node_modules/remark-gfm/node_modules/vfile-message",
+          "node_modules/remark-html/node_modules/vfile-message",
+          "node_modules/remark-parse/node_modules/vfile-message",
+          "node_modules/remark-rehype/node_modules/vfile-message"
+        ],
+        "bytes": 5800,
+        "sha256": "a665cd97772300ec291c2a31ce78605f105fb9446c72e6e33635b4f2a72ecda6"
+      },
+      {
+        "id": "node-doc-artifact-108",
+        "url": "https://registry.npmjs.org/remark-gfm/-/remark-gfm-3.0.1.tgz",
+        "integrity": "sha512-lEFDoi2PICJyNrACFOfDD3JlLkuSbOa5Wd8EPt06HUdptv8Gn0bxYTdbU/XXQ3swAPkEaGxxPN9cbnMHvVu1Ig==",
+        "sha512Hex": "944143a22d8f20227236b00214e7c30f72652e4b926ce6b959df043edd3a1d4769b6ff069f46f161375b53f5d7437b3000f904686c713cdf5c6e7307bd5bb522",
+        "logicalOccurrences": ["node_modules/remark-gfm"],
+        "bytes": 6500,
+        "sha256": "ed8f3a40d79558949b1aa99490883ed54278e107cd30ec66b05df6fa93358540"
+      },
+      {
+        "id": "node-doc-artifact-109",
+        "url": "https://registry.npmjs.org/remark-html/-/remark-html-15.0.2.tgz",
+        "integrity": "sha512-/CIOI7wzHJzsh48AiuIyIe1clxVkUtreul73zcCXLub0FmnevQE0UMFDQm7NUx8/3rl/4zCshlMfqBdWScQthw==",
+        "sha512Hex": "fc220e23bc331c9cec878f008ae23221ed5c97156452dadeba5ef7cdc0972ee6f41669debd013450c143426ecd531f3fdeb97fe330ac86531fa8175649c42d87",
+        "logicalOccurrences": ["node_modules/remark-html"],
+        "bytes": 5732,
+        "sha256": "79ff2a9a6bfab38f21f2f395f555e3562220c22394fb3f3f9feee05772bcbfc7"
+      },
+      {
+        "id": "node-doc-artifact-110",
+        "url": "https://registry.npmjs.org/hast-util-from-parse5/-/hast-util-from-parse5-7.1.2.tgz",
+        "integrity": "sha512-Nz7FfPBuljzsN3tCQ4kCBKqdNhQE2l0Tn+X1ubgKBPRoiDIu1mL08Cfw4k7q71+Duyaw7DXDN+VTAp4Vh3oCOw==",
+        "sha512Hex": "373ec57cf06e963cec377b4243890204aa9d361404da5d139fe5f5b9b80a04f46888322ed662f4f027f0e24eeaef5f83bb26b0ec35c337e553029e15877a023b",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/hast-util-from-parse5"
+        ],
+        "bytes": 7737,
+        "sha256": "cb8d38ee12d852774410d3afda0f582b39f821d1e906add7695f377c632d2003"
+      },
+      {
+        "id": "node-doc-artifact-111",
+        "url": "https://registry.npmjs.org/hast-util-parse-selector/-/hast-util-parse-selector-3.1.1.tgz",
+        "integrity": "sha512-jdlwBjEexy1oGz0aJ2f4GKMaVKkA9jwjr4MjAAI22E5fM/TXVZHuS5OpONtdeIkRKqAaryQ2E9xNQxijoThSZA==",
+        "sha512Hex": "8dd97006311ec72d681b3d1a2767f818a31a54a900f63c23af8323000236d84e5f33f4d75591ee4b93a938db5d7889112aa01aaf243613dc4d4318a3a1385264",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/hast-util-parse-selector"
+        ],
+        "bytes": 4537,
+        "sha256": "249631bc6af2f9e3c7149364beb83e2cc1dffd9de9c51cd1c53c477e949459bf"
+      },
+      {
+        "id": "node-doc-artifact-112",
+        "url": "https://registry.npmjs.org/hast-util-raw/-/hast-util-raw-7.2.3.tgz",
+        "integrity": "sha512-RujVQfVsOrxzPOPSzZFiwofMArbQke6DJjnFfceiEbFh7S05CbPt0cYN+A5YeD3pso0JQk6O1aHBnx9+Pm2uqg==",
+        "sha512Hex": "46e8d541f56c3abc733ce3d2cd9162c287cc02b6d091ee832639c57dc7a211b161ed2d3909b3edd1c60df80e58783de9b28d09424e8ed5a1c19f1f7e3e6daeaa",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/hast-util-raw"
+        ],
+        "bytes": 9568,
+        "sha256": "ff4510c86ae2ffaad9e959a8495797c23b5ab175725a8f6136325bd418f5bd89"
+      },
+      {
+        "id": "node-doc-artifact-113",
+        "url": "https://registry.npmjs.org/hast-util-to-html/-/hast-util-to-html-8.0.4.tgz",
+        "integrity": "sha512-4tpQTUOr9BMjtYyNlt0P50mH7xj0Ks2xpo8M943Vykljf99HW6EzulIoJP1N3eKOSScEHzyzi9dm7/cn0RfGwA==",
+        "sha512Hex": "e2da504d43abf41323b58c8d96dd0fe74987ef18f42acdb1a68f0cf78dd5ca49637fdf475ba133ba522824fd4ddde28e4927041f3cb38bd766eff727d117c6c0",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/hast-util-to-html"
+        ],
+        "bytes": 15273,
+        "sha256": "f8ddd9fbc9e5d2a1c59bcf3b3c44f226d27a6d4a46f6ef7942d48fa9e2f78777"
+      },
+      {
+        "id": "node-doc-artifact-114",
+        "url": "https://registry.npmjs.org/hast-util-to-parse5/-/hast-util-to-parse5-7.1.0.tgz",
+        "integrity": "sha512-YNRgAJkH2Jky5ySkIqFXTQiaqcAtJyVE+D5lkN6CdtOqrnkLfGYYrEcKuHOJZlp+MwjSwuD3fZuawI+sic/RBw==",
+        "sha512Hex": "60d460009907d89932e724a422a1574d089aa9c02d272544f83e6590de8276d3aaae790b7c6618ac470ab87389665a7e3308d2c2e0f77d9b9ac08fac89cfd107",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/hast-util-to-parse5"
+        ],
+        "bytes": 6289,
+        "sha256": "d0c306d8371708038a99e66970c607d2b3a7ea568d44202a8bb9c99c7292e184"
+      },
+      {
+        "id": "node-doc-artifact-115",
+        "url": "https://registry.npmjs.org/hast-util-whitespace/-/hast-util-whitespace-2.0.1.tgz",
+        "integrity": "sha512-nAxA0v8+vXSBDt3AnRUNjyRIQ0rD+ntpbAp4LnPkumc5M9yUbSMa4XDU9Q6etY4f1Wp4bNgvc1yjiZtsTTrSng==",
+        "sha512Hex": "9c0c40d2ff3ebd74810eddc09d150d8f2448434ac3fa7b696c0a782e73e4ba673933dc946d231ae170d4f50e9eb58e1fd56a786cd82f735ca3899b6c4d3ad29e",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/hast-util-whitespace"
+        ],
+        "bytes": 4047,
+        "sha256": "849cfc85b2e35cf1e388c82b53fad1c460b3fc8c6fc217ddceae14ce0b0d39b9"
+      },
+      {
+        "id": "node-doc-artifact-116",
+        "url": "https://registry.npmjs.org/hastscript/-/hastscript-7.2.0.tgz",
+        "integrity": "sha512-TtYPq24IldU8iKoJQqvZOuhi5CyCQRAbvDOX0x1eW6rsHSxa/1i2CCiptNTotGHJ3VoHRGmqiv6/D3q113ikkw==",
+        "sha512Hex": "4ed60fab6e0895d53c88aa0942abd93ae862e42c8241101bbc3397d31d5e5baaec1d2c5aff58b60828a9b4d4e8b461c9dd5a074469aa8afebf0f7ab5d778a493",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/hastscript"
+        ],
+        "bytes": 11503,
+        "sha256": "65d9fb4014bc5ad78889c704921568ee1b5acc9c5e092e1c8b46743c90d732c5"
+      },
+      {
+        "id": "node-doc-artifact-117",
+        "url": "https://registry.npmjs.org/html-void-elements/-/html-void-elements-2.0.1.tgz",
+        "integrity": "sha512-0quDb7s97CfemeJAnW9wC0hw78MtW7NU3hqtCD75g2vFlDLt36llsYD7uB7SUzojLMP24N5IatXf7ylGXiGG9A==",
+        "sha512Hex": "d2ab836fbb3dec27de99e2409d6f700b4870efc32d5bb354de1aad083ef9836bc59432eddfa965b180fbb81ed2533a232cc3f6e0de486ad5dfef29465e2186f4",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/html-void-elements"
+        ],
+        "bytes": 3045,
+        "sha256": "1a4099b1a4356b5c3fb7bc4616339248fd28b885a599eefdf5f0eeb9827cab58"
+      },
+      {
+        "id": "node-doc-artifact-118",
+        "url": "https://registry.npmjs.org/mdast-util-to-hast/-/mdast-util-to-hast-12.3.0.tgz",
+        "integrity": "sha512-pits93r8PhnIoU4Vy9bjW39M2jJ6/tdHyja9rrot9uujkN7UTU9SDnE6WNJz/IGyQk3XHX6yNNtrBH6cQzm8Hw==",
+        "sha512Hex": "a62b6cf77afc3e19c8a14e15cbd6e35b7f4cda327afed747ca36bdaeba2df6eba390ded44d4f520e713a58d273fc81b2424dd71d7eb234db6b047e9c4339bc1f",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/mdast-util-to-hast",
+          "node_modules/remark-rehype/node_modules/mdast-util-to-hast"
+        ],
+        "bytes": 28513,
+        "sha256": "6e965000c0f87fc94b36f3efd2f091fefdfa766fe5dce941ce1ccddd143cd165"
+      },
+      {
+        "id": "node-doc-artifact-119",
+        "url": "https://registry.npmjs.org/parse5/-/parse5-6.0.1.tgz",
+        "integrity": "sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==",
+        "sha512Hex": "39f9ff0931734464d3c70a4d12cf4f3fdde05d2847713ab6e799f345848a7bc024569658eded5fa664df3b2a08be33f91c6ed9d9933b552f4f3e14065b6a4ea7",
+        "logicalOccurrences": ["node_modules/remark-html/node_modules/parse5"],
+        "bytes": 64045,
+        "sha256": "5a562a309cadd9e3a80c97d716f56f4ff7b30bc256c557fc733bdd68adf696f4"
+      },
+      {
+        "id": "node-doc-artifact-120",
+        "url": "https://registry.npmjs.org/unist-util-position/-/unist-util-position-4.0.4.tgz",
+        "integrity": "sha512-kUBE91efOWfIVBo8xzh/uZQ7p9ffYRtUbMRZBNFYwf0RK8koUMx6dGUfwylLOKmaT2cs4wSW96QoYUSXAyEtpg==",
+        "sha512Hex": "914044f7579f3967c8541a3cc7387fb9943ba7d7df611b546cc45904d158c1fd112bc92850cc7a74651fc3294b38a99a4f672ce30496f7a42861449703212da6",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/unist-util-position",
+          "node_modules/remark-rehype/node_modules/unist-util-position"
+        ],
+        "bytes": 4296,
+        "sha256": "a8d6836a8d6f1c239e879b92cd0ec2306fd9940920d21511bdbd50e733f601cf"
+      },
+      {
+        "id": "node-doc-artifact-121",
+        "url": "https://registry.npmjs.org/vfile-location/-/vfile-location-4.1.0.tgz",
+        "integrity": "sha512-YF23YMyASIIJXpktBa4vIGLJ5Gs88UB/XePgqPmTa7cDA+JeO3yclbpheQYCHjVHBn/yePzrXuygIL+xbvRYHw==",
+        "sha512Hex": "605db760cc804882095e992d05ae2f2062c9e46b3cf1407f5de3e0a8f9936bb70303e25e3b7c9c95ba617906021e3547067ff278fceb5eeca020bfb16ef4581f",
+        "logicalOccurrences": [
+          "node_modules/remark-html/node_modules/vfile-location"
+        ],
+        "bytes": 4472,
+        "sha256": "43c241c917edb93aa5d318a03b9e74b0d6283e0d5e2577c96a569e5cbc8dc679"
+      },
+      {
+        "id": "node-doc-artifact-122",
+        "url": "https://registry.npmjs.org/remark-parse/-/remark-parse-10.0.2.tgz",
+        "integrity": "sha512-3ydxgHa/ZQzG8LvC7jTXccARYDcRld3VfcgIIFs7bI6vbRSxJJmzgLEIIoYKyrfhaY+ujuWaf/PJiMZXoiCXgw==",
+        "sha512Hex": "df27718076bf650cc6f0bbc2ee34d771c01160371195ddd57dc808205b3b6c8eaf6d14b12499b380b10822860acab7e1698fae8ee59a7ff3c988c657a2209783",
+        "logicalOccurrences": ["node_modules/remark-parse"],
+        "bytes": 5891,
+        "sha256": "bef13218fb34e4fe86297c1963e9b99f432c21a7d294473e9697bed0a327e375"
+      },
+      {
+        "id": "node-doc-artifact-123",
+        "url": "https://registry.npmjs.org/remark-rehype/-/remark-rehype-10.1.0.tgz",
+        "integrity": "sha512-EFmR5zppdBp0WQeDVZ/b66CWJipB2q2VLNFMabzDSGR66Z2fQii83G5gTBbgGEnEEA0QRussvrFHxk1HWGJskw==",
+        "sha512Hex": "105991e73a69741a74590783559fdbeba096262a41daad952cd14c69bcc348647ae99d9f4228bcdc6e604c16e01849c4100d1046eb2cbeb147c64d4758626c93",
+        "logicalOccurrences": ["node_modules/remark-rehype"],
+        "bytes": 8720,
+        "sha256": "16e3a9e547574c10199eab70a8aae441928eeeb69e80c0d5394b64bd6a231d1e"
+      },
+      {
+        "id": "node-doc-artifact-124",
+        "url": "https://registry.npmjs.org/sade/-/sade-1.8.1.tgz",
+        "integrity": "sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==",
+        "sha512Hex": "c5a9770995f55e5a3f938029c0216b1d50028bd7c1a89ed5fa6c2106cb9fff520e29b072d3df057b1f966bfe5032e6f0d3da5267fbbc118f0f5a07af26c5e9d4",
+        "logicalOccurrences": ["node_modules/sade"],
+        "bytes": 10449,
+        "sha256": "73dfd051a36ea90daf95c811ba503bb5230b24f86afbe755c254736dad5d045e"
+      },
+      {
+        "id": "node-doc-artifact-125",
+        "url": "https://registry.npmjs.org/space-separated-tokens/-/space-separated-tokens-2.0.2.tgz",
+        "integrity": "sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==",
+        "sha512Hex": "3c41a5030ac6f325c65d18d6df67c66e0eba24094e0306ce6eea95a09a6ffe6460a160d07e01f5c033efb735b25123405c119293c87be796036db704cb7487d9",
+        "logicalOccurrences": ["node_modules/space-separated-tokens"],
+        "bytes": 3219,
+        "sha256": "b386cce96593975cebbb054a8e287eb15c2e004cd6ef416f7a26b5c265930b67"
+      },
+      {
+        "id": "node-doc-artifact-126",
+        "url": "https://registry.npmjs.org/stringify-entities/-/stringify-entities-4.0.3.tgz",
+        "integrity": "sha512-BP9nNHMhhfcMbiuQKCqMjhDP5yBCAxsPu4pHFFzJ6Alo9dZgY4VLDPutXqIjpRiMoKdp7Av85Gr73Q5uH9k7+g==",
+        "sha512Hex": "04ff6734732185f70c6e2b90282a8c8e10cfe72042031b0fbb8a47145cc9e80968f5d66063854b0cfbad5ea223a5188ca0a769ec0bfce46afbdd0e6e1fd93bfa",
+        "logicalOccurrences": ["node_modules/stringify-entities"],
+        "bytes": 7241,
+        "sha256": "72409b40bde330fc8a6fa2626af83911600de86672ce1da084769b1ae83d5ca8"
+      },
+      {
+        "id": "node-doc-artifact-127",
+        "url": "https://registry.npmjs.org/to-vfile/-/to-vfile-8.0.0.tgz",
+        "integrity": "sha512-IcmH1xB5576MJc9qcfEC/m/nQCFt3fzMHz45sSlgJyTWjRbKW1HAkJpuf3DgE57YzIlZcwcBZA5ENQbBo4aLkg==",
+        "sha512Hex": "21c987d71079e7be8c25cf6a71f102fe6fe740216dddfccc1f3e39b129602724d68d16ca5b51c0909a6e7f70e0139ed8cc8959730701640e443506c1a3868b92",
+        "logicalOccurrences": ["node_modules/to-vfile"],
+        "bytes": 6439,
+        "sha256": "0070da38e0c6d2b233d3e9bbcb11dc94501a16368d82d45530888a4107bdf152"
+      },
+      {
+        "id": "node-doc-artifact-128",
+        "url": "https://registry.npmjs.org/trim-lines/-/trim-lines-3.0.1.tgz",
+        "integrity": "sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==",
+        "sha512Hex": "9118fc07e60764273d91061d59f241dbfa1497dac0f7da9ba3061806daf8ba2e26672010d89a6f54177fe94d989680137ea06105348c853a60047b54d0c7f746",
+        "logicalOccurrences": ["node_modules/trim-lines"],
+        "bytes": 3243,
+        "sha256": "5880f0ef03e792c4705dc0789f2999671d4796d1d10a0110df059f25c565d63d"
+      },
+      {
+        "id": "node-doc-artifact-129",
+        "url": "https://registry.npmjs.org/trough/-/trough-2.1.0.tgz",
+        "integrity": "sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==",
+        "sha512Hex": "02a4e200e2dc8fce714bbbd0f10900578d613c3209ef55c907844252bce8ff518cd8243086424669ff4782bec13ae80c46980652ba9183f0eb0439781f8d3ef2",
+        "logicalOccurrences": ["node_modules/trough"],
+        "bytes": 5800,
+        "sha256": "d80637868491b949574ae8f714594091b7be86284f7226ac15bc0704741dbf02"
+      },
+      {
+        "id": "node-doc-artifact-130",
+        "url": "https://registry.npmjs.org/unified/-/unified-11.0.4.tgz",
+        "integrity": "sha512-apMPnyLjAX+ty4OrNap7yumyVAMlKx5IWU2wlzzUdYJO9A8f1p9m/gywF/GM2ZDFcjQPrx59Mc90KwmxsoklxQ==",
+        "sha512Hex": "6a930f9f22e3017fadcb83ab35aa7bcae9b25403252b1e48594db0973cd475824ef40f1fd69f66fe0cb017f18cd990c572340faf1e7d31cf742b09b1b28925c5",
+        "logicalOccurrences": ["node_modules/unified"],
+        "bytes": 30877,
+        "sha256": "2a8e113988e0e520b8a109713ce2ae4234ce9710655bd81370f76f20ed6a6485"
+      },
+      {
+        "id": "node-doc-artifact-131",
+        "url": "https://registry.npmjs.org/unist-util-generated/-/unist-util-generated-2.0.1.tgz",
+        "integrity": "sha512-qF72kLmPxAw0oN2fwpWIqbXAVyEqUzDHMsbtPvOudIlUzXYFIeQIuxXQCRCFh22B7cixvU0MG7m3MW8FTq/S+A==",
+        "sha512Hex": "a85ef690b98fc40c34a0dd9fc29588a9b5c057212a5330c732c6ed3ef3ae748954cd760521e408bb15d0091085876d81edc8b1bd4d0c1bb9b7316f054eafd2f8",
+        "logicalOccurrences": ["node_modules/unist-util-generated"],
+        "bytes": 3633,
+        "sha256": "41535c4819e00c1a790a442d4cbdf94b1c864a20584063a2f65dc3adbe5a03ee"
+      },
+      {
+        "id": "node-doc-artifact-132",
+        "url": "https://registry.npmjs.org/unist-util-is/-/unist-util-is-6.0.0.tgz",
+        "integrity": "sha512-2qCTHimwdxLfz+YzdGfkqNlH0tLi9xjTnHddPmJwtIG9MGsdbutfTc4P+haPD7l7Cjxf/WZj+we5qfVPvvxfYw==",
+        "sha512Hex": "daa0931e29b07712dfcfe6337467e4a8d947d2d2e2f718d39c775d3e6270b481bd306b1d6eeb5f4dce0ffa168f0fb97b0a3c5ffd6663fb07b9a9f54fbefc5f63",
+        "logicalOccurrences": ["node_modules/unist-util-is"],
+        "bytes": 6924,
+        "sha256": "36e2b27cf1e9e2096f6fdec2d0aa19890b8b1557b292e4a87e4f329fc1bd8cb8"
+      },
+      {
+        "id": "node-doc-artifact-133",
+        "url": "https://registry.npmjs.org/unist-util-position/-/unist-util-position-5.0.0.tgz",
+        "integrity": "sha512-fucsC7HjXvkB5R3kTCO7kUjRdrS0BJt3M/FPxmHMBOm8JQi2BsHAHFsy27E0EolP8rp0NzXsJ+jNPyDWvOJZPA==",
+        "sha512Hex": "7ee72c0bb1e35ef901e51de44c23bb9148d176b4b4049b7733f14fc661cc04e9bc2508b606c1c01c5b32dbb13412894ff2ba743735ec27e8cd3f20d6bce2593c",
+        "logicalOccurrences": ["node_modules/unist-util-position"],
+        "bytes": 4369,
+        "sha256": "248cefc2080c0a78817b20e88da7324e7dee7175c5df8ac0e6d193d2d381c200"
+      },
+      {
+        "id": "node-doc-artifact-134",
+        "url": "https://registry.npmjs.org/unist-util-select/-/unist-util-select-5.1.0.tgz",
+        "integrity": "sha512-4A5mfokSHG/rNQ4g7gSbdEs+H586xyd24sdJqF1IWamqrLHvYb+DH48fzxowyOhOfK7YSqX+XlCojAyuuyyT2A==",
+        "sha512Hex": "e00e667e89121c6feb350e20ee049b744b3e1f9f3ac72776e2c749a85d4859a9aaacb1ef61bf831f8f1fcf1a30c8e84e7caed84aa5fe5e50a88c0caebb2c93d8",
+        "logicalOccurrences": ["node_modules/unist-util-select"],
+        "bytes": 11880,
+        "sha256": "aa2a4388d6e2351262775eb41912aabb74706606df7e5f7cce1bfb7e6b5bdd41"
+      },
+      {
+        "id": "node-doc-artifact-135",
+        "url": "https://registry.npmjs.org/unist-util-stringify-position/-/unist-util-stringify-position-4.0.0.tgz",
+        "integrity": "sha512-0ASV06AAoKCDkS2+xw5RXJywruurpbC4JZSm7nr7MOt1ojAzvyyaO+UxZf18j8FCF6kmzCZKcAgN/yu2gm2XgQ==",
+        "sha512Hex": "d00495d3a000a0a083912dbec70e515c9cb0aeebaba5b0b82594a6ee7afb30eb75a23033bf2c9a3be53165fd7c8fc14217a926cc264a70080dff2bb6826d9781",
+        "logicalOccurrences": ["node_modules/unist-util-stringify-position"],
+        "bytes": 4353,
+        "sha256": "8692d2396f091680fe342c344acc4594534a9a811b0a9cbcfae7d71c694168b4"
+      },
+      {
+        "id": "node-doc-artifact-136",
+        "url": "https://registry.npmjs.org/unist-util-visit/-/unist-util-visit-5.0.0.tgz",
+        "integrity": "sha512-MR04uvD+07cwl/yhVuVWAtw+3GOR/knlL55Nd/wAdblk27GCVt3lqpTivy/tkJcZoNPzTwS1Y+KMojlLDhoTzg==",
+        "sha512Hex": "311d38baf0fed3b73097fca156e55602dc3edc6391fe49e52f9e4d77fc0075b964dbb18256dde5aa94e2bf2fed909719a0d3f34f04b563e28ca2394b0e1a13ce",
+        "logicalOccurrences": ["node_modules/unist-util-visit"],
+        "bytes": 8095,
+        "sha256": "522daeb363965e2be345bf044abe975d561208952deabd3cedec828997555e82"
+      },
+      {
+        "id": "node-doc-artifact-137",
+        "url": "https://registry.npmjs.org/unist-util-visit-parents/-/unist-util-visit-parents-6.0.1.tgz",
+        "integrity": "sha512-L/PqWzfTP9lzzEa6CKs0k2nARxTdZduw3zyh8d2NVBnsyvHjSX4TWse388YrrQKbvI8w20fGjGlhgT96WwKykw==",
+        "sha512Hex": "2ff3ea5b37d33fd973cc46ba08ab349369c04714dd65dbb0df3ca1f1dd8d5419eccaf1e3497e135ac7b7f3c62bad029bbc8f30db47c68c6961813f7a5b02b293",
+        "logicalOccurrences": ["node_modules/unist-util-visit-parents"],
+        "bytes": 9166,
+        "sha256": "2be2741df31183b4d9e629dff49c71214b2234e32d81c9ef7a174708f0542723"
+      },
+      {
+        "id": "node-doc-artifact-138",
+        "url": "https://registry.npmjs.org/uvu/-/uvu-0.5.6.tgz",
+        "integrity": "sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==",
+        "sha512Hex": "fa0f043517b2afc62c39ce9fbff35526cdaf15d1c19c135d7c4e3daec86b4f30d63a5531e06abb28e4b6183f1eaa1cb68fe123ab6f7e49b287f328e402a5eaa0",
+        "logicalOccurrences": ["node_modules/uvu"],
+        "bytes": 11164,
+        "sha256": "f917b3c3ffc079fb488621aa82da5a6e9c3e23d682bdcc8ed9cca6162c0ffe69"
+      },
+      {
+        "id": "node-doc-artifact-139",
+        "url": "https://registry.npmjs.org/vfile/-/vfile-6.0.1.tgz",
+        "integrity": "sha512-1bYqc7pt6NIADBJ98UiG0Bn/CHIVOoZ/IyEkqIruLg0mE1BKzkOXY2D6CSqQIcKqgadppE5lrxgWXJmXd7zZJw==",
+        "sha512Hex": "d5b62a73ba6de8d2000c127df14886d019ff0872153a867f232124a88aee2e0d2613504ace43976360fa092a9021c2aa81a769a44e65af18165c999777bcd927",
+        "logicalOccurrences": ["node_modules/vfile"],
+        "bytes": 18797,
+        "sha256": "91c147fb461f3c6263c88ac7f6d4c8fb2f16ba44c10c10e69fe4746be65d5031"
+      },
+      {
+        "id": "node-doc-artifact-140",
+        "url": "https://registry.npmjs.org/vfile-location/-/vfile-location-5.0.2.tgz",
+        "integrity": "sha512-NXPYyxyBSH7zB5U6+3uDdd6Nybz6o6/od9rk8bp9H8GR3L+cm/fC0uUTbqBmUTnMCUDslAGBOIKNfvvb+gGlDg==",
+        "sha512Hex": "3573d8cb1c81487ef307953afb7b8375de8dc9bcfaa3afe877dae4f1ba7d1fc191dcbf9c9bf7c2d2e5136ea0665139cc0940ec94018138828d7efbdbfa01a50e",
+        "logicalOccurrences": ["node_modules/vfile-location"],
+        "bytes": 4712,
+        "sha256": "1a8aeb18e45d21281b8a90fcdecc87135f900a23fe4847683fc237a86eb0321a"
+      },
+      {
+        "id": "node-doc-artifact-141",
+        "url": "https://registry.npmjs.org/vfile-message/-/vfile-message-4.0.2.tgz",
+        "integrity": "sha512-jRDZ1IMLttGj41KcZvlrYAaI3CfqpLpfpf+Mfig13viT6NKvRzWZ+lXz0Y5D60w6uJIBAOGq9mSHf0gktF0duw==",
+        "sha512Hex": "8d10d9d4830bb6d1a3e3529c66f96b600688dc27eaa4ba5fa5ff8c7e2835def893e8d2af473599fa55f3d18e43eb4c3ab8920100e1aaf664877f4824b45d1dbb",
+        "logicalOccurrences": ["node_modules/vfile-message"],
+        "bytes": 6341,
+        "sha256": "0cb85efd8579bdb866fd2fb64db3e5284f18da660b331e13bd19467e2878266c"
+      },
+      {
+        "id": "node-doc-artifact-142",
+        "url": "https://registry.npmjs.org/web-namespaces/-/web-namespaces-2.0.1.tgz",
+        "integrity": "sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==",
+        "sha512Hex": "6caaf50e488d6b692b4bbab136d76bb47026cee6061502e2435dd3b28aec753e942d390f2cabaee7e1ac1690e583a2458d44f05f60f284c3c6d9b7bcb8faeab1",
+        "logicalOccurrences": ["node_modules/web-namespaces"],
+        "bytes": 3038,
+        "sha256": "df250d9dc73331f79700486335f046bdebb09158d172754220cc546fb5149a84"
+      },
+      {
+        "id": "node-doc-artifact-143",
+        "url": "https://registry.npmjs.org/zwitch/-/zwitch-2.0.4.tgz",
+        "integrity": "sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==",
+        "sha512Hex": "6d7138711fe455984a657fd18cf11f94768a56151597ce67a14defe9bf1aa5f404735c7803ecc1c6367894df0ba8677a599ddd97df29638a3bd7b5459a83e9f8",
+        "logicalOccurrences": ["node_modules/zwitch"],
+        "bytes": 4529,
+        "sha256": "2c162e000f5fb5a816987d6f8ad7aad295203f777a5992d514ae4660778a51a4"
+      }
+    ],
+    "logicalRows": 279,
+    "artifactCount": 144,
+    "bundledNpmVersion": "10.9.2",
+    "preparationMaximumCalls": 144,
+    "preparationConcurrency": 1,
+    "commandShape": [
+      "fresh-source/out/Release/node",
+      "fresh-source/deps/npm/bin/npm-cli.js",
+      "--cache=/work/npm-cache",
+      "cache",
+      "add",
+      "one-exact-local-tgz"
+    ],
+    "originalCiSettings": "Original bundled npm ci via original Makefile; only explicit owned cache location is routed. No ignore-scripts/omit/offline/auditfalse/preferOnline override, external Node, handcraftedcacache or stamps.",
+    "missingPolicy": "Refuse original body unless all144 current local archives match the exact closed identities and whole source package/lock bindings.",
+    "packageJsonSha256": "d4a276059105259ce17ba73e032f6f0075a115a0e538bbb484b04c8b71a75c64",
+    "lockSha256": "cb95bb02f63dfac242402e7467ed14224f555c62c97ac219343a5bf8caec8ebe",
+    "lockGitBlob": "bbb562ae9c9100ffd3c35d29b6255474cb0d4249",
+    "sourceBindingPolicy": "Require cold selected-XZ tools/doc/package.json and package-lock SHA256 to equal the known manifest/lock pins. No archive-equivalence or historical-use claim.",
+    "requiresCurrentPhysicalByteVerification": true,
+    "exactArchiveBytes": 2370969
+  },
+  "limits": {
+    "cpus": 4,
+    "memoryBytes": 8589934592,
+    "pidsLimit": 1024,
+    "workSeconds": 7200,
+    "cleanupSeconds": 300,
+    "managedTtlSeconds": 7560,
+    "observedWorkBytes": 34359738368,
+    "rawOutputBytes": 268435456,
+    "capacityAdmissionRequired": true,
+    "instantaneousDiskQuotaEnforced": false
+  },
+  "originalTargetOrder": [
+    "build-addons",
+    "build-js-native-api-tests",
+    "build-node-api-tests",
+    "build-sqlite-tests",
+    "cctest",
+    "jstest",
+    "tooltest"
+  ],
+  "buildCompletionPolicy": "configure0+make-j4=0+physical fresh out/Release/node and source/tool/output bindings. Original test-only terminal/outcomes and unrun groups remain separate; no allPASS gate.",
+  "selectedOutputs": [
+    "out/Release/node",
+    "config.gypi",
+    "config.mk",
+    "config.status",
+    "icu_config.gypi"
+  ],
+  "wholeWorktreeExportRequired": false,
+  "publishedBinaryEqualityVerified": false,
+  "historicalPublisherCompilerUseVerified": false,
+  "fullCompilerSdkBootstrapClosureVerified": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "compilerDefaultLookups": [
+    {
+      "name": "gcc",
+      "role": "tool-gcc"
+    },
+    {
+      "name": "g++",
+      "role": "tool-gxx"
+    }
+  ]
+}

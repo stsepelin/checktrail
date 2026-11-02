@@ -16,13 +16,14 @@ SOURCE_FILES = [
     'scripts/producer-qualification/binutils-retention-observer.mjs', 'scripts/producer-qualification/binutils-retention-observer.py',
     'scripts/producer-qualification/binutils-image-identity.mjs', 'scripts/producer-qualification/binutils-image-identity.v1.json',
     'scripts/verify-c-producer-observation.mjs', 'scripts/producer-qualification/c-producer-export-evidence.py',
-    'scripts/producer-qualification/c-producer-replay-evidence.py', '.github/workflows/upstream-glibc.yml',
+    'scripts/producer-qualification/c-producer-replay-evidence.py', '.github/workflows/upstream-glibc.yml', '.github/workflows/upstream-glibc-u13.yml',
   'scripts/verify-binutils-retention-observer.mjs', 'scripts/acquire-binutils-inputs.mjs', 'scripts/acquire-c-producer-inputs.mjs', 'scripts/producer-qualification/binutils.v1.json', 'scripts/producer-qualification/binutils-acquisition-plan.mjs', 'scripts/producer-qualification/binutils-prepare-inputs.py', 'scripts/producer-qualification/binutils-apt-index-preparation.v1.json', 'scripts/producer-qualification/binutils-input-reacquisition.v1.json',
 ]
 SOURCE_FILES += ['scripts/producer-qualification/' + name for name in [
     'glibc-seccomp.mjs', 'glibc-seccomp.v1.json', 'glibc-seccomp-probe.py',
     'moby-28.0.4/default.json', 'moby-28.0.4/LICENSE', 'moby-28.0.4/NOTICE', 'moby-28.0.4/AUTHORS',
 ]]
+SOURCE_FILES += ['scripts/producer-qualification/gcc-job-envelope.mjs', 'scripts/producer-qualification/gcc-github-job-clock.mjs', 'scripts/producer-qualification/emsdk-metadata-values.mjs']
 SOURCE_FILES += ['scripts/producer-qualification/c-carrier-observation.mjs','scripts/observe-c-producer-carrier.mjs','.github/workflows/upstream-gcc.yml']
 
 
@@ -50,7 +51,7 @@ class BoundedWriter:
 
 
 def export(repository, inputs, common, result, startup, output, logs=(), observer_check=None, profile_name='glibc', carrier=None):
-    if profile_name not in ['gcc-12','glibc']:
+    if profile_name not in ['gcc-12','glibc','glibc-u13']:
         raise RuntimeError('Unknown selected original C profile')
     repository, inputs, common, result, startup, output = [Path(value).absolute() for value in [repository, inputs, common, result, startup, output]]
     physical(output.parent)
@@ -122,13 +123,16 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
         ('work/test-reports.json', 8 * MIB), ('work/installed-build-package-identities.txt', MIB),
     ]:
         add(result / file, 'result/' + file, maximum)
-    if profile_name == 'glibc':
+    if profile_name in ['glibc','glibc-u13']:
         for file in ['seccomp-baseline.log','seccomp-derived.log','controls/glibc-native-seccomp.json']:
             add(result / file, 'result/' + file, 65536)
     else:
         carrier = Path(carrier).absolute() if carrier is not None else Path(str(result) + '-carrier')
         for file,maximum in [('receipt.json',MIB),('controller.log',8*MIB),('owner-frame.json',16*MIB)]:
             add(carrier / file,'carrier/' + file,maximum)
+        for file,maximum in [('github-job-response.json',128*1024),('github-job-capture.json',256*1024),('.github-job-response.part',128*1024),('.github-job-capture.part',256*1024)]:
+            if os.path.lexists(carrier / file):
+                add(carrier / file,'carrier/' + file,maximum)
         for file,maximum in [('.receipt.part',MIB),('.owner-frame.part',16*MIB)]:
             if os.path.lexists(carrier / file):
                 add(carrier / file,'carrier/failed-' + file[1:],maximum)
@@ -209,7 +213,7 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--profile',choices=['gcc-12','glibc'],required=True)
+    parser.add_argument('--profile',choices=['gcc-12','glibc','glibc-u13'],required=True)
     parser.add_argument('--carrier')
     for name in ['repository', 'inputs', 'common-inputs', 'result', 'startup', 'output']:
         parser.add_argument('--' + name, required=True)

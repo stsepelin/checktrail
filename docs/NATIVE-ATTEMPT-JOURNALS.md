@@ -160,12 +160,15 @@ in force; failed archive retention is not successful completion. See
 [TASK-STORAGE.md](TASK-STORAGE.md) and the
 [durable archive measurement](measurements/durable-task-report-archives-2026-10-11.json).
 
-Complete native call migration acceptance, embedded language/VM subprocesses,
-required Windows/runtime acceptance and host-model usage remain open. The frozen
-attempt-archives profile remains pending.
-No Gate A closure, model inference or real-project field evaluation is claimed.
+The [historical hosted attempt-archive measurement](measurements/attempt-archives-hosted-2026-11-01.json)
+qualifies eight source/fresh runtime pairs at its exact recorded c25 source and
+harness. It does not certify the follow-up's changed harness, so current native
+acceptance remains `not-measured`. Upstream producer/notice closure and external
+host-model usage remain separate and open. No Gate A closure, model inference or
+real-project field evaluation is claimed.
 
 The [whole archive acceptance profile](ATTEMPT-ACCEPTANCE.md) prepares the frozen
 callbacks and exact source/fresh-package receipt reconciliation. Its current
-Mac development observation does not qualify the frozen runtime matrix or close
-the complete native call family and upstream artifact/build/license obligations.
+Mac development observation does not qualify the frozen runtime matrix. The later
+hosted measurement qualifies only its recorded source; neither measurement
+closes upstream artifact/build/license obligations.

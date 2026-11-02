@@ -43,10 +43,15 @@ installed canonical observation; missing, duplicate, skipped, changed or foreign
 bindings cannot complete a family. Every unobserved family keeps the aggregate
 incomplete.
 
-The current implementation has pure synthetic packet controls. Source/fresh native
-collection and the complete required runtime acceptance remain pending. Gate A,
-complete upstream build/license closure and independent evaluation remain open.
-No model inference, comparison trial or field evaluation is invoked here.
+The implementation has pure synthetic packet controls and [historical hosted
+evidence](measurements/consumer-impact-hosted-2026-11-01.json) qualified at the
+recorded c25 source and byte-matching hosted checkout. That evidence includes
+26 native consumer scopes and 25 producer artifacts admitted by the exact
+controller/capsule mechanism. The follow-up changes the compiled harness;
+current-head native qualification remains pending and those historical receipts
+cannot certify it. Gate A, complete upstream build/license closure and independent
+evaluation remain open. No model inference, comparison trial or field evaluation
+is invoked here.
 
 The Go/Python entry point is the final hosted controller and refuses unqualified
 family reports, even when all six native observations exist. PHP/Rust/Ruby/C/C++/JVM inner
@@ -161,3 +166,14 @@ checks its service-provided artifact digest, and the local aggregator checks eac
 capsule's canonical JSON-body digest and attempt identity against FINISH. The
 original uploaded ZIP is not retained and independently rehashed here; workflow
 metadata does not establish host or artifact-service attestation.
+
+## Historical attempt-archive acceptance
+
+The [recorded hosted attempt-archive measurement](measurements/attempt-archives-hosted-2026-11-01.json)
+binds eight runtime slots with source and fresh-installed runs, 144 direct
+profile callbacks and 718 foundation callbacks at its exact recorded source and
+compiled harness. It preserves failed, cancelled, missing and unavailable attempt
+accounting. These are attempt-archive observations; they are separate from the
+consumer controller/capsule classification above. Current-head acceptance remains
+`not-measured` until native CI binds the changed harness. No producer, notice,
+licensed-cohort or independent evaluation closure is inferred.

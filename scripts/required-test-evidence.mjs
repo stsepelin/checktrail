@@ -244,23 +244,34 @@ async function executeRequiredTests(
           ) &&
         selection.name === "assembly-fastapi installed acceptance"
           ? 300000
-          : timeoutMs === 600000 &&
-              [
-                "dotnet-generator-extensions",
-                "ruby-extensions",
-                "swift-extensions",
-                "mutation-runners",
-                "attempt-archives",
-              ].some(
-                (profile) =>
-                  selection?.file ===
-                    path.join(
-                      fileURLToPath(new URL("../dist/test/", import.meta.url)),
-                      `gate-${profile}.test.js`,
-                    ) && selection.name === `${profile} installed acceptance`,
-              )
+          : process.platform === "win32" &&
+              timeoutMs === 600000 &&
+              selection?.file ===
+                path.join(
+                  fileURLToPath(new URL("../dist/test/", import.meta.url)),
+                  "gate-consumer-impact.test.js",
+                ) &&
+              selection.name === "consumer-impact installed acceptance"
             ? 1200000
-            : timeoutMs;
+            : timeoutMs === 600000 &&
+                [
+                  "dotnet-generator-extensions",
+                  "ruby-extensions",
+                  "swift-extensions",
+                  "mutation-runners",
+                  "attempt-archives",
+                ].some(
+                  (profile) =>
+                    selection?.file ===
+                      path.join(
+                        fileURLToPath(
+                          new URL("../dist/test/", import.meta.url),
+                        ),
+                        `gate-${profile}.test.js`,
+                      ) && selection.name === `${profile} installed acceptance`,
+                )
+              ? 1200000
+              : timeoutMs;
       for await (const { type, data } of run({
         files: selection ? [selection.file] : batch,
         concurrency: selection || exclusive ? 1 : fileWorkerLimit,
@@ -348,6 +359,9 @@ async function executeRequiredTests(
           problems.push({
             name: data.name.slice(0, MAX_NAME_CHARACTERS),
             reason: "failed",
+            ...(typeof error?.cause?.code === "string"
+              ? { causeCode: error.cause.code.slice(0, 128) }
+              : {}),
             ...(typeof error?.failureType === "string"
               ? { failureType: error.failureType.slice(0, 128) }
               : {}),

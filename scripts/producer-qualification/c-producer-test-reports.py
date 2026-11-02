@@ -190,7 +190,7 @@ def write_manifest(destination, report, caller):
 
 
 def collect(profile, source, destination, caller):
-    roots = {"gcc-12": ["build", "build-cross"], "glibc": ["build-tree"]}[profile]
+    roots = {"gcc-12": ["build", "build-cross"], "glibc": ["build-tree"], "glibc-u13": ["build-tree"]}[profile]
     retained = destination.parent / "original-test-reports"
     rows, skipped_links = [], []
     total_bytes, entries = 0, 0

@@ -1,0 +1,65 @@
+name: Original Node 22.16 source build observation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "pr/upstream-producer/node-original-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: original-node-source-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-node-source-observation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        timeout-minutes: 5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        timeout-minutes: 5
+        with:
+          node-version: "24"
+      - name: Acquire the exact pinned Node source and 144 public doc archives
+        timeout-minutes: 6
+        run: node scripts/acquire-node-original-inputs.mjs "$RUNNER_TEMP/node-original-inputs"
+      - name: Deliver the exact pinned Linux x64 producer image
+        timeout-minutes: 6
+        run: docker pull --platform linux/amd64 docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c
+      - name: Freeze operator identity and the committed controller source
+        timeout-minutes: 2
+        run: node scripts/qualify-node-original-producer.mjs capture-startup "$RUNNER_TEMP/node-original-startup.json"
+      - name: Observe original configure build and test-only commands
+        timeout-minutes: 126
+        shell: bash
+        run: |
+          set +e
+          node scripts/qualify-node-original-producer.mjs run "$RUNNER_TEMP/node-original-inputs" "$RUNNER_TEMP/node-original-observation" "$RUNNER_TEMP/node-original-inputs/doc-archives.json" "$RUNNER_TEMP/node-original-startup.json" --operator-trust-execution --coordinated-heavy-slot
+          node_original_exit=$?
+          set -e
+          node scripts/qualify-node-original-producer.mjs verify-observation "$RUNNER_TEMP/node-original-observation/receipt.json" "$RUNNER_TEMP/node-original-startup.json" "$node_original_exit"
+      - name: Retain original outcomes and selected build output identities
+        if: always()
+        timeout-minutes: 8
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: original-node-source-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/node-original-inputs/inputs.json
+            ${{ runner.temp }}/node-original-inputs/doc-archives.json
+            ${{ runner.temp }}/node-original-startup.json
+            ${{ runner.temp }}/node-original-observation/receipt.json
+            ${{ runner.temp }}/node-original-observation/retention-observer.jsonl
+            ${{ runner.temp }}/node-original-observation/work/evidence/**
+            ${{ runner.temp }}/node-original-observation/work/node/preparation/source-members.jsonl
+            ${{ runner.temp }}/node-original-observation/exports/**
+            ${{ runner.temp }}/node-original-observation/exports-built/**
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0

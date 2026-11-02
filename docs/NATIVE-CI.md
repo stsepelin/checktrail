@@ -2,6 +2,14 @@
 
 ## Workflow scheduling
 
+The Windows consumer impact installed callback has a twenty-minute enclosing
+observation allowance, with ten seconds reserved after its child process deadline.
+The exact required-case observer admits the same callback allowance; other cases
+and hosts keep their existing limits. This wrapper repeats the complete installed
+cohort and foundation controls. Native validation deadlines and the Windows job's
+45-minute limit are unchanged. Known native spawn errors propagate into the
+sanitized failure diagnostic without forwarding process paths or raw messages.
+
 Independent jobs and the OS/Node matrix are allowed to run in parallel. GitHub's
 account and runner capacity decides when queued jobs receive a runner. Steps
 within an individual job remain ordered. Separate host-validation jobs in the
