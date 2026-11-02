@@ -29,6 +29,7 @@ type Response = {
   result?: Record<string, unknown>;
   error?: { code: number; message: string; data?: unknown };
 };
+const responseDiagnostics = new WeakMap<object, string[]>();
 const taskCleanups = new WeakMap<
   TestContext,
   Array<() => void | Promise<void>>
@@ -122,6 +123,13 @@ export async function wire(
   });
   lines.on("line", (line) => {
     const response = JSON.parse(line) as Response & { id?: number };
+    responseDiagnostics.set(
+      response,
+      stderr
+        .split(/\r?\n/)
+        .filter((line) => line.startsWith("[checktrail-startup-diagnostic]"))
+        .slice(-6),
+    );
     if (response.id !== undefined) {
       pending.get(response.id)?.resolve(response);
       pending.delete(response.id);
@@ -208,7 +216,17 @@ export function acknowledge(response: Response) {
 }
 export function taskId(response: Response): string {
   assert.equal(response.error, undefined);
-  assert.equal(response.result?.resultType, "task", JSON.stringify(response));
+  assert.equal(
+    response.result?.resultType,
+    "task",
+    JSON.stringify({
+      resultType: response.result?.resultType,
+      isError: response.result?.isError,
+      diagnosticMetadata: response.result?._meta,
+      startupDiagnostics: responseDiagnostics.get(response),
+      diagnosticOnlyNotAcceptance: true,
+    }),
+  );
   assert.match(String(response.result.taskId), /^[a-f0-9-]{36}$/);
   return String(response.result.taskId);
 }

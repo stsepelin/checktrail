@@ -1491,9 +1491,41 @@ function createConnectionServer(
             input.timeoutMs,
           );
           return { resultType: "task", ...taskMetadata(task) };
-        } catch {
+        } catch (error) {
+          const known = [
+            "Task execution unavailable",
+            "Task timeout is pinned at startup",
+            "Validation task worker unavailable",
+            "Validation task request unavailable",
+            "Validation task request invalid",
+            "Validation task request busy",
+            "Native execution already active",
+          ];
+          const startDiagnostic = {
+            stage: "mcp-task-start-refused",
+            code:
+              error instanceof Error && known.includes(error.message)
+                ? error.message
+                : "other",
+            startupStage:
+              error instanceof Error &&
+              "startupDiagnostic" in error &&
+              typeof error.startupDiagnostic === "string" &&
+              ["worker-startup-deadline", "worker-startup-rejected"].includes(
+                error.startupDiagnostic,
+              )
+                ? error.startupDiagnostic
+                : "other",
+            diagnosticOnlyNotAcceptance: true,
+          };
+          process.stderr.write(
+            "[checktrail-startup-diagnostic]" +
+              JSON.stringify(startDiagnostic) +
+              "\n",
+          );
           return {
             isError: true,
+            _meta: { "io.checktrail/diagnosticOnly": startDiagnostic },
             content: [
               {
                 type: "text",

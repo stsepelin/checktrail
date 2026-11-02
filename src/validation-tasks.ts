@@ -62,6 +62,19 @@ export async function openValidationTasks(
       reject: (error: Error) => void;
     }
   >();
+  const startupBegan = performance.now();
+  function diagnostic(stage: string, code?: string): void {
+    process.stderr.write(
+      "[checktrail-startup-diagnostic]" +
+        JSON.stringify({
+          stage,
+          code,
+          elapsedMs: Math.round(performance.now() - startupBegan),
+          diagnosticOnlyNotAcceptance: true,
+        }) +
+        "\n",
+    );
+  }
   function fail(): void {
     closed = true;
     for (const entry of pending.values())
@@ -102,8 +115,17 @@ export async function openValidationTasks(
     if (result.data.ok) {
       const value = result.data.value;
       entry.resolve(value && "taskId" in value ? storedTask(value) : value);
-    } else
+    } else {
+      diagnostic(
+        "worker-response-error",
+        ["unavailable", "busy", "invalid", "closed", "denied"].includes(
+          result.data.error,
+        )
+          ? result.data.error
+          : "other",
+      );
       entry.reject(new Error(`Validation task request ${result.data.error}`));
+    }
   });
   async function send(
     id: number,
@@ -123,13 +145,24 @@ export async function openValidationTasks(
       });
     });
   }
+  let startupDeadlineReached = false;
   const startupTimer = setTimeout(() => {
+    startupDeadlineReached = true;
+    diagnostic("worker-startup-deadline", "10000ms");
     fail();
     child.kill("SIGKILL");
   }, 10000);
   try {
     await send(0, { options });
+    diagnostic("worker-ready");
   } catch (error) {
+    diagnostic("worker-startup-rejected");
+    if (error instanceof Error)
+      Object.assign(error, {
+        startupDiagnostic: startupDeadlineReached
+          ? "worker-startup-deadline"
+          : "worker-startup-rejected",
+      });
     if (child.connected) child.disconnect();
     await exited;
     throw error;
