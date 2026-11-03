@@ -18,6 +18,7 @@ import { fixtureGit } from "./git-fixture.js";
 const {
   commandKey,
   validationPhases,
+  validationTimeoutMs,
   validatePhases,
   runValidationLanes,
   runCiCommand,
@@ -47,6 +48,58 @@ async function repository(t: TestContext, scripts: Record<string, string>) {
   return { root: await realpath(root), outer };
 }
 const prelude = `import assert from 'node:assert/strict';import fs from 'node:fs/promises';import path from 'node:path';import{setTimeout as delay}from'node:timers/promises';const file='dist/src/subject.txt';console.log(JSON.stringify({root:process.cwd(),tmp:process.env.TMPDIR}));`;
+
+test("CI lane budget admits its exact finite bound and keeps time outside the lanes for the host job", async (t) => {
+  const workflow = parse(
+    await readFile(
+      new URL("../../.github/workflows/ci.yml", import.meta.url),
+      "utf8",
+    ),
+  );
+  const jobTimeoutMs =
+    workflow.jobs["host-validation"]["timeout-minutes"] * 60 * 1000;
+  assert.equal(validationTimeoutMs, 60 * 60 * 1000);
+  assert.ok(jobTimeoutMs - validationTimeoutMs >= 15 * 60 * 1000);
+  const { root } = await repository(t, { "read.mjs": prelude });
+  const phases = {
+    mutations: [task("scripts/read.mjs", ["mutations"])],
+    packages: [task("scripts/read.mjs", ["packages"])],
+  };
+  for (const options of [{}, { timeoutMs: validationTimeoutMs }]) {
+    const result = await runValidationLanes(root, { phases, ...options });
+    assert.equal(result.timeoutMs, validationTimeoutMs);
+    assert.equal(result.complete, true);
+    assert.equal(result.cleanupComplete, true);
+    assert.equal(result.sourceStable, true);
+    assert.equal(result.mutationsRestored, true);
+    assert.equal(result.maxConcurrentCommands, 2);
+    assert.deepEqual(
+      result.lanes.map((lane: { commands: { state: string }[] }) =>
+        lane.commands.map((command) => command.state),
+      ),
+      [["passed"], ["passed"]],
+    );
+  }
+  const retained = await readdir(path.join(root, ".checktrail/ci-lanes"));
+  for (const timeoutMs of [
+    validationTimeoutMs + 1,
+    jobTimeoutMs,
+    Infinity,
+    NaN,
+    0,
+    -1,
+    0.5,
+  ])
+    await assert.rejects(
+      runValidationLanes(root, { phases, timeoutMs }),
+      /CI lane timeout must be bounded/,
+    );
+  assert.deepEqual(
+    await readdir(path.join(root, ".checktrail/ci-lanes")),
+    retained,
+    "Invalid budgets must fail before creating a run or admitting commands",
+  );
+});
 
 test("consumer impact retains its guard condition and fresh installed checks on every host matrix variant after cache preparation", async () => {
   const workflow = parse(
