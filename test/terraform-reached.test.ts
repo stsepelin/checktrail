@@ -1,4 +1,10 @@
-import { readNativeProcCommand } from "./native-process-observer.js";
+import {
+  readNativeProcCommand,
+  readNativeProcParentPhase,
+  nativeProcessDiagnostic,
+  type NativeParentExpected,
+} from "./native-process-observer.js";
+import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
@@ -9,6 +15,7 @@ import {
   rm,
   writeFile,
   access,
+  realpath,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -18,7 +25,11 @@ import {
   terraformNative,
   terraformRewrite,
 } from "./terraform-fixture.js";
-async function reached(owner: string, version = false) {
+async function reached(
+  owner: string,
+  expected: NativeParentExpected,
+  version = false,
+) {
   const deadline = Date.now() + 30000;
   while (Date.now() < deadline) {
     for (const pid of await readdir("/proc")) {
@@ -40,7 +51,16 @@ async function reached(owner: string, version = false) {
         assert.ok(workspace.endsWith("/native"));
         const raw = await readFile(`/proc/${pid}/stat`, "utf8");
         const stat = raw.slice(raw.lastIndexOf(")") + 2).split(" ");
-        return { pid: Number(pid), start: stat[19]!, workspace };
+        const observedAt = performance.now();
+        const parent = await readNativeProcParentPhase(pid, expected);
+        return {
+          pid: Number(pid),
+          start: stat[19]!,
+          workspace,
+          observedAt,
+          parentObservedAt: performance.now(),
+          parent,
+        };
       } catch (error) {
         if (
           (error as NodeJS.ErrnoException).code !== "ENOENT" &&
@@ -59,6 +79,25 @@ async function exercise(
   mode: "cancel" | "source" | "document" | "version",
 ) {
   const root = await terraformFixture(t);
+  const harnessRoot = fileURLToPath(new URL("../../", import.meta.url));
+  const expected = {
+    nodeInvocation: process.execPath,
+    nodeExecutable: await realpath(process.execPath),
+    runner: await realpath(
+      fileURLToPath(new URL("../src/terraform-runner.js", import.meta.url)),
+    ),
+    root: await realpath(root),
+  };
+  const harnessForm =
+    expected.runner === path.join(harnessRoot, "dist/src/terraform-runner.js")
+      ? "source"
+      : expected.runner ===
+          path.join(
+            harnessRoot,
+            "node_modules/@stsepelin/checktrail/dist/src/terraform-runner.js",
+          )
+        ? "installed"
+        : "unrecognized";
   for (const file of ["main.tf.json", "support.tf.json"])
     await terraformRewrite(root, file, (p) => {
       const locals = (p.locals ?? {}) as Record<string, string>;
@@ -84,19 +123,32 @@ async function exercise(
     previous = process.env.TMPDIR,
     controller = new AbortController();
   process.env.TMPDIR = owner;
+  const started = performance.now();
+  let settledAt: number | undefined;
+  let abortedAt: number | undefined;
   const running = validate(root, {
     trusted: true,
     timeoutMs: 120000,
     signal: controller.signal,
   });
+  void running.then(
+    () => {
+      settledAt = performance.now();
+    },
+    () => {
+      settledAt = performance.now();
+    },
+  );
   try {
-    const native = await reached(owner, mode === "version");
+    const native = await reached(owner, expected, mode === "version");
     assert.ok(
       native.pid > 0 && native.start.length > 0,
       "Real pinned Terraform validation reached before steering execution",
     );
-    if (mode === "cancel" || mode === "version") controller.abort();
-    else {
+    if (mode === "cancel" || mode === "version") {
+      abortedAt = performance.now();
+      controller.abort();
+    } else {
       const file =
         mode === "source"
           ? path.join(root, "main.tf.json")
@@ -104,14 +156,53 @@ async function exercise(
       await writeFile(file, (await readFile(file, "utf8")) + "\n");
     }
     const report = await running;
+    const diagnostic = () =>
+      "Bounded Terraform cancellation diagnostic " +
+      JSON.stringify({
+        schemaVersion: 1,
+        mode,
+        harnessForm,
+        observedParent: native.parent,
+        nativeObservedMs: Math.round(native.observedAt - started),
+        parentClassificationMs: Math.round(
+          native.parentObservedAt - native.observedAt,
+        ),
+        abortRequestedMs:
+          abortedAt === undefined ? null : Math.round(abortedAt - started),
+        settledMs:
+          settledAt === undefined ? null : Math.round(settledAt - started),
+        settledBeforeAbort:
+          abortedAt !== undefined &&
+          settledAt !== undefined &&
+          settledAt <= abortedAt,
+        outcome: report.outcome,
+        toolStatus:
+          report.checks[0]?.tools?.find((tool) => tool.name === "terraform")
+            ?.status ?? "absent",
+        toolProcess: nativeProcessDiagnostic(
+          report.checks[0]?.tools?.find((tool) => tool.name === "terraform")
+            ?.process,
+        ),
+        checkProcesses:
+          report.checks[0]?.processes
+            .slice(0, 2)
+            .map(nativeProcessDiagnostic) ?? [],
+        checkProcessCount: report.checks[0]?.processes.length ?? 0,
+      });
+    if (mode === "cancel" || mode === "version")
+      process.stderr.write(diagnostic() + "\n");
     assert.equal(report.outcome, "incomplete", JSON.stringify(report.checks));
     if (mode === "cancel")
-      assert.ok(report.checks[0]!.processes.some((p) => p.cancelled));
+      assert.ok(
+        report.checks[0]!.processes.some((p) => p.cancelled),
+        diagnostic(),
+      );
     else if (mode === "version")
       assert.ok(
         report.checks[0]!.tools?.some(
           (t) => t.name === "terraform" && t.process?.cancelled,
         ),
+        diagnostic(),
       );
     else assert.equal(report.sourceChanged, mode === "source");
     await assert.rejects(access(native.workspace), { code: "ENOENT" });

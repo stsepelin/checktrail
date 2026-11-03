@@ -87,6 +87,170 @@ const fingerprint = async (file) => {
 const sameFingerprint = (left, right) =>
   JSON.stringify(left) === JSON.stringify(right);
 
+// Auxiliary Terraform experiment only: fixed authored fixture data, never raw
+// test stderr. Keep the acceptance report and terminal accounting unchanged.
+const TERRAFORM_DIAGNOSTIC_PREFIX =
+  "Bounded Terraform cancellation diagnostic ";
+const exactDiagnosticKeys = (value, keys) =>
+  value !== null &&
+  typeof value === "object" &&
+  !Array.isArray(value) &&
+  Object.keys(value).length === keys.length &&
+  keys.every((key) => Object.hasOwn(value, key));
+const diagnosticInteger = (value, maximum = 1200000, minimum = 0) =>
+  Number.isSafeInteger(value) && value >= minimum && value <= maximum;
+const diagnosticSignals = new Set([
+  "SIGABRT",
+  "SIGALRM",
+  "SIGBUS",
+  "SIGCHLD",
+  "SIGCONT",
+  "SIGFPE",
+  "SIGHUP",
+  "SIGILL",
+  "SIGINT",
+  "SIGIO",
+  "SIGKILL",
+  "SIGPIPE",
+  "SIGPOLL",
+  "SIGPROF",
+  "SIGPWR",
+  "SIGQUIT",
+  "SIGSEGV",
+  "SIGSTOP",
+  "SIGSYS",
+  "SIGTERM",
+  "SIGTRAP",
+  "SIGTSTP",
+  "SIGTTIN",
+  "SIGTTOU",
+  "SIGURG",
+  "SIGUSR1",
+  "SIGUSR2",
+  "SIGVTALRM",
+  "SIGWINCH",
+  "SIGXCPU",
+  "SIGXFSZ",
+]);
+function copiedTerraformProcess(value) {
+  if (
+    !exactDiagnosticKeys(value, [
+      "present",
+      "exitCode",
+      "signal",
+      "cancelled",
+      "timedOut",
+    ]) ||
+    typeof value.present !== "boolean" ||
+    typeof value.cancelled !== "boolean" ||
+    typeof value.timedOut !== "boolean" ||
+    !(
+      value.exitCode === null ||
+      diagnosticInteger(value.exitCode, 65535, -65536)
+    ) ||
+    !(value.signal === null || diagnosticSignals.has(value.signal))
+  )
+    return null;
+  return {
+    present: value.present,
+    exitCode: value.exitCode,
+    signal: value.signal,
+    cancelled: value.cancelled,
+    timedOut: value.timedOut,
+  };
+}
+function copiedTerraformDiagnostic(line) {
+  if (
+    !line.startsWith(TERRAFORM_DIAGNOSTIC_PREFIX) ||
+    Buffer.byteLength(line) > 4096
+  )
+    return null;
+  try {
+    const value = JSON.parse(line.slice(TERRAFORM_DIAGNOSTIC_PREFIX.length));
+    if (
+      !exactDiagnosticKeys(value, [
+        "schemaVersion",
+        "mode",
+        "harnessForm",
+        "observedParent",
+        "nativeObservedMs",
+        "parentClassificationMs",
+        "abortRequestedMs",
+        "settledMs",
+        "settledBeforeAbort",
+        "outcome",
+        "toolStatus",
+        "toolProcess",
+        "checkProcesses",
+        "checkProcessCount",
+      ]) ||
+      value.schemaVersion !== 1 ||
+      !["cancel", "version"].includes(value.mode) ||
+      !["source", "installed", "unrecognized"].includes(value.harnessForm) ||
+      !["passed", "failed", "incomplete"].includes(value.outcome) ||
+      !["identified", "unavailable", "inconclusive", "absent"].includes(
+        value.toolStatus,
+      ) ||
+      typeof value.settledBeforeAbort !== "boolean" ||
+      !diagnosticInteger(value.nativeObservedMs) ||
+      !diagnosticInteger(value.parentClassificationMs) ||
+      !(
+        value.abortRequestedMs === null ||
+        diagnosticInteger(value.abortRequestedMs)
+      ) ||
+      !(value.settledMs === null || diagnosticInteger(value.settledMs)) ||
+      !diagnosticInteger(value.checkProcessCount, 256) ||
+      !Array.isArray(value.checkProcesses) ||
+      value.checkProcesses.length > 2
+    )
+      return null;
+    const parent = value.observedParent;
+    if (
+      !exactDiagnosticKeys(parent, ["phase", "nativePid", "parentPid"]) ||
+      ![
+        "tool-version-probe",
+        "validation-command",
+        "unrecognized-parent",
+        "identity-changed",
+        "unavailable",
+        "read-error",
+      ].includes(parent.phase) ||
+      !diagnosticInteger(parent.nativePid, 2147483647, 1) ||
+      !(
+        parent.parentPid === null ||
+        diagnosticInteger(parent.parentPid, 2147483647, 1)
+      )
+    )
+      return null;
+    const toolProcess = copiedTerraformProcess(value.toolProcess);
+    const checkProcesses = value.checkProcesses.map(copiedTerraformProcess);
+    if (toolProcess === null || checkProcesses.some((item) => item === null))
+      return null;
+    return {
+      schemaVersion: 1,
+      mode: value.mode,
+      harnessForm: value.harnessForm,
+      observedParent: {
+        phase: parent.phase,
+        nativePid: parent.nativePid,
+        parentPid: parent.parentPid,
+      },
+      nativeObservedMs: value.nativeObservedMs,
+      parentClassificationMs: value.parentClassificationMs,
+      abortRequestedMs: value.abortRequestedMs,
+      settledMs: value.settledMs,
+      settledBeforeAbort: value.settledBeforeAbort,
+      outcome: value.outcome,
+      toolStatus: value.toolStatus,
+      toolProcess,
+      checkProcesses,
+      checkProcessCount: value.checkProcessCount,
+    };
+  } catch {
+    return null;
+  }
+}
+
 async function executeRequiredTests(
   expected,
   {
@@ -139,6 +303,11 @@ async function executeRequiredTests(
   const fileIds = new Map(
     files.map((file, index) => [file, "file-" + (index + 1)]),
   );
+  const terraformDiagnosticFixture = path.join(
+    fileURLToPath(new URL("../dist/test/", import.meta.url)),
+    "terraform-reached.test.js",
+  );
+  const terraformDiagnosticModes = new Set();
   // These native files repeat loader/build or Tasks fresh-install controls. Give
   // each complete file an exclusive slot after the shared full-suite wave; named
   // selection would omit unlisted callbacks. All existing deadlines still apply.
@@ -289,6 +458,28 @@ async function executeRequiredTests(
             }
           : {}),
       })) {
+        if (
+          type === "test:stderr" &&
+          requiredFiles.has(terraformDiagnosticFixture) &&
+          data.file === terraformDiagnosticFixture &&
+          typeof data.message === "string" &&
+          data.message.length <= 8194 &&
+          Buffer.byteLength(data.message) <= 8194 &&
+          data.message.endsWith("\n")
+        ) {
+          for (const line of data.message.slice(0, -1).split("\n")) {
+            const diagnostic = copiedTerraformDiagnostic(line);
+            if (
+              diagnostic !== null &&
+              !terraformDiagnosticModes.has(diagnostic.mode)
+            ) {
+              terraformDiagnosticModes.add(diagnostic.mode);
+              process.stderr.write(
+                TERRAFORM_DIAGNOSTIC_PREFIX + JSON.stringify(diagnostic) + "\n",
+              );
+            }
+          }
+        }
         if (type !== "test:pass" && type !== "test:fail") continue;
         terminalEventCount++;
         const suite = data.details?.type === "suite";
