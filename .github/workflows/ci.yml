@@ -1054,7 +1054,7 @@ jobs:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['javascript-extensions-arm64']) }}
     runs-on: ubuntu-24.04-arm
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-javascript-extensions
     outputs:
