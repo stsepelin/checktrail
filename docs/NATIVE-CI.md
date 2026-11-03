@@ -130,6 +130,20 @@ inventory controls to pass; an omitted or skipped required control fails.
 It executes every callback in the selected files, not only the named controls.
 Its receipt identifies the selected files and records skips separately.
 
+The exact C producer inputs enumerated in `cProducerSharedBoundary` in
+`scripts/ci-impact.mjs` select complete C, GCC/GLIBC policy, Go bootstrap and
+Node original producer regression files. The Go and Node controllers capture the
+C caller identity and include its controller, profile and catalog in their source
+inventories, so their regressions belong to this selection as well. Any declared
+native consumers are still selected. This finite list does not classify new or
+adjacent producer filenames; those retain full verification. The producer scripts
+and test sources are development files excluded from the published package.
+`docs/C-PRODUCER-QUALIFICATION.md` is included in that package and retains the
+existing Markdown routing. Shared type checking, lint, build, formatting and
+dependency/grammar audits remain mandatory. Full package/install and mutation
+checks retain their existing full-mode condition; an affected run does not
+qualify those omitted checks or upstream builds.
+
 The exact `docs/measurements/artifact-identities-2026-10-21/` namespace
 contains retained observation data. Changes there select the shared artifact
 audit and its complete regression file, including every named

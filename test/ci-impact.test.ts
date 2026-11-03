@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { fixture } from "./helpers.js";
 const {
   buildNativeInputs,
+  cProducerSharedBoundary,
   acceptFullBaseline,
   requestFullBaselineJobs,
   requestFullBaselineChecks,
@@ -241,6 +242,169 @@ test("CI selection unions exact native owners and keeps unclassified near misses
   assert.equal(plan(["README.md", "docs/NATIVE-CI.md"]).mode, "affected");
   assert.deepEqual(selected(plan(["README.md", "docs/NATIVE-CI.md"])), []);
 });
+const cProducerBoundaryInputs = [
+  "scripts/producer-qualification/c-producer-profile.mjs",
+  "scripts/producer-qualification/c-producer-profiles.v1.json",
+  "scripts/producer-qualification/c-producer-replay-evidence.py",
+  "scripts/producer-qualification/c-producer-test-reports.py",
+  "scripts/qualify-c-producer.mjs",
+  "test/c-producer-evidence.test.ts",
+  "test/c-producer-gcc-evidence.test.ts",
+  "test/c-producer-qualification.test.ts",
+];
+const cProducerRegressionFiles = [
+  "test/c-producer-evidence.test.ts",
+  "test/c-producer-gcc-evidence.test.ts",
+  "test/c-producer-qualification.test.ts",
+  "test/c-producer-replay-batch.test.ts",
+  "test/c-producer-u13.test.ts",
+  "test/gcc-job-envelope.test.ts",
+  "test/glibc-seccomp.test.ts",
+  "test/go-bootstrap-producer.test.ts",
+  "test/go-bootstrap-transport.test.ts",
+  "test/node-original-producer.test.ts",
+  "test/node-original-transport-posix.test.ts",
+];
+test("CI exact C producer inputs select every complete C Go and Node caller regression without qualifying omitted jobs", () => {
+  assert.deepEqual(cProducerSharedBoundary.files, cProducerBoundaryInputs);
+  assert.deepEqual(cProducerSharedBoundary.testFiles, cProducerRegressionFiles);
+  const mandatory = plan(["README.md"]).sharedTestFiles;
+  const expected = [
+    ...mandatory,
+    ...cProducerRegressionFiles.map(
+      (file) => "dist/" + file.replace(/\.ts$/, ".js"),
+    ),
+  ].sort();
+  for (const file of cProducerBoundaryInputs) {
+    const actual = plan([file], { baseline: null });
+    assert.equal(actual.mode, "affected", file);
+    assert.deepEqual(selected(actual), inputs[file] ?? [], file);
+    assert.deepEqual(actual.sharedTestFiles, expected, file);
+    const needs = Object.fromEntries(
+      ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
+        id,
+        {
+          result:
+            ["ci-plan", "checks"].includes(id) || actual.selected[id]
+              ? "success"
+              : "skipped",
+        },
+      ]),
+    );
+    const receipt = requireCiCompletion(actual, needs);
+    assert.equal(receipt.fullRevisionVerification, false);
+    assert.equal(receipt.omittedJobsQualified, false);
+  }
+});
+test("CI C producer boundary preserves native owner unions and validates contracts before any allowance", () => {
+  const file = cProducerBoundaryInputs[0]!;
+  const actual = plan([file, "test/gate-scala-extensions.test.ts"], {
+    inputs: { ...inputs, [file]: ["csharp-context-arm64"] },
+  });
+  assert.deepEqual(selected(actual), [
+    "csharp-context-arm64",
+    "scala-extensions-arm64",
+  ]);
+  for (const source of [
+    ...cProducerRegressionFiles,
+    "test/gate-context-csharp.test.ts",
+    "test/gate-scala-extensions.test.ts",
+  ])
+    assert.ok(
+      actual.sharedTestFiles.includes("dist/" + source.replace(/\.ts$/, ".js")),
+      source,
+    );
+  for (const owners of [
+    ["unknown-job"],
+    [],
+    ["csharp-context-arm64", "csharp-context-arm64"],
+  ])
+    assert.throws(() =>
+      plan([file], { inputs: { ...inputs, [file]: owners } }),
+    );
+  for (const changed of [
+    ...cProducerBoundaryInputs.flatMap((file) => [
+      [file + ".backup"],
+      ["adjacent/" + file],
+    ]),
+    ["scripts/producer-qualification/c-producer-new.py"],
+    ["scripts/producer-qualification/c-producer-profile-extra.mjs"],
+    ["test/c-producer-new.test.ts"],
+    [file, "scripts/ci-impact.mjs"],
+    [file, "package.json"],
+    [file, "schemas/report.schema.json"],
+  ])
+    assert.equal(plan(changed).mode, "full", JSON.stringify(changed));
+  for (const options of [
+    { contractCurrent: false },
+    { eventName: "push" },
+    { eventName: "workflow_dispatch" },
+    { eventName: "schedule" },
+  ])
+    assert.equal(plan([file], options).mode, "full");
+});
+test("CI C producer shared regressions bind the actual Go Node identity source inventories and package boundary", async () => {
+  const identities = [
+    "scripts/qualify-c-producer.mjs",
+    "scripts/producer-qualification/c-producer-profile.mjs",
+    "scripts/producer-qualification/c-producer-profiles.v1.json",
+  ];
+  for (const [controller, field, regressionFiles] of [
+    [
+      "scripts/qualify-go-bootstrap-producer.mjs",
+      "goBootstrapSourceFiles",
+      [
+        "test/go-bootstrap-producer.test.ts",
+        "test/go-bootstrap-transport.test.ts",
+      ],
+    ],
+    [
+      "scripts/qualify-node-original-producer.mjs",
+      "nodeOriginalSourceFiles",
+      [
+        "test/node-original-producer.test.ts",
+        "test/node-original-transport-posix.test.ts",
+      ],
+    ],
+  ] as const) {
+    const text = await readFile(new URL(controller, root), "utf8");
+    assert.match(
+      text,
+      /import\s*\{\s*captureCProducerCallerIdentity\s*\}\s*from\s*"\.\/qualify-c-producer\.mjs"/,
+    );
+    const api = await import(new URL(controller, root).href);
+    for (const file of identities)
+      assert.ok(api[field].includes(file), controller + ": " + file);
+    for (const file of regressionFiles) {
+      assert.ok(cProducerSharedBoundary.testFiles.includes(file));
+      // These complete regression files import the actual controller; matching
+      // a family label alone would not establish the reverse consumer edge.
+      assert.ok(
+        (await readFile(new URL(file, root), "utf8")).includes(
+          controller.slice("scripts/".length),
+        ),
+        file,
+      );
+    }
+  }
+  for (const file of cProducerRegressionFiles)
+    assert.ok((await readFile(new URL(file, root), "utf8")).length > 0, file);
+  const manifest = JSON.parse(
+    await readFile(new URL("package.json", root), "utf8"),
+  );
+  assert.ok(
+    manifest.files.includes("docs"),
+    "Markdown documentation is packaged",
+  );
+  for (const file of cProducerBoundaryInputs)
+    assert.ok(
+      !manifest.files.some(
+        (member: string) => file === member || file.startsWith(member + "/"),
+      ),
+      file,
+    );
+});
+
 test("CI native input traversal retains exact documentation data consumers", async () => {
   const file =
     "docs/measurements/artifact-identities-2026-10-21/native-input.json";
