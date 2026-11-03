@@ -62,7 +62,7 @@ export function selectTasksRuntimeRequirements(profiles, selected, platform) {
     ...profiles["mcp-tasks"].map((row) => ({ ...row })),
     {
       file: "dist/test/tasks-runtime-harness.test.js",
-      name: "Tasks installed wrapper selects a bounded Windows aggregate allowance while preserving POSIX deadlines and failed child status",
+      name: "Tasks installed wrapper bounds Windows and macOS observation while preserving Linux deadlines and failed child status",
     },
     {
       file: "dist/test/tasks-runtime-harness.test.js",

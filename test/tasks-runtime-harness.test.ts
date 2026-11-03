@@ -12,13 +12,13 @@ import {
 } from "./tasks-wire-fixture.js";
 import { processSnapshot, type ProcessIdentity } from "../src/process-tree.js";
 
-test("Tasks installed wrapper selects a bounded Windows aggregate allowance while preserving POSIX deadlines and failed child status", async (t) => {
+test("Tasks installed wrapper bounds Windows and macOS observation while preserving Linux deadlines and failed child status", async (t) => {
   const root = await fixture(t, {
     "observe.mjs": `import {registerHooks} from 'node:module';
-const target=process.argv[2],platform=process.argv[3];
+const target=process.argv[2],platform=process.argv[3],scenario=process.argv[4];
 globalThis.originalBudgetCalls=[];globalThis.originalBudgetOutcomes=[];
 const testStub="export function test(name,options,callback){if(name==='tasks-matrix installed acceptance'){globalThis.originalBudgetCalls.push({kind:'callback',timeout:options.timeout});globalThis.originalBudgetOutcomes.push(Promise.resolve().then(callback).then(()=>({outcome:'passed'}),error=>({outcome:'failed',message:error.message})));}}";
-const childStub="export function spawnSync(executable,args,options){globalThis.originalBudgetCalls.push({kind:'child',executable,args,timeout:options.timeout,maxBuffer:options.maxBuffer});return{status:7,stdout:'',stderr:'synthetic package process refusal'};}";
+const childStub="const scenario="+JSON.stringify(scenario)+";export function spawnSync(executable,args,options){globalThis.originalBudgetCalls.push({kind:'child',executable,args,timeout:options.timeout,maxBuffer:options.maxBuffer});return scenario==='timeout'?{error:Object.assign(new Error('synthetic deadline'),{code:'ETIMEDOUT'}),status:null,signal:'SIGTERM',stdout:'synthetic stdout λ',stderr:'synthetic stderr 😀'}:{status:7,signal:null,stdout:'',stderr:'synthetic package process refusal'};}";
 const unused="export const passingTest='synthetic';export const slow='synthetic',taskExecutionTimeoutMs=5000;export function createPlan(){throw Error('unexpected engine execution');}export const validate=createPlan,openTaskStore=createPlan,setup=createPlan,wire=createPlan,taskId=createPlan,terminal=createPlan,report=createPlan,started=createPlan,stopped=createPlan,acknowledge=createPlan;";
 registerHooks({resolve(specifier,context,next){if(context.parentURL===target){const stub=specifier==='node:test'?testStub:specifier==='node:child_process'?childStub:specifier.startsWith('.')?unused:null;if(stub)return{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true};}return next(specifier,context);}});
 Object.defineProperty(process,'platform',{value:platform});
@@ -32,49 +32,72 @@ console.log(JSON.stringify({calls:globalThis.originalBudgetCalls,outcomes}));`,
   delete env.CHECKTRAIL_TASKS_MATRIX_INSTALLED;
   env.CHECKTRAIL_TASKS_RUNTIME_SLOT = "original-selected-slot";
   for (const platform of ["win32", "linux", "darwin"]) {
-    const result = spawnSync(
-      process.execPath,
-      [path.join(root, "observe.mjs"), target, platform],
-      {
-        env,
-        encoding: "utf8",
-        timeout: 15000,
-      },
-    );
-    assert.equal(result.error, undefined);
-    assert.equal(result.status, 0, result.stderr);
-    const observed = JSON.parse(result.stdout) as {
-      calls: Array<{
-        kind: string;
-        timeout: number;
-        maxBuffer?: number;
-        executable?: string;
-        args?: string[];
-      }>;
-      outcomes: Array<{ outcome: string; message: string }>;
-    };
-    assert.equal(observed.calls.length, 2);
-    assert.deepEqual(
-      observed.calls.map((call) => [call.kind, call.timeout]),
-      [
-        ["callback", platform === "win32" ? 600000 : 180000],
-        ["child", platform === "win32" ? 590000 : 170000],
-      ],
-    );
-    const child = observed.calls[1]!;
-    assert.equal(child.executable, process.execPath);
-    assert.ok(child.args);
-    assert.equal(child.args.length, 2);
-    assert.ok(child.args[0]!.endsWith("verify-tasks-runtime-package.mjs"));
-    assert.equal(child.args[1], "original-selected-slot");
-    assert.equal(child.maxBuffer, 4 * 1048576);
-    assert.ok(child.timeout < observed.calls[0]!.timeout);
-    assert.equal(observed.outcomes.length, 1);
-    assert.equal(observed.outcomes[0]!.outcome, "failed");
-    assert.match(
-      observed.outcomes[0]!.message,
-      /synthetic package process refusal/,
-    );
+    for (const scenario of ["status", "timeout"]) {
+      const result = spawnSync(
+        process.execPath,
+        [path.join(root, "observe.mjs"), target, platform, scenario],
+        {
+          env,
+          encoding: "utf8",
+          timeout: 15000,
+        },
+      );
+      assert.equal(result.error, undefined);
+      assert.equal(result.status, 0, result.stderr);
+      const observed = JSON.parse(result.stdout) as {
+        calls: Array<{
+          kind: string;
+          timeout: number;
+          maxBuffer?: number;
+          executable?: string;
+          args?: string[];
+        }>;
+        outcomes: Array<{ outcome: string; message: string }>;
+      };
+      assert.equal(observed.calls.length, 2);
+      assert.deepEqual(
+        observed.calls.map((call) => [call.kind, call.timeout]),
+        [
+          ["callback", platform !== "linux" ? 600000 : 180000],
+          ["child", platform !== "linux" ? 590000 : 170000],
+        ],
+      );
+      const child = observed.calls[1]!;
+      assert.equal(child.executable, process.execPath);
+      assert.ok(child.args);
+      assert.equal(child.args.length, 2);
+      assert.ok(child.args[0]!.endsWith("verify-tasks-runtime-package.mjs"));
+      assert.equal(child.args[1], "original-selected-slot");
+      assert.equal(child.maxBuffer, 4 * 1048576);
+      assert.ok(child.timeout < observed.calls[0]!.timeout);
+      assert.equal(observed.outcomes.length, 1);
+      assert.equal(observed.outcomes[0]!.outcome, "failed");
+      if (scenario === "status")
+        assert.match(
+          observed.outcomes[0]!.message,
+          /synthetic package process refusal/,
+        );
+      else {
+        assert.match(
+          observed.outcomes[0]!.message,
+          /^\{"operation":"installed-tasks-runtime"/,
+        );
+        const context = JSON.parse(
+          observed.outcomes[0]!.message.split("\n")[0]!,
+        );
+        assert.equal(context.operation, "installed-tasks-runtime");
+        assert.equal(context.platform, platform);
+        assert.equal(context.timeoutMs, platform !== "linux" ? 590000 : 170000);
+        assert.equal(context.errorCode, "ETIMEDOUT");
+        assert.equal(context.status, null);
+        assert.equal(context.signal, "SIGTERM");
+        assert.equal(context.stdoutCodeUnits, "synthetic stdout λ".length);
+        assert.equal(context.stderrCodeUnits, "synthetic stderr 😀".length);
+        assert.ok(
+          Number.isInteger(context.elapsedMs) && context.elapsedMs >= 0,
+        );
+      }
+    }
   }
 });
 
