@@ -16,6 +16,7 @@ import {
   profile,
   project,
   run,
+  waitForFastapiLifecycleWitness,
 } from "./review-fastapi-assembly-fixture.js";
 const skip = available
   ? false
@@ -425,28 +426,59 @@ else:
       );
       await writeFile(path.join(root, "child.py"), childSource);
       const abort = new AbortController(),
+        executionTimeoutMs = mode === "timeout" ? 4000 : 15000,
         pending = validate(root, {
           trusted: true,
-          timeoutMs: mode === "timeout" ? 4000 : 15000,
+          timeoutMs: executionTimeoutMs,
           signal: abort.signal,
         });
+      let settled: Record<string, unknown> | undefined;
+      void pending.then(
+        (report) => {
+          settled = {
+            state: "resolved",
+            outcome: report.outcome,
+            processes: report.checks.flatMap((check) =>
+              check.processes.map((process) => ({
+                errorCode: process.errorCode ?? null,
+                timedOut: process.timedOut,
+                cancelled: process.cancelled,
+                truncated: process.truncated,
+              })),
+            ),
+          };
+        },
+        (error: unknown) => {
+          settled = {
+            state: "rejected",
+            name: error instanceof Error ? error.name : "unknown",
+          };
+        },
+      );
       let ids: { parent: number; child: number } | undefined;
       try {
-        for (let i = 0; i < 300; i++) {
-          try {
-            ids = JSON.parse(
+        const witness = await waitForFastapiLifecycleWitness({
+          executionTimeoutMs,
+          executionSettled: () => settled !== undefined,
+          read: async () =>
+            JSON.parse(
               await readFile(path.join(root, "parent.ready"), "utf8"),
-            );
-            break;
-          } catch (error) {
-            if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-            await delay(10);
-          }
-        }
-        assert.ok(
-          ids,
-          "Native ASGI initialization middleware and both process descendants must be reached before the control",
+            ) as { parent: number; child: number },
+        });
+        assert.equal(
+          witness.state,
+          "ready",
+          "Native ASGI initialization middleware and both process descendants must be reached before the control " +
+            JSON.stringify({
+              mode,
+              executionTimeoutMs,
+              witness,
+              execution: settled ?? { state: "pending" },
+            }),
         );
+        if (witness.state !== "ready")
+          throw new Error("Missing lifecycle witness");
+        ids = witness.value;
         assert.ok(ids.parent > 0 && ids.child > 0 && ids.parent !== ids.child);
         assert.equal(
           Number(await readFile(path.join(root, "child.ready"), "utf8")),
