@@ -41,7 +41,7 @@ const catalog = JSON.parse(
 );
 const profile = catalog.profiles["gcc-12"];
 const catalogSha256 =
-  "a2cd4b6647bfccab800576b5de4b6bb47d04edb3746a5467f2176daa207dee4f";
+  "04ff9353fbf0dd18a22d6d6be9480c70c3197a242975498f79a4bf251438f6e2";
 const attempt = "12345678-1234-4234-8234-123456789012";
 const posixFamilyControl = {
   skip:
@@ -57,7 +57,7 @@ const schemaCarrier = () => ({
     sourceVersion: profile.sourceVersion,
     catalogSha256,
   },
-  originalCommandDeadlineSeconds: 28800,
+  originalCommandDeadlineSeconds: 43200,
   carrierLimits: { ...carrier.gccCarrierLimits },
   state: "original-controller-terminal-observed",
   stopCause: null,
@@ -98,7 +98,7 @@ const schemaCarrier = () => ({
   gateAComplete: false,
 });
 
-test("GCC external carrier schema retains the original eight-hour deadline and refuses cutoff, stale and weakly typed terminals", () => {
+test("GCC external carrier schema retains the selected twelve-hour operator wall deadline and refuses cutoff, stale and weakly typed terminals", () => {
   assert.equal(
     carrier.validateGccCarrierReceipt(schemaCarrier(), profile, catalogSha256)
       .gateAComplete,
@@ -107,6 +107,18 @@ test("GCC external carrier schema retains the original eight-hour deadline and r
   for (const edit of [
     (v: ReturnType<typeof schemaCarrier>) => {
       v.originalCommandDeadlineSeconds = 14700;
+    },
+    (v: ReturnType<typeof schemaCarrier>) => {
+      v.originalCommandDeadlineSeconds = 28800;
+    },
+    (v: ReturnType<typeof schemaCarrier>) => {
+      v.originalCommandDeadlineSeconds = 43199;
+    },
+    (v: ReturnType<typeof schemaCarrier>) => {
+      v.originalCommandDeadlineSeconds = 43201;
+    },
+    (v: ReturnType<typeof schemaCarrier>) => {
+      Object.assign(v, { originalCommandDeadlineSeconds: true });
     },
     (v: ReturnType<typeof schemaCarrier>) => {
       Object.assign(v, { stopCause: "external-carrier-cutoff" });
@@ -611,7 +623,7 @@ test("GCC workflow has a narrow operator namespace, read-only capacity checks an
   assert.ok(preparation.includes('test "$gcc_free" -ge "$gcc_needed"'));
   assert.ok(!/sudo|rm -rf/u.test(preparation));
   const observation = steps.find((step) =>
-    step.name?.includes("unchanged eight-hour"),
+    step.name?.includes("selected twelve-hour"),
   )!;
   assert.ok(
     observation.run!.includes(
@@ -628,7 +640,7 @@ test("GCC workflow has a narrow operator namespace, read-only capacity checks an
   assert.deepEqual((observation as { env?: Record<string, string> }).env, {
     CHECKTRAIL_GITHUB_JOB_TOKEN: "${{ github.token }}",
   });
-  assert.equal(profile.limits.deadlineSeconds, 28800);
+  assert.equal(profile.limits.deadlineSeconds, 43200);
   assert.equal(profile.files.length, 241);
   for (const step of steps.filter((step) =>
     /export-evidence|replay-evidence/u.test(step.run ?? ""),
@@ -745,7 +757,7 @@ for key in ['fullCompilerSdkBootstrapClosureVerified','completeOriginalNoticeClo
 write(result/'build-observation.json',observed)
 child=subprocess.run([sys.executable,'-I','-S','-B','-c','print("synthetic controller terminal");raise SystemExit(2)'],capture_output=True,timeout=3);(carrier/'controller.log').write_bytes(child.stdout+child.stderr)
 owner_pin=write(carrier/'owner-frame.json',receipt)
-carrier_value={'schemaVersion':1,'selectedProfile':selected,'originalCommandDeadlineSeconds':28800,'carrierLimits':{'observationSeconds':14700,'cleanupSeconds':600,'softStopSeconds':480,'logBytes':8*1024**2},'state':'original-controller-terminal-observed','stopCause':None,'controllerObserver':{'exitCode':child.returncode,'signal':None,'error':None,'reason':None,'retainedBytes':len(child.stdout)+len(child.stderr),'stopError':None},'log':r.pin((carrier/'controller.log').read_bytes()),'startupInput':startup_pin,'ownerFrame':owner_pin,'ownerAttempt':attempt,'cleanup':{'producer':cleanup,'retention':retention_cleanup},'controllerTerminalSeconds':1.0,'elapsedSeconds':2.0,'startedAt':'2026-01-01T00:00:00.000Z','cutoffAt':'2026-01-01T04:05:00.000Z'}
+carrier_value={'schemaVersion':1,'selectedProfile':selected,'originalCommandDeadlineSeconds':43200,'carrierLimits':{'observationSeconds':14700,'cleanupSeconds':600,'softStopSeconds':480,'logBytes':8*1024**2},'state':'original-controller-terminal-observed','stopCause':None,'controllerObserver':{'exitCode':child.returncode,'signal':None,'error':None,'reason':None,'retainedBytes':len(child.stdout)+len(child.stderr),'stopError':None},'log':r.pin((carrier/'controller.log').read_bytes()),'startupInput':startup_pin,'ownerFrame':owner_pin,'ownerAttempt':attempt,'cleanup':{'producer':cleanup,'retention':retention_cleanup},'controllerTerminalSeconds':1.0,'elapsedSeconds':2.0,'startedAt':'2026-01-01T00:00:00.000Z','cutoffAt':'2026-01-01T04:05:00.000Z'}
 carrier_value.update(cleanupStartedSeconds=1.0,cleanupDeadlineSeconds=601.0,stopObservation={'ownerAdmissionError':None,'childTerminalObserved':True,'childReaped':True,'softFamilyAbsent':True,'familyAbsent':True,'processGroupId':1001})
 for key in ['originalProducerDefaultsOrBudgetChanged','fullEightHourHostedCapacityVerified','originalCommandCompletionClaimed','fullCompilerSdkBootstrapClosureVerified','completeOriginalNoticeClosureVerified','historicalPublisherConsumptionVerified','gateAComplete']:carrier_value[key]=False
 carrier_pin=write(carrier/'receipt.json',carrier_value)
@@ -798,7 +810,11 @@ mutant('reset-cleanup-clock',lambda m,v:edit_member(m,'carrier/receipt.json',lam
 mutant('cleanup-after-elapsed',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(cleanupStartedSeconds=3.0,cleanupDeadlineSeconds=603.0)),'cleanup clock reset')
 mutant('unobserved-family',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x['stopObservation'].update(familyAbsent=False)),'process-family quiescence')
 mutant('bool-family-identity',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x['stopObservation'].update(processGroupId=True)),'process-family quiescence')
-mutant('short-original-budget',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(originalCommandDeadlineSeconds=14700)),'eight-hour deadline')
+mutant('short-original-budget',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(originalCommandDeadlineSeconds=14700)),'twelve-hour operator wall deadline')
+mutant('legacy-eight-hour-budget',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(originalCommandDeadlineSeconds=28800)),'twelve-hour operator wall deadline')
+mutant('deadline-one-short',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(originalCommandDeadlineSeconds=43199)),'twelve-hour operator wall deadline')
+mutant('deadline-one-long',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(originalCommandDeadlineSeconds=43201)),'twelve-hour operator wall deadline')
+mutant('bool-original-deadline',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(originalCommandDeadlineSeconds=True)),'twelve-hour operator wall deadline')
 mutant('unobserved-cleanup',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x['cleanup']['retention'].update(state='unavailable')),'owned cleanup')
 mutant('scope-promoted',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(fullEightHourHostedCapacityVerified=0)),'overclaims')
 mutant('different-owner',lambda m,v:edit_member(m,'carrier/owner-frame.json',lambda x:x.update(attempt='87654321-1234-4234-8234-123456789012')),'Carrier owner attempt differs')
@@ -849,6 +865,10 @@ print(json.dumps({'positivePhysicalGccProtocolReplay':True,'preservedFailedOrigi
       "unobserved-family",
       "bool-family-identity",
       "short-original-budget",
+      "legacy-eight-hour-budget",
+      "deadline-one-short",
+      "deadline-one-long",
+      "bool-original-deadline",
       "unobserved-cleanup",
       "scope-promoted",
       "different-owner",

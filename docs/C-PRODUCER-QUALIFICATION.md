@@ -37,6 +37,11 @@ build and its retention trap. Container cleanup has separate bounded observer
 operations. Retained work is observed, not enforced by a native filesystem
 quota. Input/control copies have an explicit additional retention allowance.
 
+The native timeout and direct foreground observer share this wall limit. At its
+expiry the observer can stop the native container before its EXIT retention trap
+finishes. Such an attempt remains incomplete; the observer's numeric exit status
+does not establish the original package command's exit code or signal.
+
 The operator boundary captures the actual POSIX caller UID/GID. The collector
 hands over only its exclusive new report/log copies and manifest as0600 files
 and0700 directories, using their verified file descriptors and directory inode
@@ -53,13 +58,17 @@ caller is admitted but is never reported as a nonroot cross-UID proof. Local
 same-UID data controls do not qualify native Linux root-container/nonroot-host
 handoff. That native preflight remains unexecuted for this source-only slice.
 
-The GCC profile retains its original eight-hour command budget. GitHub-hosted
+The selected GCC operator envelope allows twelve hours. This wall limit is an
+operator choice; it does not change the original source, command, parallelism,
+optimizations, default targets or tests. Receipts bind their exact catalog and
+recorded limits; a longer selected envelope does not promote an older incomplete
+attempt to a completed original build. GitHub-hosted
 jobs have a [shorter platform limit](https://docs.github.com/en/actions/reference/limits); a hosted carrier may complete the unchanged
-command before its cutoff, but cannot establish full eight-hour platform
+command before its cutoff, but cannot establish full twelve-hour platform
 support. A cutoff is incomplete external-platform evidence. An existing
 operator-provided native Linux x64 carrier is needed to support the full
 profile. The hosted observer does not provision infrastructure or establish
-full eight-hour platform support. Native acceptance remains separate from
+full twelve-hour platform support. Native acceptance remains separate from
 source and synthetic protocol controls.
 
 Original result bytes and each report's outcomes remain separate by generated
@@ -87,7 +96,7 @@ those requirements.
 
 The direct GCC qualifier also accepts the additional operator flag
 `--allow-local-arm64-daemon`. It requires both execution flags and the unchanged
-selected GCC12 source, command, eight-hour budget, resources and pinned amd64
+selected GCC12 source, command, twelve-hour budget, resources and pinned amd64
 image. The default daemon architecture check remains x64; this opt-in admits
 only the separately observed `aarch64` daemon with sufficient CPU and memory.
 Preparation, GLIBC and unknown option combinations refuse the flag.
@@ -108,7 +117,7 @@ observations; dispatch becomes available after the workflow reaches the default
 branch. It does not run for ordinary PR branches or select the GCC profile.
 The job's six-hour carrier limit leaves preparation and export time around the
 unchanged four-hour command budget. Platform cutoff or capacity refusal is
-incomplete evidence. The original GCC eight-hour profile remains unchanged and
+incomplete evidence. The original GCC twelve-hour profile remains unchanged and
 is not selected by this carrier.
 
 The hosted job first captures a byte-bound committed operator source frame and
@@ -179,8 +188,8 @@ metadata does not attest the daemon's profile bytes or historical consumption.
 `upstream-gcc.yml` uses only `pr/upstream-producer/gcc-*` pushes or operator
 dispatch after default-branch merge. Startup, live observation, export and replay
 all bind an explicit closed profile name to the frozen source/version/catalog.
-GCC's original command, eight-hour timeout, CPU, memory, targets and checks remain
-unchanged. The separate `gccCarrierLimits` controller window leaves time for
+GCC's original command, CPU, memory, targets and checks remain unchanged. The
+selected operator wall envelope is twelve hours. The separate `gccCarrierLimits` controller window leaves time for
 bounded cleanup and transport within the hosted job. Fresh capacity admission
 is read-only and refuses insufficient observed storage before original execution.
 
@@ -221,9 +230,9 @@ The observation requests at most 330 minutes; this maximum is not a promise of
 five for observation completion, twenty for export, three for independent replay,
 five for upload and five for runner finalization. It requires at least 270 useful
 minutes immediately before original execution. Preparation consumes the same job
-clock. The original producer command still has its 28,800-second deadline, original
+clock. The original producer command still has its 43,200-second deadline, original
 resources, checks and export behavior. A carrier cutoff remains incomplete; natural
-original completion can be assessed without claiming eight-hour hosted capacity.
+original completion can be assessed without claiming twelve-hour hosted capacity.
 The job token is used only for metadata admission and is excluded from the original
 controller's environment. No upstream build or new hosted observation is established
 by the synthetic clock and transport controls.

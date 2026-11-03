@@ -24,7 +24,7 @@ const catalog = JSON.parse(
 );
 const profile = catalog.profiles.glibc;
 const catalogSha256 =
-  "a2cd4b6647bfccab800576b5de4b6bb47d04edb3746a5467f2176daa207dee4f";
+  "04ff9353fbf0dd18a22d6d6be9480c70c3197a242975498f79a4bf251438f6e2";
 const terminal = {
   exitCode: 0,
   signal: null,
@@ -229,7 +229,7 @@ test("GLIBC hosted carrier keeps its original budget, bounded export and a branc
   const job = workflow.jobs["original-glibc-observation"];
   assert.ok(job["timeout-minutes"] <= 360);
   assert.equal(profile.limits.deadlineSeconds, 14400);
-  assert.equal(catalog.profiles["gcc-12"].limits.deadlineSeconds, 28800);
+  assert.equal(catalog.profiles["gcc-12"].limits.deadlineSeconds, 43200);
   const steps = job.steps as {
     name?: string;
     run?: string;
