@@ -12,10 +12,12 @@ export const mavenDistributionPin = Object.freeze({
 // Operator preparation only; the installer still verifies the archive and complete extracted tree.
 export function requestMavenDistribution({
   fetchImpl = globalThis.fetch,
+  attemptTimeoutMs = 30000,
   ...options
 } = {}) {
   return requestPinnedArtifactBytes(mavenDistributionPin, {
     ...options,
+    attemptTimeoutMs,
     fetchImpl: (asset, request) =>
       fetchImpl(asset, { ...request, redirect: "error" }),
   });

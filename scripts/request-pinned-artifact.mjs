@@ -30,6 +30,7 @@ export async function requestPinnedArtifactBytes(
   {
     fetchImpl = globalThis.fetch,
     signal = globalThis.AbortSignal.timeout(120000),
+    attemptTimeoutMs,
     delayImpl = (ms) => setTimeout(ms, undefined, { signal }),
     onRetry = () => {},
     retryNotFound = false,
@@ -37,6 +38,13 @@ export async function requestPinnedArtifactBytes(
   } = {},
 ) {
   assert.equal(typeof retryNotFound, "boolean");
+  assert.ok(
+    attemptTimeoutMs === undefined ||
+      (Number.isSafeInteger(attemptTimeoutMs) &&
+        attemptTimeoutMs > 0 &&
+        attemptTimeoutMs <= 120000),
+    "Pinned artifact attempt timeout bound",
+  );
   const primary = new URL(asset);
   assert.equal(primary.protocol, "https:");
   assert.ok(
@@ -83,11 +91,21 @@ export async function requestPinnedArtifactBytes(
   let nextAsset = asset;
   for (let attempt = 1; ; attempt++) {
     signal.throwIfAborted();
+    // Opt-in attempt deadlines leave time for mirrors without replacing the
+    // caller's overall budget or cancellation reason.
+    const attemptDeadline =
+      attemptTimeoutMs === undefined
+        ? undefined
+        : globalThis.AbortSignal.timeout(attemptTimeoutMs);
+    const requestSignal = attemptDeadline
+      ? globalThis.AbortSignal.any([signal, attemptDeadline])
+      : signal;
     let response, downloaded;
+    let ownedAttemptTimeout = false;
     try {
       try {
-        response = await fetchImpl(nextAsset, { signal });
-        signal.throwIfAborted();
+        response = await fetchImpl(nextAsset, { signal: requestSignal });
+        requestSignal.throwIfAborted();
         if (
           transientStatuses.has(response.status) ||
           (retryNotFound && response.status === 404)
@@ -102,15 +120,27 @@ export async function requestPinnedArtifactBytes(
           assert.ok(count <= bytes, "Pinned artifact byte limit");
           chunks.push(Buffer.from(chunk));
         }
-        signal.throwIfAborted();
         downloaded = Buffer.concat(chunks);
+        // A complete but incorrect response is an integrity failure, not a retry.
+        assert.equal(downloaded.length, bytes, "Pinned artifact byte count");
+        requestSignal.throwIfAborted();
+      } catch (error) {
+        // Cleanup can outlive a failure and cross a deadline. Attribute the
+        // failure before cleanup so it cannot turn an unrelated abort into retry.
+        ownedAttemptTimeout =
+          attemptDeadline?.aborted === true &&
+          (error === attemptDeadline.reason ||
+            (error instanceof globalThis.DOMException &&
+              error.name === "AbortError"));
+        throw error;
       } finally {
         await response?.body?.cancel().catch(() => {});
       }
     } catch (error) {
       signal.throwIfAborted();
       if (
-        (!(error instanceof PinnedArtifactHttpError) &&
+        (!ownedAttemptTimeout &&
+          !(error instanceof PinnedArtifactHttpError) &&
           !transientCodes.has(error?.code ?? error?.cause?.code)) ||
         attempt > waits.length
       )
@@ -128,8 +158,6 @@ export async function requestPinnedArtifactBytes(
       await delayImpl(waits[attempt - 1]);
       continue;
     }
-    // A complete but incorrect response is an integrity failure, not a retry.
-    assert.equal(downloaded.length, bytes, "Pinned artifact byte count");
     return downloaded;
   }
 }
