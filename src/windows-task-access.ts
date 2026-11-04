@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { lstatSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
@@ -96,6 +97,78 @@ try {
 }
 `;
 
+// Preserve bounded machine observations on the original failed invocation. Raw
+// child messages/output can contain private paths and must not become error causes.
+const inspectionFailureCodes = new Set([
+  "EACCES",
+  "EAGAIN",
+  "EINVAL",
+  "ENOBUFS",
+  "ENOENT",
+  "ENOEXEC",
+  "ENOMEM",
+  "EPERM",
+  "ETIMEDOUT",
+  "UNKNOWN",
+]);
+const inspectionFailureSignals = new Set([
+  "SIGABRT",
+  "SIGINT",
+  "SIGKILL",
+  "SIGTERM",
+]);
+function inspectionOutput(value: unknown, maximum: number) {
+  if (typeof value !== "string" && !Buffer.isBuffer(value)) return null;
+  const bytes = Buffer.byteLength(value);
+  return {
+    bytes,
+    sha256:
+      bytes <= maximum
+        ? createHash("sha256").update(value).digest("hex")
+        : null,
+  };
+}
+function inspectionUnavailable(
+  message: string,
+  phase: "process" | "json",
+  maximum: number,
+  error?: unknown,
+  output?: string,
+) {
+  const failure =
+    phase === "process" && typeof error === "object" && error !== null
+      ? (error as Record<string, unknown>)
+      : {};
+  return new Error(message, {
+    cause: {
+      schemaVersion: 1,
+      phase,
+      code:
+        typeof failure.code === "string" &&
+        inspectionFailureCodes.has(failure.code)
+          ? failure.code
+          : null,
+      status:
+        typeof failure.status === "number" &&
+        Number.isInteger(failure.status) &&
+        failure.status >= -2147483648 &&
+        failure.status <= 4294967295
+          ? failure.status
+          : null,
+      signal:
+        typeof failure.signal === "string" &&
+        inspectionFailureSignals.has(failure.signal)
+          ? failure.signal
+          : null,
+      stdout: inspectionOutput(
+        phase === "json" ? output : failure.stdout,
+        maximum,
+      ),
+      stderr: inspectionOutput(failure.stderr, maximum),
+    },
+  });
+}
+
 export function ensureWindowsTaskAccess(
   filename: string,
   kind: "file" | "directory",
@@ -127,9 +200,9 @@ export function ensureWindowsTaskAccess(
     !lstatSync(executable).isFile()
   )
     throw new Error("Windows task ACL inspector unavailable");
-  let observed: unknown;
+  let output: string;
   try {
-    const output = execFileSync(
+    output = execFileSync(
       executable,
       [
         "-NoProfile",
@@ -146,9 +219,25 @@ export function ensureWindowsTaskAccess(
         maxBuffer: 32768,
       },
     );
+  } catch (error) {
+    throw inspectionUnavailable(
+      "Windows task ACL inspection unavailable",
+      "process",
+      32768,
+      error,
+    );
+  }
+  let observed: unknown;
+  try {
     observed = JSON.parse(output.replace(/^\uFEFF/, ""));
   } catch {
-    throw new Error("Windows task ACL inspection unavailable");
+    throw inspectionUnavailable(
+      "Windows task ACL inspection unavailable",
+      "json",
+      32768,
+      undefined,
+      output,
+    );
   }
   validateWindowsTaskAccess(observed, kind);
 }
@@ -284,9 +373,9 @@ export function ensureWindowsTaskAccessBatch(
   const input = JSON.stringify(selected);
   if (Buffer.byteLength(input) > 8388608)
     throw Error("Windows ACL batch input exceeds byte bound");
-  let observed: unknown;
+  let output: string;
   try {
-    const output = execFileSync(
+    output = execFileSync(
       executable,
       [
         "-NoProfile",
@@ -304,9 +393,25 @@ export function ensureWindowsTaskAccessBatch(
         maxBuffer: 8388608,
       },
     );
+  } catch (error) {
+    throw inspectionUnavailable(
+      "Windows private ACL batch inspection unavailable",
+      "process",
+      8388608,
+      error,
+    );
+  }
+  let observed: unknown;
+  try {
     observed = JSON.parse(output.replace(/^\uFEFF/, ""));
   } catch {
-    throw Error("Windows private ACL batch inspection unavailable");
+    throw inspectionUnavailable(
+      "Windows private ACL batch inspection unavailable",
+      "json",
+      8388608,
+      undefined,
+      output,
+    );
   }
   validateWindowsTaskAccessBatch(observed, selected);
 }
