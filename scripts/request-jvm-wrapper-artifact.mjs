@@ -33,6 +33,7 @@ export async function requestJvmWrapperArtifact(
   {
     fetchImpl = globalThis.fetch,
     signal = globalThis.AbortSignal.timeout(60000),
+    attemptTimeoutMs = 15000,
     ...options
   } = {},
 ) {
@@ -50,6 +51,7 @@ export async function requestJvmWrapperArtifact(
     {
       ...options,
       signal,
+      attemptTimeoutMs,
       // Missing or moved pinned assets fail; only admitted transport/5xx failures retry.
       retryNotFound: false,
       fetchImpl: (asset, request) =>
