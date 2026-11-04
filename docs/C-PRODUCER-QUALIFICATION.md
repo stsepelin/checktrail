@@ -207,7 +207,24 @@ stopping only the direct child is insufficient. Both exit paths share one
 cleanup attempt and a single monotonic deadline within the ten-minute reserve.
 Unknown family absence or an exhausted reserve remains incomplete.
 
-Real GCC reports use their selected `build` and `build-cross` configurations.
+GCC report manifests use version 2 and select the literal `build`, `build-jit`,
+`build-nvptx`, `build-gcn` and `build-hppa64` source directories. The existing
+`build-cross` path remains an explicitly labeled compatibility root. Each root
+records whether it was absent, present without reports, or present with reports;
+these are collector observations, and replay checks their consistency with the
+retained report inventory. Replay cannot independently establish whether an
+original source directory was absent. None of these states establishes an
+independent test run or complete coverage.
+GLIBC report manifests retain version 1. Older GCC version-1 manifests remain
+bound to their original source/runtime contract and cannot establish version-2
+root coverage. They are not rewritten or promoted by the current verifier.
+
+The original JIT recipe copies its reports into the main build tree. Both paths
+keep their physical provenance; duplicate copies are not independent evidence.
+Offload and HPPA64 build directories do not imply separate upstream test suites.
+Original conditional checks, multilib probes, ignored check exits and optional
+report repackaging/deletion remain unchanged. Configuration completeness stays
+unverified until eligible phases and actual reports have been reconciled.
 The fixed synthetic custody preflight still uses its separate GLIBC fixture;
 it is not relabeled as a GCC upstream test. GCC does not select the GLIBC syscall
 policy or its native predicate probes. A successful original command may retain

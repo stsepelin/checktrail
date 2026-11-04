@@ -367,7 +367,11 @@ export function cProducerArguments(
 
 export async function verifyCProducerReports(value, root, profile, caller) {
   caller = validateCProducerCallerIdentity(caller.uid, caller.gid);
-  assert.equal(value.schemaVersion, 1);
+  assert.equal(
+    value.schemaVersion,
+    cProducerProfileKey(profile) === "gcc-12" ? 2 : 1,
+    "C producer report manifest version differs from selected source contract",
+  );
   assert.equal(value.profile, cProducerProfileKey(profile));
   assert.deepEqual(value.generatedBuildRoots, profile.generatedBuildRoots);
   for (const key of [
@@ -379,6 +383,46 @@ export async function verifyCProducerReports(value, root, profile, caller) {
   ])
     assert.equal(value[key], false);
   assert.ok(Array.isArray(value.reports) && value.reports.length <= 8192);
+  if (cProducerProfileKey(profile) === "gcc-12") {
+    assert.ok(
+      Array.isArray(value.buildRootStates),
+      "Missing GCC build-root states",
+    );
+    assert.equal(
+      value.buildRootStates.length,
+      profile.generatedBuildRoots.length,
+    );
+    for (const [index, name] of profile.generatedBuildRoots.entries()) {
+      const row = value.buildRootStates[index];
+      assert.ok(row && typeof row === "object", "Invalid GCC build-root state");
+      assert.deepEqual(Object.keys(row).sort(), [
+        "origin",
+        "reports",
+        "root",
+        "state",
+      ]);
+      assert.equal(row.root, name, "GCC build-root identity differs");
+      assert.equal(
+        row.origin,
+        profile.compatibilityBuildRoots.includes(name)
+          ? "compatibility"
+          : "source",
+        "GCC build-root origin differs",
+      );
+      const count = value.reports.filter(
+        (report) => report.configuration === name,
+      ).length;
+      assert.ok(
+        Number.isSafeInteger(row.reports) && row.reports === count,
+        "GCC build-root report count differs",
+      );
+      assert.ok(
+        (row.state === "present-with-reports" && count > 0) ||
+          (["absent", "present-no-reports"].includes(row.state) && count === 0),
+        "GCC build-root report state differs",
+      );
+    }
+  }
   assert.ok(
     Array.isArray(value.skippedLinkedDirectories) &&
       value.skippedLinkedDirectories.length <= 8192,

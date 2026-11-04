@@ -70,7 +70,15 @@
         "workByteLimit": 68719476736,
         "inputFileByteLimit": 134217728
       },
-      "generatedBuildRoots": ["build", "build-cross"],
+      "generatedBuildRoots": [
+        "build",
+        "build-cross",
+        "build-jit",
+        "build-nvptx",
+        "build-gcn",
+        "build-hppa64"
+      ],
+      "compatibilityBuildRoots": ["build-cross"],
       "reportFileByteLimit": 67108864,
       "reportAggregateByteLimit": 536870912,
       "files": [

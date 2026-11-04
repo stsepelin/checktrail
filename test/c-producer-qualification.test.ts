@@ -1126,3 +1126,143 @@ print(json.dumps({'sameUidHostOnly':True,'actualUid':os.geteuid(),'requestedCall
     assert.equal(observed.nativeLinuxCrossUidAcceptanceVerified, false);
   },
 );
+
+test(
+  "GCC version2 report verification binds every literal root, compatibility origin and nonpassing root state",
+  {
+    skip: !sameUidCaller
+      ? "POSIX sameUID export custody control unavailable on this host"
+      : python
+        ? false
+        : "Verified Python3 data collector unavailable: " + probes.join("; "),
+  },
+  async (t) => {
+    const roots = [
+      "build",
+      "build-cross",
+      "build-jit",
+      "build-nvptx",
+      "build-gcn",
+      "build-hppa64",
+    ];
+    const copied =
+      "PASS: synthetic copied result\nFAIL: preserved copied result\n";
+    const root = await fixture(t, {
+      "source/build/native.sum": copied,
+      "source/build-cross/compat.sum": "XFAIL: synthetic compatibility data\n",
+      "source/build-jit/copied.sum": copied,
+      "source/build-nvptx/device.sum":
+        "UNSUPPORTED: synthetic unavailable data\n",
+      "source/build-gcn/device.sum":
+        "UNSUPPORTED: synthetic unavailable data\n",
+      "source/build-hppa64/target.sum":
+        "UNSUPPORTED: synthetic unavailable data\n",
+      "source/build-jit-extra/unselected.sum": "PASS: unselected near prefix\n",
+      "output/.keep": "",
+    });
+    const result = spawnSync(
+      python!,
+      [
+        "-I",
+        "-S",
+        "-B",
+        path.join(
+          repository,
+          "scripts/producer-qualification/c-producer-test-reports.py",
+        ),
+        "gcc-12",
+        path.join(root, "source"),
+        path.join(root, "output/test-reports.json"),
+        String(sameUidCaller.uid),
+        String(sameUidCaller.gid),
+      ],
+      { encoding: "utf8", timeout: 5000, maxBuffer: 65536 },
+    );
+    assert.equal(result.status, 0, diagnostic(result));
+    const value = await api.readCProducerCopyManifest(
+      path.join(root, "output/test-reports.json"),
+      sameUidCaller,
+    );
+    const { profile } = await profiles.loadCProducerProfile("gcc-12");
+    const copies = path.join(root, "output/original-test-reports");
+    const verified = await api.verifyCProducerReports(
+      value,
+      copies,
+      profile,
+      sameUidCaller,
+    );
+    type RootState = {
+      root: string;
+      origin: string;
+      state: string;
+      reports: number;
+    };
+    const states = value.buildRootStates as RootState[];
+    assert.equal(value.schemaVersion, 2);
+    assert.deepEqual(value.generatedBuildRoots, roots);
+    assert.deepEqual(
+      states,
+      roots.map((name) => ({
+        root: name,
+        origin: name === "build-cross" ? "compatibility" : "source",
+        state: "present-with-reports",
+        reports: 1,
+      })),
+    );
+    assert.equal(verified.reports.length, 6);
+    assert.equal(verified.duplicateReportsAreIndependentEvidence, false);
+    assert.equal(verified.completeConfigurationInventoryAssessed, false);
+    assert.equal(verified.allOriginalTestsPassRequired, false);
+    const reportPins = value.reports as Array<{ file: string; sha256: string }>;
+    assert.equal(
+      reportPins.find((row) => row.file === "build/native.sum")!.sha256,
+      reportPins.find((row) => row.file === "build-jit/copied.sum")!.sha256,
+    );
+    const invalid = [
+      [{ ...value, schemaVersion: 1 }, /manifest version/],
+      [{ ...value, buildRootStates: states.slice(1) }, /strictly equal/],
+      [
+        {
+          ...value,
+          buildRootStates: states.map((row, index) =>
+            index === 1 ? { ...row, origin: "source" } : row,
+          ),
+        },
+        /origin differs/,
+      ],
+      [
+        {
+          ...value,
+          buildRootStates: states.map((row, index) =>
+            index === 2 ? { ...row, root: "build-jit-extra" } : row,
+          ),
+        },
+        /identity differs/,
+      ],
+      [
+        {
+          ...value,
+          buildRootStates: states.map((row, index) =>
+            index === 2 ? { ...row, reports: 0 } : row,
+          ),
+        },
+        /report count differs/,
+      ],
+      [
+        {
+          ...value,
+          buildRootStates: states.map((row, index) =>
+            index === 2 ? { ...row, state: "present-no-reports" } : row,
+          ),
+        },
+        /report state differs/,
+      ],
+    ] as const;
+    for (const [changed, reason] of invalid)
+      await assert.rejects(
+        api.verifyCProducerReports(changed, copies, profile, sameUidCaller),
+        reason,
+      );
+    await api.verifyCProducerReports(value, copies, profile, sameUidCaller);
+  },
+);
