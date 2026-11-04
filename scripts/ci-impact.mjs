@@ -16,6 +16,36 @@ const controls = new Set([
 ]);
 const retainedArtifactDirectory =
   "docs/measurements/artifact-identities-2026-10-21/";
+// Reviewed development-only C producer inputs have no packaged runtime member.
+// Their identity/source frames also feed the Go and Node producer controllers,
+// so every exact input selects those callers' complete regression files too.
+// Keep this finite: unreviewed siblings retain conservative full verification.
+export const cProducerSharedBoundary = Object.freeze({
+  files: Object.freeze([
+    "scripts/producer-qualification/c-producer-profile.mjs",
+    "scripts/producer-qualification/c-producer-profiles.v1.json",
+    "scripts/producer-qualification/c-producer-replay-evidence.py",
+    "scripts/producer-qualification/c-producer-test-reports.py",
+    "scripts/qualify-c-producer.mjs",
+    "test/c-producer-evidence.test.ts",
+    "test/c-producer-gcc-evidence.test.ts",
+    "test/c-producer-qualification.test.ts",
+  ]),
+  testFiles: Object.freeze([
+    "test/c-producer-evidence.test.ts",
+    "test/c-producer-gcc-evidence.test.ts",
+    "test/c-producer-qualification.test.ts",
+    "test/c-producer-replay-batch.test.ts",
+    "test/c-producer-u13.test.ts",
+    "test/gcc-job-envelope.test.ts",
+    "test/glibc-seccomp.test.ts",
+    "test/go-bootstrap-producer.test.ts",
+    "test/go-bootstrap-transport.test.ts",
+    "test/node-original-producer.test.ts",
+    "test/node-original-transport-posix.test.ts",
+  ]),
+});
+const cProducerSharedInputs = new Set(cProducerSharedBoundary.files);
 const generic = new Set([
   "scripts/verify-required-native-tests.mjs",
   "scripts/required-test-evidence.mjs",
@@ -354,14 +384,15 @@ export function planNativeJobs({
       return full(
         "Shared runtime, dependency, inventory or CI input changed: " + file,
       );
-    if (!Object.hasOwn(inputs, file))
+    if (!Object.hasOwn(inputs, file) && !cProducerSharedInputs.has(file))
       return full("Unclassified input changed: " + file);
-    for (const id of inputs[file]) selected.add(id);
+    // The shared boundary adds regression coverage; it cannot erase declared
+    // native consumers or bypass the contract validation above.
+    for (const id of inputs[file] ?? []) selected.add(id);
   }
   return {
     mode: "affected",
-    reason:
-      "Exact declared native inputs with complete selected shared test files",
+    reason: "Exact declared inputs with complete selected shared test files",
     selected: Object.fromEntries(jobs.map((id) => [id, selected.has(id)])),
     notSelected: jobs.filter((id) => !selected.has(id)),
     baseline: baseline?.complete ? baseline : null,
@@ -372,6 +403,11 @@ export function planNativeJobs({
         "dist/test/gate-inventory.test.js",
         "dist/test/ci-affected-tests.test.js",
         "dist/test/ci-source-boundaries.test.js",
+        ...(changed.some((file) => cProducerSharedInputs.has(file))
+          ? cProducerSharedBoundary.testFiles.map(
+              (file) => "dist/" + file.replace(/\.ts$/, ".js"),
+            )
+          : []),
         ...sourceBoundaries
           .filter((row) => changed.includes(row.file))
           .flatMap((row) => row.testFiles)
