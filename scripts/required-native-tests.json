@@ -2909,6 +2909,30 @@
     {
       "file": "dist/test/maven-preparation.test.js",
       "name": "JVM wrapper setup discards interrupted body bytes and rejects URLs outside its exact artifact inventory"
+    },
+    {
+      "file": "dist/test/pinned-artifact-deadline.test.js",
+      "name": "Maven hung primary retains its original total budget for a pinned fallback with an owned attempt deadline"
+    },
+    {
+      "file": "dist/test/pinned-artifact-deadline.test.js",
+      "name": "JVM wrapper mirror deadlines fit every attempt within the unchanged total and retain exact digest validation"
+    },
+    {
+      "file": "dist/test/pinned-artifact-deadline.test.js",
+      "name": "Pinned attempt body timeout discards partial bytes and exhausted owned deadlines never become success"
+    },
+    {
+      "file": "dist/test/pinned-artifact-deadline.test.js",
+      "name": "Outer cancellation wins before fetch during headers body and retry delay with exact request-signal propagation"
+    },
+    {
+      "file": "dist/test/pinned-artifact-deadline.test.js",
+      "name": "Attempt timeout admission does not retry unrelated timeout names or integrity errors even when cleanup expires a deadline"
+    },
+    {
+      "file": "dist/test/pinned-artifact-deadline.test.js",
+      "name": "Attempt deadline option is finite opt-in and unchanged generic callers retain their original signal"
     }
   ],
   "posix-cleanup": [
