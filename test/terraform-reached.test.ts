@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   readFile,
+  realpath,
   readlink,
+  symlink,
   readdir,
   mkdtemp,
   rm,
@@ -12,16 +14,20 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { fixture } from "./helpers.js";
 import { validate } from "../src/engine.js";
 import {
   terraformFixture,
   terraformNative,
   terraformRewrite,
 } from "./terraform-fixture.js";
-const runner = fileURLToPath(
-  new URL("../src/terraform-runner.js", import.meta.url),
-);
+async function terraformRunnerIdentity(moduleUrl: string) {
+  return realpath(
+    fileURLToPath(new URL("../src/terraform-runner.js", moduleUrl)),
+  );
+}
+const runner = await terraformRunnerIdentity(import.meta.url);
 const nativeIo = {
   readText: (file: string) => readFile(file, "utf8"),
   readLink: (file: string) => readlink(file),
@@ -248,7 +254,7 @@ function observerFixture(version: boolean) {
       `/proc/${parent}/cmdline`,
       [
         process.execPath,
-        fileURLToPath(new URL("../src/terraform-runner.js", import.meta.url)),
+        runner,
         root,
         JSON.stringify({ inputs: [] }),
         ...(version ? ["--version"] : []),
@@ -401,4 +407,40 @@ test("Terraform native process observer rejects phase suffixes unrelated runner 
       await assert.rejects(observation, (observed) => observed === error);
     else assert.equal(await observation, null, code);
   }
+});
+
+test("Terraform native process observer resolves the installed engine symlink before exact parent matching", async (t) => {
+  const root = await fixture(t, {
+    "consumer/dist/test/synthetic-observer.mjs": "export default null;\n",
+    "package/node_modules/@stsepelin/checktrail/dist/src/terraform-runner.js":
+      "export default null;\n",
+    "package/node_modules/@stsepelin/checktrail/dist/src/engine.mjs":
+      "export const runner = new URL('./terraform-runner.js', import.meta.url).href;\n",
+  });
+  const consumerDist = path.join(root, "consumer/dist"),
+    installed = path.join(
+      root,
+      "package/node_modules/@stsepelin/checktrail/dist/src",
+    );
+  await symlink(
+    path.relative(consumerDist, installed),
+    path.join(consumerDist, "src"),
+  );
+  const harnessModule = pathToFileURL(
+      path.join(consumerDist, "test/synthetic-observer.mjs"),
+    ).href,
+    importedEngine = await import(
+      pathToFileURL(path.join(consumerDist, "src/engine.mjs")).href
+    ),
+    shippedRunner = fileURLToPath(importedEngine.runner);
+  assert.notEqual(
+    shippedRunner,
+    fileURLToPath(new URL("../src/terraform-runner.js", harnessModule)),
+    "The installed harness must exercise a real path alias",
+  );
+  assert.equal(
+    await terraformRunnerIdentity(harnessModule),
+    shippedRunner,
+    "Exact parent argv must use the same resolved engine path as Node's installed import",
+  );
 });
