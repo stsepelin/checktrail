@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { performance } from "node:perf_hooks";
 import { writeFile, mkdtemp, chmod, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -28,6 +30,117 @@ export const options = {
   probes: [pin()],
 };
 export type Call = (command: unknown) => Promise<unknown>;
+export const findingsNativeWallMs = 30000;
+export const findingsResponseHeadroomMs = 10000;
+export function findingsCliStderrDigest() {
+  let bytes = 0;
+  const hash = createHash("sha256");
+  return {
+    append(chunk: Buffer) {
+      assert.ok(Buffer.isBuffer(chunk));
+      bytes += chunk.length;
+      hash.update(chunk);
+    },
+    snapshot() {
+      return { bytes, sha256: hash.copy().digest("hex") };
+    },
+  };
+}
+export function findingsCliResponseTimeoutMs(
+  operation: string,
+  nativeWallMs: number,
+) {
+  assert.ok(
+    Number.isSafeInteger(nativeWallMs) &&
+      nativeWallMs > 0 &&
+      nativeWallMs <= 120000,
+  );
+  // Observe the unchanged native deadline, its bounded Windows job drain and
+  // directory cleanup, and the final JSON response without aborting a legal probe.
+  return ["probe", "finish", "close"].includes(operation)
+    ? nativeWallMs + findingsResponseHeadroomMs
+    : 15000;
+}
+export async function findingsCliDeadline<T>(
+  pending: Promise<T>,
+  timeoutMs: number,
+  describe: () => Record<string, unknown>,
+): Promise<T> {
+  assert.ok(
+    Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 130000,
+  );
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const started = performance.now();
+  try {
+    return await Promise.race([
+      pending,
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => {
+          const context = {
+            ...describe(),
+            timeoutMs,
+            readElapsedMs: Math.round(performance.now() - started),
+          };
+          reject(
+            Object.assign(
+              Error(
+                "Original findings CLI deadline " + JSON.stringify(context),
+              ),
+              { code: "FINDINGS_CLI_DEADLINE", context },
+            ),
+          );
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+export async function stopFindingsCliFixture(
+  child: {
+    exitCode: number | null;
+    signalCode: NodeJS.Signals | null;
+    kill(signal: NodeJS.Signals): boolean;
+  },
+  exited: Promise<number | null>,
+  timeoutMs: number,
+  describe: () => Record<string, unknown>,
+): Promise<void> {
+  const alive = () => child.exitCode === null && child.signalCode === null;
+  if (alive()) child.kill("SIGTERM");
+  try {
+    await findingsCliDeadline(exited, timeoutMs, describe);
+  } catch (primary) {
+    if (alive()) child.kill("SIGKILL");
+    const failures: unknown[] = [];
+    try {
+      await findingsCliDeadline(exited, findingsResponseHeadroomMs, describe);
+    } catch (secondary) {
+      failures.push(secondary);
+    }
+    if (failures.length)
+      throw new AggregateError(
+        [primary, ...failures],
+        "Findings CLI fixture cleanup incomplete",
+        { cause: primary },
+      );
+    throw primary;
+  }
+}
+export async function readFindingsCliResponse(
+  iterator: AsyncIterator<string>,
+  timeoutMs: number,
+  describe: () => Record<string, unknown>,
+): Promise<unknown> {
+  const line = await findingsCliDeadline(iterator.next(), timeoutMs, describe);
+  assert.equal(
+    line.done,
+    false,
+    "Original findings CLI EOF " + JSON.stringify(describe()),
+  );
+  return JSON.parse(line.value!);
+}
+
 export async function complete(
   t: TestContext,
   content = source,
@@ -187,6 +300,8 @@ export async function channel(
     "--allow-review-source",
     "--workflow-candidates",
     "all",
+    "--timeout-ms",
+    String(findingsNativeWallMs),
     ...(file ? ["--workflow-audit", file] : []),
     "--probe",
     probeFile + "#sha256=" + pinned.sha256,
@@ -221,6 +336,7 @@ export async function channel(
       close: async () => client.close(),
     };
   }
+  const launched = performance.now();
   const child = spawn(process.execPath, [
     cli,
     "review-session",
@@ -229,47 +345,92 @@ export async function channel(
   ]);
   const reader = createInterface({ input: child.stdout });
   const iterator = reader[Symbol.asyncIterator]();
-  let stderr = "";
-  child.stderr.on("data", (v: Buffer) => {
-    stderr += v.toString();
-  });
+  const stderr = findingsCliStderrDigest();
+  child.stderr.on("data", (chunk: Buffer) => stderr.append(chunk));
   const exited = new Promise<number | null>((resolve, reject) => {
     child.once("error", reject);
     child.once("close", resolve);
   });
-  const read = async () => {
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    try {
-      const line = await Promise.race([
-        iterator.next(),
-        new Promise<never>((_, reject) => {
-          timer = setTimeout(
-            () => reject(Error("Original findings CLI deadline")),
-            15000,
-          );
-        }),
-      ]);
-      assert.equal(line.done, false, stderr);
-      return JSON.parse(line.value!);
-    } finally {
-      clearTimeout(timer);
-    }
+  let sequence = 0,
+    completedResponses = 0,
+    lastCompletedOperation = "none";
+  const knownOperations = new Set([
+    "open",
+    "next",
+    "submit",
+    "probe",
+    "findings",
+    "status",
+    "close",
+    "finish",
+  ]);
+  const describe =
+    (operation: string, request: number, phase: string) => () => {
+      const observedStderr = stderr.snapshot();
+      return {
+        profile: "findings-cli-observation-v1",
+        operation: knownOperations.has(operation) ? operation : "unknown",
+        sequence: request,
+        phase,
+        spawnElapsedMs: Math.round(performance.now() - launched),
+        completedResponses,
+        lastCompletedOperation,
+        childExitCode: child.exitCode,
+        childSignal: child.signalCode,
+        stderrBytes: observedStderr.bytes,
+        stderrSha256: observedStderr.sha256,
+      };
+    };
+  const read = async (operation: string, request: number) => {
+    const value = await readFindingsCliResponse(
+      iterator,
+      findingsCliResponseTimeoutMs(operation, findingsNativeWallMs),
+      describe(operation, request, "response"),
+    );
+    completedResponses++;
+    lastCompletedOperation = knownOperations.has(operation)
+      ? operation
+      : "unknown";
+    return value;
   };
   return {
     call: async (command: unknown) => {
+      const operation =
+        command &&
+        typeof command === "object" &&
+        "operation" in command &&
+        typeof command.operation === "string"
+          ? command.operation
+          : "unknown";
+      const request = ++sequence;
       child.stdin.write(JSON.stringify(command) + "\n");
-      return read();
+      return read(operation, request);
     },
     finish: async () => {
+      const request = ++sequence;
       child.stdin.end();
-      assert.equal((await read()).format, "review-workflow-summary");
-      assert.equal(await exited, 0, stderr);
+      const summary = (await read("finish", request)) as { format?: string };
+      assert.equal(summary.format, "review-workflow-summary");
+      assert.equal(
+        await findingsCliDeadline(
+          exited,
+          findingsCliResponseTimeoutMs("finish", findingsNativeWallMs),
+          describe("finish", request, "child-close"),
+        ),
+        0,
+      );
     },
     close: async () => {
-      if (child.exitCode === null && child.signalCode === null)
-        child.kill("SIGTERM");
-      await exited;
-      reader.close();
+      try {
+        await stopFindingsCliFixture(
+          child,
+          exited,
+          findingsCliResponseTimeoutMs("close", findingsNativeWallMs),
+          describe("close", sequence, "child-close"),
+        );
+      } finally {
+        reader.close();
+      }
     },
   };
 }

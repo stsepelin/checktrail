@@ -53,7 +53,11 @@ export async function lifecyclePrivacy(t: TestContext) {
     clients: Client[] = [];
   process.env[secretName] = secret;
   try {
-    const local = await validateLifecycleProject(t, { broken: true });
+    const local = await validateLifecycleProject(
+      t,
+      { broken: true },
+      { operation: "privacy-engine", enabled: true },
+    );
     assert.equal(JSON.stringify(local.report).includes(lifecycleCanary), true);
     assert.equal(JSON.stringify(local.report).includes(secret), false);
     summary(projectReport(local.report, false), local.project.root);
@@ -71,37 +75,47 @@ export async function lifecyclePrivacy(t: TestContext) {
     await assert.rejects(access(denied.marker), { code: "ENOENT" });
     for (const detailed of [false, true]) {
       const d = await lifecycleProject(t, { broken: true });
-      const observed = await lifecycleExecute(d, async (signal) => {
-        try {
-          await execute(
-            process.execPath,
-            [
-              cli,
-              "run",
-              "--root",
-              d.root,
-              "--trust-project",
-              ...(detailed ? ["--detailed"] : []),
-            ],
-            {
-              signal,
-              env: environment(),
-              timeout: 60000,
-              maxBuffer: 2 * 1048576,
-            },
-          );
-          assert.fail("The original failing quota must return CLI status 1");
-        } catch (error) {
-          const failed = error as {
-            code: unknown;
-            stdout: string;
-            stderr: string;
-          };
-          assert.equal(failed.code, 1);
-          assert.equal((failed.stdout + failed.stderr).includes(secret), false);
-          return JSON.parse(failed.stdout) as unknown;
-        }
-      });
+      const observed = await lifecycleExecute(
+        d,
+        async (signal) => {
+          try {
+            await execute(
+              process.execPath,
+              [
+                cli,
+                "run",
+                "--root",
+                d.root,
+                "--trust-project",
+                ...(detailed ? ["--detailed"] : []),
+              ],
+              {
+                signal,
+                env: environment(),
+                timeout: 60000,
+                maxBuffer: 2 * 1048576,
+              },
+            );
+            assert.fail("The original failing quota must return CLI status 1");
+          } catch (error) {
+            const failed = error as {
+              code: unknown;
+              stdout: string;
+              stderr: string;
+            };
+            assert.equal(failed.code, 1);
+            assert.equal(
+              (failed.stdout + failed.stderr).includes(secret),
+              false,
+            );
+            return JSON.parse(failed.stdout) as unknown;
+          }
+        },
+        {
+          operation: detailed ? "privacy-cli-detailed" : "privacy-cli-summary",
+          enabled: true,
+        },
+      );
       if (detailed) {
         const report = reportSchema.parse(observed.value);
         assert.equal(report.outcome, "failed");
@@ -141,20 +155,27 @@ export async function lifecyclePrivacy(t: TestContext) {
           "--allow-execution",
           ...(detailed ? ["--detailed"] : []),
         ]);
-      const observed = await lifecycleExecute(d, async (signal) => {
-        const close = () => {
-          void client.close();
-        };
-        signal.addEventListener("abort", close, { once: true });
-        try {
-          return await client.callTool({
-            name: "validation_run",
-            arguments: {},
-          });
-        } finally {
-          signal.removeEventListener("abort", close);
-        }
-      });
+      const observed = await lifecycleExecute(
+        d,
+        async (signal) => {
+          const close = () => {
+            void client.close();
+          };
+          signal.addEventListener("abort", close, { once: true });
+          try {
+            return await client.callTool({
+              name: "validation_run",
+              arguments: {},
+            });
+          } finally {
+            signal.removeEventListener("abort", close);
+          }
+        },
+        {
+          operation: detailed ? "privacy-mcp-detailed" : "privacy-mcp-summary",
+          enabled: true,
+        },
+      );
       assert.equal(observed.value.isError, undefined);
       assert.equal(JSON.stringify(observed.value).includes(secret), false);
       if (detailed) {

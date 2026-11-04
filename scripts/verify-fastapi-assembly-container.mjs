@@ -130,13 +130,44 @@ assert.ok(
       c.restoredPassed,
   ),
 );
+const nativeGuardCases = [
+  "assembly-fastapi protocol method guard acceptance",
+  "assembly-fastapi declared registration guard acceptance",
+  "assembly-fastapi isolated bootstrap guard acceptance",
+  "assembly-fastapi hierarchy budget guard acceptance",
+  "assembly-fastapi route identity drift guard acceptance",
+  "assembly-fastapi middleware identity drift guard acceptance",
+  "assembly-fastapi incomplete native response guard acceptance",
+  "assembly-fastapi explicit request boundary guard acceptance",
+  "assembly-fastapi typed metadata near-miss guard acceptance",
+  "assembly-fastapi request server port guard acceptance",
+];
+const pureLifecycleCases = [
+  "FastAPI cancel and output witness observation admits legal startup beyond three seconds",
+  "FastAPI witness deadlines retain execution headroom and reject late reads",
+  "FastAPI witness observation refuses completed execution before and during the read",
+  "FastAPI witness observation preserves malformed reads and rejects invalid budgets",
+];
+const supplementalCases = [...nativeGuardCases, ...pureLifecycleCases];
 const supplemental = run([
   "node",
   "--test",
   "--test-reporter=tap",
   "dist/test/review-fastapi-assembly-guards.test.js",
 ]);
-assert.match(supplemental, /# pass 10\n/);
+assert.deepEqual(
+  [...supplemental.matchAll(/^ok \d+ - (.+)$/gm)].map((match) => match[1]),
+  supplementalCases,
+  "Every original native guard and pure lifecycle control must pass by exact identity",
+);
+assert.match(
+  supplemental,
+  new RegExp(`^# tests ${supplementalCases.length}\\n`, "m"),
+);
+assert.match(
+  supplemental,
+  new RegExp(`^# pass ${supplementalCases.length}\\n`, "m"),
+);
 assert.match(supplemental, /# fail 0\n/);
 assert.match(supplemental, /# skipped 0\n/);
 const installed = JSON.parse(
@@ -168,7 +199,13 @@ process.stdout.write(
     source,
     cachePreparation,
     guards,
-    supplemental: { passed: 10, failed: 0, skipped: 0 },
+    supplemental: {
+      passed: supplementalCases.length,
+      nativeGuards: nativeGuardCases.length,
+      pureLifecycleControls: pureLifecycleCases.length,
+      failed: 0,
+      skipped: 0,
+    },
     installed,
     environment: {
       network: "none",

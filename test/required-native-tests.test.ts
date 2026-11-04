@@ -1731,17 +1731,39 @@ else {console.log(${JSON.stringify(JSON.stringify(ledger))});process.exitCode=7;
 
 test("FastAPI controller admits the source and installed composite windows while keeping other phases bounded", async (t) => {
   const root = await fixture(t, {
+    "observe-cases.mjs": `import{registerHooks}from'node:module';
+const target=process.argv[2];globalThis.originalGuardNames=[];
+const register="export function test(name){if(typeof name!=='string')throw Error('A static test name is required');globalThis.originalGuardNames.push(name);}";
+const fixture="export const available=false,source='',profile={};export function project(){throw Error('Fixture execution is forbidden during registration');}export const run=project,waitForFastapiLifecycleWitness=project;";
+const engine="export function validate(){throw Error('Engine execution is forbidden during registration');}export const createPlan=validate;";
+const child="export function spawnSync(){throw Error('Native execution is forbidden during registration');}";
+registerHooks({resolve(specifier,context,next){if(context.parentURL===target){const stub=specifier==='node:test'?register:specifier==='node:child_process'?child:specifier==='./review-fastapi-assembly-fixture.js'?fixture:specifier==='../src/engine.js'?engine:null;if(stub)return{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true};}return next(specifier,context);}});
+await import(target);console.log(JSON.stringify(globalThis.originalGuardNames));`,
     "observe-controller.mjs": `
 import{registerHooks}from'node:module';import{pathToFileURL}from'node:url';
 const target=pathToFileURL(process.argv[2]).href;globalThis.originalObserverCalls=[];
-// Observe fixed subprocess arguments only. These synthetic results are not native receipts.
-const stub=String.raw\`export function execFileSync(command,args,options){globalThis.originalObserverCalls.push({command,args,timeout:options?.timeout??null});if(command==='npm')return '/synthetic/cache';if(command==='docker'){const text=args.join(' ');if(text.includes('from importlib.metadata import version'))return JSON.stringify({python:'3.12.13',packages:{fastapi:'0.141.1',starlette:'1.6.0',pydantic:'2.13.5'}});if(text.includes('readFileSync(process.execPath)'))return JSON.stringify({version:'v22.23.2',platform:'linux',arch:'arm64'});if(text.includes('prepare-acceptance-cache-subset'))return JSON.stringify({lockedRegistryTarballs:1,bytes:1,registryMetadataCopied:false,historicalLocalPackageTarballsCopied:false})+'\\n'+JSON.stringify({complete:true,passed:9});if(text.includes('verify-fastapi-assembly-guards.mjs'))return JSON.stringify({controls:Array.from({length:37},()=>({originalPassed:true,mutantCompiled:true,mutantFailedAssertion:true,restoredPassed:true}))});if(text.includes('frameworks'))return JSON.stringify({required:8,passed:8,complete:true});if(text.includes('review-fastapi-assembly-guards.test.js'))return '# pass 10\\n# fail 0\\n# skipped 0\\n';if(text.includes('fastapi.test.js'))return '# pass 1\\n# fail 0\\n# skipped 0\\n';}if(command===process.execPath&&args[0]==='scripts/verify-import-context-package.mjs')return JSON.stringify({profile:{complete:true,passed:9}});throw Error('Unexpected fixed controller command');}\`;
+// Observe arguments and actual registered names. Synthetic statuses are not native receipts.
+const stub="const scenario="+JSON.stringify(process.argv[3]??"valid")+";const actualCases="+JSON.stringify(JSON.parse(process.argv[4]))+";"+String.raw\`export function execFileSync(command,args,options){globalThis.originalObserverCalls.push({command,args,timeout:options?.timeout??null});if(command==='npm')return '/synthetic/cache';if(command==='docker'){const text=args.join(' ');if(text.includes('from importlib.metadata import version'))return JSON.stringify({python:'3.12.13',packages:{fastapi:'0.141.1',starlette:'1.6.0',pydantic:'2.13.5'}});if(text.includes('readFileSync(process.execPath)'))return JSON.stringify({version:'v22.23.2',platform:'linux',arch:'arm64'});if(text.includes('prepare-acceptance-cache-subset'))return JSON.stringify({lockedRegistryTarballs:1,bytes:1,registryMetadataCopied:false,historicalLocalPackageTarballsCopied:false})+'\\n'+JSON.stringify({complete:true,passed:9});if(text.includes('verify-fastapi-assembly-guards.mjs'))return JSON.stringify({controls:Array.from({length:37},()=>({originalPassed:true,mutantCompiled:true,mutantFailedAssertion:true,restoredPassed:true}))});if(text.includes('frameworks'))return JSON.stringify({required:8,passed:8,complete:true});if(text.includes('review-fastapi-assembly-guards.test.js')){const names=[...actualCases];if(scenario==='missing-native')names[0]=names.at(-1);if(scenario==='duplicate-native')names[0]=names[1];if(scenario==='missing-pure')names[names.length-1]=names[0];return names.map((name,i)=>'ok '+(i+1)+' - '+name+(scenario==='skipped-native'&&i===0?' # SKIP':'')).join('\\n')+'\\n# tests '+names.length+'\\n# pass '+(scenario==='skipped-native'?names.length-1:names.length)+'\\n# fail 0\\n# skipped '+(scenario==='skipped-native'?1:0)+'\\n';}if(text.includes('fastapi.test.js'))return '# pass 1\\n# fail 0\\n# skipped 0\\n';}if(command===process.execPath&&args[0]==='scripts/verify-import-context-package.mjs')return JSON.stringify({profile:{complete:true,passed:9}});throw Error('Unexpected fixed controller command');}\`;
 registerHooks({resolve(specifier,context,next){return specifier==='node:child_process'&&context.parentURL===target?{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true}:next(specifier,context)}});
 process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_IMAGE='synthetic-operator-image';process.env.CHECKTRAIL_TEST_TASK='synthetic-observer-control';await import(target);console.log(JSON.stringify({calls:globalThis.originalObserverCalls}));
 `,
   });
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT;
+  const inventory = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "observe-cases.mjs"),
+      new URL("./review-fastapi-assembly-guards.test.js", import.meta.url).href,
+    ],
+    { env, encoding: "utf8", timeout: 10000 },
+  );
+  assert.equal(inventory.error, undefined);
+  assert.equal(inventory.status, 0, inventory.stdout + inventory.stderr);
+  const actualCases = JSON.parse(inventory.stdout) as string[];
+  assert.equal(actualCases.length, 14);
+  assert.equal(new Set(actualCases).size, 14);
+  assert.ok(actualCases.every((name) => typeof name === "string"));
   const observed = spawnSync(
     process.execPath,
     [
@@ -1752,6 +1774,8 @@ process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_IMAGE='synthetic-operator-image';process
           import.meta.url,
         ),
       ),
+      "valid",
+      JSON.stringify(actualCases),
     ],
     { env, encoding: "utf8", timeout: 10000 },
   );
@@ -1780,4 +1804,45 @@ process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_IMAGE='synthetic-operator-image';process
   );
   assert.equal(installed.length, 1);
   assert.equal(installed[0]!.timeout, 300000);
+  const receipt = JSON.parse(observed.stdout.trim().split("\n")[0]!);
+  assert.deepEqual(receipt.supplemental, {
+    passed: 14,
+    nativeGuards: 10,
+    pureLifecycleControls: 4,
+    failed: 0,
+    skipped: 0,
+  });
+  for (const scenario of [
+    "missing-native",
+    "missing-pure",
+    "duplicate-native",
+    "skipped-native",
+  ]) {
+    const rejected = spawnSync(
+      process.execPath,
+      [
+        path.join(root, "observe-controller.mjs"),
+        fileURLToPath(
+          new URL(
+            "../../scripts/verify-fastapi-assembly-container.mjs",
+            import.meta.url,
+          ),
+        ),
+        scenario,
+        JSON.stringify(actualCases),
+      ],
+      { env, encoding: "utf8", timeout: 10000 },
+    );
+    assert.equal(rejected.error, undefined);
+    assert.equal(
+      rejected.status,
+      1,
+      scenario + ": " + rejected.stdout + rejected.stderr,
+    );
+    assert.match(rejected.stderr, /AssertionError/);
+    assert.doesNotMatch(
+      rejected.stderr,
+      /SyntaxError|TypeError|ReferenceError/,
+    );
+  }
 });

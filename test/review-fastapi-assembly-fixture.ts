@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { setTimeout as delay } from "node:timers/promises";
 import type { TestContext } from "node:test";
 import type { z } from "zod";
 import type { fastapiConfigSchema } from "../src/fastapi.js";
@@ -559,4 +560,40 @@ export async function run(
   configuration: unknown = profile,
 ) {
   return validate(await project(t, program, configuration), { trusted: true });
+}
+
+/** Observe the witness inside the unchanged engine wall budget, reserving control time. */
+export async function waitForFastapiLifecycleWitness<T>(options: {
+  executionTimeoutMs: number;
+  read: () => Promise<T>;
+  executionSettled: () => boolean;
+  now?: () => number;
+  pause?: (milliseconds: number) => Promise<unknown>;
+}): Promise<
+  | { state: "ready"; value: T; elapsedMs: number }
+  | { state: "deadline" | "execution-ended"; elapsedMs: number }
+> {
+  const now = options.now ?? (() => performance.now());
+  const pause = options.pause ?? delay;
+  const observationMs = Math.min(10000, options.executionTimeoutMs - 1000);
+  if (!Number.isFinite(options.executionTimeoutMs) || observationMs <= 0)
+    throw new Error("Invalid FastAPI lifecycle execution budget");
+  const started = now();
+  for (;;) {
+    const elapsedMs = now() - started;
+    if (options.executionSettled())
+      return { state: "execution-ended", elapsedMs };
+    if (elapsedMs >= observationMs) return { state: "deadline", elapsedMs };
+    try {
+      const value = await options.read();
+      const elapsedMs = now() - started;
+      if (options.executionSettled())
+        return { state: "execution-ended", elapsedMs };
+      if (elapsedMs >= observationMs) return { state: "deadline", elapsedMs };
+      return { state: "ready", value, elapsedMs };
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    }
+    await pause(Math.max(0, Math.min(10, observationMs - (now() - started))));
+  }
 }

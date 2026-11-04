@@ -95,7 +95,7 @@
     "kustomize": "5.8.2",
     "kubeconform": "0.8.0",
     "kubernetes": "1.36.0",
-    "mcp-sdk": "2.3.1",
+    "mcp-sdk": "2.4.0",
     "mcp-protocol": "2026-07-28",
     "tree-sitter": "0.27.0"
   },
@@ -3206,5 +3206,5 @@
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
   "qualityAssessed": false,
-  "scopeSha256": "0fa142f57822a015c322e2428d657b4bb5d00a543913dee0e401c9945c44568a"
+  "scopeSha256": "acddaba1dd782390afe48296e1e8e1fd0409df0658ad1cf0aa14c6f19a57d144"
 }

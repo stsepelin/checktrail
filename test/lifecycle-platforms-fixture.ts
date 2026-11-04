@@ -115,10 +115,26 @@ assert.equal(visible([{enabled:true},{enabled:true},{enabled:false}]),2,${JSON.s
     continue: () => writeFile(release, "Original operator release."),
   };
 }
+export type LifecycleDiagnostic = {
+  operation:
+    | "privacy-engine"
+    | "privacy-cli-summary"
+    | "privacy-cli-detailed"
+    | "privacy-mcp-summary"
+    | "privacy-mcp-detailed";
+  enabled?: boolean;
+};
 export async function lifecycleExecute<T>(
   project: Awaited<ReturnType<typeof lifecycleProject>>,
   start: (signal: AbortSignal) => Promise<T>,
+  diagnostic?: LifecycleDiagnostic,
 ) {
+  const diagnose =
+    diagnostic !== undefined &&
+    (diagnostic.enabled ?? process.env.CHECKTRAIL_LIFECYCLE_DIAGNOSTIC === "1");
+  const started = performance.now();
+  let phase = "observe";
+  let diagnosticError: AggregateError | undefined;
   const controller = new AbortController(),
     running = start(controller.signal);
   let settled = false;
@@ -135,12 +151,57 @@ export async function lifecycleExecute<T>(
   );
   let rows: ProcessIdentity[] = [];
   let bodyObserved = false;
+  const finish = async () => {
+    const settledBeforeAbort = settled;
+    controller.abort();
+    await Promise.allSettled([running]);
+    let cleanup = "confirmed";
+    try {
+      await project.cleanup(rows);
+    } catch (error) {
+      if (!diagnosticError) throw error;
+      cleanup = "failed";
+      diagnosticError.errors.push(error);
+    }
+    if (diagnosticError) {
+      const value = terminal?.value;
+      const object =
+        value !== null && typeof value === "object"
+          ? (value as Record<string, unknown>)
+          : undefined;
+      const candidate = object?.outcome;
+      const outcome =
+        typeof candidate === "string" &&
+        ["passed", "failed", "incomplete"].includes(candidate)
+          ? candidate
+          : null;
+      diagnosticError.message =
+        "Lifecycle operation failed; bounded diagnostic " +
+        JSON.stringify({
+          schemaVersion: 1,
+          operation: diagnostic!.operation,
+          phase,
+          elapsedMs: Math.round(performance.now() - started),
+          bodyObserved,
+          settledBeforeAbort,
+          settledAfterAbort: settled,
+          outcome,
+          cleanup,
+          reachedIdentities: rows.length,
+          failureCount: diagnosticError.errors.length,
+        });
+    }
+  };
   try {
     const reached = await project.observe();
     bodyObserved = true;
+    phase = "identities";
     rows = await project.identities(reached);
+    phase = "release";
     await project.continue();
+    phase = "execution";
     const value = await running;
+    phase = "completion-observation";
     await lifecycleWait(
       async () => {
         const ids = [...reached.children, reached.body, reached.driver];
@@ -149,9 +210,20 @@ export async function lifecycleExecute<T>(
       2500,
       "Original reached lifecycle processes survived completion",
     );
+    phase = "release-marker";
     await access(project.release);
     return { project, value, reached };
   } catch (error) {
+    if (diagnose) {
+      diagnosticError = new AggregateError(
+        [error],
+        "Lifecycle operation failed",
+        {
+          cause: error,
+        },
+      );
+      throw diagnosticError;
+    }
     if (!bodyObserved && settled) {
       const diagnostic = JSON.stringify(terminal, (_key, value: unknown) =>
         typeof value === "string" && value.length > 512
@@ -166,22 +238,24 @@ export async function lifecycleExecute<T>(
     }
     throw error;
   } finally {
-    controller.abort();
-    await Promise.allSettled([running]);
-    await project.cleanup(rows);
+    await finish();
   }
 }
 export async function validateLifecycleProject(
   t: TestContext,
   options: Parameters<typeof lifecycleProject>[1] = {},
+  diagnostic?: LifecycleDiagnostic,
 ) {
   const project = await lifecycleProject(t, options);
-  const observed = await lifecycleExecute(project, (signal) =>
-    validate(project.root, {
-      trusted: true,
-      timeoutMs: process.platform === "win32" ? 30000 : 15000,
-      signal,
-    }),
+  const observed = await lifecycleExecute(
+    project,
+    (signal) =>
+      validate(project.root, {
+        trusted: true,
+        timeoutMs: process.platform === "win32" ? 30000 : 15000,
+        signal,
+      }),
+    diagnostic,
   );
   return {
     project: observed.project,

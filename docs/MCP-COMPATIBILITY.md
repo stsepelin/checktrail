@@ -7,11 +7,11 @@ provider is required.
 
 ## SDK dependency roles
 
-The production server and its core are pinned to `2.3.1`. The external
-acceptance client remains pinned to `2.3.1`; npm now resolves their shared core
-at the root rather than keeping a separate nested client core. Acceptance checks
-resolve the client's actual dependency and compare it with the exact lock entry.
-They do not require one hoisting layout.
+The production server and its own core dependency are pinned to `2.4.0`. The
+external acceptance client remains pinned to `2.3.1`. The lock retains core
+`2.3.1` at the root for that client and core `2.4.0` beneath the server. Acceptance
+checks resolve the client's actual dependency and compare it with the exact lock
+entry. They do not require one hoisting layout.
 
 The shared offline installer verifies every required production package version
 against the source lock before publishing an installed consumer. External client

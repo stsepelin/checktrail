@@ -10,6 +10,7 @@ import {
   profile,
   project,
   run,
+  waitForFastapiLifecycleWitness,
 } from "./review-fastapi-assembly-fixture.js";
 const skip = available
   ? false
@@ -350,3 +351,116 @@ test(
     assert.equal(report.outcome, "passed");
   },
 );
+
+const absent = () =>
+  Object.assign(new Error("synthetic witness absent"), { code: "ENOENT" });
+function clock() {
+  let elapsed = 0;
+  return {
+    now: () => elapsed,
+    advance: (milliseconds: number) => {
+      elapsed += milliseconds;
+    },
+    pause: async (milliseconds: number) => {
+      elapsed += milliseconds;
+    },
+  };
+}
+test("FastAPI cancel and output witness observation admits legal startup beyond three seconds", async () => {
+  for (const executionTimeoutMs of [15000]) {
+    const time = clock();
+    const result = await waitForFastapiLifecycleWitness({
+      executionTimeoutMs,
+      ...time,
+      executionSettled: () => false,
+      read: async () => {
+        if (time.now() < 3100) throw absent();
+        return { parent: 1, child: 2 };
+      },
+    });
+    assert.deepEqual(result, {
+      state: "ready",
+      value: { parent: 1, child: 2 },
+      elapsedMs: 3100,
+    });
+  }
+});
+test("FastAPI witness deadlines retain execution headroom and reject late reads", async () => {
+  for (const [executionTimeoutMs, expected] of [
+    [4000, 3000],
+    [15000, 10000],
+  ] as const) {
+    const time = clock();
+    const result = await waitForFastapiLifecycleWitness({
+      executionTimeoutMs,
+      ...time,
+      executionSettled: () => false,
+      read: async () => {
+        throw absent();
+      },
+    });
+    assert.deepEqual(result, { state: "deadline", elapsedMs: expected });
+    assert.ok(result.elapsedMs < executionTimeoutMs);
+  }
+  const time = clock();
+  const result = await waitForFastapiLifecycleWitness({
+    executionTimeoutMs: 4000,
+    ...time,
+    executionSettled: () => false,
+    read: async () => {
+      time.advance(3000);
+      return { parent: 1, child: 2 };
+    },
+  });
+  assert.deepEqual(result, { state: "deadline", elapsedMs: 3000 });
+});
+test("FastAPI witness observation refuses completed execution before and during the read", async () => {
+  let reads = 0;
+  const time = clock();
+  const before = await waitForFastapiLifecycleWitness({
+    executionTimeoutMs: 15000,
+    ...time,
+    executionSettled: () => true,
+    read: async () => {
+      reads++;
+      return 1;
+    },
+  });
+  assert.deepEqual(before, { state: "execution-ended", elapsedMs: 0 });
+  assert.equal(reads, 0);
+  let settled = false;
+  const during = await waitForFastapiLifecycleWitness({
+    executionTimeoutMs: 15000,
+    ...time,
+    executionSettled: () => settled,
+    read: async () => {
+      settled = true;
+      return 1;
+    },
+  });
+  assert.deepEqual(during, { state: "execution-ended", elapsedMs: 0 });
+});
+test("FastAPI witness observation preserves malformed reads and rejects invalid budgets", async () => {
+  const failure = Object.assign(new Error("synthetic witness unreadable"), {
+    code: "EACCES",
+  });
+  await assert.rejects(
+    waitForFastapiLifecycleWitness({
+      executionTimeoutMs: 15000,
+      executionSettled: () => false,
+      read: async () => {
+        throw failure;
+      },
+    }),
+    (error) => error === failure,
+  );
+  for (const executionTimeoutMs of [1000, 0, NaN, Infinity])
+    await assert.rejects(
+      waitForFastapiLifecycleWitness({
+        executionTimeoutMs,
+        executionSettled: () => false,
+        read: async () => 1,
+      }),
+      /Invalid FastAPI/,
+    );
+});
