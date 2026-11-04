@@ -26,6 +26,26 @@ export class PinnedArtifactHttpError extends Error {
   }
 }
 
+// Fetch bodies and cancellation can remain pending after a transport signal aborts.
+// Observe the same signal ourselves without adding or resetting any deadline.
+function waitForRequest(action, signal) {
+  let aborted;
+  const result = new Promise((resolve, reject) => {
+    aborted = () => reject(signal.reason);
+    if (signal.aborted) {
+      aborted();
+      return;
+    }
+    signal.addEventListener("abort", aborted, { once: true });
+    try {
+      Promise.resolve(action()).then(resolve, reject);
+    } catch (error) {
+      reject(error);
+    }
+  });
+  return result.finally(() => signal.removeEventListener("abort", aborted));
+}
+
 // Operator setup only. The caller must verify the pinned digest before use.
 export async function requestPinnedArtifactBytes(
   { asset, bytes, fallbackAsset, fallbackAssets },
@@ -109,7 +129,7 @@ export async function requestPinnedArtifactBytes(
       ? globalThis.AbortSignal.any([signal, attemptDeadline])
       : signal;
     const attemptAsset = nextAsset;
-    let response, downloaded;
+    let response, downloaded, reader;
     let ownedAttemptTimeout = false;
     // Observers cannot replace delivery failures or influence retry admission.
     const diagnostic = (phase, extra = {}, failure) => {
@@ -181,10 +201,16 @@ export async function requestPinnedArtifactBytes(
         diagnostic("body-start");
         let count = 0;
         const chunks = [];
-        for await (const chunk of response.body) {
-          count += chunk.length;
+        reader = response.body.getReader();
+        for (;;) {
+          const { done, value } = await waitForRequest(
+            () => reader.read(),
+            requestSignal,
+          );
+          if (done) break;
+          count += value.length;
           assert.ok(count <= bytes, "Pinned artifact byte limit");
-          chunks.push(Buffer.from(chunk));
+          chunks.push(Buffer.from(value));
         }
         downloaded = Buffer.concat(chunks);
         diagnostic("body-complete", { receivedBytes: downloaded.length });
@@ -202,11 +228,40 @@ export async function requestPinnedArtifactBytes(
         diagnostic("failure-captured", { ownedAttemptTimeout }, error);
         throw error;
       } finally {
-        if (onDiagnostic !== undefined && response?.body)
+        // Releasing our reader also rejects an outstanding read, whose promise
+        // is already observed. Cancel the actual body even when the signal has
+        // expired; only waiting for cancellation is limited by that same signal.
+        reader?.releaseLock();
+        if (response?.body) {
           diagnostic("cleanup-start");
-        await response?.body?.cancel().catch(() => {});
-        if (onDiagnostic !== undefined && response?.body)
-          diagnostic("cleanup-complete");
+          let cleanupState = "pending";
+          let cancellation;
+          try {
+            cancellation = response.body.cancel();
+          } catch (error) {
+            cancellation = Promise.reject(error);
+          }
+          const settled = Promise.resolve(cancellation).then(
+            () => {
+              cleanupState = "fulfilled";
+            },
+            () => {
+              cleanupState = "rejected";
+            },
+          );
+          await waitForRequest(() => settled, requestSignal).catch(() => {});
+          // An immediately settled cancel still gets its terminal observation
+          // when the request signal was already aborted before cleanup started.
+          await Promise.resolve();
+          diagnostic(
+            cleanupState === "fulfilled"
+              ? "cleanup-complete"
+              : cleanupState === "rejected"
+                ? "cleanup-failed"
+                : "cleanup-pending",
+            { cleanupSettled: cleanupState !== "pending" },
+          );
+        }
       }
     } catch (error) {
       signal.throwIfAborted();
@@ -285,6 +340,8 @@ export async function tracePinnedArtifactAcquisition(
     "failure-captured",
     "cleanup-start",
     "cleanup-complete",
+    "cleanup-failed",
+    "cleanup-pending",
     "retry",
     "request-complete",
     "request-aborted",
@@ -311,6 +368,7 @@ export async function tracePinnedArtifactAcquisition(
     "requestAborted",
     "attemptAborted",
     "ownedAttemptTimeout",
+    "cleanupSettled",
     "matchesRequestReason",
     "matchesOverallReason",
   ]);
@@ -401,9 +459,13 @@ export async function tracePinnedArtifactAcquisition(
         latestEvent = event;
         emit(event.phase, event);
         if (
-          ["cleanup-complete", "retry", "request-complete"].includes(
-            event.phase,
-          )
+          [
+            "cleanup-complete",
+            "cleanup-failed",
+            "cleanup-pending",
+            "retry",
+            "request-complete",
+          ].includes(event.phase)
         ) {
           const listener = listeners.get(event.attempt);
           if (listener) {
@@ -430,7 +492,11 @@ export async function tracePinnedArtifactAcquisition(
           }
         }
         const requestIndex = ++networkRequests;
-        const metadata = { ...latestEvent, requestIndex, mirrorIndex };
+        const metadata = {
+          attempt: latestEvent.attempt,
+          requestIndex,
+          mirrorIndex,
+        };
         if (transportOnly) latestEvent = metadata;
         lastRequestSignal = options.signal;
         const aborted = () =>
