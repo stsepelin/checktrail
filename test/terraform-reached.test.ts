@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   readFile,
+  realpath,
   readlink,
+  symlink,
   readdir,
   mkdtemp,
   rm,
@@ -12,47 +14,114 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { fixture } from "./helpers.js";
 import { validate } from "../src/engine.js";
 import {
   terraformFixture,
   terraformNative,
   terraformRewrite,
 } from "./terraform-fixture.js";
-async function reached(owner: string, version = false) {
+async function terraformRunnerIdentity(moduleUrl: string) {
+  return realpath(
+    fileURLToPath(new URL("../src/terraform-runner.js", moduleUrl)),
+  );
+}
+const runner = await terraformRunnerIdentity(import.meta.url);
+const nativeIo = {
+  readText: (file: string) => readFile(file, "utf8"),
+  readLink: (file: string) => readlink(file),
+};
+const statIdentity = (text: string, pid: string) => {
+  if (!text.startsWith(pid + " (") || !text.includes(") ")) return null;
+  const fields = text.slice(text.lastIndexOf(") ") + 2).split(" ");
+  if (
+    !/^[1-9]\d*$/.test(fields[1] ?? "") ||
+    !/^[1-9]\d*$/.test(fields[19] ?? "") ||
+    ["Z", "X", "x"].includes(fields[0] ?? "")
+  )
+    return null;
+  return { parent: fields[1]!, start: fields[19]! };
+};
+
+/** Native argv alone cannot distinguish tool collection from validation's own version probe. */
+async function readTerraformProcess(
+  pid: string,
+  owner: string,
+  projectRoot: string,
+  version = false,
+  io = nativeIo,
+) {
+  if (!/^[1-9]\d*$/.test(pid)) return null;
+  try {
+    const args = await readNativeProcCommand(
+      pid,
+      "/usr/local/bin/terraform",
+      io,
+    );
+    const expected = version
+      ? ["version", "-json", ""]
+      : ["validate", "-json", "-no-color", ""];
+    if (!args || args.slice(1).join("\0") !== expected.join("\0")) return null;
+    const workspace = await io.readLink(`/proc/${pid}/cwd`);
+    if (
+      !workspace.startsWith(owner + path.sep) ||
+      !workspace.endsWith("/native")
+    )
+      return null;
+    const before = statIdentity(await io.readText(`/proc/${pid}/stat`), pid);
+    if (!before) return null;
+    const parent = await readNativeProcCommand(
+      before.parent,
+      process.execPath,
+      io,
+    );
+    if (
+      !parent ||
+      parent[1] !== runner ||
+      parent[2] !== projectRoot ||
+      parent.length !== (version ? 6 : 5) ||
+      parent.at(-1) !== "" ||
+      (version && parent[4] !== "--version")
+    )
+      return null;
+    const after = statIdentity(await io.readText(`/proc/${pid}/stat`), pid);
+    if (
+      !after ||
+      after.parent !== before.parent ||
+      after.start !== before.start
+    )
+      return null;
+    if ((await io.readLink(`/proc/${pid}/cwd`)) !== workspace) return null;
+    return { pid: Number(pid), start: before.start, workspace };
+  } catch (error) {
+    if (
+      ["ENOENT", "ESRCH", "EACCES"].includes(
+        (error as NodeJS.ErrnoException).code ?? "",
+      )
+    )
+      return null;
+    throw error;
+  }
+}
+
+async function reached(owner: string, projectRoot: string, version = false) {
   const deadline = Date.now() + 30000;
   while (Date.now() < deadline) {
     for (const pid of await readdir("/proc")) {
-      if (!/^\d+$/.test(pid)) continue;
-      try {
-        const args = await readNativeProcCommand(
-          pid,
-          "/usr/local/bin/terraform",
-        );
-        if (!args) continue;
-        if (
-          !args.includes(version ? "version" : "validate") ||
-          !args.includes("-json") ||
-          (!version && !args.includes("-no-color"))
-        )
-          continue;
-        const workspace = await readlink(`/proc/${pid}/cwd`);
-        if (!workspace.startsWith(owner + path.sep)) continue;
-        assert.ok(workspace.endsWith("/native"));
-        const raw = await readFile(`/proc/${pid}/stat`, "utf8");
-        const stat = raw.slice(raw.lastIndexOf(")") + 2).split(" ");
-        return { pid: Number(pid), start: stat[19]!, workspace };
-      } catch (error) {
-        if (
-          (error as NodeJS.ErrnoException).code !== "ENOENT" &&
-          (error as NodeJS.ErrnoException).code !== "ESRCH" &&
-          (error as NodeJS.ErrnoException).code !== "EACCES"
-        )
-          throw error;
-      }
+      const observed = await readTerraformProcess(
+        pid,
+        owner,
+        projectRoot,
+        version,
+      );
+      if (observed) return observed;
     }
     await new Promise((resolve) => setTimeout(resolve, 2));
   }
-  throw new Error("Actual native validator body was not observed");
+  throw new Error(
+    "Actual native validator body in the selected runner phase was not observed",
+  );
 }
 async function exercise(
   t: Parameters<typeof terraformFixture>[0],
@@ -90,7 +159,7 @@ async function exercise(
     signal: controller.signal,
   });
   try {
-    const native = await reached(owner, mode === "version");
+    const native = await reached(owner, root, mode === "version");
     assert.ok(
       native.pid > 0 && native.start.length > 0,
       "Real pinned Terraform validation reached before steering execution",
@@ -156,3 +225,222 @@ test(
   terraformNative,
   async (t) => exercise(t, "version"),
 );
+
+function observerFixture(version: boolean) {
+  const pid = "71",
+    parent = "23",
+    owner = "/synthetic/owned",
+    root = "/synthetic/project";
+  const fields = Array<string>(20).fill("0");
+  fields[0] = "S";
+  fields[1] = parent;
+  fields[19] = "8123";
+  const stat = () => pid + " (terraform) " + fields.join(" ");
+  const values = new Map([
+    [
+      `/proc/${pid}/cmdline`,
+      [
+        "/usr/local/bin/terraform",
+        ...(version
+          ? ["version", "-json"]
+          : ["validate", "-json", "-no-color"]),
+        "",
+      ].join("\0"),
+    ],
+    [`/proc/${pid}/exe`, "/usr/local/bin/terraform"],
+    [`/proc/${pid}/cwd`, owner + "/command/terraform/native"],
+    [`/proc/${pid}/stat`, stat()],
+    [
+      `/proc/${parent}/cmdline`,
+      [
+        process.execPath,
+        runner,
+        root,
+        JSON.stringify({ inputs: [] }),
+        ...(version ? ["--version"] : []),
+        "",
+      ].join("\0"),
+    ],
+    [`/proc/${parent}/exe`, process.execPath],
+  ]);
+  const read = async (file: string) => {
+    const value = values.get(file);
+    assert.notEqual(value, undefined, file);
+    return value!;
+  };
+  return {
+    pid,
+    parent,
+    owner,
+    root,
+    fields,
+    stat,
+    values,
+    io: { readText: read, readLink: read },
+  };
+}
+
+test("Terraform native process observer binds exact tool-collection and validation parent phases with native identity and current owned workspace", async () => {
+  for (const version of [true, false]) {
+    const control = observerFixture(version);
+    assert.deepEqual(
+      await readTerraformProcess(
+        control.pid,
+        control.owner,
+        control.root,
+        version,
+        control.io,
+      ),
+      {
+        pid: 71,
+        start: "8123",
+        workspace: control.owner + "/command/terraform/native",
+      },
+    );
+    // The same version command also runs inside validation. It is not a tool-collection witness.
+    const parentCommand = control.values.get(
+      `/proc/${control.parent}/cmdline`,
+    )!;
+    control.values.set(
+      `/proc/${control.parent}/cmdline`,
+      version
+        ? parentCommand.replace("--version\0", "")
+        : parentCommand.replace(/\0$/, "\0--version\0"),
+    );
+    assert.equal(
+      await readTerraformProcess(
+        control.pid,
+        control.owner,
+        control.root,
+        version,
+        control.io,
+      ),
+      null,
+    );
+  }
+});
+
+test("Terraform native process observer rejects phase suffixes unrelated runner identities workspace aliases and processes that exit or change parent before admission", async () => {
+  const controls = [
+    (c: ReturnType<typeof observerFixture>) =>
+      c.values.set(
+        `/proc/${c.parent}/cmdline`,
+        c.values
+          .get(`/proc/${c.parent}/cmdline`)!
+          .replace("--version\0", "--version-extra\0"),
+      ),
+    (c: ReturnType<typeof observerFixture>) =>
+      c.values.set(
+        `/proc/${c.parent}/cmdline`,
+        c.values
+          .get(`/proc/${c.parent}/cmdline`)!
+          .replace("terraform-runner.js", "terraform-runner.js-extra"),
+      ),
+    (c: ReturnType<typeof observerFixture>) =>
+      c.values.set(
+        `/proc/${c.parent}/cmdline`,
+        c.values
+          .get(`/proc/${c.parent}/cmdline`)!
+          .replace(c.root, c.root + "-other"),
+      ),
+    (c: ReturnType<typeof observerFixture>) =>
+      c.values.set(`/proc/${c.parent}/exe`, process.execPath + "-other"),
+    (c: ReturnType<typeof observerFixture>) =>
+      c.values.set(`/proc/${c.pid}/exe`, "/unverified/terraform"),
+    (c: ReturnType<typeof observerFixture>) =>
+      c.values.set(
+        `/proc/${c.pid}/cmdline`,
+        c.values
+          .get(`/proc/${c.pid}/cmdline`)!
+          .replace("version\0", "version-extra\0"),
+      ),
+    (c: ReturnType<typeof observerFixture>) =>
+      c.values.set(`/proc/${c.pid}/cwd`, c.owner + "-other/terraform/native"),
+    (c: ReturnType<typeof observerFixture>) => {
+      c.fields[0] = "Z";
+      c.values.set(`/proc/${c.pid}/stat`, c.stat());
+    },
+  ];
+  for (const change of controls) {
+    const c = observerFixture(true);
+    change(c);
+    assert.equal(
+      await readTerraformProcess(c.pid, c.owner, c.root, true, c.io),
+      null,
+    );
+  }
+  for (const field of [1, 19]) {
+    const c = observerFixture(true);
+    let reads = 0;
+    const io = {
+      ...c.io,
+      readText: async (file: string) => {
+        if (file === `/proc/${c.pid}/stat` && ++reads === 2) {
+          c.fields[field] = "999";
+          return c.stat();
+        }
+        return c.io.readText(file);
+      },
+    };
+    assert.equal(
+      await readTerraformProcess(c.pid, c.owner, c.root, true, io),
+      null,
+    );
+    assert.equal(
+      reads,
+      2,
+      "The process identity must be checked again after its parent phase",
+    );
+  }
+  for (const code of ["ENOENT", "ESRCH", "EACCES", "EIO"]) {
+    const c = observerFixture(true),
+      error = Object.assign(new Error("Authored proc read failure"), { code });
+    const io = {
+      ...c.io,
+      readLink: async (file: string) => {
+        if (file.endsWith("/cwd")) throw error;
+        return c.io.readLink(file);
+      },
+    };
+    const observation = readTerraformProcess(c.pid, c.owner, c.root, true, io);
+    if (code === "EIO")
+      await assert.rejects(observation, (observed) => observed === error);
+    else assert.equal(await observation, null, code);
+  }
+});
+
+test("Terraform native process observer resolves the installed engine symlink before exact parent matching", async (t) => {
+  const root = await fixture(t, {
+    "consumer/dist/test/synthetic-observer.mjs": "export default null;\n",
+    "package/node_modules/@stsepelin/checktrail/dist/src/terraform-runner.js":
+      "export default null;\n",
+    "package/node_modules/@stsepelin/checktrail/dist/src/engine.mjs":
+      "export const runner = new URL('./terraform-runner.js', import.meta.url).href;\n",
+  });
+  const consumerDist = path.join(root, "consumer/dist"),
+    installed = path.join(
+      root,
+      "package/node_modules/@stsepelin/checktrail/dist/src",
+    );
+  await symlink(
+    path.relative(consumerDist, installed),
+    path.join(consumerDist, "src"),
+  );
+  const harnessModule = pathToFileURL(
+      path.join(consumerDist, "test/synthetic-observer.mjs"),
+    ).href,
+    importedEngine = await import(
+      pathToFileURL(path.join(consumerDist, "src/engine.mjs")).href
+    ),
+    shippedRunner = fileURLToPath(importedEngine.runner);
+  assert.notEqual(
+    shippedRunner,
+    fileURLToPath(new URL("../src/terraform-runner.js", harnessModule)),
+    "The installed harness must exercise a real path alias",
+  );
+  assert.equal(
+    await terraformRunnerIdentity(harnessModule),
+    shippedRunner,
+    "Exact parent argv must use the same resolved engine path as Node's installed import",
+  );
+});

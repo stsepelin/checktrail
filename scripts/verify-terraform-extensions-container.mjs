@@ -97,6 +97,9 @@ const complete = (r, profile) => {
   const extra =
     profile === "terraform"
       ? [
+          "Terraform native process observer binds exact tool-collection and validation parent phases with native identity and current owned workspace",
+          "Terraform native process observer rejects phase suffixes unrelated runner identities workspace aliases and processes that exit or change parent before admission",
+          "Terraform native process observer resolves the installed engine symlink before exact parent matching",
           "Terraform planning reads all JSON module files without executing native tools and rejects empty provider module function duplicate and omitted scope",
         ]
       : [];
