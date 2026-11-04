@@ -190,9 +190,10 @@ def write_manifest(destination, report, caller):
 
 
 def collect(profile, source, destination, caller):
-    roots = {"gcc-12": ["build", "build-cross"], "glibc": ["build-tree"], "glibc-u13": ["build-tree"]}[profile]
+    roots = {"gcc-12": ["build", "build-cross", "build-jit", "build-nvptx", "build-gcn", "build-hppa64"], "glibc": ["build-tree"], "glibc-u13": ["build-tree"]}[profile]
     retained = destination.parent / "original-test-reports"
     rows, skipped_links = [], []
+    root_presence = {}
     total_bytes, entries = 0, 0
     started = time.monotonic()
     if source.resolve(strict=True) != source or not stat.S_ISDIR(source.lstat().st_mode):
@@ -228,9 +229,11 @@ def collect(profile, source, destination, caller):
       for root_name in roots:
         root = source / root_name
         if not root.exists() and not root.is_symlink():
+            root_presence[root_name] = False
             continue
         if not stat.S_ISDIR(root.lstat().st_mode):
             raise RuntimeError("Generated report root is not a physical directory")
+        root_presence[root_name] = True
         for current, directories, files in os.walk(root, followlinks=False):
             entries += 1 + len(files) + len(directories)
             if entries > 1000000 or time.monotonic() - started > 30 or len(Path(current).relative_to(root).parts) > 128:
@@ -279,6 +282,17 @@ def collect(profile, source, destination, caller):
     if custody_error is not None:
         raise custody_error
     report = {"schemaVersion": 1, "profile": profile, "generatedBuildRoots": roots, "reports": rows, "retainedBytes": total_bytes, "skippedLinkedDirectories": skipped_links, "exportCustody": custody, "completeConfigurationInventoryAssessed": False, "duplicateReportsAreIndependentEvidence": False, "allOriginalTestsPassRequired": False, "fullCompilerSdkBootstrapClosureVerified": False, "gateAComplete": False}
+    if profile == "gcc-12":
+        report["schemaVersion"] = 2
+        report["buildRootStates"] = []
+        for name in roots:
+            count = sum(row["configuration"] == name for row in rows)
+            report["buildRootStates"].append({
+                "root": name,
+                "origin": "compatibility" if name == "build-cross" else "source",
+                "state": "absent" if not root_presence[name] else "present-with-reports" if count else "present-no-reports",
+                "reports": count,
+            })
     write_manifest(destination, report, caller)
 
 

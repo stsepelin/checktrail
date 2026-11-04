@@ -41,7 +41,7 @@ const catalog = JSON.parse(
 );
 const profile = catalog.profiles["gcc-12"];
 const catalogSha256 =
-  "04ff9353fbf0dd18a22d6d6be9480c70c3197a242975498f79a4bf251438f6e2";
+  "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd";
 const attempt = "12345678-1234-4234-8234-123456789012";
 const posixFamilyControl = {
   skip:
@@ -692,7 +692,7 @@ test(
     const directory = await realpath(await fixture(t, {}));
     const selectedSources: string[] = producer.cProducerSourceFiles(profile);
     const program = String.raw`
-import base64,copy,datetime,hashlib,importlib.util,json,os,pathlib,shutil,subprocess,sys,time,zipfile
+import ast,base64,copy,datetime,hashlib,importlib.util,json,os,pathlib,shutil,subprocess,sys,time,zipfile
 repo=pathlib.Path(sys.argv[1]);root=pathlib.Path(sys.argv[2]);selected_sources=json.loads(sys.argv[3])
 def module(name,file):
  spec=importlib.util.spec_from_file_location(name,file);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
@@ -727,8 +727,30 @@ source=root/'generated';(source/'build/gcc/testsuite').mkdir(parents=True);(sour
 (source/'build/gcc/testsuite/gcc.log').write_bytes(b'Synthetic physical GCC log\n')
 (source/'build-cross/gcc/testsuite').mkdir(parents=True);(source/'build-cross/gcc/testsuite/cross.sum').write_bytes(b'XFAIL: synthetic cross check\nUNSUPPORTED: preserved upstream outcome\n')
 (source/'build-cross/gcc/testsuite/cross.log').write_bytes(b'Synthetic physical cross log\n')
+for name in ['build-jit','build-nvptx','build-gcn','build-hppa64']:
+ (source/name/'gcc/testsuite').mkdir(parents=True)
+ (source/name/'gcc/testsuite/extra.sum').write_bytes(b'PASS: synthetic copied outcome\nFAIL: preserved copied outcome\n')
+ (source/name/'gcc/testsuite/extra.log').write_bytes(b'Synthetic copied log\n')
 collector.collect('gcc-12',source,work/'test-reports.json',caller)
 original_reports=json.loads((work/'test-reports.json').read_bytes());original_reports['exportCustody']['producerEffectiveUid']=0;write(work/'test-reports.json',original_reports)
+roots=['build','build-cross','build-jit','build-nvptx','build-gcn','build-hppa64']
+assert original_reports['schemaVersion']==2 and original_reports['generatedBuildRoots']==roots
+assert [row['root'] for row in original_reports['buildRootStates']]==roots
+assert all(row['state']=='present-with-reports' and row['reports']==1 for row in original_reports['buildRootStates'])
+assert original_reports['buildRootStates'][1]['origin']=='compatibility'
+assert not original_reports['duplicateReportsAreIndependentEvidence'] and not original_reports['completeConfigurationInventoryAssessed']
+# Mutate only the actual collector's closed root family, not the fixture or assertions.
+collector_raw=(repo/'scripts/producer-qualification/c-producer-test-reports.py').read_text()
+new_roots='["build", "build-cross", "build-jit", "build-nvptx", "build-gcn", "build-hppa64"]'
+assert collector_raw.count(new_roots)==1
+old_namespace={'__name__':'synthetic_old_two_root_collector'}
+exec(compile(collector_raw.replace(new_roots,'["build", "build-cross"]'),'<synthetic-two-root-mutant>','exec'),old_namespace)
+old_output=root/'old-two-root-output';old_output.mkdir()
+old_namespace['collect']('gcc-12',source,old_output/'test-reports.json',caller)
+old_reports=json.loads((old_output/'test-reports.json').read_bytes())
+assert len(old_reports['reports'])==2 and len(original_reports['reports'])==6
+assert set(row['configuration'] for row in original_reports['reports'])-set(row['configuration'] for row in old_reports['reports'])==set(roots[2:])
+
 pre_source=root/'custody-source';(pre_source/'build-tree/amd64-libc').mkdir(parents=True)
 (pre_source/'build-tree/amd64-libc/tests.sum').write_bytes(b'PASS: synthetic custody preflight\n');(pre_source/'build-tree/amd64-libc/tests.log').write_bytes(b'Original synthetic custody bytes\n')
 pre_root=result/'custody-preflight';pre_root.mkdir(mode=0o700);collector.collect('glibc',pre_source,pre_root/'test-reports.json',caller)
@@ -763,7 +785,35 @@ for key in ['originalProducerDefaultsOrBudgetChanged','fullEightHourHostedCapaci
 carrier_pin=write(carrier/'receipt.json',carrier_value)
 observed['carrier']={'receipt':carrier_pin,'ownerFrame':owner_pin,'controllerLog':carrier_value['log']};write(result/'build-observation.json',observed)
 archive=root/'gcc-protocol.zip';exporter.export(reviewed,inputs,common,result,startup_file,archive,profile_name='gcc-12',carrier=carrier)
-replayed=r.replay(archive,reviewed,'gcc-12');assert replayed['state']=='retained-original-gcc-12-observation-replayed' and replayed['reports']==2 and replayed['observedOutcomeLines']==4 and replayed['testEvidenceState']=='failed' and replayed['gateAComplete'] is False
+replayed=r.replay(archive,reviewed,'gcc-12');assert replayed['state']=='retained-original-gcc-12-observation-replayed' and replayed['reports']==6 and replayed['observedOutcomeLines']==12 and replayed['testEvidenceState']=='failed' and replayed['gateAComplete'] is False
+# Exercise physical zero-report versus absent roots through actual collection,
+# exporter and offline report replay. Unsupported-only remains unavailable.
+state_source=root/'root-state-source';(state_source/'build').mkdir(parents=True);(state_source/'build-jit').mkdir()
+(state_source/'build-nvptx').mkdir();(state_source/'build-nvptx/tests.sum').write_bytes(b'UNSUPPORTED: synthetic no executed outcome\n')
+(state_source/'build-jit-extra').mkdir();(state_source/'build-jit-extra/unselected.sum').write_bytes(b'PASS: unselected near-prefix sibling\n')
+(state_source/'src').mkdir();(state_source/'src/unselected.sum').write_bytes(b'PASS: source fixture excluded\n')
+(state_source/'build/linked').symlink_to(state_source/'src',target_is_directory=True)
+state_result=root/'root-state-result';(state_result/'work').mkdir(parents=True)
+collector.collect('gcc-12',state_source,state_result/'work/test-reports.json',caller)
+state_report=json.loads((state_result/'work/test-reports.json').read_bytes())
+assert [(row['root'],row['state'],row['reports'])for row in state_report['buildRootStates']]==[
+ ('build','present-no-reports',0),('build-cross','absent',0),('build-jit','present-no-reports',0),
+ ('build-nvptx','present-with-reports',1),('build-gcn','absent',0),('build-hppa64','absent',0)]
+assert state_report['skippedLinkedDirectories']==['build/linked']
+assert [row['file']for row in state_report['reports']]==['build-nvptx/tests.sum']
+state_archive=root/'root-state-incomplete.zip'
+exporter.export(reviewed,inputs,common,state_result,startup_file,state_archive,profile_name='gcc-12',carrier=carrier)
+state_packet=r.Packet(state_archive)
+try:
+ state_replay=r.reports(state_packet,'result/work/original-test-reports',state_report,caller,os.geteuid(),'gcc-12')
+ assert state_replay['reports']==1 and not state_replay['resolvedTestOutcomesObserved'] and state_replay['testEvidenceState']=='unavailable'
+finally:state_packet.close()
+linked_source=root/'linked-root-source';linked_source.mkdir();(linked_source/'target').mkdir();(linked_source/'build-jit').symlink_to(linked_source/'target',target_is_directory=True)
+linked_output=root/'linked-root-output';linked_output.mkdir()
+try:collector.collect('gcc-12',linked_source,linked_output/'test-reports.json',caller)
+except RuntimeError as error:assert str(error)=='Generated report root is not a physical directory'
+else:raise AssertionError('Selected linked build root accepted')
+assert not(linked_output/'test-reports.json').exists()
 # A real incomplete export retains available bytes, never inventing a live
 # completion manifest after an external platform cutoff.
 complete_observation=(result/'build-observation.json').read_bytes();(result/'build-observation.json').unlink()
@@ -822,6 +872,37 @@ def cross_preflight(members,manifest):
  edit_member(members,'result/custody-preflight/test-reports.json',lambda x:x.update(profile='gcc-12',generatedBuildRoots=['build','build-cross']))
  edit_member(members,'result/receipt.json',lambda x:x['custodyPreflight'].update(manifest=r.pin(members['result/custody-preflight/test-reports.json'])))
 mutant('cross-preflight-profile',cross_preflight,'Wrong original report profile')
+def change_reports(members,update):
+ edit_member(members,'result/work/test-reports.json',update)
+ value=json.loads(members['result/work/test-reports.json'])
+ edit_member(members,'result/receipt.json',lambda x:x.update(testEvidence=value))
+mutant('legacy-gcc-report-version',lambda m,v:change_reports(m,lambda x:x.update(schemaVersion=1)),'Wrong original report manifest version')
+mutant('missing-root-state',lambda m,v:change_reports(m,lambda x:x['buildRootStates'].pop()),'Wrong GCC build-root state inventory')
+mutant('wrong-root-origin',lambda m,v:change_reports(m,lambda x:x['buildRootStates'][1].update(origin='source')),'Wrong GCC build-root identity/origin')
+mutant('false-empty-root-state',lambda m,v:change_reports(m,lambda x:x['buildRootStates'][2].update(state='present-no-reports')),'Wrong GCC build-root report state/count')
+mutant('wrong-root-report-count',lambda m,v:change_reports(m,lambda x:x['buildRootStates'][2].update(reports=0)),'Wrong GCC build-root report state/count')
+mutant('boolean-root-report-count',lambda m,v:change_reports(m,lambda x:x['buildRootStates'][2].update(reports=True)),'Wrong GCC build-root report state/count')
+# True equals1 in Python. Delete only the actual new row-count integer call;
+# the coherently rehashed packet then qualifies, proving why that call matters.
+report_function=next(node for node in ast.parse((repo/'scripts/producer-qualification/c-producer-replay-evidence.py').read_text()).body if isinstance(node,ast.FunctionDef) and node.name=='reports')
+class RemoveOnlyRootCountInteger(ast.NodeTransformer):
+ def __init__(self):self.changed=0
+ def visit_Call(self,node):
+  if (isinstance(node.func,ast.Name) and node.func.id=='integer' and len(node.args)==1 and
+      isinstance(node.args[0],ast.Subscript) and isinstance(node.args[0].value,ast.Name) and node.args[0].value.id=='row' and
+      isinstance(node.args[0].slice,ast.Constant) and node.args[0].slice.value=='reports'):
+   self.changed+=1;return ast.copy_location(ast.Constant(True),node)
+  return self.generic_visit(node)
+remove=RemoveOnlyRootCountInteger();report_function=remove.visit(report_function);assert remove.changed==1
+mutated_namespace=dict(r.__dict__)
+exec(compile(ast.fix_missing_locations(ast.Module(body=[report_function],type_ignores=[])),'<synthetic-count-guard-counterfactual>','exec'),mutated_namespace)
+original_reports_function=r.reports
+try:
+ r.reports=mutated_namespace['reports']
+ counterfactual=r.replay(root/'boolean-root-report-count.zip',reviewed,'gcc-12')
+ assert counterfactual['reports']==6 and counterfactual['gateAComplete'] is False
+finally:r.reports=original_reports_function
+
 mutant('empty-package',lambda m,v:edit_member(m,'result/receipt.json',lambda x:x['outputs'][0].update(bytes=0)),'Nonempty physically observed package output')
 def failed_original(members,manifest):
  edit_member(members,'result/work/original-command.json',lambda x:x.update(exitCode=2));edit_member(members,'result/receipt.json',lambda x:x['originalBuild'].update(exitCode=2))
@@ -836,7 +917,7 @@ mutant('bool-source-signature-zero',lambda m,v:weak_signature_restore(m,v,'sourc
 mutant('bool-release-signature-zero',lambda m,v:weak_signature_restore(m,v,'releaseSignatureFaultControl'),'Original signature fault/restoration control missing')
 mutant('common-only-restored-bool',lambda m,v:edit_member(m,'common-inputs/receipt.json',lambda x:x['preparation']['sourceSignatureFaultControl'].update(restoredExitCode=False)),'Original signed APT/source preparation differs')
 assert len(set(rejected_labels))==len(rejected_labels)
-print(json.dumps({'positivePhysicalGccProtocolReplay':True,'preservedFailedOriginalOutcomes':True,'incompleteCutoffBytesRetained':True,'coherentNegativePacketsRejected':len(rejected_labels),'rejectedPacketLabels':rejected_labels,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
+print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStatesReplayed':True,'zeroAndAbsentRootStatesReplayed':True,'oldTwoRootMutantMissesFourRoots':True,'selectedRootSymlinkRefused':True,'positivePhysicalGccProtocolReplay':True,'preservedFailedOriginalOutcomes':True,'incompleteCutoffBytesRetained':True,'coherentNegativePacketsRejected':len(rejected_labels),'rejectedPacketLabels':rejected_labels,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
 `;
     const result = spawnSync(
       python!,
@@ -873,6 +954,12 @@ print(json.dumps({'positivePhysicalGccProtocolReplay':True,'preservedFailedOrigi
       "scope-promoted",
       "different-owner",
       "cross-preflight-profile",
+      "legacy-gcc-report-version",
+      "missing-root-state",
+      "wrong-root-origin",
+      "false-empty-root-state",
+      "wrong-root-report-count",
+      "boolean-root-report-count",
       "empty-package",
       "failed-original",
       "bool-observed-zero",
@@ -887,6 +974,11 @@ print(json.dumps({'positivePhysicalGccProtocolReplay':True,'preservedFailedOrigi
       rejectedPacketLabels.length,
     );
     assert.deepEqual(JSON.parse(result.stdout), {
+      booleanCountPredicateCounterfactual: true,
+      allSixRootsAndStatesReplayed: true,
+      zeroAndAbsentRootStatesReplayed: true,
+      oldTwoRootMutantMissesFourRoots: true,
+      selectedRootSymlinkRefused: true,
       positivePhysicalGccProtocolReplay: true,
       preservedFailedOriginalOutcomes: true,
       incompleteCutoffBytesRetained: true,

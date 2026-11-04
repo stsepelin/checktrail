@@ -15,7 +15,7 @@ import time
 import zipfile
 
 MIB = 1024 ** 2
-CATALOG_SHA256 = '04ff9353fbf0dd18a22d6d6be9480c70c3197a242975498f79a4bf251438f6e2'
+CATALOG_SHA256 = '3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd'
 KEYS = ['PASS','FAIL','XFAIL','XPASS','UNSUPPORTED','UNRESOLVED','UNTESTED','ERROR','SKIP']
 SOURCE_FILES = [
     'scripts/qualify-c-producer.mjs', 'scripts/qualify-binutils-producer.mjs',
@@ -359,8 +359,22 @@ def nonempty_package_outputs(rows, maximum):
 
 def reports(packet, prefix, value, caller, expected_producer_uid, profile_name='glibc'):
     require(profile_name in ['gcc-12','glibc','glibc-u13'],'Unknown original report profile')
-    roots={'gcc-12':['build','build-cross'],'glibc':['build-tree'],'glibc-u13':['build-tree']}[profile_name]
-    require(exact_json([value['schemaVersion'],value['profile'],value['generatedBuildRoots']],[1,profile_name,roots]), 'Wrong original report profile')
+    roots={'gcc-12':['build','build-cross','build-jit','build-nvptx','build-gcn','build-hppa64'],'glibc':['build-tree'],'glibc-u13':['build-tree']}[profile_name]
+    version=2 if profile_name=='gcc-12' else 1
+    require(exact_json(value['schemaVersion'],version), 'Wrong original report manifest version for selected source contract')
+    require(exact_json([value['profile'],value['generatedBuildRoots']],[profile_name,roots]), 'Wrong original report profile')
+    if profile_name=='gcc-12':
+        states=value.get('buildRootStates')
+        require(isinstance(states,list) and len(states)==len(roots),'Wrong GCC build-root state inventory')
+        for name,row in zip(roots,states):
+            require(isinstance(row,dict) and set(row)=={'root','origin','state','reports'} and
+                    row['root']==name and row['origin']==('compatibility' if name=='build-cross' else 'source'),
+                    'Wrong GCC build-root identity/origin')
+            count=sum(report['configuration']==name for report in value['reports'])
+            require(integer(row['reports']) and row['reports']==count and
+                    (row['state']=='present-with-reports' and count>0 or
+                     row['state'] in ['absent','present-no-reports'] and count==0),
+                    'Wrong GCC build-root report state/count')
     for key in ['completeConfigurationInventoryAssessed','duplicateReportsAreIndependentEvidence','allOriginalTestsPassRequired','fullCompilerSdkBootstrapClosureVerified','gateAComplete']:
         require(value[key] is False, 'Unproven original report promotion')
     custody=value['exportCustody']

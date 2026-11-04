@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath, URL } from "node:url";
 
 export const cProducerCatalogSha256 =
-  "04ff9353fbf0dd18a22d6d6be9480c70c3197a242975498f79a4bf251438f6e2";
+  "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd";
 export const cProducerCommand = [
   "dpkg-buildpackage",
   "-b",
@@ -123,8 +123,20 @@ export function validateCProducerCatalog(catalog) {
     assert.equal(profile.files.length, count);
     assert.deepEqual(
       profile.generatedBuildRoots,
-      name === "gcc-12" ? ["build", "build-cross"] : ["build-tree"],
+      name === "gcc-12"
+        ? [
+            "build",
+            "build-cross",
+            "build-jit",
+            "build-nvptx",
+            "build-gcn",
+            "build-hppa64",
+          ]
+        : ["build-tree"],
     );
+    if (name === "gcc-12")
+      assert.deepEqual(profile.compatibilityBuildRoots, ["build-cross"]);
+    else assert.equal(profile.compatibilityBuildRoots, undefined);
     const seen = new Set();
     for (const row of profile.files) {
       assert.ok(

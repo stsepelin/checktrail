@@ -24,7 +24,7 @@ const catalog = JSON.parse(
 );
 const profile = catalog.profiles.glibc;
 const catalogSha256 =
-  "04ff9353fbf0dd18a22d6d6be9480c70c3197a242975498f79a4bf251438f6e2";
+  "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd";
 const terminal = {
   exitCode: 0,
   signal: null,
