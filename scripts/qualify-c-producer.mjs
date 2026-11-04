@@ -1016,7 +1016,7 @@ export function validateCProducerDaemonMetadata(
       cpuLimit: 4,
       memory: "6g",
       pidsLimit: 1024,
-      deadlineSeconds: 28800,
+      deadlineSeconds: 43200,
       logByteLimit: 536870912,
       workByteLimit: 68719476736,
       inputFileByteLimit: 134217728,

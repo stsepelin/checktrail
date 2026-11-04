@@ -208,6 +208,18 @@ test("C producer local ARM daemon permission preserves exact GCC limits and defa
       v.profile.limits.deadlineSeconds = 28799;
     },
     (v: typeof plan) => {
+      v.profile.limits.deadlineSeconds = 28800;
+    },
+    (v: typeof plan) => {
+      v.profile.limits.deadlineSeconds = 43199;
+    },
+    (v: typeof plan) => {
+      v.profile.limits.deadlineSeconds = 43201;
+    },
+    (v: typeof plan) => {
+      Object.assign(v.profile.limits, { deadlineSeconds: true });
+    },
+    (v: typeof plan) => {
       v.profile.limits.cpuLimit = 2;
     },
     (v: typeof plan) => {
@@ -279,7 +291,7 @@ test("C producer catalog binds both exact source revisions and original finite p
   const glibc = await profiles.loadCProducerProfile("glibc");
   assert.equal(gcc.profile.files.length, 241);
   assert.equal(glibc.profile.files.length, 161);
-  assert.equal(gcc.profile.limits.deadlineSeconds, 28800);
+  assert.equal(gcc.profile.limits.deadlineSeconds, 43200);
   assert.equal(glibc.profile.limits.deadlineSeconds, 14400);
   assert.equal(
     gcc.profile.files.find((row: { file: string }) =>

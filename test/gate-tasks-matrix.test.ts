@@ -291,10 +291,13 @@ test("tasks-matrix lifecycle acceptance", { timeout: 60000 }, async (t) => {
     );
   }
 });
-// A fresh installation repeats the complete runtime cohort. Windows native
-// controls need their own aggregate allowance; project execution stays bounded
-// by the unchanged engine limits and the outer native-file deadline.
-const installedTimeout = process.platform === "win32" ? 600000 : 180000;
+// A fresh installation repeats the complete runtime cohort. Windows and macOS
+// need aggregate observation headroom; native execution limits stay unchanged.
+const extendedInstalledObservation = ["win32", "darwin"].includes(
+  process.platform,
+);
+const installedTimeout = extendedInstalledObservation ? 600000 : 180000;
+const installedProcessTimeout = extendedInstalledObservation ? 590000 : 170000;
 test(
   "tasks-matrix installed acceptance",
   { timeout: installedTimeout },
@@ -313,6 +316,7 @@ test(
     const env = { ...process.env };
     delete env.NODE_TEST_CONTEXT;
     delete env.NODE_OPTIONS;
+    const started = performance.now();
     const result = spawnSync(
       process.execPath,
       [
@@ -329,11 +333,26 @@ test(
       {
         env,
         encoding: "utf8",
-        timeout: process.platform === "win32" ? 590000 : 170000,
+        timeout: installedProcessTimeout,
         maxBuffer: 4 * 1048576,
       },
     );
-    assert.equal(result.error, undefined);
+    assert.equal(
+      result.error,
+      undefined,
+      JSON.stringify({
+        operation: "installed-tasks-runtime",
+        platform: process.platform,
+        timeoutMs: installedProcessTimeout,
+        elapsedMs: Math.round(performance.now() - started),
+        errorCode:
+          (result.error as NodeJS.ErrnoException | undefined)?.code ?? null,
+        status: result.status,
+        signal: result.signal,
+        stdoutCodeUnits: (result.stdout ?? "").length,
+        stderrCodeUnits: (result.stderr ?? "").length,
+      }),
+    );
     assert.equal(
       result.status,
       0,
