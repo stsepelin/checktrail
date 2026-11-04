@@ -3,6 +3,7 @@ import {
   requestMavenDistribution,
   mavenDistributionPin,
 } from "./request-maven-distribution.mjs";
+import { tracePinnedArtifactAcquisition } from "./request-pinned-artifact.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -40,7 +41,10 @@ if (exists) {
 } else {
   const temporary = await mkdtemp(path.join(cache, ".prepare-"));
   try {
-    const bytes = await requestMavenDistribution();
+    const bytes = await tracePinnedArtifactAcquisition(
+      { artifact: "maven-distribution" },
+      (options) => requestMavenDistribution(options),
+    );
     assert.equal(bytes.length, 9979885);
     assert.equal(createHash("sha256").update(bytes).digest("hex"), sha256);
     const archive = path.join(temporary, "maven.tar.gz");

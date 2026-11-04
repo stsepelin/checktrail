@@ -29,6 +29,7 @@ import { gradleDistributionFiles } from "../dist/src/gradle-distribution.js";
 import { verifyMavenTree } from "../dist/src/maven.js";
 import { requestGradleDistribution } from "./request-gradle-distribution.mjs";
 import { requestJvmWrapperArtifact } from "./request-jvm-wrapper-artifact.mjs";
+import { tracePinnedArtifactAcquisition } from "./request-pinned-artifact.mjs";
 const { values } = parseArgs({
   options: { source: { type: "string" }, output: { type: "string" } },
 });
@@ -126,43 +127,74 @@ async function verifySignatures(base) {
     await rm(ring, { recursive: true, force: true });
   }
 }
-async function download(url, destination, pin, gradle = false) {
-  if (!gradle) {
-    const bytes = await requestJvmWrapperArtifact(
-      { ...pin, url },
-      {
-        onRetry: ({ attempt, waitMs }) =>
-          console.log(
-            JSON.stringify({
-              artifact: pin.name,
-              deliveryRetry: true,
-              attempt,
-              waitMs,
-            }),
-          ),
-      },
-    );
-    await writeFile(destination, bytes, { flag: "wx", mode: 0o600 });
-    await regular(destination, pin);
-    return;
-  }
-  const { response } = await requestGradleDistribution({
-    signal: globalThis.AbortSignal.timeout(600000),
-  });
-  assert.equal(response.status, 200);
-  assert.ok(response.body);
-  const file = await open(destination, "wx");
-  let total = 0;
-  try {
-    for await (const chunk of response.body) {
-      total += chunk.length;
-      assert.ok(total <= pin.bytes);
-      await file.writeFile(chunk);
-    }
-  } finally {
-    await file.close();
-  }
-  await regular(destination, pin);
+async function download(
+  url,
+  destination,
+  pin,
+  gradle = false,
+  artifactIndex = 0,
+) {
+  return tracePinnedArtifactAcquisition(
+    {
+      artifact: gradle ? "gradle-wrapper-distribution" : "jvm-wrapper",
+      artifactIndex,
+      centralMirror: new URL(url).hostname === "repo.maven.apache.org",
+      mirrorIndexForAsset: (asset) =>
+        [
+          "services.gradle.org",
+          "downloads.gradle.org",
+          "github.com",
+          "release-assets.githubusercontent.com",
+        ].indexOf(new URL(asset).hostname),
+    },
+    async ({ signal, attemptTimeoutMs, fetchImpl, onDiagnostic, report }) => {
+      if (!gradle) {
+        const bytes = await requestJvmWrapperArtifact(
+          { ...pin, url },
+          {
+            signal,
+            attemptTimeoutMs,
+            fetchImpl,
+            onDiagnostic,
+            onRetry: ({ attempt, waitMs }) =>
+              console.log(
+                JSON.stringify({
+                  artifact: pin.name,
+                  deliveryRetry: true,
+                  attempt,
+                  waitMs,
+                }),
+              ),
+          },
+        );
+        await writeFile(destination, bytes, { flag: "wx", mode: 0o600 });
+        await regular(destination, pin);
+        return;
+      }
+      const { response } = await requestGradleDistribution({
+        signal,
+        fetchImpl,
+      });
+      assert.equal(response.status, 200);
+      assert.ok(response.body);
+      const file = await open(destination, "wx");
+      let total = 0;
+      try {
+        report("body-start");
+        for await (const chunk of response.body) {
+          total += chunk.length;
+          assert.ok(total <= pin.bytes);
+          await file.writeFile(chunk);
+        }
+        report("body-complete", { receivedBytes: total });
+      } finally {
+        report("file-close-start");
+        await file.close();
+        report("file-close-complete");
+      }
+      await regular(destination, pin);
+    },
+  );
 }
 async function verifyCache(base) {
   for (const pin of archives) await regular(path.join(base, pin.file), pin);
@@ -207,12 +239,13 @@ if (exists) {
       for (const pin of all)
         await cp(path.join(source, pin.name), path.join(stage, pin.name));
     } else
-      for (const pin of all)
+      for (const [artifactIndex, pin] of all.entries())
         await download(
           pin.url,
           path.join(stage, pin.name),
           pin,
           pin.name === jvmWrapperArchives.gradle.file,
+          artifactIndex,
         );
     await verifySignatures(stage);
     const distribution = path.join(parent, "gradle-review-tools/gradle-9.8.0");
