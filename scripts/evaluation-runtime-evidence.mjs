@@ -16,6 +16,7 @@ const repository = fileURLToPath(new URL("../", import.meta.url));
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const profileId = "independent-evaluation-protocol";
 export const evaluationRuntimeHarnessFiles = Object.freeze([
+  "dist/test/review-evaluation-configuration-fixture.js",
   "package.json",
   "package-lock.json",
   "docs/gate-a-profiles.v1.json",

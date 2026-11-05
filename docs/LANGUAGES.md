@@ -577,3 +577,10 @@ The opt-in [original Node source producer](NODE-ORIGINAL-PRODUCER.md) has a fixe
 Linux x64 preparation/controller profile and generated refusal controls. Native
 source-build acceptance, compiler/SDK ancestry and complete notice closure remain
 separate; this adds no product discovery or language-adapter execution mode.
+
+The operator-only [evaluation configuration inspector](EVALUATION-CONFIGURATION.md)
+binds three configuration and seven procedure files to a pinned protocol through
+the shared library and a repository setup script. It retains missing or changed
+roles and checks private file identities across the whole read. It executes no
+project code or models, opens no case source or labels, and leaves protocol
+semantics, observed independence and Gate A acceptance open.

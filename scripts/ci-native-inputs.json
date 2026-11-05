@@ -1525,6 +1525,8 @@
     "scala",
     "scala-context-arm64",
     "scala-extensions-arm64",
+    "swift-extensions-arm64",
+    "swift-tools",
     "terraform",
     "terraform-extensions-arm64"
   ],
@@ -3909,6 +3911,10 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
+  "test/review-evaluation-configuration-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/review-evaluation-judging-fixture.ts": [
     "tasks-runtime",
     "tasks-runtime-arm64"
@@ -4311,6 +4317,7 @@
     "yaml-context-arm64"
   ],
   "test/swift-extensions-fixture.ts": ["swift-extensions-arm64"],
+  "test/swift-preparation.test.ts": ["swift-extensions-arm64", "swift-tools"],
   "test/swift-testing.test.ts": ["swift-extensions-arm64", "swift-tools"],
   "test/swift-tools-cancel.test.ts": ["swift-extensions-arm64", "swift-tools"],
   "test/swift-tools-fixture.ts": ["swift-extensions-arm64", "swift-tools"],
