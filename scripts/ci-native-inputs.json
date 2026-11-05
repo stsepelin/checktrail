@@ -3909,6 +3909,10 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
+  "test/review-evaluation-configuration-fixture.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/review-evaluation-judging-fixture.ts": [
     "tasks-runtime",
     "tasks-runtime-arm64"
