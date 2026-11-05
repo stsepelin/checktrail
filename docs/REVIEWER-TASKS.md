@@ -13,6 +13,19 @@ Historical measurements and unavailable native prerequisites stay distinct from
 new implementation evidence. No required item moves to a later release merely to
 open evaluation.
 
+## Current critical path
+
+Use the finite profiles in gate-a-profiles.v1.json and their linked acceptance
+records to distinguish implemented behavior from outstanding qualification. The
+broad family summaries below do not erase the later scoped implementations.
+
+Prioritize [configuration-byte readiness](EVALUATION-CONFIGURATION.md) and the
+prospective plain-review configuration/procedure freeze, then current-revision
+source and fresh installed-package acceptance. Upstream producer/build/license
+closure runs in parallel; it remains necessary to close Gate A, but does not
+prevent implementing or testing independent reviewer capabilities. No case
+inspection, model review trial or field evaluation follows from this ordering.
+
 ## Current slice and next dependency
 
 | ID   | Task                                                                             | State            | Completion evidence or next work                                                                                                                                                                                                                                                                                                                                                                                                                                |

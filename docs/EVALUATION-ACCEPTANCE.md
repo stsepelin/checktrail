@@ -46,3 +46,10 @@ Its runtime slot is unselected. Final frozen runtime reconciliation, the private
 prospective comparison freeze, full upstream artifact/build/license closure and
 Gate A remain open. Public synthetic fixtures are inspected development material
 and cannot become held-out cases through renaming. No model or field trial ran.
+
+The prerequisite callback also exercises the operator-only
+[configuration-byte inspector](EVALUATION-CONFIGURATION.md) against explicit
+synthetic configuration/procedure files, and refuses a changed baseline. The
+same callback runs from source and a fresh offline installed package. This
+checks file-byte binding; the actual prospective private configuration and
+procedure freeze remains a separate readiness obligation.
