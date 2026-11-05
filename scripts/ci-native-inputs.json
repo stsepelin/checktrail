@@ -1525,6 +1525,8 @@
     "scala",
     "scala-context-arm64",
     "scala-extensions-arm64",
+    "swift-extensions-arm64",
+    "swift-tools",
     "terraform",
     "terraform-extensions-arm64"
   ],
