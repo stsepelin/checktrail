@@ -42,6 +42,36 @@ expiry the observer can stop the native container before its EXIT retention trap
 finishes. Such an attempt remains incomplete; the observer's numeric exit status
 does not establish the original package command's exit code or signal.
 
+Current controller receipts use schema 2. Independent exclusive journals record
+that command invocation was requested and, when observed, the genuine package
+command exit before report collection and archive retention. A requested marker
+alone never proves that the command ran or completed. The retained build
+directory has a held descriptor; its identity must match before execution and
+after positive producer stop. This is a boundary check, not a continuous trace
+of build contents.
+
+The C observer counts link and special-file entries without following them in
+the writable build tree. Immutable inputs remain strict. Its fixed policy uses
+ten-second sampling, at most 9,000 samples and a 256MiB transport bound. These
+are retained observations, not a peak filesystem quota. Legacy controller
+schema 1 keeps its original 16MiB transport bound; a receipt cannot select its
+own limits.
+
+After observing producer absence, an interrupted or incomplete attempt can run
+a separate bounded Python report collector. It reads the retained build tree
+without executing upstream code and writes a fresh report family. Original-trap
+and post-stop reports retain separate manifests, paths and 512MiB aggregate
+bounds, with the existing 64MiB member bound. The receipt selects one family for
+outcome reconciliation; duplicate outcomes across families are not added.
+Missing command terminals, collection failures or incomplete cleanup remain
+incomplete even when useful reports were recovered. Schema-2 raw exports retain
+both available families, the command journals and the separate collector log.
+Live verification validates the selected report family and the journal and
+collector-log custody. Offline replay also reconciles both retained report
+families independently.
+An unreadable controller receipt can still be exported as unverified raw data,
+which cannot qualify a completed original build.
+
 The operator boundary captures the actual POSIX caller UID/GID. The collector
 hands over only its exclusive new report/log copies and manifest as0600 files
 and0700 directories, using their verified file descriptors and directory inode

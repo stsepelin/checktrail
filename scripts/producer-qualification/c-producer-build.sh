@@ -14,11 +14,6 @@ retain_native_build() {
   result=$?
   trap - EXIT
   set +e
-  python3 -I -S -B - "$checktrail_command_invoked" "$checktrail_command_exit" "$result" > /work/original-command.json <<'RECEIPT'
-import json, sys
-json.dump({"schemaVersion": 1, "command": ["dpkg-buildpackage", "-b", "-us", "-uc", "--jobs=4"], "invoked": sys.argv[1] == "1", "exitCode": int(sys.argv[2]) if sys.argv[2].isdigit() else None, "wrapperExitCode": int(sys.argv[3])}, sys.stdout)
-RECEIPT
-  command_record_result=$?
   python3 -I -S -B /controller/c-producer-test-reports.py "$1" /build/source /work/test-reports.json "$checktrail_caller_uid" "$checktrail_caller_gid"
   report_result=$?
   tar -C /build -cf /work/native-build-worktree.tar .
@@ -28,7 +23,15 @@ RECEIPT
     if test -f "$file"; then cp -- "$file" /work/output/ || copy_result=1; fi
   done
   printf 'CHECKTRAIL_RETENTION reports=%s archive=%s outputs=%s original=%s\n' "$report_result" "$archive_result" "$copy_result" "$result"
-  if test "$result" -eq 0 && { test "$command_record_result" -ne 0 || test "$report_result" -ne 0 || test "$archive_result" -ne 0 || test "$copy_result" -ne 0; }; then result=1; fi
+  if test "$result" -eq 0 && { test "$report_result" -ne 0 || test "$archive_result" -ne 0 || test "$copy_result" -ne 0; }; then result=1; fi
+  # The final wrapper record includes retention failures; the independent
+  # terminal sibling already preserves the genuine original command return.
+  python3 -I -S -B - "$checktrail_command_invoked" "$checktrail_command_exit" "$result" > /work/original-command.json <<'RECEIPT'
+import json, sys
+json.dump({"schemaVersion": 1, "command": ["dpkg-buildpackage", "-b", "-us", "-uc", "--jobs=4"], "invoked": sys.argv[1] == "1", "exitCode": int(sys.argv[2]) if sys.argv[2].isdigit() else None, "wrapperExitCode": int(sys.argv[3])}, sys.stdout)
+RECEIPT
+  command_record_result=$?
+  if test "$result" -eq 0 && test "$command_record_result" -ne 0; then result=1; fi
   exit "$result"
 }
 checktrail_caller_uid=$2
@@ -44,8 +47,14 @@ esac
 test -f /build/source/debian/control
 cd /build/source
 dpkg-checkbuilddeps debian/control
+# This marker proves only that invocation was requested, not that dpkg ran.
+python3 -I -S -B /controller/c-producer-test-reports.py --command-observation requested /work "$checktrail_caller_uid" "$checktrail_caller_gid"
 checktrail_command_invoked=1
 set +e
 dpkg-buildpackage -b -us -uc --jobs=4
 checktrail_command_exit=$?
+# Persist the genuine command return before potentially long report/tar retention.
+python3 -I -S -B /controller/c-producer-test-reports.py --command-observation terminal /work "$checktrail_caller_uid" "$checktrail_caller_gid" "$checktrail_command_exit"
+checktrail_terminal_result=$?
+if test "$checktrail_command_exit" -eq 0 && test "$checktrail_terminal_result" -ne 0; then exit 1; fi
 exit "$checktrail_command_exit"

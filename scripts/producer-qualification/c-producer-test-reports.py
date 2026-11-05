@@ -159,9 +159,17 @@ class RetainedCopies:
                 setattr(self, key, None)
 
 
-def write_manifest(destination, report, caller):
-    raw = (json.dumps(report, indent=2) + '\n').encode()
-    fd = os.open(destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+def write_manifest(destination, report, caller, parent_fd=None):
+    chunks = []
+    size = 0
+    for part in json.JSONEncoder(indent=2).iterencode(report):
+        raw_part = part.encode()
+        size += len(raw_part)
+        if size + 1 > 8 * 1024 ** 2:
+            raise RuntimeError("C manifest exceeds its existing8MiB reader bound")
+        chunks.append(raw_part)
+    raw = b''.join(chunks) + b'\n'
+    fd = os.open(destination if parent_fd is None else destination.name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=parent_fd)
     original = None
     custody_error = None
     try:
@@ -185,6 +193,47 @@ def write_manifest(destination, report, caller):
             raise RuntimeError("Original report manifest write failed: " + repr(original) + "; custody: " + repr(custody_error)) from original
         if custody_error is not None:
             raise custody_error
+    finally:
+        os.close(fd)
+
+
+def write_command_observation(phase, root, caller, exit_code=None):
+    if phase not in ('requested', 'terminal'):
+        raise RuntimeError("Unknown original command observation phase")
+    if root.resolve(strict=True) != root:
+        raise RuntimeError("Command observation parent is not canonical")
+    parent = root.lstat()
+    if (not stat.S_ISDIR(parent.st_mode) or stat.S_IMODE(parent.st_mode) != 0o700
+            or (parent.st_uid, parent.st_gid) != (caller['uid'], caller['gid'])):
+        raise RuntimeError("Command observation parent differs from captured caller custody")
+    if phase == 'requested':
+        if exit_code is not None:
+            raise RuntimeError("Requested invocation cannot claim a command terminal")
+        code = None
+    else:
+        if not isinstance(exit_code, str) or not re.fullmatch(r'0|[1-9][0-9]{0,2}', exit_code) or int(exit_code) > 255:
+            raise RuntimeError("Original command terminal exit code is invalid")
+        code = int(exit_code)
+    observation = {
+        'schemaVersion': 1,
+        'kind': 'original-command-' + phase,
+        'command': ['dpkg-buildpackage', '-b', '-us', '-uc', '--jobs=4'],
+        'invocationRequested': True,
+        'commandTerminalObserved': phase == 'terminal',
+        'exitCode': code,
+        'wrapperTerminalObserved': False,
+        'wrapperExitCode': None,
+    }
+    fd = os.open(root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        opened = os.fstat(fd)
+        identity = lambda info: (info.st_dev, info.st_ino, info.st_mode, info.st_uid, info.st_gid)
+        if identity(opened) != identity(parent):
+            raise RuntimeError("Command observation parent was replaced before opening")
+        write_manifest(root / ('original-command-' + phase + '.json'), observation, caller, parent_fd=fd)
+        if identity(os.fstat(fd)) != identity(parent) or identity(root.lstat()) != identity(parent):
+            raise RuntimeError("Command observation parent changed during the write")
+        os.fsync(fd)
     finally:
         os.close(fd)
 
@@ -297,7 +346,11 @@ def collect(profile, source, destination, caller):
 
 
 if __name__ == "__main__":
-    if sys.argv[1] == '--custody-preflight':
+    if sys.argv[1] == '--command-observation':
+        if len(sys.argv) not in (6, 7):
+            raise RuntimeError("Fixed command observation phase/root/caller/exit arguments required")
+        write_command_observation(sys.argv[2], Path(sys.argv[3]), parse_caller_identity(sys.argv[4], sys.argv[5]), sys.argv[6] if len(sys.argv) == 7 else None)
+    elif sys.argv[1] == '--custody-preflight':
         if len(sys.argv) != 5 or sys.argv[2] != '/custody':
             raise RuntimeError("Only the fixed synthetic custody preflight is supported")
         caller = parse_caller_identity(sys.argv[3], sys.argv[4])

@@ -786,6 +786,21 @@ carrier_pin=write(carrier/'receipt.json',carrier_value)
 observed['carrier']={'receipt':carrier_pin,'ownerFrame':owner_pin,'controllerLog':carrier_value['log']};write(result/'build-observation.json',observed)
 archive=root/'gcc-protocol.zip';exporter.export(reviewed,inputs,common,result,startup_file,archive,profile_name='gcc-12',carrier=carrier)
 replayed=r.replay(archive,reviewed,'gcc-12');assert replayed['state']=='retained-original-gcc-12-observation-replayed' and replayed['reports']==6 and replayed['observedOutcomeLines']==12 and replayed['testEvidenceState']=='failed' and replayed['gateAComplete'] is False
+# Replay the new closed outer protocol through the same complete source/image/
+# signature/carrier/report pipeline, then restore the untouched legacy baseline.
+legacy_receipt_bytes=(result/'receipt.json').read_bytes();legacy_observed_bytes=(result/'build-observation.json').read_bytes()
+work.chmod(0o700);os.chown(work,caller['uid'],caller['gid']);native_root=work/'native-build';native_root.mkdir(mode=0o700)
+root_stat=native_root.stat();root_identity=[str(v)for v in(root_stat.st_dev,root_stat.st_ino,root_stat.st_mode,root_stat.st_uid,root_stat.st_gid)]
+journal_rows={}
+for phase in ['requested','terminal']:
+ collector.write_command_observation(phase,work,caller,'0'if phase=='terminal'else None);leaf='original-command-'+phase+'.json';journal_rows[phase]={'state':'retained','file':leaf,'value':json.loads((work/leaf).read_bytes())}
+modern_receipt=copy.deepcopy(receipt);modern_receipt.update(schemaVersion=2,retentionTransportPolicy=dict(r.C_BUILD_POLICY),reportRetention=dict(r.REPORT_LOCATIONS['original-trap']),commandObservations=journal_rows,retainedBuildRoot={'before':root_identity,'afterStop':root_identity[:],'namedAfterStop':root_identity[:],'scope':'Directory identity before and after positive producer stop; not a continuous content trace'},nativeBuildRootClose={'state':'closed'},collectionFailures=[],postStopCleanup={'state':'not-started'})
+modern_receipt['retentionObserver']['workObjectPolicy']='c-build-links-and-specials-no-follow';modern_pin=write(result/'receipt.json',modern_receipt)
+modern_observed=copy.deepcopy(observed);modern_observed['originalReceipt']=modern_pin;write(result/'build-observation.json',modern_observed)
+modern_archive=root/'gcc-schema2-protocol.zip';exporter.export(reviewed,inputs,common,result,startup_file,modern_archive,profile_name='gcc-12',carrier=carrier)
+modern_replay=r.replay(modern_archive,reviewed,'gcc-12');assert modern_replay['state']=='retained-original-gcc-12-observation-replayed'and modern_replay['reports']==6 and modern_replay['observedOutcomeLines']==12 and modern_replay['testEvidenceState']=='failed'and modern_replay['gateAComplete']is False
+(result/'receipt.json').write_bytes(legacy_receipt_bytes);(result/'build-observation.json').write_bytes(legacy_observed_bytes)
+
 # Exercise physical zero-report versus absent roots through actual collection,
 # exporter and offline report replay. Unsupported-only remains unavailable.
 state_source=root/'root-state-source';(state_source/'build').mkdir(parents=True);(state_source/'build-jit').mkdir()
@@ -917,7 +932,7 @@ mutant('bool-source-signature-zero',lambda m,v:weak_signature_restore(m,v,'sourc
 mutant('bool-release-signature-zero',lambda m,v:weak_signature_restore(m,v,'releaseSignatureFaultControl'),'Original signature fault/restoration control missing')
 mutant('common-only-restored-bool',lambda m,v:edit_member(m,'common-inputs/receipt.json',lambda x:x['preparation']['sourceSignatureFaultControl'].update(restoredExitCode=False)),'Original signed APT/source preparation differs')
 assert len(set(rejected_labels))==len(rejected_labels)
-print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStatesReplayed':True,'zeroAndAbsentRootStatesReplayed':True,'oldTwoRootMutantMissesFourRoots':True,'selectedRootSymlinkRefused':True,'positivePhysicalGccProtocolReplay':True,'preservedFailedOriginalOutcomes':True,'incompleteCutoffBytesRetained':True,'coherentNegativePacketsRejected':len(rejected_labels),'rejectedPacketLabels':rejected_labels,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
+print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStatesReplayed':True,'zeroAndAbsentRootStatesReplayed':True,'oldTwoRootMutantMissesFourRoots':True,'selectedRootSymlinkRefused':True,'positivePhysicalGccProtocolReplay':True,'positivePhysicalGccSchema2ProtocolReplay':True,'preservedFailedOriginalOutcomes':True,'incompleteCutoffBytesRetained':True,'coherentNegativePacketsRejected':len(rejected_labels),'rejectedPacketLabels':rejected_labels,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
 `;
     const result = spawnSync(
       python!,
@@ -980,6 +995,7 @@ print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStat
       oldTwoRootMutantMissesFourRoots: true,
       selectedRootSymlinkRefused: true,
       positivePhysicalGccProtocolReplay: true,
+      positivePhysicalGccSchema2ProtocolReplay: true,
       preservedFailedOriginalOutcomes: true,
       incompleteCutoffBytesRetained: true,
       coherentNegativePacketsRejected: rejectedPacketLabels.length,
@@ -1535,3 +1551,168 @@ test("GCC final publication preserves an earlier observation failure and all pub
     (error: unknown) => error === publication,
   );
 });
+
+test(
+  "C schema2 archives reconcile both report epochs, journals and stopped roots for every fixed profile without promoting native qualification",
+  {
+    skip:
+      process.platform === "win32"
+        ? "POSIX synthetic report-custody component unavailable"
+        : python
+          ? false
+          : "Verified Python3 protocol fixture unavailable: " +
+            unavailable.join("; "),
+  },
+  async (t) => {
+    const directory = await realpath(await fixture(t, {}));
+    const program = String.raw`
+import copy,hashlib,importlib.util,json,os,pathlib,stat,sys,zipfile
+repo=pathlib.Path(sys.argv[1]);root=pathlib.Path(sys.argv[2]);MIB=1024**2
+def module(name,file):
+ spec=importlib.util.spec_from_file_location(name,file);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+e=module('closed_c_export',repo/'scripts/producer-qualification/c-producer-export-evidence.py')
+r=module('closed_c_replay',repo/'scripts/producer-qualification/c-producer-replay-evidence.py')
+c=module('closed_c_collect',repo/'scripts/producer-qualification/c-producer-test-reports.py')
+catalog=json.loads((repo/'scripts/producer-qualification/c-producer-profiles.v1.json').read_bytes());caller={'uid':os.getuid(),'gid':os.getgid()};assert caller['uid']>0
+def write(p,value):
+ p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(value if isinstance(value,bytes)else(json.dumps(value)+'\n').encode());p.chmod(0o600)
+def reports(profile,source,destination,status):
+ name='build'if profile=='gcc-12'else'build-tree';p=source/name/'tests.sum';write(p,(status+': authored result\n').encode());write(p.with_suffix('.log'),b'Authored original report log\n')
+ destination.parent.mkdir(parents=True,exist_ok=True);destination.parent.chmod(0o700);os.chown(destination.parent,caller['uid'],caller['gid'])
+ c.collect(profile,source,destination,caller);value=json.loads(destination.read_bytes());value['exportCustody']['producerEffectiveUid']=0;write(destination,value);return value
+def fixture(profile_name):
+ base=root/profile_name;base.mkdir();result=base/'result';work=result/'work';work.mkdir(parents=True,mode=0o700);os.chown(work,caller['uid'],caller['gid']);work.chmod(0o700)
+ profile=catalog['profiles'][profile_name];native=work/'native-build';native.mkdir(mode=0o700);s=native.stat();identity=[str(v)for v in(s.st_dev,s.st_ino,s.st_mode,s.st_uid,s.st_gid)]
+ trap=reports(profile_name,base/'trap-source',work/'test-reports.json','PASS');post=reports(profile_name,base/'post-source',work/'post-stop-reports/test-reports.json','FAIL')
+ command={'schemaVersion':1,'command':profile['command'],'invoked':True,'exitCode':0,'wrapperExitCode':0};write(work/'original-command.json',command)
+ journals={}
+ for phase in ['requested','terminal']:
+  c.write_command_observation(phase,work,caller,'0'if phase=='terminal'else None);name='original-command-'+phase+'.json';journals[phase]={'state':'retained','file':name,'value':json.loads((work/name).read_bytes())}
+ post_log=b'Authored data-only post-stop collection\n';write(result/'post-stop-reports.log',post_log)
+ foreground={'exitCode':0,'signal':None,'error':None,'reason':None,'retainedBytes':len(post_log),'stopError':None};cleanup={'state':'absent','id':'checktrail-producer-12345678-1234-4234-8234-123456789012'}
+ receipt={'schemaVersion':2,'profile':profile['profile'],'sourceVersion':profile['sourceVersion'],'limits':profile['limits'],'catalogSha256':r.CATALOG_SHA256,'retentionTransportPolicy':dict(r.C_BUILD_POLICY),'reportRetention':dict(r.REPORT_LOCATIONS['post-stop']),'originalBuild':command,'commandObservations':journals,'retainedBuildRoot':{'before':identity,'afterStop':identity[:],'namedAfterStop':identity[:],'scope':'Directory identity before and after positive producer stop; not a continuous content trace'},'nativeBuildRootClose':{'state':'closed'},'collectionFailures':[],'postStopRetention':{'originalCodeExecuted':False,'observer':foreground,'cleanup':cleanup,'primary':None},'postStopCleanup':dict(cleanup),'testEvidence':post,'gateAComplete':False}
+ write(result/'receipt.json',receipt);write(result/'build-observation.json',{});write(result/'build.log',b'Authored foreground bytes\n');write(result/'retention-observer.jsonl',b'authored raw observer placeholder\n');write(work/'installed-build-package-identities.txt',b'authored\t0\tamd64\n');write(result/'custody-preflight.log',b'authored\n');write(result/'custody-preflight/test-reports.json',{})
+ if profile_name!='gcc-12':
+  for name in ['seccomp-baseline.log','seccomp-derived.log','controls/glibc-native-seccomp.json']:write(result/name,{})
+ carrier=base/'carrier'
+ for name in ['receipt.json','controller.log','owner-frame.json']:write(carrier/name,{})
+ inputs=base/'inputs';common=base/'common';startup=base/'startup.json'
+ for p in [inputs/'receipt.json',common/'receipt.json',startup]:write(p,{})
+ write(common/'transform.log',b'authored\n');archive=base/'closed.zip';e.export(repo,inputs,common,result,startup,archive,profile_name=profile_name,carrier=carrier)
+ return base,result,receipt,profile,archive,trap
+def validate(archive,receipt,profile,key):
+ p=r.Packet(archive)
+ try:
+  assert not p.manifest['unavailable'],p.manifest['unavailable'];selected=r.closed_controller_evidence(p,receipt,profile,caller);value,summary=r.selected_reports(p,selected,receipt,caller,key)
+  assert summary['reports']==1 and summary['observedOutcomeLines']==1 and summary['testEvidenceState']=='failed' and summary['reportsPooledAsIndependentEvidence']is False
+  return p.manifest
+ finally:p.close()
+for key in ['gcc-12','glibc','glibc-u13']:
+ base,result,receipt,profile,archive,trap=fixture(key);manifest=validate(archive,receipt,profile,key)
+ assert manifest['schemaVersion']==2 and manifest['controllerReceiptFormat']=='schema2'and manifest['originalReportLogBytes']>0 and manifest['postStopReportLogBytes']>0
+ assert manifest['originalReportAggregateByteLimit']==manifest['postStopReportAggregateByteLimit']==512*MIB and manifest['reportFamiliesRetainedSeparately']is True
+ near=copy.deepcopy(receipt);near['postStopRetention']['cleanup']['state']='removed';validate(archive,near,profile,key)
+ # A fixed original-trap selection is also valid, but never selects post-stop data.
+ selected=copy.deepcopy(receipt);selected['reportRetention']=dict(r.REPORT_LOCATIONS['original-trap']);selected['testEvidence']=trap
+ packet=r.Packet(archive)
+ try:
+  fmt=r.closed_controller_evidence(packet,selected,profile,caller);_,summary=r.selected_reports(packet,fmt,selected,caller,key);assert summary['testEvidenceState']=='reported'and summary['observedOutcomeLines']==1
+ finally:packet.close()
+
+# Last loop profile is glibc-u13. Mutation negatives exercise that exact tuple;
+# the positive loop above covers every closed producer/report root family.
+key='glibc-u13';rejected=[]
+with zipfile.ZipFile(archive)as z:original={name:z.read(name)for name in z.namelist()}
+def mutate(label,change,reason):
+ members=dict(original);manifest=json.loads(members['manifest.json']);value=copy.deepcopy(receipt);change(members,manifest,value)
+ members['result/receipt.json']=json.dumps(value).encode()
+ for row in manifest['rawFiles']:row.update(r.pin(members[row['file']]))
+ manifest['uncompressedBytes']=sum(row['bytes']for row in manifest['rawFiles']);manifest['originalReportLogBytes']=sum(row['bytes']for row in manifest['rawFiles']if row['file'].startswith('result/work/original-test-reports/'));manifest['postStopReportLogBytes']=sum(row['bytes']for row in manifest['rawFiles']if row['file'].startswith('result/work/post-stop-reports/original-test-reports/'));members['manifest.json']=json.dumps(manifest).encode()
+ target=base/(label+'.zip')
+ with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_DEFLATED)as z:
+  for name,body in members.items():z.writestr(name,body)
+ try:validate(target,value,profile,key)
+ except ValueError as error:assert reason in str(error),(label,str(error));rejected.append(label);return
+ raise AssertionError('Coherently rehashed closed protocol accepted '+label)
+mutate('forged-log-policy',lambda m,f,v:v['retentionTransportPolicy'].update(maximumLogBytes=512*MIB),'C retention transport policy differs')
+mutate('forged-sample-policy',lambda m,f,v:v['retentionTransportPolicy'].update(maximumSamples=9001),'C retention transport policy differs')
+mutate('forged-work-policy',lambda m,f,v:v['retentionTransportPolicy'].update(workObjectPolicy='follow-links'),'C retention transport policy differs')
+mutate('arbitrary-report-path',lambda m,f,v:v['reportRetention'].update(manifest='work/other/test-reports.json'),'Unknown original C report retention source/path')
+mutate('journal-filename-substitution',lambda m,f,v:v['commandObservations']['terminal'].update(file='original-command-requested.json'),'Independent command journal retained filename differs')
+mutate('journal-byte-value-disagreement',lambda m,f,v:v['commandObservations']['terminal']['value'].update(exitCode=1),'Retained original command journal bytes/value differ')
+def journal_terminal(m,f,v):
+ name='result/work/original-command-terminal.json';value=json.loads(m[name]);value['exitCode']=1;m[name]=json.dumps(value).encode();v['commandObservations']['terminal']['value']=value
+mutate('journal-disagrees-with-final-zero',journal_terminal,'Independent original command journal differs')
+def drop(m,f,v,prefix):
+ for name in list(m):
+  if name.startswith(prefix):del m[name]
+ f['rawFiles']=[r for r in f['rawFiles']if not r['file'].startswith(prefix)]
+ f['nativeDirectories']=[r for r in f['nativeDirectories']if not r['file'].startswith(prefix)]
+mutate('drop-original-trap-family',lambda m,f,v:(drop(m,f,v,'result/work/original-test-reports'),drop(m,f,v,'result/work/test-reports.json')),'Original-trap raw report family was dropped')
+mutate('drop-selected-family-file',lambda m,f,v:drop(m,f,v,'result/work/post-stop-reports/original-test-reports/build-tree/tests.sum'),'Wrong original native export owner/group/mode')
+def drop_unselected_poststop(m,f,v):
+ v.update(reportRetention=dict(r.REPORT_LOCATIONS['original-trap']),testEvidence=trap);drop(m,f,v,'result/work/post-stop-reports')
+mutate('drop-observed-unselected-poststop-family',drop_unselected_poststop,'Post-stop raw report family was dropped')
+mutate('swapped-selected-report-epoch',lambda m,f,v:v.update(reportRetention=dict(r.REPORT_LOCATIONS['original-trap'])),'Selected original report manifest differs')
+mutate('changed-native-root',lambda m,f,v:v['retainedBuildRoot']['namedAfterStop'].__setitem__(1,'999999999'),'Stopped native build-root identity/owner/mode differs')
+mutate('noncanonical-root-decimal',lambda m,f,v:v['retainedBuildRoot']['before'].__setitem__(0,'01'),'Malformed native build-root identity')
+mutate('unclosed-native-root',lambda m,f,v:v.update(nativeBuildRootClose={'state':'not-opened'}),'Native build-root close or evidence collection incomplete')
+mutate('hidden-collection-failure',lambda m,f,v:v.update(collectionFailures=[{'field':'originalTrapReports'}]),'Native build-root close or evidence collection incomplete')
+mutate('poststop-failed-terminal',lambda m,f,v:v['postStopRetention']['observer'].update(exitCode=2),'Original foreground terminal failed or incomplete')
+mutate('poststop-cleanup-substitution',lambda m,f,v:v['postStopCleanup'].update(id='different-owned-id'),'Post-stop collector cleanup identity differs')
+def failed_unselected(m,f,v):
+ v.update(reportRetention=dict(r.REPORT_LOCATIONS['original-trap']),testEvidence=trap);v['postStopRetention']['primary']='authored collector failure'
+mutate('failed-unselected-poststop-attempt',failed_unselected,'Post-stop report collector scope/failure differs')
+mutate('missing-outer-poststop-cleanup',lambda m,f,v:v.pop('postStopCleanup'),'Post-stop report collector cleanup incomplete')
+mutate('poststop-log-length-disagreement',lambda m,f,v:v['postStopRetention']['observer'].update(retainedBytes=1),'Post-stop report collector raw log/terminal differs')
+def poststop_log_owner(manifest,field,value):
+ next(row for row in manifest['rawFiles']if row['file']=='result/post-stop-reports.log')[field]=value
+mutate('poststop-log-native-mode',lambda m,f,v:poststop_log_owner(f,'nativeMode',0o644),'Wrong original native export owner/group/mode')
+mutate('poststop-log-native-uid',lambda m,f,v:poststop_log_owner(f,'nativeUid',caller['uid']+1),'Wrong original native export owner/group/mode')
+mutate('poststop-log-native-gid',lambda m,f,v:poststop_log_owner(f,'nativeGid',caller['gid']+1),'Wrong original native export owner/group/mode')
+mutate('caller-selected-archive-limit',lambda m,f,v:f.update(retentionObserverLogByteLimit=512*MIB),'Wrong closed C archive2 policy')
+# A malformed receipt still exports every available raw family as unverified2.
+write(result/'receipt.json',b'{not JSON');unverified=base/'unverified.zip';e.export(repo,base/'inputs',base/'common',result,base/'startup.json',unverified,profile_name=key,carrier=base/'carrier')
+packet=r.Packet(unverified)
+try:
+ assert packet.manifest['controllerReceiptFormat']=='unverified'and packet.manifest['schemaVersion']==2
+ assert packet.read('result/work/original-command-terminal.json',4096)
+ assert packet.read('result/work/post-stop-reports/original-test-reports/build-tree/tests.sum',4096)
+ try:r.closed_controller_evidence(packet,receipt,profile,caller)
+ except ValueError as error:assert 'Unverified controller receipt format'in str(error)
+ else:raise AssertionError('Malformed controller receipt promoted')
+finally:packet.close()
+# Physical byte-limit near miss: old receipt1 retains16MiB, never the new quota.
+write(result/'receipt.json',{'schemaVersion':1});write(result/'retention-observer.jsonl',b'X'*(16*MIB+1));legacy=base/'legacy-over.zip';e.export(repo,base/'inputs',base/'common',result,base/'startup.json',legacy,profile_name=key,carrier=base/'carrier')
+with zipfile.ZipFile(legacy)as z:
+ m=json.loads(z.read('manifest.json'));assert m['schemaVersion']==1 and any(x['file']=='result/retention-observer.jsonl'for x in m['unavailable'])and 'result/retention-observer.jsonl'not in z.namelist()
+write(result/'receipt.json',receipt);modern=base/'schema2-near.zip';e.export(repo,base/'inputs',base/'common',result,base/'startup.json',modern,profile_name=key,carrier=base/'carrier')
+packet=r.Packet(modern)
+try:assert packet.files['result/retention-observer.jsonl']['bytes']==16*MIB+1
+finally:packet.close()
+print(json.dumps({'allThreeFixedProfilesPhysicallyReconciled':True,'bothReportEpochsRetainedWithoutPooling':True,'actualImmutableJournalWriterUsed':True,'removedThenAbsentSameOwnedCleanupAccepted':True,'coherentlyRehashedNegativesRejected':len(rejected),'legacy16MiBLimitPreserved':True,'schema2FixedLargerTransportRetained':True,'malformedReceiptRawBytesNotPromoted':True,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
+`;
+    const result = spawnSync(
+      python!,
+      ["-I", "-S", "-B", "-c", program, repository, directory],
+      {
+        encoding: "utf8",
+        timeout: 90000,
+        maxBuffer: 65536,
+      },
+    );
+    assert.equal(result.status, 0, diagnostic(result));
+    assert.deepEqual(JSON.parse(result.stdout), {
+      allThreeFixedProfilesPhysicallyReconciled: true,
+      bothReportEpochsRetainedWithoutPooling: true,
+      actualImmutableJournalWriterUsed: true,
+      removedThenAbsentSameOwnedCleanupAccepted: true,
+      coherentlyRehashedNegativesRejected: 24,
+      legacy16MiBLimitPreserved: true,
+      schema2FixedLargerTransportRetained: true,
+      malformedReceiptRawBytesNotPromoted: true,
+      nativeCompilerOrRootContainerQualificationPerformed: false,
+      gateAComplete: false,
+    });
+  },
+);

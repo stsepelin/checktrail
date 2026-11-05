@@ -1,6 +1,16 @@
 import assert from "node:assert/strict";
 import { spawnSync, type SpawnSyncReturns } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import {
+  chmod,
+  lstat,
+  mkdir,
+  readFile,
+  realpath,
+  rename,
+  symlink,
+  unlink,
+  writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -8,7 +18,11 @@ import { parse } from "yaml";
 import { fixture } from "./helpers.js";
 
 const repository = fileURLToPath(new URL("../../", import.meta.url));
-const { validateCObservationHeader } = await import(
+const {
+  validateCObservationHeader,
+  validateCObservationRetention,
+  verifyCObservationRetainedFiles,
+} = await import(
   pathToFileURL(
     path.join(repository, "scripts/verify-c-producer-observation.mjs"),
   ).href
@@ -49,6 +63,7 @@ const startup = {
   },
 };
 const syntheticHeader = () => ({
+  schemaVersion: 1,
   catalogSha256,
   state: "original-command-completed-qualification-incomplete",
   profile: profile.profile,
@@ -215,6 +230,507 @@ test("C observation refuses incomplete terminal, stale profile, wrong caller and
     assert.throws(() => validateCObservationHeader(value, profile, startup, 2));
   }
 });
+const retainedBuildScope =
+  "Directory identity before and after positive producer stop; not a continuous content trace";
+const syntheticRetention = (caller = startup.caller) => {
+  const identity = [
+    "1",
+    "2",
+    String(0o40700),
+    String(caller.uid),
+    String(caller.gid),
+  ];
+  const command = (phase: "requested" | "terminal") => ({
+    state: "retained",
+    file: "original-command-" + phase + ".json",
+    value: {
+      schemaVersion: 1,
+      kind: "original-command-" + phase,
+      command: profile.command,
+      invocationRequested: true,
+      commandTerminalObserved: phase === "terminal",
+      exitCode: phase === "terminal" ? 0 : null,
+      wrapperTerminalObserved: false,
+      wrapperExitCode: null,
+    },
+  });
+  return {
+    ...syntheticHeader(),
+    schemaVersion: 2,
+    retentionTransportPolicy: {
+      sampleIntervalMs: 10000,
+      maximumSamples: 9000,
+      maximumLogBytes: 268435456,
+      workObjectPolicy: "c-build-links-and-specials-no-follow",
+    },
+    retentionObserver: {
+      ...syntheticHeader().retentionObserver,
+      workObjectPolicy: "c-build-links-and-specials-no-follow",
+    },
+    retainedBuildRoot: {
+      scope: retainedBuildScope,
+      before: [...identity],
+      afterStop: [...identity],
+      namedAfterStop: [...identity],
+    },
+    nativeBuildRootClose: { state: "closed" },
+    collectionFailures: [] as string[],
+    commandObservations: {
+      requested: command("requested"),
+      terminal: command("terminal"),
+    },
+    reportRetention: {
+      source: "original-trap",
+      manifest: "work/test-reports.json",
+      root: "work/original-test-reports",
+    },
+    postStopCleanup: { state: "not-started" },
+  };
+};
+const withPostStopRetention = (header = syntheticRetention()) => ({
+  ...header,
+  reportRetention: {
+    source: "post-stop",
+    manifest: "work/post-stop-reports/test-reports.json",
+    root: "work/post-stop-reports/original-test-reports",
+  },
+  postStopRetention: {
+    originalCodeExecuted: false,
+    primary: null,
+    observer: { ...terminal },
+    cleanup: { state: "removed", id: "synthetic-collector" },
+  },
+  postStopCleanup: { state: "absent", id: "synthetic-collector" },
+});
+
+test("C live headers accept both fixed report epochs for each supported profile and retain legacy limits", () => {
+  const legacy = validateCObservationRetention(
+    syntheticHeader(),
+    startup.caller,
+  );
+  assert.equal(legacy.observerLogByteLimit, 16 * 1024 ** 2);
+  assert.equal(legacy.cBuildWork, false);
+  for (const name of ["glibc", "glibc-u13", "gcc-12"]) {
+    const selected = catalog.profiles[name];
+    assert.ok(selected, "Missing fixed profile " + name);
+    const selectedStartup = {
+      ...startup,
+      selectedProfile: {
+        name,
+        profile: selected.profile,
+        sourceVersion: selected.sourceVersion,
+        catalogSha256,
+      },
+    };
+    for (const header of [syntheticRetention(), withPostStopRetention()]) {
+      Object.assign(header, {
+        profile: selected.profile,
+        sourceVersion: selected.sourceVersion,
+        limits: selected.limits,
+      });
+      const result = validateCObservationHeader(
+        header,
+        selected,
+        selectedStartup,
+        2,
+      );
+      assert.equal(result.gateAComplete, false);
+      assert.equal(result.originalCommandExitCode, 0);
+      const format = validateCObservationRetention(header, startup.caller);
+      assert.equal(format.observerLogByteLimit, 256 * 1024 ** 2);
+      assert.equal(format.maximumSamples, 9000);
+      assert.equal(format.reportsRoot, header.reportRetention.root);
+    }
+  }
+});
+
+test("C live retention refuses altered policy, journal phases, root custody and report selection", () => {
+  const mutations: [
+    string,
+    (header: ReturnType<typeof syntheticRetention>) => void,
+  ][] = [
+    [
+      "unknown schema",
+      (h) => {
+        h.schemaVersion = 3;
+      },
+    ],
+    [
+      "schema downgrade",
+      (h) => {
+        h.schemaVersion = 1;
+      },
+    ],
+    [
+      "caller-selected byte cap",
+      (h) => {
+        h.retentionTransportPolicy.maximumLogBytes += 1;
+      },
+    ],
+    [
+      "caller-selected sample cap",
+      (h) => {
+        h.retentionTransportPolicy.maximumSamples += 1;
+      },
+    ],
+    [
+      "caller-selected sample interval",
+      (h) => {
+        h.retentionTransportPolicy.sampleIntervalMs -= 1;
+      },
+    ],
+    [
+      "unknown work policy",
+      (h) => {
+        h.retentionObserver.workObjectPolicy = "follow-links";
+      },
+    ],
+    [
+      "collection failure",
+      (h) => {
+        h.collectionFailures.push("reports unavailable");
+      },
+    ],
+    [
+      "unclosed root",
+      (h) => {
+        h.nativeBuildRootClose.state = "open";
+      },
+    ],
+    [
+      "root replacement",
+      (h) => {
+        h.retainedBuildRoot.namedAfterStop[1] = "3";
+      },
+    ],
+    [
+      "root FD replacement",
+      (h) => {
+        h.retainedBuildRoot.afterStop[1] = "3";
+      },
+    ],
+    [
+      "ambiguous root scope",
+      (h) => {
+        h.retainedBuildRoot.scope = "continuous trace";
+      },
+    ],
+    [
+      "leading zero identity",
+      (h) => {
+        for (const row of [
+          h.retainedBuildRoot.before,
+          h.retainedBuildRoot.afterStop,
+          h.retainedBuildRoot.namedAfterStop,
+        ])
+          row[0] = "01";
+      },
+    ],
+    [
+      "zero root device",
+      (h) => {
+        for (const row of [
+          h.retainedBuildRoot.before,
+          h.retainedBuildRoot.afterStop,
+          h.retainedBuildRoot.namedAfterStop,
+        ])
+          row[0] = "0";
+      },
+    ],
+    [
+      "zero root inode",
+      (h) => {
+        for (const row of [
+          h.retainedBuildRoot.before,
+          h.retainedBuildRoot.afterStop,
+          h.retainedBuildRoot.namedAfterStop,
+        ])
+          row[1] = "0";
+      },
+    ],
+    [
+      "extra root field",
+      (h) => {
+        Object.assign(h.retainedBuildRoot, { attested: true });
+      },
+    ],
+    [
+      "wrong root mode",
+      (h) => {
+        for (const row of [
+          h.retainedBuildRoot.before,
+          h.retainedBuildRoot.afterStop,
+          h.retainedBuildRoot.namedAfterStop,
+        ])
+          row[2] = String(0o40755);
+      },
+    ],
+    [
+      "wrong root owner",
+      (h) => {
+        for (const row of [
+          h.retainedBuildRoot.before,
+          h.retainedBuildRoot.afterStop,
+          h.retainedBuildRoot.namedAfterStop,
+        ])
+          row[3] = "1002";
+      },
+    ],
+    [
+      "wrong root group",
+      (h) => {
+        for (const row of [
+          h.retainedBuildRoot.before,
+          h.retainedBuildRoot.afterStop,
+          h.retainedBuildRoot.namedAfterStop,
+        ])
+          row[4] = "1002";
+      },
+    ],
+    [
+      "unretained requested journal",
+      (h) => {
+        h.commandObservations.requested.state = "unavailable";
+      },
+    ],
+    [
+      "unretained terminal journal",
+      (h) => {
+        h.commandObservations.terminal.state = "unavailable";
+      },
+    ],
+    [
+      "wrong journal basename",
+      (h) => {
+        h.commandObservations.requested.file =
+          "../original-command-requested.json";
+      },
+    ],
+    [
+      "requested journal claims terminal",
+      (h) => {
+        h.commandObservations.requested.value.commandTerminalObserved = true;
+      },
+    ],
+    [
+      "terminal journal exit differs",
+      (h) => {
+        h.commandObservations.terminal.value.exitCode = 1;
+      },
+    ],
+    [
+      "terminal journal claims wrapper exit",
+      (h) => {
+        h.commandObservations.terminal.value.wrapperTerminalObserved = true;
+      },
+    ],
+    [
+      "unknown report epoch",
+      (h) => {
+        h.reportRetention.source = "merged";
+      },
+    ],
+    [
+      "arbitrary report root",
+      (h) => {
+        h.reportRetention.root = "work/other-reports";
+      },
+    ],
+    [
+      "arbitrary report manifest",
+      (h) => {
+        h.reportRetention.manifest = "work/other-reports.json";
+      },
+    ],
+    [
+      "missing post-stop collector",
+      (h) => {
+        Object.assign(
+          h.reportRetention,
+          withPostStopRetention().reportRetention,
+        );
+      },
+    ],
+    [
+      "unexpected collector cleanup",
+      (h) => {
+        h.postStopCleanup.state = "failed";
+      },
+    ],
+  ];
+  for (const [label, mutate] of mutations) {
+    const header = syntheticRetention();
+    mutate(header);
+    assert.throws(
+      () => validateCObservationRetention(header, startup.caller),
+      Error,
+      label,
+    );
+  }
+  const legacy = syntheticHeader();
+  Object.assign(legacy.retentionObserver, {
+    workObjectPolicy: "c-build-links-and-specials-no-follow",
+  });
+  assert.throws(() => validateCObservationRetention(legacy, startup.caller));
+});
+
+test("C live post-stop retention requires its own complete terminal, cleanup and log bound even when the trap epoch is selected", () => {
+  const mutations: [
+    string,
+    (header: ReturnType<typeof withPostStopRetention>) => void,
+  ][] = [
+    [
+      "collector ran original code",
+      (h) => {
+        h.postStopRetention.originalCodeExecuted = true;
+      },
+    ],
+    [
+      "collector failed",
+      (h) => {
+        Object.assign(h.postStopRetention, { primary: "collection failed" });
+      },
+    ],
+    [
+      "collector nonzero exit",
+      (h) => {
+        h.postStopRetention.observer.exitCode = 1;
+      },
+    ],
+    [
+      "collector interrupted",
+      (h) => {
+        Object.assign(h.postStopRetention.observer, { signal: "SIGTERM" });
+      },
+    ],
+    [
+      "collector cleanup failed",
+      (h) => {
+        h.postStopRetention.cleanup.state = "failed";
+      },
+    ],
+    [
+      "final cleanup failed",
+      (h) => {
+        h.postStopCleanup.state = "failed";
+      },
+    ],
+    [
+      "collector identity changed",
+      (h) => {
+        h.postStopCleanup.id += "-different";
+      },
+    ],
+    [
+      "collector log over bound",
+      (h) => {
+        h.postStopRetention.observer.retainedBytes = 8 * 1024 ** 2 + 1;
+      },
+    ],
+    [
+      "unknown collector field",
+      (h) => {
+        Object.assign(h.postStopRetention, { profile: profile.profile });
+      },
+    ],
+  ];
+  const selectedTrap = withPostStopRetention();
+  selectedTrap.reportRetention = syntheticRetention().reportRetention;
+  validateCObservationRetention(selectedTrap, startup.caller);
+  for (const [label, mutate] of mutations) {
+    const header = structuredClone(selectedTrap);
+    mutate(header);
+    assert.throws(
+      () => validateCObservationRetention(header, startup.caller),
+      Error,
+      label,
+    );
+  }
+});
+
+test(
+  "C live retention reads physical journals, held build identity and the separate post-stop collector log",
+  {
+    skip:
+      process.platform === "win32"
+        ? "POSIX retained file ownership and no-follow controls"
+        : false,
+  },
+  async (t) => {
+    const root = await realpath(await fixture(t, {}));
+    const build = path.join(root, "work/native-build");
+    await mkdir(build, { recursive: true, mode: 0o700 });
+    await chmod(build, 0o700);
+    const info = await lstat(build, { bigint: true });
+    const caller = { uid: Number(info.uid), gid: Number(info.gid) };
+    const header = withPostStopRetention(syntheticRetention(caller));
+    const identity = [info.dev, info.ino, info.mode, info.uid, info.gid].map(
+      String,
+    );
+    header.retainedBuildRoot = {
+      scope: retainedBuildScope,
+      before: [...identity],
+      afterStop: [...identity],
+      namedAfterStop: [...identity],
+    };
+    for (const phase of ["requested", "terminal"] as const) {
+      const row = header.commandObservations[phase];
+      await writeFile(
+        path.join(root, "work", row.file),
+        JSON.stringify(row.value),
+        { flag: "wx", mode: 0o600 },
+      );
+    }
+    const log = path.join(root, "post-stop-reports.log");
+    await writeFile(log, Buffer.alloc(terminal.retainedBytes, 0x61), {
+      flag: "wx",
+      mode: 0o600,
+    });
+    await verifyCObservationRetainedFiles(root, header, caller);
+    const journal = path.join(root, "work/original-command-terminal.json");
+    const original = await readFile(journal);
+    await writeFile(
+      journal,
+      JSON.stringify({
+        ...header.commandObservations.terminal.value,
+        exitCode: 1,
+      }),
+    );
+    await assert.rejects(
+      verifyCObservationRetainedFiles(root, header, caller),
+      /Physical original C command journal differs/u,
+    );
+    await writeFile(journal, original);
+    await chmod(journal, 0o644);
+    await assert.rejects(
+      verifyCObservationRetainedFiles(root, header, caller),
+      /mode differs/u,
+    );
+    await chmod(journal, 0o600);
+    await writeFile(log, Buffer.alloc(terminal.retainedBytes + 1, 0x61));
+    await assert.rejects(
+      verifyCObservationRetainedFiles(root, header, caller),
+      /collector log differs/u,
+    );
+    await writeFile(log, Buffer.alloc(terminal.retainedBytes, 0x61));
+    await rename(build, build + "-original");
+    await mkdir(build, { mode: 0o700 });
+    await assert.rejects(
+      verifyCObservationRetainedFiles(root, header, caller),
+      /Physical retained C build root differs/u,
+    );
+    await rename(build, build + "-replacement");
+    await symlink(build + "-original", build);
+    await assert.rejects(
+      verifyCObservationRetainedFiles(root, header, caller),
+      /Linked path refused/u,
+    );
+    await unlink(build);
+    await rename(build + "-original", build);
+    await verifyCObservationRetainedFiles(root, header, caller);
+  },
+);
+
 test("GLIBC hosted carrier keeps its original budget, bounded export and a branch namespace separate from Binutils and GCC", async () => {
   const workflow = parse(
     await readFile(
