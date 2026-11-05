@@ -9,6 +9,13 @@ import stat
 import zipfile
 
 MIB = 1024 ** 2
+C_BUILD_POLICY = {'sampleIntervalMs': 10000, 'maximumSamples': 9000,
+                  'maximumLogBytes': 256 * MIB,
+                  'workObjectPolicy': 'c-build-links-and-specials-no-follow'}
+REPORT_LOCATIONS = {
+    'original-trap': {'source': 'original-trap', 'manifest': 'work/test-reports.json', 'root': 'work/original-test-reports'},
+    'post-stop': {'source': 'post-stop', 'manifest': 'work/post-stop-reports/test-reports.json', 'root': 'work/post-stop-reports/original-test-reports'},
+}
 SOURCE_FILES = [
     'scripts/qualify-c-producer.mjs', 'scripts/qualify-binutils-producer.mjs',
     'scripts/producer-qualification/c-producer-profile.mjs', 'scripts/producer-qualification/c-producer-profiles.v1.json',
@@ -37,6 +44,37 @@ def identity(info):
     return info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns
 
 
+def evidence_format(result):
+    """Select only closed formats; an unreadable receipt still gets raw export."""
+    def pairs(items):
+        value = {}
+        for key, item in items:
+            if key in value:
+                raise ValueError('Duplicate controller receipt key')
+            value[key] = item
+        return value
+    try:
+        file = physical(result / 'receipt.json')
+        info = file.lstat()
+        if not stat.S_ISREG(info.st_mode) or info.st_size > 16 * MIB:
+            raise ValueError('Bounded controller receipt required')
+        with os.fdopen(os.open(file, os.O_RDONLY | os.O_NOFOLLOW), 'rb') as handle:
+            raw = handle.read(16 * MIB + 1)
+            if len(raw) != info.st_size or identity(os.fstat(handle.fileno())) != identity(info) or identity(file.lstat()) != identity(info):
+                raise ValueError('Controller receipt changed')
+        receipt = json.loads(raw, object_pairs_hook=pairs)
+        version = receipt.get('schemaVersion')
+        if type(version) is int and version == 1 and not any(key in receipt for key in ['retentionTransportPolicy', 'reportRetention']):
+            return 1, 'schema1'
+        if (type(version) is int and version == 2 and
+                json.dumps(receipt.get('retentionTransportPolicy'), sort_keys=True) == json.dumps(C_BUILD_POLICY, sort_keys=True) and
+                receipt.get('reportRetention') in REPORT_LOCATIONS.values()):
+            return 2, 'schema2'
+    except (OSError, ValueError, TypeError, AttributeError, RuntimeError):
+        pass
+    return 2, 'unverified'
+
+
 class BoundedWriter:
     def __init__(self, handle):
         self.handle = handle
@@ -60,8 +98,10 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
     for source in [repository, inputs, common, result]:
         if output == source or source in output.parents:
             raise RuntimeError('Evidence output overlaps source')
+    version, controller_format = evidence_format(result)
     rows, names, directories, directory_identities, unavailable = [], set(), {}, {}, []
-    total = report_total = 0
+    total = 0
+    report_totals = {'original-trap': 0, 'post-stop': 0}
 
     def directory(file, name):
         if name in directories:
@@ -73,8 +113,8 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
         directories[name] = {'file': name, 'nativeUid': info.st_uid, 'nativeGid': info.st_gid, 'nativeMode': stat.S_IMODE(info.st_mode), 'nativeDevice': str(info.st_dev), 'nativeInode': str(info.st_ino)}
         directory_identities[name] = (file, info)
 
-    def add(file, name, maximum, report=False):
-        nonlocal total, report_total
+    def add(file, name, maximum, report=None):
+        nonlocal total
         if not re.fullmatch(r'[A-Za-z0-9](?:[A-Za-z0-9._+~/-]|%3a)*', name) or any(part in ['', '.', '..'] for part in name.split('/')) or name in names:
             raise RuntimeError('Invalid or duplicate C evidence member')
         names.add(name)
@@ -83,12 +123,12 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
             info = file.lstat()
             if not stat.S_ISREG(info.st_mode) or info.st_size > maximum:
                 raise RuntimeError('Nonphysical or over-bound evidence member')
-            if report and report_total + info.st_size > 512 * MIB:
+            if report is not None and report_totals[report] + info.st_size > 512 * MIB:
                 raise RuntimeError('Original C report/log aggregate exceeds512MiB')
             if len(rows) >= 25000 or total + info.st_size > 2 * 1024 ** 3:
                 raise RuntimeError('C evidence inventory exceeds declared bound')
-            if report:
-                report_total += info.st_size
+            if report is not None:
+                report_totals[report] += info.st_size
             total += info.st_size
             rows.append((file, name, info))
         except (OSError, RuntimeError) as error:
@@ -118,11 +158,19 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
         add(observed / 'retention-observer.jsonl', 'observer-check/retention-observer.jsonl', 16 * MIB)
     for file, maximum in [
         ('receipt.json', 16 * MIB), ('build-observation.json', 2 * MIB), ('build.log', 512 * MIB),
-        ('retention-observer.jsonl', 16 * MIB), ('custody-preflight.log', 65536),
+        ('retention-observer.jsonl', (16 if version == 1 else 256) * MIB), ('custody-preflight.log', 65536),
         ('custody-preflight/test-reports.json', 65536), ('work/original-command.json', 4096),
         ('work/test-reports.json', 8 * MIB), ('work/installed-build-package-identities.txt', MIB),
     ]:
         add(result / file, 'result/' + file, maximum)
+    if version == 2:
+        for phase in ['requested', 'terminal']:
+            name = 'work/original-command-' + phase + '.json'
+            add(result / name, 'result/' + name, 4096)
+        if os.path.lexists(result / 'work/post-stop-reports'):
+            add(result / 'work/post-stop-reports/test-reports.json', 'result/work/post-stop-reports/test-reports.json', 8 * MIB)
+        if os.path.lexists(result / 'post-stop-reports.log'):
+            add(result / 'post-stop-reports.log', 'result/post-stop-reports.log', 8 * MIB)
     if profile_name in ['glibc','glibc-u13']:
         for file in ['seccomp-baseline.log','seccomp-derived.log','controls/glibc-native-seccomp.json']:
             add(result / file, 'result/' + file, 65536)
@@ -136,7 +184,10 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
         for file,maximum in [('.receipt.part',MIB),('.owner-frame.part',16*MIB)]:
             if os.path.lexists(carrier / file):
                 add(carrier / file,'carrier/failed-' + file[1:],maximum)
-    for prefix in ['work/original-test-reports', 'custody-preflight/original-test-reports']:
+    report_prefixes = ['work/original-test-reports', 'custody-preflight/original-test-reports']
+    if version == 2:
+        report_prefixes.append('work/post-stop-reports/original-test-reports')
+    for prefix in report_prefixes:
         source = result / prefix
         if source.exists():
             physical(source)
@@ -153,7 +204,8 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
                     if Path(name).suffix not in ['.sum', '.trs', '.log']:
                         raise RuntimeError('Unknown original C report/log member')
                     # C has its own64MiB member/512MiB aggregate contract.
-                    add(current / name, logical + '/' + name, 64 * MIB, report=prefix.startswith('work/'))
+                    family = 'post-stop' if prefix.startswith('work/post-stop-reports/') else 'original-trap' if prefix.startswith('work/') else None
+                    add(current / name, logical + '/' + name, 64 * MIB, report=family)
     packages = result / 'work/output'
     if packages.exists():
         physical(packages)
@@ -162,7 +214,11 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
                 add(file, 'result/work/output/' + file.name, 4 * MIB)
     if not rows:
         raise RuntimeError('No raw C attempt observations available')
-    manifest = {'schemaVersion': 1, 'selectedProfile': profile_name, 'scope': 'Bounded original C receipts, reports and logs; failed attempts retained without promotion.', 'rawFiles': [], 'nativeDirectories': list(directories.values()), 'unavailable': unavailable, 'uncompressedBytes': total, 'originalReportLogBytes': report_total, 'originalReportMemberByteLimit': 64 * MIB, 'originalReportAggregateByteLimit': 512 * MIB, 'binaryPackagePayloadsUploaded': False, 'nativeWorktreeArchiveUploaded': False, 'originalInputPayloadsUploaded': False, 'qualificationComplete': False, 'gateAComplete': False}
+    manifest = {'schemaVersion': version, 'selectedProfile': profile_name, 'scope': 'Bounded original C receipts, reports and logs; failed attempts retained without promotion.', 'rawFiles': [], 'nativeDirectories': list(directories.values()), 'unavailable': unavailable, 'uncompressedBytes': total, 'originalReportLogBytes': report_totals['original-trap'], 'originalReportMemberByteLimit': 64 * MIB, 'originalReportAggregateByteLimit': 512 * MIB, 'binaryPackagePayloadsUploaded': False, 'nativeWorktreeArchiveUploaded': False, 'originalInputPayloadsUploaded': False, 'qualificationComplete': False, 'gateAComplete': False}
+    if version == 2:
+        manifest.update(controllerReceiptFormat=controller_format, retentionObserverLogByteLimit=256*MIB,
+                        postStopReportLogBytes=report_totals['post-stop'], postStopReportAggregateByteLimit=512*MIB,
+                        reportFamiliesRetainedSeparately=True)
     partial = Path(str(output) + '.part')
     with os.fdopen(os.open(partial, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600), 'wb') as handle:
         with zipfile.ZipFile(BoundedWriter(handle), 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=6, allowZip64=True) as archive:
@@ -208,7 +264,7 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
             raise RuntimeError('Native original copy directory changed during export')
     os.link(partial, output)
     partial.unlink()
-    return {'state': 'bounded-raw-c-attempt-exported', 'files': len(rows), 'unavailable': len(unavailable), 'originalReportLogBytes': report_total, 'archiveBytes': output.stat().st_size, 'qualificationComplete': False, 'gateAComplete': False}
+    return {'state': 'bounded-raw-c-attempt-exported', 'files': len(rows), 'unavailable': len(unavailable), 'originalReportLogBytes': report_totals['original-trap'], 'archiveBytes': output.stat().st_size, 'qualificationComplete': False, 'gateAComplete': False}
 
 
 if __name__ == '__main__':

@@ -7,6 +7,11 @@ import path from "node:path";
 import { setTimeout, clearTimeout } from "node:timers";
 const roots = ["bundle", "controls", "work"];
 const maximumLog = 16 * 1024 ** 2;
+export const cBuildRetentionPolicy = Object.freeze({
+  sampleIntervalMs: 10000,
+  maximumSamples: 9000,
+  maximumLogBytes: 256 * 1024 ** 2,
+});
 export function validateRetentionMessage(value, sequence) {
   if (sequence === 0) {
     assert.deepEqual(value, {
@@ -45,7 +50,9 @@ export function retentionObserverArguments({
   image,
   platform,
   attempt,
+  cBuildWork = false,
 }) {
+  assert.equal(typeof cBuildWork, "boolean");
   assert.match(image, /^docker\.io\/coqorg\/coq@sha256:[a-f0-9]{64}$/u);
   assert.equal(platform, "linux/amd64");
   assert.match(attempt, /^[a-f0-9-]{36}$/u);
@@ -92,6 +99,7 @@ export function retentionObserverArguments({
     "-S",
     "-B",
     "/observed/controls/binutils-retention-observer.py",
+    ...(cBuildWork ? ["--c-build-work"] : []),
   ];
 }
 export async function startRetentionObserver({
@@ -101,13 +109,18 @@ export async function startRetentionObserver({
   attempt,
   environment,
   onFailure,
+  cBuildWork = false,
 }) {
   const argv = retentionObserverArguments({
     destination,
     image,
     platform,
     attempt,
+    cBuildWork,
   });
+  const logLimit = cBuildWork
+    ? cBuildRetentionPolicy.maximumLogBytes
+    : maximumLog;
   const fd = openSync(
     path.join(destination, "retention-observer.jsonl"),
     constants.O_WRONLY |
@@ -147,7 +160,7 @@ export async function startRetentionObserver({
       JSON.stringify({ stream, base64: chunk.toString("base64") }) + "\n";
     const raw = Buffer.from(line);
     assert.ok(
-      logBytes + raw.length <= maximumLog,
+      logBytes + raw.length <= logLimit,
       "Retention observer log bound exceeded",
     );
     let written = 0;
@@ -289,6 +302,11 @@ export async function startRetentionObserver({
     closedOnce = false;
   return {
     async sample() {
+      if (cBuildWork)
+        assert.ok(
+          sequence < cBuildRetentionPolicy.maximumSamples,
+          "C build retention sample bound exceeded",
+        );
       assert.ok(!closing, "Retention observer already closing");
       assert.ok(!pending, "Concurrent retention request refused");
       if (terminalError) throw terminalError;
@@ -327,6 +345,9 @@ export async function startRetentionObserver({
           network: "none",
           capability: "DAC_READ_SEARCH",
           nativeFilesystemQuotaEnforced: false,
+          ...(cBuildWork
+            ? { workObjectPolicy: "c-build-links-and-specials-no-follow" }
+            : {}),
         };
       } finally {
         closeLog();
@@ -336,9 +357,17 @@ export async function startRetentionObserver({
 }
 
 // Reconcile the durable transport, including requests, before accepting its counters.
-export function reconcileRetentionLog(bytes, receipt) {
+export function reconcileRetentionLog(
+  bytes,
+  receipt,
+  { cBuildWork = false } = {},
+) {
+  assert.equal(typeof cBuildWork, "boolean");
+  const logLimit = cBuildWork
+    ? cBuildRetentionPolicy.maximumLogBytes
+    : maximumLog;
   assert.ok(
-    Buffer.isBuffer(bytes) && bytes.length > 0 && bytes.length <= maximumLog,
+    Buffer.isBuffer(bytes) && bytes.length > 0 && bytes.length <= logLimit,
   );
   assert.equal(bytes.length, receipt.retainedLogBytes);
   const text = bytes.toString("utf8");
@@ -395,6 +424,11 @@ export function reconcileRetentionLog(bytes, receipt) {
     "Incomplete retention transport",
   );
   assert.equal(receipt.samples, samples);
+  if (cBuildWork)
+    assert.ok(
+      samples <= cBuildRetentionPolicy.maximumSamples,
+      "C build retained sample bound exceeded",
+    );
   assert.deepEqual(receipt.lastSample, lastSample);
   return { samples, lastSample };
 }

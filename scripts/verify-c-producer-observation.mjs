@@ -1,7 +1,8 @@
 // Development-only live observer. It never promotes complete SDK/Gate A closure.
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { readdir, writeFile } from "node:fs/promises";
+import { constants } from "node:fs";
+import { lstat, open, readdir, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -10,6 +11,9 @@ import { promisify } from "node:util";
 import {
   captureCProducerCallerIdentity,
   boundedCProducerBytes,
+  boundedCProducerRetentionBytes,
+  cProducerEvidenceFormat,
+  validateCProducerCommandObservations,
   observedCProducerTerminal,
   readCProducerCopyManifest,
   verifyCProducerReports,
@@ -104,6 +108,179 @@ async function json(file, maximum = 16 * 1024 ** 2) {
   return JSON.parse(await boundedCProducerBytes(file, maximum));
 }
 
+const retainedBuildScope =
+  "Directory identity before and after positive producer stop; not a continuous content trace";
+const directoryIdentity = (info) =>
+  [info.dev, info.ino, info.mode, info.uid, info.gid].map(String);
+
+export function validateCObservationRetention(receipt, caller) {
+  const format = cProducerEvidenceFormat(receipt);
+  if (!format.cBuildWork) {
+    assert.ok(!Object.hasOwn(receipt.retentionObserver, "workObjectPolicy"));
+    return format;
+  }
+  assert.equal(
+    receipt.retentionObserver.workObjectPolicy,
+    "c-build-links-and-specials-no-follow",
+  );
+  assert.deepEqual(
+    receipt.collectionFailures,
+    [],
+    "Incomplete C evidence collection",
+  );
+  assert.deepEqual(receipt.nativeBuildRootClose, { state: "closed" });
+  const root = receipt.retainedBuildRoot;
+  assert.ok(root !== null && typeof root === "object" && !Array.isArray(root));
+  assert.deepEqual(Object.keys(root).sort(), [
+    "afterStop",
+    "before",
+    "namedAfterStop",
+    "scope",
+  ]);
+  assert.equal(root.scope, retainedBuildScope);
+  for (const key of ["before", "afterStop", "namedAfterStop"]) {
+    assert.ok(
+      Array.isArray(root[key]) &&
+        root[key].length === 5 &&
+        root[key].every(
+          (value) =>
+            typeof value === "string" && /^(0|[1-9][0-9]{0,19})$/u.test(value),
+        ),
+      "Malformed retained C build root identity",
+    );
+    assert.deepEqual(
+      root[key],
+      root.before,
+      "Retained C build root identity differs",
+    );
+  }
+  assert.ok(
+    BigInt(root.before[0]) > 0n && BigInt(root.before[1]) > 0n,
+    "Retained C build root device/inode differs",
+  );
+  assert.equal(
+    root.before[2],
+    String(0o40700),
+    "Retained C build root mode differs",
+  );
+  assert.equal(
+    root.before[3],
+    String(caller.uid),
+    "Retained C build root caller differs",
+  );
+  assert.equal(
+    root.before[4],
+    String(caller.gid),
+    "Retained C build root group differs",
+  );
+  assert.deepEqual(Object.keys(receipt.commandObservations).sort(), [
+    "requested",
+    "terminal",
+  ]);
+  validateCProducerCommandObservations(
+    receipt.originalBuild,
+    receipt.commandObservations,
+  );
+  for (const phase of ["requested", "terminal"]) {
+    const row = receipt.commandObservations[phase];
+    assert.deepEqual(Object.keys(row).sort(), ["file", "state", "value"]);
+    assert.equal(row.file, "original-command-" + phase + ".json");
+  }
+  if (Object.hasOwn(receipt, "postStopRetention")) {
+    const retained = receipt.postStopRetention;
+    assert.deepEqual(Object.keys(retained).sort(), [
+      "cleanup",
+      "observer",
+      "originalCodeExecuted",
+      "primary",
+    ]);
+    assert.equal(retained.originalCodeExecuted, false);
+    assert.equal(retained.primary, null, "Post-stop report collector failed");
+    assert.ok(
+      observedCProducerTerminal(retained.observer) &&
+        retained.observer.exitCode === 0 &&
+        retained.observer.retainedBytes <= 8 * 1024 ** 2,
+      "Incomplete post-stop report collector terminal",
+    );
+    for (const cleanup of [retained.cleanup, receipt.postStopCleanup])
+      assert.ok(
+        cleanup && ["absent", "removed"].includes(cleanup.state),
+        "Incomplete post-stop report collector cleanup",
+      );
+    if (
+      Object.hasOwn(retained.cleanup, "id") ||
+      Object.hasOwn(receipt.postStopCleanup, "id")
+    )
+      assert.equal(
+        retained.cleanup.id,
+        receipt.postStopCleanup.id,
+        "Post-stop collector identity differs",
+      );
+  } else {
+    assert.equal(
+      receipt.reportRetention.source,
+      "original-trap",
+      "Missing post-stop report collector observation",
+    );
+    assert.deepEqual(receipt.postStopCleanup, { state: "not-started" });
+  }
+  return format;
+}
+
+export async function verifyCObservationRetainedFiles(result, receipt, caller) {
+  const format = validateCObservationRetention(receipt, caller);
+  if (!format.cBuildWork) return;
+  for (const phase of ["requested", "terminal"]) {
+    const row = receipt.commandObservations[phase];
+    const raw = await boundedCProducerBytes(
+      path.join(result, "work", row.file),
+      4096,
+      caller,
+    );
+    assert.deepEqual(
+      JSON.parse(raw),
+      row.value,
+      "Physical original C command journal differs",
+    );
+  }
+  const root = path.join(result, "work/native-build");
+  await physicalPath(root, true);
+  const before = await lstat(root, { bigint: true });
+  const handle = await open(
+    root,
+    constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW,
+  );
+  try {
+    assert.deepEqual(
+      directoryIdentity(before),
+      receipt.retainedBuildRoot.before,
+      "Physical retained C build root differs",
+    );
+    assert.deepEqual(
+      directoryIdentity(await handle.stat({ bigint: true })),
+      directoryIdentity(before),
+    );
+    assert.deepEqual(
+      directoryIdentity(await lstat(root, { bigint: true })),
+      directoryIdentity(before),
+    );
+  } finally {
+    await handle.close();
+  }
+  if (Object.hasOwn(receipt, "postStopRetention")) {
+    const raw = await boundedCProducerBytes(
+      path.join(result, "post-stop-reports.log"),
+      8 * 1024 ** 2,
+      caller,
+    );
+    assert.equal(
+      raw.length,
+      receipt.postStopRetention.observer.retainedBytes,
+      "Post-stop report collector log differs",
+    );
+  }
+}
+
 export function validateCObservationHeader(
   receipt,
   profile,
@@ -161,6 +338,7 @@ export function validateCObservationHeader(
     architecture: "x64",
     kernelMachine: "x86_64",
   });
+  validateCObservationRetention(receipt, startup.caller);
   const preflight = receipt.custodyPreflight;
   assert.equal(preflight.state, "selected-nonroot-caller-export-verified");
   assert.deepEqual(preflight.capturedCaller, startup.caller);
@@ -335,6 +513,8 @@ export async function verifyCLiveObservation(
     controllerExit,
   );
   assert.equal(receipt.catalogSha256, catalogSha256);
+  const format = cProducerEvidenceFormat(receipt);
+  await verifyCObservationRetainedFiles(result, receipt, startup.caller);
   assert.equal(receipt.retentionObserver.independentImage, catalog.image);
   assert.deepEqual(
     receipt.sourcePins.map((row) => row.file),
@@ -508,15 +688,17 @@ export async function verifyCLiveObservation(
     receipt.log,
   );
   assert.equal(receipt.executionObserver.retainedBytes, receipt.log.bytes);
-  const observer = await boundedCProducerBytes(
+  const observer = await boundedCProducerRetentionBytes(
     path.join(result, "retention-observer.jsonl"),
-    16 * 1024 ** 2,
+    format.observerLogByteLimit,
   );
   assert.deepEqual(
     { bytes: observer.length, sha256: sha256(observer) },
     receipt.retentionObserver.log,
   );
-  reconcileRetentionLog(observer, receipt.retentionObserver);
+  reconcileRetentionLog(observer, receipt.retentionObserver, {
+    cBuildWork: format.cBuildWork,
+  });
   assert.deepEqual(
     receipt.finalRetention,
     receipt.retentionObserver.lastSample,
@@ -546,13 +728,13 @@ export async function verifyCLiveObservation(
   );
   assert.deepEqual(command, receipt.originalBuild);
   const reports = await readCProducerCopyManifest(
-    path.join(result, "work/test-reports.json"),
+    path.join(result, format.manifest),
     startup.caller,
   );
   assert.deepEqual(
     await verifyCProducerReports(
       reports,
-      path.join(result, "work/original-test-reports"),
+      path.join(result, format.reportsRoot),
       profile,
       startup.caller,
     ),

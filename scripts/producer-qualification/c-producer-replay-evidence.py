@@ -15,6 +15,13 @@ import time
 import zipfile
 
 MIB = 1024 ** 2
+C_BUILD_POLICY = {'sampleIntervalMs': 10000, 'maximumSamples': 9000,
+                  'maximumLogBytes': 256 * MIB,
+                  'workObjectPolicy': 'c-build-links-and-specials-no-follow'}
+REPORT_LOCATIONS = {
+    'original-trap': {'source': 'original-trap', 'manifest': 'work/test-reports.json', 'root': 'work/original-test-reports'},
+    'post-stop': {'source': 'post-stop', 'manifest': 'work/post-stop-reports/test-reports.json', 'root': 'work/post-stop-reports/original-test-reports'},
+}
 CATALOG_SHA256 = '3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd'
 KEYS = ['PASS','FAIL','XFAIL','XPASS','UNSUPPORTED','UNRESOLVED','UNTESTED','ERROR','SKIP']
 SOURCE_FILES = [
@@ -91,8 +98,78 @@ def terminal(value, limit=512*MIB, expected_exit=0):
     require(integer(value['retainedBytes'], 0, limit), 'Foreground log byte observation invalid')
 
 
-def retention(raw, receipt):
-    require(0 < len(raw) <= 16*MIB and raw.endswith(b'\n') and integer(receipt['retainedLogBytes'],1,16*MIB) and integer(receipt['samples'],1,1000000) and len(raw) == receipt['retainedLogBytes'], 'Incomplete observer raw transport')
+def evidence_format(receipt):
+    version = receipt['schemaVersion']
+    require(type(version) is int and version in [1, 2], 'Unknown C controller evidence schema')
+    if version == 1:
+        require(not any(key in receipt for key in ['retentionTransportPolicy', 'reportRetention']), 'New C evidence fields require controller schema2')
+        return {'schemaVersion': 1, 'observerLimit': 16*MIB, 'samples': 1000000, **REPORT_LOCATIONS['original-trap']}
+    require(exact_json(receipt['retentionTransportPolicy'], C_BUILD_POLICY), 'C retention transport policy differs')
+    location = receipt['reportRetention']
+    require(type(location) is dict and any(exact_json(location, value) for value in REPORT_LOCATIONS.values()), 'Unknown original C report retention source/path')
+    return {'schemaVersion': 2, 'observerLimit': 256*MIB, 'samples': 9000, **location}
+
+
+def command_journal(value, phase, profile):
+    require(type(value) is dict and set(value) == {'schemaVersion','kind','command','invocationRequested','commandTerminalObserved','exitCode','wrapperTerminalObserved','wrapperExitCode'}, 'Incomplete independent original command journal')
+    expected = {'schemaVersion':1, 'kind':'original-command-'+phase, 'command':profile['command'],
+                'invocationRequested':True, 'commandTerminalObserved':phase == 'terminal',
+                'exitCode':0 if phase == 'terminal' else None, 'wrapperTerminalObserved':False, 'wrapperExitCode':None}
+    require(exact_json(value, expected), 'Independent original command journal differs')
+
+
+def closed_controller_evidence(packet, receipt, profile, caller):
+    """Reconcile retained schema2 bytes; this does not attest native hardware."""
+    selected = evidence_format(receipt)
+    require(packet.manifest['schemaVersion'] == selected['schemaVersion'], 'Archive/controller evidence format differs')
+    if selected['schemaVersion'] == 1:
+        return selected
+    require(packet.manifest['controllerReceiptFormat'] == 'schema2', 'Unverified controller receipt format cannot qualify')
+    require(exact_json([receipt['profile'],receipt['sourceVersion'],receipt['limits'],receipt['catalogSha256']],
+                       [profile['profile'],profile['sourceVersion'],profile['limits'],CATALOG_SHA256]), 'Wrong original frozen profile')
+    observations = receipt['commandObservations']
+    require(type(observations) is dict and set(observations) == {'requested','terminal'}, 'Incomplete original command observations')
+    command = packet.json('result/work/original-command.json',4096)
+    require(exact_json(command,receipt['originalBuild']) and exact_json(command,{'schemaVersion':1,'command':profile['command'],'invoked':True,'exitCode':0,'wrapperExitCode':0}), 'Original default command terminal unavailable')
+    for phase in ['requested','terminal']:
+        name = 'original-command-'+phase+'.json'
+        row = observations[phase]
+        require(type(row) is dict and set(row) == {'state','file','value'} and row['state'] == 'retained' and row['file'] == name, 'Independent command journal retained filename differs')
+        raw_value = packet.json('result/work/'+name,4096)
+        command_journal(raw_value,phase,profile)
+        require(exact_json(raw_value,row['value']), 'Retained original command journal bytes/value differ')
+        packet.custody('result/work/'+name,caller)
+    root = receipt['retainedBuildRoot']
+    require(type(root) is dict and set(root) == {'before','afterStop','namedAfterStop','scope'} and root['scope'] == 'Directory identity before and after positive producer stop; not a continuous content trace', 'Incomplete stopped native build-root observation')
+    for key in ['before','afterStop','namedAfterStop']:
+        value = root[key]
+        require(type(value) is list and len(value) == 5 and all(type(v) is str and re.fullmatch(r'(0|[1-9][0-9]{0,19})',v) for v in value), 'Malformed native build-root identity')
+        require(value == root['before'] and int(value[0]) > 0 and int(value[1]) > 0 and value[2:] == [str(stat.S_IFDIR | 0o700),str(caller['uid']),str(caller['gid'])], 'Stopped native build-root identity/owner/mode differs')
+    require(exact_json(receipt['nativeBuildRootClose'],{'state':'closed'}) and exact_json(receipt['collectionFailures'],[]), 'Native build-root close or evidence collection incomplete')
+    if 'postStopRetention' in receipt:
+        post = receipt['postStopRetention']
+        require(type(post) is dict and set(post) == {'originalCodeExecuted','observer','cleanup','primary'} and post['originalCodeExecuted'] is False and post['primary'] is None, 'Post-stop report collector scope/failure differs')
+        terminal(post['observer'],8*MIB)
+        outer = receipt.get('postStopCleanup')
+        require(type(post['cleanup']) is dict and post['cleanup']['state'] in ['absent','removed'] and type(outer) is dict and outer.get('state') in ['absent','removed'], 'Post-stop report collector cleanup incomplete')
+        if 'id' in post['cleanup'] or 'id' in outer:
+            require('id' in post['cleanup'] and 'id' in outer and exact_json(post['cleanup']['id'],outer['id']), 'Post-stop collector cleanup identity differs')
+        packet.custody('result/post-stop-reports.log',caller)
+        log = packet.read('result/post-stop-reports.log',8*MIB)
+        require(len(log) == post['observer']['retainedBytes'], 'Post-stop report collector raw log/terminal differs')
+    else:
+        require(selected['source'] == 'original-trap' and exact_json(receipt.get('postStopCleanup'),{'state':'not-started'}), 'Missing post-stop collector observation or unexpected cleanup')
+    return selected
+
+
+def retention(raw, receipt, selected=None):
+    selected = selected or {'schemaVersion':1,'observerLimit':16*MIB,'samples':1000000}
+    limit = selected['observerLimit']
+    if selected['schemaVersion'] == 2:
+        require(receipt.get('workObjectPolicy') == C_BUILD_POLICY['workObjectPolicy'], 'C work object policy differs')
+    else:
+        require('workObjectPolicy' not in receipt, 'New C work observer requires controller schema2')
+    require(0 < len(raw) <= limit and raw.endswith(b'\n') and integer(receipt['retainedLogBytes'],1,limit) and integer(receipt['samples'],1,selected['samples']) and len(raw) == receipt['retainedLogBytes'], 'Incomplete observer raw transport')
     require(pin(raw) == receipt['log'], 'Observer raw transport hash differs')
     ready, waiting, sequence, samples, buffer, last = False, False, 0, 0, b'', None
     for line in raw[:-1].split(b'\n'):
@@ -297,16 +374,29 @@ class Packet:
         require('manifest.json' in names and self.archive.getinfo('manifest.json').file_size<=16*MIB, 'Missing bounded export manifest')
         self.manifest = strict_json(self.archive.read('manifest.json'))
         require(type(self.manifest.get('selectedProfile')) is str and self.manifest['selectedProfile'] in ['gcc-12','glibc','glibc-u13'],'Unknown archive original profile')
-        require(self.manifest['schemaVersion']==1 and self.manifest['qualificationComplete'] is False and self.manifest['gateAComplete'] is False, 'Unproven export qualification')
-        require(self.manifest['originalReportMemberByteLimit']==64*MIB and self.manifest['originalReportAggregateByteLimit']==512*MIB, 'Wrong C report export contract')
+        version = self.manifest['schemaVersion']
+        require(type(version) is int and version in [1,2] and self.manifest['qualificationComplete'] is False and self.manifest['gateAComplete'] is False, 'Unproven export qualification')
+        require(exact_json([self.manifest['originalReportMemberByteLimit'],self.manifest['originalReportAggregateByteLimit']],[64*MIB,512*MIB]), 'Wrong C report export contract')
+        if version == 2:
+            require(set(self.manifest) == {'schemaVersion','selectedProfile','scope','rawFiles','nativeDirectories','unavailable','uncompressedBytes','originalReportLogBytes','originalReportMemberByteLimit','originalReportAggregateByteLimit','binaryPackagePayloadsUploaded','nativeWorktreeArchiveUploaded','originalInputPayloadsUploaded','qualificationComplete','gateAComplete','controllerReceiptFormat','retentionObserverLogByteLimit','postStopReportLogBytes','postStopReportAggregateByteLimit','reportFamiliesRetainedSeparately'}, 'Unknown C archive2 fields')
+            require(self.manifest['controllerReceiptFormat'] in ['schema2','unverified'] and
+                    exact_json([self.manifest['retentionObserverLogByteLimit'],self.manifest['postStopReportAggregateByteLimit'],self.manifest['reportFamiliesRetainedSeparately']],[256*MIB,512*MIB,True]), 'Wrong closed C archive2 policy')
+        else:
+            require(not any(key in self.manifest for key in ['controllerReceiptFormat','retentionObserverLogByteLimit','postStopReportLogBytes','postStopReportAggregateByteLimit','reportFamiliesRetainedSeparately']), 'New C archive fields require schema2')
         for key in ['binaryPackagePayloadsUploaded','nativeWorktreeArchiveUploaded','originalInputPayloadsUploaded']:
             require(self.manifest[key] is False, 'Unrequested large payload export')
         self.files = {}
-        total = reports = 0
+        total = reports = post_reports = 0
         for row in self.manifest['rawFiles']:
             name = row['file']
             require(relative(name) and name not in self.files and integer(row['bytes'],0,512*MIB) and re.fullmatch(r'[a-f0-9]{64}',row['sha256']), 'Invalid exported byte identity')
             require(not re.search(r'\.(deb|udeb|tar|xz|gz|wasm)$',name) and not '/bundle/' in name, 'Excluded payload entered evidence archive')
+            if name == 'result/retention-observer.jsonl':
+                require(row['bytes'] <= (16 if version == 1 else 256)*MIB, 'Observer member exceeds fixed archive format cap')
+            if version == 1:
+                require(not name.startswith('result/work/post-stop-reports/') and name not in ['result/post-stop-reports.log','result/work/original-command-requested.json','result/work/original-command-terminal.json'], 'Schema1 archive contains schema2 evidence')
+            if name == 'result/post-stop-reports.log':
+                require(row['bytes']<=8*MIB, 'Post-stop collector log exceeds8MiB')
             require(integer(row['nativeUid'],0,4294967294) and integer(row['nativeGid'],0,4294967294) and integer(row['nativeMode'],0,0o7777), 'Malformed native physical owner observation')
             require(self.archive.getinfo(name).file_size==row['bytes'], 'ZIP length differs from physical export')
             digest, size = hashlib.sha256(), 0
@@ -319,10 +409,15 @@ class Packet:
             if name.startswith('result/work/original-test-reports/'):
                 require(row['bytes']<=64*MIB, 'Original C report member exceeds64MiB')
                 reports += row['bytes']
+            if name.startswith('result/work/post-stop-reports/original-test-reports/'):
+                require(version == 2 and row['bytes']<=64*MIB, 'Post-stop C report member exceeds64MiB')
+                post_reports += row['bytes']
             self.files[name] = row
             total += row['bytes']
         require(sorted(names)==sorted([*self.files,'manifest.json']) and total==self.manifest['uncompressedBytes'] and total<=2*1024**3, 'Export inventory/aggregate differs')
-        require(reports==self.manifest['originalReportLogBytes'] and reports<=512*MIB, 'Original C report aggregate differs')
+        require(exact_json(reports,self.manifest['originalReportLogBytes']) and reports<=512*MIB, 'Original C report aggregate differs')
+        if version == 2:
+            require(exact_json(post_reports,self.manifest['postStopReportLogBytes']) and post_reports<=512*MIB, 'Post-stop C report aggregate differs')
         self.directories = {}
         for row in self.manifest['nativeDirectories']:
             require(relative(row['file']) and row['file'] not in self.directories and integer(row['nativeUid'],0,4294967294) and integer(row['nativeGid'],0,4294967294) and integer(row['nativeMode'],0,0o7777), 'Malformed native directory observation')
@@ -419,6 +514,30 @@ def reports(packet, prefix, value, caller, expected_producer_uid, profile_name='
     archive_reports={name[len(prefix)+1:] for name in packet.files if name.startswith(prefix+'/')}
     require(archive_reports==observed,'Unreplayed original report/log member')
     return {'reports':len(value['reports']),'observedOutcomeLines':outcome_count,**outcome_availability(value['reports']),'originalOutcomesPreserved':True,'reportsPooledAsIndependentEvidence':False}
+
+
+def selected_reports(packet, selected, receipt, caller, profile_name):
+    manifest = 'result/'+selected['manifest']
+    root = 'result/'+selected['root']
+    packet.custody(manifest,caller)
+    value = packet.json(manifest,8*MIB)
+    summary = reports(packet,root,value,caller,0,profile_name)
+    require(all(exact_json(receipt['testEvidence'][key],item) for key,item in value.items()), 'Selected original report manifest differs from live observation')
+    if selected['schemaVersion'] == 2:
+        # Preserve both epochs separately without summing duplicate outcomes.
+        for location in REPORT_LOCATIONS.values():
+            name = 'result/'+location['manifest']
+            prefix = 'result/'+location['root']
+            if name == manifest:
+                continue
+            if name in packet.files:
+                packet.custody(name,caller)
+                reports(packet,prefix,packet.json(name,8*MIB),caller,0,profile_name)
+            else:
+                require(not any(n.startswith(prefix+'/') for n in packet.files), 'Report family bytes lack their independent manifest')
+                require(location['source'] != 'original-trap', 'Original-trap raw report family was dropped')
+                require('postStopRetention' not in receipt and 'result/post-stop-reports.log' not in packet.files and not any(n == prefix or n.startswith(prefix+'/') for n in packet.directories), 'Post-stop raw report family was dropped')
+    return value,summary
 
 
 def pending_group_probes(value):
@@ -638,6 +757,7 @@ def replay(archive,repository,expected_profile='glibc'):
             require(integer(prepared[key]['changedExitCode'],1,255) and exact_json(prepared[key]['restoredExitCode'],0),'Original signature fault/restoration control missing')
         require(prepared['compilerExecuted'] is False and prepared['packageInstalled'] is False,'Data-only common preparation changed scope')
         receipt_raw=packet.read('result/receipt.json',16*MIB);receipt=strict_json(receipt_raw)
+        format = closed_controller_evidence(packet,receipt,profile,caller)
         observed=packet.json('result/build-observation.json',2*MIB)
         require(exact_json([observed['schemaVersion'],observed['controllerExit']],[1,2]) and observed['state']=='original-'+expected_profile+'-command-observed-qualification-incomplete' and exact_json(observed['selectedProfile'],selected),'No complete live selected original observation')
         require(exact_json(observed['originalCommandExitCode'],0) and observed['originalTestOutcomesPreserved'] is True and observed['completeConfigurationInventoryAssessed'] is False and observed['packagePayloadAndNativeArchiveTransported'] is False,'Live original observation scope differs')
@@ -670,7 +790,7 @@ def replay(archive,repository,expected_profile='glibc'):
         else:gcc_carrier(packet,packet.read('operator-startup.json',MIB),receipt,profile,observed)
         observer=receipt['retentionObserver'];require(observer['state']=='completed' and observer['independentImage']==catalog['image'] and observer['readOnly'] is True and observer['network']=='none' and observer['capability']=='DAC_READ_SEARCH' and exact_json(observer['terminal'],{'exitCode':0,'signal':None}),'Independent observer unavailable or altered')
         require(observer['nativeFilesystemQuotaEnforced'] is False,'Unproven native quota')
-        last=retention(packet.read('result/retention-observer.jsonl',16*MIB),observer)
+        last=retention(packet.read('result/retention-observer.jsonl',format['observerLimit']),observer,format)
         require(last==receipt['finalRetention'],'Final observer sample differs')
         allowance=sum(row['bytes'] for row in profile['files'])+sum(row['bytes'] for row in receipt['sourcePins'] if row['file'] in ['c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','glibc-seccomp-probe.py'])+sum(row['bytes'] for row in receipt.get('generatedControlPins',[]))
         require(last['bytes']<=profile['limits']['workByteLimit']+allowance,'Retained work allowance exceeded')
@@ -683,12 +803,9 @@ def replay(archive,repository,expected_profile='glibc'):
         packet.custody('result/custody-preflight/test-reports.json',caller)
         preflight_summary=reports(packet,'result/custody-preflight/original-test-reports',strict_json(preflight_manifest),caller,0)
         require(preflight_summary['reports']==1 and packet.read('result/custody-preflight/original-test-reports/build-tree/amd64-libc/tests.sum',1024)==b'PASS: synthetic custody preflight\n' and packet.read('result/custody-preflight/original-test-reports/build-tree/amd64-libc/tests.log',1024)==b'Original synthetic custody bytes\n','Custody preflight physical source bytes differ')
-        packet.custody('result/work/test-reports.json',caller)
-        original_reports=packet.json('result/work/test-reports.json',8*MIB)
-        summary=reports(packet,'result/work/original-test-reports',original_reports,caller,0,expected_profile)
+        original_reports,summary=selected_reports(packet,format,receipt,caller,expected_profile)
         require(summary['reports']>0 and summary['resolvedTestOutcomesObserved'],'No original resolved test outcome inventory')
         require(observed['originalTestEvidenceState']==summary['testEvidenceState'],'Live original test outcome state differs')
-        require(all(receipt['testEvidence'][key]==value for key,value in original_reports.items()),'Original report manifest differs from live observation')
         require(pin(packet.read('result/work/installed-build-package-identities.txt',MIB))==receipt['installedPackageIdentities'],'Original installed package manifest differs')
         require(observed['physicallyRecheckedPackageOutputs']==receipt['outputs'] and nonempty_package_outputs(receipt['outputs'],profile['limits']['workByteLimit']),'Nonempty physically observed package output is required')
         require(observed['physicallyRecheckedNativeArchive']==receipt['nativeBuildWorktree'],'Retained native archive observation differs')

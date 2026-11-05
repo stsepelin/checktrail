@@ -6,6 +6,7 @@ import {
   mkdir,
   readFile,
   readdir,
+  rename,
   realpath,
   symlink,
   writeFile,
@@ -59,6 +60,427 @@ const sameUidControl = {
     ? false
     : "POSIX sameUID copy custody is unavailable on this host",
 };
+
+const commandObservation = (
+  phase: "requested" | "terminal",
+  exitCode: number | null = null,
+) => ({
+  schemaVersion: 1,
+  kind: "original-command-" + phase,
+  command: command.command,
+  invocationRequested: true,
+  commandTerminalObserved: phase === "terminal",
+  exitCode,
+  wrapperTerminalObserved: false,
+  wrapperExitCode: null,
+});
+
+test("C command request and genuine terminal observations cannot claim a wrapper or invented exit", () => {
+  const requested = commandObservation("requested");
+  const terminal = commandObservation("terminal", 0);
+  assert.deepEqual(
+    api.validateCProducerCommandObservation(requested, "requested"),
+    requested,
+  );
+  for (const code of [0, 7, 255])
+    api.validateCProducerCommandObservation(
+      commandObservation("terminal", code),
+      "terminal",
+    );
+  for (const bad of [null, -1, 256, "0", false, 0.5]) {
+    assert.throws(() =>
+      api.validateCProducerCommandObservation(
+        { ...terminal, exitCode: bad },
+        "terminal",
+      ),
+    );
+  }
+  for (const changed of [
+    { ...requested, exitCode: 0 },
+    { ...requested, invocationRequested: false },
+    { ...terminal, wrapperTerminalObserved: true },
+    { ...terminal, wrapperExitCode: 0 },
+    { ...terminal, commandTerminalObserved: false },
+    { ...terminal, extra: true },
+    { ...terminal, command: [...command.command, "--nocheck"] },
+  ])
+    assert.throws(() =>
+      api.validateCProducerCommandObservation(
+        changed,
+        changed.kind.endsWith("requested") ? "requested" : "terminal",
+      ),
+    );
+  assert.throws(() =>
+    api.validateCProducerCommandObservation(requested, "terminal"),
+  );
+  const observations = {
+    requested: { state: "retained", value: requested },
+    terminal: { state: "retained", value: terminal },
+  };
+  api.validateCProducerCommandObservations(command, observations);
+  api.validateCProducerCommandObservations(
+    { ...command, exitCode: null },
+    { ...observations, terminal: { state: "unavailable" } },
+  );
+  api.validateCProducerCommandObservations(
+    { ...command, invoked: false, exitCode: null },
+    { requested: observations.requested },
+  );
+  assert.throws(
+    () =>
+      api.validateCProducerCommandObservations(
+        { ...command, exitCode: 7 },
+        observations,
+      ),
+    /differs/,
+  );
+  assert.throws(
+    () =>
+      api.validateCProducerCommandObservations(
+        { ...command, exitCode: null },
+        observations,
+      ),
+    /Unobserved/,
+  );
+  assert.throws(
+    () =>
+      api.validateCProducerCommandObservations(
+        { ...command, invoked: false },
+        observations,
+      ),
+    /uninvoked/,
+  );
+  assert.throws(
+    () =>
+      api.validateCProducerCommandObservations(command, {
+        terminal: observations.terminal,
+      }),
+    /Missing/,
+  );
+});
+
+test("C evidence format admits only the two closed retention epochs and preserves legacy quotas", async (t) => {
+  const policy = {
+    sampleIntervalMs: 10000,
+    maximumSamples: 9000,
+    maximumLogBytes: 256 * 1024 ** 2,
+    workObjectPolicy: "c-build-links-and-specials-no-follow",
+  };
+  const legacy = api.cProducerEvidenceFormat({ schemaVersion: 1 });
+  assert.equal(legacy.cBuildWork, false);
+  assert.equal(legacy.observerLogByteLimit, 16 * 1024 ** 2);
+  for (const source of ["original-trap", "post-stop"]) {
+    const prefix =
+      source === "original-trap" ? "work" : "work/post-stop-reports";
+    const receipt = {
+      schemaVersion: 2,
+      retentionTransportPolicy: policy,
+      reportRetention: {
+        source,
+        manifest: prefix + "/test-reports.json",
+        root: prefix + "/original-test-reports",
+      },
+    };
+    const format = api.cProducerEvidenceFormat(receipt);
+    assert.equal(format.cBuildWork, true);
+    assert.equal(format.observerLogByteLimit, policy.maximumLogBytes);
+    assert.equal(format.maximumSamples, 9000);
+    for (const changed of [
+      { ...receipt, schemaVersion: 1 },
+      { ...receipt, schemaVersion: 3 },
+      {
+        ...receipt,
+        retentionTransportPolicy: {
+          ...policy,
+          maximumLogBytes: policy.maximumLogBytes + 1,
+        },
+      },
+      {
+        ...receipt,
+        retentionTransportPolicy: { ...policy, maximumSamples: "9000" },
+      },
+      { ...receipt, retentionTransportPolicy: { ...policy, extra: true } },
+      ...["other", "post-stop-near"].map((source) => ({
+        ...receipt,
+        reportRetention: { ...receipt.reportRetention, source },
+      })),
+      {
+        ...receipt,
+        reportRetention: {
+          ...receipt.reportRetention,
+          root: "work/../foreign",
+        },
+      },
+      {
+        ...receipt,
+        reportRetention: { ...receipt.reportRetention, extra: true },
+      },
+    ])
+      assert.throws(() => api.cProducerEvidenceFormat(changed));
+  }
+  const root = await fixture(t, { "retention-observer.jsonl": "exact" });
+  const file = path.join(root, "retention-observer.jsonl");
+  assert.equal(
+    (
+      await api.boundedCProducerRetentionBytes(file, policy.maximumLogBytes)
+    ).toString(),
+    "exact",
+  );
+  assert.equal(
+    (await api.boundedCProducerRetentionBytes(file, 5)).toString(),
+    "exact",
+  );
+  await assert.rejects(
+    api.boundedCProducerRetentionBytes(file, 4),
+    /exceeds read bound/,
+  );
+  await assert.rejects(
+    api.boundedCProducerRetentionBytes(file, policy.maximumLogBytes + 1),
+    /Finite result/,
+  );
+  await assert.rejects(
+    api.boundedCProducerRetentionBytes(
+      path.join(root, "foreign"),
+      policy.maximumLogBytes,
+    ),
+    Error,
+  );
+  await assert.rejects(
+    api.boundedCProducerBytes(file, 64 * 1024 ** 2 + 1),
+    /Finite result/,
+  );
+});
+
+async function syntheticRootMetadataReports(
+  t: Parameters<typeof fixture>[0],
+  work: string,
+) {
+  const report = await reportFixture(t);
+  await rename(report.root, path.join(work, "original-test-reports"));
+  // Only the declared producer UID is authored as root to reach controller
+  // policy branches. Physical files remain same-UID; this is no native proof.
+  report.value.exportCustody.producerEffectiveUid = 0;
+  await writeFile(
+    path.join(work, "test-reports.json"),
+    JSON.stringify(report.value),
+    { mode: 0o600 },
+  );
+  return report;
+}
+
+test(
+  "C evidence recovery retains reports and every independent artifact when the final shell record is missing",
+  sameUidControl,
+  async (t) => {
+    const { profile } = await profiles.loadCProducerProfile("glibc");
+    const work = await fixture(t, {
+      "output/generated.deb": "package",
+      "native-build-worktree.tar": "archive",
+      "installed-build-package-identities.txt": "packages",
+    });
+    const order: string[] = [];
+    let collects = 0;
+    const result = await api.collectCProducerEvidence({
+      work,
+      profile,
+      caller: sameUidCaller,
+      executionObserver: null,
+      stop: async () => {
+        order.push("stop");
+        return { state: "removed" };
+      },
+      verifyBuildRoot: async () => {
+        order.push("root");
+        return { syntheticRootWitness: true };
+      },
+      retainReports: async (post: string) => {
+        order.push("collect");
+        collects++;
+        await syntheticRootMetadataReports(t, post);
+        return {
+          originalCodeExecuted: false,
+          primary: null,
+          observer: terminal,
+          cleanup: { state: "absent" },
+        };
+      },
+    });
+    assert.deepEqual(order, ["stop", "root", "collect"]);
+    assert.equal(collects, 1);
+    assert.deepEqual(result.originalBuild, { invoked: null, exitCode: null });
+    assert.deepEqual(result.commandObservations, {
+      requested: { state: "unavailable" },
+      terminal: { state: "unavailable" },
+    });
+    assert.equal(result.testEvidence.reports.length, 1);
+    assert.equal(result.testEvidence.reports[0].counts.FAIL, 1);
+    assert.equal(result.reportRetention.source, "post-stop");
+    assert.equal(result.outputs.length, 1);
+    assert.equal(result.outputs[0].file, "generated.deb");
+    assert.equal(result.nativeBuildWorktree.bytes, 7);
+    assert.equal(result.installedPackageIdentities.bytes, 8);
+    assert.deepEqual(
+      result.collectionFailures.map((row: { field: string }) => row.field),
+      ["originalBuild", "originalTrapReports"],
+    );
+  },
+);
+
+test(
+  "C recovery refuses collection before positive absence or after lost raw-root custody",
+  sameUidControl,
+  async (t) => {
+    const { profile } = await profiles.loadCProducerProfile("glibc");
+    for (const lostRoot of [false, true]) {
+      const work = await fixture(t, {});
+      let roots = 0,
+        collects = 0;
+      const options = {
+        work,
+        profile,
+        caller: sameUidCaller,
+        executionObserver: null,
+        stop: async () => ({ state: lostRoot ? "absent" : "unknown" }),
+        verifyBuildRoot: async () => {
+          roots++;
+          throw Error("authored held root replaced");
+        },
+        retainReports: async () => {
+          collects++;
+          throw Error("collector must not run");
+        },
+      };
+      if (!lostRoot)
+        await assert.rejects(
+          api.collectCProducerEvidence(options),
+          /absence must precede/,
+        );
+      else {
+        const result = await api.collectCProducerEvidence(options);
+        assert.deepEqual(
+          result.collectionFailures.map((row: { field: string }) => row.field),
+          [
+            "retainedBuildRoot",
+            "originalBuild",
+            "originalTrapReports",
+            "outputs",
+            "nativeBuildWorktree",
+            "installedPackageIdentities",
+          ],
+        );
+        assert.match(
+          result.collectionFailures[0].error,
+          /authored held root replaced/,
+        );
+      }
+      assert.equal(roots, lostRoot ? 1 : 0);
+      assert.equal(collects, 0);
+      assert.deepEqual(await readdir(work), []);
+    }
+  },
+);
+
+test(
+  "C post-stop reports survive collector failures without promoting an incomplete process",
+  sameUidControl,
+  async (t) => {
+    const { profile } = await profiles.loadCProducerProfile("glibc");
+    for (const failure of ["primary", "exit", "cleanup", "original-code"]) {
+      const work = await fixture(t, {});
+      let collects = 0;
+      const result = await api.collectCProducerEvidence({
+        work,
+        profile,
+        caller: sameUidCaller,
+        executionObserver: null,
+        stop: async () => ({ state: "absent" }),
+        verifyBuildRoot: async () => ({ synthetic: true }),
+        retainReports: async (post: string) => {
+          collects++;
+          await syntheticRootMetadataReports(t, post);
+          return {
+            originalCodeExecuted: failure === "original-code",
+            primary:
+              failure === "primary" ? "authored collector failure" : null,
+            observer: { ...terminal, exitCode: failure === "exit" ? 7 : 0 },
+            cleanup: { state: failure === "cleanup" ? "pending" : "absent" },
+          };
+        },
+      });
+      assert.equal(collects, 1);
+      assert.equal(result.testEvidence.reports.length, 1);
+      assert.equal(result.reportRetention.source, "post-stop");
+      assert.ok(
+        result.collectionFailures.some(
+          (row: { field: string }) => row.field === "postStopReportProcess",
+        ),
+      );
+    }
+  },
+);
+
+test(
+  "C natural wrapper and complete original report epoch do not start a second collector",
+  sameUidControl,
+  async (t) => {
+    const { profile } = await profiles.loadCProducerProfile("glibc");
+    const work = await fixture(t, {
+      "original-command.json": JSON.stringify(command),
+      "output/generated.deb": "p",
+      "native-build-worktree.tar": "a",
+      "installed-build-package-identities.txt": "i",
+    });
+    await syntheticRootMetadataReports(t, work);
+    let collects = 0;
+    const result = await api.collectCProducerEvidence({
+      work,
+      profile,
+      caller: sameUidCaller,
+      executionObserver: terminal,
+      stop: async () => ({ state: "absent" }),
+      verifyBuildRoot: async () => ({ synthetic: true }),
+      retainReports: async () => {
+        collects++;
+        throw Error("unnecessary collector");
+      },
+    });
+    assert.equal(collects, 0);
+    assert.deepEqual(result.collectionFailures, []);
+    assert.equal(result.reportRetention.source, "original-trap");
+    assert.equal(result.testEvidence.reports[0].counts.FAIL, 1);
+  },
+);
+
+test(
+  "C actual generated shell preserves genuine command return and collects after EXIT bypass",
+  sameUidControl,
+  () => {
+    assert.ok(
+      python,
+      "Verified Python3 is required for generated shell controls",
+    );
+    const child = spawnSync(
+      python,
+      [
+        "-I",
+        "-S",
+        "-B",
+        path.join(repository, "test/fixtures/c-producer-interruption.py"),
+        repository,
+      ],
+      { encoding: "utf8", timeout: 45000, maxBuffer: 1048576 },
+    );
+    assert.equal(child.error, undefined, diagnostic(child));
+    assert.equal(child.status, 0, diagnostic(child));
+    assert.deepEqual(JSON.parse(child.stdout), {
+      cases: ["success", "retention-failure", "command-failure", "interrupted"],
+      commandRuns: 4,
+      markerAndManifestRefusals: 13,
+      originalProducerExecuted: false,
+      sameUidHostCustodyOnly: true,
+    });
+  },
+);
 
 test("C producer selected source frames bind every actual static helper import for all three profiles", async () => {
   for (const name of ["gcc-12", "glibc", "glibc-u13"]) {
@@ -366,6 +788,54 @@ test("C producer Docker vector preserves original command time, resource and aut
     assert.equal(argv[argv.indexOf("--network") + 1], "none");
     assert.ok(argv.includes("--pull=never"));
     assert.ok(argv.includes("HOME=/work/home"));
+    assert.ok(
+      argv.includes(
+        `type=bind,src=${path.join(destination, "work/native-build")},target=/build`,
+      ),
+    );
+    const post: string[] = api.cProducerPostStopReportArguments(
+      catalog,
+      profile,
+      destination,
+      "12345678-1234-4234-8234-123456789012",
+      { uid: 1001, gid: 1002 },
+    );
+    assert.deepEqual(post.slice(-9), [
+      "-I",
+      "-S",
+      "-B",
+      "/controller/c-producer-test-reports.py",
+      name,
+      "/build/source",
+      "/work/test-reports.json",
+      "1001",
+      "1002",
+    ]);
+    assert.ok(
+      post.includes(
+        `type=bind,src=${path.join(destination, "work/native-build")},target=/build,readonly`,
+      ),
+    );
+    assert.ok(
+      post.includes(
+        `type=bind,src=${path.join(destination, "work/post-stop-reports")},target=/work`,
+      ),
+    );
+    assert.equal(post[post.indexOf("--entrypoint") + 1], "/usr/bin/python3");
+    assert.equal(post[post.indexOf("--cpus") + 1], "1");
+    assert.equal(post[post.indexOf("--memory") + 1], "1g");
+    assert.equal(post[post.indexOf("--pids-limit") + 1], "64");
+    assert.equal(post[post.indexOf("--network") + 1], "none");
+    assert.ok(post.includes("--read-only") && post.includes("--cap-drop=ALL"));
+    assert.deepEqual(
+      post.filter((arg) => arg.startsWith("--cap-add=")),
+      ["--cap-add=DAC_OVERRIDE", "--cap-add=CHOWN"],
+    );
+    assert.ok(
+      !post.some((arg) =>
+        /apt-get|dpkg-buildpackage|native-build-worktree\.tar/u.test(arg),
+      ),
+    );
     assert.ok(
       argv.includes(
         `type=bind,src=${path.join(destination, "bundle/source")},target=/inputs,readonly`,

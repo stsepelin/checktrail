@@ -18,6 +18,7 @@ const {
   retentionObserverArguments,
   validateRetentionMessage,
   reconcileRetentionLog,
+  cBuildRetentionPolicy,
 } = await import(pathToFileURL(moduleFile).href);
 const image = "docker.io/coqorg/coq@sha256:" + "a".repeat(64);
 const attempt = "12345678-1234-4234-8234-123456789abc";
@@ -218,7 +219,11 @@ test("retention durable replay rejects missing duplicate reordered truncated and
   assert.throws(() => reconcileRetentionLog(invalid, receipt(invalid)));
 });
 
-async function synthetic(t: TestContext, mode: string) {
+async function synthetic(
+  t: TestContext,
+  mode: string,
+  selectedModule = moduleFile,
+) {
   const directory = await fixture(t, { ".keep": "synthetic transport only" });
   const program = String.raw`import assert from 'node:assert/strict';import cp from 'node:child_process';import {syncBuiltinESMExports}from'node:module';import fs,{readFileSync}from'node:fs';import {pathToFileURL}from'node:url';
 const [moduleFile,directory,mode,image,attempt]=process.argv.slice(1);const original=cp.spawn,originalWrite=fs.writeSync;let actual;const failures=[];
@@ -231,14 +236,47 @@ try{const api=await import(pathToFileURL(moduleFile).href);
  console.log(JSON.stringify({syntheticTransportOnly:true,mode,producerExecuted:false,containerExecuted:false}));
 }finally{cp.spawn=original;fs.writeSync=originalWrite;syncBuiltinESMExports();if(actual?.pid&&actual.exitCode===null&&actual.signalCode===null)actual.kill('SIGKILL');}`;
   // Nested String.raw is escaped only to keep this public fixture literal intact.
-  const executableProgram = program.replaceAll("\\`", "`");
+  const budgetBranch = String.raw`else if(mode.startsWith('budget-')||mode.startsWith('samples-')){
+ const cBuildWork=mode.endsWith('-c');
+ const observer=await api.startRetentionObserver({destination:directory,image,platform:'linux/amd64',attempt,environment:process.env,cBuildWork,onFailure:error=>failures.push(String(error))});
+ for(let n=1;n<=4;n++){const got=await observer.sample();assert.equal(got.sequence,n);}
+ if(mode.startsWith('samples-')){
+  if(cBuildWork)await assert.rejects(observer.sample(),/C build retention sample bound exceeded/);
+  else assert.equal((await observer.sample()).sequence,5);
+  const result=await observer.close();assert.equal(result.samples,cBuildWork?4:5);assert.deepEqual(failures,[]);
+  assert.equal(api.reconcileRetentionLog(readFileSync(directory+'/retention-observer.jsonl'),result,{cBuildWork}).samples,result.samples);
+  if(!cBuildWork)assert.throws(()=>api.reconcileRetentionLog(readFileSync(directory+'/retention-observer.jsonl'),result,{cBuildWork:true}),/C build retained sample bound exceeded/);
+ }else{
+  const file=directory+'/retention-observer.jsonl';const limit=cBuildWork?api.cBuildRetentionPolicy.maximumLogBytes:16*1024;
+  const before=readFileSync(file).length;const remaining=limit-before;
+  assert.ok(remaining>=36&&remaining%4===0);const padding=Buffer.alloc(3*((remaining-32)/4),120);
+  actual.stderr.emit('data',padding);const exact=readFileSync(file);assert.equal(exact.length,limit);assert.deepEqual(failures,[]);
+  const terminal={retainedLogBytes:exact.length,samples:4,lastSample:{schemaVersion:1,kind:'sample',sequence:4,bytes:18,files:1,directories:3}};
+  assert.equal(api.reconcileRetentionLog(exact,terminal,{cBuildWork}).samples,4);
+  if(cBuildWork)assert.throws(()=>api.reconcileRetentionLog(exact,terminal),{code:'ERR_ASSERTION'});
+  const extra=Buffer.from(JSON.stringify({stream:'stderr',base64:Buffer.from('x').toString('base64')})+String.fromCharCode(10));
+  const over=Buffer.concat([exact,extra]);const overTerminal={...terminal,retainedLogBytes:over.length};
+  assert.throws(()=>api.reconcileRetentionLog(over,overTerminal,{cBuildWork}),{code:'ERR_ASSERTION'});
+  if(!cBuildWork)assert.equal(api.reconcileRetentionLog(over,overTerminal,{cBuildWork:true}).samples,4);
+  actual.stderr.emit('data',Buffer.from('x'));assert.equal(failures.length,1);assert.match(failures[0],/Retention observer log bound exceeded/);
+  assert.deepEqual(readFileSync(file),exact);await assert.rejects(observer.close(),/Retention observer log bound exceeded/);assert.equal(actual.exitCode,0);
+ }
+ const requests=readFileSync(directory+'/requests','utf8').trim().split(String.fromCharCode(10));assert.equal(requests.length,mode==='samples-default'?5:4);
+ fs.writeFileSync(directory+'/quota-witness.json',JSON.stringify({mode,cBuildWork,requests:requests.length,branchReached:true,failures:failures.length}));
+}
+`;
+  const branchMarker = "else{const observer=await api.startRetentionObserver";
+  assert.equal(program.split(branchMarker).length, 2);
+  const executableProgram = program
+    .replace(branchMarker, budgetBranch + branchMarker)
+    .replaceAll("\\`", "`");
   const child = spawnSync(
     process.execPath,
     [
       "--input-type=module",
       "-e",
       executableProgram,
-      moduleFile,
+      selectedModule,
       directory,
       mode,
       image,
@@ -261,6 +299,61 @@ try{const api=await import(pathToFileURL(moduleFile).href);
   });
   return directory;
 }
+
+test(
+  "C-only retention quotas keep exact writer replay and sample boundaries without widening default Binutils",
+  { timeout: 20000 },
+  async (t) => {
+    assert.deepEqual(cBuildRetentionPolicy, {
+      sampleIntervalMs: 10000,
+      maximumSamples: 9000,
+      maximumLogBytes: 256 * 1024 ** 2,
+    });
+    assert.equal(Object.isFrozen(cBuildRetentionPolicy), true);
+    const source = await readFile(moduleFile, "utf8");
+    const substitutions = [
+      ["const maximumLog = 16 * 1024 ** 2;", "const maximumLog = 16 * 1024;"],
+      ["maximumLogBytes: 256 * 1024 ** 2,", "maximumLogBytes: 256 * 1024,"],
+      ["maximumSamples: 9000,", "maximumSamples: 4,"],
+    ] as const;
+    let reduced = source;
+    for (const [original, small] of substitutions) {
+      assert.equal(reduced.split(original).length, 2);
+      reduced = reduced.replace(original, small);
+    }
+    let restored = reduced;
+    for (const [original, small] of substitutions)
+      restored = restored.replace(small, original);
+    assert.equal(restored, source);
+    // Only the three quota constants change in this fixture module. These are
+    // guard-boundary witnesses, not256MiB throughput or native-container claims.
+    const directory = await fixture(t, { "observer.mjs": reduced });
+    for (const mode of [
+      "budget-default",
+      "budget-c",
+      "samples-default",
+      "samples-c",
+    ]) {
+      const result = await synthetic(
+        t,
+        mode,
+        path.join(directory, "observer.mjs"),
+      );
+      assert.deepEqual(
+        JSON.parse(
+          await readFile(path.join(result, "quota-witness.json"), "utf8"),
+        ),
+        {
+          mode,
+          cBuildWork: mode.endsWith("-c"),
+          requests: mode === "samples-default" ? 5 : 4,
+          branchReached: true,
+          failures: mode.startsWith("budget-") ? 1 : 0,
+        },
+      );
+    }
+  },
+);
 test(
   "retention actual synthetic transport refuses concurrent writes and reconciles one successful exchange",
   { timeout: 20000 },
@@ -315,6 +408,55 @@ test(
   { timeout: 5000 },
   async (t) => {
     await synthetic(t, "zero-write");
+  },
+);
+
+test(
+  "C and Node mutable observers retain root identity and cleanup failures under actual filesystem races",
+  {
+    skip:
+      process.platform === "win32"
+        ? "POSIX directory FD and socket fixtures required"
+        : false,
+  },
+  () => {
+    assert.ok(
+      python,
+      "A verified no-follow Python runtime is required on POSIX",
+    );
+    const child = spawnSync(
+      python,
+      [
+        "-I",
+        "-S",
+        "-B",
+        path.join(root, "test/fixtures/c-retention-controls.py"),
+        root,
+      ],
+      {
+        encoding: "utf8",
+        timeout: 45000,
+        maxBuffer: 1048576,
+      },
+    );
+    assert.equal(child.error, undefined, diagnostic(child));
+    assert.equal(child.status, 0, diagnostic(child));
+    const observed = JSON.parse(child.stdout);
+    assert.equal(observed.count, 19);
+    assert.equal(observed.cases.length, 19);
+    assert.equal(
+      new Set(observed.cases.map((row: { case: string }) => row.case)).size,
+      19,
+    );
+    assert.ok(
+      observed.cases.every(
+        (row: { outcome: string }) => row.outcome === "PASS",
+      ),
+    );
+    assert.equal(observed.allTrackedRealFDsClosed, true);
+    assert.equal(observed.mutationsDeleteOnlyNamedGuards, true);
+    assert.equal(observed.syntheticFixturesOnly, true);
+    assert.equal(observed.deviceCasesAreStatDoubles, true);
   },
 );
 

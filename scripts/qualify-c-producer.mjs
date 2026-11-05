@@ -36,6 +36,7 @@ import {
 import {
   reconcileRetentionLog,
   startRetentionObserver,
+  cBuildRetentionPolicy,
 } from "./producer-qualification/binutils-retention-observer.mjs";
 import {
   cProducerDirectory,
@@ -198,12 +199,206 @@ export async function boundedCProducerBytes(
     await handle.close();
   }
 }
+export async function boundedCProducerRetentionBytes(
+  file,
+  maximum,
+  expectedCaller = null,
+) {
+  assert.equal(path.basename(file), "retention-observer.jsonl");
+  assert.ok(
+    Number.isSafeInteger(maximum) &&
+      maximum > 0 &&
+      maximum <= cBuildRetentionPolicy.maximumLogBytes,
+    "Finite result read bound refused",
+  );
+  await physicalPath(file);
+  const handle = await open(file, constants.O_RDONLY | constants.O_NOFOLLOW);
+  try {
+    const before = await handle.stat({ bigint: true });
+    assert.ok(
+      before.isFile() && before.size <= BigInt(maximum),
+      "Physical result exceeds read bound",
+    );
+    if (expectedCaller)
+      verifyCopyOwner(
+        before,
+        validateCProducerCallerIdentity(expectedCaller.uid, expectedCaller.gid),
+        0o600,
+      );
+    const raw = Buffer.alloc(Math.min(maximum + 1, Number(before.size) + 1));
+    let bytes = 0;
+    while (bytes < raw.length) {
+      const next = await handle.read(raw, bytes, raw.length - bytes, null);
+      if (next.bytesRead === 0) break;
+      bytes += next.bytesRead;
+    }
+    assert.ok(bytes <= maximum, "Physical result grew beyond read bound");
+    const after = await handle.stat({ bigint: true });
+    const final = await lstat(file, { bigint: true });
+    const identity = (value) => [
+      value.dev,
+      value.ino,
+      value.size,
+      value.mtimeNs,
+      value.ctimeNs,
+    ];
+    assert.ok(final.isFile() && !final.isSymbolicLink());
+    if (expectedCaller) {
+      verifyCopyOwner(after, expectedCaller, 0o600);
+      verifyCopyOwner(final, expectedCaller, 0o600);
+    }
+    assert.deepEqual(
+      identity(before),
+      identity(after),
+      "Physical result changed while read",
+    );
+    assert.deepEqual(
+      identity(after),
+      identity(final),
+      "Physical result path changed while read",
+    );
+    assert.equal(BigInt(bytes), after.size);
+    return raw.subarray(0, bytes);
+  } finally {
+    await handle.close();
+  }
+}
 async function checkedJson(file, maximum) {
   return JSON.parse(await boundedCProducerBytes(file, maximum));
 }
 export async function readCProducerCopyManifest(file, caller) {
   validateCProducerCallerIdentity(caller.uid, caller.gid);
   return JSON.parse(await boundedCProducerBytes(file, 8 * 1024 ** 2, caller));
+}
+
+export function validateCProducerCommandObservation(value, phase) {
+  assert.ok(["requested", "terminal"].includes(phase));
+  assert.ok(
+    value !== null && typeof value === "object" && !Array.isArray(value),
+  );
+  assert.deepEqual(Object.keys(value).sort(), [
+    "command",
+    "commandTerminalObserved",
+    "exitCode",
+    "invocationRequested",
+    "kind",
+    "schemaVersion",
+    "wrapperExitCode",
+    "wrapperTerminalObserved",
+  ]);
+  assert.equal(value.schemaVersion, 1);
+  assert.equal(value.kind, "original-command-" + phase);
+  assert.deepEqual(value.command, [
+    "dpkg-buildpackage",
+    "-b",
+    "-us",
+    "-uc",
+    "--jobs=4",
+  ]);
+  assert.equal(value.invocationRequested, true);
+  assert.equal(value.commandTerminalObserved, phase === "terminal");
+  assert.equal(value.wrapperTerminalObserved, false);
+  assert.equal(value.wrapperExitCode, null);
+  if (phase === "requested") assert.equal(value.exitCode, null);
+  else
+    assert.ok(
+      Number.isSafeInteger(value.exitCode) &&
+        value.exitCode >= 0 &&
+        value.exitCode <= 255,
+    );
+  return value;
+}
+
+export function validateCProducerCommandObservations(command, observations) {
+  if (command.invoked) {
+    const phases =
+      command.exitCode === null ? ["requested"] : ["requested", "terminal"];
+    for (const phase of phases) {
+      assert.equal(
+        observations[phase]?.state,
+        "retained",
+        "Missing independent original command " + phase + " observation",
+      );
+      validateCProducerCommandObservation(observations[phase].value, phase);
+    }
+    if (command.exitCode === null)
+      assert.notEqual(
+        observations.terminal?.state,
+        "retained",
+        "Unobserved final command contradicts an independent terminal",
+      );
+    else
+      assert.equal(
+        observations.terminal.value.exitCode,
+        command.exitCode,
+        "Independent original command terminal differs from final wrapper record",
+      );
+  } else {
+    assert.notEqual(
+      observations.terminal?.state,
+      "retained",
+      "Command terminal contradicts final uninvoked wrapper record",
+    );
+  }
+}
+
+// Closed evidence formats retain the legacy quota; records cannot supply a
+// caller-chosen limit or arbitrary report path.
+export function cProducerEvidenceFormat(receipt) {
+  if (receipt.schemaVersion === 1) {
+    assert.ok(
+      !Object.hasOwn(receipt, "retentionTransportPolicy") &&
+        !Object.hasOwn(receipt, "reportRetention"),
+      "New C evidence fields require controller schema2",
+    );
+    return {
+      cBuildWork: false,
+      observerLogByteLimit: 16 * 1024 ** 2,
+      maximumSamples: 1000000,
+      manifest: "work/test-reports.json",
+      reportsRoot: "work/original-test-reports",
+    };
+  }
+  assert.equal(
+    receipt.schemaVersion,
+    2,
+    "Unknown C controller evidence schema",
+  );
+  assert.deepEqual(
+    receipt.retentionTransportPolicy,
+    {
+      ...cBuildRetentionPolicy,
+      workObjectPolicy: "c-build-links-and-specials-no-follow",
+    },
+    "C retention transport policy differs",
+  );
+  const location = receipt.reportRetention;
+  assert.ok(
+    location !== null &&
+      typeof location === "object" &&
+      !Array.isArray(location),
+  );
+  assert.deepEqual(Object.keys(location).sort(), [
+    "manifest",
+    "root",
+    "source",
+  ]);
+  const prefix =
+    location.source === "original-trap"
+      ? "work"
+      : location.source === "post-stop"
+        ? "work/post-stop-reports"
+        : null;
+  assert.notEqual(prefix, null, "Unknown original C report retention source");
+  assert.equal(location.manifest, prefix + "/test-reports.json");
+  assert.equal(location.root, prefix + "/original-test-reports");
+  return {
+    cBuildWork: true,
+    observerLogByteLimit: cBuildRetentionPolicy.maximumLogBytes,
+    maximumSamples: cBuildRetentionPolicy.maximumSamples,
+    manifest: location.manifest,
+    reportsRoot: location.root,
+  };
 }
 
 export function observedCProducerTerminal(result) {
@@ -344,6 +539,8 @@ export function cProducerArguments(
     ),
     "--mount",
     `type=bind,src=${path.join(destination, "work")},target=/work`,
+    "--mount",
+    `type=bind,src=${path.join(destination, "work/native-build")},target=/build`,
     "--mount",
     `type=bind,src=${path.join(destination, "controls")},target=/controller,readonly`,
     "--workdir",
@@ -1099,6 +1296,236 @@ export function validateCProducerDaemonMetadata(
   };
 }
 
+export function cProducerPostStopReportArguments(
+  catalog,
+  profile,
+  destination,
+  attempt,
+  caller,
+) {
+  caller = validateCProducerCallerIdentity(caller.uid, caller.gid);
+  assert.match(attempt, /^[a-f0-9-]{36}$/u);
+  assert.equal(path.resolve(destination), destination);
+  assert.ok(
+    !/[\r\n,]/u.test(destination),
+    "Ambiguous report collector bind path",
+  );
+  return [
+    "run",
+    "--rm",
+    "--init",
+    "--pull=never",
+    "--platform",
+    catalog.platform,
+    "--user",
+    "0:0",
+    "--cidfile",
+    path.join(destination, "post-stop-reports.id"),
+    "--name",
+    "checktrail-producer-" + attempt,
+    "--label",
+    "io.checktrail.producer-attempt=" + attempt,
+    "--label",
+    "io.checktrail.producer-role=post-stop-reports",
+    "--network",
+    "none",
+    "--read-only",
+    "--cap-drop=ALL",
+    "--cap-add=DAC_OVERRIDE",
+    "--cap-add=CHOWN",
+    "--security-opt=no-new-privileges",
+    "--cpus",
+    "1",
+    "--memory",
+    "1g",
+    "--pids-limit",
+    "64",
+    "--mount",
+    `type=bind,src=${path.join(destination, "work/native-build")},target=/build,readonly`,
+    "--mount",
+    `type=bind,src=${path.join(destination, "work/post-stop-reports")},target=/work`,
+    "--mount",
+    `type=bind,src=${path.join(destination, "controls")},target=/controller,readonly`,
+    "--workdir",
+    "/",
+    "--entrypoint",
+    "/usr/bin/python3",
+    catalog.image,
+    "-I",
+    "-S",
+    "-B",
+    "/controller/c-producer-test-reports.py",
+    cProducerProfileKey(profile),
+    "/build/source",
+    "/work/test-reports.json",
+    String(caller.uid),
+    String(caller.gid),
+  ];
+}
+
+// Collect independent evidence after positive producer stop. A missing final
+// shell-trap record cannot suppress the fixed data-only report collector.
+export async function collectCProducerEvidence({
+  work,
+  profile,
+  caller,
+  executionObserver,
+  stop,
+  verifyBuildRoot,
+  retainReports,
+}) {
+  const result = {
+    originalBuild: { invoked: null, exitCode: null },
+    commandObservations: {},
+    testEvidence: null,
+    outputs: null,
+    nativeBuildWorktree: null,
+    installedPackageIdentities: null,
+    collectionFailures: [],
+    reportRetention: {
+      source: "original-trap",
+      manifest: "work/test-reports.json",
+      root: "work/original-test-reports",
+    },
+  };
+  const capture = async (field, action, optional = false) => {
+    try {
+      return await action();
+    } catch (error) {
+      if (!optional)
+        result.collectionFailures.push({
+          field,
+          code: typeof error?.code === "string" ? error.code : null,
+          error: String(error).slice(0, 1000),
+          ...(error?.observedTerminal
+            ? { observedTerminal: error.observedTerminal }
+            : {}),
+        });
+      return null;
+    }
+  };
+  result.cleanup = await stop();
+  assert.ok(
+    ["absent", "removed"].includes(result.cleanup.state),
+    "Producer absence must precede independent report collection",
+  );
+  result.retainedBuildRoot = await capture(
+    "retainedBuildRoot",
+    verifyBuildRoot,
+  );
+  for (const phase of ["requested", "terminal"]) {
+    const relative = "original-command-" + phase + ".json";
+    const value = await capture(
+      relative,
+      async () =>
+        validateCProducerCommandObservation(
+          JSON.parse(
+            await boundedCProducerBytes(
+              path.join(work, relative),
+              4096,
+              caller,
+            ),
+          ),
+          phase,
+        ),
+      true,
+    );
+    result.commandObservations[phase] = value
+      ? { state: "retained", file: relative, value }
+      : { state: "unavailable" };
+  }
+  const command = await capture("originalBuild", () =>
+    checkedJson(path.join(work, "original-command.json"), 4096),
+  );
+  if (command) result.originalBuild = command;
+  const reports = async (root) => {
+    const value = await verifyCProducerReports(
+      await readCProducerCopyManifest(
+        path.join(root, "test-reports.json"),
+        caller,
+      ),
+      path.join(root, "original-test-reports"),
+      profile,
+      caller,
+    );
+    assert.equal(value.exportCustody.producerEffectiveUid, 0);
+    return value;
+  };
+  result.testEvidence = await capture("originalTrapReports", () =>
+    reports(work),
+  );
+  result.outputs = await capture("outputs", () =>
+    outputFiles(work, profile.limits.workByteLimit),
+  );
+  result.nativeBuildWorktree = await capture("nativeBuildWorktree", () =>
+    identifyFile(
+      path.join(work, "native-build-worktree.tar"),
+      profile.limits.workByteLimit,
+    ),
+  );
+  result.installedPackageIdentities = await capture(
+    "installedPackageIdentities",
+    () =>
+      identifyFile(
+        path.join(work, "installed-build-package-identities.txt"),
+        1024 ** 2,
+      ),
+  );
+  if (
+    result.retainedBuildRoot &&
+    (!result.testEvidence ||
+      !command ||
+      !observedCProducerTerminal(executionObserver))
+  ) {
+    const postStop = path.join(work, "post-stop-reports");
+    let prepared = false;
+    await capture("postStopReportsPreparation", async () => {
+      const capacity = await statfs(work, { bigint: true });
+      assert.ok(
+        capacity.bavail * capacity.bsize >= 1024n ** 3n,
+        "Insufficient bounded post-stop report capacity",
+      );
+      await mkdir(postStop, { mode: 0o700 });
+      prepared = true;
+    });
+    if (prepared) {
+      await capture("postStopReportProcess", async () => {
+        result.postStopRetention = await retainReports(postStop);
+        assert.equal(result.postStopRetention.originalCodeExecuted, false);
+        assert.equal(
+          result.postStopRetention.primary,
+          null,
+          "Post-stop data-only collector reported a primary failure",
+        );
+        assert.ok(
+          observedCProducerTerminal(result.postStopRetention.observer) &&
+            result.postStopRetention.observer.exitCode === 0,
+          "Post-stop data-only collector terminal failed or incomplete",
+        );
+        assert.ok(
+          ["absent", "removed"].includes(
+            result.postStopRetention.cleanup.state,
+          ),
+          "Post-stop collector cleanup incomplete",
+        );
+      });
+      // Preserve available reports even if a later collector/cleanup step failed.
+      const retained = await capture("postStopReports", () =>
+        reports(postStop),
+      );
+      if (retained) {
+        result.testEvidence = retained;
+        result.reportRetention = {
+          source: "post-stop",
+          manifest: "work/post-stop-reports/test-reports.json",
+          root: "work/post-stop-reports/original-test-reports",
+        };
+      }
+    }
+  }
+  return result;
+}
+
 async function run(plan, { allowLocalArm64Daemon = false } = {}) {
   const { catalog, profile, destination, inputs } = plan;
   assert.equal(
@@ -1155,7 +1582,16 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
   process.on("SIGINT", abort);
   process.on("SIGTERM", abort);
   const state = {
-    schemaVersion: 1,
+    schemaVersion: 2,
+    retentionTransportPolicy: {
+      ...cBuildRetentionPolicy,
+      workObjectPolicy: "c-build-links-and-specials-no-follow",
+    },
+    reportRetention: {
+      source: "original-trap",
+      manifest: "work/test-reports.json",
+      root: "work/original-test-reports",
+    },
     profile: profile.profile,
     sourceVersion: profile.sourceVersion,
     catalogSha256: plan.catalogSha256,
@@ -1189,13 +1625,117 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
     gateAComplete: false,
   };
   let observer, measuring, timer;
+  let postStopStarted = false,
+    nativeBuildHandle,
+    nativeBuildBefore;
   const cid = path.join(destination, "container.id");
   const observerCid = path.join(destination, "retention-observer.id");
   const stop = () => cleanupContainer(cid, attempt);
+  const postStopCid = path.join(destination, "post-stop-reports.id");
+  const stopPost = () => cleanupContainer(postStopCid, attempt);
+  let collectionAttempted = false;
+  const collectNativeEvidence = async () => {
+    if (collectionAttempted) return;
+    collectionAttempted = true;
+    const evidence = await collectCProducerEvidence({
+      work,
+      profile,
+      caller,
+      executionObserver: state.executionObserver,
+      stop,
+      verifyBuildRoot: async () => {
+        const after = await nativeBuildHandle.stat({ bigint: true });
+        const named = await lstat(path.join(work, "native-build"), {
+          bigint: true,
+        });
+        const identity = (info) =>
+          [info.dev, info.ino, info.mode, info.uid, info.gid].map(String);
+        assert.ok(named.isDirectory() && !named.isSymbolicLink());
+        assert.deepEqual(
+          identity(after),
+          identity(nativeBuildBefore),
+          "Held original build root changed",
+        );
+        assert.deepEqual(
+          identity(named),
+          identity(nativeBuildBefore),
+          "Original build root path changed before collection",
+        );
+        return {
+          before: identity(nativeBuildBefore),
+          afterStop: identity(after),
+          namedAfterStop: identity(named),
+          scope:
+            "Directory identity before and after positive producer stop; not a continuous content trace",
+        };
+      },
+      retainReports: async () => {
+        const retained = {
+          originalCodeExecuted: false,
+          observer: null,
+          cleanup: null,
+          primary: null,
+        };
+        try {
+          retained.observer = await observeForeground(
+            () => {
+              postStopStarted = true;
+              return spawn(
+                "docker",
+                cProducerPostStopReportArguments(
+                  catalog,
+                  profile,
+                  destination,
+                  attempt,
+                  caller,
+                ),
+                { env: environment, stdio: ["ignore", "pipe", "pipe"] },
+              );
+            },
+            path.join(destination, "post-stop-reports.log"),
+            {
+              timeoutMs: 180000,
+              maxBytes: 8 * 1024 ** 2,
+              signal: new AbortController().signal,
+              stop: stopPost,
+            },
+          );
+        } catch (error) {
+          retained.primary = String(error).slice(0, 1000);
+          retained.observer = error.observedTerminal ?? null;
+        } finally {
+          try {
+            retained.cleanup = await stopPost();
+          } catch (error) {
+            retained.cleanup = {
+              state: "unavailable",
+              error: String(error).slice(0, 1000),
+            };
+          }
+        }
+        return retained;
+      },
+    });
+    Object.assign(state, evidence);
+    state.buildExecuted =
+      typeof state.originalBuild.invoked === "boolean"
+        ? state.originalBuild.invoked
+        : null;
+  };
   try {
     await atomicReceipt(destination, state);
     await mkdir(work, { mode: 0o700 });
     await mkdir(path.join(work, "home"), { mode: 0o700 });
+    await mkdir(path.join(work, "native-build"), { mode: 0o700 });
+    nativeBuildHandle = await open(
+      path.join(work, "native-build"),
+      constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW,
+    );
+    nativeBuildBefore = await nativeBuildHandle.stat({ bigint: true });
+    assert.ok(nativeBuildBefore.isDirectory());
+    assert.equal(nativeBuildBefore.uid, BigInt(caller.uid));
+    assert.equal(nativeBuildBefore.gid, BigInt(caller.gid));
+    assert.equal(nativeBuildBefore.mode & 0o7777n, 0o700n);
     await mkdir(controls, { mode: 0o700 });
     for (const row of profile.files) {
       assert.ok(!controller.signal.aborted);
@@ -1243,6 +1783,7 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
       platform: catalog.platform,
       attempt,
       environment,
+      cBuildWork: true,
       onFailure: (error) => {
         state.retentionError = String(error);
         controller.abort("retention-observer-unavailable");
@@ -1273,7 +1814,7 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
           .finally(() => {
             measuring = undefined;
           });
-    }, 1000);
+    }, cBuildRetentionPolicy.sampleIntervalMs);
     const argv = cProducerArguments(
       catalog,
       profile,
@@ -1302,35 +1843,12 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
     );
     clearInterval(timer);
     if (measuring) await measuring;
+    await collectNativeEvidence();
     state.log = await identifyFile(
       path.join(destination, "build.log"),
       profile.limits.logByteLimit,
     );
-    state.cleanup = await stop();
-    state.originalBuild = await checkedJson(
-      path.join(work, "original-command.json"),
-      4096,
-    );
-    state.buildExecuted = state.originalBuild.invoked;
-    state.testEvidence = await verifyCProducerReports(
-      await readCProducerCopyManifest(
-        path.join(work, "test-reports.json"),
-        caller,
-      ),
-      path.join(work, "original-test-reports"),
-      profile,
-      caller,
-    );
-    assert.equal(state.testEvidence.exportCustody.producerEffectiveUid, 0);
-    state.outputs = await outputFiles(work, profile.limits.workByteLimit);
-    state.nativeBuildWorktree = await identifyFile(
-      path.join(work, "native-build-worktree.tar"),
-      profile.limits.workByteLimit,
-    );
-    state.installedPackageIdentities = await identifyFile(
-      path.join(work, "installed-build-package-identities.txt"),
-      1024 ** 2,
-    );
+
     state.finalRetention = await measure();
     await validateInputs(inputs, profile.files);
     // Mutable APT list/cache copies legitimately change; original inputs remain immutable.
@@ -1392,6 +1910,15 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
       "Selected daemon policy changed during original execution",
     );
     state.host.finalDaemonMetadata = finalDaemon;
+    assert.equal(
+      state.collectionFailures.length,
+      0,
+      "Original evidence collection was unavailable or incomplete",
+    );
+    validateCProducerCommandObservations(
+      state.originalBuild,
+      state.commandObservations,
+    );
     state.buildCompletion = cProducerCompletion(
       state.originalBuild,
       state.executionObserver,
@@ -1410,22 +1937,40 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
   } finally {
     clearInterval(timer);
     if (measuring) await measuring;
+    if (state.originalExecutionInvoked && !collectionAttempted) {
+      try {
+        await collectNativeEvidence();
+      } catch (error) {
+        state.collectionRecoveryError = String(error).slice(0, 1000);
+        state.state = "failed-or-incomplete";
+      }
+    }
+    if (state.originalExecutionInvoked && !state.log) {
+      try {
+        state.log = await identifyFile(
+          path.join(destination, "build.log"),
+          profile.limits.logByteLimit,
+        );
+      } catch (error) {
+        state.logObservationError = String(error).slice(0, 1000);
+      }
+    }
     for (const [key, action] of [
       [
         "retentionObserver",
         async () => {
           if (!observer) return { state: "not-started" };
           const receipt = await observer.close();
-          const raw = await boundedCProducerBytes(
+          const raw = await boundedCProducerRetentionBytes(
             path.join(destination, "retention-observer.jsonl"),
-            16 * 1024 ** 2,
+            cBuildRetentionPolicy.maximumLogBytes,
           );
-          reconcileRetentionLog(raw, receipt);
+          reconcileRetentionLog(raw, receipt, { cBuildWork: true });
           return {
             ...receipt,
             log: await identifyFile(
               path.join(destination, "retention-observer.jsonl"),
-              16 * 1024 ** 2,
+              cBuildRetentionPolicy.maximumLogBytes,
             ),
           };
         },
@@ -1433,6 +1978,18 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
       [
         "retentionObserverCleanup",
         () => cleanupContainer(observerCid, attempt, "retention"),
+      ],
+      [
+        "postStopCleanup",
+        () => (postStopStarted ? stopPost() : { state: "not-started" }),
+      ],
+      [
+        "nativeBuildRootClose",
+        async () => {
+          if (!nativeBuildHandle) return { state: "not-opened" };
+          await nativeBuildHandle.close();
+          return { state: "closed" };
+        },
       ],
       ["cleanup", stop],
     ]) {

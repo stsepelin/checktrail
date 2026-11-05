@@ -112,6 +112,8 @@ def count_roots(roots, sequence=1):
             try:
                 visit(opened[2][1], 0, result, True)
             except FileNotFoundError:
+                if cleanup_failures:
+                    raise
                 require_roots()
                 if attempt == MAX_SCAN_ATTEMPTS:
                     raise
