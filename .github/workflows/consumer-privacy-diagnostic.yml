@@ -44,7 +44,7 @@ jobs:
           import os from "node:os";
           import path from "node:path";
           import process from "node:process";
-          let state = "incomplete", stage = "runtime-setup", terminal = null, temporary;
+          let state = "incomplete", stage = "runtime-setup", terminal = null, shape = null, temporary;
           try {
             const { runRequiredTests } = await import("./scripts/required-test-evidence.mjs");
             const { projectConsumerTerminalDiagnostic } = await import("./scripts/consumer-runtime-diagnostics.mjs");
@@ -63,6 +63,40 @@ jobs:
             stage = "privacy-observation";
             const profile = await runRequiredTests([{ file: path.resolve(file), name: "consumer-impact privacy acceptance" }], { timeoutMs: 600000, isolatedCaseWorkers: 1, diagnosticSourceFile: path.resolve(file) });
             terminal = projectConsumerTerminalDiagnostic(profile, requirements, acceptanceSha256);
+            const publicNames = new Set([
+              "consumer-impact broken acceptance", "consumer-impact fixed acceptance", "consumer-impact near-miss acceptance",
+              "consumer-impact prerequisite acceptance", "consumer-impact stale acceptance", "consumer-impact empty acceptance",
+              "consumer-impact privacy acceptance", "consumer-impact lifecycle acceptance", "consumer-impact installed acceptance",
+            ]);
+            const count = (value) => Number.isSafeInteger(value) && value >= 0 && value <= 4096 ? value : null;
+            const known = (value, allowed) => allowed.includes(value) ? value : null;
+            const inputs = Array.isArray(profile.ledger?.files) ? profile.ledger.files : [];
+            const events = Array.isArray(profile.ledger?.events) ? profile.ledger.events : [];
+            const problems = Array.isArray(profile.problems) ? profile.problems : [];
+            shape = {
+              required: count(profile.required), passed: count(profile.passed), complete: profile.complete === true,
+              fileCount: count(inputs.length), truncated: profile.ledger?.truncated === true,
+              terminalEventCount: count(profile.ledger?.terminalEventCount), eventCount: count(events.length),
+              files: inputs.slice(0, 2).map((input) => ({
+                stable: input.stable === true,
+                beforeState: known(input.before?.state, ["present", "unavailable"]),
+                afterState: known(input.after?.state, ["present", "unavailable"]),
+                beforeDigestMatches: input.before?.sha256 === acceptanceSha256,
+                afterDigestMatches: input.after?.sha256 === acceptanceSha256,
+              })),
+              otherEventCount: count(events.filter((event) => !publicNames.has(event.name)).length),
+              events: events.filter((event) => publicNames.has(event.name)).slice(0, 100).map((event) => ({
+                name: event.name, sequence: count(event.sequence),
+                inputIdMatches: inputs.length === 1 && event.fileId === inputs[0].id,
+                nameTruncated: event.nameTruncated === true, required: event.required === true,
+                kind: known(event.kind, ["test", "suite"]),
+                outcome: known(event.outcome, ["passed", "failed", "skipped", "todo"]),
+              })),
+              otherProblemCount: count(problems.filter((problem) => !publicNames.has(problem.name)).length),
+              problems: problems.filter((problem) => publicNames.has(problem.name)).slice(0, 18).map((problem) => ({
+                name: problem.name, reason: known(problem.reason, ["failed", "skipped-or-todo", "required-test-not-passed"]),
+              })),
+            };
             const row = terminal.cases.find((item) => item.name === "consumer-impact privacy acceptance");
             state = terminal.state === "observed" && terminal.cases.length === 1 ? "observed" : "incomplete";
             process.exitCode = state === "observed" && row?.outcome === "passed" ? 0 : 1;
@@ -74,7 +108,7 @@ jobs:
               catch { state = "cleanup-incomplete"; process.exitCode = 1; }
             }
           }
-          const output = { schemaVersion: 1, profile: "consumer-privacy-diagnostic-only-v1", state, stage, terminal, acceptanceClaim: false, gateAClosed: false, inferenceExecuted: false, fieldEvaluationExecuted: false };
+          const output = { schemaVersion: 1, profile: "consumer-privacy-diagnostic-only-v1", state, stage, terminal, shape, acceptanceClaim: false, gateAClosed: false, inferenceExecuted: false, fieldEvaluationExecuted: false };
           try { await writeFile(process.env.CHECKTRAIL_DIAGNOSTIC_OUTPUT, JSON.stringify(output) + "\n", { flag: "wx" }); }
           catch { process.exitCode = 1; }
           process.stdout.write(JSON.stringify(output) + "\n");
