@@ -121,6 +121,19 @@ inventory before selective routing. Global CI controller source is not traversed
 as a native fixture dependency. A literal example in CI control code therefore
 cannot attach an unrelated language to a native job.
 
+The exact generated map path is treated as derived data only after the planner
+rebuilds the graph and verifies that it matches the checked-in contract. Other
+changed inputs still select their recorded consumers or require full verification.
+A stale or invalid map cannot authorize selective routing; CI controller,
+workflow and shared-runtime changes retain full verification. Programmatic
+selection also requires an explicit current-contract confirmation.
+
+The finite preparation regression registry in `scripts/ci-impact.mjs` assigns
+only present, exact test files to the existing native consumers of their named
+preparation controllers. These complete test files join the shared selection
+when either their controller or the test changes. Adjacent and unknown test
+filenames retain full verification.
+
 For a known native fixture or controller change, PRs select the union of its
 recorded native consumers. The four shared OS/Node variants run type checking,
 lint, formatting and artifact audits, followed by complete test files belonging

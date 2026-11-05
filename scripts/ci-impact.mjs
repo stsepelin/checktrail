@@ -16,6 +16,15 @@ const controls = new Set([
 ]);
 const retainedArtifactDirectory =
   "docs/measurements/artifact-identities-2026-10-21/";
+// Reviewed Node-only preparation controls run as complete shared test files.
+// Derive their native consumers from the exact preparation controllers; do not
+// classify neighboring test names or create entries for absent files.
+const preparationRegressionSources = Object.freeze({
+  "test/swift-preparation.test.ts": Object.freeze([
+    "scripts/prepare-swift-tools-runtime.mjs",
+    "scripts/prepare-swift-extensions-runtime.mjs",
+  ]),
+});
 // Reviewed development-only C producer inputs have no packaged runtime member.
 // Their identity/source frames also feed the Go and Node producer controllers,
 // so every exact input selects those callers' complete regression files too.
@@ -287,6 +296,18 @@ export async function buildNativeInputs({
   });
   for (const [file, jobs] of Object.entries(declaredSources))
     owners.set(file, new Set(jobs));
+  for (const [file, sources] of Object.entries(preparationRegressionSources)) {
+    if (!available.has(file)) continue;
+    const selected = new Set(owners.get(file));
+    for (const source of sources) {
+      assert.ok(
+        available.has(source) && owners.get(source)?.size > 0,
+        "Preparation regression requires its declared native controller",
+      );
+      for (const job of owners.get(source)) selected.add(job);
+    }
+    owners.set(file, selected);
+  }
   return Object.fromEntries(
     [...owners]
       .sort(([a], [b]) => a.localeCompare(b))
@@ -323,7 +344,7 @@ export function planNativeJobs({
   changed,
   eventName,
   baseline,
-  contractCurrent = true,
+  contractCurrent = false,
   sourceBoundaries = sourceCatalog.boundaries,
 }) {
   validateInputContract(inputs, jobs);
@@ -336,7 +357,7 @@ export function planNativeJobs({
   });
   if (eventName !== "pull_request")
     return full("Non-PR verification always runs every native job");
-  if (!contractCurrent)
+  if (contractCurrent !== true)
     return full("Declared native input contract changed or is stale");
   if (
     !Array.isArray(changed) ||
@@ -347,6 +368,10 @@ export function planNativeJobs({
     return full("Missing, empty or invalid changed-file inventory");
   const selected = new Set();
   for (const file of changed) {
+    // The caller rebuilt this exact generated contract before setting
+    // contractCurrent. Route its source changes normally; the generated map
+    // itself neither adds execution nor qualifies any omitted native job.
+    if (file === "scripts/ci-native-inputs.json") continue;
     // Retained observations are data consumed by the always-required artifact
     // audit and its complete regression file. New/unindexed data still fails
     // that audit. The trailing slash excludes adjacent directory names, and

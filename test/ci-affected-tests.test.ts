@@ -21,7 +21,7 @@ test("affected shared CI runs whole selected files, refuses skipped required con
     "dist/test/ci-source-boundaries.test.js": boundaryFixture(false),
     "dist/test/ci-impact.test.js": `import{test}from'node:test';test(${JSON.stringify(first)},()=>{});`,
     "dist/test/gate-inventory.test.js": `import{test}from'node:test';test(${JSON.stringify(second)},()=>{});`,
-    "dist/test/original-selected.test.js":
+    "dist/test/swift-preparation.test.js":
       "import{test}from'node:test';import{appendFileSync}from'node:fs';test('original selected first',()=>appendFileSync(process.env.ORIGINAL_CI_MARKER,'first\\n'));test('original selected second',()=>appendFileSync(process.env.ORIGINAL_CI_MARKER,'second\\n'));",
   });
   for (const file of [
@@ -56,7 +56,7 @@ test("affected shared CI runs whole selected files, refuses skipped required con
   const files = [
     "dist/test/ci-impact.test.js",
     "dist/test/gate-inventory.test.js",
-    "dist/test/original-selected.test.js",
+    "dist/test/swift-preparation.test.js",
     "dist/test/ci-source-boundaries.test.js",
     artifactFile,
   ];

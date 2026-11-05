@@ -40,6 +40,7 @@ const plan = (changed: string[], options: Record<string, unknown> = {}) =>
     changed,
     baseline,
     eventName: "pull_request",
+    contractCurrent: true,
     ...options,
   });
 const selected = (result: ReturnType<typeof plan>) =>
@@ -242,6 +243,217 @@ test("CI selection unions exact native owners and keeps unclassified near misses
   assert.equal(plan(["README.md", "docs/NATIVE-CI.md"]).mode, "affected");
   assert.deepEqual(selected(plan(["README.md", "docs/NATIVE-CI.md"])), []);
 });
+test("CI generated ownership data narrows only after explicit current-contract verification and cannot bypass global inputs", () => {
+  const mapFile = "scripts/ci-native-inputs.json";
+  const current = plan([mapFile, "scripts/prepare-swift-tools-runtime.mjs"]);
+  assert.equal(current.mode, "affected");
+  assert.deepEqual(selected(current), ["swift-tools"]);
+  assert.deepEqual(selected(plan([mapFile])), []);
+  for (const contractCurrent of [undefined, false, null, 1, "current", {}]) {
+    const result = planNativeJobs({
+      jobs,
+      inputs,
+      changed: [mapFile],
+      eventName: "pull_request",
+      contractCurrent,
+    });
+    assert.equal(result.mode, "full");
+    assert.deepEqual(selected(result), jobs);
+  }
+  for (const file of [
+    "scripts/ci-native-inputs.json.backup",
+    "scripts/ci-native-inputs-extra.json",
+    "adjacent/scripts/ci-native-inputs.json",
+    "scripts/ci-impact.mjs",
+    "scripts/plan-ci-impact.mjs",
+    "scripts/ci-source-boundaries.json",
+    "scripts/required-native-tests.json",
+    ".github/workflows/ci.yml",
+    "src/runner.ts",
+    "package-lock.json",
+    "test/swift-preparation-extra.test.ts",
+  ]) {
+    const result = plan([mapFile, file]);
+    assert.equal(result.mode, "full", file);
+    assert.deepEqual(selected(result), jobs, file);
+  }
+  for (const owners of [[], ["unknown-job"], ["swift-tools", "swift-tools"]])
+    assert.throws(() =>
+      plan([mapFile], {
+        inputs: {
+          ...inputs,
+          "scripts/prepare-swift-tools-runtime.mjs": owners,
+        },
+      }),
+    );
+});
+
+test("CI preparation regression ownership derives exact present-file consumers and preserves existing owners without loading controls", async () => {
+  const preparationTest = "test/swift-preparation.test.ts";
+  const tools = "scripts/prepare-swift-tools-runtime.mjs",
+    extensions = "scripts/prepare-swift-extensions-runtime.mjs";
+  const workflow = {
+    jobs: {
+      "swift-tools": { steps: [{ run: `node ${tools}` }] },
+      "swift-extensions-arm64": { steps: [{ run: `node ${extensions}` }] },
+      "unrelated-native": { steps: [{ run: "node scripts/unrelated.mjs" }] },
+    },
+  };
+  const sources: Record<string, string> = {
+    [tools]: "// Original synthetic preparation controller",
+    [extensions]: "// Original synthetic second preparation controller",
+    "scripts/unrelated.mjs": "// Original unrelated controller",
+    [preparationTest]:
+      "throw new Error('planning must never load this control');",
+  };
+  const collect = (files = Object.keys(sources), text = sources) =>
+    buildNativeInputs({
+      workflow,
+      requirements: {},
+      files,
+      readText: async (file: string) => text[file],
+    });
+  const actual = await collect();
+  assert.deepEqual(actual[preparationTest], [
+    "swift-extensions-arm64",
+    "swift-tools",
+  ]);
+  for (const file of [tools, extensions, preparationTest]) {
+    const planned = planNativeJobs({
+      jobs: Object.keys(workflow.jobs).sort(),
+      inputs: actual,
+      changed: [file],
+      eventName: "pull_request",
+      contractCurrent: true,
+      sourceBoundaries: [],
+    });
+    assert.equal(planned.mode, "affected");
+    assert.ok(
+      planned.sharedTestFiles.includes("dist/test/swift-preparation.test.js"),
+      file,
+    );
+    assert.equal(planned.selected["unrelated-native"], false);
+  }
+  const absent = await collect(
+    Object.keys(sources).filter((file) => file !== preparationTest),
+  );
+  assert.equal(Object.hasOwn(absent, preparationTest), false);
+  for (const adjacent of [
+    preparationTest + ".backup",
+    "test/swift-preparation-extra.test.ts",
+  ]) {
+    const near = await collect(
+      [
+        ...Object.keys(sources).filter((file) => file !== preparationTest),
+        adjacent,
+      ],
+      { ...sources, [adjacent]: sources[preparationTest]! },
+    );
+    assert.equal(Object.hasOwn(near, adjacent), false);
+    assert.equal(Object.hasOwn(near, preparationTest), false);
+  }
+  for (const missing of [tools, extensions])
+    await assert.rejects(
+      collect(Object.keys(sources).filter((file) => file !== missing)),
+      /requires its declared native controller/,
+    );
+  const shared = await collect(undefined, {
+    ...sources,
+    "scripts/unrelated.mjs": `readFile("${preparationTest}")`,
+  });
+  assert.deepEqual(shared[preparationTest], [
+    "swift-extensions-arm64",
+    "swift-tools",
+    "unrelated-native",
+  ]);
+});
+
+test("CI Swift preparation import and new regression changes select both actual Swift consumers plus complete shared controls", async () => {
+  const tools = "scripts/prepare-swift-tools-runtime.mjs",
+    extensions = "scripts/prepare-swift-extensions-runtime.mjs",
+    preparationTest = "test/swift-preparation.test.ts";
+  const files = execFileSync(
+    "git",
+    ["ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+    { cwd: root, encoding: "utf8" },
+  )
+    .split("\0")
+    .filter(Boolean);
+  const current = await buildNativeInputs({
+    workflow,
+    requirements: JSON.parse(
+      await readFile(
+        new URL("scripts/required-native-tests.json", root),
+        "utf8",
+      ),
+    ),
+    files: [...new Set([...files, preparationTest])],
+    readText: async (file: string) => {
+      if (file === preparationTest)
+        return "// Original synthetic Node-only preparation controls";
+      const text = await readFile(new URL(file, root), "utf8");
+      return [tools, extensions].includes(file)
+        ? `import './request-pinned-artifact.mjs';\n${text}`
+        : text;
+    },
+  });
+  const downloader = "scripts/request-pinned-artifact.mjs";
+  assert.deepEqual(
+    current[downloader],
+    [
+      ...new Set([
+        ...inputs[downloader],
+        "swift-extensions-arm64",
+        "swift-tools",
+      ]),
+    ].sort(),
+  );
+  assert.deepEqual(current[preparationTest], [
+    "swift-extensions-arm64",
+    "swift-tools",
+  ]);
+  for (const file of Object.keys(inputs))
+    if (file !== downloader)
+      assert.deepEqual(current[file], inputs[file], file);
+  assert.deepEqual(
+    Object.keys(current).filter((file) => !Object.hasOwn(inputs, file)),
+    Object.hasOwn(inputs, preparationTest) ? [] : [preparationTest],
+  );
+  const changed = [
+    "scripts/ci-native-inputs.json",
+    extensions,
+    tools,
+    preparationTest,
+  ];
+  const result = plan(changed, {
+    inputs: current,
+    contractCurrent: true,
+    baseline: null,
+  });
+  assert.equal(result.mode, "affected");
+  assert.deepEqual(selected(result), ["swift-extensions-arm64", "swift-tools"]);
+  for (const file of [
+    "dist/test/swift-preparation.test.js",
+    "dist/test/swift-tools.test.js",
+    ...plan(["README.md"]).sharedTestFiles,
+  ])
+    assert.ok(result.sharedTestFiles.includes(file), file);
+  const needs = Object.fromEntries(
+    ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
+      id,
+      {
+        result:
+          ["ci-plan", "checks"].includes(id) || result.selected[id]
+            ? "success"
+            : "skipped",
+      },
+    ]),
+  );
+  const receipt = requireCiCompletion(result, needs);
+  assert.equal(receipt.fullRevisionVerification, false);
+  assert.equal(receipt.omittedJobsQualified, false);
+});
+
 const cProducerBoundaryInputs = [
   "scripts/producer-qualification/c-producer-profile.mjs",
   "scripts/producer-qualification/c-producer-profiles.v1.json",
@@ -432,6 +644,7 @@ test("CI native input traversal retains exact documentation data consumers", asy
     inputs: actual,
     changed: [file],
     eventName: "pull_request",
+    contractCurrent: true,
     sourceBoundaries: [],
   });
   assert.deepEqual(result.selected, { native: true });
@@ -1015,9 +1228,10 @@ test("CI planner accepts reordered ownership objects and still rejects changed o
     output: "",
     summary: "",
   });
-  for (const [variant, contract, expectedMode] of [
-    ["reordered", reversed, "affected"],
-    ["changed", altered, "full"],
+  for (const [variant, contract, expectedMode, changedFiles] of [
+    ["reordered", reversed, "affected", ["docs/README.md"]],
+    ["generated-map", inputs, "affected", ["scripts/ci-native-inputs.json"]],
+    ["changed", altered, "full", ["scripts/ci-native-inputs.json"]],
   ] as const) {
     const loader = path.join(directory, variant + ".mjs");
     const marker = path.join(directory, variant + ".json");
@@ -1039,7 +1253,7 @@ fs.promises.readFile = async (...args) => {
 };
 const originalExec = child.execFileSync;
 child.execFileSync = (executable,args,...options) => {
-  if(executable === "git" && args[0] === "diff") { counts.diffCalls++;return "docs/README.md"+String.fromCharCode(0); }
+  if(executable === "git" && args[0] === "diff") { counts.diffCalls++;return ${JSON.stringify(changedFiles.join("\0") + "\0")}; }
   return originalExec(executable,args,...options);
 };
 syncBuiltinESMExports();
@@ -1094,7 +1308,7 @@ process.on("exit",()=>fs.writeFileSync(${JSON.stringify(marker)},JSON.stringify(
     assert.equal(actual.mode, expectedMode, variant + ": " + actual.reason);
     const observed = JSON.parse(await readFile(marker, "utf8"));
     assert.equal(observed.contractReads, 1);
-    if (variant === "reordered") {
+    if (variant !== "changed") {
       assert.deepEqual(selected(actual), []);
       assert.equal(actual.baseline.commit, base);
       assert.equal(observed.diffCalls, 1);
