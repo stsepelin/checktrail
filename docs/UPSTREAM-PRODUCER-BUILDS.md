@@ -56,9 +56,12 @@ Print the exact input operations before arranging the bundle:
 node scripts/producer-qualification/binutils-acquisition-plan.mjs --plan-only
 ```
 
-The planner checks local controller pins and records the frozen Snapshot downloads,
-original APT transformations, fixed keyring member and empty locks. Its output binds
-the transform image and retained preparation record, with a complete input partition.
+The planner hashes its acquisition sources, including the downloader and data-transform
+helper, before and after planning and records their relative names and identities.
+It leaves native build-controller validation explicitly unperformed; the original
+build profile keeps its separate pinned-controller admission. The frozen Snapshot
+downloads, original APT transformations, fixed keyring member, empty locks, transform
+image and retained preparation record remain bound to the complete input partition.
 It reports declaration coverage and local integrity; remote availability, produced
 files and compiler builds require later execution evidence.
 
