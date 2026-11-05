@@ -133,6 +133,7 @@ try {
     {
       timeoutMs: 600000,
       isolatedCaseWorkers: 1,
+      diagnosticSourceFile: path.join(harness, requirements[0].file),
       onCaseProgress: (event) =>
         process.stderr.write(
           JSON.stringify({ profile: "consumer-impact-installed", ...event }) +

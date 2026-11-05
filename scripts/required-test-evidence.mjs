@@ -47,8 +47,47 @@ export function fullSuiteBatches(files) {
 const MAX_REQUIREMENTS = 256;
 const MAX_EVENTS = 4096;
 const MAX_NAME_CHARACTERS = 512;
+const MAX_SOURCE_BYTES = 4 * 1024 * 1024;
+// Inspect the original cause stack in memory. Only exact bound source frames
+// with one unambiguous, physically possible location become numeric metadata.
+export function boundTestFailureSite(stack, source) {
+  try {
+    if (typeof stack !== "string" || stack.length > 65536 || !source)
+      return undefined;
+    const frames = stack.split("\n");
+    if (frames.length > 256) return undefined;
+    const sites = new Map();
+    for (const frame of frames.slice(1)) {
+      const call = frame.match(/^ {4}at (.+)$/);
+      if (!call) continue;
+      const location = call[1].endsWith(")")
+        ? call[1].match(/^[^()\r\n]+ \((.+)\)$/)?.[1]
+        : call[1];
+      const match = location?.match(/^(.*):([1-9][0-9]*):([1-9][0-9]*)$/);
+      if (!match || (match[1] !== source.file && match[1] !== source.url))
+        continue;
+      const line = Number(match[2]),
+        column = Number(match[3]);
+      if (
+        !Number.isSafeInteger(line) ||
+        !Number.isSafeInteger(column) ||
+        line > source.lineLengths.length ||
+        column > source.lineLengths[line - 1] + 1
+      )
+        return undefined;
+      sites.set(`${line}:${column}`, {
+        sourceFileSha256: source.sha256,
+        line,
+        column,
+      });
+    }
+    return sites.size === 1 ? sites.values().next().value : undefined;
+  } catch {
+    return undefined;
+  }
+}
 const key = ({ file, name }) => JSON.stringify([file, name]);
-const fingerprint = async (file) => {
+const fingerprint = async (file, captureSource) => {
   let handle;
   try {
     handle = await open(
@@ -59,7 +98,8 @@ const fingerprint = async (file) => {
       return { state: "unavailable", code: "not-regular" };
     const digest = createHash("sha256"),
       buffer = Buffer.alloc(65536),
-      limit = 4 * 1024 * 1024;
+      limit = MAX_SOURCE_BYTES,
+      chunks = captureSource ? [] : null;
     let total = 0;
     while (true) {
       const { bytesRead } = await handle.read(
@@ -73,8 +113,20 @@ const fingerprint = async (file) => {
       if (total > limit)
         return { state: "unavailable", code: "file-byte-limit" };
       digest.update(buffer.subarray(0, bytesRead));
+      chunks?.push(Buffer.from(buffer.subarray(0, bytesRead)));
     }
-    return { state: "present", sha256: digest.digest("hex") };
+    const sha256 = digest.digest("hex");
+    if (chunks)
+      captureSource({
+        file,
+        url: pathToFileURL(file).href,
+        sha256,
+        lineLengths: Buffer.concat(chunks)
+          .toString("utf8")
+          .split("\n")
+          .map((line) => (line.endsWith("\r") ? line.length - 1 : line.length)),
+      });
+    return { state: "present", sha256 };
   } catch (error) {
     return {
       state: "unavailable",
@@ -95,6 +147,7 @@ async function executeRequiredTests(
     additionalFiles = [],
     isolatedCaseWorkers = 0,
     onCaseProgress,
+    diagnosticSourceFile,
   } = {},
 ) {
   assert.ok(
@@ -152,7 +205,17 @@ async function executeRequiredTests(
         )
       : [];
   const exclusiveSet = new Set(exclusiveFiles);
-  const before = await Promise.all(files.map(fingerprint));
+  const failureSources = new Map();
+  const before = await Promise.all(
+    files.map((file) =>
+      fingerprint(
+        file,
+        file === diagnosticSourceFile
+          ? (source) => failureSources.set(file, source)
+          : undefined,
+      ),
+    ),
+  );
   const observed = new Map(expected.map((item) => [key(item), []]));
   const terminalEvents = [];
   const problems = [];
@@ -356,9 +419,14 @@ async function executeRequiredTests(
         }
         if (type === "test:fail" && retained) {
           const error = data.details?.error;
+          const failureSite = boundTestFailureSite(
+            error?.cause?.stack,
+            failureSources.get(file),
+          );
           problems.push({
             name: data.name.slice(0, MAX_NAME_CHARACTERS),
             reason: "failed",
+            ...(failureSite ? { failureSite } : {}),
             ...(typeof error?.cause?.code === "string"
               ? { causeCode: error.cause.code.slice(0, 128) }
               : {}),
@@ -420,7 +488,7 @@ async function executeRequiredTests(
   const truncated = terminalEventCount > terminalEvents.length;
   if (truncated)
     problems.push({ name: "terminal-ledger", reason: "terminal-ledger-limit" });
-  const after = await Promise.all(files.map(fingerprint));
+  const after = await Promise.all(files.map((file) => fingerprint(file)));
   const fileEvidence = files.map((file, index) => {
     const stable =
       before[index].state === "present" &&
@@ -520,8 +588,35 @@ async function resolveRequirements(requirements) {
   return expected;
 }
 
+function selectDiagnosticSourceFile(requirements, expected, selected) {
+  if (selected === undefined) return undefined;
+  assert.ok(
+    typeof selected === "string" &&
+      selected.length > 0 &&
+      selected.length <= 4096,
+    "Diagnostic source selection must be a bounded path",
+  );
+  const resolved = path.resolve(selected);
+  // Resolve only against inputs already normalized by resolveRequirements.
+  // This option cannot admit another file read or add an execution target.
+  const index = requirements.findIndex(
+    (item, index) =>
+      path.resolve(item.file) === resolved || expected[index].file === resolved,
+  );
+  assert.ok(index >= 0, "Diagnostic source must be a required test input");
+  return expected[index].file;
+}
+
 export async function runRequiredTests(requirements, options = {}) {
-  return executeRequiredTests(await resolveRequirements(requirements), options);
+  const expected = await resolveRequirements(requirements);
+  return executeRequiredTests(expected, {
+    ...options,
+    diagnosticSourceFile: selectDiagnosticSourceFile(
+      requirements,
+      expected,
+      options.diagnosticSourceFile,
+    ),
+  });
 }
 
 export async function runRequiredProfiles(profiles, selection, options = {}) {
@@ -533,6 +628,8 @@ export async function runRequiredProfiles(profiles, selection, options = {}) {
   assert.equal(new Set(selection).size, selection.length, "Duplicate profile");
   const selected = [];
   const requirements = new Map();
+  const originalInputs = [],
+    normalizedInputs = [];
   // Validate every manifest before executing any selected file.
   for (const profile of selection) {
     assert.ok(
@@ -540,6 +637,8 @@ export async function runRequiredProfiles(profiles, selection, options = {}) {
       "Unknown required native test profile",
     );
     const expected = await resolveRequirements(profiles[profile]);
+    originalInputs.push(...profiles[profile]);
+    normalizedInputs.push(...expected);
     selected.push({ profile, required: expected.length });
     for (const item of expected) requirements.set(key(item), item);
   }
@@ -549,9 +648,13 @@ export async function runRequiredProfiles(profiles, selection, options = {}) {
     requirements.size <= MAX_EVENTS,
     "Required profile batch exceeds terminal ledger bound",
   );
-  const report = await executeRequiredTests(
-    [...requirements.values()],
-    options,
-  );
+  const report = await executeRequiredTests([...requirements.values()], {
+    ...options,
+    diagnosticSourceFile: selectDiagnosticSourceFile(
+      originalInputs,
+      normalizedInputs,
+      options.diagnosticSourceFile,
+    ),
+  });
   return { profiles: selected, ...report };
 }
