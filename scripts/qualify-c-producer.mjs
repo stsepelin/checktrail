@@ -15,7 +15,13 @@ import {
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
-import { clearInterval, setInterval } from "node:timers";
+import {
+  clearInterval,
+  setInterval,
+  clearTimeout,
+  setTimeout,
+} from "node:timers";
+import { performance } from "node:perf_hooks";
 import { fileURLToPath, URL } from "node:url";
 import { promisify } from "node:util";
 import {
@@ -42,6 +48,12 @@ import {
   cProducerDirectory,
   loadCProducerProfile,
   cProducerProfileKey,
+  cProducerLocalPolicyId,
+  cProducerLocalPolicyFile,
+  loadCProducerExecutionPolicy,
+  cProducerExecutionLimits,
+  cProducerExecutionPolicyBinding,
+  cProducerExecutionClock,
   safeRelative,
   sha256,
 } from "./producer-qualification/c-producer-profile.mjs";
@@ -79,8 +91,9 @@ const controlFiles = [
   "c-producer-test-reports.py",
   "binutils-retention-observer.py",
 ];
-export const cProducerSourceFiles = (profile) => [
+export const cProducerSourceFiles = (profile, executionPolicy = null) => [
   ...sourceFiles,
+  ...(executionPolicy ? [cProducerLocalPolicyFile] : []),
   ...(profile.sourcePackage === "glibc"
     ? glibcSeccompSourceFiles.filter((file) => file !== "glibc-seccomp.mjs")
     : []),
@@ -488,7 +501,9 @@ export function cProducerArguments(
   destination,
   attempt,
   caller,
+  executionPolicy = null,
 ) {
+  const limits = cProducerExecutionLimits(profile, executionPolicy);
   caller = validateCProducerCallerIdentity(caller.uid, caller.gid);
   assert.match(attempt, /^[a-f0-9-]{36}$/u);
   assert.equal(path.resolve(destination), destination);
@@ -513,11 +528,11 @@ export function cProducerArguments(
     "--network",
     "none",
     "--cpus",
-    String(profile.limits.cpuLimit),
+    String(limits.cpuLimit),
     "--memory",
-    profile.limits.memory,
+    limits.memory,
     "--pids-limit",
-    String(profile.limits.pidsLimit),
+    String(limits.pidsLimit),
     "--label",
     "io.checktrail.producer-attempt=" + attempt,
     ...(profile.sourcePackage === "glibc"
@@ -553,7 +568,7 @@ export function cProducerArguments(
     "/usr/bin/timeout",
     "--signal=TERM",
     "--kill-after=30s",
-    String(profile.limits.deadlineSeconds),
+    String(limits.deadlineSeconds),
     "/bin/sh",
     "/controller/c-producer-build.sh",
     cProducerProfileKey(profile),
@@ -808,12 +823,21 @@ async function outputFiles(work, maximum) {
   return rows;
 }
 
-export async function prepareCProducer(name, inputs, output) {
+export async function prepareCProducer(
+  name,
+  inputs,
+  output,
+  executionPolicyId,
+) {
   const selected = await loadCProducerProfile(name);
+  const executionPolicy = await loadCProducerExecutionPolicy(
+    executionPolicyId,
+    selected.profile,
+  );
   await validateInputs(inputs, selected.profile.files);
   const { destination, parent } = await validateDestination(inputs, output);
   const sources = [];
-  for (const file of cProducerSourceFiles(selected.profile))
+  for (const file of cProducerSourceFiles(selected.profile, executionPolicy))
     sources.push({
       file,
       ...(await identifyFile(
@@ -845,6 +869,7 @@ export async function prepareCProducer(name, inputs, output) {
   );
   return {
     ...selected,
+    ...(executionPolicy ? { executionPolicy } : {}),
     inputs,
     destination,
     parent,
@@ -1200,9 +1225,26 @@ async function verifyCustodyPreflight(plan, caller, signal, state) {
 }
 
 export function cProducerExecutionOptions(args) {
+  assert.ok(Array.isArray(args), "Malformed producer arguments");
+  let executionPolicyId;
+  const policyIndex = args.indexOf("--execution-policy");
+  if (policyIndex !== -1) {
+    assert.equal(
+      policyIndex,
+      args.length - 2,
+      "Execution policy must be the final explicit option",
+    );
+    executionPolicyId = args[policyIndex + 1];
+    assert.equal(
+      executionPolicyId,
+      cProducerLocalPolicyId,
+      "Unknown closed local execution policy",
+    );
+    args = args.slice(0, policyIndex);
+  }
   assert.ok(
     Array.isArray(args) && [7, 8, 9].includes(args.length),
-    "Usage: --profile gcc-12|glibc|glibc-u13 --inputs BUNDLE --output NEW_DIRECTORY --prepare-only | --operator-trust-execution --coordinated-heavy-slot [--allow-local-arm64-daemon]",
+    "Usage: --profile gcc-12|glibc|glibc-u13 --inputs BUNDLE --output NEW_DIRECTORY --prepare-only | --operator-trust-execution --coordinated-heavy-slot [--allow-local-arm64-daemon] [--execution-policy local-gcc12-23h-v1]",
   );
   assert.equal(args[0], "--profile");
   assert.equal(args[2], "--inputs");
@@ -1228,7 +1270,20 @@ export function cProducerExecutionOptions(args) {
       "Local ARM daemon permission is GCC12-only",
     );
   }
-  return { prepare, allowLocalArm64Daemon };
+  if (executionPolicyId) {
+    assert.equal(args[1], "gcc-12", "Local execution policy is GCC12-only");
+    if (!prepare)
+      assert.equal(
+        allowLocalArm64Daemon,
+        true,
+        "Local execution policy requires explicit ARM daemon permission",
+      );
+  }
+  return {
+    prepare,
+    allowLocalArm64Daemon,
+    ...(executionPolicyId ? { executionPolicyId } : {}),
+  };
 }
 
 export function validateCProducerDaemonMetadata(
@@ -1526,7 +1581,15 @@ export async function collectCProducerEvidence({
   return result;
 }
 
-async function run(plan, { allowLocalArm64Daemon = false } = {}) {
+async function run(
+  plan,
+  {
+    allowLocalArm64Daemon = false,
+    clock = null,
+    controller = new AbortController(),
+    onNativeAdmission = () => {},
+  } = {},
+) {
   const { catalog, profile, destination, inputs } = plan;
   assert.equal(
     process.platform,
@@ -1577,7 +1640,6 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
   const work = path.join(destination, "work"),
     bundle = path.join(destination, "bundle"),
     controls = path.join(destination, "controls");
-  const controller = new AbortController();
   const abort = () => controller.abort("caller-signal");
   process.on("SIGINT", abort);
   process.on("SIGTERM", abort);
@@ -1600,6 +1662,18 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
     image: initialImage,
     syscallRuntime,
     limits: profile.limits,
+    ...(plan.executionPolicy
+      ? {
+          executionPolicy: cProducerExecutionPolicyBinding(
+            plan.executionPolicy,
+            profile,
+          ),
+          executionLimits: cProducerExecutionLimits(
+            profile,
+            plan.executionPolicy,
+          ),
+        }
+      : {}),
     attempt,
     state: "preparing",
     buildExecuted: false,
@@ -1694,7 +1768,7 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
             },
             path.join(destination, "post-stop-reports.log"),
             {
-              timeoutMs: 180000,
+              timeoutMs: clock ? clock.collectionTimeoutMs() : 180000,
               maxBytes: 8 * 1024 ** 2,
               signal: new AbortController().signal,
               stop: stopPost,
@@ -1821,11 +1895,17 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
       destination,
       attempt,
       caller,
+      plan.executionPolicy ?? null,
     );
     state.state = "starting";
     await atomicReceipt(destination, state);
     state.executionObserver = await observeForeground(
       () => {
+        if (clock) {
+          clock.admitNative();
+          state.controllerClock = clock.snapshot();
+          onNativeAdmission();
+        }
         state.originalExecutionInvoked = true;
         state.buildExecuted = null;
         return spawn("docker", argv, {
@@ -1835,7 +1915,10 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
       },
       path.join(destination, "build.log"),
       {
-        timeoutMs: profile.limits.deadlineSeconds * 1000,
+        timeoutMs:
+          (plan.executionPolicy
+            ? plan.executionPolicy.windows.producerObserverSeconds
+            : profile.limits.deadlineSeconds) * 1000,
         maxBytes: profile.limits.logByteLimit,
         signal: controller.signal,
         stop,
@@ -2003,6 +2086,13 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
         state.state = "cleanup-or-observation-failed";
       }
     }
+    if (clock) {
+      state.controllerClock = clock.snapshot();
+      if (controller.signal.aborted || clock.remaining() <= 0) {
+        state.state = "interrupted-or-resource-observer-failure";
+        state.stopTrigger = controller.signal.reason ?? "controller-deadline";
+      }
+    }
     state.finishedAt = new Date().toISOString();
     await atomicReceipt(destination, state);
     process.off("SIGINT", abort);
@@ -2016,28 +2106,76 @@ async function run(plan, { allowLocalArm64Daemon = false } = {}) {
 }
 
 export async function mainCProducer(args) {
-  const { prepare, allowLocalArm64Daemon } = cProducerExecutionOptions(args);
-  const plan = await prepareCProducer(
-    args[1],
-    path.resolve(args[3]),
-    path.resolve(args[5]),
-  );
-  if (prepare)
-    return {
-      profile: plan.profile.profile,
-      catalogSha256: plan.catalogSha256,
-      pinnedInputs: plan.profile.files.length,
-      command: plan.profile.command,
-      limits: plan.profile.limits,
-      sourcePins: plan.sources,
-      harnessPins: plan.harness,
-      imageIdentity: plan.imageIdentity,
-      buildExecuted: false,
-      fullCompilerSdkBootstrapClosureVerified: false,
-      gateAComplete: false,
-    };
-  return run(plan, { allowLocalArm64Daemon });
+  const started = performance.now();
+  const { prepare, allowLocalArm64Daemon, executionPolicyId } =
+    cProducerExecutionOptions(args);
+  const controller = new AbortController();
+  let timer;
+  try {
+    let clock = null;
+    if (executionPolicyId && !prepare) {
+      const selected = await loadCProducerProfile(args[1]);
+      const policy = await loadCProducerExecutionPolicy(
+        executionPolicyId,
+        selected.profile,
+      );
+      clock = cProducerExecutionClock(policy, selected.profile, started);
+      timer = setTimeout(
+        () => controller.abort("controller-setup-deadline"),
+        clock.setupRemaining(),
+      );
+    }
+    const plan = await prepareCProducer(
+      args[1],
+      path.resolve(args[3]),
+      path.resolve(args[5]),
+      executionPolicyId,
+    );
+    if (prepare)
+      return {
+        profile: plan.profile.profile,
+        catalogSha256: plan.catalogSha256,
+        pinnedInputs: plan.profile.files.length,
+        command: plan.profile.command,
+        limits: plan.profile.limits,
+        ...(plan.executionPolicy
+          ? {
+              executionPolicy: cProducerExecutionPolicyBinding(
+                plan.executionPolicy,
+                plan.profile,
+              ),
+              executionLimits: cProducerExecutionLimits(
+                plan.profile,
+                plan.executionPolicy,
+              ),
+            }
+          : {}),
+        sourcePins: plan.sources,
+        harnessPins: plan.harness,
+        imageIdentity: plan.imageIdentity,
+        buildExecuted: false,
+        fullCompilerSdkBootstrapClosureVerified: false,
+        gateAComplete: false,
+      };
+    if (clock) clock.setupRemaining();
+    return await run(plan, {
+      allowLocalArm64Daemon,
+      clock,
+      controller,
+      onNativeAdmission() {
+        clearTimeout(timer);
+        timer = setTimeout(
+          () => controller.abort("controller-deadline"),
+          clock.remaining(),
+        );
+      },
+    });
+  } finally {
+    // Preparation can refuse before run() owns its own finalization path.
+    clearTimeout(timer);
+  }
 }
+
 if (process.argv[1] && path.resolve(process.argv[1]) === self) {
   try {
     const result = await mainCProducer(process.argv.slice(2));

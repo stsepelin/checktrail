@@ -19,6 +19,7 @@ import {
   verifyCProducerReports,
   cProducerCompletion,
   cProducerSourceFiles,
+  validateCProducerDaemonMetadata,
 } from "./qualify-c-producer.mjs";
 import {
   glibcSeccompSourceFiles,
@@ -35,6 +36,12 @@ import {
   loadCProducerProfile,
   cProducerCatalogSha256,
   cProducerProfileKey,
+  cProducerLocalPolicyFile,
+  cProducerLocalPolicyId,
+  loadCProducerExecutionPolicy,
+  cProducerExecutionPolicyBinding,
+  cProducerExecutionLimits,
+  validateCProducerExecutionClock,
   sha256,
 } from "./producer-qualification/c-producer-profile.mjs";
 import { admitGccJobEnvelope } from "./producer-qualification/gcc-job-envelope.mjs";
@@ -43,6 +50,7 @@ import {
   requireCObservationProfile,
   validateCStartupProfile,
   validateGccCarrierReceipt,
+  validateLocalGccCarrierReceipt,
 } from "./producer-qualification/c-carrier-observation.mjs";
 
 const exec = promisify(execFile);
@@ -84,6 +92,13 @@ export const cObservationSources = [
   "scripts/observe-c-producer-carrier.mjs",
   ".github/workflows/upstream-gcc.yml",
 ];
+export const cObservationSourceFiles = (executionPolicy = null) => [
+  ...cObservationSources,
+  ...(executionPolicy
+    ? ["scripts/producer-qualification/" + cProducerLocalPolicyFile]
+    : []),
+];
+
 const metadataGit = async (args) =>
   (
     await exec(
@@ -286,9 +301,16 @@ export function validateCObservationHeader(
   profile,
   startup,
   controllerExit,
+  executionPolicy = null,
 ) {
   const name = requireCObservationProfile(cProducerProfileKey(profile));
-  validateCStartupProfile(startup, name, profile, cProducerCatalogSha256);
+  validateCStartupProfile(
+    startup,
+    name,
+    profile,
+    cProducerCatalogSha256,
+    executionPolicy,
+  );
   assert.equal(receipt.catalogSha256, cProducerCatalogSha256);
   assert.equal(controllerExit, 2, "Unexpected original controller exit");
   assert.equal(
@@ -298,6 +320,32 @@ export function validateCObservationHeader(
   assert.equal(receipt.profile, profile.profile);
   assert.equal(receipt.sourceVersion, profile.sourceVersion);
   assert.deepEqual(receipt.limits, profile.limits);
+  if (executionPolicy) {
+    assert.equal(
+      receipt.schemaVersion,
+      2,
+      "Local execution requires closed outer schema2",
+    );
+    assert.deepEqual(
+      receipt.executionPolicy,
+      cProducerExecutionPolicyBinding(executionPolicy, profile),
+    );
+    assert.deepEqual(
+      receipt.executionLimits,
+      cProducerExecutionLimits(profile, executionPolicy),
+    );
+    validateCProducerExecutionClock(
+      receipt.controllerClock,
+      profile,
+      executionPolicy,
+    );
+  } else
+    assert.ok(
+      !["executionPolicy", "executionLimits", "controllerClock"].some((key) =>
+        Object.hasOwn(receipt, key),
+      ),
+      "Legacy observation cannot relabel local execution",
+    );
   assert.equal(receipt.buildExecuted, true);
   assert.equal(receipt.originalExecutionInvoked, true);
   assert.ok(
@@ -394,9 +442,17 @@ export function validateCObservationHeader(
   };
 }
 
-export async function captureCObservationStartup(name, output) {
+export async function captureCObservationStartup(
+  name,
+  output,
+  executionPolicyId,
+) {
   requireCObservationProfile(name);
   const { profile, catalogSha256 } = await loadCProducerProfile(name);
+  const executionPolicy = await loadCProducerExecutionPolicy(
+    executionPolicyId,
+    profile,
+  );
   assert.deepEqual(
     [process.platform, process.arch, os.machine()],
     ["linux", "x64", "x86_64"],
@@ -411,7 +467,7 @@ export async function captureCObservationStartup(name, output) {
     .trim();
   assert.match(gitHead, /^[a-f0-9]{40}$/u);
   const sourcePins = [];
-  for (const file of cObservationSources) {
+  for (const file of cObservationSourceFiles(executionPolicy)) {
     const raw = await boundedCProducerBytes(
       path.join(repository, file),
       2 * 1024 ** 2,
@@ -438,6 +494,14 @@ export async function captureCObservationStartup(name, output) {
       sourceVersion: profile.sourceVersion,
       catalogSha256,
     },
+    ...(executionPolicy
+      ? {
+          executionPolicy: cProducerExecutionPolicyBinding(
+            executionPolicy,
+            profile,
+          ),
+        }
+      : {}),
     caller,
     host: {
       platform: process.platform,
@@ -462,24 +526,38 @@ export async function captureCObservationStartup(name, output) {
   };
 }
 
-export async function verifyCObservationStartup(name, startupFile) {
+export async function verifyCObservationStartup(
+  name,
+  startupFile,
+  executionPolicyId,
+) {
   requireCObservationProfile(name);
   assert.deepEqual(
     [process.platform, process.arch, os.machine()],
     ["linux", "x64", "x86_64"],
   );
   const { profile, catalogSha256 } = await loadCProducerProfile(name);
+  const executionPolicy = await loadCProducerExecutionPolicy(
+    executionPolicyId,
+    profile,
+  );
   const startupRaw = await boundedCProducerBytes(
     startupFile,
     1024 ** 2,
     captureCProducerCallerIdentity(),
   );
   const startup = JSON.parse(startupRaw);
-  validateCStartupProfile(startup, name, profile, catalogSha256);
+  validateCStartupProfile(
+    startup,
+    name,
+    profile,
+    catalogSha256,
+    executionPolicy,
+  );
   assert.deepEqual(startup.caller, captureCProducerCallerIdentity());
   assert.deepEqual(
     startup.sourcePins.map((row) => row.file),
-    cObservationSources,
+    cObservationSourceFiles(executionPolicy),
   );
   await validateInputs(repository, startup.sourcePins);
   assert.equal(
@@ -496,12 +574,18 @@ export async function verifyCLiveObservation(
   startupFile,
   controllerExit,
   carrierDirectory = null,
+  executionPolicyId,
 ) {
   requireCObservationProfile(name);
   const { catalog, profile, catalogSha256 } = await loadCProducerProfile(name);
+  const executionPolicy = await loadCProducerExecutionPolicy(
+    executionPolicyId,
+    profile,
+  );
   const { startupRaw, startup } = await verifyCObservationStartup(
     name,
     startupFile,
+    executionPolicyId,
   );
   const receiptFile = path.join(result, "receipt.json");
   const receiptRaw = await boundedCProducerBytes(receiptFile, 16 * 1024 ** 2);
@@ -511,6 +595,7 @@ export async function verifyCLiveObservation(
     profile,
     startup,
     controllerExit,
+    executionPolicy,
   );
   assert.equal(receipt.catalogSha256, catalogSha256);
   const format = cProducerEvidenceFormat(receipt);
@@ -518,7 +603,7 @@ export async function verifyCLiveObservation(
   assert.equal(receipt.retentionObserver.independentImage, catalog.image);
   assert.deepEqual(
     receipt.sourcePins.map((row) => row.file),
-    cProducerSourceFiles(profile),
+    cProducerSourceFiles(profile, executionPolicy),
   );
   assert.deepEqual(
     receipt.harnessPins.map((row) => row.file),
@@ -575,6 +660,21 @@ export async function verifyCLiveObservation(
       ].includes(row.file),
     ),
   );
+  if (executionPolicy) {
+    const plan = { catalog, profile, syscallPolicy: null };
+    assert.deepEqual(
+      validateCProducerDaemonMetadata(receipt.host.daemonMetadata, plan, true),
+      receipt.host.daemonPolicy,
+    );
+    assert.deepEqual(
+      validateCProducerDaemonMetadata(
+        receipt.host.finalDaemonMetadata,
+        plan,
+        true,
+      ),
+      receipt.host.daemonPolicy,
+    );
+  }
   let carrierObservation = null;
   if (profile.sourcePackage === "glibc") {
     const syscall = validateGlibcSyscallPreflight(
@@ -638,7 +738,25 @@ export async function verifyCLiveObservation(
         capture: { bytes: captureRaw.length, sha256: sha256(captureRaw) },
       };
     }
-    validateGccCarrierReceipt(carrier, profile, catalogSha256, jobResponse);
+    if (executionPolicy) {
+      assert.equal(
+        jobResponse,
+        null,
+        "Local execution cannot select a hosted job envelope",
+      );
+      validateLocalGccCarrierReceipt(
+        carrier,
+        profile,
+        catalogSha256,
+        executionPolicy,
+      );
+      assert.ok(
+        receipt.controllerClock.elapsedSeconds <=
+          carrier.controllerTerminalSeconds,
+        "Controller clock exceeds its observed carrier terminal",
+      );
+    } else
+      validateGccCarrierReceipt(carrier, profile, catalogSha256, jobResponse);
     assert.deepEqual(carrier.startupInput, {
       bytes: startupRaw.length,
       sha256: sha256(startupRaw),
@@ -665,6 +783,14 @@ export async function verifyCLiveObservation(
     assert.equal(owner.sourceVersion, receipt.sourceVersion);
     assert.equal(owner.catalogSha256, receipt.catalogSha256);
     assert.deepEqual(owner.limits, receipt.limits);
+    if (executionPolicy) {
+      assert.deepEqual(owner.executionPolicy, receipt.executionPolicy);
+      assert.deepEqual(owner.executionLimits, receipt.executionLimits);
+    } else
+      assert.ok(
+        !Object.hasOwn(owner, "executionPolicy") &&
+          !Object.hasOwn(owner, "executionLimits"),
+      );
     assert.deepEqual(owner.sourcePins, receipt.sourcePins);
     assert.deepEqual(owner.harnessPins, receipt.harnessPins);
     assert.deepEqual(owner.host.capturedCaller, startup.caller);
@@ -806,6 +932,14 @@ export async function verifyCLiveObservation(
     schemaVersion: 1,
     state: "original-" + name + "-command-observed-qualification-incomplete",
     selectedProfile: startup.selectedProfile,
+    ...(executionPolicy
+      ? {
+          executionPolicy: cProducerExecutionPolicyBinding(
+            executionPolicy,
+            profile,
+          ),
+        }
+      : {}),
     carrier: carrierObservation,
     ...summary,
     originalTestEvidenceState: receipt.buildCompletion.testEvidenceState,
@@ -835,13 +969,24 @@ if (
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
   try {
-    const args = process.argv.slice(2);
+    let args = process.argv.slice(2);
+    let executionPolicyId;
+    if (args.includes("--execution-policy")) {
+      assert.equal(args[args.length - 2], "--execution-policy");
+      executionPolicyId = args[args.length - 1];
+      assert.equal(executionPolicyId, cProducerLocalPolicyId);
+      args = args.slice(0, -2);
+    }
     assert.equal(args[0], "--profile");
     const name = requireCObservationProfile(args[1]);
     if (args.length === 4 && args[2] === "--capture-startup")
       process.stdout.write(
         JSON.stringify(
-          await captureCObservationStartup(name, path.resolve(args[3])),
+          await captureCObservationStartup(
+            name,
+            path.resolve(args[3]),
+            executionPolicyId,
+          ),
         ) + "\n",
       );
     else {
@@ -862,6 +1007,7 @@ if (
             path.resolve(args[5]),
             Number(args[7]),
             name === "gcc-12" ? path.resolve(args[9]) : null,
+            executionPolicyId,
           ),
         ) + "\n",
       );

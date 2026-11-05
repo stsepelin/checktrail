@@ -948,3 +948,106 @@ print(json.dumps({'sameUidPhysicalExport':True,'largeOriginalLogBytes':len(log),
     assert.equal(observed.gateAComplete, false);
   },
 );
+
+test("C live local policy requires explicit matching startup, closed retention and effective clock bindings", async () => {
+  const profiles = await import(
+    pathToFileURL(
+      path.join(
+        repository,
+        "scripts/producer-qualification/c-producer-profile.mjs",
+      ),
+    ).href
+  );
+  const selected = catalog.profiles["gcc-12"];
+  const policy = await profiles.loadCProducerExecutionPolicy(
+    "local-gcc12-23h-v1",
+    selected,
+  );
+  const binding = profiles.cProducerExecutionPolicyBinding(policy, selected);
+  const selectedStartup = {
+    ...startup,
+    selectedProfile: {
+      name: "gcc-12",
+      profile: selected.profile,
+      sourceVersion: selected.sourceVersion,
+      catalogSha256,
+    },
+    executionPolicy: binding,
+  };
+  const make = (header = syntheticRetention()) => ({
+    ...header,
+    profile: selected.profile,
+    sourceVersion: selected.sourceVersion,
+    limits: selected.limits,
+    executionPolicy: binding,
+    executionLimits: binding.executionLimits,
+    controllerClock: {
+      schemaVersion: 1,
+      scope: "same-controller-process-monotonic",
+      totalSeconds: 84000,
+      elapsedSeconds: 2,
+      remainingMs: 83998000,
+      nativeAdmission: {
+        elapsedSeconds: 0,
+        observerSeconds: 82890,
+        recoveryReserveSeconds: 510,
+      },
+    },
+  });
+  for (const header of [make(), make(withPostStopRetention())]) {
+    assert.equal(
+      validateCObservationHeader(header, selected, selectedStartup, 2, policy)
+        .gateAComplete,
+      false,
+    );
+    assert.throws(
+      () => validateCObservationHeader(header, selected, selectedStartup, 2),
+      /Legacy startup/,
+    );
+    const { executionPolicy: _policy, ...oldStartup } = selectedStartup;
+    assert.equal(_policy, binding);
+    assert.throws(() =>
+      validateCObservationHeader(header, selected, oldStartup, 2, policy),
+    );
+  }
+  const legacy = {
+    ...syntheticHeader(),
+    profile: selected.profile,
+    sourceVersion: selected.sourceVersion,
+    limits: selected.limits,
+    executionPolicy: binding,
+    executionLimits: binding.executionLimits,
+    controllerClock: make().controllerClock,
+  };
+  assert.throws(
+    () =>
+      validateCObservationHeader(legacy, selected, selectedStartup, 2, policy),
+    /requires closed outer schema2/,
+  );
+  for (const change of [
+    (v: ReturnType<typeof make>) => {
+      v.executionLimits = { ...v.executionLimits, deadlineSeconds: 43200 };
+    },
+    (v: ReturnType<typeof make>) => {
+      v.controllerClock.remainingMs += 1;
+    },
+    (v: ReturnType<typeof make>) => {
+      v.controllerClock.totalSeconds += 1;
+    },
+    (v: ReturnType<typeof make>) => {
+      v.controllerClock.nativeAdmission.recoveryReserveSeconds -= 1;
+    },
+    (v: ReturnType<typeof make>) => {
+      v.controllerClock.elapsedSeconds = Number.POSITIVE_INFINITY;
+    },
+    (v: ReturnType<typeof make>) => {
+      Object.assign(v.controllerClock, { unknown: true });
+    },
+  ]) {
+    const value = structuredClone(make());
+    change(value);
+    assert.throws(() =>
+      validateCObservationHeader(value, selected, selectedStartup, 2, policy),
+    );
+  }
+});

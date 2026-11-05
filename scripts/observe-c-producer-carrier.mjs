@@ -22,8 +22,17 @@ import { verifyCObservationStartup } from "./verify-c-producer-observation.mjs";
 import {
   gccCarrierLimits,
   requireCObservationProfile,
+  localGccCarrierLimits,
+  captureLocalGccManagedClock,
 } from "./producer-qualification/c-carrier-observation.mjs";
-import { sha256 } from "./producer-qualification/c-producer-profile.mjs";
+import {
+  sha256,
+  cProducerLocalPolicyId,
+  loadCProducerProfile,
+  loadCProducerExecutionPolicy,
+  cProducerExecutionPolicyBinding,
+  cProducerExecutionLimits,
+} from "./producer-qualification/c-producer-profile.mjs";
 import {
   afterGccJobAdmission,
   remainingGccObservationMs,
@@ -248,6 +257,21 @@ export function validateCarrierOwner(owner, plan, caller) {
   assert.equal(owner.sourceVersion, plan.profile.sourceVersion);
   assert.equal(owner.catalogSha256, plan.catalogSha256);
   assert.deepEqual(owner.limits, plan.profile.limits);
+  if (plan.executionPolicy) {
+    assert.deepEqual(
+      owner.executionPolicy,
+      cProducerExecutionPolicyBinding(plan.executionPolicy, plan.profile),
+    );
+    assert.deepEqual(
+      owner.executionLimits,
+      cProducerExecutionLimits(plan.profile, plan.executionPolicy),
+    );
+  } else
+    assert.ok(
+      !Object.hasOwn(owner, "executionPolicy") &&
+        !Object.hasOwn(owner, "executionLimits"),
+      "Legacy carrier cannot own local policy execution",
+    );
   assert.deepEqual(owner.sourcePins, plan.sources);
   assert.deepEqual(owner.harnessPins, plan.harness);
   assert.deepEqual(owner.host.capturedCaller, caller);
@@ -402,8 +426,19 @@ export async function retainCarrierJobClock(
 }
 
 export async function mainCProducerCarrier(args) {
+  const entered = performance.now(),
+    capturedAt = new Date().toISOString();
+  const local = args.length === 17;
+  if (local) {
+    assert.equal(args[10], "--allow-local-arm64-daemon");
+    assert.equal(args[11], "--execution-policy");
+    assert.equal(args[12], cProducerLocalPolicyId);
+    assert.equal(args[13], "--managed-started-at");
+    assert.equal(args[15], "--managed-deadline-at");
+  }
   assert.ok(
     (args.length === 10 ||
+      local ||
       (args.length === 11 && args[10] === "--github-job-envelope")) &&
       args[0] === "--profile" &&
       args[2] === "--inputs" &&
@@ -411,7 +446,7 @@ export async function mainCProducerCarrier(args) {
       args[6] === "--startup" &&
       args[8] === "--operator-trust-execution" &&
       args[9] === "--coordinated-heavy-slot",
-    "Usage: --profile gcc-12 --inputs BUNDLE --output NEW_RESULT --startup FILE --operator-trust-execution --coordinated-heavy-slot [--github-job-envelope]",
+    "Usage: --profile gcc-12 --inputs BUNDLE --output NEW_RESULT --startup FILE --operator-trust-execution --coordinated-heavy-slot [--github-job-envelope] | --allow-local-arm64-daemon --execution-policy local-gcc12-23h-v1 --managed-started-at UTC --managed-deadline-at UTC",
   );
   const name = requireCObservationProfile(args[1]);
   assert.equal(
@@ -423,8 +458,34 @@ export async function mainCProducerCarrier(args) {
     output = path.resolve(args[5]),
     startupFile = path.resolve(args[7]);
   const caller = captureCProducerCallerIdentity();
-  const { startupRaw } = await verifyCObservationStartup(name, startupFile);
-  const plan = await prepareCProducer(name, inputs, output);
+  const selected = local ? await loadCProducerProfile(name) : null;
+  const executionPolicy = local
+    ? await loadCProducerExecutionPolicy(args[12], selected.profile)
+    : null;
+  const managedClock = local
+    ? captureLocalGccManagedClock(
+        executionPolicy,
+        selected.profile,
+        args[14],
+        args[16],
+        capturedAt,
+        entered,
+      )
+    : null;
+  const { startupRaw } = await verifyCObservationStartup(
+    name,
+    startupFile,
+    local ? args[12] : undefined,
+  );
+  const plan = await prepareCProducer(
+    name,
+    inputs,
+    output,
+    local ? args[12] : undefined,
+  );
+  const initialLimits = executionPolicy
+    ? localGccCarrierLimits(executionPolicy, plan.profile)
+    : gccCarrierLimits;
   const carrier = output + "-carrier";
   await physicalPath(path.dirname(carrier), true);
   await mkdir(carrier, { mode: 0o700 });
@@ -434,21 +495,33 @@ export async function mainCProducerCarrier(args) {
   let ownerHandle, child, terminal, family, ownerRaw, ownerAttempt;
   const controller = new AbortController();
   const abort = () => controller.abort("operator-carrier-signal");
-  const started = performance.now(),
-    startedAt = new Date().toISOString();
+  const started = local ? entered : performance.now(),
+    startedAt = local ? capturedAt : new Date().toISOString();
   const value = {
-    schemaVersion: 1,
+    schemaVersion: local ? 2 : 1,
     selectedProfile: {
       name,
       profile: plan.profile.profile,
       sourceVersion: plan.profile.sourceVersion,
       catalogSha256: plan.catalogSha256,
     },
-    originalCommandDeadlineSeconds: plan.profile.limits.deadlineSeconds,
-    carrierLimits: gccCarrierLimits,
+    originalCommandDeadlineSeconds: executionPolicy
+      ? executionPolicy.native.deadlineSeconds
+      : plan.profile.limits.deadlineSeconds,
+    carrierLimits: initialLimits,
+    ...(executionPolicy
+      ? {
+          executionPolicy: cProducerExecutionPolicyBinding(
+            executionPolicy,
+            plan.profile,
+          ),
+          sourceProfileDefaultsChanged: false,
+          executionPolicyChangesWallDeadline: true,
+        }
+      : {}),
     startedAt,
     cutoffAt: new Date(
-      Date.parse(startedAt) + gccCarrierLimits.observationSeconds * 1000,
+      Date.parse(startedAt) + initialLimits.observationSeconds * 1000,
     ).toISOString(),
     startupInput: { bytes: startupRaw.length, sha256: sha256(startupRaw) },
     state: "carrier-preparing",
@@ -458,7 +531,7 @@ export async function mainCProducerCarrier(args) {
       producer: { state: "not-observed" },
       retention: { state: "not-observed" },
     },
-    originalProducerDefaultsOrBudgetChanged: false,
+    ...(local ? {} : { originalProducerDefaultsOrBudgetChanged: false }),
     fullEightHourHostedCapacityVerified: false,
     originalCommandCompletionClaimed: false,
     fullCompilerSdkBootstrapClosureVerified: false,
@@ -466,7 +539,7 @@ export async function mainCProducerCarrier(args) {
     historicalPublisherConsumptionVerified: false,
     gateAComplete: false,
   };
-  let limits = gccCarrierLimits;
+  let limits = initialLimits;
   const useGithubEnvelope = args.length === 11;
   let failure, finalPublicationFailure;
   const owner = async () => {
@@ -523,6 +596,13 @@ export async function mainCProducerCarrier(args) {
       started +
         (limits.observationSeconds + gccCarrierLimits.cleanupSeconds) * 1000,
       cleanupStarted + gccCarrierLimits.cleanupSeconds * 1000 - 1,
+      ...(managedClock
+        ? [
+            cleanupStarted +
+              managedClock.remainingMs() -
+              executionPolicy.windows.minimumExportReplayReserveSeconds * 1000,
+          ]
+        : []),
     );
     value.cleanupStartedSeconds = (cleanupStarted - started) / 1000;
     value.cleanupDeadlineSeconds = (deadline - started) / 1000;
@@ -562,6 +642,14 @@ export async function mainCProducerCarrier(args) {
         : Math.floor(
             started + limits.observationSeconds * 1000 - performance.now(),
           );
+      if (managedClock) {
+        assert.ok(
+          remaining >= executionPolicy.windows.controllerTotalSeconds * 1000,
+          "Local carrier preparation exhausted full controller allowance",
+        );
+        managedClock.admit();
+        value.managedWindow = managedClock.snapshot();
+      }
       assert.ok(
         remaining > 0,
         "Admitted GCC observation envelope expired before original execution",
@@ -578,6 +666,13 @@ export async function mainCProducerCarrier(args) {
             output,
             "--operator-trust-execution",
             "--coordinated-heavy-slot",
+            ...(local
+              ? [
+                  "--allow-local-arm64-daemon",
+                  "--execution-policy",
+                  cProducerLocalPolicyId,
+                ]
+              : []),
           ]));
           terminal = new Promise((resolve) => {
             const observed = () => {
@@ -646,7 +741,11 @@ export async function mainCProducerCarrier(args) {
       value.state = "carrier-cleanup-or-observation-incomplete";
     }
     try {
-      const current = await verifyCObservationStartup(name, startupFile);
+      const current = await verifyCObservationStartup(
+        name,
+        startupFile,
+        local ? args[12] : undefined,
+      );
       assert.deepEqual(current.startupRaw, startupRaw);
       value.log = await identifyFile(
         path.join(carrier, "controller.log"),
@@ -659,6 +758,19 @@ export async function mainCProducerCarrier(args) {
     }
     value.elapsedSeconds = (performance.now() - started) / 1000;
     value.finishedAt = new Date().toISOString();
+    if (managedClock) {
+      value.managedWindow = managedClock.snapshot();
+      value.elapsedSeconds = value.managedWindow.monotonicElapsedMs / 1000;
+      if (
+        value.managedWindow.remainingAtFinishMs <
+        executionPolicy.windows.minimumExportReplayReserveSeconds * 1000
+      ) {
+        failure ??= new Error(
+          "Original managed export/replay reserve exhausted",
+        );
+        value.state = "carrier-original-managed-remainder-incomplete";
+      }
+    }
     const finalCloseAttempts = new Set();
     try {
       finalPublicationFailure = await closeCarrierPublicationHandles(

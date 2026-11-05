@@ -42,6 +42,10 @@ SOURCE_FILES += ['scripts/producer-qualification/' + name for name in GLIBC_POLI
 SOURCE_FILES += ['scripts/producer-qualification/gcc-job-envelope.mjs', 'scripts/producer-qualification/gcc-github-job-clock.mjs', 'scripts/producer-qualification/emsdk-metadata-values.mjs']
 SOURCE_FILES += ['scripts/producer-qualification/c-carrier-observation.mjs','scripts/observe-c-producer-carrier.mjs','.github/workflows/upstream-gcc.yml']
 
+LOCAL_POLICY_ID = 'local-gcc12-23h-v1'
+LOCAL_POLICY_SOURCE = 'scripts/producer-qualification/gcc-local-wall-policy.v1.json'
+LOCAL_POLICY_SHA256 = '9356abbf7cf21ec34646c56a95158414d2832e4402797a77e5dfce0866129bd8'
+
 
 def require(condition, message):
     if not condition:
@@ -306,18 +310,72 @@ def gcc_job_envelope(value, raw, capture_raw):
     return seconds
 
 
-def gcc_carrier(packet, startup_raw, receipt, profile, observed):
+def local_policy_binding(policy, profile):
+    require(profile['sourcePackage']=='gcc-12' and profile['profile']==policy['base']['sourceProfile'] and profile['sourceVersion']==policy['base']['sourceVersion'] and exact_json(profile['command'],policy['native']['command']) and profile['limits']['deadlineSeconds']==policy['base']['deadlineSeconds']==43200, 'Foreign local execution source profile')
+    limits={**profile['limits'],'deadlineSeconds':policy['native']['deadlineSeconds']}
+    return {'schemaVersion':1,'id':LOCAL_POLICY_ID,'context':policy['context'],'sourcePin':{'file':'gcc-local-wall-policy.v1.json','sha256':LOCAL_POLICY_SHA256},'executionLimits':limits,'windows':policy['windows']}
+
+
+def local_utc_ms(value):
+    require(type(value) is str and re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z',value),'Malformed local managed UTC')
+    parsed=datetime.fromisoformat(value[:-1]+'+00:00')
+    require(parsed.isoformat(timespec='milliseconds').replace('+00:00','Z')==value,'Noncanonical local managed UTC')
+    delta=parsed-datetime(1970,1,1,tzinfo=timezone.utc)
+    return delta.days*86400000+delta.seconds*1000+delta.microseconds//1000
+
+
+def local_managed_window(value, policy):
+    require(set(value)=={'schemaVersion','authority','clockScope','managedStartedAt','managedDeadlineAt','capturedAt','remainingAtCaptureMs','admission','monotonicElapsedMs','remainingAtFinishMs','independentlyAttestedManagedLease'}, 'Unknown local managed window fields')
+    require(exact_json([value['schemaVersion'],value['authority'],value['clockScope'],value['independentlyAttestedManagedLease']],[1,'operator-declared-managed-window','one-UTC-capture-then-same-carrier-monotonic',False]), 'Local window authority is an operator declaration only')
+    windows=policy['windows'];started=local_utc_ms(value['managedStartedAt']);deadline=local_utc_ms(value['managedDeadlineAt']);captured=local_utc_ms(value['capturedAt'])
+    require(deadline-started==windows['managedMaximumSeconds']*1000 and 0<=captured-started<=windows['managedBootstrapAdmissionSeconds']*1000,'Expired/future/wrong original managed window')
+    require(integer(value['remainingAtCaptureMs']) and value['remainingAtCaptureMs']==deadline-captured,'Original managed remainder differs')
+    admitted=value['admission'];required=(windows['localForegroundObservationSeconds']+windows['localForegroundCleanupSeconds']+windows['minimumExportReplayReserveSeconds'])*1000
+    require(set(admitted)=={'monotonicAdmissionMs','remainingAtAdmissionMs','requiredAtAdmissionMs'} and integer(admitted['monotonicAdmissionMs']) and captured-started+admitted['monotonicAdmissionMs']<=windows['managedBootstrapAdmissionSeconds']*1000,'Managed admission bootstrap exhausted or malformed')
+    require(integer(admitted['requiredAtAdmissionMs']) and admitted['requiredAtAdmissionMs']==required and integer(admitted['remainingAtAdmissionMs']) and admitted['remainingAtAdmissionMs']==value['remainingAtCaptureMs']-admitted['monotonicAdmissionMs'] and admitted['remainingAtAdmissionMs']>=required,'Managed observation/cleanup/export admission missing')
+    require(integer(value['monotonicElapsedMs'],admitted['monotonicAdmissionMs']) and integer(value['remainingAtFinishMs']) and value['remainingAtFinishMs']==max(0,value['remainingAtCaptureMs']-value['monotonicElapsedMs']) and value['remainingAtFinishMs']>=windows['minimumExportReplayReserveSeconds']*1000,'Original managed final export reserve exhausted or reset')
+
+
+def local_execution_observation(policy, profile, startup, receipt, observed):
+    binding=local_policy_binding(policy,profile)
+    require(exact_json(receipt['schemaVersion'],2),'Local execution requires closed outer schema2')
+    require(all(exact_json(value.get('executionPolicy'),binding) for value in [startup,receipt,observed]),'Explicit local policy binding differs')
+    require(exact_json(receipt.get('executionLimits'),binding['executionLimits']),'Effective local execution limits differ')
+    clock=receipt['controllerClock'];windows=policy['windows'];native=clock['nativeAdmission']
+    require(set(clock)=={'schemaVersion','scope','totalSeconds','elapsedSeconds','remainingMs','nativeAdmission'} and set(native)=={'elapsedSeconds','observerSeconds','recoveryReserveSeconds'},'Unknown controller clock fields')
+    finite=lambda x:type(x) in [int,float] and math.isfinite(x)
+    require(exact_json([clock['schemaVersion'],clock['scope'],clock['totalSeconds']],[1,'same-controller-process-monotonic',windows['controllerTotalSeconds']]) and finite(clock['elapsedSeconds']) and 0<=clock['elapsedSeconds']<=clock['totalSeconds'],'Original controller clock differs')
+    require(integer(clock['remainingMs']) and abs(clock['remainingMs']-max(0,clock['totalSeconds']*1000-clock['elapsedSeconds']*1000))<0.001,'Controller remainder reset')
+    require(finite(native['elapsedSeconds']) and 0<=native['elapsedSeconds']<=windows['controllerSetupSeconds'] and clock['elapsedSeconds']>=native['elapsedSeconds'] and exact_json([native['observerSeconds'],native['recoveryReserveSeconds']],[windows['producerObserverSeconds'],windows['postStopCollectorObserverSeconds']+windows['controllerFinalizationReserveSeconds']]),'Native admission/recovery allowance differs')
+    expected_daemon={'targetPlatform':'linux/amd64','observedDaemonArchitecture':'aarch64','localArm64DaemonPermissionUsed':True,'targetAndDaemonArchitecturesDiffer':True,'emulationImplementation':'unknown','hardwareHostAttestationPerformed':False}
+    require(exact_json(receipt['host']['daemonPolicy'],expected_daemon),'Explicit local ARM permission evidence missing')
+    for daemon in [receipt['host']['daemonMetadata'],receipt['host']['finalDaemonMetadata']]:
+        require(daemon['OSType']=='linux' and daemon['Architecture']=='aarch64' and integer(daemon['NCPU'],4) and integer(daemon['MemTotal'],6442450944),'Observed local ARM daemon capacity differs')
+
+
+def gcc_carrier(packet, startup_raw, receipt, profile, observed, execution_policy=None):
     carrier_raw=packet.read('carrier/receipt.json',MIB);value=strict_json(carrier_raw)
     selected={'name':'gcc-12','profile':profile['profile'],'sourceVersion':profile['sourceVersion'],'catalogSha256':CATALOG_SHA256}
-    require(exact_json(value['schemaVersion'],1) and exact_json(value['selectedProfile'],selected),'Wrong GCC carrier original profile')
-    require(exact_json(value['originalCommandDeadlineSeconds'],43200) and profile['limits']['deadlineSeconds']==43200,'Selected twelve-hour operator wall deadline changed')
-    observation_seconds=14700;job_clock=None
-    if 'githubJobEnvelope' in value:
-        response_raw=packet.read('carrier/github-job-response.json',128*1024)
-        capture_raw=packet.read('carrier/github-job-capture.json',256*1024)
-        observation_seconds=gcc_job_envelope(value['githubJobEnvelope'],response_raw,capture_raw)
-        require(value['githubJobEnvelope']['carrierStartedAt']==value['startedAt'] and value['githubJobEnvelope']['cutoffAt']==value['cutoffAt'], 'Carrier source-job clock differs')
-        job_clock={'response':pin(response_raw),'capture':pin(capture_raw)}
+    job_clock=None
+    if execution_policy is not None:
+        require(exact_json(value['schemaVersion'],2) and exact_json(value['selectedProfile'],selected),'Wrong local GCC carrier profile/version')
+        require(exact_json(value.get('executionPolicy'),local_policy_binding(execution_policy,profile)) and exact_json(value['originalCommandDeadlineSeconds'],execution_policy['native']['deadlineSeconds']),'Wrong local carrier execution policy/deadline')
+        require('githubJobEnvelope' not in value and 'originalProducerDefaultsOrBudgetChanged' not in value and value['sourceProfileDefaultsChanged'] is False and value['executionPolicyChangesWallDeadline'] is True,'Local carrier masquerades as hosted/legacy observation')
+        local_managed_window(value['managedWindow'],execution_policy)
+        require(value['managedWindow']['capturedAt']==value['startedAt'] and value['managedWindow']['monotonicElapsedMs']==round(value['elapsedSeconds']*1000),'Local carrier elapsed/window clock differs')
+        require(receipt['controllerClock']['elapsedSeconds']<=value['controllerTerminalSeconds'],'Controller clock exceeds its observed carrier terminal')
+        observation_seconds=execution_policy['windows']['localForegroundObservationSeconds']
+    else:
+        require(exact_json(value['schemaVersion'],1) and exact_json(value['selectedProfile'],selected),'Wrong GCC carrier original profile')
+        require(exact_json(value['originalCommandDeadlineSeconds'],43200) and profile['limits']['deadlineSeconds']==43200,'Selected twelve-hour operator wall deadline changed')
+        observation_seconds=14700;job_clock=None
+        if 'githubJobEnvelope' in value:
+            response_raw=packet.read('carrier/github-job-response.json',128*1024)
+            capture_raw=packet.read('carrier/github-job-capture.json',256*1024)
+            observation_seconds=gcc_job_envelope(value['githubJobEnvelope'],response_raw,capture_raw)
+            require(value['githubJobEnvelope']['carrierStartedAt']==value['startedAt'] and value['githubJobEnvelope']['cutoffAt']==value['cutoffAt'], 'Carrier source-job clock differs')
+            job_clock={'response':pin(response_raw),'capture':pin(capture_raw)}
+        require('executionPolicy' not in value and 'managedWindow' not in value,'Legacy carrier cannot relabel local execution')
     limits={'observationSeconds':observation_seconds,'cleanupSeconds':600,'softStopSeconds':480,'logBytes':8*MIB}
     require(exact_json(value['carrierLimits'],limits),'Independent carrier limits changed')
     require(value['state']=='original-controller-terminal-observed' and value['stopCause'] is None,'External carrier cutoff or incomplete observation cannot qualify completion')
@@ -331,7 +389,7 @@ def gcc_carrier(packet, startup_raw, receipt, profile, observed):
     if job_clock is not None:expected_carrier['githubJobClock']=job_clock
     require(exact_json(observed['carrier'],expected_carrier),'Live GCC carrier bytes differ from archived proof')
     require(exact_json(owner['attempt'],value['ownerAttempt']) and exact_json(owner['attempt'],receipt['attempt']),'Carrier owner attempt differs')
-    for key in ['profile','sourceVersion','catalogSha256','limits','sourcePins','harnessPins']:
+    for key in ['profile','sourceVersion','catalogSha256','limits','sourcePins','harnessPins']+(['executionPolicy','executionLimits'] if execution_policy is not None else []):
         require(exact_json(owner[key],receipt[key]),'Carrier original owner source/profile differs')
     require(exact_json(owner['host']['capturedCaller'],receipt['host']['capturedCaller']),'Carrier original caller differs')
     for role,original in [('producer',receipt['cleanup']),('retention',receipt['retentionObserverCleanup'])]:
@@ -349,13 +407,15 @@ def gcc_carrier(packet, startup_raw, receipt, profile, observed):
         require(type(text) is str and re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z',text),'Carrier UTC framing')
         return datetime.fromisoformat(text[:-1]+'+00:00').astimezone(timezone.utc).timestamp()
     require(instant(value['cutoffAt'])-instant(value['startedAt'])==observation_seconds,'Carrier startup cutoff differs')
-    for flag in ['originalProducerDefaultsOrBudgetChanged','fullEightHourHostedCapacityVerified','originalCommandCompletionClaimed','fullCompilerSdkBootstrapClosureVerified','completeOriginalNoticeClosureVerified','historicalPublisherConsumptionVerified','gateAComplete']:
+    for flag in ([] if execution_policy is not None else ['originalProducerDefaultsOrBudgetChanged'])+['fullEightHourHostedCapacityVerified','originalCommandCompletionClaimed','fullCompilerSdkBootstrapClosureVerified','completeOriginalNoticeClosureVerified','historicalPublisherConsumptionVerified','gateAComplete']:
         require(value[flag] is False,'Carrier overclaims producer or platform closure')
     require(receipt['syscallRuntime'] is None and 'syscallPreflight' not in receipt and 'generatedControlPins' not in receipt,'GCC selected a different syscall carrier policy')
 
 
 class Packet:
-    def __init__(self, archive):
+    def __init__(self, archive, execution_policy=None):
+        require(execution_policy in [None,LOCAL_POLICY_ID], "Unknown requested local execution policy")
+        self.execution_policy = execution_policy
         archive = Path(archive).absolute()
         require(archive.resolve(strict=True)==archive and archive.is_file() and archive.stat().st_size<=1536*MIB, 'Physical archive path/size refused')
         self.archive = zipfile.ZipFile(archive)
@@ -374,14 +434,18 @@ class Packet:
         require('manifest.json' in names and self.archive.getinfo('manifest.json').file_size<=16*MIB, 'Missing bounded export manifest')
         self.manifest = strict_json(self.archive.read('manifest.json'))
         require(type(self.manifest.get('selectedProfile')) is str and self.manifest['selectedProfile'] in ['gcc-12','glibc','glibc-u13'],'Unknown archive original profile')
+        if self.execution_policy is not None:
+            require(self.manifest.get('executionPolicy')==self.execution_policy and self.manifest['selectedProfile']=='gcc-12', 'Archive did not bind explicitly requested local policy')
+        else:require('executionPolicy' not in self.manifest, 'Legacy replay cannot relabel local archive')
         version = self.manifest['schemaVersion']
         require(type(version) is int and version in [1,2] and self.manifest['qualificationComplete'] is False and self.manifest['gateAComplete'] is False, 'Unproven export qualification')
         require(exact_json([self.manifest['originalReportMemberByteLimit'],self.manifest['originalReportAggregateByteLimit']],[64*MIB,512*MIB]), 'Wrong C report export contract')
         if version == 2:
-            require(set(self.manifest) == {'schemaVersion','selectedProfile','scope','rawFiles','nativeDirectories','unavailable','uncompressedBytes','originalReportLogBytes','originalReportMemberByteLimit','originalReportAggregateByteLimit','binaryPackagePayloadsUploaded','nativeWorktreeArchiveUploaded','originalInputPayloadsUploaded','qualificationComplete','gateAComplete','controllerReceiptFormat','retentionObserverLogByteLimit','postStopReportLogBytes','postStopReportAggregateByteLimit','reportFamiliesRetainedSeparately'}, 'Unknown C archive2 fields')
+            require(set(self.manifest) == {'schemaVersion','selectedProfile','scope','rawFiles','nativeDirectories','unavailable','uncompressedBytes','originalReportLogBytes','originalReportMemberByteLimit','originalReportAggregateByteLimit','binaryPackagePayloadsUploaded','nativeWorktreeArchiveUploaded','originalInputPayloadsUploaded','qualificationComplete','gateAComplete','controllerReceiptFormat','retentionObserverLogByteLimit','postStopReportLogBytes','postStopReportAggregateByteLimit','reportFamiliesRetainedSeparately'} | ({'executionPolicy'} if self.execution_policy is not None else set()), 'Unknown C archive2 fields')
             require(self.manifest['controllerReceiptFormat'] in ['schema2','unverified'] and
                     exact_json([self.manifest['retentionObserverLogByteLimit'],self.manifest['postStopReportAggregateByteLimit'],self.manifest['reportFamiliesRetainedSeparately']],[256*MIB,512*MIB,True]), 'Wrong closed C archive2 policy')
         else:
+            require(self.execution_policy is None, 'Local execution policy requires archive2')
             require(not any(key in self.manifest for key in ['controllerReceiptFormat','retentionObserverLogByteLimit','postStopReportLogBytes','postStopReportAggregateByteLimit','reportFamiliesRetainedSeparately']), 'New C archive fields require schema2')
         for key in ['binaryPackagePayloadsUploaded','nativeWorktreeArchiveUploaded','originalInputPayloadsUploaded']:
             require(self.manifest[key] is False, 'Unrequested large payload export')
@@ -700,8 +764,8 @@ def source_batch_frames(raw, expected):
     require(at==len(raw),'Original source batch has trailing or extra objects')
 
 
-def source_frame(packet, repository, startup):
-    require([row['file'] for row in startup['sourcePins']]==SOURCE_FILES,'Incomplete source/harness inventory')
+def source_frame(packet, repository, startup, execution_policy=None):
+    require([row['file'] for row in startup['sourcePins']]==SOURCE_FILES+([LOCAL_POLICY_SOURCE] if execution_policy is not None else []),'Incomplete source/harness inventory')
     git_args=['git','--no-optional-locks','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null']
     head=bounded_git_output(repository,git_args+['rev-parse','HEAD'],b'',128)
     require(re.fullmatch(r'[a-f0-9]{40}',startup['gitHead']) and head.decode().strip()==startup['gitHead'],'Replay checkout does not match original source revision')
@@ -722,10 +786,11 @@ def source_frame(packet, repository, startup):
     return {'exactOriginalGitSourcePins':len(startup['sourcePins']),'archiveCodeExecuted':False}
 
 
-def replay(archive,repository,expected_profile='glibc'):
+def replay(archive,repository,expected_profile='glibc',execution_policy=None):
     require(type(expected_profile) is str and expected_profile in ['gcc-12','glibc','glibc-u13'],'Unknown requested original profile')
     repository=Path(repository).absolute()
-    packet=Packet(archive)
+    require(execution_policy in [None,LOCAL_POLICY_ID] and (execution_policy is None or expected_profile=='gcc-12'),'Unknown or foreign requested local execution policy')
+    packet=Packet(archive,execution_policy)
     try:
         require(not packet.manifest['unavailable'],'Incomplete raw C export')
         require(packet.manifest['selectedProfile']==expected_profile,'Archive selected a different original profile')
@@ -735,10 +800,15 @@ def replay(archive,repository,expected_profile='glibc'):
         packet.custody('operator-startup.json',caller)
         require(startup['host']=={'platform':'linux','architecture':'x64','kernelMachine':'x86_64'} and startup['hardwareHostAttestationPerformed'] is False and startup['gateAComplete'] is False,'Wrong startup host observation')
         require(startup['sourceOrCompilerExecuted'] is False,'Startup frame unexpectedly includes producer execution')
-        source_frame(packet,repository,startup)
+        source_frame(packet,repository,startup,execution_policy)
         catalog_raw=packet.read('source/scripts/producer-qualification/c-producer-profiles.v1.json',MIB)
         require(sha(catalog_raw)==CATALOG_SHA256,'Frozen C catalog changed')
         catalog=strict_json(catalog_raw);profile=catalog['profiles'][expected_profile]
+        policy=None
+        if execution_policy is not None:
+            policy_raw=packet.read('source/'+LOCAL_POLICY_SOURCE,16384)
+            require(sha(policy_raw)==LOCAL_POLICY_SHA256,'Frozen local policy source changed')
+            policy=strict_json(policy_raw);require(policy['id']==LOCAL_POLICY_ID,'Unknown local policy metadata')
         selected={'name':expected_profile,'profile':profile['profile'],'sourceVersion':profile['sourceVersion'],'catalogSha256':CATALOG_SHA256}
         require(exact_json(startup['selectedProfile'],selected),'Startup does not bind the requested original profile')
         admission=packet.json('inputs/receipt.json',8*MIB)
@@ -760,6 +830,8 @@ def replay(archive,repository,expected_profile='glibc'):
         format = closed_controller_evidence(packet,receipt,profile,caller)
         observed=packet.json('result/build-observation.json',2*MIB)
         require(exact_json([observed['schemaVersion'],observed['controllerExit']],[1,2]) and observed['state']=='original-'+expected_profile+'-command-observed-qualification-incomplete' and exact_json(observed['selectedProfile'],selected),'No complete live selected original observation')
+        if policy is not None:local_execution_observation(policy,profile,startup,receipt,observed)
+        else:require(all('executionPolicy' not in value for value in [startup,receipt,observed]) and 'executionLimits' not in receipt and 'controllerClock' not in receipt,'Legacy observation relabelled local execution')
         require(exact_json(observed['originalCommandExitCode'],0) and observed['originalTestOutcomesPreserved'] is True and observed['completeConfigurationInventoryAssessed'] is False and observed['packagePayloadAndNativeArchiveTransported'] is False,'Live original observation scope differs')
         require(observed['originalReceipt']==pin(receipt_raw) and observed['startup']==pin(packet.read('operator-startup.json',MIB)),'Live original receipt/startup binding changed')
         require(exact_json([receipt['profile'],receipt['sourceVersion'],receipt['limits'],receipt['catalogSha256']],[profile['profile'],profile['sourceVersion'],profile['limits'],CATALOG_SHA256]),'Wrong original frozen profile')
@@ -779,6 +851,7 @@ def replay(archive,repository,expected_profile='glibc'):
         require(exact_json(command,receipt['originalBuild']) and exact_json(command,{'schemaVersion':1,'command':profile['command'],'invoked':True,'exitCode':0,'wrapperExitCode':0}),'Original default command terminal unavailable')
         require(packet.files['result/build.log']['bytes']==receipt['executionObserver']['retainedBytes'] and {key:packet.files['result/build.log'][key] for key in ['bytes','sha256']}==receipt['log'],'Original process log binding differs')
         selected_sources=['c-producer-profiles.v1.json','c-producer-profile.mjs','c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','binutils-retention-observer.mjs','binutils-image-identity.mjs','binutils-image-identity.v1.json',*(GLIBC_POLICY_FILES if expected_profile in ['glibc','glibc-u13'] else ['glibc-seccomp.mjs'])]
+        if policy is not None:selected_sources.append('gcc-local-wall-policy.v1.json')
         require(exact_json([row['file'] for row in receipt['sourcePins']],selected_sources) and exact_json([row['file'] for row in receipt['harnessPins']],['qualify-c-producer.mjs','qualify-binutils-producer.mjs']),'Incomplete original source/harness pin inventory')
         for row in receipt['sourcePins']:
             require(pin(packet.read('source/scripts/producer-qualification/'+row['file'],2*MIB))=={key:row[key] for key in ['bytes','sha256']},'Original source pin differs')
@@ -787,7 +860,7 @@ def replay(archive,repository,expected_profile='glibc'):
         if expected_profile in ['glibc','glibc-u13']:
             require(observed['carrier'] is None,'GLIBC selected an external GCC carrier')
             syscall_preflight(packet,receipt)
-        else:gcc_carrier(packet,packet.read('operator-startup.json',MIB),receipt,profile,observed)
+        else:gcc_carrier(packet,packet.read('operator-startup.json',MIB),receipt,profile,observed,policy)
         observer=receipt['retentionObserver'];require(observer['state']=='completed' and observer['independentImage']==catalog['image'] and observer['readOnly'] is True and observer['network']=='none' and observer['capability']=='DAC_READ_SEARCH' and exact_json(observer['terminal'],{'exitCode':0,'signal':None}),'Independent observer unavailable or altered')
         require(observer['nativeFilesystemQuotaEnforced'] is False,'Unproven native quota')
         last=retention(packet.read('result/retention-observer.jsonl',format['observerLimit']),observer,format)
@@ -825,11 +898,12 @@ def replay(archive,repository,expected_profile='glibc'):
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--profile',choices=['gcc-12','glibc','glibc-u13'],required=True)
+    parser.add_argument('--execution-policy',choices=[LOCAL_POLICY_ID])
     parser.add_argument('--archive',required=True)
     parser.add_argument('--repository',required=True)
     args=parser.parse_args()
     try:
-        print(json.dumps(replay(args.archive,args.repository,args.profile)))
+        print(json.dumps(replay(args.archive,args.repository,args.profile,args.execution_policy)))
     except (ValueError,KeyError,TypeError,AttributeError,OSError,subprocess.SubprocessError,zipfile.BadZipFile) as error:
         print(json.dumps({'state':'original-observation-replay-incomplete','reason':str(error),'qualificationComplete':False,'gateAComplete':False}))
         raise SystemExit(2)

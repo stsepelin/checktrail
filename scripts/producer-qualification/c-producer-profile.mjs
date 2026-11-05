@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath, URL } from "node:url";
+import { performance } from "node:perf_hooks";
 
 export const cProducerCatalogSha256 =
   "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd";
@@ -276,4 +277,261 @@ export async function loadCProducerProfile(name) {
     profile: catalog.profiles[name],
     catalogSha256: sha256(bytes),
   };
+}
+
+// This is a separate execution context, never a mutation of the frozen source
+// profile. Historical/default qualifications keep their twelve-hour contract.
+export const cProducerLocalPolicyId = "local-gcc12-23h-v1";
+export const cProducerLocalPolicyFile = "gcc-local-wall-policy.v1.json";
+export const cProducerLocalPolicySha256 =
+  "9356abbf7cf21ec34646c56a95158414d2832e4402797a77e5dfce0866129bd8";
+const localPolicy = {
+  schemaVersion: 1,
+  id: "local-gcc12-23h-v1",
+  context: "operator-local-arm64-managed-window",
+  base: {
+    profileKey: "gcc-12",
+    sourceProfile: "original-debian-gcc-12-12.2.0-14+deb12u1-build-v1",
+    sourceVersion: "12.2.0-14+deb12u1",
+    catalogSha256:
+      "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd",
+    deadlineSeconds: 43200,
+  },
+  native: {
+    command: ["dpkg-buildpackage", "-b", "-us", "-uc", "--jobs=4"],
+    deadlineSeconds: 82800,
+    killAfterSeconds: 30,
+    cpuLimit: 4,
+    memory: "6g",
+    pidsLimit: 1024,
+    workByteLimit: 68719476736,
+    logByteLimit: 536870912,
+    inputFileByteLimit: 134217728,
+  },
+  windows: {
+    controllerSetupSeconds: 600,
+    producerObserverSeconds: 82890,
+    postStopCollectorObserverSeconds: 180,
+    controllerFinalizationReserveSeconds: 330,
+    controllerTotalSeconds: 84000,
+    localForegroundObservationSeconds: 84060,
+    localForegroundCleanupSeconds: 600,
+    minimumExportReplayReserveSeconds: 1200,
+    managedBootstrapAdmissionSeconds: 540,
+    managedMaximumSeconds: 86400,
+  },
+  requires: {
+    operatorTrustExecution: true,
+    coordinatedHeavySlot: true,
+    localArm64Daemon: true,
+    hostedJobEnvelope: false,
+  },
+};
+
+export function validateCProducerExecutionPolicy(policy, profile) {
+  assert.deepEqual(
+    policy,
+    localPolicy,
+    "Unknown or modified closed local execution policy",
+  );
+  assert.equal(
+    cProducerProfileKey(profile),
+    "gcc-12",
+    "Local execution policy is GCC12-only",
+  );
+  assert.equal(profile.profile, policy.base.sourceProfile);
+  assert.equal(profile.sourceVersion, policy.base.sourceVersion);
+  assert.deepEqual(profile.command, policy.native.command);
+  assert.deepEqual(
+    profile.limits,
+    {
+      cpuLimit: policy.native.cpuLimit,
+      memory: policy.native.memory,
+      pidsLimit: policy.native.pidsLimit,
+      deadlineSeconds: policy.base.deadlineSeconds,
+      logByteLimit: policy.native.logByteLimit,
+      workByteLimit: policy.native.workByteLimit,
+      inputFileByteLimit: policy.native.inputFileByteLimit,
+    },
+    "Frozen source-profile limits changed",
+  );
+  return policy;
+}
+
+export async function loadCProducerExecutionPolicy(id, profile) {
+  if (id === undefined || id === null) return null;
+  assert.equal(
+    id,
+    cProducerLocalPolicyId,
+    "Unknown closed local execution policy",
+  );
+  const raw = await readFile(
+    new URL(cProducerLocalPolicyFile, import.meta.url),
+  );
+  assert.ok(
+    raw.length <= 16384,
+    "Finite local execution policy metadata bound",
+  );
+  assert.equal(
+    sha256(raw),
+    cProducerLocalPolicySha256,
+    "Frozen local execution policy changed",
+  );
+  const policy = validateCProducerExecutionPolicy(JSON.parse(raw), profile);
+  // The private loaded object cannot be changed through the returned plan.
+  for (const value of [
+    policy.base,
+    policy.native.command,
+    policy.native,
+    policy.windows,
+    policy.requires,
+    policy,
+  ])
+    Object.freeze(value);
+  return policy;
+}
+
+export function cProducerExecutionLimits(profile, policy = null) {
+  if (policy === null) return profile.limits;
+  validateCProducerExecutionPolicy(policy, profile);
+  return Object.freeze({
+    ...profile.limits,
+    deadlineSeconds: policy.native.deadlineSeconds,
+  });
+}
+
+export function cProducerExecutionPolicyBinding(policy, profile) {
+  if (policy === null) return null;
+  validateCProducerExecutionPolicy(policy, profile);
+  return {
+    schemaVersion: 1,
+    id: cProducerLocalPolicyId,
+    context: policy.context,
+    sourcePin: {
+      file: cProducerLocalPolicyFile,
+      sha256: cProducerLocalPolicySha256,
+    },
+    executionLimits: cProducerExecutionLimits(profile, policy),
+    windows: policy.windows,
+  };
+}
+
+// One monotonic controller clock covers preparation, execution and recovery.
+// No phase grants itself a fresh copy of the whole execution window.
+export function cProducerExecutionClock(policy, profile, started) {
+  validateCProducerExecutionPolicy(policy, profile);
+  assert.ok(
+    Number.isFinite(started) && started >= 0 && started <= performance.now(),
+    "Invalid controller monotonic origin",
+  );
+  const windows = policy.windows;
+  const deadline = started + windows.controllerTotalSeconds * 1000;
+  const remaining = () => Math.max(0, Math.floor(deadline - performance.now()));
+  const elapsed = () => (performance.now() - started) / 1000;
+  let nativeAdmission = null;
+  return Object.freeze({
+    remaining,
+    setupRemaining() {
+      const value = Math.floor(
+        started + windows.controllerSetupSeconds * 1000 - performance.now(),
+      );
+      assert.ok(value > 0, "Local controller preparation allowance exhausted");
+      return value;
+    },
+    admitNative() {
+      assert.ok(
+        nativeAdmission === null,
+        "Original native execution admission is one-shot",
+      );
+      const reserve =
+        windows.postStopCollectorObserverSeconds +
+        windows.controllerFinalizationReserveSeconds;
+      assert.ok(
+        elapsed() <= windows.controllerSetupSeconds &&
+          remaining() >= (windows.producerObserverSeconds + reserve) * 1000,
+        "Insufficient original controller remainder for native execution and recovery",
+      );
+      nativeAdmission = Object.freeze({
+        elapsedSeconds: elapsed(),
+        observerSeconds: windows.producerObserverSeconds,
+        recoveryReserveSeconds: reserve,
+      });
+      return nativeAdmission;
+    },
+    collectionTimeoutMs() {
+      const value = Math.min(
+        windows.postStopCollectorObserverSeconds * 1000,
+        remaining() - windows.controllerFinalizationReserveSeconds * 1000,
+      );
+      assert.ok(value > 0, "Original controller recovery allowance exhausted");
+      return Math.floor(value);
+    },
+    snapshot() {
+      const now = performance.now();
+      const elapsedMs = Math.ceil(now - started);
+      return {
+        schemaVersion: 1,
+        scope: "same-controller-process-monotonic",
+        totalSeconds: windows.controllerTotalSeconds,
+        elapsedSeconds: elapsedMs / 1000,
+        remainingMs: Math.max(
+          0,
+          windows.controllerTotalSeconds * 1000 - elapsedMs,
+        ),
+        nativeAdmission,
+      };
+    },
+  });
+}
+
+export function validateCProducerExecutionClock(value, profile, policy) {
+  validateCProducerExecutionPolicy(policy, profile);
+  assert.deepEqual(
+    Object.keys(value).sort(),
+    [
+      "schemaVersion",
+      "scope",
+      "totalSeconds",
+      "elapsedSeconds",
+      "remainingMs",
+      "nativeAdmission",
+    ].sort(),
+  );
+  assert.equal(value.schemaVersion, 1);
+  assert.equal(value.scope, "same-controller-process-monotonic");
+  assert.equal(value.totalSeconds, policy.windows.controllerTotalSeconds);
+  assert.ok(
+    Number.isFinite(value.elapsedSeconds) &&
+      value.elapsedSeconds >= 0 &&
+      value.elapsedSeconds <= value.totalSeconds,
+  );
+  assert.equal(
+    value.remainingMs,
+    Math.max(
+      0,
+      Math.round(value.totalSeconds * 1000 - value.elapsedSeconds * 1000),
+    ),
+  );
+  assert.ok(
+    value.nativeAdmission &&
+      Number.isFinite(value.nativeAdmission.elapsedSeconds) &&
+      value.nativeAdmission.elapsedSeconds >= 0 &&
+      value.nativeAdmission.elapsedSeconds <=
+        policy.windows.controllerSetupSeconds,
+  );
+  assert.deepEqual(
+    Object.keys(value.nativeAdmission).sort(),
+    ["elapsedSeconds", "observerSeconds", "recoveryReserveSeconds"].sort(),
+  );
+  assert.equal(
+    value.nativeAdmission.observerSeconds,
+    policy.windows.producerObserverSeconds,
+  );
+  assert.equal(
+    value.nativeAdmission.recoveryReserveSeconds,
+    policy.windows.postStopCollectorObserverSeconds +
+      policy.windows.controllerFinalizationReserveSeconds,
+  );
+  assert.ok(value.elapsedSeconds >= value.nativeAdmission.elapsedSeconds);
+  return value;
 }
