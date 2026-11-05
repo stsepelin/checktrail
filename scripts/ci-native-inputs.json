@@ -3575,6 +3575,12 @@
   "test/laravel-cache-runtime-harness.test.ts": ["laravel-assembly-arm64"],
   "test/laravel-cache.test.ts": ["laravel-assembly-arm64"],
   "test/laravel.test.ts": ["laravel-assembly-arm64"],
+  "test/lifecycle-child-fixture.ts": [
+    "resource-release",
+    "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/lifecycle-platforms-boundaries.ts": [
     "resource-release",
     "resource-release-arm64",
