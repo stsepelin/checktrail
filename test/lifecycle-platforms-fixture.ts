@@ -117,6 +117,7 @@ assert.equal(visible([{enabled:true},{enabled:true},{enabled:false}]),2,${JSON.s
 }
 export type LifecycleDiagnostic = {
   operation:
+    | "engine"
     | "privacy-engine"
     | "privacy-cli-summary"
     | "privacy-cli-detailed"
@@ -124,6 +125,139 @@ export type LifecycleDiagnostic = {
     | "privacy-mcp-detailed";
   enabled?: boolean;
 };
+
+// Failure presentation only. Never include a command, reason, stream or path.
+function lifecycleTerminalMetadata(
+  terminal: { value?: unknown; error?: string } | undefined,
+  error: unknown,
+) {
+  const record = (candidate: unknown): Record<string, unknown> | undefined =>
+    candidate !== null &&
+    typeof candidate === "object" &&
+    !Array.isArray(candidate)
+      ? (candidate as Record<string, unknown>)
+      : undefined;
+  const choice = (candidate: unknown, allowed: string[]) =>
+    candidate === undefined || candidate === null
+      ? null
+      : typeof candidate === "string" && allowed.includes(candidate)
+        ? candidate
+        : "other";
+  const number = (candidate: unknown, maximum: number) =>
+    typeof candidate === "number" &&
+    Number.isSafeInteger(candidate) &&
+    candidate >= 0 &&
+    candidate <= maximum
+      ? candidate
+      : null;
+  const boolean = (candidate: unknown) =>
+    typeof candidate === "boolean" ? candidate : null;
+  const streamBytes = (candidate: unknown) => {
+    if (typeof candidate !== "string" || candidate.length > 4 * 1048576)
+      return null;
+    const bytes = Buffer.byteLength(candidate);
+    return bytes <= 4 * 1048576 ? bytes : null;
+  };
+  const errorCodes = [
+    "EACCES",
+    "EAGAIN",
+    "EINVAL",
+    "EIO",
+    "EMFILE",
+    "ENFILE",
+    "ENOENT",
+    "ENOMEM",
+    "ENOSPC",
+    "EPERM",
+    "ESRCH",
+    "ETIMEDOUT",
+    "ABORT_ERR",
+    "POSIX_OWNER_UNAVAILABLE",
+    "POSIX_OWNER_PLATFORM_UNAVAILABLE",
+    "POSIX_OWNER_PROTOCOL_INVALID",
+    "PROCESS_TREE_CLEANUP_UNAVAILABLE",
+    "WINDOWS_SUPERVISOR_UNAVAILABLE",
+    "WINDOWS_OUTPUT_INCOMPLETE",
+    "WINDOWS_SOURCE_NOT_EXECUTED",
+    "WINDOWS_EXECUTION_INCOMPLETE",
+    "WINDOWS_PREPARATION_ERROR",
+    "INVALID_WINDOWS_RECEIPT",
+    "INVALID_WINDOWS_LAUNCHER",
+  ];
+  const rejected = terminal !== undefined && "error" in terminal;
+  const object = record(terminal?.value);
+  const checks = Array.isArray(object?.checks) ? object.checks : undefined;
+  return {
+    state: rejected
+      ? "rejected"
+      : terminal !== undefined
+        ? "returned"
+        : "pending",
+    ...(rejected
+      ? {
+          error: {
+            name: choice(record(error)?.name, [
+              "Error",
+              "TypeError",
+              "RangeError",
+              "AssertionError",
+              "AbortError",
+              "TimeoutError",
+              "AggregateError",
+            ]),
+            code: choice(record(error)?.code, errorCodes),
+          },
+        }
+      : {}),
+    checkCount: checks ? number(checks.length, 10000) : null,
+    checks:
+      checks?.slice(0, 1).map((candidate) => {
+        const check = record(candidate);
+        const processes = Array.isArray(check?.processes)
+          ? check.processes
+          : undefined;
+        return {
+          // Omitted role means the exact known node-test fixture check, never unknown.
+          ...(check?.id === "javascript.node-test" ? {} : { role: "other" }),
+          status: choice(check?.status, [
+            "passed",
+            "failed",
+            "unavailable",
+            "skipped",
+            "error",
+            "inconclusive",
+          ]),
+          processCount: processes ? number(processes.length, 10000) : null,
+          processes:
+            processes?.slice(0, 1).map((candidate) => {
+              const child = record(candidate);
+              return {
+                exitCode: number(child?.exitCode, 4294967295),
+                signal: choice(child?.signal, [
+                  "SIGTERM",
+                  "SIGKILL",
+                  "SIGABRT",
+                  "SIGINT",
+                  "SIGSEGV",
+                  "SIGBUS",
+                  "SIGHUP",
+                  "SIGQUIT",
+                  "SIGPIPE",
+                  "SIGSTOP",
+                ]),
+                timedOut: boolean(child?.timedOut),
+                cancelled: boolean(child?.cancelled),
+                truncated: boolean(child?.truncated),
+                errorCode: choice(child?.errorCode, errorCodes),
+                durationMs: number(child?.durationMs, 600000),
+                stdoutBytes: streamBytes(child?.stdout),
+                stderrBytes: streamBytes(child?.stderr),
+              };
+            }) ?? [],
+        };
+      }) ?? [],
+  };
+}
 export async function lifecycleExecute<T>(
   project: Awaited<ReturnType<typeof lifecycleProject>>,
   start: (signal: AbortSignal) => Promise<T>,
@@ -139,6 +273,7 @@ export async function lifecycleExecute<T>(
     running = start(controller.signal);
   let settled = false;
   let terminal: { value?: T; error?: string } | undefined;
+  let terminalError: unknown;
   void running.then(
     (value) => {
       settled = true;
@@ -146,6 +281,7 @@ export async function lifecycleExecute<T>(
     },
     (error: unknown) => {
       settled = true;
+      terminalError = error;
       terminal = { error: String(error) };
     },
   );
@@ -155,6 +291,36 @@ export async function lifecycleExecute<T>(
     const settledBeforeAbort = settled;
     controller.abort();
     await Promise.allSettled([running]);
+    let failureContext: unknown;
+    if (diagnosticError) {
+      try {
+        const marker = async (file: string) => {
+          try {
+            await access(file);
+            return "present";
+          } catch (error) {
+            return (error as NodeJS.ErrnoException).code === "ENOENT"
+              ? "absent"
+              : "unavailable";
+          }
+        };
+        failureContext = {
+          observation: "post-abort/pre-cleanup",
+          readiness: {
+            bodyMarker: await marker(project.marker),
+            childMarkers: await Promise.all(
+              [0, 1].map((index) =>
+                marker(path.join(project.control, "child-" + index)),
+              ),
+            ),
+          },
+          execution: lifecycleTerminalMetadata(terminal, terminalError),
+        };
+      } catch {
+        // Presentation must not replace the original failure or its cleanup.
+        failureContext = { observation: "unavailable" };
+      }
+    }
     let cleanup = "confirmed";
     try {
       await project.cleanup(rows);
@@ -181,6 +347,7 @@ export async function lifecycleExecute<T>(
           schemaVersion: 1,
           operation: diagnostic!.operation,
           phase,
+          failureContext,
           elapsedMs: Math.round(performance.now() - started),
           bodyObserved,
           settledBeforeAbort,
@@ -244,7 +411,7 @@ export async function lifecycleExecute<T>(
 export async function validateLifecycleProject(
   t: TestContext,
   options: Parameters<typeof lifecycleProject>[1] = {},
-  diagnostic?: LifecycleDiagnostic,
+  diagnostic: LifecycleDiagnostic = { operation: "engine", enabled: true },
 ) {
   const project = await lifecycleProject(t, options);
   const observed = await lifecycleExecute(
