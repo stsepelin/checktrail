@@ -251,6 +251,12 @@ const cProducerBoundaryInputs = [
   "test/c-producer-evidence.test.ts",
   "test/c-producer-gcc-evidence.test.ts",
   "test/c-producer-qualification.test.ts",
+  "scripts/observe-c-producer-carrier.mjs",
+  "scripts/producer-qualification/c-carrier-observation.mjs",
+  "scripts/producer-qualification/c-producer-export-evidence.py",
+  "scripts/producer-qualification/gcc-local-wall-policy.v1.json",
+  "scripts/verify-c-producer-observation.mjs",
+  "test/fixtures/c-producer-local-clock.mjs",
 ];
 const cProducerRegressionFiles = [
   "test/c-producer-evidence.test.ts",
