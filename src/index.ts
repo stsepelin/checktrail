@@ -1,4 +1,13 @@
 export {
+  inspectReviewEvaluationConfiguration,
+  projectReviewEvaluationConfiguration,
+  reviewEvaluationConfigurationFilesSchema,
+} from "./review-evaluation-configuration.js";
+export type {
+  ReviewEvaluationConfigurationFiles,
+  ReviewEvaluationConfigurationReport,
+} from "./review-evaluation-configuration.js";
+export {
   reviewEvaluationCaptureAssignments,
   inspectReviewEvaluationCaptures,
   reviewEvaluationCaptureInputSchema,

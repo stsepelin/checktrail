@@ -128,3 +128,8 @@ fresh independently labeled cases and a completed comparison meeting a predeclar
 acceptance target. A claim to reproduce a different previous workflow would require
 its own specification and evidence. The historical pilot exercised review and
 adjudication but does not satisfy the M5 effectiveness gate.
+
+A separate [configuration-byte readiness check](EVALUATION-CONFIGURATION.md)
+now compares the three selected configurations and seven procedure files against
+the pinned protocol. It does not establish configuration semantics, freeze the
+private cohort, observe fresh model sessions or enable a review trial.

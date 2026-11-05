@@ -1,3 +1,4 @@
+import { configurationFixture } from "./review-evaluation-configuration-fixture.js";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import {
@@ -219,6 +220,28 @@ test("independent-evaluation-protocol prerequisite acceptance", async (t) => {
   assert.throws(() => score(project, store, "0".repeat(64)));
   assert.deepEqual(await readdir(store), []);
   assert.deepEqual(await readdir(project), ["marker"]);
+  const configuration = await configurationFixture(t);
+  assert.equal(configuration.inspectFiles().configurationBytesVerified, true);
+  await writeFile(
+    path.join(
+      configuration.root,
+      configuration.files.configurations.priorWorkflow.file,
+    ),
+    "Original changed baseline configuration",
+  );
+  const changedConfiguration = configuration.inspectFiles();
+  assert.equal(changedConfiguration.configurationBytesVerified, false);
+  assert.equal(changedConfiguration.artifacts.length, 10);
+  assert.equal(
+    changedConfiguration.artifacts.filter((row) => row.issues.length > 0)
+      .length,
+    1,
+  );
+  assert.equal(
+    changedConfiguration.artifacts.find((row) => row.role === "priorWorkflow")!
+      .issues.length > 0,
+    true,
+  );
 });
 test("independent-evaluation-protocol stale acceptance", async (t) => {
   const f = await matchingFixture(t),

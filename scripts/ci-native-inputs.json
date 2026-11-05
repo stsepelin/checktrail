@@ -1525,6 +1525,8 @@
     "scala",
     "scala-context-arm64",
     "scala-extensions-arm64",
+    "swift-extensions-arm64",
+    "swift-tools",
     "terraform",
     "terraform-extensions-arm64"
   ],
@@ -3906,6 +3908,10 @@
     "tasks-runtime-arm64"
   ],
   "test/review-evaluation-captures.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/review-evaluation-configuration-fixture.ts": [
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],

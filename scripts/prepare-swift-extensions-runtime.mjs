@@ -1,4 +1,5 @@
 import { pullPinnedImage } from "./pull-pinned-image.mjs";
+import { requestPinnedArtifactBytes } from "./request-pinned-artifact.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
@@ -16,7 +17,6 @@ import {
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
-import { Buffer } from "node:buffer";
 import { mavenHash } from "../dist/src/maven.js";
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url))),
   swift =
@@ -79,19 +79,10 @@ try {
     );
     bytes = await readFile(file);
   } else {
-    const response = await globalThis.fetch(asset, {
-      signal: globalThis.AbortSignal.timeout(120000),
-    });
-    assert.equal(response.status, 200);
-    assert.ok(response.body);
-    const chunks = [];
-    let total = 0;
-    for await (const chunk of response.body) {
-      total += chunk.length;
-      assert.ok(total <= 64444529);
-      chunks.push(Buffer.from(chunk));
-    }
-    bytes = Buffer.concat(chunks);
+    bytes = await requestPinnedArtifactBytes(
+      { asset, bytes: 64444529 },
+      { signal: globalThis.AbortSignal.timeout(120000) },
+    );
   }
   assert.equal(bytes.length, 64444529);
   assert.equal(mavenHash(bytes), archiveSha256);
