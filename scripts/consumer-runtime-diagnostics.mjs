@@ -43,6 +43,14 @@ const digest = (value) =>
   typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
 const keys = (value, expected) =>
   assert.deepEqual(Object.keys(value).sort(), expected.toSorted());
+const readFailureSite = (value) => {
+  keys(value, ["line", "column"]);
+  for (const position of [value.line, value.column])
+    assert.ok(
+      Number.isSafeInteger(position) && position > 0 && position <= 4194305,
+    );
+  return { line: value.line, column: value.column };
+};
 const empty = (state) => ({
   schemaVersion: 1,
   profile: "native-consumer-terminal-diagnostic-v1",
@@ -80,7 +88,18 @@ export function readConsumerTerminalDiagnostic(value) {
     const seen = new Set(),
       cases = [];
     for (const row of value.cases) {
-      keys(row, ["name", "outcome", "durationMs", "code", "failureType"]);
+      keys(row, [
+        "name",
+        "outcome",
+        "durationMs",
+        "code",
+        "failureType",
+        ...(Object.hasOwn(row, "failureSite") ? ["failureSite"] : []),
+      ]);
+      const failureSite = Object.hasOwn(row, "failureSite")
+        ? readFailureSite(row.failureSite)
+        : undefined;
+      if (failureSite) assert.equal(row.outcome, "failed");
       assert.ok(names.includes(row.name) && !seen.has(row.name));
       seen.add(row.name);
       assert.ok(outcomes.has(row.outcome));
@@ -106,6 +125,7 @@ export function readConsumerTerminalDiagnostic(value) {
         durationMs: row.durationMs,
         code: row.code,
         failureType: row.failureType,
+        ...(failureSite ? { failureSite } : {}),
       });
     }
     assert.deepEqual(
@@ -208,10 +228,21 @@ export function projectConsumerTerminalDiagnostic(
           event.outcome === "failed" ? "failed" : "skipped-or-todo",
         );
       }
+      let failureSite;
+      if (Object.hasOwn(problem ?? {}, "failureSite")) {
+        assert.equal(event.outcome, "failed");
+        keys(problem.failureSite, ["sourceFileSha256", "line", "column"]);
+        assert.equal(problem.failureSite.sourceFileSha256, acceptanceSha256);
+        failureSite = readFailureSite({
+          line: problem.failureSite.line,
+          column: problem.failureSite.column,
+        });
+      }
       events.set(event.name, {
         name: event.name,
         outcome: event.outcome,
         durationMs: event.durationMs,
+        ...(failureSite ? { failureSite } : {}),
         code: nativeCauseCodes.has(problem?.causeCode)
           ? problem.causeCode
           : codes.has(problem?.code)

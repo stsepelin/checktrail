@@ -1,0 +1,91 @@
+name: Temporary consumer privacy diagnostic
+
+on:
+  push:
+    branches:
+      - "agent/ct-win-privacy-debug-1105"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: consumer-privacy-diagnostic-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  consumer-privacy-diagnostic:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/agent/ct-win-privacy-debug-1105'
+    runs-on: windows-2025
+    timeout-minutes: 20
+    env:
+      SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22.23.3"
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - name: Diagnose existing Windows private-access setup
+        run: node scripts/diagnose-windows-task-access.mjs
+      - name: Verify bounded terminal diagnostics on native Windows
+        run: node --test dist/test/consumer-runtime-diagnostics.test.js
+      - name: Observe only the synthetic consumer privacy callback
+        shell: pwsh
+        env:
+          CHECKTRAIL_DIAGNOSTIC_OUTPUT: ${{ runner.temp }}/checktrail-consumer-privacy-diagnostic.json
+        run: |
+          @'
+          import { createHash } from "node:crypto";
+          import { readFile, writeFile, mkdtemp, realpath, rm } from "node:fs/promises";
+          import os from "node:os";
+          import path from "node:path";
+          import process from "node:process";
+          let state = "incomplete", stage = "runtime-setup", terminal = null, temporary;
+          try {
+            const { runRequiredTests } = await import("./scripts/required-test-evidence.mjs");
+            const { projectConsumerTerminalDiagnostic } = await import("./scripts/consumer-runtime-diagnostics.mjs");
+            const { observeConsumerRuntime, checkConsumerRuntimeSelection } = await import("./scripts/consumer-runtime-evidence.mjs");
+            const { ensureWindowsTaskAccess } = await import("./dist/src/windows-task-access.js");
+            const scope = JSON.parse(await readFile("docs/gate-a-profiles.v1.json", "utf8"));
+            checkConsumerRuntimeSelection(scope, "windows-node22", await observeConsumerRuntime("windows-node22"), true);
+            temporary = await realpath(await mkdtemp(path.join(os.tmpdir(), "checktrail-consumer-privacy-diagnostic-")));
+            ensureWindowsTaskAccess(temporary, "directory", true);
+            process.env.CHECKTRAIL_CONSUMER_RUNTIME_ACTIVE = "1";
+            process.env.CHECKTRAIL_CONSUMER_RUNTIME_SLOT = "windows-node22";
+            process.env.CHECKTRAIL_CONSUMER_RUNTIME_RECEIPT = path.join(temporary, "installed.json");
+            const file = "dist/test/gate-consumer-impact.test.js";
+            const requirements = JSON.parse(await readFile("scripts/required-native-tests.json", "utf8"))["consumer-impact"];
+            const acceptanceSha256 = createHash("sha256").update(await readFile(file)).digest("hex");
+            stage = "privacy-observation";
+            const profile = await runRequiredTests([{ file: path.resolve(file), name: "consumer-impact privacy acceptance" }], { timeoutMs: 600000, isolatedCaseWorkers: 1, diagnosticSourceFile: path.resolve(file) });
+            terminal = projectConsumerTerminalDiagnostic(profile, requirements, acceptanceSha256);
+            const row = terminal.cases.find((item) => item.name === "consumer-impact privacy acceptance");
+            state = terminal.state === "observed" && terminal.cases.length === 1 ? "observed" : "incomplete";
+            process.exitCode = state === "observed" && row?.outcome === "passed" ? 0 : 1;
+          } catch {
+            process.exitCode = 1;
+          } finally {
+            if (temporary) {
+              try { await rm(temporary, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); }
+              catch { state = "cleanup-incomplete"; process.exitCode = 1; }
+            }
+          }
+          const output = { schemaVersion: 1, profile: "consumer-privacy-diagnostic-only-v1", state, stage, terminal, acceptanceClaim: false, gateAClosed: false, inferenceExecuted: false, fieldEvaluationExecuted: false };
+          try { await writeFile(process.env.CHECKTRAIL_DIAGNOSTIC_OUTPUT, JSON.stringify(output) + "\n", { flag: "wx" }); }
+          catch { process.exitCode = 1; }
+          process.stdout.write(JSON.stringify(output) + "\n");
+          '@ | node --input-type=module
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Retain only the sanitized diagnostic
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-privacy-diagnostic-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-consumer-privacy-diagnostic.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false

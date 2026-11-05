@@ -377,7 +377,11 @@ export async function verifyConsumerRuntime({
     const startedAt = new Date().toISOString();
     const profileEvidence = await runRequiredTests(
       requirements.map((c) => ({ ...c, file: path.join(root, c.file) })),
-      { timeoutMs: 600000, isolatedCaseWorkers: 1 },
+      {
+        timeoutMs: 600000,
+        isolatedCaseWorkers: 1,
+        diagnosticSourceFile: path.join(root, requirements[0].file),
+      },
     );
     const foundationSelection = selectConsumerFoundation(profiles),
       foundationDigests = Object.fromEntries(inputs),

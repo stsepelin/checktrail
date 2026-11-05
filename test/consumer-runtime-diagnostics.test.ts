@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, realpath } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import path from "node:path";
@@ -8,6 +9,9 @@ import { fixture } from "./helpers.js";
 const diagnostic = await import(
   new URL("../../scripts/consumer-runtime-diagnostics.mjs", import.meta.url)
     .href
+);
+const runner = await import(
+  new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href
 );
 const runtime = await import(
   new URL("../../scripts/consumer-runtime-evidence.mjs", import.meta.url).href
@@ -467,4 +471,344 @@ test("consumer terminal diagnostics retain known native spawn causes while disca
   assert.equal(value.cases[8].failureType, "testCodeFailure");
   assert.equal(value.qualifiesNativeAcceptance, false);
   assert.equal(JSON.stringify(value).includes(root), false);
+});
+
+test("consumer failure sites accept only exact source paths or URLs and one physically bounded original stack location", () => {
+  for (const file of [
+    "/original synthetic/dist/test/gate-consumer-impact.test.js",
+    "C:\\original synthetic\\dist\\test\\gate-consumer-impact.test.js",
+  ]) {
+    const url = file.startsWith("C:")
+      ? "file:///C:/original%20synthetic/dist/test/gate-consumer-impact.test.js"
+      : pathToFileURL(file).href;
+    const source = { file, url, sha256: sha, lineLengths: [6, 10, 0] };
+    const site = { sourceFileSha256: sha, line: 2, column: 11 };
+    for (const frame of [
+      `    at TestContext.<anonymous> (${url}:2:11)`,
+      `    at ${url}:2:11`,
+      `    at async TestContext.<anonymous> (${file}:2:11)`,
+      `    at ${file}:2:11`,
+    ]) {
+      assert.deepEqual(
+        runner.boundTestFailureSite(`Error: ${secret}\n${frame}`, source),
+        site,
+      );
+      assert.deepEqual(
+        runner.boundTestFailureSite(
+          `Error: ${secret}\n${frame}\n${frame}`,
+          source,
+        ),
+        site,
+      );
+    }
+    assert.deepEqual(
+      runner.boundTestFailureSite(`Error\n    at ${url}:3:1`, source),
+      {
+        sourceFileSha256: sha,
+        line: 3,
+        column: 1,
+      },
+    );
+    for (const stack of [
+      `Error: ${url}:2:11`,
+      `Error\n    at ${url}.private:2:11`,
+      `Error\n    at prefix-${url}:2:11`,
+      `Error\n    at ${url}?private=1:2:11`,
+      `Error\n    at ${url}#private:2:11`,
+      `Error\n    at other/${file}:2:11`,
+      `Error\n    at gate-consumer-impact.test.js:2:11`,
+      `Error\n    at ${url.replace("/dist/", "/other/")}:2:11`,
+      `Error\n    at ${url}:0:1`,
+      `Error\n    at ${url}:1:0`,
+      `Error\n    at ${url}:2:12`,
+      `Error\n    at ${url}:4:1`,
+      `Error\n    at ${url}:9007199254740992:1`,
+      `Error\n    at ${url}:1:9007199254740992`,
+      `Error\n    at ${url}:2:1\n    at ${url}:2:2`,
+      `Error\n    at ${url}:2:11\n    at ${url}:4:1`,
+      `Error\n    at ${url}:2:11 ${secret}`,
+      `Error\n    at fake(${url}:2:11)`,
+      `Error\n${"x".repeat(65536)}\n    at ${url}:2:11`,
+      `Error\n${"\n".repeat(256)}    at ${url}:2:11`,
+    ])
+      assert.equal(
+        runner.boundTestFailureSite(stack, source),
+        undefined,
+        stack.slice(0, 200),
+      );
+    assert.equal(runner.boundTestFailureSite(null, source), undefined);
+    assert.equal(
+      runner.boundTestFailureSite(`Error\n    at ${url}:2:11`, undefined),
+      undefined,
+    );
+  }
+});
+
+test("consumer terminal diagnostics bind optional numeric sites to the existing file digest while retaining v1 rows", () => {
+  const p = profile();
+  Object.assign(p.problems[0]!, {
+    failureSite: { sourceFileSha256: sha, line: 42, column: 7 },
+    causeName: secret,
+    causeCode: secret,
+    operator: secret,
+    stack: secret,
+    actual: secret,
+    expected: secret,
+  });
+  const value = diagnostic.projectConsumerTerminalDiagnostic(
+    p,
+    requirements,
+    sha,
+  );
+  assert.equal(value.state, "observed");
+  assert.deepEqual(value.cases[1].failureSite, { line: 42, column: 7 });
+  assert.equal(value.cases[1].code, "ERR_TEST_FAILURE");
+  assert.equal(value.qualifiesNativeAcceptance, false);
+  assert.equal(JSON.stringify(value).includes(secret), false);
+  assert.deepEqual(diagnostic.readConsumerTerminalDiagnostic(value), value);
+  const legacy = diagnostic.projectConsumerTerminalDiagnostic(
+    profile(),
+    requirements,
+    sha,
+  );
+  assert.equal(Object.hasOwn(legacy.cases[1], "failureSite"), false);
+  assert.deepEqual(diagnostic.readConsumerTerminalDiagnostic(legacy), legacy);
+  for (const failureSite of [
+    { sourceFileSha256: "b".repeat(64), line: 42, column: 7 },
+    { sourceFileSha256: sha, line: 42, column: 7, privatePath: secret },
+    { sourceFileSha256: sha, line: Infinity, column: 7 },
+    { sourceFileSha256: sha, line: 42, column: 0 },
+    { sourceFileSha256: sha, line: 42.5, column: 7 },
+    { sourceFileSha256: sha, line: 4194306, column: 7 },
+    { sourceFileSha256: sha, line: 42, column: secret },
+  ]) {
+    Object.assign(p.problems[0]!, { failureSite });
+    const refused = diagnostic.projectConsumerTerminalDiagnostic(
+      p,
+      requirements,
+      sha,
+    );
+    assert.equal(refused.state, "refused");
+    assert.equal(JSON.stringify(refused).includes(secret), false);
+  }
+  for (const failureSite of [
+    { line: 42, column: 7, stack: secret },
+    { line: NaN, column: 7 },
+    { line: -1, column: 7 },
+    { line: 42, column: 4194306 },
+    { line: 42, column: 7.1 },
+    null,
+  ]) {
+    const forged = structuredClone(value);
+    forged.cases[1].failureSite = failureSite;
+    assert.equal(
+      diagnostic.readConsumerTerminalDiagnostic(forged).state,
+      "refused",
+    );
+  }
+  const passed = structuredClone(value);
+  passed.cases[0].failureSite = { line: 42, column: 7 };
+  assert.equal(
+    diagnostic.readConsumerTerminalDiagnostic(passed).state,
+    "refused",
+  );
+});
+
+test("consumer terminal sites require an explicitly selected required source and original Node cause without raw exception projection", async (t) => {
+  const program =
+    "import assert from 'node:assert/strict';import {test} from 'node:test';\n" +
+    names
+      .map(
+        (name, index) =>
+          `test(${JSON.stringify(name)},()=>assert.equal(${index},${index === 6 ? 0 : index},'${secret}'));`,
+      )
+      .join("\n") +
+    "\n";
+  const runnerModule = new URL(
+    "../../scripts/required-test-evidence.mjs",
+    import.meta.url,
+  ).href;
+  const root = await fixture(t, {
+    "dist/test/gate-consumer-impact.test.js": program,
+    "foreign/dist/test/gate-consumer-impact.test.js": program,
+  });
+  for (const [relative, selected] of [
+    ["dist/test/gate-consumer-impact.test.js", true],
+    ["dist/test/gate-consumer-impact.test.js", false],
+    ["foreign/dist/test/gate-consumer-impact.test.js", false],
+  ] as const) {
+    const file = path.join(root, relative),
+      observer = path.join(root, "observe.mjs");
+    await writeFile(
+      observer,
+      `import{runRequiredTests}from${JSON.stringify(runnerModule)};process.stdout.write(JSON.stringify(await runRequiredTests(${JSON.stringify(names.map((name) => ({ file, name })))},${JSON.stringify({ timeoutMs: 2000, ...(selected ? { diagnosticSourceFile: file } : {}) })})));`,
+    );
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    delete env.NODE_OPTIONS;
+    const observed = spawnSync(process.execPath, [observer], {
+      env,
+      encoding: "utf8",
+      timeout: 10000,
+      maxBuffer: 1048576,
+    });
+    assert.equal(observed.error, undefined);
+    assert.equal(observed.status, 0, observed.stderr);
+    const actual = JSON.parse(observed.stdout);
+    const failure = actual.problems.find(
+      (row: { reason: string }) => row.reason === "failed",
+    );
+    const sourceHash = createHash("sha256").update(program).digest("hex");
+    assert.equal(actual.required, 9);
+    assert.equal(actual.passed, 8);
+    if (!selected) assert.equal(Object.hasOwn(failure, "failureSite"), false);
+    else
+      assert.deepEqual(failure.failureSite, {
+        sourceFileSha256: sourceHash,
+        line: 8,
+        column: program.split("\n")[7]!.indexOf("assert.equal") + 8,
+      });
+    const value = diagnostic.projectConsumerTerminalDiagnostic(
+      actual,
+      requirements,
+      sourceHash,
+    );
+    assert.equal(value.state, "observed");
+    assert.equal(value.cases[6].outcome, "failed");
+    assert.equal(value.cases[6].code, "ERR_TEST_FAILURE");
+    assert.equal(value.cases[6].failureType, "testCodeFailure");
+    assert.equal(value.qualifiesNativeAcceptance, false);
+    assert.equal(Object.hasOwn(value.cases[6], "failureSite"), selected);
+    for (const raw of [
+      secret,
+      root,
+      program,
+      "AssertionError",
+      "strictEqual",
+      "actual",
+      "expected",
+      "stack",
+    ])
+      assert.equal(JSON.stringify(value).includes(raw), false, raw);
+  }
+});
+
+test("diagnostic source selection stays bound across unrelated named batches and accepts already-resolved required aliases", async (t) => {
+  const program =
+    "import assert from 'node:assert/strict';import {test} from 'node:test';\n" +
+    names
+      .map(
+        (name, index) =>
+          `test(${JSON.stringify(name)},()=>assert.equal(${index},${index === 6 ? 0 : index},'${secret}'));`,
+      )
+      .join("\n") +
+    "\n";
+  const root = await fixture(t, {
+    "dist/test/gate-consumer-impact.test.js": program,
+    "dist/test/unrelated.test.js":
+      "import {test}from'node:test';test('unrelated required case',()=>{});",
+  });
+  const file = path.join(root, "dist/test/gate-consumer-impact.test.js"),
+    unrelated = path.join(root, "dist/test/unrelated.test.js"),
+    observer = path.join(root, "observe.mjs"),
+    runnerModule = new URL(
+      "../../scripts/required-test-evidence.mjs",
+      import.meta.url,
+    ).href;
+  for (const [selection, fromProfiles] of [
+    [file, false],
+    [await realpath(file), true],
+  ] as const) {
+    const selectedRequirements = [
+      { file: unrelated, name: "unrelated required case" },
+      ...names.map((name) => ({ file, name })),
+    ];
+    const invocation = fromProfiles
+      ? `runRequiredProfiles(${JSON.stringify({ unrelated: [selectedRequirements[0]], consumer: selectedRequirements.slice(1) })},["unrelated","consumer"],`
+      : `runRequiredTests(${JSON.stringify(selectedRequirements)},`;
+    await writeFile(
+      observer,
+      `import{runRequiredTests,runRequiredProfiles}from${JSON.stringify(runnerModule)};process.stdout.write(JSON.stringify(await ${invocation}${JSON.stringify({ timeoutMs: 2000, isolatedCaseWorkers: 1, diagnosticSourceFile: selection })})));`,
+    );
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    delete env.NODE_OPTIONS;
+    const observed = spawnSync(process.execPath, [observer], {
+      env,
+      encoding: "utf8",
+      timeout: 15000,
+      maxBuffer: 1048576,
+    });
+    assert.equal(observed.error, undefined);
+    assert.equal(observed.status, 0, observed.stderr);
+    const actual = JSON.parse(observed.stdout);
+    assert.equal(actual.required, 10);
+    assert.equal(actual.passed, 9);
+    assert.equal(actual.complete, false);
+    assert.equal(actual.ledger.events.length, 10);
+    assert.equal(actual.ledger.events[0].name, "unrelated required case");
+    assert.equal(actual.ledger.events[0].outcome, "passed");
+    const failure = actual.problems.find(
+      (row: { reason: string }) => row.reason === "failed",
+    );
+    assert.equal(failure.name, names[6]);
+    assert.deepEqual(failure.failureSite, {
+      sourceFileSha256: createHash("sha256").update(program).digest("hex"),
+      line: 8,
+      column: program.split("\n")[7]!.indexOf("assert.equal") + 8,
+    });
+    assert.equal(JSON.stringify(actual).includes(file), false);
+    assert.equal(JSON.stringify(actual).includes(selection), false);
+  }
+});
+
+test("diagnostic source selection cannot admit optional foreign or malformed paths before any required callback executes", async (t) => {
+  const marker = "diagnostic-selection-executed";
+  const program = `import{writeFileSync}from'node:fs';import{test}from'node:test';writeFileSync(${JSON.stringify(marker)},'yes');test('required synthetic case',()=>{});`;
+  const root = await fixture(t, {
+    "required.test.mjs": program,
+    "foreign.test.mjs": program,
+  });
+  const file = path.join(root, "required.test.mjs"),
+    foreign = path.join(root, "foreign.test.mjs"),
+    observer = path.join(root, "observe.mjs"),
+    runnerModule = new URL(
+      "../../scripts/required-test-evidence.mjs",
+      import.meta.url,
+    ).href,
+    diagnosticModule = new URL(
+      "../../scripts/consumer-runtime-diagnostics.mjs",
+      import.meta.url,
+    ).href;
+  for (const selected of [
+    foreign,
+    path.join(root, "missing.mjs"),
+    "",
+    null,
+    1,
+    {},
+  ]) {
+    await writeFile(
+      observer,
+      `import assert from'node:assert/strict';import{runRequiredTests}from${JSON.stringify(runnerModule)};import{projectConsumerTerminalDiagnostic}from${JSON.stringify(diagnosticModule)};let caught;try{await runRequiredTests(${JSON.stringify([{ file, name: "required synthetic case" }])},${JSON.stringify({ timeoutMs: 2000, additionalFiles: [foreign], diagnosticSourceFile: selected })});}catch(error){caught=error;}assert.equal(caught?.code,'ERR_ASSERTION');assert.equal(caught.message.includes(${JSON.stringify(root)}),false);process.stdout.write(JSON.stringify(projectConsumerTerminalDiagnostic(null,${JSON.stringify(requirements)},${JSON.stringify(sha)})));`,
+    );
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    delete env.NODE_OPTIONS;
+    const observed = spawnSync(process.execPath, [observer], {
+      cwd: root,
+      env,
+      encoding: "utf8",
+      timeout: 10000,
+      maxBuffer: 1048576,
+    });
+    assert.equal(observed.error, undefined);
+    assert.equal(observed.status, 0, observed.stderr);
+    const publicValue = JSON.parse(observed.stdout);
+    assert.equal(publicValue.state, "missing");
+    assert.equal(publicValue.qualifiesNativeAcceptance, false);
+    for (const raw of [root, foreign, "ERR_ASSERTION", "stack", "message"])
+      assert.equal(observed.stdout.includes(raw), false, raw);
+    await assert.rejects(readFile(path.join(root, marker)), { code: "ENOENT" });
+  }
 });
