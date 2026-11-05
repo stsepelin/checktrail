@@ -38,6 +38,7 @@ jobs:
         env:
           CHECKTRAIL_DIAGNOSTIC_OUTPUT: ${{ runner.temp }}/checktrail-consumer-privacy-diagnostic.json
         run: |
+          $diagnosticScript = Join-Path $env:GITHUB_WORKSPACE ".checktrail-consumer-privacy-diagnostic.mjs"
           @'
           import { createHash } from "node:crypto";
           import { readFile, writeFile, mkdtemp, realpath, rm } from "node:fs/promises";
@@ -112,8 +113,15 @@ jobs:
           try { await writeFile(process.env.CHECKTRAIL_DIAGNOSTIC_OUTPUT, JSON.stringify(output) + "\n", { flag: "wx" }); }
           catch { process.exitCode = 1; }
           process.stdout.write(JSON.stringify(output) + "\n");
-          '@ | node --input-type=module
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          '@ | Set-Content -LiteralPath $diagnosticScript -Encoding utf8
+          $diagnosticExit = 1
+          try {
+            node $diagnosticScript
+            $diagnosticExit = $LASTEXITCODE
+          } finally {
+            Remove-Item -LiteralPath $diagnosticScript -Force
+          }
+          if ($diagnosticExit -ne 0) { exit $diagnosticExit }
       - name: Retain only the sanitized diagnostic
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
