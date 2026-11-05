@@ -230,17 +230,20 @@ export function acquisitionPlan(recipe, preparation) {
   };
 }
 
-export async function loadAcquisitionPlan() {
-  const directory = fileURLToPath(new URL("./", import.meta.url));
-  const { identifyFile, validateInputs } =
-    await import("../qualify-binutils-producer.mjs");
+export async function loadAcquisitionPlan(
+  directory = fileURLToPath(new URL("./", import.meta.url)),
+) {
+  directory = path.resolve(directory);
+  const { identifyFile } = await import("../qualify-binutils-producer.mjs");
   const sources = [
-    fileURLToPath(import.meta.url),
+    path.join(directory, "binutils-acquisition-plan.mjs"),
     path.join(directory, "binutils.v1.json"),
     path.join(directory, "binutils-apt-index-preparation.v1.json"),
     path.join(directory, "../qualify-binutils-producer.mjs"),
     path.join(directory, "binutils-image-identity.v1.json"),
     path.join(directory, "binutils-image-identity.mjs"),
+    path.join(directory, "binutils-prepare-inputs.py"),
+    path.join(directory, "../acquire-binutils-inputs.mjs"),
   ].map((file) => path.resolve(file));
   const before = await Promise.all(
     sources.map((file) => identifyFile(file, 1048576)),
@@ -251,7 +254,8 @@ export async function loadAcquisitionPlan() {
   assert.equal(hash(preparationBytes), before[2].sha256);
   const recipe = JSON.parse(recipeBytes.toString("utf8"));
   const preparation = JSON.parse(preparationBytes.toString("utf8"));
-  await validateInputs(directory, recipe.controllerFiles);
+  // Acquisition uses its own planner, downloader and data-transform helper.
+  // Native build-controller pins remain the original build profile's contract.
   const plan = acquisitionPlan(recipe, preparation);
   const imageRecord = JSON.parse(await readFile(sources[4], "utf8"));
   plan.transform.registryIdentity = registryImageIdentity(
@@ -264,9 +268,13 @@ export async function loadAcquisitionPlan() {
   assert.deepEqual(after, before, "Planning inputs changed");
   return {
     ...plan,
-    planningSourceIdentities: before,
+    planningSourceIdentities: sources.map((file, index) => ({
+      file: path.relative(directory, file).split(path.sep).join("/"),
+      ...before[index],
+    })),
     planningInputsUnchanged: true,
-    physicalControllerPinsVerified: true,
+    physicalAcquisitionSourcesVerified: true,
+    nativeBuildControllerPinsVerified: false,
     remoteAvailabilityVerified: false,
     actualModuleLoadsTraced: false,
   };
