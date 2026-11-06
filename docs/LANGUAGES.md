@@ -586,3 +586,10 @@ the shared library and a repository setup script. It retains missing or changed
 roles and checks private file identities across the whole read. It executes no
 project code or models, opens no case source or labels, and leaves protocol
 semantics, observed independence and Gate A acceptance open.
+
+The operator-only [enforced evaluation gateway](ENFORCED-EVALUATION.md) supports
+JavaScript, Python, Go and PHP probes, and native Go JSON, PHPUnit and Pest
+comparators. Prepared read-only Go/Composer vendor trees are digest-bound. A
+fresh offline installed harness checks synthetic protocol controls against the
+shipped engine; it does not certify native toolchains, independent host sessions,
+review effectiveness or Gate A completion.
