@@ -6657,6 +6657,18 @@
     {
       "file": "dist/test/review-evaluation-protocol.test.js",
       "name": "evaluation protocol controls run through a fresh offline production installation with an external harness"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol retains excluded unknown source cases without false null-content clusters or capture assignments"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation protocol known links through excluded unknown source cases still require common incident clusters"
+    },
+    {
+      "file": "dist/test/review-evaluation-protocol.test.js",
+      "name": "evaluation capture assignments refuse selected unknown source identities instead of dropping slots"
     }
   ],
   "evaluation-protocol-metering": [

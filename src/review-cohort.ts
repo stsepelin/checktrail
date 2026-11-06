@@ -7,6 +7,7 @@ const reason = z.enum([
   "missing-notice",
   "missing-license",
   "unknown-distribution",
+  "unknown-source-identity",
   "private-service",
   "undistributable-input",
   "previous-exposure",
@@ -24,37 +25,46 @@ export const reviewCohortDeclarationSchema = z.strictObject({
   }),
   cases: z
     .array(
-      z.strictObject({
-        id: id("case"),
-        repositoryId: id("repository"),
-        familyId: id("family"),
-        lineageId: id("lineage"),
-        contentSha256: hash,
-        split: z.enum(["development", "reserved", "retired"]),
-        exposure: z.enum(["uninspected", "inspected", "unknown"]),
-        sourceArchiveSha256: hash,
-        noticeSha256: hash.nullable(),
-        license: z
-          .string()
-          .min(1)
-          .max(128)
-          .refine((value) => value.trim() === value && value.trim().length > 0)
-          .nullable(),
-        requiresPrivateService: z.boolean(),
-        distribution: z.enum(["permitted", "restricted", "unknown"]),
-        inScope: z.boolean(),
-        disposition: z.discriminatedUnion("status", [
-          z.strictObject({ status: z.literal("selected") }),
-          z.strictObject({
-            status: z.literal("excluded"),
-            reasons: z
-              .array(reason)
-              .min(1)
-              .max(8)
-              .refine((a) => new Set(a).size === a.length),
-          }),
-        ]),
-      }),
+      z
+        .strictObject({
+          id: id("case"),
+          repositoryId: id("repository"),
+          familyId: id("family"),
+          lineageId: id("lineage"),
+          contentSha256: hash.nullable(),
+          split: z.enum(["development", "reserved", "retired"]),
+          exposure: z.enum(["uninspected", "inspected", "unknown"]),
+          sourceArchiveSha256: hash.nullable(),
+          noticeSha256: hash.nullable(),
+          license: z
+            .string()
+            .min(1)
+            .max(128)
+            .refine(
+              (value) => value.trim() === value && value.trim().length > 0,
+            )
+            .nullable(),
+          requiresPrivateService: z.boolean(),
+          distribution: z.enum(["permitted", "restricted", "unknown"]),
+          inScope: z.boolean(),
+          disposition: z.discriminatedUnion("status", [
+            z.strictObject({ status: z.literal("selected") }),
+            z.strictObject({
+              status: z.literal("excluded"),
+              reasons: z
+                .array(reason)
+                .min(1)
+                .max(reason.options.length)
+                .refine((a) => new Set(a).size === a.length),
+            }),
+          ]),
+        })
+        .refine(
+          (row) =>
+            row.disposition.status === "excluded" ||
+            (row.contentSha256 !== null && row.sourceArchiveSha256 !== null),
+          { message: "Selected cases require known source identities" },
+        ),
     )
     .min(1)
     .max(256),
@@ -132,10 +142,9 @@ export function inspectReviewCohortDeclaration(
   };
   const keys = new Map<string, number>();
   for (const [i, row] of rows.entries()) {
-    const bindings = [
-      "lineage:" + row.lineageId,
-      "content:" + row.contentSha256,
-    ];
+    const bindings = ["lineage:" + row.lineageId];
+    if (row.contentSha256 !== null)
+      bindings.push("content:" + row.contentSha256);
     if (declaration.grouping.holdoutRepositories)
       bindings.push("repository:" + row.repositoryId);
     if (declaration.grouping.holdoutFamilies)
@@ -179,6 +188,8 @@ export function inspectReviewCohortDeclaration(
       issues.push({ kind: "eligibility", caseIds: [row.id] });
     if (row.disposition.status === "excluded") {
       const observedReasons = {
+        "unknown-source-identity":
+          row.contentSha256 === null || row.sourceArchiveSha256 === null,
         "missing-notice": row.noticeSha256 === null,
         "missing-license": missingLicense,
         "private-service": row.requiresPrivateService,

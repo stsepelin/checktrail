@@ -8,6 +8,7 @@ import {
   reviewCohortDeclarationSchema,
 } from "../src/review-cohort.js";
 import * as library from "../src/index.js";
+import { protocolFixture } from "./review-evaluation-protocol-fixture.js";
 import type {
   ReviewCohortDeclaration,
   ReviewCohortDeclarationReport,
@@ -188,7 +189,7 @@ test("cohort declaration summary omits all case source reference workflow and fa
       row.familyId,
       row.contentSha256,
     ])
-      assert.equal(json.includes(value), false);
+      if (value !== null) assert.equal(json.includes(value), false);
   assert.equal(json.includes(input.referenceId), false);
   assert.equal(json.includes(input.priorWorkflowId), false);
   assert.equal(summary.labelsInspected, false);
@@ -481,5 +482,143 @@ test("cohort declaration checks every identity and digest boundary with valid ne
   assert.deepEqual(
     inspectReviewCohortDeclaration(input, report.declarationSha256),
     report,
+  );
+});
+
+test("cohort declarations retain excluded unknown source identities without joining unrelated missing content", () => {
+  for (const fields of [
+    ["contentSha256"],
+    ["sourceArchiveSha256"],
+    ["contentSha256", "sourceArchiveSha256"],
+  ]) {
+    const input = declaration();
+    for (const index of [0, 2]) {
+      const row = input.cases[index]!;
+      for (const field of fields) Object.assign(row, { [field]: null });
+      Object.assign(row, {
+        disposition: {
+          status: "excluded",
+          reasons: ["unknown-source-identity"],
+        },
+      });
+    }
+    const report = inspectReviewCohortDeclaration(input);
+    assert.equal(report.declarationComplete, true, fields.join(","));
+    assert.deepEqual(report.issues, []);
+    assert.equal(report.counts.total, 3);
+    assert.equal(report.counts.selected, 1);
+    assert.equal(report.counts.excluded, 2);
+    assert.equal(
+      report.counts.selected + report.counts.excluded,
+      report.counts.total,
+    );
+    assert.equal(report.counts.components, 3);
+    assert.equal(report.sourceContentInspected, false);
+    assert.equal(report.acceptanceClaim, false);
+  }
+});
+
+test("cohort unknown source exclusions still preserve every known lineage repository family and content link", () => {
+  for (const link of ["lineage", "repository", "family", "content"] as const) {
+    const input = declaration(),
+      first = input.cases[0]!,
+      last = input.cases[2]!;
+    for (const row of [first, last])
+      Object.assign(row, {
+        contentSha256: null,
+        sourceArchiveSha256: null,
+        disposition: {
+          status: "excluded",
+          reasons: ["unknown-source-identity"],
+        },
+      });
+    if (link === "lineage") last.lineageId = first.lineageId;
+    if (link === "repository") {
+      input.grouping.holdoutRepositories = true;
+      last.repositoryId = first.repositoryId;
+    }
+    if (link === "family") {
+      input.grouping.holdoutFamilies = true;
+      last.familyId = first.familyId;
+    }
+    if (link === "content") {
+      first.contentSha256 = sha(80);
+      last.contentSha256 = sha(80);
+    }
+    const broken = inspectReviewCohortDeclaration(input);
+    assert.equal(broken.declarationComplete, false, link);
+    assert.deepEqual(broken.issues, [
+      { kind: "split-conflict", caseIds: [first.id, last.id] },
+    ]);
+    assert.equal(broken.counts.components, 2);
+    last.split = "development";
+    assert.equal(
+      inspectReviewCohortDeclaration(input).declarationComplete,
+      true,
+    );
+  }
+});
+
+test("cohort selected unknown source identities are refused and restored known identities remain valid", () => {
+  for (const field of ["contentSha256", "sourceArchiveSha256"] as const) {
+    const input = declaration();
+    Object.assign(input.cases[0]!, { [field]: null });
+    assert.equal(
+      reviewCohortDeclarationSchema.safeParse(input).success,
+      false,
+      field,
+    );
+    assert.throws(() => inspectReviewCohortDeclaration(input));
+    input.cases[0]![field] = sha(90);
+    assert.equal(
+      inspectReviewCohortDeclaration(input).declarationComplete,
+      true,
+    );
+  }
+});
+
+test("cohort unknown source exclusion reasons become stale when both identities are known", () => {
+  const input = declaration(),
+    row = input.cases[0]!;
+  Object.assign(row, {
+    disposition: { status: "excluded", reasons: ["unknown-source-identity"] },
+  });
+  assert.deepEqual(inspectReviewCohortDeclaration(input).issues, [
+    { kind: "disposition", caseIds: [row.id] },
+  ]);
+  Object.assign(row, { sourceArchiveSha256: null });
+  assert.equal(inspectReviewCohortDeclaration(input).declarationComplete, true);
+  row.sourceArchiveSha256 = sha(91);
+  assert.deepEqual(inspectReviewCohortDeclaration(input).issues, [
+    { kind: "disposition", caseIds: [row.id] },
+  ]);
+});
+
+test("cohort all-excluded unknown source catalog retains the denominator and cannot become complete", () => {
+  const input = declaration();
+  for (const row of input.cases)
+    Object.assign(row, {
+      contentSha256: null,
+      sourceArchiveSha256: null,
+      disposition: { status: "excluded", reasons: ["unknown-source-identity"] },
+    });
+  const report = inspectReviewCohortDeclaration(input);
+  assert.equal(report.declarationComplete, false);
+  assert.deepEqual(report.issues, [{ kind: "empty-selection", caseIds: [] }]);
+  assert.equal(report.counts.total, 3);
+  assert.equal(report.counts.selected, 0);
+  assert.equal(report.counts.excluded, 3);
+  assert.equal(report.counts.components, 3);
+  const summary = projectReviewCohortDeclaration(report),
+    encoded = JSON.stringify(summary);
+  assert.deepEqual(summary.counts, report.counts);
+  for (const row of input.cases) assert.equal(encoded.includes(row.id), false);
+  assert.equal(summary.gateAClosed, false);
+});
+
+test("cohort existing complete-identity declaration keeps its pinned parsed fingerprint", () => {
+  assert.equal(
+    inspectReviewCohortDeclaration(protocolFixture().cohort).declarationSha256,
+    "2db09c4593ce991296ed92b3f96108710d5403134938a76382803e9dda5cb384",
   );
 });
