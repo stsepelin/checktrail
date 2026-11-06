@@ -45,6 +45,63 @@ function exercise(body: string) {
   assert.equal(result.status, 0, result.stderr || String(result.error));
 }
 
+test("evaluation gateway runs PHP probes as literal arguments and preserves source evidence", () => {
+  exercise(String.raw`
+    const php = {...config,native:{executable:'php',args:['tests.php']},languages:['php']};
+    gateway = await api.createGateway(php, {execute});
+    const read = await gateway.call('evaluation_read',{file:'entry.py'});
+    const tick = String.fromCharCode(96);
+    const code = 'echo "literal $value and backticks: ' + tick + 'id' + tick + '";';
+    const result = await gateway.call('evaluation_probe',{language:'php',code,sourceEvidenceIds:[read.evidenceId]});
+    assert.equal(result.ok,true);
+    const invocation = executions.find(x=>x.command.args[0]==='run');
+    assert.deepEqual(invocation.command.args.slice(-3),['php','-r',code]);
+    assert.deepEqual(result.value.sourceFiles,[{file:'entry.py',sha256:createHash('sha256').update('value = 1\n').digest('hex')}]);
+    const denied = await gateway.call('evaluation_probe',{language:'go',code:'package main'});
+    assert.equal(denied.ok,false);
+    assert.equal(executions.filter(x=>x.command.args[0]==='run').length,1);
+  `);
+});
+
+test("evaluation gateway prepares Go code without interpolation and binds vendor dependencies", () => {
+  exercise(String.raw`
+    const go = {...config,native:{executable:'go',args:['test','-json','-count=1','-mod=vendor','./...']},languages:['go'],dependencies,dependencyDirectory:'vendor'};
+    gateway = await api.createGateway(go, {execute});
+    const tick = String.fromCharCode(96);
+    const code = 'package main\n// $HOME ' + tick + 'id' + tick + ' ; $(false)\nfunc main() {}\n';
+    const result = await gateway.call('evaluation_probe',{language:'go',code});
+    assert.equal(result.ok,true);
+    const invocation = executions.find(x=>x.command.args[0]==='run');
+    assert.deepEqual(invocation.command.args.slice(-3),['--',code,'-mod=vendor']);
+    assert.ok(!invocation.command.args.find(x=>x.includes('mkdtempSync')).includes(code));
+    assert.ok(invocation.command.args.includes('1g'));
+    assert.ok(invocation.command.args.includes('/tmp:rw,exec,nosuid,nodev,size=256m,mode=1777'));
+    assert.ok(invocation.command.args.some(x=>x.endsWith('target=/source/vendor,readonly')));
+    assert.ok(!invocation.command.args.some(x=>x.includes('target=/source/node_modules')));
+    const audit = (await fs.readFile(go.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    assert.equal(audit[0].profile.dependencyDirectory,'vendor');
+    assert.equal(audit[0].profile.dependenciesSha256,await api.treeDigest(dependencies));
+    await fs.writeFile(path.join(dependencies,'dependency.txt'),'changed');
+    assert.equal((await gateway.call('evaluation_native',{})).ok,false);
+    assert.equal(executions.filter(x=>x.command.args[0]==='run').length,1);
+  `);
+});
+
+test("evaluation gateway retains legacy limits and rejects duplicate or unknown language profiles", () => {
+  exercise(String.raw`
+    const legacy = api.containerArgs(config,'/captured','/worker','synthetic');
+    assert.ok(legacy.includes('512m'));
+    assert.ok(legacy.includes('/tmp:rw,nosuid,nodev,size=64m,mode=1777'));
+    assert.deepEqual(api.probeCommand('python','print(1)'),['python3','-B','-c','print(1)']);
+    assert.deepEqual(api.probeCommand('javascript','1'),['node','--experimental-strip-types','--input-type=module','-e','1']);
+    assert.equal(api.configSchema.safeParse({...config,languages:['go','go']}).success,false);
+    assert.equal(api.configSchema.safeParse({...config,dependencyDirectory:'../vendor'}).success,false);
+    assert.equal(api.configSchema.safeParse({...config,languages:['shell']}).success,false);
+    assert.throws(()=>api.probeCommand('shell','true'),/Language unavailable/);
+    assert.equal(api.probeCommand('go','package main').at(-1),'-mod=readonly');
+  `);
+});
+
 test("evaluation gateway reads captured bytes only and withholds sibling names and contents", () => {
   exercise(String.raw`
     gateway = await api.createGateway(config, {execute});
