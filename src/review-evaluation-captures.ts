@@ -69,8 +69,16 @@ export function reviewEvaluationCaptureAssignments(value: unknown) {
     reference: declaration.protocol.reference.configurationSha256,
   };
   // Incomplete clustering must never shrink the selected-case denominator.
+  // The cohort schema requires both source identities for selected cases.
   return declaration.cohort.cases
-    .filter((c) => c.disposition.status === "selected")
+    .filter(
+      (
+        c,
+      ): c is typeof c & {
+        contentSha256: string;
+        sourceArchiveSha256: string;
+      } => c.disposition.status === "selected",
+    )
     .sort((a, b) => a.id.localeCompare(b.id, "en"))
     .flatMap((c) =>
       Array.from(

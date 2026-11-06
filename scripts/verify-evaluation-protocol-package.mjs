@@ -55,7 +55,9 @@ const caseCount = whole
       ? 14
       : artifacts
         ? 13
-        : 12;
+        : captures || metering
+          ? 12
+          : 15;
 const selectedProfile = whole
   ? "independent-evaluation-protocol"
   : matching

@@ -186,7 +186,8 @@ export function inspectReviewEvaluationProtocol(
   for (const row of cohort.cases) {
     const cluster = clusters.get(row.id);
     if (!cluster) continue;
-    const keys = ["lineage:" + row.lineageId, "content:" + row.contentSha256];
+    const keys = ["lineage:" + row.lineageId];
+    if (row.contentSha256 !== null) keys.push("content:" + row.contentSha256);
     if (cohort.grouping.holdoutRepositories)
       keys.push("repository:" + row.repositoryId);
     if (cohort.grouping.holdoutFamilies) keys.push("family:" + row.familyId);

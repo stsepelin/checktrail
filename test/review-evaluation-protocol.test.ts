@@ -1,3 +1,4 @@
+import { reviewEvaluationCaptureAssignments } from "../src/review-evaluation-captures.js";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -473,9 +474,9 @@ test(
     assert.equal(packet.lifecycleScriptsExecuted, false);
     assert.equal(packet.harnessOutsideInstalledPackage, true);
     assert.equal(packet.profileEvidence.complete, true);
-    assert.equal(packet.profileEvidence.required, 12);
-    assert.equal(packet.profileEvidence.passed, 12);
-    assert.equal(packet.profileEvidence.ledger.cases.length, 12);
+    assert.equal(packet.profileEvidence.required, 15);
+    assert.equal(packet.profileEvidence.passed, 15);
+    assert.equal(packet.profileEvidence.ledger.cases.length, 15);
     assert.ok(
       packet.profileEvidence.ledger.cases.every(
         (row: { outcome: string }) => row.outcome === "passed",
@@ -485,3 +486,78 @@ test(
     assert.equal(packet.gateAComplete, false);
   },
 );
+
+test("evaluation protocol retains excluded unknown source cases without false null-content clusters or capture assignments", () => {
+  const input = protocolFixture(4);
+  for (const index of [2, 3])
+    Object.assign(input.cohort.cases[index]!, {
+      contentSha256: null,
+      sourceArchiveSha256: null,
+      disposition: { status: "excluded", reasons: ["unknown-source-identity"] },
+    });
+  input.cohort.cases[2]!.split = "development";
+  bindProtocolCohort(input);
+  const report = inspect(input);
+  assert.equal(report.declarationComplete, true);
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.counts.totalCases, 4);
+  assert.equal(report.counts.selectedCases, 2);
+  assert.equal(report.counts.excludedCases, 2);
+  assert.equal(report.counts.selectedClusters, 2);
+  assert.equal(report.counts.plannedArmSlots, 12);
+  const assignments = reviewEvaluationCaptureAssignments(input);
+  assert.equal(assignments.length, report.counts.plannedArmSlots);
+  assert.deepEqual(
+    [...new Set(assignments.map((row) => row.caseId))].sort(),
+    input.cohort.cases.slice(0, 2).map((row) => row.id),
+  );
+  for (const row of assignments) {
+    assert.match(row.contentSha256, /^[a-f0-9]{64}$/);
+    assert.match(row.sourceArchiveSha256, /^[a-f0-9]{64}$/);
+  }
+  input.protocol.caseClusters.pop();
+  const omitted = inspect(input);
+  assert.equal(omitted.declarationComplete, false);
+  assert.deepEqual(omitted.issues, ["cluster-inventory"]);
+  assert.equal(omitted.counts.totalCases, 4);
+  assert.equal(omitted.counts.plannedArmSlots, 12);
+});
+
+test("evaluation protocol known links through excluded unknown source cases still require common incident clusters", () => {
+  for (const link of ["lineage", "repository", "family", "content"] as const) {
+    const input = protocolFixture(4),
+      first = input.cohort.cases[0]!,
+      second = input.cohort.cases[2]!;
+    Object.assign(second, {
+      sourceArchiveSha256: null,
+      contentSha256: null,
+      disposition: { status: "excluded", reasons: ["unknown-source-identity"] },
+    });
+    if (link === "lineage") second.lineageId = first.lineageId;
+    if (link === "repository") {
+      input.cohort.grouping.holdoutRepositories = true;
+      second.repositoryId = first.repositoryId;
+    }
+    if (link === "family") {
+      input.cohort.grouping.holdoutFamilies = true;
+      second.familyId = first.familyId;
+    }
+    if (link === "content") second.contentSha256 = first.contentSha256;
+    bindProtocolCohort(input);
+    const broken = inspect(input);
+    assert.equal(broken.declarationComplete, false, link);
+    assert.deepEqual(broken.issues, ["cluster-split"]);
+    assert.equal(broken.counts.totalCases, 4);
+    input.protocol.caseClusters[2]!.clusterId =
+      input.protocol.caseClusters[0]!.clusterId;
+    assert.equal(inspect(input).declarationComplete, true);
+  }
+});
+
+test("evaluation capture assignments refuse selected unknown source identities instead of dropping slots", () => {
+  for (const field of ["contentSha256", "sourceArchiveSha256"] as const) {
+    const input = protocolFixture();
+    Object.assign(input.cohort.cases[0]!, { [field]: null });
+    assert.throws(() => reviewEvaluationCaptureAssignments(input));
+  }
+});
