@@ -169,6 +169,48 @@ test("review workflow runtime CLI refuses unknown slots before running workflow 
   assert.equal(r.status, 1);
   assert.match(r.stderr, /Unknown selected runtime slot/);
   assert.equal(r.stdout, "");
+  for (const [args, hosted, message] of [
+    [
+      ["--local", "confidence-provenance"],
+      "true",
+      /Hosted workflow requires a selected runtime slot/,
+    ],
+    [
+      ["--local"],
+      "false",
+      /Explicit local evidence requires the confidence profile/,
+    ],
+    [
+      ["OriginalUnknownSlot", "confidence-provenance"],
+      "false",
+      /Unknown selected runtime slot/,
+    ],
+    [
+      ["OriginalUnknownSlot", "confidence-provenance-extra"],
+      "false",
+      /Unknown selected review runtime profile/,
+    ],
+  ] as const) {
+    const refused = spawnSync(
+      process.execPath,
+      [
+        fileURLToPath(
+          new URL("../../scripts/verify-review-runtime.mjs", import.meta.url),
+        ),
+        ...args,
+      ],
+      {
+        env: { ...env, GITHUB_ACTIONS: hosted },
+        encoding: "utf8",
+        timeout: 15000,
+        maxBuffer: 16384,
+      },
+    );
+    assert.equal(refused.error, undefined);
+    assert.equal(refused.status, 1);
+    assert.match(refused.stderr, message);
+    assert.equal(refused.stdout, "");
+  }
 });
 
 test("review workflow runtime rejects coherently shaped foreign installation evidence and incomplete execution", async () => {
@@ -369,4 +411,314 @@ registerHooks({resolve(specifier,context,next){if(context.parentURL===target){co
       },
     ]);
   }
+});
+
+test("confidence runtime preserves its exact frozen cohort and rejects adjacent profiles and forged terminal accounting", async () => {
+  const {
+    selectReviewRuntimeRequirements: select,
+    requireReviewRuntimeCases: check,
+  } = await import(moduleUrl.href);
+  const { scope, profiles } = await data();
+  const rows = select(profiles, scope, "confidence-provenance");
+  assert.deepEqual(rows, profiles["confidence-provenance"]);
+  assert.throws(() => select(profiles, scope, "confidence-provenance-extra"));
+  for (const mode of ["missing", "duplicate", "renamed", "foreign"]) {
+    const changed = structuredClone(profiles);
+    const cohort = changed["confidence-provenance"];
+    if (mode === "missing") cohort.pop();
+    else if (mode === "duplicate") cohort[1] = cohort[0];
+    else if (mode === "renamed") cohort[0].name += "-extra";
+    else cohort[0].file = "dist/test/gate-multi-candidate-workflow.test.js";
+    assert.throws(() => select(changed, scope, "confidence-provenance"));
+  }
+  const acceptance = "a".repeat(64);
+  const proof = {
+    complete: true,
+    required: 9,
+    passed: 9,
+    problems: [],
+    ledger: {
+      truncated: false,
+      terminalEventCount: 9,
+      files: [
+        {
+          id: "file-1",
+          stable: true,
+          before: { state: "present", sha256: acceptance },
+          after: { state: "present", sha256: acceptance },
+        },
+      ],
+      events: rows.map((r: { name: string }, i: number) => ({
+        fileId: "file-1",
+        sequence: i + 1,
+        name: r.name,
+        kind: "test",
+        outcome: "passed",
+        required: true,
+        nameTruncated: false,
+      })),
+      cases: rows.map((r: { name: string }, i: number) => ({
+        fileId: "file-1",
+        name: r.name,
+        outcome: "passed",
+        terminalSequences: [i + 1],
+      })),
+    },
+  };
+  check(proof, rows, acceptance);
+  for (const mode of [
+    "skip",
+    "duplicate-event",
+    "unrequired",
+    "wrong-link",
+    "renamed",
+    "stale",
+    "truncated",
+    "empty",
+  ]) {
+    const changed = structuredClone(proof);
+    if (mode === "skip") changed.ledger.events[0]!.outcome = "skipped";
+    else if (mode === "duplicate-event") changed.ledger.events[1]!.sequence = 1;
+    else if (mode === "unrequired") changed.ledger.events[0]!.required = false;
+    else if (mode === "wrong-link")
+      changed.ledger.cases[0]!.terminalSequences = [2];
+    else if (mode === "renamed") {
+      changed.ledger.cases[0]!.name += "-extra";
+      changed.ledger.events[0]!.name = changed.ledger.cases[0]!.name;
+    } else if (mode === "stale")
+      changed.ledger.files[0]!.after.sha256 = "b".repeat(64);
+    else if (mode === "truncated") changed.ledger.truncated = true;
+    else changed.ledger.events = [];
+    assert.throws(
+      () => check(changed, rows, acceptance),
+      { name: "AssertionError" },
+      mode,
+    );
+  }
+  const { requireReviewRuntimeInstallation: installation } = await import(
+    moduleUrl.href
+  );
+  const runtime = {
+    slot: null,
+    node: "26.12.0",
+    platform: "darwin",
+    architecture: "arm64",
+  };
+  const engine = {
+    treeSha256: "b".repeat(64),
+    manifestSha256: "c".repeat(64),
+    beforeAfterByteIdentitiesMatch: true,
+  };
+  const expected = {
+    profileId: "confidence-provenance",
+    selectedRuntime: null,
+    runtime,
+    engine,
+    requirements: rows,
+    acceptanceSha256: acceptance,
+    harnessSha256: "d".repeat(64),
+    requirementsSha256: "e".repeat(64),
+    packageSha256: "f".repeat(64),
+  };
+  const installed = {
+    offlineProductionInstall: true,
+    lifecycleScriptsExecuted: false,
+    harnessOutsideInstalledPackage: true,
+    tarballSha256: "1".repeat(64),
+    harnessSha256: "2".repeat(64),
+    productionDependencyLockSha256: "3".repeat(64),
+    profile: {
+      ...structuredClone(proof),
+      profile: "confidence-provenance-runtime-v1",
+      selectedRuntime: null,
+      installedEvidence: null,
+      runtime,
+      compiledEngine: engine,
+      runtimeArtifactsSha256: engine.treeSha256,
+      harnessSha256: expected.harnessSha256,
+      requirementsSha256: expected.requirementsSha256,
+      packageSha256: expected.packageSha256,
+      gateAComplete: false,
+      qualityAssessed: false,
+      inferenceInvoked: false,
+      fieldEvaluationExecuted: false,
+    },
+  };
+  assert.deepEqual(installation(installed, expected), installed);
+  for (const mode of [
+    "profile",
+    "recursion",
+    "runtime",
+    "selected",
+    "harness",
+    "flag",
+    "lock",
+    "cohort",
+  ]) {
+    const changed = JSON.parse(JSON.stringify(installed));
+    if (mode === "profile") changed.profile.profile += "-extra";
+    else if (mode === "recursion") changed.profile.installedEvidence = {};
+    else if (mode === "runtime") changed.profile.runtime.node = "foreign";
+    else if (mode === "selected")
+      changed.profile.selectedRuntime = { id: "foreign" };
+    else if (mode === "harness") changed.profile.harnessSha256 = "9".repeat(64);
+    else if (mode === "flag") changed.profile.qualityAssessed = true;
+    else if (mode === "lock") changed.productionDependencyLockSha256 = "";
+    else {
+      changed.profile.ledger.cases[0].name += "-extra";
+      changed.profile.ledger.events[0].name =
+        changed.profile.ledger.cases[0].name;
+    }
+    assert.throws(
+      () => installation(changed, expected),
+      { name: "AssertionError" },
+      mode,
+    );
+  }
+});
+
+test("confidence installed callback retains qualified routing failed child status and exact platform package boundaries", async (t) => {
+  const { fixture } = await import("./helpers.js");
+  const path = await import("node:path");
+  const root = await fixture(t, {
+    "observe.mjs": `import assert from'node:assert/strict';import path from'node:path';import{registerHooks}from'node:module';
+const target=process.argv[2],platform=process.argv[3],mode=process.argv[4];globalThis.observedCalls=[];globalThis.observedOutcomes=[];globalThis.selectedPath=platform==='win32'?path.win32:path.posix;
+globalThis.installedPath=globalThis.selectedPath.join(platform==='win32'?'C:\\\\original':'/original','node_modules','@stsepelin',mode==='adjacent'?'checktrail-extra':'checktrail','dist','src','index.js');
+const tests="export function test(name,options,callback){if(name==='confidence-provenance installed acceptance')globalThis.observedOutcomes.push(Promise.resolve().then(callback).then(()=>({outcome:'passed'}),error=>({outcome:'failed',message:error.message})));}";
+const fs="export * from'node:fs/promises';export async function realpath(){return globalThis.installedPath;}";
+const child="export function spawnSync(executable,args,options){globalThis.observedCalls.push({args,nodeTestContext:options.env.NODE_TEST_CONTEXT});return{status:7,stdout:'',stderr:'Original qualified installed refusal'};}";
+const unused="export const recipe={},source='original';export function provenanceFixture(){};export function inspectReviewProvenance(){};export function projectReviewProvenance(){};export function runReviewProbe(){};export function createReviewContext(){};";
+registerHooks({resolve(specifier,context,next){if(context.parentURL===target){const stub=specifier==='node:test'?tests:specifier==='node:fs/promises'?fs:specifier==='node:child_process'?child:specifier==='node:path'?'export default globalThis.selectedPath;':specifier.startsWith('.')?unused:null;if(stub)return{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true};}return next(specifier,context);}});
+Object.defineProperty(process,'platform',{value:platform});if(mode==='qualified'){delete process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED;process.env.CHECKTRAIL_CONFIDENCE_RUNTIME_SLOT='windows-node22';}else process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED='1';await import(target);console.log(JSON.stringify({calls:globalThis.observedCalls,outcomes:await Promise.all(globalThis.observedOutcomes)}));`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  for (const platform of ["win32", "darwin", "linux"])
+    for (const mode of ["installed", "adjacent", "qualified"]) {
+      const result = spawnSync(
+        process.execPath,
+        [
+          path.join(root, "observe.mjs"),
+          new URL("./gate-confidence-provenance.test.js", import.meta.url).href,
+          platform,
+          mode,
+        ],
+        { env, encoding: "utf8", timeout: 20000, maxBuffer: 65536 },
+      );
+      assert.equal(result.error, undefined);
+      assert.equal(result.status, 0, result.stderr);
+      const observed = JSON.parse(result.stdout);
+      assert.equal(observed.outcomes.length, 1);
+      assert.equal(
+        observed.outcomes[0].outcome,
+        mode === "installed" ? "passed" : "failed",
+      );
+      if (mode === "qualified") {
+        assert.match(
+          observed.outcomes[0].message,
+          /Original qualified installed refusal/,
+        );
+        assert.equal(observed.calls.length, 1);
+        assert.ok(
+          observed.calls[0].args[0].endsWith(
+            "verify-review-runtime-package.mjs",
+          ),
+        );
+        assert.deepEqual(observed.calls[0].args.slice(1), [
+          "windows-node22",
+          "confidence-provenance",
+        ]);
+        assert.equal(observed.calls[0].nodeTestContext, undefined);
+      } else assert.deepEqual(observed.calls, []);
+    }
+});
+
+test("default local review runtime preserves generic installed receipts while rejecting foreign engines and selected qualification", async () => {
+  const { requireReviewRuntimeInstallation: check } = await import(
+    moduleUrl.href
+  );
+  const { profiles } = await data();
+  const requirements = profiles["multi-candidate-workflow"] as Array<{
+    name: string;
+  }>;
+  const acceptanceSha256 = "a".repeat(64);
+  const engine = {
+    treeSha256: "b".repeat(64),
+    manifestSha256: "c".repeat(64),
+    beforeAfterByteIdentitiesMatch: true,
+  };
+  const runtime = {
+    slot: null,
+    node: "22.23.3",
+    platform: "linux",
+    architecture: "x64",
+  };
+  const expected = {
+    profileId: "multi-candidate-workflow",
+    selectedRuntime: null,
+    runtime,
+    engine,
+    requirements,
+    acceptanceSha256,
+    harnessSha256: "d".repeat(64),
+    requirementsSha256: "e".repeat(64),
+    packageSha256: "f".repeat(64),
+  };
+  const receipt = {
+    tarballSha256: "1".repeat(64),
+    offlineProductionInstall: true,
+    lifecycleScriptsExecuted: false,
+    harnessOutsideInstalledPackage: true,
+    profile: {
+      profile: "multi-candidate-workflow",
+      complete: true,
+      passed: 9,
+      required: 9,
+      problems: [],
+      compiledEngine: engine,
+      ledger: {
+        truncated: false,
+        terminalEventCount: 9,
+        files: [
+          {
+            id: "file-1",
+            stable: true,
+            before: { state: "present", sha256: acceptanceSha256 },
+            after: { state: "present", sha256: acceptanceSha256 },
+          },
+        ],
+        cases: requirements.map((r, i) => ({
+          fileId: "file-1",
+          name: r.name,
+          outcome: "passed",
+          terminalSequences: [i + 1],
+        })),
+        events: requirements.map((r, i) => ({
+          fileId: "file-1",
+          name: r.name,
+          sequence: i + 1,
+          outcome: "passed",
+          kind: "test",
+          required: true,
+          nameTruncated: false,
+        })),
+      },
+    },
+  };
+  assert.deepEqual(check(receipt, expected), receipt);
+  const foreign = structuredClone(receipt);
+  foreign.profile.compiledEngine.treeSha256 = "9".repeat(64);
+  assert.throws(() => check(foreign, expected));
+  assert.throws(() =>
+    check(receipt, {
+      ...expected,
+      runtime: { ...runtime, slot: "ci-linux-node22" },
+    }),
+  );
+  assert.throws(() =>
+    check(receipt, { ...expected, profileId: "confidence-provenance" }),
+  );
+  const skipped = structuredClone(receipt);
+  skipped.profile.ledger.events[0]!.outcome = "skipped";
+  assert.throws(() => check(skipped, expected));
 });

@@ -18,27 +18,41 @@ import {
   runAcceptanceNpm,
 } from "./install-acceptance-package.mjs";
 import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
-assert.equal(process.argv.length, 3, "Expected selected runtime slot");
-const slot = process.argv[2],
+import { reviewRuntimeProfile } from "./review-runtime-evidence.mjs";
+assert.ok(
+  process.argv.length === 3 || process.argv.length === 4,
+  "Expected selected runtime slot and optional profile",
+);
+const configuration = reviewRuntimeProfile(process.argv[3]),
+  local = process.argv[2] === "--local",
+  slot = local ? null : process.argv[2],
   root = fileURLToPath(new URL("../", import.meta.url));
 const hash = (b) => createHash("sha256").update(b).digest("hex");
 const scope = JSON.parse(
   await readFile(path.join(root, "docs/gate-a-profiles.v1.json"), "utf8"),
 );
-const selected = scope.runtimeProfiles.find((p) => p.id === slot);
-assert.ok(selected, "Unknown selected runtime slot");
-assert.equal(process.platform, selected.platform);
-assert.equal(process.arch, selected.architecture);
-assert.equal(process.versions.node, selected.node);
+const selected = local
+  ? null
+  : scope.runtimeProfiles.find((p) => p.id === slot);
+if (local) {
+  assert.equal(configuration.id, "confidence-provenance");
+  assert.notEqual(
+    process.env.GITHUB_ACTIONS,
+    "true",
+    "Hosted workflow requires a selected runtime slot",
+  );
+} else {
+  assert.ok(selected, "Unknown selected runtime slot");
+  assert.equal(process.platform, selected.platform);
+  assert.equal(process.arch, selected.architecture);
+  assert.equal(process.versions.node, selected.node);
+}
 const files = [
   "package.json",
   "package-lock.json",
   "docs/gate-a-profiles.v1.json",
-  "dist/test/gate-multi-candidate-workflow.test.js",
-  "dist/test/review-workflow-findings-fixture.js",
-  "dist/test/review-workflow-fixture.js",
-  "dist/test/helpers.js",
-  "dist/test/tool-fixture.js",
+  configuration.acceptanceFile,
+  ...configuration.fixtures,
   "scripts/review-runtime-evidence.mjs",
   "scripts/verify-review-runtime.mjs",
   "scripts/verify-review-runtime-package.mjs",
@@ -107,12 +121,18 @@ try {
       externalSdkClientDependencies[location] = version;
     },
   );
-  const env = { ...process.env, CHECKTRAIL_MULTI_WORKFLOW_INSTALLED: "1" };
+  const env = { ...process.env, [configuration.installedVariable]: "1" };
   delete env.NODE_TEST_CONTEXT;
   delete env.NODE_OPTIONS;
   const result = spawnSync(
     process.execPath,
-    ["scripts/verify-review-runtime.mjs", slot],
+    [
+      "scripts/verify-review-runtime.mjs",
+      process.argv[2],
+      ...(configuration.id === "multi-candidate-workflow"
+        ? []
+        : [configuration.id]),
+    ],
     {
       cwd: harness,
       env,
@@ -147,6 +167,9 @@ try {
       ...installation,
       harnessOutsideInstalledPackage: true,
       externalSdkClientDependencies,
+      ...(configuration.id === "confidence-provenance"
+        ? { installedCliEvaluated: true, installedRuntimeEvaluated: true }
+        : {}),
       profile: evidence,
     }) + "\n",
   );

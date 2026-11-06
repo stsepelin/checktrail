@@ -512,6 +512,13 @@ host-declared probabilities/labels without executing project code or inference.
 Unknown, stale, unsupported, abstained and unreviewed states remain visible.
 This adds no language compiler, Windows lifecycle or held-out quality acceptance.
 
+Confidence runtime CI reuses the existing selected Tasks jobs for the same nine
+source and fresh-install callbacks, with exact runtime/engine/harness bindings.
+Current-head successful receipts are required before qualifying those slots;
+host attestation, calibrated confidence and independent evaluation stay open.
+Successful selected consumer-impact controllers separately retain original
+bounded controller streams as described in [native consumer witness evidence](CONSUMER-WITNESS-EVIDENCE.md).
+
 [Native F# default formatting](FSHARP-FORMAT.md) is a separate non-rewriting source-string profile for every declared `.fs`, `.fsi` and `.fsx` input. It preserves native parse diagnostics and all returned failing conditional combinations, without evaluating source or applying project/editor configuration. Broader .NET formatting, SDK/license closure, final runtime bindings and Gate A remain open.
 
 [Selected native C#/VB formatting](DOTNET-FORMAT-EXTENSIONS.md) reconciles SDK style/analyzer diagnostics, ordinary proposed edits and declared MSBuild/Roslyn-generated participation. Generated semantic fixes stay unsupported; SDK/package compiler documents outside the declared formatting cohort remain fully accounted and unchanged. This selected Linux ARM64 profile does not close wider generators, artifact/license provenance, the final matrix or Gate A.

@@ -626,7 +626,7 @@ test(
 );
 test(
   "confidence-provenance installed acceptance",
-  { timeout: 120000 },
+  { timeout: process.platform === "win32" ? 580000 : 180000 },
   async () => {
     if (process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED === "1") {
       assert.ok(
@@ -634,13 +634,20 @@ test(
           await realpath(
             fileURLToPath(new URL("../src/index.js", import.meta.url)),
           )
-        ).includes("/node_modules/@stsepelin/checktrail/"),
+        ).includes(
+          path.sep +
+            path.join("node_modules", "@stsepelin", "checktrail") +
+            path.sep,
+        ),
       );
       return;
     }
+    const runtimeSlot = process.env.CHECKTRAIL_CONFIDENCE_RUNTIME_SLOT;
     const script = fileURLToPath(
         new URL(
-          "../../scripts/verify-import-context-package.mjs",
+          runtimeSlot === undefined
+            ? "../../scripts/verify-import-context-package.mjs"
+            : "../../scripts/verify-review-runtime-package.mjs",
           import.meta.url,
         ),
       ),
@@ -650,12 +657,21 @@ test(
       };
     // The external acceptance controller starts a fresh test runner, not a recursive node:test run.
     delete env.NODE_TEST_CONTEXT;
-    const r = spawnSync(process.execPath, [script], {
-      env,
-      encoding: "utf8",
-      timeout: 115000,
-      maxBuffer: 1048576,
-    });
+    const r = spawnSync(
+      process.execPath,
+      [
+        script,
+        ...(runtimeSlot === undefined
+          ? []
+          : [runtimeSlot, "confidence-provenance"]),
+      ],
+      {
+        env,
+        encoding: "utf8",
+        timeout: process.platform === "win32" ? 570000 : 175000,
+        maxBuffer: 1048576,
+      },
+    );
     assert.equal(r.status, 0, r.stdout + r.stderr);
     const result = JSON.parse(r.stdout);
     assert.equal(result.offlineProductionInstall, true);

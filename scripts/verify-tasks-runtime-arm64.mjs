@@ -100,17 +100,18 @@ try {
     image.Id,
     "sh",
     "-c",
-    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-review-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings\nnode scripts/verify-lifecycle-platforms.mjs native-linux-arm64-node22\nnode scripts/verify-evaluation-runtime.mjs native-linux-arm64-node22",
+    "set -eu\nnode scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache\nnode scripts/verify-tasks-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-review-runtime.mjs native-linux-arm64-node22\nnode scripts/verify-review-runtime.mjs native-linux-arm64-node22 confidence-provenance\nnode scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings\nnode scripts/verify-lifecycle-platforms.mjs native-linux-arm64-node22\nnode scripts/verify-evaluation-runtime.mjs native-linux-arm64-node22",
   ]);
   const packets = output
     .trim()
     .split("\n")
     .map((line) => JSON.parse(line));
-  assert.equal(packets.length, 6);
+  assert.equal(packets.length, 7);
   const [
     ,
     source,
     reviewWorkflow,
+    confidenceProvenance,
     lifecycleAdmission,
     lifecycleSource,
     evaluationRuntime,
@@ -142,6 +143,19 @@ try {
     reviewWorkflow.installedEvidence.profile.runtime.containerImageId,
     image.Id,
   );
+  for (const evidence of [
+    confidenceProvenance,
+    confidenceProvenance.installedEvidence.profile,
+  ]) {
+    assert.equal(evidence.profile, "confidence-provenance-runtime-v1");
+    assert.equal(evidence.complete, true);
+    assert.equal(evidence.required, 9);
+    assert.equal(evidence.passed, 9);
+    assert.equal(evidence.runtime.slot, "native-linux-arm64-node22");
+    assert.equal(evidence.runtime.containerImageId, image.Id);
+    assert.equal(evidence.gateAComplete, false);
+    assert.equal(evidence.qualityAssessed, false);
+  }
   assert.equal(lifecycleAdmission.complete, true);
   const nativeDefinitions = JSON.parse(
     await readFile(
@@ -203,6 +217,7 @@ try {
       source,
       installed,
       reviewWorkflow,
+      confidenceProvenance,
       evaluationRuntime,
       lifecycleAdmission,
       lifecycleSource,
