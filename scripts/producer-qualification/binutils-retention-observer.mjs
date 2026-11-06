@@ -21,6 +21,23 @@ export function validateRetentionMessage(value, sequence) {
     });
     return value;
   }
+  if (value?.kind === "error") {
+    assert.deepEqual(Object.keys(value).sort(), [
+      "error",
+      "kind",
+      "schemaVersion",
+      "sequence",
+    ]);
+    assert.equal(value.schemaVersion, 1);
+    assert.equal(value.sequence, sequence);
+    assert.ok(
+      typeof value.error === "string" &&
+        value.error.length > 0 &&
+        value.error.length <= 1024,
+      "Invalid retention error diagnostic",
+    );
+    throw Error(`Retention observer sample ${sequence} failed: ${value.error}`);
+  }
   assert.deepEqual(
     Object.keys(value).sort(),
     [

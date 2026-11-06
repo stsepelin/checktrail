@@ -152,6 +152,76 @@ test("retention protocol rejects incomplete adjacent unsafe and over-bound count
   ])
     assert.throws(() => validateRetentionMessage(value, 0));
 });
+const observerError = (
+  sequence = 1,
+  error = "ValueError: synthetic census failure",
+) => ({
+  schemaVersion: 1,
+  kind: "error",
+  sequence,
+  error,
+});
+
+test("retention error frames retain the bounded exact diagnostic and never return a sample", () => {
+  for (const diagnostic of [
+    "ValueError: synthetic census failure",
+    "x".repeat(1024),
+  ]) {
+    assert.throws(
+      () => validateRetentionMessage(observerError(1, diagnostic), 1),
+      {
+        name: "Error",
+        message: `Retention observer sample 1 failed: ${diagnostic}`,
+      },
+    );
+  }
+  for (const change of [
+    { schemaVersion: 2 },
+    { sequence: 2 },
+    { error: "" },
+    { error: true },
+    { error: "x".repeat(1025) },
+    { bytes: 0 },
+  ]) {
+    assert.throws(
+      () => validateRetentionMessage({ ...observerError(), ...change }, 1),
+      {
+        code: "ERR_ASSERTION",
+      },
+    );
+  }
+  assert.throws(() => validateRetentionMessage(observerError(0), 0), {
+    code: "ERR_ASSERTION",
+  });
+  assert.deepEqual(validateRetentionMessage(sample(), 1), sample());
+});
+
+test("retention replay preserves an error after prior samples despite a forged completed receipt", () => {
+  const error = JSON.stringify(observerError(2)) + "\n";
+  const bytes = Buffer.from(
+    transport().join("") +
+      row("stdin", request(2)) +
+      row("stdout", error.slice(0, 17)) +
+      row("stderr", "synthetic traceback\n") +
+      row("stdout", error.slice(17)),
+  );
+  for (const cBuildWork of [false, true]) {
+    assert.throws(
+      () =>
+        reconcileRetentionLog(
+          bytes,
+          { ...receipt(bytes), samples: 2 },
+          { cBuildWork },
+        ),
+      {
+        name: "Error",
+        message:
+          "Retention observer sample 2 failed: ValueError: synthetic census failure",
+      },
+    );
+  }
+});
+
 test("retention durable replay binds fragmented physical responses to exact requests and final counters", () => {
   const first = JSON.stringify(sample()) + "\n";
   const bytes = Buffer.from(
@@ -227,7 +297,7 @@ async function synthetic(
   const directory = await fixture(t, { ".keep": "synthetic transport only" });
   const program = String.raw`import assert from 'node:assert/strict';import cp from 'node:child_process';import {syncBuiltinESMExports}from'node:module';import fs,{readFileSync}from'node:fs';import {pathToFileURL}from'node:url';
 const [moduleFile,directory,mode,image,attempt]=process.argv.slice(1);const original=cp.spawn,originalWrite=fs.writeSync;let actual;const failures=[];
-const peer=String.raw\`import fs from 'node:fs';import readline from 'node:readline';const [mode,marker]=process.argv.slice(1);if(mode==='resist')process.on('SIGTERM',()=>{});if(mode==='startup-fail'){process.stderr.write('synthetic startup failure');process.exit(7);}console.log(JSON.stringify({schemaVersion:1,kind:'ready',roots:['/observed/bundle','/observed/controls','/observed/work']}));const lines=readline.createInterface({input:process.stdin});lines.on('line',line=>{fs.appendFileSync(marker,line+'\n');const q=JSON.parse(line);setTimeout(()=>console.log(JSON.stringify({schemaVersion:1,kind:'sample',sequence:q.sequence,bytes:18,files:1,directories:3})),40);});lines.on('close',()=>{if(mode!=='resist')process.exit(0);});if(mode==='resist')setInterval(()=>{},100);\`;
+const peer=String.raw\`import fs from 'node:fs';import readline from 'node:readline';const [mode,marker]=process.argv.slice(1);if(mode==='resist')process.on('SIGTERM',()=>{});if(mode==='startup-fail'){process.stderr.write('synthetic startup failure');process.exit(7);}console.log(JSON.stringify({schemaVersion:1,kind:'ready',roots:['/observed/bundle','/observed/controls','/observed/work']}));const lines=readline.createInterface({input:process.stdin});lines.on('line',line=>{fs.appendFileSync(marker,line+'\n');const q=JSON.parse(line);setTimeout(()=>console.log(JSON.stringify(mode==='sample-error'&&q.sequence===2?{schemaVersion:1,kind:'error',sequence:2,error:'ValueError: synthetic census failure'}:{schemaVersion:1,kind:'sample',sequence:q.sequence,bytes:18,files:1,directories:3})),40);});lines.on('close',()=>{if(mode!=='resist')process.exit(0);});if(mode==='resist')setInterval(()=>{},100);\`;
 cp.spawn=(command,args,options)=>{assert.equal(command,'docker');if(mode==='spawn-throw')throw Error('synthetic synchronous spawn failure');actual=original(process.execPath,['--input-type=module','-e',peer,mode,directory+'/requests'],options);return actual;};if(mode==='zero-write')fs.writeSync=()=>0;syncBuiltinESMExports();
 try{const api=await import(pathToFileURL(moduleFile).href);
  if(mode==='spawn-throw'||mode==='zero-write'){const started=Date.now();await assert.rejects(api.startRetentionObserver({destination:directory,image,platform:'linux/amd64',attempt,environment:process.env,onFailure:error=>failures.push(String(error))}),mode==='spawn-throw'?/synthetic synchronous spawn failure/:/progress/);assert.ok(Date.now()-started<2500);}
@@ -265,10 +335,22 @@ try{const api=await import(pathToFileURL(moduleFile).href);
  fs.writeFileSync(directory+'/quota-witness.json',JSON.stringify({mode,cBuildWork,requests:requests.length,branchReached:true,failures:failures.length}));
 }
 `;
+  const errorBranch = String.raw`else if(mode==='sample-error'){
+ const observer=await api.startRetentionObserver({destination:directory,image,platform:'linux/amd64',attempt,environment:process.env,onFailure:error=>failures.push(String(error))});
+ assert.equal((await observer.sample()).bytes,18);
+ const expected={name:'Error',message:'Retention observer sample 2 failed: ValueError: synthetic census failure'};
+ await assert.rejects(observer.sample(),expected);
+ assert.equal(failures.length,1);assert.equal(failures[0],'Error: '+expected.message);
+ await assert.rejects(observer.close(),expected);assert.equal(actual.exitCode,0);
+ const retained=readFileSync(directory+'/retention-observer.jsonl');
+ assert.throws(()=>api.reconcileRetentionLog(retained,{retainedLogBytes:retained.length,samples:2,lastSample:{schemaVersion:1,kind:'sample',sequence:2,bytes:18,files:1,directories:3}}),expected);
+ const lines=readFileSync(directory+'/requests','utf8').trim().split(String.fromCharCode(10));assert.equal(lines.length,2);assert.deepEqual(lines.map(line=>JSON.parse(line).sequence),[1,2]);
+}
+`;
   const branchMarker = "else{const observer=await api.startRetentionObserver";
   assert.equal(program.split(branchMarker).length, 2);
   const executableProgram = program
-    .replace(branchMarker, budgetBranch + branchMarker)
+    .replace(branchMarker, budgetBranch + errorBranch + branchMarker)
     .replaceAll("\\`", "`");
   const child = spawnSync(
     process.execPath,
@@ -359,6 +441,13 @@ test(
   { timeout: 20000 },
   async (t) => {
     await synthetic(t, "normal");
+  },
+);
+test(
+  "retention live synthetic error after a valid sample fails its callback request close and replay",
+  { timeout: 20000 },
+  async (t) => {
+    await synthetic(t, "sample-error");
   },
 );
 test(
