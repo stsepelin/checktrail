@@ -66,6 +66,8 @@ import {
   validateGlibcDockerSecurityOptions,
 } from "./producer-qualification/glibc-seccomp.mjs";
 
+import { sampleQuiescentCProducer } from "./producer-qualification/c-producer-quiescent-sample.mjs";
+
 const { AbortController } = globalThis;
 const exec = promisify(execFile);
 const environment = {
@@ -78,6 +80,7 @@ const self = fileURLToPath(import.meta.url);
 const sourceFiles = [
   "c-producer-profiles.v1.json",
   "c-producer-profile.mjs",
+  "c-producer-quiescent-sample.mjs",
   "c-producer-build.sh",
   "c-producer-test-reports.py",
   "binutils-retention-observer.py",
@@ -1865,8 +1868,25 @@ async function run(
     });
     const allowance =
       inputBytes + selectedControls.reduce((sum, row) => sum + row.bytes, 0);
+    if (plan.executionPolicy) state.quiescentResourceSamples = [];
     const measure = async () => {
-      const sample = await observer.sample();
+      const sample = plan.executionPolicy
+        ? await sampleQuiescentCProducer({
+            attempt,
+            image: catalog.image,
+            docker,
+            sample: () => observer.sample(),
+            nativeStarted: state.originalExecutionInvoked === true,
+            nativeFinished: () => state.executionObserver != null,
+            record: (row) => {
+              assert.ok(
+                state.quiescentResourceSamples.length <
+                  cBuildRetentionPolicy.maximumSamples + 2,
+              );
+              state.quiescentResourceSamples.push(row);
+            },
+          })
+        : await observer.sample();
       assert.ok(
         sample.bytes <= profile.limits.workByteLimit + allowance,
         "Retained original work exceeded declared bound plus frozen inputs/controls",

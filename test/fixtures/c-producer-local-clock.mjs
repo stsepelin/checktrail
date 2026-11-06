@@ -90,19 +90,22 @@ const bridge = {
       );
     },
     {
-      [promisify.custom]: async (_file, args) => ({
-        stdout: JSON.stringify(
-          args[0] === "info"
-            ? {
-                OSType: "linux",
-                Architecture: "aarch64",
-                NCPU: 4,
-                MemTotal: 6442450944,
-              }
-            : [{}],
-        ),
-        stderr: "",
-      }),
+      [promisify.custom]: async (_file, args) => {
+        if (args[0] === "ps") {
+          assert.equal(args.length, 7);
+          assert.deepEqual(args.slice(0, 4), ["ps", "--all", "--no-trunc", "--filter"]);
+          assert.match(args[4], /^name=\^\/checktrail-producer-[a-f0-9-]{36}\$$/u);
+          assert.deepEqual(args.slice(5), ["--format", "{{.ID}}"]);
+          events.push("docker:exact-producer-list-empty");
+          return { stdout: "", stderr: "" };
+        }
+        return {
+          stdout: JSON.stringify(args[0] === "info" ? {
+            OSType: "linux", Architecture: "aarch64", NCPU: 4, MemTotal: 6442450944,
+          } : [{}]),
+          stderr: "",
+        };
+      },
     },
   ),
   spawn(_file, argv) {

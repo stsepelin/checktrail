@@ -135,6 +135,7 @@ export const nodeOriginalSourceFiles = Object.freeze([
   "scripts/qualify-binutils-producer.mjs",
   "scripts/qualify-c-producer.mjs",
   "scripts/producer-qualification/c-producer-profile.mjs",
+  "scripts/producer-qualification/c-producer-quiescent-sample.mjs",
   "scripts/producer-qualification/c-producer-profiles.v1.json",
   "scripts/producer-qualification/glibc-seccomp.mjs",
   "scripts/producer-qualification/binutils-retention-observer.mjs",

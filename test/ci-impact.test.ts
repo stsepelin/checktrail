@@ -257,11 +257,14 @@ const cProducerBoundaryInputs = [
   "scripts/producer-qualification/gcc-local-wall-policy.v1.json",
   "scripts/verify-c-producer-observation.mjs",
   "test/fixtures/c-producer-local-clock.mjs",
+  "scripts/producer-qualification/c-producer-quiescent-sample.mjs",
+  "test/c-producer-quiescence.test.ts",
 ];
 const cProducerRegressionFiles = [
   "test/c-producer-evidence.test.ts",
   "test/c-producer-gcc-evidence.test.ts",
   "test/c-producer-qualification.test.ts",
+  "test/c-producer-quiescence.test.ts",
   "test/c-producer-replay-batch.test.ts",
   "test/c-producer-u13.test.ts",
   "test/gcc-job-envelope.test.ts",

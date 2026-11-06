@@ -326,3 +326,14 @@ original completion can be assessed without claiming twelve-hour hosted capacity
 The job token is used only for metadata admission and is excluded from the original
 controller's environment. No upstream build or new hosted observation is established
 by the synthetic clock and transport controls.
+
+The local GCC policy pauses the exact owned producer container during resource
+measurements, verifies Docker acknowledged that paused state, then resumes it
+before returning the measurement. This keeps temporary compiler/test files from
+disappearing during the strict no-follow scan. The unchanged upstream command
+and original wall deadline still include observation time. Every local sample
+retains its container identity, pause/sample/resume actions and completion state;
+a sampling or resume failure remains incomplete. Pre-admission and positively
+observed post-terminal absence are separate cases. Default producer policies
+continue to use their existing observer. This is a resource observation contract,
+not a filesystem quota or a claim of compiler, test or notice closure.

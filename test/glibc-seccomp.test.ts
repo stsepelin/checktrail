@@ -216,7 +216,7 @@ test("GLIBC synthetic probe schema preserves BZ19408 negative returns and the er
   assert.throws(() => api.validateGlibcSyscallProbe(wrong, "derived"));
 });
 
-test("GLIBC-only compiler and fixed probe vectors keep capabilities, budgets and the GCC carrier unchanged", async () => {
+test("GLIBC compiler and fixed probe vectors retain native capabilities and budgets while binding shared helpers", async () => {
   const destination = path.resolve("synthetic-glibc-policy");
   const attempt = "12345678-1234-4234-8234-123456789012";
   for (const name of ["gcc-12", "glibc"]) {
@@ -240,7 +240,7 @@ test("GLIBC-only compiler and fixed probe vectors keep capabilities, budgets and
     assert.ok(!argv.some((v) => /privileged|cap-add|unconfined/u.test(v)));
     assert.equal(
       controller.cProducerSourceFiles(profile).length,
-      name === "glibc" ? 15 : 9,
+      name === "glibc" ? 16 : 10,
     );
     for (const mode of ["baseline", "derived"]) {
       const args: string[] = controller.cProducerSyscallPreflightArguments(

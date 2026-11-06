@@ -18,7 +18,7 @@ REPORT_LOCATIONS = {
 }
 SOURCE_FILES = [
     'scripts/qualify-c-producer.mjs', 'scripts/qualify-binutils-producer.mjs',
-    'scripts/producer-qualification/c-producer-profile.mjs', 'scripts/producer-qualification/c-producer-profiles.v1.json',
+    'scripts/producer-qualification/c-producer-profile.mjs', 'scripts/producer-qualification/c-producer-quiescent-sample.mjs', 'scripts/producer-qualification/c-producer-profiles.v1.json',
     'scripts/producer-qualification/c-producer-build.sh', 'scripts/producer-qualification/c-producer-test-reports.py',
     'scripts/producer-qualification/binutils-retention-observer.mjs', 'scripts/producer-qualification/binutils-retention-observer.py',
     'scripts/producer-qualification/binutils-image-identity.mjs', 'scripts/producer-qualification/binutils-image-identity.v1.json',

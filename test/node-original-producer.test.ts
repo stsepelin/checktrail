@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { readFile } from "node:fs/promises";
 import { test } from "node:test";
-import { URL } from "node:url";
+import { URL, fileURLToPath } from "node:url";
+import path from "node:path";
+import { isBuiltin } from "node:module";
+import ts from "typescript";
 import { parse } from "yaml";
 const profile = await import(
   new URL(
@@ -343,5 +346,46 @@ test("Original Node final admission preserves failed test outcomes and rejects i
     assert.throws(() =>
       controller.inspectNodeOriginalObservation(value, startup, "2"),
     );
+  }
+});
+
+test("Original Node source frame binds every actual shared static import without executing producer code", async () => {
+  const repository = fileURLToPath(new URL("../../", import.meta.url));
+  const bound = new Set<string>(controller.nodeOriginalSourceFiles);
+  for (const file of bound) {
+    if (!file.endsWith(".mjs")) continue;
+    const tree = ts.createSourceFile(
+      file,
+      await readFile(path.join(repository, file), "utf8"),
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.JS,
+    );
+    for (const statement of tree.statements) {
+      if (
+        !(
+          ts.isImportDeclaration(statement) || ts.isExportDeclaration(statement)
+        ) ||
+        !statement.moduleSpecifier ||
+        !ts.isStringLiteral(statement.moduleSpecifier)
+      )
+        continue;
+      const specifier = statement.moduleSpecifier.text;
+      if (isBuiltin(specifier)) continue;
+      assert.ok(
+        specifier.startsWith("."),
+        "Unbound non-builtin Node controller dependency: " + specifier,
+      );
+      const target = path.posix.normalize(
+        path.posix.join(path.posix.dirname(file), specifier),
+      );
+      assert.ok(
+        bound.has(target),
+        "Node source frame omits actual static helper: " +
+          file +
+          " -> " +
+          target,
+      );
+    }
   }
 });
