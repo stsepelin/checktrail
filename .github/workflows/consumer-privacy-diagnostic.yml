@@ -22,6 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: 68ff3bd093cc2067b36dd0cecca0a43608bf09e8
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -29,87 +30,67 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run build
-      - name: Diagnose existing Windows private-access setup
-        run: node scripts/diagnose-windows-task-access.mjs
-      - name: Verify bounded terminal diagnostics on native Windows
-        run: node --test dist/test/consumer-runtime-diagnostics.test.js
-      - name: Observe only the synthetic consumer privacy callback
+      - name: Observe only the current confidence lifecycle callback
         shell: pwsh
         env:
-          CHECKTRAIL_DIAGNOSTIC_OUTPUT: ${{ runner.temp }}/checktrail-consumer-privacy-diagnostic.json
+          CHECKTRAIL_DIAGNOSTIC_OUTPUT: ${{ runner.temp }}/checktrail-confidence-lifecycle-diagnostic.json
         run: |
-          $diagnosticScript = Join-Path $env:GITHUB_WORKSPACE ".checktrail-consumer-privacy-diagnostic.mjs"
+          $diagnosticScript = Join-Path $env:GITHUB_WORKSPACE ".checktrail-confidence-lifecycle-diagnostic.mjs"
           @'
           import { createHash } from "node:crypto";
-          import { readFile, writeFile, mkdtemp, realpath, rm } from "node:fs/promises";
-          import os from "node:os";
+          import { execFileSync } from "node:child_process";
+          import { readFile, writeFile } from "node:fs/promises";
           import path from "node:path";
           import process from "node:process";
-          let state = "incomplete", stage = "runtime-setup", terminal = null, shape = null, temporary;
+          const expectedSource = "68ff3bd093cc2067b36dd0cecca0a43608bf09e8";
+          const expectedTree = "cfe05f6b38bd2b2bb1dd907001275e70f7509b13";
+          const name = "confidence-provenance lifecycle acceptance";
+          const file = "dist/test/gate-confidence-provenance.test.js";
+          const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+          const git = (args) => execFileSync("git", args, { encoding: "utf8" }).trim();
+          const count = (value) => Number.isSafeInteger(value) && value >= 0 && value <= 4096 ? value : null;
+          let state = "incomplete", stage = "source-binding", sourceCommit = null, sourceTree = null;
+          let compiledTestSha256 = null, callback = null, compiledBytesStable = false;
           try {
+            sourceCommit = git(["rev-parse", "HEAD"]);
+            sourceTree = git(["rev-parse", "HEAD^{tree}"]);
+            if (sourceCommit !== expectedSource || sourceTree !== expectedTree ||
+                git(["status", "--porcelain", "--untracked-files=no"]) !== "") throw Error("source-binding");
+            if (process.platform !== "win32" || process.arch !== "x64" || process.versions.node !== "22.23.3") throw Error("runtime-binding");
+            const before = await readFile(file);
+            if (before.length > 4 * 1048576) throw Error("source-bound");
+            compiledTestSha256 = hash(before);
             const { runRequiredTests } = await import("./scripts/required-test-evidence.mjs");
-            const { projectConsumerTerminalDiagnostic } = await import("./scripts/consumer-runtime-diagnostics.mjs");
-            const { observeConsumerRuntime, checkConsumerRuntimeSelection } = await import("./scripts/consumer-runtime-evidence.mjs");
-            const { ensureWindowsTaskAccess } = await import("./dist/src/windows-task-access.js");
-            const scope = JSON.parse(await readFile("docs/gate-a-profiles.v1.json", "utf8"));
-            checkConsumerRuntimeSelection(scope, "windows-node22", await observeConsumerRuntime("windows-node22"), true);
-            temporary = await realpath(await mkdtemp(path.join(os.tmpdir(), "checktrail-consumer-privacy-diagnostic-")));
-            ensureWindowsTaskAccess(temporary, "directory", true);
-            process.env.CHECKTRAIL_CONSUMER_RUNTIME_ACTIVE = "1";
-            process.env.CHECKTRAIL_CONSUMER_RUNTIME_SLOT = "windows-node22";
-            process.env.CHECKTRAIL_CONSUMER_RUNTIME_RECEIPT = path.join(temporary, "installed.json");
-            const file = "dist/test/gate-consumer-impact.test.js";
-            const requirements = JSON.parse(await readFile("scripts/required-native-tests.json", "utf8"))["consumer-impact"];
-            const acceptanceSha256 = createHash("sha256").update(await readFile(file)).digest("hex");
-            stage = "privacy-observation";
-            const profile = await runRequiredTests([{ file: path.resolve(file), name: "consumer-impact privacy acceptance" }], { timeoutMs: 600000, isolatedCaseWorkers: 1, diagnosticSourceFile: path.resolve(file) });
-            terminal = projectConsumerTerminalDiagnostic(profile, requirements, acceptanceSha256);
-            const publicNames = new Set([
-              "consumer-impact broken acceptance", "consumer-impact fixed acceptance", "consumer-impact near-miss acceptance",
-              "consumer-impact prerequisite acceptance", "consumer-impact stale acceptance", "consumer-impact empty acceptance",
-              "consumer-impact privacy acceptance", "consumer-impact lifecycle acceptance", "consumer-impact installed acceptance",
-            ]);
-            const count = (value) => Number.isSafeInteger(value) && value >= 0 && value <= 4096 ? value : null;
-            const known = (value, allowed) => allowed.includes(value) ? value : null;
-            const inputs = Array.isArray(profile.ledger?.files) ? profile.ledger.files : [];
-            const events = Array.isArray(profile.ledger?.events) ? profile.ledger.events : [];
-            const problems = Array.isArray(profile.problems) ? profile.problems : [];
-            shape = {
-              required: count(profile.required), passed: count(profile.passed), complete: profile.complete === true,
-              fileCount: count(inputs.length), truncated: profile.ledger?.truncated === true,
-              terminalEventCount: count(profile.ledger?.terminalEventCount), eventCount: count(events.length),
-              files: inputs.slice(0, 2).map((input) => ({
-                stable: input.stable === true,
-                beforeState: known(input.before?.state, ["present", "unavailable"]),
-                afterState: known(input.after?.state, ["present", "unavailable"]),
-                beforeDigestMatches: input.before?.sha256 === acceptanceSha256,
-                afterDigestMatches: input.after?.sha256 === acceptanceSha256,
-              })),
-              otherEventCount: count(events.filter((event) => !publicNames.has(event.name)).length),
-              events: events.filter((event) => publicNames.has(event.name)).slice(0, 100).map((event) => ({
-                name: event.name, sequence: count(event.sequence),
-                inputIdMatches: inputs.length === 1 && event.fileId === inputs[0].id,
-                nameTruncated: event.nameTruncated === true, required: event.required === true,
-                kind: known(event.kind, ["test", "suite"]),
-                outcome: known(event.outcome, ["passed", "failed", "skipped", "todo"]),
-              })),
-              otherProblemCount: count(problems.filter((problem) => !publicNames.has(problem.name)).length),
-              problems: problems.filter((problem) => publicNames.has(problem.name)).slice(0, 18).map((problem) => ({
-                name: problem.name, reason: known(problem.reason, ["failed", "skipped-or-todo", "required-test-not-passed"]),
-              })),
+            stage = "lifecycle-observation";
+            const profile = await runRequiredTests([{ file: path.resolve(file), name }], {
+              timeoutMs: 600000, isolatedCaseWorkers: 1, diagnosticSourceFile: path.resolve(file),
+            });
+            compiledBytesStable = hash(await readFile(file)) === compiledTestSha256;
+            const row = profile.ledger?.cases?.find((item) => item.name === name);
+            const problems = (profile.problems ?? []).filter((problem) => problem.name === name);
+            const sites = problems.filter((problem) => problem.failureSite?.sourceFileSha256 === compiledTestSha256)
+              .map((problem) => ({ sourceFileSha256: compiledTestSha256,
+                line: count(problem.failureSite.line), column: count(problem.failureSite.column) }));
+            callback = {
+              name, required: count(profile.required), passed: count(profile.passed), complete: profile.complete === true,
+              outcome: ["passed", "failed", "skipped", "todo", "missing"].includes(row?.outcome) ? row.outcome : null,
+              terminalEventCount: count(profile.ledger?.terminalEventCount), truncated: profile.ledger?.truncated === true,
+              failureSites: sites.slice(0, 4),
+              problemReasons: problems.slice(0, 8).map((problem) =>
+                ["failed", "skipped-or-todo", "required-test-not-passed"].includes(problem.reason) ? problem.reason : "other"),
             };
-            const row = terminal.cases.find((item) => item.name === "consumer-impact privacy acceptance");
-            state = terminal.state === "observed" && terminal.cases.length === 1 ? "observed" : "incomplete";
-            process.exitCode = state === "observed" && row?.outcome === "passed" ? 0 : 1;
+            state = compiledBytesStable && callback.required === 1 && callback.outcome !== null ? "observed" : "incomplete";
+            process.exitCode = state === "observed" && callback.outcome === "passed" ? 0 : 1;
           } catch {
             process.exitCode = 1;
-          } finally {
-            if (temporary) {
-              try { await rm(temporary, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); }
-              catch { state = "cleanup-incomplete"; process.exitCode = 1; }
-            }
           }
-          const output = { schemaVersion: 1, profile: "consumer-privacy-diagnostic-only-v1", state, stage, terminal, shape, acceptanceClaim: false, gateAClosed: false, inferenceExecuted: false, fieldEvaluationExecuted: false };
+          const output = {
+            schemaVersion: 1, profile: "confidence-lifecycle-diagnostic-only-v1", state, stage,
+            diagnosticWorkflowCommit: process.env.GITHUB_SHA ?? null,
+            sourceCommit, sourceTree, compiledTestSha256, compiledBytesStable, callback,
+            runtime: { node: process.versions.node, platform: process.platform, architecture: process.arch },
+            acceptanceClaim: false, gateAClosed: false, inferenceExecuted: false, fieldEvaluationExecuted: false,
+          };
           try { await writeFile(process.env.CHECKTRAIL_DIAGNOSTIC_OUTPUT, JSON.stringify(output) + "\n", { flag: "wx" }); }
           catch { process.exitCode = 1; }
           process.stdout.write(JSON.stringify(output) + "\n");
@@ -122,12 +103,12 @@ jobs:
             Remove-Item -LiteralPath $diagnosticScript -Force
           }
           if ($diagnosticExit -ne 0) { exit $diagnosticExit }
-      - name: Retain only the sanitized diagnostic
+      - name: Retain only the sanitized confidence diagnostic
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: consumer-privacy-diagnostic-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/checktrail-consumer-privacy-diagnostic.json
+          name: confidence-lifecycle-diagnostic-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-confidence-lifecycle-diagnostic.json
           if-no-files-found: error
           retention-days: 7
           include-hidden-files: false
