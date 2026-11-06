@@ -26,8 +26,17 @@ A declaration with no selected cases is incomplete.
 Selected cases must declare permitted distribution, no required private service,
 applicable scope, an active split, notice metadata and a license other than missing,
 `NONE`, `NOASSERTION` or `UNLICENSED`. This checks metadata presence, not SPDX
-expression validity or whether a license legally authorizes use. Unknown exposure
-is incomplete for selected cases. Reserved cases must declare uninspected exposure,
+expression validity or whether a license legally authorizes use.
+
+Unknown source content/archive identities are represented as null only for
+excluded cases; selected cases still require both SHA-256 values. The
+`unknown-source-identity` exclusion reason must match at least one unknown value
+and becomes stale when both are known. Missing content does not link unrelated
+cases. Known content and lineage links still participate, and optional repository
+and family holdouts remain in force. Existing complete-identity declarations
+retain their parsed fingerprint.
+
+Unknown exposure is incomplete for selected cases. Reserved cases must declare uninspected exposure,
 including excluded reserved cases. Each exclusion reason must still match the
 corresponding declared field, so a stale suppression is incomplete. Multiple reasons
 are allowed but duplicates are refused. Undeclared exclusions cannot be counted.

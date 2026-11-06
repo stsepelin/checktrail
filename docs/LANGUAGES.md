@@ -552,6 +552,8 @@ The [synthetic native workload/resource harness](NATIVE-RESOURCE-ACCOUNTING.md#s
 
 The [evaluation cohort declaration checker](EVALUATION-COHORT-DECLARATIONS.md) validates bounded declared lineage/content grouping, optional repository/family holdouts, retained exclusions, eligibility metadata and exposure declarations through the shared library and a repository setup script. These original synthetic development controls do not inspect source or labels, verify license grants or sessions, freeze the private reference/workflow, execute inference, or close the independent evaluation profile or Gate A.
 
+Excluded cohort cases can retain explicitly unknown source/archive hashes without joining unrelated missing content. Selected cases still require both source identities; known lineage/content and optional repository/family grouping remain active.
+
 All-candidate findings inspection also supports quiescent unfinished stages after
 an accepted reviewer response. Missing judgments remain unresolved; reached native
 receipts awaiting adjudication stay bound. The whole-profile synthetic cases do

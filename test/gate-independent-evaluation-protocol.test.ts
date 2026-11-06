@@ -34,7 +34,10 @@ import {
 } from "../src/review-evaluation-artifacts.js";
 import { matchingFixture } from "./review-evaluation-matching-fixture.js";
 import { artifactFixture } from "./review-evaluation-artifacts-fixture.js";
-import { protocolFixture } from "./review-evaluation-protocol-fixture.js";
+import {
+  protocolFixture,
+  bindProtocolCohort,
+} from "./review-evaluation-protocol-fixture.js";
 import { fixture, nodeManifest } from "./helpers.js";
 const sha = (bytes: Uint8Array) =>
   createHash("sha256").update(bytes).digest("hex");
@@ -220,6 +223,25 @@ test("independent-evaluation-protocol prerequisite acceptance", async (t) => {
   assert.throws(() => score(project, store, "0".repeat(64)));
   assert.deepEqual(await readdir(store), []);
   assert.deepEqual(await readdir(project), ["marker"]);
+  const excludedUnknown = protocolFixture(4);
+  for (const index of [2, 3])
+    Object.assign(excludedUnknown.cohort.cases[index]!, {
+      contentSha256: null,
+      sourceArchiveSha256: null,
+      disposition: { status: "excluded", reasons: ["unknown-source-identity"] },
+    });
+  bindProtocolCohort(excludedUnknown);
+  const retained = inspectReviewEvaluationProtocol(excludedUnknown);
+  assert.equal(retained.declarationComplete, true);
+  assert.equal(retained.counts.totalCases, 4);
+  assert.equal(retained.counts.selectedCases, 2);
+  assert.equal(retained.counts.excludedCases, 2);
+  assert.equal(retained.counts.plannedArmSlots, 12);
+  for (const field of ["contentSha256", "sourceArchiveSha256"] as const) {
+    const selectedUnknown = protocolFixture();
+    Object.assign(selectedUnknown.cohort.cases[0]!, { [field]: null });
+    assert.throws(() => inspectReviewEvaluationProtocol(selectedUnknown));
+  }
   const configuration = await configurationFixture(t);
   assert.equal(configuration.inspectFiles().configurationBytesVerified, true);
   await writeFile(
