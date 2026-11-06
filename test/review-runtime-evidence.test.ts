@@ -581,13 +581,13 @@ test("confidence installed callback retains qualified routing failed child statu
   const { fixture } = await import("./helpers.js");
   const path = await import("node:path");
   const root = await fixture(t, {
-    "observe.mjs": `import assert from'node:assert/strict';import path from'node:path';import{registerHooks}from'node:module';
-const target=process.argv[2],platform=process.argv[3],mode=process.argv[4];globalThis.observedCalls=[];globalThis.observedOutcomes=[];globalThis.selectedPath=platform==='win32'?path.win32:path.posix;
+    "observe.mjs": `import assert from'node:assert/strict';import path from'node:path';import{registerHooks}from'node:module';import{spawnSync as realSpawnSync}from'node:child_process';
+const target=process.argv[2],platform=process.argv[3],mode=process.argv[4];globalThis.failedQualifiedChild=mode==='qualified'?realSpawnSync(process.execPath,['-e',"process.getBuiltinModule('node:fs').writeSync(2,'Original qualified installed refusal');process.exit(7);"],{encoding:'utf8',timeout:5000,maxBuffer:65536}):null;if(mode==='qualified')assert.equal(globalThis.failedQualifiedChild.status,7);globalThis.observedCalls=[];globalThis.observedOutcomes=[];globalThis.selectedPath=platform==='win32'?path.win32:path.posix;
 globalThis.installedPath=globalThis.selectedPath.join(platform==='win32'?'C:\\\\original':'/original','node_modules','@stsepelin',mode==='adjacent'?'checktrail-extra':'checktrail','dist','src','index.js');
 const tests="export function test(name,options,callback){if(name==='confidence-provenance installed acceptance')globalThis.observedOutcomes.push(Promise.resolve().then(callback).then(()=>({outcome:'passed'}),error=>({outcome:'failed',message:error.message})));}";
 const fs="export * from'node:fs/promises';export async function realpath(){return globalThis.installedPath;}";
-const child="export function spawnSync(executable,args,options){globalThis.observedCalls.push({args,nodeTestContext:options.env.NODE_TEST_CONTEXT});return{status:7,stdout:'',stderr:'Original qualified installed refusal'};}";
-const unused="export const recipe={},source='original';export function provenanceFixture(){};export function inspectReviewProvenance(){};export function projectReviewProvenance(){};export function runReviewProbe(){};export function createReviewContext(){};";
+const child="export function spawnSync(executable,args,options){const result=globalThis.failedQualifiedChild;globalThis.observedCalls.push({args,nodeTestContext:options.env.NODE_TEST_CONTEXT,actualChildStatus:result?.status,actualChildPid:result?.pid});if(!result)throw Error('Unexpected child outside qualified route');return result;}";
+const unused="export const recipe={},source='original';function unexpected(){throw Error('Unexpected unselected callback dependency');}export{unexpected as provenanceFixture,unexpected as inspectReviewProvenance,unexpected as projectReviewProvenance,unexpected as runReviewProbe,unexpected as nativeProbeStartObserved,unexpected as createReviewContext};";
 registerHooks({resolve(specifier,context,next){if(context.parentURL===target){const stub=specifier==='node:test'?tests:specifier==='node:fs/promises'?fs:specifier==='node:child_process'?child:specifier==='node:path'?'export default globalThis.selectedPath;':specifier.startsWith('.')?unused:null;if(stub)return{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true};}return next(specifier,context);}});
 Object.defineProperty(process,'platform',{value:platform});if(mode==='qualified'){delete process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED;process.env.CHECKTRAIL_CONFIDENCE_RUNTIME_SLOT='windows-node22';}else process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED='1';await import(target);console.log(JSON.stringify({calls:globalThis.observedCalls,outcomes:await Promise.all(globalThis.observedOutcomes)}));`,
   });
@@ -619,6 +619,11 @@ Object.defineProperty(process,'platform',{value:platform});if(mode==='qualified'
           /Original qualified installed refusal/,
         );
         assert.equal(observed.calls.length, 1);
+        assert.equal(observed.calls[0].actualChildStatus, 7);
+        assert.ok(
+          Number.isSafeInteger(observed.calls[0].actualChildPid) &&
+            observed.calls[0].actualChildPid > 0,
+        );
         assert.ok(
           observed.calls[0].args[0].endsWith(
             "verify-review-runtime-package.mjs",

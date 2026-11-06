@@ -17,7 +17,10 @@ import {
   inspectReviewProvenance,
   projectReviewProvenance,
 } from "../src/review-provenance.js";
-import { runReviewProbe } from "../src/review-probe.js";
+import {
+  runReviewProbe,
+  nativeProbeStartObserved,
+} from "../src/review-probe.js";
 import { createReviewContext } from "../src/review.js";
 import { provenanceFixture } from "./confidence-provenance-fixture.js";
 import { recipe, source } from "./review-workflow-fixture.js";
@@ -550,6 +553,47 @@ test(
           assert.equal(run.temporaryArtifacts, "removed");
           if (run.schemaVersion !== 3)
             throw Error("Raw-output native receipt required");
+          if (process.platform === "win32") {
+            const artifact = run.trials[0]!.execution!.artifact;
+            const windows = artifact.windowsExecution;
+            assert.ok(
+              windows,
+              "Windows native-start evidence must be retained",
+            );
+            assert.equal(windows.jobAssigned, true);
+            assert.equal(windows.resumed, true);
+            assert.ok(
+              Number.isSafeInteger(windows.childPid) && windows.childPid! > 0,
+            );
+            assert.equal(artifact.signal, null);
+            assert.equal(artifact.exitCode, windows.childExitCode);
+            if (mode !== "output") {
+              assert.equal(
+                artifact.exitCode,
+                null,
+                "Forced cleanup leaves the original terminal unknown",
+              );
+              assert.equal(windows.childExitCode, null);
+            }
+            const pendingTerminal = {
+              exitCode: null,
+              signal: null,
+              windowsExecution: windows,
+            };
+            assert.equal(nativeProbeStartObserved(pendingTerminal), true);
+            for (const incomplete of [
+              { ...windows, resumed: false },
+              { ...windows, jobAssigned: false },
+              { ...windows, childPid: null },
+            ])
+              assert.equal(
+                nativeProbeStartObserved({
+                  ...pendingTerminal,
+                  windowsExecution: incomplete,
+                }),
+                false,
+              );
+          }
           assert.equal(run.nativeBudget.calls, 1);
           assert.equal(run.counts.notRun, 2);
           assert.equal(run.trials[1]!.execution, null);
