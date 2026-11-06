@@ -4317,6 +4317,7 @@
     "yaml-context-arm64"
   ],
   "test/swift-extensions-fixture.ts": ["swift-extensions-arm64"],
+  "test/swift-preparation.test.ts": ["swift-extensions-arm64", "swift-tools"],
   "test/swift-testing.test.ts": ["swift-extensions-arm64", "swift-tools"],
   "test/swift-tools-cancel.test.ts": ["swift-extensions-arm64", "swift-tools"],
   "test/swift-tools-fixture.ts": ["swift-extensions-arm64", "swift-tools"],
