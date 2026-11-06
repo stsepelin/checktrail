@@ -18,7 +18,7 @@ REPORT_LOCATIONS = {
 }
 SOURCE_FILES = [
     'scripts/qualify-c-producer.mjs', 'scripts/qualify-binutils-producer.mjs',
-    'scripts/producer-qualification/c-producer-profile.mjs', 'scripts/producer-qualification/c-producer-profiles.v1.json',
+    'scripts/producer-qualification/c-producer-profile.mjs', 'scripts/producer-qualification/c-producer-quiescent-sample.mjs', 'scripts/producer-qualification/c-producer-profiles.v1.json',
     'scripts/producer-qualification/c-producer-build.sh', 'scripts/producer-qualification/c-producer-test-reports.py',
     'scripts/producer-qualification/binutils-retention-observer.mjs', 'scripts/producer-qualification/binutils-retention-observer.py',
     'scripts/producer-qualification/binutils-image-identity.mjs', 'scripts/producer-qualification/binutils-image-identity.v1.json',
@@ -32,6 +32,9 @@ SOURCE_FILES += ['scripts/producer-qualification/' + name for name in [
 ]]
 SOURCE_FILES += ['scripts/producer-qualification/gcc-job-envelope.mjs', 'scripts/producer-qualification/gcc-github-job-clock.mjs', 'scripts/producer-qualification/emsdk-metadata-values.mjs']
 SOURCE_FILES += ['scripts/producer-qualification/c-carrier-observation.mjs','scripts/observe-c-producer-carrier.mjs','.github/workflows/upstream-gcc.yml']
+
+LOCAL_POLICY_ID = 'local-gcc12-23h-v1'
+LOCAL_POLICY_SOURCE = 'scripts/producer-qualification/gcc-local-wall-policy.v1.json'
 
 
 def physical(file):
@@ -88,9 +91,11 @@ class BoundedWriter:
         return getattr(self.handle, name)
 
 
-def export(repository, inputs, common, result, startup, output, logs=(), observer_check=None, profile_name='glibc', carrier=None):
+def export(repository, inputs, common, result, startup, output, logs=(), observer_check=None, profile_name='glibc', carrier=None, execution_policy=None):
     if profile_name not in ['gcc-12','glibc','glibc-u13']:
         raise RuntimeError('Unknown selected original C profile')
+    if execution_policy is not None and (execution_policy != LOCAL_POLICY_ID or profile_name != 'gcc-12'):
+        raise RuntimeError('Unknown or foreign local execution policy')
     repository, inputs, common, result, startup, output = [Path(value).absolute() for value in [repository, inputs, common, result, startup, output]]
     physical(output.parent)
     if output.exists() or Path(str(output) + '.part').exists():
@@ -99,6 +104,8 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
         if output == source or source in output.parents:
             raise RuntimeError('Evidence output overlaps source')
     version, controller_format = evidence_format(result)
+    if execution_policy is not None and version != 2:
+        version, controller_format = 2, 'unverified'
     rows, names, directories, directory_identities, unavailable = [], set(), {}, {}, []
     total = 0
     report_totals = {'original-trap': 0, 'post-stop': 0}
@@ -135,7 +142,7 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
             unavailable.append({'file': name, 'errorClass': type(error).__name__, 'state': 'missing-inaccessible-or-outside-declared-bound'})
 
     add(startup, 'operator-startup.json', MIB)
-    for file in SOURCE_FILES:
+    for file in SOURCE_FILES + ([LOCAL_POLICY_SOURCE] if execution_policy is not None else []):
         add(repository / file, 'source/' + file, 2 * MIB)
     for prefix, source in [('inputs', inputs), ('common-inputs', common)]:
         add(source / 'receipt.json', prefix + '/receipt.json', 8 * MIB)
@@ -215,6 +222,8 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
     if not rows:
         raise RuntimeError('No raw C attempt observations available')
     manifest = {'schemaVersion': version, 'selectedProfile': profile_name, 'scope': 'Bounded original C receipts, reports and logs; failed attempts retained without promotion.', 'rawFiles': [], 'nativeDirectories': list(directories.values()), 'unavailable': unavailable, 'uncompressedBytes': total, 'originalReportLogBytes': report_totals['original-trap'], 'originalReportMemberByteLimit': 64 * MIB, 'originalReportAggregateByteLimit': 512 * MIB, 'binaryPackagePayloadsUploaded': False, 'nativeWorktreeArchiveUploaded': False, 'originalInputPayloadsUploaded': False, 'qualificationComplete': False, 'gateAComplete': False}
+    if execution_policy is not None:
+        manifest['executionPolicy'] = execution_policy
     if version == 2:
         manifest.update(controllerReceiptFormat=controller_format, retentionObserverLogByteLimit=256*MIB,
                         postStopReportLogBytes=report_totals['post-stop'], postStopReportAggregateByteLimit=512*MIB,
@@ -271,6 +280,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--profile',choices=['gcc-12','glibc','glibc-u13'],required=True)
     parser.add_argument('--carrier')
+    parser.add_argument('--execution-policy', choices=[LOCAL_POLICY_ID])
     for name in ['repository', 'inputs', 'common-inputs', 'result', 'startup', 'output']:
         parser.add_argument('--' + name, required=True)
     parser.add_argument('--common-admission-log')
@@ -279,4 +289,4 @@ if __name__ == '__main__':
     parser.add_argument('--observer-check')
     args = parser.parse_args()
     logs = [(label, file) for label, file in [('common-admission', args.common_admission_log), ('input-admission', args.input_admission_log), ('controller', args.controller_log)] if file]
-    print(json.dumps(export(args.repository, args.inputs, args.common_inputs, args.result, args.startup, args.output, logs, args.observer_check,args.profile,args.carrier)))
+    print(json.dumps(export(args.repository, args.inputs, args.common_inputs, args.result, args.startup, args.output, logs, args.observer_check,args.profile,args.carrier,args.execution_policy)))

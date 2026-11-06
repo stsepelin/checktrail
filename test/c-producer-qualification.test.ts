@@ -12,6 +12,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
+import { performance } from "node:perf_hooks";
 import { isBuiltin } from "node:module";
 import { test } from "node:test";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -1734,5 +1735,342 @@ test(
         reason,
       );
     await api.verifyCProducerReports(value, copies, profile, sameUidCaller);
+  },
+);
+
+test("C local execution policy preserves the frozen source profile and rejects foreign or weakened contexts", async () => {
+  const { profile, catalogSha256 } =
+    await profiles.loadCProducerProfile("gcc-12");
+  const legacy = structuredClone(profile);
+  const policy = await profiles.loadCProducerExecutionPolicy(
+    "local-gcc12-23h-v1",
+    profile,
+  );
+  assert.equal(catalogSha256, profiles.cProducerCatalogSha256);
+  assert.equal(profile.files.length, 241);
+  assert.equal(profile.limits.deadlineSeconds, 43200);
+  assert.deepEqual(profile, legacy);
+  assert.equal(Object.isFrozen(policy), true);
+  assert.equal(Object.isFrozen(policy.native), true);
+  assert.equal(profiles.cProducerExecutionLimits(profile), profile.limits);
+  assert.deepEqual(profiles.cProducerExecutionLimits(profile, policy), {
+    ...profile.limits,
+    deadlineSeconds: 82800,
+  });
+  assert.deepEqual(api.cProducerSourceFiles(profile, policy), [
+    ...api.cProducerSourceFiles(profile),
+    "gcc-local-wall-policy.v1.json",
+  ]);
+  assert.equal(
+    await profiles.loadCProducerExecutionPolicy(undefined, profile),
+    null,
+  );
+  for (const id of ["local-gcc12-23h", "local-gcc12-23h-v2", "", 1])
+    await assert.rejects(
+      profiles.loadCProducerExecutionPolicy(id, profile),
+      /Unknown closed local execution policy/,
+    );
+  for (const name of ["glibc", "glibc-u13"]) {
+    const other = await profiles.loadCProducerProfile(name);
+    await assert.rejects(
+      profiles.loadCProducerExecutionPolicy(policy.id, other.profile),
+      /GCC12-only/,
+    );
+    assert.equal(other.profile.limits.deadlineSeconds, 14400);
+  }
+  for (const change of [
+    (v: typeof policy) => {
+      v.schemaVersion = 2;
+    },
+    (v: typeof policy) => {
+      v.native.deadlineSeconds = 82801;
+    },
+    (v: typeof policy) => {
+      v.native.killAfterSeconds = 31;
+    },
+    (v: typeof policy) => {
+      v.native.workByteLimit += 1;
+    },
+    (v: typeof policy) => {
+      v.windows.minimumExportReplayReserveSeconds -= 1;
+    },
+    (v: typeof policy) => {
+      v.requires.hostedJobEnvelope = true;
+    },
+    (v: typeof policy) => {
+      v.extra = true;
+    },
+  ]) {
+    const changed = structuredClone(policy);
+    change(changed);
+    assert.throws(
+      () => profiles.validateCProducerExecutionPolicy(changed, profile),
+      /Unknown or modified closed local execution policy/,
+    );
+  }
+  const base = [
+    "--profile",
+    "gcc-12",
+    "--inputs",
+    "/synthetic/inputs",
+    "--output",
+    "/synthetic/output",
+  ];
+  const selected = [
+    ...base,
+    "--operator-trust-execution",
+    "--coordinated-heavy-slot",
+    "--allow-local-arm64-daemon",
+    "--execution-policy",
+    policy.id,
+  ];
+  assert.deepEqual(api.cProducerExecutionOptions(selected), {
+    prepare: false,
+    allowLocalArm64Daemon: true,
+    executionPolicyId: policy.id,
+  });
+  assert.throws(
+    () =>
+      api.cProducerExecutionOptions([
+        ...base,
+        "--operator-trust-execution",
+        "--coordinated-heavy-slot",
+        "--execution-policy",
+        policy.id,
+      ]),
+    /explicit ARM daemon permission/,
+  );
+  assert.throws(
+    () =>
+      api.cProducerExecutionOptions([...base, "--execution-policy", policy.id]),
+    /Usage:/,
+  );
+  assert.throws(
+    () => api.cProducerExecutionOptions([...selected, "--github-job-envelope"]),
+    /final explicit option/,
+  );
+  assert.deepEqual(
+    api.cProducerExecutionOptions([
+      ...base,
+      "--prepare-only",
+      "--execution-policy",
+      policy.id,
+    ]),
+    {
+      prepare: true,
+      allowLocalArm64Daemon: false,
+      executionPolicyId: policy.id,
+    },
+  );
+  const argv = api.cProducerArguments(
+    (await profiles.loadCProducerProfile("gcc-12")).catalog,
+    profile,
+    "/synthetic/output",
+    "b57ee8b4-3bec-4bd1-8104-7f45a904c2b6",
+    { uid: 501, gid: 20 },
+    policy,
+  );
+  const timeout = argv.indexOf("/usr/bin/timeout");
+  assert.deepEqual(argv.slice(timeout, timeout + 4), [
+    "/usr/bin/timeout",
+    "--signal=TERM",
+    "--kill-after=30s",
+    "82800",
+  ]);
+  assert.deepEqual(profile, legacy);
+});
+
+test("C local policy clocks consume the original controller and declared managed windows without resetting reserves", async (t) => {
+  const carrier = await import(
+    pathToFileURL(
+      path.join(
+        repository,
+        "scripts/producer-qualification/c-carrier-observation.mjs",
+      ),
+    ).href
+  );
+  const { profile } = await profiles.loadCProducerProfile("gcc-12");
+  const policy = await profiles.loadCProducerExecutionPolicy(
+    "local-gcc12-23h-v1",
+    profile,
+  );
+  let now = 1_000_000;
+  t.mock.method(performance, "now", () => now);
+  const clock = profiles.cProducerExecutionClock(policy, profile, now);
+  assert.equal(clock.setupRemaining(), 600000);
+  const admitted = clock.admitNative();
+  assert.deepEqual(admitted, {
+    elapsedSeconds: 0,
+    observerSeconds: 82890,
+    recoveryReserveSeconds: 510,
+  });
+  assert.throws(() => clock.admitNative(), /one-shot/);
+  now += 82890000;
+  assert.equal(clock.collectionTimeoutMs(), 180000);
+  profiles.validateCProducerExecutionClock(clock.snapshot(), profile, policy);
+  const altered = structuredClone(clock.snapshot());
+  altered.nativeAdmission.recoveryReserveSeconds = 509;
+  assert.throws(() =>
+    profiles.validateCProducerExecutionClock(altered, profile, policy),
+  );
+  now = 1_000_000 + 84000001;
+  assert.equal(clock.remaining(), 0);
+  assert.throws(
+    () => clock.collectionTimeoutMs(),
+    /recovery allowance exhausted/,
+  );
+  assert.throws(() =>
+    profiles.validateCProducerExecutionClock(clock.snapshot(), profile, policy),
+  );
+  const expired = profiles.cProducerExecutionClock(
+    policy,
+    profile,
+    now - 600001,
+  );
+  assert.throws(
+    () => expired.setupRemaining(),
+    /preparation allowance exhausted/,
+  );
+  assert.throws(
+    () => expired.admitNative(),
+    /Insufficient original controller remainder/,
+  );
+  now = 1000000;
+  const start = "2026-01-01T00:00:00.000Z",
+    end = "2026-01-02T00:00:00.000Z";
+  const managed = carrier.captureLocalGccManagedClock(
+    policy,
+    profile,
+    start,
+    end,
+    start,
+    now,
+  );
+  now += 1000;
+  managed.admit();
+  assert.throws(() => managed.admit(), /one-shot/);
+  now += 100000;
+  const snapshot = managed.snapshot();
+  assert.equal(snapshot.authority, "operator-declared-managed-window");
+  assert.equal(snapshot.independentlyAttestedManagedLease, false);
+  assert.equal(snapshot.remainingAtFinishMs, 86299000);
+  carrier.validateLocalGccManagedWindow(snapshot, policy, profile);
+  for (const change of [
+    (v: typeof snapshot) => {
+      v.remainingAtFinishMs += 1;
+    },
+    (v: typeof snapshot) => {
+      v.admission.remainingAtAdmissionMs += 1;
+    },
+    (v: typeof snapshot) => {
+      v.admission.requiredAtAdmissionMs -= 1;
+    },
+    (v: typeof snapshot) => {
+      v.independentlyAttestedManagedLease = true;
+    },
+    (v: typeof snapshot) => {
+      v.extra = true;
+    },
+  ]) {
+    const value = structuredClone(snapshot);
+    change(value);
+    assert.throws(() =>
+      carrier.validateLocalGccManagedWindow(value, policy, profile),
+    );
+  }
+  for (const captured of [
+    "2025-12-31T23:59:59.999Z",
+    "2026-01-01T00:09:00.001Z",
+    "invalid",
+  ])
+    assert.throws(
+      () =>
+        carrier.captureLocalGccManagedClock(
+          policy,
+          profile,
+          start,
+          end,
+          captured,
+          now,
+        ),
+      /origin|window/,
+    );
+  assert.throws(
+    () =>
+      carrier.captureLocalGccManagedClock(
+        policy,
+        profile,
+        start,
+        "2026-01-02T00:00:00.001Z",
+        start,
+        now,
+      ),
+    /exactly24hours/,
+  );
+  const used = carrier.captureLocalGccManagedClock(
+    policy,
+    profile,
+    start,
+    end,
+    "2026-01-01T00:09:00.000Z",
+    now,
+  );
+  now += 1;
+  assert.throws(() => used.admit(), /Insufficient original managed remainder/);
+  now = 1000000;
+  const exhausted = carrier.captureLocalGccManagedClock(
+    policy,
+    profile,
+    start,
+    end,
+    start,
+    now,
+  );
+  exhausted.admit();
+  now += 85200001;
+  assert.throws(
+    () =>
+      carrier.validateLocalGccManagedWindow(
+        exhausted.snapshot(),
+        policy,
+        profile,
+      ),
+    /export\/replay reserve exhausted/,
+  );
+});
+
+test(
+  "C local actual controller timer and one-shot recovery preserve independent collection before cleanup",
+  sameUidControl,
+  async (t) => {
+    const root = await fixture(t, {});
+    for (const scenario of [
+      "observer-cutoff",
+      "controller-cutoff",
+      "root-replaced",
+      "absence-unavailable",
+      "preparation-refused",
+    ]) {
+      const selected = path.join(root, scenario);
+      const result = spawnSync(
+        process.execPath,
+        [
+          path.join(repository, "test/fixtures/c-producer-local-clock.mjs"),
+          repository,
+          selected,
+          scenario,
+        ],
+        { encoding: "utf8", timeout: 15000, maxBuffer: 1048576 },
+      );
+      assert.equal(result.status, 0, diagnostic(result));
+      const value = JSON.parse(result.stdout);
+      assert.equal(value.scenario, scenario);
+      assert.equal(value.controllerAndRecoveryBytesUnchanged, true);
+      assert.equal(value.compilerOrDockerOrOriginalInputExecuted, false);
+      assert.equal(
+        value.acquisitionAndCustodyPreflightAreAuthoredDoubles,
+        true,
+      );
+    }
   },
 );

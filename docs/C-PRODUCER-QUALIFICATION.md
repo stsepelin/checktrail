@@ -139,6 +139,49 @@ original command. A same-path, case-sensitive Linux volume and complete native
 execution evidence remain separate prerequisites; the flag alone establishes
 none of them. No local ARM-daemon GCC build is qualified by these source controls.
 
+## Separate local GCC execution context
+
+`--execution-policy local-gcc12-23h-v1` selects the closed
+[gcc-local-wall-policy.v1.json](../scripts/producer-qualification/gcc-local-wall-policy.v1.json)
+context. It leaves the frozen catalog, source profile and its default twelve-hour
+limits unchanged. A prepared plan and each new receipt separately bind the
+selected policy and effective execution limits. Data-only preparation may inspect
+this selection; execution also requires the existing operator-trust, coordinated
+heavy-slot and local ARM-daemon flags. It cannot select GLIBC or a hosted job envelope.
+
+The fixed native deadline is 82,800 seconds, with the existing 30 second GNU timeout
+kill allowance. Preparation, the original command and its EXIT retention all consume
+that same native allowance. The controller observes the producer for 82,890 seconds
+and reserves time for the independent post-stop report collector and finalization.
+Its setup, original observer, collector and finalization share one 84,000 second
+monotonic controller window. Recovery cannot reset it. A preparation refusal clears
+the pending controller timer; an exhausted collector allowance refuses a new collector.
+
+The local carrier additionally requires `--managed-started-at` and
+`--managed-deadline-at`, both canonical UTC timestamps, alongside the explicit
+policy and ARM-daemon options. These are **operator declarations**, not an
+attestation of the environment manager's lease. Their span must be exactly 24 hours.
+The carrier captures UTC remainder once at entry, admits within the fixed bootstrap
+allowance and subtracts its own monotonic elapsed time throughout observation and
+cleanup. Its 84,060 second observation and 600 second cleanup leave at least 1,200 seconds
+for export/replay inside the original declared window. The surrounding operator
+must bind these declarations to the actual foreground start and TTL. Neither a
+phase transition nor failed cleanup creates a fresh window. Insufficient remaining
+time stays incomplete even if the compiler returned zero.
+
+Fresh capacity admission still uses the existing filesystem observation. Raw build
+files and the simultaneous EXIT worktree tar consume the same 64 GiB work allowance;
+the policy does not predict peak size or export throughput, or claim a filesystem
+quota. Bounded public evidence ZIPs continue to exclude binary package payloads
+and the worktree tar. Full private raw retention remains separate work within the
+original managed remainder.
+
+Startup, live validation, export and offline replay must each explicitly select
+this policy. Its extra pinned source is absent from legacy inventories; a receipt
+cannot choose arbitrary limits or relabel a historical twelve-hour archive.
+Synthetic timer, ownership and archive controls do not qualify a native 23 hour build,
+full producer ancestry, original notices or Gate A closure.
+
 ## Opt-in hosted GLIBC observation
 
 `upstream-glibc.yml` selects only the frozen GLIBC profile. Its narrow
@@ -283,3 +326,14 @@ original completion can be assessed without claiming twelve-hour hosted capacity
 The job token is used only for metadata admission and is excluded from the original
 controller's environment. No upstream build or new hosted observation is established
 by the synthetic clock and transport controls.
+
+The local GCC policy pauses the exact owned producer container during resource
+measurements, verifies Docker acknowledged that paused state, then resumes it
+before returning the measurement. This keeps temporary compiler/test files from
+disappearing during the strict no-follow scan. The unchanged upstream command
+and original wall deadline still include observation time. Every local sample
+retains its container identity, pause/sample/resume actions and completion state;
+a sampling or resume failure remains incomplete. Pre-admission and positively
+observed post-terminal absence are separate cases. Default producer policies
+continue to use their existing observer. This is a resource observation contract,
+not a filesystem quota or a claim of compiler, test or notice closure.

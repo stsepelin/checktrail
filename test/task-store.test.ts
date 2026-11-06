@@ -313,6 +313,8 @@ test("task retention enforces capacity, expiry, result bytes and source identity
 test("task store refuses unsafe directories, links, foreign databases and damaged results", async (t) => {
   const opt = await options(t);
   await mkdir(opt.directory, { mode: 0o755 });
+  // mkdir applies the ambient umask; force the unsafe fixture on strict hosts.
+  await chmod(opt.directory, 0o755);
   await assert.rejects(openTaskStore(opt), /private/);
   await chmod(opt.directory, 0o700);
   const foreign = path.join(path.dirname(opt.directory), "foreign.sqlite");

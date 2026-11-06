@@ -30,6 +30,14 @@ const observation = await import(
     path.join(repository, "scripts/verify-c-producer-observation.mjs"),
   ).href
 );
+const profiles = await import(
+  pathToFileURL(
+    path.join(
+      repository,
+      "scripts/producer-qualification/c-producer-profile.mjs",
+    ),
+  ).href
+);
 const catalog = JSON.parse(
   await readFile(
     path.join(
@@ -691,9 +699,17 @@ test(
   async (t) => {
     const directory = await realpath(await fixture(t, {}));
     const selectedSources: string[] = producer.cProducerSourceFiles(profile);
+    const localPolicy = await profiles.loadCProducerExecutionPolicy(
+      "local-gcc12-23h-v1",
+      profile,
+    );
+    const localBinding = profiles.cProducerExecutionPolicyBinding(
+      localPolicy,
+      profile,
+    );
     const program = String.raw`
 import ast,base64,copy,datetime,hashlib,importlib.util,json,os,pathlib,shutil,subprocess,sys,time,zipfile
-repo=pathlib.Path(sys.argv[1]);root=pathlib.Path(sys.argv[2]);selected_sources=json.loads(sys.argv[3])
+repo=pathlib.Path(sys.argv[1]);root=pathlib.Path(sys.argv[2]);selected_sources=json.loads(sys.argv[3]);local_binding=json.loads(sys.argv[4])
 def module(name,file):
  spec=importlib.util.spec_from_file_location(name,file);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 exporter=module('gcc_fixture_export',repo/'scripts/producer-qualification/c-producer-export-evidence.py')
@@ -702,11 +718,11 @@ collector=module('gcc_fixture_collect',repo/'scripts/producer-qualification/c-pr
 catalog=json.loads((repo/'scripts/producer-qualification/c-producer-profiles.v1.json').read_bytes());profile=catalog['profiles']['gcc-12'];catalog_sha=r.CATALOG_SHA256
 caller={'uid':os.getuid(),'gid':os.getgid()};assert caller['uid']>0
 reviewed=root/'operator-source';reviewed.mkdir()
-for name in exporter.SOURCE_FILES:
+for name in exporter.SOURCE_FILES+[exporter.LOCAL_POLICY_SOURCE]:
  target=reviewed/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(repo/name,target)
 env=dict(os.environ);env.update(SKIP_CODEX_REVIEW='1',GIT_CONFIG_NOSYSTEM='1',GIT_CONFIG_GLOBAL=os.devnull)
 git=['git','-c','core.hooksPath='+os.devnull,'-c','core.fsmonitor=false','-c','commit.gpgsign=false']
-for args in [['init','--quiet'],['add','--',*exporter.SOURCE_FILES],['-c','user.name=Synthetic Protocol','-c','user.email=synthetic@example.invalid','commit','--quiet','-m','Synthetic operator frame']]:
+for args in [['init','--quiet'],['add','--',*exporter.SOURCE_FILES,exporter.LOCAL_POLICY_SOURCE],['-c','user.name=Synthetic Protocol','-c','user.email=synthetic@example.invalid','commit','--quiet','-m','Synthetic operator frame']]:
  p=subprocess.run(git+args,cwd=reviewed,env=env,capture_output=True,timeout=10);assert p.returncode==0,p.stderr
 head=subprocess.check_output(git+['rev-parse','HEAD'],cwd=reviewed,env=env).decode().strip()
 def write(file,value):
@@ -799,6 +815,28 @@ modern_receipt['retentionObserver']['workObjectPolicy']='c-build-links-and-speci
 modern_observed=copy.deepcopy(observed);modern_observed['originalReceipt']=modern_pin;write(result/'build-observation.json',modern_observed)
 modern_archive=root/'gcc-schema2-protocol.zip';exporter.export(reviewed,inputs,common,result,startup_file,modern_archive,profile_name='gcc-12',carrier=carrier)
 modern_replay=r.replay(modern_archive,reviewed,'gcc-12');assert modern_replay['state']=='retained-original-gcc-12-observation-replayed'and modern_replay['reports']==6 and modern_replay['observedOutcomeLines']==12 and modern_replay['testEvidenceState']=='failed'and modern_replay['gateAComplete']is False
+
+# A separate, explicitly selected local context uses the same full physical
+# schema2 protocol, source Git objects and original reports. Host/process clock
+# fields remain authored schema data, never a native23hour qualification claim.
+legacy_startup_bytes=startup_file.read_bytes();legacy_owner_bytes=(carrier/'owner-frame.json').read_bytes();legacy_carrier_bytes=(carrier/'receipt.json').read_bytes()
+policy=json.loads((reviewed/exporter.LOCAL_POLICY_SOURCE).read_bytes());assert r.local_policy_binding(policy,profile)==local_binding
+local_startup=copy.deepcopy(startup);local_startup.update(executionPolicy=local_binding,sourcePins=source_pins+[{'file':exporter.LOCAL_POLICY_SOURCE,**r.pin((reviewed/exporter.LOCAL_POLICY_SOURCE).read_bytes())}]);local_startup_pin=write(startup_file,local_startup)
+local_receipt=copy.deepcopy(modern_receipt);local_receipt.update(executionPolicy=local_binding,executionLimits=local_binding['executionLimits'],controllerClock={'schemaVersion':1,'scope':'same-controller-process-monotonic','totalSeconds':84000,'elapsedSeconds':2.0,'remainingMs':83998000,'nativeAdmission':{'elapsedSeconds':0.0,'observerSeconds':82890,'recoveryReserveSeconds':510}})
+local_receipt['sourcePins'].append({'file':'gcc-local-wall-policy.v1.json',**r.pin((reviewed/exporter.LOCAL_POLICY_SOURCE).read_bytes())})
+local_receipt['host'].update(daemonMetadata={'OSType':'linux','Architecture':'aarch64','NCPU':4,'MemTotal':6442450944},finalDaemonMetadata={'OSType':'linux','Architecture':'aarch64','NCPU':4,'MemTotal':6442450944},daemonPolicy={'targetPlatform':'linux/amd64','observedDaemonArchitecture':'aarch64','localArm64DaemonPermissionUsed':True,'targetAndDaemonArchitecturesDiffer':True,'emulationImplementation':'unknown','hardwareHostAttestationPerformed':False})
+local_receipt_pin=write(result/'receipt.json',local_receipt);local_owner_pin=write(carrier/'owner-frame.json',local_receipt)
+local_carrier=copy.deepcopy(carrier_value);local_carrier.pop('originalProducerDefaultsOrBudgetChanged');local_carrier.update(schemaVersion=2,executionPolicy=local_binding,sourceProfileDefaultsChanged=False,executionPolicyChangesWallDeadline=True,originalCommandDeadlineSeconds=82800,carrierLimits={'observationSeconds':84060,'cleanupSeconds':600,'softStopSeconds':480,'logBytes':8*1024**2},cutoffAt='2026-01-01T23:21:00.000Z',startupInput=local_startup_pin,ownerFrame=local_owner_pin,controllerTerminalSeconds=3.0,elapsedSeconds=4.0,cleanupStartedSeconds=3.0,cleanupDeadlineSeconds=603.0)
+local_carrier['managedWindow']={'schemaVersion':1,'authority':'operator-declared-managed-window','clockScope':'one-UTC-capture-then-same-carrier-monotonic','managedStartedAt':'2026-01-01T00:00:00.000Z','managedDeadlineAt':'2026-01-02T00:00:00.000Z','capturedAt':'2026-01-01T00:00:00.000Z','remainingAtCaptureMs':86400000,'admission':{'monotonicAdmissionMs':1,'remainingAtAdmissionMs':86399999,'requiredAtAdmissionMs':85860000},'monotonicElapsedMs':4000,'remainingAtFinishMs':86396000,'independentlyAttestedManagedLease':False}
+local_carrier_pin=write(carrier/'receipt.json',local_carrier)
+local_observed=copy.deepcopy(modern_observed);local_observed.update(executionPolicy=local_binding,startup=local_startup_pin,originalReceipt=local_receipt_pin,carrier={'receipt':local_carrier_pin,'ownerFrame':local_owner_pin,'controllerLog':local_carrier['log']});write(result/'build-observation.json',local_observed)
+local_archive=root/'gcc-local23h-schema2-protocol.zip';exporter.export(reviewed,inputs,common,result,startup_file,local_archive,profile_name='gcc-12',carrier=carrier,execution_policy=exporter.LOCAL_POLICY_ID)
+local_replayed=r.replay(local_archive,reviewed,'gcc-12',r.LOCAL_POLICY_ID);assert local_replayed['state']=='retained-original-gcc-12-observation-replayed'and local_replayed['reports']==6 and local_replayed['observedOutcomeLines']==12 and local_replayed['gateAComplete']is False
+for selected_archive,requested,fragment in [(local_archive,None,'Legacy replay cannot relabel local archive'),(modern_archive,r.LOCAL_POLICY_ID,'Archive did not bind explicitly requested local policy')]:
+ try:r.replay(selected_archive,reviewed,'gcc-12',requested)
+ except ValueError as error:assert fragment in str(error),(fragment,str(error))
+ else:raise AssertionError('Cross-policy archive relabeling passed')
+startup_file.write_bytes(legacy_startup_bytes);(carrier/'owner-frame.json').write_bytes(legacy_owner_bytes);(carrier/'receipt.json').write_bytes(legacy_carrier_bytes)
 (result/'receipt.json').write_bytes(legacy_receipt_bytes);(result/'build-observation.json').write_bytes(legacy_observed_bytes)
 
 # Exercise physical zero-report versus absent roots through actual collection,
@@ -845,9 +883,10 @@ except ValueError as error:assert 'Incomplete raw C export' in str(error),str(er
 else:raise AssertionError('Actual incomplete cutoff export qualified')
 (carrier/'.owner-frame.part').unlink();(result/'build-observation.json').write_bytes(complete_observation);(carrier/'receipt.json').write_bytes(complete_carrier)
 rejected_labels=[]
-def mutant(label,change,expected_error):
- assert label not in rejected_labels,'Duplicate rejected packet label'
- with zipfile.ZipFile(archive) as z:members={name:z.read(name) for name in z.namelist()}
+def mutant(label,change,expected_error,selected_archive=archive,expected_policy=None,labels=None):
+ if labels is None:labels=rejected_labels
+ assert label not in labels,'Duplicate rejected packet label'
+ with zipfile.ZipFile(selected_archive) as z:members={name:z.read(name) for name in z.namelist()}
  manifest=json.loads(members['manifest.json']);change(members,manifest)
  # Repair all dependent byte links so the named behavior, not an earlier hash,
  # rejects each intentionally contradictory synthetic protocol observation.
@@ -859,12 +898,34 @@ def mutant(label,change,expected_error):
  target=root/(label+'.zip')
  with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_DEFLATED) as z:
   for name,body in members.items():z.writestr(name,body)
- try:r.replay(target,reviewed,'gcc-12')
+ try:r.replay(target,reviewed,'gcc-12',expected_policy)
  except ValueError as error:
-  assert expected_error in str(error),(label,str(error));rejected_labels.append(label);return
+  assert expected_error in str(error),(label,str(error));labels.append(label);return
  raise AssertionError('Invalid coherently rehashed GCC protocol packet accepted: '+label)
 def edit_member(members,name,update):
  value=json.loads(members[name]);update(value);members[name]=json.dumps(value).encode()
+local_rejected_labels=[]
+def local_mutant(label,change,expected_error):return mutant(label,change,expected_error,local_archive,r.LOCAL_POLICY_ID,local_rejected_labels)
+local_mutant('local-wrong-manifest-selector',lambda m,v:v.update(executionPolicy='local-gcc12-23h-v2'),'Archive did not bind')
+local_mutant('local-missing-startup-binding',lambda m,v:edit_member(m,'operator-startup.json',lambda x:x.pop('executionPolicy')),'Explicit local policy binding differs')
+local_mutant('local-missing-source-frame',lambda m,v:edit_member(m,'operator-startup.json',lambda x:x['sourcePins'].pop()),'Incomplete source/harness inventory')
+local_mutant('local-effective-resource-change',lambda m,v:edit_member(m,'result/receipt.json',lambda x:x['executionLimits'].update(memory='7g')),'Effective local execution limits differ')
+local_mutant('local-controller-remainder-reset',lambda m,v:edit_member(m,'result/receipt.json',lambda x:x['controllerClock'].update(remainingMs=83998001)),'Controller remainder reset')
+def local_late_native(m,v):
+ edit_member(m,'result/receipt.json',lambda x:x['controllerClock'].update(elapsedSeconds=700.0,remainingMs=83300000,nativeAdmission={'elapsedSeconds':601.0,'observerSeconds':82890,'recoveryReserveSeconds':510}))
+ edit_member(m,'carrier/receipt.json',lambda x:x.update(controllerTerminalSeconds=701.0,elapsedSeconds=702.0,cleanupStartedSeconds=701.0,cleanupDeadlineSeconds=1301.0,managedWindow={**x['managedWindow'],'monotonicElapsedMs':702000,'remainingAtFinishMs':85698000}))
+local_mutant('local-native-admission-too-late',local_late_native,'Native admission/recovery allowance differs')
+local_mutant('local-base-profile-relabelled',lambda m,v:edit_member(m,'result/receipt.json',lambda x:x['limits'].update(deadlineSeconds=82800)),'Wrong original frozen profile')
+local_mutant('local-ungranted-arm',lambda m,v:edit_member(m,'result/receipt.json',lambda x:x['host']['daemonPolicy'].update(localArm64DaemonPermissionUsed=False)),'Explicit local ARM permission evidence missing')
+local_mutant('local-daemon-capacity',lambda m,v:edit_member(m,'result/receipt.json',lambda x:x['host']['daemonMetadata'].update(NCPU=3)),'Observed local ARM daemon capacity differs')
+local_mutant('local-wrong-native-deadline',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(originalCommandDeadlineSeconds=82801)),'Wrong local carrier execution policy/deadline')
+local_mutant('local-hosted-envelope-confusion',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(githubJobEnvelope={})),'Local carrier masquerades as hosted/legacy')
+local_mutant('local-managed-wrong-span',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x['managedWindow'].update(managedDeadlineAt='2026-01-02T00:00:00.001Z')),'Expired/future/wrong original managed window')
+local_mutant('local-managed-future-origin',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x['managedWindow'].update(managedStartedAt='2026-01-01T00:00:00.001Z',managedDeadlineAt='2026-01-02T00:00:00.001Z')),'Expired/future/wrong original managed window')
+local_mutant('local-managed-late-admission',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x['managedWindow']['admission'].update(monotonicAdmissionMs=540001)),'Managed admission bootstrap exhausted')
+local_mutant('local-managed-final-reserve-reset',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x['managedWindow'].update(remainingAtFinishMs=86396001)),'Original managed final export reserve exhausted or reset')
+local_mutant('local-carrier-managed-clock-disagreement',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(elapsedSeconds=4.001)),'Local carrier elapsed/window clock differs')
+assert len(local_rejected_labels)==16
 mutant('wrong-archive-profile',lambda m,v:v.update(selectedProfile='glibc'),'Archive selected a different original profile')
 mutant('cross-startup-profile',lambda m,v:edit_member(m,'operator-startup.json',lambda x:x['selectedProfile'].update(name='glibc')),'Startup does not bind')
 mutant('external-cutoff',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(state='external-carrier-cutoff-incomplete',stopCause='external-carrier-cutoff')),'External carrier cutoff')
@@ -932,7 +993,7 @@ mutant('bool-source-signature-zero',lambda m,v:weak_signature_restore(m,v,'sourc
 mutant('bool-release-signature-zero',lambda m,v:weak_signature_restore(m,v,'releaseSignatureFaultControl'),'Original signature fault/restoration control missing')
 mutant('common-only-restored-bool',lambda m,v:edit_member(m,'common-inputs/receipt.json',lambda x:x['preparation']['sourceSignatureFaultControl'].update(restoredExitCode=False)),'Original signed APT/source preparation differs')
 assert len(set(rejected_labels))==len(rejected_labels)
-print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStatesReplayed':True,'zeroAndAbsentRootStatesReplayed':True,'oldTwoRootMutantMissesFourRoots':True,'selectedRootSymlinkRefused':True,'positivePhysicalGccProtocolReplay':True,'positivePhysicalGccSchema2ProtocolReplay':True,'preservedFailedOriginalOutcomes':True,'incompleteCutoffBytesRetained':True,'coherentNegativePacketsRejected':len(rejected_labels),'rejectedPacketLabels':rejected_labels,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
+print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStatesReplayed':True,'zeroAndAbsentRootStatesReplayed':True,'oldTwoRootMutantMissesFourRoots':True,'selectedRootSymlinkRefused':True,'positivePhysicalGccProtocolReplay':True,'positivePhysicalGccSchema2ProtocolReplay':True,'positivePhysicalGccLocalPolicyProtocolReplay':True,'explicitPolicyRelabelingRefusedBothDirections':True,'localPolicyNegativePacketsRejected':local_rejected_labels,'preservedFailedOriginalOutcomes':True,'incompleteCutoffBytesRetained':True,'coherentNegativePacketsRejected':len(rejected_labels),'rejectedPacketLabels':rejected_labels,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
 `;
     const result = spawnSync(
       python!,
@@ -945,6 +1006,7 @@ print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStat
         repository,
         directory,
         JSON.stringify(selectedSources),
+        JSON.stringify(localBinding),
       ],
       { encoding: "utf8", timeout: 45000, maxBuffer: 65536 },
     );
@@ -996,6 +1058,26 @@ print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStat
       selectedRootSymlinkRefused: true,
       positivePhysicalGccProtocolReplay: true,
       positivePhysicalGccSchema2ProtocolReplay: true,
+      positivePhysicalGccLocalPolicyProtocolReplay: true,
+      explicitPolicyRelabelingRefusedBothDirections: true,
+      localPolicyNegativePacketsRejected: [
+        "local-wrong-manifest-selector",
+        "local-missing-startup-binding",
+        "local-missing-source-frame",
+        "local-effective-resource-change",
+        "local-controller-remainder-reset",
+        "local-native-admission-too-late",
+        "local-base-profile-relabelled",
+        "local-ungranted-arm",
+        "local-daemon-capacity",
+        "local-wrong-native-deadline",
+        "local-hosted-envelope-confusion",
+        "local-managed-wrong-span",
+        "local-managed-future-origin",
+        "local-managed-late-admission",
+        "local-managed-final-reserve-reset",
+        "local-carrier-managed-clock-disagreement",
+      ],
       preservedFailedOriginalOutcomes: true,
       incompleteCutoffBytesRetained: true,
       coherentNegativePacketsRejected: rejectedPacketLabels.length,
@@ -1716,3 +1798,107 @@ print(json.dumps({'allThreeFixedProfilesPhysicallyReconciled':True,'bothReportEp
     });
   },
 );
+
+test("GCC local carrier requires a distinct explicit policy and original declared managed window", async () => {
+  const policy = await profiles.loadCProducerExecutionPolicy(
+    "local-gcc12-23h-v1",
+    profile,
+  );
+  const binding = profiles.cProducerExecutionPolicyBinding(policy, profile);
+  const { originalProducerDefaultsOrBudgetChanged, ...legacy } =
+    schemaCarrier();
+  assert.equal(originalProducerDefaultsOrBudgetChanged, false);
+  const value = {
+    ...legacy,
+    schemaVersion: 2,
+    executionPolicy: binding,
+    originalCommandDeadlineSeconds: 82800,
+    carrierLimits: {
+      observationSeconds: 84060,
+      cleanupSeconds: 600,
+      softStopSeconds: 480,
+      logBytes: 8 * 1024 ** 2,
+    },
+    sourceProfileDefaultsChanged: false,
+    executionPolicyChangesWallDeadline: true,
+    cutoffAt: "2026-01-01T23:21:00.000Z",
+    managedWindow: {
+      schemaVersion: 1,
+      authority: "operator-declared-managed-window",
+      clockScope: "one-UTC-capture-then-same-carrier-monotonic",
+      managedStartedAt: "2026-01-01T00:00:00.000Z",
+      managedDeadlineAt: "2026-01-02T00:00:00.000Z",
+      capturedAt: "2026-01-01T00:00:00.000Z",
+      remainingAtCaptureMs: 86400000,
+      admission: {
+        monotonicAdmissionMs: 1,
+        remainingAtAdmissionMs: 86399999,
+        requiredAtAdmissionMs: 85860000,
+      },
+      monotonicElapsedMs: Math.round(legacy.elapsedSeconds * 1000),
+      remainingAtFinishMs: 86400000 - Math.round(legacy.elapsedSeconds * 1000),
+      independentlyAttestedManagedLease: false,
+    },
+  };
+  assert.equal(
+    carrier.validateLocalGccCarrierReceipt(
+      value,
+      profile,
+      catalogSha256,
+      policy,
+    ).originalControllerTerminalObserved,
+    true,
+  );
+  assert.throws(() =>
+    carrier.validateGccCarrierReceipt(value, profile, catalogSha256),
+  );
+  assert.throws(() =>
+    carrier.validateLocalGccCarrierReceipt(
+      schemaCarrier(),
+      profile,
+      catalogSha256,
+      policy,
+    ),
+  );
+  for (const change of [
+    (v: typeof value) => {
+      v.originalCommandDeadlineSeconds = 43200;
+    },
+    (v: typeof value) => {
+      v.carrierLimits.observationSeconds -= 1;
+    },
+    (v: typeof value) => {
+      Object.assign(v, { githubJobEnvelope: {} });
+    },
+    (v: typeof value) => {
+      v.managedWindow.independentlyAttestedManagedLease = true;
+    },
+    (v: typeof value) => {
+      v.managedWindow.remainingAtFinishMs += 1;
+    },
+    (v: typeof value) => {
+      v.managedWindow.monotonicElapsedMs += 1;
+      v.managedWindow.remainingAtFinishMs -= 1;
+    },
+    (v: typeof value) => {
+      Object.assign(v.managedWindow.admission, { extra: true });
+    },
+    (v: typeof value) => {
+      v.sourceProfileDefaultsChanged = true;
+    },
+    (v: typeof value) => {
+      v.executionPolicyChangesWallDeadline = false;
+    },
+  ]) {
+    const changed = structuredClone(value);
+    change(changed);
+    assert.throws(() =>
+      carrier.validateLocalGccCarrierReceipt(
+        changed,
+        profile,
+        catalogSha256,
+        policy,
+      ),
+    );
+  }
+});
