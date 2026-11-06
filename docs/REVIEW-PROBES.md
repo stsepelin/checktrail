@@ -139,6 +139,14 @@ Versions 1 and 2 remain readable as historical contracts. Raw artifacts stay out
 of summaries and independent model packets. See
 [NATIVE-RAW-EVIDENCE.md](NATIVE-RAW-EVIDENCE.md) for privacy, limits and acceptance.
 
+Detailed Windows attempts retain the validated `windowsExecution` launch/job
+receipt. The run's `nativeExecution` flag records evidence that a target started:
+a known target terminal or a job-assigned child with a recorded successful resume.
+Cancellation may leave the original `exitCode` and `signal` null. Those terminal
+fields remain unknown. Pre-admission cancellation, missing tools and spawns that
+never resume supply no start evidence. Function observations require complete,
+usable worker output and a successful terminal status.
+
 ## Structured results
 
 The separate [structured Node profile](NATIVE-JSON-PROBES.md) uses version 2

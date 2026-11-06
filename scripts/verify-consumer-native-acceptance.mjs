@@ -31,6 +31,7 @@ import {
   consumerNativeFailureDiagnostic,
 } from "./consumer-native-controller-entry.mjs";
 import { createConsumerCaptureRegistry } from "./consumer-native-capture-registry.mjs";
+import { retainConsumerRuntimeReceipt } from "./consumer-native-runtime-receipts.mjs";
 import {
   requireConsumerPrivateDirectory,
   readConsumerPrivateFile,
@@ -55,7 +56,7 @@ async function privateDirectory(parent, name) {
   await requireConsumerPrivateDirectory(target);
   return target;
 }
-async function outputDirectory(value) {
+async function outputDirectory(value, separateFrom = null) {
   assert.ok(path.isAbsolute(value));
   const parent = await realpath(path.dirname(value)),
     target = path.join(parent, path.basename(value));
@@ -66,6 +67,19 @@ async function outputDirectory(value) {
       relative.startsWith(".." + path.sep),
     "Native capsule output must be outside its source tree",
   );
+  if (separateFrom)
+    for (const [parent, child] of [
+      [separateFrom, target],
+      [target, separateFrom],
+    ]) {
+      const relative = path.relative(parent, child);
+      assert.ok(
+        path.isAbsolute(relative) ||
+          relative === ".." ||
+          relative.startsWith(".." + path.sep),
+        "Runtime receipt and capsule directories must be separate",
+      );
+    }
   try {
     await lstat(target);
   } catch (error) {
@@ -154,6 +168,14 @@ try {
           path.join(capsuleDirectory, consumerNativeCapsuleFilename(scope)),
         ),
         { code: "ENOENT" },
+      );
+    }
+    let runtimeReceiptDirectory = null;
+    if (process.env.CHECKTRAIL_NATIVE_RUNTIME_RECEIPT_DIRECTORY) {
+      assert.equal(scope.acceptanceProfile, "consumer-impact");
+      runtimeReceiptDirectory = await outputDirectory(
+        process.env.CHECKTRAIL_NATIVE_RUNTIME_RECEIPT_DIRECTORY,
+        capsuleDirectory,
       );
     }
     if (process.env.CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY)
@@ -323,6 +345,16 @@ try {
         );
       assert.equal(current.sha256, retained.sha256);
       await rm(retainedParent, { recursive: true, force: false });
+    }
+    if (runtimeReceiptDirectory) {
+      failureStage = "retain-runtime-receipt";
+      await retainConsumerRuntimeReceipt(
+        runtimeReceiptDirectory,
+        capsule,
+        entry,
+        stdout.bytes,
+        stderr.bytes,
+      );
     }
     failureStage = "publish-capsule";
     if (capsuleDirectory)

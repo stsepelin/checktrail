@@ -172,7 +172,7 @@ counts describe structural declarations; independent host isolation and verified
 claim truth remain unimplemented. See
 measurements/review-benchmark-judging-2026-10-05.json.
 The bounded [native Boolean probe](REVIEW-PROBES.md) supports selected plain ESM
-with operator-pinned cases and measured V8 function/guard coverage on the recorded POSIX profiles. The Windows probe backend now establishes private source workspaces before using the owned Job Object runner; native Windows qualification remains pending on the selected source and fresh installed cohort. Wider
+with operator-pinned cases and measured V8 function/guard coverage on the recorded POSIX profiles. The Windows probe backend establishes private source workspaces before using the owned Job Object runner. Detailed attempts retain job-resume evidence separately from unknown original terminal status; native Windows qualification remains pending on the selected source and fresh installed cohort. Wider
 language probes, automatic callers and independent claim verification remain pending.
 [Stateless refutation attempts](REVIEW-REFUTATION.md) can propose counterclaims
 without adding semantic support or establishing their correctness. See
@@ -511,6 +511,13 @@ current source addresses and reconciles imported native receipts and bound
 host-declared probabilities/labels without executing project code or inference.
 Unknown, stale, unsupported, abstained and unreviewed states remain visible.
 This adds no language compiler, Windows lifecycle or held-out quality acceptance.
+
+Confidence runtime CI reuses the existing selected Tasks jobs for the same nine
+source and fresh-install callbacks, with exact runtime/engine/harness bindings.
+Current-head successful receipts are required before qualifying those slots;
+host attestation, calibrated confidence and independent evaluation stay open.
+Successful selected consumer-impact controllers separately retain original
+bounded controller streams as described in [native consumer witness evidence](CONSUMER-WITNESS-EVIDENCE.md).
 
 [Native F# default formatting](FSHARP-FORMAT.md) is a separate non-rewriting source-string profile for every declared `.fs`, `.fsi` and `.fsx` input. It preserves native parse diagnostics and all returned failing conditional combinations, without evaluating source or applying project/editor configuration. Broader .NET formatting, SDK/license closure, final runtime bindings and Gate A remain open.
 

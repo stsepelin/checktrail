@@ -94,3 +94,19 @@ Fresh offline production installation repeats the same frozen callbacks. POSIX
 native lifecycle acceptance is distinct from the still-open wider platform
 matrix and independent evaluation. This feature invokes no inference or field
 review evaluation; Gate A remains open.
+
+The internal confidence runtime controller reuses the selected review-runtime
+jobs: `node scripts/verify-review-runtime.mjs SLOT confidence-provenance` runs the
+same nine frozen confidence callbacks from source and a fresh offline production
+installation. It binds exact selected Node/platform/OS-image metadata, executable,
+current engine, harness, requirements and package bytes, and complete named
+terminal events. The installed harness remains outside the package. Existing
+multi-candidate invocations retain their default profile and output contract.
+The existing ARM container carries the eighth slot; the Windows consumer-only
+lane does not repeat the core confidence controller. No new CI matrix is added.
+
+Explicit `--local confidence-provenance` runs remain unselected local evidence and
+are refused as hosted qualification. Current-source successful receipts are still
+required to establish each selected slot. These controls do not attest a host,
+calibrate confidence, prove independent sessions, or perform actual independent
+evaluation. Quality, inference, field evaluation and Gate A flags remain false.
