@@ -11,6 +11,7 @@ export const lifecycleHarnessFiles = Object.freeze([
   "docs/gate-a-profiles.v1.json",
   "dist/test/gate-lifecycle-platforms.test.js",
   "dist/test/lifecycle-platforms-fixture.js",
+  "dist/test/lifecycle-child-fixture.js",
   "dist/test/lifecycle-platforms-boundaries.js",
   "dist/test/lifecycle-platforms-interruption.js",
   "dist/test/process-tree.test.js",

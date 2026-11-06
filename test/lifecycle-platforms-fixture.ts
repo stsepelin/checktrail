@@ -6,6 +6,7 @@ import type { TestContext } from "node:test";
 import { validate } from "../src/engine.js";
 import { processSnapshot, type ProcessIdentity } from "../src/process-tree.js";
 import { fixture, nodeManifest } from "./helpers.js";
+import { lifecycleChildBody } from "./lifecycle-child-fixture.js";
 
 export const lifecycleCanary = "Original lifecycle diagnostic 8e71.";
 export type LifecycleReached = {
@@ -62,8 +63,6 @@ export async function lifecycleProject(
   const implementation = options.broken
     ? "export const visible = rows => rows.length;\n"
     : "export const visible = rows => rows.filter(row => row.enabled).length;\n";
-  const childBody =
-    "require('node:fs').writeFileSync(process.argv[1],String(process.pid));setInterval(()=>{},1000);setTimeout(()=>process.exit(0),60000);";
   const root = await realpath(
     await fixture(t, {
       "package.json": nodeManifest,
@@ -71,7 +70,7 @@ export async function lifecycleProject(
       [file]: `import{test}from'node:test';import assert from'node:assert/strict';import{spawn}from'node:child_process';import{readFile,writeFile,rename,appendFile}from'node:fs/promises';import{setTimeout as delay}from'node:timers/promises';import{visible}from'./quota.js';
 test('original two enabled and one disabled quota',async()=>{
 const control=${JSON.stringify(control)},marker=${JSON.stringify(marker)},release=${JSON.stringify(release)};
-const children=[0,1].map(i=>spawn(process.execPath,['-e',${JSON.stringify(childBody)},control+'/child-'+i],{stdio:'ignore'}));
+const children=[0,1].map(i=>spawn(process.execPath,['-e',${JSON.stringify(lifecycleChildBody)},control+'/child-'+i],{stdio:'ignore'}));
 for(let i=0;i<children.length;i++){for(;;){try{assert.equal(Number(await readFile(control+'/child-'+i,'utf8')),children[i].pid);break;}catch(error){if(error.code!=='ENOENT')throw error;}await delay(10);}children[i].unref();}
 await writeFile(marker+'.partial',JSON.stringify({body:process.pid,driver:process.ppid,children:children.map(child=>child.pid)}));await rename(marker+'.partial',marker);
 for(;;){try{await readFile(release);break;}catch(error){if(error.code!=='ENOENT')throw error;}await delay(10);}

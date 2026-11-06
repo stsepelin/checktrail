@@ -8,6 +8,7 @@ import type { TestContext } from "node:test";
 import { runProcess } from "../src/runner.js";
 import { processSnapshot, type ProcessIdentity } from "../src/process-tree.js";
 import { fixture } from "./helpers.js";
+import { lifecycleChildBody } from "./lifecycle-child-fixture.js";
 import {
   cleanupLifecycleIdentities,
   lifecycleAlive,
@@ -21,13 +22,11 @@ async function nativeBody(t: TestContext) {
     marker = path.join(control, "reached.json"),
     release = path.join(control, "release"),
     file = path.join(root, "original-worker.mjs");
-  const leaf =
-    "require('node:fs').writeFileSync(process.argv[1],String(process.pid));setInterval(()=>{},1000);setTimeout(()=>process.exit(0),60000);";
   await writeFile(
     file,
     `import{spawn}from'node:child_process';import{readFile,writeFile,rename}from'node:fs/promises';import{setTimeout as delay}from'node:timers/promises';
 const control=${JSON.stringify(control)},marker=${JSON.stringify(marker)},release=${JSON.stringify(release)};
-const children=[false,true].map((detached,i)=>spawn(process.execPath,['-e',${JSON.stringify(leaf)},control+'/leaf-'+i],{detached,stdio:'ignore'}));
+const children=[false,true].map((detached,i)=>spawn(process.execPath,['-e',${JSON.stringify(lifecycleChildBody)},control+'/leaf-'+i],{detached,stdio:'ignore'}));
 for(let i=0;i<children.length;i++){for(;;){try{if(Number(await readFile(control+'/leaf-'+i,'utf8'))===children[i].pid)break;}catch(error){if(error.code!=='ENOENT')throw error;}await delay(10);}}
 await writeFile(marker+'.partial',JSON.stringify({body:process.pid,children:children.map(child=>child.pid),temp:process.env.CHECKTRAIL_TEMP}));await rename(marker+'.partial',marker);
 setInterval(()=>{},1000);for(;;){try{await readFile(release);break;}catch(error){if(error.code!=='ENOENT')throw error;}await delay(10);}for(;;){if(!process.stdout.write(Buffer.alloc(65536,120)))await new Promise(resolve=>process.stdout.once('drain',resolve));}
