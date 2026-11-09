@@ -123,9 +123,26 @@ custom capture-parent refusal and uses the existing protected default namespace
 contract. Failed or incomplete originals remain private diagnostics.
 
 Only a successful reconciled scope publishes a sanitized capsule to the
-operator-selected output directory. Raw packets, stdout/stderr, namespace paths
-and attempt files remain private and are never uploaded by the workflow. The
-capsule records controller module completion without claiming that the same
+operator-selected output directory. Successful `consumer-impact` CI scopes also
+retain their original controller stdout/stderr buffers in a separate
+`consumer-runtime-receipts-*` artifact for seven days. The combined capture stays
+bounded to 32 MiB. Private exclusive files and Windows ACL admission preserve the
+exact bytes; copied lengths and SHA256 must match the controller and capsule.
+A small manifest binds scope, source, workflow attempt and capsule hash using
+relative stream filenames. This is internal synthetic acceptance output, not a
+product/MCP disclosure grant or a sweep of raw attempt namespaces.
+
+The raw success artifact remains separate from the strict capsule artifact and
+its START/FINISH claims. Other raw packets and attempt files remain runner-private;
+the existing sanitized failure diagnostic remains separate. Raw success bytes
+upload only after the exact consumer step succeeds and while the workflow is not
+cancelled. They can survive a later ACL, capsule-upload or publisher failure;
+failed/incomplete consumer steps never upload a raw success bundle. A later outer
+job failure still leaves those bytes unqualified: successful outer-job and exact
+FINISH requirements remain unchanged. Downloaded
+stream member bytes can be checked directly against capsule controller hashes;
+timestamped job logs or reserialized JSON cannot reconstruct the original bytes.
+The capsule records controller module completion without claiming that the same
 process observed its own exit or a native process-start acknowledgement.
 
 The CI completion step independently requires successful outer jobs and exact

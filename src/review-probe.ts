@@ -12,7 +12,7 @@ import {
 } from "./review.js";
 import { reviewCandidateSchema } from "./review-provider-schema.js";
 import { runProcess } from "./runner.js";
-import { VERSION } from "./types.js";
+import { VERSION, type ProcessResult } from "./types.js";
 import { createPrivateProbeWorkspace } from "./review-probe-storage.js";
 import {
   reviewNativeBudgetLimitsSchema,
@@ -73,6 +73,25 @@ export function reviewProbeInputScale(args: unknown[]): number {
   for (const value of args) visit(value, 0);
   return maximum;
 }
+/** Native-start evidence is separate from a known original terminal. */
+export function nativeProbeStartObserved(
+  result: Pick<ProcessResult, "exitCode" | "signal" | "windowsExecution">,
+): boolean {
+  if (
+    (Number.isSafeInteger(result.exitCode) && (result.exitCode ?? -1) >= 0) ||
+    result.signal !== null
+  )
+    return true;
+  const windows = result.windowsExecution;
+  return (
+    windows?.jobAssigned === true &&
+    windows.resumed === true &&
+    Number.isSafeInteger(windows.childPid) &&
+    (windows.childPid ?? 0) > 0 &&
+    ["running", "completed", "failed"].includes(windows.phase)
+  );
+}
+
 export async function runReviewProbe(
   root: string,
   contextInput: unknown,
@@ -325,7 +344,7 @@ export async function runReviewProbe(
             ...(options.signal ? { signal: options.signal } : {}),
           },
         );
-        nativeExecution ||= result.exitCode !== null || result.signal !== null;
+        nativeExecution ||= nativeProbeStartObserved(result);
         const outputBytes = result.outputBytes;
         nativeBudget.outputBytes += outputBytes;
         trial.execution = {
@@ -343,6 +362,9 @@ export async function runReviewProbe(
             truncated: result.truncated,
             errorCode: result.errorCode ?? null,
             output: result.capturedOutput ?? null,
+            ...(result.windowsExecution
+              ? { windowsExecution: result.windowsExecution }
+              : {}),
           },
         };
         if (result.truncated) nativeBudget.stopReason = "output-limit";

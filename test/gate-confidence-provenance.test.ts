@@ -17,7 +17,10 @@ import {
   inspectReviewProvenance,
   projectReviewProvenance,
 } from "../src/review-provenance.js";
-import { runReviewProbe } from "../src/review-probe.js";
+import {
+  runReviewProbe,
+  nativeProbeStartObserved,
+} from "../src/review-probe.js";
 import { createReviewContext } from "../src/review.js";
 import { provenanceFixture } from "./confidence-provenance-fixture.js";
 import { recipe, source } from "./review-workflow-fixture.js";
@@ -550,6 +553,47 @@ test(
           assert.equal(run.temporaryArtifacts, "removed");
           if (run.schemaVersion !== 3)
             throw Error("Raw-output native receipt required");
+          if (process.platform === "win32") {
+            const artifact = run.trials[0]!.execution!.artifact;
+            const windows = artifact.windowsExecution;
+            assert.ok(
+              windows,
+              "Windows native-start evidence must be retained",
+            );
+            assert.equal(windows.jobAssigned, true);
+            assert.equal(windows.resumed, true);
+            assert.ok(
+              Number.isSafeInteger(windows.childPid) && windows.childPid! > 0,
+            );
+            assert.equal(artifact.signal, null);
+            assert.equal(artifact.exitCode, windows.childExitCode);
+            if (mode !== "output") {
+              assert.equal(
+                artifact.exitCode,
+                null,
+                "Forced cleanup leaves the original terminal unknown",
+              );
+              assert.equal(windows.childExitCode, null);
+            }
+            const pendingTerminal = {
+              exitCode: null,
+              signal: null,
+              windowsExecution: windows,
+            };
+            assert.equal(nativeProbeStartObserved(pendingTerminal), true);
+            for (const incomplete of [
+              { ...windows, resumed: false },
+              { ...windows, jobAssigned: false },
+              { ...windows, childPid: null },
+            ])
+              assert.equal(
+                nativeProbeStartObserved({
+                  ...pendingTerminal,
+                  windowsExecution: incomplete,
+                }),
+                false,
+              );
+          }
           assert.equal(run.nativeBudget.calls, 1);
           assert.equal(run.counts.notRun, 2);
           assert.equal(run.trials[1]!.execution, null);
@@ -626,7 +670,7 @@ test(
 );
 test(
   "confidence-provenance installed acceptance",
-  { timeout: 120000 },
+  { timeout: process.platform === "win32" ? 580000 : 180000 },
   async () => {
     if (process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED === "1") {
       assert.ok(
@@ -634,13 +678,20 @@ test(
           await realpath(
             fileURLToPath(new URL("../src/index.js", import.meta.url)),
           )
-        ).includes("/node_modules/@stsepelin/checktrail/"),
+        ).includes(
+          path.sep +
+            path.join("node_modules", "@stsepelin", "checktrail") +
+            path.sep,
+        ),
       );
       return;
     }
+    const runtimeSlot = process.env.CHECKTRAIL_CONFIDENCE_RUNTIME_SLOT;
     const script = fileURLToPath(
         new URL(
-          "../../scripts/verify-import-context-package.mjs",
+          runtimeSlot === undefined
+            ? "../../scripts/verify-import-context-package.mjs"
+            : "../../scripts/verify-review-runtime-package.mjs",
           import.meta.url,
         ),
       ),
@@ -650,12 +701,21 @@ test(
       };
     // The external acceptance controller starts a fresh test runner, not a recursive node:test run.
     delete env.NODE_TEST_CONTEXT;
-    const r = spawnSync(process.execPath, [script], {
-      env,
-      encoding: "utf8",
-      timeout: 115000,
-      maxBuffer: 1048576,
-    });
+    const r = spawnSync(
+      process.execPath,
+      [
+        script,
+        ...(runtimeSlot === undefined
+          ? []
+          : [runtimeSlot, "confidence-provenance"]),
+      ],
+      {
+        env,
+        encoding: "utf8",
+        timeout: process.platform === "win32" ? 570000 : 175000,
+        maxBuffer: 1048576,
+      },
+    );
     assert.equal(r.status, 0, r.stdout + r.stderr);
     const result = JSON.parse(r.stdout);
     assert.equal(result.offlineProductionInstall, true);

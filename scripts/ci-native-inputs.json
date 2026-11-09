@@ -519,6 +519,27 @@
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
+  "scripts/consumer-native-runtime-receipts.mjs": [
+    "c-context-arm64",
+    "cpp-context-arm64",
+    "cpp-extensions-arm64",
+    "csharp-context-arm64",
+    "fsharp-context-arm64",
+    "go-workspaces-arm64",
+    "hcl-context-arm64",
+    "java-context-arm64",
+    "javascript-extensions-arm64",
+    "kotlin-context-arm64",
+    "php-context-arm64",
+    "ruby-context-arm64",
+    "rust-context-arm64",
+    "scala-context-arm64",
+    "swift-context-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "vb-context-arm64",
+    "yaml-context-arm64"
+  ],
   "scripts/consumer-runtime-diagnostics.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -2379,6 +2400,12 @@
   "test/clippy-evidence.test.ts": ["rust-extensions-arm64"],
   "test/clippy-surfaces.test.ts": ["rust-extensions-arm64"],
   "test/clippy.test.ts": ["rust-extensions-arm64"],
+  "test/confidence-provenance-fixture.ts": [
+    "resource-release",
+    "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/consumer-impact-fixture.ts": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -2772,6 +2799,12 @@
   "test/gate-attempt-archives.test.ts": [
     "attempt-runtime",
     "attempt-runtime-arm64"
+  ],
+  "test/gate-confidence-provenance.test.ts": [
+    "resource-release",
+    "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64"
   ],
   "test/gate-consumer-impact.test.ts": [
     "c-context-arm64",
