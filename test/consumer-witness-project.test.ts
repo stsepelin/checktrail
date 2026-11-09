@@ -1228,6 +1228,8 @@ test("JavaScript tool preparation follows exact development declarations and rej
   const selected = selectJavaScriptToolsLock(manifest, lock);
   for (const name of [
     "eslint",
+    "vite",
+    "rolldown",
     "@types/node",
     "@modelcontextprotocol/client",
   ]) {
@@ -1251,6 +1253,8 @@ test("JavaScript tool preparation follows exact development declarations and rej
   for (const name of [
     "typescript-eslint",
     "eslint",
+    "vite",
+    "rolldown",
     "@types/node",
     "@modelcontextprotocol/client",
   ]) {
