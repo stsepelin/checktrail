@@ -5,6 +5,7 @@ import path from "node:path";
 import process from "node:process";
 import { isDeepStrictEqual } from "node:util";
 import { parse } from "yaml";
+import { createPinnedGitHubFetch } from "./request-pinned-artifact.mjs";
 import {
   buildNativeInputs,
   nativeJobIds,
@@ -19,6 +20,11 @@ try {
     !update || process.env.GITHUB_ACTIONS !== "true",
     "CI cannot rewrite its expected input contract",
   );
+  // Validate the actual step-scoped credential's transport contract only.
+  // Preflight must never acquire artifacts or claim authentication succeeded.
+  createPinnedGitHubFetch({
+    fetchImpl: () => assert.fail("CI preflight cannot request artifacts"),
+  });
   const json = async (file) => JSON.parse(await readFile(file, "utf8"));
   const manifest = await json("package.json");
   const lock = await json("package-lock.json");
