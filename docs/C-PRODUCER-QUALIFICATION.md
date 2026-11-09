@@ -52,8 +52,12 @@ of build contents.
 
 The C observer counts link and special-file entries without following them in
 the writable build tree. Immutable inputs remain strict. Its fixed policy uses
-ten-second sampling, at most 9,000 samples and a 256MiB transport bound. These
-are retained observations, not a peak filesystem quota. Legacy controller
+ten-second sampling, at most 9,000 samples and a 256MiB transport bound. Its
+separate observer container receives two CPUs, 128MiB and 16 PIDs for complete
+scans under the existing 30-second deadline. Operators must include this CPU
+allocation in their aggregate admission budget. The strict binutils observer
+retains its quarter-CPU allocation. These are retained observations, not a peak
+filesystem quota. Legacy controller
 schema 1 keeps its original 16MiB transport bound; a receipt cannot select its
 own limits.
 

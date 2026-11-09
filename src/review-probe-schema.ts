@@ -1,4 +1,5 @@
 import { capturedProcessOutputSchema } from "./process-output.js";
+import { windowsExecutionSchema } from "./windows-execution.js";
 import { z } from "zod";
 import { reviewFamilySchema } from "./review-hypotheses.js";
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
@@ -78,6 +79,7 @@ export const nativeProbeAttemptSchema = z.strictObject({
   truncated: z.boolean(),
   errorCode: z.string().max(256).nullable(),
   output: capturedProcessOutputSchema.nullable(),
+  windowsExecution: windowsExecutionSchema.optional(),
 });
 const nativeBudget = z.strictObject({
   scope: z.literal("native-probe-run"),

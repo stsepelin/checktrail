@@ -39,8 +39,14 @@ Use the gateway's exported `treeDigest()` for runtime and dependency identities.
 Prepare and verify the public runtime against its declared package archive before
 freezing. The digest binds installed bytes; it does not itself establish package
 origin. Use `dependenciesSha256: null` only when no dependency tree is mounted.
-The judge profile is separate because a judge packet may need both languages and
+The judge profile is separate because a judge packet may need multiple languages and
 a shared prepared dependency tree.
+
+The optional `dependencyDirectory` is `node_modules` or `vendor`. It selects the
+read-only dependency mount below `/source` and must match the gateway and frozen
+execution profile. Omission preserves the existing `node_modules` mount. Use
+`vendor` for a prepared Composer or Go vendor tree; its complete bytes remain
+covered by `dependenciesSha256` and the before/after execution identity checks.
 
 For a Python comparator, declare:
 
@@ -51,13 +57,42 @@ For a Python comparator, declare:
 }
 ```
 
-`vitest-json` is also supported, with the exact captured test-file scope. The
+`vitest-json`, `go-json`, `phpunit-junit` and `pest-junit` are also supported. The
 native command must produce the parser's real output. Native comparator evidence
 uses the shared Checktrail parsers and requires positive executed test counts;
 zero tests, all-skipped tests, startup failures, truncation and cancellation cannot
 satisfy it. A conclusive failing test run remains useful execution evidence.
-Other native comparator formats need a separately implemented and tested profile;
-this initial enforced gateway is limited to Python and JavaScript/TypeScript.
+Go uses complete `go test -json` package/test sequences with an exit status that
+agrees with the observed test outcomes. Go's JSON does not establish per-file
+coverage; review the captured scope and declared native command before freezing.
+PHPUnit must emit complete JUnit XML on stdout; Pest must emit it on stderr.
+Every declared PHP test file must occur in the XML, with a positive assertion
+count for each non-skipped case. Foreign-file failures and assertion-free fixture
+errors cannot satisfy this native comparator. Pest method suffixes are removed
+before comparing whole file paths.
+
+The permitted native executables are `node`, `python3`, `go` and `php`; probe
+languages are `javascript`, `python`, `go` and `php`. PHP probes use `php -r`
+without an opening PHP tag. Go probes supply a complete `package main` program,
+which is written to a fresh private temporary directory and passed as data to
+`go run`. Prepared Go images must also contain Node.js for this bootstrap.
+Toolchain downloads and proxy fetches are disabled. A declared vendor
+tree selects `-mod=vendor`; other Go probes use `-mod=readonly`. The directory is
+removed after normal child completion. The containing execution is cleaned up on
+timeout or cancellation.
+
+Profiles enabling Go use a 1 GiB container memory limit and a 256 MiB executable
+temporary filesystem for compilation. Other profiles retain the 512 MiB memory
+and 64 MiB temporary filesystem limits. Both arms of a comparison must use the
+same profile. Source/dependency mounts remain read-only and networking remains
+disabled. The operator must prepare the pinned image with the declared runtimes
+and dependencies, then pass the native preflight; adding a language to a profile
+does not demonstrate that it is available or that a comparison was run.
+
+After building, `node scripts/verify-evaluation-native-package.mjs` reruns the
+gateway and native-evidence controls through a fresh offline production install
+with an external harness. It uses synthetic records and an injected executor; it
+does not certify native toolchains, host sessions or independent review trials.
 
 The MCP-assisted arm additionally requires a real validation response whose
 retained report is equal, whose source is unchanged, and whose nonempty checks are

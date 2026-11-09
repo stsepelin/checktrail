@@ -11,8 +11,10 @@ import { setTimeout as delay } from "node:timers/promises";
 import { syncBuiltinESMExports } from "node:module";
 import { rm } from "node:fs/promises";
 import { createReviewContext } from "../src/review.js";
+import { runProcess } from "../src/runner.js";
 import {
   runReviewProbe,
+  nativeProbeStartObserved,
   projectReviewProbe,
   parseReviewProbe,
   parseReviewProbeRun,
@@ -21,6 +23,11 @@ import {
 import type { ReviewProbeRecipe } from "../src/review-probe-schema.js";
 import type { ReviewCandidate } from "../src/review-provider-schema.js";
 import { fixture } from "./helpers.js";
+import type { WindowsExecution } from "../src/windows-execution.js";
+import {
+  windowsLauncherSha256,
+  windowsSupervisorSha256,
+} from "../src/windows-process.js";
 const pin = (recipe: unknown): PinnedReviewProbe => {
   const contents = JSON.stringify(recipe);
   return {
@@ -1334,4 +1341,335 @@ test("native probe cancellation retains the reached attempt and never creates ev
     controller.abort();
     await pending;
   }
+});
+
+test("native probe start evidence separates resumed Windows children from unknown terminals and unstarted attempts", () => {
+  const windows = resumedWindowsAttempt();
+  type Start = Parameters<typeof nativeProbeStartObserved>[0];
+  const unobserved: Start = { exitCode: null, signal: null };
+  const cases: { name: string; value: Start; started: boolean }[] = [
+    {
+      name: "resumed target with unknown original terminal",
+      value: { ...unobserved, windowsExecution: windows },
+      started: true,
+    },
+    {
+      name: "ordinary successful target terminal",
+      value: { exitCode: 0, signal: null },
+      started: true,
+    },
+    {
+      name: "ordinary failed target terminal",
+      value: { exitCode: 1, signal: null },
+      started: true,
+    },
+    {
+      name: "ordinary target signal",
+      value: { exitCode: null, signal: "SIGTERM" },
+      started: true,
+    },
+    {
+      name: "missing-target spawn errno is not a target terminal",
+      value: { exitCode: -2, signal: null },
+      started: false,
+    },
+    {
+      name: "permission-denied spawn errno is not a target terminal",
+      value: { exitCode: -13, signal: null },
+      started: false,
+    },
+    {
+      name: "fractional value is not a target terminal",
+      value: { exitCode: 0.5, signal: null },
+      started: false,
+    },
+    { name: "pre-admission cancellation", value: unobserved, started: false },
+    {
+      name: "missing target executable",
+      value: {
+        ...unobserved,
+        windowsExecution: {
+          ...windows,
+          phase: "failed",
+          childPid: null,
+          jobAssigned: false,
+          resumed: false,
+          cleanup: "unavailable",
+          nativeError: 2,
+        },
+      },
+      started: false,
+    },
+    {
+      name: "native spawn failed before resume",
+      value: {
+        ...unobserved,
+        windowsExecution: {
+          ...windows,
+          phase: "failed",
+          childPid: null,
+          jobAssigned: false,
+          resumed: false,
+          cleanup: "unavailable",
+          nativeError: 5,
+        },
+      },
+      started: false,
+    },
+    {
+      name: "assigned suspended target never resumed",
+      value: {
+        ...unobserved,
+        windowsExecution: { ...windows, resumed: false },
+      },
+      started: false,
+    },
+    {
+      name: "assigned prefix is not a resumed target",
+      value: {
+        ...unobserved,
+        windowsExecution: {
+          ...windows,
+          phase: "assigned",
+          resumed: false,
+          cleanup: "unavailable",
+          activeAfterCleanup: null,
+        },
+      },
+      started: false,
+    },
+    {
+      name: "resume claim lacks job assignment",
+      value: {
+        ...unobserved,
+        windowsExecution: { ...windows, jobAssigned: false },
+      },
+      started: false,
+    },
+    {
+      name: "resume claim lacks a target PID",
+      value: {
+        ...unobserved,
+        windowsExecution: { ...windows, childPid: null },
+      },
+      started: false,
+    },
+    {
+      name: "target PID must be positive",
+      value: { ...unobserved, windowsExecution: { ...windows, childPid: 0 } },
+      started: false,
+    },
+    {
+      name: "target PID must be integral",
+      value: {
+        ...unobserved,
+        windowsExecution: { ...windows, childPid: 1003.5 },
+      },
+      started: false,
+    },
+    {
+      name: "assigned phase contradicts resume",
+      value: {
+        ...unobserved,
+        windowsExecution: { ...windows, phase: "assigned" },
+      },
+      started: false,
+    },
+    {
+      name: "running target with incomplete cleanup remains started",
+      value: {
+        ...unobserved,
+        windowsExecution: {
+          ...windows,
+          phase: "running",
+          cleanup: "unavailable",
+          activeAfterCleanup: null,
+        },
+      },
+      started: true,
+    },
+    {
+      name: "failure after a successful target resume remains started",
+      value: {
+        ...unobserved,
+        windowsExecution: {
+          ...windows,
+          phase: "failed",
+          cleanup: "unavailable",
+          nativeError: 5,
+        },
+      },
+      started: true,
+    },
+  ];
+  for (const item of cases)
+    assert.equal(nativeProbeStartObserved(item.value), item.started, item.name);
+  assert.equal(
+    windows.childExitCode,
+    null,
+    "A start claim cannot invent an original terminal",
+  );
+});
+
+function resumedWindowsAttempt(): WindowsExecution {
+  return {
+    profile: "windows-job-v1",
+    requestId: "00000000-0000-4000-8000-000000000001",
+    phase: "completed",
+    supervisorPid: 1002,
+    childPid: 1003,
+    jobAssigned: true,
+    resumed: true,
+    childExitCode: null,
+    activeBeforeCleanup: 1,
+    activeAfterCleanup: 0,
+    cleanup: "confirmed",
+    nativeError: null,
+    resources: {
+      profile: "windows-job-resources-v1",
+      state: "unavailable",
+      stage: "process-times",
+      nativeError: 5,
+    },
+    launcherPid: 1001,
+    launcherSha256: windowsLauncherSha256,
+    supervisorSha256: windowsSupervisorSha256,
+    ownership: "creation-job-list",
+    executionSandboxed: false,
+  };
+}
+
+test("boolean and JSON probe packets retain Windows start evidence without inventing an original terminal", async (t) => {
+  const d = await assignment(
+    t,
+    "export async function decision(marker){const fs=process.getBuiltinModule('node:fs');fs.writeFileSync(marker+'.pending','entered');fs.renameSync(marker+'.pending',marker);await new Promise(()=>setInterval(()=>{},1000));return true;}\n",
+  );
+  for (const json of [false, true]) {
+    const marker = path.join(d.root, ".checktrail/windows-start-" + json);
+    const selected = {
+      ...recipe,
+      ...(json ? { schemaVersion: 2, profile: "node-export-json-v1" } : {}),
+      cases: recipe.cases.map((item) => ({ ...item, args: [marker] })),
+    };
+    const controller = new AbortController();
+    const pending = runReviewProbe(d.root, d.context, d.candidate, {
+      ...runOptions,
+      recipe: pin(selected),
+      timeoutMs: 12000,
+      signal: controller.signal,
+    });
+    try {
+      const deadline = Date.now() + 8000;
+      while (true) {
+        try {
+          if ((await readFile(marker, "utf8")) === "entered") break;
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+        }
+        assert.ok(
+          Date.now() < deadline,
+          "Native body must be reached before cancellation",
+        );
+        await delay(10);
+      }
+      controller.abort();
+      const run = await pending;
+      assert.equal(run.status, "cancelled");
+      assert.equal(run.nativeExecution, true);
+      assert.equal(run.schemaVersion, json ? 4 : 3);
+      if (run.schemaVersion !== 3 && run.schemaVersion !== 4)
+        throw Error("Retained physical attempt required");
+      const attempt = run.trials[0]!.execution!.artifact;
+      // Synthetic serialization control; this host invocation is not claimed to be Windows.
+      attempt.exitCode = null;
+      attempt.signal = null;
+      attempt.windowsExecution = resumedWindowsAttempt();
+      const parsed = parseReviewProbeRun(JSON.parse(JSON.stringify(run)));
+      if (parsed.schemaVersion !== 3 && parsed.schemaVersion !== 4)
+        throw Error("Retained physical attempt required");
+      const retained = parsed.trials[0]!.execution!.artifact;
+      assert.deepEqual(retained.windowsExecution, resumedWindowsAttempt());
+      assert.equal(retained.exitCode, null);
+      assert.equal(retained.signal, null);
+      assert.equal(retained.windowsExecution!.childExitCode, null);
+      assert.equal(parsed.trials[0]!.functionExecuted, false);
+      assert.equal(
+        JSON.stringify(projectReviewProbe(parsed, false)).includes(
+          "windowsExecution",
+        ),
+        false,
+      );
+      assert.equal(parsed.executionSandboxed, false);
+    } finally {
+      controller.abort();
+      await pending;
+    }
+  }
+});
+
+test("native probe start evidence rejects an actual missing target and cancellation before admission", async (t) => {
+  const root = await fixture(t, {});
+  const missing = await runProcess(
+    root,
+    {
+      executable: path.join(root, "missing-native-target.exe"),
+      args: [],
+      cwd: ".",
+    },
+    { timeoutMs: 10000, maxOutputBytes: 1024, captureRawOutput: true },
+  );
+  assert.ok(missing.exitCode === null || missing.exitCode < 0);
+  assert.equal(missing.signal, null);
+  assert.equal(missing.errorCode, "ENOENT");
+  const originalMissingTerminal = [
+    missing.exitCode,
+    missing.signal,
+    missing.errorCode,
+  ];
+  assert.equal(
+    nativeProbeStartObserved(missing),
+    false,
+    "A launcher cannot supply target start evidence",
+  );
+  assert.deepEqual(
+    [missing.exitCode, missing.signal, missing.errorCode],
+    originalMissingTerminal,
+  );
+  const blockedTarget = path.join(root, "blocked-native-target.exe");
+  await writeFile(blockedTarget, "", { mode: 0o600 });
+  const failedSpawn = await runProcess(
+    root,
+    {
+      executable: blockedTarget,
+      args: [],
+      cwd: ".",
+    },
+    { timeoutMs: 10000, maxOutputBytes: 1024, captureRawOutput: true },
+  );
+  assert.ok(failedSpawn.exitCode === null || failedSpawn.exitCode < 0);
+  assert.equal(failedSpawn.signal, null);
+  assert.equal(typeof failedSpawn.errorCode, "string");
+  assert.ok(failedSpawn.errorCode!.length > 0);
+  assert.equal(
+    nativeProbeStartObserved(failedSpawn),
+    false,
+    "An existing file that cannot spawn supplies no target start",
+  );
+  const d = await assignment(
+    t,
+    "export function decision(name){return name==='scope:read';}\n",
+  );
+  const controller = new AbortController();
+  controller.abort();
+  const run = await runReviewProbe(d.root, d.context, d.candidate, {
+    ...runOptions,
+    recipe: pin(recipe),
+    signal: controller.signal,
+  });
+  assert.equal(run.status, "cancelled");
+  assert.equal(run.nativeExecution, false);
+  assert.equal(run.temporaryArtifacts, "not-created");
+  if (run.schemaVersion !== 3) throw Error("Current Boolean receipt required");
+  assert.equal(run.nativeBudget.calls, 0);
+  assert.ok(run.trials.every((trial) => trial.execution === null));
 });

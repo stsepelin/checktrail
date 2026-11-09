@@ -42,6 +42,7 @@ export const configSchema = z.strictObject({
   image: z.string().regex(/^sha256:[a-f0-9]{64}$/),
   runtime: absolute,
   dependencies: absolute.nullable(),
+  dependencyDirectory: z.enum(["node_modules", "vendor"]).optional(),
   treatment: z.boolean(),
   binding: z
     .strictObject({
@@ -52,13 +53,14 @@ export const configSchema = z.strictObject({
     })
     .optional(),
   native: z.strictObject({
-    executable: z.enum(["node", "python3"]),
+    executable: z.enum(["node", "python3", "go", "php"]),
     args: z.array(z.string().max(2048)).max(64),
   }),
   languages: z
-    .array(z.enum(["javascript", "python"]))
+    .array(z.enum(["javascript", "python", "go", "php"]))
     .min(1)
-    .max(2),
+    .max(4)
+    .refine((values) => new Set(values).size === values.length),
   timeoutMs: z.number().int().min(100).max(120000).default(30000),
   maxOutputBytes: z.number().int().min(1024).max(1048576).default(1048576),
   maxCalls: z.number().int().min(1).max(100).default(50),
@@ -78,7 +80,7 @@ const schemas = {
   }),
   evaluation_native: z.strictObject({}),
   evaluation_probe: z.strictObject({
-    language: z.enum(["javascript", "python"]),
+    language: z.enum(["javascript", "python", "go", "php"]),
     code: z.string().min(1).max(16000),
     sourceEvidenceIds: z
       .array(z.string().regex(/^evidence-\d+-[a-f0-9]{12}$/))
@@ -198,7 +200,56 @@ export async function treeDigest(root) {
   return hash.digest("hex");
 }
 
+export function probeCommand(language, code, dependencyDirectory) {
+  if (language === "python") return ["python3", "-B", "-c", code];
+  if (language === "php") return ["php", "-r", code];
+  if (language === "go") {
+    const bootstrap = `
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+const directory = mkdtempSync(join(tmpdir(), 'checktrail-evaluation-go-'));
+try {
+  const source = join(directory, 'main.go');
+  const temporary = join(directory, 'tmp');
+  mkdirSync(temporary);
+  writeFileSync(source, process.argv[1], {flag:'wx', mode:0o600});
+  const child = spawnSync('go', ['run', process.argv[2], source], {
+    stdio:'inherit',
+    env:{...process.env, GOCACHE:join(directory,'cache'), GOTMPDIR:temporary,
+      GOTOOLCHAIN:'local', GOPROXY:'off'},
+  });
+  if (child.error) process.stderr.write(String(child.error) + '\\n');
+  if (child.signal) process.kill(process.pid, child.signal);
+  else process.exitCode = child.status ?? 127;
+} finally {
+  rmSync(directory, {recursive:true, force:true});
+}
+`;
+    return [
+      "node",
+      "--input-type=module",
+      "-e",
+      bootstrap,
+      "--",
+      code,
+      dependencyDirectory === "vendor" ? "-mod=vendor" : "-mod=readonly",
+    ];
+  }
+  assert.equal(language, "javascript", "Language unavailable");
+  return [
+    "node",
+    "--experimental-strip-types",
+    "--input-type=module",
+    "-e",
+    code,
+  ];
+}
+
 export function containerArgs(config, snapshot, worker, name, engine = false) {
+  const go =
+    config.native.executable === "go" || config.languages.includes("go");
   const mounts = [
     [snapshot, "/source"],
     ...(engine
@@ -208,7 +259,12 @@ export function containerArgs(config, snapshot, worker, name, engine = false) {
         ]
       : []),
     ...(config.dependencies
-      ? [[config.dependencies, "/source/node_modules"]]
+      ? [
+          [
+            config.dependencies,
+            `/source/${config.dependencyDirectory ?? "node_modules"}`,
+          ],
+        ]
       : []),
   ];
   return [
@@ -230,11 +286,13 @@ export function containerArgs(config, snapshot, worker, name, engine = false) {
     "--pids-limit",
     "64",
     "--memory",
-    "512m",
+    go ? "1g" : "512m",
     "--cpus",
     "1",
     "--tmpfs",
-    "/tmp:rw,nosuid,nodev,size=64m,mode=1777",
+    go
+      ? "/tmp:rw,exec,nosuid,nodev,size=256m,mode=1777"
+      : "/tmp:rw,nosuid,nodev,size=64m,mode=1777",
     ...mounts.flatMap(([host, target]) => [
       "--mount",
       `type=bind,src=${host},target=${target},readonly`,
@@ -251,6 +309,16 @@ export function containerArgs(config, snapshot, worker, name, engine = false) {
     "PYTHONPATH=/source",
     "--env",
     "CI=1",
+    ...(go
+      ? [
+          "--env",
+          "GOTOOLCHAIN=local",
+          "--env",
+          "GOPROXY=off",
+          "--env",
+          "GOCACHE=/tmp/go-cache",
+        ]
+      : []),
     config.image,
   ];
 }
@@ -341,6 +409,9 @@ export async function createGateway(input, options = {}) {
       image: config.image,
       runtimeSha256: identities[0],
       dependenciesSha256: identities[1],
+      ...(config.dependencyDirectory
+        ? { dependencyDirectory: config.dependencyDirectory }
+        : {}),
       native: config.native,
       languages: config.languages,
       timeoutMs: config.timeoutMs,
@@ -538,15 +609,7 @@ export async function createGateway(input, options = {}) {
         ),
       ].sort();
       const execution = await container(
-        args.language === "python"
-          ? ["python3", "-B", "-c", args.code]
-          : [
-              "node",
-              "--experimental-strip-types",
-              "--input-type=module",
-              "-e",
-              args.code,
-            ],
+        probeCommand(args.language, args.code, config.dependencyDirectory),
       );
       return {
         ...execution,

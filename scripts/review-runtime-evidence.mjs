@@ -12,8 +12,42 @@ import {
 } from "./compiled-engine-evidence.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const hash = (b) => createHash("sha256").update(b).digest("hex");
-const profileId = "multi-candidate-workflow";
-export function selectReviewRuntimeRequirements(profiles, scope) {
+const defaultProfileId = "multi-candidate-workflow";
+export function reviewRuntimeProfile(profileId = defaultProfileId) {
+  assert.ok(
+    [defaultProfileId, "confidence-provenance"].includes(profileId),
+    "Unknown selected review runtime profile",
+  );
+  const confidence = profileId === "confidence-provenance";
+  return {
+    id: profileId,
+    receiptProfile: profileId + "-runtime-v1",
+    acceptanceFile: "dist/test/gate-" + profileId + ".test.js",
+    fixtures: [
+      confidence
+        ? "dist/test/confidence-provenance-fixture.js"
+        : "dist/test/review-workflow-findings-fixture.js",
+      "dist/test/review-workflow-fixture.js",
+      "dist/test/helpers.js",
+      "dist/test/tool-fixture.js",
+    ],
+    installedVariable: confidence
+      ? "CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED"
+      : "CHECKTRAIL_MULTI_WORKFLOW_INSTALLED",
+    receiptVariable: confidence
+      ? "CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALL_RECEIPT"
+      : "CHECKTRAIL_MULTI_WORKFLOW_INSTALL_RECEIPT",
+    slotVariable: confidence
+      ? "CHECKTRAIL_CONFIDENCE_RUNTIME_SLOT"
+      : "CHECKTRAIL_REVIEW_RUNTIME_SLOT",
+  };
+}
+export function selectReviewRuntimeRequirements(
+  profiles,
+  scope,
+  profileId = defaultProfileId,
+) {
+  const configuration = reviewRuntimeProfile(profileId);
   const selected = scope.extensionProfiles.filter((p) => p.id === profileId);
   assert.equal(
     selected.length,
@@ -22,10 +56,7 @@ export function selectReviewRuntimeRequirements(profiles, scope) {
   );
   const p = selected[0];
   assert.equal(p.runtime, "engine-matrix");
-  assert.equal(
-    p.acceptanceFile,
-    "dist/test/gate-multi-candidate-workflow.test.js",
-  );
+  assert.equal(p.acceptanceFile, configuration.acceptanceFile);
   const kinds = [
     "broken",
     "fixed",
@@ -139,6 +170,48 @@ export function checkReviewRuntimeSelection(
     );
   return selected;
 }
+export function requireReviewRuntimeCases(
+  evidence,
+  requirements,
+  acceptanceSha256,
+) {
+  assert.equal(evidence.complete, true);
+  assert.equal(evidence.required, 9);
+  assert.equal(evidence.passed, 9);
+  assert.deepEqual(evidence.problems, []);
+  const ledger = evidence.ledger;
+  assert.equal(ledger.truncated, false);
+  assert.equal(ledger.terminalEventCount, 9);
+  assert.equal(ledger.events.length, 9);
+  assert.equal(ledger.cases.length, 9);
+  assert.equal(ledger.files.length, 1);
+  const file = ledger.files[0];
+  assert.equal(file.stable, true);
+  assert.deepEqual(file.before, { state: "present", sha256: acceptanceSha256 });
+  assert.deepEqual(file.after, file.before);
+  const events = new Map();
+  for (const event of ledger.events) {
+    assert.equal(event.fileId, file.id);
+    assert.equal(event.kind, "test");
+    assert.equal(event.outcome, "passed");
+    assert.equal(event.required, true);
+    assert.equal(event.nameTruncated, false);
+    assert.ok(Number.isSafeInteger(event.sequence));
+    assert.ok(event.sequence >= 1 && event.sequence <= 9);
+    assert.equal(events.has(event.sequence), false);
+    events.set(event.sequence, event);
+  }
+  for (const item of ledger.cases) {
+    assert.equal(item.fileId, file.id);
+    assert.equal(item.outcome, "passed");
+    assert.equal(item.terminalSequences.length, 1);
+    assert.equal(events.get(item.terminalSequences[0])?.name, item.name);
+  }
+  assert.deepEqual(
+    ledger.cases.map((c) => c.name).sort(),
+    requirements.map((c) => c.name).sort(),
+  );
+}
 export function requireReviewRuntimeInstallation(receipt, expected) {
   assert.equal(receipt.offlineProductionInstall, true);
   assert.equal(receipt.lifecycleScriptsExecuted, false);
@@ -158,7 +231,47 @@ export function requireReviewRuntimeInstallation(receipt, expected) {
     receipt.profile.compiledEngine.manifestSha256,
     expected.engine.manifestSha256,
   );
-  if (expected.runtime.slot !== null) {
+  const qualified =
+    expected.runtime.slot !== null ||
+    expected.profileId === "confidence-provenance";
+  if (expected.profileId) {
+    requireReviewRuntimeCases(
+      receipt.profile,
+      expected.requirements,
+      expected.acceptanceSha256,
+    );
+    if (qualified) {
+      for (const key of [
+        "tarballSha256",
+        "harnessSha256",
+        "productionDependencyLockSha256",
+      ])
+        assert.match(receipt[key] ?? "", /^[a-f0-9]{64}$/);
+      assert.deepEqual(
+        receipt.profile.selectedRuntime,
+        expected.selectedRuntime,
+      );
+      assert.equal(
+        receipt.profile.profile,
+        reviewRuntimeProfile(expected.profileId).receiptProfile,
+      );
+      assert.equal(receipt.profile.installedEvidence, null);
+      assert.equal(receipt.profile.inferenceInvoked, false);
+      assert.equal(receipt.profile.fieldEvaluationExecuted, false);
+      if (expected.profileId === "confidence-provenance") {
+        assert.equal(receipt.profile.gateAComplete, false);
+        assert.equal(receipt.profile.qualityAssessed, false);
+      } else
+        assert.equal(
+          receipt.profile.gateAMultiCandidateWorkflowComplete,
+          false,
+        );
+    } else {
+      // The existing no-slot default uses the generic offline installation ledger.
+      assert.equal(receipt.profile.profile, defaultProfileId);
+    }
+  }
+  if (qualified) {
     assert.deepEqual(receipt.profile.runtime, expected.runtime);
     assert.equal(receipt.profile.harnessSha256, expected.harnessSha256);
     assert.equal(
@@ -177,14 +290,13 @@ let busy = false;
 export async function verifyReviewRuntime({
   slot = null,
   requireHostedIdentity = process.env.GITHUB_ACTIONS === "true",
+  profileId = defaultProfileId,
 } = {}) {
+  const configuration = reviewRuntimeProfile(profileId);
   assert.equal(busy, false, "Concurrent runtime controller is unavailable");
   busy = true;
   let temporary;
-  const variables = [
-    "CHECKTRAIL_MULTI_WORKFLOW_INSTALL_RECEIPT",
-    "CHECKTRAIL_REVIEW_RUNTIME_SLOT",
-  ];
+  const variables = [configuration.receiptVariable, configuration.slotVariable];
   const previous = Object.fromEntries(
     variables.map((k) => [k, process.env[k]]),
   );
@@ -198,7 +310,11 @@ export async function verifyReviewRuntime({
         "utf8",
       ),
     );
-    const requirements = selectReviewRuntimeRequirements(profiles, scope);
+    const requirements = selectReviewRuntimeRequirements(
+      profiles,
+      scope,
+      profileId,
+    );
     let distributionId = null,
       distributionVersion = null,
       distributionBytes = null;
@@ -240,10 +356,7 @@ export async function verifyReviewRuntime({
     );
     const files = [
       ...new Set(requirements.map((x) => x.file)),
-      "dist/test/review-workflow-findings-fixture.js",
-      "dist/test/review-workflow-fixture.js",
-      "dist/test/helpers.js",
-      "dist/test/tool-fixture.js",
+      ...configuration.fixtures,
       "scripts/verify-import-context-package.mjs",
       "scripts/verify-review-runtime-package.mjs",
       "package-lock.json",
@@ -271,17 +384,18 @@ export async function verifyReviewRuntime({
     const harnessSha256 = hash(
       JSON.stringify({ inputs, packageSha256, requirementsSha256 }),
     );
-    const source = process.env.CHECKTRAIL_MULTI_WORKFLOW_INSTALLED !== "1";
+    const source = process.env[configuration.installedVariable] !== "1";
     if (source) {
       temporary = await mkdtemp(
         path.join(os.tmpdir(), "checktrail-review-runtime-"),
       );
-      process.env.CHECKTRAIL_MULTI_WORKFLOW_INSTALL_RECEIPT = path.join(
+      process.env[configuration.receiptVariable] = path.join(
         temporary,
         "installed.json",
       );
-      if (slot === null) delete process.env.CHECKTRAIL_REVIEW_RUNTIME_SLOT;
-      else process.env.CHECKTRAIL_REVIEW_RUNTIME_SLOT = slot;
+      if (slot === null && profileId === defaultProfileId)
+        delete process.env[configuration.slotVariable];
+      else process.env[configuration.slotVariable] = slot ?? "--local";
     }
     const startedAt = new Date().toISOString();
     const evidence = await runRequiredTests(
@@ -295,10 +409,10 @@ export async function verifyReviewRuntime({
           ),
       },
     );
-    assert.equal(evidence.complete, true, JSON.stringify(evidence.problems));
-    assert.equal(evidence.required, 9);
-    assert.equal(evidence.passed, 9);
-    assert.equal(evidence.ledger.truncated, false);
+    const acceptanceSha256 = inputs.find(
+      ([file]) => file === configuration.acceptanceFile,
+    )[1];
+    requireReviewRuntimeCases(evidence, requirements, acceptanceSha256);
     const compiledEngine = requireUnchangedCompiledEngine(
       before,
       await captureCompiledEngine(engineRoot),
@@ -326,6 +440,7 @@ export async function verifyReviewRuntime({
           ),
         ),
         scope,
+        profileId,
       ),
       requirements,
     );
@@ -336,9 +451,7 @@ export async function verifyReviewRuntime({
       );
     let installedEvidence = null;
     if (source) {
-      const bytes = await readFile(
-        process.env.CHECKTRAIL_MULTI_WORKFLOW_INSTALL_RECEIPT,
-      );
+      const bytes = await readFile(process.env[configuration.receiptVariable]);
       assert.ok(bytes.length <= 4 * 1048576);
       installedEvidence = JSON.parse(bytes.toString("utf8"));
       requireReviewRuntimeInstallation(installedEvidence, {
@@ -347,11 +460,15 @@ export async function verifyReviewRuntime({
         harnessSha256,
         requirementsSha256,
         packageSha256,
+        profileId,
+        selectedRuntime: selected,
+        requirements,
+        acceptanceSha256,
       });
     }
     return {
       schemaVersion: 1,
-      profile: "multi-candidate-workflow-runtime-v1",
+      profile: configuration.receiptProfile,
       ...evidence,
       startedAt,
       finishedAt: new Date().toISOString(),
@@ -366,7 +483,9 @@ export async function verifyReviewRuntime({
       installedEvidence,
       inferenceInvoked: false,
       fieldEvaluationExecuted: false,
-      gateAMultiCandidateWorkflowComplete: false,
+      ...(profileId === defaultProfileId
+        ? { gateAMultiCandidateWorkflowComplete: false }
+        : { gateAComplete: false, qualityAssessed: false }),
     };
   } finally {
     for (const [k, v] of Object.entries(previous)) {
