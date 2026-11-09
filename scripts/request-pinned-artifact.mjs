@@ -580,9 +580,11 @@ export function createPinnedGitHubFetch({
   fetchImpl = globalThis.fetch,
   token = process.env.CHECKTRAIL_GITHUB_ARTIFACT_TOKEN,
 } = {}) {
+  // Credentials are opaque. Check visible ASCII header safety without assuming
+  // a GitHub prefix, encoding, decoded content, or fixed token length.
   if (token !== undefined && token !== "")
     assert.ok(
-      typeof token === "string" && /^[A-Za-z0-9_]+$/.test(token),
+      typeof token === "string" && !/[^\x21-\x7e]/u.test(token),
       "Invalid pinned artifact credentials",
     );
   return async (asset, request) => {
