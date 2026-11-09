@@ -4,6 +4,10 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      native-jest-mutation-qualification:
+        patterns:
+          - jest-native-mutation
   - package-ecosystem: github-actions
     directory: /
     schedule:
