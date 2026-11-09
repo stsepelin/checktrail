@@ -5,7 +5,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
 
-test("mutation tool preparation uses current declarations and publishes the complete exact locked pair", async (t) => {
+test("mutation tool preparation binds current runner declarations and frozen native roles in a complete exact locked pair", async (t) => {
   const files = Object.fromEntries(
     await Promise.all(
       [
@@ -49,7 +49,6 @@ test("mutation tool preparation uses current declarations and publishes the comp
   for (const name of [
     "vitest",
     "jest",
-    "eslint",
     "@types/node",
     "@modelcontextprotocol/client",
   ]) {
@@ -59,6 +58,30 @@ test("mutation tool preparation uses current declarations and publishes the comp
       manifest.devDependencies[name],
     );
   }
+  const alias = "eslint-native-profile";
+  const nativeEntry = originalLock.packages["node_modules/" + alias];
+  assert.equal(
+    manifest.devDependencies[alias],
+    "npm:eslint@" + nativeEntry.version,
+  );
+  assert.equal(
+    originalLock.packages[""].devDependencies[alias],
+    manifest.devDependencies[alias],
+  );
+  assert.equal(nativeEntry.name, "eslint");
+  assert.equal(selected.dependencies.eslint, nativeEntry.version);
+  assert.equal(
+    lock.packages["node_modules/eslint"].version,
+    nativeEntry.version,
+  );
+  assert.equal(lock.packages["node_modules/eslint"].name, "eslint");
+  assert.equal(lock.packages["node_modules/" + alias], undefined);
+  const config = "@eslint/config-array";
+  assert.equal(selected.dependencies[config], manifest.devDependencies[config]);
+  assert.equal(
+    lock.packages["node_modules/" + config].version,
+    manifest.devDependencies[config],
+  );
   const parser = "@typescript-eslint/parser";
   const expected =
     originalLock.packages["node_modules/typescript-eslint"].dependencies[
