@@ -1789,6 +1789,7 @@ test("CI Windows lanes preserve frozen runtime pins and partition every required
     "node scripts/verify-review-runtime.mjs ${{ matrix.slot }}",
     "node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings &&",
     "node scripts/verify-lifecycle-platforms.mjs ${{ matrix.slot }}",
+    "node scripts/verify-review-runtime.mjs ${{ matrix.slot }} confidence-provenance",
     "node scripts/verify-evaluation-runtime.mjs ${{ matrix.slot }}",
   ]);
   assert.deepEqual(commands("matrix.consumer"), [
@@ -2460,5 +2461,78 @@ test("native failure diagnostic uploads preserve the capsule publication order a
         id,
       );
     }
+  }
+});
+
+test("CI confidence reuses exactly the existing core runtime slots and raw consumer bytes have separate bounded artifact custody", async () => {
+  const matrix = workflow.jobs["tasks-runtime"].strategy.matrix.include;
+  assert.equal(matrix.filter((row: { core: boolean }) => row.core).length, 7);
+  const confidence = workflow.jobs["tasks-runtime"].steps.filter(
+    (step: { run?: string }) => step.run?.includes("confidence-provenance"),
+  );
+  assert.equal(confidence.length, 1);
+  assert.equal(confidence[0].if, "matrix.core");
+  assert.equal(
+    confidence[0].run,
+    "node scripts/verify-review-runtime.mjs ${{ matrix.slot }} confidence-provenance",
+  );
+  const arm = await readFile(
+    new URL("scripts/verify-tasks-runtime-arm64.mjs", root),
+    "utf8",
+  );
+  assert.equal(
+    arm.split(
+      "node scripts/verify-review-runtime.mjs native-linux-arm64-node22 confidence-provenance",
+    ).length - 1,
+    1,
+  );
+  for (const id of ["tasks-runtime", "tasks-runtime-arm64"]) {
+    const job = workflow.jobs[id];
+    const capture = job.steps.find((step: { run?: string }) =>
+      step.run?.includes(
+        "scripts/verify-consumer-native-acceptance.mjs consumer-impact ",
+      ),
+    );
+    assert.equal(capture.id, "consumer-runtime");
+    assert.equal(
+      capture.env.CHECKTRAIL_NATIVE_RUNTIME_RECEIPT_DIRECTORY,
+      "${{ runner.temp }}/checktrail-native-runtime-receipts",
+    );
+    const uploads = job.steps.filter(
+      (step: { name?: string }) =>
+        step.name === "Retain original bounded consumer runtime receipt bytes",
+    );
+    assert.equal(uploads.length, 1);
+    assert.equal(
+      uploads[0].if,
+      id === "tasks-runtime"
+        ? "${{ !cancelled() && matrix.consumer && steps.consumer-runtime.outcome == 'success' }}"
+        : "${{ !cancelled() && steps.consumer-runtime.outcome == 'success' }}",
+    );
+    assert.equal(
+      uploads[0].uses,
+      "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+    );
+    assert.equal(
+      uploads[0].with.path,
+      "${{ runner.temp }}/checktrail-native-runtime-receipts/*/*",
+    );
+    assert.equal(uploads[0].with["if-no-files-found"], "error");
+    assert.equal(uploads[0].with["retention-days"], 7);
+    assert.equal(uploads[0].with["include-hidden-files"], false);
+    assert.ok(uploads[0].with.name.startsWith("consumer-runtime-receipts-"));
+    assert.ok(
+      job.steps.indexOf(uploads[0]) <
+        job.steps.findIndex(
+          (step: { id?: string }) => step.id === "native-upload",
+        ),
+    );
+    const capsule = job.steps.find(
+      (step: { id?: string }) => step.id === "native-upload",
+    );
+    assert.equal(
+      capsule.with.path,
+      "${{ runner.temp }}/checktrail-native-capsules/*.json",
+    );
   }
 });

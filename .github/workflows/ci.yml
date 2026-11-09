@@ -1782,20 +1782,34 @@ jobs:
       - name: Require literal native Windows private access batches
         if: matrix.core && matrix.slot == 'windows-node22'
         run: node scripts/verify-required-native-tests.mjs windows-private-access-batch
+      - name: Require confidence provenance from source and a fresh offline package
+        if: matrix.core
+        run: node scripts/verify-review-runtime.mjs ${{ matrix.slot }} confidence-provenance
       - name: Require whole independent setup from source and a fresh offline package
         if: matrix.core
         run: node scripts/verify-evaluation-runtime.mjs ${{ matrix.slot }}
       - name: Require whole consumer impact from source and a fresh offline package
+        id: consumer-runtime
         if: matrix.consumer
         run: |
           node scripts/verify-required-native-tests.mjs consumer-runtime-bindings consumer-foundation-bindings &&
           node scripts/verify-consumer-native-acceptance.mjs consumer-impact ${{ matrix.slot }}
         env:
           CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_RUNTIME_RECEIPT_DIRECTORY: ${{ runner.temp }}/checktrail-native-runtime-receipts
           CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
       - name: Require actual Windows registry ACL and host-custody controls
         if: matrix.consumer && matrix.slot == 'windows-node22'
         run: node scripts/verify-required-native-tests.mjs consumer-native-windows-capture
+      - name: Retain original bounded consumer runtime receipt bytes
+        if: ${{ !cancelled() && matrix.consumer && steps.consumer-runtime.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-runtime-receipts-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-runtime-receipts/*/*
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
       - name: Retain sanitized incomplete native consumer diagnostics
         if: ${{ failure() && !cancelled() && matrix.consumer }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -1852,10 +1866,21 @@ jobs:
       - name: Require source and offline installed controls in the pinned native runtime
         run: node scripts/verify-tasks-runtime-arm64.mjs
       - name: Require whole consumer impact with pinned native Git prerequisites
+        id: consumer-runtime
         run: node scripts/verify-consumer-native-acceptance.mjs consumer-impact native-linux-arm64-node22
         env:
           CHECKTRAIL_NATIVE_CAPSULE_DIRECTORY: ${{ runner.temp }}/checktrail-native-capsules
+          CHECKTRAIL_NATIVE_RUNTIME_RECEIPT_DIRECTORY: ${{ runner.temp }}/checktrail-native-runtime-receipts
           CHECKTRAIL_NATIVE_DIAGNOSTIC_DIRECTORY: ${{ runner.temp }}/checktrail-native-diagnostics
+      - name: Retain original bounded consumer runtime receipt bytes
+        if: ${{ !cancelled() && steps.consumer-runtime.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-runtime-receipts-tasks-runtime-arm64-single-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-native-runtime-receipts/*/*
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
       - name: Retain sanitized incomplete native consumer diagnostics
         if: ${{ failure() && !cancelled() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
