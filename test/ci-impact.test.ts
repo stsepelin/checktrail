@@ -152,9 +152,9 @@ test("CI Tasks runtime jobs participate in selection and the final completion in
     assert.deepEqual(workflow.jobs[id].needs, ["ci-plan", "actionlint"]);
     assert.equal(
       workflow.jobs[id].if,
-      "${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['" +
+      "${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['" +
         id +
-        "']) }}",
+        "'] }}",
     );
     assert.ok(workflow.jobs["ci-complete"].needs.includes(id));
     assert.equal(plan(["test/gate-tasks-matrix.test.ts"]).selected[id], true);
@@ -861,7 +861,7 @@ test("CI managed pull-request branch prefixes avoid duplicate push workflows whi
   assert.ok(Object.hasOwn(workflow.on, "pull_request"));
 });
 
-test("CI initial wave stays within the free runner ceiling and selected jobs survive admission failure or skip", () => {
+test("CI initial wave stays within the free runner ceiling and native fanout requires successful planning", () => {
   const variants = (job: {
     strategy?: { matrix?: Record<string, unknown[]> };
   }) => {
@@ -893,7 +893,8 @@ test("CI initial wave stays within the free runner ceiling and selected jobs sur
     const job = workflow.jobs[id];
     assert.ok(job.needs.includes("ci-plan"));
     assert.ok(job.if.includes("always() && !cancelled()"));
-    assert.ok(job.if.includes("needs.ci-plan.result != 'success'"));
+    assert.ok(job.if.includes("needs.ci-plan.result == 'success'"));
+    assert.equal(job.if.includes("needs.actionlint.result"), false);
     assert.ok(job.if.includes("selected['" + id + "']"));
   }
   assert.deepEqual(
@@ -2233,9 +2234,9 @@ test("CI attempt archive lanes retain every frozen runtime, prerequisite and com
     assert.deepEqual(job.needs, ["ci-plan", "actionlint"]);
     assert.equal(
       job.if,
-      "${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['" +
+      "${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['" +
         id +
-        "']) }}",
+        "'] }}",
     );
     assert.ok(workflow.jobs["ci-complete"].needs.includes(id));
     const gate = job.steps.find((step: { run?: string }) =>
