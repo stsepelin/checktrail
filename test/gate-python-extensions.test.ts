@@ -1,3 +1,4 @@
+import { lifecyclePidPublication, assertLifecyclePids } from "./helpers.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { spawnSync } from "node:child_process";
@@ -528,7 +529,9 @@ test(
         });
         const token = kind + mode;
         const worker =
-          "import os,time,pathlib\npathlib.Path('child.ready').write_text(str(os.getpid()))\nwhile True:\n    if pathlib.Path('worker.release').exists():os.write(1,b'original'*4096)\n    time.sleep(0.01)\n";
+          "import os,time,pathlib\n" +
+          lifecyclePidPublication("python", "child") +
+          "\nwhile True:\n    if pathlib.Path('worker.release').exists():os.write(1,b'original'*4096)\n    time.sleep(0.01)\n";
         await writeFile(path.join(root, "child_worker.py"), worker);
         const waiting = `import os,sys,time,json,subprocess,pathlib\nchild=subprocess.Popen([sys.executable,'-I','-B','child_worker.py'],start_new_session=True)\nwhile not pathlib.Path('child.ready').exists():time.sleep(0.01)\npathlib.Path('parent.pending').write_text(json.dumps({'token':'${token}','parent':os.getpid(),'child':int(pathlib.Path('child.ready').read_text()),'temporary':os.environ['CHECKTRAIL_TEMP']}))\npathlib.Path('parent.pending').replace('parent.ready')\nwhile True:time.sleep(0.01)\n`;
         const file =
@@ -575,9 +578,7 @@ test(
             "Native plugin never reached the original waiting parent",
           );
           assert.equal(ids.token, token);
-          assert.ok(
-            ids.parent > 1 && ids.child > 1 && ids.parent !== ids.child,
-          );
+          assertLifecyclePids(ids);
           process.kill(ids.parent, 0);
           process.kill(ids.child, 0);
           if (mode === "cancel") abort.abort();
