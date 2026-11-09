@@ -2964,6 +2964,19 @@
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
+  "test/github-artifact-delivery.test.ts": [
+    "helm",
+    "helm-extensions-arm64",
+    "kubeconform",
+    "kubernetes-extensions-arm64",
+    "kustomize",
+    "kustomize-extensions-arm64",
+    "scala",
+    "scala-context-arm64",
+    "scala-extensions-arm64",
+    "terraform",
+    "terraform-extensions-arm64"
+  ],
   "test/go-build.test.ts": [
     "attempt-runtime",
     "attempt-runtime-arm64",
