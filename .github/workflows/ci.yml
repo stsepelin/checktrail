@@ -47,8 +47,10 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci --ignore-scripts
-      - name: Check pinned dependency metadata and CI input declarations
+      - name: Check dependency metadata and CI preparation contracts
         run: node scripts/check-ci-preflight.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: npm run typecheck
       - run: npm run lint
       - id: impact
