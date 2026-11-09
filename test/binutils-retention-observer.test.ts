@@ -126,6 +126,29 @@ test("retention observer argv fixes read-only independent roots resource limits 
       }),
     );
 });
+test("C-build retention allocates scanner CPU while preserving strict observer grants", () => {
+  const options = {
+    destination: path.resolve("synthetic-observation"),
+    image,
+    platform: "linux/amd64",
+    attempt,
+  };
+  const strict = retentionObserverArguments(options);
+  const cBuild = retentionObserverArguments({ ...options, cBuildWork: true });
+  const cpu = strict.indexOf("--cpus") + 1;
+  assert.equal(strict[cpu], "0.25");
+  assert.equal(cBuild[cpu], "2");
+  const expected = [...strict];
+  expected[cpu] = "2";
+  expected.push("--c-build-work");
+  assert.deepEqual(cBuild, expected);
+  assert.deepEqual(
+    retentionObserverArguments({ ...options, cBuildWork: false }),
+    strict,
+  );
+  for (const cBuildWork of ["true", "false", 1, null])
+    assert.throws(() => retentionObserverArguments({ ...options, cBuildWork }));
+});
 test("retention protocol rejects incomplete adjacent unsafe and over-bound counter identities", () => {
   assert.deepEqual(validateRetentionMessage(ready, 0), ready);
   assert.deepEqual(validateRetentionMessage(sample(), 1), sample());

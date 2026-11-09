@@ -98,7 +98,7 @@ export function retentionObserverArguments({
     "--cap-add=DAC_READ_SEARCH",
     "--security-opt=no-new-privileges",
     "--cpus",
-    "0.25",
+    cBuildWork ? "2" : "0.25",
     "--memory",
     "128m",
     "--pids-limit",
