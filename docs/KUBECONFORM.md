@@ -108,3 +108,11 @@ No inference or real-project field evaluation is part of these controls. Wider
 Kubernetes schemas, Helm/Kustomize and broader Terraform profiles, Windows, complete
 attempt archives, full provenance and representative-project performance remain
 required and unverified.
+
+The CI preparation steps supply a read-only `CHECKTRAIL_GITHUB_ARTIFACT_TOKEN`
+for authenticated GitHub API delivery of the exact pinned kubeconform, kustomize
+and Scala release assets. Credentials are sent only to their fixed API asset
+endpoints and removed before CDN redirects. Other URLs and local runs without
+that optional token keep the existing download path. Existing byte/digest checks,
+retry limits and overall deadlines still apply. The token is scoped to preparation
+steps and is not passed to the subsequent project-validation steps.
