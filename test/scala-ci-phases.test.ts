@@ -20,10 +20,7 @@ test("Scala CI requires source guards and installed acceptance as independent ma
   ]);
   assert.equal(job.strategy["fail-fast"], false);
   assert.ok(workflow.jobs["ci-complete"].needs.includes("scala"));
-  assert.equal(
-    job.if,
-    "${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['scala']) }}",
-  );
+  // Admission is covered for every native job by ci-preflight.test.ts.
   const native = job.steps.find((step: { run?: string }) =>
     step.run?.includes("scripts/verify-scala-container.mjs"),
   );
