@@ -1,4 +1,5 @@
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
+import { inspectMcpClientConnection } from "./mcp-client-wire-evidence.mjs";
 import assert from "node:assert/strict";
 import { execFileSync, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -45,6 +46,9 @@ const expectedTools = [
   "review_context",
   "review_guidance",
   "review_hypotheses",
+  "review_findings",
+  "review_multi_score",
+  "review_provenance",
   "review_paired_score",
   "review_probe",
   "review_receipt",
@@ -57,7 +61,7 @@ const expectedTools = [
   "validation_plan",
   "validation_report",
   "validation_run",
-];
+].sort();
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 async function treeDigest(directory) {
   const hash = createHash("sha256");
@@ -157,11 +161,12 @@ try {
   const proxy = path.join(temporary, "observe.mjs");
   await writeFile(
     proxy,
-    `import {spawn} from 'node:child_process';import {appendFileSync} from 'node:fs';import {createInterface} from 'node:readline';
-const label=process.argv[2]; const record=value=>appendFileSync(${JSON.stringify(trace)},JSON.stringify({label,...value})+'\\n');
+    `import {randomUUID} from 'node:crypto';import {spawn} from 'node:child_process';import {appendFileSync} from 'node:fs';import {createInterface} from 'node:readline';
+import {projectMcpWireMessage} from ${JSON.stringify(new URL("./mcp-client-wire-evidence.mjs", import.meta.url).href)};
+const label=process.argv[2];const connectionId=randomUUID(); const record=value=>appendFileSync(${JSON.stringify(trace)},JSON.stringify({label,...value,connectionId})+'\\n');
 const child=spawn(process.execPath,[${JSON.stringify(cli)},'serve','--root',${JSON.stringify(fixture)},...(label==='trusted'?['--allow-execution']:[])],{stdio:['pipe','pipe','pipe']});
 record({event:'start',observerPid:process.pid,serverPid:child.pid});
-for(const [direction,input] of [['client',process.stdin],['server',child.stdout]]){createInterface({input}).on('line',line=>{const value=JSON.parse(line);const protocol=value.params?.protocolVersion??value.result?.protocolVersion;const tools=value.result?.tools?.map(tool=>tool.name).sort();record({event:'message',direction,...(value.method?{method:value.method}:{}),...(protocol?{protocol}:{}),...(tools?{tools}:{})});});}
+for(const [direction,input] of [['client',process.stdin],['server',child.stdout]]){createInterface({input}).on('line',line=>{const value=JSON.parse(line);record({event:'message',direction,...projectMcpWireMessage(value)});});}
 process.stdin.pipe(child.stdin);child.stdout.pipe(process.stdout);child.stderr.pipe(process.stderr);
 for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>child.kill(signal));
 child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(code??1);});
@@ -169,7 +174,7 @@ child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(
   );
   const observations = [];
   const result = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     recordedAt: new Date().toISOString(),
     profile:
       mode === "claude"
@@ -188,6 +193,11 @@ child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(
       runtimeArtifactsSha256: await treeDigest(path.dirname(cli)),
     },
     harnessSha256: digest(await readFile(fileURLToPath(import.meta.url))),
+    wireEvidenceSha256: digest(
+      await readFile(
+        new URL("./mcp-client-wire-evidence.mjs", import.meta.url),
+      ),
+    ),
     observations,
   };
   if (mode === "claude") {
@@ -254,7 +264,14 @@ child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(
       response.writeHead(200, { "Content-Type": "application/json" });
       response.end(JSON.stringify({ models: [] }));
     });
-    await new Promise((resolve) => endpoint.listen(0, "127.0.0.1", resolve));
+    const port = process.env.PORT === undefined ? 0 : Number(process.env.PORT);
+    assert.ok(
+      Number.isInteger(port) &&
+        port >= (process.env.PORT === undefined ? 0 : 1) &&
+        port <= 65535,
+      "Invalid assigned client-probe port",
+    );
+    await new Promise((resolve) => endpoint.listen(port, "127.0.0.1", resolve));
     const provider = "checktrail-unused";
     const overrides = [
       "analytics.enabled=false",
@@ -531,34 +548,14 @@ child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(
     const exits = events.filter((item) => item.event === "exit");
     assert.ok(starts > 0);
     assert.ok(exits.length <= starts);
-    const requested = [
-      ...new Set(
-        events
-          .filter((item) => item.direction === "client" && item.protocol)
-          .map((item) => item.protocol),
-      ),
-    ];
-    const negotiated = [
-      ...new Set(
-        events
-          .filter((item) => item.direction === "server" && item.protocol)
-          .map((item) => item.protocol),
-      ),
-    ];
-    assert.equal(requested.length, 1);
-    assert.deepEqual(negotiated, requested);
-    const lists = events.filter((item) => item.tools);
-    assert.ok(lists.length > 0);
-    for (const item of lists) assert.deepEqual(item.tools, expectedTools);
+    const protocol = inspectMcpClientConnection(events, expectedTools);
     return {
       label,
       starts,
       observedExits: exits.length,
       processesStopped: true,
       exits: exits.map(({ code, signal }) => ({ code, signal })),
-      requestedProtocol: requested[0],
-      negotiatedProtocol: negotiated[0],
-      tools: expectedTools,
+      ...protocol,
     };
   });
   process.stdout.write(JSON.stringify(result, null, 2) + "\n");

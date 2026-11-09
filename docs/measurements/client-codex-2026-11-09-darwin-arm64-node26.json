@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 2,
+  "recordedAt": "2026-11-09T15:45:10.390Z",
+  "profile": "codex-app-server-direct-tools",
+  "clientVersion": "codex-cli 0.166.0",
+  "runtime": {
+    "node": "26.12.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "package": {
+    "name": "@stsepelin/checktrail",
+    "version": "0.1.0-alpha.5",
+    "tarballSha256": "5546ff8c9c89ebc7948a5db1486e67edcefa4a9307068c55cc8c3b2c26f18235",
+    "runtimeArtifactsSha256": "1c02f0304714240ece506c0d33bebd5852c1e3c9e702d4dbf945c9d540b22188"
+  },
+  "harnessSha256": "910035722d6bcb935a3272f86e91374a247e416119e5bbd8173632a8f72532ec",
+  "wireEvidenceSha256": "d7346ff1ba15b41311278f1350e4c8d1ad239e8665654d25af33fd43cb1eb2b9",
+  "observations": [
+    {
+      "check": "project_context",
+      "outcome": "passed",
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "kind": "test",
+          "ready": true
+        }
+      ]
+    },
+    {
+      "check": "validation_plan",
+      "outcome": "passed",
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "kind": "test",
+          "ready": true
+        }
+      ]
+    },
+    {
+      "check": "guidance-https-result",
+      "outcome": "passed",
+      "references": ["https://nodejs.org/api/test.html"]
+    },
+    {
+      "check": "default-execution-denied",
+      "outcome": "passed"
+    },
+    {
+      "check": "tool-cannot-grant-trust",
+      "outcome": "passed"
+    },
+    {
+      "check": "native-passed-and-report",
+      "outcome": "passed",
+      "validationOutcome": "passed",
+      "sourceChanged": false,
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          }
+        }
+      ],
+      "retainedReportEqual": true
+    },
+    {
+      "check": "native-failed-and-report",
+      "outcome": "passed",
+      "validationOutcome": "failed",
+      "sourceChanged": false,
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "status": "failed",
+          "tests": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "skipped": 0
+          }
+        }
+      ],
+      "retainedReportEqual": true
+    },
+    {
+      "check": "all-skipped-is-incomplete",
+      "outcome": "passed",
+      "validationOutcome": "incomplete",
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "status": "inconclusive",
+          "tests": {
+            "total": 1,
+            "passed": 0,
+            "failed": 0,
+            "skipped": 1
+          }
+        }
+      ]
+    }
+  ],
+  "providerRequests": [
+    {
+      "method": "GET",
+      "path": "/models?client_version=0.166.0"
+    }
+  ],
+  "inferenceRequests": 0,
+  "connections": [
+    {
+      "label": "readonly",
+      "starts": 2,
+      "observedExits": 1,
+      "processesStopped": true,
+      "exits": [
+        {
+          "code": null,
+          "signal": "SIGTERM"
+        }
+      ],
+      "observedProtocols": ["2025-06-18"],
+      "observedConnections": 2,
+      "connectionsWithToolLists": 2,
+      "protocolEvidence": ["legacy-initialize-and-tools-list"],
+      "successfulDiscoveryResponses": 0,
+      "failedDiscoveryProbes": 0,
+      "correlatedToolLists": 2,
+      "tools": [
+        "architecture_validation",
+        "contract_validation",
+        "finding_comparison",
+        "import_context",
+        "mutation_experiment",
+        "project_context",
+        "review_benchmark",
+        "review_calibration_apply",
+        "review_calibration_fit",
+        "review_context",
+        "review_findings",
+        "review_guidance",
+        "review_hypotheses",
+        "review_multi_score",
+        "review_paired_score",
+        "review_probe",
+        "review_provenance",
+        "review_receipt",
+        "review_refute",
+        "review_run",
+        "review_score",
+        "review_verify",
+        "review_workflow",
+        "runtime_comparison",
+        "validation_plan",
+        "validation_report",
+        "validation_run"
+      ]
+    },
+    {
+      "label": "trusted",
+      "starts": 2,
+      "observedExits": 1,
+      "processesStopped": true,
+      "exits": [
+        {
+          "code": null,
+          "signal": "SIGTERM"
+        }
+      ],
+      "observedProtocols": ["2025-06-18"],
+      "observedConnections": 2,
+      "connectionsWithToolLists": 2,
+      "protocolEvidence": ["legacy-initialize-and-tools-list"],
+      "successfulDiscoveryResponses": 0,
+      "failedDiscoveryProbes": 0,
+      "correlatedToolLists": 2,
+      "tools": [
+        "architecture_validation",
+        "contract_validation",
+        "finding_comparison",
+        "import_context",
+        "mutation_experiment",
+        "project_context",
+        "review_benchmark",
+        "review_calibration_apply",
+        "review_calibration_fit",
+        "review_context",
+        "review_findings",
+        "review_guidance",
+        "review_hypotheses",
+        "review_multi_score",
+        "review_paired_score",
+        "review_probe",
+        "review_provenance",
+        "review_receipt",
+        "review_refute",
+        "review_run",
+        "review_score",
+        "review_verify",
+        "review_workflow",
+        "runtime_comparison",
+        "validation_plan",
+        "validation_report",
+        "validation_run"
+      ]
+    }
+  ]
+}
