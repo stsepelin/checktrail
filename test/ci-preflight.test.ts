@@ -62,12 +62,23 @@ async function project(
   execFileSync("git", ["init", "--quiet"], { cwd: root });
   return { root, manifest, lock, name, target };
 }
-const run = (root: string, args: string[] = [], ci = false) =>
+const run = (
+  root: string,
+  args: string[] = [],
+  ci = false,
+  credential?: string,
+) =>
   spawnSync(process.execPath, [script, ...args], {
     cwd: root,
     encoding: "utf8",
     timeout: 15000,
-    env: { ...process.env, GITHUB_ACTIONS: ci ? "true" : "" },
+    env: {
+      ...process.env,
+      GITHUB_ACTIONS: ci ? "true" : "",
+      ...(credential === undefined
+        ? {}
+        : { CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: credential }),
+    },
   });
 
 test("CI preflight follows exact dependency declarations across future versions and native aliases", async (t) => {
@@ -85,6 +96,24 @@ test("CI preflight follows exact dependency declarations across future versions 
     assert.equal(report.inputContractCurrent, true);
     assert.equal(report.inputContractUpdated, false);
     assert.deepEqual(report.counts, { dependencies: 1, devDependencies: 0 });
+  }
+});
+
+test("CI preflight checks the actual scoped credential header without requesting artifacts or exposing invalid values", async (t) => {
+  const f = await project(t);
+  const credential =
+    "ghs_12345_" + "a".repeat(260) + "." + "b".repeat(260) + ".-_";
+  assert.equal(run(f.root, [], true, credential).status, 0);
+  for (const value of [
+    "PRIVATE_SENTINEL\n",
+    "PRIVATE_SENTINEL\rheader",
+    "PRIVATE_SENTINEL value",
+  ]) {
+    const result = run(f.root, [], true, value);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Invalid pinned artifact credentials/);
+    assert.equal(result.stdout, "");
+    assert.equal(result.stderr.includes("PRIVATE_SENTINEL"), false);
   }
 });
 

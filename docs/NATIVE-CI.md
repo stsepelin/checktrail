@@ -112,11 +112,18 @@ measurements retain the package identities actually observed at that time.
 ## Affected checks on pull requests
 
 Before planning the matrix, `ci-plan` installs the committed lock with lifecycle
-scripts disabled, then checks direct dependency metadata, the native input
-contract, TypeScript types and lint. Direct dependency declarations must be exact
+scripts disabled, then checks direct dependency metadata and the native input
+contract, validates artifact credential header safety without network requests,
+and runs TypeScript type checks and lint. The artifact token is scoped to that
+preflight step and the tool preparation steps; no authentication success is
+claimed by header validation. Direct dependency declarations must be exact
 pins, including npm aliases; their root lock declarations, selected lock entries
 and installed package metadata must agree. This checks installation metadata,
 not package-body integrity or native acceptance.
+
+Credential admission follows [GitHub's opaque-token guidance](https://github.blog/changelog/2026-04-24-notice-about-upcoming-new-format-for-github-app-installation-tokens/).
+It checks header safety without inferring validity from a prefix, length or
+decoded token data.
 
 A failed preflight or planner prevents the shared and native matrix jobs from
 starting. `ci-complete` still runs and requires successful planning and every

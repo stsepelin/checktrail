@@ -16,7 +16,7 @@ function exercise(body: string) {
     const {createPinnedGitHubFetch,requestPinnedArtifactBytes}=await import(process.argv[1]);
     const scala=await import(new URL('./request-scala-archive.mjs',process.argv[1]));
     delete process.env.CHECKTRAIL_GITHUB_ARTIFACT_TOKEN;
-    const token='SYNTHETIC_TOKEN'; const signal=AbortSignal.timeout(5000);
+    const token='ghs_12345_'+('A'.repeat(260))+'.'+('b'.repeat(260))+'.'+('-_'.repeat(50)); const signal=AbortSignal.timeout(5000);
     const url='https://github.com/scala/scala/releases/download/v2.13.18/scala-2.13.18.zip';
     ${body}
   `,
@@ -51,6 +51,43 @@ test("pinned GitHub delivery authenticates only four exact API asset identities 
       }});
       const response=await delivery(asset,{signal,headers:{'X-Private':'must not forward'}});
       assert.equal(await response.text(),'original');assert.equal(calls.length,status===200?1:2);
+    }
+  `);
+});
+
+test("pinned GitHub delivery passes opaque header-safe credentials unchanged without guessing prefix encoding or length", () => {
+  exercise(String.raw`
+    const visibleAscii=Array.from({length:94},(_,i)=>String.fromCharCode(33+i)).join('');
+    for(const credential of [token,token.repeat(8),'opaque.future:token/+~=',visibleAscii]) for(const fromEnvironment of [false,true]) {
+      let calls=0;
+      const fetchImpl=async(address,options)=>{
+        calls++;
+        if(calls===1){
+          assert.equal(address,'https://api.github.com/repos/scala/scala/releases/assets/317382229');
+          assert.equal(new Headers(options.headers).get('Authorization'),'Bearer '+credential);
+          return new Response('',{status:302,headers:{location:'https://objects.githubusercontent.com/pinned'}});
+        }
+        assert.equal(address,'https://objects.githubusercontent.com/pinned');
+        assert.equal(new Headers(options.headers).has('Authorization'),false);
+        return new Response('original');
+      };
+      if(fromEnvironment) process.env.CHECKTRAIL_GITHUB_ARTIFACT_TOKEN=credential;
+      const delivery=createPinnedGitHubFetch(fromEnvironment?{fetchImpl}:{token:credential,fetchImpl});
+      assert.equal(await(await delivery(url,{signal})).text(),'original');
+      assert.equal(calls,2);
+      delete process.env.CHECKTRAIL_GITHUB_ARTIFACT_TOKEN;
+    }
+  `);
+});
+
+test("pinned GitHub delivery rejects unsafe header characters before requests without exposing credentials", () => {
+  exercise(String.raw`
+    const controls=Array.from({length:33},(_,i)=>String.fromCharCode(i));
+    const unsafe=[...controls,String.fromCharCode(127),'\u0085','é','\u2028','\u200b','\ud800'];
+    for(const credential of [null,1,true,{},[],...unsafe.flatMap(value=>[value+'SYNTHETIC_PRIVATE','SYNTHETIC_PRIVATE'+value,'SYNTHETIC_PRIVATE'+value+'suffix'])]) {
+      let calls=0;
+      assert.throws(()=>createPinnedGitHubFetch({token:credential,fetchImpl:async()=>{calls++;return new Response('unexpected');}}),error=>error.code==='ERR_ASSERTION'&&error.message==='Invalid pinned artifact credentials');
+      assert.equal(calls,0);
     }
   `);
 });
@@ -111,7 +148,7 @@ test("authenticated delivery retains existing finite retry cancellation and exac
   `);
 });
 
-test("CI artifact credentials are restricted to all infrastructure and Scala preparation steps", () => {
+test("CI artifact credentials are restricted to header preflight and infrastructure and Scala preparation", () => {
   const workflow = parse(
     readFileSync(
       new URL("../../.github/workflows/ci.yml", import.meta.url),
@@ -122,21 +159,29 @@ test("CI artifact credentials are restricted to all infrastructure and Scala pre
   assert.equal(workflow.permissions.contents, "read");
   assert.equal(workflow.env?.[key], undefined);
   let selected = 0;
-  for (const job of Object.values(workflow.jobs) as {
-    env?: Record<string, string>;
-    steps?: { run?: string; env?: Record<string, string> }[];
-  }[]) {
+  let preflights = 0;
+  for (const [id, job] of Object.entries(workflow.jobs) as [
+    string,
+    {
+      env?: Record<string, string>;
+      steps?: { run?: string; env?: Record<string, string> }[];
+    },
+  ][]) {
     assert.equal(job.env?.[key], undefined);
     for (const step of job.steps ?? []) {
       const preparation =
         /^node scripts\/(prepare-infra-tools-runtime|prepare-scala-tools|prepare-scala2-tools)\.mjs$/.test(
           step.run?.trim() ?? "",
         );
-      if (preparation) {
-        selected++;
+      const preflight =
+        id === "ci-plan" && step.run === "node scripts/check-ci-preflight.mjs";
+      if (preparation || preflight) {
+        if (preparation) selected++;
+        if (preflight) preflights++;
         assert.equal(step.env?.[key], "${{ github.token }}");
       } else assert.equal(step.env?.[key], undefined);
     }
   }
   assert.equal(selected, 12);
+  assert.equal(preflights, 1);
 });
