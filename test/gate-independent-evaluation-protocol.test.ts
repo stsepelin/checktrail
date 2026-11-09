@@ -1,3 +1,4 @@
+import { lifecyclePidPublication, assertLifecyclePids } from "./helpers.js";
 import { configurationFixture } from "./review-evaluation-configuration-fixture.js";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -432,9 +433,9 @@ async function terminatedCollector(
   t: TestContext,
   mode: "cancelled" | "timed-out" | "budget-exhausted",
 ) {
-  const child = `const fs=require('node:fs');fs.writeFileSync('child.ready',String(process.pid));setTimeout(()=>fs.writeFileSync('late-child-write','unexpected'),6000);setInterval(()=>{},100);`;
+  const child = `const fs=require('node:fs');${lifecyclePidPublication("javascript", "child")}setTimeout(()=>fs.writeFileSync('late-child-write','unexpected'),6000);setInterval(()=>{},100);`;
   const parent = `const fs=require('node:fs'),cp=require('node:child_process');cp.spawn(process.execPath,['--eval',${JSON.stringify(child)}],{stdio:'ignore'});
-const timer=setInterval(()=>{if(!fs.existsSync('child.ready'))return;clearInterval(timer);process.stdout.write('Original partial collector output');fs.writeFileSync('parent.ready',String(process.pid));${mode === "budget-exhausted" ? "setInterval(()=>process.stdout.write(Buffer.alloc(8192,120)),10);" : ""}},10);setInterval(()=>{},100);`;
+const timer=setInterval(()=>{if(!fs.existsSync('child.ready'))return;clearInterval(timer);process.stdout.write('Original partial collector output');${lifecyclePidPublication("javascript", "parent")}${mode === "budget-exhausted" ? "setInterval(()=>process.stdout.write(Buffer.alloc(8192,120)),10);" : ""}},10);setInterval(()=>{},100);`;
   const root = await fixture(t, {}),
     controller = new AbortController();
   // Warm the fixed process-ownership helper before starting a body deadline.
@@ -492,7 +493,10 @@ const timer=setInterval(()=>{if(!fs.existsSync('child.ready'))return;clearInterv
     (await readFile(path.join(root, "parent.ready"), "utf8")).length > 0,
   );
   const pid = Number(await readFile(path.join(root, "child.ready"), "utf8"));
-  assert.ok(Number.isSafeInteger(pid) && pid > 0);
+  assertLifecyclePids({
+    parent: Number(await readFile(path.join(root, "parent.ready"), "utf8")),
+    child: pid,
+  });
   let gone = false;
   for (let i = 0; i < 100; i++) {
     try {
