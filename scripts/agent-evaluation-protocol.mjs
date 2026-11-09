@@ -5,6 +5,7 @@ import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { z } from "zod";
 import { evaluate } from "../dist/src/evidence.js";
+import { importJUnit } from "../dist/src/junit.js";
 import { analyzeSessionEvents } from "./agent-evaluation-session.mjs";
 
 const sha = z.string().regex(/^[a-f0-9]{64}$/);
@@ -27,21 +28,28 @@ export const probeEvidenceIds = z
   .max(16)
   .refine(unique);
 export const nativeEvidenceSchema = z.strictObject({
-  parser: z.enum(["unittest", "vitest-json"]),
+  parser: z.enum([
+    "unittest",
+    "vitest-json",
+    "go-json",
+    "phpunit-junit",
+    "pest-junit",
+  ]),
   scope: z.array(relative).min(1).max(1000).refine(unique),
 });
 export const executionProfileSchema = z.strictObject({
   image: z.string().regex(/^sha256:[a-f0-9]{64}$/),
   runtimeSha256: sha,
   dependenciesSha256: sha.nullable(),
+  dependencyDirectory: z.enum(["node_modules", "vendor"]).optional(),
   native: z.strictObject({
-    executable: z.enum(["node", "python3"]),
+    executable: z.enum(["node", "python3", "go", "php"]),
     args: z.array(z.string().max(2048)).max(64),
   }),
   languages: z
-    .array(z.enum(["javascript", "python"]))
+    .array(z.enum(["javascript", "python", "go", "php"]))
     .min(1)
-    .max(2)
+    .max(4)
     .refine(unique),
   timeoutMs: z.number().int().min(100).max(120000),
   maxOutputBytes: z.number().int().min(1024).max(1048576),
@@ -91,7 +99,7 @@ const toolArguments = {
   }),
   evaluation_native: z.strictObject({}),
   evaluation_probe: z.strictObject({
-    language: z.enum(["javascript", "python"]),
+    language: z.enum(["javascript", "python", "go", "php"]),
     code: z.string().min(1).max(16000),
     sourceEvidenceIds: probeEvidenceIds,
   }),
@@ -189,14 +197,40 @@ export function nativeComplete(value, expected) {
   if (!expected.nativeEvidence || !boundedExecution(value, [0, 1]))
     return false;
   const declaration = nativeEvidenceSchema.parse(expected.nativeEvidence);
+  const pest = declaration.parser === "pest-junit";
+  if (declaration.parser === "phpunit-junit" || pest) {
+    const imported = importJUnit(pest ? value.stderr : value.stdout);
+    const scope = new Set(
+      declaration.scope.map((file) => path.resolve("/source", file)),
+    );
+    const observed = new Set();
+    if (!imported.cases?.length) return false;
+    for (const item of imported.cases) {
+      const file = pest ? item.file?.split("::")[0] : item.file;
+      if (!file || !scope.has(path.resolve("/source", file))) return false;
+      if (
+        item.status !== "skipped" &&
+        (!Number.isSafeInteger(item.assertions) || item.assertions < 1)
+      )
+        return false;
+      observed.add(path.resolve("/source", file));
+    }
+    if (observed.size !== scope.size) return false;
+  }
   const command = { ...expected.profile.native, cwd: "." };
   const check = {
-    id: "evaluation.native",
-    adapter: declaration.parser === "unittest" ? "python" : "javascript",
+    id: pest ? "php.pest" : "evaluation.native",
+    adapter: {
+      unittest: "python",
+      "vitest-json": "javascript",
+      "go-json": "go",
+      "phpunit-junit": "php",
+      "pest-junit": "php",
+    }[declaration.parser],
     project: ".",
     scope: declaration.scope,
     kind: "test",
-    parser: declaration.parser,
+    parser: pest ? "phpunit-junit" : declaration.parser,
     commands: [command],
     reason: "Frozen native comparator",
   };
