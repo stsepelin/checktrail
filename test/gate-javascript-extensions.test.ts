@@ -25,6 +25,8 @@ import {
   project,
   source,
   loaderFiles,
+  javascriptLifecycleWorker,
+  assertJavascriptLifecyclePids,
 } from "./javascript-extensions-fixture.js";
 import {
   beginConsumerWitness,
@@ -432,7 +434,7 @@ test(
           "checktrail.json": policy([adapter]),
         });
         const token = adapter + mode;
-        const worker = `const fs=require('node:fs');fs.writeFileSync('child.ready',String(process.pid));setInterval(()=>{if(fs.existsSync('worker.release')&&'${mode}'==='output')process.stdout.write('original'.repeat(4096));},10);`;
+        const worker = javascriptLifecycleWorker(mode);
         await writeFile(path.join(root, "child.cjs"), worker);
         const witness = `const child=spawn(process.execPath,['child.cjs'],{detached:true,stdio:['ignore','inherit','inherit']});while(!fs.existsSync('child.ready'))await delay(10);fs.writeFileSync('parent.pending',JSON.stringify({token:'${token}',parent:process.pid,child:Number(fs.readFileSync('child.ready','utf8'))}));fs.renameSync('parent.pending','parent.ready');await new Promise(()=>{});`;
         if (adapter === "javascript.eslint")
@@ -477,6 +479,7 @@ test(
             "Native config/hook and detached child must be reached",
           );
           assert.equal(ids.token, token);
+          assertJavascriptLifecyclePids(ids);
           for (const pid of [ids.parent, ids.child]) process.kill(pid, 0);
           await writeFile(path.join(root, "worker.release"), "go");
           if (mode === "cancel") abort.abort();
