@@ -20,6 +20,11 @@ const retainedArtifactDirectory =
 // Derive their native consumers from the exact preparation controllers; do not
 // classify neighboring test names or create entries for absent files.
 const preparationRegressionSources = Object.freeze({
+  "test/github-artifact-delivery.test.ts": Object.freeze([
+    "scripts/prepare-infra-tools-runtime.mjs",
+    "scripts/prepare-scala-tools.mjs",
+    "scripts/prepare-scala2-tools.mjs",
+  ]),
   "test/swift-preparation.test.ts": Object.freeze([
     "scripts/prepare-swift-tools-runtime.mjs",
     "scripts/prepare-swift-extensions-runtime.mjs",
@@ -65,6 +70,7 @@ export const cProducerSharedBoundary = Object.freeze({
 });
 const cProducerSharedInputs = new Set(cProducerSharedBoundary.files);
 const generic = new Set([
+  "scripts/request-pinned-artifact.mjs",
   "scripts/verify-required-native-tests.mjs",
   "scripts/required-test-evidence.mjs",
   "scripts/verify-import-context-package.mjs",
@@ -91,8 +97,11 @@ const generic = new Set([
   "scripts/consumer-runtime-selection.mjs",
   "test/consumer-witness-fixture.ts",
 ]);
-// These reviewed selectors/observers return targets or hash native harness bytes; they execute no native controller or test. Their static imports remain inputs. Workflow invocations enumerate actual selected targets below; any execution primitive restores conservative full profile expansion.
+// Reviewed delivery/selector/observer helpers acquire bytes, return targets or hash
+// harness bytes without executing native controllers/tests. Static imports remain
+// inputs; detected execution primitives restore conservative full profile expansion.
 const consumerDataSelectors = new Set([
+  "scripts/request-pinned-artifact.mjs",
   "scripts/consumer-native-entrypoints.mjs",
   "scripts/consumer-native-acceptance-scope.mjs",
   "scripts/consumer-native-acceptance-capsule.mjs",
