@@ -29,6 +29,45 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
     );
     return entry;
   }
+  // The repository linter may advance independently of the frozen native API profile.
+  declaredTool("eslint");
+  const nativeAlias = "eslint-native-profile";
+  const nativeKey = "node_modules/" + nativeAlias;
+  const nativeDeclaration = rootManifest.devDependencies?.[nativeAlias];
+  const nativeMatch = /^npm:eslint@(\d+\.\d+\.\d+)$/.exec(
+    nativeDeclaration ?? "",
+  );
+  assert.ok(
+    nativeMatch,
+    "Native ESLint alias must exactly pin the eslint package",
+  );
+  const nativeVersion = nativeMatch[1];
+  assert.equal(
+    source.packages[""]?.devDependencies?.[nativeAlias],
+    nativeDeclaration,
+    "Native ESLint alias lock root differs from declaration",
+  );
+  assert.equal(
+    source.packages[nativeKey]?.name,
+    "eslint",
+    "Native ESLint alias target differs",
+  );
+  assert.equal(
+    source.packages[nativeKey]?.version,
+    nativeVersion,
+    "Native ESLint alias lock version differs from declaration",
+  );
+  const nativeConfigArray = declaredTool("@eslint/config-array").version;
+  assert.equal(
+    source.packages[""].devDependencies?.["@eslint/config-array"],
+    nativeConfigArray,
+    "Native config-array lock root differs from declaration",
+  );
+  const canonicalKey = (key) =>
+    key === nativeKey || key.startsWith(nativeKey + "/node_modules/")
+      ? "node_modules/eslint" + key.slice(nativeKey.length)
+      : key;
+  const owners = new Map();
   const linter = declaredTool("typescript-eslint");
   const parserVersion = linter.dependencies?.["@typescript-eslint/parser"];
   assert.match(
@@ -38,7 +77,8 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
   );
   const dependencies = {
     ...rootManifest.dependencies,
-    eslint: declaredTool("eslint").version,
+    eslint: nativeVersion,
+    "@eslint/config-array": nativeConfigArray,
     "@typescript-eslint/parser": parserVersion,
     "@types/node": declaredTool("@types/node").version,
     vite: "8.3.0",
@@ -56,6 +96,7 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
     "": { name: manifest.name, version: manifest.version, dependencies },
   };
   function resolve(name, from = "") {
+    if (name === "eslint") return nativeKey;
     const segments = from.split("/");
     const candidates = [];
     while (segments.length) {
@@ -72,7 +113,22 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
       assert.ok(optional, "Missing locked required tool dependency " + name);
       return;
     }
-    if (Object.hasOwn(packages, key)) return;
+    if (name === "@eslint/config-array")
+      assert.equal(
+        source.packages[key]?.version,
+        nativeConfigArray,
+        "Native config-array resolution differs from frozen role",
+      );
+    const destination = canonicalKey(key);
+    if (Object.hasOwn(packages, destination)) {
+      assert.equal(
+        owners.get(destination),
+        key,
+        "Projected native tool lock collision",
+      );
+      return;
+    }
+    owners.set(destination, key);
     const original = source.packages[key];
     assert.ok(!original.link && !original.inBundle);
     assert.match(original.resolved, /^https:\/\/registry\.npmjs\.org\//);
@@ -80,7 +136,7 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
     const entry = globalThis.structuredClone(original);
     delete entry.dev;
     delete entry.devOptional;
-    packages[key] = entry;
+    packages[destination] = entry;
     for (const dependency of Object.keys(entry.dependencies ?? {}))
       visit(
         dependency,
@@ -102,6 +158,7 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
   }
   return {
     manifest,
+    sources: Object.fromEntries(owners),
     lock: {
       name: manifest.name,
       version: manifest.version,

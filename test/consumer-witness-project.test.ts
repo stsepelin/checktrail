@@ -1226,11 +1226,19 @@ test("JavaScript tool preparation follows exact development declarations and rej
     ),
   );
   const selected = selectJavaScriptToolsLock(manifest, lock);
-  for (const name of [
-    "eslint",
-    "@types/node",
-    "@modelcontextprotocol/client",
-  ]) {
+  assert.equal(
+    selected.manifest.dependencies.eslint,
+    lock.packages["node_modules/eslint-native-profile"].version,
+  );
+  assert.equal(
+    selected.lock.packages["node_modules/eslint"].version,
+    lock.packages["node_modules/eslint-native-profile"].version,
+  );
+  assert.equal(
+    selected.lock.packages["node_modules/eslint-native-profile"],
+    undefined,
+  );
+  for (const name of ["@types/node", "@modelcontextprotocol/client"]) {
     assert.equal(
       selected.manifest.dependencies[name],
       manifest.devDependencies[name],

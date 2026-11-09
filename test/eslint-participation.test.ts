@@ -3,7 +3,10 @@ import { test } from "node:test";
 import { createPlan, validate } from "../src/engine.js";
 import { evaluate } from "../src/evidence.js";
 import { fixture } from "./helpers.js";
-import { copyESLint, eslintPolicy } from "./eslint-helpers.js";
+import {
+  copyESLintParticipation as copyESLint,
+  eslintPolicy,
+} from "./eslint-helpers.js";
 import { copyInstalledPackages } from "./tool-fixture.js";
 import { access, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -131,8 +134,8 @@ test("native ESLint participation reaches the TypeScript parser for named blocks
       "input.js": `export const value: number = 7;${broken ? "debugger;" : ""}\n`,
       "eslint.config.mjs": `import parser from '@typescript-eslint/parser';export default [{files:['**/*.js'],rules:{'no-debugger':'error'},processor:{preprocess(text){return [{text,filename:'leaf.ts'}]},postprocess(messages){return messages.flat()}}},{files:['**/*.ts'],languageOptions:{parser},rules:{'no-debugger':'error'}},{files:['**/*.mjs'],rules:{'no-debugger':'error'}}];\n`,
     });
+    await copyESLint(root);
     await copyInstalledPackages(root, [
-      "eslint",
       "@typescript-eslint/parser",
       "typescript",
     ]);
@@ -375,8 +378,8 @@ test("native ESLint virtual leaves require their effective rules and permit an u
         (mode !== "unruled-container" ? "debugger;" : ""),
       "eslint.config.mjs": `import parser from '@typescript-eslint/parser';export default [{files:['**/*.js'],rules:{'no-debugger':'${mode === "unruled-leaf" ? "error" : "off"}'},processor:{preprocess(text){return [{text,filename:'leaf.ts'}]},postprocess(messages){return messages.flat()}}},{files:['**/*.ts'],languageOptions:{parser},rules:{'no-debugger':'${mode === "unruled-leaf" ? "off" : "error"}'}},{files:['**/*.mjs'],rules:{'no-debugger':'error'}}];`,
     });
+    await copyESLint(root);
     await copyInstalledPackages(root, [
-      "eslint",
       "@typescript-eslint/parser",
       "typescript",
     ]);

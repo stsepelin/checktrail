@@ -4,6 +4,11 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      native-eslint-profile-qualification:
+        patterns:
+          - eslint-native-profile
+          - "@eslint/config-array"
   - package-ecosystem: github-actions
     directory: /
     schedule:

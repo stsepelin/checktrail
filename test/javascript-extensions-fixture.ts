@@ -1,6 +1,7 @@
 import { realpath } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { copyInstalledPackages } from "./tool-fixture.js";
+import { copyESLintParticipation } from "./eslint-helpers.js";
 import { fixture, nodeManifest } from "./helpers.js";
 import type { TestContext } from "node:test";
 export const cjs = `const fs=require('node:fs');require('node:module').registerHooks({load(url,context,next){if(url.endsWith('.cts'))return {format:'commonjs',shortCircuit:true,source:fs.readFileSync(new URL(url),'utf8').replace(/: number/g,'').replaceAll('__answer__','42')};return next(url,context)}});`;
@@ -79,12 +80,13 @@ export async function project(
   prepared = true,
 ) {
   const root = await fixture(t, files);
-  if (prepared)
+  if (prepared) {
+    await copyESLintParticipation(root);
     await copyInstalledPackages(root, [
-      "eslint",
       "@typescript-eslint/parser",
       "typescript",
       "vite",
     ]);
+  }
   return realpath(root);
 }

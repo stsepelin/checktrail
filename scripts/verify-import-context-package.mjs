@@ -295,6 +295,7 @@ try {
     "gate-python-extensions.test.js",
     "python-extensions-fixture.js",
     "javascript-extensions-fixture.js",
+    "eslint-helpers.js",
     "tool-fixture.js",
     "gate-assembly-laravel.test.js",
     "review-laravel-assembly-fixture.js",
@@ -442,18 +443,26 @@ try {
     const selected = selectJavaScriptToolsLock(
       JSON.parse(await readFile(path.join(repository, "package.json"), "utf8")),
       lock,
-    ).lock;
+    );
     const copies = [];
-    for (const [key, entry] of Object.entries(selected.packages)) {
+    const preparedCanonical =
+      dependencySource !== path.join(repository, "node_modules");
+    for (const [key, entry] of Object.entries(selected.lock.packages)) {
       if (!key) continue;
       assert.ok(
         key.startsWith("node_modules/") &&
           !key.split("/").includes("..") &&
           !key.includes("\\"),
       );
+      const sourceKey = preparedCanonical ? key : selected.sources[key];
+      assert.equal(
+        typeof sourceKey,
+        "string",
+        "Selected native tool source is missing",
+      );
       const source = path.join(
         dependencySource,
-        key.slice("node_modules/".length),
+        sourceKey.slice("node_modules/".length),
       );
       let metadata;
       try {
@@ -465,6 +474,7 @@ try {
         throw error;
       }
       assert.equal(metadata.version, entry.version);
+      if (key === "node_modules/eslint") assert.equal(metadata.name, "eslint");
       const target = path.join(consumer, key);
       const existing = await readFile(path.join(target, "package.json"), "utf8")
         .then(JSON.parse)
