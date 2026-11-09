@@ -524,6 +524,8 @@ jobs:
         run: node --test dist/test/scala-ci-phases.test.js
       - name: Prepare pinned scala artifact
         run: node scripts/prepare-scala-tools.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - name: Prepare pinned public images with bounded delivery retries
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
@@ -885,7 +887,11 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-scala-tools.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-scala2-tools.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - name: Prepare pinned public images with bounded delivery retries
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
@@ -1488,6 +1494,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-infra-tools-runtime.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-kubernetes-extensions-runtime.mjs
       - run: node scripts/prepare-package-cache.mjs
       - name: Require preserved native checks, source and fresh installation, regressions and compiling controls
@@ -1515,6 +1523,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-infra-tools-runtime.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-package-cache.mjs
       - name: Require preserved native checks, source and fresh installation, regressions and compiling controls
         run: node scripts/verify-kustomize-extensions-container.mjs
@@ -1539,6 +1549,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-infra-tools-runtime.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-kubeconform-container.mjs
       - if: always()
@@ -1567,6 +1579,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-infra-tools-runtime.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-terraform-extensions-runtime.mjs
       - run: node scripts/prepare-package-cache.mjs
       - name: Native baseline, offline installation or paired controls
@@ -1597,6 +1611,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-infra-tools-runtime.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-package-cache.mjs
       - name: Native baseline, offline installation or paired controls
         run: node scripts/verify-helm-extensions-container.mjs ${{ matrix.phase }}
@@ -1621,6 +1637,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-infra-tools-runtime.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-terraform-container.mjs
       - if: always()
@@ -1644,6 +1662,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-infra-tools-runtime.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-kustomize-container.mjs
       - if: always()
@@ -1667,6 +1687,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-infra-tools-runtime.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-helm-container.mjs
       - if: always()
@@ -2475,6 +2497,8 @@ jobs:
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
       - run: node scripts/prepare-scala-tools.mjs
+        env:
+          CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-scala-context-tools.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |

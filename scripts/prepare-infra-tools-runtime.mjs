@@ -15,7 +15,11 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import { mavenHash } from "../dist/src/maven.js";
-import { requestPinnedArtifactBytes } from "./request-pinned-artifact.mjs";
+import {
+  createPinnedGitHubFetch,
+  requestPinnedArtifactBytes,
+} from "./request-pinned-artifact.mjs";
+const artifactFetch = createPinnedGitHubFetch();
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url)));
 const task = process.env.CHECKTRAIL_TEST_TASK || `infra-tools-${process.pid}`;
 assert.equal(process.arch, "arm64");
@@ -132,6 +136,7 @@ try {
           asset = "operator-prepared-artifact";
         } else {
           bytes = await requestPinnedArtifactBytes(item, {
+            fetchImpl: artifactFetch,
             onRetry: ({ attempt, waitMs }) =>
               process.stderr.write(
                 `Retrying ${item.path} after transport failure (attempt ${attempt}/3; wait ${waitMs}ms)\n`,

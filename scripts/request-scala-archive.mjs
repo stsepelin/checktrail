@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { URL } from "node:url";
-import { requestPinnedArtifactBytes } from "./request-pinned-artifact.mjs";
+import {
+  createPinnedGitHubFetch,
+  requestPinnedArtifactBytes,
+} from "./request-pinned-artifact.mjs";
 const admitted = new Set([
   "https://github.com/scala/scala3/releases/download/3.9.0/scala3-3.9.0.zip",
   "https://github.com/scala/scala/releases/download/v2.13.18/scala-2.13.18.zip",
@@ -11,7 +14,7 @@ const admitted = new Set([
 export async function requestScalaArchive(
   pin,
   {
-    fetchImpl = globalThis.fetch,
+    fetchImpl = createPinnedGitHubFetch(),
     signal = globalThis.AbortSignal.timeout(60000),
     ...options
   } = {},

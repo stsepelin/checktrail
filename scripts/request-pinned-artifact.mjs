@@ -553,3 +553,88 @@ export async function tracePinnedArtifactAcquisition(
       requestSignal.removeEventListener("abort", aborted);
   }
 }
+
+// Exact alternative delivery endpoints, resolved from the publishers' release
+// metadata. Callers still verify their existing archive length and digest.
+const authenticatedReleaseAssets = new Map([
+  [
+    "https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-linux-arm64.tar.gz",
+    "https://api.github.com/repos/yannh/kubeconform/releases/assets/438612685",
+  ],
+  [
+    "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v5.8.2/kustomize_v5.8.2_linux_arm64.tar.gz",
+    "https://api.github.com/repos/kubernetes-sigs/kustomize/releases/assets/600925223",
+  ],
+  [
+    "https://github.com/scala/scala3/releases/download/3.9.0/scala3-3.9.0.zip",
+    "https://api.github.com/repos/scala/scala3/releases/assets/530989006",
+  ],
+  [
+    "https://github.com/scala/scala/releases/download/v2.13.18/scala-2.13.18.zip",
+    "https://api.github.com/repos/scala/scala/releases/assets/317382229",
+  ],
+]);
+
+/** Operator preparation only; the CI token is never sent to asset/CDN hosts. */
+export function createPinnedGitHubFetch({
+  fetchImpl = globalThis.fetch,
+  token = process.env.CHECKTRAIL_GITHUB_ARTIFACT_TOKEN,
+} = {}) {
+  if (token !== undefined && token !== "")
+    assert.ok(
+      typeof token === "string" && /^[A-Za-z0-9_]+$/.test(token),
+      "Invalid pinned artifact credentials",
+    );
+  return async (asset, request) => {
+    const endpoint = authenticatedReleaseAssets.get(String(asset));
+    if (!token || !endpoint) return fetchImpl(asset, request);
+    const signal = request?.signal;
+    assert.ok(
+      signal,
+      "Authenticated artifact delivery requires a request deadline",
+    );
+    let address = new URL(endpoint);
+    for (let hop = 0; hop < 4; hop++) {
+      signal.throwIfAborted();
+      const response = await fetchImpl(address.href, {
+        ...request,
+        redirect: "manual",
+        headers:
+          hop === 0
+            ? {
+                Accept: "application/octet-stream",
+                Authorization: `Bearer ${token}`,
+                "X-GitHub-Api-Version": "2026-03-10",
+              }
+            : { Accept: "application/octet-stream" },
+      });
+      if (signal.aborted) {
+        const cancellation = Promise.resolve()
+          .then(() => response.body?.cancel())
+          .catch(() => {});
+        await waitForRequest(() => cancellation, signal).catch(() => {});
+        signal.throwIfAborted();
+      }
+      if (![301, 302, 303, 307, 308].includes(response.status)) return response;
+      const next = response.headers.get("location");
+      const cancellation = Promise.resolve().then(() =>
+        response.body?.cancel(),
+      );
+      cancellation.catch(() => {});
+      await waitForRequest(() => cancellation, signal);
+      assert.ok(next, "Pinned artifact redirect requires a Location");
+      address = new URL(next, address);
+      assert.ok(
+        address.protocol === "https:" &&
+          address.port === "" &&
+          address.username + address.password + address.hash === "" &&
+          [
+            "release-assets.githubusercontent.com",
+            "objects.githubusercontent.com",
+          ].includes(address.hostname),
+        "Unapproved pinned GitHub artifact redirect",
+      );
+    }
+    assert.fail("Pinned GitHub artifact redirect limit");
+  };
+}
