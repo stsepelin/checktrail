@@ -26,6 +26,7 @@ type Dependency = {
   optional?: boolean;
   os?: string[];
   cpu?: string[];
+  libc?: string[];
   dependencies?: Record<string, string>;
   optionalDependencies?: Record<string, string>;
 };
@@ -54,6 +55,7 @@ async function auditFixture(t: TestContext, dependencies: Dependency[]) {
       name: dependency.name,
       version: "1.0.0",
       license: "MIT",
+      ...(dependency.libc ? { libc: dependency.libc } : {}),
       ...(dependency.dependencies
         ? { dependencies: dependency.dependencies }
         : {}),
@@ -114,6 +116,7 @@ function invoke(
   );
 }
 type Audit = {
+  runtime?: { libc: { family: string; evidence: string; version?: string } };
   complete: boolean;
   scope: string;
   lockedPackageCount: number;
@@ -319,6 +322,7 @@ test("dependency audit reconciles npm 10 retained optional descendants of an inc
 });
 
 type FixtureLockEntry = {
+  dev?: boolean;
   name?: string;
   version?: string;
   optional?: boolean;
@@ -336,11 +340,412 @@ async function changeFixtureLock(
   change(lock.packages);
   await writeFile(file, JSON.stringify(lock));
 }
+async function nestedProjectionFixture(
+  t: TestContext,
+  live: "none" | "dev" | "production" = "none",
+) {
+  const f = await optionalOverinstallFixture(t);
+  const parent = f.retained[0]!;
+  const child = f.retained[1]!;
+  const normal = structuredClone(f.trees.development.dependencies[child]!);
+  normal.extraneous = false;
+  delete normal.problems;
+  if (live !== "none") {
+    normal.optional = false;
+    normal.dev = live === "dev";
+  }
+  const owner =
+    live === "production" ? "synthetic-prod" : "synthetic-development-parent";
+  const update = async (name: string) => {
+    const file = path.join(f.root, "node_modules", name, "package.json");
+    const value = JSON.parse(await readFile(file, "utf8"));
+    await writeFile(
+      file,
+      JSON.stringify({
+        ...value,
+        dependencies: { ...value.dependencies, [child]: "1.0.0" },
+      }),
+    );
+  };
+  await update(parent);
+  if (live !== "none") await update(owner);
+  await changeFixtureLock(f.root, (packages) => {
+    packages["node_modules/" + parent]!.dependencies = { [child]: "1.0.0" };
+    if (live !== "none") {
+      packages["node_modules/" + owner]!.dependencies = { [child]: "1.0.0" };
+      packages["node_modules/" + child]!.optional = false;
+      packages["node_modules/" + child]!.dev = live === "dev";
+    }
+  });
+  const ownDiagnostic = f.trees.production.dependencies[child]!.problems![0]!;
+  for (const tree of Object.values(f.trees)) {
+    tree.dependencies[parent]!.dependencies = {
+      [child]: structuredClone(normal),
+    };
+    if (live !== "none") {
+      delete tree.dependencies[child];
+      tree.problems = tree.problems.filter(
+        (problem) => problem !== ownDiagnostic,
+      );
+      if (tree.dependencies[owner])
+        tree.dependencies[owner]!.dependencies = {
+          [child]: structuredClone(normal),
+        };
+    }
+    tree.dependencies = {
+      [parent]: tree.dependencies[parent]!,
+      ...Object.fromEntries(
+        Object.entries(tree.dependencies).filter(([name]) => name !== parent),
+      ),
+    };
+  }
+  await f.save();
+  return { ...f, parent, child };
+}
+
 function refused(result: ReturnType<typeof invoke>, pattern: RegExp) {
   assert.equal(result.status, 1, result.stderr);
   assert.equal(result.stdout, "");
   assert.match(result.stderr, pattern);
 }
+
+test("dependency audit reconciles repeated non-extraneous descendants beneath omitted development roots", async (t) => {
+  const f = await nestedProjectionFixture(t);
+  const nested =
+    f.trees.production.dependencies[f.parent]!.dependencies![f.child]!;
+  assert.equal(nested.extraneous, false);
+  assert.equal(nested.path, f.trees.production.dependencies[f.child]!.path);
+  const production = parsed(f.invoke([]));
+  assert.deepEqual(
+    production.packages.map((p) => p.name),
+    ["synthetic-prod"],
+  );
+  const development = parsed(f.invoke());
+  assert.equal(development.complete, true);
+  assert.equal(development.installedPackageCount, 4);
+});
+
+test("dependency audit omits a repeated child shared only with a compatible required development path", async (t) => {
+  const f = await nestedProjectionFixture(t, "dev");
+  const production = parsed(f.invoke([]));
+  assert.deepEqual(
+    production.packages.map((p) => p.name),
+    ["synthetic-prod"],
+  );
+  const development = parsed(f.invoke());
+  assert.equal(development.complete, true);
+  assert.equal(development.installedPackageCount, 4);
+  assert.equal(
+    f.trees.development.dependencies["synthetic-development-parent"]!
+      .dependencies![f.child]!.optional,
+    false,
+  );
+});
+
+test("dependency audit preserves a genuine production shared path first reached under an omitted branch", async (t) => {
+  const f = await nestedProjectionFixture(t, "production");
+  assert.equal(Object.keys(f.trees.production.dependencies)[0], f.parent);
+  const production = parsed(f.invoke([]));
+  assert.deepEqual(
+    production.packages.map((p) => p.name).sort(),
+    ["synthetic-prod", f.child].sort(),
+  );
+  assert.equal(production.packageCount, 2);
+  assert.equal(parsed(f.invoke()).complete, true);
+  for (const tree of Object.values(f.trees)) {
+    const child = tree.dependencies[f.parent]!.dependencies![f.child]!;
+    child.extraneous = true;
+    child.problems = [
+      `extraneous: ${child.name}@${child.version} ${child.path}`,
+    ];
+    tree.problems.push(child.problems[0]!);
+  }
+  await f.save();
+  for (const args of [[], ["--include-dev"]])
+    refused(f.invoke(args), /Unreconciled extraneous dependency/);
+});
+
+test("dependency audit refuses an unlocked normal descendant even when its identity duplicates production", async (t) => {
+  const f = await nestedProjectionFixture(t);
+  const location = path.join(f.root, "node_modules/synthetic-unlocked-copy");
+  await mkdir(location);
+  await writeFile(
+    path.join(location, "package.json"),
+    JSON.stringify({
+      name: "synthetic-prod",
+      version: "1.0.0",
+      license: "MIT",
+    }),
+  );
+  for (const tree of Object.values(f.trees))
+    tree.dependencies[f.parent]!.dependencies!["synthetic-unlocked-copy"] = {
+      name: "synthetic-prod",
+      version: "1.0.0",
+      path: location,
+      extraneous: false,
+    };
+  await f.save();
+  for (const args of [[], ["--include-dev"]])
+    refused(f.invoke(args), /location is not locked/);
+});
+
+test("dependency audit rejects a mismatching normal descendant inside an omitted development branch", async (t) => {
+  const f = await nestedProjectionFixture(t);
+  for (const tree of Object.values(f.trees))
+    tree.dependencies[f.parent]!.dependencies![f.child]!.version = "2.0.0";
+  await f.save();
+  for (const args of [[], ["--include-dev"]])
+    refused(f.invoke(args), /Installed version differs from lock/);
+});
+
+async function syntheticLibcReport(
+  root: string,
+  report: unknown,
+  throws = false,
+) {
+  const loader = path.join(root, "synthetic-libc-report.mjs");
+  const observed = path.join(root, "report-settings-observed.json");
+  const restored = path.join(root, "report-settings-restored.json");
+  const commands = path.join(root, "runtime-helper-commands.json");
+  await writeFile(
+    loader,
+    `import process from 'node:process';import fs from 'node:fs';import cp from 'node:child_process';import{syncBuiltinESMExports}from'node:module';const names=['excludeNetwork','excludeEnv'];const settings=()=>Object.fromEntries(names.filter(name=>typeof process.report[name]==='boolean').map(name=>[name,process.report[name]]));const before=settings();Object.defineProperty(process,'platform',{value:'linux'});fs.writeFileSync(${JSON.stringify(commands)},'[]');const original=cp.execFileSync;cp.execFileSync=(file,...args)=>{if(file!=='npm'){const calls=JSON.parse(fs.readFileSync(${JSON.stringify(commands)},'utf8'));calls.push(file);fs.writeFileSync(${JSON.stringify(commands)},JSON.stringify(calls));throw Error('Runtime helper commands are forbidden');}return original(file,...args);};syncBuiltinESMExports();process.report.getReport=()=>{fs.writeFileSync(${JSON.stringify(observed)},JSON.stringify(settings()));if(${JSON.stringify(throws)})throw Error('Original synthetic report error; do not retain');return ${JSON.stringify(report)};};process.on('exit',()=>fs.writeFileSync(${JSON.stringify(restored)},JSON.stringify({before,after:settings()})));`,
+  );
+  return {
+    args: ["--import", pathToFileURL(loader).href],
+    async checked() {
+      const captured = JSON.parse(await readFile(observed, "utf8"));
+      assert.equal(captured.excludeNetwork, true);
+      assert.ok(Object.values(captured).every((value) => value === true));
+      const result = JSON.parse(await readFile(restored, "utf8"));
+      assert.deepEqual(result.after, result.before);
+      assert.deepEqual(JSON.parse(await readFile(commands, "utf8")), []);
+    },
+  };
+}
+
+const glibcReport = {
+  header: { glibcVersionRuntime: "2.36" },
+  environmentVariables: {
+    SYNTHETIC_PRIVATE_ENV: "Original-private-report-marker",
+  },
+};
+const muslReport = {
+  header: {},
+  sharedObjects: ["/original/lib/ld-musl-x86_64.so.1"],
+  environmentVariables: {
+    SYNTHETIC_PRIVATE_ENV: "Original-private-report-marker",
+  },
+};
+const libcCases = [
+  {
+    name: "glibc excludes musl",
+    report: glibcReport,
+    selector: ["musl"],
+    family: "glibc",
+    excluded: true,
+  },
+  {
+    name: "musl excludes glibc",
+    report: muslReport,
+    selector: ["glibc"],
+    family: "musl",
+    excluded: true,
+  },
+  {
+    name: "matching glibc stays unresolved when absent",
+    report: glibcReport,
+    selector: ["glibc"],
+    family: "glibc",
+    excluded: false,
+  },
+  {
+    name: "matching musl stays unresolved when absent",
+    report: muslReport,
+    selector: ["musl"],
+    family: "musl",
+    excluded: false,
+  },
+  {
+    name: "unknown report stays unresolved",
+    report: { header: {}, sharedObjects: [] },
+    selector: ["musl"],
+    family: "unknown",
+    excluded: false,
+  },
+  {
+    name: "musl path backup is not a loader",
+    report: {
+      header: {},
+      sharedObjects: [
+        "/original/ld-musl-x86_64.so.1.backup",
+        "/original/ld-musl-x86_64.so.1/ordinary.so",
+      ],
+    },
+    selector: ["musl"],
+    family: "unknown",
+    excluded: false,
+  },
+  {
+    name: "known glibc header takes precedence",
+    report: { ...muslReport, header: { glibcVersionRuntime: "2.36" } },
+    selector: ["musl"],
+    family: "glibc",
+    excluded: true,
+  },
+  {
+    name: "report errors remain unknown",
+    report: {},
+    throws: true,
+    selector: ["musl"],
+    family: "unknown",
+    excluded: false,
+  },
+  {
+    name: "exact any remains compatible",
+    report: glibcReport,
+    selector: ["any"],
+    family: "glibc",
+    excluded: false,
+  },
+  {
+    name: "mixed any is literal",
+    report: glibcReport,
+    selector: ["any", "musl"],
+    family: "glibc",
+    excluded: true,
+  },
+  {
+    name: "matching negation excludes",
+    report: glibcReport,
+    selector: ["!glibc"],
+    family: "glibc",
+    excluded: true,
+  },
+  {
+    name: "other negation is compatible",
+    report: glibcReport,
+    selector: ["!musl"],
+    family: "glibc",
+    excluded: false,
+  },
+];
+for (const entry of libcCases) {
+  test(`development audit libc facts: ${entry.name}`, async (t) => {
+    const root = await auditFixture(t, [
+      { name: "synthetic-prod" },
+      {
+        name: "synthetic-development-parent",
+        dev: true,
+        optionalDependencies: { "synthetic-libc-native": "1.0.0" },
+      },
+      {
+        name: "synthetic-libc-native",
+        location: "node_modules/synthetic-libc-native",
+        dev: true,
+        optional: true,
+        absent: true,
+        libc: entry.selector,
+      },
+    ]);
+    const report = await syntheticLibcReport(
+      root,
+      entry.report,
+      entry.throws ?? false,
+    );
+    const result = invoke(root, ["--include-dev"], report.args);
+    const evidence = parsed(result, entry.excluded ? 0 : 2);
+    assert.equal(evidence.runtime!.libc.family, entry.family);
+    assert.equal(evidence.complete, entry.excluded);
+    assert.equal(evidence.platformInapplicableCount, entry.excluded ? 1 : 0);
+    assert.equal(evidence.optionalAbsentCount, entry.excluded ? 0 : 1);
+    assert.equal(
+      evidence.absentPackages[0]!.state,
+      entry.excluded ? "platform-inapplicable" : "not-installed-optional",
+    );
+    assert.equal(
+      result.stdout.includes("Original-private-report-marker"),
+      false,
+    );
+    await report.checked();
+  });
+}
+
+test("development audit retains an active matching-libc path instead of inheriting a foreign exclusion", async (t) => {
+  const root = await auditFixture(t, [
+    { name: "synthetic-prod" },
+    {
+      name: "synthetic-libc-foreign",
+      optional: true,
+      absent: true,
+      libc: ["musl"],
+      dependencies: { "synthetic-libc-shared": "1.0.0" },
+    },
+    {
+      name: "synthetic-libc-active",
+      optional: true,
+      libc: ["glibc"],
+      optionalDependencies: { "synthetic-libc-shared": "1.0.0" },
+    },
+    {
+      name: "synthetic-libc-shared",
+      location: "node_modules/synthetic-libc-shared",
+      optional: true,
+      absent: true,
+    },
+  ]);
+  const report = await syntheticLibcReport(root, glibcReport);
+  const evidence = parsed(invoke(root, ["--include-dev"], report.args), 2);
+  assert.equal(evidence.complete, false);
+  assert.equal(evidence.platformInapplicableCount, 1);
+  assert.equal(evidence.optionalAbsentCount, 1);
+  assert.equal(
+    evidence.absentPackages.find(
+      (item) => item.package === "synthetic-libc-shared@1.0.0",
+    )!.state,
+    "not-installed-optional",
+  );
+  assert.ok(
+    evidence.packages.some((item) => item.name === "synthetic-libc-active"),
+  );
+  await report.checked();
+});
+
+test("development audit retains a compatible absent optional notice source without declaring its notice inspected", async (t) => {
+  const f = await pinnedNoticeFixture(t, false);
+  const file = path.join(f.root, "package.json");
+  const manifest = JSON.parse(await readFile(file, "utf8"));
+  delete manifest.dependencies[f.name];
+  manifest.optionalDependencies[f.name] = "1.0.0";
+  await writeFile(file, JSON.stringify(manifest));
+  await changeFixtureLock(f.root, (packages) => {
+    delete packages[""]!.dependencies![f.name];
+    packages[""]!.optionalDependencies = { [f.name]: "1.0.0" };
+    packages[f.dependency]!.optional = true;
+  });
+  await rm(path.join(f.root, f.dependency), { recursive: true });
+  const report = parsed(invoke(f.root), 2);
+  assert.equal(report.complete, false);
+  assert.deepEqual(report.uninspectedNoticeSources, [
+    {
+      package: f.name + "@1.0.0",
+      state: "not-installed-optional",
+      noticeInspected: false,
+    },
+  ]);
+  assert.deepEqual(report.gaps, [
+    {
+      package: f.name + "@1.0.0",
+      reason:
+        "Optional package absent without a demonstrated platform exclusion",
+    },
+  ]);
+  await writeFile(
+    path.join(f.root, "scripts/license-sources.json"),
+    JSON.stringify({ [f.name + "@2.0.0"]: f.source }),
+  );
+  refused(invoke(f.root), /no longer describes/);
+});
 
 test("dependency audit accepts OS-incompatible optional ancestry and continues hashing retained development contents and notices", async (t) => {
   const f = await optionalOverinstallFixture(t, "os");
@@ -901,7 +1306,7 @@ test("development audit reconciles installed foreign-platform and unresolved opt
     {
       package: "synthetic-local@1.0.0",
       reason:
-        "Optional package absent without an incompatible OS or CPU declaration",
+        "Optional package absent without a demonstrated platform exclusion",
     },
   ]);
   assert.deepEqual(
@@ -1134,7 +1539,7 @@ test("development audit excludes an absent dependency only when every declared p
     {
       package: "synthetic-shared@1.0.0",
       reason:
-        "Optional package absent without an incompatible OS or CPU declaration",
+        "Optional package absent without a demonstrated platform exclusion",
     },
   ]);
   assert.equal(

@@ -23,12 +23,22 @@ nonregular entries, changed files, individual files above 128 MiB and package
 contents above 256 MiB or 8,192 files are refused. These are per-package bounds;
 they do not establish a global resource bound or a hermetic filesystem snapshot.
 
-Absent optional packages remain accounted for. Literal OS/CPU constraints and
+Absent optional packages remain accounted for. Literal OS/CPU/libc constraints and
 inherited incompatible ancestors can justify a platform exclusion only when no
 compatible root path reaches the missing package. An absent compatible optional
-package remains a gap. Required missing packages and conflicting installed
+package remains a gap. A current notice-source entry for that known absence stays
+explicitly uninspected with the same unresolved state; it cannot turn the gap into
+passed evidence. A source ID absent from the current lock still fails as stale. Required missing packages and conflicting installed
 locations are errors. Platform selection is not a claim that another platform's
 binary has been validated.
+
+Linux libc exclusions require known Node runtime report facts: a recognized
+glibc version header takes priority, otherwise an exact musl loader basename in
+reported shared objects can identify musl. Unknown or unavailable libc evidence
+cannot justify an exclusion. Capture retains only those libc facts, restores the
+report settings in `finally`, and never executes `ldd` or loads dependency code.
+Selector lists follow [npm-install-checks](https://raw.githubusercontent.com/npm/npm-install-checks/main/lib/index.js)
+for exact values, negation and the single `any` form.
 
 Both modes pair npm's short diagnostic tree with its long identity metadata,
 requiring identical dependency topology and versions. Arbitrary manifest fields
@@ -40,7 +50,10 @@ installed manifest identity, and literal graph exclusion. An aggregate problem
 string alone cannot authorize an exception. Unknown extras, invalid or missing
 nodes, version drift and any compatible shared path still fail. Development mode
 continues inspecting the contents and notices of every physically present locked
-package; production reports remain scoped to production packages. CI runs the
+package. Production scope tracks an independently proven omitted development
+branch through repeated child projections; a child shared with a compatible
+production path stays included. Every versioned projection must bind a canonical
+lock location and actual installed identity, even beneath an omitted branch. CI runs the
 production audit immediately after its root dependency install, before JavaScript fixture
 preparation and build.
 

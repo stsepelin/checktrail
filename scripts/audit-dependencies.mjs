@@ -127,6 +127,45 @@ const sources = Object.fromEntries(
     ([, source]) => includeDev || source.scope !== "development",
   ),
 );
+function captureRuntimeLibc() {
+  if (process.platform !== "linux")
+    return { family: "unknown", evidence: "not-linux" };
+  const report = process.report;
+  if (!report || typeof report.getReport !== "function")
+    return { family: "unknown", evidence: "report-unavailable" };
+  const settings = ["excludeNetwork", "excludeEnv"]
+    .map((name) => [name, report[name]])
+    .filter(([, value]) => typeof value === "boolean");
+  try {
+    for (const [name] of settings) report[name] = true;
+    const observed = report.getReport();
+    const version = observed?.header?.glibcVersionRuntime;
+    if (
+      typeof version === "string" &&
+      version.length <= 32 &&
+      /^\d+\.\d+(?:\.\d+)?$/.test(version)
+    )
+      return { family: "glibc", evidence: "node-report-header", version };
+    if (
+      Array.isArray(observed?.sharedObjects) &&
+      observed.sharedObjects.some(
+        (file) =>
+          typeof file === "string" &&
+          /^(?:libc\.musl-|ld-musl-)[A-Za-z0-9_-]+\.so\.1$/.test(
+            path.posix.basename(file),
+          ),
+      )
+    )
+      return { family: "musl", evidence: "node-report-shared-object" };
+    return { family: "unknown", evidence: "unrecognized-report" };
+  } catch {
+    return { family: "unknown", evidence: "report-unavailable" };
+  } finally {
+    for (const [name, value] of settings) report[name] = value;
+  }
+}
+const runtimeLibc = captureRuntimeLibc();
+
 // Use only the lock's literal graph in both audit modes. An absent or retained
 // optional dependency is platform-excluded only without a compatible root path.
 const graph = new Map();
@@ -143,14 +182,14 @@ function lockedDependency(parent, name) {
     prefix = separator === -1 ? "" : prefix.slice(0, separator);
   }
 }
-function reachable(start, blocked) {
+function reachable(start, blocked, rootEdges = graph.get("") ?? []) {
   const found = new Set(),
     pending = [start];
   while (pending.length) {
     const node = pending.pop();
     if (found.has(node) || blocked.has(node)) continue;
     found.add(node);
-    pending.push(...(graph.get(node) ?? []));
+    pending.push(...(node === "" ? rootEdges : (graph.get(node) ?? [])));
   }
   return found;
 }
@@ -169,9 +208,11 @@ const includesPlatform = (selection, value) => {
   );
 };
 for (const [location, entry] of Object.entries(lock.packages)) {
+  const libcMatches = includesPlatform(entry.libc, runtimeLibc.family);
   if (
     !includesPlatform(entry.os, process.platform) ||
-    !includesPlatform(entry.cpu, process.arch)
+    !includesPlatform(entry.cpu, process.arch) ||
+    (runtimeLibc.family !== "unknown" && !libcMatches)
   )
     platformBlocked.add(location);
   const names = new Set([
@@ -189,6 +230,17 @@ for (const [location, entry] of Object.entries(lock.packages)) {
 }
 const allReachable = reachable("", new Set());
 const selectedReachable = reachable("", platformBlocked);
+const rootPackage = lock.packages[""];
+const productionRoots = [
+  ...new Set([
+    ...Object.keys(rootPackage.dependencies ?? {}),
+    ...Object.keys(rootPackage.optionalDependencies ?? {}),
+    ...Object.keys(rootPackage.peerDependencies ?? {}),
+  ]),
+]
+  .map((name) => lockedDependency("", name))
+  .filter((location) => location !== undefined);
+const productionReachable = reachable("", platformBlocked, productionRoots);
 
 function npmTree(long) {
   return JSON.parse(
@@ -229,7 +281,13 @@ function treeContext(node) {
         : null,
   });
 }
-async function inspectTree(node, diagnostic, isRoot = false) {
+async function inspectTree(
+  node,
+  diagnostic,
+  isRoot = false,
+  omittedDevelopment = false,
+) {
+  let omittedBranch = omittedDevelopment;
   assert.ok(
     node && typeof node === "object" && !Array.isArray(node),
     "Invalid installed dependency tree node",
@@ -286,21 +344,18 @@ async function inspectTree(node, diagnostic, isRoot = false) {
       "Installed dependency has no package identity: " + context,
     );
     const id = `${packageName}@${node.version}`;
-    let location, entry;
-    if (includeDev || diagnostic.extraneous) {
-      assert.ok(
-        typeof node.path === "string" && path.isAbsolute(node.path),
-        "Installed dependency tree has no absolute path: " + context,
-      );
-      location = path.relative(root, node.path).split(path.sep).join("/");
-      assert.ok(
-        location.startsWith("node_modules/") &&
-          !location.split("/").includes("..") &&
-          path.join(root, location) === node.path,
-        "Installed dependency tree path escapes package root: " + context,
-      );
-      entry = lock.packages[location];
-    }
+    assert.ok(
+      typeof node.path === "string" && path.isAbsolute(node.path),
+      "Installed dependency tree has no absolute path: " + context,
+    );
+    const location = path.relative(root, node.path).split(path.sep).join("/");
+    assert.ok(
+      location.startsWith("node_modules/") &&
+        !location.split("/").includes("..") &&
+        path.join(root, location) === node.path,
+      "Installed dependency tree path escapes package root: " + context,
+    );
+    const entry = lock.packages[location];
     if (diagnostic.extraneous) {
       // npm 10 can retain locked optional descendants of omitted foreign
       // packages. Its aggregate diagnostics are not themselves proof of this.
@@ -349,8 +404,52 @@ async function inspectTree(node, diagnostic, isRoot = false) {
         "Extraneous dependency has no exact diagnostic: " + context,
       );
       retainedOptionalProblems.add(problem);
+      if (entry.dev) omittedBranch = true;
+    } else {
+      assert.ok(
+        entry,
+        "Installed dependency tree location is not locked: " + context,
+      );
+      assert.equal(
+        await realpath(node.path),
+        node.path,
+        "Installed dependency path must be canonical: " + context,
+      );
+      const manifestPath = path.join(node.path, "package.json");
+      const stat = await lstat(manifestPath);
+      assert.ok(
+        stat.isFile() && !stat.isSymbolicLink(),
+        "Installed dependency manifest must be a regular file: " + context,
+      );
+      const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+      const expectedName = entry.name ?? location.split("node_modules/").at(-1);
+      assert.equal(
+        packageName,
+        expectedName,
+        "Installed dependency name differs from lock for " + location,
+      );
+      assert.equal(
+        manifest.name,
+        expectedName,
+        "Installed dependency name differs from lock for " + location,
+      );
+      assert.equal(
+        node.version,
+        entry.version,
+        "Installed version differs from lock for " + location,
+      );
+      assert.equal(
+        manifest.version,
+        entry.version,
+        "Installed version differs from lock for " + location,
+      );
     }
-    if (includeDev || !diagnostic.extraneous || !entry.dev) {
+    const omittedProjection =
+      !includeDev &&
+      omittedBranch &&
+      entry.dev &&
+      !productionReachable.has(location);
+    if (!omittedProjection) {
       treeIdentities.add(id);
       if (includeDev) {
         assert.ok(
@@ -362,7 +461,12 @@ async function inspectTree(node, diagnostic, isRoot = false) {
     }
   }
   for (const [name, child] of Object.entries(node.dependencies ?? {}))
-    await inspectTree(child, diagnostic.dependencies[name]);
+    await inspectTree(
+      child,
+      diagnostic.dependencies[name],
+      false,
+      omittedBranch,
+    );
 }
 await inspectTree(tree, diagnosticTree, true);
 for (const { problem, context, node, diagnostic, isRoot } of treeProblems)
@@ -433,13 +537,14 @@ for (const [location, entry] of Object.entries(lock.packages).sort(([a], [b]) =>
         state: excluded ? "platform-inapplicable" : "not-installed-optional",
         os: entry.os ?? null,
         cpu: entry.cpu ?? null,
+        libc: entry.libc ?? null,
         ...(inheritedExclusion ? { blockingAncestors } : {}),
       });
       if (!excluded)
         gaps.push({
           package: id,
           reason:
-            "Optional package absent without an incompatible OS or CPU declaration",
+            "Optional package absent without a demonstrated platform exclusion",
         });
       continue;
     }
@@ -685,14 +790,15 @@ const uninspectedNoticeSources = includeDev
   ? Object.keys(sources)
       .filter(
         (id) =>
-          !usedSources.has(id) &&
-          absentPackages.some(
-            (p) => p.package === id && p.state === "platform-inapplicable",
-          ),
+          !usedSources.has(id) && absentPackages.some((p) => p.package === id),
       )
       .map((id) => ({
         package: id,
-        state: "platform-inapplicable",
+        state: absentPackages
+          .filter((p) => p.package === id)
+          .every((p) => p.state === "platform-inapplicable")
+          ? "platform-inapplicable"
+          : "not-installed-optional",
         noticeInspected: false,
       }))
   : [];
@@ -735,6 +841,7 @@ process.stdout.write(
               node: process.versions.node,
               platform: process.platform,
               architecture: process.arch,
+              libc: runtimeLibc,
             },
             lockedPackageCount,
             installedPackageCount: packages.length,
