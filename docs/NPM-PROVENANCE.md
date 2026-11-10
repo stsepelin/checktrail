@@ -12,6 +12,8 @@ node scripts/audit-dependencies.mjs --include-dev
 The default production report retains schema version 1. The explicit development
 mode uses version 2 and reconciles every locked location with its actual installed
 package identity. Alias names and duplicate nested locations remain distinct.
+Installed manifest names must match their literal lock identities in both modes;
+an alias retains the actual package name from its lock entry.
 Unknown or repeated arguments fail before the audit starts. This is source setup
 tooling; it is not an MCP discovery operation or an installed-package command.
 
@@ -28,6 +30,20 @@ package remains a gap. Required missing packages and conflicting installed
 locations are errors. Platform selection is not a claim that another platform's
 binary has been validated.
 
+Both modes pair npm's short diagnostic tree with its long identity metadata,
+requiring identical dependency topology and versions. Arbitrary manifest fields
+in long output cannot supply npm failure flags. npm 10 may report a retained
+optional package as extraneous when its only locked root paths pass through an
+incompatible optional OS/CPU ancestor. The audit reconciles that diagnostic only
+after binding the structured node's canonical in-root location, exact lock and
+installed manifest identity, and literal graph exclusion. An aggregate problem
+string alone cannot authorize an exception. Unknown extras, invalid or missing
+nodes, version drift and any compatible shared path still fail. Development mode
+continues inspecting the contents and notices of every physically present locked
+package; production reports remain scoped to production packages. CI runs the
+production audit immediately after its root dependency install, before JavaScript fixture
+preparation and build.
+
 Notice filenames use an exact case-insensitive set. Backup names such as
 `LICENSE.backup`, `NOTICE.old` and `COPYING.save` cannot supply a notice.
 Recognized license variants and the existing pinned upstream fallback retain
@@ -36,13 +52,13 @@ unrecognized filename remains a gap pending deliberate reconciliation.
 
 A complete audit exits 0. Missing declarations or notices produce an incomplete
 report and exit 2. Invalid trees, stale bindings and unsafe contents fail without
-a successful report. The current development audit remains incomplete because
-some notices remain unavailable or declarations conflict;
-[the dated notice binding measurement](measurements/npm-notice-bindings-2026-10-11.json)
-records its original gaps and package accounting. The
+a successful report. The
+[dated notice binding measurement](measurements/npm-notice-bindings-2026-10-11.json)
+records its original incomplete notice evidence and package accounting. The
 [earlier audit measurement](measurements/npm-provenance-2026-10-11.json) records
-its pre-reconciliation state. The recorded production audit is
-complete for its narrower npm scope.
+its pre-reconciliation state. These dated reports do not qualify later dependency
+refreshes or unresolved stale bindings. The recorded production audit is complete
+for its narrower npm scope.
 
 Original synthetic controls passed on the recorded macOS ARM64 Node runtimes.
 Paired mutations remove scope, content, bounds, notice and optional-path guards;

@@ -127,58 +127,8 @@ const sources = Object.fromEntries(
     ([, source]) => includeDev || source.scope !== "development",
   ),
 );
-const tree = JSON.parse(
-  execFileSync(
-    "npm",
-    ["ls", ...(includeDev ? ["--long"] : ["--omit=dev"]), "--all", "--json"],
-    {
-      cwd: root,
-      encoding: "utf8",
-      timeout: 30000,
-      maxBuffer: 8 * 1024 * 1024,
-    },
-  ),
-);
-const treeIdentities = new Set();
-const treeLocations = new Map();
-function inspectTree(node) {
-  assert.ok(
-    !node.problems?.length,
-    "Installed production dependency tree has problems",
-  );
-  for (const [name, child] of Object.entries(node.dependencies ?? {})) {
-    if (child.version) {
-      const packageName = includeDev ? child.name : name;
-      assert.ok(
-        typeof packageName === "string" && packageName.length > 0,
-        "Installed dependency has no package identity",
-      );
-      treeIdentities.add(`${packageName}@${child.version}`);
-      if (includeDev) {
-        const location = path
-          .relative(root, child.path)
-          .split(path.sep)
-          .join("/");
-        assert.ok(
-          location.startsWith("node_modules/") &&
-            !location.split(path.sep).includes(".."),
-          "Installed dependency tree path escapes package root",
-        );
-        const id = `${packageName}@${child.version}`;
-        assert.ok(
-          !treeLocations.has(location) || treeLocations.get(location) === id,
-          "Installed dependency tree location conflicts",
-        );
-        treeLocations.set(location, id);
-      }
-    }
-    inspectTree(child);
-  }
-}
-inspectTree(tree);
-
-// Use only the lock's literal package graph. An absent shared dependency is
-// excluded only when every root-reachable path crosses an incompatible package.
+// Use only the lock's literal graph in both audit modes. An absent or retained
+// optional dependency is platform-excluded only without a compatible root path.
 const graph = new Map();
 const platformBlocked = new Set();
 function lockedDependency(parent, name) {
@@ -204,14 +154,6 @@ function reachable(start, blocked) {
   }
   return found;
 }
-let allReachable, selectedReachable;
-
-const packages = [];
-const gaps = [];
-const usedSources = new Set();
-const absentPackages = [];
-const installedLocations = new Map();
-let lockedPackageCount = 0;
 const includesPlatform = (selection, value) => {
   if (selection === undefined) return true;
   const list = typeof selection === "string" ? [selection] : selection;
@@ -226,29 +168,224 @@ const includesPlatform = (selection, value) => {
     (positive.length === 0 || positive.includes(value))
   );
 };
-if (includeDev) {
-  for (const [location, entry] of Object.entries(lock.packages)) {
-    if (
-      !includesPlatform(entry.os, process.platform) ||
-      !includesPlatform(entry.cpu, process.arch)
-    )
-      platformBlocked.add(location);
-    const names = new Set([
-      ...Object.keys(entry.dependencies ?? {}),
-      ...Object.keys(entry.optionalDependencies ?? {}),
-      ...Object.keys(entry.peerDependencies ?? {}),
-      ...(location === "" ? Object.keys(entry.devDependencies ?? {}) : []),
-    ]);
-    graph.set(
-      location,
-      [...names]
-        .map((name) => lockedDependency(location, name))
-        .filter((node) => node !== undefined),
-    );
-  }
-  allReachable = reachable("", new Set());
-  selectedReachable = reachable("", platformBlocked);
+for (const [location, entry] of Object.entries(lock.packages)) {
+  if (
+    !includesPlatform(entry.os, process.platform) ||
+    !includesPlatform(entry.cpu, process.arch)
+  )
+    platformBlocked.add(location);
+  const names = new Set([
+    ...Object.keys(entry.dependencies ?? {}),
+    ...Object.keys(entry.optionalDependencies ?? {}),
+    ...Object.keys(entry.peerDependencies ?? {}),
+    ...(location === "" ? Object.keys(entry.devDependencies ?? {}) : []),
+  ]);
+  graph.set(
+    location,
+    [...names]
+      .map((name) => lockedDependency(location, name))
+      .filter((node) => node !== undefined),
+  );
 }
+const allReachable = reachable("", new Set());
+const selectedReachable = reachable("", platformBlocked);
+
+function npmTree(long) {
+  return JSON.parse(
+    execFileSync(
+      "npm",
+      [
+        "ls",
+        ...(includeDev ? [] : ["--omit=dev"]),
+        "--all",
+        "--json",
+        ...(long ? ["--long"] : []),
+      ],
+      {
+        cwd: root,
+        encoding: "utf8",
+        timeout: 30000,
+        maxBuffer: 8 * 1024 * 1024,
+      },
+    ),
+  );
+}
+// Long output copies arbitrary package.json fields. Only the short tree's
+// npm-owned diagnostics can authorize failures or a retained-optional exception.
+const diagnosticTree = npmTree(false);
+const tree = npmTree(true);
+const treeIdentities = new Set();
+const treeLocations = new Map();
+const retainedOptionalProblems = new Set();
+const treeProblems = [];
+function treeContext(node) {
+  return JSON.stringify({
+    name: typeof node.name === "string" ? node.name.slice(0, 128) : null,
+    version:
+      typeof node.version === "string" ? node.version.slice(0, 64) : null,
+    location:
+      typeof node.path === "string"
+        ? path.relative(root, node.path).slice(0, 256)
+        : null,
+  });
+}
+async function inspectTree(node, diagnostic, isRoot = false) {
+  assert.ok(
+    node && typeof node === "object" && !Array.isArray(node),
+    "Invalid installed dependency tree node",
+  );
+  assert.ok(
+    diagnostic && typeof diagnostic === "object" && !Array.isArray(diagnostic),
+    "Invalid installed dependency diagnostic node",
+  );
+  const context = treeContext(node);
+  assert.equal(
+    node.version,
+    diagnostic.version,
+    "Installed dependency tree version changed between captures: " + context,
+  );
+  assert.equal(
+    node.extraneous === true,
+    diagnostic.extraneous === true,
+    "Installed dependency tree extraneous state changed between captures: " +
+      context,
+  );
+  assert.deepEqual(
+    Object.keys(node.dependencies ?? {}).sort(),
+    Object.keys(diagnostic.dependencies ?? {}).sort(),
+    "Installed dependency tree topology changed between captures: " + context,
+  );
+  assert.ok(
+    !diagnostic.invalid && !diagnostic.missing,
+    "Invalid or missing installed dependency: " + context,
+  );
+  assert.ok(
+    diagnostic.extraneous === undefined ||
+      typeof diagnostic.extraneous === "boolean",
+    "Invalid extraneous dependency flag: " + context,
+  );
+  if (diagnostic.problems !== undefined) {
+    assert.ok(
+      Array.isArray(diagnostic.problems),
+      "Invalid installed dependency diagnostics: " + context,
+    );
+    for (const problem of diagnostic.problems)
+      treeProblems.push({ problem, context, node, diagnostic, isRoot });
+  }
+  assert.ok(
+    !isRoot || !diagnostic.extraneous,
+    "Installed root cannot be extraneous",
+  );
+  if (!isRoot && (node.version || diagnostic.extraneous)) {
+    const packageName = node.name;
+    assert.ok(
+      typeof packageName === "string" &&
+        packageName.length > 0 &&
+        typeof node.version === "string" &&
+        node.version.length > 0,
+      "Installed dependency has no package identity: " + context,
+    );
+    const id = `${packageName}@${node.version}`;
+    let location, entry;
+    if (includeDev || diagnostic.extraneous) {
+      assert.ok(
+        typeof node.path === "string" && path.isAbsolute(node.path),
+        "Installed dependency tree has no absolute path: " + context,
+      );
+      location = path.relative(root, node.path).split(path.sep).join("/");
+      assert.ok(
+        location.startsWith("node_modules/") &&
+          !location.split("/").includes("..") &&
+          path.join(root, location) === node.path,
+        "Installed dependency tree path escapes package root: " + context,
+      );
+      entry = lock.packages[location];
+    }
+    if (diagnostic.extraneous) {
+      // npm 10 can retain locked optional descendants of omitted foreign
+      // packages. Its aggregate diagnostics are not themselves proof of this.
+      assert.ok(
+        entry &&
+          entry.optional === true &&
+          allReachable.has(location) &&
+          !selectedReachable.has(location),
+        "Unreconciled extraneous dependency: " + context,
+      );
+      assert.ok(
+        [...platformBlocked].some(
+          (ancestor) =>
+            ancestor !== location &&
+            lock.packages[ancestor].optional === true &&
+            allReachable.has(ancestor) &&
+            reachable(ancestor, new Set()).has(location),
+        ),
+        "Extraneous dependency has no incompatible optional ancestor: " +
+          context,
+      );
+      assert.equal(
+        await realpath(node.path),
+        node.path,
+        "Extraneous dependency path must be canonical: " + context,
+      );
+      const manifestPath = path.join(node.path, "package.json");
+      const stat = await lstat(manifestPath);
+      assert.ok(
+        stat.isFile() && !stat.isSymbolicLink(),
+        "Extraneous dependency manifest must be a regular file: " + context,
+      );
+      const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+      assert.ok(
+        packageName ===
+          (entry.name ?? location.split("node_modules/").at(-1)) &&
+          packageName === manifest.name &&
+          node.version === entry.version &&
+          node.version === manifest.version,
+        "Extraneous dependency identity differs from lock or installed manifest: " +
+          context,
+      );
+      const problem = `extraneous: ${id} ${node.path}`;
+      assert.ok(
+        diagnostic.problems?.includes(problem),
+        "Extraneous dependency has no exact diagnostic: " + context,
+      );
+      retainedOptionalProblems.add(problem);
+    }
+    if (includeDev || !diagnostic.extraneous || !entry.dev) {
+      treeIdentities.add(id);
+      if (includeDev) {
+        assert.ok(
+          !treeLocations.has(location) || treeLocations.get(location) === id,
+          "Installed dependency tree location conflicts",
+        );
+        treeLocations.set(location, id);
+      }
+    }
+  }
+  for (const [name, child] of Object.entries(node.dependencies ?? {}))
+    await inspectTree(child, diagnostic.dependencies[name]);
+}
+await inspectTree(tree, diagnosticTree, true);
+for (const { problem, context, node, diagnostic, isRoot } of treeProblems)
+  assert.ok(
+    typeof problem === "string" &&
+      retainedOptionalProblems.has(problem) &&
+      (isRoot ||
+        (diagnostic.extraneous === true &&
+          problem === `extraneous: ${node.name}@${node.version} ${node.path}`)),
+    "Installed dependency tree has unreconciled problems: " +
+      context +
+      " " +
+      (typeof problem === "string"
+        ? problem.slice(0, 256)
+        : "invalid diagnostic"),
+  );
+
+const packages = [];
+const gaps = [];
+const usedSources = new Set();
+const absentPackages = [];
+const installedLocations = new Map();
+let lockedPackageCount = 0;
 
 for (const [location, entry] of Object.entries(lock.packages).sort(([a], [b]) =>
   a.localeCompare(b, "en"),
@@ -315,12 +452,12 @@ for (const [location, entry] of Object.entries(lock.packages).sort(([a], [b]) =>
   const manifestBytes = await readFile(path.join(directory, "package.json"));
   const manifest = JSON.parse(manifestBytes.toString("utf8"));
   const id = `${manifest.name}@${manifest.version}`;
+  assert.equal(
+    manifest.name,
+    entry.name ?? location.split("node_modules/").at(-1),
+    "Installed dependency name differs from lock for " + location,
+  );
   if (includeDev) {
-    assert.equal(
-      manifest.name,
-      entry.name ?? location.split("node_modules/").at(-1),
-      "Installed dependency name differs from lock for " + location,
-    );
     assert.equal(
       treeLocations.get(location),
       id,
