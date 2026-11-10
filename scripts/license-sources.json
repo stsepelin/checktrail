@@ -554,5 +554,37 @@
       "eastasianwidth.js": "2672ae17e3d91c246546bf3d56e78c95570eec79381ec143f41d45ec498bccab",
       "package.json": "51db62f97656d02d4bc9670393cae42930dbd1ed89f5837056851807e602867a"
     }
+  },
+  "@napi-rs/wasm-runtime@1.2.6": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-napi-rs-wasm-runtime1.2.6.txt",
+    "sha256": "3f1ce66533302df3a32edbfdfc0b78f0dd34659e4c1f5817162e5ea3c2297215",
+    "source": "https://raw.githubusercontent.com/napi-rs/napi-rs/4fff029f67693d08be0ff16818eb9ead2637a99e/LICENSE",
+    "upstreamManifestVersion": "1.2.6",
+    "license": "MIT",
+    "files": {
+      "README.md": "3eaa7ce7f1df69723b82a4dda99a7213e2e26faedfe976d72b44d189ac0325f4",
+      "dist/emnapi-plugins.cjs": "242eb9edd6419ab2a443e4aa0936eb384f30913578dbdbc63f484ea37a081bee",
+      "dist/emnapi-plugins.js": "94ba2bce144d149db3f4cf87267034a176466c37c8c03267e0eef8ff044bedde",
+      "dist/fs-proxy.cjs": "60344c89721cf1d623e726905f33923bdad51a1bf9444c9531ef39d8e77bbe6e",
+      "dist/fs.js": "7b2d1ef854bf399420693b19db849f000e4d99e9eb896433d0be93fe9dd421aa",
+      "fs-proxy.js": "95cc7ffb14b5f605461a33470f66792ece28b80dd2b4325838542249705dbc45",
+      "package.json": "d6f1c4646138b02b4127e6990b3bb9a71db177e5144937fc8094da3c93ba545c",
+      "runtime.cjs": "e629eb9752723e52273d193537939b96cd12df097e6e7cd404affec2a713e877",
+      "runtime.js": "a27764d8d05c5bd5fbaf1ed50fc41b885b73bd59a9f3df776c7bfd3ad44ee8c2"
+    }
+  },
+  "@unrs/resolver-binding-linux-x64-gnu@1.12.2": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-unrs-resolver-binding-linux-x64-gnu1.12.2.txt",
+    "sha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f",
+    "source": "https://raw.githubusercontent.com/unrs/unrs-resolver/ccb26d205e2938b16069c64a28996b48ee97ff94/LICENSE",
+    "upstreamManifestVersion": "1.12.2",
+    "license": "MIT",
+    "files": {
+      "README.md": "d3fea91d5663b2fe4f3b1c47b8ba8a7568332e5d2712fde35b65c6339f9d9b7d",
+      "package.json": "72cecf001066926be4b669b4501d629fb81034ddc94dc87bd194415af37f3101",
+      "resolver.linux-x64-gnu.node": "13bd18708eaf0f050f2d86732ed29ce8cdbc7f1ee81263c10790b5c90a46d28b"
+    }
   }
 }
