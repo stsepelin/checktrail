@@ -21,7 +21,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d5342cf07d8024e5dd7969000efed8ad1c2b844f"
+      "hash": "4178198d4bf3bacf94637e417ea7a9a5a7518bb0"
     },
     {
       "path": ".github/workflows/upstream-binutils.yml",
@@ -980,7 +980,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "e598987f3f4c507627e2ec7468fbd0359ab13af8"
+      "hash": "ac5fe489e0fd7b8d3f61d7b7be2d0709c88049f8"
     },
     {
       "path": "docs/LARAVEL-ASSEMBLY.md",
@@ -1078,7 +1078,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "aba86e2812e9b32e4fa65c6930d02e125cde11b3"
+      "hash": "f41613029dfdd0b0fe52fd02c2c2247675524a17"
     },
     {
       "path": "docs/NUXT-ASSEMBLY.md",
@@ -1830,6 +1830,13 @@
       "hash": "f433b1a53f5b830a205fd2df78e2b34974656c7b"
     },
     {
+      "path": "docs/licenses/npm-development-runtime-notice-provenance.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "6bdcc50e3fe07918bb56f368514f082f6e9cc1d7"
+    },
+    {
       "path": "docs/licenses/npm-eastasianwidth-current-clarification.txt",
       "mode": "100644",
       "type": "blob",
@@ -1879,6 +1886,13 @@
       "hash": "797d38eab53bd551b8d44643aba385687c8e5e6a"
     },
     {
+      "path": "docs/licenses/npm-napi-rs-wasm-runtime1.2.6.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "7fe7e35eff46457f65a4e30a717fada632de9e03"
+    },
+    {
       "path": "docs/licenses/npm-natural-compare1.4.0.txt",
       "mode": "100644",
       "type": "blob",
@@ -1907,7 +1921,49 @@
       "hash": "afc0cdbabfb99ed4030bf9be2b852977f1ed72a0"
     },
     {
+      "path": "docs/licenses/npm-rolldown-release-notice-provenance.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "8ac622b711e9f6f97a68a19924813885712cd044"
+    },
+    {
+      "path": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "afc0cdbabfb99ed4030bf9be2b852977f1ed72a0"
+    },
+    {
+      "path": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "6e673d76c2bf35903d2f16ae41f901cf7966c402"
+    },
+    {
+      "path": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "afc0cdbabfb99ed4030bf9be2b852977f1ed72a0"
+    },
+    {
+      "path": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "6e673d76c2bf35903d2f16ae41f901cf7966c402"
+    },
+    {
       "path": "docs/licenses/npm-unrs-resolver-binding-darwin-arm641.12.2.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "07ee4692602110df4fcfadcd21cfd9a8169a8e2c"
+    },
+    {
+      "path": "docs/licenses/npm-unrs-resolver-binding-linux-x64-gnu1.12.2.txt",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
@@ -8134,7 +8190,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "734da52d25c39ed6856efedc6cd641f4bcc45534"
+      "hash": "7338bab897a4543bb5dd5f43728cfb7f804fe71f"
     },
     {
       "path": "scripts/audit-gate-inventory.mjs",
@@ -9044,7 +9100,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "e434e988f256c2f9b36050d8b6cce1279ecfcf3b"
+      "hash": "b302f1ad41d274dcd1511d710ef7e7807f8f8cd6"
     },
     {
       "path": "scripts/lifecycle-runtime-evidence.mjs",
@@ -16282,7 +16338,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "49bdc56b7a597614d604b1298a177f84dc64d737"
+      "hash": "cbc42fcf76760ca0fd22b140f0d905e339585de7"
     },
     {
       "path": "test/development-playwright.test.ts",
