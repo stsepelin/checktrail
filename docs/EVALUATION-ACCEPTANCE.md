@@ -38,18 +38,26 @@ node scripts/verify-required-native-tests.mjs independent-evaluation-protocol
 selected runtime. Hosted Tasks jobs and the pinned native ARM64 controller are
 wired to collect those receipts. Windows additionally requires literal private
 ACL batch controls; the production batch inspector reads permissions without
-repairing them. Newly wired hosted runs remain unverified until observed.
+repairing them. Changed source/runtime combinations require their own observation.
 
 [The development observation](measurements/evaluation-protocol-development-2026-10-29.json)
 records complete source and installed synthetic cohorts on the current Mac.
-Its runtime slot is unselected. Final frozen runtime reconciliation, the private
-prospective comparison freeze, full upstream artifact/build/license closure and
-Gate A remain open. Public synthetic fixtures are inspected development material
-and cannot become held-out cases through renaming. No model or field trial ran.
+Its runtime slot is unselected.
+
+[The selected-runtime observation](measurements/evaluation-runtime-2026-11-10.json)
+reconciles all eight recorded slots at `c28083a`, with nine source and nine fresh
+offline installed cases per slot. Five changed-record controls reject skipped or
+missing cases, foreign file identity, runtime substitution and engine substitution.
+The original receipts come from job-log JSON; the consumer-specific ZIP upload
+does not include this separate cohort. These observations qualify their recorded
+source only. Public synthetic fixtures are inspected development material and
+cannot become held-out cases through renaming. No model or field trial ran.
 
 The prerequisite callback also exercises the operator-only
 [configuration-byte inspector](EVALUATION-CONFIGURATION.md) against explicit
 synthetic configuration/procedure files, and refuses a changed baseline. The
 same callback runs from source and a fresh offline installed package. This
-checks file-byte binding; the actual prospective private configuration and
-procedure freeze remains a separate readiness obligation.
+checks file-byte binding. Prospective configuration/procedure policy selection
+is privately frozen; effective authenticated host behavior and case-specific
+experiment admission remain separate. Full upstream artifact/build/license
+closure and Gate A remain open.

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 2,
+  "recordedAt": "2026-11-09T15:45:02.070Z",
+  "profile": "claude-code-health-discovery",
+  "clientVersion": "2.1.314 (Claude Code)",
+  "runtime": {
+    "node": "26.12.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "package": {
+    "name": "@stsepelin/checktrail",
+    "version": "0.1.0-alpha.5",
+    "tarballSha256": "5546ff8c9c89ebc7948a5db1486e67edcefa4a9307068c55cc8c3b2c26f18235",
+    "runtimeArtifactsSha256": "1c02f0304714240ece506c0d33bebd5852c1e3c9e702d4dbf945c9d540b22188"
+  },
+  "harnessSha256": "910035722d6bcb935a3272f86e91374a247e416119e5bbd8173632a8f72532ec",
+  "wireEvidenceSha256": "d7346ff1ba15b41311278f1350e4c8d1ad239e8665654d25af33fd43cb1eb2b9",
+  "observations": [
+    {
+      "check": "health-and-discovery",
+      "outcome": "passed",
+      "warnings": []
+    }
+  ],
+  "connections": [
+    {
+      "label": "readonly",
+      "starts": 1,
+      "observedExits": 1,
+      "processesStopped": true,
+      "exits": [
+        {
+          "code": 130,
+          "signal": null
+        }
+      ],
+      "observedProtocols": ["2026-07-28"],
+      "observedConnections": 1,
+      "connectionsWithToolLists": 1,
+      "protocolEvidence": ["discovery-and-versioned-tools-list"],
+      "successfulDiscoveryResponses": 2,
+      "failedDiscoveryProbes": 0,
+      "correlatedToolLists": 1,
+      "tools": [
+        "architecture_validation",
+        "contract_validation",
+        "finding_comparison",
+        "import_context",
+        "mutation_experiment",
+        "project_context",
+        "review_benchmark",
+        "review_calibration_apply",
+        "review_calibration_fit",
+        "review_context",
+        "review_findings",
+        "review_guidance",
+        "review_hypotheses",
+        "review_multi_score",
+        "review_paired_score",
+        "review_probe",
+        "review_provenance",
+        "review_receipt",
+        "review_refute",
+        "review_run",
+        "review_score",
+        "review_verify",
+        "review_workflow",
+        "runtime_comparison",
+        "validation_plan",
+        "validation_report",
+        "validation_run"
+      ]
+    }
+  ]
+}

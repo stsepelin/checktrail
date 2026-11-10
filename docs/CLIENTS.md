@@ -5,20 +5,25 @@ profiles below against the exact published artifact. The original standalone
 snapshots predate the Checktrail rename and retain their original identities.
 A future release needs its own checks; see [RENAMING.md](RENAMING.md).
 
-The local package was installed offline into a fresh temporary consumer and tested
-with Claude Code 2.1.263 and Codex CLI 0.154.0 on macOS arm64, Node 26.8.1. These
-are specific client surfaces and versions; they do not establish compatibility
-with every editor or with model-driven tool selection.
+The November 9 source candidate was installed offline into fresh temporary
+consumers on macOS arm64 with Node 26.12.0. The
+[Claude Code 2.1.314 observation](measurements/client-claude-2026-11-09-darwin-arm64-node26.json)
+and [Codex CLI 0.166.0 observation](measurements/client-codex-2026-11-09-darwin-arm64-node26.json)
+bind the runtime, harness and wire-observer bytes independently. These are specific
+client surfaces and versions; they do not establish compatibility with every editor
+or with model-driven tool selection. They are separate from published release
+artifact acceptance.
 
 | Client surface                  | Observed protocol | Verified behavior                                                                                                                                                                                               |
 | ------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Claude Code `mcp list`          | `2025-11-25`      | Successful connection and discovery of every advertised tool                                                                                                                                                    |
+| Claude Code `mcp list`          | `2026-07-28`      | Successful connection and discovery of every advertised tool                                                                                                                                                    |
 | Codex app-server direct MCP API | `2025-06-18`      | Tool discovery, inspection, planning, HTTPS guidance results, default execution denial, rejection of tool-supplied trust, trusted native passing/failing/skipped-only runs, and exact retained report retrieval |
 
-Both clients use the SDK's existing legacy negotiation path. The separate SDK
-integration suite exercises `2026-07-28`; these application observations do not
-establish modern protocol or standard Tasks support. See
-[MCP compatibility](MCP-COMPATIBILITY.md).
+Claude Code used modern discovery and versioned tool listing. Codex used legacy
+initialization. Both clients' observed MCP processes stopped. Earlier observations
+with Claude Code 2.1.263 and Codex CLI 0.154.0 used legacy negotiation; they remain
+in the historical release record. These application checks do not establish
+standard Tasks support. See [MCP compatibility](MCP-COMPATIBILITY.md).
 
 The initial Claude Code check exposed an ignored `starts_with` format in the
 guidance-reference URL output schema. That observation is retained in the
@@ -63,6 +68,19 @@ its temporary installation afterward. A transparent stdio observer records only
 protocol versions, methods, advertised tool names and process lifecycle metadata;
 it forwards protocol bytes unchanged. Tool calls go through the actual client.
 No custom MCP compatibility implementation is introduced.
+
+The current recorder correlates exact JSON-RPC request IDs, including numeric zero,
+for legacy `initialize` and modern per-request version metadata. A modern
+`server/discover` response supplies supported versions; a successful, complete
+`tools/list` response confirms the client used an advertised version. Direct
+versioned calls and explicit method-not-found fallback to legacy initialization
+remain distinct. See the [discovery specification](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/docs/specification/2026-07-28/server/discover.mdx).
+Malformed, paginated, incomplete, unanswered or failed tool-list responses cannot
+satisfy the measurement. Request IDs are correlated within each physical observed
+connection, so simultaneous processes may reuse numeric IDs. The observer projects
+transport metadata and tool names, and forwards
+the original protocol bytes unchanged. Its source digest accompanies the harness
+digest; it does not implement a protocol fallback or choose a client version.
 
 Claude Code uses a fresh `CLAUDE_CONFIG_DIR`, bare mode, user settings from that
 directory, and disabled nonessential traffic/marketplace auto-installation.

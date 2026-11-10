@@ -86,9 +86,12 @@ Summary output is the default. Add `--detailed` to the server command only when
 the client may receive file paths, commands and raw diagnostics. An MCP client
 may forward the returned information to its model provider.
 
-Validation uses asynchronous calls and supports cancellation. Standard MCP Tasks
-is not advertised; the durable worker is a separate library API. See
-[client coverage](CLIENTS.md) and [MCP compatibility](MCP-COMPATIBILITY.md).
+Validation uses asynchronous calls and supports cancellation. An operator-selected
+`--task-store` enables standard MCP Tasks for `validation_run`, subject to client
+capability negotiation. Other clients retain completed-call behavior. The native
+client checks cover connection/discovery and direct calls; Tasks has separate SDK
+acceptance. See [client coverage](CLIENTS.md) and
+[MCP compatibility](MCP-COMPATIBILITY.md).
 
 ## Source checkout or unpublished candidate
 

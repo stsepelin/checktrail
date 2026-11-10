@@ -730,7 +730,7 @@ export function createServer(gateway) {
     evaluation_native:
       "Execute the operator-selected native test suite in a fresh offline container. Passing tests do not prove behavior outside their coverage.",
     evaluation_probe:
-      "Run a JavaScript or Python reproduction against /source in a fresh offline container. Source/runtime are read-only; ephemeral scratch is /tmp. No host files, credentials, sibling packets, or network. Cite the returned evidenceId when claiming execution.",
+      "Run a JavaScript, Python, Go, or PHP reproduction against /source in a fresh offline container. Source/runtime are read-only; ephemeral scratch is /tmp. No host files, credentials, sibling packets, or network. Cite the returned evidenceId when claiming execution.",
     checktrail_plan:
       "Request a plan from the pinned Checktrail MCP server over real stdio transport.",
     checktrail_validate:
