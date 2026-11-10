@@ -452,11 +452,10 @@ function inventoryEntries(rows, manifest, lock, graph) {
             file === "package.json"
               ? "root-manifest-sha256"
               : "protected-lock-sha256",
-          hash: dataHash(
+          hash:
             file === "package.json"
-              ? maskDevelopmentVersions(manifest)
-              : protectedLockProjection(manifest, lock, graph),
-          ),
+              ? digest(JSON.stringify(maskDevelopmentVersions(manifest)))
+              : dataHash(protectedLockProjection(manifest, lock, graph)),
         };
       }
       return {
@@ -747,9 +746,9 @@ export function classifyDevelopmentBump(options) {
     );
   const without = (value, field) =>
     Object.fromEntries(Object.entries(value).filter(([key]) => key !== field));
-  assert.deepEqual(
-    without(m0, "devDependencies"),
-    without(m1, "devDependencies"),
+  assert.equal(
+    JSON.stringify(without(m0, "devDependencies")),
+    JSON.stringify(without(m1, "devDependencies")),
     "Shared manifest input changed",
   );
   assert.deepEqual(

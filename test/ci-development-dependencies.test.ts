@@ -104,6 +104,8 @@ type Manifest = {
   peerDependencies?: Record<string, string>;
   engines?: Record<string, string>;
   overrides?: Record<string, string>;
+  exports?: Record<string, Record<string, string>>;
+  imports?: Record<string, Record<string, string>>;
 };
 type Lock = {
   name: string;
@@ -1371,4 +1373,72 @@ test("checkout inventory reads bypass configured visibility caches without chang
   );
   assert.equal(git("config", "--get", "core.untrackedCache"), "true");
   assert.equal(git("config", "--get", "core.fsmonitor"), "true");
+});
+
+test("whole manifest projection retains conditional exports and imports key order", async (t) => {
+  for (const field of ["exports", "imports"] as const)
+    await t.test(field, async (t) => {
+      const key = field === "exports" ? "." : "#original";
+      const auditedBefore: Change = (m, _l, f) => {
+        m[field] = { [key]: { default: "./first.js", import: "./second.js" } };
+        f["first.js"] = f["second.js"] =
+          'throw new Error("Fixture modules must never execute");';
+      };
+      const reorder: Change = (m) => {
+        m[field] = { [key]: { import: "./second.js", default: "./first.js" } };
+      };
+      const { options, directory, git } = await gitGraph(t, {
+        auditedBefore,
+        after: (m, l, f) => {
+          bumpVite(m, l);
+          reorder(m, l, f);
+        },
+      });
+      const rootManifest = path.join(directory, "package.json"),
+        headManifest = await readFile(rootManifest, "utf8");
+      const resolve = () =>
+        execFileSync(
+          process.execPath,
+          [
+            "--input-type=module",
+            "--eval",
+            `console.log(import.meta.resolve(${JSON.stringify(field === "exports" ? "original-ci-fixture" : "#original")}))`,
+          ],
+          { cwd: directory, encoding: "utf8" },
+        ).trim();
+      const canonicalDirectory = await realpath(directory);
+      let beforeResolution: string | undefined;
+      try {
+        await writeFile(
+          rootManifest,
+          git("show", options.base + ":package.json"),
+        );
+        beforeResolution = resolve();
+      } finally {
+        await writeFile(rootManifest, headManifest);
+      }
+      assert.equal(
+        beforeResolution,
+        pathToFileURL(path.join(canonicalDirectory, "first.js")).href,
+      );
+      assert.equal(
+        resolve(),
+        pathToFileURL(path.join(canonicalDirectory, "second.js")).href,
+      );
+      assert.equal(git("status", "--porcelain"), "");
+      assert.throws(
+        () => classifyDevelopmentBump(options),
+        /Shared manifest input changed/,
+      );
+      const stable = await gitGraph(t, { auditedBefore });
+      assert.equal(
+        classifyDevelopmentBump(stable.options).evidence.scope,
+        "audited-development-dependency-consumers-v1",
+      );
+      const preexisting = await gitGraph(t, { auditedBefore, before: reorder });
+      assert.throws(
+        () => classifyDevelopmentBump(preexisting.options),
+        /audited inventory/,
+      );
+    });
 });

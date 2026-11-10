@@ -221,7 +221,9 @@ verification. Profile mismatch is normal source evolution and does not itself
 fail CI.
 
 The root manifest fingerprint preserves scripts, configuration and every field
-except the graph-approved Vite/Rolldown development version values. The lock
+except the graph-approved Vite/Rolldown development version values. Manifest
+object key order is preserved, including conditional `exports` and `imports`
+precedence. The lock
 fingerprint preserves metadata and every entry outside the exclusively reviewed
 development closures; the graph checks still validate every changed lock entry,
 range, alias and required resolution. The actual checked-out Git tree must match

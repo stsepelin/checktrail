@@ -21,7 +21,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "2a720c8d116f8e33390b57b6772652d9d3291fdb"
+      "hash": "d5342cf07d8024e5dd7969000efed8ad1c2b844f"
     },
     {
       "path": ".github/workflows/upstream-binutils.yml",
@@ -105,7 +105,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "7830e2fe9a08eea0eb18a0178189923645e1f72f"
+      "hash": "9ecce57051ce7a405f97768cbf8ddc054b4c37cf"
     },
     {
       "path": "LICENSE",
@@ -119,7 +119,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "495fc26f60e32e9bba1cb17376cf4da46a00b4af"
+      "hash": "a6d788a88cba9588dd2d5cd485940c371536ced0"
     },
     {
       "path": "SECURITY.md",
@@ -1043,7 +1043,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "75cda35bde99ee9a642d0dd3643365b765eceb92"
+      "hash": "036a9a8446bb94d97d8ddc772c60409189c3b78f"
     },
     {
       "path": "docs/NATIVE-JSON-PROBES.md",
@@ -1169,7 +1169,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "84589a6ed6dd3bf68ecb763aa3b72da64960dcd4"
+      "hash": "e3db0a84922ef344b2ef71818372ba20702f91fd"
     },
     {
       "path": "docs/POLICY-PACKS.md",
@@ -6650,14 +6650,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "protected-lock-sha256",
-      "hash": "0d1f80af5d92b760e5a533a76cbcb232ff2a96b28f5d2f79667fd10d859c7a38"
+      "hash": "446459962d552db191b7afe3af6457170a3df7add17aa40ea9fe7ef9420782eb"
     },
     {
       "path": "package.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "root-manifest-sha256",
-      "hash": "83be9c2ac57dbc52b22146432112fe38850b4b3a81741061748c0ff9070e5e40"
+      "hash": "837859febee6652191a83b7c6691bf9ac434771cb9c7d9648c4ff26ba6898d77"
     },
     {
       "path": "packs/actionlint.json",
@@ -9282,7 +9282,21 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "ff3473a10ed4b7aff00c7bd5354d409424b2e581"
+      "hash": "449a0dd5d1a038f30ea95f6f45a7244dd38dcbe1"
+    },
+    {
+      "path": "scripts/playwright-tools/package-lock.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "d81397a48046a7f89ab9d452415b9efdfbba9dc2"
+    },
+    {
+      "path": "scripts/playwright-tools/package.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "4b779f8c9f3f37f207c9b37eec07671880aba05e"
     },
     {
       "path": "scripts/preflight-evaluation-native.mjs",
@@ -9472,6 +9486,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "5638d19fe6238095e09196810273a0c489c2f0d2"
+    },
+    {
+      "path": "scripts/prepare-playwright-tools.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "aa218a190997596069db31269bf57cb1e781839a"
     },
     {
       "path": "scripts/prepare-public-adoption.mjs",
@@ -10395,7 +10416,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "b8c537f3513f41f3d61dfb44c3453f827e368901"
+      "hash": "55fc01d616c16525eb2050e358b7cbd0395890f4"
     },
     {
       "path": "scripts/spotbugs-tools.Dockerfile",
@@ -15827,14 +15848,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "416b7ac652a61f3b9129d43ea4d2cd9549c01f27"
+      "hash": "3a7c057528e49b63e3bbb30be0051d5849199fbe"
     },
     {
       "path": "test/ci-impact.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "0f8173c796cb2912bd18ee8c31d457eb7474d0d5"
+      "hash": "35e8bbed6df1ec44104a4e7cebee77a7cbd406b2"
     },
     {
       "path": "test/ci-native-profiles.test.ts",
@@ -16262,6 +16283,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "49bdc56b7a597614d604b1298a177f84dc64d737"
+    },
+    {
+      "path": "test/development-playwright.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "3ceaf77e499a3372541813359d9c5e8bfad4005c"
     },
     {
       "path": "test/django-evidence.test.ts",
@@ -18273,11 +18301,18 @@
       "hash": "06f2a4b14b0926a556dc84ce8bd090929937f7f5"
     },
     {
+      "path": "test/playwright-tool-preparation.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "246b9927b93a901e0d75980cb811e0150286bd7c"
+    },
+    {
       "path": "test/playwright.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "7a3ed63cbe277d848dc80845a86eaca6f9113794"
+      "hash": "1a1bb688674818a0b47ff2d8e0508c1e93a80fc8"
     },
     {
       "path": "test/policy-pack.test.ts",
