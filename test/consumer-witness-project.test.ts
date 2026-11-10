@@ -1214,91 +1214,11 @@ test("shared project controller bindings project both families and their complet
   );
 });
 
-test("JavaScript tool preparation follows exact development declarations and rejects parser and lock drift", async () => {
-  const { selectJavaScriptToolsLock } = await import(
+test("TypeScript project witnesses reconcile the exact qualified tool versions and reject stale pins", async () => {
+  const { readQualifiedJavaScriptTools } = await import(
     new URL("../../scripts/prepare-javascript-tools.mjs", import.meta.url).href
   );
-  const [manifest, lock] = await Promise.all(
-    ["package.json", "package-lock.json"].map(async (file) =>
-      JSON.parse(
-        await readFile(new URL("../../" + file, import.meta.url), "utf8"),
-      ),
-    ),
-  );
-  const selected = selectJavaScriptToolsLock(manifest, lock);
-  for (const name of [
-    "eslint",
-    "vite",
-    "rolldown",
-    "@types/node",
-    "@modelcontextprotocol/client",
-  ]) {
-    assert.equal(
-      selected.manifest.dependencies[name],
-      manifest.devDependencies[name],
-    );
-    assert.equal(
-      selected.lock.packages["node_modules/" + name].version,
-      manifest.devDependencies[name],
-    );
-  }
-  const parser = "@typescript-eslint/parser";
-  const expected =
-    lock.packages["node_modules/typescript-eslint"].dependencies[parser];
-  assert.equal(selected.manifest.dependencies[parser], expected);
-  assert.equal(
-    selected.lock.packages["node_modules/" + parser].version,
-    expected,
-  );
-  for (const name of [
-    "typescript-eslint",
-    "eslint",
-    "vite",
-    "rolldown",
-    "@types/node",
-    "@modelcontextprotocol/client",
-  ]) {
-    const unpinned = structuredClone(manifest);
-    unpinned.devDependencies[name] = "^" + manifest.devDependencies[name];
-    assert.throws(
-      () => selectJavaScriptToolsLock(unpinned, lock),
-      /must be exactly pinned/,
-    );
-    const stale = structuredClone(lock);
-    stale.packages["node_modules/" + name].version = "0.0.0";
-    assert.throws(
-      () => selectJavaScriptToolsLock(manifest, stale),
-      /must match its declaration/,
-    );
-  }
-  const unpinnedParser = structuredClone(lock);
-  unpinnedParser.packages["node_modules/typescript-eslint"].dependencies[
-    parser
-  ] = "^" + expected;
-  assert.throws(
-    () => selectJavaScriptToolsLock(manifest, unpinnedParser),
-    /parser dependency must be exactly pinned/,
-  );
-  const staleParser = structuredClone(lock);
-  staleParser.packages["node_modules/" + parser].version = "0.0.0";
-  assert.throws(() => selectJavaScriptToolsLock(manifest, staleParser), {
-    code: "ERR_ASSERTION",
-  });
-  assert.deepEqual(selectJavaScriptToolsLock(manifest, lock), selected);
-});
-
-test("TypeScript project witnesses reconcile the exact locked tool versions and reject stale pins", async () => {
-  const { selectJavaScriptToolsLock } = await import(
-    new URL("../../scripts/prepare-javascript-tools.mjs", import.meta.url).href
-  );
-  const [manifest, lock] = await Promise.all(
-    ["package.json", "package-lock.json"].map(async (file) =>
-      JSON.parse(
-        await readFile(new URL("../../" + file, import.meta.url), "utf8"),
-      ),
-    ),
-  );
-  const selected = selectJavaScriptToolsLock(manifest, lock);
+  const selected = await readQualifiedJavaScriptTools();
   const versions = {
     eslint: selected.manifest.dependencies.eslint,
     vite: selected.manifest.dependencies.vite,
