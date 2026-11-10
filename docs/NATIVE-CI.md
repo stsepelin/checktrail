@@ -227,7 +227,9 @@ development closures; the graph checks still validate every changed lock entry,
 range, alias and required resolution. The actual checked-out Git tree must match
 the reviewed inventory and event-head metadata, and all tracked physical files
 must match that checkout. Untracked inputs are also inspected without repository,
-info, global or standard ignore rules. Only an exact real top-level
+info, global or standard ignore rules. Planner Git reads disable untracked-cache
+and filesystem-monitor visibility through command-local settings; repository
+configuration is not changed. Only an exact real top-level
 `node_modules/` directory is admitted for the npm installation; adjacent names,
 files and symlinked dependency roots are refused. Every other added path,
 including ignored `dist/` or `.checktrail/` output, selects full verification.

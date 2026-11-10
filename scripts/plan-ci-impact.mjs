@@ -81,11 +81,15 @@ export const qualificationInputs = [
 ];
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 function git(repository, args, options = {}) {
-  return execFileSync("git", args, {
-    cwd: repository,
-    maxBuffer: 64 * 1048576,
-    ...options,
-  });
+  return execFileSync(
+    "git",
+    ["-c", "core.untrackedCache=false", "-c", "core.fsmonitor=false", ...args],
+    {
+      cwd: repository,
+      maxBuffer: 64 * 1048576,
+      ...options,
+    },
+  );
 }
 function jsonObject(text, file) {
   const ast = ts.parseJsonText(file, text);

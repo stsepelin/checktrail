@@ -1347,3 +1347,28 @@ test("checkout inventory permits only the exact real dependency root and retains
     );
   });
 });
+
+test("checkout inventory reads bypass configured visibility caches without changing repository settings", async (t) => {
+  const { options, directory, git } = await gitGraph(t);
+  git("config", "core.untrackedCache", "true");
+  git("config", "core.fsmonitor", "true");
+  assert.equal(
+    classifyDevelopmentBump(options).evidence.scope,
+    "audited-development-dependency-consumers-v1",
+  );
+  const file = "test/hidden-with-visibility-cache.test.ts";
+  await writeFile(
+    path.join(directory, file),
+    'import {build} from "vite";export const unknownConsumer=build;',
+  );
+  await appendFile(
+    path.join(directory, ".git/info/exclude"),
+    "\n/" + file + "\n",
+  );
+  assert.throws(
+    () => classifyDevelopmentBump(options),
+    /Unknown untracked input/,
+  );
+  assert.equal(git("config", "--get", "core.untrackedCache"), "true");
+  assert.equal(git("config", "--get", "core.fsmonitor"), "true");
+});
