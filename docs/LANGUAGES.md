@@ -600,3 +600,8 @@ comparators. Prepared read-only Go/Composer vendor trees are digest-bound. A
 fresh offline installed harness checks synthetic protocol controls against the
 shipped engine; it does not certify native toolchains, independent host sessions,
 review effectiveness or Gate A completion.
+
+The operator-only [paired-settings check](EVALUATION-CONFIGURATION.md#matched-declared-settings)
+compares structured baseline/verifier declarations against the pinned protocol.
+It refuses unequal host/context/tool/budget settings and baseline treatment
+access. It does not observe host sessions, run inference or close Gate A.

@@ -101,7 +101,10 @@ The undeclared JavaScript adapter retains its original explicit runner selection
 ## Native library and downstream declarations
 
 Select `javascript.vite-library`. The bounded profile requires Vite 8.3.0,
-Rolldown 1.2.9 and TypeScript 6.0.3. Selected builder/compiler APIs and measured
+Rolldown 1.2.9 and TypeScript 6.0.3. The acceptance Vite/Rolldown pair is
+explicitly pinned in the root development dependencies. Vitest is a separate
+test-runner role; updating it must not implicitly replace this library-build
+profile through peer dependency resolution. Selected builder/compiler APIs and measured
 ARM64 native bindings are checked before import and after execution. Current
 binding selection covers macOS ARM64 and Linux ARM64 musl; other native platforms
 remain unavailable. This does not close the final Gate A runtime matrix.

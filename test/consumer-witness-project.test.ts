@@ -1238,7 +1238,12 @@ test("JavaScript tool preparation follows exact development declarations and rej
     selected.lock.packages["node_modules/eslint-native-profile"],
     undefined,
   );
-  for (const name of ["@types/node", "@modelcontextprotocol/client"]) {
+  for (const name of [
+    "vite",
+    "rolldown",
+    "@types/node",
+    "@modelcontextprotocol/client",
+  ]) {
     assert.equal(
       selected.manifest.dependencies[name],
       manifest.devDependencies[name],
@@ -1259,6 +1264,8 @@ test("JavaScript tool preparation follows exact development declarations and rej
   for (const name of [
     "typescript-eslint",
     "eslint",
+    "vite",
+    "rolldown",
     "@types/node",
     "@modelcontextprotocol/client",
   ]) {

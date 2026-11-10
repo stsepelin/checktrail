@@ -1,3 +1,4 @@
+import { lifecyclePidPublication, assertLifecyclePids } from "./helpers.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { spawnSync } from "node:child_process";
@@ -460,7 +461,9 @@ test(
         checks: ["php.extensions"],
       });
       const worker =
-        "posix_setsid();file_put_contents('child.ready',(string)getmypid());while(true){if(is_file('worker.release'))fwrite(STDOUT,str_repeat('original',4096));usleep(10000);}";
+        "posix_setsid();" +
+        lifecyclePidPublication("php", "child") +
+        "while(true){if(is_file('worker.release'))fwrite(STDOUT,str_repeat('original',4096));usleep(10000);}";
       const waiting =
         "<?php $child=proc_open([PHP_BINARY,'-r'," +
         JSON.stringify(worker) +
@@ -491,7 +494,7 @@ test(
         }
         assert.ok(ids, "Native bootstrap did not reach both waiting processes");
         assert.equal(ids.token, mode);
-        assert.ok(ids.parent > 1 && ids.child > 1 && ids.parent !== ids.child);
+        assertLifecyclePids(ids);
         process.kill(ids.parent, 0);
         process.kill(ids.child, 0);
         if (mode === "cancel") abort.abort();

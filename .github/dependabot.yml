@@ -5,6 +5,12 @@ updates:
     schedule:
       interval: weekly
     groups:
+      native-vitest-mutation-qualification:
+        patterns:
+          - vitest-native-mutation
+      native-jest-mutation-qualification:
+        patterns:
+          - jest-native-mutation
       native-eslint-profile-qualification:
         patterns:
           - eslint-native-profile

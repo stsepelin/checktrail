@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -147,4 +148,32 @@ export async function cleanupFixtureProcessGroup(
     if (!remaining.some((row) => same(row, rows))) return;
     await io.wait(Math.min(25, deadline - io.now()));
   }
+}
+
+export function lifecyclePidPublication(
+  language: "javascript" | "python" | "php",
+  name: "parent" | "child",
+): string {
+  if (language === "javascript")
+    return `fs.writeFileSync('${name}.pending',String(process.pid));fs.renameSync('${name}.pending','${name}.ready');`;
+  if (language === "python")
+    return `pathlib.Path('${name}.pending').write_text(str(os.getpid()));os.replace('${name}.pending','${name}.ready')`;
+  return `file_put_contents('${name}.pending',(string)getmypid());rename('${name}.pending','${name}.ready');`;
+}
+export function assertLifecyclePids(ids: {
+  parent: unknown;
+  child: unknown;
+}): asserts ids is { parent: number; child: number } {
+  for (const role of ["parent", "child"] as const) {
+    const pid = ids[role];
+    assert.ok(
+      typeof pid === "number" && Number.isSafeInteger(pid) && pid > 1,
+      `Native lifecycle ${role} PID must identify an individual process`,
+    );
+  }
+  assert.notEqual(
+    ids.parent,
+    ids.child,
+    "Native lifecycle parent and child PIDs must be distinct",
+  );
 }

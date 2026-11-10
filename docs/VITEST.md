@@ -38,8 +38,8 @@ That archive remains unchanged and uses the Vitest 5 invocation; its Vitest 4
 failure is retained as evaluation evidence. Use a release containing this fix
 or a built checkout for the Vitest 4 behavior described here.
 
-The default integration suite exercises Vitest 5.0.5 with Vite 8.3.0. The same
-original synthetic tests have also passed against Vitest 4.1.9 using an
+By default, the integration suite uses the repository’s exactly pinned Vitest
+and Vite development dependencies. The same original synthetic tests have also passed against Vitest 4.1.9 using an
 operator-prepared Linux installation. To repeat that run, set
 `CHECKTRAIL_TEST_VITEST_NODE_MODULES` to an existing Vitest 4.1.9 `node_modules`
 directory with dependencies for the current platform, build Checktrail, then run

@@ -2,7 +2,8 @@ import { realpath } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { copyInstalledPackages } from "./tool-fixture.js";
 import { copyESLintParticipation } from "./eslint-helpers.js";
-import { fixture, nodeManifest } from "./helpers.js";
+import { fixture, nodeManifest, lifecyclePidPublication } from "./helpers.js";
+export { assertLifecyclePids as assertJavascriptLifecyclePids } from "./helpers.js";
 import type { TestContext } from "node:test";
 export const cjs = `const fs=require('node:fs');require('node:module').registerHooks({load(url,context,next){if(url.endsWith('.cts'))return {format:'commonjs',shortCircuit:true,source:fs.readFileSync(new URL(url),'utf8').replace(/: number/g,'').replaceAll('__answer__','42')};return next(url,context)}});`;
 export const asyncEsm = `import {register} from 'node:module';register('data:text/javascript,'+encodeURIComponent("import fs from 'node:fs/promises';export async function load(url,context,next){if(url.endsWith('.mts'))return {format:'module',shortCircuit:true,source:(await fs.readFile(new URL(url),'utf8')).replace(/: number/g,'').replaceAll('__answer__','42')};return next(url,context)}"),import.meta.url);`;
@@ -89,4 +90,8 @@ export async function project(
     ]);
   }
   return realpath(root);
+}
+
+export function javascriptLifecycleWorker(mode: string): string {
+  return `const fs=require('node:fs');${lifecyclePidPublication("javascript", "child")}setInterval(()=>{if(fs.existsSync('worker.release')&&'${mode}'==='output')process.stdout.write('original'.repeat(4096));},10);`;
 }
