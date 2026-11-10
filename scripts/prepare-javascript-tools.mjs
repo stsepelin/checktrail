@@ -28,13 +28,16 @@ function selectLockedTools(manifest, source) {
     candidates.push("node_modules/" + name);
     return candidates.find((key) => Object.hasOwn(source.packages, key));
   }
+  const requiredPaths = new Map();
   function visit(name, from = "", optional = false) {
     const key = resolve(name, from);
     if (!key) {
       assert.ok(optional, "Missing locked required tool dependency " + name);
       return;
     }
-    if (Object.hasOwn(packages, key)) return;
+    if (requiredPaths.get(key) === true || (requiredPaths.has(key) && optional))
+      return;
+    requiredPaths.set(key, !optional);
     const original = source.packages[key];
     assert.ok(!original.link && !original.inBundle);
     assert.match(original.resolved, /^https:\/\/registry\.npmjs\.org\//);
@@ -47,7 +50,7 @@ function selectLockedTools(manifest, source) {
       visit(
         dependency,
         key,
-        Object.hasOwn(entry.optionalDependencies ?? {}, dependency),
+        optional || Object.hasOwn(entry.optionalDependencies ?? {}, dependency),
       );
     for (const dependency of Object.keys(entry.optionalDependencies ?? {}))
       visit(dependency, key, true);
@@ -55,12 +58,18 @@ function selectLockedTools(manifest, source) {
       visit(
         dependency,
         key,
-        entry.peerDependenciesMeta?.[dependency]?.optional === true,
+        optional || entry.peerDependenciesMeta?.[dependency]?.optional === true,
       );
   }
   for (const [name, version] of Object.entries(dependencies)) {
     visit(name);
     assert.equal(packages["node_modules/" + name].version, version);
+  }
+  // Root-graph flags can be stale after selecting different roots. A required
+  // path wins over every optional path, including peers and their descendants.
+  for (const [key, required] of requiredPaths) {
+    if (required) delete packages[key].optional;
+    else packages[key].optional = true;
   }
   return {
     manifest,

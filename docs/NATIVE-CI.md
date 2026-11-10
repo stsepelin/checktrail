@@ -553,6 +553,8 @@ install them explicitly with `npm ci --prefix .checktrail/javascript-tools
 --ignore-scripts --no-audit --no-fund` before running the full suite locally.
 Mutation preparation uses the same graph in `.checktrail/mutation-javascript-tools`.
 Neither preparer resolves version ranges or falls back to development packages.
+Optionality follows paths from the selected roots; any required path makes a
+shared dependency and its required descendants mandatory.
 CI includes this lock in its npm cache identity and installs it separately from
 the root development lock. Source fixtures and fresh installed-package probes
 read the qualified graph; the app build, lint, ordinary integration tests and live
