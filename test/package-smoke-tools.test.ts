@@ -555,12 +555,18 @@ test("smoke namespaces refuse an existing empty destination and keep explicit pr
     "jest",
   ])
     assert.equal(smokeProjectPath(name), "smoke-tools/qualified-js/" + name);
-  for (const name of ["vue-tsc", "playwright"])
-    assert.equal(smokeProjectPath(name), "smoke-tools/root-frameworks/" + name);
+  assert.equal(
+    smokeProjectPath("vue-tsc"),
+    "smoke-tools/root-frameworks/vue-tsc",
+  );
+  assert.equal(
+    smokeProjectPath("playwright"),
+    "smoke-tools/qualified-playwright/playwright",
+  );
   assert.throws(() => smokeProjectPath("unknown"), /Unknown smoke project/);
 });
 
-test("smoke publishes all role graphs together and removes staged qualified tools when the framework graph drifts", async (t) => {
+test("smoke publishes all three role graphs together and removes staged tools when either later role drifts", async (t) => {
   const entry = (name: string) => ({
     name,
     version: "1.0.0",
@@ -599,7 +605,42 @@ test("smoke publishes all role graphs together and removes staged qualified tool
       ),
     },
   };
+  const playwrightProfile = {
+    name: "checktrail-playwright-acceptance-tools",
+    version: "0.0.0",
+    private: true,
+    dependencies: { "@playwright/test": "1.0.0" },
+  };
+  const playwrightDependencies: Record<string, Record<string, string>> = {
+    "@playwright/test": { playwright: "1.0.0" },
+    playwright: { "playwright-core": "1.0.0" },
+    "playwright-core": {},
+  };
+  const playwrightLock = {
+    name: playwrightProfile.name,
+    version: playwrightProfile.version,
+    lockfileVersion: 3,
+    packages: {
+      "": playwrightProfile,
+      ...Object.fromEntries(
+        Object.entries(playwrightDependencies).map(([name, dependencies]) => [
+          "node_modules/" + name,
+          { ...entry(name), dependencies },
+        ]),
+      ),
+    },
+  };
   const files: Record<string, string> = {
+    "source/scripts/playwright-tools/package.json":
+      JSON.stringify(playwrightProfile),
+    "source/scripts/playwright-tools/package-lock.json":
+      JSON.stringify(playwrightLock),
+    "source/.checktrail/playwright-tools/package.json":
+      JSON.stringify(playwrightProfile),
+    "source/node_modules/@playwright/test/package.json": metadata(
+      "@playwright/test",
+      "99.0.0",
+    ),
     "source/scripts/javascript-tools/package.json": JSON.stringify(profile),
     "source/scripts/javascript-tools/package-lock.json":
       JSON.stringify(qualifiedLock),
@@ -624,6 +665,14 @@ test("smoke publishes all role graphs together and removes staged qualified tool
       name,
       name === "vue-tsc" ? "2.0.0" : "1.0.0",
     );
+  for (const [name, dependencies] of Object.entries(playwrightDependencies))
+    files[
+      "source/.checktrail/playwright-tools/node_modules/" +
+        name +
+        "/package.json"
+    ] = metadata(name, name === "playwright-core" ? "2.0.0" : "1.0.0", {
+      dependencies,
+    });
   const root = await localFixture(t, files),
     consumer = path.join(root, "consumer"),
     source = path.join(root, "source");
@@ -640,6 +689,23 @@ test("smoke publishes all role graphs together and removes staged qualified tool
     path.join(source, "node_modules/vue-tsc/package.json"),
     metadata("vue-tsc", "1.0.0"),
   );
+  // The first two graphs are valid now; failure in the third must also leave no prefix.
+  await assert.rejects(
+    preparePackageSmokeTools(consumer, source),
+    /version differs from lock/,
+  );
+  assert.deepEqual((await readdir(consumer)).sort(), [
+    "node_modules",
+    "package-lock.json",
+    "package.json",
+  ]);
+  await writeFile(
+    path.join(
+      source,
+      ".checktrail/playwright-tools/node_modules/playwright-core/package.json",
+    ),
+    metadata("playwright-core", "1.0.0", { dependencies: {} }),
+  );
   await preparePackageSmokeTools(consumer, source);
   for (const role of ["qualified-js", "root-frameworks"])
     await access(
@@ -650,6 +716,18 @@ test("smoke publishes all role graphs together and removes staged qualified tool
         "node_modules/typescript/package.json",
       ),
     );
+  assert.equal(
+    JSON.parse(
+      await readFile(
+        path.join(
+          consumer,
+          "smoke-tools/qualified-playwright/node_modules/@playwright/test/package.json",
+        ),
+        "utf8",
+      ),
+    ).version,
+    "1.0.0",
+  );
   assert.equal(
     JSON.parse(
       await readFile(

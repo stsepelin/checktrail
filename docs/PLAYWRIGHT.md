@@ -64,10 +64,19 @@ and Chromium revision 1248. The development native controls also pass with
 1.64.1 and that prepared Chromium revision, including actual DOM assertion
 failures and absent-browser detection. Fresh hosted acceptance remains required.
 
-Prepare development browsers explicitly after installing the locked npm tools:
+Native qualification fixtures and installed package smoke checks use the separate
+`1.64.1` graph committed in `scripts/playwright-tools`. Its versions and integrity
+values are preserved independently of the root development dependency. The root
+package remains exercised by Node-only CLI tests of actual reporter callbacks,
+passing and failing assertions, a valid near miss and malformed configuration.
+A root dependency update does not qualify a new native integration version.
+
+Prepare native fixtures and their browsers explicitly after installing the root npm tools:
 
 ```sh
-PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell
+node scripts/prepare-playwright-tools.mjs
+npm ci --prefix .checktrail/playwright-tools --ignore-scripts --no-audit --no-fund
+PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node .checktrail/playwright-tools/node_modules/playwright/cli.js install chromium --only-shell
 npm run build
 node --test dist/test/playwright.test.js
 ```

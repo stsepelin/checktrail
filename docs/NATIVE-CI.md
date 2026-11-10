@@ -653,9 +653,10 @@ and establishes no measured quality or observed independent-session claim.
 ## Fresh-runner package preparation
 
 Package smoke uses the independently locked JavaScript fixture graph in a
-separate project/module prefix. Its Vue and Playwright fixtures retain their
-current-root role in another prefix. Neither graph is copied into the fresh
-consumer's production installation. Both role namespaces publish together only
+separate project/module prefix. Playwright uses its independently locked fixture
+graph in another prefix, while Vue retains its current-root role in a third.
+These graphs are kept outside the fresh consumer's production installation. All
+role namespaces publish together only
 after validation; a refusal leaves no partial prefix. The host job also runs
 `scripts/verify-root-javascript-reporters.mjs` separately: it checks fresh-installed
 current-root Vitest/Jest reporters against exact multi-file passing, failing,

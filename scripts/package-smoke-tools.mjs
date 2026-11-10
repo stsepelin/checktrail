@@ -13,6 +13,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL, URL } from "node:url";
 import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 import { readQualifiedJavaScriptTools } from "./prepare-javascript-tools.mjs";
+import { readPlaywrightTools } from "./prepare-playwright-tools.mjs";
 
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const qualifiedProjects = new Set([
@@ -23,7 +24,7 @@ const qualifiedProjects = new Set([
   "vitest",
   "jest",
 ]);
-const frameworkProjects = new Set(["vue-tsc", "playwright"]);
+const frameworkProjects = new Set(["vue-tsc"]);
 export const qualifiedSmokePackages = [
   "typescript",
   "eslint",
@@ -31,22 +32,21 @@ export const qualifiedSmokePackages = [
   "vite",
   "jest",
 ];
-export const frameworkSmokePackages = [
-  "typescript",
-  "vue-tsc",
-  "vue",
-  "@playwright/test",
-];
+export const frameworkSmokePackages = ["typescript", "vue-tsc", "vue"];
 
 export function smokeProjectPath(name) {
   assert.ok(
-    qualifiedProjects.has(name) || frameworkProjects.has(name),
+    qualifiedProjects.has(name) ||
+      frameworkProjects.has(name) ||
+      name === "playwright",
     "Unknown smoke project role",
   );
   return (
     (qualifiedProjects.has(name)
       ? "smoke-tools/qualified-js/"
-      : "smoke-tools/root-frameworks/") + name
+      : name === "playwright"
+        ? "smoke-tools/qualified-playwright/"
+        : "smoke-tools/root-frameworks/") + name
   );
 }
 
@@ -191,6 +191,9 @@ export async function preparePackageSmokeTools(consumer, source = repository) {
   const qualified = await readQualifiedJavaScriptTools(
     pathToFileURL(source + path.sep),
   );
+  const playwright = await readPlaywrightTools(
+    pathToFileURL(source + path.sep),
+  );
   const rootLock = JSON.parse(
     await readFile(path.join(source, "package-lock.json"), "utf8"),
   );
@@ -213,7 +216,21 @@ export async function preparePackageSmokeTools(consumer, source = repository) {
           lock: rootLock,
         },
       ),
+      playwright: await copySmokeToolGraph(
+        path.join(staging, "qualified-playwright"),
+        {
+          modules: path.join(
+            source,
+            ".checktrail/playwright-tools/node_modules",
+          ),
+          packages: ["@playwright/test"],
+          lock: playwright.lock,
+        },
+      ),
       qualifiedProfileLockSha256: qualified.profileLockSha256,
+      playwrightProfileLockSha256: createHash("sha256")
+        .update(playwright.lockBytes)
+        .digest("hex"),
     };
     assert.deepEqual(
       await captureSmokeProductionGraph(consumer),
