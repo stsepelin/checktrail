@@ -190,7 +190,10 @@ absence actions, and checked against the same frozen work allowance. A scan, own
 as a complete observation. The original command, numeric resource bounds and
 running deadline stay unchanged; recorded pauses can affect wall-clock behavior,
 so these observations do not establish uninterrupted upstream runtime. Historical
-schema 1 and 2 receipts keep their original meanings. Go, Node and the legacy
+schema 1 and 2 receipts keep their original meanings. Qualification binds those
+epochs to exact known public historical controller hashes through verified startup
+source pins; unknown controller sources require schema 3. Evidence archives cannot
+supply or extend the trusted historical index. Go, Node and the legacy
 Binutils observer contracts are unchanged.
 
 Preparation exits zero on successful data validation. Actual execution currently

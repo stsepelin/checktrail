@@ -103,6 +103,39 @@ def terminal(value, limit=512*MIB, expected_exit=0):
     require(integer(value['retainedBytes'], 0, limit), 'Foreground log byte observation invalid')
 
 
+# Trusted local reader constants, never archive/caller-supplied authority.
+# Exact public historical bodies and emit sites: test/fixtures/c-controller-history/.
+HISTORICAL_C_CONTROLLER_EPOCHS = {
+    'be1561e57b777e5c08aea20e39a734e80ce0fed47ddb09e6730f77db544c7bdf': (2, 67909),
+    'aea6f78bf62439189636a0765e31ee0ca881a7a7a7c4ce2c12104f59011f5884': (2, 67101),
+    'c7298cc50eb437d7bf6a34bd0fdd156edaaa3322f04a767801776023970fb65c': (2, 63182),
+    'c675c3244feaa2a3c28003290519307db273a77f70f24550be388eb0f0602492': (1, 46160),
+    '183a5cf1c2412d496bbd43f69cfbe1558d23abb3dc15a006f5ad0da08de028ef': (1, 44685),
+    '7f23265d6bc2f6e0521287cb5e63bb0f3e93c79cf72461b0593286e73937926e': (1, 41703),
+    '3cc575883e38ab8da7de299686ec549717df7581de22c6e8ebc4d5aaf7cfed30': (1, 41656),
+    '3fd12c507228d53d1987c4b27f5db1fc8746221148e7ae02c76eb5ef5919c083': (1, 41812),
+    'dba900988c4630c79737720d70ac165bc4ea2d65fc867bd8f578c77c074dbd1f': (1, 41734),
+    '9ba614fb44695ca46d3d95d30db2df2f49dd5d1355222b6474f93c4874852003': (1, 34452),
+    '68c82b4e467cc16e1281a4c07d43ae5a3e4b86e4d15fab2253e9d9637ae0714c': (1, 34414),
+    'a7ab7606d15dab9c2cfc2101dd88faa5287be21bbe727e79f33b7d17a0b2d408': (1, 33922),
+}
+
+
+def controller_source_epoch(receipt, verified_source_pins):
+    """Use only startup pins already bound by source_frame to physical Git bytes."""
+    require(type(verified_source_pins) is list, 'Malformed verified C source pins')
+    rows = [row for row in verified_source_pins if type(row) is dict and row.get('file') == 'scripts/qualify-c-producer.mjs']
+    require(len(rows) == 1, 'Exactly one canonical C controller source pin is required')
+    row = rows[0]
+    require(set(row) == {'file','bytes','sha256'} and integer(row['bytes'],1,2*MIB) and type(row['sha256']) is str and re.fullmatch(r'[a-f0-9]{64}',row['sha256']), 'Malformed canonical C controller source pin')
+    historical = HISTORICAL_C_CONTROLLER_EPOCHS.get(row['sha256'])
+    if historical is not None:
+        require(row['bytes'] == historical[1], 'Historical C controller byte length differs')
+    expected = historical[0] if historical is not None else 3
+    require(type(receipt['schemaVersion']) is int and receipt['schemaVersion'] == expected, 'C controller source identity requires receipt schema'+str(expected))
+    return expected
+
+
 def evidence_format(receipt):
     version = receipt['schemaVersion']
     require(type(version) is int and version in [1, 2, 3], 'Unknown C controller evidence schema')
@@ -231,9 +264,10 @@ def quiescent_samples(receipt, maximum_bytes=None):
     return rows
 
 
-def retention(raw, receipt, selected=None, controller=None):
+def retention(raw, receipt, selected=None, controller=None, maximum_bytes=None):
     selected = selected or {'schemaVersion':1,'observerLimit':16*MIB,'samples':1000000}
     limit = selected['observerLimit']
+    require(maximum_bytes is None or integer(maximum_bytes), 'Invalid frozen C work allowance')
     if selected['schemaVersion'] in [2, 3]:
         require(receipt.get('workObjectPolicy') == C_BUILD_POLICY['workObjectPolicy'], 'C work object policy differs')
     else:
@@ -268,6 +302,7 @@ def retention(raw, receipt, selected=None, controller=None):
                 require(waiting and set(value) == {'schemaVersion','kind','sequence','bytes','files','directories'}, 'Unsolicited or incomplete observer response')
                 require(type(value['schemaVersion']) is int and value['schemaVersion'] == 1 and value['kind']=='sample' and type(value['sequence']) is int and value['sequence']==sequence, 'Observer sample identity differs')
                 require(all(integer(value[key]) for key in ['bytes','files','directories']) and value['directories']>=3 and value['directories']+value['files']<=1000000, 'Invalid observer counters')
+                require(maximum_bytes is None or value['bytes'] <= maximum_bytes, 'C raw retention sample exceeded frozen work allowance')
                 if quiescent is not None:
                     require(samples < len(quiescent) and exact_json(value,quiescent[samples]['sample']), 'Quiescent C receipt differs from exact raw sample')
                 last, samples, waiting = value, samples+1, False
@@ -895,6 +930,7 @@ def replay(archive,repository,expected_profile='glibc',execution_policy=None):
             require(integer(prepared[key]['changedExitCode'],1,255) and exact_json(prepared[key]['restoredExitCode'],0),'Original signature fault/restoration control missing')
         require(prepared['compilerExecuted'] is False and prepared['packageInstalled'] is False,'Data-only common preparation changed scope')
         receipt_raw=packet.read('result/receipt.json',16*MIB);receipt=strict_json(receipt_raw)
+        controller_source_epoch(receipt,startup['sourcePins'])
         format = closed_controller_evidence(packet,receipt,profile,caller)
         observed=packet.json('result/build-observation.json',2*MIB)
         require(exact_json([observed['schemaVersion'],observed['controllerExit']],[1,2]) and observed['state']=='original-'+expected_profile+'-command-observed-qualification-incomplete' and exact_json(observed['selectedProfile'],selected),'No complete live selected original observation')
@@ -931,9 +967,9 @@ def replay(archive,repository,expected_profile='glibc',execution_policy=None):
         else:gcc_carrier(packet,packet.read('operator-startup.json',MIB),receipt,profile,observed,policy)
         observer=receipt['retentionObserver'];require(observer['state']=='completed' and observer['independentImage']==catalog['image'] and observer['readOnly'] is True and observer['network']=='none' and observer['capability']=='DAC_READ_SEARCH' and exact_json(observer['terminal'],{'exitCode':0,'signal':None}),'Independent observer unavailable or altered')
         require(observer['nativeFilesystemQuotaEnforced'] is False,'Unproven native quota')
-        last=retention(packet.read('result/retention-observer.jsonl',format['observerLimit']),observer,format,receipt)
-        require(last==receipt['finalRetention'],'Final observer sample differs')
         allowance=sum(row['bytes'] for row in profile['files'])+sum(row['bytes'] for row in receipt['sourcePins'] if row['file'] in ['c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','glibc-seccomp-probe.py'])+sum(row['bytes'] for row in receipt.get('generatedControlPins',[]))
+        last=retention(packet.read('result/retention-observer.jsonl',format['observerLimit']),observer,format,receipt,profile['limits']['workByteLimit']+allowance)
+        require(last==receipt['finalRetention'],'Final observer sample differs')
         require(last['bytes']<=profile['limits']['workByteLimit']+allowance,'Retained work allowance exceeded')
         if format['schemaVersion'] == 3:quiescent_samples(receipt,profile['limits']['workByteLimit']+allowance)
         for key in ['cleanup','retentionObserverCleanup']:require(receipt[key]['state'] in ['absent','removed'],'Incomplete original owned cleanup')

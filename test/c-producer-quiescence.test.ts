@@ -938,7 +938,8 @@ with tempfile.TemporaryDirectory(prefix='ct-c-receipt-format-') as directory:
  complete=payload['cases'][0]['receipt']
  for version in [1,2,3]:
   value=dict(complete,schemaVersion=version)
-  if version<3:value.pop('retentionSamplingPolicy')
+  if version<3:
+   value.pop('retentionSamplingPolicy');value.pop('quiescentResourceSamples')
   if version==1:
    value.pop('retentionTransportPolicy');value.pop('reportRetention')
   file.write_text(json.dumps(value))

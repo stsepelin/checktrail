@@ -15,6 +15,97 @@ export const cProducerRetentionSamplingPolicy = Object.freeze({
   nativeDeadlineIncludesObservation: true,
 });
 
+// Trusted reader authority for exact public historical controller bodies.
+// Provenance and inert originals are in test/fixtures/c-controller-history/.
+// Never obtain this index from an evidence archive or caller-provided metadata.
+const historicalCControllerEpochs = Object.freeze({
+  be1561e57b777e5c08aea20e39a734e80ce0fed47ddb09e6730f77db544c7bdf: {
+    epoch: 2,
+    bytes: 67909,
+  },
+  aea6f78bf62439189636a0765e31ee0ca881a7a7a7c4ce2c12104f59011f5884: {
+    epoch: 2,
+    bytes: 67101,
+  },
+  c7298cc50eb437d7bf6a34bd0fdd156edaaa3322f04a767801776023970fb65c: {
+    epoch: 2,
+    bytes: 63182,
+  },
+  c675c3244feaa2a3c28003290519307db273a77f70f24550be388eb0f0602492: {
+    epoch: 1,
+    bytes: 46160,
+  },
+  "183a5cf1c2412d496bbd43f69cfbe1558d23abb3dc15a006f5ad0da08de028ef": {
+    epoch: 1,
+    bytes: 44685,
+  },
+  "7f23265d6bc2f6e0521287cb5e63bb0f3e93c79cf72461b0593286e73937926e": {
+    epoch: 1,
+    bytes: 41703,
+  },
+  "3cc575883e38ab8da7de299686ec549717df7581de22c6e8ebc4d5aaf7cfed30": {
+    epoch: 1,
+    bytes: 41656,
+  },
+  "3fd12c507228d53d1987c4b27f5db1fc8746221148e7ae02c76eb5ef5919c083": {
+    epoch: 1,
+    bytes: 41812,
+  },
+  dba900988c4630c79737720d70ac165bc4ea2d65fc867bd8f578c77c074dbd1f: {
+    epoch: 1,
+    bytes: 41734,
+  },
+  "9ba614fb44695ca46d3d95d30db2df2f49dd5d1355222b6474f93c4874852003": {
+    epoch: 1,
+    bytes: 34452,
+  },
+  "68c82b4e467cc16e1281a4c07d43ae5a3e4b86e4d15fab2253e9d9637ae0714c": {
+    epoch: 1,
+    bytes: 34414,
+  },
+  a7ab7606d15dab9c2cfc2101dd88faa5287be21bbe727e79f33b7d17a0b2d408: {
+    epoch: 1,
+    bytes: 33922,
+  },
+});
+
+// Call only after the startup pins have been bound to physical committed source.
+export function validateCControllerSourceEpoch(receipt, verifiedSourcePins) {
+  assert.ok(Array.isArray(verifiedSourcePins));
+  const rows = verifiedSourcePins.filter(
+    (row) => row?.file === "scripts/qualify-c-producer.mjs",
+  );
+  assert.equal(
+    rows.length,
+    1,
+    "Exactly one canonical C controller source pin is required",
+  );
+  const row = rows[0];
+  assert.deepEqual(Object.keys(row).sort(), ["bytes", "file", "sha256"]);
+  assert.ok(
+    Number.isSafeInteger(row.bytes) &&
+      row.bytes > 0 &&
+      row.bytes <= 2 * 1024 ** 2,
+  );
+  assert.equal(typeof row.sha256, "string");
+  assert.equal(row.sha256.length, 64);
+  assert.match(row.sha256, /^[a-f0-9]{64}$/u);
+  const historical = historicalCControllerEpochs[row.sha256];
+  if (historical)
+    assert.equal(
+      row.bytes,
+      historical.bytes,
+      "Historical C controller byte length differs",
+    );
+  const expected = historical?.epoch ?? 3;
+  assert.equal(
+    receipt.schemaVersion,
+    expected,
+    "C controller source identity requires receipt schema" + expected,
+  );
+  return expected;
+}
+
 export async function sampleQuiescentCProducer({
   attempt,
   image,
@@ -259,6 +350,48 @@ export async function sampleQuiescentCProducer({
   return value;
 }
 
+// The historical controller also bounded every successful sample. Re-read all
+// raw counters for every receipt epoch; a smaller final tree cannot erase an
+// earlier work-retention overrun.
+function cRetentionSamples(raw, observer, cBuildWork) {
+  reconcileRetentionLog(raw, observer, { cBuildWork });
+  const text = raw.toString("utf8"),
+    samples = [];
+  let buffer = "",
+    start = 0;
+  while (start < text.length) {
+    const end = text.indexOf("\n", start);
+    assert.ok(end >= start);
+    const row = JSON.parse(text.slice(start, end));
+    start = end + 1;
+    if (row.stream !== "stdout") continue;
+    buffer += Buffer.from(row.base64, "base64").toString("utf8");
+    while (buffer.includes("\n")) {
+      const boundary = buffer.indexOf("\n");
+      const message = JSON.parse(buffer.slice(0, boundary));
+      buffer = buffer.slice(boundary + 1);
+      if (message.kind === "sample") samples.push(message);
+    }
+  }
+  assert.equal(samples.length, observer.samples);
+  return samples;
+}
+export function validateCWorkSampleBounds(
+  raw,
+  observer,
+  cBuildWork,
+  maximumBytes,
+) {
+  assert.ok(Number.isSafeInteger(maximumBytes) && maximumBytes >= 0);
+  const samples = cRetentionSamples(raw, observer, cBuildWork);
+  for (const sample of samples)
+    assert.ok(
+      sample.bytes <= maximumBytes,
+      "C raw retention sample exceeded frozen work allowance",
+    );
+  return samples.length;
+}
+
 // Schema3 binds complete observer replies to recorded operator interventions.
 // Historical controller schemas1/2 retain their original meaning.
 export function validateCQuiescentResourceSamples(receipt, raw, maximumBytes) {
@@ -418,26 +551,13 @@ export function validateCQuiescentResourceSamples(receipt, raw, maximumBytes) {
   assert.deepEqual(rows.at(-1).sample, receipt.retentionObserver.lastSample);
   assert.deepEqual(rows.at(-1).sample, receipt.finalRetention);
   if (raw !== undefined) {
-    reconcileRetentionLog(raw, receipt.retentionObserver, { cBuildWork: true });
-    let buffer = "",
-      index = 0;
-    for (const line of raw.toString("utf8").trimEnd().split("\n")) {
-      const row = JSON.parse(line);
-      if (row.stream !== "stdout") continue;
-      buffer += Buffer.from(row.base64, "base64").toString("utf8");
-      while (buffer.includes("\n")) {
-        const end = buffer.indexOf("\n");
-        const message = JSON.parse(buffer.slice(0, end));
-        buffer = buffer.slice(end + 1);
-        if (message.kind === "sample")
-          assert.deepEqual(
-            message,
-            rows[index++].sample,
-            "Quiescent C receipt differs from exact raw sample",
-          );
-      }
-    }
-    assert.equal(index, rows.length);
+    const samples = cRetentionSamples(raw, receipt.retentionObserver, true);
+    for (const [index, sample] of samples.entries())
+      assert.deepEqual(
+        sample,
+        rows[index].sample,
+        "Quiescent C receipt differs from exact raw sample",
+      );
   }
   return rows.length;
 }

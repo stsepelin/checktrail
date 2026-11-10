@@ -32,7 +32,11 @@ import {
   physicalPath,
 } from "./qualify-binutils-producer.mjs";
 import { reconcileRetentionLog } from "./producer-qualification/binutils-retention-observer.mjs";
-import { validateCQuiescentResourceSamples } from "./producer-qualification/c-producer-quiescent-sample.mjs";
+import {
+  validateCControllerSourceEpoch,
+  validateCQuiescentResourceSamples,
+  validateCWorkSampleBounds,
+} from "./producer-qualification/c-producer-quiescent-sample.mjs";
 import {
   loadCProducerProfile,
   cProducerCatalogSha256,
@@ -592,6 +596,7 @@ export async function verifyCLiveObservation(
   const receiptFile = path.join(result, "receipt.json");
   const receiptRaw = await boundedCProducerBytes(receiptFile, 16 * 1024 ** 2);
   const receipt = JSON.parse(receiptRaw);
+  validateCControllerSourceEpoch(receipt, startup.sourcePins);
   const summary = validateCObservationHeader(
     receipt,
     profile,
@@ -849,6 +854,12 @@ export async function verifyCLiveObservation(
     );
   assert.ok(
     receipt.finalRetention.bytes <= profile.limits.workByteLimit + allowance,
+  );
+  validateCWorkSampleBounds(
+    observer,
+    receipt.retentionObserver,
+    format.cBuildWork,
+    profile.limits.workByteLimit + allowance,
   );
   if (receipt.schemaVersion === 3)
     validateCQuiescentResourceSamples(
