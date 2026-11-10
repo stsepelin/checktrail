@@ -618,6 +618,11 @@ function requireWorkingCheckout(
     const file = path.join(realRoot, row.path),
       physical = realpathSync(file),
       relative = path.relative(realRoot, physical);
+    assert.equal(
+      physical,
+      file,
+      "Checked-out input has a noncanonical physical path",
+    );
     assert.ok(
       relative &&
         relative !== ".." &&

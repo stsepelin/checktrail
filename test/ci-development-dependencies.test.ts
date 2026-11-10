@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdir, readFile, writeFile, rm } from "node:fs/promises";
+import {
+  mkdir,
+  readFile,
+  writeFile,
+  rm,
+  symlink,
+  realpath,
+  appendFile,
+} from "node:fs/promises";
 import path from "node:path";
 import { test, type TestContext } from "node:test";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -1196,4 +1204,37 @@ test("bound event revisions cannot admit a different or dirty tested checkout", 
       "audited-development-dependency-consumers-v1",
     );
   });
+});
+
+test("physical checkout rejects a hidden inside-root parent link and admits the same nonlinked inventory", async (t) => {
+  const { options, directory, git } = await gitGraph(t, {
+    auditedBefore: (_m, _l, f) => {
+      f["left/tool.mjs"] = f["right/tool.mjs"] =
+        "export const address=import.meta.url;";
+    },
+  });
+  assert.equal(
+    classifyDevelopmentBump(options).evidence.scope,
+    "audited-development-dependency-consumers-v1",
+  );
+  git("update-index", "--assume-unchanged", "left/tool.mjs");
+  await rm(path.join(directory, "left"), { recursive: true });
+  await symlink(
+    path.join(directory, "right"),
+    path.join(directory, "left"),
+    process.platform === "win32" ? "junction" : "dir",
+  );
+  await appendFile(path.join(directory, ".git/info/exclude"), "\n/left\n");
+  assert.equal(git("status", "--porcelain"), "");
+  const canonicalRoot = await realpath(directory),
+    file = path.join(canonicalRoot, "left/tool.mjs");
+  assert.notEqual(await realpath(file), file);
+  assert.equal(
+    await readFile(file, "utf8"),
+    await readFile(path.join(directory, "right/tool.mjs"), "utf8"),
+  );
+  assert.throws(
+    () => classifyDevelopmentBump(options),
+    /noncanonical physical path/,
+  );
 });
