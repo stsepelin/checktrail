@@ -59,6 +59,8 @@ const files = [
   "scripts/verify-import-context-package.mjs",
   "scripts/install-acceptance-package.mjs",
   "scripts/prepare-javascript-tools.mjs",
+  "scripts/javascript-tools/package.json",
+  "scripts/javascript-tools/package-lock.json",
   "scripts/native-acceptance-diagnostics.mjs",
   "scripts/required-native-tests.json",
   "scripts/required-test-evidence.mjs",
