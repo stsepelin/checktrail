@@ -133,7 +133,7 @@ test(
     ] as const) {
       await writeFile(
         path.join(root, "live.spec.js"),
-        `import {test,expect} from '@playwright/test';test(${JSON.stringify(name)},()=>{${expression}});`,
+        `import {test,expect} from '@playwright/test';test(${JSON.stringify(name)},()=>{${expression}});test('stable Node control',()=>expect(7*6).toBe(42));`,
       );
       const result = run();
       assert.equal(result.error, undefined);
@@ -142,19 +142,38 @@ test(
       const native = JSON.parse(result.stdout);
       assert.equal(native.status, status);
       assert.deepEqual(native.projects, [""]);
-      assert.equal(native.tests.length, 1);
-      assert.equal(native.tests[0].file, path.join(root, "live.spec.js"));
-      assert.equal(native.tests[0].expectedStatus, "passed");
-      assert.equal(native.tests[0].results.length, 1);
-      assert.equal(native.tests[0].results[0].status, status);
-      assert.equal(native.tests[0].results[0].retry, 0);
-      if (status === "passed")
-        assert.deepEqual(native.tests[0].results[0].errors, []);
-      else
-        assert.match(
-          native.tests[0].results[0].errors.join("\n"),
-          /Expected: 6[\s\S]*Received: 5/,
-        );
+      assert.deepEqual(native.errors, []);
+      assert.equal(native.tests.length, 2);
+      const identities = new Set<string>();
+      let passed = 0;
+      let failed = 0;
+      for (const reported of native.tests) {
+        assert.equal(typeof reported.id, "string");
+        assert.ok(reported.id.length > 0);
+        identities.add(reported.id);
+        assert.equal(reported.file, path.join(root, "live.spec.js"));
+        assert.equal(reported.project, "");
+        assert.equal(reported.expectedStatus, "passed");
+        assert.equal(reported.results.length, 1);
+        const attempt = reported.results[0];
+        assert.equal(attempt.retry, 0);
+        if (attempt.status === "passed") {
+          passed++;
+          assert.equal(reported.outcome, "expected");
+          assert.deepEqual(attempt.errors, []);
+        } else {
+          failed++;
+          assert.equal(attempt.status, "failed");
+          assert.equal(reported.outcome, "unexpected");
+          assert.match(
+            attempt.errors.join("\n"),
+            /Expected: 6[\s\S]*Received: 5/,
+          );
+        }
+      }
+      assert.equal(identities.size, 2);
+      assert.equal(passed, status === "passed" ? 2 : 1);
+      assert.equal(failed, status === "failed" ? 1 : 0);
       const processResult: ProcessResult = {
         command,
         exitCode: result.status,
@@ -169,8 +188,8 @@ test(
       const parsed = evaluate(check, [processResult], root);
       assert.equal(parsed.status, status, JSON.stringify({ parsed, native }));
       assert.deepEqual(parsed.tests, {
-        total: 1,
-        passed: status === "passed" ? 1 : 0,
+        total: 2,
+        passed: status === "passed" ? 2 : 1,
         failed: status === "failed" ? 1 : 0,
         skipped: 0,
       });
