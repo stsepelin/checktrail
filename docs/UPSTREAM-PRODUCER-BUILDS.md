@@ -25,6 +25,15 @@ original developer source-signing keyring package and member. The developer
 keyring is distinct from the image-provided APT archive keyring. Empty generated
 lock files are classified separately from downloaded archives.
 
+Run `node scripts/verify-binutils-retention-observer.mjs --check-inputs` to
+check the committed controller file sizes and hashes before native preparation.
+The upstream Binutils, GCC and GLIBC workflows run this check before their first
+Docker call. It requires no Docker access or native host permissions and does
+not establish the separate Linux permission proof. A changed controller requires
+reviewing and updating its pins; CI never regenerates them automatically. The
+native `--output` mode still validates the same controller inputs before running
+its permission controls.
+
 The retained [APT preparation record](../scripts/producer-qualification/binutils-apt-index-preparation.v1.json)
 binds fresh content-addressed Packages downloads to the signed canonical payloads
 and exactly reconstructs the retained compressed indexes through the original

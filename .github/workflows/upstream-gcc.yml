@@ -29,6 +29,9 @@ jobs:
         timeout-minutes: 5
         with:
           node-version: "24"
+      - name: Verify pinned observer inputs before native preparation
+        timeout-minutes: 2
+        run: node scripts/verify-binutils-retention-observer.mjs --check-inputs
       - name: Freeze the selected original GCC source and caller frame
         timeout-minutes: 2
         run: >-
