@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
+import {
+  mkdtemp,
+  mkdir,
+  readFile,
+  writeFile,
+  rm,
+  realpath,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
@@ -38,7 +45,7 @@ try {
   const tools = await copySmokeToolGraph(
     path.join(consumer, "current-root-runners"),
     {
-      modules: path.join(repository, "node_modules"),
+      modules: await realpath(path.join(repository, "node_modules")),
       packages: ["vitest", "vite", "jest"],
       lock,
     },

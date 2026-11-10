@@ -204,14 +204,16 @@ export async function preparePackageSmokeTools(consumer, source = repository) {
   try {
     const result = {
       qualified: await copySmokeToolGraph(path.join(staging, "qualified-js"), {
-        modules: path.join(source, ".checktrail/javascript-tools/node_modules"),
+        modules: await realpath(
+          path.join(source, ".checktrail/javascript-tools/node_modules"),
+        ),
         packages: qualifiedSmokePackages,
         lock: qualified.lock,
       }),
       frameworks: await copySmokeToolGraph(
         path.join(staging, "root-frameworks"),
         {
-          modules: path.join(source, "node_modules"),
+          modules: await realpath(path.join(source, "node_modules")),
           packages: frameworkSmokePackages,
           lock: rootLock,
         },
@@ -219,9 +221,8 @@ export async function preparePackageSmokeTools(consumer, source = repository) {
       playwright: await copySmokeToolGraph(
         path.join(staging, "qualified-playwright"),
         {
-          modules: path.join(
-            source,
-            ".checktrail/playwright-tools/node_modules",
+          modules: await realpath(
+            path.join(source, ".checktrail/playwright-tools/node_modules"),
           ),
           packages: ["@playwright/test"],
           lock: playwright.lock,

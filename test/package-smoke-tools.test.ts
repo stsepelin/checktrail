@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
   access,
+  cp,
+  symlink,
   mkdir,
   readFile,
   realpath,
@@ -706,7 +708,7 @@ test("smoke publishes all three role graphs together and removes staged tools wh
     ),
     metadata("playwright-core", "1.0.0", { dependencies: {} }),
   );
-  await preparePackageSmokeTools(consumer, source);
+  const direct = await preparePackageSmokeTools(consumer, source);
   for (const role of ["qualified-js", "root-frameworks"])
     await access(
       path.join(
@@ -737,6 +739,79 @@ test("smoke publishes all three role graphs together and removes staged tools wh
     ).version,
     "99.0.0",
   );
+  for (const [name, targets, modules, packages, lock] of [
+    [
+      "framework root",
+      ["node_modules"],
+      "node_modules",
+      frameworkSmokePackages,
+      rootLock,
+    ],
+    [
+      "qualified JavaScript root",
+      [".checktrail/javascript-tools"],
+      ".checktrail/javascript-tools/node_modules",
+      qualifiedSmokePackages,
+      qualifiedLock,
+    ],
+    [
+      "qualified Playwright root",
+      [".checktrail/playwright-tools"],
+      ".checktrail/playwright-tools/node_modules",
+      ["@playwright/test"],
+      playwrightLock,
+    ],
+    [
+      "controller layout",
+      ["node_modules", ".checktrail"],
+      ".checktrail/javascript-tools/node_modules",
+      qualifiedSmokePackages,
+      qualifiedLock,
+    ],
+  ] as const) {
+    await t.test(
+      name + " intentional links preserve the selected graph",
+      async () => {
+        const snapshot = path.join(root, "snapshot-" + name),
+          installed = path.join(root, "consumer-" + name);
+        await cp(source, snapshot, { recursive: true });
+        for (const target of targets) {
+          await rm(path.join(snapshot, target), { recursive: true });
+          await symlink(
+            path.join(source, target),
+            path.join(snapshot, target),
+            process.platform === "win32" ? "junction" : "dir",
+          );
+        }
+        await cp(consumer, installed, {
+          recursive: true,
+          filter: (file) => file !== path.join(consumer, "smoke-tools"),
+        });
+        // Arbitrary copier callers retain the strict canonical-source boundary.
+        await assert.rejects(
+          copySmokeToolGraph(path.join(root, "refused-" + name), {
+            modules: path.join(snapshot, modules),
+            packages: [...packages],
+            lock,
+          }),
+          /Smoke tool source must be canonical/,
+        );
+        assert.deepEqual(
+          await preparePackageSmokeTools(installed, snapshot),
+          direct,
+        );
+        assert.equal(
+          JSON.parse(
+            await readFile(
+              path.join(installed, "node_modules/tool/package.json"),
+              "utf8",
+            ),
+          ).version,
+          "99.0.0",
+        );
+      },
+    );
+  }
 });
 
 test("host smoke preserves qualified preparation and routes current-root reporter proof separately from the phase controller", async () => {
