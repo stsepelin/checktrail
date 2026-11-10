@@ -1,0 +1,8 @@
+{
+  "name": "checktrail-playwright-acceptance-tools",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@playwright/test": "1.64.1"
+  }
+}
