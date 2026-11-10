@@ -1,3 +1,4 @@
+import { lifecyclePidPublication, assertLifecyclePids } from "./helpers.js";
 import { frameworkReportSemantics } from "./framework-report-semantics.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
@@ -470,7 +471,7 @@ test(
   async (t) => {
     for (const mode of ["cancel", "timeout", "output"]) {
       const root = await project(t);
-      const child = `<?php posix_setsid();file_put_contents('child.ready',(string)getmypid());while(!file_exists('worker.release'))usleep(10000);if('${mode}'==='output')while(true){fwrite(STDOUT,str_repeat('original',4096));usleep(1000);}while(true)usleep(10000);`;
+      const child = `<?php posix_setsid();${lifecyclePidPublication("php", "child")}while(!file_exists('worker.release'))usleep(10000);if('${mode}'==='output')while(true){fwrite(STDOUT,str_repeat('original',4096));usleep(1000);}while(true)usleep(10000);`;
       await writeFile(path.join(root, "child.php"), child);
       const token = "original-" + mode;
       const witness = `$worker=proc_open([PHP_BINARY,base_path('child.php')],[0=>['file','/dev/null','r'],1=>STDOUT,2=>STDERR],$pipes,base_path());while(!is_file(base_path('child.ready')))usleep(10000);file_put_contents(base_path('parent.pending'),json_encode(['token'=>'${token}','parent'=>getmypid(),'child'=>(int)file_get_contents(base_path('child.ready')),'temporary'=>getenv('CHECKTRAIL_TEMP')]));rename(base_path('parent.pending'),base_path('parent.ready'));while(proc_get_status($worker)['running'])usleep(10000);`;
@@ -508,7 +509,7 @@ test(
           "Native HTTP initialization and detached child must be reached",
         );
         assert.equal(ids.token, token);
-        assert.notEqual(ids.parent, ids.child);
+        assertLifecyclePids(ids);
         for (const pid of [ids.parent, ids.child]) process.kill(pid, 0);
         await writeFile(path.join(root, "worker.release"), "go");
         if (mode === "cancel") abort.abort();

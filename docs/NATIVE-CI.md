@@ -111,6 +111,33 @@ measurements retain the package identities actually observed at that time.
 
 ## Affected checks on pull requests
 
+Before planning the matrix, `ci-plan` installs the committed lock with lifecycle
+scripts disabled, then checks direct dependency metadata and the native input
+contract, validates artifact credential header safety without network requests,
+and runs TypeScript type checks and lint. The artifact token is scoped to that
+preflight step and the tool preparation steps; no authentication success is
+claimed by header validation. Direct dependency declarations must be exact
+pins, including npm aliases; their root lock declarations, selected lock entries
+and installed package metadata must agree. This checks installation metadata,
+not package-body integrity or native acceptance.
+
+Credential admission follows [GitHub's opaque-token guidance](https://github.blog/changelog/2026-04-24-notice-about-upcoming-new-format-for-github-app-installation-tokens/).
+It checks header safety without inferring validity from a prefix, length or
+decoded token data.
+
+A failed preflight or planner prevents the shared and native matrix jobs from
+starting. `ci-complete` still runs and requires successful planning and every
+selected job; skipped jobs cannot qualify a failed plan. When planning succeeds,
+unknown inputs and shared dependency changes still select full verification.
+This saves the expensive fanout on early failures without narrowing successful
+runs.
+
+If a deliberate source change makes the declared input map stale, run
+`node scripts/check-ci-preflight.mjs --update-inputs` locally, review the generated
+map and rerun the check without that flag. The update validates dependency
+metadata and the generated contract before replacing the map. CI refuses that
+flag and never repairs its own expected contract.
+
 `ci-plan` compares the exact PR base and head with a NUL-delimited Git diff,
 including both paths of renames as delete/add changes. It reads the full Git
 inventory instead of workflow-level path filters or a truncated PR-files

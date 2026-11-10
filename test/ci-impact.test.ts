@@ -152,9 +152,9 @@ test("CI Tasks runtime jobs participate in selection and the final completion in
     assert.deepEqual(workflow.jobs[id].needs, ["ci-plan", "actionlint"]);
     assert.equal(
       workflow.jobs[id].if,
-      "${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['" +
+      "${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['" +
         id +
-        "']) }}",
+        "'] }}",
     );
     assert.ok(workflow.jobs["ci-complete"].needs.includes(id));
     assert.equal(plan(["test/gate-tasks-matrix.test.ts"]).selected[id], true);
@@ -861,7 +861,7 @@ test("CI managed pull-request branch prefixes avoid duplicate push workflows whi
   assert.ok(Object.hasOwn(workflow.on, "pull_request"));
 });
 
-test("CI initial wave stays within the free runner ceiling and selected jobs survive admission failure or skip", () => {
+test("CI initial wave stays within the free runner ceiling and native fanout requires successful planning", () => {
   const variants = (job: {
     strategy?: { matrix?: Record<string, unknown[]> };
   }) => {
@@ -893,7 +893,8 @@ test("CI initial wave stays within the free runner ceiling and selected jobs sur
     const job = workflow.jobs[id];
     assert.ok(job.needs.includes("ci-plan"));
     assert.ok(job.if.includes("always() && !cancelled()"));
-    assert.ok(job.if.includes("needs.ci-plan.result != 'success'"));
+    assert.ok(job.if.includes("needs.ci-plan.result == 'success'"));
+    assert.equal(job.if.includes("needs.actionlint.result"), false);
     assert.ok(job.if.includes("selected['" + id + "']"));
   }
   assert.deepEqual(
@@ -2233,9 +2234,9 @@ test("CI attempt archive lanes retain every frozen runtime, prerequisite and com
     assert.deepEqual(job.needs, ["ci-plan", "actionlint"]);
     assert.equal(
       job.if,
-      "${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['" +
+      "${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['" +
         id +
-        "']) }}",
+        "'] }}",
     );
     assert.ok(workflow.jobs["ci-complete"].needs.includes(id));
     const gate = job.steps.find((step: { run?: string }) =>
@@ -2535,4 +2536,59 @@ test("CI confidence reuses exactly the existing core runtime slots and raw consu
       "${{ runner.temp }}/checktrail-native-capsules/*.json",
     );
   }
+});
+
+test("CI pinned delivery metadata preserves imports without selecting URL profile names and restores full coverage for execution", async () => {
+  const helper = "scripts/request-pinned-artifact.mjs";
+  const families = ["scala", "kubeconform", "swift"];
+  const source =
+    "import pins from './artifact-map.json' with {type:'json'}; const urls=['https://github.com/scala/scala/releases/download/v2/file.zip','https://api.github.com/repos/yannh/kubeconform/releases/assets/1'];";
+  const build = (body: string, file = helper) =>
+    buildNativeInputs({
+      workflow: {
+        jobs: {
+          delivery: { steps: [{ run: "node " + file }] },
+          native: {
+            steps: [
+              { run: "node scripts/verify-required-native-tests.mjs scala" },
+            ],
+          },
+        },
+      },
+      requirements: Object.fromEntries(
+        families.map((name) => [
+          name,
+          [{ file: "dist/test/" + name + "-native.test.js" }],
+        ]),
+      ),
+      files: [
+        file,
+        "scripts/artifact-map.json",
+        ...families.map((name) => "test/" + name + "-native.test.ts"),
+      ],
+      readText: async (name: string) => (name === file ? body : "{}"),
+    });
+  const data = await build(source);
+  assert.deepEqual(data[helper], ["delivery"]);
+  assert.deepEqual(data["scripts/artifact-map.json"], ["delivery"]);
+  assert.deepEqual(data["test/scala-native.test.ts"], ["native"]);
+  assert.equal(Object.hasOwn(data, "test/kubeconform-native.test.ts"), false);
+  for (const call of [
+    "runRequiredTests([])",
+    "execFileSync('node', [])",
+    "import('./native-controller.mjs')",
+    "import x from 'node:child_process'",
+  ]) {
+    const executed = await build(source + ";" + call);
+    for (const name of families)
+      assert.ok(
+        executed["test/" + name + "-native.test.ts"]?.includes("delivery"),
+        call + ":" + name,
+      );
+  }
+  const adjacent = await build(
+    source,
+    "scripts/request-pinned-artifact-extra.mjs",
+  );
+  assert.ok(adjacent["test/kubeconform-native.test.ts"]?.includes("delivery"));
 });

@@ -119,7 +119,13 @@ hermetic or licensed artifact closure.
 
 Prepare dependencies as an explicit operator action before running recipes.
 The acceptance harness derives Vitest/Jest packages from the existing npm lock
-with `scripts/prepare-mutation-tools.mjs`, uses the pinned public Python tools
+with `scripts/prepare-mutation-tools.mjs`. The exact `vitest-native-mutation` npm
+alias preserves the qualified Vitest 5.0.5 mutation runtime independently of the
+repository development Vitest version. Preparation binds its declaration to the
+lock root, actual package name and exact locked version, and projects its nested
+dependency namespace to canonical `vitest` paths before offline installation.
+Changing this role requires explicit native-profile qualification; a development
+runner bump does not qualify a new mutation runtime. The harness uses the pinned public Python tools
 prepared by `scripts/prepare-python-extensions-tools.mjs`, and installs the
 existing locked `scripts/php-tools` Composer tree. Consumer pytest projects must
 place the selected dependencies at `.checktrail/mutation-python-tools`; PHP

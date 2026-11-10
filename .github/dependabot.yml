@@ -4,6 +4,10 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      native-vitest-mutation-qualification:
+        patterns:
+          - vitest-native-mutation
   - package-ecosystem: github-actions
     directory: /
     schedule:
