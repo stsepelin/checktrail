@@ -1,3 +1,4 @@
+import { readPlaywrightTools } from "./prepare-playwright-tools.mjs";
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import { supportedClangVersion } from "../dist/src/clang-protocol.js";
 import { architectureFixture } from "../dist/test/architecture-helpers.js";
@@ -630,8 +631,22 @@ try {
     "jest",
     "vue-tsc",
     "vue",
-    "@playwright/test",
   ]);
+  const { lock: playwrightLock } = await readPlaywrightTools();
+  await copyInstalledPackages(
+    consumer,
+    ["@playwright/test"],
+    path.join(repository, ".checktrail/playwright-tools/node_modules"),
+    ({ relative, version }) => {
+      assert.equal(
+        version,
+        playwrightLock.packages[
+          "node_modules/" + relative.split(path.sep).join("/")
+        ].version,
+        "Installed smoke Playwright fixture differs from its qualified lock",
+      );
+    },
+  );
   const installedMetadata = JSON.parse(
     await readFile(
       path.join(consumer, "node_modules/@stsepelin/checktrail/server.json"),
