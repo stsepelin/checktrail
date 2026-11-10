@@ -41,7 +41,8 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
     eslint: declaredTool("eslint").version,
     "@typescript-eslint/parser": parserVersion,
     "@types/node": declaredTool("@types/node").version,
-    vite: "8.3.0",
+    vite: declaredTool("vite").version,
+    rolldown: declaredTool("rolldown").version,
     "@modelcontextprotocol/client": declaredTool("@modelcontextprotocol/client")
       .version,
   };

@@ -23,6 +23,59 @@ export function runAcceptanceNpm(args, options = {}) {
   return execFileSync(process.execPath, [npmCli, ...args], options);
 }
 
+export async function assertLockedAcceptanceClient(
+  repository,
+  observedVersion,
+) {
+  const name = "@modelcontextprotocol/client";
+  const [manifest, lock, installed] = await Promise.all([
+    readFile(path.join(repository, "package.json"), "utf8").then(JSON.parse),
+    readFile(path.join(repository, "package-lock.json"), "utf8").then(
+      JSON.parse,
+    ),
+    readFile(
+      path.join(repository, "node_modules", name, "package.json"),
+      "utf8",
+    ).then(JSON.parse),
+  ]);
+  const declared = manifest.devDependencies?.[name];
+  assert.match(
+    declared ?? "",
+    /^\d+\.\d+\.\d+$/,
+    "Acceptance client declaration must be exactly pinned",
+  );
+  assert.equal(
+    lock.lockfileVersion,
+    3,
+    "Acceptance client requires lockfile v3",
+  );
+  assert.equal(
+    lock.packages?.[""]?.devDependencies?.[name],
+    declared,
+    "Acceptance client lock root differs from declaration",
+  );
+  assert.equal(
+    lock.packages?.["node_modules/" + name]?.version,
+    declared,
+    "Acceptance client lock entry differs from declaration",
+  );
+  assert.equal(
+    installed.name,
+    name,
+    "Installed acceptance client package name differs",
+  );
+  assert.equal(
+    installed.version,
+    declared,
+    "Acceptance client installed version differs from declaration",
+  );
+  assert.equal(
+    observedVersion,
+    declared,
+    "Acceptance client observed version differs from declaration",
+  );
+}
+
 export function acceptanceConsumerLock(manifest, lock, tarball, integrity) {
   assert.equal(lock.lockfileVersion, 3);
   assert.match(manifest.name, /^(?:@[a-z0-9_.-]+\/)?[a-z0-9_.-]+$/);

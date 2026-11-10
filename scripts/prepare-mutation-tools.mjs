@@ -16,69 +16,60 @@ import { selectJavaScriptToolsLock } from "./prepare-javascript-tools.mjs";
 const nativeRoles = [
   {
     name: "vitest",
+    label: "Vitest",
     alias: "vitest-native-mutation",
     version: "5.0.5",
-    required: false,
   },
   {
     name: "jest",
+    label: "Jest",
     alias: "jest-native-mutation",
     version: "30.5.2",
-    required: true,
   },
 ];
 export function selectMutationToolsLock(rootManifest, source) {
   assert.equal(source.lockfileVersion, 3);
   let packages = source.packages;
   const versions = {};
-  for (const { name, alias, version, required } of nativeRoles) {
+  for (const { name, label, alias, version } of nativeRoles) {
     const development = rootManifest.devDependencies?.[name];
     assert.match(
       development ?? "",
       /^\d+\.\d+\.\d+$/,
-      `Development ${name} declaration must be exactly pinned`,
+      `Development ${label} declaration must be exactly pinned`,
     );
     assert.equal(
       source.packages[""]?.devDependencies?.[name],
       development,
-      `Development ${name} lock root differs`,
+      `Development ${label} lock root differs`,
     );
     assert.equal(
       source.packages["node_modules/" + name]?.version,
       development,
-      `Development ${name} lock version differs`,
+      `Development ${label} lock version differs`,
     );
     const declaration = rootManifest.devDependencies?.[alias];
-    if (declaration === undefined && !required) {
-      assert.equal(
-        development,
-        version,
-        `Native mutation ${name} requires its qualified alias before development updates`,
-      );
-      versions[name] = version;
-      continue;
-    }
     assert.equal(
       declaration,
       `npm:${name}@${version}`,
-      `Native mutation ${name} role must retain its qualified exact pin`,
+      `Native mutation ${label} role must retain its qualified exact pin`,
     );
     assert.equal(
       source.packages[""]?.devDependencies?.[alias],
       declaration,
-      `Native mutation ${name} lock root differs`,
+      `Native mutation ${label} lock root differs`,
     );
     const nativeKey = "node_modules/" + alias,
       canonical = "node_modules/" + name;
     assert.equal(
       source.packages[nativeKey]?.name,
       name,
-      `Native mutation ${name} alias target differs`,
+      `Native mutation ${label} alias target differs`,
     );
     assert.equal(
       source.packages[nativeKey]?.version,
       version,
-      `Native mutation ${name} alias version differs`,
+      `Native mutation ${label} alias version differs`,
     );
     const projected = {};
     for (const [key, entry] of Object.entries(packages)) {
@@ -90,7 +81,7 @@ export function selectMutationToolsLock(rootManifest, source) {
           : key;
       assert.ok(
         !Object.hasOwn(projected, target),
-        `Native mutation ${name} namespace collision`,
+        `Native mutation ${label} namespace collision`,
       );
       projected[target] = entry;
     }
@@ -149,5 +140,6 @@ async function main() {
 if (
   process.argv[1] &&
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-)
+) {
   await main();
+}

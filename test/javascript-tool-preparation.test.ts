@@ -5,7 +5,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
 
-test("mutation tool preparation keeps the qualified Jest role separate from development declarations", async (t) => {
+test("mutation tool preparation preserves qualified native roles independently of development versions", async (t) => {
   const files = Object.fromEntries(
     await Promise.all(
       [
@@ -46,28 +46,59 @@ test("mutation tool preparation keeps the qualified Jest role separate from deve
   );
   const manifest = JSON.parse(files["package.json"]!);
   const originalLock = JSON.parse(files["package-lock.json"]!);
+  const nativeAliases: Record<string, string> = {
+    jest: "jest-native-mutation",
+    eslint: "eslint-native-profile",
+  };
   for (const name of [
-    "vitest",
+    "jest",
     "eslint",
     "@types/node",
     "@modelcontextprotocol/client",
   ]) {
-    assert.equal(selected.dependencies[name], manifest.devDependencies[name]);
-    assert.equal(
-      lock.packages["node_modules/" + name].version,
-      manifest.devDependencies[name],
-    );
+    const alias = nativeAliases[name];
+    const declaration = alias && manifest.devDependencies[alias];
+    let expected = manifest.devDependencies[name];
+    if (declaration) {
+      const prefix = `npm:${name}@`;
+      assert.ok(declaration.startsWith(prefix));
+      expected = declaration.slice(prefix.length);
+      assert.match(expected, /^\d+\.\d+\.\d+$/);
+      assert.equal(originalLock.packages["node_modules/" + alias].name, name);
+      assert.equal(
+        originalLock.packages["node_modules/" + alias].version,
+        expected,
+      );
+      assert.equal(lock.packages["node_modules/" + name].name, name);
+      assert.ok(
+        !Object.keys(lock.packages).some(
+          (key) =>
+            key === "node_modules/" + alias ||
+            key.startsWith("node_modules/" + alias + "/"),
+        ),
+      );
+    }
+    assert.equal(selected.dependencies[name], expected);
+    assert.equal(lock.packages["node_modules/" + name].version, expected);
   }
-  assert.equal(selected.dependencies.jest, "30.5.2");
-  assert.equal(lock.packages["node_modules/jest"].name, "jest");
-  assert.equal(lock.packages["node_modules/jest"].version, "30.5.2");
+  assert.equal(selected.dependencies.vitest, "5.0.5");
+  assert.equal(lock.packages["node_modules/vitest"].name, "vitest");
+  assert.equal(lock.packages["node_modules/vitest"].version, "5.0.5");
   assert.equal(
-    manifest.devDependencies["jest-native-mutation"],
-    "npm:jest@30.5.2",
+    manifest.devDependencies["vitest-native-mutation"],
+    "npm:vitest@5.0.5",
+  );
+  assert.equal(
+    originalLock.packages["node_modules/vitest"].version,
+    manifest.devDependencies.vitest,
+  );
+  assert.equal(
+    lock.packages["node_modules/vitest/node_modules/@vitest/mocker"].version,
+    "5.0.5",
   );
   assert.ok(
     !Object.keys(lock.packages).some((key) =>
-      key.includes("jest-native-mutation"),
+      key.includes("vitest-native-mutation"),
     ),
   );
   const parser = "@typescript-eslint/parser";
@@ -83,8 +114,8 @@ test("mutation tool preparation keeps the qualified Jest role separate from deve
   }
 });
 
-async function roleInputs() {
-  const module = await import(
+test("mutation Vitest selection rejects declaration and lock drift before projection", async () => {
+  const { selectMutationToolsLock } = await import(
     new URL("../../scripts/prepare-mutation-tools.mjs", import.meta.url).href
   );
   const manifest = JSON.parse(
@@ -93,73 +124,75 @@ async function roleInputs() {
   const lock = JSON.parse(
     await readFile(new URL("../../package-lock.json", import.meta.url), "utf8"),
   );
-  return { select: module.selectMutationToolsLock, manifest, lock };
-}
-test("mutation Jest role rejects declaration and lock drift before projection", async () => {
-  const { select, manifest, lock } = await roleInputs();
   for (const [mutate, message] of [
     [
       (m: typeof manifest) => {
-        delete m.devDependencies["jest-native-mutation"];
+        m.devDependencies["vitest-native-mutation"] = "npm:vitest@^5.0.5";
       },
-      /Native mutation jest role/,
+      /Native mutation Vitest role must retain its qualified exact pin/,
+    ],
+    [
+      (_m: typeof manifest, l: typeof lock) => {
+        l.packages[""].devDependencies["vitest-native-mutation"] =
+          "npm:vitest@5.1.0";
+      },
+      /Native mutation Vitest lock root differs/,
+    ],
+    [
+      (_m: typeof manifest, l: typeof lock) => {
+        l.packages["node_modules/vitest-native-mutation"].name = "other";
+      },
+      /Native mutation Vitest alias target differs/,
+    ],
+    [
+      (_m: typeof manifest, l: typeof lock) => {
+        l.packages["node_modules/vitest-native-mutation"].version = "5.1.0";
+      },
+      /Native mutation Vitest alias version differs/,
     ],
     [
       (m: typeof manifest) => {
-        m.devDependencies.jest = "^30.5.2";
+        m.devDependencies.vitest = "^5.1.0";
       },
-      /Development jest declaration/,
+      /Development Vitest declaration must be exactly pinned/,
     ],
     [
       (_m: typeof manifest, l: typeof lock) => {
-        l.packages[""].devDependencies.jest = "99.0.0";
+        l.packages[""].devDependencies.vitest = "9.9.9";
       },
-      /Development jest lock root/,
+      /Development Vitest lock root differs/,
     ],
     [
       (_m: typeof manifest, l: typeof lock) => {
-        l.packages["node_modules/jest"].version = "99.0.0";
+        l.packages["node_modules/vitest"].version = "9.9.9";
       },
-      /Development jest lock version/,
-    ],
-    [
-      (m: typeof manifest) => {
-        m.devDependencies["jest-native-mutation"] = "npm:jest@^30.5.2";
-      },
-      /Native mutation jest role/,
-    ],
-    [
-      (_m: typeof manifest, l: typeof lock) => {
-        l.packages[""].devDependencies["jest-native-mutation"] =
-          "npm:jest@30.5.3";
-      },
-      /Native mutation jest lock root/,
-    ],
-    [
-      (_m: typeof manifest, l: typeof lock) => {
-        l.packages["node_modules/jest-native-mutation"].name = "other";
-      },
-      /Native mutation jest alias target/,
-    ],
-    [
-      (_m: typeof manifest, l: typeof lock) => {
-        l.packages["node_modules/jest-native-mutation"].version = "30.5.3";
-      },
-      /Native mutation jest alias version/,
+      /Development Vitest lock version differs/,
     ],
   ] as const) {
     const m = structuredClone(manifest),
       l = structuredClone(lock);
     mutate(m, l);
-    assert.throws(() => select(m, l), { code: "ERR_ASSERTION", message });
+    assert.throws(() => selectMutationToolsLock(m, l), {
+      code: "ERR_ASSERTION",
+      message,
+    });
   }
 });
-test("mutation Jest role preserves its native closure across coherent future development versions and nested collisions", async () => {
-  const { select, manifest, lock } = await roleInputs();
-  manifest.devDependencies.jest = "99.0.0";
-  lock.packages[""].devDependencies.jest = "99.0.0";
-  lock.packages["node_modules/jest"].version = "99.0.0";
-  const alias = "node_modules/jest-native-mutation";
+
+test("mutation Vitest projection retains alias-scoped dependencies despite colliding development versions", async () => {
+  const { selectMutationToolsLock } = await import(
+    new URL("../../scripts/prepare-mutation-tools.mjs", import.meta.url).href
+  );
+  const manifest = JSON.parse(
+    await readFile(new URL("../../package.json", import.meta.url), "utf8"),
+  );
+  const lock = JSON.parse(
+    await readFile(new URL("../../package-lock.json", import.meta.url), "utf8"),
+  );
+  manifest.devDependencies.vitest = "99.0.0";
+  lock.packages[""].devDependencies.vitest = "99.0.0";
+  lock.packages["node_modules/vitest"].version = "99.0.0";
+  const alias = "node_modules/vitest-native-mutation";
   lock.packages[alias].dependencies["synthetic-leaf"] = "1.0.0";
   const entry = {
     version: "1.0.0",
@@ -168,41 +201,42 @@ test("mutation Jest role preserves its native closure across coherent future dev
     integrity: "sha512-AAAA",
   };
   lock.packages[alias + "/node_modules/synthetic-leaf"] = entry;
-  lock.packages["node_modules/jest/node_modules/synthetic-leaf"] = {
+  lock.packages["node_modules/vitest/node_modules/synthetic-leaf"] = {
     ...entry,
     version: "99.0.0",
   };
-  const before = JSON.stringify(lock),
-    selected = select(manifest, lock);
-  assert.equal(selected.manifest.dependencies.jest, "30.5.2");
-  assert.equal(selected.lock.packages["node_modules/jest"].version, "30.5.2");
+  const before = JSON.stringify(lock);
+  const selected = selectMutationToolsLock(manifest, lock);
+  assert.equal(selected.manifest.dependencies.vitest, "5.0.5");
   assert.equal(
-    selected.lock.packages["node_modules/jest/node_modules/synthetic-leaf"]
+    selected.lock.packages["node_modules/vitest/node_modules/synthetic-leaf"]
       .version,
     "1.0.0",
   );
+  assert.equal(
+    selected.lock.packages["node_modules/vitest/node_modules/@vitest/mocker"]
+      .version,
+    "5.0.5",
+  );
   assert.equal(JSON.stringify(lock), before);
 });
-test("mutation roles compose with the separate Vitest alias without accepting an unqualified legacy fallback", async () => {
-  const { select, manifest, lock } = await roleInputs();
-  const vitest = structuredClone(lock.packages["node_modules/vitest"]);
-  manifest.devDependencies.vitest = "99.0.0";
-  lock.packages[""].devDependencies.vitest = "99.0.0";
-  lock.packages["node_modules/vitest"].version = "99.0.0";
-  assert.throws(() => select(manifest, lock), {
+
+test("mutation Vitest role refuses a missing alias even when development matches the native pin", async () => {
+  const { selectMutationToolsLock } = await import(
+    new URL("../../scripts/prepare-mutation-tools.mjs", import.meta.url).href
+  );
+  const manifest = JSON.parse(
+    await readFile(new URL("../../package.json", import.meta.url), "utf8"),
+  );
+  const lock = JSON.parse(
+    await readFile(new URL("../../package-lock.json", import.meta.url), "utf8"),
+  );
+  manifest.devDependencies.vitest = "5.0.5";
+  lock.packages[""].devDependencies.vitest = "5.0.5";
+  lock.packages["node_modules/vitest"].version = "5.0.5";
+  delete manifest.devDependencies["vitest-native-mutation"];
+  assert.throws(() => selectMutationToolsLock(manifest, lock), {
     code: "ERR_ASSERTION",
-    message: /Native mutation vitest requires its qualified alias/,
+    message: /Native mutation Vitest role/,
   });
-  manifest.devDependencies["vitest-native-mutation"] = "npm:vitest@5.0.5";
-  lock.packages[""].devDependencies["vitest-native-mutation"] =
-    "npm:vitest@5.0.5";
-  lock.packages["node_modules/vitest-native-mutation"] = {
-    ...vitest,
-    name: "vitest",
-  };
-  const selected = select(manifest, lock);
-  assert.equal(selected.manifest.dependencies.vitest, "5.0.5");
-  assert.equal(selected.manifest.dependencies.jest, "30.5.2");
-  assert.equal(selected.lock.packages["node_modules/vitest"].version, "5.0.5");
-  assert.equal(selected.lock.packages["node_modules/jest"].version, "30.5.2");
 });
