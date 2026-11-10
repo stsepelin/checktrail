@@ -315,7 +315,7 @@ jobs:
         run: node scripts/verify-consumer-impact-package.mjs
     needs:
       - ci-plan
-    if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).mode == 'full' }}
+    if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && (fromJSON(needs.ci-plan.outputs.plan).mode == 'full' || (fromJSON(needs.ci-plan.outputs.plan).mode == 'affected' && fromJSON(needs.ci-plan.outputs.plan).hostValidation == 'required')) }}
 
   php-review:
     needs: [ci-plan, actionlint]

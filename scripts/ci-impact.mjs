@@ -368,6 +368,7 @@ export function planNativeJobs({
   validateInputContract(inputs, jobs);
   const full = (reason) => ({
     mode: "full",
+    hostValidation: "required",
     reason,
     selected: Object.fromEntries(jobs.map((id) => [id, true])),
     notSelected: [],
@@ -435,6 +436,7 @@ export function planNativeJobs({
   }
   return {
     mode: "affected",
+    hostValidation: "not-selected",
     reason: "Exact declared inputs with complete selected shared test files",
     selected: Object.fromEntries(jobs.map((id) => [id, selected.has(id)])),
     notSelected: jobs.filter((id) => !selected.has(id)),
@@ -470,6 +472,67 @@ export function planNativeJobs({
 export function requireCiCompletion(plan, needs) {
   assert.ok(plan && ["full", "affected"].includes(plan.mode));
   assert.ok(
+    ["required", "not-selected"].includes(plan.hostValidation),
+    "Missing or malformed host validation route",
+  );
+  if (plan.mode === "full") {
+    assert.equal(
+      plan.hostValidation,
+      "required",
+      "Full verification requires host validation",
+    );
+    assert.equal(plan.dependencyImpact, undefined);
+  } else if (plan.hostValidation === "required") {
+    const impact = plan.dependencyImpact;
+    assert.ok(
+      impact && typeof impact === "object" && !Array.isArray(impact),
+      "Dependency host route has no typed evidence",
+    );
+    assert.deepEqual(Object.keys(impact).sort(), [
+      "affectedDevelopmentRoots",
+      "changedLockEntries",
+      "declaredBumps",
+      "moduleResolutionInventorySha256",
+      "observedConsumers",
+      "qualifiedLockSha256",
+      "scope",
+    ]);
+    assert.equal(impact.scope, "development-dependency-consumers-v1");
+    assert.ok(
+      Array.isArray(impact.declaredBumps) && impact.declaredBumps.length > 0,
+    );
+    for (const row of impact.declaredBumps) {
+      assert.deepEqual(Object.keys(row).sort(), ["after", "before", "name"]);
+      assert.ok(["vite", "rolldown"].includes(row.name));
+      for (const value of [row.before, row.after])
+        assert.match(value, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/);
+    }
+    for (const field of [
+      "affectedDevelopmentRoots",
+      "changedLockEntries",
+      "observedConsumers",
+    ]) {
+      assert.ok(
+        Array.isArray(impact[field]) &&
+          impact[field].length > 0 &&
+          impact[field].every(
+            (value) => typeof value === "string" && value.length > 0,
+          ),
+      );
+      assert.equal(new Set(impact[field]).size, impact[field].length);
+    }
+    for (const field of [
+      "moduleResolutionInventorySha256",
+      "qualifiedLockSha256",
+    ])
+      assert.match(impact[field], /^[a-f0-9]{64}$/);
+  } else
+    assert.equal(
+      plan.dependencyImpact,
+      undefined,
+      "Dependency plan cannot omit the host queue",
+    );
+  assert.ok(
     Object.values(plan.selected).every(
       (selected) => typeof selected === "boolean",
     ),
@@ -498,7 +561,9 @@ export function requireCiCompletion(plan, needs) {
   for (const id of expected) {
     const required =
       ["ci-plan", "checks"].includes(id) ||
-      (id === "host-validation" ? plan.mode === "full" : plan.selected[id]);
+      (id === "host-validation"
+        ? plan.hostValidation === "required"
+        : plan.selected[id]);
     assert.equal(
       needs[id].result,
       required ? "success" : "skipped",
@@ -522,6 +587,7 @@ export function requireCiCompletion(plan, needs) {
   return {
     complete: true,
     mode: plan.mode,
+    hostValidation: plan.hostValidation,
     selectedNativeJobs: Object.keys(plan.selected).filter(
       (id) => plan.selected[id],
     ),

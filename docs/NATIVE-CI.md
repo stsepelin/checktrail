@@ -129,8 +129,8 @@ A failed preflight or planner prevents the shared and native matrix jobs from
 starting. `ci-complete` still runs and requires successful planning and every
 selected job; skipped jobs cannot qualify a failed plan. When planning succeeds,
 unknown inputs and shared dependency changes still select full verification.
-This saves the expensive fanout on early failures without narrowing successful
-runs.
+This avoids expensive fanout after early failures. The bounded development
+profile below can also select affected consumers after successful preflight.
 
 If a deliberate source change makes the declared input map stale, run
 `node scripts/check-ci-preflight.mjs --update-inputs` locally, review the generated
@@ -194,18 +194,42 @@ constraints. Adjacent directory names and other unclassified documentation data
 retain full verification. This routing does not certify upstream builds or
 native acceptance.
 
-These affected runs avoid unrelated language tool preparation and the full
-package/mutation phase. That phase is explicitly skipped at this revision.
+Fixture, controller, retained-data and Markdown affected runs avoid unrelated
+language tool preparation and the full package/mutation phase. That phase is
+explicitly skipped for those routes.
 Markdown-only PRs run the shared checks and control files without native stacks.
 A successful full run on the exact base is no longer a scheduling prerequisite:
 unavailable or failed historical CI does not broaden a known fixture change.
 No prior job result substitutes for execution of selected current inputs.
 
-Shared production source, schemas, dependency/configuration, CI, executable
-inventories and unknown paths still select full verification. A missing, empty or
+A development-only dependency route is available only after both Git revisions
+already contain the supported, unchanged independent JavaScript qualification
+manifest, lock and source/installed fixture wiring. Revisions before that
+migration retain full verification. The initial admission profile covers exact
+Vite and Rolldown development version changes, follows required, optional and
+peer dependency resolution in both locks, and includes affected shared Vitest,
+Jest and alias consumers. It rejects unresolved or invalid graphs, unreviewed
+aliases, unrelated re-resolutions, production/compiler/build/lint effects and
+unknown consumers. Qualification bytes and actual API/copy wiring are frozen;
+opaque module and executable resolution slices have a bounded reviewed profile.
+New or changed unclassified wiring requires full verification.
+
+Admitted dependency plans retain the entire generated native-owner union and
+complete live-root bundler, Vitest/Jest, preparation, audit and native control
+files. They set the typed `hostValidation` route to `required`: the existing
+host-validation job runs its whole installed/package queue, unchanged smoke
+check, mutation queue and separate installed consumer proof. The completion gate
+rejects a missing or malformed route and any skipped required host job. Other
+affected plans use `not-selected`; full plans always require the host job.
+The four shared matrices retain typecheck, lint, build, formatting and audits.
+This narrows selection, not package failures or native support. The complete
+host queue remains a latency limit; no measured speedup is implied.
+
+Shared production source, schemas, other dependency/configuration changes, CI,
+executable inventories and unknown paths still select full verification. A missing, empty or
 invalid diff and a stale ownership contract also select full verification.
 Only the standalone source boundaries declared below can narrow production
-source changes. Semantic manifest changes remain global. Adapter names do not
+source changes. Manifest changes beyond admitted development version bumps remain global. Adapter names do not
 establish isolation from filename prefixes. Pushes, tags, manual runs and the weekly schedule retain
 the complete shared suite, package/mutation phases and all native stacks.
 The full path retains every original command and OS/Node variant.

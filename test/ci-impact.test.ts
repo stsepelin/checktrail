@@ -778,7 +778,11 @@ test("CI completion requires selected jobs to pass and reports omitted jobs as u
     /outcome disagrees/,
   );
   assert.throws(
-    () => requireCiCompletion({ ...result, mode: "full" }, needs),
+    () =>
+      requireCiCompletion(
+        { ...result, mode: "full", hostValidation: "required" },
+        needs,
+      ),
     /cannot omit/,
   );
   const unexpected = structuredClone(needs);
