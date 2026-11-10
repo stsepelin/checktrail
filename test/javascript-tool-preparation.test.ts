@@ -279,7 +279,10 @@ test("qualified graph optionality follows selected paths and required paths prom
     delete missingRequiredPeer.packages["node_modules/peer-leaf"];
     assert.throws(
       () =>
-        selectQualifiedJavaScriptToolsLock(requiredManifest, missingRequiredPeer),
+        selectQualifiedJavaScriptToolsLock(
+          requiredManifest,
+          missingRequiredPeer,
+        ),
       /Missing locked required tool dependency peer-leaf/,
     );
     delete requiredSource.packages["node_modules/leaf"];
