@@ -210,9 +210,33 @@ Vite and Rolldown development version changes, follows required, optional and
 peer dependency resolution in both locks, and includes affected shared Vitest,
 Jest and alias consumers. It rejects unresolved or invalid graphs, unreviewed
 aliases, unrelated re-resolutions, production/compiler/build/lint effects and
-unknown consumers. Qualification bytes and actual API/copy wiring are frozen;
-opaque module and executable resolution slices have a bounded reviewed profile.
-New or changed unclassified wiring requires full verification.
+unknown consumers. `scripts/ci-development-inventory.json` is an explicitly
+reviewed admission profile. It records the exact closed set of tracked paths,
+Git modes, blob types and content identities, including the planner, CI runners,
+workflows, shell/configuration files and documentation. Only this exact data-only
+profile path is excluded from its own inventory; the same regular profile blob
+must exist at both event revisions and in the tested checkout. Unknown additions,
+changed bytes or modes, malformed profiles and pre-migration trees select full
+verification. Profile mismatch is normal source evolution and does not itself
+fail CI.
+
+The root manifest fingerprint preserves scripts, configuration and every field
+except the graph-approved Vite/Rolldown development version values. The lock
+fingerprint preserves metadata and every entry outside the exclusively reviewed
+development closures; the graph checks still validate every changed lock entry,
+range, alias and required resolution. The actual checked-out Git tree must match
+the reviewed inventory and event-head metadata, and all tracked physical files
+must match that checkout. Dirty or untracked inputs select full verification.
+A merge checkout with the same audited tree is valid; a newer-main checkout with
+additional consumer or configuration bytes is not admitted by older event refs.
+
+Updating this profile requires deliberately auditing dependency consumers and
+their complete routed test files, generated native-owner union and whole host
+phases. Capturing hashes alone does not perform that audit. Do not regenerate
+it as routine dependency/source housekeeping or automatically in CI. Ordinary
+source changes remain valid and run full verification until a separately
+reviewed profile refresh. This is a finite repository admission decision, not
+an inference engine for arbitrary JavaScript or shell behavior.
 
 Admitted dependency plans retain the entire generated native-owner union and
 complete live-root bundler, Vitest/Jest, preparation, audit and native control
@@ -242,8 +266,9 @@ remain unqualified. This optional observation does not control PR routing and
 cannot qualify an omitted native job against the new revision.
 
 `ci-complete` requires the planner, shared matrix and every selected native job
-to succeed. It requires unselected jobs, including the affected run's full
-package/mutation phase, to be explicitly skipped. Its receipt reports whether
+to succeed. It requires unselected jobs to be explicitly skipped. The full
+package/mutation phase is required for admitted dependency routes and omitted
+only when the affected plan explicitly selects no host validation. Its receipt reports whether
 full-revision verification occurred, and never qualifies omitted jobs. Require
 this aggregate check in branch protection when using selective CI. Gate A still
 requires its separately specified complete current-revision native evidence.

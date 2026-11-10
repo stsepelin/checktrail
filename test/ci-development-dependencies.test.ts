@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
 import { test, type TestContext } from "node:test";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -9,13 +8,18 @@ import { parse } from "yaml";
 import { fixture } from "./helpers.js";
 
 const repository = fileURLToPath(new URL("../../", import.meta.url));
-const { classifyDevelopmentBump, dependencyHostCondition } = await import(
+const {
+  classifyDevelopmentBump,
+  dependencyHostCondition,
+  captureDevelopmentInventory,
+  developmentInventoryPath,
+  qualificationInputs,
+} = await import(
   new URL("../../scripts/plan-ci-impact.mjs", import.meta.url).href
 );
 const { buildNativeInputs, planNativeJobs, requireCiCompletion } = await import(
   new URL("../../scripts/ci-impact.mjs", import.meta.url).href
 );
-const hash = (text: string) => createHash("sha256").update(text).digest("hex");
 const jobs = [
   "original-vite",
   "original-vitest",
@@ -61,16 +65,18 @@ const sourceFiles: Record<string, string> = {
   "test/mutation-native-guards.test.ts": "export {};",
   "test/mutation-native-selection.test.ts": "export {};",
 };
-const qualificationHashes = Object.fromEntries(
-  Object.entries(sourceFiles)
-    .filter(([file]) => file.startsWith("scripts/"))
-    .map(([file, text]) => [file, hash(text)]),
-);
-const consumerHashes = Object.fromEntries(
-  Object.entries(sourceFiles)
-    .filter(([file]) => file.startsWith("test/"))
-    .map(([file, text]) => [file, hash(text)]),
-);
+for (const file of qualificationInputs)
+  sourceFiles[file] ??= file.endsWith(".json")
+    ? '{"private":true}'
+    : "export {};";
+for (const file of ["scripts/plan-ci-impact.mjs", "scripts/ci-impact.mjs"])
+  sourceFiles[file] = await readFile(path.join(repository, file), "utf8");
+Object.assign(sourceFiles, {
+  ".gitignore": "node_modules/\n",
+  ".github/workflows/ci.yml": JSON.stringify(workflow),
+  "scripts/ci-native-inputs.json": JSON.stringify(inputs),
+  "test/jvm-wrapper-phases.test.ts": "export {};",
+});
 type Entry = {
   version: string;
   name?: string;
@@ -174,11 +180,15 @@ type Change = (
 ) => void;
 async function gitGraph(
   t: TestContext,
-  { before, after = bumpVite }: { before?: Change; after?: Change } = {},
+  {
+    before,
+    after = bumpVite,
+    auditedBefore,
+  }: { before?: Change; after?: Change; auditedBefore?: Change } = {},
 ) {
   const { manifest, lock } = graph();
   const files = { ...sourceFiles };
-  before?.(manifest, lock, files);
+  auditedBefore?.(manifest, lock, files);
   lock.packages[""] = structuredClone(manifest);
   const directory = await fixture(t, {});
   const git = (...args: string[]) =>
@@ -198,7 +208,11 @@ async function gitGraph(
         },
       },
     ).trim();
-  const save = async () => {
+  let previousFiles = new Set<string>();
+  const save = async (commit = true) => {
+    for (const file of previousFiles)
+      if (!(file in files)) await rm(path.join(directory, file));
+    previousFiles = new Set(Object.keys(files));
     for (const [file, text] of Object.entries(files)) {
       await mkdir(path.dirname(path.join(directory, file)), {
         recursive: true,
@@ -214,10 +228,22 @@ async function gitGraph(
       JSON.stringify(lock),
     );
     git("add", ".");
-    git("commit", "-m", "Synthetic dependency graph");
+    if (!commit) return git("write-tree");
+    git("commit", "--allow-empty", "-m", "Synthetic dependency graph");
     return git("rev-parse", "HEAD");
   };
   git("init", "--initial-branch=main");
+  git("config", "core.autocrlf", "false");
+  git("config", "core.filemode", "true");
+  const reviewedTree = await save(false);
+  files[developmentInventoryPath] = JSON.stringify(
+    captureDevelopmentInventory({
+      repository: directory,
+      revision: reviewedTree,
+    }),
+  );
+  before?.(manifest, lock, files);
+  lock.packages[""] = structuredClone(manifest);
   const base = await save();
   after(manifest, lock, files);
   lock.packages[""] = structuredClone(manifest);
@@ -226,11 +252,8 @@ async function gitGraph(
     repository: directory,
     base,
     head,
-    workflow,
-    inputs,
-    qualificationHashes,
-    consumerHashes,
-    resolutionHash: hash("{}"),
+    workflow: parse(files[".github/workflows/ci.yml"]!),
+    inputs: JSON.parse(files["scripts/ci-native-inputs.json"]!),
   };
   return { options, directory, git };
 }
@@ -457,7 +480,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["scripts/prepare-javascript-tools.mjs"] =
           "export const coupled=true;";
       },
-      reason: /Unsupported qualification input/,
+      reason: /audited inventory/,
     },
     {
       name: "changed wiring",
@@ -473,14 +496,14 @@ test("qualification and source boundaries fail closed before migration, for alte
       before: (_m, _l, f) => {
         f["test/unclassified.test.ts"] = 'import {build} from "vite";';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "encoded consumer already on base",
       before: (_m, _l, f) => {
         f["test/unclassified.test.ts"] = 'import {build} from "v\\u0069te";';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "unknown dynamic consumer",
@@ -488,7 +511,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["test/unclassified.test.ts"] =
           "const tool=process.env.TOOL;await import(tool);";
       },
-      reason: /module-resolution\/copy wiring/,
+      reason: /audited inventory/,
     },
     {
       name: "aliased copied root consumer",
@@ -496,7 +519,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["test/unclassified.test.ts"] =
           'import {copyInstalledPackages as clone} from "./tool-fixture.js";clone("synthetic",["vite"]);';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "rebound copied root consumer",
@@ -504,7 +527,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["test/unclassified.test.ts"] =
           'import {copyInstalledPackages} from "./tool-fixture.js";const clone=copyInstalledPackages;clone("synthetic",["vite"]);';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "namespace copied root consumer",
@@ -512,7 +535,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["test/unclassified.test.ts"] =
           'import * as tools from "./tool-fixture.js";tools.copyInstalledPackages("synthetic",["vite"]);';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "rebound module resolver",
@@ -520,7 +543,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["test/unclassified.test.ts"] =
           'const resolve=import.meta.resolve;resolve("vite");';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "aliased require factory",
@@ -528,21 +551,21 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["test/unclassified.test.ts"] =
           'import {createRequire as factory} from "node:module";const load=factory(import.meta.url);load("vite");';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "unknown root configuration consumer",
       before: (_m, _l, f) => {
         f["vite.config.mjs"] = 'import {build} from "vite";';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "unknown asset builder consumer",
       before: (_m, _l, f) => {
         f["assets/build.mjs"] = 'import {build} from "vite";';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "opaque code evaluator",
@@ -550,7 +573,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["src/unclassified.ts"] =
           "const execute=eval;execute(process.env.CODE);";
       },
-      reason: /module-resolution\/copy wiring/,
+      reason: /audited inventory/,
     },
     {
       name: "relative installed-module consumer",
@@ -558,7 +581,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["src/unclassified.ts"] =
           'import {build} from "../node_modules/vite/dist/node/index.js";';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "live legacy alias consumer",
@@ -566,7 +589,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["src/unclassified.ts"] =
           'import {startVitest} from "vitest-native-mutation/node";';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "unknown root CLI consumer",
@@ -574,7 +597,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["scripts/unclassified.mjs"] =
           'import {spawn} from "node:child_process";spawn(process.execPath,["./node_modules/vite/bin/vite.js"]);';
       },
-      reason: /Unreviewed dependency consumer/,
+      reason: /audited inventory/,
     },
     {
       name: "unknown computed executable",
@@ -582,7 +605,7 @@ test("qualification and source boundaries fail closed before migration, for alte
         f["scripts/unclassified.mjs"] =
           'import {spawn} from "node:child_process";spawn(process.env.TOOL,[]);';
       },
-      reason: /module-resolution\/copy wiring/,
+      reason: /audited inventory/,
     },
     {
       name: "source change in bump",
@@ -637,7 +660,7 @@ test("qualification and source boundaries fail closed before migration, for alte
       before: (m) => {
         m.scripts.build = "vite build";
       },
-      reason: /used by a build\/test script/,
+      reason: /audited inventory/,
     },
   ];
   for (const row of cases)
@@ -647,9 +670,9 @@ test("qualification and source boundaries fail closed before migration, for alte
     });
 });
 
-test("valid near misses retain eligibility without treating independent audit bytes or adjacent package names as consumers", async (t) => {
+test("explicitly reviewed stable inventory admits valid near misses without runtime source inference", async (t) => {
   const { options } = await gitGraph(t, {
-    before: (_m, l, f) => {
+    auditedBefore: (_m, l, f) => {
       f["scripts/original-audit.mjs"] =
         'import {readFile} from "node:fs/promises";export const audit=()=>readFile("package-lock.json");';
       f["test/adjacent.test.ts"] = 'import {build} from "vite-extra";';
@@ -672,7 +695,7 @@ test("valid near misses retain eligibility without treating independent audit by
   });
   assert.equal(
     classifyDevelopmentBump(options).evidence.scope,
-    "development-dependency-consumers-v1",
+    "audited-development-dependency-consumers-v1",
   );
   assert.throws(
     () =>
@@ -688,7 +711,7 @@ test("valid near misses retain eligibility without treating independent audit by
         ...options,
         inputs: { ...inputs, "test/vitest.test.ts": [] },
       }),
-    /Missing declared dependency consumer owners/,
+    /Checked-out owner contract/,
   );
 });
 
@@ -816,7 +839,7 @@ test("planner entrypoint emits the dependency route from a real synthetic Git gr
     readText: async (file: string) => files[file as keyof typeof files],
   });
   const { directory, options } = await gitGraph(t, {
-    before: (_m, _l, target) => {
+    auditedBefore: (_m, _l, target) => {
       Object.assign(target, nativeFiles, {
         ".github/workflows/ci.yml": JSON.stringify(nativeWorkflow),
         "scripts/required-native-tests.json": "{}",
@@ -824,9 +847,10 @@ test("planner entrypoint emits the dependency route from a real synthetic Git gr
       });
     },
   });
-  const event = path.join(directory, "event.json"),
-    output = path.join(directory, "output"),
-    summary = path.join(directory, "summary");
+  const evidence = await fixture(t, {});
+  const event = path.join(evidence, "event.json"),
+    output = path.join(evidence, "output"),
+    summary = path.join(evidence, "summary");
   await writeFile(
     event,
     JSON.stringify({
@@ -841,7 +865,7 @@ test("planner entrypoint emits the dependency route from a real synthetic Git gr
     [
       "--input-type=module",
       "--eval",
-      `const {main}=await import(${JSON.stringify(pathToFileURL(path.join(repository, "scripts/plan-ci-impact.mjs")).href)});await main(${JSON.stringify({ qualificationHashes, consumerHashes, resolutionHash: hash("{}") })});`,
+      `const {main}=await import(${JSON.stringify(pathToFileURL(path.join(repository, "scripts/plan-ci-impact.mjs")).href)});await main();`,
     ],
     {
       cwd: directory,
@@ -870,7 +894,7 @@ test("planner entrypoint emits the dependency route from a real synthetic Git gr
   );
   assert.equal(
     plan.dependencyImpact.scope,
-    "development-dependency-consumers-v1",
+    "audited-development-dependency-consumers-v1",
   );
   assert.deepEqual(JSON.parse((await readFile(output, "utf8")).slice(5)), plan);
   assert.match(
@@ -905,4 +929,271 @@ test("duplicate-key and malformed JSON locks cannot authorize selective dependen
         );
       },
     );
+});
+
+test("complete inventory rejects the reproduced loader and command family without inferring JavaScript or shell semantics", async (t) => {
+  const sources = [
+    'let tool="node:fs";tool="vite";await import(tool);',
+    'import {createRequire} from "node:module";const base=createRequire(import.meta.url);const load=base.bind(null);load("vite");',
+    'require.bind(null)("vite");',
+    "(0,eval)(process.env.CODE);",
+    "const execute=(eval);execute(process.env.CODE);",
+    'tools["copy"+"InstalledPackages"]("synthetic",["vite"]);',
+    'import {build} from "../node_modules/placeholder/../vite/dist/node/index.js";',
+    'await import(new URL("./dist/node/index.js",process.env.TOOL_BASE).href);',
+  ];
+  for (const source of sources)
+    await t.test(source, async (t) => {
+      const { options } = await gitGraph(t, {
+        before: (_m, _l, f) => {
+          f["scripts/unknown.mjs"] = source;
+        },
+      });
+      assert.throws(
+        () => classifyDevelopmentBump(options),
+        /audited inventory/,
+      );
+    });
+  for (const command of [
+    "node ./node_modules/vite/bin/vite.js build",
+    '"vite" build',
+    'npx --package=vite --call="vite build"',
+  ])
+    await t.test(command, async (t) => {
+      const { options } = await gitGraph(t, {
+        before: (m) => {
+          m.scripts.build = command;
+        },
+      });
+      assert.throws(
+        () => classifyDevelopmentBump(options),
+        /audited inventory/,
+      );
+    });
+  for (const file of [
+    "bin/tool",
+    "scripts/tool.sh",
+    "new.config",
+    "docs/new.md",
+  ])
+    await t.test(file, async (t) => {
+      const { options } = await gitGraph(t, {
+        before: (_m, _l, f) => {
+          f[file] = "new input";
+        },
+      });
+      assert.throws(
+        () => classifyDevelopmentBump(options),
+        /audited inventory/,
+      );
+    });
+});
+
+test("inventory profile is strict data with no caller-selected exclusions", async (t) => {
+  type Profile = {
+    schemaVersion: number;
+    scope: string;
+    entries: [
+      {
+        path: string;
+        mode: string;
+        type: string;
+        fingerprint: string;
+        hash: string;
+      },
+      ...Array<{
+        path: string;
+        mode: string;
+        type: string;
+        fingerprint: string;
+        hash: string;
+      }>,
+    ];
+  };
+  const mutations: Array<[string, (p: Profile) => void]> = [
+    ["unknown key", (p) => Object.assign(p, { exclusions: ["src"] })],
+    [
+      "wrong schema",
+      (p) => {
+        p.schemaVersion = 2;
+      },
+    ],
+    [
+      "wrong scope",
+      (p) => {
+        p.scope = "unknown";
+      },
+    ],
+    [
+      "duplicate path",
+      (p) => {
+        p.entries.push({ ...p.entries[0] });
+      },
+    ],
+    [
+      "case ambiguous path",
+      (p) => {
+        p.entries.push({
+          ...p.entries[0],
+          path: p.entries[0].path.toUpperCase(),
+        });
+      },
+    ],
+    [
+      "symlink mode",
+      (p) => {
+        p.entries[0].mode = "120000";
+      },
+    ],
+    [
+      "gitlink type",
+      (p) => {
+        p.entries[0].type = "commit";
+      },
+    ],
+    [
+      "malformed object ID",
+      (p) => {
+        p.entries[0].hash = "a";
+      },
+    ],
+    [
+      "traversal path",
+      (p) => {
+        p.entries[0].path = "../outside";
+      },
+    ],
+    [
+      "self exclusion entry",
+      (p) => {
+        p.entries[0].path = developmentInventoryPath;
+      },
+    ],
+    [
+      "extra row field",
+      (p) => {
+        Object.assign(p.entries[0], { exclude: true });
+      },
+    ],
+    [
+      "missing reviewed entry",
+      (p) => {
+        p.entries.pop();
+      },
+    ],
+  ];
+  for (const [name, mutate] of mutations)
+    await t.test(name, async (t) => {
+      const { options } = await gitGraph(t, {
+        before: (_m, _l, f) => {
+          const p = JSON.parse(f[developmentInventoryPath]!) as Profile;
+          mutate(p);
+          f[developmentInventoryPath] = JSON.stringify(p);
+        },
+      });
+      assert.throws(() => classifyDevelopmentBump(options));
+    });
+  const { options, directory } = await gitGraph(t, {
+    before: (_m, _l, f) => {
+      f[developmentInventoryPath] = f[developmentInventoryPath]!.replace(
+        "{",
+        '{"scope":"shadow",',
+      );
+    },
+  });
+  assert.throws(() => classifyDevelopmentBump(options), /Duplicate JSON key/);
+  assert.throws(
+    () =>
+      captureDevelopmentInventory({
+        repository: directory,
+        revision: options.head,
+        exclusions: ["src"],
+      }),
+    /Unknown inventory option/,
+  );
+  assert.throws(
+    () => classifyDevelopmentBump({ ...options, qualificationHashes: {} }),
+    /Unknown inventory option/,
+  );
+});
+
+test("bound event revisions cannot admit a different or dirty tested checkout", async (t) => {
+  for (const file of [
+    "src/new-consumer.ts",
+    "new.config",
+    "scripts/plan-ci-impact.mjs",
+    "package.json",
+  ])
+    await t.test(file, async (t) => {
+      const { options, directory, git } = await gitGraph(t);
+      await mkdir(path.dirname(path.join(directory, file)), {
+        recursive: true,
+      });
+      if (file === "package.json") {
+        const m = JSON.parse(
+          await readFile(path.join(directory, file), "utf8"),
+        );
+        m.scripts.build = '"vite" build';
+        await writeFile(path.join(directory, file), JSON.stringify(m));
+      } else
+        await writeFile(
+          path.join(directory, file),
+          'import {build} from "vite";',
+        );
+      git("add", ".");
+      git("commit", "-m", "Unreviewed merge checkout input");
+      assert.throws(
+        () => classifyDevelopmentBump(options),
+        /Checked-out (tree|manifest)/,
+      );
+    });
+  for (const file of ["scripts/plan-ci-impact.mjs", "untracked-input"])
+    await t.test("dirty " + file, async (t) => {
+      const { options, directory } = await gitGraph(t);
+      await writeFile(path.join(directory, file), "dirty");
+      assert.throws(
+        () => classifyDevelopmentBump(options),
+        /Dirty or untracked/,
+      );
+    });
+  await t.test("Git-hidden dirty planner bytes", async (t) => {
+    const { options, directory, git } = await gitGraph(t);
+    git("update-index", "--assume-unchanged", "scripts/plan-ci-impact.mjs");
+    await writeFile(
+      path.join(directory, "scripts/plan-ci-impact.mjs"),
+      "unreviewed controller",
+    );
+    assert.equal(git("status", "--porcelain"), "");
+    assert.throws(
+      () => classifyDevelopmentBump(options),
+      /Dirty checked-out input/,
+    );
+  });
+  await t.test("mode drift", async (t) => {
+    const { options, git } = await gitGraph(t);
+    git("update-index", "--chmod=+x", "scripts/plan-ci-impact.mjs");
+    git("commit", "-m", "Unreviewed executable mode");
+    git("config", "core.filemode", "false");
+    assert.equal(git("status", "--porcelain"), "");
+    assert.throws(() => classifyDevelopmentBump(options), /audited inventory/);
+  });
+  await t.test("same audited tree at merge checkout", async (t) => {
+    const { options, git } = await gitGraph(t);
+    const tree = git("rev-parse", "HEAD^{tree}");
+    const merge = git(
+      "commit-tree",
+      tree,
+      "-p",
+      options.head,
+      "-p",
+      options.base,
+      "-m",
+      "Synthetic same-tree merge",
+    );
+    git("update-ref", "refs/heads/main", merge);
+    assert.equal(
+      classifyDevelopmentBump(options).evidence.scope,
+      "audited-development-dependency-consumers-v1",
+    );
+  });
 });

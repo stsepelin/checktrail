@@ -18,6 +18,14 @@ import {
 } from "./ci-impact.mjs";
 import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
+import {
+  openSync,
+  readSync,
+  closeSync,
+  readFileSync,
+  lstatSync,
+  realpathSync,
+} from "node:fs";
 import { fileURLToPath, URL } from "node:url";
 import path from "node:path";
 import ts from "typescript";
@@ -43,91 +51,34 @@ const dependencyControlFiles = [
   "test/mutation-native-selection.test.ts",
   "test/ci-development-dependencies.test.ts",
   "test/ci-validation.test.ts",
+  "test/jvm-wrapper-phases.test.ts",
   "test/dependency-audit.test.ts",
   "test/development-dependency-audit.test.ts",
 ];
-const dependencyCompleteControls = new Set([
-  ...dependencyControlFiles,
-  "test/artifact-evidence.test.ts",
-  "test/ci-impact.test.ts",
-  "test/ci-affected-tests.test.ts",
-  "test/ci-source-boundaries.test.ts",
-  "test/gate-inventory.test.ts",
-]);
 const dependencyNativeFiles = [
   "test/vite-library.test.ts",
   "test/gate-javascript-extensions.test.ts",
   "test/mutation-native-fixture.ts",
 ];
-// Exact source/fixture wiring reviewed for the independent qualified graph.
-// Unrelated source, audit and notice bytes are not part of this profile.
-export const dependencyQualificationHashes = {
-  "scripts/javascript-tools/package.json":
-    "8178c794db4976dc569542f207a31817ee25bc0bca096e1508cde6e471457ede",
-  "scripts/javascript-tools/package-lock.json":
-    "ae19bc7b5fa2b518a105f26f8024aaeb913c72adebea889cfe584687843ad52e",
-  "scripts/prepare-javascript-tools.mjs":
-    "375bf189766d28ea627cde53a4bb8d34ceca4aebd1cbcccc00507091fd3a8d6f",
-  "scripts/prepare-mutation-tools.mjs":
-    "6b401e24eb53a49a956f2610283499665244b758386f6c618ed1020f18d3b5e6",
-  "scripts/verify-import-context-package.mjs":
-    "a8f0e3ef027f8b41d80b66430ac405d000b81a5301fe87d2cee18f5530dd8585",
-  "scripts/verify-javascript-extensions-container.mjs":
-    "cea36493b2f1df107cdfe137c5b6398d793471a5e93890686d6e28da5caa269e",
-  "scripts/verify-consumer-project-profile.mjs":
-    "9b52f40ba337b03d5f7f6fde34f1c3adea2b422ba251475aab088345affa2c4c",
-  "scripts/verify-mutation-package.mjs":
-    "b34ea0a17c7f663f1672f8eb28958a20ccbd4fc0e999385e59179aabdf29a522",
-  "scripts/verify-mutation-container.mjs":
-    "95444964f2f4dbd25336e57e7bbc480d9eee7fef4af036c60f4e2d31b5079f57",
-  "scripts/verify-mutation-guards.mjs":
-    "9545c961c31e2149cbce158c9b66c48ea43ac64a4c5cfef3d5e10b20569c7d43",
-  "test/javascript-extensions-fixture.ts":
-    "6428059f49cf07f6721c4d26a00995798eab29c864f2630e1de639cd3cb4478b",
-  "test/mutation-native-fixture.ts":
-    "dc088599885b222bc23a7e998db916fdb1f0486d04ecbed695e174cc05a4fe00",
-  "test/tool-fixture.ts":
-    "e0bf8f90a2bae5787b9f7aa790d3de44f6995e88467747b856f542b9106ca5be",
-  "test/vite-library.test.ts":
-    "be64a684bf53aa7a520e3106fa7ed39180c8605b8890ca014f99a519125fc145",
-  "test/vitest.test.ts":
-    "26c02594f74a7a9caa5dc67eb76c6fb084ff9faec50bcd26332a1003b5f4fd5f",
-  "test/jest.test.ts":
-    "82bc1d5e348eae205ead0f595ea5188e5c32e08d0c61c2b6158918dcb4dde03b",
-  "test/development-bundlers.test.ts":
-    "e49b3584d34c5f8c6dc5184bfc139e50bdbfa5f7031669fc81e82ec8989bc7e6",
-};
-export const dependencyConsumerHashes = {
-  "scripts/smoke-package.mjs":
-    "b8499f2ec473d8810e7c61816374ea385eb8ba9e551c08ea888fc02c5178b9c3",
-  "src/jest-runner.ts":
-    "ec20aca6cde95f08637d159fbfd81e119b91d28860fd2b9a82d2326a89518986",
-  "src/mutation-jest-runner.ts":
-    "ef860aecccffee5d0dd4007e42bf6e903699534717abdc2fe617245d9df8562f",
-  "src/mutation-vitest-runner.ts":
-    "89fa31be7729a6427f187f2d0ef8f03cc5e50f87c2d8eddc6d76cb005e22add4",
-  "src/vite-library-prerequisites.ts":
-    "441316a620d961aa61c887a1571d5edaa82dc4ff292d13a81609ee24d086a84f",
-  "src/vite-library-runner.ts":
-    "c78b6c7889f0100bdd24b3c28b2dc9d74670b5e5e26acaef9604e2da53e96daa",
-  "src/vitest-runner.ts":
-    "08d658c0083474b2b2c6ee9c542174149d426d2b461d46ad9fabef0170712a12",
-  "test/development-bundlers.test.ts":
-    "e49b3584d34c5f8c6dc5184bfc139e50bdbfa5f7031669fc81e82ec8989bc7e6",
-  "test/javascript-extensions-fixture.ts":
-    "6428059f49cf07f6721c4d26a00995798eab29c864f2630e1de639cd3cb4478b",
-  "test/jest.test.ts":
-    "82bc1d5e348eae205ead0f595ea5188e5c32e08d0c61c2b6158918dcb4dde03b",
-  "test/mutation-native-fixture.ts":
-    "dc088599885b222bc23a7e998db916fdb1f0486d04ecbed695e174cc05a4fe00",
-  "test/vite-library.test.ts":
-    "be64a684bf53aa7a520e3106fa7ed39180c8605b8890ca014f99a519125fc145",
-  "test/vitest.test.ts":
-    "26c02594f74a7a9caa5dc67eb76c6fb084ff9faec50bcd26332a1003b5f4fd5f",
-};
-// Freeze only unresolved module-resolution slices, not unrelated source bytes.
-export const dependencyResolutionHash =
-  "ea7d0afaa8f6636736220efad739d3ddcd068a84e1bd7c76835e4804977ac618";
+export const qualificationInputs = [
+  "scripts/javascript-tools/package.json",
+  "scripts/javascript-tools/package-lock.json",
+  "scripts/prepare-javascript-tools.mjs",
+  "scripts/prepare-mutation-tools.mjs",
+  "scripts/verify-import-context-package.mjs",
+  "scripts/verify-javascript-extensions-container.mjs",
+  "scripts/verify-consumer-project-profile.mjs",
+  "scripts/verify-mutation-package.mjs",
+  "scripts/verify-mutation-container.mjs",
+  "scripts/verify-mutation-guards.mjs",
+  "test/javascript-extensions-fixture.ts",
+  "test/mutation-native-fixture.ts",
+  "test/tool-fixture.ts",
+  "test/vite-library.test.ts",
+  "test/vitest.test.ts",
+  "test/jest.test.ts",
+  "test/development-bundlers.test.ts",
+];
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 function git(repository, args, options = {}) {
   return execFileSync("git", args, {
@@ -155,68 +106,6 @@ function jsonObject(text, file) {
   assert.ok(data && typeof data === "object" && !Array.isArray(data), file);
   return data;
 }
-function snapshot(repository, revision, required) {
-  const rows = git(repository, ["ls-tree", "-r", "-z", revision], {
-    encoding: "utf8",
-  })
-    .split("\0")
-    .filter(Boolean)
-    .map((row) => {
-      const [metadata, file] = row.split("\t");
-      const [mode, kind, object] = metadata.split(" ");
-      return { mode, kind, object, file };
-    });
-  assert.ok(rows.length > 0 && rows.length <= 10000);
-  const selected = rows.filter(
-    ({ file }) => required.includes(file) || /\.[cm]?[jt]sx?$/.test(file),
-  );
-  for (const file of required)
-    assert.ok(
-      selected.some((row) => row.file === file),
-      "Missing qualification input: " + file,
-    );
-  assert.ok(
-    selected.every(
-      (row) => row.kind === "blob" && ["100644", "100755"].includes(row.mode),
-    ),
-    "Unsupported source object",
-  );
-  const bytes = git(repository, ["cat-file", "--batch"], {
-    input: selected.map((row) => row.object).join("\n") + "\n",
-  });
-  const texts = new Map();
-  let offset = 0;
-  for (const row of selected) {
-    const end = bytes.indexOf(10, offset);
-    assert.ok(end !== -1);
-    const [object, kind, rawSize] = bytes
-      .subarray(offset, end)
-      .toString()
-      .split(" ");
-    const size = Number(rawSize);
-    assert.equal(object, row.object);
-    assert.equal(kind, "blob");
-    assert.ok(Number.isSafeInteger(size) && size >= 0 && size <= 8 * 1048576);
-    offset = end + 1;
-    assert.ok(offset + size < bytes.length && bytes[offset + size] === 10);
-    texts.set(row.file, bytes.subarray(offset, offset + size).toString("utf8"));
-    offset += size + 1;
-  }
-  assert.equal(offset, bytes.length);
-  return texts;
-}
-const packageName = (value) => {
-  let decoded = decodeURIComponent(value).replaceAll("\\", "/").toLowerCase();
-  if (/^(?:\.|\/|file:|[a-z]:\/)/.test(decoded)) {
-    const installed = /(?:^|\/)node_modules\/(?:\.bin\/)?(.+)/.exec(decoded);
-    if (installed) decoded = installed[1];
-  }
-  const name = decoded.startsWith("@")
-    ? decoded.split("/").slice(0, 2).join("/")
-    : decoded.split("/")[0];
-  return name === "vitest-native-mutation" ? "vitest" : name;
-};
-
 const validName = (name) =>
   typeof name === "string" &&
   /^(?:@[a-zA-Z0-9_.-]+\/)?[a-zA-Z0-9_.-]+$/.test(name) &&
@@ -408,300 +297,390 @@ function dependencyGraph(manifest, lock) {
   }
   return { packages, edges, closures };
 }
-function inspectedConsumers(texts, affected, hashes, resolutionHash) {
-  const canonical = new Set(
-    affected.map((name) =>
-      name === "vitest-native-mutation" ? "vitest" : name,
-    ),
+export const developmentInventoryPath = "scripts/ci-development-inventory.json";
+const inventoryScope = "audited-first-party-development-ci-v1";
+const comparePath = (a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+function exactKeys(value, keys) {
+  assert.ok(
+    value && typeof value === "object" && !Array.isArray(value),
+    "Expected a data object",
   );
-  const inspected = new Set(),
-    resolutions = {};
-  for (const [file, text] of texts) {
-    if (!/\.[cm]?[jt]sx?$/.test(file) || file === "scripts/plan-ci-impact.mjs")
-      continue;
-    const ast = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true);
-    assert.equal(
-      ast.parseDiagnostics.length,
-      0,
-      "Unparseable consumer source: " + file,
-    );
-    const aliases = new Set(["copyInstalledPackages"]),
-      factories = new Set(["createRequire"]),
-      loaders = new Set(["require", "import.meta.resolve"]),
-      evaluators = new Set([
-        "eval",
-        "Function",
-        "globalThis.eval",
-        "globalThis.Function",
-      ]),
-      declarations = new Map();
-    function declarationsIn(node) {
-      if (
-        ts.isImportDeclaration(node) &&
-        node.importClause?.namedBindings &&
-        ts.isNamedImports(node.importClause.namedBindings)
-      )
-        for (const item of node.importClause.namedBindings.elements) {
-          const imported = item.propertyName?.text ?? item.name.text;
-          if (imported === "copyInstalledPackages") aliases.add(item.name.text);
-          if (imported === "createRequire") factories.add(item.name.text);
-        }
-      if (ts.isVariableDeclaration(node)) {
-        if (ts.isIdentifier(node.name)) {
-          const name = node.name.text;
-          declarations.set(
-            name,
-            declarations.has(name) ? null : node.initializer,
-          );
-        } else if (ts.isObjectBindingPattern(node.name)) {
-          for (const item of node.name.elements)
-            if (ts.isIdentifier(item.name)) {
-              const imported = item.propertyName?.text ?? item.name.text;
-              if (imported === "copyInstalledPackages")
-                aliases.add(item.name.text);
-              if (imported === "createRequire") factories.add(item.name.text);
-              if (
-                imported === "resolve" &&
-                node.initializer?.getText(ast) === "import.meta"
-              )
-                loaders.add(item.name.text);
-            }
-        }
-      }
-      ts.forEachChild(node, declarationsIn);
-    }
-    declarationsIn(ast);
-    const member = (node, name) =>
-      !!node &&
-      ((ts.isPropertyAccessExpression(node) && node.name.text === name) ||
-        (ts.isElementAccessExpression(node) &&
-          node.argumentExpression &&
-          ts.isStringLiteralLike(node.argumentExpression) &&
-          node.argumentExpression.text === name));
-    let previous = -1;
-    while (
-      previous !==
-      aliases.size + factories.size + loaders.size + evaluators.size
-    ) {
-      previous = aliases.size + factories.size + loaders.size + evaluators.size;
-      for (const [name, initializer] of declarations) {
-        if (!initializer) continue;
-        const value = initializer.getText(ast);
-        if (evaluators.has(value)) evaluators.add(name);
-        if (aliases.has(value) || member(initializer, "copyInstalledPackages"))
-          aliases.add(name);
-        if (factories.has(value) || member(initializer, "createRequire"))
-          factories.add(name);
-        if (
-          loaders.has(value) ||
-          (ts.isCallExpression(initializer) &&
-            (factories.has(initializer.expression.getText(ast)) ||
-              member(initializer.expression, "createRequire"))) ||
-          (member(initializer, "resolve") &&
-            loaders.has(initializer.expression.getText(ast)))
-        )
-          loaders.add(name);
-      }
-    }
-    const literals = (node, depth = 0) => {
-      if (!node || depth > 8) return null;
-      if (ts.isStringLiteralLike(node)) return [node.text];
-      if (ts.isParenthesizedExpression(node))
-        return literals(node.expression, depth + 1);
-      if (ts.isIdentifier(node))
-        return literals(declarations.get(node.text), depth + 1);
-      if (ts.isArrayLiteralExpression(node)) {
-        const values = node.elements.map((item) => literals(item, depth + 1));
-        return values.every(Boolean) ? values.flat() : null;
-      }
-      if (ts.isConditionalExpression(node)) {
-        const left = literals(node.whenTrue, depth + 1),
-          right = literals(node.whenFalse, depth + 1);
-        return left && right ? [...left, ...right] : null;
-      }
-      return null;
-    };
-    const local = (node) => {
-      const value = literals(node);
-      if (
-        value?.every(
-          (item) =>
-            /^(?:\.\.?\/|node:|data:|file:)/.test(item) &&
-            !item.includes("node_modules"),
-        )
-      )
-        return true;
-      if (
-        node &&
-        ts.isPropertyAccessExpression(node) &&
-        node.name.text === "href"
-      )
-        return local(node.expression);
-      return !!(
-        node &&
-        ts.isNewExpression(node) &&
-        node.expression.getText(ast) === "URL" &&
-        local(node.arguments?.[0])
+  assert.deepEqual(
+    Object.keys(value).sort(),
+    [...keys].sort(),
+    "Unknown or missing inventory fields",
+  );
+}
+function onlyOptions(value, keys) {
+  assert.ok(value && typeof value === "object" && !Array.isArray(value));
+  assert.ok(
+    Object.keys(value).every((key) => keys.includes(key)),
+    "Unknown inventory option or exclusion",
+  );
+}
+function safeInventoryPath(file) {
+  return (
+    typeof file === "string" &&
+    file.length > 0 &&
+    [...file].every(
+      (char) =>
+        char.charCodeAt(0) >= 32 && char.charCodeAt(0) !== 127 && char !== "\\",
+    ) &&
+    !path.posix.isAbsolute(file) &&
+    !path.win32.isAbsolute(file) &&
+    path.posix.normalize(file) === file &&
+    !file.split("/").some((part) => [".", "..", ""].includes(part))
+  );
+}
+function treeEntries(repository, revision) {
+  assert.match(revision, /^[a-f0-9]{40}$/);
+  const rows = git(
+    repository,
+    ["ls-tree", "-r", "-z", "--full-tree", revision],
+    { encoding: "utf8" },
+  )
+    .split("\0")
+    .filter(Boolean)
+    .map((row) => {
+      const separator = row.indexOf("\t");
+      assert.ok(separator > 0, "Malformed Git tree entry");
+      const [mode, type, object] = row.slice(0, separator).split(" ");
+      const file = row.slice(separator + 1);
+      assert.ok(safeInventoryPath(file), "Unsupported inventory path");
+      assert.ok(
+        type === "blob" && ["100644", "100755"].includes(mode),
+        "Unsupported inventory mode or type",
       );
-    };
-    const sites = [];
-    const resolutionSlice = (node) => {
-      const values = new Set([node.getText(ast)]),
-        seen = new Set();
-      function visitName(item) {
-        if (ts.isIdentifier(item) && !seen.has(item.text)) {
-          seen.add(item.text);
-          const declaration = declarations.get(item.text);
-          if (declaration) {
-            values.add(declaration.getText(ast));
-            ts.forEachChild(declaration, visitName);
-          }
-        }
-        ts.forEachChild(item, visitName);
-      }
-      visitName(node);
-      return [...values].sort();
-    };
-    let consumer = false;
-    function visit(node) {
-      if (
-        ts.isNewExpression(node) &&
-        evaluators.has(node.expression.getText(ast))
-      )
-        sites.push(resolutionSlice(node));
-      if (
-        (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) &&
-        node.moduleSpecifier &&
-        ts.isStringLiteral(node.moduleSpecifier) &&
-        canonical.has(packageName(node.moduleSpecifier.text))
-      )
-        consumer = true;
-      if (
-        ts.isImportTypeNode(node) &&
-        ts.isLiteralTypeNode(node.argument) &&
-        ts.isStringLiteral(node.argument.literal) &&
-        canonical.has(packageName(node.argument.literal.text))
-      )
-        consumer = true;
-      if (ts.isCallExpression(node)) {
-        const expression = node.expression.getText(ast);
-        if (
-          evaluators.has(expression) ||
-          /(?:^|\.)(?:runInContext|runInNewContext|runInThisContext|compileFunction)$/.test(
-            expression,
-          )
-        )
-          sites.push(resolutionSlice(node));
-        const cli =
-          /(?:^|\.)(?:spawn|spawnSync|execFile|execFileSync|exec|execSync|fork)$/.test(
-            expression,
-          );
-        if (cli) {
-          const command = literals(node.arguments[0]);
-          const args = literals(node.arguments[1]);
-          const rootPath = (value) => {
-            const decoded = decodeURIComponent(value).replaceAll("\\", "/");
-            const match = /(?:^|\/)node_modules\/(?:\.bin\/)?(.+)/.exec(
-              decoded,
-            );
-            return match && canonical.has(packageName(match[1]));
-          };
-          if (
-            command?.some(
-              (value) =>
-                canonical.has(packageName(value.split(/\s+/)[0])) ||
-                rootPath(value),
-            ) ||
-            args?.some(rootPath) ||
-            (command?.some((value) => ["npx", "npm"].includes(value)) &&
-              args?.some((value) => canonical.has(packageName(value))))
-          )
-            consumer = true;
-          if (
-            !command ||
-            ((command.includes("node") ||
-              node.arguments[0]?.getText(ast) === "process.execPath") &&
-              !args)
-          )
-            sites.push(resolutionSlice(node));
-        }
-        if (
-          aliases.has(expression) ||
-          member(node.expression, "copyInstalledPackages")
-        ) {
-          const values = literals(node.arguments[1]);
-          if (!values) sites.push(resolutionSlice(node));
-          else if (values.some((name) => canonical.has(packageName(name))))
-            consumer = true;
-        }
-        if (
-          node.expression.kind === ts.SyntaxKind.ImportKeyword ||
-          loaders.has(expression) ||
-          (member(node.expression, "resolve") &&
-            loaders.has(node.expression.expression.getText(ast))) ||
-          (ts.isCallExpression(node.expression) &&
-            (factories.has(node.expression.expression.getText(ast)) ||
-              member(node.expression.expression, "createRequire")))
-        ) {
-          const values = literals(node.arguments[0]);
-          if (values?.some((name) => canonical.has(packageName(name))))
-            consumer = true;
-          else if (!values && !local(node.arguments[0]))
-            sites.push(resolutionSlice(node));
-        }
-      }
-      ts.forEachChild(node, visit);
-    }
-    visit(ast);
-    // These exact Node control files run in their entirety for every admitted
-    // dependency plan. Their audit/Git subprocess wiring adds no omitted native
-    // consumer, and unrelated audit implementation bytes are not hash-gated.
-    if (sites.length && !dependencyCompleteControls.has(file)) {
-      const fingerprint = digest(JSON.stringify(sites));
-      resolutions[file] = fingerprint;
-    }
-    if (consumer) {
-      assert.equal(
-        digest(text),
-        hashes[file],
-        "Unreviewed dependency consumer: " + file,
-      );
-      inspected.add(file);
-    }
-  }
+      assert.match(object, /^[a-f0-9]{40}$/);
+      return { path: file, mode, type, object };
+    })
+    .sort(comparePath);
+  assert.ok(
+    rows.length > 0 && rows.length <= 10000,
+    "Inventory must be nonempty and bounded",
+  );
   assert.equal(
-    digest(JSON.stringify(resolutions)),
-    resolutionHash,
-    "Unreviewed module-resolution/copy wiring",
+    new Set(rows.map((row) => row.path.toLowerCase())).size,
+    rows.length,
+    "Duplicate or case-ambiguous inventory path",
   );
+  return rows;
+}
+function treeText(repository, revision, rows, file) {
+  assert.ok(
+    rows.some((row) => row.path === file),
+    "Missing qualification or inventory input: " + file,
+  );
+  return git(repository, ["show", revision + ":" + file], { encoding: "utf8" });
+}
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value && typeof value === "object")
+    return Object.fromEntries(
+      Object.keys(value)
+        .sort()
+        .map((key) => [key, canonical(value[key])]),
+    );
+  return value;
+}
+const dataHash = (value) => digest(JSON.stringify(canonical(value)));
+function maskDevelopmentVersions(value) {
   return {
-    observedConsumers: [...inspected].sort(),
-    moduleResolutionInventorySha256: resolutionHash,
+    ...value,
+    devDependencies: Object.fromEntries(
+      Object.entries(value.devDependencies ?? {}).map(([name, version]) => [
+        name,
+        supportedDevelopmentRoots.includes(name)
+          ? "<graph-approved-development-version>"
+          : version,
+      ]),
+    ),
   };
 }
-export function classifyDevelopmentBump({
-  repository = process.cwd(),
-  base,
-  head,
+function protectedLockProjection(manifest, lock, graph) {
+  const admitted = new Set(),
+    protectedNodes = new Set();
+  for (const [name, closure] of graph.closures) {
+    const production = [
+      "dependencies",
+      "optionalDependencies",
+      "peerDependencies",
+    ].some((field) => Object.hasOwn(manifest[field] ?? {}, name));
+    const target =
+      Object.hasOwn(consumerFiles, name) && !production
+        ? admitted
+        : protectedNodes;
+    for (const location of closure) target.add(location);
+  }
+  return {
+    ...lock,
+    packages: Object.fromEntries(
+      Object.entries(lock.packages)
+        .filter(
+          ([location, entry]) =>
+            !location ||
+            !admitted.has(location) ||
+            protectedNodes.has(location) ||
+            entry.dev !== true,
+        )
+        .map(([location, entry]) => [
+          location,
+          location ? entry : maskDevelopmentVersions(entry),
+        ]),
+    ),
+  };
+}
+function inventoryEntries(rows, manifest, lock, graph) {
+  return rows
+    .filter((row) => row.path !== developmentInventoryPath)
+    .map(({ path: file, mode, type, object }) => {
+      if (file === "package.json" || file === "package-lock.json") {
+        assert.equal(
+          mode,
+          "100644",
+          "Dependency metadata must be a regular data file",
+        );
+        return {
+          path: file,
+          mode,
+          type,
+          fingerprint:
+            file === "package.json"
+              ? "root-manifest-sha256"
+              : "protected-lock-sha256",
+          hash: dataHash(
+            file === "package.json"
+              ? maskDevelopmentVersions(manifest)
+              : protectedLockProjection(manifest, lock, graph),
+          ),
+        };
+      }
+      return {
+        path: file,
+        mode,
+        type,
+        fingerprint: "git-blob-sha1",
+        hash: object,
+      };
+    });
+}
+function parseInventory(text) {
+  const value = jsonObject(text, developmentInventoryPath);
+  exactKeys(value, ["schemaVersion", "scope", "entries"]);
+  assert.equal(value.schemaVersion, 1);
+  assert.equal(value.scope, inventoryScope);
+  assert.ok(
+    Array.isArray(value.entries) &&
+      value.entries.length > 0 &&
+      value.entries.length <= 10000,
+  );
+  for (const row of value.entries) {
+    exactKeys(row, ["path", "mode", "type", "fingerprint", "hash"]);
+    assert.ok(
+      safeInventoryPath(row.path) && row.path !== developmentInventoryPath,
+      "Malformed inventory path",
+    );
+    assert.ok(
+      ["100644", "100755"].includes(row.mode) && row.type === "blob",
+      "Malformed inventory mode or type",
+    );
+    const metadata =
+      row.path === "package.json" || row.path === "package-lock.json";
+    assert.equal(
+      row.fingerprint,
+      metadata
+        ? row.path === "package.json"
+          ? "root-manifest-sha256"
+          : "protected-lock-sha256"
+        : "git-blob-sha1",
+    );
+    assert.match(row.hash, metadata ? /^[a-f0-9]{64}$/ : /^[a-f0-9]{40}$/);
+    if (metadata) assert.equal(row.mode, "100644");
+  }
+  assert.equal(
+    new Set(value.entries.map((row) => row.path.toLowerCase())).size,
+    value.entries.length,
+    "Duplicate inventory path",
+  );
+  return { ...value, entries: value.entries.toSorted(comparePath) };
+}
+function requireQualification(rows) {
+  for (const file of qualificationInputs)
+    assert.ok(
+      rows.some((row) => row.path === file),
+      "Missing qualification input: " + file,
+    );
+}
+export function captureDevelopmentInventory(options) {
+  onlyOptions(options, ["repository", "revision"]);
+  const { repository = process.cwd(), revision } = options;
+  const rows = treeEntries(repository, revision);
+  requireQualification(rows);
+  const manifest = jsonObject(
+      treeText(repository, revision, rows, "package.json"),
+      "package.json",
+    ),
+    lock = jsonObject(
+      treeText(repository, revision, rows, "package-lock.json"),
+      "package-lock.json",
+    );
+  const graph = dependencyGraph(manifest, lock);
+  // Capturing bytes is not a consumer audit and does not write or approve a profile.
+  return {
+    schemaVersion: 1,
+    scope: inventoryScope,
+    entries: inventoryEntries(rows, manifest, lock, graph),
+  };
+}
+function requireInventory(actual, expected, label) {
+  const match = isDeepStrictEqual(actual, expected);
+  const different =
+    actual.find((row, index) => !isDeepStrictEqual(row, expected[index]))
+      ?.path ??
+    expected[actual.length]?.path ??
+    "inventory";
+  assert.ok(match, label + " differs from the audited inventory: " + different);
+}
+function workingBlob(file, stat) {
+  const hash = createHash("sha1").update("blob " + stat.size + "\0");
+  const descriptor = openSync(file, "r"),
+    block = Buffer.alloc(65536);
+  try {
+    let read;
+    while ((read = readSync(descriptor, block, 0, block.length, null)) > 0)
+      hash.update(block.subarray(0, read));
+  } finally {
+    closeSync(descriptor);
+  }
+  return hash.digest("hex");
+}
+function requireWorkingCheckout(
+  repository,
+  eventProfile,
+  manifest,
+  lock,
+  expected,
   workflow,
   inputs,
-  qualificationHashes = dependencyQualificationHashes,
-  consumerHashes = dependencyConsumerHashes,
-  resolutionHash = dependencyResolutionHash,
-}) {
+) {
+  const current = git(repository, ["rev-parse", "HEAD"], {
+    encoding: "utf8",
+  }).trim();
+  const rows = treeEntries(repository, current);
+  const profile = rows.find((row) => row.path === developmentInventoryPath);
+  assert.ok(
+    profile &&
+      profile.mode === "100644" &&
+      profile.type === "blob" &&
+      profile.object === eventProfile.object,
+    "Checked-out inventory profile differs from the bound head",
+  );
+  assert.equal(
+    git(
+      repository,
+      ["status", "--porcelain=v1", "-z", "--untracked-files=all"],
+      { encoding: "utf8" },
+    ),
+    "",
+    "Dirty or untracked checked-out inputs require full verification",
+  );
+  const actualManifest = jsonObject(
+      treeText(repository, current, rows, "package.json"),
+      "package.json",
+    ),
+    actualLock = jsonObject(
+      treeText(repository, current, rows, "package-lock.json"),
+      "package-lock.json",
+    );
+  assert.deepEqual(
+    actualManifest,
+    manifest,
+    "Checked-out manifest differs from the bound head",
+  );
+  assert.deepEqual(
+    actualLock,
+    lock,
+    "Checked-out lock differs from the bound head",
+  );
+  requireInventory(
+    inventoryEntries(
+      rows,
+      actualManifest,
+      actualLock,
+      dependencyGraph(actualManifest, actualLock),
+    ),
+    expected,
+    "Checked-out tree",
+  );
+  const realRoot = realpathSync(repository);
+  let bytes = 0;
+  for (const row of rows) {
+    const file = path.join(realRoot, row.path),
+      physical = realpathSync(file),
+      relative = path.relative(realRoot, physical);
+    assert.ok(
+      relative &&
+        relative !== ".." &&
+        !relative.startsWith(".." + path.sep) &&
+        !path.isAbsolute(relative),
+      "Checked-out source escapes the repository",
+    );
+    const stat = lstatSync(file);
+    assert.ok(
+      stat.isFile() && !stat.isSymbolicLink(),
+      "Checked-out input is not a regular file",
+    );
+    if (process.platform !== "win32")
+      assert.equal(
+        Boolean(stat.mode & 0o111),
+        row.mode === "100755",
+        "Checked-out executable mode differs",
+      );
+    bytes += stat.size;
+    assert.ok(
+      bytes <= 512 * 1048576,
+      "Checked-out input verification bound exceeded",
+    );
+    assert.equal(
+      workingBlob(file, stat),
+      row.object,
+      "Dirty checked-out input: " + row.path,
+    );
+  }
+  assert.deepEqual(
+    parse(
+      readFileSync(path.join(realRoot, ".github/workflows/ci.yml"), "utf8"),
+    ),
+    workflow,
+    "Checked-out workflow differs from the planned workflow",
+  );
+  assert.deepEqual(
+    jsonObject(
+      readFileSync(
+        path.join(realRoot, "scripts/ci-native-inputs.json"),
+        "utf8",
+      ),
+      "scripts/ci-native-inputs.json",
+    ),
+    inputs,
+    "Checked-out owner contract differs from the planned contract",
+  );
+}
+export function classifyDevelopmentBump(options) {
+  onlyOptions(options, ["repository", "base", "head", "workflow", "inputs"]);
+  const { repository = process.cwd(), base, head, workflow, inputs } = options;
   assert.match(base, /^[a-f0-9]{40}$/);
   assert.match(head, /^[a-f0-9]{40}$/);
   const changed = git(
     repository,
-    ["diff", "--name-only", "-z", "--no-renames", base, head],
+    ["diff", "--name-only", "-z", "--no-renames", "--no-ext-diff", base, head],
     { encoding: "utf8" },
   )
     .split("\0")
     .filter(Boolean)
     .sort();
-  assert.deepEqual(
-    changed,
-    ["package-lock.json", "package.json"],
+  assert.ok(
+    isDeepStrictEqual(changed, ["package-lock.json", "package.json"]),
     "Dependency selection requires only root manifest and lock changes",
   );
   assert.equal(
@@ -709,29 +688,26 @@ export function classifyDevelopmentBump({
     dependencyHostCondition,
     "Required host dependency routing unavailable",
   );
-  const required = [
-    "package.json",
-    "package-lock.json",
-    ...Object.keys(qualificationHashes),
-  ];
-  const before = snapshot(repository, base, required),
-    after = snapshot(repository, head, required);
-  for (const [file, expected] of Object.entries(qualificationHashes)) {
-    assert.equal(
-      before.get(file),
-      after.get(file),
-      "Qualification input changed: " + file,
+  const beforeRows = treeEntries(repository, base),
+    afterRows = treeEntries(repository, head);
+  requireQualification(beforeRows);
+  requireQualification(afterRows);
+  const m0 = jsonObject(
+      treeText(repository, base, beforeRows, "package.json"),
+      "package.json",
+    ),
+    m1 = jsonObject(
+      treeText(repository, head, afterRows, "package.json"),
+      "package.json",
     );
-    assert.equal(
-      digest(after.get(file)),
-      expected,
-      "Unsupported qualification input: " + file,
+  const l0 = jsonObject(
+      treeText(repository, base, beforeRows, "package-lock.json"),
+      "package-lock.json",
+    ),
+    l1 = jsonObject(
+      treeText(repository, head, afterRows, "package-lock.json"),
+      "package-lock.json",
     );
-  }
-  const m0 = jsonObject(before.get("package.json"), "package.json"),
-    m1 = jsonObject(after.get("package.json"), "package.json");
-  const l0 = jsonObject(before.get("package-lock.json"), "package-lock.json"),
-    l1 = jsonObject(after.get("package-lock.json"), "package-lock.json");
   const without = (value, field) =>
     Object.fromEntries(Object.entries(value).filter(([key]) => key !== field));
   assert.deepEqual(
@@ -767,14 +743,6 @@ export function classifyDevelopmentBump({
     without(l1.packages[""], "devDependencies"),
     "Shared root lock metadata changed",
   );
-  for (const command of Object.values(m0.scripts ?? {}))
-    assert.ok(
-      typeof command === "string" &&
-        !/(?:^|[\s;&|])(?:vite|rolldown|vitest|jest)(?:[\s;&|]|$)/.test(
-          command,
-        ),
-      "Root tool is used by a build/test script",
-    );
   const g0 = dependencyGraph(m0, l0),
     g1 = dependencyGraph(m1, l1);
   const changedNodes = new Set(
@@ -851,18 +819,47 @@ export function classifyDevelopmentBump({
       ),
       "Unreachable dependency change",
     );
-  const { observedConsumers, moduleResolutionInventorySha256 } =
-    inspectedConsumers(after, affected, consumerHashes, resolutionHash);
+
+  const profile0 = beforeRows.find(
+      (row) => row.path === developmentInventoryPath,
+    ),
+    profile1 = afterRows.find((row) => row.path === developmentInventoryPath);
+  assert.ok(
+    profile0 &&
+      profile1 &&
+      profile0.mode === "100644" &&
+      profile1.mode === "100644" &&
+      profile0.type === "blob" &&
+      profile1.type === "blob" &&
+      profile0.object === profile1.object,
+    "Inventory profile must be the same regular data blob at both bound revisions",
+  );
+  const profile = parseInventory(
+    treeText(repository, head, afterRows, developmentInventoryPath),
+  );
+  requireInventory(
+    inventoryEntries(beforeRows, m0, l0, g0),
+    profile.entries,
+    "Base source",
+  );
+  requireInventory(
+    inventoryEntries(afterRows, m1, l1, g1),
+    profile.entries,
+    "Head source",
+  );
+  requireWorkingCheckout(
+    repository,
+    profile1,
+    m1,
+    l1,
+    profile.entries,
+    workflow,
+    inputs,
+  );
   const routedFiles = [
     ...new Set([
       ...dependencyNativeFiles,
       ...affected.flatMap((name) => consumerFiles[name]),
-      ...observedConsumers.filter(
-        (file) =>
-          file.startsWith("test/") &&
-          Array.isArray(inputs[file]) &&
-          inputs[file].length > 0,
-      ),
     ]),
   ].sort();
   for (const file of routedFiles)
@@ -870,24 +867,24 @@ export function classifyDevelopmentBump({
       Array.isArray(inputs[file]) && inputs[file].length > 0,
       "Missing declared dependency consumer owners: " + file,
     );
-  const sharedTestFiles = [
+  const shared = [
     ...new Set([
       ...dependencyControlFiles,
-      ...observedConsumers.filter(
-        (file) => file.startsWith("test/") && file.endsWith(".test.ts"),
-      ),
       ...routedFiles.filter((file) => file.endsWith(".test.ts")),
     ]),
-  ];
-  for (const file of sharedTestFiles)
-    assert.ok(after.has(file), "Missing dependency regression: " + file);
+  ].sort();
+  for (const file of shared)
+    assert.ok(
+      afterRows.some((row) => row.path === file),
+      "Missing dependency regression: " + file,
+    );
   return {
     routedFiles,
-    sharedTestFiles: sharedTestFiles
-      .map((file) => "dist/" + file.replace(/\.ts$/, ".js"))
-      .sort(),
+    sharedTestFiles: shared.map(
+      (file) => "dist/" + file.replace(/\.ts$/, ".js"),
+    ),
     evidence: {
-      scope: "development-dependency-consumers-v1",
+      scope: "audited-development-dependency-consumers-v1",
       declaredBumps: bumps.sort().map((name) => ({
         name,
         before: m0.devDependencies[name],
@@ -895,16 +892,30 @@ export function classifyDevelopmentBump({
       })),
       affectedDevelopmentRoots: affected,
       changedLockEntries: [...changedNodes].sort(),
-      observedConsumers,
-      moduleResolutionInventorySha256,
+      auditedConsumerFiles: [
+        ...new Set([
+          ...routedFiles,
+          ...dependencyControlFiles,
+          "scripts/smoke-package.mjs",
+          "scripts/run-ci-validation.mjs",
+          "scripts/ci-validation.mjs",
+          "scripts/ci-validation-phases.json",
+        ]),
+      ].sort(),
+      sourceInventorySha256: dataHash(profile.entries),
       qualifiedLockSha256: digest(
-        after.get("scripts/javascript-tools/package-lock.json"),
+        treeText(
+          repository,
+          head,
+          afterRows,
+          "scripts/javascript-tools/package-lock.json",
+        ),
       ),
     },
   };
 }
 
-export async function main(dependencyProfile = {}) {
+export async function main() {
   const workflow = parse(await readFile(".github/workflows/ci.yml", "utf8"));
   const jobs = nativeJobIds(workflow);
   const inputs = JSON.parse(
@@ -952,7 +963,6 @@ export async function main(dependencyProfile = {}) {
       ) {
         try {
           developmentImpact = classifyDevelopmentBump({
-            ...dependencyProfile,
             base,
             head,
             workflow,

@@ -445,6 +445,8 @@ export function planNativeJobs({
       ...new Set([
         "dist/test/artifact-evidence.test.js",
         "dist/test/ci-impact.test.js",
+        "dist/test/ci-development-dependencies.test.js",
+        "dist/test/jvm-wrapper-phases.test.js",
         "dist/test/gate-inventory.test.js",
         "dist/test/ci-affected-tests.test.js",
         "dist/test/ci-source-boundaries.test.js",
@@ -490,14 +492,14 @@ export function requireCiCompletion(plan, needs) {
     );
     assert.deepEqual(Object.keys(impact).sort(), [
       "affectedDevelopmentRoots",
+      "auditedConsumerFiles",
       "changedLockEntries",
       "declaredBumps",
-      "moduleResolutionInventorySha256",
-      "observedConsumers",
       "qualifiedLockSha256",
       "scope",
+      "sourceInventorySha256",
     ]);
-    assert.equal(impact.scope, "development-dependency-consumers-v1");
+    assert.equal(impact.scope, "audited-development-dependency-consumers-v1");
     assert.ok(
       Array.isArray(impact.declaredBumps) && impact.declaredBumps.length > 0,
     );
@@ -510,7 +512,7 @@ export function requireCiCompletion(plan, needs) {
     for (const field of [
       "affectedDevelopmentRoots",
       "changedLockEntries",
-      "observedConsumers",
+      "auditedConsumerFiles",
     ]) {
       assert.ok(
         Array.isArray(impact[field]) &&
@@ -521,10 +523,7 @@ export function requireCiCompletion(plan, needs) {
       );
       assert.equal(new Set(impact[field]).size, impact[field].length);
     }
-    for (const field of [
-      "moduleResolutionInventorySha256",
-      "qualifiedLockSha256",
-    ])
+    for (const field of ["sourceInventorySha256", "qualifiedLockSha256"])
       assert.match(impact[field], /^[a-f0-9]{64}$/);
   } else
     assert.equal(
