@@ -32,6 +32,7 @@ import {
   physicalPath,
 } from "./qualify-binutils-producer.mjs";
 import { reconcileRetentionLog } from "./producer-qualification/binutils-retention-observer.mjs";
+import { validateCQuiescentResourceSamples } from "./producer-qualification/c-producer-quiescent-sample.mjs";
 import {
   loadCProducerProfile,
   cProducerCatalogSha256,
@@ -131,6 +132,7 @@ const directoryIdentity = (info) =>
 
 export function validateCObservationRetention(receipt, caller) {
   const format = cProducerEvidenceFormat(receipt);
+  if (receipt.schemaVersion === 3) validateCQuiescentResourceSamples(receipt);
   if (!format.cBuildWork) {
     assert.ok(!Object.hasOwn(receipt.retentionObserver, "workObjectPolicy"));
     return format;
@@ -322,10 +324,9 @@ export function validateCObservationHeader(
   assert.equal(receipt.sourceVersion, profile.sourceVersion);
   assert.deepEqual(receipt.limits, profile.limits);
   if (executionPolicy) {
-    assert.equal(
-      receipt.schemaVersion,
-      2,
-      "Local execution requires closed outer schema2",
+    assert.ok(
+      receipt.schemaVersion === 2 || receipt.schemaVersion === 3,
+      "Local execution requires closed outer schema2 or3",
     );
     assert.deepEqual(
       receipt.executionPolicy,
@@ -849,6 +850,12 @@ export async function verifyCLiveObservation(
   assert.ok(
     receipt.finalRetention.bytes <= profile.limits.workByteLimit + allowance,
   );
+  if (receipt.schemaVersion === 3)
+    validateCQuiescentResourceSamples(
+      receipt,
+      observer,
+      profile.limits.workByteLimit + allowance,
+    );
   const command = await json(
     path.join(result, "work/original-command.json"),
     4096,

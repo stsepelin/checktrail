@@ -160,7 +160,7 @@ test("C command request and genuine terminal observations cannot claim a wrapper
   );
 });
 
-test("C evidence format admits only the two closed retention epochs and preserves legacy quotas", async (t) => {
+test("C evidence format admits only closed retention epochs and preserves their original quotas", async (t) => {
   const policy = {
     sampleIntervalMs: 10000,
     maximumSamples: 9000,
@@ -182,6 +182,39 @@ test("C evidence format admits only the two closed retention epochs and preserve
         root: prefix + "/original-test-reports",
       },
     };
+    const sampling = {
+      id: "owned-container-quiescent-v1",
+      counters: "complete-fixed-root-scan",
+      nativeDeadlineIncludesObservation: true,
+    };
+    const current = {
+      ...receipt,
+      schemaVersion: 3,
+      retentionSamplingPolicy: sampling,
+    };
+    assert.deepEqual(
+      api.cProducerEvidenceFormat(current),
+      api.cProducerEvidenceFormat(receipt),
+    );
+    for (const schemaVersion of [1, 2, 4])
+      assert.throws(() =>
+        api.cProducerEvidenceFormat({ ...current, schemaVersion }),
+      );
+    assert.throws(() =>
+      api.cProducerEvidenceFormat({
+        ...current,
+        retentionSamplingPolicy: {
+          ...sampling,
+          nativeDeadlineIncludesObservation: false,
+        },
+      }),
+    );
+    assert.throws(() =>
+      api.cProducerEvidenceFormat({
+        ...current,
+        retentionSamplingPolicy: { ...sampling, extra: true },
+      }),
+    );
     const format = api.cProducerEvidenceFormat(receipt);
     assert.equal(format.cBuildWork, true);
     assert.equal(format.observerLogByteLimit, policy.maximumLogBytes);
@@ -2040,12 +2073,13 @@ test("C local policy clocks consume the original controller and declared managed
 });
 
 test(
-  "C local actual controller timer and one-shot recovery preserve independent collection before cleanup",
+  "C ordinary sampling and local actual controller timers preserve independent one-shot collection before cleanup",
   sameUidControl,
   async (t) => {
     const root = await fixture(t, {});
     for (const scenario of [
       "observer-cutoff",
+      "ordinary-sampling",
       "controller-cutoff",
       "root-replaced",
       "absence-unavailable",

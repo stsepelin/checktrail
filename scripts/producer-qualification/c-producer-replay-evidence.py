@@ -18,6 +18,7 @@ MIB = 1024 ** 2
 C_BUILD_POLICY = {'sampleIntervalMs': 10000, 'maximumSamples': 9000,
                   'maximumLogBytes': 256 * MIB,
                   'workObjectPolicy': 'c-build-links-and-specials-no-follow'}
+C_SAMPLING_POLICY = {'id':'owned-container-quiescent-v1','counters':'complete-fixed-root-scan','nativeDeadlineIncludesObservation':True}
 REPORT_LOCATIONS = {
     'original-trap': {'source': 'original-trap', 'manifest': 'work/test-reports.json', 'root': 'work/original-test-reports'},
     'post-stop': {'source': 'post-stop', 'manifest': 'work/post-stop-reports/test-reports.json', 'root': 'work/post-stop-reports/original-test-reports'},
@@ -104,14 +105,18 @@ def terminal(value, limit=512*MIB, expected_exit=0):
 
 def evidence_format(receipt):
     version = receipt['schemaVersion']
-    require(type(version) is int and version in [1, 2], 'Unknown C controller evidence schema')
+    require(type(version) is int and version in [1, 2, 3], 'Unknown C controller evidence schema')
     if version == 1:
-        require(not any(key in receipt for key in ['retentionTransportPolicy', 'reportRetention']), 'New C evidence fields require controller schema2')
+        require(not any(key in receipt for key in ['retentionTransportPolicy', 'reportRetention', 'retentionSamplingPolicy']), 'New C evidence fields require controller schema2')
         return {'schemaVersion': 1, 'observerLimit': 16*MIB, 'samples': 1000000, **REPORT_LOCATIONS['original-trap']}
+    if version == 3:
+        require(exact_json(receipt.get('retentionSamplingPolicy'), C_SAMPLING_POLICY), 'C quiescent sampling policy differs')
+    else:
+        require('retentionSamplingPolicy' not in receipt, 'Quiescent C sampling policy requires controller schema3')
     require(exact_json(receipt['retentionTransportPolicy'], C_BUILD_POLICY), 'C retention transport policy differs')
     location = receipt['reportRetention']
     require(type(location) is dict and any(exact_json(location, value) for value in REPORT_LOCATIONS.values()), 'Unknown original C report retention source/path')
-    return {'schemaVersion': 2, 'observerLimit': 256*MIB, 'samples': 9000, **location}
+    return {'schemaVersion': version, 'observerLimit': 256*MIB, 'samples': 9000, **location}
 
 
 def command_journal(value, phase, profile):
@@ -123,14 +128,16 @@ def command_journal(value, phase, profile):
 
 
 def closed_controller_evidence(packet, receipt, profile, caller):
-    """Reconcile retained schema2 bytes; this does not attest native hardware."""
+    """Reconcile retained closed controller bytes; this does not attest native hardware."""
     selected = evidence_format(receipt)
     require(packet.manifest['schemaVersion'] == selected['schemaVersion'], 'Archive/controller evidence format differs')
     if selected['schemaVersion'] == 1:
         return selected
-    require(packet.manifest['controllerReceiptFormat'] == 'schema2', 'Unverified controller receipt format cannot qualify')
+    require(packet.manifest['controllerReceiptFormat'] == 'schema'+str(selected['schemaVersion']), 'Unverified controller receipt format cannot qualify')
     require(exact_json([receipt['profile'],receipt['sourceVersion'],receipt['limits'],receipt['catalogSha256']],
                        [profile['profile'],profile['sourceVersion'],profile['limits'],CATALOG_SHA256]), 'Wrong original frozen profile')
+    if selected['schemaVersion'] == 3:
+        quiescent_samples(receipt)
     observations = receipt['commandObservations']
     require(type(observations) is dict and set(observations) == {'requested','terminal'}, 'Incomplete original command observations')
     command = packet.json('result/work/original-command.json',4096)
@@ -166,15 +173,74 @@ def closed_controller_evidence(packet, receipt, profile, caller):
     return selected
 
 
-def retention(raw, receipt, selected=None):
+def quiescent_samples(receipt, maximum_bytes=None):
+    require(type(receipt.get('schemaVersion')) is int and receipt['schemaVersion'] == 3 and exact_json(receipt.get('retentionSamplingPolicy'),C_SAMPLING_POLICY), 'Wrong quiescent C sampling format/policy')
+    attempt = receipt['attempt']
+    require(type(attempt) is str and re.fullmatch(r'[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}',attempt), 'Malformed C attempt identity')
+    require(maximum_bytes is None or integer(maximum_bytes), 'Invalid frozen C work allowance')
+    rows = receipt.get('quiescentResourceSamples')
+    observer = receipt['retentionObserver']
+    require(type(rows) is list and 2 <= len(rows) <= C_BUILD_POLICY['maximumSamples'] and type(observer['samples']) is int and len(rows) == observer['samples'], 'Incomplete quiescent C sample inventory')
+    terminal_seen,container_id = False,None
+    terminal_prefixes = [
+        ['stopped-after-native-terminal','sample-completed'],
+        ['owned-container-absent-after-native-terminal','sample-completed'],
+        ['pause-requested','owned-container-absent-after-native-terminal','sample-completed'],
+        ['pause-requested','owned-container-absent-after-native-terminal-during-pause','sample-completed'],
+    ]
+    resumes = [
+        ['unpause-requested','unpaused-acknowledged'],
+        ['unpause-requested','owned-container-absent-after-native-terminal'],
+        ['owned-container-absent-after-native-terminal'],
+        ['owned-container-absent-during-resume'],
+        ['stopped-after-native-terminal-during-resume'],
+    ]
+    for index,row in enumerate(rows):
+        require(type(row) is dict and set(row) == {'schemaVersion','name','image','id','nativeStarted','nativeTerminalObservedBeforeSample','nativeTerminalObservedAtCompletion','actions','sample','elapsedMilliseconds','complete','errors'}, 'Unknown quiescent C observation fields')
+        require(type(row['schemaVersion']) is int and row['schemaVersion'] == 2 and row['name'] == 'checktrail-producer-'+attempt and row['image'] == observer['independentImage'], 'Quiescent C owner/image binding differs')
+        require(row['id'] is None or (type(row['id']) is str and re.fullmatch(r'[a-f0-9]{64}',row['id'])), 'Malformed quiescent C container identity')
+        if row['id'] is not None:
+            require(container_id is None or row['id'] == container_id, 'Original C producer container identity changed between samples')
+            container_id = row['id']
+        require(integer(row['elapsedMilliseconds']) and row['complete'] is True and exact_json(row['errors'],[]), 'Incomplete quiescent C intervention')
+        require(all(type(row[key]) is bool for key in ['nativeStarted','nativeTerminalObservedBeforeSample','nativeTerminalObservedAtCompletion']), 'Malformed quiescent C lifecycle facts')
+        before,after = row['nativeTerminalObservedBeforeSample'],row['nativeTerminalObservedAtCompletion']
+        require((not terminal_seen or before) and (not before or after), 'Native terminal observation regressed')
+        terminal_seen = after
+        sample = row['sample']
+        require(type(sample) is dict and set(sample) == {'schemaVersion','kind','sequence','bytes','files','directories'} and type(sample['schemaVersion']) is int and sample['schemaVersion'] == 1 and sample['kind'] == 'sample' and type(sample['sequence']) is int and sample['sequence'] == index+1, 'Quiescent C sample identity differs')
+        require(all(integer(sample[key]) for key in ['bytes','files','directories']) and sample['directories'] >= 3 and sample['directories']+sample['files'] <= 1000000, 'Invalid quiescent C counters')
+        require(maximum_bytes is None or sample['bytes'] <= maximum_bytes, 'Quiescent C sample exceeded frozen work allowance')
+        actions = row['actions']
+        require(type(actions) is list and all(type(action) is str for action in actions), 'Malformed quiescent C actions')
+        if index == 0:
+            require(row['nativeStarted'] is False and row['id'] is None and before is False and after is False and actions == ['absent-before-admission','sample-completed'], 'Missing positive pre-admission absence')
+            continue
+        require(row['nativeStarted'] is True, 'Native lifecycle regressed')
+        if row['id'] is None:
+            require(actions == ['absent-after-native-terminal','sample-completed'] and before, 'Missing positive post-terminal absence')
+        elif actions in terminal_prefixes:
+            require(before, 'Missing terminal before stopped-writer sample')
+        else:
+            require(actions[:3] == ['pause-requested','paused-acknowledged','sample-completed'] and actions[3:] in resumes, 'Incomplete owned C pause/resume lifecycle')
+            if any(action in actions[3:] for action in ['owned-container-absent-after-native-terminal','owned-container-absent-during-resume','stopped-after-native-terminal-during-resume']):
+                require(after, 'Missing terminal during resume')
+        if index == len(rows)-1:
+            require(before and 'paused-acknowledged' not in actions, 'Final C sample requires a positively stopped or absent writer')
+    require(exact_json(rows[-1]['sample'],observer['lastSample']) and exact_json(rows[-1]['sample'],receipt['finalRetention']), 'Final quiescent C counter binding differs')
+    return rows
+
+
+def retention(raw, receipt, selected=None, controller=None):
     selected = selected or {'schemaVersion':1,'observerLimit':16*MIB,'samples':1000000}
     limit = selected['observerLimit']
-    if selected['schemaVersion'] == 2:
+    if selected['schemaVersion'] in [2, 3]:
         require(receipt.get('workObjectPolicy') == C_BUILD_POLICY['workObjectPolicy'], 'C work object policy differs')
     else:
         require('workObjectPolicy' not in receipt, 'New C work observer requires controller schema2')
     require(0 < len(raw) <= limit and raw.endswith(b'\n') and integer(receipt['retainedLogBytes'],1,limit) and integer(receipt['samples'],1,selected['samples']) and len(raw) == receipt['retainedLogBytes'], 'Incomplete observer raw transport')
     require(pin(raw) == receipt['log'], 'Observer raw transport hash differs')
+    quiescent = quiescent_samples(controller) if selected['schemaVersion'] == 3 else None
     ready, waiting, sequence, samples, buffer, last = False, False, 0, 0, b'', None
     for line in raw[:-1].split(b'\n'):
         row = strict_json(line)
@@ -202,6 +268,8 @@ def retention(raw, receipt, selected=None):
                 require(waiting and set(value) == {'schemaVersion','kind','sequence','bytes','files','directories'}, 'Unsolicited or incomplete observer response')
                 require(type(value['schemaVersion']) is int and value['schemaVersion'] == 1 and value['kind']=='sample' and type(value['sequence']) is int and value['sequence']==sequence, 'Observer sample identity differs')
                 require(all(integer(value[key]) for key in ['bytes','files','directories']) and value['directories']>=3 and value['directories']+value['files']<=1000000, 'Invalid observer counters')
+                if quiescent is not None:
+                    require(samples < len(quiescent) and exact_json(value,quiescent[samples]['sample']), 'Quiescent C receipt differs from exact raw sample')
                 last, samples, waiting = value, samples+1, False
     require(ready and samples>0 and not waiting and not buffer and samples==receipt['samples'] and last==receipt['lastSample'], 'Incomplete observer request/response lifecycle')
     return last
@@ -338,7 +406,7 @@ def local_managed_window(value, policy):
 
 def local_execution_observation(policy, profile, startup, receipt, observed):
     binding=local_policy_binding(policy,profile)
-    require(exact_json(receipt['schemaVersion'],2),'Local execution requires closed outer schema2')
+    require(type(receipt['schemaVersion']) is int and receipt['schemaVersion'] in [2,3],'Local execution requires closed outer schema2 or3')
     require(all(exact_json(value.get('executionPolicy'),binding) for value in [startup,receipt,observed]),'Explicit local policy binding differs')
     require(exact_json(receipt.get('executionLimits'),binding['executionLimits']),'Effective local execution limits differ')
     clock=receipt['controllerClock'];windows=policy['windows'];native=clock['nativeAdmission']
@@ -438,11 +506,11 @@ class Packet:
             require(self.manifest.get('executionPolicy')==self.execution_policy and self.manifest['selectedProfile']=='gcc-12', 'Archive did not bind explicitly requested local policy')
         else:require('executionPolicy' not in self.manifest, 'Legacy replay cannot relabel local archive')
         version = self.manifest['schemaVersion']
-        require(type(version) is int and version in [1,2] and self.manifest['qualificationComplete'] is False and self.manifest['gateAComplete'] is False, 'Unproven export qualification')
+        require(type(version) is int and version in [1,2,3] and self.manifest['qualificationComplete'] is False and self.manifest['gateAComplete'] is False, 'Unproven export qualification')
         require(exact_json([self.manifest['originalReportMemberByteLimit'],self.manifest['originalReportAggregateByteLimit']],[64*MIB,512*MIB]), 'Wrong C report export contract')
-        if version == 2:
+        if version in [2,3]:
             require(set(self.manifest) == {'schemaVersion','selectedProfile','scope','rawFiles','nativeDirectories','unavailable','uncompressedBytes','originalReportLogBytes','originalReportMemberByteLimit','originalReportAggregateByteLimit','binaryPackagePayloadsUploaded','nativeWorktreeArchiveUploaded','originalInputPayloadsUploaded','qualificationComplete','gateAComplete','controllerReceiptFormat','retentionObserverLogByteLimit','postStopReportLogBytes','postStopReportAggregateByteLimit','reportFamiliesRetainedSeparately'} | ({'executionPolicy'} if self.execution_policy is not None else set()), 'Unknown C archive2 fields')
-            require(self.manifest['controllerReceiptFormat'] in ['schema2','unverified'] and
+            require(self.manifest['controllerReceiptFormat'] in ['schema'+str(version),'unverified'] and
                     exact_json([self.manifest['retentionObserverLogByteLimit'],self.manifest['postStopReportAggregateByteLimit'],self.manifest['reportFamiliesRetainedSeparately']],[256*MIB,512*MIB,True]), 'Wrong closed C archive2 policy')
         else:
             require(self.execution_policy is None, 'Local execution policy requires archive2')
@@ -474,13 +542,13 @@ class Packet:
                 require(row['bytes']<=64*MIB, 'Original C report member exceeds64MiB')
                 reports += row['bytes']
             if name.startswith('result/work/post-stop-reports/original-test-reports/'):
-                require(version == 2 and row['bytes']<=64*MIB, 'Post-stop C report member exceeds64MiB')
+                require(version in [2,3] and row['bytes']<=64*MIB, 'Post-stop C report member exceeds64MiB')
                 post_reports += row['bytes']
             self.files[name] = row
             total += row['bytes']
         require(sorted(names)==sorted([*self.files,'manifest.json']) and total==self.manifest['uncompressedBytes'] and total<=2*1024**3, 'Export inventory/aggregate differs')
         require(exact_json(reports,self.manifest['originalReportLogBytes']) and reports<=512*MIB, 'Original C report aggregate differs')
-        if version == 2:
+        if version in [2,3]:
             require(exact_json(post_reports,self.manifest['postStopReportLogBytes']) and post_reports<=512*MIB, 'Post-stop C report aggregate differs')
         self.directories = {}
         for row in self.manifest['nativeDirectories']:
@@ -587,7 +655,7 @@ def selected_reports(packet, selected, receipt, caller, profile_name):
     value = packet.json(manifest,8*MIB)
     summary = reports(packet,root,value,caller,0,profile_name)
     require(all(exact_json(receipt['testEvidence'][key],item) for key,item in value.items()), 'Selected original report manifest differs from live observation')
-    if selected['schemaVersion'] == 2:
+    if selected['schemaVersion'] in [2,3]:
         # Preserve both epochs separately without summing duplicate outcomes.
         for location in REPORT_LOCATIONS.values():
             name = 'result/'+location['manifest']
@@ -863,10 +931,11 @@ def replay(archive,repository,expected_profile='glibc',execution_policy=None):
         else:gcc_carrier(packet,packet.read('operator-startup.json',MIB),receipt,profile,observed,policy)
         observer=receipt['retentionObserver'];require(observer['state']=='completed' and observer['independentImage']==catalog['image'] and observer['readOnly'] is True and observer['network']=='none' and observer['capability']=='DAC_READ_SEARCH' and exact_json(observer['terminal'],{'exitCode':0,'signal':None}),'Independent observer unavailable or altered')
         require(observer['nativeFilesystemQuotaEnforced'] is False,'Unproven native quota')
-        last=retention(packet.read('result/retention-observer.jsonl',format['observerLimit']),observer,format)
+        last=retention(packet.read('result/retention-observer.jsonl',format['observerLimit']),observer,format,receipt)
         require(last==receipt['finalRetention'],'Final observer sample differs')
         allowance=sum(row['bytes'] for row in profile['files'])+sum(row['bytes'] for row in receipt['sourcePins'] if row['file'] in ['c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','glibc-seccomp-probe.py'])+sum(row['bytes'] for row in receipt.get('generatedControlPins',[]))
         require(last['bytes']<=profile['limits']['workByteLimit']+allowance,'Retained work allowance exceeded')
+        if format['schemaVersion'] == 3:quiescent_samples(receipt,profile['limits']['workByteLimit']+allowance)
         for key in ['cleanup','retentionObserverCleanup']:require(receipt[key]['state'] in ['absent','removed'],'Incomplete original owned cleanup')
         preflight=receipt['custodyPreflight'];require(preflight['capturedCaller']==caller and preflight['state']=='selected-nonroot-caller-export-verified' and preflight['nativeLinuxCrossUidAcceptanceVerified'] is True and preflight['sourceOrCompilerInvoked'] is False and preflight['cleanup']['state'] in ['absent','removed'],'Native caller custody preflight incomplete')
         terminal(preflight['observer'],65536)

@@ -66,7 +66,11 @@ import {
   validateGlibcDockerSecurityOptions,
 } from "./producer-qualification/glibc-seccomp.mjs";
 
-import { sampleQuiescentCProducer } from "./producer-qualification/c-producer-quiescent-sample.mjs";
+import {
+  cProducerRetentionSamplingPolicy,
+  sampleQuiescentCProducer,
+  validateCQuiescentResourceSamples,
+} from "./producer-qualification/c-producer-quiescent-sample.mjs";
 
 const { AbortController } = globalThis;
 const exec = promisify(execFile);
@@ -364,7 +368,8 @@ export function cProducerEvidenceFormat(receipt) {
   if (receipt.schemaVersion === 1) {
     assert.ok(
       !Object.hasOwn(receipt, "retentionTransportPolicy") &&
-        !Object.hasOwn(receipt, "reportRetention"),
+        !Object.hasOwn(receipt, "reportRetention") &&
+        !Object.hasOwn(receipt, "retentionSamplingPolicy"),
       "New C evidence fields require controller schema2",
     );
     return {
@@ -375,11 +380,20 @@ export function cProducerEvidenceFormat(receipt) {
       reportsRoot: "work/original-test-reports",
     };
   }
-  assert.equal(
-    receipt.schemaVersion,
-    2,
+  assert.ok(
+    receipt.schemaVersion === 2 || receipt.schemaVersion === 3,
     "Unknown C controller evidence schema",
   );
+  if (receipt.schemaVersion === 3)
+    assert.deepEqual(
+      receipt.retentionSamplingPolicy,
+      cProducerRetentionSamplingPolicy,
+    );
+  else
+    assert.ok(
+      !Object.hasOwn(receipt, "retentionSamplingPolicy"),
+      "Quiescent C sampling policy requires controller schema3",
+    );
   assert.deepEqual(
     receipt.retentionTransportPolicy,
     {
@@ -1647,7 +1661,9 @@ async function run(
   process.on("SIGINT", abort);
   process.on("SIGTERM", abort);
   const state = {
-    schemaVersion: 2,
+    schemaVersion: 3,
+    retentionSamplingPolicy: cProducerRetentionSamplingPolicy,
+    quiescentResourceSamples: [],
     retentionTransportPolicy: {
       ...cBuildRetentionPolicy,
       workObjectPolicy: "c-build-links-and-specials-no-follow",
@@ -1868,25 +1884,22 @@ async function run(
     });
     const allowance =
       inputBytes + selectedControls.reduce((sum, row) => sum + row.bytes, 0);
-    if (plan.executionPolicy) state.quiescentResourceSamples = [];
     const measure = async () => {
-      const sample = plan.executionPolicy
-        ? await sampleQuiescentCProducer({
-            attempt,
-            image: catalog.image,
-            docker,
-            sample: () => observer.sample(),
-            nativeStarted: state.originalExecutionInvoked === true,
-            nativeFinished: () => state.executionObserver != null,
-            record: (row) => {
-              assert.ok(
-                state.quiescentResourceSamples.length <
-                  cBuildRetentionPolicy.maximumSamples + 2,
-              );
-              state.quiescentResourceSamples.push(row);
-            },
-          })
-        : await observer.sample();
+      const sample = await sampleQuiescentCProducer({
+        attempt,
+        image: catalog.image,
+        docker,
+        sample: () => observer.sample(),
+        nativeStarted: state.originalExecutionInvoked === true,
+        nativeFinished: () => state.executionObserver != null,
+        record: (row) => {
+          assert.ok(
+            state.quiescentResourceSamples.length <
+              cBuildRetentionPolicy.maximumSamples,
+          );
+          state.quiescentResourceSamples.push(row);
+        },
+      });
       assert.ok(
         sample.bytes <= profile.limits.workByteLimit + allowance,
         "Retained original work exceeded declared bound plus frozen inputs/controls",
@@ -2069,6 +2082,14 @@ async function run(
             cBuildRetentionPolicy.maximumLogBytes,
           );
           reconcileRetentionLog(raw, receipt, { cBuildWork: true });
+          if (
+            state.state ===
+            "original-command-completed-qualification-incomplete"
+          )
+            validateCQuiescentResourceSamples(
+              { ...state, retentionObserver: receipt },
+              raw,
+            );
           return {
             ...receipt,
             log: await identifyFile(

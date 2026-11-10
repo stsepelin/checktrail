@@ -12,6 +12,7 @@ MIB = 1024 ** 2
 C_BUILD_POLICY = {'sampleIntervalMs': 10000, 'maximumSamples': 9000,
                   'maximumLogBytes': 256 * MIB,
                   'workObjectPolicy': 'c-build-links-and-specials-no-follow'}
+C_SAMPLING_POLICY = {'id':'owned-container-quiescent-v1','counters':'complete-fixed-root-scan','nativeDeadlineIncludesObservation':True}
 REPORT_LOCATIONS = {
     'original-trap': {'source': 'original-trap', 'manifest': 'work/test-reports.json', 'root': 'work/original-test-reports'},
     'post-stop': {'source': 'post-stop', 'manifest': 'work/post-stop-reports/test-reports.json', 'root': 'work/post-stop-reports/original-test-reports'},
@@ -67,12 +68,14 @@ def evidence_format(result):
                 raise ValueError('Controller receipt changed')
         receipt = json.loads(raw, object_pairs_hook=pairs)
         version = receipt.get('schemaVersion')
-        if type(version) is int and version == 1 and not any(key in receipt for key in ['retentionTransportPolicy', 'reportRetention']):
+        if type(version) is int and version == 1 and not any(key in receipt for key in ['retentionTransportPolicy', 'reportRetention', 'retentionSamplingPolicy']):
             return 1, 'schema1'
-        if (type(version) is int and version == 2 and
+        if (type(version) is int and version in [2, 3] and
                 json.dumps(receipt.get('retentionTransportPolicy'), sort_keys=True) == json.dumps(C_BUILD_POLICY, sort_keys=True) and
-                receipt.get('reportRetention') in REPORT_LOCATIONS.values()):
-            return 2, 'schema2'
+                receipt.get('reportRetention') in REPORT_LOCATIONS.values() and
+                ((version == 2 and 'retentionSamplingPolicy' not in receipt) or
+                 (version == 3 and json.dumps(receipt.get('retentionSamplingPolicy'), sort_keys=True) == json.dumps(C_SAMPLING_POLICY, sort_keys=True)))):
+            return version, 'schema'+str(version)
     except (OSError, ValueError, TypeError, AttributeError, RuntimeError):
         pass
     return 2, 'unverified'
@@ -104,7 +107,7 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
         if output == source or source in output.parents:
             raise RuntimeError('Evidence output overlaps source')
     version, controller_format = evidence_format(result)
-    if execution_policy is not None and version != 2:
+    if execution_policy is not None and version not in [2, 3]:
         version, controller_format = 2, 'unverified'
     rows, names, directories, directory_identities, unavailable = [], set(), {}, {}, []
     total = 0
@@ -170,7 +173,7 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
         ('work/test-reports.json', 8 * MIB), ('work/installed-build-package-identities.txt', MIB),
     ]:
         add(result / file, 'result/' + file, maximum)
-    if version == 2:
+    if version in [2, 3]:
         for phase in ['requested', 'terminal']:
             name = 'work/original-command-' + phase + '.json'
             add(result / name, 'result/' + name, 4096)
@@ -192,7 +195,7 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
             if os.path.lexists(carrier / file):
                 add(carrier / file,'carrier/failed-' + file[1:],maximum)
     report_prefixes = ['work/original-test-reports', 'custody-preflight/original-test-reports']
-    if version == 2:
+    if version in [2, 3]:
         report_prefixes.append('work/post-stop-reports/original-test-reports')
     for prefix in report_prefixes:
         source = result / prefix
@@ -224,7 +227,7 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
     manifest = {'schemaVersion': version, 'selectedProfile': profile_name, 'scope': 'Bounded original C receipts, reports and logs; failed attempts retained without promotion.', 'rawFiles': [], 'nativeDirectories': list(directories.values()), 'unavailable': unavailable, 'uncompressedBytes': total, 'originalReportLogBytes': report_totals['original-trap'], 'originalReportMemberByteLimit': 64 * MIB, 'originalReportAggregateByteLimit': 512 * MIB, 'binaryPackagePayloadsUploaded': False, 'nativeWorktreeArchiveUploaded': False, 'originalInputPayloadsUploaded': False, 'qualificationComplete': False, 'gateAComplete': False}
     if execution_policy is not None:
         manifest['executionPolicy'] = execution_policy
-    if version == 2:
+    if version in [2, 3]:
         manifest.update(controllerReceiptFormat=controller_format, retentionObserverLogByteLimit=256*MIB,
                         postStopReportLogBytes=report_totals['post-stop'], postStopReportAggregateByteLimit=512*MIB,
                         reportFamiliesRetainedSeparately=True)

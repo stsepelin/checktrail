@@ -180,6 +180,19 @@ evidence. Complete PGO/Automake phase selection remains separately unassessed. T
 `builddir-*` configurations; it does not assert an independently complete
 configuration inventory.
 
+New C-profile controller receipts use schema 3 and explicitly record each
+resource-observation intervention. Before scanning, the controller verifies the
+exact owned producer container and pauses a running writer; it always attempts
+to resume that writer afterward. Initial and final scans require positive
+pre-admission absence and post-terminal stopped-writer evidence. Every complete
+counter row is bound to its raw observer sequence and recorded pause/resume or
+absence actions, and checked against the same frozen work allowance. A scan, ownership, cancellation, or cleanup failure cannot count
+as a complete observation. The original command, numeric resource bounds and
+running deadline stay unchanged; recorded pauses can affect wall-clock behavior,
+so these observations do not establish uninterrupted upstream runtime. Historical
+schema 1 and 2 receipts keep their original meanings. Go, Node and the legacy
+Binutils observer contracts are unchanged.
+
 Preparation exits zero on successful data validation. Actual execution currently
 returns a nonzero, explicitly incomplete qualification status even when the
 original package command succeeds: the independent expected configuration/test
