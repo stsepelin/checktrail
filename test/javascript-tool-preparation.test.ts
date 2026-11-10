@@ -202,3 +202,84 @@ test("invalid qualified graph publishes no partial tool artifacts and cannot fal
     });
   }
 });
+
+test("qualified graph optionality follows selected paths and required paths promote shared descendants", async () => {
+  const { selectQualifiedJavaScriptToolsLock } = await selectors();
+  const manifest = {
+    name: "checktrail-javascript-acceptance-tools",
+    version: "0.0.0",
+    private: true,
+    dependencies: { native: "1.0.0" } as Record<string, string>,
+  };
+  const entry = (name: string) => ({
+    version: "1.0.0",
+    resolved: `https://registry.npmjs.org/${name}/-/${name}-1.0.0.tgz`,
+    integrity: "sha512-AAAA",
+  });
+  const source = {
+    name: manifest.name,
+    version: manifest.version,
+    lockfileVersion: 3,
+    packages: {
+      "": {
+        name: manifest.name,
+        version: manifest.version,
+        dependencies: manifest.dependencies,
+      },
+      "node_modules/native": {
+        ...entry("native"),
+        peerDependencies: { shared: "^1.0.0" },
+        peerDependenciesMeta: { shared: { optional: true } },
+      },
+      // These were required in the source graph, but only an optional peer
+      // reaches them from this selected profile (the Vite/YAML failure case).
+      "node_modules/shared": {
+        ...entry("shared"),
+        dependencies: { leaf: "1.0.0" },
+      },
+      "node_modules/leaf": entry("leaf"),
+    } as Record<
+      string,
+      {
+        [key: string]: unknown;
+        dependencies?: Record<string, string>;
+        optional?: boolean;
+      }
+    >,
+  };
+  const selected = selectQualifiedJavaScriptToolsLock(manifest, source).lock
+    .packages;
+  assert.equal(selected["node_modules/native"].optional, undefined);
+  assert.equal(selected["node_modules/shared"].optional, true);
+  assert.equal(selected["node_modules/leaf"].optional, true);
+  assert.equal(source.packages["node_modules/shared"]!.optional, undefined);
+  for (const dependencies of [
+    { native: "1.0.0", consumer: "1.0.0" },
+    { consumer: "1.0.0", native: "1.0.0" },
+  ]) {
+    const requiredManifest = { ...manifest, dependencies };
+    const requiredSource = structuredClone(source);
+    requiredSource.packages[""]!.dependencies = dependencies;
+    requiredSource.packages["node_modules/consumer"] = {
+      ...entry("consumer"),
+      dependencies: { shared: "1.0.0" },
+    };
+    const required = selectQualifiedJavaScriptToolsLock(
+      requiredManifest,
+      requiredSource,
+    ).lock.packages;
+    assert.equal(required["node_modules/shared"].optional, undefined);
+    assert.equal(required["node_modules/leaf"].optional, undefined);
+    delete requiredSource.packages["node_modules/leaf"];
+    assert.throws(
+      () =>
+        selectQualifiedJavaScriptToolsLock(requiredManifest, requiredSource),
+      /Missing locked required tool dependency leaf/,
+    );
+  }
+  const absentOptional = structuredClone(source);
+  delete absentOptional.packages["node_modules/shared"];
+  assert.doesNotThrow(() =>
+    selectQualifiedJavaScriptToolsLock(manifest, absentOptional),
+  );
+});
