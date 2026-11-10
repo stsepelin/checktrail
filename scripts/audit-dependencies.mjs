@@ -499,55 +499,53 @@ for (const [location, entry] of Object.entries(lock.packages).sort(([a], [b]) =>
   assert.match(location, /^node_modules\//);
   assert.ok(!path.isAbsolute(location) && !location.split("/").includes(".."));
   const directory = path.join(root, location);
-  if (includeDev) {
-    assert.match(entry.integrity, /^sha512-[A-Za-z0-9+/]+={0,2}$/);
-    assert.equal(new URL(entry.resolved).origin, "https://registry.npmjs.org");
-    try {
-      await lstat(directory);
-    } catch (error) {
-      if (error.code !== "ENOENT") throw error;
-      assert.equal(
-        entry.optional,
-        true,
-        "Required locked dependency is not installed",
-      );
-      const inheritedExclusion =
-        allReachable.has(location) && !selectedReachable.has(location);
-      const excluded = platformBlocked.has(location) || inheritedExclusion;
-      const blockingAncestors = inheritedExclusion
-        ? [...platformBlocked]
-            .filter(
-              (ancestor) =>
-                allReachable.has(ancestor) &&
-                reachable(ancestor, new Set()).has(location),
-            )
-            .sort()
-        : [];
-      const packageName = entry.name ?? location.split("node_modules/").at(-1);
-      assert.ok(
-        typeof packageName === "string" && packageName.length > 0,
-        "Absent dependency has no package identity",
-      );
-      const id = packageName + "@" + entry.version;
-      absentPackages.push({
-        location,
+  assert.match(entry.integrity, /^sha512-[A-Za-z0-9+/]+={0,2}$/);
+  assert.equal(new URL(entry.resolved).origin, "https://registry.npmjs.org");
+  try {
+    await lstat(directory);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+    assert.equal(
+      entry.optional,
+      true,
+      "Required locked dependency is not installed",
+    );
+    const inheritedExclusion =
+      allReachable.has(location) && !selectedReachable.has(location);
+    const excluded = platformBlocked.has(location) || inheritedExclusion;
+    const blockingAncestors = inheritedExclusion
+      ? [...platformBlocked]
+          .filter(
+            (ancestor) =>
+              allReachable.has(ancestor) &&
+              reachable(ancestor, new Set()).has(location),
+          )
+          .sort()
+      : [];
+    const packageName = entry.name ?? location.split("node_modules/").at(-1);
+    assert.ok(
+      typeof packageName === "string" && packageName.length > 0,
+      "Absent dependency has no package identity",
+    );
+    const id = packageName + "@" + entry.version;
+    absentPackages.push({
+      location,
+      package: id,
+      declaredIntegrity: entry.integrity,
+      resolved: entry.resolved,
+      state: excluded ? "platform-inapplicable" : "not-installed-optional",
+      os: entry.os ?? null,
+      cpu: entry.cpu ?? null,
+      libc: entry.libc ?? null,
+      ...(inheritedExclusion ? { blockingAncestors } : {}),
+    });
+    if (!excluded)
+      gaps.push({
         package: id,
-        declaredIntegrity: entry.integrity,
-        resolved: entry.resolved,
-        state: excluded ? "platform-inapplicable" : "not-installed-optional",
-        os: entry.os ?? null,
-        cpu: entry.cpu ?? null,
-        libc: entry.libc ?? null,
-        ...(inheritedExclusion ? { blockingAncestors } : {}),
+        reason:
+          "Optional package absent without a demonstrated platform exclusion",
       });
-      if (!excluded)
-        gaps.push({
-          package: id,
-          reason:
-            "Optional package absent without a demonstrated platform exclusion",
-        });
-      continue;
-    }
+    continue;
   }
   assert.equal(
     await realpath(directory),
@@ -786,22 +784,20 @@ assert.deepEqual(
   treeIdentities,
   "Production lock and installed tree identities differ",
 );
-const uninspectedNoticeSources = includeDev
-  ? Object.keys(sources)
-      .filter(
-        (id) =>
-          !usedSources.has(id) && absentPackages.some((p) => p.package === id),
-      )
-      .map((id) => ({
-        package: id,
-        state: absentPackages
-          .filter((p) => p.package === id)
-          .every((p) => p.state === "platform-inapplicable")
-          ? "platform-inapplicable"
-          : "not-installed-optional",
-        noticeInspected: false,
-      }))
-  : [];
+const uninspectedNoticeSources = Object.keys(sources)
+  .filter(
+    (id) =>
+      !usedSources.has(id) && absentPackages.some((p) => p.package === id),
+  )
+  .map((id) => ({
+    package: id,
+    state: absentPackages
+      .filter((p) => p.package === id)
+      .every((p) => p.state === "platform-inapplicable")
+      ? "platform-inapplicable"
+      : "not-installed-optional",
+    noticeInspected: false,
+  }));
 assert.deepEqual(
   new Set([
     ...usedSources,
@@ -816,17 +812,17 @@ if (includeDev) {
     treeLocations,
     "Installed package locations and lockfile differ",
   );
-  assert.equal(
-    packages.length + absentPackages.length,
-    lockedPackageCount,
-    "Locked package accounting differs",
-  );
-  if (packages.length === 0)
-    gaps.push({
-      package: null,
-      reason: "No installed packages were inspected",
-    });
 }
+assert.equal(
+  packages.length + absentPackages.length,
+  lockedPackageCount,
+  "Locked package accounting differs",
+);
+if (packages.length === 0)
+  gaps.push({
+    package: null,
+    reason: "No installed packages were inspected",
+  });
 process.stdout.write(
   `${JSON.stringify(
     {
@@ -835,24 +831,24 @@ process.stdout.write(
       scope: includeDev
         ? "production-and-development-npm-dependencies"
         : "production-npm-dependencies",
+      runtime: {
+        node: process.versions.node,
+        platform: process.platform,
+        architecture: process.arch,
+        libc: runtimeLibc,
+      },
+      lockedPackageCount,
+      installedPackageCount: packages.length,
+      platformInapplicableCount: absentPackages.filter(
+        (p) => p.state === "platform-inapplicable",
+      ).length,
+      optionalAbsentCount: absentPackages.filter(
+        (p) => p.state === "not-installed-optional",
+      ).length,
+      absentPackages,
+      uninspectedNoticeSources,
       ...(includeDev
         ? {
-            runtime: {
-              node: process.versions.node,
-              platform: process.platform,
-              architecture: process.arch,
-              libc: runtimeLibc,
-            },
-            lockedPackageCount,
-            installedPackageCount: packages.length,
-            platformInapplicableCount: absentPackages.filter(
-              (p) => p.state === "platform-inapplicable",
-            ).length,
-            optionalAbsentCount: absentPackages.filter(
-              (p) => p.state === "not-installed-optional",
-            ).length,
-            absentPackages,
-            uninspectedNoticeSources,
             installedContentIntegrityIsArchiveIntegrity: false,
             completeNativeArtifactClosure: false,
           }
@@ -865,9 +861,9 @@ process.stdout.write(
       limitations: [
         "Declared integrity is recorded, not recomputed over installed package contents",
         "License declarations and notice presence do not establish legal compliance",
+        "Absent optional packages retain explicit platform exclusions or unresolved gaps",
         ...(includeDev
           ? [
-              "Absent optional packages retain explicit platform exclusions or unresolved gaps",
               "Installed content hashes bind observed files, not npm archive integrity or producer authentication",
               "Native toolchains and container images are outside this audit",
             ]

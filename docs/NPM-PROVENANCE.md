@@ -9,9 +9,11 @@ node scripts/audit-dependencies.mjs
 node scripts/audit-dependencies.mjs --include-dev
 ```
 
-The default production report retains schema version 1. The explicit development
-mode uses version 2 and reconciles every locked location with its actual installed
-package identity. Alias names and duplicate nested locations remain distinct.
+The default production report retains schema version 1 with additive runtime facts,
+locked/installed/absent counters, absence records and uninspected notice-source
+records. The explicit development mode uses version 2 and adds installed content
+bindings. Both modes reconcile every scoped locked location with its actual
+installed package identity. Alias names and duplicate nested locations remain distinct.
 Installed manifest names must match their literal lock identities in both modes;
 an alias retains the actual package name from its lock entry.
 Unknown or repeated arguments fail before the audit starts. This is source setup
@@ -23,7 +25,8 @@ nonregular entries, changed files, individual files above 128 MiB and package
 contents above 256 MiB or 8,192 files are refused. These are per-package bounds;
 they do not establish a global resource bound or a hermetic filesystem snapshot.
 
-Absent optional packages remain accounted for. Literal OS/CPU/libc constraints and
+Both modes account for absent optional packages. An audit with no inspected
+installed packages remains incomplete. Literal OS/CPU/libc constraints and
 inherited incompatible ancestors can justify a platform exclusion only when no
 compatible root path reaches the missing package. An absent compatible optional
 package remains a gap. A current notice-source entry for that known absence stays

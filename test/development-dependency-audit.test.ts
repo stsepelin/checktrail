@@ -116,6 +116,7 @@ function invoke(
   );
 }
 type Audit = {
+  schemaVersion: number;
   runtime?: { libc: { family: string; evidence: string; version?: string } };
   complete: boolean;
   scope: string;
@@ -326,7 +327,9 @@ type FixtureLockEntry = {
   name?: string;
   version?: string;
   optional?: boolean;
+  os?: string[];
   cpu?: string[];
+  libc?: string[];
   dependencies?: Record<string, string>;
   optionalDependencies?: Record<string, string>;
   peerDependencies?: Record<string, string>;
@@ -671,7 +674,152 @@ for (const entry of libcCases) {
   });
 }
 
-test("development audit retains an active matching-libc path instead of inheriting a foreign exclusion", async (t) => {
+for (const entry of libcCases) {
+  test(`production optional absence retains exact libc evidence: ${entry.name}`, async (t) => {
+    const root = await auditFixture(t, [
+      { name: "synthetic-prod" },
+      {
+        name: "synthetic-production-native",
+        optional: true,
+        absent: true,
+        libc: entry.selector,
+      },
+    ]);
+    const runtime = await syntheticLibcReport(
+      root,
+      entry.report,
+      entry.throws ?? false,
+    );
+    for (const args of [[], ["--include-dev"]]) {
+      const report = parsed(
+        invoke(root, args, runtime.args),
+        entry.excluded ? 0 : 2,
+      );
+      assert.equal(report.schemaVersion, args.length ? 2 : 1);
+      assert.equal(report.runtime!.libc.family, entry.family);
+      assert.equal(report.complete, entry.excluded);
+      assert.equal(report.packageCount, 1);
+      assert.equal(report.lockedPackageCount, 2);
+      assert.equal(report.installedPackageCount, 1);
+      assert.equal(report.platformInapplicableCount, entry.excluded ? 1 : 0);
+      assert.equal(report.optionalAbsentCount, entry.excluded ? 0 : 1);
+      assert.equal(
+        report.absentPackages[0]!.state,
+        entry.excluded ? "platform-inapplicable" : "not-installed-optional",
+      );
+      assert.equal(report.gaps.length, entry.excluded ? 0 : 1);
+      if (!args.length) {
+        assert.equal("content" in report.packages[0]!, false);
+        assert.equal("manifestSha256" in report.packages[0]!, false);
+      }
+      await runtime.checked();
+    }
+  });
+}
+
+test("production optional absence accounts for direct OS and CPU exclusions and inherited descendants in both modes", async (t) => {
+  for (const selector of [
+    { os: [process.platform === "win32" ? "linux" : "win32"] },
+    { cpu: ["wasm32"] },
+  ]) {
+    const root = await auditFixture(t, [
+      { name: "synthetic-prod" },
+      {
+        name: "synthetic-production-foreign",
+        optional: true,
+        absent: true,
+        ...selector,
+        dependencies: { "synthetic-production-child": "1.0.0" },
+      },
+      {
+        name: "synthetic-production-child",
+        location: "node_modules/synthetic-production-child",
+        optional: true,
+        absent: true,
+      },
+    ]);
+    for (const args of [[], ["--include-dev"]]) {
+      const report = parsed(invoke(root, args));
+      assert.equal(report.complete, true);
+      assert.equal(report.packageCount, 1);
+      assert.equal(report.lockedPackageCount, 3);
+      assert.equal(
+        report.installedPackageCount + report.absentPackages.length,
+        3,
+      );
+      assert.equal(report.platformInapplicableCount, 2);
+      assert.equal(report.optionalAbsentCount, 0);
+      assert.ok(
+        report.absentPackages.every(
+          (item) => item.state === "platform-inapplicable",
+        ),
+      );
+    }
+  }
+});
+
+test("production optional absence refuses a required literal lock entry despite an optional npm projection", async (t) => {
+  const root = await auditFixture(t, [
+    { name: "synthetic-prod" },
+    {
+      name: "synthetic-required-native",
+      optional: true,
+      absent: true,
+      os: [process.platform === "win32" ? "linux" : "win32"],
+    },
+  ]);
+  await changeFixtureLock(root, (packages) => {
+    packages["node_modules/synthetic-required-native"]!.optional = false;
+  });
+  for (const args of [[], ["--include-dev"]])
+    refused(invoke(root, args), /Required locked dependency is not installed/);
+});
+
+test("production optional absence still inspects a physically present foreign optional package", async (t) => {
+  const root = await auditFixture(t, [
+    { name: "synthetic-prod" },
+    { name: "synthetic-installed-native", optional: true, libc: ["musl"] },
+  ]);
+  const runtime = await syntheticLibcReport(root, glibcReport);
+  for (const args of [[], ["--include-dev"]]) {
+    const report = parsed(invoke(root, args, runtime.args));
+    assert.equal(report.complete, true);
+    assert.equal(report.packageCount, 2);
+    assert.equal(report.installedPackageCount, 2);
+    assert.equal(report.platformInapplicableCount, 0);
+    assert.deepEqual(report.absentPackages, []);
+    assert.ok(
+      report.packages.some(
+        (item) =>
+          item.name === "synthetic-installed-native" &&
+          item.notices.length === 1,
+      ),
+    );
+  }
+  await runtime.checked();
+});
+
+test("production optional absence cannot make an empty installed scope complete", async (t) => {
+  const root = await auditFixture(t, [
+    {
+      name: "synthetic-production-foreign",
+      optional: true,
+      absent: true,
+      os: [process.platform === "win32" ? "linux" : "win32"],
+    },
+  ]);
+  for (const args of [[], ["--include-dev"]]) {
+    const report = parsed(invoke(root, args), 2);
+    assert.equal(report.packageCount, 0);
+    assert.equal(report.lockedPackageCount, 1);
+    assert.equal(report.platformInapplicableCount, 1);
+    assert.deepEqual(report.gaps, [
+      { package: null, reason: "No installed packages were inspected" },
+    ]);
+  }
+});
+
+test("dependency audit retains an active matching-libc path instead of inheriting a foreign exclusion", async (t) => {
   const root = await auditFixture(t, [
     { name: "synthetic-prod" },
     {
@@ -695,23 +843,25 @@ test("development audit retains an active matching-libc path instead of inheriti
     },
   ]);
   const report = await syntheticLibcReport(root, glibcReport);
-  const evidence = parsed(invoke(root, ["--include-dev"], report.args), 2);
-  assert.equal(evidence.complete, false);
-  assert.equal(evidence.platformInapplicableCount, 1);
-  assert.equal(evidence.optionalAbsentCount, 1);
-  assert.equal(
-    evidence.absentPackages.find(
-      (item) => item.package === "synthetic-libc-shared@1.0.0",
-    )!.state,
-    "not-installed-optional",
-  );
-  assert.ok(
-    evidence.packages.some((item) => item.name === "synthetic-libc-active"),
-  );
-  await report.checked();
+  for (const args of [[], ["--include-dev"]]) {
+    const evidence = parsed(invoke(root, args, report.args), 2);
+    assert.equal(evidence.complete, false);
+    assert.equal(evidence.platformInapplicableCount, 1);
+    assert.equal(evidence.optionalAbsentCount, 1);
+    assert.equal(
+      evidence.absentPackages.find(
+        (item) => item.package === "synthetic-libc-shared@1.0.0",
+      )!.state,
+      "not-installed-optional",
+    );
+    assert.ok(
+      evidence.packages.some((item) => item.name === "synthetic-libc-active"),
+    );
+    await report.checked();
+  }
 });
 
-test("development audit retains a compatible absent optional notice source without declaring its notice inspected", async (t) => {
+test("dependency audit retains a known absent optional notice source without declaring its notice inspected", async (t) => {
   const f = await pinnedNoticeFixture(t, false);
   const file = path.join(f.root, "package.json");
   const manifest = JSON.parse(await readFile(file, "utf8"));
@@ -724,27 +874,46 @@ test("development audit retains a compatible absent optional notice source witho
     packages[f.dependency]!.optional = true;
   });
   await rm(path.join(f.root, f.dependency), { recursive: true });
-  const report = parsed(invoke(f.root), 2);
-  assert.equal(report.complete, false);
-  assert.deepEqual(report.uninspectedNoticeSources, [
-    {
-      package: f.name + "@1.0.0",
-      state: "not-installed-optional",
-      noticeInspected: false,
-    },
-  ]);
-  assert.deepEqual(report.gaps, [
-    {
-      package: f.name + "@1.0.0",
-      reason:
-        "Optional package absent without a demonstrated platform exclusion",
-    },
-  ]);
+  for (const excluded of [true, false]) {
+    await changeFixtureLock(f.root, (packages) => {
+      if (excluded)
+        packages[f.dependency]!.os = [
+          process.platform === "win32" ? "linux" : "win32",
+        ];
+      else delete packages[f.dependency]!.os;
+    });
+    for (const args of [[], ["--include-dev"]]) {
+      const report = parsed(invoke(f.root, args), excluded ? 0 : 2);
+      assert.equal(report.complete, excluded);
+      assert.equal(report.packageCount, 1);
+      assert.equal(report.lockedPackageCount, 2);
+      assert.deepEqual(report.uninspectedNoticeSources, [
+        {
+          package: f.name + "@1.0.0",
+          state: excluded ? "platform-inapplicable" : "not-installed-optional",
+          noticeInspected: false,
+        },
+      ]);
+      assert.deepEqual(
+        report.gaps,
+        excluded
+          ? []
+          : [
+              {
+                package: f.name + "@1.0.0",
+                reason:
+                  "Optional package absent without a demonstrated platform exclusion",
+              },
+            ],
+      );
+    }
+  }
   await writeFile(
     path.join(f.root, "scripts/license-sources.json"),
     JSON.stringify({ [f.name + "@2.0.0"]: f.source }),
   );
-  refused(invoke(f.root), /no longer describes/);
+  for (const args of [[], ["--include-dev"]])
+    refused(invoke(f.root, args), /no longer describes/);
 });
 
 test("dependency audit accepts OS-incompatible optional ancestry and continues hashing retained development contents and notices", async (t) => {
