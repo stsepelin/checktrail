@@ -1,5 +1,8 @@
 import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
-import { installAcceptancePackage } from "./install-acceptance-package.mjs";
+import {
+  installAcceptancePackage,
+  assertLockedAcceptanceClient,
+} from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -88,7 +91,7 @@ try {
       "utf8",
     ),
   );
-  assert.equal(clientManifest.version, "2.3.1");
+  await assertLockedAcceptanceClient(repository, clientManifest.version);
   const lock = JSON.parse(
     await readFile(path.join(repository, "package-lock.json"), "utf8"),
   );

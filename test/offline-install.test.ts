@@ -9,9 +9,11 @@ const helperUrl = new URL(
   "../../scripts/install-acceptance-package.mjs",
   import.meta.url,
 );
-const { installAcceptancePackage, acceptanceConsumerLock } = (await import(
-  helperUrl.href
-)) as {
+const {
+  installAcceptancePackage,
+  acceptanceConsumerLock,
+  assertLockedAcceptanceClient,
+} = (await import(helperUrl.href)) as {
   installAcceptancePackage: (
     repository: string,
     tarball: string,
@@ -21,6 +23,10 @@ const { installAcceptancePackage, acceptanceConsumerLock } = (await import(
     offlineProductionInstall: boolean;
     lifecycleScriptsExecuted: boolean;
   }>;
+  assertLockedAcceptanceClient: (
+    repository: string,
+    observedVersion: string,
+  ) => Promise<void>;
   acceptanceConsumerLock: (
     manifest: unknown,
     lock: unknown,
@@ -269,4 +275,148 @@ test("offline package acceptance uses tarball integrity without registry metadat
     code: "ENOENT",
   });
   assert.deepEqual(await readdir(root), beforeMismatch);
+});
+
+test("acceptance client selection binds exact declared locked installed and observed versions without a historical literal", async (t) => {
+  const name = "@modelcontextprotocol/client";
+  const root = await fixture(t, {});
+  await mkdir(path.join(root, "node_modules", name), { recursive: true });
+  const candidate = (version: string) => ({
+    manifest: {
+      devDependencies: { [name]: version } as Record<string, string>,
+    },
+    lock: {
+      lockfileVersion: 3,
+      packages: {
+        "": { devDependencies: { [name]: version } as Record<string, string> },
+        "node_modules/@modelcontextprotocol/client": { version },
+      },
+    },
+    installed: { name: name as string, version },
+  });
+  const write = async (state: ReturnType<typeof candidate>) => {
+    await Promise.all([
+      writeFile(
+        path.join(root, "package.json"),
+        JSON.stringify(state.manifest),
+      ),
+      writeFile(
+        path.join(root, "package-lock.json"),
+        JSON.stringify(state.lock),
+      ),
+      writeFile(
+        path.join(root, "node_modules", name, "package.json"),
+        JSON.stringify(state.installed),
+      ),
+    ]);
+  };
+  for (const version of ["2.3.1", "2.4.0"]) {
+    await write(candidate(version));
+    await assertLockedAcceptanceClient(root, version);
+  }
+  const cases: {
+    label: string;
+    mutate: (state: ReturnType<typeof candidate>) => void;
+    observed?: string;
+    message: RegExp;
+  }[] = [
+    {
+      label: "coherent range metadata",
+      mutate: (state) => {
+        state.manifest.devDependencies[name] = "^2.4.0";
+        state.lock.packages[""].devDependencies[name] = "^2.4.0";
+        state.lock.packages[
+          "node_modules/@modelcontextprotocol/client"
+        ].version = "^2.4.0";
+        state.installed.version = "^2.4.0";
+      },
+      observed: "^2.4.0",
+      message: /exactly pinned/,
+    },
+    {
+      label: "missing declaration",
+      mutate: (state) => {
+        delete state.manifest.devDependencies[name];
+      },
+      message: /exactly pinned/,
+    },
+    {
+      label: "old lock format",
+      mutate: (state) => {
+        state.lock.lockfileVersion = 2;
+      },
+      message: /lockfile v3/,
+    },
+    {
+      label: "stale lock root",
+      mutate: (state) => {
+        state.lock.packages[""].devDependencies[name] = "2.3.1";
+      },
+      message: /lock root/,
+    },
+    {
+      label: "missing lock declaration",
+      mutate: (state) => {
+        delete state.lock.packages[""].devDependencies[name];
+      },
+      message: /lock root/,
+    },
+    {
+      label: "stale lock package",
+      mutate: (state) => {
+        state.lock.packages[
+          "node_modules/@modelcontextprotocol/client"
+        ].version = "2.3.1";
+      },
+      message: /lock entry/,
+    },
+    {
+      label: "missing lock package",
+      mutate: (state) => {
+        Reflect.deleteProperty(
+          state.lock.packages,
+          "node_modules/@modelcontextprotocol/client",
+        );
+      },
+      message: /lock entry/,
+    },
+    {
+      label: "foreign installed package",
+      mutate: (state) => {
+        state.installed.name = "other-client";
+      },
+      message: /package name/,
+    },
+    {
+      label: "stale installed version",
+      mutate: (state) => {
+        state.installed.version = "2.3.1";
+      },
+      message: /installed version/,
+    },
+    {
+      label: "stale observed version",
+      mutate: () => {},
+      observed: "2.3.1",
+      message: /observed version/,
+    },
+    {
+      label: "unselected newer version",
+      mutate: () => {},
+      observed: "2.5.0",
+      message: /observed version/,
+    },
+  ];
+  for (const item of cases) {
+    const state = candidate("2.4.0");
+    item.mutate(state);
+    await write(state);
+    await assert.rejects(
+      assertLockedAcceptanceClient(root, item.observed ?? "2.4.0"),
+      item.message,
+      item.label,
+    );
+  }
+  await write(candidate("2.4.0"));
+  await assertLockedAcceptanceClient(root, "2.4.0");
 });
