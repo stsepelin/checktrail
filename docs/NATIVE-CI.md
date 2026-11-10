@@ -1032,7 +1032,10 @@ fresh installed usage intake runs separately. Native Windows requires the new
 literal private ACL batch profile, with read-only inspection and explicit public
 access refusal. No new CI jobs are introduced by this wiring.
 
-See [EVALUATION-ACCEPTANCE.md](EVALUATION-ACCEPTANCE.md) for the development
-observation and remaining qualification. The selected hosted runs, private
-prospective comparison freeze and full upstream build/license closure remain
-open. These controls invoke no model or field trial and do not measure quality.
+See [EVALUATION-ACCEPTANCE.md](EVALUATION-ACCEPTANCE.md) for the development and
+dated eight-slot source/fresh-installed observations. The latter binds `c28083a`
+through original job-log receipts, separately from the consumer ZIP upload.
+Prospective configuration/procedure policy selection is privately frozen;
+changed revisions and effective host/case readiness require separate evidence.
+Full upstream build/license closure and Gate A remain open. These controls invoke
+no model or field trial and do not measure quality.
