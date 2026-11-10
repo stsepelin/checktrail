@@ -362,6 +362,8 @@ export async function verifyReviewRuntime({
       "package-lock.json",
       "scripts/install-acceptance-package.mjs",
       "scripts/prepare-javascript-tools.mjs",
+      "scripts/javascript-tools/package.json",
+      "scripts/javascript-tools/package-lock.json",
       "scripts/native-acceptance-diagnostics.mjs",
       "docs/gate-a-profiles.v1.json",
       "scripts/review-runtime-evidence.mjs",

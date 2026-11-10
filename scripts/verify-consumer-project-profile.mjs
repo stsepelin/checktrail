@@ -51,12 +51,21 @@ const runtime = {
   imageVersion: process.env.ImageVersion ?? null,
   eslint: await eslintParticipationPrerequisites(
     root,
-    path.join(root, "node_modules/eslint/lib/api.js"),
+    path.join(
+      root,
+      ".checktrail/javascript-tools/node_modules/eslint/lib/api.js",
+    ),
   ),
   library: await viteLibraryPrerequisites(
     root,
-    path.join(root, "node_modules/vite/dist/node/index.js"),
-    path.join(root, "node_modules/typescript/lib/typescript.js"),
+    path.join(
+      root,
+      ".checktrail/javascript-tools/node_modules/vite/dist/node/index.js",
+    ),
+    path.join(
+      root,
+      ".checktrail/javascript-tools/node_modules/typescript/lib/typescript.js",
+    ),
   ),
 };
 const packet = await collectConsumerWitnesses(
