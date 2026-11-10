@@ -1,0 +1,670 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original public notice and package-byte evidence for the ROOT development Rolldown graph. Separate qualified 1.2.9 fixture data is unchanged.",
+  "rootDependencyLockSha256": "aab5d69fd62aff62668d9d7815e1679d965f0864c3eb7cdd0a96edc223c9f57b",
+  "releases": [
+    {
+      "version": "1.3.0",
+      "tag": "v1.3.0",
+      "commit": "be42c65ad38f2966edf35bfe7fe44262b44dafc8",
+      "githubCommitVerificationReportedValid": true,
+      "upstreamManifest": {
+        "source": "https://raw.githubusercontent.com/rolldown/rolldown/be42c65ad38f2966edf35bfe7fe44262b44dafc8/packages/rolldown/package.json",
+        "sha256": "090930349c0c20f172c72b613cedf488ff67a5d31f97b46cad519a15a632f1bb",
+        "bytes": 6825,
+        "version": "1.3.0"
+      },
+      "originalNotices": {
+        "primary": {
+          "file": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+          "source": "https://raw.githubusercontent.com/rolldown/rolldown/be42c65ad38f2966edf35bfe7fe44262b44dafc8/LICENSE",
+          "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+          "bytes": 1302,
+          "matchesPublishedParentArchive": true
+        },
+        "supplemental": {
+          "file": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+          "source": "https://raw.githubusercontent.com/rolldown/rolldown/be42c65ad38f2966edf35bfe7fe44262b44dafc8/THIRD-PARTY-LICENSE",
+          "sha256": "a877291d800ed43692f3f9ae09d8e01cc6f7293ad39d43896059c188ffbb8b7c",
+          "bytes": 2209,
+          "matchesPublishedParentArchive": true
+        }
+      },
+      "publishedParentArchive": {
+        "resolved": "https://registry.npmjs.org/rolldown/-/rolldown-1.3.0.tgz",
+        "integrity": "sha512-7j1jdVlzWzbRat9EDMsB/QmyMcc6hOO0vbcma8LGjBTmKlpS5Hem+5fpntc/HoRV5tLrG+Qo6I1ZHV/ZuL5S8g==",
+        "sha256": "7dd96bbe98545a724d6bf169706c4522ed82e74867763741a9e4f42fe97c3533",
+        "bytes": 229156
+      }
+    },
+    {
+      "version": "1.2.16",
+      "tag": "v1.2.16",
+      "commit": "de6facf2228279718e042b801dd6b60dd6503918",
+      "githubCommitVerificationReportedValid": true,
+      "upstreamManifest": {
+        "source": "https://raw.githubusercontent.com/rolldown/rolldown/de6facf2228279718e042b801dd6b60dd6503918/packages/rolldown/package.json",
+        "sha256": "892c3b4c42d43c1f0d16a35286cce8d839af1f65affd38f62a9e63ad63783ed8",
+        "bytes": 6793,
+        "version": "1.2.16"
+      },
+      "originalNotices": {
+        "primary": {
+          "file": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+          "source": "https://raw.githubusercontent.com/rolldown/rolldown/de6facf2228279718e042b801dd6b60dd6503918/LICENSE",
+          "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+          "bytes": 1302,
+          "matchesPublishedParentArchive": true
+        },
+        "supplemental": {
+          "file": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+          "source": "https://raw.githubusercontent.com/rolldown/rolldown/de6facf2228279718e042b801dd6b60dd6503918/THIRD-PARTY-LICENSE",
+          "sha256": "a877291d800ed43692f3f9ae09d8e01cc6f7293ad39d43896059c188ffbb8b7c",
+          "bytes": 2209,
+          "matchesPublishedParentArchive": true
+        }
+      },
+      "publishedParentArchive": {
+        "resolved": "https://registry.npmjs.org/rolldown/-/rolldown-1.2.16.tgz",
+        "integrity": "sha512-bWvlMpFKiTfDKfnK7FC2MPgPeWCf/Kpwsq49ApdW+FQaBZb6O6dZ4MAPbPUjp7hYQrw/RobqCzn64BRrQecGHw==",
+        "sha256": "9a86591756be331a7686bc11bdc3f41d51ced8bcb13a888d9e34038cae31030b",
+        "bytes": 205329
+      }
+    }
+  ],
+  "nativePackages": [
+    {
+      "package": "@rolldown/binding-android-arm-eabi@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-android-arm-eabi",
+      "os": ["android"],
+      "cpu": ["arm"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-android-arm-eabi/-/binding-android-arm-eabi-1.2.16.tgz",
+        "integrity": "sha512-ia3DwAs0OsMGS7+IConptSiyk9pEXkOx/AbJ2n/lAGxH3QkWQus1t8d7gnAT38FCU2sQu8lUbeR6AiZFv4JxaA==",
+        "sha256": "077b4390cca470df4fdec90484308a9eda9cbc5158c091e6b19ea9c8f3da7855",
+        "bytes": 7293238
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-android-arm-eabi@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-android-arm-eabi",
+      "os": ["android"],
+      "cpu": ["arm"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-android-arm-eabi/-/binding-android-arm-eabi-1.3.0.tgz",
+        "integrity": "sha512-zjq+pUSE36RJG9nJXqrRfMCOxekzVhlaYMtFELHaOcRH4UqTnkWhbTbEixKEawsb0ZTVMRbn8RLYcuU4DYk8qg==",
+        "sha256": "f5a5fc85314bff4841df2b4934b7b6d4a235039717203821a4204cb0a7b919be",
+        "bytes": 7436061
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-android-arm64@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-android-arm64",
+      "os": ["android"],
+      "cpu": ["arm64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-android-arm64/-/binding-android-arm64-1.2.16.tgz",
+        "integrity": "sha512-kx5wBiMB6E7TEvpl2B9gjLU004BkvEm2Dr941BFjx/SontPwSzNuQUIoVKxHHoSjpFIfHMmcguyLOtyn0hObRg==",
+        "sha256": "621b10dcdeb42db1b3412e34b084c548e06aff680b4496afd64ad0b6f8f47b24",
+        "bytes": 8325063
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-android-arm64@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-android-arm64",
+      "os": ["android"],
+      "cpu": ["arm64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-android-arm64/-/binding-android-arm64-1.3.0.tgz",
+        "integrity": "sha512-HdnCiSmMGgEILGVLU1o4dcOblLGj8sMnqEFrDY/S7KRti1nTQHAqGGs2AniPspbK90AFS3pM23K/R0J3hPQXYQ==",
+        "sha256": "030c304743bc134f7aaf0d92aea92b9688b2174f7f227f664c612e8887542665",
+        "bytes": 8492622
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-darwin-arm64@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-darwin-arm64",
+      "os": ["darwin"],
+      "cpu": ["arm64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-darwin-arm64/-/binding-darwin-arm64-1.2.16.tgz",
+        "integrity": "sha512-qslZrXnKJU4cUpjoAmtAo/KQM9e2IRMlmpig6Zpwj+8KWxW8v+nkAf9216Bsek9lOC1jvg2yCjygCFo2f83msQ==",
+        "sha256": "73ecc172198bb2e50581fc85518fd23875cc683c4c38c7a0c5f16bad20de8fc5",
+        "bytes": 8010042
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-darwin-arm64@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-darwin-arm64",
+      "os": ["darwin"],
+      "cpu": ["arm64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-darwin-arm64/-/binding-darwin-arm64-1.3.0.tgz",
+        "integrity": "sha512-TkQ2JGC8/9UxoCeH5dSJj1gxuFhzw200QTJJd2YNPRXznSSM4XvpKV2Cs+RM2BcM8sa6xa4rmXNuiJ64+1993g==",
+        "sha256": "16039f30485ff4e166c49272c056a425b172611430e41a670c6755de4974e508",
+        "bytes": 8170644
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-darwin-x64@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-darwin-x64",
+      "os": ["darwin"],
+      "cpu": ["x64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-darwin-x64/-/binding-darwin-x64-1.2.16.tgz",
+        "integrity": "sha512-FdF+y48ND13eAyM2mQn+85kvAqNlvRWROy2rhgA463X/0Gv4vGtazZtfaF1mRBLscYvtOlh4QnLjOWiFzX69OQ==",
+        "sha256": "cdf6461096e96ad19e500ff90a05c0a4b59038a8c990c5f54b4ec54018b24421",
+        "bytes": 8415293
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-darwin-x64@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-darwin-x64",
+      "os": ["darwin"],
+      "cpu": ["x64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-darwin-x64/-/binding-darwin-x64-1.3.0.tgz",
+        "integrity": "sha512-Gr+iZW50RJZo4BPUazaDh/Azx7W0Rl04sy2MkXD+H4RkxzUX5hIrjaVw1BK+XHsccKExQAmCy6DhvRLlUzaYUg==",
+        "sha256": "94c232e82b3c0a20e22f1797038bea0e10d3e65945006f57d639fbeda8bb61dd",
+        "bytes": 8581570
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-freebsd-x64@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-freebsd-x64",
+      "os": ["freebsd"],
+      "cpu": ["x64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-freebsd-x64/-/binding-freebsd-x64-1.2.16.tgz",
+        "integrity": "sha512-ddjqFM5e95AgLbUPtKIS7V1KTVlA0RUgCVr5mn+/IEhsdy3pr+Vuj/HZ7nlMN2FyxIwUktOH1LEPIQXO1v9y1Q==",
+        "sha256": "317fca44a5e88bd560ce7a1b8b41ca9930909eaf8df7d4cbed3eecfc522ba7a4",
+        "bytes": 8783406
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-freebsd-x64@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-freebsd-x64",
+      "os": ["freebsd"],
+      "cpu": ["x64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-freebsd-x64/-/binding-freebsd-x64-1.3.0.tgz",
+        "integrity": "sha512-RwAtx8peSqUoBf8pxE0L62xKXBNnA3BtdFV+07t13t0TQoASCtV9tnU67aKKMRZSiD06SU07chB5B8fWFdW3gQ==",
+        "sha256": "3c14a6db90948c8a526b128cc30da20a918d0832478632efe19aa414c5668cf8",
+        "bytes": 8945726
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-arm-gnueabihf@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-linux-arm-gnueabihf",
+      "os": ["linux"],
+      "cpu": ["arm"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-arm-gnueabihf/-/binding-linux-arm-gnueabihf-1.2.16.tgz",
+        "integrity": "sha512-tHdKWbFkFBI687iim3LIyIvyL7j66VvQYkDPss5Stn/qyE2tWkR1YD0dXmXPFKKqT/o5ZEJVsaRsWS2meQwGOA==",
+        "sha256": "74f722dedea79353d34cdcdfcaeb5b2e1ca1a44356f72815a605e4a8d61ab96b",
+        "bytes": 8081668
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-arm-gnueabihf@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-linux-arm-gnueabihf",
+      "os": ["linux"],
+      "cpu": ["arm"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-arm-gnueabihf/-/binding-linux-arm-gnueabihf-1.3.0.tgz",
+        "integrity": "sha512-ow8fq6kYaIx75D0EVT5GeF4DcawcEYYXJ2CvEaOzyygW1jtVDQU/9o5YYidctHBRDUgPzGaTNB6n/VMTmd1ymw==",
+        "sha256": "5d65fcd595a2145de4158e350a59b3e604dbf7b4443a23900c186fc1dde70fe4",
+        "bytes": 8244240
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-arm64-gnu@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-linux-arm64-gnu",
+      "os": ["linux"],
+      "cpu": ["arm64"],
+      "libc": ["glibc"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-arm64-gnu/-/binding-linux-arm64-gnu-1.2.16.tgz",
+        "integrity": "sha512-FJiLGAblPBMlBEdbOqw6kW6QcXDWAf/oJu7gYs9ZJZwmg+K+/zjFLxPTIY9izJUzxzc24FHvmseyA0IvJSl17w==",
+        "sha256": "209a20b4e9b518314df3152bf86f3b819dcc056476ab4c0669da3bf78da21196",
+        "bytes": 8334408
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-arm64-gnu@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-linux-arm64-gnu",
+      "os": ["linux"],
+      "cpu": ["arm64"],
+      "libc": ["glibc"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-arm64-gnu/-/binding-linux-arm64-gnu-1.3.0.tgz",
+        "integrity": "sha512-PLOWuiz+rdqSgiLgN7bxvy6DjXLj8gnJxzRS243LNnLi96VeyB7VFsC3eblcKv3Xwd3jQqJfbCWRhLijTIZyvQ==",
+        "sha256": "a6ade6b09ec08d1912b0cc773ab202c80a2347390a434b3fa5100048caf15654",
+        "bytes": 8499093
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-arm64-musl@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-linux-arm64-musl",
+      "os": ["linux"],
+      "cpu": ["arm64"],
+      "libc": ["musl"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-arm64-musl/-/binding-linux-arm64-musl-1.2.16.tgz",
+        "integrity": "sha512-hrJpblMsrQ58U9veWpbXzkhV5zStunds6HWLprqq1qauvgBr1E6P+24kLj6lSLI9vjRn/RYpjprhkHQPKGWpNg==",
+        "sha256": "1fe782f0ad7af99fe69065c2c08a627c75a0b0ec495838e88db765766f9af601",
+        "bytes": 8345842
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-arm64-musl@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-linux-arm64-musl",
+      "os": ["linux"],
+      "cpu": ["arm64"],
+      "libc": ["musl"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-arm64-musl/-/binding-linux-arm64-musl-1.3.0.tgz",
+        "integrity": "sha512-CQ/k85cc342j5SnZ/gT9p132NXZRGTgLRhfItdYqUg+jpvL5HYFve0GB+zQDCYGwDjtDWIoqKSOitkmZMZc/tw==",
+        "sha256": "419f0a2d4a45cfe5054b6218a0e72225e740a361f6283fdc506d253d77c4b14e",
+        "bytes": 8512961
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-ppc64-gnu@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-linux-ppc64-gnu",
+      "os": ["linux"],
+      "cpu": ["ppc64"],
+      "libc": ["glibc"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-ppc64-gnu/-/binding-linux-ppc64-gnu-1.2.16.tgz",
+        "integrity": "sha512-qJd/dC6j6CwLG9/s/RP2nb1RZ0GIgj7Ioj7x/SYa3RzjVrlzrmH0fhIOpfvqQDeIsdP0loi+kHaMhJzY1PBIaA==",
+        "sha256": "4c4fa828f21a01faac30eed6dfe5b73d511240308f19aaa3841bae5cd9a85166",
+        "bytes": 9724118
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-ppc64-gnu@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-linux-ppc64-gnu",
+      "os": ["linux"],
+      "cpu": ["ppc64"],
+      "libc": ["glibc"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-ppc64-gnu/-/binding-linux-ppc64-gnu-1.3.0.tgz",
+        "integrity": "sha512-wk+ZG7xDP2px3cQRFoNoNp52/w1O5hTTtciHxuastreMOp8isYUTCpcG/rEYnSQBI+nycN+B9d9pBGua+qvV7w==",
+        "sha256": "2eb5706f68d7ab8f490d406f25c20e6c240770ea2ae19277d7bb1eaa9cc6979f",
+        "bytes": 9888953
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-s390x-gnu@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-linux-s390x-gnu",
+      "os": ["linux"],
+      "cpu": ["s390x"],
+      "libc": ["glibc"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-s390x-gnu/-/binding-linux-s390x-gnu-1.2.16.tgz",
+        "integrity": "sha512-Vx7Xg5uUJuNcujJjI70OICaH0EYj80BtOLZTSN7uOYg8QOLlyKnaG0IW7Fn/J0IpJsaKzmDKMhOQv1JBM9m9vg==",
+        "sha256": "9b552a486a103a3155509e4b62273a578fa072a107ada7ab4af68c5db08828ee",
+        "bytes": 9067300
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-s390x-gnu@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-linux-s390x-gnu",
+      "os": ["linux"],
+      "cpu": ["s390x"],
+      "libc": ["glibc"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-s390x-gnu/-/binding-linux-s390x-gnu-1.3.0.tgz",
+        "integrity": "sha512-sEgyZt72Rj7V5q6OZ7A4U2I5v4EMGEv3Fp5QmoncmKbUMTrGmpyH7MwENfERGbfUYjxdBmktw4JJLys5I1aQNQ==",
+        "sha256": "1b96ae6cefbe97a928b616562cf0491c055e2e1a1605cc025638ebf3a04f6e1b",
+        "bytes": 9221205
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-x64-gnu@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-linux-x64-gnu",
+      "os": ["linux"],
+      "cpu": ["x64"],
+      "libc": ["glibc"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-x64-gnu/-/binding-linux-x64-gnu-1.2.16.tgz",
+        "integrity": "sha512-TNKhgE3uJTsTzatUSSYt0Kgo+Oa2uSlSjz4r1aEIea7HX6ULBym4fAlYUhG1i6pjNf2njfCUAfKwr6C3E9Xg1w==",
+        "sha256": "8bcdc0b4e718ad1febfc845775dbd1c2217e875fbcd632eb1b7ea658bf303e7c",
+        "bytes": 8821456
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-x64-gnu@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-linux-x64-gnu",
+      "os": ["linux"],
+      "cpu": ["x64"],
+      "libc": ["glibc"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-x64-gnu/-/binding-linux-x64-gnu-1.3.0.tgz",
+        "integrity": "sha512-PvL0BoBUwVugK1pFd+zyVk1L9F6ucmQ7oF2dpy8zKPHNlbW2zrU9Jst3fWYfG7z3owjxqhwAvi5G4o0AikrJMw==",
+        "sha256": "7c1a8d487c1c70b215dd0fc8da2e4fa13372cb22a9d3e15addd3579df8c9067f",
+        "bytes": 8982023
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-x64-musl@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-linux-x64-musl",
+      "os": ["linux"],
+      "cpu": ["x64"],
+      "libc": ["musl"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-x64-musl/-/binding-linux-x64-musl-1.2.16.tgz",
+        "integrity": "sha512-7chXdpjXZ8qG0+mIxECN3cT9kvhZ3/oZhMX6Pp876P7CDrIy8nJswva6Mq357JR7eYXfuskwZxMeV1SzoZdHrA==",
+        "sha256": "d4009fa68a9f106f9a4d9bcfe3d948e5b7096fb81a8aac870939d91247c38b45",
+        "bytes": 8805618
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-linux-x64-musl@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-linux-x64-musl",
+      "os": ["linux"],
+      "cpu": ["x64"],
+      "libc": ["musl"],
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-x64-musl/-/binding-linux-x64-musl-1.3.0.tgz",
+        "integrity": "sha512-5N4DdzAmLtnyuh027H6ViC99BeoA4T0RwKS6qUrl6zY70AKRsNDrnEZeWnqrKmDRFxXmv8zf9yhF2DxN/SfyGQ==",
+        "sha256": "23ba42a55ec2cc6068e1c3c5ebb10a9caa0a8e3105a7de19c37d5f3b973d4ba3",
+        "bytes": 8966105
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-openharmony-arm64@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-openharmony-arm64",
+      "os": ["openharmony"],
+      "cpu": ["arm64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-openharmony-arm64/-/binding-openharmony-arm64-1.2.16.tgz",
+        "integrity": "sha512-Kwjt+7uNTJK5/MDkGWGVO2KQPnj8yAV75dMpfwyHZrJSXWHrniOB0aUEWlVYf3H1hOqFLIStLdM5QXq6bnKmOQ==",
+        "sha256": "805d54234286943a34117b7de841c4d26c9b94da9ad8c2706faaa7c2cc5da493",
+        "bytes": 8256835
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-openharmony-arm64@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-openharmony-arm64",
+      "os": ["openharmony"],
+      "cpu": ["arm64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-openharmony-arm64/-/binding-openharmony-arm64-1.3.0.tgz",
+        "integrity": "sha512-Tz+2b+yF5eVRGX3DWebn2JIvZkNYI1gkafI+nF2fau2zeQDOpBAS8w1PxHi4ke//NIOE6+2DNYyq1veIjzAXqQ==",
+        "sha256": "aa4111f708aaae78c3d11c09ab82f9eca4894f75ed79819ab4165d44c89b6667",
+        "bytes": 8424852
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-wasm32-wasi@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-wasm32-wasi",
+      "os": null,
+      "cpu": ["wasm32"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-wasm32-wasi/-/binding-wasm32-wasi-1.3.0.tgz",
+        "integrity": "sha512-ntK6OFor3nQtS1TenZP5wX59oPpkKEmour3AipGHB32u+Z8QXxjVdG+7vNSvgerRWIj6vjg4XpKu42slb0vlXQ==",
+        "sha256": "28ac1e6ad9773419b3c4f6fe7ae386056ad061a36f8b317e006a2544390548ae",
+        "bytes": 4086375
+      },
+      "archiveRegularFileCount": 8,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-win32-arm64-msvc@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-win32-arm64-msvc",
+      "os": ["win32"],
+      "cpu": ["arm64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-win32-arm64-msvc/-/binding-win32-arm64-msvc-1.2.16.tgz",
+        "integrity": "sha512-/LH6WfjDRXXJz/p5xl4TmU+jpcnwcxbKEQBW/GZE0JHfN0lGIyTtsUEGaQ/q/GikkGJ2yLKe6pwm7AnEWO8pdw==",
+        "sha256": "b247d395ed1988aa353c1f13b1b855b3e819ceea5fe04ff0a71562db25e3eae1",
+        "bytes": 8467053
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-win32-arm64-msvc@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-win32-arm64-msvc",
+      "os": ["win32"],
+      "cpu": ["arm64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-win32-arm64-msvc/-/binding-win32-arm64-msvc-1.3.0.tgz",
+        "integrity": "sha512-ldH38lBlOpS+b4fbSG9euQjhYXLE18PIz5hyvf6gvFfyVLodRE/Tsu4jV8UmPqjjce6lotmUUwscxPuer4lczQ==",
+        "sha256": "c899eabce1c61145187d523e19650c99937f43712be4824d60aa2237b181744a",
+        "bytes": 8642654
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-win32-x64-msvc@1.2.16",
+      "lockedLocation": "node_modules/vite/node_modules/@rolldown/binding-win32-x64-msvc",
+      "os": ["win32"],
+      "cpu": ["x64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-win32-x64-msvc/-/binding-win32-x64-msvc-1.2.16.tgz",
+        "integrity": "sha512-1lv1KvX0Z871zfk7vw+dnXMMnHNyDwMzWG8Kv3HxDXMOhzCX4SHc7HK319fInP0i+0p9D8brkfzL7pJOaGl+tw==",
+        "sha256": "57365e17933bf69965a180f0e06bd47bcac3dcc6ba5a902b39c448b2da378314",
+        "bytes": 8914933
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.2.16-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.2.16-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    },
+    {
+      "package": "@rolldown/binding-win32-x64-msvc@1.3.0",
+      "lockedLocation": "node_modules/@rolldown/binding-win32-x64-msvc",
+      "os": ["win32"],
+      "cpu": ["x64"],
+      "libc": null,
+      "declaredLicense": "MIT",
+      "archive": {
+        "resolved": "https://registry.npmjs.org/@rolldown/binding-win32-x64-msvc/-/binding-win32-x64-msvc-1.3.0.tgz",
+        "integrity": "sha512-HglhUzUPuXNTGFt5ZwJalSEvavhFSl+nxpQM9urkzkt+2oGI1ZSwgyytk9aGw15/0kk1TCHPc57nv3DdiG8/yQ==",
+        "sha256": "84ad30d9114a6cc5ae029667deed9b6ca8ced755ed188b80f58ef1ad00d43850",
+        "bytes": 9090278
+      },
+      "archiveRegularFileCount": 3,
+      "primaryIndexNotice": "docs/licenses/npm-rolldown1.3.0-LICENSE.txt",
+      "supplementalOriginalNotice": "docs/licenses/npm-rolldown1.3.0-THIRD-PARTY-LICENSE.txt",
+      "publishedNoticeFileCount": 0
+    }
+  ],
+  "retainedHistoricalQualifiedNotices": [
+    {
+      "package": "@rolldown/binding-darwin-arm64@1.2.9",
+      "notice": "docs/licenses/npm-rolldown-binding-darwin-arm641.2.9.txt",
+      "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+      "source": "https://raw.githubusercontent.com/rolldown/rolldown/5b4746e442989d770c606ce08d2737e6aafbd25d/LICENSE",
+      "upstreamManifestVersion": "1.2.9",
+      "state": "Historical qualified 1.2.9 notice retained unchanged; not a current ROOT development fallback."
+    },
+    {
+      "package": "@rolldown/binding-linux-arm64-musl@1.2.9",
+      "notice": "docs/licenses/npm-rolldown-binding-linux-arm64-musl1.2.9.txt",
+      "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+      "source": "https://raw.githubusercontent.com/rolldown/rolldown/5b4746e442989d770c606ce08d2737e6aafbd25d/LICENSE",
+      "upstreamManifestVersion": "1.2.9",
+      "state": "Historical qualified 1.2.9 notice retained unchanged; not a current ROOT development fallback."
+    }
+  ],
+  "limitations": [
+    "Archive SRI and per-file hashes identify the original published bytes; native binary build-source identity was not reproduced or attested.",
+    "The current source index binds one primary notice per package. Full supplemental THIRD-PARTY-LICENSE originals are retained here, but are not expressible as additional machine-audited source-index notice bindings.",
+    "Original notice presence and matching license declarations do not establish complete third-party obligations or legal compliance."
+  ],
+  "nativeBinarySourceBuildVerified": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "legalComplianceAssessed": false,
+  "archiveInventory": {
+    "archiveBytesVerified": 262266120,
+    "nativeArchiveCount": 31,
+    "parentArchiveCount": 2,
+    "byVersion": {
+      "1.3.0": 16,
+      "1.2.16": 15
+    }
+  }
+}
