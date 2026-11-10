@@ -14,6 +14,7 @@ import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import {
   installAcceptancePackage,
+  assertLockedAcceptanceClient,
   runAcceptanceNpm,
 } from "./install-acceptance-package.mjs";
 import {
@@ -121,9 +122,9 @@ try {
       externalSdkDependencies[name] = version;
     },
   );
-  assert.equal(
+  await assertLockedAcceptanceClient(
+    repository,
     externalSdkDependencies["@modelcontextprotocol/client"],
-    "2.3.1",
   );
   process.env.CHECKTRAIL_CONSUMER_WHOLE_INSTALLED = "1";
   const installedBefore = await captureCompiledEngine(installed);

@@ -2592,3 +2592,50 @@ test("CI pinned delivery metadata preserves imports without selecting URL profil
   );
   assert.ok(adjacent["test/kubeconform-native.test.ts"]?.includes("delivery"));
 });
+
+test("Playwright fixture artifacts retain full verification and both host lanes install the locked native profile", () => {
+  for (const file of [
+    "scripts/prepare-playwright-tools.mjs",
+    "scripts/playwright-tools/package.json",
+    "scripts/playwright-tools/package-lock.json",
+    "test/playwright-tool-preparation.test.ts",
+    "test/development-playwright.test.ts",
+  ]) {
+    const result = plan([file]);
+    assert.equal(result.mode, "full", file);
+    assert.deepEqual(selected(result), jobs, file);
+  }
+  for (const name of ["checks", "host-validation"]) {
+    const steps = workflow.jobs[name].steps;
+    const preparation = steps.find(
+      (step: { name?: string }) =>
+        step.name === "Prepare locked native Playwright fixtures",
+    );
+    assert.ok(preparation, name);
+    assert.equal(
+      preparation.if,
+      undefined,
+      "Affected source tests also need the pinned native fixture",
+    );
+    assert.equal(
+      preparation.run,
+      "node scripts/prepare-playwright-tools.mjs\nnpm ci --prefix .checktrail/playwright-tools --ignore-scripts --no-audit --no-fund\n",
+    );
+    const browser = steps.find(
+      (step: { name?: string }) =>
+        step.name === "Prepare pinned Chromium for native browser fixtures",
+    );
+    assert.equal(
+      browser.run,
+      "PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node .checktrail/playwright-tools/node_modules/playwright/cli.js install chromium --only-shell --with-deps",
+    );
+    assert.ok(steps.indexOf(preparation) < steps.indexOf(browser));
+    const setup = steps.find((step: { uses?: string }) =>
+      step.uses?.startsWith("actions/setup-node@"),
+    );
+    assert.deepEqual(setup.with["cache-dependency-path"].trim().split("\n"), [
+      "package-lock.json",
+      "scripts/playwright-tools/package-lock.json",
+    ]);
+  }
+});

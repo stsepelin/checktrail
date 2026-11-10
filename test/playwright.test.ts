@@ -1,12 +1,17 @@
 import assert from "node:assert/strict";
 import { access, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { test } from "node:test";
 import { createPlan, validate } from "../src/engine.js";
 import { evaluate } from "../src/evidence.js";
 import type { Check, ProcessResult } from "../src/types.js";
 import { fixture } from "./helpers.js";
 import { copyInstalledPackages } from "./tool-fixture.js";
+
+const fixtureModules = fileURLToPath(
+  new URL("../../.checktrail/playwright-tools/node_modules", import.meta.url),
+);
 
 const policy = JSON.stringify({
   schemaVersion: 1,
@@ -28,7 +33,7 @@ test(
       "never-load.cjs": "throw new Error('project reporter must not run');",
       "preserved-output/sentinel.txt": "keep",
     });
-    await copyInstalledPackages(root, ["@playwright/test"]);
+    await copyInstalledPackages(root, ["@playwright/test"], fixtureModules);
     const passed = await validate(root, { trusted: true });
     assert.equal(passed.outcome, "passed", JSON.stringify(passed.checks));
     assert.deepEqual(passed.checks[0]!.tests, {
@@ -106,7 +111,7 @@ test(
       (await createPlan(root)).plan.checks[0]!.unavailableReason,
       "Playwright is not installed within the configured root.",
     );
-    await copyInstalledPackages(root, ["@playwright/test"]);
+    await copyInstalledPackages(root, ["@playwright/test"], fixtureModules);
     assert.equal(
       (await createPlan(root)).plan.checks[0]!.unavailableReason,
       undefined,
@@ -176,6 +181,8 @@ test(
       "1.64.0-next.1",
       "1.64.1-next.1",
       "1.64.2",
+      "1.65.0",
+      "1.65.0-next.1",
       "11.64.0",
       "11.64.1",
     ]) {
@@ -334,7 +341,7 @@ test(
       "playwright.config.js":
         "export default {timeout:5000,expect:{timeout:500}};",
     });
-    await copyInstalledPackages(root, ["@playwright/test"]);
+    await copyInstalledPackages(root, ["@playwright/test"], fixtureModules);
     const missing = await validate(root, {
       trusted: true,
       environment: {
