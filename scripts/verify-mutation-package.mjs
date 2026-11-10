@@ -36,10 +36,25 @@ const files = await Promise.all(
     bytes: await readFile(path.join(repository, "dist/test", file)),
   })),
 );
+const preparationInputs =
+  family === "vitest" || family === "jest"
+    ? [
+        "scripts/prepare-javascript-tools.mjs",
+        "scripts/prepare-mutation-tools.mjs",
+        "scripts/javascript-tools/package.json",
+        "scripts/javascript-tools/package-lock.json",
+      ]
+    : [];
+const preparationFiles = await Promise.all(
+  preparationInputs.map(async (file) => ({
+    file,
+    bytes: await readFile(path.join(repository, file)),
+  })),
+);
 const sourceHarnessSha256 = createHash("sha256")
   .update(
     JSON.stringify(
-      files.map((v) => [
+      [...files, ...preparationFiles].map((v) => [
         v.file,
         createHash("sha256").update(v.bytes).digest("hex"),
       ]),

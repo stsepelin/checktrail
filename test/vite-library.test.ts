@@ -6,6 +6,7 @@ import { createPlan, validate } from "../src/engine.js";
 import { evaluate } from "../src/evidence.js";
 import { fixture } from "./helpers.js";
 import { copyInstalledPackages } from "./tool-fixture.js";
+import { qualifiedJavaScriptModules } from "./javascript-extensions-fixture.js";
 const profile = JSON.stringify({
   schemaVersion: 1,
   library: {
@@ -40,7 +41,11 @@ const skip = !(
   ? "Selected native library platform unavailable"
   : false;
 const native = async (root: string) =>
-  copyInstalledPackages(root, ["vite", "typescript"]);
+  copyInstalledPackages(
+    root,
+    ["vite", "typescript"],
+    qualifiedJavaScriptModules,
+  );
 test(
   "native library emits both formats and fresh declarations and detects producer and downstream defects",
   { skip, timeout: 60000 },
