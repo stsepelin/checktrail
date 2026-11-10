@@ -1,11 +1,10 @@
 import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
-import { selectJavaScriptToolsLock } from "./prepare-javascript-tools.mjs";
+import { readQualifiedJavaScriptTools } from "./prepare-javascript-tools.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { nativeAcceptanceFailure } from "./native-acceptance-diagnostics.mjs";
 import {
-  access,
   cp,
   mkdir,
   mkdtemp,
@@ -295,7 +294,6 @@ try {
     "gate-python-extensions.test.js",
     "python-extensions-fixture.js",
     "javascript-extensions-fixture.js",
-    "eslint-helpers.js",
     "tool-fixture.js",
     "gate-assembly-laravel.test.js",
     "review-laravel-assembly-fixture.js",
@@ -429,40 +427,50 @@ try {
     await readFile(path.join(repository, "package-lock.json"), "utf8"),
   );
   const dependencies = {};
-  const dependencySource =
-    profile === "javascript-extensions"
-      ? await access(
-          path.join(repository, ".checktrail/javascript-tools/node_modules"),
-        ).then(
-          () =>
-            path.join(repository, ".checktrail/javascript-tools/node_modules"),
-          () => path.join(repository, "node_modules"),
-        )
-      : path.join(repository, "node_modules");
+  const dependencySource = path.join(repository, "node_modules");
+  await copyInstalledPackages(
+    consumer,
+    ["@modelcontextprotocol/client"],
+    dependencySource,
+    async ({ relative, version }) => {
+      const location = relative.split(path.sep).join("/");
+      assert.equal(typeof version, "string");
+      assert.equal(version, lock.packages["node_modules/" + location].version);
+      const existing = await readFile(
+        path.join(consumer, "node_modules", relative, "package.json"),
+        "utf8",
+      )
+        .then(JSON.parse)
+        .catch((error) => {
+          if (error.code !== "ENOENT") throw error;
+          return null;
+        });
+      if (existing) assert.equal(existing.version, version);
+      dependencies[location] = version;
+    },
+  );
   if (profile === "javascript-extensions") {
-    const selected = selectJavaScriptToolsLock(
-      JSON.parse(await readFile(path.join(repository, "package.json"), "utf8")),
-      lock,
+    const qualifiedSource = path.join(
+      repository,
+      ".checktrail/javascript-tools/node_modules",
     );
+    const qualifiedDestination = path.join(
+      consumer,
+      ".checktrail/javascript-tools",
+    );
+    const { manifest: qualifiedManifest, lock: selected } =
+      await readQualifiedJavaScriptTools();
     const copies = [];
-    const preparedCanonical =
-      dependencySource !== path.join(repository, "node_modules");
-    for (const [key, entry] of Object.entries(selected.lock.packages)) {
+    for (const [key, entry] of Object.entries(selected.packages)) {
       if (!key) continue;
       assert.ok(
         key.startsWith("node_modules/") &&
           !key.split("/").includes("..") &&
           !key.includes("\\"),
       );
-      const sourceKey = preparedCanonical ? key : selected.sources[key];
-      assert.equal(
-        typeof sourceKey,
-        "string",
-        "Selected native tool source is missing",
-      );
       const source = path.join(
-        dependencySource,
-        sourceKey.slice("node_modules/".length),
+        qualifiedSource,
+        key.slice("node_modules/".length),
       );
       let metadata;
       try {
@@ -474,8 +482,7 @@ try {
         throw error;
       }
       assert.equal(metadata.version, entry.version);
-      if (key === "node_modules/eslint") assert.equal(metadata.name, "eslint");
-      const target = path.join(consumer, key);
+      const target = path.join(qualifiedDestination, key);
       const existing = await readFile(path.join(target, "package.json"), "utf8")
         .then(JSON.parse)
         .catch((error) => {
@@ -494,30 +501,13 @@ try {
       await cp(copy.source, copy.target, { recursive: true });
       dependencies[copy.key] = copy.version;
     }
-  } else {
-    await copyInstalledPackages(
-      consumer,
-      ["@modelcontextprotocol/client"],
-      dependencySource,
-      async ({ relative, version }) => {
-        const location = relative.split(path.sep).join("/");
-        assert.equal(typeof version, "string");
-        assert.equal(
-          version,
-          lock.packages["node_modules/" + location].version,
-        );
-        const existing = await readFile(
-          path.join(consumer, "node_modules", relative, "package.json"),
-          "utf8",
-        )
-          .then(JSON.parse)
-          .catch((error) => {
-            if (error.code !== "ENOENT") throw error;
-            return null;
-          });
-        if (existing) assert.equal(existing.version, version);
-        dependencies[location] = version;
-      },
+    await writeFile(
+      path.join(qualifiedDestination, "package.json"),
+      JSON.stringify(qualifiedManifest),
+    );
+    await writeFile(
+      path.join(qualifiedDestination, "package-lock.json"),
+      JSON.stringify(selected),
     );
   }
   if (["javascript-extensions", "cpp-extensions"].includes(profile)) {

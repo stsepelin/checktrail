@@ -81,6 +81,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            scripts/javascript-tools/package-lock.json
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: "1.27.1"
@@ -142,6 +145,10 @@ jobs:
       - run: python3 -m pip install -r scripts/framework-tools.requirements.txt
         if: env.CHECKTRAIL_CI_MODE == 'full'
       - run: npm ci --ignore-scripts
+      - name: Prepare qualified native JavaScript fixtures
+        run: |
+          node scripts/prepare-javascript-tools.mjs
+          npm ci --prefix .checktrail/javascript-tools --ignore-scripts --no-audit --no-fund
       - name: Prepare locked legacy TypeScript compiler
         run: |
           mkdir -p .checktrail/typescript-legacy-tools
@@ -238,6 +245,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            scripts/javascript-tools/package-lock.json
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: "1.27.1"
@@ -289,6 +299,10 @@ jobs:
       - run: python3 -m pip install -r scripts/python-tools.requirements.txt
       - run: python3 -m pip install -r scripts/framework-tools.requirements.txt
       - run: npm ci --ignore-scripts
+      - name: Prepare qualified native JavaScript fixtures
+        run: |
+          node scripts/prepare-javascript-tools.mjs
+          npm ci --prefix .checktrail/javascript-tools --ignore-scripts --no-audit --no-fund
       - name: Prepare locked legacy TypeScript compiler
         run: |
           mkdir -p .checktrail/typescript-legacy-tools
@@ -1080,12 +1094,15 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            scripts/javascript-tools/package-lock.json
       - name: Mark native consumer producer execution
         id: native-start
         run: node scripts/consumer-native-job-claims.mjs start single
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - name: Derive exact locked native acceptance tools
+      - name: Prepare qualified native JavaScript fixture manifest
         run: node scripts/prepare-javascript-tools.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
@@ -3356,11 +3373,14 @@ jobs:
         with:
           node-version: "22.23.2"
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            scripts/javascript-tools/package-lock.json
       - run: npm ci --ignore-scripts
       - run: npm run build
       - name: Prepare the pinned Node image
         run: node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
-      - name: Prepare the exact locked native JavaScript tool closure
+      - name: Prepare the qualified native JavaScript mutation closure
         if: matrix.family == 'vitest' || matrix.family == 'jest'
         run: |
           node scripts/prepare-mutation-tools.mjs

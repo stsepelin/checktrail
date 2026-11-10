@@ -12,92 +12,12 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import { createHash } from "node:crypto";
-export function selectJavaScriptToolsLock(rootManifest, source) {
-  assert.equal(source.lockfileVersion, 3);
-  function declaredTool(name) {
-    const version = rootManifest.devDependencies?.[name];
-    assert.match(
-      version ?? "",
-      /^\d+\.\d+\.\d+$/,
-      "Tool declaration must be exactly pinned: " + name,
-    );
-    const entry = source.packages["node_modules/" + name];
-    assert.equal(
-      entry?.version,
-      version,
-      "Tool lock must match its declaration: " + name,
-    );
-    return entry;
-  }
-  // The repository linter may advance independently of the frozen native API profile.
-  declaredTool("eslint");
-  const nativeAlias = "eslint-native-profile";
-  const nativeKey = "node_modules/" + nativeAlias;
-  const nativeDeclaration = rootManifest.devDependencies?.[nativeAlias];
-  const nativeMatch = /^npm:eslint@(\d+\.\d+\.\d+)$/.exec(
-    nativeDeclaration ?? "",
-  );
-  assert.ok(
-    nativeMatch,
-    "Native ESLint alias must exactly pin the eslint package",
-  );
-  const nativeVersion = nativeMatch[1];
-  assert.equal(
-    source.packages[""]?.devDependencies?.[nativeAlias],
-    nativeDeclaration,
-    "Native ESLint alias lock root differs from declaration",
-  );
-  assert.equal(
-    source.packages[nativeKey]?.name,
-    "eslint",
-    "Native ESLint alias target differs",
-  );
-  assert.equal(
-    source.packages[nativeKey]?.version,
-    nativeVersion,
-    "Native ESLint alias lock version differs from declaration",
-  );
-  const nativeConfigArray = declaredTool("@eslint/config-array").version;
-  assert.equal(
-    source.packages[""].devDependencies?.["@eslint/config-array"],
-    nativeConfigArray,
-    "Native config-array lock root differs from declaration",
-  );
-  const canonicalKey = (key) =>
-    key === nativeKey || key.startsWith(nativeKey + "/node_modules/")
-      ? "node_modules/eslint" + key.slice(nativeKey.length)
-      : key;
-  const owners = new Map();
-  const linter = declaredTool("typescript-eslint");
-  const parserVersion = linter.dependencies?.["@typescript-eslint/parser"];
-  assert.match(
-    parserVersion ?? "",
-    /^\d+\.\d+\.\d+$/,
-    "TypeScript ESLint parser dependency must be exactly pinned",
-  );
-  const dependencies = {
-    ...rootManifest.dependencies,
-    eslint: nativeVersion,
-    "@eslint/config-array": nativeConfigArray,
-    "@typescript-eslint/parser": parserVersion,
-    "@types/node": declaredTool("@types/node").version,
-    vite: declaredTool("vite").version,
-    rolldown: declaredTool("rolldown").version,
-    "@modelcontextprotocol/client": declaredTool("@modelcontextprotocol/client")
-      .version,
-  };
-  const manifest = {
-    name: "checktrail-javascript-acceptance-tools",
-    version: "0.0.0",
-    private: true,
-    type: "module",
-    dependencies,
-  };
+function selectLockedTools(manifest, source) {
+  const { dependencies } = manifest;
   const packages = {
     "": { name: manifest.name, version: manifest.version, dependencies },
   };
   function resolve(name, from = "") {
-    if (name === "eslint") return nativeKey;
     const segments = from.split("/");
     const candidates = [];
     while (segments.length) {
@@ -108,28 +28,16 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
     candidates.push("node_modules/" + name);
     return candidates.find((key) => Object.hasOwn(source.packages, key));
   }
+  const requiredPaths = new Map();
   function visit(name, from = "", optional = false) {
     const key = resolve(name, from);
     if (!key) {
       assert.ok(optional, "Missing locked required tool dependency " + name);
       return;
     }
-    if (name === "@eslint/config-array")
-      assert.equal(
-        source.packages[key]?.version,
-        nativeConfigArray,
-        "Native config-array resolution differs from frozen role",
-      );
-    const destination = canonicalKey(key);
-    if (Object.hasOwn(packages, destination)) {
-      assert.equal(
-        owners.get(destination),
-        key,
-        "Projected native tool lock collision",
-      );
+    if (requiredPaths.get(key) === true || (requiredPaths.has(key) && optional))
       return;
-    }
-    owners.set(destination, key);
+    requiredPaths.set(key, !optional);
     const original = source.packages[key];
     assert.ok(!original.link && !original.inBundle);
     assert.match(original.resolved, /^https:\/\/registry\.npmjs\.org\//);
@@ -137,12 +45,12 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
     const entry = globalThis.structuredClone(original);
     delete entry.dev;
     delete entry.devOptional;
-    packages[destination] = entry;
+    packages[key] = entry;
     for (const dependency of Object.keys(entry.dependencies ?? {}))
       visit(
         dependency,
         key,
-        Object.hasOwn(entry.optionalDependencies ?? {}, dependency),
+        optional || Object.hasOwn(entry.optionalDependencies ?? {}, dependency),
       );
     for (const dependency of Object.keys(entry.optionalDependencies ?? {}))
       visit(dependency, key, true);
@@ -150,16 +58,21 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
       visit(
         dependency,
         key,
-        entry.peerDependenciesMeta?.[dependency]?.optional === true,
+        optional || entry.peerDependenciesMeta?.[dependency]?.optional === true,
       );
   }
   for (const [name, version] of Object.entries(dependencies)) {
     visit(name);
     assert.equal(packages["node_modules/" + name].version, version);
   }
+  // Root-graph flags can be stale after selecting different roots. A required
+  // path wins over every optional path, including peers and their descendants.
+  for (const [key, required] of requiredPaths) {
+    if (required) delete packages[key].optional;
+    else packages[key].optional = true;
+  }
   return {
     manifest,
-    sources: Object.fromEntries(owners),
     lock: {
       name: manifest.name,
       version: manifest.version,
@@ -169,16 +82,61 @@ export function selectJavaScriptToolsLock(rootManifest, source) {
     },
   };
 }
-async function main() {
-  const repository = fileURLToPath(new URL("../", import.meta.url));
-  const destination = path.join(repository, ".checktrail/javascript-tools");
-  const source = JSON.parse(
-    await readFile(path.join(repository, "package-lock.json"), "utf8"),
+export function selectQualifiedJavaScriptToolsLock(manifest, source) {
+  assert.equal(manifest.name, "checktrail-javascript-acceptance-tools");
+  assert.equal(manifest.private, true);
+  assert.equal(source.lockfileVersion, 3);
+  assert.equal(source.name, manifest.name);
+  assert.equal(source.version, manifest.version);
+  assert.deepEqual(
+    source.packages[""]?.dependencies,
+    manifest.dependencies,
+    "Qualified tool lock root must match its declarations",
   );
-  const rootManifest = JSON.parse(
-    await readFile(path.join(repository, "package.json"), "utf8"),
+  assert.ok(
+    Object.keys(manifest.dependencies ?? {}).length > 0,
+    "Qualified tool profile must not be empty",
   );
-  const { manifest, lock } = selectJavaScriptToolsLock(rootManifest, source);
+  for (const [name, version] of Object.entries(manifest.dependencies)) {
+    assert.match(
+      version,
+      /^\d+\.\d+\.\d+$/,
+      "Qualified tool declaration must be exactly pinned: " + name,
+    );
+    assert.equal(
+      source.packages["node_modules/" + name]?.version,
+      version,
+      "Qualified tool lock must match its declaration: " + name,
+    );
+  }
+  return selectLockedTools(manifest, source);
+}
+
+export const qualifiedJavaScriptToolInputs = [
+  "scripts/javascript-tools/package.json",
+  "scripts/javascript-tools/package-lock.json",
+];
+
+export async function readQualifiedJavaScriptTools(
+  repository = new URL("../", import.meta.url),
+) {
+  const [manifestBytes, lockBytes] = await Promise.all(
+    qualifiedJavaScriptToolInputs.map((file) =>
+      readFile(new URL(file, repository)),
+    ),
+  );
+  return {
+    ...selectQualifiedJavaScriptToolsLock(
+      JSON.parse(manifestBytes),
+      JSON.parse(lockBytes),
+    ),
+    profileLockSha256: createHash("sha256").update(lockBytes).digest("hex"),
+  };
+}
+
+export async function prepareJavaScriptTools(destination) {
+  const { manifest, lock, profileLockSha256 } =
+    await readQualifiedJavaScriptTools();
   // Resolve all artifacts before writing either one; npm ci installs these exact locked versions separately.
   await mkdir(path.dirname(destination), { recursive: true });
   await assert.rejects(lstat(destination), { code: "ENOENT" });
@@ -205,9 +163,7 @@ async function main() {
   process.stdout.write(
     JSON.stringify({
       packages: Object.keys(lock.packages).length - 1,
-      rootLockSha256: createHash("sha256")
-        .update(JSON.stringify(source))
-        .digest("hex"),
+      profileLockSha256,
       selectedLockSha256: createHash("sha256")
         .update(JSON.stringify(lock))
         .digest("hex"),
@@ -220,4 +176,6 @@ if (
   process.argv[1] &&
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 )
-  await main();
+  await prepareJavaScriptTools(
+    fileURLToPath(new URL("../.checktrail/javascript-tools", import.meta.url)),
+  );

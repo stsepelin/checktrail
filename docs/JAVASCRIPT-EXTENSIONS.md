@@ -34,15 +34,6 @@ project-relative files/directories. The published contract is
 
 ## ESLint source participation
 
-The repository development linter follows the exact `eslint` declaration. The
-separate `eslint-native-profile` npm alias supplies the frozen native acceptance
-runtime, with an exact direct `@eslint/config-array` pin protecting its critical
-API dependency. Preparation validates their declarations and lock before projecting them into
-an isolated canonical `node_modules/eslint` namespace. Development linter updates
-therefore do not silently replace this native profile. Both native-role updates stay enabled
-in the explicit `native-eslint-profile-qualification` dependency group and require
-native profile qualification.
-
 Select `javascript.eslint`. The opt-in contract requires ESLint 10.13.0 and
 `@eslint/config-array` 0.23.5 with selected native API byte pins. Physical source
 and flat configuration bytes are bound before importing configuration, and checked

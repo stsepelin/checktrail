@@ -8,13 +8,6 @@ updates:
       native-vitest-mutation-qualification:
         patterns:
           - vitest-native-mutation
-      native-jest-mutation-qualification:
-        patterns:
-          - jest-native-mutation
-      native-eslint-profile-qualification:
-        patterns:
-          - eslint-native-profile
-          - "@eslint/config-array"
   - package-ecosystem: github-actions
     directory: /
     schedule:
