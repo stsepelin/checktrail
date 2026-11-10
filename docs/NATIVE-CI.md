@@ -652,6 +652,20 @@ and establishes no measured quality or observed independent-session claim.
 
 ## Fresh-runner package preparation
 
+Package smoke uses the independently locked JavaScript fixture graph in a
+separate project/module prefix. Its Vue and Playwright fixtures retain their
+current-root role in another prefix. Neither graph is copied into the fresh
+consumer's production installation. Both role namespaces publish together only
+after validation; a refusal leaves no partial prefix. The host job also runs
+`scripts/verify-root-javascript-reporters.mjs` separately: it checks fresh-installed
+current-root Vitest/Jest reporters against exact multi-file passing, failing,
+valid-near-miss and skipped controls. An intended skipped assertion leaves that
+reporter qualification incomplete, preserving the generic engine's existing
+skip semantics. These roles do not replace the direct bundler API or generic
+Vitest/Jest regressions, or the existing host phase controller. The standalone
+compatibility step runs those complete existing regression files before the
+fresh-installed reporter controls.
+
 `npm ci` installs from the repository lockfile but does not necessarily cache
 the registry metadata needed to resolve a new consumer's dependencies. Before
 packaged checks, CI runs `node scripts/prepare-package-cache.mjs` with network
