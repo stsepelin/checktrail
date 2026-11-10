@@ -1,6 +1,7 @@
 // Trusted-reader orchestration control. Historical implementations stay inert.
 import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
+import console from "node:console";
 import process from "node:process";
 import { createHash } from "node:crypto";
 import { readFile, mkdir, realpath, writeFile } from "node:fs/promises";
