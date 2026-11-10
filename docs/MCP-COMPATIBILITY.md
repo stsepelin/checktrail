@@ -7,17 +7,17 @@ provider is required.
 
 ## SDK dependency roles
 
-The production server and its own core dependency are pinned to `2.4.0`. The
-external acceptance client remains pinned to `2.3.1`. The lock retains core
-`2.3.1` at the root for that client and core `2.4.0` beneath the server. Acceptance
-checks resolve the client's actual dependency and compare it with the exact lock
-entry. They do not require one hoisting layout.
+The production server and external acceptance client use the exact pins declared
+in `package.json`. Each role's resolved core dependency is checked against its
+matching lock entry; no particular hoisting layout is required. Client preflight
+requires its exact development declaration, v3 lock root declaration, selected
+locked package, installed metadata and observed copy version to agree.
 
 The shared offline installer verifies every required production package version
 against the source lock before publishing an installed consumer. External client
 copies validate their entire resolved graph before copying. Individual language
 collectors rely on that shared check instead of repeating an obsolete literal
-server/core version. Actual Tasks routing and native wire acceptance remain
+server/core/client version. Actual Tasks routing and native wire acceptance remain
 required. The candidate SDK pin changes as a reviewable inventory revision;
 historical receipts retain their original identities and do not qualify this
 new version.
