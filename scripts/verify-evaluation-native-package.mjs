@@ -24,41 +24,62 @@ import { runRequiredTests } from "./required-test-evidence.mjs";
 
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
-const requirements = [
-  [
-    "agent-evaluation-gateway",
-    "evaluation gateway runs PHP probes as literal arguments and preserves source evidence",
-  ],
-  [
-    "agent-evaluation-gateway",
-    "evaluation gateway prepares Go code without interpolation and binds vendor dependencies",
-  ],
-  [
-    "agent-evaluation-gateway",
-    "evaluation gateway retains legacy limits and rejects duplicate or unknown language profiles",
-  ],
-  [
-    "evaluation-go-php",
-    "Go evaluation native evidence requires complete real test event sequences and matching exits",
-  ],
-  [
-    "evaluation-go-php",
-    "PHP evaluation native evidence reconciles every source file for passing and failing PHPUnit runs",
-  ],
-  [
-    "evaluation-go-php",
-    "Pest native evidence uses stderr and preserves exact file boundaries when removing method suffixes",
-  ],
-].map(([file, name]) => ({ file: "dist/test/" + file + ".test.js", name }));
-const harnessFiles = [
-  "scripts/agent-evaluation-gateway.mjs",
-  "scripts/agent-evaluation-protocol.mjs",
-  "scripts/agent-evaluation-session.mjs",
-  "scripts/agent-evaluation-worker.mjs",
-  "dist/test/agent-evaluation-gateway.test.js",
-  "dist/test/agent-evaluation-protocol.test.js",
-  "dist/test/evaluation-go-php.test.js",
-];
+const args = process.argv.slice(2);
+assert.ok(
+  args.length === 0 || (args.length === 1 && args[0] === "--pair-settings"),
+);
+const pairSettings = args[0] === "--pair-settings";
+const requirements = (
+  pairSettings
+    ? [
+        "evaluation pair admits matched settings with only the declared treatment and never certifies effective hosts or trials",
+        "evaluation pair checks every shared host context native and budget field even when altered bytes are repinned",
+        "evaluation pair rejects baseline tool exposure role swaps resumed sessions and unrecognized configuration fields",
+        "evaluation pair binds exact bytes and protocol while malformed empty oversized and foreign baseline inputs remain incomplete",
+        "evaluation pair setup command reports matched mismatch and malformed input without exposing private settings",
+      ].map((name) => ["review-evaluation-pair", name])
+    : [
+        [
+          "agent-evaluation-gateway",
+          "evaluation gateway runs PHP probes as literal arguments and preserves source evidence",
+        ],
+        [
+          "agent-evaluation-gateway",
+          "evaluation gateway prepares Go code without interpolation and binds vendor dependencies",
+        ],
+        [
+          "agent-evaluation-gateway",
+          "evaluation gateway retains legacy limits and rejects duplicate or unknown language profiles",
+        ],
+        [
+          "evaluation-go-php",
+          "Go evaluation native evidence requires complete real test event sequences and matching exits",
+        ],
+        [
+          "evaluation-go-php",
+          "PHP evaluation native evidence reconciles every source file for passing and failing PHPUnit runs",
+        ],
+        [
+          "evaluation-go-php",
+          "Pest native evidence uses stderr and preserves exact file boundaries when removing method suffixes",
+        ],
+      ]
+).map(([file, name]) => ({ file: "dist/test/" + file + ".test.js", name }));
+const harnessFiles = pairSettings
+  ? [
+      "scripts/check-evaluation-pair.mjs",
+      "dist/test/review-evaluation-pair.test.js",
+      "dist/test/review-evaluation-protocol-fixture.js",
+    ]
+  : [
+      "scripts/agent-evaluation-gateway.mjs",
+      "scripts/agent-evaluation-protocol.mjs",
+      "scripts/agent-evaluation-session.mjs",
+      "scripts/agent-evaluation-worker.mjs",
+      "dist/test/agent-evaluation-gateway.test.js",
+      "dist/test/agent-evaluation-protocol.test.js",
+      "dist/test/evaluation-go-php.test.js",
+    ];
 const inputFiles = [
   ...harnessFiles,
   "scripts/verify-evaluation-native-package.mjs",
@@ -119,7 +140,9 @@ try {
     path.join(harness, "dist/src"),
     process.platform === "win32" ? "junction" : "dir",
   );
-  for (const file of ["runner.js", "evidence.js", "junit.js"]) {
+  for (const file of pairSettings
+    ? ["index.js", "review-evaluation-pair.js"]
+    : ["runner.js", "evidence.js", "junit.js"]) {
     assert.equal(
       await realpath(path.join(harness, "dist/src", file)),
       await realpath(path.join(installed, "dist/src", file)),
@@ -137,16 +160,17 @@ try {
     await readFile(path.join(repository, "package-lock.json"), "utf8"),
   );
   const externalSdkClientDependencies = {};
-  await copyInstalledPackages(
-    harness,
-    ["@modelcontextprotocol/client"],
-    path.join(repository, "node_modules"),
-    ({ relative, version }) => {
-      const key = relative.split(path.sep).join("/");
-      assert.equal(version, lock.packages["node_modules/" + key].version);
-      externalSdkClientDependencies[key] = version;
-    },
-  );
+  if (!pairSettings)
+    await copyInstalledPackages(
+      harness,
+      ["@modelcontextprotocol/client"],
+      path.join(repository, "node_modules"),
+      ({ relative, version }) => {
+        const key = relative.split(path.sep).join("/");
+        assert.equal(version, lock.packages["node_modules/" + key].version);
+        externalSdkClientDependencies[key] = version;
+      },
+    );
   const installedCode = await attemptOutputCodeIdentity(installed);
   assert.equal(installedCode, sourceCode);
   delete process.env.NODE_TEST_CONTEXT;
@@ -154,9 +178,9 @@ try {
     requirements.map((row) => ({ ...row, file: path.join(harness, row.file) })),
     {
       timeoutMs: 120000,
-      additionalFiles: [
-        path.join(harness, "dist/test/agent-evaluation-protocol.test.js"),
-      ],
+      additionalFiles: pairSettings
+        ? []
+        : [path.join(harness, "dist/test/agent-evaluation-protocol.test.js")],
     },
   );
   assert.equal(profile.complete, true, JSON.stringify(profile.problems));
@@ -178,7 +202,9 @@ try {
   process.stdout.write(
     JSON.stringify({
       schemaVersion: 1,
-      profile: "evaluation-go-php-controls",
+      profile: pairSettings
+        ? "evaluation-pair-settings-controls"
+        : "evaluation-go-php-controls",
       node: process.versions.node,
       platform: process.platform,
       architecture: process.arch,

@@ -68,3 +68,46 @@ Original synthetic regression tests cover each role's mismatched and missing
 bytes, unsafe selections and file types, permission refusal, stale protocol
 binding, replacement of an earlier file during the final read, empty-file
 near misses, and summary/error privacy. No evaluation trial is started.
+
+## Matched declared settings
+
+`inspectReviewEvaluationPair(input, expectedProtocolSha256)` checks a narrower
+structured baseline/verifier pair. Input contains the existing `protocol` and
+`configurations: { priorWorkflow, verifier }`, where each configuration is its exact
+JSON text, bounded to 1 MiB of UTF-8. Both raw hashes must match the pinned
+protocol. The configuration profile is `prospective-review-arm-configuration-v1`.
+Its strict fields are `schemaVersion`, `profile`, `role`, `host`, `context`,
+`native`, `budgets`, `isolation` and `treatment`; the exported
+`reviewEvaluationArmConfigurationSchema` describes the field shapes.
+
+The two arms must declare identical host client/version/executable, requested
+model/effort and shared settings digest, task and repository-instruction digests,
+native tools/environment digests, and all five budgets. `settingsSha256` identifies
+the shared sampling/context settings, excluding the separately represented
+treatment; keep that projection with the private configuration record. Native and budget values must
+also match the protocol; equal but foreign settings are refused. Both arms must
+declare fresh sessions without shared history or outputs. The baseline must
+have `checktrailEnabled: false` with no treatment fields. The verifier requires
+`checktrailEnabled: true`, the protocol's engine digest and a usage-instruction
+digest. Different hosts require separate pairs and protocols.
+
+After building, pass the input on stdin:
+
+```sh
+node scripts/check-evaluation-pair.mjs --expected-protocol-sha256 EXPECTED_HASH   < /absolute/private-pair-input.json
+```
+
+Exit 0 means declared settings match, 2 means an incomplete or mismatched pair,
+and 1 means invalid input. Output contains hashes, issue codes and explicit
+unverified claims, without client/model names or configuration contents. The
+setup command reads no referenced files and runs no models or native commands.
+A matching declaration does not establish effective host configuration, model
+availability, actual isolation, native readiness, cohort readiness, a frozen
+experiment or Gate A completion. Keep the private-file byte inspector and actual
+host/native preflight as separate requirements; this check does not replace them.
+
+`node scripts/verify-evaluation-native-package.mjs --pair-settings` repeats the
+matched-pair controls and setup command from an external harness against a fresh
+offline production install. It requires each named control exactly once without
+skips and binds harness and installed engine bytes before and after execution.
+This remains synthetic setup acceptance, not an observed host comparison.
