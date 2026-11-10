@@ -3,6 +3,10 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+export const qualifiedJavaScriptModules = fileURLToPath(
+  new URL("../../.checktrail/javascript-tools/node_modules", import.meta.url),
+);
+
 export async function copyInstalledPackages(
   root: string,
   packages: string[],

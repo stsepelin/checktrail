@@ -8,9 +8,12 @@ baseline; it does not qualify this selected configuration or reproduce a private
 team's previous workflow.
 
 The executable [agent evaluation workflow](AGENT-EVALUATION.md) provides collection
-and adjudication stages. The private prospective configuration freeze and current
-runtime acceptance remain open. No new review trial starts before Gate A is
-complete and the concrete Gate B permissions and readiness requirements are met.
+and adjudication stages. Prospective configuration/procedure policy selection is
+privately frozen, and the [dated synthetic runtime observation](EVALUATION-ACCEPTANCE.md)
+qualifies its recorded source. Effective authenticated host behavior, case-specific
+admission and changed-revision qualification remain separate. No new review trial
+starts before Gate A is complete and the concrete Gate B permissions and readiness
+requirements are met.
 
 The existing [development evaluation](EVALUATION.md),
 [external ESLint cohort](EXTERNAL-EVALUATION.md) and
