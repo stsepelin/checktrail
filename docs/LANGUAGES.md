@@ -5,11 +5,13 @@ per-language configuration proposals and static tool diagnosis. Setup does not
 extend the execution capabilities or native evidence listed below.
 
 The [operator npm provenance audit](NPM-PROVENANCE.md) reconciles production and
-development dependency locations, optional platform exclusions and installed
-content. Pinned and embedded development notices retain exact file and byte
-bindings, canonical notice addresses and explicit declaration conflicts. Its
-current development notice gaps remain incomplete; complete native
-artifact/license closure and the final runtime matrix remain pending.
+development dependency locations, optional OS/CPU/libc exclusions and installed
+content. Linux libc exclusions require narrowly captured known runtime facts;
+unknown libc and compatible optional absences remain incomplete. Repeated omitted
+development projections preserve genuine production-shared paths. Pinned and
+embedded notices retain exact version/file bindings, canonical addresses and
+explicit declaration conflicts. Complete native artifact/license closure and the
+final runtime matrix remain pending.
 
 [Declared findings resolution](REVIEW-FINDINGS.md) adds parameter-name
 availability checks for captured JavaScript/TypeScript functions. This syntax

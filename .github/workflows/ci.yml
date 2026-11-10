@@ -146,6 +146,7 @@ jobs:
       - run: python3 -m pip install -r scripts/framework-tools.requirements.txt
         if: env.CHECKTRAIL_CI_MODE == 'full'
       - run: npm ci --ignore-scripts
+      - run: node scripts/audit-dependencies.mjs
       - name: Prepare qualified native JavaScript fixtures
         run: |
           node scripts/prepare-javascript-tools.mjs
@@ -194,7 +195,6 @@ jobs:
         if: env.CHECKTRAIL_CI_MODE == 'full'
         run: node scripts/verify-evaluation-protocol-package.mjs --metering
       - run: npm run format:check
-      - run: node scripts/audit-dependencies.mjs
       - run: node scripts/audit-context-grammars.mjs
       - name: Prepare this runner's package-install cache for Linux container acceptance
         if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
