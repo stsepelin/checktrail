@@ -2633,9 +2633,11 @@ test("Playwright fixture artifacts retain full verification and both host lanes 
     const setup = steps.find((step: { uses?: string }) =>
       step.uses?.startsWith("actions/setup-node@"),
     );
-    assert.deepEqual(setup.with["cache-dependency-path"].trim().split("\n"), [
+    const cachedLocks = setup.with["cache-dependency-path"].trim().split("\n");
+    for (const required of [
       "package-lock.json",
       "scripts/playwright-tools/package-lock.json",
-    ]);
+    ])
+      assert.ok(cachedLocks.includes(required), name + ":" + required);
   }
 });

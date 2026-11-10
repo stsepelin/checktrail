@@ -349,6 +349,11 @@ are separate future capabilities. See [security](SECURITY.md).
 ## Development
 
 ```sh
+npm ci --ignore-scripts
+node scripts/prepare-javascript-tools.mjs
+npm ci --prefix .checktrail/javascript-tools --ignore-scripts --no-audit --no-fund
+node scripts/prepare-playwright-tools.mjs
+npm ci --prefix .checktrail/playwright-tools --ignore-scripts --no-audit --no-fund
 npm run check
 npm run format:check
 node scripts/smoke-package.mjs
@@ -356,7 +361,9 @@ node scripts/smoke-package.mjs
 
 Tests include real process execution, native adapter integration where tools are
 available, source-change detection, output limits, schemas, CLI exit codes and
-MCP calls. Missing native tools are explicitly skipped locally; CI prepares tools
+MCP calls. The qualified JavaScript and Playwright fixture graphs above are required for
+their unit controls. Additional native adapters are explicitly skipped locally when their
+tools are missing; CI prepares tools
 and requires exact native regression names through [required profiles](docs/NATIVE-CI.md). Run `node scripts/generate-schemas.mjs` after building when
 changing schema definitions; tests reject drift in the checked-in JSON schemas.
 

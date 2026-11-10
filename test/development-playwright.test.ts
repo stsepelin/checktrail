@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
 import { readFile, realpath, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
@@ -45,20 +46,52 @@ test(
         );
       },
     );
-    for (const name of ["@playwright/test", "playwright", "playwright-core"]) {
-      const metadata = JSON.parse(
-        await readFile(
-          path.join(root, "node_modules", name, "package.json"),
-          "utf8",
-        ),
+    const directMetadataFile = path.join(
+      root,
+      "node_modules/@playwright/test/package.json",
+    );
+    const directMetadata = JSON.parse(
+      await readFile(directMetadataFile, "utf8"),
+    );
+    assert.equal(directMetadata.name, "@playwright/test");
+    assert.equal(directMetadata.version, expected);
+    const playwrightMetadataFile = createRequire(directMetadataFile).resolve(
+      "playwright/package.json",
+    );
+    const coreMetadataFile = createRequire(playwrightMetadataFile).resolve(
+      "playwright-core/package.json",
+    );
+    for (const [name, file] of [
+      ["@playwright/test", directMetadataFile],
+      ["playwright", playwrightMetadataFile],
+      ["playwright-core", coreMetadataFile],
+    ] as const) {
+      const metadata = JSON.parse(await readFile(file, "utf8"));
+      const relative = path.relative(
+        path.join(root, "node_modules"),
+        path.dirname(file),
+      );
+      assert.ok(
+        relative !== ".." &&
+          !relative.startsWith(".." + path.sep) &&
+          !path.isAbsolute(relative),
       );
       assert.equal(metadata.name, name);
-      assert.equal(metadata.version, expected);
+      assert.equal(
+        metadata.version,
+        lock.packages["node_modules/" + relative.split(path.sep).join("/")]
+          .version,
+      );
     }
+    const declaredBin =
+      typeof directMetadata.bin === "string"
+        ? directMetadata.bin
+        : directMetadata.bin.playwright;
+    assert.equal(typeof declaredBin, "string");
     const command = {
       executable: process.execPath,
       args: [
-        path.join(root, "node_modules/playwright/cli.js"),
+        path.resolve(path.dirname(directMetadataFile), declaredBin),
         "test",
         "--reporter=" + reporter,
         "--workers=1",

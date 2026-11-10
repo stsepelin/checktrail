@@ -22,10 +22,7 @@ const native = path.join(
   repository,
   ".checktrail/javascript-tools/node_modules",
 );
-const prepared = await access(native).then(
-  () => true,
-  () => false,
-);
+await access(native);
 const cache = execFileSync("npm", ["config", "get", "cache"], {
   encoding: "utf8",
 }).trim();
@@ -49,12 +46,6 @@ const base = [
   "checktrail.task=" + task,
   "--mount",
   `type=bind,src=${repository},target=/workspace,readonly`,
-  ...(prepared
-    ? [
-        "--mount",
-        `type=bind,src=${native},target=/workspace/node_modules,readonly`,
-      ]
-    : []),
   "--mount",
   `type=bind,src=${cache},target=/prepared-cache,readonly`,
   "--workdir",
@@ -74,7 +65,7 @@ const runtime = JSON.parse(
     "node",
     "--input-type=module",
     "-e",
-    `import{readFileSync}from'node:fs';import{createHash}from'node:crypto';import{viteLibraryPrerequisites}from'./dist/src/vite-library-prerequisites.js';import{eslintParticipationPrerequisites}from'./dist/src/eslint-participation-prerequisites.js';const b=readFileSync(process.execPath);console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,nodeBinary:{bytes:b.length,sha256:createHash('sha256').update(b).digest('hex')},os:readFileSync('/etc/os-release','utf8'),eslint:await eslintParticipationPrerequisites('/workspace','/workspace/node_modules/eslint/lib/api.js'),library:await viteLibraryPrerequisites('/workspace','/workspace/node_modules/vite/dist/node/index.js','/workspace/node_modules/typescript/lib/typescript.js')}));`,
+    `import{readFileSync}from'node:fs';import{createHash}from'node:crypto';import{viteLibraryPrerequisites}from'./dist/src/vite-library-prerequisites.js';import{eslintParticipationPrerequisites}from'./dist/src/eslint-participation-prerequisites.js';const b=readFileSync(process.execPath);console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,nodeBinary:{bytes:b.length,sha256:createHash('sha256').update(b).digest('hex')},os:readFileSync('/etc/os-release','utf8'),eslint:await eslintParticipationPrerequisites('/workspace','/workspace/.checktrail/javascript-tools/node_modules/eslint/lib/api.js'),library:await viteLibraryPrerequisites('/workspace','/workspace/.checktrail/javascript-tools/node_modules/vite/dist/node/index.js','/workspace/.checktrail/javascript-tools/node_modules/typescript/lib/typescript.js')}));`,
   ]),
 );
 assert.equal(runtime.node, "v22.23.2");
@@ -121,7 +112,7 @@ const guards = JSON.parse(
   run([
     "/bin/sh",
     "-c",
-    "mkdir /tmp/guards && cp -a dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-javascript-extensions-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && ln -s /workspace/assets /tmp/guards/assets && cd /tmp/guards && node scripts/verify-javascript-extensions-guards.mjs",
+    "mkdir /tmp/guards && cp -a dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-javascript-extensions-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && ln -s /workspace/assets /tmp/guards/assets && mkdir /tmp/guards/.checktrail && ln -s /workspace/.checktrail/javascript-tools /tmp/guards/.checktrail/javascript-tools && cd /tmp/guards && node scripts/verify-javascript-extensions-guards.mjs",
   ]),
 );
 assert.ok(guards.controls.length > 0);

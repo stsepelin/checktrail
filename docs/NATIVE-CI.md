@@ -546,6 +546,27 @@ The main matrix also prepares the separately locked TypeScript 4.9.5 compiler
 from `scripts/typescript-legacy-tools/`. Its named native regression is mandatory
 in the `javascript` profile; root build tooling stays on its existing compiler.
 
+JavaScript native fixtures use the separately locked `scripts/javascript-tools/`
+graph. `node scripts/prepare-javascript-tools.mjs` validates its exact declarations
+and dependency closure, then publishes manifests to `.checktrail/javascript-tools`;
+install them explicitly with `npm ci --prefix .checktrail/javascript-tools
+--ignore-scripts --no-audit --no-fund` before running the full suite locally.
+Mutation preparation uses the same graph in `.checktrail/mutation-javascript-tools`.
+Neither preparer resolves version ranges or falls back to development packages.
+Optionality follows paths from the selected roots; any required path makes a
+shared dependency and its required descendants mandatory.
+CI includes this lock in its npm cache identity and installs it separately from
+the root development lock. Source fixtures and fresh installed-package probes
+read the qualified graph; the app build, lint, ordinary integration tests and live
+MCP client still use the current root dependencies.
+
+Routine development updates do not rewrite qualified tool versions or byte pins.
+Updating a qualified tool requires reviewing its new source/binding identities,
+updating the applicable runtime/report contracts and completing the native source
+and installed-package controls. Missing dependencies, declaration/lock drift,
+unsupported versions and changed bytes remain failures; a successful fixture run
+does not certify a newly updated tool for consumer projects.
+
 A tool version preflight remains useful but is not the acceptance condition.
 Installing the expected binary cannot compensate for a skipped, renamed, removed
 or failing required test. When intentionally renaming or replacing a regression,

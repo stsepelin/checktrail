@@ -1,7 +1,21 @@
 # Contributing
 
 Read `docs/ARCHITECTURE.md` and `docs/LANGUAGES.md` before changing engine contracts.
-Use Node 22+ and `npm ci --ignore-scripts`. Run `npm run check` and
+Use Node 22+ and install the development and qualified fixture graphs:
+
+```sh
+npm ci --ignore-scripts
+node scripts/prepare-javascript-tools.mjs
+npm ci --prefix .checktrail/javascript-tools --ignore-scripts --no-audit --no-fund
+node scripts/prepare-playwright-tools.mjs
+npm ci --prefix .checktrail/playwright-tools --ignore-scripts --no-audit --no-fund
+```
+
+Preparation refuses to replace an existing fixture directory; keep these installs
+separate from root development dependencies. See [native toolchain setup](docs/NATIVE-CI.md)
+when intentionally changing a qualified graph.
+
+Run `npm run check` and
 `npm run format:check`; invoke the binaries in `node_modules/.bin` directly if a
 package-manager wrapper cannot start. The local HTTPS distribution tests require
 `openssl` to generate ephemeral test certificates. Report which native toolchains
