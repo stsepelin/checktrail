@@ -26,6 +26,7 @@ type Dependency = {
   optional?: boolean;
   os?: string[];
   cpu?: string[];
+  libc?: string[];
   dependencies?: Record<string, string>;
   optionalDependencies?: Record<string, string>;
 };
@@ -54,6 +55,7 @@ async function auditFixture(t: TestContext, dependencies: Dependency[]) {
       name: dependency.name,
       version: "1.0.0",
       license: "MIT",
+      ...(dependency.libc ? { libc: dependency.libc } : {}),
       ...(dependency.dependencies
         ? { dependencies: dependency.dependencies }
         : {}),
@@ -114,6 +116,8 @@ function invoke(
   );
 }
 type Audit = {
+  schemaVersion: number;
+  runtime?: { libc: { family: string; evidence: string; version?: string } };
   complete: boolean;
   scope: string;
   lockedPackageCount: number;
@@ -146,6 +150,1230 @@ function parsed(result: ReturnType<typeof invoke>, status = 0): Audit {
   assert.equal(result.status, status, result.stderr);
   return JSON.parse(result.stdout) as Audit;
 }
+
+type NpmNode = {
+  name: string;
+  version: string;
+  path: string;
+  dev?: boolean;
+  optional?: boolean;
+  extraneous?: boolean;
+  invalid?: boolean | string;
+  missing?: boolean;
+  problems?: string[];
+  dependencies?: Record<string, NpmNode>;
+};
+type NpmDiagnosticNode = Pick<
+  NpmNode,
+  "version" | "extraneous" | "invalid" | "missing" | "problems"
+> & {
+  dependencies?: Record<string, NpmDiagnosticNode>;
+};
+function npmDiagnosticTree(node: NpmNode): NpmDiagnosticNode {
+  return {
+    version: node.version,
+    ...(node.extraneous !== undefined ? { extraneous: node.extraneous } : {}),
+    ...(node.invalid !== undefined ? { invalid: node.invalid } : {}),
+    ...(node.missing !== undefined ? { missing: node.missing } : {}),
+    ...(node.problems !== undefined ? { problems: node.problems } : {}),
+    ...(node.dependencies
+      ? {
+          dependencies: Object.fromEntries(
+            Object.entries(node.dependencies).map(([name, child]) => [
+              name,
+              npmDiagnosticTree(child),
+            ]),
+          ),
+        }
+      : {}),
+  };
+}
+async function optionalOverinstallFixture(
+  t: TestContext,
+  selector: "cpu" | "os" = "cpu",
+) {
+  const retained = ["@synthetic/retained-core", "synthetic-retained-helper"];
+  const root = await realpath(
+    await auditFixture(t, [
+      { name: "synthetic-prod" },
+      {
+        name: "synthetic-development-parent",
+        dev: true,
+        optionalDependencies: { "synthetic-foreign-parent": "1.0.0" },
+      },
+      {
+        name: "synthetic-foreign-parent",
+        location: "node_modules/synthetic-foreign-parent",
+        dev: true,
+        optional: true,
+        absent: true,
+        ...(selector === "cpu"
+          ? { cpu: ["synthetic-other-cpu"] }
+          : { os: ["!" + process.platform] }),
+        dependencies: Object.fromEntries(
+          retained.map((name) => [name, "1.0.0"]),
+        ),
+      },
+      ...retained.map((name) => ({
+        name,
+        location: "node_modules/" + name,
+        dev: true,
+        optional: true,
+      })),
+    ]),
+  );
+  const nodes: Record<string, NpmNode> = {};
+  for (const name of [
+    "synthetic-prod",
+    "synthetic-development-parent",
+    ...retained,
+  ]) {
+    const directory = path.join(root, "node_modules", name);
+    nodes[name] = {
+      ...JSON.parse(
+        await readFile(path.join(directory, "package.json"), "utf8"),
+      ),
+      path: directory,
+      ...(name !== "synthetic-prod" ? { dev: true } : {}),
+      ...(retained.includes(name)
+        ? {
+            optional: true,
+            extraneous: true,
+            problems: [`extraneous: ${name}@1.0.0 ${directory}`],
+          }
+        : {}),
+    };
+    // npm's child dependency graph is distinct from manifest range declarations.
+    delete nodes[name]!.dependencies;
+  }
+  const aggregate = retained.flatMap((name) => nodes[name]!.problems!);
+  const trees = {
+    production: {
+      name: "synthetic-development-audit",
+      version: "1.0.0",
+      path: root,
+      problems: [...aggregate],
+      dependencies: Object.fromEntries(
+        Object.entries(nodes).filter(
+          ([name]) => name !== "synthetic-development-parent",
+        ),
+      ),
+    } satisfies NpmNode,
+    development: {
+      name: "synthetic-development-audit",
+      version: "1.0.0",
+      path: root,
+      problems: [...aggregate],
+      dependencies: structuredClone(nodes),
+    } satisfies NpmNode,
+  };
+  const metadata = path.join(root, "npm-tree.json");
+  const loader = path.join(root, "npm-metadata-loader.mjs");
+  await writeFile(
+    loader,
+    `import cp from 'node:child_process';import fs from 'node:fs';import{syncBuiltinESMExports}from'node:module';const original=cp.execFileSync;cp.execFileSync=(file,args,options)=>{if(file!=='npm'||args[0]!=='ls')return original(file,args,options);fs.writeFileSync(${JSON.stringify(path.join(root, "npm-observed-arguments.json"))},JSON.stringify(args));const captured=JSON.parse(fs.readFileSync(${JSON.stringify(metadata)},'utf8'));const trees=args.includes('--long')?captured.long:captured.diagnostics;return JSON.stringify(args.includes('--omit=dev')?trees.production:trees.development);};syncBuiltinESMExports();`,
+  );
+  async function save(
+    diagnostics = {
+      production: npmDiagnosticTree(trees.production),
+      development: npmDiagnosticTree(trees.development),
+    },
+  ) {
+    await writeFile(metadata, JSON.stringify({ long: trees, diagnostics }));
+  }
+  await save();
+  return {
+    root,
+    retained,
+    trees,
+    save,
+    invoke: (args = ["--include-dev"]) =>
+      invoke(root, args, ["--import", pathToFileURL(loader).href]),
+  };
+}
+
+test("dependency audit reconciles npm 10 retained optional descendants of an incompatible ancestor in both scopes", async (t) => {
+  const f = await optionalOverinstallFixture(t);
+  const production = parsed(f.invoke([]));
+  assert.equal(production.complete, true);
+  assert.deepEqual(
+    production.packages.map((p) => p.name),
+    ["synthetic-prod"],
+  );
+  const development = parsed(f.invoke());
+  assert.equal(development.complete, true);
+  assert.equal(development.lockedPackageCount, 5);
+  assert.equal(development.installedPackageCount, 4);
+  assert.equal(development.platformInapplicableCount, 1);
+  for (const name of f.retained) {
+    const entry = development.packages.find((p) => p.name === name)!;
+    assert.equal(entry.content.files, 3);
+    assert.equal(entry.notices.length, 1);
+    assert.equal(
+      entry.manifestSha256,
+      createHash("sha256")
+        .update(
+          await readFile(
+            path.join(f.root, "node_modules", name, "package.json"),
+          ),
+        )
+        .digest("hex"),
+    );
+  }
+});
+
+type FixtureLockEntry = {
+  dev?: boolean;
+  name?: string;
+  version?: string;
+  optional?: boolean;
+  os?: string[];
+  cpu?: string[];
+  libc?: string[];
+  dependencies?: Record<string, string>;
+  optionalDependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>;
+};
+async function changeFixtureLock(
+  root: string,
+  change: (packages: Record<string, FixtureLockEntry>) => void,
+) {
+  const file = path.join(root, "package-lock.json");
+  const lock = JSON.parse(await readFile(file, "utf8"));
+  change(lock.packages);
+  await writeFile(file, JSON.stringify(lock));
+}
+async function nestedProjectionFixture(
+  t: TestContext,
+  live: "none" | "dev" | "production" = "none",
+) {
+  const f = await optionalOverinstallFixture(t);
+  const parent = f.retained[0]!;
+  const child = f.retained[1]!;
+  const normal = structuredClone(f.trees.development.dependencies[child]!);
+  normal.extraneous = false;
+  delete normal.problems;
+  if (live !== "none") {
+    normal.optional = false;
+    normal.dev = live === "dev";
+  }
+  const owner =
+    live === "production" ? "synthetic-prod" : "synthetic-development-parent";
+  const update = async (name: string) => {
+    const file = path.join(f.root, "node_modules", name, "package.json");
+    const value = JSON.parse(await readFile(file, "utf8"));
+    await writeFile(
+      file,
+      JSON.stringify({
+        ...value,
+        dependencies: { ...value.dependencies, [child]: "1.0.0" },
+      }),
+    );
+  };
+  await update(parent);
+  if (live !== "none") await update(owner);
+  await changeFixtureLock(f.root, (packages) => {
+    packages["node_modules/" + parent]!.dependencies = { [child]: "1.0.0" };
+    if (live !== "none") {
+      packages["node_modules/" + owner]!.dependencies = { [child]: "1.0.0" };
+      packages["node_modules/" + child]!.optional = false;
+      packages["node_modules/" + child]!.dev = live === "dev";
+    }
+  });
+  const ownDiagnostic = f.trees.production.dependencies[child]!.problems![0]!;
+  for (const tree of Object.values(f.trees)) {
+    tree.dependencies[parent]!.dependencies = {
+      [child]: structuredClone(normal),
+    };
+    if (live !== "none") {
+      delete tree.dependencies[child];
+      tree.problems = tree.problems.filter(
+        (problem) => problem !== ownDiagnostic,
+      );
+      if (tree.dependencies[owner])
+        tree.dependencies[owner]!.dependencies = {
+          [child]: structuredClone(normal),
+        };
+    }
+    tree.dependencies = {
+      [parent]: tree.dependencies[parent]!,
+      ...Object.fromEntries(
+        Object.entries(tree.dependencies).filter(([name]) => name !== parent),
+      ),
+    };
+  }
+  await f.save();
+  return { ...f, parent, child };
+}
+
+function refused(result: ReturnType<typeof invoke>, pattern: RegExp) {
+  assert.equal(result.status, 1, result.stderr);
+  assert.equal(result.stdout, "");
+  assert.match(result.stderr, pattern);
+}
+
+test("dependency audit reconciles repeated non-extraneous descendants beneath omitted development roots", async (t) => {
+  const f = await nestedProjectionFixture(t);
+  const nested =
+    f.trees.production.dependencies[f.parent]!.dependencies![f.child]!;
+  assert.equal(nested.extraneous, false);
+  assert.equal(nested.path, f.trees.production.dependencies[f.child]!.path);
+  const production = parsed(f.invoke([]));
+  assert.deepEqual(
+    production.packages.map((p) => p.name),
+    ["synthetic-prod"],
+  );
+  const development = parsed(f.invoke());
+  assert.equal(development.complete, true);
+  assert.equal(development.installedPackageCount, 4);
+});
+
+test("dependency audit omits a repeated child shared only with a compatible required development path", async (t) => {
+  const f = await nestedProjectionFixture(t, "dev");
+  const production = parsed(f.invoke([]));
+  assert.deepEqual(
+    production.packages.map((p) => p.name),
+    ["synthetic-prod"],
+  );
+  const development = parsed(f.invoke());
+  assert.equal(development.complete, true);
+  assert.equal(development.installedPackageCount, 4);
+  assert.equal(
+    f.trees.development.dependencies["synthetic-development-parent"]!
+      .dependencies![f.child]!.optional,
+    false,
+  );
+});
+
+test("dependency audit preserves a genuine production shared path first reached under an omitted branch", async (t) => {
+  const f = await nestedProjectionFixture(t, "production");
+  assert.equal(Object.keys(f.trees.production.dependencies)[0], f.parent);
+  const production = parsed(f.invoke([]));
+  assert.deepEqual(
+    production.packages.map((p) => p.name).sort(),
+    ["synthetic-prod", f.child].sort(),
+  );
+  assert.equal(production.packageCount, 2);
+  assert.equal(parsed(f.invoke()).complete, true);
+  for (const tree of Object.values(f.trees)) {
+    const child = tree.dependencies[f.parent]!.dependencies![f.child]!;
+    child.extraneous = true;
+    child.problems = [
+      `extraneous: ${child.name}@${child.version} ${child.path}`,
+    ];
+    tree.problems.push(child.problems[0]!);
+  }
+  await f.save();
+  for (const args of [[], ["--include-dev"]])
+    refused(f.invoke(args), /Unreconciled extraneous dependency/);
+});
+
+test("dependency audit refuses an unlocked normal descendant even when its identity duplicates production", async (t) => {
+  const f = await nestedProjectionFixture(t);
+  const location = path.join(f.root, "node_modules/synthetic-unlocked-copy");
+  await mkdir(location);
+  await writeFile(
+    path.join(location, "package.json"),
+    JSON.stringify({
+      name: "synthetic-prod",
+      version: "1.0.0",
+      license: "MIT",
+    }),
+  );
+  for (const tree of Object.values(f.trees))
+    tree.dependencies[f.parent]!.dependencies!["synthetic-unlocked-copy"] = {
+      name: "synthetic-prod",
+      version: "1.0.0",
+      path: location,
+      extraneous: false,
+    };
+  await f.save();
+  for (const args of [[], ["--include-dev"]])
+    refused(f.invoke(args), /location is not locked/);
+});
+
+test("dependency audit rejects a mismatching normal descendant inside an omitted development branch", async (t) => {
+  const f = await nestedProjectionFixture(t);
+  for (const tree of Object.values(f.trees))
+    tree.dependencies[f.parent]!.dependencies![f.child]!.version = "2.0.0";
+  await f.save();
+  for (const args of [[], ["--include-dev"]])
+    refused(f.invoke(args), /Installed version differs from lock/);
+});
+
+async function syntheticLibcReport(
+  root: string,
+  report: unknown,
+  throws = false,
+) {
+  const loader = path.join(root, "synthetic-libc-report.mjs");
+  const observed = path.join(root, "report-settings-observed.json");
+  const restored = path.join(root, "report-settings-restored.json");
+  const commands = path.join(root, "runtime-helper-commands.json");
+  await writeFile(
+    loader,
+    `import process from 'node:process';import fs from 'node:fs';import cp from 'node:child_process';import{syncBuiltinESMExports}from'node:module';const names=['excludeNetwork','excludeEnv'];const settings=()=>Object.fromEntries(names.filter(name=>typeof process.report[name]==='boolean').map(name=>[name,process.report[name]]));const before=settings();Object.defineProperty(process,'platform',{value:'linux'});fs.writeFileSync(${JSON.stringify(commands)},'[]');const original=cp.execFileSync;cp.execFileSync=(file,...args)=>{if(file!=='npm'){const calls=JSON.parse(fs.readFileSync(${JSON.stringify(commands)},'utf8'));calls.push(file);fs.writeFileSync(${JSON.stringify(commands)},JSON.stringify(calls));throw Error('Runtime helper commands are forbidden');}return original(file,...args);};syncBuiltinESMExports();process.report.getReport=()=>{fs.writeFileSync(${JSON.stringify(observed)},JSON.stringify(settings()));if(${JSON.stringify(throws)})throw Error('Original synthetic report error; do not retain');return ${JSON.stringify(report)};};process.on('exit',()=>fs.writeFileSync(${JSON.stringify(restored)},JSON.stringify({before,after:settings()})));`,
+  );
+  return {
+    args: ["--import", pathToFileURL(loader).href],
+    async checked() {
+      const captured = JSON.parse(await readFile(observed, "utf8"));
+      assert.equal(captured.excludeNetwork, true);
+      assert.ok(Object.values(captured).every((value) => value === true));
+      const result = JSON.parse(await readFile(restored, "utf8"));
+      assert.deepEqual(result.after, result.before);
+      assert.deepEqual(JSON.parse(await readFile(commands, "utf8")), []);
+    },
+  };
+}
+
+const glibcReport = {
+  header: { glibcVersionRuntime: "2.36" },
+  environmentVariables: {
+    SYNTHETIC_PRIVATE_ENV: "Original-private-report-marker",
+  },
+};
+const muslReport = {
+  header: {},
+  sharedObjects: ["/original/lib/ld-musl-x86_64.so.1"],
+  environmentVariables: {
+    SYNTHETIC_PRIVATE_ENV: "Original-private-report-marker",
+  },
+};
+const libcCases = [
+  {
+    name: "glibc excludes musl",
+    report: glibcReport,
+    selector: ["musl"],
+    family: "glibc",
+    excluded: true,
+  },
+  {
+    name: "musl excludes glibc",
+    report: muslReport,
+    selector: ["glibc"],
+    family: "musl",
+    excluded: true,
+  },
+  {
+    name: "matching glibc stays unresolved when absent",
+    report: glibcReport,
+    selector: ["glibc"],
+    family: "glibc",
+    excluded: false,
+  },
+  {
+    name: "matching musl stays unresolved when absent",
+    report: muslReport,
+    selector: ["musl"],
+    family: "musl",
+    excluded: false,
+  },
+  {
+    name: "unknown report stays unresolved",
+    report: { header: {}, sharedObjects: [] },
+    selector: ["musl"],
+    family: "unknown",
+    excluded: false,
+  },
+  {
+    name: "musl path backup is not a loader",
+    report: {
+      header: {},
+      sharedObjects: [
+        "/original/ld-musl-x86_64.so.1.backup",
+        "/original/ld-musl-x86_64.so.1/ordinary.so",
+      ],
+    },
+    selector: ["musl"],
+    family: "unknown",
+    excluded: false,
+  },
+  {
+    name: "known glibc header takes precedence",
+    report: { ...muslReport, header: { glibcVersionRuntime: "2.36" } },
+    selector: ["musl"],
+    family: "glibc",
+    excluded: true,
+  },
+  {
+    name: "report errors remain unknown",
+    report: {},
+    throws: true,
+    selector: ["musl"],
+    family: "unknown",
+    excluded: false,
+  },
+  {
+    name: "exact any remains compatible",
+    report: glibcReport,
+    selector: ["any"],
+    family: "glibc",
+    excluded: false,
+  },
+  {
+    name: "mixed any is literal",
+    report: glibcReport,
+    selector: ["any", "musl"],
+    family: "glibc",
+    excluded: true,
+  },
+  {
+    name: "matching negation excludes",
+    report: glibcReport,
+    selector: ["!glibc"],
+    family: "glibc",
+    excluded: true,
+  },
+  {
+    name: "other negation is compatible",
+    report: glibcReport,
+    selector: ["!musl"],
+    family: "glibc",
+    excluded: false,
+  },
+];
+for (const entry of libcCases) {
+  test(`development audit libc facts: ${entry.name}`, async (t) => {
+    const root = await auditFixture(t, [
+      { name: "synthetic-prod" },
+      {
+        name: "synthetic-development-parent",
+        dev: true,
+        optionalDependencies: { "synthetic-libc-native": "1.0.0" },
+      },
+      {
+        name: "synthetic-libc-native",
+        location: "node_modules/synthetic-libc-native",
+        dev: true,
+        optional: true,
+        absent: true,
+        libc: entry.selector,
+      },
+    ]);
+    const report = await syntheticLibcReport(
+      root,
+      entry.report,
+      entry.throws ?? false,
+    );
+    const result = invoke(root, ["--include-dev"], report.args);
+    const evidence = parsed(result, entry.excluded ? 0 : 2);
+    assert.equal(evidence.runtime!.libc.family, entry.family);
+    assert.equal(evidence.complete, entry.excluded);
+    assert.equal(evidence.platformInapplicableCount, entry.excluded ? 1 : 0);
+    assert.equal(evidence.optionalAbsentCount, entry.excluded ? 0 : 1);
+    assert.equal(
+      evidence.absentPackages[0]!.state,
+      entry.excluded ? "platform-inapplicable" : "not-installed-optional",
+    );
+    assert.equal(
+      result.stdout.includes("Original-private-report-marker"),
+      false,
+    );
+    await report.checked();
+  });
+}
+
+for (const entry of libcCases) {
+  test(`production optional absence retains exact libc evidence: ${entry.name}`, async (t) => {
+    const root = await auditFixture(t, [
+      { name: "synthetic-prod" },
+      {
+        name: "synthetic-production-native",
+        optional: true,
+        absent: true,
+        libc: entry.selector,
+      },
+    ]);
+    const runtime = await syntheticLibcReport(
+      root,
+      entry.report,
+      entry.throws ?? false,
+    );
+    for (const args of [[], ["--include-dev"]]) {
+      const report = parsed(
+        invoke(root, args, runtime.args),
+        entry.excluded ? 0 : 2,
+      );
+      assert.equal(report.schemaVersion, args.length ? 2 : 1);
+      assert.equal(report.runtime!.libc.family, entry.family);
+      assert.equal(report.complete, entry.excluded);
+      assert.equal(report.packageCount, 1);
+      assert.equal(report.lockedPackageCount, 2);
+      assert.equal(report.installedPackageCount, 1);
+      assert.equal(report.platformInapplicableCount, entry.excluded ? 1 : 0);
+      assert.equal(report.optionalAbsentCount, entry.excluded ? 0 : 1);
+      assert.equal(
+        report.absentPackages[0]!.state,
+        entry.excluded ? "platform-inapplicable" : "not-installed-optional",
+      );
+      assert.equal(report.gaps.length, entry.excluded ? 0 : 1);
+      if (!args.length) {
+        assert.equal("content" in report.packages[0]!, false);
+        assert.equal("manifestSha256" in report.packages[0]!, false);
+      }
+      await runtime.checked();
+    }
+  });
+}
+
+test("production optional absence accounts for direct OS and CPU exclusions and inherited descendants in both modes", async (t) => {
+  for (const selector of [
+    { os: [process.platform === "win32" ? "linux" : "win32"] },
+    { cpu: ["wasm32"] },
+  ]) {
+    const root = await auditFixture(t, [
+      { name: "synthetic-prod" },
+      {
+        name: "synthetic-production-foreign",
+        optional: true,
+        absent: true,
+        ...selector,
+        dependencies: { "synthetic-production-child": "1.0.0" },
+      },
+      {
+        name: "synthetic-production-child",
+        location: "node_modules/synthetic-production-child",
+        optional: true,
+        absent: true,
+      },
+    ]);
+    for (const args of [[], ["--include-dev"]]) {
+      const report = parsed(invoke(root, args));
+      assert.equal(report.complete, true);
+      assert.equal(report.packageCount, 1);
+      assert.equal(report.lockedPackageCount, 3);
+      assert.equal(
+        report.installedPackageCount + report.absentPackages.length,
+        3,
+      );
+      assert.equal(report.platformInapplicableCount, 2);
+      assert.equal(report.optionalAbsentCount, 0);
+      assert.ok(
+        report.absentPackages.every(
+          (item) => item.state === "platform-inapplicable",
+        ),
+      );
+    }
+  }
+});
+
+test("production optional absence refuses a required literal lock entry despite an optional npm projection", async (t) => {
+  const root = await auditFixture(t, [
+    { name: "synthetic-prod" },
+    {
+      name: "synthetic-required-native",
+      optional: true,
+      absent: true,
+      os: [process.platform === "win32" ? "linux" : "win32"],
+    },
+  ]);
+  await changeFixtureLock(root, (packages) => {
+    packages["node_modules/synthetic-required-native"]!.optional = false;
+  });
+  for (const args of [[], ["--include-dev"]])
+    refused(invoke(root, args), /Required locked dependency is not installed/);
+});
+
+test("production optional absence still inspects a physically present foreign optional package", async (t) => {
+  const root = await auditFixture(t, [
+    { name: "synthetic-prod" },
+    { name: "synthetic-installed-native", optional: true, libc: ["musl"] },
+  ]);
+  const runtime = await syntheticLibcReport(root, glibcReport);
+  for (const args of [[], ["--include-dev"]]) {
+    const report = parsed(invoke(root, args, runtime.args));
+    assert.equal(report.complete, true);
+    assert.equal(report.packageCount, 2);
+    assert.equal(report.installedPackageCount, 2);
+    assert.equal(report.platformInapplicableCount, 0);
+    assert.deepEqual(report.absentPackages, []);
+    assert.ok(
+      report.packages.some(
+        (item) =>
+          item.name === "synthetic-installed-native" &&
+          item.notices.length === 1,
+      ),
+    );
+  }
+  await runtime.checked();
+});
+
+test("production optional absence cannot make an empty installed scope complete", async (t) => {
+  const root = await auditFixture(t, [
+    {
+      name: "synthetic-production-foreign",
+      optional: true,
+      absent: true,
+      os: [process.platform === "win32" ? "linux" : "win32"],
+    },
+  ]);
+  for (const args of [[], ["--include-dev"]]) {
+    const report = parsed(invoke(root, args), 2);
+    assert.equal(report.packageCount, 0);
+    assert.equal(report.lockedPackageCount, 1);
+    assert.equal(report.platformInapplicableCount, 1);
+    assert.deepEqual(report.gaps, [
+      { package: null, reason: "No installed packages were inspected" },
+    ]);
+  }
+});
+
+test("dependency audit retains an active matching-libc path instead of inheriting a foreign exclusion", async (t) => {
+  const root = await auditFixture(t, [
+    { name: "synthetic-prod" },
+    {
+      name: "synthetic-libc-foreign",
+      optional: true,
+      absent: true,
+      libc: ["musl"],
+      dependencies: { "synthetic-libc-shared": "1.0.0" },
+    },
+    {
+      name: "synthetic-libc-active",
+      optional: true,
+      libc: ["glibc"],
+      optionalDependencies: { "synthetic-libc-shared": "1.0.0" },
+    },
+    {
+      name: "synthetic-libc-shared",
+      location: "node_modules/synthetic-libc-shared",
+      optional: true,
+      absent: true,
+    },
+  ]);
+  const report = await syntheticLibcReport(root, glibcReport);
+  for (const args of [[], ["--include-dev"]]) {
+    const evidence = parsed(invoke(root, args, report.args), 2);
+    assert.equal(evidence.complete, false);
+    assert.equal(evidence.platformInapplicableCount, 1);
+    assert.equal(evidence.optionalAbsentCount, 1);
+    assert.equal(
+      evidence.absentPackages.find(
+        (item) => item.package === "synthetic-libc-shared@1.0.0",
+      )!.state,
+      "not-installed-optional",
+    );
+    assert.ok(
+      evidence.packages.some((item) => item.name === "synthetic-libc-active"),
+    );
+    await report.checked();
+  }
+});
+
+test("dependency audit retains a known absent optional notice source without declaring its notice inspected", async (t) => {
+  const f = await pinnedNoticeFixture(t, false);
+  const file = path.join(f.root, "package.json");
+  const manifest = JSON.parse(await readFile(file, "utf8"));
+  delete manifest.dependencies[f.name];
+  manifest.optionalDependencies[f.name] = "1.0.0";
+  await writeFile(file, JSON.stringify(manifest));
+  await changeFixtureLock(f.root, (packages) => {
+    delete packages[""]!.dependencies![f.name];
+    packages[""]!.optionalDependencies = { [f.name]: "1.0.0" };
+    packages[f.dependency]!.optional = true;
+  });
+  await rm(path.join(f.root, f.dependency), { recursive: true });
+  for (const excluded of [true, false]) {
+    await changeFixtureLock(f.root, (packages) => {
+      if (excluded)
+        packages[f.dependency]!.os = [
+          process.platform === "win32" ? "linux" : "win32",
+        ];
+      else delete packages[f.dependency]!.os;
+    });
+    for (const args of [[], ["--include-dev"]]) {
+      const report = parsed(invoke(f.root, args), excluded ? 0 : 2);
+      assert.equal(report.complete, excluded);
+      assert.equal(report.packageCount, 1);
+      assert.equal(report.lockedPackageCount, 2);
+      assert.deepEqual(report.uninspectedNoticeSources, [
+        {
+          package: f.name + "@1.0.0",
+          state: excluded ? "platform-inapplicable" : "not-installed-optional",
+          noticeInspected: false,
+        },
+      ]);
+      assert.deepEqual(
+        report.gaps,
+        excluded
+          ? []
+          : [
+              {
+                package: f.name + "@1.0.0",
+                reason:
+                  "Optional package absent without a demonstrated platform exclusion",
+              },
+            ],
+      );
+    }
+  }
+  await writeFile(
+    path.join(f.root, "scripts/license-sources.json"),
+    JSON.stringify({ [f.name + "@2.0.0"]: f.source }),
+  );
+  for (const args of [[], ["--include-dev"]])
+    refused(invoke(f.root, args), /no longer describes/);
+});
+
+test("dependency audit accepts OS-incompatible optional ancestry and continues hashing retained development contents and notices", async (t) => {
+  const f = await optionalOverinstallFixture(t, "os");
+  const before = parsed(f.invoke());
+  const name = f.retained[0]!;
+  const first = before.packages.find((p) => p.name === name)!;
+  await writeFile(
+    path.join(f.root, "node_modules", name, "index.js"),
+    "throw Error('Original changed synthetic bytes; never load');",
+  );
+  const after = parsed(f.invoke()).packages.find((p) => p.name === name)!;
+  assert.notEqual(after.content.sha256, first.content.sha256);
+  assert.equal(after.manifestSha256, first.manifestSha256);
+  await rm(path.join(f.root, "node_modules", name, "LICENSE"));
+  const incomplete = parsed(f.invoke(), 2);
+  assert.equal(incomplete.complete, false);
+  assert.deepEqual(incomplete.gaps, [
+    { package: name + "@1.0.0", reason: "No notice file was located" },
+  ]);
+  assert.equal(parsed(f.invoke([])).complete, true);
+  const args = JSON.parse(
+    await readFile(path.join(f.root, "npm-observed-arguments.json"), "utf8"),
+  );
+  assert.deepEqual(args, ["ls", "--omit=dev", "--all", "--json", "--long"]);
+});
+
+for (const field of [
+  "dependencies",
+  "optionalDependencies",
+  "peerDependencies",
+] as const) {
+  test(`dependency audit refuses an extraneous optional package with a live shared ${field} path`, async (t) => {
+    const f = await optionalOverinstallFixture(t);
+    await changeFixtureLock(f.root, (packages) => {
+      packages["node_modules/synthetic-prod"]![field] = {
+        [f.retained[0]!]: "1.0.0",
+      };
+    });
+    for (const args of [[], ["--include-dev"]])
+      refused(f.invoke(args), /Unreconciled extraneous dependency/);
+  });
+}
+
+for (const kind of [
+  "required",
+  "unreachable",
+  "compatible",
+  "required-ancestor",
+] as const) {
+  test(`dependency audit refuses the ${kind} near miss to an excluded optional subtree`, async (t) => {
+    const f = await optionalOverinstallFixture(t);
+    await changeFixtureLock(f.root, (packages) => {
+      const foreign = packages["node_modules/synthetic-foreign-parent"]!;
+      if (kind === "required")
+        packages["node_modules/" + f.retained[0]!]!.optional = false;
+      if (kind === "unreachable") foreign.dependencies = {};
+      if (kind === "compatible") foreign.cpu = [process.arch];
+      if (kind === "required-ancestor") foreign.optional = false;
+    });
+    for (const args of [[], ["--include-dev"]])
+      refused(
+        f.invoke(args),
+        /Unreconciled extraneous dependency|no incompatible optional ancestor/,
+      );
+  });
+}
+
+for (const source of ["tree", "lock", "manifest", "name"] as const) {
+  test(`dependency audit refuses retained optional ${source} identity drift`, async (t) => {
+    const f = await optionalOverinstallFixture(t);
+    const name = f.retained[0]!;
+    if (source === "tree" || source === "name") {
+      for (const tree of Object.values(f.trees)) {
+        const node = tree.dependencies[name]!;
+        if (source === "tree") node.version = "2.0.0";
+        else node.name += "-different";
+      }
+      await f.save();
+    } else if (source === "lock") {
+      await changeFixtureLock(f.root, (packages) => {
+        packages["node_modules/" + name]!.version = "2.0.0";
+      });
+    } else {
+      const file = path.join(f.root, "node_modules", name, "package.json");
+      await writeFile(
+        file,
+        JSON.stringify({
+          ...JSON.parse(await readFile(file, "utf8")),
+          version: "2.0.0",
+        }),
+      );
+    }
+    for (const args of [[], ["--include-dev"]])
+      refused(
+        f.invoke(args),
+        /identity differs from lock or installed manifest/,
+      );
+  });
+}
+
+for (const flag of ["invalid", "missing"] as const) {
+  test(`dependency audit refuses ${flag === "invalid" ? "an" : "a"} ${flag} node even beside reconciled optional diagnostics`, async (t) => {
+    const f = await optionalOverinstallFixture(t);
+    for (const tree of Object.values(f.trees))
+      tree.dependencies[f.retained[0]!]![flag] = true;
+    await f.save();
+    for (const args of [[], ["--include-dev"]])
+      refused(f.invoke(args), /Invalid or missing installed dependency/);
+  });
+}
+
+test("dependency audit refuses an unlocked extra instead of allowing an extraneous-name pattern", async (t) => {
+  const f = await optionalOverinstallFixture(t);
+  const name = f.retained[0]!;
+  await changeFixtureLock(f.root, (packages) => {
+    delete packages["node_modules/" + name];
+  });
+  for (const args of [[], ["--include-dev"]])
+    refused(f.invoke(args), /Unreconciled extraneous dependency/);
+});
+
+for (const kind of [
+  "unknown-root",
+  "missing-node",
+  "missing-flag",
+  "missing-own-diagnostic",
+  "suffix",
+] as const) {
+  test(`dependency audit reconciles each aggregate diagnostic and refuses ${kind} metadata`, async (t) => {
+    const f = await optionalOverinstallFixture(t);
+    for (const tree of Object.values(f.trees)) {
+      const name = f.retained[0]!;
+      const node = tree.dependencies[name]!;
+      if (kind === "unknown-root")
+        tree.problems.push(
+          "extraneous: synthetic-unlocked@1.0.0 " +
+            f.root +
+            "/node_modules/synthetic-unlocked",
+        );
+      if (kind === "missing-node") delete tree.dependencies[name];
+      if (kind === "missing-flag") delete node.extraneous;
+      if (kind === "missing-own-diagnostic") delete node.problems;
+      if (kind === "suffix") {
+        node.problems = node.problems!.map((problem) => problem + "-backup");
+        tree.problems = tree.problems.map((problem) => problem + "-backup");
+      }
+    }
+    await f.save();
+    for (const args of [[], ["--include-dev"]])
+      refused(f.invoke(args), /unreconciled problems|no exact diagnostic/);
+  });
+}
+
+test("dependency audit refuses a retained optional node whose installed package is absent", async (t) => {
+  const f = await optionalOverinstallFixture(t);
+  await rm(path.join(f.root, "node_modules", f.retained[0]!), {
+    recursive: true,
+  });
+  for (const args of [[], ["--include-dev"]]) refused(f.invoke(args), /ENOENT/);
+});
+
+test("dependency audit refuses noncanonical and escaping optional package paths", async (t) => {
+  const f = await optionalOverinstallFixture(t);
+  const name = f.retained[0]!;
+  const outside = await realpath(
+    await fixture(t, {
+      "package.json": JSON.stringify({
+        name,
+        version: "1.0.0",
+        license: "MIT",
+      }),
+    }),
+  );
+  for (const tree of Object.values(f.trees))
+    tree.dependencies[name]!.path = outside;
+  await f.save();
+  for (const args of [[], ["--include-dev"]])
+    refused(f.invoke(args), /path escapes package root/);
+  const directory = path.join(f.root, "node_modules", name);
+  await rm(directory, { recursive: true });
+  await symlink(
+    outside,
+    directory,
+    process.platform === "win32" ? "junction" : "dir",
+  );
+  for (const tree of Object.values(f.trees))
+    tree.dependencies[name]!.path = directory;
+  await f.save();
+  for (const args of [[], ["--include-dev"]])
+    refused(f.invoke(args), /path must be canonical/);
+});
+
+test("dependency audit binds retained optional aliases to their installed identity and lock location", async (t) => {
+  const f = await optionalOverinstallFixture(t);
+  const name = f.retained[0]!;
+  const alias = "synthetic-retained-alias";
+  const oldLocation = "node_modules/" + name;
+  const location = "node_modules/" + alias;
+  await rename(path.join(f.root, oldLocation), path.join(f.root, location));
+  await changeFixtureLock(f.root, (packages) => {
+    packages[location] = packages[oldLocation]!;
+    delete packages[oldLocation];
+    const names =
+      packages["node_modules/synthetic-foreign-parent"]!.dependencies!;
+    delete names[name];
+    names[alias] = "npm:" + name + "@1.0.0";
+  });
+  for (const tree of Object.values(f.trees)) {
+    const node = tree.dependencies[name]!;
+    const oldProblem = node.problems![0]!;
+    node.path = path.join(f.root, location);
+    node.problems = [`extraneous: ${name}@1.0.0 ${node.path}`];
+    tree.problems = tree.problems.map((problem) =>
+      problem === oldProblem ? node.problems![0]! : problem,
+    );
+    tree.dependencies[alias] = node;
+    delete tree.dependencies[name];
+  }
+  await f.save();
+  assert.deepEqual(
+    parsed(f.invoke([])).packages.map((p) => p.name),
+    ["synthetic-prod"],
+  );
+  const entry = parsed(f.invoke()).packages.find(
+    (p) => p.location === location,
+  )!;
+  assert.equal(entry.name, name);
+  assert.equal(entry.content.files, 3);
+});
+
+test("dependency audit confines aggregate diagnostics to the root and exact extraneous owner", async (t) => {
+  const f = await optionalOverinstallFixture(t);
+  f.trees.development.dependencies["synthetic-development-parent"]!.problems = [
+    f.trees.development.problems[0]!,
+  ];
+  await f.save();
+  refused(f.invoke(), /unreconciled problems/);
+});
+
+test("dependency audit bounds unreconciled diagnostic context", async (t) => {
+  const f = await optionalOverinstallFixture(t);
+  for (const tree of Object.values(f.trees))
+    tree.problems.push("unknown: " + "x".repeat(4096));
+  await f.save();
+  const result = f.invoke([]);
+  refused(result, /unreconciled problems.*unknown:/);
+  assert.equal(result.stderr.includes("x".repeat(257)), false);
+});
+
+test("dependency audit refuses a retained optional manifest symlink without reading it as installed identity", async (t) => {
+  const f = await optionalOverinstallFixture(t);
+  const name = f.retained[0]!;
+  const file = path.join(f.root, "node_modules", name, "package.json");
+  const outside = await fixture(t, {
+    "package.json": await readFile(file, "utf8"),
+  });
+  await rm(file);
+  await symlink(path.join(outside, "package.json"), file);
+  for (const args of [[], ["--include-dev"]])
+    refused(f.invoke(args), /manifest must be a regular file/);
+});
+
+test("dependency audit accepts ordinary custom npm long metadata without mistaking it for diagnostics", async (t) => {
+  const root = await realpath(
+    await auditFixture(t, [{ name: "synthetic-prod" }]),
+  );
+  const file = path.join(root, "node_modules/synthetic-prod/package.json");
+  const custom = {
+    peerMissing: true,
+    error: { message: "Original synthetic package metadata" },
+    invalid: "Original package-owned invalid field",
+    missing: true,
+    problems: ["Original package-owned problems field"],
+  };
+  for (const manifest of [path.join(root, "package.json"), file])
+    await writeFile(
+      manifest,
+      JSON.stringify({
+        ...JSON.parse(await readFile(manifest, "utf8")),
+        ...custom,
+      }),
+    );
+  for (const args of [[], ["--include-dev"]]) {
+    const prefix = [
+      "ls",
+      ...(args.length ? [] : ["--omit=dev"]),
+      "--all",
+      "--json",
+    ];
+    const short = spawnSync("npm", prefix, {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 30000,
+    });
+    const long = spawnSync("npm", [...prefix, "--long"], {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 30000,
+    });
+    assert.equal(short.status, 0, short.stderr);
+    assert.equal(long.status, 0, long.stderr);
+    const structural = JSON.parse(short.stdout);
+    const metadata = JSON.parse(long.stdout);
+    for (const [plain, detailed] of [
+      [structural, metadata],
+      [
+        structural.dependencies["synthetic-prod"],
+        metadata.dependencies["synthetic-prod"],
+      ],
+    ])
+      for (const [field, value] of Object.entries(custom)) {
+        assert.equal(plain[field], undefined);
+        assert.deepEqual(detailed[field], value);
+      }
+    const report = parsed(invoke(root, args));
+    assert.equal(report.complete, true);
+    assert.equal(report.packageCount, 1);
+  }
+});
+
+test("dependency audit preserves real npm missing and invalid failures", async (t) => {
+  for (const kind of ["missing", "invalid"] as const) {
+    const root = await realpath(
+      await auditFixture(t, [{ name: "synthetic-prod" }]),
+    );
+    const file = path.join(root, "node_modules/synthetic-prod/package.json");
+    if (kind === "missing") await rm(path.dirname(file), { recursive: true });
+    else
+      await writeFile(
+        file,
+        JSON.stringify({
+          ...JSON.parse(await readFile(file, "utf8")),
+          version: "2.0.0",
+          peerMissing: true,
+          error: "Original package metadata",
+        }),
+      );
+    const native = spawnSync("npm", ["ls", "--all", "--json"], {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 30000,
+    });
+    assert.notEqual(native.status, 0);
+    assert.match(native.stdout, new RegExp(kind + ":"));
+    for (const args of [[], ["--include-dev"]])
+      refused(invoke(root, args), /Command failed: npm ls/);
+  }
+});
+
+for (const mismatch of ["topology", "version", "extraneous-state"] as const) {
+  test(`dependency audit refuses paired npm trees with changed ${mismatch}`, async (t) => {
+    const f = await optionalOverinstallFixture(t);
+    const diagnostics = {
+      production: npmDiagnosticTree(f.trees.production),
+      development: npmDiagnosticTree(f.trees.development),
+    };
+    for (const tree of Object.values(diagnostics)) {
+      const node = tree.dependencies![f.retained[0]!]!;
+      if (mismatch === "version") node.version = "2.0.0";
+      if (mismatch === "topology") delete tree.dependencies![f.retained[0]!];
+      if (mismatch === "extraneous-state") node.extraneous = false;
+    }
+    await f.save(diagnostics);
+    for (const args of [[], ["--include-dev"]])
+      refused(
+        f.invoke(args),
+        /tree (topology|version|extraneous state) changed between captures/,
+      );
+  });
+}
+
+test("production dependency audit binds ordinary transitive and aliased installed names to literal lock identities", async (t) => {
+  const root = await realpath(
+    await auditFixture(t, [
+      { name: "synthetic-prod" },
+      { name: "synthetic-published", alias: "synthetic-production-alias" },
+      {
+        name: "synthetic-wrapper",
+        dependencies: { "synthetic-leaf": "1.0.0" },
+      },
+      { name: "synthetic-leaf", location: "node_modules/synthetic-leaf" },
+    ]),
+  );
+  await changeFixtureLock(root, (packages) => {
+    delete packages["node_modules/synthetic-prod"]!.name;
+    delete packages["node_modules/synthetic-leaf"]!.name;
+  });
+  const valid = parsed(invoke(root, []));
+  assert.equal(valid.complete, true);
+  assert.equal(valid.packageCount, 4);
+  assert.equal(
+    valid.packages.find(
+      (p) => p.location === "node_modules/synthetic-production-alias",
+    )!.name,
+    "synthetic-published",
+  );
+  assert.equal(parsed(invoke(root)).complete, true);
+  for (const location of [
+    "node_modules/synthetic-prod",
+    "node_modules/synthetic-leaf",
+    "node_modules/synthetic-production-alias",
+  ]) {
+    const file = path.join(root, location, "package.json");
+    const original = await readFile(file, "utf8");
+    try {
+      await writeFile(
+        file,
+        JSON.stringify({
+          ...JSON.parse(original),
+          name: "synthetic-name-drift",
+        }),
+      );
+      const tree = spawnSync(
+        "npm",
+        ["ls", "--omit=dev", "--all", "--json", "--long"],
+        { cwd: root, encoding: "utf8", timeout: 30000 },
+      );
+      assert.equal(tree.status, 0, tree.stderr);
+      for (const args of [[], ["--include-dev"]])
+        refused(
+          invoke(root, args),
+          /Installed dependency name differs from lock/,
+        );
+    } finally {
+      await writeFile(file, original);
+    }
+    assert.equal(parsed(invoke(root, [])).complete, true);
+  }
+});
+
+test("production dependency audit runs immediately after root installation before JavaScript fixtures and build", async () => {
+  const { parse } = await import("yaml");
+  const workflow = parse(
+    await readFile(
+      new URL("../../.github/workflows/ci.yml", import.meta.url),
+      "utf8",
+    ),
+  );
+  const steps = workflow.jobs.checks.steps as { run?: string; name?: string }[];
+  const installs = steps
+    .map((step, index) => (step.run === "npm ci --ignore-scripts" ? index : -1))
+    .filter((index) => index !== -1);
+  const audits = steps
+    .map((step, index) =>
+      step.run === "node scripts/audit-dependencies.mjs" ? index : -1,
+    )
+    .filter((index) => index !== -1);
+  assert.equal(installs.length, 1);
+  assert.deepEqual(audits, [installs[0]! + 1]);
+  assert.ok(
+    audits[0]! < steps.findIndex((step) => step.run === "npm run build"),
+  );
+  assert.ok(
+    audits[0]! <
+      steps.findIndex(
+        (step) => step.name === "Prepare qualified native JavaScript fixtures",
+      ),
+  );
+});
 
 test("development audit preserves production scope and reconciles actual alias identities at every location without loading code", async (t) => {
   const root = await auditFixture(t, [
@@ -247,7 +1475,7 @@ test("development audit reconciles installed foreign-platform and unresolved opt
     {
       package: "synthetic-local@1.0.0",
       reason:
-        "Optional package absent without an incompatible OS or CPU declaration",
+        "Optional package absent without a demonstrated platform exclusion",
     },
   ]);
   assert.deepEqual(
@@ -480,7 +1708,7 @@ test("development audit excludes an absent dependency only when every declared p
     {
       package: "synthetic-shared@1.0.0",
       reason:
-        "Optional package absent without an incompatible OS or CPU declaration",
+        "Optional package absent without a demonstrated platform exclusion",
     },
   ]);
   assert.equal(
