@@ -1238,3 +1238,112 @@ test("physical checkout rejects a hidden inside-root parent link and admits the 
     /noncanonical physical path/,
   );
 });
+
+test("ignore-independent checkout inventory rejects hidden first-party source additions", async (t) => {
+  for (const mechanism of ["info-exclude", "core-excludesFile"])
+    for (const file of ["src/extra.ts", "test/extra.test.ts"])
+      await t.test(mechanism + ":" + file, async (t) => {
+        const { options, directory, git } = await gitGraph(t, {
+          auditedBefore: (_m, _l, f) => {
+            f["tsconfig.json"] = '{"include":["src/**/*.ts","test/**/*.ts"]}';
+          },
+        });
+        assert.equal(
+          classifyDevelopmentBump(options).evidence.scope,
+          "audited-development-dependency-consumers-v1",
+        );
+        await mkdir(path.dirname(path.join(directory, file)), {
+          recursive: true,
+        });
+        await writeFile(
+          path.join(directory, file),
+          'import {build} from "vite";export const unknownConsumer=build;',
+        );
+        assert.throws(
+          () => classifyDevelopmentBump(options),
+          /Dirty or untracked/,
+        );
+        if (mechanism === "info-exclude")
+          await appendFile(
+            path.join(directory, ".git/info/exclude"),
+            "\n/" + file + "\n",
+          );
+        else {
+          const patterns = path.join(await fixture(t, {}), "ignore-patterns");
+          await writeFile(patterns, "/" + file + "\n");
+          git("config", "core.excludesFile", patterns);
+        }
+        assert.equal(git("status", "--porcelain"), "");
+        assert.throws(
+          () => classifyDevelopmentBump(options),
+          /Unknown untracked input/,
+        );
+      });
+});
+
+test("checkout inventory permits only the exact real dependency root and retains canonical repository aliases", async (t) => {
+  await t.test("real node_modules and repository alias", async (t) => {
+    const { options, directory, git } = await gitGraph(t);
+    const baseline = classifyDevelopmentBump(options);
+    await mkdir(path.join(directory, "node_modules"));
+    await writeFile(
+      path.join(directory, "node_modules", "original-runtime.json"),
+      "{}",
+    );
+    assert.equal(git("status", "--porcelain"), "");
+    assert.deepEqual(classifyDevelopmentBump(options), baseline);
+    const alias = path.join(await fixture(t, {}), "repository-alias");
+    await symlink(
+      directory,
+      alias,
+      process.platform === "win32" ? "junction" : "dir",
+    );
+    assert.deepEqual(
+      classifyDevelopmentBump({ ...options, repository: alias }),
+      baseline,
+    );
+  });
+  for (const file of [
+    "node_modules-backup/cache.js",
+    "NODE_MODULES/cache.js",
+    "node_modules.txt",
+    "dist/test/extra.test.js",
+    ".checktrail/extra.js",
+    "node_modules",
+  ])
+    await t.test(file, async (t) => {
+      const { options, directory, git } = await gitGraph(t);
+      await mkdir(path.dirname(path.join(directory, file)), {
+        recursive: true,
+      });
+      await writeFile(path.join(directory, file), "unreviewed input");
+      await appendFile(
+        path.join(directory, ".git/info/exclude"),
+        "\n/" + file.split("/")[0] + "\n",
+      );
+      assert.equal(git("status", "--porcelain"), "");
+      assert.throws(
+        () => classifyDevelopmentBump(options),
+        /Unknown untracked input/,
+      );
+    });
+  await t.test("symlinked dependency root", async (t) => {
+    const { options, directory, git } = await gitGraph(t);
+    const target = await fixture(t, {});
+    await writeFile(path.join(target, "original-runtime.json"), "{}");
+    await symlink(
+      target,
+      path.join(directory, "node_modules"),
+      process.platform === "win32" ? "junction" : "dir",
+    );
+    await appendFile(
+      path.join(directory, ".git/info/exclude"),
+      "\n/node_modules\n",
+    );
+    assert.equal(git("status", "--porcelain"), "");
+    assert.throws(
+      () => classifyDevelopmentBump(options),
+      /Unknown untracked input|dependency root/,
+    );
+  });
+});

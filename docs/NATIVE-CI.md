@@ -226,7 +226,13 @@ fingerprint preserves metadata and every entry outside the exclusively reviewed
 development closures; the graph checks still validate every changed lock entry,
 range, alias and required resolution. The actual checked-out Git tree must match
 the reviewed inventory and event-head metadata, and all tracked physical files
-must match that checkout. Dirty or untracked inputs select full verification.
+must match that checkout. Untracked inputs are also inspected without repository,
+info, global or standard ignore rules. Only an exact real top-level
+`node_modules/` directory is admitted for the npm installation; adjacent names,
+files and symlinked dependency roots are refused. Every other added path,
+including ignored `dist/` or `.checktrail/` output, selects full verification.
+The production planning job runs before build and fixture preparation. Dirty
+tracked inputs also select full verification.
 A merge checkout with the same audited tree is valid; a newer-main checkout with
 additional consumer or configuration bytes is not admitted by older event refs.
 

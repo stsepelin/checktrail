@@ -652,6 +652,34 @@ function requireWorkingCheckout(
       "Dirty checked-out input: " + row.path,
     );
   }
+  // Deliberately do not apply repository, info, global or standard ignores.
+  // ci-plan runs before build/fixture preparation; only npm's dependency root
+  // exists legitimately outside this reviewed first-party source inventory.
+  const untracked = git(
+    repository,
+    ["ls-files", "--others", "--directory", "--no-empty-directory", "-z"],
+    { encoding: "utf8" },
+  )
+    .split("\0")
+    .filter(Boolean);
+  for (const file of untracked) {
+    assert.equal(
+      file,
+      "node_modules/",
+      "Unknown untracked input requires full verification: " + file,
+    );
+    const directory = path.join(realRoot, "node_modules"),
+      stat = lstatSync(directory);
+    assert.ok(
+      stat.isDirectory() && !stat.isSymbolicLink(),
+      "Untracked dependency root must be a real local directory",
+    );
+    assert.equal(
+      realpathSync(directory),
+      directory,
+      "Untracked dependency root has a noncanonical physical path",
+    );
+  }
   assert.deepEqual(
     parse(
       readFileSync(path.join(realRoot, ".github/workflows/ci.yml"), "utf8"),
