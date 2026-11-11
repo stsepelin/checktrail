@@ -5,8 +5,8 @@
   "files": [
     {
       "file": "README.md",
-      "bytes": 30123,
-      "sha256": "2c5d7ede835e399ac1ad1c54f8dcaea3b3abf0b0e4df00197f507f91c46240f3"
+      "bytes": 30233,
+      "sha256": "dbedf1627bd440170224222fa0d9725654facde8806760376a332a1959feb5fc"
     },
     {
       "file": "dotnet-sdk-LICENSE.txt",
@@ -100,8 +100,8 @@
     },
     {
       "file": "fantomas.json",
-      "bytes": 26809,
-      "sha256": "3d2141474902090aa8ac597ae656e86ea0dd856b9f77c58c78a29c8a7bbad735"
+      "bytes": 28410,
+      "sha256": "b74992fe803939cc3ecf1e8a29a2480387f1d23f9753a95b82581112ea7f04c4"
     },
     {
       "file": "jline-native-notices/169435fe49bdad094e4a5af2649d662c43b5034d2f394a4461aed64672495988.txt",
@@ -1296,9 +1296,14 @@
       "sha256": "e9a4798cb66c25f4e2a93a2de605c13ceee4a1bae3383430c951daa0a7ff0762"
     },
     {
+      "file": "scripts/prepare-fsharp-format-signature-proof.mjs",
+      "bytes": 10654,
+      "sha256": "395528afe3dee2acbe8ba688400c9d693e4548b9e9ca526d4a41959c4cc33117"
+    },
+    {
       "file": "scripts/prepare-fsharp-format-tools.mjs",
-      "bytes": 6122,
-      "sha256": "3941656c3a2549f637508880a4b62382f05d1ee523cec28606970cd4011463df"
+      "bytes": 7180,
+      "sha256": "624308811793a9dc9fbab8222139e0f65af2fdad89968a1d24cb3b6f52097475"
     },
     {
       "file": "scripts/prepare-scala2-signature-proof.mjs",
@@ -1324,6 +1329,16 @@
       "file": "src/fsharp-format-pins.ts",
       "bytes": 71831,
       "sha256": "7dc1fa0762bbb8ec4b2428e8a94b6db4073d9ce2c45b1f3759978bcd978466a4"
+    },
+    {
+      "file": "src/fsharp-format-release-signature.ts",
+      "bytes": 13334,
+      "sha256": "1055eefd2e42610085252fa59801adb336ec9a57deebcb54e2101582b00380a8"
+    },
+    {
+      "file": "src/kotlin-io.ts",
+      "bytes": 1943,
+      "sha256": "f936b27a68e475429bc892a444b14d85dfc66d0641df7794f9cd1712a03af23a"
     },
     {
       "file": "src/release-signature-proof.ts",

@@ -18,6 +18,12 @@ import {
 import { mavenHash } from "./maven.js";
 import { parseCapturedProcessOutput } from "./process-output.js";
 import type { Check, CheckResult, Finding, ProcessResult } from "./types.js";
+import { parseReleaseProofPin } from "./release-signature-proof.js";
+import {
+  fsharpPreparedFileNames,
+  fsharpReleaseProofEnvironment,
+  readFsharpReleaseProof,
+} from "./fsharp-format-release-signature.js";
 const need = (value: unknown) =>
   fsharpRequire(value, "F# native evidence does not reconcile");
 function physical(file: string, expected: { bytes: number; sha256: string }) {
@@ -59,7 +65,10 @@ export function fsharpFormatEvidence(
     };
   if (result.exitCode !== 0) return incomplete;
   try {
-    const serialized = check.commands[0]!.args[2]!,
+    const proofPin = parseReleaseProofPin(
+        check.commands[0]?.env?.[fsharpReleaseProofEnvironment] ?? "",
+      ),
+      serialized = check.commands[0]!.args[2]!,
       request = fsharpFormatInvocationSchema.parse(JSON.parse(serialized)),
       packet = fsharpPacketSchema.parse(JSON.parse(result.stdout));
     need(
@@ -103,9 +112,16 @@ export function fsharpFormatEvidence(
         realpathSync(tools) === tools &&
         isDeepStrictEqual(
           readdirSync(tools).sort(),
-          fsharpFormatterPins.map((p) => p.file).sort(),
+          fsharpPreparedFileNames(proofPin),
         ),
     );
+    const proof = readFsharpReleaseProof(tools, proofPin);
+    if (proof) {
+      need(
+        packet.version === 2 &&
+          isDeepStrictEqual(packet.releaseSignatureProof, proof),
+      );
+    } else need(packet.version === 1);
     for (const pin of fsharpFormatterPins)
       physical(path.join(tools, pin.file), pin);
     for (const directory of ["host/fxr", "shared/Microsoft.NETCore.App"])

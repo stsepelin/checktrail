@@ -3192,6 +3192,25 @@ jobs:
           node scripts/prepare-package-cache.mjs
       - name: Verify preserved .NET profiles, source and installed formatter, native lifecycle and compiling controls
         run: node scripts/verify-fsharp-format-container.mjs
+      - name: Prepare scoped native NuGet repository-signature observation
+        run: node scripts/prepare-fsharp-format-tools.mjs --archive "$PWD/.checktrail/fantomas.8.0.7.nupkg" --verify-repository-signature > "$CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST"
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
+      - name: Verify immutable signed formatter publication and refusal controls
+        run: |
+          node --input-type=module <<'NODE'
+          import { kotlinRead } from './dist/src/kotlin-io.js';
+          import { parseFsharpSignaturePreparation } from './scripts/verify-fsharp-format-signature-container.mjs';
+          import { verifyFsharpSignaturePublication } from './scripts/verify-fsharp-format-signature-proof.mjs';
+          const manifest = parseFsharpSignaturePreparation((await kotlinRead(process.env.CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST, 16384)).toString('utf8'));
+          process.stdout.write(JSON.stringify(await verifyFsharpSignaturePublication(manifest.formatterRoot, manifest.proofSha256)) + '\n');
+          NODE
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
+      - name: Verify scoped signature source and fresh installed formatter sequentially
+        run: node scripts/verify-fsharp-format-signature-container.mjs "$CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST"
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
 
   dotnet-format-extensions-arm64:
     needs: [ci-plan]

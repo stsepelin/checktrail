@@ -19,6 +19,9 @@
     "resource-release",
     "resource-release-arm64"
   ],
+  "docs/measurements/artifact-identities-2026-10-21/nuget-verification.config": [
+    "fsharp-format-arm64"
+  ],
   "docs/measurements/artifact-identities-2026-10-21/provider-public-key.asc": [
     "terraform-extensions-arm64"
   ],
@@ -937,6 +940,9 @@
     "fastapi-assembly-arm64"
   ],
   "scripts/fsharp-context-tools.Dockerfile": ["fsharp-context-arm64"],
+  "scripts/fsharp-format-signature-native-cases.v1.json": [
+    "fsharp-format-arm64"
+  ],
   "scripts/fsharp-format-tools.Dockerfile": [
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
@@ -1345,6 +1351,7 @@
     "django-assembly-arm64",
     "fastapi-assembly-arm64"
   ],
+  "scripts/prepare-fsharp-format-signature-proof.mjs": ["fsharp-format-arm64"],
   "scripts/prepare-fsharp-format-tools.mjs": ["fsharp-format-arm64"],
   "scripts/prepare-go-tools.mjs": ["go-workspaces-arm64"],
   "scripts/prepare-gradle-dependencies.mjs": ["gradle", "jvm-wrappers-arm64"],
@@ -2076,6 +2083,14 @@
   "scripts/verify-fsharp-context-guards.mjs": ["fsharp-context-arm64"],
   "scripts/verify-fsharp-format-container.mjs": ["fsharp-format-arm64"],
   "scripts/verify-fsharp-format-guards.mjs": ["fsharp-format-arm64"],
+  "scripts/verify-fsharp-format-signature-container.mjs": [
+    "fsharp-format-arm64"
+  ],
+  "scripts/verify-fsharp-format-signature-installed.mjs": [
+    "fsharp-format-arm64"
+  ],
+  "scripts/verify-fsharp-format-signature-native.mjs": ["fsharp-format-arm64"],
+  "scripts/verify-fsharp-format-signature-proof.mjs": ["fsharp-format-arm64"],
   "scripts/verify-go-workspace-package.mjs": ["go-workspaces-arm64"],
   "scripts/verify-gradle-container.mjs": ["gradle"],
   "scripts/verify-gradle-package.mjs": ["gradle"],
@@ -3501,6 +3516,7 @@
     "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
+    "fsharp-format-arm64",
     "go-workspaces-arm64",
     "hcl-context-arm64",
     "java-context-arm64",
@@ -3527,6 +3543,7 @@
     "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
+    "fsharp-format-arm64",
     "go-workspaces-arm64",
     "hcl-context-arm64",
     "java-context-arm64",
@@ -3558,6 +3575,7 @@
     "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
+    "fsharp-format-arm64",
     "go-workspaces-arm64",
     "hcl-context-arm64",
     "java-context-arm64",
@@ -3585,6 +3603,7 @@
     "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
+    "fsharp-format-arm64",
     "go-workspaces-arm64",
     "hcl-context-arm64",
     "java-context-arm64",
@@ -3611,6 +3630,7 @@
     "cpp-extensions-arm64",
     "csharp-context-arm64",
     "fsharp-context-arm64",
+    "fsharp-format-arm64",
     "go-workspaces-arm64",
     "hcl-context-arm64",
     "java-context-arm64",

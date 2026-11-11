@@ -51,6 +51,61 @@ file and 8 MiB in aggregate, including configuration; the invocation has a
 100 KiB bound. Normal engine time/output limits still apply. An admitted input
 size does not guarantee it fits the available execution/output budget.
 
+## Optional repository-signature observation
+
+The default three-assembly cache remains explicitly unverified with respect to
+release signatures. An operator can separately prepare a signature-qualified
+cohort after loading the frozen official SDK image:
+
+```sh
+node scripts/pull-pinned-image.mjs mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256
+node scripts/prepare-fsharp-format-tools.mjs --archive PATH_TO_FANTOMAS_NUPKG --verify-repository-signature
+```
+
+This explicit preparation runs the SDK's native `dotnet nuget verify` with the
+tracked repository-certificate policy, private home, bounded container resources
+and configured online revocation. It verifies the selected SDK manifest and
+NuGet verifier/root-store bytes before and after the attempt. The proof retains
+the exact new invocation, environment, policy and tool identities, observation
+times and bounded native output. It does not reconstruct the missing exact
+argv/environment custody of the earlier historical NuGet observation.
+
+After validating the package, all selected assemblies and proof, preparation
+publishes one immutable five-file directory at
+`.checktrail/fsharp-format-signed-tools/PROOF_SHA256`. The original nupkg and proof
+remain beside the three DLLs. A single rename publishes a previously absent
+cohort; reuse physically revalidates every file and refuses corruption. The
+legacy cache and prior valid qualified cohorts are preserved on failure.
+
+Copy the complete directory into the project's permitted local formatter path,
+retaining the final digest directory name, and select it with
+`formatterDirectory`. Start the CLI or MCP process with the printed proof digest
+in `CHECKTRAIL_FSHARP_FORMAT_RELEASE_PROOF_SHA256`. Planning captures that operator
+value, including an explicit blank when unset. Project/request environment cannot
+promote the mode. Planning, the actual runner before and after native formatting,
+and final admission each reread the physical proof and exact package/assembly
+membership. Qualified packets use version 2; legacy packets retain version 1.
+An adjacent proof cannot silently downgrade to legacy mode.
+
+This is an operator-pinned **dated repository-signature policy observation**.
+Configured online revocation and native success do not establish fresh revocation
+at later execution, and network revocation response bodies are not retained.
+The timestamp is retained in its native text form without inventing a timezone.
+Author-signature verification, publisher ownership, original SDK/source producer
+verification and full artifact/notice closure remain separate, unproved claims.
+The native verifier owns certificate-chain and signature parsing; Checktrail does
+not implement CMS/PKCS#7. See the official
+[NuGet verification command](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-verify)
+and [signed-package policy](https://learn.microsoft.com/en-us/nuget/consume-packages/installing-signed-packages).
+
+`scripts/verify-fsharp-format-signature-proof.mjs QUALIFIED_ROOT PROOF_SHA256`
+exercises immutable publication, reuse, corruption refusal and rollback.
+`scripts/verify-fsharp-format-signature-container.mjs ABS_PREPARATION_JSON`
+runs the separately enumerated signed source and fresh offline installed-package
+controls sequentially in the prepared F# runtime image. They include multiple
+documents, actual runner/final gates, CLI and MCP authority boundaries. These
+controls do not replace the existing legacy acceptance cohort or establish Gate A.
+
 ## Execute and reconcile
 
 Execution requires CLI `--trust-project` or MCP startup `--allow-execution`.

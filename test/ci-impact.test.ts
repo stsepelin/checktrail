@@ -683,6 +683,11 @@ test("CI operational release signature inputs select their exact native consumer
         "provider-SHA256SUMS.sig",
       ],
     },
+    {
+      job: "fsharp-format-arm64",
+      record: "fantomas.json",
+      files: ["nuget-verification.config"],
+    },
   ];
   let checked = 0;
   for (const family of families) {
@@ -703,7 +708,7 @@ test("CI operational release signature inputs select their exact native consumer
       checked++;
     }
   }
-  assert.equal(checked, 7);
+  assert.equal(checked, 8);
 });
 test("CI retained artifact data requires whole shared audits without unrelated native stacks and preserves native consumers", () => {
   const directory = "docs/measurements/artifact-identities-2026-10-21/";
