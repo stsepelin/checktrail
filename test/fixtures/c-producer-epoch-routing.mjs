@@ -35,6 +35,11 @@ const historical = provenance.fixtures.map((row) => ({
   epoch: row.schemaVersion,
   pin: { file: pin.file, bytes: row.bytes, sha256: row.sha256 },
 }));
+const legacyCollectorPin = {
+  file: "scripts/producer-qualification/c-producer-test-reports.py",
+  bytes: 18397,
+  sha256: "9dee7066707382c33ba971fe63ded57c407454c81ed38ab30aa66b95b558691c",
+};
 const state = { startup: { sourcePins: [pin] }, headerCalls: 0 };
 globalThis[key] = state;
 let bodyUnchanged = false;
@@ -115,14 +120,14 @@ try {
     ...historical.map((row) => ({
       label: "known" + row.epoch,
       schemaVersion: row.epoch,
-      pins: [row.pin],
+      pins: [row.pin, legacyCollectorPin],
       expected: "Authored next-header checkpoint",
       header: true,
     })),
     ...historical.map((row) => ({
       label: "upgraded-old" + row.epoch,
       schemaVersion: 3,
-      pins: [row.pin],
+      pins: [row.pin, legacyCollectorPin],
       expected: "requires receipt schema" + row.epoch,
       header: false,
     })),

@@ -103,6 +103,43 @@ export function validateCControllerSourceEpoch(receipt, verifiedSourcePins) {
     expected,
     "C controller source identity requires receipt schema" + expected,
   );
+  if (historical) {
+    const collectors = verifiedSourcePins.filter(
+      (pin) =>
+        pin?.file ===
+        "scripts/producer-qualification/c-producer-test-reports.py",
+    );
+    assert.equal(
+      collectors.length,
+      1,
+      "Historical C controller requires one canonical legacy report collector",
+    );
+    const collector = collectors[0];
+    assert.deepEqual(Object.keys(collector).sort(), [
+      "bytes",
+      "file",
+      "sha256",
+    ]);
+    const legacyCollectors = new Map([
+      [
+        "9dee7066707382c33ba971fe63ded57c407454c81ed38ab30aa66b95b558691c",
+        18397,
+      ],
+      [
+        "653010a795c74ec4c216436449d222517998b759736634c2c44ec97368e9ab7f",
+        24102,
+      ],
+    ]);
+    assert.ok(
+      legacyCollectors.has(collector.sha256),
+      "Historical C controller requires a known legacy report collector",
+    );
+    assert.equal(
+      collector.bytes,
+      legacyCollectors.get(collector.sha256),
+      "Historical C report collector byte length differs",
+    );
+  }
   return expected;
 }
 

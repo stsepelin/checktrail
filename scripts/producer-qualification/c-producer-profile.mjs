@@ -328,10 +328,53 @@ const localPolicy = {
   },
 };
 
+// This separate carrier grants the original twelve-hour native deadline.
+// Keep the historical 23-hour policy and its byte pin unchanged.
+const local12hPolicy = {
+  ...localPolicy,
+  id: "local-gcc12-12h-v1",
+  native: { ...localPolicy.native, deadlineSeconds: 43200 },
+  windows: {
+    ...localPolicy.windows,
+    producerObserverSeconds: 43290,
+    controllerTotalSeconds: 44400,
+    localForegroundObservationSeconds: 44460,
+    managedMaximumSeconds: 46800,
+  },
+};
+const localPolicies = new Map([
+  [localPolicy.id, localPolicy],
+  [local12hPolicy.id, local12hPolicy],
+]);
+const localPolicyPins = new Map([
+  [
+    cProducerLocalPolicyId,
+    Object.freeze({
+      file: cProducerLocalPolicyFile,
+      sha256: cProducerLocalPolicySha256,
+    }),
+  ],
+  [
+    local12hPolicy.id,
+    Object.freeze({
+      file: "gcc-local-12h-policy.v1.json",
+      sha256:
+        "1964d3ca86505c6fc12791cd1b58d67cbb5013f20de87300371f7a4652efc3cf",
+    }),
+  ],
+]);
+
+export function cProducerExecutionPolicyPin(id) {
+  assert.ok(localPolicyPins.has(id), "Unknown closed local execution policy");
+  return localPolicyPins.get(id);
+}
+
 export function validateCProducerExecutionPolicy(policy, profile) {
+  const expected = localPolicies.get(policy?.id);
+  assert.ok(expected, "Unknown or modified closed local execution policy");
   assert.deepEqual(
     policy,
-    localPolicy,
+    expected,
     "Unknown or modified closed local execution policy",
   );
   assert.equal(
@@ -360,21 +403,15 @@ export function validateCProducerExecutionPolicy(policy, profile) {
 
 export async function loadCProducerExecutionPolicy(id, profile) {
   if (id === undefined || id === null) return null;
-  assert.equal(
-    id,
-    cProducerLocalPolicyId,
-    "Unknown closed local execution policy",
-  );
-  const raw = await readFile(
-    new URL(cProducerLocalPolicyFile, import.meta.url),
-  );
+  const pin = cProducerExecutionPolicyPin(id);
+  const raw = await readFile(new URL(pin.file, import.meta.url));
   assert.ok(
     raw.length <= 16384,
     "Finite local execution policy metadata bound",
   );
   assert.equal(
     sha256(raw),
-    cProducerLocalPolicySha256,
+    pin.sha256,
     "Frozen local execution policy changed",
   );
   const policy = validateCProducerExecutionPolicy(JSON.parse(raw), profile);
@@ -405,12 +442,9 @@ export function cProducerExecutionPolicyBinding(policy, profile) {
   validateCProducerExecutionPolicy(policy, profile);
   return {
     schemaVersion: 1,
-    id: cProducerLocalPolicyId,
+    id: policy.id,
     context: policy.context,
-    sourcePin: {
-      file: cProducerLocalPolicyFile,
-      sha256: cProducerLocalPolicySha256,
-    },
+    sourcePin: { ...cProducerExecutionPolicyPin(policy.id) },
     executionLimits: cProducerExecutionLimits(profile, policy),
     windows: policy.windows,
   };

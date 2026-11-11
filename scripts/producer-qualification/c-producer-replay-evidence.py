@@ -2,6 +2,7 @@
 import argparse
 import base64
 import hashlib
+import importlib.util
 import json
 import math
 import os
@@ -42,10 +43,15 @@ GLIBC_POLICY_FILES = [
 SOURCE_FILES += ['scripts/producer-qualification/' + name for name in GLIBC_POLICY_FILES]
 SOURCE_FILES += ['scripts/producer-qualification/gcc-job-envelope.mjs', 'scripts/producer-qualification/gcc-github-job-clock.mjs', 'scripts/producer-qualification/emsdk-metadata-values.mjs']
 SOURCE_FILES += ['scripts/producer-qualification/c-carrier-observation.mjs','scripts/observe-c-producer-carrier.mjs','.github/workflows/upstream-gcc.yml']
+SOURCE_FILES[SOURCE_FILES.index('scripts/producer-qualification/c-producer-test-reports.py')+1:SOURCE_FILES.index('scripts/producer-qualification/c-producer-test-reports.py')+1]=['scripts/producer-qualification/'+name for name in ['c-report-encoding.v1.json','c-producer-report-codec.mjs','c-producer-report-codec.py']]
 
 LOCAL_POLICY_ID = 'local-gcc12-23h-v1'
 LOCAL_POLICY_SOURCE = 'scripts/producer-qualification/gcc-local-wall-policy.v1.json'
 LOCAL_POLICY_SHA256 = '9356abbf7cf21ec34646c56a95158414d2832e4402797a77e5dfce0866129bd8'
+LOCAL_POLICIES = {
+    LOCAL_POLICY_ID: {'source': LOCAL_POLICY_SOURCE, 'sha256': LOCAL_POLICY_SHA256},
+    'local-gcc12-12h-v1': {'source': 'scripts/producer-qualification/gcc-local-12h-policy.v1.json', 'sha256': '1964d3ca86505c6fc12791cd1b58d67cbb5013f20de87300371f7a4652efc3cf'},
+}
 
 
 def require(condition, message):
@@ -133,6 +139,8 @@ def controller_source_epoch(receipt, verified_source_pins):
         require(row['bytes'] == historical[1], 'Historical C controller byte length differs')
     expected = historical[0] if historical is not None else 3
     require(type(receipt['schemaVersion']) is int and receipt['schemaVersion'] == expected, 'C controller source identity requires receipt schema'+str(expected))
+    if historical is not None:
+        require(report_source_contract(verified_source_pins)=='legacy-raw-v1','Historical C controller requires exact legacy raw report collector')
     return expected
 
 
@@ -416,7 +424,9 @@ def gcc_job_envelope(value, raw, capture_raw):
 def local_policy_binding(policy, profile):
     require(profile['sourcePackage']=='gcc-12' and profile['profile']==policy['base']['sourceProfile'] and profile['sourceVersion']==policy['base']['sourceVersion'] and exact_json(profile['command'],policy['native']['command']) and profile['limits']['deadlineSeconds']==policy['base']['deadlineSeconds']==43200, 'Foreign local execution source profile')
     limits={**profile['limits'],'deadlineSeconds':policy['native']['deadlineSeconds']}
-    return {'schemaVersion':1,'id':LOCAL_POLICY_ID,'context':policy['context'],'sourcePin':{'file':'gcc-local-wall-policy.v1.json','sha256':LOCAL_POLICY_SHA256},'executionLimits':limits,'windows':policy['windows']}
+    require(type(policy.get('id')) is str and policy['id'] in LOCAL_POLICIES,'Unknown closed local execution policy')
+    selected=LOCAL_POLICIES[policy['id']]
+    return {'schemaVersion':1,'id':policy['id'],'context':policy['context'],'sourcePin':{'file':selected['source'].rsplit('/',1)[-1],'sha256':selected['sha256']},'executionLimits':limits,'windows':policy['windows']}
 
 
 def local_utc_ms(value):
@@ -463,7 +473,7 @@ def gcc_carrier(packet, startup_raw, receipt, profile, observed, execution_polic
     if execution_policy is not None:
         require(exact_json(value['schemaVersion'],2) and exact_json(value['selectedProfile'],selected),'Wrong local GCC carrier profile/version')
         require(exact_json(value.get('executionPolicy'),local_policy_binding(execution_policy,profile)) and exact_json(value['originalCommandDeadlineSeconds'],execution_policy['native']['deadlineSeconds']),'Wrong local carrier execution policy/deadline')
-        require('githubJobEnvelope' not in value and 'originalProducerDefaultsOrBudgetChanged' not in value and value['sourceProfileDefaultsChanged'] is False and value['executionPolicyChangesWallDeadline'] is True,'Local carrier masquerades as hosted/legacy observation')
+        require('githubJobEnvelope' not in value and 'originalProducerDefaultsOrBudgetChanged' not in value and value['sourceProfileDefaultsChanged'] is False and value['executionPolicyChangesWallDeadline'] is (execution_policy['native']['deadlineSeconds'] != execution_policy['base']['deadlineSeconds']),'Local carrier masquerades as hosted/legacy observation')
         local_managed_window(value['managedWindow'],execution_policy)
         require(value['managedWindow']['capturedAt']==value['startedAt'] and value['managedWindow']['monotonicElapsedMs']==round(value['elapsedSeconds']*1000),'Local carrier elapsed/window clock differs')
         require(receipt['controllerClock']['elapsedSeconds']<=value['controllerTerminalSeconds'],'Controller clock exceeds its observed carrier terminal')
@@ -517,7 +527,7 @@ def gcc_carrier(packet, startup_raw, receipt, profile, observed, execution_polic
 
 class Packet:
     def __init__(self, archive, execution_policy=None):
-        require(execution_policy in [None,LOCAL_POLICY_ID], "Unknown requested local execution policy")
+        require(execution_policy in [None,*LOCAL_POLICIES], "Unknown requested local execution policy")
         self.execution_policy = execution_policy
         archive = Path(archive).absolute()
         require(archive.resolve(strict=True)==archive and archive.is_file() and archive.stat().st_size<=1536*MIB, 'Physical archive path/size refused')
@@ -557,7 +567,8 @@ class Packet:
         for row in self.manifest['rawFiles']:
             name = row['file']
             require(relative(name) and name not in self.files and integer(row['bytes'],0,512*MIB) and re.fullmatch(r'[a-f0-9]{64}',row['sha256']), 'Invalid exported byte identity')
-            require(not re.search(r'\.(deb|udeb|tar|xz|gz|wasm)$',name) and not '/bundle/' in name, 'Excluded payload entered evidence archive')
+            report_chunk=bool(re.fullmatch(r'result/(?:work/original-test-reports|work/post-stop-reports/original-test-reports|custody-preflight/original-test-reports)/encoded/[0-9]{8}\.gz',name))
+            require((not re.search(r'\.(deb|udeb|tar|xz|gz|wasm)$',name) or report_chunk) and not '/bundle/' in name,'Excluded payload entered evidence archive')
             if name == 'result/retention-observer.jsonl':
                 require(row['bytes'] <= (16 if version == 1 else 256)*MIB, 'Observer member exceeds fixed archive format cap')
             if version == 1:
@@ -619,91 +630,196 @@ def nonempty_package_outputs(rows, maximum):
     return any(isinstance(row,dict) and isinstance(row.get('file'),str) and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.+_~-]*\.(deb|udeb)',row['file']) and integer(row.get('bytes'),1,maximum) and isinstance(row.get('sha256'),str) and re.fullmatch(r'[a-f0-9]{64}',row['sha256']) for row in rows)
 
 
-def reports(packet, prefix, value, caller, expected_producer_uid, profile_name='glibc'):
+REPORT_CODEC_FILES = ['scripts/producer-qualification/'+name for name in ['c-report-encoding.v1.json','c-producer-report-codec.mjs','c-producer-report-codec.py']]
+HISTORICAL_REPORT_COLLECTORS = {
+    '9dee7066707382c33ba971fe63ded57c407454c81ed38ab30aa66b95b558691c':18397,
+    '653010a795c74ec4c216436449d222517998b759736634c2c44ec97368e9ab7f':24102,
+}
+_report_codec_spec = importlib.util.spec_from_file_location('trusted_local_c_report_codec', Path(__file__).with_name('c-producer-report-codec.py'))
+REPORT_CODEC = importlib.util.module_from_spec(_report_codec_spec)
+_report_codec_spec.loader.exec_module(REPORT_CODEC)
+
+
+def report_source_contract(verified_source_pins):
+    require(type(verified_source_pins) is list,'Verified C report source pins required')
+    rows=[row for row in verified_source_pins if type(row) is dict and row.get('file')=='scripts/producer-qualification/c-producer-test-reports.py']
+    require(len(rows)==1,'Exactly one canonical C report collector source pin is required')
+    row=rows[0]
+    require(set(row)=={'file','bytes','sha256'} and integer(row['bytes'],1,2*MIB) and type(row['sha256']) is str and re.fullmatch(r'[a-f0-9]{64}',row['sha256']),'Malformed canonical C report collector source pin')
+    historical=HISTORICAL_REPORT_COLLECTORS.get(row['sha256'])
+    if historical is not None:require(row['bytes']==historical,'Historical C report collector byte length differs')
+    return 'legacy-raw-v1' if historical is not None else 'gzip-chunks-v1'
+
+
+def report_source_files(verified_source_pins=None):
+    return [name for name in SOURCE_FILES if name not in REPORT_CODEC_FILES] if verified_source_pins is not None and report_source_contract(verified_source_pins)=='legacy-raw-v1' else SOURCE_FILES
+
+
+def validate_report_source(value, verified_source_pins, profile_name):
+    expected=3 if report_source_contract(verified_source_pins)=='gzip-chunks-v1' else 2 if profile_name=='gcc-12' else 1
+    require(exact_json(value.get('schemaVersion'),expected),'Canonical C report collector source requires manifest schema'+str(expected))
+
+
+def current_report_semantics(value):
+    fields={'schemaVersion','profile','generatedBuildRoots','reports','retainedBytes','skippedLinkedDirectories','exportCustody','completeConfigurationInventoryAssessed','duplicateReportsAreIndependentEvidence','allOriginalTestsPassRequired','fullCompilerSdkBootstrapClosureVerified','gateAComplete','encoding','storedBytes'}
+    if value.get('profile')=='gcc-12':fields.add('buildRootStates')
+    require(set(value)==fields,'Unknown or missing version3 original report manifest fields')
+    require(type(value['reports']) is list,'Malformed original report semantic inventory')
+    for row in value['reports']:
+        expected={'file','bytes','sha256','chunks','configuration','format','counts','totalLines','otherLines'}
+        if 'log' in row:expected.add('log')
+        if row.get('format')=='original-trs':expected.add('outcomesInterpreted')
+        require(set(row)==expected and row['format'] in ['original-sum','original-trs'],'Unknown or missing original report semantic fields')
+        require(type(row['counts']) is dict and set(row['counts'])==set(KEYS) and all(integer(n) for n in row['counts'].values()),'Malformed original outcome counts')
+        require(integer(row['totalLines']) and integer(row['otherLines']),'Malformed original report line counts')
+        if 'log' in row:require(set(row['log'])=={'file','bytes','sha256','chunks'} and row['log']['file']==re.sub(r'\.(sum|trs)$','.log',row['file']),'Associated original log identity differs')
+    require(set(value['exportCustody'])=={'schemaVersion','requestedCaller','producerEffectiveUid','directories','files','newCopyOwnersVerified','recursiveOwnershipChangeUsed','sourceTreePermissionsChanged','nativeLinuxCrossUidAcceptanceVerified'},'Unknown original report custody fields')
+
+
+def admit_report_families(values, verified_source_pins=None, profile_name=None, maximum=None):
+    if maximum is None:maximum=REPORT_CODEC.POLICY['limits']['decodedCombinedBytes']
+    total=0
+    for value in values:
+        if verified_source_pins is not None:validate_report_source(value,verified_source_pins,profile_name)
+        if exact_json(value.get('schemaVersion'),3):
+            current_report_semantics(value)
+            total+=REPORT_CODEC.validate_transport(value)['decodedBytes']
+        else:
+            require(integer(value.get('retainedBytes'),0,512*MIB),'Invalid declared original report bytes')
+            total+=value['retainedBytes']
+        require(total<=maximum,'Combined decoded original report bytes exceed closed limit')
+    return total
+
+
+class OriginalOutcomeCounter:
+    def __init__(self):
+        self.counts={key:0 for key in KEYS};self.prefix=bytearray();self.line_bytes=self.lines=0;self.previous_cr=False
+        self.maximum_prefix=max(map(len,KEYS))+2
+    def end_line(self):
+        self.lines+=1
+        match=re.match(rb'^(PASS|FAIL|XFAIL|XPASS|UNSUPPORTED|UNRESOLVED|UNTESTED|ERROR|SKIP):(?:[ \t\f\v]|$)',self.prefix)
+        if match:self.counts[match[1].decode()]+=1
+        self.prefix.clear();self.line_bytes=0
+    def feed(self,raw):
+        for byte in raw:
+            if self.previous_cr and byte==10:self.previous_cr=False;continue
+            self.previous_cr=False
+            if byte in [10,13]:self.end_line();self.previous_cr=byte==13
+            else:
+                self.line_bytes+=1
+                if len(self.prefix)<self.maximum_prefix:self.prefix.append(byte)
+    def finish(self):
+        if self.line_bytes:self.end_line()
+        return self.counts,self.lines,self.lines-sum(self.counts.values())
+
+
+def logical_report_bytes(packet,prefix,value,row,maximum):
+    require(integer(row.get('bytes'),0,maximum),'Synthetic report preflight decoded bytes exceed bound')
+    if exact_json(value['schemaVersion'],3):
+        REPORT_CODEC.validate_transport(value)
+        raw=b''.join(REPORT_CODEC.iter_report_bytes(row,lambda name,limit:packet.read(prefix+'/'+name,limit)))
+    else:raw=packet.read(prefix+'/'+row['file'],maximum)
+    require(len(raw)<=maximum and exact_json(pin(raw),{key:row[key] for key in ['bytes','sha256']}),'Synthetic report preflight physical bytes differ')
+    return raw
+
+
+def reports(packet, prefix, value, caller, expected_producer_uid, profile_name='glibc', verified_source_pins=None):
     require(profile_name in ['gcc-12','glibc','glibc-u13'],'Unknown original report profile')
-    roots={'gcc-12':['build','build-cross','build-jit','build-nvptx','build-gcn','build-hppa64'],'glibc':['build-tree'],'glibc-u13':['build-tree']}[profile_name]
+    if verified_source_pins is not None:validate_report_source(value,verified_source_pins,profile_name)
+    encoded=exact_json(value.get('schemaVersion'),3)
     version=2 if profile_name=='gcc-12' else 1
-    require(exact_json(value['schemaVersion'],version), 'Wrong original report manifest version for selected source contract')
-    require(exact_json([value['profile'],value['generatedBuildRoots']],[profile_name,roots]), 'Wrong original report profile')
+    require(encoded or exact_json(value.get('schemaVersion'),version),'Wrong original report manifest version for selected source contract')
+    transport=None
+    if encoded:current_report_semantics(value);transport=REPORT_CODEC.validate_transport(value)
+    roots={'gcc-12':['build','build-cross','build-jit','build-nvptx','build-gcn','build-hppa64'],'glibc':['build-tree'],'glibc-u13':['build-tree']}[profile_name]
+    require(exact_json([value['profile'],value['generatedBuildRoots']],[profile_name,roots]),'Wrong original report profile')
     if profile_name=='gcc-12':
         states=value.get('buildRootStates')
         require(isinstance(states,list) and len(states)==len(roots),'Wrong GCC build-root state inventory')
         for name,row in zip(roots,states):
-            require(isinstance(row,dict) and set(row)=={'root','origin','state','reports'} and
-                    row['root']==name and row['origin']==('compatibility' if name=='build-cross' else 'source'),
-                    'Wrong GCC build-root identity/origin')
+            require(isinstance(row,dict) and set(row)=={'root','origin','state','reports'} and row['root']==name and row['origin']==('compatibility' if name=='build-cross' else 'source'),'Wrong GCC build-root identity/origin')
             count=sum(report['configuration']==name for report in value['reports'])
-            require(integer(row['reports']) and row['reports']==count and
-                    (row['state']=='present-with-reports' and count>0 or
-                     row['state'] in ['absent','present-no-reports'] and count==0),
-                    'Wrong GCC build-root report state/count')
-    for key in ['completeConfigurationInventoryAssessed','duplicateReportsAreIndependentEvidence','allOriginalTestsPassRequired','fullCompilerSdkBootstrapClosureVerified','gateAComplete']:
-        require(value[key] is False, 'Unproven original report promotion')
+            require(integer(row['reports']) and row['reports']==count and (row['state']=='present-with-reports' and count>0 or row['state'] in ['absent','present-no-reports'] and count==0),'Wrong GCC build-root report state/count')
+    for key in ['completeConfigurationInventoryAssessed','duplicateReportsAreIndependentEvidence','allOriginalTestsPassRequired','fullCompilerSdkBootstrapClosureVerified','gateAComplete']:require(value[key] is False,'Unproven original report promotion')
+    require(type(value['reports']) is list and len(value['reports'])<=8192 and type(value['skippedLinkedDirectories']) is list and len(value['skippedLinkedDirectories'])<=8192,'Original report inventory bound exceeded')
     custody=value['exportCustody']
-    require(exact_json([custody['schemaVersion'],custody['requestedCaller'],custody['producerEffectiveUid']],[1,caller,expected_producer_uid]) and custody['newCopyOwnersVerified'] is True, 'Wrong original producer copy custody')
-    for key in ['recursiveOwnershipChangeUsed','sourceTreePermissionsChanged','nativeLinuxCrossUidAcceptanceVerified']:
-        require(custody[key] is False,'Producer custody relabeled as broader acceptance')
-    claimed_files={row['file']:row for row in custody['files']}
-    claimed_dirs={row['directory']:row for row in custody['directories']}
+    require(exact_json([custody['schemaVersion'],custody['requestedCaller'],custody['producerEffectiveUid']],[1,caller,expected_producer_uid]) and custody['newCopyOwnersVerified'] is True,'Wrong original producer copy custody')
+    for key in ['recursiveOwnershipChangeUsed','sourceTreePermissionsChanged','nativeLinuxCrossUidAcceptanceVerified']:require(custody[key] is False,'Producer custody relabeled as broader acceptance')
+    require(type(custody['files']) is list and len(custody['files'])<=16384 and type(custody['directories']) is list and len(custody['directories'])<=50000,'Producer custody inventory bound exceeded')
+    claimed_files={row['file']:row for row in custody['files']};claimed_dirs={row['directory']:row for row in custody['directories']}
     require(len(claimed_files)==len(custody['files']) and len(claimed_dirs)==len(custody['directories']) and '.' in claimed_dirs,'Duplicate/incomplete producer custody inventory')
     for name,row in claimed_dirs.items():
         require(name=='.' or relative(name),'Foreign producer copy directory')
         require(exact_json([row['ownership']['uid'],row['ownership']['gid'],row['ownership']['mode']],[caller['uid'],caller['gid'],0o700]),'Wrong producer directory owner')
         packet.custody(prefix+('/'+name if name!='.' else ''),caller,True)
-    observed=set();total=0;outcome_count=0
-    def verify(row):
-        nonlocal total
-        name=row['file'];require(relative(name) and any(name.startswith(root+'/') for root in roots) and name not in observed and name in claimed_files,'Foreign/duplicate original report custody')
-        observed.add(name)
-        owner=claimed_files[name]['ownership']
+    observed=set();physical_files=set();physical_order=[];total=stored=outcome_count=0
+    def read_chunk(name,maximum):
+        nonlocal stored
+        require(name in claimed_files and name not in physical_files,'Foreign/duplicate original report custody')
+        physical_files.add(name);physical_order.append(name);owner=claimed_files[name]['ownership']
         require(exact_json([owner['uid'],owner['gid'],owner['mode']],[caller['uid'],caller['gid'],0o600]),'Wrong producer report owner')
         pieces=name.split('/')
         require(all('/'.join(pieces[:n]) in claimed_dirs for n in range(1,len(pieces))),'Missing original copy ancestor custody')
+        require(prefix+'/'+name in packet.files,'Missing original report/log transport member: '+name)
         packet.custody(prefix+'/'+name,caller)
-        raw=packet.read(prefix+'/'+name,64*MIB)
-        require(exact_json(pin(raw),{key:row[key] for key in ['bytes','sha256']}),'Corrupt original report pin')
-        total+=len(raw);require(total<=512*MIB,'Original report aggregate exceeded')
+        raw=packet.read(prefix+'/'+name,maximum);stored+=len(raw)
+        require(stored<=512*MIB,'Original report stored aggregate exceeded')
         return raw
+    def verify(row,count_outcomes=False):
+        nonlocal total
+        name=row['file'];require(relative(name) and any(name.startswith(root+'/') for root in roots) and name not in observed,'Foreign/duplicate original report custody')
+        observed.add(name)
+        require(integer(row['bytes'],0,REPORT_CODEC.POLICY['limits']['decodedFileBytes'] if encoded else 64*MIB),'Original report decoded member exceeded')
+        counter=OriginalOutcomeCounter() if count_outcomes else None
+        decoded=0
+        if encoded:
+            # Always exhaust the generator, including associated logs: its final
+            # step verifies the whole logical file after the final yield.
+            for raw in REPORT_CODEC.iter_report_bytes(row,read_chunk):
+                decoded+=len(raw)
+                if counter is not None:counter.feed(raw)
+        else:
+            raw=read_chunk(name,64*MIB)
+            require(exact_json(pin(raw),{key:row[key] for key in ['bytes','sha256']}),'Corrupt original report pin')
+            decoded=len(raw)
+            if counter is not None:counter.feed(raw)
+        require(decoded==row['bytes'],'Original report decoded bytes differ')
+        total+=decoded;require(total<=(REPORT_CODEC.POLICY['limits']['decodedFamilyBytes'] if encoded else 512*MIB),'Original report aggregate exceeded')
+        return counter.finish() if counter is not None else None
     for row in value['reports']:
-        raw=verify(row);require(row['configuration'] in roots and row['file'].startswith(row['configuration']+'/') and row['format'] in ['original-sum','original-trs'],'Wrong original configuration/format')
+        require(row['configuration'] in roots and row['file'].startswith(row['configuration']+'/') and row['format'] in ['original-sum','original-trs'],'Wrong original configuration/format')
         require(row['file'].endswith('.sum' if row['format']=='original-sum' else '.trs'),'Wrong original report extension')
-        lines=re.split(rb'\r\n|\n|\r',raw) if raw else []
-        if raw.endswith((b'\r',b'\n')):lines.pop()
-        counts={key:0 for key in KEYS}
-        for line in lines:
-            match=re.match(rb'^(PASS|FAIL|XFAIL|XPASS|UNSUPPORTED|UNRESOLVED|UNTESTED|ERROR|SKIP):(?:[ \t\f\v]|$)',line)
-            if match:counts[match[1].decode()]+=1
-        require(isinstance(row['counts'],dict) and set(row['counts'])==set(KEYS) and all(integer(n) for n in row['counts'].values()) and exact_json(counts,row['counts']) and exact_json([len(lines),len(lines)-sum(counts.values())],[row['totalLines'],row['otherLines']]),'Physical original outcome counts differ')
+        counts,lines,other=verify(row,True)
+        require(isinstance(row['counts'],dict) and set(row['counts'])==set(KEYS) and all(integer(n) for n in row['counts'].values()) and exact_json(counts,row['counts']) and exact_json([lines,other],[row['totalLines'],row['otherLines']]),'Physical original outcome counts differ')
         if row['format']=='original-trs':require(row['outcomesInterpreted'] is False,'Unknown Automake result promoted')
         outcome_count+=sum(counts.values())
         if 'log' in row:verify(row['log'])
-    require(exact_json(total,value['retainedBytes']) and observed==set(claimed_files),'Original report inventory/retained bytes differ')
+    require(exact_json(total,value['retainedBytes']) and physical_files==set(claimed_files),'Original report inventory/retained bytes differ')
+    if encoded:require(stored==value['storedBytes']==transport['storedBytes'] and total==transport['decodedBytes'] and physical_order==[row['file'] for row in transport['chunkFiles']],'Original report stored/decoded aggregate differs')
     archive_reports={name[len(prefix)+1:] for name in packet.files if name.startswith(prefix+'/')}
-    require(archive_reports==observed,'Unreplayed original report/log member')
+    require(archive_reports==physical_files,'Unreplayed original report/log member')
     return {'reports':len(value['reports']),'observedOutcomeLines':outcome_count,**outcome_availability(value['reports']),'originalOutcomesPreserved':True,'reportsPooledAsIndependentEvidence':False}
 
 
-def selected_reports(packet, selected, receipt, caller, profile_name):
-    manifest = 'result/'+selected['manifest']
-    root = 'result/'+selected['root']
-    packet.custody(manifest,caller)
-    value = packet.json(manifest,8*MIB)
-    summary = reports(packet,root,value,caller,0,profile_name)
-    require(all(exact_json(receipt['testEvidence'][key],item) for key,item in value.items()), 'Selected original report manifest differs from live observation')
-    if selected['schemaVersion'] in [2,3]:
-        # Preserve both epochs separately without summing duplicate outcomes.
-        for location in REPORT_LOCATIONS.values():
-            name = 'result/'+location['manifest']
-            prefix = 'result/'+location['root']
-            if name == manifest:
-                continue
-            if name in packet.files:
-                packet.custody(name,caller)
-                reports(packet,prefix,packet.json(name,8*MIB),caller,0,profile_name)
-            else:
-                require(not any(n.startswith(prefix+'/') for n in packet.files), 'Report family bytes lack their independent manifest')
-                require(location['source'] != 'original-trap', 'Original-trap raw report family was dropped')
-                require('postStopRetention' not in receipt and 'result/post-stop-reports.log' not in packet.files and not any(n == prefix or n.startswith(prefix+'/') for n in packet.directories), 'Post-stop raw report family was dropped')
+def selected_reports(packet, selected, receipt, caller, profile_name, verified_source_pins=None):
+    manifest='result/'+selected['manifest'];root='result/'+selected['root']
+    families=[]
+    for location in REPORT_LOCATIONS.values():
+        name='result/'+location['manifest'];prefix='result/'+location['root']
+        if name in packet.files:
+            packet.custody(name,caller);families.append((name,prefix,packet.json(name,8*MIB)))
+        else:
+            require(not any(n.startswith(prefix+'/') for n in packet.files),'Report family bytes lack their independent manifest')
+            if selected['schemaVersion'] in [2,3]:
+                require(location['source']!='original-trap','Original-trap raw report family was dropped')
+                require('postStopRetention' not in receipt and 'result/post-stop-reports.log' not in packet.files,'Post-stop raw report family was dropped')
+    admit_report_families([value for _,_,value in families],verified_source_pins,profile_name)
+    summary=None;value=None
+    for name,prefix,candidate in families:
+        observed=reports(packet,prefix,candidate,caller,0,profile_name,verified_source_pins)
+        if name==manifest and prefix==root:summary=observed;value=candidate
+    require(summary is not None,'Selected original report family is unavailable')
+    require(all(exact_json(receipt['testEvidence'][key],item) for key,item in value.items()),'Selected original report manifest differs from live observation')
     return value,summary
 
 
@@ -822,7 +938,7 @@ def source_file_bytes(file, expected):
     fd=None
     primary=None
     try:
-        fd=os.open(file,os.O_RDONLY|getattr(os,'O_NOFOLLOW',0))
+        fd=os.open(file,os.O_RDONLY|getattr(os,'O_NOFOLLOW',0)|os.O_NONBLOCK)
         require(stat.S_ISREG(os.fstat(fd).st_mode) and identity(before)==identity(os.fstat(fd)),'Nonphysical current harness')
         raw=bytearray()
         while len(raw)<=len(expected):
@@ -868,7 +984,7 @@ def source_batch_frames(raw, expected):
 
 
 def source_frame(packet, repository, startup, execution_policy=None):
-    require([row['file'] for row in startup['sourcePins']]==SOURCE_FILES+([LOCAL_POLICY_SOURCE] if execution_policy is not None else []),'Incomplete source/harness inventory')
+    require([row['file'] for row in startup['sourcePins']]==report_source_files(startup['sourcePins'])+([LOCAL_POLICIES[execution_policy]['source']] if execution_policy is not None else []),'Incomplete source/harness inventory')
     git_args=['git','--no-optional-locks','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null']
     head=bounded_git_output(repository,git_args+['rev-parse','HEAD'],b'',128)
     require(re.fullmatch(r'[a-f0-9]{40}',startup['gitHead']) and head.decode().strip()==startup['gitHead'],'Replay checkout does not match original source revision')
@@ -892,7 +1008,7 @@ def source_frame(packet, repository, startup, execution_policy=None):
 def replay(archive,repository,expected_profile='glibc',execution_policy=None):
     require(type(expected_profile) is str and expected_profile in ['gcc-12','glibc','glibc-u13'],'Unknown requested original profile')
     repository=Path(repository).absolute()
-    require(execution_policy in [None,LOCAL_POLICY_ID] and (execution_policy is None or expected_profile=='gcc-12'),'Unknown or foreign requested local execution policy')
+    require(execution_policy in [None,*LOCAL_POLICIES] and (execution_policy is None or expected_profile=='gcc-12'),'Unknown or foreign requested local execution policy')
     packet=Packet(archive,execution_policy)
     try:
         require(not packet.manifest['unavailable'],'Incomplete raw C export')
@@ -909,9 +1025,10 @@ def replay(archive,repository,expected_profile='glibc',execution_policy=None):
         catalog=strict_json(catalog_raw);profile=catalog['profiles'][expected_profile]
         policy=None
         if execution_policy is not None:
-            policy_raw=packet.read('source/'+LOCAL_POLICY_SOURCE,16384)
-            require(sha(policy_raw)==LOCAL_POLICY_SHA256,'Frozen local policy source changed')
-            policy=strict_json(policy_raw);require(policy['id']==LOCAL_POLICY_ID,'Unknown local policy metadata')
+            policy_pin=LOCAL_POLICIES[execution_policy]
+            policy_raw=packet.read('source/'+policy_pin['source'],16384)
+            require(sha(policy_raw)==policy_pin['sha256'],'Frozen local policy source changed')
+            policy=strict_json(policy_raw);require(policy['id']==execution_policy,'Unknown local policy metadata')
         selected={'name':expected_profile,'profile':profile['profile'],'sourceVersion':profile['sourceVersion'],'catalogSha256':CATALOG_SHA256}
         require(exact_json(startup['selectedProfile'],selected),'Startup does not bind the requested original profile')
         admission=packet.json('inputs/receipt.json',8*MIB)
@@ -954,8 +1071,8 @@ def replay(archive,repository,expected_profile='glibc',execution_policy=None):
         command=packet.json('result/work/original-command.json',4096)
         require(exact_json(command,receipt['originalBuild']) and exact_json(command,{'schemaVersion':1,'command':profile['command'],'invoked':True,'exitCode':0,'wrapperExitCode':0}),'Original default command terminal unavailable')
         require(packet.files['result/build.log']['bytes']==receipt['executionObserver']['retainedBytes'] and {key:packet.files['result/build.log'][key] for key in ['bytes','sha256']}==receipt['log'],'Original process log binding differs')
-        selected_sources=['c-producer-profiles.v1.json','c-producer-profile.mjs','c-producer-quiescent-sample.mjs','c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','binutils-retention-observer.mjs','binutils-image-identity.mjs','binutils-image-identity.v1.json',*(GLIBC_POLICY_FILES if expected_profile in ['glibc','glibc-u13'] else ['glibc-seccomp.mjs'])]
-        if policy is not None:selected_sources.append('gcc-local-wall-policy.v1.json')
+        selected_sources=['c-producer-profiles.v1.json','c-producer-profile.mjs','c-producer-quiescent-sample.mjs','c-producer-build.sh','c-producer-test-reports.py',*([name.rsplit('/',1)[-1] for name in REPORT_CODEC_FILES] if report_source_contract(startup['sourcePins'])=='gzip-chunks-v1' else []),'binutils-retention-observer.py','binutils-retention-observer.mjs','binutils-image-identity.mjs','binutils-image-identity.v1.json',*(GLIBC_POLICY_FILES if expected_profile in ['glibc','glibc-u13'] else ['glibc-seccomp.mjs'])]
+        if policy is not None:selected_sources.append(LOCAL_POLICIES[execution_policy]['source'].rsplit('/',1)[-1])
         require(exact_json([row['file'] for row in receipt['sourcePins']],selected_sources) and exact_json([row['file'] for row in receipt['harnessPins']],['qualify-c-producer.mjs','qualify-binutils-producer.mjs']),'Incomplete original source/harness pin inventory')
         for row in receipt['sourcePins']:
             require(pin(packet.read('source/scripts/producer-qualification/'+row['file'],2*MIB))=={key:row[key] for key in ['bytes','sha256']},'Original source pin differs')
@@ -967,7 +1084,7 @@ def replay(archive,repository,expected_profile='glibc',execution_policy=None):
         else:gcc_carrier(packet,packet.read('operator-startup.json',MIB),receipt,profile,observed,policy)
         observer=receipt['retentionObserver'];require(observer['state']=='completed' and observer['independentImage']==catalog['image'] and observer['readOnly'] is True and observer['network']=='none' and observer['capability']=='DAC_READ_SEARCH' and exact_json(observer['terminal'],{'exitCode':0,'signal':None}),'Independent observer unavailable or altered')
         require(observer['nativeFilesystemQuotaEnforced'] is False,'Unproven native quota')
-        allowance=sum(row['bytes'] for row in profile['files'])+sum(row['bytes'] for row in receipt['sourcePins'] if row['file'] in ['c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','glibc-seccomp-probe.py'])+sum(row['bytes'] for row in receipt.get('generatedControlPins',[]))
+        allowance=sum(row['bytes'] for row in profile['files'])+sum(row['bytes'] for row in receipt['sourcePins'] if row['file'] in ['c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','glibc-seccomp-probe.py',*[name.rsplit('/',1)[-1] for name in REPORT_CODEC_FILES]])+sum(row['bytes'] for row in receipt.get('generatedControlPins',[]))
         last=retention(packet.read('result/retention-observer.jsonl',format['observerLimit']),observer,format,receipt,profile['limits']['workByteLimit']+allowance)
         require(last==receipt['finalRetention'],'Final observer sample differs')
         require(last['bytes']<=profile['limits']['workByteLimit']+allowance,'Retained work allowance exceeded')
@@ -979,9 +1096,11 @@ def replay(archive,repository,expected_profile='glibc',execution_policy=None):
         preflight_manifest=packet.read('result/custody-preflight/test-reports.json',65536)
         require(pin(preflight_manifest)==preflight['manifest'],'Custody preflight manifest differs')
         packet.custody('result/custody-preflight/test-reports.json',caller)
-        preflight_summary=reports(packet,'result/custody-preflight/original-test-reports',strict_json(preflight_manifest),caller,0)
-        require(preflight_summary['reports']==1 and packet.read('result/custody-preflight/original-test-reports/build-tree/amd64-libc/tests.sum',1024)==b'PASS: synthetic custody preflight\n' and packet.read('result/custody-preflight/original-test-reports/build-tree/amd64-libc/tests.log',1024)==b'Original synthetic custody bytes\n','Custody preflight physical source bytes differ')
-        original_reports,summary=selected_reports(packet,format,receipt,caller,expected_profile)
+        preflight_value=strict_json(preflight_manifest)
+        admit_report_families([preflight_value],startup['sourcePins'],'glibc',65536)
+        preflight_summary=reports(packet,'result/custody-preflight/original-test-reports',preflight_value,caller,0,'glibc',startup['sourcePins'])
+        require(preflight_summary['reports']==1 and logical_report_bytes(packet,'result/custody-preflight/original-test-reports',preflight_value,preflight_value['reports'][0],1024)==b'PASS: synthetic custody preflight\n' and logical_report_bytes(packet,'result/custody-preflight/original-test-reports',preflight_value,preflight_value['reports'][0]['log'],1024)==b'Original synthetic custody bytes\n','Custody preflight physical source bytes differ')
+        original_reports,summary=selected_reports(packet,format,receipt,caller,expected_profile,startup['sourcePins'])
         require(summary['reports']>0 and summary['resolvedTestOutcomesObserved'],'No original resolved test outcome inventory')
         require(observed['originalTestEvidenceState']==summary['testEvidenceState'],'Live original test outcome state differs')
         require(pin(packet.read('result/work/installed-build-package-identities.txt',MIB))==receipt['installedPackageIdentities'],'Original installed package manifest differs')
@@ -1003,12 +1122,12 @@ def replay(archive,repository,expected_profile='glibc',execution_policy=None):
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--profile',choices=['gcc-12','glibc','glibc-u13'],required=True)
-    parser.add_argument('--execution-policy',choices=[LOCAL_POLICY_ID])
+    parser.add_argument('--execution-policy',choices=list(LOCAL_POLICIES))
     parser.add_argument('--archive',required=True)
     parser.add_argument('--repository',required=True)
     args=parser.parse_args()
     try:
         print(json.dumps(replay(args.archive,args.repository,args.profile,args.execution_policy)))
-    except (ValueError,KeyError,TypeError,AttributeError,OSError,subprocess.SubprocessError,zipfile.BadZipFile) as error:
+    except (ValueError,RuntimeError,KeyError,TypeError,AttributeError,OSError,subprocess.SubprocessError,zipfile.BadZipFile) as error:
         print(json.dumps({'state':'original-observation-replay-incomplete','reason':str(error),'qualificationComplete':False,'gateAComplete':False}))
         raise SystemExit(2)

@@ -48,8 +48,7 @@ import {
   cProducerDirectory,
   loadCProducerProfile,
   cProducerProfileKey,
-  cProducerLocalPolicyId,
-  cProducerLocalPolicyFile,
+  cProducerExecutionPolicyPin,
   loadCProducerExecutionPolicy,
   cProducerExecutionLimits,
   cProducerExecutionPolicyBinding,
@@ -73,6 +72,12 @@ import {
 } from "./producer-qualification/c-producer-quiescent-sample.mjs";
 
 const { AbortController } = globalThis;
+import {
+  cReportEncodingPolicy,
+  validateCReportTransport,
+  iterateCReportFile,
+} from "./producer-qualification/c-producer-report-codec.mjs";
+
 const exec = promisify(execFile);
 const environment = {
   PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -87,6 +92,9 @@ const sourceFiles = [
   "c-producer-quiescent-sample.mjs",
   "c-producer-build.sh",
   "c-producer-test-reports.py",
+  "c-report-encoding.v1.json",
+  "c-producer-report-codec.mjs",
+  "c-producer-report-codec.py",
   "binutils-retention-observer.py",
   "binutils-retention-observer.mjs",
   "binutils-image-identity.mjs",
@@ -96,11 +104,23 @@ const sourceFiles = [
 const controlFiles = [
   "c-producer-build.sh",
   "c-producer-test-reports.py",
+  "c-report-encoding.v1.json",
+  "c-producer-report-codec.mjs",
+  "c-producer-report-codec.py",
   "binutils-retention-observer.py",
 ];
-export const cProducerSourceFiles = (profile, executionPolicy = null) => [
-  ...sourceFiles,
-  ...(executionPolicy ? [cProducerLocalPolicyFile] : []),
+export const cProducerSourceFiles = (
+  profile,
+  executionPolicy = null,
+  verifiedSourcePins = null,
+) => [
+  ...(verifiedSourcePins &&
+  cProducerReportSourceContract(verifiedSourcePins) === "legacy-raw-v1"
+    ? sourceFiles.filter((file) => !cProducerReportCodecFiles.includes(file))
+    : sourceFiles),
+  ...(executionPolicy
+    ? [cProducerExecutionPolicyPin(executionPolicy.id).file]
+    : []),
   ...(profile.sourcePackage === "glibc"
     ? glibcSeccompSourceFiles.filter((file) => file !== "glibc-seccomp.mjs")
     : []),
@@ -594,13 +614,298 @@ export function cProducerArguments(
   ];
 }
 
-export async function verifyCProducerReports(value, root, profile, caller) {
-  caller = validateCProducerCallerIdentity(caller.uid, caller.gid);
+const historicalReportCollectors = new Map([
+  ["9dee7066707382c33ba971fe63ded57c407454c81ed38ab30aa66b95b558691c", 18397],
+  ["653010a795c74ec4c216436449d222517998b759736634c2c44ec97368e9ab7f", 24102],
+]);
+export const cProducerReportCodecFiles = Object.freeze([
+  "c-report-encoding.v1.json",
+  "c-producer-report-codec.mjs",
+  "c-producer-report-codec.py",
+]);
+export function cProducerReportSourceContract(verifiedSourcePins) {
+  assert.ok(
+    Array.isArray(verifiedSourcePins),
+    "Verified C report source pins required",
+  );
+  const rows = verifiedSourcePins.filter(
+    (row) =>
+      row?.file === "scripts/producer-qualification/c-producer-test-reports.py",
+  );
+  assert.equal(
+    rows.length,
+    1,
+    "Exactly one canonical C report collector source pin is required",
+  );
+  const row = rows[0];
+  assert.deepEqual(Object.keys(row).sort(), ["bytes", "file", "sha256"]);
+  assert.ok(
+    Number.isSafeInteger(row.bytes) &&
+      row.bytes > 0 &&
+      row.bytes <= 2 * 1024 ** 2,
+  );
+  assert.match(row.sha256, /^[a-f0-9]{64}$/u);
+  const historicalBytes = historicalReportCollectors.get(row.sha256);
+  if (historicalBytes !== undefined)
+    assert.equal(
+      row.bytes,
+      historicalBytes,
+      "Historical C report collector byte length differs",
+    );
+  return historicalBytes === undefined ? "gzip-chunks-v1" : "legacy-raw-v1";
+}
+export function validateCProducerReportSource(
+  value,
+  verifiedSourcePins,
+  profileName,
+) {
+  assert.ok(["gcc-12", "glibc", "glibc-u13"].includes(profileName));
+  const contract = cProducerReportSourceContract(verifiedSourcePins);
+  const expected =
+    contract === "gzip-chunks-v1" ? 3 : profileName === "gcc-12" ? 2 : 1;
   assert.equal(
     value.schemaVersion,
-    cProducerProfileKey(profile) === "gcc-12" ? 2 : 1,
+    expected,
+    "Canonical C report collector source requires manifest schema" + expected,
+  );
+  return contract;
+}
+function validateCurrentReportSemantics(value) {
+  const fields = [
+    "schemaVersion",
+    "profile",
+    "generatedBuildRoots",
+    "reports",
+    "retainedBytes",
+    "skippedLinkedDirectories",
+    "exportCustody",
+    "completeConfigurationInventoryAssessed",
+    "duplicateReportsAreIndependentEvidence",
+    "allOriginalTestsPassRequired",
+    "fullCompilerSdkBootstrapClosureVerified",
+    "gateAComplete",
+    "encoding",
+    "storedBytes",
+  ];
+  if (value.profile === "gcc-12") fields.push("buildRootStates");
+  assert.deepEqual(
+    Object.keys(value).sort(),
+    fields.sort(),
+    "Unknown or missing version3 original report manifest fields",
+  );
+  assert.ok(Array.isArray(value.reports));
+  const keys = [
+    "PASS",
+    "FAIL",
+    "XFAIL",
+    "XPASS",
+    "UNSUPPORTED",
+    "UNRESOLVED",
+    "UNTESTED",
+    "ERROR",
+    "SKIP",
+  ];
+  for (const row of value.reports) {
+    const expected = [
+      "file",
+      "bytes",
+      "sha256",
+      "chunks",
+      "configuration",
+      "format",
+      "counts",
+      "totalLines",
+      "otherLines",
+    ];
+    if (Object.hasOwn(row, "log")) expected.push("log");
+    if (row.format === "original-trs") expected.push("outcomesInterpreted");
+    assert.deepEqual(
+      Object.keys(row).sort(),
+      expected.sort(),
+      "Unknown or missing original report semantic fields",
+    );
+    assert.ok(["original-sum", "original-trs"].includes(row.format));
+    assert.ok(
+      row.counts &&
+        typeof row.counts === "object" &&
+        !Array.isArray(row.counts),
+    );
+    assert.deepEqual(Object.keys(row.counts).sort(), [...keys].sort());
+    for (const count of Object.values(row.counts))
+      assert.ok(Number.isSafeInteger(count) && count >= 0);
+    for (const key of ["totalLines", "otherLines"])
+      assert.ok(Number.isSafeInteger(row[key]) && row[key] >= 0);
+    if (row.log) {
+      assert.deepEqual(Object.keys(row.log).sort(), [
+        "bytes",
+        "chunks",
+        "file",
+        "sha256",
+      ]);
+      assert.equal(
+        row.log.file,
+        row.file.replace(/\.(sum|trs)$/u, ".log"),
+        "Associated original log identity differs",
+      );
+    }
+  }
+  const custody = value.exportCustody;
+  assert.deepEqual(
+    Object.keys(custody).sort(),
+    [
+      "schemaVersion",
+      "requestedCaller",
+      "producerEffectiveUid",
+      "directories",
+      "files",
+      "newCopyOwnersVerified",
+      "recursiveOwnershipChangeUsed",
+      "sourceTreePermissionsChanged",
+      "nativeLinuxCrossUidAcceptanceVerified",
+    ].sort(),
+    "Unknown original report custody fields",
+  );
+}
+
+export function admitCProducerReportFamilies(
+  values,
+  verifiedSourcePins = null,
+  profileName = null,
+  maximum = cReportEncodingPolicy.limits.decodedCombinedBytes,
+) {
+  let decodedBytes = 0;
+  for (const value of values) {
+    if (verifiedSourcePins)
+      validateCProducerReportSource(value, verifiedSourcePins, profileName);
+    if (value.schemaVersion === 3) validateCurrentReportSemantics(value);
+    const bytes =
+      value.schemaVersion === 3
+        ? validateCReportTransport(value).decodedBytes
+        : value.retainedBytes;
+    assert.ok(
+      Number.isSafeInteger(bytes) && bytes >= 0,
+      "Invalid declared original report bytes",
+    );
+    decodedBytes += bytes;
+    assert.ok(
+      Number.isSafeInteger(decodedBytes) && decodedBytes <= maximum,
+      "Combined decoded original report bytes exceed closed limit",
+    );
+  }
+  return decodedBytes;
+}
+function originalOutcomeCounter() {
+  const keys = [
+    "PASS",
+    "FAIL",
+    "XFAIL",
+    "XPASS",
+    "UNSUPPORTED",
+    "UNRESOLVED",
+    "UNTESTED",
+    "ERROR",
+    "SKIP",
+  ];
+  const counts = Object.fromEntries(keys.map((key) => [key, 0]));
+  const maximumPrefix = Math.max(...keys.map((key) => key.length)) + 2;
+  let prefix = "",
+    lineBytes = 0,
+    totalLines = 0,
+    previousCr = false;
+  const endLine = () => {
+    totalLines++;
+    const match =
+      /^(PASS|FAIL|XFAIL|XPASS|UNSUPPORTED|UNRESOLVED|UNTESTED|ERROR|SKIP):(?:[ \t\f\v]|$)/u.exec(
+        prefix,
+      );
+    if (match) counts[match[1]]++;
+    prefix = "";
+    lineBytes = 0;
+  };
+  return {
+    feed(raw) {
+      for (const byte of raw) {
+        if (previousCr && byte === 10) {
+          previousCr = false;
+          continue;
+        }
+        previousCr = false;
+        if (byte === 13 || byte === 10) {
+          endLine();
+          previousCr = byte === 13;
+        } else {
+          lineBytes++;
+          if (prefix.length < maximumPrefix)
+            prefix += String.fromCharCode(byte);
+        }
+      }
+    },
+    finish() {
+      if (lineBytes) endLine();
+      return {
+        counts,
+        totalLines,
+        otherLines:
+          totalLines -
+          Object.values(counts).reduce((sum, value) => sum + value, 0),
+      };
+    },
+  };
+}
+export async function readCProducerLogicalReport(
+  value,
+  row,
+  root,
+  caller,
+  maximum,
+) {
+  assert.ok(
+    Number.isSafeInteger(row.bytes) && row.bytes >= 0 && row.bytes <= maximum,
+    "Synthetic report preflight decoded bytes exceed bound",
+  );
+  const chunks = [];
+  let bytes = 0;
+  if (value.schemaVersion === 3) {
+    validateCReportTransport(value);
+    for await (const raw of iterateCReportFile(row, (relative, limit) =>
+      boundedCProducerBytes(path.join(root, relative), limit, caller),
+    )) {
+      bytes += raw.length;
+      assert.ok(
+        bytes <= maximum,
+        "Synthetic report preflight decoded bytes exceed bound",
+      );
+      chunks.push(raw);
+    }
+  } else {
+    const raw = await boundedCProducerBytes(
+      path.join(root, row.file),
+      maximum,
+      caller,
+    );
+    assert.deepEqual(
+      { bytes: raw.length, sha256: sha256(raw) },
+      { bytes: row.bytes, sha256: row.sha256 },
+      "Synthetic report preflight physical bytes differ",
+    );
+    chunks.push(raw);
+    bytes = raw.length;
+  }
+  assert.equal(bytes, row.bytes);
+  return Buffer.concat(chunks, bytes);
+}
+
+export async function verifyCProducerReports(value, root, profile, caller) {
+  caller = validateCProducerCallerIdentity(caller.uid, caller.gid);
+  const encoded = value.schemaVersion === 3;
+  assert.ok(
+    encoded ||
+      value.schemaVersion ===
+        (cProducerProfileKey(profile) === "gcc-12" ? 2 : 1),
     "C producer report manifest version differs from selected source contract",
   );
+  if (encoded) validateCurrentReportSemantics(value);
+  const transport = encoded ? validateCReportTransport(value) : null;
   assert.equal(value.profile, cProducerProfileKey(profile));
   assert.deepEqual(value.generatedBuildRoots, profile.generatedBuildRoots);
   for (const key of [
@@ -681,8 +986,8 @@ export async function verifyCProducerReports(value, root, profile, caller) {
       Array.isArray(custody.files) &&
       custody.files.length <= 16384,
   );
-  const directories = new Set();
-  const claimedFiles = new Set();
+  const directories = new Set(),
+    claimedFiles = new Set();
   const producerOwner = (row, mode) => {
     assert.equal(row.uid, caller.uid);
     assert.equal(row.gid, caller.gid);
@@ -711,20 +1016,42 @@ export async function verifyCProducerReports(value, root, profile, caller) {
     claimedFiles.add(row.file);
     producerOwner(row.ownership, 0o600);
   }
-  let retainedBytes = 0;
-  const names = new Set();
-  const keys = [
-    "PASS",
-    "FAIL",
-    "XFAIL",
-    "XPASS",
-    "UNSUPPORTED",
-    "UNRESOLVED",
-    "UNTESTED",
-    "ERROR",
-    "SKIP",
-  ];
-  const verify = async (row) => {
+  const names = new Set(),
+    physicalFiles = new Set();
+  let retainedBytes = 0,
+    storedBytes = 0;
+  const physical = async (relative, maximum) => {
+    assert.ok(
+      claimedFiles.has(relative),
+      "Original report file custody is missing",
+    );
+    assert.ok(
+      !physicalFiles.has(relative),
+      "Duplicate retained original report chunk",
+    );
+    physicalFiles.add(relative);
+    const parts = relative.split("/");
+    for (let count = 1; count < parts.length; count++)
+      assert.ok(
+        directories.has(parts.slice(0, count).join("/")),
+        "Original report ancestor custody is missing",
+      );
+    const raw = await boundedCProducerBytes(
+      path.join(root, relative),
+      maximum,
+      caller,
+    );
+    storedBytes += raw.length;
+    assert.ok(
+      storedBytes <=
+        (encoded
+          ? cReportEncodingPolicy.limits.storedFamilyBytes
+          : profile.reportAggregateByteLimit),
+      "Original report stored aggregate exceeds bound",
+    );
+    return raw;
+  };
+  const verify = async (row, countOutcomes = false) => {
     assert.ok(
       safeRelative(row.file) &&
         profile.generatedBuildRoots.includes(row.file.split("/")[0]) &&
@@ -733,66 +1060,63 @@ export async function verifyCProducerReports(value, root, profile, caller) {
     );
     names.add(row.file);
     assert.ok(
-      claimedFiles.has(row.file),
-      "Original report file custody is missing",
-    );
-    const parts = row.file.split("/");
-    for (let count = 1; count < parts.length; count++)
-      assert.ok(
-        directories.has(parts.slice(0, count).join("/")),
-        "Original report ancestor custody is missing",
-      );
-    assert.ok(
       Number.isSafeInteger(row.bytes) &&
         row.bytes >= 0 &&
-        row.bytes <= profile.reportFileByteLimit,
+        row.bytes <=
+          (encoded
+            ? cReportEncodingPolicy.limits.decodedFileBytes
+            : profile.reportFileByteLimit),
     );
-    retainedBytes += row.bytes;
-    assert.ok(retainedBytes <= profile.reportAggregateByteLimit);
-    const file = path.join(root, row.file);
-    assert.deepEqual(await identifyFile(file, profile.reportFileByteLimit), {
-      bytes: row.bytes,
-      sha256: row.sha256,
-    });
-    const raw = await boundedCProducerBytes(
-      file,
-      profile.reportFileByteLimit,
-      caller,
-    );
+    const counter = countOutcomes ? originalOutcomeCounter() : null;
+    let decodedBytes = 0;
+    if (encoded) {
+      for await (const raw of iterateCReportFile(row, physical)) {
+        decodedBytes += raw.length;
+        counter?.feed(raw);
+      }
+    } else {
+      const raw = await physical(row.file, profile.reportFileByteLimit);
+      const file = path.join(root, row.file);
+      assert.deepEqual(await identifyFile(file, profile.reportFileByteLimit), {
+        bytes: row.bytes,
+        sha256: row.sha256,
+      });
+      assert.equal(
+        sha256(raw),
+        row.sha256,
+        "Retained report changed after observation",
+      );
+      decodedBytes = raw.length;
+      counter?.feed(raw);
+    }
     assert.equal(
-      sha256(raw),
-      row.sha256,
-      "Retained report changed after observation",
+      decodedBytes,
+      row.bytes,
+      "Original report decoded bytes differ",
     );
-    return raw;
+    retainedBytes += decodedBytes;
+    assert.ok(
+      retainedBytes <=
+        (encoded
+          ? cReportEncodingPolicy.limits.decodedFamilyBytes
+          : profile.reportAggregateByteLimit),
+    );
+    return counter?.finish();
   };
   for (const row of value.reports) {
-    const raw = await verify(row);
     assert.equal(row.configuration, row.file.split("/")[0]);
     assert.ok(["original-sum", "original-trs"].includes(row.format));
     assert.ok(
       row.file.endsWith(row.format === "original-sum" ? ".sum" : ".trs"),
     );
-    const lines = raw.length ? raw.toString("latin1").split(/\r\n|\n|\r/u) : [];
-    if (raw.length && /[\r\n]$/u.test(raw.toString("latin1"))) lines.pop();
-    const counts = Object.fromEntries(keys.map((key) => [key, 0]));
-    for (const line of lines) {
-      const match =
-        /^(PASS|FAIL|XFAIL|XPASS|UNSUPPORTED|UNRESOLVED|UNTESTED|ERROR|SKIP):(?:[ \t\f\v]|$)/u.exec(
-          line,
-        );
-      if (match) counts[match[1]]++;
-    }
+    const observed = await verify(row, true);
     assert.deepEqual(
       row.counts,
-      counts,
+      observed.counts,
       "Original outcome counts do not match physical bytes",
     );
-    assert.equal(row.totalLines, lines.length);
-    assert.equal(
-      row.otherLines,
-      lines.length - Object.values(counts).reduce((sum, n) => sum + n, 0),
-    );
+    assert.equal(row.totalLines, observed.totalLines);
+    assert.equal(row.otherLines, observed.otherLines);
     if (row.format === "original-trs")
       assert.equal(row.outcomesInterpreted, false);
     if (row.log) await verify(row.log);
@@ -804,9 +1128,23 @@ export async function verifyCProducerReports(value, root, profile, caller) {
   );
   assert.equal(
     claimedFiles.size,
-    names.size,
+    physicalFiles.size,
     "Export file custody inventory differs from actual reports",
   );
+  if (encoded) {
+    assert.equal(
+      value.storedBytes,
+      storedBytes,
+      "Original report stored aggregate differs",
+    );
+    assert.equal(transport.storedBytes, storedBytes);
+    assert.equal(transport.decodedBytes, retainedBytes);
+    assert.deepEqual(
+      [...physicalFiles],
+      transport.chunkFiles.map((row) => row.file),
+      "Original report physical chunk inventory differs",
+    );
+  }
   return {
     ...value,
     physicalBytesReconciled: true,
@@ -814,7 +1152,7 @@ export async function verifyCProducerReports(value, root, profile, caller) {
     hostCopyCustody: {
       capturedCaller: caller,
       directoriesObserved: directories.size,
-      filesObserved: names.size,
+      filesObserved: physicalFiles.size,
       actualOwnerModesVerified: true,
       producerInodesRelabeledAsHostIdentity: false,
       nativeLinuxCrossUidAcceptanceVerified: false,
@@ -1161,6 +1499,15 @@ async function verifyCustodyPreflight(plan, caller, signal, state) {
       path.join(root, "test-reports.json"),
       caller,
     );
+    admitCProducerReportFamilies(
+      [manifest],
+      plan.sources.map((row) => ({
+        ...row,
+        file: "scripts/producer-qualification/" + row.file,
+      })),
+      "glibc",
+      65536,
+    );
     const evidence = await verifyCProducerReports(
       manifest,
       path.join(root, "original-test-reports"),
@@ -1175,28 +1522,27 @@ async function verifyCustodyPreflight(plan, caller, signal, state) {
     assert.equal(evidence.reports.length, 1);
     assert.equal(evidence.reports[0].file, "build-tree/amd64-libc/tests.sum");
     assert.equal(evidence.reports[0].counts.PASS, 1);
+    const reportRoot = path.join(root, "original-test-reports");
     assert.equal(
       (
-        await boundedCProducerBytes(
-          path.join(
-            root,
-            "original-test-reports/build-tree/amd64-libc/tests.sum",
-          ),
-          1024,
+        await readCProducerLogicalReport(
+          manifest,
+          evidence.reports[0],
+          reportRoot,
           caller,
+          1024,
         )
       ).toString("utf8"),
       "PASS: synthetic custody preflight\n",
     );
     assert.equal(
       (
-        await boundedCProducerBytes(
-          path.join(
-            root,
-            "original-test-reports/build-tree/amd64-libc/tests.log",
-          ),
-          1024,
+        await readCProducerLogicalReport(
+          manifest,
+          evidence.reports[0].log,
+          reportRoot,
           caller,
+          1024,
         )
       ).toString("utf8"),
       "Original synthetic custody bytes\n",
@@ -1252,16 +1598,12 @@ export function cProducerExecutionOptions(args) {
       "Execution policy must be the final explicit option",
     );
     executionPolicyId = args[policyIndex + 1];
-    assert.equal(
-      executionPolicyId,
-      cProducerLocalPolicyId,
-      "Unknown closed local execution policy",
-    );
+    cProducerExecutionPolicyPin(executionPolicyId);
     args = args.slice(0, policyIndex);
   }
   assert.ok(
     Array.isArray(args) && [7, 8, 9].includes(args.length),
-    "Usage: --profile gcc-12|glibc|glibc-u13 --inputs BUNDLE --output NEW_DIRECTORY --prepare-only | --operator-trust-execution --coordinated-heavy-slot [--allow-local-arm64-daemon] [--execution-policy local-gcc12-23h-v1]",
+    "Usage: --profile gcc-12|glibc|glibc-u13 --inputs BUNDLE --output NEW_DIRECTORY --prepare-only | --operator-trust-execution --coordinated-heavy-slot [--allow-local-arm64-daemon] [--execution-policy local-gcc12-12h-v1|local-gcc12-23h-v1]",
   );
   assert.equal(args[0], "--profile");
   assert.equal(args[2], "--inputs");
@@ -1442,6 +1784,7 @@ export async function collectCProducerEvidence({
   profile,
   caller,
   executionObserver,
+  sourcePins = null,
   stop,
   verifyBuildRoot,
   retainReports,
@@ -1510,12 +1853,20 @@ export async function collectCProducerEvidence({
     checkedJson(path.join(work, "original-command.json"), 4096),
   );
   if (command) result.originalBuild = command;
+  const reportFamilies = [];
   const reports = async (root) => {
+    const manifest = await readCProducerCopyManifest(
+      path.join(root, "test-reports.json"),
+      caller,
+    );
+    admitCProducerReportFamilies(
+      [...reportFamilies, manifest],
+      sourcePins,
+      cProducerProfileKey(profile),
+    );
+    reportFamilies.push(manifest);
     const value = await verifyCProducerReports(
-      await readCProducerCopyManifest(
-        path.join(root, "test-reports.json"),
-        caller,
-      ),
+      manifest,
       path.join(root, "original-test-reports"),
       profile,
       caller,
@@ -1735,6 +2086,10 @@ async function run(
       profile,
       caller,
       executionObserver: state.executionObserver,
+      sourcePins: plan.sources.map((row) => ({
+        ...row,
+        file: "scripts/producer-qualification/" + row.file,
+      })),
       stop,
       verifyBuildRoot: async () => {
         const after = await nativeBuildHandle.stat({ bigint: true });

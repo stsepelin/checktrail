@@ -33,9 +33,17 @@ SOURCE_FILES += ['scripts/producer-qualification/' + name for name in [
 ]]
 SOURCE_FILES += ['scripts/producer-qualification/gcc-job-envelope.mjs', 'scripts/producer-qualification/gcc-github-job-clock.mjs', 'scripts/producer-qualification/emsdk-metadata-values.mjs']
 SOURCE_FILES += ['scripts/producer-qualification/c-carrier-observation.mjs','scripts/observe-c-producer-carrier.mjs','.github/workflows/upstream-gcc.yml']
+REPORT_CODEC_FILES=['scripts/producer-qualification/'+name for name in ['c-report-encoding.v1.json','c-producer-report-codec.mjs','c-producer-report-codec.py']]
+SOURCE_FILES[SOURCE_FILES.index('scripts/producer-qualification/c-producer-test-reports.py')+1:SOURCE_FILES.index('scripts/producer-qualification/c-producer-test-reports.py')+1]=REPORT_CODEC_FILES
+HISTORICAL_REPORT_COLLECTORS={'9dee7066707382c33ba971fe63ded57c407454c81ed38ab30aa66b95b558691c':18397,'653010a795c74ec4c216436449d222517998b759736634c2c44ec97368e9ab7f':24102}
 
 LOCAL_POLICY_ID = 'local-gcc12-23h-v1'
 LOCAL_POLICY_SOURCE = 'scripts/producer-qualification/gcc-local-wall-policy.v1.json'
+LOCAL_POLICY_SHA256 = '9356abbf7cf21ec34646c56a95158414d2832e4402797a77e5dfce0866129bd8'
+LOCAL_POLICIES = {
+    LOCAL_POLICY_ID: {'source': LOCAL_POLICY_SOURCE, 'sha256': LOCAL_POLICY_SHA256},
+    'local-gcc12-12h-v1': {'source': 'scripts/producer-qualification/gcc-local-12h-policy.v1.json', 'sha256': '1964d3ca86505c6fc12791cd1b58d67cbb5013f20de87300371f7a4652efc3cf'},
+}
 
 
 def physical(file):
@@ -62,7 +70,10 @@ def evidence_format(result):
         info = file.lstat()
         if not stat.S_ISREG(info.st_mode) or info.st_size > 16 * MIB:
             raise ValueError('Bounded controller receipt required')
-        with os.fdopen(os.open(file, os.O_RDONLY | os.O_NOFOLLOW), 'rb') as handle:
+        with os.fdopen(os.open(file, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK), 'rb') as handle:
+            opened = os.fstat(handle.fileno())
+            if not stat.S_ISREG(opened.st_mode) or identity(opened) != identity(info):
+                raise ValueError('Controller receipt changed before read')
             raw = handle.read(16 * MIB + 1)
             if len(raw) != info.st_size or identity(os.fstat(handle.fileno())) != identity(info) or identity(file.lstat()) != identity(info):
                 raise ValueError('Controller receipt changed')
@@ -94,10 +105,30 @@ class BoundedWriter:
         return getattr(self.handle, name)
 
 
+def report_source_files(repository):
+    # Source selection cannot be downgraded by a report or archive manifest.
+    # Only exact known local collector bytes admit the historical source cohort.
+    file=repository/'scripts/producer-qualification/c-producer-test-reports.py'
+    try:
+        physical(file)
+        named=file.lstat()
+        if not stat.S_ISREG(named.st_mode) or named.st_size>2*MIB:return SOURCE_FILES
+        with os.fdopen(os.open(file,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK),'rb') as handle:
+            before=os.fstat(handle.fileno())
+            if not stat.S_ISREG(before.st_mode) or identity(named)!=identity(before):return SOURCE_FILES
+            raw=handle.read(2*MIB+1);after=os.fstat(handle.fileno())
+        if identity(before)!=identity(after) or identity(file.lstat())!=identity(before) or len(raw)!=before.st_size:return SOURCE_FILES
+        historical=HISTORICAL_REPORT_COLLECTORS.get(hashlib.sha256(raw).hexdigest())
+        if historical is not None and historical==len(raw):return [name for name in SOURCE_FILES if name not in REPORT_CODEC_FILES]
+    except (OSError,RuntimeError):
+        pass
+    return SOURCE_FILES
+
+
 def export(repository, inputs, common, result, startup, output, logs=(), observer_check=None, profile_name='glibc', carrier=None, execution_policy=None):
     if profile_name not in ['gcc-12','glibc','glibc-u13']:
         raise RuntimeError('Unknown selected original C profile')
-    if execution_policy is not None and (execution_policy != LOCAL_POLICY_ID or profile_name != 'gcc-12'):
+    if execution_policy is not None and (execution_policy not in LOCAL_POLICIES or profile_name != 'gcc-12'):
         raise RuntimeError('Unknown or foreign local execution policy')
     repository, inputs, common, result, startup, output = [Path(value).absolute() for value in [repository, inputs, common, result, startup, output]]
     physical(output.parent)
@@ -145,7 +176,7 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
             unavailable.append({'file': name, 'errorClass': type(error).__name__, 'state': 'missing-inaccessible-or-outside-declared-bound'})
 
     add(startup, 'operator-startup.json', MIB)
-    for file in SOURCE_FILES + ([LOCAL_POLICY_SOURCE] if execution_policy is not None else []):
+    for file in report_source_files(repository) + ([LOCAL_POLICIES[execution_policy]['source']] if execution_policy is not None else []):
         add(repository / file, 'source/' + file, 2 * MIB)
     for prefix, source in [('inputs', inputs), ('common-inputs', common)]:
         add(source / 'receipt.json', prefix + '/receipt.json', 8 * MIB)
@@ -211,9 +242,12 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
                     if (current / child).is_symlink():
                         raise RuntimeError('Linked original C copy directory refused')
                 for name in sorted(files):
-                    if Path(name).suffix not in ['.sum', '.trs', '.log']:
+                    retained_relative=(current/name).relative_to(source).as_posix()
+                    encoded_chunk=bool(re.fullmatch(r'encoded/[0-9]{8}\.gz',retained_relative))
+                    if Path(name).suffix not in ['.sum','.trs','.log'] and not encoded_chunk:
                         raise RuntimeError('Unknown original C report/log member')
-                    # C has its own64MiB member/512MiB aggregate contract.
+                    # Both transports retain the64MiB stored-member/512MiB
+                    # stored-family cap. Decoded identities are checked separately.
                     family = 'post-stop' if prefix.startswith('work/post-stop-reports/') else 'original-trap' if prefix.startswith('work/') else None
                     add(current / name, logical + '/' + name, 64 * MIB, report=family)
     packages = result / 'work/output'
@@ -236,9 +270,9 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
         with zipfile.ZipFile(BoundedWriter(handle), 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=6, allowZip64=True) as archive:
             for file, name, info in rows:
                 digest, size = hashlib.sha256(), 0
-                with os.fdopen(os.open(file, os.O_RDONLY | os.O_NOFOLLOW), 'rb') as source, archive.open(name, 'w') as target:
+                with os.fdopen(os.open(file, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK), 'rb') as source, archive.open(name, 'w') as target:
                     before = os.fstat(source.fileno())
-                    if identity(before) != identity(info):
+                    if not stat.S_ISREG(before.st_mode) or identity(before) != identity(info):
                         raise RuntimeError('C evidence member changed before export')
                     while raw := source.read(MIB):
                         size += len(raw)
@@ -283,7 +317,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--profile',choices=['gcc-12','glibc','glibc-u13'],required=True)
     parser.add_argument('--carrier')
-    parser.add_argument('--execution-policy', choices=[LOCAL_POLICY_ID])
+    parser.add_argument('--execution-policy', choices=list(LOCAL_POLICIES))
     for name in ['repository', 'inputs', 'common-inputs', 'result', 'startup', 'output']:
         parser.add_argument('--' + name, required=True)
     parser.add_argument('--common-admission-log')

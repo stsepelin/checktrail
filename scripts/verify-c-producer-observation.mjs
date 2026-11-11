@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { constants } from "node:fs";
-import { lstat, open, readdir, writeFile } from "node:fs/promises";
+import { lstat, open, opendir, readdir, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -17,6 +17,10 @@ import {
   observedCProducerTerminal,
   readCProducerCopyManifest,
   verifyCProducerReports,
+  cProducerReportCodecFiles,
+  cProducerReportSourceContract,
+  admitCProducerReportFamilies,
+  readCProducerLogicalReport,
   cProducerCompletion,
   cProducerSourceFiles,
   validateCProducerDaemonMetadata,
@@ -41,8 +45,7 @@ import {
   loadCProducerProfile,
   cProducerCatalogSha256,
   cProducerProfileKey,
-  cProducerLocalPolicyFile,
-  cProducerLocalPolicyId,
+  cProducerExecutionPolicyPin,
   loadCProducerExecutionPolicy,
   cProducerExecutionPolicyBinding,
   cProducerExecutionLimits,
@@ -71,6 +74,9 @@ export const cObservationSources = [
   "scripts/producer-qualification/c-producer-profiles.v1.json",
   "scripts/producer-qualification/c-producer-build.sh",
   "scripts/producer-qualification/c-producer-test-reports.py",
+  ...cProducerReportCodecFiles.map(
+    (file) => "scripts/producer-qualification/" + file,
+  ),
   "scripts/producer-qualification/binutils-retention-observer.mjs",
   "scripts/producer-qualification/binutils-retention-observer.py",
   "scripts/producer-qualification/binutils-image-identity.mjs",
@@ -98,10 +104,24 @@ export const cObservationSources = [
   "scripts/observe-c-producer-carrier.mjs",
   ".github/workflows/upstream-gcc.yml",
 ];
-export const cObservationSourceFiles = (executionPolicy = null) => [
-  ...cObservationSources,
+export const cObservationSourceFiles = (
+  executionPolicy = null,
+  verifiedSourcePins = null,
+) => [
+  ...(verifiedSourcePins &&
+  cProducerReportSourceContract(verifiedSourcePins) === "legacy-raw-v1"
+    ? cObservationSources.filter(
+        (file) =>
+          !cProducerReportCodecFiles.some(
+            (name) => file === "scripts/producer-qualification/" + name,
+          ),
+      )
+    : cObservationSources),
   ...(executionPolicy
-    ? ["scripts/producer-qualification/" + cProducerLocalPolicyFile]
+    ? [
+        "scripts/producer-qualification/" +
+          cProducerExecutionPolicyPin(executionPolicy.id).file,
+      ]
     : []),
 ];
 
@@ -563,7 +583,7 @@ export async function verifyCObservationStartup(
   assert.deepEqual(startup.caller, captureCProducerCallerIdentity());
   assert.deepEqual(
     startup.sourcePins.map((row) => row.file),
-    cObservationSourceFiles(executionPolicy),
+    cObservationSourceFiles(executionPolicy, startup.sourcePins),
   );
   await validateInputs(repository, startup.sourcePins);
   assert.equal(
@@ -572,6 +592,68 @@ export async function verifyCObservationStartup(
     "Source revision changed during original execution",
   );
   return { startupRaw, startup };
+}
+
+export async function cObservationReportFamilyHasFiles(root) {
+  try {
+    await physicalPath(root, true);
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
+  }
+  const pending = [{ directory: root, depth: 0 }];
+  let entries = 0;
+  while (pending.length) {
+    const { directory, depth } = pending.pop();
+    assert.ok(
+      depth <= 128,
+      "Unmanifested original report directory depth exceeded",
+    );
+    for await (const entry of await opendir(directory)) {
+      assert.ok(
+        ++entries <= 50000,
+        "Unmanifested original report inventory exceeded",
+      );
+      const file = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        await physicalPath(file, true);
+        pending.push({ directory: file, depth: depth + 1 });
+      } else {
+        assert.ok(
+          entry.isFile(),
+          "Nonphysical unmanifested original report member",
+        );
+        await physicalPath(file);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+export function validateCObservationMissingReportFamily(
+  receipt,
+  manifest,
+  postStopLogExists,
+) {
+  assert.ok(
+    [
+      "work/test-reports.json",
+      "work/post-stop-reports/test-reports.json",
+    ].includes(manifest),
+  );
+  assert.equal(typeof postStopLogExists, "boolean");
+  if (receipt.schemaVersion === 1) return;
+  assert.ok([2, 3].includes(receipt.schemaVersion));
+  assert.notEqual(
+    manifest,
+    "work/test-reports.json",
+    "Original-trap raw report family was dropped",
+  );
+  assert.ok(
+    !Object.hasOwn(receipt, "postStopRetention") && !postStopLogExists,
+    "Post-stop raw report family was dropped",
+  );
 }
 
 export async function verifyCLiveObservation(
@@ -610,7 +692,7 @@ export async function verifyCLiveObservation(
   assert.equal(receipt.retentionObserver.independentImage, catalog.image);
   assert.deepEqual(
     receipt.sourcePins.map((row) => row.file),
-    cProducerSourceFiles(profile, executionPolicy),
+    cProducerSourceFiles(profile, executionPolicy, startup.sourcePins),
   );
   assert.deepEqual(
     receipt.harnessPins.map((row) => row.file),
@@ -662,6 +744,7 @@ export async function verifyCLiveObservation(
       [
         "c-producer-build.sh",
         "c-producer-test-reports.py",
+        ...cProducerReportCodecFiles,
         "binutils-retention-observer.py",
         "glibc-seccomp-probe.py",
       ].includes(row.file),
@@ -843,6 +926,7 @@ export async function verifyCLiveObservation(
         [
           "c-producer-build.sh",
           "c-producer-test-reports.py",
+          ...cProducerReportCodecFiles,
           "binutils-retention-observer.py",
           "glibc-seccomp-probe.py",
         ].includes(row.file),
@@ -872,31 +956,106 @@ export async function verifyCLiveObservation(
     4096,
   );
   assert.deepEqual(command, receipt.originalBuild);
-  const reports = await readCProducerCopyManifest(
-    path.join(result, format.manifest),
-    startup.caller,
+  const families = [];
+  for (const location of [
+    { manifest: "work/test-reports.json", root: "work/original-test-reports" },
+    {
+      manifest: "work/post-stop-reports/test-reports.json",
+      root: "work/post-stop-reports/original-test-reports",
+    },
+  ]) {
+    let manifest;
+    try {
+      manifest = await readCProducerCopyManifest(
+        path.join(result, location.manifest),
+        startup.caller,
+      );
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+      assert.ok(
+        !(await cObservationReportFamilyHasFiles(
+          path.join(result, location.root),
+        )),
+        "Original report family bytes lack their independent manifest",
+      );
+      let postStopLogExists = false;
+      try {
+        await lstat(path.join(result, "post-stop-reports.log"));
+        postStopLogExists = true;
+      } catch (missingLog) {
+        if (missingLog?.code !== "ENOENT") throw missingLog;
+      }
+      validateCObservationMissingReportFamily(
+        receipt,
+        location.manifest,
+        postStopLogExists,
+      );
+      continue;
+    }
+    families.push({ ...location, value: manifest });
+  }
+  // Admit the combined declared decoded size before decoding either family.
+  admitCProducerReportFamilies(
+    families.map((family) => family.value),
+    startup.sourcePins,
+    name,
   );
-  assert.deepEqual(
-    await verifyCProducerReports(
-      reports,
-      path.join(result, format.reportsRoot),
-      profile,
-      startup.caller,
-    ),
-    receipt.testEvidence,
-  );
-  assert.equal(reports.exportCustody.producerEffectiveUid, 0);
   const preflightRoot = path.join(result, "custody-preflight");
   const preflight = await readCProducerCopyManifest(
     path.join(preflightRoot, "test-reports.json"),
     startup.caller,
   );
+  admitCProducerReportFamilies([preflight], startup.sourcePins, "glibc", 65536);
+  const selectedFamily = families.find(
+    (family) =>
+      family.manifest === format.manifest && family.root === format.reportsRoot,
+  );
+  assert.ok(selectedFamily, "Selected original report family is unavailable");
+  for (const family of families) {
+    const evidence = await verifyCProducerReports(
+      family.value,
+      path.join(result, family.root),
+      profile,
+      startup.caller,
+    );
+    assert.equal(evidence.exportCustody.producerEffectiveUid, 0);
+    if (family === selectedFamily)
+      assert.deepEqual(evidence, receipt.testEvidence);
+  }
   assert.equal(preflight.exportCustody.producerEffectiveUid, 0);
   await verifyCProducerReports(
     preflight,
     path.join(preflightRoot, "original-test-reports"),
     (await loadCProducerProfile("glibc")).profile,
     startup.caller,
+  );
+  assert.equal(preflight.reports.length, 1);
+  const syntheticReport = preflight.reports[0];
+  assert.equal(syntheticReport.file, "build-tree/amd64-libc/tests.sum");
+  const preflightCopies = path.join(preflightRoot, "original-test-reports");
+  assert.equal(
+    (
+      await readCProducerLogicalReport(
+        preflight,
+        syntheticReport,
+        preflightCopies,
+        startup.caller,
+        1024,
+      )
+    ).toString("utf8"),
+    "PASS: synthetic custody preflight\n",
+  );
+  assert.equal(
+    (
+      await readCProducerLogicalReport(
+        preflight,
+        syntheticReport.log,
+        preflightCopies,
+        startup.caller,
+        1024,
+      )
+    ).toString("utf8"),
+    "Original synthetic custody bytes\n",
   );
   assert.deepEqual(
     await identifyFile(path.join(preflightRoot, "test-reports.json"), 65536),
@@ -993,7 +1152,7 @@ if (
     if (args.includes("--execution-policy")) {
       assert.equal(args[args.length - 2], "--execution-policy");
       executionPolicyId = args[args.length - 1];
-      assert.equal(executionPolicyId, cProducerLocalPolicyId);
+      cProducerExecutionPolicyPin(executionPolicyId);
       args = args.slice(0, -2);
     }
     assert.equal(args[0], "--profile");

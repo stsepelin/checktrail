@@ -51,6 +51,11 @@ const pin = (entry: { bytes: number; sha256: string }): Pin => ({
   bytes: entry.bytes,
   sha256: entry.sha256,
 });
+const legacyCollectorPin: Pin = {
+  file: "scripts/producer-qualification/c-producer-test-reports.py",
+  bytes: 18397,
+  sha256: "9dee7066707382c33ba971fe63ded57c407454c81ed38ab30aa66b95b558691c",
+};
 const current = await readFile(path.join(repository, controllerPath));
 const currentPin = {
   file: controllerPath,
@@ -74,7 +79,7 @@ for (const entry of provenance.reviewedEpochs)
       assert.equal(
         api.validateCControllerSourceEpoch(
           { schemaVersion: entry.schemaVersion },
-          [pin(entry)],
+          [pin(entry), legacyCollectorPin],
         ),
         entry.schemaVersion,
       );
@@ -83,11 +88,52 @@ for (const entry of provenance.reviewedEpochs)
       ))
         assert.throws(
           () =>
-            api.validateCControllerSourceEpoch({ schemaVersion }, [pin(entry)]),
+            api.validateCControllerSourceEpoch({ schemaVersion }, [
+              pin(entry),
+              legacyCollectorPin,
+            ]),
           /source identity requires receipt schema/u,
         );
     },
   );
+
+test("C historical controllers refuse incompatible new collectors while current controllers preserve legacy compatibility", async () => {
+  const raw = await readFile(path.join(repository, legacyCollectorPin.file));
+  const currentCollector = {
+    file: legacyCollectorPin.file,
+    bytes: raw.length,
+    sha256: sha(raw),
+  };
+  for (const entry of provenance.reviewedEpochs) {
+    for (const collectors of [
+      [],
+      [currentCollector],
+      [legacyCollectorPin, legacyCollectorPin],
+      [{ ...legacyCollectorPin, bytes: legacyCollectorPin.bytes + 1 }],
+      [{ ...legacyCollectorPin, file: "./" + legacyCollectorPin.file }],
+    ])
+      assert.throws(() =>
+        api.validateCControllerSourceEpoch(
+          { schemaVersion: entry.schemaVersion },
+          [pin(entry), ...collectors],
+        ),
+      );
+  }
+  assert.equal(
+    api.validateCControllerSourceEpoch({ schemaVersion: 3 }, [
+      currentPin,
+      legacyCollectorPin,
+    ]),
+    3,
+  );
+  assert.equal(
+    api.validateCControllerSourceEpoch({ schemaVersion: 3 }, [
+      currentPin,
+      currentCollector,
+    ]),
+    3,
+  );
+});
 
 test("C public historical implementation and original license assets remain exact inert bytes", async () => {
   assert.equal(provenance.reviewedEpochs.length, 12);
@@ -170,7 +216,7 @@ test(
     const cases = provenance.reviewedEpochs.flatMap((entry) =>
       [1, 2, 3].map((schemaVersion) => ({
         receipt: { schemaVersion },
-        pins: [pin(entry)],
+        pins: [pin(entry), legacyCollectorPin],
         accepted: schemaVersion === entry.schemaVersion,
       })),
     );
@@ -247,7 +293,7 @@ function legacyCounters(epoch: number, middleBytes: number) {
   );
   return {
     epoch,
-    pins: [pin(entry)],
+    pins: [pin(entry), legacyCollectorPin],
     raw,
     observer: {
       retainedLogBytes: raw.length,
@@ -344,10 +390,13 @@ print(json.dumps(results))
 );
 
 test("C exact historical implementation bytes disable checkout conversion only in their fixture directory", () => {
-  const files = provenance.fixtures.flatMap((entry) => [
-    "test/fixtures/c-controller-history/" + entry.file,
-    "test/fixtures/c-controller-history/" + entry.license.file,
-  ]);
+  const files = [
+    ...provenance.fixtures.flatMap((entry) => [
+      "test/fixtures/c-controller-history/" + entry.file,
+      "test/fixtures/c-controller-history/" + entry.license.file,
+    ]),
+    "test/fixtures/c-controller-history/schema2-report-collector.py.txt",
+  ];
   const near = "test/fixtures/c-controller-history-near/source.txt";
   const output = execFileSync(
     "git",
