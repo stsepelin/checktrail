@@ -131,8 +131,18 @@ On Linux, the workflow starts the watchdog with the selected absolute Node
 executable under noninteractive sudo. The watchdog and APT then have the same
 owner for scoped process-tree cleanup. macOS uses the selected executable without
 sudo. The helper retains the fixed browser-cache path and ordinary read access;
-proxy and certificate settings are preserved without forwarding the full CI
-environment to privileged package processes.
+proxy, certificate and hosted-runner identity settings are preserved without
+forwarding the full CI environment to privileged package processes.
+
+On supported GitHub-hosted Ubuntu runners, browser preparation temporarily gives
+the independent Princeton Ubuntu mirror priority over the runner’s existing
+Canonical mirror entries. APT still verifies the Ubuntu archive signatures with
+the runner’s existing keys. The helper validates the referenced mirror list before
+publication and restores its original bytes and ownership after the owned CLI
+process tree has stopped. Unsupported layouts are reported explicitly; an
+intervening mirror-list change prevents restoration from overwriting it. If
+process cleanup cannot be verified, preparation fails without rollback or retry.
+This failover changes acquisition only and does not qualify browser tests.
 
 Before planning the matrix, `ci-plan` installs the committed lock with lifecycle
 scripts disabled, then checks direct dependency metadata and the native input

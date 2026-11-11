@@ -19,6 +19,7 @@ import { setTimeout as sleep } from "node:timers/promises";
 import { fileURLToPath, pathToFileURL, URL } from "node:url";
 import { runCiCommand } from "./ci-validation.mjs";
 import { readPlaywrightTools } from "./prepare-playwright-tools.mjs";
+import { prepareUbuntuMirrors } from "./prepare-ubuntu-mirrors.mjs";
 
 export const browserInstallArguments = Object.freeze([
   "install",
@@ -439,6 +440,7 @@ export async function preparePlaywrightBrowser(
     signal = new globalThis.AbortController().signal,
     onAttempt = () => {},
     limits = browserAcquisitionLimits,
+    prepareMirrors = prepareUbuntuMirrors,
   } = {},
 ) {
   assert.deepEqual(
@@ -489,136 +491,243 @@ export async function preparePlaywrightBrowser(
       process.geteuid?.(),
     );
   const { root, cli, version } = await qualifiedCli(repository);
-  if (native) {
-    const cache = path.join(root, ".checktrail/playwright-browsers");
-    try {
-      await mkdir(cache, { mode: 0o755 });
-    } catch (error) {
-      if (error.code !== "EEXIST") throw error;
-    }
-    assert.ok(
-      (await lstat(cache)).isDirectory(),
-      "Nonphysical Playwright browser cache",
-    );
-    assert.equal(
-      await realpath(cache),
-      cache,
-      "Linked Playwright browser cache",
-    );
-    await chmod(cache, 0o755);
-  }
-  const attempts = [];
-  const receipt = (state, reason) => ({
-    state,
-    reason,
-    version,
-    attempts,
-    elapsedMilliseconds: elapsed(),
-  });
-  for (let attempt = 1; attempt <= limits.attempts; attempt++) {
-    if (signal.aborted) return receipt("failed", "canceled");
-    const remaining = limits.totalMilliseconds - elapsed();
-    if (remaining <= 0) return receipt("failed", "deadline-exceeded");
-    const result = await run({
-      repository: root,
-      cli,
-      args: [...browserInstallArguments],
-      signal,
-      timeoutMilliseconds: Math.min(remaining, limits.attemptMilliseconds),
-      outputBytes: limits.outputBytes,
-    });
-    assert.ok(
-      result && typeof result === "object",
-      "Malformed acquisition result",
-    );
-    assert.deepEqual(
-      Object.keys(result).sort(),
-      [
-        "exitCode",
-        "signal",
-        "timedOut",
-        "canceled",
-        "outputExceeded",
-        "error",
-        "output",
-      ].sort(),
-      "Malformed acquisition result keys",
-    );
-    assert.ok(
-      result.exitCode === null ||
-        (Number.isInteger(result.exitCode) &&
-          result.exitCode >= 0 &&
-          result.exitCode <= 255),
-      "Malformed acquisition exit",
-    );
-    assert.ok(
-      result.signal === null ||
-        (typeof result.signal === "string" &&
-          /^SIG[A-Z0-9]+$/u.test(result.signal)),
-      "Malformed acquisition signal",
-    );
-    for (const key of ["timedOut", "canceled", "outputExceeded"])
-      assert.equal(typeof result[key], "boolean", "Malformed acquisition flag");
-    assert.ok(
-      result.error === null || typeof result.error === "string",
-      "Malformed acquisition error",
-    );
-    assert.equal(
-      typeof result.output,
-      "string",
-      "Malformed acquisition output",
-    );
-    const retainedBytes = Buffer.byteLength(result.output);
-    const safe =
-      result.signal === null &&
-      !result.timedOut &&
-      !result.canceled &&
-      !result.outputExceeded &&
-      result.error === null &&
-      retainedBytes <= limits.outputBytes;
-    const passed =
-      safe &&
-      result.exitCode === 0 &&
-      !signal.aborted &&
-      elapsed() < limits.totalMilliseconds;
-    const retryable =
-      !signal.aborted &&
-      retainedBytes <= limits.outputBytes &&
-      isTransientAptDnsFailure(result);
-    const record = {
-      attempt,
-      exitCode: result.exitCode,
-      signal: result.signal,
-      timedOut: result.timedOut,
-      canceled: result.canceled,
-      outputExceeded: result.outputExceeded,
-      error: result.error,
-      retainedOutputBytes: retainedBytes,
-      outputSha256: createHash("sha256").update(result.output).digest("hex"),
-      passed,
-      retryable,
-    };
-    attempts.push(record);
-    await onAttempt(record, result.output);
-    if (passed) return receipt("ready", null);
-    if (signal.aborted) return receipt("failed", "canceled");
-    if (elapsed() >= limits.totalMilliseconds)
-      return receipt("failed", "deadline-exceeded");
-    if (!retryable || attempt === limits.attempts)
-      return receipt(
-        "failed",
-        retryable ? "attempts-exhausted" : "terminal-acquisition-failure",
+  const inactive = {
+    schemaVersion: 1,
+    state: "not-applicable",
+    reason: "injected-runner",
+    sourceCount: 0,
+    targetCount: 0,
+    changedCount: 0,
+    restoredCount: 0,
+    hashes: [],
+  };
+  const mirrors =
+    native || prepareMirrors !== prepareUbuntuMirrors
+      ? await prepareMirrors()
+      : { metadata: inactive, restore: async () => inactive };
+  assert.ok(
+    mirrors &&
+      typeof mirrors.restore === "function" &&
+      mirrors.metadata &&
+      typeof mirrors.metadata.state === "string",
+    "Malformed Ubuntu mirror preparation",
+  );
+  let familyQuiescent = true;
+  const acquire = async () => {
+    if (mirrors.metadata.state === "failed")
+      return {
+        state: "failed",
+        reason: "mirror-preparation-failed",
+        version,
+        attempts: [],
+        elapsedMilliseconds: elapsed(),
+      };
+    if (native) {
+      const cache = path.join(root, ".checktrail/playwright-browsers");
+      try {
+        await mkdir(cache, { mode: 0o755 });
+      } catch (error) {
+        if (error.code !== "EEXIST") throw error;
+      }
+      assert.ok(
+        (await lstat(cache)).isDirectory(),
+        "Nonphysical Playwright browser cache",
       );
-    const wait = limits.backoffMilliseconds[attempt - 1];
-    if (elapsed() + wait >= limits.totalMilliseconds)
-      return receipt("failed", "deadline-exceeded");
-    try {
-      await delay(wait, signal);
-    } catch (error) {
-      if (!signal.aborted) throw error;
+      assert.equal(
+        await realpath(cache),
+        cache,
+        "Linked Playwright browser cache",
+      );
+      await chmod(cache, 0o755);
     }
+    const attempts = [];
+    const receipt = (state, reason) => ({
+      state,
+      reason,
+      version,
+      attempts,
+      elapsedMilliseconds: elapsed(),
+    });
+    for (let attempt = 1; attempt <= limits.attempts; attempt++) {
+      if (signal.aborted) return receipt("failed", "canceled");
+      const remaining = limits.totalMilliseconds - elapsed();
+      if (remaining <= 0) return receipt("failed", "deadline-exceeded");
+      familyQuiescent = false;
+      const result = await run({
+        repository: root,
+        cli,
+        args: [...browserInstallArguments],
+        signal,
+        timeoutMilliseconds: Math.min(remaining, limits.attemptMilliseconds),
+        outputBytes: limits.outputBytes,
+      });
+      assert.ok(
+        result && typeof result === "object",
+        "Malformed acquisition result",
+      );
+      assert.deepEqual(
+        Object.keys(result).sort(),
+        [
+          "exitCode",
+          "signal",
+          "timedOut",
+          "canceled",
+          "outputExceeded",
+          "error",
+          "output",
+        ].sort(),
+        "Malformed acquisition result keys",
+      );
+      assert.ok(
+        result.exitCode === null ||
+          (Number.isInteger(result.exitCode) &&
+            result.exitCode >= 0 &&
+            result.exitCode <= 255),
+        "Malformed acquisition exit",
+      );
+      assert.ok(
+        result.signal === null ||
+          (typeof result.signal === "string" &&
+            /^SIG[A-Z0-9]+$/u.test(result.signal)),
+        "Malformed acquisition signal",
+      );
+      for (const key of ["timedOut", "canceled", "outputExceeded"])
+        assert.equal(
+          typeof result[key],
+          "boolean",
+          "Malformed acquisition flag",
+        );
+      assert.ok(
+        result.error === null || typeof result.error === "string",
+        "Malformed acquisition error",
+      );
+      assert.equal(
+        typeof result.output,
+        "string",
+        "Malformed acquisition output",
+      );
+      // runCiCommand's terminal wrapper survives only when its awaited family
+      // cleanup succeeded; a cleanup rejection is retained in result.error.
+      familyQuiescent =
+        result.error === null &&
+        (Number.isInteger(result.exitCode) || result.signal !== null);
+      const retainedBytes = Buffer.byteLength(result.output);
+      const safe =
+        result.signal === null &&
+        !result.timedOut &&
+        !result.canceled &&
+        !result.outputExceeded &&
+        result.error === null &&
+        retainedBytes <= limits.outputBytes;
+      const passed =
+        safe &&
+        result.exitCode === 0 &&
+        !signal.aborted &&
+        elapsed() < limits.totalMilliseconds;
+      const retryable =
+        !signal.aborted &&
+        retainedBytes <= limits.outputBytes &&
+        isTransientAptDnsFailure(result);
+      const record = {
+        attempt,
+        exitCode: result.exitCode,
+        signal: result.signal,
+        timedOut: result.timedOut,
+        canceled: result.canceled,
+        outputExceeded: result.outputExceeded,
+        error: result.error,
+        retainedOutputBytes: retainedBytes,
+        outputSha256: createHash("sha256").update(result.output).digest("hex"),
+        passed,
+        retryable,
+      };
+      attempts.push(record);
+      await onAttempt(record, result.output);
+      if (passed) return receipt("ready", null);
+      if (signal.aborted) return receipt("failed", "canceled");
+      if (elapsed() >= limits.totalMilliseconds)
+        return receipt("failed", "deadline-exceeded");
+      if (!retryable || attempt === limits.attempts)
+        return receipt(
+          "failed",
+          retryable ? "attempts-exhausted" : "terminal-acquisition-failure",
+        );
+      const wait = limits.backoffMilliseconds[attempt - 1];
+      if (elapsed() + wait >= limits.totalMilliseconds)
+        return receipt("failed", "deadline-exceeded");
+      try {
+        await delay(wait, signal);
+      } catch (error) {
+        if (!signal.aborted) throw error;
+      }
+    }
+    throw Error("Browser acquisition did not produce a terminal receipt");
+  };
+  let result, failure;
+  try {
+    result = await acquire();
+  } catch (error) {
+    failure = error;
   }
-  throw Error("Browser acquisition did not produce a terminal receipt");
+  if (!familyQuiescent) {
+    let mirrorPreparation = {
+      ...mirrors.metadata,
+      state: "failed",
+      reason: "quiescence-unverified",
+    };
+    try {
+      if (typeof mirrors.abandon === "function")
+        mirrorPreparation = await mirrors.abandon();
+    } catch {
+      /* Retain failure; never restore while the CLI family is unverified. */
+    }
+    if (failure) {
+      const error =
+        failure instanceof Error
+          ? failure
+          : Error("Browser acquisition family quiescence is unverified");
+      error.mirrorPreparation = mirrorPreparation;
+      throw error;
+    }
+    return {
+      ...result,
+      state: "failed",
+      reason: "mirror-quiescence-unverified",
+      mirrorPreparation,
+    };
+  }
+  let mirrorPreparation;
+  try {
+    mirrorPreparation = await mirrors.restore();
+  } catch {
+    mirrorPreparation = {
+      ...inactive,
+      state: "failed",
+      reason: "restoration-incomplete",
+    };
+  }
+  const restored =
+    mirrorPreparation &&
+    ["not-applicable", "unsupported", "unchanged", "restored"].includes(
+      mirrorPreparation.state,
+    );
+  if (!restored) {
+    if (failure)
+      throw Error(
+        "Browser acquisition failed and Ubuntu mirror restoration is incomplete",
+      );
+    return {
+      ...result,
+      state: "failed",
+      reason:
+        result?.reason === "mirror-preparation-failed"
+          ? result.reason
+          : "mirror-restoration-failed",
+      mirrorPreparation,
+    };
+  }
+  if (failure) throw failure;
+  return { ...result, mirrorPreparation };
 }
 
 if (

@@ -2796,7 +2796,9 @@ test("Playwright fixture artifacts retain full verification and both host lanes 
   for (const file of [
     "scripts/prepare-playwright-tools.mjs",
     "scripts/prepare-playwright-browser.mjs",
+    "scripts/prepare-ubuntu-mirrors.mjs",
     "test/prepare-playwright-browser.test.ts",
+    "test/prepare-ubuntu-mirrors.test.ts",
     "scripts/playwright-tools/package.json",
     "scripts/playwright-tools/package-lock.json",
     "test/playwright-tool-preparation.test.ts",
@@ -2831,7 +2833,7 @@ test("Playwright fixture artifacts retain full verification and both host lanes 
       [
         "browser_node=\"$(node -p 'process.execPath')\"",
         'if [ "$RUNNER_OS" = "Linux" ]; then',
-        '  sudo -n --preserve-env=CI,HTTP_PROXY,HTTPS_PROXY,ALL_PROXY,NO_PROXY,http_proxy,https_proxy,all_proxy,no_proxy,NODE_EXTRA_CA_CERTS,SSL_CERT_FILE,SSL_CERT_DIR,PLAYWRIGHT_DOWNLOAD_HOST,PLAYWRIGHT_CHROMIUM_DOWNLOAD_HOST,PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT -- "$browser_node" scripts/prepare-playwright-browser.mjs',
+        '  sudo -n --preserve-env=CI,GITHUB_ACTIONS,RUNNER_ENVIRONMENT,HTTP_PROXY,HTTPS_PROXY,ALL_PROXY,NO_PROXY,http_proxy,https_proxy,all_proxy,no_proxy,NODE_EXTRA_CA_CERTS,SSL_CERT_FILE,SSL_CERT_DIR,PLAYWRIGHT_DOWNLOAD_HOST,PLAYWRIGHT_CHROMIUM_DOWNLOAD_HOST,PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT -- "$browser_node" scripts/prepare-playwright-browser.mjs',
         "else",
         '  "$browser_node" scripts/prepare-playwright-browser.mjs',
         "fi",

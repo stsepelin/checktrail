@@ -61,6 +61,21 @@ const terminal = (edit: Partial<Attempt> = {}): Attempt => ({
   ...edit,
 });
 const success = () => terminal({ exitCode: 0, output: "Chromium acquired\n" });
+const inactiveMirrors = {
+  schemaVersion: 1,
+  state: "not-applicable",
+  reason: "synthetic",
+  sourceCount: 0,
+  targetCount: 0,
+  changedCount: 0,
+  restoredCount: 0,
+  hashes: [],
+};
+const noSystemMirrors = async () => ({
+  metadata: inactiveMirrors,
+  restore: async () => inactiveMirrors,
+});
+
 async function profile(cliSource = "process.exit(0);\n") {
   const root = await realpath(
     await mkdtemp(path.join(tmpdir(), "checktrail-browser-test-")),
@@ -575,8 +590,28 @@ test(
       watch = new AbortController();
     let group:
       Awaited<ReturnType<typeof captureFixtureProcessGroup>> | undefined;
+    let mirrorRestored = 0;
     const running = browser.preparePlaywrightBrowser(f.root, {
       signal: abort.signal,
+      prepareMirrors: async () => ({
+        metadata: { state: "prepared" },
+        restore: async () => {
+          assert.ok(
+            group,
+            "Mirror restoration must follow ready family capture",
+          );
+          const after = await processSnapshot();
+          for (const held of [group.owner, ...group.members])
+            assert.ok(
+              !after.some(
+                (row) => row.pid === held.pid && row.identity === held.identity,
+              ),
+              "Mirror restoration must wait until every owned CLI process is gone",
+            );
+          mirrorRestored++;
+          return { state: "restored" };
+        },
+      }),
       run: (options: unknown) => browser.runBrowserAcquisitionAttempt(options),
       limits: {
         ...browser.browserAcquisitionLimits,
@@ -619,6 +654,8 @@ test(
         ),
       ]);
       assert.equal(result.state, "failed");
+      assert.equal(result.mirrorPreparation.state, "restored");
+      assert.equal(mirrorRestored, 1);
       assert.equal(result.attempts.length, 1);
       assert.equal(result.attempts[0].timedOut, true);
       assert.equal(result.attempts[0].passed, false);
@@ -855,7 +892,9 @@ test("native default admission uses actual host ownership and publishes a readab
         /root-owned helper|effective root/u,
       );
     } else if (["linux", "darwin"].includes(process.platform)) {
-      const result = await browser.preparePlaywrightBrowser(f.root);
+      const result = await browser.preparePlaywrightBrowser(f.root, {
+        prepareMirrors: noSystemMirrors,
+      });
       assert.equal(result.state, "ready");
       const cache = await lstat(
         path.join(f.root, ".checktrail/playwright-browsers"),
@@ -904,7 +943,17 @@ test("native CLI enforces actual ownership and gives admitted children a readabl
     const result = spawnSync(
       process.execPath,
       ["--input-type=module", "-e", launch],
-      { cwd: f.root, encoding: "utf8", timeout: 5000, maxBuffer: 1048576 },
+      {
+        cwd: f.root,
+        env: {
+          ...process.env,
+          GITHUB_ACTIONS: "false",
+          RUNNER_ENVIRONMENT: "synthetic",
+        },
+        encoding: "utf8",
+        timeout: 5000,
+        maxBuffer: 1048576,
+      },
     );
     assert.equal(result.signal, null);
     const admitted =
@@ -933,6 +982,259 @@ test("native CLI enforces actual ownership and gives admitted children a readabl
       );
       assert.equal(result.stdout, "");
     }
+  } finally {
+    await f.cleanup();
+  }
+});
+
+test("qualified browser graph validation precedes mirror modification and CLI execution follows the scoped update", async () => {
+  const f = await profile();
+  const marker = path.join(f.root, "synthetic-mirror-state");
+  await writeFile(marker, "original");
+  const order: string[] = [];
+  const metadata = {
+    schemaVersion: 1,
+    state: "prepared",
+    reason: null,
+    sourceCount: 1,
+    targetCount: 1,
+    changedCount: 1,
+    restoredCount: 0,
+    hashes: [],
+  };
+  const prepareMirrors = async () => {
+    order.push("prepare");
+    await writeFile(marker, "prepared");
+    return {
+      metadata,
+      restore: async () => {
+        order.push("restore");
+        await writeFile(marker, "original");
+        return { ...metadata, state: "restored", restoredCount: 1 };
+      },
+    };
+  };
+  try {
+    const source = path.join(f.root, "scripts/playwright-tools/package.json");
+    const original = await readFile(source);
+    const invalid = JSON.parse(original.toString());
+    invalid.dependencies["@playwright/test"] = "^0.0.0";
+    await writeFile(source, JSON.stringify(invalid));
+    await assert.rejects(
+      browser.preparePlaywrightBrowser(f.root, {
+        prepareMirrors,
+        run: async () => {
+          assert.fail("Invalid fixture must not execute CLI");
+        },
+      }),
+      /pinned/u,
+    );
+    assert.equal(order.length, 0);
+    assert.equal(await readFile(marker, "utf8"), "original");
+    await writeFile(source, original);
+    const result = await browser.preparePlaywrightBrowser(f.root, {
+      prepareMirrors,
+      run: async () => {
+        order.push("cli");
+        assert.equal(await readFile(marker, "utf8"), "prepared");
+        return success();
+      },
+    });
+    assert.equal(result.state, "ready");
+    assert.equal(result.mirrorPreparation.state, "restored");
+    assert.deepEqual(order, ["prepare", "cli", "restore"]);
+    assert.equal(await readFile(marker, "utf8"), "original");
+  } finally {
+    await f.cleanup();
+  }
+});
+
+for (const mode of ["failure", "cancel"])
+  test(
+    "scoped mirror state is restored after executor completion: " + mode,
+    async () => {
+      const f = await profile();
+      const abort = new AbortController();
+      let closed = false,
+        restores = 0;
+      try {
+        const metadata = { state: "prepared" };
+        const operation = browser.preparePlaywrightBrowser(f.root, {
+          signal: abort.signal,
+          prepareMirrors: async () => ({
+            metadata,
+            restore: async () => {
+              assert.equal(
+                closed,
+                true,
+                "Restore must follow owned executor completion",
+              );
+              restores++;
+              return { state: "restored" };
+            },
+          }),
+          run: async () => {
+            closed = true;
+            if (mode === "throw") throw Error("synthetic executor failure");
+            if (mode === "cancel") abort.abort();
+            return terminal({
+              output: "E: synthetic terminal package failure",
+              canceled: mode === "cancel",
+            });
+          },
+        });
+        if (mode === "throw")
+          await assert.rejects(operation, /synthetic executor failure/u);
+        else {
+          const result = await operation;
+          assert.equal(result.state, "failed");
+          assert.equal(result.mirrorPreparation.state, "restored");
+        }
+        assert.equal(restores, 1);
+      } finally {
+        await f.cleanup();
+      }
+    },
+  );
+
+test("an incomplete mirror restoration prevents a healthy CLI result from passing", async () => {
+  const f = await profile();
+  let calls = 0;
+  try {
+    const result = await browser.preparePlaywrightBrowser(f.root, {
+      prepareMirrors: async () => ({
+        metadata: { state: "prepared" },
+        restore: async () => ({
+          state: "failed",
+          reason: "restoration-incomplete",
+        }),
+      }),
+      run: async () => {
+        calls++;
+        return success();
+      },
+    });
+    assert.equal(calls, 1);
+    assert.equal(result.attempts[0].passed, true);
+    assert.equal(result.state, "failed");
+    assert.equal(result.reason, "mirror-restoration-failed");
+  } finally {
+    await f.cleanup();
+  }
+});
+
+test("injected acquisition runners never select the real system-mirror component", async () => {
+  const f = await profile();
+  try {
+    const result = await browser.preparePlaywrightBrowser(f.root, {
+      run: async () => success(),
+    });
+    assert.equal(result.state, "ready");
+    assert.equal(result.mirrorPreparation.state, "not-applicable");
+    assert.equal(result.mirrorPreparation.reason, "injected-runner");
+    assert.equal(result.mirrorPreparation.changedCount, 0);
+  } finally {
+    await f.cleanup();
+  }
+});
+
+test("failed mirror preparation prevents CLI execution and remains an explicit acquisition failure", async () => {
+  const f = await profile();
+  let calls = 0,
+    restores = 0;
+  try {
+    const failed = { state: "failed", reason: "unsafe-metadata" };
+    const result = await browser.preparePlaywrightBrowser(f.root, {
+      prepareMirrors: async () => ({
+        metadata: failed,
+        restore: async () => {
+          restores++;
+          return failed;
+        },
+      }),
+      run: async () => {
+        calls++;
+        return success();
+      },
+    });
+    assert.equal(calls, 0);
+    assert.equal(restores, 1);
+    assert.equal(result.state, "failed");
+    assert.equal(result.reason, "mirror-preparation-failed");
+    assert.deepEqual(result.attempts, []);
+  } finally {
+    await f.cleanup();
+  }
+});
+
+test("an unverified native cleanup rejection cannot authorize mirror restoration or retry", async () => {
+  const f = await profile();
+  let restores = 0,
+    abandoned = 0,
+    calls = 0;
+  try {
+    const result = await browser.preparePlaywrightBrowser(f.root, {
+      prepareMirrors: async () => ({
+        metadata: { state: "prepared" },
+        restore: async () => {
+          restores++;
+          return { state: "restored" };
+        },
+        abandon: async () => {
+          abandoned++;
+          return { state: "failed", reason: "quiescence-unverified" };
+        },
+      }),
+      run: async () => {
+        calls++;
+        return terminal({ error: "Process cleanup deadline exceeded" });
+      },
+    });
+    assert.equal(calls, 1);
+    assert.equal(restores, 0);
+    assert.equal(abandoned, 1);
+    assert.equal(result.state, "failed");
+    assert.equal(result.reason, "mirror-quiescence-unverified");
+    assert.equal(result.mirrorPreparation.state, "failed");
+  } finally {
+    await f.cleanup();
+  }
+});
+
+test("an executor exception without a verified terminal retains failed scope metadata without rollback", async () => {
+  const f = await profile();
+  let restores = 0,
+    abandoned = 0;
+  try {
+    await assert.rejects(
+      browser.preparePlaywrightBrowser(f.root, {
+        prepareMirrors: async () => ({
+          metadata: { state: "prepared" },
+          restore: async () => {
+            restores++;
+            return { state: "restored" };
+          },
+          abandon: async () => {
+            abandoned++;
+            return { state: "failed", reason: "quiescence-unverified" };
+          },
+        }),
+        run: async () => {
+          throw Error("synthetic executor rejection");
+        },
+      }),
+      (error) => {
+        assert.match((error as Error).message, /synthetic executor rejection/u);
+        assert.equal(
+          (error as Error & { mirrorPreparation: { state: string } })
+            .mirrorPreparation.state,
+          "failed",
+        );
+        return true;
+      },
+    );
+    assert.equal(restores, 0);
+    assert.equal(abandoned, 1);
   } finally {
     await f.cleanup();
   }
