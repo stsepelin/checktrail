@@ -1,3 +1,5 @@
+import { parseReleaseProofPin } from "./release-signature-proof.js";
+import { scala2ReleaseProofEnvironment } from "./scala2-release-signature.js";
 import {
   mkdir,
   mkdtemp,
@@ -98,7 +100,10 @@ async function main() {
   const version = await jvmInvoker(env, false)("java", ["--version"]);
   if (version.status !== 0 || version.signal || version.stderrBytes)
     throw Error("Pinned Java version probe failed");
-  const inputs = await scala2Inputs(root, project, config);
+  const releaseProofPin = parseReleaseProofPin(
+    env[scala2ReleaseProofEnvironment],
+  );
+  const inputs = await scala2Inputs(root, project, config, releaseProofPin);
   const original = [];
   let total = 0;
   for (const file of invocation.scope) {
@@ -225,8 +230,10 @@ async function main() {
         scala2Hash(scala2NativeSource)
     )
       throw Error("Original Scala 2 observer changed");
-    const fresh = await scala2Inputs(root, project, config);
+    const fresh = await scala2Inputs(root, project, config, releaseProofPin);
     if (
+      JSON.stringify(fresh.releaseSignatureProof) !==
+        JSON.stringify(inputs.releaseSignatureProof) ||
       !fresh.bytes.equals(inputs.bytes) ||
       fresh.dependencies.some(
         (dep, i) => !dep.bytes.equals(inputs.dependencies[i]!.bytes),
@@ -236,7 +243,10 @@ async function main() {
     await verifyJvmToolchain();
     process.stdout.write(
       JSON.stringify({
-        version: 1,
+        version: inputs.releaseSignatureProof ? 2 : 1,
+        ...(inputs.releaseSignatureProof
+          ? { releaseSignatureProof: inputs.releaseSignatureProof }
+          : {}),
         requestDigest: scala2Hash(serialized),
         scala: scala2Artifacts.version,
         javaHome: home,

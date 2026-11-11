@@ -1,3 +1,14 @@
+import {
+  parseReleaseProofPin,
+  maximumReleaseProofBytes,
+} from "./release-signature-proof.js";
+import {
+  randomReleaseProofEnvironment,
+  randomReleaseProofFile,
+  randomPreparedFileNames,
+  randomPreparedIdentity,
+  readRandomReleaseProof,
+} from "./terraform-release-signature.js";
 import path from "node:path";
 import { realpathSync, readdirSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
@@ -98,6 +109,9 @@ export function terraformExtensionsEvidence(
       };
     }
     terraformRequire(process.exitCode === 0, "Collector did not complete");
+    const expectedProofPin = parseReleaseProofPin(
+      command.env?.[randomReleaseProofEnvironment],
+    );
     const packet = terraformExtensionsPacketSchema.parse(json(process.stdout));
     terraformRequire(
       path.isAbsolute(packet.temporary) &&
@@ -134,6 +148,20 @@ export function terraformExtensionsEvidence(
       packet.preparedProvider,
       command.env?.CHECKTRAIL_TERRAFORM_EXTENSIONS_PROVIDER_ROOT,
       "Operator provider root differs",
+    );
+    const releaseSignatureProof = readRandomReleaseProof(
+      packet.preparedProvider,
+      expectedProofPin,
+    );
+    same(
+      packet.releaseSignatureProof,
+      releaseSignatureProof,
+      "Operator release signature proof differs",
+    );
+    same(
+      packet.artifacts.length,
+      expectedProofPin ? 5 : 4,
+      "Prepared artifact cohort count differs",
     );
     same(
       packet.sourceInputs,
@@ -180,11 +208,7 @@ export function terraformExtensionsEvidence(
     same(mavenHash(toolBytes), packet.tool.sha256, "Current tool changed");
     same(
       readdirSync(packet.preparedProvider).toSorted(),
-      [
-        provider.archive,
-        "identity.json",
-        ...provider.members.map((member) => member.path),
-      ].toSorted(),
+      randomPreparedFileNames(expectedProofPin),
       "Current prepared provider cohort differs",
     );
     same(process.command, command, "Executed collector command differs");
@@ -247,17 +271,45 @@ export function terraformExtensionsEvidence(
     );
     same(
       identity,
-      {
-        schemaVersion: 1,
-        provider,
-        archiveSource: identity.archiveSource,
-        completeMembersObserved: true,
-        releaseSignatureVerified: false,
-        publisherAndLicenseClosureVerified: false,
-        nativeExecutionReached: false,
-      },
+      randomPreparedIdentity(
+        String(identity.archiveSource),
+        releaseSignatureProof,
+      ),
       "Prepared metadata declaration differs",
     );
+    if (expectedProofPin) {
+      const observed = packet.artifacts[4]!;
+      same(
+        observed.path,
+        randomReleaseProofFile,
+        "Prepared release proof role differs",
+      );
+      same(
+        observed.entry,
+        path.join(packet.preparedProvider, randomReleaseProofFile),
+        "Prepared release proof path differs",
+      );
+      same(
+        observed.sha256,
+        expectedProofPin,
+        "Prepared release proof operator pin differs",
+      );
+      same(
+        observed.afterSha256,
+        expectedProofPin,
+        "Prepared release proof changed",
+      );
+      const bytes = terraformExtensionsRegular(
+        observed.entry,
+        maximumReleaseProofBytes,
+      );
+      same(bytes.length, observed.bytes, "Prepared release proof size differs");
+      same(
+        mavenHash(bytes),
+        expectedProofPin,
+        "Current release proof bytes differ",
+      );
+    }
     for (const [index, pin] of provider.members.entries())
       same(
         packet.providerMembers[index],

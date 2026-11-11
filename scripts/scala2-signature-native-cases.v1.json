@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "requiredCaseIds": [
+    "qualified-broken",
+    "qualified-fixed",
+    "legacy-fixed",
+    "operator-capture-request-collision-borrowed-pin-packet-and-physical-afterchecks",
+    "actual-runner-refuses-coherent-wrong-policy",
+    "cli-fixed",
+    "cli-broken",
+    "mcp-cannot-promote-authority-and-private-summary"
+  ]
+}

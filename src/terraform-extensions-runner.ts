@@ -1,3 +1,14 @@
+import {
+  parseReleaseProofPin,
+  maximumReleaseProofBytes,
+} from "./release-signature-proof.js";
+import {
+  randomReleaseProofEnvironment,
+  randomReleaseProofFile,
+  randomPreparedFileNames,
+  randomPreparedIdentity,
+  readRandomReleaseProof,
+} from "./terraform-release-signature.js";
 import { invokeNativeOutput } from "./native-invoke-output.js";
 import { constants } from "node:fs";
 import {
@@ -68,17 +79,13 @@ async function selectedTool() {
   }
   throw new TerraformExtensionsUnavailable();
 }
-function preparedProvider(directory: string) {
+function preparedProvider(directory: string, expectedProofPin: string) {
   try {
     terraformRequire(
       path.isAbsolute(directory),
       "Absolute operator provider cache required",
     );
-    const expected = [
-      provider.archive,
-      "identity.json",
-      ...provider.members.map((member) => member.path),
-    ].toSorted();
+    const expected = randomPreparedFileNames(expectedProofPin);
     terraformRequire(
       isDeepStrictEqual(readdirSyncNames(directory), expected),
       "Exact prepared provider cohort required",
@@ -96,19 +103,18 @@ function preparedProvider(directory: string) {
       ].includes(identity.archiveSource),
       "Prepared artifact origin differs",
     );
+    const releaseSignatureProof = readRandomReleaseProof(
+      directory,
+      expectedProofPin,
+    );
     terraformRequire(
-      isDeepStrictEqual(identity, {
-        schemaVersion: 1,
-        provider,
-        archiveSource: identity.archiveSource,
-        completeMembersObserved: true,
-        releaseSignatureVerified: false,
-        publisherAndLicenseClosureVerified: false,
-        nativeExecutionReached: false,
-      }),
+      isDeepStrictEqual(
+        identity,
+        randomPreparedIdentity(identity.archiveSource, releaseSignatureProof),
+      ),
       "Prepared provider metadata differs",
     );
-    return [
+    const artifacts = [
       {
         path: provider.archive,
         bytes: provider.archiveBytes,
@@ -120,6 +126,18 @@ function preparedProvider(directory: string) {
         bytes: identityBytes.length,
         sha256: mavenHash(identityBytes),
       },
+      ...(releaseSignatureProof
+        ? [
+            {
+              path: randomReleaseProofFile,
+              bytes: terraformExtensionsRegular(
+                path.join(directory, randomReleaseProofFile),
+                maximumReleaseProofBytes,
+              ).length,
+              sha256: expectedProofPin,
+            },
+          ]
+        : []),
     ].map((pin) => {
       const file = path.join(directory, pin.path),
         bytes = terraformExtensionsRegular(file, 32 * 1024 * 1024);
@@ -129,6 +147,7 @@ function preparedProvider(directory: string) {
       );
       return { ...pin, entry: file, afterSha256: "" };
     });
+    return { artifacts, releaseSignatureProof };
   } catch {
     throw new TerraformExtensionsUnavailable();
   }
@@ -153,7 +172,13 @@ async function main() {
     tool = await selectedTool();
   const prepared = process.env.CHECKTRAIL_TERRAFORM_EXTENSIONS_PROVIDER_ROOT;
   if (!prepared) throw new TerraformExtensionsUnavailable();
-  const artifacts = preparedProvider(prepared);
+  const expectedProofPin = parseReleaseProofPin(
+    process.env[randomReleaseProofEnvironment],
+  );
+  const { artifacts, releaseSignatureProof } = preparedProvider(
+    prepared,
+    expectedProofPin,
+  );
   const temporary = await mkdtemp(
     path.join(process.env.CHECKTRAIL_TEMP ?? tmpdir(), "terraform-extensions-"),
   );
@@ -268,7 +293,7 @@ async function main() {
         ) === tool.sha256,
         "Tool bytes changed",
       );
-      preparedProvider(prepared);
+      preparedProvider(prepared, expectedProofPin);
       process.stdout.write("Terraform v1.16.5\n");
       return;
     }
@@ -439,11 +464,7 @@ async function main() {
     terraformRequire(
       isDeepStrictEqual(
         readdirSyncNames(prepared),
-        [
-          provider.archive,
-          "identity.json",
-          ...provider.members.map((member) => member.path),
-        ].toSorted(),
+        randomPreparedFileNames(expectedProofPin),
       ),
       "Prepared provider cohort changed",
     );
@@ -482,6 +503,7 @@ async function main() {
         data,
         mirror,
         preparedProvider: prepared,
+        ...(releaseSignatureProof ? { releaseSignatureProof } : {}),
         inputSha256: mavenHash(JSON.stringify(invocation)),
         tool,
         artifacts,

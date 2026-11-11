@@ -5,8 +5,8 @@
   "files": [
     {
       "file": "README.md",
-      "bytes": 29812,
-      "sha256": "b06bb73fdcc240512abf2430064910b4afdadd4b0bf8a05e552de8f02fe994d3"
+      "bytes": 30123,
+      "sha256": "2c5d7ede835e399ac1ad1c54f8dcaea3b3abf0b0e4df00197f507f91c46240f3"
     },
     {
       "file": "dotnet-sdk-LICENSE.txt",
@@ -975,8 +975,8 @@
     },
     {
       "file": "random-provider.json",
-      "bytes": 8623,
-      "sha256": "b568b47e2332447cae22e67f4535d62afa01b199f39619bf3c9677bc2ee0a10f"
+      "bytes": 9845,
+      "sha256": "72541bcad7565fc950f093ab21e5120d3c4419620d10d1f3654b446d7fdda64d"
     },
     {
       "file": "scala-LICENSE",
@@ -1150,8 +1150,8 @@
     },
     {
       "file": "scala2.json",
-      "bytes": 9712,
-      "sha256": "301a21b54080dd5640233d937b089fdf4054a21c02046b47546cbfbd0790eebe"
+      "bytes": 11058,
+      "sha256": "c8645c263afc7e46b63f8cfc0b28af0c421bdc183ec85acbf2a96fc9e8bfa869"
     },
     {
       "file": "sigstore-trusted-root.jsonl",
@@ -1301,14 +1301,24 @@
       "sha256": "3941656c3a2549f637508880a4b62382f05d1ee523cec28606970cd4011463df"
     },
     {
+      "file": "scripts/prepare-scala2-signature-proof.mjs",
+      "bytes": 5372,
+      "sha256": "d50dc7b38fd119cfc4bc567d4ef1a4ec32a6b380dc214fcd977b359d266b9597"
+    },
+    {
       "file": "scripts/prepare-scala2-tools.mjs",
-      "bytes": 2617,
-      "sha256": "7b1f92376c66ca3366115f636b324e3e7ddf4fd0248fbf1a2a3fe341175572b4"
+      "bytes": 3742,
+      "sha256": "280bc123f479455104f74873a625d5b3e8228d15c0c6e5d60a1fcf9ddd3a5514"
     },
     {
       "file": "scripts/prepare-terraform-extensions-runtime.mjs",
-      "bytes": 3602,
-      "sha256": "cb5e4e9b28692a4e05020215716959cdc3a745141445e43d7e6bed61fc148eaf"
+      "bytes": 9386,
+      "sha256": "58accf804b57b9f6bd1d3e568fcce2d315030570ecbbb42fe106b6b3f006fb5d"
+    },
+    {
+      "file": "scripts/release-signature-preparation.mjs",
+      "bytes": 9266,
+      "sha256": "9d406135ae11f4b01ffa42d782badd83b349416b22c2fef47d5fc7a529d17e9d"
     },
     {
       "file": "src/fsharp-format-pins.ts",
@@ -1316,14 +1326,29 @@
       "sha256": "7dc1fa0762bbb8ec4b2428e8a94b6db4073d9ce2c45b1f3759978bcd978466a4"
     },
     {
+      "file": "src/release-signature-proof.ts",
+      "bytes": 10978,
+      "sha256": "1ade1df184c8d26fa23de3f7dee764bfdbe76637a9beab1f777d9b65aa7ce4f2"
+    },
+    {
       "file": "src/scala2-artifacts.ts",
       "bytes": 1245,
       "sha256": "2609bc9f6aa3db43c5b3e77ba15e7cca1ef7410ddb9868b3b38818fabcd3a238"
     },
     {
+      "file": "src/scala2-release-signature.ts",
+      "bytes": 5384,
+      "sha256": "aee64f4d27475cb6c4af102af94330b3dcacb89d4d01b20f86295f79fc885d73"
+    },
+    {
       "file": "src/terraform-extensions-contract.ts",
       "bytes": 12969,
       "sha256": "3a748511488030ea9b75864fcfc9186b1c1d611c6a20ff4d699aa1a57da19548"
+    },
+    {
+      "file": "src/terraform-release-signature.ts",
+      "bytes": 4298,
+      "sha256": "1e20a6aadada0650b7fbbc04056ced8cc0e4e2d8ff88f2a59e46aef2f5e1fb4a"
     }
   ]
 }
