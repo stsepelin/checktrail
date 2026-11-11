@@ -297,9 +297,24 @@ metadata does not attest the daemon's profile bytes or historical consumption.
 
 ## Opt-in hosted GCC observation
 
-`upstream-gcc.yml` uses only `pr/upstream-producer/gcc-*` pushes or operator
-dispatch after default-branch merge. Startup, live observation, export and replay
-all bind an explicit closed profile name to the frozen source/version/catalog.
+`upstream-gcc.yml` runs only by explicit operator dispatch. Routine source
+verification remains in the separate `Verify` workflow. Branch pushes and pull
+requests do not start another original compiler build. Once the qualification
+workflow is present on the default branch, an operator can select a source branch:
+
+```sh
+gh workflow run upstream-gcc.yml --repo stsepelin/checktrail --ref BRANCH
+```
+
+Dispatch once for the intended qualification candidate and let that run finish
+independently of routine source repairs. The existing `cancel-in-progress: false`
+policy preserves an active observation when another commit is pushed. Evidence
+remains bound to its captured source frame; a previous run cannot be relabeled
+as proof for a newer revision. Passing PR checks does not establish full original
+GCC producer-build closure, which remains required for Gate A.
+
+Startup, live observation, export and replay all bind an explicit closed profile
+name to the frozen source/version/catalog.
 GCC's original command, CPU, memory, targets and checks remain unchanged. The
 selected operator wall envelope is twelve hours. The separate `gccCarrierLimits` controller window leaves time for
 bounded cleanup and transport within the hosted job. Fresh capacity admission

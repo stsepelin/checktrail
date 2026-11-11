@@ -605,14 +605,14 @@ test("GCC carrier owner admission binds the exact caller, UUID, selected source 
   }
 });
 
-test("GCC workflow has a narrow operator namespace, read-only capacity checks and an independent cutoff without altering the profile", async () => {
+test("GCC qualification runs only on explicit dispatch and preserves capacity admission, evidence retention and the original profile", async () => {
   const workflow = parse(
     await readFile(
       path.join(repository, ".github/workflows/upstream-gcc.yml"),
       "utf8",
     ),
   );
-  assert.deepEqual(workflow.on.push.branches, ["pr/upstream-producer/gcc-*"]);
+  assert.deepEqual(workflow.on, { workflow_dispatch: null });
   assert.equal(workflow.concurrency["cancel-in-progress"], false);
   const job = workflow.jobs["original-gcc-observation"];
   const steps = job.steps as {

@@ -1,10 +1,9 @@
 name: Original GCC producer observation
 
+# Original compiler qualification is expensive and runs separately from PR verification.
+# Select the intended source branch explicitly; pushing a repair must not restart it.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "pr/upstream-producer/gcc-*"
 
 permissions:
   contents: read
