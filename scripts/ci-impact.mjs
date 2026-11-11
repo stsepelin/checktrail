@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import ts from "typescript";
 import { sourceBoundaryInputs } from "./ci-source-boundaries.mjs";
 import sourceCatalog from "./ci-source-boundaries.json" with { type: "json" };
@@ -30,45 +31,94 @@ const preparationRegressionSources = Object.freeze({
     "scripts/prepare-swift-extensions-runtime.mjs",
   ]),
 });
-// Reviewed development-only C producer inputs have no packaged runtime member.
-// Their identity/source frames also feed the Go and Node producer controllers,
-// so every exact input selects those callers' complete regression files too.
-// Keep this finite: unreviewed siblings retain conservative full verification.
+// Reviewed development-only producer inputs have no packaged runtime member.
+// Shared identity and retention controls also feed Binutils, Go and Node, so
+// every exact input selects those callers' complete regression files as well.
+// Unknown siblings continue to require full verification.
+const cProducerRegressionFiles = Object.freeze([
+  "test/binutils-acquisition.test.ts",
+  "test/binutils-build-observation.test.ts",
+  "test/binutils-download.test.ts",
+  "test/binutils-image-identity.test.ts",
+  "test/binutils-input-preparation.test.ts",
+  "test/binutils-retention-observer.test.ts",
+  "test/c-producer-evidence.test.ts",
+  "test/c-producer-gcc-evidence.test.ts",
+  "test/c-producer-qualification.test.ts",
+  "test/c-producer-quiescence.test.ts",
+  "test/c-producer-replay-batch.test.ts",
+  "test/c-producer-u13.test.ts",
+  "test/gcc-job-envelope.test.ts",
+  "test/glibc-seccomp.test.ts",
+  "test/go-bootstrap-producer.test.ts",
+  "test/go-bootstrap-transport.test.ts",
+  "test/node-original-acquisition.test.ts",
+  "test/node-original-materializer.test.ts",
+  "test/node-original-producer.test.ts",
+  "test/node-original-retention.test.ts",
+  "test/node-original-transport-posix.test.ts",
+  "test/producer-container-cleanup.test.ts",
+  "test/producer-qualification.test.ts",
+  "test/web-runtime-producer.test.ts",
+]);
 export const cProducerSharedBoundary = Object.freeze({
+  // Names only: editing a reviewed member does not invalidate its fast path.
+  // A new helper, fixture, test or workflow needs an explicit inventory review.
+  inventorySha256:
+    "8e986597b558f0a3c4f30b6bee53871213d3d5b4f19ffc5c7d2d4aad98a09db2",
   files: Object.freeze([
+    "scripts/acquire-binutils-inputs.mjs",
+    "scripts/acquire-c-producer-inputs.mjs",
+    "scripts/observe-c-producer-carrier.mjs",
+    "scripts/qualify-binutils-producer.mjs",
+    "scripts/qualify-c-producer.mjs",
+    "scripts/verify-binutils-build-observation.mjs",
+    "scripts/verify-c-producer-observation.mjs",
+    "scripts/producer-qualification/binutils-acquisition-plan.mjs",
+    "scripts/producer-qualification/binutils-apt-index-preparation.v1.json",
+    "scripts/producer-qualification/binutils-build.sh",
+    "scripts/producer-qualification/binutils-expectations.v1.json",
+    "scripts/producer-qualification/binutils-export-evidence.py",
+    "scripts/producer-qualification/binutils-image-identity.mjs",
+    "scripts/producer-qualification/binutils-image-identity.v1.json",
+    "scripts/producer-qualification/binutils-input-reacquisition.v1.json",
+    "scripts/producer-qualification/binutils-prepare-inputs.py",
+    "scripts/producer-qualification/binutils-retention-observer.mjs",
+    "scripts/producer-qualification/binutils-retention-observer.py",
+    "scripts/producer-qualification/binutils-test-reports.py",
+    "scripts/producer-qualification/binutils.v1.json",
+    "scripts/producer-qualification/c-carrier-observation.mjs",
+    "scripts/producer-qualification/c-producer-build.sh",
+    "scripts/producer-qualification/c-producer-export-evidence.py",
     "scripts/producer-qualification/c-producer-profile.mjs",
     "scripts/producer-qualification/c-producer-profiles.v1.json",
+    "scripts/producer-qualification/c-producer-quiescent-sample.mjs",
     "scripts/producer-qualification/c-producer-replay-evidence.py",
     "scripts/producer-qualification/c-producer-test-reports.py",
-    "scripts/qualify-c-producer.mjs",
-    "test/c-producer-evidence.test.ts",
-    "test/c-producer-gcc-evidence.test.ts",
-    "test/c-producer-qualification.test.ts",
-    "scripts/observe-c-producer-carrier.mjs",
-    "scripts/producer-qualification/c-carrier-observation.mjs",
-    "scripts/producer-qualification/c-producer-export-evidence.py",
+    "scripts/producer-qualification/gcc-github-job-clock.mjs",
+    "scripts/producer-qualification/gcc-job-envelope.mjs",
     "scripts/producer-qualification/gcc-local-wall-policy.v1.json",
-    "scripts/verify-c-producer-observation.mjs",
+    "scripts/producer-qualification/glibc-seccomp-probe.py",
+    "scripts/producer-qualification/glibc-seccomp.mjs",
+    "scripts/producer-qualification/glibc-seccomp.v1.json",
+    "test/fixtures/c-producer-interruption.py",
     "test/fixtures/c-producer-local-clock.mjs",
-    "scripts/producer-qualification/c-producer-quiescent-sample.mjs",
-    "test/c-producer-quiescence.test.ts",
+    "test/fixtures/c-retention-controls.py",
+    ...cProducerRegressionFiles,
   ]),
-  testFiles: Object.freeze([
-    "test/c-producer-evidence.test.ts",
-    "test/c-producer-gcc-evidence.test.ts",
-    "test/c-producer-qualification.test.ts",
-    "test/c-producer-quiescence.test.ts",
-    "test/c-producer-replay-batch.test.ts",
-    "test/c-producer-u13.test.ts",
-    "test/gcc-job-envelope.test.ts",
-    "test/glibc-seccomp.test.ts",
-    "test/go-bootstrap-producer.test.ts",
-    "test/go-bootstrap-transport.test.ts",
-    "test/node-original-producer.test.ts",
-    "test/node-original-transport-posix.test.ts",
+  workflowFiles: Object.freeze([
+    ".github/workflows/upstream-binutils.yml",
+    ".github/workflows/upstream-gcc.yml",
+    ".github/workflows/upstream-glibc.yml",
+    ".github/workflows/upstream-glibc-u13.yml",
   ]),
+  testFiles: cProducerRegressionFiles,
 });
-const cProducerSharedInputs = new Set(cProducerSharedBoundary.files);
+const cProducerSharedInputs = new Set([
+  ...cProducerSharedBoundary.files,
+  ...cProducerSharedBoundary.workflowFiles,
+]);
+const cProducerWorkflowInputs = new Set(cProducerSharedBoundary.workflowFiles);
 const generic = new Set([
   "scripts/request-pinned-artifact.mjs",
   "scripts/verify-required-native-tests.mjs",
@@ -124,6 +174,31 @@ const validPath = (file) =>
   file.length <= 1024 &&
   !path.posix.isAbsolute(file) &&
   !file.split("/").some((p) => ["", ".", ".."].includes(p));
+// The caller supplies the complete tracked inventory it used for the native
+// input contract. Pure metadata only; the planner never reads the filesystem.
+export function producerInventoryFingerprint(files) {
+  if (
+    !Array.isArray(files) ||
+    files.length === 0 ||
+    files.length > 100000 ||
+    !files.every(validPath) ||
+    new Set(files).size !== files.length
+  )
+    return null;
+  return createHash("sha256")
+    .update(
+      JSON.stringify(
+        files
+          .filter((file) =>
+            ["test/", "scripts/", ".github/workflows/"].some((prefix) =>
+              file.startsWith(prefix),
+            ),
+          )
+          .sort(),
+      ),
+    )
+    .digest("hex");
+}
 export const nativeJobIds = (workflow) =>
   Object.keys(workflow.jobs)
     .filter((id) => !controls.has(id))
@@ -364,6 +439,7 @@ export function planNativeJobs({
   baseline,
   contractCurrent = false,
   sourceBoundaries = sourceCatalog.boundaries,
+  producerInventory = null,
 }) {
   validateInputContract(inputs, jobs);
   const full = (reason) => ({
@@ -384,6 +460,14 @@ export function planNativeJobs({
     !changed.every(validPath)
   )
     return full("Missing, empty or invalid changed-file inventory");
+  if (
+    changed.some((file) => cProducerSharedInputs.has(file)) &&
+    producerInventoryFingerprint(producerInventory) !==
+      cProducerSharedBoundary.inventorySha256
+  )
+    return full(
+      "Producer-only inventory is missing or changed; review new test/helper/workflow names and refresh the producer boundary",
+    );
   const selected = new Set();
   for (const file of changed) {
     // The caller rebuilt this exact generated contract before setting
@@ -406,6 +490,16 @@ export function planNativeJobs({
       )
     )
       continue;
+    // Only these reviewed original-producer workflows use the producer-only
+    // boundary. Keep workflow syntax verification and every declared consumer.
+    // Shared CI and unreviewed adjacent workflows retain the full fallback below.
+    if (cProducerWorkflowInputs.has(file)) {
+      if (!jobs.includes("actionlint"))
+        return full("Producer workflow requires the declared actionlint job");
+      selected.add("actionlint");
+      for (const id of inputs[file] ?? []) selected.add(id);
+      continue;
+    }
     if (
       (file.startsWith("src/") && !Object.hasOwn(inputs, file)) ||
       file.startsWith("schemas/") ||

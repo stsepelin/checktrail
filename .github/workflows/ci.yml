@@ -173,12 +173,20 @@ jobs:
         run: |
           node scripts/prepare-playwright-tools.mjs
           npm ci --prefix .checktrail/playwright-tools --ignore-scripts --no-audit --no-fund
-      - name: Prepare pinned Chromium for native browser fixtures
-        run: PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node .checktrail/playwright-tools/node_modules/playwright/cli.js install chromium --only-shell --with-deps
-        if: env.CHECKTRAIL_CI_MODE == 'full'
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
+      - name: Prepare pinned Chromium for native browser fixtures
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          browser_node="$(node -p 'process.execPath')"
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo -n --preserve-env=CI,HTTP_PROXY,HTTPS_PROXY,ALL_PROXY,NO_PROXY,http_proxy,https_proxy,all_proxy,no_proxy,NODE_EXTRA_CA_CERTS,SSL_CERT_FILE,SSL_CERT_DIR,PLAYWRIGHT_DOWNLOAD_HOST,PLAYWRIGHT_CHROMIUM_DOWNLOAD_HOST,PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT -- "$browser_node" scripts/prepare-playwright-browser.mjs
+          else
+            "$browser_node" scripts/prepare-playwright-browser.mjs
+          fi
+        if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Verify captured consumer selection guards
         if: env.CHECKTRAIL_CI_MODE == 'full' && (runner.os == 'Linux' && matrix.node == '26')
         run: node scripts/verify-consumer-impact-guards.mjs
@@ -328,9 +336,17 @@ jobs:
         run: |
           node scripts/prepare-playwright-tools.mjs
           npm ci --prefix .checktrail/playwright-tools --ignore-scripts --no-audit --no-fund
-      - name: Prepare pinned Chromium for native browser fixtures
-        run: PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node .checktrail/playwright-tools/node_modules/playwright/cli.js install chromium --only-shell --with-deps
       - run: npm run build
+      - name: Prepare pinned Chromium for native browser fixtures
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          browser_node="$(node -p 'process.execPath')"
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo -n --preserve-env=CI,HTTP_PROXY,HTTPS_PROXY,ALL_PROXY,NO_PROXY,http_proxy,https_proxy,all_proxy,no_proxy,NODE_EXTRA_CA_CERTS,SSL_CERT_FILE,SSL_CERT_DIR,PLAYWRIGHT_DOWNLOAD_HOST,PLAYWRIGHT_CHROMIUM_DOWNLOAD_HOST,PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT -- "$browser_node" scripts/prepare-playwright-browser.mjs
+          else
+            "$browser_node" scripts/prepare-playwright-browser.mjs
+          fi
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - name: Require isolated mutation and fresh package lanes
