@@ -1,4 +1,6 @@
 {
+  "assets/context-grammars/manifest.json": ["go-workspaces-arm64"],
+  "assets/context-grammars/runtime-manifest.json": ["go-workspaces-arm64"],
   "assets/context-grammars/tree-sitter-c_sharp.wasm": ["csharp-context-arm64"],
   "assets/context-grammars/tree-sitter-c.wasm": ["c-context-arm64"],
   "assets/context-grammars/tree-sitter-cpp.wasm": ["cpp-context-arm64"],
@@ -14,10 +16,14 @@
   "assets/context-grammars/tree-sitter-scala.wasm": ["scala-context-arm64"],
   "assets/context-grammars/tree-sitter-swift.wasm": ["swift-context-arm64"],
   "assets/context-grammars/tree-sitter-yaml.wasm": ["yaml-context-arm64"],
+  "assets/context-vb-grammar/manifest.json": ["go-workspaces-arm64"],
   "assets/context-vb-grammar/tree-sitter-vbnet.wasm": ["vb-context-arm64"],
   "assets/native-tool-archives/alpine-v3.24/aarch64/zlib-1.3.2-r0.apk": [
     "resource-release",
     "resource-release-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/sigstore-trusted-root.jsonl": [
+    "go-workspaces-arm64"
   ],
   "examples/external-adapter/bundle/adapter.json": ["external-adapters"],
   "examples/external-adapter/bundle/adapter.mjs": ["external-adapters"],
@@ -67,7 +73,9 @@
     "attempt-runtime",
     "attempt-runtime-arm64"
   ],
+  "scripts/audit-context-grammars.mjs": ["go-workspaces-arm64"],
   "scripts/audit-php-review-tools.mjs": ["php-review"],
+  "scripts/audit-selected-artifact-evidence.mjs": ["go-workspaces-arm64"],
   "scripts/c-context-tools.Dockerfile": ["c-context-arm64"],
   "scripts/capture-jvm-wrapper-guards.mjs": ["jvm-wrappers-arm64"],
   "scripts/check-consumer-native-ci.mjs": [
@@ -834,6 +842,7 @@
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
+  "scripts/context-runtime-proof-ci-inputs.json": ["go-workspaces-arm64"],
   "scripts/cpp-archive-fallbacks/libexpat-2.8.5-r0.apk": [
     "cpp-extensions-arm64",
     "cpp-tools"
@@ -1249,6 +1258,7 @@
     "resource-release",
     "resource-release-arm64"
   ],
+  "scripts/pango-complete-text-binding.mjs": ["go-workspaces-arm64"],
   "scripts/php-context-tools.Dockerfile": [
     "laravel-assembly-arm64",
     "mutation-native-arm64",
@@ -1305,6 +1315,8 @@
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
   ],
+  "scripts/prepare-context-runtime-proof-ci.mjs": ["go-workspaces-arm64"],
+  "scripts/prepare-context-runtime-proof.mjs": ["go-workspaces-arm64"],
   "scripts/prepare-cpp-extensions-runtime.mjs": ["cpp-extensions-arm64"],
   "scripts/prepare-cpp-tools-runtime.mjs": [
     "cpp-extensions-arm64",
@@ -1620,6 +1632,7 @@
   "scripts/request-pinned-artifact.mjs": [
     "cpp-extensions-arm64",
     "cpp-tools",
+    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -2001,6 +2014,16 @@
     "swift-context-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
+  ],
+  "scripts/verify-context-runtime-proof-admission.mjs": ["go-workspaces-arm64"],
+  "scripts/verify-context-runtime-proof-authority.mjs": ["go-workspaces-arm64"],
+  "scripts/verify-context-runtime-proof-cache.mjs": ["go-workspaces-arm64"],
+  "scripts/verify-context-runtime-proof-ci.mjs": ["go-workspaces-arm64"],
+  "scripts/verify-context-runtime-proof-families.mjs": ["go-workspaces-arm64"],
+  "scripts/verify-context-runtime-proof-mixed.mjs": ["go-workspaces-arm64"],
+  "scripts/verify-context-runtime-proof-package.mjs": ["go-workspaces-arm64"],
+  "scripts/verify-context-runtime-proof-transports.mjs": [
+    "go-workspaces-arm64"
   ],
   "scripts/verify-cpp-context-container.mjs": ["cpp-context-arm64"],
   "scripts/verify-cpp-context-guards.mjs": ["cpp-context-arm64"],
@@ -2460,6 +2483,7 @@
     "terraform-extensions-arm64"
   ],
   "test/actionlint.test.ts": ["actionlint"],
+  "test/artifact-evidence.test.ts": ["go-workspaces-arm64"],
   "test/attempt-archive-native.test.ts": [
     "attempt-runtime",
     "attempt-runtime-arm64"
@@ -2562,6 +2586,10 @@
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
+  "test/context-runtime-attestation-policy.test.ts": ["go-workspaces-arm64"],
+  "test/context-runtime-proof-ci.test.ts": ["go-workspaces-arm64"],
+  "test/context-runtime-proof-preparation.test.ts": ["go-workspaces-arm64"],
+  "test/context-runtime-proof.test.ts": ["go-workspaces-arm64"],
   "test/cpp-controls.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
   "test/cpp-extensions-cancel.test.ts": ["cpp-extensions-arm64"],
   "test/cpp-extensions-fixture.ts": ["cpp-extensions-arm64"],
@@ -4004,6 +4032,7 @@
     "resource-release-arm64"
   ],
   "test/review-behavior.test.ts": [
+    "go-workspaces-arm64",
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
@@ -4022,6 +4051,7 @@
     "rust-context-arm64"
   ],
   "test/review-citations.test.ts": [
+    "go-workspaces-arm64",
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",
@@ -4111,6 +4141,7 @@
   ],
   "test/review-nuxt-assembly-fixture.ts": ["nuxt-assembly-arm64"],
   "test/review-nuxt-assembly-guards.test.ts": ["nuxt-assembly-arm64"],
+  "test/review-polyglot-fixture.ts": ["go-workspaces-arm64"],
   "test/review-probe-storage.test.ts": ["tasks-runtime"],
   "test/review-ruby-boundaries-fixture.ts": ["ruby-context-arm64"],
   "test/review-runtime-evidence.test.ts": ["tasks-runtime"],
@@ -4139,6 +4170,7 @@
   "test/review-yaml-boundaries-fixture.ts": ["yaml-context-arm64"],
   "test/review-yaml-boundaries.test.ts": ["yaml-context-arm64"],
   "test/review.test.ts": [
+    "go-workspaces-arm64",
     "kotlin-context-arm64",
     "kustomize-extensions-arm64",
     "php-review",

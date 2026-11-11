@@ -5445,6 +5445,40 @@
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
                       },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
+                      },
                       "grammarBindings": {
                         "maxItems": 16,
                         "type": "array",
@@ -6733,6 +6767,40 @@
                       "grammarManifestDigest": {
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
                       },
                       "grammarBindings": {
                         "maxItems": 16,
@@ -8054,6 +8122,40 @@
                       "grammarManifestDigest": {
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
                       },
                       "grammarBindings": {
                         "maxItems": 16,
@@ -9527,6 +9629,40 @@
                       "grammarManifestDigest": {
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
                       },
                       "grammarBindings": {
                         "maxItems": 16,
@@ -11070,6 +11206,40 @@
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
                       },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
+                      },
                       "grammarBindings": {
                         "maxItems": 16,
                         "type": "array",
@@ -12542,6 +12712,40 @@
                       "grammarManifestDigest": {
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
                       },
                       "grammarBindings": {
                         "maxItems": 16,
@@ -14032,6 +14236,40 @@
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
                       },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
+                      },
                       "grammarBindings": {
                         "maxItems": 16,
                         "type": "array",
@@ -15520,6 +15758,40 @@
                       "grammarManifestDigest": {
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
                       },
                       "grammarBindings": {
                         "maxItems": 16,
@@ -17010,6 +17282,40 @@
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
                       },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
+                      },
                       "grammarBindings": {
                         "maxItems": 16,
                         "type": "array",
@@ -18498,6 +18804,40 @@
                       "grammarManifestDigest": {
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
                       },
                       "grammarBindings": {
                         "maxItems": 16,
@@ -19990,6 +20330,40 @@
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
                       },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
+                      },
                       "grammarBindings": {
                         "maxItems": 16,
                         "type": "array",
@@ -21478,6 +21852,40 @@
                       "grammarManifestDigest": {
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
                       },
                       "grammarBindings": {
                         "maxItems": 16,
@@ -22985,6 +23393,40 @@
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
                       },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
+                      },
                       "grammarBindings": {
                         "maxItems": 16,
                         "type": "array",
@@ -24487,8 +24929,42 @@
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
                       },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
+                      },
                       "grammarBindings": {
-                        "maxItems": 16,
+                        "maxItems": 17,
                         "type": "array",
                         "items": {
                           "type": "object",
@@ -25986,6 +26462,40 @@
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
                       },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
+                      },
                       "grammarBindings": {
                         "maxItems": 16,
                         "type": "array",
@@ -27477,6 +27987,40 @@
                       "grammarManifestDigest": {
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
                       },
                       "grammarBindings": {
                         "maxItems": 16,
@@ -28973,6 +29517,40 @@
                       "grammarManifestDigest": {
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
                       },
                       "grammarBindings": {
                         "maxItems": 16,
@@ -30593,6 +31171,40 @@
                       "grammarManifestDigest": {
                         "type": "string",
                         "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtimeArtifactProof": {
+                        "type": "object",
+                        "properties": {
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 262144
+                          },
+                          "policyId": {
+                            "type": "string",
+                            "const": "selected-context-runtime-attestation-v1"
+                          },
+                          "policySha256": {
+                            "type": "string",
+                            "const": "8fb1412004413977ee2a11765e54c75c5a890eba20dfefaa4070cc413cd50e5e"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-context-runtime-release"
+                          }
+                        },
+                        "required": [
+                          "sha256",
+                          "bytes",
+                          "policyId",
+                          "policySha256",
+                          "scope"
+                        ],
+                        "additionalProperties": false
                       },
                       "grammarBindings": {
                         "maxItems": 16,

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "scope": "selected-context-runtime-proof-ci",
+  "runtime": {
+    "platform": "linux",
+    "architecture": "arm64",
+    "node": "v22.23.2"
+  },
+  "githubCli": {
+    "version": "2.102.1",
+    "versionOutput": "gh version 2.102.1 (2026-10-20)\nhttps://github.com/cli/cli/releases/tag/v2.102.1\n",
+    "releaseApi": "https://api.github.com/repos/cli/cli/releases/tags/v2.102.1",
+    "releaseId": 418794335,
+    "releaseApiResponse": {
+      "bytes": 39054,
+      "sha256": "8557c153dbb170c57cf4a37fcbe390984346392a53ba95974a6ded0cb1841136"
+    },
+    "archive": {
+      "name": "gh_2.102.1_linux_arm64.tar.gz",
+      "url": "https://github.com/cli/cli/releases/download/v2.102.1/gh_2.102.1_linux_arm64.tar.gz",
+      "bytes": 13922552,
+      "sha256": "5019b3cc6e8a03bb4d88600f8dbda2add8e6407705c159b0c63151036e77a1af",
+      "githubReleaseAssetId": 660284837
+    },
+    "checksums": {
+      "name": "gh_2.102.1_checksums.txt",
+      "url": "https://github.com/cli/cli/releases/download/v2.102.1/gh_2.102.1_checksums.txt",
+      "bytes": 1971,
+      "sha256": "7b35c23de1547377b2c3276e2e4f02b3c44a4ce2686e3fe00a77a9c48b0daa8d",
+      "githubReleaseAssetId": 660284791,
+      "selectedLine": "5019b3cc6e8a03bb4d88600f8dbda2add8e6407705c159b0c63151036e77a1af  gh_2.102.1_linux_arm64.tar.gz"
+    },
+    "executable": {
+      "member": "gh_2.102.1_linux_arm64/bin/gh",
+      "bytes": 39059616,
+      "sha256": "2a94934af93acc2161e165841559b532cce266c805a600b71392761941bed264"
+    },
+    "license": {
+      "member": "gh_2.102.1_linux_arm64/LICENSE",
+      "bytes": 1068,
+      "sha256": "6da4adc42392c8485e40b4251c7e332fc3352df1947c9ffade71dd60b14a7a4f",
+      "source": "https://github.com/cli/cli/blob/v2.102.1/LICENSE"
+    },
+    "publisherSignatureVerified": false,
+    "producerBuildVerified": false,
+    "completeLicenseClosureVerified": false
+  },
+  "runtimeArchive": {
+    "name": "web-tree-sitter.tar.gz",
+    "url": "https://github.com/tree-sitter/tree-sitter/releases/download/v0.27.1/web-tree-sitter.tar.gz",
+    "bytes": 1176564,
+    "sha256": "0a1c8c6a369c5483bbc5385ef1ae9a0d68793553c59f83458fa5973f5de0568a"
+  },
+  "fullProducerBuildClosureVerified": false,
+  "grammarSignaturesVerified": false,
+  "completeLicenseClosureVerified": false,
+  "ownerCurrentStatusVerified": false,
+  "gateAComplete": false
+}

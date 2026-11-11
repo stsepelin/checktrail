@@ -381,6 +381,25 @@ test("selected syntax reports missing or changed grammar prerequisites before pa
 
 test("selected syntax accepts exact runtime bytes and refuses changed JavaScript or valid WASM before parsing", async (t) => {
   const repository = fileURLToPath(new URL("../../", import.meta.url));
+  const [manifest, lock] = (await Promise.all(
+    ["package.json", "package-lock.json"].map(async (file) =>
+      JSON.parse(await readFile(path.join(repository, file), "utf8")),
+    ),
+  )) as [
+    { dependencies: Record<string, string> },
+    {
+      packages: Record<
+        string,
+        {
+          dependencies?: Record<string, string>;
+          version?: string;
+          dev?: boolean;
+        }
+      >;
+    },
+  ];
+  assert.deepEqual(lock.packages[""]?.dependencies, manifest.dependencies);
+  const productionRoots = Object.keys(manifest.dependencies).sort();
   for (const changedFile of [
     null,
     "web-tree-sitter.js",
@@ -401,11 +420,29 @@ test("selected syntax accepts exact runtime bytes and refuses changed JavaScript
         path.join(copied, "assets/context-grammars"),
         { recursive: true },
       );
-      await copyInstalledPackages(copied, [
-        "web-tree-sitter",
-        "zod",
-        "typescript",
-      ]);
+      await copyInstalledPackages(
+        copied,
+        productionRoots,
+        path.join(repository, "node_modules"),
+        ({ relative, version }) => {
+          const location = "node_modules/" + relative.split(path.sep).join("/");
+          const locked = lock.packages[location];
+          assert.ok(
+            locked,
+            "Shadow runtime dependency is not locked: " + location,
+          );
+          assert.notEqual(
+            locked.dev,
+            true,
+            "Shadow runtime dependency is dev-only: " + location,
+          );
+          assert.equal(
+            version,
+            locked.version,
+            "Shadow runtime dependency version differs: " + location,
+          );
+        },
+      );
       await writeFile(path.join(copied, "package.json"), '{"type":"module"}');
       if (changedFile) {
         const target = path.join(

@@ -1,3 +1,5 @@
+import { contextRuntimeInstallationProof } from "./context-runtime-installation.js";
+import { isDeepStrictEqual as sameRuntimeProof } from "node:util";
 import { validateYamlModuleRoots } from "./review-yaml-bindings.js";
 import { validateYamlReviewBindings } from "./review-yaml-resolution.js";
 import { validateHclModuleRoots } from "./review-hcl-bindings.js";
@@ -906,6 +908,15 @@ export function parseReviewContext(input: unknown): ReviewContext {
       : 1024 * 1024,
   );
   const parsed = reviewContextSchema.parse(input);
+  if ("analysis" in parsed && "grammarManifestDigest" in parsed.analysis) {
+    const expected = contextRuntimeInstallationProof(
+      parsed.analysis.grammarBindings.map((binding) => binding.grammar),
+    );
+    if (!sameRuntimeProof(parsed.analysis.runtimeArtifactProof, expected))
+      throw new Error(
+        "Captured context runtime proof differs from operator authority or physical assets",
+      );
+  }
   if (parsed.schemaVersion === 8) {
     validatePythonModuleRoots(parsed.selection.moduleRoots);
     if (

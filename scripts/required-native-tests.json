@@ -6798,5 +6798,123 @@
       "file": "dist/test/windows-task-access-batch-contract.test.js",
       "name": "Windows private ACL batching ships one fixed read-only OS program"
     }
+  ],
+  "context-runtime-proof": [
+    {
+      "file": "dist/test/context-runtime-attestation-policy.test.js",
+      "name": "runtime attestation inspection retains the selected native certificate subject and verified timestamp scope"
+    },
+    {
+      "file": "dist/test/context-runtime-attestation-policy.test.js",
+      "name": "runtime attestation inspection rejects every wrong native identity and empty or ambiguous subject cohort"
+    },
+    {
+      "file": "dist/test/context-runtime-attestation-policy.test.js",
+      "name": "runtime attestation JSON is bounded strict UTF-8 JSON and refuses duplicate native identity keys"
+    },
+    {
+      "file": "dist/test/context-runtime-attestation-policy.test.js",
+      "name": "runtime attestation policy refuses version workflow member and grammar-manifest substitution"
+    },
+    {
+      "file": "dist/test/context-runtime-proof.test.js",
+      "name": "context proof reference rejects unknown fields and private paths"
+    },
+    {
+      "file": "dist/test/context-runtime-proof.test.js",
+      "name": "context proof operator selection is absent for unset and empty startup values"
+    },
+    {
+      "file": "dist/test/context-runtime-proof.test.js",
+      "name": "context proof selection rejects malformed nonempty startup authority"
+    },
+    {
+      "file": "dist/test/context-runtime-proof.test.js",
+      "name": "context proof authority cannot be added after static module import"
+    },
+    {
+      "file": "dist/test/context-runtime-proof.test.js",
+      "name": "context proof JSON rejects duplicates, invalid UTF-8, depth and byte overflows"
+    },
+    {
+      "file": "dist/test/context-runtime-proof.test.js",
+      "name": "context proof bounded reader rejects files, directories and linked parents at their actual boundary"
+    },
+    {
+      "file": "dist/test/context-runtime-proof.test.js",
+      "name": "context proof reader rejects a real concurrently growing input"
+    },
+    {
+      "file": "dist/test/context-runtime-proof.test.js",
+      "name": "context proof actual read loop caps growth after the preflight fstat and retains its stable near miss"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "context runtime offline proof preparation and coherent corruption controls"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "real native result binds both signed runtime members and explicit unsigned-license limits"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "complete identical atomic reuse preserves the previous namespace"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "coherent malformed policy and missing full-closure flags are refused"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "verified timestamp UTC and offset spellings retain the same exact witness instant"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "verified timestamp fractional zeros are equivalent while changed sub-millisecond instants are refused"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "coherent wrong native certificate/source and output bundle are refused"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "six-file reader rejects omitted/extra files and an inside-root parent link"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "operator expected hash and read-only namespace are enforced"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "startup-selected public reference remains fixed after environment removal"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "corrupt existing cache is refused without overwriting the prior proof"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "preparation lifecycle refuses a linked output parent before creating outside directories"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "preparation lifecycle refuses an attempts symlink without touching its outside target"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "preparation lifecycle refuses a regular-file attempts namespace without a leaked stage"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "preparation lifecycle cleans its stage when attempt directory creation is denied"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "preparation lifecycle preserves a controlled nonzero native failure only inside the canonical output"
+    },
+    {
+      "file": "dist/test/context-runtime-proof-preparation.test.js",
+      "name": "actual one-call native counterfactuals reject wrong artifact/workflow/source/signature"
+    }
   ]
 }
