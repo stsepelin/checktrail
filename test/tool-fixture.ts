@@ -1,4 +1,4 @@
-import { cp, readFile } from "node:fs/promises";
+import { cp, readFile, lstat } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -16,6 +16,10 @@ export async function copyInstalledPackages(
     relative: string;
     version: string | undefined;
   }) => void | Promise<void>,
+  options: {
+    includePeers?: boolean;
+    lockedPackages?: Record<string, unknown>;
+  } = {},
 ): Promise<void> {
   const copied = new Set<string>();
   const planned: {
@@ -43,18 +47,63 @@ export async function copyInstalledPackages(
           path.isAbsolute(candidate))
       )
         continue;
+      const locked =
+        options.lockedPackages &&
+        Object.hasOwn(
+          options.lockedPackages,
+          "node_modules/" + candidate.split(path.sep).join("/"),
+        );
       let metadata: {
         version?: string;
         dependencies?: Record<string, string>;
         optionalDependencies?: Record<string, string>;
+        peerDependencies?: Record<string, string>;
+        peerDependenciesMeta?: Record<string, { optional?: boolean }>;
       };
       try {
         metadata = JSON.parse(
           await readFile(path.join(source, "package.json"), "utf8"),
         ) as typeof metadata;
-      } catch {
+      } catch (error) {
+        if (options.lockedPackages) {
+          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+          let absent = false;
+          try {
+            await lstat(source);
+          } catch (missing) {
+            if ((missing as NodeJS.ErrnoException).code !== "ENOENT")
+              throw missing;
+            absent = true;
+          }
+          if (!absent) {
+            if (!locked)
+              throw new Error(
+                "Installed test dependency is outside the selected lock: " +
+                  candidate,
+                { cause: error },
+              );
+            throw new Error(
+              "Invalid installed " +
+                (optional ? "optional " : "") +
+                "test dependency " +
+                name,
+              { cause: error },
+            );
+          }
+          if (locked) {
+            if (optional) return;
+            throw new Error("Missing installed test dependency " + name, {
+              cause: error,
+            });
+          }
+        }
         continue;
       }
+      if (options.lockedPackages && !locked)
+        throw new Error(
+          "Installed test dependency is outside the selected lock: " +
+            candidate,
+        );
       if (copied.has(source)) return;
       copied.add(source);
       const relative = path.relative(sourceModules, source);
@@ -73,6 +122,13 @@ export async function copyInstalledPackages(
         );
       for (const dependency of Object.keys(metadata.optionalDependencies ?? {}))
         await copy(dependency, path.join(source, "package.json"), true);
+      if (options.includePeers)
+        for (const dependency of Object.keys(metadata.peerDependencies ?? {}))
+          await copy(
+            dependency,
+            path.join(source, "package.json"),
+            metadata.peerDependenciesMeta?.[dependency]?.optional === true,
+          );
       return;
     }
     if (!optional) throw new Error(`Missing installed test dependency ${name}`);

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "c-original-report-gzip-chunks-v1",
+  "reportManifestSchemaVersion": 3,
+  "compression": {
+    "format": "gzip-fixed-header-raw-deflate",
+    "headerHex": "1f8b08000000000000ff",
+    "level": 6,
+    "windowBits": -15,
+    "memoryLevel": 8,
+    "strategy": 0
+  },
+  "limits": {
+    "storedMemberBytes": 67108864,
+    "storedFamilyBytes": 536870912,
+    "decodedFileBytes": 536870912,
+    "decodedFamilyBytes": 2147483648,
+    "decodedCombinedBytes": 4294967296,
+    "decodedChunkBytes": 1048576,
+    "reportCount": 8192,
+    "logicalFileCount": 16384,
+    "chunkCount": 16384,
+    "pathDepth": 128,
+    "manifestBytes": 8388608,
+    "discoveryEntries": 1000000,
+    "discoverySeconds": 30
+  },
+  "losslessOriginalBytesRequired": true,
+  "legacyDecodedCapsUnchanged": true,
+  "partialCaptureQualifies": false,
+  "producerOrSdkClosureVerified": false
+}

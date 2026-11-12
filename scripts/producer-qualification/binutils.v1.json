@@ -3183,13 +3183,13 @@
     },
     {
       "file": "binutils-retention-observer.py",
-      "bytes": 3147,
-      "sha256": "1f4a08e23053306b573b1be65def084e7b6fc4d7ef18b4d8cf179dffb489bc0d"
+      "bytes": 11004,
+      "sha256": "e6bb70198cd80efea6eee11dd030827b387b050ab8bf44b29e2a0ad58d3ff49a"
     },
     {
       "file": "binutils-retention-observer.mjs",
-      "bytes": 11128,
-      "sha256": "4fa341cc7296a97b5b7c47a6ab99d8806a2fd274596e90521d3282eee21a3702"
+      "bytes": 12643,
+      "sha256": "b0a7bea8b8cc982313bbe34fc41d41c6389fb128826f3949b5192adde50e0d91"
     }
   ],
   "inputOrigins": {

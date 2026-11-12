@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "local-gcc12-12h-v1",
+  "context": "operator-local-arm64-managed-window",
+  "base": {
+    "profileKey": "gcc-12",
+    "sourceProfile": "original-debian-gcc-12-12.2.0-14+deb12u1-build-v1",
+    "sourceVersion": "12.2.0-14+deb12u1",
+    "catalogSha256": "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd",
+    "deadlineSeconds": 43200
+  },
+  "native": {
+    "command": ["dpkg-buildpackage", "-b", "-us", "-uc", "--jobs=4"],
+    "deadlineSeconds": 43200,
+    "killAfterSeconds": 30,
+    "cpuLimit": 4,
+    "memory": "6g",
+    "pidsLimit": 1024,
+    "workByteLimit": 68719476736,
+    "logByteLimit": 536870912,
+    "inputFileByteLimit": 134217728
+  },
+  "windows": {
+    "controllerSetupSeconds": 600,
+    "producerObserverSeconds": 43290,
+    "postStopCollectorObserverSeconds": 180,
+    "controllerFinalizationReserveSeconds": 330,
+    "controllerTotalSeconds": 44400,
+    "localForegroundObservationSeconds": 44460,
+    "localForegroundCleanupSeconds": 600,
+    "minimumExportReplayReserveSeconds": 1200,
+    "managedBootstrapAdmissionSeconds": 540,
+    "managedMaximumSeconds": 46800
+  },
+  "requires": {
+    "operatorTrustExecution": true,
+    "coordinatedHeavySlot": true,
+    "localArm64Daemon": true,
+    "hostedJobEnvelope": false
+  }
+}

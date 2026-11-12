@@ -30,7 +30,26 @@ const environment = {
 const exec = promisify(execFile);
 const docker = (args) =>
   exec("docker", args, { env: environment, timeout: 20000, maxBuffer: 65536 });
+export async function checkObserverInputs(sourceDirectory = directory) {
+  const recipe = JSON.parse(
+    await readFile(path.join(sourceDirectory, "binutils.v1.json"), "utf8"),
+  );
+  await validateInputs(sourceDirectory, recipe.controllerFiles);
+  return recipe;
+}
 async function main(args) {
+  if (args.length === 1 && args[0] === "--check-inputs") {
+    const recipe = await checkObserverInputs();
+    process.stdout.write(
+      JSON.stringify({
+        controllerInputsVerified: recipe.controllerFiles.length,
+        nativeLinuxPermissionProof: false,
+        sourceOrCompilerInvoked: false,
+        gateAComplete: false,
+      }) + "\n",
+    );
+    return;
+  }
   assert.deepEqual(args.slice(0, 1), ["--output"]);
   assert.equal(args.length, 2);
   assert.equal(process.platform, "linux");
@@ -40,10 +59,7 @@ async function main(args) {
     process.getuid() !== 0,
     "Permission-negative proof requires an unprivileged host user",
   );
-  const recipe = JSON.parse(
-    await readFile(path.join(directory, "binutils.v1.json"), "utf8"),
-  );
-  await validateInputs(directory, recipe.controllerFiles);
+  const recipe = await checkObserverInputs();
   const { destination } = await validateDestination(
     path.resolve(directory, "../.."),
     args[1],
