@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "scope": "scala2",
   "observedAt": "2026-10-21T17:22:21.518730+00:00",
-  "repositoryCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
   "repositoryInputs": [
     {
       "file": "src/scala2-artifacts.ts",
@@ -10,7 +9,23 @@
     },
     {
       "file": "scripts/prepare-scala2-tools.mjs",
-      "sha256": "7b1f92376c66ca3366115f636b324e3e7ddf4fd0248fbf1a2a3fe341175572b4"
+      "sha256": "280bc123f479455104f74873a625d5b3e8228d15c0c6e5d60a1fcf9ddd3a5514"
+    },
+    {
+      "file": "scripts/prepare-scala2-signature-proof.mjs",
+      "sha256": "d50dc7b38fd119cfc4bc567d4ef1a4ec32a6b380dc214fcd977b359d266b9597"
+    },
+    {
+      "file": "scripts/release-signature-preparation.mjs",
+      "sha256": "9d406135ae11f4b01ffa42d782badd83b349416b22c2fef47d5fc7a529d17e9d"
+    },
+    {
+      "file": "src/release-signature-proof.ts",
+      "sha256": "1ade1df184c8d26fa23de3f7dee764bfdbe76637a9beab1f777d9b65aa7ce4f2"
+    },
+    {
+      "file": "src/scala2-release-signature.ts",
+      "sha256": "aee64f4d27475cb6c4af102af94330b3dcacb89d4d01b20f86295f79fc885d73"
     }
   ],
   "observations": {
@@ -230,5 +245,24 @@
   "gateAComplete": false,
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
-  "observationsUpdatedAt": "2026-10-27"
+  "observationsUpdatedAt": "2026-10-27",
+  "historicalRepositoryBinding": {
+    "repositoryCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+    "repositoryInputs": [
+      {
+        "file": "src/scala2-artifacts.ts",
+        "sha256": "2609bc9f6aa3db43c5b3e77ba15e7cca1ef7410ddb9868b3b38818fabcd3a238"
+      },
+      {
+        "file": "scripts/prepare-scala2-tools.mjs",
+        "sha256": "7b1f92376c66ca3366115f636b324e3e7ddf4fd0248fbf1a2a3fe341175572b4"
+      }
+    ]
+  },
+  "currentRepositoryBinding": {
+    "bindingKind": "working-tree-bytes",
+    "baseCommit": "afe996777c96d831d626e76d3f34d74bab97f450",
+    "reconciledAt": "2026-11-11",
+    "scope": "Current selected preparation inputs, including opt-in scoped release-signature admission. These byte bindings do not identify the code executed by the retained historical observations."
+  }
 }

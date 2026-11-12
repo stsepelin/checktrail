@@ -1,3 +1,9 @@
+import { parseReleaseProofPin } from "./release-signature-proof.js";
+import {
+  scala2ReleaseProofEnvironment,
+  scala2ReleaseSignature,
+  scala2ReleaseSignatureReferenceSchema,
+} from "./scala2-release-signature.js";
 import path from "node:path";
 import { realpathSync } from "node:fs";
 import { z } from "zod";
@@ -26,7 +32,7 @@ const digest = z.string().regex(/^[a-f0-9]{64}$/),
       .max(1024 * 1024),
     sha256: digest,
   });
-export const scala2EvidenceSchema = z.strictObject({
+const scala2LegacyEvidenceSchema = z.strictObject({
   version: z.literal(1),
   requestDigest: digest,
   scala: z.literal("2.13.18"),
@@ -142,6 +148,13 @@ export const scala2EvidenceSchema = z.strictObject({
       .max(4001),
   }),
 });
+export const scala2EvidenceSchema = z.union([
+  scala2LegacyEvidenceSchema,
+  scala2LegacyEvidenceSchema.extend({
+    version: z.literal(2),
+    releaseSignatureProof: scala2ReleaseSignatureReferenceSchema,
+  }),
+]);
 const phases = [
   "parser",
   "namer",
@@ -236,7 +249,24 @@ export function scala2Evidence(
     if (JSON.stringify(current) !== JSON.stringify(config)) return incomplete;
     const archive = path.resolve(root, check.project, config.archive);
     if (realpathSync(archive) !== archive) return incomplete;
-    scala2Libraries(kotlinReadSync(archive, scala2Artifacts.archiveBytes));
+    const archiveBytes = kotlinReadSync(archive, scala2Artifacts.archiveBytes);
+    scala2Libraries(archiveBytes);
+    const releaseProofPin = parseReleaseProofPin(
+      check.commands[0]!.env?.[scala2ReleaseProofEnvironment],
+    );
+    const releaseSignatureProof = scala2ReleaseSignature(
+      archive,
+      archiveBytes,
+      releaseProofPin,
+    );
+    if (releaseSignatureProof) {
+      if (
+        data.version !== 2 ||
+        JSON.stringify(data.releaseSignatureProof) !==
+          JSON.stringify(releaseSignatureProof)
+      )
+        return incomplete;
+    } else if (data.version !== 1) return incomplete;
     let dependencyBytes = 0;
     const dependencyPaths = new Set<string>();
     for (const dep of config.classPath) {
@@ -281,7 +311,7 @@ export function scala2Evidence(
         0,
       ) !== mirror.stderr.bytes ||
       JSON.stringify(
-        scala2EvidenceSchema.shape.native.parse(
+        scala2LegacyEvidenceSchema.shape.native.parse(
           JSON.parse(Buffer.from(raw.stdout.base64, "base64").toString("utf8")),
         ),
       ) !== JSON.stringify(native)

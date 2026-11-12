@@ -7,6 +7,7 @@ import { kotlinRead } from "./kotlin-io.js";
 import { kotlinJar } from "./kotlin-jar.js";
 import { scala2Artifacts } from "./scala2-artifacts.js";
 import { scala2Hash, scala2Libraries } from "./scala2-archive.js";
+import { scala2ReleaseSignature } from "./scala2-release-signature.js";
 export const scala2ConfigSchema = z.strictObject({
   schemaVersion: z.literal(1),
   archive: externalPathSchema,
@@ -27,6 +28,7 @@ export async function scala2Inputs(
   root: string,
   project: string,
   config: z.infer<typeof scala2ConfigSchema>,
+  releaseProofPin = "",
 ) {
   const declared = path.resolve(root, project, config.archive),
     archive = await withinRoot(root, path.relative(root, declared)),
@@ -53,6 +55,11 @@ export async function scala2Inputs(
     if (JSON.stringify(actual.classPath) !== JSON.stringify(expected))
       throw Error("Scala 2 runtime manifest dependencies disagree");
   }
+  const releaseSignatureProof = scala2ReleaseSignature(
+    archive,
+    bytes,
+    releaseProofPin,
+  );
   const dependencies = [];
   let total = 0;
   for (const dep of config.classPath) {
@@ -78,5 +85,5 @@ export async function scala2Inputs(
   }
   if (new Set(dependencies.map((d) => d.file)).size !== dependencies.length)
     throw Error("Duplicate Scala 2 dependency");
-  return { archive, bytes, libraries, dependencies };
+  return { archive, bytes, libraries, dependencies, releaseSignatureProof };
 }

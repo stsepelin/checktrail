@@ -943,6 +943,16 @@ jobs:
       - run: node scripts/prepare-scala2-tools.mjs
         env:
           CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
+      - name: Verify selected Scala JAR signatures and immutable publication controls
+        run: node scripts/verify-scala2-signature-proof.mjs
+      - name: Prepare operator-pinned selected Scala JAR signature evidence
+        env:
+          SCALA2_SIGNATURE_INPUTS: ${{ runner.temp }}/scala2-signature-inputs
+          CHECKTRAIL_SCALA2_PREPARATION_MANIFEST: ${{ runner.temp }}/scala2-release-signature-preparation.json
+        run: |
+          mkdir "$SCALA2_SIGNATURE_INPUTS"
+          cp docs/measurements/artifact-identities-2026-10-21/scala-public-key.asc docs/measurements/artifact-identities-2026-10-21/scala-compiler-2.13.18.jar.asc docs/measurements/artifact-identities-2026-10-21/scala-library-2.13.18.jar.asc docs/measurements/artifact-identities-2026-10-21/scala-reflect-2.13.18.jar.asc "$SCALA2_SIGNATURE_INPUTS/"
+          node scripts/prepare-scala2-tools.mjs --verify-release-signatures "$SCALA2_SIGNATURE_INPUTS" > "$CHECKTRAIL_SCALA2_PREPARATION_MANIFEST"
       - name: Prepare pinned public images with bounded delivery retries
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
@@ -952,6 +962,10 @@ jobs:
       - run: node scripts/prepare-package-cache.mjs
       - name: Verify preserved compilation, extension source and installed acceptance, compiling guards and native regressions
         run: node scripts/verify-scala-extensions-container.mjs
+      - name: Verify operator-pinned Scala signature source and fresh installed acceptance
+        env:
+          CHECKTRAIL_SCALA2_PREPARATION_MANIFEST: ${{ runner.temp }}/scala2-release-signature-preparation.json
+        run: node scripts/verify-scala2-signature-container.mjs "$CHECKTRAIL_SCALA2_PREPARATION_MANIFEST"
 
   jvm-wrappers-arm64:
     needs: [ci-plan, actionlint]
@@ -1636,9 +1650,23 @@ jobs:
         env:
           CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
       - run: node scripts/prepare-terraform-extensions-runtime.mjs
+      - name: Prepare operator-pinned Random release signature evidence
+        if: ${{ matrix.phase == 'acceptance' }}
+        env:
+          RANDOM_SIGNATURE_INPUTS: ${{ runner.temp }}/random-signature-inputs
+          CHECKTRAIL_RANDOM_PREPARATION_MANIFEST: ${{ runner.temp }}/random-release-signature-preparation.json
+        run: |
+          mkdir "$RANDOM_SIGNATURE_INPUTS"
+          cp docs/measurements/artifact-identities-2026-10-21/provider-public-key.asc docs/measurements/artifact-identities-2026-10-21/provider-SHA256SUMS.txt docs/measurements/artifact-identities-2026-10-21/provider-SHA256SUMS.sig "$RANDOM_SIGNATURE_INPUTS/"
+          node scripts/prepare-terraform-extensions-runtime.mjs --verify-release-signature "$RANDOM_SIGNATURE_INPUTS" > "$CHECKTRAIL_RANDOM_PREPARATION_MANIFEST"
       - run: node scripts/prepare-package-cache.mjs
       - name: Native baseline, offline installation or paired controls
         run: node scripts/verify-terraform-extensions-container.mjs ${{ matrix.phase }}
+      - name: Require signed Random source and fresh installed controls
+        if: ${{ matrix.phase == 'acceptance' }}
+        env:
+          CHECKTRAIL_RANDOM_PREPARATION_MANIFEST: ${{ runner.temp }}/random-release-signature-preparation.json
+        run: node scripts/verify-terraform-signature-container.mjs "$CHECKTRAIL_RANDOM_PREPARATION_MANIFEST"
       - if: always()
         run: node scripts/cleanup-infra-tools-runtime.mjs
 

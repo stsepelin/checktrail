@@ -1,0 +1,62 @@
+{
+  "provider": {
+    "address": "registry.terraform.io/hashicorp/random",
+    "version": "3.9.1",
+    "archive": "synthetic-provider.zip",
+    "archiveBytes": 323,
+    "archiveSha256": "35aa774127738d4d27d7f911d599c649c3eda2999c544b87786347028aa4f050",
+    "members": [
+      {
+        "path": "LICENSE.txt",
+        "bytes": 27,
+        "sha256": "c6054681cab9736758583581dd2dfd76ebc0f8e12960d43229d85f2d950950d0"
+      },
+      {
+        "path": "terraform-provider-synthetic",
+        "bytes": 44,
+        "sha256": "53db1db71f49b495c50d1a6f54f5adb991429acc16e1851035baed168f7b2aef"
+      }
+    ]
+  },
+  "policy": {
+    "id": "synthetic-random-preparation-v1",
+    "payloads": [
+      {
+        "path": "synthetic-provider.zip",
+        "bytes": 323,
+        "sha256": "35aa774127738d4d27d7f911d599c649c3eda2999c544b87786347028aa4f050"
+      },
+      {
+        "path": "LICENSE.txt",
+        "bytes": 27,
+        "sha256": "c6054681cab9736758583581dd2dfd76ebc0f8e12960d43229d85f2d950950d0"
+      },
+      {
+        "path": "terraform-provider-synthetic",
+        "bytes": 44,
+        "sha256": "53db1db71f49b495c50d1a6f54f5adb991429acc16e1851035baed168f7b2aef"
+      }
+    ],
+    "publicKey": {
+      "path": "provider-public-key.asc",
+      "bytes": 478,
+      "sha256": "ea021e040cf3b083e92cd9ff48828160023fa0ae1f2fa6ea7e01237a2921d5db"
+    },
+    "signatures": [
+      {
+        "subject": {
+          "path": "provider-SHA256SUMS.txt",
+          "bytes": 89,
+          "sha256": "ec24632a00d00f171b8e2a0d45482b142ed5dbc988dd199530b498f1e00d82af"
+        },
+        "signature": {
+          "path": "provider-SHA256SUMS.sig",
+          "bytes": 265,
+          "sha256": "6d4f1bd00bb1541ee91b5ec7139c5786fffb23797879cf651d2f7f455005b7d2"
+        },
+        "signerFingerprint": "79D2B7F88DCA1C556D4991F915A56A42623F9900",
+        "primaryFingerprint": "79D2B7F88DCA1C556D4991F915A56A42623F9900"
+      }
+    ]
+  }
+}

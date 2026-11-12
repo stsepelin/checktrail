@@ -1,3 +1,5 @@
+import { parseReleaseProofPin } from "./release-signature-proof.js";
+import { randomReleaseProofEnvironment } from "./terraform-release-signature.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDeepStrictEqual } from "node:util";
@@ -43,6 +45,9 @@ export async function terraformExtensionsCheck(
     const providerRoot =
       process.env.CHECKTRAIL_TERRAFORM_EXTENSIONS_PROVIDER_ROOT ??
       path.join(source.root, ".checktrail/terraform-extensions-tools");
+    const releaseProofPin = parseReleaseProofPin(
+      process.env[randomReleaseProofEnvironment],
+    );
     check.scope = current.files;
     check.commands.push({
       executable: process.execPath,
@@ -64,6 +69,7 @@ export async function terraformExtensionsCheck(
         NODE_PATH: "",
         PATH: process.env.PATH ?? "",
         CHECKTRAIL_TERRAFORM_EXTENSIONS_PROVIDER_ROOT: providerRoot,
+        [randomReleaseProofEnvironment]: releaseProofPin,
       },
     });
   } catch {
