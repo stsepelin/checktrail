@@ -908,15 +908,22 @@ test(
       }),
     ];
     const program = String.raw`
-import base64,importlib.util,json,pathlib,sys,tempfile
+import base64,importlib.util,json,pathlib,sys,tempfile,time
+started=time.monotonic()
+def phase(name,**values):
+ print('CT_C_REPLAY_PHASE '+json.dumps(dict(phase=name,elapsedMilliseconds=round((time.monotonic()-started)*1000,3),**values),separators=(',',':')),file=sys.stderr,flush=True)
+phase('read-input')
 repo=pathlib.Path(sys.argv[1]);payload=json.load(sys.stdin)
+phase('load-replay')
 def load(name,file):
  spec=importlib.util.spec_from_file_location(name,file);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 replay=load('c_replay',repo/'scripts/producer-qualification/c-producer-replay-evidence.py')
+phase('load-exporter')
 exporter=load('c_export',repo/'scripts/producer-qualification/c-producer-export-evidence.py')
 raw=base64.b64decode(payload['raw'],validate=True)
 results=[]
-for case in payload['cases']:
+for index,case in enumerate(payload['cases']):
+ phase('receipt-case',index=index)
  raw=base64.b64decode(case.get('raw',payload['raw']),validate=True)
  receipt=case['receipt'];observer=receipt['retentionObserver']
  observer.update(workObjectPolicy=replay.C_BUILD_POLICY['workObjectPolicy'],log=replay.pin(raw))
@@ -933,10 +940,12 @@ for case in payload['cases']:
  else:accepted=True
  results.append({'label':case['label'],'accepted':accepted})
  assert accepted is case['expected'],case['label']
+phase('format-controls')
 with tempfile.TemporaryDirectory(prefix='ct-c-receipt-format-') as directory:
  file=pathlib.Path(directory)/'receipt.json'
  complete=payload['cases'][0]['receipt']
  for version in [1,2,3]:
+  phase('receipt-format',version=version)
   value=dict(complete,schemaVersion=version)
   if version<3:
    value.pop('retentionSamplingPolicy');value.pop('quiescentResourceSamples')
@@ -961,7 +970,9 @@ with tempfile.TemporaryDirectory(prefix='ct-c-receipt-format-') as directory:
  (result/'retention-observer.jsonl').write_bytes(raw)
  startup=base/'startup.json';startup.write_text('{}')
  archive=base/'schema3.zip'
+ phase('export')
  exporter.export(repo,inputs,common,result,startup,archive,profile_name='gcc-12')
+ phase('packet')
  packet=replay.Packet(archive)
  try:
   assert packet.manifest['schemaVersion']==3 and packet.manifest['controllerReceiptFormat']=='schema3'
@@ -970,9 +981,11 @@ with tempfile.TemporaryDirectory(prefix='ct-c-receipt-format-') as directory:
   selected=replay.evidence_format(physical)
   assert replay.retention(packet.read('result/retention-observer.jsonl',256*1024**2),physical['retentionObserver'],selected,physical)==physical['finalRetention']
  finally:packet.close()
+ phase('incomplete-replay')
  try:replay.replay(archive,repo,expected_profile='gcc-12')
  except ValueError as error:assert 'Incomplete raw C export' in str(error)
  else:raise AssertionError('Synthetic schema3 transport became native qualification')
+phase('complete',cases=len(results))
 print(json.dumps(results))
 `;
     const result = spawnSync(
@@ -985,7 +998,20 @@ print(json.dumps(results))
         maxBuffer: 65536,
       },
     );
-    assert.equal(result.status, 0, result.stderr);
+    const terminal = JSON.stringify({
+      status: result.status,
+      signal: result.signal,
+      errorCode:
+        (result.error as NodeJS.ErrnoException | undefined)?.code ?? null,
+      stdoutBytes: Buffer.byteLength(result.stdout ?? ""),
+      stderrBytes: Buffer.byteLength(result.stderr ?? ""),
+      lastPhase:
+        result.stderr
+          ?.split("\n")
+          .findLast((line) => line.startsWith("CT_C_REPLAY_PHASE ")) ?? null,
+      stderrTail: result.stderr?.slice(-4096) ?? "",
+    });
+    assert.equal(result.status, 0, terminal);
     assert.deepEqual(
       JSON.parse(result.stdout),
       cases.map((candidate) => ({

@@ -38,15 +38,21 @@ const preparationRegressionSources = Object.freeze({
 const cProducerRegressionFiles = Object.freeze([
   "test/binutils-acquisition.test.ts",
   "test/binutils-build-observation.test.ts",
+  "test/binutils-controller-inputs.test.ts",
   "test/binutils-download.test.ts",
   "test/binutils-image-identity.test.ts",
   "test/binutils-input-preparation.test.ts",
   "test/binutils-retention-observer.test.ts",
   "test/c-producer-evidence.test.ts",
   "test/c-producer-gcc-evidence.test.ts",
+  "test/c-producer-local12h.test.ts",
   "test/c-producer-qualification.test.ts",
   "test/c-producer-quiescence.test.ts",
   "test/c-producer-replay-batch.test.ts",
+  "test/c-producer-report-capture.test.ts",
+  "test/c-producer-report-codec.test.ts",
+  "test/c-producer-report-transport.test.ts",
+  "test/c-producer-source-epoch.test.ts",
   "test/c-producer-u13.test.ts",
   "test/gcc-job-envelope.test.ts",
   "test/glibc-seccomp.test.ts",
@@ -65,14 +71,17 @@ export const cProducerSharedBoundary = Object.freeze({
   // Names only: editing a reviewed member does not invalidate its fast path.
   // A new helper, fixture, test or workflow needs an explicit inventory review.
   inventorySha256:
-    "33c5eb3dbbe2805077996a4ccefa33b2c7ea99cfa50f237dbf7f1ec2c46257ef",
+    "8943c47e4bf50102a8951f607a0732cf47e12eeae4eaee31c9fdf6d7e8b1ba2a",
   files: Object.freeze([
     "scripts/acquire-binutils-inputs.mjs",
     "scripts/acquire-c-producer-inputs.mjs",
     "scripts/observe-c-producer-carrier.mjs",
     "scripts/qualify-binutils-producer.mjs",
     "scripts/qualify-c-producer.mjs",
+    "scripts/qualify-go-bootstrap-producer.mjs",
+    "scripts/qualify-node-original-producer.mjs",
     "scripts/verify-binutils-build-observation.mjs",
+    "scripts/verify-binutils-retention-observer.mjs",
     "scripts/verify-c-producer-observation.mjs",
     "scripts/producer-qualification/binutils-acquisition-plan.mjs",
     "scripts/producer-qualification/binutils-apt-index-preparation.v1.json",
@@ -94,16 +103,29 @@ export const cProducerSharedBoundary = Object.freeze({
     "scripts/producer-qualification/c-producer-profiles.v1.json",
     "scripts/producer-qualification/c-producer-quiescent-sample.mjs",
     "scripts/producer-qualification/c-producer-replay-evidence.py",
+    "scripts/producer-qualification/c-producer-report-codec.mjs",
+    "scripts/producer-qualification/c-producer-report-codec.py",
     "scripts/producer-qualification/c-producer-test-reports.py",
+    "scripts/producer-qualification/c-report-encoding.v1.json",
     "scripts/producer-qualification/gcc-github-job-clock.mjs",
     "scripts/producer-qualification/gcc-job-envelope.mjs",
+    "scripts/producer-qualification/gcc-local-12h-policy.v1.json",
     "scripts/producer-qualification/gcc-local-wall-policy.v1.json",
     "scripts/producer-qualification/glibc-seccomp-probe.py",
     "scripts/producer-qualification/glibc-seccomp.mjs",
     "scripts/producer-qualification/glibc-seccomp.v1.json",
+    "test/fixtures/c-controller-history/LICENSE-schema1.txt",
+    "test/fixtures/c-controller-history/LICENSE-schema2.txt",
+    "test/fixtures/c-controller-history/provenance.json",
+    "test/fixtures/c-controller-history/report-collector-provenance.json",
+    "test/fixtures/c-controller-history/schema1-controller.mjs.txt",
+    "test/fixtures/c-controller-history/schema2-controller.mjs.txt",
+    "test/fixtures/c-controller-history/schema2-report-collector.py.txt",
+    "test/fixtures/c-producer-epoch-routing.mjs",
     "test/fixtures/c-producer-interruption.py",
     "test/fixtures/c-producer-local-clock.mjs",
     "test/fixtures/c-retention-controls.py",
+    "test/fixtures/c-retention-quiescent-rename.py",
     ...cProducerRegressionFiles,
   ]),
   workflowFiles: Object.freeze([
@@ -114,11 +136,6 @@ export const cProducerSharedBoundary = Object.freeze({
   ]),
   testFiles: cProducerRegressionFiles,
 });
-const cProducerSharedInputs = new Set([
-  ...cProducerSharedBoundary.files,
-  ...cProducerSharedBoundary.workflowFiles,
-]);
-const cProducerWorkflowInputs = new Set(cProducerSharedBoundary.workflowFiles);
 const generic = new Set([
   "scripts/request-pinned-artifact.mjs",
   "scripts/verify-required-native-tests.mjs",
@@ -181,7 +198,7 @@ export function producerInventoryFingerprint(files) {
     !Array.isArray(files) ||
     files.length === 0 ||
     files.length > 100000 ||
-    !files.every(validPath) ||
+    !Array.from(files).every(validPath) ||
     new Set(files).size !== files.length
   )
     return null;
@@ -431,6 +448,37 @@ export function validateInputContract(inputs, jobs) {
     );
   }
 }
+function validProducerBoundary(boundary) {
+  if (
+    !boundary ||
+    typeof boundary !== "object" ||
+    Array.isArray(boundary) ||
+    typeof boundary.inventorySha256 !== "string" ||
+    !/^[a-f0-9]{64}$/.test(boundary.inventorySha256)
+  )
+    return false;
+  for (const key of ["files", "workflowFiles", "testFiles"]) {
+    const files = boundary[key];
+    if (
+      !Array.isArray(files) ||
+      files.length === 0 ||
+      files.length > 10000 ||
+      !Array.from(files).every(validPath) ||
+      new Set(files).size !== files.length
+    )
+      return false;
+  }
+  const files = new Set(boundary.files);
+  return (
+    boundary.workflowFiles.every((file) => !files.has(file)) &&
+    boundary.testFiles.every(
+      (file) =>
+        files.has(file) &&
+        file.startsWith("test/") &&
+        file.endsWith(".test.ts"),
+    )
+  );
+}
 export function planNativeJobs({
   jobs,
   inputs,
@@ -440,6 +488,7 @@ export function planNativeJobs({
   contractCurrent = false,
   sourceBoundaries = sourceCatalog.boundaries,
   producerInventory = null,
+  producerBoundary = cProducerSharedBoundary,
 }) {
   validateInputContract(inputs, jobs);
   const full = (reason) => ({
@@ -449,6 +498,13 @@ export function planNativeJobs({
     notSelected: [],
     baseline: null,
   });
+  if (!validProducerBoundary(producerBoundary))
+    return full("Invalid reviewed producer boundary policy");
+  const cProducerSharedInputs = new Set([
+    ...producerBoundary.files,
+    ...producerBoundary.workflowFiles,
+  ]);
+  const cProducerWorkflowInputs = new Set(producerBoundary.workflowFiles);
   if (eventName !== "pull_request")
     return full("Non-PR verification always runs every native job");
   if (contractCurrent !== true)
@@ -457,13 +513,13 @@ export function planNativeJobs({
     !Array.isArray(changed) ||
     !changed.length ||
     changed.length > 10000 ||
-    !changed.every(validPath)
+    !Array.from(changed).every(validPath)
   )
     return full("Missing, empty or invalid changed-file inventory");
   if (
     changed.some((file) => cProducerSharedInputs.has(file)) &&
     producerInventoryFingerprint(producerInventory) !==
-      cProducerSharedBoundary.inventorySha256
+      producerBoundary.inventorySha256
   )
     return full(
       "Producer-only inventory is missing or changed; review new test/helper/workflow names and refresh the producer boundary",
@@ -541,7 +597,7 @@ export function planNativeJobs({
         "dist/test/ci-affected-tests.test.js",
         "dist/test/ci-source-boundaries.test.js",
         ...(changed.some((file) => cProducerSharedInputs.has(file))
-          ? cProducerSharedBoundary.testFiles.map(
+          ? producerBoundary.testFiles.map(
               (file) => "dist/" + file.replace(/\.ts$/, ".js"),
             )
           : []),
