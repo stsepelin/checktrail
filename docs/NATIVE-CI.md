@@ -52,16 +52,17 @@ records actual sequential and concurrent executions of the sealed multi-claim
 mutation and installed-package controllers. This is one local subset comparison,
 not current hosted acceptance or a prediction for total workflow duration.
 
-Stack branches under `pr/**` use pull-request events for verification rather than
+Branches under `pr/**` use pull-request events for verification rather than
 duplicating the full workflow on their branch push. Other branch pushes and all
 tag pushes retain verification. A newly opened PR triggers its checks even when
 its initial branch push did not. Each PR has its own workflow concurrency group;
 a newer merge-candidate run supersedes older runs for that PR, including runs
-caused by predecessor updates. This does not serialize jobs within a run or other
+caused by updating the PR branch. This does not serialize jobs within a run or other
 PRs. Branch pushes also share a group per branch, so a newer push cancels an older
 run for that branch, including main during consecutive merges. Different
 branches and tag refs have separate groups; running tag verification is not
-cancelled by a newer push. Native profiles, matrix entries and assertions are unchanged.
+cancelled by a newer push. Required callback assertions remain intact; generator
+shard scheduling is described below.
 
 Superseded results are cancelled, not credited as successful acceptance. Check
 the current head and latest merge-candidate run before claiming hosted success.
@@ -118,6 +119,14 @@ measure queued time, setup and execution on the hosted candidate. Full
 compatibility verification remains the conservative fallback for shared and
 unclassified changes. Original upstream compiler qualification is separate work;
 complete producer-build closure remains required for Gate A.
+
+The same affected selection applies to a repository-bound, nonforced update to
+`main` after the planner verifies the exact event/checkout commits, their ancestry
+and the current ownership contract. It uses the complete `before..after` net diff,
+including deleted paths. Missing or uncertain metadata, an empty diff, shared or
+unknown inputs and other push refs retain full verification. Scheduled and manual
+full workflows retain their existing selection. Results from an earlier revision cannot qualify
+execution of the selected current inputs.
 
 Chromium acquisition validates the locked native fixture before starting the
 qualified CLI. A bounded helper retains every attempt and retries only recognized
@@ -829,10 +838,27 @@ job deadlines remain unchanged. A failed or incomplete pull still fails setup.
 
 ## Generator installation acceptance budget
 
-The generator extension job participates in the planner, native input inventory
-and final completion gate. It starts in the initial wave; F# format admission
-waits for actionlint so the initial expanded wave stays within twenty jobs.
-The existing four shared OS/Node variants and every native callback remain.
+The generator extension profile uses three closed matrix rows after `ci-plan`
+and actionlint. Its logical planner key, native input inventory and completion
+gate remain one profile. Sealed callback roles and control IDs are partitioned
+across the rows, and the original installed child cohort remains intact on its
+assigned row. The scheduling contract keeps the initial expanded wave within
+twenty jobs.
+
+Each row retains two containers with the original per-container limits of two
+CPUs, 4 GiB and 256 PIDs. The complete three-row cohort therefore permits at most
+six containers with aggregate limits of twelve CPUs and 24 GiB. These are container
+limits; hosted execution time still requires measurement on the current candidate.
+
+An individual fragment cannot qualify the whole profile. `ci-complete` requires
+the complete disjoint manifest union, current-source frames and exact retained
+artifact claims. Each fragment binds its actual numeric execution ID and attempt,
+with the candidate head kept separate from the checked-out PR merge commit.
+GitHub can give retained successful executions new API job IDs on a failed-job
+rerun. Admission preserves the original identity, requires a successful latest
+context and reconciles the retained execution metadata and START/FINISH claims.
+Failed, missing or incomplete latest contexts cannot be filled with an older
+artifact.
 
 The installed generator acceptance callback repeats its original native cases
 through a fresh offline production installation. Its subprocess deadline is

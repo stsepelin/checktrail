@@ -21,6 +21,12 @@ const retainedArtifactDirectory =
 // Derive their native consumers from the exact preparation controllers; do not
 // classify neighboring test names or create entries for absent files.
 const preparationRegressionSources = Object.freeze({
+  "test/dotnet-generator-shards.test.ts": Object.freeze([
+    "scripts/verify-dotnet-generator-extensions-container.mjs",
+  ]),
+  "test/dotnet-generator-ci.test.ts": Object.freeze([
+    "scripts/verify-dotnet-generator-extensions-container.mjs",
+  ]),
   "test/github-artifact-delivery.test.ts": Object.freeze([
     "scripts/prepare-infra-tools-runtime.mjs",
     "scripts/prepare-scala-tools.mjs",
@@ -65,7 +71,7 @@ export const cProducerSharedBoundary = Object.freeze({
   // Names only: editing a reviewed member does not invalidate its fast path.
   // A new helper, fixture, test or workflow needs an explicit inventory review.
   inventorySha256:
-    "33c5eb3dbbe2805077996a4ccefa33b2c7ea99cfa50f237dbf7f1ec2c46257ef",
+    "187b7e85d40eb71488c3772ebd6705b24871faf70e6018b9f6a638d8c82edde0",
   files: Object.freeze([
     "scripts/acquire-binutils-inputs.mjs",
     "scripts/acquire-c-producer-inputs.mjs",
@@ -114,11 +120,6 @@ export const cProducerSharedBoundary = Object.freeze({
   ]),
   testFiles: cProducerRegressionFiles,
 });
-const cProducerSharedInputs = new Set([
-  ...cProducerSharedBoundary.files,
-  ...cProducerSharedBoundary.workflowFiles,
-]);
-const cProducerWorkflowInputs = new Set(cProducerSharedBoundary.workflowFiles);
 const generic = new Set([
   "scripts/request-pinned-artifact.mjs",
   "scripts/verify-required-native-tests.mjs",
@@ -181,7 +182,7 @@ export function producerInventoryFingerprint(files) {
     !Array.isArray(files) ||
     files.length === 0 ||
     files.length > 100000 ||
-    !files.every(validPath) ||
+    !Array.from(files).every(validPath) ||
     new Set(files).size !== files.length
   )
     return null;
@@ -431,6 +432,86 @@ export function validateInputContract(inputs, jobs) {
     );
   }
 }
+function qualifiedMainPush(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const keys = [
+    "schemaVersion",
+    "ref",
+    "before",
+    "after",
+    "githubSha",
+    "checkoutSha",
+    "ancestorVerified",
+    "comparison",
+    "forced",
+    "deleted",
+    "repository",
+    "githubRepository",
+  ];
+  if (
+    Object.keys(value).length !== keys.length ||
+    !keys.every((key) => Object.hasOwn(value, key))
+  )
+    return false;
+  const sha = (candidate) =>
+    typeof candidate === "string" &&
+    /^[a-f0-9]{40}$/u.test(candidate) &&
+    candidate !== "0".repeat(40);
+  const repository = (candidate) =>
+    typeof candidate === "string" &&
+    candidate.length <= 201 &&
+    /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u.test(candidate) &&
+    candidate
+      .split("/")
+      .every((part) => part !== "." && part !== ".." && part.length <= 100);
+  return (
+    repository(value.repository) &&
+    value.githubRepository === value.repository &&
+    value.schemaVersion === 1 &&
+    value.ref === "refs/heads/main" &&
+    sha(value.before) &&
+    sha(value.after) &&
+    value.before !== value.after &&
+    value.githubSha === value.after &&
+    value.checkoutSha === value.after &&
+    value.ancestorVerified === true &&
+    value.comparison === "before..after" &&
+    value.forced === false &&
+    value.deleted === false
+  );
+}
+
+function validProducerBoundary(boundary) {
+  if (
+    !boundary ||
+    typeof boundary !== "object" ||
+    Array.isArray(boundary) ||
+    typeof boundary.inventorySha256 !== "string" ||
+    !/^[a-f0-9]{64}$/.test(boundary.inventorySha256)
+  )
+    return false;
+  for (const key of ["files", "workflowFiles", "testFiles"]) {
+    const files = boundary[key];
+    if (
+      !Array.isArray(files) ||
+      files.length === 0 ||
+      files.length > 10000 ||
+      !Array.from(files).every(validPath) ||
+      new Set(files).size !== files.length
+    )
+      return false;
+  }
+  const files = new Set(boundary.files);
+  return (
+    boundary.workflowFiles.every((file) => !files.has(file)) &&
+    boundary.testFiles.every(
+      (file) =>
+        files.has(file) &&
+        file.startsWith("test/") &&
+        file.endsWith(".test.ts"),
+    )
+  );
+}
 export function planNativeJobs({
   jobs,
   inputs,
@@ -440,6 +521,8 @@ export function planNativeJobs({
   contractCurrent = false,
   sourceBoundaries = sourceCatalog.boundaries,
   producerInventory = null,
+  producerBoundary = cProducerSharedBoundary,
+  qualifiedPush = null,
 }) {
   validateInputContract(inputs, jobs);
   const full = (reason) => ({
@@ -449,21 +532,35 @@ export function planNativeJobs({
     notSelected: [],
     baseline: null,
   });
-  if (eventName !== "pull_request")
-    return full("Non-PR verification always runs every native job");
-  if (contractCurrent !== true)
+  if (!validProducerBoundary(producerBoundary))
+    return full("Invalid reviewed producer boundary policy");
+  const cProducerSharedInputs = new Set([
+    ...producerBoundary.files,
+    ...producerBoundary.workflowFiles,
+  ]);
+  const cProducerWorkflowInputs = new Set(producerBoundary.workflowFiles);
+  if (["pull_request", "push"].includes(eventName) && contractCurrent !== true)
     return full("Declared native input contract changed or is stale");
+  if (
+    eventName !== "pull_request" &&
+    !(eventName === "push" && qualifiedMainPush(qualifiedPush))
+  )
+    return full(
+      eventName === "push"
+        ? "Push verification requires a qualified non-forced main transition"
+        : "Dispatch, scheduled or unsupported events require complete native verification",
+    );
   if (
     !Array.isArray(changed) ||
     !changed.length ||
     changed.length > 10000 ||
-    !changed.every(validPath)
+    !Array.from(changed).every(validPath)
   )
     return full("Missing, empty or invalid changed-file inventory");
   if (
     changed.some((file) => cProducerSharedInputs.has(file)) &&
     producerInventoryFingerprint(producerInventory) !==
-      cProducerSharedBoundary.inventorySha256
+      producerBoundary.inventorySha256
   )
     return full(
       "Producer-only inventory is missing or changed; review new test/helper/workflow names and refresh the producer boundary",
@@ -532,7 +629,8 @@ export function planNativeJobs({
     reason: "Exact declared inputs with complete selected shared test files",
     selected: Object.fromEntries(jobs.map((id) => [id, selected.has(id)])),
     notSelected: jobs.filter((id) => !selected.has(id)),
-    baseline: baseline?.complete ? baseline : null,
+    baseline:
+      eventName === "pull_request" && baseline?.complete ? baseline : null,
     sharedTestFiles: [
       ...new Set([
         "dist/test/artifact-evidence.test.js",
@@ -541,7 +639,7 @@ export function planNativeJobs({
         "dist/test/ci-affected-tests.test.js",
         "dist/test/ci-source-boundaries.test.js",
         ...(changed.some((file) => cProducerSharedInputs.has(file))
-          ? cProducerSharedBoundary.testFiles.map(
+          ? producerBoundary.testFiles.map(
               (file) => "dist/" + file.replace(/\.ts$/, ".js"),
             )
           : []),

@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, rm } from "node:fs/promises";
 import { execFileSync, spawnSync } from "node:child_process";
 import { test } from "node:test";
 import { parse } from "yaml";
+import ts from "typescript";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { fixture } from "./helpers.js";
@@ -34,12 +35,23 @@ const baseline = {
   run: "https://github.com/example/project/actions/runs/1",
   jobs: 81,
 };
-const producerInventory = execFileSync("git", ["ls-files", "-z"], {
+const checkoutProducerInventory = execFileSync("git", ["ls-files", "-z"], {
   cwd: root,
   encoding: "utf8",
 })
   .split("\0")
   .filter(Boolean);
+// Unit routing policies have a fixed inventory independent of unrelated checkout
+// additions. The production-default and entrypoint tests below retain the real pin.
+const producerInventory = [
+  "scripts/synthetic-ci-inventory.mjs",
+  ...cProducerSharedBoundary.files,
+  ...cProducerSharedBoundary.workflowFiles,
+];
+const unitProducerBoundary = Object.freeze({
+  ...cProducerSharedBoundary,
+  inventorySha256: producerInventoryFingerprint(producerInventory),
+});
 const plan = (changed: string[], options: Record<string, unknown> = {}) =>
   planNativeJobs({
     jobs,
@@ -49,6 +61,7 @@ const plan = (changed: string[], options: Record<string, unknown> = {}) =>
     eventName: "pull_request",
     contractCurrent: true,
     producerInventory,
+    producerBoundary: unitProducerBoundary,
     ...options,
   });
 const selected = (result: ReturnType<typeof plan>) =>
@@ -661,14 +674,21 @@ test("CI exact original-producer workflows retain actionlint and complete produc
 test("CI producer fast mode requires a complete reviewed name inventory and rejects newly introduced contracts or helpers", () => {
   assert.equal(
     producerInventoryFingerprint(producerInventory),
-    cProducerSharedBoundary.inventorySha256,
+    unitProducerBoundary.inventorySha256,
   );
   assert.equal(
     producerInventoryFingerprint([...producerInventory].reverse()),
-    cProducerSharedBoundary.inventorySha256,
+    unitProducerBoundary.inventorySha256,
   );
+  assert.equal(producerInventoryFingerprint(Array(1)), null);
   const file = cProducerWorkflowInputs[1]!;
   assert.equal(plan([file]).mode, "affected");
+  const sparseChanged = plan(Array(1));
+  assert.equal(sparseChanged.mode, "full");
+  assert.match(
+    sparseChanged.reason,
+    /Missing, empty or invalid changed-file inventory/,
+  );
   assert.equal(plan([cProducerRegressionFiles[0]!]).mode, "affected");
   for (const inventory of [
     null,
@@ -713,6 +733,167 @@ test("CI producer fast mode requires a complete reviewed name inventory and reje
     [file, "test/c-producer-new.test.ts"],
   ])
     assert.equal(plan(changed).mode, "full", JSON.stringify(changed));
+});
+
+test("CI production producer policy falls back for new checkout names without failing the routing suite", () => {
+  const actualPlan = (inventory: unknown) =>
+    planNativeJobs({
+      jobs,
+      inputs,
+      changed: ["scripts/qualify-c-producer.mjs"],
+      eventName: "pull_request",
+      contractCurrent: true,
+      producerInventory: inventory,
+    });
+  const current = actualPlan(checkoutProducerInventory);
+  const reviewed =
+    producerInventoryFingerprint(checkoutProducerInventory) ===
+    cProducerSharedBoundary.inventorySha256;
+  assert.equal(current.mode, reviewed ? "affected" : "full");
+  if (!reviewed) {
+    assert.match(current.reason, /review new test\/helper\/workflow names/);
+    assert.equal(selected(current).length, jobs.length);
+  }
+  const next = "test/synthetic-unreviewed-new-producer.test.ts";
+  assert.ok(!checkoutProducerInventory.includes(next));
+  for (const inventory of [null, [...checkoutProducerInventory, next]]) {
+    const actual = actualPlan(inventory);
+    assert.equal(actual.mode, "full");
+    assert.match(actual.reason, /review new test\/helper\/workflow names/);
+    assert.equal(selected(actual).length, jobs.length);
+  }
+});
+
+test("CI producer policies reject missing invalid and incomplete identities before inventory comparison", () => {
+  const file = "scripts/qualify-c-producer.mjs";
+  for (const producerBoundary of [
+    null,
+    {},
+    ...[
+      null,
+      undefined,
+      "",
+      "a".repeat(63),
+      "A".repeat(64),
+      new String("a".repeat(64)),
+    ].map((inventorySha256) => ({ ...unitProducerBoundary, inventorySha256 })),
+    ...["files", "workflowFiles", "testFiles"].flatMap((key) => [
+      { ...unitProducerBoundary, [key]: null },
+      { ...unitProducerBoundary, [key]: [] },
+      { ...unitProducerBoundary, [key]: Array(1) },
+      { ...unitProducerBoundary, [key]: ["../escape"] },
+      {
+        ...unitProducerBoundary,
+        [key]: ["scripts/duplicate.mjs", "scripts/duplicate.mjs"],
+      },
+      {
+        ...unitProducerBoundary,
+        [key]: Array.from(
+          { length: 10001 },
+          (_, i) => "scripts/synthetic-" + i + ".mjs",
+        ),
+      },
+    ]),
+    { ...unitProducerBoundary, workflowFiles: [unitProducerBoundary.files[0]] },
+    {
+      ...unitProducerBoundary,
+      testFiles: ["test/absent-synthetic-producer.test.ts"],
+    },
+  ]) {
+    const actual = plan([file], { producerBoundary, producerInventory: null });
+    assert.equal(actual.mode, "full");
+    assert.match(actual.reason, /Invalid reviewed producer boundary policy/);
+    assert.equal(selected(actual).length, jobs.length);
+  }
+});
+
+test("CI producer policy injection binds file workflow and regression sets to one fixed unit inventory", () => {
+  const file = "scripts/synthetic-producer.mjs";
+  const testFile = "test/synthetic-producer.test.ts";
+  const workflowFile = ".github/workflows/synthetic-producer.yml";
+  const inventory = [file, testFile, workflowFile];
+  const producerBoundary = {
+    files: [file, testFile],
+    workflowFiles: [workflowFile],
+    testFiles: [testFile],
+    inventorySha256: producerInventoryFingerprint(inventory),
+  };
+  for (const changed of [[file], [workflowFile]]) {
+    const actual = plan(changed, {
+      producerBoundary,
+      producerInventory: inventory,
+    });
+    assert.equal(actual.mode, "affected");
+    assert.deepEqual(
+      selected(actual),
+      changed[0] === workflowFile ? ["actionlint"] : [],
+    );
+    assert.ok(
+      actual.sharedTestFiles.includes("dist/test/synthetic-producer.test.js"),
+    );
+    assert.ok(
+      !actual.sharedTestFiles.includes(
+        "dist/test/c-producer-gcc-evidence.test.js",
+      ),
+    );
+  }
+  const expanded = plan([file], {
+    producerBoundary,
+    producerInventory: [...inventory, "scripts/synthetic-unreviewed.mjs"],
+  });
+  assert.equal(expanded.mode, "full");
+  assert.match(expanded.reason, /review new test\/helper\/workflow names/);
+  const adjacent = plan([file + ".extra"], {
+    producerBoundary,
+    producerInventory: inventory,
+  });
+  assert.equal(adjacent.mode, "full");
+  assert.match(adjacent.reason, /Unclassified input/);
+});
+
+test("CI production planner entrypoint cannot override the reviewed producer policy", async () => {
+  const source = ts.createSourceFile(
+    "plan-ci-impact.mjs",
+    await readFile(new URL("scripts/plan-ci-impact.mjs", root), "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.JS,
+  );
+  const calls: ts.CallExpression[] = [];
+  const visit = (node: ts.Node) => {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === "planNativeJobs"
+    )
+      calls.push(node);
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(calls.length, 1);
+  const args = calls[0]!.arguments;
+  assert.equal(args.length, 1);
+  assert.ok(ts.isObjectLiteralExpression(args[0]!));
+  const properties = args[0].properties.map((member) => {
+    assert.ok(
+      ts.isPropertyAssignment(member) ||
+        ts.isShorthandPropertyAssignment(member),
+    );
+    assert.ok(ts.isIdentifier(member.name));
+    return member.name.text;
+  });
+  assert.equal(new Set(properties).size, properties.length);
+  assert.ok(!properties.includes("producerBoundary"));
+  assert.ok(!properties.includes("__proto__"));
+  for (const required of [
+    "changed",
+    "contractCurrent",
+    "eventName",
+    "inputs",
+    "jobs",
+    "producerInventory",
+  ])
+    assert.ok(properties.includes(required), required);
 });
 
 test("CI C producer boundary preserves native owner unions and validates contracts before any allowance", () => {
@@ -1102,6 +1283,7 @@ test("CI initial wave stays within the free runner ceiling and native fanout req
   );
   assert.deepEqual(workflow.jobs["dotnet-generator-extensions-arm64"].needs, [
     "ci-plan",
+    "actionlint",
   ]);
   assert.deepEqual(workflow.jobs["fsharp-format-arm64"].needs, [
     "ci-plan",
@@ -2856,5 +3038,609 @@ test("Playwright fixture artifacts retain full verification and both host lanes 
       "scripts/playwright-tools/package-lock.json",
     ])
       assert.ok(cachedLocks.includes(required), name + ":" + required);
+  }
+});
+
+test("generator CI keeps three closed shards original runtime limits and unique retained claims within the initial runner ceiling", async () => {
+  const api = await import(
+    new URL("../../scripts/check-dotnet-generator-ci.mjs", import.meta.url).href
+  );
+  const job = workflow.jobs[api.generatorCIJob];
+  assert.equal(
+    job.name,
+    "dotnet-generator-extensions-arm64 (${{ matrix.shard }})",
+  );
+  assert.deepEqual(job.needs, ["ci-plan", "actionlint"]);
+  assert.deepEqual(job.strategy, {
+    "fail-fast": false,
+    "max-parallel": 3,
+    matrix: { include: [{ shard: "0" }, { shard: "1" }, { shard: "2" }] },
+  });
+  assert.equal(job["runs-on"], "ubuntu-24.04-arm");
+  assert.deepEqual(job.permissions, { contents: "read", actions: "read" });
+  const keys = ["0", "1", "2"].flatMap((id) =>
+    Object.values(api.generatorCIOutputKeys(id)),
+  );
+  assert.deepEqual(Object.keys(job.outputs).sort(), keys.sort());
+  for (const id of ["0", "1", "2"]) {
+    const names = api.generatorCIOutputKeys(id);
+    for (const stage of ["start", "finish"] as const)
+      assert.equal(
+        job.outputs[names[stage]],
+        "${{ steps.dotnet-" + stage + ".outputs." + names[stage] + " }}",
+      );
+  }
+  const steps = job.steps,
+    start = steps.findIndex(
+      (row: { id?: string }) => row.id === "dotnet-start",
+    ),
+    upload = steps.findIndex(
+      (row: { id?: string }) => row.id === "dotnet-upload",
+    ),
+    finish = steps.findIndex(
+      (row: { id?: string }) => row.id === "dotnet-finish",
+    );
+  const node = steps.findIndex((row: { uses?: string }) =>
+    row.uses?.startsWith("actions/setup-node@"),
+  );
+  assert.equal(start, node + 1);
+  assert.equal(steps[node].with["node-version"], "22.23.2");
+  assert.equal(
+    steps[start].run,
+    "node scripts/check-dotnet-generator-ci.mjs start --shard ${{ matrix.shard }}",
+  );
+  assert.equal(steps[start].env.CHECKTRAIL_DOTNET_JOB, "${{ toJSON(job) }}");
+  assert.equal(steps[start + 1].run, "npm ci --ignore-scripts");
+  assert.equal(upload + 1, finish);
+  assert.equal(finish, steps.length - 1);
+  for (const index of [start, upload, finish]) {
+    assert.equal(steps[index].if, undefined);
+    assert.equal(steps[index]["continue-on-error"], undefined);
+  }
+  assert.equal(
+    steps[upload - 1].run,
+    "node scripts/check-dotnet-generator-ci.mjs run --shard ${{ matrix.shard }}",
+  );
+  assert.equal(
+    steps[upload - 1].env.CHECKTRAIL_DOTNET_GENERATOR_JOB_CONTEXT,
+    "${{ steps.dotnet-start.outputs.context }}",
+  );
+  assert.equal(steps[upload - 1].env.GITHUB_TOKEN, undefined);
+  assert.deepEqual(steps[upload].with, {
+    name: "native-dotnet-generator-shard-${{ matrix.shard }}-${{ github.run_attempt }}",
+    path: "${{ runner.temp }}/checktrail-dotnet-fragments/dotnet-generator-shard-${{ matrix.shard }}.json",
+    "if-no-files-found": "error",
+    "retention-days": 7,
+    "include-hidden-files": false,
+  });
+  assert.equal(
+    steps[upload].uses,
+    "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+  );
+  assert.equal(
+    steps[finish].env.CHECKTRAIL_DOTNET_ARTIFACT_ID,
+    "${{ steps.dotnet-upload.outputs.artifact-id }}",
+  );
+  assert.equal(
+    steps[finish].env.CHECKTRAIL_DOTNET_ARTIFACT_DIGEST,
+    "${{ steps.dotnet-upload.outputs.artifact-digest }}",
+  );
+  assert.equal(
+    steps[finish].env.CHECKTRAIL_DOTNET_ARTIFACT_NAME,
+    steps[upload].with.name,
+  );
+  const complete = workflow.jobs["ci-complete"],
+    selection = complete.steps.findIndex(
+      (row: { id?: string }) => row.id === "dotnet-fragments",
+    );
+  assert.deepEqual(complete.permissions, { contents: "read", actions: "read" });
+  assert.ok(
+    selection >
+      complete.steps.findIndex(
+        (row: { run?: string }) =>
+          row.run === "node scripts/check-ci-completion.mjs",
+      ),
+  );
+  assert.equal(
+    complete.steps[selection].run,
+    "node scripts/check-dotnet-generator-ci.mjs selection",
+  );
+  assert.equal(
+    complete.steps[selection].env.CHECKTRAIL_CI_NEEDS,
+    "${{ toJSON(needs) }}",
+  );
+  assert.deepEqual(complete.steps[selection + 1], {
+    name: "Acquire exact retained generator fragment artifacts",
+    if: "steps.dotnet-fragments.outputs.selected == 'true'",
+    uses: "actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+    with: {
+      "artifact-ids": "${{ steps.dotnet-fragments.outputs.artifact_ids }}",
+      path: "${{ runner.temp }}/checktrail-dotnet-fragment-artifacts",
+      "merge-multiple": false,
+      "digest-mismatch": "error",
+    },
+  });
+  assert.equal(
+    complete.steps[selection + 2].run,
+    "node scripts/check-dotnet-generator-ci.mjs aggregate",
+  );
+  for (const file of [
+    "scripts/check-dotnet-generator-ci.mjs",
+    "scripts/dotnet-generator-shards.mjs",
+    "scripts/dotnet-generator-shards.v1.json",
+    "test/dotnet-generator-ci.test.ts",
+    "test/dotnet-generator-shards.test.ts",
+  ]) {
+    assert.equal(plan([file]).selected[api.generatorCIJob], true, file);
+    assert.ok(inputs[file]?.includes(api.generatorCIJob), file);
+  }
+  assert.deepEqual(
+    inputs["scripts/native-ci-artifact-storage.mjs"],
+    [
+      ...new Set([
+        ...inputs["scripts/consumer-native-ci-artifacts.mjs"],
+        api.generatorCIJob,
+      ]),
+    ].sort(),
+  );
+  for (const file of [
+    "scripts/verify-javascript-extensions-container.mjs",
+    "test/gate-javascript-extensions.test.ts",
+    "test/go-race.test.ts",
+    "test/scala.test.ts",
+    "test/playwright.test.ts",
+  ])
+    assert.equal(
+      plan([file]).selected[api.generatorCIJob],
+      false,
+      "Transport reuse must not add unrelated producer owners: " + file,
+    );
+  const shared = plan([
+    "scripts/check-dotnet-generator-ci.mjs",
+  ]).sharedTestFiles;
+  assert.ok(shared.includes("dist/test/dotnet-generator-ci.test.js"));
+  assert.ok(shared.includes("dist/test/dotnet-generator-shards.test.js"));
+  assert.equal(plan(["scripts/new-unreviewed-dotnet-helper.mjs"]).mode, "full");
+  const names = workflowJobNames(workflow);
+  for (const id of ["0", "1", "2"])
+    assert.equal(
+      names.filter((name: string) => name === api.generatorCIJobName(id))
+        .length,
+      1,
+    );
+  assert.equal(names.includes(api.generatorCIJob), false);
+});
+
+const acceptedMainPush = Object.freeze({
+  schemaVersion: 1,
+  repository: "synthetic/project",
+  githubRepository: "synthetic/project",
+  ref: "refs/heads/main",
+  before: "a".repeat(40),
+  after: "b".repeat(40),
+  githubSha: "b".repeat(40),
+  checkoutSha: "b".repeat(40),
+  ancestorVerified: true,
+  comparison: "before..after",
+  forced: false,
+  deleted: false,
+});
+test("main push routing requires qualified metadata in addition to caller-provided changed paths", () => {
+  const changed = ["test/gate-scala-extensions.test.ts"];
+  assert.equal(plan(changed, { eventName: "push" }).mode, "full");
+  const scoped = plan(changed, {
+    eventName: "push",
+    qualifiedPush: acceptedMainPush,
+  });
+  assert.equal(scoped.mode, "affected");
+  assert.deepEqual(selected(scoped), ["scala-extensions-arm64"]);
+  assert.equal(
+    scoped.baseline,
+    null,
+    "PR baseline observations cannot qualify a main push",
+  );
+  for (const qualifiedPush of [
+    true,
+    { qualified: true },
+    { ...acceptedMainPush, extra: true },
+    { ...acceptedMainPush, repository: "foreign/project" },
+    { ...acceptedMainPush, githubRepository: undefined },
+    {
+      ...acceptedMainPush,
+      repository: "../project",
+      githubRepository: "../project",
+    },
+    { ...acceptedMainPush, ref: "refs/tags/synthetic" },
+    { ...acceptedMainPush, ref: "refs/heads/main-extra" },
+    { ...acceptedMainPush, before: "0".repeat(40) },
+    { ...acceptedMainPush, after: "0".repeat(40) },
+    { ...acceptedMainPush, after: "--help" },
+    { ...acceptedMainPush, githubSha: "c".repeat(40) },
+    { ...acceptedMainPush, checkoutSha: "c".repeat(40) },
+    { ...acceptedMainPush, ancestorVerified: false },
+    { ...acceptedMainPush, forced: true },
+    { ...acceptedMainPush, deleted: true },
+    { ...acceptedMainPush, forced: undefined },
+    { ...acceptedMainPush, comparison: "before...after" },
+  ])
+    assert.deepEqual(
+      selected(plan(changed, { eventName: "push", qualifiedPush })),
+      jobs,
+    );
+  for (const eventName of [
+    "schedule",
+    "workflow_dispatch",
+    "pull_request_target",
+    undefined,
+  ])
+    assert.equal(
+      plan(changed, { eventName, qualifiedPush: acceptedMainPush }).mode,
+      "full",
+    );
+  for (const changed of [
+    [],
+    ["src/shared-synthetic-runtime.ts"],
+    [".github/workflows/ci.yml"],
+    ["test/gate-scala-extensions.test.ts", "package-lock.json"],
+  ])
+    assert.equal(
+      plan(changed, { eventName: "push", qualifiedPush: acceptedMainPush })
+        .mode,
+      "full",
+    );
+  assert.equal(
+    plan(changed, {
+      eventName: "push",
+      qualifiedPush: acceptedMainPush,
+      contractCurrent: false,
+    }).mode,
+    "full",
+  );
+});
+
+async function mainPushFixture(
+  t: Parameters<typeof fixture>[0],
+  kind = "scoped",
+) {
+  const workflowText =
+    "name: Synthetic\non: push\njobs:\n  native-a:\n    steps:\n      - run: node scripts/native-a.mjs\n  native-b:\n    steps:\n      - run: node scripts/native-b.mjs\n";
+  const a = "// synthetic original A\n",
+    b = "// synthetic original B\n";
+  const nativeInputs = {
+    "scripts/native-a.mjs": ["native-a"],
+    "scripts/native-b.mjs": ["native-b"],
+    "test/scoped-a.test.ts": ["native-a"],
+    "test/scoped-b.test.ts": ["native-b"],
+  };
+  if (kind === "stale") nativeInputs["test/scoped-a.test.ts"] = ["native-b"];
+  const directory = await fixture(t, {
+    "repository/.github/workflows/ci.yml": workflowText,
+    "repository/scripts/ci-native-inputs.json": JSON.stringify(nativeInputs),
+    "repository/scripts/required-native-tests.json": "{}",
+    "repository/scripts/native-a.mjs":
+      "import {writeFileSync} from 'node:fs';const input='test/scoped-a.test.ts';writeFileSync('.native-executed','a');throw Error('Planner must not execute controllers');",
+    "repository/scripts/native-b.mjs":
+      "import {writeFileSync} from 'node:fs';const input='test/scoped-b.test.ts';writeFileSync('.native-executed','b');throw Error('Planner must not execute controllers');",
+    "repository/test/scoped-a.test.ts": a,
+    "repository/test/scoped-b.test.ts": b,
+    "repository/README.md": "Synthetic planner fixture.\n",
+  });
+  const f = {
+    root: directory,
+    cleanup: () => rm(directory, { recursive: true, force: true }),
+  };
+  const repository = path.join(f.root, "repository");
+  const git = (args: string[]) =>
+    execFileSync(
+      "git",
+      ["-c", "commit.gpgsign=false", "-c", "core.hooksPath=/dev/null", ...args],
+      {
+        cwd: repository,
+        encoding: "utf8",
+        timeout: 10000,
+        maxBuffer: 1048576,
+        env: {
+          ...process.env,
+          GIT_AUTHOR_NAME: "Synthetic CI",
+          GIT_AUTHOR_EMAIL: "synthetic@example.invalid",
+          GIT_COMMITTER_NAME: "Synthetic CI",
+          GIT_COMMITTER_EMAIL: "synthetic@example.invalid",
+          GIT_AUTHOR_DATE: "2026-01-01T00:00:00Z",
+          GIT_COMMITTER_DATE: "2026-01-01T00:00:00Z",
+          GIT_CONFIG_NOSYSTEM: "1",
+        },
+      },
+    ).trim();
+  git(["init", "-b", "main"]);
+  git(["add", "."]);
+  git(["commit", "-m", "synthetic initial"]);
+  const before = git(["rev-parse", "HEAD"]);
+  await writeFile(
+    path.join(repository, "test/scoped-a.test.ts"),
+    "// synthetic updated A\n",
+  );
+  git(["add", "."]);
+  git(["commit", "-m", "synthetic A"]);
+  if (kind === "net") {
+    await writeFile(path.join(repository, "test/scoped-a.test.ts"), a);
+    await writeFile(
+      path.join(repository, "test/scoped-b.test.ts"),
+      "// synthetic updated B\n",
+    );
+    git(["add", "."]);
+    git(["commit", "-m", "synthetic net B"]);
+  }
+  if (kind === "empty") {
+    git(["checkout", before]);
+    git(["commit", "--allow-empty", "-m", "synthetic empty"]);
+  }
+  if (kind === "unknown") {
+    await writeFile(
+      path.join(repository, "unclassified.synthetic"),
+      "synthetic unknown input",
+    );
+    git(["add", "."]);
+    git(["commit", "-m", "synthetic unknown"]);
+  }
+  const after = git(["rev-parse", "HEAD"]);
+  let nonAncestor = before;
+  if (kind === "fork") {
+    git(["checkout", "-b", "synthetic-side", before]);
+    await writeFile(
+      path.join(repository, "test/scoped-b.test.ts"),
+      "// synthetic divergent B\n",
+    );
+    git(["add", "."]);
+    git(["commit", "-m", "synthetic fork"]);
+    nonAncestor = git(["rev-parse", "HEAD"]);
+    git(["checkout", "main"]);
+  }
+  const marker = path.join(f.root, "git-calls.jsonl"),
+    loader = path.join(f.root, "observe-git.mjs");
+  await writeFile(
+    loader,
+    String.raw`import fs from 'node:fs';import child from 'node:child_process';import {syncBuiltinESMExports} from 'node:module';const original=child.execFileSync;child.execFileSync=(file,args,...options)=>{if(file==='git')fs.appendFileSync(${JSON.stringify(marker)},JSON.stringify(args)+'\n');return original(file,args,...options);};syncBuiltinESMExports();globalThis.fetch=()=>{throw Error('A push must not request PR baseline observations');};`,
+  );
+  return { ...f, repository, before, after, nonAncestor, marker, loader, git };
+}
+
+async function runMainPushPlanner(
+  f: Awaited<ReturnType<typeof mainPushFixture>>,
+  edit: {
+    event?: Record<string, unknown>;
+    env?: Record<string, string | undefined>;
+    payload?: string;
+    missingEvent?: boolean;
+  } = {},
+) {
+  const event = {
+    ref: "refs/heads/main",
+    forced: false,
+    deleted: false,
+    repository: {
+      full_name: "synthetic/project",
+      name: "project",
+      owner: { login: "synthetic" },
+    },
+    before: f.before,
+    after: f.after,
+    commits: [{ modified: ["README.md"] }],
+    ...edit.event,
+  };
+  const eventFile = path.join(f.root, "event.json");
+  if (!edit.missingEvent)
+    await writeFile(eventFile, edit.payload ?? JSON.stringify(event));
+  await writeFile(f.marker, "");
+  const env: NodeJS.ProcessEnv = {
+    ...process.env,
+    GITHUB_EVENT_NAME: "push",
+    GITHUB_REPOSITORY: "synthetic/project",
+    GITHUB_REF: "refs/heads/main",
+    GITHUB_SHA: f.after,
+    GITHUB_EVENT_PATH: edit.missingEvent
+      ? path.join(f.root, "missing.json")
+      : eventFile,
+    GITHUB_OUTPUT: path.join(f.root, "output"),
+    GITHUB_STEP_SUMMARY: path.join(f.root, "summary"),
+    CHECKTRAIL_CI_OBSERVE_BASELINE: "1",
+    ...edit.env,
+  };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      "--import",
+      pathToFileURL(f.loader).href,
+      fileURLToPath(new URL("scripts/plan-ci-impact.mjs", root)),
+    ],
+    {
+      cwd: f.repository,
+      env,
+      encoding: "utf8",
+      timeout: 30000,
+      maxBuffer: 1048576,
+    },
+  );
+  assert.equal(result.signal, null);
+  assert.equal(result.status, 0, result.stderr);
+  const actual = JSON.parse(result.stdout);
+  const calls = (await readFile(f.marker, "utf8"))
+    .split("\n")
+    .filter(Boolean)
+    .map((value) => JSON.parse(value) as string[]);
+  assert.equal(
+    await readFile(path.join(f.repository, ".native-executed"), "utf8").then(
+      () => true,
+      (error) => {
+        assert.equal((error as NodeJS.ErrnoException).code, "ENOENT");
+        return false;
+      },
+    ),
+    false,
+  );
+  return { actual, calls, stderr: result.stderr };
+}
+
+test("planner qualifies actual main pushes from exact Git endpoints without trusting payload changed-file claims", async (t) => {
+  for (const kind of ["scoped", "net"]) {
+    const f = await mainPushFixture(t, kind);
+    try {
+      const { actual, calls } = await runMainPushPlanner(f);
+      assert.equal(actual.mode, "affected", actual.reason);
+      assert.deepEqual(selected(actual), [
+        kind === "net" ? "native-b" : "native-a",
+      ]);
+      assert.equal(actual.baseline, null);
+      const net = calls.filter((args) => args.includes("--name-only"));
+      assert.equal(net.length, 1);
+      assert.ok(net[0]!.includes(f.before + ".." + f.after));
+      assert.ok(net[0]!.includes("--no-renames"));
+      assert.ok(net[0]!.includes("--no-ext-diff"));
+      assert.ok(net[0]!.includes("--no-textconv"));
+      assert.ok(!net[0]!.some((value) => value.includes("...")));
+    } finally {
+      await f.cleanup();
+    }
+  }
+});
+
+test("planner rejects uncertain main push metadata before any changed-file diff is admitted", async (t) => {
+  const f = await mainPushFixture(t);
+  try {
+    const cases: [string, Parameters<typeof runMainPushPlanner>[1]][] = [
+      ["missing repository", { event: { repository: undefined } }],
+      [
+        "foreign repository",
+        {
+          event: {
+            repository: {
+              full_name: "foreign/project",
+              name: "project",
+              owner: { login: "foreign" },
+            },
+          },
+        },
+      ],
+      [
+        "malformed repository",
+        {
+          event: {
+            repository: {
+              full_name: "../project",
+              name: "project",
+              owner: { login: ".." },
+            },
+          },
+        },
+      ],
+      [
+        "repository name mismatch",
+        {
+          event: {
+            repository: {
+              full_name: "synthetic/project",
+              name: "other",
+              owner: { login: "synthetic" },
+            },
+          },
+        },
+      ],
+      [
+        "repository owner mismatch",
+        {
+          event: {
+            repository: {
+              full_name: "synthetic/project",
+              name: "project",
+              owner: { login: "other" },
+            },
+          },
+        },
+      ],
+      [
+        "missing repository environment",
+        { env: { GITHUB_REPOSITORY: undefined } },
+      ],
+      ["forced", { event: { forced: true } }],
+      ["deleted", { event: { deleted: true } }],
+      ["missing forced", { event: { forced: undefined } }],
+      ["zero before", { event: { before: "0".repeat(40) } }],
+      [
+        "zero after",
+        {
+          event: { after: "0".repeat(40) },
+          env: { GITHUB_SHA: "0".repeat(40) },
+        },
+      ],
+      ["malformed before", { event: { before: "--help" } }],
+      ["missing before", { event: { before: undefined } }],
+      ["missing local commit", { event: { before: "f".repeat(40) } }],
+      [
+        "unknown after",
+        {
+          event: { after: "f".repeat(40) },
+          env: { GITHUB_SHA: "f".repeat(40) },
+        },
+      ],
+      ["mismatched environment SHA", { env: { GITHUB_SHA: f.before } }],
+      ["missing environment SHA", { env: { GITHUB_SHA: undefined } }],
+      ["mismatched event ref", { event: { ref: "refs/heads/other" } }],
+      [
+        "mismatched environment ref",
+        { env: { GITHUB_REF: "refs/heads/main-extra" } },
+      ],
+      [
+        "tag",
+        {
+          event: { ref: "refs/tags/synthetic" },
+          env: { GITHUB_REF: "refs/tags/synthetic" },
+        },
+      ],
+      ["missing event", { missingEvent: true }],
+      ["malformed JSON", { payload: "{synthetic invalid metadata" }],
+      ["bounded metadata", { payload: " ".repeat(4 * 1048576 + 1) }],
+      ["dispatch", { env: { GITHUB_EVENT_NAME: "workflow_dispatch" } }],
+      ["schedule", { env: { GITHUB_EVENT_NAME: "schedule" } }],
+    ];
+    for (const [name, edit] of cases) {
+      const { actual, calls } = await runMainPushPlanner(f, edit);
+      assert.equal(actual.mode, "full", name + ": " + actual.reason);
+      assert.deepEqual(selected(actual), ["native-a", "native-b"]);
+      assert.equal(
+        calls.filter((args) => args.includes("--name-only")).length,
+        0,
+        name,
+      );
+    }
+    f.git(["checkout", f.before]);
+    const { actual, calls } = await runMainPushPlanner(f);
+    assert.equal(actual.mode, "full");
+    assert.equal(
+      calls.filter((args) => args.includes("--name-only")).length,
+      0,
+    );
+  } finally {
+    await f.cleanup();
+  }
+});
+
+test("planner keeps non-ancestor, empty, unknown and stale-contract main transitions on full verification", async (t) => {
+  for (const kind of ["fork", "empty", "unknown", "stale"]) {
+    const f = await mainPushFixture(t, kind);
+    try {
+      const { actual, calls } = await runMainPushPlanner(
+        f,
+        kind === "fork" ? { event: { before: f.nonAncestor } } : {},
+      );
+      assert.equal(actual.mode, "full", kind + ": " + actual.reason);
+      assert.deepEqual(selected(actual), ["native-a", "native-b"]);
+      if (["fork", "stale"].includes(kind))
+        assert.equal(
+          calls.filter((args) => args.includes("--name-only")).length,
+          0,
+        );
+    } finally {
+      await f.cleanup();
+    }
   }
 });
