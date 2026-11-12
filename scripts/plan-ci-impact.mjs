@@ -23,7 +23,8 @@ const inputs = JSON.parse(
 );
 let changed = null,
   baseline = null,
-  contractCurrent = false;
+  contractCurrent = false,
+  producerInventory = null;
 try {
   const files = execFileSync("git", ["ls-files", "-z"], {
     encoding: "utf8",
@@ -31,6 +32,7 @@ try {
   })
     .split("\0")
     .filter(Boolean);
+  producerInventory = files;
   const current = await buildNativeInputs({
     workflow,
     requirements: JSON.parse(
@@ -183,6 +185,7 @@ const plan = planNativeJobs({
   changed,
   baseline,
   contractCurrent,
+  producerInventory,
   eventName: process.env.GITHUB_EVENT_NAME,
 });
 process.stdout.write(JSON.stringify(plan) + "\n");
