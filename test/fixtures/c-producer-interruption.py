@@ -95,8 +95,12 @@ with tempfile.TemporaryDirectory(prefix='ct-command-') as temporary:
             restored = restored.replace(str(case / leaf), '/' + leaf)
         assert restored == original
         write(case / 'run.sh', shell)
-        write(case / 'controller/c-producer-test-reports.py',
-              (controller / 'c-producer-test-reports.py').read_text())
+        for control in ['c-producer-test-reports.py', 'c-producer-report-codec.py',
+                        'c-producer-report-codec.mjs', 'c-report-encoding.v1.json']:
+            target = case / 'controller' / control
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((controller / control).read_bytes())
+            target.chmod(0o600)
         prefix = '#!' + sys.executable + '\n'
         tracing = "import json,os,sys\nfrom pathlib import Path\ncase=Path(os.environ['CT_CASE'])\nwith (case/'trace').open('a')as f:f.write(json.dumps([Path(sys.argv[0]).name,*sys.argv[1:]])+'\\n')\n"
         write(case / 'bin/apt-get', prefix + tracing, True)

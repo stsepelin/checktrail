@@ -134,6 +134,8 @@ export const nodeOriginalSourceFiles = Object.freeze([
   "scripts/producer-qualification/go-bootstrap.v1.json",
   "scripts/qualify-binutils-producer.mjs",
   "scripts/qualify-c-producer.mjs",
+  "scripts/producer-qualification/c-producer-report-codec.mjs",
+  "scripts/producer-qualification/c-report-encoding.v1.json",
   "scripts/producer-qualification/c-producer-profile.mjs",
   "scripts/producer-qualification/c-producer-quiescent-sample.mjs",
   "scripts/producer-qualification/c-producer-profiles.v1.json",

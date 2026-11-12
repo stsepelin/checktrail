@@ -160,7 +160,7 @@ test("C command request and genuine terminal observations cannot claim a wrapper
   );
 });
 
-test("C evidence format admits only the two closed retention epochs and preserves legacy quotas", async (t) => {
+test("C evidence format admits only closed retention epochs and preserves their original quotas", async (t) => {
   const policy = {
     sampleIntervalMs: 10000,
     maximumSamples: 9000,
@@ -182,6 +182,39 @@ test("C evidence format admits only the two closed retention epochs and preserve
         root: prefix + "/original-test-reports",
       },
     };
+    const sampling = {
+      id: "owned-container-quiescent-v1",
+      counters: "complete-fixed-root-scan",
+      nativeDeadlineIncludesObservation: true,
+    };
+    const current = {
+      ...receipt,
+      schemaVersion: 3,
+      retentionSamplingPolicy: sampling,
+    };
+    assert.deepEqual(
+      api.cProducerEvidenceFormat(current),
+      api.cProducerEvidenceFormat(receipt),
+    );
+    for (const schemaVersion of [1, 2, 4])
+      assert.throws(() =>
+        api.cProducerEvidenceFormat({ ...current, schemaVersion }),
+      );
+    assert.throws(() =>
+      api.cProducerEvidenceFormat({
+        ...current,
+        retentionSamplingPolicy: {
+          ...sampling,
+          nativeDeadlineIncludesObservation: false,
+        },
+      }),
+    );
+    assert.throws(() =>
+      api.cProducerEvidenceFormat({
+        ...current,
+        retentionSamplingPolicy: { ...sampling, extra: true },
+      }),
+    );
     const format = api.cProducerEvidenceFormat(receipt);
     assert.equal(format.cBuildWork, true);
     assert.equal(format.observerLogByteLimit, policy.maximumLogBytes);
@@ -1214,6 +1247,7 @@ test(
     );
     const foreign = structuredClone(value);
     foreign.reports[0]!.file = "src/tests.sum";
+    foreign.reports[0]!.configuration = "src";
     await assert.rejects(
       api.verifyCProducerReports(foreign, root, profile, sameUidCaller),
       /Foreign or duplicate/,
@@ -1487,7 +1521,7 @@ test(
   async (t) => {
     const root = await fixture(t, {});
     const program = String.raw`
-import importlib.util,json,os,pathlib,sys
+import gzip,importlib.util,json,os,pathlib,sys
 spec=importlib.util.spec_from_file_location('synthetic_custody',sys.argv[1])
 module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 root=pathlib.Path(sys.argv[2]);caller=module.parse_caller_identity(sys.argv[3],sys.argv[4])
@@ -1517,10 +1551,10 @@ try:
   assert error.__cause__ is not None and 'Nonphysical or oversized original report/log' in str(error.__cause__)
  else:raise AssertionError('Original physical-source failure disappeared')
 finally:module.RetainedCopies.finish=original_finish
-partial=output/'original-test-reports/build-tree/a.sum'
-assert partial.read_bytes()==b'PASS: retained partial\n'
+partial=output/'original-test-reports/encoded/00000000.gz'
+assert gzip.decompress(partial.read_bytes())==b'PASS: retained partial\n'
 assert partial.stat().st_mode&0o7777==0o600
-assert (output/'original-test-reports/build-tree').stat().st_mode&0o7777==0o700
+assert (output/'original-test-reports/encoded').stat().st_mode&0o7777==0o700
 assert not (output/'test-reports.json').exists()
 after=(source/'build-tree/a.sum').stat()
 assert (before.st_uid,before.st_gid,before.st_mode,before.st_mtime_ns)==(after.st_uid,after.st_gid,after.st_mode,after.st_mtime_ns)
@@ -1528,7 +1562,7 @@ controls.append('original-and-custody-errors-preserved-with-readable-partial-cop
 try:module.RetainedCopies(output/'original-test-reports',caller)
 except FileExistsError:pass
 else:raise AssertionError('Existing retained namespace was reused')
-assert partial.read_bytes()==b'PASS: retained partial\n'
+assert gzip.decompress(partial.read_bytes())==b'PASS: retained partial\n'
 controls.append('existing-namespace-refused-unchanged')
 replaced=root/'replaced';copies=module.RetainedCopies(replaced,caller)
 try:
@@ -1599,7 +1633,7 @@ print(json.dumps({'sameUidHostOnly':True,'actualUid':os.geteuid(),'requestedCall
 );
 
 test(
-  "GCC version2 report verification binds every literal root, compatibility origin and nonpassing root state",
+  "GCC encoded report verification binds every literal root, compatibility origin and nonpassing root state",
   {
     skip: !sameUidCaller
       ? "POSIX sameUID export custody control unavailable on this host"
@@ -1669,7 +1703,7 @@ test(
       reports: number;
     };
     const states = value.buildRootStates as RootState[];
-    assert.equal(value.schemaVersion, 2);
+    assert.equal(value.schemaVersion, 3);
     assert.deepEqual(value.generatedBuildRoots, roots);
     assert.deepEqual(
       states,
@@ -2040,12 +2074,13 @@ test("C local policy clocks consume the original controller and declared managed
 });
 
 test(
-  "C local actual controller timer and one-shot recovery preserve independent collection before cleanup",
+  "C ordinary sampling and local actual controller timers preserve independent one-shot collection before cleanup",
   sameUidControl,
   async (t) => {
     const root = await fixture(t, {});
     for (const scenario of [
       "observer-cutoff",
+      "ordinary-sampling",
       "controller-cutoff",
       "root-replaced",
       "absence-unavailable",
