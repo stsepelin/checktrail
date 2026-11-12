@@ -376,7 +376,7 @@ test("CI preparation regression ownership derives exact present-file consumers a
   for (const missing of [tools, extensions])
     await assert.rejects(
       collect(Object.keys(sources).filter((file) => file !== missing)),
-      /requires its declared native controller/,
+      /requires its declared native input/,
     );
   const shared = await collect(undefined, {
     ...sources,
@@ -3723,4 +3723,246 @@ test("planner keeps non-ancestor, empty, unknown and stale-contract main transit
       await f.cleanup();
     }
   }
+});
+
+test("CI profile expansion rejects helper identifier fragments while preserving native calls and conservative module metadata", async () => {
+  const requirements = Object.fromEntries(
+    ["kotlin", "maven", "fsharp-format"].map((profile) => [
+      profile,
+      [
+        {
+          file: `dist/test/original-${profile}.test.js`,
+          name: `${profile} original acceptance`,
+        },
+      ],
+    ]),
+  );
+  const collect = async (code: string, inline = true) => {
+    const files: Record<string, string> = {
+      "scripts/profile-token-fixture.mjs": code,
+      ...Object.fromEntries(
+        Object.keys(requirements).map((profile) => [
+          `test/original-${profile}.test.ts`,
+          "export {};\n",
+        ]),
+      ),
+    };
+    return buildNativeInputs({
+      workflow: {
+        jobs: {
+          formatter: {
+            steps: [
+              { run: inline ? code : "node scripts/profile-token-fixture.mjs" },
+            ],
+          },
+        },
+      },
+      requirements,
+      files: Object.keys(files),
+      readText: async (file: string) => files[file]!,
+    });
+  };
+  for (const inline of [true, false]) {
+    const code = inline
+      ? [
+          "node scripts/verify-required-native-tests.mjs fsharp-format",
+          "node --input-type=module <<'NODE'",
+          "import { kotlinRead } from './dist/src/kotlin-io.js';",
+          "const manifest = (await kotlinRead(process.env.MANIFEST, 16384)).toString('utf8');",
+          "NODE",
+        ].join("\n")
+      : [
+          'const profiles = ["fsharp-format"];',
+          "import { kotlinRead } from '../dist/src/kotlin-io.js';",
+          "import { mavenHash } from '../dist/src/maven.js';",
+          "const manifest = (await kotlinRead(process.env.MANIFEST, 16384)).toString('utf8');",
+          "mavenHash(Buffer.from(manifest));",
+        ].join("\n");
+    const result = await collect(code, inline);
+    assert.deepEqual(result["test/original-fsharp-format.test.ts"], [
+      "formatter",
+    ]);
+    assert.equal(result["test/original-kotlin.test.ts"], undefined);
+    assert.deepEqual(
+      result["test/original-maven.test.ts"],
+      inline ? undefined : ["formatter"],
+    );
+  }
+  const helperOnly = await collect('const result = mavenHash("synthetic");');
+  assert.equal(helperOnly["test/original-maven.test.ts"], undefined);
+  for (const [code, expected] of [
+    [
+      "node scripts/verify-required-native-tests.mjs kotlin maven fsharp-format",
+      ["kotlin", "maven", "fsharp-format"],
+    ],
+    [
+      'const profiles = ["kotlin", "maven", "fsharp-format"];',
+      ["kotlin", "maven", "fsharp-format"],
+    ],
+    ["const profile = 'maven';", ["maven"]],
+    ["const profile = `fsharp-format`;", ["fsharp-format"]],
+    [
+      "CHECKTRAIL_IMPORT_CONTEXT_PROFILE=kotlin node scripts/native.mjs",
+      ["kotlin"],
+    ],
+  ] as Array<[string, string[]]>) {
+    const result = await collect(code);
+    for (const profile of Object.keys(requirements))
+      assert.deepEqual(
+        result[`test/original-${profile}.test.ts`],
+        expected.includes(profile) ? ["formatter"] : undefined,
+        code + ": " + profile,
+      );
+  }
+});
+
+test("CI profile tokens reject full identifier continuations on both sides including Unicode", async () => {
+  const requirements = {
+    kotlin: [
+      {
+        file: "dist/test/original-kotlin.test.js",
+        name: "kotlin original acceptance",
+      },
+    ],
+  };
+  const excluded = [
+    "kotlinRead",
+    "prefixKotlin",
+    "pre_kotlin",
+    "kotlin_suffix",
+    "$kotlin",
+    "kotlin$",
+    "#kotlin",
+    "1kotlin",
+    "kotlin2",
+    "akotlin",
+    "kotlina",
+    "extra-kotlin",
+    "kotlin-extra",
+    "kotlinπ",
+    "πkotlin",
+    "𐐀kotlin",
+    "kotlin𐐀",
+    "kotlin\u200cRead",
+    "kotlin\u200d",
+    "\u200dkotlin",
+  ];
+  for (const token of excluded) {
+    const files: Record<string, string> = {
+      "scripts/native-profile-fixture.mjs": token,
+      "test/original-kotlin.test.ts": "export {};",
+    };
+    const result = await buildNativeInputs({
+      workflow: {
+        jobs: {
+          original: {
+            steps: [{ run: "node scripts/native-profile-fixture.mjs" }],
+          },
+        },
+      },
+      requirements,
+      files: Object.keys(files),
+      readText: async (file: string) => files[file]!,
+    });
+    assert.equal(result["test/original-kotlin.test.ts"], undefined, token);
+  }
+});
+
+test("CI observer helper consumers retain its complete two-callback regression without profile-name inference", async () => {
+  const helper = "test/native-process-observer.ts";
+  const regression = "test/native-process-observer.test.ts";
+  const files: Record<string, string> = {
+    "scripts/first-observer-consumer.mjs":
+      'import { readNativeProcCommand } from "../test/native-process-observer.js";',
+    "scripts/unrelated-consumer.mjs": "export {};",
+    [helper]: "export const readNativeProcCommand = () => null;",
+    [regression]:
+      'import { readNativeProcCommand } from "./native-process-observer.js"; export const originalControls = readNativeProcCommand;',
+  };
+  const requirements = {
+    "original-observer-controls": [
+      {
+        file: "dist/test/native-process-observer.test.js",
+        name: "original observer exclusion",
+      },
+      {
+        file: "dist/test/native-process-observer.test.js",
+        name: "original observer retained command",
+      },
+    ],
+  };
+  const result = await buildNativeInputs({
+    workflow: {
+      jobs: {
+        first: { steps: [{ run: "node scripts/first-observer-consumer.mjs" }] },
+        second: {
+          steps: [
+            {
+              run: "node --input-type=module -e 'import { readNativeProcCommand } from \"./dist/test/native-process-observer.js\";'",
+            },
+          ],
+        },
+        unrelated: { steps: [{ run: "node scripts/unrelated-consumer.mjs" }] },
+      },
+    },
+    requirements,
+    files: Object.keys(files),
+    readText: async (file: string) => files[file]!,
+  });
+  assert.deepEqual(result[helper], ["first", "second"]);
+  assert.deepEqual(result[regression], ["first", "second"]);
+  assert.ok(!result[regression]!.includes("unrelated"));
+  const actualRequirements = JSON.parse(
+    await readFile(new URL("scripts/required-native-tests.json", root), "utf8"),
+  );
+  const rows = actualRequirements["native-process-observer"] as Array<{
+    file: string;
+    name: string;
+  }>;
+  assert.equal(rows.length, 2);
+  assert.ok(
+    rows.every(
+      (row) => row.file === "dist/test/native-process-observer.test.js",
+    ),
+  );
+  const actual = await buildNativeInputs({
+    workflow,
+    requirements: actualRequirements,
+    files: checkoutProducerInventory,
+    readText: (file: string) => readFile(new URL(file, root), "utf8"),
+  });
+  assert.ok(actual[helper]?.length > 0);
+  assert.deepEqual(actual[regression], actual[helper]);
+  const source = ts.createSourceFile(
+    regression,
+    await readFile(new URL(regression, root), "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+  );
+  assert.ok(
+    source.statements.some(
+      (node) =>
+        ts.isImportDeclaration(node) &&
+        ts.isStringLiteral(node.moduleSpecifier) &&
+        node.moduleSpecifier.text === "./native-process-observer.js",
+    ),
+  );
+  const declared = source.statements.flatMap((statement) => {
+    if (
+      !ts.isExpressionStatement(statement) ||
+      !ts.isCallExpression(statement.expression)
+    )
+      return [];
+    const call = statement.expression;
+    return ts.isIdentifier(call.expression) &&
+      call.expression.text === "test" &&
+      call.arguments[0] &&
+      ts.isStringLiteral(call.arguments[0])
+      ? [call.arguments[0].text]
+      : [];
+  });
+  assert.deepEqual(
+    declared,
+    rows.map((row) => row.name),
+  );
 });

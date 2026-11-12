@@ -17,10 +17,13 @@ const controls = new Set([
 ]);
 const retainedArtifactDirectory =
   "docs/measurements/artifact-identities-2026-10-21/";
-// Reviewed Node-only preparation controls run as complete shared test files.
-// Derive their native consumers from the exact preparation controllers; do not
+// Reviewed shared helper/preparation controls run as complete test files.
+// Derive their native consumers from the exact declared inputs; do not
 // classify neighboring test names or create entries for absent files.
 const preparationRegressionSources = Object.freeze({
+  "test/native-process-observer.test.ts": Object.freeze([
+    "test/native-process-observer.ts",
+  ]),
   "test/dotnet-generator-shards.test.ts": Object.freeze([
     "scripts/verify-dotnet-generator-extensions-container.mjs",
   ]),
@@ -285,7 +288,11 @@ export async function buildNativeInputs({
           /\b(?:docker\.io|public\.ecr\.aws|mcr\.microsoft\.com)\/[a-z0-9_./-]+@sha256:[a-f0-9]{64}(?![a-f0-9])/g,
           " ",
         );
-        for (const token of profileText.match(/[a-z][a-z0-9-]*/g) ?? []) {
+        // Match whole identifiers, including Unicode continuations. File-name
+        // tokens remain conservative metadata; helper-name fragments do not.
+        for (const [, token] of profileText.matchAll(
+          /(?<![\p{ID_Continue}\p{Join_Control}$#-])([a-z][a-z0-9-]*)(?![\p{ID_Continue}\p{Join_Control}$#-])/gu,
+        )) {
           if (profiles.has(token))
             for (const item of requirements[token]) admit(item.file);
         }
@@ -418,7 +425,7 @@ export async function buildNativeInputs({
     for (const source of sources) {
       assert.ok(
         available.has(source) && owners.get(source)?.size > 0,
-        "Preparation regression requires its declared native controller",
+        "Shared regression requires its declared native input",
       );
       for (const job of owners.get(source)) selected.add(job);
     }
