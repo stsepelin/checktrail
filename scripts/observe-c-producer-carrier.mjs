@@ -27,7 +27,7 @@ import {
 } from "./producer-qualification/c-carrier-observation.mjs";
 import {
   sha256,
-  cProducerLocalPolicyId,
+  cProducerExecutionPolicyPin,
   loadCProducerProfile,
   loadCProducerExecutionPolicy,
   cProducerExecutionPolicyBinding,
@@ -432,7 +432,7 @@ export async function mainCProducerCarrier(args) {
   if (local) {
     assert.equal(args[10], "--allow-local-arm64-daemon");
     assert.equal(args[11], "--execution-policy");
-    assert.equal(args[12], cProducerLocalPolicyId);
+    cProducerExecutionPolicyPin(args[12]);
     assert.equal(args[13], "--managed-started-at");
     assert.equal(args[15], "--managed-deadline-at");
   }
@@ -446,7 +446,7 @@ export async function mainCProducerCarrier(args) {
       args[6] === "--startup" &&
       args[8] === "--operator-trust-execution" &&
       args[9] === "--coordinated-heavy-slot",
-    "Usage: --profile gcc-12 --inputs BUNDLE --output NEW_RESULT --startup FILE --operator-trust-execution --coordinated-heavy-slot [--github-job-envelope] | --allow-local-arm64-daemon --execution-policy local-gcc12-23h-v1 --managed-started-at UTC --managed-deadline-at UTC",
+    "Usage: --profile gcc-12 --inputs BUNDLE --output NEW_RESULT --startup FILE --operator-trust-execution --coordinated-heavy-slot [--github-job-envelope] | --allow-local-arm64-daemon --execution-policy local-gcc12-12h-v1|local-gcc12-23h-v1 --managed-started-at UTC --managed-deadline-at UTC",
   );
   const name = requireCObservationProfile(args[1]);
   assert.equal(
@@ -516,7 +516,9 @@ export async function mainCProducerCarrier(args) {
             plan.profile,
           ),
           sourceProfileDefaultsChanged: false,
-          executionPolicyChangesWallDeadline: true,
+          executionPolicyChangesWallDeadline:
+            executionPolicy.native.deadlineSeconds !==
+            executionPolicy.base.deadlineSeconds,
         }
       : {}),
     startedAt,
@@ -670,7 +672,7 @@ export async function mainCProducerCarrier(args) {
               ? [
                   "--allow-local-arm64-daemon",
                   "--execution-policy",
-                  cProducerLocalPolicyId,
+                  executionPolicy.id,
                 ]
               : []),
           ]));

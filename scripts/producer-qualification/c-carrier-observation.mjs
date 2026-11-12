@@ -243,7 +243,7 @@ export function captureLocalGccManagedClock(
   assert.equal(
     Date.parse(managedDeadlineAt) - Date.parse(managedStartedAt),
     windows.managedMaximumSeconds * 1000,
-    "Managed window must be exactly24hours",
+    `Managed window must be exactly${windows.managedMaximumSeconds / 3600}hours`,
   );
   const remainingAtCaptureMs =
     Date.parse(managedDeadlineAt) - Date.parse(capturedAt);
@@ -428,7 +428,10 @@ export function validateLocalGccCarrierReceipt(
     policy.native.deadlineSeconds,
   );
   assert.equal(receipt.sourceProfileDefaultsChanged, false);
-  assert.equal(receipt.executionPolicyChangesWallDeadline, true);
+  assert.equal(
+    receipt.executionPolicyChangesWallDeadline,
+    policy.native.deadlineSeconds !== policy.base.deadlineSeconds,
+  );
   const limits = localGccCarrierLimits(policy, profile);
   assert.deepEqual(receipt.carrierLimits, limits);
   validateLocalGccManagedWindow(receipt.managedWindow, policy, profile);

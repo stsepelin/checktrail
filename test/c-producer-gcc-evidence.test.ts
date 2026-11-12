@@ -605,14 +605,14 @@ test("GCC carrier owner admission binds the exact caller, UUID, selected source 
   }
 });
 
-test("GCC workflow has a narrow operator namespace, read-only capacity checks and an independent cutoff without altering the profile", async () => {
+test("GCC qualification runs only on explicit dispatch and preserves capacity admission, evidence retention and the original profile", async () => {
   const workflow = parse(
     await readFile(
       path.join(repository, ".github/workflows/upstream-gcc.yml"),
       "utf8",
     ),
   );
-  assert.deepEqual(workflow.on.push.branches, ["pr/upstream-producer/gcc-*"]);
+  assert.deepEqual(workflow.on, { workflow_dispatch: null });
   assert.equal(workflow.concurrency["cancel-in-progress"], false);
   const job = workflow.jobs["original-gcc-observation"];
   const steps = job.steps as {
@@ -717,17 +717,57 @@ r=module('gcc_fixture_replay',repo/'scripts/producer-qualification/c-producer-re
 collector=module('gcc_fixture_collect',repo/'scripts/producer-qualification/c-producer-test-reports.py')
 catalog=json.loads((repo/'scripts/producer-qualification/c-producer-profiles.v1.json').read_bytes());profile=catalog['profiles']['gcc-12'];catalog_sha=r.CATALOG_SHA256
 caller={'uid':os.getuid(),'gid':os.getgid()};assert caller['uid']>0
-reviewed=root/'operator-source';reviewed.mkdir()
-for name in exporter.SOURCE_FILES+[exporter.LOCAL_POLICY_SOURCE]:
- target=reviewed/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(repo/name,target)
 env=dict(os.environ);env.update(SKIP_CODEX_REVIEW='1',GIT_CONFIG_NOSYSTEM='1',GIT_CONFIG_GLOBAL=os.devnull)
 git=['git','-c','core.hooksPath='+os.devnull,'-c','core.fsmonitor=false','-c','commit.gpgsign=false']
-for args in [['init','--quiet'],['add','--',*exporter.SOURCE_FILES,exporter.LOCAL_POLICY_SOURCE],['-c','user.name=Synthetic Protocol','-c','user.email=synthetic@example.invalid','commit','--quiet','-m','Synthetic operator frame']]:
- p=subprocess.run(git+args,cwd=reviewed,env=env,capture_output=True,timeout=10);assert p.returncode==0,p.stderr
-head=subprocess.check_output(git+['rev-parse','HEAD'],cwd=reviewed,env=env).decode().strip()
+history=repo/'test/fixtures/c-controller-history';provenance=json.loads((history/'provenance.json').read_bytes())
+legacy_collector_meta=json.loads((history/'report-collector-provenance.json').read_bytes());assert legacy_collector_meta['file']=='schema2-report-collector.py.txt' and legacy_collector_meta['license']['file']=='LICENSE-schema2.txt'
+legacy_collector_body=(history/legacy_collector_meta['file']).read_bytes()
+assert r.pin(legacy_collector_body)=={key:legacy_collector_meta[key]for key in ['bytes','sha256']}=={'bytes':18397,'sha256':'9dee7066707382c33ba971fe63ded57c407454c81ed38ab30aa66b95b558691c'} and legacy_collector_meta['originalCommit']=='d05fc53fa83e519cab9692c662288c50f67fb11b' and legacy_collector_meta['originalPath']=='scripts/producer-qualification/c-producer-test-reports.py'
+assert r.pin((history/legacy_collector_meta['license']['file']).read_bytes())=={key:legacy_collector_meta['license'][key]for key in ['bytes','sha256']}
+current_selected_sources=list(selected_sources);legacy_selected_sources=[name for name in selected_sources if name not in [file.rsplit('/',1)[-1]for file in r.REPORT_CODEC_FILES]]
+def source_tree(name,epoch,legacy_collector=None):
+ if legacy_collector is None:legacy_collector=epoch in [1,2]
+ files=[file for file in exporter.SOURCE_FILES if not legacy_collector or file not in r.REPORT_CODEC_FILES]
+ reviewed=root/name;reviewed.mkdir()
+ for file in files+[exporter.LOCAL_POLICY_SOURCE]:
+  target=reviewed/file;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(repo/file,target)
+ if legacy_collector:(reviewed/'scripts/producer-qualification/c-producer-test-reports.py').write_bytes(legacy_collector_body)
+ if epoch in [1,2]:
+  original=next(row for row in provenance['fixtures'] if row['schemaVersion']==epoch)
+  body=(history/original['file']).read_bytes();assert r.pin(body)=={'bytes':original['bytes'],'sha256':original['sha256']}
+  # Inert original first-party implementation data, never imported/executed.
+  (reviewed/'scripts/qualify-c-producer.mjs').write_bytes(body)
+ for args in [['init','--quiet'],['add','--',*files,exporter.LOCAL_POLICY_SOURCE],['-c','user.name=Synthetic Protocol','-c','user.email=synthetic@example.invalid','commit','--quiet','-m','Synthetic operator frame']]:
+  process=subprocess.run(git+args,cwd=reviewed,env=env,capture_output=True,timeout=10);assert process.returncode==0,process.stderr
+ head=subprocess.check_output(git+['rev-parse','HEAD'],cwd=reviewed,env=env).decode().strip()
+ pins=[{'file':file,**r.pin((reviewed/file).read_bytes())} for file in files]
+ return reviewed,head,pins
+reviewed,head,source_pins=source_tree('operator-source-schema1',1)
+reviewed2,head2,source_pins2=source_tree('operator-source-schema2',2)
+reviewed3,head3,source_pins3=source_tree('operator-source-schema3',3)
+reviewed_mixed,head_mixed,source_pins_mixed=source_tree('invalid-old-controller-new-collector',2,False)
+def legacy_collect(profile_name,source,destination,caller):
+ # Execute only the current collector against synthetic data. Convert its fully
+ # verified small files to the historical raw layout; historical code stays data.
+ collector.collect(profile_name,source,destination,caller);value=json.loads(destination.read_bytes());retained=destination.parent/'original-test-reports';files=[];directories={'.'}
+ def owner(path,mode):
+  info=path.stat();return {'uid':info.st_uid,'gid':info.st_gid,'mode':mode,'producerDevice':str(info.st_dev),'producerInode':str(info.st_ino)}
+ for report in value['reports']:
+  for row in [report]+([report['log']]if 'log'in report else[]):
+   assert row['bytes']<=4096
+   raw=b''.join(collector.report_codec().iter_report_bytes(row,lambda name,maximum:(retained/name).read_bytes()));assert raw==(source/row['file']).read_bytes();row.pop('chunks');target=retained/row['file'];target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(raw);target.chmod(0o600);parts=row['file'].split('/');directories.update('/'.join(parts[:n])for n in range(1,len(parts)));files.append(row['file'])
+ shutil.rmtree(retained/'encoded');value['schemaVersion']=2 if profile_name=='gcc-12'else 1;value.pop('encoding');value.pop('storedBytes');value['exportCustody']['files']=[{'file':name,'ownership':owner(retained/name,0o600)}for name in files];value['exportCustody']['directories']=[]
+ for name in sorted(directories):
+  path=retained/name;path.chmod(0o700);value['exportCustody']['directories'].append({'directory':name,'ownership':owner(path,0o700)})
+ write(destination,value)
+selected_sources=legacy_selected_sources
+archive_sources={}
+def replay_fixture(archive,selected_source,*args):
+ return r.replay(archive,archive_sources.get(archive,selected_source),*args)
+
 def write(file,value):
  file.parent.mkdir(parents=True,exist_ok=True);file.write_bytes((json.dumps(value)+'\n').encode());file.chmod(0o600);return r.pin(file.read_bytes())
-source_pins=[{'file':name,**r.pin((reviewed/name).read_bytes())} for name in exporter.SOURCE_FILES]
+source_pins=[{'file':name,**r.pin((reviewed/name).read_bytes())} for name in exporter.report_source_files(reviewed)]
 selected={'name':'gcc-12','profile':profile['profile'],'sourceVersion':profile['sourceVersion'],'catalogSha256':catalog_sha}
 # Native host/root observation fields below are SYNTHETIC SCHEMA DATA.
 # Actual exported bytes, owner/modes, ZIP hashes and Git objects are generated.
@@ -747,7 +787,7 @@ for name in ['build-jit','build-nvptx','build-gcn','build-hppa64']:
  (source/name/'gcc/testsuite').mkdir(parents=True)
  (source/name/'gcc/testsuite/extra.sum').write_bytes(b'PASS: synthetic copied outcome\nFAIL: preserved copied outcome\n')
  (source/name/'gcc/testsuite/extra.log').write_bytes(b'Synthetic copied log\n')
-collector.collect('gcc-12',source,work/'test-reports.json',caller)
+legacy_collect('gcc-12',source,work/'test-reports.json',caller)
 original_reports=json.loads((work/'test-reports.json').read_bytes());original_reports['exportCustody']['producerEffectiveUid']=0;write(work/'test-reports.json',original_reports)
 roots=['build','build-cross','build-jit','build-nvptx','build-gcn','build-hppa64']
 assert original_reports['schemaVersion']==2 and original_reports['generatedBuildRoots']==roots
@@ -759,7 +799,7 @@ assert not original_reports['duplicateReportsAreIndependentEvidence'] and not or
 collector_raw=(repo/'scripts/producer-qualification/c-producer-test-reports.py').read_text()
 new_roots='["build", "build-cross", "build-jit", "build-nvptx", "build-gcn", "build-hppa64"]'
 assert collector_raw.count(new_roots)==1
-old_namespace={'__name__':'synthetic_old_two_root_collector'}
+old_namespace={'__name__':'synthetic_old_two_root_collector','__file__':str(repo/'scripts/producer-qualification/c-producer-test-reports.py')}
 exec(compile(collector_raw.replace(new_roots,'["build", "build-cross"]'),'<synthetic-two-root-mutant>','exec'),old_namespace)
 old_output=root/'old-two-root-output';old_output.mkdir()
 old_namespace['collect']('gcc-12',source,old_output/'test-reports.json',caller)
@@ -769,7 +809,7 @@ assert set(row['configuration'] for row in original_reports['reports'])-set(row[
 
 pre_source=root/'custody-source';(pre_source/'build-tree/amd64-libc').mkdir(parents=True)
 (pre_source/'build-tree/amd64-libc/tests.sum').write_bytes(b'PASS: synthetic custody preflight\n');(pre_source/'build-tree/amd64-libc/tests.log').write_bytes(b'Original synthetic custody bytes\n')
-pre_root=result/'custody-preflight';pre_root.mkdir(mode=0o700);collector.collect('glibc',pre_source,pre_root/'test-reports.json',caller)
+pre_root=result/'custody-preflight';pre_root.mkdir(mode=0o700);legacy_collect('glibc',pre_source,pre_root/'test-reports.json',caller)
 pre_reports=json.loads((pre_root/'test-reports.json').read_bytes());pre_reports['exportCustody']['producerEffectiveUid']=0;pre_manifest=write(pre_root/'test-reports.json',pre_reports)
 (result/'custody-preflight.log').write_bytes(b'Synthetic custody transport\n');pre_log=r.pin((result/'custody-preflight.log').read_bytes())
 process=subprocess.run([sys.executable,'-I','-S','-B','-c','print("synthetic original foreground transport")'],capture_output=True,timeout=3)
@@ -801,27 +841,32 @@ for key in ['originalProducerDefaultsOrBudgetChanged','fullEightHourHostedCapaci
 carrier_pin=write(carrier/'receipt.json',carrier_value)
 observed['carrier']={'receipt':carrier_pin,'ownerFrame':owner_pin,'controllerLog':carrier_value['log']};write(result/'build-observation.json',observed)
 archive=root/'gcc-protocol.zip';exporter.export(reviewed,inputs,common,result,startup_file,archive,profile_name='gcc-12',carrier=carrier)
-replayed=r.replay(archive,reviewed,'gcc-12');assert replayed['state']=='retained-original-gcc-12-observation-replayed' and replayed['reports']==6 and replayed['observedOutcomeLines']==12 and replayed['testEvidenceState']=='failed' and replayed['gateAComplete'] is False
+replayed=replay_fixture(archive,reviewed,'gcc-12');assert replayed['state']=='retained-original-gcc-12-observation-replayed' and replayed['reports']==6 and replayed['observedOutcomeLines']==12 and replayed['testEvidenceState']=='failed' and replayed['gateAComplete'] is False
 # Replay the new closed outer protocol through the same complete source/image/
 # signature/carrier/report pipeline, then restore the untouched legacy baseline.
 legacy_receipt_bytes=(result/'receipt.json').read_bytes();legacy_observed_bytes=(result/'build-observation.json').read_bytes()
+legacy_startup_bytes=startup_file.read_bytes();legacy_owner_bytes=(carrier/'owner-frame.json').read_bytes();legacy_carrier_bytes=(carrier/'receipt.json').read_bytes()
+modern_startup=copy.deepcopy(startup);modern_startup.update(gitHead=head2,sourcePins=source_pins2);modern_startup_pin=write(startup_file,modern_startup)
 work.chmod(0o700);os.chown(work,caller['uid'],caller['gid']);native_root=work/'native-build';native_root.mkdir(mode=0o700)
 root_stat=native_root.stat();root_identity=[str(v)for v in(root_stat.st_dev,root_stat.st_ino,root_stat.st_mode,root_stat.st_uid,root_stat.st_gid)]
 journal_rows={}
 for phase in ['requested','terminal']:
  collector.write_command_observation(phase,work,caller,'0'if phase=='terminal'else None);leaf='original-command-'+phase+'.json';journal_rows[phase]={'state':'retained','file':leaf,'value':json.loads((work/leaf).read_bytes())}
 modern_receipt=copy.deepcopy(receipt);modern_receipt.update(schemaVersion=2,retentionTransportPolicy=dict(r.C_BUILD_POLICY),reportRetention=dict(r.REPORT_LOCATIONS['original-trap']),commandObservations=journal_rows,retainedBuildRoot={'before':root_identity,'afterStop':root_identity[:],'namedAfterStop':root_identity[:],'scope':'Directory identity before and after positive producer stop; not a continuous content trace'},nativeBuildRootClose={'state':'closed'},collectionFailures=[],postStopCleanup={'state':'not-started'})
+modern_receipt['harnessPins']=[{'file':name,**r.pin((reviewed2/'scripts'/name).read_bytes())} for name in ['qualify-c-producer.mjs','qualify-binutils-producer.mjs']]
 modern_receipt['retentionObserver']['workObjectPolicy']='c-build-links-and-specials-no-follow';modern_pin=write(result/'receipt.json',modern_receipt)
-modern_observed=copy.deepcopy(observed);modern_observed['originalReceipt']=modern_pin;write(result/'build-observation.json',modern_observed)
-modern_archive=root/'gcc-schema2-protocol.zip';exporter.export(reviewed,inputs,common,result,startup_file,modern_archive,profile_name='gcc-12',carrier=carrier)
-modern_replay=r.replay(modern_archive,reviewed,'gcc-12');assert modern_replay['state']=='retained-original-gcc-12-observation-replayed'and modern_replay['reports']==6 and modern_replay['observedOutcomeLines']==12 and modern_replay['testEvidenceState']=='failed'and modern_replay['gateAComplete']is False
+modern_owner_pin=write(carrier/'owner-frame.json',modern_receipt)
+modern_carrier=copy.deepcopy(carrier_value);modern_carrier.update(startupInput=modern_startup_pin,ownerFrame=modern_owner_pin);modern_carrier_pin=write(carrier/'receipt.json',modern_carrier)
+modern_observed=copy.deepcopy(observed);modern_observed.update(startup=modern_startup_pin,originalReceipt=modern_pin,carrier={'receipt':modern_carrier_pin,'ownerFrame':modern_owner_pin,'controllerLog':modern_carrier['log']});write(result/'build-observation.json',modern_observed)
+modern_archive=root/'gcc-schema2-protocol.zip';archive_sources[modern_archive]=reviewed2;exporter.export(reviewed2,inputs,common,result,startup_file,modern_archive,profile_name='gcc-12',carrier=carrier)
+modern_replay=replay_fixture(modern_archive,reviewed,'gcc-12');assert modern_replay['state']=='retained-original-gcc-12-observation-replayed'and modern_replay['reports']==6 and modern_replay['observedOutcomeLines']==12 and modern_replay['testEvidenceState']=='failed'and modern_replay['gateAComplete']is False
 
 # A separate, explicitly selected local context uses the same full physical
 # schema2 protocol, source Git objects and original reports. Host/process clock
 # fields remain authored schema data, never a native23hour qualification claim.
-legacy_startup_bytes=startup_file.read_bytes();legacy_owner_bytes=(carrier/'owner-frame.json').read_bytes();legacy_carrier_bytes=(carrier/'receipt.json').read_bytes()
+# Original schema1 snapshots remain unchanged for later legacy controls.
 policy=json.loads((reviewed/exporter.LOCAL_POLICY_SOURCE).read_bytes());assert r.local_policy_binding(policy,profile)==local_binding
-local_startup=copy.deepcopy(startup);local_startup.update(executionPolicy=local_binding,sourcePins=source_pins+[{'file':exporter.LOCAL_POLICY_SOURCE,**r.pin((reviewed/exporter.LOCAL_POLICY_SOURCE).read_bytes())}]);local_startup_pin=write(startup_file,local_startup)
+local_startup=copy.deepcopy(modern_startup);local_startup.update(executionPolicy=local_binding,sourcePins=source_pins2+[{'file':exporter.LOCAL_POLICY_SOURCE,**r.pin((reviewed/exporter.LOCAL_POLICY_SOURCE).read_bytes())}]);local_startup_pin=write(startup_file,local_startup)
 local_receipt=copy.deepcopy(modern_receipt);local_receipt.update(executionPolicy=local_binding,executionLimits=local_binding['executionLimits'],controllerClock={'schemaVersion':1,'scope':'same-controller-process-monotonic','totalSeconds':84000,'elapsedSeconds':2.0,'remainingMs':83998000,'nativeAdmission':{'elapsedSeconds':0.0,'observerSeconds':82890,'recoveryReserveSeconds':510}})
 local_receipt['sourcePins'].append({'file':'gcc-local-wall-policy.v1.json',**r.pin((reviewed/exporter.LOCAL_POLICY_SOURCE).read_bytes())})
 local_receipt['host'].update(daemonMetadata={'OSType':'linux','Architecture':'aarch64','NCPU':4,'MemTotal':6442450944},finalDaemonMetadata={'OSType':'linux','Architecture':'aarch64','NCPU':4,'MemTotal':6442450944},daemonPolicy={'targetPlatform':'linux/amd64','observedDaemonArchitecture':'aarch64','localArm64DaemonPermissionUsed':True,'targetAndDaemonArchitecturesDiffer':True,'emulationImplementation':'unknown','hardwareHostAttestationPerformed':False})
@@ -830,14 +875,55 @@ local_carrier=copy.deepcopy(carrier_value);local_carrier.pop('originalProducerDe
 local_carrier['managedWindow']={'schemaVersion':1,'authority':'operator-declared-managed-window','clockScope':'one-UTC-capture-then-same-carrier-monotonic','managedStartedAt':'2026-01-01T00:00:00.000Z','managedDeadlineAt':'2026-01-02T00:00:00.000Z','capturedAt':'2026-01-01T00:00:00.000Z','remainingAtCaptureMs':86400000,'admission':{'monotonicAdmissionMs':1,'remainingAtAdmissionMs':86399999,'requiredAtAdmissionMs':85860000},'monotonicElapsedMs':4000,'remainingAtFinishMs':86396000,'independentlyAttestedManagedLease':False}
 local_carrier_pin=write(carrier/'receipt.json',local_carrier)
 local_observed=copy.deepcopy(modern_observed);local_observed.update(executionPolicy=local_binding,startup=local_startup_pin,originalReceipt=local_receipt_pin,carrier={'receipt':local_carrier_pin,'ownerFrame':local_owner_pin,'controllerLog':local_carrier['log']});write(result/'build-observation.json',local_observed)
-local_archive=root/'gcc-local23h-schema2-protocol.zip';exporter.export(reviewed,inputs,common,result,startup_file,local_archive,profile_name='gcc-12',carrier=carrier,execution_policy=exporter.LOCAL_POLICY_ID)
-local_replayed=r.replay(local_archive,reviewed,'gcc-12',r.LOCAL_POLICY_ID);assert local_replayed['state']=='retained-original-gcc-12-observation-replayed'and local_replayed['reports']==6 and local_replayed['observedOutcomeLines']==12 and local_replayed['gateAComplete']is False
+local_archive=root/'gcc-local23h-schema2-protocol.zip';archive_sources[local_archive]=reviewed2;exporter.export(reviewed2,inputs,common,result,startup_file,local_archive,profile_name='gcc-12',carrier=carrier,execution_policy=exporter.LOCAL_POLICY_ID)
+local_replayed=replay_fixture(local_archive,reviewed,'gcc-12',r.LOCAL_POLICY_ID);assert local_replayed['state']=='retained-original-gcc-12-observation-replayed'and local_replayed['reports']==6 and local_replayed['observedOutcomeLines']==12 and local_replayed['gateAComplete']is False
 for selected_archive,requested,fragment in [(local_archive,None,'Legacy replay cannot relabel local archive'),(modern_archive,r.LOCAL_POLICY_ID,'Archive did not bind explicitly requested local policy')]:
- try:r.replay(selected_archive,reviewed,'gcc-12',requested)
+ try:replay_fixture(selected_archive,reviewed,'gcc-12',requested)
  except ValueError as error:assert fragment in str(error),(fragment,str(error))
  else:raise AssertionError('Cross-policy archive relabeling passed')
 startup_file.write_bytes(legacy_startup_bytes);(carrier/'owner-frame.json').write_bytes(legacy_owner_bytes);(carrier/'receipt.json').write_bytes(legacy_carrier_bytes)
 (result/'receipt.json').write_bytes(legacy_receipt_bytes);(result/'build-observation.json').write_bytes(legacy_observed_bytes)
+
+# Complete new-source schema3 capsule with two active interventions. All raw
+# counters stay WELL BELOW the allowance for the downgrade control; an omitted
+# epoch gate cannot be hidden by the uniform historical byte-ceiling check.
+# Historical controller1/2 fixtures use the exact pinned legacy collector and
+# raw reports. The current controller3 fixture independently captures v3 bytes.
+legacy_work_manifest=(work/'test-reports.json').read_bytes();legacy_pre_manifest=(pre_root/'test-reports.json').read_bytes()
+legacy_work_copies=root/'legacy-work-copies';legacy_pre_copies=root/'legacy-pre-copies'
+(work/'original-test-reports').rename(legacy_work_copies);(pre_root/'original-test-reports').rename(legacy_pre_copies);(work/'test-reports.json').unlink();(pre_root/'test-reports.json').unlink()
+collector.collect('gcc-12',source,work/'test-reports.json',caller);current_reports=json.loads((work/'test-reports.json').read_bytes());current_reports['exportCustody']['producerEffectiveUid']=0;write(work/'test-reports.json',current_reports)
+collector.collect('glibc',pre_source,pre_root/'test-reports.json',caller);current_pre_reports=json.loads((pre_root/'test-reports.json').read_bytes());current_pre_reports['exportCustody']['producerEffectiveUid']=0;current_pre_manifest=write(pre_root/'test-reports.json',current_pre_reports)
+assert current_reports['schemaVersion']==current_pre_reports['schemaVersion']==3 and len(current_reports['reports'])==6
+startup3=copy.deepcopy(startup);startup3.update(gitHead=head3,sourcePins=source_pins3);startup3_pin=write(startup_file,startup3)
+rows3=[]
+for sequence,phase in enumerate(['initial','active','active','final'],1):
+ value={'schemaVersion':1,'kind':'sample','sequence':sequence,'bytes':122+sequence,'files':2,'directories':4}
+ rows3.append({'schemaVersion':2,'name':'checktrail-producer-'+attempt,'image':catalog['image'],'id':'b'*64 if phase=='active'else None,'nativeStarted':phase!='initial','nativeTerminalObservedBeforeSample':phase=='final','nativeTerminalObservedAtCompletion':phase=='final','sample':value,'actions':['absent-before-admission','sample-completed']if phase=='initial'else['absent-after-native-terminal','sample-completed']if phase=='final'else['pause-requested','paused-acknowledged','sample-completed','unpause-requested','unpaused-acknowledged'],'elapsedMilliseconds':1,'complete':True,'errors':[]})
+transport3=line('stdout',ready)+b''.join(line('stdin',{'schemaVersion':1,'kind':'sample','sequence':row['sample']['sequence']})+line('stdout',row['sample'])for row in rows3)
+(result/'retention-observer.jsonl').write_bytes(transport3)
+receipt3=copy.deepcopy(modern_receipt);receipt3.update(schemaVersion=3,retentionSamplingPolicy=dict(r.C_SAMPLING_POLICY),quiescentResourceSamples=rows3,finalRetention=rows3[-1]['sample'],harnessPins=[{'file':name,**r.pin((reviewed3/'scripts'/name).read_bytes())}for name in ['qualify-c-producer.mjs','qualify-binutils-producer.mjs']])
+receipt3.update(sourcePins=[{'file':name,**r.pin((reviewed3/'scripts/producer-qualification'/name).read_bytes())}for name in current_selected_sources],testEvidence=current_reports);receipt3['custodyPreflight']['manifest']=current_pre_manifest
+receipt3['retentionObserver'].update(samples=4,lastSample=rows3[-1]['sample'],retainedLogBytes=len(transport3),log=r.pin(transport3));receipt3_pin=write(result/'receipt.json',receipt3)
+owner3_pin=write(carrier/'owner-frame.json',receipt3);carrier3=copy.deepcopy(carrier_value);carrier3.update(startupInput=startup3_pin,ownerFrame=owner3_pin);carrier3_pin=write(carrier/'receipt.json',carrier3)
+observed3=copy.deepcopy(observed);observed3.update(startup=startup3_pin,originalReceipt=receipt3_pin,carrier={'receipt':carrier3_pin,'ownerFrame':owner3_pin,'controllerLog':carrier3['log']});write(result/'build-observation.json',observed3)
+archive3=root/'gcc-current-schema3-protocol.zip';archive_sources[archive3]=reviewed3;exporter.export(reviewed3,inputs,common,result,startup_file,archive3,profile_name='gcc-12',carrier=carrier)
+replayed3=replay_fixture(archive3,reviewed3,'gcc-12');assert replayed3['state']=='retained-original-gcc-12-observation-replayed'and replayed3['gateAComplete']is False
+# The source frame and all byte links are coherent, but the frozen old
+# controller cannot consume this new collector/report format.
+(result/'retention-observer.jsonl').write_bytes(transport)
+mixed_startup=copy.deepcopy(startup);mixed_startup.update(gitHead=head_mixed,sourcePins=source_pins_mixed);mixed_startup_pin=write(startup_file,mixed_startup)
+mixed_receipt=copy.deepcopy(modern_receipt);mixed_receipt.update(sourcePins=[{'file':name,**r.pin((reviewed_mixed/'scripts/producer-qualification'/name).read_bytes())}for name in current_selected_sources],harnessPins=[{'file':name,**r.pin((reviewed_mixed/'scripts'/name).read_bytes())}for name in ['qualify-c-producer.mjs','qualify-binutils-producer.mjs']],testEvidence=current_reports);mixed_receipt['custodyPreflight']['manifest']=current_pre_manifest;mixed_receipt_pin=write(result/'receipt.json',mixed_receipt)
+mixed_owner_pin=write(carrier/'owner-frame.json',mixed_receipt);mixed_carrier=copy.deepcopy(carrier_value);mixed_carrier.update(startupInput=mixed_startup_pin,ownerFrame=mixed_owner_pin);mixed_carrier_pin=write(carrier/'receipt.json',mixed_carrier)
+mixed_observed=copy.deepcopy(observed);mixed_observed.update(startup=mixed_startup_pin,originalReceipt=mixed_receipt_pin,carrier={'receipt':mixed_carrier_pin,'ownerFrame':mixed_owner_pin,'controllerLog':mixed_carrier['log']});write(result/'build-observation.json',mixed_observed)
+mixed_archive=root/'old-controller-new-collector.zip';exporter.export(reviewed_mixed,inputs,common,result,startup_file,mixed_archive,profile_name='gcc-12',carrier=carrier)
+try:r.replay(mixed_archive,reviewed_mixed,'gcc-12')
+except ValueError as error:assert 'Historical C controller requires exact legacy raw report collector'in str(error)
+else:raise AssertionError('Impossible historical-controller/current-collector tuple replayed')
+# Restore the exact raw historical cohort for the historical mutation cases.
+shutil.rmtree(work/'original-test-reports');shutil.rmtree(pre_root/'original-test-reports');legacy_work_copies.rename(work/'original-test-reports');legacy_pre_copies.rename(pre_root/'original-test-reports');(work/'test-reports.json').write_bytes(legacy_work_manifest);(pre_root/'test-reports.json').write_bytes(legacy_pre_manifest)
+startup_file.write_bytes(legacy_startup_bytes);(carrier/'owner-frame.json').write_bytes(legacy_owner_bytes);(carrier/'receipt.json').write_bytes(legacy_carrier_bytes)
+(result/'receipt.json').write_bytes(legacy_receipt_bytes);(result/'build-observation.json').write_bytes(legacy_observed_bytes);(result/'retention-observer.jsonl').write_bytes(transport)
 
 # Exercise physical zero-report versus absent roots through actual collection,
 # exporter and offline report replay. Unsupported-only remains unavailable.
@@ -878,7 +964,7 @@ with zipfile.ZipFile(cutoff_archive) as z:
  assert z.read('carrier/failed-owner-frame.part')==partial
  cutoff_manifest=json.loads(z.read('manifest.json'));assert any(row['file']=='result/build-observation.json' for row in cutoff_manifest['unavailable'])
  assert 'result/build-observation.json' not in z.namelist()
-try:r.replay(cutoff_archive,reviewed,'gcc-12')
+try:replay_fixture(cutoff_archive,reviewed,'gcc-12')
 except ValueError as error:assert 'Incomplete raw C export' in str(error),str(error)
 else:raise AssertionError('Actual incomplete cutoff export qualified')
 (carrier/'.owner-frame.part').unlink();(result/'build-observation.json').write_bytes(complete_observation);(carrier/'receipt.json').write_bytes(complete_carrier)
@@ -898,12 +984,46 @@ def mutant(label,change,expected_error,selected_archive=archive,expected_policy=
  target=root/(label+'.zip')
  with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_DEFLATED) as z:
   for name,body in members.items():z.writestr(name,body)
- try:r.replay(target,reviewed,'gcc-12',expected_policy)
- except ValueError as error:
+ archive_sources[target]=archive_sources.get(selected_archive,reviewed)
+ if expected_error is None:
+  positive=replay_fixture(target,reviewed,'gcc-12',expected_policy)
+  assert positive['state']=='retained-original-gcc-12-observation-replayed'and positive['gateAComplete']is False
+  return
+ try:replay_fixture(target,reviewed,'gcc-12',expected_policy)
+ except (ValueError,RuntimeError) as error:
   assert expected_error in str(error),(label,str(error));labels.append(label);return
  raise AssertionError('Invalid coherently rehashed GCC protocol packet accepted: '+label)
 def edit_member(members,name,update):
  value=json.loads(members[name]);update(value);members[name]=json.dumps(value).encode()
+epoch_rejected=[]
+def downgrade(members,manifest,keep_rows=False):
+ value=json.loads(members['result/receipt.json']);value['schemaVersion']=2;value.pop('retentionSamplingPolicy')
+ if not keep_rows:value.pop('quiescentResourceSamples')
+ # An archive-supplied admission table must never become reader authority.
+ digest=next(row['sha256']for row in json.loads(members['operator-startup.json'])['sourcePins']if row['file']=='scripts/qualify-c-producer.mjs')
+ value['historicalCControllerEpochs']={digest:2}
+ members['result/receipt.json']=json.dumps(value).encode();members['carrier/owner-frame.json']=members['result/receipt.json']
+ manifest.update(schemaVersion=2,controllerReceiptFormat='schema2')
+mutant('new-source-stripped-policy-and-rows',downgrade,'C controller source identity requires receipt schema3',archive3,labels=epoch_rejected)
+mutant('new-source-stripped-policy-with-rows',lambda m,v:downgrade(m,v,True),'C controller source identity requires receipt schema3',archive3,labels=epoch_rejected)
+def old_upgrade(members,manifest):
+ value=json.loads(members['result/receipt.json']);value.update(schemaVersion=3,retentionSamplingPolicy=dict(r.C_SAMPLING_POLICY),quiescentResourceSamples=copy.deepcopy(rows3),finalRetention=rows3[-1]['sample'])
+ value['retentionObserver'].update(samples=4,lastSample=rows3[-1]['sample'],retainedLogBytes=len(transport3),log=r.pin(transport3))
+ members['result/retention-observer.jsonl']=transport3;members['result/receipt.json']=json.dumps(value).encode();members['carrier/owner-frame.json']=members['result/receipt.json']
+ manifest.update(schemaVersion=3,controllerReceiptFormat='schema3')
+mutant('known-old-source-cannot-upgrade3',old_upgrade,'C controller source identity requires receipt schema2',modern_archive,labels=epoch_rejected)
+ceiling_rejected=[]
+allowance=sum(row['bytes']for row in profile['files'])+sum(row['bytes']for row in modern_receipt['sourcePins']if row['file']in['c-producer-build.sh','c-producer-test-reports.py','binutils-retention-observer.py','glibc-seccomp-probe.py',*[name.rsplit('/',1)[-1]for name in r.REPORT_CODEC_FILES]])
+maximum=profile['limits']['workByteLimit']+allowance
+def coherent_middle(members,manifest,middle_bytes):
+ values=[{'schemaVersion':1,'kind':'sample','sequence':index+1,'bytes':size,'files':2,'directories':4}for index,size in enumerate([123,middle_bytes,126])]
+ raw=line('stdout',ready)+b''.join(line('stdin',{'schemaVersion':1,'kind':'sample','sequence':value['sequence']})+line('stdout',value)for value in values)
+ value=json.loads(members['result/receipt.json']);value['finalRetention']=values[-1];value['retentionObserver'].update(samples=3,lastSample=values[-1],retainedLogBytes=len(raw),log=r.pin(raw))
+ members['result/retention-observer.jsonl']=raw;members['result/receipt.json']=json.dumps(value).encode();members['carrier/owner-frame.json']=members['result/receipt.json']
+mutant('known-schema2-exact-work-allowance',lambda m,v:coherent_middle(m,v,maximum),None,modern_archive,labels=[])
+mutant('known-schema2-oversized-middle',lambda m,v:coherent_middle(m,v,maximum+1),'C raw retention sample exceeded frozen work allowance',modern_archive,labels=ceiling_rejected)
+assert len(epoch_rejected)==3 and ceiling_rejected==['known-schema2-oversized-middle']
+
 local_rejected_labels=[]
 def local_mutant(label,change,expected_error):return mutant(label,change,expected_error,local_archive,r.LOCAL_POLICY_ID,local_rejected_labels)
 local_mutant('local-wrong-manifest-selector',lambda m,v:v.update(executionPolicy='local-gcc12-23h-v2'),'Archive did not bind')
@@ -945,14 +1065,27 @@ mutant('unobserved-cleanup',lambda m,v:edit_member(m,'carrier/receipt.json',lamb
 mutant('scope-promoted',lambda m,v:edit_member(m,'carrier/receipt.json',lambda x:x.update(fullEightHourHostedCapacityVerified=0)),'overclaims')
 mutant('different-owner',lambda m,v:edit_member(m,'carrier/owner-frame.json',lambda x:x.update(attempt='87654321-1234-4234-8234-123456789012')),'Carrier owner attempt differs')
 def cross_preflight(members,manifest):
- edit_member(members,'result/custody-preflight/test-reports.json',lambda x:x.update(profile='gcc-12',generatedBuildRoots=['build','build-cross']))
+ def foreign_report(value):
+  value.update(profile='gcc-12',generatedBuildRoots=roots,buildRootStates=[{'root':name,'origin':'compatibility'if name=='build-cross'else'source','state':'present-with-reports'if name=='build'else'absent','reports':1 if name=='build'else 0}for name in roots])
+  for row in value['reports']:
+   row['configuration']='build';row['file']=row['file'].replace('build-tree/','build/',1)
+   if 'log'in row:row['log']['file']=row['log']['file'].replace('build-tree/','build/',1)
+ edit_member(members,'result/custody-preflight/test-reports.json',foreign_report)
  edit_member(members,'result/receipt.json',lambda x:x['custodyPreflight'].update(manifest=r.pin(members['result/custody-preflight/test-reports.json'])))
 mutant('cross-preflight-profile',cross_preflight,'Wrong original report profile')
 def change_reports(members,update):
  edit_member(members,'result/work/test-reports.json',update)
  value=json.loads(members['result/work/test-reports.json'])
  edit_member(members,'result/receipt.json',lambda x:x.update(testEvidence=value))
-mutant('legacy-gcc-report-version',lambda m,v:change_reports(m,lambda x:x.update(schemaVersion=1)),'Wrong original report manifest version')
+mutant('legacy-gcc-report-version',lambda m,v:change_reports(m,lambda x:x.update(schemaVersion=1)),'Canonical C report collector source requires manifest schema2')
+mutant('current-gcc-report-version',lambda m,v:change_reports(m,lambda x:x.update(schemaVersion=2)),'Canonical C report collector source requires manifest schema3',archive3)
+def trailing_report_chunk(members,manifest):
+ value=json.loads(members['result/work/test-reports.json']);chunk=value['reports'][0]['chunks'][0];name='result/work/original-test-reports/'+chunk['file'];encoded=members[name];changed=encoded[:-8]+b'\0'+encoded[-8:];members[name]=changed;chunk.update(r.pin(changed));value['storedBytes']+=1;members['result/work/test-reports.json']=json.dumps(value).encode();edit_member(members,'result/receipt.json',lambda x:x.update(testEvidence=value))
+mutant('coherent-trailing-gzip',trailing_report_chunk,'C report gzip decoded length/trailing stream differs',archive3)
+codec_cli=subprocess.run([sys.executable,'-I','-S','-B',str(repo/'scripts/producer-qualification/c-producer-replay-evidence.py'),'--profile','gcc-12','--repository',str(reviewed3),'--archive',str(root/'coherent-trailing-gzip.zip')],capture_output=True,timeout=10)
+assert codec_cli.returncode==2 and codec_cli.stderr==b'',(codec_cli.returncode,codec_cli.stderr)
+codec_cli_result=json.loads(codec_cli.stdout);assert codec_cli_result['state']=='original-observation-replay-incomplete' and 'trailing stream differs'in codec_cli_result['reason'] and codec_cli_result['qualificationComplete']is False and codec_cli_result['gateAComplete']is False
+
 mutant('missing-root-state',lambda m,v:change_reports(m,lambda x:x['buildRootStates'].pop()),'Wrong GCC build-root state inventory')
 mutant('wrong-root-origin',lambda m,v:change_reports(m,lambda x:x['buildRootStates'][1].update(origin='source')),'Wrong GCC build-root identity/origin')
 mutant('false-empty-root-state',lambda m,v:change_reports(m,lambda x:x['buildRootStates'][2].update(state='present-no-reports')),'Wrong GCC build-root report state/count')
@@ -975,7 +1108,7 @@ exec(compile(ast.fix_missing_locations(ast.Module(body=[report_function],type_ig
 original_reports_function=r.reports
 try:
  r.reports=mutated_namespace['reports']
- counterfactual=r.replay(root/'boolean-root-report-count.zip',reviewed,'gcc-12')
+ counterfactual=replay_fixture(root/'boolean-root-report-count.zip',reviewed,'gcc-12')
  assert counterfactual['reports']==6 and counterfactual['gateAComplete'] is False
 finally:r.reports=original_reports_function
 
@@ -993,7 +1126,7 @@ mutant('bool-source-signature-zero',lambda m,v:weak_signature_restore(m,v,'sourc
 mutant('bool-release-signature-zero',lambda m,v:weak_signature_restore(m,v,'releaseSignatureFaultControl'),'Original signature fault/restoration control missing')
 mutant('common-only-restored-bool',lambda m,v:edit_member(m,'common-inputs/receipt.json',lambda x:x['preparation']['sourceSignatureFaultControl'].update(restoredExitCode=False)),'Original signed APT/source preparation differs')
 assert len(set(rejected_labels))==len(rejected_labels)
-print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStatesReplayed':True,'zeroAndAbsentRootStatesReplayed':True,'oldTwoRootMutantMissesFourRoots':True,'selectedRootSymlinkRefused':True,'positivePhysicalGccProtocolReplay':True,'positivePhysicalGccSchema2ProtocolReplay':True,'positivePhysicalGccLocalPolicyProtocolReplay':True,'explicitPolicyRelabelingRefusedBothDirections':True,'localPolicyNegativePacketsRejected':local_rejected_labels,'preservedFailedOriginalOutcomes':True,'incompleteCutoffBytesRetained':True,'coherentNegativePacketsRejected':len(rejected_labels),'rejectedPacketLabels':rejected_labels,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
+print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStatesReplayed':True,'zeroAndAbsentRootStatesReplayed':True,'oldTwoRootMutantMissesFourRoots':True,'selectedRootSymlinkRefused':True,'positivePhysicalGccProtocolReplay':True,'positivePhysicalGccSchema2ProtocolReplay':True,'positivePhysicalGccSchema3ProtocolReplay':True,'coherentSourceEpochDowngradesAndUpgradesRefused':True,'knownHistoricalMiddleCeilingAndExactBoundaryReplayed':True,'positivePhysicalGccLocalPolicyProtocolReplay':True,'explicitPolicyRelabelingRefusedBothDirections':True,'localPolicyNegativePacketsRejected':local_rejected_labels,'preservedFailedOriginalOutcomes':True,'incompleteCutoffBytesRetained':True,'coherentNegativePacketsRejected':len(rejected_labels),'rejectedPacketLabels':rejected_labels,'nativeCompilerOrRootContainerQualificationPerformed':False,'gateAComplete':False}))
 `;
     const result = spawnSync(
       python!,
@@ -1032,6 +1165,8 @@ print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStat
       "different-owner",
       "cross-preflight-profile",
       "legacy-gcc-report-version",
+      "current-gcc-report-version",
+      "coherent-trailing-gzip",
       "missing-root-state",
       "wrong-root-origin",
       "false-empty-root-state",
@@ -1058,6 +1193,9 @@ print(json.dumps({'booleanCountPredicateCounterfactual':True,'allSixRootsAndStat
       selectedRootSymlinkRefused: true,
       positivePhysicalGccProtocolReplay: true,
       positivePhysicalGccSchema2ProtocolReplay: true,
+      positivePhysicalGccSchema3ProtocolReplay: true,
+      coherentSourceEpochDowngradesAndUpgradesRefused: true,
+      knownHistoricalMiddleCeilingAndExactBoundaryReplayed: true,
       positivePhysicalGccLocalPolicyProtocolReplay: true,
       explicitPolicyRelabelingRefusedBothDirections: true,
       localPolicyNegativePacketsRejected: [
@@ -1731,7 +1869,8 @@ def drop(m,f,v,prefix):
  f['rawFiles']=[r for r in f['rawFiles']if not r['file'].startswith(prefix)]
  f['nativeDirectories']=[r for r in f['nativeDirectories']if not r['file'].startswith(prefix)]
 mutate('drop-original-trap-family',lambda m,f,v:(drop(m,f,v,'result/work/original-test-reports'),drop(m,f,v,'result/work/test-reports.json')),'Original-trap raw report family was dropped')
-mutate('drop-selected-family-file',lambda m,f,v:drop(m,f,v,'result/work/post-stop-reports/original-test-reports/build-tree/tests.sum'),'Wrong original native export owner/group/mode')
+selected_chunk='result/work/post-stop-reports/original-test-reports/'+receipt['testEvidence']['reports'][0]['chunks'][0]['file']
+mutate('drop-selected-family-file',lambda m,f,v:drop(m,f,v,selected_chunk),'Missing original report/log transport member: '+receipt['testEvidence']['reports'][0]['chunks'][0]['file'])
 def drop_unselected_poststop(m,f,v):
  v.update(reportRetention=dict(r.REPORT_LOCATIONS['original-trap']),testEvidence=trap);drop(m,f,v,'result/work/post-stop-reports')
 mutate('drop-observed-unselected-poststop-family',drop_unselected_poststop,'Post-stop raw report family was dropped')
@@ -1759,7 +1898,7 @@ packet=r.Packet(unverified)
 try:
  assert packet.manifest['controllerReceiptFormat']=='unverified'and packet.manifest['schemaVersion']==2
  assert packet.read('result/work/original-command-terminal.json',4096)
- assert packet.read('result/work/post-stop-reports/original-test-reports/build-tree/tests.sum',4096)
+ selected_manifest=packet.json('result/work/post-stop-reports/test-reports.json');selected_pin=selected_manifest['reports'][0];assert b''.join(r.REPORT_CODEC.iter_report_bytes(selected_pin,lambda name,maximum:packet.read('result/work/post-stop-reports/original-test-reports/'+name,maximum)))==b'FAIL: authored result\n'
  try:r.closed_controller_evidence(packet,receipt,profile,caller)
  except ValueError as error:assert 'Unverified controller receipt format'in str(error)
  else:raise AssertionError('Malformed controller receipt promoted')

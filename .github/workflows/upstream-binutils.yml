@@ -27,6 +27,9 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24"
+      - name: Verify pinned observer inputs before native preparation
+        timeout-minutes: 2
+        run: node scripts/verify-binutils-retention-observer.mjs --check-inputs
       - name: Observe native host and available capacity
         run: |
           node --version

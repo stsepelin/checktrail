@@ -848,7 +848,7 @@ archive=root/'evidence.zip'
 summary=exporter.export(reviewed,root/'inputs',root/'common',result,startup_file,archive)
 packet=replayer.Packet(archive)
 try:
- assert packet.read('result/work/original-test-reports/build-tree/amd64-libc/tests.log',64*1024**2)==log
+ log_pin=report['reports'][0]['log'];assert b''.join(replayer.REPORT_CODEC.iter_report_bytes(log_pin,lambda name,maximum:packet.read('result/work/original-test-reports/'+name,maximum)))==log
  assert not any(name.endswith(('.deb','.tar')) for name in packet.files)
  parsed=replayer.reports(packet,'result/work/original-test-reports',report,caller,os.geteuid())
  assert parsed['observedOutcomeLines']==80001 and parsed['originalOutcomesPreserved'] and not parsed['reportsPooledAsIndependentEvidence']
@@ -871,17 +871,20 @@ def mutated(label,change):
   for name,value in members.items():z.writestr(name,value)
  return target
 def wrong_owner(members,manifest):
- next(r for r in manifest['rawFiles'] if r['file'].endswith('/tests.sum'))['nativeUid']+=1
+ first_chunk=report['reports'][0]['chunks'][0]['file'];next(row for row in manifest['rawFiles'] if row['file']=='result/work/original-test-reports/'+first_chunk)['nativeUid']+=1
 owner_packet=replayer.Packet(mutated('wrong-owner',wrong_owner))
 try:
  try:replayer.reports(owner_packet,'result/work/original-test-reports',report,caller,os.geteuid())
  except ValueError as error:assert 'owner/group/mode' in str(error)
  else:raise AssertionError('Wrong native owner was accepted')
 finally:owner_packet.close()
-report_path='result/work/original-test-reports/build-tree/amd64-libc/tests.sum'
+report_prefix='result/work/original-test-reports';report_path=report_prefix+'/'+report['reports'][0]['chunks'][0]['file']
 def wrong_counts(members,manifest):
- members[report_path]=members[report_path].replace(b'FAIL: preserved failure',b'PASS: preserved failure')
- value=json.loads(members['result/work/test-reports.json']);value['reports'][0].update(replayer.pin(members[report_path]));members['result/work/test-reports.json']=json.dumps(value).encode()
+ value=json.loads(members['result/work/test-reports.json']);row=value['reports'][0]
+ body=b''.join(replayer.REPORT_CODEC.iter_report_bytes(row,lambda name,maximum:members[report_prefix+'/'+name]));changed=body.replace(b'FAIL: preserved failure',b'PASS: preserved failure');assert changed!=body and len(changed)==len(body)
+ for chunk in row['chunks']:
+  raw=changed[chunk['offset']:chunk['offset']+chunk['decodedBytes']];encoded=replayer.REPORT_CODEC.encode_gzip_chunk(raw);members[report_prefix+'/'+chunk['file']]=encoded;chunk.update(replayer.pin(encoded),decodedSha256=replayer.sha(raw))
+ row.update(replayer.pin(changed));value['storedBytes']=sum(chunk['bytes']for report in value['reports']for item in [report]+([report['log']]if 'log'in report else[])for chunk in item['chunks']);members['result/work/test-reports.json']=json.dumps(value).encode()
 count_packet=replayer.Packet(mutated('wrong-counts',wrong_counts))
 try:
  try:replayer.reports(count_packet,'result/work/original-test-reports',count_packet.json('result/work/test-reports.json'),caller,os.geteuid())
