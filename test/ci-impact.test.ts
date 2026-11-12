@@ -1261,15 +1261,20 @@ test("CI completion YAML policy admits failed dependencies and skips a canceled 
     "Reaching the aggregate after a dependency failure still refuses completion",
   );
 });
-test("CI managed pull-request branch prefixes avoid duplicate push workflows while tags retain verification", () => {
+test("CI managed pull-request branches avoid duplicate push workflows while tags retain verification", () => {
   assert.deepEqual(workflow.on.push["branches-ignore"], [
     "pr/**",
     "agent/**",
     "dependabot/**",
     "fix/**",
+    "feat/scoped-release-signatures",
   ]);
   assert.deepEqual(workflow.on.push.tags, ["**"]);
   assert.ok(Object.hasOwn(workflow.on, "pull_request"));
+  assert.ok(Object.hasOwn(workflow.on, "workflow_dispatch"));
+  assert.ok(
+    Array.isArray(workflow.on.schedule) && workflow.on.schedule.length > 0,
+  );
 });
 
 test("CI initial wave stays within the free runner ceiling and native fanout requires successful planning", () => {

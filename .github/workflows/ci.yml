@@ -7,6 +7,7 @@ on:
       - "agent/**"
       - "dependabot/**"
       - "fix/**"
+      - "feat/scoped-release-signatures"
     tags:
       - "**"
   pull_request:
