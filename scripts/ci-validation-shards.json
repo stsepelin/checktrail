@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "profile": "host-validation-command-partition-v1",
+  "shards": [
+    {
+      "id": 0,
+      "mutations": [
+        "[\"scripts/verify-posix-cleanup-guards.mjs\",[],[]]",
+        "[\"scripts/verify-selected-syntax-guards.mjs\",[],[]]",
+        "[\"scripts/verify-go-context-guards.mjs\",[],[]]",
+        "[\"scripts/verify-laravel-cache-guards.mjs\",[],[]]",
+        "[\"scripts/verify-context-limits-guards.mjs\",[],[]]"
+      ],
+      "packages": [
+        "[\"scripts/verify-init-publication-package.mjs\",[],[]]",
+        "[\"scripts/verify-posix-cleanup-package.mjs\",[],[]]",
+        "[\"scripts/verify-review-workflow-package.mjs\",[\"--all-candidates\"],[]]",
+        "[\"scripts/verify-import-context-package.mjs\",[],[[\"CHECKTRAIL_IMPORT_CONTEXT_PROFILE\",\"selected-syntax-context\"]]]",
+        "[\"scripts/verify-attempt-outputs.mjs\",[],[]]",
+        "[\"scripts/verify-native-attempt-journals-package.mjs\",[],[]]",
+        "[\"scripts/verify-native-json-package.mjs\",[],[]]",
+        "[\"scripts/verify-review-multi-package.mjs\",[],[]]",
+        "[\"scripts/verify-review-benchmark-multi-package.mjs\",[],[]]",
+        "[\"scripts/verify-php-review-package.mjs\",[],[]]",
+        "[\"scripts/verify-rust-test-package.mjs\",[],[]]",
+        "[\"scripts/verify-import-context-package.mjs\",[],[[\"CHECKTRAIL_IMPORT_CONTEXT_PROFILE\",\"review-context-limits\"]]]",
+        "[\"scripts/verify-task-archives-package.mjs\",[],[]]"
+      ]
+    },
+    {
+      "id": 1,
+      "mutations": [
+        "[\"scripts/verify-review-benchmark-multi-guards.mjs\",[],[]]",
+        "[\"scripts/verify-host-session-guards.mjs\",[],[]]",
+        "[\"scripts/verify-python-context-guards.mjs\",[],[]]",
+        "[\"scripts/verify-import-history-guards.mjs\",[],[]]",
+        "[\"scripts/verify-go-workspace-guards.mjs\",[],[]]"
+      ],
+      "packages": [
+        "[\"scripts/verify-laravel-cache-package.mjs\",[],[]]",
+        "[\"scripts/verify-review-budget-package.mjs\",[],[]]",
+        "[\"scripts/verify-review-workflow-audit-package.mjs\",[],[]]",
+        "[\"scripts/verify-import-context-package.mjs\",[],[[\"CHECKTRAIL_IMPORT_CONTEXT_PROFILE\",\"import-history\"]]]",
+        "[\"scripts/verify-attempt-outputs-package.mjs\",[],[]]",
+        "[\"scripts/verify-native-engine-journals.mjs\",[],[]]",
+        "[\"scripts/verify-review-claim-probability-package.mjs\",[],[]]",
+        "[\"scripts/verify-review-paired-package.mjs\",[],[]]",
+        "[\"scripts/verify-review-benchmark-package.mjs\",[],[]]",
+        "[\"scripts/verify-rust-format-package.mjs\",[],[]]",
+        "[\"scripts/verify-rust-workspace-package.mjs\",[],[]]",
+        "[\"scripts/verify-go-workspace-package.mjs\",[],[]]"
+      ]
+    },
+    {
+      "id": 2,
+      "mutations": [
+        "[\"scripts/verify-review-workflow-multi-guards.mjs\",[],[]]",
+        "[\"scripts/verify-confidence-provenance-guards.mjs\",[],[]]",
+        "[\"scripts/verify-acceptance-ledger-guards.mjs\",[],[]]",
+        "[\"scripts/verify-review-multi-guards.mjs\",[],[]]"
+      ],
+      "packages": [
+        "[\"scripts/smoke-package.mjs\",[],[]]",
+        "[\"scripts/verify-review-workflow-package.mjs\",[],[]]",
+        "[\"scripts/verify-import-context-package.mjs\",[],[]]",
+        "[\"scripts/verify-native-raw-package.mjs\",[],[]]",
+        "[\"scripts/verify-native-attempt-journals.mjs\",[],[]]",
+        "[\"scripts/verify-native-engine-journals-package.mjs\",[],[]]",
+        "[\"scripts/verify-review-calibration-package.mjs\",[],[]]",
+        "[\"scripts/verify-review-benchmark-score-package.mjs\",[],[]]",
+        "[\"scripts/verify-mcp-tasks-package.mjs\",[],[]]",
+        "[\"scripts/verify-clippy-package.mjs\",[],[]]",
+        "[\"scripts/verify-go-matrix-package.mjs\",[],[]]",
+        "[\"scripts/verify-task-archives.mjs\",[],[]]"
+      ]
+    }
+  ]
+}
