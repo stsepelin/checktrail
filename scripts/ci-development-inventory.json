@@ -21,7 +21,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "5b3527f7a9c4dc86c187775f6826603b8088ef41"
+      "hash": "8c89858ec94172e72551ac2611bfb41412633ac2"
     },
     {
       "path": ".github/workflows/upstream-binutils.yml",
@@ -546,7 +546,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "67b7560af732bff88097c48642911fe5d076df6e"
+      "hash": "dc081e85afea3d5d7a61727f340c12414a3f32e9"
     },
     {
       "path": "docs/CONTRACTS.md",
@@ -980,7 +980,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "f703615a6e33dc697c1b62875bc4b21b9c8dfb76"
+      "hash": "ec52fd20806b20ae4c1ab645bf2bc2605cfffe23"
     },
     {
       "path": "docs/LARAVEL-ASSEMBLY.md",
@@ -1043,7 +1043,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "2bc7abbb54349d1cda77508fdec8cd0ba5b64dc1"
+      "hash": "f4515557cb03b5da00351248da9e04b4b258a1ad"
     },
     {
       "path": "docs/NATIVE-JSON-PROBES.md",
@@ -7147,7 +7147,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "9984605c4797bece0db56e8da0aeba00574dbba4"
+      "hash": "88fa947f9a6c5cf1df7862d7144b299de95e4b23"
     },
     {
       "path": "schemas/import-context-summary.schema.json",
@@ -7315,7 +7315,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "91d8035853b93c40425548fcaa7063690dd6e33b"
+      "hash": "adaeec714b31b2998031f686f0db5045b2890927"
     },
     {
       "path": "schemas/review-benchmark-judge-profile.schema.json",
@@ -7336,7 +7336,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "39ae9e46231048db62794c2913afeb9f8764995f"
+      "hash": "dc7ba150cdaa7367287d62e955809073d43396d4"
     },
     {
       "path": "schemas/review-benchmark-judgment-archive.schema.json",
@@ -7385,7 +7385,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "60d31210dbc26cee2003d188f044b7bfe87933e8"
+      "hash": "12a50f5ccc8f1c37d41bbd596cdad41e1d8f9b35"
     },
     {
       "path": "schemas/review-benchmark-matching-response.schema.json",
@@ -7427,14 +7427,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "7dfcff1ea7cd83745fa3c8699391615719e05269"
+      "hash": "c9b4ebc89027cbc71e1a0389e13340beeb244c51"
     },
     {
       "path": "schemas/review-benchmark-plan.schema.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "46935da4f2d043193f91c3ec889d0920766a38b5"
+      "hash": "12a9ac71f1fe1e51c27bc652cfb7e01901282204"
     },
     {
       "path": "schemas/review-benchmark-reference.schema.json",
@@ -7553,21 +7553,21 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "dd45071f6ec53693a968245a9cb939443d47b3c2"
+      "hash": "425fbe780cf675d9e68619c9ba2c23e636eea8f6"
     },
     {
       "path": "schemas/review-findings-input.schema.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "5ee0b5659e5e9b3c3fdfe410d411b3db0cba24e5"
+      "hash": "d9fbf87ab6fc76e712736ce9bfbeabe0b64ddeb3"
     },
     {
       "path": "schemas/review-findings-report.schema.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "1c4022979cf9f9d3f6b24a767cb3e2c7ddd1dba9"
+      "hash": "ca75acf4dbe234f8f386a6f57d640e2685ad305d"
     },
     {
       "path": "schemas/review-findings-summary.schema.json",
@@ -7700,14 +7700,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "f38fab30787ff5787f5e838ca8d2f4fc841c1d8a"
+      "hash": "49bfa824dac9383557f8d26f39061ffa527e87c1"
     },
     {
       "path": "schemas/review-provenance-report.schema.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a6c23a936108ddf5d33b43193a95242254fb5cdb"
+      "hash": "c87246f40f79f63d20f100aa07fd5982a83d0f2b"
     },
     {
       "path": "schemas/review-provenance-summary.schema.json",
@@ -7812,7 +7812,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "28c82ca4478edf9ab439516b392973c3f5675a4d"
+      "hash": "d71d74c7b436149ffd695cbe103670fe48af3bc7"
     },
     {
       "path": "schemas/review-verification-summary.schema.json",
@@ -8249,6 +8249,13 @@
       "hash": "8015f2e04ebbe0e6520acd2c2ffee2e4abc56c80"
     },
     {
+      "path": "scripts/check-dotnet-generator-ci.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "4bcb7f560b0e3c16bfdae90e7ffd8bfc946e496c"
+    },
+    {
       "path": "scripts/check-evaluation-captures.mjs",
       "mode": "100644",
       "type": "blob",
@@ -8295,14 +8302,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "354d024850581d2830f6a4593bfd557e21ab6009"
+      "hash": "a59ccba5eae23e059aa405d33937c6415b7c2550"
     },
     {
       "path": "scripts/ci-native-inputs.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "892812f9d8037db8a058572035b85a2ac47c089e"
+      "hash": "7dc7719dfa894d301961bcd980bb9b50c04d50e3"
     },
     {
       "path": "scripts/ci-source-boundaries.json",
@@ -8463,7 +8470,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "6acce0ca8d9b710df2ba20f122d23ce5bdf9e284"
+      "hash": "14456a4a7c24842d04938091555a2bc5149083f3"
     },
     {
       "path": "scripts/consumer-native-controller-entry.mjs",
@@ -8627,6 +8634,13 @@
       "hash": "04d921d70e23b8f65657482d0a00df579e7ad6b9"
     },
     {
+      "path": "scripts/context-runtime-proof-ci-inputs.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "55c907df0988ba5218d1b8130c8703cf324b32ab"
+    },
+    {
       "path": "scripts/context-tools.Dockerfile",
       "mode": "100644",
       "type": "blob",
@@ -8723,6 +8737,20 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "0dbf118bc4b98adb3ef56b6a66cb217ea91a91e9"
+    },
+    {
+      "path": "scripts/dotnet-generator-shards.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "84e84011ce4cc87b38fe723de1246c47e7941efd"
+    },
+    {
+      "path": "scripts/dotnet-generator-shards.v1.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "e3bca3617606d931bc1a8e5cc31d7525a4617aca"
     },
     {
       "path": "scripts/dotnet-tools.Dockerfile",
@@ -9215,6 +9243,13 @@
       "hash": "2408e4376250abb1ce483c3856f88ddea48f6392"
     },
     {
+      "path": "scripts/native-ci-artifact-storage.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "c128eaf579a9b744eab941e23757f1a114ebde8a"
+    },
+    {
       "path": "scripts/native-engine-journal-evidence.mjs",
       "mode": "100644",
       "type": "blob",
@@ -9345,7 +9380,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a7bb169d2dac0deb39d7d12b0e675ee66def5263"
+      "hash": "6774a7c570acea882a96bb7b2fdd11a497f4c16c"
     },
     {
       "path": "scripts/playwright-tools/package-lock.json",
@@ -9374,6 +9409,20 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "42312343d8837a50e91ce808af89f87717af682d"
+    },
+    {
+      "path": "scripts/prepare-context-runtime-proof-ci.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "8470c284ec0c4c3f8d8bf1f159aaf63cbada16d5"
+    },
+    {
+      "path": "scripts/prepare-context-runtime-proof.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "e9bcd17d13101c2fa65746bb8247f73e482b326f"
     },
     {
       "path": "scripts/prepare-cpp-extensions-runtime.mjs",
@@ -10360,7 +10409,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "58cc95851422738ef252966d5ddfbf5b4e4f39bc"
+      "hash": "77a86aa8782672c69058b0dedf8a519e3b7758ee"
     },
     {
       "path": "scripts/required-test-evidence.mjs",
@@ -10818,6 +10867,62 @@
       "hash": "4face5b775bd8fab122f8a8a108664178f2effdf"
     },
     {
+      "path": "scripts/verify-context-runtime-proof-admission.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "e6d271189926f0b4e1ad4e6e084c9225fa17ec3e"
+    },
+    {
+      "path": "scripts/verify-context-runtime-proof-authority.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f97a085fd9073c03a7d58f0750e6da645d07e9be"
+    },
+    {
+      "path": "scripts/verify-context-runtime-proof-cache.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "2a75f67e240911b4d31f2f39fc30ba09394c9300"
+    },
+    {
+      "path": "scripts/verify-context-runtime-proof-ci.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "68aa3a4cc67046ca7e2912fd6a35b996111a3189"
+    },
+    {
+      "path": "scripts/verify-context-runtime-proof-families.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "0e714e3a1ca6f198f2407bb5c2c72c7c936ae388"
+    },
+    {
+      "path": "scripts/verify-context-runtime-proof-mixed.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "24b90f2177166f3dfda06f857ed4ff75677313e2"
+    },
+    {
+      "path": "scripts/verify-context-runtime-proof-package.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f5e5ca35d64debccadbe863c2f1b855e0a336d58"
+    },
+    {
+      "path": "scripts/verify-context-runtime-proof-transports.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "2a9fc996ab40331eca1864928647d1457595c621"
+    },
+    {
       "path": "scripts/verify-cpp-context-container.mjs",
       "mode": "100644",
       "type": "blob",
@@ -10962,14 +11067,21 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "58382a04154145663c46e3d479698f881e237dc3"
+      "hash": "491e9c7616a9dda797e6df53bf2b1cbc57ad745b"
     },
     {
       "path": "scripts/verify-dotnet-generator-extensions-guards.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "ed7c9ec5d56bb4606c7063ccbaca8b0c0641e8c1"
+      "hash": "47145f9c3c718df2dccc590e2f002ffd7fb9e730"
+    },
+    {
+      "path": "scripts/verify-dotnet-generator-shard-tests.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "34f9197cd80093b21a6427aef91a1fdafbbe7327"
     },
     {
       "path": "scripts/verify-dotnet-method-container.mjs",
@@ -12461,6 +12573,27 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "87efa353373c4189215a3f60f9cccf46f9a54d25"
+    },
+    {
+      "path": "src/context-runtime-attestation.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "a3766d3cfcd65156ec598027f958747c3edfc64a"
+    },
+    {
+      "path": "src/context-runtime-installation.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "09b5f2c10e7b0f143bfae3618c7822a424646b0e"
+    },
+    {
+      "path": "src/context-runtime-proof.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "8cdc3c730ea73d4602661464dc1cae9e4f5d374f"
     },
     {
       "path": "src/contract-schema.ts",
@@ -14315,7 +14448,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "2a778cec7cfcacd12adcee0e3d463ac53b394601"
+      "hash": "47c26fb04306dacfc06665f09fe32e3b510116b9"
     },
     {
       "path": "src/review-behavior-validation.ts",
@@ -14630,7 +14763,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "b6bf9ef42e28bc7c2459c14d2303e07e8c9873d9"
+      "hash": "c009b7d6c9ce65374988976be1af74e7250632d3"
     },
     {
       "path": "src/review-probe-schema.ts",
@@ -14875,7 +15008,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "34e52d797b0b3799d8adcb4e98d210734ac3b662"
+      "hash": "14f587f9818a077924d19ed15930b46389743248"
     },
     {
       "path": "src/ruby-extensions-contract.ts",
@@ -16100,7 +16233,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "6b36aa3e7a87f3b45f739e1ab773fb6421b737d4"
+      "hash": "894dee69cc21cd7d48c9aafac99e8a2b171bfa1a"
     },
     {
       "path": "test/ci-native-profiles.test.ts",
@@ -16233,7 +16366,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "e213dd25bdebee34fe4987f280db2a93b0a08ef4"
+      "hash": "8abfa62f285f4d06b4246fa9c442e570b93f72bd"
     },
     {
       "path": "test/consumer-native-cli.test.ts",
@@ -16353,6 +16486,34 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "823c8d9c44f268a8b303d9104e6ab76164b0c15f"
+    },
+    {
+      "path": "test/context-runtime-attestation-policy.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "0a6df44bfb636ec1a79415efa5b102c9b42660b8"
+    },
+    {
+      "path": "test/context-runtime-proof-ci.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "b8dbdcc3096aded00843b49f4473fb047985b16a"
+    },
+    {
+      "path": "test/context-runtime-proof-preparation.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "3be28e1409aa22a545b03f0ef42b3502fe74bac5"
+    },
+    {
+      "path": "test/context-runtime-proof.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "3c81aa1b08f1f1b27e3f1675fcc044ef6c863dd2"
     },
     {
       "path": "test/contract-helpers.ts",
@@ -16698,6 +16859,13 @@
       "hash": "aed2b4d35a10cb0c814a3d4ce29a768375cadd3b"
     },
     {
+      "path": "test/dotnet-generator-ci.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "5c590f24e814e6d46d4b2e408720b02072a1c144"
+    },
+    {
       "path": "test/dotnet-generator-extensions-config.test.ts",
       "mode": "100644",
       "type": "blob",
@@ -16710,6 +16878,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "9dd8edfa3ff7ef2fa55c6814d69ae19c04a966dc"
+    },
+    {
+      "path": "test/dotnet-generator-shards.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "9572d42c94f44340a6e7b5883ecf7096b51a75d0"
     },
     {
       "path": "test/dotnet-method-fixture.ts",
@@ -19278,7 +19453,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "cea7d8a21ac4aef80c031566aaa0c977b289b006"
+      "hash": "aa8b3a859edc3a16993065b494f3f9f6e9701859"
     },
     {
       "path": "test/review-probe-storage.test.ts",

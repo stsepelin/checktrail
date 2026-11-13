@@ -3271,6 +3271,9 @@ jobs:
 
   ci-complete:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     timeout-minutes: 5
     if: ${{ !cancelled() }}
     needs:
@@ -3377,6 +3380,31 @@ jobs:
           path: ${{ runner.temp }}/checktrail-native-capsule-artifacts
           merge-multiple: false
           digest-mismatch: error
+      - name: Select complete current-source generator shard inventory
+        id: dotnet-fragments
+        run: node scripts/check-dotnet-generator-ci.mjs selection
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CHECKTRAIL_DOTNET_CANDIDATE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CHECKTRAIL_CI_PLAN: ${{ needs.ci-plan.outputs.plan }}
+          CHECKTRAIL_CI_NEEDS: ${{ toJSON(needs) }}
+      - name: Acquire exact retained generator fragment artifacts
+        if: steps.dotnet-fragments.outputs.selected == 'true'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          artifact-ids: ${{ steps.dotnet-fragments.outputs.artifact_ids }}
+          path: ${{ runner.temp }}/checktrail-dotnet-fragment-artifacts
+          merge-multiple: false
+          digest-mismatch: error
+      - name: Require all generator shards before whole-profile qualification
+        run: node scripts/check-dotnet-generator-ci.mjs aggregate
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CHECKTRAIL_DOTNET_CANDIDATE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CHECKTRAIL_CI_PLAN: ${{ needs.ci-plan.outputs.plan }}
+          CHECKTRAIL_CI_NEEDS: ${{ toJSON(needs) }}
+          CHECKTRAIL_DOTNET_ARTIFACTS: ${{ runner.temp }}/checktrail-dotnet-fragment-artifacts
+
       - name: Reconcile selected current-source native consumer matrix
         run: node scripts/check-consumer-native-ci.mjs
         env:
@@ -3385,21 +3413,47 @@ jobs:
           CHECKTRAIL_NATIVE_CAPSULE_ARTIFACTS: ${{ runner.temp }}/checktrail-native-capsule-artifacts
 
   dotnet-generator-extensions-arm64:
-    needs: [ci-plan]
+    name: dotnet-generator-extensions-arm64 (${{ matrix.shard }})
+    needs: [ci-plan, actionlint]
+    permissions:
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - shard: "0"
+          - shard: "1"
+          - shard: "2"
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['dotnet-generator-extensions-arm64'] }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 60
     env:
-      CHECKTRAIL_TEST_TASK: ci-dotnet-generator-extensions
+      CHECKTRAIL_TEST_TASK: ci-dotnet-generator-extensions-${{ matrix.shard }}
       CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_IMAGE: checktrail-dotnet-generator-extensions:ci
+    outputs:
+      dotnet_start_0: ${{ steps.dotnet-start.outputs.dotnet_start_0 }}
+      dotnet_finish_0: ${{ steps.dotnet-finish.outputs.dotnet_finish_0 }}
+      dotnet_start_1: ${{ steps.dotnet-start.outputs.dotnet_start_1 }}
+      dotnet_finish_1: ${{ steps.dotnet-finish.outputs.dotnet_finish_1 }}
+      dotnet_start_2: ${{ steps.dotnet-start.outputs.dotnet_start_2 }}
+      dotnet_finish_2: ${{ steps.dotnet-finish.outputs.dotnet_finish_2 }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: "22"
+          node-version: "22.23.2"
           cache: npm
+      - name: Bind exact native generator producer execution
+        id: dotnet-start
+        run: node scripts/check-dotnet-generator-ci.mjs start --shard ${{ matrix.shard }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CHECKTRAIL_DOTNET_JOB: ${{ toJSON(job) }}
+          CHECKTRAIL_DOTNET_CANDIDATE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
       - run: npm ci --ignore-scripts
       - run: npm run build
       - name: Prepare pinned public runtime images
@@ -3413,7 +3467,32 @@ jobs:
           CHECKTRAIL_DOTNET_BUILD_IMAGE="$CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_IMAGE" node scripts/prepare-dotnet-build-dependencies.mjs
           node scripts/prepare-package-cache.mjs
       - name: Verify preserved .NET profiles, source and installed formatter, native lifecycle and compiling controls
-        run: node scripts/verify-dotnet-generator-extensions-container.mjs
+        run: node scripts/check-dotnet-generator-ci.mjs run --shard ${{ matrix.shard }}
+        env:
+          CHECKTRAIL_DOTNET_CANDIDATE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CHECKTRAIL_DOTNET_START: ${{ steps.dotnet-start.outputs.claim }}
+          CHECKTRAIL_DOTNET_GENERATOR_JOB_CONTEXT: ${{ steps.dotnet-start.outputs.context }}
+          CHECKTRAIL_DOTNET_FRAGMENT_DIRECTORY: ${{ runner.temp }}/checktrail-dotnet-fragments
+      - name: Retain exact current-source generator fragment
+        id: dotnet-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-dotnet-generator-shard-${{ matrix.shard }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/checktrail-dotnet-fragments/dotnet-generator-shard-${{ matrix.shard }}.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
+      - name: Publish exact successful generator artifact claim
+        id: dotnet-finish
+        run: node scripts/check-dotnet-generator-ci.mjs publish --shard ${{ matrix.shard }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CHECKTRAIL_DOTNET_CANDIDATE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CHECKTRAIL_DOTNET_START: ${{ steps.dotnet-start.outputs.claim }}
+          CHECKTRAIL_DOTNET_FRAGMENT_DIRECTORY: ${{ runner.temp }}/checktrail-dotnet-fragments
+          CHECKTRAIL_DOTNET_ARTIFACT_ID: ${{ steps.dotnet-upload.outputs.artifact-id }}
+          CHECKTRAIL_DOTNET_ARTIFACT_NAME: native-dotnet-generator-shard-${{ matrix.shard }}-${{ github.run_attempt }}
+          CHECKTRAIL_DOTNET_ARTIFACT_DIGEST: ${{ steps.dotnet-upload.outputs.artifact-digest }}
 
   mutation-passive-guards:
     needs: [ci-plan, actionlint]

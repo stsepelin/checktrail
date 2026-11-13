@@ -17,10 +17,19 @@ const controls = new Set([
 ]);
 const retainedArtifactDirectory =
   "docs/measurements/artifact-identities-2026-10-21/";
-// Reviewed Node-only preparation controls run as complete shared test files.
-// Derive their native consumers from the exact preparation controllers; do not
+// Reviewed shared helper/preparation controls run as complete test files.
+// Derive their native consumers from the exact declared inputs; do not
 // classify neighboring test names or create entries for absent files.
 const preparationRegressionSources = Object.freeze({
+  "test/native-process-observer.test.ts": Object.freeze([
+    "test/native-process-observer.ts",
+  ]),
+  "test/dotnet-generator-shards.test.ts": Object.freeze([
+    "scripts/verify-dotnet-generator-extensions-container.mjs",
+  ]),
+  "test/dotnet-generator-ci.test.ts": Object.freeze([
+    "scripts/verify-dotnet-generator-extensions-container.mjs",
+  ]),
   "test/github-artifact-delivery.test.ts": Object.freeze([
     "scripts/prepare-infra-tools-runtime.mjs",
     "scripts/prepare-scala-tools.mjs",
@@ -71,7 +80,7 @@ export const cProducerSharedBoundary = Object.freeze({
   // Names only: editing a reviewed member does not invalidate its fast path.
   // A new helper, fixture, test or workflow needs an explicit inventory review.
   inventorySha256:
-    "164b14c06d4b808baed7e36e2f31c7a3be67476ef21295a9bb9ef34b01afdd98",
+    "f1d2dcfa621ec2647a8c6aded5efefa7ec9770875e73156384551bce2b095efe",
   files: Object.freeze([
     "scripts/acquire-binutils-inputs.mjs",
     "scripts/acquire-c-producer-inputs.mjs",
@@ -279,7 +288,11 @@ export async function buildNativeInputs({
           /\b(?:docker\.io|public\.ecr\.aws|mcr\.microsoft\.com)\/[a-z0-9_./-]+@sha256:[a-f0-9]{64}(?![a-f0-9])/g,
           " ",
         );
-        for (const token of profileText.match(/[a-z][a-z0-9-]*/g) ?? []) {
+        // Match whole identifiers, including Unicode continuations. File-name
+        // tokens remain conservative metadata; helper-name fragments do not.
+        for (const [, token] of profileText.matchAll(
+          /(?<![\p{ID_Continue}\p{Join_Control}$#-])([a-z][a-z0-9-]*)(?![\p{ID_Continue}\p{Join_Control}$#-])/gu,
+        )) {
           if (profiles.has(token))
             for (const item of requirements[token]) admit(item.file);
         }
@@ -412,7 +425,7 @@ export async function buildNativeInputs({
     for (const source of sources) {
       assert.ok(
         available.has(source) && owners.get(source)?.size > 0,
-        "Preparation regression requires its declared native controller",
+        "Shared regression requires its declared native input",
       );
       for (const job of owners.get(source)) selected.add(job);
     }
@@ -448,6 +461,55 @@ export function validateInputContract(inputs, jobs) {
     );
   }
 }
+function qualifiedMainPush(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const keys = [
+    "schemaVersion",
+    "ref",
+    "before",
+    "after",
+    "githubSha",
+    "checkoutSha",
+    "ancestorVerified",
+    "comparison",
+    "forced",
+    "deleted",
+    "repository",
+    "githubRepository",
+  ];
+  if (
+    Object.keys(value).length !== keys.length ||
+    !keys.every((key) => Object.hasOwn(value, key))
+  )
+    return false;
+  const sha = (candidate) =>
+    typeof candidate === "string" &&
+    /^[a-f0-9]{40}$/u.test(candidate) &&
+    candidate !== "0".repeat(40);
+  const repository = (candidate) =>
+    typeof candidate === "string" &&
+    candidate.length <= 201 &&
+    /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u.test(candidate) &&
+    candidate
+      .split("/")
+      .every((part) => part !== "." && part !== ".." && part.length <= 100);
+  return (
+    repository(value.repository) &&
+    value.githubRepository === value.repository &&
+    value.schemaVersion === 1 &&
+    value.ref === "refs/heads/main" &&
+    sha(value.before) &&
+    sha(value.after) &&
+    value.before !== value.after &&
+    value.githubSha === value.after &&
+    value.checkoutSha === value.after &&
+    value.ancestorVerified === true &&
+    value.comparison === "before..after" &&
+    value.forced === false &&
+    value.deleted === false
+  );
+}
+
 function validProducerBoundary(boundary) {
   if (
     !boundary ||
@@ -489,6 +551,7 @@ export function planNativeJobs({
   sourceBoundaries = sourceCatalog.boundaries,
   producerInventory = null,
   producerBoundary = cProducerSharedBoundary,
+  qualifiedPush = null,
 }) {
   validateInputContract(inputs, jobs);
   const full = (reason) => ({
@@ -506,10 +569,17 @@ export function planNativeJobs({
     ...producerBoundary.workflowFiles,
   ]);
   const cProducerWorkflowInputs = new Set(producerBoundary.workflowFiles);
-  if (eventName !== "pull_request")
-    return full("Non-PR verification always runs every native job");
-  if (contractCurrent !== true)
+  if (["pull_request", "push"].includes(eventName) && contractCurrent !== true)
     return full("Declared native input contract changed or is stale");
+  if (
+    eventName !== "pull_request" &&
+    !(eventName === "push" && qualifiedMainPush(qualifiedPush))
+  )
+    return full(
+      eventName === "push"
+        ? "Push verification requires a qualified non-forced main transition"
+        : "Dispatch, scheduled or unsupported events require complete native verification",
+    );
   if (
     !Array.isArray(changed) ||
     !changed.length ||
@@ -590,7 +660,8 @@ export function planNativeJobs({
     reason: "Exact declared inputs with complete selected shared test files",
     selected: Object.fromEntries(jobs.map((id) => [id, selected.has(id)])),
     notSelected: jobs.filter((id) => !selected.has(id)),
-    baseline: baseline?.complete ? baseline : null,
+    baseline:
+      eventName === "pull_request" && baseline?.complete ? baseline : null,
     sharedTestFiles: [
       ...new Set([
         "dist/test/artifact-evidence.test.js",
