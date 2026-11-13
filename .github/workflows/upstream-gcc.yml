@@ -1,10 +1,9 @@
 name: Original GCC producer observation
 
+# Original compiler qualification is expensive and runs separately from PR verification.
+# Select the intended source branch explicitly; pushing a repair must not restart it.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "pr/upstream-producer/gcc-*"
 
 permissions:
   contents: read
@@ -29,6 +28,9 @@ jobs:
         timeout-minutes: 5
         with:
           node-version: "24"
+      - name: Verify pinned observer inputs before native preparation
+        timeout-minutes: 2
+        run: node scripts/verify-binutils-retention-observer.mjs --check-inputs
       - name: Freeze the selected original GCC source and caller frame
         timeout-minutes: 2
         run: >-

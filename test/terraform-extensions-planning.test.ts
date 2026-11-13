@@ -126,6 +126,7 @@ test("Terraform extension operator environment cannot replace command source or 
     "NODE_OPTIONS",
     "NODE_PATH",
     "CHECKTRAIL_TERRAFORM_EXTENSIONS_PROVIDER_ROOT",
+    "CHECKTRAIL_TERRAFORM_EXTENSIONS_RELEASE_PROOF_SHA256",
   ]) {
     await writeFile(
       path.join(root, "checktrail.json"),

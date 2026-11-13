@@ -1,4 +1,3 @@
-import { readPlaywrightTools } from "./prepare-playwright-tools.mjs";
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import { supportedClangVersion } from "../dist/src/clang-protocol.js";
 import { architectureFixture } from "../dist/test/architecture-helpers.js";
@@ -12,7 +11,10 @@ import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
-import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
+import {
+  preparePackageSmokeTools,
+  smokeProjectPath,
+} from "./package-smoke-tools.mjs";
 import { contractFixture } from "../dist/test/contract-helpers.js";
 
 const repository = fileURLToPath(new URL("../", import.meta.url));
@@ -623,30 +625,7 @@ try {
     await client.close();
     client = undefined;
   }
-  await copyInstalledPackages(consumer, [
-    "typescript",
-    "eslint",
-    "vitest",
-    "vite",
-    "jest",
-    "vue-tsc",
-    "vue",
-  ]);
-  const { lock: playwrightLock } = await readPlaywrightTools();
-  await copyInstalledPackages(
-    consumer,
-    ["@playwright/test"],
-    path.join(repository, ".checktrail/playwright-tools/node_modules"),
-    ({ relative, version }) => {
-      assert.equal(
-        version,
-        playwrightLock.packages[
-          "node_modules/" + relative.split(path.sep).join("/")
-        ].version,
-        "Installed smoke Playwright fixture differs from its qualified lock",
-      );
-    },
-  );
+  await preparePackageSmokeTools(consumer);
   const installedMetadata = JSON.parse(
     await readFile(
       path.join(consumer, "node_modules/@stsepelin/checktrail/server.json"),
@@ -697,7 +676,7 @@ try {
     "checktrail.json": JSON.stringify({
       schemaVersion: 1,
       projects: checks.map((name) => ({
-        path: name,
+        path: smokeProjectPath(name),
         checks: name === "node-test" ? [] : [`javascript.${name}`],
         ...(name === "node-test"
           ? {
@@ -761,7 +740,13 @@ try {
   for (const name of checks)
     files[`${name}/package.json`] = JSON.stringify({ type: "module" });
   for (const [name, contents] of Object.entries(files)) {
-    const target = path.join(consumer, name);
+    const [role, ...relative] = name.split("/");
+    const target = path.join(
+      consumer,
+      checks.includes(role)
+        ? [smokeProjectPath(role), ...relative].join("/")
+        : name,
+    );
     await mkdir(path.dirname(target), { recursive: true });
     await writeFile(target, contents);
   }

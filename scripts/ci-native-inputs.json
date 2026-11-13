@@ -22,6 +22,27 @@
     "resource-release",
     "resource-release-arm64"
   ],
+  "docs/measurements/artifact-identities-2026-10-21/provider-public-key.asc": [
+    "terraform-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/provider-SHA256SUMS.sig": [
+    "terraform-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/provider-SHA256SUMS.txt": [
+    "terraform-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/scala-compiler-2.13.18.jar.asc": [
+    "scala-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/scala-library-2.13.18.jar.asc": [
+    "scala-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/scala-public-key.asc": [
+    "scala-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/scala-reflect-2.13.18.jar.asc": [
+    "scala-extensions-arm64"
+  ],
   "docs/measurements/artifact-identities-2026-10-21/sigstore-trusted-root.jsonl": [
     "go-workspaces-arm64"
   ],
@@ -1518,7 +1539,14 @@
     "scala-context-arm64",
     "scala-extensions-arm64"
   ],
-  "scripts/prepare-scala2-tools.mjs": ["scala-extensions-arm64"],
+  "scripts/prepare-scala2-signature-proof.mjs": [
+    "go-workspaces-arm64",
+    "scala-extensions-arm64"
+  ],
+  "scripts/prepare-scala2-tools.mjs": [
+    "go-workspaces-arm64",
+    "scala-extensions-arm64"
+  ],
   "scripts/prepare-spotbugs-tools.mjs": [
     "jvm-analyzer-extensions-arm64",
     "spotbugs"
@@ -1526,6 +1554,7 @@
   "scripts/prepare-swift-extensions-runtime.mjs": ["swift-extensions-arm64"],
   "scripts/prepare-swift-tools-runtime.mjs": ["swift-tools"],
   "scripts/prepare-terraform-extensions-runtime.mjs": [
+    "go-workspaces-arm64",
     "terraform-extensions-arm64"
   ],
   "scripts/prepare-yaml-context-runtime.mjs": ["yaml-context-arm64"],
@@ -1625,6 +1654,11 @@
     "resource-release",
     "resource-release-arm64"
   ],
+  "scripts/release-signature-preparation.mjs": [
+    "go-workspaces-arm64",
+    "scala-extensions-arm64",
+    "terraform-extensions-arm64"
+  ],
   "scripts/request-cpp-tool-archive.mjs": ["cpp-extensions-arm64", "cpp-tools"],
   "scripts/request-gradle-distribution.mjs": ["gradle", "jvm-wrappers-arm64"],
   "scripts/request-jvm-wrapper-artifact.mjs": ["jvm-wrappers-arm64", "maven"],
@@ -1661,6 +1695,7 @@
     "ruby-tools"
   ],
   "scripts/request-scala-archive.mjs": [
+    "go-workspaces-arm64",
     "scala",
     "scala-context-arm64",
     "scala-extensions-arm64"
@@ -2357,6 +2392,10 @@
   "scripts/verify-scala-extensions-guards.mjs": ["scala-extensions-arm64"],
   "scripts/verify-scala-guards.mjs": ["scala"],
   "scripts/verify-scala-package.mjs": ["scala"],
+  "scripts/verify-scala2-signature-container.mjs": ["scala-extensions-arm64"],
+  "scripts/verify-scala2-signature-installed.mjs": ["scala-extensions-arm64"],
+  "scripts/verify-scala2-signature-native.mjs": ["scala-extensions-arm64"],
+  "scripts/verify-scala2-signature-proof.mjs": ["scala-extensions-arm64"],
   "scripts/verify-selected-clang-consumers.mjs": ["cpp-extensions-arm64"],
   "scripts/verify-spotbugs-container.mjs": ["spotbugs"],
   "scripts/verify-spotbugs-package.mjs": ["spotbugs"],
@@ -2386,6 +2425,12 @@
   ],
   "scripts/verify-terraform-package.mjs": [
     "terraform",
+    "terraform-extensions-arm64"
+  ],
+  "scripts/verify-terraform-signature-container.mjs": [
+    "terraform-extensions-arm64"
+  ],
+  "scripts/verify-terraform-signature-installed.mjs": [
     "terraform-extensions-arm64"
   ],
   "scripts/verify-vb-context-container.mjs": ["vb-context-arm64"],
@@ -2472,6 +2517,7 @@
   ],
   "src/terraform-extensions-runner.ts": ["terraform-extensions-arm64"],
   "src/terraform-runner.ts": [
+    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -3083,6 +3129,7 @@
     "yaml-context-arm64"
   ],
   "test/github-artifact-delivery.test.ts": [
+    "go-workspaces-arm64",
     "helm",
     "helm-extensions-arm64",
     "kubeconform",
@@ -3509,6 +3556,7 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3534,6 +3582,7 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3564,6 +3613,7 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3590,6 +3640,7 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3615,6 +3666,7 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3773,6 +3825,7 @@
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
+    "go-workspaces-arm64",
     "gradle",
     "helm",
     "helm-extensions-arm64",
@@ -3797,6 +3850,7 @@
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
+    "go-workspaces-arm64",
     "gradle",
     "helm",
     "helm-extensions-arm64",
@@ -3819,6 +3873,7 @@
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
+    "go-workspaces-arm64",
     "gradle",
     "helm",
     "helm-extensions-arm64",
@@ -3900,6 +3955,7 @@
     "terraform-extensions-arm64"
   ],
   "test/native-process-observer.ts": [
+    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -4289,9 +4345,11 @@
     "rust-context-arm64",
     "rust-extensions-arm64",
     "scala-context-arm64",
+    "scala-extensions-arm64",
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -4573,6 +4631,7 @@
   "test/terraform-extensions-lifecycle.test.ts": ["terraform-extensions-arm64"],
   "test/terraform-extensions-surfaces.test.ts": ["terraform-extensions-arm64"],
   "test/terraform-fixture.ts": [
+    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -4584,6 +4643,7 @@
     "terraform-extensions-arm64"
   ],
   "test/terraform-lifecycle.test.ts": [
+    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -4595,6 +4655,7 @@
     "terraform-extensions-arm64"
   ],
   "test/terraform-reached.test.ts": [
+    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -4605,7 +4666,11 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
+  "test/terraform-release-signature-native.test.ts": [
+    "terraform-extensions-arm64"
+  ],
   "test/terraform-surfaces.test.ts": [
+    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -4617,6 +4682,7 @@
     "terraform-extensions-arm64"
   ],
   "test/terraform.test.ts": [
+    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",

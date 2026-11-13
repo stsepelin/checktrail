@@ -19,6 +19,7 @@ const scenario = process.argv[4];
 assert.ok(
   [
     "observer-cutoff",
+    "ordinary-sampling",
     "controller-cutoff",
     "root-replaced",
     "absence-unavailable",
@@ -101,7 +102,7 @@ const bridge = {
         }
         return {
           stdout: JSON.stringify(args[0] === "info" ? {
-            OSType: "linux", Architecture: "aarch64", NCPU: 4, MemTotal: 6442450944,
+            OSType: "linux", Architecture: scenario === "ordinary-sampling" ? "x86_64" : "aarch64", NCPU: 4, MemTotal: 6442450944,
           } : [{}]),
           stderr: "",
         };
@@ -172,8 +173,8 @@ const bridge = {
       await fs.writeFile(log, "authored process transport\n", { mode: 0o600 });
       const retainedBytes = (await fs.stat(log)).size;
       if (path.basename(log) === "build.log") {
-        assert.equal(child.argv.includes("82800"), true);
-        assert.equal(options.timeoutMs, 82890000);
+        assert.equal(child.argv.includes(scenario === "ordinary-sampling" ? "43200" : "82800"), true);
+        assert.equal(options.timeoutMs, scenario === "ordinary-sampling" ? 43200000 : 82890000);
         if (scenario === "controller-cutoff") {
           fireAt(1000000 + 84000000);
           assert.equal(options.signal.aborted, true);
@@ -242,8 +243,16 @@ const bridge = {
         path.join(destination, "retention-observer.jsonl"),
         "authored observer metadata\n",
       );
+      let sequence = 0;
       return {
-        sample: async () => ({ bytes: 0 }),
+        sample: async () => ({
+          schemaVersion: 1,
+          kind: "sample",
+          sequence: ++sequence,
+          bytes: 0,
+          files: 0,
+          directories: 4,
+        }),
         close: async () => ({ state: "completed" }),
       };
     },
@@ -372,6 +381,10 @@ try {
     "--execution-policy",
     "local-gcc12-23h-v1",
   ];
+  if (scenario === "ordinary-sampling") {
+    argv.splice(argv.indexOf("--allow-local-arm64-daemon"), 1);
+    argv.splice(argv.indexOf("--execution-policy"), 2);
+  }
   if (scenario === "preparation-refused") {
     await assert.rejects(
       mainCProducer(argv),
@@ -395,12 +408,22 @@ try {
     assert.equal(final.originalBuild.exitCode, null);
     assert.equal(originalStarts, 1);
     assert.equal(final.limits.deadlineSeconds, 43200);
-    assert.equal(final.executionLimits.deadlineSeconds, 82800);
+    if (scenario === "ordinary-sampling") {
+      assert.ok(!Object.hasOwn(final, "executionPolicy"));
+      assert.ok(!Object.hasOwn(final, "executionLimits"));
+      assert.ok(!Object.hasOwn(final, "controllerClock"));
+      assert.equal(final.schemaVersion, 3);
+      assert.equal(final.retentionSamplingPolicy.id, "owned-container-quiescent-v1");
+      assert.equal(final.quiescentResourceSamples.length, 2);
+      assert.deepEqual(final.quiescentResourceSamples[0].actions, ["absent-before-admission", "sample-completed"]);
+      assert.deepEqual(final.quiescentResourceSamples[1].actions, ["absent-after-native-terminal", "sample-completed"]);
+      assert.deepEqual(final.quiescentResourceSamples.map((row) => row.sample.sequence), [1, 2]);
+    } else assert.equal(final.executionLimits.deadlineSeconds, 82800);
     assert.deepEqual(
       events.filter((x) => x.startsWith("schedule:")),
-      ["schedule:600000", "schedule:84000000"],
+      scenario === "ordinary-sampling" ? [] : ["schedule:600000", "schedule:84000000"],
     );
-    if (scenario === "observer-cutoff") {
+    if (["observer-cutoff", "ordinary-sampling"].includes(scenario)) {
       assert.equal(collectorStarts, 1);
       assert.equal(collectorTimeout, 180000);
       assert.ok(

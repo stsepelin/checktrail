@@ -435,6 +435,12 @@ installed-package acceptance remains profile-specific. Scala 2, scripts, mixed
 source, inline/staging/macros, build wrappers, wider analyzers and the remaining
 E11/platform/provenance requirements remain open.
 
+[Selected Scala 2 extensions](SCALA-EXTENSIONS.md) also describe optional,
+operator-pinned native signature-preparation evidence for the selected compiler,
+library and reflect JARs. The archive and other selected libraries retain their
+separate signature scopes. End-to-end native acceptance of this proof mode is
+pending; complete publisher/build/notice closure remains a separate obligation.
+
 The bounded `js-ts-historical-imports-v1` profile additionally captures immutable
 base and working/index consumers, deleted/moved source and revision-specific
 edges through the shared import interface. See
@@ -534,7 +540,7 @@ bounded controller streams as described in [native consumer witness evidence](CO
 
 [Declared generator and compiled-method extensions](DOTNET-GENERATOR-EXTENSIONS.md) add exact producer/consumer graphs, actual same-arity method signatures, scalar parameter cases and inherited source provenance across declared assemblies. The earlier method check retains its narrower contract. Duplicate or unsupported cases remain incomplete; complete dependency/license and final platform acceptance remain open.
 
-The opt-in [Terraform module/provider extension](TERRAFORM-EXTENSIONS.md) adds a finite mixed HCL/JSON local graph with repeated/transitive module instances, scalar variables and native pinned-provider diagnostics. Source, provider/lock/schema, current-root receipts and reached lifecycle controls are scoped to Terraform 1.16.5/random 3.9.1/Linux ARM64; wider infrastructure semantics, provenance and Gate A remain open.
+The opt-in [Terraform module/provider extension](TERRAFORM-EXTENSIONS.md) adds a finite mixed HCL/JSON local graph with repeated/transitive module instances, scalar variables and native pinned-provider diagnostics. Source, provider/lock/schema, current-root receipts and reached lifecycle controls are scoped to Terraform 1.16.5/random 3.9.1/Linux ARM64. Optional operator-pinned release-signature preparation binds the selected checksum signature and complete provider ZIP/member cohort independently at runtime and final admission; legacy preparation remains explicitly unverified. Key-owner trust, current key validity, wider infrastructure semantics, complete provenance and Gate A remain open.
 
 The opt-in [Helm application/subchart extension](HELM-EXTENSIONS.md) validates a finite local alias graph with transitive and repeated charts, scalar value/schema constraints and physical/rendered native diagnostics. Exact source bytes, full debug schemas, all physical lint outcomes and complete template-instance participation remain current at admission. Linux ARM64/Helm 4.3.0 is the measured scope; wider charts, cluster/API schema behavior, provenance and Gate A remain open.
 

@@ -1,0 +1,1 @@
+Synthetic OpenPGP public key and detached signature generated offline for Checktrail tests. The subject lists two synthetic payloads. No private key is retained in the repository. Key validity/revocation and publisher identity are not established by these tests.

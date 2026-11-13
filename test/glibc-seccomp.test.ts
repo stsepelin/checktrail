@@ -219,8 +219,9 @@ test("GLIBC synthetic probe schema preserves BZ19408 negative returns and the er
 test("GLIBC compiler and fixed probe vectors retain native capabilities and budgets while binding shared helpers", async () => {
   const destination = path.resolve("synthetic-glibc-policy");
   const attempt = "12345678-1234-4234-8234-123456789012";
-  for (const name of ["gcc-12", "glibc"]) {
+  for (const name of ["gcc-12", "glibc", "glibc-u13"]) {
     const { catalog, profile } = await profileApi.loadCProducerProfile(name);
+    const isGlibc = name !== "gcc-12";
     const argv: string[] = controller.cProducerArguments(
       catalog,
       profile,
@@ -228,8 +229,8 @@ test("GLIBC compiler and fixed probe vectors retain native capabilities and budg
       attempt,
       { uid: 1001, gid: 1002 },
     );
-    assert.equal(argv.includes("--security-opt"), name === "glibc");
-    if (name === "glibc")
+    assert.equal(argv.includes("--security-opt"), isGlibc);
+    if (isGlibc)
       assert.equal(
         argv[argv.indexOf("--security-opt") + 1],
         "seccomp=" +
@@ -240,8 +241,17 @@ test("GLIBC compiler and fixed probe vectors retain native capabilities and budg
     assert.ok(!argv.some((v) => /privileged|cap-add|unconfined/u.test(v)));
     assert.equal(
       controller.cProducerSourceFiles(profile).length,
-      name === "glibc" ? 16 : 10,
+      isGlibc ? 19 : 13,
     );
+    for (const helper of [
+      "c-report-encoding.v1.json",
+      "c-producer-report-codec.mjs",
+      "c-producer-report-codec.py",
+    ])
+      assert.ok(
+        controller.cProducerSourceFiles(profile).includes(helper),
+        "Unbound report transport helper: " + helper,
+      );
     for (const mode of ["baseline", "derived"]) {
       const args: string[] = controller.cProducerSyscallPreflightArguments(
         catalog,
