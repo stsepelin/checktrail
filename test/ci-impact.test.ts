@@ -3386,7 +3386,7 @@ async function mainPushFixture(
     "name: Synthetic\non: push\njobs:\n  native-a:\n    steps:\n      - run: node scripts/native-a.mjs\n  native-b:\n    steps:\n      - run: node scripts/native-b.mjs\n";
   const a = "// synthetic original A\n",
     b = "// synthetic original B\n";
-  const nativeInputs = {
+  const nativeInputs: Record<string, string[]> = {
     "scripts/native-a.mjs": ["native-a"],
     "scripts/native-b.mjs": ["native-b"],
     "test/scoped-a.test.ts": ["native-a"],
@@ -3449,6 +3449,20 @@ async function mainPushFixture(
     );
     git(["add", "."]);
     git(["commit", "-m", "synthetic net B"]);
+  }
+  if (kind === "deletion") {
+    await rm(path.join(repository, "test/scoped-a.test.ts"));
+    await writeFile(
+      path.join(repository, "test/scoped-b.test.ts"),
+      "// synthetic updated B after deleting A\n",
+    );
+    delete nativeInputs["test/scoped-a.test.ts"];
+    await writeFile(
+      path.join(repository, "scripts/ci-native-inputs.json"),
+      JSON.stringify(nativeInputs),
+    );
+    git(["add", "."]);
+    git(["commit", "-m", "synthetic deleted A and updated B"]);
   }
   if (kind === "empty") {
     git(["checkout", before]);
@@ -3581,6 +3595,44 @@ test("planner qualifies actual main pushes from exact Git endpoints without trus
     } finally {
       await f.cleanup();
     }
+  }
+});
+
+test("planner retains deleted inputs in a multi-commit main push and requires full verification", async (t) => {
+  const f = await mainPushFixture(t, "deletion");
+  try {
+    assert.equal(
+      f.git(["rev-list", "--count", f.before + ".." + f.after]),
+      "2",
+    );
+    assert.equal(
+      f.git([
+        "diff",
+        "--name-status",
+        f.before + ".." + f.after,
+        "--",
+        "test/scoped-a.test.ts",
+      ]),
+      "D\ttest/scoped-a.test.ts",
+    );
+    const { actual, calls } = await runMainPushPlanner(f);
+    assert.equal(actual.mode, "full", actual.reason);
+    assert.deepEqual(selected(actual), ["native-a", "native-b"]);
+    assert.match(actual.reason, /[Uu]nclassified/);
+    assert.ok(actual.reason.includes("test/scoped-a.test.ts"), actual.reason);
+    const diffs = calls.filter((args) => args.includes("--name-only"));
+    assert.equal(
+      diffs.length,
+      1,
+      "Current canonical ownership must admit the actual endpoint diff",
+    );
+    assert.ok(diffs[0]!.includes(f.before + ".." + f.after));
+    assert.ok(
+      !diffs[0]!.some((arg) => arg.startsWith("--diff-filter")),
+      "The endpoint diff must preserve deleted inputs",
+    );
+  } finally {
+    await f.cleanup();
   }
 });
 

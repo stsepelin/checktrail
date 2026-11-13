@@ -343,6 +343,36 @@ test("generator job context keeps each actual job attempt without cross-run or h
     );
 });
 
+for (const role of ["baseline", "source", "installed"] as const)
+  test(`generator fragment rejects coherently stale ${role} callback bytes against the current harness`, () => {
+    const value = inputs("0");
+    assert.equal(
+      api.createGeneratorShardFragment(value).fragmentComplete,
+      true,
+    );
+    const report =
+      role === "installed" ? value.installed!.profile : value[role].evidence;
+    const expected =
+      role === "installed"
+        ? loaded.requirements[loaded.manifest.sourceProfile]
+        : api.selectGeneratorShard(loaded.manifest, "0")[role];
+    const artifact = report.ledger.files[0]!;
+    const stale = digest("coherently stale " + role + " callback bytes");
+    assert.notEqual(stale, artifact.before.sha256);
+    artifact.before.sha256 = stale;
+    artifact.after.sha256 = stale;
+    assert.equal(artifact.stable, true);
+    // This remains a complete self-consistent ledger; only the current harness
+    // join can distinguish these coherent stale bytes from this run's callbacks.
+    assert.doesNotThrow(() =>
+      api.requireGeneratorRoleEvidence(report, expected),
+    );
+    assert.throws(
+      () => api.createGeneratorShardFragment(value),
+      /Callback came from the wrong source artifact/,
+    );
+  });
+
 test("fragment receipts reject omission duplicate skip stale context changed engine and missing native proof", () => {
   for (const mutate of [
     (x: ReturnType<typeof inputs>) => {
