@@ -126,20 +126,24 @@ test("consumer impact retains its guard condition and fresh installed checks on 
   assert.equal(hosts.filter((step) => step.run === installed).length, 1);
   assert.equal(
     hosts.find((step) => step.run === installed)!.if,
-    undefined,
-    "Every existing host variant must execute fresh consumer acceptance",
+    "matrix.shard == 0",
+    "Every existing host variant must execute fresh consumer acceptance once",
   );
   const cache = hosts.findIndex(
     (step) => step.run === "node scripts/prepare-package-cache.mjs",
   );
   const lanes = hosts.findIndex(
-    (step) => step.run === "node scripts/run-ci-validation.mjs",
+    (step) =>
+      step.run ===
+      "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}",
   );
   const consumer = hosts.findIndex((step) => step.run === installed);
   assert.ok(cache >= 0 && cache < lanes && lanes < consumer);
   assert.deepEqual(
-    workflow.jobs["host-validation"].strategy.matrix,
-    workflow.jobs.checks.strategy.matrix,
+    workflow.jobs["host-validation"].strategy.matrix.include
+      .filter((row: { shard: number }) => row.shard === 0)
+      .map(({ os, node }: { os: string; node: string }) => ({ os, node })),
+    workflow.jobs.checks.strategy.matrix.include,
   );
 });
 
@@ -185,28 +189,37 @@ test("CI lanes preserve every original matrix command and keep distinct package 
   );
   assert.equal(
     workflow.jobs["host-validation"].steps.filter(
-      (s: { run?: string }) => s.run === "node scripts/run-ci-validation.mjs",
+      (s: { run?: string }) =>
+        s.run ===
+        "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}",
     ).length,
     1,
   );
   assert.equal(workflow.jobs.checks.strategy.matrix.include.length, 4);
   assert.deepEqual(
-    workflow.jobs["host-validation"].strategy.matrix,
-    workflow.jobs.checks.strategy.matrix,
+    workflow.jobs["host-validation"].strategy.matrix.include
+      .filter((row: { shard: number }) => row.shard === 0)
+      .map(({ os, node }: { os: string; node: string }) => ({ os, node })),
+    workflow.jobs.checks.strategy.matrix.include,
   );
   assert.equal(workflow.jobs["host-validation"]["timeout-minutes"], 75);
-  assert.deepEqual(workflow.jobs["host-validation"].needs, ["ci-plan"]);
+  assert.deepEqual(workflow.jobs["host-validation"].needs, [
+    "ci-plan",
+    "actionlint",
+  ]);
   assert.deepEqual(workflow.jobs.checks.needs, ["ci-plan"]);
   assert.match(workflow.jobs["host-validation"].if, /mode == 'full'/);
   assert.equal(
     workflow.jobs.checks.steps.find((s: { run?: string }) =>
-      s.run?.includes("--full-suite gate-inventory"),
+      s.run?.includes("verify-ci-full-suite-shard.mjs --shard0"),
     )?.if,
     "env.CHECKTRAIL_CI_MODE == 'full'",
   );
   assert.ok(
     !workflow.jobs.checks.steps.some(
-      (s: { run?: string }) => s.run === "node scripts/run-ci-validation.mjs",
+      (s: { run?: string }) =>
+        s.run ===
+        "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}",
     ),
   );
   assert.equal(
@@ -216,7 +229,7 @@ test("CI lanes preserve every original matrix command and keep distinct package 
   );
   assert.ok(
     workflow.jobs.checks.steps.some((s: { run?: string }) =>
-      s.run?.includes("--full-suite gate-inventory"),
+      s.run?.includes("verify-ci-full-suite-shard.mjs --shard0"),
     ),
   );
 });
