@@ -8,6 +8,7 @@ import { performance } from "node:perf_hooks";
 import { setTimeout, clearTimeout } from "node:timers";
 import { readPinnedArchive } from "./emsdk-metadata-archive.mjs";
 import { readExactDescriptor } from "./emsdk-metadata-file.mjs";
+import { bindGitmoduleUrls } from "./emsdk-metadata-gitmodules.mjs";
 import {
   digest,
   metadataUrl,
@@ -444,7 +445,8 @@ export async function collectMetadata({
       );
       treeResponse.receipt.semanticAdmission = true;
       publish(treeResponse.rawName, roles[1].id + ".response");
-      const blobs = [],
+      const blobs = [];
+      let moduleUrlBindings = null,
         gitlinks = [...entries.values()]
           .filter((entry) => entry.type === "commit")
           .map((entry) => ({
@@ -468,6 +470,11 @@ export async function collectMetadata({
           blobId,
           frozen.limits.decodedBlobBytes,
         );
+        if (role.path === ".gitmodules") {
+          const bound = bindGitmoduleUrls(bytes, entries);
+          gitlinks = bound.gitlinks;
+          moduleUrlBindings = { role: role.id, ...bound.moduleUrlBindings };
+        }
         write(role.id + ".source.partial", bytes);
         publish(role.id + ".source.partial", role.id + ".source");
         response.receipt.semanticAdmission = true;
@@ -487,6 +494,7 @@ export async function collectMetadata({
         treeBytesVerified: true,
         blobs,
         gitlinks,
+        moduleUrlBindings,
       });
     }
     let localArchiveMetadata = null;

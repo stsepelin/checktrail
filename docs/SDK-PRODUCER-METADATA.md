@@ -29,10 +29,25 @@ A Gitiles commit response names its tree, and the collector recomputes that tree
 from every observed entry before admitting a selected blob by its Git object
 hash. The commit response remains a publication claim: the raw commit object,
 commit signature, real checkout, index and history have not been verified. The
-complete selected LICENSE blob is retained without rewriting. Root Gitlink
-commits are recorded, while module URL and nested-source closure remain open.
-An optional `.gitmodules` file is considered absent only when the admitted root
-tree does not declare it.
+complete selected LICENSE blob is retained without rewriting. For an admitted
+Binaryen `.gitmodules` blob, a bounded passive parser binds each exact root
+Gitlink path and recorded commit to its declared canonical HTTPS repository URL.
+The association retains the Git blob identity and a SHA-256 digest of the original
+configuration bytes. It does not resolve Git URL rewriting or authorize a fetch.
+
+The parser accepts quoted submodule headers, explicit assignments, plain or
+wholly quoted single-line values, LF/CRLF and comments. Duplicate sections, keys
+or paths, overlapping paths, malformed mappings, unsupported URL forms and
+foreign/include sections fail preparation. Other submodule settings remain inert
+strings. No Git configuration, interpolation or update command runs.
+
+Nested declarations are retained only beneath an admitted root directory entry.
+They remain unverified with no recorded nested commit; a parent tree identity
+cannot supply it. Complete nested-source, notice and producer-build closure remain
+open. An optional `.gitmodules` file is considered absent only when the admitted
+root tree does not declare it; absence leaves root URL bindings unverified.
+Synthetic tests cover the parser and collector. Actual selected metadata replay
+and broader Gate A acceptance remain separate obligations.
 
 When an explicit local archive input is supplied, the reader checks the original
 compressed archive size and SHA-256 before reading selected Emscripten metadata.
