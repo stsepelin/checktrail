@@ -8253,7 +8253,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4bcb7f560b0e3c16bfdae90e7ffd8bfc946e496c"
+      "hash": "1b69dd8ff781d368bb95e04af47634f815841179"
     },
     {
       "path": "scripts/check-evaluation-captures.mjs",
@@ -16863,7 +16863,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "5c590f24e814e6d46d4b2e408720b02072a1c144"
+      "hash": "d02332987261b65b7553fcf03f20167562168041"
     },
     {
       "path": "test/dotnet-generator-extensions-config.test.ts",

@@ -431,6 +431,91 @@ test("generator workflow identity keeps candidate head distinct from its checkou
   );
 });
 
+test("generator START accepts a queued aggregate only with its exact active producer", async () => {
+  for (const id of shards.dotnetGeneratorShardIds) {
+    const target = { ...job(id, 2), status: "in_progress", conclusion: null };
+    for (const statuses of [
+      ["queued", "queued"],
+      ["queued", "in_progress"],
+      ["in_progress", "queued"],
+    ]) {
+      const seen: string[] = [];
+      let reads = 0;
+      const request = async (endpoint: string) => {
+        seen.push(endpoint);
+        if (endpoint === `runs/${ci.runId}`)
+          return { ...run(), status: statuses[reads++] };
+        assert.equal(
+          endpoint,
+          `runs/${ci.runId}/attempts/2/jobs?per_page=20&page=1`,
+        );
+        return { total_count: 1, jobs: [target] };
+      };
+      const result = await api.observeGeneratorProducer(
+        request,
+        ci,
+        id,
+        String(5000 + Number(id)),
+      );
+      assert.equal(result.jobId, String(target.id));
+      assert.equal(result.jobAttempt, 2);
+      assert.equal(reads, 2);
+      assert.equal(seen.length, 3);
+    }
+    for (const variant of [
+      "queued-job",
+      "completed-job",
+      "failed-job",
+      "active-failure",
+      "foreign-attempt",
+      "foreign-head",
+      "foreign-check-run",
+      "cancelled-run",
+      "waiting-run",
+      "changed-attempt-after-job",
+    ]) {
+      const changed = clone(target);
+      if (variant === "queued-job") changed.status = "queued";
+      if (variant === "completed-job") changed.status = "completed";
+      if (variant === "failed-job")
+        Object.assign(changed, { status: "completed", conclusion: "failure" });
+      if (variant === "active-failure")
+        Object.assign(changed, { conclusion: "failure" });
+      if (variant === "foreign-attempt") changed.run_attempt++;
+      if (variant === "foreign-head") changed.head_sha = ci.checkoutSha;
+      if (variant === "foreign-check-run") changed.check_run_url += "9";
+      let reads = 0;
+      await assert.rejects(
+        api.observeGeneratorProducer(
+          async (endpoint: string) => {
+            if (endpoint === `runs/${ci.runId}`) {
+              reads++;
+              return {
+                ...run(),
+                status:
+                  variant === "cancelled-run"
+                    ? "cancelled"
+                    : variant === "waiting-run"
+                      ? "waiting"
+                      : "queued",
+                run_attempt:
+                  variant === "changed-attempt-after-job" && reads === 2
+                    ? 3
+                    : 2,
+              };
+            }
+            return { total_count: 1, jobs: [changed] };
+          },
+          ci,
+          id,
+          String(5000 + Number(id)),
+        ),
+        variant,
+      );
+    }
+  }
+});
+
 test("generator metadata pagination rejects incomplete changing duplicate foreign and excessive inventories", async () => {
   const rows = Array.from({ length: 21 }, (_, i) => ({
     ...job("0"),
@@ -737,9 +822,14 @@ test("generator API reconciliation accepts mixed retained successes but refuses 
     created_at: "2026-01-01T00:10:00Z",
   }));
   const makeRequest =
-    (fail = false) =>
+    (
+      fail = false,
+      aggregateStatus = "in_progress",
+      producerStatus = "completed",
+    ) =>
     async (endpoint: string) => {
-      if (endpoint === `runs/${ci.runId}`) return run();
+      if (endpoint === `runs/${ci.runId}`)
+        return { ...run(), status: aggregateStatus };
       if (endpoint.startsWith("artifacts/"))
         return metadata(
           value.bindings.find((row: { finish: { artifact: { id: string } } }) =>
@@ -749,8 +839,10 @@ test("generator API reconciliation accepts mixed retained successes but refuses 
       const rows = endpoint.includes("filter=latest")
         ? clone(latest)
         : clone(originals);
-      if (fail && endpoint.includes("filter=latest"))
-        rows[0]!.conclusion = "failure";
+      if (endpoint.includes("filter=latest")) {
+        rows[0]!.status = producerStatus;
+        if (fail) rows[0]!.conclusion = "failure";
+      }
       return { total_count: rows.length, jobs: rows };
     };
   const observed = await api.observeGeneratorBindings(
@@ -765,10 +857,33 @@ test("generator API reconciliation accepts mixed retained successes but refuses 
     ),
     [1, 1, 1],
   );
-  await assert.rejects(
-    api.observeGeneratorBindings(makeRequest(true), value.bindings, ci),
-    /Latest failure/,
+  assert.deepEqual(
+    await api.observeGeneratorBindings(
+      makeRequest(false, "queued"),
+      value.bindings,
+      ci,
+    ),
+    observed,
   );
+  for (const aggregateStatus of ["queued", "in_progress"]) {
+    await assert.rejects(
+      api.observeGeneratorBindings(
+        makeRequest(true, aggregateStatus),
+        value.bindings,
+        ci,
+      ),
+      /Latest failure/,
+    );
+    for (const producerStatus of ["queued", "in_progress"])
+      await assert.rejects(
+        api.observeGeneratorBindings(
+          makeRequest(false, aggregateStatus, producerStatus),
+          value.bindings,
+          ci,
+        ),
+        /completed/,
+      );
+  }
 });
 
 test("generator complete fan-in requires every preserved role and current immutable fragment", () => {
