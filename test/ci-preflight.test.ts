@@ -251,10 +251,9 @@ test("CI gates expensive jobs on successful cheap checks and cannot qualify a sk
   assert.equal(plan.mode, "full");
   assert.ok(Object.values(plan.selected).every(Boolean));
   const needs = Object.fromEntries(
-    ["ci-plan", "checks", "host-validation", ...ids].map((id) => [
-      id,
-      { result: "success" },
-    ]),
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...ids].map(
+      (id) => [id, { result: "success" }],
+    ),
   );
   assert.equal(requireCiCompletion(plan, needs).complete, true);
   needs["ci-plan"].result = "failure";

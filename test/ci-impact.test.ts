@@ -460,15 +460,17 @@ test("CI Swift preparation import and new regression changes select both actual 
   ])
     assert.ok(result.sharedTestFiles.includes(file), file);
   const needs = Object.fromEntries(
-    ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
-      id,
-      {
-        result:
-          ["ci-plan", "checks"].includes(id) || result.selected[id]
-            ? "success"
-            : "skipped",
-      },
-    ]),
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [
+        id,
+        {
+          result:
+            ["ci-plan", "checks"].includes(id) || result.selected[id]
+              ? "success"
+              : "skipped",
+        },
+      ],
+    ),
   );
   const receipt = requireCiCompletion(result, needs);
   assert.equal(receipt.fullRevisionVerification, false);
@@ -618,7 +620,13 @@ test("CI exact C producer inputs select every complete C Go and Node caller regr
     assert.deepEqual(selected(actual), inputs[file] ?? [], file);
     assert.deepEqual(actual.sharedTestFiles, expected, file);
     const needs = Object.fromEntries(
-      ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
+      [
+        "ci-plan",
+        "checks",
+        "full-suite-shards",
+        "host-validation",
+        ...jobs,
+      ].map((id) => [
         id,
         {
           result:
@@ -651,7 +659,13 @@ test("CI exact original-producer workflows retain actionlint and complete produc
       );
     assert.ok(actual.sharedTestFiles.includes("dist/test/actionlint.test.js"));
     const needs = Object.fromEntries(
-      ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
+      [
+        "ci-plan",
+        "checks",
+        "full-suite-shards",
+        "host-validation",
+        ...jobs,
+      ].map((id) => [
         id,
         {
           result:
@@ -1193,15 +1207,18 @@ test("CI stale contracts and non-PR events select the complete inventory while m
 test("CI completion requires selected jobs to pass and reports omitted jobs as unselected", () => {
   const result = plan(["test/gate-scala-extensions.test.ts"]);
   const needs = Object.fromEntries(
-    ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
-      id,
-      {
-        result:
-          id === "scala-extensions-arm64" || ["ci-plan", "checks"].includes(id)
-            ? "success"
-            : "skipped",
-      },
-    ]),
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [
+        id,
+        {
+          result:
+            id === "scala-extensions-arm64" ||
+            ["ci-plan", "checks"].includes(id)
+              ? "success"
+              : "skipped",
+        },
+      ],
+    ),
   );
   const receipt = requireCiCompletion(result, needs);
   assert.equal(receipt.complete, true);
@@ -1284,17 +1301,19 @@ test("CI completion YAML policy admits failed dependencies and skips a canceled 
   }
   const selected = plan(["test/gate-scala-extensions.test.ts"]);
   const needs: Record<string, { result: string }> = Object.fromEntries(
-    ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
-      id,
-      {
-        result:
-          id === "scala-extensions-arm64"
-            ? "failure"
-            : ["ci-plan", "checks"].includes(id)
-              ? "success"
-              : "skipped",
-      },
-    ]),
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [
+        id,
+        {
+          result:
+            id === "scala-extensions-arm64"
+              ? "failure"
+              : ["ci-plan", "checks"].includes(id)
+                ? "success"
+                : "skipped",
+        },
+      ],
+    ),
   );
   assert.equal(
     eligible(
@@ -1363,7 +1382,13 @@ test("CI initial wave stays within the free runner ceiling and native fanout req
   }
   assert.deepEqual(
     workflow.jobs["ci-complete"].needs.toSorted(),
-    ["ci-plan", "checks", "host-validation", ...jobs].sort(),
+    [
+      "ci-plan",
+      "checks",
+      "full-suite-shards",
+      "host-validation",
+      ...jobs,
+    ].sort(),
   );
   assert.deepEqual(workflow.jobs["dotnet-generator-extensions-arm64"].needs, [
     "ci-plan",
@@ -1498,8 +1523,8 @@ test("CI a successful pre-split JVM baseline cannot qualify the expanded phase i
   );
 });
 
-test("CI split matrix retains each runner's package cache before Linux installed-container acceptance", () => {
-  const steps = workflow.jobs.checks.steps;
+test("CI full-suite shard runners retain their package cache before Linux installed-container acceptance", () => {
+  const steps = workflow.jobs["full-suite-shards"].steps;
   const cache = steps.findIndex(
     (step: { run?: string }) =>
       step.run === "node scripts/prepare-package-cache.mjs",
@@ -2125,10 +2150,17 @@ test("CI shared matrices retain every full command and use selected complete fil
   assert.equal(fast.length, 1);
   assert.equal(fast[0].if, "env.CHECKTRAIL_CI_MODE == 'affected'");
   const full = checks.steps.find((step: { run?: string }) =>
-    step.run?.includes("--full-suite"),
+    step.run?.startsWith(
+      "node scripts/verify-ci-full-suite-shard.mjs --shard0\n",
+    ),
   );
   assert.ok(full);
   assert.equal(full.if, "env.CHECKTRAIL_CI_MODE == 'full'");
+  assert.deepEqual(full.run.trim().split("\n"), [
+    "node scripts/verify-ci-full-suite-shard.mjs --shard0",
+    "node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness",
+    "CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js",
+  ]);
   for (const command of [
     "npm ci --ignore-scripts",
     "npm run typecheck",
@@ -2143,7 +2175,10 @@ test("CI shared matrices retain every full command and use selected complete fil
       undefined,
       command,
     );
-  assert.deepEqual(workflow.jobs["host-validation"].needs, ["ci-plan"]);
+  assert.deepEqual(workflow.jobs["host-validation"].needs, [
+    "ci-plan",
+    "actionlint",
+  ]);
   assert.match(workflow.jobs["host-validation"].if, /mode == 'full'/);
   const docs = plan(["docs/NATIVE-CI.md"], { baseline: null });
   assert.deepEqual(selected(docs), []);
@@ -2151,8 +2186,11 @@ test("CI shared matrices retain every full command and use selected complete fil
     "dist/test/artifact-evidence.test.js",
     "dist/test/ci-affected-tests.test.js",
     "dist/test/ci-development-dependencies.test.js",
+    "dist/test/ci-duration-workflow.test.js",
+    "dist/test/ci-full-suite-shards.test.js",
     "dist/test/ci-impact.test.js",
     "dist/test/ci-source-boundaries.test.js",
+    "dist/test/ci-validation-shards.test.js",
     "dist/test/gate-inventory.test.js",
     "dist/test/jvm-wrapper-phases.test.js",
   ]);
@@ -4022,5 +4060,47 @@ test("CI observer helper consumers retain its complete two-callback regression w
   assert.deepEqual(
     declared,
     rows.map((row) => row.name),
+  );
+});
+
+test("full completion requires all shared file shards and scoped runs cannot credit them", () => {
+  const full = plan(["package.json"]);
+  assert.equal(full.mode, "full");
+  const needs = Object.fromEntries(
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [id, { result: "success" }],
+    ),
+  );
+  assert.equal(requireCiCompletion(full, needs).fullRevisionVerification, true);
+  for (const result of ["failure", "cancelled", "skipped", "neutral"]) {
+    assert.throws(
+      () =>
+        requireCiCompletion(full, {
+          ...needs,
+          "full-suite-shards": { result },
+        }),
+      /outcome disagrees/,
+    );
+  }
+  const missing = structuredClone(needs);
+  delete missing["full-suite-shards"];
+  assert.throws(() => requireCiCompletion(full, missing), /inventory differs/);
+  const scoped = plan(["README.md"]);
+  const scopedNeeds = Object.fromEntries(
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [
+        id,
+        { result: ["ci-plan", "checks"].includes(id) ? "success" : "skipped" },
+      ],
+    ),
+  );
+  assert.equal(requireCiCompletion(scoped, scopedNeeds).complete, true);
+  assert.throws(
+    () =>
+      requireCiCompletion(scoped, {
+        ...scopedNeeds,
+        "full-suite-shards": { result: "success" },
+      }),
+    /outcome disagrees/,
   );
 });

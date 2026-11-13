@@ -21,7 +21,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "8c89858ec94172e72551ac2611bfb41412633ac2"
+      "hash": "4c03468636175439f444240334967f449550595f"
     },
     {
       "path": ".github/workflows/upstream-binutils.yml",
@@ -1043,7 +1043,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "f4515557cb03b5da00351248da9e04b4b258a1ad"
+      "hash": "bc4093f6b4298be48034a6a1ad0776dd1b678931"
     },
     {
       "path": "docs/NATIVE-JSON-PROBES.md",
@@ -8298,11 +8298,25 @@
       "hash": "499f0146191c8672b299fcdfc88245380178c32e"
     },
     {
+      "path": "scripts/ci-full-suite-profiles.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "ff6dfa945831ea2213d7e2fcb335aabb64bd589f"
+    },
+    {
+      "path": "scripts/ci-full-suite-shards.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "fb9ad64a529a8c17eb9054b39434e32b4973c055"
+    },
+    {
       "path": "scripts/ci-impact.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a59ccba5eae23e059aa405d33937c6415b7c2550"
+      "hash": "c9ab47acaec1b2acb476676a82e41b7fc7b9404e"
     },
     {
       "path": "scripts/ci-native-inputs.json",
@@ -8333,11 +8347,25 @@
       "hash": "cb1cfd240ce6963ce13687bbfe4a38bba14ffce6"
     },
     {
+      "path": "scripts/ci-validation-shards.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "dc9429b89e05bccd155e5fe2be9b02e995ba08e5"
+    },
+    {
+      "path": "scripts/ci-validation-shards.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "939d6b78d71700d636b5e874c16f17c478a30b8d"
+    },
+    {
       "path": "scripts/ci-validation.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "b82582ec82d6a0d892432061065e2a310c20fbc6"
+      "hash": "be17fde5592d770cff4bf8ac4e117f386aff948d"
     },
     {
       "path": "scripts/clang-tools.Dockerfile",
@@ -9380,7 +9408,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "6774a7c570acea882a96bb7b2fdd11a497f4c16c"
+      "hash": "4252abcee50ae8ac86ab4071f0690fb64117d46b"
     },
     {
       "path": "scripts/playwright-tools/package-lock.json",
@@ -10500,7 +10528,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4b2ab23f4f5de7f1cf22168c05873c828fa41d48"
+      "hash": "3dcead4dc61c89670290f957bc57237dfb5c5a45"
     },
     {
       "path": "scripts/run-test-suite.mjs",
@@ -10774,6 +10802,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "1d1438d614a9cd34f855ea77b42cfa3ade59ce48"
+    },
+    {
+      "path": "scripts/verify-ci-full-suite-shard.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "cc0527b24dc1bd831f7d0dc143facbd7a112d37d"
     },
     {
       "path": "scripts/verify-clang-container.mjs",
@@ -16226,14 +16261,28 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "79fa25f52a87991f42f18d30ff400cdf961e1945"
+      "hash": "d755bd322a0694e3d6c564fd9b40be9b68d6a651"
+    },
+    {
+      "path": "test/ci-duration-workflow.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "38738e6c5dd4e341263ebc5e6ee8e8269817bd5f"
+    },
+    {
+      "path": "test/ci-full-suite-shards.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "b91b5922dcac9c41c82ca2cb73b3ed8f3ca8fed3"
     },
     {
       "path": "test/ci-impact.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "894dee69cc21cd7d48c9aafac99e8a2b171bfa1a"
+      "hash": "a0a8ed05f895c40b880856255b36decd5e8d52b5"
     },
     {
       "path": "test/ci-native-profiles.test.ts",
@@ -16247,7 +16296,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "fe7cdd102fd15214c122666ebd041fe619f8d530"
+      "hash": "30ad75f4eb4ce0e7323101f230295e8be7027aa9"
     },
     {
       "path": "test/ci-source-boundaries.test.ts",
@@ -16257,11 +16306,18 @@
       "hash": "0c4a19acf6b05c1276196b073030ab726f8306dc"
     },
     {
+      "path": "test/ci-validation-shards.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "82b7a8c42d13447a16dd8097b790c230623771ea"
+    },
+    {
       "path": "test/ci-validation.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "e0f834c6d3daf4524c438c366ad25f35c2014113"
+      "hash": "fc17cc119313b5f85b3a1688f1dab30050a157ec"
     },
     {
       "path": "test/clang.test.ts",
