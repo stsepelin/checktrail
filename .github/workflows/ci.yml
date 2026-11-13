@@ -920,9 +920,14 @@ jobs:
         run: node scripts/verify-kotlin-extensions-container.mjs
 
   scala-extensions-arm64:
-    needs: [ci-plan]
+    needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['scala-extensions-arm64'] }}
     runs-on: ubuntu-24.04-arm
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        phase: [baseline, source, installed, guards]
     timeout-minutes: 30
     env:
       CHECKTRAIL_TEST_TASK: ci-scala-extensions
@@ -960,9 +965,10 @@ jobs:
       - name: Prepare pinned native Scala extension runtime
         run: docker build --network none --label checktrail.task=ci-scala-extensions --file scripts/scala-extensions-tools.Dockerfile --tag "$CHECKTRAIL_SCALA_EXTENSIONS_IMAGE" .checktrail/scala-tools
       - run: node scripts/prepare-package-cache.mjs
-      - name: Verify preserved compilation, extension source and installed acceptance, compiling guards and native regressions
-        run: node scripts/verify-scala-extensions-container.mjs
+      - name: Verify required Scala native phase
+        run: node scripts/verify-scala-extensions-container.mjs --phase "${{ matrix.phase }}"
       - name: Verify operator-pinned Scala signature source and fresh installed acceptance
+        if: matrix.phase == 'baseline'
         env:
           CHECKTRAIL_SCALA2_PREPARATION_MANIFEST: ${{ runner.temp }}/scala2-release-signature-preparation.json
         run: node scripts/verify-scala2-signature-container.mjs "$CHECKTRAIL_SCALA2_PREPARATION_MANIFEST"

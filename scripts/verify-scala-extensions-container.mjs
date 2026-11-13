@@ -6,6 +6,12 @@ import { performance } from "node:perf_hooks";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
+import { createHash } from "node:crypto";
+import {
+  runScalaNativeCiPhase,
+  selectScalaNativeCiPhase,
+} from "./scala-native-ci-phases.mjs";
+const phase = selectScalaNativeCiPhase(process.argv.slice(2));
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const selected = process.env.CHECKTRAIL_SCALA_EXTENSIONS_IMAGE;
 assert.ok(
@@ -32,7 +38,7 @@ const base = [
   "none",
   "--read-only",
   "--cpus",
-  "2",
+  phase === undefined ? "2" : "4",
   "--memory",
   "2g",
   "--pids-limit",
@@ -95,144 +101,225 @@ const measured = async (name, action) => {
     );
   }
 };
-// Separate read-only containers own their /tmp and caches. Heavy named callbacks
-// remain serial within each container; aggregate admission is two containers.
-const groups = await Promise.allSettled([
-  measured("baseline-regressions-installed-warning", async () => {
-    stage("preserved-native");
-    const baseline = JSON.parse(
-      await run([
-        "node",
-        "scripts/verify-required-native-tests.mjs",
-        "scala",
-        "java",
-      ]),
-    );
-    assert.equal(
-      baseline.required,
-      requirements.scala.length + requirements.java.length,
-    );
-    assert.equal(baseline.complete, true);
-    stage("native-regressions");
-    const regressions = await run([
+const runBaseline = async () => {
+  stage("preserved-native");
+  const baseline = JSON.parse(
+    await run([
       "node",
-      "--test",
-      "--test-concurrency=1",
-      "--test-reporter=tap",
-      "dist/test/scala-extension-regressions.test.js",
-      "dist/test/scala-java-warning-policy.test.js",
-    ]);
-    assert.match(regressions, /# tests 4\n/);
-    assert.match(regressions, /# pass 4\n/);
-    assert.match(regressions, /# fail 0\n/);
-    assert.match(regressions, /# skipped 0\n/);
-    stage("fresh-installed-java-warning-policy");
-    const installedJavaWarningPolicy = JSON.parse(
-      await run([
-        "/bin/sh",
-        "-c",
-        "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache > /tmp/cache.json && node scripts/verify-jvm-java-warning-package.mjs scala",
-      ]),
-    );
-    assert.equal(installedJavaWarningPolicy.acceptance.complete, true);
-    assert.equal(installedJavaWarningPolicy.acceptance.passed, 1);
-
-    return { baseline, regressions, installedJavaWarningPolicy };
-  }),
-  measured("source-installed-compiling-controls", async () => {
-    stage("source-and-fresh-installation");
-    const lines = (
-      await run([
-        "/bin/sh",
-        "-c",
-        "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache && CHECKTRAIL_SCALA_INSTALL_RECEIPT=/tmp/installed-receipt.json node scripts/verify-required-native-tests.mjs scala-extensions && cat /tmp/installed-receipt.json",
-      ])
-    )
-      .trim()
-      .split("\n");
-    assert.equal(lines.length, 3);
-    const preparedCache = JSON.parse(lines[0]),
-      source = JSON.parse(lines[1]),
-      installed = JSON.parse(lines[2]);
-    assert.equal(source.required, 9);
-    assert.equal(source.passed, 9);
-    assert.equal(source.complete, true);
-    assert.equal(installed.profile.required, 9);
-    assert.equal(installed.profile.passed, 9);
-    assert.equal(installed.profile.complete, true);
-    stage("compiling-controls");
-    const guards = JSON.parse(
-      await run([
-        "/bin/sh",
-        "-c",
-        "mkdir /tmp/guards && cp -a dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-scala-extensions-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && ln -s /workspace/assets /tmp/guards/assets && cd /tmp/guards && node scripts/verify-scala-extensions-guards.mjs",
-      ]),
-    );
-    assert.equal(guards.controls.length, 13);
-    assert.equal(guards.allComplete, true);
-    assert.ok(
-      guards.controls.every(
-        (c) =>
-          c.originalPassed &&
-          c.mutantCompiled &&
-          c.mutantFailedAssertion &&
-          c.restoredPassed,
-      ),
-    );
-
-    return { preparedCache, source, installed, guards };
-  }),
-]);
-const failures = groups.filter((group) => group.status === "rejected");
-if (failures.length)
-  throw new AggregateError(
-    failures.map((group) => group.reason),
-    "Required Scala native stages failed",
+      "scripts/verify-required-native-tests.mjs",
+      "scala",
+      "java",
+    ]),
   );
-const { baseline, regressions, installedJavaWarningPolicy } = groups[0].value;
-const { preparedCache, source, installed, guards } = groups[1].value;
-process.stdout.write(
-  JSON.stringify({
-    schemaVersion: 1,
-    stageDurationMs: timings,
-    maxConcurrentContainers: 2,
-    aggregateLimits: {
-      cpus: 4,
-      memoryMiB: 4096,
-      pids: 512,
-      temporaryFilesystemMiB: 2048,
-    },
-    runtime,
-    environment: {
-      image,
-      network: "none",
-      rootFilesystemReadonly: true,
-      sourceMountReadonly: true,
-      preparedCacheReadonly: true,
-      cpus: 2,
-      memoryMiB: 2048,
-      pids: 256,
-      temporaryFilesystemMiB: 1024,
-      temporaryFilesystemExecutable: true,
-    },
-    preparedCache,
-    baseline,
-    source,
-    installed,
-    guards,
-    regressions: {
-      tests: 4,
-      passed: 4,
-      failed: 0,
-      skipped: 0,
-      outputSha256: (await import("node:crypto"))
-        .createHash("sha256")
-        .update(regressions)
-        .digest("hex"),
-    },
-    installedJavaWarningPolicy,
-    complete: true,
-    inferenceInvoked: false,
-    fieldEvaluationExecuted: false,
-  }) + "\n",
-);
+  assert.equal(
+    baseline.required,
+    requirements.scala.length + requirements.java.length,
+  );
+  assert.equal(baseline.complete, true);
+  stage("native-regressions");
+  const regressions = await run([
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "dist/test/scala-extension-regressions.test.js",
+    "dist/test/scala-java-warning-policy.test.js",
+  ]);
+  assert.match(regressions, /# tests 4\n/);
+  assert.match(regressions, /# pass 4\n/);
+  assert.match(regressions, /# fail 0\n/);
+  assert.match(regressions, /# skipped 0\n/);
+  stage("fresh-installed-java-warning-policy");
+  const installedJavaWarningPolicy = JSON.parse(
+    await run([
+      "/bin/sh",
+      "-c",
+      "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache > /tmp/cache.json && node scripts/verify-jvm-java-warning-package.mjs scala",
+    ]),
+  );
+  assert.equal(installedJavaWarningPolicy.acceptance.complete, true);
+  assert.equal(installedJavaWarningPolicy.acceptance.passed, 1);
+
+  return { baseline, regressions, installedJavaWarningPolicy };
+};
+const runLegacySourceAndInstalled = async () => {
+  stage("source-and-fresh-installation");
+  const lines = (
+    await run([
+      "/bin/sh",
+      "-c",
+      "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache && CHECKTRAIL_SCALA_INSTALL_RECEIPT=/tmp/installed-receipt.json node scripts/verify-required-native-tests.mjs scala-extensions && cat /tmp/installed-receipt.json",
+    ])
+  )
+    .trim()
+    .split("\n");
+  assert.equal(lines.length, 3);
+  const preparedCache = JSON.parse(lines[0]),
+    source = JSON.parse(lines[1]),
+    installed = JSON.parse(lines[2]);
+  assert.equal(source.required, 9);
+  assert.equal(source.passed, 9);
+  assert.equal(source.complete, true);
+  assert.equal(installed.profile.required, 9);
+  assert.equal(installed.profile.passed, 9);
+  assert.equal(installed.profile.complete, true);
+  return { preparedCache, source, installed };
+};
+const runGuards = async () => {
+  stage("compiling-controls");
+  const guards = JSON.parse(
+    await run([
+      "/bin/sh",
+      "-c",
+      "mkdir /tmp/guards && cp -a dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-scala-extensions-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && ln -s /workspace/assets /tmp/guards/assets && cd /tmp/guards && node scripts/verify-scala-extensions-guards.mjs",
+    ]),
+  );
+  assert.equal(guards.controls.length, 13);
+  assert.equal(guards.allComplete, true);
+  assert.ok(
+    guards.controls.every(
+      (c) =>
+        c.originalPassed &&
+        c.mutantCompiled &&
+        c.mutantFailedAssertion &&
+        c.restoredPassed,
+    ),
+  );
+
+  return { guards };
+};
+const regressionSummary = (output) => ({
+  tests: 4,
+  passed: 4,
+  failed: 0,
+  skipped: 0,
+  outputSha256: createHash("sha256").update(output).digest("hex"),
+});
+if (phase !== undefined) {
+  const result = await measured(phase, () =>
+    runScalaNativeCiPhase(
+      phase,
+      {
+        baseline: async () => {
+          const result = await runBaseline();
+          return {
+            ...result,
+            regressions: regressionSummary(result.regressions),
+          };
+        },
+        source: async () => {
+          stage("source-native");
+          const source = JSON.parse(
+            await run([
+              "node",
+              "scripts/scala-native-ci-phases.mjs",
+              "--source",
+            ]),
+          );
+          return { source };
+        },
+        installed: async () => {
+          stage("fresh-installed-native");
+          const lines = (
+            await run([
+              "/bin/sh",
+              "-c",
+              "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache && CHECKTRAIL_IMPORT_CONTEXT_PROFILE=scala-extensions node scripts/verify-import-context-package.mjs",
+            ])
+          )
+            .trim()
+            .split("\n");
+          assert.equal(lines.length, 2);
+          return {
+            preparedCache: JSON.parse(lines[0]),
+            installed: JSON.parse(lines[1]),
+          };
+        },
+        guards: runGuards,
+      },
+      requirements,
+    ),
+  );
+  process.stdout.write(
+    JSON.stringify({
+      schemaVersion: 1,
+      stageDurationMs: timings,
+      maxConcurrentContainers: 1,
+      aggregateLimits: {
+        cpus: 4,
+        memoryMiB: 2048,
+        pids: 256,
+        temporaryFilesystemMiB: 1024,
+      },
+      runtime,
+      environment: {
+        image,
+        network: "none",
+        rootFilesystemReadonly: true,
+        sourceMountReadonly: true,
+        preparedCacheReadonly: true,
+        cpus: 4,
+        memoryMiB: 2048,
+        pids: 256,
+        temporaryFilesystemMiB: 1024,
+        temporaryFilesystemExecutable: true,
+      },
+      ...result,
+      inferenceInvoked: false,
+      fieldEvaluationExecuted: false,
+    }) + "\n",
+  );
+} else {
+  // Preserve the original full mode: two isolated groups and every original check.
+  const groups = await Promise.allSettled([
+    measured("baseline-regressions-installed-warning", runBaseline),
+    measured("source-installed-compiling-controls", async () => ({
+      ...(await runLegacySourceAndInstalled()),
+      ...(await runGuards()),
+    })),
+  ]);
+  const failures = groups.filter((group) => group.status === "rejected");
+  if (failures.length)
+    throw new AggregateError(
+      failures.map((group) => group.reason),
+      "Required Scala native stages failed",
+    );
+  const { baseline, regressions, installedJavaWarningPolicy } = groups[0].value;
+  const { preparedCache, source, installed, guards } = groups[1].value;
+  process.stdout.write(
+    JSON.stringify({
+      schemaVersion: 1,
+      stageDurationMs: timings,
+      maxConcurrentContainers: 2,
+      aggregateLimits: {
+        cpus: 4,
+        memoryMiB: 4096,
+        pids: 512,
+        temporaryFilesystemMiB: 2048,
+      },
+      runtime,
+      environment: {
+        image,
+        network: "none",
+        rootFilesystemReadonly: true,
+        sourceMountReadonly: true,
+        preparedCacheReadonly: true,
+        cpus: 2,
+        memoryMiB: 2048,
+        pids: 256,
+        temporaryFilesystemMiB: 1024,
+        temporaryFilesystemExecutable: true,
+      },
+      preparedCache,
+      baseline,
+      source,
+      installed,
+      guards,
+      regressions: regressionSummary(regressions),
+      installedJavaWarningPolicy,
+      complete: true,
+      inferenceInvoked: false,
+      fieldEvaluationExecuted: false,
+    }) + "\n",
+  );
+}

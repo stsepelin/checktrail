@@ -4024,3 +4024,19 @@ test("CI observer helper consumers retain its complete two-callback regression w
     rows.map((row) => row.name),
   );
 });
+
+test("Scala extension phase inputs select their complete routing controls without widening the legacy Scala job", () => {
+  for (const file of [
+    "scripts/scala-native-ci-phases.mjs",
+    "test/scala-native-ci-phases.test.ts",
+  ]) {
+    const actual = plan([file]);
+    assert.equal(actual.mode, "affected");
+    assert.deepEqual(selected(actual), ["scala-extensions-arm64"]);
+    assert.ok(
+      actual.sharedTestFiles.includes(
+        "dist/test/scala-native-ci-phases.test.js",
+      ),
+    );
+  }
+});

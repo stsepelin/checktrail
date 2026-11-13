@@ -884,6 +884,29 @@ agreement. `verify-review-claim-probability-package.mjs` repeats the same callba
 from a fresh offline production installation. No external model calls or field
 reviews are part of this development profile.
 
+## Scala extension phase jobs
+
+The ARM64 Scala extension job requires four matrix phases: `baseline`, `source`,
+`installed` and `guards`. Matrix failure does not cancel the other phases, and
+completion still requires the whole matrix to succeed. The baseline phase also
+retains the separate Scala signature source and fresh installed proof.
+
+The source phase runs every original source callback except the wrapper that
+launches installed acceptance. The installed phase invokes that same complete
+fresh-package harness directly: offline installation, an external harness, every
+original installed callback and the installed engine address check remain
+required. This avoids enclosing packaging and the repeated native cohort inside
+the source wrapper's shorter subprocess timer. It does not reuse source results
+as installed results.
+
+An explicit phase admits at most one container at a time, with four CPUs and the
+existing read-only filesystem, disabled network, memory, PID and temporary-file
+bounds. Sequential checks retain fresh containers. Every container invocation
+keeps its bounded runtime. Phase reports cannot claim whole-profile completion;
+GitHub's required four-row matrix provides the fan-in. The argument-free local
+controller retains its existing complete two-group behavior. Hosted durations
+must be measured at the tested revision before claiming a speedup.
+
 ## Full-suite worker capacity
 
 `npm test` builds the project and runs every compiled `dist/test/*.test.js` file through `scripts/run-test-suite.mjs`. The worker pool is bounded by the smaller of four workers and the runtime's available parallelism. It stays parallel and does not select, omit, retry or weaken test callbacks. An empty compiled inventory, a worker failure or a terminated test run cannot pass.
