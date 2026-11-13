@@ -83,6 +83,10 @@ import {
 import { resolvePythonBindings } from "./review-python-resolution.js";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { isDeepStrictEqual } from "node:util";
+import { contextRuntimeInstallationProof } from "./context-runtime-installation.js";
+import { readContextRuntimeProofInput } from "./context-runtime-proof.js";
 import { performance } from "node:perf_hooks";
 import type { Parser, Language, Node, Tree } from "web-tree-sitter";
 import { collectReviewBehavior } from "./review-behavior.js";
@@ -104,12 +108,24 @@ const bytesHash = (bytes: Uint8Array) =>
 const languages = new Map<string, Promise<Language>>();
 let initialization: Promise<typeof import("web-tree-sitter")> | undefined;
 async function runtime() {
+  const qualification = contextRuntimeInstallationProof();
   initialization ??= (async () => {
     const moduleURL = import.meta.resolve("web-tree-sitter");
-    const code = await readFile(new URL(moduleURL));
-    const wasm = await readFile(
-      new URL(import.meta.resolve("web-tree-sitter/web-tree-sitter.wasm")),
+    const code = qualification
+      ? readContextRuntimeProofInput(
+          fileURLToPath(moduleURL),
+          grammarRuntimeAssets["web-tree-sitter.js"].bytes,
+        )
+      : await readFile(new URL(moduleURL));
+    const wasmURL = new URL(
+      import.meta.resolve("web-tree-sitter/web-tree-sitter.wasm"),
     );
+    const wasm = qualification
+      ? readContextRuntimeProofInput(
+          fileURLToPath(wasmURL),
+          grammarRuntimeAssets["web-tree-sitter.wasm"].bytes,
+        )
+      : await readFile(wasmURL);
     for (const [bytes, expected] of [
       [code, grammarRuntimeAssets["web-tree-sitter.js"]],
       [wasm, grammarRuntimeAssets["web-tree-sitter.wasm"]],
@@ -122,6 +138,10 @@ async function runtime() {
     }
     const module = await import("web-tree-sitter");
     await module.Parser.init({ wasmBinary: wasm });
+    if (!isDeepStrictEqual(contextRuntimeInstallationProof(), qualification))
+      throw new Error(
+        "Context runtime qualification changed during initialization",
+      );
     return module;
   })();
   return initialization;
@@ -258,21 +278,24 @@ import { selectedGrammar } from "./review-grammar-profile.js";
 async function language(
   grammar: NonNullable<ReturnType<typeof selectedGrammar>>,
 ) {
+  // Recheck physical bytes even when a previously loaded Language is cached.
+  const qualification = contextRuntimeInstallationProof([grammar.grammar]);
   let loaded = languages.get(grammar.grammar);
   if (!loaded) {
     loaded = (async () => {
       const { Language } = await runtime();
-      const bytes = await readFile(
-        new URL(
-          "../../assets/" +
-            (grammar.grammar === "vbnet"
-              ? "context-vb-grammar"
-              : "context-grammars") +
-            "/" +
-            grammar.file,
-          import.meta.url,
-        ),
+      const assetURL = new URL(
+        "../../assets/" +
+          (grammar.grammar === "vbnet"
+            ? "context-vb-grammar"
+            : "context-grammars") +
+          "/" +
+          grammar.file,
+        import.meta.url,
       );
+      const bytes = qualification
+        ? readContextRuntimeProofInput(fileURLToPath(assetURL), grammar.bytes)
+        : await readFile(assetURL);
       if (bytes.length !== grammar.bytes || bytesHash(bytes) !== grammar.sha256)
         throw new Error("Grammar asset identity differs");
       return Language.load(bytes);
@@ -436,6 +459,7 @@ async function collectReviewPolyglotCore(
   hclRoots?: string[],
   yamlRoots?: string[],
 ): Promise<ReviewBehavior> {
+  const runtimeArtifactProof = contextRuntimeInstallationProof();
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
     profile: "selected-syntax-v1",
@@ -443,6 +467,7 @@ async function collectReviewPolyglotCore(
     parserVersion: "6.0.3/0.27.1",
     grammarManifestDigest,
     grammarBindings: [],
+    ...(runtimeArtifactProof ? { runtimeArtifactProof } : {}),
     decisions: [],
   });
   const changes = diff
@@ -900,6 +925,15 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (
+    !isDeepStrictEqual(
+      contextRuntimeInstallationProof(
+        result.grammarBindings.map((binding) => binding.grammar),
+      ),
+      runtimeArtifactProof,
+    )
+  )
+    throw new Error("Context runtime qualification changed during collection");
   if (yamlRoots)
     return resolveYamlBindings(result, yamlUnits, yamlRoots, primary, [
       ...base,

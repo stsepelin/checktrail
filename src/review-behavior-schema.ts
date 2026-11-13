@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { contextRuntimeProofReferenceSchema } from "./context-runtime-proof.js";
 
 const id = z.string().regex(/^[a-f0-9]{64}$/);
 const offset = z.number().int().nonnegative().max(65536);
@@ -142,6 +143,7 @@ export const reviewPolyglotBehaviorSchema =
     parser: z.literal("typescript-and-tree-sitter-wasm"),
     parserVersion: z.literal("6.0.3/0.27.1"),
     grammarManifestDigest: id,
+    runtimeArtifactProof: contextRuntimeProofReferenceSchema.optional(),
     grammarBindings: z
       .array(
         z.strictObject({
@@ -689,7 +691,9 @@ export const reviewSwiftBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
 export const reviewVbBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
   profile: z.literal("vb-selected-bindings-v1"),
   vbGrammarManifestDigest: id,
-  grammarBindings: reviewPolyglotBehaviorSchema.shape.grammarBindings.max(17),
+  grammarBindings: z
+    .array(reviewPolyglotBehaviorSchema.shape.grammarBindings.element)
+    .max(17),
   vbBindings: z.strictObject({
     moduleRoots: z.array(z.string().min(1).max(1024)).min(1).max(16),
     scope: z.literal("selected-captured-vb-source"),

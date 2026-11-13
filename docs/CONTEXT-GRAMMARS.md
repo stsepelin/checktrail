@@ -90,6 +90,47 @@ notices match the retained bytes. This is a runtime update; the existing grammar
 binaries and their historical build records are unchanged. Full producer-build
 closure for the new runtime remains a separate, open Gate A obligation.
 
+## Operator-selected runtime release proof
+
+Explicit preparation can run the pinned native GitHub attestation verifier against
+the selected `web-tree-sitter@0.27.1` release archive, retained bundle and trust
+roots. `scripts/prepare-context-runtime-proof.mjs` requires absolute operator paths
+for the archive, original verification, trusted root, native `gh` executable and
+output. It checks the exact release subject, certificate workflow identity, source
+commit/ref, issuer, predicate and hosted-runner policy. Discovery, planning and
+context collection do not invoke that verifier or download its inputs.
+
+Preparation publishes a complete read-only cohort before returning its proof
+path and SHA-256. Set `CHECKTRAIL_CONTEXT_RELEASE_PROOF` to that absolute
+`proof.json` path followed by `#sha256=` and its lowercase SHA-256 before starting
+the application. The proof module captures this selection when it first loads;
+later environment edits and MCP arguments cannot grant authority. An absent or
+empty selection retains the legacy context contract. A malformed nonempty
+selection fails admission.
+
+Qualified contexts include a bounded `runtimeArtifactProof` reference without
+the private proof path. The shared engine rechecks the physical cohort, packaged
+manifests, runtime JavaScript/WASM, separately bound runtime license and selected
+grammars. Cached language objects still require the selected grammar's physical
+bytes before parsing. Context intake and the actual final receipt independently
+apply the same authority and physical-asset checks, including coherently rehashed
+input. CLI/MCP summaries continue to withhold source and the proof path; source
+disclosure requires the existing operator startup grant.
+
+The signed release archive contains the selected runtime JavaScript and WASM;
+it does **not** contain the separately bound `LICENSE`. The proof therefore does
+not claim signed license membership, grammar signatures, complete notices,
+current owner status or full upstream producer-build closure. The qualification
+does not close Gate A or enable model calls and review trials.
+
+`scripts/verify-context-runtime-proof-package.mjs` exercises every exported parser
+collector and public language context through final receipt admission, the mixed
+Visual Basic grammar boundary, actual warm-cache rejection, CLI/MCP disclosure and
+startup authority through source
+and a fresh locked offline production installation. The synthetic receipt declares
+its files unreviewed. These controls validate the transport and admission paths;
+they do not perform an AI or field review.
+
 ## Acceptance and remaining work
 
 The required `selected-syntax-context` component profile exercises original text

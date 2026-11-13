@@ -2276,6 +2276,30 @@ jobs:
         run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=context-python node scripts/verify-import-context-package.mjs
       - name: Verify installed selected Go bindings
         run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=context-go node scripts/verify-import-context-package.mjs
+      - name: Require scoped context runtime proof with the pinned native verifier
+        run: |
+          mkdir "$RUNNER_TEMP/checktrail-context-runtime-proof"
+          cp docs/measurements/artifact-identities-2026-10-21/sigstore-trusted-root.jsonl "$RUNNER_TEMP/checktrail-context-runtime-proof/sigstore-trusted-root.jsonl"
+          cp docs/measurements/context-runtime-0.27.1-2026-10-30/attestation-verified.json "$RUNNER_TEMP/checktrail-context-runtime-proof/attestation-verified.json"
+          node scripts/prepare-context-runtime-proof-ci.mjs "$RUNNER_TEMP/checktrail-context-runtime-proof"
+        env:
+          TZ: UTC
+          NODE_OPTIONS: --max-old-space-size=1536
+      - name: Retain scoped context runtime proof receipts and original notice
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: context-runtime-proof-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/checktrail-context-runtime-proof/PREPARATION.v1.json
+            ${{ runner.temp }}/checktrail-context-runtime-proof/RESULT.v1.json
+            ${{ runner.temp }}/checktrail-context-runtime-proof/*.log
+            ${{ runner.temp }}/checktrail-context-runtime-proof/proofs/
+            ${{ runner.temp }}/checktrail-context-runtime-proof/native29/
+            ${{ runner.temp }}/checktrail-context-runtime-proof/github-cli/LICENSE
+            ${{ runner.temp }}/checktrail-context-runtime-proof/inputs/gh_2.102.1_checksums.txt
+          if-no-files-found: warn
+          retention-days: 1
       - name: Retain exact runtime identity
         if: always()
         run: |

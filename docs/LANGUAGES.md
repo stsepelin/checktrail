@@ -457,6 +457,13 @@ verified findings. Its legacy profile does not parse Visual Basic; version 19 ad
 the separate opt-in profile below. Broader node forms, complete build-tool
 provenance and full runtime acceptance remain required.
 
+The optional [operator-selected runtime release proof](CONTEXT-GRAMMARS.md#operator-selected-runtime-release-proof)
+binds qualified captured syntax to an explicitly prepared attestation and physical
+runtime/grammar bytes through context intake and final receipt admission. Source
+and fresh offline installed controls include the mixed Visual Basic grammar
+boundary. This scoped runtime proof leaves grammar signatures, full upstream
+build and notice closure, final runtime acceptance and Gate A open.
+
 The bounded [inventoried Go workspace profile](GO-WORKSPACES.md) adds captured
 member/local replacement manifests and native main-module reconciliation while
 preserving build-tag and target controls. It does not complete broader platform
