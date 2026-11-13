@@ -123,7 +123,10 @@ export function requireGeneratorRun(run, ci) {
   assert.equal(run.run_attempt, ci.runAttempt, "Workflow attempt changed");
   assert.equal(run.event, ci.event);
   assert.equal(run.path, ".github/workflows/ci.yml");
-  assert.ok(["in_progress", "completed"].includes(run.status));
+  // The aggregate can remain queued while this exact job is already running.
+  // This validates workflow identity, not execution success: START checks the
+  // active check run; reconciliation requires each producer's terminal success.
+  assert.ok(["queued", "in_progress", "completed"].includes(run.status));
   return run;
 }
 export function createGeneratorMetadataRequest({
