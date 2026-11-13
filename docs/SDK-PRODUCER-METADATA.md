@@ -49,6 +49,26 @@ root tree does not declare it; absence leaves root URL bindings unverified.
 Synthetic tests cover the parser and collector. Actual selected metadata replay
 and broader Gate A acceptance remain separate obligations.
 
+A separate passive nested-binding checker accepts the original admitted
+`.gitmodules` bytes, the expected root tree identity and bounded raw child-tree
+responses. It recomputes every Git tree and joins each child to its exact admitted
+parent directory entry before reading a final Gitlink commit. Supplied responses
+must be proper ancestors of declared modules; duplicate, disconnected, foreign or
+mismatched trees fail qualification. Missing unsupplied trees retain explicit
+unverified declarations and their expected next tree identity. A known parent
+with an absent or wrong-type final entry is a mismatch.
+
+The sibling
+[Binaryen submodule metadata catalog](../scripts/producer-qualification/emsdk-binaryen-submodule-metadata.v1.json)
+selects only `third_party`, `test` and `test/spec` at the same fixed source commit.
+It preserves the original catalog as a separate prerequisite; it does not expand
+that catalog's request roles. Operator review remains required before acquiring
+these additional metadata responses. Tree-byte digests, parent identities and
+final commit associations are retained separately. URL bindings are complete
+only for a nonempty declaration set with every association verified. Submodule
+source bodies, original notices, raw commit authentication and producer-build
+closure remain unqualified.
+
 When an explicit local archive input is supplied, the reader checks the original
 compressed archive size and SHA-256 before reading selected Emscripten metadata.
 It validates tar checksums, paths, types, PAX overrides, member counts, inflated

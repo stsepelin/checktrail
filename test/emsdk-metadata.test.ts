@@ -11,3 +11,11 @@ await import(
     ),
   ).href
 );
+await import(
+  pathToFileURL(
+    path.join(
+      repository,
+      "scripts/producer-qualification/emsdk-metadata-nested.test.mjs",
+    ),
+  ).href
+);
