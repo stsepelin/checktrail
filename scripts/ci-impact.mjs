@@ -22,6 +22,7 @@ const retainedArtifactDirectory =
 // Derive their native consumers from the exact declared inputs; do not
 // classify neighboring test names or create entries for absent files.
 const preparationRegressionSources = Object.freeze({
+  "test/scala-native-ci-phases.test.ts": ["scripts/scala-native-ci-phases.mjs"],
   "test/native-process-observer.test.ts": Object.freeze([
     "test/native-process-observer.ts",
   ]),

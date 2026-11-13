@@ -21,7 +21,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4c03468636175439f444240334967f449550595f"
+      "hash": "178ffb7ec42ef680b40ed2ca67b68f9672dd09cd"
     },
     {
       "path": ".github/workflows/upstream-binutils.yml",
@@ -1043,7 +1043,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "bc4093f6b4298be48034a6a1ad0776dd1b678931"
+      "hash": "7913d9565d6199cc085f6fbdac9dbeb5e5e2d1ef"
     },
     {
       "path": "docs/NATIVE-JSON-PROBES.md",
@@ -8316,14 +8316,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "c9ab47acaec1b2acb476676a82e41b7fc7b9404e"
+      "hash": "086e306895f575b8623f595fc7e26e8f5eef0cf5"
     },
     {
       "path": "scripts/ci-native-inputs.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "7dc7719dfa894d301961bcd980bb9b50c04d50e3"
+      "hash": "662b3adb147bd6617dddfc56a06dd4df2fee4784"
     },
     {
       "path": "scripts/ci-source-boundaries.json",
@@ -10594,6 +10594,13 @@
       "hash": "e03f58b21f9b55d3b6a9f4c7bdd3cbeb7b863cc0"
     },
     {
+      "path": "scripts/scala-native-ci-phases.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "ea17d8e21236c9e68f8dece2e0bdbf20189c2cf1"
+    },
+    {
       "path": "scripts/scala-tools.Dockerfile",
       "mode": "100644",
       "type": "blob",
@@ -12131,7 +12138,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "3aca83260adaa0ed4cd6faea0aa18f95a844b8c4"
+      "hash": "0ad82393638c7cf19cf7070722b774198e262d05"
     },
     {
       "path": "scripts/verify-scala-extensions-guards.mjs",
@@ -16282,7 +16289,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a0a8ed05f895c40b880856255b36decd5e8d52b5"
+      "hash": "bced6e102b6743359ec795991b6b319d1f15d415"
     },
     {
       "path": "test/ci-native-profiles.test.ts",
@@ -20037,6 +20044,13 @@
       "hash": "483c53fc9befa4818bfa7a3db1d5a98f44756b5e"
     },
     {
+      "path": "test/scala-native-ci-phases.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "10051cb5c9c69a06c305f74c67837e533f31d04e"
+    },
+    {
       "path": "test/scala-surfaces.test.ts",
       "mode": "100644",
       "type": "blob",
@@ -20069,7 +20083,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "bf1e5ed7aecab6fda9f94c542e739ce873bf13b8"
+      "hash": "8fb8fcd7bc4058bb5f82b1fdfa72dfa0ecdff88c"
     },
     {
       "path": "test/schemas.test.ts",
