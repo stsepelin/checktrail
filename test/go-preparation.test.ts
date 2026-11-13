@@ -219,6 +219,7 @@ test("all Go analyzer workflow setup sites call the same preparation helper and 
   }
   assert.deepEqual(owners.sort(), [
     "checks",
+    "full-suite-shards",
     "go-workspaces-arm64",
     "host-validation",
   ]);
