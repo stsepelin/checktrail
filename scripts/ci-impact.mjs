@@ -71,7 +71,7 @@ export const cProducerSharedBoundary = Object.freeze({
   // Names only: editing a reviewed member does not invalidate its fast path.
   // A new helper, fixture, test or workflow needs an explicit inventory review.
   inventorySha256:
-    "2696ee116141f8d0cdf7d3c4e710ba882a597a5848b9091390e7981b1ddc61b3",
+    "164b14c06d4b808baed7e36e2f31c7a3be67476ef21295a9bb9ef34b01afdd98",
   files: Object.freeze([
     "scripts/acquire-binutils-inputs.mjs",
     "scripts/acquire-c-producer-inputs.mjs",
