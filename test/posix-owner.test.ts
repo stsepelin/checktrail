@@ -225,7 +225,10 @@ test(
     }
   },
 );
-async function copiedRuntime(t: TestContext) {
+async function copiedRuntime(
+  t: TestContext,
+  prepare?: (root: string) => Promise<void>,
+) {
   const root = await realpath(
     await fixture(t, { "package.json": '{"type":"module"}' }),
   );
@@ -239,12 +242,139 @@ async function copiedRuntime(t: TestContext) {
     path.join(root, "node_modules"),
     "dir",
   );
+  await prepare?.(root);
   return {
     root,
     run: (await import(
       pathToFileURL(path.join(root, "src/runner.js")).href
     )) as typeof import("../src/runner.js"),
   };
+}
+async function terminalOwnerObservations(t: TestContext) {
+  const cp = await import("node:child_process"),
+    { syncBuiltinESMExports } = await import("node:module");
+  for (const mode of [
+    "terminal-original-group",
+    "terminal-cleared-group",
+    "running-changed-group",
+    "reused-start-identity",
+  ] as const) {
+    const d = await copiedRuntime(t, async (root) => {
+      const file = path.join(root, "src/process-tree.js"),
+        original = await readFile(file, "utf8"),
+        declaration = "export async function processSnapshot(";
+      assert.equal(original.split(declaration).length, 2);
+      await writeFile(
+        file,
+        original.replace(declaration, "async function nativeProcessSnapshot(") +
+          "\nlet snapshotObserver;export function observeSnapshot(value){snapshotObserver=value;}export async function processSnapshot(...args){return snapshotObserver?snapshotObserver(nativeProcessSnapshot,args):nativeProcessSnapshot(...args);}\n",
+      );
+    });
+    const tree = (await import(
+      pathToFileURL(path.join(d.root, "src/process-tree.js")).href
+    )) as typeof import("../src/process-tree.js") & {
+      observeSnapshot(
+        value?: (
+          native: typeof processSnapshot,
+          args: Parameters<typeof processSnapshot>,
+        ) => ReturnType<typeof processSnapshot>,
+      ): void;
+    };
+    await writeFile(
+      path.join(d.root, "src/posix-owner-keeper.js"),
+      `import{processSnapshot}from'./process-tree.js';import{createHash}from'node:crypto';const nonce=process.argv[2],identity=(await processSnapshot(process.pid)).find(p=>p.pid===process.pid);process.once('message',request=>{const raw=Buffer.from('x'),digest=b=>createHash('sha256').update(b).digest('hex'),blob=b=>({base64:b.toString('base64'),bytes:b.length,sha256:digest(b)});process.send({kind:'result',nonce,result:{command:request.command,exitCode:0,signal:null,stdout:'z',stderr:'',durationMs:1,timedOut:false,cancelled:false,truncated:false,outputBytes:1,capturedOutput:{profile:'bounded-physical-process-output-v1',stdout:blob(raw),stderr:blob(Buffer.alloc(0)),observedBytes:1,completeForObservedStreams:true}}},()=>process.disconnect());});process.send({kind:'ready',nonce,identity});`,
+    );
+    const originalFork = cp.default.fork;
+    let owner: ReturnType<typeof originalFork> | undefined,
+      exited: Promise<void> | undefined,
+      identity: ProcessIdentity | undefined,
+      injected = 0;
+    const fork = t.mock.method(
+      cp.default,
+      "fork",
+      (...args: Parameters<typeof originalFork>) => {
+        const child = Reflect.apply(
+          originalFork,
+          cp.default,
+          args,
+        ) as ReturnType<typeof originalFork>;
+        owner = child;
+        exited = new Promise<void>((resolve) =>
+          child.once("exit", () => resolve()),
+        );
+        child.on("message", (message) => {
+          const row = message as { kind?: string; identity?: ProcessIdentity };
+          if (row.kind === "ready") identity = row.identity;
+        });
+        return child;
+      },
+    );
+    syncBuiltinESMExports();
+    tree.observeSnapshot(async (native, args) => {
+      const rows = await native(...args);
+      if (args[0] !== undefined || injected || !identity) return rows;
+      injected++;
+      // A snapshot may hold the kernel's final task row after waitpid reaps it.
+      // Await the real owner exit: this control never labels a live owner dead.
+      await exited;
+      const held: ProcessIdentity = { ...identity, state: "exited" };
+      if (mode !== "terminal-original-group") {
+        held.parent = 0;
+        held.group = -1;
+      }
+      if (mode === "running-changed-group") {
+        held.state = "running";
+        held.parent = identity.parent;
+        held.group = identity.group + 1;
+      }
+      if (mode === "reused-start-identity") held.identity += "-reused";
+      return [...rows.filter((row) => row.pid !== held.pid), held];
+    });
+    const mark = path.join(d.root, "never-executed");
+    try {
+      const result = await d.run.runProcess(
+        d.root,
+        {
+          executable: process.execPath,
+          args: [
+            "-e",
+            `require('node:fs').writeFileSync(${JSON.stringify(mark)},'unreachable')`,
+          ],
+          cwd: ".",
+        },
+        { timeoutMs: 10000, captureRawOutput: true },
+      );
+      assert.equal(
+        injected,
+        1,
+        "The terminal owner observation must arm the cleanup identity guard",
+      );
+      assert.ok(owner && identity && exited);
+      assert.equal(
+        owner.exitCode,
+        0,
+        "The malformed real owner exited naturally and was reaped",
+      );
+      assert.equal(result.exitCode, null);
+      assert.equal(result.timedOut, false);
+      assert.equal(result.cancelled, false);
+      assert.equal(
+        result.errorCode,
+        mode.startsWith("terminal-")
+          ? "POSIX_OWNER_PROTOCOL_INVALID"
+          : "PROCESS_TREE_CLEANUP_UNAVAILABLE",
+        "Original terminal owner observation: " + mode,
+      );
+      await assert.rejects(access(mark), { code: "ENOENT" });
+    } finally {
+      tree.observeSnapshot();
+      fork.mock.restore();
+      syncBuiltinESMExports();
+      if (owner && owner.exitCode === null && owner.signalCode === null)
+        owner.kill("SIGKILL");
+      await exited;
+    }
+  }
 }
 test(
   "native POSIX absent and malformed private owners remain unavailable before project execution",
@@ -316,6 +446,7 @@ test(
       );
       await assert.rejects(access(mark), { code: "ENOENT" });
     }
+    await terminalOwnerObservations(t);
   },
 );
 

@@ -1,3 +1,4 @@
+import { randomReleaseProofSummarySchema } from "./terraform-release-signature.js";
 import { z } from "zod";
 const file = z.string().min(1).max(8192),
   digest = z.string().regex(/^[a-f0-9]{64}$/),
@@ -23,6 +24,7 @@ export const terraformExtensionsPacketSchema = z.strictObject({
   data: file,
   mirror: file,
   preparedProvider: file,
+  releaseSignatureProof: randomReleaseProofSummarySchema.optional(),
   inputSha256: digest,
   tool: z.strictObject({
     entry: file,
@@ -31,7 +33,7 @@ export const terraformExtensionsPacketSchema = z.strictObject({
     sha256: digest,
     afterSha256: digest,
   }),
-  artifacts: z.array(pin).length(4),
+  artifacts: z.array(pin).min(4).max(5),
   providerMembers: z.array(pin).length(2),
   modules: z.strictObject({ file, text, sha256: digest, afterSha256: digest }),
   lock: z.strictObject({ file, sha256: digest, afterSha256: digest }),

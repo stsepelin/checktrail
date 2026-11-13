@@ -36,6 +36,50 @@ retain the existing 64 KiB bound. Dependencies require explicit local SHA-256
 pins, no source entries and no implicit manifest classpath. No tool is downloaded
 by planning or validation.
 
+### Optional selected-JAR signature evidence
+
+The explicit preparer can verify the detached signatures for the selected
+compiler, library and reflect JARs:
+
+```sh
+node scripts/prepare-scala2-tools.mjs --verify-release-signatures /absolute/original-signature-inputs
+```
+
+The input directory supplies the literal public key and three `.asc` files named
+by the [recorded release identities](measurements/artifact-identities-2026-10-21/scala2.json).
+The preparer checks their complete byte identities, uses native GnuPG with a fresh
+private keyring and no key retrieval, and publishes a complete archive/proof cohort
+under `.checktrail/scala-signed-tools/<proof SHA-256>`. Existing unverified and
+qualified caches are preserved. A failed verification cannot publish a qualified
+cohort; an existing destination must match its actual physical bytes.
+
+Copy the entire published two-file directory into the project's local tool cache,
+retain its digest directory name, and select that directory's archive in
+`checktrail.scala.json`. Set `CHECKTRAIL_SCALA2_RELEASE_PROOF_SHA256` to the
+reported proof digest in the operator environment before starting the CLI or MCP
+server. No project configuration or MCP argument can enable this mode. The shared
+engine captures the selected digest in the planned command; later environment
+changes cannot replace its authority during final admission.
+
+Planning reads bounded data only. Execution checks the archive, complete selected
+library membership and proof before use and after native compilation. Final
+admission independently rereads the physical cohort and checks the captured
+operator pin. A proof-bearing cache without that pin, a nonempty malformed pin,
+a mismatched proof, or a missing/extra cohort member refuses qualification rather
+than silently selecting the old mode. The original archive-only mode remains
+explicitly unverified.
+
+This is operator-pinned evidence of native preparation. Runtime admission does
+not rerun OpenPGP cryptography and the JSON transcript cannot authenticate itself;
+the operator's externally selected digest supplies its authority. The
+[GnuPG verifier manual](https://www.gnupg.org/documentation/manuals/gnupg/gpgv.html)
+explains that supplied keys are treated as trusted and key expiry/revocation is
+not checked. The proof records verification against the pinned key snapshot. The signed JAR
+subset is distinct from the complete selected library cohort. The ZIP, JLine and
+java-diff-utils do not gain signature coverage from it. Key-owner trust, current
+revocation, upstream compiler/build ancestry and complete notice closure remain
+separate. Native acceptance of this new end-to-end mode is pending.
+
 ## Ordered Scala 3 compilation
 
 Keep the baseline Scala 3 archive, digest, target and warning policy described in

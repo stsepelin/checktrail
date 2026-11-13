@@ -68,6 +68,61 @@ async function reindex(root: string, name: string) {
   entry.sha256 = digest(bytes);
   await saveIndex(root, value);
 }
+test("artifact source reconciliation preserves historical preparation bindings and refuses changed current bytes", async (t) => {
+  for (const [name, preparation, historicalSha256] of [
+    [
+      "scala2.json",
+      "scripts/prepare-scala2-tools.mjs",
+      "7b1f92376c66ca3366115f636b324e3e7ddf4fd0248fbf1a2a3fe341175572b4",
+    ],
+    [
+      "random-provider.json",
+      "scripts/prepare-terraform-extensions-runtime.mjs",
+      "cb5e4e9b28692a4e05020215716959cdc3a745141445e43d7e6bed61fc148eaf",
+    ],
+  ]) {
+    const root = await source(t);
+    const record = JSON.parse(
+      await readFile(path.join(root, directory, name!), "utf8"),
+    );
+    assert.equal(
+      record.historicalRepositoryBinding.repositoryCommit,
+      "fcf1344ad43b586e9504ade1587f33d3d24575df",
+    );
+    assert.equal(
+      record.historicalRepositoryBinding.repositoryInputs.find(
+        (input: { file: string }) => input.file === preparation,
+      ).sha256,
+      historicalSha256,
+    );
+    assert.equal(
+      record.currentRepositoryBinding.bindingKind,
+      "working-tree-bytes",
+    );
+    assert.equal(Object.hasOwn(record, "repositoryCommit"), false);
+    const current = await readFile(path.join(root, preparation!));
+    assert.notEqual(digest(current), historicalSha256);
+    assert.equal(
+      record.repositoryInputs.find(
+        (input: { file: string }) => input.file === preparation,
+      ).sha256,
+      digest(current),
+    );
+    const valid = await audit(root);
+    assert.equal(valid.code, 0, valid.stderr);
+    await writeFile(
+      path.join(root, preparation!),
+      Buffer.concat([
+        current,
+        Buffer.from("\n// changed current preparation bytes\n"),
+      ]),
+    );
+    const changed = await audit(root);
+    assert.equal(changed.code, 2);
+    assert.match(changed.stderr, /Evidence byte count mismatch/);
+    assert.ok(changed.stderr.includes(preparation!));
+  }
+});
 test("artifact audit binds the retained byte and source graph without certifying native acceptance", async (t) => {
   const root = await source(t);
   await writeFile(

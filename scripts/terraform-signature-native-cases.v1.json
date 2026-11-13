@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "file": "dist/test/terraform-release-signature-native.test.js",
+  "requiredCaseNames": [
+    "Random signed native collector and final admission independently bind the externally selected proof and both payload members",
+    "Random signed native CLI and MCP preserve actual mixed diagnostics and operator-only proof authority",
+    "Random legacy native mode stays explicitly unverified and captured blank overrides a request proof"
+  ]
+}

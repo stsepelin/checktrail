@@ -1064,6 +1064,50 @@ test("CI native input traversal retains exact documentation data consumers", asy
     result.sharedTestFiles.includes("dist/test/artifact-evidence.test.js"),
   );
 });
+test("CI operational release signature inputs select their exact native consumer and the complete artifact audit", () => {
+  const directory = "docs/measurements/artifact-identities-2026-10-21/";
+  const families = [
+    {
+      job: "scala-extensions-arm64",
+      record: "scala2.json",
+      files: [
+        "scala-public-key.asc",
+        "scala-compiler-2.13.18.jar.asc",
+        "scala-library-2.13.18.jar.asc",
+        "scala-reflect-2.13.18.jar.asc",
+      ],
+    },
+    {
+      job: "terraform-extensions-arm64",
+      record: "random-provider.json",
+      files: [
+        "provider-public-key.asc",
+        "provider-SHA256SUMS.txt",
+        "provider-SHA256SUMS.sig",
+      ],
+    },
+  ];
+  let checked = 0;
+  for (const family of families) {
+    for (const name of family.files) {
+      const file = directory + name;
+      assert.deepEqual(inputs[file], [family.job], file);
+      const result = plan([
+        file,
+        directory + family.record,
+        directory + "artifact-evidence-index.v1.json",
+      ]);
+      assert.equal(result.mode, "affected", file);
+      assert.deepEqual(selected(result), [family.job], file);
+      assert.ok(
+        result.sharedTestFiles.includes("dist/test/artifact-evidence.test.js"),
+        file,
+      );
+      checked++;
+    }
+  }
+  assert.equal(checked, 7);
+});
 test("CI retained artifact data requires whole shared audits without unrelated native stacks and preserves native consumers", () => {
   const directory = "docs/measurements/artifact-identities-2026-10-21/";
   const artifactFile = "dist/test/artifact-evidence.test.js";
@@ -1253,15 +1297,20 @@ test("CI completion YAML policy admits failed dependencies and skips a canceled 
     "Reaching the aggregate after a dependency failure still refuses completion",
   );
 });
-test("CI managed pull-request branch prefixes avoid duplicate push workflows while tags retain verification", () => {
+test("CI managed pull-request branches avoid duplicate push workflows while tags retain verification", () => {
   assert.deepEqual(workflow.on.push["branches-ignore"], [
     "pr/**",
     "agent/**",
     "dependabot/**",
     "fix/**",
+    "feat/scoped-release-signatures",
   ]);
   assert.deepEqual(workflow.on.push.tags, ["**"]);
   assert.ok(Object.hasOwn(workflow.on, "pull_request"));
+  assert.ok(Object.hasOwn(workflow.on, "workflow_dispatch"));
+  assert.ok(
+    Array.isArray(workflow.on.schedule) && workflow.on.schedule.length > 0,
+  );
 });
 
 test("CI initial wave stays within the free runner ceiling and native fanout requires successful planning", () => {

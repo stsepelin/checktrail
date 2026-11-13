@@ -153,11 +153,18 @@ export async function runSupervisedPosixProcess(
           const current = (await processSnapshot()).find(
             (row) => row.pid === child.pid,
           );
+          // Linux may clear parent/group in the final task stat while retaining
+          // its start identity. This is exited state, never proof of a live owner
+          // or reaping; keep the full descendant cleanup and exit wait below.
+          const exitedWithoutGroup =
+            current?.state === "exited" &&
+            current.parent === 0 &&
+            current.group === -1;
           if (
             current &&
             identity &&
             (current.identity !== identity.identity ||
-              current.group !== identity.group)
+              (current.group !== identity.group && !exitedWithoutGroup))
           )
             throw Error("POSIX owner identity changed");
           child.kill("SIGSTOP");

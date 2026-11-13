@@ -83,6 +83,62 @@ owned tree. Tool, source and installed-provider files retain their strict physic
 path rules. Trusted execution and coherent receipts do not establish a hostile
 project sandbox or whole-machine attestation.
 
+## Optional scoped release-signature preparation
+
+The default four-file provider cache remains explicitly unverified. An operator
+can separately prepare a cache whose release checksum signature is verified:
+
+```sh
+node scripts/prepare-terraform-extensions-runtime.mjs --verify-release-signature /absolute/original-signature-inputs
+```
+
+The input directory supplies the original `provider-SHA256SUMS.txt`,
+`provider-SHA256SUMS.sig` and `provider-public-key.asc` at the compiled public
+pins recorded in `random-provider.json`. Preparation checks the exact archive
+checksum row and both ZIP members, then runs native GPG/GPGV with a private key
+home and explicit options. Executable bytes are bounded and observed before and
+after verification. No key retrieval or agent startup is requested.
+
+The result prints an operator-selected provider root and proof SHA-256. The
+five-file cache is published beneath
+`.checktrail/terraform-extensions-signed-tools/<proofSHA>` after all validation.
+A matching existing destination is physically revalidated; it is never replaced.
+The legacy cache is untouched. Select the printed root and proof hash in the
+operator environment before CLI execution or MCP server startup:
+
+```sh
+CHECKTRAIL_TERRAFORM_EXTENSIONS_PROVIDER_ROOT=/absolute/signed-cache \
+CHECKTRAIL_TERRAFORM_EXTENSIONS_RELEASE_PROOF_SHA256=<proofSHA> \
+node dist/src/cli.js run --root /absolute/project --trust-project
+```
+
+The same environment can precede `serve --allow-execution`. The plan captures
+the pin, including an explicit empty value when absent. Project/request
+configuration cannot grant or override this authority. The native runner and
+final evidence admission independently bind the exact proof, policy, provider
+archive and two members to that captured pin. Missing, malformed or changed
+nonempty pins fail prerequisites; they never select legacy mode. Discovery and
+planning execute no signature verifier.
+
+This is operator-pinned native-preparation evidence, not a self-authenticating
+JSON success claim or protection from an operator deliberately selecting forged
+evidence. The claim is cryptographic verification against the pinned public-key
+snapshot. [GPGV assumes supplied keys are trusted and does not check expiration
+or revocation](https://www.gnupg.org/documentation/manuals/gnupg/gpgv.html).
+Unrelated expired-key diagnostics do not invalidate an exact selected `VALIDSIG`;
+observed bad-signature outcomes are refused. Key-owner trust, current key
+validity, full publisher/build/license closure and Gate A remain separate.
+Terraform's native mirror event still reports `unauthenticated`; the external
+release-signature observation does not rewrite it. Summaries expose no raw
+verification witness or private key-home paths.
+
+The dedicated `test/terraform-release-signature-native.test.ts` controls require
+`CHECKTRAIL_RANDOM_RELEASE_PROOF_NATIVE=1`, the selected proof/root environment,
+and the prepared Linux ARM64 Terraform runtime. The same controls can exercise source or fresh
+installed code through the collector, CLI and MCP engine, including legacy mode
+and independent runner/final proof refusal. An unselected native cohort is
+reported as skipped.
+
 ## Evidence and limits
 
 Importing a receipt requires the current canonical root and rechecks the current

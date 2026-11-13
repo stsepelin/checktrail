@@ -52,12 +52,13 @@ records actual sequential and concurrent executions of the sealed multi-claim
 mutation and installed-package controllers. This is one local subset comparison,
 not current hosted acceptance or a prediction for total workflow duration.
 
-Stack branches under `pr/**` use pull-request events for verification rather than
-duplicating the full workflow on their branch push. Other branch pushes and all
-tag pushes retain verification. A newly opened PR triggers its checks even when
+Managed branches under `pr/**`, `agent/**`, `dependabot/**` and `fix/**`, plus
+the exact legacy branch `feat/scoped-release-signatures`, use pull-request events
+for verification without duplicating the full workflow on their branch push.
+Other branch pushes and all tag pushes retain verification. A newly opened PR triggers its checks even when
 its initial branch push did not. Each PR has its own workflow concurrency group;
 a newer merge-candidate run supersedes older runs for that PR, including runs
-caused by predecessor updates. This does not serialize jobs within a run or other
+caused by updating the branch with main. This does not serialize jobs within a run or other
 PRs. Branch pushes also share a group per branch, so a newer push cancels an older
 run for that branch, including main during consecutive merges. Different
 branches and tag refs have separate groups; running tag verification is not
