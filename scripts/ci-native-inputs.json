@@ -19,6 +19,27 @@
     "resource-release",
     "resource-release-arm64"
   ],
+  "docs/measurements/artifact-identities-2026-10-21/provider-public-key.asc": [
+    "terraform-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/provider-SHA256SUMS.sig": [
+    "terraform-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/provider-SHA256SUMS.txt": [
+    "terraform-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/scala-compiler-2.13.18.jar.asc": [
+    "scala-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/scala-library-2.13.18.jar.asc": [
+    "scala-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/scala-public-key.asc": [
+    "scala-extensions-arm64"
+  ],
+  "docs/measurements/artifact-identities-2026-10-21/scala-reflect-2.13.18.jar.asc": [
+    "scala-extensions-arm64"
+  ],
   "examples/external-adapter/bundle/adapter.json": ["external-adapters"],
   "examples/external-adapter/bundle/adapter.mjs": ["external-adapters"],
   "examples/external-adapter/native/adapter.go": ["external-adapters"],
@@ -1506,6 +1527,7 @@
     "scala-context-arm64",
     "scala-extensions-arm64"
   ],
+  "scripts/prepare-scala2-signature-proof.mjs": ["scala-extensions-arm64"],
   "scripts/prepare-scala2-tools.mjs": ["scala-extensions-arm64"],
   "scripts/prepare-spotbugs-tools.mjs": [
     "jvm-analyzer-extensions-arm64",
@@ -1612,6 +1634,10 @@
   "scripts/release-readiness-tools/package.json": [
     "resource-release",
     "resource-release-arm64"
+  ],
+  "scripts/release-signature-preparation.mjs": [
+    "scala-extensions-arm64",
+    "terraform-extensions-arm64"
   ],
   "scripts/request-cpp-tool-archive.mjs": ["cpp-extensions-arm64", "cpp-tools"],
   "scripts/request-gradle-distribution.mjs": ["gradle", "jvm-wrappers-arm64"],
@@ -2334,6 +2360,10 @@
   "scripts/verify-scala-extensions-guards.mjs": ["scala-extensions-arm64"],
   "scripts/verify-scala-guards.mjs": ["scala"],
   "scripts/verify-scala-package.mjs": ["scala"],
+  "scripts/verify-scala2-signature-container.mjs": ["scala-extensions-arm64"],
+  "scripts/verify-scala2-signature-installed.mjs": ["scala-extensions-arm64"],
+  "scripts/verify-scala2-signature-native.mjs": ["scala-extensions-arm64"],
+  "scripts/verify-scala2-signature-proof.mjs": ["scala-extensions-arm64"],
   "scripts/verify-selected-clang-consumers.mjs": ["cpp-extensions-arm64"],
   "scripts/verify-spotbugs-container.mjs": ["spotbugs"],
   "scripts/verify-spotbugs-package.mjs": ["spotbugs"],
@@ -2363,6 +2393,12 @@
   ],
   "scripts/verify-terraform-package.mjs": [
     "terraform",
+    "terraform-extensions-arm64"
+  ],
+  "scripts/verify-terraform-signature-container.mjs": [
+    "terraform-extensions-arm64"
+  ],
+  "scripts/verify-terraform-signature-installed.mjs": [
     "terraform-extensions-arm64"
   ],
   "scripts/verify-vb-context-container.mjs": ["vb-context-arm64"],
@@ -3481,6 +3517,7 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3506,6 +3543,7 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3536,6 +3574,7 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3562,6 +3601,7 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3587,6 +3627,7 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -4257,9 +4298,11 @@
     "rust-context-arm64",
     "rust-extensions-arm64",
     "scala-context-arm64",
+    "scala-extensions-arm64",
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -4571,6 +4614,9 @@
     "kustomize",
     "kustomize-extensions-arm64",
     "terraform",
+    "terraform-extensions-arm64"
+  ],
+  "test/terraform-release-signature-native.test.ts": [
     "terraform-extensions-arm64"
   ],
   "test/terraform-surfaces.test.ts": [

@@ -142,7 +142,11 @@ class Controls(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'Invalid pending carrier'):r.pending_group_probes({**value,'extra':False})
  def test_real_git_batch_keeps_head_current_pins_order_and_original_blob(self):
   source=self.directory/'repository';source.mkdir();bodies={'one.txt':b'one\n','two.txt':b'two\n'}
-  for name,body in bodies.items():(source/name).write_bytes(body)
+  collector=(repo/'test/fixtures/c-controller-history/schema2-report-collector.py.txt').read_bytes();self.assertEqual(r.pin(collector),{'bytes':18397,'sha256':'9dee7066707382c33ba971fe63ded57c407454c81ed38ab30aa66b95b558691c'})
+  # Inert source identity bytes only; never import or execute this implementation.
+  bodies['scripts/producer-qualification/c-producer-test-reports.py']=collector
+  for name,body in bodies.items():
+   file=source/name;file.parent.mkdir(parents=True,exist_ok=True);file.write_bytes(body)
   env=dict(os.environ);env.update(SKIP_CODEX_REVIEW='1',GIT_CONFIG_NOSYSTEM='1',GIT_CONFIG_GLOBAL=os.devnull)
   git=['git','-c','core.hooksPath='+os.devnull,'-c','core.fsmonitor=false','-c','commit.gpgsign=false']
   for args in [['init','--quiet'],['add','--',*bodies],['-c','user.name=Synthetic Frame','-c','user.email=synthetic@example.invalid','commit','--quiet','-m','Synthetic source frame']]:
@@ -154,7 +158,7 @@ class Controls(unittest.TestCase):
   self_outer=self;startup={'gitHead':head,'sourcePins':[{'file':name,**r.pin(body)}for name,body in bodies.items()]};actual=r.bounded_git_output;calls=[]
   def observed(*args,**kwargs):calls.append(args);return actual(*args,**kwargs)
   with mock.patch.object(r,'SOURCE_FILES',list(bodies)),mock.patch.object(r,'bounded_git_output',side_effect=observed):
-   self.assertEqual(r.source_frame(Packet(),source,startup)['exactOriginalGitSourcePins'],2)
+   self.assertEqual(r.source_frame(Packet(),source,startup)['exactOriginalGitSourcePins'],len(bodies))
    self.assertEqual([c[1][-2:]for c in calls],[['rev-parse','HEAD'],['cat-file','--batch']]);self.assertEqual(calls[1][2],b''.join((head+':'+name+'\n').encode()for name in bodies));self.assertEqual(calls[1][3],sum(len(b)+129 for b in bodies.values()))
    calls.clear();bad=copy.deepcopy(startup);bad['sourcePins'].reverse()
    with self.assertRaisesRegex(ValueError,'Incomplete source/harness inventory'):r.source_frame(Packet(),source,bad)

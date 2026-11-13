@@ -44,6 +44,7 @@ const consumerFiles = {
 };
 const dependencyControlFiles = [
   "test/development-bundlers.test.ts",
+  "test/package-smoke-tools.test.ts",
   "test/javascript-tool-preparation.test.ts",
   "test/consumer-witness-project.test.ts",
   "test/mutation-native-evidence.test.ts",
@@ -64,6 +65,8 @@ export const qualificationInputs = [
   "scripts/javascript-tools/package.json",
   "scripts/javascript-tools/package-lock.json",
   "scripts/prepare-javascript-tools.mjs",
+  "scripts/package-smoke-tools.mjs",
+  "scripts/verify-root-javascript-reporters.mjs",
   "scripts/prepare-mutation-tools.mjs",
   "scripts/verify-import-context-package.mjs",
   "scripts/verify-javascript-extensions-container.mjs",
@@ -78,6 +81,7 @@ export const qualificationInputs = [
   "test/vitest.test.ts",
   "test/jest.test.ts",
   "test/development-bundlers.test.ts",
+  "test/package-smoke-tools.test.ts",
 ];
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 function git(repository, args, options = {}) {
@@ -933,6 +937,8 @@ export function classifyDevelopmentBump(options) {
           ...routedFiles,
           ...dependencyControlFiles,
           "scripts/smoke-package.mjs",
+          "scripts/package-smoke-tools.mjs",
+          "scripts/verify-root-javascript-reporters.mjs",
           "scripts/run-ci-validation.mjs",
           "scripts/ci-validation.mjs",
           "scripts/ci-validation-phases.json",
@@ -960,6 +966,7 @@ export async function main() {
   let changed = null,
     baseline = null,
     contractCurrent = false,
+    producerInventory = null,
     developmentImpact = null,
     dependencyFallback = null;
   try {
@@ -969,6 +976,7 @@ export async function main() {
     })
       .split("\0")
       .filter(Boolean);
+    producerInventory = files;
     const current = await buildNativeInputs({
       workflow,
       requirements: JSON.parse(
@@ -1146,6 +1154,7 @@ export async function main() {
     changed,
     baseline,
     contractCurrent,
+    producerInventory,
     eventName: process.env.GITHUB_EVENT_NAME,
   });
   if (developmentImpact && plan.mode === "affected") {

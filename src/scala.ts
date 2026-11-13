@@ -1,3 +1,5 @@
+import { parseReleaseProofPin } from "./release-signature-proof.js";
+import { scala2ReleaseProofEnvironment } from "./scala2-release-signature.js";
 import { stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -161,8 +163,11 @@ export async function scalaCheck(
     }
     if (extensions) await verifyJvmToolchain();
 
+    const releaseProofPin = scala2
+      ? parseReleaseProofPin(process.env[scala2ReleaseProofEnvironment])
+      : "";
     if (scala2) {
-      await scala2Inputs(source.root, project.path, config);
+      await scala2Inputs(source.root, project.path, config, releaseProofPin);
       await verifyJvmToolchain();
       check.reason =
         "Compile declared pinned Scala 2 source with native typed-tree, exact suppression and physical class-origin accounting.";
@@ -196,6 +201,7 @@ export async function scalaCheck(
         JDK_JAVA_OPTIONS: "",
         _JAVA_OPTIONS: "",
         CLASSPATH: "",
+        [scala2ReleaseProofEnvironment]: releaseProofPin,
       },
     });
   } catch (error) {

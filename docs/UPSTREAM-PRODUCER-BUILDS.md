@@ -25,6 +25,15 @@ original developer source-signing keyring package and member. The developer
 keyring is distinct from the image-provided APT archive keyring. Empty generated
 lock files are classified separately from downloaded archives.
 
+Run `node scripts/verify-binutils-retention-observer.mjs --check-inputs` to
+check the committed controller file sizes and hashes before native preparation.
+The upstream Binutils, GCC and GLIBC workflows run this check before their first
+Docker call. It requires no Docker access or native host permissions and does
+not establish the separate Linux permission proof. A changed controller requires
+reviewing and updating its pins; CI never regenerates them automatically. The
+native `--output` mode still validates the same controller inputs before running
+its permission controls.
+
 The retained [APT preparation record](../scripts/producer-qualification/binutils-apt-index-preparation.v1.json)
 binds fresh content-addressed Packages downloads to the signed canonical payloads
 and exactly reconstructs the retained compressed indexes through the original
@@ -170,6 +179,22 @@ reports, contradictory metadata and unexpected outcomes cannot count as passing
 evidence. Complete PGO/Automake phase selection remains separately unassessed. The report collector records observed generated
 `builddir-*` configurations; it does not assert an independently complete
 configuration inventory.
+
+New C-profile controller receipts use schema 3 and explicitly record each
+resource-observation intervention. Before scanning, the controller verifies the
+exact owned producer container and pauses a running writer; it always attempts
+to resume that writer afterward. Initial and final scans require positive
+pre-admission absence and post-terminal stopped-writer evidence. Every complete
+counter row is bound to its raw observer sequence and recorded pause/resume or
+absence actions, and checked against the same frozen work allowance. A scan, ownership, cancellation, or cleanup failure cannot count
+as a complete observation. The original command, numeric resource bounds and
+running deadline stay unchanged; recorded pauses can affect wall-clock behavior,
+so these observations do not establish uninterrupted upstream runtime. Historical
+schema 1 and 2 receipts keep their original meanings. Qualification binds those
+epochs to exact known public historical controller hashes through verified startup
+source pins; unknown controller sources require schema 3. Evidence archives cannot
+supply or extend the trusted historical index. Go, Node and the legacy
+Binutils observer contracts are unchanged.
 
 Preparation exits zero on successful data validation. Actual execution currently
 returns a nonzero, explicitly incomplete qualification status even when the

@@ -64,9 +64,25 @@ own limits.
 After observing producer absence, an interrupted or incomplete attempt can run
 a separate bounded Python report collector. It reads the retained build tree
 without executing upstream code and writes a fresh report family. Original-trap
-and post-stop reports retain separate manifests, paths and 512MiB aggregate
-bounds, with the existing 64MiB member bound. The receipt selects one family for
-outcome reconciliation; duplicate outcomes across families are not added.
+and post-stop reports retain separate manifests and paths. The version-3 report
+transport preserves every original byte in independently hashed gzip chunks,
+with at most 1 MiB decoded per chunk. Stored chunks keep the 64 MiB member and
+512 MiB per-family bounds; each manifest has a separate 8 MiB bound. The closed
+[c-report-encoding.v1.json](../scripts/producer-qualification/c-report-encoding.v1.json)
+policy permits at most 512 MiB decoded per logical file, 2 GiB per family and
+4 GiB across the original-trap and post-stop families. These decoded limits are
+explicit new policy, separate from the unchanged historical raw-byte limits.
+The receipt selects one family for outcome reconciliation; duplicate outcomes
+across families are not added.
+
+Both readers verify stored and decoded chunk identities, sequence and offsets,
+then exhaust every report and associated log before checking the whole original
+file identity. Truncated or concatenated streams, trailing data, missing chunks,
+wrong log associations and incorrect outcome counts refuse completeness. A
+failed capture publishes no complete manifest; available chunks remain partial
+diagnostics. Verified canonical collector source pins select the report format.
+Only the closed historical collector identities admit the legacy raw format;
+a report or archive field cannot downgrade current or unknown source.
 Missing command terminals, collection failures or incomplete cleanup remain
 incomplete even when useful reports were recovered. Schema-2 raw exports retain
 both available families, the command journals and the separate collector log.
@@ -77,7 +93,7 @@ An unreadable controller receipt can still be exported as unverified raw data,
 which cannot qualify a completed original build.
 
 The operator boundary captures the actual POSIX caller UID/GID. The collector
-hands over only its exclusive new report/log copies and manifest as0600 files
+hands over only its exclusive new report/log chunks and manifest as0600 files
 and0700 directories, using their verified file descriptors and directory inode
 journal. It does not change source/build-tree permissions or use recursive
 ownership changes. The host independently checks actual copy ownership and
@@ -144,6 +160,25 @@ execution evidence remain separate prerequisites; the flag alone establishes
 none of them. No local ARM-daemon GCC build is qualified by these source controls.
 
 ## Separate local GCC execution context
+
+`--execution-policy local-gcc12-12h-v1` selects the separately pinned
+[gcc-local-12h-policy.v1.json](../scripts/producer-qualification/gcc-local-12h-policy.v1.json)
+context. Its native deadline remains the source profile's 43,200 seconds, with
+unchanged command, CPU, memory, PID, work and log limits. It gives the controller
+44,400 seconds for setup, the 43,290 second producer observation, post-stop
+collection and finalization. The local carrier observes for 44,460 seconds and
+reserves 600 seconds for cleanup and 1,200 seconds for export/replay. Together
+with the 540 second bootstrap allowance these require an exactly 46,800 second
+(13 hour) declared managed window.
+
+The same operator-trust, coordinated heavy-slot, local ARM-daemon, startup,
+capacity and source-pinning checks apply to both local policies. A new twelve-hour
+carrier receipt records `executionPolicyChangesWallDeadline: false`; the
+historical twenty-three-hour context records `true`. Selecting a policy or passing
+synthetic controls does not establish that a native compiler completed. A hosted
+carrier cutoff stays incomplete and cannot be relabeled as a full local run.
+
+The following describes the preserved historical twenty-three-hour context.
 
 `--execution-policy local-gcc12-23h-v1` selects the closed
 [gcc-local-wall-policy.v1.json](../scripts/producer-qualification/gcc-local-wall-policy.v1.json)
@@ -262,9 +297,24 @@ metadata does not attest the daemon's profile bytes or historical consumption.
 
 ## Opt-in hosted GCC observation
 
-`upstream-gcc.yml` uses only `pr/upstream-producer/gcc-*` pushes or operator
-dispatch after default-branch merge. Startup, live observation, export and replay
-all bind an explicit closed profile name to the frozen source/version/catalog.
+`upstream-gcc.yml` runs only by explicit operator dispatch. Routine source
+verification remains in the separate `Verify` workflow. Branch pushes and pull
+requests do not start another original compiler build. Once the qualification
+workflow is present on the default branch, an operator can select a source branch:
+
+```sh
+gh workflow run upstream-gcc.yml --repo stsepelin/checktrail --ref BRANCH
+```
+
+Dispatch once for the intended qualification candidate and let that run finish
+independently of routine source repairs. The existing `cancel-in-progress: false`
+policy preserves an active observation when another commit is pushed. Evidence
+remains bound to its captured source frame; a previous run cannot be relabeled
+as proof for a newer revision. Passing PR checks does not establish full original
+GCC producer-build closure, which remains required for Gate A.
+
+Startup, live observation, export and replay all bind an explicit closed profile
+name to the frozen source/version/catalog.
 GCC's original command, CPU, memory, targets and checks remain unchanged. The
 selected operator wall envelope is twelve hours. The separate `gccCarrierLimits` controller window leaves time for
 bounded cleanup and transport within the hosted job. Fresh capacity admission

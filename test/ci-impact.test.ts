@@ -3,12 +3,14 @@ import { readFile, writeFile } from "node:fs/promises";
 import { execFileSync, spawnSync } from "node:child_process";
 import { test } from "node:test";
 import { parse } from "yaml";
+import ts from "typescript";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { fixture } from "./helpers.js";
 const {
   buildNativeInputs,
   cProducerSharedBoundary,
+  producerInventoryFingerprint,
   acceptFullBaseline,
   requestFullBaselineJobs,
   requestFullBaselineChecks,
@@ -33,6 +35,23 @@ const baseline = {
   run: "https://github.com/example/project/actions/runs/1",
   jobs: 81,
 };
+const checkoutProducerInventory = execFileSync("git", ["ls-files", "-z"], {
+  cwd: root,
+  encoding: "utf8",
+})
+  .split("\0")
+  .filter(Boolean);
+// Unit routing policies have a fixed inventory independent of unrelated checkout
+// additions. The production-default and entrypoint tests below retain the real pin.
+const producerInventory = [
+  "scripts/synthetic-ci-inventory.mjs",
+  ...cProducerSharedBoundary.files,
+  ...cProducerSharedBoundary.workflowFiles,
+];
+const unitProducerBoundary = Object.freeze({
+  ...cProducerSharedBoundary,
+  inventorySha256: producerInventoryFingerprint(producerInventory),
+});
 const plan = (changed: string[], options: Record<string, unknown> = {}) =>
   planNativeJobs({
     jobs,
@@ -41,6 +60,8 @@ const plan = (changed: string[], options: Record<string, unknown> = {}) =>
     baseline,
     eventName: "pull_request",
     contractCurrent: true,
+    producerInventory,
+    producerBoundary: unitProducerBoundary,
     ...options,
   });
 const selected = (result: ReturnType<typeof plan>) =>
@@ -455,40 +476,135 @@ test("CI Swift preparation import and new regression changes select both actual 
 });
 
 const cProducerBoundaryInputs = [
+  "scripts/acquire-binutils-inputs.mjs",
+  "scripts/acquire-c-producer-inputs.mjs",
+  "scripts/observe-c-producer-carrier.mjs",
+  "scripts/qualify-binutils-producer.mjs",
+  "scripts/qualify-c-producer.mjs",
+  "scripts/qualify-go-bootstrap-producer.mjs",
+  "scripts/qualify-node-original-producer.mjs",
+  "scripts/verify-binutils-build-observation.mjs",
+  "scripts/verify-binutils-retention-observer.mjs",
+  "scripts/verify-c-producer-observation.mjs",
+  "scripts/producer-qualification/binutils-acquisition-plan.mjs",
+  "scripts/producer-qualification/binutils-apt-index-preparation.v1.json",
+  "scripts/producer-qualification/binutils-build.sh",
+  "scripts/producer-qualification/binutils-expectations.v1.json",
+  "scripts/producer-qualification/binutils-export-evidence.py",
+  "scripts/producer-qualification/binutils-image-identity.mjs",
+  "scripts/producer-qualification/binutils-image-identity.v1.json",
+  "scripts/producer-qualification/binutils-input-reacquisition.v1.json",
+  "scripts/producer-qualification/binutils-prepare-inputs.py",
+  "scripts/producer-qualification/binutils-retention-observer.mjs",
+  "scripts/producer-qualification/binutils-retention-observer.py",
+  "scripts/producer-qualification/binutils-test-reports.py",
+  "scripts/producer-qualification/binutils.v1.json",
+  "scripts/producer-qualification/c-carrier-observation.mjs",
+  "scripts/producer-qualification/c-producer-build.sh",
+  "scripts/producer-qualification/c-producer-export-evidence.py",
   "scripts/producer-qualification/c-producer-profile.mjs",
   "scripts/producer-qualification/c-producer-profiles.v1.json",
-  "scripts/producer-qualification/c-producer-replay-evidence.py",
-  "scripts/producer-qualification/c-producer-test-reports.py",
-  "scripts/qualify-c-producer.mjs",
-  "test/c-producer-evidence.test.ts",
-  "test/c-producer-gcc-evidence.test.ts",
-  "test/c-producer-qualification.test.ts",
-  "scripts/observe-c-producer-carrier.mjs",
-  "scripts/producer-qualification/c-carrier-observation.mjs",
-  "scripts/producer-qualification/c-producer-export-evidence.py",
-  "scripts/producer-qualification/gcc-local-wall-policy.v1.json",
-  "scripts/verify-c-producer-observation.mjs",
-  "test/fixtures/c-producer-local-clock.mjs",
   "scripts/producer-qualification/c-producer-quiescent-sample.mjs",
-  "test/c-producer-quiescence.test.ts",
-];
-const cProducerRegressionFiles = [
+  "scripts/producer-qualification/c-producer-replay-evidence.py",
+  "scripts/producer-qualification/c-producer-report-codec.mjs",
+  "scripts/producer-qualification/c-producer-report-codec.py",
+  "scripts/producer-qualification/c-producer-test-reports.py",
+  "scripts/producer-qualification/c-report-encoding.v1.json",
+  "scripts/producer-qualification/gcc-github-job-clock.mjs",
+  "scripts/producer-qualification/gcc-job-envelope.mjs",
+  "scripts/producer-qualification/gcc-local-12h-policy.v1.json",
+  "scripts/producer-qualification/gcc-local-wall-policy.v1.json",
+  "scripts/producer-qualification/glibc-seccomp-probe.py",
+  "scripts/producer-qualification/glibc-seccomp.mjs",
+  "scripts/producer-qualification/glibc-seccomp.v1.json",
+  "test/fixtures/c-controller-history/LICENSE-schema1.txt",
+  "test/fixtures/c-controller-history/LICENSE-schema2.txt",
+  "test/fixtures/c-controller-history/provenance.json",
+  "test/fixtures/c-controller-history/report-collector-provenance.json",
+  "test/fixtures/c-controller-history/schema1-controller.mjs.txt",
+  "test/fixtures/c-controller-history/schema2-controller.mjs.txt",
+  "test/fixtures/c-controller-history/schema2-report-collector.py.txt",
+  "test/fixtures/c-producer-epoch-routing.mjs",
+  "test/fixtures/c-producer-interruption.py",
+  "test/fixtures/c-producer-local-clock.mjs",
+  "test/fixtures/c-retention-controls.py",
+  "test/fixtures/c-retention-quiescent-rename.py",
+  "test/binutils-acquisition.test.ts",
+  "test/binutils-build-observation.test.ts",
+  "test/binutils-controller-inputs.test.ts",
+  "test/binutils-download.test.ts",
+  "test/binutils-image-identity.test.ts",
+  "test/binutils-input-preparation.test.ts",
+  "test/binutils-retention-observer.test.ts",
   "test/c-producer-evidence.test.ts",
   "test/c-producer-gcc-evidence.test.ts",
+  "test/c-producer-local12h.test.ts",
   "test/c-producer-qualification.test.ts",
   "test/c-producer-quiescence.test.ts",
   "test/c-producer-replay-batch.test.ts",
+  "test/c-producer-report-capture.test.ts",
+  "test/c-producer-report-codec.test.ts",
+  "test/c-producer-report-transport.test.ts",
+  "test/c-producer-source-epoch.test.ts",
   "test/c-producer-u13.test.ts",
   "test/gcc-job-envelope.test.ts",
   "test/glibc-seccomp.test.ts",
   "test/go-bootstrap-producer.test.ts",
   "test/go-bootstrap-transport.test.ts",
+  "test/node-original-acquisition.test.ts",
+  "test/node-original-materializer.test.ts",
   "test/node-original-producer.test.ts",
+  "test/node-original-retention.test.ts",
   "test/node-original-transport-posix.test.ts",
+  "test/producer-container-cleanup.test.ts",
+  "test/producer-qualification.test.ts",
+  "test/web-runtime-producer.test.ts",
+];
+const cProducerWorkflowInputs = [
+  ".github/workflows/upstream-binutils.yml",
+  ".github/workflows/upstream-gcc.yml",
+  ".github/workflows/upstream-glibc.yml",
+  ".github/workflows/upstream-glibc-u13.yml",
+];
+const cProducerRegressionFiles = [
+  "test/binutils-acquisition.test.ts",
+  "test/binutils-build-observation.test.ts",
+  "test/binutils-controller-inputs.test.ts",
+  "test/binutils-download.test.ts",
+  "test/binutils-image-identity.test.ts",
+  "test/binutils-input-preparation.test.ts",
+  "test/binutils-retention-observer.test.ts",
+  "test/c-producer-evidence.test.ts",
+  "test/c-producer-gcc-evidence.test.ts",
+  "test/c-producer-local12h.test.ts",
+  "test/c-producer-qualification.test.ts",
+  "test/c-producer-quiescence.test.ts",
+  "test/c-producer-replay-batch.test.ts",
+  "test/c-producer-report-capture.test.ts",
+  "test/c-producer-report-codec.test.ts",
+  "test/c-producer-report-transport.test.ts",
+  "test/c-producer-source-epoch.test.ts",
+  "test/c-producer-u13.test.ts",
+  "test/gcc-job-envelope.test.ts",
+  "test/glibc-seccomp.test.ts",
+  "test/go-bootstrap-producer.test.ts",
+  "test/go-bootstrap-transport.test.ts",
+  "test/node-original-acquisition.test.ts",
+  "test/node-original-materializer.test.ts",
+  "test/node-original-producer.test.ts",
+  "test/node-original-retention.test.ts",
+  "test/node-original-transport-posix.test.ts",
+  "test/producer-container-cleanup.test.ts",
+  "test/producer-qualification.test.ts",
+  "test/web-runtime-producer.test.ts",
 ];
 test("CI exact C producer inputs select every complete C Go and Node caller regression without qualifying omitted jobs", () => {
   assert.deepEqual(cProducerSharedBoundary.files, cProducerBoundaryInputs);
   assert.deepEqual(cProducerSharedBoundary.testFiles, cProducerRegressionFiles);
+  assert.deepEqual(
+    cProducerSharedBoundary.workflowFiles,
+    cProducerWorkflowInputs,
+  );
   const mandatory = plan(["README.md"]).sharedTestFiles;
   const expected = [
     ...mandatory,
@@ -517,6 +633,289 @@ test("CI exact C producer inputs select every complete C Go and Node caller regr
     assert.equal(receipt.omittedJobsQualified, false);
   }
 });
+test("CI exact original-producer workflows retain actionlint and complete producer contracts without unrelated native jobs", () => {
+  for (const file of cProducerWorkflowInputs) {
+    const actual = plan([file], { baseline: null });
+    assert.equal(actual.mode, "affected", file);
+    assert.deepEqual(
+      selected(actual),
+      [...new Set(["actionlint", ...(inputs[file] ?? [])])].sort(),
+      file,
+    );
+    for (const regression of cProducerRegressionFiles)
+      assert.ok(
+        actual.sharedTestFiles.includes(
+          "dist/" + regression.replace(/\.ts$/, ".js"),
+        ),
+        file + " omitted " + regression,
+      );
+    assert.ok(actual.sharedTestFiles.includes("dist/test/actionlint.test.js"));
+    const needs = Object.fromEntries(
+      ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
+        id,
+        {
+          result:
+            ["ci-plan", "checks"].includes(id) || actual.selected[id]
+              ? "success"
+              : "skipped",
+        },
+      ]),
+    );
+    assert.equal(
+      requireCiCompletion(actual, needs).fullRevisionVerification,
+      false,
+    );
+    assert.throws(() =>
+      requireCiCompletion(actual, {
+        ...needs,
+        actionlint: { result: "skipped" },
+      }),
+    );
+  }
+  const workflow = cProducerWorkflowInputs[0]!;
+  const actual = plan([workflow], {
+    inputs: { ...inputs, [workflow]: ["csharp-context-arm64"] },
+  });
+  assert.deepEqual(selected(actual), ["actionlint", "csharp-context-arm64"]);
+  assert.ok(
+    actual.sharedTestFiles.includes("dist/test/gate-context-csharp.test.js"),
+  );
+  const noLintInputs = Object.fromEntries(
+    Object.entries(inputs)
+      .map(
+        ([file, owners]) =>
+          [
+            file,
+            (owners as string[]).filter((id) => id !== "actionlint"),
+          ] as const,
+      )
+      .filter(([, owners]) => owners.length > 0),
+  );
+  const noLint = plan([workflow], {
+    jobs: jobs.filter((id: string) => id !== "actionlint"),
+    inputs: noLintInputs,
+  });
+  assert.equal(noLint.mode, "full");
+  assert.match(noLint.reason, /requires the declared actionlint job/);
+});
+
+test("CI producer fast mode requires a complete reviewed name inventory and rejects newly introduced contracts or helpers", () => {
+  assert.equal(
+    producerInventoryFingerprint(producerInventory),
+    unitProducerBoundary.inventorySha256,
+  );
+  assert.equal(
+    producerInventoryFingerprint([...producerInventory].reverse()),
+    unitProducerBoundary.inventorySha256,
+  );
+  assert.equal(producerInventoryFingerprint(Array(1)), null);
+  const file = cProducerWorkflowInputs[1]!;
+  assert.equal(plan([file]).mode, "affected");
+  assert.equal(plan(Array(1)).mode, "full");
+  assert.equal(plan([cProducerRegressionFiles[0]!]).mode, "affected");
+  for (const inventory of [
+    null,
+    undefined,
+    [],
+    ["../test/unsafe.test.ts"],
+    [...producerInventory, producerInventory[0]!],
+    producerInventory.filter(
+      (item) => item !== "test/c-producer-gcc-evidence.test.ts",
+    ),
+    ...[
+      "test/binutils-controller-inputs-new.test.ts",
+      "test/c-producer-report-codec-new.test.ts",
+      "test/unrelated-new-contract.test.ts",
+      "scripts/producer-qualification/c-producer-new.mjs",
+      "scripts/new-indirect-producer-helper.mjs",
+      ".github/workflows/new-producer.yml",
+    ].map((member) => [...producerInventory, member]),
+  ]) {
+    const actual = plan([file], { producerInventory: inventory });
+    assert.equal(actual.mode, "full", JSON.stringify(inventory));
+    assert.match(actual.reason, /review new test\/helper\/workflow names/);
+    assert.equal(selected(actual).length, jobs.length);
+  }
+  // New source members outside this development-only namespace do not silently
+  // become a producer test: changing any such file still takes the shared fallback.
+  for (const changed of [
+    ...cProducerWorkflowInputs.flatMap((member) => [
+      [member + ".backup"],
+      [member.replace(/\.yml$/, ".yaml")],
+      ["adjacent/" + member],
+    ]),
+    [".github/workflows/upstream-gcc-extra.yml"],
+    [".github/workflows/upstream-web-runtime.yml"],
+    [".github/actions/producer/action.yml"],
+    [file, ".github/workflows/ci.yml"],
+    [file, "src/adapters.ts"],
+    [file, "package-lock.json"],
+    [file, "packs/default.yaml"],
+    [file, "scripts/producer-qualification/emsdk-metadata-values.mjs"],
+    [file, "scripts/new-indirect-producer-helper.mjs"],
+    [file, "test/c-producer-new.test.ts"],
+  ])
+    assert.equal(plan(changed).mode, "full", JSON.stringify(changed));
+});
+
+test("CI production producer policy falls back for new checkout names without failing the routing suite", () => {
+  const actualPlan = (inventory: unknown) =>
+    planNativeJobs({
+      jobs,
+      inputs,
+      changed: ["scripts/producer-qualification/c-producer-report-codec.mjs"],
+      eventName: "pull_request",
+      contractCurrent: true,
+      producerInventory: inventory,
+    });
+  const current = actualPlan(checkoutProducerInventory);
+  const reviewed =
+    producerInventoryFingerprint(checkoutProducerInventory) ===
+    cProducerSharedBoundary.inventorySha256;
+  assert.equal(current.mode, reviewed ? "affected" : "full");
+  if (!reviewed) {
+    assert.match(current.reason, /review new test\/helper\/workflow names/);
+    assert.equal(selected(current).length, jobs.length);
+  }
+  const next = "test/synthetic-unreviewed-new-producer.test.ts";
+  assert.ok(!checkoutProducerInventory.includes(next));
+  for (const inventory of [null, [...checkoutProducerInventory, next]]) {
+    const actual = actualPlan(inventory);
+    assert.equal(actual.mode, "full");
+    assert.match(actual.reason, /review new test\/helper\/workflow names/);
+    assert.equal(selected(actual).length, jobs.length);
+  }
+});
+
+test("CI producer policies reject missing invalid and incomplete identities before inventory comparison", () => {
+  const file = "scripts/producer-qualification/c-producer-report-codec.mjs";
+  for (const producerBoundary of [
+    null,
+    {},
+    ...[
+      null,
+      undefined,
+      "",
+      "a".repeat(63),
+      "A".repeat(64),
+      new String("a".repeat(64)),
+    ].map((inventorySha256) => ({ ...unitProducerBoundary, inventorySha256 })),
+    ...["files", "workflowFiles", "testFiles"].flatMap((key) => [
+      { ...unitProducerBoundary, [key]: null },
+      { ...unitProducerBoundary, [key]: [] },
+      { ...unitProducerBoundary, [key]: Array(1) },
+      { ...unitProducerBoundary, [key]: ["../escape"] },
+      {
+        ...unitProducerBoundary,
+        [key]: ["scripts/duplicate.mjs", "scripts/duplicate.mjs"],
+      },
+      {
+        ...unitProducerBoundary,
+        [key]: Array.from(
+          { length: 10001 },
+          (_, i) => "scripts/synthetic-" + i + ".mjs",
+        ),
+      },
+    ]),
+    { ...unitProducerBoundary, workflowFiles: [unitProducerBoundary.files[0]] },
+    {
+      ...unitProducerBoundary,
+      testFiles: ["test/absent-synthetic-producer.test.ts"],
+    },
+  ]) {
+    const actual = plan([file], { producerBoundary, producerInventory: null });
+    assert.equal(actual.mode, "full");
+    assert.match(actual.reason, /Invalid reviewed producer boundary policy/);
+    assert.equal(selected(actual).length, jobs.length);
+  }
+});
+
+test("CI producer policy injection binds file workflow and regression sets to one fixed unit inventory", () => {
+  const file = "scripts/synthetic-producer.mjs";
+  const testFile = "test/synthetic-producer.test.ts";
+  const workflowFile = ".github/workflows/synthetic-producer.yml";
+  const inventory = [file, testFile, workflowFile];
+  const producerBoundary = {
+    files: [file, testFile],
+    workflowFiles: [workflowFile],
+    testFiles: [testFile],
+    inventorySha256: producerInventoryFingerprint(inventory),
+  };
+  for (const changed of [[file], [workflowFile]]) {
+    const actual = plan(changed, {
+      producerBoundary,
+      producerInventory: inventory,
+    });
+    assert.equal(actual.mode, "affected");
+    assert.deepEqual(
+      selected(actual),
+      changed[0] === workflowFile ? ["actionlint"] : [],
+    );
+    assert.ok(
+      actual.sharedTestFiles.includes("dist/test/synthetic-producer.test.js"),
+    );
+    assert.ok(
+      !actual.sharedTestFiles.includes(
+        "dist/test/c-producer-gcc-evidence.test.js",
+      ),
+    );
+  }
+  const expanded = plan([file], {
+    producerBoundary,
+    producerInventory: [...inventory, "scripts/synthetic-unreviewed.mjs"],
+  });
+  assert.equal(expanded.mode, "full");
+  assert.match(expanded.reason, /review new test\/helper\/workflow names/);
+  const adjacent = plan([file + ".extra"], {
+    producerBoundary,
+    producerInventory: inventory,
+  });
+  assert.equal(adjacent.mode, "full");
+  assert.match(adjacent.reason, /Unclassified input/);
+});
+
+test("CI production planner entrypoint cannot override the reviewed producer policy", async () => {
+  const source = ts.createSourceFile(
+    "plan-ci-impact.mjs",
+    await readFile(new URL("scripts/plan-ci-impact.mjs", root), "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.JS,
+  );
+  const calls: ts.CallExpression[] = [];
+  const visit = (node: ts.Node) => {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === "planNativeJobs"
+    )
+      calls.push(node);
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(calls.length, 1);
+  const args = calls[0]!.arguments;
+  assert.equal(args.length, 1);
+  assert.ok(ts.isObjectLiteralExpression(args[0]!));
+  const properties = args[0].properties.map((member) => {
+    assert.ok(
+      ts.isPropertyAssignment(member) ||
+        ts.isShorthandPropertyAssignment(member),
+    );
+    assert.ok(ts.isIdentifier(member.name));
+    return member.name.text;
+  });
+  assert.deepEqual(properties.sort(), [
+    "baseline",
+    "changed",
+    "contractCurrent",
+    "eventName",
+    "inputs",
+    "jobs",
+    "producerInventory",
+  ]);
+});
+
 test("CI C producer boundary preserves native owner unions and validates contracts before any allowance", () => {
   const file = cProducerBoundaryInputs[0]!;
   const actual = plan([file, "test/gate-scala-extensions.test.ts"], {
@@ -548,12 +947,14 @@ test("CI C producer boundary preserves native owner unions and validates contrac
       [file + ".backup"],
       ["adjacent/" + file],
     ]),
+    ["scripts/verify-binutils-retention-observer-extra.mjs"],
     ["scripts/producer-qualification/c-producer-new.py"],
     ["scripts/producer-qualification/c-producer-profile-extra.mjs"],
     ["test/c-producer-new.test.ts"],
     [file, "scripts/ci-impact.mjs"],
     [file, "package.json"],
     [file, "schemas/report.schema.json"],
+    [file, ".gitattributes"],
   ])
     assert.equal(plan(changed).mode, "full", JSON.stringify(changed));
   for (const options of [
@@ -569,6 +970,8 @@ test("CI C producer shared regressions bind the actual Go Node identity source i
     "scripts/qualify-c-producer.mjs",
     "scripts/producer-qualification/c-producer-profile.mjs",
     "scripts/producer-qualification/c-producer-profiles.v1.json",
+    "scripts/producer-qualification/c-producer-report-codec.mjs",
+    "scripts/producer-qualification/c-report-encoding.v1.json",
   ];
   for (const [controller, field, regressionFiles] of [
     [
@@ -660,6 +1063,50 @@ test("CI native input traversal retains exact documentation data consumers", asy
   assert.ok(
     result.sharedTestFiles.includes("dist/test/artifact-evidence.test.js"),
   );
+});
+test("CI operational release signature inputs select their exact native consumer and the complete artifact audit", () => {
+  const directory = "docs/measurements/artifact-identities-2026-10-21/";
+  const families = [
+    {
+      job: "scala-extensions-arm64",
+      record: "scala2.json",
+      files: [
+        "scala-public-key.asc",
+        "scala-compiler-2.13.18.jar.asc",
+        "scala-library-2.13.18.jar.asc",
+        "scala-reflect-2.13.18.jar.asc",
+      ],
+    },
+    {
+      job: "terraform-extensions-arm64",
+      record: "random-provider.json",
+      files: [
+        "provider-public-key.asc",
+        "provider-SHA256SUMS.txt",
+        "provider-SHA256SUMS.sig",
+      ],
+    },
+  ];
+  let checked = 0;
+  for (const family of families) {
+    for (const name of family.files) {
+      const file = directory + name;
+      assert.deepEqual(inputs[file], [family.job], file);
+      const result = plan([
+        file,
+        directory + family.record,
+        directory + "artifact-evidence-index.v1.json",
+      ]);
+      assert.equal(result.mode, "affected", file);
+      assert.deepEqual(selected(result), [family.job], file);
+      assert.ok(
+        result.sharedTestFiles.includes("dist/test/artifact-evidence.test.js"),
+        file,
+      );
+      checked++;
+    }
+  }
+  assert.equal(checked, 7);
 });
 test("CI retained artifact data requires whole shared audits without unrelated native stacks and preserves native consumers", () => {
   const directory = "docs/measurements/artifact-identities-2026-10-21/";
@@ -854,15 +1301,20 @@ test("CI completion YAML policy admits failed dependencies and skips a canceled 
     "Reaching the aggregate after a dependency failure still refuses completion",
   );
 });
-test("CI managed pull-request branch prefixes avoid duplicate push workflows while tags retain verification", () => {
+test("CI managed pull-request branches avoid duplicate push workflows while tags retain verification", () => {
   assert.deepEqual(workflow.on.push["branches-ignore"], [
     "pr/**",
     "agent/**",
     "dependabot/**",
     "fix/**",
+    "feat/scoped-release-signatures",
   ]);
   assert.deepEqual(workflow.on.push.tags, ["**"]);
   assert.ok(Object.hasOwn(workflow.on, "pull_request"));
+  assert.ok(Object.hasOwn(workflow.on, "workflow_dispatch"));
+  assert.ok(
+    Array.isArray(workflow.on.schedule) && workflow.on.schedule.length > 0,
+  );
 });
 
 test("CI initial wave stays within the free runner ceiling and native fanout requires successful planning", () => {
@@ -2602,6 +3054,10 @@ test("CI pinned delivery metadata preserves imports without selecting URL profil
 test("Playwright fixture artifacts retain full verification and both host lanes install the locked native profile", () => {
   for (const file of [
     "scripts/prepare-playwright-tools.mjs",
+    "scripts/prepare-playwright-browser.mjs",
+    "scripts/prepare-ubuntu-mirrors.mjs",
+    "test/prepare-playwright-browser.test.ts",
+    "test/prepare-ubuntu-mirrors.test.ts",
     "scripts/playwright-tools/package.json",
     "scripts/playwright-tools/package-lock.json",
     "test/playwright-tool-preparation.test.ts",
@@ -2633,8 +3089,22 @@ test("Playwright fixture artifacts retain full verification and both host lanes 
     );
     assert.equal(
       browser.run,
-      "PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node .checktrail/playwright-tools/node_modules/playwright/cli.js install chromium --only-shell --with-deps",
+      [
+        "browser_node=\"$(node -p 'process.execPath')\"",
+        'if [ "$RUNNER_OS" = "Linux" ]; then',
+        '  sudo -n --preserve-env=CI,GITHUB_ACTIONS,RUNNER_ENVIRONMENT,HTTP_PROXY,HTTPS_PROXY,ALL_PROXY,NO_PROXY,http_proxy,https_proxy,all_proxy,no_proxy,NODE_EXTRA_CA_CERTS,SSL_CERT_FILE,SSL_CERT_DIR,PLAYWRIGHT_DOWNLOAD_HOST,PLAYWRIGHT_CHROMIUM_DOWNLOAD_HOST,PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT -- "$browser_node" scripts/prepare-playwright-browser.mjs',
+        "else",
+        '  "$browser_node" scripts/prepare-playwright-browser.mjs',
+        "fi",
+      ].join("\n") + "\n",
     );
+    assert.equal(browser["timeout-minutes"], 10);
+    assert.equal(browser.shell, "bash");
+    const builds = steps.filter(
+      (step: { run?: string }) => step.run === "npm run build",
+    );
+    assert.equal(builds.length, 1, "Build exactly once for the watchdog");
+    assert.ok(steps.indexOf(builds[0]) < steps.indexOf(browser));
     assert.ok(steps.indexOf(preparation) < steps.indexOf(browser));
     const setup = steps.find((step: { uses?: string }) =>
       step.uses?.startsWith("actions/setup-node@"),

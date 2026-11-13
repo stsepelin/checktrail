@@ -11,3 +11,4 @@ docs/measurements/artifact-identities-2026-10-21/fantomas-generator-inputs/* -wh
 
 # Preserve measured native JSON packet bodies byte-for-byte.
 docs/measurements/tasks-runtime-matrix-2026-10-21/receipts/*.json -text
+test/fixtures/c-controller-history/*.txt -text

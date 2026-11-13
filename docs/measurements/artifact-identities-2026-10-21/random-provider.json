@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "scope": "random-provider",
   "observedAt": "2026-10-21T17:22:24.610192+00:00",
-  "repositoryCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
   "repositoryInputs": [
     {
       "file": "src/terraform-extensions-contract.ts",
@@ -10,7 +9,19 @@
     },
     {
       "file": "scripts/prepare-terraform-extensions-runtime.mjs",
-      "sha256": "cb5e4e9b28692a4e05020215716959cdc3a745141445e43d7e6bed61fc148eaf"
+      "sha256": "58accf804b57b9f6bd1d3e568fcce2d315030570ecbbb42fe106b6b3f006fb5d"
+    },
+    {
+      "file": "scripts/release-signature-preparation.mjs",
+      "sha256": "9d406135ae11f4b01ffa42d782badd83b349416b22c2fef47d5fc7a529d17e9d"
+    },
+    {
+      "file": "src/release-signature-proof.ts",
+      "sha256": "1ade1df184c8d26fa23de3f7dee764bfdbe76637a9beab1f777d9b65aa7ce4f2"
+    },
+    {
+      "file": "src/terraform-release-signature.ts",
+      "sha256": "1e20a6aadada0650b7fbbc04056ced8cc0e4e2d8ff88f2a59e46aef2f5e1fb4a"
     }
   ],
   "observations": {
@@ -201,5 +212,24 @@
     "go12413LinuxAmd64CompleteArchiveRebuilt": true,
     "go1268LinuxAmd64CompleteArchiveRebuilt": true,
     "bootstrapAndCompleteNoticeClosureVerified": false
+  },
+  "historicalRepositoryBinding": {
+    "repositoryCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+    "repositoryInputs": [
+      {
+        "file": "src/terraform-extensions-contract.ts",
+        "sha256": "3a748511488030ea9b75864fcfc9186b1c1d611c6a20ff4d699aa1a57da19548"
+      },
+      {
+        "file": "scripts/prepare-terraform-extensions-runtime.mjs",
+        "sha256": "cb5e4e9b28692a4e05020215716959cdc3a745141445e43d7e6bed61fc148eaf"
+      }
+    ]
+  },
+  "currentRepositoryBinding": {
+    "bindingKind": "working-tree-bytes",
+    "baseCommit": "afe996777c96d831d626e76d3f34d74bab97f450",
+    "reconciledAt": "2026-11-11",
+    "scope": "Current selected preparation inputs, including opt-in scoped release-signature admission. These byte bindings do not identify the code executed by the retained historical observations."
   }
 }

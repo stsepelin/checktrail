@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/stsepelin/checktrail",
+  "scope": "Inert original first-party source identity; never import or execute this fixture. Synthetic legacy raw report bytes are derived from current synthetic captures and physically reconciled.",
+  "file": "schema2-report-collector.py.txt",
+  "originalCommit": "d05fc53fa83e519cab9692c662288c50f67fb11b",
+  "originalPath": "scripts/producer-qualification/c-producer-test-reports.py",
+  "bytes": 18397,
+  "sha256": "9dee7066707382c33ba971fe63ded57c407454c81ed38ab30aa66b95b558691c",
+  "license": {
+    "file": "LICENSE-schema2.txt",
+    "originalCommit": "d05fc53fa83e519cab9692c662288c50f67fb11b",
+    "originalPath": "LICENSE",
+    "bytes": 1066,
+    "sha256": "38fbc60c5849e96fbfb96227eb1eef160e8e3c5a3959b0d51ee0b89b7bca291d"
+  }
+}

@@ -287,6 +287,7 @@ test("development-only Git graph routes Vite and all shared Vitest/alias owners 
   ]);
   for (const file of [
     "development-bundlers",
+    "package-smoke-tools",
     "javascript-tool-preparation",
     "consumer-witness-project",
     "mutation-native-evidence",
@@ -298,6 +299,11 @@ test("development-only Git graph routes Vite and all shared Vitest/alias owners 
       result.sharedTestFiles.includes(`dist/test/${file}.test.js`),
       file,
     );
+  for (const file of [
+    "scripts/package-smoke-tools.mjs",
+    "scripts/verify-root-javascript-reporters.mjs",
+  ])
+    assert.ok(result.evidence.auditedConsumerFiles.includes(file), file);
   assert.equal(result.evidence.changedLockEntries.length, 3);
 });
 
@@ -333,6 +339,23 @@ test("development graph rejects shared production, compiler effects and unrelate
     after?: Change;
     reason: RegExp;
   }> = [
+    {
+      name: "shared Rolldown descendant reaches the unaudited Playwright root",
+      before: (m, l) => {
+        m.devDependencies["@playwright/test"] = "1.0.0";
+        l.packages["node_modules/@playwright/test"] = {
+          ...entry("@playwright/test"),
+          dependencies: { "original-shared": "*" },
+        };
+        (l.packages["node_modules/rolldown"] as Entry).dependencies = {
+          "original-shared": "1.0.0",
+        };
+        l.packages["node_modules/original-shared"] = entry("original-shared");
+      },
+      after: bumpRolldown,
+      reason:
+        /Unreviewed production\/compiler\/build\/lint root effect:.*@playwright\/test/,
+    },
     {
       name: "production descendant",
       before: (_m, l) => {
@@ -477,6 +500,17 @@ test("qualification and source boundaries fail closed before migration, for alte
     after?: Change;
     reason: RegExp;
   }> = [
+    ...[
+      "scripts/package-smoke-tools.mjs",
+      "scripts/verify-root-javascript-reporters.mjs",
+      "test/package-smoke-tools.test.ts",
+    ].map((file) => ({
+      name: "missing smoke qualification input: " + file,
+      before: (_m: Manifest, _l: Lock, files: Record<string, string>) => {
+        delete files[file];
+      },
+      reason: /Missing qualification input/,
+    })),
     {
       name: "pre-migration",
       before: (_m, _l, f) => {
@@ -790,6 +824,13 @@ test("dependency host route requires the complete existing host queue and reject
     .filter((step: { run?: string }) => step.run)
     .map((step: { run: string }) => step.run);
   assert.ok(commands.includes("node scripts/run-ci-validation.mjs"));
+  assert.ok(
+    commands
+      .flatMap((command: string) =>
+        command.split("\n").map((line) => line.trim()),
+      )
+      .includes("node scripts/verify-root-javascript-reporters.mjs"),
+  );
   assert.ok(
     commands.includes("node scripts/verify-consumer-impact-package.mjs"),
   );

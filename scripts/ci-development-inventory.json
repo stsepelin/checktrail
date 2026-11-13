@@ -7,7 +7,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4f4fe63f0655f005ef905d5c892b64e8dc8967aa"
+      "hash": "0036faa4f792dca614ea7e1d8aa3b735a9b4e66e"
     },
     {
       "path": ".github/dependabot.yml",
@@ -21,35 +21,35 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4178198d4bf3bacf94637e417ea7a9a5a7518bb0"
+      "hash": "5b3527f7a9c4dc86c187775f6826603b8088ef41"
     },
     {
       "path": ".github/workflows/upstream-binutils.yml",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "15ae189a49669c2580d5bb81abb10f694a605c16"
+      "hash": "bb21fe63c21a1d1c89520a307cb7079a2e9c53ae"
     },
     {
       "path": ".github/workflows/upstream-gcc.yml",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a544632d2ea9f34e46cbb2ffc2805d8adfbe3b5b"
+      "hash": "996ba9717b1aa2ddfb3dc740c9b14841ae715298"
     },
     {
       "path": ".github/workflows/upstream-glibc-u13.yml",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "985758cf67bcafe2fc05c46fad02ec41a867d9e1"
+      "hash": "00f7470c6d81e7b10c6aa47762845926d0b2e21b"
     },
     {
       "path": ".github/workflows/upstream-glibc.yml",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "04fa6493d8b39b8d582dc5cecb0a98405f4221a9"
+      "hash": "99499c91b94971b129f02f78e656dc4ab5f40b26"
     },
     {
       "path": ".github/workflows/upstream-go-bootstrap.yml",
@@ -483,7 +483,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "82ca906e3372312148835a8bfc645bd8f3083603"
+      "hash": "9d8d5d6d112c2dae52c8e7d68aeec7883fb9bde7"
     },
     {
       "path": "docs/CHECKSTYLE.md",
@@ -980,7 +980,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "ac5fe489e0fd7b8d3f61d7b7be2d0709c88049f8"
+      "hash": "f703615a6e33dc697c1b62875bc4b21b9c8dfb76"
     },
     {
       "path": "docs/LARAVEL-ASSEMBLY.md",
@@ -1043,7 +1043,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "036a9a8446bb94d97d8ddc772c60409189c3b78f"
+      "hash": "2bc7abbb54349d1cda77508fdec8cd0ba5b64dc1"
     },
     {
       "path": "docs/NATIVE-JSON-PROBES.md",
@@ -1610,7 +1610,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "2dfb079996ba9337b8ec64ac37de10e791e71361"
+      "hash": "9bce68ca8729ba756a750700f098bbadb53932b0"
     },
     {
       "path": "docs/SCALA.md",
@@ -1687,7 +1687,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "3381540d46f0a6cf922fd61b244223f6bcba2869"
+      "hash": "a2028943b4ab89d12ad8f5ed8e95a774a208595e"
     },
     {
       "path": "docs/TERRAFORM.md",
@@ -1736,7 +1736,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d7785236ce0c22db2915944b7d34596032c6f5e8"
+      "hash": "8be38f8fcab177adf907cf2f0119a88079e8ef47"
     },
     {
       "path": "docs/VALIDATION-TASKS.md",
@@ -2016,14 +2016,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "471511cc0da323b43030a705fc59e9e2bfb6b46b"
+      "hash": "00f145441e0fa12a5e55c380fa080388af73e8cf"
     },
     {
       "path": "docs/measurements/artifact-identities-2026-10-21/artifact-evidence-index.v1.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4ff30ff920cd086aff6da3c3c6d18894f0aaea08"
+      "hash": "a81882207051fc91ee74f489d6e376b30a04248b"
     },
     {
       "path": "docs/measurements/artifact-identities-2026-10-21/dotnet-sdk-LICENSE.txt",
@@ -3381,7 +3381,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "e8b2daa98e88a4c3a9db093ce83f9ad40bdf74e1"
+      "hash": "540f379de433c083304ded21d16a5573ead0c44f"
     },
     {
       "path": "docs/measurements/artifact-identities-2026-10-21/scala-LICENSE",
@@ -3626,7 +3626,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "6c78c8e71dddc7db4457e430c879fa0bc579f49c"
+      "hash": "5f86d6ab4571984f9de1fdf14a25a4dbb13698c2"
     },
     {
       "path": "docs/measurements/artifact-identities-2026-10-21/sigstore-trusted-root.jsonl",
@@ -8295,14 +8295,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d40653fb37d6ffb4894c4a04afac451e23fda5ac"
+      "hash": "354d024850581d2830f6a4593bfd557e21ab6009"
     },
     {
       "path": "scripts/ci-native-inputs.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "51c45fe30c8de884b8d6a212b1d641a9fda66086"
+      "hash": "892812f9d8037db8a058572035b85a2ac47c089e"
     },
     {
       "path": "scripts/ci-source-boundaries.json",
@@ -9268,7 +9268,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "ebcda64f10f8347163ab7d492190146adab8dfa0"
+      "hash": "fd9a4c798e6b934a8884a368188d706a67f3ad9b"
+    },
+    {
+      "path": "scripts/package-smoke-tools.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "69eae5c0a2cb3f6351efe8582319197c93f39ed3"
     },
     {
       "path": "scripts/package-upgrade-readiness.mjs",
@@ -9338,7 +9345,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "449a0dd5d1a038f30ea95f6f45a7244dd38dcbe1"
+      "hash": "a7bb169d2dac0deb39d7d12b0e675ee66def5263"
     },
     {
       "path": "scripts/playwright-tools/package-lock.json",
@@ -9544,6 +9551,13 @@
       "hash": "5638d19fe6238095e09196810273a0c489c2f0d2"
     },
     {
+      "path": "scripts/prepare-playwright-browser.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "82fc0053c2ab9c9c681f7a214f17937de4396f64"
+    },
+    {
       "path": "scripts/prepare-playwright-tools.mjs",
       "mode": "100644",
       "type": "blob",
@@ -9621,11 +9635,18 @@
       "hash": "d00d83d88de266d78380f1e2dd9ad0dee51ea643"
     },
     {
+      "path": "scripts/prepare-scala2-signature-proof.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "c5c7c619429acb4993c4ec26a2319943c26ffe15"
+    },
+    {
       "path": "scripts/prepare-scala2-tools.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "381b9f5e5a904cb94ccaa66fb7156dc56e7d97ac"
+      "hash": "3c58785b96c89a9014a6a74a711795345fb34605"
     },
     {
       "path": "scripts/prepare-spotbugs-tools.mjs",
@@ -9653,7 +9674,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "09ed4f3952d6541e455db40974c1d3162eb90984"
+      "hash": "5792b8189f93e80ec69da942a20d091b1789a9f6"
+    },
+    {
+      "path": "scripts/prepare-ubuntu-mirrors.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "d25de1342cbd21f87ba25b8c05f663f2766c7884"
     },
     {
       "path": "scripts/prepare-yaml-context-runtime.mjs",
@@ -9793,14 +9821,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "8f3232f2adf7a86406be2ecd8742783136f73e6c"
+      "hash": "f5df99927ebeff0f0b7678cd87b33e2f51a6f293"
     },
     {
       "path": "scripts/producer-qualification/c-carrier-observation.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "aa776df44bd4c25ae629dbc7e8ca446769ea6142"
+      "hash": "b3db10896499e883613414824b9ab405f9981da7"
     },
     {
       "path": "scripts/producer-qualification/c-producer-build.sh",
@@ -9814,14 +9842,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "c71a36cfa3c00b9af875c8bdcf2765231263ec1f"
+      "hash": "ae90b0f284794dc73f9ba8e694c89565b821ccc9"
     },
     {
       "path": "scripts/producer-qualification/c-producer-profile.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "2051acd94fbcbca4c701ef4ccf5fbb01a6219bdf"
+      "hash": "5f27b341fbf8fb794b97e6d5755636e755b53690"
     },
     {
       "path": "scripts/producer-qualification/c-producer-profiles.v1.json",
@@ -9835,21 +9863,42 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "6a6c95d77c339e2498a70ef2c776f8d690c60f53"
+      "hash": "e66761f80ed9cbe973d8785c0996f5572f5b714c"
     },
     {
       "path": "scripts/producer-qualification/c-producer-replay-evidence.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "5e64f2abfe9d8e363280ed14e2d7442aab4a3b05"
+      "hash": "89226efb79e6cfe1866d0620565efc3551a88322"
+    },
+    {
+      "path": "scripts/producer-qualification/c-producer-report-codec.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f96ae85b4ce3d06cb32bcfe6c8bea436399b8287"
+    },
+    {
+      "path": "scripts/producer-qualification/c-producer-report-codec.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "816fe7ca822619d449af1067f08bf7639012f6e7"
     },
     {
       "path": "scripts/producer-qualification/c-producer-test-reports.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "b545edd2ae190551d9e0dde20161e26fab9626a8"
+      "hash": "f4d12f60dffeed754a47528b3406832aa4976663"
+    },
+    {
+      "path": "scripts/producer-qualification/c-report-encoding.v1.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "ec63f92aefd924c744011bfe5a835a74196bcf08"
     },
     {
       "path": "scripts/producer-qualification/emsdk-metadata-archive.mjs",
@@ -9913,6 +9962,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "2a2c5a42d45cce8ddf0ff5600afdbe20dea945e4"
+    },
+    {
+      "path": "scripts/producer-qualification/gcc-local-12h-policy.v1.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "e7119cfda7a324a7ece949550462bf073ab89c2f"
     },
     {
       "path": "scripts/producer-qualification/gcc-local-wall-policy.v1.json",
@@ -10199,21 +10255,21 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "10b7711d4fbdd3eebb26640ff6b78100a39e98a4"
+      "hash": "f6900e6baff7297bf91747a37dfa0b4c4acd4838"
     },
     {
       "path": "scripts/qualify-go-bootstrap-producer.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "b94556b3aa71bdb2eb827145263d08d17163398b"
+      "hash": "5d6216e453926c60d0308a81f4943dbaabbb0407"
     },
     {
       "path": "scripts/qualify-node-original-producer.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "8347e935f4b6b191f1e722b01161a180cdb69a91"
+      "hash": "fdb2b3ec43171ac1ea7f5e225cc2c03f6d9e74ca"
     },
     {
       "path": "scripts/release-readiness-tools.mjs",
@@ -10242,6 +10298,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "6600896c85abb6aae70b7f5648fdf8f370601f4c"
+    },
+    {
+      "path": "scripts/release-signature-preparation.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "a729de579142736267c5189424c4e7d6a268c92f"
     },
     {
       "path": "scripts/request-cpp-tool-archive.mjs",
@@ -10461,6 +10524,13 @@
       "hash": "28330a29e875b63d19de2be98c045adf93135667"
     },
     {
+      "path": "scripts/scala2-signature-native-cases.v1.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "d1c62ff40cd14b4c95b3044ea869f2287adb3bdf"
+    },
+    {
       "path": "scripts/selected-clang-consumer-witness.mjs",
       "mode": "100644",
       "type": "blob",
@@ -10472,7 +10542,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "55fc01d616c16525eb2050e358b7cbd0395890f4"
+      "hash": "fa1beea44a0faa8f8312ff772d75ce21640dae37"
     },
     {
       "path": "scripts/spotbugs-tools.Dockerfile",
@@ -10522,6 +10592,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "78e2b4f391991aa042e74d34c41080f12291ab17"
+    },
+    {
+      "path": "scripts/terraform-signature-native-cases.v1.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "0da46a96cbd2a9c5058b2157728e2080390473e4"
     },
     {
       "path": "scripts/typescript-legacy-tools/package-lock.json",
@@ -10605,7 +10682,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a10f175feed198ba434aac9b107554b9048838eb"
+      "hash": "4830973e7e748a865acd60236e69679f85c6dadb"
     },
     {
       "path": "scripts/verify-c-context-container.mjs",
@@ -10626,7 +10703,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "63cbb69444722fccfdfdebb9e17b1faae0f017c6"
+      "hash": "36c921ceba18bcea792180450446374fba88382a"
     },
     {
       "path": "scripts/verify-checkstyle-container.mjs",
@@ -11756,6 +11833,13 @@
       "hash": "473c7aedba5c30fa7fe5721613df8400f1959106"
     },
     {
+      "path": "scripts/verify-root-javascript-reporters.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "6fc7128f22532ff604da37b1543d52f56ce7aeaa"
+    },
+    {
       "path": "scripts/verify-ruby-container.mjs",
       "mode": "100644",
       "type": "blob",
@@ -11924,6 +12008,34 @@
       "hash": "6a1e25de548756474e9851c14ccf02c3b9d640a4"
     },
     {
+      "path": "scripts/verify-scala2-signature-container.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "8f24811fa4774e1f971e8d98e31ee56e99877660"
+    },
+    {
+      "path": "scripts/verify-scala2-signature-installed.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "c141736e033dca52e8bc14ed25f1cdbfd46666e1"
+    },
+    {
+      "path": "scripts/verify-scala2-signature-native.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "440a56492d76b6a7137dab1b64d740e5a2b418a5"
+    },
+    {
+      "path": "scripts/verify-scala2-signature-proof.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "80f16aba7de742fb0c9c396415c406068c5dae47"
+    },
+    {
       "path": "scripts/verify-selected-clang-consumers.mjs",
       "mode": "100644",
       "type": "blob",
@@ -12069,6 +12181,20 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "6859a6991d51197ed70aa6dc6db7775e1dd41765"
+    },
+    {
+      "path": "scripts/verify-terraform-signature-container.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "c011d9ac7f76c30247b507f2b8f34e70772d08f0"
+    },
+    {
+      "path": "scripts/verify-terraform-signature-installed.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "b65f56444fcb7a645eb4ea8a7f7c515488ccfd1b"
     },
     {
       "path": "scripts/verify-vb-context-container.mjs",
@@ -14070,7 +14196,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "78c1607f74b2f5f3ded856cdd274a6369eb4ecdf"
+      "hash": "067a53b66ef8e876709f9c73535ec159320245b9"
     },
     {
       "path": "src/posix-target.ts",
@@ -14162,6 +14288,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "e60c7d7c2ad4effa0ccb571212a46c6e61b89a86"
+    },
+    {
+      "path": "src/release-signature-proof.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "77dbb52b0f26d3f690238c091c41fadf5f366b65"
     },
     {
       "path": "src/report-validation.ts",
@@ -15050,7 +15183,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "3ecc2c944ec4eb2e2b8fd99c9f57ba2a713c7b1d"
+      "hash": "653cc97764669c4757ae9686d29cb4a5579af622"
     },
     {
       "path": "src/scala2-archive.ts",
@@ -15071,7 +15204,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "1f7b7c28ca5381532d82fdf4a36841001dc2c0d6"
+      "hash": "e026cc7fc860d6d97142caf1ee4513763c60e849"
     },
     {
       "path": "src/scala2-native.ts",
@@ -15081,18 +15214,25 @@
       "hash": "aa93aba7694292dfa962d1f623c2d498a6490d4b"
     },
     {
+      "path": "src/scala2-release-signature.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "91bf15220a8d9f991d390314f232a96213acce50"
+    },
+    {
       "path": "src/scala2-runner.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "fa061c15ed8a3a55843c38d11d738c3ba16ede57"
+      "hash": "68ae9718eb06dfebd4d5de054cbf9029525bc03b"
     },
     {
       "path": "src/scala2.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "6036374582beb877ec3480f41c2ae1aedb67de93"
+      "hash": "e753369f0e8fc6e17df27e10392c0bb82ac23beb"
     },
     {
       "path": "src/schemas.ts",
@@ -15379,14 +15519,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "2672e8f7cadfb6be565b34b97e562c7934aa6c15"
+      "hash": "e300a6f2e5979200e8f4688d68f7135212a24596"
     },
     {
       "path": "src/terraform-extensions-packet.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "e4c6cf2e722faf819266698f65777fb77302578e"
+      "hash": "02d035fd57399d4c8e63a1a78592020ed76cf294"
     },
     {
       "path": "src/terraform-extensions-physical.ts",
@@ -15400,14 +15540,21 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "360841163449e2af0f361be1a2cdde76ba654cf5"
+      "hash": "ce04ca551b63e253b78eee2d10adc2adf122260b"
     },
     {
       "path": "src/terraform-extensions.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "9bf57b7161dbcdb135c9ff3b2e2099e1c47f15c2"
+      "hash": "73a435408300980faffbf9dba60f45e2321747e8"
+    },
+    {
+      "path": "src/terraform-release-signature.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f1593759517cfda7d7d0f4df7bb7ee6ea4a588b0"
     },
     {
       "path": "src/terraform-runner.ts",
@@ -15736,7 +15883,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "07768f4f00025309a915e4c21aaee94b1302958f"
+      "hash": "cf42b9611b15baa18f36ad78dfcef3a3c0b0666d"
     },
     {
       "path": "test/attempt-archive-native.test.ts",
@@ -15802,6 +15949,13 @@
       "hash": "399976850fe4712718b568e2e09f6ddba368bd25"
     },
     {
+      "path": "test/binutils-controller-inputs.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "5ddbf7b2fb0749dd65ef03d0d6250fac0a64cc57"
+    },
+    {
       "path": "test/binutils-download.test.ts",
       "mode": "100644",
       "type": "blob",
@@ -15834,35 +15988,70 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "936f99c4e0a76e4b372b49b907808b30ba33c5ad"
+      "hash": "fca17309e642e2e31664a6a1e2fe413694737315"
     },
     {
       "path": "test/c-producer-gcc-evidence.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "9b048eefdea3e492b6299da4c7e95b55159664fe"
+      "hash": "7203b3c82b2f8aad2559a753a81b36ca4e7e94ad"
+    },
+    {
+      "path": "test/c-producer-local12h.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f750559339e0e259bff321331be7f9eecc0a2ab9"
     },
     {
       "path": "test/c-producer-qualification.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "c71c25671bbb06aac4c3c590260a1c6dae3a8d37"
+      "hash": "657dd97cbfc4c4a2ab0359fd3db499c41c7fc192"
     },
     {
       "path": "test/c-producer-quiescence.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "9a868f78a9cc235c0e533b6f319f7684df6d9943"
+      "hash": "c1cebaec0c6c493b1547c7e076960da2655d89e5"
     },
     {
       "path": "test/c-producer-replay-batch.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "550955af8366d258a2bdef592af6bd6cee5fe373"
+      "hash": "b5de8e8ee6866fe198ef027010d4fc1841a93c0b"
+    },
+    {
+      "path": "test/c-producer-report-capture.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "1cbdd439010b9da7b007409fabb1881e8c634518"
+    },
+    {
+      "path": "test/c-producer-report-codec.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f4e868b32e4e99e43f11ef4f673098d16535e214"
+    },
+    {
+      "path": "test/c-producer-report-transport.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "69ade5cf6d05f0fc25450720c8ed7c7a7eb9f5d1"
+    },
+    {
+      "path": "test/c-producer-source-epoch.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "060235c193f4df4a3e2a0ddeaf18bb368e3721ec"
     },
     {
       "path": "test/c-producer-u13.test.ts",
@@ -15904,14 +16093,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "3a7c057528e49b63e3bbb30be0051d5849199fbe"
+      "hash": "79fa25f52a87991f42f18d30ff400cdf961e1945"
     },
     {
       "path": "test/ci-impact.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "35e8bbed6df1ec44104a4e7cebee77a7cbd406b2"
+      "hash": "6b36aa3e7a87f3b45f739e1ab773fb6421b737d4"
     },
     {
       "path": "test/ci-native-profiles.test.ts",
@@ -16803,18 +16992,74 @@
       "hash": "7452ce1823301cea58dd32865a625a30d9285ae9"
     },
     {
+      "path": "test/fixtures/c-controller-history/LICENSE-schema1.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "bc8e9a33cf2a78057017187176f0810c85e467ae"
+    },
+    {
+      "path": "test/fixtures/c-controller-history/LICENSE-schema2.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "bc8e9a33cf2a78057017187176f0810c85e467ae"
+    },
+    {
+      "path": "test/fixtures/c-controller-history/provenance.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "377e4400980f8c493c139389164fdfc5613d3bb1"
+    },
+    {
+      "path": "test/fixtures/c-controller-history/report-collector-provenance.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "543f0cc02d2201ec2f4c3ccf348931abd00cfea7"
+    },
+    {
+      "path": "test/fixtures/c-controller-history/schema1-controller.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f97b193d3cd137ac863e01aa330883d9dbafacb7"
+    },
+    {
+      "path": "test/fixtures/c-controller-history/schema2-controller.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "10b7711d4fbdd3eebb26640ff6b78100a39e98a4"
+    },
+    {
+      "path": "test/fixtures/c-controller-history/schema2-report-collector.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "b545edd2ae190551d9e0dde20161e26fab9626a8"
+    },
+    {
+      "path": "test/fixtures/c-producer-epoch-routing.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f853531e4e57bb2c92ff774fd36b9e9fb253a527"
+    },
+    {
       "path": "test/fixtures/c-producer-interruption.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "1bfe6d8dd7e04cd8b80eb21a0c288e63b2daf5ce"
+      "hash": "f1d4b8d161356cb07374a913084bd6bd85a8ed6c"
     },
     {
       "path": "test/fixtures/c-producer-local-clock.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "f1b4d2cf22231d9820080444e95a0813d8b7ae4a"
+      "hash": "d6a095a8283dc611e715f1f328b108e7abe54d25"
     },
     {
       "path": "test/fixtures/c-retention-controls.py",
@@ -16822,6 +17067,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "57166945008aa1c058f61f38865c1dec0f2c32e9"
+    },
+    {
+      "path": "test/fixtures/c-retention-quiescent-rename.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "892f003cef3ca6cd73fd9b3cad447ad86a410881"
     },
     {
       "path": "test/fixtures/ci-matrix-validation.v1.json",
@@ -16843,6 +17095,76 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "534d35da2b8450502d9256a6c699dfe40f5b1ed5"
+    },
+    {
+      "path": "test/fixtures/release-signature/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "2be497400188bf8d78ed990201b744acbad85b4e"
+    },
+    {
+      "path": "test/fixtures/release-signature/checksums.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "3bb84aa3b8479768d1f5d9a0840ec8556051403d"
+    },
+    {
+      "path": "test/fixtures/release-signature/preparation/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "1f9e93056d16aff0252f2c9d6428222ef5501e88"
+    },
+    {
+      "path": "test/fixtures/release-signature/preparation/metadata.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "471b8a8bdc0d79c5f56cee45fef461b7f73fb6bb"
+    },
+    {
+      "path": "test/fixtures/release-signature/preparation/provider-SHA256SUMS.sig",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "bba04b29045455d34ea0105a079c082131a485ab"
+    },
+    {
+      "path": "test/fixtures/release-signature/preparation/provider-SHA256SUMS.txt",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "8dbb940129897362fc5ea8f6dea3f3d66dd0169d"
+    },
+    {
+      "path": "test/fixtures/release-signature/preparation/provider-public-key.asc",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "51ce72d683d9c1c4e918115ff7b9fe544a66d510"
+    },
+    {
+      "path": "test/fixtures/release-signature/preparation/synthetic-provider.zip",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "668bbe3b22465fdbe5fc9ca6df22dd8b7739c0d0"
+    },
+    {
+      "path": "test/fixtures/release-signature/public-key.asc",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "1156bf9b5f3baaad1ba4fc8017773d5baceee89f"
+    },
+    {
+      "path": "test/fixtures/release-signature/signature.asc",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "c91a63404845a5bfc844e5179903c0e6358c30a5"
     },
     {
       "path": "test/framework-examples.test.ts",
@@ -17276,14 +17598,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "deec5f9ad18a36cd7551f57e7572c90bc4cdcafd"
+      "hash": "1fc765ae90154dfbe283a86c4d80bb326ceb4064"
     },
     {
       "path": "test/go-bootstrap-producer.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "8aacd96ff1e9e515587ec1c0fc83285cd994ec6f"
+      "hash": "0dd2c82db74f71c3b673b3b9bafcde3088edd9f9"
     },
     {
       "path": "test/go-bootstrap-transport.test.ts",
@@ -18207,7 +18529,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "bdce95a7f3353dfd9f6251308eb4db71d45bbb3f"
+      "hash": "3413bd1dd0250f9f8eb055e210516d99501bef38"
     },
     {
       "path": "test/node-original-retention-controls.py",
@@ -18257,6 +18579,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "4d5d7c4b51575bf40d898b7a41990813ff9b4aa5"
+    },
+    {
+      "path": "test/package-smoke-tools.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "46b1beec8673e69f608809073af13f2c09fbc1d3"
     },
     {
       "path": "test/performance.test.ts",
@@ -18382,7 +18711,21 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "b4e098d41f719d14ba0f3e9665e61bc604647862"
+      "hash": "dbdb84cf1c3ecdd80ceb7a987547734424be0799"
+    },
+    {
+      "path": "test/prepare-playwright-browser.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "8f4ff8b9179e5d3854431dc94583868b0799be87"
+    },
+    {
+      "path": "test/prepare-ubuntu-mirrors.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "8e46aae9b91f471cae65b9f06fd3e43412e0b60b"
     },
     {
       "path": "test/prepared-native-resource-tools.test.ts",
@@ -18481,6 +18824,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "357cc1be9356ebeccc5fd900363206033924ec1d"
+    },
+    {
+      "path": "test/release-signature-proof.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "61a4ee02b8f803cfba52fa9770da0ea26e576e97"
     },
     {
       "path": "test/required-native-tests.test.ts",
@@ -19477,6 +19827,20 @@
       "hash": "518851d06cdfc25442abc63b11ffc07d7ed54eef"
     },
     {
+      "path": "test/scala2-release-signature.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "85e50bfb03a05f88b4322d31713d74d1dcb9f2d6"
+    },
+    {
+      "path": "test/scala2-signature-ci.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "bf1e5ed7aecab6fda9f94c542e739ce873bf13b8"
+    },
+    {
       "path": "test/schemas.test.ts",
       "mode": "100644",
       "type": "blob",
@@ -19747,7 +20111,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "8daa69fa84a64b2ec64b59dc2e9a8c3550686826"
+      "hash": "16dbbaaca5ae70a6576a508fa66fa7363e6b17ba"
     },
     {
       "path": "test/terraform-extensions-surfaces.test.ts",
@@ -19776,6 +20140,34 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "fb39f4f38c7efa3171299a3929294e51fee022b0"
+    },
+    {
+      "path": "test/terraform-release-preparation.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "2bc274074a845512d0a66cc1484bc1caa44ab6fe"
+    },
+    {
+      "path": "test/terraform-release-signature-native.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "5cdaecfd90cb2347233162fd89a90ba39be40022"
+    },
+    {
+      "path": "test/terraform-release-signature.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "450b235bcedd97ef601aca6cf134f069bc48b109"
+    },
+    {
+      "path": "test/terraform-signature-ci.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "121981eb103240e4bebd69292b835c9975a4295b"
     },
     {
       "path": "test/terraform-surfaces.test.ts",
@@ -19810,7 +20202,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "1441cf2359880da371ef91f69fd3141576b02dd5"
+      "hash": "11eaba4bbafd19ce96608117f99b82805a92047f"
     },
     {
       "path": "test/tool-versions.test.ts",

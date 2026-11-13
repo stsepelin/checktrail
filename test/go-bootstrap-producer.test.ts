@@ -942,6 +942,14 @@ test("Go source-chain caller passes the current attempt and retains the closed p
       "scripts/producer-qualification/go-bootstrap-transport.mjs",
     ),
   );
+  for (const file of [
+    "scripts/producer-qualification/c-producer-report-codec.mjs",
+    "scripts/producer-qualification/c-report-encoding.v1.json",
+  ])
+    assert.ok(
+      goBootstrapSourceFiles.includes(file),
+      "Unbound actual shared report helper/data: " + file,
+    );
   for (const helperFile of goBootstrapSourceFiles.filter((file: string) =>
     file.endsWith(".mjs"),
   )) {

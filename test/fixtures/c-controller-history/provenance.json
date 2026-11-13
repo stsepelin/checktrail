@@ -1,0 +1,461 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/stsepelin/checktrail",
+  "scope": "Inert original first-party implementation inputs; never import or execute these files. Producer result data remains synthetic. Runtime source-epoch authority lives only in trusted reader constants, not this test provenance.",
+  "historicalControllerPath": "scripts/qualify-c-producer.mjs",
+  "historyTip": "f3e7b06f097c4490234060b9f4b25a65015804e8",
+  "fixtures": [
+    {
+      "schemaVersion": 1,
+      "file": "schema1-controller.mjs.txt",
+      "originalCommit": "abca11cfa538ea911f6a686268f4fc70d0d456a2",
+      "originalPath": "scripts/qualify-c-producer.mjs",
+      "bytes": 46160,
+      "sha256": "c675c3244feaa2a3c28003290519307db273a77f70f24550be388eb0f0602492",
+      "license": {
+        "file": "LICENSE-schema1.txt",
+        "originalCommit": "abca11cfa538ea911f6a686268f4fc70d0d456a2",
+        "originalPath": "LICENSE",
+        "bytes": 1066,
+        "sha256": "38fbc60c5849e96fbfb96227eb1eef160e8e3c5a3959b0d51ee0b89b7bca291d"
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "file": "schema2-controller.mjs.txt",
+      "originalCommit": "87a528dbb3281bd5e5b308db6acdb355acebcd89",
+      "originalPath": "scripts/qualify-c-producer.mjs",
+      "bytes": 67909,
+      "sha256": "be1561e57b777e5c08aea20e39a734e80ce0fed47ddb09e6730f77db544c7bdf",
+      "license": {
+        "file": "LICENSE-schema2.txt",
+        "originalCommit": "87a528dbb3281bd5e5b308db6acdb355acebcd89",
+        "originalPath": "LICENSE",
+        "bytes": 1066,
+        "sha256": "38fbc60c5849e96fbfb96227eb1eef160e8e3c5a3959b0d51ee0b89b7bca291d"
+      }
+    }
+  ],
+  "reviewedEpochs": [
+    {
+      "commit": "87a528dbb3281bd5e5b308db6acdb355acebcd89",
+      "bytes": 67909,
+      "sha256": "be1561e57b777e5c08aea20e39a734e80ce0fed47ddb09e6730f77db544c7bdf",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [2],
+      "stateSites": [
+        {
+          "line": 1650,
+          "source": "schemaVersion: 2,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 1803,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1921,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 2117,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 1890,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 2
+    },
+    {
+      "commit": "da2037be29c51fa0797f463bf918a1609765c321",
+      "bytes": 67101,
+      "sha256": "aea6f78bf62439189636a0765e31ee0ca881a7a7a7c4ce2c12104f59011f5884",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [2],
+      "stateSites": [
+        {
+          "line": 1647,
+          "source": "schemaVersion: 2,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 1800,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1901,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 2097,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 1870,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 2
+    },
+    {
+      "commit": "074bb4be98024a6481e183f3dcb0f0b09f4d3a07",
+      "bytes": 63182,
+      "sha256": "c7298cc50eb437d7bf6a34bd0fdd156edaaa3322f04a767801776023970fb65c",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [2],
+      "stateSites": [
+        {
+          "line": 1585,
+          "source": "schemaVersion: 2,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 1726,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1826,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 2007,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 1796,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 2
+    },
+    {
+      "commit": "abca11cfa538ea911f6a686268f4fc70d0d456a2",
+      "bytes": 46160,
+      "sha256": "c675c3244feaa2a3c28003290519307db273a77f70f24550be388eb0f0602492",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [1],
+      "stateSites": [
+        {
+          "line": 1158,
+          "source": "schemaVersion: 1,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 1196,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1285,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1450,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 1255,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 1
+    },
+    {
+      "commit": "0c3f48574ddd934775ce114ce58f14186ec1308b",
+      "bytes": 44685,
+      "sha256": "183a5cf1c2412d496bbd43f69cfbe1558d23abb3dc15a006f5ad0da08de028ef",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [1],
+      "stateSites": [
+        {
+          "line": 1114,
+          "source": "schemaVersion: 1,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 1152,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1241,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1406,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 1211,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 1
+    },
+    {
+      "commit": "79cba9b784a200ccb4b8302c9788742e96a334ce",
+      "bytes": 41703,
+      "sha256": "7f23265d6bc2f6e0521287cb5e63bb0f3e93c79cf72461b0593286e73937926e",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [1],
+      "stateSites": [
+        {
+          "line": 1014,
+          "source": "schemaVersion: 1,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 1050,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1139,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1295,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 1109,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 1
+    },
+    {
+      "commit": "0ef52d40d40a4bcbb8437538ecf1aa9c0467686e",
+      "bytes": 41656,
+      "sha256": "3cc575883e38ab8da7de299686ec549717df7581de22c6e8ebc4d5aaf7cfed30",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [1],
+      "stateSites": [
+        {
+          "line": 1013,
+          "source": "schemaVersion: 1,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 1049,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1138,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1294,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 1108,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 1
+    },
+    {
+      "commit": "6244fffcdc82de85b70bb0a733c32d6d7cc2ed63",
+      "bytes": 41812,
+      "sha256": "3fd12c507228d53d1987c4b27f5db1fc8746221148e7ae02c76eb5ef5919c083",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [1],
+      "stateSites": [
+        {
+          "line": 1020,
+          "source": "schemaVersion: 1,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 1056,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1145,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1301,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 1115,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 1
+    },
+    {
+      "commit": "6de8da796a71f99bdebaf344cf7d695157c9c2c5",
+      "bytes": 41734,
+      "sha256": "dba900988c4630c79737720d70ac165bc4ea2d65fc867bd8f578c77c074dbd1f",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [1],
+      "stateSites": [
+        {
+          "line": 1017,
+          "source": "schemaVersion: 1,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 1053,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1142,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1298,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 1112,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 1
+    },
+    {
+      "commit": "9841ba3ef8cb7bccfdf24cf476533aec96af1d4d",
+      "bytes": 34452,
+      "sha256": "9ba614fb44695ca46d3d95d30db2df2f49dd5d1355222b6474f93c4874852003",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [1],
+      "stateSites": [
+        {
+          "line": 821,
+          "source": "schemaVersion: 1,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 856,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 927,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1062,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 897,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 1
+    },
+    {
+      "commit": "c54e69b31eca849c436b8d0154394534bc8b2d30",
+      "bytes": 34414,
+      "sha256": "68c82b4e467cc16e1281a4c07d43ae5a3e4b86e4d15fab2253e9d9637ae0714c",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [1],
+      "stateSites": [
+        {
+          "line": 819,
+          "source": "schemaVersion: 1,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 854,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 925,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1060,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 895,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 1
+    },
+    {
+      "commit": "ae3ea0ba5f85bdf1b73c3ed897b778fe9b364802",
+      "bytes": 33922,
+      "sha256": "a7ab7606d15dab9c2cfc2101dd88faa5287be21bbe727e79f33b7d17a0b2d408",
+      "runFunctions": 1,
+      "explicitRunStateSchemaVersions": [1],
+      "stateSites": [
+        {
+          "line": 804,
+          "source": "schemaVersion: 1,"
+        }
+      ],
+      "atomicReceiptStateEmitSites": [
+        {
+          "line": 839,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 910,
+          "source": "await atomicReceipt(destination, state);"
+        },
+        {
+          "line": 1045,
+          "source": "await atomicReceipt(destination, state);"
+        }
+      ],
+      "workBoundSites": [
+        {
+          "line": 880,
+          "condition": "sample.bytes <= profile.limits.workByteLimit + allowance",
+          "message": "Retained original work exceeded declared bound plus frozen inputs/controls"
+        }
+      ],
+      "schemaVersion": 1
+    }
+  ]
+}

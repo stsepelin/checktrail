@@ -1,3 +1,7 @@
+import {
+  scala2SignatureInputs,
+  prepareScala2SignatureProof,
+} from "./prepare-scala2-signature-proof.mjs";
 import assert from "node:assert/strict";
 import { requestScalaArchive } from "./request-scala-archive.mjs";
 import { createHash, randomUUID } from "node:crypto";
@@ -19,6 +23,16 @@ const SCALA_VERSION = scala2Artifacts.version;
 const repository = await realpath(
   fileURLToPath(new URL("../", import.meta.url)),
 );
+const args = process.argv.slice(2);
+assert.ok(
+  args.length === 0 ||
+    (args.length === 2 && args[0] === "--verify-release-signatures"),
+  "Usage: prepare-scala2-tools.mjs [--verify-release-signatures ABSOLUTE_INPUT_DIRECTORY]",
+);
+// Refuse incomplete signature inputs before modifying either cache.
+const signatureInputs = args.length
+  ? await scala2SignatureInputs(args[1])
+  : null;
 const directory = path.join(repository, ".checktrail/scala-tools");
 await mkdir(directory, { recursive: true });
 assert.equal(
@@ -48,6 +62,7 @@ try {
 } catch (error) {
   if (error.code !== "ENOENT") throw error;
 }
+let downloadedPayload;
 if (!cached) {
   const payload = await requestScalaArchive(
     {
@@ -67,25 +82,43 @@ if (!cached) {
     },
   );
   verify(payload);
-  const staging = path.join(directory, `.scala-${randomUUID()}.part`);
-  try {
-    await writeFile(staging, payload, { flag: "wx", mode: 0o600 });
+  downloadedPayload = payload;
+  if (!signatureInputs) {
+    const staging = path.join(directory, `.scala-${randomUUID()}.part`);
     try {
-      await link(staging, target);
-    } catch (error) {
-      if (error.code !== "EEXIST") throw error;
-      await verifyCached();
+      await writeFile(staging, payload, { flag: "wx", mode: 0o600 });
+      try {
+        await link(staging, target);
+      } catch (error) {
+        if (error.code !== "EEXIST") throw error;
+        await verifyCached();
+      }
+    } finally {
+      await rm(staging, { force: true });
     }
-  } finally {
-    await rm(staging, { force: true });
   }
 }
-process.stdout.write(
-  JSON.stringify({
-    artifact: filename,
-    bytes: expectedBytes,
-    sha256: SCALA_SHA256,
-    cached,
-    publisherSignatureVerified: false,
-  }) + "\n",
-);
+if (signatureInputs) {
+  const prepared = await prepareScala2SignatureProof({
+    archive: cached ? await readFile(target) : downloadedPayload,
+    inputs: signatureInputs,
+    destinationParent: path.join(repository, ".checktrail/scala-signed-tools"),
+  });
+  process.stdout.write(
+    JSON.stringify({
+      ...prepared,
+      operatorProofPinSelectionRequired: true,
+      distributionSignatureVerified: false,
+      completeArtifactAndNoticeClosureVerified: false,
+    }) + "\n",
+  );
+} else
+  process.stdout.write(
+    JSON.stringify({
+      artifact: filename,
+      bytes: expectedBytes,
+      sha256: SCALA_SHA256,
+      cached,
+      publisherSignatureVerified: false,
+    }) + "\n",
+  );

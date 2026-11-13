@@ -52,12 +52,13 @@ records actual sequential and concurrent executions of the sealed multi-claim
 mutation and installed-package controllers. This is one local subset comparison,
 not current hosted acceptance or a prediction for total workflow duration.
 
-Stack branches under `pr/**` use pull-request events for verification rather than
-duplicating the full workflow on their branch push. Other branch pushes and all
-tag pushes retain verification. A newly opened PR triggers its checks even when
+Managed branches under `pr/**`, `agent/**`, `dependabot/**` and `fix/**`, plus
+the exact legacy branch `feat/scoped-release-signatures`, use pull-request events
+for verification without duplicating the full workflow on their branch push.
+Other branch pushes and all tag pushes retain verification. A newly opened PR triggers its checks even when
 its initial branch push did not. Each PR has its own workflow concurrency group;
 a newer merge-candidate run supersedes older runs for that PR, including runs
-caused by predecessor updates. This does not serialize jobs within a run or other
+caused by updating the branch with main. This does not serialize jobs within a run or other
 PRs. Branch pushes also share a group per branch, so a newer push cancels an older
 run for that branch, including main during consecutive merges. Different
 branches and tag refs have separate groups; running tag verification is not
@@ -111,6 +112,39 @@ measurements retain the package identities actually observed at that time.
 
 ## Affected checks on pull requests
 
+The performance target for ordinary scoped PR verification is ten to twenty
+minutes from submission to completion, including queueing, with at most twenty
+concurrent GitHub jobs available. Job counts alone do not establish this target:
+measure queued time, setup and execution on the hosted candidate. Full
+compatibility verification remains the conservative fallback for shared and
+unclassified changes. Original upstream compiler qualification is separate work;
+complete producer-build closure remains required for Gate A.
+
+Chromium acquisition validates the locked native fixture before starting the
+qualified CLI. A bounded helper retains every attempt and retries only recognized
+Ubuntu archive DNS failures. Integrity, package, permission and mixed failures,
+output exhaustion, signals, cancellation and timeouts remain terminal. Persistent
+DNS hangs can therefore still fail setup; retrying acquisition does not qualify
+any browser test. Browser runtime admission and fresh installed controls remain
+separate checks.
+
+On Linux, the workflow starts the watchdog with the selected absolute Node
+executable under noninteractive sudo. The watchdog and APT then have the same
+owner for scoped process-tree cleanup. macOS uses the selected executable without
+sudo. The helper retains the fixed browser-cache path and ordinary read access;
+proxy, certificate and hosted-runner identity settings are preserved without
+forwarding the full CI environment to privileged package processes.
+
+On supported GitHub-hosted Ubuntu runners, browser preparation temporarily gives
+the independent Princeton Ubuntu mirror priority over the runner’s existing
+Canonical mirror entries. APT still verifies the Ubuntu archive signatures with
+the runner’s existing keys. The helper validates the referenced mirror list before
+publication and restores its original bytes and ownership after the owned CLI
+process tree has stopped. Unsupported layouts are reported explicitly; an
+intervening mirror-list change prevents restoration from overwriting it. If
+process cleanup cannot be verified, preparation fails without rollback or retry.
+This failover changes acquisition only and does not qualify browser tests.
+
 Before planning the matrix, `ci-plan` installs the committed lock with lifecycle
 scripts disabled, then checks direct dependency metadata and the native input
 contract, validates artifact credential header safety without network requests,
@@ -151,8 +185,9 @@ cannot attach an unrelated language to a native job.
 The exact generated map path is treated as derived data only after the planner
 rebuilds the graph and verifies that it matches the checked-in contract. Other
 changed inputs still select their recorded consumers or require full verification.
-A stale or invalid map cannot authorize selective routing; CI controller,
-workflow and shared-runtime changes retain full verification. Programmatic
+A stale or invalid map cannot authorize selective routing. Shared CI controllers,
+shared runtime changes and workflows outside the reviewed producer boundary retain
+full verification. Programmatic
 selection also requires an explicit current-contract confirmation.
 
 The finite preparation regression registry in `scripts/ci-impact.mjs` assigns
@@ -170,14 +205,23 @@ inventory controls to pass; an omitted or skipped required control fails.
 It executes every callback in the selected files, not only the named controls.
 Its receipt identifies the selected files and records skips separately.
 
-The exact C producer inputs enumerated in `cProducerSharedBoundary` in
-`scripts/ci-impact.mjs` select complete C, GCC/GLIBC policy, Go bootstrap and
-Node original producer regression files. The Go and Node controllers capture the
-C caller identity and include its controller, profile and catalog in their source
-inventories, so their regressions belong to this selection as well. Any declared
-native consumers are still selected. This finite list does not classify new or
-adjacent producer filenames; those retain full verification. The producer scripts
-and test sources are development files excluded from the published package.
+The exact producer inputs enumerated in `cProducerSharedBoundary` in
+`scripts/ci-impact.mjs` select the complete Binutils, C, GCC/GLIBC policy, Go
+bootstrap, Node original producer and shared producer regression files. The Go
+and Node controllers capture the C caller identity and include its controller,
+profile and catalog in their source inventories, so their regressions belong to
+this selection as well. The exact Binutils, GCC, GLIBC and GLIBC-u13 qualification
+workflow files also select these contracts and require actionlint. Other workflows
+retain full verification. Any declared native consumers are still selected.
+
+The producer boundary requires a reviewed fingerprint of tracked script, test
+and workflow names. Missing, malformed or changed inventories force full
+verification. New helpers, fixtures, contracts or workflows therefore need a
+review of reverse consumers and a fingerprint refresh before producer selection
+can resume. Existing member edits keep their complete regression files. This
+finite list does not classify new or adjacent producer filenames; those retain
+full verification. The producer scripts and test sources are development files
+excluded from the published package.
 `docs/C-PRODUCER-QUALIFICATION.md` is included in that package and retains the
 existing Markdown routing. Shared type checking, lint, build, formatting and
 dependency/grammar audits remain mandatory. Full package/install and mutation
@@ -710,6 +754,21 @@ harness and official client outside the installed package. It invokes no model
 and establishes no measured quality or observed independent-session claim.
 
 ## Fresh-runner package preparation
+
+Package smoke uses the independently locked JavaScript fixture graph in a
+separate project/module prefix. Playwright uses its independently locked fixture
+graph in another prefix, while Vue retains its current-root role in a third.
+These graphs are kept outside the fresh consumer's production installation. All
+role namespaces publish together only
+after validation; a refusal leaves no partial prefix. The host job also runs
+`scripts/verify-root-javascript-reporters.mjs` separately: it checks fresh-installed
+current-root Vitest/Jest reporters against exact multi-file passing, failing,
+valid-near-miss and skipped controls. An intended skipped assertion leaves that
+reporter qualification incomplete, preserving the generic engine's existing
+skip semantics. These roles do not replace the direct bundler API or generic
+Vitest/Jest regressions, or the existing host phase controller. The standalone
+compatibility step runs those complete existing regression files before the
+fresh-installed reporter controls.
 
 `npm ci` installs from the repository lockfile but does not necessarily cache
 the registry metadata needed to resolve a new consumer's dependencies. Before

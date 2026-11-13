@@ -80,6 +80,8 @@ export const goBootstrapSourceFiles = Object.freeze([
   "scripts/producer-qualification/go-bootstrap-transport.mjs",
   "scripts/qualify-binutils-producer.mjs",
   "scripts/qualify-c-producer.mjs",
+  "scripts/producer-qualification/c-producer-report-codec.mjs",
+  "scripts/producer-qualification/c-report-encoding.v1.json",
   "scripts/producer-qualification/glibc-seccomp.mjs",
   "scripts/producer-qualification/c-producer-profile.mjs",
   "scripts/producer-qualification/c-producer-quiescent-sample.mjs",

@@ -352,6 +352,14 @@ test("Original Node final admission preserves failed test outcomes and rejects i
 test("Original Node source frame binds every actual shared static import without executing producer code", async () => {
   const repository = fileURLToPath(new URL("../../", import.meta.url));
   const bound = new Set<string>(controller.nodeOriginalSourceFiles);
+  for (const file of [
+    "scripts/producer-qualification/c-producer-report-codec.mjs",
+    "scripts/producer-qualification/c-report-encoding.v1.json",
+  ])
+    assert.ok(
+      bound.has(file),
+      "Node source frame omits actual shared report helper/data: " + file,
+    );
   for (const file of bound) {
     if (!file.endsWith(".mjs")) continue;
     const tree = ts.createSourceFile(
