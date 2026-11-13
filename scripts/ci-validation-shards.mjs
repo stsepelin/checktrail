@@ -5,9 +5,9 @@ import { URL } from "node:url";
 
 export const validationShardCount = 3;
 export const validationCohortCommandCount = 51;
-// Count-balanced command assignments have not yet been timed on hosted runners.
+// Assignments use observed command service times; these shard jobs remain unmeasured.
 export const validationShardPartitionSha256 =
-  "0ffdb87c45a5fb61ca2356431dae128846f318dcb366dcb804f3f1f1f2a4c08f";
+  "77dba00893a6b85b4e373c360b45236f7ca83733c3cb2541908a41288cb68a2b";
 
 const canonicalPhases = JSON.parse(
   await readFile(

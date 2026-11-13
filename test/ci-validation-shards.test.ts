@@ -158,9 +158,9 @@ test("host command shards freeze every complete command key in one disjoint thre
       phases.packages.length,
     ]),
     [
-      [5, 13],
+      [6, 12],
+      [3, 13],
       [5, 12],
-      [4, 12],
     ],
   );
   const assignedKeys = selected.flatMap(({ phases }: { phases: Phases }) =>
