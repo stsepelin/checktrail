@@ -120,6 +120,9 @@
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
+  "scripts/check-dotnet-generator-ci.mjs": [
+    "dotnet-generator-extensions-arm64"
+  ],
   "scripts/check-evaluation-captures.mjs": [
     "tasks-runtime",
     "tasks-runtime-arm64"
@@ -280,6 +283,7 @@
     "cpp-context-arm64",
     "cpp-extensions-arm64",
     "csharp-context-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
     "hcl-context-arm64",
@@ -927,6 +931,10 @@
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
   ],
+  "scripts/dotnet-generator-shards.mjs": ["dotnet-generator-extensions-arm64"],
+  "scripts/dotnet-generator-shards.v1.json": [
+    "dotnet-generator-extensions-arm64"
+  ],
   "scripts/dotnet-tools.Dockerfile": ["dotnet"],
   "scripts/evaluation-judgments.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
   "scripts/evaluation-matching.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
@@ -1255,6 +1263,28 @@
   "scripts/native-child-resource.mjs": [
     "resource-release",
     "resource-release-arm64"
+  ],
+  "scripts/native-ci-artifact-storage.mjs": [
+    "c-context-arm64",
+    "cpp-context-arm64",
+    "cpp-extensions-arm64",
+    "csharp-context-arm64",
+    "dotnet-generator-extensions-arm64",
+    "fsharp-context-arm64",
+    "go-workspaces-arm64",
+    "hcl-context-arm64",
+    "java-context-arm64",
+    "javascript-extensions-arm64",
+    "kotlin-context-arm64",
+    "php-context-arm64",
+    "ruby-context-arm64",
+    "rust-context-arm64",
+    "scala-context-arm64",
+    "swift-context-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "vb-context-arm64",
+    "yaml-context-arm64"
   ],
   "scripts/native-resource-observer.c": [
     "resource-release",
@@ -1877,6 +1907,7 @@
   "scripts/scala-ci-phases.mjs": ["scala"],
   "scripts/scala-context-tools.Dockerfile": ["scala-context-arm64"],
   "scripts/scala-extensions-tools.Dockerfile": ["scala-extensions-arm64"],
+  "scripts/scala-native-ci-phases.mjs": ["scala-extensions-arm64"],
   "scripts/scala-tools.Dockerfile": ["scala"],
   "scripts/selected-clang-consumer-witness.mjs": [
     "c-context-arm64",
@@ -2088,6 +2119,9 @@
     "dotnet-generator-extensions-arm64"
   ],
   "scripts/verify-dotnet-generator-extensions-guards.mjs": [
+    "dotnet-generator-extensions-arm64"
+  ],
+  "scripts/verify-dotnet-generator-shard-tests.mjs": [
     "dotnet-generator-extensions-arm64"
   ],
   "scripts/verify-dotnet-method-container.mjs": ["dotnet"],
@@ -2517,7 +2551,6 @@
   ],
   "src/terraform-extensions-runner.ts": ["terraform-extensions-arm64"],
   "src/terraform-runner.ts": [
-    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -2768,9 +2801,11 @@
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64"
   ],
+  "test/dotnet-generator-ci.test.ts": ["dotnet-generator-extensions-arm64"],
   "test/dotnet-generator-extensions-fixture.ts": [
     "dotnet-generator-extensions-arm64"
   ],
+  "test/dotnet-generator-shards.test.ts": ["dotnet-generator-extensions-arm64"],
   "test/dotnet-method-fixture.ts": [
     "dotnet",
     "dotnet-generator-extensions-arm64"
@@ -3156,7 +3191,6 @@
     "java-context-arm64",
     "javascript-extensions-arm64",
     "kotlin-context-arm64",
-    "kustomize-extensions-arm64",
     "php-context-arm64",
     "resource-release",
     "resource-release-arm64",
@@ -3185,7 +3219,6 @@
     "java-context-arm64",
     "javascript-extensions-arm64",
     "kotlin-context-arm64",
-    "kustomize-extensions-arm64",
     "php-context-arm64",
     "resource-release",
     "resource-release-arm64",
@@ -3213,7 +3246,6 @@
     "java-context-arm64",
     "javascript-extensions-arm64",
     "kotlin-context-arm64",
-    "kustomize-extensions-arm64",
     "php-context-arm64",
     "resource-release",
     "resource-release-arm64",
@@ -3241,7 +3273,6 @@
     "java-context-arm64",
     "javascript-extensions-arm64",
     "kotlin-context-arm64",
-    "kustomize-extensions-arm64",
     "php-context-arm64",
     "resource-release",
     "resource-release-arm64",
@@ -3270,7 +3301,6 @@
     "java-context-arm64",
     "javascript-extensions-arm64",
     "kotlin-context-arm64",
-    "kustomize-extensions-arm64",
     "php-context-arm64",
     "resource-release",
     "resource-release-arm64",
@@ -3556,7 +3586,6 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
-    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3582,7 +3611,6 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
-    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3613,7 +3641,6 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
-    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3640,7 +3667,6 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
-    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3666,7 +3692,6 @@
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
-    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -3822,8 +3847,6 @@
   "test/maven-fixture.ts": [
     "cpp-extensions-arm64",
     "cpp-tools",
-    "dotnet-format-extensions-arm64",
-    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
     "go-workspaces-arm64",
     "gradle",
@@ -3847,8 +3870,6 @@
   "test/maven-surfaces.test.ts": [
     "cpp-extensions-arm64",
     "cpp-tools",
-    "dotnet-format-extensions-arm64",
-    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
     "go-workspaces-arm64",
     "gradle",
@@ -3870,8 +3891,6 @@
   "test/maven.test.ts": [
     "cpp-extensions-arm64",
     "cpp-tools",
-    "dotnet-format-extensions-arm64",
-    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
     "go-workspaces-arm64",
     "gradle",
@@ -3914,7 +3933,6 @@
     "cpp-extensions-arm64",
     "csharp-context-arm64",
     "django-assembly-arm64",
-    "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -3922,7 +3940,6 @@
     "java-context-arm64",
     "javascript-extensions-arm64",
     "kotlin-context-arm64",
-    "mutation-native-arm64",
     "php-context-arm64",
     "python-extensions-arm64",
     "ruby-context-arm64",
@@ -3949,13 +3966,17 @@
     "attempt-runtime-arm64"
   ],
   "test/native-process-observer.test.ts": [
+    "hcl-context-arm64",
+    "helm",
+    "helm-extensions-arm64",
     "kubeconform",
+    "kubernetes-extensions-arm64",
     "kustomize",
+    "kustomize-extensions-arm64",
     "terraform",
     "terraform-extensions-arm64"
   ],
   "test/native-process-observer.ts": [
-    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -4059,7 +4080,6 @@
     "cpp-extensions-arm64",
     "csharp-context-arm64",
     "django-assembly-arm64",
-    "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -4067,7 +4087,6 @@
     "java-context-arm64",
     "javascript-extensions-arm64",
     "kotlin-context-arm64",
-    "mutation-native-arm64",
     "php-context-arm64",
     "python-extensions-arm64",
     "ruby-context-arm64",
@@ -4287,7 +4306,6 @@
     "cpp-extensions-arm64",
     "csharp-context-arm64",
     "django-assembly-arm64",
-    "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
     "go-workspaces-arm64",
@@ -4295,7 +4313,6 @@
     "java-context-arm64",
     "javascript-extensions-arm64",
     "kotlin-context-arm64",
-    "mutation-native-arm64",
     "php-context-arm64",
     "python-extensions-arm64",
     "ruby-context-arm64",
@@ -4338,18 +4355,15 @@
     "hcl-context-arm64",
     "java-context-arm64",
     "javascript-extensions-arm64",
-    "jvm-wrappers-arm64",
     "kotlin-context-arm64",
     "php-context-arm64",
     "ruby-context-arm64",
     "rust-context-arm64",
     "rust-extensions-arm64",
     "scala-context-arm64",
-    "scala-extensions-arm64",
     "swift-context-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
-    "terraform-extensions-arm64",
     "vb-context-arm64",
     "yaml-context-arm64"
   ],
@@ -4456,6 +4470,7 @@
     "yaml-context-arm64"
   ],
   "test/scala-java-warning-policy.test.ts": ["scala-extensions-arm64"],
+  "test/scala-native-ci-phases.test.ts": ["scala-extensions-arm64"],
   "test/scala-surfaces.test.ts": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -4534,7 +4549,6 @@
     "java-context-arm64",
     "javascript-extensions-arm64",
     "kotlin-context-arm64",
-    "kustomize-extensions-arm64",
     "php-context-arm64",
     "resource-release",
     "resource-release-arm64",
@@ -4631,7 +4645,6 @@
   "test/terraform-extensions-lifecycle.test.ts": ["terraform-extensions-arm64"],
   "test/terraform-extensions-surfaces.test.ts": ["terraform-extensions-arm64"],
   "test/terraform-fixture.ts": [
-    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -4643,7 +4656,6 @@
     "terraform-extensions-arm64"
   ],
   "test/terraform-lifecycle.test.ts": [
-    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -4655,7 +4667,6 @@
     "terraform-extensions-arm64"
   ],
   "test/terraform-reached.test.ts": [
-    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -4670,7 +4681,6 @@
     "terraform-extensions-arm64"
   ],
   "test/terraform-surfaces.test.ts": [
-    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
@@ -4682,7 +4692,6 @@
     "terraform-extensions-arm64"
   ],
   "test/terraform.test.ts": [
-    "go-workspaces-arm64",
     "hcl-context-arm64",
     "helm",
     "helm-extensions-arm64",
