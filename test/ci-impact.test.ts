@@ -97,10 +97,16 @@ test("CI declared native inputs match every workflow controller profile matrix a
   assert.deepEqual(selected(plan(["test/gate-context-csharp.test.ts"])), [
     "csharp-context-arm64",
   ]);
+  // Runtime provenance traverses the artifact audit, while the Go controller
+  // retains its shared artifact-regression references. These conservative owners
+  // do not imply that those jobs execute the F# native profile.
   assert.deepEqual(selected(plan(["scripts/fsharp-format-tools.Dockerfile"])), [
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
+    "go-workspaces-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
   ]);
   assert.deepEqual(selected(plan(["test/gate-ruby-extensions.test.ts"])), [
     "ruby-extensions-arm64",
@@ -1094,6 +1100,11 @@ test("CI operational release signature inputs select their exact native consumer
         "provider-SHA256SUMS.sig",
       ],
     },
+    {
+      job: "fsharp-format-arm64",
+      record: "fantomas.json",
+      files: ["nuget-verification.config"],
+    },
   ];
   let checked = 0;
   for (const family of families) {
@@ -1114,7 +1125,7 @@ test("CI operational release signature inputs select their exact native consumer
       checked++;
     }
   }
-  assert.equal(checked, 7);
+  assert.equal(checked, 8);
 });
 test("CI retained artifact data requires whole shared audits without unrelated native stacks and preserves native consumers", () => {
   const directory = "docs/measurements/artifact-identities-2026-10-21/";
@@ -2252,6 +2263,7 @@ test("CI Windows lanes preserve frozen runtime pins and partition every required
       .filter((step) => step.if === condition && step.run !== undefined)
       .flatMap((step) => step.run!.trim().split("\n"));
   assert.deepEqual(commands("matrix.core"), [
+    "node scripts/verify-native-provenance-runtime.mjs ${{ matrix.slot }}",
     "node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}",
     "node scripts/verify-required-native-tests.mjs review-runtime-bindings probe-workspace-privacy",
     "node scripts/verify-review-runtime.mjs ${{ matrix.slot }}",

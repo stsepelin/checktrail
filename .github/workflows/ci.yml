@@ -1875,6 +1875,22 @@ jobs:
         run: node scripts/diagnose-windows-task-access.mjs
       - name: Prepare pinned production installation cache
         run: node scripts/prepare-package-cache.mjs
+      - name: Require provenance composition from source and a fresh offline package
+        id: native-provenance-runtime
+        if: matrix.core
+        timeout-minutes: 10
+        run: node scripts/verify-native-provenance-runtime.mjs ${{ matrix.slot }}
+        env:
+          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}/native-provenance-runtime.json
+      - name: Retain original bounded provenance runtime receipt bytes
+        if: ${{ !cancelled() && matrix.core && steps.native-provenance-runtime.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-provenance-runtime-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/native-provenance-runtime.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
       - name: Require source and retained fresh-install controls with exact runtime and observed image identity
         if: matrix.core
         run: node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}
@@ -1974,7 +1990,19 @@ jobs:
       - name: Prepare pinned production installation cache
         run: node scripts/prepare-package-cache.mjs
       - name: Require source and offline installed controls in the pinned native runtime
+        id: native-provenance-runtime
         run: node scripts/verify-tasks-runtime-arm64.mjs
+        env:
+          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}/native-provenance-runtime.json
+      - name: Retain original bounded provenance runtime receipt bytes
+        if: ${{ !cancelled() && steps.native-provenance-runtime.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-provenance-runtime-tasks-runtime-arm64-native-linux-arm64-node22-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/native-provenance-runtime.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
       - name: Require whole consumer impact with pinned native Git prerequisites
         id: consumer-runtime
         run: node scripts/verify-consumer-native-acceptance.mjs consumer-impact native-linux-arm64-node22
@@ -3243,6 +3271,25 @@ jobs:
           node scripts/prepare-package-cache.mjs
       - name: Verify preserved .NET profiles, source and installed formatter, native lifecycle and compiling controls
         run: node scripts/verify-fsharp-format-container.mjs
+      - name: Prepare scoped native NuGet repository-signature observation
+        run: node scripts/prepare-fsharp-format-tools.mjs --archive "$PWD/.checktrail/fantomas.8.0.7.nupkg" --verify-repository-signature > "$CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST"
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
+      - name: Verify immutable signed formatter publication and refusal controls
+        run: |
+          node --input-type=module <<'NODE'
+          import { kotlinRead } from './dist/src/kotlin-io.js';
+          import { parseFsharpSignaturePreparation } from './scripts/verify-fsharp-format-signature-container.mjs';
+          import { verifyFsharpSignaturePublication } from './scripts/verify-fsharp-format-signature-proof.mjs';
+          const manifest = parseFsharpSignaturePreparation((await kotlinRead(process.env.CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST, 16384)).toString('utf8'));
+          process.stdout.write(JSON.stringify(await verifyFsharpSignaturePublication(manifest.formatterRoot, manifest.proofSha256)) + '\n');
+          NODE
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
+      - name: Verify scoped signature source and fresh installed formatter sequentially
+        run: node scripts/verify-fsharp-format-signature-container.mjs "$CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST"
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
 
   dotnet-format-extensions-arm64:
     needs: [ci-plan]

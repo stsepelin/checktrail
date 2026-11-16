@@ -18,6 +18,10 @@ const environments = Object.freeze({
     receipt: "CHECKTRAIL_TASKS_INSTALL_RECEIPT",
     slot: "CHECKTRAIL_TASKS_RUNTIME_SLOT",
   },
+  "native-provenance": {
+    receipt: "CHECKTRAIL_NATIVE_PROVENANCE_INSTALL_RECEIPT",
+    slot: "CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_SLOT",
+  },
   lifecycle: {
     receipt: "CHECKTRAIL_LIFECYCLE_INSTALL_RECEIPT",
     slot: "CHECKTRAIL_LIFECYCLE_RUNTIME_SLOT",
