@@ -1,0 +1,164 @@
+{
+  "caseManifestSha256": "17111fbdbce12d20524f671087cbaf29c62096835325489efb747d1eaad4940e",
+  "completeArtifactAndNoticeClosureVerified": false,
+  "configuredRevocationMode": "online",
+  "exactOwnedTemporaryContainersRemoved": true,
+  "fieldEvaluationExecuted": false,
+  "formatterOriginalProducerVerified": false,
+  "freshOfflineInstalledPackage": {
+    "harnessOutsideInstalledPackage": true,
+    "installedCliEvaluated": true,
+    "installedMcpEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "lifecycleScriptsExecuted": false,
+    "offlineProductionInstall": true,
+    "tarball": {
+      "bytes": 11683926,
+      "sha256": "3e4f5086fd01b8cc1d93685bc4cf3615b5e43dbcdc7e2df09e815b367fb2ff7e"
+    }
+  },
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "installedCases": [
+    "qualified-broken",
+    "qualified-fixed",
+    "legacy-fixed",
+    "operator-capture-request-collision-borrowed-pin-packet-and-physical-afterchecks",
+    "actual-runner-refuses-coherent-wrong-policy",
+    "cli-fixed",
+    "cli-broken",
+    "mcp-cannot-promote-authority-and-private-summary"
+  ],
+  "managedTaskStopped": true,
+  "nativeControlsCompleted": true,
+  "nativeResources": {
+    "sourceAndInstalled": {
+      "cpu": 2,
+      "maximumSeconds": 900,
+      "memoryBytes": 2147483648,
+      "pids": 256
+    },
+    "verification": {
+      "cpu": 2,
+      "maximumSeconds": 120,
+      "memoryBytes": 2147483648,
+      "pids": 128
+    }
+  },
+  "nugetPolicy": "fantomas-8-0-7-nuget-repository-signature-v1",
+  "observedAt": "2026-11-16",
+  "observedDurationSeconds": {
+    "nativeSignaturePreparation": 3.05,
+    "sourceAndInstalled": 32.68
+  },
+  "officialSdkImage": "mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256",
+  "operatorTrustedNativeExecution": true,
+  "package": {
+    "bytes": 7093840,
+    "sha256": "cbf317a4583d7547666195fcada160fff695a1a6f4a7062701b01ee75d5d8971"
+  },
+  "platform": "linux/arm64",
+  "proofReused": false,
+  "proofSha256": "69378bfbc6719707bc78f92587f8c06b7a663cc51acba0214bd3c91477a7ddd5",
+  "publicationCases": [
+    "rename-failure-no-partial-publication",
+    "exact-cohort-reuse",
+    "corrupt-physical-cache-refused",
+    "missing-member-refused-before-publication"
+  ],
+  "publicationControlsCompleted": true,
+  "repositorySignatureVerified": true,
+  "retainedPrivateTypedReceipt": {
+    "bytes": 1150,
+    "sha256": "785710a2545c508c2733d812bdfdd495e9b0556b9fa2d123327e9bfe9d53d831"
+  },
+  "revocationFreshAtRuntime": false,
+  "schemaVersion": 1,
+  "scope": "Fresh exact selected Fantomas8.0.7 NuGet repository-signature policy, physical proof publication and source/fresh offline installed native formatting acceptance. This is a scoped runtime component witness, not original formatter/SDK producer-build or whole-GateA closure.",
+  "sdkOriginalProducerVerified": false,
+  "sharedOfficialImagesPreserved": true,
+  "sourceCases": [
+    "qualified-broken",
+    "qualified-fixed",
+    "legacy-fixed",
+    "operator-capture-request-collision-borrowed-pin-packet-and-physical-afterchecks",
+    "actual-runner-refuses-coherent-wrong-policy",
+    "cli-fixed",
+    "cli-broken",
+    "mcp-cannot-promote-authority-and-private-summary"
+  ],
+  "sourceCommit": "46a96952c7480ecad7c215a3a38df7cbdb0df821",
+  "sourceRuntimeAndHarnessBindings": [
+    {
+      "bytes": 6938,
+      "file": "dist/src/fsharp-format.js",
+      "sha256": "0d462377d91bb353bf23240b6c3946544d74ace29d109e2d1872e8c94ee7aa51"
+    },
+    {
+      "bytes": 9363,
+      "file": "dist/src/fsharp-format-runner.js",
+      "sha256": "4f44d812e69cdae273dccf5915a1222c9c88a40b52437a7ff0fc0cc31481f679"
+    },
+    {
+      "bytes": 16219,
+      "file": "dist/src/fsharp-format-evidence.js",
+      "sha256": "c2aec5ff2be5776e395f33b2a6ee1b3ddf6ef8f8d79892d7950bfcef2efad342"
+    },
+    {
+      "bytes": 5701,
+      "file": "dist/src/fsharp-format-contract.js",
+      "sha256": "333af992db8314a07155e47517eb5989f5858f4602e5bb10c5708ff3a472ea1a"
+    },
+    {
+      "bytes": 13398,
+      "file": "dist/src/fsharp-format-release-signature.js",
+      "sha256": "25b3b9d2b059998da569e11d4cd45a69ab8d0876258bb0f82c57a3032b76dfd9"
+    },
+    {
+      "bytes": 77748,
+      "file": "dist/src/fsharp-format-pins.js",
+      "sha256": "095c766b82ea1f3787b987a7cba1d6de3cf99324c66470f94e046172d15b5149"
+    },
+    {
+      "bytes": 9877,
+      "file": "dist/src/release-signature-proof.js",
+      "sha256": "4719dadf1cc449f309e6681ab8f0edb5870cbf8756c64301c84a4c99a97740c4"
+    },
+    {
+      "bytes": 1933,
+      "file": "dist/src/kotlin-io.js",
+      "sha256": "28dd0ca06726388af9da5388497b08065a4708ddf8d5a151a0119e89cfdb8e2a"
+    },
+    {
+      "bytes": 12493,
+      "file": "scripts/verify-fsharp-format-signature-native.mjs",
+      "sha256": "232425c44f22c06fd9e1df56047c4626c98fc1fd5ab7ae954d8413a05aeac112"
+    },
+    {
+      "bytes": 7226,
+      "file": "scripts/verify-fsharp-format-signature-installed.mjs",
+      "sha256": "acdf61db7998193070ca82e9b0985f360e35e16147c10a4b6a07194fe8faf41f"
+    },
+    {
+      "bytes": 9979,
+      "file": "scripts/verify-fsharp-format-signature-container.mjs",
+      "sha256": "cfb8710d2086977c468e9d5e6ac8df4a99b4f7bca0ca43efb0c995e356d15fe4"
+    },
+    {
+      "bytes": 348,
+      "file": "scripts/fsharp-format-signature-native-cases.v1.json",
+      "sha256": "17111fbdbce12d20524f671087cbaf29c62096835325489efb747d1eaad4940e"
+    },
+    {
+      "bytes": 6592,
+      "file": "scripts/install-acceptance-package.mjs",
+      "sha256": "5fb55d5c1578dd1e3b2f51cedafae546cbce72f7b55e453196b9696d2169f065"
+    },
+    {
+      "bytes": 3215,
+      "file": "scripts/prepare-acceptance-cache-subset.mjs",
+      "sha256": "d567067e3a4dd7263dc93e3f4db431c4c1f08ebff0def398bca0dc0c281c57f5"
+    }
+  ],
+  "taskOwnedDerivedImageTagRemoved": true
+}

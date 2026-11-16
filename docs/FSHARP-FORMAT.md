@@ -106,6 +106,15 @@ controls sequentially in the prepared F# runtime image. They include multiple
 documents, actual runner/final gates, CLI and MCP authority boundaries. These
 controls do not replace the existing legacy acceptance cohort or establish Gate A.
 
+The [2026-11-16 native observation](measurements/fsharp-format-signature-native-2026-11-16.json)
+records a newly verified package, four publication controls and the original eight
+source plus eight fresh installed native cases. It retains the tested source commit
+and component byte identities. Those component bytes are unchanged at
+`53b0b003b8d0bdd6bbeef664a6643a0132464728`; the subsequent change affects the
+separate provenance coordinator and its empty-file regression test. This observation
+does not qualify the formatter or SDK original producer builds or the full Gate A
+matrix.
+
 ## Execute and reconcile
 
 Execution requires CLI `--trust-project` or MCP startup `--allow-execution`.
