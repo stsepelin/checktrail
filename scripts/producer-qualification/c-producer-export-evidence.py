@@ -228,6 +228,15 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
     report_prefixes = ['work/original-test-reports', 'custody-preflight/original-test-reports']
     if version in [2, 3]:
         report_prefixes.append('work/post-stop-reports/original-test-reports')
+    # The independently versioned diagnostic companion leaves historical report
+    # schemas untouched. Its absence is unavailable evidence, never a pass.
+    for ordinary in list(report_prefixes):
+        parent = ordinary.rsplit('/', 1)[0]
+        companion = parent + '/failed-test-diagnostics.json'
+        diagnostic_root = parent + '/failed-test-diagnostics'
+        if os.path.lexists(result / companion) or os.path.lexists(result / diagnostic_root):
+            add(result / companion, 'result/' + companion, 8 * MIB)
+            report_prefixes.append(diagnostic_root)
     for prefix in report_prefixes:
         source = result / prefix
         if source.exists():
@@ -244,12 +253,14 @@ def export(repository, inputs, common, result, startup, output, logs=(), observe
                 for name in sorted(files):
                     retained_relative=(current/name).relative_to(source).as_posix()
                     encoded_chunk=bool(re.fullmatch(r'encoded/[0-9]{8}\.gz',retained_relative))
-                    if Path(name).suffix not in ['.sum','.trs','.log'] and not encoded_chunk:
+                    diagnostic_member = prefix.endswith('/failed-test-diagnostics')
+                    admitted = bool(re.fullmatch(r'files/[0-9]{8}(?:\.out|\.test-result)', retained_relative)) if diagnostic_member else Path(name).suffix in ['.sum','.trs','.log'] or encoded_chunk
+                    if not admitted:
                         raise RuntimeError('Unknown original C report/log member')
                     # Both transports retain the64MiB stored-member/512MiB
                     # stored-family cap. Decoded identities are checked separately.
                     family = 'post-stop' if prefix.startswith('work/post-stop-reports/') else 'original-trap' if prefix.startswith('work/') else None
-                    add(current / name, logical + '/' + name, 64 * MIB, report=family)
+                    add(current / name, logical + '/' + name, MIB if diagnostic_member else 64 * MIB, report=family)
     packages = result / 'work/output'
     if packages.exists():
         physical(packages)

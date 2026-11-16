@@ -196,6 +196,26 @@ source pins; unknown controller sources require schema 3. Evidence archives cann
 supply or extend the trusted historical index. Go, Node and the legacy
 Binutils observer contracts are unchanged.
 
+GLIBC failed-test diagnostics have a separate version-1 companion manifest,
+`failed-test-diagnostics.json`, beside each original-trap or post-stop report
+manifest. The existing report schema and historical replay contracts are unchanged.
+Exact `FAIL`, `ERROR` and `UNRESOLVED` identifiers in retained `.sum` files select
+only the corresponding `.out` and `.test-result` bytes under the same
+`build-tree/<configuration>` directory. Repeated overall/subdirectory references
+share one output pair; different configurations remain separate. Passing outcomes,
+expected failures and similarly prefixed names do not select diagnostic files.
+The collector never executes diagnostic content.
+
+Diagnostic retention is limited to 512 selected tests, 4,096 failure records,
+16 MiB of decoded summary input, 1 MiB per output and 16 MiB of original output
+bytes per family. Every source ancestor is opened without following links;
+linked, nonregular, changing and oversized files are refused. The companion binds
+original-byte hashes, selection origins, missing/refused outputs and copy custody
+to the exact report manifest. Export and replay preserve its independent namespace
+and verify the original selection and bytes. Missing diagnostics and historical
+attempts without a companion remain unavailable or incomplete. These states do
+not change the original build exit status, test outcomes or qualification result.
+
 Preparation exits zero on successful data validation. Actual execution currently
 returns a nonzero, explicitly incomplete qualification status even when the
 original package command succeeds: the independent expected configuration/test
