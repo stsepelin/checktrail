@@ -1,0 +1,130 @@
+{
+  "additionalOriginalGLIBCLICENSESDocumentRetained": true,
+  "allCurrentCatalogDeclaredGCCAndGLIBCNoticeDocumentsAvailable": true,
+  "allCurrentSelectedBinaryArchiveNoticeIdentitiesMatched": true,
+  "binaryArchiveOccurrences": 716,
+  "binaryDependencyCohorts": [
+    {
+      "exactOriginalNoticeArchiveIdentitiesMatched": 338,
+      "missingOriginalNoticeArchiveIdentities": 0,
+      "producer": "binutils",
+      "selectedBinaryPackageArchives": 338
+    },
+    {
+      "exactOriginalNoticeArchiveIdentitiesMatched": 229,
+      "missingOriginalNoticeArchiveIdentities": 0,
+      "producer": "gcc-12",
+      "selectedBinaryPackageArchives": 229
+    },
+    {
+      "exactOriginalNoticeArchiveIdentitiesMatched": 149,
+      "missingOriginalNoticeArchiveIdentities": 0,
+      "producer": "glibc-u13",
+      "selectedBinaryPackageArchives": 149
+    }
+  ],
+  "completeCompilerSdkBootstrapOriginalBuildGraphClosed": false,
+  "distinctBinaryArchiveIdentities": 583,
+  "gateAComplete": false,
+  "newArchiveAcquisition": false,
+  "newCompilerOrProjectExecution": false,
+  "observedAt": "2026-11-16",
+  "schemaVersion": 1,
+  "scope": "Original documentary notice availability for exact selected C binary dependency archives and current catalog-declared GCC/GLIBCu13 original source notices. This is separate from source/build/bootstrap graph closure and exhaustive inline-source notice selection.",
+  "sharedLicenseTextAlternative": {
+    "completeOriginalTextAvailable": true,
+    "containingParagraphSha256": "28c25ebc4e464049e0a875feb1d1cf30d5d8e7bdbc82e663ce68e54e9806e810",
+    "exactOriginalArchiveAssociations": 3,
+    "inventedFilesystemAlias": false,
+    "literalReferenceFilesystemPathResolved": false,
+    "originalCompleteText": {
+      "bytes": 18092,
+      "imagePath": "/usr/share/common-licenses/GPL-2",
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    "originalLiteralReference": "/usr/share/common-licenses/GPL-2.0",
+    "sourceNoticeSha256": "3a29d0e487eae553ec47f260be1570a0d96e4f28c21f29ef58a14cd3d53147ff"
+  },
+  "sourceCommit": "6809bf39c3aba1f1b582742c741051667461754e",
+  "sourceNoticeDocumentCount": 8,
+  "sourceNoticeDocuments": [
+    {
+      "bytes": 956,
+      "completeOriginalTextRetained": true,
+      "originalMember": "glibc-2.36/posix/rxspencer/COPYRIGHT",
+      "producer": "glibc-u13",
+      "sha256": "66994e75c03e014b084b4f4fdca49f37882bb3da8b0736b237c074c33d4b212a"
+    },
+    {
+      "bytes": 18943,
+      "completeOriginalTextRetained": true,
+      "originalMember": "glibc-2.36/LICENSES",
+      "producer": "glibc-u13",
+      "sha256": "b33d0bd9f685b46853548814893a6135e74430d12f6d94ab3eba42fc591f83bc"
+    },
+    {
+      "bytes": 18092,
+      "completeOriginalTextRetained": true,
+      "originalMember": "glibc-2.36/COPYING",
+      "producer": "glibc-u13",
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    {
+      "bytes": 26530,
+      "completeOriginalTextRetained": true,
+      "originalMember": "glibc-2.36/COPYING.LIB",
+      "producer": "glibc-u13",
+      "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+    },
+    {
+      "bytes": 25467,
+      "completeOriginalTextRetained": true,
+      "originalMember": "debian/copyright",
+      "producer": "glibc-u13",
+      "sha256": "40c7e1f2118531f038ca22999bd976901254e1bc5cd1b0f0211bdd064c599987"
+    },
+    {
+      "bytes": 2933,
+      "completeOriginalTextRetained": true,
+      "originalMember": "glibc-2.36/localedata/unicode-gen/unicode-license.txt",
+      "producer": "glibc-u13",
+      "sha256": "72a95a3930bf6fc1961c08c3011321d294c5d9ee9c5d10b535c1afca15287fba"
+    },
+    {
+      "bytes": 68194,
+      "completeOriginalTextRetained": true,
+      "originalMember": "debian/copyright",
+      "producer": "gcc-12",
+      "sha256": "da8191658b3452ce9caf31638ba61dab31a38c619fa39df119812e050f592fd3"
+    },
+    {
+      "bytes": 68251,
+      "completeOriginalTextRetained": true,
+      "originalMember": "debian/copyright.in",
+      "producer": "gcc-12",
+      "sha256": "99f44a2ae30c1fb237021b7411b7985ecc352794b116ad9728de81c7ae0227c6"
+    }
+  ],
+  "sourceOrNoticeOrCompilerLogBodiesPublished": false,
+  "sourceOriginalNoticeBytes": 229366,
+  "sourceSelections": [
+    {
+      "bytes": 511562,
+      "file": "scripts/producer-qualification/c-producer-profiles.v1.json",
+      "sha256": "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd"
+    },
+    {
+      "bytes": 163560,
+      "file": "scripts/producer-qualification/binutils.v1.json",
+      "sha256": "767cd256f71d7bda5c1f839f7ffb4ca8fb945a5013f4515490ec34f005a91c3c"
+    },
+    {
+      "bytes": 2001364,
+      "file": "docs/measurements/artifact-identities-2026-10-21/provider-c-root-sdk-and-generator-replays.json",
+      "sha256": "4302a42410111efd3d132c2d6e0929a61577db9a3eb36614931408ceac1a8a95"
+    }
+  ],
+  "u13DependencyReuseRequiresExactArchiveHashAndSize": true,
+  "u13ProducerBuildSubstitutedByU14": false,
+  "wholeSourceInlineNoticeSelectionExhaustive": false
+}

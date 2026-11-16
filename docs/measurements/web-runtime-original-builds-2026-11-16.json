@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-16",
+  "scope": "Existing original web-tree-sitter 0.27.1 recipe observations reconciled against unchanged producer inputs at the selected current commit. No new producer execution.",
+  "qualifiedCurrentSourceCommit": "6809bf39c3aba1f1b582742c741051667461754e",
+  "upstreamSourceCommit": "10eb5ac119eec9cb4267a8e035066473983f5f3a",
+  "sdkVersion": "4.0.15",
+  "privateCurrentInputBridge": {
+    "bytes": 7998,
+    "sha256": "bd5051bce30f532350b6e01581463e3e133d9b790eddc02556167041fd98637a"
+  },
+  "priorPhysicalReconciliation": {
+    "bytes": 12717,
+    "sha256": "d8134db3e0591e9865526c9afbf32f5b496e3cf13ccbafacd4269a929628f4f5"
+  },
+  "unchangedProducerInputs": [
+    {
+      "path": "scripts/producer-qualification/web-runtime-controller.mjs",
+      "bytes": 29039,
+      "sha256": "1dc687f4a8bbae5027778e8d6eaa93b25114ad8143b31091f328e2e64e8c0113"
+    },
+    {
+      "path": "scripts/producer-qualification/web-runtime-worker.mjs",
+      "bytes": 20092,
+      "sha256": "14b687b06b07454daa837bcfb9824619daa5cd4d906d9526c0ade8381ae9bfc2"
+    },
+    {
+      "path": "scripts/producer-qualification/web-runtime-image.mjs",
+      "bytes": 7753,
+      "sha256": "56a114b8b41d03eebedbeab3eae1fc872a928da878171b152512d1151cb201a0"
+    },
+    {
+      "path": "scripts/producer-qualification/web-runtime.v1.json",
+      "bytes": 125986,
+      "sha256": "b9f4fa61d231f897f669a7542bf9b0e4157d8c2f2936f8e88475290f76f63045"
+    },
+    {
+      "path": "scripts/producer-qualification/web-runtime-acquisition.v1.json",
+      "bytes": 790746,
+      "sha256": "0896da1acaccfa88b77ad7d0a7f304e44f8269b32164e9bb2b3c0f0c33319fed"
+    },
+    {
+      "path": "scripts/producer-qualification/web-runtime-inputs.mjs",
+      "bytes": 24337,
+      "sha256": "2c0a8bbbc631b375db67aa3c943f52225629118d439ad5b523606ec22eb3e1ba"
+    },
+    {
+      "path": "scripts/producer-qualification/web-runtime-prepare.py",
+      "bytes": 13196,
+      "sha256": "19824b2a2e4a5037e7330488e2b7b366978b1c1dfaada298932f7b7dd6e482c6"
+    },
+    {
+      "path": "scripts/producer-qualification/web-runtime-npm-cache.mjs",
+      "bytes": 3153,
+      "sha256": "e51a2b105ad9a600e021d9e6efa1237a1672eb9dcfb7928c1e4b336c133b928b"
+    },
+    {
+      "path": "scripts/producer-qualification/web-runtime-command-vectors.v1.json",
+      "bytes": 23576,
+      "sha256": "67248b0441b496c908a2d2b178f85332f106ff3a093ad6f7c3469c81f661b1ff"
+    },
+    {
+      "path": "scripts/producer-qualification/binutils-image-identity.mjs",
+      "bytes": 3639,
+      "sha256": "6288522acb54d96b69d45d9cb636150a511232e81764d8ae93a5c238fb31eb9a"
+    },
+    {
+      "path": "scripts/producer-qualification/binutils-image-identity.v1.json",
+      "bytes": 18176,
+      "sha256": "780c503c94b0e504b57cdd363ec0739d576f5a84c1ba2a608cfb454075b51bb2"
+    }
+  ],
+  "recipes": [
+    {
+      "recipe": "github",
+      "runId": 41164549501,
+      "runAttempt": 1,
+      "buildSourceCommit": "4fa62f60ec15f8943e4b7c97ba496c4b834033e4",
+      "workflowUrl": "https://github.com/stsepelin/checktrail/actions/runs/41164549501",
+      "retainedReceipt": {
+        "bytes": 279763,
+        "sha256": "a0d4f801a158986418e6f02e47d9f1817e2f91e0c2b2276a2e35ac68d79a8690"
+      },
+      "retainedObservationArchive": {
+        "bytes": 868703,
+        "sha256": "8e923ccf6a4c8b7727c91cf7794ddc90df9486482df5ca643463c180e837165d"
+      },
+      "originalStages": [
+        {
+          "id": "locked-install",
+          "exitCode": 0
+        },
+        {
+          "id": "cjs-release",
+          "exitCode": 0
+        },
+        {
+          "id": "cjs-debug",
+          "exitCode": 0
+        },
+        {
+          "id": "esm-release",
+          "exitCode": 0
+        },
+        {
+          "id": "esm-debug",
+          "exitCode": 0
+        }
+      ],
+      "catalogOutputCount": 27,
+      "allCatalogOutputsMatch": true,
+      "runtimeBuildVerified": true
+    },
+    {
+      "recipe": "npm",
+      "runId": 41164549450,
+      "runAttempt": 1,
+      "buildSourceCommit": "4fa62f60ec15f8943e4b7c97ba496c4b834033e4",
+      "workflowUrl": "https://github.com/stsepelin/checktrail/actions/runs/41164549450",
+      "retainedReceipt": {
+        "bytes": 277368,
+        "sha256": "325a1a49298799866cbb5aeb830cf007f883b644cd0fe57f009b3212ec503450"
+      },
+      "retainedObservationArchive": {
+        "bytes": 868703,
+        "sha256": "9145b3ec57215a60f961bad647d4812a7fecbf00cac235d01b97a6749976197b"
+      },
+      "originalStages": [
+        {
+          "id": "locked-install",
+          "exitCode": 0
+        },
+        {
+          "id": "esm-release",
+          "exitCode": 0
+        },
+        {
+          "id": "esm-debug",
+          "exitCode": 0
+        },
+        {
+          "id": "cjs-release",
+          "exitCode": 0
+        },
+        {
+          "id": "cjs-debug",
+          "exitCode": 0
+        },
+        {
+          "id": "declarations",
+          "exitCode": 0
+        }
+      ],
+      "catalogOutputCount": 16,
+      "allCatalogOutputsMatch": true,
+      "runtimeBuildVerified": true
+    }
+  ],
+  "originalBuildFlagsPreserved": true,
+  "originalRecipesAddNoUpstreamTests": true,
+  "sourceRechecksAndCleanupComplete": true,
+  "retainedArtifactsRehashedWithoutExtractingArchiveBodies": true,
+  "newProducerOrModelExecution": false,
+  "fullCompilerSdkBootstrapClosureVerified": false,
+  "completeOriginalNoticeClosureVerified": false,
+  "historicalPublisherConsumptionVerified": false,
+  "gateAComplete": false
+}

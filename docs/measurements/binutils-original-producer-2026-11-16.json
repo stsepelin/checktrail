@@ -1,0 +1,308 @@
+{
+  "all112ReportBytesAndCountersMatched": true,
+  "allMinimumExplicitSummaryReportsRetained": true,
+  "allOriginalUpstreamTestsPass": false,
+  "currentReconciliationSourceCommit": "6809bf39c3aba1f1b582742c741051667461754e",
+  "declaredBuildConfigurations": 23,
+  "declaredPackageCheckConfigurations": 21,
+  "directoryLinks": {
+    "allNormalizedInsideSameOriginalBuildConfiguration": true,
+    "classification": "internal-build-output-aliases",
+    "count": 30,
+    "targetsFollowed": false,
+    "unseenTargetAbsenceClaimed": false
+  },
+  "evidence": {
+    "focusedPhaseProjection": {
+      "bytes": 193209,
+      "sha256": "05428e12da077f223db45ce846b23aab4d6e1f0dccea96b2a670a78fda9e1bc6"
+    },
+    "independentReportReconciliation": {
+      "bytes": 148983,
+      "sha256": "f3852b3589e8350ba1abac3e8fb4a9a53d8f97dfa398680af27030b6f8698ce4"
+    },
+    "originalBuildLog": {
+      "bytes": 18117536,
+      "sha256": "3d556c30c74c4464d2ea0005c16807e4d817a50d9ddbdc663e6aa3ff6bae7a82"
+    },
+    "retainedOriginalTransport": {
+      "bytes": 7923249,
+      "sha256": "5bd38ba2b42c9df3baed1aa832ef78694f93a138515cdee73f56c7dc4625a22d"
+    }
+  },
+  "finalAutomakeTRSReports": 3,
+  "finalDejaGNUReports": 109,
+  "gateAComplete": false,
+  "goldTRS": [
+    {
+      "bytes": 82,
+      "counts": {
+        "ERROR": 0,
+        "FAIL": 0,
+        "PASS": 1,
+        "SKIP": 0,
+        "XFAIL": 0,
+        "XPASS": 0
+      },
+      "file": "builddir-single/gold/bootstrap-test-r.trs",
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "bytes": 82,
+      "counts": {
+        "ERROR": 0,
+        "FAIL": 0,
+        "PASS": 1,
+        "SKIP": 0,
+        "XFAIL": 0,
+        "XPASS": 0
+      },
+      "file": "builddir-single/gold/bootstrap-test-treehash-chunksize.trs",
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    },
+    {
+      "bytes": 82,
+      "counts": {
+        "ERROR": 0,
+        "FAIL": 0,
+        "PASS": 1,
+        "SKIP": 0,
+        "XFAIL": 0,
+        "XPASS": 0
+      },
+      "file": "builddir-single/gold/bootstrap-test.trs",
+      "sha256": "7f175f2f5d04511903d382671ba96ca623e127f57730d53966587cf2c2689229"
+    }
+  ],
+  "gprofng": [
+    {
+      "bytes": 425,
+      "configuration": "builddir-arm64",
+      "disposition": "reached-empty-unproven",
+      "file": "builddir-arm64/gprofng/gprofng.sum",
+      "reason": "unknown",
+      "reportedOutcomes": 0,
+      "sha256": "2866e0dac11b95f579086d2ebc589bab0ab45617208dca43a0658438ebb08194",
+      "testsPass": false
+    },
+    {
+      "bytes": 417,
+      "configuration": "builddir-i386",
+      "disposition": "reached-empty-unproven",
+      "file": "builddir-i386/gprofng/gprofng.sum",
+      "reason": "unknown",
+      "reportedOutcomes": 0,
+      "sha256": "2d9c825aa5de8b5ea1655d947b945842ec8ec99d70afd8ea6afeb0a496b2cf4b",
+      "testsPass": false
+    },
+    {
+      "bytes": 269,
+      "configuration": "builddir-single",
+      "disposition": "reached-empty-unproven",
+      "file": "builddir-single/gprofng/gprofng.sum",
+      "reason": "unknown",
+      "reportedOutcomes": 0,
+      "sha256": "721f3a611f60e43d432ceddc902bb2b93ec3caa7c57b18b8ef529d5c1ed946f8",
+      "testsPass": false
+    },
+    {
+      "bytes": 422,
+      "configuration": "builddir-x32",
+      "disposition": "reached-empty-unproven",
+      "file": "builddir-x32/gprofng/gprofng.sum",
+      "reason": "unknown",
+      "reportedOutcomes": 0,
+      "sha256": "4f3ffe3ad4ac31f6bc21600b9556f436a6f13874fb938603612c066daa012020",
+      "testsPass": false
+    }
+  ],
+  "literalRequirementBasis": "docs/UPSTREAM-PRODUCER-BUILDS.md distinguishes successful source build, delivered bytes, upstream tests and notices. No selected original build contract requires all upstream tests to pass; empty gprofng therefore remains unproven test evidence, not a retroactive original-build failure.",
+  "minimumExplicitSummaryReports": 63,
+  "newProducerBuildPerformed": false,
+  "noticesOrBootstrapClosureClaimed": false,
+  "observedAt": "2026-11-16",
+  "originalCommand": {
+    "argv": ["dpkg-buildpackage", "-b", "-us", "-uc", "--jobs=4"],
+    "commandCompleted": true,
+    "exitCode": 0,
+    "invoked": true,
+    "wrapperExitCode": 0
+  },
+  "originalLogDejaGNUSummaryBlocks": 115,
+  "originalNativeAttempt": 1,
+  "originalNativeRun": 41156027164,
+  "originalNativeSourceCommitPrefix": "78a37bdabcc8",
+  "originalPackageBuildCompleted": true,
+  "originalReportOutcomeTotals": {
+    "ERROR": 275,
+    "FAIL": 70,
+    "PASS": 52039,
+    "UNRESOLVED": 275,
+    "UNSUPPORTED": 6409,
+    "UNTESTED": 202,
+    "XFAIL": 399,
+    "XPASS": 7
+  },
+  "pgoTraining": [
+    {
+      "configuration": "builddir-single",
+      "followingProfileUse": {
+        "byteOffset": 920992,
+        "lineSha256": "f24cbae1a10fff9b8a2f1105c5a3ba06152a64cff512cec2e816f7d35001a16a"
+      },
+      "originalTrainingSummaries": [
+        {
+          "byteOffset": 892097,
+          "component": "binutils",
+          "counts": {
+            "PASS": 310,
+            "UNSUPPORTED": 2
+          },
+          "headerLineSha256": "83eb34ba29fbef335a6a2c9b64f5cfa638b3d08325a6f9eb1169b6e7eb93906e"
+        },
+        {
+          "byteOffset": 898483,
+          "component": "gas",
+          "counts": {
+            "PASS": 1660,
+            "UNSUPPORTED": 1
+          },
+          "headerLineSha256": "969ab65b46068c47bf20f935e13455e9d78d50a6927e6d8a9c5f4757204463e3"
+        },
+        {
+          "byteOffset": 906712,
+          "component": "ld",
+          "counts": {
+            "PASS": 2861,
+            "UNSUPPORTED": 28,
+            "XFAIL": 59
+          },
+          "headerLineSha256": "5076a22040b97a2bc06aadce1346162c7fe617fa074c9cf51b44ece7f9d49c8f"
+        }
+      ],
+      "originalTrainingSummaryAccounting": "accounted-separately-from-superseding-final-sum-files",
+      "precedingProfileGenerate": {
+        "byteOffset": 874242,
+        "lineSha256": "ed2871d71fc049a1bfa25284c404c33ea13aebd2b574aae435cd4d2e485ddc55"
+      }
+    },
+    {
+      "configuration": "builddir-multi",
+      "followingProfileUse": {
+        "byteOffset": 3203186,
+        "lineSha256": "f24cbae1a10fff9b8a2f1105c5a3ba06152a64cff512cec2e816f7d35001a16a"
+      },
+      "originalTrainingSummaries": [
+        {
+          "byteOffset": 3174867,
+          "component": "binutils",
+          "counts": {
+            "PASS": 310,
+            "UNSUPPORTED": 2
+          },
+          "headerLineSha256": "83eb34ba29fbef335a6a2c9b64f5cfa638b3d08325a6f9eb1169b6e7eb93906e"
+        },
+        {
+          "byteOffset": 3181249,
+          "component": "gas",
+          "counts": {
+            "PASS": 1660,
+            "UNSUPPORTED": 1
+          },
+          "headerLineSha256": "969ab65b46068c47bf20f935e13455e9d78d50a6927e6d8a9c5f4757204463e3"
+        },
+        {
+          "byteOffset": 3189474,
+          "component": "ld",
+          "counts": {
+            "PASS": 2861,
+            "UNSUPPORTED": 28,
+            "XFAIL": 59
+          },
+          "headerLineSha256": "5076a22040b97a2bc06aadce1346162c7fe617fa074c9cf51b44ece7f9d49c8f"
+        }
+      ],
+      "originalTrainingSummaryAccounting": "accounted-separately-from-superseding-final-sum-files",
+      "precedingProfileGenerate": {
+        "byteOffset": 3156236,
+        "lineSha256": "bb729f1faa652f3a2417aa030f99858fd877982ca88a96e78ab3e9686d8f31d5"
+      }
+    }
+  ],
+  "retainedOriginalReportsAndCountersReconciled": true,
+  "revision": 2,
+  "schemaVersion": 1,
+  "scopeDefinition": "Original unmodified selected package command and retained configured phase outcomes, including original failures, superseded PGO summary outputs and reached-empty gprofng. This is separate from every upstream test passing, complete arbitrary-upstream test inventory, source/bootstrap notices or whole GateA.",
+  "selectedConfiguredPhaseOutcomeAccountingComplete": true,
+  "selectedProfile": "original-debian-binutils-2.40-2-build-v1",
+  "sourceOrRawLogOrReportBodiesEmitted": false,
+  "state": "selected-original-binutils-build-and-retained-configured-phase-outcome-leaf-closed",
+  "summaryAccountingPartition": {
+    "automakeTRSKeptSeparateFromDejaGNUSummaryArithmetic": true,
+    "counts": [
+      {
+        "finalDejaGNUReportCount": 52036,
+        "originalLogSummaryCount": 61698,
+        "outcome": "PASS",
+        "partitionCloses": true,
+        "supersededPGOSummaryCount": 9662
+      },
+      {
+        "finalDejaGNUReportCount": 70,
+        "originalLogSummaryCount": 70,
+        "outcome": "FAIL",
+        "partitionCloses": true,
+        "supersededPGOSummaryCount": 0
+      },
+      {
+        "finalDejaGNUReportCount": 399,
+        "originalLogSummaryCount": 517,
+        "outcome": "XFAIL",
+        "partitionCloses": true,
+        "supersededPGOSummaryCount": 118
+      },
+      {
+        "finalDejaGNUReportCount": 7,
+        "originalLogSummaryCount": 7,
+        "outcome": "XPASS",
+        "partitionCloses": true,
+        "supersededPGOSummaryCount": 0
+      },
+      {
+        "finalDejaGNUReportCount": 6409,
+        "originalLogSummaryCount": 6471,
+        "outcome": "UNSUPPORTED",
+        "partitionCloses": true,
+        "supersededPGOSummaryCount": 62
+      },
+      {
+        "finalDejaGNUReportCount": 275,
+        "originalLogSummaryCount": 275,
+        "outcome": "UNRESOLVED",
+        "partitionCloses": true,
+        "supersededPGOSummaryCount": 0
+      },
+      {
+        "finalDejaGNUReportCount": 202,
+        "originalLogSummaryCount": 202,
+        "outcome": "UNTESTED",
+        "partitionCloses": true,
+        "supersededPGOSummaryCount": 0
+      }
+    ],
+    "finalDejaGNUReportSummaryBlocks": 109,
+    "noUnexplainedSummaryCountRemainder": true,
+    "originalERRORChannel": {
+      "finalRawReportErrorPrefixes": 275,
+      "match": true,
+      "notInventedAsLogSummaryStatistic": true,
+      "originalLogRawErrorPrefixes": 275
+    },
+    "originalSummaryBlocks": 115,
+    "supersededPGOTrainingSummaryBlocks": 6
+  },
+  "supersededPGOTrainingConfigurationGroups": 2,
+  "supersededPGOTrainingSummaryBlocks": 6,
+  "testAcceptance": "failed-and-empty-outcomes-preserved",
+  "universalOriginalUpstreamTestInventoryClaimed": false
+}

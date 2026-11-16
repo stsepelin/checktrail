@@ -180,6 +180,26 @@ evidence. Complete PGO/Automake phase selection remains separately unassessed. T
 `builddir-*` configurations; it does not assert an independently complete
 configuration inventory.
 
+The separate [2026-11-16 selected Binutils reconciliation](measurements/binutils-original-producer-2026-11-16.json)
+closes the original package-build and retained configured-outcome requirement for
+the recorded native attempt. Its 115 summaries partition into 109 final DejaGNU
+reports and six superseded PGO training summaries; the seven outcome partitions
+close independently. Three Automake reports are accounted separately. The 30
+recorded directory links normalize inside their original build configurations;
+their targets were not traversed and unseen report absence is not claimed.
+Original failures remain failed, and four empty gprofng reports remain unproven
+with an unknown reason. This does not change the historical controller receipt,
+qualify every upstream test, or close bootstrap and original notice requirements.
+
+The [2026-11-16 original notice coverage](measurements/c-original-notice-coverage-2026-11-16.json)
+reconciles the exact selected C binary dependency archive identities with retained
+original notices. It also records the complete original texts of the eight selected
+GCC and GLIBC source notice documents, including `copyright.in` and the previously
+missing GLIBC copyright and Unicode notices. This is documentary availability;
+exhaustive inline-source notice selection and compiler/bootstrap closure remain
+separate requirements. The original Pango reference spelling is preserved alongside
+the exact complete GPL-2 text, without inventing a filesystem alias.
+
 New C-profile controller receipts use schema 3 and explicitly record each
 resource-observation intervention. Before scanning, the controller verifies the
 exact owned producer container and pauses a running writer; it always attempts
