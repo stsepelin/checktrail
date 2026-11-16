@@ -2,14 +2,20 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import {
+  chmod,
+  link,
   lstat,
   mkdtemp,
   mkdir,
   readFile,
+  readdir,
+  readlink,
   realpath,
   rm,
+  symlink,
   writeFile,
 } from "node:fs/promises";
+import { renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
@@ -1239,3 +1245,447 @@ test("an executor exception without a verified terminal retains failed scope met
     await f.cleanup();
   }
 });
+
+const ownershipTestOptions = {
+  skip:
+    typeof process.geteuid !== "function"
+      ? "Browser inode ownership requires POSIX identities"
+      : false,
+};
+
+async function ownershipCache() {
+  const root = await realpath(
+    await mkdtemp(path.join(tmpdir(), "checktrail-browser-owner-")),
+  );
+  const cache = path.join(root, ".checktrail/playwright-browsers");
+  const downloads = path.join(cache, "downloads");
+  const executable = path.join(cache, "chromium/headless_shell");
+  await mkdir(downloads, { recursive: true });
+  await mkdir(path.dirname(executable));
+  await chmod(cache, 0o750);
+  await chmod(downloads, 0o700);
+  await chmod(path.dirname(executable), 0o750);
+  const deb = path.join(downloads, "synthetic-browser.deb");
+  const rpm = path.join(downloads, "synthetic-browser.rpm");
+  await writeFile(deb, Buffer.from([0x21, 0x3c, 0x00, 0x7f]), { mode: 0o600 });
+  await writeFile(rpm, Buffer.from([0xed, 0xab, 0x00, 0x42]), { mode: 0o600 });
+  await writeFile(executable, "Inert synthetic browser bytes\n", {
+    mode: 0o750,
+  });
+  const alias = path.join(cache, "browser-alias");
+  await symlink("chromium/headless_shell", alias);
+  const producer = process.geteuid!();
+  const consumer =
+    producer === 0
+      ? { uid: 65532, gid: 65532 }
+      : { uid: producer, gid: process.getegid!() };
+  return {
+    root,
+    cache,
+    deb,
+    rpm,
+    executable,
+    alias,
+    producer,
+    consumer,
+    cleanup: () => rm(root, { recursive: true, force: true }),
+  };
+}
+
+async function ownershipSnapshot(directory: string) {
+  const rows: {
+    file: string;
+    uid: number;
+    gid: number;
+    mode: number;
+    dev: number;
+    ino: number;
+    nlink: number;
+    bytes: string | null;
+    target: string | null;
+  }[] = [];
+  const walk = async (file: string) => {
+    const stat = await lstat(file);
+    rows.push({
+      file: path.relative(directory, file),
+      uid: stat.uid,
+      gid: stat.gid,
+      mode: stat.mode,
+      dev: stat.dev,
+      ino: stat.ino,
+      nlink: stat.nlink,
+      bytes: stat.isFile()
+        ? await readFile(file)
+            .then((body) => body.toString("base64"))
+            .catch((error: NodeJS.ErrnoException) => {
+              if (error.code !== "EACCES") throw error;
+              return null;
+            })
+        : null,
+      target: stat.isSymbolicLink() ? await readlink(file) : null,
+    });
+    if (stat.isDirectory())
+      for (const name of (await readdir(file)).sort())
+        await walk(path.join(file, name)).catch(
+          (error: NodeJS.ErrnoException) => {
+            if (error.code !== "EACCES") throw error;
+          },
+        );
+  };
+  await walk(directory);
+  return rows;
+}
+
+test("sudo browser consumer metadata is exact, bounded and platform scoped", () => {
+  assert.equal(
+    browser.browserConsumerFromSudo("darwin", { SUDO_UID: "bad" }),
+    null,
+  );
+  assert.equal(
+    browser.browserConsumerFromSudo("win32", { SUDO_GID: "bad" }),
+    null,
+  );
+  assert.equal(browser.browserConsumerFromSudo("linux", {}), null);
+  assert.equal(
+    browser.browserConsumerFromSudo("linux", { SUDO_UID: "0", SUDO_GID: "0" }),
+    null,
+  );
+  for (const [uid, gid] of [
+    ["1", "0"],
+    ["65532", "65532"],
+    ["4294967294", "4294967294"],
+  ]) {
+    const actual = browser.browserConsumerFromSudo("linux", {
+      SUDO_UID: uid,
+      SUDO_GID: gid,
+    });
+    assert.deepEqual(actual, { uid: Number(uid), gid: Number(gid) });
+    assert.equal(Object.isFrozen(actual), true);
+  }
+  for (const environment of [
+    { SUDO_UID: "1" },
+    { SUDO_GID: "1" },
+    { SUDO_UID: "0" },
+    { SUDO_UID: "01", SUDO_GID: "1" },
+    { SUDO_UID: "1", SUDO_GID: "00" },
+    { SUDO_UID: "+1", SUDO_GID: "1" },
+    { SUDO_UID: " 1", SUDO_GID: "1" },
+    { SUDO_UID: "1", SUDO_GID: "1\n" },
+    { SUDO_UID: "1.0", SUDO_GID: "1" },
+    { SUDO_UID: "-1", SUDO_GID: "1" },
+    { SUDO_UID: "4294967295", SUDO_GID: "1" },
+    { SUDO_UID: "1", SUDO_GID: "4294967295" },
+    { SUDO_UID: "10000000000", SUDO_GID: "1" },
+    { SUDO_UID: 1, SUDO_GID: "1" },
+    { SUDO_UID: null, SUDO_GID: "1" },
+  ])
+    assert.throws(
+      () => browser.browserConsumerFromSudo("linux", environment),
+      /sudo browser consumer identity/u,
+      JSON.stringify(environment),
+    );
+});
+
+test(
+  "browser ownership preserves private deb and rpm bytes, complete modes and physical internal aliases",
+  ownershipTestOptions,
+  async () => {
+    const f = await ownershipCache();
+    try {
+      const before = await ownershipSnapshot(f.cache);
+      const result = await browser.handoffPreparedBrowserOwnership(
+        f.cache,
+        f.consumer,
+      );
+      const after = await ownershipSnapshot(f.cache);
+      assert.deepEqual(
+        after,
+        before.map((row) =>
+          row.target === null ? { ...row, ...f.consumer } : row,
+        ),
+      );
+      assert.equal(result.state, "consumer-owned");
+      assert.equal(result.uid, f.consumer.uid);
+      assert.equal(result.gid, f.consumer.gid);
+      assert.equal(result.inspectedInodes, 7);
+      assert.equal(result.changedInodes, f.producer === 0 ? 6 : 0);
+      assert.equal(result.beforeAfterBrowserIdentityMatch, true);
+      assert.equal((await lstat(f.deb)).mode & 0o7777, 0o600);
+      assert.equal((await lstat(f.rpm)).mode & 0o7777, 0o600);
+      assert.equal(await readlink(f.alias), "chromium/headless_shell");
+      assert.equal((await lstat(f.alias)).uid, f.producer);
+    } finally {
+      await f.cleanup();
+    }
+  },
+);
+
+test("browser ownership rejects malformed consumer identities before inspecting paths", async () => {
+  for (const consumer of [
+    null,
+    {},
+    { uid: 0, gid: 0 },
+    { uid: -1, gid: 1 },
+    { uid: 1.5, gid: 1 },
+    { uid: "1", gid: 1 },
+    { uid: 1, gid: -1 },
+    { uid: 1, gid: 4294967295 },
+    { uid: 4294967295, gid: 1 },
+    { uid: 1, gid: Number.NaN },
+  ])
+    await assert.rejects(
+      browser.handoffPreparedBrowserOwnership(
+        "/missing/synthetic-cache",
+        consumer,
+      ),
+      /Invalid browser consumer identity/u,
+    );
+});
+
+const invalidOwnershipEntries: [
+  string,
+  (f: Awaited<ReturnType<typeof ownershipCache>>) => Promise<void>,
+  RegExp,
+][] = [
+  [
+    "hardlink",
+    async (f) => link(f.deb, path.join(f.cache, "late-hardlink")),
+    /Hardlinked browser ownership input/u,
+  ],
+  ["setuid", async (f) => chmod(f.rpm, 0o4600), /Special browser permissions/u],
+  ["setgid", async (f) => chmod(f.rpm, 0o2600), /Special browser permissions/u],
+  [
+    "sticky",
+    async (f) => chmod(path.dirname(f.rpm), 0o1700),
+    /Special browser permissions/u,
+  ],
+  [
+    "unreadable file",
+    async (f) => chmod(f.rpm, 0o000),
+    /owner permissions are unreadable/u,
+  ],
+  [
+    "unsearchable directory",
+    async (f) => chmod(path.dirname(f.rpm), 0o400),
+    /owner permissions are unreadable/u,
+  ],
+  [
+    "absolute link",
+    async (f) => symlink(f.deb, path.join(f.cache, "late-invalid")),
+    /Invalid browser ownership link/u,
+  ],
+  [
+    "escaping link",
+    async (f) => {
+      await writeFile(
+        path.join(f.root, "outside"),
+        "Unmodified outside bytes\n",
+      );
+      await symlink("../../outside", path.join(f.cache, "late-invalid"));
+    },
+    /ownership link escapes cache/u,
+  ],
+  [
+    "cyclic link",
+    async (f) => symlink("late-invalid", path.join(f.cache, "late-invalid")),
+    /ELOOP/u,
+  ],
+  [
+    "ancestor directory cycle",
+    async (f) =>
+      symlink("..", path.join(path.dirname(f.executable), "ancestor")),
+    /ownership link escapes cache/u,
+  ],
+  [
+    "fifo",
+    async (f) => {
+      const result = spawnSync("mkfifo", [path.join(f.cache, "late-invalid")], {
+        encoding: "utf8",
+      });
+      assert.equal(result.status, 0, result.stderr);
+    },
+    /Nonregular browser ownership input/u,
+  ],
+];
+for (const [name, invalidate, error] of invalidOwnershipEntries)
+  test(
+    "browser ownership rejects " + name + " before modifying any inode",
+    ownershipTestOptions,
+    async () => {
+      const f = await ownershipCache();
+      try {
+        await invalidate(f);
+        const before = await ownershipSnapshot(f.cache);
+        await assert.rejects(
+          browser.handoffPreparedBrowserOwnership(f.cache, f.consumer),
+          error,
+        );
+        assert.deepEqual(await ownershipSnapshot(f.cache), before);
+      } finally {
+        await chmod(path.dirname(f.rpm), 0o700);
+        await chmod(f.rpm, 0o600);
+        await f.cleanup();
+      }
+    },
+  );
+
+test(
+  "browser ownership refuses noncanonical, renamed and linked cache roots",
+  ownershipTestOptions,
+  async () => {
+    const f = await ownershipCache();
+    try {
+      const before = await ownershipSnapshot(f.cache);
+      await assert.rejects(
+        browser.handoffPreparedBrowserOwnership(
+          path.join(f.cache, "..") + "/playwright-browsers/.",
+          f.consumer,
+        ),
+        /Noncanonical browser ownership root/u,
+      );
+      const wrong = path.join(f.root, ".checktrail/other-browser-cache");
+      await mkdir(wrong);
+      await assert.rejects(
+        browser.handoffPreparedBrowserOwnership(wrong, f.consumer),
+        /playwright-browsers/u,
+      );
+      const linked = path.join(
+        f.root,
+        "linked/.checktrail/playwright-browsers",
+      );
+      await mkdir(path.dirname(linked), { recursive: true });
+      await symlink(f.cache, linked);
+      await assert.rejects(
+        browser.handoffPreparedBrowserOwnership(linked, f.consumer),
+        /Linked browser ownership root/u,
+      );
+      assert.deepEqual(await ownershipSnapshot(f.cache), before);
+    } finally {
+      await f.cleanup();
+    }
+  },
+);
+
+test(
+  "browser ownership deadline refusal retains every byte and inode before mutation",
+  ownershipTestOptions,
+  async () => {
+    const f = await ownershipCache();
+    try {
+      const before = await ownershipSnapshot(f.cache);
+      let checks = 0;
+      const expired = new Error("Synthetic original browser deadline");
+      await assert.rejects(
+        browser.handoffPreparedBrowserOwnership(f.cache, f.consumer, {
+          checkDeadline() {
+            // Seven preflight entries complete; the first plan recheck must stop.
+            if (++checks === 8) throw expired;
+          },
+        }),
+        (error: unknown) => error === expired,
+      );
+      assert.equal(checks, 8);
+      assert.deepEqual(await ownershipSnapshot(f.cache), before);
+    } finally {
+      await f.cleanup();
+    }
+  },
+);
+
+test(
+  "browser ownership rejects same-byte inode replacement before transfer",
+  ownershipTestOptions,
+  async () => {
+    const f = await ownershipCache();
+    try {
+      const original = await lstat(f.deb);
+      const bytes = await readFile(f.deb);
+      let checks = 0;
+      await assert.rejects(
+        browser.handoffPreparedBrowserOwnership(f.cache, f.consumer, {
+          checkDeadline() {
+            if (++checks === 8) {
+              renameSync(f.deb, f.deb + ".original");
+              writeFileSync(f.deb, bytes, { mode: 0o600 });
+            }
+          },
+        }),
+        /Browser ownership path changed before transfer/u,
+      );
+      assert.notEqual((await lstat(f.deb)).ino, original.ino);
+      assert.deepEqual(await readFile(f.deb), bytes);
+      for (const file of [f.cache, f.deb, f.rpm, f.executable])
+        assert.equal((await lstat(file)).uid, f.producer);
+    } finally {
+      await f.cleanup();
+    }
+  },
+);
+
+test(
+  "browser ownership completes invalid-entry preflight before any descriptor chown",
+  ownershipTestOptions,
+  async () => {
+    const f = await ownershipCache();
+    try {
+      await link(f.deb, path.join(f.cache, "late-hardlink"));
+      const before = await ownershipSnapshot(f.cache);
+      const code = `
+      import assert from 'node:assert/strict';
+      import promises from 'node:fs/promises';
+      import { syncBuiltinESMExports } from 'node:module';
+      const originalOpen = promises.open;
+      let chownAttempts = 0;
+      promises.open = async (...args) => {
+        const fd = await originalOpen(...args);
+        fd.chown = async () => {
+          chownAttempts++;
+          throw new Error('Unexpected chown before complete preflight');
+        };
+        return fd;
+      };
+      syncBuiltinESMExports();
+      try {
+        const { handoffPreparedBrowserOwnership } = await import(process.argv[1]);
+        const consumer = JSON.parse(process.argv[3]);
+        await assert.rejects(
+          handoffPreparedBrowserOwnership(process.argv[2], consumer),
+          /Hardlinked browser ownership input/u,
+        );
+        assert.equal(chownAttempts, 0);
+        console.log(JSON.stringify({ chownAttempts, refused: true }));
+      } finally {
+        promises.open = originalOpen;
+        syncBuiltinESMExports();
+      }
+    `;
+      const result = spawnSync(
+        process.execPath,
+        [
+          "--input-type=module",
+          "-e",
+          code,
+          pathToFileURL(
+            path.join(repository, "scripts/prepare-playwright-browser.mjs"),
+          ).href,
+          f.cache,
+          JSON.stringify({
+            uid: f.consumer.uid,
+            gid: f.consumer.gid === 1 ? 2 : 1,
+          }),
+        ],
+        { encoding: "utf8", timeout: 10_000, maxBuffer: 65536 },
+      );
+      assert.equal(result.error, undefined);
+      assert.equal(result.signal, null);
+      assert.equal(result.status, 0, result.stderr);
+      assert.deepEqual(JSON.parse(result.stdout), {
+        chownAttempts: 0,
+        refused: true,
+      });
+      assert.deepEqual(await ownershipSnapshot(f.cache), before);
+    } finally {
+      await f.cleanup();
+    }
+  },
+);

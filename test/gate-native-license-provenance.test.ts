@@ -391,6 +391,7 @@ test(
         signal: control.signal,
       });
     try {
+      await observeProvenanceBootstrap(during.journal);
       const end = Date.now() + 5000;
       while (Date.now() < end) {
         if (
