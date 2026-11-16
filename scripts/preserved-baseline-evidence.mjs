@@ -6,11 +6,16 @@ import {
   cp,
   lstat,
   mkdir,
+  open,
+  opendir,
   readFile,
   realpath,
   readdir,
+  readlink,
   symlink,
 } from "node:fs/promises";
+import { constants } from "node:fs";
+import { Buffer } from "node:buffer";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -137,7 +142,233 @@ async function executableIdentity(command, args) {
   };
 }
 
-export async function captureBaselineRuntime(binding) {
+// Observe the selected public browser cache as data. This does not authenticate
+// its publisher, trace loaded libraries, or qualify a complete browser/SDK build.
+export async function capturePreparedBaselineBrowser(directory) {
+  assert.equal(
+    await realpath(directory),
+    directory,
+    "Linked prepared browser cache",
+  );
+  const rows = [],
+    directories = [],
+    links = [],
+    directoryEdges = new Map();
+  let bytes = 0,
+    entries = 0;
+  const same = (a, b) =>
+    ["dev", "ino", "size", "mtimeNs", "ctimeNs"].every(
+      (key) => a[key] === b[key],
+    );
+  const walk = async (local, depth) => {
+    assert.ok(depth <= 24, "Prepared browser cache depth exceeded");
+    const absolute = path.join(directory, local);
+    const before = await lstat(absolute, { bigint: true });
+    assert.ok(
+      before.isDirectory() && !before.isSymbolicLink(),
+      "Nonphysical prepared browser directory",
+    );
+    assert.equal(
+      await realpath(absolute),
+      absolute,
+      "Linked prepared browser directory",
+    );
+    directories.push({ directory: local, mode: Number(before.mode & 511n) });
+    directoryEdges.set(absolute, new Set());
+    const names = [];
+    for await (const entry of await opendir(absolute)) {
+      assert.ok(++entries <= 16384, "Prepared browser entry bound exceeded");
+      names.push(entry.name);
+    }
+    names.sort();
+    for (const name of names) {
+      assert.ok(
+        name !== "." && name !== ".." && !/[\\\0]/u.test(name),
+        "Malformed prepared browser entry",
+      );
+      const relative = path.posix.join(local, name),
+        file = path.join(directory, relative);
+      const named = await lstat(file, { bigint: true });
+      if (named.isSymbolicLink()) {
+        assert.ok(rows.length < 8192, "Prepared browser file bound/type");
+        const target = await readlink(file);
+        assert.ok(
+          target.length > 0 &&
+            Buffer.byteLength(target) <= 4096 &&
+            !path.isAbsolute(target) &&
+            !/^[A-Za-z]:/u.test(target) &&
+            !/[\\\0]/u.test(target),
+          "Prepared browser link must be bounded and relative",
+        );
+        const lexical = path.resolve(path.dirname(file), target);
+        assert.ok(
+          inside(directory, lexical),
+          "Prepared browser link escapes cache",
+        );
+        const resolved = await realpath(file);
+        assert.ok(
+          inside(directory, resolved),
+          "Prepared browser link resolves outside cache",
+        );
+        const targetInfo = await lstat(resolved, { bigint: true });
+        assert.ok(
+          targetInfo.isFile() || targetInfo.isDirectory(),
+          "Prepared browser link target is nonregular",
+        );
+        const after = await lstat(file, { bigint: true });
+        assert.ok(
+          after.isSymbolicLink() &&
+            same(named, after) &&
+            (await readlink(file)) === target,
+          "Prepared browser link changed during capture",
+        );
+        const size = Buffer.byteLength(target);
+        assert.ok(
+          bytes + size <= 2048 * 1048576,
+          "Prepared browser byte bound exceeded",
+        );
+        bytes += size;
+        rows.push({
+          file: relative,
+          kind: "relative-link",
+          target,
+          resolvedTarget: path
+            .relative(directory, resolved)
+            .split(path.sep)
+            .join("/"),
+          bytes: size,
+          mode: Number(named.mode & 511n),
+        });
+        links.push({ file, named, target, resolved });
+        if (targetInfo.isDirectory())
+          directoryEdges.get(absolute).add(resolved);
+        continue;
+      }
+      if (named.isDirectory()) {
+        directoryEdges.get(absolute).add(file);
+        await walk(relative, depth + 1);
+        continue;
+      }
+      assert.ok(
+        named.isFile() && rows.length < 8192,
+        "Prepared browser file bound/type",
+      );
+      assert.ok(
+        named.size <= 512n * 1048576n &&
+          BigInt(bytes) + named.size <= 2048n * 1048576n,
+        "Prepared browser byte bound exceeded",
+      );
+      assert.equal(await realpath(file), file, "Linked prepared browser file");
+      const fd = await open(
+        file,
+        constants.O_RDONLY |
+          (constants.O_NOFOLLOW ?? 0) |
+          (constants.O_NONBLOCK ?? 0),
+      );
+      const digest = createHash("sha256");
+      let total = 0;
+      try {
+        const opened = await fd.stat({ bigint: true });
+        assert.ok(
+          opened.isFile() && same(named, opened),
+          "Prepared browser changed before capture",
+        );
+        const buffer = Buffer.alloc(65536);
+        while (true) {
+          const { bytesRead } = await fd.read(
+            buffer,
+            0,
+            Math.min(buffer.length, 512 * 1048576 + 1 - total),
+            null,
+          );
+          if (!bytesRead) break;
+          total += bytesRead;
+          assert.ok(
+            total <= 512 * 1048576 && bytes + total <= 2048 * 1048576,
+            "Prepared browser grew beyond byte bound",
+          );
+          digest.update(buffer.subarray(0, bytesRead));
+        }
+        const after = await fd.stat({ bigint: true }),
+          current = await lstat(file, { bigint: true });
+        assert.ok(
+          current.isFile() &&
+            same(opened, after) &&
+            same(opened, current) &&
+            BigInt(total) === opened.size,
+          "Prepared browser changed during capture",
+        );
+        assert.equal(
+          await realpath(file),
+          file,
+          "Prepared browser path changed during capture",
+        );
+      } finally {
+        await fd.close();
+      }
+      bytes += total;
+      rows.push({
+        file: relative,
+        bytes: total,
+        sha256: digest.digest("hex"),
+        mode: Number(named.mode & 511n),
+      });
+    }
+    const after = await lstat(absolute, { bigint: true });
+    assert.ok(
+      after.isDirectory() && same(before, after),
+      "Prepared browser directory changed during capture",
+    );
+  };
+  await walk("", 0);
+  for (const link of links) {
+    const current = await lstat(link.file, { bigint: true });
+    assert.ok(
+      current.isSymbolicLink() &&
+        same(link.named, current) &&
+        (await readlink(link.file)) === link.target &&
+        (await realpath(link.file)) === link.resolved,
+      "Prepared browser link path changed after capture",
+    );
+  }
+  // Link aliases may only add acyclic edges to the physical directory tree.
+  // This also refuses directory cycles whose individual realpath calls succeed.
+  const incoming = new Map([...directoryEdges.keys()].map((key) => [key, 0]));
+  for (const children of directoryEdges.values()) {
+    for (const child of children) {
+      assert.ok(
+        incoming.has(child),
+        "Unobserved prepared browser link directory",
+      );
+      incoming.set(child, incoming.get(child) + 1);
+    }
+  }
+  const ready = [...incoming]
+    .filter(([, count]) => count === 0)
+    .map(([key]) => key);
+  for (let i = 0; i < ready.length; i++) {
+    for (const child of directoryEdges.get(ready[i])) {
+      incoming.set(child, incoming.get(child) - 1);
+      if (incoming.get(child) === 0) ready.push(child);
+    }
+  }
+  assert.equal(
+    ready.length,
+    incoming.size,
+    "Prepared browser directory link cycle",
+  );
+  assert.ok(rows.length > 0 && bytes > 0, "Empty prepared browser cache");
+  return {
+    schemaVersion: 1,
+    scope: "Observed prepared browser cache bytes only",
+    files: rows.length,
+    directories: directories.length,
+    bytes,
+    treeSha256: hash(JSON.stringify({ directories, files: rows })),
+  };
+}
+
+export async function captureBaselineRuntime(binding, root = process.cwd()) {
   assert.equal(
     process.platform,
     binding.platform,
@@ -166,6 +397,16 @@ export async function captureBaselineRuntime(binding) {
     os: { type: os.type(), release: os.release(), version: os.version() },
     tools,
   };
+  if (binding.preparedBrowserDirectory !== undefined) {
+    assert.equal(
+      binding.preparedBrowserDirectory,
+      ".checktrail/playwright-browsers",
+      "Unknown prepared browser binding",
+    );
+    runtime.preparedBrowser = await capturePreparedBaselineBrowser(
+      path.join(root, binding.preparedBrowserDirectory),
+    );
+  }
   return runtime;
 }
 
@@ -349,11 +590,18 @@ export async function runBaselinePhase({
   expectedCallbacks,
   expectedEngine,
   binding,
+  expectedRuntime,
   installedPackage,
   sourceEngine,
   timeoutMs = 600000,
 }) {
-  const beforeRuntime = await captureBaselineRuntime(binding);
+  const beforeRuntime = await captureBaselineRuntime(binding, root);
+  if (expectedRuntime !== undefined)
+    assert.deepEqual(
+      beforeRuntime,
+      expectedRuntime,
+      "Fresh baseline runtime differs before acceptance",
+    );
   const beforeCallbacks = await callbackIdentities(root, profiles, selection);
   assert.deepEqual(
     beforeCallbacks,
@@ -446,7 +694,7 @@ export async function runBaselinePhase({
       sourceEngine,
     });
   assert.deepEqual(
-    await captureBaselineRuntime(binding),
+    await captureBaselineRuntime(binding, root),
     beforeRuntime,
     "Baseline runtime or tool bytes changed during collection",
   );
@@ -536,6 +784,7 @@ export async function prepareBaselineHarness({
     await cp(source, path.join(harness, ".checktrail", name), {
       recursive: true,
       dereference: false,
+      ...(name === "playwright-browsers" ? { verbatimSymlinks: true } : {}),
     });
   }
 }
@@ -905,7 +1154,7 @@ export async function captureBaselineSourceExecution({
     scope.baselineProfiles,
     scope.baselineSelection,
   );
-  const runtime = await captureBaselineRuntime(scope.binding);
+  const runtime = await captureBaselineRuntime(scope.binding, root);
   const engineBefore = await captureCompiledEngine(path.join(root, "dist/src"));
   const originalReport = await execute();
   const subset = requireBaselineSourceSubset({
@@ -941,7 +1190,7 @@ export async function captureBaselineSourceExecution({
     await captureCompiledEngine(path.join(root, "dist/src")),
   );
   assert.deepEqual(
-    await captureBaselineRuntime(scope.binding),
+    await captureBaselineRuntime(scope.binding, root),
     runtime,
     "Original source runtime or tool bytes changed during execution",
   );
@@ -1043,10 +1292,13 @@ export async function runFreshBaselineFromSourceCapture({
   assert.equal(phase.expectedEngine.manifestSha256, engine.manifestSha256);
   assert.deepEqual(
     sourceCapture.runtime,
-    await captureBaselineRuntime(phase.binding),
+    await captureBaselineRuntime(phase.binding, sourceRoot),
     "Fresh runtime differs from the observed original source runtime",
   );
-  const fresh = await runBaselinePhase(phase);
+  const fresh = await runBaselinePhase({
+    ...phase,
+    expectedRuntime: sourceCapture.runtime,
+  });
   assert.deepEqual(fresh.runtime, sourceCapture.runtime);
   return {
     schemaVersion: 1,

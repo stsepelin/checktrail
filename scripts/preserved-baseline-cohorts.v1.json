@@ -48,6 +48,7 @@
       "preparedDirectories": [
         "javascript-tools",
         "playwright-tools",
+        "playwright-browsers",
         "typescript-legacy-tools",
         "vue-router-tools",
         "nuxt-tools",

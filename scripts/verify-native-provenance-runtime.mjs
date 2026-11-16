@@ -156,7 +156,7 @@ await withRuntimeInstallationCapture(
               ...row,
               file: path.join(repository, row.file),
             })),
-            { timeoutMs: 600000 },
+            { timeoutMs: 600000, onTestProgress: progress.caseEvent },
           ),
       );
       assert.deepEqual(

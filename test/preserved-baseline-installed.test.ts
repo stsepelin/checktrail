@@ -4,6 +4,8 @@ import { createHash } from "node:crypto";
 import {
   mkdir,
   lstat,
+  open,
+  readlink,
   readFile,
   realpath,
   rm,
@@ -13,12 +15,14 @@ import {
 import path from "node:path";
 import process from "node:process";
 import { test } from "node:test";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { fixture } from "./helpers.js";
 const repository = fileURLToPath(new URL("../../", import.meta.url));
 const {
   callbackIdentities,
   captureBaselineRuntime,
+  capturePreparedBaselineBrowser,
+  runBaselinePhase,
   requireBaselineToolVersions,
   captureBaselineSourceExecution,
   assertInstalledEngineBinding,
@@ -33,13 +37,16 @@ const { captureCompiledEngine } = await import(
 const { installAcceptancePackage, runAcceptanceNpm } = await import(
   new URL("../../scripts/install-acceptance-package.mjs", import.meta.url).href
 );
-const { runFreshBaselineAtInstallation, sourceScopeTransportValue } =
-  await import(
-    new URL(
-      "../../scripts/preserved-baseline-fresh-coordinator.mjs",
-      import.meta.url,
-    ).href
-  );
+const {
+  runFreshBaselineAtInstallation,
+  sourceScopeTransportValue,
+  baselineRuntimeBinding,
+} = await import(
+  new URL(
+    "../../scripts/preserved-baseline-fresh-coordinator.mjs",
+    import.meta.url,
+  ).href
+);
 const runtime = {
   platform: process.platform,
   nodeMajor: Number(process.versions.node.split(".")[0]),
@@ -78,6 +85,11 @@ test("preserved baseline registry retains frozen original callbacks, finite appl
     "native-acceptance-ledger",
     "native-process-observer",
   ]);
+  assert.ok(host.cohort.preparedDirectories.includes("playwright-browsers"));
+  assert.equal(
+    baselineRuntimeBinding(host.cohort).preparedBrowserDirectory,
+    ".checktrail/playwright-browsers",
+  );
   const review = await selectBaselineCohort(repository, "packaged-review");
   assert.equal(review.selection.length, 15);
   assert.equal(review.cohort.nodeVersion, "22.23.2");
@@ -1024,4 +1036,214 @@ test("source scope transport preserves complete null-prototype JSON maps and ref
     sourceScopeTransportValue({ first: aliased, second: aliased }),
     { first: { value: 1 }, second: { value: 1 } },
   );
+});
+
+test("fresh baseline copies observed browser bytes and internal framework links into its independent namespace", async (t) => {
+  const root = await realpath(
+    await fixture(t, { "package.json": '{"type":"module"}' }),
+  );
+  await mkdir(path.join(root, "node_modules"));
+  await mkdir(path.join(root, "dist/test"), { recursive: true });
+  await mkdir(path.join(root, "dist/src"));
+  await writeFile(
+    path.join(root, "dist/src/index.js"),
+    "export const synthetic = 1;\n",
+  );
+  execFileSync("git", ["init", "--quiet"], { cwd: root });
+  execFileSync("git", ["add", "package.json"], { cwd: root });
+  const cache = path.join(root, ".checktrail/playwright-browsers"),
+    version = path.join(cache, "Chromium.app/Framework.framework/Versions/A");
+  await mkdir(version, { recursive: true });
+  await writeFile(
+    path.join(version, "browser-data"),
+    "Inert synthetic browser bytes; never executable\n",
+    { mode: 0o755 },
+  );
+  await writeFile(path.join(version, "INSTALLATION_COMPLETE"), "");
+  const current = path.join(
+    cache,
+    "Chromium.app/Framework.framework/Versions/Current",
+  );
+  await symlink("A", current, "dir");
+  const binding = {
+    ...runtime,
+    preparedBrowserDirectory: ".checktrail/playwright-browsers",
+  };
+  const observed = await captureBaselineRuntime(binding, root);
+  assert.equal(observed.preparedBrowser.files, 3);
+  const output = await realpath(await fixture(t, {})),
+    installedPackage = path.join(
+      output,
+      "consumer/node_modules/@stsepelin/checktrail",
+    );
+  await mkdir(path.join(installedPackage, "dist/src"), { recursive: true });
+  await writeFile(
+    path.join(installedPackage, "dist/src/index.js"),
+    "export const synthetic = 1;\n",
+  );
+  const harness = path.join(output, "harness");
+  await prepareBaselineHarness({
+    repository: root,
+    harness,
+    installedPackage,
+    preparedDirectories: ["playwright-browsers"],
+  });
+  const freshCache = path.join(harness, ".checktrail/playwright-browsers"),
+    freshCurrent = path.join(
+      freshCache,
+      "Chromium.app/Framework.framework/Versions/Current",
+    );
+  assert.equal(await readlink(freshCurrent), "A");
+  assert.equal(
+    await realpath(freshCurrent),
+    path.join(freshCache, "Chromium.app/Framework.framework/Versions/A"),
+  );
+  assert.notEqual(await realpath(freshCurrent), await realpath(current));
+  assert.deepEqual(await captureBaselineRuntime(binding, harness), observed);
+  assert.equal(
+    await realpath(path.join(harness, "dist/src")),
+    await realpath(path.join(installedPackage, "dist/src")),
+  );
+  assert.notEqual(
+    await realpath(path.join(harness, "dist/src")),
+    await realpath(path.join(root, "dist/src")),
+  );
+  await writeFile(
+    path.join(freshCurrent, "browser-data"),
+    "Changed only in the physical fresh cache\n",
+  );
+  assert.notDeepEqual(await captureBaselineRuntime(binding, harness), observed);
+  assert.deepEqual(await captureBaselineRuntime(binding, root), observed);
+  await assert.rejects(
+    runBaselinePhase({
+      root: harness,
+      profiles: {},
+      selection: [],
+      expectedCallbacks: {},
+      expectedEngine: {},
+      binding,
+      expectedRuntime: observed,
+    }),
+    /Fresh baseline runtime differs before acceptance/u,
+  );
+  await assert.rejects(
+    captureBaselineRuntime(
+      { ...runtime, preparedBrowserDirectory: "adjacent/playwright-browsers" },
+      root,
+    ),
+    /Unknown prepared browser binding/u,
+  );
+});
+
+test("browser snapshot rejects absent empty linked escaping cyclic and oversized caches without browser execution", async (t) => {
+  const root = await realpath(await fixture(t, {})),
+    cache = path.join(root, "cache");
+  await assert.rejects(capturePreparedBaselineBrowser(cache));
+  await mkdir(cache);
+  await assert.rejects(
+    capturePreparedBaselineBrowser(cache),
+    /Empty prepared browser cache/u,
+  );
+  const regular = path.join(cache, "browser-data");
+  await writeFile(regular, "Inert original bytes\n");
+  const before = await capturePreparedBaselineBrowser(cache);
+  await writeFile(regular, "Inert changed bytes\n");
+  assert.notDeepEqual(await capturePreparedBaselineBrowser(cache), before);
+  const alias = path.join(root, "cache-alias");
+  await symlink("cache", alias, "dir");
+  await assert.rejects(
+    capturePreparedBaselineBrowser(alias),
+    /Linked prepared browser cache/u,
+  );
+  const outside = path.join(root, "outside");
+  await writeFile(outside, "Outside synthetic bytes must not be captured\n");
+  await symlink("../outside", path.join(cache, "escape"));
+  await assert.rejects(capturePreparedBaselineBrowser(cache), /escapes cache/u);
+  await rm(path.join(cache, "escape"));
+  await symlink("cycle-b", path.join(cache, "cycle-a"));
+  await symlink("cycle-a", path.join(cache, "cycle-b"));
+  await assert.rejects(capturePreparedBaselineBrowser(cache));
+  await rm(path.join(cache, "cycle-a"));
+  await rm(path.join(cache, "cycle-b"));
+  await mkdir(path.join(cache, "a"));
+  await mkdir(path.join(cache, "b"));
+  await symlink("../b", path.join(cache, "a/to-b"), "dir");
+  await symlink("../a", path.join(cache, "b/to-a"), "dir");
+  await assert.rejects(
+    capturePreparedBaselineBrowser(cache),
+    /Prepared browser directory link cycle/u,
+  );
+  await rm(path.join(cache, "a"), { recursive: true });
+  await rm(path.join(cache, "b"), { recursive: true });
+  const large = await open(path.join(cache, "too-large"), "wx");
+  try {
+    await large.truncate(512 * 1048576 + 1);
+  } finally {
+    await large.close();
+  }
+  await assert.rejects(
+    capturePreparedBaselineBrowser(cache),
+    /Prepared browser byte bound exceeded/u,
+  );
+});
+
+test("browser snapshot refuses a link path replaced after its directory was captured", async (t) => {
+  const root = await realpath(
+      await fixture(t, { "package.json": '{"type":"module"}' }),
+    ),
+    cache = path.join(root, "cache"),
+    link = path.join(cache, "Current");
+  await mkdir(path.join(cache, "A"), { recursive: true });
+  await mkdir(path.join(cache, "B"));
+  await writeFile(path.join(cache, "A/data"), "Original inert data\n");
+  await writeFile(path.join(cache, "B/data"), "Other inert data\n");
+  await symlink("A", link, "dir");
+  // The normal near miss is a valid relative alias to a physical sibling.
+  await capturePreparedBaselineBrowser(cache);
+  const original = await readFile(
+    path.join(repository, "scripts/preserved-baseline-evidence.mjs"),
+    "utf8",
+  );
+  assert.equal(original.split("  lstat,\n").length, 2);
+  let instrumented = original.replace(
+    "  lstat,\n",
+    "  lstat as originalLstat,\n  rm as removeEntry,\n",
+  );
+  for (const name of [
+    "compiled-engine-evidence.mjs",
+    "required-test-evidence.mjs",
+  ]) {
+    const relative = JSON.stringify("./" + name);
+    assert.equal(instrumented.split(relative).length, 2);
+    instrumented = instrumented.replace(
+      relative,
+      JSON.stringify(
+        pathToFileURL(path.join(repository, "scripts", name)).href,
+      ),
+    );
+  }
+  // Only the private copy's I/O boundary changes. The third named observation is
+  // the final whole-tree check; return its old stat but replace the real path.
+  instrumented += `
+let linkObservations = 0;
+async function lstat(file, options) {
+  const observed = await originalLstat(file, options);
+  if (file === ${JSON.stringify(link)} && ++linkObservations === 3) {
+    await removeEntry(file);
+    await symlink("B", file, "dir");
+  }
+  return observed;
+}
+`;
+  const instrumentedFile = path.join(
+    root,
+    "instrumented-browser-observation.mjs",
+  );
+  await writeFile(instrumentedFile, instrumented);
+  const observed = await import(pathToFileURL(instrumentedFile).href);
+  await assert.rejects(
+    observed.capturePreparedBaselineBrowser(cache),
+    /Prepared browser link path changed after capture/u,
+  );
+  assert.equal(await readlink(link), "B");
 });

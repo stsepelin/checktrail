@@ -33,6 +33,9 @@ export function baselineRuntimeBinding(cohort) {
     ...(cohort.selectors ? { selectors: cohort.selectors } : {}),
     tools: cohort.tools,
     toolVersionAssertions: cohort.toolVersionAssertions ?? {},
+    ...(cohort.preparedDirectories?.includes("playwright-browsers")
+      ? { preparedBrowserDirectory: ".checktrail/playwright-browsers" }
+      : {}),
   };
 }
 

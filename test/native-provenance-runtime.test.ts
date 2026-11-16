@@ -1002,3 +1002,182 @@ test("raw provenance publication refuses overwrite aliases links and noncanonica
     "linked.json",
   ]);
 });
+
+test("provenance case diagnostics retain only bounded declared dequeue and terminal metadata", () => {
+  const lines: string[] = [];
+  let now = 0;
+  const progress = api.createProvenanceRuntimeProgress({
+    cohort: "source",
+    clock: () => now++,
+    write: (line: string) => lines.push(line),
+  });
+  for (const name of [
+    "PRIVATE /private/project",
+    "native-license-provenance broken acceptance-extra",
+    "native-license-provenance broken",
+    "xnative-license-provenance broken acceptance",
+  ])
+    progress.caseEvent({ phase: "dequeued", name });
+  progress.caseEvent({
+    phase: "start",
+    name: "native-license-provenance broken acceptance",
+  });
+  progress.caseEvent({
+    phase: "terminal",
+    name: "native-license-provenance broken acceptance",
+    outcome: "PRIVATE_FAILURE",
+  });
+  assert.equal(lines.length, 0);
+  const kinds = [...api.provenanceRuntimeKinds] as string[];
+  for (const [index, kind] of kinds.entries()) {
+    const name = "native-license-provenance " + kind + " acceptance";
+    progress.caseEvent({
+      phase: "dequeued",
+      name,
+      body: "PRIVATE /private/project TOKEN",
+      durationMs: 99,
+    });
+    progress.caseEvent({ phase: "dequeued", name });
+    progress.caseEvent({
+      phase: "terminal",
+      name,
+      outcome: ["passed", "failed", "skipped", "todo"][index % 4],
+      durationMs: [
+        1.5,
+        -1,
+        NaN,
+        Infinity,
+        "PRIVATE",
+        Number.MAX_VALUE,
+        0,
+        23,
+        4,
+      ][index],
+      message: "PRIVATE_ERROR /private/path TOKEN",
+    });
+    progress.caseEvent({
+      phase: "terminal",
+      name,
+      outcome: "passed",
+      durationMs: 999,
+    });
+  }
+  const packets = lines.map((line) => JSON.parse(line));
+  assert.equal(packets.length, 18);
+  for (const [index, kind] of kinds.entries()) {
+    const dequeued = packets[index * 2],
+      terminal = packets[index * 2 + 1];
+    assert.deepEqual(dequeued, {
+      profile: "native-provenance-progress-v1",
+      cohort: "source",
+      phase: "case",
+      case: kind,
+      status: "dequeued",
+      elapsedMs: index * 2 + 1,
+    });
+    assert.equal(terminal.case, kind);
+    assert.equal(terminal.status, "terminal");
+    assert.equal(
+      terminal.outcome,
+      ["passed", "failed", "skipped", "todo"][index % 4],
+    );
+    assert.equal(
+      terminal.durationMs,
+      [2, null, null, null, null, Number.MAX_SAFE_INTEGER, 0, 23, 4][index],
+    );
+  }
+  assert.doesNotMatch(
+    lines.join(""),
+    /PRIVATE|private\/|TOKEN|acceptance|message|fileId|body/u,
+  );
+  assert.ok(lines.every((line) => Buffer.byteLength(line) <= 512));
+  const silent = api.createProvenanceRuntimeProgress({
+    cohort: "fresh",
+    write: () => {
+      throw Error("broken diagnostic pipe");
+    },
+  });
+  assert.doesNotThrow(() =>
+    silent.caseEvent({
+      phase: "dequeued",
+      name: "native-license-provenance fixed acceptance",
+    }),
+  );
+});
+
+test("provenance controller forwards live progress without changing the original cohort call", async () => {
+  // Execute the actual call expression against authored transports; this is
+  // call-site wiring coverage, never Windows or native acceptance evidence.
+  const ts = await import("typescript");
+  const source = await readFile(
+    path.join(root, "scripts/verify-native-provenance-runtime.mjs"),
+    "utf8",
+  );
+  const tree = ts.createSourceFile(
+    "controller.mjs",
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.JS,
+  );
+  const calls: import("typescript").CallExpression[] = [];
+  const visit = (node: import("typescript").Node) => {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === "runRequiredTests"
+    )
+      calls.push(node);
+    ts.forEachChild(node, visit);
+  };
+  visit(tree);
+  assert.equal(calls.length, 1);
+  const invoke = new Function(
+    "runRequiredTests",
+    "requirements",
+    "repository",
+    "path",
+    "progress",
+    "return " + calls[0]!.getText(tree) + ";",
+  );
+  const lines: string[] = [];
+  const progress = api.createProvenanceRuntimeProgress({
+    cohort: "source",
+    write: (line: string) => lines.push(line),
+  });
+  const marker = { originalReport: true };
+  const result = await invoke(
+    async (
+      selected: typeof requirements,
+      options: {
+        timeoutMs: number;
+        isolatedCaseWorkers?: number;
+        onTestProgress: (event: unknown) => void;
+      },
+    ) => {
+      assert.deepEqual(
+        selected,
+        requirements.map((row) => ({
+          ...row,
+          file: path.join(root, row.file),
+        })),
+      );
+      assert.equal(options.timeoutMs, 600000);
+      assert.equal(options.isolatedCaseWorkers, undefined);
+      assert.equal(options.onTestProgress, progress.caseEvent);
+      options.onTestProgress({
+        phase: "dequeued",
+        name: requirements[0]!.name,
+      });
+      return marker;
+    },
+    requirements,
+    root,
+    path,
+    progress,
+  );
+  assert.equal(result, marker);
+  assert.equal(lines.length, 1);
+  assert.equal(JSON.parse(lines[0]!).case, "broken");
+  assert.equal(JSON.parse(lines[0]!).status, "dequeued");
+});

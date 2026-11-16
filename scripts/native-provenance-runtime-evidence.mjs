@@ -97,7 +97,42 @@ export function createProvenanceRuntimeProgress({
       // A broken diagnostic pipe cannot replace an original acceptance outcome.
     }
   };
+  const cases = new Set();
   return {
+    caseEvent(event) {
+      const kind = provenanceRuntimeKinds.find(
+        (value) =>
+          event?.name === `${provenanceRuntimeProfile} ${value} acceptance`,
+      );
+      if (!kind || !["dequeued", "terminal"].includes(event.phase)) return;
+      if (
+        event.phase === "terminal" &&
+        !["passed", "failed", "skipped", "todo"].includes(event.outcome)
+      )
+        return;
+      const id = kind + ":" + event.phase;
+      if (cases.has(id)) return;
+      cases.add(id);
+      emit({
+        phase: "case",
+        case: kind,
+        status: event.phase,
+        ...(event.phase === "terminal"
+          ? {
+              outcome: event.outcome,
+              durationMs:
+                typeof event.durationMs === "number" &&
+                Number.isFinite(event.durationMs) &&
+                event.durationMs >= 0
+                  ? Math.min(
+                      Number.MAX_SAFE_INTEGER,
+                      Math.round(event.durationMs),
+                    )
+                  : null,
+            }
+          : {}),
+      });
+    },
     async run(phase, action) {
       assert.ok(phases.has(phase), "Unknown provenance diagnostic phase");
       emit({ phase, status: "started" });
