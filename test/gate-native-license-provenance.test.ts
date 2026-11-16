@@ -186,9 +186,17 @@ test(
       path.join(f.project, "inert-project.mjs"),
       "throw new Error('project modules must never be imported by audits');\n",
     );
-    const packed = await f.prepare(),
-      report = await runProvenance(f.project, packed.reference),
+    const beforeEmpty = (await f.prepare()).policy.npm.identity;
+    const empty = path.join(f.npm, "ordinary-empty.txt");
+    await writeFile(empty, "");
+    const packed = await f.prepare();
+    assert.equal(packed.policy.npm.identity.files, beforeEmpty.files + 1);
+    assert.equal(packed.policy.npm.identity.bytes, beforeEmpty.bytes);
+    assert.notEqual(packed.policy.npm.identity.sha256, beforeEmpty.sha256);
+    const report = await runProvenance(f.project, packed.reference),
       receipt = retainedProvenanceReceipt(report);
+    assert.equal((await readFile(empty)).length, 0);
+    assert.deepEqual(receipt.inputs.npm, packed.policy.npm.identity);
     assert.equal(receipt.state, "incomplete");
     assert.equal(receipt.audits[0]!.gaps, 0);
     assert.equal(receipt.audits[1]!.exitCode, 2);
@@ -244,6 +252,12 @@ test(
       );
       completeAccounting(receipt);
     }
+    const emptyNpmCli = path.join(f.root, "empty-npm-cli.mjs");
+    await writeFile(emptyNpmCli, "");
+    await assert.rejects(
+      f.prepare({ npmCliFile: emptyNpmCli }),
+      /Bounded regular provenance file required/,
+    );
     const safe = await f.prepare();
     for (const args of [
       ["--npm-cli"],

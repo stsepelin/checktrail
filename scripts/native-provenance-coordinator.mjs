@@ -41,7 +41,11 @@ const canonical = async (value) => {
   );
   return value;
 };
-async function provenanceBytes(file, maximum = 1024 * 1024) {
+async function provenanceBytes(
+  file,
+  maximum = 1024 * 1024,
+  allowEmpty = false,
+) {
   await canonical(file);
   const fd = await open(
     file,
@@ -50,7 +54,7 @@ async function provenanceBytes(file, maximum = 1024 * 1024) {
   try {
     const a = await fd.stat();
     assert.ok(
-      a.isFile() && a.size > 0 && a.size <= maximum,
+      a.isFile() && (allowEmpty || a.size > 0) && a.size <= maximum,
       "Bounded regular provenance file required",
     );
     const bytes = Buffer.alloc(a.size + 1);
@@ -90,7 +94,7 @@ async function provenanceTree(root) {
       if (info.isDirectory()) await visit(relative, depth + 1);
       else {
         assert.ok(files.length < 4096, "Provenance file inventory exhausted");
-        const body = await provenanceBytes(file, 64 * 1024 * 1024);
+        const body = await provenanceBytes(file, 64 * 1024 * 1024, true);
         bytes += body.length;
         assert.ok(
           bytes <= 128 * 1024 * 1024,
