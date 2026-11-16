@@ -191,6 +191,15 @@ Original failures remain failed, and four empty gprofng reports remain unproven
 with an unknown reason. This does not change the historical controller receipt,
 qualify every upstream test, or close bootstrap and original notice requirements.
 
+The [2026-11-16 original notice coverage](measurements/c-original-notice-coverage-2026-11-16.json)
+reconciles the exact selected C binary dependency archive identities with retained
+original notices. It also records the complete original texts of the eight selected
+GCC and GLIBC source notice documents, including `copyright.in` and the previously
+missing GLIBC copyright and Unicode notices. This is documentary availability;
+exhaustive inline-source notice selection and compiler/bootstrap closure remain
+separate requirements. The original Pango reference spelling is preserved alongside
+the exact complete GPL-2 text, without inventing a filesystem alias.
+
 New C-profile controller receipts use schema 3 and explicitly record each
 resource-observation intervention. Before scanning, the controller verifies the
 exact owned producer container and pauses a running writer; it always attempts
