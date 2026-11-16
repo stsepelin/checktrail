@@ -2,11 +2,11 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { requestPinnedArtifactBytes } from "./request-pinned-artifact.mjs";
 
-const apachePaths = [
-  "/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip",
-  "/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip.asc",
-  "/maven/KEYS",
-];
+const apachePaths = ["/maven/KEYS"];
+const archiveDistribution =
+  "https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip";
+const centralDistribution =
+  "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0/apache-maven-3.10.0-bin.zip";
 const centralPaths = [
   "/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.4/maven-wrapper-3.3.4.jar",
   "/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.4/maven-wrapper-3.3.4.jar.asc",
@@ -21,15 +21,10 @@ const admitted = new Map([
       "https://archive.apache.org/dist" + suffix,
     ],
   ]),
-  ...apachePaths
-    .filter((suffix) => suffix !== "/maven/KEYS")
-    .map((suffix) => [
-      "https://archive.apache.org/dist" + suffix,
-      [
-        "https://downloads.apache.org" + suffix,
-        "https://dlcdn.apache.org" + suffix,
-      ],
-    ]),
+  ...["", ".asc"].map((suffix) => [
+    archiveDistribution + suffix,
+    [centralDistribution + suffix],
+  ]),
   ...centralPaths.map((suffix) => [
     "https://repo.maven.apache.org" + suffix,
     undefined,

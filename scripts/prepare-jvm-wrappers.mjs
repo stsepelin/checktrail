@@ -139,6 +139,10 @@ async function download(
       artifact: gradle ? "gradle-wrapper-distribution" : "jvm-wrapper",
       artifactIndex,
       centralMirror: new URL(url).hostname === "repo.maven.apache.org",
+      archiveMirror: [
+        "https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip",
+        "https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip.asc",
+      ].includes(url),
       mirrorIndexForAsset: (asset) =>
         [
           "services.gradle.org",

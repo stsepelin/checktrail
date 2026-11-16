@@ -9569,7 +9569,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "69654599d24a17ec4fedd7d1c2efafb99020f07c"
+      "hash": "9ff6fe9f998dc13817a1d927432c70363ede520a"
     },
     {
       "path": "scripts/prepare-kotlin-tools.mjs",
@@ -10402,21 +10402,21 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "fae60394cf07483d9de2a18673c40e37d171e2ad"
+      "hash": "639fe7b61ae6f0f956c5e2f99943f642af20890a"
     },
     {
       "path": "scripts/request-maven-distribution.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "6cdf140179621a3c87a414a2e6982a93bae7ea15"
+      "hash": "fab59d3c2c43a4735909a1af972111d0f352959e"
     },
     {
       "path": "scripts/request-pinned-artifact.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "8f9c413bace9ddd9e234a6c754b17d9da0e162b3"
+      "hash": "e24413676405e30de6be9074e077efd5678bbc3a"
     },
     {
       "path": "scripts/request-ruby-compiler-archive.mjs",
@@ -18494,14 +18494,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4a6547819a50f3c89ad5a0ecefede9d0ec5defb2"
+      "hash": "4873dd307fa6bcb9391425b3332302af5e7b9a4f"
     },
     {
       "path": "test/maven-preparation.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4f01edde25750ca88b7dda27c56c3bda0b1f5da2"
+      "hash": "746d1a56e425ad2281167009f17c13251739e901"
     },
     {
       "path": "test/maven-surfaces.test.ts",
@@ -18907,7 +18907,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "50d8803a009e3f617733d1e08abe00c960bf0c80"
+      "hash": "d8bc84938cbbe5604659e3b04d23169c1b86c098"
     },
     {
       "path": "test/pinned-image-pull.test.ts",
