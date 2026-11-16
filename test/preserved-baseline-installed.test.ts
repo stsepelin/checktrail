@@ -33,12 +33,13 @@ const { captureCompiledEngine } = await import(
 const { installAcceptancePackage, runAcceptanceNpm } = await import(
   new URL("../../scripts/install-acceptance-package.mjs", import.meta.url).href
 );
-const { runFreshBaselineAtInstallation } = await import(
-  new URL(
-    "../../scripts/preserved-baseline-fresh-coordinator.mjs",
-    import.meta.url,
-  ).href
-);
+const { runFreshBaselineAtInstallation, sourceScopeTransportValue } =
+  await import(
+    new URL(
+      "../../scripts/preserved-baseline-fresh-coordinator.mjs",
+      import.meta.url,
+    ).href
+  );
 const runtime = {
   platform: process.platform,
   nodeMajor: Number(process.versions.node.split(".")[0]),
@@ -241,10 +242,10 @@ test("real offline fresh install retains exact original callback union and physi
   const engine = await captureCompiledEngine(path.join(root, "dist/src"));
   const worker = path.join(repository, "scripts/preserved-baseline-worker.mjs");
   const expectedSourceScope = {
-    profiles,
+    profiles: Object.assign(Object.create(null), profiles),
     selection: ["alpha", "overlapping"],
     additionalFiles: [],
-    baselineProfiles: profiles,
+    baselineProfiles: Object.assign(Object.create(null), profiles),
     baselineSelection: ["alpha", "overlapping"],
     binding: runtime,
     sourceContract: { kind: "required-profiles", maxTerminalEvents: 4096 },
@@ -376,7 +377,10 @@ test("real offline fresh install retains exact original callback union and physi
       const input = JSON.parse(await readFile(inputFile, "utf8"));
       assert.equal(input.mode, "fresh-from-original-source");
       assert.equal(input.sourceCapture.originalExecutionInvocations, 1);
-      assert.deepEqual(input.expectedSourceScope, expectedSourceScope);
+      assert.deepEqual(
+        input.expectedSourceScope,
+        sourceScopeTransportValue(expectedSourceScope),
+      );
       assert.equal(input.installedPackage, installedPackage);
       const env = { ...process.env };
       delete env.NODE_TEST_CONTEXT;
@@ -411,6 +415,203 @@ test("real offline fresh install retains exact original callback union and physi
     (await lstat(installedPackage)).isDirectory(),
     "Controller's shared fresh installation remains for original CLI/MCP checks",
   );
+  // Reproduce the production selector's null-prototype map through the real
+  // source-fragment API and a physically installed JSON worker.
+  const shardApi = await import(
+    new URL("../../scripts/ci-full-suite-shards.mjs", import.meta.url).href
+  );
+  await mkdir(path.join(root, "test"), { recursive: true });
+  await writeFile(
+    path.join(root, "test/original.test.ts"),
+    "// Synthetic source inventory.\n",
+  );
+  const otherRows = [];
+  for (const index of [1, 2]) {
+    const name = "original other shard callback " + index;
+    const file = "other-" + index + ".test";
+    await writeFile(
+      path.join(root, "test", file + ".ts"),
+      "// Synthetic source inventory.\n",
+    );
+    await writeFile(
+      path.join(root, "dist/test", file + ".js"),
+      "import {test} from 'node:test'; test(" +
+        JSON.stringify(name) +
+        ", () => {});\n",
+    );
+    otherRows.push({ file: "dist/test/" + file + ".js", name });
+  }
+  const fragmentProfiles = { ...profiles, other: otherRows };
+  const fragmentManifest = {
+    schemaVersion: 1,
+    profiles: Object.keys(fragmentProfiles),
+    remainingCommands: [],
+  };
+  await writeFile(
+    path.join(root, "scripts/ci-full-suite-profiles.json"),
+    JSON.stringify(fragmentManifest),
+  );
+  await writeFile(
+    path.join(root, "scripts/required-native-tests.json"),
+    JSON.stringify(fragmentProfiles),
+  );
+  const inventory = await shardApi.captureFullSuiteInventory(root);
+  const partition = shardApi.partitionFullSuiteFiles(inventory.inventory);
+  const shard = partition.shards.find((item: { files: string[] }) =>
+    item.files.includes("original.test.js"),
+  )!;
+  const originalSelection = shardApi.selectFullSuiteRequirements(
+    fragmentProfiles,
+    fragmentManifest.profiles,
+    inventory.inventory,
+    shard.files,
+  );
+  assert.equal(Object.getPrototypeOf(originalSelection.profiles), null);
+  const fragmentScope = {
+    ...expectedSourceScope,
+    profiles: originalSelection.profiles,
+    selection: originalSelection.selection,
+    additionalFiles: shard.files.map((file: string) => "dist/test/" + file),
+    sourceContract: {
+      kind: "full-suite-fragment",
+      maxTerminalEvents: 4096,
+      fragment: {
+        shard: shard.id,
+        partitionSha256: createHash("sha256")
+          .update(JSON.stringify(partition))
+          .digest("hex"),
+        inventorySha256: partition.inventorySha256,
+        profileManifestSha256: createHash("sha256")
+          .update(JSON.stringify(fragmentManifest))
+          .digest("hex"),
+        requestedProfiles: fragmentManifest.profiles,
+        totalRequired: originalSelection.allRequired,
+        assignedRequired: originalSelection.assignedRequired,
+        assignedFiles: shard.files,
+        unassignedFiles: inventory.inventory
+          .map((row: { file: string }) => row.file)
+          .filter((file: string) => !shard.files.includes(file)),
+        compiledTestsTreeSha256: inventory.snapshot.treeSha256,
+      },
+    },
+  };
+  let fragmentSourceInvocations = 0;
+  const fragmentCapture = await captureBaselineSourceExecution({
+    root,
+    ...fragmentScope,
+    execute: async () => {
+      fragmentSourceInvocations++;
+      const env = { ...process.env };
+      delete env.NODE_TEST_CONTEXT;
+      const driver = path.join(root, "scripts/original-fragment-driver.mjs");
+      await writeFile(
+        driver,
+        "import {runFullSuiteShard} from " +
+          JSON.stringify(
+            new URL("../../scripts/ci-full-suite-shards.mjs", import.meta.url)
+              .href,
+          ) +
+          ";process.stdout.write(JSON.stringify(await runFullSuiteShard(process.cwd(),process.argv[2])));\n",
+      );
+      const child = spawnSync(process.execPath, [driver, shard.id], {
+        cwd: root,
+        env: {
+          ...env,
+          CHECKTRAIL_BASELINE_UNIT_PHYSICAL: await realpath(
+            path.join(root, "dist/src/index.js"),
+          ),
+        },
+        encoding: "utf8",
+        timeout: 20000,
+        maxBuffer: 4 * 1024 * 1024,
+      });
+      assert.equal(child.status, 0, child.stderr);
+      const report = JSON.parse(child.stdout);
+      assert.equal(
+        report.fragmentComplete,
+        true,
+        JSON.stringify(report.problems),
+      );
+      return report;
+    },
+  });
+  assert.equal(fragmentCapture.originalReport.complete, false);
+  assert.equal(fragmentCapture.originalReport.fragmentComplete, true);
+  assert.equal(fragmentCapture.originalReport.wholeSuiteComplete, false);
+  const fragmentCoordinated = await runFreshBaselineAtInstallation({
+    repository: root,
+    sourceCapture: JSON.parse(JSON.stringify(fragmentCapture)),
+    expectedSourceScope: fragmentScope,
+    installedPackage,
+    harness: path.join(output, "fragment-coordinated-harness"),
+    launchWorker: async ({
+      harness: workerRoot,
+      inputFile,
+      worker: workerFile,
+    }: {
+      harness: string;
+      inputFile: string;
+      worker: string;
+    }) => {
+      const env = { ...process.env };
+      delete env.NODE_TEST_CONTEXT;
+      const child = spawnSync(process.execPath, [workerFile, inputFile], {
+        cwd: workerRoot,
+        env: {
+          ...env,
+          CHECKTRAIL_BASELINE_UNIT_PHYSICAL: await realpath(
+            path.join(installedPackage, "dist/src/index.js"),
+          ),
+        },
+        encoding: "utf8",
+        timeout: 20000,
+        maxBuffer: 4 * 1024 * 1024,
+      });
+      assert.equal(child.status, 0, child.stderr);
+      return child.stdout;
+    },
+  });
+  assert.equal(fragmentSourceInvocations, 1);
+  assert.equal(fragmentCoordinated.sourceCallbacksReexecuted, false);
+  assert.equal(fragmentCoordinated.sourceAndFreshSubsetComplete, true);
+  assert.equal(
+    fragmentCoordinated.originalSource.originalReport.complete,
+    false,
+  );
+  assert.equal(
+    fragmentCoordinated.fresh.physicalBinding.physicallyInstalled,
+    true,
+  );
+  assert.equal(fragmentCoordinated.fresh.required, 1);
+  for (const mutate of [
+    (scope: typeof expectedSourceScope) => {
+      scope.profiles.alpha[0].name = "changed callback";
+    },
+    (scope: typeof expectedSourceScope) => {
+      Object.assign(scope, { extra: true });
+    },
+    (scope: typeof expectedSourceScope) => {
+      Reflect.deleteProperty(scope, "additionalFiles");
+    },
+    (scope: typeof expectedSourceScope) => {
+      scope.sourceContract.maxTerminalEvents = 1;
+    },
+  ]) {
+    const changed = structuredClone(expectedSourceScope);
+    mutate(changed);
+    await assert.rejects(
+      runFreshBaselineAtInstallation({
+        repository: root,
+        sourceCapture,
+        expectedSourceScope: changed,
+        installedPackage,
+        harness: path.join(output, "refused-wire-harness"),
+        launchWorker: () =>
+          assert.fail("Changed scope must refuse before launch"),
+      }),
+      /Original source scope differs/,
+    );
+  }
   const refusedHarness = path.join(output, "refused-coordinated-harness");
   await assert.rejects(
     runFreshBaselineAtInstallation({
@@ -702,5 +903,125 @@ test("baseline callback admission rejects empty duplicate unknown and linked cal
   await assert.rejects(
     callbackIdentities(root, profiles, ["alpha"]),
     /falls back through a link/,
+  );
+});
+
+test("source scope transport preserves complete null-prototype JSON maps and refuses unsupported values without invoking hooks", () => {
+  const value = Object.assign(Object.create(null), {
+    profiles: Object.assign(Object.create(null), {
+      original: [{ file: "dist/test/original.test.js", name: "original" }],
+    }),
+    count: 1,
+    disabled: false,
+    absent: null,
+    selection: ["original"],
+  });
+  const projected = sourceScopeTransportValue(value);
+  assert.deepEqual(projected, JSON.parse(JSON.stringify(value)));
+  assert.equal(Object.getPrototypeOf(projected.profiles), Object.prototype);
+  assert.notEqual(projected.profiles, value.profiles);
+  let hooks = 0;
+  const getter = Object.defineProperty({}, "original", {
+    enumerable: true,
+    get() {
+      hooks++;
+      return 1;
+    },
+  });
+  const hidden = Object.defineProperty({}, "hidden", { value: 1 });
+  const symbol = { [Symbol("original")]: 1 };
+  const sparse = Array(1);
+  const extraArray = Object.assign([1], { extra: true });
+  const cyclic: Record<string, unknown> = {};
+  cyclic.self = cyclic;
+  const proxy = new Proxy(
+    {},
+    {
+      ownKeys() {
+        hooks++;
+        return [];
+      },
+    },
+  );
+  for (const unsupported of [
+    undefined,
+    NaN,
+    Infinity,
+    -Infinity,
+    -0,
+    1n,
+    () => {},
+    Symbol("value"),
+    new Date(),
+    new Map(),
+    new Set(),
+    getter,
+    hidden,
+    symbol,
+    sparse,
+    extraArray,
+    cyclic,
+    proxy,
+    {
+      toJSON() {
+        hooks++;
+        return {};
+      },
+    },
+  ])
+    assert.throws(
+      () => sourceScopeTransportValue({ original: unsupported }),
+      /Source scope transport/,
+    );
+  assert.equal(hooks, 0);
+  const countNodes = (current: unknown): number =>
+    current !== null && typeof current === "object"
+      ? 1 +
+        Object.values(current).reduce<number>(
+          (sum, child) => sum + countNodes(child),
+          0,
+        )
+      : 1;
+  let depthBoundary: unknown = 1;
+  for (let depth = 0; depth < 64; depth++)
+    depthBoundary = { next: depthBoundary };
+  assert.equal(countNodes(depthBoundary), 65);
+  assert.deepEqual(sourceScopeTransportValue(depthBoundary), depthBoundary);
+  const depthExcess = { next: depthBoundary };
+  assert.equal(countNodes(depthExcess), 66);
+  assert.throws(
+    () => sourceScopeTransportValue(depthExcess),
+    /Source scope transport is unbounded/,
+  );
+
+  // Root + array + every scalar are counted; the excess differs by one leaf.
+  const nodeBoundary = { values: Array(100000 - 2).fill(null) };
+  assert.equal(countNodes(nodeBoundary), 100000);
+  assert.deepEqual(sourceScopeTransportValue(nodeBoundary), nodeBoundary);
+  const nodeExcess = { values: [...nodeBoundary.values, null] };
+  assert.equal(countNodes(nodeExcess), 100001);
+  assert.throws(
+    () => sourceScopeTransportValue(nodeExcess),
+    /Source scope transport is unbounded/,
+  );
+
+  const prototypeBefore = Object.getOwnPropertyDescriptors(Object.prototype);
+  const ownPrototypeData = Object.defineProperty({}, "__proto__", {
+    value: "original literal data",
+    enumerable: true,
+  });
+  const preservedPrototypeData = sourceScopeTransportValue(ownPrototypeData);
+  assert.equal(Object.hasOwn(preservedPrototypeData, "__proto__"), true);
+  assert.equal(preservedPrototypeData.__proto__, "original literal data");
+  assert.equal(Object.getPrototypeOf(preservedPrototypeData), Object.prototype);
+  assert.deepEqual(
+    Object.getOwnPropertyDescriptors(Object.prototype),
+    prototypeBefore,
+  );
+
+  const aliased = { value: 1 };
+  assert.deepEqual(
+    sourceScopeTransportValue({ first: aliased, second: aliased }),
+    { first: { value: 1 }, second: { value: 1 } },
   );
 });

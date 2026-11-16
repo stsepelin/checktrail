@@ -10,7 +10,7 @@ import {
   realpath,
   unlink,
 } from "node:fs/promises";
-import { constants } from "node:fs";
+import { constants, writeSync } from "node:fs";
 import { Buffer } from "node:buffer";
 import os from "node:os";
 import path from "node:path";
@@ -58,6 +58,83 @@ export const provenanceRuntimeHarnessFiles = Object.freeze([
   "scripts/runtime-installation-capture.mjs",
   ...provenanceInstalledPrograms,
 ]);
+// Progress is an enum-only diagnostic channel, never acceptance evidence.
+// A synchronous bounded write reaches the parent pipe before a blocking child.
+export function createProvenanceRuntimeProgress({
+  cohort,
+  write = (line) => writeSync(2, line),
+  clock = () => Number(process.hrtime.bigint() / 1000000n),
+}) {
+  assert.ok(cohort === "source" || cohort === "fresh");
+  const phases = new Set([
+    "capture",
+    "source-build",
+    "source-cases",
+    "install-capture",
+    "pack",
+    "installation",
+    "fresh-cases",
+    "cleanup",
+  ]);
+  const started = clock();
+  let emitted = 0;
+  const emit = (fields) => {
+    if (emitted >= 128) return;
+    emitted++;
+    const elapsed = clock() - started;
+    const packet = {
+      profile: "native-provenance-progress-v1",
+      cohort,
+      ...fields,
+      elapsedMs:
+        Number.isFinite(elapsed) && elapsed >= 0
+          ? Math.min(Number.MAX_SAFE_INTEGER, Math.round(elapsed))
+          : null,
+    };
+    try {
+      write(JSON.stringify(packet) + "\n");
+    } catch {
+      // A broken diagnostic pipe cannot replace an original acceptance outcome.
+    }
+  };
+  return {
+    async run(phase, action) {
+      assert.ok(phases.has(phase), "Unknown provenance diagnostic phase");
+      emit({ phase, status: "started" });
+      try {
+        const result = await action();
+        const count = (value) =>
+          Number.isSafeInteger(value) && value >= 0 && value <= 4096
+            ? value
+            : null;
+        emit({
+          phase,
+          status: "completed",
+          ...(phase === "source-cases" || phase === "fresh-cases"
+            ? {
+                acceptanceComplete: result?.complete === true,
+                passed: count(result?.passed),
+                required: count(result?.required),
+                skipped: Array.isArray(result?.ledger?.events)
+                  ? result.ledger.events.filter(
+                      (row) => row.outcome === "skipped",
+                    ).length
+                  : null,
+                todo: Array.isArray(result?.ledger?.events)
+                  ? result.ledger.events.filter((row) => row.outcome === "todo")
+                      .length
+                  : null,
+              }
+            : {}),
+        });
+        return result;
+      } catch (error) {
+        emit({ phase, status: "failed" });
+        throw error;
+      }
+    },
+  };
+}
 export const provenanceRuntimeHash = (bytes) =>
   createHash("sha256").update(bytes).digest("hex");
 const digest = (value) =>

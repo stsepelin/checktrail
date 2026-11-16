@@ -528,6 +528,47 @@ const engineEvidence = await import(
 const { createHash } = await import("node:crypto");
 const sha256 = (bytes: Uint8Array | string) =>
   createHash("sha256").update(bytes).digest("hex");
+// These are product programs, independently enumerated from the package manifest.
+// Operator harnesses remain outside the installed package.
+const resourceProductScripts = new Set([
+  "scripts/native-provenance-coordinator.mjs",
+  "scripts/native-provenance-adapter.mjs",
+  "scripts/native-provenance-audit-child.mjs",
+  "scripts/audit-dependencies.mjs",
+  "scripts/audit-selected-artifact-evidence.mjs",
+  "scripts/pango-complete-text-binding.mjs",
+]);
+export function assertResourcePackageLayout(files: { path: string }[]) {
+  for (const required of ["dist/src/index.js", "dist/src/cli.js"])
+    assert.ok(
+      files.some((file) => file.path === required),
+      `Missing resource package entry: ${required}`,
+    );
+  for (const file of files) {
+    const parts = file.path.split("/");
+    assert.ok(
+      !file.path.includes("\\") &&
+        !file.path.includes("\0") &&
+        !/^[A-Za-z]:/.test(file.path) &&
+        parts.every((part) => part && part !== "." && part !== ".."),
+      `Noncanonical resource package path: ${file.path}`,
+    );
+    assert.ok(
+      !/^(?:test|reports|research_notes|\.checktrail)\//.test(file.path) &&
+        (!file.path.startsWith("scripts/") ||
+          resourceProductScripts.has(file.path)),
+      `Unapproved resource package path: ${file.path}`,
+    );
+  }
+  assert.deepEqual(
+    files
+      .map((file) => file.path)
+      .filter((file) => file.startsWith("scripts/"))
+      .sort(),
+    [...resourceProductScripts].sort(),
+    "Resource package provenance script set differs",
+  );
+}
 async function candidateArchive(t: TestContext) {
   const selected = process.env.CHECKTRAIL_RESOURCE_CANDIDATE_ARCHIVE;
   if (selected) {
@@ -552,24 +593,7 @@ async function candidateArchive(t: TestContext) {
     throw error;
   }
   const [packed] = JSON.parse(output);
-  assert.ok(
-    packed.files.some(
-      (file: { path: string }) => file.path === "dist/src/index.js",
-    ),
-  );
-  assert.ok(
-    packed.files.some(
-      (file: { path: string }) => file.path === "dist/src/cli.js",
-    ),
-  );
-  assert.ok(
-    packed.files.every(
-      (file: { path: string }) =>
-        !/^(?:test|scripts|reports|research_notes|\.checktrail)\//.test(
-          file.path,
-        ),
-    ),
-  );
+  assertResourcePackageLayout(packed.files);
   return path.join(directory, packed.filename);
 }
 export async function resourceNearMissControl(t: TestContext) {

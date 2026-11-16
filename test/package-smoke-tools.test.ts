@@ -22,6 +22,8 @@ const localFixture: typeof fixture = async (t, files) =>
 
 const repository = fileURLToPath(new URL("../../", import.meta.url));
 const {
+  assertSmokePackageLayout,
+  smokeProductPrograms,
   copySmokeToolGraph,
   smokeProjectPath,
   preparePackageSmokeTools,
@@ -928,3 +930,110 @@ test(
     }
   },
 );
+
+test("smoke package layout requires the exact product programs and supplemental grammar without admitting sibling scripts or private material", () => {
+  const programs = [
+    "scripts/native-provenance-coordinator.mjs",
+    "scripts/native-provenance-adapter.mjs",
+    "scripts/native-provenance-audit-child.mjs",
+    "scripts/audit-dependencies.mjs",
+    "scripts/audit-selected-artifact-evidence.mjs",
+    "scripts/pango-complete-text-binding.mjs",
+  ];
+  const grammar = [
+    "assets/context-vb-grammar/manifest.json",
+    "assets/context-vb-grammar/tree-sitter-vbnet.wasm",
+    "assets/context-vb-grammar/notices/vbnet-MIT.txt",
+    "assets/context-vb-grammar/patches/vbnet-newlines.patch",
+  ];
+  assert.deepEqual([...smokeProductPrograms].sort(), [...programs].sort());
+  const files = [
+    ...programs,
+    ...grammar,
+    "dist/src/index.js",
+    "dist/src/cli.js",
+    "docs/scripts/usage.md",
+    "docs/reports.md",
+    "assets/context-grammars/manifest.json",
+    "schemas/checktrail.schema.json",
+    "packs/standard.json",
+    "package.json",
+    "README.md",
+  ].map((path) => ({ path }));
+  assert.doesNotThrow(() => assertSmokePackageLayout(files));
+  assert.doesNotThrow(() => assertSmokePackageLayout([...files].reverse()));
+  for (const path of [
+    "scripts/operator-only.mjs",
+    "scripts/native-provenance-coordinator.mjs.map",
+    "scripts/native-provenance-coordinator-extra.mjs",
+    "scripts/pango-complete-text-binding.mjs/extra",
+  ])
+    assert.throws(
+      () => assertSmokePackageLayout([...files, { path }]),
+      /Smoke package product script set differs/,
+    );
+  for (const path of [
+    "assets/context-vb-grammar/extra.wasm",
+    "assets/context-vb-grammar/manifest.json.backup",
+  ])
+    assert.throws(
+      () => assertSmokePackageLayout([...files, { path }]),
+      /Smoke package supplemental grammar set differs/,
+    );
+  for (const path of [
+    "test/fixtures/.env",
+    "reports/review.json",
+    "research_notes/credentials.json",
+    ".checktrail/credentials.json",
+    "assets/context-grammars-extra/grammar.wasm",
+    "README.md.backup",
+  ])
+    assert.throws(
+      () => assertSmokePackageLayout([...files, { path }]),
+      (error: unknown) => {
+        assert.ok(error instanceof assert.AssertionError);
+        assert.ok(
+          error.message.includes(`Unexpected smoke package path: ${path}`),
+        );
+        return true;
+      },
+    );
+  for (const path of [
+    "./scripts/operator-only.mjs",
+    "/scripts/operator-only.mjs",
+    "C:scripts/operator-only.mjs",
+    "docs/../scripts/operator-only.mjs",
+    "docs//scripts/operator-only.mjs",
+    "scripts\\operator-only.mjs",
+  ])
+    assert.throws(
+      () => assertSmokePackageLayout([...files, { path }]),
+      (error: unknown) => {
+        assert.ok(error instanceof assert.AssertionError);
+        assert.ok(
+          error.message.includes(`Noncanonical smoke package path: ${path}`),
+        );
+        return true;
+      },
+    );
+  for (const path of [...programs, ...grammar])
+    assert.throws(
+      () =>
+        assertSmokePackageLayout(files.filter((file) => file.path !== path)),
+      (error: unknown) => {
+        assert.ok(error instanceof assert.AssertionError);
+        assert.ok(
+          error.message.includes(`Missing smoke package file: ${path}`),
+        );
+        return true;
+      },
+    );
+  assert.throws(
+    () => assertSmokePackageLayout([...files, { path: programs[0]! }]),
+    /Smoke package product script set differs/,
+  );
+  assert.throws(
+    () => assertSmokePackageLayout([...files, { path: grammar[0]! }]),
+    /Smoke package supplemental grammar set differs/,
+  );
+});

@@ -1,6 +1,8 @@
 // Original synthetic receipt and physical-layout controls, never native qualification.
 import assert from "node:assert/strict";
-import { execFile } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
+import { once } from "node:events";
+import { createInterface } from "node:readline";
 import { promisify } from "node:util";
 import {
   lstat,
@@ -313,6 +315,142 @@ test("provenance qualification selects all nine exact planned callbacks and reje
     api.selectProvenanceRuntimeRequirements(wrong, inventory),
   );
 });
+
+test("provenance phase diagnostics preserve outcomes and redact errors with bounded timing and accounting", async () => {
+  const lines: string[] = [];
+  let time = 100;
+  const progress = api.createProvenanceRuntimeProgress({
+    cohort: "source",
+    clock: () => time++,
+    write: (line: string) => lines.push(line),
+  });
+  const report = {
+    complete: false,
+    required: 9,
+    passed: 6,
+    problems: [{ message: "PRIVATE_ERROR /private/project TOKEN" }],
+    ledger: {
+      events: [
+        { outcome: "failed" },
+        { outcome: "skipped" },
+        { outcome: "todo" },
+      ],
+    },
+  };
+  assert.equal(await progress.run("source-cases", () => report), report);
+  const failure = new Error("PRIVATE_ERROR /private/project TOKEN");
+  await assert.rejects(
+    progress.run("source-build", () => {
+      throw failure;
+    }),
+    (error: unknown) => error === failure,
+  );
+  const missing = await progress.run("fresh-cases", () => undefined);
+  assert.equal(missing, undefined);
+  const packets = lines.map((line) => JSON.parse(line));
+  assert.deepEqual(packets[0], {
+    profile: "native-provenance-progress-v1",
+    cohort: "source",
+    phase: "source-cases",
+    status: "started",
+    elapsedMs: 1,
+  });
+  assert.deepEqual(packets[1], {
+    profile: "native-provenance-progress-v1",
+    cohort: "source",
+    phase: "source-cases",
+    status: "completed",
+    elapsedMs: 2,
+    acceptanceComplete: false,
+    passed: 6,
+    required: 9,
+    skipped: 1,
+    todo: 1,
+  });
+  assert.equal(packets[3].status, "failed");
+  assert.deepEqual(
+    { ...packets[5], elapsedMs: 0 },
+    {
+      profile: "native-provenance-progress-v1",
+      cohort: "source",
+      phase: "fresh-cases",
+      status: "completed",
+      elapsedMs: 0,
+      acceptanceComplete: false,
+      passed: null,
+      required: null,
+      skipped: null,
+      todo: null,
+    },
+  );
+  assert.doesNotMatch(
+    lines.join(""),
+    /PRIVATE_ERROR|private\/project|TOKEN|message|durationMs/u,
+  );
+  for (let i = 0; i < 200; i++) await progress.run("capture", () => undefined);
+  assert.equal(lines.length, 128);
+  assert.ok(lines.every((line) => Buffer.byteLength(line) <= 512));
+  const brokenPipe = api.createProvenanceRuntimeProgress({
+    cohort: "fresh",
+    write: () => {
+      throw new Error("diagnostic pipe failed");
+    },
+  });
+  assert.equal(await brokenPipe.run("capture", () => report), report);
+  await assert.rejects(
+    brokenPipe.run("capture", () => {
+      throw failure;
+    }),
+    (error: unknown) => error === failure,
+  );
+  await assert.rejects(
+    progress.run("/private/project", () => report),
+    /Unknown provenance diagnostic phase/u,
+  );
+});
+
+test(
+  "provenance phase diagnostics reach stderr before a blocking child and leave stdout empty",
+  { timeout: 15000 },
+  async () => {
+    const child = spawn(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        `
+    import { createProvenanceRuntimeProgress } from ${JSON.stringify(pathToFileURL(path.join(root, "scripts/native-provenance-runtime-evidence.mjs")).href)};
+    const progress = createProvenanceRuntimeProgress({ cohort: "source" });
+    await progress.run("source-build", () => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 30000));
+  `,
+      ],
+      { stdio: ["ignore", "pipe", "pipe"] },
+    );
+    let stdout = "";
+    child.stdout.on("data", (chunk) => {
+      stdout += String(chunk);
+    });
+    const exited = once(child, "exit");
+    const reader = createInterface({
+      input: child.stderr,
+      crlfDelay: Infinity,
+    });
+    try {
+      const [line] = await once(reader, "line", {
+        signal: AbortSignal.timeout(10000),
+      });
+      const packet = JSON.parse(line);
+      assert.equal(packet.phase, "source-build");
+      assert.equal(packet.status, "started");
+      assert.equal(child.exitCode, null);
+      assert.equal(stdout, "");
+    } finally {
+      reader.close();
+      child.kill();
+      await exited;
+    }
+  },
+);
 
 test("synthetic selected-slot controls require every exact patch, architecture and image family", () => {
   assert.equal(inventory.runtimeProfiles.length, 8);

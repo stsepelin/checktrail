@@ -698,14 +698,17 @@ function arm64Startup() {
   };
 }
 
-test("ARM provenance shell preserves prior profiles and emits syntactically valid inner startup JavaScript", () => {
-  const body = arm64.arm64TasksRuntimeCommand();
-  const shell = spawnSync("sh", ["-n"], {
-    input: body,
-    encoding: "utf8",
-    timeout: 10000,
-  });
-  assert.equal(shell.status, 0, shell.stderr);
+test("ARM provenance shell leaves all original bare-Node commands separate from Git-dependent startup", () => {
+  const legacy = arm64.arm64TasksRuntimeCommand();
+  const body = arm64.arm64ProvenanceRuntimeCommand();
+  for (const input of [legacy, body]) {
+    const shell = spawnSync("sh", ["-n"], {
+      input,
+      encoding: "utf8",
+      timeout: 10000,
+    });
+    assert.equal(shell.status, 0, shell.stderr);
+  }
   const marker = "node --input-type=module <<'CHECKTRAIL_PROVENANCE_STARTUP'\n";
   assert.equal(body.split(marker).length, 2);
   const program = body
@@ -721,20 +724,45 @@ test("ARM provenance shell preserves prior profiles and emits syntactically vali
     },
   );
   assert.equal(syntax.status, 0, syntax.stderr);
-  for (const command of [
+  const original = [
     "node scripts/verify-tasks-runtime.mjs native-linux-arm64-node22",
     "node scripts/verify-review-runtime.mjs native-linux-arm64-node22",
     "node scripts/verify-review-runtime.mjs native-linux-arm64-node22 confidence-provenance",
     "node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings",
     "node scripts/verify-lifecycle-platforms.mjs native-linux-arm64-node22",
     "node scripts/verify-evaluation-runtime.mjs native-linux-arm64-node22",
-    "node scripts/verify-native-provenance-runtime.mjs native-linux-arm64-node22",
-  ])
+  ];
+  assert.equal(
+    legacy,
+    [
+      "set -eu",
+      "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache",
+      ...original,
+    ].join("\n"),
+  );
+  for (const command of original) {
     assert.equal(
-      body.split("\n").filter((line: string) => line === command).length,
+      legacy.split("\n").filter((line: string) => line === command).length,
       1,
       command,
     );
+    assert.equal(
+      body.split("\n").filter((line: string) => line === command).length,
+      0,
+      command,
+    );
+  }
+  const provenanceCommand =
+    "node scripts/verify-native-provenance-runtime.mjs native-linux-arm64-node22";
+  assert.equal(
+    body.split("\n").filter((line: string) => line === provenanceCommand)
+      .length,
+    1,
+  );
+  assert.ok(!legacy.includes(provenanceCommand));
+  assert.ok(!legacy.includes("CHECKTRAIL_PROVENANCE_STARTUP"));
+  assert.ok(!legacy.includes("git"));
+  assert.ok(body.includes("/prepared-cache /tmp/npm-cache >/dev/null"));
   assert.ok(
     program.includes(
       "observeProvenanceSourceBuild('/workspace',sourceBinding)",
@@ -745,6 +773,147 @@ test("ARM provenance shell preserves prior profiles and emits syntactically vali
   );
   assert.ok(!body.includes("safe.directory=*"));
   assert.ok(!body.includes("CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT"));
+});
+
+test("ARM provenance image binds the actual derived image, definition and both pinned ARM64 bases", async () => {
+  const definition = await arm64.captureArm64ProvenanceImageDefinition(
+    fileURLToPath(new URL("../../", import.meta.url)),
+  );
+  const { consumerRuntimeBaseImages } = await import(
+    new URL("../../scripts/consumer-runtime-selection.mjs", import.meta.url)
+      .href
+  );
+  const bases = {
+    node: {
+      reference: consumerRuntimeBaseImages.node,
+      image: { Id: "sha256:" + hex("b"), Os: "linux", Architecture: "arm64" },
+    },
+    system: {
+      reference: consumerRuntimeBaseImages.system,
+      image: { Id: "sha256:" + hex("c"), Os: "linux", Architecture: "arm64" },
+    },
+  };
+  const image = {
+    Id: "sha256:" + hex("d"),
+    Os: "linux",
+    Architecture: "arm64",
+  };
+  const bound = arm64.bindArm64ProvenanceImage(definition, bases, image);
+  assert.deepEqual(bound.definition, definition);
+  assert.equal(bound.imageId, image.Id);
+  assert.deepEqual(bound.baseImages, {
+    node: {
+      reference: consumerRuntimeBaseImages.node,
+      imageId: bases.node.image.Id,
+    },
+    system: {
+      reference: consumerRuntimeBaseImages.system,
+      imageId: bases.system.image.Id,
+    },
+  });
+  for (const mutate of [
+    (v: typeof bases) => {
+      v.node.reference = consumerRuntimeBaseImages.system;
+    },
+    (v: typeof bases) => {
+      v.system.image.Architecture = "amd64";
+    },
+    (v: typeof bases) => {
+      v.node.image.Os = "darwin";
+    },
+    (v: typeof bases) => {
+      v.system.image.Id = "unobserved";
+    },
+  ]) {
+    const changed = structuredClone(bases);
+    mutate(changed);
+    assert.throws(() =>
+      arm64.bindArm64ProvenanceImage(definition, changed, image),
+    );
+  }
+  assert.throws(() =>
+    arm64.bindArm64ProvenanceImage({ ...definition, sha256: "" }, bases, image),
+  );
+  assert.throws(() =>
+    arm64.bindArm64ProvenanceImage(definition, bases, bases.node.image),
+  );
+  assert.throws(() =>
+    arm64.bindArm64ProvenanceImage(definition, bases, {
+      ...image,
+      Architecture: "amd64",
+    }),
+  );
+});
+
+test("ARM split containers retain identical isolation budgets and distinct actual image IDs", () => {
+  const common = {
+    task: "synthetic-arm64",
+    preparedCache: "/synthetic-public-cache",
+  };
+  const legacy = arm64.arm64RuntimeRunArguments({
+    ...common,
+    name: "legacy",
+    imageId: "sha256:" + hex("b"),
+    imageReference: arm64.arm64RuntimeReference,
+    command: arm64.arm64TasksRuntimeCommand(),
+  });
+  const derived = arm64.arm64RuntimeRunArguments({
+    ...common,
+    name: "provenance",
+    imageId: "sha256:" + hex("d"),
+    imageReference: "sha256:" + hex("d"),
+    command: arm64.arm64ProvenanceRuntimeCommand(),
+  });
+  for (const args of [legacy, derived]) {
+    for (const [option, value] of [
+      ["--network", "none"],
+      ["--user", "65532:65532"],
+      ["--cpus", "2"],
+      ["--memory", "3g"],
+      ["--pids-limit", "256"],
+      ["--tmpfs", "/tmp:rw,exec,nosuid,nodev,size=2048m,mode=1777"],
+    ]) {
+      assert.equal(args.filter((x: string) => x === option).length, 1);
+      assert.equal(args[args.indexOf(option) + 1], value);
+    }
+    assert.ok(args.includes("--read-only"));
+    assert.ok(
+      args.some((x: string) => x.endsWith(",target=/workspace,readonly")),
+    );
+    assert.ok(
+      args.includes(
+        "type=bind,src=/synthetic-public-cache,target=/prepared-cache,readonly",
+      ),
+    );
+  }
+  assert.deepEqual(legacy.slice(-4), [
+    "sha256:" + hex("b"),
+    "sh",
+    "-c",
+    arm64.arm64TasksRuntimeCommand(),
+  ]);
+  assert.deepEqual(derived.slice(-4), [
+    "sha256:" + hex("d"),
+    "sh",
+    "-c",
+    arm64.arm64ProvenanceRuntimeCommand(),
+  ]);
+  assert.ok(
+    legacy.includes("CHECKTRAIL_REVIEW_RUNTIME_IMAGE_ID=sha256:" + hex("b")),
+  );
+  assert.ok(
+    derived.includes("CHECKTRAIL_REVIEW_RUNTIME_IMAGE_ID=sha256:" + hex("d")),
+  );
+  assert.ok(
+    legacy.includes(
+      "CHECKTRAIL_EVAL_RUNTIME_IMAGE_REFERENCE=" + arm64.arm64RuntimeReference,
+    ),
+  );
+  assert.ok(
+    derived.includes(
+      "CHECKTRAIL_EVAL_RUNTIME_IMAGE_REFERENCE=sha256:" + hex("d"),
+    ),
+  );
 });
 
 test("ARM startup admits synthetic inner build bindings and refuses host runtime or changed source build inputs", () => {

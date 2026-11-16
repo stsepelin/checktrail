@@ -10,6 +10,7 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { types } from "node:util";
 import {
   captureCompiledEngine,
   requireUnchangedCompiledEngine,
@@ -35,6 +36,90 @@ export function baselineRuntimeBinding(cohort) {
   };
 }
 
+// Compare the JSON wire data model, including every own field. Serialization
+// erases plain/null map prototypes; it must not erase unsupported values or
+// invoke accessors/toJSON hooks while admitting a source contract.
+export function sourceScopeTransportValue(value) {
+  const ancestors = new Set();
+  let nodes = 0;
+  const visit = (current, depth) => {
+    assert.ok(
+      ++nodes <= 100000 && depth <= 64,
+      "Source scope transport is unbounded",
+    );
+    if (
+      current === null ||
+      typeof current === "string" ||
+      typeof current === "boolean"
+    )
+      return current;
+    if (typeof current === "number") {
+      assert.ok(
+        Number.isFinite(current) && !Object.is(current, -0),
+        "Source scope transport number is not JSON-exact",
+      );
+      return current;
+    }
+    assert.ok(
+      typeof current === "object" && !types.isProxy(current),
+      "Source scope transport value is unsupported",
+    );
+    assert.ok(!ancestors.has(current), "Source scope transport is cyclic");
+    const array = Array.isArray(current),
+      prototype = Object.getPrototypeOf(current);
+    assert.ok(
+      array
+        ? prototype === Array.prototype
+        : prototype === Object.prototype || prototype === null,
+      "Source scope transport object is unsupported",
+    );
+    const descriptors = Object.getOwnPropertyDescriptors(current),
+      keys = Reflect.ownKeys(descriptors);
+    if (array)
+      assert.equal(
+        keys.length,
+        current.length + 1,
+        "Source scope transport array has holes or extra fields",
+      );
+    const projected = array ? [] : {};
+    ancestors.add(current);
+    try {
+      for (const key of keys) {
+        if (array && key === "length") continue;
+        assert.equal(
+          typeof key,
+          "string",
+          "Source scope transport symbol field is unsupported",
+        );
+        const descriptor = descriptors[key];
+        assert.ok(
+          Object.hasOwn(descriptor, "value") && descriptor.enumerable,
+          "Source scope transport requires enumerable data fields",
+        );
+        if (array)
+          assert.ok(
+            /^(0|[1-9][0-9]*)$/.test(key) && Number(key) < current.length,
+            "Source scope transport array field is unsupported",
+          );
+        Object.defineProperty(projected, key, {
+          value: visit(descriptor.value, depth + 1),
+          enumerable: true,
+          configurable: true,
+          writable: true,
+        });
+      }
+    } finally {
+      ancestors.delete(current);
+    }
+    return projected;
+  };
+  assert.ok(
+    value && typeof value === "object" && !Array.isArray(value),
+    "Source scope transport requires a map",
+  );
+  return visit(value, 0);
+}
+
 // The existing controller owns the one source execution and its native context.
 // This function only launches the physically fresh installed phase.
 export async function runFreshBaselineAtInstallation({
@@ -53,7 +138,24 @@ export async function runFreshBaselineAtInstallation({
     "Fresh worker launcher missing",
   );
   assert.equal(sourceCapture?.originalExecutionInvocations, 1);
-  assert.deepEqual(sourceCapture.sourceScope, expectedSourceScope);
+  const capturedScope = Object.getOwnPropertyDescriptor(
+    sourceCapture,
+    "sourceScope",
+  );
+  assert.ok(
+    capturedScope &&
+      Object.hasOwn(capturedScope, "value") &&
+      capturedScope.enumerable,
+    "Original source scope must be a data field",
+  );
+  const sourceScope = sourceScopeTransportValue(capturedScope.value);
+  expectedSourceScope = sourceScopeTransportValue(expectedSourceScope);
+  assert.deepEqual(
+    sourceScope,
+    expectedSourceScope,
+    "Original source scope differs from the current controller contract",
+  );
+  sourceCapture = { ...sourceCapture, sourceScope };
   repository = await realpath(repository);
   const expectedEngine = await captureCompiledEngine(
     path.join(repository, "dist/src"),

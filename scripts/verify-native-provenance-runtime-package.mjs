@@ -29,6 +29,7 @@ import {
 import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 import {
   captureProvenanceHarness,
+  createProvenanceRuntimeProgress,
   captureProvenanceRuntime,
   captureProvenanceSource,
   provenanceInstalledPrograms,
@@ -52,21 +53,32 @@ const inventory = JSON.parse(
     await readFile(path.join(repository, "scripts/required-native-tests.json")),
   );
 const requirements = selectProvenanceRuntimeRequirements(
-    definitions,
-    inventory,
+  definitions,
+  inventory,
+);
+const progress = createProvenanceRuntimeProgress({
+  cohort: "fresh",
+});
+const runtime = await progress.run("capture", () =>
+    captureProvenanceRuntime(inventory, slot),
   ),
-  runtime = await captureProvenanceRuntime(inventory, slot),
-  sourceBinding = await captureProvenanceSource(repository);
+  sourceBinding = await progress.run("capture", () =>
+    captureProvenanceSource(repository),
+  );
 if (slot !== null)
   assert.equal(
     sourceBinding.worktreeClean,
     true,
     "Selected qualification requires clean source",
   );
-const inputSources = await captureProvenanceHarness(repository),
+const inputSources = await progress.run("capture", () =>
+    captureProvenanceHarness(repository),
+  ),
   harnessSha256 = provenanceRuntimeHash(JSON.stringify(inputSources)),
   requirementsSha256 = provenanceRuntimeHash(JSON.stringify(requirements)),
-  before = await captureCompiledEngine(path.join(repository, "dist/src"));
+  before = await progress.run("capture", () =>
+    captureCompiledEngine(path.join(repository, "dist/src")),
+  );
 assert.ok(
   process.env.CHECKTRAIL_NATIVE_PROVENANCE_BUILD_RECEIPT &&
     process.env.CHECKTRAIL_NATIVE_PROVENANCE_BUILD_SHA256,
@@ -98,10 +110,12 @@ const temporary = await realpath(
   await mkdtemp(path.join(os.tmpdir(), "checktrail-provenance-install-")),
 );
 try {
-  const [packed] = JSON.parse(
-    runAcceptanceNpm(
-      ["pack", "--json", "--ignore-scripts", "--pack-destination", temporary],
-      { cwd: repository, encoding: "utf8" },
+  const [packed] = await progress.run("pack", () =>
+    JSON.parse(
+      runAcceptanceNpm(
+        ["pack", "--json", "--ignore-scripts", "--pack-destination", temporary],
+        { cwd: repository, encoding: "utf8" },
+      ),
     ),
   );
   assert.ok(
@@ -112,10 +126,8 @@ try {
     consumer = path.join(temporary, "consumer"),
     harness = path.join(temporary, "harness");
   const tarballSha256 = provenanceRuntimeHash(await readFile(tarball));
-  const installation = await installAcceptancePackage(
-      repository,
-      tarball,
-      consumer,
+  const installation = await progress.run("installation", () =>
+      installAcceptancePackage(repository, tarball, consumer),
     ),
     installedPackageRoot = await realpath(
       path.join(consumer, "node_modules/@stsepelin/checktrail"),
@@ -191,43 +203,46 @@ try {
   delete env.CHECKTRAIL_NATIVE_PROVENANCE_INSTALL_RECEIPT;
   delete env.CHECKTRAIL_NATIVE_PROVENANCE_BUILD_RECEIPT;
   delete env.CHECKTRAIL_NATIVE_PROVENANCE_BUILD_SHA256;
-  const result = spawnSync(
-    process.execPath,
-    ["scripts/verify-native-provenance-runtime.mjs", slot ?? "--development"],
-    {
-      cwd: harness,
-      env,
-      encoding: "utf8",
-      timeout: 540000,
-      maxBuffer: 4 * 1048576,
-    },
-  );
-  assert.equal(result.error, undefined);
-  assert.equal(result.signal, null);
-  let diagnostic = (result.stdout + result.stderr).slice(-6000);
-  try {
-    const packet = JSON.parse(result.stdout);
-    diagnostic = JSON.stringify({
-      passed: packet.passed,
-      required: packet.required,
-      complete: packet.complete,
-      problems: packet.problems,
-    }).slice(0, 6000);
-  } catch {
-    /* Crashed collectors have no structured packet. */
-  }
-  assert.equal(result.status, 0, diagnostic);
-  const evidence = JSON.parse(result.stdout);
-  requireProvenanceRuntimeEvidence(evidence, {
-    runtime,
-    sourceBinding,
-    sourceBuild,
-    inputSources,
-    harnessSha256,
-    requirementsSha256,
-    compiledEngine: before,
-    installed: true,
-    requirements,
+  const evidence = await progress.run("fresh-cases", () => {
+    const result = spawnSync(
+      process.execPath,
+      ["scripts/verify-native-provenance-runtime.mjs", slot ?? "--development"],
+      {
+        cwd: harness,
+        env,
+        encoding: "utf8",
+        timeout: 540000,
+        maxBuffer: 4 * 1048576,
+      },
+    );
+    assert.equal(result.error, undefined);
+    assert.equal(result.signal, null);
+    let diagnostic = (result.stdout + result.stderr).slice(-6000);
+    try {
+      const packet = JSON.parse(result.stdout);
+      diagnostic = JSON.stringify({
+        passed: packet.passed,
+        required: packet.required,
+        complete: packet.complete,
+        problems: packet.problems,
+      }).slice(0, 6000);
+    } catch {
+      /* Crashed collectors have no structured packet. */
+    }
+    assert.equal(result.status, 0, diagnostic);
+    const evidence = JSON.parse(result.stdout);
+    requireProvenanceRuntimeEvidence(evidence, {
+      runtime,
+      sourceBinding,
+      sourceBuild,
+      inputSources,
+      harnessSha256,
+      requirementsSha256,
+      compiledEngine: before,
+      installed: true,
+      requirements,
+    });
+    return evidence;
   });
   assert.deepEqual(await captureProvenanceRuntime(inventory, slot), runtime);
   assert.deepEqual(await captureProvenanceSource(repository), sourceBinding);
@@ -260,10 +275,12 @@ try {
     }) + "\n",
   );
 } finally {
-  await rm(temporary, {
-    recursive: true,
-    force: true,
-    maxRetries: process.platform === "win32" ? 30 : 0,
-    retryDelay: 100,
-  });
+  await progress.run("cleanup", () =>
+    rm(temporary, {
+      recursive: true,
+      force: true,
+      maxRetries: process.platform === "win32" ? 30 : 0,
+      retryDelay: 100,
+    }),
+  );
 }

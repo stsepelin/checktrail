@@ -34,6 +34,66 @@ export const qualifiedSmokePackages = [
 ];
 export const frameworkSmokePackages = ["typescript", "vue-tsc", "vue"];
 
+// Independent product-file contract; never derive this allowlist from files in
+// package.json, which is the implementation this operator check verifies.
+export const smokeProductPrograms = Object.freeze([
+  "scripts/native-provenance-coordinator.mjs",
+  "scripts/native-provenance-adapter.mjs",
+  "scripts/native-provenance-audit-child.mjs",
+  "scripts/audit-dependencies.mjs",
+  "scripts/audit-selected-artifact-evidence.mjs",
+  "scripts/pango-complete-text-binding.mjs",
+]);
+const smokeSupplementalGrammarFiles = new Set([
+  "assets/context-vb-grammar/manifest.json",
+  "assets/context-vb-grammar/tree-sitter-vbnet.wasm",
+  "assets/context-vb-grammar/notices/vbnet-MIT.txt",
+  "assets/context-vb-grammar/patches/vbnet-newlines.patch",
+]);
+export function assertSmokePackageLayout(files) {
+  const paths = files.map((file) => file.path);
+  for (const required of [
+    ...smokeProductPrograms,
+    ...smokeSupplementalGrammarFiles,
+  ])
+    assert.ok(
+      paths.includes(required),
+      `Missing smoke package file: ${required}`,
+    );
+  assert.deepEqual(
+    paths.filter((file) => file.startsWith("scripts/")).sort(),
+    [...smokeProductPrograms].sort(),
+    "Smoke package product script set differs",
+  );
+  assert.deepEqual(
+    paths
+      .filter((file) => file.startsWith("assets/context-vb-grammar/"))
+      .sort(),
+    [...smokeSupplementalGrammarFiles].sort(),
+    "Smoke package supplemental grammar set differs",
+  );
+  for (const file of paths) {
+    const parts = file.split("/");
+    assert.ok(
+      !file.includes("\\") &&
+        !file.includes("\0") &&
+        !/^[A-Za-z]:/.test(file) &&
+        parts.every((part) => part && part !== "." && part !== ".."),
+      `Noncanonical smoke package path: ${file}`,
+    );
+    if (
+      smokeProductPrograms.includes(file) ||
+      smokeSupplementalGrammarFiles.has(file)
+    )
+      continue;
+    assert.match(
+      file,
+      /^(?:dist\/src\/|assets\/context-grammars\/|schemas\/|packs\/|docs\/|package\.json$|server\.json$|README\.md$|LICENSE$|SECURITY\.md$|CONTRIBUTING\.md$)/,
+      `Unexpected smoke package path: ${file}`,
+    );
+  }
+}
+
 export function smokeProjectPath(name) {
   assert.ok(
     qualifiedProjects.has(name) ||

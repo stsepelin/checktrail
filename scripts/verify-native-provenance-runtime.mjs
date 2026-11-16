@@ -17,6 +17,7 @@ import { runRequiredTests } from "./required-test-evidence.mjs";
 import { withRuntimeInstallationCapture } from "./runtime-installation-capture.mjs";
 import {
   captureProvenanceHarness,
+  createProvenanceRuntimeProgress,
   captureProvenanceRuntime,
   captureProvenanceSource,
   provenanceRuntimeArgument,
@@ -43,11 +44,16 @@ const definitions = JSON.parse(
     await readFile(path.join(repository, "docs/gate-a-profiles.v1.json")),
   );
 const requirements = selectProvenanceRuntimeRequirements(
-    definitions,
-    inventory,
-  ),
-  runtime = await captureProvenanceRuntime(inventory, slot);
+  definitions,
+  inventory,
+);
 const installed = process.env.CHECKTRAIL_NATIVE_PROVENANCE_INSTALLED === "1";
+const progress = createProvenanceRuntimeProgress({
+  cohort: installed ? "fresh" : "source",
+});
+const runtime = await progress.run("capture", () =>
+  captureProvenanceRuntime(inventory, slot),
+);
 let context = null,
   sourceBinding,
   executionBinding = {
@@ -68,12 +74,14 @@ if (installed) {
     "Installed context changed",
   );
   context = JSON.parse(raw);
-  executionBinding = await requireProvenanceInstalledLayout(
-    repository,
-    context,
+  executionBinding = await progress.run("capture", () =>
+    requireProvenanceInstalledLayout(repository, context),
   );
   sourceBinding = context.sourceBinding;
-} else sourceBinding = await captureProvenanceSource(repository);
+} else
+  sourceBinding = await progress.run("capture", () =>
+    captureProvenanceSource(repository),
+  );
 if (slot !== null)
   assert.equal(
     sourceBinding.worktreeClean,
@@ -82,7 +90,9 @@ if (slot !== null)
   );
 process.env.CHECKTRAIL_NATIVE_LICENSE_COMPOSITION_NATIVE = "1";
 process.env.CHECKTRAIL_NATIVE_PROVENANCE_QUALIFICATION = "1";
-const inputSources = await captureProvenanceHarness(repository),
+const inputSources = await progress.run("capture", () =>
+    captureProvenanceHarness(repository),
+  ),
   harnessSha256 = provenanceRuntimeHash(JSON.stringify(inputSources)),
   requirementsSha256 = provenanceRuntimeHash(JSON.stringify(requirements));
 if (context) {
@@ -90,7 +100,9 @@ if (context) {
   assert.equal(context.harnessSha256, harnessSha256);
   assert.deepEqual(context.runtime, runtime);
 }
-const before = await captureCompiledEngine(path.join(repository, "dist/src"));
+const before = await progress.run("capture", () =>
+  captureCompiledEngine(path.join(repository, "dist/src")),
+);
 if (context) {
   for (const key of [
     "schemaVersion",
@@ -105,14 +117,17 @@ if (context) {
       "Installed engine differs from selected source",
     );
 }
-const sourceBuild = context
-  ? context.sourceBuild
-  : await observeProvenanceSourceBuild(repository, sourceBinding);
-requireProvenanceSourceBuild(sourceBuild, {
-  sourceBinding,
-  compiledEngine: before,
-  inputSources,
-  runtime,
+const sourceBuild = await progress.run("source-build", async () => {
+  const result = context
+    ? context.sourceBuild
+    : await observeProvenanceSourceBuild(repository, sourceBinding);
+  requireProvenanceSourceBuild(result, {
+    sourceBinding,
+    compiledEngine: before,
+    inputSources,
+    runtime,
+  });
+  return result;
 });
 await withRuntimeInstallationCapture(
   "native-provenance",
@@ -133,12 +148,16 @@ await withRuntimeInstallationCapture(
         provenanceRuntimeHash(bytes);
     }
     try {
-      const report = await runRequiredTests(
-        requirements.map((row) => ({
-          ...row,
-          file: path.join(repository, row.file),
-        })),
-        { timeoutMs: 600000 },
+      const report = await progress.run(
+        installed ? "fresh-cases" : "source-cases",
+        () =>
+          runRequiredTests(
+            requirements.map((row) => ({
+              ...row,
+              file: path.join(repository, row.file),
+            })),
+            { timeoutMs: 600000 },
+          ),
       );
       assert.deepEqual(
         await captureProvenanceRuntime(inventory, slot),
@@ -201,7 +220,7 @@ await withRuntimeInstallationCapture(
         );
         if (!installed)
           result.installedEvidence = requireProvenanceRuntimeInstallation(
-            await capture.read(),
+            await progress.run("install-capture", () => capture.read()),
             result,
             requirements,
           );

@@ -8,6 +8,7 @@ import {
   realpath,
   lstat,
   mkdtemp,
+  mkdir,
   readdir,
   readFile,
   chmod,
@@ -18,12 +19,107 @@ import { tmpdir } from "node:os";
 import { runAcceptanceNpm } from "./install-acceptance-package.mjs";
 import { fileURLToPath, URL } from "node:url";
 import process from "node:process";
+import { randomBytes } from "node:crypto";
 import { pullPinnedImage } from "./pull-pinned-image.mjs";
+import { consumerRuntimeBaseImages } from "./consumer-runtime-selection.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 export const arm64ProvenanceSlot = "native-linux-arm64-node22";
 export const arm64RuntimeReference =
   "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
 const reference = arm64RuntimeReference;
+
+export async function captureArm64ProvenanceImageDefinition(repository) {
+  const file = "scripts/consumer-runtime-tools.Dockerfile";
+  const bytes = await readFile(path.join(repository, file));
+  const text = bytes.toString("utf8");
+  assert.ok(
+    text.startsWith(
+      `FROM ${consumerRuntimeBaseImages.node} AS node\nFROM ${consumerRuntimeBaseImages.system}\n`,
+    ),
+  );
+  assert.equal(
+    text.split("\n").filter((line) => line.startsWith("FROM ")).length,
+    2,
+  );
+  assert.equal(consumerRuntimeBaseImages.node, arm64RuntimeReference);
+  return { file, sha256: provenance.provenanceRuntimeHash(bytes) };
+}
+
+export function bindArm64ProvenanceImage(definition, baseImages, image) {
+  assert.equal(definition.file, "scripts/consumer-runtime-tools.Dockerfile");
+  assert.match(definition.sha256, /^[a-f0-9]{64}$/);
+  assert.deepEqual(Object.keys(baseImages).sort(), ["node", "system"]);
+  const bases = {};
+  for (const [key, reference] of Object.entries(consumerRuntimeBaseImages)) {
+    const base = baseImages[key];
+    assert.equal(base.reference, reference);
+    assert.match(base.image.Id, /^sha256:[a-f0-9]{64}$/);
+    assert.equal(base.image.Os, "linux");
+    assert.equal(base.image.Architecture, "arm64");
+    bases[key] = { reference, imageId: base.image.Id };
+  }
+  assert.match(image.Id, /^sha256:[a-f0-9]{64}$/);
+  assert.equal(image.Os, "linux");
+  assert.equal(image.Architecture, "arm64");
+  assert.notEqual(image.Id, bases.node.imageId);
+  return {
+    definition,
+    baseImages: bases,
+    imageId: image.Id,
+    platform: image.Os,
+    architecture: image.Architecture,
+  };
+}
+
+export function arm64RuntimeRunArguments({
+  name,
+  task,
+  preparedCache,
+  imageId,
+  imageReference,
+  command,
+}) {
+  return [
+    "run",
+    "--rm",
+    "--init",
+    "--name",
+    name,
+    "--label",
+    "checktrail.task=" + task,
+    "--network",
+    "none",
+    "--read-only",
+    "--user",
+    "65532:65532",
+    "--cpus",
+    "2",
+    "--memory",
+    "3g",
+    "--pids-limit",
+    "256",
+    "--tmpfs",
+    "/tmp:rw,exec,nosuid,nodev,size=2048m,mode=1777",
+    "--mount",
+    "type=bind,src=" + root + ",target=/workspace,readonly",
+    "--mount",
+    "type=bind,src=" + preparedCache + ",target=/prepared-cache,readonly",
+    "--workdir",
+    "/workspace",
+    "--env",
+    "npm_config_cache=/tmp/npm-cache",
+    "--env",
+    "CHECKTRAIL_EVAL_RUNTIME_IMAGE_REFERENCE=" + imageReference,
+    "--env",
+    "CHECKTRAIL_EVAL_RUNTIME_IMAGE_ID=" + imageId,
+    "--env",
+    "CHECKTRAIL_REVIEW_RUNTIME_IMAGE_ID=" + imageId,
+    imageId,
+    "sh",
+    "-c",
+    command,
+  ];
+}
 
 export function splitArm64RuntimePackets(output) {
   assert.equal(typeof output, "string");
@@ -192,7 +288,12 @@ node scripts/verify-review-runtime.mjs native-linux-arm64-node22
 node scripts/verify-review-runtime.mjs native-linux-arm64-node22 confidence-provenance
 node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings
 node scripts/verify-lifecycle-platforms.mjs native-linux-arm64-node22
-node scripts/verify-evaluation-runtime.mjs native-linux-arm64-node22
+node scripts/verify-evaluation-runtime.mjs native-linux-arm64-node22`;
+}
+
+export function arm64ProvenanceRuntimeCommand() {
+  return `set -eu
+node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache >/dev/null
 # The source checkout remains readonly. Trust only this exact worktree for Git
 # metadata, using an owned temporary wrapper because capture strips Git env.
 mkdir /tmp/checktrail-provenance-git
@@ -226,6 +327,8 @@ export async function mainArm64TasksRuntime() {
   assert.ok(["linux", "darwin"].includes(process.platform));
   assert.equal(process.arch, "arm64");
   const name = "checktrail-tasks-runtime-" + process.pid,
+    provenanceName = name + "-provenance",
+    provenanceTag = name + "-provenance-" + randomBytes(6).toString("hex"),
     task = process.env.CHECKTRAIL_TEST_TASK ?? "tasks-runtime-native-arm64";
   assert.match(task, /^[a-z][a-z0-9-]{0,80}$/);
   const cache = await realpath(
@@ -247,6 +350,7 @@ export async function mainArm64TasksRuntime() {
     await mkdtemp(path.join(tmpdir(), "checktrail-tasks-public-cache-")),
   );
   const preparedCache = path.join(temporary, "cache");
+  let provenanceImage;
   try {
     const prepared = JSON.parse(
       execFileSync(
@@ -270,57 +374,73 @@ export async function mainArm64TasksRuntime() {
     }
     await publicPermissions(temporary);
     const provenanceBindings = await captureArm64ProvenanceBindings(root);
+    const definition = await captureArm64ProvenanceImageDefinition(root);
+    const baseImages = {};
+    for (const [key, reference] of Object.entries(consumerRuntimeBaseImages)) {
+      await pullPinnedImage(reference);
+      const [base] = JSON.parse(run(["image", "inspect", reference]));
+      baseImages[key] = { reference, image: base };
+    }
+    const context = path.join(temporary, "empty-context");
+    await mkdir(context);
+    run([
+      "build",
+      "--network=none",
+      "--pull=false",
+      "--label",
+      "checktrail.task=" + task,
+      "--file",
+      path.join(root, definition.file),
+      "--tag",
+      provenanceTag,
+      context,
+    ]);
+    [provenanceImage] = JSON.parse(run(["image", "inspect", provenanceTag]));
+    assert.equal(provenanceImage.Config.Labels["checktrail.task"], task);
+    const nativeProvenanceRuntimeImage = bindArm64ProvenanceImage(
+      definition,
+      baseImages,
+      provenanceImage,
+    );
     let output, containerFailure;
+    const runtimeDeadline = Date.now() + 1200000;
     try {
-      output = run([
-        "run",
-        "--rm",
-        "--init",
-        "--name",
-        name,
-        "--label",
-        "checktrail.task=" + task,
-        "--network",
-        "none",
-        "--read-only",
-        "--user",
-        "65532:65532",
-        "--cpus",
-        "2",
-        "--memory",
-        "3g",
-        "--pids-limit",
-        "256",
-        "--tmpfs",
-        "/tmp:rw,exec,nosuid,nodev,size=2048m,mode=1777",
-        "--mount",
-        "type=bind,src=" + root + ",target=/workspace,readonly",
-        "--mount",
-        "type=bind,src=" + preparedCache + ",target=/prepared-cache,readonly",
-        "--workdir",
-        "/workspace",
-        "--env",
-        "npm_config_cache=/tmp/npm-cache",
-        "--env",
-        "CHECKTRAIL_EVAL_RUNTIME_IMAGE_REFERENCE=" + reference,
-        "--env",
-        "CHECKTRAIL_EVAL_RUNTIME_IMAGE_ID=" + image.Id,
-        "--env",
-        "CHECKTRAIL_REVIEW_RUNTIME_IMAGE_ID=" + image.Id,
-        image.Id,
-        "sh",
-        "-c",
-        arm64TasksRuntimeCommand(),
-      ]);
+      output = run(
+        arm64RuntimeRunArguments({
+          name,
+          task,
+          preparedCache,
+          imageId: image.Id,
+          imageReference: reference,
+          command: arm64TasksRuntimeCommand(),
+        }),
+        Math.max(1, runtimeDeadline - Date.now()),
+      );
+      assert.equal(
+        splitArm64RuntimePackets(output).length,
+        7,
+        "Original bare-Node profiles incomplete",
+      );
+      output += run(
+        arm64RuntimeRunArguments({
+          name: provenanceName,
+          task,
+          preparedCache,
+          imageId: provenanceImage.Id,
+          imageReference: provenanceImage.Id,
+          command: arm64ProvenanceRuntimeCommand(),
+        }),
+        Math.max(1, runtimeDeadline - Date.now()),
+      );
     } catch (error) {
-      output = error.stdout?.toString() ?? "";
+      output = (output ?? "") + (error.stdout?.toString() ?? "");
       containerFailure = error;
     }
     let { lines, receipt: nativeProvenanceReceipt } =
       await captureArm64ProvenanceOutput(
         output,
         provenanceBindings,
-        image.Id,
+        provenanceImage.Id,
         process.env.CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT,
         containerFailure,
       );
@@ -339,7 +459,7 @@ export async function mainArm64TasksRuntime() {
     const expectedProvenance = requireArm64ProvenanceStartup(
       nativeProvenanceStartup,
       provenanceBindings,
-      image.Id,
+      provenanceImage.Id,
     );
     const installed = source.installedEvidence;
     const lifecycleInstalled = lifecycleSource.installedEvidence;
@@ -357,6 +477,11 @@ export async function mainArm64TasksRuntime() {
       true,
     );
     assert.equal(evaluationRuntime.runtime.containerImageId, image.Id);
+    assert.equal(
+      expectedProvenance.runtime.nodeExecutableSha256,
+      evaluationRuntime.runtime.nodeExecutableSha256,
+      "Derived provenance image must execute the original pinned Node bytes",
+    );
     assert.equal(
       evaluationRuntime.installedEvidence.runtimeEvidence.runtime
         .containerImageId,
@@ -448,6 +573,11 @@ export async function mainArm64TasksRuntime() {
           expectedProvenance,
         );
         assert.deepEqual(
+          await captureArm64ProvenanceImageDefinition(root),
+          definition,
+          "Provenance Docker definition changed during ARM qualification",
+        );
+        assert.deepEqual(
           await captureArm64ProvenanceBindings(root),
           provenanceBindings,
           "Outer source/harness/compiled bytes changed during ARM qualification",
@@ -472,6 +602,7 @@ export async function mainArm64TasksRuntime() {
         lifecycleSource,
         lifecycleInstalled,
         nativeProvenanceRuntime,
+        nativeProvenanceRuntimeImage,
         nativeProvenanceReceipt: nativeProvenanceReceipt && {
           bytes: nativeProvenanceReceipt.bytes,
           sha256: nativeProvenanceReceipt.sha256,
@@ -483,32 +614,48 @@ export async function mainArm64TasksRuntime() {
       }) + "\n",
     );
   } finally {
-    let owned;
-    try {
-      owned = run(
-        [
-          "container",
-          "inspect",
-          name,
-          "--format",
-          '{{index .Config.Labels "checktrail.task"}}',
-        ],
-        10000,
-      ).trim();
-    } catch (error) {
-      assert.match(
-        error.stderr?.toString() ?? "",
-        /No such (?:container|object)/,
+    for (const ownedName of [name, provenanceName]) {
+      let owned;
+      try {
+        owned = run(
+          [
+            "container",
+            "inspect",
+            ownedName,
+            "--format",
+            '{{index .Config.Labels "checktrail.task"}}',
+          ],
+          10000,
+        ).trim();
+      } catch (error) {
+        assert.match(
+          error.stderr?.toString() ?? "",
+          /No such (?:container|object)/,
+        );
+      }
+      if (owned !== undefined) {
+        assert.equal(owned, task);
+        run(["rm", "-f", ownedName], 10000);
+      }
+      assert.equal(
+        run(
+          ["ps", "-aq", "--filter", "name=^/" + ownedName + "$"],
+          10000,
+        ).trim(),
+        "",
       );
     }
-    if (owned !== undefined) {
-      assert.equal(owned, task);
-      run(["rm", "-f", name], 10000);
+    let tagged;
+    try {
+      [tagged] = JSON.parse(run(["image", "inspect", provenanceTag], 10000));
+    } catch (error) {
+      assert.match(error.stderr?.toString() ?? "", /No such (?:image|object)/);
     }
-    assert.equal(
-      run(["ps", "-aq", "--filter", "name=^/" + name + "$"], 10000).trim(),
-      "",
-    );
+    if (tagged) {
+      assert.equal(tagged.Config.Labels["checktrail.task"], task);
+      if (provenanceImage) assert.equal(tagged.Id, provenanceImage.Id);
+      run(["image", "rm", provenanceTag], 10000);
+    }
     await rm(temporary, { recursive: true, force: true });
   }
 }
