@@ -29,10 +29,45 @@ A Gitiles commit response names its tree, and the collector recomputes that tree
 from every observed entry before admitting a selected blob by its Git object
 hash. The commit response remains a publication claim: the raw commit object,
 commit signature, real checkout, index and history have not been verified. The
-complete selected LICENSE blob is retained without rewriting. Root Gitlink
-commits are recorded, while module URL and nested-source closure remain open.
-An optional `.gitmodules` file is considered absent only when the admitted root
-tree does not declare it.
+complete selected LICENSE blob is retained without rewriting. For an admitted
+Binaryen `.gitmodules` blob, a bounded passive parser binds each exact root
+Gitlink path and recorded commit to its declared canonical HTTPS repository URL.
+The association retains the Git blob identity and a SHA-256 digest of the original
+configuration bytes. It does not resolve Git URL rewriting or authorize a fetch.
+
+The parser accepts quoted submodule headers, explicit assignments, plain or
+wholly quoted single-line values, LF/CRLF and comments. Duplicate sections, keys
+or paths, overlapping paths, malformed mappings, unsupported URL forms and
+foreign/include sections fail preparation. Other submodule settings remain inert
+strings. No Git configuration, interpolation or update command runs.
+
+Nested declarations are retained only beneath an admitted root directory entry.
+They remain unverified with no recorded nested commit; a parent tree identity
+cannot supply it. Complete nested-source, notice and producer-build closure remain
+open. An optional `.gitmodules` file is considered absent only when the admitted
+root tree does not declare it; absence leaves root URL bindings unverified.
+Synthetic tests cover the parser and collector. Actual selected metadata replay
+and broader Gate A acceptance remain separate obligations.
+
+A separate passive nested-binding checker accepts the original admitted
+`.gitmodules` bytes, the expected root tree identity and bounded raw child-tree
+responses. It recomputes every Git tree and joins each child to its exact admitted
+parent directory entry before reading a final Gitlink commit. Supplied responses
+must be proper ancestors of declared modules; duplicate, disconnected, foreign or
+mismatched trees fail qualification. Missing unsupplied trees retain explicit
+unverified declarations and their expected next tree identity. A known parent
+with an absent or wrong-type final entry is a mismatch.
+
+The sibling
+[Binaryen submodule metadata catalog](../scripts/producer-qualification/emsdk-binaryen-submodule-metadata.v1.json)
+selects only `third_party`, `test` and `test/spec` at the same fixed source commit.
+It preserves the original catalog as a separate prerequisite; it does not expand
+that catalog's request roles. Operator review remains required before acquiring
+these additional metadata responses. Tree-byte digests, parent identities and
+final commit associations are retained separately. URL bindings are complete
+only for a nonempty declaration set with every association verified. Submodule
+source bodies, original notices, raw commit authentication and producer-build
+closure remain unqualified.
 
 When an explicit local archive input is supplied, the reader checks the original
 compressed archive size and SHA-256 before reading selected Emscripten metadata.
