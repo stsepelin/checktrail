@@ -6,13 +6,18 @@ import { fileURLToPath } from "node:url";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
 
-for (const mode of ["mirror-bad-digest", "permanent-forbidden"] as const) {
+for (const mode of [
+  "mirror-bad-digest",
+  "permanent-forbidden",
+  "permanent-not-found",
+] as const) {
   test(`Maven installer ${mode} reaches the actual bounded requester and cannot publish invalid bytes`, async (t) => {
     const root = await fixture(t, {
       "fetch.mjs": `import {appendFileSync} from 'node:fs';
 let calls=0; globalThis.fetch=async (url,request)=>{
  appendFileSync('calls.jsonl',JSON.stringify({url,redirect:request.redirect})+String.fromCharCode(10));calls++;
  if (${JSON.stringify(mode)}==='permanent-forbidden') return new Response(null,{status:403});
+ if (${JSON.stringify(mode)}==='permanent-not-found') return new Response(null,{status:404});
  if(calls===1) return new Response(null,{status:503});
  return new Response(new Uint8Array(9979885));
 };`,
@@ -40,14 +45,14 @@ let calls=0; globalThis.fetch=async (url,request)=>{
       .split("\n")
       .map((line) => JSON.parse(line));
     const primary =
-      "https://downloads.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz";
+      "https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz";
     assert.deepEqual(
       calls.map((r) => r.url),
-      mode === "permanent-forbidden"
+      mode !== "mirror-bad-digest"
         ? [primary]
         : [
             primary,
-            "https://dlcdn.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz",
+            "https://downloads.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz",
           ],
     );
     assert.ok(calls.every((r) => r.redirect === "error"));

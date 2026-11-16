@@ -110,10 +110,14 @@ test("JVM wrapper setup retries transient deliveries through exact Apache mirror
     t,
     wrapperControlImports +
       `
+ const {readFile}=await import('node:fs/promises');
+ const setup=JSON.parse(await readFile(new URL(${JSON.stringify(new URL("../../scripts/jvm-wrapper-artifacts.json", import.meta.url).href)}),'utf8'));
+ assert.equal(setup.maven.find(p=>p.name==='apache-maven-3.10.0-bin.zip').url,'https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip');
  const apachePaths=['/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip','/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip.asc','/maven/KEYS'];
  const centralPaths=['/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.4/maven-wrapper-3.3.4.jar','/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.4/maven-wrapper-3.3.4.jar.asc','/maven2/org/apache/maven/wrapper/maven-wrapper-distribution/3.3.4/maven-wrapper-distribution-3.3.4-bin.zip','/maven2/org/apache/maven/wrapper/maven-wrapper-distribution/3.3.4/maven-wrapper-distribution-3.3.4-bin.zip.asc'];
  for(const [url,expected] of [
   ...apachePaths.map(p=>['https://downloads.apache.org'+p,['https://downloads.apache.org'+p,'https://dlcdn.apache.org'+p,'https://archive.apache.org/dist'+p]]),
+  ...apachePaths.filter(p=>p!=='/maven/KEYS').map(p=>['https://archive.apache.org/dist'+p,['https://archive.apache.org/dist'+p,'https://downloads.apache.org'+p,'https://dlcdn.apache.org'+p]]),
   ...centralPaths.map(p=>['https://repo.maven.apache.org'+p,Array(3).fill('https://repo.maven.apache.org'+p)]),
  ]){
   const signal=AbortSignal.timeout(5000),calls=[],waits=[];
@@ -130,8 +134,9 @@ test("JVM wrapper setup rejects redirects permanent responses malformed bodies a
     t,
     wrapperControlImports +
       `
+ for(const url of [pin.url,pin.url.replace('https://downloads.apache.org/','https://archive.apache.org/dist/')])
  for(const response of [()=>new Response('no',{status:404}),()=>new Response('no',{status:401}),()=>new Response('go',{status:302}),()=>new Response('x'),()=>new Response('long'),()=>new Response(),()=>new Response(Uint8Array.from([0,255,8]))]){
-  let calls=0;await assert.rejects(requestJvmWrapperArtifact(pin,{fetchImpl:async()=>{calls++;return response();},delayImpl:async()=>assert.fail('Integrity or permanent failures must not retry')}));assert.equal(calls,1);
+  let calls=0;await assert.rejects(requestJvmWrapperArtifact({...pin,url},{fetchImpl:async asset=>{assert.equal(asset,url);calls++;return response();},delayImpl:async()=>assert.fail('Integrity or permanent failures must not retry')}));assert.equal(calls,1);
  }
  for(const failure of [new TypeError('redirect blocked'),Object.assign(new Error('bad certificate'),{code:'CERT_HAS_EXPIRED'})]){let calls=0;await assert.rejects(requestJvmWrapperArtifact(pin,{fetchImpl:async()=>{calls++;throw failure;},delayImpl:async()=>assert.fail('Must not retry')}),e=>e===failure);assert.equal(calls,1);}
  `,
@@ -159,6 +164,7 @@ test("JVM wrapper setup discards interrupted body bytes and rejects URLs outside
  let calls=0;const waits=[];
  const bytes=await requestJvmWrapperArtifact(pin,{fetchImpl:async()=>{if(++calls===1)return new Response(new ReadableStream({start(c){c.enqueue(Uint8Array.from([99,99]));},pull(c){c.error(Object.assign(new Error('body interrupted'),{code:'ECONNRESET'}));}}));return new Response(original);},delayImpl:async ms=>waits.push(ms)});
  assert.equal(calls,2);assert.deepEqual(waits,[1000]);assert.deepEqual([...bytes],[0,255,7]);
- for(const url of [pin.url.replace('https:','http:'),pin.url.replace('downloads.apache.org','downloads.apache.org.evil.invalid'),pin.url+'?changed=1',pin.url+'#fragment',pin.url.replace('3.10.0','3.10.1'),pin.url.replace('https://','https://user:secret@')]){let reached=0;await assert.rejects(requestJvmWrapperArtifact({...pin,url},{fetchImpl:async()=>{reached++;return new Response(original)}}));assert.equal(reached,0);}
+ for(const base of [pin.url,pin.url.replace('https://downloads.apache.org/','https://archive.apache.org/dist/')])
+ for(const url of [base.replace('https:','http:'),base.replace('.apache.org','.apache.org.evil.invalid'),base+'?changed=1',base+'#fragment',base.replace('3.10.0','3.10.1'),base.replace('https://','https://user:secret@'),'https://archive.apache.org/dist/maven/KEYS']){let reached=0;await assert.rejects(requestJvmWrapperArtifact({...pin,url},{fetchImpl:async()=>{reached++;return new Response(original)}}));assert.equal(reached,0);}
  `,
   ));

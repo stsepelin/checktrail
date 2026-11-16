@@ -21,6 +21,15 @@ const admitted = new Map([
       "https://archive.apache.org/dist" + suffix,
     ],
   ]),
+  ...apachePaths
+    .filter((suffix) => suffix !== "/maven/KEYS")
+    .map((suffix) => [
+      "https://archive.apache.org/dist" + suffix,
+      [
+        "https://downloads.apache.org" + suffix,
+        "https://dlcdn.apache.org" + suffix,
+      ],
+    ]),
   ...centralPaths.map((suffix) => [
     "https://repo.maven.apache.org" + suffix,
     undefined,

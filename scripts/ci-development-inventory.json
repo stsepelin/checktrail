@@ -9100,7 +9100,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "17ec14911edbfaed10de41ea830930efa1325958"
+      "hash": "640f4cf96db6804e4e6e9cc6bed36162a3194e3c"
     },
     {
       "path": "scripts/jvm-wrapper-phase-evidence.mjs",
@@ -10402,14 +10402,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "1770f2e7ae0f6208d089239277539af421f3763a"
+      "hash": "fae60394cf07483d9de2a18673c40e37d171e2ad"
     },
     {
       "path": "scripts/request-maven-distribution.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "683511792825557d1a4cd5efa1bd4a1e61146eac"
+      "hash": "6cdf140179621a3c87a414a2e6982a93bae7ea15"
     },
     {
       "path": "scripts/request-pinned-artifact.mjs",
@@ -18494,14 +18494,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "ad2fb2f93c0d87be76c7ef1c6b384ea41f4b094c"
+      "hash": "4a6547819a50f3c89ad5a0ecefede9d0ec5defb2"
     },
     {
       "path": "test/maven-preparation.test.ts",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a5a799e1401338bd4ef789313ff1c3b9987c7260"
+      "hash": "4f01edde25750ca88b7dda27c56c3bda0b1f5da2"
     },
     {
       "path": "test/maven-surfaces.test.ts",
