@@ -545,6 +545,7 @@ const cProducerBoundaryInputs = [
   "test/binutils-input-preparation.test.ts",
   "test/binutils-retention-observer.test.ts",
   "test/c-producer-evidence.test.ts",
+  "test/c-producer-failed-diagnostics.test.ts",
   "test/c-producer-gcc-evidence.test.ts",
   "test/c-producer-local12h.test.ts",
   "test/c-producer-qualification.test.ts",
@@ -583,6 +584,7 @@ const cProducerRegressionFiles = [
   "test/binutils-input-preparation.test.ts",
   "test/binutils-retention-observer.test.ts",
   "test/c-producer-evidence.test.ts",
+  "test/c-producer-failed-diagnostics.test.ts",
   "test/c-producer-gcc-evidence.test.ts",
   "test/c-producer-local12h.test.ts",
   "test/c-producer-qualification.test.ts",
@@ -4201,4 +4203,149 @@ test("CI preserved native binding labels retain exact controller ownership and r
     "scripts/preserved-native-baseline-bindings-extra.mjs",
   );
   assert.ok(adjacent["test/original-java.test.ts"]?.includes("ruby"));
+});
+
+test("CI reviewed host baseline dispatcher keeps exact arguments and shared imports while changed or adjacent dispatchers remain conservative", async () => {
+  const dispatcher = "scripts/verify-native-baseline-host.mjs";
+  const body = await readFile(new URL(dispatcher, root), "utf8");
+  const families = ["swift", "gradle-preparation", "maven-preparation", "ruby"];
+  const build = (text: string, helper = dispatcher) => {
+    const files: Record<string, string> = {
+      [helper]: text,
+      "scripts/preserved-baseline-fresh-coordinator.mjs": "export {};",
+      "scripts/preserved-baseline-source-worker.mjs":
+        'import "./original-host-dependency.mjs";',
+      "scripts/original-host-dependency.mjs": "export {};",
+      ...Object.fromEntries(
+        families.map((name) => [
+          "test/original-" + name + ".test.ts",
+          "export {}; ",
+        ]),
+      ),
+    };
+    return buildNativeInputs({
+      workflow: {
+        jobs: Object.fromEntries(
+          families
+            .slice(0, 3)
+            .map((name) => [
+              name,
+              { steps: [{ run: "node " + helper + " " + name }] },
+            ]),
+        ),
+      },
+      requirements: Object.fromEntries(
+        families.map((name) => [
+          name,
+          [
+            {
+              file: "dist/test/original-" + name + ".test.js",
+              name: "original " + name,
+            },
+          ],
+        ]),
+      ),
+      files: Object.keys(files),
+      readText: async (file: string) => files[file]!,
+    });
+  };
+  const actual = await build(body);
+  for (const family of families.slice(0, 3))
+    assert.deepEqual(actual["test/original-" + family + ".test.ts"], [family]);
+  assert.equal(actual["test/original-ruby.test.ts"], undefined);
+  assert.deepEqual(
+    actual["scripts/original-host-dependency.mjs"],
+    families.slice(0, 3).sort(),
+  );
+  for (const changed of [
+    body +
+      "\nexecFileSync('node', ['scripts/verify-required-native-tests.mjs', 'ruby']);\n",
+    body + "\nawait import('./unknown-native-controller.mjs');\n",
+    body + "\n// A changed dispatcher requires a fresh ownership review.\n",
+  ]) {
+    const mutation = await build(changed);
+    for (const family of families)
+      assert.deepEqual(
+        mutation["test/original-" + family + ".test.ts"],
+        families.slice(0, 3).sort(),
+      );
+  }
+  const adjacent = await build(
+    body,
+    "scripts/verify-native-baseline-host-extra.mjs",
+  );
+  assert.ok(
+    adjacent["test/original-swift.test.ts"]?.includes("maven-preparation"),
+  );
+});
+
+test("CI actual native baseline graph preserves Java Ruby and separate Swift Maven Gradle paths", async () => {
+  const files = execFileSync(
+    "git",
+    ["ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+    { cwd: root, encoding: "utf8" },
+  )
+    .split("\0")
+    .filter(Boolean);
+  const actual = await buildNativeInputs({
+    workflow,
+    requirements: JSON.parse(
+      await readFile(
+        new URL("scripts/required-native-tests.json", root),
+        "utf8",
+      ),
+    ),
+    files,
+    readText: (file: string) => readFile(new URL(file, root), "utf8"),
+  });
+  assert.ok(actual["test/ruby.test.ts"].includes("ruby"));
+  assert.ok(!actual["test/ruby.test.ts"].includes("java"));
+  assert.ok(!actual["test/ruby.test.ts"].includes("maven"));
+  assert.ok(actual["test/java.test.ts"].includes("java"));
+  assert.ok(!actual["test/java.test.ts"].includes("ruby"));
+  assert.ok(!actual["test/java.test.ts"].includes("swift"));
+  assert.ok(actual["test/swift.test.ts"].includes("swift"));
+  assert.ok(!actual["test/swift.test.ts"].includes("maven"));
+  assert.ok(!actual["test/swift.test.ts"].includes("gradle"));
+  assert.deepEqual(actual["test/gradle-preparation.test.ts"], ["gradle"]);
+  assert.deepEqual(actual["test/maven-preparation.test.ts"], [
+    "jvm-wrappers-arm64",
+    "maven",
+  ]);
+  assert.deepEqual(actual["scripts/verify-native-baseline-host.mjs"], [
+    "gradle",
+    "jvm-wrappers-arm64",
+    "maven",
+    "swift",
+  ]);
+  for (const consumer of ["ruby", "java"])
+    assert.ok(
+      actual["scripts/preserved-native-baseline-controller.mjs"].includes(
+        consumer,
+      ),
+    );
+});
+
+test("CI failed C diagnostic controls require the reviewed producer inventory and preserve conservative adjacent-file fallback", () => {
+  const file = "test/c-producer-failed-diagnostics.test.ts";
+  assert.ok(cProducerSharedBoundary.testFiles.includes(file));
+  const qualified = plan([file], { baseline: null });
+  assert.equal(qualified.mode, "affected");
+  assert.ok(
+    qualified.sharedTestFiles.includes(
+      "dist/test/c-producer-failed-diagnostics.test.js",
+    ),
+  );
+  assert.deepEqual(selected(qualified), inputs[file] ?? []);
+  const missing = plan([file], {
+    producerInventory: producerInventory.filter((member) => member !== file),
+  });
+  assert.equal(missing.mode, "full");
+  assert.match(missing.reason, /review new test\/helper\/workflow names/);
+  for (const changed of [
+    "test/c-producer-failed-diagnostics-extra.test.ts",
+    "adjacent/" + file,
+    file + ".backup",
+  ])
+    assert.equal(plan([changed]).mode, "full", changed);
 });

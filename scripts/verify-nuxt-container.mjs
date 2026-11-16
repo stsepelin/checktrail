@@ -1,3 +1,7 @@
+import {
+  captureNativeContainerSource,
+  completeNativeContainerFresh,
+} from "./preserved-native-baseline-controller.mjs";
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
@@ -38,15 +42,12 @@ assert.equal(
   }).trim(),
   "v22.23.2",
 );
-const source = spawnSync(
-  "docker",
-  [...native, "node", "scripts/verify-required-native-tests.mjs", "nuxt"],
-  { encoding: "utf8", maxBuffer: 2 * 1024 * 1024 },
-);
-process.stdout.write(source.stdout ?? "");
-process.stderr.write(source.stderr ?? "");
-assert.equal(source.error, undefined, "Required Nuxt source process failed");
-assert.equal(source.status, 0, "Required Nuxt source cohort failed");
+const baselineReceipt = await captureNativeContainerSource({
+  repository,
+  cohortName: "nuxt",
+  selection: ["nuxt"],
+  containerArgs: native,
+});
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-nuxt-package-"),
 );
@@ -65,6 +66,13 @@ try {
     path.join(temporary, packed.filename),
     consumer,
   );
+  await completeNativeContainerFresh({
+    repository,
+    baseline: baselineReceipt,
+    installedPackage: path.join(consumer, "node_modules/@stsepelin/checktrail"),
+    harness: path.join(temporary, "baseline-harness"),
+    preparedMounts: [{ name: "nuxt-tools", source: prepared }],
+  });
   const project = path.join(consumer, "example");
   await cp(path.join(repository, "examples/nuxt"), project, {
     recursive: true,

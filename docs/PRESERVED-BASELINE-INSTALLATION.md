@@ -83,3 +83,19 @@ the frozen review subset, in a separate process using the same image ID and
 observed runtime. The shared fresh coordinator never executes source callbacks;
 it cleans its harness and private input even when admission or a worker fails.
 The original package CLI and MCP checks continue against that installation.
+
+The Ruby, Clang, Java, .NET, actionlint, Vue Router and Nuxt controllers preserve
+their original source profile selections and pinned native images. The source
+worker executes the original required-test command once, and the fresh worker
+runs the frozen callback subset in the same observed image. Existing package CLI
+and MCP checks still use the same installation. Ruby retains its original Node
+binary and library mounts; Nuxt retains its prepared Linux tools mount.
+
+The separate external-adapter controller preserves the protocol and policy
+source commands as two independent captures while sharing one fresh installation.
+The host entrypoint accepts only Swift, Gradle preparation and Maven preparation.
+Preparation scripts remain public operator harness inputs outside the installed
+product; their callbacks bind the engine to the fresh installation without
+claiming that those scripts ship in the package. These adapters still require
+actual source/fresh observations in the selected CI environments; their presence
+and development runs do not close the native matrix or Gate A.

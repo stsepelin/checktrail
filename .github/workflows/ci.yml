@@ -832,7 +832,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: node scripts/verify-required-native-tests.mjs maven-preparation
+      - run: node scripts/verify-native-baseline-host.mjs maven-preparation
       - run: node scripts/prepare-maven-tools.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
@@ -858,7 +858,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: node scripts/verify-required-native-tests.mjs gradle-preparation
+      - run: node scripts/verify-native-baseline-host.mjs gradle-preparation
       - run: node scripts/prepare-gradle-tools.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
@@ -967,8 +967,7 @@ jobs:
         run: |
           docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle
           docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle-interpreters
-          docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs external-protocol
-          docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs policy-distribution
+          node scripts/verify-external-baseline-container.mjs
       - name: Verify packed executable adapters in a fresh offline production installation
         env:
           CHECKTRAIL_EXECUTABLE_BUNDLE_IMAGE: checktrail-executable-bundle-test:1
@@ -1231,7 +1230,7 @@ jobs:
       - name: Verify bounded phase routing and complete aggregate requirements
         run: node --test dist/test/jvm-wrapper-phases.test.js
       - name: Require bounded wrapper delivery and integrity controls
-        run: node scripts/verify-required-native-tests.mjs maven-preparation
+        run: node scripts/verify-native-baseline-host.mjs maven-preparation
       - name: Prepare pinned public images with bounded delivery retries
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
@@ -1658,7 +1657,7 @@ jobs:
       - run: swiftc --version
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: node scripts/verify-required-native-tests.mjs swift
+      - run: node scripts/verify-native-baseline-host.mjs swift
 
   swift-tools:
     needs: [ci-plan, actionlint]
