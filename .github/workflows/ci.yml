@@ -11,537 +11,460 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  windows-original-stale-diagnostic:
-    name: Windows original stale callback diagnostic
+  windows-same-host-cost-diagnostic:
+    name: Windows fixed supervision cost diagnostic
     runs-on: windows-2025
-    timeout-minutes: 15
+    timeout-minutes: 10
     defaults:
       run:
         shell: pwsh
     steps:
-      - name: Check out the exact failing application source
+      - name: Check out the exact reviewed source candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: stsepelin/checktrail
           ref: de1753a0c662b73fa66df145c05d0539ac839379
           persist-credentials: false
-      - name: Set up the original selected Node version
+      - name: Set up the original Windows Node version
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "22.23.3"
           cache: npm
-      - name: Install the pinned dependencies without lifecycle scripts
+      - name: Install pinned dependencies without lifecycle scripts
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Build the original source normally
         id: build
         run: npm run build
-      - name: Prepare the bounded first-party diagnostic controller
+      - name: Prepare the bounded fixed timing controller
         id: controller
         run: |
           $program = @'
           import assert from "node:assert/strict";
+          import { Buffer } from "node:buffer";
           import { createHash } from "node:crypto";
           import { execFileSync } from "node:child_process";
-          import { readFile, realpath, writeFile } from "node:fs/promises";
+          import {
+            lstat,
+            mkdir,
+            mkdtemp,
+            readFile,
+            realpath,
+            rm,
+            writeFile,
+          } from "node:fs/promises";
           import path from "node:path";
-          import { run } from "node:test";
           import process from "node:process";
-          import console from "node:console";
           import { performance } from "node:perf_hooks";
+          import { setTimeout, clearTimeout } from "node:timers";
+          let deadlineTimer;
           import { fileURLToPath, pathToFileURL } from "node:url";
-
           const SOURCE = "de1753a0c662b73fa66df145c05d0539ac839379";
-          const CASE = "native-license-provenance stale acceptance";
-          const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
-          const errorNames = new Set([
-            "Error",
-            "AssertionError",
-            "TypeError",
-            "RangeError",
-            "AbortError",
-            "SyntaxError",
-          ]);
-          const errorCodes = new Set([
-            "ERR_ASSERTION",
-            "ERR_TEST_FAILURE",
-            "ERR_TEST_TIMEOUT",
-            "ERR_INVALID_ARG_TYPE",
-            "ABORT_ERR",
-            "ETIMEDOUT",
-            "ENOENT",
-            "EACCES",
-          ]);
-          const failureTypes = new Set([
-            "testCodeFailure",
-            "testTimeoutFailure",
-            "cancelledByParent",
-            "subtestsFailed",
-            "hookFailed",
-            "testAborted",
-          ]);
-          const own = (value, key) => {
-            if (!value || typeof value !== "object") return undefined;
-            const descriptor = Object.getOwnPropertyDescriptor(value, key);
-            return descriptor && "value" in descriptor ? descriptor.value : undefined;
-          };
-          const boundedDuration = (value) =>
-            Number.isFinite(value) && value >= 0 && value <= 180000
-              ? Math.round(value)
-              : null;
-          function frames(stack, sources) {
-            if (typeof stack !== "string" || stack.length > 65536) return [];
-            const lines = stack.split("\n");
-            if (lines.length > 256) return [];
-            const result = [];
-            const seen = new Set();
-            for (const line of lines.slice(1)) {
-              const call = line.match(/^ {4}at (.+)$/u);
-              if (!call) continue;
-              const location = call[1].endsWith(")")
-                ? call[1].match(/^[^()\r\n]+ \((.+)\)$/u)?.[1]
-                : call[1];
-              const match = location?.match(/^(.*):([1-9][0-9]*):([1-9][0-9]*)$/u);
-              if (!match) continue;
-              const source = sources.find(
-                (item) => item.file === match[1] || item.url === match[1],
+          const sha = (body) => createHash("sha256").update(body).digest("hex");
+          const finite = (number, max = 15000) =>
+            typeof number === "number" &&
+            Number.isFinite(number) &&
+            number >= 0 &&
+            number <= max;
+          function commandBudget(end, now) {
+            assert.ok(Number.isFinite(end) && Number.isFinite(now));
+            assert.ok(Math.floor(end - now - 5000) >= 15000);
+            return 15000;
+          }
+          function compileProgram(pin) {
+            assert.match(pin.sha256, /^[a-f0-9]{64}$/u);
+            assert.ok(
+              Number.isSafeInteger(pin.bytes) &&
+                pin.bytes > 0 &&
+                pin.bytes <= 2 * 1048576,
+            );
+            return `
+          $ErrorActionPreference = 'Stop'
+          [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
+          $bodyClock = [Diagnostics.Stopwatch]::StartNew()
+          $creationMs = 0.0; $compileMs = 0.0; $typeLoadMs = 0.0
+          $errorCount = 0; $warningCount = 0; $typeAvailable = $false; $complete = $false
+          $compiler = $null; $parameters = $null
+          try {
+            [void][Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35')
+            $ownedDirectory = [Environment]::CurrentDirectory
+            $reader = [IO.BinaryReader]::new([IO.File]::Open([IO.Path]::Combine($ownedDirectory,'compile-source.cs'),[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::Read))
+            try { $sourceBytes = $reader.ReadBytes(${pin.bytes + 1}) } finally { $reader.Dispose() }
+            $hasher = [Security.Cryptography.SHA256]::Create()
+            try { $sourceDigest = [BitConverter]::ToString($hasher.ComputeHash($sourceBytes)).Replace('-','').ToLowerInvariant() } finally { $hasher.Dispose() }
+            if ($sourceBytes.Length -ne ${pin.bytes} -or $sourceDigest -ne '${pin.sha256}') { throw 'Pinned fixed source changed' }
+            $source = [Text.Encoding]::UTF8.GetString($sourceBytes)
+            $clock = [Diagnostics.Stopwatch]::StartNew()
+            $compiler = [Microsoft.CSharp.CSharpCodeProvider]::new()
+            $parameters = [CodeDom.Compiler.CompilerParameters]::new()
+            $parameters.GenerateInMemory = $true
+            $parameters.GenerateExecutable = $false
+            $parameters.TempFiles = [CodeDom.Compiler.TempFileCollection]::new($ownedDirectory,$false)
+            [void]$parameters.ReferencedAssemblies.Add('System.dll')
+            [void]$parameters.ReferencedAssemblies.Add('System.Core.dll')
+            [void]$parameters.ReferencedAssemblies.Add('System.Web.Extensions.dll')
+            $creationMs = $clock.Elapsed.TotalMilliseconds
+            $clock.Restart()
+            $compiled = $compiler.CompileAssemblyFromSource($parameters,[string[]]@($source))
+            $compileMs = $clock.Elapsed.TotalMilliseconds
+            foreach ($problem in $compiled.Errors) { if ($problem.IsWarning) { $warningCount++ } else { $errorCount++ } }
+            if ($compiled.Errors.HasErrors) { throw 'Fixed source compilation failed' }
+            $clock.Restart()
+            $type = $compiled.CompiledAssembly.GetType('ChecktrailWindowsJobV1',$true)
+            $typeAvailable = $null -ne $type
+            $typeLoadMs = $clock.Elapsed.TotalMilliseconds
+            $complete = $typeAvailable
+          } catch {
+            $complete = $false
+          } finally {
+            if ($null -ne $compiler) { $compiler.Dispose() }
+            if ($null -ne $parameters) { $parameters.TempFiles.Delete() }
+          }
+          $json = [Web.Script.Serialization.JavaScriptSerializer]::new()
+          $json.MaxJsonLength = 4096
+          [Console]::Out.WriteLine($json.Serialize([ordered]@{sourceSHA256='${pin.sha256}';sourceBytes=${pin.bytes};creationMs=$creationMs;compileMs=$compileMs;typeLoadMs=$typeLoadMs;bodyMs=$bodyClock.Elapsed.TotalMilliseconds;errorCount=$errorCount;warningCount=$warningCount;typeAvailable=$typeAvailable;runInvoked=$false;complete=$complete}))
+          if (!$complete) { exit 1 }
+          `;
+          }
+          function parseCompilation(text, pin) {
+            try {
+              assert.ok(typeof text === "string" && Buffer.byteLength(text) <= 4096);
+              const result = JSON.parse(text);
+              assert.deepEqual(
+                Object.keys(result).sort(),
+                [
+                  "sourceSHA256",
+                  "sourceBytes",
+                  "creationMs",
+                  "compileMs",
+                  "typeLoadMs",
+                  "bodyMs",
+                  "errorCount",
+                  "warningCount",
+                  "typeAvailable",
+                  "runInvoked",
+                  "complete",
+                ].sort(),
               );
-              if (!source) continue;
-              const row = Number(match[2]),
-                column = Number(match[3]);
-              if (
-                !Number.isSafeInteger(row) ||
-                !Number.isSafeInteger(column) ||
-                row > source.lineLengths.length ||
-                column > source.lineLengths[row - 1] + 1
-              )
-                continue;
-              const key = `${source.id}:${row}:${column}`;
-              if (seen.has(key)) continue;
-              seen.add(key);
-              if (result.length === 16) break;
-              result.push({ sourceId: source.id, line: row, column });
+              assert.equal(result.sourceSHA256, pin.sha256);
+              assert.equal(result.sourceBytes, pin.bytes);
+              for (const key of ["creationMs", "compileMs", "typeLoadMs", "bodyMs"])
+                assert.ok(finite(result[key]));
+              assert.ok(
+                result.creationMs + result.compileMs + result.typeLoadMs <=
+                  result.bodyMs + 1,
+              );
+              assert.equal(result.errorCount, 0);
+              assert.ok(
+                Number.isInteger(result.warningCount) &&
+                  result.warningCount >= 0 &&
+                  result.warningCount <= 1000,
+              );
+              assert.equal(result.typeAvailable, true);
+              assert.equal(result.runInvoked, false);
+              assert.equal(result.complete, true);
+              return result;
+            } catch {
+              return null;
             }
-            return result;
           }
-          function failure(error, sources) {
-            const chain = [];
-            const seen = new Set();
-            for (
-              let value = error;
-              value && typeof value === "object" && chain.length < 8 && !seen.has(value);
-              value = own(value, "cause")
-            ) {
-              seen.add(value);
-              chain.push({
-                code: errorCodes.has(own(value, "code")) ? own(value, "code") : "other",
-                type: failureTypes.has(own(value, "failureType"))
-                  ? own(value, "failureType")
-                  : "other",
-                name: errorNames.has(own(value, "name")) ? own(value, "name") : "other",
-                frames: frames(own(value, "stack"), sources),
-              });
-            }
-            return chain;
+          function processMetadata(result) {
+            return {
+              durationMs: finite(result.durationMs, 20000)
+                ? Math.round(result.durationMs)
+                : null,
+              exitCode:
+                Number.isInteger(result.exitCode) &&
+                result.exitCode >= 0 &&
+                result.exitCode <= 4294967295
+                  ? result.exitCode
+                  : null,
+              timedOut: result.timedOut === true,
+              cancelled: result.cancelled === true,
+              cleanupConfirmed: result.windowsExecution?.cleanup === "confirmed",
+              outputBytes:
+                Number.isSafeInteger(result.outputBytes) && result.outputBytes >= 0
+                  ? result.outputBytes
+                  : null,
+              stdoutSHA256: sha(result.stdout ?? ""),
+              stderrSHA256: sha(result.stderr ?? ""),
+            };
           }
-          async function sourceContext() {
+          async function main() {
+            const started = performance.now(),
+              end = started + 90000;
+            const abort = new globalThis.AbortController();
+            deadlineTimer = setTimeout(() => abort.abort(), 90000);
+            deadlineTimer.unref();
+            assert.equal(process.argv.length, 2);
+            assert.equal(process.platform, "win32");
             const root = await realpath(process.cwd());
             assert.equal(
               execFileSync("git", ["rev-parse", "HEAD"], {
-                cwd: root,
                 encoding: "utf8",
+                timeout: 5000,
                 maxBuffer: 256,
-                  timeout: 5000,
               }).trim(),
               SOURCE,
             );
             assert.equal(
               execFileSync("git", ["status", "--porcelain=v1", "--untracked-files=no"], {
-                cwd: root,
                 encoding: "utf8",
+                timeout: 5000,
                 maxBuffer: 65536,
-                  timeout: 5000,
               }).trim(),
               "",
             );
-            const specs = [
-              [
-                "gate-ts",
-                "test/gate-native-license-provenance.test.ts",
-                "41832012858f5e06e81a53da9a0407e85123d7acc9459864722a2c017f7fc9e8",
-              ],
-              [
-                "fixture-ts",
-                "test/native-license-provenance-fixture.ts",
-                "5854fd6c2707e837bbdddac5322974fbf73b05f9b2a240f6a252466e6e42e853",
-              ],
-              ["gate-js", "dist/test/gate-native-license-provenance.test.js", null],
-              ["fixture-js", "dist/test/native-license-provenance-fixture.js", null],
+            const sourceFiles = [
+              "dist/src/runner.js",
+              "dist/src/windows-process.js",
+              "dist/src/windows-native.js",
+              "dist/src/windows-task-access.js",
             ];
-            const sources = [];
-            for (const [id, local, pin] of specs) {
-              const file = path.join(root, local);
-              assert.equal(await realpath(file), file);
-              const body = await readFile(file);
-              assert.ok(body.length > 0 && body.length <= 4 * 1048576);
-              const sha256 = hash(body);
-              if (pin) assert.equal(sha256, pin);
-              sources.push({
-                id,
-                file,
-                url: pathToFileURL(file).href,
-                bytes: body.length,
-                sha256,
-                lineLengths: body
-                  .toString("utf8")
-                  .split(/\r?\n/u)
-                  .map((line) => line.length),
-              });
-            }
-            const runtime = {
-              node: process.versions.node,
-              platform: process.platform,
-              architecture: process.arch,
-              nodeSha256: hash(await readFile(process.execPath)),
-            };
-            return { root, sources, runtime };
-          }
-          const publicSources = (sources) =>
-            sources.map(({ id, bytes, sha256, lineLengths }) => ({
-              id,
-              bytes,
-              sha256,
-              lineCount: lineLengths.length,
-            }));
-          async function unchanged(before) {
-            const after = await sourceContext();
-            assert.deepEqual(publicSources(after.sources), publicSources(before.sources));
-            assert.deepEqual(after.runtime, before.runtime);
-          }
-          async function callback() {
-            assert.equal(process.platform, "win32");
-            assert.equal(process.env.CHECKTRAIL_NATIVE_LICENSE_COMPOSITION_NATIVE, "1");
-            const context = await sourceContext();
-            const selected = context.sources.find((item) => item.id === "gate-js");
-            const events = [];
-            let selectedTerminals = 0,
-              excludedTerminals = 0;
-            // Original file-process isolation, concurrency and execArgv; only the name
-            // selection and diagnostic file ceiling differ from the nine-case acceptance.
-            for await (const { type, data } of run({
-              files: [selected.file],
-              concurrency: 1,
-              timeout: 110000,
-              execArgv: [],
-              testNamePatterns: [/^native-license-provenance stale acceptance$/u],
-            })) {
-              if (data.name !== CASE) {
-                if (type === "test:pass" || type === "test:fail") excludedTerminals++;
-                continue;
-              }
-              if (type === "test:dequeue") {
-                if (events.some((event) => event.event === "dequeued"))
-                  throw new Error("Duplicate dequeue");
-                events.push({ event: "dequeued" });
-              }
-              if (type !== "test:pass" && type !== "test:fail") continue;
-              selectedTerminals++;
-              assert.ok(selectedTerminals <= 1 && events.length < 3);
-              const outcome =
-                data.skip !== undefined && data.skip !== false
-                  ? "skipped"
-                  : data.todo !== undefined && data.todo !== false
-                    ? "todo"
-                    : type === "test:pass"
-                      ? "passed"
-                      : "failed";
-              events.push({
-                event: "terminal",
-                outcome,
-                durationMs: boundedDuration(data.details?.duration_ms),
-                failure:
-                  type === "test:fail"
-                    ? failure(data.details?.error, context.sources)
-                    : [],
-              });
-            }
-            await unchanged(context);
-            const result = {
-              schemaVersion: 1,
-              scope: "original-stale-callback-diagnostic-only",
-              sourceCommit: SOURCE,
-              runtime: context.runtime,
-              sources: publicSources(context.sources),
-              selectedCase: "stale",
-              originalCaseTimeoutMs: 90000,
-              diagnosticFileTimeoutMs: 110000,
-              selectedTerminals,
-              excludedTerminals,
-              excludedOriginalCasesUncredited: 8,
-              events,
-              source9Qualified: false,
-              fresh9Qualified: false,
-              gateAQualified: false,
-            };
-            process.stdout.write(JSON.stringify(result) + "\n");
-            process.exitCode =
-              selectedTerminals === 1 &&
-              events.some((event) => event.outcome === "passed")
-                ? 0
-                : 1;
-          }
-          function validateCallback(value, context) {
-            const exact = (object, keys) => {
-              assert.ok(object && typeof object === "object" && !Array.isArray(object));
-              assert.deepEqual(Object.keys(object).sort(), [...keys].sort());
+            const capture = async () =>
+              Promise.all(
+                sourceFiles.map(async (local) => {
+                  const body = await readFile(path.join(root, local));
+                  return { id: local, bytes: body.length, sha256: sha(body) };
+                }),
+              );
+            const before = await capture();
+            const runtimeFile = await realpath(process.execPath),
+              runtimeSHA256 = sha(await readFile(runtimeFile));
+            const { runProcess } = await import(
+              pathToFileURL(path.join(root, "dist/src/runner.js")).href
+            );
+            const { windowsEnvironment } = await import(
+              pathToFileURL(path.join(root, "dist/src/windows-process.js")).href
+            );
+            const { ensureWindowsTaskAccess } = await import(
+              pathToFileURL(path.join(root, "dist/src/windows-task-access.js")).href
+            );
+            const native = await import(
+              pathToFileURL(path.join(root, "dist/src/windows-native.js")).href
+            );
+            const fixedSource = Buffer.from(native.windowsNativeCode, "utf8"),
+              pin = { bytes: fixedSource.length, sha256: sha(fixedSource) };
+            assert.equal(pin.sha256, native.windowsNativeSourceSha256);
+            const program = compileProgram(pin),
+              programSHA256 = sha(program);
+            const environment = windowsEnvironment(process.env);
+            const powershell = await realpath(
+              path.win32.join(
+                environment.SYSTEMROOT,
+                "System32/WindowsPowerShell/v1.0/powershell.exe",
+              ),
+            );
+            assert.equal((await lstat(powershell)).isFile(), true);
+            const powershellSHA256 = sha(await readFile(powershell));
+            const directory = await realpath(
+              await mkdtemp(path.join(process.env.RUNNER_TEMP, "ct-windows-same-host-")),
+            );
+            const rows = [];
+            let failureStage = 0,
+              activeStage = 0;
+            let complete = false,
+              cleanupComplete;
+            const budget = () => {
+              abort.signal.throwIfAborted();
+              return commandBudget(end, performance.now());
             };
             try {
-              exact(value, [
-                "schemaVersion",
-                "scope",
-                "sourceCommit",
-                "runtime",
-                "sources",
-                "selectedCase",
-                "originalCaseTimeoutMs",
-                "diagnosticFileTimeoutMs",
-                "selectedTerminals",
-                "excludedTerminals",
-                "excludedOriginalCasesUncredited",
-                "events",
-                "source9Qualified",
-                "fresh9Qualified",
-                "gateAQualified",
-              ]);
-              assert.equal(value.schemaVersion, 1);
-              assert.equal(value.scope, "original-stale-callback-diagnostic-only");
-              assert.equal(value.sourceCommit, SOURCE);
-              assert.deepEqual(value.runtime, context.runtime);
-              assert.deepEqual(value.sources, publicSources(context.sources));
-              assert.equal(value.selectedCase, "stale");
-              assert.equal(value.originalCaseTimeoutMs, 90000);
-              assert.equal(value.diagnosticFileTimeoutMs, 110000);
-              assert.ok(
-                Number.isInteger(value.selectedTerminals) &&
-                  value.selectedTerminals >= 0 &&
-                  value.selectedTerminals <= 1,
-              );
-              assert.ok(
-                Number.isInteger(value.excludedTerminals) &&
-                  value.excludedTerminals >= 0 &&
-                  value.excludedTerminals <= 10,
-              );
-              assert.equal(value.excludedOriginalCasesUncredited, 8);
-              assert.equal(value.source9Qualified, false);
-              assert.equal(value.fresh9Qualified, false);
-              assert.equal(value.gateAQualified, false);
-              assert.ok(Array.isArray(value.events) && value.events.length <= 2);
-              let dequeues = 0,
-                terminals = 0;
-              for (const event of value.events) {
-                if (event.event === "dequeued") {
-                  exact(event, ["event"]);
-                  assert.equal(++dequeues, 1);
-                  assert.equal(terminals, 0);
-                  continue;
+              for (let sample = 0; sample < 2; sample++) {
+                activeStage = 1;
+                budget(); // Original synchronous ACL inspector has its own15s bound.
+                const aclStart = performance.now();
+                ensureWindowsTaskAccess(directory, "directory", sample === 0);
+                rows.push({
+                  stage: 1,
+                  sample,
+                  durationMs: Math.round(performance.now() - aclStart),
+                  complete: true,
+                });
+                activeStage = 2;
+                const directStart = performance.now();
+                let rawComplete = false,
+                  rawStatus = null,
+                  rawStdout = "",
+                  rawStderr = "";
+                try {
+                  rawStdout = execFileSync(runtimeFile, ["--version"], {
+                    cwd: directory,
+                    env: environment,
+                    encoding: "utf8",
+                    windowsHide: true,
+                    timeout: budget(),
+                    maxBuffer: 4096,
+                  });
+                  rawStatus = 0;
+                  rawComplete = rawStdout.trim() === process.version;
+                } catch (error) {
+                  rawStatus = typeof error.status === "number" ? error.status : null;
+                  rawStdout = String(error.stdout ?? "");
+                  rawStderr = String(error.stderr ?? "");
                 }
-                exact(event, ["event", "outcome", "durationMs", "failure"]);
-                assert.equal(event.event, "terminal");
-                assert.equal(++terminals, 1);
-                assert.ok(
-                  ["passed", "failed", "skipped", "todo"].includes(event.outcome),
+                rows.push({
+                  stage: 2,
+                  sample,
+                  durationMs: Math.round(performance.now() - directStart),
+                  exitCode: rawStatus,
+                  stdoutSHA256: sha(rawStdout),
+                  stderrSHA256: sha(rawStderr),
+                  complete: rawComplete,
+                });
+                if (!rawComplete) break;
+                activeStage = 3;
+                const version = await runProcess(
+                  directory,
+                  { executable: runtimeFile, args: ["--version"], cwd: "." },
+                  { timeoutMs: budget(), maxOutputBytes: 4096, signal: abort.signal },
                 );
-                assert.ok(
-                  event.durationMs === null ||
-                    boundedDuration(event.durationMs) === event.durationMs,
-                );
-                assert.ok(Array.isArray(event.failure) && event.failure.length <= 8);
-                for (const item of event.failure) {
-                  exact(item, ["code", "type", "name", "frames"]);
-                  assert.ok(item.code === "other" || errorCodes.has(item.code));
-                  assert.ok(item.type === "other" || failureTypes.has(item.type));
-                  assert.ok(item.name === "other" || errorNames.has(item.name));
-                  assert.ok(Array.isArray(item.frames) && item.frames.length <= 16);
-                  for (const frame of item.frames) {
-                    exact(frame, ["sourceId", "line", "column"]);
-                    const source = context.sources.find(
-                      (row) => row.id === frame.sourceId,
-                    );
-                    assert.ok(
-                      source &&
-                        Number.isInteger(frame.line) &&
-                        frame.line >= 1 &&
-                        frame.line <= source.lineLengths.length,
-                    );
-                    assert.ok(
-                      Number.isInteger(frame.column) &&
-                        frame.column >= 1 &&
-                        frame.column <= source.lineLengths[frame.line - 1] + 1,
-                    );
-                  }
-                }
-              }
-              assert.equal(terminals, value.selectedTerminals);
-              return true;
-            } catch {
-              return false;
-            }
-          }
-          async function execute(mode) {
-            assert.equal(process.platform, "win32");
-            const context = await sourceContext();
-            const { runProcess } = await import(
-              pathToFileURL(path.join(context.root, "dist/src/runner.js")).href
-            );
-            const started = performance.now();
-            const rows = [];
-            if (mode === "probe") {
-              const end = started + 75000;
-              for (let index = 0; index < 5; index++) {
-                const remaining = Math.floor(end - performance.now());
-                if (remaining <= 0) break;
+                const versionComplete =
+                  version.exitCode === 0 &&
+                  !version.errorCode &&
+                  !version.timedOut &&
+                  !version.cancelled &&
+                  !version.truncated &&
+                  version.stdout.trim() === process.version &&
+                  version.stderr === "" &&
+                  version.windowsExecution?.cleanup === "confirmed";
+                rows.push({
+                  stage: 3,
+                  sample,
+                  ...processMetadata(version),
+                  complete: versionComplete,
+                });
+                if (!versionComplete) break;
+                activeStage = 4;
+                const compileDirectory = path.join(directory, `compile-${sample}`);
+                await mkdir(compileDirectory);
+                const input = path.join(compileDirectory, "compile-source.cs");
+                await writeFile(input, fixedSource, { flag: "wx", mode: 0o600 });
                 const result = await runProcess(
-                  context.root,
-                  { executable: process.execPath, args: ["--version"], cwd: "." },
-                  { timeoutMs: Math.min(15000, remaining), maxOutputBytes: 4096 },
+                  directory,
+                  {
+                    executable: powershell,
+                    args: [
+                      "-NoProfile",
+                      "-NonInteractive",
+                      "-EncodedCommand",
+                      Buffer.from(program, "utf16le").toString("base64"),
+                    ],
+                    cwd: `compile-${sample}`,
+                  },
+                  { timeoutMs: budget(), maxOutputBytes: 4096, signal: abort.signal },
                 );
-                const complete =
+                const compilation = parseCompilation(result.stdout, pin);
+                const compileComplete = Boolean(
+                  compilation &&
                   result.exitCode === 0 &&
+                  !result.errorCode &&
                   !result.timedOut &&
                   !result.cancelled &&
                   !result.truncated &&
-                  !result.errorCode &&
-                  result.stdout.trim() === process.version &&
                   result.stderr === "" &&
-                  result.windowsExecution?.cleanup === "confirmed";
+                  result.windowsExecution?.cleanup === "confirmed",
+                );
                 rows.push({
-                  index,
-                  durationMs: boundedDuration(result.durationMs),
-                  status: result.exitCode,
-                  timedOut: result.timedOut,
-                  cancelled: result.cancelled,
-                  complete,
-                  outputBytes: result.outputBytes,
+                  stage: 4,
+                  sample,
+                  ...processMetadata(result),
+                  compilation,
+                  complete: compileComplete,
                 });
-                if (!complete) break;
+                assert.equal(sha(await readFile(input)), pin.sha256);
+                if (!compileComplete) break;
               }
-            } else {
-              assert.equal(mode, "stale");
-              const result = await runProcess(
-                context.root,
-                {
-                  executable: process.execPath,
-                  args: [fileURLToPath(import.meta.url), "callback"],
-                  cwd: ".",
-                  env: { CHECKTRAIL_NATIVE_LICENSE_COMPOSITION_NATIVE: "1" },
-                },
-                { timeoutMs: 120000, maxOutputBytes: 65536 },
-              );
-              // Only this fixed first-party callback runner can write the bounded payload.
-              // Its stdout/stderr are never retained or echoed as diagnostic fields.
-              let parsed = null;
+              assert.deepEqual(await capture(), before);
+              assert.equal(sha(await readFile(runtimeFile)), runtimeSHA256);
+              assert.equal(sha(await readFile(powershell)), powershellSHA256);
+              complete = rows.length === 8 && rows.every((row) => row.complete);
+            } catch {
+              failureStage = activeStage;
+            } finally {
               try {
-                const value = JSON.parse(result.stdout);
-                if (validateCallback(value, context)) parsed = value;
+                await rm(directory, {
+                  recursive: true,
+                  force: true,
+                  maxRetries: 3,
+                  retryDelay: 100,
+                });
+                cleanupComplete = await lstat(directory).then(
+                  () => false,
+                  (error) => error.code === "ENOENT",
+                );
               } catch {
-                /* Preserve unavailable evidence as null. */
+                cleanupComplete = false;
               }
-              rows.push({
-                durationMs: boundedDuration(result.durationMs),
-                status: result.exitCode,
-                timedOut: result.timedOut,
-                cancelled: result.cancelled,
-                outputBytes: result.outputBytes,
-                cleanupConfirmed: result.windowsExecution?.cleanup === "confirmed",
-                callback: parsed,
-              });
             }
-            await unchanged(context);
-            const output = {
+            const result = {
               schemaVersion: 1,
-              scope:
-                mode === "probe"
-                  ? "five-fixed-supervised-node-version-launches-only"
-                  : "original-stale-callback-diagnostic-controller-only",
+              scope: "same-host-fixed-Windows-setup-timing-only",
               sourceCommit: SOURCE,
-              diagnosticWorkflowCommit: /^[a-f0-9]{40}$/u.test(
-                process.env.GITHUB_SHA ?? "",
-              )
-                ? process.env.GITHUB_SHA
-                : null,
-              runtime: context.runtime,
-              sourceFiles: publicSources(context.sources),
-              controllerSha256: hash(await readFile(fileURLToPath(import.meta.url))),
+              runtime: {
+                node: process.versions.node,
+                architecture: process.arch,
+                nodeSHA256: runtimeSHA256,
+                powershellSHA256,
+              },
+              sourceFiles: before,
+              fixedCSharpSource: pin,
+              compileProgramSHA256: programSHA256,
+              controllerSHA256: sha(await readFile(fileURLToPath(import.meta.url))),
               durationMs: Math.round(performance.now() - started),
               rows,
+              complete,
+              failureStage,
+              cleanupComplete,
+              historicalColdStartClaimed: false,
+              originalCallbacksExecuted: false,
+              excludedOriginalCasesUncredited: 9,
               source9Qualified: false,
               fresh9Qualified: false,
               gateAQualified: false,
-              excludedOriginalCasesUncredited: mode === "probe" ? 9 : 8,
               rawBodiesEmitted: false,
             };
             await writeFile(
-              path.join(
-                process.env.RUNNER_TEMP,
-                `native-provenance-${mode}-diagnostic.json`,
-              ),
-              JSON.stringify(output) + "\n",
+              path.join(process.env.RUNNER_TEMP, "native-provenance-same-host-cost.json"),
+              JSON.stringify(result) + "\n",
               { flag: "wx", mode: 0o600 },
             );
-            console.log(JSON.stringify(output));
-            if (
-              mode === "stale" &&
-              (!rows[0].callback || rows[0].status !== 0 || !rows[0].cleanupConfirmed)
-            )
-              process.exitCode = 1;
-            if (
-              mode === "probe" &&
-              (rows.length !== 5 || rows.some((row) => !row.complete))
-            )
-              process.exitCode = 1;
+            process.stdout.write(JSON.stringify(result) + "\n");
+            if (!complete || !cleanupComplete) process.exitCode = 1;
           }
           try {
-            const mode = process.argv[2];
-            if (mode === "callback") await callback();
-            else await execute(mode);
-          } catch (error) {
-            // Infrastructure failures must not print an assertion's private values/stack.
-            console.log(
+            await main();
+          } catch {
+            process.stdout.write(
               JSON.stringify({
                 schemaVersion: 1,
-                scope: "diagnostic-infrastructure-failure",
-                failure: failure(error, []),
+                scope: "same-host-timing-infrastructure-incomplete",
+                complete: false,
                 source9Qualified: false,
                 fresh9Qualified: false,
                 gateAQualified: false,
-              }),
+                rawBodiesEmitted: false,
+              }) + "\n",
             );
             process.exitCode = 1;
+          } finally {
+            if (deadlineTimer) clearTimeout(deadlineTimer);
           }
           '@
-          $controller = Join-Path $env:RUNNER_TEMP 'native-provenance-diagnostic.mjs'
+          $controller = Join-Path $env:RUNNER_TEMP 'native-provenance-cost-diagnostic.mjs'
           Set-Content -LiteralPath $controller -Value $program -Encoding utf8NoBOM
-      - name: Diagnose only the original stale callback
-        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.controller.outcome == 'success' }}
-        timeout-minutes: 3
-        run: |
-          $controller = Join-Path $env:RUNNER_TEMP 'native-provenance-diagnostic.mjs'
-          node $controller stale
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Measure five fixed supervised Node version launches
+      - name: Measure only fixed same-host setup costs
         if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.controller.outcome == 'success' }}
         timeout-minutes: 2
         run: |
-          $controller = Join-Path $env:RUNNER_TEMP 'native-provenance-diagnostic.mjs'
-          node $controller probe
+          $controller = Join-Path $env:RUNNER_TEMP 'native-provenance-cost-diagnostic.mjs'
+          node $controller
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Retain sanitized diagnostic metadata only
+      - name: Retain numeric timing and hash metadata only
         if: ${{ !cancelled() && steps.controller.outcome == 'success' }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: native-provenance-original-stale-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            ${{ runner.temp }}/native-provenance-stale-diagnostic.json
-            ${{ runner.temp }}/native-provenance-probe-diagnostic.json
+          name: native-provenance-same-host-cost-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/native-provenance-same-host-cost.json
           if-no-files-found: error
           retention-days: 7
           include-hidden-files: false
