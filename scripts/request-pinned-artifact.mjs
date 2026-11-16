@@ -296,7 +296,13 @@ export async function requestPinnedArtifactBytes(
 
 // Only fixed mirror labels and bounded scalar observations reach stderr.
 export async function tracePinnedArtifactAcquisition(
-  { artifact, artifactIndex = 0, centralMirror = false, mirrorIndexForAsset },
+  {
+    artifact,
+    artifactIndex = 0,
+    centralMirror = false,
+    archiveMirror = false,
+    mirrorIndexForAsset,
+  },
   acquire,
 ) {
   const policies = new Map([
@@ -311,6 +317,7 @@ export async function tracePinnedArtifactAcquisition(
       artifactIndex <= 255,
   );
   assert.equal(typeof centralMirror, "boolean");
+  assert.equal(typeof archiveMirror, "boolean");
   assert.equal(typeof acquire, "function");
   assert.ok(
     mirrorIndexForAsset === undefined ||
@@ -328,9 +335,11 @@ export async function tracePinnedArtifactAcquisition(
         "github-release",
         "github-release-assets",
       ]
-    : centralMirror
-      ? ["maven-central"]
-      : ["apache-primary", "apache-cdn", "apache-archive"];
+    : artifact === "maven-distribution" || archiveMirror
+      ? ["apache-archive", "maven-central"]
+      : centralMirror
+        ? ["maven-central"]
+        : ["apache-primary", "apache-cdn", "apache-archive"];
   const phases = new Set([
     "download-start",
     "fetch-start",

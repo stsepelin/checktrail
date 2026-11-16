@@ -272,7 +272,13 @@ test("CI JVM completion requires all source-bound phase outputs and permits reta
     notSelected: [],
   };
   const needs = Object.fromEntries(
-    ["ci-plan", "checks", "host-validation", "jvm-wrappers-arm64"].map((id) => [
+    [
+      "ci-plan",
+      "checks",
+      "full-suite-shards",
+      "host-validation",
+      "jvm-wrappers-arm64",
+    ].map((id) => [
       id,
       {
         result: "success",

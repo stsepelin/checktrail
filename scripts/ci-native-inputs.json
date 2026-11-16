@@ -1189,6 +1189,7 @@
   ],
   "scripts/jvm-analyzer-tools.Dockerfile": ["jvm-analyzer-extensions-arm64"],
   "scripts/jvm-extension-tools.Dockerfile": ["jvm-wrappers-arm64"],
+  "scripts/jvm-wrapper-artifacts.json": ["jvm-wrappers-arm64", "maven"],
   "scripts/jvm-wrapper-phase-evidence.mjs": ["jvm-wrappers-arm64"],
   "scripts/kotlin-context-tools.Dockerfile": ["kotlin-context-arm64"],
   "scripts/kotlin-tools.Dockerfile": ["kotlin", "kotlin-extensions-arm64"],

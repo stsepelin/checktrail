@@ -62,7 +62,7 @@ test("Maven distribution preparation retries transient connection and response f
  const calls=[],waits=[],signal=AbortSignal.timeout(5000);
  const timeout=Object.assign(new AggregateError([],'synthetic connect timeout'),{code:'ETIMEDOUT'});
  const bytes=await requestMavenDistribution({signal,fetchImpl:async(asset,options)=>{calls.push([asset,options.redirect,options.signal!==signal&&!options.signal.aborted]);if(calls.length===1)throw new TypeError('fetch failed',{cause:timeout});if(calls.length===2)return new Response('temporary',{status:503});return new Response(new Uint8Array(mavenDistributionPin.bytes).fill(7));},delayImpl:async ms=>waits.push(ms)});
- assert.deepEqual(calls,[[mavenDistributionPin.asset,'error',true],[mavenDistributionPin.fallbackAssets[0],'error',true],[mavenDistributionPin.fallbackAssets[1],'error',true]]);assert.deepEqual(waits,[1000,3000]);assert.equal(bytes.length,9979885);assert.equal(bytes[0],7);assert.equal(bytes[bytes.length-1],7);
+ assert.deepEqual(calls,[[mavenDistributionPin.asset,'error',true],[mavenDistributionPin.fallbackAssets[0],'error',true],[mavenDistributionPin.fallbackAssets[0],'error',true]]);assert.deepEqual(waits,[1000,3000]);assert.equal(bytes.length,9979885);assert.equal(bytes[0],7);assert.equal(bytes[bytes.length-1],7);
  assert.equal(mavenDistributionPin.sha256,'a46cc51bc74fa23fd267c7a0b9132b146dcf526da60d31aa5174e565632e9e0e');
 `,
   ));
@@ -102,7 +102,7 @@ const wrapperControlImports = `
  const {createHash}=await import('node:crypto');
  const {requestJvmWrapperArtifact}=await import(${JSON.stringify(new URL("../../scripts/request-jvm-wrapper-artifact.mjs", import.meta.url).href)});
  const original=Uint8Array.from([0,255,7]);
- const pin={url:'https://downloads.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip',bytes:3,sha256:createHash('sha256').update(original).digest('hex')};
+ const pin={url:'https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip',bytes:3,sha256:createHash('sha256').update(original).digest('hex')};
 `;
 
 test("JVM wrapper setup retries transient deliveries through exact Apache mirrors and keeps Central artifact URLs unchanged", async (t) =>
@@ -110,10 +110,15 @@ test("JVM wrapper setup retries transient deliveries through exact Apache mirror
     t,
     wrapperControlImports +
       `
- const apachePaths=['/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip','/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip.asc','/maven/KEYS'];
+ const {readFile}=await import('node:fs/promises');
+ const setup=JSON.parse(await readFile(new URL(${JSON.stringify(new URL("../../scripts/jvm-wrapper-artifacts.json", import.meta.url).href)}),'utf8'));
+ assert.equal(setup.maven.find(p=>p.name==='apache-maven-3.10.0-bin.zip').url,'https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip');
+ const apachePaths=['/maven/KEYS'];
+ const centralDistribution='https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0/apache-maven-3.10.0-bin.zip';
  const centralPaths=['/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.4/maven-wrapper-3.3.4.jar','/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.4/maven-wrapper-3.3.4.jar.asc','/maven2/org/apache/maven/wrapper/maven-wrapper-distribution/3.3.4/maven-wrapper-distribution-3.3.4-bin.zip','/maven2/org/apache/maven/wrapper/maven-wrapper-distribution/3.3.4/maven-wrapper-distribution-3.3.4-bin.zip.asc'];
  for(const [url,expected] of [
   ...apachePaths.map(p=>['https://downloads.apache.org'+p,['https://downloads.apache.org'+p,'https://dlcdn.apache.org'+p,'https://archive.apache.org/dist'+p]]),
+  ...['','.asc'].map(suffix=>[pin.url+suffix,[pin.url+suffix,centralDistribution+suffix,centralDistribution+suffix]]),
   ...centralPaths.map(p=>['https://repo.maven.apache.org'+p,Array(3).fill('https://repo.maven.apache.org'+p)]),
  ]){
   const signal=AbortSignal.timeout(5000),calls=[],waits=[];
@@ -130,8 +135,9 @@ test("JVM wrapper setup rejects redirects permanent responses malformed bodies a
     t,
     wrapperControlImports +
       `
+ for(const url of [pin.url])
  for(const response of [()=>new Response('no',{status:404}),()=>new Response('no',{status:401}),()=>new Response('go',{status:302}),()=>new Response('x'),()=>new Response('long'),()=>new Response(),()=>new Response(Uint8Array.from([0,255,8]))]){
-  let calls=0;await assert.rejects(requestJvmWrapperArtifact(pin,{fetchImpl:async()=>{calls++;return response();},delayImpl:async()=>assert.fail('Integrity or permanent failures must not retry')}));assert.equal(calls,1);
+  let calls=0;await assert.rejects(requestJvmWrapperArtifact({...pin,url},{fetchImpl:async asset=>{assert.equal(asset,url);calls++;return response();},delayImpl:async()=>assert.fail('Integrity or permanent failures must not retry')}));assert.equal(calls,1);
  }
  for(const failure of [new TypeError('redirect blocked'),Object.assign(new Error('bad certificate'),{code:'CERT_HAS_EXPIRED'})]){let calls=0;await assert.rejects(requestJvmWrapperArtifact(pin,{fetchImpl:async()=>{calls++;throw failure;},delayImpl:async()=>assert.fail('Must not retry')}),e=>e===failure);assert.equal(calls,1);}
  `,
@@ -144,7 +150,8 @@ test("JVM wrapper setup bounds exhausted retries and preserves cancellation befo
       `
  const failure=Object.assign(new Error('connect timeout'),{code:'ETIMEDOUT'}),waits=[],calls=[],retries=[];
  await assert.rejects(requestJvmWrapperArtifact(pin,{fetchImpl:async url=>{calls.push(url);throw failure},delayImpl:async ms=>waits.push(ms),onRetry:event=>retries.push(event)}),e=>e===failure);
- assert.deepEqual(calls,[pin.url,pin.url.replace('downloads.apache.org','dlcdn.apache.org'),pin.url.replace('https://downloads.apache.org/','https://archive.apache.org/dist/')]);assert.deepEqual(waits,[1000,3000]);assert.deepEqual(retries,[{attempt:1,waitMs:1000},{attempt:2,waitMs:3000}]);
+ const central='https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0/apache-maven-3.10.0-bin.zip';
+ assert.deepEqual(calls,[pin.url,central,central]);assert.deepEqual(waits,[1000,3000]);assert.deepEqual(retries,[{attempt:1,waitMs:1000},{attempt:2,waitMs:3000}]);
  const abort=new Error('original cancellation');let before=0;await assert.rejects(requestJvmWrapperArtifact(pin,{signal:AbortSignal.abort(abort),fetchImpl:async()=>{before++;return new Response(original)}}),e=>e===abort);assert.equal(before,0);
  const controller=new AbortController();let during=0;
  await assert.rejects(requestJvmWrapperArtifact(pin,{signal:controller.signal,fetchImpl:async()=>{during++;throw failure},delayImpl:async()=>controller.abort(abort)}),e=>e===abort);assert.equal(during,1);
@@ -159,6 +166,54 @@ test("JVM wrapper setup discards interrupted body bytes and rejects URLs outside
  let calls=0;const waits=[];
  const bytes=await requestJvmWrapperArtifact(pin,{fetchImpl:async()=>{if(++calls===1)return new Response(new ReadableStream({start(c){c.enqueue(Uint8Array.from([99,99]));},pull(c){c.error(Object.assign(new Error('body interrupted'),{code:'ECONNRESET'}));}}));return new Response(original);},delayImpl:async ms=>waits.push(ms)});
  assert.equal(calls,2);assert.deepEqual(waits,[1000]);assert.deepEqual([...bytes],[0,255,7]);
- for(const url of [pin.url.replace('https:','http:'),pin.url.replace('downloads.apache.org','downloads.apache.org.evil.invalid'),pin.url+'?changed=1',pin.url+'#fragment',pin.url.replace('3.10.0','3.10.1'),pin.url.replace('https://','https://user:secret@')]){let reached=0;await assert.rejects(requestJvmWrapperArtifact({...pin,url},{fetchImpl:async()=>{reached++;return new Response(original)}}));assert.equal(reached,0);}
+ for(const base of [pin.url])
+ for(const url of [base.replace('https:','http:'),base.replace('.apache.org','.apache.org.evil.invalid'),base+'?changed=1',base+'#fragment',base.replace('3.10.0','3.10.1'),base.replace('https://','https://user:secret@'),'https://archive.apache.org/dist/maven/KEYS',pin.url.replace('https://archive.apache.org/dist/','https://downloads.apache.org/'),pin.url.replace('https://archive.apache.org/dist/','https://dlcdn.apache.org/')]){let reached=0;await assert.rejects(requestJvmWrapperArtifact({...pin,url},{fetchImpl:async()=>{reached++;return new Response(original)}}));assert.equal(reached,0);}
+ `,
+  ));
+
+test("Maven archive and Central trace roles preserve live key and wrapper identities without URL disclosure", async (t) =>
+  control(
+    t,
+    wrapperControlImports +
+      `
+ const {tracePinnedArtifactAcquisition}=await import(${JSON.stringify(new URL("../../scripts/request-pinned-artifact.mjs", import.meta.url).href)});
+ const archive='https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip';
+ const central='https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0/apache-maven-3.10.0-bin.zip';
+ const cases=[
+  [archive,true,false,'apache-archive','maven-central',central],
+  [archive+'.asc',true,false,'apache-archive','maven-central',central+'.asc'],
+  ['https://downloads.apache.org/maven/KEYS',false,false,'apache-primary','apache-cdn','https://dlcdn.apache.org/maven/KEYS'],
+  ['https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.4/maven-wrapper-3.3.4.jar',false,true,'maven-central','maven-central','https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.4/maven-wrapper-3.3.4.jar'],
+ ];
+ const savedFetch=globalThis.fetch,savedWrite=process.stderr.write;
+ try {
+  for(const [url,archiveMirror,centralMirror,primaryRole,fallbackRole,fallback] of cases){
+   const calls=[],records=[];
+   globalThis.fetch=async asset=>{calls.push(asset);return calls.length===1?new Response(null,{status:503}):new Response(original);};
+   process.stderr.write=text=>{records.push(JSON.parse(String(text)));return true;};
+   const result=await tracePinnedArtifactAcquisition({artifact:'jvm-wrapper',archiveMirror,centralMirror},options=>requestJvmWrapperArtifact({...pin,url},{...options,delayImpl:async()=>{}}));
+   assert.deepEqual(calls,[url,fallback]);assert.deepEqual([...result],[0,255,7]);
+   assert.deepEqual(records.filter(e=>e.phase==='headers').map(e=>[e.httpStatus,e.mirror]),[[503,primaryRole],[200,fallbackRole]]);
+   assert(records.some(e=>e.phase==='retry'&&e.mirror===primaryRole&&e.nextMirror===fallbackRole));
+   assert.equal(JSON.stringify(records).includes('https://'),false);assert(records.length<=48);
+  }
+ } finally {globalThis.fetch=savedFetch;process.stderr.write=savedWrite;}
+ `,
+  ));
+
+test("Maven immutable fallback still stops on permanent404 for TAR ZIP and signature", async (t) =>
+  control(
+    t,
+    wrapperControlImports +
+      `
+ const central='https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0/apache-maven-3.10.0-bin.zip';
+ for(const suffix of ['', '.asc']){
+  const calls=[],waits=[];
+  await assert.rejects(requestJvmWrapperArtifact({...pin,url:pin.url+suffix},{fetchImpl:async asset=>{calls.push(asset);return new Response(null,{status:calls.length===1?503:404});},delayImpl:async ms=>waits.push(ms)}));
+  assert.deepEqual(calls,[pin.url+suffix,central+suffix]);assert.deepEqual(waits,[1000]);
+ }
+ const calls=[],waits=[];
+ await assert.rejects(requestMavenDistribution({fetchImpl:async asset=>{calls.push(asset);return new Response(null,{status:calls.length===1?503:404});},delayImpl:async ms=>waits.push(ms)}));
+ assert.deepEqual(calls,[mavenDistributionPin.asset,mavenDistributionPin.fallbackAssets[0]]);assert.deepEqual(waits,[1000]);
  `,
   ));

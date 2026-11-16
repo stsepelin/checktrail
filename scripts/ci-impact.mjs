@@ -11,6 +11,7 @@ import {
 
 const controls = new Set([
   "checks",
+  "full-suite-shards",
   "host-validation",
   "ci-plan",
   "ci-complete",
@@ -81,7 +82,7 @@ export const cProducerSharedBoundary = Object.freeze({
   // Names only: editing a reviewed member does not invalidate its fast path.
   // A new helper, fixture, test or workflow needs an explicit inventory review.
   inventorySha256:
-    "f1d2dcfa621ec2647a8c6aded5efefa7ec9770875e73156384551bce2b095efe",
+    "56b2c02f5db2656ffb7a27d5677fcff6cda52afd4a73698e9c3e84290c36b960",
   files: Object.freeze([
     "scripts/acquire-binutils-inputs.mjs",
     "scripts/acquire-c-producer-inputs.mjs",
@@ -672,6 +673,9 @@ export function planNativeJobs({
         "dist/test/gate-inventory.test.js",
         "dist/test/ci-affected-tests.test.js",
         "dist/test/ci-source-boundaries.test.js",
+        "dist/test/ci-full-suite-shards.test.js",
+        "dist/test/ci-validation-shards.test.js",
+        "dist/test/ci-duration-workflow.test.js",
         ...(changed.some((file) => cProducerSharedInputs.has(file))
           ? producerBoundary.testFiles.map(
               (file) => "dist/" + file.replace(/\.ts$/, ".js"),
@@ -771,6 +775,7 @@ export function requireCiCompletion(plan, needs) {
   const expected = [
     "ci-plan",
     "checks",
+    "full-suite-shards",
     "host-validation",
     ...Object.keys(plan.selected),
   ];
@@ -782,9 +787,11 @@ export function requireCiCompletion(plan, needs) {
   for (const id of expected) {
     const required =
       ["ci-plan", "checks"].includes(id) ||
-      (id === "host-validation"
-        ? plan.hostValidation === "required"
-        : plan.selected[id]);
+      (id === "full-suite-shards"
+        ? plan.mode === "full"
+        : id === "host-validation"
+          ? plan.hostValidation === "required"
+          : plan.selected[id]);
     assert.equal(
       needs[id].result,
       required ? "success" : "skipped",

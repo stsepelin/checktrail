@@ -828,9 +828,15 @@ test("host smoke preserves qualified preparation and routes current-root reporte
     proof = commands.findIndex((command) =>
       command.includes("node scripts/verify-root-javascript-reporters.mjs"),
     ),
-    controller = commands.indexOf("node scripts/run-ci-validation.mjs");
+    controller = commands.indexOf(
+      "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}",
+    );
   assert.ok(
     prepare >= 0 && prepare < build && build < proof && proof < controller,
+  );
+  assert.equal(
+    workflow.jobs["host-validation"].steps[proof].if,
+    "matrix.shard == 0",
   );
   assert.deepEqual(commands[proof]!.trim().split("\n"), [
     "node --test dist/test/development-bundlers.test.js dist/test/vitest.test.js dist/test/jest.test.js",
