@@ -257,7 +257,7 @@ test("Scala preparation manifest binds the literal sibling namespace and selecte
   assert.throws(() => validate({ ...manifest, extraAuthority: true }, root));
 });
 
-test("Scala signature CI carries prepared proof data to a serial same-image step after legacy acceptance", async () => {
+test("Scala signature CI carries prepared proof data to a serial same-image step in the required baseline phase", async () => {
   const workflow = parse(
     await readFile(
       new URL("../../.github/workflows/ci.yml", import.meta.url),
@@ -265,14 +265,18 @@ test("Scala signature CI carries prepared proof data to a serial same-image step
     ),
   );
   const job = workflow.jobs["scala-extensions-arm64"],
-    steps = job.steps as { run?: string; env?: Record<string, string> }[];
+    steps = job.steps as {
+      run?: string;
+      if?: string;
+      env?: Record<string, string>;
+    }[];
   const signedPreparation =
     'mkdir "$SCALA2_SIGNATURE_INPUTS"\ncp docs/measurements/artifact-identities-2026-10-21/scala-public-key.asc docs/measurements/artifact-identities-2026-10-21/scala-compiler-2.13.18.jar.asc docs/measurements/artifact-identities-2026-10-21/scala-library-2.13.18.jar.asc docs/measurements/artifact-identities-2026-10-21/scala-reflect-2.13.18.jar.asc "$SCALA2_SIGNATURE_INPUTS/"\nnode scripts/prepare-scala2-tools.mjs --verify-release-signatures "$SCALA2_SIGNATURE_INPUTS" > "$CHECKTRAIL_SCALA2_PREPARATION_MANIFEST"\n';
   const commands = [
     "node scripts/prepare-scala2-tools.mjs",
     "node scripts/verify-scala2-signature-proof.mjs",
     signedPreparation,
-    "node scripts/verify-scala-extensions-container.mjs",
+    'node scripts/verify-scala-extensions-container.mjs --phase "${{ matrix.phase }}"',
     'node scripts/verify-scala2-signature-container.mjs "$CHECKTRAIL_SCALA2_PREPARATION_MANIFEST"',
   ];
   const indexes = commands.map((command) => {
@@ -296,6 +300,13 @@ test("Scala signature CI carries prepared proof data to a serial same-image step
     preparation.env!.CHECKTRAIL_SCALA2_PREPARATION_MANIFEST,
     "${{ runner.temp }}/scala2-release-signature-preparation.json",
   );
+  assert.equal(acceptance.if, "matrix.phase == 'baseline'");
+  assert.deepEqual(job.strategy.matrix.phase, [
+    "baseline",
+    "source",
+    "installed",
+    "guards",
+  ]);
   assert.equal(
     acceptance.env!.CHECKTRAIL_SCALA2_PREPARATION_MANIFEST,
     preparation.env!.CHECKTRAIL_SCALA2_PREPARATION_MANIFEST,

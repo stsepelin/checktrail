@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, rm } from "node:fs/promises";
 import { execFileSync, spawnSync } from "node:child_process";
 import { test } from "node:test";
 import { parse } from "yaml";
@@ -376,7 +376,7 @@ test("CI preparation regression ownership derives exact present-file consumers a
   for (const missing of [tools, extensions])
     await assert.rejects(
       collect(Object.keys(sources).filter((file) => file !== missing)),
-      /requires its declared native controller/,
+      /requires its declared native input/,
     );
   const shared = await collect(undefined, {
     ...sources,
@@ -711,7 +711,12 @@ test("CI producer fast mode requires a complete reviewed name inventory and reje
   assert.equal(producerInventoryFingerprint(Array(1)), null);
   const file = cProducerWorkflowInputs[1]!;
   assert.equal(plan([file]).mode, "affected");
-  assert.equal(plan(Array(1)).mode, "full");
+  const sparseChanged = plan(Array(1));
+  assert.equal(sparseChanged.mode, "full");
+  assert.match(
+    sparseChanged.reason,
+    /Missing, empty or invalid changed-file inventory/,
+  );
   assert.equal(plan([cProducerRegressionFiles[0]!]).mode, "affected");
   for (const inventory of [
     null,
@@ -763,7 +768,7 @@ test("CI production producer policy falls back for new checkout names without fa
     planNativeJobs({
       jobs,
       inputs,
-      changed: ["scripts/producer-qualification/c-producer-report-codec.mjs"],
+      changed: ["scripts/qualify-c-producer.mjs"],
       eventName: "pull_request",
       contractCurrent: true,
       producerInventory: inventory,
@@ -788,7 +793,7 @@ test("CI production producer policy falls back for new checkout names without fa
 });
 
 test("CI producer policies reject missing invalid and incomplete identities before inventory comparison", () => {
-  const file = "scripts/producer-qualification/c-producer-report-codec.mjs";
+  const file = "scripts/qualify-c-producer.mjs";
   for (const producerBoundary of [
     null,
     {},
@@ -905,15 +910,18 @@ test("CI production planner entrypoint cannot override the reviewed producer pol
     assert.ok(ts.isIdentifier(member.name));
     return member.name.text;
   });
-  assert.deepEqual(properties.sort(), [
-    "baseline",
+  assert.equal(new Set(properties).size, properties.length);
+  assert.ok(!properties.includes("producerBoundary"));
+  assert.ok(!properties.includes("__proto__"));
+  for (const required of [
     "changed",
     "contractCurrent",
     "eventName",
     "inputs",
     "jobs",
     "producerInventory",
-  ]);
+  ])
+    assert.ok(properties.includes(required), required);
 });
 
 test("CI C producer boundary preserves native owner unions and validates contracts before any allowance", () => {
@@ -1225,7 +1233,11 @@ test("CI completion requires selected jobs to pass and reports omitted jobs as u
     /outcome disagrees/,
   );
   assert.throws(
-    () => requireCiCompletion({ ...result, mode: "full" }, needs),
+    () =>
+      requireCiCompletion(
+        { ...result, mode: "full", hostValidation: "required" },
+        needs,
+      ),
     /cannot omit/,
   );
   const unexpected = structuredClone(needs);
@@ -1355,6 +1367,7 @@ test("CI initial wave stays within the free runner ceiling and native fanout req
   );
   assert.deepEqual(workflow.jobs["dotnet-generator-extensions-arm64"].needs, [
     "ci-plan",
+    "actionlint",
   ]);
   assert.deepEqual(workflow.jobs["fsharp-format-arm64"].needs, [
     "ci-plan",
@@ -2137,9 +2150,11 @@ test("CI shared matrices retain every full command and use selected complete fil
   assert.deepEqual(docs.sharedTestFiles, [
     "dist/test/artifact-evidence.test.js",
     "dist/test/ci-affected-tests.test.js",
+    "dist/test/ci-development-dependencies.test.js",
     "dist/test/ci-impact.test.js",
     "dist/test/ci-source-boundaries.test.js",
     "dist/test/gate-inventory.test.js",
+    "dist/test/jvm-wrapper-phases.test.js",
   ]);
 });
 
@@ -3109,5 +3124,919 @@ test("Playwright fixture artifacts retain full verification and both host lanes 
       "scripts/playwright-tools/package-lock.json",
     ])
       assert.ok(cachedLocks.includes(required), name + ":" + required);
+  }
+});
+
+test("generator CI keeps three closed shards original runtime limits and unique retained claims within the initial runner ceiling", async () => {
+  const api = await import(
+    new URL("../../scripts/check-dotnet-generator-ci.mjs", import.meta.url).href
+  );
+  const job = workflow.jobs[api.generatorCIJob];
+  assert.equal(
+    job.name,
+    "dotnet-generator-extensions-arm64 (${{ matrix.shard }})",
+  );
+  assert.deepEqual(job.needs, ["ci-plan", "actionlint"]);
+  assert.deepEqual(job.strategy, {
+    "fail-fast": false,
+    "max-parallel": 3,
+    matrix: { include: [{ shard: "0" }, { shard: "1" }, { shard: "2" }] },
+  });
+  assert.equal(job["runs-on"], "ubuntu-24.04-arm");
+  assert.deepEqual(job.permissions, { contents: "read", actions: "read" });
+  const keys = ["0", "1", "2"].flatMap((id) =>
+    Object.values(api.generatorCIOutputKeys(id)),
+  );
+  assert.deepEqual(Object.keys(job.outputs).sort(), keys.sort());
+  for (const id of ["0", "1", "2"]) {
+    const names = api.generatorCIOutputKeys(id);
+    for (const stage of ["start", "finish"] as const)
+      assert.equal(
+        job.outputs[names[stage]],
+        "${{ steps.dotnet-" + stage + ".outputs." + names[stage] + " }}",
+      );
+  }
+  const steps = job.steps,
+    start = steps.findIndex(
+      (row: { id?: string }) => row.id === "dotnet-start",
+    ),
+    upload = steps.findIndex(
+      (row: { id?: string }) => row.id === "dotnet-upload",
+    ),
+    finish = steps.findIndex(
+      (row: { id?: string }) => row.id === "dotnet-finish",
+    );
+  const node = steps.findIndex((row: { uses?: string }) =>
+    row.uses?.startsWith("actions/setup-node@"),
+  );
+  assert.equal(start, node + 1);
+  assert.equal(steps[node].with["node-version"], "22.23.2");
+  assert.equal(
+    steps[start].run,
+    "node scripts/check-dotnet-generator-ci.mjs start --shard ${{ matrix.shard }}",
+  );
+  assert.equal(steps[start].env.CHECKTRAIL_DOTNET_JOB, "${{ toJSON(job) }}");
+  assert.equal(steps[start + 1].run, "npm ci --ignore-scripts");
+  assert.equal(upload + 1, finish);
+  assert.equal(finish, steps.length - 1);
+  for (const index of [start, upload, finish]) {
+    assert.equal(steps[index].if, undefined);
+    assert.equal(steps[index]["continue-on-error"], undefined);
+  }
+  assert.equal(
+    steps[upload - 1].run,
+    "node scripts/check-dotnet-generator-ci.mjs run --shard ${{ matrix.shard }}",
+  );
+  assert.equal(
+    steps[upload - 1].env.CHECKTRAIL_DOTNET_GENERATOR_JOB_CONTEXT,
+    "${{ steps.dotnet-start.outputs.context }}",
+  );
+  assert.equal(steps[upload - 1].env.GITHUB_TOKEN, undefined);
+  assert.deepEqual(steps[upload].with, {
+    name: "native-dotnet-generator-shard-${{ matrix.shard }}-${{ github.run_attempt }}",
+    path: "${{ runner.temp }}/checktrail-dotnet-fragments/dotnet-generator-shard-${{ matrix.shard }}.json",
+    "if-no-files-found": "error",
+    "retention-days": 7,
+    "include-hidden-files": false,
+  });
+  assert.equal(
+    steps[upload].uses,
+    "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+  );
+  assert.equal(
+    steps[finish].env.CHECKTRAIL_DOTNET_ARTIFACT_ID,
+    "${{ steps.dotnet-upload.outputs.artifact-id }}",
+  );
+  assert.equal(
+    steps[finish].env.CHECKTRAIL_DOTNET_ARTIFACT_DIGEST,
+    "${{ steps.dotnet-upload.outputs.artifact-digest }}",
+  );
+  assert.equal(
+    steps[finish].env.CHECKTRAIL_DOTNET_ARTIFACT_NAME,
+    steps[upload].with.name,
+  );
+  const complete = workflow.jobs["ci-complete"],
+    selection = complete.steps.findIndex(
+      (row: { id?: string }) => row.id === "dotnet-fragments",
+    );
+  assert.deepEqual(complete.permissions, { contents: "read", actions: "read" });
+  assert.ok(
+    selection >
+      complete.steps.findIndex(
+        (row: { run?: string }) =>
+          row.run === "node scripts/check-ci-completion.mjs",
+      ),
+  );
+  assert.equal(
+    complete.steps[selection].run,
+    "node scripts/check-dotnet-generator-ci.mjs selection",
+  );
+  assert.equal(
+    complete.steps[selection].env.CHECKTRAIL_CI_NEEDS,
+    "${{ toJSON(needs) }}",
+  );
+  assert.deepEqual(complete.steps[selection + 1], {
+    name: "Acquire exact retained generator fragment artifacts",
+    if: "steps.dotnet-fragments.outputs.selected == 'true'",
+    uses: "actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+    with: {
+      "artifact-ids": "${{ steps.dotnet-fragments.outputs.artifact_ids }}",
+      path: "${{ runner.temp }}/checktrail-dotnet-fragment-artifacts",
+      "merge-multiple": false,
+      "digest-mismatch": "error",
+    },
+  });
+  assert.equal(
+    complete.steps[selection + 2].run,
+    "node scripts/check-dotnet-generator-ci.mjs aggregate",
+  );
+  for (const file of [
+    "scripts/check-dotnet-generator-ci.mjs",
+    "scripts/dotnet-generator-shards.mjs",
+    "scripts/dotnet-generator-shards.v1.json",
+    "test/dotnet-generator-ci.test.ts",
+    "test/dotnet-generator-shards.test.ts",
+  ]) {
+    assert.equal(plan([file]).selected[api.generatorCIJob], true, file);
+    assert.ok(inputs[file]?.includes(api.generatorCIJob), file);
+  }
+  assert.deepEqual(
+    inputs["scripts/native-ci-artifact-storage.mjs"],
+    [
+      ...new Set([
+        ...inputs["scripts/consumer-native-ci-artifacts.mjs"],
+        api.generatorCIJob,
+      ]),
+    ].sort(),
+  );
+  for (const file of [
+    "scripts/verify-javascript-extensions-container.mjs",
+    "test/gate-javascript-extensions.test.ts",
+    "test/go-race.test.ts",
+    "test/scala.test.ts",
+    "test/playwright.test.ts",
+  ])
+    assert.equal(
+      plan([file]).selected[api.generatorCIJob],
+      false,
+      "Transport reuse must not add unrelated producer owners: " + file,
+    );
+  const shared = plan([
+    "scripts/check-dotnet-generator-ci.mjs",
+  ]).sharedTestFiles;
+  assert.ok(shared.includes("dist/test/dotnet-generator-ci.test.js"));
+  assert.ok(shared.includes("dist/test/dotnet-generator-shards.test.js"));
+  assert.equal(plan(["scripts/new-unreviewed-dotnet-helper.mjs"]).mode, "full");
+  const names = workflowJobNames(workflow);
+  for (const id of ["0", "1", "2"])
+    assert.equal(
+      names.filter((name: string) => name === api.generatorCIJobName(id))
+        .length,
+      1,
+    );
+  assert.equal(names.includes(api.generatorCIJob), false);
+});
+
+const acceptedMainPush = Object.freeze({
+  schemaVersion: 1,
+  repository: "synthetic/project",
+  githubRepository: "synthetic/project",
+  ref: "refs/heads/main",
+  before: "a".repeat(40),
+  after: "b".repeat(40),
+  githubSha: "b".repeat(40),
+  checkoutSha: "b".repeat(40),
+  ancestorVerified: true,
+  comparison: "before..after",
+  forced: false,
+  deleted: false,
+});
+test("main push routing requires qualified metadata in addition to caller-provided changed paths", () => {
+  const changed = ["test/gate-scala-extensions.test.ts"];
+  assert.equal(plan(changed, { eventName: "push" }).mode, "full");
+  const scoped = plan(changed, {
+    eventName: "push",
+    qualifiedPush: acceptedMainPush,
+  });
+  assert.equal(scoped.mode, "affected");
+  assert.deepEqual(selected(scoped), ["scala-extensions-arm64"]);
+  assert.equal(
+    scoped.baseline,
+    null,
+    "PR baseline observations cannot qualify a main push",
+  );
+  for (const qualifiedPush of [
+    true,
+    { qualified: true },
+    { ...acceptedMainPush, extra: true },
+    { ...acceptedMainPush, repository: "foreign/project" },
+    { ...acceptedMainPush, githubRepository: undefined },
+    {
+      ...acceptedMainPush,
+      repository: "../project",
+      githubRepository: "../project",
+    },
+    { ...acceptedMainPush, ref: "refs/tags/synthetic" },
+    { ...acceptedMainPush, ref: "refs/heads/main-extra" },
+    { ...acceptedMainPush, before: "0".repeat(40) },
+    { ...acceptedMainPush, after: "0".repeat(40) },
+    { ...acceptedMainPush, after: "--help" },
+    { ...acceptedMainPush, githubSha: "c".repeat(40) },
+    { ...acceptedMainPush, checkoutSha: "c".repeat(40) },
+    { ...acceptedMainPush, ancestorVerified: false },
+    { ...acceptedMainPush, forced: true },
+    { ...acceptedMainPush, deleted: true },
+    { ...acceptedMainPush, forced: undefined },
+    { ...acceptedMainPush, comparison: "before...after" },
+  ])
+    assert.deepEqual(
+      selected(plan(changed, { eventName: "push", qualifiedPush })),
+      jobs,
+    );
+  for (const eventName of [
+    "schedule",
+    "workflow_dispatch",
+    "pull_request_target",
+    undefined,
+  ])
+    assert.equal(
+      plan(changed, { eventName, qualifiedPush: acceptedMainPush }).mode,
+      "full",
+    );
+  for (const changed of [
+    [],
+    ["src/shared-synthetic-runtime.ts"],
+    [".github/workflows/ci.yml"],
+    ["test/gate-scala-extensions.test.ts", "package-lock.json"],
+  ])
+    assert.equal(
+      plan(changed, { eventName: "push", qualifiedPush: acceptedMainPush })
+        .mode,
+      "full",
+    );
+  assert.equal(
+    plan(changed, {
+      eventName: "push",
+      qualifiedPush: acceptedMainPush,
+      contractCurrent: false,
+    }).mode,
+    "full",
+  );
+});
+
+async function mainPushFixture(
+  t: Parameters<typeof fixture>[0],
+  kind = "scoped",
+) {
+  const workflowText =
+    "name: Synthetic\non: push\njobs:\n  native-a:\n    steps:\n      - run: node scripts/native-a.mjs\n  native-b:\n    steps:\n      - run: node scripts/native-b.mjs\n";
+  const a = "// synthetic original A\n",
+    b = "// synthetic original B\n";
+  const nativeInputs: Record<string, string[]> = {
+    "scripts/native-a.mjs": ["native-a"],
+    "scripts/native-b.mjs": ["native-b"],
+    "test/scoped-a.test.ts": ["native-a"],
+    "test/scoped-b.test.ts": ["native-b"],
+  };
+  if (kind === "stale") nativeInputs["test/scoped-a.test.ts"] = ["native-b"];
+  const directory = await fixture(t, {
+    "repository/.github/workflows/ci.yml": workflowText,
+    "repository/scripts/ci-native-inputs.json": JSON.stringify(nativeInputs),
+    "repository/scripts/required-native-tests.json": "{}",
+    "repository/scripts/native-a.mjs":
+      "import {writeFileSync} from 'node:fs';const input='test/scoped-a.test.ts';writeFileSync('.native-executed','a');throw Error('Planner must not execute controllers');",
+    "repository/scripts/native-b.mjs":
+      "import {writeFileSync} from 'node:fs';const input='test/scoped-b.test.ts';writeFileSync('.native-executed','b');throw Error('Planner must not execute controllers');",
+    "repository/test/scoped-a.test.ts": a,
+    "repository/test/scoped-b.test.ts": b,
+    "repository/README.md": "Synthetic planner fixture.\n",
+  });
+  const f = {
+    root: directory,
+    cleanup: () => rm(directory, { recursive: true, force: true }),
+  };
+  const repository = path.join(f.root, "repository");
+  const git = (args: string[]) =>
+    execFileSync(
+      "git",
+      ["-c", "commit.gpgsign=false", "-c", "core.hooksPath=/dev/null", ...args],
+      {
+        cwd: repository,
+        encoding: "utf8",
+        timeout: 10000,
+        maxBuffer: 1048576,
+        env: {
+          ...process.env,
+          GIT_AUTHOR_NAME: "Synthetic CI",
+          GIT_AUTHOR_EMAIL: "synthetic@example.invalid",
+          GIT_COMMITTER_NAME: "Synthetic CI",
+          GIT_COMMITTER_EMAIL: "synthetic@example.invalid",
+          GIT_AUTHOR_DATE: "2026-01-01T00:00:00Z",
+          GIT_COMMITTER_DATE: "2026-01-01T00:00:00Z",
+          GIT_CONFIG_NOSYSTEM: "1",
+        },
+      },
+    ).trim();
+  git(["init", "-b", "main"]);
+  git(["add", "."]);
+  git(["commit", "-m", "synthetic initial"]);
+  const before = git(["rev-parse", "HEAD"]);
+  await writeFile(
+    path.join(repository, "test/scoped-a.test.ts"),
+    "// synthetic updated A\n",
+  );
+  git(["add", "."]);
+  git(["commit", "-m", "synthetic A"]);
+  if (kind === "net") {
+    await writeFile(path.join(repository, "test/scoped-a.test.ts"), a);
+    await writeFile(
+      path.join(repository, "test/scoped-b.test.ts"),
+      "// synthetic updated B\n",
+    );
+    git(["add", "."]);
+    git(["commit", "-m", "synthetic net B"]);
+  }
+  if (kind === "deletion") {
+    await rm(path.join(repository, "test/scoped-a.test.ts"));
+    await writeFile(
+      path.join(repository, "test/scoped-b.test.ts"),
+      "// synthetic updated B after deleting A\n",
+    );
+    delete nativeInputs["test/scoped-a.test.ts"];
+    await writeFile(
+      path.join(repository, "scripts/ci-native-inputs.json"),
+      JSON.stringify(nativeInputs),
+    );
+    git(["add", "."]);
+    git(["commit", "-m", "synthetic deleted A and updated B"]);
+  }
+  if (kind === "empty") {
+    git(["checkout", before]);
+    git(["commit", "--allow-empty", "-m", "synthetic empty"]);
+  }
+  if (kind === "unknown") {
+    await writeFile(
+      path.join(repository, "unclassified.synthetic"),
+      "synthetic unknown input",
+    );
+    git(["add", "."]);
+    git(["commit", "-m", "synthetic unknown"]);
+  }
+  const after = git(["rev-parse", "HEAD"]);
+  let nonAncestor = before;
+  if (kind === "fork") {
+    git(["checkout", "-b", "synthetic-side", before]);
+    await writeFile(
+      path.join(repository, "test/scoped-b.test.ts"),
+      "// synthetic divergent B\n",
+    );
+    git(["add", "."]);
+    git(["commit", "-m", "synthetic fork"]);
+    nonAncestor = git(["rev-parse", "HEAD"]);
+    git(["checkout", "main"]);
+  }
+  const marker = path.join(f.root, "git-calls.jsonl"),
+    loader = path.join(f.root, "observe-git.mjs");
+  await writeFile(
+    loader,
+    String.raw`import fs from 'node:fs';import child from 'node:child_process';import {syncBuiltinESMExports} from 'node:module';const original=child.execFileSync;child.execFileSync=(file,args,...options)=>{if(file==='git')fs.appendFileSync(${JSON.stringify(marker)},JSON.stringify(args)+'\n');return original(file,args,...options);};syncBuiltinESMExports();globalThis.fetch=()=>{throw Error('A push must not request PR baseline observations');};`,
+  );
+  return { ...f, repository, before, after, nonAncestor, marker, loader, git };
+}
+
+async function runMainPushPlanner(
+  f: Awaited<ReturnType<typeof mainPushFixture>>,
+  edit: {
+    event?: Record<string, unknown>;
+    env?: Record<string, string | undefined>;
+    payload?: string;
+    missingEvent?: boolean;
+  } = {},
+) {
+  const event = {
+    ref: "refs/heads/main",
+    forced: false,
+    deleted: false,
+    repository: {
+      full_name: "synthetic/project",
+      name: "project",
+      owner: { login: "synthetic" },
+    },
+    before: f.before,
+    after: f.after,
+    commits: [{ modified: ["README.md"] }],
+    ...edit.event,
+  };
+  const eventFile = path.join(f.root, "event.json");
+  if (!edit.missingEvent)
+    await writeFile(eventFile, edit.payload ?? JSON.stringify(event));
+  await writeFile(f.marker, "");
+  const env: NodeJS.ProcessEnv = {
+    ...process.env,
+    GITHUB_EVENT_NAME: "push",
+    GITHUB_REPOSITORY: "synthetic/project",
+    GITHUB_REF: "refs/heads/main",
+    GITHUB_SHA: f.after,
+    GITHUB_EVENT_PATH: edit.missingEvent
+      ? path.join(f.root, "missing.json")
+      : eventFile,
+    GITHUB_OUTPUT: path.join(f.root, "output"),
+    GITHUB_STEP_SUMMARY: path.join(f.root, "summary"),
+    CHECKTRAIL_CI_OBSERVE_BASELINE: "1",
+    ...edit.env,
+  };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      "--import",
+      pathToFileURL(f.loader).href,
+      fileURLToPath(new URL("scripts/plan-ci-impact.mjs", root)),
+    ],
+    {
+      cwd: f.repository,
+      env,
+      encoding: "utf8",
+      timeout: 30000,
+      maxBuffer: 1048576,
+    },
+  );
+  assert.equal(result.signal, null);
+  assert.equal(result.status, 0, result.stderr);
+  const actual = JSON.parse(result.stdout);
+  const calls = (await readFile(f.marker, "utf8"))
+    .split("\n")
+    .filter(Boolean)
+    .map((value) => JSON.parse(value) as string[]);
+  assert.equal(
+    await readFile(path.join(f.repository, ".native-executed"), "utf8").then(
+      () => true,
+      (error) => {
+        assert.equal((error as NodeJS.ErrnoException).code, "ENOENT");
+        return false;
+      },
+    ),
+    false,
+  );
+  return { actual, calls, stderr: result.stderr };
+}
+
+test("planner qualifies actual main pushes from exact Git endpoints without trusting payload changed-file claims", async (t) => {
+  for (const kind of ["scoped", "net"]) {
+    const f = await mainPushFixture(t, kind);
+    try {
+      const { actual, calls } = await runMainPushPlanner(f);
+      assert.equal(actual.mode, "affected", actual.reason);
+      assert.deepEqual(selected(actual), [
+        kind === "net" ? "native-b" : "native-a",
+      ]);
+      assert.equal(actual.baseline, null);
+      const net = calls.filter((args) => args.includes("--name-only"));
+      assert.equal(net.length, 1);
+      assert.ok(net[0]!.includes(f.before + ".." + f.after));
+      assert.ok(net[0]!.includes("--no-renames"));
+      assert.ok(net[0]!.includes("--no-ext-diff"));
+      assert.ok(net[0]!.includes("--no-textconv"));
+      assert.ok(!net[0]!.some((value) => value.includes("...")));
+    } finally {
+      await f.cleanup();
+    }
+  }
+});
+
+test("planner retains deleted inputs in a multi-commit main push and requires full verification", async (t) => {
+  const f = await mainPushFixture(t, "deletion");
+  try {
+    assert.equal(
+      f.git(["rev-list", "--count", f.before + ".." + f.after]),
+      "2",
+    );
+    assert.equal(
+      f.git([
+        "diff",
+        "--name-status",
+        f.before + ".." + f.after,
+        "--",
+        "test/scoped-a.test.ts",
+      ]),
+      "D\ttest/scoped-a.test.ts",
+    );
+    const { actual, calls } = await runMainPushPlanner(f);
+    assert.equal(actual.mode, "full", actual.reason);
+    assert.deepEqual(selected(actual), ["native-a", "native-b"]);
+    assert.match(actual.reason, /[Uu]nclassified/);
+    assert.ok(actual.reason.includes("test/scoped-a.test.ts"), actual.reason);
+    const diffs = calls.filter((args) => args.includes("--name-only"));
+    assert.equal(
+      diffs.length,
+      1,
+      "Current canonical ownership must admit the actual endpoint diff",
+    );
+    assert.ok(diffs[0]!.includes(f.before + ".." + f.after));
+    assert.ok(
+      !diffs[0]!.some((arg) => arg.startsWith("--diff-filter")),
+      "The endpoint diff must preserve deleted inputs",
+    );
+  } finally {
+    await f.cleanup();
+  }
+});
+
+test("planner rejects uncertain main push metadata before any changed-file diff is admitted", async (t) => {
+  const f = await mainPushFixture(t);
+  try {
+    const cases: [string, Parameters<typeof runMainPushPlanner>[1]][] = [
+      ["missing repository", { event: { repository: undefined } }],
+      [
+        "foreign repository",
+        {
+          event: {
+            repository: {
+              full_name: "foreign/project",
+              name: "project",
+              owner: { login: "foreign" },
+            },
+          },
+        },
+      ],
+      [
+        "malformed repository",
+        {
+          event: {
+            repository: {
+              full_name: "../project",
+              name: "project",
+              owner: { login: ".." },
+            },
+          },
+        },
+      ],
+      [
+        "repository name mismatch",
+        {
+          event: {
+            repository: {
+              full_name: "synthetic/project",
+              name: "other",
+              owner: { login: "synthetic" },
+            },
+          },
+        },
+      ],
+      [
+        "repository owner mismatch",
+        {
+          event: {
+            repository: {
+              full_name: "synthetic/project",
+              name: "project",
+              owner: { login: "other" },
+            },
+          },
+        },
+      ],
+      [
+        "missing repository environment",
+        { env: { GITHUB_REPOSITORY: undefined } },
+      ],
+      ["forced", { event: { forced: true } }],
+      ["deleted", { event: { deleted: true } }],
+      ["missing forced", { event: { forced: undefined } }],
+      ["zero before", { event: { before: "0".repeat(40) } }],
+      [
+        "zero after",
+        {
+          event: { after: "0".repeat(40) },
+          env: { GITHUB_SHA: "0".repeat(40) },
+        },
+      ],
+      ["malformed before", { event: { before: "--help" } }],
+      ["missing before", { event: { before: undefined } }],
+      ["missing local commit", { event: { before: "f".repeat(40) } }],
+      [
+        "unknown after",
+        {
+          event: { after: "f".repeat(40) },
+          env: { GITHUB_SHA: "f".repeat(40) },
+        },
+      ],
+      ["mismatched environment SHA", { env: { GITHUB_SHA: f.before } }],
+      ["missing environment SHA", { env: { GITHUB_SHA: undefined } }],
+      ["mismatched event ref", { event: { ref: "refs/heads/other" } }],
+      [
+        "mismatched environment ref",
+        { env: { GITHUB_REF: "refs/heads/main-extra" } },
+      ],
+      [
+        "tag",
+        {
+          event: { ref: "refs/tags/synthetic" },
+          env: { GITHUB_REF: "refs/tags/synthetic" },
+        },
+      ],
+      ["missing event", { missingEvent: true }],
+      ["malformed JSON", { payload: "{synthetic invalid metadata" }],
+      ["bounded metadata", { payload: " ".repeat(4 * 1048576 + 1) }],
+      ["dispatch", { env: { GITHUB_EVENT_NAME: "workflow_dispatch" } }],
+      ["schedule", { env: { GITHUB_EVENT_NAME: "schedule" } }],
+    ];
+    for (const [name, edit] of cases) {
+      const { actual, calls } = await runMainPushPlanner(f, edit);
+      assert.equal(actual.mode, "full", name + ": " + actual.reason);
+      assert.deepEqual(selected(actual), ["native-a", "native-b"]);
+      assert.equal(
+        calls.filter((args) => args.includes("--name-only")).length,
+        0,
+        name,
+      );
+    }
+    f.git(["checkout", f.before]);
+    const { actual, calls } = await runMainPushPlanner(f);
+    assert.equal(actual.mode, "full");
+    assert.equal(
+      calls.filter((args) => args.includes("--name-only")).length,
+      0,
+    );
+  } finally {
+    await f.cleanup();
+  }
+});
+
+test("planner keeps non-ancestor, empty, unknown and stale-contract main transitions on full verification", async (t) => {
+  for (const kind of ["fork", "empty", "unknown", "stale"]) {
+    const f = await mainPushFixture(t, kind);
+    try {
+      const { actual, calls } = await runMainPushPlanner(
+        f,
+        kind === "fork" ? { event: { before: f.nonAncestor } } : {},
+      );
+      assert.equal(actual.mode, "full", kind + ": " + actual.reason);
+      assert.deepEqual(selected(actual), ["native-a", "native-b"]);
+      if (["fork", "stale"].includes(kind))
+        assert.equal(
+          calls.filter((args) => args.includes("--name-only")).length,
+          0,
+        );
+    } finally {
+      await f.cleanup();
+    }
+  }
+});
+
+test("CI profile expansion rejects helper identifier fragments while preserving native calls and conservative module metadata", async () => {
+  const requirements = Object.fromEntries(
+    ["kotlin", "maven", "fsharp-format"].map((profile) => [
+      profile,
+      [
+        {
+          file: `dist/test/original-${profile}.test.js`,
+          name: `${profile} original acceptance`,
+        },
+      ],
+    ]),
+  );
+  const collect = async (code: string, inline = true) => {
+    const files: Record<string, string> = {
+      "scripts/profile-token-fixture.mjs": code,
+      ...Object.fromEntries(
+        Object.keys(requirements).map((profile) => [
+          `test/original-${profile}.test.ts`,
+          "export {};\n",
+        ]),
+      ),
+    };
+    return buildNativeInputs({
+      workflow: {
+        jobs: {
+          formatter: {
+            steps: [
+              { run: inline ? code : "node scripts/profile-token-fixture.mjs" },
+            ],
+          },
+        },
+      },
+      requirements,
+      files: Object.keys(files),
+      readText: async (file: string) => files[file]!,
+    });
+  };
+  for (const inline of [true, false]) {
+    const code = inline
+      ? [
+          "node scripts/verify-required-native-tests.mjs fsharp-format",
+          "node --input-type=module <<'NODE'",
+          "import { kotlinRead } from './dist/src/kotlin-io.js';",
+          "const manifest = (await kotlinRead(process.env.MANIFEST, 16384)).toString('utf8');",
+          "NODE",
+        ].join("\n")
+      : [
+          'const profiles = ["fsharp-format"];',
+          "import { kotlinRead } from '../dist/src/kotlin-io.js';",
+          "import { mavenHash } from '../dist/src/maven.js';",
+          "const manifest = (await kotlinRead(process.env.MANIFEST, 16384)).toString('utf8');",
+          "mavenHash(Buffer.from(manifest));",
+        ].join("\n");
+    const result = await collect(code, inline);
+    assert.deepEqual(result["test/original-fsharp-format.test.ts"], [
+      "formatter",
+    ]);
+    assert.equal(result["test/original-kotlin.test.ts"], undefined);
+    assert.deepEqual(
+      result["test/original-maven.test.ts"],
+      inline ? undefined : ["formatter"],
+    );
+  }
+  const helperOnly = await collect('const result = mavenHash("synthetic");');
+  assert.equal(helperOnly["test/original-maven.test.ts"], undefined);
+  for (const [code, expected] of [
+    [
+      "node scripts/verify-required-native-tests.mjs kotlin maven fsharp-format",
+      ["kotlin", "maven", "fsharp-format"],
+    ],
+    [
+      'const profiles = ["kotlin", "maven", "fsharp-format"];',
+      ["kotlin", "maven", "fsharp-format"],
+    ],
+    ["const profile = 'maven';", ["maven"]],
+    ["const profile = `fsharp-format`;", ["fsharp-format"]],
+    [
+      "CHECKTRAIL_IMPORT_CONTEXT_PROFILE=kotlin node scripts/native.mjs",
+      ["kotlin"],
+    ],
+  ] as Array<[string, string[]]>) {
+    const result = await collect(code);
+    for (const profile of Object.keys(requirements))
+      assert.deepEqual(
+        result[`test/original-${profile}.test.ts`],
+        expected.includes(profile) ? ["formatter"] : undefined,
+        code + ": " + profile,
+      );
+  }
+});
+
+test("CI profile tokens reject full identifier continuations on both sides including Unicode", async () => {
+  const requirements = {
+    kotlin: [
+      {
+        file: "dist/test/original-kotlin.test.js",
+        name: "kotlin original acceptance",
+      },
+    ],
+  };
+  const excluded = [
+    "kotlinRead",
+    "prefixKotlin",
+    "pre_kotlin",
+    "kotlin_suffix",
+    "$kotlin",
+    "kotlin$",
+    "#kotlin",
+    "1kotlin",
+    "kotlin2",
+    "akotlin",
+    "kotlina",
+    "extra-kotlin",
+    "kotlin-extra",
+    "kotlinπ",
+    "πkotlin",
+    "𐐀kotlin",
+    "kotlin𐐀",
+    "kotlin\u200cRead",
+    "kotlin\u200d",
+    "\u200dkotlin",
+  ];
+  for (const token of excluded) {
+    const files: Record<string, string> = {
+      "scripts/native-profile-fixture.mjs": token,
+      "test/original-kotlin.test.ts": "export {};",
+    };
+    const result = await buildNativeInputs({
+      workflow: {
+        jobs: {
+          original: {
+            steps: [{ run: "node scripts/native-profile-fixture.mjs" }],
+          },
+        },
+      },
+      requirements,
+      files: Object.keys(files),
+      readText: async (file: string) => files[file]!,
+    });
+    assert.equal(result["test/original-kotlin.test.ts"], undefined, token);
+  }
+});
+
+test("CI observer helper consumers retain its complete two-callback regression without profile-name inference", async () => {
+  const helper = "test/native-process-observer.ts";
+  const regression = "test/native-process-observer.test.ts";
+  const files: Record<string, string> = {
+    "scripts/first-observer-consumer.mjs":
+      'import { readNativeProcCommand } from "../test/native-process-observer.js";',
+    "scripts/unrelated-consumer.mjs": "export {};",
+    [helper]: "export const readNativeProcCommand = () => null;",
+    [regression]:
+      'import { readNativeProcCommand } from "./native-process-observer.js"; export const originalControls = readNativeProcCommand;',
+  };
+  const requirements = {
+    "original-observer-controls": [
+      {
+        file: "dist/test/native-process-observer.test.js",
+        name: "original observer exclusion",
+      },
+      {
+        file: "dist/test/native-process-observer.test.js",
+        name: "original observer retained command",
+      },
+    ],
+  };
+  const result = await buildNativeInputs({
+    workflow: {
+      jobs: {
+        first: { steps: [{ run: "node scripts/first-observer-consumer.mjs" }] },
+        second: {
+          steps: [
+            {
+              run: "node --input-type=module -e 'import { readNativeProcCommand } from \"./dist/test/native-process-observer.js\";'",
+            },
+          ],
+        },
+        unrelated: { steps: [{ run: "node scripts/unrelated-consumer.mjs" }] },
+      },
+    },
+    requirements,
+    files: Object.keys(files),
+    readText: async (file: string) => files[file]!,
+  });
+  assert.deepEqual(result[helper], ["first", "second"]);
+  assert.deepEqual(result[regression], ["first", "second"]);
+  assert.ok(!result[regression]!.includes("unrelated"));
+  const actualRequirements = JSON.parse(
+    await readFile(new URL("scripts/required-native-tests.json", root), "utf8"),
+  );
+  const rows = actualRequirements["native-process-observer"] as Array<{
+    file: string;
+    name: string;
+  }>;
+  assert.equal(rows.length, 2);
+  assert.ok(
+    rows.every(
+      (row) => row.file === "dist/test/native-process-observer.test.js",
+    ),
+  );
+  const actual = await buildNativeInputs({
+    workflow,
+    requirements: actualRequirements,
+    files: checkoutProducerInventory,
+    readText: (file: string) => readFile(new URL(file, root), "utf8"),
+  });
+  assert.ok(actual[helper]?.length > 0);
+  assert.deepEqual(actual[regression], actual[helper]);
+  const source = ts.createSourceFile(
+    regression,
+    await readFile(new URL(regression, root), "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+  );
+  assert.ok(
+    source.statements.some(
+      (node) =>
+        ts.isImportDeclaration(node) &&
+        ts.isStringLiteral(node.moduleSpecifier) &&
+        node.moduleSpecifier.text === "./native-process-observer.js",
+    ),
+  );
+  const declared = source.statements.flatMap((statement) => {
+    if (
+      !ts.isExpressionStatement(statement) ||
+      !ts.isCallExpression(statement.expression)
+    )
+      return [];
+    const call = statement.expression;
+    return ts.isIdentifier(call.expression) &&
+      call.expression.text === "test" &&
+      call.arguments[0] &&
+      ts.isStringLiteral(call.arguments[0])
+      ? [call.arguments[0].text]
+      : [];
+  });
+  assert.deepEqual(
+    declared,
+    rows.map((row) => row.name),
+  );
+});
+
+test("Scala extension phase inputs select their complete routing controls without widening the legacy Scala job", () => {
+  for (const file of [
+    "scripts/scala-native-ci-phases.mjs",
+    "test/scala-native-ci-phases.test.ts",
+  ]) {
+    const actual = plan([file]);
+    assert.equal(actual.mode, "affected");
+    assert.deepEqual(selected(actual), ["scala-extensions-arm64"]);
+    assert.ok(
+      actual.sharedTestFiles.includes(
+        "dist/test/scala-native-ci-phases.test.js",
+      ),
+    );
   }
 });

@@ -267,6 +267,7 @@ test("CI JVM completion requires all source-bound phase outputs and permits reta
   assert.equal(requireJvmWrapperPhaseOutputs(outputs, expected).complete, true);
   const plan = {
     mode: "full",
+    hostValidation: "required",
     selected: { "jvm-wrappers-arm64": true },
     notSelected: [],
   };

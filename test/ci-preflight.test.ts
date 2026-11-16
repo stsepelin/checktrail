@@ -231,7 +231,7 @@ test("CI gates expensive jobs on successful cheap checks and cannot qualify a sk
   );
   assert.equal(
     w.jobs["host-validation"].if,
-    "${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).mode == 'full' }}",
+    "${{ always() && !cancelled() && needs.ci-plan.result == 'success' && (fromJSON(needs.ci-plan.outputs.plan).mode == 'full' || (fromJSON(needs.ci-plan.outputs.plan).mode == 'affected' && fromJSON(needs.ci-plan.outputs.plan).hostValidation == 'required')) }}",
   );
   for (const id of ids)
     assert.equal(

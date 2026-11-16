@@ -399,3 +399,89 @@ test("configured native CI directories retain strict linked and dot-segment refu
     await rm(f.base, { recursive: true, force: true });
   }
 });
+
+test("shared native CI artifact readers preserve the existing physical and bounded file controls", async (t) => {
+  const { requireNativeCIArtifactDirectory, readNativeCIArtifact } =
+    await import(
+      new URL("../../scripts/consumer-native-ci-artifacts.mjs", import.meta.url)
+        .href
+    );
+  const fs = await import("node:fs/promises"),
+    os = await import("node:os");
+  const root = await fs.realpath(
+    await fs.mkdtemp(path.join(os.tmpdir(), "checktrail-shared-artifact-")),
+  );
+  t.after(() => fs.rm(root, { recursive: true, force: true }));
+  await requireNativeCIArtifactDirectory(root);
+  const file = path.join(root, "fragment.json");
+  await fs.writeFile(file, '{"synthetic":true}');
+  assert.deepEqual(await readNativeCIArtifact(file), { synthetic: true });
+  await fs.link(file, path.join(root, "second-link.json"));
+  await assert.rejects(readNativeCIArtifact(file));
+  await fs.rm(path.join(root, "second-link.json"));
+  await fs.writeFile(file, JSON.stringify({ synthetic: "x".repeat(1048576) }));
+  await assert.rejects(readNativeCIArtifact(file));
+  await fs.rm(file);
+  await fs.symlink(root, file);
+  await assert.rejects(requireNativeCIArtifactDirectory(file));
+});
+
+test("shared private metadata preserves owned modes exclusive writes and bounded physical rereads", async (t) => {
+  const storage = await import(
+    new URL("../../scripts/native-ci-artifact-storage.mjs", import.meta.url)
+      .href
+  );
+  const fs = await import("node:fs/promises"),
+    os = await import("node:os");
+  const root = await fs.realpath(
+    await fs.mkdtemp(path.join(os.tmpdir(), "checktrail-private-artifact-")),
+  );
+  t.after(async () => {
+    await fs.chmod(root, 0o700);
+    await fs.rm(root, { recursive: true, force: true });
+  });
+  const file = path.join(root, "fragment.json"),
+    bytes = Buffer.from('{"synthetic":true}\n');
+  if (process.platform === "win32") {
+    assert.throws(
+      () =>
+        storage.requireNativeCIPrivateMode({ uid: 0n, mode: 0o700n }, 0o700),
+      /unavailable on Windows/,
+    );
+    await assert.rejects(
+      storage.writeNativeCIPrivateFile(file, bytes),
+      /unavailable on Windows/,
+    );
+    return;
+  }
+  const stat = await fs.lstat(root, { bigint: true });
+  storage.requireNativeCIPrivateMode(stat, 0o700);
+  assert.throws(() =>
+    storage.requireNativeCIPrivateMode({ ...stat, uid: stat.uid + 1n }, 0o700),
+  );
+  assert.throws(() =>
+    storage.requireNativeCIPrivateMode({ ...stat, mode: 0o755n }, 0o700),
+  );
+  const written = await storage.writeNativeCIPrivateFile(file, bytes);
+  assert.equal(written.bytes, bytes.length);
+  assert.equal((await fs.lstat(file, { bigint: true })).mode & 0o777n, 0o600n);
+  const actual = await storage.readNativeCIPrivateFile(file);
+  assert.deepEqual(actual.bytes, bytes);
+  assert.equal(actual.sha256, written.sha256);
+  await assert.rejects(storage.writeNativeCIPrivateFile(file, bytes), {
+    code: "EEXIST",
+  });
+  await fs.chmod(file, 0o644);
+  await assert.rejects(storage.readNativeCIPrivateFile(file));
+  await fs.chmod(file, 0o600);
+  await fs.chmod(root, 0o755);
+  await assert.rejects(
+    storage.writeNativeCIPrivateFile(path.join(root, "other.json"), bytes),
+  );
+  await fs.chmod(root, 0o700);
+  const excessive = path.join(root, "too-large.json");
+  await assert.rejects(
+    storage.writeNativeCIPrivateFile(excessive, Buffer.alloc(1048577)),
+  );
+  await assert.rejects(fs.access(excessive), { code: "ENOENT" });
+});

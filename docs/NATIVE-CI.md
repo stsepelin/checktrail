@@ -62,7 +62,8 @@ caused by updating the branch with main. This does not serialize jobs within a r
 PRs. Branch pushes also share a group per branch, so a newer push cancels an older
 run for that branch, including main during consecutive merges. Different
 branches and tag refs have separate groups; running tag verification is not
-cancelled by a newer push. Native profiles, matrix entries and assertions are unchanged.
+cancelled by a newer push. Required callback assertions remain intact; generator
+shard scheduling is described below.
 
 Superseded results are cancelled, not credited as successful acceptance. Check
 the current head and latest merge-candidate run before claiming hosted success.
@@ -120,6 +121,14 @@ compatibility verification remains the conservative fallback for shared and
 unclassified changes. Original upstream compiler qualification is separate work;
 complete producer-build closure remains required for Gate A.
 
+The same affected selection applies to a repository-bound, nonforced update to
+`main` after the planner verifies the exact event/checkout commits, their ancestry
+and the current ownership contract. It uses the complete `before..after` net diff,
+including deleted paths. Missing or uncertain metadata, an empty diff, shared or
+unknown inputs and other push refs retain full verification. Scheduled and manual
+full workflows retain their existing selection. Results from an earlier revision cannot qualify
+execution of the selected current inputs.
+
 Chromium acquisition validates the locked native fixture before starting the
 qualified CLI. A bounded helper retains every attempt and retries only recognized
 Ubuntu archive DNS failures. Integrity, package, permission and mixed failures,
@@ -163,8 +172,8 @@ A failed preflight or planner prevents the shared and native matrix jobs from
 starting. `ci-complete` still runs and requires successful planning and every
 selected job; skipped jobs cannot qualify a failed plan. When planning succeeds,
 unknown inputs and shared dependency changes still select full verification.
-This saves the expensive fanout on early failures without narrowing successful
-runs.
+This avoids expensive fanout after early failures. The bounded development
+profile below can also select affected consumers after successful preflight.
 
 If a deliberate source change makes the declared input map stale, run
 `node scripts/check-ci-preflight.mjs --update-inputs` locally, review the generated
@@ -238,18 +247,76 @@ constraints. Adjacent directory names and other unclassified documentation data
 retain full verification. This routing does not certify upstream builds or
 native acceptance.
 
-These affected runs avoid unrelated language tool preparation and the full
-package/mutation phase. That phase is explicitly skipped at this revision.
+Fixture, controller, retained-data and Markdown affected runs avoid unrelated
+language tool preparation and the full package/mutation phase. That phase is
+explicitly skipped for those routes.
 Markdown-only PRs run the shared checks and control files without native stacks.
 A successful full run on the exact base is no longer a scheduling prerequisite:
 unavailable or failed historical CI does not broaden a known fixture change.
 No prior job result substitutes for execution of selected current inputs.
 
-Shared production source, schemas, dependency/configuration, shared CI, executable
-inventories and unknown paths still select full verification. A missing, empty or
+A development-only dependency route is available only after both Git revisions
+already contain the supported, unchanged independent JavaScript qualification
+manifest, lock and source/installed fixture wiring. Revisions before that
+migration retain full verification. The initial admission profile covers exact
+Vite and Rolldown development version changes, follows required, optional and
+peer dependency resolution in both locks, and includes affected shared Vitest,
+Jest and alias consumers. It rejects unresolved or invalid graphs, unreviewed
+aliases, unrelated re-resolutions, production/compiler/build/lint effects and
+unknown consumers. `scripts/ci-development-inventory.json` is an explicitly
+reviewed admission profile. It records the exact closed set of tracked paths,
+Git modes, blob types and content identities, including the planner, CI runners,
+workflows, shell/configuration files and documentation. Only this exact data-only
+profile path is excluded from its own inventory; the same regular profile blob
+must exist at both event revisions and in the tested checkout. Unknown additions,
+changed bytes or modes, malformed profiles and pre-migration trees select full
+verification. Profile mismatch is normal source evolution and does not itself
+fail CI.
+
+The root manifest fingerprint preserves scripts, configuration and every field
+except the graph-approved Vite/Rolldown development version values. Manifest
+object key order is preserved, including conditional `exports` and `imports`
+precedence. The lock
+fingerprint preserves metadata and every entry outside the exclusively reviewed
+development closures; the graph checks still validate every changed lock entry,
+range, alias and required resolution. The actual checked-out Git tree must match
+the reviewed inventory and event-head metadata, and all tracked physical files
+must match that checkout. Untracked inputs are also inspected without repository,
+info, global or standard ignore rules. Planner Git reads disable untracked-cache
+and filesystem-monitor visibility through command-local settings; repository
+configuration is not changed. Only an exact real top-level
+`node_modules/` directory is admitted for the npm installation; adjacent names,
+files and symlinked dependency roots are refused. Every other added path,
+including ignored `dist/` or `.checktrail/` output, selects full verification.
+The production planning job runs before build and fixture preparation. Dirty
+tracked inputs also select full verification.
+A merge checkout with the same audited tree is valid; a newer-main checkout with
+additional consumer or configuration bytes is not admitted by older event refs.
+
+Updating this profile requires deliberately auditing dependency consumers and
+their complete routed test files, generated native-owner union and whole host
+phases. Capturing hashes alone does not perform that audit. Do not regenerate
+it as routine dependency/source housekeeping or automatically in CI. Ordinary
+source changes remain valid and run full verification until a separately
+reviewed profile refresh. This is a finite repository admission decision, not
+an inference engine for arbitrary JavaScript or shell behavior.
+
+Admitted dependency plans retain the entire generated native-owner union and
+complete live-root bundler, Vitest/Jest, preparation, audit and native control
+files. They set the typed `hostValidation` route to `required`: the existing
+host-validation job runs its whole installed/package queue, unchanged smoke
+check, mutation queue and separate installed consumer proof. The completion gate
+rejects a missing or malformed route and any skipped required host job. Other
+affected plans use `not-selected`; full plans always require the host job.
+The four shared matrices retain typecheck, lint, build, formatting and audits.
+This narrows selection, not package failures or native support. The complete
+host queue remains a latency limit; no measured speedup is implied.
+
+Shared production source, schemas, other dependency/configuration changes, CI,
+executable inventories and unknown paths still select full verification. A missing, empty or
 invalid diff and a stale ownership contract also select full verification.
 Only the standalone source boundaries declared below can narrow production
-source changes. Semantic manifest changes remain global. Adapter names do not
+source changes. Manifest changes beyond admitted development version bumps remain global. Adapter names do not
 establish isolation from filename prefixes. Pushes, tags, manual runs and the weekly schedule retain
 the complete shared suite, package/mutation phases and all native stacks.
 The full path retains every original command and OS/Node variant.
@@ -262,8 +329,9 @@ remain unqualified. This optional observation does not control PR routing and
 cannot qualify an omitted native job against the new revision.
 
 `ci-complete` requires the planner, shared matrix and every selected native job
-to succeed. It requires unselected jobs, including the affected run's full
-package/mutation phase, to be explicitly skipped. Its receipt reports whether
+to succeed. It requires unselected jobs to be explicitly skipped. The full
+package/mutation phase is required for admitted dependency routes and omitted
+only when the affected plan explicitly selects no host validation. Its receipt reports whether
 full-revision verification occurred, and never qualifies omitted jobs. Require
 this aggregate check in branch protection when using selective CI. Gate A still
 requires its separately specified complete current-revision native evidence.
@@ -816,6 +884,29 @@ agreement. `verify-review-claim-probability-package.mjs` repeats the same callba
 from a fresh offline production installation. No external model calls or field
 reviews are part of this development profile.
 
+## Scala extension phase jobs
+
+The ARM64 Scala extension job requires four matrix phases: `baseline`, `source`,
+`installed` and `guards`. Matrix failure does not cancel the other phases, and
+completion still requires the whole matrix to succeed. The baseline phase also
+retains the separate Scala signature source and fresh installed proof.
+
+The source phase runs every original source callback except the wrapper that
+launches installed acceptance. The installed phase invokes that same complete
+fresh-package harness directly: offline installation, an external harness, every
+original installed callback and the installed engine address check remain
+required. This avoids enclosing packaging and the repeated native cohort inside
+the source wrapper's shorter subprocess timer. It does not reuse source results
+as installed results.
+
+An explicit phase admits at most one container at a time, with four CPUs and the
+existing read-only filesystem, disabled network, memory, PID and temporary-file
+bounds. Sequential checks retain fresh containers. Every container invocation
+keeps its bounded runtime. Phase reports cannot claim whole-profile completion;
+GitHub's required four-row matrix provides the fan-in. The argument-free local
+controller retains its existing complete two-group behavior. Hosted durations
+must be measured at the tested revision before claiming a speedup.
+
 ## Full-suite worker capacity
 
 `npm test` builds the project and runs every compiled `dist/test/*.test.js` file through `scripts/run-test-suite.mjs`. The worker pool is bounded by the smaller of four workers and the runtime's available parallelism. It stays parallel and does not select, omit, retry or weaken test callbacks. An empty compiled inventory, a worker failure or a terminated test run cannot pass.
@@ -845,10 +936,27 @@ job deadlines remain unchanged. A failed or incomplete pull still fails setup.
 
 ## Generator installation acceptance budget
 
-The generator extension job participates in the planner, native input inventory
-and final completion gate. It starts in the initial wave; F# format admission
-waits for actionlint so the initial expanded wave stays within twenty jobs.
-The existing four shared OS/Node variants and every native callback remain.
+The generator extension profile uses three closed matrix rows after `ci-plan`
+and actionlint. Its logical planner key, native input inventory and completion
+gate remain one profile. Sealed callback roles and control IDs are partitioned
+across the rows, and the original installed child cohort remains intact on its
+assigned row. The scheduling contract keeps the initial expanded wave within
+twenty jobs.
+
+Each row retains two containers with the original per-container limits of two
+CPUs, 4 GiB and 256 PIDs. The complete three-row cohort therefore permits at most
+six containers with aggregate limits of twelve CPUs and 24 GiB. These are container
+limits; hosted execution time still requires measurement on the current candidate.
+
+An individual fragment cannot qualify the whole profile. `ci-complete` requires
+the complete disjoint manifest union, current-source frames and exact retained
+artifact claims. Each fragment binds its actual numeric execution ID and attempt,
+with the candidate head kept separate from the checked-out PR merge commit.
+GitHub can give retained successful executions new API job IDs on a failed-job
+rerun. Admission preserves the original identity, requires a successful latest
+context and reconciles the retained execution metadata and START/FINISH claims.
+Failed, missing or incomplete latest contexts cannot be filled with an older
+artifact.
 
 The installed generator acceptance callback repeats its original native cases
 through a fresh offline production installation. Its subprocess deadline is
