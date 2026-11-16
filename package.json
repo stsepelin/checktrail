@@ -23,7 +23,13 @@
     "README.md",
     "LICENSE",
     "SECURITY.md",
-    "CONTRIBUTING.md"
+    "CONTRIBUTING.md",
+    "scripts/native-provenance-coordinator.mjs",
+    "scripts/native-provenance-adapter.mjs",
+    "scripts/native-provenance-audit-child.mjs",
+    "scripts/audit-dependencies.mjs",
+    "scripts/audit-selected-artifact-evidence.mjs",
+    "scripts/pango-complete-text-binding.mjs"
   ],
   "exports": {
     ".": {

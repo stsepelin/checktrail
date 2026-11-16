@@ -597,3 +597,488 @@ test("evaluation terminal evidence rejects foreign changed or forged file event 
   }
   requireEvidence(baseline);
 });
+
+const arm64 = await import(
+  new URL("../../scripts/verify-tasks-runtime-arm64.mjs", import.meta.url).href
+);
+const provenanceApi = await import(
+  new URL(
+    "../../scripts/native-provenance-runtime-evidence.mjs",
+    import.meta.url,
+  ).href
+);
+const provenanceBuild = await import(
+  new URL("../../scripts/native-provenance-source-build.mjs", import.meta.url)
+    .href
+);
+function arm64Startup() {
+  const digest = (value: unknown) =>
+    provenanceApi.provenanceRuntimeHash(JSON.stringify(value));
+  const selectedRuntime = scope.runtimeProfiles.find(
+    (row: { id: string }) => row.id === "native-linux-arm64-node22",
+  );
+  const runtime = {
+    slot: selectedRuntime.id,
+    node: selectedRuntime.node,
+    platform: selectedRuntime.platform,
+    architecture: selectedRuntime.architecture,
+    nodeExecutableSha256: hex("a"),
+    containerImageId: "sha256:" + hex("f"),
+    selectedRuntime,
+  };
+  const sourceBinding = { head: "a".repeat(40), worktreeClean: true };
+  const tree = {
+    schemaVersion: 1,
+    fileCount: 1,
+    bytes: 42,
+    treeSha256: hex("a"),
+    manifestSha256: hex("b"),
+  };
+  const inputSources = [
+    { file: "dist/test/synthetic.test.js", bytes: 42, sha256: hex("c") },
+  ];
+  const requirements = provenanceApi.selectProvenanceRuntimeRequirements(
+    profiles,
+    scope,
+  );
+  const inputs = {
+    schemaVersion: 1,
+    runtime: {
+      node: runtime.node,
+      platform: runtime.platform,
+      architecture: runtime.architecture,
+      nodeExecutableSha256: runtime.nodeExecutableSha256,
+    },
+    configuration: ["tsconfig.json", "package.json", "package-lock.json"].map(
+      (file) => ({ file, bytes: 42, sha256: hex("a") }),
+    ),
+    compiler: ["package.json", "bin/tsc", "lib/tsc.js", "lib/_tsc.js"].map(
+      (file) => ({ file, bytes: 42, sha256: hex("b") }),
+    ),
+    source: { ...tree },
+    tests: { ...tree },
+    compilerDependencyClosureVerified: false,
+  };
+  const sourceBuild = {
+    schemaVersion: 1,
+    state: "current-source-typescript-build-reconciled",
+    command: [...provenanceBuild.provenanceBuildCommand],
+    sourceBinding,
+    inputs,
+    sourceInputSha256: digest(inputs),
+    compilerExitCode: 0,
+    compilerSignal: null,
+    currentArtifactsMatchFreshBuild: true,
+    engine: { ...tree },
+    tests: {
+      ...tree,
+      treeSha256: digest([["synthetic.test.js", hex("c")]]),
+      manifestSha256: digest([
+        { file: "synthetic.test.js", bytes: 42, sha256: hex("c") },
+      ]),
+    },
+    compiledTests: inputSources,
+    compilerDependencyClosureVerified: false,
+    upstreamProducerClosureVerified: false,
+  };
+  const bindings = {
+    sourceBinding,
+    inputSources,
+    harnessSha256: digest(inputSources),
+    requirements,
+    requirementsSha256: digest(requirements),
+    compiledEngine: { ...tree },
+    selectedRuntime,
+  };
+  const expected = { ...bindings, runtime, sourceBuild, installed: false };
+  return {
+    packet: { profile: "native-provenance-arm64-startup-v1", expected },
+    bindings: structuredClone(bindings),
+    imageId: runtime.containerImageId,
+  };
+}
+
+test("ARM provenance shell preserves prior profiles and emits syntactically valid inner startup JavaScript", () => {
+  const body = arm64.arm64TasksRuntimeCommand();
+  const shell = spawnSync("sh", ["-n"], {
+    input: body,
+    encoding: "utf8",
+    timeout: 10000,
+  });
+  assert.equal(shell.status, 0, shell.stderr);
+  const marker = "node --input-type=module <<'CHECKTRAIL_PROVENANCE_STARTUP'\n";
+  assert.equal(body.split(marker).length, 2);
+  const program = body
+    .split(marker)[1]!
+    .split("\nCHECKTRAIL_PROVENANCE_STARTUP\n")[0]!;
+  const syntax = spawnSync(
+    process.execPath,
+    ["--input-type=module", "--check"],
+    {
+      input: program,
+      encoding: "utf8",
+      timeout: 10000,
+    },
+  );
+  assert.equal(syntax.status, 0, syntax.stderr);
+  for (const command of [
+    "node scripts/verify-tasks-runtime.mjs native-linux-arm64-node22",
+    "node scripts/verify-review-runtime.mjs native-linux-arm64-node22",
+    "node scripts/verify-review-runtime.mjs native-linux-arm64-node22 confidence-provenance",
+    "node scripts/verify-required-native-tests.mjs lifecycle-runtime-bindings",
+    "node scripts/verify-lifecycle-platforms.mjs native-linux-arm64-node22",
+    "node scripts/verify-evaluation-runtime.mjs native-linux-arm64-node22",
+    "node scripts/verify-native-provenance-runtime.mjs native-linux-arm64-node22",
+  ])
+    assert.equal(
+      body.split("\n").filter((line: string) => line === command).length,
+      1,
+      command,
+    );
+  assert.ok(
+    program.includes(
+      "observeProvenanceSourceBuild('/workspace',sourceBinding)",
+    ),
+  );
+  assert.ok(
+    body.includes('exec /usr/bin/git -c safe.directory=/workspace "$@"'),
+  );
+  assert.ok(!body.includes("safe.directory=*"));
+  assert.ok(!body.includes("CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT"));
+});
+
+test("ARM startup admits synthetic inner build bindings and refuses host runtime or changed source build inputs", () => {
+  const { packet, bindings, imageId } = arm64Startup();
+  assert.equal(
+    arm64.requireArm64ProvenanceStartup(packet, bindings, imageId),
+    packet.expected,
+  );
+  const changes: [string, (value: typeof packet) => void][] = [
+    [
+      "outer host Node",
+      (v) => {
+        v.expected.runtime.node = "22.23.3";
+      },
+    ],
+    [
+      "neighboring slot",
+      (v) => {
+        v.expected.runtime.slot = "ci-linux-node22";
+      },
+    ],
+    [
+      "foreign arch",
+      (v) => {
+        v.expected.runtime.architecture = "x64";
+      },
+    ],
+    [
+      "foreign OS",
+      (v) => {
+        v.expected.runtime.platform = "darwin";
+      },
+    ],
+    [
+      "foreign image",
+      (v) => {
+        v.expected.runtime.containerImageId = "sha256:" + hex("e");
+      },
+    ],
+    [
+      "dirty source",
+      (v) => {
+        v.expected.sourceBinding.worktreeClean = false;
+      },
+    ],
+    [
+      "foreign source",
+      (v) => {
+        v.expected.sourceBinding.head = "b".repeat(40);
+      },
+    ],
+    [
+      "changed harness",
+      (v) => {
+        v.expected.inputSources[0]!.sha256 = hex("e");
+      },
+    ],
+    [
+      "changed ledger",
+      (v) => {
+        v.expected.requirementsSha256 = hex("e");
+      },
+    ],
+    [
+      "foreign compiled tree",
+      (v) => {
+        v.expected.compiledEngine.treeSha256 = hex("e");
+      },
+    ],
+    [
+      "stale build",
+      (v) => {
+        v.expected.sourceBuild.currentArtifactsMatchFreshBuild = false;
+      },
+    ],
+    [
+      "failed compiler",
+      (v) => {
+        v.expected.sourceBuild.compilerExitCode = 1;
+      },
+    ],
+    [
+      "other compiler runtime",
+      (v) => {
+        v.expected.sourceBuild.inputs.runtime.node = "22.23.3";
+      },
+    ],
+    [
+      "changed compiler bytes",
+      (v) => {
+        v.expected.sourceBuild.inputs.compiler[0]!.sha256 = hex("e");
+      },
+    ],
+    [
+      "wrong fresh test emit",
+      (v) => {
+        v.expected.sourceBuild.tests.treeSha256 = hex("e");
+      },
+    ],
+  ];
+  for (const [name, change] of changes) {
+    const changed = structuredClone(packet);
+    change(changed);
+    assert.throws(
+      () => arm64.requireArm64ProvenanceStartup(changed, bindings, imageId),
+      name,
+    );
+  }
+  assert.throws(() =>
+    arm64.requireArm64ProvenanceCompletion(
+      { complete: true, selectedSlotQualified: true },
+      packet.expected,
+    ),
+  );
+});
+
+test("ARM raw packet framing preserves receipt bytes and rejects blank malformed or extra output", () => {
+  const raw = ' { "complete": false } \n';
+  assert.deepEqual(arm64.splitArm64RuntimePackets(raw), [
+    { raw, packet: { complete: false } },
+  ]);
+  assert.deepEqual(arm64.splitArm64RuntimePackets(""), []);
+  for (const changed of ["\n", "{}\n\n", "broken\n", "{}\n".repeat(10)])
+    assert.throws(() => arm64.splitArm64RuntimePackets(changed));
+});
+
+test("ARM host publication forwards exact child bytes and keeps the original child failure on capture errors", async () => {
+  const { packet, bindings, imageId } = arm64Startup();
+  const raw = ' { "complete": false, "synthetic": "incomplete" } \n';
+  const output = "{}\n".repeat(7) + JSON.stringify(packet) + "\n" + raw;
+  const destination = "/synthetic/host-receipt.json";
+  const calls: unknown[][] = [];
+  const publish = async (...args: unknown[]) => {
+    calls.push(args);
+    return {
+      bytes: Buffer.byteLength(raw),
+      sha256: hex("a"),
+      complete: false,
+      selectedSlotQualified: false,
+    };
+  };
+  const result = await arm64.captureArm64ProvenanceOutput(
+    output,
+    bindings,
+    imageId,
+    destination,
+    undefined,
+    publish,
+  );
+  assert.equal(result.receipt.complete, false);
+  assert.equal(calls.length, 1);
+  assert.deepEqual(calls[0], [Buffer.from(raw), destination, packet.expected]);
+  assert.equal(
+    await arm64.publishArm64ProvenanceReceipt(
+      raw,
+      undefined,
+      packet.expected,
+      publish,
+    ),
+    null,
+  );
+  assert.equal(calls.length, 1);
+  const childFailure = new Error("synthetic original container failure");
+  await assert.rejects(
+    arm64.captureArm64ProvenanceOutput(
+      output,
+      bindings,
+      imageId,
+      destination,
+      childFailure,
+      publish,
+    ),
+    (error: unknown) => error === childFailure,
+  );
+  assert.equal(calls.length, 2);
+  for (const malformed of [
+    "broken\n",
+    output.replace(packet.profile, "foreign-startup"),
+  ]) {
+    const failed = new Error("synthetic child error") as Error & {
+      provenanceCaptureFailure?: Error;
+    };
+    await assert.rejects(
+      arm64.captureArm64ProvenanceOutput(
+        malformed,
+        bindings,
+        imageId,
+        destination,
+        failed,
+        publish,
+      ),
+      (error: unknown) => error === failed,
+    );
+    assert.ok(failed.provenanceCaptureFailure instanceof Error);
+  }
+  const denied = new Error("synthetic publication refusal");
+  const failed = new Error("synthetic child error") as Error & {
+    provenanceCaptureFailure?: Error;
+  };
+  const refuse = async () => {
+    throw denied;
+  };
+  await assert.rejects(
+    arm64.captureArm64ProvenanceOutput(
+      output,
+      bindings,
+      imageId,
+      destination,
+      failed,
+      refuse,
+    ),
+    (error: unknown) => error === failed,
+  );
+  assert.equal(failed.provenanceCaptureFailure, denied);
+  await assert.rejects(
+    arm64.captureArm64ProvenanceOutput(
+      output,
+      bindings,
+      imageId,
+      destination,
+      undefined,
+      refuse,
+    ),
+    (error: unknown) => error === denied,
+  );
+});
+
+test("ARM positive packet waits for natural completion and qualification before the publisher is called", async () => {
+  const { packet, bindings, imageId } = arm64Startup();
+  const raw = ' { "complete": true, "synthetic": "positive" } \n';
+  const output = "{}\n".repeat(7) + JSON.stringify(packet) + "\n" + raw;
+  const destination = "/synthetic/host-positive-receipt.json";
+  const calls: unknown[][] = [];
+  const events: string[] = [];
+  const publish = async (...args: unknown[]) => {
+    events.push("published");
+    calls.push(args);
+    return { complete: true, selectedSlotQualified: true };
+  };
+  const failed = new Error("synthetic failure after positive output");
+  await assert.rejects(
+    arm64.captureArm64ProvenanceOutput(
+      output,
+      bindings,
+      imageId,
+      destination,
+      failed,
+      publish,
+    ),
+    (error: unknown) => error === failed,
+  );
+  assert.deepEqual(
+    calls,
+    [],
+    "A failed container cannot publish its positive packet",
+  );
+  const captured = await arm64.captureArm64ProvenanceOutput(
+    output,
+    bindings,
+    imageId,
+    destination,
+    undefined,
+    publish,
+  );
+  assert.equal(captured.receipt, null);
+  assert.deepEqual(
+    calls,
+    [],
+    "Capturing a positive packet does not qualify it",
+  );
+  const changedBindings = structuredClone(bindings);
+  changedBindings.harnessSha256 = hex("e");
+  await assert.rejects(
+    arm64.publishQualifiedArm64ProvenanceReceipt(
+      raw,
+      destination,
+      packet.expected,
+      async () => {
+        assert.deepEqual(changedBindings, bindings, "Outer freshness mismatch");
+      },
+      publish,
+    ),
+    /Outer freshness mismatch/,
+  );
+  assert.deepEqual(
+    calls,
+    [],
+    "Changed outer bindings cannot publish a positive receipt",
+  );
+  const result = await arm64.publishQualifiedArm64ProvenanceReceipt(
+    raw,
+    destination,
+    packet.expected,
+    async () => {
+      events.push("qualification-started");
+      await Promise.resolve();
+      assert.deepEqual(structuredClone(bindings), bindings);
+      events.push("qualification-completed");
+    },
+    publish,
+  );
+  assert.equal(result.complete, true);
+  assert.deepEqual(events, [
+    "qualification-started",
+    "qualification-completed",
+    "published",
+  ]);
+  assert.deepEqual(calls, [[Buffer.from(raw), destination, packet.expected]]);
+});
+
+test("ARM main publishes positive provenance after prior profile checks and runs completion and outer freshness inside qualification", async () => {
+  const controller = await readFile(
+    new URL("../../scripts/verify-tasks-runtime-arm64.mjs", import.meta.url),
+    "utf8",
+  );
+  const publishAt = controller.indexOf(
+    "nativeProvenanceReceipt = await publishQualifiedArm64ProvenanceReceipt(",
+  );
+  const baselineAt = controller.indexOf(
+    "lifecycleInstalled.evidence.compiledEngine.treeSha256,",
+  );
+  assert.ok(baselineAt > 0 && publishAt > baselineAt);
+  const afterPublicationCall = controller.slice(publishAt);
+  const callbackStart = afterPublicationCall.indexOf("async () => {");
+  const callbackEnd = afterPublicationCall.indexOf("\n      },\n    );");
+  assert.ok(callbackStart > 0 && callbackEnd > callbackStart);
+  const qualification = afterPublicationCall.slice(callbackStart, callbackEnd);
+  assert.ok(qualification.includes("requireArm64ProvenanceCompletion("));
+  assert.ok(
+    qualification.includes("await captureArm64ProvenanceBindings(root)"),
+  );
+  assert.ok(
+    qualification.includes(
+      "Outer source/harness/compiled bytes changed during ARM qualification",
+    ),
+  );
+});

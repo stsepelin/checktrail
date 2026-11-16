@@ -2,16 +2,52 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { lstat, readFile, readdir, realpath } from "node:fs/promises";
+import { lstatSync, readFileSync, realpathSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 
+const auditArguments = process.argv.slice(2);
+const includeDev = auditArguments[0] === "--include-dev";
+if (includeDev) auditArguments.shift();
 assert.ok(
-  process.argv.slice(2).length === 0 ||
-    (process.argv.length === 3 && process.argv[2] === "--include-dev"),
-  "Expected no arguments or --include-dev",
+  auditArguments.length === 0 ||
+    (auditArguments.length === 2 && auditArguments[0] === "--npm-cli"),
+  "Expected no arguments or --include-dev; optional final --npm-cli ABSOLUTE_FILE",
 );
-const includeDev = process.argv[2] === "--include-dev";
+const npmCliFile = auditArguments.length ? auditArguments[1] : null;
+function npmCliIdentity() {
+  if (npmCliFile === null) return null;
+  assert.ok(
+    path.isAbsolute(npmCliFile) && realpathSync(npmCliFile) === npmCliFile,
+    "Canonical operator npm CLI required",
+  );
+  const before = lstatSync(npmCliFile);
+  assert.ok(
+    before.isFile() &&
+      !before.isSymbolicLink() &&
+      before.size > 0 &&
+      before.size <= 1024 * 1024,
+    "Bounded operator npm CLI required",
+  );
+  const body = readFileSync(npmCliFile),
+    after = lstatSync(npmCliFile);
+  assert.ok(
+    before.dev === after.dev &&
+      before.ino === after.ino &&
+      before.size === body.length &&
+      before.size === after.size &&
+      before.mtimeMs === after.mtimeMs &&
+      before.ctimeMs === after.ctimeMs,
+    "Operator npm CLI changed during capture",
+  );
+  return {
+    file: npmCliFile,
+    bytes: body.length,
+    sha256: createHash("sha256").update(body).digest("hex"),
+  };
+}
+const selectedNpmCli = npmCliIdentity();
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url)));
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const noticeNames = new Set([
@@ -243,24 +279,35 @@ const productionRoots = [
 const productionReachable = reachable("", platformBlocked, productionRoots);
 
 function npmTree(long) {
-  return JSON.parse(
-    execFileSync(
-      "npm",
-      [
-        "ls",
-        ...(includeDev ? [] : ["--omit=dev"]),
-        "--all",
-        "--json",
-        ...(long ? ["--long"] : []),
-      ],
-      {
-        cwd: root,
-        encoding: "utf8",
-        timeout: 30000,
-        maxBuffer: 8 * 1024 * 1024,
-      },
-    ),
+  assert.deepEqual(
+    npmCliIdentity(),
+    selectedNpmCli,
+    "Operator npm CLI changed before inspection",
   );
+  const args = [
+    "ls",
+    ...(includeDev ? [] : ["--omit=dev"]),
+    "--all",
+    "--json",
+    ...(long ? ["--long"] : []),
+  ];
+  const body = execFileSync(
+    selectedNpmCli ? process.execPath : "npm",
+    selectedNpmCli ? [selectedNpmCli.file, ...args] : args,
+    {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 30000,
+      maxBuffer: 8 * 1024 * 1024,
+      ...(selectedNpmCli ? { env: { ...process.env, NODE_OPTIONS: "" } } : {}),
+    },
+  );
+  assert.deepEqual(
+    npmCliIdentity(),
+    selectedNpmCli,
+    "Operator npm CLI changed during inspection",
+  );
+  return JSON.parse(body);
 }
 // Long output copies arbitrary package.json fields. Only the short tree's
 // npm-owned diagnostics can authorize failures or a retained-optional exception.
@@ -836,6 +883,7 @@ process.stdout.write(
         platform: process.platform,
         architecture: process.arch,
         libc: runtimeLibc,
+        ...(selectedNpmCli ? { npmCli: selectedNpmCli } : {}),
       },
       lockedPackageCount,
       installedPackageCount: packages.length,

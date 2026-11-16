@@ -22,11 +22,13 @@ import {
   fantomasPackagePin,
   fsharpFormatterPins,
 } from "../dist/src/fsharp-format-pins.js";
-const repository = fileURLToPath(new URL("../", import.meta.url));
+const repository = path.resolve(fileURLToPath(new URL("../", import.meta.url)));
 const args = process.argv.slice(2);
 assert.ok(
-  args.length === 2 && args[0] === "--archive",
-  "Pass --archive PATH for the already downloaded exact NuGet package",
+  (args.length === 2 ||
+    (args.length === 3 && args[2] === "--verify-repository-signature")) &&
+    args[0] === "--archive",
+  "Pass --archive PATH [--verify-repository-signature] for the already downloaded exact NuGet package",
 );
 const archive = path.resolve(args[1]),
   output = path.join(repository, ".checktrail/fsharp-format-tools");
@@ -38,7 +40,11 @@ assert.ok(
     info.size === fantomasPackagePin.bytes,
   "Canonical pinned archive required",
 );
-const bytes = await readFile(archive);
+const bytes = args[2]
+  ? await (
+      await import("../dist/src/kotlin-io.js")
+    ).kotlinRead(archive, fantomasPackagePin.bytes)
+  : await readFile(archive);
 assert.equal(bytes.length, fantomasPackagePin.bytes);
 assert.equal(mavenHash(bytes), fantomasPackagePin.sha256);
 let end = -1;
@@ -123,73 +129,95 @@ for (let i = 0; i < count; i++) {
 }
 assert.equal(cursor, end);
 assert.equal(selected.size, fsharpFormatterPins.length);
-// Validate and expand every payload before creating any of the advertised outputs.
-try {
-  const existing = await lstat(output);
-  assert.ok(
-    existing.isDirectory() &&
-      !existing.isSymbolicLink() &&
-      (await realpath(output)) === output,
+if (args[2] === "--verify-repository-signature") {
+  const { verifyFsharpNugetSignature, publishFsharpSignatureCohort } =
+    await import("./prepare-fsharp-format-signature-proof.mjs");
+  const proof = await verifyFsharpNugetSignature(repository, bytes);
+  const published = await publishFsharpSignatureCohort(
+    repository,
+    bytes,
+    selected,
+    proof,
   );
-  assert.deepEqual(
-    (await readdir(output)).sort(),
-    fsharpFormatterPins.map((p) => p.file).sort(),
+  console.log(
+    JSON.stringify({
+      profile: "fantomas-core-default-v1",
+      ...published,
+      repositorySignatureVerified: true,
+      revocationFreshAtRuntime: false,
+      sdkOriginalProducerVerified: false,
+      completeArtifactAndNoticeClosureVerified: false,
+    }),
   );
-  for (const pin of fsharpFormatterPins) {
-    const file = path.join(output, pin.file),
-      stat = await lstat(file);
-    assert.ok(
-      stat.isFile() && !stat.isSymbolicLink() && stat.size === pin.bytes,
-    );
-    assert.equal(mavenHash(await readFile(file)), pin.sha256);
-  }
-} catch (error) {
-  if (error.code !== "ENOENT") throw error;
-  // A missing existing payload does not authorize replacement of a partial tree.
-  assert.equal(
-    await lstat(output).then(
-      () => true,
-      (e) => {
-        if (e.code !== "ENOENT") throw e;
-        return false;
-      },
-    ),
-    false,
-    "Refuse partially prepared formatter trees",
-  );
-  await mkdir(path.dirname(output), { recursive: true });
-  const parent = path.dirname(output),
-    parentStat = await lstat(parent);
-  assert.ok(
-    parentStat.isDirectory() &&
-      !parentStat.isSymbolicLink() &&
-      (await realpath(parent)) === parent,
-    "Canonical owned cache parent required",
-  );
-  const staged = await mkdtemp(
-    path.join(path.dirname(output), ".fsharp-format-pending-"),
-  );
+} else {
+  // Validate and expand every payload before creating any of the advertised outputs.
   try {
-    for (const [name, payload] of selected) {
-      const file = path.join(staged, name);
-      await writeFile(file, payload, { flag: "wx", mode: 0o644 });
-      await chmod(file, 0o644);
+    const existing = await lstat(output);
+    assert.ok(
+      existing.isDirectory() &&
+        !existing.isSymbolicLink() &&
+        (await realpath(output)) === output,
+    );
+    assert.deepEqual(
+      (await readdir(output)).sort(),
+      fsharpFormatterPins.map((p) => p.file).sort(),
+    );
+    for (const pin of fsharpFormatterPins) {
+      const file = path.join(output, pin.file),
+        stat = await lstat(file);
+      assert.ok(
+        stat.isFile() && !stat.isSymbolicLink() && stat.size === pin.bytes,
+      );
+      assert.equal(mavenHash(await readFile(file)), pin.sha256);
     }
-    // These verified public payloads must remain readable by the fixed non-root
-    // acceptance user after atomic publication, even under a private host umask.
-    await chmod(staged, 0o755);
-    await rename(staged, output);
-  } finally {
-    await rm(staged, { recursive: true, force: true });
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+    // A missing existing payload does not authorize replacement of a partial tree.
+    assert.equal(
+      await lstat(output).then(
+        () => true,
+        (e) => {
+          if (e.code !== "ENOENT") throw e;
+          return false;
+        },
+      ),
+      false,
+      "Refuse partially prepared formatter trees",
+    );
+    await mkdir(path.dirname(output), { recursive: true });
+    const parent = path.dirname(output),
+      parentStat = await lstat(parent);
+    assert.ok(
+      parentStat.isDirectory() &&
+        !parentStat.isSymbolicLink() &&
+        (await realpath(parent)) === parent,
+      "Canonical owned cache parent required",
+    );
+    const staged = await mkdtemp(
+      path.join(path.dirname(output), ".fsharp-format-pending-"),
+    );
+    try {
+      for (const [name, payload] of selected) {
+        const file = path.join(staged, name);
+        await writeFile(file, payload, { flag: "wx", mode: 0o644 });
+        await chmod(file, 0o644);
+      }
+      // These verified public payloads must remain readable by the fixed non-root
+      // acceptance user after atomic publication, even under a private host umask.
+      await chmod(staged, 0o755);
+      await rename(staged, output);
+    } finally {
+      await rm(staged, { recursive: true, force: true });
+    }
   }
+  console.log(
+    JSON.stringify({
+      profile: "fantomas-core-default-v1",
+      package: fantomasPackagePin,
+      selected: fsharpFormatterPins,
+      complete: true,
+      limit:
+        "Selected formatter components; not complete SDK/container/license provenance.",
+    }),
+  );
 }
-console.log(
-  JSON.stringify({
-    profile: "fantomas-core-default-v1",
-    package: fantomasPackagePin,
-    selected: fsharpFormatterPins,
-    complete: true,
-    limit:
-      "Selected formatter components; not complete SDK/container/license provenance.",
-  }),
-);
