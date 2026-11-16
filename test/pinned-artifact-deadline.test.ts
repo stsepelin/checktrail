@@ -17,7 +17,7 @@ AbortSignal.timeout=ms=>{const controller=new AbortController();timers.push({at:
 function advanceNext(){const next=timers.filter(t=>!t.controller.signal.aborted).sort((a,b)=>a.at-b.at)[0];assert(next);now=next.at;next.controller.abort(new DOMException('Authored deterministic attempt deadline','TimeoutError'));return next;}
 const payload=Uint8Array.from([0,255,7]);
 const pin={asset:'https://primary.example.invalid/original.bin',fallbackAssets:['https://first.example.invalid/original.bin','https://second.example.invalid/original.bin'],bytes:3};
-const wrapperPin={url:'https://downloads.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip',bytes:3,sha256:createHash('sha256').update(payload).digest('hex')};
+const wrapperPin={url:'https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip',bytes:3,sha256:createHash('sha256').update(payload).digest('hex')};
 `;
 async function control(t: TestContext, body: string) {
   const root = await fixture(t, {
@@ -44,6 +44,8 @@ test("Maven hung primary retains its original total budget for a pinned fallback
  const calls=[],waits=[],original=new Uint8Array(mavenDistributionPin.bytes).fill(7);
  const value=await requestMavenDistribution({fetchImpl:async(asset,{signal,redirect})=>{calls.push(asset);assert.equal(redirect,'error');if(calls.length===1){advanceNext();signal.throwIfAborted();assert.fail('Missing bounded request signal');}return new Response(original);},delayImpl:async ms=>{waits.push(ms);now+=ms;}});
  assert.deepEqual(timers.map(t=>t.ms),[120000,30000,30000]);
+ assert.equal(mavenDistributionPin.asset,'https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz');
+ assert.deepEqual(mavenDistributionPin.fallbackAssets,['https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0/apache-maven-3.10.0-bin.tar.gz']);
  assert.deepEqual(calls,[mavenDistributionPin.asset,mavenDistributionPin.fallbackAssets[0]]);assert.deepEqual(waits,[1000]);assert.equal(now,31000);assert.equal(timers[0].controller.signal.aborted,false);assert.deepEqual(value,Buffer.from(original));
 `,
   ));
@@ -55,7 +57,8 @@ test("JVM wrapper mirror deadlines fit every attempt within the unchanged total 
  const calls=[],waits=[];
  const value=await requestJvmWrapperArtifact(wrapperPin,{fetchImpl:async(asset,{signal,redirect})=>{calls.push(asset);assert.equal(redirect,'error');if(calls.length<3){advanceNext();signal.throwIfAborted();assert.fail('Missing wrapper attempt deadline');}return new Response(payload);},delayImpl:async ms=>{waits.push(ms);now+=ms;}});
  assert.deepEqual(timers.map(t=>t.ms),[60000,15000,15000,15000]);
- assert.deepEqual(calls,[wrapperPin.url,wrapperPin.url.replace('downloads.apache.org','dlcdn.apache.org'),wrapperPin.url.replace('https://downloads.apache.org/','https://archive.apache.org/dist/')]);assert.deepEqual(waits,[1000,3000]);assert.equal(now,34000);assert.equal(timers[0].controller.signal.aborted,false);assert.deepEqual(value,Buffer.from(payload));
+ const central='https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0/apache-maven-3.10.0-bin.zip';
+ assert.deepEqual(calls,[wrapperPin.url,central,central]);assert.deepEqual(waits,[1000,3000]);assert.equal(now,34000);assert.equal(timers[0].controller.signal.aborted,false);assert.deepEqual(value,Buffer.from(payload));
  let invalidCalls=0;await assert.rejects(requestJvmWrapperArtifact({...wrapperPin,sha256:'0'.repeat(64)},{fetchImpl:async()=>{invalidCalls++;return new Response(payload);},delayImpl:async()=>assert.fail('Digest failure must not retry')}),/digest/);assert.equal(invalidCalls,1);
 
  const savedFetch=globalThis.fetch,savedWrite=process.stderr.write;
@@ -65,8 +68,8 @@ test("JVM wrapper mirror deadlines fit every attempt within the unchanged total 
    process.stderr.write=text=>{records.push(JSON.parse(String(text)));return true;};
    const foreign=new DOMException('Authored private query marker','TimeoutError');
    globalThis.fetch=async(asset,{signal,redirect})=>{assert.equal(redirect,'error');signals.push(signal);count++;if(scenario==='foreign')throw foreign;if(scenario==='owned'&&count===1){advanceNext();signal.throwIfAborted();}if(scenario==='retry'&&count===1)return new Response(null,{status:503});return new Response(payload);};
-   const invoke=()=>tracePinnedArtifactAcquisition({artifact:'jvm-wrapper',artifactIndex:2},options=>requestJvmWrapperArtifact(scenario==='integrity'?{...wrapperPin,sha256:'0'.repeat(64)}:wrapperPin,{...options,delayImpl:async ms=>{waits.push(ms);now+=ms;},onRetry:e=>retries.push(e)}));
-   if(scenario==='retry'||scenario==='owned'){assert.deepEqual(await invoke(),Buffer.from(payload));assert.equal(count,2);assert.deepEqual(waits,[1000]);assert.deepEqual(retries,[{attempt:1,waitMs:1000}]);assert.deepEqual(timers.map(t=>t.ms),[60000,15000,15000]);assert(records.some(e=>e.phase==='retry'&&e.mirror==='apache-primary'&&e.nextMirror==='apache-cdn'));}
+   const invoke=()=>tracePinnedArtifactAcquisition({artifact:'jvm-wrapper',artifactIndex:2,archiveMirror:true},options=>requestJvmWrapperArtifact(scenario==='integrity'?{...wrapperPin,sha256:'0'.repeat(64)}:wrapperPin,{...options,delayImpl:async ms=>{waits.push(ms);now+=ms;},onRetry:e=>retries.push(e)}));
+   if(scenario==='retry'||scenario==='owned'){assert.deepEqual(await invoke(),Buffer.from(payload));assert.equal(count,2);assert.deepEqual(waits,[1000]);assert.deepEqual(retries,[{attempt:1,waitMs:1000}]);assert.deepEqual(timers.map(t=>t.ms),[60000,15000,15000]);assert(records.some(e=>e.phase==='retry'&&e.mirror==='apache-archive'&&e.nextMirror==='maven-central'));}
    else {await assert.rejects(invoke(),e=>scenario==='foreign'?e===foreign:e.code==='ERR_ASSERTION'&&e.message.includes('digest'));assert.equal(count,1);assert.deepEqual(waits,[]);assert.deepEqual(timers.map(t=>t.ms),[60000,15000]);}
    assert(records.length>0&&records.length<=48);assert(records.every(e=>e.artifact==='jvm-wrapper'&&e.artifactIndex===2));assert.equal(JSON.stringify(records).includes('Authored private query marker'),false);assert.equal(JSON.stringify(records).includes('https://'),false);assert.equal(records[0].totalTimeoutMs,60000);assert.equal(records[0].attemptTimeoutMs,15000);assert.equal(records.at(-1).phase,scenario==='retry'||scenario==='owned'?'download-complete':'download-failed');
    if(scenario==='owned'){const abort=records.find(e=>e.phase==='request-aborted');assert(abort);assert.equal(abort.requestAborted,true);for(const field of ['attemptAborted','ownedAttemptTimeout','matchesRequestReason','matchesOverallReason','errorName','errorCode'])assert.equal(Object.hasOwn(abort,field),false,field+' is not a live abort observation');assert(records.some(e=>e.phase==='failure-captured'&&e.attemptAborted===true&&e.ownedAttemptTimeout===true));}

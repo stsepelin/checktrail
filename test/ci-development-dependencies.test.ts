@@ -504,8 +504,16 @@ test("qualification and source boundaries fail closed before migration, for alte
       "scripts/package-smoke-tools.mjs",
       "scripts/verify-root-javascript-reporters.mjs",
       "test/package-smoke-tools.test.ts",
+      "scripts/ci-full-suite-profiles.json",
+      "scripts/ci-full-suite-shards.mjs",
+      "scripts/verify-ci-full-suite-shard.mjs",
+      "scripts/ci-validation-shards.json",
+      "scripts/ci-validation-shards.mjs",
+      "test/ci-full-suite-shards.test.ts",
+      "test/ci-validation-shards.test.ts",
+      "test/ci-duration-workflow.test.ts",
     ].map((file) => ({
-      name: "missing smoke qualification input: " + file,
+      name: "missing qualified consumer/control input: " + file,
       before: (_m: Manifest, _l: Lock, files: Record<string, string>) => {
         delete files[file];
       },
@@ -776,16 +784,18 @@ test("dependency host route requires the complete existing host queue and reject
     dependencyImpact: impact.evidence,
   };
   const needs = Object.fromEntries(
-    ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
-      id,
-      {
-        result:
-          ["ci-plan", "checks", "host-validation"].includes(id) ||
-          plan.selected[id]
-            ? "success"
-            : "skipped",
-      },
-    ]),
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [
+        id,
+        {
+          result:
+            ["ci-plan", "checks", "host-validation"].includes(id) ||
+            plan.selected[id]
+              ? "success"
+              : "skipped",
+        },
+      ],
+    ),
   );
   assert.equal(requireCiCompletion(plan, needs).complete, true);
   assert.deepEqual(
@@ -823,7 +833,11 @@ test("dependency host route requires the complete existing host queue and reject
   const commands = actual.jobs["host-validation"].steps
     .filter((step: { run?: string }) => step.run)
     .map((step: { run: string }) => step.run);
-  assert.ok(commands.includes("node scripts/run-ci-validation.mjs"));
+  assert.ok(
+    commands.includes(
+      "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}",
+    ),
+  );
   assert.ok(
     commands
       .flatMap((command: string) =>
@@ -848,7 +862,8 @@ test("dependency host route requires the complete existing host queue and reject
   );
   const controller = actual.jobs["host-validation"].steps.find(
     (step: { run?: string }) =>
-      step.run === "node scripts/run-ci-validation.mjs",
+      step.run ===
+      "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}",
   );
   assert.equal(controller.if, undefined);
   assert.ok(
