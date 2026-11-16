@@ -158,6 +158,14 @@ requires both frozen profiles and their completed acceptance evidence. Gate B
 also requires the concrete existing operator permissions; Gate C requires the
 independent measured outcomes. Development tests close none of those by themselves.
 
+The [partial engine-matrix record](measurements/engine-matrix-partial-2026-11-16.json)
+reconciles source and fresh installed acceptance for all seven implemented
+engine-matrix extension profiles across the eight selected slots at recorded
+commit `6809bf39c3aba1f1b582742c741051667461754e`. It retains original run identities
+and a scoped bridge for the documented selection-state changes. The native-license
+profile, native-language matrix and preserved baseline bindings remain separate;
+this partial record does not close the whole matrix or Gate A.
+
 The bounded current-source `js-ts-selected-imports-v1` collector adds engine-parsed
 JS/TS edges and automatically captured declarations/consumers under explicit
 project roots. Unknown or incomplete capture keeps all declared projects selected,
