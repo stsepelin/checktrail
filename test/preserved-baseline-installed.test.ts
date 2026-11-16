@@ -255,6 +255,7 @@ test("real offline fresh install retains exact original callback union and physi
     expectedCallbacks = callbacks,
     expectedEngine = engine,
     sourceCapture?: object,
+    phaseProfiles = profiles,
   ) => {
     const currentRoot = fresh ? harness : root;
     const input = path.join(output, "input-" + ++counter + ".json");
@@ -262,7 +263,7 @@ test("real offline fresh install retains exact original callback union and physi
       input,
       JSON.stringify({
         root: currentRoot,
-        profiles,
+        profiles: phaseProfiles,
         selection: ["alpha", "overlapping"],
         expectedCallbacks,
         expectedEngine,
@@ -481,7 +482,7 @@ test("real offline fresh install retains exact original callback union and physi
   // signature precondition. The changed body is supplied as the expected copy.
   const broken = callback.replace(
     "assert.equal(value, 42)",
-    "assert.equal(value, 43)",
+    "assert.equal(value, 43, 'CHECKTRAIL_BASELINE_PRIVATE_SENTINEL /private/synthetic/token.mjs')",
   );
   await writeFile(path.join(harness, "dist/test/original.test.js"), broken);
   const brokenIdentities = await callbackIdentities(harness, profiles, [
@@ -491,6 +492,95 @@ test("real offline fresh install retains exact original callback union and physi
   const failed = await run(true, brokenIdentities);
   assert.notEqual(failed.status, 0);
   assert.match(failed.stderr, /Preserved baseline cohort incomplete/);
+  const failedDiagnostic = JSON.parse(
+    failed.stderr
+      .split("\n")
+      .find((line: string) =>
+        line.startsWith(
+          '{"schemaVersion":1,"profile":"preserved-baseline-incomplete-v1"',
+        ),
+      )!,
+  );
+  assert.equal(failedDiagnostic.phase, "fresh-installed");
+  assert.equal(failedDiagnostic.complete, false);
+  assert.equal(failedDiagnostic.required, 1);
+  assert.equal(failedDiagnostic.installedBindingVerifiedBeforeExecution, true);
+  assert.equal(failedDiagnostic.afterExecutionEngineAndRuntimeAssessed, false);
+  assert.equal(failedDiagnostic.caseOutcomes[0].name, caseName);
+  assert.equal(failedDiagnostic.caseOutcomes[0].outcome, "failed");
+  assert.ok(
+    failedDiagnostic.problems.some(
+      (problem: { name: string; reason: string }) =>
+        problem.name === caseName && problem.reason === "failed",
+    ),
+  );
+  assert.ok(!failed.stderr.includes("CHECKTRAIL_BASELINE_PRIVATE_SENTINEL"));
+  assert.ok(!failed.stderr.includes("/private/synthetic/token.mjs"));
+
+  // Crossing the observed 64 KiB pipe boundary must still emit one complete
+  // diagnostic JSON record before the original refusal terminates the worker.
+  const largeRun = async (padding: number) => {
+    const names = Array.from(
+      { length: 200 },
+      (_, i) =>
+        "original bounded callback " +
+        i +
+        " " +
+        "x".repeat(70 + Math.min(400, Math.max(0, padding - i * 400))),
+    );
+    const largeBody =
+      broken +
+      names
+        .map((name) => "\ntest(" + JSON.stringify(name) + ", () => {});\n")
+        .join("");
+    await writeFile(
+      path.join(harness, "dist/test/original.test.js"),
+      largeBody,
+    );
+    const largeProfiles = {
+      alpha: [caseName, ...names].map((name) => ({
+        file: "dist/test/original.test.js",
+        name,
+      })),
+      overlapping: profiles.overlapping,
+    };
+    const identities = await callbackIdentities(harness, largeProfiles, [
+      "alpha",
+      "overlapping",
+    ]);
+    const observed = await run(
+      true,
+      identities,
+      engine,
+      undefined,
+      largeProfiles,
+    );
+    assert.notEqual(observed.status, 0);
+    const line = observed.stderr
+      .split("\n")
+      .find((value: string) =>
+        value.startsWith(
+          '{"schemaVersion":1,"profile":"preserved-baseline-incomplete-v1"',
+        ),
+      )!;
+    const diagnostic = JSON.parse(line);
+    assert.equal(diagnostic.caseOutcomes.length, 201);
+    assert.equal(
+      diagnostic.caseOutcomes.filter(
+        (row: { outcome: string }) => row.outcome === "passed",
+      ).length,
+      200,
+    );
+    assert.equal(diagnostic.failedTerminals[0].name, caseName);
+    assert.ok(
+      !observed.stderr.includes("CHECKTRAIL_BASELINE_PRIVATE_SENTINEL"),
+    );
+    return Buffer.byteLength(line) + 1;
+  };
+  const initialBytes = await largeRun(0);
+  assert.ok(initialBytes < 65536);
+  for (const boundary of [65536, 65537])
+    assert.equal(await largeRun(boundary - initialBytes), boundary);
 
   const skipped = callback.replace("test(", "test.skip(");
   await writeFile(path.join(harness, "dist/test/original.test.js"), skipped);
@@ -501,6 +591,17 @@ test("real offline fresh install retains exact original callback union and physi
   const skip = await run(true, skipIdentities);
   assert.notEqual(skip.status, 0);
   assert.match(skip.stderr, /Preserved baseline cohort incomplete/);
+  const skippedDiagnostic = JSON.parse(
+    skip.stderr
+      .split("\n")
+      .find((line: string) =>
+        line.startsWith(
+          '{"schemaVersion":1,"profile":"preserved-baseline-incomplete-v1"',
+        ),
+      )!,
+  );
+  assert.equal(skippedDiagnostic.complete, false);
+  assert.equal(skippedDiagnostic.caseOutcomes[0].outcome, "skipped");
 
   // The frozen expected source bytes reject an altered callback before it runs.
   const staleCallback = await run(true);

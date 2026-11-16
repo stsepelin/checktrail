@@ -390,6 +390,44 @@ export async function runBaselinePhase({
   const report = await runRequiredProfiles(absoluteProfiles, selection, {
     timeoutMs,
   });
+  if (!report.complete)
+    await new Promise((resolve, reject) => {
+      // Flush before the refusal can terminate a piped worker. Preserve each
+      // required case, failed terminal and file identity without raw output.
+      process.stderr.write(
+        JSON.stringify({
+          schemaVersion: 1,
+          profile: "preserved-baseline-incomplete-v1",
+          phase: installedPackage ? "fresh-installed" : "source",
+          complete: false,
+          passed: report.passed,
+          required: report.required,
+          problems: report.problems.map(({ name, reason, failureSite }) => ({
+            name,
+            reason,
+            ...(failureSite ? { failureSite } : {}),
+          })),
+          caseOutcomes: report.ledger.cases,
+          terminalEventCount: report.ledger.terminalEventCount,
+          terminalLedgerTruncated: report.ledger.truncated,
+          failedTerminals: report.ledger.events
+            .filter(({ outcome }) => outcome === "failed")
+            .map(({ sequence, fileId, name, outcome, required }) => ({
+              sequence,
+              fileId,
+              name,
+              outcome,
+              required,
+            })),
+          fileIdentities: report.ledger.files,
+          callbacks: beforeCallbacks,
+          installedBindingVerifiedBeforeExecution:
+            physical.physicallyInstalled === true,
+          afterExecutionEngineAndRuntimeAssessed: false,
+        }) + "\n",
+        (error) => (error ? reject(error) : resolve()),
+      );
+    });
   assert.ok(report.complete, "Preserved baseline cohort incomplete");
   assert.equal(report.required, beforeCallbacks.uniqueCallbacks);
   assert.deepEqual(
