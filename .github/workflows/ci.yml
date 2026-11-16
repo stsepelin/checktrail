@@ -444,6 +444,48 @@ jobs:
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-java-container.mjs
 
+  pyright:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['pyright'] }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CHECKTRAIL_PYRIGHT_PACKAGE: ${{ github.workspace }}/.checktrail/pyright-tools/node_modules/pyright
+      CHECKTRAIL_PYRIGHT_IMAGE: checktrail-pyright-tools:ci-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            scripts/pyright-tools/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned Pyright compiler without lifecycle scripts
+        run: |
+          mkdir -p .checktrail/pyright-tools
+          cp scripts/pyright-tools/package.json scripts/pyright-tools/package-lock.json .checktrail/pyright-tools/
+          npm ci --prefix .checktrail/pyright-tools --ignore-scripts --no-audit --no-fund
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs docker.io/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
+      - name: Prepare pinned Pyright runtime
+        run: docker build --file scripts/pyright-tools.Dockerfile --tag "$CHECKTRAIL_PYRIGHT_IMAGE" scripts
+      - name: Require all seven native source callbacks offline
+        run: node scripts/verify-pyright-container.mjs
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
+      - name: Require all seven callbacks against a fresh offline production install
+        run: node scripts/verify-pyright-package.mjs
+      - name: Remove this run's Pyright image
+        if: always()
+        run: docker image rm "$CHECKTRAIL_PYRIGHT_IMAGE"
+
   checkstyle:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['checkstyle'] }}
@@ -3289,6 +3331,7 @@ jobs:
       - php-review
       - clang
       - java
+      - pyright
       - checkstyle
       - spotbugs
       - detekt
