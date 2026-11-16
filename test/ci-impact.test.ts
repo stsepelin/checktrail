@@ -97,14 +97,16 @@ test("CI declared native inputs match every workflow controller profile matrix a
   assert.deepEqual(selected(plan(["test/gate-context-csharp.test.ts"])), [
     "csharp-context-arm64",
   ]);
-  // Runtime provenance traverses the artifact audit, while the Go controller
-  // retains its shared artifact-regression references. These conservative owners
-  // do not imply that those jobs execute the F# native profile.
+  // Runtime provenance and resource package guards retain the product-program
+  // artifact audit dependencies, while Go retains shared artifact regressions.
+  // These conservative owners do not imply those jobs execute the F# native profile.
   assert.deepEqual(selected(plan(["scripts/fsharp-format-tools.Dockerfile"])), [
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
     "go-workspaces-arm64",
+    "resource-release",
+    "resource-release-arm64",
     "tasks-runtime",
     "tasks-runtime-arm64",
   ]);
