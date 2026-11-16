@@ -199,6 +199,16 @@ the complete JAR differs in its manifest and Maven properties. The original sour
 remains unchanged after its authored Spotless phase. Compiler/SDK bootstrap builds,
 dependency producer builds and complete original-notice attribution remain open.
 
+The [2026-11-16 original .NET SDK source build](measurements/dotnet-sdk11-original-producer-2026-11-16.json)
+completes the pinned VMR source-build command on native Linux ARM64. The original
+ARM bootstrap and default preparation precede the offline build; the produced
+SDK identifies version `11.0.100-dev` and the selected source commit. New SDK and
+package outputs are distinguished from retained bootstrap inputs. The stopped
+snapshot passes round-trip verification and owned runtime cleanup is verified.
+The original workflow changes or removes some tracked inputs; full post-build
+source-byte immutability is not established. Historical publisher binary equality,
+unrun upstream tests and full compiler/bootstrap/original-notice closure remain open.
+
 The [2026-11-16 original notice coverage](measurements/c-original-notice-coverage-2026-11-16.json)
 reconciles the exact selected C binary dependency archive identities with retained
 original notices. It also records the complete original texts of the eight selected
