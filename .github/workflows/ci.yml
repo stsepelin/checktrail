@@ -195,6 +195,8 @@ jobs:
         run: node scripts/audit-gate-inventory.mjs .
         if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Require assigned full-suite shard and remaining host contracts
+        env:
+          CHECKTRAIL_PRESERVED_BASELINE: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '22' && 'host-core' || '' }}
         run: |
           node scripts/verify-ci-full-suite-shard.mjs --shard0
           node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness
@@ -361,6 +363,8 @@ jobs:
           fi
         if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Require assigned full-suite fragment
+        env:
+          CHECKTRAIL_PRESERVED_BASELINE: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '22' && 'host-core' || '' }}
         run: node scripts/verify-ci-full-suite-shard.mjs --shard${{ matrix.shard }}
       - name: Prepare this runner's package-install cache for Linux container acceptance
         if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')

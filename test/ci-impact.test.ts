@@ -4132,3 +4132,73 @@ test("Scala extension phase inputs select their complete routing controls withou
     );
   }
 });
+
+test("CI preserved native binding labels retain exact controller ownership and restore conservative coverage if the binding starts executing", async () => {
+  const binding = "scripts/preserved-native-baseline-bindings.mjs";
+  const families = ["ruby", "java", "go"];
+  const data =
+    "import frozen from './preserved-baseline-cohorts.v1.json' with {type:'json'}; const runtimeBindings={ruby:{tools:['ruby']},java:{tools:['java']},go:{tools:['go']}};";
+  const build = (body: string, helper = binding) =>
+    buildNativeInputs({
+      workflow: {
+        jobs: {
+          ruby: { steps: [{ run: "node scripts/ruby-controller.mjs" }] },
+          java: {
+            steps: [
+              { run: "node scripts/verify-required-native-tests.mjs java" },
+            ],
+          },
+        },
+      },
+      requirements: Object.fromEntries(
+        families.map((name) => [
+          name,
+          [{ file: "dist/test/original-" + name + ".test.js" }],
+        ]),
+      ),
+      files: [
+        "scripts/ruby-controller.mjs",
+        helper,
+        "scripts/preserved-baseline-evidence.mjs",
+        "scripts/required-test-evidence.mjs",
+        "scripts/preserved-baseline-cohorts.v1.json",
+        ...families.map((name) => "test/original-" + name + ".test.ts"),
+      ],
+      readText: async (file: string) =>
+        file === "scripts/ruby-controller.mjs"
+          ? `import "./${helper.slice("scripts/".length)}"; import "./preserved-baseline-evidence.mjs"; const selection=['ruby'];`
+          : file === helper
+            ? body
+            : file === "scripts/preserved-baseline-evidence.mjs"
+              ? "import './required-test-evidence.mjs'; const runtimeToolName='go';"
+              : "{}",
+    });
+  const actual = await build(data);
+  assert.deepEqual(actual[binding], ["ruby"]);
+  assert.deepEqual(actual["scripts/preserved-baseline-evidence.mjs"], ["ruby"]);
+  assert.deepEqual(actual["scripts/required-test-evidence.mjs"], ["ruby"]);
+  assert.deepEqual(actual["scripts/preserved-baseline-cohorts.v1.json"], [
+    "ruby",
+  ]);
+  assert.deepEqual(actual["test/original-ruby.test.ts"], ["ruby"]);
+  assert.deepEqual(actual["test/original-java.test.ts"], ["java"]);
+  assert.equal(Object.hasOwn(actual, "test/original-go.test.ts"), false);
+  for (const mutation of [
+    "runRequiredTests([])",
+    "execFileSync('node', [])",
+    "import('./unknown-native-controller.mjs')",
+    "import child from 'node:child_process'",
+  ]) {
+    const changed = await build(data + mutation);
+    for (const family of families)
+      assert.ok(
+        changed["test/original-" + family + ".test.ts"]?.includes("ruby"),
+        mutation + ":" + family,
+      );
+  }
+  const adjacent = await build(
+    data,
+    "scripts/preserved-native-baseline-bindings-extra.mjs",
+  );
+  assert.ok(adjacent["test/original-java.test.ts"]?.includes("ruby"));
+});

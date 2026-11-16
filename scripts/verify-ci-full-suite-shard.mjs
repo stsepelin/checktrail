@@ -7,11 +7,38 @@ assert.ok(
   match && process.argv.length >= 3,
   "Use --shard0|--shard1|--shard2 and required profiles",
 );
-const report = await runFullSuiteShard(
-  fileURLToPath(new URL("../", import.meta.url)),
-  match[1],
-  process.argv.slice(3),
+assert.ok(
+  process.env.CHECKTRAIL_PRESERVED_BASELINE === undefined ||
+    process.env.CHECKTRAIL_PRESERVED_BASELINE === "" ||
+    process.env.CHECKTRAIL_PRESERVED_BASELINE === "host-core",
+  "Unknown preserved baseline controller selection",
 );
+const repository = fileURLToPath(new URL("../", import.meta.url));
+let report;
+if (process.env.CHECKTRAIL_PRESERVED_BASELINE === "host-core") {
+  const { runFullSuiteShardWithBaseline } =
+    await import("./preserved-baseline-full-suite.mjs");
+  const collected = await runFullSuiteShardWithBaseline(
+    repository,
+    match[1],
+    process.argv.slice(3),
+  );
+  report = collected.report;
+  process.stderr.write(
+    JSON.stringify({
+      kind: "preserved-baseline-fresh-fragment-evidence",
+      ...collected.baselineEvidence,
+    }) + "\n",
+  );
+  process.stderr.write(
+    JSON.stringify({
+      kind: "preserved-baseline-fresh-fragment",
+      ...collected.baseline,
+    }) + "\n",
+  );
+} else {
+  report = await runFullSuiteShard(repository, match[1], process.argv.slice(3));
+}
 process.stderr.write(
   JSON.stringify({
     kind: "full-suite-shard-timing",

@@ -151,6 +151,10 @@ const generic = new Set([
   "scripts/request-pinned-artifact.mjs",
   "scripts/verify-required-native-tests.mjs",
   "scripts/required-test-evidence.mjs",
+  // These shared APIs receive the caller's separately validated finite profile
+  // selection. Runtime tool names and binding-table labels are not invocations.
+  "scripts/preserved-baseline-evidence.mjs",
+  "scripts/preserved-native-baseline-bindings.mjs",
   "scripts/verify-import-context-package.mjs",
   "scripts/verify-mutation-guards.mjs",
   // The consumer entry point uses the workflow's exact context-* argument.
@@ -179,6 +183,7 @@ const generic = new Set([
 // harness bytes without executing native controllers/tests. Static imports remain
 // inputs; detected execution primitives restore conservative full profile expansion.
 const consumerDataSelectors = new Set([
+  "scripts/preserved-native-baseline-bindings.mjs",
   "scripts/request-pinned-artifact.mjs",
   "scripts/consumer-native-entrypoints.mjs",
   "scripts/consumer-native-acceptance-scope.mjs",

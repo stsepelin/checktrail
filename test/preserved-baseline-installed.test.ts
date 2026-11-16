@@ -3,6 +3,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   mkdir,
+  lstat,
   readFile,
   realpath,
   rm,
@@ -19,6 +20,7 @@ const {
   callbackIdentities,
   captureBaselineRuntime,
   requireBaselineToolVersions,
+  captureBaselineSourceExecution,
   assertInstalledEngineBinding,
   prepareBaselineHarness,
   selectBaselineCohort,
@@ -30,6 +32,12 @@ const { captureCompiledEngine } = await import(
 );
 const { installAcceptancePackage, runAcceptanceNpm } = await import(
   new URL("../../scripts/install-acceptance-package.mjs", import.meta.url).href
+);
+const { runFreshBaselineAtInstallation } = await import(
+  new URL(
+    "../../scripts/preserved-baseline-fresh-coordinator.mjs",
+    import.meta.url,
+  ).href
 );
 const runtime = {
   platform: process.platform,
@@ -232,11 +240,21 @@ test("real offline fresh install retains exact original callback union and physi
   assert.equal(callbacks.memberships, 2);
   const engine = await captureCompiledEngine(path.join(root, "dist/src"));
   const worker = path.join(repository, "scripts/preserved-baseline-worker.mjs");
+  const expectedSourceScope = {
+    profiles,
+    selection: ["alpha", "overlapping"],
+    additionalFiles: [],
+    baselineProfiles: profiles,
+    baselineSelection: ["alpha", "overlapping"],
+    binding: runtime,
+    sourceContract: { kind: "required-profiles", maxTerminalEvents: 4096 },
+  };
   let counter = 0;
   const run = async (
     fresh: boolean,
     expectedCallbacks = callbacks,
     expectedEngine = engine,
+    sourceCapture?: object,
   ) => {
     const currentRoot = fresh ? harness : root;
     const input = path.join(output, "input-" + ++counter + ".json");
@@ -250,6 +268,14 @@ test("real offline fresh install retains exact original callback union and physi
         expectedEngine,
         binding: runtime,
         timeoutMs: 10000,
+        ...(sourceCapture
+          ? {
+              mode: "fresh-from-original-source",
+              sourceCapture,
+              expectedSourceScope,
+              sourceRoot: root,
+            }
+          : {}),
         ...(fresh
           ? { installedPackage, sourceEngine: path.join(root, "dist/src") }
           : {}),
@@ -290,6 +316,165 @@ test("real offline fresh install retains exact original callback union and physi
   assert.deepEqual(
     JSON.parse(source.stdout).runtime,
     JSON.parse(fresh.stdout).runtime,
+  );
+
+  let sourceInvocations = 0;
+  const sourceCapture = await captureBaselineSourceExecution({
+    root,
+    ...expectedSourceScope,
+    execute: async () => {
+      sourceInvocations++;
+      const observed = await run(false);
+      assert.equal(observed.status, 0, observed.stderr);
+      return JSON.parse(observed.stdout);
+    },
+  });
+  const reused = await run(true, callbacks, engine, sourceCapture);
+  assert.equal(reused.status, 0, reused.stderr);
+  const reusedReport = JSON.parse(reused.stdout);
+  assert.equal(
+    sourceInvocations,
+    1,
+    "Fresh reuse must not run source callbacks",
+  );
+  assert.equal(reusedReport.sourceCallbacksReexecuted, false);
+  assert.equal(reusedReport.sourceAndFreshSubsetComplete, true);
+  assert.equal(reusedReport.fresh.physicalBinding.physicallyInstalled, true);
+  assert.equal(reusedReport.wholeSuiteQualification, false);
+  for (const name of [
+    "preserved-baseline-worker.mjs",
+    "preserved-baseline-evidence.mjs",
+    "compiled-engine-evidence.mjs",
+    "required-test-evidence.mjs",
+  ]) {
+    await mkdir(path.join(root, "scripts"), { recursive: true });
+    await writeFile(
+      path.join(root, "scripts", name),
+      await readFile(path.join(repository, "scripts", name)),
+    );
+    execFileSync("git", ["add", "scripts/" + name], { cwd: root });
+  }
+  const coordinatedHarness = path.join(output, "coordinated-harness");
+  let freshLaunches = 0;
+  const coordinated = await runFreshBaselineAtInstallation({
+    repository: root,
+    sourceCapture,
+    expectedSourceScope,
+    installedPackage,
+    harness: coordinatedHarness,
+    launchWorker: async ({
+      harness: workerRoot,
+      inputFile,
+      worker: workerFile,
+    }: {
+      harness: string;
+      inputFile: string;
+      worker: string;
+    }) => {
+      freshLaunches++;
+      const input = JSON.parse(await readFile(inputFile, "utf8"));
+      assert.equal(input.mode, "fresh-from-original-source");
+      assert.equal(input.sourceCapture.originalExecutionInvocations, 1);
+      assert.deepEqual(input.expectedSourceScope, expectedSourceScope);
+      assert.equal(input.installedPackage, installedPackage);
+      const env = { ...process.env };
+      delete env.NODE_TEST_CONTEXT;
+      const child = spawnSync(process.execPath, [workerFile, inputFile], {
+        cwd: workerRoot,
+        encoding: "utf8",
+        timeout: 20000,
+        maxBuffer: 4 * 1024 * 1024,
+        env: {
+          ...env,
+          CHECKTRAIL_BASELINE_UNIT_PHYSICAL: await realpath(
+            path.join(installedPackage, "dist/src/index.js"),
+          ),
+        },
+      });
+      assert.equal(child.status, 0, child.stderr);
+      return child.stdout;
+    },
+  });
+  assert.equal(freshLaunches, 1);
+  assert.equal(
+    sourceInvocations,
+    1,
+    "Fresh coordinator must not replay original source",
+  );
+  assert.equal(coordinated.fresh.physicalBinding.physicallyInstalled, true);
+  await assert.rejects(lstat(coordinatedHarness), { code: "ENOENT" });
+  await assert.rejects(lstat(coordinatedHarness + ".input.json"), {
+    code: "ENOENT",
+  });
+  assert.ok(
+    (await lstat(installedPackage)).isDirectory(),
+    "Controller's shared fresh installation remains for original CLI/MCP checks",
+  );
+  const refusedHarness = path.join(output, "refused-coordinated-harness");
+  await assert.rejects(
+    runFreshBaselineAtInstallation({
+      repository: root,
+      sourceCapture,
+      expectedSourceScope,
+      installedPackage,
+      harness: refusedHarness,
+      launchWorker: () =>
+        JSON.stringify({ ...coordinated, sourceCallbacksReexecuted: true }),
+    }),
+    /true.*false/s,
+  );
+  await assert.rejects(lstat(refusedHarness), { code: "ENOENT" });
+  await assert.rejects(lstat(refusedHarness + ".input.json"), {
+    code: "ENOENT",
+  });
+  const occupiedHarness = path.join(output, "occupied-harness");
+  await mkdir(occupiedHarness);
+  await writeFile(
+    path.join(occupiedHarness, "sentinel"),
+    "keep existing harness",
+  );
+  await assert.rejects(
+    runFreshBaselineAtInstallation({
+      repository: root,
+      sourceCapture,
+      expectedSourceScope,
+      installedPackage,
+      harness: occupiedHarness,
+      launchWorker: () =>
+        assert.fail("Existing target must refuse before launching"),
+    }),
+    /target already exists/,
+  );
+  assert.equal(
+    await readFile(path.join(occupiedHarness, "sentinel"), "utf8"),
+    "keep existing harness",
+  );
+  const occupiedInputHarness = path.join(output, "occupied-input-harness");
+  await writeFile(occupiedInputHarness + ".input.json", "keep existing input");
+  await assert.rejects(
+    runFreshBaselineAtInstallation({
+      repository: root,
+      sourceCapture,
+      expectedSourceScope,
+      installedPackage,
+      harness: occupiedInputHarness,
+      launchWorker: () =>
+        assert.fail("Existing input must refuse before launching"),
+    }),
+    /target already exists/,
+  );
+  assert.equal(
+    await readFile(occupiedInputHarness + ".input.json", "utf8"),
+    "keep existing input",
+  );
+  await assert.rejects(lstat(occupiedInputHarness), { code: "ENOENT" });
+  const changedCapture = structuredClone(sourceCapture);
+  changedCapture.originalReport.ledger.events[0].outcome = "skipped";
+  const rejectedSource = await run(true, callbacks, engine, changedCapture);
+  assert.notEqual(rejectedSource.status, 0);
+  assert.match(
+    rejectedSource.stderr,
+    /Original required source event did not pass/,
   );
 
   // Wrong expected output must fail in the original callback, not in a

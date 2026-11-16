@@ -49,3 +49,37 @@ or an image recipe attestation. A successful receipt qualifies only its
 explicit profiles and observed environment. Unit controls using a synthetic
 package do not qualify the native cohorts. This helper does not declare the
 whole matrix or Gate A complete and performs no model calls or field reviews.
+
+Existing CI source commands should be wrapped with
+captureBaselineSourceExecution, whose execution callback is called once.
+It preserves the entire original source report and validates every broader
+required case before projecting the frozen subset. The
+fresh-from-original-source worker mode then validates that capture and runs
+only the fresh installed subset. Its source expectation must come from the
+controller's current selectors, independently of the receipt.
+
+PR205 full-suite source fragments deliberately report complete: false,
+fragmentComplete: true, and wholeSuiteComplete: false. Reuse validates those
+flags and the actual partition, inventory, file and required-case bindings;
+it does not rewrite a fragment as whole-suite success. All three original
+source fragments and the full frozen callback union remain obligations.
+The APIs provide the shared mechanism; each existing controller still needs
+an explicit adapter and actual source/fresh observations before qualification.
+
+The selected Linux/Node 22 host path wraps each existing full-suite source
+fragment before it executes. It derives the frozen subset from the same closed
+file partition independently of the observed result, validates the original
+source ledger, then runs only that subset against one fresh offline installation.
+Every fragment retains `complete: false`, `fragmentComplete: true` and
+`wholeSuiteComplete: false`. All three existing rows remain required; no individual
+receipt qualifies the host cohort. The selector verifies that the three expected
+subsets preserve the entire frozen callback union and all profile memberships.
+Full source/fresh receipts are retained separately on stderr while the original
+source report remains on stdout.
+
+The packaged-review path captures the existing broader source command inside its
+original pinned image. It reuses the controller's existing fresh installation for
+the frozen review subset, in a separate process using the same image ID and
+observed runtime. The shared fresh coordinator never executes source callbacks;
+it cleans its harness and private input even when admission or a worker fails.
+The original package CLI and MCP checks continue against that installation.

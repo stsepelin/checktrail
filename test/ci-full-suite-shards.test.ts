@@ -111,6 +111,86 @@ test("full-suite profile selection validates unassigned requirements before any 
     /run separately/,
   );
 });
+test("preserved baseline partition retains every frozen callback and overlapping profile membership across all three original shards", () => {
+  const all = files.map((file, index) => ({
+    file: "dist/test/" + file,
+    name: "required-" + index,
+  }));
+  const profiles = { original: all };
+  const baselineProfiles = { frozen: all, overlap: [all[0]!] };
+  const input = {
+    profiles,
+    selection: ["original"],
+    baselineProfiles,
+    baselineSelection: ["frozen", "overlap"],
+    inventory,
+    partition: api.partitionFullSuiteFiles(inventory),
+  };
+  const selected = api.selectFullSuiteBaselinePartition(input);
+  assert.equal(selected.required, 6);
+  assert.equal(selected.memberships, 7);
+  assert.equal(selected.fragments.length, 3);
+  assert.equal(
+    selected.fragments.reduce(
+      (n: number, row: { required: number }) => n + row.required,
+      0,
+    ),
+    6,
+  );
+  assert.equal(
+    selected.fragments.reduce(
+      (n: number, row: { memberships: number }) => n + row.memberships,
+      0,
+    ),
+    7,
+  );
+  assert.equal(selected.wholeCohortComplete, false);
+  assert.equal(selected.allThreeFragmentsRequired, true);
+  for (const fragment of selected.fragments) {
+    const assigned = input.partition.shards.find(
+      (row: { id: string }) => row.id === fragment.shard,
+    )!.files;
+    for (const rows of Object.values(fragment.profiles) as Array<
+      Array<{ file: string }>
+    >) {
+      assert.ok(
+        rows.every((row) =>
+          assigned.includes(row.file.slice("dist/test/".length)),
+        ),
+      );
+    }
+  }
+  assert.throws(
+    () =>
+      api.selectFullSuiteBaselinePartition({
+        ...input,
+        baselineProfiles: {
+          ...baselineProfiles,
+          overlap: [{ ...all[0]!, name: "unexecuted neighbor" }],
+        },
+      }),
+    /outside the unchanged original source union/,
+  );
+  assert.throws(
+    () =>
+      api.selectFullSuiteBaselinePartition({
+        ...input,
+        baselineProfiles: { ...baselineProfiles, overlap: [all[0]!, all[0]!] },
+      }),
+    /Duplicate frozen profile membership/,
+  );
+  assert.throws(() =>
+    api.selectFullSuiteBaselinePartition({
+      ...input,
+      baselineSelection: ["frozen", "frozen"],
+    }),
+  );
+  const broken = structuredClone(input.partition);
+  broken.shards[0].files.pop();
+  assert.throws(() =>
+    api.selectFullSuiteBaselinePartition({ ...input, partition: broken }),
+  );
+});
 async function project(t: Parameters<typeof fixture>[0], failing = false) {
   const data: Record<string, string> = {
     "package.json": '{"type":"module"}',
@@ -149,6 +229,7 @@ async function project(t: Parameters<typeof fixture>[0], failing = false) {
 function invoke(repository: string, flag: string, ...profiles: string[]) {
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT;
+  delete env.CHECKTRAIL_PRESERVED_BASELINE;
   return spawnSync(
     process.execPath,
     ["scripts/verify-ci-full-suite-shard.mjs", flag, ...profiles],
@@ -287,4 +368,48 @@ test("full-suite shard refuses a caller working directory outside its selected r
   await assert.rejects(readFile(path.join(repository, "bodies.jsonl")), {
     code: "ENOENT",
   });
+});
+
+test("preserved baseline controller selection matches exactly and rejects foreign flags before any source body", async (t) => {
+  const repository = await project(t);
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  for (const value of ["host-core-suffix", "host-core?", "true"]) {
+    const child = spawnSync(
+      process.execPath,
+      ["scripts/verify-ci-full-suite-shard.mjs", "--shard0", "all"],
+      {
+        cwd: repository,
+        encoding: "utf8",
+        timeout: 10000,
+        env: { ...env, CHECKTRAIL_PRESERVED_BASELINE: value },
+      },
+    );
+    assert.notEqual(child.status, 0);
+    assert.match(
+      child.stderr,
+      /Unknown preserved baseline controller selection/,
+    );
+    await assert.rejects(readFile(path.join(repository, "bodies.jsonl")), {
+      code: "ENOENT",
+    });
+  }
+  const original = spawnSync(
+    process.execPath,
+    ["scripts/verify-ci-full-suite-shard.mjs", "--shard0", "all"],
+    {
+      cwd: repository,
+      encoding: "utf8",
+      timeout: 10000,
+      env: { ...env, CHECKTRAIL_PRESERVED_BASELINE: "" },
+    },
+  );
+  assert.equal(original.status, 0, original.stderr);
+  const report = JSON.parse(original.stdout);
+  assert.equal(report.fragmentComplete, true);
+  assert.equal(report.complete, false);
+  const bodies = (await readFile(path.join(repository, "bodies.jsonl"), "utf8"))
+    .trim()
+    .split("\n");
+  assert.equal(bodies.length, report.assignedFiles.length * 2);
 });

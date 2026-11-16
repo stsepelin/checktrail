@@ -11,6 +11,7 @@ const { parseValidationShardArgs, selectValidationShard } = await import(
 );
 type Row = { os: string; node: string; shard?: number };
 type Step = {
+  env?: Record<string, string>;
   name?: string;
   run?: string;
   uses?: string;
@@ -516,5 +517,73 @@ test("workflow guard rejects missing or moved roles, dropped completion dependen
     const changed = globalThis.structuredClone(workflow);
     mutate(changed);
     assert.throws(() => requireDurationWorkflow(changed));
+  }
+});
+
+function requirePreservedBaselineWiring(w: Workflow) {
+  const selector =
+    "${{ matrix.os == 'ubuntu-latest' && matrix.node == '22' && 'host-core' || '' }}";
+  const primary = w.jobs.checks!;
+  const extras = w.jobs["full-suite-shards"]!;
+  const first = primary.steps.filter((step) => step.run?.includes(full0));
+  const rest = extras.steps.filter((step) => step.run === fullCommand);
+  assert.equal(first.length, 1);
+  assert.equal(rest.length, 1);
+  assert.equal(first[0]!.env?.CHECKTRAIL_PRESERVED_BASELINE, selector);
+  assert.equal(rest[0]!.env?.CHECKTRAIL_PRESERVED_BASELINE, selector);
+  const bound = [
+    ...rows(w, "checks", fullContext)
+      .filter((row) => row.os === "ubuntu-latest" && row.node === "22")
+      .map(() => "0"),
+    ...rows(w, "full-suite-shards", fullContext)
+      .filter((row) => row.os === "ubuntu-latest" && row.node === "22")
+      .map((row) => String(row.shard)),
+  ];
+  assert.deepEqual(bound.sort(), ["0", "1", "2"]);
+  assert.ok(w.jobs["ci-complete"]!.needs.includes("checks"));
+  assert.ok(w.jobs["ci-complete"]!.needs.includes("full-suite-shards"));
+  for (const job of [primary, extras])
+    assert.ok(
+      job.steps.every(
+        (step) => !step.run?.includes("verify-preserved-baseline.mjs"),
+      ),
+      "Standalone collector would repeat the original source command",
+    );
+}
+
+test("preserved host baseline binds all three existing Linux22 fragments without adding a source rerun or omitting completion dependencies", () => {
+  requirePreservedBaselineWiring(workflow);
+  for (const mutate of [
+    (w: Workflow) => {
+      delete w.jobs.checks!.steps.find((step) => step.run?.includes(full0))!
+        .env;
+    },
+    (w: Workflow) => {
+      w.jobs["full-suite-shards"]!.steps.find(
+        (step) => step.run === fullCommand,
+      )!.env = { CHECKTRAIL_PRESERVED_BASELINE: "host-core" };
+    },
+    (w: Workflow) => {
+      w.jobs["ci-complete"]!.needs = w.jobs["ci-complete"]!.needs.filter(
+        (name) => name !== "full-suite-shards",
+      );
+    },
+    (w: Workflow) => {
+      w.jobs["full-suite-shards"]!.strategy.matrix.include = w.jobs[
+        "full-suite-shards"
+      ]!.strategy.matrix.include.filter(
+        (row) =>
+          row.os !== "ubuntu-latest" || row.node !== "22" || row.shard !== 2,
+      );
+    },
+    (w: Workflow) => {
+      w.jobs.checks!.steps.push({
+        run: "node scripts/verify-preserved-baseline.mjs host-core",
+      });
+    },
+  ]) {
+    const changed = structuredClone(workflow);
+    mutate(changed);
+    assert.throws(() => requirePreservedBaselineWiring(changed));
   }
 });
