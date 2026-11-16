@@ -849,40 +849,6 @@ test(
   "native-license-provenance installed acceptance",
   { ...selected, timeout: 180000 },
   async (t) => {
-    if (
-      process.env.CHECKTRAIL_NATIVE_PROVENANCE_QUALIFICATION === "1" &&
-      process.env.CHECKTRAIL_NATIVE_PROVENANCE_INSTALLED !== "1"
-    ) {
-      const { stdout } = await exec(
-        process.execPath,
-        [
-          path.join(
-            provenanceRepository,
-            "scripts/verify-native-provenance-runtime-package.mjs",
-          ),
-          process.env.CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_SLOT ??
-            "--development",
-        ],
-        { timeout: 240000, maxBuffer: 4 * 1048576 },
-      );
-      const capture = await import(
-        pathToFileURL(
-          path.join(
-            provenanceRepository,
-            "scripts/runtime-installation-capture.mjs",
-          ),
-        ).href
-      );
-      assert.equal(
-        await capture.writeRuntimeInstallation(
-          "native-provenance",
-          JSON.parse(stdout),
-        ),
-        true,
-        "Source qualification must retain its actual installed receipt",
-      );
-      return;
-    }
     const f = await provenanceFixture(t),
       archiveRoot = path.join(f.root, "archive"),
       consumer = path.join(f.root, "consumer");

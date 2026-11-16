@@ -25,6 +25,10 @@ const api = await import(
     path.join(root, "scripts/native-provenance-runtime-evidence.mjs"),
   ).href
 );
+const stageApi = await import(
+  pathToFileURL(path.join(root, "scripts/native-provenance-stage-owner.mjs"))
+    .href
+);
 const runtimeApi = await import(
   pathToFileURL(path.join(root, "scripts/review-runtime-evidence.mjs")).href
 );
@@ -1180,4 +1184,502 @@ test("provenance controller forwards live progress without changing the original
   assert.equal(lines.length, 1);
   assert.equal(JSON.parse(lines[0]!).case, "broken");
   assert.equal(JSON.parse(lines[0]!).status, "dequeued");
+});
+
+test("provenance fresh stage starts after complete source evidence and retains a distinct complete fresh ledger", async (t) => {
+  const source = sourceEvidence(),
+    receipt = installedReceipt();
+  const directory = await realpath(
+    await fixture(t, {
+      "scripts/verify-native-provenance-runtime-package.mjs": `import{readFileSync,writeFileSync}from'node:fs';
+writeFileSync(new URL('../launched.json',import.meta.url),JSON.stringify({slot:process.argv[2],pid:process.pid}));
+process.stdout.write(readFileSync(new URL('../packet.json',import.meta.url)));`,
+      "packet.json": JSON.stringify(receipt),
+    }),
+  );
+  const { withRuntimeInstallationCapture } = await import(
+    new URL("../../scripts/runtime-installation-capture.mjs", import.meta.url)
+      .href
+  );
+  const execute = stageApi.runProvenanceNodeStage;
+  let calls = 0;
+  await withRuntimeInstallationCapture(
+    "native-provenance",
+    { installed: false, slot: source.runtime.slot },
+    async (capture: { read(): Promise<unknown> }) => {
+      const result = await api.collectProvenanceRuntimeInstallation(
+        {
+          repository: directory,
+          slot: source.runtime.slot,
+          source,
+          requirements,
+          capture,
+        },
+        {
+          execute: async (
+            program: string,
+            args: string[],
+            options: {
+              timeout: number;
+              maxBuffer: number;
+              env: NodeJS.ProcessEnv;
+              cwd: string;
+            },
+          ) => {
+            calls++;
+            assert.equal(program, process.execPath);
+            assert.deepEqual(args, [
+              path.join(
+                directory,
+                "scripts/verify-native-provenance-runtime-package.mjs",
+              ),
+              source.runtime.slot,
+            ]);
+            assert.equal(options.timeout, 720000);
+            assert.equal(options.maxBuffer, 4 * 1048576);
+            assert.equal(options.cwd, directory);
+            assert.equal(options.env.NODE_OPTIONS, undefined);
+            assert.equal(options.env.NODE_TEST_CONTEXT, undefined);
+            return execute(program, args, options);
+          },
+        },
+      );
+      assert.deepEqual(result, receipt);
+      assert.deepEqual(await capture.read(), receipt);
+      assert.equal(result.evidence.installed, true);
+      assert.equal(source.installed, false);
+      assert.deepEqual(source.installedEvidence, null);
+      assert.equal(
+        result.evidence.executionBinding.engineLocation,
+        "fresh-installed-package",
+      );
+      assert.equal(source.executionBinding.engineLocation, "current-source");
+    },
+  );
+  assert.equal(calls, 1);
+  assert.equal(
+    JSON.parse(await readFile(path.join(directory, "launched.json"), "utf8"))
+      .slot,
+    source.runtime.slot,
+  );
+  assert.equal(api.provenanceFreshWorkerTimeoutMs, 600000 + 60000);
+  assert.equal(
+    api.provenanceInstallationTimeoutMs,
+    api.provenanceFreshWorkerTimeoutMs + 60000,
+  );
+});
+
+test("provenance fresh stage rejects incomplete source before launch and changed missing skipped or stale fresh capture", async (t) => {
+  const directory = await fixture(t, {}),
+    source = sourceEvidence();
+  for (const mutate of [
+    (s: ReturnType<typeof sourceEvidence>) => {
+      s.complete = false;
+    },
+    (s: ReturnType<typeof sourceEvidence>) => {
+      s.ledger.cases.pop();
+    },
+    (s: ReturnType<typeof sourceEvidence>) => {
+      s.ledger.cases[0]!.outcome = "skipped";
+    },
+  ]) {
+    const changed = structuredClone(source);
+    mutate(changed);
+    let launched = false;
+    await assert.rejects(
+      api.collectProvenanceRuntimeInstallation(
+        {
+          repository: directory,
+          slot: null,
+          source: changed,
+          requirements,
+          capture: {
+            read: () => {
+              throw Error("capture must not be read");
+            },
+          },
+        },
+        {
+          execute: async () => {
+            launched = true;
+            throw Error("must not launch");
+          },
+        },
+      ),
+    );
+    assert.equal(launched, false);
+  }
+  const { withRuntimeInstallationCapture } = await import(
+    new URL("../../scripts/runtime-installation-capture.mjs", import.meta.url)
+      .href
+  );
+  for (const mutate of [
+    (r: ReturnType<typeof installedReceipt>) => {
+      r.evidence.ledger.cases.pop();
+    },
+    (r: ReturnType<typeof installedReceipt>) => {
+      r.evidence.ledger.cases[0]!.outcome = "skipped";
+    },
+    (r: ReturnType<typeof installedReceipt>) => {
+      r.evidence.ledger.truncated = true;
+    },
+    (r: ReturnType<typeof installedReceipt>) => {
+      r.evidence.sourceBinding.gitHead = "d".repeat(40);
+    },
+    (r: ReturnType<typeof installedReceipt>) => {
+      r.evidence.runtime.node = "22.0.0";
+    },
+    (r: ReturnType<typeof installedReceipt>) => {
+      r.evidence.compiledEngine.treeSha256 = other;
+    },
+    (r: ReturnType<typeof installedReceipt>) => {
+      r.evidence.executionBinding.engineLocation = "current-source";
+    },
+    (r: ReturnType<typeof installedReceipt>) => {
+      r.offlineProductionInstall = false;
+    },
+  ]) {
+    const changed = installedReceipt();
+    mutate(changed);
+    await withRuntimeInstallationCapture(
+      "native-provenance",
+      { installed: false, slot: null },
+      async (capture: { read(): Promise<unknown> }) => {
+        await assert.rejects(
+          api.collectProvenanceRuntimeInstallation(
+            {
+              repository: directory,
+              slot: null,
+              source,
+              requirements,
+              capture,
+            },
+            { execute: async () => ({ stdout: JSON.stringify(changed) }) },
+          ),
+        );
+        await assert.rejects(capture.read(), { code: "ENOENT" });
+      },
+    );
+  }
+  for (const read of [
+    async () => {
+      const earlier = installedReceipt();
+      earlier.evidence.sourceBinding.gitHead = "d".repeat(40);
+      return earlier;
+    },
+    async () => {
+      throw Error("original capture refusal");
+    },
+  ]) {
+    await withRuntimeInstallationCapture(
+      "native-provenance",
+      { installed: false, slot: null },
+      async () => {
+        await assert.rejects(
+          api.collectProvenanceRuntimeInstallation(
+            {
+              repository: directory,
+              slot: null,
+              source,
+              requirements,
+              capture: { read },
+            },
+            {
+              execute: async () => ({
+                stdout: JSON.stringify(installedReceipt()),
+              }),
+            },
+          ),
+        );
+      },
+    );
+  }
+});
+
+test("provenance fresh stage preserves actual child failures timeouts malformed output and capture cleanup", async (t) => {
+  const directory = await realpath(await fixture(t, {})),
+    program = path.join(
+      directory,
+      "scripts/verify-native-provenance-runtime-package.mjs",
+    );
+  await mkdir(path.dirname(program));
+  const { withRuntimeInstallationCapture } = await import(
+    new URL("../../scripts/runtime-installation-capture.mjs", import.meta.url)
+      .href
+  );
+  const execute = stageApi.runProvenanceNodeStage;
+  for (const [body, kind] of [
+    ["process.exit(17)", "nonzero"],
+    ["process.stdout.write('{')", "malformed"],
+    [
+      "import{writeFileSync}from'node:fs';writeFileSync(new URL('../pid.json',import.meta.url),JSON.stringify(process.pid));setInterval(()=>{},1000)",
+      "timeout",
+    ],
+  ]) {
+    await writeFile(program, body!);
+    let namespace = "";
+    await withRuntimeInstallationCapture(
+      "native-provenance",
+      { installed: false, slot: null },
+      async (capture: { read(): Promise<unknown> }) => {
+        namespace = path.dirname(
+          process.env.CHECKTRAIL_NATIVE_PROVENANCE_INSTALL_RECEIPT!,
+        );
+        let error: unknown;
+        try {
+          await api.collectProvenanceRuntimeInstallation(
+            {
+              repository: directory,
+              slot: null,
+              source: sourceEvidence(),
+              requirements,
+              capture,
+            },
+            {
+              execute: async (
+                executable: string,
+                args: string[],
+                options: { timeout: number },
+              ) => {
+                assert.equal(options.timeout, 720000);
+                // The actual child transport receives a short synthetic deadline only
+                // in this timeout control. The production stage retains 720 seconds.
+                return execute(executable, args, {
+                  ...options,
+                  timeout: kind === "timeout" ? 1000 : options.timeout,
+                });
+              },
+            },
+          );
+        } catch (value) {
+          error = value;
+        }
+        assert.ok(error);
+        if (kind === "nonzero")
+          assert.equal((error as { code: unknown }).code, 17);
+        if (kind === "timeout")
+          assert.equal((error as { killed: unknown }).killed, true);
+        if (kind === "malformed") assert.ok(error instanceof SyntaxError);
+        await assert.rejects(capture.read(), { code: "ENOENT" });
+      },
+    );
+    await assert.rejects(lstat(namespace), { code: "ENOENT" });
+    if (kind === "timeout") {
+      const pid = JSON.parse(
+        await readFile(path.join(directory, "pid.json"), "utf8"),
+      );
+      assert.ok(Number.isSafeInteger(pid) && pid > 0);
+      assert.throws(() => process.kill(pid, 0), { code: "ESRCH" });
+    }
+  }
+});
+
+test(
+  "qualification ninth callback performs its direct installed assertions without a recursive fresh suite",
+  { timeout: 240000 },
+  async () => {
+    const env = {
+      ...process.env,
+      CHECKTRAIL_NATIVE_LICENSE_COMPOSITION_NATIVE: "1",
+      CHECKTRAIL_NATIVE_PROVENANCE_QUALIFICATION: "1",
+    } as NodeJS.ProcessEnv;
+    // The former recursive branch required this witness and started the entire
+    // fresh suite. Direct installed broken/fixed/near-miss controls do neither.
+    for (const key of [
+      "NODE_OPTIONS",
+      "NODE_TEST_CONTEXT",
+      "CHECKTRAIL_NATIVE_PROVENANCE_INSTALLED",
+      "CHECKTRAIL_NATIVE_PROVENANCE_INSTALLED_PACKAGE",
+      "CHECKTRAIL_NATIVE_PROVENANCE_BUILD_RECEIPT",
+      "CHECKTRAIL_NATIVE_PROVENANCE_BUILD_SHA256",
+      "CHECKTRAIL_NATIVE_PROVENANCE_INSTALL_RECEIPT",
+    ])
+      delete env[key];
+    const { stdout } = await promisify(execFile)(
+      process.execPath,
+      [
+        "--test",
+        "--test-reporter=tap",
+        "--test-name-pattern",
+        "^native-license-provenance installed acceptance$",
+        path.join(root, "dist/test/gate-native-license-provenance.test.js"),
+      ],
+      { cwd: root, env, timeout: 210000, maxBuffer: 2 * 1048576 },
+    );
+    assert.match(stdout, /# pass 1(?:\r?\n|$)/u);
+    assert.match(stdout, /# fail 0(?:\r?\n|$)/u);
+    assert.match(stdout, /# cancelled 0(?:\r?\n|$)/u);
+  },
+);
+
+const provenanceOwnerControlNames = [
+  "provenance stage owner timeout reaps nested file descendants and preserves an unrelated sibling",
+  "provenance stage owner parent loss reaps nested file descendants and preserves an unrelated sibling",
+];
+for (const [mode, name] of provenanceOwnerControlNames.entries())
+  test(name, { timeout: 20000 }, async (t) => {
+    const directory = await realpath(
+      await fixture(t, {
+        "scripts/verify-native-provenance-runtime-package.mjs": `import{spawn}from'node:child_process';import{writeFileSync}from'node:fs';
+writeFileSync(new URL('../package.json.pid',import.meta.url),JSON.stringify({pid:process.pid,keeper:process.ppid}));
+spawn(process.execPath,[new URL('../fresh.mjs',import.meta.url).pathname],{detached:false,stdio:'ignore'});setInterval(()=>{},1000);`,
+        "fresh.mjs": `import{spawn}from'node:child_process';import{writeFileSync}from'node:fs';import{fileURLToPath}from'node:url';
+writeFileSync(new URL('./fresh.json.pid',import.meta.url),JSON.stringify({pid:process.pid}));
+spawn(process.execPath,[fileURLToPath(new URL('./file.mjs',import.meta.url))],{detached:process.platform!=='win32',stdio:'ignore'});setInterval(()=>{},1000);`,
+        "file.mjs": `import{writeFileSync}from'node:fs';writeFileSync(new URL('./file.json.pid',import.meta.url),JSON.stringify({pid:process.pid}));setInterval(()=>{},1000);`,
+      }),
+    );
+    // Use fileURLToPath for the synthetic Windows package-to-fresh argv too.
+    const pkg = path.join(
+      directory,
+      "scripts/verify-native-provenance-runtime-package.mjs",
+    );
+    await writeFile(
+      pkg,
+      (await readFile(pkg, "utf8"))
+        .replace(
+          "import{spawn}from'node:child_process';",
+          "import{spawn}from'node:child_process';import{fileURLToPath}from'node:url';",
+        )
+        .replace(
+          "new URL('../fresh.mjs',import.meta.url).pathname",
+          "fileURLToPath(new URL('../fresh.mjs',import.meta.url))",
+        ),
+    );
+    const sibling = spawn(
+      process.execPath,
+      ["-e", "setInterval(()=>{},1000)"],
+      { stdio: "ignore", detached: false },
+    );
+    t.after(async () => {
+      sibling.kill("SIGKILL");
+      await once(sibling, "close");
+    });
+    const waitFor = async (check: () => Promise<boolean>, seconds = 5000) => {
+      const deadline = Date.now() + seconds;
+      while (!(await check())) {
+        assert.ok(Date.now() < deadline, "owned stage evidence deadline");
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      }
+    };
+    const names = ["package.json.pid", "fresh.json.pid", "file.json.pid"];
+    const readPids = async () => {
+      const rows = await Promise.all(
+        names.map(async (file) =>
+          JSON.parse(await readFile(path.join(directory, file), "utf8")),
+        ),
+      );
+      return [rows[0].keeper, ...rows.map((row) => row.pid)] as number[];
+    };
+    let caller: ReturnType<typeof spawn> | undefined, result: Promise<unknown>;
+    if (mode === 0) {
+      result = stageApi.runProvenanceNodeStage(
+        process.execPath,
+        [pkg, "--development"],
+        {
+          cwd: directory,
+          env: { ...process.env },
+          timeout: 4000,
+          maxBuffer: 4 * 1048576,
+        },
+      );
+      // Attach the rejection handler before the physical-start handshake.
+      result.catch(() => {});
+    } else {
+      const ownModule = pathToFileURL(
+        path.join(root, "scripts/native-provenance-stage-owner.mjs"),
+      ).href;
+      const script = `import{runProvenanceNodeStage}from${JSON.stringify(ownModule)};await runProvenanceNodeStage(process.execPath,${JSON.stringify([pkg, "--development"])},{cwd:${JSON.stringify(directory)},env:process.env,timeout:10000,maxBuffer:4194304});`;
+      await writeFile(path.join(directory, "caller.mjs"), script);
+      caller = spawn(process.execPath, [path.join(directory, "caller.mjs")], {
+        env: { ...process.env, NODE_OPTIONS: "" },
+        stdio: "ignore",
+        detached: false,
+      });
+      result = once(caller, "close");
+    }
+    await waitFor(async () => {
+      try {
+        return (await readPids()).every(
+          (pid) => Number.isSafeInteger(pid) && pid > 0,
+        );
+      } catch {
+        return false;
+      }
+    });
+    const pids = await readPids();
+    assert.equal(new Set(pids).size, 4);
+    for (const pid of pids) assert.doesNotThrow(() => process.kill(pid, 0));
+    if (mode === 0) await assert.rejects(result, { code: "ETIMEDOUT" });
+    else {
+      caller!.kill("SIGKILL");
+      await result;
+    }
+    await waitFor(async () =>
+      pids.every((pid) => {
+        try {
+          process.kill(pid, 0);
+          return false;
+        } catch (error) {
+          assert.equal((error as NodeJS.ErrnoException).code, "ESRCH");
+          return true;
+        }
+      }),
+    );
+    assert.doesNotThrow(() => process.kill(sibling.pid!, 0));
+  });
+
+test("provenance stage owner enforces exact output and fixed command boundaries", async (t) => {
+  const directory = await fixture(t, {
+    "scripts/verify-native-provenance-runtime-package.mjs":
+      "process.stdout.write('x'.repeat(1024))",
+  });
+  const script = path.join(
+      directory,
+      "scripts/verify-native-provenance-runtime-package.mjs",
+    ),
+    options = {
+      cwd: directory,
+      env: { ...process.env },
+      timeout: 5000,
+      maxBuffer: 1024,
+    };
+  for (const [program, args, changed] of [
+    ["unowned-node", [script, "--development"], options],
+    [process.execPath, [script], options],
+    [
+      process.execPath,
+      [path.join(directory, "other.mjs"), "--development"],
+      options,
+    ],
+    [
+      process.execPath,
+      [script, "--development"],
+      { ...options, timeout: 720001 },
+    ],
+    [
+      process.execPath,
+      [script, "--development"],
+      { ...options, maxBuffer: 4 * 1048576 + 1 },
+    ],
+  ] as Array<[string, string[], typeof options]>)
+    await assert.rejects(
+      stageApi.runProvenanceNodeStage(program, args, changed),
+    );
+  const exact = await stageApi.runProvenanceNodeStage(
+    process.execPath,
+    [script, "--development"],
+    options,
+  );
+  assert.equal(exact.stdout, "x".repeat(1024));
+  assert.equal(exact.stderr, "");
+  await writeFile(script, "process.stdout.write('x'.repeat(1025))");
+  await assert.rejects(
+    stageApi.runProvenanceNodeStage(
+      process.execPath,
+      [script, "--development"],
+      options,
+    ),
+    { code: "ERR_CHILD_PROCESS_STDIO_MAXBUFFER" },
+  );
 });

@@ -17,6 +17,7 @@ import { runRequiredTests } from "./required-test-evidence.mjs";
 import { withRuntimeInstallationCapture } from "./runtime-installation-capture.mjs";
 import {
   captureProvenanceHarness,
+  collectProvenanceRuntimeInstallation,
   createProvenanceRuntimeProgress,
   captureProvenanceRuntime,
   captureProvenanceSource,
@@ -27,7 +28,6 @@ import {
   readProvenanceInput,
   requireProvenanceInstalledLayout,
   requireProvenanceRuntimeCases,
-  requireProvenanceRuntimeInstallation,
   selectProvenanceRuntimeRequirements,
 } from "./native-provenance-runtime-evidence.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url)),
@@ -89,7 +89,6 @@ if (slot !== null)
     "Selected qualification requires clean source",
   );
 process.env.CHECKTRAIL_NATIVE_LICENSE_COMPOSITION_NATIVE = "1";
-process.env.CHECKTRAIL_NATIVE_PROVENANCE_QUALIFICATION = "1";
 const inputSources = await progress.run("capture", () =>
     captureProvenanceHarness(repository),
   ),
@@ -219,10 +218,14 @@ await withRuntimeInstallationCapture(
           inputSources.find((x) => x.file === requirements[0].file).sha256,
         );
         if (!installed)
-          result.installedEvidence = requireProvenanceRuntimeInstallation(
-            await progress.run("install-capture", () => capture.read()),
-            result,
-            requirements,
+          result.installedEvidence = await progress.run("install-capture", () =>
+            collectProvenanceRuntimeInstallation({
+              repository,
+              slot,
+              source: result,
+              requirements,
+              capture,
+            }),
           );
       }
       const rawReceipt = Buffer.from(JSON.stringify(result) + "\n");

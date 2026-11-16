@@ -241,10 +241,13 @@ test("provenance source and fresh receipts use exactly the seven core rows and p
     const source = steps.find((step) => step.run === command)!;
     assert.equal(source.id, "native-provenance-runtime");
     assert.equal(source.if, "matrix.core", "Core rows only may run provenance");
-    assert.equal(
-      source["timeout-minutes"],
-      10,
-      "Finite provenance step budget",
+    const provenanceMinutes = source["timeout-minutes"];
+    assert.ok(
+      typeof provenanceMinutes === "number" &&
+        Number.isInteger(provenanceMinutes) &&
+        provenanceMinutes >= 25 &&
+        provenanceMinutes <= 30,
+      "Finite provenance parent must cover source and fresh stages with bounded overhead",
     );
     assert.deepEqual(
       source.env,
@@ -345,6 +348,9 @@ test("provenance source and fresh receipts use exactly the seven core rows and p
   verify(workflow);
   const valid = JSON.parse(JSON.stringify(workflow));
   valid.jobs["tasks-runtime"].steps.push({ run: "node --version" });
+  valid.jobs["tasks-runtime"].steps.find((step: Step) => step.run === command)[
+    "timeout-minutes"
+  ] = 25;
   verify(valid);
   const mutations: [string, (candidate: typeof workflow) => void, RegExp][] = [
     [
@@ -372,6 +378,15 @@ test("provenance source and fresh receipts use exactly the seven core rows and p
         ).env = {};
       },
       /Raw receipt output/,
+    ],
+    [
+      "source and fresh share the old one-file envelope",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) => step.run === command,
+        )["timeout-minutes"] = 10;
+      },
+      /Finite provenance/,
     ],
     [
       "unbounded controller",

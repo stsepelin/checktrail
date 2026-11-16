@@ -4,7 +4,7 @@ import {
   captureProvenanceBuildInputs,
   requireProvenanceSourceBuild,
 } from "./native-provenance-source-build.mjs";
-import { spawnSync } from "node:child_process";
+import { runProvenanceNodeStage } from "./native-provenance-stage-owner.mjs";
 import {
   mkdir,
   mkdtemp,
@@ -33,6 +33,7 @@ import {
   captureProvenanceRuntime,
   captureProvenanceSource,
   provenanceInstalledPrograms,
+  provenanceFreshWorkerTimeoutMs,
   provenanceRuntimeArgument,
   provenanceRuntimeHash,
   readProvenanceInput,
@@ -203,33 +204,17 @@ try {
   delete env.CHECKTRAIL_NATIVE_PROVENANCE_INSTALL_RECEIPT;
   delete env.CHECKTRAIL_NATIVE_PROVENANCE_BUILD_RECEIPT;
   delete env.CHECKTRAIL_NATIVE_PROVENANCE_BUILD_SHA256;
-  const evidence = await progress.run("fresh-cases", () => {
-    const result = spawnSync(
+  const evidence = await progress.run("fresh-cases", async () => {
+    const result = await runProvenanceNodeStage(
       process.execPath,
       ["scripts/verify-native-provenance-runtime.mjs", slot ?? "--development"],
       {
         cwd: harness,
         env,
-        encoding: "utf8",
-        timeout: 540000,
+        timeout: provenanceFreshWorkerTimeoutMs,
         maxBuffer: 4 * 1048576,
       },
     );
-    assert.equal(result.error, undefined);
-    assert.equal(result.signal, null);
-    let diagnostic = (result.stdout + result.stderr).slice(-6000);
-    try {
-      const packet = JSON.parse(result.stdout);
-      diagnostic = JSON.stringify({
-        passed: packet.passed,
-        required: packet.required,
-        complete: packet.complete,
-        problems: packet.problems,
-      }).slice(0, 6000);
-    } catch {
-      /* Crashed collectors have no structured packet. */
-    }
-    assert.equal(result.status, 0, diagnostic);
     const evidence = JSON.parse(result.stdout);
     requireProvenanceRuntimeEvidence(evidence, {
       runtime,

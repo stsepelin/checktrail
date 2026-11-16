@@ -2105,7 +2105,9 @@ jobs:
       - name: Require provenance composition from source and a fresh offline package
         id: native-provenance-runtime
         if: matrix.core
-        timeout-minutes: 10
+        # Source and fresh-package files each retain their own 600-second limit.
+        # This parent also covers their bounded build, installation and cleanup.
+        timeout-minutes: 30
         run: node scripts/verify-native-provenance-runtime.mjs ${{ matrix.slot }}
         env:
           CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}/native-provenance-runtime.json

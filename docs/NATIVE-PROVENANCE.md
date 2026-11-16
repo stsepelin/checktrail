@@ -81,12 +81,17 @@ unqualified local run. Runtime admission compares the exact Node patch, platform
 architecture and observed image fields before any cohort; major-only CI jobs
 cannot substitute for the selected eight-slot matrix.
 
-Both modes require the same nine callbacks. The source installed callback retains
-its fresh nine-case envelope in a protected temporary namespace. The fresh harness
-runs outside the installed package, resolves its engine and default coordinator
-from that installation, and does not install recursively. The existing ninth
-callback's installed broken/fixed/near-miss controls remain real additional
-observations. Copied first-party guard counterfactuals remain synthetic tests;
+Both modes require the same nine callbacks. Each cohort runs its original ninth
+callback's installed broken/fixed/near-miss controls directly. After the source
+cohort completes, a separate sequential packaging stage runs the fresh nine-case
+cohort and retains its envelope in a protected temporary namespace. The fresh
+harness runs outside the installed package, resolves its engine and default
+coordinator from that installation, and does not install recursively. Each file
+keeps its 600-second limit and each callback keeps its original limit. The fresh
+worker has a 660-second parent envelope including guards and cleanup; its package
+stage has a 720-second envelope including packaging and cleanup. Those sequential
+stages require a parent budget covering both cohorts and source-build overhead;
+the fresh suite is never nested inside the 180-second installed callback. Copied first-party guard counterfactuals remain synthetic tests;
 these receipts do not trace every loaded module or reproduce the source build.
 
 Receipts bind the source Git identity and cleanliness, complete declared harness

@@ -1352,6 +1352,10 @@
     "tasks-runtime",
     "tasks-runtime-arm64"
   ],
+  "scripts/native-provenance-stage-owner.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/native-resource-observer.c": [
     "resource-release",
     "resource-release-arm64"

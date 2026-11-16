@@ -1,6 +1,7 @@
 // Internal synthetic acceptance bookkeeping; no legal or upstream-build verdict.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { runProvenanceNodeStage } from "./native-provenance-stage-owner.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import {
   link,
@@ -18,6 +19,7 @@ import process from "node:process";
 import { TextDecoder } from "node:util";
 import { checkReviewRuntimeSelection } from "./review-runtime-evidence.mjs";
 import { requireProvenanceSourceBuild } from "./native-provenance-source-build.mjs";
+import { writeRuntimeInstallation } from "./runtime-installation-capture.mjs";
 export const provenanceRuntimeProfile = "native-license-provenance";
 export const provenanceRuntimeKinds = Object.freeze([
   "broken",
@@ -49,6 +51,7 @@ export const provenanceRuntimeHarnessFiles = Object.freeze([
   "scripts/verify-native-provenance-runtime.mjs",
   "scripts/verify-native-provenance-runtime-package.mjs",
   "scripts/native-provenance-runtime-evidence.mjs",
+  "scripts/native-provenance-stage-owner.mjs",
   "scripts/native-provenance-source-build.mjs",
   "scripts/review-runtime-evidence.mjs",
   "scripts/required-native-tests.json",
@@ -564,6 +567,59 @@ export function requireProvenanceRuntimeInstallation(
   return receipt;
 }
 
+// The two file cohorts keep their own original 600-second limits. Packaging is
+// an orchestration stage, never work hidden inside the 180-second ninth case.
+export const provenanceFreshWorkerTimeoutMs = 660000; // 600s file + 60s guards/cleanup.
+export const provenanceInstallationTimeoutMs = 720000; // worker + 60s packaging/cleanup.
+
+export async function collectProvenanceRuntimeInstallation(
+  { repository, slot, source, requirements, capture },
+  { execute = runProvenanceNodeStage } = {},
+) {
+  requireProvenanceRuntimeEvidence(source, {
+    ...source,
+    installed: false,
+    requirements,
+  });
+  const env = { ...process.env };
+  delete env.NODE_OPTIONS;
+  delete env.NODE_TEST_CONTEXT;
+  const temporary = path.dirname(
+    process.env.CHECKTRAIL_NATIVE_PROVENANCE_INSTALL_RECEIPT,
+  );
+  env.TMPDIR = env.TMP = env.TEMP = temporary;
+  const { stdout } = await execute(
+    process.execPath,
+    [
+      path.join(
+        repository,
+        "scripts/verify-native-provenance-runtime-package.mjs",
+      ),
+      slot ?? "--development",
+    ],
+    {
+      cwd: repository,
+      env,
+      timeout: provenanceInstallationTimeoutMs,
+      maxBuffer: 4 * 1048576,
+    },
+  );
+  const receipt = requireProvenanceRuntimeInstallation(
+    JSON.parse(stdout),
+    source,
+    requirements,
+  );
+  assert.equal(
+    await writeRuntimeInstallation("native-provenance", receipt),
+    true,
+    "Source orchestration must retain its actual installed receipt",
+  );
+  return requireProvenanceRuntimeInstallation(
+    await capture.read(),
+    source,
+    requirements,
+  );
+}
 // Internal operator artifact retention. It does not observe the publisher host's
 // runtime: an ARM carrier can supply its independently pinned inner context.
 export async function publishProvenanceRuntimeReceipt(
