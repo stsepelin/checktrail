@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: stsepelin/checktrail
-          ref: 7363f55c69a2e8a13086b9b0ac6a22e6483c93b0
+          ref: de1753a0c662b73fa66df145c05d0539ac839379
           persist-credentials: false
       - name: Set up the original selected Node version
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -50,7 +50,7 @@ jobs:
           import { performance } from "node:perf_hooks";
           import { fileURLToPath, pathToFileURL } from "node:url";
 
-          const SOURCE = "7363f55c69a2e8a13086b9b0ac6a22e6483c93b0";
+          const SOURCE = "de1753a0c662b73fa66df145c05d0539ac839379";
           const CASE = "native-license-provenance stale acceptance";
           const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
           const errorNames = new Set([
@@ -167,7 +167,7 @@ jobs:
               [
                 "gate-ts",
                 "test/gate-native-license-provenance.test.ts",
-                "4deba740e835f35242e11422c4a76104ae991eda1a5a7fe5c11f6072e20c471a",
+                "41832012858f5e06e81a53da9a0407e85123d7acc9459864722a2c017f7fc9e8",
               ],
               [
                 "fixture-ts",
