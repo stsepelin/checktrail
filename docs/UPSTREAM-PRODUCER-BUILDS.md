@@ -191,6 +191,14 @@ Original failures remain failed, and four empty gprofng reports remain unproven
 with an unknown reason. This does not change the historical controller receipt,
 qualify every upstream test, or close bootstrap and original notice requirements.
 
+The [2026-11-16 original diff-utils package build](measurements/diff-utils-original-producer-2026-11-16.json)
+completes the unchanged upstream `mvn -B package --file pom.xml` lifecycle in its
+documented local Temurin8/Maven profile. Its observed test outcomes retain three
+authored skips without passing credit. All selected class files match the release;
+the complete JAR differs in its manifest and Maven properties. The original source
+remains unchanged after its authored Spotless phase. Compiler/SDK bootstrap builds,
+dependency producer builds and complete original-notice attribution remain open.
+
 The [2026-11-16 original notice coverage](measurements/c-original-notice-coverage-2026-11-16.json)
 reconciles the exact selected C binary dependency archive identities with retained
 original notices. It also records the complete original texts of the eight selected
