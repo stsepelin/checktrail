@@ -286,6 +286,8 @@ function npmTree(long) {
   );
   const args = [
     "ls",
+    // Local metadata inspection must not trigger npm self-update queries.
+    "--no-update-notifier",
     ...(includeDev ? [] : ["--omit=dev"]),
     "--all",
     "--json",
