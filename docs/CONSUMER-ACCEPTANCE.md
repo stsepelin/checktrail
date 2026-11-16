@@ -18,11 +18,19 @@ foreign receipt entries fail admission.
 The runtime controller supports the selected engine matrix. Its checks compare
 observed metadata; they do not attest a host or qualify another runtime. CI wiring
 adds the cohort to each selected Tasks runtime slot, with a separate pinned
-Linux ARM64 controller. These new hosted runs remain unverified until observed.
+Linux ARM64 controller. The [main-source measurement](measurements/consumer-impact-hosted-2026-11-16.json)
+reconciles all eight source/fresh pairs and the complete native consumer matrix
+from run `43635572499` at commit `6809bf39c3aba1f1b582742c741051667461754e`.
+The original controller streams were rehashed against their capsules, and the
+existing strict validators matched every callback and foundation event to the
+recorded source and rebuilt engine/harness bytes. Successful job labels alone
+were not used as acceptance evidence.
 
 [The development measurement](measurements/consumer-impact-development-2026-10-28.json)
 records successful source and fresh-install execution on the observed current
 Mac. No final runtime slot was selected, so this observation does not satisfy
-the frozen runtime matrix. It does not close other language/framework consumer
-chains, artifact/build/license closure, independent evaluation or Gate A.
+the frozen runtime matrix. The later hosted measurement supplies the selected
+runtime and language/framework consumer scopes only at its recorded revision.
+Changed source still needs its own binding. Artifact/build/license closure,
+independent evaluation and Gate A remain separate.
 No inference or field evaluation ran.

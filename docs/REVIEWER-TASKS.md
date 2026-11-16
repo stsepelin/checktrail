@@ -20,11 +20,16 @@ records to distinguish implemented behavior from outstanding qualification. The
 broad family summaries below do not erase the later scoped implementations.
 
 Prospective configuration/procedure policy selection is privately frozen. The
-[recorded runtime observation](EVALUATION-ACCEPTANCE.md) qualifies the synthetic
-source and fresh installed-package cohort at `c28083a` across eight selected
-slots; changed revisions require their own qualification. Upstream
-producer/build/license closure remains necessary to close Gate A and continues
-in parallel. Effective authenticated host behavior and case-specific experiment
+[recorded runtime observations](EVALUATION-ACCEPTANCE.md) qualify the synthetic
+source and fresh installed-package cohort at their exact recorded sources. The
+[main-source record](measurements/evaluation-runtime-2026-11-16.json) revalidates all
+eight selected slots at `6809bf39c3aba1f1b582742c741051667461754e`, preserving the
+original nine callbacks and the earlier `c28083a` history. Changed revisions and
+private prospective-policy implementation bindings require separate qualification.
+The [linked selection record](measurements/prospective-policy-rebind-2026-11-16.json)
+now binds that prospective policy selection to the tested main implementation,
+preserving the original selection and its history. Upstream producer/build/license
+closure remains necessary to close Gate A and continues in parallel. Effective authenticated host behavior and case-specific experiment
 admission remain separate; no case inspection, model review trial or field
 evaluation follows from these implementation receipts.
 

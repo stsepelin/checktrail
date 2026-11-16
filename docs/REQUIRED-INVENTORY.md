@@ -145,8 +145,13 @@ breadth remains an explicit profile-selection item below, not an exclusion.
 - Specify provider-neutral review stages and host-side fresh-session evidence for
   evaluation. MCP cannot reset a host conversation; a prompt requesting freshness
   is insufficient. Checktrail-owned native AI client profiles are optional.
-- Freeze the actual external reference/prior-workflow identity and blinded cohort
-  acquisition/adjudication protocol before opening held-out cases.
+  The opaque private reference/prior-workflow and reserved cohort
+  acquisition/adjudication policy selection is now linked to the tested main
+  implementation. The [selection rebind record](measurements/prospective-policy-rebind-2026-11-16.json)
+  resolves that selection decision while preserving the original policies,
+  identities and history. The actual experiment remains unfrozen: effective
+  host configuration, session isolation, labels and case-specific admission are
+  separate requirements. No model, held-out source or field trial was run.
 
 The task ledger must keep these unfinished profile decisions visible. Gate A
 requires both frozen profiles and their completed acceptance evidence. Gate B

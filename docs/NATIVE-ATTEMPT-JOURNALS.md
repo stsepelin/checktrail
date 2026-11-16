@@ -163,7 +163,9 @@ in force; failed archive retention is not successful completion. See
 The [historical hosted attempt-archive measurement](measurements/attempt-archives-hosted-2026-11-01.json)
 qualifies eight source/fresh runtime pairs at its exact recorded c25 source and
 harness. It does not certify the follow-up's changed harness, so current native
-acceptance remains `not-measured`. Upstream producer/notice closure and external
+acceptance is separately recorded in the [main-source measurement](measurements/attempt-archives-hosted-2026-11-16.json)
+at commit `6809bf39c3aba1f1b582742c741051667461754e`. Changed revisions require
+their own bindings. Upstream producer/notice closure and external
 host-model usage remain separate and open. No Gate A closure, model inference or
 real-project field evaluation is claimed.
 

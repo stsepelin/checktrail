@@ -2,9 +2,10 @@
 
 The selected consumer-family manifest keeps nineteen required family boundaries
 visible. Families marked prepared have their original producer/consumer witness
-and controller hooks integrated. Other families remain required and pending.
-This is development acceptance tooling, not a review-quality result or complete
-consumer-family qualification.
+and controller hooks integrated. The manifest keeps declaration placeholders
+separate from measured evidence. The [main-source hosted record](measurements/consumer-impact-hosted-2026-11-16.json)
+qualifies the complete selected scope set at its recorded source; it does not
+qualify changed revisions, arbitrary consumer behavior or review quality.
 
 The optional test helper captures source bytes before and after the native
 invocation, the observed compiler/interpreter and executable bytes, bounded
@@ -47,11 +48,14 @@ The implementation has pure synthetic packet controls and [historical hosted
 evidence](measurements/consumer-impact-hosted-2026-11-01.json) qualified at the
 recorded c25 source and byte-matching hosted checkout. That evidence includes
 26 native consumer scopes and 25 producer artifacts admitted by the exact
-controller/capsule mechanism. The follow-up changes the compiled harness;
-current-head native qualification remains pending and those historical receipts
-cannot certify it. Gate A, complete upstream build/license closure and independent
-evaluation remain open. No model inference, comparison trial or field evaluation
-is invoked here.
+controller/capsule mechanism. The follow-up changed the compiled harness, and
+those historical receipts cannot certify it. The [main-source hosted measurement](measurements/consumer-impact-hosted-2026-11-16.json)
+separately reconciles all selected scopes at commit
+`6809bf39c3aba1f1b582742c741051667461754e` in run `43635572499`. It binds
+original source/fresh callback and foundation ledgers, rehashed physical runtime
+streams, exact compiled bytes and the successful complete capsule aggregate.
+Gate A, complete upstream build/license closure and independent evaluation
+remain open. No model inference, comparison trial or field evaluation is invoked here.
 
 The Go/Python entry point is the final hosted controller and refuses unqualified
 family reports, even when all six native observations exist. PHP/Rust/Ruby/C/C++/JVM inner
@@ -62,15 +66,16 @@ individual families does not complete the nineteen-family aggregate or Gate A.
 Ruby reuses its original interpreter witness and source/fresh acceptance callbacks.
 The physical response includes all three consumer calls, including the alias,
 and original producer/caller byte arrays read by the Ruby process. No optional
-JSON or digest gem is needed by this witness. Native Ruby qualification remains
-pending until the selected OCI controller actually runs and binds its results.
+JSON or digest gem is needed by this witness. Its selected OCI controller scope
+is included in the main-source hosted measurement.
 
 C/C++ retain the original seven producer cases and both consumer outcomes. Their
 compiler and executable invocations have separate retained attempts and byte
 identities; a missing or failed compiler attempt cannot be replaced by a successful
 executable result. The existing controller observes supplementary GCC/G++ 14.2.0,
 its Debian identity and aarch64 target. These observations explicitly do not
-qualify the selected Clang toolchain. Native source/fresh qualification is pending.
+qualify the selected Clang toolchain. The main-source record includes the
+original C/C++ source/fresh scopes and the separate selected-Clang scope.
 
 Java/Kotlin/Scala keep compiler and runtime attempts separate. The collector
 observes the actual Java runtime, compiler launcher, JDK module image and every
@@ -79,8 +84,8 @@ labels cannot fill missing dependency observations. The complete generated class
 directory is observed after compilation and after execution; the actual compiler
 output argument and runtime classpath must bind that same directory. Missing
 producer/caller classes, changed artifacts, changed dependencies and foreign
-classpaths refuse qualification. These collectors are prepared; native JVM
-source/fresh acceptance and the final selected matrix remain pending.
+classpaths refuse qualification. The main-source hosted record includes the
+selected native JVM source/fresh scopes.
 
 Classpath observation includes both `.jar` and `.JAR` names, ignores ordinary
 non-recursive subdirectories, and refuses a directory whose name itself matches
@@ -101,8 +106,9 @@ and, for F#, its byte-matching copied FSharp.Core. Witness.dll must be produced
 after that seed and stay unchanged through the actual consumer invocation.
 
 C#/F#/VB now have their original fixture and OCI controller hooks integrated.
-Their compiler/runtime acceptance remains pending; a prepared hook, SDK label or
-synthetic control is not a selected native result.
+Their selected compiler/runtime scopes are included in the main-source hosted
+record; a prepared hook, SDK label or synthetic control alone supplies no native
+acceptance evidence.
 
 ## Current-source native matrix transport
 
@@ -156,8 +162,10 @@ also requires its actual Windows-only ACL and host-custody inventory; optional
 skips on another operating system do not satisfy it.
 
 These controls and transport wiring do not themselves qualify the current native
-matrix. The manifest's native acceptance remains pending until actual exact-source
-source/fresh execution and complete aggregation. Whole upstream build/license
+matrix. The main-source hosted measurement supplies actual exact-source
+source/fresh execution and complete aggregation for its recorded revision. The
+manifest's pending declaration fields are not promoted into evidence, and changed
+source still requires its own runtime binding. Whole upstream build/license
 closure, host/client isolation and independent evaluation remain separate Gate A
 requirements. No model or field trial runs through these entrypoints.
 
@@ -184,13 +192,15 @@ capsule's canonical JSON-body digest and attempt identity against FINISH. The
 original uploaded ZIP is not retained and independently rehashed here; workflow
 metadata does not establish host or artifact-service attestation.
 
-## Historical attempt-archive acceptance
+## Attempt-archive acceptance records
 
 The [recorded hosted attempt-archive measurement](measurements/attempt-archives-hosted-2026-11-01.json)
 binds eight runtime slots with source and fresh-installed runs, 144 direct
 profile callbacks and 718 foundation callbacks at its exact recorded source and
 compiled harness. It preserves failed, cancelled, missing and unavailable attempt
 accounting. These are attempt-archive observations; they are separate from the
-consumer controller/capsule classification above. Current-head acceptance remains
-`not-measured` until native CI binds the changed harness. No producer, notice,
-licensed-cohort or independent evaluation closure is inferred.
+consumer controller/capsule classification above. The [main-source attempt record](measurements/attempt-archives-hosted-2026-11-16.json)
+separately revalidates all eight original source/fresh receipt pairs at commit
+`6809bf39c3aba1f1b582742c741051667461754e`, including its changed harness,
+pinned native tool observations and explicit Windows POSIX exclusion. No producer,
+notice, licensed-cohort or independent evaluation closure is inferred.
