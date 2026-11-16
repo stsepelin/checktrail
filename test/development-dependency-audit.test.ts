@@ -938,7 +938,14 @@ test("dependency audit accepts OS-incompatible optional ancestry and continues h
   const args = JSON.parse(
     await readFile(path.join(f.root, "npm-observed-arguments.json"), "utf8"),
   );
-  assert.deepEqual(args, ["ls", "--omit=dev", "--all", "--json", "--long"]);
+  assert.deepEqual(args, [
+    "ls",
+    "--no-update-notifier",
+    "--omit=dev",
+    "--all",
+    "--json",
+    "--long",
+  ]);
 });
 
 for (const field of [
