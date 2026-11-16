@@ -11,15 +11,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  windows-fresh-acl-fixture-diagnostic:
-    name: Windows fresh ACL and original fixture cost diagnostic
+  windows-termination-discriminator:
+    name: Windows fixed launcher termination discriminator
     runs-on: windows-2025
     timeout-minutes: 10
     defaults:
       run:
         shell: pwsh
     steps:
-      - name: Check out the exact reviewed source candidate
+      - name: Check out the exact reviewed application source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: stsepelin/checktrail
@@ -35,7 +35,7 @@ jobs:
       - name: Build the original source normally
         id: build
         run: npm run build
-      - name: Prepare the fixed ACL and fixture timing controller
+      - name: Prepare the fixed termination discriminator
         id: controller
         run: |
           $program = @'
@@ -43,164 +43,108 @@ jobs:
           import { Buffer } from "node:buffer";
           import { createHash } from "node:crypto";
           import { execFileSync, spawnSync } from "node:child_process";
-          import {
-            lstat,
-            mkdir,
-            mkdtemp,
-            readFile,
-            realpath,
-            rm,
-            writeFile,
-          } from "node:fs/promises";
+          import { lstat, readFile, realpath, writeFile } from "node:fs/promises";
           import path from "node:path";
           import process from "node:process";
           import { performance } from "node:perf_hooks";
-          import { setTimeout, clearTimeout } from "node:timers";
+          import { gzipSync } from "node:zlib";
           import { fileURLToPath, pathToFileURL } from "node:url";
           const SOURCE = "de1753a0c662b73fa66df145c05d0539ac839379";
           const hash = (body) => createHash("sha256").update(body).digest("hex");
-          const bounded = (value, max) =>
-            typeof value === "number" &&
-            Number.isFinite(value) &&
-            value >= 0 &&
-            value <= max;
-          let deadlineTimer;
-          function commandBudget(end, now, minimum = 15000, maximum = 15000) {
-            assert.ok(Number.isFinite(end) && Number.isFinite(now));
-            const remaining = Math.floor(end - now - 5000);
-            assert.ok(remaining >= minimum);
-            return Math.min(maximum, remaining);
+          function wireStatus(status) {
+            if (!Number.isInteger(status) || status < -2147483648 || status > 4294967295)
+              return null;
+            return status < 0 ? status + 4294967296 : status;
           }
-          function rawMetadata(result) {
+          function targets() {
+            return [
+              { kind: 0, value: 0, program: "[Environment]::Exit(0)" },
+              { kind: 1, value: 0, program: "exit 0" },
+              { kind: 2, value: 0, program: "$null = 0" },
+              { kind: 0, value: 37, program: "[Environment]::Exit(37)" },
+              { kind: 1, value: 37, program: "exit 37" },
+              { kind: 0, value: -1, program: "[Environment]::Exit(-1)" },
+              { kind: 1, value: -1, program: "exit -1" },
+              { kind: 3, value: 0, program: "$host.SetShouldExit(0)" },
+              { kind: 3, value: 37, program: "$host.SetShouldExit(37)" },
+              { kind: 3, value: -1, program: "$host.SetShouldExit(-1)" },
+            ];
+          }
+          function fixedTarget(target) {
+            assert.ok(target && [0, 1, 2, 3].includes(target.kind));
+            assert.ok([0, 37, -1].includes(target.value));
+            const expected =
+              target.kind === 0
+                ? `[Environment]::Exit(${target.value})`
+                : target.kind === 1
+                  ? `exit ${target.value}`
+                  : target.kind === 3
+                    ? `$host.SetShouldExit(${target.value})`
+                    : "$null = 0";
+            assert.equal(target.program, expected);
+            if (target.kind === 2) assert.equal(target.value, 0);
+            return target;
+          }
+          function wrappedProgram(original, originalCompressed, target) {
+            fixedTarget(target);
+            assert.ok(
+              typeof original === "string" && Buffer.byteLength(original) <= 65536,
+            );
+            assert.ok(
+              typeof originalCompressed === "string" &&
+                /^[A-Za-z0-9+/]+=*$/u.test(originalCompressed),
+            );
+            const parts = original.split(originalCompressed);
+            assert.equal(parts.length, 2);
+            const compressed = gzipSync(Buffer.from(target.program, "utf8"), {
+              level: 9,
+            }).toString("base64");
+            return { program: parts[0] + compressed + parts[1], compressed };
+          }
+          function projection(result, target, durationMs) {
             const stdout = String(result.stdout ?? ""),
               stderr = String(result.stderr ?? "");
+            const status = wireStatus(result.status),
+              expected = wireStatus(target.value);
+            const durationValid =
+              Number.isFinite(durationMs) && durationMs >= 0 && durationMs <= 20000;
+            const measured =
+              !result.error && !result.signal && status !== null && durationValid;
             return {
-              exitCode:
-                Number.isInteger(result.status) && result.status >= 0
-                  ? result.status
+              kind: target.kind,
+              value: target.value,
+              durationMs:
+                Number.isFinite(durationMs) && durationMs >= 0 && durationMs <= 20000
+                  ? Math.round(durationMs)
                   : null,
+              rawExitCode: status !== null ? result.status : null,
+              unsignedExitCode: status,
+              expectedUnsignedExitCode: expected,
+              measurementComplete: measured,
+              contractMatches:
+                measured && status === expected && stdout === "" && stderr === "",
+              stdoutBytes: Buffer.byteLength(stdout),
+              stderrBytes: Buffer.byteLength(stderr),
               stdoutSHA256: hash(stdout),
               stderrSHA256: hash(stderr),
-              complete:
-                !result.error &&
-                !result.signal &&
-                result.status === 0 &&
-                stdout === "" &&
-                stderr === "",
             };
           }
-          function profileWorker(root) {
-            assert.ok(path.isAbsolute(root));
-            const fixture = pathToFileURL(
-              path.join(root, "dist/test/native-license-provenance-fixture.js"),
-            ).href;
-            return `import assert from 'node:assert/strict';
-          import {test} from 'node:test';
-          import {lstat,writeFile} from 'node:fs/promises';
-          import process from 'node:process';
-          import {performance} from 'node:perf_hooks';
-          import {provenanceFixture,runProvenance,retainedProvenanceReceipt} from ${JSON.stringify(fixture)};
-          const output=process.argv[2];
-          const result={schemaVersion:1,fixtureMs:null,prepareMs:null,runMs:null,reportMs:null,processDurationsMs:[],engineFiles:null,engineBytes:null,engineSHA256:null,ordinaryOutcomeExpected:false,complete:false,cleanupObserved:false};
-          const flush=()=>writeFile(output,JSON.stringify(result)+'\\n',{mode:0o600});
-          let fixtureRoot;
-          await test('original synthetic fixture preparation and ordinary validation cost',{timeout:60000},async t=>{
-           let start=performance.now();
-           const f=await provenanceFixture(t);fixtureRoot=f.root;result.fixtureMs=performance.now()-start;await flush();
-           start=performance.now();const prepared=await f.prepare();result.prepareMs=performance.now()-start;
-           result.engineFiles=prepared.policy.engine.identity.files;result.engineBytes=prepared.policy.engine.identity.bytes;result.engineSHA256=prepared.policy.engine.identity.sha256;await flush();
-           start=performance.now();const report=await runProvenance(f.project,prepared.reference);result.runMs=performance.now()-start;
-           result.reportMs=typeof report.durationMs==='number'?report.durationMs:null;
-           result.processDurationsMs=report.checks.flatMap(row=>row.processes).map(row=>row.durationMs);await flush();
-           const receipt=retainedProvenanceReceipt(report);
-           assert.equal(report.outcome,'incomplete');assert.equal(receipt.state,'incomplete');
-           assert.deepEqual(receipt.audits.map(row=>row.state),['consistent-within-npm-scope','consistent-within-npm-scope','consistent-observations-only']);
-           assert.equal(receipt.rawOutputRetentionComplete,true);assert.equal(receipt.gateAComplete,false);
-           result.ordinaryOutcomeExpected=true;result.complete=true;await flush();
-          });
-          if(fixtureRoot)result.cleanupObserved=await lstat(fixtureRoot).then(()=>false,error=>error.code==='ENOENT');
-          result.complete=result.complete&&result.cleanupObserved;await flush();if(!result.complete||!result.cleanupObserved)process.exitCode=1;
-          `;
-          }
-          function parseProfile(text) {
-            try {
-              assert.ok(typeof text === "string" && Buffer.byteLength(text) <= 8192);
-              const value = JSON.parse(text);
-              assert.deepEqual(
-                Object.keys(value).sort(),
-                [
-                  "schemaVersion",
-                  "fixtureMs",
-                  "prepareMs",
-                  "runMs",
-                  "reportMs",
-                  "processDurationsMs",
-                  "engineFiles",
-                  "engineBytes",
-                  "engineSHA256",
-                  "ordinaryOutcomeExpected",
-                  "complete",
-                  "cleanupObserved",
-                ].sort(),
-              );
-              assert.equal(value.schemaVersion, 1);
-              for (const name of ["fixtureMs", "prepareMs", "runMs", "reportMs"])
-                assert.ok(value[name] === null || bounded(value[name], 60000));
-              assert.ok(
-                Array.isArray(value.processDurationsMs) &&
-                  value.processDurationsMs.length <= 4 &&
-                  value.processDurationsMs.every((number) => bounded(number, 35000)),
-              );
-              assert.ok(
-                value.engineFiles === null ||
-                  (Number.isSafeInteger(value.engineFiles) &&
-                    value.engineFiles > 0 &&
-                    value.engineFiles <= 8192),
-              );
-              assert.ok(
-                value.engineBytes === null ||
-                  (Number.isSafeInteger(value.engineBytes) &&
-                    value.engineBytes > 0 &&
-                    value.engineBytes <= 256 * 1048576),
-              );
-              assert.ok(
-                value.engineSHA256 === null || /^[a-f0-9]{64}$/u.test(value.engineSHA256),
-              );
-              for (const name of [
-                "ordinaryOutcomeExpected",
-                "complete",
-                "cleanupObserved",
-              ])
-                assert.equal(typeof value[name], "boolean");
-              if (value.complete) {
-                assert.ok(value.ordinaryOutcomeExpected && value.cleanupObserved);
-                assert.ok(
-                  [value.fixtureMs, value.prepareMs, value.runMs].every(
-                    (number) => number !== null,
-                  ),
-                );
-                assert.ok(
-                  value.engineFiles !== null &&
-                    value.engineBytes !== null &&
-                    value.engineSHA256 !== null,
-                );
-              }
-              return value;
-            } catch {
-              return null;
-            }
+          function budget(end, now) {
+            assert.ok(
+              Number.isFinite(end) &&
+                Number.isFinite(now) &&
+                Math.floor(end - now - 5000) >= 15000,
+            );
+            return 15000;
           }
           async function main() {
-            const started = performance.now(),
-              end = started + 90000,
-              abort = new globalThis.AbortController();
-            deadlineTimer = setTimeout(() => abort.abort(), 90000);
-            deadlineTimer.unref();
             assert.equal(process.argv.length, 2);
             assert.equal(process.platform, "win32");
-            const root = await realpath(process.cwd());
-            const git = (argv) =>
-              execFileSync("git", argv, {
+            const started = performance.now(),
+              end = started + 90000,
+              root = await realpath(process.cwd());
+            const git = (args) =>
+              execFileSync("git", args, {
                 encoding: "utf8",
                 timeout: 5000,
                 maxBuffer: 65536,
@@ -208,195 +152,103 @@ jobs:
               }).trim();
             assert.equal(git(["rev-parse", "HEAD"]), SOURCE);
             assert.equal(git(["status", "--porcelain=v1", "--untracked-files=no"]), "");
-            const locals = [
-              "dist/src/windows-task-access.js",
-              "dist/src/windows-process.js",
-              "dist/src/windows-native.js",
-              "dist/test/native-license-provenance-fixture.js",
-              "scripts/native-provenance-coordinator.mjs",
-            ];
-            const capture = async () =>
-              Promise.all(
-                locals.map(async (local, id) => {
-                  const body = await readFile(path.join(root, local));
-                  return { id, bytes: body.length, sha256: hash(body) };
-                }),
-              );
-            const before = await capture();
-            const runtimeFile = await realpath(process.execPath),
-              runtimeSHA256 = hash(await readFile(runtimeFile));
-            const { ensureWindowsTaskAccess } = await import(
-              pathToFileURL(path.join(root, "dist/src/windows-task-access.js")).href
+            const file = path.join(root, "dist/src/windows-native.js"),
+              sourceBefore = await readFile(file);
+            const { windowsLauncherScript, windowsCompressedSupervisor } = await import(
+              pathToFileURL(file).href
             );
             const { windowsEnvironment } = await import(
               pathToFileURL(path.join(root, "dist/src/windows-process.js")).href
             );
-            const { runProcess } = await import(
-              pathToFileURL(path.join(root, "dist/src/runner.js")).href
-            );
-            const environment = windowsEnvironment(process.env);
-            const powershell = await realpath(
-              path.win32.join(
-                environment.SYSTEMROOT,
-                "System32/WindowsPowerShell/v1.0/powershell.exe",
-              ),
-            );
-            const powershellSHA256 = hash(await readFile(powershell));
-            const noOp = "[Environment]::Exit(0)",
-              noOpSHA256 = hash(noOp);
-            const directories = [],
-              rows = [];
-            let profile = null,
-              profileProcess = null,
-              cleanupComplete,
-              failureStage = 0,
-              activeStage = 0;
-            const budget = (minimum = 15000, maximum = 15000) => {
-              abort.signal.throwIfAborted();
-              return commandBudget(end, performance.now(), minimum, maximum);
-            };
-            try {
-              for (let sample = 0; sample < 2; sample++) {
-                activeStage = 1;
-                budget();
-                const directory = await realpath(
-                  await mkdtemp(
-                    path.join(process.env.RUNNER_TEMP, "ct-fresh-acl-fixture-"),
+            const systemroot = windowsEnvironment(process.env).SYSTEMROOT,
+              powershell = await realpath(
+                path.win32.join(
+                  systemroot,
+                  "System32/WindowsPowerShell/v1.0/powershell.exe",
+                ),
+              );
+            assert.equal((await lstat(powershell)).isFile(), true);
+            const powershellSHA256 = hash(await readFile(powershell)),
+              nodeSHA256 = hash(await readFile(process.execPath));
+            const rows = [];
+            let failure = false;
+            for (const target of targets()) {
+              try {
+                const wrapped = wrappedProgram(
+                    windowsLauncherScript,
+                    windowsCompressedSupervisor,
+                    target,
                   ),
-                );
-                directories.push(directory);
-                const start = performance.now();
-                ensureWindowsTaskAccess(directory, "directory", true);
-                rows.push({
-                  stage: 1,
-                  sample,
-                  created: true,
-                  durationMs: Math.round(performance.now() - start),
-                  complete: true,
-                });
-              }
-              for (let sample = 0; sample < 2; sample++) {
-                activeStage = 2;
-                const start = performance.now();
-                const observed = spawnSync(
+                  start = performance.now();
+                const result = spawnSync(
                   powershell,
                   [
                     "-NoLogo",
                     "-NoProfile",
                     "-NonInteractive",
                     "-EncodedCommand",
-                    Buffer.from(noOp, "utf16le").toString("base64"),
+                    Buffer.from(wrapped.program, "utf16le").toString("base64"),
                   ],
                   {
-                    cwd: directories[sample],
-                    env: { SYSTEMROOT: environment.SYSTEMROOT },
+                    cwd: root,
+                    env: { SYSTEMROOT: systemroot },
                     encoding: "utf8",
                     windowsHide: true,
-                    timeout: budget(),
+                    timeout: budget(end, performance.now()),
                     maxBuffer: 4096,
                     stdio: ["ignore", "pipe", "pipe"],
                   },
                 );
-                const metadata = rawMetadata(observed);
                 rows.push({
-                  stage: 2,
-                  sample,
-                  durationMs: Math.round(performance.now() - start),
-                  ...metadata,
+                  ...projection(result, target, performance.now() - start),
+                  payloadSHA256: hash(target.program),
+                  wrappedProgramSHA256: hash(wrapped.program),
                 });
-                if (!metadata.complete) throw new Error("Fixed no-op failed");
-              }
-              activeStage = 3;
-              const directory = directories[1],
-                temporary = path.join(directory, "fixture-tmp");
-              await mkdir(temporary);
-              const worker = path.join(directory, "fixture-profile.mjs"),
-                packet = path.join(directory, "fixture-profile.json"),
-                program = profileWorker(root);
-              await writeFile(worker, program, { flag: "wx", mode: 0o600 });
-              const result = await runProcess(
-                directory,
-                {
-                  executable: runtimeFile,
-                  args: [worker, packet],
-                  cwd: ".",
-                  env: { TEMP: temporary, TMP: temporary, TMPDIR: temporary },
-                },
-                {
-                  timeoutMs: budget(40000, 60000),
-                  maxOutputBytes: 65536,
-                  signal: abort.signal,
-                },
-              );
-              profileProcess = {
-                durationMs: bounded(result.durationMs, 65000)
-                  ? Math.round(result.durationMs)
-                  : null,
-                exitCode: Number.isInteger(result.exitCode) ? result.exitCode : null,
-                timedOut: result.timedOut === true,
-                cancelled: result.cancelled === true,
-                cleanupConfirmed: result.windowsExecution?.cleanup === "confirmed",
-                stdoutSHA256: hash(result.stdout),
-                stderrSHA256: hash(result.stderr),
-              };
-              const contents = await readFile(packet, "utf8").catch(() => null);
-              if (contents !== null) profile = parseProfile(contents);
-              assert.deepEqual(await capture(), before);
-              assert.equal(hash(await readFile(runtimeFile)), runtimeSHA256);
-              assert.equal(hash(await readFile(powershell)), powershellSHA256);
-            } catch {
-              failureStage = activeStage;
-            } finally {
-              cleanupComplete = true;
-              for (const directory of directories) {
-                try {
-                  await rm(directory, {
-                    recursive: true,
-                    force: true,
-                    maxRetries: 3,
-                    retryDelay: 100,
-                  });
-                  if (
-                    await lstat(directory).then(
-                      () => true,
-                      (error) => error.code !== "ENOENT",
-                    )
-                  )
-                    cleanupComplete = false;
-                } catch {
-                  cleanupComplete = false;
+                if (!rows.at(-1).measurementComplete) {
+                  failure = true;
+                  break;
                 }
+              } catch {
+                failure = true;
+                break;
               }
             }
-            const complete =
-              rows.length === 4 &&
-              rows.every((row) => row.complete) &&
-              profile?.complete === true &&
-              profile?.cleanupObserved === true &&
-              profileProcess?.exitCode === 0 &&
-              profileProcess?.cleanupConfirmed === true &&
-              cleanupComplete;
+            assert.equal(hash(await readFile(file)), hash(sourceBefore));
+            assert.equal(hash(await readFile(powershell)), powershellSHA256);
+            assert.equal(hash(await readFile(process.execPath)), nodeSHA256);
+            const measurementsComplete =
+                !failure &&
+                rows.length === targets().length &&
+                rows.every((row) => row.measurementComplete),
+              baselinesMatch =
+                rows.filter((row) => row.kind === 0).length === 3 &&
+                rows.filter((row) => row.kind === 0).every((row) => row.contractMatches),
+              nativeExitAlternativePreservesCodes =
+                rows.filter((row) => row.kind === 1).length === 3 &&
+                rows.filter((row) => row.kind === 1).every((row) => row.contractMatches),
+              hostExitAlternativePreservesCodes =
+                rows.filter((row) => row.kind === 3).length === 3 &&
+                rows.filter((row) => row.kind === 3).every((row) => row.contractMatches);
             const output = {
               schemaVersion: 1,
-              scope: "same-host-fresh-ACL-and-original-fixture-cost-only",
+              scope: "fixed-original-compressed-launcher-termination-discriminator-only",
               sourceCommit: SOURCE,
-              runtime: {
-                node: process.versions.node,
-                architecture: process.arch,
-                nodeSHA256: runtimeSHA256,
-                powershellSHA256,
-              },
-              sourceFiles: before,
-              noOpSHA256,
+              node: process.versions.node,
+              nodeSHA256,
+              powershellSHA256,
+              sourceModuleSHA256: hash(sourceBefore),
+              originalLauncherSHA256: hash(windowsLauncherScript),
               controllerSHA256: hash(await readFile(fileURLToPath(import.meta.url))),
               durationMs: Math.round(performance.now() - started),
               rows,
-              profile,
-              profileProcess,
-              failureStage,
-              complete,
-              cleanupComplete,
-              privateTemporaryCarrier: true,
+              measurementsComplete,
+              baselinesMatch,
+              nativeExitAlternativePreservesCodes,
+              hostExitAlternativePreservesCodes,
+              naturalCompletionMatchesZero:
+                rows.find((row) => row.kind === 2)?.contractMatches === true,
+              directChildrenReaped: rows.every((row) => row.measurementComplete),
+              fixedTargetsCannotSpawnProjectChildren: true,
               originalNamedCallbacksExecuted: false,
               excludedOriginalCasesUncredited: 9,
               source9Qualified: false,
@@ -407,13 +259,13 @@ jobs:
             await writeFile(
               path.join(
                 process.env.RUNNER_TEMP,
-                "native-provenance-acl-fixture-cost.json",
+                "native-provenance-termination-cost.json",
               ),
               JSON.stringify(output) + "\n",
               { flag: "wx", mode: 0o600 },
             );
             process.stdout.write(JSON.stringify(output) + "\n");
-            if (!complete) process.exitCode = 1;
+            if (!measurementsComplete || !baselinesMatch) process.exitCode = 1;
           }
           try {
             await main();
@@ -421,8 +273,8 @@ jobs:
             process.stdout.write(
               JSON.stringify({
                 schemaVersion: 1,
-                scope: "ACL-fixture-probe-incomplete",
-                complete: false,
+                scope: "termination-discriminator-incomplete",
+                measurementsComplete: false,
                 source9Qualified: false,
                 fresh9Qualified: false,
                 gateAQualified: false,
@@ -430,25 +282,23 @@ jobs:
               }) + "\n",
             );
             process.exitCode = 1;
-          } finally {
-            if (deadlineTimer) clearTimeout(deadlineTimer);
           }
           '@
-          $controller = Join-Path $env:RUNNER_TEMP 'native-provenance-acl-fixture-cost.mjs'
+          $controller = Join-Path $env:RUNNER_TEMP 'native-provenance-termination.mjs'
           Set-Content -LiteralPath $controller -Value $program -Encoding utf8NoBOM
-      - name: Profile only fresh ACLs and one original synthetic fixture validation
+      - name: Compare only fixed compressed-launcher exit targets
         if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.controller.outcome == 'success' }}
         timeout-minutes: 2
         run: |
-          $controller = Join-Path $env:RUNNER_TEMP 'native-provenance-acl-fixture-cost.mjs'
+          $controller = Join-Path $env:RUNNER_TEMP 'native-provenance-termination.mjs'
           node $controller
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Retain bounded numeric and hash observations
+      - name: Retain bounded numeric statuses and hash observations
         if: ${{ !cancelled() && steps.controller.outcome == 'success' }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: native-provenance-acl-fixture-cost-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/native-provenance-acl-fixture-cost.json
+          name: native-provenance-termination-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/native-provenance-termination-cost.json
           if-no-files-found: error
           retention-days: 7
           include-hidden-files: false
