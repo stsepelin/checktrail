@@ -328,7 +328,7 @@ try {
 } finally { $compiler.Dispose(); $parameters.TempFiles.Delete() }
 $result = $nativeApi::Run([string]$request.executable, [string]$request.commandLine,
   [string[]]@($request.environment), [string]$request.cwd, [string]$request.receipt, [string]$request.requestId, [string]$request.controlPipe)
-[Environment]::Exit($result)
+exit $result
 `.replace(/^#.*\n/gm, "");
 
 // Compress only fixed engine source. Project data remains in the owned JSON file.
