@@ -584,10 +584,12 @@ class Packet:
                     require(size<=row['bytes'], 'ZIP member grew beyond exact pin')
                     digest.update(chunk)
             require(size==row['bytes'] and digest.hexdigest()==row['sha256'], 'Corrupt exported C raw bytes')
-            if name.startswith('result/work/original-test-reports/'):
+            if '/failed-test-diagnostics/' in name:
+                require(re.fullmatch(r'result/(?:work|work/post-stop-reports|custody-preflight)/failed-test-diagnostics/files/[0-9]{8}(?:\.out|\.test-result)',name) is not None and row['bytes']<=MIB, 'Foreign or over-bound failed diagnostic member')
+            if name.startswith(('result/work/original-test-reports/','result/work/failed-test-diagnostics/')):
                 require(row['bytes']<=64*MIB, 'Original C report member exceeds64MiB')
                 reports += row['bytes']
-            if name.startswith('result/work/post-stop-reports/original-test-reports/'):
+            if name.startswith(('result/work/post-stop-reports/original-test-reports/','result/work/post-stop-reports/failed-test-diagnostics/')):
                 require(version in [2,3] and row['bytes']<=64*MIB, 'Post-stop C report member exceeds64MiB')
                 post_reports += row['bytes']
             self.files[name] = row
@@ -798,7 +800,60 @@ def reports(packet, prefix, value, caller, expected_producer_uid, profile_name='
     if encoded:require(stored==value['storedBytes']==transport['storedBytes'] and total==transport['decodedBytes'] and physical_order==[row['file'] for row in transport['chunkFiles']],'Original report stored/decoded aggregate differs')
     archive_reports={name[len(prefix)+1:] for name in packet.files if name.startswith(prefix+'/')}
     require(archive_reports==physical_files,'Unreplayed original report/log member')
-    return {'reports':len(value['reports']),'observedOutcomeLines':outcome_count,**outcome_availability(value['reports']),'originalOutcomesPreserved':True,'reportsPooledAsIndependentEvidence':False}
+    return {'reports':len(value['reports']),'observedOutcomeLines':outcome_count,**outcome_availability(value['reports']),'originalOutcomesPreserved':True,'reportsPooledAsIndependentEvidence':False,'failedTestDiagnostics':failed_test_diagnostics(packet,prefix,value,caller,expected_producer_uid,profile_name)}
+
+
+_diagnostic_spec = importlib.util.spec_from_file_location('trusted_local_c_diagnostics', Path(__file__).with_name('c-producer-test-reports.py'))
+DIAGNOSTICS = importlib.util.module_from_spec(_diagnostic_spec)
+_diagnostic_spec.loader.exec_module(DIAGNOSTICS)
+
+
+def failed_test_diagnostics(packet, report_prefix, report_value, caller, expected_producer_uid, profile_name):
+    parent = report_prefix.rsplit('/', 1)[0]
+    manifest, prefix = parent + '/failed-test-diagnostics.json', parent + '/failed-test-diagnostics'
+    physical = {name[len(prefix) + 1:] for name in packet.files if name.startswith(prefix + '/')}
+    if manifest not in packet.files:
+        require(not physical, 'Failed diagnostic bytes lack their companion manifest')
+        return {'state': 'unavailable', 'diagnosticsComplete': False, 'originalOutcomesChanged': False}
+    require(profile_name in ['glibc', 'glibc-u13'], 'Foreign failed GLIBC diagnostics')
+    packet.custody(manifest, caller)
+    value = packet.json(manifest, 8 * MIB)
+    pins = DIAGNOSTICS.validate_failed_diagnostics(value)
+    require(value['profile'] == profile_name, 'Failed diagnostic profile differs')
+    report_name = parent + '/test-reports.json'
+    require(exact_json(value['sourceReportManifest'], {'file': 'test-reports.json', **{key:packet.files[report_name][key] for key in ['bytes', 'sha256']}}), 'Failed diagnostic report manifest pin differs')
+    def read_report(row):
+        if exact_json(report_value['schemaVersion'], 3):
+            return REPORT_CODEC.iter_report_bytes(row, lambda name, maximum:packet.read(report_prefix + '/' + name, maximum))
+        return iter([packet.read(report_prefix + '/' + row['file'], 64 * MIB)])
+    selection = DIAGNOSTICS.failed_diagnostic_selection(profile_name, report_value['reports'], read_report)
+    require(exact_json(selection['tests'], [{key:item for key,item in test.items() if key != 'outputs'} for test in value['tests']]) and exact_json(selection['unresolvedRecords'], value['unresolvedRecords']), 'Failed diagnostic selection differs from original sum bytes')
+    custody = value['exportCustody']
+    fields = {'schemaVersion','requestedCaller','producerEffectiveUid','directories','files','newCopyOwnersVerified','recursiveOwnershipChangeUsed','sourceTreePermissionsChanged','nativeLinuxCrossUidAcceptanceVerified'}
+    require(type(custody) is dict and set(custody) == fields and exact_json([custody['schemaVersion'],custody['requestedCaller'],custody['producerEffectiveUid']],[1,caller,expected_producer_uid]) and custody['newCopyOwnersVerified'] is True, 'Wrong failed diagnostic copy custody')
+    for key in ['recursiveOwnershipChangeUsed','sourceTreePermissionsChanged','nativeLinuxCrossUidAcceptanceVerified']:
+        require(custody[key] is False, 'Failed diagnostic custody relabeled as broader acceptance')
+    require(type(custody['files']) is list and len(custody['files']) <= 1024 and type(custody['directories']) is list and len(custody['directories']) <= 2, 'Failed diagnostic custody bound exceeded')
+    files, directories = {}, {}
+    def ownership(owner, mode):
+        require(type(owner) is dict and set(owner) == {'uid','gid','mode','producerDevice','producerInode'} and exact_json([owner['uid'],owner['gid'],owner['mode']],[caller['uid'],caller['gid'],mode]) and all(type(owner[k]) is str and re.fullmatch(r'[0-9]+',owner[k]) for k in ['producerDevice','producerInode']), 'Wrong failed diagnostic ownership')
+    for row in custody['files']:
+        require(type(row) is dict and set(row) == {'file','ownership'} and type(row['file']) is str and row['file'] not in files, 'Duplicate or malformed failed diagnostic custody file')
+        ownership(row['ownership'], 0o600); files[row['file']] = row
+    for row in custody['directories']:
+        require(type(row) is dict and set(row) == {'directory','ownership'} and row['directory'] in ['.','files'] and row['directory'] not in directories, 'Duplicate or malformed failed diagnostic custody directory')
+        ownership(row['ownership'], 0o700); directories[row['directory']] = row
+        packet.custody(prefix + ('/' + row['directory'] if row['directory'] != '.' else ''), caller, True)
+    require('.' in directories and set(directories) <= {'.','files'} and (not pins or 'files' in directories), 'Failed diagnostic ancestor custody differs')
+    expected = {pin['file'] for pin in pins}
+    require(set(files) == expected == physical, 'Failed diagnostic physical inventory differs')
+    for item in pins:
+        name = prefix + '/' + item['file']; packet.custody(name, caller)
+        require(exact_json(pin(packet.read(name, DIAGNOSTICS.DIAGNOSTIC_LIMITS['fileBytes'])), {key:item[key] for key in ['bytes','sha256']}), 'Failed diagnostic original bytes differ')
+    return {'state': 'no-selected-failures' if not value['tests'] and not value['unresolvedRecords'] else 'retained' if value['diagnosticsComplete'] else 'incomplete',
+            'tests': len(value['tests']), 'unresolvedRecords': len(value['unresolvedRecords']),
+            'retainedFiles': len(pins), 'retainedBytes': value['retainedBytes'],
+            'diagnosticsComplete': value['diagnosticsComplete'], 'originalOutcomesChanged': False}
 
 
 def selected_reports(packet, selected, receipt, caller, profile_name, verified_source_pins=None):
@@ -813,6 +868,8 @@ def selected_reports(packet, selected, receipt, caller, profile_name, verified_s
             if selected['schemaVersion'] in [2,3]:
                 require(location['source']!='original-trap','Original-trap raw report family was dropped')
                 require('postStopRetention' not in receipt and 'result/post-stop-reports.log' not in packet.files,'Post-stop raw report family was dropped')
+            diagnostic_parent=prefix.rsplit('/',1)[0]+'/failed-test-diagnostics'
+            require(not any(n==diagnostic_parent+'.json' or n.startswith(diagnostic_parent+'/') for n in packet.files),'Failed diagnostics lack their original report manifest')
     admit_report_families([value for _,_,value in families],verified_source_pins,profile_name)
     summary=None;value=None
     for name,prefix,candidate in families:

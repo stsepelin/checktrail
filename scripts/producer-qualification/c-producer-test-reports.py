@@ -506,6 +506,295 @@ def collect(profile, source, destination, caller):
             report["buildRootStates"].append({"root": name, "origin": "compatibility" if name == "build-cross" else "source", "state": "absent" if not root_presence[name] else "present-with-reports" if count else "present-no-reports", "reports": count})
     codec.validate_transport(report)
     write_manifest(destination, report, caller)
+    if profile in ['glibc', 'glibc-u13']:
+        def original_report_bytes(row):
+            return codec.iter_report_bytes(row, lambda name, maximum: physical_diagnostic_bytes(retained / name, maximum))
+        collect_failed_diagnostics(profile, source, destination, caller, rows, original_report_bytes)
+
+
+# Companion evidence deliberately does not change the version3 report transport.
+# Diagnostics are inert bytes, never imported, interpreted, or executed.
+DIAGNOSTIC_LIMITS = {'tests': 512, 'records': 4096, 'reportBytes': 16 * 1024 ** 2,
+                     'fileBytes': 1024 ** 2, 'totalBytes': 16 * 1024 ** 2,
+                     'lineBytes': 2048, 'testIdBytes': 1024, 'pathDepth': 32}
+DIAGNOSTIC_STATUSES = ['FAIL', 'ERROR', 'UNRESOLVED']
+DIAGNOSTIC_EXTENSIONS = ['.out', '.test-result']
+
+
+def diagnostic_component(value):
+    return isinstance(value, str) and value not in ['.', '..'] and re.fullmatch(r'[A-Za-z0-9_+.-]{1,128}', value) is not None
+
+
+def diagnostic_test_id(value):
+    return (isinstance(value, str) and len(value) <= DIAGNOSTIC_LIMITS['testIdBytes']
+            and 2 <= len(value.split('/')) <= DIAGNOSTIC_LIMITS['pathDepth']
+            and all(diagnostic_component(part) for part in value.split('/')))
+
+
+def failed_diagnostic_selection(profile, reports, read_report):
+    """Derive exact identifiers from retained sums; no source paths are followed."""
+    if profile not in ['glibc', 'glibc-u13']:
+        raise RuntimeError('Only selected GLIBC profiles have failed-test diagnostics')
+    tests, unresolved, decoded, records = {}, [], 0, 0
+    for report in reports:
+        if report['format'] != 'original-sum':
+            continue
+        parts = report['file'].split('/')
+        configuration = '/'.join(parts[:2]) if len(parts) >= 3 and parts[0] == 'build-tree' and diagnostic_component(parts[1]) else None
+        number, prefix, size, digest, pending_cr = 0, bytearray(), 0, hashlib.sha256(), False
+        def line():
+            nonlocal number, prefix, size, digest, records
+            number += 1
+            status = re.match(rb'^(FAIL|ERROR|UNRESOLVED):(?:[ \t\f\v]|$)', prefix)
+            if status:
+                records += 1
+                if records > DIAGNOSTIC_LIMITS['records']:
+                    raise RuntimeError('Failed GLIBC diagnostic selection record bound exceeded')
+                origin = {'report': report['file'], 'line': number, 'lineSha256': digest.hexdigest()}
+                match = re.fullmatch(rb'(FAIL|ERROR|UNRESOLVED):[ \t]+([A-Za-z0-9_+./-]+)[ \t]*', prefix) if size <= DIAGNOSTIC_LIMITS['lineBytes'] else None
+                test_id = match[2].decode('ascii') if match else None
+                if configuration is None or not diagnostic_test_id(test_id):
+                    unresolved.append({**origin, 'reason': 'unsafe-or-unrecognized-test-identifier-or-configuration'})
+                else:
+                    key = (configuration, test_id)
+                    if key not in tests:
+                        if len(tests) >= DIAGNOSTIC_LIMITS['tests']:
+                            raise RuntimeError('Failed GLIBC diagnostic test inventory bound exceeded')
+                        tests[key] = {'configuration': configuration, 'testId': test_id, 'statuses': [], 'origins': []}
+                    row = tests[key]
+                    state = match[1].decode('ascii')
+                    if state not in row['statuses']:
+                        row['statuses'].append(state)
+                    row['origins'].append(origin)
+            prefix, size, digest = bytearray(), 0, hashlib.sha256()
+        for raw in read_report(report):
+            decoded += len(raw)
+            if decoded > DIAGNOSTIC_LIMITS['reportBytes']:
+                raise RuntimeError('Failed GLIBC diagnostic sum byte bound exceeded')
+            # Sum files are small; bounded prefixes and incremental line hashes
+            # prevent an unbounded single report line from entering memory.
+            start = 0
+            if pending_cr and raw.startswith(b'\n'):
+                start = 1
+            pending_cr = False
+            position = start
+            for match in re.finditer(rb'\r\n|\n|\r', raw[start:]):
+                begin, end = start + match.start(), start + match.end()
+                piece = raw[position:begin]
+                prefix.extend(piece[:max(0, DIAGNOSTIC_LIMITS['lineBytes'] - len(prefix))])
+                size += len(piece); digest.update(piece)
+                line()
+                pending_cr = match.group() == b'\r' and end == len(raw)
+                position = end
+            piece = raw[position:]
+            prefix.extend(piece[:max(0, DIAGNOSTIC_LIMITS['lineBytes'] - len(prefix))])
+            size += len(piece); digest.update(piece)
+        if size:
+            line()
+    rows = [tests[key] for key in sorted(tests)]
+    for row in rows:
+        row['statuses'].sort()
+    return {'tests': rows, 'unresolvedRecords': unresolved}
+
+
+def diagnostic_identity(info):
+    return (info.st_dev, info.st_ino, info.st_mode, info.st_uid, info.st_gid,
+            info.st_nlink, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+
+
+def open_diagnostic_source(root_fd, relative):
+    """Open every ancestor from a pinned root; no lexical or symlink traversal."""
+    parts = relative.split('/')
+    suffix = next((extension for extension in DIAGNOSTIC_EXTENSIONS if parts[-1].endswith(extension)), None)
+    if (len(parts) > DIAGNOSTIC_LIMITS['pathDepth'] + 3
+            or not all(diagnostic_component(part) for part in parts[:-1])
+            or suffix is None or not diagnostic_component(parts[-1][:-len(suffix)])):
+        raise RuntimeError('unsafe-source-path')
+    current = os.dup(root_fd)
+    chain = []
+    try:
+        for part in parts[:-1]:
+            named = os.stat(part, dir_fd=current, follow_symlinks=False)
+            if not stat.S_ISDIR(named.st_mode):
+                raise RuntimeError('linked-or-nondirectory-source-ancestor')
+            following = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=current)
+            if diagnostic_identity(named) != diagnostic_identity(os.fstat(following)):
+                os.close(following)
+                raise RuntimeError('source-ancestor-identity-changed')
+            chain.append((current, part, following, named))
+            current = following
+        before = os.stat(parts[-1], dir_fd=current, follow_symlinks=False)
+        if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1:
+            raise RuntimeError('linked-or-nonregular-source')
+        if before.st_size > DIAGNOSTIC_LIMITS['fileBytes']:
+            raise RuntimeError('file-byte-bound-exceeded')
+        fd = os.open(parts[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=current)
+        if diagnostic_identity(before) != diagnostic_identity(os.fstat(fd)):
+            os.close(fd)
+            raise RuntimeError('source-identity-changed')
+        def validate():
+            if (diagnostic_identity(os.fstat(fd)) != diagnostic_identity(before)
+                    or diagnostic_identity(os.stat(parts[-1], dir_fd=current, follow_symlinks=False)) != diagnostic_identity(before)):
+                raise RuntimeError('source-identity-changed')
+            for parent, name, child, original in chain:
+                if (diagnostic_identity(os.stat(name, dir_fd=parent, follow_symlinks=False)) != diagnostic_identity(original)
+                        or diagnostic_identity(os.fstat(child)) != diagnostic_identity(original)):
+                    raise RuntimeError('source-ancestor-identity-changed')
+        return fd, before, validate, [current] + [item[0] for item in reversed(chain)]
+    except BaseException:
+        for fd in set([current] + [item[0] for item in chain]):
+            os.close(fd)
+        raise
+
+
+def collect_failed_diagnostics(profile, source, destination, caller, reports, read_report):
+    selection = failed_diagnostic_selection(profile, reports, read_report)
+    retained = destination.parent / 'failed-test-diagnostics'
+    copies = RetainedCopies(retained, caller)
+    root_fd = os.open(source, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    source_identity = diagnostic_identity(os.fstat(root_fd))
+    total, ordinal = 0, 0
+    original_error = custody_error = None
+    try:
+        for test in selection['tests']:
+            test['outputs'] = []
+            for extension in DIAGNOSTIC_EXTENSIONS:
+                relative = test['configuration'] + '/' + test['testId'] + extension
+                row = {'extension': extension, 'sourceFile': relative}
+                fd, ancestors = None, []
+                try:
+                    fd, before, validate, ancestors = open_diagnostic_source(root_fd, relative)
+                    if total + before.st_size > DIAGNOSTIC_LIMITS['totalBytes']:
+                        raise RuntimeError('total-byte-bound-exceeded')
+                    size = 0
+                    def chunks():
+                        nonlocal size
+                        while size < before.st_size:
+                            raw = os.read(fd, min(65536, before.st_size - size))
+                            if not raw:
+                                raise RuntimeError('source-size-changed')
+                            size += len(raw)
+                            yield raw
+                        if os.read(fd, 1):
+                            raise RuntimeError('source-size-changed')
+                    def stable():
+                        validate()
+                        if (diagnostic_identity(os.fstat(root_fd)) != source_identity
+                                or diagnostic_identity(source.lstat()) != source_identity):
+                            raise RuntimeError('source-root-identity-changed')
+                    pin = copies.write_stream('files/%08d%s' % (ordinal, extension), chunks(), stable)
+                    total += pin['bytes']; ordinal += 1
+                    row.update(state='retained', pin=pin)
+                except FileNotFoundError:
+                    row.update(state='missing', reason='source-not-present')
+                except OSError as error:
+                    row.update(state='refused', reason='source-io-error', errno=error.errno)
+                except RuntimeError as error:
+                    allowed = {'unsafe-source-path', 'linked-or-nondirectory-source-ancestor', 'source-ancestor-identity-changed',
+                               'linked-or-nonregular-source', 'file-byte-bound-exceeded', 'source-identity-changed',
+                               'total-byte-bound-exceeded', 'source-size-changed', 'source-root-identity-changed'}
+                    if str(error) not in allowed:
+                        raise
+                    row.update(state='refused', reason=str(error))
+                finally:
+                    if fd is not None:
+                        os.close(fd)
+                    for ancestor in set(ancestors):
+                        os.close(ancestor)
+                test['outputs'].append(row)
+    except BaseException as error:
+        original_error = error
+    finally:
+        os.close(root_fd)
+        try:
+            custody = copies.finish()
+        except BaseException as error:
+            custody_error = error
+        finally:
+            copies.close()
+    if original_error is not None:
+        raise original_error
+    if custody_error is not None:
+        raise custody_error
+    raw = physical_diagnostic_bytes(destination, 8 * 1024 ** 2)
+    manifest = {'schemaVersion': 1, 'profile': profile, 'selectionStatuses': DIAGNOSTIC_STATUSES,
+                'extensions': DIAGNOSTIC_EXTENSIONS, 'limits': DIAGNOSTIC_LIMITS,
+                'sourceReportManifest': {'file': destination.name, 'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()},
+                **selection, 'retainedBytes': total, 'exportCustody': custody,
+                'diagnosticsComplete': not selection['unresolvedRecords'] and all(output['state'] == 'retained' for test in selection['tests'] for output in test['outputs']),
+                'testOutcomesChanged': False, 'diagnosticsExecuted': False, 'qualificationComplete': False, 'gateAComplete': False}
+    validate_failed_diagnostics(manifest)
+    write_manifest(destination.with_name('failed-test-diagnostics.json'), manifest, caller)
+
+
+def validate_failed_diagnostics(value):
+    """Closed companion schema. Physical bytes and selection are replayed separately."""
+    def require(condition, reason):
+        if not condition:
+            raise RuntimeError('Invalid GLIBC failed-test diagnostics: ' + reason)
+    def integer(n, maximum):
+        return type(n) is int and 0 <= n <= maximum
+    def sha(n):
+        return type(n) is str and re.fullmatch('[a-f0-9]{64}', n) is not None
+    fields = {'schemaVersion', 'profile', 'selectionStatuses', 'extensions', 'limits', 'sourceReportManifest', 'tests', 'unresolvedRecords', 'retainedBytes', 'exportCustody', 'diagnosticsComplete', 'testOutcomesChanged', 'diagnosticsExecuted', 'qualificationComplete', 'gateAComplete'}
+    require(type(value) is dict and set(value) == fields and type(value['schemaVersion']) is int and value['schemaVersion'] == 1, 'schema')
+    require(value['profile'] in ['glibc', 'glibc-u13'] and value['selectionStatuses'] == DIAGNOSTIC_STATUSES and value['extensions'] == DIAGNOSTIC_EXTENSIONS and value['limits'] == DIAGNOSTIC_LIMITS, 'closed policy')
+    source = value['sourceReportManifest']
+    require(type(source) is dict and set(source) == {'file', 'bytes', 'sha256'} and source['file'] == 'test-reports.json' and integer(source['bytes'], 8 * 1024 ** 2) and sha(source['sha256']), 'source manifest pin')
+    require(type(value['tests']) is list and len(value['tests']) <= DIAGNOSTIC_LIMITS['tests'] and type(value['unresolvedRecords']) is list and len(value['unresolvedRecords']) <= DIAGNOSTIC_LIMITS['records'], 'selection bound')
+    files, tests, records, total = [], set(), 0, 0
+    def origin(row):
+        require(type(row) is dict and {'report', 'line', 'lineSha256'} <= set(row) and type(row['report']) is str and row['report'].startswith('build-tree/') and row['report'].endswith('.sum') and all(diagnostic_component(part) for part in row['report'].split('/')) and integer(row['line'], 2 ** 53 - 1) and row['line'] > 0 and sha(row['lineSha256']), 'origin')
+    for test in value['tests']:
+        require(type(test) is dict and set(test) == {'configuration', 'testId', 'statuses', 'origins', 'outputs'}, 'test fields')
+        require(type(test['configuration']) is str and len(test['configuration'].split('/')) == 2 and test['configuration'].startswith('build-tree/') and diagnostic_component(test['configuration'].split('/')[1]) and diagnostic_test_id(test['testId']), 'test path')
+        key = (test['configuration'], test['testId'])
+        require(key not in tests, 'duplicate test'); tests.add(key)
+        require(type(test['statuses']) is list and test['statuses'] and sorted(set(test['statuses'])) == test['statuses'] and all(status in DIAGNOSTIC_STATUSES for status in test['statuses']), 'statuses')
+        require(type(test['origins']) is list and test['origins'], 'origins')
+        for row in test['origins']:
+            origin(row); require(set(row) == {'report', 'line', 'lineSha256'}, 'origin fields'); records += 1
+        require(type(test['outputs']) is list and len(test['outputs']) == len(DIAGNOSTIC_EXTENSIONS), 'output count')
+        for extension, output in zip(DIAGNOSTIC_EXTENSIONS, test['outputs']):
+            require(type(output) is dict and output.get('extension') == extension and output.get('sourceFile') == test['configuration'] + '/' + test['testId'] + extension, 'output association')
+            if output.get('state') == 'retained':
+                require(set(output) == {'extension', 'sourceFile', 'state', 'pin'}, 'retained fields')
+                pin = output['pin']
+                require(type(pin) is dict and set(pin) == {'file', 'bytes', 'sha256'} and pin['file'] == 'files/%08d%s' % (len(files), extension) and integer(pin['bytes'], DIAGNOSTIC_LIMITS['fileBytes']) and sha(pin['sha256']), 'output pin')
+                files.append(pin); total += pin['bytes']
+            else:
+                require(output.get('state') in ['missing', 'refused'] and set(output) in [{'extension', 'sourceFile', 'state', 'reason'}, {'extension', 'sourceFile', 'state', 'reason', 'errno'}] and type(output.get('reason')) is str and output['reason'] in ['source-not-present', 'source-io-error', 'unsafe-source-path', 'linked-or-nondirectory-source-ancestor', 'source-ancestor-identity-changed', 'linked-or-nonregular-source', 'file-byte-bound-exceeded', 'source-identity-changed', 'total-byte-bound-exceeded', 'source-size-changed', 'source-root-identity-changed'], 'unavailable output')
+                require((output['state'] == 'missing') == (output['reason'] == 'source-not-present'), 'missing state')
+                if 'errno' in output:
+                    require(output['reason'] == 'source-io-error' and integer(output['errno'], 4096), 'errno')
+    for row in value['unresolvedRecords']:
+        origin(row); require(set(row) == {'report', 'line', 'lineSha256', 'reason'} and row['reason'] == 'unsafe-or-unrecognized-test-identifier-or-configuration', 'unresolved record'); records += 1
+    require(records <= DIAGNOSTIC_LIMITS['records'] and integer(value['retainedBytes'], DIAGNOSTIC_LIMITS['totalBytes']) and value['retainedBytes'] == total, 'aggregate')
+    complete = not value['unresolvedRecords'] and all(output['state'] == 'retained' for test in value['tests'] for output in test['outputs'])
+    require(type(value['diagnosticsComplete']) is bool and value['diagnosticsComplete'] == complete, 'completeness')
+    require(all(value[key] is False for key in ['testOutcomesChanged', 'diagnosticsExecuted', 'qualificationComplete', 'gateAComplete']), 'promotion')
+    return files
+
+
+def physical_diagnostic_bytes(file, maximum):
+    if file.parent.resolve(strict=True) != file.parent:
+        raise RuntimeError('Linked diagnostic evidence parent refused')
+    fd = os.open(file, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    try:
+        before = os.fstat(fd)
+        if not stat.S_ISREG(before.st_mode) or before.st_size > maximum:
+            raise RuntimeError('Nonregular or over-bound diagnostic evidence')
+        parts, size = [], 0
+        while size <= maximum:
+            raw = os.read(fd, min(65536, maximum + 1 - size))
+            if not raw:
+                break
+            size += len(raw); parts.append(raw)
+        if size != before.st_size or diagnostic_identity(before) != diagnostic_identity(os.fstat(fd)) or diagnostic_identity(before) != diagnostic_identity(file.lstat()):
+            raise RuntimeError('Diagnostic evidence identity changed')
+        return b''.join(parts)
+    finally:
+        os.close(fd)
 
 
 if __name__ == "__main__":

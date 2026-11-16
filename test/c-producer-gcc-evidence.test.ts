@@ -760,6 +760,9 @@ def legacy_collect(profile_name,source,destination,caller):
  for name in sorted(directories):
   path=retained/name;path.chmod(0o700);value['exportCustody']['directories'].append({'directory':name,'ownership':owner(path,0o700)})
  write(destination,value)
+ # Historical epochs predate this separately versioned companion.
+ companion=destination.with_name('failed-test-diagnostics.json')
+ if companion.exists():companion.unlink();shutil.rmtree(destination.parent/'failed-test-diagnostics')
 selected_sources=legacy_selected_sources
 archive_sources={}
 def replay_fixture(archive,selected_source,*args):
@@ -894,6 +897,8 @@ legacy_work_copies=root/'legacy-work-copies';legacy_pre_copies=root/'legacy-pre-
 (work/'original-test-reports').rename(legacy_work_copies);(pre_root/'original-test-reports').rename(legacy_pre_copies);(work/'test-reports.json').unlink();(pre_root/'test-reports.json').unlink()
 collector.collect('gcc-12',source,work/'test-reports.json',caller);current_reports=json.loads((work/'test-reports.json').read_bytes());current_reports['exportCustody']['producerEffectiveUid']=0;write(work/'test-reports.json',current_reports)
 collector.collect('glibc',pre_source,pre_root/'test-reports.json',caller);current_pre_reports=json.loads((pre_root/'test-reports.json').read_bytes());current_pre_reports['exportCustody']['producerEffectiveUid']=0;current_pre_manifest=write(pre_root/'test-reports.json',current_pre_reports)
+# Both copied custody observations are synthetic root-container schema data.
+pre_diagnostic_file=pre_root/'failed-test-diagnostics.json';pre_diagnostics=json.loads(pre_diagnostic_file.read_bytes());pre_diagnostics['exportCustody']['producerEffectiveUid']=0;pre_diagnostics['sourceReportManifest']={'file':'test-reports.json',**current_pre_manifest};write(pre_diagnostic_file,pre_diagnostics)
 assert current_reports['schemaVersion']==current_pre_reports['schemaVersion']==3 and len(current_reports['reports'])==6
 startup3=copy.deepcopy(startup);startup3.update(gitHead=head3,sourcePins=source_pins3);startup3_pin=write(startup_file,startup3)
 rows3=[]
@@ -922,6 +927,7 @@ except ValueError as error:assert 'Historical C controller requires exact legacy
 else:raise AssertionError('Impossible historical-controller/current-collector tuple replayed')
 # Restore the exact raw historical cohort for the historical mutation cases.
 shutil.rmtree(work/'original-test-reports');shutil.rmtree(pre_root/'original-test-reports');legacy_work_copies.rename(work/'original-test-reports');legacy_pre_copies.rename(pre_root/'original-test-reports');(work/'test-reports.json').write_bytes(legacy_work_manifest);(pre_root/'test-reports.json').write_bytes(legacy_pre_manifest)
+pre_diagnostic_file.unlink();shutil.rmtree(pre_root/'failed-test-diagnostics')
 startup_file.write_bytes(legacy_startup_bytes);(carrier/'owner-frame.json').write_bytes(legacy_owner_bytes);(carrier/'receipt.json').write_bytes(legacy_carrier_bytes)
 (result/'receipt.json').write_bytes(legacy_receipt_bytes);(result/'build-observation.json').write_bytes(legacy_observed_bytes);(result/'retention-observer.jsonl').write_bytes(transport)
 
@@ -1799,7 +1805,11 @@ def write(p,value):
 def reports(profile,source,destination,status):
  name='build'if profile=='gcc-12'else'build-tree';p=source/name/'tests.sum';write(p,(status+': authored result\n').encode());write(p.with_suffix('.log'),b'Authored original report log\n')
  destination.parent.mkdir(parents=True,exist_ok=True);destination.parent.chmod(0o700);os.chown(destination.parent,caller['uid'],caller['gid'])
- c.collect(profile,source,destination,caller);value=json.loads(destination.read_bytes());value['exportCustody']['producerEffectiveUid']=0;write(destination,value);return value
+ c.collect(profile,source,destination,caller);value=json.loads(destination.read_bytes());value['exportCustody']['producerEffectiveUid']=0;write(destination,value)
+ companion=destination.with_name('failed-test-diagnostics.json')
+ if companion.exists():
+  diagnostics=json.loads(companion.read_bytes());diagnostics['exportCustody']['producerEffectiveUid']=0;diagnostics['sourceReportManifest']={'file':'test-reports.json',**r.pin(destination.read_bytes())};write(companion,diagnostics)
+ return value
 def fixture(profile_name):
  base=root/profile_name;base.mkdir();result=base/'result';work=result/'work';work.mkdir(parents=True,mode=0o700);os.chown(work,caller['uid'],caller['gid']);work.chmod(0o700)
  profile=catalog['profiles'][profile_name];native=work/'native-build';native.mkdir(mode=0o700);s=native.stat();identity=[str(v)for v in(s.st_dev,s.st_ino,s.st_mode,s.st_uid,s.st_gid)]
