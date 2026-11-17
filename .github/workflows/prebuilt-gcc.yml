@@ -27,7 +27,12 @@ jobs:
           test "$RUNNER_ENVIRONMENT" = github-hosted
           test "$RUNNER_ARCH" = X64
           python3 - "$RUNNER_TEMP/prebuilt-gcc" <<'PY'
-          import hashlib, json, os, pathlib, platform, subprocess, sys
+          import hashlib, json, os, pathlib, platform, re, subprocess, sys
+          image_version = os.environ.get("ImageVersion", "")
+          if not re.fullmatch(r"20[0-9]{6}\.[0-9]+\.[0-9]+", image_version):
+              raise SystemExit("Exact hosted image version is unavailable")
+          if platform.machine() != "x86_64":
+              raise SystemExit("Expected native x64 compiler host")
           out = pathlib.Path(sys.argv[1])
           out.mkdir(mode=0o700)
           release = platform.freedesktop_os_release()
@@ -42,7 +47,7 @@ jobs:
               with path.open("rb") as body:
                   driver_hash = hashlib.file_digest(body, "sha256").hexdigest()
               tools.append({"name": name, "version": version, "resolvedPath": str(path.resolve(strict=True)), "driverSHA256": driver_hash})
-          record = {"schemaVersion": 1, "runner": "ubuntu-26.04", "imageVersion": os.environ.get("ImageVersion"), "osVersion": release["VERSION_ID"], "architecture": platform.machine(), "sourceCommit": os.environ["GITHUB_SHA"], "tools": tools, "scope": "preinstalled compiler smoke only; no upstream source-build or Checktrail adapter acceptance claim"}
+          record = {"schemaVersion": 1, "runner": "ubuntu-26.04", "imageVersion": image_version, "osVersion": release["VERSION_ID"], "architecture": platform.machine(), "sourceCommit": os.environ["GITHUB_SHA"], "tools": tools, "scope": "preinstalled compiler smoke only; no upstream source-build or Checktrail adapter acceptance claim"}
           (out / "tools.json").write_text(json.dumps(record, indent=2) + "\n")
           print(json.dumps(record))
           PY

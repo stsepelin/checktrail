@@ -38,14 +38,14 @@ function observed(slot: string) {
         ? "Windows Server 2025 Datacenter"
         : "Original observed OS",
     distributionId: "ubuntu",
-    distributionVersion: "24.04",
+    distributionVersion: "26.04",
     distributionSha256: hex("d"),
     imageOS:
       p.platform === "win32"
         ? "win25-vs2026"
         : p.platform === "darwin"
           ? "macos26"
-          : "ubuntu24",
+          : "ubuntu26",
     imageVersion: "20261023.1.0",
     containerReference:
       slot === "native-linux-arm64-node22"

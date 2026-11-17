@@ -232,7 +232,7 @@ test("provenance source and fresh receipts use exactly the seven core rows and p
         ).node,
         "Each core slot must retain its exact selected Node patch",
       );
-    assert.equal(arm["runs-on"], "ubuntu-24.04-arm");
+    assert.equal(arm["runs-on"], "ubuntu-26.04-arm");
     assert.equal(arm["timeout-minutes"], 30);
     assert.equal(
       core["timeout-minutes"],

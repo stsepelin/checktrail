@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   original-glibc-observation:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 360
     env:
       SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"

@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   original-runtime-build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 80
     env:
       RUNTIME_RECIPE: ${{ inputs.recipe || (startsWith(github.ref_name, 'pr/upstream-runtime/web-tree-sitter-npm-') && 'npm') || 'github' }}

@@ -16,7 +16,7 @@ concurrency:
 jobs:
   original-package-build:
     name: Original package build and evidence collection
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 240
     env:
       SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"

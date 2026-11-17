@@ -1,5 +1,26 @@
 # Required native CI evidence
 
+## Current Linux runner selection
+
+Current Linux workflow placements use explicit `ubuntu-26.04` for x64 and
+`ubuntu-26.04-arm` for ARM64, including Linux matrix rows and host-baseline
+conditions. Existing macOS/Windows selections, Node/tool pins, check cohorts,
+trigger boundaries and native command limits remain unchanged. Older dated
+measurements retain their original runner identities; they do not qualify this
+new selection.
+
+The existing actionlint job now checks this repository's actual workflow files
+with the pinned checker, explicit label configuration, read-only repository mount
+and disabled container network before its existing synthetic adapter acceptance.
+The exact Ubuntu 26.04 labels are declared for the pinned linter whose built-in
+label table predates them. Unknown adjacent labels remain invalid.
+
+The separate manual `prebuilt-gcc.yml` workflow exercises installed GNU C/C++
+compilers with small positive and broken controls within a ten-minute job bound.
+It does not establish upstream source-build closure or replace required adapter
+or source/fresh-installed native acceptance. A prepared workflow or green local
+contract test is not a hosted platform pass.
+
 ## Workflow scheduling
 
 The Windows consumer impact installed callback has a twenty-minute enclosing

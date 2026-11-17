@@ -1547,7 +1547,7 @@ test("CI full-suite shard runners retain their package cache before Linux instal
   assert.ok(cache >= 0);
   assert.equal(
     steps[cache].if,
-    "env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')",
+    "env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-26.04' && matrix.node == '22')",
   );
   for (const script of [
     "verify-review-container.mjs",
@@ -2153,9 +2153,9 @@ test("CI shared matrices retain every full command and use selected complete fil
     /needs.ci-plan.result == 'success'.*mode \|\| 'full'/,
   );
   assert.deepEqual(checks.strategy.matrix.include, [
-    { os: "ubuntu-latest", node: "22" },
-    { os: "ubuntu-latest", node: "24" },
-    { os: "ubuntu-latest", node: "26" },
+    { os: "ubuntu-26.04", node: "22" },
+    { os: "ubuntu-26.04", node: "24" },
+    { os: "ubuntu-26.04", node: "26" },
     { os: "macos-latest", node: "24" },
   ]);
   const fast = checks.steps.filter(
@@ -2778,7 +2778,7 @@ test("CI attempt archive lanes retain every frozen runtime, prerequisite and com
   }
   assert.equal(
     workflow.jobs["attempt-runtime-arm64"]["runs-on"],
-    "ubuntu-24.04-arm",
+    "ubuntu-26.04-arm",
   );
   for (const id of ["tasks-runtime", "tasks-runtime-arm64"])
     assert.equal(
@@ -3196,7 +3196,7 @@ test("generator CI keeps three closed shards original runtime limits and unique 
     "max-parallel": 3,
     matrix: { include: [{ shard: "0" }, { shard: "1" }, { shard: "2" }] },
   });
-  assert.equal(job["runs-on"], "ubuntu-24.04-arm");
+  assert.equal(job["runs-on"], "ubuntu-26.04-arm");
   assert.deepEqual(job.permissions, { contents: "read", actions: "read" });
   const keys = ["0", "1", "2"].flatMap((id) =>
     Object.values(api.generatorCIOutputKeys(id)),

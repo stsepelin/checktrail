@@ -55,9 +55,9 @@ const manifest = JSON.parse(
   ),
 ) as { schemaVersion: number; profiles: string[]; remainingCommands: string[] };
 const variants = [
-  { os: "ubuntu-latest", node: "22" },
-  { os: "ubuntu-latest", node: "24" },
-  { os: "ubuntu-latest", node: "26" },
+  { os: "ubuntu-26.04", node: "22" },
+  { os: "ubuntu-26.04", node: "24" },
+  { os: "ubuntu-26.04", node: "26" },
   { os: "macos-latest", node: "24" },
 ];
 const fullContext: Context = {
@@ -112,10 +112,10 @@ function condition(expression: string | undefined, context: Context, row: Row) {
     ],
     ["env.CHECKTRAIL_CI_MODE == 'full'", context.mode === "full"],
     ["env.CHECKTRAIL_CI_MODE == 'affected'", context.mode === "affected"],
-    ["runner.os == 'Linux'", row.os === "ubuntu-latest"],
+    ["runner.os == 'Linux'", row.os === "ubuntu-26.04"],
     ["runner.os == 'macOS'", row.os === "macos-latest"],
     ["runner.os != 'macOS'", row.os !== "macos-latest"],
-    ["matrix.os == 'ubuntu-latest'", row.os === "ubuntu-latest"],
+    ["matrix.os == 'ubuntu-26.04'", row.os === "ubuntu-26.04"],
     ["matrix.node == '22'", row.node === "22"],
     ["matrix.node == '26'", row.node === "26"],
     ["matrix.shard == 0", row.shard === 0],
@@ -463,7 +463,7 @@ test("Linux container work moves once to its designated suite role with both cac
       commands
         .filter((entry) => entry.command === command)
         .map(({ row }) => row),
-      [{ os: "ubuntu-latest", node: "22", shard }],
+      [{ os: "ubuntu-26.04", node: "22", shard }],
     );
     assert.equal(
       executed(workflow, "checks").filter((entry) => entry.command === command)
@@ -472,7 +472,7 @@ test("Linux container work moves once to its designated suite role with both cac
     );
   }
   for (const shard of [1, 2]) {
-    const row = { os: "ubuntu-latest", node: "22", shard };
+    const row = { os: "ubuntu-26.04", node: "22", shard };
     const projected = extras.steps.flatMap((step) =>
       lines(step, fullContext, row),
     );
@@ -522,7 +522,7 @@ test("workflow guard rejects missing or moved roles, dropped completion dependen
 
 function requirePreservedBaselineWiring(w: Workflow) {
   const selector =
-    "${{ matrix.os == 'ubuntu-latest' && matrix.node == '22' && 'host-core' || '' }}";
+    "${{ matrix.os == 'ubuntu-26.04' && matrix.node == '22' && 'host-core' || '' }}";
   const primary = w.jobs.checks!;
   const extras = w.jobs["full-suite-shards"]!;
   const first = primary.steps.filter((step) => step.run?.includes(full0));
@@ -533,10 +533,10 @@ function requirePreservedBaselineWiring(w: Workflow) {
   assert.equal(rest[0]!.env?.CHECKTRAIL_PRESERVED_BASELINE, selector);
   const bound = [
     ...rows(w, "checks", fullContext)
-      .filter((row) => row.os === "ubuntu-latest" && row.node === "22")
+      .filter((row) => row.os === "ubuntu-26.04" && row.node === "22")
       .map(() => "0"),
     ...rows(w, "full-suite-shards", fullContext)
-      .filter((row) => row.os === "ubuntu-latest" && row.node === "22")
+      .filter((row) => row.os === "ubuntu-26.04" && row.node === "22")
       .map((row) => String(row.shard)),
   ];
   assert.deepEqual(bound.sort(), ["0", "1", "2"]);
@@ -573,7 +573,7 @@ test("preserved host baseline binds all three existing Linux22 fragments without
         "full-suite-shards"
       ]!.strategy.matrix.include.filter(
         (row) =>
-          row.os !== "ubuntu-latest" || row.node !== "22" || row.shard !== 2,
+          row.os !== "ubuntu-26.04" || row.node !== "22" || row.shard !== 2,
       );
     },
     (w: Workflow) => {

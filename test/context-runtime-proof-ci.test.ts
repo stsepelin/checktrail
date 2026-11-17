@@ -198,7 +198,7 @@ test("context proof required profile names every original case and the existing 
     Object.keys(baseline.jobs).sort(),
   );
   const job = workflow.jobs["go-workspaces-arm64"];
-  assert.equal(job["runs-on"], "ubuntu-24.04-arm");
+  assert.equal(job["runs-on"], "ubuntu-26.04-arm");
   assert.ok(
     job.steps.some(
       (step: { with?: Record<string, string> }) =>

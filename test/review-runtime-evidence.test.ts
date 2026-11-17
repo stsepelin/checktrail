@@ -86,13 +86,13 @@ test("review workflow runtime refuses wrong Node architecture OS image and unsel
         p.platform === "win32" ? "Windows Server 2025 Datacenter" : "observed",
       imageOS:
         p.platform === "linux"
-          ? "ubuntu24"
+          ? "ubuntu26"
           : p.platform === "darwin"
             ? "macos26"
             : "win25-vs2026",
       imageVersion: "20261013.0424.1",
       distributionId: "ubuntu",
-      distributionVersion: "24.04",
+      distributionVersion: "26.04",
       containerImageId: "sha256:" + "a".repeat(64),
     };
   };
@@ -119,8 +119,8 @@ test("review workflow runtime refuses wrong Node architecture OS image and unsel
   const linux = observed("ci-linux-node22");
   for (const change of [
     { distributionId: "debian" },
-    { distributionVersion: "26.04" },
-    { imageOS: "ubuntu24-extra" },
+    { distributionVersion: "24.04" },
+    { imageOS: "ubuntu26-extra" },
     { imageVersion: "latest" },
   ])
     assert.throws(() =>
@@ -223,7 +223,7 @@ test("review workflow runtime rejects coherently shaped foreign installation evi
     node: "22.23.3",
     platform: "linux",
     architecture: "x64",
-    imageOS: "ubuntu24",
+    imageOS: "ubuntu26",
     imageVersion: "20261013.0424.1",
   };
   const expected = {

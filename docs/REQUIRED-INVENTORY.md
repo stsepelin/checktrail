@@ -37,6 +37,12 @@ macOS slots and exact OS-image/tool identities still require native acceptance.
 A repository license label and a selected grammar commit do not replace the
 required source/archive/notice inspection.
 
+The current Linux selection is Ubuntu 26.04: `ubuntu-26.04` on x64 and
+`ubuntu-26.04-arm` on ARM64. macOS/Windows and selected tool versions are unchanged.
+The active selection and consumer manifest must bind the updated inventory scope;
+older observations stay historical and cannot be relabeled as new-runner evidence.
+This migration alone changes no upstream-build or native acceptance requirement.
+
 Context collection must remain
 non-evaluating; dynamic dispatch, unsupported syntax and exhausted capture retain
 conservative impact fallback.

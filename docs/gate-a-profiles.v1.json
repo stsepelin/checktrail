@@ -104,25 +104,28 @@
       "id": "ci-linux-node22",
       "platform": "linux",
       "architecture": "x64",
-      "osFamily": "Ubuntu 24.04",
+      "osFamily": "Ubuntu 26.04",
       "node": "22.23.3",
-      "exactOsImageIdentityRequired": true
+      "exactOsImageIdentityRequired": true,
+      "runnerLabel": "ubuntu-26.04"
     },
     {
       "id": "ci-linux-node24",
       "platform": "linux",
       "architecture": "x64",
-      "osFamily": "Ubuntu 24.04",
+      "osFamily": "Ubuntu 26.04",
       "node": "24.21.0",
-      "exactOsImageIdentityRequired": true
+      "exactOsImageIdentityRequired": true,
+      "runnerLabel": "ubuntu-26.04"
     },
     {
       "id": "ci-linux-node26",
       "platform": "linux",
       "architecture": "x64",
-      "osFamily": "Ubuntu 24.04",
+      "osFamily": "Ubuntu 26.04",
       "node": "26.10.0",
-      "exactOsImageIdentityRequired": true
+      "exactOsImageIdentityRequired": true,
+      "runnerLabel": "ubuntu-26.04"
     },
     {
       "id": "ci-macos-node22",
@@ -153,7 +156,9 @@
       "platform": "linux",
       "architecture": "arm64",
       "node": "22.23.2",
-      "exactOsImageIdentityRequired": true
+      "exactOsImageIdentityRequired": true,
+      "runnerLabel": "ubuntu-26.04-arm",
+      "hostOsFamily": "Ubuntu 26.04"
     },
     {
       "id": "windows-node22",
@@ -3202,5 +3207,5 @@
   "inferenceInvoked": false,
   "fieldEvaluationExecuted": false,
   "qualityAssessed": false,
-  "scopeSha256": "acddaba1dd782390afe48296e1e8e1fd0409df0658ad1cf0aa14c6f19a57d144"
+  "scopeSha256": "533cd3c311de30ce505e99c776b41c583e1dc42981679d82d13626526a9c942f"
 }

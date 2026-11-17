@@ -66,14 +66,14 @@ function syntheticRuntime(slot: {
         ? "Windows Server 2025 Datacenter"
         : "synthetic",
     distributionId: "ubuntu",
-    distributionVersion: "24.04",
+    distributionVersion: "26.04",
     distributionSha256: sha,
     imageOS:
       slot.platform === "darwin"
         ? "macos26"
         : slot.platform === "win32"
           ? "win25"
-          : "ubuntu24",
+          : "ubuntu26",
     imageVersion: "20261112.1.0",
     containerImageId: "sha256:" + sha,
     nodeExecutableSha256: sha,
