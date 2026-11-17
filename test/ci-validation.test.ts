@@ -169,7 +169,8 @@ test("provenance source and fresh receipts use exactly the seven core rows and p
     with?: Record<string, string | number | boolean>;
     "timeout-minutes"?: number;
   };
-  const receipt = "${{ runner.temp }}/native-provenance-runtime.json",
+  const receipt =
+      "${{ runner.temp }}${{ runner.os == 'Windows' && '\\' || '/' }}native-provenance-runtime.json",
     command =
       "node scripts/verify-native-provenance-runtime.mjs ${{ matrix.slot }}",
     action = "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9";
@@ -378,6 +379,27 @@ test("provenance source and fresh receipts use exactly the seven core rows and p
         ).env = {};
       },
       /Raw receipt output/,
+    ],
+    [
+      "mixed Windows receipt separators",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) => step.run === command,
+        ).env.CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT =
+          "${{ runner.temp }}/native-provenance-runtime.json";
+      },
+      /Raw receipt output/,
+    ],
+    [
+      "upload uses a different receipt path",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) =>
+            step.with?.name ===
+            "native-provenance-runtime-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}",
+        ).with.path = "${{ runner.temp }}/native-provenance-runtime.json";
+      },
+      /Exact original receipt file/,
     ],
     [
       "source and fresh share the old one-file envelope",

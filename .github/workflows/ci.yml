@@ -2110,13 +2110,13 @@ jobs:
         timeout-minutes: 30
         run: node scripts/verify-native-provenance-runtime.mjs ${{ matrix.slot }}
         env:
-          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}/native-provenance-runtime.json
+          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
       - name: Retain original bounded provenance runtime receipt bytes
         if: ${{ !cancelled() && matrix.core && steps.native-provenance-runtime.outcome == 'success' }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: native-provenance-runtime-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/native-provenance-runtime.json
+          path: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
           if-no-files-found: error
           retention-days: 7
           include-hidden-files: false
@@ -2222,13 +2222,13 @@ jobs:
         id: native-provenance-runtime
         run: node scripts/verify-tasks-runtime-arm64.mjs
         env:
-          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}/native-provenance-runtime.json
+          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
       - name: Retain original bounded provenance runtime receipt bytes
         if: ${{ !cancelled() && steps.native-provenance-runtime.outcome == 'success' }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: native-provenance-runtime-tasks-runtime-arm64-native-linux-arm64-node22-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/native-provenance-runtime.json
+          path: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
           if-no-files-found: error
           retention-days: 7
           include-hidden-files: false
