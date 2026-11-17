@@ -359,6 +359,12 @@ failed or unsupported test outcomes under its unchanged defaults. Full producer
 ancestry, original notice closure, historical consumption and Gate A remain
 unverified by the observer. Earlier GLIBC source revisions remain separate.
 
+The [hosted continuation plan](HOSTED-PRODUCER-PLAN.md#gcc-implement-bounded-continuation)
+tracks the next execution path within standard hosted job limits. The existing
+single-job observer remains a bounded, potentially incomplete observation; its
+internal twelve-hour command limit does not provide twelve hours of hosted time.
+No dedicated-host capacity request is a prerequisite of that next plan.
+
 ### Remaining whole-job envelope for a hosted GCC observation
 
 The dedicated hosted job requests 355 minutes. Its metadata-only admission makes

@@ -12,6 +12,11 @@ discovery, planning, the published CLI or MCP. It is an explicit trusted-operato
 repository maintenance command. Upstream package code executes with the supplied
 container privileges and mounts; this is not a security sandbox for that code.
 
+The [hosted producer plan](HOSTED-PRODUCER-PLAN.md) binds remaining work to
+standard public GitHub-hosted runners. It records the GCC continuation work and
+corrects the additional historical Apple SDK replay assumption without claiming
+that either producer is already qualified.
+
 ## Input preparation
 
 [scripts/producer-qualification/binutils.v1.json](../scripts/producer-qualification/binutils.v1.json)

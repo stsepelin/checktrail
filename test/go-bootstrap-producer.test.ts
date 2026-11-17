@@ -848,7 +848,7 @@ test("Go hosted carrier has fixed operator scope cleanup export and a separate o
     "pr/upstream-producer/go-bootstrap-*",
   ]);
   const job = workflow.jobs["original-go-bootstrap-observation"];
-  assert.equal(job["runs-on"], "ubuntu-24.04");
+  assert.equal(job["runs-on"], "ubuntu-26.04");
   assert.equal(job["timeout-minutes"], 360);
   const runs = job.steps.map((step: { run?: string }) => step.run ?? "");
   const startup = runs.findIndex((text: string) =>

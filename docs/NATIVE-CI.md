@@ -1,5 +1,50 @@
 # Required native CI evidence
 
+## Current Linux runner selection
+
+Current Linux workflow placements use explicit `ubuntu-26.04` for x64 and
+`ubuntu-26.04-arm` for ARM64, including Linux matrix rows and host-baseline
+conditions. Existing macOS/Windows selections, Node/tool pins, check cohorts,
+trigger boundaries and native command limits remain unchanged. Older dated
+measurements retain their original runner identities; they do not qualify this
+new selection.
+
+The existing actionlint job now checks this repository's actual workflow files
+with the pinned checker, explicit label configuration, read-only repository mount
+and disabled container network before its existing synthetic adapter acceptance.
+The exact Ubuntu 26.04 labels are declared for the pinned linter whose built-in
+label table predates them. Unknown adjacent labels remain invalid.
+
+The planning job checks selected parser-runtime coherence immediately after the
+locked installation and metadata preflight, before the expensive matrix is
+planned. It reads known literal source pins and hashes installed data without
+importing the parser runtime or compiling WASM. Version-only runtime bumps fail
+there with the coordinated-upgrade requirement; the later grammar audit and native
+attestation checks remain mandatory.
+
+Checks that execute a nonempty affected shared selection prepare the same pinned
+Go SDK and analyzers as full verification. A shared file can activate native Go
+cases even when a dedicated Go owner job is not selected. Missing analyzers and
+skipped native cases are not accepted as dependency compatibility results. An
+empty shared selection still fails its existing required-test admission.
+
+The Go workspace ARM job retains Python `3.13.5`. Its official SDK was built for
+Ubuntu 24.04; the publisher's manifest has no 26.04 asset for that patch. A scoped
+preparation step verifies the original archive and interpreter digests, validates
+its complete install paths, and seeds the standard hosted tool cache before the
+unchanged `setup-python` action. It executes neither the upstream installer nor
+its unpinned pip upgrade. Completion is withheld until the exact interpreter and
+selected native standard-library controls succeed on the Ubuntu 26.04 ARM host.
+The preparation receipt records SDK producer OS and current host OS separately;
+it establishes no publisher support declaration or upstream build reproduction.
+Source and fresh-installed Python acceptance callbacks remain required.
+
+The separate manual `prebuilt-gcc.yml` workflow exercises installed GNU C/C++
+compilers with small positive and broken controls within a ten-minute job bound.
+It does not establish upstream source-build closure or replace required adapter
+or source/fresh-installed native acceptance. A prepared workflow or green local
+contract test is not a hosted platform pass.
+
 ## Workflow scheduling
 
 The Windows consumer impact installed callback has a twenty-minute enclosing
@@ -648,7 +693,7 @@ The main CI matrix prepares and requires `core`, `javascript`, `python`,
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
 Dedicated JVM jobs require `checkstyle`, `maven` and `gradle`, including offline
 installed CLI/MCP profiles. The .NET job also prepares original public dependency artifacts and requires `dotnet-build`, `dotnet-test`, `dotnet-format`, `dotnet-generated` and `dotnet-method` against source and an offline production install; its newly configured hosted run remains unverified. Ruby and Swift have dedicated required-native jobs. The new `swift-tools`
-job uses `ubuntu-24.04-arm`, prepares pinned runtime/release artifacts and requires
+job uses `ubuntu-26.04-arm`, prepares pinned runtime/release artifacts and requires
 the native profile against both source and a fresh offline production install.
 Its local acceptance is recorded in SWIFT-TOOLS.md; hosted execution of the new
 job remains unverified. The new `cpp-tools` ARM64 job prepares checksum-pinned

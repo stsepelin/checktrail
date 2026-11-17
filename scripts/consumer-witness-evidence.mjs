@@ -192,8 +192,32 @@ function consumerBindingReason(row, binding, family, inventory) {
     return "unselected-tool-version";
   }
   const image = binding.runtimeImage;
+  // Hosted placement metadata describes the outer runner. The OCI branch below
+  // validates the separately observed container instead of its host distribution.
+  const hostedLinux = new Map([
+    [
+      "ubuntu-26.04",
+      { family: "Ubuntu 26.04", architecture: "x64", imageOS: "ubuntu26" },
+    ],
+    [
+      "ubuntu-26.04-arm",
+      {
+        family: "Ubuntu 26.04",
+        architecture: "arm64",
+        imageOS: "ubuntu26-arm64",
+      },
+    ],
+  ]).get(declared.runnerLabel);
+  const declaredHostedFamily =
+    observed.architecture === "arm64"
+      ? declared.hostOsFamily
+      : declared.osFamily;
   const hostedLinuxImageOS =
-    observed.architecture === "arm64" ? "ubuntu24-arm64" : "ubuntu24";
+    hostedLinux &&
+    hostedLinux.family === declaredHostedFamily &&
+    hostedLinux.architecture === observed.architecture
+      ? hostedLinux.imageOS
+      : null;
   if (
     !image ||
     (image.kind === "oci-image-observation"

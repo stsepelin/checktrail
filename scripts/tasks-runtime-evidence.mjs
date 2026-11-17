@@ -156,6 +156,37 @@ async function treeHash(directory) {
   await walk("");
   return hash(JSON.stringify(parts));
 }
+// Hosted metadata concerns the outer runner; container /etc/os-release is separate.
+export function checkTasksHostedLinuxImage(selected, imageOS) {
+  const expected = new Map([
+    [
+      "ubuntu-26.04",
+      { family: "Ubuntu 26.04", architecture: "x64", imageOS: "ubuntu26" },
+    ],
+    [
+      "ubuntu-26.04-arm",
+      {
+        family: "Ubuntu 26.04",
+        architecture: "arm64",
+        imageOS: "ubuntu26-arm64",
+      },
+    ],
+  ]).get(selected.runnerLabel);
+  assert.ok(expected, "Unknown selected hosted Linux runner");
+  assert.equal(selected.platform, "linux");
+  assert.equal(selected.architecture, expected.architecture);
+  assert.equal(
+    selected.architecture === "arm64"
+      ? selected.hostOsFamily
+      : selected.osFamily,
+    expected.family,
+  );
+  assert.equal(
+    imageOS,
+    expected.imageOS,
+    "Selected hosted Linux image family differs",
+  );
+}
 export async function verifyTasksRuntime({
   slot = null,
   requireHostedIdentity = false,
@@ -163,8 +194,9 @@ export async function verifyTasksRuntime({
   const scope = JSON.parse(
     await readFile(path.join(root, "docs/gate-a-profiles.v1.json"), "utf8"),
   );
+  let selected = null;
   if (slot !== null) {
-    const selected = scope.runtimeProfiles.find((p) => p.id === slot);
+    selected = scope.runtimeProfiles.find((p) => p.id === slot);
     assert.ok(selected, "Unknown frozen runtime slot");
     assert.equal(process.platform, selected.platform);
     assert.equal(process.arch, selected.architecture);
@@ -175,6 +207,8 @@ export async function verifyTasksRuntime({
   if (requireHostedIdentity) {
     assert.ok(imageVersion && /^20\d{6}\.\d+\.\d+$/.test(imageVersion));
     assert.ok(imageOS && /^[A-Za-z0-9-]+$/.test(imageOS));
+    if (selected?.platform === "linux")
+      checkTasksHostedLinuxImage(selected, imageOS);
   }
   const installed = process.env.CHECKTRAIL_TASKS_MATRIX_INSTALLED === "1";
   return await withRuntimeInstallationCapture(

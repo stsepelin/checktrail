@@ -708,7 +708,7 @@ function envelope(
                 ? "macos26"
                 : slot.platform === "win32"
                   ? "win25"
-                  : "ubuntu24",
+                  : "ubuntu26",
             imageVersion: "20261030.1.0",
             distributionSha256: row.runtime.distributionSha256,
             metadataAttested: false,

@@ -71,7 +71,7 @@ No derived registry digest or raw OCI-config verification is invented.
 ## Operator execution
 
 The [dedicated workflow](../.github/workflows/upstream-web-runtime.yml) runs on
-`ubuntu-24.04` through explicit dispatch, or a push to
+`ubuntu-26.04` through explicit dispatch, or a push to
 `pr/upstream-runtime/web-tree-sitter-*`. That namespace does not match the Binutils
 workflow. Push-trigger admission allows pre-merge native qualification without
 assuming that dispatch is available before the workflow reaches the default branch.

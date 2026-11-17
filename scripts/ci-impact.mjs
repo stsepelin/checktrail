@@ -29,6 +29,14 @@ const documentaryMeasurementFiles = new Set([
 // Derive their native consumers from the exact declared inputs; do not
 // classify neighboring test names or create entries for absent files.
 const preparationRegressionSources = Object.freeze({
+  "scripts/test-python-host-sdk.py": Object.freeze([
+    "scripts/install-python-host-sdk.py",
+  ]),
+  "test/python-host-sdk.test.ts": Object.freeze([
+    "scripts/prepare-python-host-sdk.mjs",
+    "scripts/install-python-host-sdk.py",
+    "scripts/python-ubuntu26-arm64.json",
+  ]),
   "test/scala-native-ci-phases.test.ts": ["scripts/scala-native-ci-phases.mjs"],
   "test/native-process-observer.test.ts": Object.freeze([
     "test/native-process-observer.ts",

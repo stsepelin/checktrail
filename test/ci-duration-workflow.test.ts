@@ -41,6 +41,7 @@ type Context = {
   plan: "success" | "failure" | "pending";
   actionlint: "success" | "skipped" | "failure" | "pending";
   cancelled: boolean;
+  sharedTestFiles: string[];
 };
 const workflow = parse(
   await readFile(
@@ -55,9 +56,9 @@ const manifest = JSON.parse(
   ),
 ) as { schemaVersion: number; profiles: string[]; remainingCommands: string[] };
 const variants = [
-  { os: "ubuntu-latest", node: "22" },
-  { os: "ubuntu-latest", node: "24" },
-  { os: "ubuntu-latest", node: "26" },
+  { os: "ubuntu-26.04", node: "22" },
+  { os: "ubuntu-26.04", node: "24" },
+  { os: "ubuntu-26.04", node: "26" },
   { os: "macos-latest", node: "24" },
 ];
 const fullContext: Context = {
@@ -66,6 +67,7 @@ const fullContext: Context = {
   plan: "success",
   actionlint: "success",
   cancelled: false,
+  sharedTestFiles: [],
 };
 const hostCommand =
   "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}";
@@ -112,10 +114,14 @@ function condition(expression: string | undefined, context: Context, row: Row) {
     ],
     ["env.CHECKTRAIL_CI_MODE == 'full'", context.mode === "full"],
     ["env.CHECKTRAIL_CI_MODE == 'affected'", context.mode === "affected"],
-    ["runner.os == 'Linux'", row.os === "ubuntu-latest"],
+    [
+      "join(fromJSON(needs.ci-plan.outputs.plan).sharedTestFiles, '') != ''",
+      context.sharedTestFiles.length > 0,
+    ],
+    ["runner.os == 'Linux'", row.os === "ubuntu-26.04"],
     ["runner.os == 'macOS'", row.os === "macos-latest"],
     ["runner.os != 'macOS'", row.os !== "macos-latest"],
-    ["matrix.os == 'ubuntu-latest'", row.os === "ubuntu-latest"],
+    ["matrix.os == 'ubuntu-26.04'", row.os === "ubuntu-26.04"],
     ["matrix.node == '22'", row.node === "22"],
     ["matrix.node == '26'", row.node === "26"],
     ["matrix.shard == 0", row.shard === 0],
@@ -293,6 +299,155 @@ test("simulated dependency conditions keep full-only suite shards, affected host
   }
 });
 
+function requireSharedGoPreparation(w: Workflow, context: Context) {
+  const job = w.jobs.checks!;
+  for (const row of rows(w, "checks", context)) {
+    const steps = job.steps.filter((step) => condition(step.if, context, row));
+    const sdk = steps.findIndex((step) =>
+      step.uses?.startsWith("actions/setup-go@"),
+    );
+    const analyzer = steps.findIndex((step) =>
+      step.run?.includes("node scripts/prepare-go-tools.mjs"),
+    );
+    const shared = steps.findIndex(
+      (step) => step.run === "node scripts/verify-ci-affected-tests.mjs",
+    );
+    const required =
+      context.mode === "full" || context.sharedTestFiles.length > 0;
+    if (!required) {
+      assert.equal(sdk, -1, "Empty affected selection must not prepare Go");
+      assert.equal(
+        analyzer,
+        -1,
+        "Empty affected selection must not prepare analyzers",
+      );
+      continue;
+    }
+    assert.ok(sdk >= 0, "Shared execution requires the pinned Go SDK");
+    assert.equal(steps[sdk]!.with?.["go-version"], "1.27.1");
+    assert.equal(steps[sdk]!.with?.cache, false);
+    assert.ok(analyzer > sdk, "Go analyzers must follow the pinned SDK");
+    assert.ok(
+      steps[analyzer]!.run?.includes(
+        'echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"',
+      ),
+      "Prepared analyzers must reach subsequent shared test processes",
+    );
+    if (context.mode === "affected")
+      assert.ok(
+        shared > analyzer,
+        "Selected shared files must follow complete Go preparation",
+      );
+  }
+}
+
+test("full and nonempty affected shared files receive pinned Go prerequisites before execution while empty selections avoid preparation", () => {
+  for (const mode of ["full", "affected"] as const)
+    for (const sharedTestFiles of [
+      [],
+      [
+        "dist/test/original-selected-one.test.js",
+        "dist/test/original-selected-two.test.js",
+      ],
+    ])
+      requireSharedGoPreparation(workflow, {
+        ...fullContext,
+        mode,
+        sharedTestFiles,
+      });
+});
+
+test("affected Go preparation rejects full-only guards wrong pins missing PATH publication and late analyzers", () => {
+  const context: Context = {
+    ...fullContext,
+    mode: "affected",
+    sharedTestFiles: [
+      "dist/test/original-selected-one.test.js",
+      "dist/test/original-selected-two.test.js",
+    ],
+  };
+  const mutations: ((w: Workflow) => void)[] = [
+    (w) => {
+      w.jobs.checks!.steps.find((step) =>
+        step.uses?.startsWith("actions/setup-go@"),
+      )!.if = "env.CHECKTRAIL_CI_MODE == 'full'";
+    },
+    (w) => {
+      w.jobs.checks!.steps.find(
+        (step) => step.name === "Prepare pinned Go analyzers",
+      )!.if = "env.CHECKTRAIL_CI_MODE == 'full'";
+    },
+    (w) => {
+      w.jobs.checks!.steps.find((step) =>
+        step.uses?.startsWith("actions/setup-go@"),
+      )!.with!["go-version"] = "stable";
+    },
+    (w) => {
+      w.jobs.checks!.steps.find(
+        (step) => step.name === "Prepare pinned Go analyzers",
+      )!.run = "node scripts/prepare-go-tools.mjs";
+    },
+    (w) => {
+      const steps = w.jobs.checks!.steps;
+      const index = steps.findIndex(
+        (step) => step.name === "Prepare pinned Go analyzers",
+      );
+      steps.push(...steps.splice(index, 1));
+    },
+  ];
+  for (const mutate of mutations) {
+    const changed = structuredClone(workflow);
+    mutate(changed);
+    assert.throws(() => requireSharedGoPreparation(changed, context), {
+      code: "ERR_ASSERTION",
+    });
+  }
+});
+
+function requireEarlyRuntimeCoherence(w: Workflow) {
+  const steps = w.jobs["ci-plan"]!.steps;
+  const install = steps.findIndex(
+    (step) => step.run === "npm ci --ignore-scripts",
+  );
+  const metadata = steps.findIndex(
+    (step) => step.run === "node scripts/check-ci-preflight.mjs",
+  );
+  const audit = steps.findIndex(
+    (step) => step.run === "node scripts/check-context-runtime-coherence.mjs",
+  );
+  assert.ok(install >= 0 && metadata > install && audit > metadata);
+  assert.equal(steps[audit]!.if, undefined);
+  assert.equal(steps[audit]!["continue-on-error"], undefined);
+  for (const command of [
+    "npm run typecheck",
+    "npm run lint",
+    "node scripts/plan-ci-impact.mjs",
+  ])
+    assert.ok(
+      steps.findIndex((step) => step.run === command) > audit,
+      "Runtime coherence must fail before planning: " + command,
+    );
+}
+
+test("CI planning checks selected runtime coherence after installation and before expensive validation or fanout", () => {
+  requireEarlyRuntimeCoherence(workflow);
+  for (const mode of ["missing", "late", "conditional", "ignored"]) {
+    const changed = structuredClone(workflow);
+    const steps = changed.jobs["ci-plan"]!.steps;
+    const index = steps.findIndex(
+      (step) => step.run === "node scripts/check-context-runtime-coherence.mjs",
+    );
+    if (mode === "missing") steps.splice(index, 1);
+    if (mode === "late") steps.push(...steps.splice(index, 1));
+    if (mode === "conditional")
+      steps[index]!.if = "env.CHECKTRAIL_CI_MODE == 'full'";
+    if (mode === "ignored") steps[index]!["continue-on-error"] = true;
+    assert.throws(() => requireEarlyRuntimeCoherence(changed), {
+      code: "ERR_ASSERTION",
+    });
+  }
+});
+
 test("each host executes one exact 51-command union and one reporter and fresh consumer after preparation", () => {
   const hostJob = workflow.jobs["host-validation"]!;
   const cache = hostJob.steps.findIndex(
@@ -463,7 +618,7 @@ test("Linux container work moves once to its designated suite role with both cac
       commands
         .filter((entry) => entry.command === command)
         .map(({ row }) => row),
-      [{ os: "ubuntu-latest", node: "22", shard }],
+      [{ os: "ubuntu-26.04", node: "22", shard }],
     );
     assert.equal(
       executed(workflow, "checks").filter((entry) => entry.command === command)
@@ -472,7 +627,7 @@ test("Linux container work moves once to its designated suite role with both cac
     );
   }
   for (const shard of [1, 2]) {
-    const row = { os: "ubuntu-latest", node: "22", shard };
+    const row = { os: "ubuntu-26.04", node: "22", shard };
     const projected = extras.steps.flatMap((step) =>
       lines(step, fullContext, row),
     );
@@ -522,7 +677,7 @@ test("workflow guard rejects missing or moved roles, dropped completion dependen
 
 function requirePreservedBaselineWiring(w: Workflow) {
   const selector =
-    "${{ matrix.os == 'ubuntu-latest' && matrix.node == '22' && 'host-core' || '' }}";
+    "${{ matrix.os == 'ubuntu-26.04' && matrix.node == '22' && 'host-core' || '' }}";
   const primary = w.jobs.checks!;
   const extras = w.jobs["full-suite-shards"]!;
   const first = primary.steps.filter((step) => step.run?.includes(full0));
@@ -533,10 +688,10 @@ function requirePreservedBaselineWiring(w: Workflow) {
   assert.equal(rest[0]!.env?.CHECKTRAIL_PRESERVED_BASELINE, selector);
   const bound = [
     ...rows(w, "checks", fullContext)
-      .filter((row) => row.os === "ubuntu-latest" && row.node === "22")
+      .filter((row) => row.os === "ubuntu-26.04" && row.node === "22")
       .map(() => "0"),
     ...rows(w, "full-suite-shards", fullContext)
-      .filter((row) => row.os === "ubuntu-latest" && row.node === "22")
+      .filter((row) => row.os === "ubuntu-26.04" && row.node === "22")
       .map((row) => String(row.shard)),
   ];
   assert.deepEqual(bound.sort(), ["0", "1", "2"]);
@@ -573,7 +728,7 @@ test("preserved host baseline binds all three existing Linux22 fragments without
         "full-suite-shards"
       ]!.strategy.matrix.include.filter(
         (row) =>
-          row.os !== "ubuntu-latest" || row.node !== "22" || row.shard !== 2,
+          row.os !== "ubuntu-26.04" || row.node !== "22" || row.shard !== 2,
       );
     },
     (w: Workflow) => {

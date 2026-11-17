@@ -260,7 +260,7 @@ test("Fsharp signature CI prepares and admits one scoped manifest serially after
       CHECKTRAIL_TEST_TASK: "ci-fsharp-format",
       CHECKTRAIL_FSHARP_FORMAT_IMAGE: "checktrail-fsharp-format:ci",
     });
-    assert.equal(job["runs-on"], "ubuntu-24.04-arm");
+    assert.equal(job["runs-on"], "ubuntu-26.04-arm");
     assert.equal(job["timeout-minutes"], 30);
     return indexes;
   }
