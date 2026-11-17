@@ -28,7 +28,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "fa0aaa5a4b175df0fa75209a2909ad3bf0be2a46"
+      "hash": "95926fe895f80236df026cb77e1788d311a7eebe"
     },
     {
       "path": ".github/workflows/prebuilt-gcc.yml",
@@ -1071,7 +1071,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "cef57ef991fafa3c30337ee4f648d5dc5ceb0d32"
+      "hash": "374392bc72eefbf48500bc02163b22c03a3e8a39"
     },
     {
       "path": "docs/NATIVE-JSON-PROBES.md",
@@ -8470,14 +8470,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "3daab202ff9c677e0840e0a1971dc52e32229093"
+      "hash": "ac9aa0e25f4d7093d863d00f6b8a868e51d5c9ae"
     },
     {
       "path": "scripts/ci-native-inputs.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "0110c545409fb9230424675a316b80c5d4bc9bed"
+      "hash": "3f5886bb4f50eabd2b6099530a659f51d7c9da45"
     },
     {
       "path": "scripts/ci-source-boundaries.json",
@@ -9208,6 +9208,13 @@
       "hash": "f74588dc40e872450656700ba739d7ec56039471"
     },
     {
+      "path": "scripts/install-python-host-sdk.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "a682145001b1de4e06fbde0619d27c0f0b813cb8"
+    },
+    {
       "path": "scripts/java-context-tools.Dockerfile",
       "mode": "100644",
       "type": "blob",
@@ -9864,6 +9871,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "d74a210ad34b787d2b87a6c16fe98ab2afa66b00"
+    },
+    {
+      "path": "scripts/prepare-python-host-sdk.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "75c81039e65af0e0b8328821aa8b7f5c7526fc97"
     },
     {
       "path": "scripts/prepare-release-readiness-tools.mjs",
@@ -10629,6 +10643,13 @@
       "hash": "2926ae577d93c6c7b54ec5ef4ba6d56e9481ccfb"
     },
     {
+      "path": "scripts/python-ubuntu26-arm64.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "d30dcc5feea6b242c7e53ab338631b1f1fb5a773"
+    },
+    {
       "path": "scripts/qualify-binutils-producer.mjs",
       "mode": "100644",
       "type": "blob",
@@ -10991,6 +11012,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "0da46a96cbd2a9c5058b2157728e2080390473e4"
+    },
+    {
+      "path": "scripts/test-python-host-sdk.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "122313b37bf92aa7551fd4e303ddb738295b2fe9"
     },
     {
       "path": "scripts/typescript-legacy-tools/package-lock.json",
@@ -19524,6 +19552,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "cb62c553f18884fea7a8cf8581c8a5e0fffb790b"
+    },
+    {
+      "path": "test/python-host-sdk.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f2822a50766cc7eed73ff0fe6d02e4ea8fef9b0f"
     },
     {
       "path": "test/release-metadata.test.ts",
