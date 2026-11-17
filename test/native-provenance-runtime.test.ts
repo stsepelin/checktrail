@@ -1683,3 +1683,176 @@ test("provenance stage owner enforces exact output and fixed command boundaries"
     { code: "ERR_CHILD_PROCESS_STDIO_MAXBUFFER" },
   );
 });
+
+test("installed provenance command checks use actual portable arguments and reject source fallback or output-only claims", async () => {
+  const ts = await import("typescript");
+  const source = await readFile(
+    path.join(root, "test/gate-native-license-provenance.test.ts"),
+    "utf8",
+  );
+  const tree = ts.createSourceFile(
+    "gate.ts",
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+  const declarations: import("typescript").VariableStatement[] = [];
+  const assertions: import("typescript").CallExpression[] = [];
+  const visit = (node: import("typescript").Node) => {
+    if (
+      ts.isVariableStatement(node) &&
+      node.declarationList.declarations.some(
+        (d) => ts.isIdentifier(d.name) && d.name.text === "commandArguments",
+      )
+    )
+      declarations.push(node);
+    if (
+      ts.isCallExpression(node) &&
+      node.expression.getText(tree) === "assert.ok" &&
+      node.arguments[0]?.getText(tree).includes("commandArguments")
+    )
+      assertions.push(node);
+    ts.forEachChild(node, visit);
+  };
+  visit(tree);
+  assert.equal(declarations.length, 1);
+  assert.equal(assertions.length, 2);
+  // Run the actual assertion block, not a parallel reimplementation. These are
+  // synthetic command-metadata controls, never native qualification evidence.
+  const check = new Function(
+    "assert",
+    "report",
+    "installedEngine",
+    "provenanceRepository",
+    "path",
+    declarations[0]!.getText(tree) +
+      "\n" +
+      assertions.map((node) => node.getText(tree) + ";").join("\n"),
+  );
+  for (const [paths, repository, installed] of [
+    [
+      path.win32,
+      String.raw`D:\source-'[literal]-🧪`,
+      String.raw`D:\owned consumer-'[literal]-🧪\node_modules\package\dist\src`,
+    ],
+    [
+      path.posix,
+      '/source-"quoted"-🧪',
+      '/owned consumer-"quoted"-🧪/node_modules/package/dist/src',
+    ],
+  ] as const) {
+    const installedRunner = paths.join(installed, "external-runner.js"),
+      sourceEngine = paths.join(repository, "dist/src"),
+      sourceRunner = paths.join(sourceEngine, "external-runner.js");
+    const report = (args: string[], stdout = "") => ({
+      checks: [
+        {
+          processes: [
+            { command: { executable: "node", args }, stdout, stderr: "" },
+          ],
+        },
+      ],
+    });
+    const run = (value: ReturnType<typeof report>) =>
+      check(assert, value, installed, repository, paths);
+    assert.doesNotThrow(() => run(report([installedRunner])));
+    assert.doesNotThrow(() =>
+      run(
+        report([
+          "--version",
+          installedRunner,
+          sourceEngine + "-sibling" + paths.sep + "external-runner.js",
+        ]),
+      ),
+    );
+    assert.throws(
+      () => run(report([sourceRunner])),
+      /packaged external runner/u,
+    );
+    assert.throws(
+      () => run(report([installedRunner, sourceRunner])),
+      /source-engine command/u,
+    );
+    assert.throws(
+      () => run(report([installedRunner, sourceEngine])),
+      /source-engine command/u,
+    );
+    assert.throws(
+      () =>
+        run(
+          report([
+            installedRunner,
+            paths.join(sourceEngine, "other-runner.js"),
+          ]),
+        ),
+      /source-engine command/u,
+    );
+    assert.throws(
+      () => run(report([installedRunner + ".backup"])),
+      /packaged external runner/u,
+    );
+    assert.throws(
+      () =>
+        run(report([paths.join(installed + "-sibling", "external-runner.js")])),
+      /packaged external runner/u,
+    );
+    assert.throws(
+      () => run(report([], JSON.stringify({ path: installedRunner }))),
+      /packaged external runner/u,
+    );
+    assert.doesNotThrow(() =>
+      run({
+        checks: [
+          ...report(["--version"]).checks,
+          ...report([installedRunner]).checks,
+        ],
+      }),
+    );
+    assert.throws(
+      () =>
+        run({
+          checks: [
+            ...report([installedRunner]).checks,
+            ...report([sourceRunner]).checks,
+          ],
+        }),
+      /source-engine command/u,
+    );
+    assert.throws(
+      () =>
+        run({
+          checks: [
+            {
+              processes: [
+                ...report([installedRunner]).checks[0]!.processes,
+                ...report([sourceRunner]).checks[0]!.processes,
+              ],
+            },
+          ],
+        }),
+      /source-engine command/u,
+    );
+    assert.throws(
+      () =>
+        run({
+          checks: [
+            {
+              processes: [
+                {
+                  command: {
+                    executable: sourceRunner,
+                    args: [installedRunner],
+                  },
+                  stdout: "",
+                  stderr: "",
+                },
+              ],
+            },
+          ],
+        }),
+      /source-engine command/u,
+    );
+    assert.throws(() => run({ checks: [] }), /packaged external runner/u);
+  }
+});

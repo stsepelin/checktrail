@@ -16,6 +16,7 @@ import { promisify } from "node:util";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { createPlan, validate } from "../src/engine.js";
+import type { Report } from "../src/types.js";
 import { projectReport } from "../src/output.js";
 import { reportSummarySchema } from "../src/schemas.js";
 import {
@@ -937,7 +938,7 @@ test(
       assert.equal(packed.policy.engine.root, installedEngine);
       const target = path.join(cohort.root, "installed.bundle.json");
       await writeFile(target, packed.bytes);
-      const report = await engine.validate(cohort.project, {
+      const report: Report = await engine.validate(cohort.project, {
         trusted: true,
         externalAdapters: [{ path: target, sha256: hash(packed.bytes) }],
         timeoutMs: 30000,
@@ -946,11 +947,26 @@ test(
       assert.equal(report.outcome, "incomplete");
       assert.equal(receipt.state, state === "broken" ? "error" : "incomplete");
       assert.equal(receipt.audits[1]!.gaps, state === "near-miss" ? 1 : 0);
-      assert.ok(JSON.stringify(report).includes(installedEngine));
-      assert.ok(
-        !JSON.stringify(report).includes(
-          path.join(provenanceRepository, "dist/src"),
+      const commandArguments = report.checks.flatMap((check) =>
+          check.processes.flatMap(({ command }) => [
+            command.executable,
+            ...command.args,
+          ]),
         ),
+        sourceEngine = path.join(provenanceRepository, "dist/src");
+      assert.ok(
+        commandArguments.includes(
+          path.join(installedEngine, "external-runner.js"),
+        ),
+        "Installed validation must execute its packaged external runner",
+      );
+      assert.ok(
+        !commandArguments.some(
+          (argument) =>
+            argument === sourceEngine ||
+            argument.startsWith(sourceEngine + path.sep),
+        ),
+        "Installed validation must not execute a source-engine command",
       );
       completeAccounting(receipt);
     }
