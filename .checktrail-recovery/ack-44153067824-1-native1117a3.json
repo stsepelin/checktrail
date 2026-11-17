@@ -1,0 +1,29 @@
+{
+  "algorithm": "RSA-PSS-SHA256-salt32",
+  "payload": {
+    "ciphertext": {
+      "bytes": 2269687317,
+      "headerSHA256": "039965f7638999e5d41d8404ea4f97fbee09dbdd137b8f095963f87651cee2c5",
+      "sha256": "3e7a960d25da6d6857f2b2c1495508b490369f03e22a159d74bc6c3fc2d04aef"
+    },
+    "context": {
+      "attempt": 1,
+      "head": "847fc1819b95d35ab8876180bbbd8505251ec5f2",
+      "nonce": "native1117a3",
+      "run": 44153067824
+    },
+    "custodyLedgerSHA256": "78a352a19478d8a10b5aaca6e757c9f080a8d0b19765780c7e5a7743d696ad81",
+    "durableRoundtripReceiptSHA256": "b910b4d319af0f3286974524c8e27cd3047615dce69148879626ec18d2c83f60",
+    "kind": "checktrail-sdk10-durable-recovery-ack-v1",
+    "payloadParts": 18,
+    "plaintext": {
+      "bytes": 2269685810,
+      "internalMemberMapSHA256": "b6380eb44fa5439d50d032d0b89e8b3dfdea6a050ab639d946b762117170aba0",
+      "sha256": "daba03473b3bf55b699be0062c1e612fdbe0332dac787baf319f45e39d640ada"
+    },
+    "schemaVersion": 1,
+    "seriesSHA256": "8144559c4142338e134db4bec164e06c62eb3e84a1d64bf859ee39371aa9b82b",
+    "totalCarriers": 20
+  },
+  "signature": "JxVln8Vz4cUR4axzY4Bk27w6C8fxdBEn396OvKxRXswX6JK3dFeAkONrJ5UaepDfE5oSuJT1RR24VXoPvIH1TF-BJ0TdgsrAUHOvN0yqdSkAET4vyw-yUgcaiu9k-FJiKFXgdpEYX4xHvnXyhVbZ_6Z14vcHa7V6w-mSr_86uCLfUNIWI6TMY7vYvE4JtIrblMTIaecfE-BtDXdjcv2-mmf_4O07YeSOMcbZDE9nLphm4ucv70EayNcpPmlgTAfVsSCfsR_eAxXIQRC8Tcj_gTapuRNOl7YEW19qO5c2VrnuyzH0EGzF3YGsJEdH_OzaDI5i3R0_zvr9REHup7o2_k90cHoK1wIUHB4MVOzRkRDkOue8Gwkl0wnQglbg32xKZPzC_X70l9kXEOaoXudOfkIdaCxj0E6FGqg1W3ZFilE15e-uH2TMJ0UbyDGiwdgoWiZ5pwS2OYndPFVKk5yfmNDvcjPRHF4i3CbKa0w_GSXTjn05foFxS3Hicy3FNHNhnhBnUA2n1dl8YigiZXsTWuMxUJOIN-lRT5IQ4FCC4rbMXns649yDK4NFacdUdjDn6kqNTW6H-OPXHmhPUEb0tzzItyuEO7Ge3g-DUa2u9xZbl9IeHXoWLE29Myumu-0-r84a_AKageznHdQQ79rWAJolAvpfzn0GQRB7gPy2UQc"
+}
