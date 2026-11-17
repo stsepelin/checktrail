@@ -1,0 +1,29 @@
+{
+  "algorithm": "RSA-PSS-SHA256-salt32",
+  "payload": {
+    "ciphertext": {
+      "bytes": 545339659,
+      "headerSHA256": "6050c28b7409cb8eb71d18d43de594b735b224233d5038c1ba5cc23f2c5f5462",
+      "sha256": "51e8edc3027c8303a965a9a6c2da80fdcf8ac4fccbcd5a71ef2284aa7dd554c5"
+    },
+    "context": {
+      "attempt": 1,
+      "head": "bc2cdcfda6c78534f2a47088fc27be4769931dbf",
+      "nonce": "native1117a1",
+      "run": 44122905073
+    },
+    "custodyLedgerSHA256": "c3366b3255f3be4e06b3b2d15be6ee23360e275421b6b7b3a36a091f9fc1ada4",
+    "durableRoundtripReceiptSHA256": "0cd77e6199f1c7d94c93a79d019af5b862dd5e1efc9ff9e779238f02f9d5c1fe",
+    "kind": "checktrail-sdk10-durable-recovery-ack-v1",
+    "payloadParts": 5,
+    "plaintext": {
+      "bytes": 545338166,
+      "internalMemberMapSHA256": "52ea99a3bc948c4bcdd4e4546ee7a46fc1697d7438656751c8dc32e7db9ab0dc",
+      "sha256": "800584a03c620bf56ecf591db61b621db8adf57e53657d65d10942b50636cb0f"
+    },
+    "schemaVersion": 1,
+    "seriesSHA256": "a054a288de178fc98e3dd70516e25b33b19edea601376a01cb366a1fbc60cceb",
+    "totalCarriers": 6
+  },
+  "signature": "qGFyl9so7t6Y-vOYfgu9EglXe1WnZ01X8dgHXnYLoMGqrBoEWETFS5LzEXgIziKFpX_oYChcV8pMAMfXvgmVnPgnnXOepljDeMczuQaSrKf3XRtyfuEYIu3iln8VhPq7EoHaqKT09yhZYbkl1Zk-9ZjR0rXPbSDkImjkEg9s-MJ7Wet1_uy7lHUla0K4RKvsc6Lkq16tCJuvHtxZ-Br8l-09iEFnxCTSn7dPh-45e8mv_6f7gRi6QL9FxBfgsKsnYHAQ3aEXIPTPSSOsfTYMY9pYN5r_8YAMQq8rBEjjTDS4rtjM_ozpQ89B_xJNuBGUlbqIY_4NBt64wOXMQaehlFouQgVpAPl6B63VkBm_Mc4lTzTE9BUPRfM-m2CSgrsqlJT8n7sbqqUdZSynKEiWhaStWXozjNXcf-nYRrtAiwDQNeVLFMeuJXw-EKcF7ZJ9J6PKVpU61Ptv-Axs2NbYthJLZM3ARUtgxYH26Vu4JpMDSgeygrV_0TsRHHjMPt-9aG1AKT8pTiD45QkLPkBvjYPo4Id03V7fDsGX6g6I_Gmxp3wGCBG5T6Zz9w-aR7lnQuN8UcgkKn8Kyy0E0xGA-_yJBTOrkOwS39MJHHMqO_MwSL0BFpDUQ58ega6UZcjZE6AHB9s7U9f4-TvQLDEYfG33dh0fChUvyZTlJ7bLluI"
+}
