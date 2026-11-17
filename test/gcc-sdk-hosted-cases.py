@@ -93,22 +93,58 @@ class Hosted(unittest.TestCase):
                 touch.assert_not_called()
 
     def test_sdk_container_has_readonly_predecessor_exact_environment_and_no_gcc_target(self):
-        output=Path('/synthetic/sdk');catalog={'image':'synthetic-image','environment':s.stage.FIXED_ENVIRONMENT}
-        args=s.arguments(catalog,output,'synthetic-owner');self.assertEqual(args[-5:],s.BODY)
-        self.assertIn('target=/inputs/predecessor,readonly',','.join(args));self.assertNotIn('--rules-target=configure',args)
-        mounts={'/build':(output/'state',True),'/inputs':(output/'inputs/source',False),'/controller':(output/'controls',False),
-                '/inputs/predecessor':(output/'predecessor',False),'/controller/observations':(output/'observations',True),
-                '/usr/share/keyrings/debian-keyring.gpg':(output/'inputs/keyrings/debian-keyring.gpg',False)}
-        mounts.update({target:(output/'state'/relative,True) for relative,target in s.h.MUTABLE_MOUNTS.items()})
-        owner={'Id':'synthetic-id','Config':{'Labels':{'io.checktrail.gcc-staged-owner':'synthetic-owner'},'User':'0:0','WorkingDir':'/work','Image':'synthetic-image','Entrypoint':['/usr/bin/env'],
-          'Cmd':['-i',*[k+'='+v for k,v in catalog['environment'].items()],*s.BODY]},'HostConfig':{'NetworkMode':'none','Privileged':False,'Init':True,'NanoCpus':4000000000,'Memory':6*s.h.GIB,'PidsLimit':1024},
-          'State':{'Status':'created','Running':False,'Pid':0},'Mounts':[{'Type':'bind','Destination':target,'Source':str(path),'RW':rw} for target,(path,rw) in mounts.items()]}
-        self.assertTrue(s.validate_container(owner,'synthetic-id','synthetic-owner',catalog,output)['readOnlyPredecessorObserved'])
-        for mutate in [lambda v:next(x for x in v['Mounts'] if x['Destination']=='/inputs/predecessor').update(RW=True),
-                       lambda v:v['Config']['Cmd'].__setitem__(-1,'native'),lambda v:v['HostConfig'].update(NetworkMode='host'),
-                       lambda v:v['HostConfig'].update(Memory=0),lambda v:v['State'].update(Running=True,Pid=1)]:
-            changed=copy.deepcopy(owner);mutate(changed)
-            with self.assertRaises(ValueError):s.validate_container(changed,'synthetic-id','synthetic-owner',catalog,output)
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();(output/'inputs/source').mkdir(parents=True);(output/'controls').mkdir();catalog={'image':'synthetic-image','environment':s.stage.FIXED_ENVIRONMENT}
+            args=s.arguments(catalog,output,'synthetic-owner');self.assertEqual(args[-5:],s.BODY)
+            self.assertIn('target=/inputs/predecessor,readonly',','.join(args));self.assertNotIn('--rules-target=configure',args)
+            mounts={'/build':(output/'state',True),'/inputs':(output/'inputs/source',False),'/controller':(output/'controls',False),
+                    '/inputs/predecessor':(output/'predecessor',False),'/controller/observations':(output/'observations',True),
+                    '/usr/share/keyrings/debian-keyring.gpg':(output/'inputs/keyrings/debian-keyring.gpg',False)}
+            mounts.update({target:(output/'state'/relative,True) for relative,target in s.h.MUTABLE_MOUNTS.items()})
+            owner={'Id':'synthetic-id','Config':{'Labels':{'io.checktrail.gcc-staged-owner':'synthetic-owner'},'User':'0:0','WorkingDir':'/work','Image':'synthetic-image','Entrypoint':['/usr/bin/env'],
+              'Cmd':['-i',*[k+'='+v for k,v in catalog['environment'].items()],*s.BODY]},'HostConfig':{'NetworkMode':'none','Privileged':False,'Init':True,'NanoCpus':4000000000,'Memory':6*s.h.GIB,'PidsLimit':1024},
+              'State':{'Status':'created','Running':False,'Pid':0},'Mounts':[{'Type':'bind','Destination':target,'Source':str(path),'RW':rw} for target,(path,rw) in mounts.items()]}
+            self.assertTrue(s.validate_container(owner,'synthetic-id','synthetic-owner',catalog,output)['readOnlyPredecessorObserved'])
+            for mutate in [lambda v:next(x for x in v['Mounts'] if x['Destination']=='/inputs/predecessor').update(RW=True),
+                           lambda v:v['Config']['Cmd'].__setitem__(-1,'native'),lambda v:v['HostConfig'].update(NetworkMode='host'),
+                           lambda v:v['HostConfig'].update(Memory=0),lambda v:v['State'].update(Running=True,Pid=1)]:
+                changed=copy.deepcopy(owner);mutate(changed)
+                with self.assertRaises(ValueError):s.validate_container(changed,'synthetic-id','synthetic-owner',catalog,output)
+
+    def test_actual_constructor_prepares_each_nested_mount_before_readonly_parents_start(self):
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();(output/'inputs/source/gcc-12').mkdir(parents=True);(output/'controls').mkdir()
+            original=output/'inputs/source/gcc-12/synthetic-input';original.write_bytes(b'Synthetic unchanged input')
+            before=s.h.digest_file(original)
+            args=s.arguments({'image':'synthetic-image','environment':s.stage.FIXED_ENVIRONMENT},output,'synthetic-owner')
+            expected=[output/'inputs/source/predecessor',output/'controls/observations']
+            for child in expected:
+                self.assertTrue(child.is_dir());self.assertFalse(child.is_symlink());self.assertEqual(list(child.iterdir()),[])
+                self.assertEqual(child.stat().st_mode & 0o777,0o700)
+            self.assertEqual(s.h.digest_file(original),before)
+            nested=[arg for arg in args if arg.startswith('type=bind,') and
+                    any('target='+target in arg for target in ['/inputs/predecessor,','/controller/observations'])]
+            self.assertEqual(len(nested),2)
+            self.assertIn('type=bind,source='+str(output/'predecessor')+',target=/inputs/predecessor,readonly',nested)
+            self.assertIn('type=bind,source='+str(output/'observations')+',target=/controller/observations',nested)
+
+    def test_all_nested_mount_destinations_preflight_before_any_directory_is_created(self):
+        for bad in ['missing-input-parent','missing-controller-parent','existing-first','existing-second','linked-parent','dangling-child']:
+            with self.subTest(bad=bad),tempfile.TemporaryDirectory() as name:
+                output=Path(name).resolve();(output/'inputs/source').mkdir(parents=True);(output/'controls').mkdir()
+                first=output/'inputs/source/predecessor';second=output/'controls/observations'
+                if bad=='missing-input-parent':(output/'inputs/source').rmdir()
+                if bad=='missing-controller-parent':(output/'controls').rmdir()
+                if bad=='existing-first':first.write_bytes(b'Synthetic conflicting file')
+                if bad=='existing-second':second.mkdir()
+                if bad=='linked-parent':
+                    (output/'controls').rmdir();(output/'actual-controls').mkdir();(output/'controls').symlink_to('actual-controls')
+                if bad=='dangling-child':first.symlink_to('missing')
+                before=[p.relative_to(output).as_posix() for p in output.rglob('*')]
+                with mock.patch.object(s.h,'create_arguments') as construct:
+                    with self.assertRaises(ValueError):s.arguments({'image':'synthetic','environment':s.stage.FIXED_ENVIRONMENT},output,'owner')
+                    construct.assert_not_called()
+                self.assertEqual([p.relative_to(output).as_posix() for p in output.rglob('*')],before)
 
     def test_sdk_admission_requires_measured_scratch_memory_clock_without_a_successor_cache(self):
         resources={'architecture':'x86_64','cpus':4,'memoryBytes':16*s.h.GIB,'availableMemoryBytes':12*s.h.GIB,'freeDiskBytes':80*s.h.GIB}

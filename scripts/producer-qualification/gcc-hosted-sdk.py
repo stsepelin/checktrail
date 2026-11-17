@@ -110,7 +110,26 @@ def prepare_readonly_keyring(path, predecessor, expected_root):
             'mtimeNs':row['mtimeNs'],'hostOwnershipAndModePreserved':True,'preparedBeforeReadOnlyMount':True}
 
 
+def prepare_nested_bind_targets(output):
+    # runc applies the nested mounts only at START. A created-container mount
+    # map does not prove a child can be created beneath a read-only parent.
+    # These are ALL child mounts below our two read-only directory binds.
+    parents=[output/'inputs/source',output/'controls']
+    children=[parents[0]/'predecessor',parents[1]/'observations']
+    for parent,child in zip(parents,children):
+        h.physical(parent)
+        require(parent.is_dir() and not child.exists() and not child.is_symlink(),
+                'Fresh physical nested read-only bind destinations required')
+    for child in children:child.mkdir(mode=0o700)
+    for child in children:
+        h.physical(child)
+        require(child.is_dir() and not any(child.iterdir()) and stat.S_IMODE(child.stat().st_mode)==0o700,
+                'Empty owned nested read-only bind destination unavailable')
+    return children
+
+
 def arguments(catalog, output, name):
+    prepare_nested_bind_targets(output)
     args=h.create_arguments(catalog,output,name)
     require(args[-2:]==['/controller/gcc-hosted-stage.py','configure'],'Existing constructor tail changed')
     args[-2:]=['/controller/gcc-sdk-reconstruct.py','sdk-reconstruct']
@@ -244,7 +263,6 @@ def main():
         for relative in ['__carrier_work','__carrier_apt_lists','__carrier_apt_archives']:(state/relative).mkdir(mode=0o700)
         (output/'observations').mkdir(mode=0o700);target=output/'controls';target.mkdir(mode=0o700)
         for filename in CONTROLS:h.copy_pinned(controls/filename,target/filename,h.digest_file(controls/filename))
-        (target/'observations').mkdir(mode=0o700)
         (target/'EXPECTED-PREDECESSOR-ROOT.json').write_bytes(codec.canonical(expected))
         # Authenticated workflow acquisition already selected this exact image;
         # creation below forbids an implicit pull or alternate image.
