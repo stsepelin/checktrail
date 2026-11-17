@@ -1,0 +1,359 @@
+{
+  "boundaries": {
+    "arbitraryOrUnobservedBundleComponentsExcluded": false,
+    "fullCompilerSDKBootstrapClosureClaimed": false,
+    "gateAComplete": false,
+    "historicalExactBundleVersionsBound": false,
+    "historicalSourceResult": {
+      "bytes": 344919,
+      "physicalJSONCustodyRecovered": false,
+      "sha256": "09a67e2dd077f9b33b909c727bd9a43f36e0249260469b70b5e1c847b55c52e7"
+    },
+    "legalComplianceOrPermissionsConclusion": false,
+    "reviewTrialsRun": false,
+    "sourceTransformEquivalenceProven": false,
+    "wholeSDKOriginalNoticeClosureClaimed": false,
+    "wholeSDKProducerBuildClosureClaimed": false
+  },
+  "boundedRecoveryProvenance": {
+    "all52OriginalTextObjectsPhysicallyRetainedAndRehashed": true,
+    "cleanupErrors": 0,
+    "currentAuditNetworkOrHarvesting": false,
+    "exactCompressedBytes": 139502,
+    "observedDecodedTarBytes": 566272,
+    "originalTextsReused": 22,
+    "originalYarnURLAttributionPreservedInFrozenManifest": true,
+    "ownedRequestWorkersReaped": true,
+    "previouslyMissingOriginalTextIdentitiesRecovered": 30,
+    "provider": "registry.npmjs.org",
+    "redirectsOrProviderFallback": false,
+    "selectedArchiveCount": 30,
+    "sourceOrProjectExecution": false
+  },
+  "completeOriginalGrantSectionBindings": [
+    {
+      "archive": {
+        "bytes": 2021,
+        "sha256": "8a76b86e848314f6958dd95fd75c9c43ffce736c73462d099e34a5ea21836363"
+      },
+      "archiveMember": "package/README.md",
+      "byteOffset": 937,
+      "bytes": 1138,
+      "containingMember": {
+        "bytes": 2075,
+        "sha256": "7cb1b0ed2e73816693c708f7b3c0736d99455c3bba99e1fd75f7b07e23bf7898"
+      },
+      "name": "async-each",
+      "publicMetadataURL": "https://registry.npmjs.org/async-each/1.0.3",
+      "sha256": "5be7044c12c86e7be53457f2b11940413ee383faa1e1a8e829722fea2bb2074a",
+      "version": "1.0.3",
+      "wholeContainingREADMEReplayedThisAudit": false
+    },
+    {
+      "archive": {
+        "bytes": 2021,
+        "sha256": "e23c76f14f5222e07e39d89858b61e8e33f96956de9e0df3659cbdf8db950c87"
+      },
+      "archiveMember": "package/README.md",
+      "byteOffset": 782,
+      "bytes": 1108,
+      "containingMember": {
+        "bytes": 1890,
+        "sha256": "ff138e683771b187f3629c383db72ee7d632009010a36d08e18e8d2a34222ec7"
+      },
+      "name": "isarray",
+      "publicMetadataURL": "https://registry.npmjs.org/isarray/1.0.0",
+      "sha256": "66aa9feab8bb39aceebd69f2a357015d57ceab486d3c7a19ff8d3d4110a6d101",
+      "version": "1.0.0",
+      "wholeContainingREADMEReplayedThisAudit": false
+    },
+    {
+      "bytes": 1142,
+      "name": "chokidar",
+      "originalSourceDocument": {
+        "bytes": 13261,
+        "sha256": "67a5485bd3d5cea42c062a7d2ad613fca70ac360ba8052b62eaa11a1372de8fd"
+      },
+      "originalSourceGitBlobSHA1": "ab66c179bb927ed88366a66f43747952cf1f270f",
+      "publicOriginalSourceURL": "https://raw.githubusercontent.com/paulmillr/chokidar/a60961966746b143c1cdab13b37a90b97c4fae05/README.md",
+      "sha256": "015c248baf65ea37775696f203c2103549972627e00ec9090c832eb473b34fd1",
+      "version": "2.1.8",
+      "wholeContainingREADMEReplayedThisAudit": false
+    }
+  ],
+  "documentaryConclusion": "Every declared original notice from every fixed candidate version alternative is physically retained at its complete expected byte length and SHA-256. This closes original-text preservation for this finite union while preserving uncertainty about historical consumption and source transforms.",
+  "frozenEvidence": {
+    "boundedRecoveryManifest": {
+      "bytes": 98063,
+      "sha256": "b5e04aa2ca9a538bc76bbab7972bac0d8172069209beef9b3da1e588844bd89f"
+    },
+    "candidateAssociationsCanonicalJSON": {
+      "bytes": 36394,
+      "encoding": "UTF-8, sorted keys, compact separators, literal Unicode, no trailing newline",
+      "sha256": "c476386de0f5dd0da00d1b20e4e0806806470cfa12a3d306344da933edd84ee0"
+    },
+    "candidateOriginalNoticeUnion": {
+      "bytes": 58351,
+      "sha256": "b0c42d6c0130132f0498db7f448068c8ff45dfeadc0ffecfe5611ce1b782bdc1"
+    },
+    "independentDocumentaryAudit": {
+      "bytes": 143309,
+      "sha256": "38218480a2636fdb62fb0e96d4a469f53163f8ce3c01d51445be854454397896"
+    },
+    "originalTextCustodyReconciliation": {
+      "bytes": 94881,
+      "sha256": "360fbc4d3b0cd4f84a0801c7b06e39c2ea54f73a1a8c199101bf8aee8da54c14"
+    }
+  },
+  "measurement": "finite-sdk4-fork-original-notice-preservation",
+  "observedDate": "2026-11-17",
+  "originalTextObjects": [
+    {
+      "bytes": 1102,
+      "sha256": "0154425673db15cdfa80ecba2c9b1f1a867f7197a006764712849bfc3a93cbb7"
+    },
+    {
+      "bytes": 1142,
+      "sha256": "015c248baf65ea37775696f203c2103549972627e00ec9090c832eb473b34fd1"
+    },
+    {
+      "bytes": 1083,
+      "sha256": "0798f37cff4a3f438c071316e41f94ffe110116a313ab0fc4f8caa07218f1f0f"
+    },
+    {
+      "bytes": 1087,
+      "sha256": "0ead7e8cd8b0bc66a981ee69acaf1297ffa838cfce1b156a039bb24f997c0a27"
+    },
+    {
+      "bytes": 2338,
+      "sha256": "11f2aafb37d06b3ee5bdaf06e9811141d0da05263c316f3d627f45c20d43261b"
+    },
+    {
+      "bytes": 12548,
+      "sha256": "21426d8b8bcbfd772a7d0a382f0e1eea935d32906b0f2deec2f4d457ea4e9606"
+    },
+    {
+      "bytes": 1089,
+      "sha256": "29b396fbfc4042f461034807ee195f93278f16b7bcaad896f6dd961137cab89d"
+    },
+    {
+      "bytes": 753,
+      "sha256": "2c46f1325bd3822a33c1e2c1e49c18d13127ac00f9c8b3b79196c7a126f73cd9"
+    },
+    {
+      "bytes": 781,
+      "sha256": "2fc5460f1526810979054ecd18cd01349b57f38ea56d1e920afdea34d104540c"
+    },
+    {
+      "bytes": 1077,
+      "sha256": "33b734d60042d0fe0c92dd1fc1e874193a1c899ec3e276a2eb935d2d0bf5b710"
+    },
+    {
+      "bytes": 1088,
+      "sha256": "3672fb6ef1c214578dfee689643516c2685f61ab08d130517ca8ea24f383a840"
+    },
+    {
+      "bytes": 1142,
+      "sha256": "3c78dad6a73137a152a78f545eb0fe897c6828785368379a1218cc3d21d45e25"
+    },
+    {
+      "bytes": 1073,
+      "sha256": "435a6722c786b0a56fbe7387028f1d9d3f3a2d0fb615bb8fee118727c3f59b7b"
+    },
+    {
+      "bytes": 1109,
+      "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+    },
+    {
+      "bytes": 1087,
+      "sha256": "4922620a5741e9d1bb43dde132021a982ae7c545eed1c6e00b555d6fe978005f"
+    },
+    {
+      "bytes": 1088,
+      "sha256": "4cd903859549d4b20b571041f96dfae1136ed079c476126268f9d7cc1b611150"
+    },
+    {
+      "bytes": 1083,
+      "sha256": "5464e84783e7c02e6c19eaf8a364869a1b1f83205e1a7dd95b1da9ef7d7ab304"
+    },
+    {
+      "bytes": 1138,
+      "sha256": "5be7044c12c86e7be53457f2b11940413ee383faa1e1a8e829722fea2bb2074a"
+    },
+    {
+      "bytes": 749,
+      "sha256": "5ffe28e7ade7d8f10d85d5337a73fd793dac5c462fb9a28fbf8c5046c7fbca3b"
+    },
+    {
+      "bytes": 1077,
+      "sha256": "6652830c2607c722b66f1b57de15877ab8fc5dca406cc5b335afeb365d0f32c1"
+    },
+    {
+      "bytes": 1108,
+      "sha256": "66aa9feab8bb39aceebd69f2a357015d57ceab486d3c7a19ff8d3d4110a6d101"
+    },
+    {
+      "bytes": 1088,
+      "sha256": "6b8eac57398e657431675649c722902adbbd3058e3af382f6bc4fd1c05325df6"
+    },
+    {
+      "bytes": 1526,
+      "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd"
+    },
+    {
+      "bytes": 1119,
+      "sha256": "6fb9754611c20f6649f68805e8c990e83261f29316e29de9e6cedae607b8634c"
+    },
+    {
+      "bytes": 1087,
+      "sha256": "73b5283588baa142c5baaef5f56d3e8fdea7a30b214e8c5737e87640f882453a"
+    },
+    {
+      "bytes": 747,
+      "sha256": "765ad7d16f05b2a0c77d78e23822c3daddb0c5aa71b2db7bac663deba77d5b2c"
+    },
+    {
+      "bytes": 1088,
+      "sha256": "79ee8fb0e2dab906712344a3ad8a7a4a9b5bb6f3be8767ecfba2d2cb10155d29"
+    },
+    {
+      "bytes": 1088,
+      "sha256": "7c780ed6eea810915c06e5db8718d6fa770c251824ea2578562f68b7becfc528"
+    },
+    {
+      "bytes": 1133,
+      "sha256": "8c4f4bed2e7b5065132c4a7860a0394296a9c3a1736a911869a29b7d3e94a7e9"
+    },
+    {
+      "bytes": 1094,
+      "sha256": "9580cc528a1c38d1560a9d36e34404fe1ea9d8e6f44c596dac2a3104ef63cdab"
+    },
+    {
+      "bytes": 1107,
+      "sha256": "98c970de440dcfc77471610aec2377c9d9b0db2b3be6d1add524a586e1d7f422"
+    },
+    {
+      "bytes": 1087,
+      "sha256": "a91e1093d7fb934a4982016df082ddbf0d715549f0c94e2c878f8613bd7044e2"
+    },
+    {
+      "bytes": 1088,
+      "sha256": "aab63d733edfbb74393d94d75ece4ca89577d9f4a852a4cb18fb25cc8e254209"
+    },
+    {
+      "bytes": 696,
+      "sha256": "aff6a0eab5763020fd4b179927f918152be1f9b6bfec360cffda972e6adf73e7"
+    },
+    {
+      "bytes": 1128,
+      "sha256": "bf9b8053dead389db16aaf9a2634abc99297f2cdb72144f474af0cae5aa72c32"
+    },
+    {
+      "bytes": 1079,
+      "sha256": "c6a06b557de55e1ef10173b0c63411951c1909650aeeba9e41365a1ec97e3e8e"
+    },
+    {
+      "bytes": 1061,
+      "sha256": "c7b6718db5ace1d13eb030d29c53eb2b02f90e84ba21ba59eee63dfd4fcbefee"
+    },
+    {
+      "bytes": 1081,
+      "sha256": "c7cc929b57080f4b9d0c6cf57669f0463fc5b39906344dfc8d3bc43426b30eac"
+    },
+    {
+      "bytes": 1087,
+      "sha256": "d1a8c05367d9bf8f4fe511a04ff699a72ceccf694ac6260fa79dc8649475816d"
+    },
+    {
+      "bytes": 1082,
+      "sha256": "d4a190ec206bae01d90ecbc7d6b62196c525cf5353e2283f2ba9b846727a2895"
+    },
+    {
+      "bytes": 1088,
+      "sha256": "daca23d50b0f54d36d6da1b16c82dfea6461e2ae20de0e869957e44cc6d34781"
+    },
+    {
+      "bytes": 1079,
+      "sha256": "e1c2cb717f96dce44101960354e25cf7799051b2756a63ff01d7044ec762a67d"
+    },
+    {
+      "bytes": 1088,
+      "sha256": "e70ff771504ba41f2be55de812a017ff46433d7a250c862e38fc419159e44500"
+    },
+    {
+      "bytes": 1091,
+      "sha256": "e7d1fee7347ffddccc5fd03327ffdb50f8c112be0d5016d62388a92c4ae6e7a9"
+    },
+    {
+      "bytes": 1094,
+      "sha256": "e83834436cadded044f9533764eb1c10304f53d6417db79ef7f5e28f243e4aa1"
+    },
+    {
+      "bytes": 2337,
+      "sha256": "ec62dc96da0099b87f4511736c87309335527fb7031639493e06c95728dc8c54"
+    },
+    {
+      "bytes": 1064,
+      "sha256": "ecdccbcf39024f624ded480c01c0b25458e1eca8f26ecf040933865ce56d9a4f"
+    },
+    {
+      "bytes": 1088,
+      "sha256": "f2274cb4b0e7ce5e4d6e9049a44981dd49cbd7b4b0a71aaaeb7b96a0d8d3439d"
+    },
+    {
+      "bytes": 1087,
+      "sha256": "f4a48aa8354a257785aa534bab2ac5ff2c2a98cd59cdf4a637bb68ee185683f7"
+    },
+    {
+      "bytes": 1092,
+      "sha256": "f7032bfd2007196bdac0910ef82c3eaafe72be152a9131ecb05d52431f1c4335"
+    },
+    {
+      "bytes": 1087,
+      "sha256": "f9f40678b97b1a6aa62cb1f2166d8169bd7ee0616e48db2cdc4618feea9f97f6"
+    },
+    {
+      "bytes": 1114,
+      "sha256": "fd8e193cc5249d8a1812de96e1bc4ea95807c6d1151a2d0a3c6d6f3988d25384"
+    }
+  ],
+  "schemaVersion": 1,
+  "scope": "Complete declared original notice texts for the frozen metadata-qualified candidate union of the selected prebuilt SDK4 fork bundle",
+  "sourceExecutionScope": "The selected recipe consumes a prebuilt fork archive; this documentary audit executes no project, producer, package implementation, compiler or model.",
+  "state": "finite-candidate-original-notice-preservation-complete",
+  "universe": {
+    "candidateNameVersionArchiveIdentities": 106,
+    "componentNames": 89,
+    "occurrencePartition": {
+      "archiveREADMECompleteGrantSection": 2,
+      "exactPinnedPublisherREADMECompleteGrantSection": 1,
+      "fullSeparateNoticeFile": 103
+    },
+    "originalNoticeAssociations": 106,
+    "uniqueOriginalTextBytes": 69517,
+    "uniqueOriginalTextObjects": 52
+  },
+  "verifiedPreservation": {
+    "all106CandidateArchivePinsAndOriginalNoticeBindingsEqualAcrossFrozenUnionManifestAndCustody": true,
+    "all22PriorOriginalTextCopiesEqualCurrentCustodyObjects": true,
+    "all30RetainedRecoveryArchiveDeclaredLicenseMembersEqualCurrentCustodyObjects": true,
+    "all52UniqueOriginalTextIdentitiesEqualDeclaredNoticeIdentitySet": true,
+    "allOriginalTextPhysicalIdentitiesUnchangedDuringRead": true,
+    "allOriginalTextReadsRegularNoFollow": true,
+    "allThreeOriginalCompleteGrantSectionBindingsPreserved": true,
+    "candidateRowsWithNoNoticeAssociation": 0,
+    "expectedUniqueTexts": 52,
+    "full106OriginalArchivesReplayedThisAudit": false,
+    "missing": 0,
+    "modified": 0,
+    "physicallyReadAndRehashed": 52,
+    "retainedPriorOriginalCopiesRehashed": 22,
+    "retainedRecoveryArchiveCompressedBytes": 139502,
+    "retainedRecoveryArchiveDeclaredNoticeBytesEqual": true,
+    "retainedRecoveryArchiveDecodedBytes": 566272,
+    "retainedRecoveryArchivesRehashed": 30,
+    "truncated": 0,
+    "unexpectedReferencedHashes": 0,
+    "unionManifestCustodyAssociationMismatches": 0
+  }
+}
