@@ -1,19 +1,19 @@
-# Candidate-only original native acceptance; no protected ci-complete context or whole Gate A claim.
-name: Native candidate acceptance
+name: Windows ACL startup diagnostics
 on:
-  workflow_dispatch: null
+  workflow_dispatch: {}
 permissions:
   contents: read
-env:
-  SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
-concurrency:
-  group: native-candidate-acceptance-${{ github.ref }}
-  cancel-in-progress: false
 jobs:
-  candidate-windows-provenance:
-    name: Candidate Windows original provenance source and fresh controls
+  cold-acl:
+    name: Original ACL startup (${{ matrix.mode }})
     runs-on: windows-2025
-    timeout-minutes: 45
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        mode:
+          - cold-original
+          - cold-instrumented
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -24,45 +24,431 @@ jobs:
           node-version: 22.23.3
           cache: npm
       - run: npm ci --ignore-scripts --no-audit --no-fund
-      - run: npm run typecheck
       - run: npm run build
-      - run: node scripts/prepare-package-cache.mjs
-      - name: Require actual nested stage timeout and parent-loss ownership
-        timeout-minutes: 3
+      - name: Observe first original or instrumented ACL invocation
+        id: acl-probe
+        timeout-minutes: 2
         shell: pwsh
-        run: |
-          node --test --test-reporter=tap '--test-name-pattern=^provenance stage owner (timeout|parent loss) reaps nested file descendants and preserves an unrelated sibling$' dist/test/native-provenance-runtime.test.js
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $entry = Join-Path $env:RUNNER_TEMP 'checktrail-provenance-owner-controls.mjs'
-          @'
-          import assert from 'node:assert/strict';
-          import path from 'node:path';
-          import { pathToFileURL } from 'node:url';
-          const { runRequiredTests } = await import(pathToFileURL(path.resolve('scripts/required-test-evidence.mjs')).href);
-          const names = [
-            'provenance stage owner timeout reaps nested file descendants and preserves an unrelated sibling',
-            'provenance stage owner parent loss reaps nested file descendants and preserves an unrelated sibling',
-          ];
-          const evidence = await runRequiredTests(names.map(name => ({file: 'dist/test/native-provenance-runtime.test.js', name})), {timeoutMs: 120000, isolatedCaseWorkers: 1});
-          console.log(JSON.stringify({schemaVersion: 1, status: 'observed-required-owner-evidence', evidence}));
-          assert.equal(evidence.required, 2);
-          assert.equal(evidence.complete, true, JSON.stringify(evidence.problems));
-          assert.deepEqual(evidence.ledger.cases.map(({name, outcome}) => ({name, outcome})), names.map(name => ({name, outcome: 'passed'})));
-          console.log(JSON.stringify({schemaVersion: 1, status: 'passed-original-nested-stage-owner-controls', evidence}));
-          '@ | Set-Content -LiteralPath $entry -Encoding utf8
-          node $entry
-      - name: Require provenance composition from source and a fresh offline package
-        id: native-provenance-runtime
-        timeout-minutes: 30
-        run: node scripts/verify-native-provenance-runtime.mjs windows-node22
         env:
-          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}/native-provenance-runtime.json
-      - name: Retain original bounded provenance runtime receipt bytes
-        if: ${{ !cancelled() && steps.native-provenance-runtime.outcome == 'success' }}
+          CHECKTRAIL_ACL_PROBE_RECEIPT: ${{ runner.temp }}/windows-acl-startup.json
+        run: |
+          $entry = Join-Path $env:RUNNER_TEMP 'checktrail-acl-startup-probe.mjs'
+          @'
+          // Fixed first-party Windows ACL startup diagnostic. Never runtime qualification.
+          import assert from "node:assert/strict";
+          import { Buffer } from "node:buffer";
+          import { spawnSync } from "node:child_process";
+          import { createHash } from "node:crypto";
+          import {
+            constants,
+            closeSync,
+            fstatSync,
+            lstatSync,
+            openSync,
+            readFileSync,
+            realpathSync,
+          } from "node:fs";
+          import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+          import os from "node:os";
+          import path from "node:path";
+          import process from "node:process";
+          import { fileURLToPath, pathToFileURL } from "node:url";
+          const sourceCommit = "0152b8f7981c3686b5cc2ccf1cde91fe3db1bf04";
+          const sourcePins = [
+            [
+              "src/windows-task-access.ts",
+              15278,
+              "4018769733a9f34d32b5d3f4664c9dfc330768cefd54fc0ef94f27f55b177b1d",
+            ],
+            [
+              "dist/src/windows-task-access.js",
+              15052,
+              "b3e0c2fef723b0e3a257d1be39c796af67b5ca6a313d09e9a61a9e0ab99e7d33",
+            ],
+          ];
+          export const originalScriptPin = {
+            bytes: 2861,
+            sha256: "945c23447150a9e8eff6fb4ea566defa6cdac4be08e16438b74ebd3ca0a98f96",
+          };
+          export const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
+          export const bytesIdentity = (bytes) => ({
+            bytes: bytes.length,
+            sha256: sha(bytes),
+          });
+          const same = (a, b) =>
+            ["dev", "ino", "mode", "size", "mtimeMs", "ctimeMs"].every(
+              (k) => a[k] === b[k],
+            );
+          function regular(file, maximum) {
+            const named = lstatSync(file);
+            assert.ok(named.isFile() && !named.isSymbolicLink());
+            assert.ok(named.size > 0 && named.size <= maximum);
+            const fd = openSync(
+              file,
+              constants.O_RDONLY |
+                (constants.O_NOFOLLOW ?? 0) |
+                (constants.O_NONBLOCK ?? 0),
+            );
+            try {
+              assert.ok(same(named, fstatSync(fd)));
+              const bytes = readFileSync(fd);
+              assert.equal(bytes.length, named.size);
+              assert.ok(same(named, fstatSync(fd)) && same(named, lstatSync(file)));
+              return bytes;
+            } finally {
+              closeSync(fd);
+            }
+          }
+          export function extractOriginal(compiled) {
+            const matches = [
+              ...compiled.matchAll(/const accessScript = String\.raw\s*`([\s\S]*?)`;/gu),
+            ];
+            assert.equal(matches.length, 1);
+            const script = matches[0][1];
+            assert.deepEqual(bytesIdentity(Buffer.from(script)), originalScriptPin);
+            return script;
+          }
+          export const phaseNames = [
+            "script-entry",
+            "before-input-encoding",
+            "after-input-encoding",
+            "after-output-encoding",
+            "before-assembly-load",
+            "after-serializer-configuration",
+            "before-stdin-read",
+            "after-stdin-read",
+            "after-current-identity",
+            "before-set-access",
+            "after-set-access",
+            "before-get-access",
+            "after-get-access",
+            "before-serialization",
+            "after-serialization",
+            "script-return",
+          ];
+          export function instrumentOriginal(script) {
+            assert.deepEqual(bytesIdentity(Buffer.from(script)), originalScriptPin);
+            const markers = [];
+            const marker = (id) => {
+              const text =
+                "\n[Console]::Error.WriteLine(([string]" +
+                id +
+                " + ',' + [Diagnostics.Stopwatch]::GetTimestamp() + ',' + [Diagnostics.Stopwatch]::Frequency))\n";
+              markers.push(text);
+              return text;
+            };
+            let result = marker(0) + script;
+            const edits = [
+              ["[Console]::InputEncoding = [Text.UTF8Encoding]::new($false)", 1, 2],
+              ["[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)", null, 3],
+              [
+                "[void][System.Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35')",
+                4,
+                null,
+              ],
+              ["$serializer.RecursionLimit = 8", null, 5],
+              [
+                "$request = $serializer.DeserializeObject([Console]::In.ReadToEnd())",
+                6,
+                7,
+              ],
+              [
+                "$identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()",
+                null,
+                8,
+              ],
+              ["$item.SetAccessControl($acl)", 9, 10],
+              ["$acl = $item.GetAccessControl()", 11, 12],
+              ["[Console]::Out.WriteLine($serializer.Serialize($observed))", 13, 14],
+            ];
+            for (const [needle, before, after] of edits) {
+              assert.equal(result.split(needle).length, 2);
+              result = result.replace(
+                needle,
+                (before === null ? "" : marker(before)) +
+                  needle +
+                  (after === null ? "" : marker(after)),
+              );
+            }
+            result += marker(15);
+            let restored = result;
+            for (const m of markers) {
+              assert.equal(restored.split(m).length, 2);
+              restored = restored.replace(m, "");
+            }
+            assert.equal(restored, script);
+            return result;
+          }
+          export function numericPhases(stderr) {
+            assert.ok(Buffer.isBuffer(stderr) && stderr.length <= 32768);
+            const lines = stderr.toString("utf8").split(/\r?\n/u);
+            const events = [];
+            let previous = -1,
+              first = null,
+              previousTick = null,
+              frequency = null;
+            for (const line of lines) {
+              if (!/^[0-9]+,[0-9]+,[0-9]+$/u.test(line)) continue;
+              const [id, ticks, freq] = line.split(",");
+              assert.ok(id.length <= 2 && ticks.length <= 20 && freq.length <= 20);
+              const n = Number(id),
+                t = BigInt(ticks),
+                f = BigInt(freq);
+              assert.ok(n > previous && n < phaseNames.length && f > 0n);
+              assert.ok(events.length < phaseNames.length);
+              frequency ??= f;
+              assert.equal(f, frequency);
+              first ??= t;
+              assert.ok(t >= first && (previousTick === null || t >= previousTick));
+              previousTick = t;
+              assert.ok(((t - first) * 1000000n) / f <= 60000000n);
+              events.push({
+                id: n,
+                elapsedMs: Number(((t - first) * 1000000n) / f) / 1000,
+              });
+              previous = n;
+            }
+            return events;
+          }
+          function processMetadata(result) {
+            return {
+              status: result.status,
+              signal: result.signal,
+              code: typeof result.error?.code === "string" ? result.error.code : null,
+              pid: Number.isSafeInteger(result.pid) ? result.pid : null,
+              stdout: bytesIdentity(result.stdout ?? Buffer.alloc(0)),
+              stderr: bytesIdentity(result.stderr ?? Buffer.alloc(0)),
+            };
+          }
+          function alive(pid) {
+            if (!Number.isSafeInteger(pid) || pid <= 0) return null;
+            try {
+              process.kill(pid, 0);
+              return true;
+            } catch (error) {
+              if (error.code === "ESRCH") return false;
+              throw error;
+            }
+          }
+          async function main(mode) {
+            assert.ok(mode === "cold-original" || mode === "cold-instrumented");
+            assert.equal(process.platform, "win32");
+            assert.equal(process.arch, "x64");
+            assert.equal(process.versions.node, "22.23.3");
+            const begun = Date.now(),
+              deadline = begun + 60000,
+              remaining = (max) => {
+                const left = deadline - Date.now();
+                assert.ok(left > 0, "Diagnostic whole deadline");
+                return Math.min(max, left);
+              };
+            const root = realpathSync(process.cwd()),
+              output = process.env.CHECKTRAIL_ACL_PROBE_RECEIPT;
+            assert.ok(output && path.isAbsolute(output));
+            const pins = sourcePins.map(([file, size, digest]) => {
+              const bytes = regular(path.join(root, file), 65536);
+              assert.equal(bytes.length, size);
+              assert.equal(sha(bytes), digest);
+              return { file, ...bytesIdentity(bytes) };
+            });
+            const compiled = regular(path.join(root, sourcePins[1][0]), 65536).toString(
+                "utf8",
+              ),
+              original = extractOriginal(compiled),
+              instrumented = instrumentOriginal(original);
+            const api = await import(
+                pathToFileURL(path.join(root, "dist/src/windows-task-access.js")).href
+              ),
+              { windowsEnvironment } = await import(
+                pathToFileURL(path.join(root, "dist/src/windows-process.js")).href
+              );
+            const systemRoot = windowsEnvironment(process.env).SYSTEMROOT;
+            assert.ok(systemRoot && /^[A-Za-z]:\\/u.test(systemRoot));
+            const selected = path.win32.join(
+                systemRoot,
+                "System32/WindowsPowerShell/v1.0/powershell.exe",
+              ),
+              powershell = realpathSync(selected);
+            assert.equal(powershell.toLowerCase(), selected.toLowerCase());
+            const binary = {
+              node: bytesIdentity(regular(process.execPath, 256 * 1048576)),
+              powershell: bytesIdentity(regular(powershell, 64 * 1048576)),
+            };
+            const temporary = realpathSync(
+              await mkdtemp(path.join(os.tmpdir(), "checktrail-acl-phase-")),
+            );
+            const receipt = {
+              schemaVersion: 1,
+              sourceCommit,
+              mode,
+              sourcePins: pins,
+              binary,
+              node: process.versions.node,
+              platform: process.platform,
+              architecture: process.arch,
+              osRelease: os.release(),
+              imageOS: process.env.ImageOS ?? null,
+              imageVersion: process.env.ImageVersion ?? null,
+              originalScript: bytesIdentity(Buffer.from(original)),
+              instrumentedScript: bytesIdentity(Buffer.from(instrumented)),
+              originalStatementsPreserved: true,
+              originalProcessTimeoutMs: 15000,
+              wholeProbeMaximumMs: 60000,
+              observations: [],
+              cleanup: {},
+              diagnosticComplete: false,
+              applicationQualified: false,
+              source9Qualified: false,
+              fresh9Qualified: false,
+              inferenceInvoked: false,
+              fieldEvaluationExecuted: false,
+              gateAComplete: false,
+            };
+            const originalCall = async (label) => {
+              const target = realpathSync(
+                await mkdir(path.join(temporary, label), { recursive: true }),
+              );
+              const wrapper = path.join(temporary, "original-call.mjs");
+              const module = pathToFileURL(
+                path.join(root, "dist/src/windows-task-access.js"),
+              ).href;
+              const text = `import{ensureWindowsTaskAccess}from${JSON.stringify(module)};const start=Date.now();let result;try{ensureWindowsTaskAccess(${JSON.stringify(target)},'directory',true);result={validated:true};}catch(error){const c=error.cause;result={validated:false,cause:c&&{schemaVersion:c.schemaVersion,phase:c.phase,code:c.code,status:c.status,signal:c.signal,stdout:c.stdout,stderr:c.stderr}};}console.log(JSON.stringify({...result,elapsedMs:Date.now()-start}));`;
+              await writeFile(wrapper, text);
+              const r = spawnSync(process.execPath, [wrapper], {
+                cwd: root,
+                env: { ...process.env, NODE_OPTIONS: "" },
+                timeout: remaining(20000),
+                maxBuffer: 65536,
+                stdio: ["ignore", "pipe", "pipe"],
+              });
+              const metadata = processMetadata(r);
+              let result = null;
+              try {
+                result = JSON.parse(r.stdout);
+              } catch {}
+              assert.ok(result === null || typeof result.validated === "boolean");
+              receipt.observations.push({
+                label,
+                process: metadata,
+                result,
+                wrapperReaped: alive(r.pid) === false,
+              });
+            };
+            try {
+              if (mode === "cold-original") await originalCall("cold-original");
+              else {
+                const target = realpathSync(
+                  await mkdir(path.join(temporary, "cold-instrumented"), {
+                    recursive: true,
+                  }),
+                );
+                const started = Date.now();
+                const r = spawnSync(
+                  powershell,
+                  [
+                    "-NoProfile",
+                    "-NonInteractive",
+                    "-EncodedCommand",
+                    Buffer.from(instrumented, "utf16le").toString("base64"),
+                  ],
+                  {
+                    cwd: root,
+                    env: { SYSTEMROOT: systemRoot },
+                    input: JSON.stringify({
+                      path: target,
+                      kind: "directory",
+                      created: true,
+                    }),
+                    timeout: remaining(15000),
+                    maxBuffer: 32768,
+                    windowsHide: true,
+                    stdio: ["pipe", "pipe", "pipe"],
+                  },
+                );
+                let aclValidated = false;
+                try {
+                  api.validateWindowsTaskAccess(
+                    JSON.parse(r.stdout.toString("utf8").replace(/^\uFEFF/u, "")),
+                    "directory",
+                  );
+                  aclValidated = true;
+                } catch {}
+                receipt.observations.push({
+                  label: "cold-instrumented",
+                  elapsedMs: Date.now() - started,
+                  process: processMetadata(r),
+                  phases: numericPhases(r.stderr ?? Buffer.alloc(0)),
+                  aclValidated,
+                  directChildReaped: alive(r.pid) === false,
+                });
+                await originalCall("original-after-instrumentation");
+              }
+              for (const row of pins)
+                assert.deepEqual(
+                  bytesIdentity(regular(path.join(root, row.file), 65536)),
+                  { bytes: row.bytes, sha256: row.sha256 },
+                );
+              receipt.sourceInputsUnchanged = true;
+              assert.deepEqual(
+                bytesIdentity(regular(process.execPath, 256 * 1048576)),
+                binary.node,
+              );
+              assert.deepEqual(
+                bytesIdentity(regular(powershell, 64 * 1048576)),
+                binary.powershell,
+              );
+              receipt.runtimeBinariesUnchanged = true;
+              receipt.diagnosticComplete = true;
+            } catch (error) {
+              receipt.failureCode =
+                typeof error.code === "string"
+                  ? error.code
+                  : "DIAGNOSTIC_CONTROL_REFUSAL";
+              process.exitCode = 1;
+            } finally {
+              try {
+                await rm(temporary, {
+                  recursive: true,
+                  force: true,
+                  maxRetries: 10,
+                  retryDelay: 100,
+                });
+                receipt.cleanup.ownedRootRemoved = true;
+              } catch {
+                receipt.cleanup.ownedRootRemoved = false;
+                process.exitCode = 1;
+              }
+              receipt.elapsedMs = Date.now() - begun;
+              const raw = Buffer.from(JSON.stringify(receipt) + "\n");
+              assert.ok(raw.length <= 65536);
+              await writeFile(output, raw, { flag: "wx" });
+              console.log(
+                JSON.stringify({
+                  mode,
+                  diagnosticComplete: receipt.diagnosticComplete,
+                  receipt: bytesIdentity(raw),
+                  observations: receipt.observations,
+                  cleanup: receipt.cleanup,
+                  applicationQualified: false,
+                  gateAComplete: false,
+                }),
+              );
+            }
+          }
+          if (
+            process.argv[1] &&
+            path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+          )
+            await main(process.argv[2]);
+          '@ | Set-Content -LiteralPath $entry -Encoding utf8
+          node $entry '${{ matrix.mode }}'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Retain bounded diagnostic metadata
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          name: candidate-native-provenance-windows-node22-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/native-provenance-runtime.json
+          name: windows-acl-startup-${{ matrix.mode }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/windows-acl-startup.json
           if-no-files-found: error
           retention-days: 7
           include-hidden-files: false
