@@ -1,0 +1,185 @@
+#!/usr/bin/env python3
+"""Observe a hosted Apple toolchain; never admit or execute a project producer."""
+
+import hashlib
+import json
+import os
+from pathlib import Path
+import platform
+import plistlib
+import re
+import shutil
+import stat
+import subprocess
+import sys
+import tempfile
+import time
+
+EXPECTED = {"Xcode": "16.4", "XcodeBuild": "16F6", "SDK": "15.5", "AppleClang": "17.0.0.17000013"}
+DEVELOPER = Path("/Applications/Xcode_16.4.app/Contents/Developer")
+MACROS = ("__clang_major__", "__clang_minor__", "__clang_patchlevel__", "__apple_build_version__")
+PRODUCERS = frozenset("clang clang++ cc cc1 cc1plus gcc g++ ld ld64 lld swift swiftc make gmake ninja cmake cargo rustc rustdoc wasm-opt emcc em++ npm npx pnpm yarn node javac java dotnet msbuild gradle mvn go".split())
+MAX_METADATA = 131072
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def command(argv, env, metadata):
+    result = subprocess.run(argv, input=b"", stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            timeout=15, env=env, cwd="/", check=False)
+    if len(result.stdout) + len(result.stderr) > 1048576:
+        raise ValueError("command-output-bound")
+    metadata.append({"argv": argv, "exitCode": result.returncode,
+                     "stdoutBytes": len(result.stdout), "stdoutSHA256": digest(result.stdout),
+                     "stderrBytes": len(result.stderr), "stderrSHA256": digest(result.stderr)})
+    if result.returncode:
+        raise ValueError("metadata-command-failed")
+    return result.stdout.decode("utf-8", "strict").strip()
+
+
+def file_metadata(path, root, limit, deadline):
+    real = path.resolve(strict=True)
+    real.relative_to(root.resolve(strict=True))
+    before = real.stat()
+    if not stat.S_ISREG(before.st_mode) or before.st_size > limit:
+        raise ValueError("tool-file-type-or-byte-bound")
+    h = hashlib.sha256()
+    with real.open("rb") as stream:
+        while True:
+            if time.monotonic() > deadline:
+                raise ValueError("probe-deadline")
+            chunk = stream.read(1048576)
+            if not chunk:
+                break
+            h.update(chunk)
+    after = real.stat()
+    keys = ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns", "st_mode", "st_uid")
+    if any(getattr(before, k) != getattr(after, k) for k in keys):
+        raise ValueError("tool-file-changed-during-hash")
+    return {"selectedPath": str(path), "physicalPath": str(real), "bytes": before.st_size,
+            "sha256": h.hexdigest(), "mode": stat.S_IMODE(before.st_mode), "uid": before.st_uid,
+            "writableByProbeCaller": os.access(real, os.W_OK)}
+
+
+def compiler_identity(text):
+    values = {}
+    for line in text.splitlines():
+        match = re.fullmatch(r"#define (\w+) (\d+)", line)
+        if match and match[1] in MACROS:
+            if match[1] in values:
+                raise ValueError("duplicate-compiler-version-macro")
+            values[match[1]] = int(match[2])
+    if set(values) != set(MACROS):
+        raise ValueError("missing-compiler-version-macro")
+    return values, ".".join(str(values[k]) for k in MACROS)
+
+
+def workload_snapshot(text, own_pid):
+    lines = text.splitlines()
+    if len(lines) > 8192:
+        raise ValueError("process-count-bound")
+    conflicts = []
+    for line in lines:
+        pid, name = line.strip().split(None, 1)
+        name = Path(name).name
+        if int(pid) != own_pid and name in PRODUCERS:
+            conflicts.append({"pid": int(pid), "executableBasename": name})
+    return {"observedProcessCount": len(lines), "knownProducerProcesses": conflicts,
+            "noKnownProducerProcessObserved": not conflicts,
+            "scope": "One process-name snapshot; no arguments, credentials, exclusive-host guarantee or future reservation."}
+
+
+def observe(env, commands, deadline):
+    system, architecture = platform.system(), platform.machine()
+    if system != "Darwin" or architecture != "arm64":
+        raise ValueError("requires-native-Darwin-arm64")
+    version = command(["/usr/bin/sw_vers", "-productVersion"], env, commands)
+    xcode = command(["/usr/bin/xcodebuild", "-version"], env, commands)
+    sdk = command(["/usr/bin/xcrun", "--sdk", "macosx", "--show-sdk-version"], env, commands)
+    sdk_path = Path(command(["/usr/bin/xcrun", "--sdk", "macosx", "--show-sdk-path"], env, commands))
+    sdk_path.resolve(strict=True).relative_to(DEVELOPER.resolve(strict=True))
+    compiler = Path(command(["/usr/bin/xcrun", "--sdk", "macosx", "--find", "clang"], env, commands))
+    compiler.resolve(strict=True).relative_to(DEVELOPER.resolve(strict=True))
+    banner = command([str(compiler), "--version"], env, commands)
+    if len(banner) > 4096:
+        raise ValueError("compiler-banner-bound")
+    values, identity = compiler_identity(command([str(compiler), "-dM", "-E", "-x", "c", "-"], env, commands))
+    memory = int(command(["/usr/sbin/sysctl", "-n", "hw.memsize"], env, commands))
+    cpus = int(command(["/usr/sbin/sysctl", "-n", "hw.logicalcpu"], env, commands))
+    disk = shutil.disk_usage(env["RUNNER_TEMP"])
+    settings = sdk_path / "SDKSettings.plist"
+    if settings.stat().st_size > 2097152:
+        raise ValueError("SDK-metadata-byte-bound")
+    files = [file_metadata(compiler, DEVELOPER, 1073741824, deadline),
+             file_metadata(settings, sdk_path, 2097152, deadline)]
+    sdk_bytes = settings.read_bytes()
+    if digest(sdk_bytes) != files[1]["sha256"]:
+        raise ValueError("SDK-metadata-changed-before-parsing")
+    sdk_values = plistlib.loads(sdk_bytes)
+    for path, root in [(sdk_path / "SDKSettings.json", sdk_path),
+                       (DEVELOPER.parent / "Info.plist", DEVELOPER.parent),
+                       (DEVELOPER.parent / "version.plist", DEVELOPER.parent)]:
+        if path.exists():
+            files.append(file_metadata(path, root, 2097152, deadline))
+    workload = workload_snapshot(command(["/bin/ps", "-axo", "pid=,comm="], env, commands), os.getpid())
+    checks = {"githubHosted": env.get("GITHUB_ACTIONS") == "true" and env.get("RUNNER_ENVIRONMENT") == "github-hosted",
+              "runnerMacOSARM64": env.get("RUNNER_OS") == "macOS" and env.get("RUNNER_ARCH") == "ARM64",
+              "nativeMacOS15ARM64": system == "Darwin" and architecture == "arm64" and version.split(".")[0] == "15",
+              "exactXcode164Build16F6": xcode.splitlines() == ["Xcode 16.4", "Build version 16F6"],
+              "exactSelectedSDK155": sdk == "15.5" and str(sdk_values.get("Version")) == "15.5",
+              "exactAppleClang170017000013": identity == EXPECTED["AppleClang"],
+              "atLeastTwoCPUs": cpus >= 2, "atLeast8GiBRAM": memory >= 8 * 1024**3,
+              "provisional20GiBFreeScratch": disk.free >= 20 * 1024**3,
+              "noKnownProducerProcessObserved": workload["noKnownProducerProcessObserved"],
+              "selectedFilesNotWritableByProbeCaller": all(not f["writableByProbeCaller"] for f in files)}
+    return {"compilerVersionMetadataPreprocessingObserved": True,
+            "host": {"platform": system, "architecture": architecture, "macOS": version,
+                     "CPUCount": cpus, "RAMBytes": memory, "scratchTotalBytes": disk.total,
+                     "scratchFreeBytes": disk.free, "loadAverage": os.getloadavg()},
+            "toolchain": {"developerDirectory": str(DEVELOPER), "xcodeVersionMetadata": xcode,
+                          "SDKVersion": sdk, "SDKPath": str(sdk_path), "compilerVersionBanner": banner,
+                          "compilerVersionMacros": values, "AppleClangIdentity": identity,
+                          "selectedPhysicalMetadataFiles": files, "wholeSDKOrToolchainHashed": False},
+            "workload": workload, "checks": checks,
+            "allProvisionalHostMetadataChecksObserved": all(checks.values())}
+
+
+def main():
+    started = time.monotonic()
+    result = {"schemaVersion": 1, "scope": "Tree-sitter 0.27.0 original-host metadata diagnostic only",
+              "expected": EXPECTED, "state": "unavailable", "commands": [],
+              "nativeProducerAdmissionGranted": False, "producerSourceOrPayloadDownloaded": False,
+              "projectSourceReadOrExecuted": False, "compilerBuildOrLinkPerformed": False,
+              "compilerMetadataQueryUsesEmptyInputOnly": True, "ordinaryRequiredCIChanged": False,
+              "sourceBuildOrTestClosureClaimed": False, "machineConfigurationChanged": False}
+    try:
+        runner_temp = Path(os.environ["RUNNER_TEMP"]).resolve(strict=True)
+        with tempfile.TemporaryDirectory(prefix="treesitter027-host-meta-", dir=runner_temp) as scratch:
+            home, cargo = Path(scratch) / "home", Path(scratch) / "cargo"
+            home.mkdir(mode=0o700)
+            cargo.mkdir(mode=0o700)
+            env = {k: os.environ[k] for k in ("RUNNER_TEMP", "GITHUB_ACTIONS", "RUNNER_ENVIRONMENT", "RUNNER_OS", "RUNNER_ARCH") if k in os.environ}
+            env.update({"PATH": "/usr/bin:/bin:/usr/sbin:/sbin", "HOME": str(home), "CARGO_HOME": str(cargo),
+                        "DEVELOPER_DIR": str(DEVELOPER), "SDKROOT": str(DEVELOPER / "Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk"), "LC_ALL": "C"})
+            result["freshEmptyHOMEAndCARGO_HOMEObserved"] = not any(home.iterdir()) and not any(cargo.iterdir())
+            result.update(observe(env, result["commands"], started + 120))
+            result["state"] = "metadata-observed"
+        result["ownedTemporaryHOMEAndCARGO_HOMERemoved"] = True
+    except (OSError, ValueError, KeyError, UnicodeError, subprocess.TimeoutExpired) as error:
+        result["unavailableReason"] = str(error) if type(error) is ValueError else type(error).__name__
+    result["elapsedSeconds"] = time.monotonic() - started
+    encoded = (json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n").encode()
+    if len(encoded) > MAX_METADATA:
+        raise ValueError("result-metadata-byte-bound")
+    output = Path(os.environ["RUNNER_TEMP"]) / "treesitter027-host-metadata.json"
+    with output.open("xb") as stream:
+        stream.write(encoded)
+    output.chmod(0o600)
+    print("TREESITTER027_HOST_METADATA " + json.dumps({"state": result["state"], "bytes": len(encoded), "sha256": digest(encoded), "producerAdmission": False}, sort_keys=True))
+    return 0 if result.get("allProvisionalHostMetadataChecksObserved") else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
