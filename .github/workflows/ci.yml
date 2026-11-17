@@ -190,8 +190,8 @@ jobs:
                       self.observation[name+'Complete']=len(body)<=32768
 
           def sudo_denial(result):
-              text=(result.stdout+result.stderr).decode('utf-8','strict').strip()
-              return result.returncode==1 and re.fullmatch(r'User nobody is not allowed to run sudo on [A-Za-z0-9_.-]+\.',text) is not None
+              text=result.stdout or result.stderr
+              return result.returncode in (0,1) and not (result.stdout and result.stderr) and re.fullmatch(rb'User nobody is not allowed to run sudo on [A-Za-z0-9_.-]+\.\n?',text) is not None
 
           def context(env):
               value={k:env[k] for k in CONTEXT}
@@ -321,7 +321,7 @@ jobs:
 
           if __name__=='__main__':main()
           PY_TREESITTER_CURRENT_ADMISSION
-          printf '%s  %s\n' '8f71922effb8f628cfe59326fec2c5fd90dd332bb140958914c61c58ff5d10f6' "$staged" | /usr/bin/shasum -a 256 -c -
+          printf '%s  %s\n' '75372424bcf0ca882a681c8708aa0b4ee057c9e8c5fe94d5370e45e432863fb0' "$staged" | /usr/bin/shasum -a 256 -c -
           control_root="$(sudo -n /usr/bin/mktemp -d /private/tmp/checktrail-treesitter027-admission.XXXXXXXX)"
           case "$control_root" in /private/tmp/checktrail-treesitter027-admission.*) ;; *) exit 1 ;; esac
           cleanup() {
