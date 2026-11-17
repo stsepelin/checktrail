@@ -1,4 +1,4 @@
-name: SDK10 rolling retention synthetic
+name: SDK10 parallel rolling retention synthetic
 on:
   workflow_dispatch:
     inputs:
@@ -9,7 +9,7 @@ on:
 permissions:
   actions: read
 concurrency:
-  group: sdk10-rolling-retention-synthetic
+  group: sdk10-parallel-rolling-retention-synthetic
   cancel-in-progress: false
 jobs:
   synthetic:
@@ -22,60 +22,119 @@ jobs:
       - name: Materialize only the first-party deterministic synthetic helper
         shell: bash
         run: |
-          TRIAL_ROOT="$RUNNER_TEMP/ct-sdk10-synthetic"
+          TRIAL_ROOT="$RUNNER_TEMP/ct-sdk10-parallel-synthetic"
           export TRIAL_ROOT
           printf 'TRIAL_ROOT=%s\n' "$TRIAL_ROOT" >> "$GITHUB_ENV"
           python3 -I -B - <<'PY_HELPER'
-          import base64,hashlib,os,pathlib
-          import zlib
-          d=zlib.decompressobj()
-          b=d.decompress(base64.b64decode("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"),16587)
-          assert len(b)==16586 and d.eof and not d.unused_data and not d.unconsumed_tail
-          assert hashlib.sha256(b).hexdigest()=="be28e89724a7877e68b854239b445a466746058f6a98f68ab21b1f9b67aec5f6"
+          import base64,hashlib,os,pathlib,zlib
+          raw=base64.b64decode("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",validate=True)
+          assert len(raw)<=16384
+          d=zlib.decompressobj();b=d.decompress(raw,25234)
+          assert len(b)==25233 and d.eof and not d.unused_data and not d.unconsumed_tail
+          assert hashlib.sha256(b).hexdigest()=="c51243007d42ab77ca36cf64cdfa629f067f676b9e9259ed970c46a3e48b869e"
           p=pathlib.Path(os.environ['TRIAL_ROOT']);p.mkdir(mode=0o700)
-          f=p/'rolling.py';f.write_bytes(b);f.chmod(0o400)
+          f=p/'parallel.py';f.write_bytes(b);f.chmod(0o400)
           PY_HELPER
-          python3 -I -B "$TRIAL_ROOT/rolling.py" generate --nonce "$TRIAL_NONCE" --out "$TRIAL_ROOT/parts" --seconds 60
-      - name: Upload owned synthetic part one
-        id: first
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+          python3 -I -B "$TRIAL_ROOT/parallel.py" generate --nonce "$TRIAL_NONCE" --out "$TRIAL_ROOT/parts" --seconds 60
+      - name: Upload owned synthetic part 1
+        id: part1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ct-sdk10-rolling-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.nonce }}-000001
           path: ${{ env.TRIAL_ROOT }}/parts/1/*
           compression-level: 0
           if-no-files-found: error
           retention-days: 1
-      - name: Upload owned synthetic part two
-        id: second
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      - name: Upload owned synthetic part 2
+        id: part2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ct-sdk10-rolling-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.nonce }}-000002
           path: ${{ env.TRIAL_ROOT }}/parts/2/*
           compression-level: 0
           if-no-files-found: error
           retention-days: 1
-      - name: Record the exact two-slot backpressure snapshot
+      - name: Record exact two-slot backpressure window 1
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          FIRST_ID: ${{ steps.first.outputs.artifact-id }}
-          SECOND_ID: ${{ steps.second.outputs.artifact-id }}
+          FIRST_ID: ${{ steps.part1.outputs.artifact-id }}
+          SECOND_ID: ${{ steps.part2.outputs.artifact-id }}
         run: |
-          python3 -I -B "$TRIAL_ROOT/rolling.py" record --nonce "$TRIAL_NONCE" --out "$TRIAL_ROOT/gate" --parts "$TRIAL_ROOT/parts" --run "$GITHUB_RUN_ID" --head "$GITHUB_SHA" --workflow "$TRIAL_WORKFLOW" --ids "$FIRST_ID,$SECOND_ID" --seconds 60
-      - name: Wait for the locally verified first deletion
+          python3 -I -B "$TRIAL_ROOT/parallel.py" record --window 1 --nonce "$TRIAL_NONCE" --out "$TRIAL_ROOT/gate-1" --parts "$TRIAL_ROOT/parts" --run "$GITHUB_RUN_ID" --head "$GITHUB_SHA" --workflow "$TRIAL_WORKFLOW" --ids "$FIRST_ID,$SECOND_ID" --seconds 60
+      - name: Wait for both locally verified deletions window 1
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          FIRST_ID: ${{ steps.first.outputs.artifact-id }}
-          SECOND_ID: ${{ steps.second.outputs.artifact-id }}
+          FIRST_ID: ${{ steps.part1.outputs.artifact-id }}
+          SECOND_ID: ${{ steps.part2.outputs.artifact-id }}
         run: |
-          python3 -I -B "$TRIAL_ROOT/rolling.py" wait --nonce "$TRIAL_NONCE" --out "$TRIAL_ROOT/gate" --parts "$TRIAL_ROOT/parts" --run "$GITHUB_RUN_ID" --head "$GITHUB_SHA" --workflow "$TRIAL_WORKFLOW" --ids "$FIRST_ID,$SECOND_ID" --seconds 600
-      - name: Upload the post-backpressure one-KiB sentinel with actual gate metadata
-        id: third
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+          python3 -I -B "$TRIAL_ROOT/parallel.py" wait --window 1 --nonce "$TRIAL_NONCE" --out "$TRIAL_ROOT/gate-1" --parts "$TRIAL_ROOT/parts" --run "$GITHUB_RUN_ID" --head "$GITHUB_SHA" --workflow "$TRIAL_WORKFLOW" --ids "$FIRST_ID,$SECOND_ID" --seconds 600
+      - name: Upload owned synthetic part 3
+        id: part3
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ct-sdk10-rolling-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.nonce }}-000003
           path: ${{ env.TRIAL_ROOT }}/parts/3/*
           compression-level: 0
           if-no-files-found: error
           retention-days: 1
+      - name: Upload owned synthetic part 4
+        id: part4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ct-sdk10-rolling-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.nonce }}-000004
+          path: ${{ env.TRIAL_ROOT }}/parts/4/*
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 1
+      - name: Record exact two-slot backpressure window 2
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FIRST_ID: ${{ steps.part3.outputs.artifact-id }}
+          SECOND_ID: ${{ steps.part4.outputs.artifact-id }}
+        run: |
+          python3 -I -B "$TRIAL_ROOT/parallel.py" record --window 2 --nonce "$TRIAL_NONCE" --out "$TRIAL_ROOT/gate-2" --parts "$TRIAL_ROOT/parts" --run "$GITHUB_RUN_ID" --head "$GITHUB_SHA" --workflow "$TRIAL_WORKFLOW" --ids "$FIRST_ID,$SECOND_ID" --seconds 60
+      - name: Wait for both locally verified deletions window 2
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FIRST_ID: ${{ steps.part3.outputs.artifact-id }}
+          SECOND_ID: ${{ steps.part4.outputs.artifact-id }}
+        run: |
+          python3 -I -B "$TRIAL_ROOT/parallel.py" wait --window 2 --nonce "$TRIAL_NONCE" --out "$TRIAL_ROOT/gate-2" --parts "$TRIAL_ROOT/parts" --run "$GITHUB_RUN_ID" --head "$GITHUB_SHA" --workflow "$TRIAL_WORKFLOW" --ids "$FIRST_ID,$SECOND_ID" --seconds 600
+      - name: Upload owned synthetic part 5
+        id: part5
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ct-sdk10-rolling-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.nonce }}-000005
+          path: ${{ env.TRIAL_ROOT }}/parts/5/*
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 1
+      - name: Upload owned synthetic part 6
+        id: part6
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ct-sdk10-rolling-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.nonce }}-000006
+          path: ${{ env.TRIAL_ROOT }}/parts/6/*
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 1
+      - name: Record exact two-slot backpressure window 3
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FIRST_ID: ${{ steps.part5.outputs.artifact-id }}
+          SECOND_ID: ${{ steps.part6.outputs.artifact-id }}
+        run: |
+          python3 -I -B "$TRIAL_ROOT/parallel.py" record --window 3 --nonce "$TRIAL_NONCE" --out "$TRIAL_ROOT/gate-3" --parts "$TRIAL_ROOT/parts" --run "$GITHUB_RUN_ID" --head "$GITHUB_SHA" --workflow "$TRIAL_WORKFLOW" --ids "$FIRST_ID,$SECOND_ID" --seconds 60
+      - name: Wait for both locally verified deletions window 3
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FIRST_ID: ${{ steps.part5.outputs.artifact-id }}
+          SECOND_ID: ${{ steps.part6.outputs.artifact-id }}
+        run: |
+          python3 -I -B "$TRIAL_ROOT/parallel.py" wait --window 3 --nonce "$TRIAL_NONCE" --out "$TRIAL_ROOT/gate-3" --parts "$TRIAL_ROOT/parts" --run "$GITHUB_RUN_ID" --head "$GITHUB_SHA" --workflow "$TRIAL_WORKFLOW" --ids "$FIRST_ID,$SECOND_ID" --seconds 600
