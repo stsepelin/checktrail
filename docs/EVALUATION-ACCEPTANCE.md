@@ -44,14 +44,24 @@ repairing them. Changed source/runtime combinations require their own observatio
 records complete source and installed synthetic cohorts on the current Mac.
 Its runtime slot is unselected.
 
-[The selected-runtime observation](measurements/evaluation-runtime-2026-11-10.json)
-reconciles all eight recorded slots at `c28083a`, with nine source and nine fresh
-offline installed cases per slot. Five changed-record controls reject skipped or
-missing cases, foreign file identity, runtime substitution and engine substitution.
+[The historical selected-runtime observation](measurements/evaluation-runtime-2026-11-10.json)
+reconciles all eight recorded slots at `c28083a`. It retains its original source
+and engine identity. The [main-source observation](measurements/evaluation-runtime-2026-11-16.json)
+separately revalidates the same nine source and nine fresh offline installed
+callbacks per slot at `6809bf39c3aba1f1b582742c741051667461754e` in run
+`43635572499`. The recorded source, compiled engine, selected harness inputs,
+acceptance-file identity, installed package and runtime bindings match the
+original strict validators. Changed-record controls on every slot reject skipped
+or missing cases, foreign file identity, runtime substitution and engine
+substitution.
+
 The original receipts come from job-log JSON; the consumer-specific ZIP upload
-does not include this separate cohort. These observations qualify their recorded
-source only. Public synthetic fixtures are inspected development material and
-cannot become held-out cases through renaming. No model or field trial ran.
+does not include this separate cohort. The ordinary Windows core lane supplies
+its cohort; the consumer-only Windows lane supplies no evaluation acceptance.
+These observations qualify their recorded sources only. They do not rebind a
+private prospective policy to a different implementation. Public synthetic
+fixtures are inspected development material and cannot become held-out cases
+through renaming. No model or field trial ran.
 
 The prerequisite callback also exercises the operator-only
 [configuration-byte inspector](EVALUATION-CONFIGURATION.md) against explicit

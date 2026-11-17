@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "observationKind": "gate-a-prospective-policy-selection-rebind",
+  "observedDate": "2026-11-16",
+  "scope": "Only the literal independent-reference-and-prior-workflow Gate A selection decision. This does not freeze or admit an experiment, establish host behavior or complete Gate A.",
+  "implementation": {
+    "sourceCommit": "6809bf39c3aba1f1b582742c741051667461754e",
+    "engineTreeSha256": "78ae46322683423eb3c504c5b798259cd102c1c46464e23e5ccb601f7066535d",
+    "selectedRuntimeAcceptanceMeasurementSha256": "6b94c85daf70f0f8ac60d3524e09a1eb18bdd04f1340c9fad3cd65661d889572"
+  },
+  "previousPrivateSelectionLedgerSha256": "87994615a410fade57798454b385c4dc0d906c56f9fb781dcadba3da2e242be2",
+  "reviewedSemanticMigrationPlanSha256": "df01eb800d5ba880000984845e22195e34c9080bc49fba0d71699f41540258ca",
+  "linkedPrivateSelectionLedgerSha256": "39b598212ae05dfe20e890faea7c11a2d31582100946ce59267c978e18cba658",
+  "linkedSelectedFiles": 70,
+  "originalFrozenFilesVerifiedUnchanged": 75,
+  "hostPolicySelections": [
+    {
+      "configurationBytesVerified": true,
+      "host": "claude-code",
+      "protocolSha256": "1c06e1229592226f086a1c183fd31d3d22bfa9ba2756b25743f51d820e07a9ee",
+      "roles": 10
+    },
+    {
+      "configurationBytesVerified": true,
+      "host": "codex",
+      "protocolSha256": "b2dd2619b098a600f6b49e0834362984823cf55425f9a18cc1ed56a29efe354e",
+      "roles": 10
+    }
+  ],
+  "originalProtocolAndTenRoleInspectorsUsed": true,
+  "selectedReferenceWorkflowAndOpaqueCohortIdentitiesPreserved": true,
+  "allOriginalConfigurationAndProcedureSemanticsPreserved": true,
+  "sourceRoleAndPreviousCandidateHistoryPreserved": true,
+  "nativeToolsAndEnvironmentRemainProspectivePins": true,
+  "threeAdditionalInstructionProfilesPerHostPreserved": true,
+  "plainBaselineAndSeparateHostComparisonsPreserved": true,
+  "modelsVersionsEffortBudgetsScoringPowerAndMultiplicitySelectionsChanged": false,
+  "refusalControls": {
+    "validCopiedConfigurationControlsAccepted": 2,
+    "changedMissingForeignAndStaleControlsRejected": 16,
+    "specificRoleIssueOrProtocolErrorRequired": true,
+    "otherNineRolesRemainValidForSingleFileControls": true,
+    "proofSha256": "25797c2e265c4c8a40c46ffa7368708f3645f205fc81aea07a4daf5a4e2afcec",
+    "bothOldAndNewFrozenFileSetsRehashedAfterControls": true
+  },
+  "policySelectionFrozen": true,
+  "experimentProtocolFrozen": false,
+  "effectiveAuthenticatedHostConfigurationVerified": false,
+  "hostSessionIsolationObserved": false,
+  "caseInstructionsLabelsAndDependenciesAdmitted": false,
+  "experimentAdmissionComplete": false,
+  "sourceOrAnswerPathsDereferenced": false,
+  "heldoutSourceFixOrAnswerBodiesOpened": false,
+  "rawCaseMetadataIncluded": false,
+  "configurationBodiesIncluded": false,
+  "privateIdentitiesIncluded": false,
+  "privatePathsIncluded": false,
+  "modelCalls": 0,
+  "reviewTrials": 0,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "remainingFreezeDecisions": [
+    "expanded-native-artifact-closures",
+    "matrix-and-acceptance-bindings"
+  ],
+  "gateAComplete": false
+}

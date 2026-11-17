@@ -1,13 +1,24 @@
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import {
+  cp,
+  mkdir,
+  mkdtemp,
+  readFile,
+  realpath,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
+import { captureControllerSourceScope } from "./preserved-baseline-source-worker.mjs";
+import { runFreshBaselineAtInstallation } from "./preserved-baseline-fresh-coordinator.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const preparedImage =
   process.env.CHECKTRAIL_REVIEW_IMAGE ??
@@ -58,19 +69,33 @@ const profiles = [
   "review-benchmark-judging",
   "review-native-budget",
 ];
+const { baseline, sourceScope: expectedSourceScope } =
+  await captureControllerSourceScope(repository, "packaged-review", profiles);
 const source = spawnSync(
   "docker",
-  [...native, "node", "scripts/verify-required-native-tests.mjs", ...profiles],
-  { encoding: "utf8", maxBuffer: 1024 * 1024 },
+  [
+    ...native.slice(0, -1),
+    "--mount",
+    `type=bind,src=${repository},target=${repository},readonly`,
+    image,
+    "node",
+    "scripts/preserved-baseline-source-worker.mjs",
+    "packaged-review",
+    ...profiles,
+  ],
+  { encoding: "utf8", timeout: 660000, maxBuffer: 32 * 1024 * 1024 },
 );
 // Preserve the bounded full ledger before reporting failure. Throwing an
 // execFileSync error first lets Node truncate its stdout in the error display.
-process.stdout.write(source.stdout ?? "");
+if (source.error || source.status !== 0)
+  process.stdout.write(source.stdout ?? "");
 process.stderr.write(source.stderr ?? "");
 assert.equal(source.error, undefined, "Required review source process failed");
 assert.equal(source.status, 0, "Required review source cohort failed");
-const temporary = await mkdtemp(
-  path.join(tmpdir(), "checktrail-review-package-"),
+const sourceCapture = JSON.parse(source.stdout);
+process.stdout.write(JSON.stringify(sourceCapture.originalReport) + "\n");
+const temporary = await realpath(
+  await mkdtemp(path.join(tmpdir(), "checktrail-review-package-")),
 );
 let client;
 try {
@@ -82,10 +107,85 @@ try {
     ),
   );
   const consumer = path.join(temporary, "consumer");
-  await installAcceptancePackage(
+  const installation = await installAcceptancePackage(
     repository,
     path.join(temporary, packed.filename),
     consumer,
+  );
+  const baselineFresh = await runFreshBaselineAtInstallation({
+    repository,
+    sourceRoot: "/workspace",
+    sourceCapture,
+    expectedSourceScope,
+    preparedDirectories: baseline.cohort.preparedDirectories,
+    installedPackage: path.join(consumer, "node_modules/@stsepelin/checktrail"),
+    harness: path.join(temporary, "baseline-harness"),
+    launchWorker: ({ harness, inputFile, worker }) => {
+      const container = "checktrail-review-baseline-" + randomUUID();
+      let output, operationError, cleanupError;
+      try {
+        output = execFileSync(
+          "docker",
+          [
+            "run",
+            "--rm",
+            "--init",
+            "--name",
+            container,
+            "--network",
+            "none",
+            "--cpus",
+            "2",
+            "--memory",
+            "2g",
+            "--pids-limit",
+            "512",
+            "--mount",
+            `type=bind,src=${repository},target=/workspace,readonly`,
+            "--mount",
+            `type=bind,src=${repository},target=${repository},readonly`,
+            "--mount",
+            `type=bind,src=${temporary},target=${temporary},readonly`,
+            "--workdir",
+            harness,
+            image,
+            "node",
+            worker,
+            inputFile,
+          ],
+          { encoding: "utf8", timeout: 660000, maxBuffer: 32 * 1024 * 1024 },
+        );
+      } catch (error) {
+        operationError = error;
+      } finally {
+        try {
+          execFileSync("docker", ["container", "rm", "--force", container], {
+            encoding: "utf8",
+            timeout: 15000,
+            stdio: ["ignore", "pipe", "pipe"],
+          });
+        } catch (error) {
+          if (!String(error.stderr ?? "").includes("No such container"))
+            cleanupError = error;
+        }
+      }
+      if (operationError && cleanupError)
+        throw new AggregateError(
+          [operationError, cleanupError],
+          "Fresh review phase and owned container cleanup failed",
+        );
+      if (operationError) throw operationError;
+      if (cleanupError) throw cleanupError;
+      return output;
+    },
+  });
+  process.stderr.write(
+    JSON.stringify({
+      kind: "preserved-packaged-review-fresh",
+      identities: baseline.identities,
+      installation,
+      ...baselineFresh,
+    }) + "\n",
   );
   const project = path.join(consumer, "example");
   await cp(path.join(repository, "examples/review"), project, {

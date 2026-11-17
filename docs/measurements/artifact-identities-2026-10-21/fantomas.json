@@ -2,7 +2,29 @@
   "schemaVersion": 1,
   "scope": "fantomas",
   "observedAt": "2026-10-21T17:22:24.538358+00:00",
-  "repositoryCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+  "historicalRepositoryBinding": {
+    "repositoryCommit": "fcf1344ad43b586e9504ade1587f33d3d24575df",
+    "repositoryInputs": [
+      {
+        "file": "src/fsharp-format-pins.ts",
+        "sha256": "7dc1fa0762bbb8ec4b2428e8a94b6db4073d9ce2c45b1f3759978bcd978466a4"
+      },
+      {
+        "file": "scripts/prepare-fsharp-format-tools.mjs",
+        "sha256": "3941656c3a2549f637508880a4b62382f05d1ee523cec28606970cd4011463df"
+      },
+      {
+        "file": "scripts/fsharp-format-tools.Dockerfile",
+        "sha256": "e9a4798cb66c25f4e2a93a2de605c13ceee4a1bae3383430c951daa0a7ff0762"
+      }
+    ]
+  },
+  "currentRepositoryBinding": {
+    "bindingKind": "working-tree-bytes",
+    "baseCommit": "88dfba012370db9804ad85b8b745e37330ec180f",
+    "reconciledAt": "2026-11-11",
+    "scope": "Current selected preparation inputs, including opt-in operator-pinned native NuGet repository-signature observation admission. These byte bindings do not identify the code executed by the retained historical observations or reconstruct their missing exact argv/environment custody."
+  },
   "repositoryInputs": [
     {
       "file": "src/fsharp-format-pins.ts",
@@ -10,11 +32,27 @@
     },
     {
       "file": "scripts/prepare-fsharp-format-tools.mjs",
-      "sha256": "3941656c3a2549f637508880a4b62382f05d1ee523cec28606970cd4011463df"
+      "sha256": "624308811793a9dc9fbab8222139e0f65af2fdad89968a1d24cb3b6f52097475"
     },
     {
       "file": "scripts/fsharp-format-tools.Dockerfile",
       "sha256": "e9a4798cb66c25f4e2a93a2de605c13ceee4a1bae3383430c951daa0a7ff0762"
+    },
+    {
+      "file": "scripts/prepare-fsharp-format-signature-proof.mjs",
+      "sha256": "395528afe3dee2acbe8ba688400c9d693e4548b9e9ca526d4a41959c4cc33117"
+    },
+    {
+      "file": "src/fsharp-format-release-signature.ts",
+      "sha256": "1055eefd2e42610085252fa59801adb336ec9a57deebcb54e2101582b00380a8"
+    },
+    {
+      "file": "src/release-signature-proof.ts",
+      "sha256": "1ade1df184c8d26fa23de3f7dee764bfdbe76637a9beab1f777d9b65aa7ce4f2"
+    },
+    {
+      "file": "src/kotlin-io.ts",
+      "sha256": "f936b27a68e475429bc892a444b14d85dfc66d0641df7794f9cd1712a03af23a"
     }
   ],
   "observations": {

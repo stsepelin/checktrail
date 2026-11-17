@@ -1846,3 +1846,114 @@ process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_IMAGE='synthetic-operator-image';process
     );
   }
 });
+
+test("nonisolated required progress is live at dequeue and retains original failures cancellation and duplicate evidence", async (t) => {
+  // Node22 may suppress later dequeue events after a deliberate timeout.
+  // Keep cancellation last; every original outcome and lifecycle guard remains.
+  const root = await fixture(t, {
+    "controls.mjs": `import{test}from'node:test';import assert from'node:assert/strict';import{appendFileSync,existsSync,writeFileSync}from'node:fs';let shared=0;const pid=()=>appendFileSync(new URL('pids',import.meta.url),process.pid+'\\n');test('barrier',{timeout:2000},async()=>{pid();shared++;while(!existsSync(new URL('release',import.meta.url)))await new Promise(r=>setTimeout(r,5));assert.equal(shared,1);writeFileSync(new URL('barrier-complete',import.meta.url),'1');});test('failed',()=>{pid();assert.equal(shared,1);throw Error('PRIVATE_FAILURE /private/project TOKEN')});test('skipped',{skip:'PRIVATE_SKIP'},()=>{});test('todo',{todo:true},()=>{});test('duplicate',()=>{pid()});test('duplicate',()=>{pid()});test('PRIVATE_UNRECOGNIZED /private/source',()=>{});test('cancelled',{timeout:50},async(t)=>{pid();await new Promise(resolve=>t.signal.addEventListener('abort',()=>{writeFileSync(new URL('cancelled',import.meta.url),'1');resolve();},{once:true}));});`,
+    "runner.mjs": `import{appendFileSync,existsSync,writeFileSync}from'node:fs';import{fileURLToPath}from'node:url';const{runRequiredTests}=await import(process.argv[2]);const progress=[];const evidence=await runRequiredTests(['barrier','failed','cancelled','skipped','todo','duplicate','absent'].map(name=>({file:fileURLToPath(new URL('controls.mjs',import.meta.url)),name})),{timeoutMs:5000,onTestProgress:event=>{progress.push(event);appendFileSync(new URL('progress.jsonl',import.meta.url),JSON.stringify(event)+'\\n');if(event.phase==='dequeued'&&event.name==='barrier'){if(existsSync(new URL('barrier-complete',import.meta.url)))throw Error('dequeue was buffered');writeFileSync(new URL('release',import.meta.url),'1');}}});console.log(JSON.stringify({evidence,progress}));`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "runner.mjs"),
+      new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href,
+    ],
+    { env, encoding: "utf8", timeout: 15000 },
+  );
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stderr);
+  const { evidence, progress } = JSON.parse(result.stdout) as {
+    evidence: TerminalReceipt;
+    progress: Array<{
+      phase: string;
+      name: string;
+      outcome?: string;
+      durationMs?: number;
+      fileId: string;
+    }>;
+  };
+  assert.equal(evidence.complete, false);
+  assert.equal(evidence.required, 7);
+  assert.equal(Object.hasOwn(evidence, "requiredCaseWorkerLimit"), false);
+  assert.deepEqual(
+    evidence.ledger.cases.map(({ name, outcome }) => ({ name, outcome })),
+    [
+      { name: "barrier", outcome: "passed" },
+      { name: "failed", outcome: "failed" },
+      { name: "cancelled", outcome: "failed" },
+      { name: "skipped", outcome: "skipped" },
+      { name: "todo", outcome: "todo" },
+      { name: "duplicate", outcome: "duplicate" },
+      { name: "absent", outcome: "not-observed" },
+    ],
+  );
+  assert.deepEqual(
+    progress.filter((row) => row.phase === "dequeued").map((row) => row.name),
+    ["barrier", "failed", "skipped", "todo", "duplicate", "cancelled"],
+  );
+  assert.deepEqual(
+    progress
+      .filter((row) => row.phase === "terminal")
+      .map(({ name, outcome }) => ({ name, outcome })),
+    [
+      { name: "barrier", outcome: "passed" },
+      { name: "failed", outcome: "failed" },
+      { name: "skipped", outcome: "skipped" },
+      { name: "todo", outcome: "todo" },
+      { name: "duplicate", outcome: "passed" },
+      { name: "cancelled", outcome: "failed" },
+    ],
+  );
+  assert.ok(progress.every((row) => row.fileId === "file-1"));
+  assert.ok(progress.length <= evidence.required * 2);
+  assert.doesNotMatch(
+    JSON.stringify(progress),
+    /PRIVATE_|private\/project|TOKEN|message|failureType/u,
+  );
+  assert.equal(await readFile(path.join(root, "cancelled"), "utf8"), "1");
+  assert.equal(
+    await readFile(path.join(root, "barrier-complete"), "utf8"),
+    "1",
+  );
+  const pids = (await readFile(path.join(root, "pids"), "utf8"))
+    .trim()
+    .split("\n");
+  assert.equal(pids.length, 5);
+  assert.equal(
+    new Set(pids).size,
+    1,
+    "Original callbacks must retain one shared file process",
+  );
+  for (const pid of new Set(pids))
+    assert.throws(() => process.kill(Number(pid), 0));
+});
+
+test("optional nonisolated progress hook errors cannot change original acceptance outcomes", async (t) => {
+  const root = await fixture(t, {
+    "controls.mjs":
+      "import{test}from'node:test';let count=0;test('first',()=>{count++});test('second',()=>{if(count!==1)throw Error('file process changed')});",
+    "runner.mjs": `import{fileURLToPath}from'node:url';const{runRequiredTests}=await import(process.argv[2]);const requirements=['first','second'].map(name=>({file:fileURLToPath(new URL('controls.mjs',import.meta.url)),name}));let calls=0;const report=await runRequiredTests(requirements,{timeoutMs:5000,onTestProgress:()=>{calls++;throw Error('PRIVATE_DIAGNOSTIC_FAILURE')}});let malformedRejected=false;try{await runRequiredTests(requirements,{onTestProgress:1})}catch{malformedRejected=true}console.log(JSON.stringify({report,calls,malformedRejected}));`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "runner.mjs"),
+      new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href,
+    ],
+    { env, encoding: "utf8", timeout: 15000 },
+  );
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stderr);
+  const { report, calls, malformedRejected } = JSON.parse(result.stdout);
+  assert.equal(report.complete, true);
+  assert.equal(report.required, 2);
+  assert.equal(report.passed, 2);
+  assert.equal(calls, 4);
+  assert.equal(malformedRejected, true);
+});

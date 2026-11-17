@@ -80,6 +80,11 @@ test("artifact source reconciliation preserves historical preparation bindings a
       "scripts/prepare-terraform-extensions-runtime.mjs",
       "cb5e4e9b28692a4e05020215716959cdc3a745141445e43d7e6bed61fc148eaf",
     ],
+    [
+      "fantomas.json",
+      "scripts/prepare-fsharp-format-tools.mjs",
+      "3941656c3a2549f637508880a4b62382f05d1ee523cec28606970cd4011463df",
+    ],
   ]) {
     const root = await source(t);
     const record = JSON.parse(
@@ -100,6 +105,34 @@ test("artifact source reconciliation preserves historical preparation bindings a
       "working-tree-bytes",
     );
     assert.equal(Object.hasOwn(record, "repositoryCommit"), false);
+    if (name === "fantomas.json") {
+      assert.deepEqual(record.historicalRepositoryBinding.repositoryInputs, [
+        {
+          file: "src/fsharp-format-pins.ts",
+          sha256:
+            "7dc1fa0762bbb8ec4b2428e8a94b6db4073d9ce2c45b1f3759978bcd978466a4",
+        },
+        {
+          file: "scripts/prepare-fsharp-format-tools.mjs",
+          sha256: historicalSha256,
+        },
+        {
+          file: "scripts/fsharp-format-tools.Dockerfile",
+          sha256:
+            "e9a4798cb66c25f4e2a93a2de605c13ceee4a1bae3383430c951daa0a7ff0762",
+        },
+      ]);
+      assert.equal(
+        record.currentRepositoryBinding.baseCommit,
+        "88dfba012370db9804ad85b8b745e37330ec180f",
+      );
+      for (const flag of [
+        "gateAComplete",
+        "completeArtifactAndNoticeClosureVerified",
+        "preparationAndReceiptIntegrationVerified",
+      ])
+        assert.equal(record[flag], false);
+    }
     const current = await readFile(path.join(root, preparation!));
     assert.notEqual(digest(current), historicalSha256);
     assert.equal(
@@ -577,7 +610,9 @@ test("artifact evidence refuses reindexed uncompressed notices with wrong bytes 
   }
 });
 test("artifact evidence shares one original notice budget across plain and compressed bytes", async (t) => {
-  const bytes = Buffer.alloc(32 * 1024, "x");
+  // Keep the indexed base64 payload small enough to reach the separate shared
+  // original-notice expansion guard, even as true selected source bindings grow.
+  const bytes = Buffer.alloc(1024, "x");
   const baseline = await audit(repository);
   assert.equal(baseline.code, 0, baseline.stderr);
   const before = JSON.parse(baseline.stdout);

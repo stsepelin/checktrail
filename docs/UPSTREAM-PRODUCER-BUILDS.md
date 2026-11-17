@@ -180,6 +180,55 @@ evidence. Complete PGO/Automake phase selection remains separately unassessed. T
 `builddir-*` configurations; it does not assert an independently complete
 configuration inventory.
 
+The separate [2026-11-16 selected Binutils reconciliation](measurements/binutils-original-producer-2026-11-16.json)
+closes the original package-build and retained configured-outcome requirement for
+the recorded native attempt. Its 115 summaries partition into 109 final DejaGNU
+reports and six superseded PGO training summaries; the seven outcome partitions
+close independently. Three Automake reports are accounted separately. The 30
+recorded directory links normalize inside their original build configurations;
+their targets were not traversed and unseen report absence is not claimed.
+Original failures remain failed, and four empty gprofng reports remain unproven
+with an unknown reason. This does not change the historical controller receipt,
+qualify every upstream test, or close bootstrap and original notice requirements.
+
+The [2026-11-16 original diff-utils package build](measurements/diff-utils-original-producer-2026-11-16.json)
+completes the unchanged upstream `mvn -B package --file pom.xml` lifecycle in its
+documented local Temurin8/Maven profile. Its observed test outcomes retain three
+authored skips without passing credit. All selected class files match the release;
+the complete JAR differs in its manifest and Maven properties. The original source
+remains unchanged after its authored Spotless phase. Compiler/SDK bootstrap builds,
+dependency producer builds and complete original-notice attribution remain open.
+
+The [2026-11-16 original .NET SDK source build](measurements/dotnet-sdk11-original-producer-2026-11-16.json)
+completes the pinned VMR source-build command on native Linux ARM64. The original
+ARM bootstrap and default preparation precede the offline build; the produced
+SDK identifies version `11.0.100-dev` and the selected source commit. New SDK and
+package outputs are distinguished from retained bootstrap inputs. The stopped
+snapshot passes round-trip verification and owned runtime cleanup is verified.
+The original workflow changes or removes some tracked inputs; full post-build
+source-byte immutability is not established. Historical publisher binary equality,
+unrun upstream tests and full compiler/bootstrap/original-notice closure remain open.
+
+The [2026-11-17 original Temurin 8 source build](measurements/temurin8-original-producer-2026-11-17.json)
+completes the pinned upstream recipe on native Linux ARM64 and produces a new JDK
+archive. The original source and recipe, Boot JDK 7, generator JDK 8, GCC 7.5 and
+recorded build arguments are preserved. The original command repeats its public
+ALSA acquisition with normal TLS validation using an explicitly recorded CA bundle;
+this is not an offline build. The independently observed output identifies
+`1.8.0_504-b01`, and the tracked regular source baseline retains its bytes and
+full modes. The stopped work capture passes round-trip verification and owned
+runtime cleanup is verified. Publisher byte equality, unrun upstream tests,
+compiler/bootstrap producer builds and complete original-notice closure remain open.
+
+The [2026-11-16 original notice coverage](measurements/c-original-notice-coverage-2026-11-16.json)
+reconciles the exact selected C binary dependency archive identities with retained
+original notices. It also records the complete original texts of the eight selected
+GCC and GLIBC source notice documents, including `copyright.in` and the previously
+missing GLIBC copyright and Unicode notices. This is documentary availability;
+exhaustive inline-source notice selection and compiler/bootstrap closure remain
+separate requirements. The original Pango reference spelling is preserved alongside
+the exact complete GPL-2 text, without inventing a filesystem alias.
+
 New C-profile controller receipts use schema 3 and explicitly record each
 resource-observation intervention. Before scanning, the controller verifies the
 exact owned producer container and pauses a running writer; it always attempts
@@ -195,6 +244,26 @@ epochs to exact known public historical controller hashes through verified start
 source pins; unknown controller sources require schema 3. Evidence archives cannot
 supply or extend the trusted historical index. Go, Node and the legacy
 Binutils observer contracts are unchanged.
+
+GLIBC failed-test diagnostics have a separate version-1 companion manifest,
+`failed-test-diagnostics.json`, beside each original-trap or post-stop report
+manifest. The existing report schema and historical replay contracts are unchanged.
+Exact `FAIL`, `ERROR` and `UNRESOLVED` identifiers in retained `.sum` files select
+only the corresponding `.out` and `.test-result` bytes under the same
+`build-tree/<configuration>` directory. Repeated overall/subdirectory references
+share one output pair; different configurations remain separate. Passing outcomes,
+expected failures and similarly prefixed names do not select diagnostic files.
+The collector never executes diagnostic content.
+
+Diagnostic retention is limited to 512 selected tests, 4,096 failure records,
+16 MiB of decoded summary input, 1 MiB per output and 16 MiB of original output
+bytes per family. Every source ancestor is opened without following links;
+linked, nonregular, changing and oversized files are refused. The companion binds
+original-byte hashes, selection origins, missing/refused outputs and copy custody
+to the exact report manifest. Export and replay preserve its independent namespace
+and verify the original selection and bytes. Missing diagnostics and historical
+attempts without a companion remain unavailable or incomplete. These states do
+not change the original build exit status, test outcomes or qualification result.
 
 Preparation exits zero on successful data validation. Actual execution currently
 returns a nonzero, explicitly incomplete qualification status even when the

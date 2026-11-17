@@ -145,13 +145,26 @@ breadth remains an explicit profile-selection item below, not an exclusion.
 - Specify provider-neutral review stages and host-side fresh-session evidence for
   evaluation. MCP cannot reset a host conversation; a prompt requesting freshness
   is insufficient. Checktrail-owned native AI client profiles are optional.
-- Freeze the actual external reference/prior-workflow identity and blinded cohort
-  acquisition/adjudication protocol before opening held-out cases.
+  The opaque private reference/prior-workflow and reserved cohort
+  acquisition/adjudication policy selection is now linked to the tested main
+  implementation. The [selection rebind record](measurements/prospective-policy-rebind-2026-11-16.json)
+  resolves that selection decision while preserving the original policies,
+  identities and history. The actual experiment remains unfrozen: effective
+  host configuration, session isolation, labels and case-specific admission are
+  separate requirements. No model, held-out source or field trial was run.
 
 The task ledger must keep these unfinished profile decisions visible. Gate A
 requires both frozen profiles and their completed acceptance evidence. Gate B
 also requires the concrete existing operator permissions; Gate C requires the
 independent measured outcomes. Development tests close none of those by themselves.
+
+The [partial engine-matrix record](measurements/engine-matrix-partial-2026-11-16.json)
+reconciles source and fresh installed acceptance for all seven implemented
+engine-matrix extension profiles across the eight selected slots at recorded
+commit `6809bf39c3aba1f1b582742c741051667461754e`. It retains original run identities
+and a scoped bridge for the documented selection-state changes. The native-license
+profile, native-language matrix and preserved baseline bindings remain separate;
+this partial record does not close the whole matrix or Gate A.
 
 The bounded current-source `js-ts-selected-imports-v1` collector adds engine-parsed
 JS/TS edges and automatically captured declarations/consumers under explicit

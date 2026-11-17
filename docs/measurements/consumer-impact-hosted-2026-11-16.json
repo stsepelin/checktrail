@@ -1,0 +1,1169 @@
+{
+  "schemaVersion": 1,
+  "state": "hosted-measurement-qualified-only-at-recorded-source",
+  "sourceHead": "6809bf39c3aba1f1b582742c741051667461754e",
+  "hostedActualCheckout": "6809bf39c3aba1f1b582742c741051667461754e",
+  "hostedGitTree": "3054e9e4d610ffd29ec1644cb4c2bd5ecb0ee275",
+  "sourceCommitIdentityClaimedEqual": true,
+  "run": 43635572499,
+  "aggregateAttempt": 1,
+  "workflowUrl": "https://github.com/stsepelin/checktrail/actions/runs/43635572499",
+  "measuredExecutionDate": "2026-11-14",
+  "receiptReconciliationDate": "2026-11-16",
+  "compiledEngineTreeSha256": "78ae46322683423eb3c504c5b798259cd102c1c46464e23e5ccb601f7066535d",
+  "receiptValidationExecuted": true,
+  "recordedSourceRecompiledForByteComparison": true,
+  "recordedSourceAndCompiledHashesMatch": true,
+  "newNativeFixtureExecutionPerformed": false,
+  "existingHostedReceiptsDownloaded": true,
+  "rawReceiptsRetainedOutsideGit": true,
+  "laterSourceRevisionsQualified": false,
+  "requiredCallbacksChanged": false,
+  "skippedCallbacksCredited": false,
+  "gateAComplete": false,
+  "producerBuildClosureVerified": false,
+  "licenseClosureVerified": false,
+  "licensedCohortAdmitted": false,
+  "independentEvaluationProtocolPromoted": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "sourceFrame": {
+    "schemaVersion": 1,
+    "profile": "native-consumer-current-source-frame-v1",
+    "commit": "6809bf39c3aba1f1b582742c741051667461754e",
+    "gitTree": "3054e9e4d610ffd29ec1644cb4c2bd5ecb0ee275",
+    "sourceManifestSha256": "c28807fcd8d83670bc0e3edf91429c5149cc9bf38de03ae56afc5d7278d8c03c",
+    "sourceFiles": 2939,
+    "sourceBytes": 115820403,
+    "engineSha256": "78ae46322683423eb3c504c5b798259cd102c1c46464e23e5ccb601f7066535d",
+    "engineManifestSha256": "29472470c7f71e89d2efaaece15c8b8f14815856f8b7b07fe9d59b1ead7cddd5",
+    "harnessSha256": "4a3cf1ef4937205715ac187d12d3d27eb863ab04ab10c5e925df57da1593ce5c",
+    "harnessManifestSha256": "d0595df6aa353c25195c1c4592e03d7906194f198fb5b74bc6c94e68cc77749d",
+    "inventorySha256": "43f8c8f11df5d1bba0a4660cfe6d9011fb29834b357ef6254a7526156fa2b8a7",
+    "inventoryScopeSha256": "acddaba1dd782390afe48296e1e8e1fd0409df0658ad1cf0aa14c6f19a57d144",
+    "requirementsSha256": "f3edc30902801c432fe6f1ed71835287c2aee09627a82e331ccf3288b2c8c677",
+    "packageManifestSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+    "packageLockSha256": "132654a52917f06104ee4b187dc20f8a919ada0800fa4c8d869bee4efd280e95",
+    "clean": true,
+    "hostAttestationPerformed": false,
+    "gateAComplete": false
+  },
+  "validation": {
+    "existingOriginalValidatorsUsed": true,
+    "sourceAndInstalledCallbackFilesMatchedRecordedSource": true,
+    "compiledEngineBytesMatchedAcrossSourceAndFreshInstall": true,
+    "allRequiredTerminalEventsPassed": true,
+    "missingDuplicateExtraSkippedOrStaleEvidenceAccepted": false,
+    "skippedEventNegativeControlsRejected": 8,
+    "externalHostUsageInferred": false,
+    "hostOrArtifactServiceAttestationClaimed": false,
+    "sourceOfRuntimeObservations": "original required controller output, not successful check labels",
+    "originalValidatorModules": [
+      {
+        "file": "scripts/consumer-runtime-evidence.mjs",
+        "sha256": "6cf1d3b749f045bfa00a5475911b85a5b10bb1e93037f9b0fcf3e91707ffb52c"
+      },
+      {
+        "file": "scripts/consumer-runtime-selection.mjs",
+        "sha256": "e2375d7082b9cf1284d44b5c0b1f1f74f45e48343b476289885e0db26d2244f8"
+      },
+      {
+        "file": "scripts/consumer-foundation-evidence.mjs",
+        "sha256": "6f6b2570a3dbedbcef02cd34ba761f66ad8ab83befe96fcf8438142f631b6e7c"
+      },
+      {
+        "file": "scripts/consumer-native-acceptance-frame.mjs",
+        "sha256": "9f079ef9fc951cbbade8216367b68482ba4f7da230c1e0592fe72631d8ab40fb"
+      },
+      {
+        "file": "scripts/consumer-native-acceptance-capsule.mjs",
+        "sha256": "2f2abe660d9cb9e551e2f4a153dfd5ecd9b8e837143bb353452faf97333c88b1"
+      },
+      {
+        "file": "scripts/check-consumer-native-ci.mjs",
+        "sha256": "f54e3d3231a8c5630b956a516d5e002b4101ccd04342b165ffb05c6e0462c4e3"
+      }
+    ]
+  },
+  "profile": "consumer-impact",
+  "runtimeSlots": [
+    {
+      "slot": "ci-linux-node22",
+      "job": 132572668522,
+      "selectedRuntime": {
+        "id": "ci-linux-node22",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-linux-node22",
+        "node": "22.23.3",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261111.370.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.1",
+        "gitExecutableSha256": "08ca4d2ee4d8915e86f1faaa52603752507c57af1d16d451dec9992bc9b6d801",
+        "nodeExecutableSha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "harnessSha256": "5f49b465a7c3f4d37fde204dc5deb159be11c477813eeaf7fb5d8518cbd8a8f7",
+      "requirementsSha256": "4d82fde6122557bfc88aba5a6a8611c84007ac26896d3c73a0c02e52a8773446",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "242fbc8f2c6740f133998f9539a09df0c28e00d8a6ef1caad839ba9d9b94ed8a",
+      "receiptArtifact": {
+        "id": 14131379356,
+        "name": "consumer-runtime-receipts-tasks-runtime-ci-linux-node22-1",
+        "digest": "sha256:a5f76693bf29e570d0b4e91fc50fe896e5fda76d817f5755c60b696a6e322e4f"
+      },
+      "receiptManifestSha256": "f2f74c389d42306eecab8fe707970d77237c310be8c0d6c3892ca3844a96ab93",
+      "controllerStreams": {
+        "stdout": {
+          "file": "controller.stdout",
+          "bytes": 844274,
+          "sha256": "53f80669d021701b19426149d67e5098dc4299e41e0a01ce3d8f8dab18bb0a94"
+        },
+        "stderr": {
+          "file": "controller.stderr",
+          "bytes": 9582,
+          "sha256": "deb7259c483bb1d6758a40ee46cbb1b8342745c749f8dbbd9a9c00ceac3a8fd2"
+        }
+      }
+    },
+    {
+      "slot": "ci-linux-node24",
+      "job": 132572668591,
+      "selectedRuntime": {
+        "id": "ci-linux-node24",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "24.21.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-linux-node24",
+        "node": "24.21.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261111.370.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.1",
+        "gitExecutableSha256": "08ca4d2ee4d8915e86f1faaa52603752507c57af1d16d451dec9992bc9b6d801",
+        "nodeExecutableSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "harnessSha256": "5f49b465a7c3f4d37fde204dc5deb159be11c477813eeaf7fb5d8518cbd8a8f7",
+      "requirementsSha256": "4d82fde6122557bfc88aba5a6a8611c84007ac26896d3c73a0c02e52a8773446",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "b7bd16f42107bec572f4ff151f2754f534dd58cbf7d89688cc72ae4a67265ef0",
+      "receiptArtifact": {
+        "id": 14132315668,
+        "name": "consumer-runtime-receipts-tasks-runtime-ci-linux-node24-1",
+        "digest": "sha256:33a53f498e636178728648fe9b27c42038cb34b8f0d8293b7b22f3b811a90ec6"
+      },
+      "receiptManifestSha256": "9c2840089e0e2b6562a1a1bb1b1c8113dd967459d900be0b098f833993591466",
+      "controllerStreams": {
+        "stdout": {
+          "file": "controller.stdout",
+          "bytes": 988176,
+          "sha256": "385909afc3eb4fc684a114f638ea228e7b46f3ffcaf442eebc45073327b73b92"
+        },
+        "stderr": {
+          "file": "controller.stderr",
+          "bytes": 9577,
+          "sha256": "2aa9cf9b88f49fef324f094a96b7a5b531489a5742be60694c1c37529c284746"
+        }
+      }
+    },
+    {
+      "slot": "ci-linux-node26",
+      "job": 132572668639,
+      "selectedRuntime": {
+        "id": "ci-linux-node26",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "26.10.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-linux-node26",
+        "node": "26.10.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261111.370.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.1",
+        "gitExecutableSha256": "08ca4d2ee4d8915e86f1faaa52603752507c57af1d16d451dec9992bc9b6d801",
+        "nodeExecutableSha256": "ab9c8eecf9f82d6693cdc3accced17034065c8d96213b0aa76a7e803d20ae1da",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "harnessSha256": "5f49b465a7c3f4d37fde204dc5deb159be11c477813eeaf7fb5d8518cbd8a8f7",
+      "requirementsSha256": "4d82fde6122557bfc88aba5a6a8611c84007ac26896d3c73a0c02e52a8773446",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "0fe7e3393430b9a5f3afb5eb8d33663f3603013cde490b7abd24938a280f0f7f",
+      "receiptArtifact": {
+        "id": 14132360731,
+        "name": "consumer-runtime-receipts-tasks-runtime-ci-linux-node26-1",
+        "digest": "sha256:bdb7afb577a53655cd35edfe1797e75d9013d88a2e6c85ecd67c4a482317f5be"
+      },
+      "receiptManifestSha256": "5dcf86993e2962ea57e576318fa6d614fef70017b282a1329251aff7f8997509",
+      "controllerStreams": {
+        "stdout": {
+          "file": "controller.stdout",
+          "bytes": 988239,
+          "sha256": "f29d706aedc8c9d3083a40328c8c02fd7911ab7727acb88fc2f9fcdc59f177fa"
+        },
+        "stderr": {
+          "file": "controller.stderr",
+          "bytes": 9581,
+          "sha256": "c6e2e7761b3aff5963531d308f2c298b058049cb9bbc58e00ea573cb611c4183"
+        }
+      }
+    },
+    {
+      "slot": "ci-macos-node22",
+      "job": 132572668576,
+      "selectedRuntime": {
+        "id": "ci-macos-node22",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-macos-node22",
+        "node": "22.23.3",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Mon Oct 12 00:39:04 PDT 2026; root:xnu-12377.161.15.701.48~2/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261102.0473.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.0",
+        "gitExecutableSha256": "371fc6bfbfea4d9ace7d122feefe100503d24f827bc94f54ab3973583ffea11f",
+        "nodeExecutableSha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "harnessSha256": "5f49b465a7c3f4d37fde204dc5deb159be11c477813eeaf7fb5d8518cbd8a8f7",
+      "requirementsSha256": "4d82fde6122557bfc88aba5a6a8611c84007ac26896d3c73a0c02e52a8773446",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "4857bcfc818ede8a6102056c3b2eba37768f2b77e855eaa9481e7792905e5a96",
+      "receiptArtifact": {
+        "id": 14131232627,
+        "name": "consumer-runtime-receipts-tasks-runtime-ci-macos-node22-1",
+        "digest": "sha256:bfc7f284548ec59f6e31e468c4b7e3a662dd93c1f37cdc4c28d7a813d72b7633"
+      },
+      "receiptManifestSha256": "6eb9a944e4cdb6e19e89a0317b8cf4abe14a37ed394e0480cce067e2ac5f19f8",
+      "controllerStreams": {
+        "stdout": {
+          "file": "controller.stdout",
+          "bytes": 910589,
+          "sha256": "a99344dbe82b395ab6bb93666d44587388131f2fc3f552a35dd1084ec0e7f870"
+        },
+        "stderr": {
+          "file": "controller.stderr",
+          "bytes": 9577,
+          "sha256": "1311617a3d86134c99229a1e42326e0a74635d7a7b9a494f25af04fb8b76caf3"
+        }
+      }
+    },
+    {
+      "slot": "ci-macos-node24",
+      "job": 132572668578,
+      "selectedRuntime": {
+        "id": "ci-macos-node24",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "24.20.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-macos-node24",
+        "node": "24.20.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Mon Oct 12 00:39:04 PDT 2026; root:xnu-12377.161.15.701.48~2/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261102.0473.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.0",
+        "gitExecutableSha256": "371fc6bfbfea4d9ace7d122feefe100503d24f827bc94f54ab3973583ffea11f",
+        "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "harnessSha256": "5f49b465a7c3f4d37fde204dc5deb159be11c477813eeaf7fb5d8518cbd8a8f7",
+      "requirementsSha256": "4d82fde6122557bfc88aba5a6a8611c84007ac26896d3c73a0c02e52a8773446",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "93b310824783ba1bae9884bba156cd3b7c6c0878cd372930ceeaddffbee1ff00",
+      "receiptArtifact": {
+        "id": 14130449468,
+        "name": "consumer-runtime-receipts-tasks-runtime-ci-macos-node24-1",
+        "digest": "sha256:96462dfef8157a749697d2cf008a7c3173730efa15f768c97c2f6d2e0d190a39"
+      },
+      "receiptManifestSha256": "abf580d905c20e9e2043a21942920d6eb3a4ec99d516b2ad6724e737f651b79a",
+      "controllerStreams": {
+        "stdout": {
+          "file": "controller.stdout",
+          "bytes": 1107472,
+          "sha256": "e4c71b55446cb2b30d4ea554cbb9381f2abaede93fc6d8e32645ce6b8534ed43"
+        },
+        "stderr": {
+          "file": "controller.stderr",
+          "bytes": 9581,
+          "sha256": "c7a331218332b37e6bb72af42c8ab6ac62c4c7309612f786e07e23be2937c06e"
+        }
+      }
+    },
+    {
+      "slot": "ci-macos-node26",
+      "job": 132572668575,
+      "selectedRuntime": {
+        "id": "ci-macos-node26",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "26.9.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-macos-node26",
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Mon Oct 12 00:39:04 PDT 2026; root:xnu-12377.161.15.701.48~2/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261102.0473.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.0",
+        "gitExecutableSha256": "371fc6bfbfea4d9ace7d122feefe100503d24f827bc94f54ab3973583ffea11f",
+        "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "harnessSha256": "5f49b465a7c3f4d37fde204dc5deb159be11c477813eeaf7fb5d8518cbd8a8f7",
+      "requirementsSha256": "4d82fde6122557bfc88aba5a6a8611c84007ac26896d3c73a0c02e52a8773446",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "b4d89a41a2f0767502dc0a1e4a54372744a7e0cbf24b7a0b992f9559bddff94f",
+      "receiptArtifact": {
+        "id": 14131585527,
+        "name": "consumer-runtime-receipts-tasks-runtime-ci-macos-node26-1",
+        "digest": "sha256:42ea3d0785c661a559e1ee94e135be078c7fbaea9abc9ef6fedaf0589e65285c"
+      },
+      "receiptManifestSha256": "3549f2c591a47edf19c62448c690a38e731bfcf97ccde5408094a1fad582df30",
+      "controllerStreams": {
+        "stdout": {
+          "file": "controller.stdout",
+          "bytes": 1107500,
+          "sha256": "6a09bbc9be58b399d36796b308da5d0aa435eaa6a75c1b6b65c5169301bc6965"
+        },
+        "stderr": {
+          "file": "controller.stderr",
+          "bytes": 9582,
+          "sha256": "a63b2a422cbd750effae9e6d2e18e052401e7bc7c2147e65906abdea37cf8793"
+        }
+      }
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "job": 132572668517,
+      "selectedRuntime": {
+        "id": "native-linux-arm64-node22",
+        "platform": "linux",
+        "architecture": "arm64",
+        "node": "22.23.2",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "native-linux-arm64-node22",
+        "node": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 19:06:39 UTC 2026",
+        "distributionId": "debian",
+        "distributionVersion": "13",
+        "distributionSha256": "14c430da04c2d571793fc68a8f5e17fce3d7a746e316c3f23192590861b18bd7",
+        "imageOS": null,
+        "imageVersion": null,
+        "containerReference": "sha256:494442f647c67104f8e5d5a5d7b6b412530e17d6e3d533b9b8cb6e15380f9e35",
+        "containerImageId": "sha256:494442f647c67104f8e5d5a5d7b6b412530e17d6e3d533b9b8cb6e15380f9e35",
+        "baseNodeReference": "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+        "baseSystemReference": "docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.47.3",
+        "gitExecutableSha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3",
+        "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "harnessSha256": "5f49b465a7c3f4d37fde204dc5deb159be11c477813eeaf7fb5d8518cbd8a8f7",
+      "requirementsSha256": "4d82fde6122557bfc88aba5a6a8611c84007ac26896d3c73a0c02e52a8773446",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "7efe9671da093c38f51e7529f17ece14711f52266faea25bbd5db6fdb819b241",
+      "receiptArtifact": {
+        "id": 14132950601,
+        "name": "consumer-runtime-receipts-tasks-runtime-arm64-single-1",
+        "digest": "sha256:6aec14e88ccb2bfe5d593e57a73bb89f5697c0558e4c31bf7e4dc09e3111c596"
+      },
+      "receiptManifestSha256": "d1bce0663b2a404f64f64e5fd48ab2c71001787e748be690e0e315cbfc648c34",
+      "controllerStreams": {
+        "stdout": {
+          "file": "controller.stdout",
+          "bytes": 845381,
+          "sha256": "0e68faac766131cfde2fb37ad966d89ec0a5e4ebb8f5a925120dc714e568fc3b"
+        },
+        "stderr": {
+          "file": "controller.stderr",
+          "bytes": 11295,
+          "sha256": "b0ea5ea0e1f38eae1d5d4048eebb47d275fc83371ee6f5aecf4e63220ee4b826"
+        }
+      }
+    },
+    {
+      "slot": "windows-node22",
+      "job": 132572668487,
+      "selectedRuntime": {
+        "id": "windows-node22",
+        "platform": "win32",
+        "architecture": "x64",
+        "osFamily": "Windows Server 2025",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "windows-node22",
+        "node": "22.23.3",
+        "platform": "win32",
+        "architecture": "x64",
+        "osRelease": "10.0.26100",
+        "osVersion": "Windows Server 2025 Datacenter",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "win25-vs2026",
+        "imageVersion": "20261103.298.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.0.windows.4",
+        "gitExecutableSha256": "20d0dde30a65afb6e5810a883700a94dcd77fbf3b44b32868d45bf7c9b30137c",
+        "nodeExecutableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+        "systemPowerShellSha256": "41796f1f3d81f921fdb4030c865f9dcf5032a2a1b49dde148bbc99e8d10f6e8c",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 18,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "harnessSha256": "5f49b465a7c3f4d37fde204dc5deb159be11c477813eeaf7fb5d8518cbd8a8f7",
+      "requirementsSha256": "4d82fde6122557bfc88aba5a6a8611c84007ac26896d3c73a0c02e52a8773446",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "1d622237538ab8428a0f840c82f13ec1d911a474f4e10decae05190edfef531a",
+      "receiptArtifact": {
+        "id": 14131596145,
+        "name": "consumer-runtime-receipts-tasks-runtime-windows-node22-1",
+        "digest": "sha256:542a4cf4cc59c9fe20a6ce4151783b2ebbd5a4f2c60f6e357d97581a7ffad9b6"
+      },
+      "receiptManifestSha256": "c036ea5d74fe1cec511abe7d4cb51fccf44134c02393dea115d2e52f3616d8a0",
+      "controllerStreams": {
+        "stdout": {
+          "file": "controller.stdout",
+          "bytes": 899465,
+          "sha256": "642f000a0e68f0d7810bee91e5892be7f149cd43200e561f9adaa6cc944103b6"
+        },
+        "stderr": {
+          "file": "controller.stderr",
+          "bytes": 9555,
+          "sha256": "38f2cedb603589ae0043517900f44103c47820152713f99717339756610aefc5"
+        }
+      }
+    }
+  ],
+  "counts": {
+    "runtimePairs": 8,
+    "sourceAndFreshInstalledCohorts": 16,
+    "profileEvidence": 144,
+    "foundationEvidence": 720
+  },
+  "nativeConsumerEvidence": {
+    "schemaVersion": 1,
+    "profile": "current-source-native-consumer-matrix-v1",
+    "source": {
+      "schemaVersion": 1,
+      "profile": "native-consumer-current-source-frame-v1",
+      "commit": "6809bf39c3aba1f1b582742c741051667461754e",
+      "gitTree": "3054e9e4d610ffd29ec1644cb4c2bd5ecb0ee275",
+      "sourceManifestSha256": "c28807fcd8d83670bc0e3edf91429c5149cc9bf38de03ae56afc5d7278d8c03c",
+      "sourceFiles": 2939,
+      "sourceBytes": 115820403,
+      "engineSha256": "78ae46322683423eb3c504c5b798259cd102c1c46464e23e5ccb601f7066535d",
+      "engineManifestSha256": "29472470c7f71e89d2efaaece15c8b8f14815856f8b7b07fe9d59b1ead7cddd5",
+      "harnessSha256": "4a3cf1ef4937205715ac187d12d3d27eb863ab04ab10c5e925df57da1593ce5c",
+      "harnessManifestSha256": "d0595df6aa353c25195c1c4592e03d7906194f198fb5b74bc6c94e68cc77749d",
+      "inventorySha256": "43f8c8f11df5d1bba0a4660cfe6d9011fb29834b357ef6254a7526156fa2b8a7",
+      "inventoryScopeSha256": "acddaba1dd782390afe48296e1e8e1fd0409df0658ad1cf0aa14c6f19a57d144",
+      "requirementsSha256": "f3edc30902801c432fe6f1ed71835287c2aee09627a82e331ccf3288b2c8c677",
+      "packageManifestSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packageLockSha256": "132654a52917f06104ee4b187dc20f8a919ada0800fa4c8d869bee4efd280e95",
+      "clean": true,
+      "hostAttestationPerformed": false,
+      "gateAComplete": false
+    },
+    "selectedScopes": [
+      "consumer-impact:ci-linux-node22",
+      "consumer-impact:ci-linux-node24",
+      "consumer-impact:ci-linux-node26",
+      "consumer-impact:ci-macos-node22",
+      "consumer-impact:ci-macos-node24",
+      "consumer-impact:ci-macos-node26",
+      "consumer-impact:native-linux-arm64-node22",
+      "consumer-impact:windows-node22",
+      "javascript-extensions:native-linux-arm64-node22",
+      "context-python:native-linux-arm64-node22",
+      "context-go:native-linux-arm64-node22",
+      "context-php:native-linux-arm64-node22",
+      "context-rust:native-linux-arm64-node22",
+      "context-java:native-linux-arm64-node22",
+      "context-kotlin:native-linux-arm64-node22",
+      "context-scala:native-linux-arm64-node22",
+      "context-csharp:native-linux-arm64-node22",
+      "context-fsharp:native-linux-arm64-node22",
+      "context-vb:native-linux-arm64-node22",
+      "context-ruby:native-linux-arm64-node22",
+      "context-swift:native-linux-arm64-node22",
+      "context-c:native-linux-arm64-node22",
+      "context-cpp:native-linux-arm64-node22",
+      "context-hcl:native-linux-arm64-node22",
+      "context-yaml:native-linux-arm64-node22",
+      "selected-clang:native-linux-arm64-node22"
+    ],
+    "unselectedScopes": [],
+    "scopeCapsules": [
+      {
+        "id": "consumer-impact:ci-linux-node22",
+        "sha256": "0e673a6ffe5b550eda516d881108fc555bba86689840c501da4204fed390a79a"
+      },
+      {
+        "id": "consumer-impact:ci-linux-node24",
+        "sha256": "372b0e143042df77b8624e996f7380e33c56d71c0fc3fe5c7ec3f3c9e8c8dd4d"
+      },
+      {
+        "id": "consumer-impact:ci-linux-node26",
+        "sha256": "81a06f4db36b921deee6332c6610b427dd62fe1c8c0b8a47cd44a6ac64ecf8df"
+      },
+      {
+        "id": "consumer-impact:ci-macos-node22",
+        "sha256": "09f629e260abd79edf24d21272910b423525ce2d453ba6f9d1dfa5f8a04bbb72"
+      },
+      {
+        "id": "consumer-impact:ci-macos-node24",
+        "sha256": "0c3769efcd1cc375c4285222043274bb4b40e5230a56855afd193c64ce332042"
+      },
+      {
+        "id": "consumer-impact:ci-macos-node26",
+        "sha256": "d03fc4a6b973ade04a8cb9eb40c4b0c4f2e18f7afbbd44754e6ffe5d54971a7a"
+      },
+      {
+        "id": "consumer-impact:native-linux-arm64-node22",
+        "sha256": "ba60ded190264d810f76bccc5ee162f6f38a65cdffdb041d2400fe0b7024a6fb"
+      },
+      {
+        "id": "consumer-impact:windows-node22",
+        "sha256": "7a5a5c4f034be302b512489f6544d82aa2ec336ea39b3471c2deb4ad45f02585"
+      },
+      {
+        "id": "javascript-extensions:native-linux-arm64-node22",
+        "sha256": "67a3fbcf381b87417a56451d2053dc71940351ddd5f5a159a4efdb7f247001dc"
+      },
+      {
+        "id": "context-python:native-linux-arm64-node22",
+        "sha256": "d137dce94ede3ce46c5844f32ccc1af48e12fc382a01b6eaeebf7c88c08d6723"
+      },
+      {
+        "id": "context-go:native-linux-arm64-node22",
+        "sha256": "dff3fdc141970259b4854187c46590abf29625e23169cf76dee5e2d294a1bfd7"
+      },
+      {
+        "id": "context-php:native-linux-arm64-node22",
+        "sha256": "6a69cf86f58f629ddc455c365ea95abc00889319e9755b817de378ff25a2ee1c"
+      },
+      {
+        "id": "context-rust:native-linux-arm64-node22",
+        "sha256": "232935b08bbf6ddf183476eb67cdb72226f7dbaad7419f6206bac316f29f9813"
+      },
+      {
+        "id": "context-java:native-linux-arm64-node22",
+        "sha256": "9ada5aea448024e1fabb42cf8a61c52614169c37d82f57a07d507b4b8952db2e"
+      },
+      {
+        "id": "context-kotlin:native-linux-arm64-node22",
+        "sha256": "5ba56fa95a6067cddc23a4ab33c1e019f6b9bf0342d8826f9942037c5aee2882"
+      },
+      {
+        "id": "context-scala:native-linux-arm64-node22",
+        "sha256": "7b647cd920fe6994e6a71ec28a21c46b62270baaab0f6e25d94e39c4720d588a"
+      },
+      {
+        "id": "context-csharp:native-linux-arm64-node22",
+        "sha256": "d03055165efb3f34f108728bdfd33fecaff266d7a2c924a87b46e5df3dc5a5d0"
+      },
+      {
+        "id": "context-fsharp:native-linux-arm64-node22",
+        "sha256": "cd3525ed7c33c269c5e3231998975de731ab1a0bf9c065712ad91b527814696b"
+      },
+      {
+        "id": "context-vb:native-linux-arm64-node22",
+        "sha256": "42bf7139eb1bc8178828951f829a2ddf28227e898cb2cde842399175298a64c5"
+      },
+      {
+        "id": "context-ruby:native-linux-arm64-node22",
+        "sha256": "0235def3952632813526d77ad134d30a9457231e74ae4d565adcf043028c618a"
+      },
+      {
+        "id": "context-swift:native-linux-arm64-node22",
+        "sha256": "15594ef39336092efed3bbec62d2d8d75b0dadbac93f441434f4fb32f762f41f"
+      },
+      {
+        "id": "context-c:native-linux-arm64-node22",
+        "sha256": "1853a70118fb1fddad4ce192a3c1379aeb1b81d88f232d252b831fa77d9c5131"
+      },
+      {
+        "id": "context-cpp:native-linux-arm64-node22",
+        "sha256": "02dfdaa9b69545b77c9af9b8bf81d66e9e5622ab561d0421efa7d0be1edfa2a7"
+      },
+      {
+        "id": "context-hcl:native-linux-arm64-node22",
+        "sha256": "b60d703471bbcb0f961bea2238aa1e9bbd8c55d0764af4d25b944e425c8e6bd6"
+      },
+      {
+        "id": "context-yaml:native-linux-arm64-node22",
+        "sha256": "184562dd8c8c3c2072840e427b05427643c4b7160456a2f5ceb33af165fbb5b8"
+      },
+      {
+        "id": "selected-clang:native-linux-arm64-node22",
+        "sha256": "502a7185317e09a090108ae7a326845d01d7ceb3a8007f0d73c7caf0c701760c"
+      }
+    ],
+    "producerArtifacts": [
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-linux-node22",
+        "producerAttempt": "1",
+        "id": "14132215902",
+        "name": "native-consumer-tasks-runtime-ci-linux-node22-1",
+        "digest": "31a7d31c24b9005cb7c225fc490689a4c11c706560e32eea0bbb84f8d4cd86b2"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-linux-node24",
+        "producerAttempt": "1",
+        "id": "14131986565",
+        "name": "native-consumer-tasks-runtime-ci-linux-node24-1",
+        "digest": "86b4785b86cc03bf25ea17b18d2d5ff9a6e45c29783776ab060e91133868d656"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-linux-node26",
+        "producerAttempt": "1",
+        "id": "14131722601",
+        "name": "native-consumer-tasks-runtime-ci-linux-node26-1",
+        "digest": "f5b1adca2536412f976604fc63b06197b1128bb0408d8822254992bc59ff6bb4"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-macos-node22",
+        "producerAttempt": "1",
+        "id": "14131382366",
+        "name": "native-consumer-tasks-runtime-ci-macos-node22-1",
+        "digest": "ed93204736cecc181bb66dc6708bb5a5cf73996f7d728a883310a749221926e8"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-macos-node24",
+        "producerAttempt": "1",
+        "id": "14131402777",
+        "name": "native-consumer-tasks-runtime-ci-macos-node24-1",
+        "digest": "35f84bbee77e1821b41e48029d33121128e583f6f3d7e04203e3e1e2466abd76"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "ci-macos-node26",
+        "producerAttempt": "1",
+        "id": "14130732507",
+        "name": "native-consumer-tasks-runtime-ci-macos-node26-1",
+        "digest": "90939c439dfd211a22e6a50e9679b4aa8f736834fedeee0c64ed4ee13283af7d"
+      },
+      {
+        "job": "tasks-runtime-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132880976",
+        "name": "native-consumer-tasks-runtime-arm64-single-1",
+        "digest": "7b966c6820e676ace517cbd76b07c20f25e8a8eb94ad22146559b4a4107f546c"
+      },
+      {
+        "job": "tasks-runtime",
+        "lane": "windows-node22",
+        "producerAttempt": "1",
+        "id": "14131452462",
+        "name": "native-consumer-tasks-runtime-windows-node22-1",
+        "digest": "e5e8b4f9e369772e490cfabc423fbe9d5a1c0eb8e6d9db57515043fdba9c8bca"
+      },
+      {
+        "job": "javascript-extensions-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14130741621",
+        "name": "native-consumer-javascript-extensions-arm64-single-1",
+        "digest": "8e6163e8968bf80aaeece429d7b3c47836d1fc1575a9d4a30a7093808ff732b3"
+      },
+      {
+        "job": "go-workspaces-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132312197",
+        "name": "native-consumer-go-workspaces-arm64-single-1",
+        "digest": "0e5f80decc32a546a2c3dcc22fa48127396e1c84ab34d3f42d791bd181732a61"
+      },
+      {
+        "job": "php-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14131189202",
+        "name": "native-consumer-php-context-arm64-single-1",
+        "digest": "388bcb305df4fcb8e072c1417aa1d51f76322afd2b9a3a5ac77839e92eaa4d13"
+      },
+      {
+        "job": "rust-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132111833",
+        "name": "native-consumer-rust-context-arm64-single-1",
+        "digest": "4792992b5bb4e82fa04fa1226a511d21e48ef1348a11dbdead29eea3ef962d88"
+      },
+      {
+        "job": "java-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14130583726",
+        "name": "native-consumer-java-context-arm64-single-1",
+        "digest": "38745af64613ff98e10f954ea0fe321b4a657017eca7505b8ee5a73f7f04abcc"
+      },
+      {
+        "job": "kotlin-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132087982",
+        "name": "native-consumer-kotlin-context-arm64-single-1",
+        "digest": "6707d0a807e2ff84684ded4df5d3c75c52342199f381406a10eecc43ef1ecce0"
+      },
+      {
+        "job": "scala-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132241445",
+        "name": "native-consumer-scala-context-arm64-single-1",
+        "digest": "b530230c99c7e5a2589df6e9b4a5e80ef639e74136349cf805fde9f1a84ee545"
+      },
+      {
+        "job": "csharp-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132760499",
+        "name": "native-consumer-csharp-context-arm64-single-1",
+        "digest": "2c1235009fcf4410dec6949f66d48731d4d7103cc2915e6afc9e1b0d35a7e006"
+      },
+      {
+        "job": "fsharp-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132881005",
+        "name": "native-consumer-fsharp-context-arm64-single-1",
+        "digest": "1a4b25a49703323ebfb63428ae17bfd076f5df6d949dab8c06de0f9d9250fc66"
+      },
+      {
+        "job": "vb-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132116465",
+        "name": "native-consumer-vb-context-arm64-single-1",
+        "digest": "35701d6f9846964d227b3c233d27ed58951968c6a49c5fe3c6419bc3dd2cf248"
+      },
+      {
+        "job": "ruby-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14131824863",
+        "name": "native-consumer-ruby-context-arm64-single-1",
+        "digest": "ba4ffe1dd8c7f9ee3fd6ce59054f7f1ea4ea618c716f454207d02b89ddc84b2d"
+      },
+      {
+        "job": "swift-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14131429794",
+        "name": "native-consumer-swift-context-arm64-single-1",
+        "digest": "ba68c3284c935ea6fffd8c1d39ef295ccd47e099f2cb9618b050ea86ff1f46e4"
+      },
+      {
+        "job": "c-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132100111",
+        "name": "native-consumer-c-context-arm64-single-1",
+        "digest": "2fc77e8b820f7e2f114a13904581bd3a7197c20edcac3e942b80b8b638a2bd6e"
+      },
+      {
+        "job": "cpp-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14131887570",
+        "name": "native-consumer-cpp-context-arm64-single-1",
+        "digest": "90e5b6fa0f0388ad754328e292fe1f96c2d976930c057e016dd156cf33ab9645"
+      },
+      {
+        "job": "hcl-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14131626750",
+        "name": "native-consumer-hcl-context-arm64-single-1",
+        "digest": "520b1a541ffa105d39014dcec26e2cf58dbd1f57cfcf54b813709f7739201c62"
+      },
+      {
+        "job": "yaml-context-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132098954",
+        "name": "native-consumer-yaml-context-arm64-single-1",
+        "digest": "ad182374502b3481b4f998604180e52417e9871fa794af0d76cd04e1ffa0ba16"
+      },
+      {
+        "job": "cpp-extensions-arm64",
+        "lane": "single",
+        "producerAttempt": "1",
+        "id": "14132711674",
+        "name": "native-consumer-cpp-extensions-arm64-single-1",
+        "digest": "b1ad74a0963a6c208db5673f7d7033169664bb2b9950a64eb70ed8333abb7eca"
+      }
+    ],
+    "allDeclaredScopesComplete": true,
+    "consumerProfileComplete": true,
+    "wholeUpstreamClosureVerified": false,
+    "hostAttestationPerformed": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "aggregateJob": 132597442456,
+    "rawAggregateLogSha256": "ab72e1f8d6ebf1211aa22ebe8ffa5923d952c84e04896c626d0d91f18e673983",
+    "sanitizedCapsulesRevalidatedAgainstRecordedSource": 26,
+    "artifactClaimIdsNamesAndDigestsMatchedApiMetadata": 25,
+    "originalControllerStreamsRehashedAgainstCapsules": 8,
+    "staleSourceNegativeControlRejected": true,
+    "originalArtifactZipIndependentlyRehashed": false
+  }
+}

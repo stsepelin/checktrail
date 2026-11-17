@@ -1,5 +1,7 @@
+import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
+  assertResourcePackageLayout,
   releaseToolsAvailable,
   resourcePrerequisiteControl,
   resourceMeasurementsAvailable,
@@ -73,3 +75,90 @@ test(
   },
   resourceInstalledControl,
 );
+
+test("resource package layout permits exactly the six product provenance scripts and rejects operator material and adjacent paths", () => {
+  const productScripts = [
+    "scripts/native-provenance-coordinator.mjs",
+    "scripts/native-provenance-adapter.mjs",
+    "scripts/native-provenance-audit-child.mjs",
+    "scripts/audit-dependencies.mjs",
+    "scripts/audit-selected-artifact-evidence.mjs",
+    "scripts/pango-complete-text-binding.mjs",
+  ];
+  const files = [
+    "dist/src/index.js",
+    "dist/src/cli.js",
+    "package.json",
+    "README.md",
+    "docs/scripts/usage.md",
+    "docs/reports.md",
+    ".checktrail.md",
+    "test-guide.md",
+    "scripts-guide.md",
+    ...productScripts,
+  ].map((path) => ({ path }));
+  assert.doesNotThrow(() => assertResourcePackageLayout(files));
+  assert.doesNotThrow(() => assertResourcePackageLayout([...files].reverse()));
+  for (const path of [
+    "scripts/operator-only.mjs",
+    "scripts/native-provenance-coordinator.mjs.map",
+    "scripts/native-provenance-coordinator-extra.mjs",
+    "scripts/pango-complete-text-binding.mjs/extra",
+    "scripts/nested/operator-only.mjs",
+    "test/fixtures/.env",
+    "reports/review.json",
+    "research_notes/credentials.json",
+    ".checktrail/credentials.json",
+    ".checktrail/.env",
+  ])
+    assert.throws(
+      () => assertResourcePackageLayout([...files, { path }]),
+      (error: unknown) => {
+        assert.ok(error instanceof assert.AssertionError);
+        assert.ok(
+          error.message.includes(`Unapproved resource package path: ${path}`),
+        );
+        return true;
+      },
+    );
+  for (const path of [
+    "./scripts/operator-only.mjs",
+    "scripts/../operator-only.mjs",
+    "scripts//operator-only.mjs",
+    "scripts\\operator-only.mjs",
+    "/scripts/operator-only.mjs",
+    "C:scripts/operator-only.mjs",
+  ])
+    assert.throws(
+      () => assertResourcePackageLayout([...files, { path }]),
+      (error: unknown) => {
+        assert.ok(error instanceof assert.AssertionError);
+        assert.ok(
+          error.message.includes(`Noncanonical resource package path: ${path}`),
+        );
+        return true;
+      },
+    );
+  for (const path of productScripts)
+    assert.throws(
+      () =>
+        assertResourcePackageLayout(files.filter((file) => file.path !== path)),
+      /Resource package provenance script set differs/,
+    );
+  assert.throws(
+    () => assertResourcePackageLayout([...files, { path: productScripts[0]! }]),
+    /Resource package provenance script set differs/,
+  );
+  for (const path of ["dist/src/index.js", "dist/src/cli.js"])
+    assert.throws(
+      () =>
+        assertResourcePackageLayout(files.filter((file) => file.path !== path)),
+      (error: unknown) => {
+        assert.ok(error instanceof assert.AssertionError);
+        assert.ok(
+          error.message.includes(`Missing resource package entry: ${path}`),
+        );
+        return true;
+      },
+    );
+});

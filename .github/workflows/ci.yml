@@ -195,6 +195,8 @@ jobs:
         run: node scripts/audit-gate-inventory.mjs .
         if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Require assigned full-suite shard and remaining host contracts
+        env:
+          CHECKTRAIL_PRESERVED_BASELINE: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '22' && 'host-core' || '' }}
         run: |
           node scripts/verify-ci-full-suite-shard.mjs --shard0
           node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness
@@ -361,6 +363,8 @@ jobs:
           fi
         if: env.CHECKTRAIL_CI_MODE == 'full'
       - name: Require assigned full-suite fragment
+        env:
+          CHECKTRAIL_PRESERVED_BASELINE: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '22' && 'host-core' || '' }}
         run: node scripts/verify-ci-full-suite-shard.mjs --shard${{ matrix.shard }}
       - name: Prepare this runner's package-install cache for Linux container acceptance
         if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
@@ -626,6 +630,48 @@ jobs:
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-java-container.mjs
 
+  pyright:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['pyright'] }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CHECKTRAIL_PYRIGHT_PACKAGE: ${{ github.workspace }}/.checktrail/pyright-tools/node_modules/pyright
+      CHECKTRAIL_PYRIGHT_IMAGE: checktrail-pyright-tools:ci-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            scripts/pyright-tools/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned Pyright compiler without lifecycle scripts
+        run: |
+          mkdir -p .checktrail/pyright-tools
+          cp scripts/pyright-tools/package.json scripts/pyright-tools/package-lock.json .checktrail/pyright-tools/
+          npm ci --prefix .checktrail/pyright-tools --ignore-scripts --no-audit --no-fund
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs docker.io/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
+      - name: Prepare pinned Pyright runtime
+        run: docker build --file scripts/pyright-tools.Dockerfile --tag "$CHECKTRAIL_PYRIGHT_IMAGE" scripts
+      - name: Require all seven native source callbacks offline
+        run: node scripts/verify-pyright-container.mjs
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
+      - name: Require all seven callbacks against a fresh offline production install
+        run: node scripts/verify-pyright-package.mjs
+      - name: Remove this run's Pyright image
+        if: always()
+        run: docker image rm "$CHECKTRAIL_PYRIGHT_IMAGE"
+
   checkstyle:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['checkstyle'] }}
@@ -786,7 +832,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: node scripts/verify-required-native-tests.mjs maven-preparation
+      - run: node scripts/verify-native-baseline-host.mjs maven-preparation
       - run: node scripts/prepare-maven-tools.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
@@ -812,7 +858,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: node scripts/verify-required-native-tests.mjs gradle-preparation
+      - run: node scripts/verify-native-baseline-host.mjs gradle-preparation
       - run: node scripts/prepare-gradle-tools.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
@@ -921,8 +967,7 @@ jobs:
         run: |
           docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle
           docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle-interpreters
-          docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs external-protocol
-          docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs policy-distribution
+          node scripts/verify-external-baseline-container.mjs
       - name: Verify packed executable adapters in a fresh offline production installation
         env:
           CHECKTRAIL_EXECUTABLE_BUNDLE_IMAGE: checktrail-executable-bundle-test:1
@@ -1185,7 +1230,7 @@ jobs:
       - name: Verify bounded phase routing and complete aggregate requirements
         run: node --test dist/test/jvm-wrapper-phases.test.js
       - name: Require bounded wrapper delivery and integrity controls
-        run: node scripts/verify-required-native-tests.mjs maven-preparation
+        run: node scripts/verify-native-baseline-host.mjs maven-preparation
       - name: Prepare pinned public images with bounded delivery retries
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
@@ -1612,7 +1657,7 @@ jobs:
       - run: swiftc --version
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: node scripts/verify-required-native-tests.mjs swift
+      - run: node scripts/verify-native-baseline-host.mjs swift
 
   swift-tools:
     needs: [ci-plan, actionlint]
@@ -2057,6 +2102,24 @@ jobs:
         run: node scripts/diagnose-windows-task-access.mjs
       - name: Prepare pinned production installation cache
         run: node scripts/prepare-package-cache.mjs
+      - name: Require provenance composition from source and a fresh offline package
+        id: native-provenance-runtime
+        if: matrix.core
+        # Source and fresh-package files each retain their own 600-second limit.
+        # This parent also covers their bounded build, installation and cleanup.
+        timeout-minutes: 30
+        run: node scripts/verify-native-provenance-runtime.mjs ${{ matrix.slot }}
+        env:
+          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
+      - name: Retain original bounded provenance runtime receipt bytes
+        if: ${{ !cancelled() && matrix.core && steps.native-provenance-runtime.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-provenance-runtime-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
       - name: Require source and retained fresh-install controls with exact runtime and observed image identity
         if: matrix.core
         run: node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}
@@ -2156,7 +2219,19 @@ jobs:
       - name: Prepare pinned production installation cache
         run: node scripts/prepare-package-cache.mjs
       - name: Require source and offline installed controls in the pinned native runtime
+        id: native-provenance-runtime
         run: node scripts/verify-tasks-runtime-arm64.mjs
+        env:
+          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
+      - name: Retain original bounded provenance runtime receipt bytes
+        if: ${{ !cancelled() && steps.native-provenance-runtime.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-provenance-runtime-tasks-runtime-arm64-native-linux-arm64-node22-${{ github.run_attempt }}
+          path: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
       - name: Require whole consumer impact with pinned native Git prerequisites
         id: consumer-runtime
         run: node scripts/verify-consumer-native-acceptance.mjs consumer-impact native-linux-arm64-node22
@@ -3425,6 +3500,25 @@ jobs:
           node scripts/prepare-package-cache.mjs
       - name: Verify preserved .NET profiles, source and installed formatter, native lifecycle and compiling controls
         run: node scripts/verify-fsharp-format-container.mjs
+      - name: Prepare scoped native NuGet repository-signature observation
+        run: node scripts/prepare-fsharp-format-tools.mjs --archive "$PWD/.checktrail/fantomas.8.0.7.nupkg" --verify-repository-signature > "$CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST"
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
+      - name: Verify immutable signed formatter publication and refusal controls
+        run: |
+          node --input-type=module <<'NODE'
+          import { kotlinRead } from './dist/src/kotlin-io.js';
+          import { parseFsharpSignaturePreparation } from './scripts/verify-fsharp-format-signature-container.mjs';
+          import { verifyFsharpSignaturePublication } from './scripts/verify-fsharp-format-signature-proof.mjs';
+          const manifest = parseFsharpSignaturePreparation((await kotlinRead(process.env.CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST, 16384)).toString('utf8'));
+          process.stdout.write(JSON.stringify(await verifyFsharpSignaturePublication(manifest.formatterRoot, manifest.proofSha256)) + '\n');
+          NODE
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
+      - name: Verify scoped signature source and fresh installed formatter sequentially
+        run: node scripts/verify-fsharp-format-signature-container.mjs "$CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST"
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
 
   dotnet-format-extensions-arm64:
     needs: [ci-plan]
@@ -3472,6 +3566,7 @@ jobs:
       - php-review
       - clang
       - java
+      - pyright
       - checkstyle
       - spotbugs
       - detekt

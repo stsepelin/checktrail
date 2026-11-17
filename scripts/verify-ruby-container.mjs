@@ -1,3 +1,7 @@
+import {
+  captureNativeContainerSource,
+  completeNativeContainerFresh,
+} from "./preserved-native-baseline-controller.mjs";
 import { execFileSync } from "node:child_process";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -73,11 +77,13 @@ try {
   process.stdout.write(
     `${JSON.stringify({ image, nodeImage, rubyVersion, nodeVersion, network: "none", fixtureFilesystem: "container" })}\n`,
   );
-  execFileSync(
-    "docker",
-    [...args, "node", "scripts/verify-required-native-tests.mjs", "ruby"],
-    { stdio: "inherit" },
-  );
+  const baselineReceipt = await captureNativeContainerSource({
+    repository,
+    cohortName: "ruby",
+    selection: ["ruby"],
+    containerArgs: args,
+  });
+  await completeNativeContainerFresh({ repository, baseline: baselineReceipt });
 } finally {
   try {
     if (sourceContainer)

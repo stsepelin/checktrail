@@ -55,6 +55,7 @@ const cProducerRegressionFiles = Object.freeze([
   "test/binutils-input-preparation.test.ts",
   "test/binutils-retention-observer.test.ts",
   "test/c-producer-evidence.test.ts",
+  "test/c-producer-failed-diagnostics.test.ts",
   "test/c-producer-gcc-evidence.test.ts",
   "test/c-producer-local12h.test.ts",
   "test/c-producer-qualification.test.ts",
@@ -82,7 +83,7 @@ export const cProducerSharedBoundary = Object.freeze({
   // Names only: editing a reviewed member does not invalidate its fast path.
   // A new helper, fixture, test or workflow needs an explicit inventory review.
   inventorySha256:
-    "56b2c02f5db2656ffb7a27d5677fcff6cda52afd4a73698e9c3e84290c36b960",
+    "1e70e75976168ef9fd5bb60846770433a777b8dc33f045cb0c5ab5a973be022a",
   files: Object.freeze([
     "scripts/acquire-binutils-inputs.mjs",
     "scripts/acquire-c-producer-inputs.mjs",
@@ -151,6 +152,11 @@ const generic = new Set([
   "scripts/request-pinned-artifact.mjs",
   "scripts/verify-required-native-tests.mjs",
   "scripts/required-test-evidence.mjs",
+  // These shared APIs receive the caller's separately validated finite profile
+  // selection. Runtime tool names and binding-table labels are not invocations.
+  "scripts/preserved-baseline-evidence.mjs",
+  "scripts/preserved-native-baseline-bindings.mjs",
+  "scripts/verify-native-baseline-host.mjs",
   "scripts/verify-import-context-package.mjs",
   "scripts/verify-mutation-guards.mjs",
   // The consumer entry point uses the workflow's exact context-* argument.
@@ -178,7 +184,18 @@ const generic = new Set([
 // Reviewed delivery/selector/observer helpers acquire bytes, return targets or hash
 // harness bytes without executing native controllers/tests. Static imports remain
 // inputs; detected execution primitives restore conservative full profile expansion.
+// This exact reviewed dispatcher forwards one validated workflow argument to
+// the existing source command and a separate fresh worker. Its allowed-cohort
+// labels are data. Any changed bytes require review and restore all profiles;
+// imports and changed shared helper consumers always remain graph inputs.
+const reviewedArgumentDrivenDispatchers = new Map([
+  [
+    "scripts/verify-native-baseline-host.mjs",
+    "452c2459e3af67383218e94b9e40515b38fc976f1a53a9726f17dc0f88af4c93",
+  ],
+]);
 const consumerDataSelectors = new Set([
+  "scripts/preserved-native-baseline-bindings.mjs",
   "scripts/request-pinned-artifact.mjs",
   "scripts/consumer-native-entrypoints.mjs",
   "scripts/consumer-native-acceptance-scope.mjs",
@@ -263,7 +280,11 @@ export async function buildNativeInputs({
           !/\b(?:runRequiredTests|runProcess|spawn|spawnSync|execFile|execFileSync|exec|execSync|fork|eval|import)\s*\(|["']node:child_process["']/.test(
             text,
           );
-      if (selector && !dataOnly)
+      const changedDispatcher =
+        reviewedArgumentDrivenDispatchers.has(parent) &&
+        createHash("sha256").update(text).digest("hex") !==
+          reviewedArgumentDrivenDispatchers.get(parent);
+      if ((selector && !dataOnly) || changedDispatcher)
         for (const rows of Object.values(requirements))
           for (const item of rows) admit(item.file);
       for (const match of text.matchAll(

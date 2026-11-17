@@ -2615,7 +2615,7 @@
         }
       ],
       "implementationState": "implemented",
-      "acceptanceState": "not-measured"
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "mutation-runners",
@@ -2900,7 +2900,7 @@
         }
       ],
       "implementationState": "implemented",
-      "acceptanceState": "not-measured"
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "lifecycle-platforms",
@@ -3192,10 +3192,6 @@
     {
       "id": "expanded-native-artifact-closures",
       "detail": "Verify complete pinned archive/build/license closures for the selected new profiles, including Tree-sitter/WASM, Scala 2, Fantomas and random provider. A chosen version or GitHub license label is not this verification."
-    },
-    {
-      "id": "independent-reference-and-prior-workflow",
-      "detail": "Finalize the opaque private reference/prior-workflow identities and reserved cohort acquisition/adjudication protocol without opening acceptance cases. Keep names/source/reference answers outside Git."
     },
     {
       "id": "matrix-and-acceptance-bindings",

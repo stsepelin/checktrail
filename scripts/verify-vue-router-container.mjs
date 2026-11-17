@@ -1,3 +1,7 @@
+import {
+  captureNativeContainerSource,
+  completeNativeContainerFresh,
+} from "./preserved-native-baseline-controller.mjs";
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
@@ -30,12 +34,12 @@ assert.equal(
   }).trim(),
   "v22.23.2",
 );
-const output = execFileSync(
-  "docker",
-  [...native, "node", "scripts/verify-required-native-tests.mjs", "vue-router"],
-  { encoding: "utf8", maxBuffer: 1024 * 1024 },
-);
-process.stdout.write(output);
+const baselineReceipt = await captureNativeContainerSource({
+  repository,
+  cohortName: "vue-router",
+  selection: ["vue-router"],
+  containerArgs: native,
+});
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-vue-router-package-"),
 );
@@ -54,6 +58,13 @@ try {
     path.join(temporary, packed.filename),
     consumer,
   );
+  await completeNativeContainerFresh({
+    repository,
+    baseline: baselineReceipt,
+    installedPackage: path.join(consumer, "node_modules/@stsepelin/checktrail"),
+    harness: path.join(temporary, "baseline-harness"),
+    preparedDirectories: ["vue-router-tools"],
+  });
   const project = path.join(consumer, "example");
   await cp(path.join(repository, "examples/vue-router"), project, {
     recursive: true,

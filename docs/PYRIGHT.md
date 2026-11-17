@@ -81,7 +81,13 @@ for acceptance fixtures; it does not configure the product's tool selection.
 `scripts/pyright-tools.Dockerfile` pins the Linux Node/Python runtime images.
 `scripts/verify-pyright-container.mjs` requires an already prepared image and
 compiler, mounts the checkout and compiler read-only and uses no container
-network. The test fixtures themselves are writable, temporary and removed.
+network. The test fixtures themselves are writable, temporary and removed. The selected
+`pyright` CI job prepares the exact compiler from its dedicated npm lock with
+lifecycle scripts disabled. It requires all seven original callbacks from source
+and from a fresh offline production installation, using the same pinned image
+and read-only compiler mount. The fresh-install harness and locked MCP client
+remain outside the installed package. Missing tooling and skipped or incomplete
+callbacks cannot qualify either cohort.
 Installed production-package smoke explicitly reports an unavailable Pyright
 profile when no prepared tool is supplied; it never silently reports that check
 as passing.

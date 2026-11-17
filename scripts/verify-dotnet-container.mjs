@@ -1,3 +1,7 @@
+import {
+  captureNativeContainerSource,
+  completeNativeContainerFresh,
+} from "./preserved-native-baseline-controller.mjs";
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -53,13 +57,12 @@ assert.equal(
   compiler,
   "5.9.0-1.26423.113 (e34a38d2ae1fc26406a317517196e55c68ff83ab)",
 );
-execFileSync(
-  "docker",
-  [...args, "node", "scripts/verify-required-native-tests.mjs", "dotnet"],
-  {
-    stdio: "inherit",
-  },
-);
+const baselineReceipt = await captureNativeContainerSource({
+  repository,
+  cohortName: "dotnet",
+  selection: ["dotnet"],
+  containerArgs: args,
+});
 
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-dotnet-package-"),
@@ -79,6 +82,12 @@ try {
     path.join(temporary, packed.filename),
     consumer,
   );
+  await completeNativeContainerFresh({
+    repository,
+    baseline: baselineReceipt,
+    installedPackage: path.join(consumer, "node_modules/@stsepelin/checktrail"),
+    harness: path.join(temporary, "baseline-harness"),
+  });
   const installed = [
     "run",
     "--rm",

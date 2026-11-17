@@ -938,7 +938,14 @@ test("dependency audit accepts OS-incompatible optional ancestry and continues h
   const args = JSON.parse(
     await readFile(path.join(f.root, "npm-observed-arguments.json"), "utf8"),
   );
-  assert.deepEqual(args, ["ls", "--omit=dev", "--all", "--json", "--long"]);
+  assert.deepEqual(args, [
+    "ls",
+    "--no-update-notifier",
+    "--omit=dev",
+    "--all",
+    "--json",
+    "--long",
+  ]);
 });
 
 for (const field of [
@@ -2170,4 +2177,76 @@ test("dependency audit requires canonical notice addresses before platform norma
   await f.setSource({ ...f.source, notice: valid });
   for (const args of [[], ["--include-dev"]])
     assert.equal(parsed(invoke(f.root, args)).complete, true);
+});
+
+test("dependency audit disables only npm self-update checks for both metadata shapes and CLI selections", async (t) => {
+  const root = await realpath(
+    await auditFixture(t, [
+      { name: "synthetic-prod" },
+      { name: "synthetic-dev", dev: true },
+    ]),
+  );
+  const selectedCli = path.join(root, "selected-npm.mjs"),
+    observed = path.join(root, "npm-queries.jsonl"),
+    loader = path.join(root, "observe-npm.mjs");
+  await writeFile(
+    selectedCli,
+    `import {runAcceptanceNpm} from ${JSON.stringify(new URL("../../scripts/install-acceptance-package.mjs", import.meta.url).href)};process.stdout.write(runAcceptanceNpm(process.argv.slice(2),{encoding:'utf8',timeout:10000}));`,
+  );
+  const selectedBefore = createHash("sha256")
+    .update(await readFile(selectedCli))
+    .digest("hex");
+  await writeFile(
+    loader,
+    `import cp from 'node:child_process';import fs from 'node:fs';import {syncBuiltinESMExports} from 'node:module';const original=cp.execFileSync;cp.execFileSync=(file,args,options)=>{if(file==='npm'||(file===process.execPath&&args[0]===${JSON.stringify(selectedCli)}))fs.appendFileSync(${JSON.stringify(observed)},JSON.stringify({file,args})+'\\n');return original(file,args,options);};syncBuiltinESMExports();`,
+  );
+  for (const selected of [false, true]) {
+    for (const development of [false, true]) {
+      await writeFile(observed, "");
+      const args = [
+        ...(development ? ["--include-dev"] : []),
+        ...(selected ? ["--npm-cli", selectedCli] : []),
+      ];
+      const report = parsed(
+        invoke(root, args, ["--import", pathToFileURL(loader).href]),
+      );
+      assert.equal(report.complete, true);
+      assert.deepEqual(
+        report.packages.map((row) => row.name).sort(),
+        development ? ["synthetic-dev", "synthetic-prod"] : ["synthetic-prod"],
+      );
+      const queries = (await readFile(observed, "utf8"))
+        .trim()
+        .split("\n")
+        .map((line) => JSON.parse(line) as { file: string; args: string[] });
+      assert.equal(queries.length, 2);
+      for (const [index, query] of queries.entries()) {
+        assert.equal(query.file, selected ? process.execPath : "npm");
+        assert.deepEqual(query.args, [
+          ...(selected ? [selectedCli] : []),
+          "ls",
+          "--no-update-notifier",
+          ...(development ? [] : ["--omit=dev"]),
+          "--all",
+          "--json",
+          ...(index === 1 ? ["--long"] : []),
+        ]);
+      }
+    }
+  }
+  await rm(path.join(root, "node_modules/synthetic-dev/LICENSE"));
+  const refusedNotice = parsed(
+    invoke(root, ["--include-dev", "--npm-cli", selectedCli]),
+    2,
+  );
+  assert.equal(refusedNotice.complete, false);
+  assert.ok(
+    refusedNotice.gaps.some((gap) => gap.package === "synthetic-dev@1.0.0"),
+  );
+  assert.equal(
+    createHash("sha256")
+      .update(await readFile(selectedCli))
+      .digest("hex"),
+    selectedBefore,
+  );
 });

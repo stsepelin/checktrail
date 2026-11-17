@@ -235,6 +235,106 @@ export function selectFullSuiteRequirements(
     assignedRequired: assignedCases.size,
   };
 }
+export function selectFullSuiteBaselinePartition({
+  profiles,
+  selection,
+  baselineProfiles,
+  baselineSelection,
+  inventory,
+  partition,
+}) {
+  requireFullSuitePartition(partition, inventory);
+  selectFullSuiteRequirements(
+    profiles,
+    selection,
+    inventory,
+    inventory.map((row) => row.file),
+  );
+  const original = new Set(
+    selection.flatMap((name) =>
+      profiles[name].map((row) => JSON.stringify([row.file, row.name])),
+    ),
+  );
+  assert.ok(Array.isArray(baselineSelection) && baselineSelection.length > 0);
+  assert.equal(new Set(baselineSelection).size, baselineSelection.length);
+  const frozen = new Set();
+  let memberships = 0;
+  for (const name of baselineSelection) {
+    assert.ok(
+      Object.hasOwn(baselineProfiles, name) &&
+        baselineProfiles[name].length > 0,
+    );
+    const members = new Set();
+    for (const row of baselineProfiles[name]) {
+      exact(row, ["file", "name"]);
+      const key = JSON.stringify([row.file, row.name]);
+      assert.ok(
+        original.has(key),
+        "Frozen callback is outside the unchanged original source union",
+      );
+      assert.ok(!members.has(key), "Duplicate frozen profile membership");
+      members.add(key);
+      frozen.add(key);
+      memberships++;
+    }
+  }
+  const seen = new Set();
+  let assignedMemberships = 0;
+  const fragments = partition.shards.map(({ id, files }) => {
+    const assigned = new Set(files.map((file) => "dist/test/" + file));
+    const selected = Object.fromEntries(
+      baselineSelection
+        .map((name) => [
+          name,
+          baselineProfiles[name].filter((row) => assigned.has(row.file)),
+        ])
+        .filter(([, rows]) => rows.length),
+    );
+    const fragmentKeys = new Set(
+      Object.values(selected).flatMap((rows) =>
+        rows.map((row) => JSON.stringify([row.file, row.name])),
+      ),
+    );
+    assert.ok(fragmentKeys.size > 0, "Frozen baseline partition is empty");
+    for (const key of fragmentKeys) {
+      assert.ok(
+        !seen.has(key),
+        "Frozen callback is assigned to multiple fragments",
+      );
+      seen.add(key);
+    }
+    const fragmentMemberships = Object.values(selected).reduce(
+      (n, rows) => n + rows.length,
+      0,
+    );
+    assignedMemberships += fragmentMemberships;
+    return {
+      shard: id,
+      profiles: selected,
+      selection: Object.keys(selected),
+      required: fragmentKeys.size,
+      memberships: fragmentMemberships,
+    };
+  });
+  assert.deepEqual(
+    [...seen].sort(),
+    [...frozen].sort(),
+    "Frozen callback partition is incomplete",
+  );
+  assert.equal(
+    assignedMemberships,
+    memberships,
+    "Frozen profile membership partition is incomplete",
+  );
+  return {
+    fragments,
+    required: frozen.size,
+    memberships,
+    allThreeFragmentsRequired: true,
+    wholeCohortComplete: false,
+  };
+}
+
 export function requireFullSuiteFileEvidence(
   report,
   inventory,

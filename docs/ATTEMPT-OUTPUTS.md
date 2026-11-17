@@ -70,7 +70,10 @@ bytes and incomplete flags; it supplies no missing producer or host-model output
 The `attempt-archives` implementation is integrated. Its [historical hosted
 measurement](measurements/attempt-archives-hosted-2026-11-01.json) binds the frozen
 source/fresh runtime matrix at the recorded c25 engine and harness. The follow-up
-changes the harness, so current-head native acceptance remains `not-measured`.
+changed the harness. The [main-source measurement](measurements/attempt-archives-hosted-2026-11-16.json)
+separately revalidates the original source/fresh cohorts and physical controls at
+commit `6809bf39c3aba1f1b582742c741051667461754e`; changed revisions require their
+own bindings.
 Complete upstream artifact/build/notice closure and independently supplied
 external host-cost evidence remain separate requirements. No model inference,
 held-out scoring or real-project MCP field evaluation was performed.

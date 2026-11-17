@@ -6916,5 +6916,43 @@
       "file": "dist/test/context-runtime-proof-preparation.test.js",
       "name": "actual one-call native counterfactuals reject wrong artifact/workflow/source/signature"
     }
+  ],
+  "native-license-provenance": [
+    {
+      "file": "dist/test/gate-native-license-provenance.test.js",
+      "name": "native-license-provenance broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-native-license-provenance.test.js",
+      "name": "native-license-provenance fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-native-license-provenance.test.js",
+      "name": "native-license-provenance near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-native-license-provenance.test.js",
+      "name": "native-license-provenance prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-native-license-provenance.test.js",
+      "name": "native-license-provenance stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-native-license-provenance.test.js",
+      "name": "native-license-provenance empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-native-license-provenance.test.js",
+      "name": "native-license-provenance privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-native-license-provenance.test.js",
+      "name": "native-license-provenance lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-native-license-provenance.test.js",
+      "name": "native-license-provenance installed acceptance"
+    }
   ]
 }
