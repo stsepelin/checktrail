@@ -1,0 +1,586 @@
+{
+  "actualGeneratorAndClasspathInputs": {
+    "allGeneratorOrAQATestsPassedClaimed": false,
+    "arbitraryJVMClassLoadsTraced": false,
+    "externalOriginalJARCount": 13,
+    "generatorOrJVMExecutedByObserver": false,
+    "newOriginalRecipeSourceGeneratorJARCount": 2,
+    "newSBOM": {
+      "all15DeclaredJARHashesMatchPhysicalFiles": true,
+      "bytes": 79395,
+      "path": "recipe/workspace/target/OpenJDK8U-sbom_aarch64_linux_hotspot_8u504b01.json",
+      "sha256": "4458dcee8cb0656e68a89320aec20a276fe9e95b3d179989565aee0b8f6f4855"
+    },
+    "physicalJARs": [
+      {
+        "bytes": 372687,
+        "path": "recipe/cyclonedx-lib/build/jar/commons-codec.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "f9f6cb103f2ddc3c99a9d80ada2ae7bf0685111fd6bffccb72033d1da4e6ff23"
+      },
+      {
+        "bytes": 751914,
+        "path": "recipe/cyclonedx-lib/build/jar/commons-collections4.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "1df8b9430b5c8ed143d7815e403e33ef5371b2400aadbe9bda0883762e0846d1"
+      },
+      {
+        "bytes": 508826,
+        "path": "recipe/cyclonedx-lib/build/jar/commons-io.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "f41f7baacd716896447ace9758621f62c1c6b0a91d89acee488da26fc477c84f"
+      },
+      {
+        "bytes": 673587,
+        "path": "recipe/cyclonedx-lib/build/jar/commons-lang3.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "6ee731df5c8e5a2976a1ca023b6bb320ea8d3539fbe64c8a1d5cb765127c33b4"
+      },
+      {
+        "bytes": 2419341,
+        "path": "recipe/cyclonedx-lib/build/jar/cyclonedx-core-java.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "4931d0aed28763ae9fa1c574e26b7636879abdc101ff81ce3c63ad905c99937c"
+      },
+      {
+        "bytes": 16998,
+        "path": "recipe/cyclonedx-lib/build/jar/github-package-url.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "e45551727707acc0c56ac62d56964332ea0f138d6cc3656d988b9369150f5247"
+      },
+      {
+        "bytes": 78492,
+        "path": "recipe/cyclonedx-lib/build/jar/jackson-annotations.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "873a606e23507969f9bbbea939d5e19274a88775ea5a169ba7e2d795aa5156e1"
+      },
+      {
+        "bytes": 581927,
+        "path": "recipe/cyclonedx-lib/build/jar/jackson-core.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "721a189241dab0525d9e858e5cb604d3ecc0ede081e2de77d6f34fa5779a5b46"
+      },
+      {
+        "bytes": 1649454,
+        "path": "recipe/cyclonedx-lib/build/jar/jackson-databind.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "c04993f33c0f845342653784f14f38373d005280e6359db5f808701cfae73c0c"
+      },
+      {
+        "bytes": 129180,
+        "path": "recipe/cyclonedx-lib/build/jar/jackson-dataformat-xml.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "517add5f3848517894b319a93a7ebfc1c21737b2c17c9acccd38fea97d6adc6f"
+      },
+      {
+        "bytes": 576398,
+        "path": "recipe/cyclonedx-lib/build/jar/json-schema-validator.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "de015f79d4a63d22c002bad76bb30c039cafa205465eef8770e2c6b85880ded7"
+      },
+      {
+        "bytes": 195922,
+        "path": "recipe/cyclonedx-lib/build/jar/stax2-api.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "a61c48d553efad78bc01fffc4ac528bebbae64cbaec170b2a5e39cf61eb51abe"
+      },
+      {
+        "bytes": 1608803,
+        "path": "recipe/cyclonedx-lib/build/jar/woodstox-core.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "81266920a1cdc47306a8a2b4726c99ec89b3fbf31c2470e4f5e477d9d857ca9f"
+      },
+      {
+        "bytes": 9683,
+        "classMajorVersions": {
+          "52": 3
+        },
+        "classes": 3,
+        "path": "recipe/cyclonedx-lib/build/jar/temurin-gen-sbom.jar",
+        "payloadExecutedByMetadataObserver": false,
+        "role": "new-original-recipe-source-generator",
+        "sha256": "9f20e438989d56684246fb206ac791f1fc8cec85ca5d3f69df703f1bc6929a2f"
+      },
+      {
+        "bytes": 10882,
+        "classMajorVersions": {
+          "52": 4
+        },
+        "classes": 4,
+        "path": "recipe/cyclonedx-lib/build/jar/temurin-gen-cdxa.jar",
+        "payloadExecutedByMetadataObserver": false,
+        "role": "new-original-recipe-source-generator",
+        "sha256": "68ec08a9a81ac06d0cf8aa7a44178a56650e81da085fd03aeea4c9c6b56cefee"
+      }
+    ]
+  },
+  "carrier": {
+    "actualExportedConfigBytesMatchOriginal": true,
+    "actualExportedConfigSHA256": "7e0192413c224c29dfa23f31e61fbf8fbeed07b7c41ca938e491b34997bbc361",
+    "observedRuntimeImageID": "sha256:35234f035f47175ed4ec8349adaa451ddd454307d58a4da099a5ea69d66a2207",
+    "originalCompressedManifestSHA256": "368fdf5f460dc7d292ea0404760a67461b0e6b2494d18bccace711faa1442b4e",
+    "originalLayerBytesVerified": 10,
+    "originalLayerDiffIDs": [
+      "sha256:65f23ff12f4df9625427d229db82655bdadd805108d3431520673d79198419ff",
+      "sha256:7b1eed6beefa1f23079e7480f8805ba25d4e5b809ddf9ebacaa4a3d1fef6635f",
+      "sha256:b2c3491556b99f8a1401b368272e088e416f28c1a6772261a93597a7c186c00b",
+      "sha256:8565bce917cb6d25887574987dc33fd9a7b19c0f261409447f72eb029f15501b",
+      "sha256:50b82d95101422f7b7af152790a15b7f3252101ba8cb0786934c3fd6f7bbdce8",
+      "sha256:69585e429f91f4f6d7f1d708d4f5c60ce7e5f8e73d4bea151fa50a003cf20a64",
+      "sha256:eee16b5c60f3e81e858177b5b531dc4d91326c1fc1896bffb62621a91c3ea8e3",
+      "sha256:89973b8ae5db11ef91fbec60ace0bcd7d9afeceba0ddc25de86948c06e0d6958",
+      "sha256:22367a2db9c942cfdfdb026c5e96475301e264340b75468e2e4958af1e3d8627",
+      "sha256:2c0be7bdbc85414b9905aadcf2da5d61a5880acf31934152826eea902537e00f"
+    ],
+    "originalOCIConfigDigest": "sha256:7e0192413c224c29dfa23f31e61fbf8fbeed07b7c41ca938e491b34997bbc361"
+  },
+  "cleanup": {
+    "allOwnedResourcesPositivelyAbsent": true,
+    "cachedOperatorImageIdentityAndRootFSCompared": true,
+    "cachedOperatorImagePreserved": true,
+    "childOwnerAndExpiryNull": true,
+    "independentSuccessfulContainerVolumeAndTagListingsConfirmedAbsent": true,
+    "managedTaskStopped": true
+  },
+  "explicitTransportEnvironment": {
+    "TLSHostnameTimeOrAlgorithmVerificationRelaxed": false,
+    "actualOriginalCurlProbePassed": true,
+    "additionalPublicRootSHA256": "8faf7d2e2cb4709bb8e0b33666bf75a5dd45b5de480f8ea8d4bfe6bebc17f2ed",
+    "additionalTrustAnchors": 1,
+    "caBundleBytes": 222814,
+    "caBundleSHA256": "c673e12d7b6de0adc1a4c4caf1753c7b758360a3f9d0aa5ae171d962f797a324",
+    "globalHostOrImageTrustStoreModified": false,
+    "intermediateUsedAsTrustAnchor": false,
+    "networkNoneOrEndpointAllowlistClaimed": false,
+    "original142CertificateBytesPreserved": true,
+    "originalProducerRepeatedItsALSAFetch": true,
+    "originalPublicNetworkEnabled": true
+  },
+  "facetOutcomes": {
+    "fieldReviewTrials": 0,
+    "gateAComplete": false,
+    "historicalPublisherBinaryEquality": false,
+    "historicalPublisherDirtySourceMappingClosed": false,
+    "newLocalSDKArtifact": true,
+    "originalAQAOrGeneratorTestSuitesPassed": false,
+    "originalSourceBuild": true,
+    "twoOriginalSourceGeneratorJARsProduced": true,
+    "unrunSuitesClaimedPassed": false,
+    "wholeCompilerSDKBootstrapBuildAndLegalGraphClosed": false
+  },
+  "measurementReceipts": [
+    {
+      "bytes": 184065,
+      "file": "RESULT.v1.json",
+      "sha256": "317dc07511e46b07807f472df1317177c68357b74e8afb7f2a118ac1993e74d2"
+    },
+    {
+      "bytes": 8553,
+      "file": "RESULT.v1.json",
+      "sha256": "105ef6b4997de3dceaf99a101ec336f43a968624367504456cf97f0f6def77d8"
+    },
+    {
+      "bytes": 8049,
+      "file": "ACTUAL-ORIGINAL-IMAGE-IDENTITY.v1.json",
+      "sha256": "129c340818c34baa2f96e040b67ae5f924febf7f3cf9415181c184e8702f6300"
+    },
+    {
+      "bytes": 788,
+      "file": "CLEANUP.v1.json",
+      "sha256": "574473ba8475e71285be087fd051aa13a420c5f52832dc34bcdc4deb05dd0a83"
+    },
+    {
+      "bytes": 550,
+      "file": "STOPPED-WORK-RETENTION.v1.json",
+      "sha256": "b5e870f6fc93506e758526f497c3ee034c7df74d1d57f9770712656b38aeeee0"
+    }
+  ],
+  "newProducedJDK": {
+    "bytes": 101831834,
+    "historicalPublisherReproductionClaimed": false,
+    "historicalSelectedSDKBytesEqual": false,
+    "members": 490,
+    "nativeJavaELFIdentities": [
+      {
+        "ELFMachine": 183,
+        "bytes": 70384,
+        "path": "jdk8u504-b01/bin/java",
+        "sha256": "3aee95fe64af43618feb6e33ed19e13b61ecaa5212752c2ad0bdeca938de1b16"
+      },
+      {
+        "ELFMachine": 183,
+        "bytes": 70384,
+        "path": "jdk8u504-b01/jre/bin/java",
+        "sha256": "3aee95fe64af43618feb6e33ed19e13b61ecaa5212752c2ad0bdeca938de1b16"
+      }
+    ],
+    "originalNoticeOccurrenceBytes": 427214,
+    "originalNoticeOccurrences": 7,
+    "path": "recipe/workspace/target/OpenJDK8U-jdk_aarch64_linux_hotspot_8u504b01.tar.gz",
+    "productOrSDKExecutedByObserver": false,
+    "regularBodyBytes": 207146610,
+    "releaseMetadata": [
+      {
+        "bytes": 504,
+        "path": "jdk8u504-b01/release",
+        "selectedSourceCommitTokenObserved": true,
+        "selectedVersionFields": {
+          "BUILD_SOURCE": "git:e6ba7dec3d07654074559310376a3ae89da5f4ac",
+          "BUILD_SOURCE_REPO": "https://github.com/adoptium/temurin-build.git",
+          "FULL_VERSION": "1.8.0_504-b01",
+          "IMPLEMENTOR": "Eclipse Adoptium",
+          "JAVA_VERSION": "1.8.0_504",
+          "OS_ARCH": "aarch64",
+          "OS_NAME": "Linux"
+        },
+        "sha256": "615471703f7b919ce11fe3305870b956d9044bec73f1b6e9459ff2d4982a28a3",
+        "sourceDirtyMarker": false
+      }
+    ],
+    "sha256": "eaa5c924630a38710089298ef8cae70b08cd21b4f746591eb5ce5923d675fff6"
+  },
+  "notices": {
+    "newGeneratorJAREmbeddedNoticeOccurrences": 0,
+    "producedJDKDistinctObjects": 4,
+    "producedJDKOccurrenceBytes": 427214,
+    "producedJDKOccurrences": 7,
+    "records": [
+      {
+        "bytes": 19274,
+        "path": "jdk8u504-b01/jre/LICENSE",
+        "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726"
+      },
+      {
+        "bytes": 1522,
+        "path": "jdk8u504-b01/jre/ASSEMBLY_EXCEPTION",
+        "sha256": "a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb"
+      },
+      {
+        "bytes": 191611,
+        "path": "jdk8u504-b01/jre/THIRD_PARTY_README",
+        "sha256": "6e8a224193a89759f9fe936ed405c91753f849640f7e8a8e5813f492a865bcbe"
+      },
+      {
+        "bytes": 19274,
+        "path": "jdk8u504-b01/LICENSE",
+        "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726"
+      },
+      {
+        "bytes": 1522,
+        "path": "jdk8u504-b01/ASSEMBLY_EXCEPTION",
+        "sha256": "a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb"
+      },
+      {
+        "bytes": 191611,
+        "path": "jdk8u504-b01/THIRD_PARTY_README",
+        "sha256": "6e8a224193a89759f9fe936ed405c91753f849640f7e8a8e5813f492a865bcbe"
+      },
+      {
+        "bytes": 2400,
+        "path": "jdk8u504-b01/NOTICE",
+        "sha256": "c02756bcd9fa8191bf0fda4451bc018414dd44ee35bf09922c24377a475e4b5a"
+      }
+    ],
+    "wholeNoticeClosureClaimed": false
+  },
+  "observation": "original-temurin8-source-build-and-local-output",
+  "observedAtUTC": "2026-11-17T00:15:25.285871+00:00",
+  "opaqueStoppedWorkCapture": {
+    "archive": {
+      "bytes": 2389585494,
+      "file": "STOPPED-ORIGINAL-WORKTREE.tar.gz",
+      "sha256": "3983c61a4cb6df67c42f447f3d48c23bec4ad61e5017048d6721cde4d085d57a"
+    },
+    "archiveRoundTripVerified": true,
+    "memberMap": {
+      "bytes": 94818805,
+      "file": "STOPPED-ORIGINAL-WORKTREE-MEMBERS.jsonl",
+      "sha256": "bb2307c2a34a28f3ef83596b47458f29ddf7ccc38e4dec05f035f8b240356159"
+    },
+    "members": 287509,
+    "originalReportOrSourceBodiesEmittedToModel": false,
+    "regularBodyBytes": 5725842694,
+    "schemaVersion": 1,
+    "state": "stopped-original-work-volume-opaque-snapshot-written",
+    "symlinksFollowed": false,
+    "targetCodeExecuted": false
+  },
+  "originalDuplicateFetchedALSA": {
+    "actualMembers": 545,
+    "different": [],
+    "endpointNetworkAllowlistClaimed": false,
+    "exactPhysicalOriginalNamespaceMatch": true,
+    "expectedMembers": 545,
+    "extra": [],
+    "independentlyRetainedArchiveSHA256": "5f2cd274b272cae0d0d111e8a9e363f08783329157e8dd68b3de0c096de6d724",
+    "independentlyVerifiedFullSigningFingerprint": "F04DF50737AC1A884C4B3D718380596DA6E59C91",
+    "missing": [],
+    "originalArchiveFullPermissionsCompared": true,
+    "originalRecipeNetworkAcquisitionRepeated": true,
+    "producerOriginalCurlRawArchiveRetainedClaimed": false,
+    "regularBodyBytes": 6507718,
+    "selectedOriginalRootExtractionProfile": {
+      "defaultEffectiveUID": 0,
+      "dockerUserOverride": null,
+      "originalImageConfigSHA256": "7e0192413c224c29dfa23f31e61fbf8fbeed07b7c41ca938e491b34997bbc361",
+      "originalImageConfigUser": null
+    },
+    "sourceCodeExecutedByObserver": false,
+    "state": "original duplicate-fetched ALSA installed namespace observed"
+  },
+  "originalInputs": {
+    "bootJava": "1.7.0_261",
+    "gcc": "7.5.0",
+    "generatorJava": "1.8.0_412",
+    "operatorReadOnlyExternalJARCacheOverlay": {
+      "allOriginalDeclaredSHA256Matched": true,
+      "bytes": 9563529,
+      "jars": 13,
+      "partOfOriginalImageClaimed": false
+    },
+    "originalRecordedSourceCompilerJVMAndFlagsPreserved": true,
+    "physicalInputVerificationPassed": true
+  },
+  "originalRecipe": {
+    "argv": [
+      "--clean-git-repo",
+      "--jdk-boot-dir",
+      "/usr/lib/jvm/java-1.7.0-openjdk",
+      "--configure-args",
+      " --disable-ccache --with-jobs=4",
+      "--target-file-name",
+      "OpenJDK8U-jdk_aarch64_linux_hotspot_8u504b01.tar.gz",
+      "--release",
+      "--clean-libs",
+      "--tag",
+      "jdk8u504-b01_adopt",
+      "--create-sbom",
+      "--enable-sbom-strace",
+      "--use-jep319-certs",
+      "--create-debug-image",
+      "--create-jre-image",
+      "--build-variant",
+      "temurin",
+      "jdk8u"
+    ],
+    "commit": "e6ba7dec3d07654074559310376a3ae89da5f4ac",
+    "entrypoint": "makejdk-any-platform.sh",
+    "historicalSBOMAlternateCommandExecuted": false,
+    "repository": "https://github.com/adoptium/temurin-build.git",
+    "sourceOrRecipePatchedByOperator": false,
+    "tree": "7cfc7558812d71233efe4ed05b2a024eda156d1d"
+  },
+  "originalSource": {
+    "annotatedTagOID": "1cfd9194a46a321da5c23734ea6a166a30af9518",
+    "archive": {
+      "bytes": 94027230,
+      "sha256": "ef07cb3427f55300a8c3f840f1c9399b67b41d5ee47fb0d6041befa5eb9238ea"
+    },
+    "commit": "1358e1b273e29392787e6feb32732304befaf1da",
+    "originalRawGitCommitAndAnnotatedTagVerified": true,
+    "repository": "https://github.com/adoptium/jdk8u.git",
+    "tag": "jdk8u504-b01_adopt",
+    "tree": "021def5b257c873f87dc6f1d3205b38fb7cabf41"
+  },
+  "phases": [
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 29.451842708000015,
+      "exitCode": 0,
+      "finishedAt": "2026-11-16T23:57:03.980976269Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "inert-materialization",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:56:35.894339745Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1615915419999965,
+      "exitCode": 0,
+      "finishedAt": "2026-11-16T23:57:05.37002224Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "original-image-input-verification",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:57:05.208645328Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1400443750000022,
+      "exitCode": 0,
+      "finishedAt": "2026-11-16T23:57:06.40984503Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "gcc-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:57:06.36816017Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1696674579999922,
+      "exitCode": 0,
+      "finishedAt": "2026-11-16T23:57:07.546217782Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "gxx-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:57:07.505662178Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1065374159999806,
+      "exitCode": 0,
+      "finishedAt": "2026-11-16T23:57:08.799457653Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "boot7-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:57:08.690575496Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1606799589999923,
+      "exitCode": 0,
+      "finishedAt": "2026-11-16T23:57:09.88055426Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "generator-java-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:57:09.765914737Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.2113007919999745,
+      "exitCode": 0,
+      "finishedAt": "2026-11-16T23:57:11.110859876Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "ant-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:57:10.942792885Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.138923166999973,
+      "exitCode": 0,
+      "finishedAt": "2026-11-16T23:57:12.205175057Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "strace-owned-child",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:57:12.153345431Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 5.199785292000001,
+      "exitCode": 0,
+      "finishedAt": "2026-11-16T23:57:17.132291096Z",
+      "nativeStateExitCode": 0,
+      "network": "bridge",
+      "phase": "original-curl-fixed-ca",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:57:13.2868515Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1641237499999875,
+      "exitCode": 0,
+      "finishedAt": "2026-11-16T23:57:18.565676901Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "observe-native-transport",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:57:18.503946928Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 503.94592033299995,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T00:05:43.118819376Z",
+      "nativeStateExitCode": 0,
+      "network": "bridge",
+      "phase": "original-temurin-build",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-16T23:57:19.664573734Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 2.1137080419999847,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T00:05:45.52150985Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "observe-output",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T00:05:43.621638311Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 80.69854287499993,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T00:07:06.079507853Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "inert-final-capture",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T00:05:45.726857522Z",
+      "stopReason": null
+    }
+  ],
+  "priorAttemptsPreserved": [
+    {
+      "attempt": 1,
+      "capturedAndCleaned": true,
+      "cause": "Operator Ant version probe used an unsupported absolute path; original source command never ran."
+    },
+    {
+      "attempt": 2,
+      "capturedAndCleaned": true,
+      "cause": "Original source command naturally exited60 at verified-TLS ALSA transport before compilation; unchanged original image trust bundle lacked new public issuer root."
+    }
+  ],
+  "resources": {
+    "aggregateWallSeconds": 10800,
+    "captureReserveSeconds": 1200,
+    "foregroundManagedLeaseSeconds": 10920,
+    "nativeCPUSet": "0-3",
+    "nativeCPUs": 4,
+    "nativeMemoryAndSwapBytes": 6442450944,
+    "nativePIDs": 1024,
+    "producerWallSeconds": 7200
+  },
+  "schemaVersion": 1,
+  "scope": "Source-build/local-output facet only; no whole compiler/bootstrap/build/license graph completion.",
+  "sourceAfter": {
+    "HEADMatchesSelectedCommit": true,
+    "allBeforeAfterSHA256AndModesComparable": true,
+    "counts": {
+      "changedBytesOrFullModesOrKind": 0,
+      "missing": 0,
+      "sameBytesAndFullModes": 48141
+    },
+    "fullPhysicalSourceImmutabilityClaimed": false,
+    "newUntrackedFilesInventoried": false,
+    "observedOriginalSourceHEAD": {
+      "commit": "1358e1b273e29392787e6feb32732304befaf1da",
+      "observed": true
+    },
+    "originalProducerTransformsMustBeAttributedSeparately": false,
+    "originalTrackedBaselineBytesAndModesUnchanged": true,
+    "path": "recipe/workspace/build/src",
+    "trackedRegularSourceEntries": 48141
+  }
+}

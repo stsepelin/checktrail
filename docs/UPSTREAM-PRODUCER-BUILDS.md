@@ -209,6 +209,17 @@ The original workflow changes or removes some tracked inputs; full post-build
 source-byte immutability is not established. Historical publisher binary equality,
 unrun upstream tests and full compiler/bootstrap/original-notice closure remain open.
 
+The [2026-11-17 original Temurin 8 source build](measurements/temurin8-original-producer-2026-11-17.json)
+completes the pinned upstream recipe on native Linux ARM64 and produces a new JDK
+archive. The original source and recipe, Boot JDK 7, generator JDK 8, GCC 7.5 and
+recorded build arguments are preserved. The original command repeats its public
+ALSA acquisition with normal TLS validation using an explicitly recorded CA bundle;
+this is not an offline build. The independently observed output identifies
+`1.8.0_504-b01`, and the tracked regular source baseline retains its bytes and
+full modes. The stopped work capture passes round-trip verification and owned
+runtime cleanup is verified. Publisher byte equality, unrun upstream tests,
+compiler/bootstrap producer builds and complete original-notice closure remain open.
+
 The [2026-11-16 original notice coverage](measurements/c-original-notice-coverage-2026-11-16.json)
 reconciles the exact selected C binary dependency archive identities with retained
 original notices. It also records the complete original texts of the eight selected
