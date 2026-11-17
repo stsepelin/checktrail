@@ -669,7 +669,7 @@ The main CI matrix prepares and requires `core`, `javascript`, `python`,
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
 Dedicated JVM jobs require `checkstyle`, `maven` and `gradle`, including offline
 installed CLI/MCP profiles. The .NET job also prepares original public dependency artifacts and requires `dotnet-build`, `dotnet-test`, `dotnet-format`, `dotnet-generated` and `dotnet-method` against source and an offline production install; its newly configured hosted run remains unverified. Ruby and Swift have dedicated required-native jobs. The new `swift-tools`
-job uses `ubuntu-24.04-arm`, prepares pinned runtime/release artifacts and requires
+job uses `ubuntu-26.04-arm`, prepares pinned runtime/release artifacts and requires
 the native profile against both source and a fresh offline production install.
 Its local acceptance is recorded in SWIFT-TOOLS.md; hosted execution of the new
 job remains unverified. The new `cpp-tools` ARM64 job prepares checksum-pinned
