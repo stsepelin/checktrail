@@ -28,6 +28,17 @@ cases even when a dedicated Go owner job is not selected. Missing analyzers and
 skipped native cases are not accepted as dependency compatibility results. An
 empty shared selection still fails its existing required-test admission.
 
+The Go workspace ARM job retains Python `3.13.5`. Its official SDK was built for
+Ubuntu 24.04; the publisher's manifest has no 26.04 asset for that patch. A scoped
+preparation step verifies the original archive and interpreter digests, validates
+its complete install paths, and seeds the standard hosted tool cache before the
+unchanged `setup-python` action. It executes neither the upstream installer nor
+its unpinned pip upgrade. Completion is withheld until the exact interpreter and
+selected native standard-library controls succeed on the Ubuntu 26.04 ARM host.
+The preparation receipt records SDK producer OS and current host OS separately;
+it establishes no publisher support declaration or upstream build reproduction.
+Source and fresh-installed Python acceptance callbacks remain required.
+
 The separate manual `prebuilt-gcc.yml` workflow exercises installed GNU C/C++
 compilers with small positive and broken controls within a ten-minute job bound.
 It does not establish upstream source-build closure or replace required adapter

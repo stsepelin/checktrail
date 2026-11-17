@@ -1132,6 +1132,7 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "scripts/install-python-host-sdk.py": ["go-workspaces-arm64"],
   "scripts/java-context-tools.Dockerfile": ["java-context-arm64"],
   "scripts/java-review-tools.Dockerfile": ["checkstyle"],
   "scripts/java-tools.Dockerfile": ["java"],
@@ -1633,6 +1634,7 @@
     "mutation-native-arm64",
     "python-extensions-arm64"
   ],
+  "scripts/prepare-python-host-sdk.mjs": ["go-workspaces-arm64"],
   "scripts/prepare-release-readiness-tools.mjs": [
     "resource-release",
     "resource-release-arm64"
@@ -1869,6 +1871,7 @@
     "python-extensions-arm64"
   ],
   "scripts/python-extensions-wheels.json": ["python-extensions-arm64"],
+  "scripts/python-ubuntu26-arm64.json": ["go-workspaces-arm64"],
   "scripts/release-readiness-tools.mjs": [
     "resource-release",
     "resource-release-arm64"
@@ -2160,6 +2163,7 @@
     "windows"
   ],
   "scripts/terraform-extensions-controls.json": ["terraform-extensions-arm64"],
+  "scripts/test-python-host-sdk.py": ["go-workspaces-arm64"],
   "scripts/vb-context-tools.Dockerfile": ["vb-context-arm64"],
   "scripts/verify-actionlint-container.mjs": ["actionlint"],
   "scripts/verify-attempt-archives-whole-package.mjs": [
@@ -4406,6 +4410,7 @@
   "test/python-extension-planning.test.ts": ["python-extensions-arm64"],
   "test/python-extensions-fixture.ts": ["python-extensions-arm64"],
   "test/python-extensions.test.ts": ["python-extensions-arm64"],
+  "test/python-host-sdk.test.ts": ["go-workspaces-arm64"],
   "test/resource-release-fixture.ts": [
     "resource-release",
     "resource-release-arm64"

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "version": "3.13.5",
+  "architecture": "arm64",
+  "hostOS": "Ubuntu 26.04",
+  "producerOS": "Ubuntu 24.04",
+  "publisher": "actions/python-versions",
+  "release": "3.13.5-15601068749",
+  "asset": "https://github.com/actions/python-versions/releases/download/3.13.5-15601068749/python-3.13.5-linux-24.04-arm64.tar.gz",
+  "bytes": 127728485,
+  "sha256": "00483c89358f1bc01a88665ca799daa34aaee600657bd60e6d7d82447cae8791",
+  "interpreterSHA256": "6e9a6c916e20288955c50dacccc162e5220c6f25dd2b13ad835924077c8d3ca5",
+  "toolCacheRoot": "/opt/hostedtoolcache",
+  "maximumExpandedBytes": 536870912,
+  "maximumMembers": 20000,
+  "publisherUbuntu26SupportClaimed": false
+}
