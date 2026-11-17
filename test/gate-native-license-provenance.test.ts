@@ -953,6 +953,16 @@ test(
             ...command.args,
           ]),
         ),
+        commandArgumentsWithTools = [
+          ...commandArguments,
+          ...report.checks.flatMap((check) =>
+            (check.tools ?? []).flatMap(({ process }) =>
+              process
+                ? [process.command.executable, ...process.command.args]
+                : [],
+            ),
+          ),
+        ],
         sourceEngine = path.join(provenanceRepository, "dist/src");
       assert.ok(
         commandArguments.includes(
@@ -961,7 +971,7 @@ test(
         "Installed validation must execute its packaged external runner",
       );
       assert.ok(
-        !commandArguments.some(
+        !commandArgumentsWithTools.some(
           (argument) =>
             argument === sourceEngine ||
             argument.startsWith(sourceEngine + path.sep),

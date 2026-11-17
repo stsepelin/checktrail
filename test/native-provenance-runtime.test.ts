@@ -1745,17 +1745,37 @@ test("installed provenance command checks use actual portable arguments and reje
     const installedRunner = paths.join(installed, "external-runner.js"),
       sourceEngine = paths.join(repository, "dist/src"),
       sourceRunner = paths.join(sourceEngine, "external-runner.js");
-    const report = (args: string[], stdout = "") => ({
+    const versionTool = (args?: string[], executable = "node") => ({
+      name: "synthetic-version-tool",
+      source: "version-command" as const,
+      version: null,
+      status: "inconclusive" as const,
+      ...(args === undefined
+        ? {}
+        : {
+            process: { command: { executable, args }, stdout: "", stderr: "" },
+          }),
+    });
+    const report = (
+      args: string[],
+      stdout = "",
+      tools: ReturnType<typeof versionTool>[] = [],
+    ) => ({
       checks: [
         {
           processes: [
             { command: { executable: "node", args }, stdout, stderr: "" },
           ],
+          tools,
         },
       ],
     });
-    const run = (value: ReturnType<typeof report>) =>
-      check(assert, value, installed, repository, paths);
+    const run = (value: {
+      checks: Array<{
+        processes: ReturnType<typeof report>["checks"][number]["processes"];
+        tools?: ReturnType<typeof versionTool>[];
+      }>;
+    }) => check(assert, value, installed, repository, paths);
     assert.doesNotThrow(() => run(report([installedRunner])));
     assert.doesNotThrow(() =>
       run(
@@ -1852,6 +1872,68 @@ test("installed provenance command checks use actual portable arguments and reje
           ],
         }),
       /source-engine command/u,
+    );
+    // Tool probes also execute commands, but cannot substitute for validation.
+    assert.doesNotThrow(() =>
+      run(report([installedRunner], "", [versionTool()])),
+    );
+    assert.doesNotThrow(() =>
+      run(report([installedRunner], "", [versionTool([installedRunner])])),
+    );
+    assert.doesNotThrow(() =>
+      run(
+        report([installedRunner], "", [
+          versionTool([
+            sourceEngine + "-sibling" + paths.sep + "version-runner.js",
+          ]),
+        ]),
+      ),
+    );
+    for (const sourceArgument of [
+      sourceEngine,
+      sourceRunner,
+      paths.join(sourceEngine, "version-runner.js"),
+    ]) {
+      assert.throws(
+        () =>
+          run(
+            report([installedRunner], "", [
+              versionTool(),
+              versionTool([sourceArgument]),
+            ]),
+          ),
+        /source-engine command/u,
+      );
+    }
+    assert.throws(
+      () =>
+        run(
+          report([installedRunner], "", [
+            versionTool(["--version"], sourceRunner),
+          ]),
+        ),
+      /source-engine command/u,
+    );
+    assert.throws(
+      () =>
+        run({
+          checks: [
+            ...report([installedRunner]).checks,
+            ...report(["--version"], "", [versionTool([sourceRunner])]).checks,
+          ],
+        }),
+      /source-engine command/u,
+    );
+    assert.throws(
+      () => run(report(["--version"], "", [versionTool([installedRunner])])),
+      /packaged external runner/u,
+    );
+    assert.throws(
+      () =>
+        run({
+          checks: [{ processes: [], tools: [versionTool([installedRunner])] }],
+        }),
+      /packaged external runner/u,
     );
     assert.throws(() => run({ checks: [] }), /packaged external runner/u);
   }
