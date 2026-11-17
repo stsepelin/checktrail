@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "rootTag": "version_132",
+  "sources": [
+    {
+      "id": "binaryen132-main",
+      "repository": "WebAssembly/binaryen",
+      "commit": "79dfe6b412a3c22bfdb190ed6a4d79adf734db5d",
+      "rootTree": "495a04782ba40bdbc6dd554bc864a321b045464b",
+      "mountPath": ".",
+      "archiveURL": "https://codeload.github.com/WebAssembly/binaryen/tar.gz/refs/tags/version_132",
+      "archiveBytes": 7089501,
+      "archiveSHA256": "ede5e20f2f5148641bad31ceaef3c1fd4de4fb63b2d7b5081c605ba475483f6b",
+      "rawCommitBytes": 1049,
+      "rawCommitSHA256": "06ff8c565a68678042b8579e5e869da99d7823cbe9c11e3ec1c9aef0802b2e70"
+    },
+    {
+      "id": "direct-gitlink-1",
+      "repository": "WebAssembly/testsuite",
+      "commit": "4b24564c844e3d34bf46dfcb3c774ee5163e31cc",
+      "rootTree": "76e36b1225d2d6088abd660c8b039d74549d2c15",
+      "mountPath": "test/spec/testsuite",
+      "archiveURL": "https://codeload.github.com/WebAssembly/testsuite/tar.gz/4b24564c844e3d34bf46dfcb3c774ee5163e31cc",
+      "archiveBytes": 564947,
+      "archiveSHA256": "eb0825d6f601b81c70db41aea3c3b35848dc1de7859ecbd01ac89807f8e14891",
+      "rawCommitBytes": 1852,
+      "rawCommitSHA256": "2bc11a2365c596022125fd07a9bda5e722afe44f8b3f5f5f4ba237735befb1f8"
+    },
+    {
+      "id": "direct-gitlink-2",
+      "repository": "google/fuzztest",
+      "commit": "5bbbddfc241c8c87902d4a80cda5697dd8c20199",
+      "rootTree": "68cfa401d15ff1c21ef35d61abe9aef37c34dd0d",
+      "mountPath": "third_party/fuzztest",
+      "archiveURL": "https://codeload.github.com/google/fuzztest/tar.gz/5bbbddfc241c8c87902d4a80cda5697dd8c20199",
+      "archiveBytes": 734406,
+      "archiveSHA256": "0d93b785662a35e190aa774599212f8b93f5570a063ed0c626055867f91b4b05",
+      "rawCommitBytes": 325,
+      "rawCommitSHA256": "48dc7a100e68f68464037b6725bdb6f168867f17bbdd8eb7a62f4ab00e303ba4"
+    },
+    {
+      "id": "direct-gitlink-3",
+      "repository": "google/googletest",
+      "commit": "e2239ee6043f73722e7aa812a459f54a28552929",
+      "rootTree": "8cf1e36614fc6ca89eb70fa2aeaad0b4ebf0c34a",
+      "mountPath": "third_party/googletest",
+      "archiveURL": "https://codeload.github.com/google/googletest/tar.gz/e2239ee6043f73722e7aa812a459f54a28552929",
+      "archiveBytes": 887296,
+      "archiveSHA256": "2765fbfaa978e90d1c8477bc2f2b9705be65b1b562bb215dbfaa76567d508fe1",
+      "rawCommitBytes": 291,
+      "rawCommitSHA256": "f8becd677da862bcfdd265eff3ec66e9186c1ad4af95c54ee0524af59f8afb7c"
+    },
+    {
+      "id": "direct-gitlink-4",
+      "repository": "microsoft/mimalloc",
+      "commit": "fbd8b99c2b828428947d70fdc046bb55609be93e",
+      "rootTree": "94efd375175e501c561e68d1dd8523f56eded5a9",
+      "mountPath": "third_party/mimalloc",
+      "archiveURL": "https://codeload.github.com/microsoft/mimalloc/tar.gz/fbd8b99c2b828428947d70fdc046bb55609be93e",
+      "archiveBytes": 1295244,
+      "archiveSHA256": "083ea3a867ce85d0f552b2333f3629c10f86e29edfdaa944c35e3e0051375b99",
+      "rawCommitBytes": 259,
+      "rawCommitSHA256": "4ac79f6fad2f8afb19c9647953b4f9a7b6819b96b7d9c834ff5f475c3b6c8696"
+    },
+    {
+      "id": "direct-gitlink-5",
+      "repository": "okdshin/PicoSHA2",
+      "commit": "161cb3fc4170fa7a3eca9e582cebd27cc4d1fe29",
+      "rootTree": "b3fb1c0189437c6fc5f996e324bf6ac28d760777",
+      "mountPath": "third_party/picosha2",
+      "archiveURL": "https://codeload.github.com/okdshin/PicoSHA2/tar.gz/161cb3fc4170fa7a3eca9e582cebd27cc4d1fe29",
+      "archiveBytes": 7765,
+      "archiveSHA256": "6cf473a00c98298d3ddee0aed853e3c799791f49dbc01c996ea46cb248e85802",
+      "rawCommitBytes": 1178,
+      "rawCommitSHA256": "2fe9b067170a7300a22f1f145bb3d2c284fe7f6f447d95dc1e14fbce911ecfcf"
+    },
+    {
+      "id": "direct-gitlink-6",
+      "repository": "simd-everywhere/simde",
+      "commit": "f3e8262173b7089db9a9d57a9ecef8dd07ad9c97",
+      "rootTree": "201d3d58412d0077c1d68da271f86f15acb10bab",
+      "mountPath": "third_party/simde",
+      "archiveURL": "https://codeload.github.com/simd-everywhere/simde/tar.gz/f3e8262173b7089db9a9d57a9ecef8dd07ad9c97",
+      "archiveBytes": 8155952,
+      "archiveSHA256": "04fef3b36b43fd1e8f2d4350ff6bef9d219244b7f4ddc8ca401da2bbbae813ed",
+      "rawCommitBytes": 284,
+      "rawCommitSHA256": "c857ae68ffb414223dd9f3112125d5efd68202870212412ad788e5f6f8c7d59e"
+    },
+    {
+      "id": "nested-munit",
+      "repository": "nemequ/munit",
+      "commit": "da8f73412998e4f1adf1100dc187533a51af77fd",
+      "rootTree": "abcefac57595af6cb90c2df18292ae09a7d1468a",
+      "mountPath": "third_party/simde/test/munit",
+      "archiveURL": "https://codeload.github.com/nemequ/munit/tar.gz/da8f73412998e4f1adf1100dc187533a51af77fd",
+      "archiveBytes": 27727,
+      "archiveSHA256": "835a9ee03e3b9560af5a2e4465394e00337398f5baba9d686083b8e1d93f0c30",
+      "rawCommitBytes": 918,
+      "rawCommitSHA256": "bda709d9897aa66877365fec9c6752e49bfbc4a8a659cab99d9feaa71c6049f5"
+    }
+  ],
+  "sourceCodeExecuted": false,
+  "producerComplete": false,
+  "publisherSignaturesLocallyVerified": false
+}
