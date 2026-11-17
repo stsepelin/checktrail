@@ -22,6 +22,7 @@ jobs:
           #!/usr/bin/env python3
           """First-party Apple host/identity metadata only; no producer or payload execution."""
           import argparse
+          import base64
           import gzip
           import hashlib
           import json
@@ -178,6 +179,16 @@ jobs:
               need(result.returncode in accept_codes,'metadata-command-failed')
               return result
 
+          class SudoPolicyUnavailable(ValueError):
+              def __init__(self,result):
+                  super().__init__('noninteractive-sudo-denial-not-established')
+                  self.observation={'exitCode':result.returncode}
+                  for name,body in [('stdout',result.stdout),('stderr',result.stderr)]:
+                      self.observation[name+'Bytes']=len(body)
+                      self.observation[name+'SHA256']=digest(body)
+                      self.observation[name+'Base64']=base64.b64encode(body[:32768]).decode()
+                      self.observation[name+'Complete']=len(body)<=32768
+
           def sudo_denial(result):
               text=(result.stdout+result.stderr).decode('utf-8','strict').strip()
               return result.returncode==1 and re.fullmatch(r'User nobody is not allowed to run sudo on [A-Za-z0-9_.-]+\.',text) is not None
@@ -214,7 +225,9 @@ jobs:
           def write_json(path,value,mode=0o444,maximum=MAX_DECODED_METADATA):
               body=encoded(value);need(len(body)<=maximum,'metadata-decoded-byte-bound')
               fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,mode)
-              with os.fdopen(fd,'wb') as f:f.write(body);f.flush();os.fsync(f.fileno())
+              with os.fdopen(fd,'wb') as f:
+                  os.fchmod(f.fileno(),mode)
+                  f.write(body);f.flush();os.fsync(f.fileno())
               return {'bytes':len(body),'sha256':digest(body)}
 
           class LimitedCarrier:
@@ -248,7 +261,8 @@ jobs:
                   result=command(argv,clean,receipts,accept_codes,timeout=min(remaining,300 if long else 30));bounds.tick();return result
               def text(argv):return run(argv).stdout.decode().strip()
               identity={'uid':account.pw_uid,'gid':account.pw_gid,'groups':sorted(set(group_id(x) for x in text(['/usr/bin/id','-G','nobody']).split()))}
-              need(sudo_denial(run(['/usr/bin/sudo','-n','-l','-U','nobody'],(0,1))),'noninteractive-sudo-denial-not-established')
+              policy=run(['/usr/bin/sudo','-n','-l','-U','nobody'],(0,1))
+              if not sudo_denial(policy):raise SudoPolicyUnavailable(policy)
               cpus=int(text(['/usr/sbin/sysctl','-n','hw.logicalcpu']));memory=int(text(['/usr/sbin/sysctl','-n','hw.memsize']))
               macos=text(['/usr/bin/sw_vers','-productVersion']);xcode=text(['/usr/bin/xcodebuild','-version'])
               sdk=text(['/usr/bin/xcrun','--sdk','macosx','--show-sdk-path']);sdk_version=text(['/usr/bin/xcrun','--sdk','macosx','--show-sdk-version'])
@@ -277,6 +291,7 @@ jobs:
               expected_endpoint=current_endpoint(frame)
               checks.update(nobodyIdentity=observed['identity']==identity,controllerProtected=observed['controllerProtected'],selectedTreeProtected=observed['allSelectedEntriesReadableExecutableAndProtected'],metadataEndpointMatches=observed['metadataEndpointSha256']==digest(encoded(expected_endpoint)),allEntriesInspected=observed['selectedEntriesChecked']==len(frame))
               output.mkdir(mode=0o755)
+              output.chmod(0o755)
               raw=encoded(frame);need(len(raw)<=MAX_DECODED_METADATA-MAX_COMMAND_BYTES-65536,'metadata-decoded-byte-bound')
               compressed=output/'selected-sdk-toolchain-frame.json.gz'
               with compressed.open('xb') as f:
@@ -296,7 +311,9 @@ jobs:
               try:result=observe(control,output,{k:os.environ[k] for k in ['GITHUB_ACTIONS','RUNNER_ENVIRONMENT','RUNNER_OS','RUNNER_ARCH','CHECKTRAIL_CONTROLLER_UID',*CONTEXT]})
               except Exception as error:
                   output.mkdir(mode=0o755,exist_ok=True)
+                  output.chmod(0o755)
                   failure={'schemaVersion':1,'state':'unavailable','failureType':type(error).__name__,'failure':str(error),'allDeclaredHostChecksObserved':False,'nativeProducerAdmissionGranted':False,'projectCodeExecuted':False,'sourceOrSDKPayloadExported':False,'stockHostConfigurationChanged':False}
+                  if isinstance(error,SudoPolicyUnavailable):failure['sudoPolicyObservation']=error.observation
                   if not (output/'admission.json').exists():write_json(output/'admission.json',failure,maximum=MAX_COMMAND_BYTES)
                   raise
               print(json.dumps({'hostReadinessObserved':result['allDeclaredHostChecksObserved'],'nativeProducerAdmissionGranted':False,'artifact':str(output/'admission.json')}))
@@ -304,7 +321,7 @@ jobs:
 
           if __name__=='__main__':main()
           PY_TREESITTER_CURRENT_ADMISSION
-          printf '%s  %s\n' 'b6187f380e6b1f8670cdc93c45b1483111e4148f7dc173241abdb6abb1250b75' "$staged" | /usr/bin/shasum -a 256 -c -
+          printf '%s  %s\n' '8f71922effb8f628cfe59326fec2c5fd90dd332bb140958914c61c58ff5d10f6' "$staged" | /usr/bin/shasum -a 256 -c -
           control_root="$(sudo -n /usr/bin/mktemp -d /private/tmp/checktrail-treesitter027-admission.XXXXXXXX)"
           case "$control_root" in /private/tmp/checktrail-treesitter027-admission.*) ;; *) exit 1 ;; esac
           cleanup() {
