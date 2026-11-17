@@ -109,19 +109,55 @@ def validate_daemon(daemon, resources, output):
             'dockerAndStateShareFilesystem': root.stat().st_dev == output.stat().st_dev}
 
 
-def validate_image(image, selected_image, registry):
-    require(registry['selectedImage'] == selected_image, 'Wrong original image metadata')
-    config = registry['config']
-    import base64
-    raw = base64.b64decode(config['base64'], validate=True)
-    require(len(raw) == config['bytes'] and hashlib.sha256(raw).hexdigest() == config['sha256'],
-            'Pinned registry config bytes differ')
-    parsed = json.loads(raw)
-    require(image['Id'] == 'sha256:' + config['sha256'] and image['Architecture'] == 'amd64' and image['Os'] == 'linux' and
-            image['RootFS']['Layers'] == parsed['rootfs']['diff_ids'], 'Observed original image/config/layers differ')
-    require(selected_image in image['RepoDigests'] or selected_image.removeprefix('docker.io/') in image['RepoDigests'],
-            'Original digest absent from Docker image identities')
-    return {'image': selected_image, 'configSha256': config['sha256'], 'nativeAmd64': True}
+def admit_host_node(record):
+    path = Path(record['path'])
+    require(path.is_absolute() and str(path.resolve(strict=True)) == record['path'],
+            'Exact physical host Node path required')
+    mode = path.lstat().st_mode
+    require(stat.S_ISREG(mode) and mode & 0o111 and not mode & 0o022, 'Host Node must be a regular protected executable')
+    pin = digest_file(path, maximum=256 * 1024 ** 2)
+    require(pin['sha256'] == record['sha256'], 'Host Node bytes differ across operator transition')
+    version = subprocess.run([str(path), '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             timeout=10, check=True, env=HOST_ENV).stdout.decode().strip()
+    require(version == record['version'] and version.startswith('v') and int(version.split('.')[0][1:]) >= 22,
+            'Host Node version differs or is incompatible')
+    return {'path': str(path), **pin, 'version': version, 'physicalExecutableVerified': True}
+
+
+def observed_image_fields(image):
+    # Retain the exact admission inputs before validation, including refusal.
+    # Public image configuration/environment and unrelated daemon fields are
+    # outside this small identity witness.
+    value = {key: image.get(key) for key in ['Id', 'Architecture', 'Os', 'RepoDigests', 'RootFS']}
+    require(len(canonical(value)) <= 2 * 1024 ** 2, 'Observed image metadata bound')
+    return value
+
+
+def validate_image(image, selected_image, registry, runtime):
+    # Acquisition and native admission use one first-party image contract. Some
+    # Docker stores expose the manifest ID and others the config ID; both must
+    # bind the identical raw pinned registry config and filesystem layers.
+    helper = Path(__file__).with_name('binutils-image-identity.mjs').resolve()
+    code = ('import { readFileSync } from "node:fs"; '
+            'import { registryImageIdentity, validateObservedImage } from ' + json.dumps(helper.as_uri()) + '; '
+            'const input = JSON.parse(readFileSync(0, "utf8")); '
+            'const identity = registryImageIdentity(input.registry, input.selectedImage); '
+            'process.stdout.write(JSON.stringify(validateObservedImage(input.image, identity)));')
+    result = subprocess.run([runtime['path'], '--input-type=module', '--eval', code],
+                            input=canonical({'image': observed_image_fields(image), 'selectedImage': selected_image,
+                                             'registry': registry}),
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30, check=False, env=HOST_ENV)
+    require(result.returncode == 0, 'Original pinned image validation failed: ' +
+            result.stderr.decode('utf8', errors='replace')[-1000:])
+    require(len(result.stdout) <= 2 * 1024 ** 2, 'Validated image metadata bound')
+    witness = json.loads(result.stdout)
+    return {'image': selected_image, 'configSha256': witness['configDigest'].removeprefix('sha256:'),
+            'nativeAmd64': True, 'observedIdentity': witness}
+
+
+def validate_and_retain_image(output, image, selected_image, registry, runtime):
+    (output / 'IMAGE-OBSERVATION.json').write_bytes(canonical(observed_image_fields(image)) + b'\n')
+    return validate_image(image, selected_image, registry, runtime)
 
 
 def create_arguments(catalog, output, name):
@@ -432,6 +468,8 @@ def main():
     try:
         resources = capacity.stock_resources(output)
         source_witness = verify_repository(repository, resources['context'])
+        node_runtime = admit_host_node(json.loads(os.environ['CHECKTRAIL_HOST_NODE']))
+        (output / 'HOST-NODE.json').write_bytes(canonical(node_runtime) + b'\n')
         api = capacity.GitHub(os.environ.get('CHECKTRAIL_GITHUB_JOB_TOKEN'), output)
         service = capacity.capture_service(api, resources['context'])
         controls = repository / 'scripts/producer-qualification'
@@ -476,7 +514,7 @@ def main():
         docker(['pull', '--platform', 'linux/amd64', codec.IMAGE], timeout=900)
         image = json.loads(docker(['image', 'inspect', codec.IMAGE]))[0]
         registry = json.loads((controls / 'binutils-image-identity.v1.json').read_bytes())
-        image_witness = validate_image(image, codec.IMAGE, registry)
+        image_witness = validate_and_retain_image(output, image, codec.IMAGE, registry, node_runtime)
         daemon = json.loads(docker(['info', '--format', '{{json .}}']))
         resources = validate_daemon(daemon, capacity.stock_resources(output), output)
         service = capacity.capture_service(api, resources['context'])

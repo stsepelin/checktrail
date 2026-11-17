@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-26.04
     timeout-minutes: 360
     env:
-      SEGMENT_DOWNLOAD_TIMEOUT_MINS: '2'
+      SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         timeout-minutes: 5
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         timeout-minutes: 5
         with:
-          node-version: '24'
+          node-version: "24"
           package-manager-cache: false
       - name: Prepare exact authenticated original inputs
         timeout-minutes: 55
@@ -37,11 +37,13 @@ jobs:
         timeout-minutes: 95
         env:
           CHECKTRAIL_GITHUB_JOB_TOKEN: ${{ github.token }}
-        run: >-
-          sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,RUNNER_OS,RUNNER_ARCH,GITHUB_EVENT_NAME,GITHUB_REPOSITORY,GITHUB_REF,GITHUB_SHA,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT,GITHUB_JOB,RUNNER_TEMP,CHECKTRAIL_GITHUB_JOB_TOKEN
-          python3 -I -B scripts/producer-qualification/gcc-hosted-carrier.py
-          --repository "$GITHUB_WORKSPACE" --inputs "$RUNNER_TEMP/gcc-inputs/bundle"
-          --output "$RUNNER_TEMP/gcc-phase0" --operator-trust-execution
+        run: |
+          CHECKTRAIL_HOST_NODE="$(node --input-type=module --eval 'import { readFileSync, realpathSync } from "node:fs"; import { createHash } from "node:crypto"; const path = realpathSync(process.execPath); process.stdout.write(JSON.stringify({path, sha256: createHash("sha256").update(readFileSync(path)).digest("hex"), version: process.version}));')"
+          export CHECKTRAIL_HOST_NODE
+          sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,RUNNER_OS,RUNNER_ARCH,GITHUB_EVENT_NAME,GITHUB_REPOSITORY,GITHUB_REF,GITHUB_SHA,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT,GITHUB_JOB,RUNNER_TEMP,CHECKTRAIL_GITHUB_JOB_TOKEN,CHECKTRAIL_HOST_NODE \
+            python3 -I -B scripts/producer-qualification/gcc-hosted-carrier.py \
+            --repository "$GITHUB_WORKSPACE" --inputs "$RUNNER_TEMP/gcc-inputs/bundle" \
+            --output "$RUNNER_TEMP/gcc-phase0" --operator-trust-execution
       - name: Reobserve complete shared cache headroom immediately before save
         timeout-minutes: 3
         env:

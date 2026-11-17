@@ -1,9 +1,13 @@
 """Synthetic lifecycle/SDK/selection controls; Docker and upstream never run."""
+import base64
 import copy
+import hashlib
 import importlib.util
 import io
 import json
 import os
+import shutil
+import subprocess
 from pathlib import Path
 import stat
 import tempfile
@@ -24,6 +28,33 @@ def configuration(**options):
     value=existing.configuration(**{'hppa64':True,**options})
     value['variables']['CONFARGS']='--enable-languages='+s.LANGUAGES+' --enable-multilib --enable-offload-targets=nvptx-none=/build/source/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/source/debian/tmp-gcn/usr'
     return value
+
+
+def node_record():
+    path = Path(shutil.which('node')).resolve(strict=True)
+    return {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+            'version': subprocess.check_output([str(path), '--version'], text=True).strip()}
+
+
+def image_fixture():
+    def row(raw, url):
+        return {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest(),
+                'base64': base64.b64encode(raw).decode(), 'sourceUrl': url}
+    config = {'os': 'linux', 'architecture': 'amd64', 'rootfs': {'type': 'layers',
+              'diff_ids': ['sha256:' + 'a' * 64, 'sha256:' + 'b' * 64]}}
+    raw_config = h.canonical(config); config_digest = 'sha256:' + hashlib.sha256(raw_config).hexdigest()
+    manifest = {'schemaVersion': 2, 'mediaType': 'application/vnd.oci.image.manifest.v1+json',
+                'config': {'digest': config_digest, 'size': len(raw_config)},
+                'layers': [{'digest': 'sha256:' + letter * 64} for letter in ['c', 'd']]}
+    raw_manifest = h.canonical(manifest); manifest_digest = 'sha256:' + hashlib.sha256(raw_manifest).hexdigest()
+    selected = 'docker.io/coqorg/coq@' + manifest_digest
+    registry = {'schemaVersion': 1, 'selectedImage': selected,
+                'manifest': row(raw_manifest, 'https://registry-1.docker.io/v2/coqorg/coq/manifests/' + manifest_digest),
+                'config': row(raw_config, 'https://registry-1.docker.io/v2/coqorg/coq/blobs/' + config_digest),
+                'rawManifestConfigVerified': True, 'compilerBuildExecuted': False, 'gateAComplete': False}
+    image = {'Id': config_digest, 'Architecture': 'amd64', 'Os': 'linux', 'RepoDigests': [selected],
+             'RootFS': {'Type': 'layers', 'Layers': config['rootfs']['diff_ids']}}
+    return image, selected, registry, manifest_digest
 
 
 class Body(unittest.TestCase):
@@ -69,6 +100,60 @@ class Body(unittest.TestCase):
 
 
 class Host(unittest.TestCase):
+    def test_host_node_uses_the_explicit_physical_executable_without_inherited_path_or_options(self):
+        record = node_record()
+        with mock.patch.dict(os.environ, {'PATH': '/absent/synthetic', 'NODE_OPTIONS': '--not-a-real-option'}):
+            runtime = h.admit_host_node(record)
+            image, selected, registry, _ = image_fixture()
+            self.assertTrue(h.validate_image(image, selected, registry, runtime)['nativeAmd64'])
+        self.assertTrue(runtime['physicalExecutableVerified'])
+        for field, value in [('sha256', '0'*64), ('version', 'v0.0.0'), ('path', '/absent/synthetic-node')]:
+            changed = {**record, field: value}
+            with self.subTest(field=field), self.assertRaises((ValueError, FileNotFoundError)):
+                h.admit_host_node(changed)
+
+    def test_both_original_docker_id_forms_bind_the_same_pinned_layers_and_repository(self):
+        image, selected, registry, manifest_digest = image_fixture()
+        runtime = h.admit_host_node(node_record())
+        for identifier in [image['Id'], manifest_digest]:
+            image['Id'] = identifier
+            witness = h.validate_image(image, selected, registry, runtime)
+            self.assertEqual(witness['observedIdentity']['id'], identifier)
+            self.assertEqual(witness['observedIdentity']['rootfsDiffIds'], image['RootFS']['Layers'])
+            self.assertEqual(witness['configSha256'], registry['config']['sha256'])
+            self.assertTrue(witness['nativeAmd64'])
+        image['RepoDigests'] = [selected.removeprefix('docker.io/')]
+        self.assertEqual(h.validate_image(image, selected, registry, runtime)['observedIdentity']['id'], manifest_digest)
+        image['Config'] = {'Env': ['EXCLUDED_SYNTHETIC=not-an-identity-field']}
+        self.assertNotIn('Config', h.observed_image_fields(image))
+
+    def test_refused_image_keeps_only_its_exact_admission_fields_before_failure(self):
+        runtime = h.admit_host_node(node_record())
+        image, selected, registry, _ = image_fixture(); image['Id'] = 'sha256:' + '0'*64
+        image['Config'] = {'Env': ['EXCLUDED_SYNTHETIC=not-an-identity-field']}
+        with tempfile.TemporaryDirectory(prefix='gcc-image-synthetic-') as name:
+            output = Path(name)
+            with self.assertRaisesRegex(ValueError, 'pinned image validation failed'):
+                h.validate_and_retain_image(output, image, selected, registry, runtime)
+            observed = json.loads((output/'IMAGE-OBSERVATION.json').read_bytes())
+            self.assertEqual(observed, h.observed_image_fields(image))
+            self.assertEqual(observed['Id'], 'sha256:'+'0'*64)
+            self.assertNotIn('Config', observed)
+            self.assertEqual(sorted(p.name for p in output.iterdir()), ['IMAGE-OBSERVATION.json'])
+
+    def test_image_near_misses_cannot_bypass_the_shared_raw_registry_contract(self):
+        mutations = [lambda i, r:i.update(Id='sha256:'+'e'*64), lambda i, r:i.update(Architecture='arm64'),
+            lambda i, r:i.update(Os='windows'), lambda i, r:i.update(RepoDigests=['wrong/repository@'+i['Id']]),
+            lambda i, r:i['RootFS'].update(Type='wrong'), lambda i, r:i['RootFS']['Layers'].reverse(),
+            lambda i, r:r['config'].update(bytes=r['config']['bytes']+1),
+            lambda i, r:r['manifest'].update(sha256='f'*64), lambda i, r:r.update(rawManifestConfigVerified=False),
+            lambda i, r:r.update(compilerBuildExecuted=True), lambda i, r:r.update(gateAComplete=True)]
+        runtime = h.admit_host_node(node_record())
+        for mutate in mutations:
+            image, selected, registry, _ = image_fixture(); mutate(image, registry)
+            with self.subTest(mutation=mutations.index(mutate)), self.assertRaisesRegex(ValueError, 'pinned image validation failed'):
+                h.validate_image(image, selected, registry, runtime)
+
     def test_actual_container_assembly_rejects_wrong_limits_mounts_and_early_execution(self):
         output=Path('/synthetic/output');catalog={'image':'synthetic-pinned-image','environment':s.FIXED_ENVIRONMENT}
         config={'Labels':{'io.checktrail.gcc-staged-owner':'synthetic-owner'},'User':'0:0','WorkingDir':'/work',

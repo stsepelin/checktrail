@@ -66,6 +66,10 @@ The fixed `gcc-hosted-carrier.py` path admits only the reviewed manual diagnosti
 workflow on a public stock Ubuntu 26.04 AMD64 host. It verifies the actual GitHub
 source job and tracked first-party commit, the pinned image and original inputs,
 and the container's exact environment, goals, mounts and resource limits.
+Image admission uses the same raw registry and filesystem identity validator as
+input acquisition, including its two pinned Docker ID forms. The setup Node
+executable is recorded before `sudo`, then its physical path, bytes and version
+are rechecked; sanitized image identity fields are retained before any refusal.
 Original source preparation and pre-clean are witnessed explicitly. Configure
 then captures all original expanded flags and requires the full retained native
 language, multilib, JIT, offload, HPPA64, check and package selection.
