@@ -12,6 +12,23 @@ Preparation, stopping, retention, upload and runner finalization consume that sa
 budget. Long producer qualification stays in explicit maintenance workflows;
 ordinary PR verification must not start these builds.
 
+## Selected Linux runner and prebuilt compiler smoke
+
+The selected Linux runner is `ubuntu-26.04`; macOS remains on its separate
+selection. The current [Ubuntu 26.04 inventory](https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2604-Readme.md)
+lists GNU C++ 13.4.0, 14.3.0 and 15.2.0, alongside Clang 20/21/22, CMake and Ninja.
+Runner images change over time, so a label is not an immutable tool identity.
+
+The manual [prebuilt GCC smoke workflow](../.github/workflows/prebuilt-gcc.yml)
+uses the explicit `/usr/bin/gcc-15` and `/usr/bin/g++-15` binaries on the standard
+x64 runner. It records the actual image, compiler versions and driver hashes,
+compiles and runs small original C/C++ controls, and requires each broken
+counterpart to fail with its expected diagnostic identifier. Its whole job has
+a ten-minute limit and does not install or rebuild the compiler. This is a
+compiler smoke profile, separate from Checktrail adapter acceptance and the
+historical full producer observations below. No hosted pass is claimed before
+an actual run.
+
 ## GCC: implement bounded continuation
 
 The existing profile selects Debian GCC 12.2.0-14+deb12u1 and

@@ -1,0 +1,89 @@
+name: Prebuilt GCC smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prebuilt-gcc-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  prebuilt-gcc:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        timeout-minutes: 2
+        with:
+          persist-credentials: false
+      - name: Record the assigned runner and preinstalled compilers
+        timeout-minutes: 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          test "$RUNNER_ARCH" = X64
+          python3 - "$RUNNER_TEMP/prebuilt-gcc" <<'PY'
+          import hashlib, json, os, pathlib, platform, subprocess, sys
+          out = pathlib.Path(sys.argv[1])
+          out.mkdir(mode=0o700)
+          release = platform.freedesktop_os_release()
+          if release.get("ID") != "ubuntu" or release.get("VERSION_ID") != "26.04":
+              raise SystemExit("Expected Ubuntu 26.04")
+          tools = []
+          for name in ("gcc-15", "g++-15"):
+              path = pathlib.Path("/usr/bin") / name
+              version = subprocess.run([str(path), "-dumpfullversion", "-dumpversion"], check=True, capture_output=True, text=True, timeout=10).stdout.strip()
+              if version.split(".")[0] != "15":
+                  raise SystemExit("Expected GNU compiler major 15")
+              with path.open("rb") as body:
+                  driver_hash = hashlib.file_digest(body, "sha256").hexdigest()
+              tools.append({"name": name, "version": version, "resolvedPath": str(path.resolve(strict=True)), "driverSHA256": driver_hash})
+          record = {"schemaVersion": 1, "runner": "ubuntu-26.04", "imageVersion": os.environ.get("ImageVersion"), "osVersion": release["VERSION_ID"], "architecture": platform.machine(), "sourceCommit": os.environ["GITHUB_SHA"], "tools": tools, "scope": "preinstalled compiler smoke only; no upstream source-build or Checktrail adapter acceptance claim"}
+          (out / "tools.json").write_text(json.dumps(record, indent=2) + "\n")
+          print(json.dumps(record))
+          PY
+      - name: Compile and run small positive controls and reject their broken counterparts
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$RUNNER_TEMP/prebuilt-gcc"
+          cat > "$work/valid.c" <<'C'
+          static int checktrail_value(void) { return 21; }
+          int main(void) { return checktrail_value() * 2 == 42 ? 0 : 1; }
+          C
+          cat > "$work/broken.c" <<'C'
+          int main(void) { return checktrail_value() * 2 == 42 ? 0 : 1; }
+          C
+          cat > "$work/valid.cpp" <<'CPP'
+          constexpr int checktrail_value = 21;
+          int main() { return checktrail_value * 2 == 42 ? 0 : 1; }
+          CPP
+          cat > "$work/broken.cpp" <<'CPP'
+          int main() { return checktrail_value * 2 == 42 ? 0 : 1; }
+          CPP
+          for language in c cpp; do
+            if [ "$language" = c ]; then compiler=/usr/bin/gcc-15; standard=c17; else compiler=/usr/bin/g++-15; standard=c++20; fi
+            timeout --kill-after=5s 30s "$compiler" -std="$standard" -Wall -Wextra -Werror -pedantic-errors "$work/valid.$language" -o "$work/valid-$language" > "$work/valid-$language.stdout" 2> "$work/valid-$language.stderr"
+            timeout --kill-after=5s 5s "$work/valid-$language"
+            set +e
+            timeout --kill-after=5s 30s "$compiler" -std="$standard" -Wall -Wextra -Werror -pedantic-errors "$work/broken.$language" -o "$work/broken-$language" > "$work/broken-$language.stdout" 2> "$work/broken-$language.stderr"
+            status=$?
+            set -e
+            test "$status" -eq 1
+            grep -Fq checktrail_value "$work/broken-$language.stderr"
+          done
+          printf '%s\n' 'C and C++ positive programs executed; both broken programs rejected with their expected diagnostic identifier.' > "$work/SMOKE-PASSED.txt"
+      - name: Retain the small original smoke inputs, tool identities and diagnostics
+        if: always()
+        timeout-minutes: 2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: prebuilt-gcc-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/prebuilt-gcc
+          if-no-files-found: error
+          retention-days: 1

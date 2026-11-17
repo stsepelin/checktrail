@@ -1,0 +1,7 @@
+# GitHub-hosted label documented at:
+# https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+# The pinned actionlint 1.7.12 label table predates Ubuntu 26.04. This exact
+# additional-label declaration does not change the workflow to self-hosted.
+self-hosted-runner:
+  labels:
+    - ubuntu-26.04
