@@ -18,6 +18,13 @@ const controls = new Set([
 ]);
 const retainedArtifactDirectory =
   "docs/measurements/artifact-identities-2026-10-21/";
+// Reviewed public observations are data, with any declared native consumers retained.
+// Unknown documentary JSON remains unclassified; this is an exact file boundary.
+const documentaryMeasurementFiles = new Set([
+  "docs/measurements/glibc-u13-original-producer-2026-11-17.json",
+  "docs/measurements/sdk4-fork-original-notice-preservation-2026-11-17.json",
+  "docs/measurements/temurin25-original-producer-2026-11-17.json",
+]);
 // Reviewed shared helper/preparation controls run as complete test files.
 // Derive their native consumers from the exact declared inputs; do not
 // classify neighboring test names or create entries for absent files.
@@ -293,7 +300,8 @@ export async function buildNativeInputs({
         // Other documentation may define shared policy and stays unclassified.
         if (
           match[0].startsWith("docs/") &&
-          !match[0].startsWith(retainedArtifactDirectory)
+          !match[0].startsWith(retainedArtifactDirectory) &&
+          !documentaryMeasurementFiles.has(match[0])
         )
           continue;
         if (
@@ -624,11 +632,13 @@ export function planNativeJobs({
     // contractCurrent. Route its source changes normally; the generated map
     // itself neither adds execution nor qualifies any omitted native job.
     if (file === "scripts/ci-native-inputs.json") continue;
-    // Retained observations are data consumed by the always-required artifact
-    // audit and its complete regression file. New/unindexed data still fails
-    // that audit. The trailing slash excludes adjacent directory names, and
-    // recorded native consumers are preserved rather than replaced.
-    if (file.startsWith(retainedArtifactDirectory)) {
+    // Artifact records retain their complete audit; reviewed documentary records
+    // retain shared controls. Neither boundary can erase declared native consumers.
+    // The artifact directory's trailing slash excludes adjacent directory names.
+    if (
+      file.startsWith(retainedArtifactDirectory) ||
+      documentaryMeasurementFiles.has(file)
+    ) {
       for (const id of inputs[file] ?? []) selected.add(id);
       continue;
     }
