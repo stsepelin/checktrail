@@ -31,19 +31,26 @@ jobs:
         timeout-minutes: 3
         shell: pwsh
         run: |
-          node --input-type=module -e @'
+          node --test --test-reporter=tap '--test-name-pattern=^provenance stage owner (timeout|parent loss) reaps nested file descendants and preserves an unrelated sibling$' dist/test/native-provenance-runtime.test.js
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $entry = Join-Path $env:RUNNER_TEMP 'checktrail-provenance-owner-controls.mjs'
+          @'
           import assert from 'node:assert/strict';
-          import { runRequiredTests } from './scripts/required-test-evidence.mjs';
+          import path from 'node:path';
+          import { pathToFileURL } from 'node:url';
+          const { runRequiredTests } = await import(pathToFileURL(path.resolve('scripts/required-test-evidence.mjs')).href);
           const names = [
             'provenance stage owner timeout reaps nested file descendants and preserves an unrelated sibling',
             'provenance stage owner parent loss reaps nested file descendants and preserves an unrelated sibling',
           ];
           const evidence = await runRequiredTests(names.map(name => ({file: 'dist/test/native-provenance-runtime.test.js', name})), {timeoutMs: 120000, isolatedCaseWorkers: 1});
+          console.log(JSON.stringify({schemaVersion: 1, status: 'observed-required-owner-evidence', evidence}));
           assert.equal(evidence.required, 2);
           assert.equal(evidence.complete, true, JSON.stringify(evidence.problems));
           assert.deepEqual(evidence.ledger.cases.map(({name, outcome}) => ({name, outcome})), names.map(name => ({name, outcome: 'passed'})));
           console.log(JSON.stringify({schemaVersion: 1, status: 'passed-original-nested-stage-owner-controls', evidence}));
-          '@
+          '@ | Set-Content -LiteralPath $entry -Encoding utf8
+          node $entry
       - name: Require provenance composition from source and a fresh offline package
         id: native-provenance-runtime
         timeout-minutes: 30
