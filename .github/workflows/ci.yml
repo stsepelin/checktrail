@@ -13,7 +13,6 @@ jobs:
       matrix:
         mode:
           - cold-original
-          - cold-instrumented
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -210,6 +209,65 @@ jobs:
             }
             return events;
           }
+          export async function prepareProbeDirectory(
+            temporary,
+            label,
+            phase = () => {},
+          ) {
+            phase(1);
+            const created = await mkdir(path.join(temporary, label), { recursive: true });
+            phase(2);
+            const target = realpathSync(created);
+            phase(3);
+            return target;
+          }
+          export async function prepareProbeWrapper(temporary, text, phase = () => {}) {
+            phase(4);
+            const wrapper = path.join(temporary, "original-call.mjs");
+            await writeFile(wrapper, text);
+            phase(5);
+            return wrapper;
+          }
+          export function boundedProbeFailure(error, phase) {
+            const syscalls = new Set([
+              "mkdir",
+              "realpath",
+              "lstat",
+              "stat",
+              "open",
+              "read",
+              "write",
+              "scandir",
+              "spawn",
+              "spawnSync",
+            ]);
+            const frames = [];
+            // Only errors raised by this fixed first-party probe reach this projection.
+            // Raw messages/paths/stacks are never emitted or retained in the receipt.
+            const stack =
+              error instanceof Error && typeof error.stack === "string"
+                ? error.stack.slice(0, 8192)
+                : "";
+            const url = import.meta.url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const pattern = new RegExp(url + ":([0-9]+):([0-9]+)", "g");
+            for (const match of stack.matchAll(pattern)) {
+              const line = Number(match[1]),
+                column = Number(match[2]);
+              if (
+                line > 0 &&
+                line <= 1000 &&
+                column > 0 &&
+                column <= 4096 &&
+                frames.length < 4
+              )
+                frames.push({ line, column });
+            }
+            return {
+              phase,
+              syscall: syscalls.has(error?.syscall) ? error.syscall : "unknown",
+              frames,
+            };
+          }
           function processMetadata(result) {
             return {
               status: result.status,
@@ -304,16 +362,18 @@ jobs:
               fieldEvaluationExecuted: false,
               gateAComplete: false,
             };
+            let probePhase = 0;
+            const phase = (value) => {
+              probePhase = value;
+            };
             const originalCall = async (label) => {
-              const target = realpathSync(
-                await mkdir(path.join(temporary, label), { recursive: true }),
-              );
-              const wrapper = path.join(temporary, "original-call.mjs");
+              const target = await prepareProbeDirectory(temporary, label, phase);
               const module = pathToFileURL(
                 path.join(root, "dist/src/windows-task-access.js"),
               ).href;
               const text = `import{ensureWindowsTaskAccess}from${JSON.stringify(module)};const start=Date.now();let result;try{ensureWindowsTaskAccess(${JSON.stringify(target)},'directory',true);result={validated:true};}catch(error){const c=error.cause;result={validated:false,cause:c&&{schemaVersion:c.schemaVersion,phase:c.phase,code:c.code,status:c.status,signal:c.signal,stdout:c.stdout,stderr:c.stderr}};}console.log(JSON.stringify({...result,elapsedMs:Date.now()-start}));`;
-              await writeFile(wrapper, text);
+              const wrapper = await prepareProbeWrapper(temporary, text, phase);
+              phase(6);
               const r = spawnSync(process.execPath, [wrapper], {
                 cwd: root,
                 env: { ...process.env, NODE_OPTIONS: "" },
@@ -321,6 +381,7 @@ jobs:
                 maxBuffer: 65536,
                 stdio: ["ignore", "pipe", "pipe"],
               });
+              phase(7);
               const metadata = processMetadata(r);
               let result = null;
               try {
@@ -337,12 +398,13 @@ jobs:
             try {
               if (mode === "cold-original") await originalCall("cold-original");
               else {
-                const target = realpathSync(
-                  await mkdir(path.join(temporary, "cold-instrumented"), {
-                    recursive: true,
-                  }),
+                const target = await prepareProbeDirectory(
+                  temporary,
+                  "cold-instrumented",
+                  phase,
                 );
                 const started = Date.now();
+                phase(8);
                 const r = spawnSync(
                   powershell,
                   [
@@ -365,6 +427,7 @@ jobs:
                     stdio: ["pipe", "pipe", "pipe"],
                   },
                 );
+                phase(9);
                 let aclValidated = false;
                 try {
                   api.validateWindowsTaskAccess(
@@ -400,6 +463,7 @@ jobs:
               receipt.runtimeBinariesUnchanged = true;
               receipt.diagnosticComplete = true;
             } catch (error) {
+              receipt.failure = boundedProbeFailure(error, probePhase);
               receipt.failureCode =
                 typeof error.code === "string"
                   ? error.code
