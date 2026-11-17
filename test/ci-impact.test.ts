@@ -1166,6 +1166,85 @@ test("CI retained artifact data requires whole shared audits without unrelated n
   ]);
   assert.ok(combined.sharedTestFiles.includes(artifactFile));
 });
+const documentaryMeasurements = [
+  "docs/measurements/glibc-u13-original-producer-2026-11-17.json",
+  "docs/measurements/sdk4-fork-original-notice-preservation-2026-11-17.json",
+  "docs/measurements/temurin25-original-producer-2026-11-17.json",
+] as const;
+test("CI reviewed documentary measurements retain complete shared controls and exact native consumers", () => {
+  for (const file of documentaryMeasurements) {
+    const result = plan([file]);
+    assert.equal(result.mode, "affected", file);
+    assert.equal(result.hostValidation, "not-selected", file);
+    assert.deepEqual(selected(result), [], file);
+    assert.deepEqual(
+      result.sharedTestFiles,
+      plan(["README.md"]).sharedTestFiles,
+    );
+    const combined = plan([file, "test/gate-scala-extensions.test.ts"], {
+      inputs: { ...inputs, [file]: ["csharp-context-arm64"] },
+    });
+    assert.deepEqual(selected(combined), [
+      "csharp-context-arm64",
+      "scala-extensions-arm64",
+    ]);
+  }
+});
+test("CI native input traversal follows each reviewed documentary measurement without admitting other docs inventories", async () => {
+  for (const file of documentaryMeasurements) {
+    const other = "docs/measurements/unreviewed-execution-inventory.json";
+    const controller = "scripts/native-controller.mjs";
+    const actual = await buildNativeInputs({
+      workflow: {
+        jobs: {
+          native: { steps: [{ run: "node " + controller }] },
+        },
+      },
+      requirements: {},
+      files: [controller, file, other],
+      readText: (name: string) =>
+        Promise.resolve(
+          name === controller
+            ? `readFile("${file}"); readFile("${other}")`
+            : "{}",
+        ),
+    });
+    assert.deepEqual(actual[file], ["native"], file);
+    assert.equal(Object.hasOwn(actual, other), false);
+    const result = planNativeJobs({
+      jobs: ["native"],
+      inputs: actual,
+      changed: [file],
+      eventName: "pull_request",
+      contractCurrent: true,
+      sourceBoundaries: [],
+    });
+    assert.equal(result.mode, "affected", file);
+    assert.deepEqual(result.selected, { native: true });
+  }
+});
+test("CI documentary boundary keeps adjacent JSON and stale or unsupported events on full fallback", () => {
+  for (const file of documentaryMeasurements) {
+    for (const adjacent of [
+      file + ".bak",
+      file + "/record.json",
+      file.replace("/measurements/", "/measurements0/"),
+      file.replace(".json", "0.json"),
+      file.replace("/measurements/", "/measurements/../"),
+      "/" + file,
+    ]) {
+      assert.equal(plan([adjacent]).mode, "full", adjacent);
+    }
+    assert.equal(plan([file], { contractCurrent: false }).mode, "full");
+    assert.equal(plan([file], { eventName: "workflow_dispatch" }).mode, "full");
+  }
+  assert.equal(
+    plan([documentaryMeasurements[0], "docs/measurements/new-record.json"])
+      .mode,
+    "full",
+  );
+  assert.equal(plan(["docs/gate-a-profiles.v1.json"]).mode, "full");
+});
 test("CI stale contracts and non-PR events select the complete inventory while missing history does not broaden known PR inputs", () => {
   for (const baseline of [null, { complete: false }]) {
     const result = plan(["test/gate-scala-extensions.test.ts"], { baseline });
