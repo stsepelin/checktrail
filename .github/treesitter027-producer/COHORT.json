@@ -1,0 +1,107 @@
+[
+  {
+    "bytes": 22007,
+    "file": "native-controller.py",
+    "sha256": "79c428498902a4072363c71ae69ad58bdbc8f8c32e5e28e6382a3abc69eeddc8"
+  },
+  {
+    "bytes": 8157,
+    "file": "original-stage-driver.py",
+    "sha256": "48ffd64895b0dde7ba5131e4e8744dcc04d6869aa67e09851a74f781aef15536"
+  },
+  {
+    "bytes": 8691,
+    "file": "materialize-native-inputs.py",
+    "sha256": "78085008fbfb16631b2a313e78f3e496704de85e087264436dc6670f164b942e"
+  },
+  {
+    "bytes": 5310,
+    "file": "curate-native-inputs.py",
+    "sha256": "40ff006ac899a417509253ff3bfbe2f135c08b524cedf3839ba3973caf3b1f05"
+  },
+  {
+    "bytes": 1196,
+    "file": "custody-budget.py",
+    "sha256": "0e202c8d8d7865b045eb3466c21a4b8728f13af0f7677653853e7791f34f61fc"
+  },
+  {
+    "bytes": 3218,
+    "file": "original-npm-cache.mjs",
+    "sha256": "33d1e7d6d36f7c17b00e78fa89cbc15d106a2b4120fa825c100c9b53167faadd"
+  },
+  {
+    "bytes": 21071,
+    "file": "admit.py",
+    "sha256": "06bb9d23fc305375f8e7498caab3fb40cbe65e4e37f01d60ef6333c54c3fa49c"
+  },
+  {
+    "bytes": 2637,
+    "file": "git_source_root_proof.py",
+    "sha256": "be8fad6e264ee4ec82e734648b2b8fdc6de0efa5ec9fd394c3cf09e39f9b3e16"
+  },
+  {
+    "bytes": 284765,
+    "file": "native-inputs.json",
+    "sha256": "13e5c329bcf4d31c226e9ce606c369d0fcb015302fef729d195ccace8d013231"
+  },
+  {
+    "bytes": 6445,
+    "file": "validate-capture.py",
+    "sha256": "44c4a36b8dfb3281fc86c3ffc69ac7aef83b4d2906a21771f0651a1e78187096"
+  },
+  {
+    "bytes": 18024,
+    "file": "test-native-controller.py",
+    "sha256": "f628454aedc2c509a7b7db734c0ff4659af0062ca1586b2b3344a47791ccda0d"
+  },
+  {
+    "bytes": 8562,
+    "file": "test-materializer.py",
+    "sha256": "e1225bc8f60f955c3c6808efd0c2b1d35a9329fd549780b313d9e4108dfa07da"
+  },
+  {
+    "bytes": 40504,
+    "file": "reused-native-v5/controller.py",
+    "sha256": "fc38cf99a77eaa8ed06e38514b3123e4659d5ec6ea0fa92c716213ba06e13861"
+  },
+  {
+    "bytes": 14580,
+    "file": "reused-native-v5/capsule.py",
+    "sha256": "d12ce716bfd076de740769a4db1e67a38bee55a38a93751b15ececf108b7b283"
+  },
+  {
+    "bytes": 10914,
+    "file": "reused-sdk-crypto/common.py",
+    "sha256": "c7d863cf1502600b11754d9d5aed90511481a6959f2a4d3b4a68ad3616eee72f"
+  },
+  {
+    "bytes": 1908,
+    "file": "reused-sdk-crypto/crypto_bridge.py",
+    "sha256": "39bba5b8b24e96f3c7982d0d9af1869f12e0990fcea5932831d33e5438f350ce"
+  },
+  {
+    "bytes": 9905,
+    "file": "reused-sdk-crypto/envelope.mjs",
+    "sha256": "ef5234172c894d8df88fbe58ae1507cb222facae95d3823bc3bbfee941ee26ef"
+  },
+  {
+    "bytes": 10905,
+    "file": "encrypted-capture.py",
+    "sha256": "6054f45c18fffd5a6af2e7e5b2fe096a15206ff39c8f6b78016225c1884dca04"
+  },
+  {
+    "bytes": 9325,
+    "file": "test-encrypted-capture.py",
+    "sha256": "76d8d4e613f50267ff09bd5a8259d255b625f78f4ed704c8f6b5829608f53fdf"
+  },
+  {
+    "bytes": 544,
+    "file": "recipient-public.json",
+    "sha256": "36893bdc2cc7d24aabe526023533fa0f4c6ae39cbf4ab32ad3e275653fdc9863"
+  },
+  {
+    "bytes": 3664,
+    "file": "recover-private-capture.py",
+    "sha256": "c094d68619bfbdf0566b4957eb9724ffcc220607210f6f516ed7371a787542cc"
+  }
+]
