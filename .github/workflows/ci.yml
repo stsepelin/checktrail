@@ -13,6 +13,7 @@ jobs:
       matrix:
         mode:
           - cold-original
+          - cold-instrumented
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -215,9 +216,10 @@ jobs:
             phase = () => {},
           ) {
             phase(1);
-            const created = await mkdir(path.join(temporary, label), { recursive: true });
+            const selected = path.join(temporary, label);
+            await mkdir(selected, { recursive: true });
             phase(2);
-            const target = realpathSync(created);
+            const target = realpathSync(selected);
             phase(3);
             return target;
           }
