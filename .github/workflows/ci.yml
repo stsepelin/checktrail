@@ -126,6 +126,7 @@ jobs:
           name: binaryen132-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             ${{ runner.temp }}/binaryen-code.json
+            ${{ runner.temp }}/binaryen-host-admission.json
             ${{ runner.temp }}/binaryen-intake/INTAKE.json
             ${{ env.BINARYEN_CAPTURE_DIR }}
           if-no-files-found: error

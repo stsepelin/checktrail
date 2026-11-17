@@ -1,5 +1,5 @@
 """Synthetic fixtures only. No upstream materialization, sudo or compiler runs."""
-import contextlib,copy,errno,gzip,hashlib,importlib.util,io,json,os,shutil,stat,struct,sys,tarfile,tempfile,unittest,uuid,zlib
+import contextlib,copy,errno,gzip,hashlib,importlib.util,io,json,os,shutil,stat,struct,sys,tarfile,tempfile,types,unittest,uuid,zlib
 from pathlib import Path
 from unittest import mock
 
@@ -193,7 +193,7 @@ class NativeContractTests(unittest.TestCase):
   host={'tools':{'python3':{'path':sys.executable}},'sdk':str(self.root/'sdk'),'developerDir':str(self.root/'developer'),'protectedWorkflowPaths':[],'buildUid':65533}
   payloads=[];operations=[];original_open=open
   class Probe:
-   writable=False;allow_unlink=False;unreadable=False
+   writable=False;allow_unlink=False;unreadable=False;write_target=None
    def run(inner,name,args,env,cwd,seconds):
     data=json.loads(Path(args[-1]).read_text());payloads.append(data);canaries=set(data['canaries'])
     def opening(path,*pos,**kw):
@@ -204,7 +204,7 @@ class NativeContractTests(unittest.TestCase):
      operations.append(('unlink',str(path)))
      if not inner.allow_unlink:raise PermissionError(errno.EACCES,'synthetic deny')
     def rename(before,after):operations.append(('rename',str(before)));raise PermissionError(errno.EACCES,'synthetic deny')
-    def access(path,mode):return not inner.unreadable if mode==os.R_OK else inner.writable and str(path)==str(source)
+    def access(path,mode):return not inner.unreadable if mode==os.R_OK else inner.writable and str(path)==str(inner.write_target or source)
     with mock.patch('builtins.open',opening),mock.patch.object(n.os,'getuid',lambda:65533),mock.patch.object(n.os,'access',access),mock.patch.object(n.os,'unlink',unlink),mock.patch.object(n.os,'rename',rename),mock.patch.object(sys,'argv',['probe',args[-1]]),contextlib.redirect_stdout(io.StringIO()):exec(compile(args[-2],'<trusted-permission-probe>','exec'),{})
   probe=Probe();n.permission_admission(self.root,source,manifest,host,{},probe,[])
   self.assertEqual(len(payloads[-1]['canaries']),8);self.assertEqual(len(operations),32)
@@ -216,6 +216,41 @@ class NativeContractTests(unittest.TestCase):
   with self.assertRaisesRegex(AssertionError,'replacement/write unexpectedly permitted'):n.permission_admission(self.root,source,manifest,host,{},probe,[])
   probe.allow_unlink=False;probe.unreadable=True
   with self.assertRaisesRegex(AssertionError,'required source/request is unreadable'):n.permission_admission(self.root,source,manifest,host,{},probe,[])
+  probe.unreadable=False;probe.writable=True
+  for root in [host['sdk'],str(self.root/'cmake-modules'),str(self.root/'git-helper-root')]:
+   probe.write_target=root
+   with self.subTest(root=root),self.assertRaisesRegex(AssertionError,'parent writable'):n.permission_admission(self.root,source,manifest,host,{},probe,[{'root':root,'entries':[]}])
+   self.assertIn(root,payloads[-1]['paths'])
+ def test_cmake_actual_app_and_brew_reported_module_layouts_are_queried_without_guessing(self):
+  for style,relative in [('app','CMake.app/Contents'),('brew','Cellar/cmake/4.4.5')]:
+   installation=self.root/relative;tool=installation/'bin/cmake';tool.parent.mkdir(parents=True);tool.write_bytes(b'inert stock-tool identity');modules=installation/'actual-not-guessed-data/Modules';modules.mkdir(parents=True);record={};calls=[]
+   def query(folder,name,args,env,**kwargs):
+    calls.append((args,env,kwargs));self.assertEqual(Path(args[-1]).read_bytes(),b'message(STATUS "CHECKTRAIL_CMAKE_ROOT=${CMAKE_ROOT}")\n');self.assertEqual(args[:2],[str(tool),'-P']);self.assertEqual(kwargs['cwd'],folder);return 0,('-- CHECKTRAIL_CMAKE_ROOT='+str(modules.parent)+'\n').encode(),b''
+   self.assertEqual(n.cmake_root_metadata({'path':str(tool)},record,query),modules.parent)
+   self.assertEqual(len(calls),1);self.assertEqual(record['physicalRoot'],str(modules.parent));self.assertFalse(record['projectCompilerOrSdkExecuted'])
+ def test_cmake_foreign_missing_module_root_and_unknown_query_preserve_refusal_metadata(self):
+  installation=self.root/'stock';tool=installation/'bin/cmake';tool.parent.mkdir(parents=True);tool.write_bytes(b'inert');missing=installation/'missing';foreign=self.root/'foreign';(foreign/'Modules').mkdir(parents=True);empty=installation/'empty';empty.mkdir()
+  escaped=installation/'escaped';escaped.mkdir();(escaped/'Modules').symlink_to(foreign/'Modules',target_is_directory=True)
+  for selected in [missing,foreign,empty,escaped]:
+   record={}
+   with self.subTest(selected=selected),self.assertRaises((ValueError,FileNotFoundError)):n.cmake_root_metadata({'path':str(tool)},record,lambda *a,**kw:(0,('-- CHECKTRAIL_CMAKE_ROOT='+str(selected)+'\n').encode(),b''))
+   self.assertEqual(record['reportedRoot'],str(selected))
+  record={}
+  with self.assertRaisesRegex(ValueError,'root metadata query failed'):n.cmake_root_metadata({'path':str(tool)},record,lambda *a,**kw:(1,b'unknown format\n',b'bounded native diagnostic\n'))
+  self.assertEqual(record['stdout'],'unknown format\n');self.assertEqual(record['stderr'],'bounded native diagnostic\n')
+ def test_sdk_cmake_and_git_helper_root_identity_changes_are_detected_even_with_same_children(self):
+  for name in ['sdk','cmake-modules','git-helpers']:
+   root=self.root/name;root.mkdir();root.chmod(0o755);(root/'same').write_bytes(b'identical stock data');before=n.input_catalog(root,1024,10);root.chmod(0o700);changed=n.input_catalog(root,1024,10)
+   self.assertNotEqual(before,changed);self.assertEqual(before['entries'],changed['entries'])
+   root.rename(self.root/(name+'-old'));root.mkdir();(root/'same').write_bytes(b'identical stock data');replaced=n.input_catalog(root,1024,10);self.assertNotEqual(changed['rootIdentity']['inode'],replaced['rootIdentity']['inode'])
+ def test_early_actual_host_refusal_retains_versions_and_roots_readably_under_umask077(self):
+  env={'GITHUB_ACTIONS':'true','GITHUB_EVENT_NAME':'workflow_dispatch','GITHUB_REPOSITORY':'stsepelin/checktrail','GITHUB_RUN_ID':'123','GITHUB_SHA':'a'*40,'RUNNER_TEMP':str(self.root),'SUDO_UID':str(os.getuid())}
+  def refuse(environment,admission):admission.update(cmakeVersion='cmake version 4.4.5',cmakeRootQuery={'reportedRoot':'/observed/stock/root'},physicalTools={'cmake':{'path':'/observed/stock/cmake'}});raise ValueError('synthetic layout refusal')
+  prior=os.umask(0o077)
+  try:
+   with mock.patch.dict(n.os.environ,env,clear=True),mock.patch.object(n.os,'getuid',lambda:0),mock.patch.object(n,'host_admission',refuse),self.assertRaisesRegex(ValueError,'synthetic layout refusal'):n.observe(types.SimpleNamespace(work=str(self.root/'uncreated-source')))
+  finally:os.umask(prior)
+  path=self.root/'binaryen-host-admission.json';row=json.loads(path.read_bytes());self.assertFalse(row['complete']);self.assertEqual(row['cmakeVersion'],'cmake version 4.4.5');self.assertEqual(row['cmakeRootQuery']['reportedRoot'],'/observed/stock/root');self.assertEqual(stat.S_IMODE(path.stat().st_mode),0o644);self.assertFalse((self.root/'uncreated-source').exists())
  def test_actual_umask_077_modes_keep_source_git_and_requests_readable_and_capture_private(self):
   manifest,objects,expected=fixture();prior=os.umask(0o077)
   try:

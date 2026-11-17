@@ -4,7 +4,7 @@
 This is not a discovery/planning tool and does not claim project execution is
 sandboxed. Native execution requires a reviewed workflow_dispatch action.
 """
-import argparse,errno,hashlib,json,os,platform,pwd,re,resource,selectors,shutil,signal,stat,struct,subprocess,sys,time
+import argparse,errno,hashlib,json,os,platform,pwd,re,resource,selectors,shutil,signal,stat,struct,subprocess,sys,tempfile,time
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from capsule import ROOTS,SELECTION,git_hash,load_capsule,materialize,need,pinned_object,read_physical,sha
@@ -39,11 +39,11 @@ def metadata_query_limits():
  resource.setrlimit(resource.RLIMIT_FSIZE,(65536,65536))
  resource.setrlimit(resource.RLIMIT_CPU,(30,30))
 
-def capture_control_query(capture,name,args,env,seconds=30):
+def capture_control_query(capture,name,args,env,seconds=30,cwd=None):
  need(re.fullmatch('[a-z][a-z-]+',name),'Fixed controller query name required')
  paths=[capture/(name+'.stdout'),capture/(name+'.stderr')];started=time.monotonic();code=None;timed_out=False
  with paths[0].open('xb') as stdout,paths[1].open('xb') as stderr:
-  process=subprocess.Popen(args,env=env,stdin=subprocess.DEVNULL,stdout=stdout,stderr=stderr,start_new_session=True,preexec_fn=metadata_query_limits)
+  process=subprocess.Popen(args,env=env,cwd=cwd,stdin=subprocess.DEVNULL,stdout=stdout,stderr=stderr,start_new_session=True,preexec_fn=metadata_query_limits)
   try:
    try:code=process.wait(timeout=seconds)
    except subprocess.TimeoutExpired:timed_out=True
@@ -82,7 +82,7 @@ def physical_file(path,deadline=None):
  return {'path':str(path),'bytes':s.st_size,'sha256':h.hexdigest(),'mode':stat.S_IMODE(s.st_mode),'uid':s.st_uid,'gid':s.st_gid}
 
 def input_catalog(root,maximum_bytes,maximum_files,deadline=None):
- root=Path(root).resolve(strict=True);rows=[];total=0;start=time.monotonic()
+ root=Path(root).resolve(strict=True);root_stat=root.lstat();need(stat.S_ISDIR(root_stat.st_mode),'Physical input root directory required');rows=[];total=0;start=time.monotonic()
  for folder,dirs,files in os.walk(root,followlinks=False):
   for name in sorted(dirs+files):
    need(time.monotonic()-start<900 and (deadline is None or time.monotonic()<deadline),'Input catalog deadline')
@@ -93,35 +93,59 @@ def input_catalog(root,maximum_bytes,maximum_files,deadline=None):
     need(stat.S_ISREG(s.st_mode),'Unsupported physical input type');total+=s.st_size
     need(total<=maximum_bytes,'Input byte ceiling');item.update(type='file',**{k:v for k,v in physical_file(p,deadline).items() if k in ('bytes','sha256')})
    rows.append(item);need(len(rows)<=maximum_files,'Input entry ceiling')
- return {'root':str(root),'entries':rows,'regularBytes':total,'catalogSHA256':sha(json.dumps(rows,sort_keys=True,separators=(',',':')).encode()),'continuousImmutabilityClaimed':False}
+ return {'root':str(root),'rootIdentity':{'mode':stat.S_IMODE(root_stat.st_mode),'uid':root_stat.st_uid,'gid':root_stat.st_gid,'device':root_stat.st_dev,'inode':root_stat.st_ino},'entries':rows,'regularBytes':total,'catalogSHA256':sha(json.dumps(rows,sort_keys=True,separators=(',',':')).encode()),'continuousImmutabilityClaimed':False}
 
-def host_admission(env,run=quick):
+def cmake_root_metadata(tool,record,query=capture_control_query):
+ # Script mode evaluates only this fixed first-party message, without loading a
+ # project, modules, compiler or SDK. Do not infer installation layout/version.
+ with tempfile.TemporaryDirectory(prefix='checktrail-binaryen-cmake-root-',dir='/private/tmp') as folder:
+  folder=Path(folder);folder.chmod(0o700);script=folder/'root.cmake';script.write_bytes(b'message(STATUS "CHECKTRAIL_CMAKE_ROOT=${CMAKE_ROOT}")\n');script.chmod(0o444)
+  record.update({'argv':[tool['path'],'-P','<fixed-first-party-root-query>'],'scriptSHA256':sha(script.read_bytes()),'projectCompilerOrSdkExecuted':False})
+  try:code,stdout,stderr=query(folder,'cmake-root',[tool['path'],'-P',str(script)],{'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C'},cwd=folder)
+  except BaseException as error:
+   record['queryFailure']=type(error).__name__+': '+str(error)
+   for stream in ['stdout','stderr']:
+    raw=folder/('cmake-root.'+stream)
+    if raw.is_file():
+     with raw.open('rb') as f:record[stream]=f.read(65536).decode('utf8',errors='replace')
+   raise
+  record.update({'exitCode':code,'stdout':stdout.decode('utf8',errors='replace'),'stderr':stderr.decode('utf8',errors='replace')})
+  match=re.fullmatch(rb'-- CHECKTRAIL_CMAKE_ROOT=(/[^\r\n\x00]+)\n',stdout)
+  need(code==0 and stderr==b'' and match is not None,'Exact stock CMake root metadata query failed')
+  selected=Path(match[1].decode('utf8'));record['reportedRoot']=str(selected);physical=selected.resolve(strict=True);record['physicalRoot']=str(physical)
+  installation=Path(tool['path']).parent.parent;need(installation in physical.parents and physical.is_dir() and (physical/'Modules').is_dir(),'Reported CMake module root escaped admitted physical installation or is missing')
+  need(physical in (physical/'Modules').resolve(strict=True).parents,'Physical CMake Modules directory escaped reported stock root')
+  return physical
+
+def host_admission(env,run=quick,admission=None):
+ admission={} if admission is None else admission
  need(platform.system()=='Darwin' and platform.machine()=='arm64','Native Darwin ARM64 required')
  need(os.getuid()==0,'Controller must run as root; build uses the existing nobody UID')
  need(env.get('GITHUB_ACTIONS')=='true' and env.get('RUNNER_ENVIRONMENT')=='github-hosted' and env.get('RUNNER_ARCH')=='ARM64','Standard hosted ARM runner required')
  need(env.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and env.get('GITHUB_REPOSITORY')=='stsepelin/checktrail','Reviewed manual repository workflow required')
  need(re.fullmatch('[0-9]+',env.get('GITHUB_RUN_ID','')) and re.fullmatch('[0-9a-f]{40}',env.get('GITHUB_SHA','')),'Exact hosted run/source identity required')
  need(re.fullmatch('20[0-9]{6}\\.[0-9]+\\.[0-9]+',env.get('ImageVersion','')),'Exact image version unavailable')
+ admission.update(imageVersion=env['ImageVersion'],physicalArchitecture=platform.machine())
  developer=Path('/Applications/Xcode_16.4.app/Contents/Developer').resolve(strict=True)
  selected={**env,'DEVELOPER_DIR':str(developer)}
- need(run(['/usr/bin/xcodebuild','-version'],env=selected)=='Xcode 16.4\nBuild version 16F6','Selected Xcode identity differs')
- need(run(['/usr/bin/xcrun','--sdk','macosx','--show-sdk-version'],env=selected)=='15.5','Selected SDK version differs')
- sdk=Path(run(['/usr/bin/xcrun','--sdk','macosx','--show-sdk-path'],env=selected)).resolve(strict=True)
+ admission['xcodeVersion']=run(['/usr/bin/xcodebuild','-version'],env=selected);need(admission['xcodeVersion']=='Xcode 16.4\nBuild version 16F6','Selected Xcode identity differs')
+ admission['sdkVersion']=run(['/usr/bin/xcrun','--sdk','macosx','--show-sdk-version'],env=selected);need(admission['sdkVersion']=='15.5','Selected SDK version differs')
+ admission['reportedSdkPath']=run(['/usr/bin/xcrun','--sdk','macosx','--show-sdk-path'],env=selected);sdk=Path(admission['reportedSdkPath']).resolve(strict=True);admission['physicalSdkPath']=str(sdk)
  need(developer in sdk.parents,'SDK escaped selected Xcode')
  need(run(['/usr/sbin/sysctl','-in','sysctl.proc_translated'],env=selected) in ('0',),'Translated execution refused')
  cpus=int(run(['/usr/sbin/sysctl','-n','hw.ncpu'],env=selected));memory=int(run(['/usr/sbin/sysctl','-n','hw.memsize'],env=selected))
  need(cpus>=3 and memory>=7*GIB,'Standard 3CPU/7GiB minimum unavailable')
- tools={}
+ tools={};admission['physicalTools']=tools
  for name in ['cmake','ninja','git','python3']:
   found=shutil.which(name,path=env.get('PATH'));need(found,'Required stock tool missing: '+name);tools[name]=physical_file(found)
  for name in ['clang','clang++','ld','strip','ar','ranlib']:
   tools[name]=physical_file(run(['/usr/bin/xcrun','--find',name],env=selected))
  for name,path in {'bash':'/bin/bash','find':'/usr/bin/find','tar':'/usr/bin/tar','sed':'/usr/bin/sed','sudo':'/usr/bin/sudo','env':'/usr/bin/env','sandbox-exec':'/usr/bin/sandbox-exec'}.items():tools[name]=physical_file(path)
  tools['cc-shim']=physical_file('/usr/bin/cc');tools['cxx-shim']=physical_file('/usr/bin/c++')
- need(run([tools['cmake']['path'],'--version']).splitlines()[0]=='cmake version 4.4.5','Selected CMake identity differs')
- need(run([tools['ninja']['path'],'--version'])=='1.13.2','Selected Ninja identity differs')
- cmake_modules=Path(tools['cmake']['path']).parent.parent/'share'/'cmake-4.4';need(cmake_modules.is_dir(),'Selected CMake module tree missing')
- git_exec=Path(run([tools['git']['path'],'--exec-path'])).resolve(strict=True);need(Path(tools['git']['path']).parent.parent in git_exec.parents,'Git helper tree escaped admitted installation')
+ admission['cmakeVersion']=run([tools['cmake']['path'],'--version']);need(admission['cmakeVersion'].splitlines()[0]=='cmake version 4.4.5','Selected CMake identity differs')
+ admission['ninjaVersion']=run([tools['ninja']['path'],'--version']);need(admission['ninjaVersion']=='1.13.2','Selected Ninja identity differs')
+ admission['cmakeRootQuery']={};cmake_modules=cmake_root_metadata(tools['cmake'],admission['cmakeRootQuery'])
+ admission['reportedGitExecPath']=run([tools['git']['path'],'--exec-path']);git_exec=Path(admission['reportedGitExecPath']).resolve(strict=True);admission['physicalGitExecPath']=str(git_exec);need(Path(tools['git']['path']).parent.parent in git_exec.parents,'Git helper tree escaped admitted installation')
  nobody=pwd.getpwnam('nobody');need(nobody.pw_uid not in (0,int(env.get('SUDO_UID','0'))),'Distinct existing build UID required')
  toolchain=next((p for p in Path(tools['clang']['path']).parents if p.name.endswith('.xctoolchain')),None);need(toolchain and developer in toolchain.parents,'Selected compiler toolchain escaped Xcode')
  protected=[env[k] for k in ['GITHUB_WORKSPACE','RUNNER_TEMP','GITHUB_ENV','GITHUB_OUTPUT','GITHUB_PATH','GITHUB_STATE','GITHUB_STEP_SUMMARY'] if env.get(k)]
@@ -226,6 +250,7 @@ def permission_admission(work,source,manifest,host,env,native,input_catalogs):
  for tool in host['tools'].values():
   p=Path(tool['path']);paths.add(str(p));paths.update(str(x) for x in p.parents)
  for catalog in input_catalogs:
+  paths.add(catalog['root']);paths.update(str(x) for x in Path(catalog['root']).parents)
   for row in catalog['entries']:
    p=Path(catalog['root'])/row['path'];paths.add(str(p))
    if row['type']=='symlink' and p.exists():
@@ -304,7 +329,17 @@ def validate_cache(text,source,host):
  return values
 
 def observe(args):
- host=host_admission(dict(os.environ));work=Path(args.work)
+ env=dict(os.environ)
+ need(os.getuid()==0 and env.get('GITHUB_ACTIONS')=='true' and env.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and env.get('GITHUB_REPOSITORY')=='stsepelin/checktrail' and re.fullmatch('[0-9]+',env.get('GITHUB_RUN_ID','')) and re.fullmatch('[0-9a-f]{40}',env.get('GITHUB_SHA','')),'Exact hosted operator context before admission evidence write')
+ runner_temp=Path(env.get('RUNNER_TEMP',''));need(runner_temp.is_absolute() and runner_temp==runner_temp.resolve(strict=True) and runner_temp.is_dir() and runner_temp.stat().st_uid in (0,int(env.get('SUDO_UID','0'))),'Physical exact runner-owned temporary root required')
+ admission_file=runner_temp/'binaryen-host-admission.json';need(not os.path.lexists(admission_file),'Fresh early host admission evidence required')
+ admission={'schemaVersion':1,'runId':env['GITHUB_RUN_ID'],'sourceCommit':env['GITHUB_SHA'],'complete':False,'originalProducerExecuted':False}
+ try:
+  host=host_admission(env,admission=admission);admission['complete']=True
+ except BaseException as error:
+  admission['failure']=type(error).__name__+': '+str(error);raise
+ finally:atomic_json(admission_file,admission,mode=0o644)
+ work=Path(args.work)
  need(work.parent==Path('/private/tmp') and re.fullmatch('checktrail-binaryen-'+host['runId']+'-[a-z0-9]{8,32}',work.name),'Owned work namespace required')
  need(not work.exists() and shutil.disk_usage(work.parent).free>=LIMITS['admissionFreeBytes'],'Fresh namespace/capacity required')
  manifest,objects,facts=load_capsule(Path(args.capsule),args.sha256,args.bytes)
