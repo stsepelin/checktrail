@@ -206,6 +206,24 @@ class Host(unittest.TestCase):
             with self.subTest(mutation=mutations.index(mutate)), self.assertRaisesRegex(ValueError, 'pinned image validation failed'):
                 h.validate_image(image, selected, registry, runtime)
 
+    def test_summary_finalizes_both_cache_flags_only_after_complete_service_replay_and_cleanup(self):
+        carrier={'ownedContainerCleanup':'removed','cacheSaveCompleted':False,'cacheRestoreReplayQualified':False,'capturedOriginalExit':0}
+        replay={'state':'phase0-service-cache-restored-and-physical-state-replayed','cacheSaveAndRestoreReplayed':True,
+                'fullSourceReportsAndMountStatePhysicallyReplayed':True,'receipt':{'physicalTreeVerified':True},
+                'nextPhase':'native','fullCompilerSdkBootstrapClosureVerified':False,'gateAComplete':False}
+        h.record_service_replay(carrier,replay)
+        self.assertEqual(carrier,{'ownedContainerCleanup':'removed','capturedOriginalExit':0,
+            'cacheSaveCompleted':True,'cacheRestoreReplayQualified':True,
+            'state':replay['state'],'serviceCacheRestoredAndReplayed':True,
+            'localLedgerIsProvisionalUntilServiceReplay':False,'phaseAdvancedTo':'native',
+            'allSelectedOriginalPhasesCompleted':False})
+        for key,value in [('cacheSaveAndRestoreReplayed',False),('fullSourceReportsAndMountStatePhysicallyReplayed',False),
+                          ('nextPhase','jit'),('gateAComplete',True),('receipt',{'physicalTreeVerified':False})]:
+            before={'ownedContainerCleanup':'removed','cacheSaveCompleted':False,'cacheRestoreReplayQualified':False}
+            changed={**replay,key:value}
+            with self.assertRaisesRegex(ValueError,'Incomplete service replay'):h.record_service_replay(before,changed)
+            self.assertFalse(before['cacheSaveCompleted']);self.assertFalse(before['cacheRestoreReplayQualified'])
+
     def test_actual_container_assembly_rejects_wrong_limits_mounts_and_early_execution(self):
         output=Path('/synthetic/output');catalog={'image':'synthetic-pinned-image','environment':s.FIXED_ENVIRONMENT}
         config={'Labels':{'io.checktrail.gcc-staged-owner':'synthetic-owner'},'User':'0:0','WorkingDir':'/work',
@@ -250,7 +268,7 @@ class Host(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'logical/physical'):
             h.admit_state({}, {}, {'logicalBytes':h.STATE_CEILING+1,'allocatedBytes':4096})
 
-    def observation(self,output,*,running=False,oom=False,clock=None,maximum=60,late_terminal=False):
+    def observation(self,output,*,running=False,oom=False,clock=None,maximum=60,late_terminal=False,scope='configure'):
         late_now=[0]
         if late_terminal:clock=lambda:late_now[0]
         read_fd,write_fd=os.pipe();os.write(write_fd,b'Synthetic original stdout\n');os.close(write_fd)
@@ -268,8 +286,22 @@ class Host(unittest.TestCase):
         service={'remainingSeconds':20000,'capturedMonotonic':0 if clock else h.time.monotonic()}
         with mock.patch.object(h.subprocess,'Popen',return_value=process),mock.patch.object(h,'docker',side_effect=docker),mock.patch.object(h.time,'sleep'):
             if clock:
-                with mock.patch.object(h.time,'monotonic',side_effect=clock):return h.native_observation(output,'synthetic-owner',maximum,service),calls
-            return h.native_observation(output,'synthetic-owner',maximum,service),calls
+                with mock.patch.object(h.time,'monotonic',side_effect=clock):return h.native_observation(output,'synthetic-owner',maximum,service,scope=scope),calls
+            return h.native_observation(output,'synthetic-owner',maximum,service,scope=scope),calls
+
+    def test_sdk_observer_scope_retains_true_body_terminal_without_claiming_a_gcc_phase(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-sdk-observe-synthetic-') as name:
+            output=Path(name).resolve();(output/'state').mkdir()
+            result,_=self.observation(output,scope='sdk-reconstruction')
+            self.assertEqual(result['containerState']['ExitCode'],0)
+            attempt=json.loads((output/'ATTEMPT.json').read_bytes())
+            self.assertEqual(attempt['nativePhase'],'sdk-reconstruction')
+            self.assertFalse(attempt['originalCommandTerminalAssessed'])
+            self.assertIsNone(attempt['nativeOriginalCommandExitCode'])
+        with mock.patch.object(h.subprocess,'Popen') as start:
+            with self.assertRaisesRegex(ValueError,'Unknown fixed hosted observation scope'):
+                h.native_observation(Path('/not-created'),'synthetic-owner',60,{},scope='arbitrary-target')
+            start.assert_not_called()
 
     def test_attach_zero_is_insufficient_without_clean_container_and_absent_native_family(self):
         for values in [{'running':True},{'oom':True}]:

@@ -252,7 +252,8 @@ def admit_state(resources, service, measured):
     return capacity.admit(resources, service, state_bytes=measured['allocatedBytes'], state_ceiling_bytes=STATE_CEILING)
 
 
-def native_observation(output, name, maximum_seconds, service_clock):
+def native_observation(output, name, maximum_seconds, service_clock, *, scope='configure'):
+    require(scope in ['configure', 'sdk-reconstruction'], 'Unknown fixed hosted observation scope')
     start = time.monotonic()
     process = subprocess.Popen(['/usr/bin/docker', 'start', '--attach', name], env=HOST_ENV,
                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
@@ -285,7 +286,7 @@ def native_observation(output, name, maximum_seconds, service_clock):
                     require(observed_bytes <= LOG_CEILING, 'Native log retention ceiling reached')
                     log.write(raw)
             status = process.wait(timeout=10)
-            require(status == 0, 'Original first-stage controller exited nonzero')
+            require(status == 0, 'Original first-stage controller exited nonzero' if scope == 'configure' else 'SDK reconstruction body exited nonzero; no GCC target was selected')
             require(time.monotonic() - start <= maximum_seconds and service_clock['remainingSeconds'] -
                     (time.monotonic() - service_clock['capturedMonotonic']) >= capacity.FINALIZE_SECONDS,
                     'Late native wrapper terminal cannot bypass the source-job/native cutoff')
@@ -311,7 +312,7 @@ def native_observation(output, name, maximum_seconds, service_clock):
                                                                  'physicalHighWaterProven': False}) + b'\n')
     state = json.loads(docker(['inspect', name]))[0]['State']
     attempt = {'schemaVersion': 1, 'elapsedSeconds': time.monotonic() - start,
-               'nativePhase': 'configure', 'sourceJobSecondsRemaining': service_clock['remainingSeconds'] -
+               'nativePhase': scope, 'sourceJobSecondsRemaining': service_clock['remainingSeconds'] -
                     (time.monotonic() - service_clock['capturedMonotonic']),
                'nativeOriginalCommandExitCode': None, 'originalCommandTerminalAssessed': False,
                'containerState': state, 'cutoffOrRetentionError': str(failure)[:1000] if failure else None,
@@ -338,6 +339,21 @@ def failed_retention_ledger(output, planner, configuration, body, observed, stag
         'checkpointSha256': None, 'retentionStage': stage, 'retentionFailure': str(failure)[:2048] or 'Unavailable retention'})
     (output / 'FAILED-PHASE-LEDGER.json').write_bytes(planner.canonical(ledger))
     return ledger
+
+
+def record_service_replay(carrier, replay):
+    require(carrier['ownedContainerCleanup'] == 'removed' and
+            replay['state'] == 'phase0-service-cache-restored-and-physical-state-replayed' and
+            replay['cacheSaveAndRestoreReplayed'] is True and
+            replay['fullSourceReportsAndMountStatePhysicallyReplayed'] is True and
+            replay['receipt']['physicalTreeVerified'] is True and replay['nextPhase'] == 'native' and
+            replay['fullCompilerSdkBootstrapClosureVerified'] is False and replay['gateAComplete'] is False,
+            'Incomplete service replay cannot finalize configure summary')
+    carrier.update(state=replay['state'], serviceCacheRestoredAndReplayed=True,
+                   cacheSaveCompleted=True, cacheRestoreReplayQualified=True,
+                   localLedgerIsProvisionalUntilServiceReplay=False, phaseAdvancedTo='native',
+                   allSelectedOriginalPhasesCompleted=False)
+
 
 
 def post_capture(args, repository, output):
@@ -368,9 +384,7 @@ def post_capture(args, repository, output):
             transport.prepare_restore(output, selected, capacity, codec, os.environ)
         elif args.mode == 'verify-restore':
             replay = transport.verify(output, selected, capacity, codec, planner, api, os.environ)
-            carrier.update(state=replay['state'], serviceCacheRestoredAndReplayed=True,
-                           localLedgerIsProvisionalUntilServiceReplay=False, phaseAdvancedTo='native',
-                           allSelectedOriginalPhasesCompleted=False)
+            record_service_replay(carrier, replay)
             (output / 'CARRIER.json').write_bytes(canonical(carrier) + b'\n')
         else:
             raise ValueError('Unknown closed post-capture mode')

@@ -1,6 +1,6 @@
 # REVIEW ONLY. Do not publish/dispatch before the complete carrier review.
 # Replacement ci.yml on the existing manual diagnostic branch, workflow 363121286.
-name: GCC hosted configure checkpoint
+name: GCC original SDK reconstruction diagnostic
 on:
   workflow_dispatch:
 permissions:
@@ -32,71 +32,41 @@ jobs:
           docker pull --platform linux/amd64 docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c
           node scripts/acquire-binutils-inputs.mjs --output "$RUNNER_TEMP/gcc-common-inputs" --operator-trust-execution
           node scripts/acquire-c-producer-inputs.mjs --profile gcc-12 --common-inputs "$RUNNER_TEMP/gcc-common-inputs/bundle" --output "$RUNNER_TEMP/gcc-inputs"
-      - name: Capture the genuine original configure boundary
-        id: capture
-        timeout-minutes: 95
-        env:
-          CHECKTRAIL_GITHUB_JOB_TOKEN: ${{ github.token }}
-        run: |
-          CHECKTRAIL_HOST_NODE="$(node --input-type=module --eval 'import { readFileSync, realpathSync } from "node:fs"; import { createHash } from "node:crypto"; const path = realpathSync(process.execPath); process.stdout.write(JSON.stringify({path, sha256: createHash("sha256").update(readFileSync(path)).digest("hex"), version: process.version}));')"
-          export CHECKTRAIL_HOST_NODE
-          sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,RUNNER_OS,RUNNER_ARCH,GITHUB_EVENT_NAME,GITHUB_REPOSITORY,GITHUB_REF,GITHUB_SHA,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT,GITHUB_JOB,RUNNER_TEMP,CHECKTRAIL_GITHUB_JOB_TOKEN,CHECKTRAIL_HOST_NODE \
-            python3 -I -B scripts/producer-qualification/gcc-hosted-carrier.py \
-            --repository "$GITHUB_WORKSPACE" --inputs "$RUNNER_TEMP/gcc-inputs/bundle" \
-            --output "$RUNNER_TEMP/gcc-phase0" --operator-trust-execution
-      - name: Reobserve complete shared cache headroom immediately before save
-        timeout-minutes: 3
-        env:
-          CHECKTRAIL_GITHUB_JOB_TOKEN: ${{ github.token }}
-        run: >-
-          sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,RUNNER_OS,RUNNER_ARCH,GITHUB_EVENT_NAME,GITHUB_REPOSITORY,GITHUB_REF,GITHUB_SHA,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT,GITHUB_JOB,RUNNER_TEMP,CHECKTRAIL_GITHUB_JOB_TOKEN
-          python3 -I -B scripts/producer-qualification/gcc-hosted-carrier.py
-          --repository "$GITHUB_WORKSPACE" --inputs "$RUNNER_TEMP/gcc-inputs/bundle"
-          --output "$RUNNER_TEMP/gcc-phase0" --mode pre-save
-      - name: Save the one bounded configure checkpoint
-        timeout-minutes: 10
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, official ref verified
-        with:
-          path: ${{ runner.temp }}/gcc-phase0-transport
-          key: gcc-phase0-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
-      - name: Move original bytes aside before service replay
-        timeout-minutes: 2
-        run: >-
-          sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,RUNNER_OS,RUNNER_ARCH,GITHUB_EVENT_NAME,GITHUB_REPOSITORY,GITHUB_REF,GITHUB_SHA,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT,GITHUB_JOB,RUNNER_TEMP
-          python3 -I -B scripts/producer-qualification/gcc-hosted-carrier.py
-          --repository "$GITHUB_WORKSPACE" --inputs "$RUNNER_TEMP/gcc-inputs/bundle"
-          --output "$RUNNER_TEMP/gcc-phase0" --mode prepare-restore
-      - name: Restore the exact source checkpoint without fallback keys
+      - name: Restore the independently pinned configure predecessor
+        id: predecessor
         timeout-minutes: 10
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ runner.temp }}/gcc-phase0-transport
-          key: gcc-phase0-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: gcc-phase0-9b237f06213d06bca5f94340c59bd40b2dccccd3-44140525465-1
           fail-on-cache-miss: true
-      - name: Independently replay service-restored source reports and mount state
-        timeout-minutes: 20
+      - name: Reconstruct and compare the original SDK without a GCC target
+        timeout-minutes: 50
         env:
           CHECKTRAIL_GITHUB_JOB_TOKEN: ${{ github.token }}
-        run: >-
-          sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,RUNNER_OS,RUNNER_ARCH,GITHUB_EVENT_NAME,GITHUB_REPOSITORY,GITHUB_REF,GITHUB_SHA,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT,GITHUB_JOB,RUNNER_TEMP,CHECKTRAIL_GITHUB_JOB_TOKEN
-          python3 -I -B scripts/producer-qualification/gcc-hosted-carrier.py
-          --repository "$GITHUB_WORKSPACE" --inputs "$RUNNER_TEMP/gcc-inputs/bundle"
-          --output "$RUNNER_TEMP/gcc-phase0" --mode verify-restore
-      - name: Retain bounded diagnostics including failed native-zero attempts
+          CHECKTRAIL_PREDECESSOR_CACHE_HIT: ${{ steps.predecessor.outputs.cache-hit }}
+        run: |
+          CHECKTRAIL_HOST_NODE="$(node --input-type=module --eval 'import { readFileSync, realpathSync } from "node:fs"; import { createHash } from "node:crypto"; const path = realpathSync(process.execPath); process.stdout.write(JSON.stringify({path, sha256: createHash("sha256").update(readFileSync(path)).digest("hex"), version: process.version}));')"
+          export CHECKTRAIL_HOST_NODE
+          sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,RUNNER_OS,RUNNER_ARCH,GITHUB_EVENT_NAME,GITHUB_REPOSITORY,GITHUB_REF,GITHUB_SHA,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT,GITHUB_JOB,RUNNER_TEMP,CHECKTRAIL_GITHUB_JOB_TOKEN,CHECKTRAIL_HOST_NODE,CHECKTRAIL_PREDECESSOR_CACHE_HIT \
+            python3 -I -B scripts/producer-qualification/gcc-hosted-sdk.py \
+            --repository "$GITHUB_WORKSPACE" --inputs "$RUNNER_TEMP/gcc-inputs/bundle" \
+            --output "$RUNNER_TEMP/gcc-sdk-reconstruction" --operator-trust-execution
+      - name: Retain bounded SDK reconstruction diagnostics
         if: always()
-        timeout-minutes: 3
+        timeout-minutes: 5
         run: >-
           sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,RUNNER_OS,RUNNER_ARCH,GITHUB_EVENT_NAME,GITHUB_REPOSITORY,GITHUB_REF,GITHUB_SHA,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT,GITHUB_JOB,RUNNER_TEMP
-          python3 -I -B scripts/producer-qualification/gcc-hosted-carrier.py
+          python3 -I -B scripts/producer-qualification/gcc-hosted-sdk.py
           --repository "$GITHUB_WORKSPACE" --inputs "$RUNNER_TEMP/gcc-inputs/bundle"
-          --output "$RUNNER_TEMP/gcc-phase0" --mode export-diagnostics
-      - name: Upload bounded first-stage metadata
+          --output "$RUNNER_TEMP/gcc-sdk-reconstruction" --mode export-diagnostics
+      - name: Upload bounded SDK reconstruction metadata
         if: always()
         timeout-minutes: 5
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: gcc-phase0-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/gcc-phase0-diagnostics
+          name: gcc-sdk-reconstruction-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/gcc-sdk-diagnostics
           if-no-files-found: error
           retention-days: 1
           compression-level: 0

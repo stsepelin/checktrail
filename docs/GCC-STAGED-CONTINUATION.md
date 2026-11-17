@@ -102,6 +102,28 @@ does not prove an enforced disk quota or physical high-water bound. The later
 main bootstrap still requires verified external SDK reconstruction and its own
 measured scratch, compression, transport and duration admission.
 
+## SDK reconstruction before the original bootstrap
+
+The fixed SDK reconstruction diagnostic restores the independently pinned
+configure checkpoint at the same cache path and branch. It verifies the complete
+physical project state before mounting that predecessor read-only. Fresh APT
+scratch stores preserve bytes, ownership, modes, hardlinks, symlinks and
+nanosecond timestamps; original package preparation uses the same authenticated
+offline command and environment.
+
+The comparison accounts for every external inventory entry and the complete
+installed-package inventory. Matching compiler, header, library and support files
+may receive their captured dependency timestamps only after byte/type/owner/mode/
+link identity matches a fresh physical inventory. Explicit operating identity and
+log differences remain visible. Unknown material differences refuse the next
+compiler target and retain their complete metadata for review. This does not
+claim an identical full container root or completion of the GCC producer.
+
+This diagnostic records SDK preparation separately and leaves the original
+phase ledger unchanged. The next original target remains `stamps/05-build-stamp`
+through the reviewed outer-rules proxy. Its compiler, scratch, archive, transport
+and whole source-job allowances require separate admission before execution.
+
 ## Physical checkpoint contract
 
 `gcc-staged-checkpoint.py` captures the entire logical `/build` tree with content
