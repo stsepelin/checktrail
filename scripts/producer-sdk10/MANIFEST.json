@@ -1,0 +1,117 @@
+{
+  "files": [
+    {
+      "bytes": 8595,
+      "path": "profile.json",
+      "sha256": "af00b2afccbab43821bc68e36aa0ce34fc1affb6ca012b1ec9010a97c973b197"
+    },
+    {
+      "bytes": 10914,
+      "path": "common.py",
+      "sha256": "c7d863cf1502600b11754d9d5aed90511481a6959f2a4d3b4a68ad3616eee72f"
+    },
+    {
+      "bytes": 49183,
+      "path": "driver.py",
+      "sha256": "124a367aec3068470004d746f2780b6f71620a4e9094bcde99033d4097fe4fac"
+    },
+    {
+      "bytes": 4648,
+      "path": "native_entry.py",
+      "sha256": "f05d0d8c40c45b35da511eff18f3f73881cc47b6b3dffee9ec4b0f11497f265c"
+    },
+    {
+      "bytes": 10041,
+      "path": "capture.py",
+      "sha256": "43c695a5e08d5c88e9ba979eb1cbce177f8a9fa7454d7504e4451e61f10228ef"
+    },
+    {
+      "bytes": 17671,
+      "path": "collect.py",
+      "sha256": "dc3873507f30c28478cc579489b3f3bb54009cf660183425dda5a4182c1c3f69"
+    },
+    {
+      "bytes": 1908,
+      "path": "crypto_bridge.py",
+      "sha256": "39bba5b8b24e96f3c7982d0d9af1869f12e0990fcea5932831d33e5438f350ce"
+    },
+    {
+      "bytes": 9803,
+      "path": "envelope.mjs",
+      "sha256": "398f0ed090cb7947ec25be030a71c0083c776ace50db8a5afd853277ff180921"
+    },
+    {
+      "bytes": 5187,
+      "path": "git_ack.py",
+      "sha256": "d5fd9dd661f26d6c6eddd3071d82752efe80ead9a59e258bc201e0a9738b852e"
+    },
+    {
+      "bytes": 6238,
+      "path": "transport_base.py",
+      "sha256": "13e7a3190903a915aa1efc9b9a35b72f8b7161bd9d177aa51b56685064a11206"
+    },
+    {
+      "bytes": 5722,
+      "path": "meter.py",
+      "sha256": "f9ded029ee9997ed454e5948129ff8ee59440d5b5754012016cb8bdb4ccf4e33"
+    },
+    {
+      "bytes": 621,
+      "path": "meter_runner.py",
+      "sha256": "61710f1d67c1765b9e802b1d7fadfe13fd465afa1db23a91350f01b0dce632be"
+    },
+    {
+      "bytes": 25068,
+      "path": "observer.py",
+      "sha256": "bafa9942ece302632df2b7cfb1e651d6e67ac64cdebf1137f91c7e36a1e9bb90"
+    },
+    {
+      "bytes": 56038,
+      "path": "input_prep.py",
+      "sha256": "0be5a03bec857fbed4796d49a2784057718998da79e7dafd94c4f7fe613f5452"
+    },
+    {
+      "bytes": 6055,
+      "path": "make_workflow.py",
+      "sha256": "c0e912732165f8bdd307e72fe932f88e21d669382b09e2edafecdcb73b49f9af"
+    },
+    {
+      "bytes": 2696,
+      "path": "run_checks.py",
+      "sha256": "e3b8294b3531ec80e6ae95d92b34e89115d7f2575b407e6c25a0783140edb183"
+    },
+    {
+      "bytes": 17959,
+      "path": "test_core.py",
+      "sha256": "6016b55f0b474ca0089f74e5f9fe7a078a80d215109a677cc4cd8475fc25cc3a"
+    },
+    {
+      "bytes": 11696,
+      "path": "test_observer.py",
+      "sha256": "87efc2a7fa01820b4a138f66e3645a4036a04cece2ad6582ecab6207c2e3e2c6"
+    },
+    {
+      "bytes": 10799,
+      "path": "test_integration.py",
+      "sha256": "3e6503936da15c1c7e8a840ee825f94847f226e0bd61cd7c171a1f70560bce95"
+    },
+    {
+      "bytes": 6278,
+      "path": "test_crypto.mjs",
+      "sha256": "c6d4995dc42a8fbdb37a543e031961fdbe78470a337f263c7fc50aed42118f8a"
+    },
+    {
+      "bytes": 8176,
+      "path": "test_compilers.py",
+      "sha256": "8c8559b4f0be757f5ebbb8e86d3fcb24d6302d232e27d132537688088f8480ac"
+    },
+    {
+      "bytes": 7341,
+      "path": "test_deadlines.py",
+      "sha256": "c5aa387b03d3942f632f1cd1bfaaf4a293a257399d2a60af6045233b8af2e9e7"
+    }
+  ],
+  "firstPartyCodeOnly": true,
+  "nativeActionsRequireConcreteOperatorReview": true,
+  "schemaVersion": 1
+}
