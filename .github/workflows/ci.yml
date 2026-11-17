@@ -156,13 +156,24 @@ jobs:
               need(controller_path.stat().st_uid==0 and digest(controller_path.read_bytes())==controller['sha256'],'root-controller-identity-differs')
               good,paths=protected_path(controller_path,actual['uid'],access)
               need(good,'controller-writable-by-build-identity')
+              records={row['path']:row for row in frame}
+              need(len(records)==len(frame),'duplicate-selected-permission-frame-path')
               failures=[];count=0;current=[]
               for row in frame:
                   path=Path(row['path']);now=metadata(path)
                   need(all(now[k]==row[k] for k in now),'selected-metadata-changed-before-permission-probe')
-                  if row['type']=='symlink':need(os.readlink(path)==row['target'] and str(path.resolve(strict=True))==row['physicalPath'],'selected-link-changed')
+                  execution_row=row
+                  if row['type']=='symlink':
+                      need(os.readlink(path)==row['target'] and str(path.resolve(strict=True))==row['physicalPath'],'selected-link-changed')
+                      physical=records.get(row['physicalPath'])
+                      need(physical is not None and physical['type'] in ('file','directory'),'bound-physical-target-record-required')
+                      physical_path=Path(physical['path']);physical_now=metadata(physical_path)
+                      need(all(physical_now[k]==physical[k] for k in physical_now),'bound-physical-target-metadata-changed')
+                      physical_mode=physical_path.lstat().st_mode
+                      need(physical_path.resolve(strict=True)==physical_path and (stat.S_ISREG(physical_mode) if physical['type']=='file' else stat.S_ISDIR(physical_mode)),'bound-physical-target-type-differs')
+                      execution_row=physical
                   readable=access(path,os.R_OK)
-                  executable=access(path,os.X_OK) if row['type']=='directory' or row['mode'] & 0o111 else True
+                  executable=access(path,os.X_OK) if execution_row['type']=='directory' or execution_row['mode'] & 0o111 else True
                   protected,bad=protected_path(path,actual['uid'],access)
                   if not (readable and executable and protected):
                       count+=1
@@ -321,7 +332,7 @@ jobs:
 
           if __name__=='__main__':main()
           PY_TREESITTER_CURRENT_ADMISSION
-          printf '%s  %s\n' '75372424bcf0ca882a681c8708aa0b4ee057c9e8c5fe94d5370e45e432863fb0' "$staged" | /usr/bin/shasum -a 256 -c -
+          printf '%s  %s\n' '06bb9d23fc305375f8e7498caab3fb40cbe65e4e37f01d60ef6333c54c3fa49c' "$staged" | /usr/bin/shasum -a 256 -c -
           control_root="$(sudo -n /usr/bin/mktemp -d /private/tmp/checktrail-treesitter027-admission.XXXXXXXX)"
           case "$control_root" in /private/tmp/checktrail-treesitter027-admission.*) ;; *) exit 1 ;; esac
           cleanup() {
