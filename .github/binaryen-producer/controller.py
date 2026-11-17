@@ -60,7 +60,7 @@ def capture_control_query(capture,name,args,env,seconds=30,cwd=None):
  return code,paths[0].read_bytes(),paths[1].read_bytes()
 
 def deny_only_sudo_policy(code,stdout,stderr):
- denied=rb'User nobody is not allowed to run sudo on [A-Za-z0-9_.-]+\.\n?'
+ denied=rb'User nobody is not allowed to run sudo on(?: |\n {8})[A-Za-z0-9_.-]+\.\n?'
  need(code in (0,1) and ((re.fullmatch(denied,stdout) is not None and stderr==b'') or (stdout==b'' and re.fullmatch(denied,stderr) is not None)),'Unknown or permissive nobody sudo policy; bounded raw query retained')
  return {'exitCode':code,'standaloneDenialVerified':True,'policyModified':False}
 
@@ -140,7 +140,7 @@ def host_admission(env,run=quick,admission=None):
   found=shutil.which(name,path=env.get('PATH'));need(found,'Required stock tool missing: '+name);tools[name]=physical_file(found)
  for name in ['clang','clang++','ld','strip','ar','ranlib']:
   tools[name]=physical_file(run(['/usr/bin/xcrun','--find',name],env=selected))
- for name,path in {'bash':'/bin/bash','find':'/usr/bin/find','tar':'/usr/bin/tar','sed':'/usr/bin/sed','sudo':'/usr/bin/sudo','env':'/usr/bin/env','sandbox-exec':'/usr/bin/sandbox-exec'}.items():tools[name]=physical_file(path)
+ for name,path in {'bash':'/bin/bash','find':'/usr/bin/find','tar':'/usr/bin/tar','sed':'/usr/bin/sed','rm':'/bin/rm','mv':'/bin/mv','sudo':'/usr/bin/sudo','env':'/usr/bin/env','sandbox-exec':'/usr/bin/sandbox-exec'}.items():tools[name]=physical_file(path)
  tools['cc-shim']=physical_file('/usr/bin/cc');tools['cxx-shim']=physical_file('/usr/bin/c++')
  admission['cmakeVersion']=run([tools['cmake']['path'],'--version']);need(admission['cmakeVersion'].splitlines()[0]=='cmake version 4.4.5','Selected CMake identity differs')
  admission['ninjaVersion']=run([tools['ninja']['path'],'--version']);need(admission['ninjaVersion']=='1.13.2','Selected Ninja identity differs')
@@ -223,6 +223,15 @@ def build_environment(work,source,host):
  tools=host['tools'];paths=list(dict.fromkeys([str(Path(tools[k]['path']).parent) for k in ['cmake','ninja','git','python3','clang']]+['/usr/bin','/bin','/usr/sbin','/sbin']))
  result={'PATH':':'.join(paths),'HOME':host['buildHome'],'TMPDIR':str(work/'tmp'),'XDG_CACHE_HOME':str(work/'cache'),'LANG':'en_US.UTF-8','LC_ALL':'en_US.UTF-8','DEVELOPER_DIR':host['developerDir'],'SDKROOT':host['sdk'],'GITHUB_REF_NAME':'version_132','GIT_CONFIG_NOSYSTEM':'1','GIT_CONFIG_GLOBAL':str(work/'control'/'git-safe.config'),'GIT_TERMINAL_PROMPT':'0','GIT_OPTIONAL_LOCKS':'0'}
  return result
+
+def verify_pack_tools(host,env):
+ bindings={}
+ for name in ['rm','mv','tar','sed','cmake']:
+  need(name in host['tools'],'Original PACK external tool is not admitted: '+name)
+  found=shutil.which(name,path=env['PATH']);need(found is not None,'Original PACK external is unavailable on fixed build PATH: '+name)
+  actual=physical_file(found);need(actual==host['tools'][name],'Original PACK external resolved to a changed or foreign physical tool: '+name)
+  bindings[name]={'resolvedFromFixedBuildPATH':found,'physicalTool':actual}
+ return bindings
 
 def source_frame(source,manifest):
  result=[]
@@ -400,7 +409,9 @@ def observe(args):
   frozen_probe="import json,os,sys; from pathlib import Path; paths=json.loads(Path(sys.argv[1]).read_text()); assert not [p for p in paths if os.access(p,os.W_OK)],'frozen output writable'; print(len(paths))"
   native.run('frozen-output-denial',[host['tools']['python3']['path'],'-I','-c',frozen_probe,str(work/'control'/'frozen-output-paths.json')],env,source,120)
   for name in ['binaryen-version_132','binaryen-version_132-arm64-macos.tar.gz','binaryen-version_132-arm64-macos.tar.gz.sha256']:need(not (source/name).exists(),'Original pack target collision')
+  pack_before=verify_pack_tools(host,env);atomic_json(work/'capture'/'PACK-TOOLS-BEFORE.json',pack_before)
   native.run('pack',[host['tools']['bash']['path'],'-euo','pipefail','-c',PACK],env,source,LIMITS['packSeconds'],as_build=False)
+  pack_after=verify_pack_tools(host,env);need(pack_before==pack_after,'Original PACK external tool bindings changed');atomic_json(work/'capture'/'PACK-TOOLS-AFTER.json',pack_after)
   archive=source/'binaryen-version_132-arm64-macos.tar.gz';artifact=physical_file(archive)
   checksum=(source/'binaryen-version_132-arm64-macos.tar.gz.sha256').read_text().split()
   need(checksum==[artifact['sha256'],archive.name],'Original checksum output differs')

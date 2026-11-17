@@ -179,6 +179,26 @@ class NativeContractTests(unittest.TestCase):
   self.assertEqual(n.BUILD,['--build','out-arm64','-v','--config','Release','--target','install'])
   self.assertIn('rm -rf binaryen-$VERSION\nmv out-arm64/install binaryen-$VERSION',n.PACK)
   self.assertNotIn('ctest',n.PACK);self.assertNotIn('--parallel',n.BUILD)
+ def test_pack_entire_external_family_resolves_to_admitted_physical_tools_without_execution(self):
+  tools={};folder=self.root/'stock-bin';folder.mkdir()
+  for name in ['rm','mv','tar','sed','cmake']:
+   path=folder/name;path.write_bytes(('inert synthetic '+name).encode());path.chmod(0o755);tools[name]=n.physical_file(path)
+  actual=n.verify_pack_tools({'tools':tools},{'PATH':str(folder)})
+  self.assertEqual(set(actual),{'rm','mv','tar','sed','cmake'})
+  self.assertTrue(all(actual[name]['physicalTool']==tools[name] for name in tools))
+ def test_pack_foreign_path_changed_tools_and_missing_rm_or_mv_refuse(self):
+  tools={};folder=self.root/'stock-bin';folder.mkdir();foreign=self.root/'foreign-bin';foreign.mkdir()
+  for name in ['rm','mv','tar','sed','cmake']:
+   path=folder/name;path.write_bytes(('inert synthetic '+name).encode());path.chmod(0o755);tools[name]=n.physical_file(path)
+  for name in ['rm','mv']:
+   with self.subTest(missingAdmission=name),self.assertRaisesRegex(ValueError,'not admitted'):n.verify_pack_tools({'tools':{k:v for k,v in tools.items() if k!=name}},{'PATH':str(folder)})
+   path=folder/name;hidden=folder/(name+'-hidden');path.rename(hidden)
+   with self.subTest(missingExecutable=name),self.assertRaisesRegex(ValueError,'unavailable'):n.verify_pack_tools({'tools':tools},{'PATH':str(folder)})
+   hidden.rename(path)
+  path=foreign/'rm';path.write_bytes((folder/'rm').read_bytes());path.chmod(0o755)
+  with self.assertRaisesRegex(ValueError,'foreign physical tool'):n.verify_pack_tools({'tools':tools},{'PATH':str(foreign)+':'+str(folder)})
+  (folder/'mv').write_bytes(b'changed admitted tool')
+  with self.assertRaisesRegex(ValueError,'foreign physical tool'):n.verify_pack_tools({'tools':tools},{'PATH':str(folder)})
  def test_wrong_platform_refuses_before_stock_tool_or_source_calls(self):
   runner=mock.Mock()
   with mock.patch.object(n.platform,'system',lambda:'Linux'),self.assertRaisesRegex(ValueError,'Native Darwin ARM64'):n.host_admission({},runner)
@@ -279,6 +299,12 @@ class NativeContractTests(unittest.TestCase):
    for stdout,stderr in [(denial,b''),(b'',denial)]:self.assertTrue(n.deny_only_sudo_policy(code,stdout,stderr)['standaloneDenialVerified'])
   for code,stdout,stderr in [(2,denial,b''),(0,b' '+denial,b''),(0,denial,b'warning\n'),(0,denial+denial,b''),(0,denial[:-1]+b' ALL\n',b''),(0,b'User nobody may run sudo on host.\n',b''),(0,denial[:20],denial[20:])]:
    with self.subTest(code=code,stdout=stdout),self.assertRaisesRegex(ValueError,'Unknown or permissive'):n.deny_only_sudo_policy(code,stdout,stderr)
+ def test_sudo_wrapped_hostname_denial_accepts_only_exact_observed_eight_space_layout(self):
+  wrapped=b'User nobody is not allowed to run sudo on\n        synthetic-long-host.invalid.\n'
+  self.assertTrue(n.deny_only_sudo_policy(0,wrapped,b'')['standaloneDenialVerified'])
+  self.assertTrue(n.deny_only_sudo_policy(1,b'',wrapped)['standaloneDenialVerified'])
+  for invalid in [wrapped.replace(b'\n        ',b'\n    '),wrapped.replace(b'\n        ',b'\n\t'),wrapped.replace(b'\n        ',b'\n\n        '),wrapped+b'additional command permission\n',wrapped.replace(b'not allowed',b'allowed')]:
+   with self.subTest(invalid=invalid),self.assertRaisesRegex(ValueError,'Unknown or permissive'):n.deny_only_sudo_policy(0,invalid,b'')
  def test_metadata_query_retains_separate_actual_streams_exit_and_failure_receipt(self):
   capture=self.root/'capture';capture.mkdir()
   code,out,err=n.capture_control_query(capture,'synthetic-query',[sys.executable,'-I','-c',"import sys;print('stdout');print('stderr',file=sys.stderr);sys.exit(1)"],dict(os.environ))
