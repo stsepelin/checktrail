@@ -46,6 +46,10 @@ including compiler, SDK and bootstrap build inputs and complete original notices
 Verified pinned releases, payload reconstruction and source attribution contribute
 to that evidence. Unreproduced producer builds and unknown inputs remain open
 Gate A work; upstream reproducibility is not deferred to a later gate.
+The [hosted execution plan](HOSTED-PRODUCER-PLAN.md) uses standard public GitHub
+runners for this work; a historical SDK observed in delivered bytes is distinct
+from an SDK version explicitly required by the original recipe. Current hosted
+source-build evidence must retain that environment distinction.
 
 The finite [original producer-build controller](UPSTREAM-PRODUCER-BUILDS.md)
 prepares a fixed binutils package build with explicit native execution admission.
