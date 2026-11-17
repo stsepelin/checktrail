@@ -1,0 +1,223 @@
+{
+  "buildArgv": [
+    "./build.sh",
+    "--ci",
+    "--clean-while-building",
+    "--prepareMachine",
+    "-c",
+    "Release",
+    "/p:VerticalName=AzureLinux_x64_Cross_Alpine_arm64",
+    "/p:ArtifactsStagingDir=/work/staging",
+    "-os",
+    "linux-musl",
+    "-arch",
+    "arm64",
+    "--target-rid",
+    "linux-musl-arm64",
+    "/p:CrossBuild=true"
+  ],
+  "image": {
+    "configSHA256": "bd9a923f8e414d620d678509e29d7d7224301788e5943dee9231da3caee8d186",
+    "diffIDs": [
+      "12f31d9bbdcc354d786a73db7f5ce16d9f1443a0e64ac70185967d40a2a35ba4",
+      "dc09cb2f5416a9d51177f0d2c6c883b1e825d6c389ea50473f8e4a96a381df5e",
+      "27d485c47480b14f380fd200c1fddf8dad9b2032adddae4d231bf10a57efae2f",
+      "1fa0c540d09a15079a5ec361618c8c26d081f538132c913160e405018cb6cd9c"
+    ],
+    "manifestSHA256": "45db477704550c9b46d5366ceef07c22fb838c60ab32cfab8b27a396ecf1d38b",
+    "physicalCompilerHeaders": [
+      {
+        "bytes": 160770880,
+        "path": "/usr/local/bin/clang-20",
+        "sha256": "183894010401cff2c06fb1b65677a2a6650c0887f8c455e05bca51981130c50c"
+      },
+      {
+        "bytes": 95985648,
+        "path": "/usr/local/bin/lld",
+        "sha256": "275c2897194ad88834c953bb91ca9ca10ca73007866379d46b6174fa3af85a97"
+      },
+      {
+        "bytes": 19716432,
+        "path": "/usr/local/bin/llvm-ar",
+        "sha256": "3105c08b5777f6623cd68404bb19e9896c60ae9d9398430825fed85471ea6456"
+      },
+      {
+        "bytes": 1802360,
+        "path": "/usr/bin/gcc",
+        "sha256": "ca5abe4c4d6ed406d128c999c1da2c70facde6a016c172ce24c18d78a7f1eac5"
+      },
+      {
+        "bytes": 1802440,
+        "path": "/usr/bin/c++",
+        "sha256": "bd2e0da0fa334878eb73fb25746bb080a3f68961ec2400293192cbaf06e1f0ec"
+      },
+      {
+        "bytes": 6299,
+        "path": "/usr/local/include/llvm/Config/llvm-config.h",
+        "sha256": "0009aeb9e84280de2600e90ec60d27a0d5d9edae15a3a26fdf4d7744bdc85745"
+      },
+      {
+        "bytes": 5053,
+        "path": "/usr/local/lib/clang/20/include/stddef.h",
+        "sha256": "b3e62a046ddf28d09eedebe6eb9461cb7060e47cad2c69964b222c4eea10347e"
+      },
+      {
+        "bytes": 5887,
+        "path": "/crossrootfs/arm64/usr/include/stdio.h",
+        "sha256": "2915cfac1de92275ebca3af755b59b029af21ecb982227f0f0d0186f01f001ec"
+      },
+      {
+        "bytes": 4898,
+        "path": "/crossrootfs/arm64/usr/include/stdlib.h",
+        "sha256": "5f66ab3fe5e6ce8d535acbbed8858cd36247a1f821f9cf67a29f863e4b9c09d4"
+      },
+      {
+        "bytes": 2578,
+        "path": "/crossrootfs/arm64/usr/include/stdint.h",
+        "sha256": "b6e77f1611e56cf499233172cab8bc09c0f7d937f3daa5ad552e1712fc6663e5"
+      },
+      {
+        "bytes": 865,
+        "path": "/crossrootfs/arm64/usr/include/features.h",
+        "sha256": "6d228e77b88b69f70f9157548b6ec673ffc6b998ce6035fbbee0caddb8442903"
+      },
+      {
+        "bytes": 4179,
+        "path": "/crossrootfs/arm64/usr/include/limits.h",
+        "sha256": "d6fb743478f7a8dd27f057db844a806165709641b0d0e78fbf0cabf5c88f1e12"
+      },
+      {
+        "bytes": 1910,
+        "path": "/crossrootfs/arm64/usr/include/sys/types.h",
+        "sha256": "6118194c1a6214f9a05e264c5e5318b541534c9a86860ef9288e890674cce42c"
+      },
+      {
+        "bytes": 9367,
+        "path": "/crossrootfs/arm64/usr/include/pthread.h",
+        "sha256": "85ecd05b6e9845851bf5444b480326281fb1484d3e4646742a50aaea612c4ef3"
+      },
+      {
+        "bytes": 13478,
+        "path": "/crossrootfs/arm64/usr/include/unistd.h",
+        "sha256": "60b0afb76bdcff53465224f9be5d3194120bf87c0591079451899cbe81c21008"
+      }
+    ],
+    "rawLayerBytes": 6524793856,
+    "reference": "mcr.microsoft.com/dotnet-buildtools/prereqs@sha256:45db477704550c9b46d5366ceef07c22fb838c60ab32cfab8b27a396ecf1d38b",
+    "staticNoticePackageHandoffSHA256": "b1d52a05405b6b4733c0e7c24ee01c3e91dd7625d3debc961379a1df36744bb7"
+  },
+  "jobName": "sdk10-original",
+  "limits": {
+    "captureAndRecoverySeconds": 4500,
+    "captureBytes": 12884901888,
+    "captureMembers": 2000000,
+    "carrierBytes": 134217728,
+    "cleanupSeconds": 300,
+    "freeReserve": 10737418240,
+    "logBytes": 536870912,
+    "maxCarriers": 98,
+    "maxWindows": 49,
+    "minCPUs": 4,
+    "minHostMemory": 16106127360,
+    "minimumFreeBeforeInputs": 79725330432,
+    "nativeCombinedSeconds": 14400,
+    "nativeMemory": 12884901888,
+    "nativePIDs": 1024,
+    "partBytes": 133169152,
+    "preparationSeconds": 1800,
+    "samplerMemory": 268435456,
+    "wholeSeconds": 21000,
+    "workBytes": 25769803776
+  },
+  "repository": "stsepelin/checktrail",
+  "schemaVersion": 1,
+  "seed": {
+    "bytes": 240133692,
+    "sha256": "7ad9d2db01512e41fd580a0630321bb70cd062d7fe4c5badfb4ce81ec1eddbb8",
+    "sha512": "1033977dd837150e0814cf0c5d5b17ceb63925fda7ba2158b47258a4bd7c048cf82eac3bc1166f3146f53124a3f5fba09db1de1260d2ce96399860303b404b48",
+    "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.400/dotnet-sdk-10.0.400-linux-x64.tar.gz"
+  },
+  "seedVersion": "10.0.400",
+  "source": {
+    "archive": {
+      "bytes": 292872198,
+      "sha256": "a0fdca947841662ac25d07c1bf523a3456518e0de328b10c5c4e9cc929a3a010",
+      "url": "https://codeload.github.com/dotnet/dotnet/tar.gz/e34a38d2ae1fc26406a317517196e55c68ff83ab"
+    },
+    "archiveLeaves": 81088,
+    "canonicalByteRestoredPaths": 857,
+    "commit": "e34a38d2ae1fc26406a317517196e55c68ff83ab",
+    "exportTree": "a77226ab00bbb0cf84746d96c0a6534a544a6b7b",
+    "leaves": 81090,
+    "missingAttributes": [
+      {
+        "bytes": 2387,
+        "gitBlobSHA1": "81543208f4cd1f1f88c275f07c8ae0094ece1306",
+        "sha256": "373232a293aa624d0610b1fab86ec8751c51f21fa94702fa5bd63ed4f9303ce6",
+        "sourcePath": "src/sdk/template_feed/Microsoft.DotNet.Common.ItemTemplates/content/Gitattributes/.gitattributes"
+      },
+      {
+        "bytes": 2390,
+        "gitBlobSHA1": "eef788daa6ee7b8fc415d2e0dffdfe534217c19d",
+        "sha256": "b9b25422cf3371104018fcd030673c8ffb3e330ddc5cc4c938267579866e6d5e",
+        "sourcePath": "src/sdk/test/dotnet-new.IntegrationTests/Approvals/AllCommonItemsCreate.-o#dotnet-gitattributes-file#-n#item.verified/dotnet-gitattributes-file/.gitattributes"
+      }
+    ],
+    "rawCommitBytes": 336,
+    "rawCommitSHA256": "e769a7ed2b7b241a0dceea2c23439fd6579189364b4e25bbf5aa164fa7970584",
+    "recursiveComponents": [
+      {
+        "expectedRootGitTree": "9b9db0ae34b4b59fbf6f4de05a32239e8c69542e",
+        "sourcePath": "src/nuget-client",
+        "url": "https://api.github.com/repos/dotnet/dotnet/git/trees/9b9db0ae34b4b59fbf6f4de05a32239e8c69542e?recursive=1"
+      },
+      {
+        "expectedRootGitTree": "6d3302219f64f2bf473b2e3fd499f41b6ebab690",
+        "sourcePath": "src/scenario-tests",
+        "url": "https://api.github.com/repos/dotnet/dotnet/git/trees/6d3302219f64f2bf473b2e3fd499f41b6ebab690?recursive=1"
+      },
+      {
+        "expectedRootGitTree": "8f76da16cb6aa4b0a711621ee5a5496c02ef6863",
+        "sourcePath": "src/sdk",
+        "url": "https://api.github.com/repos/dotnet/dotnet/git/trees/8f76da16cb6aa4b0a711621ee5a5496c02ef6863?recursive=1"
+      },
+      {
+        "expectedRootGitTree": "8ae10619cc77654c8550feb5994927c8a9ce97b5",
+        "sourcePath": "src/source-build-assets",
+        "url": "https://api.github.com/repos/dotnet/dotnet/git/trees/8ae10619cc77654c8550feb5994927c8a9ce97b5?recursive=1"
+      },
+      {
+        "expectedRootGitTree": "a6ed14b28a668e8c1aad9af741b17500a26c0fe5",
+        "sourcePath": "src/templating",
+        "url": "https://api.github.com/repos/dotnet/dotnet/git/trees/a6ed14b28a668e8c1aad9af741b17500a26c0fe5?recursive=1"
+      }
+    ],
+    "tag": "v10.0.401",
+    "tree": "e1c0c92ba1256d6d8669aff6b49d2a73d5b3c844"
+  },
+  "sourceEndpointImmutabilityRequired": false,
+  "sourceExecutionCalledSandboxed": false,
+  "targetRID": "linux-musl-arm64",
+  "testArgv": [
+    "./build.sh",
+    "--test",
+    "--excludeCIBinarylog",
+    "/bl:artifacts/log/Release/Test.binlog",
+    "--ci",
+    "--clean-while-building",
+    "--prepareMachine",
+    "-c",
+    "Release",
+    "/p:VerticalName=AzureLinux_x64_Cross_Alpine_arm64",
+    "/p:ArtifactsStagingDir=/work/staging",
+    "-os",
+    "linux-musl",
+    "-arch",
+    "arm64",
+    "--target-rid",
+    "linux-musl-arm64"
+  ],
+  "upstreamNaturalTestSkipsOrUnavailableCountAsPass": false,
+  "workflowPath": ".github/workflows/ci.yml",
+  "workingTreeProjection": "Retain original exported bytes + two exact omitted attributes; preserve859canonical-original byte/projection evidence separately. Native original recipe may rewrite tracked files; snapshot before/after and all stopped work."
+}
