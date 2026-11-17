@@ -109,12 +109,22 @@ def validate_daemon(daemon, resources, output):
             'dockerAndStateShareFilesystem': root.stat().st_dev == output.stat().st_dev}
 
 
-def admit_host_node(record):
+def admit_host_node(record, output=None):
+    observation = {'requestedRuntime': record}
+    if output is not None:
+        (output / 'HOST-NODE-OBSERVATION.json').write_bytes(canonical(observation) + b'\n')
     path = Path(record['path'])
     require(path.is_absolute() and str(path.resolve(strict=True)) == record['path'],
             'Exact physical host Node path required')
-    mode = path.lstat().st_mode
-    require(stat.S_ISREG(mode) and mode & 0o111 and not mode & 0o022, 'Host Node must be a regular protected executable')
+    observed = path.lstat()
+    mode = observed.st_mode
+    observation.update(mode=stat.S_IMODE(mode), uid=observed.st_uid, gid=observed.st_gid,
+                       regularFile=stat.S_ISREG(mode), executable=bool(mode & 0o111))
+    if output is not None:
+        (output / 'HOST-NODE-OBSERVATION.json').write_bytes(canonical(observation) + b'\n')
+    # The trusted setup workflow binds this exact physical executable's bytes
+    # and version. Hosted tool-cache write bits are observed, not a new policy.
+    require(stat.S_ISREG(mode) and mode & 0o111, 'Host Node must be a regular executable')
     pin = digest_file(path, maximum=256 * 1024 ** 2)
     require(pin['sha256'] == record['sha256'], 'Host Node bytes differ across operator transition')
     version = subprocess.run([str(path), '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -468,7 +478,7 @@ def main():
     try:
         resources = capacity.stock_resources(output)
         source_witness = verify_repository(repository, resources['context'])
-        node_runtime = admit_host_node(json.loads(os.environ['CHECKTRAIL_HOST_NODE']))
+        node_runtime = admit_host_node(json.loads(os.environ['CHECKTRAIL_HOST_NODE']), output)
         (output / 'HOST-NODE.json').write_bytes(canonical(node_runtime) + b'\n')
         api = capacity.GitHub(os.environ.get('CHECKTRAIL_GITHUB_JOB_TOKEN'), output)
         service = capacity.capture_service(api, resources['context'])

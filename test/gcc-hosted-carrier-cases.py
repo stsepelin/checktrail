@@ -127,6 +127,58 @@ class Host(unittest.TestCase):
         image['Config'] = {'Env': ['EXCLUDED_SYNTHETIC=not-an-identity-field']}
         self.assertNotIn('Config', h.observed_image_fields(image))
 
+    def test_host_toolcache_write_modes_are_observations_and_byte_identity_stays_required(self):
+        record = node_record(); path = Path(record['path']); actual_lstat = Path.lstat
+        for permissions in [0o755, 0o775, 0o777]:
+            # Synthetic lstat mode changes only the condition under test; the
+            # actual selected Node executable still performs both bridge calls.
+            def mode_observation(candidate, **options):
+                result = actual_lstat(candidate, **options)
+                if candidate == path:
+                    values = list(result); values[0] = stat.S_IFREG | permissions
+                    return os.stat_result(values)
+                return result
+            with tempfile.TemporaryDirectory(prefix='gcc-node-mode-synthetic-') as name:
+                output = Path(name)
+                with mock.patch.object(Path, 'lstat', mode_observation):
+                    try:
+                        runtime = h.admit_host_node(record, output)
+                    except ValueError as error:
+                        self.fail('Valid hosted tool-cache mode refused: ' + str(error))
+                    image, selected, registry, _ = image_fixture()
+                    self.assertTrue(h.validate_image(image, selected, registry, runtime)['nativeAmd64'])
+                    changed = {**record, 'sha256': '0'*64}
+                    with self.assertRaisesRegex(ValueError, 'bytes differ'):
+                        h.admit_host_node(changed, output)
+                observation = json.loads((output/'HOST-NODE-OBSERVATION.json').read_bytes())
+                self.assertEqual(observation['mode'], permissions)
+                self.assertEqual(observation['requestedRuntime'], changed)
+                self.assertTrue(observation['regularFile']);self.assertTrue(observation['executable'])
+        with tempfile.TemporaryDirectory(prefix='gcc-node-refusal-synthetic-') as name:
+            output = Path(name); changed = {**record, 'sha256': '0'*64}
+            with self.assertRaisesRegex(ValueError, 'bytes differ'):h.admit_host_node(changed, output)
+            self.assertTrue((output/'HOST-NODE-OBSERVATION.json').is_file())
+            self.assertFalse((output/'HOST-NODE.json').exists())
+
+    def test_host_runtime_non_executable_and_special_file_modes_refuse_before_execution(self):
+        record = node_record(); path = Path(record['path']); actual_lstat = Path.lstat
+        for rejected_mode in [stat.S_IFREG | 0o644, stat.S_IFIFO | 0o777, stat.S_IFLNK | 0o777]:
+            def mode_observation(candidate, **options):
+                result = actual_lstat(candidate, **options)
+                if candidate == path:
+                    values = list(result); values[0] = rejected_mode
+                    return os.stat_result(values)
+                return result
+            with tempfile.TemporaryDirectory(prefix='gcc-node-type-synthetic-') as name:
+                output = Path(name)
+                with mock.patch.object(Path, 'lstat', mode_observation), mock.patch.object(h.subprocess, 'run') as execute:
+                    with self.assertRaisesRegex(ValueError, 'regular executable'):
+                        h.admit_host_node(record, output)
+                    execute.assert_not_called()
+                observed = json.loads((output/'HOST-NODE-OBSERVATION.json').read_bytes())
+                self.assertEqual(observed['mode'], rejected_mode & 0o777)
+                self.assertTrue(not observed['regularFile'] or not observed['executable'])
+
     def test_refused_image_keeps_only_its_exact_admission_fields_before_failure(self):
         runtime = h.admit_host_node(node_record())
         image, selected, registry, _ = image_fixture(); image['Id'] = 'sha256:' + '0'*64
