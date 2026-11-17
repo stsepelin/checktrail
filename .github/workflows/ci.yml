@@ -1,69 +1,670 @@
-name: Native candidate acceptance
+name: Windows resource preparation ACL diagnostics
 on:
-  workflow_dispatch: null
+  workflow_dispatch: {}
 permissions:
   contents: read
-env:
-  SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
-concurrency:
-  group: native-candidate-acceptance-${{ github.ref }}
-  cancel-in-progress: false
 jobs:
-  candidate-windows-provenance:
-    name: Candidate Windows original provenance source and fresh controls
+  resource-acl:
+    name: First resource preparation ACL (${{ matrix.mode }})
     runs-on: windows-2025
-    timeout-minutes: 45
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        mode:
+          - cold-original
+          - cold-instrumented
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: d6fe2c2024367315a992ad9dc753ef1957e39d5c
           persist-credentials: false
+          ref: fe6461e3da07959bc040dba14134dc102885a0ef
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: 22.23.3
           cache: npm
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+        with:
+          go-version: 1.27.1
+          cache: false
       - run: npm ci --ignore-scripts --no-audit --no-fund
-      - run: npm run typecheck
       - run: npm run build
-      - name: Diagnose native Windows private-access setup boundaries
-        run: node scripts/diagnose-windows-task-access.mjs
-      - run: node scripts/prepare-package-cache.mjs
-      - name: Require actual nested stage timeout and parent-loss ownership
-        timeout-minutes: 3
+      - name: Prepare pinned production installation cache
+        run: node scripts/prepare-package-cache.mjs
+      - name: Observe first original resource preparation protection only
+        timeout-minutes: 2
         shell: pwsh
-        run: |
-          node --test --test-reporter=tap '--test-name-pattern=^provenance stage owner (timeout|parent loss) reaps nested file descendants and preserves an unrelated sibling$' dist/test/native-provenance-runtime.test.js
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $entry = Join-Path $env:RUNNER_TEMP 'checktrail-provenance-owner-controls.mjs'
-          @'
-          import assert from 'node:assert/strict';
-          import path from 'node:path';
-          import { pathToFileURL } from 'node:url';
-          const { runRequiredTests } = await import(pathToFileURL(path.resolve('scripts/required-test-evidence.mjs')).href);
-          const names = [
-            'provenance stage owner timeout reaps nested file descendants and preserves an unrelated sibling',
-            'provenance stage owner parent loss reaps nested file descendants and preserves an unrelated sibling',
-          ];
-          const evidence = await runRequiredTests(names.map(name => ({file: 'dist/test/native-provenance-runtime.test.js', name})), {timeoutMs: 120000, isolatedCaseWorkers: 1});
-          console.log(JSON.stringify({schemaVersion: 1, status: 'observed-required-owner-evidence', evidence}));
-          assert.equal(evidence.required, 2);
-          assert.equal(evidence.complete, true, JSON.stringify(evidence.problems));
-          assert.deepEqual(evidence.ledger.cases.map(({name, outcome}) => ({name, outcome})), names.map(name => ({name, outcome: 'passed'})));
-          console.log(JSON.stringify({schemaVersion: 1, status: 'passed-original-nested-stage-owner-controls', evidence}));
-          '@ | Set-Content -LiteralPath $entry -Encoding utf8
-          node $entry
-      - name: Require provenance composition from source and a fresh offline package
-        id: native-provenance-runtime
-        timeout-minutes: 30
-        run: node scripts/verify-native-provenance-runtime.mjs windows-node22
         env:
-          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
-      - name: Retain original bounded provenance runtime receipt bytes
-        if: ${{ !cancelled() && steps.native-provenance-runtime.outcome == 'success' }}
+          CHECKTRAIL_ACL_PROBE_RECEIPT: ${{ runner.temp }}\resource-release-acl.json
+        run: |
+          $entry = Join-Path $env:RUNNER_TEMP 'checktrail-resource-acl-probe.mjs'
+          @'
+          // Fixed first-party Windows ACL startup diagnostic. Never runtime qualification.
+          import assert from "node:assert/strict";
+          import { Buffer } from "node:buffer";
+          import { spawnSync } from "node:child_process";
+          import { createHash } from "node:crypto";
+          import {
+            constants,
+            closeSync,
+            fstatSync,
+            lstatSync,
+            openSync,
+            readFileSync,
+            realpathSync,
+          } from "node:fs";
+          import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+          import os from "node:os";
+          import path from "node:path";
+          import process from "node:process";
+          import { fileURLToPath, pathToFileURL } from "node:url";
+          const sourceCommit = "fe6461e3da07959bc040dba14134dc102885a0ef";
+          const sourcePins = [
+            [
+              "src/windows-task-access.ts",
+              15278,
+              "4018769733a9f34d32b5d3f4664c9dfc330768cefd54fc0ef94f27f55b177b1d",
+            ],
+            [
+              "dist/src/windows-task-access.js",
+              15052,
+              "b3e0c2fef723b0e3a257d1be39c796af67b5ca6a313d09e9a61a9e0ab99e7d33",
+            ],
+          ];
+          export const originalScriptPin = {
+            bytes: 2861,
+            sha256: "945c23447150a9e8eff6fb4ea566defa6cdac4be08e16438b74ebd3ca0a98f96",
+          };
+          export const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
+          export const bytesIdentity = (bytes) => ({
+            bytes: bytes.length,
+            sha256: sha(bytes),
+          });
+          const same = (a, b) =>
+            ["dev", "ino", "mode", "size", "mtimeMs", "ctimeMs"].every(
+              (k) => a[k] === b[k],
+            );
+          function regular(file, maximum) {
+            const named = lstatSync(file);
+            assert.ok(named.isFile() && !named.isSymbolicLink());
+            assert.ok(named.size > 0 && named.size <= maximum);
+            const fd = openSync(
+              file,
+              constants.O_RDONLY |
+                (constants.O_NOFOLLOW ?? 0) |
+                (constants.O_NONBLOCK ?? 0),
+            );
+            try {
+              assert.ok(same(named, fstatSync(fd)));
+              const bytes = readFileSync(fd);
+              assert.equal(bytes.length, named.size);
+              assert.ok(same(named, fstatSync(fd)) && same(named, lstatSync(file)));
+              return bytes;
+            } finally {
+              closeSync(fd);
+            }
+          }
+          export function extractOriginal(compiled) {
+            const matches = [
+              ...compiled.matchAll(/const accessScript = String\.raw\s*`([\s\S]*?)`;/gu),
+            ];
+            assert.equal(matches.length, 1);
+            const script = matches[0][1];
+            assert.deepEqual(bytesIdentity(Buffer.from(script)), originalScriptPin);
+            return script;
+          }
+          export const phaseNames = [
+            "script-entry",
+            "before-input-encoding",
+            "after-input-encoding",
+            "after-output-encoding",
+            "before-assembly-load",
+            "after-serializer-configuration",
+            "before-stdin-read",
+            "after-stdin-read",
+            "after-current-identity",
+            "before-set-access",
+            "after-set-access",
+            "before-get-access",
+            "after-get-access",
+            "before-serialization",
+            "after-serialization",
+            "script-return",
+          ];
+          export function instrumentOriginal(script) {
+            assert.deepEqual(bytesIdentity(Buffer.from(script)), originalScriptPin);
+            const markers = [];
+            const marker = (id) => {
+              const text =
+                "\n[Console]::Error.WriteLine(([string]" +
+                id +
+                " + ',' + [Diagnostics.Stopwatch]::GetTimestamp() + ',' + [Diagnostics.Stopwatch]::Frequency))\n";
+              markers.push(text);
+              return text;
+            };
+            let result = marker(0) + script;
+            const edits = [
+              ["[Console]::InputEncoding = [Text.UTF8Encoding]::new($false)", 1, 2],
+              ["[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)", null, 3],
+              [
+                "[void][System.Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35')",
+                4,
+                null,
+              ],
+              ["$serializer.RecursionLimit = 8", null, 5],
+              [
+                "$request = $serializer.DeserializeObject([Console]::In.ReadToEnd())",
+                6,
+                7,
+              ],
+              [
+                "$identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()",
+                null,
+                8,
+              ],
+              ["$item.SetAccessControl($acl)", 9, 10],
+              ["$acl = $item.GetAccessControl()", 11, 12],
+              ["[Console]::Out.WriteLine($serializer.Serialize($observed))", 13, 14],
+            ];
+            for (const [needle, before, after] of edits) {
+              assert.equal(result.split(needle).length, 2);
+              result = result.replace(
+                needle,
+                (before === null ? "" : marker(before)) +
+                  needle +
+                  (after === null ? "" : marker(after)),
+              );
+            }
+            result += marker(15);
+            let restored = result;
+            for (const m of markers) {
+              assert.equal(restored.split(m).length, 2);
+              restored = restored.replace(m, "");
+            }
+            assert.equal(restored, script);
+            return result;
+          }
+          export function numericPhases(stderr) {
+            assert.ok(Buffer.isBuffer(stderr) && stderr.length <= 32768);
+            const lines = stderr.toString("utf8").split(/\r?\n/u);
+            const events = [];
+            let previous = -1,
+              first = null,
+              previousTick = null,
+              frequency = null;
+            for (const line of lines) {
+              if (!/^[0-9]+,[0-9]+,[0-9]+$/u.test(line)) continue;
+              const [id, ticks, freq] = line.split(",");
+              assert.ok(id.length <= 2 && ticks.length <= 20 && freq.length <= 20);
+              const n = Number(id),
+                t = BigInt(ticks),
+                f = BigInt(freq);
+              assert.ok(n > previous && n < phaseNames.length && f > 0n);
+              assert.ok(events.length < phaseNames.length);
+              frequency ??= f;
+              assert.equal(f, frequency);
+              first ??= t;
+              assert.ok(t >= first && (previousTick === null || t >= previousTick));
+              previousTick = t;
+              assert.ok(((t - first) * 1000000n) / f <= 60000000n);
+              events.push({
+                id: n,
+                elapsedMs: Number(((t - first) * 1000000n) / f) / 1000,
+              });
+              previous = n;
+            }
+            return events;
+          }
+          export async function prepareProbeDirectory(
+            temporary,
+            label,
+            phase = () => {},
+          ) {
+            phase(1);
+            const selected = path.join(temporary, label);
+            await mkdir(selected, { recursive: true });
+            phase(2);
+            const target = realpathSync(selected);
+            phase(3);
+            return target;
+          }
+          export async function prepareProbeWrapper(temporary, text, phase = () => {}) {
+            phase(4);
+            const wrapper = path.join(temporary, "original-call.mjs");
+            await writeFile(wrapper, text);
+            phase(5);
+            return wrapper;
+          }
+          export function boundedProbeFailure(error, phase) {
+            const syscalls = new Set([
+              "mkdir",
+              "realpath",
+              "lstat",
+              "stat",
+              "open",
+              "read",
+              "write",
+              "scandir",
+              "spawn",
+              "spawnSync",
+            ]);
+            const frames = [];
+            // Only errors raised by this fixed first-party probe reach this projection.
+            // Raw messages/paths/stacks are never emitted or retained in the receipt.
+            const stack =
+              error instanceof Error && typeof error.stack === "string"
+                ? error.stack.slice(0, 8192)
+                : "";
+            const url = import.meta.url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const pattern = new RegExp(url + ":([0-9]+):([0-9]+)", "g");
+            for (const match of stack.matchAll(pattern)) {
+              const line = Number(match[1]),
+                column = Number(match[2]);
+              if (
+                line > 0 &&
+                line <= 1000 &&
+                column > 0 &&
+                column <= 4096 &&
+                frames.length < 4
+              )
+                frames.push({ line, column });
+            }
+            return {
+              phase,
+              syscall: syscalls.has(error?.syscall) ? error.syscall : "unknown",
+              frames,
+            };
+          }
+          function processMetadata(result) {
+            return {
+              status: result.status,
+              signal: result.signal,
+              code: typeof result.error?.code === "string" ? result.error.code : null,
+              pid: Number.isSafeInteger(result.pid) ? result.pid : null,
+              stdout: bytesIdentity(result.stdout ?? Buffer.alloc(0)),
+              stderr: bytesIdentity(result.stderr ?? Buffer.alloc(0)),
+            };
+          }
+          function alive(pid) {
+            if (!Number.isSafeInteger(pid) || pid <= 0) return null;
+            try {
+              process.kill(pid, 0);
+              return true;
+            } catch (error) {
+              if (error.code === "ESRCH") return false;
+              throw error;
+            }
+          }
+
+          export function requireFirstProtectCall(executable, args, options, expected) {
+            assert.equal(executable.toLowerCase(), expected.powershell.toLowerCase());
+            assert.deepEqual(args, [
+              "-NoProfile",
+              "-NonInteractive",
+              "-EncodedCommand",
+              Buffer.from(expected.original, "utf16le").toString("base64"),
+            ]);
+            assert.deepEqual(Object.keys(options).sort(), [
+              "encoding",
+              "env",
+              "input",
+              "maxBuffer",
+              "timeout",
+              "windowsHide",
+            ]);
+            assert.deepEqual(options.env, { SYSTEMROOT: expected.systemRoot });
+            assert.equal(options.encoding, "utf8");
+            assert.equal(options.windowsHide, true);
+            assert.equal(options.timeout, 15000);
+            assert.equal(options.maxBuffer, 32768);
+            const request = JSON.parse(options.input);
+            assert.deepEqual(Object.keys(request).sort(), ["created", "kind", "path"]);
+            assert.equal(request.kind, "directory");
+            assert.equal(request.created, true);
+            assert.equal(typeof request.path, "string");
+            const paths = path.win32;
+            assert.equal(
+              paths.dirname(request.path).toLowerCase(),
+              paths.join(expected.root, ".checktrail").toLowerCase(),
+            );
+            assert.match(
+              paths.basename(request.path),
+              /^\.prepare-release-readiness-[A-Za-z0-9_-]+$/u,
+            );
+            assert.equal(paths.normalize(request.path), request.path);
+            return request.path;
+          }
+
+          export function resourceWrapper({
+            root,
+            mode,
+            powershell,
+            systemRoot,
+            original,
+            instrumented,
+          }) {
+            assert.ok(["cold-original", "cold-instrumented"].includes(mode));
+            return `import assert from 'node:assert/strict';
+          import cp from 'node:child_process';
+          import { syncBuiltinESMExports } from 'node:module';
+          import { realpathSync, existsSync } from 'node:fs';
+          import path from 'node:path';
+          import { requireFirstProtectCall, numericPhases, bytesIdentity } from ${JSON.stringify(import.meta.url)};
+          const expected=${JSON.stringify({ root, powershell, systemRoot, original })};
+          const instrumented=${JSON.stringify(instrumented)};
+          const mode=${JSON.stringify(mode)};
+          const nativeExec=cp.execFileSync, nativeSpawn=cp.spawnSync;
+          const stop=new Error('Fixed no-network boundary');
+          let calls=0,fetchCalls=0,npmCalls=0,target=null,observation=null,reachedBoundary=false,failure=null;
+          const begun=Date.now();
+          const alive=(pid)=>{if(!Number.isSafeInteger(pid)||pid<=0)return null;try{process.kill(pid,0);return true;}catch(e){if(e.code==='ESRCH')return false;throw e;}};
+          cp.execFileSync=(file,args,options)=>{
+           assert.equal(++calls,1);
+           target=requireFirstProtectCall(file,args,options,expected);
+           assert.equal(realpathSync(target).toLowerCase(),target.toLowerCase());
+           const started=Date.now();
+           if(mode==='cold-original'){
+            try{
+             const stdout=nativeExec(file,args,options);
+             observation={mode,elapsedMs:Date.now()-started,status:0,signal:null,code:null,stdout:bytesIdentity(Buffer.from(stdout)),stderr:null,pid:null,pidObservedGone:null,pidAvailability:'not-exposed-by-original-api',phases:[],lastPhase:null};
+             return stdout;
+            }catch(error){
+             const pid=Number.isSafeInteger(error.pid)&&error.pid>0?error.pid:null;
+             observation={mode,elapsedMs:Date.now()-started,status:Number.isInteger(error.status)?error.status:null,signal:['SIGTERM','SIGKILL','SIGABRT'].includes(error.signal)?error.signal:null,code:['ETIMEDOUT','ENOENT','EACCES','EPERM','ENOBUFS'].includes(error.code)?error.code:null,stdout:bytesIdentity(Buffer.from(error.stdout??'')),stderr:bytesIdentity(Buffer.from(error.stderr??'')),pid,pidObservedGone:alive(pid)===false?true:null,pidAvailability:pid===null?'not-exposed-by-original-api':'error-result',phases:[],lastPhase:null};
+             throw error;
+            }
+           }
+           // Only the numeric-marker diagnostic uses spawnSync to retain stderr and PID.
+           // The uninstrumented cold job above keeps the original execFileSync API.
+           const changed=[...args];changed[3]=Buffer.from(instrumented,'utf16le').toString('base64');
+           const result=nativeSpawn(file,changed,options);
+           const phases=numericPhases(Buffer.from(result.stderr??''));
+           observation={mode,elapsedMs:Date.now()-started,status:result.status,signal:result.signal,code:['ETIMEDOUT','ENOENT','EACCES','EPERM','ENOBUFS'].includes(result.error?.code)?result.error.code:null,stdout:bytesIdentity(Buffer.from(result.stdout??'')),stderr:bytesIdentity(Buffer.from(result.stderr??'')),pid:Number.isSafeInteger(result.pid)?result.pid:null,pidObservedGone:alive(result.pid)===false?true:null,pidAvailability:'spawn-result',phases,lastPhase:phases.at(-1)?.id??null};
+           if(result.error||result.status!==0){const error=result.error??new Error('Fixed instrumented process failure');Object.assign(error,{status:result.status,signal:result.signal,stdout:result.stdout,stderr:result.stderr,pid:result.pid});throw error;}
+           return result.stdout;
+          };
+          syncBuiltinESMExports();
+          try{
+           const tools=await import(${JSON.stringify(pathToFileURL(path.join(root, "scripts/release-readiness-tools.mjs")).href)});
+           assert.equal(tools.releaseToolsDirectory,path.join(expected.root,'.checktrail/release-readiness-tools'));
+           assert.equal(existsSync(tools.releaseToolsDirectory),false);
+           await tools.prepareReleaseTools({fetchImpl:()=>{fetchCalls++;assert.equal(calls,1);throw stop;},invokeNpm:()=>{npmCalls++;throw new Error('Forbidden npm boundary');}});
+           failure='UNEXPECTED_PREPARATION_SUCCESS';
+          }catch(error){
+           if(error===stop)reachedBoundary=true;
+           else if(error?.cause?.schemaVersion===1&&['process','json'].includes(error.cause.phase)){
+            const c=error.cause;failure={kind:'ORIGINAL_ACL_INSPECTION_UNAVAILABLE',phase:c.phase,code:['ETIMEDOUT','ENOENT','EACCES','EPERM','ENOBUFS'].includes(c.code)?c.code:null,status:c.status,signal:['SIGTERM','SIGKILL','SIGABRT'].includes(c.signal)?c.signal:null,stdout:c.stdout,stderr:c.stderr};
+           }else failure='DIAGNOSTIC_CONTROL_REFUSAL';
+          }finally{
+           cp.execFileSync=nativeExec;syncBuiltinESMExports();
+          }
+          assert.equal(npmCalls,0);
+          assert.ok(fetchCalls===0||fetchCalls===1);
+          assert.ok(observation===null||observation.elapsedMs<=20000);
+          console.log(JSON.stringify({schemaVersion:1,calls,fetchCalls,npmCalls,reachedBoundary,failure,elapsedMs:Date.now()-begun,observation,preparationTargetRemoved:target!==null&&!existsSync(target),publishedToolsAbsent:!existsSync(path.join(expected.root,'.checktrail/release-readiness-tools')),builtinRestored:cp.execFileSync===nativeExec,remoteFetchExecuted:false,baselineExecuted:false}));
+          `;
+          }
+
+          let preflightStage = 0;
+          async function main(mode) {
+            preflightStage = 1;
+            assert.ok(["cold-original", "cold-instrumented"].includes(mode));
+            assert.equal(process.platform, "win32");
+            assert.equal(process.arch, "x64");
+            assert.equal(process.versions.node, "22.23.3");
+            const begun = Date.now(),
+              deadline = begun + 60000;
+            const remaining = (maximum) => {
+              const left = deadline - Date.now();
+              assert.ok(left > 0);
+              return Math.min(maximum, left);
+            };
+            const root = realpathSync(process.cwd()),
+              output = process.env.CHECKTRAIL_ACL_PROBE_RECEIPT;
+            assert.ok(output && path.isAbsolute(output));
+            const gitHead = spawnSync(
+              "git",
+              [
+                "--no-optional-locks",
+                "-c",
+                "core.hooksPath=NUL",
+                "-c",
+                "core.fsmonitor=false",
+                "rev-parse",
+                "HEAD",
+              ],
+              {
+                cwd: root,
+                encoding: "utf8",
+                timeout: remaining(10000),
+                maxBuffer: 65536,
+              },
+            );
+            assert.equal(gitHead.status, 0);
+            assert.equal(gitHead.stdout.trim(), sourceCommit);
+            preflightStage = 2;
+            const pins = sourcePins.map(([file, bytes, sha256]) => {
+              const body = regular(path.join(root, file), 65536);
+              assert.deepEqual(bytesIdentity(body), { bytes, sha256 });
+              return { file, bytes, sha256 };
+            });
+            const resourceFiles = [
+              "scripts/release-readiness-tools.mjs",
+              "scripts/request-pinned-artifact.mjs",
+              "scripts/prepare-release-readiness-tools.mjs",
+            ];
+            for (const file of resourceFiles) {
+              const body = regular(path.join(root, file), 65536);
+              const original = spawnSync(
+                "git",
+                [
+                  "--no-optional-locks",
+                  "-c",
+                  "core.hooksPath=NUL",
+                  "-c",
+                  "core.fsmonitor=false",
+                  "show",
+                  sourceCommit + ":" + file,
+                ],
+                { cwd: root, timeout: remaining(10000), maxBuffer: 65536 },
+              );
+              assert.equal(original.status, 0);
+              assert.deepEqual(body, original.stdout);
+              pins.push({ file, ...bytesIdentity(body) });
+            }
+            preflightStage = 3;
+            const compiled = regular(path.join(root, sourcePins[1][0]), 65536).toString(
+              "utf8",
+            );
+            const original = extractOriginal(compiled),
+              instrumented = instrumentOriginal(original);
+            const { windowsEnvironment } = await import(
+              pathToFileURL(path.join(root, "dist/src/windows-process.js")).href
+            );
+            const systemRoot = windowsEnvironment(process.env).SYSTEMROOT;
+            assert.ok(systemRoot && /^[A-Za-z]:\\/u.test(systemRoot));
+            const selected = path.win32.join(
+                systemRoot,
+                "System32/WindowsPowerShell/v1.0/powershell.exe",
+              ),
+              powershell = realpathSync(selected);
+            assert.equal(powershell.toLowerCase(), selected.toLowerCase());
+            const binary = {
+              node: bytesIdentity(regular(process.execPath, 256 * 1048576)),
+              powershell: bytesIdentity(regular(powershell, 64 * 1048576)),
+            };
+            preflightStage = 4;
+            const temporary = realpathSync(
+              await mkdtemp(path.join(os.tmpdir(), "checktrail-resource-acl-phase-")),
+            );
+            const receipt = {
+              schemaVersion: 1,
+              sourceCommit,
+              mode,
+              scope:
+                "First actual resource-release preparation protect call; no release fetch or callback",
+              sourcePins: pins,
+              binary,
+              node: process.versions.node,
+              platform: process.platform,
+              architecture: process.arch,
+              osRelease: os.release(),
+              imageOS: process.env.ImageOS ?? null,
+              imageVersion: process.env.ImageVersion ?? null,
+              originalScript: bytesIdentity(Buffer.from(original)),
+              instrumentedScript: bytesIdentity(Buffer.from(instrumented)),
+              originalStatementsPreserved: true,
+              originalProcessTimeoutMs: 15000,
+              wholeProbeMaximumMs: 60000,
+              observations: [],
+              cleanup: {},
+              diagnosticComplete: false,
+              applicationQualified: false,
+              source9Qualified: false,
+              fresh9Qualified: false,
+              inferenceInvoked: false,
+              fieldEvaluationExecuted: false,
+              gateAComplete: false,
+            };
+            let phase = 0;
+            try {
+              const wrapper = await prepareProbeWrapper(
+                temporary,
+                resourceWrapper({
+                  root,
+                  mode,
+                  powershell,
+                  systemRoot,
+                  original,
+                  instrumented,
+                }),
+                (value) => {
+                  phase = value;
+                },
+              );
+              phase = 6;
+              const result = spawnSync(process.execPath, [wrapper], {
+                cwd: root,
+                env: process.env,
+                timeout: remaining(20000),
+                maxBuffer: 65536,
+                stdio: ["ignore", "pipe", "pipe"],
+              });
+              phase = 7;
+              let parsed = null;
+              try {
+                parsed = JSON.parse(result.stdout.toString("utf8"));
+              } catch {}
+              assert.ok(parsed && parsed.schemaVersion === 1);
+              assert.equal(parsed.calls, 1);
+              assert.equal(parsed.npmCalls, 0);
+              assert.equal(parsed.remoteFetchExecuted, false);
+              assert.equal(parsed.baselineExecuted, false);
+              assert.equal(parsed.builtinRestored, true);
+              receipt.observations.push({
+                process: processMetadata(result),
+                result: parsed,
+                wrapperPidObservedGone: alive(result.pid) === false,
+              });
+              for (const row of pins)
+                assert.deepEqual(
+                  bytesIdentity(regular(path.join(root, row.file), 65536)),
+                  { bytes: row.bytes, sha256: row.sha256 },
+                );
+              receipt.sourceInputsUnchanged = true;
+              assert.deepEqual(
+                bytesIdentity(regular(process.execPath, 256 * 1048576)),
+                binary.node,
+              );
+              assert.deepEqual(
+                bytesIdentity(regular(powershell, 64 * 1048576)),
+                binary.powershell,
+              );
+              receipt.runtimeBinariesUnchanged = true;
+              receipt.diagnosticComplete =
+                result.status === 0 &&
+                alive(result.pid) === false &&
+                parsed.preparationTargetRemoved &&
+                parsed.publishedToolsAbsent &&
+                Date.now() <= deadline;
+              receipt.phaseAttributionAvailable =
+                mode === "cold-instrumented" && parsed.observation.phases.length > 0;
+              receipt.aclPidObservationAvailable = parsed.observation.pid !== null;
+              receipt.processTreeCleanupClaim = false;
+            } catch (error) {
+              receipt.failure = boundedProbeFailure(error, phase);
+              process.exitCode = 1;
+            } finally {
+              try {
+                await rm(temporary, {
+                  recursive: true,
+                  force: true,
+                  maxRetries: 10,
+                  retryDelay: 100,
+                });
+                receipt.cleanup.ownedWrapperRootRemoved = true;
+              } catch {
+                receipt.cleanup.ownedWrapperRootRemoved = false;
+                process.exitCode = 1;
+              }
+              receipt.elapsedMs = Date.now() - begun;
+              if (receipt.elapsedMs > 60000) {
+                receipt.diagnosticComplete = false;
+                receipt.wholeProbeBoundExceeded = true;
+                process.exitCode = 1;
+              }
+              const raw = Buffer.from(JSON.stringify(receipt) + "\n");
+              assert.ok(raw.length <= 65536);
+              await writeFile(output, raw, { flag: "wx" });
+              console.log(
+                JSON.stringify({
+                  schemaVersion: 1,
+                  mode,
+                  diagnosticComplete: receipt.diagnosticComplete,
+                  elapsedMs: receipt.elapsedMs,
+                  receipt: bytesIdentity(raw),
+                  applicationQualified: false,
+                  gateAComplete: false,
+                }),
+              );
+            }
+          }
+          if (
+            process.argv[1] &&
+            pathToFileURL(realpathSync(process.argv[1])).href === import.meta.url
+          ) {
+            main(process.argv[2]).catch(async (error) => {
+              const refusal = {
+                schemaVersion: 1,
+                status: "PREFLIGHT_REFUSAL",
+                failure: boundedProbeFailure(error, preflightStage),
+                diagnosticComplete: false,
+                applicationQualified: false,
+                source9Qualified: false,
+                fresh9Qualified: false,
+                inferenceInvoked: false,
+                fieldEvaluationExecuted: false,
+                gateAComplete: false,
+              };
+              const output = process.env.CHECKTRAIL_ACL_PROBE_RECEIPT;
+              if (output && path.isAbsolute(output)) {
+                try {
+                  await writeFile(output, JSON.stringify(refusal) + "\n", { flag: "wx" });
+                } catch {}
+              }
+              console.log(JSON.stringify(refusal));
+              process.exitCode = 1;
+            });
+          }
+          '@ | Set-Content -LiteralPath $entry -Encoding utf8
+          node $entry '${{ matrix.mode }}'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Retain bounded diagnostic metadata
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          name: candidate-native-provenance-windows-node22-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
+          name: resource-release-acl-${{ matrix.mode }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}\resource-release-acl.json
           if-no-files-found: error
           retention-days: 7
           include-hidden-files: false
