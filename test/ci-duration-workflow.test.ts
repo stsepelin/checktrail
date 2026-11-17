@@ -41,6 +41,7 @@ type Context = {
   plan: "success" | "failure" | "pending";
   actionlint: "success" | "skipped" | "failure" | "pending";
   cancelled: boolean;
+  sharedTestFiles: string[];
 };
 const workflow = parse(
   await readFile(
@@ -66,6 +67,7 @@ const fullContext: Context = {
   plan: "success",
   actionlint: "success",
   cancelled: false,
+  sharedTestFiles: [],
 };
 const hostCommand =
   "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}";
@@ -112,6 +114,10 @@ function condition(expression: string | undefined, context: Context, row: Row) {
     ],
     ["env.CHECKTRAIL_CI_MODE == 'full'", context.mode === "full"],
     ["env.CHECKTRAIL_CI_MODE == 'affected'", context.mode === "affected"],
+    [
+      "join(fromJSON(needs.ci-plan.outputs.plan).sharedTestFiles, '') != ''",
+      context.sharedTestFiles.length > 0,
+    ],
     ["runner.os == 'Linux'", row.os === "ubuntu-26.04"],
     ["runner.os == 'macOS'", row.os === "macos-latest"],
     ["runner.os != 'macOS'", row.os !== "macos-latest"],
@@ -290,6 +296,155 @@ test("simulated dependency conditions keep full-only suite shards, affected host
       extraCount,
     );
     assert.equal(rows(workflow, "checks", context).length, checksCount);
+  }
+});
+
+function requireSharedGoPreparation(w: Workflow, context: Context) {
+  const job = w.jobs.checks!;
+  for (const row of rows(w, "checks", context)) {
+    const steps = job.steps.filter((step) => condition(step.if, context, row));
+    const sdk = steps.findIndex((step) =>
+      step.uses?.startsWith("actions/setup-go@"),
+    );
+    const analyzer = steps.findIndex((step) =>
+      step.run?.includes("node scripts/prepare-go-tools.mjs"),
+    );
+    const shared = steps.findIndex(
+      (step) => step.run === "node scripts/verify-ci-affected-tests.mjs",
+    );
+    const required =
+      context.mode === "full" || context.sharedTestFiles.length > 0;
+    if (!required) {
+      assert.equal(sdk, -1, "Empty affected selection must not prepare Go");
+      assert.equal(
+        analyzer,
+        -1,
+        "Empty affected selection must not prepare analyzers",
+      );
+      continue;
+    }
+    assert.ok(sdk >= 0, "Shared execution requires the pinned Go SDK");
+    assert.equal(steps[sdk]!.with?.["go-version"], "1.27.1");
+    assert.equal(steps[sdk]!.with?.cache, false);
+    assert.ok(analyzer > sdk, "Go analyzers must follow the pinned SDK");
+    assert.ok(
+      steps[analyzer]!.run?.includes(
+        'echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"',
+      ),
+      "Prepared analyzers must reach subsequent shared test processes",
+    );
+    if (context.mode === "affected")
+      assert.ok(
+        shared > analyzer,
+        "Selected shared files must follow complete Go preparation",
+      );
+  }
+}
+
+test("full and nonempty affected shared files receive pinned Go prerequisites before execution while empty selections avoid preparation", () => {
+  for (const mode of ["full", "affected"] as const)
+    for (const sharedTestFiles of [
+      [],
+      [
+        "dist/test/original-selected-one.test.js",
+        "dist/test/original-selected-two.test.js",
+      ],
+    ])
+      requireSharedGoPreparation(workflow, {
+        ...fullContext,
+        mode,
+        sharedTestFiles,
+      });
+});
+
+test("affected Go preparation rejects full-only guards wrong pins missing PATH publication and late analyzers", () => {
+  const context: Context = {
+    ...fullContext,
+    mode: "affected",
+    sharedTestFiles: [
+      "dist/test/original-selected-one.test.js",
+      "dist/test/original-selected-two.test.js",
+    ],
+  };
+  const mutations: ((w: Workflow) => void)[] = [
+    (w) => {
+      w.jobs.checks!.steps.find((step) =>
+        step.uses?.startsWith("actions/setup-go@"),
+      )!.if = "env.CHECKTRAIL_CI_MODE == 'full'";
+    },
+    (w) => {
+      w.jobs.checks!.steps.find(
+        (step) => step.name === "Prepare pinned Go analyzers",
+      )!.if = "env.CHECKTRAIL_CI_MODE == 'full'";
+    },
+    (w) => {
+      w.jobs.checks!.steps.find((step) =>
+        step.uses?.startsWith("actions/setup-go@"),
+      )!.with!["go-version"] = "stable";
+    },
+    (w) => {
+      w.jobs.checks!.steps.find(
+        (step) => step.name === "Prepare pinned Go analyzers",
+      )!.run = "node scripts/prepare-go-tools.mjs";
+    },
+    (w) => {
+      const steps = w.jobs.checks!.steps;
+      const index = steps.findIndex(
+        (step) => step.name === "Prepare pinned Go analyzers",
+      );
+      steps.push(...steps.splice(index, 1));
+    },
+  ];
+  for (const mutate of mutations) {
+    const changed = structuredClone(workflow);
+    mutate(changed);
+    assert.throws(() => requireSharedGoPreparation(changed, context), {
+      code: "ERR_ASSERTION",
+    });
+  }
+});
+
+function requireEarlyRuntimeCoherence(w: Workflow) {
+  const steps = w.jobs["ci-plan"]!.steps;
+  const install = steps.findIndex(
+    (step) => step.run === "npm ci --ignore-scripts",
+  );
+  const metadata = steps.findIndex(
+    (step) => step.run === "node scripts/check-ci-preflight.mjs",
+  );
+  const audit = steps.findIndex(
+    (step) => step.run === "node scripts/check-context-runtime-coherence.mjs",
+  );
+  assert.ok(install >= 0 && metadata > install && audit > metadata);
+  assert.equal(steps[audit]!.if, undefined);
+  assert.equal(steps[audit]!["continue-on-error"], undefined);
+  for (const command of [
+    "npm run typecheck",
+    "npm run lint",
+    "node scripts/plan-ci-impact.mjs",
+  ])
+    assert.ok(
+      steps.findIndex((step) => step.run === command) > audit,
+      "Runtime coherence must fail before planning: " + command,
+    );
+}
+
+test("CI planning checks selected runtime coherence after installation and before expensive validation or fanout", () => {
+  requireEarlyRuntimeCoherence(workflow);
+  for (const mode of ["missing", "late", "conditional", "ignored"]) {
+    const changed = structuredClone(workflow);
+    const steps = changed.jobs["ci-plan"]!.steps;
+    const index = steps.findIndex(
+      (step) => step.run === "node scripts/check-context-runtime-coherence.mjs",
+    );
+    if (mode === "missing") steps.splice(index, 1);
+    if (mode === "late") steps.push(...steps.splice(index, 1));
+    if (mode === "conditional")
+      steps[index]!.if = "env.CHECKTRAIL_CI_MODE == 'full'";
+    if (mode === "ignored") steps[index]!["continue-on-error"] = true;
+    assert.throws(() => requireEarlyRuntimeCoherence(changed), {
+      code: "ERR_ASSERTION",
+    });
   }
 });
 

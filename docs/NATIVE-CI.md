@@ -15,6 +15,19 @@ and disabled container network before its existing synthetic adapter acceptance.
 The exact Ubuntu 26.04 labels are declared for the pinned linter whose built-in
 label table predates them. Unknown adjacent labels remain invalid.
 
+The planning job checks selected parser-runtime coherence immediately after the
+locked installation and metadata preflight, before the expensive matrix is
+planned. It reads known literal source pins and hashes installed data without
+importing the parser runtime or compiling WASM. Version-only runtime bumps fail
+there with the coordinated-upgrade requirement; the later grammar audit and native
+attestation checks remain mandatory.
+
+Checks that execute a nonempty affected shared selection prepare the same pinned
+Go SDK and analyzers as full verification. A shared file can activate native Go
+cases even when a dedicated Go owner job is not selected. Missing analyzers and
+skipped native cases are not accepted as dependency compatibility results. An
+empty shared selection still fails its existing required-test admission.
+
 The separate manual `prebuilt-gcc.yml` workflow exercises installed GNU C/C++
 compilers with small positive and broken controls within a ten-minute job bound.
 It does not establish upstream source-build closure or replace required adapter

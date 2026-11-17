@@ -227,8 +227,9 @@ Current Linux CI uses explicit Ubuntu 26.04 x64/ARM64 runners while retaining th
 existing macOS and Windows selections. Preinstalled tools are selected by actual
 version and identity; a runner upgrade does not change a pinned tool inside a
 container. Changed runner placements require fresh native/installed evidence.
-See [NATIVE-CI.md](NATIVE-CI.md). Existing Gate A acceptance requirements remain
-unchanged by this runner migration.
+See [NATIVE-CI.md](NATIVE-CI.md). Selected affected shared tests retain their native
+prerequisites; coupled parser-runtime pins are checked before matrix fanout.
+Existing Gate A acceptance requirements remain unchanged by this runner migration.
 
 ### M5 — measured review assistance
 

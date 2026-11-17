@@ -52,6 +52,8 @@ jobs:
         run: node scripts/check-ci-preflight.mjs
         env:
           CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
+      - name: Check selected parser runtime coherence before matrix planning
+        run: node scripts/check-context-runtime-coherence.mjs
       - run: npm run typecheck
       - run: npm run lint
       - id: impact
@@ -90,7 +92,7 @@ jobs:
         with:
           go-version: "1.27.1"
           cache: false
-        if: env.CHECKTRAIL_CI_MODE == 'full'
+        if: env.CHECKTRAIL_CI_MODE == 'full' || (env.CHECKTRAIL_CI_MODE == 'affected' && join(fromJSON(needs.ci-plan.outputs.plan).sharedTestFiles, '') != '')
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13"
@@ -123,7 +125,7 @@ jobs:
         run: |
           node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
-        if: env.CHECKTRAIL_CI_MODE == 'full'
+        if: env.CHECKTRAIL_CI_MODE == 'full' || (env.CHECKTRAIL_CI_MODE == 'affected' && join(fromJSON(needs.ci-plan.outputs.plan).sharedTestFiles, '') != '')
       - name: Prepare locked PHP test tools
         run: |
           mkdir -p .checktrail/php-tools
@@ -267,7 +269,7 @@ jobs:
         with:
           go-version: "1.27.1"
           cache: false
-        if: env.CHECKTRAIL_CI_MODE == 'full'
+        if: env.CHECKTRAIL_CI_MODE == 'full' || (env.CHECKTRAIL_CI_MODE == 'affected' && join(fromJSON(needs.ci-plan.outputs.plan).sharedTestFiles, '') != '')
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13"
@@ -300,7 +302,7 @@ jobs:
         run: |
           node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
-        if: env.CHECKTRAIL_CI_MODE == 'full'
+        if: env.CHECKTRAIL_CI_MODE == 'full' || (env.CHECKTRAIL_CI_MODE == 'affected' && join(fromJSON(needs.ci-plan.outputs.plan).sharedTestFiles, '') != '')
       - name: Prepare locked PHP test tools
         run: |
           mkdir -p .checktrail/php-tools
