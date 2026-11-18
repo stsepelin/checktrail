@@ -150,6 +150,9 @@ def load(name):
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 
 
+structured=load('gcc-sdk-structured-diagnostics.py')
+
+
 def file_pin(path,maximum):
     path=Path(path);before=path.lstat()
     require(stat.S_ISREG(before.st_mode) and not path.is_symlink() and before.st_size<=maximum,'sdk-proof-refused')
@@ -174,7 +177,7 @@ def read_json(path,maximum=2*1024**2):
 
 def validate_receipt(value):
     keys={'schemaVersion','kind','sourceHead','sourcePolicySha256','errorId','sdkVerifiedOnHost','sdkContainerExitCode',
-          'sdkContainerQuiescent','ownedSdkCleanupObserved','sdkContainerSeconds','helperSeconds','counts','hashes','diagnostics',*LIMITATIONS}
+          'sdkContainerQuiescent','ownedSdkCleanupObserved','sdkContainerSeconds','helperSeconds','counts','hashes','diagnostics','structuredSdk',*LIMITATIONS}
     require(type(value) is dict and set(value)==keys and type(value['schemaVersion']) is int and value['schemaVersion']==1 and value['kind']=='gcc-sdk-onhost-receipt-v1','sdk-proof-refused')
     require(type(value['sourceHead']) is str and re.fullmatch('[a-f0-9]{40}',value['sourceHead']) and
             value['sourcePolicySha256']==POLICY_SHA256 and value['errorId'] in ERRORS,'sdk-proof-refused')
@@ -188,6 +191,8 @@ def validate_receipt(value):
             all(type(v) is int and 0<=v<=10000000 for v in value['counts'].values()),'sdk-proof-refused')
     require(type(value['hashes']) is dict and set(value['hashes'])==HASHES and
             all(v is None or type(v) is str and re.fullmatch('[a-f0-9]{64}',v) for v in value['hashes'].values()),'sdk-proof-refused')
+    try:structured.validate(value['structuredSdk'])
+    except BaseException:require(False,'sdk-proof-refused')
     diagnostics=value['diagnostics']
     require(type(diagnostics) is dict and set(diagnostics)==DIAGNOSTIC_KEYS and diagnostics['stage'] in STAGES and
             diagnostics['lastLegacyMilestone'] in MILESTONES and
@@ -210,12 +215,12 @@ def empty_receipt(head):
             'sourcePolicySha256':POLICY_SHA256,'errorId':'unexpected-failure','sdkVerifiedOnHost':False,
             'sdkContainerExitCode':None,'sdkContainerQuiescent':False,'ownedSdkCleanupObserved':False,
             'sdkContainerSeconds':None,'helperSeconds':0,'counts':{k:0 for k in sorted(COUNTS)},
-            'hashes':{k:None for k in sorted(HASHES)},'diagnostics':empty_diagnostics(),**LIMITATIONS}
+            'hashes':{k:None for k in sorted(HASHES)},'diagnostics':empty_diagnostics(),'structuredSdk':structured.empty(),**LIMITATIONS}
 
 
 def failed_receipt(previous,identifier,elapsed):
     value=empty_receipt(previous['sourceHead']);value.update(errorId=identifier,helperSeconds=elapsed)
-    value['diagnostics']=previous['diagnostics']
+    value['diagnostics']=previous['diagnostics'];value['structuredSdk']=previous['structuredSdk']
     observed={k:previous[k] for k in ['sdkContainerExitCode','sdkContainerQuiescent','ownedSdkCleanupObserved','sdkContainerSeconds']}
     try:return validate_receipt({**value,**observed})
     except BaseException:return validate_receipt(value)
@@ -261,6 +266,11 @@ def guarded(work,private,head):
                     require(set(observed)=={'sdkContainerExitCode','sdkContainerQuiescent','ownedSdkCleanupObserved','sdkContainerSeconds'},'sdk-proof-refused')
                     candidate={**value,**observed};validate_receipt(candidate);value=candidate
                 except BaseException:traceback.print_exc()
+        projection=private/'OWNED-STRUCTURED-SDK.json'
+        if projection.exists():
+            try:value['structuredSdk']=structured.validate(read_json(projection,8192))
+            except BaseException:
+                value['structuredSdk']=structured.empty();value['structuredSdk'].update(state='invalid',errorId='record-unavailable')
     value['helperSeconds']=time.monotonic()-started
     try:value['hashes']['wrapperOutput']=file_pin(log,MAX_OPAQUE)['sha256']
     except BaseException:
@@ -310,9 +320,18 @@ def fixed_work(private):
         # Read only this freshly entered R3 call's actual container observation.
         # A later metadata/cleanup failure cannot reset observed elapsed time or
         # replace a genuine container exit with the outer helper's exit code.
-        retain_attempt(output,private)
+        try:retain_attempt(output,private)
+        finally:retain_structured(output,private)
     record_stage(private,'independent-verification')
     return verify_on_host(output,private,policy,independent)
+
+
+def retain_structured(output,private):
+    # Independent diagnostics cannot overwrite the genuine SDK error/terminal.
+    try:
+        value=structured.collect(output,os.environ,read_json,file_pin)
+        with (private/'OWNED-STRUCTURED-SDK.json').open('xb') as sink:sink.write(canonical(value))
+    except BaseException:traceback.print_exc()  # opaque local FD boundary only
 
 
 def retain_attempt(output,private):
