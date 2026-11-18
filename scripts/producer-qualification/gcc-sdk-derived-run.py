@@ -249,11 +249,13 @@ FORMAT_MAP = {'dvilualatex': {'configuredEngine': 'luatex',
          'sourceConfigSha256': '2aac945fee9cf297b50cb58d6150e31a251d88333bc609bfa75acf46b50875b5'}}
 
 
+MAPPING_STATUS0_TRAILER='fmtutil [INFO]: exiting with status 0'
+
 def empty_mapping_shape():
     return {'state':'unobserved','layout':'unobserved','separatorScope':'document-and-complete-record-boundaries','sourceBound':False,'stdoutSha256':None,'layoutCompatible':None,
             **{key:None for key in ['totalLines','blankLines','headerLines','prefixLines','bodyLines','boundaryBlankLines',
                                    'documentBlankLines','misplacedBlankLines','unknownLines','recognizedRecords','unknownRecords','duplicateRecords',
-                                   'missingRecords','semanticMismatchRecords','separatorBoundaries']}}
+                                   'missingRecords','semanticMismatchRecords','separatorBoundaries','status0TrailerLines','misplacedStatus0TrailerLines']}}
 
 
 def mapping_fields(block):
@@ -268,7 +270,9 @@ def mapping_layout(raw):
 
     Only exact empty lines at the document boundary after the unique header
     or AFTER a complete three-line record are separators.
-    Unknown nonempty lines and blank lines within fields are never discarded.
+    The exact optional status0 trailer is accepted once, last nonempty, only
+    after all13 matching complete records. Other nonempty rows are not ignored.
+    Blank lines within fields are never discarded.
     Config/code identity remains the responsibility of parse_mapping below.
     """
     require(type(raw) is bytes and len(raw)<=STDOUT_BYTES,'Bounded native fmtutil listing required')
@@ -280,7 +284,8 @@ def mapping_layout(raw):
     if len(headers)!=1:return [],shape
     body=lines[headers[0]+1:];blocks=[];seen=set();boundary=False;document=True;gap=0
     shape.update(prefixLines=headers[0],bodyLines=len(body),boundaryBlankLines=0,documentBlankLines=0,misplacedBlankLines=0,unknownLines=0,
-                 recognizedRecords=0,unknownRecords=0,duplicateRecords=0,missingRecords=len(FORMAT_MAP),semanticMismatchRecords=0,separatorBoundaries=0)
+                 recognizedRecords=0,unknownRecords=0,duplicateRecords=0,missingRecords=len(FORMAT_MAP),semanticMismatchRecords=0,separatorBoundaries=0,
+                 status0TrailerLines=0,misplacedStatus0TrailerLines=sum(line==MAPPING_STATUS0_TRAILER for line in lines))
     offset=0
     while offset<len(body):
         if body[offset]=='':
@@ -288,6 +293,10 @@ def mapping_layout(raw):
             if boundary:gap+=1
             offset+=1;continue
         document=False
+        if (body[offset]==MAPPING_STATUS0_TRAILER and boundary and len(blocks)==len(FORMAT_MAP) and seen==set(FORMAT_MAP) and
+            shape['recognizedRecords']==len(FORMAT_MAP) and shape['unknownRecords']==shape['duplicateRecords']==shape['semanticMismatchRecords']==0 and
+            shape['unknownLines']==shape['misplacedBlankLines']==0 and all(line=='' for line in body[offset+1:])):
+            shape['status0TrailerLines']+=1;shape['misplacedStatus0TrailerLines']-=1;offset+=1;continue
         block=body[offset:offset+3];header,details,origin=mapping_fields(block)
         if header is not None and details is not None and origin is not None:
             if blocks and gap:shape['separatorBoundaries']+=1
@@ -302,8 +311,8 @@ def mapping_layout(raw):
         else:
             shape['unknownLines']+=1;boundary=False;gap=0;offset+=1
     shape['missingRecords']=len(set(FORMAT_MAP)-seen)
-    require(3*len(blocks)+shape['boundaryBlankLines']+shape['documentBlankLines']+shape['misplacedBlankLines']+shape['unknownLines']==len(body),'Native fmtutil shape counts do not reconcile')
-    shape['layoutCompatible']=shape['misplacedBlankLines']==shape['unknownLines']==0
+    require(3*len(blocks)+shape['boundaryBlankLines']+shape['documentBlankLines']+shape['misplacedBlankLines']+shape['unknownLines']+shape['status0TrailerLines']==len(body),'Native fmtutil shape counts do not reconcile')
+    shape['layoutCompatible']=shape['misplacedBlankLines']==shape['unknownLines']==shape['misplacedStatus0TrailerLines']==0
     if shape['layoutCompatible']:
         separated=shape['separatorBoundaries'];shape['layout']='compact' if not separated else 'separated' if separated==len(blocks)-1 else 'mixed'
     return blocks,shape

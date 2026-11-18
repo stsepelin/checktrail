@@ -1,123 +1,12 @@
 {
-  "schemaVersion": 1,
-  "purpose": "on-host-original-sdk-validation-with-minimized-public-receipt",
+  "artifactUploads": 0,
+  "cacheWrites": 0,
   "freshApprovalReviewRequired": true,
-  "runtimeFiles": [
-    {
-      "path": "scripts/producer-qualification/gcc-hosted-capacity.py",
-      "bytes": 13709,
-      "sha256": "911eb056fa5a35b147c22a227ff789df95be0108089db6ae7b8a163b9a32763d",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-hosted-carrier.py",
-      "bytes": 43970,
-      "sha256": "ea6521cec4a88bfacf73999c4f9e4ee42fc3253c25a3224bd76702d93a7555ea",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-hosted-phase0-capacity.py",
-      "bytes": 7231,
-      "sha256": "df30328a8be4cabd05d1765abdb46f996ce79db7100147b77ba9d9135eac0a2d",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-hosted-sdk.py",
-      "bytes": 22232,
-      "sha256": "d8003939d68fd9a3ccff4d2157c609a97ca0e8b28d31b26f2d4323a59be48dec",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-hosted-stage.py",
-      "bytes": 10473,
-      "sha256": "21c1020e4a36b67f8ebf4037099f59c79899b69b5e042d8cd40e2d5e0c9c1f20",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-phase0-transport.py",
-      "bytes": 11764,
-      "sha256": "c2ce6976e93620c6d47a0723421ffb1c4e450420ca2475355741dbd195033e05",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-sdk-derived-run.py",
-      "bytes": 31889,
-      "sha256": "15d0e02fd3ce2bcee95aadd00e8a0bfe277464ee25f1022e60e3742ab7f7ae00",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-sdk-derived.py",
-      "bytes": 7496,
-      "sha256": "82db8293f1122ea1361dff6f335c8a3c23bc410d1b2738f27c35f3916c2b5c56",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-sdk-material.py",
-      "bytes": 7741,
-      "sha256": "965e14a5dc43129cc03d86549e2f283ea5b66a99247fad32ba563168289da9a0",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-sdk-reconstruct.py",
-      "bytes": 9059,
-      "sha256": "591c43cb9b7a2c2fc168e323887d9ea914465160a94716ef49330d7f9a989947",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-staged-checkpoint.py",
-      "bytes": 21803,
-      "sha256": "376971c0196d1e71e47b851f4b33600e0c30537ac6c08ea2f13425ad4260c295",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-staged-configuration.mk",
-      "bytes": 4025,
-      "sha256": "057c9532336d74b7f9d8e2fac3c672183aa00beb2fa97d88ec692a49b2212555",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-staged-plan.py",
-      "bytes": 19801,
-      "sha256": "9da37512ceda9e3e23218f2c41992a8c29ccdc3f030f10b2cfe8717477a423de",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-staged-rules2.sh",
-      "bytes": 908,
-      "sha256": "ff87f224140a50837246cbd3929d6eec39acc0241a10fa70aafa8a194ffe67fb",
-      "mode": 493
-    },
-    {
-      "path": "scripts/producer-qualification/gcc-main05-sdk.py",
-      "bytes": 10127,
-      "sha256": "89e10a71f2476da82936a2918b52dded52550aa503f4917eccd4f03c72a207ca",
-      "mode": 420
-    },
-    {
-      "path": "scripts/acquire-binutils-inputs.mjs",
-      "bytes": 19001,
-      "sha256": "522add3ed2a8ee5fcff0cf9415a0b15c31052ddbc22490e303a5e2b406a8831f",
-      "mode": 420
-    },
-    {
-      "path": "scripts/acquire-c-producer-inputs.mjs",
-      "bytes": 10524,
-      "sha256": "e52df8dd5916f9cbd1949b87c8056b690e37d729d124ad8d7596f4afa49c9729",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/c-producer-profiles.v1.json",
-      "bytes": 511562,
-      "sha256": "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd",
-      "mode": 420
-    },
-    {
-      "path": "scripts/producer-qualification/binutils-image-identity.v1.json",
-      "bytes": 18176,
-      "sha256": "780c503c94b0e504b57cdd363ec0739d576f5a84c1ba2a608cfb454075b51bb2",
-      "mode": 420
-    }
-  ],
+  "gateAComplete": false,
+  "inputPreparationSeconds": 3300,
+  "native05Authorized": false,
+  "offHostRawCustody": false,
+  "opaqueWrapperLogBytes": 16777216,
   "originalOfflineAptCommand": [
     "apt-get",
     "-o",
@@ -136,18 +25,129 @@
     "build-dep",
     "/inputs/gcc-12/gcc-12_12.2.0-14+deb12u1.dsc"
   ],
-  "sdkBodySeconds": 1200,
-  "inputPreparationSeconds": 3300,
-  "wrapperSeconds": 6600,
-  "sourceJobSeconds": 21600,
-  "receiptBytes": 16384,
-  "opaqueWrapperLogBytes": 16777216,
   "originalSdkStdoutBytes": 536870912,
-  "artifactUploads": 0,
-  "cacheWrites": 0,
-  "native05Authorized": false,
-  "offHostRawCustody": false,
-  "gateAComplete": false,
-  "revision": "fmtutil-document-and-record-boundary-separators-v2",
-  "previousPolicySha256": "6f4b1a0d3ec3b509be871938118371d5a4d4a7a3b43ffb89f8221c799d02079b"
+  "previousPolicySha256": "c6f7ae7400d945b7192a27018d0f2a55aba3457cf975f61e32cb3c837b156d38",
+  "purpose": "on-host-original-sdk-validation-with-minimized-public-receipt",
+  "receiptBytes": 16384,
+  "revision": "fmtutil-exact-optional-final-status0-trailer-v3",
+  "runtimeFiles": [
+    {
+      "bytes": 13709,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-hosted-capacity.py",
+      "sha256": "911eb056fa5a35b147c22a227ff789df95be0108089db6ae7b8a163b9a32763d"
+    },
+    {
+      "bytes": 43970,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-hosted-carrier.py",
+      "sha256": "ea6521cec4a88bfacf73999c4f9e4ee42fc3253c25a3224bd76702d93a7555ea"
+    },
+    {
+      "bytes": 7231,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-hosted-phase0-capacity.py",
+      "sha256": "df30328a8be4cabd05d1765abdb46f996ce79db7100147b77ba9d9135eac0a2d"
+    },
+    {
+      "bytes": 22232,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-hosted-sdk.py",
+      "sha256": "d8003939d68fd9a3ccff4d2157c609a97ca0e8b28d31b26f2d4323a59be48dec"
+    },
+    {
+      "bytes": 10473,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-hosted-stage.py",
+      "sha256": "21c1020e4a36b67f8ebf4037099f59c79899b69b5e042d8cd40e2d5e0c9c1f20"
+    },
+    {
+      "bytes": 11764,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-phase0-transport.py",
+      "sha256": "c2ce6976e93620c6d47a0723421ffb1c4e450420ca2475355741dbd195033e05"
+    },
+    {
+      "bytes": 32824,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-sdk-derived-run.py",
+      "sha256": "9bf4b4eba1f0c61461346821115d83dabe25a7ec8e64cf628e087b5aa310c9fc"
+    },
+    {
+      "bytes": 7496,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-sdk-derived.py",
+      "sha256": "82db8293f1122ea1361dff6f335c8a3c23bc410d1b2738f27c35f3916c2b5c56"
+    },
+    {
+      "bytes": 7741,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-sdk-material.py",
+      "sha256": "965e14a5dc43129cc03d86549e2f283ea5b66a99247fad32ba563168289da9a0"
+    },
+    {
+      "bytes": 9059,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-sdk-reconstruct.py",
+      "sha256": "591c43cb9b7a2c2fc168e323887d9ea914465160a94716ef49330d7f9a989947"
+    },
+    {
+      "bytes": 21803,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-staged-checkpoint.py",
+      "sha256": "376971c0196d1e71e47b851f4b33600e0c30537ac6c08ea2f13425ad4260c295"
+    },
+    {
+      "bytes": 4025,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-staged-configuration.mk",
+      "sha256": "057c9532336d74b7f9d8e2fac3c672183aa00beb2fa97d88ec692a49b2212555"
+    },
+    {
+      "bytes": 19801,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-staged-plan.py",
+      "sha256": "9da37512ceda9e3e23218f2c41992a8c29ccdc3f030f10b2cfe8717477a423de"
+    },
+    {
+      "bytes": 908,
+      "mode": 493,
+      "path": "scripts/producer-qualification/gcc-staged-rules2.sh",
+      "sha256": "ff87f224140a50837246cbd3929d6eec39acc0241a10fa70aafa8a194ffe67fb"
+    },
+    {
+      "bytes": 10127,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-main05-sdk.py",
+      "sha256": "89e10a71f2476da82936a2918b52dded52550aa503f4917eccd4f03c72a207ca"
+    },
+    {
+      "bytes": 19001,
+      "mode": 420,
+      "path": "scripts/acquire-binutils-inputs.mjs",
+      "sha256": "522add3ed2a8ee5fcff0cf9415a0b15c31052ddbc22490e303a5e2b406a8831f"
+    },
+    {
+      "bytes": 10524,
+      "mode": 420,
+      "path": "scripts/acquire-c-producer-inputs.mjs",
+      "sha256": "e52df8dd5916f9cbd1949b87c8056b690e37d729d124ad8d7596f4afa49c9729"
+    },
+    {
+      "bytes": 511562,
+      "mode": 420,
+      "path": "scripts/producer-qualification/c-producer-profiles.v1.json",
+      "sha256": "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd"
+    },
+    {
+      "bytes": 18176,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-image-identity.v1.json",
+      "sha256": "780c503c94b0e504b57cdd363ec0739d576f5a84c1ba2a608cfb454075b51bb2"
+    }
+  ],
+  "schemaVersion": 1,
+  "sdkBodySeconds": 1200,
+  "sourceJobSeconds": 21600,
+  "wrapperSeconds": 6600
 }

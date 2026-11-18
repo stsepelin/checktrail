@@ -47,6 +47,85 @@ def number(value):return type(value) in [int,float] and math.isfinite(value) and
 def integer(value,maximum=10000000):return type(value) is int and 0<=value<=maximum
 def hash_value(value):return value is None or type(value) is str and re.fullmatch('[a-f0-9]{64}',value) is not None
 
+# Closed syntactic categories describe rows, never a semantic footer or acceptance.
+ROW_CATEGORIES={'whitespace-only','record-header-fragment','record-details-fragment','record-origin-fragment','other-nonempty','status0-trailer-literal'}
+MAX_UNRECOGNIZED_ROWS=8
+
+def empty_mapping_rows():
+    return {'state':'unobserved','sourceBound':False,'stdoutSha256':None,'totalRows':None,
+            'retainedRows':None,'omittedRows':None,'categoryCounts':None,'rows':[]}
+
+def row_position(before,after):
+    return 'no-complete-records' if before==after==0 else 'before-complete-records' if before==0 else 'after-complete-records' if after==0 else 'between-complete-records'
+
+def unrecognized_mapping_rows(raw):
+    """Closed diagnostic only, using the exact current three-field recognizer.
+
+    Positions are 1-based. Length/SHA cover the UTF-8 bytes of one decoded line,
+    excluding its line terminator, with NO stripping or normalization. The full
+    raw stdout digest still binds these observations to the original command.
+    Up to eight non-record row descriptors are shown, including the exact
+    status0 trailer literal. Totals cover every such body row. Acceptance is
+    separate: only the original parser can qualify its final trailer position.
+    No category authorizes skipping a row or qualifies effective physical origin.
+    """
+    need(type(raw) is bytes and len(raw)<=d.STDOUT_BYTES)
+    result=empty_mapping_rows();result.update(state='unsupported',stdoutSha256=digest(raw))
+    try:lines=raw.decode().splitlines()
+    except UnicodeDecodeError:return result
+    headers=[index for index,line in enumerate(lines) if line=='List of all formats:']
+    if len(headers)!=1:return result
+    start=headers[0]+1;body=lines[start:];unknown=[];complete=0;offset=0;counts={name:0 for name in ROW_CATEGORIES}
+    while offset<len(body):
+        line=body[offset]
+        if line=='':offset+=1;continue
+        header,details,origin=d.mapping_fields(body[offset:offset+3])
+        if header is not None and details is not None and origin is not None:
+            complete+=1;offset+=3;continue
+        category='other-nonempty'
+        if line==d.MAPPING_STATUS0_TRAILER:category='status0-trailer-literal'
+        elif re.fullmatch(r'[ \t]+',line):category='whitespace-only'
+        elif d.mapping_fields([line,'',''])[0] is not None:category='record-header-fragment'
+        elif d.mapping_fields(['',line,''])[1] is not None:category='record-details-fragment'
+        elif d.mapping_fields(['','',line])[2] is not None:category='record-origin-fragment'
+        counts[category]+=1
+        if len(unknown)<MAX_UNRECOGNIZED_ROWS:
+            encoded=line.encode();unknown.append({'documentLine':start+offset+1,'bodyLine':offset+1,
+                'byteLength':len(encoded),'sha256':digest(encoded),'category':category,'completeRecordsBefore':complete})
+        offset+=1
+    for row in unknown:
+        row['completeRecordsAfter']=complete-row['completeRecordsBefore']
+        row['position']=row_position(row['completeRecordsBefore'],row['completeRecordsAfter'])
+    total=sum(counts.values());result.update(state='observed',totalRows=total,retainedRows=len(unknown),omittedRows=total-len(unknown),categoryCounts=counts,rows=unknown)
+    return result
+
+def validate_mapping_rows(value,mapping):
+    prototype=empty_mapping_rows();need(type(value) is dict and set(value)==set(prototype))
+    need(value['state'] in {'unobserved','unsupported','observed'} and type(value['sourceBound']) is bool and hash_value(value['stdoutSha256']))
+    if not value['sourceBound']:
+        need(value==prototype);return
+    need(mapping['sourceBound'] is True and value['stdoutSha256']==mapping['stdoutSha256'] and type(value['stdoutSha256']) is str)
+    if value['state']=='unsupported':
+        need(value=={**prototype,'state':'unsupported','sourceBound':True,'stdoutSha256':mapping['stdoutSha256']})
+        need(mapping['state']=='invalid' or mapping['headerLines']!=1);return
+    need(value['state']=='observed' and mapping['state']=='observed' and mapping['headerLines']==1)
+    total=value['totalRows'];retained=value['retainedRows'];omitted=value['omittedRows'];counts=value['categoryCounts'];rows=value['rows']
+    need(integer(total,d.STDOUT_BYTES) and integer(retained,MAX_UNRECOGNIZED_ROWS) and integer(omitted,d.STDOUT_BYTES))
+    need(total==mapping['unknownLines']+mapping['status0TrailerLines'] and retained==min(total,MAX_UNRECOGNIZED_ROWS) and total==retained+omitted)
+    need(type(counts) is dict and set(counts)==ROW_CATEGORIES and all(integer(n,d.STDOUT_BYTES) for n in counts.values()) and sum(counts.values())==total)
+    need(mapping['status0TrailerLines']<=counts['status0-trailer-literal']<=mapping['status0TrailerLines']+mapping['misplacedStatus0TrailerLines'])
+    need(type(rows) is list and len(rows)==retained)
+    previous=0;shown={name:0 for name in ROW_CATEGORIES};records=mapping['recognizedRecords']+mapping['unknownRecords']
+    for row in rows:
+        need(type(row) is dict and set(row)=={'documentLine','bodyLine','byteLength','sha256','category','completeRecordsBefore','completeRecordsAfter','position'})
+        need(integer(row['documentLine'],d.STDOUT_BYTES) and integer(row['bodyLine'],d.STDOUT_BYTES) and previous<row['bodyLine']<=mapping['bodyLines'])
+        need(row['documentLine']==mapping['prefixLines']+1+row['bodyLine']);previous=row['bodyLine']
+        need(type(row['byteLength']) is int and 1<=row['byteLength']<=d.STDOUT_BYTES and type(row['sha256']) is str and hash_value(row['sha256']))
+        need(row['category'] in ROW_CATEGORIES and integer(row['completeRecordsBefore'],records) and integer(row['completeRecordsAfter'],records))
+        need(row['completeRecordsBefore']+row['completeRecordsAfter']==records and row['position']==row_position(row['completeRecordsBefore'],row['completeRecordsAfter']))
+        shown[row['category']]+=1
+    need(all(shown[name]<=counts[name] for name in ROW_CATEGORIES))
+
 def empty():
     return {'schemaVersion':1,'state':'unobserved','errorId':'none','cause':'unestablished',
       'sdkQualifiedByProjection':False,'underlyingRootCauseAssessed':False,
@@ -54,7 +133,7 @@ def empty():
       'hashes':{name:None for name in FILES},
       'journal':{'state':'unobserved','expectedSlots':74,'requested':None,'terminals':None,'terminalZero':None,
                  'terminalNonzero':None,'terminalUnknown':None,'lastRequested':None,'lastTerminal':None},
-      'mapping':d.empty_mapping_shape(),
+      'mapping':d.empty_mapping_shape(),'nonRecordMappingRows':empty_mapping_rows(),
       'sdk':{'state':'unobserved','packagesMatch':None,'entries':None,'counts':None,'materialProjectionMatches':None,'generatedComplete':None},
       'generation':{'state':'unobserved','toolIdentities':None,'removedOutputs':None,'completedGenerators':None,'freshFormats':None,'errorSha256':None},
       'validation':{'state':'unobserved','completedValidators':None,'finalGeneratedOutputs':None,'errorSha256':None}}
@@ -63,7 +142,7 @@ def validate(value):
     prototype=empty();need(type(value) is dict and set(value)==set(prototype))
     need(type(value['schemaVersion']) is int and value['schemaVersion']==1 and value['state'] in {'unobserved','observed','incomplete','invalid'} and value['errorId'] in ERRORS and value['cause'] in CAUSES)
     need(value['sdkQualifiedByProjection'] is False and value['underlyingRootCauseAssessed'] is False and value['unjournaledCollectionAndNormalizationTerminals']=='unobserved')
-    for name in ['hashes','journal','mapping','sdk','generation','validation']:need(type(value[name]) is dict and set(value[name])==set(prototype[name]))
+    for name in ['hashes','journal','mapping','nonRecordMappingRows','sdk','generation','validation']:need(type(value[name]) is dict and set(value[name])==set(prototype[name]))
     need(all(hash_value(v) for v in value['hashes'].values()))
     j=value['journal'];need(j['state'] in JOURNAL_STATES and type(j['expectedSlots']) is int and j['expectedSlots']==74)
     for key in ['requested','terminals','terminalZero','terminalNonzero','terminalUnknown']:need(j[key] is None or integer(j[key],74))
@@ -94,12 +173,16 @@ def validate(value):
                 need(all(type(mapping[key]) is int for key in fields))
                 need(mapping['prefixLines']+1+mapping['bodyLines']==mapping['totalLines'])
                 count=mapping['recognizedRecords']+mapping['unknownRecords']
-                need(3*count+mapping['boundaryBlankLines']+mapping['documentBlankLines']+mapping['misplacedBlankLines']+mapping['unknownLines']==mapping['bodyLines'])
+                need(3*count+mapping['boundaryBlankLines']+mapping['documentBlankLines']+mapping['misplacedBlankLines']+mapping['unknownLines']+mapping['status0TrailerLines']==mapping['bodyLines'])
                 need(mapping['semanticMismatchRecords']<=mapping['recognizedRecords'] and mapping['duplicateRecords']<=count and mapping['missingRecords']<=13)
                 need(mapping['separatorBoundaries']<=max(0,count-1) and mapping['separatorBoundaries']<=mapping['boundaryBlankLines'])
                 need(mapping['documentBlankLines']+mapping['boundaryBlankLines']+mapping['misplacedBlankLines']<=mapping['blankLines'])
-        if mapping['layoutCompatible']:need(mapping['headerLines']==1 and mapping['misplacedBlankLines']==mapping['unknownLines']==0 and mapping['layout'] in {'compact','separated','mixed'})
+                need(mapping['status0TrailerLines']<=1)
+                if mapping['status0TrailerLines']:
+                    need(mapping['recognizedRecords']==13 and mapping['unknownRecords']==mapping['duplicateRecords']==mapping['missingRecords']==mapping['semanticMismatchRecords']==0)
+        if mapping['layoutCompatible']:need(mapping['headerLines']==1 and mapping['misplacedBlankLines']==mapping['unknownLines']==mapping['misplacedStatus0TrailerLines']==0 and mapping['layout'] in {'compact','separated','mixed'})
         else:need(mapping['layout']=='unsupported')
+    validate_mapping_rows(value['nonRecordMappingRows'],mapping)
     s=value['sdk'];need(s['state'] in SDK_STATES)
     for key in ['packagesMatch','materialProjectionMatches','generatedComplete']:need(s[key] is None or type(s[key]) is bool)
     need(s['entries'] is None or integer(s['entries']))
@@ -243,6 +326,7 @@ def collect(output,environment,read_json,file_pin):
                     witness=terminal[19];raw=record['effectiveMappingNativeOutput'].encode()
                     need(witness['exitCode']==0 and witness['terminalObserved'] is True and witness['stdoutComplete'] is True and len(raw)==witness['stdoutBytesRetained'] and digest(raw)==witness['stdoutSha256'])
                     _,shape=d.mapping_layout(raw);shape['sourceBound']=True;value['mapping']=shape
+                    projected_rows=unrecognized_mapping_rows(raw);projected_rows['sourceBound']=True;value['nonRecordMappingRows']=projected_rows
                 value[key]={'state':record['state'],'toolIdentities':len(record['toolIdentities']),'removedOutputs':len(removed),'completedGenerators':len(completed),'freshFormats':len(record['newlyGeneratedOutputs']),'errorSha256':error_hash(record.get('error'))}
             else:
                 need(record['state'] in VALIDATION_STATES-{'unobserved'});events=record['validators'];need(type(events) is list and len(events)<=37)
