@@ -150,11 +150,74 @@ test("browser acquisition uses the qualified fixture CLI and exact Chromium argu
     assert.equal((calls[0] as { repository: string }).repository, f.root);
     assert.equal(
       (calls[0] as { timeoutMilliseconds: number }).timeoutMilliseconds,
-      165000,
+      300000,
     );
     assert.equal(calls.length, 1);
     assert.equal(observed.length, 1);
     assert.equal(result.attempts[0].passed, true);
+  } finally {
+    await f.cleanup();
+  }
+});
+
+test("healthy combined APT and browser preparation can outlive 165 seconds without a retry", async () => {
+  const f = await profile();
+  try {
+    let clock = 0,
+      calls = 0;
+    const result = await browser.preparePlaywrightBrowser(f.root, {
+      now: () => clock,
+      run: async (options: { timeoutMilliseconds: number }) => {
+        calls++;
+        const healthyDuration = 245000;
+        clock += Math.min(healthyDuration, options.timeoutMilliseconds);
+        return options.timeoutMilliseconds < healthyDuration
+          ? terminal({
+              exitCode: null,
+              signal: "SIGKILL",
+              timedOut: true,
+              output: "Synthetic APT/font installation still progressing\n",
+            })
+          : success();
+      },
+      delay: async () => assert.fail("Healthy acquisition must not retry"),
+    });
+    assert.equal(result.state, "ready");
+    assert.equal(result.elapsedMilliseconds, 245000);
+    assert.equal(result.attempts.length, 1);
+    assert.equal(result.attempts[0].passed, true);
+    assert.equal(calls, 1);
+    assert.equal(browser.browserAcquisitionLimits.totalMilliseconds, 540000);
+  } finally {
+    await f.cleanup();
+  }
+});
+
+test("a slow positive DNS failure leaves only the original aggregate remainder for recovery", async () => {
+  const f = await profile();
+  try {
+    let clock = 0,
+      calls = 0;
+    const windows: number[] = [];
+    const result = await browser.preparePlaywrightBrowser(f.root, {
+      now: () => clock,
+      run: async (options: { timeoutMilliseconds: number }) => {
+        windows.push(options.timeoutMilliseconds);
+        calls++;
+        clock += calls === 1 ? 290000 : 1000;
+        return calls === 1 ? terminal() : success();
+      },
+      delay: async (milliseconds: number) => {
+        assert.equal(milliseconds, 2000);
+        clock += milliseconds;
+      },
+    });
+    assert.equal(result.state, "ready");
+    assert.deepEqual(windows, [300000, 248000]);
+    assert.equal(calls, 2);
+    assert.equal(result.elapsedMilliseconds, 293000);
+    assert.equal(result.attempts[0].retryable, true);
+    assert.equal(result.attempts[1].passed, true);
   } finally {
     await f.cleanup();
   }
@@ -176,7 +239,7 @@ test("positive APT DNS acquisition failure is retained before a fresh bounded re
       }) => {
         assert.equal(options.cli, f.cli);
         assert.deepEqual(options.args, [...browser.browserInstallArguments]);
-        assert.equal(options.timeoutMilliseconds, 165000);
+        assert.equal(options.timeoutMilliseconds, 300000);
         calls++;
         clock += 10;
         return calls === 1 ? terminal() : success();
@@ -718,7 +781,7 @@ test("browser acquisition rejects expanded budgets before admission", async () =
   for (const changed of [
     { attempts: 4 },
     { totalMilliseconds: 540001 },
-    { attemptMilliseconds: 165001 },
+    { attemptMilliseconds: 300001 },
     { outputBytes: 2 * 1048576 + 1 },
     { backoffMilliseconds: [2001, 5000] },
   ]) {

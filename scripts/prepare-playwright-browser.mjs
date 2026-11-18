@@ -35,7 +35,10 @@ export const browserInstallArguments = Object.freeze([
 export const browserAcquisitionLimits = Object.freeze({
   attempts: 3,
   totalMilliseconds: 540000,
-  attemptMilliseconds: 165000,
+  // Stock Ubuntu APT/font installation and the browser share this attempt.
+  // Allow measured healthy installation progress beyond the old 165s cutoff;
+  // every attempt still consumes the unchanged nine-minute aggregate window.
+  attemptMilliseconds: 300000,
   outputBytes: 2 * 1048576,
   backoffMilliseconds: Object.freeze([2000, 5000]),
 });
