@@ -1,0 +1,312 @@
+#!/usr/bin/env python3
+"""First-party Apple host/identity metadata only; no producer or payload execution."""
+import argparse
+import base64
+import gzip
+import hashlib
+import json
+import os
+from pathlib import Path
+import platform
+import pwd
+import re
+import shutil
+import stat
+import subprocess
+import sys
+import tempfile
+import time
+
+DEVELOPER = Path('/Applications/Xcode_16.4.app/Contents/Developer')
+SDK = DEVELOPER/'Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk'
+TOOLCHAIN = DEVELOPER/'Toolchains/XcodeDefault.xctoolchain'
+PINS = {
+ 'Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk/SDKSettings.json':'58a133735f0a55a624a1703067059f6e78925e51725ec6e1f966072e142c9c42',
+ 'Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk/SDKSettings.plist':'30bf3c8ef32f46d43f68eb91a85eded3e1763edc752a6fd71633eecac4909b28',
+ '../Info.plist':'cd2c5ad123051dfbbfc316a048bb376b253af190bd10ae37c797d3e5c165cad8',
+ '../version.plist':'b44fcf33ce9e1ac6759f5e71f682bcf734743e6ecd8ad6263116338236b25926',
+ 'Toolchains/XcodeDefault.xctoolchain/usr/bin/clang':'4c458256bcdf913774de1bb4a37768244d3b41f32ad55afb2dfec3432f46f4fe',
+}
+MAX_ENTRIES=200000
+MAX_READ_BYTES=16*1024**3
+MAX_DECODED_METADATA=128*1024**2
+MAX_CAPTURE_BYTES=32*1024**2
+READ_SECONDS=300
+MAX_COMMAND_BYTES=1024**2
+CONTEXT=('GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_SHA','GITHUB_REPOSITORY','GITHUB_REF','GITHUB_WORKFLOW_REF','GITHUB_JOB','ImageOS','ImageVersion')
+PRODUCERS=frozenset('clang clang++ cc cc1 cc1plus gcc g++ ld ld64 lld swift swiftc make gmake ninja cmake cargo rustc rustdoc wasm-opt emcc em++ npm npx pnpm yarn node javac java dotnet msbuild gradle mvn go'.split())
+
+def need(value,message):
+    if not value:raise ValueError(message)
+
+def encoded(value):return (json.dumps(value,sort_keys=True,separators=(',',':'))+'\n').encode()
+def digest(body):return hashlib.sha256(body).hexdigest()
+
+class Bounds:
+    def __init__(self,seconds=READ_SECONDS,entries=MAX_ENTRIES,read_bytes=MAX_READ_BYTES,clock=None):
+        self.clock=clock or time.monotonic;self.deadline=self.clock()+seconds
+        self.entries=0;self.bytes=0;self.maximum_entries=entries;self.maximum_bytes=read_bytes
+    def tick(self):need(self.clock()<self.deadline,'metadata-deadline')
+    def entry(self):
+        self.tick();self.entries+=1;need(self.entries<=self.maximum_entries,'metadata-entry-bound')
+    def read(self,count):
+        self.tick();self.bytes+=count;need(self.bytes<=self.maximum_bytes,'selected-tool-byte-bound')
+
+def metadata(path):
+    s=path.lstat()
+    return {'mode':stat.S_IMODE(s.st_mode),'uid':s.st_uid,'gid':s.st_gid,
+            'device':s.st_dev,'inode':s.st_ino,'bytes':s.st_size,
+            'mtimeNs':s.st_mtime_ns,'ctimeNs':s.st_ctime_ns,'links':s.st_nlink}
+
+def group_id(value):
+    value=int(value);need(-(2**31)<=value<2**32,'invalid-group-ID')
+    return value & 0xffffffff
+
+def current_endpoint(frame):
+    result=[]
+    for row in frame:
+        path=Path(row['path']);now=metadata(path)
+        need(all(now[key]==row[key] for key in now),'selected-metadata-changed-after-permission-probe')
+        if row['type']=='symlink':need(os.readlink(path)==row['target'] and str(path.resolve(strict=True))==row['physicalPath'],'selected-link-changed-after-permission-probe')
+        result.append({'path':str(path),**now})
+    return result
+
+def under(path,roots):return any(path==root or root in path.parents for root in roots)
+
+def snapshot(roots,bounds):
+    roots=[root.resolve(strict=True) for root in roots]
+    rows=[];seen=set()
+    def visit(path):
+        bounds.entry();name=str(path)
+        need(name not in seen,'duplicate-selected-path');seen.add(name)
+        before=metadata(path);kind=path.lstat().st_mode
+        row={'path':name,**before}
+        if stat.S_ISLNK(kind):
+            target=os.readlink(path);physical=path.resolve(strict=True)
+            need(under(physical,roots),'selected-symlink-escapes-roots')
+            row.update(type='symlink',target=target,physicalPath=str(physical))
+        elif stat.S_ISDIR(kind):
+            row['type']='directory'
+            for child in sorted(path.iterdir(),key=lambda x:os.fsencode(x.name)):visit(child)
+        else:
+            need(stat.S_ISREG(kind),'unsupported-selected-file-type')
+            need(before['bytes']<=bounds.maximum_bytes-bounds.bytes,'selected-tool-byte-bound')
+            h=hashlib.sha256();length=0
+            fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
+            with os.fdopen(fd,'rb') as stream:
+                opened=os.fstat(stream.fileno())
+                need((opened.st_dev,opened.st_ino,opened.st_size)==(before['device'],before['inode'],before['bytes']),'selected-file-replaced-before-open')
+                while length<before['bytes']:
+                    bounds.tick();block=stream.read(min(65536,before['bytes']-length));bounds.tick()
+                    need(block,'selected-file-size-changed')
+                    bounds.read(len(block));h.update(block);length+=len(block)
+            need(length==before['bytes'],'selected-file-size-changed')
+            row.update(type='file',sha256=h.hexdigest())
+        bounds.tick();need(metadata(path)==before,'selected-file-changed-during-frame')
+        rows.append(row)
+    for root in roots:visit(root)
+    return sorted(rows,key=lambda x:os.fsencode(x['path']))
+
+def protected_path(path,build_uid,access=os.access):
+    """Check effective ACL access and rename ancestors, including sticky parents."""
+    path=Path(path)
+    need(path.is_absolute(),'absolute-selected-path-required')
+    child=path
+    writable=[]
+    if access(path,os.W_OK):writable.append(str(path))
+    for parent in path.parents:
+        s=parent.stat()
+        if access(parent,os.W_OK):
+            # A sticky parent protects a child owned by a different UID. An
+            # ancestor owned by build UID still permits replacement and refuses.
+            sticky=bool(s.st_mode & stat.S_ISVTX)
+            if not sticky or child.lstat().st_uid==build_uid or s.st_uid==build_uid:
+                writable.append(str(parent))
+        child=parent
+    return not writable,writable
+
+def inspect_as_build(frame,controller,expected,access=os.access,identity=None):
+    actual=identity or {'uid':os.getuid(),'gid':os.getgid(),'groups':sorted({os.getgid(),*os.getgroups()})}
+    need(actual==expected,'build-identity-differs')
+    need(actual['uid'] not in (0,controller['uid']),'distinct-nonroot-build-identity-required')
+    need(actual['gid'] in actual['groups'],'primary-build-group-required')
+    controller_path=Path(controller['file'])
+    need(controller_path.resolve(strict=True)==controller_path,'controller-link-refused')
+    need(controller_path.stat().st_uid==0 and digest(controller_path.read_bytes())==controller['sha256'],'root-controller-identity-differs')
+    good,paths=protected_path(controller_path,actual['uid'],access)
+    need(good,'controller-writable-by-build-identity')
+    records={row['path']:row for row in frame}
+    need(len(records)==len(frame),'duplicate-selected-permission-frame-path')
+    failures=[];count=0;current=[]
+    for row in frame:
+        path=Path(row['path']);now=metadata(path)
+        need(all(now[k]==row[k] for k in now),'selected-metadata-changed-before-permission-probe')
+        execution_row=row
+        if row['type']=='symlink':
+            need(os.readlink(path)==row['target'] and str(path.resolve(strict=True))==row['physicalPath'],'selected-link-changed')
+            physical=records.get(row['physicalPath'])
+            need(physical is not None and physical['type'] in ('file','directory'),'bound-physical-target-record-required')
+            physical_path=Path(physical['path']);physical_now=metadata(physical_path)
+            need(all(physical_now[k]==physical[k] for k in physical_now),'bound-physical-target-metadata-changed')
+            physical_mode=physical_path.lstat().st_mode
+            need(physical_path.resolve(strict=True)==physical_path and (stat.S_ISREG(physical_mode) if physical['type']=='file' else stat.S_ISDIR(physical_mode)),'bound-physical-target-type-differs')
+            execution_row=physical
+        readable=access(path,os.R_OK)
+        executable=access(path,os.X_OK) if execution_row['type']=='directory' or execution_row['mode'] & 0o111 else True
+        protected,bad=protected_path(path,actual['uid'],access)
+        if not (readable and executable and protected):
+            count+=1
+            if len(failures)<100:failures.append({'path':str(path),'readable':readable,'executableWhenRequired':executable,'writablePaths':bad})
+        current.append({'path':str(path),**now})
+    return {'identity':actual,'selectedEntriesChecked':len(frame),'failureCount':count,'firstFailures':failures,
+            'allSelectedEntriesReadableExecutableAndProtected':count==0,'controllerProtected':True,
+            'metadataEndpointSha256':digest(encoded(current)),'permissionProbeOnly':True,'projectCodeExecuted':False}
+
+def command(argv,env,receipts,accept_codes=(0,),timeout=30):
+    result=subprocess.run(argv,cwd='/',input=b'',capture_output=True,env=env,timeout=timeout,check=False)
+    need(len(result.stdout)+len(result.stderr)<=MAX_COMMAND_BYTES,'metadata-command-output-bound')
+    receipts.append({'argv':argv,'exitCode':result.returncode,'stdoutBytes':len(result.stdout),'stdoutSHA256':digest(result.stdout),'stderrBytes':len(result.stderr),'stderrSHA256':digest(result.stderr)})
+    need(result.returncode in accept_codes,'metadata-command-failed')
+    return result
+
+class SudoPolicyUnavailable(ValueError):
+    def __init__(self,result):
+        super().__init__('noninteractive-sudo-denial-not-established')
+        self.observation={'exitCode':result.returncode}
+        for name,body in [('stdout',result.stdout),('stderr',result.stderr)]:
+            self.observation[name+'Bytes']=len(body)
+            self.observation[name+'SHA256']=digest(body)
+            self.observation[name+'Base64']=base64.b64encode(body[:32768]).decode()
+            self.observation[name+'Complete']=len(body)<=32768
+
+def sudo_denial(result):
+    text=result.stdout or result.stderr
+    return result.returncode in (0,1) and not (result.stdout and result.stderr) and re.fullmatch(rb'User nobody is not allowed to run sudo on [A-Za-z0-9_.-]+\.\n?',text) is not None
+
+def context(env):
+    value={k:env[k] for k in CONTEXT}
+    need(re.fullmatch(r'[1-9][0-9]*',value['GITHUB_RUN_ID']) and re.fullmatch(r'[1-9][0-9]*',value['GITHUB_RUN_ATTEMPT']),'invalid-run-identity')
+    need(re.fullmatch(r'[0-9a-f]{40}',value['GITHUB_SHA']),'invalid-source-head')
+    need(value['GITHUB_REPOSITORY']=='stsepelin/checktrail','repository-differs')
+    # ImageOS is recorded metadata, not an OS admission selector. Physical Darwin,
+    # arm64 and sw_vers checks below decide the selected host; do not guess an
+    # undocumented ARM image suffix. Preserve the actual bounded image identity.
+    need(re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,63}',value['ImageOS']) and re.fullmatch(r'20[0-9]{6}\.[0-9]+\.[0-9]+',value['ImageVersion']),'exact-hosted-image-identity-required')
+    need(value['GITHUB_WORKFLOW_REF'].startswith(value['GITHUB_REPOSITORY']+'/.github/workflows/') and '@' in value['GITHUB_WORKFLOW_REF'],'workflow-context-differs')
+    return value
+
+def compiler_identity(text):
+    names=('__clang_major__','__clang_minor__','__clang_patchlevel__','__apple_build_version__');values={}
+    for line in text.splitlines():
+        match=re.fullmatch(r'#define (\w+) (\d+)',line)
+        if match and match[1] in names:
+            need(match[1] not in values,'duplicate-compiler-version-macro');values[match[1]]=int(match[2])
+    need(set(values)==set(names),'missing-compiler-version-macro')
+    return '.'.join(str(values[n]) for n in names)
+
+def workload(text,own_pid):
+    rows=text.splitlines();need(len(rows)<=8192,'process-snapshot-count-bound')
+    conflicts=[]
+    for row in rows:
+        pid,name=row.strip().split(None,1)
+        if int(pid)!=own_pid and Path(name).name in PRODUCERS:conflicts.append({'pid':int(pid),'executableBasename':Path(name).name})
+    return {'processCount':len(rows),'knownProducerProcesses':conflicts,'noKnownProducerProcessObserved':not conflicts,'exclusiveHostOrFutureReservationClaimed':False}
+
+def write_json(path,value,mode=0o444,maximum=MAX_DECODED_METADATA):
+    body=encoded(value);need(len(body)<=maximum,'metadata-decoded-byte-bound')
+    fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,mode)
+    with os.fdopen(fd,'wb') as f:
+        os.fchmod(f.fileno(),mode)
+        f.write(body);f.flush();os.fsync(f.fileno())
+    return {'bytes':len(body),'sha256':digest(body)}
+
+class LimitedCarrier:
+    def __init__(self,stream,maximum):self.stream=stream;self.maximum=maximum;self.bytes=0
+    def write(self,body):
+        need(len(body)<=self.maximum-self.bytes,'metadata-carrier-byte-bound')
+        written=self.stream.write(body);self.bytes+=written;return written
+    def flush(self):self.stream.flush()
+
+def inner(request):
+    path=Path(request);s=path.lstat()
+    need(path==path.resolve(strict=True) and stat.S_ISREG(s.st_mode) and s.st_uid==0 and s.st_size<=MAX_DECODED_METADATA,'root-request-required')
+    value=json.loads(path.read_bytes())
+    need(set(value)=={'frame','controller','identity'},'permission-request-fields-differ')
+    return inspect_as_build(value['frame'],value['controller'],value['identity'])
+
+def observe(control_root,output,env):
+    bounds=Bounds();run_context=context(env)
+    need(os.getuid()==0,'root-controller-required')
+    need(platform.system()=='Darwin' and platform.machine()=='arm64','native-Darwin-arm64-required')
+    need(control_root==control_root.resolve(strict=True) and control_root.stat().st_uid==0,'root-owned-controller-directory-required')
+    script=Path(__file__).resolve(strict=True)
+    need(script.parent==control_root and script.stat().st_uid==0,'root-owned-controller-required')
+    need(env.get('GITHUB_ACTIONS')=='true' and env.get('RUNNER_ENVIRONMENT')=='github-hosted' and env.get('RUNNER_OS')=='macOS' and env.get('RUNNER_ARCH')=='ARM64','standard-hosted-ARM64-required')
+    account=pwd.getpwnam('nobody');need(account.pw_uid not in (0,int(env['CHECKTRAIL_CONTROLLER_UID'])),'distinct-existing-nobody-required')
+    home=control_root/'build-home';home.mkdir(mode=0o700);os.chown(home,account.pw_uid,account.pw_gid)
+    clean={'PATH':'/usr/bin:/bin:/usr/sbin:/sbin','HOME':str(home),'DEVELOPER_DIR':str(DEVELOPER),'SDKROOT':str(SDK),'LC_ALL':'C'}
+    receipts=[]
+    def run(argv,accept_codes=(0,),long=False):
+        bounds.tick();remaining=bounds.deadline-bounds.clock()
+        result=command(argv,clean,receipts,accept_codes,timeout=min(remaining,300 if long else 30));bounds.tick();return result
+    def text(argv):return run(argv).stdout.decode().strip()
+    identity={'uid':account.pw_uid,'gid':account.pw_gid,'groups':sorted(set(group_id(x) for x in text(['/usr/bin/id','-G','nobody']).split()))}
+    policy=run(['/usr/bin/sudo','-n','-l','-U','nobody'],(0,1))
+    if not sudo_denial(policy):raise SudoPolicyUnavailable(policy)
+    cpus=int(text(['/usr/sbin/sysctl','-n','hw.logicalcpu']));memory=int(text(['/usr/sbin/sysctl','-n','hw.memsize']))
+    macos=text(['/usr/bin/sw_vers','-productVersion']);xcode=text(['/usr/bin/xcodebuild','-version'])
+    sdk=text(['/usr/bin/xcrun','--sdk','macosx','--show-sdk-path']);sdk_version=text(['/usr/bin/xcrun','--sdk','macosx','--show-sdk-version'])
+    clang=text(['/usr/bin/xcrun','--sdk','macosx','--find','clang'])
+    need(Path(sdk).resolve(strict=True)==SDK.resolve(strict=True),'selected-SDK-path-differs')
+    need(Path(clang).resolve(strict=True)==(TOOLCHAIN/'usr/bin/clang').resolve(strict=True),'selected-clang-path-differs')
+    compiler=compiler_identity(text([clang,'-dM','-E','-x','c','-']))
+    processes=workload(text(['/bin/ps','-axo','pid=,comm=']),os.getpid())
+    disk=shutil.disk_usage(output.parent)
+    checks={'macOS15':macos.split('.')[0]=='15','Xcode164Build16F6':xcode.splitlines()==['Xcode 16.4','Build version 16F6'],'SDK155':sdk_version=='15.5','AppleClang170017000013':compiler=='17.0.0.17000013','atLeast3CPUs':cpus>=3,'atLeast7GiBRAM':memory>=7*1024**3,'metadataCaptureReserve':disk.free>=2*1024**3,'noKnownProducerProcessObserved':processes['noKnownProducerProcessObserved']}
+    frame=snapshot([SDK,TOOLCHAIN],bounds);by_path={r['path']:r for r in frame}
+    pins=[]
+    for relative,expected in PINS.items():
+        p=(DEVELOPER/relative).resolve(strict=True)
+        if str(p) in by_path:observed=by_path[str(p)]['sha256']
+        else:
+            extra=snapshot([p],bounds);observed=extra[0]['sha256'];frame.extend(extra)
+        pins.append({'path':str(p),'expectedSHA256':expected,'observedSHA256':observed})
+    checks['fiveExactPhysicalPins']=all(p['expectedSHA256']==p['observedSHA256'] for p in pins)
+    frame.sort(key=lambda r:os.fsencode(r['path']))
+    request=control_root/'permission-request.json'
+    write_json(request,{'frame':frame,'controller':{'file':str(script),'sha256':digest(script.read_bytes()),'uid':int(env['CHECKTRAIL_CONTROLLER_UID'])},'identity':identity})
+    prefix=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/env','-i']
+    prefix += [key+'='+clean[key] for key in sorted(clean)]
+    observed=json.loads(run(prefix+['/usr/bin/python3','-I','-S','-B',str(script),'--inner',str(request)],long=True).stdout)
+    expected_endpoint=current_endpoint(frame)
+    checks.update(nobodyIdentity=observed['identity']==identity,controllerProtected=observed['controllerProtected'],selectedTreeProtected=observed['allSelectedEntriesReadableExecutableAndProtected'],metadataEndpointMatches=observed['metadataEndpointSha256']==digest(encoded(expected_endpoint)),allEntriesInspected=observed['selectedEntriesChecked']==len(frame))
+    output.mkdir(mode=0o755)
+    output.chmod(0o755)
+    raw=encoded(frame);need(len(raw)<=MAX_DECODED_METADATA-MAX_COMMAND_BYTES-65536,'metadata-decoded-byte-bound')
+    compressed=output/'selected-sdk-toolchain-frame.json.gz'
+    with compressed.open('xb') as f:
+        with gzip.GzipFile(filename='',fileobj=LimitedCarrier(f,MAX_CAPTURE_BYTES-MAX_COMMAND_BYTES-65536),mode='wb',mtime=0) as z:z.write(raw)
+    compressed.chmod(0o444);need(compressed.stat().st_size<=MAX_CAPTURE_BYTES,'metadata-carrier-byte-bound')
+    result={'schemaVersion':1,'scope':'Fresh Tree-sitter0.27.0 original native host readiness metadata only','runContext':run_context,'ImageOSRecordedNotAdmissionSelector':True,'allDeclaredHostChecksObserved':all(checks.values()),'checks':checks,'commands':receipts,'host':{'macOS':macos,'CPUs':cpus,'RAMBytes':memory,'scratchFreeBytes':disk.free},'workload':processes,'identity':identity,'permissionObservation':observed,'selectedPhysicalPins':pins,'frame':{'entries':len(frame),'hashReadBytes':bounds.bytes,'decodedBytes':len(raw),'decodedSHA256':digest(raw),'gzipBytes':compressed.stat().st_size,'gzipSHA256':digest(compressed.read_bytes())},'nativeProducerAdmissionGranted':False,'projectCodeExecuted':False,'sourceOrSDKPayloadExported':False,'stockHostConfigurationChanged':False,'sourceBuildOrSDKReproductionClaimed':False,'memoryHardLimitClaimed':False,'nativeWorkDiskFitQualified':False,'wholeSelectedSDKAndToolchainHashed':True,'endpointEqualityIsNotContinuousImmutability':True}
+    write_json(output/'admission.json',result,maximum=MAX_COMMAND_BYTES)
+    return result
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--inner');parser.add_argument('--controller-root');parser.add_argument('--output');args=parser.parse_args()
+    if args.inner:
+        need(not args.controller_root and not args.output,'inner-fields-differ');print(encoded(inner(args.inner)).decode(),end='');return
+    need(args.controller_root and args.output,'controller-and-output-required')
+    control=Path(args.controller_root);output=Path(args.output)
+    need(output.is_absolute() and output.parent==output.parent.resolve(strict=True) and not output.exists(),'fresh-physical-output-required')
+    try:result=observe(control,output,{k:os.environ[k] for k in ['GITHUB_ACTIONS','RUNNER_ENVIRONMENT','RUNNER_OS','RUNNER_ARCH','CHECKTRAIL_CONTROLLER_UID',*CONTEXT]})
+    except Exception as error:
+        output.mkdir(mode=0o755,exist_ok=True)
+        output.chmod(0o755)
+        failure={'schemaVersion':1,'state':'unavailable','failureType':type(error).__name__,'failure':str(error),'allDeclaredHostChecksObserved':False,'nativeProducerAdmissionGranted':False,'projectCodeExecuted':False,'sourceOrSDKPayloadExported':False,'stockHostConfigurationChanged':False}
+        if isinstance(error,SudoPolicyUnavailable):failure['sudoPolicyObservation']=error.observation
+        if not (output/'admission.json').exists():write_json(output/'admission.json',failure,maximum=MAX_COMMAND_BYTES)
+        raise
+    print(json.dumps({'hostReadinessObserved':result['allDeclaredHostChecksObserved'],'nativeProducerAdmissionGranted':False,'artifact':str(output/'admission.json')}))
+    raise SystemExit(0 if result['allDeclaredHostChecksObserved'] else 1)
+
+if __name__=='__main__':main()

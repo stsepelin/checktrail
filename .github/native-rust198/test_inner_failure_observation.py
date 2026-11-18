@@ -1,0 +1,85 @@
+"""Closed first-party failed-inner metadata, synthetic only; no SDK operations."""
+from pathlib import Path
+import ast,hashlib,io,json,os,subprocess,sys,tempfile,unittest
+from contextlib import redirect_stdout
+from types import SimpleNamespace
+from unittest import mock
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+import host_probe as H
+HERE=Path(__file__).resolve().parent
+class InnerFailure(unittest.TestCase):
+ def setUp(self):self.module=SimpleNamespace(MAX_COMMAND_BYTES=1024**2);self.argv=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/python3','-I','-S','-B',str(HERE/'reused_admission.py'),'--inner','/synthetic/request'];self.env={'PATH':'/usr/bin:/bin'};self.receipts=[]
+ def failed(self,response):
+  with mock.patch.object(H.subprocess,'run',return_value=response):
+   with self.assertRaises(H.InnerPermissionProbeRefusal) as caught:H.observe_inner(self.module,self.argv,self.env,self.receipts,.25)
+  return caught.exception.observation
+ def trace(self,reason,script=None):
+  script=script or HERE/'reused_admission.py';return b'Traceback (most recent call last):\n  File "'+os.fsencode(script)+b'", line 40, in need\n    if not value:raise ValueError(message)\nValueError: '+reason.encode()+b'\n'
+ def test_closed_id_set_equals_all_reachable_original_inner_need_declarations(self):
+  tree=ast.parse((HERE/'reused_admission.py').read_text());names={'inner','inspect_as_build','protected_path','metadata'};ids=set()
+  for f in tree.body:
+   if isinstance(f,ast.FunctionDef) and f.name in names:
+    for n in ast.walk(f):
+     if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='need' and len(n.args)>1 and isinstance(n.args[1],ast.Constant):ids.add(n.args[1].value)
+  self.assertEqual(ids,H.INNER_NEED_IDS);self.assertEqual(15,len(ids))
+ def test_all_closed_need_identifiers_classify_without_emitting_trace_or_path(self):
+  for reason in sorted(H.INNER_NEED_IDS):
+   with self.subTest(reason=reason):
+    stderr=self.trace(reason);r=self.failed(subprocess.CompletedProcess([],1,b'',stderr));self.assertEqual({'kind':'closed-firstparty-inner-need-refusal','reasonIdentifier':reason},r['classification']);self.assertEqual(1,r['exitCode']);self.assertEqual(len(stderr),r['stderr']['bytes']);self.assertEqual(hashlib.sha256(stderr).hexdigest(),r['stderr']['sha256']);self.assertNotIn(str(HERE),json.dumps(r));self.assertNotIn('Traceback',json.dumps(r));self.assertFalse(r['descendantQuiescenceProven'])
+ def test_real_pinned_firstparty_need_trace_matches_classifier_without_sdk_execution(self):
+  file=HERE/'reused_admission.py';code="import importlib.util;spec=importlib.util.spec_from_file_location('firstparty_permission_fixture',"+repr(str(file))+");module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);module.need(False,'root-request-required')"
+  actual=subprocess.run([sys.executable,'-I','-B','-c',code],stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=5);self.assertEqual(1,actual.returncode);self.assertEqual(b'',actual.stdout);self.assertLess(len(actual.stderr),65536);r=self.failed(actual);self.assertEqual({'kind':'closed-firstparty-inner-need-refusal','reasonIdentifier':'root-request-required'},r['classification'])
+ def test_unknown_reason_suffix_prefix_wrong_script_and_stdout_are_unknown(self):
+  reason='root-request-required';good=self.trace(reason)
+  for stdout,stderr in [(b'',self.trace('prefix-'+reason)),(b'',self.trace(reason+'-suffix')),(b'',self.trace(reason,Path('/unrelated/firstparty.py'))),(b'',good+b'extra\n'),(b'',good.replace(b'Traceback (most recent call last):\n',b'')),(b'UNEMITTED-SOURCE-OR-SLA',good)]:
+   with self.subTest(stderrSHA=hashlib.sha256(stderr).hexdigest()):r=self.failed(subprocess.CompletedProcess([],2,stdout,stderr));self.assertEqual('unknown-inner-failure',r['classification']['kind']);self.assertIsNone(r['classification']['reasonIdentifier']);self.assertNotIn('UNEMITTED',json.dumps(r));self.assertEqual(hashlib.sha256(stdout).hexdigest(),r['stdout']['sha256'])
+ def test_exact_python_open_permission_family_only_for_known_alias_and_controller(self):
+  script=HERE/'reused_admission.py'
+  for number,message in [(13,b'Permission denied'),(1,b'Operation not permitted')]:
+   stderr=os.fsencode(sys.executable)+b": can't open file '"+os.fsencode(script)+b"': [Errno "+str(number).encode()+b'] '+message+b'\n';r=self.failed(subprocess.CompletedProcess([],2,b'',stderr));self.assertEqual('stock-python-cannot-open-firstparty-controller-permission-refusal',r['classification']['kind']);self.assertEqual(number,r['classification']['osErrno']);self.assertNotIn(str(script),json.dumps(r))
+ def test_permission_message_near_misses_remain_unknown(self):
+  good=b"/usr/bin/python3: can't open file '"+os.fsencode(HERE/'reused_admission.py')+b"': [Errno 13] Permission denied\n"
+  for bad in [good.replace(b'/usr/bin/python3',b'/unreviewed/python3'),good.replace(b'reused_admission.py',b'other.py'),good.replace(b'Errno 13',b'Errno 2'),good+b'raw-extra',good.replace(b'Permission denied',b'Permission deniedx')]:
+   r=self.failed(subprocess.CompletedProcess([],2,b'',bad));self.assertEqual('unknown-inner-failure',r['classification']['kind'])
+ def test_success_preserves_exact_original_run_arguments_and_receipt(self):
+  body=json.dumps({'metadataEndpointSha256':'a'*64}).encode();response=subprocess.CompletedProcess([],0,body,b'')
+  with mock.patch.object(H.subprocess,'run',return_value=response) as called:r=H.observe_inner(self.module,self.argv,self.env,self.receipts,.25)
+  called.assert_called_once_with(self.argv,cwd='/',input=b'',capture_output=True,env=self.env,timeout=.25,check=False);self.assertEqual({'metadataEndpointSha256':'a'*64},r);self.assertEqual(1,len(self.receipts));self.assertEqual(self.argv,self.receipts[0]['argv']);self.assertEqual(hashlib.sha256(body).hexdigest(),self.receipts[0]['stdoutSHA256'])
+ def test_exact_output_cap_accepted_and_one_over_refused_before_parse(self):
+  prefix=b'{"metadataEndpointSha256":"';suffix=b'"}';body=prefix+b'a'*(self.module.MAX_COMMAND_BYTES-len(prefix)-len(suffix))+suffix
+  with mock.patch.object(H.subprocess,'run',return_value=subprocess.CompletedProcess([],0,body,b'')):r=H.observe_inner(self.module,self.argv,self.env,self.receipts,.25)
+  self.assertEqual(self.module.MAX_COMMAND_BYTES-len(prefix)-len(suffix),len(r['metadataEndpointSha256']))
+  r=self.failed(subprocess.CompletedProcess([],0,body+b' ',b''));self.assertFalse(r['outputWithinOriginalBound']);self.assertEqual('original-command-output-bound-refused',r['classification']['kind']);self.assertEqual(len(body)+1,r['stdout']['bytes'])
+ def test_timeout_keeps_partial_output_hashes_and_explicit_unknown_exit_lifecycle(self):
+  error=subprocess.TimeoutExpired(self.argv,.25,output=b'PARTIAL-UNEMITTED',stderr=None)
+  with mock.patch.object(H.subprocess,'run',side_effect=error),self.assertRaises(H.InnerPermissionProbeRefusal) as caught:H.observe_inner(self.module,self.argv,self.env,self.receipts,.25)
+  r=caught.exception.observation;self.assertTrue(r['timedOut']);self.assertIsNone(r['exitCode']);self.assertEqual(hashlib.sha256(error.output).hexdigest(),r['stdout']['sha256']);self.assertFalse(r['stderr']['available']);self.assertIsNone(r['stderr']['bytes']);self.assertFalse(r['descendantQuiescenceProven']);self.assertEqual([],self.receipts);self.assertNotIn('PARTIAL',json.dumps(r))
+ def test_spawn_lifecycle_and_unknown_errors_never_expose_exception_bodies(self):
+  for error in [PermissionError(13,'DO-NOT-EMIT','/private/secret'),RuntimeError('SOURCE-OR-SLA-BODY')]:
+   with mock.patch.object(H.subprocess,'run',side_effect=error),self.assertRaises(H.InnerPermissionProbeRefusal) as caught:H.observe_inner(self.module,self.argv,self.env,self.receipts,.25)
+   r=caught.exception.observation;self.assertIsNone(r['exitCode']);self.assertFalse(r['stdout']['available']);self.assertEqual('spawn-or-lifecycle-outcome-unknown',r['processOutcome']);self.assertNotIn('DO-NOT',json.dumps(r));self.assertNotIn('SOURCE-OR',json.dumps(r))
+ def test_signal_exit_is_preserved_without_group_absence_claim(self):
+  r=self.failed(subprocess.CompletedProcess([],-15,b'',b''));self.assertEqual(-15,r['exitCode']);self.assertFalse(r['descendantQuiescenceProven']);self.assertEqual('unknown-inner-failure',r['classification']['kind'])
+ def test_malformed_success_json_is_unknown_not_a_pass(self):
+  for body in [b'not-json',b'[]',b'{"other":"payload"}']:
+   r=self.failed(subprocess.CompletedProcess([],0,body,b''));self.assertEqual(0,r['exitCode']);self.assertEqual('unknown-firstparty-inner-result-format',r['classification']['kind']);self.assertEqual(hashlib.sha256(body).hexdigest(),r['stdout']['sha256'])
+ def test_permission_probe_uses_observer_instead_of_losing_failed_inner_output(self):
+  error=H.InnerPermissionProbeRefusal({'stage':'synthetic-inner-refusal','exitCode':1})
+  class Bounds:
+   def __init__(self):self.deadline=H.time.monotonic()+5;self.clock=H.time.monotonic
+   def tick(self):pass
+  def command(argv,env,receipts,codes=(0,),timeout=30):
+   if argv[0]=='/usr/bin/id':return subprocess.CompletedProcess(argv,0,b'20\n',b'')
+   if argv[:3]==['/usr/bin/sudo','-n','-l']:return subprocess.CompletedProcess(argv,1,b'synthetic-policy',b'')
+   if argv[0]=='/bin/ps':return subprocess.CompletedProcess(argv,0,b'',b'')
+   raise AssertionError('Failed inner must use bounded observation, not old opaque command')
+  module=SimpleNamespace(Bounds=Bounds,command=command,group_id=int,sudo_denial=lambda value:True,snapshot=lambda roots,bounds:[{'synthetic':'nonempty-firstparty-frame'}],encoded=lambda value:json.dumps(value).encode(),digest=lambda value:hashlib.sha256(value).hexdigest(),MAX_DECODED_METADATA=128*1024**2,MAX_COMMAND_BYTES=1024**2,write_json=lambda path,value:path.write_text(json.dumps(value)))
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory).resolve();account=SimpleNamespace(pw_uid=os.getuid()+1,pw_gid=20)
+   with mock.patch.object(H,'guard',return_value=module),mock.patch.object(H.pwd,'getpwnam',return_value=account),mock.patch.dict(os.environ,{'CHECKTRAIL_CONTROLLER_UID':str(os.getuid())}),mock.patch.object(H,'observe_inner',side_effect=error) as observed,self.assertRaises(H.InnerPermissionProbeRefusal) as caught:H.permission_observation(root/'Developer',root/'SDK',root/'Toolchain',{},root,{})
+   self.assertIs(error,caught.exception);observed.assert_called_once();args,kwargs=observed.call_args;self.assertEqual(module,args[0]);self.assertEqual(str(HERE/'reused_admission.py'),args[1][-3]);self.assertEqual('--inner',args[1][-2]);self.assertGreater(kwargs['timeout'],0);self.assertLessEqual(kwargs['timeout'],300)
+ def test_main_emits_only_bounded_closed_projection_and_refuses(self):
+  observation=self.failed(subprocess.CompletedProcess([],1,b'SOURCE-BODY',b'/private/SLA-BODY'));error=H.InnerPermissionProbeRefusal(observation);out=io.StringIO();environment={'GITHUB_ACTIONS':'true','RUNNER_ENVIRONMENT':'github-hosted','GITHUB_RUN_ID':'1','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40}
+  with mock.patch.dict(os.environ,environment),mock.patch.object(H.os,'getuid',return_value=0),mock.patch.object(H.platform,'system',return_value='Darwin'),mock.patch.object(H.platform,'machine',return_value='arm64'),mock.patch.object(H,'collect_metadata',side_effect=error),mock.patch.object(sys,'argv',['host_probe','/synthetic/out']),redirect_stdout(out):code=H.main()
+  text=out.getvalue();r=json.loads(text);self.assertEqual(1,code);self.assertLess(len(text),4096);self.assertFalse(r['nativeAdmissionGranted']);self.assertFalse(r['metadataObserved']);self.assertFalse(r['originalSDKOrSLABodyEmitted']);self.assertNotIn('SOURCE-BODY',text);self.assertNotIn('/private/',text)
+if __name__=='__main__':unittest.main()
