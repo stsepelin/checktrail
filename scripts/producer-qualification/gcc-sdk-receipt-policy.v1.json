@@ -26,10 +26,10 @@
     "/inputs/gcc-12/gcc-12_12.2.0-14+deb12u1.dsc"
   ],
   "originalSdkStdoutBytes": 536870912,
-  "previousPolicySha256": "c6f7ae7400d945b7192a27018d0f2a55aba3457cf975f61e32cb3c837b156d38",
+  "previousPolicySha256": "f102a785af8a8b82f7996fc3820b4ad3a9089928747729909d269ee3c5f1b230",
   "purpose": "on-host-original-sdk-validation-with-minimized-public-receipt",
   "receiptBytes": 16384,
-  "revision": "fmtutil-exact-optional-final-status0-trailer-v3",
+  "revision": "fmtutil-exact-numeric0-or-empty-false-success-trailer-v4",
   "runtimeFiles": [
     {
       "bytes": 13709,
@@ -68,10 +68,10 @@
       "sha256": "c2ce6976e93620c6d47a0723421ffb1c4e450420ca2475355741dbd195033e05"
     },
     {
-      "bytes": 32824,
+      "bytes": 32979,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-sdk-derived-run.py",
-      "sha256": "9bf4b4eba1f0c61461346821115d83dabe25a7ec8e64cf628e087b5aa310c9fc"
+      "sha256": "c91a467942e4d9f5a91209fd4faf6075d2fef20edbaa1c45b59c31b6aeccea71"
     },
     {
       "bytes": 7496,

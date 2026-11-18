@@ -39,7 +39,7 @@ class Footer(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'configuration origin'):h.parse(raw,extra,origin=bad)
     def test_prefix_suffix_whitespace_case_nonzero_and_other_info_lines_are_never_generic_footers(self):
         h=self.helper();literal=d.MAPPING_STATUS0_TRAILER
-        candidates=['prefix '+literal,literal+' suffix',' '+literal,literal+' ',literal.replace('[INFO]','[info]'),literal[:-1]+'1',literal[:-1]+'00','fmtutil [INFO]: done']
+        candidates=['prefix '+literal,literal+' suffix',' '+literal,literal+' ',literal[:-1]+' ',literal.replace('[INFO]','[info]'),literal[:-1]+'1',literal[:-1]+'00','fmtutil [INFO]: done']
         for text in candidates:
             raw=h.listing()+text.encode()+b'\n'
             with self.subTest(text=text),self.assertRaises(ValueError):h.parse(raw)

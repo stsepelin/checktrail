@@ -250,6 +250,8 @@ FORMAT_MAP = {'dvilualatex': {'configuredEngine': 'luatex',
 
 
 MAPPING_STATUS0_TRAILER='fmtutil [INFO]: exiting with status 0'
+MAPPING_EMPTY_FALSE_TRAILER='fmtutil [INFO]: exiting with status '
+MAPPING_SUCCESS_TRAILERS={MAPPING_STATUS0_TRAILER,MAPPING_EMPTY_FALSE_TRAILER}
 
 def empty_mapping_shape():
     return {'state':'unobserved','layout':'unobserved','separatorScope':'document-and-complete-record-boundaries','sourceBound':False,'stdoutSha256':None,'layoutCompatible':None,
@@ -270,7 +272,7 @@ def mapping_layout(raw):
 
     Only exact empty lines at the document boundary after the unique header
     or AFTER a complete three-line record are separators.
-    The exact optional status0 trailer is accepted once, last nonempty, only
+    Either exact optional success trailer is accepted once, last nonempty, only
     after all13 matching complete records. Other nonempty rows are not ignored.
     Blank lines within fields are never discarded.
     Config/code identity remains the responsibility of parse_mapping below.
@@ -285,7 +287,7 @@ def mapping_layout(raw):
     body=lines[headers[0]+1:];blocks=[];seen=set();boundary=False;document=True;gap=0
     shape.update(prefixLines=headers[0],bodyLines=len(body),boundaryBlankLines=0,documentBlankLines=0,misplacedBlankLines=0,unknownLines=0,
                  recognizedRecords=0,unknownRecords=0,duplicateRecords=0,missingRecords=len(FORMAT_MAP),semanticMismatchRecords=0,separatorBoundaries=0,
-                 status0TrailerLines=0,misplacedStatus0TrailerLines=sum(line==MAPPING_STATUS0_TRAILER for line in lines))
+                 status0TrailerLines=0,misplacedStatus0TrailerLines=sum(line in MAPPING_SUCCESS_TRAILERS for line in lines))
     offset=0
     while offset<len(body):
         if body[offset]=='':
@@ -293,7 +295,7 @@ def mapping_layout(raw):
             if boundary:gap+=1
             offset+=1;continue
         document=False
-        if (body[offset]==MAPPING_STATUS0_TRAILER and boundary and len(blocks)==len(FORMAT_MAP) and seen==set(FORMAT_MAP) and
+        if (body[offset] in MAPPING_SUCCESS_TRAILERS and boundary and len(blocks)==len(FORMAT_MAP) and seen==set(FORMAT_MAP) and
             shape['recognizedRecords']==len(FORMAT_MAP) and shape['unknownRecords']==shape['duplicateRecords']==shape['semanticMismatchRecords']==0 and
             shape['unknownLines']==shape['misplacedBlankLines']==0 and all(line=='' for line in body[offset+1:])):
             shape['status0TrailerLines']+=1;shape['misplacedStatus0TrailerLines']-=1;offset+=1;continue

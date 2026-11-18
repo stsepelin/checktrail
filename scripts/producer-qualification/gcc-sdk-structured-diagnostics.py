@@ -48,7 +48,7 @@ def integer(value,maximum=10000000):return type(value) is int and 0<=value<=maxi
 def hash_value(value):return value is None or type(value) is str and re.fullmatch('[a-f0-9]{64}',value) is not None
 
 # Closed syntactic categories describe rows, never a semantic footer or acceptance.
-ROW_CATEGORIES={'whitespace-only','record-header-fragment','record-details-fragment','record-origin-fragment','other-nonempty','status0-trailer-literal'}
+ROW_CATEGORIES={'whitespace-only','record-header-fragment','record-details-fragment','record-origin-fragment','other-nonempty','status0-trailer-literal','empty-false-trailer-literal'}
 MAX_UNRECOGNIZED_ROWS=8
 
 def empty_mapping_rows():
@@ -65,7 +65,7 @@ def unrecognized_mapping_rows(raw):
     excluding its line terminator, with NO stripping or normalization. The full
     raw stdout digest still binds these observations to the original command.
     Up to eight non-record row descriptors are shown, including the exact
-    status0 trailer literal. Totals cover every such body row. Acceptance is
+    numeric0 or empty-false trailer literal. Totals cover every such body row. Acceptance is
     separate: only the original parser can qualify its final trailer position.
     No category authorizes skipping a row or qualifies effective physical origin.
     """
@@ -83,7 +83,8 @@ def unrecognized_mapping_rows(raw):
         if header is not None and details is not None and origin is not None:
             complete+=1;offset+=3;continue
         category='other-nonempty'
-        if line==d.MAPPING_STATUS0_TRAILER:category='status0-trailer-literal'
+        if line==d.MAPPING_EMPTY_FALSE_TRAILER:category='empty-false-trailer-literal'
+        elif line==d.MAPPING_STATUS0_TRAILER:category='status0-trailer-literal'
         elif re.fullmatch(r'[ \t]+',line):category='whitespace-only'
         elif d.mapping_fields([line,'',''])[0] is not None:category='record-header-fragment'
         elif d.mapping_fields(['',line,''])[1] is not None:category='record-details-fragment'
@@ -113,7 +114,7 @@ def validate_mapping_rows(value,mapping):
     need(integer(total,d.STDOUT_BYTES) and integer(retained,MAX_UNRECOGNIZED_ROWS) and integer(omitted,d.STDOUT_BYTES))
     need(total==mapping['unknownLines']+mapping['status0TrailerLines'] and retained==min(total,MAX_UNRECOGNIZED_ROWS) and total==retained+omitted)
     need(type(counts) is dict and set(counts)==ROW_CATEGORIES and all(integer(n,d.STDOUT_BYTES) for n in counts.values()) and sum(counts.values())==total)
-    need(mapping['status0TrailerLines']<=counts['status0-trailer-literal']<=mapping['status0TrailerLines']+mapping['misplacedStatus0TrailerLines'])
+    need(mapping['status0TrailerLines']<=counts['status0-trailer-literal']+counts['empty-false-trailer-literal']<=mapping['status0TrailerLines']+mapping['misplacedStatus0TrailerLines'])
     need(type(rows) is list and len(rows)==retained)
     previous=0;shown={name:0 for name in ROW_CATEGORIES};records=mapping['recognizedRecords']+mapping['unknownRecords']
     for row in rows:

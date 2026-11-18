@@ -43,7 +43,7 @@ class Rows(unittest.TestCase):
     def test_finite_syntactic_fragment_categories_reconcile_without_paths_or_names(self):
         lines=[' \t','standalone (engine=engine) enabled',RAW_A,'  hyphen=synthetic, args=synthetic',RAW_B,'  origin=/private/not-for-egress']
         value=self.project(('List of all formats:\n'+'\n'.join(lines)+'\n').encode());rows=value['nonRecordMappingRows'];self.public(value)
-        self.assertEqual(rows['categoryCounts'],{'whitespace-only':1,'record-header-fragment':1,'record-details-fragment':1,'record-origin-fragment':1,'other-nonempty':2,'status0-trailer-literal':0})
+        self.assertEqual(rows['categoryCounts'],{'whitespace-only':1,'record-header-fragment':1,'record-details-fragment':1,'record-origin-fragment':1,'other-nonempty':2,'status0-trailer-literal':0,'empty-false-trailer-literal':0})
         self.assertTrue(all(r['position']=='no-complete-records' for r in rows['rows']));self.assertEqual(rows['totalRows'],6)
     def test_n10_rows_keep_only_eight_descriptors_and_all_category_totals(self):
         helper=self.helper();texts=[RAW_A+str(i) for i in range(10)];value=self.project(helper.listing()+('\n'.join(texts)+'\n').encode())
