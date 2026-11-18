@@ -1,0 +1,212 @@
+{
+  "files": [
+    {
+      "bytes": 13625,
+      "path": "owned_image.py",
+      "sha256": "ab7365a5610936053728ddfa498b300b35cf2a8045200141a4a967ee5a4a7e6b"
+    },
+    {
+      "bytes": 8838,
+      "path": "profile.json",
+      "sha256": "a4eae99ddab761a4d295977f1c77c8ea128e886e06e3c5bc76264ce0c7746741"
+    },
+    {
+      "bytes": 15876,
+      "path": "common.py",
+      "sha256": "9076ed5affee0a7ef61c5988cbf947caf6c99901f4cf3b483eeac75065fc4914"
+    },
+    {
+      "bytes": 56555,
+      "path": "driver.py",
+      "sha256": "0cfaeddc116ef452815312adef2bb98f6ed12e68cfa3b7940c854adde050b82a"
+    },
+    {
+      "bytes": 4648,
+      "path": "native_entry.py",
+      "sha256": "f05d0d8c40c45b35da511eff18f3f73881cc47b6b3dffee9ec4b0f11497f265c"
+    },
+    {
+      "bytes": 10041,
+      "path": "capture.py",
+      "sha256": "43c695a5e08d5c88e9ba979eb1cbce177f8a9fa7454d7504e4451e61f10228ef"
+    },
+    {
+      "bytes": 18741,
+      "path": "collect.py",
+      "sha256": "3ef0c49eeaaa94547faad2ac2b157d8e8e59cd412cdf361b1c21dc9bdd56c994"
+    },
+    {
+      "bytes": 1908,
+      "path": "crypto_bridge.py",
+      "sha256": "39bba5b8b24e96f3c7982d0d9af1869f12e0990fcea5932831d33e5438f350ce"
+    },
+    {
+      "bytes": 9905,
+      "path": "envelope.mjs",
+      "sha256": "ef5234172c894d8df88fbe58ae1507cb222facae95d3823bc3bbfee941ee26ef"
+    },
+    {
+      "bytes": 5187,
+      "path": "git_ack.py",
+      "sha256": "d5fd9dd661f26d6c6eddd3071d82752efe80ead9a59e258bc201e0a9738b852e"
+    },
+    {
+      "bytes": 8338,
+      "path": "transport_base.py",
+      "sha256": "fd4f390f1412af25241830dc8d63e132c791a517df79ed9ddf211d52d62265fb"
+    },
+    {
+      "bytes": 5722,
+      "path": "meter.py",
+      "sha256": "f9ded029ee9997ed454e5948129ff8ee59440d5b5754012016cb8bdb4ccf4e33"
+    },
+    {
+      "bytes": 621,
+      "path": "meter_runner.py",
+      "sha256": "61710f1d67c1765b9e802b1d7fadfe13fd465afa1db23a91350f01b0dce632be"
+    },
+    {
+      "bytes": 25068,
+      "path": "observer.py",
+      "sha256": "bafa9942ece302632df2b7cfb1e651d6e67ac64cdebf1137f91c7e36a1e9bb90"
+    },
+    {
+      "bytes": 56038,
+      "path": "input_prep.py",
+      "sha256": "0be5a03bec857fbed4796d49a2784057718998da79e7dafd94c4f7fe613f5452"
+    },
+    {
+      "bytes": 6514,
+      "path": "make_workflow.py",
+      "sha256": "9c0c2238550a1a4a16d787147348106f7a3c7defe97c2a1502bec8261429ab5b"
+    },
+    {
+      "bytes": 2696,
+      "path": "run_checks.py",
+      "sha256": "e3b8294b3531ec80e6ae95d92b34e89115d7f2575b407e6c25a0783140edb183"
+    },
+    {
+      "bytes": 18240,
+      "path": "test_core.py",
+      "sha256": "7bb8f879a6e0ebdee9e254908fecd933231d251a89d255e08f5e163d97174ce5"
+    },
+    {
+      "bytes": 11696,
+      "path": "test_observer.py",
+      "sha256": "87efc2a7fa01820b4a138f66e3645a4036a04cece2ad6582ecab6207c2e3e2c6"
+    },
+    {
+      "bytes": 19727,
+      "path": "test_integration.py",
+      "sha256": "2fd41ad64e3b66ae2377cfed9c72ad5b8df024f9d292b31d6dcb517cce66e974"
+    },
+    {
+      "bytes": 6379,
+      "path": "test_crypto.mjs",
+      "sha256": "eb40c8699d64aa6d82ed6676598995010e24ebde8c7ddc5b30fdf4d917c0bc9c"
+    },
+    {
+      "bytes": 8176,
+      "path": "test_compilers.py",
+      "sha256": "8c8559b4f0be757f5ebbb8e86d3fcb24d6302d232e27d132537688088f8480ac"
+    },
+    {
+      "bytes": 7341,
+      "path": "test_deadlines.py",
+      "sha256": "c5aa387b03d3942f632f1cd1bfaaf4a293a257399d2a60af6045233b8af2e9e7"
+    },
+    {
+      "bytes": 3078,
+      "path": "test_volume_options.py",
+      "sha256": "5413f159d540912e1a14298720433ceeb346690197be170dfeb4fa7c996f5428"
+    },
+    {
+      "bytes": 9390,
+      "path": "test_api_state.py",
+      "sha256": "f2d55366d606817326d0a8d839bbc19d0eb3dfcac212d4c5e46fa60330875b2d"
+    },
+    {
+      "bytes": 1326,
+      "path": "test_native_identity.py",
+      "sha256": "7634ea9284c4d06d389e8869573b5628fcb0f2fc6fb2e7113c1bd18cc6fa1482"
+    },
+    {
+      "bytes": 3709,
+      "path": "test_artifact_consistency.py",
+      "sha256": "2479265b0ac24b314b278ba45aec605e7a82daee634513f61cc81d47f115aa0b"
+    },
+    {
+      "bytes": 7526,
+      "path": "test_receiver_metadata.py",
+      "sha256": "c8db2a4f488f5325f567d240d1c3d44320b13b3835a4ab7892db0f33c7fefd78"
+    },
+    {
+      "bytes": 4837,
+      "path": "test_mode_policy.py",
+      "sha256": "60284ad592af5f2f147050269b3c59b6db8d3cb7f70be993ed685a3bc7ec83bd"
+    },
+    {
+      "bytes": 11867,
+      "path": "live_resource.py",
+      "sha256": "3ba2e845a818fde1c790d420fb9d6ca3362888608d721ec252da21b54b9f2fbc"
+    },
+    {
+      "bytes": 6327,
+      "path": "cleanup_owned.py",
+      "sha256": "a044adf614b68bc36705ee14c75428246d52e7b86f43738921026094cb741663"
+    },
+    {
+      "bytes": 12922,
+      "path": "test_live_resource.py",
+      "sha256": "baaca185857c0b54605c83574ac952f92560dce23013b5200d75c856d7f41bcf"
+    },
+    {
+      "bytes": 7213,
+      "path": "test_cleanup_owned.py",
+      "sha256": "ca8e25b97a36ae2c6777c5b9bb339999a3433236cf100cb514e07f8d62641e6f"
+    },
+    {
+      "bytes": 10814,
+      "path": "producer_pause.py",
+      "sha256": "c05ea089c636142b7b0d3affe7ca5b6687e0b77cff2b4fd186fcc8020d4aa863"
+    },
+    {
+      "bytes": 10004,
+      "path": "producer_adapter.py",
+      "sha256": "0bbf2787a421ac7e01cb45358ea0b60d00aa096319ee216fd37adfded464b340"
+    },
+    {
+      "bytes": 14676,
+      "path": "test_producer_pause.py",
+      "sha256": "0710423aa82734158a835b4ad5919219694403a2f5f2ebc2d4695577b6f9adaa"
+    },
+    {
+      "bytes": 17944,
+      "path": "test_producer_adapter.py",
+      "sha256": "9dc4e8d5444c59b9d5876f617712d950cd42b0ca661f045c1594ee6be79f3649"
+    },
+    {
+      "bytes": 22381,
+      "path": "target_pause_controls.py",
+      "sha256": "eabf6d85ad16d96a407c2914e04236f396e5594e2a77a0923e5c1600309b0566"
+    },
+    {
+      "bytes": 4156,
+      "path": "pause_control_worker.py",
+      "sha256": "41998071c7f98dd082dcc249b7400b953b3ec332b3c61c78187f6c86f20f66f3"
+    },
+    {
+      "bytes": 53897,
+      "path": "test_target_pause_controls.py",
+      "sha256": "fc40f274c311aeb55d41cca2c127946b5d5227fe100b7e640b236d3e139dff4a"
+    },
+    {
+      "bytes": 3530,
+      "path": "make_pause_workflow.py",
+      "sha256": "d3cc9a4e24a3df03358b99dabcbd394b74986f09c294b2a1645296eee2e37ece"
+    }
+  ],
+  "firstPartyCodeOnly": true,
+  "nativeActionsRequireConcreteOperatorReview": true,
+  "schemaVersion": 1
+}
