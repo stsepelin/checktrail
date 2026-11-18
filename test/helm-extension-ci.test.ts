@@ -15,7 +15,7 @@ test("Helm extension CI phases preserve finite source installed and paired guard
     "guards-1",
     "guards-2",
   ]);
-  assert.equal(job["runs-on"], "ubuntu-24.04-arm");
+  assert.equal(job["runs-on"], "ubuntu-26.04-arm");
   assert.equal(job["timeout-minutes"], 45);
   assert.ok(
     job.steps.some(

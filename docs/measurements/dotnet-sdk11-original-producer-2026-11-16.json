@@ -1,0 +1,647 @@
+{
+  "bootstrapSDKVersion": "11.0.100-rc.1.26420.103",
+  "claims": {
+    "SDKSourceCommit": "3551975be08744f0418857c5bed8ab1545c5dd47",
+    "SDKVersion": "11.0.100-dev",
+    "allTransitiveCompilerSDKOrNoticeLegalClosureClaimed": false,
+    "fieldModelOrReviewTrialsRun": 0,
+    "fullTrackedRegularByteImmutabilityClaimed": false,
+    "historicalPublisherBinaryEqualityClaimed": false,
+    "originalPinnedSourceProducerCommandCompleted": true,
+    "originalUpstreamTestsNotRunClaimedPassed": false,
+    "positiveFreshSDKSourceVersionAndARM64MetadataVerified": true,
+    "wholeGateAComplete": false
+  },
+  "generatedOutputs": {
+    "allRootOutputPackagePathsAbsentInOriginalTrackedSource": true,
+    "allSourceCompilerClassesLoadedOrRuntimeSmokeExecutedClaimed": false,
+    "inputHashPartition": {
+      "comparedInputMembers": [
+        "original previously-source-built archive",
+        "ARM64 transformed bootstrap archive",
+        "bootstrap SDK archive"
+      ],
+      "notByteIdenticalToThoseInputMembers": 375
+    },
+    "newPreviouslySourceBuiltPackageArchive": {
+      "bytes": 823938969,
+      "differsFromOriginalAndARM64BootstrapArchives": true,
+      "packageIdentities": 373,
+      "sha256": "071032e6cac60338a546d8345be8f8667646d14cdf7aa4d631fd0a8598789647"
+    },
+    "newRootOutputNupkgFiles": 375,
+    "newSDK": {
+      "SDKEmbeddedSourceCommitMatchesVMR3551975": true,
+      "SDKVersion": "11.0.100-dev",
+      "artifact": "dotnet-sdk-11.0.100-dev-ubuntu.24.04-arm64.tar.gz",
+      "bytes": 418545121,
+      "differsFromSDKSeedArchiveSHA256": true,
+      "embeddedSDKVersionFile": {
+        "lines": [
+          "3551975be08744f0418857c5bed8ab1545c5dd47",
+          "11.0.100-dev",
+          "ubuntu.24.04-arm64",
+          "11.0.100-rc.1",
+          "11.0.100"
+        ],
+        "path": "sdk/11.0.100-dev/.version",
+        "sha256": "d2ac4af0291a2b132bfcb3991acea2bab91cf72ebbc414bb2ec7ef3949628dd1"
+      },
+      "historicalSelectedPublisherSDKBinaryEqualityClaimed": false,
+      "hostARM64ELFMetadataMatched": true,
+      "hostExecuted": false,
+      "sha256": "e2d010a6021966afe757334856c01b8dde48cca5ae78c467cc23d0467de7f2f1"
+    },
+    "producedOriginalNoticeBytes": 14764429,
+    "producedOriginalNoticeOccurrences": 306,
+    "producedPackageIdentities": 373,
+    "repoBuildCompletionMarkerCount": 20
+  },
+  "historicallySelectedPublisherSDK": {
+    "binaryEqualityClaimed": false,
+    "bytes": 199947444,
+    "freshProducedSDKIsSameReleaseVersion": false,
+    "platform": "linux-arm64",
+    "sha256": "8562f92101fbc531e416920a61cb6646e911af3c1912d486e6ade7752d647ea3",
+    "version": "11.0.100-rc.1.26425.128"
+  },
+  "measurement": "Original pinned .NET SDK VMR3551975 Linux ARM64 source producer",
+  "naturalPhaseOutcomes": [
+    {
+      "elapsedSeconds": 24.202686374999995,
+      "exitCode": 0,
+      "network": "none",
+      "phase": "inert-materialization",
+      "positivePriorContainerAbsenceObserved": true,
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stopReason": null
+    },
+    {
+      "elapsedSeconds": 47.306703375,
+      "exitCode": 0,
+      "network": "bridge",
+      "phase": "original-bootstrap",
+      "positivePriorContainerAbsenceObserved": true,
+      "stderrBytes": 685,
+      "stderrSHA256": "3225d4a9562775d0f38c16dcdee9ce499b50b4cf2c835c4be1e3bf0522ac3fa5",
+      "stdoutBytes": 848,
+      "stdoutSHA256": "43119a95fe76f8cffb264f058575f99cf22ab027131d80c307eb98756c6954eb",
+      "stopReason": null
+    },
+    {
+      "elapsedSeconds": 6.071833499999997,
+      "exitCode": 0,
+      "network": "none",
+      "phase": "independent-prep-checkpoint",
+      "positivePriorContainerAbsenceObserved": true,
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 204,
+      "stdoutSHA256": "ef30943676a744ae895c365e92bc4dd762f5bfc7d97d0fe031ca70e3e47c4552",
+      "stopReason": null
+    },
+    {
+      "elapsedSeconds": 11.125920582999996,
+      "exitCode": 0,
+      "network": "bridge",
+      "phase": "original-prep",
+      "positivePriorContainerAbsenceObserved": true,
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 2049,
+      "stdoutSHA256": "1612dff6d38f7f50a7b83eaa579c55dceecb150a361a38d64a19514a4dd568f5",
+      "stopReason": null
+    },
+    {
+      "elapsedSeconds": 1174.409570541,
+      "exitCode": 0,
+      "network": "none",
+      "phase": "original-build",
+      "positivePriorContainerAbsenceObserved": true,
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 114897,
+      "stdoutSHA256": "b42cfcb36d6b874b7b7a6e77b2fa8f76d321b6a3e8e59161f70033c4c0d1004a",
+      "stopReason": null
+    },
+    {
+      "elapsedSeconds": 231.61499020799988,
+      "exitCode": 0,
+      "network": "none",
+      "phase": "inert-final-capture",
+      "positivePriorContainerAbsenceObserved": true,
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 223,
+      "stdoutSHA256": "6c87f537a807e66b799b2af2483f1a2aff55a180bb88eb8d204bd55a06d8ba73",
+      "stopReason": null
+    }
+  ],
+  "observedDateUTC": "2026-11-16",
+  "operatorResources": {
+    "allOriginalInputMountsReadOnly": true,
+    "buildNetwork": "none",
+    "directoryRaceWholeSampleRetriesMaximum": 1,
+    "kernelFilesystemQuotaClaimed": false,
+    "managedLeaseSeconds": 55800,
+    "nativeBuildSecondsMaximum": 43200,
+    "nativeCPU": 4,
+    "nativeCPUSet": "0-3",
+    "nativeMemoryBytes": 12884901888,
+    "nativeMemorySwapBytes": 12884901888,
+    "originalPrepNetwork": "original feeds via bridge; fresh credential-free HOME",
+    "producerEvidenceMountReadOnly": true,
+    "remotePublicationAllowed": false,
+    "singleMetadataSamplerSecondsMaximum": 20,
+    "sourceOrCompilerCodeCalledSandboxed": false,
+    "stoppedCaptureReserveSeconds": 5400,
+    "wholeDriverSecondsMaximum": 54000,
+    "workBytesSampledMaximum": 137438953472
+  },
+  "originalARM64Bootstrap": {
+    "newBootstrapArchive": {
+      "bytes": 767090723,
+      "sha256": "466d22164939793da50cf30808154a6c95fb1b4114d09361d2276f0efdfbec79"
+    },
+    "originalReplacementNoticeOccurrences": 19,
+    "postPrepInputOutputCheckpointVerifiedBeforeBuild": true,
+    "replacementCount": 15,
+    "replacementInputs": [
+      {
+        "bytes": 12313605,
+        "id": "Microsoft.AspNetCore.App.Runtime.linux-arm64",
+        "sha256": "11847c507a82f990b0095e297500531d23615a3a2f17bfa3ff06431e4b8f9fb6",
+        "targetRID": "linux-arm64",
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 91351,
+        "id": "Microsoft.DotNet.ILCompiler",
+        "sha256": "7e6720741b53c8db0547ce849d2d6d71b0f568ac5516ce975384ef8ed50ded8b",
+        "targetRID": null,
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 13905819,
+        "id": "Microsoft.NETCore.App.Crossgen2.linux-arm64",
+        "sha256": "dacebaa07963f5ab665804e5a518839a5617cec8d7cb52ddda8466bc4486cee8",
+        "targetRID": "linux-arm64",
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 4871330,
+        "id": "Microsoft.NETCore.App.Host.linux-arm64",
+        "sha256": "0eac56df65677211465100978b1f1e1e31deb7596706e08d4c0a0fe70e992e9a",
+        "targetRID": "linux-arm64",
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 39927416,
+        "id": "Microsoft.NETCore.App.Runtime.linux-arm64",
+        "sha256": "a0e3750ff92c3275e1b30732a2d40ef28ea82c86a1d308c4faf5a23c5aa3a988",
+        "targetRID": "linux-arm64",
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 34786,
+        "id": "Microsoft.NETCore.DotNetAppHost",
+        "sha256": "60d52e977a3306a1fd4aacc866f9cb34f459db8d2c1751dce8319a7bdfb4f1b6",
+        "targetRID": null,
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 34591,
+        "id": "Microsoft.NETCore.ILAsm",
+        "sha256": "7cf81c5ac1fa0818621571b40bb9a50147cebbe2fd3a7f3b183a443afbda707d",
+        "targetRID": null,
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 34602,
+        "id": "Microsoft.NETCore.ILDAsm",
+        "sha256": "032e47f7366f3d85df136749d1934b937dc43be7f5451145ca28a5375b2ddecb",
+        "targetRID": null,
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 34625,
+        "id": "Microsoft.NETCore.TestHost",
+        "sha256": "e1fc19c84754d85bb37537eb008412a557b27caf86d6ce8b8b06a57f337ea54e",
+        "targetRID": null,
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 15167340,
+        "id": "runtime.linux-arm64.Microsoft.DotNet.ILCompiler",
+        "sha256": "847bc55e0c86d8f1ccc97d98fde0432d870572ce9757994a4e9a9e43ae991eaa",
+        "targetRID": "linux-arm64",
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 7063516,
+        "id": "runtime.linux-arm64.Microsoft.NETCore.DotNetAppHost",
+        "sha256": "8c00e86811751307c4b69a55d2a813e78030e776b16578d9a2ab15443d0d6135",
+        "targetRID": "linux-arm64",
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 528719,
+        "id": "runtime.linux-arm64.Microsoft.NETCore.ILAsm",
+        "sha256": "ad444ad0f4db461eaad472c84b90f1594c59f25fb6700ba059da77b927e6f195",
+        "targetRID": "linux-arm64",
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 532764,
+        "id": "runtime.linux-arm64.Microsoft.NETCore.ILDAsm",
+        "sha256": "d28b0d1677d01ffec30752cb9a9244722455ed12eadce2511fda23411c2a5184",
+        "targetRID": "linux-arm64",
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 334548,
+        "id": "runtime.linux-arm64.Microsoft.NETCore.TestHost",
+        "sha256": "0f8559d28220d84e1e715a108e9022202a1847acae8668c152d25816d76af502",
+        "targetRID": "linux-arm64",
+        "version": "11.0.0-rc.1.26420.103"
+      },
+      {
+        "bytes": 43544,
+        "id": "runtime.linux-arm64.runtime.native.System.IO.Ports",
+        "sha256": "59389b1a6a8f879a28ac46e12606f4da56f94c4a0e628d8250ba2947e22a4c7c",
+        "targetRID": "linux-arm64",
+        "version": "11.0.0-rc.1.26420.103"
+      }
+    ]
+  },
+  "originalCommands": {
+    "cachedInputBootstrap": {
+      "inOriginalSourceWorkingDirectory": "source ./prep-source-build.sh --no-artifacts --no-prebuilts --no-binary-removal --no-sdk && BootstrapArtifacts \"$packagesArchiveDir\"",
+      "originalShellZeroContextPreserved": true,
+      "unchangedOriginalBootstrapFunctionInvokedOnce": true,
+      "whyExplicitInvocation": "Original prep skips the automatic bootstrap function when the immutable previously-source-built archive is cached; original supported controls load unchanged context before this exact original function call."
+    },
+    "defaultPrep": ["./prep-source-build.sh"],
+    "sourceBuild": [
+      "./build.sh",
+      "-sb",
+      "--clean-while-building",
+      "-bl",
+      "--source-repository",
+      "https://github.com/dotnet/dotnet",
+      "--source-version",
+      "3551975be08744f0418857c5bed8ab1545c5dd47"
+    ]
+  },
+  "preExecutionCompatibilityAttempt": {
+    "executedUpstreamSourceOrCompiler": false,
+    "outcome": "Runtime image lookup by original config digest failed before materialization; actual local data-only save proved distinct runtime manifest with byte-identical original config and all ten layers. Original failure retained; unique owned tag cleanup recovered before corrected native action."
+  },
+  "prerequisiteImage": {
+    "allTenOriginalRawLayerIdentitiesBound": true,
+    "architecture": "arm64",
+    "historicalPublisherImageClaimed": false,
+    "observedDockerRuntimeManifest": "sha256:73ce9e79bf87370c68a49b8b14b51d94ccfe1e73260ca714ae82b0025ae7fd1a",
+    "operatingSystem": "linux",
+    "originalConfig": "sha256:b08897252b3b2ce5acc618bb4c4c3f383248498936ebb617324b8e9e7872850a",
+    "originalRegistryManifest": "sha256:44a3ba53741ff27c450e2038515662f91c7b0bd733704f0db2a808002704a84d",
+    "runtimeManifestIsOriginalRegistryManifest": false
+  },
+  "retainedFrozenInputs": [
+    {
+      "bytes": 485322567,
+      "id": "source-VMR3551975",
+      "sha256": "9e65fe4090763671aebcb4ce47d4779616bf4521bde8f4883d0aeb7d17ec7cb4"
+    },
+    {
+      "bytes": 918635529,
+      "id": "seed-PrivateSourceBuiltArtifacts",
+      "sha256": "b5975790573b3ec1a684ffd9412feeb2e17b510e5a2ab7df95996e7508a47819"
+    },
+    {
+      "bytes": 199857718,
+      "id": "seed-SDK11-linux-arm64",
+      "sha256": "42ea74e976c7c9570e427dffe48678cf96391a705db1c9aeddfc7afe4521eb22"
+    }
+  ],
+  "retentionAndCleanup": {
+    "allOwnedCleanupCommandsSucceeded": true,
+    "driverExitCode": 0,
+    "fullSnapshotRoundTripVerified": true,
+    "independentOwnedContainerVolumeTagAbsenceVerified": true,
+    "managedTaskStoppedVerified": true,
+    "originalBuildExit0": true,
+    "stoppedSnapshot": {
+      "bytes": 10034809830,
+      "sha256": "4c05d52e14ef9269ddca3746516a5441fc6c4c4b4bc730ad230951e5cd17f5e4"
+    },
+    "stoppedSnapshotMembers": 250931,
+    "stoppedSnapshotRegularBytes": 14601840120
+  },
+  "schemaVersion": 1,
+  "scope": "Original source compiler/SDK build and positive generated output identity facets; historical publisher binary reproduction, all upstream tests and complete transitive/legal closure are separate unclaimed obligations.",
+  "source": {
+    "GitTree": "cb4447267419402d10f43036ed42bd7f6f71a884",
+    "agentGitHistoryInvented": false,
+    "agentSourceNormalizationPerformed": false,
+    "commit": "3551975be08744f0418857c5bed8ab1545c5dd47",
+    "declaredArchiveProjectionVerified": true,
+    "originalExportIgnoredFilesRestored": 5,
+    "pinnedAttributeDeclaredCRLFFiles": 963,
+    "postBuildComparison": {
+      "fileKindCategories": {
+        "matchingKind": 179838,
+        "missing": 723
+      },
+      "fullRegularByteImmutabilityVerified": false,
+      "missingTrackedPathsByTopLevelGroup": {
+        "src/arcade/src": 94,
+        "src/aspnetcore/src": 38,
+        "src/cecil/Test": 105,
+        "src/cecil/rocks": 2,
+        "src/cecil/symbols": 29,
+        "src/diagnostics/src": 36,
+        "src/efcore/benchmark": 1,
+        "src/efcore/test": 1,
+        "src/fsharp/tests": 6,
+        "src/msbuild/src": 2,
+        "src/nuget-client/test": 94,
+        "src/roslyn/src": 200,
+        "src/runtime/src": 50,
+        "src/sdk/test": 13,
+        "src/symreader/src": 2,
+        "src/vstest/samples": 10,
+        "src/vstest/temp": 12,
+        "src/vstest/test": 5,
+        "src/winforms/src": 8,
+        "src/wpf/src": 15
+      },
+      "postCapturedTrackedEntries": 179838,
+      "reason": "Pre-execution full tracked-source binding used Git blob SHA1 and whole-tree identities; stopped regular-file records retain SHA256. Existing records support all-path/type/mode and selected original metadata SHA256 comparisons, not a complete post-build regular-byte/Git-tree equality claim.",
+      "regularFiles": 180558,
+      "regularPhysicalModeChanges": [
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/fsharp/eng/common/cross/install-debs.py"
+        },
+        {
+          "afterMode": "0o644",
+          "beforeMode": "0o755",
+          "path": "src/fsharp/eng/common/dotnet.cmd"
+        },
+        {
+          "afterMode": "0o644",
+          "beforeMode": "0o755",
+          "path": "src/fsharp/eng/common/dotnet.ps1"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/fsharp/eng/common/native/install-dependencies.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/fsharp/eng/common/sdk-task.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/fsharp/eng/common/vmr-sync.ps1"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/fsharp/eng/common/vmr-sync.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/roslyn/eng/common/SetupNugetSources.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/roslyn/eng/common/cross/install-debs.py"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/roslyn/eng/common/cross/tizen-build-rootfs.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/roslyn/eng/common/cross/tizen-fetch.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/roslyn/eng/common/native/install-dependencies.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/roslyn/eng/common/sdk-task.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/roslyn/eng/common/vmr-sync.ps1"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/roslyn/eng/common/vmr-sync.sh"
+        },
+        {
+          "afterMode": "0o644",
+          "beforeMode": "0o755",
+          "path": "src/source-build-assets/eng/common/SetupNugetSources.sh"
+        },
+        {
+          "afterMode": "0o644",
+          "beforeMode": "0o755",
+          "path": "src/source-build-assets/eng/common/cross/install-debs.py"
+        },
+        {
+          "afterMode": "0o644",
+          "beforeMode": "0o755",
+          "path": "src/source-build-assets/eng/common/cross/tizen-build-rootfs.sh"
+        },
+        {
+          "afterMode": "0o644",
+          "beforeMode": "0o755",
+          "path": "src/source-build-assets/eng/common/cross/tizen-fetch.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/SetupNugetSources.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/cibuild.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/cross/build-android-rootfs.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/cross/build-rootfs.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/cross/install-debs.py"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/cross/tizen-build-rootfs.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/cross/tizen-fetch.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/darc-init.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/dotnet.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/init-tools-native.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/internal-feed-operations.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/msbuild.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/native/common-library.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/native/install-cmake-test.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/native/install-cmake.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/native/install-dependencies.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/pipeline-logging-functions.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/sdk-task.sh"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/vmr-sync.ps1"
+        },
+        {
+          "afterMode": "0o755",
+          "beforeMode": "0o644",
+          "path": "src/vstest/eng/common/vmr-sync.sh"
+        }
+      ],
+      "regularPhysicalModesUnchanged": 179796,
+      "regularSHA256BeforeAfterCoverage": {
+        "changedBytesPaths": [
+          "src/source-build-assets/src/externalPackages/src/humanizer/.gitattributes"
+        ],
+        "comparablePresentOriginalMetadataFiles": 41,
+        "knownOriginalRegularSHA256Identities": 41,
+        "knownOriginalRegularSHA256PathsMissingAfterBuild": [],
+        "originalRegularFilesWithoutRetainedBeforeSHA256": 180517,
+        "presentRegularFilesWithoutComparableBeforeSHA256": 179794,
+        "sameBytesPaths": [
+          "AGENTS.md",
+          "Directory.Build.props",
+          "Directory.Build.targets",
+          "README.md",
+          "build.proj",
+          "build.sh",
+          "docs/VMR-Code-And-Build-Workflow.md",
+          "docs/VMR-re-bootstrapping.md",
+          "eng/PublishSourceBuild.props",
+          "eng/Publishing.props",
+          "eng/RuntimeIdentifier.props",
+          "eng/Versions.props",
+          "eng/VmrLayout.props",
+          "eng/bootstrap/buildBootstrapPreviouslySB.csproj",
+          "eng/common/build.sh",
+          "eng/common/native/install-dependencies.sh",
+          "eng/common/tools.sh",
+          "eng/download-source-built-archive.sh",
+          "eng/init-source-only.proj",
+          "eng/pipelines/templates/jobs/vmr-build.yml",
+          "eng/pipelines/templates/stages/source-build-and-validate.yml",
+          "eng/pipelines/templates/stages/source-build-stages.yml",
+          "eng/pipelines/templates/variables/vmr-build.yml",
+          "eng/source-build-toolset-init.sh",
+          "global.json",
+          "prep-source-build.sh",
+          "repo-projects/Directory.Build.props",
+          "repo-projects/Directory.Build.targets",
+          "repo-projects/dotnet.proj",
+          "repo-projects/sdk.proj",
+          "src/arcade/Documentation/Publishing.md",
+          "src/arcade/src/Microsoft.DotNet.Arcade.Sdk/sdk/Sdk.targets",
+          "src/arcade/src/Microsoft.DotNet.Arcade.Sdk/toolset/Build.proj",
+          "src/arcade/src/Microsoft.DotNet.Arcade.Sdk/toolset/Publish.proj",
+          "src/arcade/src/Microsoft.DotNet.Arcade.Sdk/toolset/PublishBuildAssets.proj",
+          "src/runtime/src/native/external/zlib-ng/.gitattributes",
+          "src/runtime/src/native/external/zlib-ng/.gitignore",
+          "src/runtime/src/native/external/zlib-ng/arch/.gitignore",
+          "src/sdk/template_feed/Microsoft.DotNet.Common.ItemTemplates/content/Gitattributes/.gitattributes",
+          "src/sdk/test/dotnet-new.IntegrationTests/Approvals/AllCommonItemsCreate.-o#dotnet-gitattributes-file#-n#item.verified/dotnet-gitattributes-file/.gitattributes"
+        ]
+      },
+      "symlinkTargetGitBlobIdentitiesUnchanged": 3,
+      "symlinkTargetsChanged": [],
+      "symlinks": 3,
+      "trackedSourceEntries": 180561
+    },
+    "rawArchiveBytes": 485322567,
+    "rawArchiveEqualsFullGitTree": false,
+    "rawArchiveGitTree": "cb13818e35407d50cdfb04b69e5ccbc940bcfee0",
+    "rawArchiveSHA256": "9e65fe4090763671aebcb4ce47d4779616bf4521bde8f4883d0aeb7d17ec7cb4",
+    "repository": "https://github.com/dotnet/dotnet",
+    "trackedSourceEntriesPhysicallyVerifiedBeforeExecution": 180561
+  }
+}

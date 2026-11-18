@@ -62,8 +62,9 @@ The earlier foundation receipt remains an unchanged historical checkpoint.
 These parser guards do not prove arbitrary JavaScript runtime or loader validity.
 
 [Whole-profile acceptance](CONSUMER-ACCEPTANCE.md) now has original source and
-fresh offline installed development evidence. The frozen final runtime matrix
-and broader native language/framework producer-consumer chains remain open.
+fresh offline installed development evidence. The [main-source hosted measurement](measurements/consumer-impact-hosted-2026-11-16.json)
+subsequently reconciles the selected runtime matrix and native language/framework
+producer-consumer scopes at its exact recorded source.
 Unsupported import families continue to retain full validation. These
 observations do not authorize inference or field evaluation and make no
 review-quality claim.
@@ -75,6 +76,7 @@ measurement](measurements/consumer-impact-hosted-2026-11-01.json) records the
 qualified c25 source and its different, byte-matching hosted checkout. It binds
 26 native consumer scopes and 25 producer artifacts through the exact
 controller/capsule mechanism; it does not claim independent inspection of 144 raw
-consumer runtime callback events. The follow-up changes the compiled harness,
-so its current native qualification remains pending. Unknown imports continue to
-retain the full validation plan.
+consumer runtime callback events. The later main-source measurement independently
+revalidates the original raw runtime receipts and the complete capsule aggregate
+at commit `6809bf39c3aba1f1b582742c741051667461754e`. Changed revisions require
+new source bindings. Unknown imports continue to retain the full validation plan.

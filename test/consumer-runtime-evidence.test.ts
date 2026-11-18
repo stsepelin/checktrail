@@ -61,13 +61,13 @@ function observed(p: {
           ? "25.1.0"
           : "original",
     distributionId: "ubuntu",
-    distributionVersion: "24.04",
+    distributionVersion: "26.04",
     imageOS:
       p.platform === "win32"
         ? "win25"
         : p.platform === "darwin"
           ? "macos26"
-          : "ubuntu24",
+          : "ubuntu26",
     imageVersion: "20261023.1.0",
     systemPowerShellSha256: "a".repeat(64),
     containerReference: "sha256:" + "b".repeat(64),

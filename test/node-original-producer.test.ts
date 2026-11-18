@@ -237,7 +237,7 @@ test("Original Node workflow binds one source-only acquisition and preserves ori
     steps: { run?: string; uses?: string; with?: { path?: string } }[];
   }[];
   assert.equal(jobs.length, 1);
-  assert.equal(jobs[0]!["runs-on"], "ubuntu-24.04");
+  assert.equal(jobs[0]!["runs-on"], "ubuntu-26.04");
   const commands = jobs[0]!.steps.flatMap((row) => (row.run ? [row.run] : []));
   assert.equal(
     commands.filter((row) => row.includes("acquire-node-original-inputs.mjs"))

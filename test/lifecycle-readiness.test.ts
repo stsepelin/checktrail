@@ -148,7 +148,7 @@ test("lifecycle readiness diagnostics retain bounded original terminal metadata 
     new URL("../../scripts/lifecycle-runtime-evidence.mjs", import.meta.url)
       .href
   );
-  const observerSource = `import{readFileSync}from'node:fs';import{runRequiredTests}from${JSON.stringify(new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href)};const requirements=JSON.parse(readFileSync(0,'utf8'));console.log(JSON.stringify(await runRequiredTests(requirements,{timeoutMs:10000,isolatedCaseWorkers:1})));`;
+  const observerSource = `import{runRequiredTests}from${JSON.stringify(new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href)};const chunks=[];for await(const chunk of process.stdin)chunks.push(chunk);const requirements=JSON.parse(Buffer.concat(chunks).toString('utf8'));console.log(JSON.stringify(await runRequiredTests(requirements,{timeoutMs:10000,isolatedCaseWorkers:1})));`;
   const observer = await fixture(t, { "observer.mjs": observerSource });
   const observe = (requirements: { file: string; name: string }[]) => {
     const env = { ...process.env };

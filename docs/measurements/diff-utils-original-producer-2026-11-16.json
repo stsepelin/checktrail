@@ -1,0 +1,351 @@
+{
+  "allDependencyProducerBuildsComplete": false,
+  "allInlineOrOriginalNoticesComplete": false,
+  "allSDKCompilerBootstrapSourceBuildsComplete": false,
+  "authoredSourceTransformation": {
+    "executed": true,
+    "generatedFilesAdded": 318,
+    "operatorSourceOrTestExpectationEdits": false,
+    "originalBoundPhase": "validate",
+    "originalSourceBytesUnchanged": true,
+    "originalSourceEntriesAfter": 127,
+    "originalSourceEntriesBefore": 127,
+    "originalSourceFilesModified": 0,
+    "originalSourceFilesRemoved": 0,
+    "physicalSourceAndGeneratedEntriesAfter": 445,
+    "plugin": "com.diffplug.spotless:spotless-maven-plugin:2.30.0:apply",
+    "sourceAndGeneratedCountPartitionCloses": true
+  },
+  "cleanup": {
+    "checkoutUnchangedAndClean": true,
+    "managedLeaseStoppedIndependentlyVerified": true,
+    "ownedContainerAbsenceIndependentlyVerified": true,
+    "sharedBaseImagesRemoved": false
+  },
+  "evidence": {
+    "dependencyArtifactsAndNotices": {
+      "bytes": 155432,
+      "sha256": "37d66423a7279d2f2f7655b741911b3f1fbd8eb806ee72fbfd4b6d97fd6cc278"
+    },
+    "originalBuildPlan": {
+      "bytes": 2668,
+      "sha256": "fcbe9e0ab24b628f97992441681fb70fb036aa968c490c0f8aacee2c1a489751"
+    },
+    "originalBuildReceipt": {
+      "bytes": 7333,
+      "sha256": "f15ddfbce209cc3aa413fd27fd2c25c6434b33f40834d789649c7c862414988c"
+    },
+    "originalNativeLog": {
+      "bytes": 4966570,
+      "sha256": "4edd053605d755e52ce11e01b9b7852d8e589fb99e565100b4db21408fd38cb8"
+    },
+    "ownedOperatorDriver": {
+      "bytes": 9065,
+      "sha256": "5d8da9becb7dcf32e563a8239778335aedc05fda460eba58c53fe3a024e172c6"
+    },
+    "physicalInputBinding": {
+      "bytes": 126209,
+      "sha256": "adc64aa0c232b0c62c1b3e1199319be3efc12bfd733a2fa2b54c95a148abcc9e"
+    },
+    "privateImmutableHandoff": {
+      "bytes": 11792,
+      "sha256": "afd86dcc426a3eb08c6eb0bc18b9844d57b0dcadfde1c044f7b202648fb71fda"
+    },
+    "selectedClassAndPackageComparison": {
+      "bytes": 12340,
+      "sha256": "42234f1de30e02d24efa5b341002a3870fd0e6e23820403328a55a6ad2e1d4be"
+    },
+    "sourceAfterAndAuthoredTransforms": {
+      "bytes": 102513,
+      "sha256": "01a0a7de268db9ab53378820530ded3532ab6580ae2dafd6b7dcc0dd63fd854e"
+    },
+    "supplementalOriginalJDKNotices": {
+      "bytes": 1075,
+      "sha256": "39adc1d1ab65fa3252b0733669dd1ec600ba33caf81fc9cd41619a906a667be4"
+    }
+  },
+  "gateAComplete": false,
+  "historicalPublisherEnvironmentReproduced": false,
+  "localBuildEnvironment": {
+    "JDK": {
+      "archive": {
+        "bytes": 102617391,
+        "sha256": "57b7ed8af9d48542bb49ff7894448040b17bea0a48b41677d11ecaec6129768d",
+        "url": "https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u504-b01/OpenJDK8U-jdk_aarch64_linux_hotspot_8u504b01.tar.gz"
+      },
+      "completeSDKSourceBuildReproduced": false,
+      "distribution": "Temurin",
+      "nativeVersion": "1.8.0_504",
+      "originalVersionProbe": {
+        "bytes": 152,
+        "sha256": "c2cfce5165969dc80288affb24cd0c1f74feb89aca2abbb6014fb33282d9b5b7"
+      },
+      "physicalEntriesIndependentlyMatched": 407,
+      "version": "8u504-b01"
+    },
+    "Maven": {
+      "completeDistributionTreeVerified": true,
+      "distributionBytes": 11784219,
+      "distributionFiles": 113,
+      "firstPartyVerifierComponents": [
+        {
+          "file": "src/maven.ts",
+          "matchesVerificationSourceHead5db38de": true,
+          "sha256": "176f7015fdcddacc60ebfb0079c0de8c9782134f93c9a638be0d38e22674746a"
+        },
+        {
+          "file": "src/maven-distribution.ts",
+          "matchesVerificationSourceHead5db38de": true,
+          "sha256": "1b5ea80a032333e51302b08508d5d72c7198486a0744931b8ebb3e45f05d7e0b"
+        },
+        {
+          "file": "dist/src/maven.js",
+          "sha256": "15e86682f4c8a8bff44037d1692143f3dd6deea67b5e9c5a93699a609ed00330"
+        },
+        {
+          "file": "dist/src/maven-distribution.js",
+          "sha256": "5ba51386578b83f32f1019683030c688511d0353521617bde7afd315ba972252"
+        }
+      ],
+      "firstPartyVerifierSourceCommit": "5db38debc46f954e70f2ed853a1004a7ab2e7190",
+      "originalVersionProbe": {
+        "bytes": 335,
+        "sha256": "fcbf60bce1f391e23636fe580196fc9a22040120d915f17af010d021c96cbe34"
+      },
+      "version": "3.10.0"
+    },
+    "OS": "linux",
+    "architecture": "arm64",
+    "baseImage": {
+      "GoExecuted": false,
+      "GoVersionEnvironmentMetadata": "1.26.5",
+      "platform": "linux/arm64",
+      "pulledDuringBuild": false,
+      "reference": "public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+    },
+    "operatorControls": {
+      "CPUs": 2,
+      "capabilitiesDropped": "ALL",
+      "credentialFreeFreshHOME": true,
+      "logBytesMaximum": 67108864,
+      "memoryBytes": 3221225472,
+      "memorySwapBytes": 3221225472,
+      "nativeSecondsMaximum": 1200,
+      "noNewPrivileges": true,
+      "pidsLimit": 256,
+      "readOnlyRootAndInputMounts": true,
+      "userSettings": {
+        "bytes": 204,
+        "sha256": "be46681f18014cb347b09f3725a1a612499611bfa1c4204185f6fb14fa7771b1"
+      },
+      "userSettingsRepositoryMirror": "https://repo.maven.apache.org/maven2",
+      "workBytesMaximum": 4294967296
+    },
+    "originalWorkflow": {
+      "declaredDistribution": "zulu",
+      "declaredJavaMatrix": [8, 11, 17],
+      "localProfileSubstitutionExplicit": true,
+      "originalWorkflowPublisherEnvironmentReproduced": false,
+      "sourcePath": ".github/workflows/maven.yml"
+    }
+  },
+  "modelReviewsRun": 0,
+  "observedAt": "2026-11-16",
+  "originalCommand": {
+    "argv": ["mvn", "-B", "package", "--file", "pom.xml"],
+    "commandCompleted": true,
+    "controllerObservedElapsedSeconds": 29.347465333,
+    "deployReleaseOrPublishingGoalSelected": false,
+    "elapsedScope": "Owned controller from container launch through physical-input preparation, native command, cleanup and output metadata capture; UTC native start/finish are separately retained at one-second resolution.",
+    "exitCode": 0,
+    "finishedUTC": "2026-11-16T14:49:34Z",
+    "invoked": true,
+    "startedUTC": "2026-11-16T14:49:07Z",
+    "wrapperExitCode": 0
+  },
+  "originalNoticeRetention": {
+    "actualRuntimeJarLoadsTraced": false,
+    "completeOriginalNoticesOrInlineAttributionClaimed": false,
+    "dependencyDistinctOriginalTexts": 171,
+    "dependencyOriginalNoticeBytes": 2050165,
+    "dependencyOriginalNoticeOccurrences": 353,
+    "downloadedMavenDependencyJarBytes": 106098712,
+    "downloadedMavenDependencyJarFiles": 303,
+    "originalOccurrences": [
+      {
+        "bytes": 11357,
+        "path": "LICENSE",
+        "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "source": "diff-utils-source.tar.gz"
+      },
+      {
+        "bytes": 19274,
+        "path": "jdk8u504-b01/jre/LICENSE",
+        "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+        "source": "jdk8-linux-arm64.tar.gz"
+      },
+      {
+        "bytes": 19274,
+        "path": "jdk8u504-b01/LICENSE",
+        "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+        "source": "jdk8-linux-arm64.tar.gz"
+      },
+      {
+        "bytes": 2400,
+        "path": "jdk8u504-b01/NOTICE",
+        "sha256": "c02756bcd9fa8191bf0fda4451bc018414dd44ee35bf09922c24377a475e4b5a",
+        "source": "jdk8-linux-arm64.tar.gz"
+      },
+      {
+        "bodyExposedToModels": false,
+        "bytes": 1522,
+        "originalTextRetained": true,
+        "path": "jdk8u504-b01/ASSEMBLY_EXCEPTION",
+        "sha256": "a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb",
+        "source": "jdk8-linux-arm64.tar.gz"
+      },
+      {
+        "bodyExposedToModels": false,
+        "bytes": 1522,
+        "originalTextRetained": true,
+        "path": "jdk8u504-b01/jre/ASSEMBLY_EXCEPTION",
+        "sha256": "a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb",
+        "source": "jdk8-linux-arm64.tar.gz"
+      },
+      {
+        "bodyExposedToModels": false,
+        "bytes": 191611,
+        "originalTextRetained": true,
+        "path": "jdk8u504-b01/jre/THIRD_PARTY_README",
+        "sha256": "6e8a224193a89759f9fe936ed405c91753f849640f7e8a8e5813f492a865bcbe",
+        "source": "jdk8-linux-arm64.tar.gz"
+      },
+      {
+        "bodyExposedToModels": false,
+        "bytes": 191611,
+        "originalTextRetained": true,
+        "path": "jdk8u504-b01/THIRD_PARTY_README",
+        "sha256": "6e8a224193a89759f9fe936ed405c91753f849640f7e8a8e5813f492a865bcbe",
+        "source": "jdk8-linux-arm64.tar.gz"
+      }
+    ],
+    "retentionScope": "Exact recognized original notice files from retained source/JDK archives and downloaded dependency JAR members. Original POM and archive identities retained separately. No exhaustive copied/generated inline attribution, final distribution legal completeness or dependency source-build closure claim.",
+    "sourceAndJDKArchiveNoticeOccurrences": 8,
+    "sourceAndJDKDistinctOriginalTexts": 5,
+    "sourceAndJDKOriginalOccurrenceBytes": 438571
+  },
+  "originalPackageBuildCompleted": true,
+  "originalUpstreamTestOutcomes": {
+    "allNonSkippedObservedTestsPassed": true,
+    "allUpstreamTestsExecutedOrInventoryComplete": false,
+    "countsPartitionCloses": true,
+    "defaultLongRunningTestExclusionPreserved": "**/LR*.java",
+    "errors": 0,
+    "failures": 0,
+    "passed": 142,
+    "skipped": 3,
+    "skipsCreditedAsPassing": false,
+    "tests": 145
+  },
+  "outputPackages": [
+    {
+      "bytes": 24683,
+      "file": "java-diff-utils-jgit/target/java-diff-utils-jgit-4.16-javadoc.jar",
+      "sha256": "14ae85a18b3424fc58022acfa5db8c9684e6cef813de5425d83d8fc21ebc744d"
+    },
+    {
+      "bytes": 6551,
+      "file": "java-diff-utils-jgit/target/java-diff-utils-jgit-4.16.jar",
+      "sha256": "2c665a19df3c8096836a9f5fe78afc9c76e9a583d7cdc694ca4689e3b1cde378"
+    },
+    {
+      "bytes": 244267,
+      "file": "java-diff-utils/target/java-diff-utils-4.16-javadoc.jar",
+      "sha256": "1daee4959dc63266ecd35840e5a1c902105eca63b6e0d005994304898085837c"
+    },
+    {
+      "bytes": 78728,
+      "file": "java-diff-utils/target/java-diff-utils-4.16.jar",
+      "sha256": "84cefa9caa4aa1cf9203bfa0f149645da86b2aa2b2df3632d319232f7475e484"
+    }
+  ],
+  "revision": 1,
+  "schemaVersion": 1,
+  "scopeDefinition": "Unchanged original Maven package lifecycle and selected delivered class bytes in the documented local Temurin8/Maven profile. This is separate from historical publisher environment, complete SDK/bootstrap builds, all upstream tests, copied/generated inline notices and dependency producer closure.",
+  "selectedArtifactComparison": {
+    "built": {
+      "bytes": 78728,
+      "sha256": "84cefa9caa4aa1cf9203bfa0f149645da86b2aa2b2df3632d319232f7475e484"
+    },
+    "builtEntries": 45,
+    "byteIdenticalClassEntries": 42,
+    "classEntries": 42,
+    "differentOrMissingClassEntries": 0,
+    "nonClassEntryDifferences": [
+      "META-INF/MANIFEST.MF",
+      "META-INF/maven/io.github.java-diff-utils/java-diff-utils/pom.properties"
+    ],
+    "sameWholeJarBytes": false,
+    "selected": {
+      "bytes": 78743,
+      "sha256": "620403030d676a4a27f780a3acec7438dee1b1651a1c804fa6bb11bb07399a6f",
+      "url": "https://repo.maven.apache.org/maven2/io/github/java-diff-utils/java-diff-utils/4.16/java-diff-utils-4.16.jar"
+    },
+    "selectedEntries": 45
+  },
+  "selectedProfile": "original-java-diff-utils-4.16-package-temurin8-linux-arm64-v1",
+  "source": {
+    "archive": {
+      "bytes": 2136086,
+      "sha256": "89706a231f631c5219766f04619b8fc9384b8d7f82c4f79c2c5e28022c5f2c5c",
+      "url": "https://codeload.github.com/java-diff-utils/java-diff-utils/tar.gz/637cb7b6a309d66ff5e0cec2b3ffea52f867edc7"
+    },
+    "archiveEntries": 127,
+    "commit": "637cb7b6a309d66ff5e0cec2b3ffea52f867edc7",
+    "completeGitTreeReconstructedAndMatched": true,
+    "gitTree": "3b879f804cd769967b617f8f4df361e283980b40",
+    "originalBuildMetadata": [
+      {
+        "bytes": 9162,
+        "file": "parent-pom.xml",
+        "gitBlob": "e5dd60afe07b75aafccb5c056771f0f4e4f148b0",
+        "sha256": "a4344da58e53a8e8c57be19e923badf24b27dd42b07de6d446d2a659a456509a",
+        "sourceArchiveMatched": true,
+        "sourcePath": "pom.xml"
+      },
+      {
+        "bytes": 2304,
+        "file": "module-pom.xml",
+        "gitBlob": "fb2d1b9d55761a0becec2729e4d1e5199fe8c888",
+        "sha256": "434d598a1e1813111385235161627a4c4ebd62134f7054428d3e202b32cf39de",
+        "sourceArchiveMatched": true,
+        "sourcePath": "java-diff-utils/pom.xml"
+      },
+      {
+        "bytes": 2126,
+        "file": "jgit-module-pom.xml",
+        "gitBlob": "98db85539d520d7659085899355ee8e15251c815",
+        "sha256": "59cfdb2ee7a1da6e2d921b523ed07a76148a52d34131b2a23f670d13362008b1",
+        "sourceArchiveMatched": true,
+        "sourcePath": "java-diff-utils-jgit/pom.xml"
+      },
+      {
+        "bytes": 682,
+        "file": "original-maven-workflow.yml",
+        "gitBlob": "e57857f38fdeecedf025b5aa55949680ec5b4c91",
+        "sha256": "699480e68c2bf2c2c1066370b276164b5488e422b439bafef78d9db28f6aef38",
+        "sourceArchiveMatched": true,
+        "sourcePath": ".github/workflows/maven.yml"
+      }
+    ],
+    "physicalSourceEntriesIndependentlyMatched": 127,
+    "regularSourceBytes": 4520631,
+    "repository": "https://github.com/java-diff-utils/java-diff-utils"
+  },
+  "sourceOrRawLogOrNoticeBodiesEmitted": false,
+  "state": "selected-original-diff-utils-package-build-observed",
+  "wholeSelectedJarBytesMatched": false,
+  "observationRepositoryCommit": "5db38debc46f954e70f2ed853a1004a7ab2e7190",
+  "reconciliationRepositoryCommit": "2c7da0734ca77d8ad306b78745b7776e602f8afb",
+  "reconciliationVerifierComponentBytesUnchanged": true
+}

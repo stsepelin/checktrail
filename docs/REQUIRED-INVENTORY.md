@@ -37,6 +37,12 @@ macOS slots and exact OS-image/tool identities still require native acceptance.
 A repository license label and a selected grammar commit do not replace the
 required source/archive/notice inspection.
 
+The current Linux selection is Ubuntu 26.04: `ubuntu-26.04` on x64 and
+`ubuntu-26.04-arm` on ARM64. macOS/Windows and selected tool versions are unchanged.
+The active selection and consumer manifest must bind the updated inventory scope;
+older observations stay historical and cannot be relabeled as new-runner evidence.
+This migration alone changes no upstream-build or native acceptance requirement.
+
 Context collection must remain
 non-evaluating; dynamic dispatch, unsupported syntax and exhausted capture retain
 conservative impact fallback.
@@ -46,6 +52,10 @@ including compiler, SDK and bootstrap build inputs and complete original notices
 Verified pinned releases, payload reconstruction and source attribution contribute
 to that evidence. Unreproduced producer builds and unknown inputs remain open
 Gate A work; upstream reproducibility is not deferred to a later gate.
+The [hosted execution plan](HOSTED-PRODUCER-PLAN.md) uses standard public GitHub
+runners for this work; a historical SDK observed in delivered bytes is distinct
+from an SDK version explicitly required by the original recipe. Current hosted
+source-build evidence must retain that environment distinction.
 
 The finite [original producer-build controller](UPSTREAM-PRODUCER-BUILDS.md)
 prepares a fixed binutils package build with explicit native execution admission.
@@ -145,13 +155,26 @@ breadth remains an explicit profile-selection item below, not an exclusion.
 - Specify provider-neutral review stages and host-side fresh-session evidence for
   evaluation. MCP cannot reset a host conversation; a prompt requesting freshness
   is insufficient. Checktrail-owned native AI client profiles are optional.
-- Freeze the actual external reference/prior-workflow identity and blinded cohort
-  acquisition/adjudication protocol before opening held-out cases.
+  The opaque private reference/prior-workflow and reserved cohort
+  acquisition/adjudication policy selection is now linked to the tested main
+  implementation. The [selection rebind record](measurements/prospective-policy-rebind-2026-11-16.json)
+  resolves that selection decision while preserving the original policies,
+  identities and history. The actual experiment remains unfrozen: effective
+  host configuration, session isolation, labels and case-specific admission are
+  separate requirements. No model, held-out source or field trial was run.
 
 The task ledger must keep these unfinished profile decisions visible. Gate A
 requires both frozen profiles and their completed acceptance evidence. Gate B
 also requires the concrete existing operator permissions; Gate C requires the
 independent measured outcomes. Development tests close none of those by themselves.
+
+The [partial engine-matrix record](measurements/engine-matrix-partial-2026-11-16.json)
+reconciles source and fresh installed acceptance for all seven implemented
+engine-matrix extension profiles across the eight selected slots at recorded
+commit `6809bf39c3aba1f1b582742c741051667461754e`. It retains original run identities
+and a scoped bridge for the documented selection-state changes. The native-license
+profile, native-language matrix and preserved baseline bindings remain separate;
+this partial record does not close the whole matrix or Gate A.
 
 The bounded current-source `js-ts-selected-imports-v1` collector adds engine-parsed
 JS/TS edges and automatically captured declarations/consumers under explicit

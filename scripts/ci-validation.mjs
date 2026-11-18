@@ -23,6 +23,7 @@ import { setTimeout, clearTimeout } from "node:timers";
 const { AbortController } = globalThis;
 import { performance } from "node:perf_hooks";
 import { stopDescendants } from "../dist/src/process-tree.js";
+import { requireValidationShardAssignment } from "./ci-validation-shards.mjs";
 
 // Leave 15 minutes of the 75-minute host job for preparation, the separate
 // installed consumer proof and cleanup; the full package queue can exceed 45.
@@ -276,6 +277,7 @@ export async function runValidationLanes(
   repository,
   {
     phases = validationPhases,
+    assignment,
     timeoutMs = validationTimeoutMs,
     signal,
     logDirectory = path.join(repository, ".checktrail/ci-lanes"),
@@ -285,6 +287,8 @@ export async function runValidationLanes(
 ) {
   assert.ok(["darwin", "linux"].includes(process.platform));
   validatePhases(phases);
+  if (assignment !== undefined)
+    requireValidationShardAssignment(phases, assignment);
   assert.ok(
     Number.isSafeInteger(timeoutMs) &&
       timeoutMs > 0 &&
@@ -482,7 +486,7 @@ export async function runValidationLanes(
       fail(error);
     }
   }
-  const complete =
+  const assignedComplete =
     failures.length === 0 &&
     sourceStable &&
     mutationsRestored &&
@@ -491,7 +495,15 @@ export async function runValidationLanes(
       .flat()
       .every((record) => record.state === "passed");
   const result = {
-    complete,
+    complete: assignment === undefined && assignedComplete,
+    ...(assignment === undefined
+      ? {}
+      : {
+          scope: "assigned-host-validation-shard",
+          assignedComplete,
+          wholeCohortComplete: false,
+          assignment,
+        }),
     sourceSha256: before,
     sourceStable,
     mutationsRestored,
@@ -519,7 +531,7 @@ export async function runValidationLanes(
     JSON.stringify(result, null, 2) + "\n",
     { flag: "wx" },
   );
-  if (!complete) {
+  if (!assignedComplete) {
     const error = new AggregateError(
       failures,
       "Required CI lanes failed; " +

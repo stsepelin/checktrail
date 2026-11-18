@@ -1,3 +1,7 @@
+import {
+  captureNativeContainerSource,
+  completeNativeContainerFresh,
+} from "./preserved-native-baseline-controller.mjs";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath, URL } from "node:url";
 import process from "node:process";
@@ -43,10 +47,11 @@ const node = execFileSync("docker", [...args, "node", "--version"], {
 process.stdout.write(
   `${JSON.stringify({ image, clang, node, network: "none", fixtureFilesystem: "container" })}\n`,
 );
-execFileSync(
-  "docker",
-  [...args, "node", "scripts/verify-required-native-tests.mjs", "clang"],
-  {
-    stdio: "inherit",
-  },
-);
+const baselineReceipt = await captureNativeContainerSource({
+  repository,
+  cohortName: "clang",
+  selection: ["clang"],
+  containerArgs: args,
+});
+
+await completeNativeContainerFresh({ repository, baseline: baselineReceipt });

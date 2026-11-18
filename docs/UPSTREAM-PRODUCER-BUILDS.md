@@ -12,6 +12,11 @@ discovery, planning, the published CLI or MCP. It is an explicit trusted-operato
 repository maintenance command. Upstream package code executes with the supplied
 container privileges and mounts; this is not a security sandbox for that code.
 
+The [hosted producer plan](HOSTED-PRODUCER-PLAN.md) binds remaining work to
+standard public GitHub-hosted runners. It records the GCC continuation work and
+corrects the additional historical Apple SDK replay assumption without claiming
+that either producer is already qualified.
+
 ## Input preparation
 
 [scripts/producer-qualification/binutils.v1.json](../scripts/producer-qualification/binutils.v1.json)
@@ -180,6 +185,55 @@ evidence. Complete PGO/Automake phase selection remains separately unassessed. T
 `builddir-*` configurations; it does not assert an independently complete
 configuration inventory.
 
+The separate [2026-11-16 selected Binutils reconciliation](measurements/binutils-original-producer-2026-11-16.json)
+closes the original package-build and retained configured-outcome requirement for
+the recorded native attempt. Its 115 summaries partition into 109 final DejaGNU
+reports and six superseded PGO training summaries; the seven outcome partitions
+close independently. Three Automake reports are accounted separately. The 30
+recorded directory links normalize inside their original build configurations;
+their targets were not traversed and unseen report absence is not claimed.
+Original failures remain failed, and four empty gprofng reports remain unproven
+with an unknown reason. This does not change the historical controller receipt,
+qualify every upstream test, or close bootstrap and original notice requirements.
+
+The [2026-11-16 original diff-utils package build](measurements/diff-utils-original-producer-2026-11-16.json)
+completes the unchanged upstream `mvn -B package --file pom.xml` lifecycle in its
+documented local Temurin8/Maven profile. Its observed test outcomes retain three
+authored skips without passing credit. All selected class files match the release;
+the complete JAR differs in its manifest and Maven properties. The original source
+remains unchanged after its authored Spotless phase. Compiler/SDK bootstrap builds,
+dependency producer builds and complete original-notice attribution remain open.
+
+The [2026-11-16 original .NET SDK source build](measurements/dotnet-sdk11-original-producer-2026-11-16.json)
+completes the pinned VMR source-build command on native Linux ARM64. The original
+ARM bootstrap and default preparation precede the offline build; the produced
+SDK identifies version `11.0.100-dev` and the selected source commit. New SDK and
+package outputs are distinguished from retained bootstrap inputs. The stopped
+snapshot passes round-trip verification and owned runtime cleanup is verified.
+The original workflow changes or removes some tracked inputs; full post-build
+source-byte immutability is not established. Historical publisher binary equality,
+unrun upstream tests and full compiler/bootstrap/original-notice closure remain open.
+
+The [2026-11-17 original Temurin 8 source build](measurements/temurin8-original-producer-2026-11-17.json)
+completes the pinned upstream recipe on native Linux ARM64 and produces a new JDK
+archive. The original source and recipe, Boot JDK 7, generator JDK 8, GCC 7.5 and
+recorded build arguments are preserved. The original command repeats its public
+ALSA acquisition with normal TLS validation using an explicitly recorded CA bundle;
+this is not an offline build. The independently observed output identifies
+`1.8.0_504-b01`, and the tracked regular source baseline retains its bytes and
+full modes. The stopped work capture passes round-trip verification and owned
+runtime cleanup is verified. Publisher byte equality, unrun upstream tests,
+compiler/bootstrap producer builds and complete original-notice closure remain open.
+
+The [2026-11-16 original notice coverage](measurements/c-original-notice-coverage-2026-11-16.json)
+reconciles the exact selected C binary dependency archive identities with retained
+original notices. It also records the complete original texts of the eight selected
+GCC and GLIBC source notice documents, including `copyright.in` and the previously
+missing GLIBC copyright and Unicode notices. This is documentary availability;
+exhaustive inline-source notice selection and compiler/bootstrap closure remain
+separate requirements. The original Pango reference spelling is preserved alongside
+the exact complete GPL-2 text, without inventing a filesystem alias.
+
 New C-profile controller receipts use schema 3 and explicitly record each
 resource-observation intervention. Before scanning, the controller verifies the
 exact owned producer container and pauses a running writer; it always attempts
@@ -195,6 +249,26 @@ epochs to exact known public historical controller hashes through verified start
 source pins; unknown controller sources require schema 3. Evidence archives cannot
 supply or extend the trusted historical index. Go, Node and the legacy
 Binutils observer contracts are unchanged.
+
+GLIBC failed-test diagnostics have a separate version-1 companion manifest,
+`failed-test-diagnostics.json`, beside each original-trap or post-stop report
+manifest. The existing report schema and historical replay contracts are unchanged.
+Exact `FAIL`, `ERROR` and `UNRESOLVED` identifiers in retained `.sum` files select
+only the corresponding `.out` and `.test-result` bytes under the same
+`build-tree/<configuration>` directory. Repeated overall/subdirectory references
+share one output pair; different configurations remain separate. Passing outcomes,
+expected failures and similarly prefixed names do not select diagnostic files.
+The collector never executes diagnostic content.
+
+Diagnostic retention is limited to 512 selected tests, 4,096 failure records,
+16 MiB of decoded summary input, 1 MiB per output and 16 MiB of original output
+bytes per family. Every source ancestor is opened without following links;
+linked, nonregular, changing and oversized files are refused. The companion binds
+original-byte hashes, selection origins, missing/refused outputs and copy custody
+to the exact report manifest. Export and replay preserve its independent namespace
+and verify the original selection and bytes. Missing diagnostics and historical
+attempts without a companion remain unavailable or incomplete. These states do
+not change the original build exit status, test outcomes or qualification result.
 
 Preparation exits zero on successful data validation. Actual execution currently
 returns a nonzero, explicitly incomplete qualification status even when the
@@ -269,6 +343,46 @@ the pinned official Node source archive and unchanged configure/build/test-only
 sequence through its own opt-in hosted workflow. This is a prospective producer
 profile; generated controls do not establish native build or ancestry closure.
 
+## Selected Temurin 25 source observation
+
+The [2026-11-17 original Temurin 25 source build](measurements/temurin25-original-producer-2026-11-17.json)
+completes the pinned Alpine Linux ARM64 recipe with its original 19 arguments,
+GCC 10.3.1, generator JDK `1.8.0_342-beta` and read-only Boot JDK 24. The new
+`25.0.4+7` archive has verified source and release identities; all 69,947 tracked
+regular source files and all 450 bootstrap paths retain their bytes, full modes and
+applicable link targets. The generated SBOM matches all 15 physical JAR identities.
+The original command repeats public ALSA acquisition with normal TLS verification
+under an explicit read-only transport bundle that preserves the original 141
+certificates and adds one verified public root.
+
+The initial stopped-work capture refused five zero-byte GPG sockets. A separate
+capture-only recovery verifies all regular bytes, modes and symlink targets and
+retains the five exact socket identities as typed metadata, without opening or
+recreating sockets or rerunning the source build. The original work volume remains
+retained pending authorized disposal, so cleanup and the overall facet remain
+incomplete. The local archive differs from the retained publisher archive; unrun
+upstream tests, compiler/bootstrap producer builds and full original-notice closure
+remain open.
+
+## Finite SDK4 fork original notices
+
+The [finite SDK4 fork notice-preservation measurement](measurements/sdk4-fork-original-notice-preservation-2026-11-17.json)
+accounts for all 106 original-notice associations across 89 component names and
+52 unique original texts (69,517 bytes). The association partition is 103 complete
+separate notice files, two complete archive README grant sections and one complete
+pinned publisher README grant section. The independent audit rehashes every text,
+reconciles every candidate/archive/notice binding across the frozen records, and
+finds no missing, truncated or modified expected text. It also verifies 22 retained
+prior copies and the exact declared notice members of 30 retained recovery archives.
+
+This closes original-text preservation for the frozen finite candidate union.
+All version alternatives remain retained. Historical bundle-version consumption,
+source-transform attribution and exclusion of unobserved components remain
+unproven; the earlier source-result JSON custody remains unrecovered. The selected
+recipe consumes a prebuilt fork archive. This documentary result makes no legal
+compliance or permissions conclusion and leaves whole SDK notice coverage,
+producer/compiler/bootstrap closure and Gate A completion separate.
+
 ## Selected u13 GLIBC source variant
 
 The closed producer key `glibc-u13` selects Debian GLIBC
@@ -289,12 +403,12 @@ arbitrary descriptor can be selected. An admitted local source is copied with
 exclusive publication and has no silent network fallback. Existing GCC and u14
 preparation arguments are unchanged.
 
-The u13 signer identity and fresh source-signature result remain unverified.
-The original native `dpkg-source --require-valid-signature
---require-strong-checksums` and offline build-dependency checks remain required.
-The prepared variant does not establish a completed original u13 build, passing
-upstream tests, exhaustive notices, or Gate A completion. Original unexpected-pass
-and unavailable test outcomes remain separate from package-command completion.
+The selected native verifier records a successful fresh source-signature result
+from the original `dpkg-source --require-valid-signature
+--require-strong-checksums` check, together with the offline build-dependency check.
+This result does not independently establish whole-publisher signer trust.
+Original unexpected-pass and unavailable test outcomes remain separate from
+package-command completion.
 
 The dedicated [u13 workflow](../.github/workflows/upstream-glibc-u13.yml) fixes
 every producer, startup, acquisition, export and replay selector to `glibc-u13`.
@@ -302,4 +416,21 @@ Its push namespace is `pr/upstream-producer/glibc-u13-*`; the u14 workflow
 excludes that namespace. The u13 concurrency group does not cancel an existing
 original observation. Its job and step budgets preserve the u14 carrier's
 original four-hour command and bounded export/replay envelope. This prepared
-workflow is not a successful native u13 observation.
+workflow definition alone is not evidence of a successful native u13 observation.
+
+The [2026-11-17 original u13 GLIBC observation](measurements/glibc-u13-original-producer-2026-11-17.json)
+completed the unchanged `dpkg-buildpackage -b -us -uc --jobs=4` command and
+wrapper with exit 0. The selected observation recorded 26 physical outputs,
+including 24 nonempty binary packages. Its independent data-only replay
+reconciles the retained carrier, input pins, source frame, image and native
+custody metadata; package payloads were not independently replayed. The original
+observation step took 55m21s, which is not asserted to be command-only duration.
+
+Build completion remains separate from upstream test acceptance. The 114 retained
+reports include 13 empty reports. Their 12,948 outcome lines include 20 `XPASS`
+lines, so the verifier retains failed test evidence. These counts are outcome
+lines, not unique tests; unsupported, expected-failure, unexpected-pass and empty
+outcomes are not credited as passing. The earlier run's native
+`nptl/tst-cancel4` failure remains preserved without an inferred cause or an
+erasure by the later success. Full compiler/SDK/bootstrap builds, original notices,
+historical consumption and final Gate A acceptance remain open.

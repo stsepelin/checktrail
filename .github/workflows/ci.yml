@@ -30,7 +30,7 @@ env:
 
 jobs:
   ci-plan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     permissions:
       contents: read
@@ -52,6 +52,8 @@ jobs:
         run: node scripts/check-ci-preflight.mjs
         env:
           CHECKTRAIL_GITHUB_ARTIFACT_TOKEN: ${{ github.token }}
+      - name: Check selected parser runtime coherence before matrix planning
+        run: node scripts/check-context-runtime-coherence.mjs
       - run: npm run typecheck
       - run: npm run lint
       - id: impact
@@ -64,11 +66,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-26.04
             node: "22"
-          - os: ubuntu-latest
+          - os: ubuntu-26.04
             node: "24"
-          - os: ubuntu-latest
+          - os: ubuntu-26.04
             node: "26"
           - os: macos-latest
             node: "24"
@@ -90,7 +92,7 @@ jobs:
         with:
           go-version: "1.27.1"
           cache: false
-        if: env.CHECKTRAIL_CI_MODE == 'full'
+        if: env.CHECKTRAIL_CI_MODE == 'full' || (env.CHECKTRAIL_CI_MODE == 'affected' && join(fromJSON(needs.ci-plan.outputs.plan).sharedTestFiles, '') != '')
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13"
@@ -123,7 +125,7 @@ jobs:
         run: |
           node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
-        if: env.CHECKTRAIL_CI_MODE == 'full'
+        if: env.CHECKTRAIL_CI_MODE == 'full' || (env.CHECKTRAIL_CI_MODE == 'affected' && join(fromJSON(needs.ci-plan.outputs.plan).sharedTestFiles, '') != '')
       - name: Prepare locked PHP test tools
         run: |
           mkdir -p .checktrail/php-tools
@@ -194,9 +196,11 @@ jobs:
       - name: Audit finite inventory structure and preserved native obligations
         run: node scripts/audit-gate-inventory.mjs .
         if: env.CHECKTRAIL_CI_MODE == 'full'
-      - name: Require the full suite and prepared native regression profiles
+      - name: Require assigned full-suite shard and remaining host contracts
+        env:
+          CHECKTRAIL_PRESERVED_BASELINE: ${{ matrix.os == 'ubuntu-26.04' && matrix.node == '22' && 'host-core' || '' }}
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory selected-artifact-evidence probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings consumer-impact consumer-runtime-bindings consumer-foundation-bindings attempt-archives attempt-runtime-bindings attempt-foundation-bindings consumer-witness-bindings evaluation-protocol-declarations evaluation-protocol-metering evaluation-capture-declarations evaluation-physical-captures evaluation-independent-judging evaluation-common-matching independent-evaluation-protocol evaluation-runtime-bindings
+          node scripts/verify-ci-full-suite-shard.mjs --shard0
           node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
         if: env.CHECKTRAIL_CI_MODE == 'full'
@@ -205,26 +209,6 @@ jobs:
         run: node scripts/verify-evaluation-protocol-package.mjs --metering
       - run: npm run format:check
       - run: node scripts/audit-context-grammars.mjs
-      - name: Prepare this runner's package-install cache for Linux container acceptance
-        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
-        run: node scripts/prepare-package-cache.mjs
-      - name: Prepare pinned public images with bounded delivery retries
-        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
-        run: |
-          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
-          node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
-      - name: Prepare pinned review runtime
-        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
-        run: docker build --file scripts/review-tools.Dockerfile --tag checktrail-review-tools:finish-first-v1 scripts
-      - name: Verify review exchange in the packaged Linux runtime
-        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
-        run: node scripts/verify-review-container.mjs
-      - name: Verify task storage and execution in the packaged Linux runtime
-        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
-        run: node scripts/verify-task-store-container.mjs
-      - name: Verify installed MCP Tasks lifecycle offline in Linux
-        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')
-        run: CHECKTRAIL_TASKS_IMAGE=docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 node scripts/verify-mcp-tasks-package.mjs
       - name: Require affected shared test files without claiming omitted native acceptance
         if: env.CHECKTRAIL_CI_MODE == 'affected'
         run: node scripts/verify-ci-affected-tests.mjs
@@ -236,19 +220,222 @@ jobs:
     env:
       CHECKTRAIL_CI_MODE: ${{ needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).mode || 'full' }}
 
-  host-validation:
+  full-suite-shards:
+    name: full-suite-shards (${{ matrix.os }}, ${{ matrix.node }}, ${{ matrix.shard }})
     strategy:
       fail-fast: false
+      max-parallel: 8
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-26.04
             node: "22"
-          - os: ubuntu-latest
+            shard: 1
+          - os: ubuntu-26.04
+            node: "22"
+            shard: 2
+          - os: ubuntu-26.04
             node: "24"
-          - os: ubuntu-latest
+            shard: 1
+          - os: ubuntu-26.04
+            node: "24"
+            shard: 2
+          - os: ubuntu-26.04
             node: "26"
+            shard: 1
+          - os: ubuntu-26.04
+            node: "26"
+            shard: 2
           - os: macos-latest
             node: "24"
+            shard: 1
+          - os: macos-latest
+            node: "24"
+            shard: 2
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            scripts/javascript-tools/package-lock.json
+            scripts/playwright-tools/package-lock.json
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.27.1"
+          cache: false
+        if: env.CHECKTRAIL_CI_MODE == 'full' || (env.CHECKTRAIL_CI_MODE == 'affected' && join(fromJSON(needs.ci-plan.outputs.plan).sharedTestFiles, '') != '')
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (runner.os != 'macOS')
+        with:
+          php-version: "8.5"
+          coverage: none
+      - name: Prepare PHP from the pinned macOS build-cache action
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (runner.os == 'macOS')
+        with:
+          php-version: "8.5"
+          coverage: none
+      - name: Verify required toolchains
+        run: |
+          node --version
+          go version
+          python3 --version
+          php --version
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - name: Prepare pinned Rust compiler
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+          rustup target add --toolchain 1.98.1 wasm32-unknown-unknown
+          dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - name: Prepare pinned Go analyzers
+        run: |
+          node scripts/prepare-go-tools.mjs
+          echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
+        if: env.CHECKTRAIL_CI_MODE == 'full' || (env.CHECKTRAIL_CI_MODE == 'affected' && join(fromJSON(needs.ci-plan.outputs.plan).sharedTestFiles, '') != '')
+      - name: Prepare locked PHP test tools
+        run: |
+          mkdir -p .checktrail/php-tools
+          cp scripts/php-tools/composer.json scripts/php-tools/composer.lock .checktrail/php-tools/
+          composer install --working-dir=.checktrail/php-tools --no-interaction --no-scripts --prefer-dist --no-progress
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - name: Prepare locked PHP review tools
+        run: |
+          mkdir -p .checktrail/php-review-tools
+          cp scripts/php-review-tools/composer.json scripts/php-review-tools/composer.lock .checktrail/php-review-tools/
+          composer install --working-dir=.checktrail/php-review-tools --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - name: Prepare locked Laravel runtime fixtures
+        run: |
+          mkdir -p .checktrail/laravel-tools
+          cp scripts/laravel-tools/composer.json scripts/laravel-tools/composer.lock .checktrail/laravel-tools/
+          composer install --working-dir=.checktrail/laravel-tools --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - run: python3 -m pip install -r scripts/python-tools.requirements.txt
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - run: python3 -m pip install -r scripts/framework-tools.requirements.txt
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - run: npm ci --ignore-scripts
+      - name: Prepare qualified native JavaScript fixtures
+        run: |
+          node scripts/prepare-javascript-tools.mjs
+          npm ci --prefix .checktrail/javascript-tools --ignore-scripts --no-audit --no-fund
+      - name: Prepare locked legacy TypeScript compiler
+        run: |
+          mkdir -p .checktrail/typescript-legacy-tools
+          cp scripts/typescript-legacy-tools/package.json scripts/typescript-legacy-tools/package-lock.json .checktrail/typescript-legacy-tools/
+          npm ci --prefix .checktrail/typescript-legacy-tools --ignore-scripts --no-audit --no-fund
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - name: Prepare locked Vue Router fixtures
+        run: |
+          mkdir -p .checktrail/vue-router-tools
+          cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .checktrail/vue-router-tools/
+          npm ci --prefix .checktrail/vue-router-tools --ignore-scripts --no-audit --no-fund
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - name: Prepare locked Nuxt fixtures
+        run: |
+          mkdir -p .checktrail/nuxt-tools
+          cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .checktrail/nuxt-tools/
+          npm ci --prefix .checktrail/nuxt-tools --ignore-scripts --no-audit --no-fund
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - name: Prepare locked native Playwright fixtures
+        run: |
+          node scripts/prepare-playwright-tools.mjs
+          npm ci --prefix .checktrail/playwright-tools --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - name: Prepare pinned Chromium for native browser fixtures
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          browser_node="$(node -p 'process.execPath')"
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo -n --preserve-env=CI,GITHUB_ACTIONS,RUNNER_ENVIRONMENT,HTTP_PROXY,HTTPS_PROXY,ALL_PROXY,NO_PROXY,http_proxy,https_proxy,all_proxy,no_proxy,NODE_EXTRA_CA_CERTS,SSL_CERT_FILE,SSL_CERT_DIR,PLAYWRIGHT_DOWNLOAD_HOST,PLAYWRIGHT_CHROMIUM_DOWNLOAD_HOST,PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT -- "$browser_node" scripts/prepare-playwright-browser.mjs
+          else
+            "$browser_node" scripts/prepare-playwright-browser.mjs
+          fi
+        if: env.CHECKTRAIL_CI_MODE == 'full'
+      - name: Require assigned full-suite fragment
+        env:
+          CHECKTRAIL_PRESERVED_BASELINE: ${{ matrix.os == 'ubuntu-26.04' && matrix.node == '22' && 'host-core' || '' }}
+        run: node scripts/verify-ci-full-suite-shard.mjs --shard${{ matrix.shard }}
+      - name: Prepare this runner's package-install cache for Linux container acceptance
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-26.04' && matrix.node == '22')
+        run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-26.04' && matrix.node == '22')
+        run: |
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+      - name: Prepare pinned review runtime
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-26.04' && matrix.node == '22') && matrix.shard == 1
+        run: docker build --file scripts/review-tools.Dockerfile --tag checktrail-review-tools:finish-first-v1 scripts
+      - name: Verify review exchange in the packaged Linux runtime
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-26.04' && matrix.node == '22') && matrix.shard == 1
+        run: node scripts/verify-review-container.mjs
+      - name: Verify task storage and execution in the packaged Linux runtime
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-26.04' && matrix.node == '22') && matrix.shard == 2
+        run: node scripts/verify-task-store-container.mjs
+      - name: Verify installed MCP Tasks lifecycle offline in Linux
+        if: env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-26.04' && matrix.node == '22') && matrix.shard == 2
+        run: CHECKTRAIL_TASKS_IMAGE=docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 node scripts/verify-mcp-tasks-package.mjs
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).mode == 'full' }}
+    env:
+      CHECKTRAIL_CI_MODE: full
+
+  host-validation:
+    name: host-validation (${{ matrix.os }}, ${{ matrix.node }}, ${{ matrix.shard }})
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        include:
+          - os: ubuntu-26.04
+            node: "22"
+            shard: 0
+          - os: ubuntu-26.04
+            node: "22"
+            shard: 1
+          - os: ubuntu-26.04
+            node: "22"
+            shard: 2
+          - os: ubuntu-26.04
+            node: "24"
+            shard: 0
+          - os: ubuntu-26.04
+            node: "24"
+            shard: 1
+          - os: ubuntu-26.04
+            node: "24"
+            shard: 2
+          - os: ubuntu-26.04
+            node: "26"
+            shard: 0
+          - os: ubuntu-26.04
+            node: "26"
+            shard: 1
+          - os: ubuntu-26.04
+            node: "26"
+            shard: 2
+          - os: macos-latest
+            node: "24"
+            shard: 0
+          - os: macos-latest
+            node: "24"
+            shard: 1
+          - os: macos-latest
+            node: "24"
+            shard: 2
     runs-on: ${{ matrix.os }}
     timeout-minutes: 75
     steps:
@@ -351,21 +538,22 @@ jobs:
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - name: Verify current-root JavaScript compatibility
+        if: matrix.shard == 0
         run: |
           node --test dist/test/development-bundlers.test.js dist/test/vitest.test.js dist/test/jest.test.js
           node scripts/verify-root-javascript-reporters.mjs
       - name: Require isolated mutation and fresh package lanes
-        run: node scripts/run-ci-validation.mjs
+        run: node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}
       - name: Verify captured consumer impact in the offline production package
+        if: matrix.shard == 0
         run: node scripts/verify-consumer-impact-package.mjs
-    needs:
-      - ci-plan
+    needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && (fromJSON(needs.ci-plan.outputs.plan).mode == 'full' || (fromJSON(needs.ci-plan.outputs.plan).mode == 'affected' && fromJSON(needs.ci-plan.outputs.plan).hostValidation == 'required')) }}
 
   php-review:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['php-review'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -400,7 +588,7 @@ jobs:
   clang:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['clang'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -422,7 +610,7 @@ jobs:
   java:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['java'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -444,10 +632,52 @@ jobs:
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-java-container.mjs
 
+  pyright:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['pyright'] }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+    env:
+      CHECKTRAIL_PYRIGHT_PACKAGE: ${{ github.workspace }}/.checktrail/pyright-tools/node_modules/pyright
+      CHECKTRAIL_PYRIGHT_IMAGE: checktrail-pyright-tools:ci-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            scripts/pyright-tools/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned Pyright compiler without lifecycle scripts
+        run: |
+          mkdir -p .checktrail/pyright-tools
+          cp scripts/pyright-tools/package.json scripts/pyright-tools/package-lock.json .checktrail/pyright-tools/
+          npm ci --prefix .checktrail/pyright-tools --ignore-scripts --no-audit --no-fund
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs docker.io/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
+      - name: Prepare pinned Pyright runtime
+        run: docker build --file scripts/pyright-tools.Dockerfile --tag "$CHECKTRAIL_PYRIGHT_IMAGE" scripts
+      - name: Require all seven native source callbacks offline
+        run: node scripts/verify-pyright-container.mjs
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
+      - name: Require all seven callbacks against a fresh offline production install
+        run: node scripts/verify-pyright-package.mjs
+      - name: Remove this run's Pyright image
+        if: always()
+        run: docker image rm "$CHECKTRAIL_PYRIGHT_IMAGE"
+
   checkstyle:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['checkstyle'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -474,7 +704,7 @@ jobs:
   spotbugs:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['spotbugs'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -501,7 +731,7 @@ jobs:
   detekt:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['detekt'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -528,7 +758,7 @@ jobs:
   kotlin:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['kotlin'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -555,7 +785,7 @@ jobs:
   scala:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['scala'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -592,7 +822,7 @@ jobs:
   maven:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['maven'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -604,7 +834,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: node scripts/verify-required-native-tests.mjs maven-preparation
+      - run: node scripts/verify-native-baseline-host.mjs maven-preparation
       - run: node scripts/prepare-maven-tools.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
@@ -618,7 +848,7 @@ jobs:
   gradle:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['gradle'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -630,7 +860,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: node scripts/verify-required-native-tests.mjs gradle-preparation
+      - run: node scripts/verify-native-baseline-host.mjs gradle-preparation
       - run: node scripts/prepare-gradle-tools.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
@@ -645,7 +875,7 @@ jobs:
     needs: [ci-plan]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['dotnet'] }}
     name: dotnet (${{ matrix.profile }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -686,7 +916,7 @@ jobs:
   actionlint:
     needs: [ci-plan]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['actionlint'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -703,6 +933,13 @@ jobs:
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned workflow checker
         run: docker build --file scripts/actionlint-tools.Dockerfile --tag checktrail-actionlint-test:1.7.12 scripts
+      - name: Validate repository workflows with the pinned checker
+        timeout-minutes: 2
+        run: >-
+          docker run --rm --network none
+          --mount "type=bind,src=$GITHUB_WORKSPACE,target=/workspace,readonly"
+          --workdir /workspace checktrail-actionlint-test:1.7.12
+          actionlint -config-file .github/actionlint.yaml -shellcheck= .github/workflows/*.yml
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-actionlint-container.mjs
@@ -710,7 +947,7 @@ jobs:
   external-adapters:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['external-adapters'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -739,8 +976,7 @@ jobs:
         run: |
           docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle
           docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle-interpreters
-          docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs external-protocol
-          docker run --rm --init --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs policy-distribution
+          node scripts/verify-external-baseline-container.mjs
       - name: Verify packed executable adapters in a fresh offline production installation
         env:
           CHECKTRAIL_EXECUTABLE_BUNDLE_IMAGE: checktrail-executable-bundle-test:1
@@ -749,7 +985,7 @@ jobs:
   vue-router:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['vue-router'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -776,7 +1012,7 @@ jobs:
   vue-router-assembly-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['vue-router-assembly-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     env:
       CHECKTRAIL_TEST_TASK: ci-vue-router-assembly
@@ -805,7 +1041,7 @@ jobs:
   fastapi-assembly-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['fastapi-assembly-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     env:
       CHECKTRAIL_TEST_TASK: ci-fastapi-assembly
@@ -833,7 +1069,7 @@ jobs:
   django-assembly-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['django-assembly-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     env:
       CHECKTRAIL_TEST_TASK: ci-django-assembly
@@ -861,7 +1097,7 @@ jobs:
   jvm-analyzer-extensions-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['jvm-analyzer-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 30
     env:
       CHECKTRAIL_TEST_TASK: ci-jvm-analyzer-extensions
@@ -893,7 +1129,7 @@ jobs:
   kotlin-extensions-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['kotlin-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 30
     env:
       CHECKTRAIL_TEST_TASK: ci-kotlin-extensions
@@ -922,7 +1158,7 @@ jobs:
   scala-extensions-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['scala-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -976,7 +1212,7 @@ jobs:
   jvm-wrappers-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['jvm-wrappers-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 40
     strategy:
       fail-fast: false
@@ -1003,7 +1239,7 @@ jobs:
       - name: Verify bounded phase routing and complete aggregate requirements
         run: node --test dist/test/jvm-wrapper-phases.test.js
       - name: Require bounded wrapper delivery and integrity controls
-        run: node scripts/verify-required-native-tests.mjs maven-preparation
+        run: node scripts/verify-native-baseline-host.mjs maven-preparation
       - name: Prepare pinned public images with bounded delivery retries
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
@@ -1027,7 +1263,7 @@ jobs:
   rust-extensions-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['rust-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-rust-extensions
@@ -1059,7 +1295,7 @@ jobs:
   php-extensions-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['php-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     env:
       CHECKTRAIL_TEST_TASK: ci-php-extensions
@@ -1100,7 +1336,7 @@ jobs:
   python-extensions-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['python-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     env:
       CHECKTRAIL_TEST_TASK: ci-python-extensions
@@ -1130,7 +1366,7 @@ jobs:
   javascript-extensions-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['javascript-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-javascript-extensions
@@ -1197,7 +1433,7 @@ jobs:
   laravel-assembly-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['laravel-assembly-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-laravel-assembly
@@ -1230,7 +1466,7 @@ jobs:
   nuxt-assembly-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['nuxt-assembly-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -1263,7 +1499,7 @@ jobs:
   nuxt:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['nuxt'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1290,7 +1526,7 @@ jobs:
   ruby:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['ruby'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1312,7 +1548,7 @@ jobs:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['ruby-tools'] }}
     name: ruby-tools (${{ matrix.profile }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 25
     strategy:
       fail-fast: false
@@ -1348,7 +1584,7 @@ jobs:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['ruby-extensions-arm64'] }}
     name: ruby-extensions (${{ matrix.phase }})
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -1389,7 +1625,7 @@ jobs:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['swift-extensions-arm64'] }}
     name: swift-extensions (${{ matrix.phase }})
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -1430,12 +1666,12 @@ jobs:
       - run: swiftc --version
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: node scripts/verify-required-native-tests.mjs swift
+      - run: node scripts/verify-native-baseline-host.mjs swift
 
   swift-tools:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['swift-tools'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-swift-tools
@@ -1459,7 +1695,7 @@ jobs:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['cpp-extensions-arm64'] }}
     name: cpp-extensions (${{ matrix.phase }})
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 45
     strategy:
       fail-fast: false
@@ -1530,7 +1766,7 @@ jobs:
   cpp-tools:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['cpp-tools'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-cpp-tools
@@ -1553,7 +1789,7 @@ jobs:
   kubernetes-extensions-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['kubernetes-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-kubernetes-extensions
@@ -1582,7 +1818,7 @@ jobs:
   kustomize-extensions-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['kustomize-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-kustomize-extensions
@@ -1608,7 +1844,7 @@ jobs:
   kubeconform:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['kubeconform'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-infra-tools
@@ -1634,7 +1870,7 @@ jobs:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['terraform-extensions-arm64'] }}
     name: terraform-extensions (${{ matrix.phase }})
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 45
     strategy:
       fail-fast: false
@@ -1680,7 +1916,7 @@ jobs:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['helm-extensions-arm64'] }}
     name: helm-extensions (${{ matrix.phase }})
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 45
     strategy:
       fail-fast: false
@@ -1710,7 +1946,7 @@ jobs:
   terraform:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['terraform'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-terraform-tools
@@ -1735,7 +1971,7 @@ jobs:
   kustomize:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['kustomize'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-kustomize-tools
@@ -1760,7 +1996,7 @@ jobs:
   helm:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['helm'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       CHECKTRAIL_TEST_TASK: ci-helm-tools
@@ -1794,19 +2030,19 @@ jobs:
             lane: ci-linux-node22
             core: true
             consumer: true
-            os: ubuntu-24.04
+            os: ubuntu-26.04
             node: "22.23.3"
           - slot: ci-linux-node24
             lane: ci-linux-node24
             core: true
             consumer: true
-            os: ubuntu-24.04
+            os: ubuntu-26.04
             node: "24.21.0"
           - slot: ci-linux-node26
             lane: ci-linux-node26
             core: true
             consumer: true
-            os: ubuntu-24.04
+            os: ubuntu-26.04
             node: "26.10.0"
           - slot: ci-macos-node22
             lane: ci-macos-node22
@@ -1875,6 +2111,24 @@ jobs:
         run: node scripts/diagnose-windows-task-access.mjs
       - name: Prepare pinned production installation cache
         run: node scripts/prepare-package-cache.mjs
+      - name: Require provenance composition from source and a fresh offline package
+        id: native-provenance-runtime
+        if: matrix.core
+        # Source and fresh-package files each retain their own 600-second limit.
+        # This parent also covers their bounded build, installation and cleanup.
+        timeout-minutes: 30
+        run: node scripts/verify-native-provenance-runtime.mjs ${{ matrix.slot }}
+        env:
+          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
+      - name: Retain original bounded provenance runtime receipt bytes
+        if: ${{ !cancelled() && matrix.core && steps.native-provenance-runtime.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-provenance-runtime-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
       - name: Require source and retained fresh-install controls with exact runtime and observed image identity
         if: matrix.core
         run: node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}
@@ -1953,7 +2207,7 @@ jobs:
   tasks-runtime-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['tasks-runtime-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 30
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -1974,7 +2228,19 @@ jobs:
       - name: Prepare pinned production installation cache
         run: node scripts/prepare-package-cache.mjs
       - name: Require source and offline installed controls in the pinned native runtime
+        id: native-provenance-runtime
         run: node scripts/verify-tasks-runtime-arm64.mjs
+        env:
+          CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
+      - name: Retain original bounded provenance runtime receipt bytes
+        if: ${{ !cancelled() && steps.native-provenance-runtime.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-provenance-runtime-tasks-runtime-arm64-native-linux-arm64-node22-${{ github.run_attempt }}
+          path: ${{ runner.temp }}${{ runner.os == 'Windows' && '\' || '/' }}native-provenance-runtime.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
       - name: Require whole consumer impact with pinned native Git prerequisites
         id: consumer-runtime
         run: node scripts/verify-consumer-native-acceptance.mjs consumer-impact native-linux-arm64-node22
@@ -2028,13 +2294,13 @@ jobs:
       matrix:
         include:
           - slot: ci-linux-node22
-            os: ubuntu-24.04
+            os: ubuntu-26.04
             node: "22.23.3"
           - slot: ci-linux-node24
-            os: ubuntu-24.04
+            os: ubuntu-26.04
             node: "24.21.0"
           - slot: ci-linux-node26
-            os: ubuntu-24.04
+            os: ubuntu-26.04
             node: "26.10.0"
           - slot: ci-macos-node22
             os: macos-26
@@ -2078,7 +2344,7 @@ jobs:
   attempt-runtime-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['attempt-runtime-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2110,13 +2376,13 @@ jobs:
       matrix:
         include:
           - slot: ci-linux-node22
-            os: ubuntu-24.04
+            os: ubuntu-26.04
             node: "22.23.3"
           - slot: ci-linux-node24
-            os: ubuntu-24.04
+            os: ubuntu-26.04
             node: "24.21.0"
           - slot: ci-linux-node26
-            os: ubuntu-24.04
+            os: ubuntu-26.04
             node: "26.10.0"
           - slot: ci-macos-node22
             os: macos-26
@@ -2159,7 +2425,7 @@ jobs:
   resource-release-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['resource-release-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2230,7 +2496,7 @@ jobs:
   go-workspaces-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['go-workspaces-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 30
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2250,6 +2516,8 @@ jobs:
         with:
           go-version: "1.27.1"
           cache: false
+      - name: Prepare verified Python 3.13.5 SDK for the Ubuntu 26.04 ARM host
+        run: node scripts/prepare-python-host-sdk.mjs
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13.5"
@@ -2341,7 +2609,7 @@ jobs:
   php-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['php-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2402,7 +2670,7 @@ jobs:
   rust-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['rust-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2464,7 +2732,7 @@ jobs:
   java-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['java-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2526,7 +2794,7 @@ jobs:
   kotlin-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['kotlin-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2589,7 +2857,7 @@ jobs:
   scala-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['scala-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2655,7 +2923,7 @@ jobs:
   csharp-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['csharp-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2716,7 +2984,7 @@ jobs:
   fsharp-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['fsharp-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2777,7 +3045,7 @@ jobs:
   ruby-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['ruby-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2839,7 +3107,7 @@ jobs:
   swift-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['swift-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2900,7 +3168,7 @@ jobs:
   vb-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['vb-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -2961,7 +3229,7 @@ jobs:
   c-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['c-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -3022,7 +3290,7 @@ jobs:
   cpp-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['cpp-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -3083,7 +3351,7 @@ jobs:
   hcl-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['hcl-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -3147,7 +3415,7 @@ jobs:
   yaml-context-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['yaml-context-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     outputs:
       native_start_single: ${{ steps.native-start.outputs.native_start_single }}
@@ -3211,7 +3479,7 @@ jobs:
   fsharp-format-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['fsharp-format-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 30
     env:
       CHECKTRAIL_TEST_TASK: ci-fsharp-format
@@ -3243,11 +3511,30 @@ jobs:
           node scripts/prepare-package-cache.mjs
       - name: Verify preserved .NET profiles, source and installed formatter, native lifecycle and compiling controls
         run: node scripts/verify-fsharp-format-container.mjs
+      - name: Prepare scoped native NuGet repository-signature observation
+        run: node scripts/prepare-fsharp-format-tools.mjs --archive "$PWD/.checktrail/fantomas.8.0.7.nupkg" --verify-repository-signature > "$CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST"
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
+      - name: Verify immutable signed formatter publication and refusal controls
+        run: |
+          node --input-type=module <<'NODE'
+          import { kotlinRead } from './dist/src/kotlin-io.js';
+          import { parseFsharpSignaturePreparation } from './scripts/verify-fsharp-format-signature-container.mjs';
+          import { verifyFsharpSignaturePublication } from './scripts/verify-fsharp-format-signature-proof.mjs';
+          const manifest = parseFsharpSignaturePreparation((await kotlinRead(process.env.CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST, 16384)).toString('utf8'));
+          process.stdout.write(JSON.stringify(await verifyFsharpSignaturePublication(manifest.formatterRoot, manifest.proofSha256)) + '\n');
+          NODE
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
+      - name: Verify scoped signature source and fresh installed formatter sequentially
+        run: node scripts/verify-fsharp-format-signature-container.mjs "$CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST"
+        env:
+          CHECKTRAIL_FSHARP_FORMAT_PREPARATION_MANIFEST: ${{ runner.temp }}/fsharp-format-release-signature-preparation.json
 
   dotnet-format-extensions-arm64:
     needs: [ci-plan]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['dotnet-format-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 60
     env:
       CHECKTRAIL_TEST_TASK: ci-dotnet-format-extensions
@@ -3276,7 +3563,7 @@ jobs:
         run: node scripts/verify-dotnet-format-extensions-container.mjs
 
   ci-complete:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       actions: read
@@ -3286,9 +3573,11 @@ jobs:
       - ci-plan
       - checks
       - host-validation
+      - full-suite-shards
       - php-review
       - clang
       - java
+      - pyright
       - checkstyle
       - spotbugs
       - detekt
@@ -3433,7 +3722,7 @@ jobs:
           - shard: "1"
           - shard: "2"
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['dotnet-generator-extensions-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 60
     env:
       CHECKTRAIL_TEST_TASK: ci-dotnet-generator-extensions-${{ matrix.shard }}
@@ -3503,7 +3792,7 @@ jobs:
   mutation-passive-guards:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['mutation-passive-guards'] }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3523,7 +3812,7 @@ jobs:
   mutation-native-arm64:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && needs.ci-plan.result == 'success' && fromJSON(needs.ci-plan.outputs.plan).selected['mutation-native-arm64'] }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 45
     strategy:
       fail-fast: false

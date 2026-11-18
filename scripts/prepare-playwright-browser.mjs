@@ -4,12 +4,16 @@ import { Buffer } from "node:buffer";
 import {
   chmod,
   lstat,
+  open,
+  opendir,
+  readlink,
   mkdir,
   mkdtemp,
   readFile,
   realpath,
   rm,
 } from "node:fs/promises";
+import { constants } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -20,6 +24,7 @@ import { fileURLToPath, pathToFileURL, URL } from "node:url";
 import { runCiCommand } from "./ci-validation.mjs";
 import { readPlaywrightTools } from "./prepare-playwright-tools.mjs";
 import { prepareUbuntuMirrors } from "./prepare-ubuntu-mirrors.mjs";
+import { capturePreparedBaselineBrowser } from "./preserved-baseline-evidence.mjs";
 
 export const browserInstallArguments = Object.freeze([
   "install",
@@ -59,6 +64,263 @@ export function validateBrowserAcquisitionOwner(platform, uid, effectiveUid) {
     );
   }
   return Object.freeze({ platform, uid, effectiveUid });
+}
+
+// Native acquisition is already root-admitted. sudo supplies the real calling
+// consumer; this metadata is never a project/tool argument granting execution.
+export function browserConsumerFromSudo(platform, environment) {
+  if (platform !== "linux") return null;
+  const values = [environment.SUDO_UID, environment.SUDO_GID];
+  if (values.every((value) => value === undefined)) return null;
+  const ids = values.map((value) => {
+    assert.ok(
+      typeof value === "string" && /^(?:0|[1-9][0-9]{0,9})$/u.test(value),
+      "Malformed sudo browser consumer identity",
+    );
+    const id = Number(value);
+    assert.ok(id < 4294967295, "Unbounded sudo browser consumer identity");
+    return id;
+  });
+  return ids[0] === 0 ? null : Object.freeze({ uid: ids[0], gid: ids[1] });
+}
+
+export async function handoffPreparedBrowserOwnership(
+  directory,
+  consumer,
+  { checkDeadline = () => {} } = {},
+) {
+  assert.ok(
+    [consumer?.uid, consumer?.gid].every(
+      (id) => Number.isSafeInteger(id) && id >= 0 && id < 4294967295,
+    ) && consumer.uid > 0,
+    "Invalid browser consumer identity",
+  );
+  assert.equal(
+    typeof checkDeadline,
+    "function",
+    "Missing browser ownership deadline check",
+  );
+  const producer = process.geteuid?.();
+  assert.ok(
+    Number.isSafeInteger(producer),
+    "Browser ownership needs POSIX identity",
+  );
+  assert.equal(
+    path.resolve(directory),
+    directory,
+    "Noncanonical browser ownership root",
+  );
+  assert.equal(
+    await realpath(directory),
+    directory,
+    "Linked browser ownership root",
+  );
+  assert.equal(path.basename(directory), "playwright-browsers");
+  assert.equal(path.basename(path.dirname(directory)), ".checktrail");
+  const inside = (file) => {
+    const relative = path.relative(directory, file);
+    return (
+      relative !== "" &&
+      relative !== ".." &&
+      !relative.startsWith(".." + path.sep) &&
+      !path.isAbsolute(relative)
+    );
+  };
+  const identity = (
+    a,
+    b,
+    keys = [
+      "dev",
+      "ino",
+      "size",
+      "mode",
+      "uid",
+      "gid",
+      "nlink",
+      "mtimeNs",
+      "ctimeNs",
+    ],
+  ) => keys.every((key) => a[key] === b[key]);
+  const rows = [];
+  let entries = 0,
+    bytes = 0;
+  const walk = async (file, depth) => {
+    checkDeadline();
+    assert.ok(depth <= 24, "Browser ownership depth bound");
+    const stat = await lstat(file, { bigint: true });
+    assert.ok(
+      stat.uid === BigInt(producer) || stat.uid === BigInt(consumer.uid),
+      "Unexpected browser inode owner",
+    );
+    assert.equal(
+      stat.mode & 0o7000n,
+      0n,
+      "Special browser permissions cannot be transferred",
+    );
+    if (stat.isSymbolicLink()) {
+      assert.equal(stat.nlink, 1n, "Hardlinked browser alias");
+      const target = await readlink(file);
+      assert.ok(
+        target.length > 0 &&
+          Buffer.byteLength(target) <= 4096 &&
+          !path.isAbsolute(target) &&
+          !/^[A-Za-z]:/u.test(target) &&
+          !/[\\\0]/u.test(target),
+        "Invalid browser ownership link",
+      );
+      assert.ok(
+        inside(path.resolve(path.dirname(file), target)) &&
+          inside(await realpath(file)),
+        "Browser ownership link escapes cache",
+      );
+      rows.push({ file, stat, link: true, target });
+      return;
+    }
+    assert.ok(
+      stat.isDirectory() || stat.isFile(),
+      "Nonregular browser ownership input",
+    );
+    assert.equal(await realpath(file), file, "Linked browser ownership path");
+    assert.ok(
+      (stat.mode & (stat.isDirectory() ? 0o500n : 0o400n)) ===
+        (stat.isDirectory() ? 0o500n : 0o400n),
+      "Browser original owner permissions are unreadable",
+    );
+    rows.push({ file, stat, directory: stat.isDirectory() });
+    if (stat.isDirectory()) {
+      for await (const entry of await opendir(file)) {
+        assert.ok(++entries <= 16384, "Browser ownership entry bound");
+        await walk(path.join(file, entry.name), depth + 1);
+      }
+    } else {
+      assert.equal(stat.nlink, 1n, "Hardlinked browser ownership input");
+      assert.ok(
+        stat.size <= 512n * 1048576n,
+        "Browser ownership file byte bound",
+      );
+      bytes += Number(stat.size);
+      assert.ok(bytes <= 2048 * 1048576, "Browser ownership total byte bound");
+    }
+    assert.ok(
+      identity(stat, await lstat(file, { bigint: true })),
+      "Browser changed during ownership preflight",
+    );
+  };
+  await walk(directory, 0);
+  checkDeadline();
+  const before = await capturePreparedBaselineBrowser(directory);
+  // Validate the entire finite plan before changing any inode.
+  for (const row of rows) {
+    checkDeadline();
+    assert.ok(
+      identity(row.stat, await lstat(row.file, { bigint: true })),
+      "Browser ownership path changed before transfer",
+    );
+    if (!row.link)
+      assert.equal(
+        await realpath(row.file),
+        row.file,
+        "Browser ownership path replaced",
+      );
+  }
+  let changed = 0;
+  for (const row of rows) {
+    checkDeadline();
+    // Links keep their original ownership: readability comes from their physical
+    // parent and target. Never chown through a link or follow it for mutation.
+    if (row.link) continue;
+    const fd = await open(
+      row.file,
+      constants.O_RDONLY |
+        constants.O_NOFOLLOW |
+        constants.O_NONBLOCK |
+        (row.directory ? constants.O_DIRECTORY : 0),
+    );
+    try {
+      const opened = await fd.stat({ bigint: true });
+      assert.ok(identity(row.stat, opened), "Browser ownership inode replaced");
+      assert.equal(
+        await realpath(row.file),
+        row.file,
+        "Browser ownership parent replaced",
+      );
+      if (
+        opened.uid !== BigInt(consumer.uid) ||
+        opened.gid !== BigInt(consumer.gid)
+      ) {
+        await fd.chown(consumer.uid, consumer.gid);
+        changed++;
+      }
+      const after = await fd.stat({ bigint: true }),
+        named = await lstat(row.file, { bigint: true });
+      assert.ok(
+        identity(opened, after, [
+          "dev",
+          "ino",
+          "size",
+          "mode",
+          "nlink",
+          "mtimeNs",
+        ]) && identity(after, named),
+        "Browser identity changed during ownership transfer",
+      );
+      assert.ok(
+        after.uid === BigInt(consumer.uid) &&
+          after.gid === BigInt(consumer.gid),
+        "Browser consumer ownership not established",
+      );
+      assert.equal(
+        await realpath(row.file),
+        row.file,
+        "Browser ownership path replaced during transfer",
+      );
+      row.after = after;
+    } finally {
+      await fd.close();
+    }
+  }
+  checkDeadline();
+  const after = await capturePreparedBaselineBrowser(directory);
+  for (const row of rows) {
+    checkDeadline();
+    assert.ok(
+      identity(row.after ?? row.stat, await lstat(row.file, { bigint: true })),
+      "Browser ownership physical path changed after transfer",
+    );
+    if (row.link) {
+      assert.equal(
+        await readlink(row.file),
+        row.target,
+        "Browser ownership alias changed after transfer",
+      );
+      assert.ok(
+        inside(await realpath(row.file)),
+        "Browser ownership alias escaped after transfer",
+      );
+    } else {
+      assert.equal(
+        await realpath(row.file),
+        row.file,
+        "Browser ownership parent changed after transfer",
+      );
+    }
+  }
+  assert.deepEqual(
+    after,
+    before,
+    "Browser bytes or modes changed during ownership transfer",
+  );
+  return {
+    state: "consumer-owned",
+    scope:
+      "Physical cache files and directories only; symbolic links and ancestor ownership are preserved. Later consumer validation checks actual access.",
+    uid: consumer.uid,
+    gid: consumer.gid,
+    inspectedInodes: rows.length,
+    changedInodes: changed,
+    beforeAfterBrowserIdentityMatch: true,
+    observedBrowser: after,
+  };
 }
 
 const mirrors = new Set([
@@ -490,6 +752,9 @@ export async function preparePlaywrightBrowser(
       process.getuid?.(),
       process.geteuid?.(),
     );
+  const consumer = native
+    ? browserConsumerFromSudo(process.platform, process.env)
+    : null;
   const { root, cli, version } = await qualifiedCli(repository);
   const inactive = {
     schemaVersion: 1,
@@ -727,7 +992,33 @@ export async function preparePlaywrightBrowser(
     };
   }
   if (failure) throw failure;
-  return { ...result, mirrorPreparation };
+  let browserCacheOwnership = {
+    state: "not-applicable",
+    reason:
+      native && consumer ? "acquisition-not-ready" : "no-native-sudo-consumer",
+  };
+  if (native && consumer && result.state === "ready") {
+    browserCacheOwnership = await handoffPreparedBrowserOwnership(
+      path.join(root, ".checktrail/playwright-browsers"),
+      consumer,
+      {
+        checkDeadline: () => {
+          assert.ok(
+            !signal.aborted && elapsed() < limits.totalMilliseconds,
+            "Browser ownership absolute acquisition deadline exceeded",
+          );
+        },
+      },
+    );
+  }
+  return {
+    ...result,
+    ...(browserCacheOwnership.state === "consumer-owned"
+      ? { elapsedMilliseconds: elapsed() }
+      : {}),
+    mirrorPreparation,
+    browserCacheOwnership,
+  };
 }
 
 if (

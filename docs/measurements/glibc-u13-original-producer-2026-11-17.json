@@ -1,0 +1,248 @@
+{
+  "immutableMetadataReceipts": {
+    "compactQualification": {
+      "bytes": 3368,
+      "sha256": "7ddda9bf122fa0646272c808d8d9ac4b14388c1c585e0b42582e35b14dbf78e7"
+    },
+    "completePerReportPartitions": {
+      "bytes": 66212,
+      "sha256": "6f1468d2cbcba099bff9b622603d5a2d9b7fb15756df656767ee113cee8ec490"
+    },
+    "independentReplayExecution": {
+      "bytes": 1502,
+      "sha256": "20b6559cd562d70b21df4f7735a1d8b1680493fb2a4e83917508ffdae3f5f46b"
+    },
+    "nativeArchiveCustody": {
+      "bytes": 986,
+      "sha256": "2917c9fcd366e942a8643776d239b50967705bcfba07ce2b023bee8fdf1fb4bf"
+    }
+  },
+  "inputCountScope": "161 selected pins and350 common physical inputs are separate reconciliations; they are not asserted to be disjoint or summed as a unique closure.",
+  "inputSignatureScope": "Selected native verifier source-signature result; independent whole-publisher signer trust is not asserted by this measurement.",
+  "inputs": {
+    "allSourceArchivesBoundBySignedDescriptor": true,
+    "commonPhysicalPinnedInputs": 350,
+    "inputAuthenticationAndFreshnessDisabled": false,
+    "originalSourceSignatureVerified": true,
+    "selectedInputPinsReconciled": 161,
+    "selectedProfile": "glibc-u13",
+    "sourcePinCount": 40,
+    "trustedGitSourceFrameReconciled": true
+  },
+  "nativeCustody": {
+    "caller": {
+      "gid": 1001,
+      "uid": 1001
+    },
+    "cleanupState": "absent",
+    "nativeCustodyObservationsReconciled": true,
+    "nativeLinuxCrossUidAcceptanceVerified": true,
+    "preflightState": "selected-nonroot-caller-export-verified",
+    "retentionObserverCleanupState": "absent",
+    "transportedFileOwnersRelabeledAsNative": false
+  },
+  "observation": "original-debian-glibc-u13-build-and-report-replay",
+  "observedAt": "2026-11-17",
+  "observedBuildPackageIdentityMetadata": {
+    "originalManifestBytes": 10125,
+    "originalManifestSha256": "6d0b7f0f2db39fd6d646197039407c0e9a67f279c185626ae076ed77aaf44a2a",
+    "payloadsReplayed": false,
+    "rows": 335,
+    "uniquePackageNames": 335
+  },
+  "observedHost": {
+    "architecture": "x64",
+    "kernelMachine": "x86_64",
+    "platform": "linux"
+  },
+  "observedImage": {
+    "architecture": "amd64",
+    "configDigest": "sha256:1800d215751b3f9113556efafa95267fc7641ee6bddbcaf29f692773fbc6cbf3",
+    "id": "sha256:1800d215751b3f9113556efafa95267fc7641ee6bddbcaf29f692773fbc6cbf3",
+    "manifestDigest": "sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+    "os": "linux",
+    "rootfsDiffIds": [
+      "sha256:6143ee9e3de07e6ca35edaf392cf93dea566a5bcd0d3696607ae6c324193d099",
+      "sha256:7cfda785da7bf0e8e68163bc502a02036e630093b300992e9ee02d49083c7b83",
+      "sha256:5e65ff98e609f5fa2426ee01fd2e2f8598b6533dd6f63f931f5cfdee4d6b0922",
+      "sha256:8223c1a3753b48225389d774837087b870e6e921736a3349a711dc92a6aec190",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:2255e31716d8a2646ece8346a28b020a0943ffcaeef0d5a5f62252f2c22fc55b",
+      "sha256:d7710c81c35947969b88043011580187d79cf488115c7ef335751c6948b5870d"
+    ]
+  },
+  "observedOutputMetadata": {
+    "binaryPackages": 24,
+    "binaryPayloadsIndependentlyReplayed": false,
+    "bySuffix": {
+      ".buildinfo": 1,
+      ".changes": 1,
+      ".deb": 23,
+      ".udeb": 1
+    },
+    "nonemptyBinaryPackages": 24,
+    "observedOutputBytes": 78360779,
+    "totalObserved": 26
+  },
+  "observerSourceCommit": "fe6461e3da07959bc040dba14134dc102885a0ef",
+  "originalCommand": {
+    "argv": ["dpkg-buildpackage", "-b", "-us", "-uc", "--jobs=4"],
+    "exitCode": 0,
+    "invoked": true,
+    "schemaVersion": 1,
+    "selectedProfileOrOriginalCommandChangedForThisObservation": false,
+    "wrapperExitCode": 0
+  },
+  "priorObservation": {
+    "causeReclassified": false,
+    "laterSuccessErasesPriorFailure": false,
+    "nativeFailurePreserved": true,
+    "originalCommandExitCode": 2,
+    "reportedIdentifier": "nptl/tst-cancel4",
+    "run": 43851418265
+  },
+  "reports": {
+    "allUpstreamTestsPassed": false,
+    "emptyUnsupportedExpectedFailureAndUnexpectedPassOutcomesCreditedAsPassing": false,
+    "failedDiagnosticMetadata": {
+      "diagnosticsComplete": true,
+      "originalOutcomesChanged": false,
+      "retainedBytes": 0,
+      "retainedFiles": 0,
+      "state": "no-selected-failures",
+      "tests": 0,
+      "unresolvedRecords": 0
+    },
+    "noSelectedFailureDiagnosticsDoesNotClearUnexpectedPasses": true,
+    "outcomeCountsAreRetainedLinesNotUniqueTests": true,
+    "reportsPooledAsIndependentEvidence": false,
+    "selectedTestEvidenceState": "failed",
+    "summaries": [
+      {
+        "configurationGroups": 1,
+        "decodedReportBytes": 443356,
+        "emptyReports": 13,
+        "family": "original-trap",
+        "nonemptyReports": 101,
+        "notUniqueTestsOrIndependentEvidence": true,
+        "retainedOutcomeLineCounts": {
+          "ERROR": 0,
+          "FAIL": 0,
+          "PASS": 12610,
+          "SKIP": 0,
+          "UNRESOLVED": 0,
+          "UNSUPPORTED": 256,
+          "UNTESTED": 0,
+          "XFAIL": 62,
+          "XPASS": 20
+        },
+        "retainedOutcomeLines": 12948,
+        "retainedReportCount": 114,
+        "storedReportBytes": 59775
+      }
+    ],
+    "unexpectedPassesRemainFailedEvidence": true
+  },
+  "resources": {
+    "declaredSelectedProfileLimits": {
+      "cpuLimit": 4,
+      "deadlineSeconds": 14400,
+      "inputFileByteLimit": 134217728,
+      "logByteLimit": 536870912,
+      "memory": "6g",
+      "pidsLimit": 1024,
+      "workByteLimit": 34359738368
+    },
+    "hardwareHostAttestationPerformed": false,
+    "nativeFilesystemQuotaEnforced": false
+  },
+  "schemaVersion": 1,
+  "scope": "Successful selected original GLIBC-u13 build/package command, retained original report outcomes and independent data-only transport replay. This is not all-upstream-tests acceptance or complete compiler/bootstrap/notice closure.",
+  "scopeAccounting": {
+    "allUpstreamTestsPassed": false,
+    "dataOnlyRetainedObservationReplayPassed": true,
+    "fieldOrModelReviewTrials": 0,
+    "fullCompilerSdkBootstrapAndOriginalNoticeGraphClosed": false,
+    "gateAComplete": false,
+    "originalSelectedBuildAndPackageCommandPassed": true
+  },
+  "scopeLimits": {
+    "binaryPackagePayloadsIndependentlyReplayed": false,
+    "completeConfigurationInventoryAssessed": false,
+    "completeOriginalNoticeClosureVerified": false,
+    "fullCompilerSdkBootstrapClosureVerified": false,
+    "gateAComplete": false,
+    "historicalPublisherConsumptionVerified": false,
+    "nativeArchivePayloadIndependentlyReplayed": false
+  },
+  "selectedProfile": "original-debian-glibc-2.36-9+deb12u13-build-v1",
+  "sourcePackage": "glibc",
+  "sourceVersion": "2.36-9+deb12u13",
+  "transport": {
+    "artifactID": 14299968352,
+    "independentReplay": {
+      "elapsedSeconds": 0.272,
+      "embeddedImplementationExecuted": false,
+      "exitCode": 0,
+      "producerOrProjectCodeExecutedDuringLocalReplay": false,
+      "sourceOrRawLogReportBodiesEmittedToModel": false,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 926,
+        "sha256": "8afb2fc51343647b01c3d0ed357a11fed110751afff03afcffb0a59e50807a4e"
+      },
+      "trustedSourceBytesAndModesUnchanged": true,
+      "trustedVerifierSourcePins": {
+        "scripts/producer-qualification/c-producer-replay-evidence.py": {
+          "bytes": 105730,
+          "mode": 420,
+          "sha256": "e5615a449b258a28717b7ef2f9de34c577ab569dc4c39ad85225d2c279f1440d"
+        },
+        "scripts/producer-qualification/c-producer-report-codec.py": {
+          "bytes": 8147,
+          "mode": 420,
+          "sha256": "1c756245f4cd5140b6aea992864c6c8d2dc82f3806411173ff1f8ac3443a9a8a"
+        },
+        "scripts/producer-qualification/c-producer-test-reports.py": {
+          "bytes": 45847,
+          "mode": 420,
+          "sha256": "3416fe1a846ed31af2745877e01b40d1a3b78bd8e53f2c941bf73a39fce92c4a"
+        }
+      }
+    },
+    "innerEvidenceArchive": {
+      "bytes": 2906218,
+      "sha256": "6a1a09d919e1b3dd8f58f10074e9a1d65a0174aa93a0255f3b149abc4b977511"
+    },
+    "originalArtifactName": "original-glibc-u13-44013052436-1",
+    "originalServiceDigestVerified": true,
+    "outerServiceCarrier": {
+      "bytes": 2906376,
+      "sha256": "420ec552209f54c967fb8cf58832087b3e98f75cdaad8bb1530337e192cdea0d"
+    },
+    "retainedBeforeServiceExpiry": true
+  },
+  "workflow": {
+    "attempt": 1,
+    "commandOnlyWallDurationClaimed": false,
+    "event": "workflow_dispatch",
+    "hostedJob": {
+      "completedAtUTC": "2026-11-17T04:51:21Z",
+      "elapsedSeconds": 3523,
+      "startedAtUTC": "2026-11-17T03:52:38Z"
+    },
+    "job": 133804370001,
+    "originalObservationStep": {
+      "completedAtUTC": "2026-11-17T04:51:16Z",
+      "elapsedSeconds": 3321,
+      "name": "Observe the original four-hour GLIBC profile and physical outputs",
+      "startedAtUTC": "2026-11-17T03:55:55Z"
+    },
+    "result": "success",
+    "run": 44013052436,
+    "url": "https://github.com/stsepelin/checktrail/actions/runs/44013052436"
+  }
+}

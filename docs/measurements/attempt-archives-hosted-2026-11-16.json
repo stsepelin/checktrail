@@ -1,0 +1,714 @@
+{
+  "schemaVersion": 1,
+  "state": "hosted-measurement-qualified-only-at-recorded-source",
+  "sourceHead": "6809bf39c3aba1f1b582742c741051667461754e",
+  "hostedActualCheckout": "6809bf39c3aba1f1b582742c741051667461754e",
+  "hostedGitTree": "3054e9e4d610ffd29ec1644cb4c2bd5ecb0ee275",
+  "sourceCommitIdentityClaimedEqual": true,
+  "run": 43635572499,
+  "aggregateAttempt": 1,
+  "workflowUrl": "https://github.com/stsepelin/checktrail/actions/runs/43635572499",
+  "measuredExecutionDate": "2026-11-14",
+  "receiptReconciliationDate": "2026-11-16",
+  "compiledEngineTreeSha256": "78ae46322683423eb3c504c5b798259cd102c1c46464e23e5ccb601f7066535d",
+  "receiptValidationExecuted": true,
+  "recordedSourceRecompiledForByteComparison": true,
+  "recordedSourceAndCompiledHashesMatch": true,
+  "newNativeFixtureExecutionPerformed": false,
+  "existingHostedReceiptsDownloaded": true,
+  "rawReceiptsRetainedOutsideGit": true,
+  "laterSourceRevisionsQualified": false,
+  "requiredCallbacksChanged": false,
+  "skippedCallbacksCredited": false,
+  "gateAComplete": false,
+  "producerBuildClosureVerified": false,
+  "licenseClosureVerified": false,
+  "licensedCohortAdmitted": false,
+  "independentEvaluationProtocolPromoted": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "sourceFrame": {
+    "schemaVersion": 1,
+    "profile": "native-consumer-current-source-frame-v1",
+    "commit": "6809bf39c3aba1f1b582742c741051667461754e",
+    "gitTree": "3054e9e4d610ffd29ec1644cb4c2bd5ecb0ee275",
+    "sourceManifestSha256": "c28807fcd8d83670bc0e3edf91429c5149cc9bf38de03ae56afc5d7278d8c03c",
+    "sourceFiles": 2939,
+    "sourceBytes": 115820403,
+    "engineSha256": "78ae46322683423eb3c504c5b798259cd102c1c46464e23e5ccb601f7066535d",
+    "engineManifestSha256": "29472470c7f71e89d2efaaece15c8b8f14815856f8b7b07fe9d59b1ead7cddd5",
+    "harnessSha256": "4a3cf1ef4937205715ac187d12d3d27eb863ab04ab10c5e925df57da1593ce5c",
+    "harnessManifestSha256": "d0595df6aa353c25195c1c4592e03d7906194f198fb5b74bc6c94e68cc77749d",
+    "inventorySha256": "43f8c8f11df5d1bba0a4660cfe6d9011fb29834b357ef6254a7526156fa2b8a7",
+    "inventoryScopeSha256": "acddaba1dd782390afe48296e1e8e1fd0409df0658ad1cf0aa14c6f19a57d144",
+    "requirementsSha256": "f3edc30902801c432fe6f1ed71835287c2aee09627a82e331ccf3288b2c8c677",
+    "packageManifestSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+    "packageLockSha256": "132654a52917f06104ee4b187dc20f8a919ada0800fa4c8d869bee4efd280e95",
+    "clean": true,
+    "hostAttestationPerformed": false,
+    "gateAComplete": false
+  },
+  "validation": {
+    "existingOriginalValidatorsUsed": true,
+    "sourceAndInstalledCallbackFilesMatchedRecordedSource": true,
+    "compiledEngineBytesMatchedAcrossSourceAndFreshInstall": true,
+    "allRequiredTerminalEventsPassed": true,
+    "missingDuplicateExtraSkippedOrStaleEvidenceAccepted": false,
+    "skippedEventNegativeControlsRejected": 8,
+    "externalHostUsageInferred": false,
+    "hostOrArtifactServiceAttestationClaimed": false,
+    "sourceOfRuntimeObservations": "original required controller output, not successful check labels",
+    "originalValidatorModules": [
+      {
+        "file": "scripts/attempt-runtime-evidence.mjs",
+        "sha256": "f25706293cd03c425b4222ce321247a4bb46365ad52461af9c5a37c4124c50fd"
+      },
+      {
+        "file": "scripts/attempt-whole-evidence.mjs",
+        "sha256": "a79e014d0169927d8d5b2c6c22d65724ef76b4b1366bcbf52daca48c28311e60"
+      },
+      {
+        "file": "scripts/attempt-foundation-evidence.mjs",
+        "sha256": "017a1c7de755acfbf3be9224215f64993f056526d23f61353e9676446bbf395a"
+      },
+      {
+        "file": "scripts/verify-attempt-archives-whole-package.mjs",
+        "sha256": "5a441f44110ba42d2d7b2bff588390349e9c718dfd8286e17faf26518c4f61a5"
+      }
+    ]
+  },
+  "profile": "attempt-archives",
+  "runtimeSlots": [
+    {
+      "slot": "ci-linux-node22",
+      "job": 132572668440,
+      "selectedRuntime": {
+        "id": "ci-linux-node22",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-linux-node22",
+        "node": "22.23.3",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261111.370.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.1",
+        "gitExecutableSha256": "08ca4d2ee4d8915e86f1faaa52603752507c57af1d16d451dec9992bc9b6d801",
+        "goVersion": "go1.27.1",
+        "goPlatform": "linux",
+        "goArchitecture": "amd64",
+        "goExecutableSha256": "30969f97169d7f43fe6a085873d75613adc21e30818a8c61d95bd27275df4624",
+        "nodeExecutableSha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "rawLogSha256": "d5498555aeac4047756ba8b06fbcfcd8e9b91d668c2064849f30adad97f4b229",
+      "receiptSha256": "b0300ccec7b8cb186d7a954ae61db7a99093674ee03c051b16d54d9fb9959f98",
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "b39b89af60b7e49f9b7451cc6d8c7f04b447ef419702f95c71a6cb3a55b8898e",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "c16b659b5588771e89f392b8d4d2fef4de36ad95d07c7ea6ce23dd90f2e8eae8"
+    },
+    {
+      "slot": "ci-linux-node24",
+      "job": 132572668411,
+      "selectedRuntime": {
+        "id": "ci-linux-node24",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "24.21.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-linux-node24",
+        "node": "24.21.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261111.370.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.1",
+        "gitExecutableSha256": "08ca4d2ee4d8915e86f1faaa52603752507c57af1d16d451dec9992bc9b6d801",
+        "goVersion": "go1.27.1",
+        "goPlatform": "linux",
+        "goArchitecture": "amd64",
+        "goExecutableSha256": "30969f97169d7f43fe6a085873d75613adc21e30818a8c61d95bd27275df4624",
+        "nodeExecutableSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "rawLogSha256": "b87b259a631657ad99c4812860208aa443273885d12600aa4f70766c00188c0b",
+      "receiptSha256": "b3c990d19fd00b3588d8cd209c14c3d4fb4ecc378c75bc50b0e634c5172625be",
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "b39b89af60b7e49f9b7451cc6d8c7f04b447ef419702f95c71a6cb3a55b8898e",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "4f57eb81dfd95fc3123108e4ba876069ba4c173809240ef4e07d050d1cf45afd"
+    },
+    {
+      "slot": "ci-linux-node26",
+      "job": 132572668527,
+      "selectedRuntime": {
+        "id": "ci-linux-node26",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "26.10.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-linux-node26",
+        "node": "26.10.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261111.370.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.1",
+        "gitExecutableSha256": "08ca4d2ee4d8915e86f1faaa52603752507c57af1d16d451dec9992bc9b6d801",
+        "goVersion": "go1.27.1",
+        "goPlatform": "linux",
+        "goArchitecture": "amd64",
+        "goExecutableSha256": "30969f97169d7f43fe6a085873d75613adc21e30818a8c61d95bd27275df4624",
+        "nodeExecutableSha256": "ab9c8eecf9f82d6693cdc3accced17034065c8d96213b0aa76a7e803d20ae1da",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "rawLogSha256": "41d1578ba4578124b65a300d657fea01613c4d68813f12756a60147062325598",
+      "receiptSha256": "d8980ccf983c8a3cc1fd82b4af17b8937b296cf3cd890ab10b616d8f40d892c1",
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "b39b89af60b7e49f9b7451cc6d8c7f04b447ef419702f95c71a6cb3a55b8898e",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "247968ca5b91903670710a3189f748abc39e73bfcac025cd2a082179a333416b"
+    },
+    {
+      "slot": "ci-macos-node22",
+      "job": 132572668911,
+      "selectedRuntime": {
+        "id": "ci-macos-node22",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-macos-node22",
+        "node": "22.23.3",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Mon Oct 12 00:39:04 PDT 2026; root:xnu-12377.161.15.701.48~2/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261102.0473.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.0",
+        "gitExecutableSha256": "371fc6bfbfea4d9ace7d122feefe100503d24f827bc94f54ab3973583ffea11f",
+        "goVersion": "go1.27.1",
+        "goPlatform": "darwin",
+        "goArchitecture": "arm64",
+        "goExecutableSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598",
+        "nodeExecutableSha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "rawLogSha256": "172ab3c467e99aacd34ca77949cbf528b6df4a77f2c85b7b0e1e7bb797ea2b00",
+      "receiptSha256": "84bedd34e7d0d0154ce8788d7ab3945b3005f4a81a3c18140279892f6a634f19",
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "b39b89af60b7e49f9b7451cc6d8c7f04b447ef419702f95c71a6cb3a55b8898e",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "cb35858ed4d5dbf75b5ecee7e13c0d65a9e72ddacd1376ef9c32f1d8df002cf0"
+    },
+    {
+      "slot": "ci-macos-node24",
+      "job": 132572668500,
+      "selectedRuntime": {
+        "id": "ci-macos-node24",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "24.20.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-macos-node24",
+        "node": "24.20.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Mon Oct 12 00:39:04 PDT 2026; root:xnu-12377.161.15.701.48~2/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261102.0473.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.0",
+        "gitExecutableSha256": "371fc6bfbfea4d9ace7d122feefe100503d24f827bc94f54ab3973583ffea11f",
+        "goVersion": "go1.27.1",
+        "goPlatform": "darwin",
+        "goArchitecture": "arm64",
+        "goExecutableSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598",
+        "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "rawLogSha256": "afb542dfa199314ae3b8dc667a8f6bc618e2916c0c31fc43b5a1a24eab361e58",
+      "receiptSha256": "c5eeeda5f901188e44b1f46dc056763c1ddf3bdc477aec071be02bf9d5a30e6e",
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "b39b89af60b7e49f9b7451cc6d8c7f04b447ef419702f95c71a6cb3a55b8898e",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "ac806fccf21371526a96b6be12b1b671faccd7bcf3ebb39819ebdb73925d049d"
+    },
+    {
+      "slot": "ci-macos-node26",
+      "job": 132572668476,
+      "selectedRuntime": {
+        "id": "ci-macos-node26",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "26.9.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "ci-macos-node26",
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Mon Oct 12 00:39:04 PDT 2026; root:xnu-12377.161.15.701.48~2/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261102.0473.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.0",
+        "gitExecutableSha256": "371fc6bfbfea4d9ace7d122feefe100503d24f827bc94f54ab3973583ffea11f",
+        "goVersion": "go1.27.1",
+        "goPlatform": "darwin",
+        "goArchitecture": "arm64",
+        "goExecutableSha256": "132b69336a1f809932a8a20b0201dbbb980e86e3a323ae32e893639d83d71598",
+        "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "rawLogSha256": "d74f83f0a8685290f7fb94819435413b85df47d4aafede7e97c347c20ead9c76",
+      "receiptSha256": "ec323070e6fe89e722db327fbf4553f64d8bd8dff956ebafaa6fd9b89ec4b9bd",
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "b39b89af60b7e49f9b7451cc6d8c7f04b447ef419702f95c71a6cb3a55b8898e",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "430bd1043c07f4a8f96d58d28efac7e6b2266299d0152978e9d2fec65cf71001"
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "job": 132572668405,
+      "selectedRuntime": {
+        "id": "native-linux-arm64-node22",
+        "platform": "linux",
+        "architecture": "arm64",
+        "node": "22.23.2",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "native-linux-arm64-node22",
+        "node": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 19:06:39 UTC 2026",
+        "distributionId": "debian",
+        "distributionVersion": "13",
+        "distributionSha256": "14c430da04c2d571793fc68a8f5e17fce3d7a746e316c3f23192590861b18bd7",
+        "imageOS": null,
+        "imageVersion": null,
+        "containerReference": "sha256:6316353a3f49722a7aabe91152bd6528e448cb1e4e77792e624a5493faff203d",
+        "containerImageId": "sha256:6316353a3f49722a7aabe91152bd6528e448cb1e4e77792e624a5493faff203d",
+        "baseNodeReference": "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+        "baseSystemReference": "docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.47.3",
+        "gitExecutableSha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3",
+        "goVersion": "go1.27.1",
+        "goPlatform": "linux",
+        "goArchitecture": "arm64",
+        "goExecutableSha256": "1675694ef690db0f18fbe7046a886170904bede1d9db6ec96ae27945c1705c64",
+        "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "rawLogSha256": "73ecb704c7a0d84aa660d0c5f6a3b3a197a7ece8cfae9acc566f1f00db0ac7be",
+      "receiptSha256": "73efaf4cee893b1d617977e514eab805addbf7a073ac7c22cdd232bb6c572987",
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 45,
+          "passed": 45,
+          "terminalEvents": 45,
+          "complete": true
+        }
+      },
+      "foundationExclusions": [],
+      "harnessSha256": "b39b89af60b7e49f9b7451cc6d8c7f04b447ef419702f95c71a6cb3a55b8898e",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "1f2d7a16845f57feaaea3061b632311d0dcef040256dcf8be17a31fd15866e8e"
+    },
+    {
+      "slot": "windows-node22",
+      "job": 132572668414,
+      "selectedRuntime": {
+        "id": "windows-node22",
+        "platform": "win32",
+        "architecture": "x64",
+        "osFamily": "Windows Server 2025",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "runtime": {
+        "slot": "windows-node22",
+        "node": "22.23.3",
+        "platform": "win32",
+        "architecture": "x64",
+        "osRelease": "10.0.26100",
+        "osVersion": "Windows Server 2025 Datacenter",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "win25-vs2026",
+        "imageVersion": "20261103.298.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "baseNodeReference": null,
+        "baseSystemReference": null,
+        "containerDefinitionSha256": "30d5b108af240fc9dff2a5a0d560b7796cc80e399578516432bc5d5c3b2a1fcc",
+        "gitVersion": "git version 2.56.0.windows.4",
+        "gitExecutableSha256": "20d0dde30a65afb6e5810a883700a94dcd77fbf3b44b32868d45bf7c9b30137c",
+        "goVersion": "go1.27.1",
+        "goPlatform": "windows",
+        "goArchitecture": "amd64",
+        "goExecutableSha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490",
+        "nodeExecutableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+        "systemPowerShellSha256": "41796f1f3d81f921fdb4030c865f9dcf5032a2a1b49dde148bbc99e8d10f6e8c",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "rawLogSha256": "23c83ddd3cc1b028cba5a71348055ddd36e5da95838d9e8c28aaf79a26a4bd03",
+      "receiptSha256": "0d14021e60b83a7e73e94fe00aef5cea079eb73935d46cf2b2dd7c67b6974454",
+      "source": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 44,
+          "passed": 44,
+          "terminalEvents": 44,
+          "complete": true
+        }
+      },
+      "installed": {
+        "profileEvidence": {
+          "required": 9,
+          "passed": 9,
+          "terminalEvents": 9,
+          "complete": true
+        },
+        "foundationEvidence": {
+          "required": 44,
+          "passed": 44,
+          "terminalEvents": 44,
+          "complete": true
+        }
+      },
+      "foundationExclusions": [
+        {
+          "file": "dist/test/native-invoke.test.js",
+          "name": "native invocation closes ordinary descendants retaining output pipes after root exit without inventing a successful timeout",
+          "reason": "POSIX descendant ownership requires a native POSIX runtime"
+        }
+      ],
+      "harnessSha256": "b39b89af60b7e49f9b7451cc6d8c7f04b447ef419702f95c71a6cb3a55b8898e",
+      "requirementsSha256": "0c2879895584ae3b6ebb2d8f73b4d27c60f9532d5bbf64cbb8aeb84583364236",
+      "packageJsonSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+      "packedArchiveSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+      "productionDependencyLockSha256": "4fbf1b31e80b083b3330d9883934227f97f900920f07d7aea92fecbc08c41cfe"
+    }
+  ],
+  "counts": {
+    "runtimePairs": 8,
+    "sourceAndFreshInstalledCohorts": 16,
+    "profileEvidence": 144,
+    "foundationEvidence": 718
+  },
+  "physicalArchiveControls": {
+    "nativeTool": "go1.27.1",
+    "actualVersionTargetAndExecutableHashesRetainedPerRuntime": true,
+    "twoConsumerProducerFixtureRequired": true,
+    "physicalStdoutStderrAndJournalReconciled": true,
+    "tasksStoreClosedAndReopenedForExactChunkReplay": true,
+    "failedMissingCancelledUnavailableAttemptsRetainedByOriginalControls": true,
+    "scriptedApiControlsContactedProvider": false,
+    "externalHostAiUsage": "unknown unless independently supplied",
+    "windowsPosixDescendantExclusionQualifiesPosix": false
+  }
+}

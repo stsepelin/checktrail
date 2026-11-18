@@ -1,3 +1,7 @@
+import {
+  captureNativeContainerSource,
+  completeNativeContainerFresh,
+} from "./preserved-native-baseline-controller.mjs";
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -38,13 +42,12 @@ const version = execFileSync("docker", [...args, "actionlint", "-version"], {
   encoding: "utf8",
 }).trim();
 assert.match(version, /^1\.7\.12\n/);
-execFileSync(
-  "docker",
-  [...args, "node", "scripts/verify-required-native-tests.mjs", "actionlint"],
-  {
-    stdio: "inherit",
-  },
-);
+const baselineReceipt = await captureNativeContainerSource({
+  repository,
+  cohortName: "actionlint",
+  selection: ["actionlint"],
+  containerArgs: args,
+});
 
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-actionlint-package-"),
@@ -64,6 +67,12 @@ try {
     path.join(temporary, packed.filename),
     consumer,
   );
+  await completeNativeContainerFresh({
+    repository,
+    baseline: baselineReceipt,
+    installedPackage: path.join(consumer, "node_modules/@stsepelin/checktrail"),
+    harness: path.join(temporary, "baseline-harness"),
+  });
   const installed = [
     "run",
     "--rm",

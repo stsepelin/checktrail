@@ -1163,7 +1163,7 @@ test("consumer controller code identity binds selected requirements equally from
   });
   const image = {
     kind: "hosted-runner-metadata",
-    imageOS: "ubuntu24",
+    imageOS: "ubuntu26",
     imageVersion: "20261021.113.1",
   };
   const runtime = {
@@ -1615,7 +1615,7 @@ test("operator consumer capture parent requires an explicit canonical private di
 test("hosted ARM consumer witnesses require the exact architecture image label and retain every metadata boundary", () => {
   const image = {
     kind: "hosted-runner-metadata",
-    imageOS: "ubuntu24-arm64",
+    imageOS: "ubuntu26-arm64",
     imageVersion: "20261026.166.1",
     distributionSha256: hex("b"),
     metadataAttested: false,
@@ -1637,8 +1637,10 @@ test("hosted ARM consumer witnesses require the exact architecture image label a
     );
     for (const changed of [
       { imageOS: "ubuntu24" },
-      { imageOS: "ubuntu24-arm64-extra" },
-      { imageOS: "prefix-ubuntu24-arm64" },
+      { imageOS: "ubuntu24-arm64" },
+      { imageOS: "ubuntu26" },
+      { imageOS: "ubuntu26-arm64-extra" },
+      { imageOS: "prefix-ubuntu26-arm64" },
       { imageVersion: "20261026.166.1-extra" },
       { distributionSha256: "invalid" },
       { metadataAttested: true },

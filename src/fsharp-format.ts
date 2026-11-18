@@ -1,12 +1,19 @@
 import { z } from "zod";
 import path from "node:path";
-import { readFile, readdir, lstat, realpath } from "node:fs/promises";
+import { readdir, lstat, realpath } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { externalPathSchema } from "./external-schema.js";
 import { readProjectFile } from "./inventory.js";
 import { mavenHash, mavenLocal } from "./maven.js";
 import { fsharpFormatterPins, fsharpSdkPins } from "./fsharp-format-pins.js";
 import type { Check, Inventory, Project } from "./types.js";
+import { kotlinRead } from "./kotlin-io.js";
+import { parseReleaseProofPin } from "./release-signature-proof.js";
+import {
+  fsharpPreparedFileNames,
+  fsharpReleaseProofEnvironment,
+  readFsharpReleaseProof,
+} from "./fsharp-format-release-signature.js";
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 export const fsharpFormatConfigSchema = z.strictObject({
   schemaVersion: z.literal(1),
@@ -39,7 +46,7 @@ export async function fsharpRegular(file: string, bound: number) {
       (await realpath(file)) === file,
     "Bounded canonical regular F# input required",
   );
-  const bytes = await readFile(file);
+  const bytes = await kotlinRead(file, bound);
   fsharpRequire(bytes.length <= bound, "F# file grew beyond its bound");
   return bytes;
 }
@@ -47,6 +54,7 @@ export async function verifyFsharpFormatter(
   root: string,
   project: string,
   directory: string,
+  selectedProof = "",
 ) {
   const resolved = await mavenLocal(root, project, directory),
     stat = await lstat(resolved);
@@ -56,7 +64,7 @@ export async function verifyFsharpFormatter(
   );
   fsharpRequire(
     JSON.stringify((await readdir(resolved)).sort()) ===
-      JSON.stringify(fsharpFormatterPins.map((p) => p.file).sort()),
+      JSON.stringify(fsharpPreparedFileNames(selectedProof)),
     "Exact selected formatter assembly inventory required",
   );
   for (const pin of fsharpFormatterPins) {
@@ -67,6 +75,7 @@ export async function verifyFsharpFormatter(
       "Pinned formatter assembly bytes differ",
     );
   }
+  readFsharpReleaseProof(resolved, selectedProof);
   return resolved;
 }
 export async function verifyFsharpSdk(root: string) {
@@ -127,6 +136,9 @@ export async function fsharpFormatCheck(
         "Inspect every declared F# implementation, signature or script with the pinned non-rewriting native formatter and complete source/document accounting.",
     };
   try {
+    const proofPin = parseReleaseProofPin(
+      process.env[fsharpReleaseProofEnvironment] ?? "",
+    );
     fsharpRequire(scope.length > 0, "No inventoried F# documents selected");
     const name = "checktrail.fsharp-format.json";
     fsharpRequire(
@@ -147,6 +159,7 @@ export async function fsharpFormatCheck(
       source.root,
       project.path,
       config.formatterDirectory,
+      proofPin,
     );
     const inputs = [];
     let total = 0;
@@ -177,7 +190,10 @@ export async function fsharpFormatCheck(
         ],
         cwd: project.path,
         temporaryDirectory: true,
-        env: { PATH: process.env.PATH ?? "" },
+        env: {
+          PATH: process.env.PATH ?? "",
+          [fsharpReleaseProofEnvironment]: proofPin,
+        },
       },
     ];
   } catch {

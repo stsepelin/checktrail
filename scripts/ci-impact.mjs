@@ -11,16 +11,32 @@ import {
 
 const controls = new Set([
   "checks",
+  "full-suite-shards",
   "host-validation",
   "ci-plan",
   "ci-complete",
 ]);
 const retainedArtifactDirectory =
   "docs/measurements/artifact-identities-2026-10-21/";
+// Reviewed public observations are data, with any declared native consumers retained.
+// Unknown documentary JSON remains unclassified; this is an exact file boundary.
+const documentaryMeasurementFiles = new Set([
+  "docs/measurements/glibc-u13-original-producer-2026-11-17.json",
+  "docs/measurements/sdk4-fork-original-notice-preservation-2026-11-17.json",
+  "docs/measurements/temurin25-original-producer-2026-11-17.json",
+]);
 // Reviewed shared helper/preparation controls run as complete test files.
 // Derive their native consumers from the exact declared inputs; do not
 // classify neighboring test names or create entries for absent files.
 const preparationRegressionSources = Object.freeze({
+  "scripts/test-python-host-sdk.py": Object.freeze([
+    "scripts/install-python-host-sdk.py",
+  ]),
+  "test/python-host-sdk.test.ts": Object.freeze([
+    "scripts/prepare-python-host-sdk.mjs",
+    "scripts/install-python-host-sdk.py",
+    "scripts/python-ubuntu26-arm64.json",
+  ]),
   "test/scala-native-ci-phases.test.ts": ["scripts/scala-native-ci-phases.mjs"],
   "test/native-process-observer.test.ts": Object.freeze([
     "test/native-process-observer.ts",
@@ -54,6 +70,7 @@ const cProducerRegressionFiles = Object.freeze([
   "test/binutils-input-preparation.test.ts",
   "test/binutils-retention-observer.test.ts",
   "test/c-producer-evidence.test.ts",
+  "test/c-producer-failed-diagnostics.test.ts",
   "test/c-producer-gcc-evidence.test.ts",
   "test/c-producer-local12h.test.ts",
   "test/c-producer-qualification.test.ts",
@@ -81,7 +98,7 @@ export const cProducerSharedBoundary = Object.freeze({
   // Names only: editing a reviewed member does not invalidate its fast path.
   // A new helper, fixture, test or workflow needs an explicit inventory review.
   inventorySha256:
-    "f1d2dcfa621ec2647a8c6aded5efefa7ec9770875e73156384551bce2b095efe",
+    "1e70e75976168ef9fd5bb60846770433a777b8dc33f045cb0c5ab5a973be022a",
   files: Object.freeze([
     "scripts/acquire-binutils-inputs.mjs",
     "scripts/acquire-c-producer-inputs.mjs",
@@ -150,6 +167,11 @@ const generic = new Set([
   "scripts/request-pinned-artifact.mjs",
   "scripts/verify-required-native-tests.mjs",
   "scripts/required-test-evidence.mjs",
+  // These shared APIs receive the caller's separately validated finite profile
+  // selection. Runtime tool names and binding-table labels are not invocations.
+  "scripts/preserved-baseline-evidence.mjs",
+  "scripts/preserved-native-baseline-bindings.mjs",
+  "scripts/verify-native-baseline-host.mjs",
   "scripts/verify-import-context-package.mjs",
   "scripts/verify-mutation-guards.mjs",
   // The consumer entry point uses the workflow's exact context-* argument.
@@ -177,7 +199,18 @@ const generic = new Set([
 // Reviewed delivery/selector/observer helpers acquire bytes, return targets or hash
 // harness bytes without executing native controllers/tests. Static imports remain
 // inputs; detected execution primitives restore conservative full profile expansion.
+// This exact reviewed dispatcher forwards one validated workflow argument to
+// the existing source command and a separate fresh worker. Its allowed-cohort
+// labels are data. Any changed bytes require review and restore all profiles;
+// imports and changed shared helper consumers always remain graph inputs.
+const reviewedArgumentDrivenDispatchers = new Map([
+  [
+    "scripts/verify-native-baseline-host.mjs",
+    "452c2459e3af67383218e94b9e40515b38fc976f1a53a9726f17dc0f88af4c93",
+  ],
+]);
 const consumerDataSelectors = new Set([
+  "scripts/preserved-native-baseline-bindings.mjs",
   "scripts/request-pinned-artifact.mjs",
   "scripts/consumer-native-entrypoints.mjs",
   "scripts/consumer-native-acceptance-scope.mjs",
@@ -262,7 +295,11 @@ export async function buildNativeInputs({
           !/\b(?:runRequiredTests|runProcess|spawn|spawnSync|execFile|execFileSync|exec|execSync|fork|eval|import)\s*\(|["']node:child_process["']/.test(
             text,
           );
-      if (selector && !dataOnly)
+      const changedDispatcher =
+        reviewedArgumentDrivenDispatchers.has(parent) &&
+        createHash("sha256").update(text).digest("hex") !==
+          reviewedArgumentDrivenDispatchers.get(parent);
+      if ((selector && !dataOnly) || changedDispatcher)
         for (const rows of Object.values(requirements))
           for (const item of rows) admit(item.file);
       for (const match of text.matchAll(
@@ -271,7 +308,8 @@ export async function buildNativeInputs({
         // Other documentation may define shared policy and stays unclassified.
         if (
           match[0].startsWith("docs/") &&
-          !match[0].startsWith(retainedArtifactDirectory)
+          !match[0].startsWith(retainedArtifactDirectory) &&
+          !documentaryMeasurementFiles.has(match[0])
         )
           continue;
         if (
@@ -602,11 +640,13 @@ export function planNativeJobs({
     // contractCurrent. Route its source changes normally; the generated map
     // itself neither adds execution nor qualifies any omitted native job.
     if (file === "scripts/ci-native-inputs.json") continue;
-    // Retained observations are data consumed by the always-required artifact
-    // audit and its complete regression file. New/unindexed data still fails
-    // that audit. The trailing slash excludes adjacent directory names, and
-    // recorded native consumers are preserved rather than replaced.
-    if (file.startsWith(retainedArtifactDirectory)) {
+    // Artifact records retain their complete audit; reviewed documentary records
+    // retain shared controls. Neither boundary can erase declared native consumers.
+    // The artifact directory's trailing slash excludes adjacent directory names.
+    if (
+      file.startsWith(retainedArtifactDirectory) ||
+      documentaryMeasurementFiles.has(file)
+    ) {
       for (const id of inputs[file] ?? []) selected.add(id);
       continue;
     }
@@ -672,6 +712,9 @@ export function planNativeJobs({
         "dist/test/gate-inventory.test.js",
         "dist/test/ci-affected-tests.test.js",
         "dist/test/ci-source-boundaries.test.js",
+        "dist/test/ci-full-suite-shards.test.js",
+        "dist/test/ci-validation-shards.test.js",
+        "dist/test/ci-duration-workflow.test.js",
         ...(changed.some((file) => cProducerSharedInputs.has(file))
           ? producerBoundary.testFiles.map(
               (file) => "dist/" + file.replace(/\.ts$/, ".js"),
@@ -771,6 +814,7 @@ export function requireCiCompletion(plan, needs) {
   const expected = [
     "ci-plan",
     "checks",
+    "full-suite-shards",
     "host-validation",
     ...Object.keys(plan.selected),
   ];
@@ -782,9 +826,11 @@ export function requireCiCompletion(plan, needs) {
   for (const id of expected) {
     const required =
       ["ci-plan", "checks"].includes(id) ||
-      (id === "host-validation"
-        ? plan.hostValidation === "required"
-        : plan.selected[id]);
+      (id === "full-suite-shards"
+        ? plan.mode === "full"
+        : id === "host-validation"
+          ? plan.hostValidation === "required"
+          : plan.selected[id]);
     assert.equal(
       needs[id].result,
       required ? "success" : "skipped",

@@ -12,6 +12,8 @@ import { fileURLToPath, URL } from "node:url";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import {
+  assertSmokePackageLayout,
+  smokeProductPrograms,
   preparePackageSmokeTools,
   smokeProjectPath,
 } from "./package-smoke-tools.mjs";
@@ -50,31 +52,20 @@ try {
     "assets/context-vb-grammar/notices/vbnet-MIT.txt",
     "assets/context-vb-grammar/patches/vbnet-newlines.patch",
   ]);
-  const packedPaths = new Set(packed.files.map((file) => file.path));
-  for (const file of supplementalGrammarFiles)
-    assert.ok(
-      packedPaths.has(file),
-      `Missing supplemental grammar asset: ${file}`,
-    );
-  for (const file of packed.files)
-    if (!supplementalGrammarFiles.has(file.path))
-      assert.match(
-        file.path,
-        /^(?:dist\/src\/|assets\/context-grammars\/|schemas\/|packs\/|docs\/|package\.json$|server\.json$|README\.md$|LICENSE$|SECURITY\.md$|CONTRIBUTING\.md$)/,
-      );
+  assertSmokePackageLayout(packed.files);
   const consumer = path.join(temporary, "consumer");
   await installAcceptancePackage(
     repository,
     path.join(temporary, packed.filename),
     consumer,
   );
-  for (const file of supplementalGrammarFiles)
+  for (const file of [...supplementalGrammarFiles, ...smokeProductPrograms])
     assert.deepEqual(
       await readFile(
         path.join(consumer, "node_modules/@stsepelin/checktrail", file),
       ),
       await readFile(path.join(repository, file)),
-      `Installed supplemental grammar bytes differ: ${file}`,
+      `Installed product bytes differ: ${file}`,
     );
   const scoringSmoke = JSON.parse(
     execFileSync(

@@ -64,9 +64,21 @@ export function checkAttemptRuntimeSelection(
     assert.match(observed.osRelease, /^25\./);
     assert.equal(observed.imageOS, "macos26");
   } else if (selected.architecture === "x64") {
+    const expected = new Map([
+      [
+        "Ubuntu 26.04",
+        {
+          runnerLabel: "ubuntu-26.04",
+          distributionVersion: "26.04",
+          imageOS: "ubuntu26",
+        },
+      ],
+    ]).get(selected.osFamily);
+    assert.ok(expected, "Unknown selected hosted Linux image family");
+    assert.equal(selected.runnerLabel, expected.runnerLabel);
     assert.equal(observed.distributionId, "ubuntu");
-    assert.equal(observed.distributionVersion, "24.04");
-    assert.equal(observed.imageOS, "ubuntu24");
+    assert.equal(observed.distributionVersion, expected.distributionVersion);
+    assert.equal(observed.imageOS, expected.imageOS);
   } else {
     assert.equal(slot, "native-linux-arm64-node22");
     assert.equal(observed.containerReference, observed.containerImageId);

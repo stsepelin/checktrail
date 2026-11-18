@@ -78,7 +78,7 @@ test("runtime native workflow stays in its exclusive push namespace and preserve
   );
   assert.match(text, /"pr\/upstream-runtime\/web-tree-sitter-\*"/u);
   assert.doesNotMatch(text, /pr\/upstream-producer\/binutils/u);
-  assert.match(text, /runs-on: ubuntu-24\.04/u);
+  assert.match(text, /runs-on: ubuntu-26\.04/u);
   assert.match(text, /workflow_dispatch:/u);
   assert.ok(
     text.includes(

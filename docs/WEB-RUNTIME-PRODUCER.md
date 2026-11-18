@@ -2,8 +2,10 @@
 
 This development-only controller prepares the original web-tree-sitter 0.27.1
 publisher recipes for a native Linux x86-64 host. It is not invoked by discovery,
-the review CLI, MCP, or ordinary pull-request validation. Native acceptance of
-this public controller is pending. Its presence does not complete Gate A.
+the review CLI, MCP, or ordinary pull-request validation. The [scoped original-build observation](measurements/web-runtime-original-builds-2026-11-16.json)
+binds both publisher recipes to retained successful native builds and unchanged
+producer inputs at its recorded Checktrail commit. Compiler, SDK, bootstrap and
+complete original-notice closure remain separate Gate A requirements.
 
 The [input catalog](../scripts/producer-qualification/web-runtime.v1.json)
 binds original public archives, source-file identities, selected Emscripten
@@ -69,7 +71,7 @@ No derived registry digest or raw OCI-config verification is invented.
 ## Operator execution
 
 The [dedicated workflow](../.github/workflows/upstream-web-runtime.yml) runs on
-`ubuntu-24.04` through explicit dispatch, or a push to
+`ubuntu-26.04` through explicit dispatch, or a push to
 `pr/upstream-runtime/web-tree-sitter-*`. That namespace does not match the Binutils
 workflow. Push-trigger admission allows pre-merge native qualification without
 assuming that dispatch is available before the workflow reaches the default branch.
@@ -120,6 +122,9 @@ the npm recipe uses `/emsdk/upstream` through a second empty owned bind. Source
 and SDK directories, probes, generated relocation configuration and before/after
 tool identities are bound separately. A preexisting SDK subtree, linked parent or
 populated external target is refused before extraction. Every original command,
-compiler flag, resource limit and expected output hash remains unchanged. Native
-byte equality for this revised layout remains pending; debug-section inspection
-alone does not qualify a producer build or close broader SDK ancestry.
+compiler flag, resource limit and expected output hash remains unchanged. The scoped observation
+qualifies the revised layout through successful original stages and matching
+published outputs for both recipes. It rehashes the retained receipts and archive
+custody, and verifies every recorded producer source/catalog pin against the
+selected current commit. This does not close broader SDK ancestry or original
+notices.

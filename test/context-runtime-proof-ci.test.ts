@@ -198,7 +198,7 @@ test("context proof required profile names every original case and the existing 
     Object.keys(baseline.jobs).sort(),
   );
   const job = workflow.jobs["go-workspaces-arm64"];
-  assert.equal(job["runs-on"], "ubuntu-24.04-arm");
+  assert.equal(job["runs-on"], "ubuntu-26.04-arm");
   assert.ok(
     job.steps.some(
       (step: { with?: Record<string, string> }) =>
@@ -254,7 +254,21 @@ test("context proof CI graph binds actual retained root and new preparation inpu
     "test/context-runtime-proof-ci.test.ts",
     "docs/measurements/artifact-identities-2026-10-21/sigstore-trusted-root.jsonl",
   ]) {
-    assert.deepEqual(actual[file], ["go-workspaces-arm64"], file);
+    // The retained trust root also reaches the runtime provenance audit and
+    // resource package guards through the six product programs. The other
+    // inputs stay exclusive to the existing context-proof consumer.
+    const expectedOwners =
+      file ===
+      "docs/measurements/artifact-identities-2026-10-21/sigstore-trusted-root.jsonl"
+        ? [
+            "go-workspaces-arm64",
+            "resource-release",
+            "resource-release-arm64",
+            "tasks-runtime",
+            "tasks-runtime-arm64",
+          ]
+        : ["go-workspaces-arm64"];
+    assert.deepEqual(actual[file], expectedOwners, file);
     const plan = planNativeJobs({
       jobs: nativeJobIds(workflow),
       inputs: actual,

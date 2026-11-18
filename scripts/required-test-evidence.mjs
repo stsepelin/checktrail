@@ -147,6 +147,7 @@ async function executeRequiredTests(
     additionalFiles = [],
     isolatedCaseWorkers = 0,
     onCaseProgress,
+    onTestProgress,
     diagnosticSourceFile,
   } = {},
 ) {
@@ -175,6 +176,10 @@ async function executeRequiredTests(
     onCaseProgress === undefined ||
       (typeof onCaseProgress === "function" && isolatedCaseWorkers > 0),
     "Required case progress needs named isolation",
+  );
+  assert.ok(
+    onTestProgress === undefined || typeof onTestProgress === "function",
+    "Required test progress must be a function",
   );
   const requiredCaseWorkerLimit =
     isolatedCaseWorkers === 0
@@ -218,6 +223,20 @@ async function executeRequiredTests(
   );
   const observed = new Map(expected.map((item) => [key(item), []]));
   const terminalEvents = [];
+  // Diagnostic events do not select, isolate, time or credit callbacks. Dequeue
+  // is the live Node queue event; test:start can be buffered until completion.
+  const progressEvents = new Set();
+  const observeTestProgress = (phase, file, name, fields = {}) => {
+    if (!onTestProgress || !expectedKeys.has(key({ file, name }))) return;
+    const id = phase + ":" + key({ file, name });
+    if (progressEvents.has(id)) return;
+    progressEvents.add(id); // At most two events per bounded requirement.
+    try {
+      onTestProgress({ phase, fileId: fileIds.get(file), name, ...fields });
+    } catch {
+      // An optional diagnostic consumer cannot replace the original outcome.
+    }
+  };
   const problems = [];
   let passed = 0;
   let optionalSkipped = 0;
@@ -352,6 +371,14 @@ async function executeRequiredTests(
             }
           : {}),
       })) {
+        if (type === "test:dequeue") {
+          observeTestProgress(
+            "dequeued",
+            data.file ? path.resolve(data.file) : "",
+            data.name,
+          );
+          continue;
+        }
         if (type !== "test:pass" && type !== "test:fail") continue;
         terminalEventCount++;
         const suite = data.details?.type === "suite";
@@ -386,6 +413,11 @@ async function executeRequiredTests(
           };
           terminalEvents.push(event);
           if (!suite && observed.has(id)) observed.get(id).push(event.sequence);
+          if (!suite)
+            observeTestProgress("terminal", file, data.name, {
+              outcome,
+              durationMs: event.durationMs,
+            });
           if (selection && !suite && id === key(selection))
             onCaseProgress?.({
               phase: "terminal",

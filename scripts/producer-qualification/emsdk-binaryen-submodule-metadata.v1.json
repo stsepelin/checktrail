@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "binaryen-submodule-tree-metadata-v1",
+  "state": "source-only-metadata-catalog-pending-network-review",
+  "source": {
+    "repository": "https://chromium.googlesource.com/external/github.com/WebAssembly/binaryen",
+    "commit": "cf756c92997182276122c2f0a9ac567d2d39ef42",
+    "originalMetadataCatalogId": "emsdk-upstream-metadata-v1",
+    "originalMetadataCatalogValueSha256": "84835d0669a17578fb01d2d1149686f400d1ba120a402627b365bae0c05e1be5"
+  },
+  "requiresExistingAdmittedRootAndGitmodules": true,
+  "allowedHost": "chromium.googlesource.com",
+  "allowedRedirects": 0,
+  "limits": {
+    "phaseMs": 60000,
+    "requestMs": 15000,
+    "wireBytes": 4194304,
+    "retainedBytes": 8388608,
+    "maximumTreeWireBytes": 1048576
+  },
+  "roles": [
+    {
+      "id": "binaryen-third-party-tree",
+      "kind": "tree",
+      "path": "third_party",
+      "parentPath": "",
+      "entryName": "third_party",
+      "url": "https://chromium.googlesource.com/external/github.com/WebAssembly/binaryen/+/cf756c92997182276122c2f0a9ac567d2d39ef42/third_party/?format=JSON",
+      "maximumWireBytes": 1048576
+    },
+    {
+      "id": "binaryen-test-tree",
+      "kind": "tree",
+      "path": "test",
+      "parentPath": "",
+      "entryName": "test",
+      "url": "https://chromium.googlesource.com/external/github.com/WebAssembly/binaryen/+/cf756c92997182276122c2f0a9ac567d2d39ef42/test/?format=JSON",
+      "maximumWireBytes": 1048576
+    },
+    {
+      "id": "binaryen-test-spec-tree",
+      "kind": "tree",
+      "path": "test/spec",
+      "parentPath": "test",
+      "entryName": "spec",
+      "url": "https://chromium.googlesource.com/external/github.com/WebAssembly/binaryen/+/cf756c92997182276122c2f0a9ac567d2d39ef42/test/spec/?format=JSON",
+      "maximumWireBytes": 1048576
+    }
+  ],
+  "upstreamCodeExecuted": false,
+  "sourceBodiesRetained": false,
+  "originalNoticesClosed": false,
+  "rawCommitObjectAuthenticated": false,
+  "producerBuildReproduced": false,
+  "gateAComplete": false
+}

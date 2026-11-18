@@ -138,6 +138,18 @@ export function checkReviewRuntimeSelection(
         "Selected hosted Windows image family differs",
       );
   } else if (selected.architecture === "x64") {
+    const expected = new Map([
+      [
+        "Ubuntu 26.04",
+        {
+          runnerLabel: "ubuntu-26.04",
+          distributionVersion: "26.04",
+          imageOS: "ubuntu26",
+        },
+      ],
+    ]).get(selected.osFamily);
+    assert.ok(expected, "Unknown selected hosted Linux image family");
+    assert.equal(selected.runnerLabel, expected.runnerLabel);
     assert.equal(
       observed.distributionId,
       "ubuntu",
@@ -145,13 +157,13 @@ export function checkReviewRuntimeSelection(
     );
     assert.equal(
       observed.distributionVersion,
-      "24.04",
+      expected.distributionVersion,
       "Selected Linux distribution version differs",
     );
     if (slot !== "native-linux-arm64-node22" || requireHostedIdentity)
       assert.equal(
         observed.imageOS,
-        "ubuntu24",
+        expected.imageOS,
         "Selected hosted Linux image family differs",
       );
   } else {

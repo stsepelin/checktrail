@@ -126,21 +126,369 @@ test("consumer impact retains its guard condition and fresh installed checks on 
   assert.equal(hosts.filter((step) => step.run === installed).length, 1);
   assert.equal(
     hosts.find((step) => step.run === installed)!.if,
-    undefined,
-    "Every existing host variant must execute fresh consumer acceptance",
+    "matrix.shard == 0",
+    "Every existing host variant must execute fresh consumer acceptance once",
   );
   const cache = hosts.findIndex(
     (step) => step.run === "node scripts/prepare-package-cache.mjs",
   );
   const lanes = hosts.findIndex(
-    (step) => step.run === "node scripts/run-ci-validation.mjs",
+    (step) =>
+      step.run ===
+      "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}",
   );
   const consumer = hosts.findIndex((step) => step.run === installed);
   assert.ok(cache >= 0 && cache < lanes && lanes < consumer);
   assert.deepEqual(
-    workflow.jobs["host-validation"].strategy.matrix,
-    workflow.jobs.checks.strategy.matrix,
+    workflow.jobs["host-validation"].strategy.matrix.include
+      .filter((row: { shard: number }) => row.shard === 0)
+      .map(({ os, node }: { os: string; node: string }) => ({ os, node })),
+    workflow.jobs.checks.strategy.matrix.include,
   );
+});
+
+test("provenance source and fresh receipts use exactly the seven core rows and pinned ARM slot", async (t) => {
+  const workflow = parse(
+    await readFile(
+      new URL("../../.github/workflows/ci.yml", import.meta.url),
+      "utf8",
+    ),
+  );
+  const inventory = JSON.parse(
+    await readFile(
+      new URL("../../docs/gate-a-profiles.v1.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  type Step = {
+    id?: string;
+    run?: string;
+    if?: string;
+    uses?: string;
+    env?: Record<string, string>;
+    with?: Record<string, string | number | boolean>;
+    "timeout-minutes"?: number;
+  };
+  const receipt =
+      "${{ runner.temp }}${{ runner.os == 'Windows' && '\\' || '/' }}native-provenance-runtime.json",
+    command =
+      "node scripts/verify-native-provenance-runtime.mjs ${{ matrix.slot }}",
+    action = "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9";
+  function verify(candidate: typeof workflow) {
+    const core = candidate.jobs["tasks-runtime"],
+      arm = candidate.jobs["tasks-runtime-arm64"],
+      steps: Step[] = core.steps,
+      armSteps: Step[] = arm.steps;
+    const rows: {
+      slot: string;
+      lane: string;
+      node: string;
+      core: boolean;
+      consumer: boolean;
+    }[] = core.strategy.matrix.include;
+    const selected = rows.filter((row) => row.core);
+    assert.deepEqual(
+      selected.map((row) => row.slot).sort(),
+      [
+        "ci-linux-node22",
+        "ci-linux-node24",
+        "ci-linux-node26",
+        "ci-macos-node22",
+        "ci-macos-node24",
+        "ci-macos-node26",
+        "windows-node22",
+      ],
+      "Exactly seven distinct core slots must be selected",
+    );
+    assert.deepEqual(
+      rows
+        .filter((row) => !row.core)
+        .map(({ slot, lane, consumer }) => ({
+          slot,
+          lane,
+          consumer,
+        })),
+      [
+        {
+          slot: "windows-node22",
+          lane: "windows-consumer-node22",
+          consumer: true,
+        },
+      ],
+      "The separate Windows consumer must not duplicate provenance execution",
+    );
+    assert.deepEqual(
+      inventory.runtimeProfiles
+        .map((profile: { id: string }) => profile.id)
+        .sort(),
+      [...selected.map((row) => row.slot), "native-linux-arm64-node22"].sort(),
+      "The existing placements must cover exactly the selected eight profiles",
+    );
+    for (const row of selected)
+      assert.equal(
+        row.node,
+        inventory.runtimeProfiles.find(
+          (profile: { id: string }) => profile.id === row.slot,
+        ).node,
+        "Each core slot must retain its exact selected Node patch",
+      );
+    assert.equal(arm["runs-on"], "ubuntu-26.04-arm");
+    assert.equal(arm["timeout-minutes"], 30);
+    assert.equal(
+      core["timeout-minutes"],
+      "${{ matrix.slot == 'windows-node22' && 45 || 30 }}",
+    );
+    assert.equal(steps.filter((step) => step.run === command).length, 1);
+    const source = steps.find((step) => step.run === command)!;
+    assert.equal(source.id, "native-provenance-runtime");
+    assert.equal(source.if, "matrix.core", "Core rows only may run provenance");
+    const provenanceMinutes = source["timeout-minutes"];
+    assert.ok(
+      typeof provenanceMinutes === "number" &&
+        Number.isInteger(provenanceMinutes) &&
+        provenanceMinutes >= 25 &&
+        provenanceMinutes <= 30,
+      "Finite provenance parent must cover source and fresh stages with bounded overhead",
+    );
+    assert.deepEqual(
+      source.env,
+      { CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: receipt },
+      "Raw receipt output must be requested",
+    );
+    assert.equal(
+      core.env?.CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT,
+      undefined,
+    );
+    const sourceUpload = steps.find(
+      (step) =>
+        step.with?.name ===
+        "native-provenance-runtime-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}",
+    );
+    assert.ok(
+      sourceUpload,
+      "A unique core slot and attempt artifact is required",
+    );
+    assert.equal(
+      sourceUpload.if,
+      "${{ !cancelled() && matrix.core && steps.native-provenance-runtime.outcome == 'success' }}",
+      "Successful core outcome only",
+    );
+    const armSource = armSteps.find(
+      (step) => step.run === "node scripts/verify-tasks-runtime-arm64.mjs",
+    );
+    assert.ok(armSource, "Existing pinned ARM wrapper is required");
+    assert.equal(
+      armSteps.filter((step) => step.run === armSource.run).length,
+      1,
+    );
+    assert.equal(armSource.id, "native-provenance-runtime");
+    assert.equal(
+      armSource.if,
+      undefined,
+      "The ARM slot must not silently skip",
+    );
+    assert.deepEqual(
+      armSource.env,
+      { CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT: receipt },
+      "ARM raw receipt output must be requested",
+    );
+    const armUpload = armSteps.find(
+      (step) =>
+        step.with?.name ===
+        "native-provenance-runtime-tasks-runtime-arm64-native-linux-arm64-node22-${{ github.run_attempt }}",
+    );
+    assert.ok(armUpload, "A unique ARM slot and attempt artifact is required");
+    assert.equal(
+      armSteps.filter((step) => step.with?.name === armUpload.with!.name)
+        .length,
+      1,
+    );
+    assert.equal(
+      armUpload.if,
+      "${{ !cancelled() && steps.native-provenance-runtime.outcome == 'success' }}",
+      "Successful ARM outcome only",
+    );
+    for (const upload of [sourceUpload, armUpload]) {
+      assert.equal(
+        upload.uses,
+        action,
+        "Pinned receipt upload action is required",
+      );
+      assert.equal(
+        upload.with!.path,
+        receipt,
+        "Exact original receipt file must be uploaded",
+      );
+      assert.equal(upload.with!["if-no-files-found"], "error");
+      assert.equal(upload.with!["retention-days"], 7);
+      assert.equal(upload.with!["include-hidden-files"], false);
+    }
+    for (const [lane, sourceStep, upload] of [
+      [steps, source, sourceUpload],
+      [armSteps, armSource, armUpload],
+    ] as const) {
+      const build = lane.findIndex((step) => step.run === "npm run build"),
+        cache = lane.findIndex(
+          (step) => step.run === "node scripts/prepare-package-cache.mjs",
+        );
+      assert.ok(
+        build >= 0 &&
+          build < cache &&
+          cache < lane.indexOf(sourceStep) &&
+          lane.indexOf(sourceStep) < lane.indexOf(upload),
+        "After cache/build, observe before uploading",
+      );
+    }
+    assert.ok(
+      candidate.jobs["host-validation"].steps.every(
+        (step: Step) => !step.run?.includes("native-license-provenance"),
+      ),
+      "Generic host callbacks cannot substitute for exact-slot evidence",
+    );
+  }
+  verify(workflow);
+  const valid = JSON.parse(JSON.stringify(workflow));
+  valid.jobs["tasks-runtime"].steps.push({ run: "node --version" });
+  valid.jobs["tasks-runtime"].steps.find((step: Step) => step.run === command)[
+    "timeout-minutes"
+  ] = 25;
+  verify(valid);
+  const mutations: [string, (candidate: typeof workflow) => void, RegExp][] = [
+    [
+      "duplicate core slot",
+      (candidate) =>
+        candidate.jobs["tasks-runtime"].strategy.matrix.include.push(
+          candidate.jobs["tasks-runtime"].strategy.matrix.include[0],
+        ),
+      /Exactly seven distinct core/,
+    ],
+    [
+      "consumer execution",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) => step.run === command,
+        ).if = undefined;
+      },
+      /Core rows only/,
+    ],
+    [
+      "missing raw output",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) => step.run === command,
+        ).env = {};
+      },
+      /Raw receipt output/,
+    ],
+    [
+      "mixed Windows receipt separators",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) => step.run === command,
+        ).env.CHECKTRAIL_NATIVE_PROVENANCE_RUNTIME_RECEIPT =
+          "${{ runner.temp }}/native-provenance-runtime.json";
+      },
+      /Raw receipt output/,
+    ],
+    [
+      "upload uses a different receipt path",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) =>
+            step.with?.name ===
+            "native-provenance-runtime-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}",
+        ).with.path = "${{ runner.temp }}/native-provenance-runtime.json";
+      },
+      /Exact original receipt file/,
+    ],
+    [
+      "source and fresh share the old one-file envelope",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) => step.run === command,
+        )["timeout-minutes"] = 10;
+      },
+      /Finite provenance/,
+    ],
+    [
+      "unbounded controller",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) => step.run === command,
+        )["timeout-minutes"] = undefined;
+      },
+      /Finite provenance/,
+    ],
+    [
+      "upload failed controller",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) =>
+            step.with?.name ===
+            "native-provenance-runtime-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}",
+        ).if = "always()";
+      },
+      /Successful core outcome/,
+    ],
+    [
+      "unpinned uploader",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) =>
+            step.with?.name ===
+            "native-provenance-runtime-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}",
+        ).uses = "actions/upload-artifact@main";
+      },
+      /Pinned receipt upload/,
+    ],
+    [
+      "reconstructed output glob",
+      (candidate) => {
+        candidate.jobs["tasks-runtime"].steps.find(
+          (step: Step) =>
+            step.with?.name ===
+            "native-provenance-runtime-tasks-runtime-${{ matrix.slot }}-${{ github.run_attempt }}",
+        ).with.path += "*";
+      },
+      /Exact original receipt/,
+    ],
+    [
+      "missing ARM output",
+      (candidate) => {
+        candidate.jobs["tasks-runtime-arm64"].steps.find(
+          (step: Step) =>
+            step.run === "node scripts/verify-tasks-runtime-arm64.mjs",
+        ).env = {};
+      },
+      /ARM raw receipt output/,
+    ],
+    [
+      "upload failed ARM wrapper",
+      (candidate) => {
+        candidate.jobs["tasks-runtime-arm64"].steps.find(
+          (step: Step) =>
+            step.with?.name ===
+            "native-provenance-runtime-tasks-runtime-arm64-native-linux-arm64-node22-${{ github.run_attempt }}",
+        ).if = "always()";
+      },
+      /Successful ARM outcome/,
+    ],
+    [
+      "observe before cache",
+      (candidate) => {
+        const lane = candidate.jobs["tasks-runtime"].steps,
+          index = lane.findIndex((step: Step) => step.run === command);
+        lane.unshift(...lane.splice(index, 1));
+      },
+      /After cache\/build/,
+    ],
+  ];
+  for (const [name, mutate, reason] of mutations)
+    await t.test(`rejects ${name}`, () => {
+      const candidate = JSON.parse(JSON.stringify(workflow));
+      mutate(candidate);
+      assert.throws(() => verify(candidate), reason);
+    });
 });
 
 test("CI lanes preserve every original matrix command and keep distinct package variants", async () => {
@@ -185,28 +533,37 @@ test("CI lanes preserve every original matrix command and keep distinct package 
   );
   assert.equal(
     workflow.jobs["host-validation"].steps.filter(
-      (s: { run?: string }) => s.run === "node scripts/run-ci-validation.mjs",
+      (s: { run?: string }) =>
+        s.run ===
+        "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}",
     ).length,
     1,
   );
   assert.equal(workflow.jobs.checks.strategy.matrix.include.length, 4);
   assert.deepEqual(
-    workflow.jobs["host-validation"].strategy.matrix,
-    workflow.jobs.checks.strategy.matrix,
+    workflow.jobs["host-validation"].strategy.matrix.include
+      .filter((row: { shard: number }) => row.shard === 0)
+      .map(({ os, node }: { os: string; node: string }) => ({ os, node })),
+    workflow.jobs.checks.strategy.matrix.include,
   );
   assert.equal(workflow.jobs["host-validation"]["timeout-minutes"], 75);
-  assert.deepEqual(workflow.jobs["host-validation"].needs, ["ci-plan"]);
+  assert.deepEqual(workflow.jobs["host-validation"].needs, [
+    "ci-plan",
+    "actionlint",
+  ]);
   assert.deepEqual(workflow.jobs.checks.needs, ["ci-plan"]);
   assert.match(workflow.jobs["host-validation"].if, /mode == 'full'/);
   assert.equal(
     workflow.jobs.checks.steps.find((s: { run?: string }) =>
-      s.run?.includes("--full-suite gate-inventory"),
+      s.run?.includes("verify-ci-full-suite-shard.mjs --shard0"),
     )?.if,
     "env.CHECKTRAIL_CI_MODE == 'full'",
   );
   assert.ok(
     !workflow.jobs.checks.steps.some(
-      (s: { run?: string }) => s.run === "node scripts/run-ci-validation.mjs",
+      (s: { run?: string }) =>
+        s.run ===
+        "node scripts/run-ci-validation.mjs --shard${{ matrix.shard }}",
     ),
   );
   assert.equal(
@@ -216,7 +573,7 @@ test("CI lanes preserve every original matrix command and keep distinct package 
   );
   assert.ok(
     workflow.jobs.checks.steps.some((s: { run?: string }) =>
-      s.run?.includes("--full-suite gate-inventory"),
+      s.run?.includes("verify-ci-full-suite-shard.mjs --shard0"),
     ),
   );
 });

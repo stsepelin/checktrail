@@ -247,6 +247,8 @@ def packet(name,mutate=None,raw_legacy=False):
  case=root/name;case.mkdir();result=case/'result';shutil.copytree(base_result,result)
  manifest=result/'work/test-reports.json';value=json.loads(manifest.read_bytes())
  if raw_legacy:
+  # Historical collectors did not emit the diagnostic companion.
+  (result/'work/failed-test-diagnostics.json').unlink();shutil.rmtree(result/'work/failed-test-diagnostics')
   shutil.rmtree(result/'work/original-test-reports/encoded')
   files=[];directories={'.'}
   for row in [value['reports'][0],value['reports'][0]['log']]:
@@ -260,7 +262,11 @@ def packet(name,mutate=None,raw_legacy=False):
    directory=result/'work/original-test-reports'/name;directory.chmod(0o700);custody['directories'].append({'directory':name,'ownership':owner(directory,0o700)})
   value['schemaVersion']=1;value.pop('encoding');value.pop('storedBytes')
  if mutate:mutate(value,result)
- write(manifest,value);startup=case/'startup.json';write(startup,{'state':'synthetic-report-component-not-native-qualification','caller':caller})
+ write(manifest,value)
+ if not raw_legacy:
+  # Bind the independently serialized synthetic report baseline, not a stale copy.
+  companion=result/'work/failed-test-diagnostics.json';diagnostics=json.loads(companion.read_bytes());diagnostics['sourceReportManifest']={'file':'test-reports.json',**r.pin(manifest.read_bytes())};write(companion,diagnostics)
+ startup=case/'startup.json';write(startup,{'state':'synthetic-report-component-not-native-qualification','caller':caller})
  for name in ['inputs','common']:(case/name).mkdir()
  archive=case/'reports.zip';e.export(repo,case/'inputs',case/'common',result,startup,archive,profile_name='glibc')
  return r.Packet(archive),value

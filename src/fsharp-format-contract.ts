@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { capturedProcessOutputSchema } from "./process-output.js";
+import { fsharpReleaseProofReferenceSchema } from "./fsharp-format-release-signature.js";
 export const fsharpDigest = z.string().regex(/^[a-f0-9]{64}$/);
 const file = z.string().min(1).max(8192),
   count = z.number().int().nonnegative();
@@ -68,7 +69,7 @@ export const fsharpNativeSchema = z.strictObject({
     .max(128),
   complete: z.literal(true),
 });
-export const fsharpPacketSchema = z.strictObject({
+const legacyFsharpPacketSchema = z.strictObject({
   version: z.literal(1),
   profile: z.literal("fantomas-core-default-v1"),
   requestSha256: fsharpDigest,
@@ -116,6 +117,13 @@ export const fsharpPacketSchema = z.strictObject({
   mirroredSha256: fsharpDigest,
   complete: z.literal(true),
 });
+export const fsharpPacketSchema = z.union([
+  legacyFsharpPacketSchema,
+  legacyFsharpPacketSchema.extend({
+    version: z.literal(2),
+    releaseSignatureProof: fsharpReleaseProofReferenceSchema,
+  }),
+]);
 export const fsharpRuntimeConfig = JSON.stringify({
   runtimeOptions: {
     tfm: "net10.0",

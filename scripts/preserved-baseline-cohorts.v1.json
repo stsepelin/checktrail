@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "profile": "preserved-native-baseline-cohort-bindings-v1",
+  "baseline": {
+    "file": "docs/gate-a-native-baseline.v1.json",
+    "sha256": "04b2ba50cb1e4516d5472ff2412478b75ec5f5803de34d62fa4b78237a1d5568"
+  },
+  "scope": "Completion bindings for exact preserved original callbacks; selectors are existing source environments, not fabricated 89-by-8 obligations. Every actual runtime/tool/image identity is observed before and after collection.",
+  "sourceCommandsReplaced": false,
+  "newCompilerOrModelVersionsSelected": false,
+  "pyrightExternalOwnership": "Its original seven source/fresh callbacks are owned by the dedicated Pyright controller; this helper does not duplicate them.",
+  "cohorts": {
+    "host-core": {
+      "profiles": [
+        "core",
+        "javascript",
+        "python",
+        "frameworks",
+        "go",
+        "go-matrix",
+        "php-tools",
+        "rust",
+        "native-acceptance-ledger",
+        "native-process-observer"
+      ],
+      "job": "checks (ubuntu-latest, 22)",
+      "sourceCommand": "node scripts/verify-required-native-tests.mjs --full-suite gate-inventory selected-artifact-evidence probe-workspace-privacy laravel-cache import-history init-publication posix-cleanup posix-owner git-metadata native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks tasks-matrix mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance finding-resolution multi-candidate-workflow review-runtime-bindings consumer-impact consumer-runtime-bindings consumer-foundation-bindings attempt-archives attempt-runtime-bindings attempt-foundation-bindings consumer-witness-bindings evaluation-protocol-declarations evaluation-protocol-metering evaluation-capture-declarations evaluation-physical-captures evaluation-independent-judging evaluation-common-matching independent-evaluation-protocol evaluation-runtime-bindings",
+      "backend": "host",
+      "platform": "linux",
+      "nodeMajor": 22,
+      "selectors": {
+        "runner": "ubuntu-latest",
+        "node": "22",
+        "go": "1.27.1",
+        "python": "3.13",
+        "php": "8.5",
+        "rust": "1.98.1"
+      },
+      "tools": {
+        "git": ["--version"],
+        "go": ["version"],
+        "python3": ["--version"],
+        "php": ["--version"],
+        "rustc": ["--version"],
+        "staticcheck": ["-version"],
+        "golangci-lint": ["version", "--short"]
+      },
+      "preparedDirectories": [
+        "javascript-tools",
+        "playwright-tools",
+        "playwright-browsers",
+        "typescript-legacy-tools",
+        "vue-router-tools",
+        "nuxt-tools",
+        "go-tools",
+        "php-tools",
+        "php-review-tools",
+        "laravel-tools"
+      ],
+      "toolVersionAssertions": {
+        "staticcheck": {
+          "tokens": ["staticcheck", "(0.8.1)"]
+        },
+        "golangci-lint": {
+          "equals": "2.13.2"
+        }
+      }
+    },
+    "packaged-review": {
+      "profiles": [
+        "review",
+        "review-git",
+        "review-provider",
+        "review-probe",
+        "review-refutation",
+        "review-scoring",
+        "review-verification",
+        "review-budget",
+        "review-workflow",
+        "review-workflow-audit",
+        "review-benchmark",
+        "review-benchmark-judging",
+        "review-native-budget",
+        "mcp-tasks-routing",
+        "mcp-task-dispatch"
+      ],
+      "job": "checks (ubuntu-latest, 22)",
+      "sourceCommand": "node scripts/verify-review-container.mjs",
+      "backend": "container",
+      "platform": "linux",
+      "nodeMajor": 22,
+      "nodeVersion": "22.23.2",
+      "imageEnvironment": "CHECKTRAIL_REVIEW_IMAGE",
+      "image": "checktrail-review-tools:finish-first-v1",
+      "dockerfile": "scripts/review-tools.Dockerfile",
+      "baseImages": [
+        "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+        "docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+      ],
+      "tools": {
+        "git": ["--version"],
+        "go": ["version"]
+      },
+      "preparedDirectories": [],
+      "gitVersion": "2.47.3"
+    },
+    "external-adapters": {
+      "profiles": ["external-protocol", "policy-distribution"],
+      "job": "external-adapters",
+      "sourceCommand": "docker run --rm --init --network none --cpus 2 --memory 2g --mount \"type=bind,src=$PWD,target=/workspace,readonly\" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs external-protocol\ndocker run --rm --init --network none --cpus 2 --memory 2g --mount \"type=bind,src=$PWD,target=/workspace,readonly\" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs policy-distribution",
+      "backend": "existing-controller",
+      "controller": ".github/workflows/ci.yml:external-adapters (original direct container commands)",
+      "image": "checktrail-executable-bundle-test:1",
+      "dockerfile": "scripts/executable-bundle-tools.Dockerfile"
+    },
+    "ruby": {
+      "profiles": ["ruby"],
+      "job": "ruby",
+      "sourceCommand": "node scripts/verify-ruby-container.mjs",
+      "backend": "existing-controller",
+      "controller": "scripts/verify-ruby-container.mjs",
+      "hostNodeSelector": "22",
+      "image": "docker.io/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+      "dockerfile": null
+    },
+    "swift": {
+      "profiles": ["swift"],
+      "job": "swift",
+      "sourceCommand": "node scripts/verify-required-native-tests.mjs swift",
+      "backend": "existing-controller",
+      "controller": "scripts/verify-required-native-tests.mjs swift",
+      "hostNodeSelector": "22",
+      "image": null,
+      "dockerfile": null,
+      "selectors": {
+        "runner": "macos-latest",
+        "node": "22",
+        "swift": "runner swiftc; actual identity must be observed"
+      }
+    },
+    "clang": {
+      "profiles": ["clang"],
+      "job": "clang",
+      "sourceCommand": "node scripts/verify-clang-container.mjs",
+      "backend": "existing-controller",
+      "controller": "scripts/verify-clang-container.mjs",
+      "hostNodeSelector": "22",
+      "image": "checktrail-clang-test:22.1.3",
+      "dockerfile": "scripts/clang-tools.Dockerfile"
+    },
+    "java": {
+      "profiles": ["java"],
+      "job": "java",
+      "sourceCommand": "node scripts/verify-java-container.mjs",
+      "backend": "existing-controller",
+      "controller": "scripts/verify-java-container.mjs",
+      "hostNodeSelector": "22",
+      "image": "checktrail-java-test:25.0.4",
+      "dockerfile": "scripts/java-tools.Dockerfile"
+    },
+    "dotnet": {
+      "profiles": ["dotnet"],
+      "job": "dotnet (compiler)",
+      "sourceCommand": "node scripts/verify-dotnet-container.mjs",
+      "backend": "existing-controller",
+      "controller": "scripts/verify-dotnet-container.mjs",
+      "hostNodeSelector": "22",
+      "image": "checktrail-dotnet-test:10.0.401",
+      "dockerfile": "scripts/dotnet-tools.Dockerfile"
+    },
+    "actionlint": {
+      "profiles": ["actionlint"],
+      "job": "actionlint",
+      "sourceCommand": "node scripts/verify-actionlint-container.mjs",
+      "backend": "existing-controller",
+      "controller": "scripts/verify-actionlint-container.mjs",
+      "hostNodeSelector": "22",
+      "image": "checktrail-actionlint-test:1.7.12",
+      "dockerfile": "scripts/actionlint-tools.Dockerfile"
+    },
+    "vue-router": {
+      "profiles": ["vue-router"],
+      "job": "vue-router",
+      "sourceCommand": "node scripts/verify-vue-router-container.mjs",
+      "backend": "existing-controller",
+      "controller": "scripts/verify-vue-router-container.mjs",
+      "hostNodeSelector": "22",
+      "image": "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "dockerfile": null
+    },
+    "nuxt": {
+      "profiles": ["nuxt"],
+      "job": "nuxt",
+      "sourceCommand": "node scripts/verify-nuxt-container.mjs",
+      "backend": "existing-controller",
+      "controller": "scripts/verify-nuxt-container.mjs",
+      "hostNodeSelector": "22",
+      "image": "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "dockerfile": null
+    },
+    "gradle-preparation": {
+      "profiles": ["gradle-preparation"],
+      "job": "gradle",
+      "sourceCommand": "node scripts/verify-required-native-tests.mjs gradle-preparation",
+      "backend": "existing-controller",
+      "controller": "scripts/verify-required-native-tests.mjs gradle-preparation",
+      "hostNodeSelector": "22",
+      "image": null,
+      "dockerfile": null,
+      "applicability": "Original operator preparation code remains external to the production package; run its exact callback bodies in the same host job with a physically fresh installed engine context. Do not claim that operator scripts are shipped runtime modules."
+    },
+    "maven-preparation": {
+      "profiles": ["maven-preparation"],
+      "job": "maven",
+      "sourceCommand": "node scripts/verify-required-native-tests.mjs maven-preparation",
+      "backend": "existing-controller",
+      "controller": "scripts/verify-required-native-tests.mjs maven-preparation",
+      "hostNodeSelector": "22",
+      "image": null,
+      "dockerfile": null,
+      "applicability": "Original operator preparation code remains external to the production package; run its exact callback bodies in the same host job with a physically fresh installed engine context. Do not claim that operator scripts are shipped runtime modules."
+    }
+  },
+  "gateAComplete": false,
+  "fieldEvaluationExecuted": false,
+  "inferenceInvoked": false
+}

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "profile": "selected-native-consumer-witnesses-v1",
-  "inventoryScopeSha256": "acddaba1dd782390afe48296e1e8e1fd0409df0658ad1cf0aa14c6f19a57d144",
+  "inventoryScopeSha256": "533cd3c311de30ce505e99c776b41c583e1dc42981679d82d13626526a9c942f",
   "scope": "Required selected consumer witness families. Prepared collectors and declared callback identities are not native acceptance. Unknown semantics keep full impact selection.",
   "families": [
     {

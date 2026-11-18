@@ -1,0 +1,771 @@
+{
+  "actualGeneratorAndClasspathInputs": {
+    "allGeneratorOrAQATestsPassedClaimed": false,
+    "arbitraryJVMClassLoadsTraced": false,
+    "externalOriginalJARCount": 13,
+    "generatorOrJVMExecutedByObserver": false,
+    "newOriginalRecipeSourceGeneratorJARCount": 2,
+    "newSBOM": {
+      "all15DeclaredJARHashesMatchPhysicalFiles": true,
+      "bytes": 156879,
+      "path": "recipe/workspace/target/OpenJDK25U-sbom_aarch64_alpine-linux_hotspot_25.0.4_7.json",
+      "sha256": "bc83e25e81eecf08ad72b495a383185323df28d225c69f7e517e2ab5156f0283"
+    },
+    "physicalJARs": [
+      {
+        "bytes": 372687,
+        "path": "recipe/cyclonedx-lib/build/jar/commons-codec.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "f9f6cb103f2ddc3c99a9d80ada2ae7bf0685111fd6bffccb72033d1da4e6ff23"
+      },
+      {
+        "bytes": 751914,
+        "path": "recipe/cyclonedx-lib/build/jar/commons-collections4.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "1df8b9430b5c8ed143d7815e403e33ef5371b2400aadbe9bda0883762e0846d1"
+      },
+      {
+        "bytes": 508826,
+        "path": "recipe/cyclonedx-lib/build/jar/commons-io.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "f41f7baacd716896447ace9758621f62c1c6b0a91d89acee488da26fc477c84f"
+      },
+      {
+        "bytes": 673587,
+        "path": "recipe/cyclonedx-lib/build/jar/commons-lang3.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "6ee731df5c8e5a2976a1ca023b6bb320ea8d3539fbe64c8a1d5cb765127c33b4"
+      },
+      {
+        "bytes": 2419341,
+        "path": "recipe/cyclonedx-lib/build/jar/cyclonedx-core-java.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "4931d0aed28763ae9fa1c574e26b7636879abdc101ff81ce3c63ad905c99937c"
+      },
+      {
+        "bytes": 16998,
+        "path": "recipe/cyclonedx-lib/build/jar/github-package-url.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "e45551727707acc0c56ac62d56964332ea0f138d6cc3656d988b9369150f5247"
+      },
+      {
+        "bytes": 78492,
+        "path": "recipe/cyclonedx-lib/build/jar/jackson-annotations.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "873a606e23507969f9bbbea939d5e19274a88775ea5a169ba7e2d795aa5156e1"
+      },
+      {
+        "bytes": 581927,
+        "path": "recipe/cyclonedx-lib/build/jar/jackson-core.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "721a189241dab0525d9e858e5cb604d3ecc0ede081e2de77d6f34fa5779a5b46"
+      },
+      {
+        "bytes": 1649454,
+        "path": "recipe/cyclonedx-lib/build/jar/jackson-databind.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "c04993f33c0f845342653784f14f38373d005280e6359db5f808701cfae73c0c"
+      },
+      {
+        "bytes": 129180,
+        "path": "recipe/cyclonedx-lib/build/jar/jackson-dataformat-xml.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "517add5f3848517894b319a93a7ebfc1c21737b2c17c9acccd38fea97d6adc6f"
+      },
+      {
+        "bytes": 576398,
+        "path": "recipe/cyclonedx-lib/build/jar/json-schema-validator.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "de015f79d4a63d22c002bad76bb30c039cafa205465eef8770e2c6b85880ded7"
+      },
+      {
+        "bytes": 195922,
+        "path": "recipe/cyclonedx-lib/build/jar/stax2-api.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "a61c48d553efad78bc01fffc4ac528bebbae64cbaec170b2a5e39cf61eb51abe"
+      },
+      {
+        "bytes": 1608803,
+        "path": "recipe/cyclonedx-lib/build/jar/woodstox-core.jar",
+        "role": "original-external-classpath-input",
+        "sha256": "81266920a1cdc47306a8a2b4726c99ec89b3fbf31c2470e4f5e477d9d857ca9f"
+      },
+      {
+        "bytes": 9688,
+        "classMajorVersions": {
+          "52": 3
+        },
+        "classes": 3,
+        "path": "recipe/cyclonedx-lib/build/jar/temurin-gen-sbom.jar",
+        "payloadExecutedByMetadataObserver": false,
+        "role": "new-original-recipe-source-generator",
+        "sha256": "45d5daa0c9972c7df0298e3e3bb2083462b9281060a75179f509e721b44dcf89"
+      },
+      {
+        "bytes": 10887,
+        "classMajorVersions": {
+          "52": 4
+        },
+        "classes": 4,
+        "path": "recipe/cyclonedx-lib/build/jar/temurin-gen-cdxa.jar",
+        "payloadExecutedByMetadataObserver": false,
+        "role": "new-original-recipe-source-generator",
+        "sha256": "7365548386cd65e719476888b214f5f625702acf96355487ca63d2a568a8c20e"
+      }
+    ]
+  },
+  "captureOnlyRecovery": {
+    "CPUs": 2,
+    "archiveAndMetadataIndependentHostRehashVerified": true,
+    "captureManifestSHA256": "73d4802af3070dee87323c5a1cce33e91d7ad44534010d7d9c5865fc551f889e",
+    "cleanupReserveSeconds": 120,
+    "commandSecondsMaximum": 1200,
+    "complete": true,
+    "compressedBytesMaximum": 17179869184,
+    "elapsedSeconds": 134.985779,
+    "helperSHA256": "f5353cf4bd8d496e1c72f862fd83f4ecdc7cf2d161779d80a7a45e9b3e0089ca",
+    "memoryAndSwapBytes": 2147483648,
+    "network": "none",
+    "nonDestructiveSupervisorSHA256": "56deb709a067385d5e4deaf8b8f407e6c14415cb2ec0d69cf37a8243da9080aa",
+    "regularLogicalBytesMaximum": 34359738368,
+    "socketRepresentation": "Five exact zero-byte Unix socket identities retained only as typed metadata; not opened, activated, replaced with regular files, recreated or claimed physically restorable.",
+    "sourceBuildRepeated": false,
+    "supervisorSecondsMaximum": 1320
+  },
+  "carrier": {
+    "actualExportedConfigBytesMatchOriginal": true,
+    "actualExportedConfigSHA256": "b96918af0a640ac6a39781b1f731cf4fda2ccb7570ba0286461834453692be41",
+    "observedRuntimeImageID": "sha256:d3f4f288f3c5cf6d4e695890af0a2a07a5c4dd989a6592139a077ac0ea47cd8b",
+    "originalCompressedManifestSHA256": "3dc811e630e4fa44359effbc13c84a44eca62aec7912aa759ec260546fee5bcf",
+    "originalIndexDigest": "sha256:bcd853a1dcc3570bdcf4ae5df67ff6cbce5df8051bd4db50fac06e7c9246db7e",
+    "originalLayerBytesVerified": 5,
+    "originalLayerDiffIDs": [
+      "sha256:5d3a1326148f9d026568b20b7dcda09e350227b61039b689a6fde54ea7828b66",
+      "sha256:0e8ada356f61a3fa649c759d1e5b6d44a7173546d8072c9afd38387bad7d5093",
+      "sha256:ba1f81f96193d44365e3c5789087a92662abe3e1187d7f936e2129abb920fac3",
+      "sha256:b9e406f070e0af07277970b7ab06b16e75d03378c7745a14f83830a90e9d87e1",
+      "sha256:7a62948580dc3710e20e0bfc615c87324faf1b989467d0448be9d499862e48cf"
+    ],
+    "originalOCIConfigDigest": "sha256:b96918af0a640ac6a39781b1f731cf4fda2ccb7570ba0286461834453692be41",
+    "originalRepository": "docker.io/adoptopenjdk/alpine3_build_image",
+    "selectedVariant": "Alpine 3.15.11 Linux ARM64; musl 1.2.2-r9"
+  },
+  "cleanup": {
+    "allOwnedResourcesPositivelyAbsent": false,
+    "allTaskContainersAbsent": true,
+    "cachedOperatorImageIdentityAndRootFSCompared": true,
+    "cachedOperatorImagePreserved": true,
+    "managedTaskStopped": true,
+    "originalBootVolumeAbsent": true,
+    "originalOwnedImageTagAbsent": true,
+    "originalWorkVolumePositivelyAbsent": false,
+    "originalWorkVolumeRetained": true,
+    "ownedCaptureContainerPositivelyAbsent": true,
+    "workVolumeDisposalPendingAuthorization": true
+  },
+  "explicitTransportEnvironment": {
+    "TLSHostnameTimeOrAlgorithmVerificationRelaxed": false,
+    "actualOriginalCurlProbePassed": true,
+    "additionalPublicRootSHA256": "8faf7d2e2cb4709bb8e0b33666bf75a5dd45b5de480f8ea8d4bfe6bebc17f2ed",
+    "additionalTrustAnchors": 1,
+    "caBundleBytes": 216490,
+    "caBundleSHA256": "524fea57190b39546c49dbf97541280d2a0d72e48b3399105817c79a2949df05",
+    "globalHostOrImageTrustStoreModified": false,
+    "intermediateUsedAsTrustAnchor": false,
+    "networkNoneOrEndpointAllowlistClaimed": false,
+    "original141CertificateBytesOrderAndDERIdentitiesPreserved": true,
+    "originalImageCABundleBytes": 214509,
+    "originalImageCABundleSHA256": "824cefcee69de918c76b7b92776f304c3a4b7f6281539118bc1d41a9dd8476d9",
+    "originalImageCASeparatelyBoundUnchanged": true,
+    "originalImageCertificateCount": 141,
+    "originalProducerRepeatedItsALSAFetch": true,
+    "originalPublicNetworkEnabled": true,
+    "transportCertificateCount": 142
+  },
+  "facetOutcomes": {
+    "cleanupComplete": false,
+    "fieldReviewTrials": 0,
+    "gateAComplete": false,
+    "historicalPublisherBinaryEquality": false,
+    "newLocalSDKArtifact": true,
+    "opaqueByteAndTypedMetadataCaptureVerified": true,
+    "originalAQAOrGeneratorTestSuitesPassed": false,
+    "originalSourceBuild": true,
+    "sourceBuildAndLocalArtifactFacetComplete": false,
+    "twoOriginalSourceGeneratorJARsProduced": true,
+    "unrunSuitesClaimedPassed": false,
+    "wholeCompilerSDKBootstrapBuildAndLegalGraphClosed": false
+  },
+  "measurementReceipts": [
+    {
+      "bytes": 223607,
+      "file": "RESULT.v1.json",
+      "role": "original-native-controller-outcome",
+      "sha256": "3620f00d9e97b61fee250f59449a109b5c6508e9454d39e753406b9236f2c1cf"
+    },
+    {
+      "bytes": 8716,
+      "file": "RESULT.v1.json",
+      "role": "data-only-produced-output-observer",
+      "sha256": "b89477101ebac07f7b537cce3de8cf39f2eb9cdad6600745f5b964f489cdd8fc"
+    },
+    {
+      "bytes": 5733,
+      "file": "ACTUAL-ORIGINAL-IMAGE-IDENTITY.v1.json",
+      "role": "actual-original-carrier",
+      "sha256": "8c8cf905e4c6ba8b0935a9e24101bd20699f7577f3461b3f44a192ae3d29ea71"
+    },
+    {
+      "bytes": 4577,
+      "file": "ORIGINAL-IMAGE-INPUT-IDENTITIES.v1.json",
+      "role": "stopped-image-physical-input-binding",
+      "sha256": "de9e572f960eeb1d0c7eb50f0436d2b8ca90de55b8ae0d8ba5a09b53b370d12d"
+    },
+    {
+      "bytes": 173,
+      "file": "STOPPED-WORK-RETENTION-INCOMPLETE.v1.json",
+      "role": "preserved-original-capture-failure",
+      "sha256": "7c12bfea4075be9cea0aea7c50b3a661196a4abf0f71b449c6ca1a9503e1a556"
+    },
+    {
+      "bytes": 1206,
+      "file": "STOPPED-WORK-RETENTION.v1.json",
+      "role": "recovered-opaque-byte-and-typed-metadata-capture",
+      "sha256": "0fcbadc3052fc1434edfa03797615bcbc38e7691ea1b75d6498e1857eaad499d"
+    },
+    {
+      "bytes": 965,
+      "file": "CAPTURE-RECOVERY-RESULT.v1.json",
+      "role": "non-destructive-capture-recovery",
+      "sha256": "59256f572be104d760d53f81e5f5f0525fbe5ad28a0d465b6b006ed1d1a94d87"
+    },
+    {
+      "bytes": 512,
+      "file": "FINAL-RETENTION-STATUS.v1.json",
+      "role": "stopped-task-retained-volume-and-absent-containers",
+      "sha256": "f30f208c5f831cf7056986e5e5ce414816f7882b9907b82701a6717ca05cee5b"
+    }
+  ],
+  "newProducedJDK": {
+    "bytes": 139138858,
+    "historicalPublisherReproductionClaimed": false,
+    "historicalSelectedSDKBytesEqual": false,
+    "members": 483,
+    "nativeJavaELFIdentities": [
+      {
+        "ELFMachine": 183,
+        "bytes": 12672,
+        "path": "jdk-25.0.4+7/bin/java",
+        "sha256": "bf14eecd544fe58970e7349aa1e7edf4b446927a731670b4d824d180f2622c0a"
+      }
+    ],
+    "originalNoticeOccurrenceBytes": 23188,
+    "originalNoticeOccurrences": 3,
+    "path": "recipe/workspace/target/OpenJDK25U-jdk_aarch64_alpine-linux_hotspot_25.0.4_7.tar.gz",
+    "productOrSDKExecutedByObserver": false,
+    "regularBodyBytes": 311327630,
+    "releaseMetadata": [
+      {
+        "bytes": 1624,
+        "path": "jdk-25.0.4+7/release",
+        "selectedSourceCommitTokenObserved": true,
+        "selectedVersionFields": {
+          "BUILD_SOURCE": "git:e6ba7dec3d07654074559310376a3ae89da5f4ac",
+          "BUILD_SOURCE_REPO": "https://github.com/adoptium/temurin-build.git",
+          "FULL_VERSION": "25.0.4+7-LTS",
+          "IMPLEMENTOR": "Eclipse Adoptium",
+          "IMPLEMENTOR_VERSION": "Temurin-25.0.4+7",
+          "JAVA_VERSION": "25.0.4",
+          "OS_ARCH": "aarch64",
+          "OS_NAME": "Linux"
+        },
+        "sha256": "3c9ac553b406ba9275be22e30b715aed4fe15c721b59e6ee7069b8a6b241737f",
+        "sourceDirtyMarker": false
+      }
+    ],
+    "sha256": "b3116190626f1c0fc0fd45995df092f1ab8ded09ca47a25cdfb010055edf99b3"
+  },
+  "notices": {
+    "newGeneratorJAREmbeddedNoticeOccurrences": 0,
+    "producedJDKDistinctObjects": 3,
+    "producedJDKOccurrenceBytes": 23188,
+    "producedJDKOccurrences": 3,
+    "records": [
+      {
+        "bytes": 19274,
+        "path": "jdk-25.0.4+7/legal/java.base/LICENSE",
+        "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726"
+      },
+      {
+        "bytes": 1514,
+        "path": "jdk-25.0.4+7/legal/java.base/ASSEMBLY_EXCEPTION",
+        "sha256": "75292f03bf23d3db7c985aecc191029b93883200721ed23ed34a2e601463df33"
+      },
+      {
+        "bytes": 2400,
+        "path": "jdk-25.0.4+7/NOTICE",
+        "sha256": "c02756bcd9fa8191bf0fda4451bc018414dd44ee35bf09922c24377a475e4b5a"
+      }
+    ],
+    "selection": "Metadata-only original notice-name occurrences observed by the product observer; not an exhaustive legal/inline/alias inventory.",
+    "wholeNoticeClosureClaimed": false
+  },
+  "observation": "original-temurin25-source-build-local-output-and-capture-cleanup-pending",
+  "observedAtUTC": "2026-11-17T04:45:29.897933+00:00",
+  "opaqueStoppedWorkCapture": {
+    "allEntriesAccountedInArchiveOrTypedMetadata": true,
+    "archive": {
+      "bytes": 3916785379,
+      "file": "STOPPED-ORIGINAL-WORKTREE.tar.gz",
+      "sha256": "a9d9a4884ef4ab61c7610d9f92178105e37a19e16818c2fd9dfc1d4de80de3de"
+    },
+    "archiveMembers": 439722,
+    "archiveRoundTripVerified": true,
+    "kindCounts": {
+      "directory": 37525,
+      "regular": 401692,
+      "socket": 5,
+      "symlink": 505
+    },
+    "memberMap": {
+      "bytes": 140746393,
+      "file": "STOPPED-ORIGINAL-WORKTREE-MEMBERS.jsonl",
+      "sha256": "02bd1c989d6cb6acddc6348ccc78dd4fdfd6ddd5025ba8ef25ef1cde8d3e5078"
+    },
+    "members": 439727,
+    "metadataOnlyUnixSocketMembers": 5,
+    "metadataRoundTripVerified": true,
+    "originalReportOrSourceBodiesEmittedToModel": false,
+    "physicallyRecreatableUnixSocketSnapshotClaimed": false,
+    "regularBodyBytes": 10947214028,
+    "schemaVersion": 2,
+    "state": "stopped-original-work-volume-opaque-snapshot-written",
+    "symlinksFollowed": false,
+    "targetCodeExecuted": false,
+    "unixSocketMetadataPaths": [
+      "recipe/workspace/.gpg-temp/S.dirmngr",
+      "recipe/workspace/.gpg-temp/S.gpg-agent",
+      "recipe/workspace/.gpg-temp/S.gpg-agent.browser",
+      "recipe/workspace/.gpg-temp/S.gpg-agent.extra",
+      "recipe/workspace/.gpg-temp/S.gpg-agent.ssh"
+    ],
+    "unixSocketsOpenedRecreatedOrActivated": false
+  },
+  "originalBoot24After": {
+    "SDKExecutedByObserver": false,
+    "counts": {
+      "directory": 84,
+      "regular": 161,
+      "symlink": 205
+    },
+    "fullOriginal450PathBytesModesLinksUnchanged": true,
+    "regularBytes": 307750454,
+    "sourceProducerClosureClaimed": false
+  },
+  "originalDuplicateFetchedALSA": {
+    "actualMembers": 545,
+    "different": [],
+    "endpointNetworkAllowlistClaimed": false,
+    "exactPhysicalOriginalNamespaceMatch": true,
+    "expectedMembers": 545,
+    "extra": [],
+    "independentlyRetainedArchiveSHA256": "5f2cd274b272cae0d0d111e8a9e363f08783329157e8dd68b3de0c096de6d724",
+    "independentlyVerifiedFullSigningFingerprint": "F04DF50737AC1A884C4B3D718380596DA6E59C91",
+    "missing": [],
+    "originalArchiveFullPermissionsCompared": true,
+    "originalRecipeNetworkAcquisitionRepeated": true,
+    "producerOriginalCurlRawArchiveRetainedClaimed": false,
+    "regularBodyBytes": 6507718,
+    "selectedOriginalRootExtractionProfile": {
+      "defaultEffectiveUID": 0,
+      "dockerUserOverride": null,
+      "originalImageConfigSHA256": "b96918af0a640ac6a39781b1f731cf4fda2ccb7570ba0286461834453692be41",
+      "originalImageConfigUser": null
+    },
+    "sourceCodeExecutedByObserver": false,
+    "state": "original duplicate-fetched ALSA installed namespace observed"
+  },
+  "originalInputs": {
+    "ant": "1.10.15",
+    "bootJava": "24.0.2",
+    "bootstrap24Archive": {
+      "bytes": 138252362,
+      "mountedReadOnlyAtOriginalPublisherArgument": true,
+      "publisherDetachedSignatureVerified": true,
+      "publisherPrimaryFingerprint": "3B04D753C9050D9A5D343F39843C48A565F8F04B",
+      "sha256": "5563867bf1abfc466c59bf3d08e9957a30666fe96fb8f9c5bae939ab11d262d5"
+    },
+    "gcc": "10.3.1",
+    "generatorJava": "1.8.0_342-beta",
+    "gxx": "10.3.1",
+    "make": "4.3",
+    "operatorReadOnlyExternalJARCacheOverlay": {
+      "allOriginalDeclaredSHA256Matched": true,
+      "bytes": 9563529,
+      "jars": 13,
+      "partOfOriginalImageClaimed": false
+    },
+    "originalRecordedSourceCompilerJVMAndFlagsPreserved": true,
+    "physicalInputVerificationPassed": true,
+    "selectedOriginalImagePhysicalInputs": [
+      {
+        "ELFMachine": 183,
+        "bytes": 1075616,
+        "fullMode": 493,
+        "imageRootRelativePath": "usr/bin/aarch64-alpine-linux-musl-gcc",
+        "originalImageRootRelativeAliases": ["usr/bin/gcc"],
+        "role": "original-GCC10.3.1",
+        "sha256": "1a60342162d64b38870a29b72a744dcfb56ee274a08f2c02b277ae1717345572"
+      },
+      {
+        "ELFMachine": 183,
+        "bytes": 1075616,
+        "fullMode": 493,
+        "imageRootRelativePath": "usr/bin/aarch64-alpine-linux-musl-c++",
+        "originalImageRootRelativeAliases": ["usr/bin/g++"],
+        "role": "original-GXX10.3.1",
+        "sha256": "f41bf3ba11918d64a9e7f63f88c6e3a63ef65a94a02138294a46d2e38d159806"
+      },
+      {
+        "ELFMachine": 183,
+        "bytes": 222264,
+        "fullMode": 493,
+        "imageRootRelativePath": "usr/bin/make",
+        "originalImageRootRelativeAliases": [],
+        "role": "original-Make4.3",
+        "sha256": "a5aa7b27680d9436e7da5717060d782245c8ae87b501830d9d97b39542cb1def"
+      },
+      {
+        "ELFMachine": 183,
+        "bytes": 1415376,
+        "fullMode": 493,
+        "imageRootRelativePath": "usr/bin/strace",
+        "originalImageRootRelativeAliases": [],
+        "role": "original-strace5.14",
+        "sha256": "aa24d3786c188230cf18a8f1619186c91a90afeb5e3fa4db40f4b1e0ef125b44"
+      },
+      {
+        "ELFMachine": 183,
+        "bytes": 268096,
+        "fullMode": 493,
+        "imageRootRelativePath": "usr/bin/curl",
+        "originalImageRootRelativeAliases": [],
+        "role": "original-curl8.5.0",
+        "sha256": "cd07893373087f963ab456c66030e7abbd96cd52396b5e48ebf0d26b0fe4b683"
+      },
+      {
+        "ELFMachine": 183,
+        "bytes": 923376,
+        "fullMode": 493,
+        "imageRootRelativePath": "usr/bin/gpg",
+        "originalImageRootRelativeAliases": [],
+        "role": "original-GPG2.2.31",
+        "sha256": "e94db343a784b4663d25c8f5a0816d3cfa0d66bfa670d29c1d441ca5192a7b7a"
+      },
+      {
+        "ELFMachine": 183,
+        "bytes": 8576,
+        "fullMode": 493,
+        "imageRootRelativePath": "usr/lib/jvm/jdk8u342-b02/bin/java",
+        "originalImageRootRelativeAliases": ["usr/lib/jvm/jdk8/bin/java"],
+        "role": "original-generator-Java8u342",
+        "sha256": "35a7d8eb3a79e67cf33e6e803b383057bc7c78cf46c4b14de41bf9a68411daf7"
+      },
+      {
+        "ELFMachine": 183,
+        "bytes": 8712,
+        "fullMode": 493,
+        "imageRootRelativePath": "usr/lib/jvm/jdk8u342-b02/bin/javac",
+        "originalImageRootRelativeAliases": ["usr/lib/jvm/jdk8/bin/javac"],
+        "role": "original-generator-Javac8u342",
+        "sha256": "6a9f4cfed97c82fe7c80d463290e8c389203548ff9b16f6b513172e61d82d727"
+      },
+      {
+        "ELFMachine": null,
+        "bytes": 11730,
+        "fullMode": 493,
+        "imageRootRelativePath": "usr/local/apache-ant-1.10.15/bin/ant",
+        "originalImageRootRelativeAliases": ["usr/local/bin/ant"],
+        "role": "original-Ant1.10.15",
+        "sha256": "c4ea0c8cb1e043c030ec0012f7e80e70a23c190e5403da47186e229afc954c77"
+      },
+      {
+        "ELFMachine": null,
+        "bytes": 214509,
+        "fullMode": 420,
+        "imageRootRelativePath": "etc/ssl/certs/ca-certificates.crt",
+        "originalImageRootRelativeAliases": ["etc/ssl/cert.pem"],
+        "role": "original-Alpine141-CA-bundle",
+        "sha256": "824cefcee69de918c76b7b92776f304c3a4b7f6281539118bc1d41a9dd8476d9"
+      }
+    ],
+    "strace": "5.14"
+  },
+  "originalRecipe": {
+    "argv": [
+      "--clean-git-repo",
+      "--jdk-boot-dir",
+      "/home/jenkins/workspace/build-scripts/jobs/release/jobs/jdk25u/jdk25u-release-alpine-linux-aarch64-temurin/jdk24",
+      "--configure-args",
+      " --disable-warnings-as-errors --disable-ccache --enable-headless-only=yes --with-jobs=4",
+      "--target-file-name",
+      "OpenJDK25U-jdk_aarch64_alpine-linux_hotspot_25.0.4_7.tar.gz",
+      "--release",
+      "--clean-libs",
+      "--tag",
+      "jdk-25.0.4+7_adopt",
+      "--create-jre-image",
+      "--create-sbom",
+      "--enable-sbom-strace",
+      "--use-jep319-certs",
+      "--create-debug-image",
+      "--build-variant",
+      "temurin",
+      "jdk25u"
+    ],
+    "commit": "e6ba7dec3d07654074559310376a3ae89da5f4ac",
+    "entrypoint": "makejdk-any-platform.sh",
+    "historicalSBOMAlternateCommandExecuted": false,
+    "originalPublisherBuildMetadataSHA256": "229c05983ae538bce836a19d8869e8669e65cca0acb25c7baf8b3aeb097d5690",
+    "repository": "https://github.com/adoptium/temurin-build.git",
+    "sourceOrRecipePatchedByOperator": false,
+    "tree": "7cfc7558812d71233efe4ed05b2a024eda156d1d"
+  },
+  "originalSource": {
+    "annotatedTagOID": "c5ae717fb8a9fa420931267cd049bc5c45d6c251",
+    "archive": {
+      "bytes": 119696545,
+      "sha256": "842c1c1a19ee6a267818953bcc90ad43a0668963fae809815c20ccf9c196882b"
+    },
+    "commit": "a2ce02c38bc995274bb0599ce507849c1f8eccac",
+    "originalArchiveGitTreeProjectionVerified": true,
+    "originalRawGitCommitAndAnnotatedTagVerified": true,
+    "repository": "https://github.com/adoptium/jdk25u.git",
+    "tag": "jdk-25.0.4+7_adopt",
+    "tree": "7e9ad58f9e21c90130f07b89b5cc89f4e84d55e9"
+  },
+  "phases": [
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.195675916,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:48:38.144029061Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "fresh-volume-capacity",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:48:38.045474324Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 40.482643708,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:49:48.944260684Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "inert-materialization",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:49:10.032678144Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1084840000000042,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:49:51.063213442Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "gcc-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:49:51.014296637Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.173654667000008,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:49:52.152762837Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "gxx-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:49:52.116954686Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1458141659999939,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:49:53.360666993Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "boot24-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:49:53.297291694Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1612750410000103,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:49:54.490803189Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "generator-java-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:49:54.434313094Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1510652080000057,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:49:55.734224077Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "ant-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:49:55.604027919Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1669816250000054,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:49:56.802812276Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "make-version",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:49:56.759822628Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.225332249999994,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:49:57.970688092Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "strace-owned-child",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:49:57.924935846Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 5.217905458999994,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:50:03.597886155Z",
+      "nativeStateExitCode": 0,
+      "network": "bridge",
+      "phase": "original-curl-fixed-ca",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:49:59.159488395Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1.1344131670000053,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T03:50:04.444912831Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "observe-native-transport",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:50:04.368771463Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 1947.757035291,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T04:22:32.649904927Z",
+      "nativeStateExitCode": 0,
+      "network": "bridge",
+      "phase": "original-temurin-build",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T03:50:05.505233485Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 7.2340963750000356,
+      "exitCode": 0,
+      "finishedAt": "2026-11-17T04:22:39.82420751Z",
+      "nativeStateExitCode": 0,
+      "network": "none",
+      "phase": "observe-output",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T04:22:33.286064144Z",
+      "stopReason": null
+    },
+    {
+      "OOMKilled": false,
+      "elapsedSeconds": 4.195452166999985,
+      "exitCode": 1,
+      "finishedAt": "2026-11-17T04:22:44.181573219Z",
+      "nativeStateExitCode": 1,
+      "network": "none",
+      "phase": "inert-final-capture",
+      "positiveContainerAbsenceObserved": true,
+      "startedAt": "2026-11-17T04:22:40.521657682Z",
+      "stopReason": null
+    }
+  ],
+  "priorAttemptsPreserved": [
+    {
+      "attempt": 1,
+      "capturedAndCleaned": true,
+      "cause": "Operator guard expected stable generator version from directory spelling; actual pinned executable reported exact 1.8.0_342-beta. The guard was corrected with no suffix normalization.",
+      "sourceCommandInvoked": false
+    },
+    {
+      "attempt": 2,
+      "capturedAndCleaned": true,
+      "cause": "Original curl exited60 under the original 141-certificate image CA bundle: unable local issuer. Original source was not invoked. The subsequent explicit read-only transport profile adds one separately verified official public root.",
+      "sourceCommandInvoked": false
+    },
+    {
+      "attempt": 3,
+      "cause": "Original byte snapshot guard refused five zero-byte GPG Unix sockets. Capture-only recovery retained their exact typed metadata and all remaining bytes/modes/link targets, without rebuilding the source.",
+      "originalCaptureExitCode": 1,
+      "originalCaptureFailurePreserved": true,
+      "originalSourceExitCode": 0,
+      "outputObserverExitCode": 0
+    }
+  ],
+  "resources": {
+    "aggregateWallSeconds": 9000,
+    "captureReserveSeconds": 1200,
+    "foregroundManagedLeaseSeconds": 9600,
+    "historicalPublisherResourceEquivalenceClaimed": false,
+    "nativeCPUSet": "0-3",
+    "nativeCPUs": 4,
+    "nativeMemoryAndSwapBytes": 12884901888,
+    "nativePIDs": 2048,
+    "producerWallSeconds": 5400
+  },
+  "schemaVersion": 1,
+  "scope": "Original source command, new local SDK and complete opaque byte/typed-metadata capture only. Original work volume retained; cleanup and overall facet incomplete. No whole compiler/bootstrap/build/license graph completion.",
+  "sourceAfter": {
+    "HEADMatchesSelectedCommit": true,
+    "allBeforeAfterSHA256AndModesComparable": true,
+    "counts": {
+      "changedBytesOrFullModesOrKind": 0,
+      "missing": 0,
+      "sameBytesAndFullModes": 69947
+    },
+    "fullPhysicalSourceImmutabilityClaimed": false,
+    "newUntrackedFilesInventoried": false,
+    "observedOriginalSourceHEAD": {
+      "commit": "a2ce02c38bc995274bb0599ce507849c1f8eccac",
+      "observed": true
+    },
+    "originalProducerTransformsMustBeAttributedSeparately": false,
+    "originalTrackedBaselineBytesAndModesUnchanged": true,
+    "path": "recipe/workspace/build/src",
+    "trackedRegularSourceEntries": 69947
+  }
+}

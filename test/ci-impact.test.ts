@@ -97,10 +97,18 @@ test("CI declared native inputs match every workflow controller profile matrix a
   assert.deepEqual(selected(plan(["test/gate-context-csharp.test.ts"])), [
     "csharp-context-arm64",
   ]);
+  // Runtime provenance and resource package guards retain the product-program
+  // artifact audit dependencies, while Go retains shared artifact regressions.
+  // These conservative owners do not imply those jobs execute the F# native profile.
   assert.deepEqual(selected(plan(["scripts/fsharp-format-tools.Dockerfile"])), [
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
+    "go-workspaces-arm64",
+    "resource-release",
+    "resource-release-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
   ]);
   assert.deepEqual(selected(plan(["test/gate-ruby-extensions.test.ts"])), [
     "ruby-extensions-arm64",
@@ -460,15 +468,17 @@ test("CI Swift preparation import and new regression changes select both actual 
   ])
     assert.ok(result.sharedTestFiles.includes(file), file);
   const needs = Object.fromEntries(
-    ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
-      id,
-      {
-        result:
-          ["ci-plan", "checks"].includes(id) || result.selected[id]
-            ? "success"
-            : "skipped",
-      },
-    ]),
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [
+        id,
+        {
+          result:
+            ["ci-plan", "checks"].includes(id) || result.selected[id]
+              ? "success"
+              : "skipped",
+        },
+      ],
+    ),
   );
   const receipt = requireCiCompletion(result, needs);
   assert.equal(receipt.fullRevisionVerification, false);
@@ -537,6 +547,7 @@ const cProducerBoundaryInputs = [
   "test/binutils-input-preparation.test.ts",
   "test/binutils-retention-observer.test.ts",
   "test/c-producer-evidence.test.ts",
+  "test/c-producer-failed-diagnostics.test.ts",
   "test/c-producer-gcc-evidence.test.ts",
   "test/c-producer-local12h.test.ts",
   "test/c-producer-qualification.test.ts",
@@ -575,6 +586,7 @@ const cProducerRegressionFiles = [
   "test/binutils-input-preparation.test.ts",
   "test/binutils-retention-observer.test.ts",
   "test/c-producer-evidence.test.ts",
+  "test/c-producer-failed-diagnostics.test.ts",
   "test/c-producer-gcc-evidence.test.ts",
   "test/c-producer-local12h.test.ts",
   "test/c-producer-qualification.test.ts",
@@ -618,7 +630,13 @@ test("CI exact C producer inputs select every complete C Go and Node caller regr
     assert.deepEqual(selected(actual), inputs[file] ?? [], file);
     assert.deepEqual(actual.sharedTestFiles, expected, file);
     const needs = Object.fromEntries(
-      ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
+      [
+        "ci-plan",
+        "checks",
+        "full-suite-shards",
+        "host-validation",
+        ...jobs,
+      ].map((id) => [
         id,
         {
           result:
@@ -651,7 +669,13 @@ test("CI exact original-producer workflows retain actionlint and complete produc
       );
     assert.ok(actual.sharedTestFiles.includes("dist/test/actionlint.test.js"));
     const needs = Object.fromEntries(
-      ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
+      [
+        "ci-plan",
+        "checks",
+        "full-suite-shards",
+        "host-validation",
+        ...jobs,
+      ].map((id) => [
         id,
         {
           result:
@@ -1094,6 +1118,11 @@ test("CI operational release signature inputs select their exact native consumer
         "provider-SHA256SUMS.sig",
       ],
     },
+    {
+      job: "fsharp-format-arm64",
+      record: "fantomas.json",
+      files: ["nuget-verification.config"],
+    },
   ];
   let checked = 0;
   for (const family of families) {
@@ -1114,7 +1143,7 @@ test("CI operational release signature inputs select their exact native consumer
       checked++;
     }
   }
-  assert.equal(checked, 7);
+  assert.equal(checked, 8);
 });
 test("CI retained artifact data requires whole shared audits without unrelated native stacks and preserves native consumers", () => {
   const directory = "docs/measurements/artifact-identities-2026-10-21/";
@@ -1151,6 +1180,85 @@ test("CI retained artifact data requires whole shared audits without unrelated n
     "scala-extensions-arm64",
   ]);
   assert.ok(combined.sharedTestFiles.includes(artifactFile));
+});
+const documentaryMeasurements = [
+  "docs/measurements/glibc-u13-original-producer-2026-11-17.json",
+  "docs/measurements/sdk4-fork-original-notice-preservation-2026-11-17.json",
+  "docs/measurements/temurin25-original-producer-2026-11-17.json",
+] as const;
+test("CI reviewed documentary measurements retain complete shared controls and exact native consumers", () => {
+  for (const file of documentaryMeasurements) {
+    const result = plan([file]);
+    assert.equal(result.mode, "affected", file);
+    assert.equal(result.hostValidation, "not-selected", file);
+    assert.deepEqual(selected(result), [], file);
+    assert.deepEqual(
+      result.sharedTestFiles,
+      plan(["README.md"]).sharedTestFiles,
+    );
+    const combined = plan([file, "test/gate-scala-extensions.test.ts"], {
+      inputs: { ...inputs, [file]: ["csharp-context-arm64"] },
+    });
+    assert.deepEqual(selected(combined), [
+      "csharp-context-arm64",
+      "scala-extensions-arm64",
+    ]);
+  }
+});
+test("CI native input traversal follows each reviewed documentary measurement without admitting other docs inventories", async () => {
+  for (const file of documentaryMeasurements) {
+    const other = "docs/measurements/unreviewed-execution-inventory.json";
+    const controller = "scripts/native-controller.mjs";
+    const actual = await buildNativeInputs({
+      workflow: {
+        jobs: {
+          native: { steps: [{ run: "node " + controller }] },
+        },
+      },
+      requirements: {},
+      files: [controller, file, other],
+      readText: (name: string) =>
+        Promise.resolve(
+          name === controller
+            ? `readFile("${file}"); readFile("${other}")`
+            : "{}",
+        ),
+    });
+    assert.deepEqual(actual[file], ["native"], file);
+    assert.equal(Object.hasOwn(actual, other), false);
+    const result = planNativeJobs({
+      jobs: ["native"],
+      inputs: actual,
+      changed: [file],
+      eventName: "pull_request",
+      contractCurrent: true,
+      sourceBoundaries: [],
+    });
+    assert.equal(result.mode, "affected", file);
+    assert.deepEqual(result.selected, { native: true });
+  }
+});
+test("CI documentary boundary keeps adjacent JSON and stale or unsupported events on full fallback", () => {
+  for (const file of documentaryMeasurements) {
+    for (const adjacent of [
+      file + ".bak",
+      file + "/record.json",
+      file.replace("/measurements/", "/measurements0/"),
+      file.replace(".json", "0.json"),
+      file.replace("/measurements/", "/measurements/../"),
+      "/" + file,
+    ]) {
+      assert.equal(plan([adjacent]).mode, "full", adjacent);
+    }
+    assert.equal(plan([file], { contractCurrent: false }).mode, "full");
+    assert.equal(plan([file], { eventName: "workflow_dispatch" }).mode, "full");
+  }
+  assert.equal(
+    plan([documentaryMeasurements[0], "docs/measurements/new-record.json"])
+      .mode,
+    "full",
+  );
+  assert.equal(plan(["docs/gate-a-profiles.v1.json"]).mode, "full");
 });
 test("CI stale contracts and non-PR events select the complete inventory while missing history does not broaden known PR inputs", () => {
   for (const baseline of [null, { complete: false }]) {
@@ -1193,15 +1301,18 @@ test("CI stale contracts and non-PR events select the complete inventory while m
 test("CI completion requires selected jobs to pass and reports omitted jobs as unselected", () => {
   const result = plan(["test/gate-scala-extensions.test.ts"]);
   const needs = Object.fromEntries(
-    ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
-      id,
-      {
-        result:
-          id === "scala-extensions-arm64" || ["ci-plan", "checks"].includes(id)
-            ? "success"
-            : "skipped",
-      },
-    ]),
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [
+        id,
+        {
+          result:
+            id === "scala-extensions-arm64" ||
+            ["ci-plan", "checks"].includes(id)
+              ? "success"
+              : "skipped",
+        },
+      ],
+    ),
   );
   const receipt = requireCiCompletion(result, needs);
   assert.equal(receipt.complete, true);
@@ -1284,17 +1395,19 @@ test("CI completion YAML policy admits failed dependencies and skips a canceled 
   }
   const selected = plan(["test/gate-scala-extensions.test.ts"]);
   const needs: Record<string, { result: string }> = Object.fromEntries(
-    ["ci-plan", "checks", "host-validation", ...jobs].map((id) => [
-      id,
-      {
-        result:
-          id === "scala-extensions-arm64"
-            ? "failure"
-            : ["ci-plan", "checks"].includes(id)
-              ? "success"
-              : "skipped",
-      },
-    ]),
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [
+        id,
+        {
+          result:
+            id === "scala-extensions-arm64"
+              ? "failure"
+              : ["ci-plan", "checks"].includes(id)
+                ? "success"
+                : "skipped",
+        },
+      ],
+    ),
   );
   assert.equal(
     eligible(
@@ -1363,7 +1476,13 @@ test("CI initial wave stays within the free runner ceiling and native fanout req
   }
   assert.deepEqual(
     workflow.jobs["ci-complete"].needs.toSorted(),
-    ["ci-plan", "checks", "host-validation", ...jobs].sort(),
+    [
+      "ci-plan",
+      "checks",
+      "full-suite-shards",
+      "host-validation",
+      ...jobs,
+    ].sort(),
   );
   assert.deepEqual(workflow.jobs["dotnet-generator-extensions-arm64"].needs, [
     "ci-plan",
@@ -1498,8 +1617,8 @@ test("CI a successful pre-split JVM baseline cannot qualify the expanded phase i
   );
 });
 
-test("CI split matrix retains each runner's package cache before Linux installed-container acceptance", () => {
-  const steps = workflow.jobs.checks.steps;
+test("CI full-suite shard runners retain their package cache before Linux installed-container acceptance", () => {
+  const steps = workflow.jobs["full-suite-shards"].steps;
   const cache = steps.findIndex(
     (step: { run?: string }) =>
       step.run === "node scripts/prepare-package-cache.mjs",
@@ -1507,7 +1626,7 @@ test("CI split matrix retains each runner's package cache before Linux installed
   assert.ok(cache >= 0);
   assert.equal(
     steps[cache].if,
-    "env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-latest' && matrix.node == '22')",
+    "env.CHECKTRAIL_CI_MODE == 'full' && (matrix.os == 'ubuntu-26.04' && matrix.node == '22')",
   );
   for (const script of [
     "verify-review-container.mjs",
@@ -2113,9 +2232,9 @@ test("CI shared matrices retain every full command and use selected complete fil
     /needs.ci-plan.result == 'success'.*mode \|\| 'full'/,
   );
   assert.deepEqual(checks.strategy.matrix.include, [
-    { os: "ubuntu-latest", node: "22" },
-    { os: "ubuntu-latest", node: "24" },
-    { os: "ubuntu-latest", node: "26" },
+    { os: "ubuntu-26.04", node: "22" },
+    { os: "ubuntu-26.04", node: "24" },
+    { os: "ubuntu-26.04", node: "26" },
     { os: "macos-latest", node: "24" },
   ]);
   const fast = checks.steps.filter(
@@ -2125,10 +2244,17 @@ test("CI shared matrices retain every full command and use selected complete fil
   assert.equal(fast.length, 1);
   assert.equal(fast[0].if, "env.CHECKTRAIL_CI_MODE == 'affected'");
   const full = checks.steps.find((step: { run?: string }) =>
-    step.run?.includes("--full-suite"),
+    step.run?.startsWith(
+      "node scripts/verify-ci-full-suite-shard.mjs --shard0\n",
+    ),
   );
   assert.ok(full);
   assert.equal(full.if, "env.CHECKTRAIL_CI_MODE == 'full'");
+  assert.deepEqual(full.run.trim().split("\n"), [
+    "node scripts/verify-ci-full-suite-shard.mjs --shard0",
+    "node scripts/verify-required-native-tests.mjs tasks-runtime-manifest tasks-runtime-cli native-harness-cleanup tasks-runtime-startup go-installed-harness",
+    "CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js",
+  ]);
   for (const command of [
     "npm ci --ignore-scripts",
     "npm run typecheck",
@@ -2143,7 +2269,10 @@ test("CI shared matrices retain every full command and use selected complete fil
       undefined,
       command,
     );
-  assert.deepEqual(workflow.jobs["host-validation"].needs, ["ci-plan"]);
+  assert.deepEqual(workflow.jobs["host-validation"].needs, [
+    "ci-plan",
+    "actionlint",
+  ]);
   assert.match(workflow.jobs["host-validation"].if, /mode == 'full'/);
   const docs = plan(["docs/NATIVE-CI.md"], { baseline: null });
   assert.deepEqual(selected(docs), []);
@@ -2151,8 +2280,11 @@ test("CI shared matrices retain every full command and use selected complete fil
     "dist/test/artifact-evidence.test.js",
     "dist/test/ci-affected-tests.test.js",
     "dist/test/ci-development-dependencies.test.js",
+    "dist/test/ci-duration-workflow.test.js",
+    "dist/test/ci-full-suite-shards.test.js",
     "dist/test/ci-impact.test.js",
     "dist/test/ci-source-boundaries.test.js",
+    "dist/test/ci-validation-shards.test.js",
     "dist/test/gate-inventory.test.js",
     "dist/test/jvm-wrapper-phases.test.js",
   ]);
@@ -2252,6 +2384,7 @@ test("CI Windows lanes preserve frozen runtime pins and partition every required
       .filter((step) => step.if === condition && step.run !== undefined)
       .flatMap((step) => step.run!.trim().split("\n"));
   assert.deepEqual(commands("matrix.core"), [
+    "node scripts/verify-native-provenance-runtime.mjs ${{ matrix.slot }}",
     "node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}",
     "node scripts/verify-required-native-tests.mjs review-runtime-bindings probe-workspace-privacy",
     "node scripts/verify-review-runtime.mjs ${{ matrix.slot }}",
@@ -2724,7 +2857,7 @@ test("CI attempt archive lanes retain every frozen runtime, prerequisite and com
   }
   assert.equal(
     workflow.jobs["attempt-runtime-arm64"]["runs-on"],
-    "ubuntu-24.04-arm",
+    "ubuntu-26.04-arm",
   );
   for (const id of ["tasks-runtime", "tasks-runtime-arm64"])
     assert.equal(
@@ -3142,7 +3275,7 @@ test("generator CI keeps three closed shards original runtime limits and unique 
     "max-parallel": 3,
     matrix: { include: [{ shard: "0" }, { shard: "1" }, { shard: "2" }] },
   });
-  assert.equal(job["runs-on"], "ubuntu-24.04-arm");
+  assert.equal(job["runs-on"], "ubuntu-26.04-arm");
   assert.deepEqual(job.permissions, { contents: "read", actions: "read" });
   const keys = ["0", "1", "2"].flatMap((id) =>
     Object.values(api.generatorCIOutputKeys(id)),
@@ -4025,6 +4158,48 @@ test("CI observer helper consumers retain its complete two-callback regression w
   );
 });
 
+test("full completion requires all shared file shards and scoped runs cannot credit them", () => {
+  const full = plan(["package.json"]);
+  assert.equal(full.mode, "full");
+  const needs = Object.fromEntries(
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [id, { result: "success" }],
+    ),
+  );
+  assert.equal(requireCiCompletion(full, needs).fullRevisionVerification, true);
+  for (const result of ["failure", "cancelled", "skipped", "neutral"]) {
+    assert.throws(
+      () =>
+        requireCiCompletion(full, {
+          ...needs,
+          "full-suite-shards": { result },
+        }),
+      /outcome disagrees/,
+    );
+  }
+  const missing = structuredClone(needs);
+  delete missing["full-suite-shards"];
+  assert.throws(() => requireCiCompletion(full, missing), /inventory differs/);
+  const scoped = plan(["README.md"]);
+  const scopedNeeds = Object.fromEntries(
+    ["ci-plan", "checks", "full-suite-shards", "host-validation", ...jobs].map(
+      (id) => [
+        id,
+        { result: ["ci-plan", "checks"].includes(id) ? "success" : "skipped" },
+      ],
+    ),
+  );
+  assert.equal(requireCiCompletion(scoped, scopedNeeds).complete, true);
+  assert.throws(
+    () =>
+      requireCiCompletion(scoped, {
+        ...scopedNeeds,
+        "full-suite-shards": { result: "success" },
+      }),
+    /outcome disagrees/,
+  );
+});
+
 test("Scala extension phase inputs select their complete routing controls without widening the legacy Scala job", () => {
   for (const file of [
     "scripts/scala-native-ci-phases.mjs",
@@ -4039,4 +4214,219 @@ test("Scala extension phase inputs select their complete routing controls withou
       ),
     );
   }
+});
+
+test("CI preserved native binding labels retain exact controller ownership and restore conservative coverage if the binding starts executing", async () => {
+  const binding = "scripts/preserved-native-baseline-bindings.mjs";
+  const families = ["ruby", "java", "go"];
+  const data =
+    "import frozen from './preserved-baseline-cohorts.v1.json' with {type:'json'}; const runtimeBindings={ruby:{tools:['ruby']},java:{tools:['java']},go:{tools:['go']}};";
+  const build = (body: string, helper = binding) =>
+    buildNativeInputs({
+      workflow: {
+        jobs: {
+          ruby: { steps: [{ run: "node scripts/ruby-controller.mjs" }] },
+          java: {
+            steps: [
+              { run: "node scripts/verify-required-native-tests.mjs java" },
+            ],
+          },
+        },
+      },
+      requirements: Object.fromEntries(
+        families.map((name) => [
+          name,
+          [{ file: "dist/test/original-" + name + ".test.js" }],
+        ]),
+      ),
+      files: [
+        "scripts/ruby-controller.mjs",
+        helper,
+        "scripts/preserved-baseline-evidence.mjs",
+        "scripts/required-test-evidence.mjs",
+        "scripts/preserved-baseline-cohorts.v1.json",
+        ...families.map((name) => "test/original-" + name + ".test.ts"),
+      ],
+      readText: async (file: string) =>
+        file === "scripts/ruby-controller.mjs"
+          ? `import "./${helper.slice("scripts/".length)}"; import "./preserved-baseline-evidence.mjs"; const selection=['ruby'];`
+          : file === helper
+            ? body
+            : file === "scripts/preserved-baseline-evidence.mjs"
+              ? "import './required-test-evidence.mjs'; const runtimeToolName='go';"
+              : "{}",
+    });
+  const actual = await build(data);
+  assert.deepEqual(actual[binding], ["ruby"]);
+  assert.deepEqual(actual["scripts/preserved-baseline-evidence.mjs"], ["ruby"]);
+  assert.deepEqual(actual["scripts/required-test-evidence.mjs"], ["ruby"]);
+  assert.deepEqual(actual["scripts/preserved-baseline-cohorts.v1.json"], [
+    "ruby",
+  ]);
+  assert.deepEqual(actual["test/original-ruby.test.ts"], ["ruby"]);
+  assert.deepEqual(actual["test/original-java.test.ts"], ["java"]);
+  assert.equal(Object.hasOwn(actual, "test/original-go.test.ts"), false);
+  for (const mutation of [
+    "runRequiredTests([])",
+    "execFileSync('node', [])",
+    "import('./unknown-native-controller.mjs')",
+    "import child from 'node:child_process'",
+  ]) {
+    const changed = await build(data + mutation);
+    for (const family of families)
+      assert.ok(
+        changed["test/original-" + family + ".test.ts"]?.includes("ruby"),
+        mutation + ":" + family,
+      );
+  }
+  const adjacent = await build(
+    data,
+    "scripts/preserved-native-baseline-bindings-extra.mjs",
+  );
+  assert.ok(adjacent["test/original-java.test.ts"]?.includes("ruby"));
+});
+
+test("CI reviewed host baseline dispatcher keeps exact arguments and shared imports while changed or adjacent dispatchers remain conservative", async () => {
+  const dispatcher = "scripts/verify-native-baseline-host.mjs";
+  const body = await readFile(new URL(dispatcher, root), "utf8");
+  const families = ["swift", "gradle-preparation", "maven-preparation", "ruby"];
+  const build = (text: string, helper = dispatcher) => {
+    const files: Record<string, string> = {
+      [helper]: text,
+      "scripts/preserved-baseline-fresh-coordinator.mjs": "export {};",
+      "scripts/preserved-baseline-source-worker.mjs":
+        'import "./original-host-dependency.mjs";',
+      "scripts/original-host-dependency.mjs": "export {};",
+      ...Object.fromEntries(
+        families.map((name) => [
+          "test/original-" + name + ".test.ts",
+          "export {}; ",
+        ]),
+      ),
+    };
+    return buildNativeInputs({
+      workflow: {
+        jobs: Object.fromEntries(
+          families
+            .slice(0, 3)
+            .map((name) => [
+              name,
+              { steps: [{ run: "node " + helper + " " + name }] },
+            ]),
+        ),
+      },
+      requirements: Object.fromEntries(
+        families.map((name) => [
+          name,
+          [
+            {
+              file: "dist/test/original-" + name + ".test.js",
+              name: "original " + name,
+            },
+          ],
+        ]),
+      ),
+      files: Object.keys(files),
+      readText: async (file: string) => files[file]!,
+    });
+  };
+  const actual = await build(body);
+  for (const family of families.slice(0, 3))
+    assert.deepEqual(actual["test/original-" + family + ".test.ts"], [family]);
+  assert.equal(actual["test/original-ruby.test.ts"], undefined);
+  assert.deepEqual(
+    actual["scripts/original-host-dependency.mjs"],
+    families.slice(0, 3).sort(),
+  );
+  for (const changed of [
+    body +
+      "\nexecFileSync('node', ['scripts/verify-required-native-tests.mjs', 'ruby']);\n",
+    body + "\nawait import('./unknown-native-controller.mjs');\n",
+    body + "\n// A changed dispatcher requires a fresh ownership review.\n",
+  ]) {
+    const mutation = await build(changed);
+    for (const family of families)
+      assert.deepEqual(
+        mutation["test/original-" + family + ".test.ts"],
+        families.slice(0, 3).sort(),
+      );
+  }
+  const adjacent = await build(
+    body,
+    "scripts/verify-native-baseline-host-extra.mjs",
+  );
+  assert.ok(
+    adjacent["test/original-swift.test.ts"]?.includes("maven-preparation"),
+  );
+});
+
+test("CI actual native baseline graph preserves Java Ruby and separate Swift Maven Gradle paths", async () => {
+  const files = execFileSync(
+    "git",
+    ["ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+    { cwd: root, encoding: "utf8" },
+  )
+    .split("\0")
+    .filter(Boolean);
+  const actual = await buildNativeInputs({
+    workflow,
+    requirements: JSON.parse(
+      await readFile(
+        new URL("scripts/required-native-tests.json", root),
+        "utf8",
+      ),
+    ),
+    files,
+    readText: (file: string) => readFile(new URL(file, root), "utf8"),
+  });
+  assert.ok(actual["test/ruby.test.ts"].includes("ruby"));
+  assert.ok(!actual["test/ruby.test.ts"].includes("java"));
+  assert.ok(!actual["test/ruby.test.ts"].includes("maven"));
+  assert.ok(actual["test/java.test.ts"].includes("java"));
+  assert.ok(!actual["test/java.test.ts"].includes("ruby"));
+  assert.ok(!actual["test/java.test.ts"].includes("swift"));
+  assert.ok(actual["test/swift.test.ts"].includes("swift"));
+  assert.ok(!actual["test/swift.test.ts"].includes("maven"));
+  assert.ok(!actual["test/swift.test.ts"].includes("gradle"));
+  assert.deepEqual(actual["test/gradle-preparation.test.ts"], ["gradle"]);
+  assert.deepEqual(actual["test/maven-preparation.test.ts"], [
+    "jvm-wrappers-arm64",
+    "maven",
+  ]);
+  assert.deepEqual(actual["scripts/verify-native-baseline-host.mjs"], [
+    "gradle",
+    "jvm-wrappers-arm64",
+    "maven",
+    "swift",
+  ]);
+  for (const consumer of ["ruby", "java"])
+    assert.ok(
+      actual["scripts/preserved-native-baseline-controller.mjs"].includes(
+        consumer,
+      ),
+    );
+});
+
+test("CI failed C diagnostic controls require the reviewed producer inventory and preserve conservative adjacent-file fallback", () => {
+  const file = "test/c-producer-failed-diagnostics.test.ts";
+  assert.ok(cProducerSharedBoundary.testFiles.includes(file));
+  const qualified = plan([file], { baseline: null });
+  assert.equal(qualified.mode, "affected");
+  assert.ok(
+    qualified.sharedTestFiles.includes(
+      "dist/test/c-producer-failed-diagnostics.test.js",
+    ),
+  );
+  assert.deepEqual(selected(qualified), inputs[file] ?? []);
+  const missing = plan([file], {
+    producerInventory: producerInventory.filter((member) => member !== file),
+  });
+  assert.equal(missing.mode, "full");
+  assert.match(missing.reason, /review new test\/helper\/workflow names/);
+  for (const changed of [
+    "test/c-producer-failed-diagnostics-extra.test.ts",
+    "adjacent/" + file,
+    file + ".backup",
+  ])
+    assert.equal(plan([changed]).mode, "full", changed);
 });

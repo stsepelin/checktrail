@@ -1,10 +1,50 @@
 import assert from "node:assert/strict";
+import { Buffer } from "node:buffer";
 import { execFileSync } from "node:child_process";
 import process from "node:process";
 import { performance } from "node:perf_hooks";
 import { setTimeout } from "node:timers/promises";
 import { pathToFileURL } from "node:url";
-const transient = (error) => {
+const resumablePullTimeout = (error, reference) => {
+  if (
+    error?.code !== "ETIMEDOUT" ||
+    error.syscall !== "spawnSync docker" ||
+    error.path !== "docker" ||
+    !Array.isArray(error.spawnargs) ||
+    error.spawnargs.length !== 2 ||
+    error.spawnargs[0] !== "pull" ||
+    error.spawnargs[1] !== reference ||
+    !Number.isSafeInteger(error.pid) ||
+    error.pid <= 0 ||
+    error.status !== 143 ||
+    error.signal !== null ||
+    error.stderr !== "" ||
+    typeof error.stdout !== "string" ||
+    Buffer.byteLength(error.stdout) > 8 * 1024 * 1024
+  )
+    return false;
+  const lines = error.stdout.trimEnd().split("\n");
+  const repository = reference.slice(
+    reference.indexOf("/") + 1,
+    reference.indexOf("@"),
+  );
+  return (
+    lines.shift() === `${reference}: Pulling from ${repository}` &&
+    lines.some((line) =>
+      /^[a-f0-9]{12}: (?:Download|Pull) complete$/.test(line),
+    ) &&
+    lines.every((line) =>
+      /^[a-f0-9]{12}: (?:Pulling fs layer|Waiting|Verifying Checksum|Download complete|Pull complete|Already exists)$/.test(
+        line,
+      ),
+    )
+  );
+};
+const transient = (error, reference) => {
+  // execFileSync returns only after its child closes. Resume only the observed
+  // reaped Docker timeout with completed layers, within the original deadline.
+  if (error?.code === "ETIMEDOUT")
+    return resumablePullTimeout(error, reference);
   if (
     error?.signal ||
     error?.code === "ETIMEDOUT" ||
@@ -96,7 +136,7 @@ export async function pullPinnedImage(
       return { reference, attempts: attempt, deliveryComplete: true };
     } catch (error) {
       signal.throwIfAborted();
-      if (!transient(error) || attempt > waits.length) throw error;
+      if (!transient(error, reference) || attempt > waits.length) throw error;
       await onRetry({ attempt, waitMs: waits[attempt - 1] });
       if (remaining() <= waits[attempt - 1])
         throw Error("Pinned image delivery wall limit exhausted", {

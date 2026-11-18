@@ -315,6 +315,6 @@ test("Scala signature CI carries prepared proof data to a serial same-image step
     CHECKTRAIL_TEST_TASK: "ci-scala-extensions",
     CHECKTRAIL_SCALA_EXTENSIONS_IMAGE: "checktrail-scala-extensions:ci",
   });
-  assert.equal(job["runs-on"], "ubuntu-24.04-arm");
+  assert.equal(job["runs-on"], "ubuntu-26.04-arm");
   assert.equal(job["timeout-minutes"], 30);
 });

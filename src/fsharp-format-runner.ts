@@ -29,6 +29,11 @@ import {
 import { mavenHash, mavenLocal } from "./maven.js";
 import { jvmInvoker } from "./jvm-invoke.js";
 import { captureProcessOutput } from "./process-output.js";
+import { parseReleaseProofPin } from "./release-signature-proof.js";
+import {
+  fsharpReleaseProofEnvironment,
+  fsharpReleaseProofReference,
+} from "./fsharp-format-release-signature.js";
 async function sdkInstallation() {
   for (const directory of (process.env.PATH ?? "")
     .split(path.delimiter)
@@ -49,6 +54,9 @@ async function sdkInstallation() {
   throw Error("Selected F# runtime is unavailable");
 }
 async function main() {
+  const proofPin = parseReleaseProofPin(
+    process.env[fsharpReleaseProofEnvironment] ?? "",
+  );
   let sdkRoot: string;
   try {
     sdkRoot = await sdkInstallation();
@@ -77,7 +85,11 @@ async function main() {
     root,
     project,
     request.config.formatterDirectory,
+    proofPin,
   );
+  const releaseSignatureProof = proofPin
+    ? fsharpReleaseProofReference(proofPin)
+    : null;
   if (process.argv[4] === "--version") {
     process.stdout.write("Fantomas 8.0.7 (SDK 10.0.401; runtime 10.0.12)\n");
     return;
@@ -261,10 +273,12 @@ async function main() {
       root,
       project,
       request.config.formatterDirectory,
+      proofPin,
     );
     await verifyFsharpSdk(sdkRoot);
     const packet = fsharpPacketSchema.parse({
-      version: 1,
+      version: releaseSignatureProof ? 2 : 1,
+      ...(releaseSignatureProof ? { releaseSignatureProof } : {}),
       profile: request.config.profile,
       requestSha256: mavenHash(serialized),
       sdkRoot,

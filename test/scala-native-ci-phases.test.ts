@@ -664,7 +664,7 @@ test("Scala extension CI requires every native phase and keeps fresh installed v
   assert.equal(job.strategy["max-parallel"], 4);
   assert.deepEqual(job.needs, ["ci-plan", "actionlint"]);
   assert.match(job.if, /selected\['scala-extensions-arm64'\]/);
-  assert.equal(job["runs-on"], "ubuntu-24.04-arm");
+  assert.equal(job["runs-on"], "ubuntu-26.04-arm");
   assert.ok(
     workflow.jobs["ci-complete"].needs.includes("scala-extensions-arm64"),
   );

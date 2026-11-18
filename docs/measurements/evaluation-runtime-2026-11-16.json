@@ -1,0 +1,906 @@
+{
+  "schemaVersion": 1,
+  "observationKind": "independent-evaluation-runtime-acceptance",
+  "at": "2026-11-16T09:17:14.662Z",
+  "scope": "Original synthetic independent-evaluation setup acceptance at recorded main6809 and all eight selected source/fresh runtimes. No review-host trial, case access, effective authenticated host behavior or whole Gate A completion is inferred.",
+  "source": {
+    "repository": "https://github.com/stsepelin/checktrail",
+    "sourceCommit": "6809bf39c3aba1f1b582742c741051667461754e",
+    "testedCheckoutCommit": "6809bf39c3aba1f1b582742c741051667461754e",
+    "gitTree": "3054e9e4d610ffd29ec1644cb4c2bd5ecb0ee275",
+    "trackedSourceManifestSha256": "c28807fcd8d83670bc0e3edf91429c5149cc9bf38de03ae56afc5d7278d8c03c",
+    "compiledEngine": {
+      "schemaVersion": 1,
+      "fileCount": 1000,
+      "bytes": 16745489,
+      "treeSha256": "78ae46322683423eb3c504c5b798259cd102c1c46464e23e5ccb601f7066535d",
+      "manifestSha256": "29472470c7f71e89d2efaaece15c8b8f14815856f8b7b07fe9d59b1ead7cddd5",
+      "beforeAfterByteIdentitiesMatch": true,
+      "dependencyBytesCaptured": false,
+      "actualModuleLoadsTraced": false,
+      "producerSourceBuildVerified": false
+    },
+    "compiledCodeSha256": "78ae46322683423eb3c504c5b798259cd102c1c46464e23e5ccb601f7066535d",
+    "wholeHarnessTreeSha256": "4a3cf1ef4937205715ac187d12d3d27eb863ab04ab10c5e925df57da1593ce5c",
+    "evaluationHarnessSha256": "4ccd1e5e0bd03583d81a0fd22fe7831ea96acc82cf0ede44ff0746146a5a9c58",
+    "acceptanceFile": "dist/test/gate-independent-evaluation-protocol.test.js",
+    "acceptanceFileSha256": "d9557751910b20c70a031368de46b2abcda6f0af1e900d7e129d255592dc585c",
+    "selectedRequirementsSha256": "f10b74ce0a3ff9f78d58bb87096a0e09aaa13d9d400415a8f6e6a7d8f59c4ea5",
+    "inventoryFile": "docs/gate-a-profiles.v1.json",
+    "inventorySha256": "43f8c8f11df5d1bba0a4660cfe6d9011fb29834b357ef6254a7526156fa2b8a7",
+    "inventoryScopeSha256": "acddaba1dd782390afe48296e1e8e1fd0409df0658ad1cf0aa14c6f19a57d144",
+    "requiredNativeTestsSha256": "f3edc30902801c432fe6f1ed71835287c2aee09627a82e331ccf3288b2c8c677",
+    "packageManifestSha256": "a7baf2f7479a619daca39c307ecd29a1502e86cdac63b935b21da0b1ae391c71",
+    "packageLockSha256": "132654a52917f06104ee4b187dc20f8a919ada0800fa4c8d869bee4efd280e95"
+  },
+  "run": {
+    "id": 43635572499,
+    "attempt": 1,
+    "url": "https://github.com/stsepelin/checktrail/actions/runs/43635572499",
+    "conclusion": "success"
+  },
+  "requiredCases": [
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "name": "independent-evaluation-protocol installed acceptance"
+    }
+  ],
+  "runtimeSlots": [
+    {
+      "slot": "ci-linux-node22",
+      "job": {
+        "id": 132572668522,
+        "name": "tasks-runtime (ci-linux-node22)",
+        "url": "https://github.com/stsepelin/checktrail/actions/runs/43635572499/job/132572668522",
+        "runAttempt": 1,
+        "conclusion": "success",
+        "startedAt": "2026-11-14T20:52:44Z",
+        "completedAt": "2026-11-14T21:06:32Z"
+      },
+      "originalLog": {
+        "bytes": 1455543,
+        "sha256": "6e8b2f15ede7d34a6965544ffd58bd1d9ebb74400ced2098a3ff46e0ac1b21d0",
+        "jsonLine": 547,
+        "jsonPath": "$",
+        "jsonLineSha256": "1c54c0b79edf2ec94707f59b75a6789fee971e3571b842bdc1e9c34589462323"
+      },
+      "runtime": {
+        "slot": "ci-linux-node22",
+        "node": "22.23.3",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261111.370.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "nodeExecutableSha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-linux-node22",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "source": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "profileEvidenceSha256": "da720f6a61a51038e261f5c1ec7d2407d114fbeb9c31f90d9bb3aa634f8c2ff0",
+        "ledgerSha256": "d6e8f6360abf68e449f564f41f1e2778e79ad884bc36baac01c4865e3fb4a29f"
+      },
+      "freshInstalled": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "runtimeReceiptRequired": 9,
+        "runtimeReceiptPassed": 9,
+        "runtimeReceiptComplete": true,
+        "profileEvidenceSha256": "174c09687fe87f092088a4b495876e14948272aa281f2320bd0fc0c63c44ade6",
+        "runtimeLedgerSha256": "abdbb82d47e86e847d7e7ac7b086a2c63b6b4ace1912e2547e0e11172404886a",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "reportedTarballSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+        "reportedProductionDependencyLockSha256": "9c6f36866d5aeae575606452e11878447807d45d397802e371a9623dacb270d4",
+        "externalSdkDependencyMatchedRecordedLock": true
+      },
+      "caseFileBeforeAfterMatched": true,
+      "sourceAndInstalledRuntimeAndEngineMatched": true
+    },
+    {
+      "slot": "ci-linux-node24",
+      "job": {
+        "id": 132572668591,
+        "name": "tasks-runtime (ci-linux-node24)",
+        "url": "https://github.com/stsepelin/checktrail/actions/runs/43635572499/job/132572668591",
+        "runAttempt": 1,
+        "conclusion": "success",
+        "startedAt": "2026-11-14T20:49:50Z",
+        "completedAt": "2026-11-14T21:02:39Z"
+      },
+      "originalLog": {
+        "bytes": 1455440,
+        "sha256": "785efcd106e6579f2ad2f25eb401f7dbf3c69eb3100d06e3cf8c330c6d87aab8",
+        "jsonLine": 546,
+        "jsonPath": "$",
+        "jsonLineSha256": "35834d7d54ebd2779947d5f34503d3aeebed9a55bde3590f15d60dbd4e1714ce"
+      },
+      "runtime": {
+        "slot": "ci-linux-node24",
+        "node": "24.21.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261111.370.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "nodeExecutableSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-linux-node24",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "24.21.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "source": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "profileEvidenceSha256": "b04f9beef8b0e4df963cea4ab65b07e656b0f5d2132dcf4060d9b4e255a0ea93",
+        "ledgerSha256": "43a2568e5e6178a2b75cb4e901fc167e472f8ca3ea0aeea707839a5ff7cc9a6a"
+      },
+      "freshInstalled": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "runtimeReceiptRequired": 9,
+        "runtimeReceiptPassed": 9,
+        "runtimeReceiptComplete": true,
+        "profileEvidenceSha256": "1a20c8f62cfbc6f56a4aa419502f4ae1bbd019fcd93924c5aa50156aa7c92783",
+        "runtimeLedgerSha256": "df0b7da3278a9fa00d25bcd84d8d4e85b714292b075ae2d8dcbd41770ad78c9b",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "reportedTarballSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+        "reportedProductionDependencyLockSha256": "d18ef60395b0544b65f105f68bd899bf25961a71fcbbc1bcba055d478b642641",
+        "externalSdkDependencyMatchedRecordedLock": true
+      },
+      "caseFileBeforeAfterMatched": true,
+      "sourceAndInstalledRuntimeAndEngineMatched": true
+    },
+    {
+      "slot": "ci-linux-node26",
+      "job": {
+        "id": 132572668639,
+        "name": "tasks-runtime (ci-linux-node26)",
+        "url": "https://github.com/stsepelin/checktrail/actions/runs/43635572499/job/132572668639",
+        "runAttempt": 1,
+        "conclusion": "success",
+        "startedAt": "2026-11-14T20:49:48Z",
+        "completedAt": "2026-11-14T21:03:16Z"
+      },
+      "originalLog": {
+        "bytes": 1455429,
+        "sha256": "99f79cfc55a0d90fe54c6f5ab9ed175db3a0db110201e298433b1dda6c4f8b1d",
+        "jsonLine": 546,
+        "jsonPath": "$",
+        "jsonLineSha256": "966fb5059aad760c4ae90dfdd65013f23dedc4d4f7bbd37c6fd3fbfff16501f5"
+      },
+      "runtime": {
+        "slot": "ci-linux-node26",
+        "node": "26.10.0",
+        "platform": "linux",
+        "architecture": "x64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "distributionId": "ubuntu",
+        "distributionVersion": "24.04",
+        "distributionSha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763",
+        "imageOS": "ubuntu24",
+        "imageVersion": "20261111.370.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "nodeExecutableSha256": "ab9c8eecf9f82d6693cdc3accced17034065c8d96213b0aa76a7e803d20ae1da",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-linux-node26",
+        "platform": "linux",
+        "architecture": "x64",
+        "osFamily": "Ubuntu 24.04",
+        "node": "26.10.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "source": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "profileEvidenceSha256": "02a4fb4df232015485e72ba3f32273dc1be96b1fbef43bac2a655eb7c1036499",
+        "ledgerSha256": "eef9756dfed5449aa6e149d69100a1d4bc4709e9720fcaa823b7cf8ac4b6548e"
+      },
+      "freshInstalled": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "runtimeReceiptRequired": 9,
+        "runtimeReceiptPassed": 9,
+        "runtimeReceiptComplete": true,
+        "profileEvidenceSha256": "bb7fbe43b14f96beadc96b8e01c70f43b6ed272f7f1abff8d2cdd17585b3f5c2",
+        "runtimeLedgerSha256": "e80f386caf18f9b4de2e7158ffe05cf9d6dca9605a716a839ea9934762eb06fa",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "reportedTarballSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+        "reportedProductionDependencyLockSha256": "af93d476787e46c6ce33ed963e4acac76b73b0baec48b20064e3c91e05622fef",
+        "externalSdkDependencyMatchedRecordedLock": true
+      },
+      "caseFileBeforeAfterMatched": true,
+      "sourceAndInstalledRuntimeAndEngineMatched": true
+    },
+    {
+      "slot": "ci-macos-node22",
+      "job": {
+        "id": 132572668576,
+        "name": "tasks-runtime (ci-macos-node22)",
+        "url": "https://github.com/stsepelin/checktrail/actions/runs/43635572499/job/132572668576",
+        "runAttempt": 1,
+        "conclusion": "success",
+        "startedAt": "2026-11-14T20:27:21Z",
+        "completedAt": "2026-11-14T20:41:18Z"
+      },
+      "originalLog": {
+        "bytes": 1456004,
+        "sha256": "3e8adb606f80931f6d5d3eb65d3d1b64f2b988f83dc9cd591ae9ade30434e061",
+        "jsonLine": 547,
+        "jsonPath": "$",
+        "jsonLineSha256": "3bafd6a77e66cf9e19c7d86596704b919729bc9ecee972fe5b1ee2eb9717a89b"
+      },
+      "runtime": {
+        "slot": "ci-macos-node22",
+        "node": "22.23.3",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Mon Oct 12 00:39:04 PDT 2026; root:xnu-12377.161.15.701.48~2/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261102.0473.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "nodeExecutableSha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-macos-node22",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "source": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "profileEvidenceSha256": "875be12247dbe14d43b709c5478faee8c086c1098e3212473200d3434fd617ce",
+        "ledgerSha256": "c3ec9f42de6ab0075261264f79a9b83132c35be8d17547b4ce99246a26d40726"
+      },
+      "freshInstalled": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "runtimeReceiptRequired": 9,
+        "runtimeReceiptPassed": 9,
+        "runtimeReceiptComplete": true,
+        "profileEvidenceSha256": "05906d57f9ed5d518280d5b02547ab9927714c3bbb2def696904a17b12b24eaf",
+        "runtimeLedgerSha256": "f1f8572b9bada269d02a42a967e161bcbd15c02fa664e402b415109effb24e40",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "reportedTarballSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+        "reportedProductionDependencyLockSha256": "aae9bb7e1e70cca895e571f915350bef32c5f535a16e87f3855866658337f0be",
+        "externalSdkDependencyMatchedRecordedLock": true
+      },
+      "caseFileBeforeAfterMatched": true,
+      "sourceAndInstalledRuntimeAndEngineMatched": true
+    },
+    {
+      "slot": "ci-macos-node24",
+      "job": {
+        "id": 132572668578,
+        "name": "tasks-runtime (ci-macos-node24)",
+        "url": "https://github.com/stsepelin/checktrail/actions/runs/43635572499/job/132572668578",
+        "runAttempt": 1,
+        "conclusion": "success",
+        "startedAt": "2026-11-14T20:40:50Z",
+        "completedAt": "2026-11-14T20:53:13Z"
+      },
+      "originalLog": {
+        "bytes": 1456091,
+        "sha256": "99598f5415e5e0bd649377ea4c7c2c420a8311942c47492c8cd28ebf93d26c01",
+        "jsonLine": 548,
+        "jsonPath": "$",
+        "jsonLineSha256": "0be302c3c0670d1c8cd3bd3f842ad6d7f7c3e8a088b8b8a1f81fdaedac9f263a"
+      },
+      "runtime": {
+        "slot": "ci-macos-node24",
+        "node": "24.20.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Mon Oct 12 00:39:04 PDT 2026; root:xnu-12377.161.15.701.48~2/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261102.0473.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-macos-node24",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "24.20.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "source": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "profileEvidenceSha256": "9144c31f9755e8397170d5b8d565acab70fdd1707abda772cd1f615ff83acf0c",
+        "ledgerSha256": "037b381ae4f6941442b2daee62196bee3a84b64a19f50f8d9fa17d75fc17d25e"
+      },
+      "freshInstalled": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "runtimeReceiptRequired": 9,
+        "runtimeReceiptPassed": 9,
+        "runtimeReceiptComplete": true,
+        "profileEvidenceSha256": "97e8987a4283d3ad31f728657592e681b5ca5a23d51ca22be66ce7347e6a9859",
+        "runtimeLedgerSha256": "81fc008776d2ccaee34950715139d088c1dc3a65197e574306a551011b2c55e4",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "reportedTarballSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+        "reportedProductionDependencyLockSha256": "6a1109785be6ec38319c12c747bb3d2020989f0887785cd7a9ed256d8ba64e48",
+        "externalSdkDependencyMatchedRecordedLock": true
+      },
+      "caseFileBeforeAfterMatched": true,
+      "sourceAndInstalledRuntimeAndEngineMatched": true
+    },
+    {
+      "slot": "ci-macos-node26",
+      "job": {
+        "id": 132572668575,
+        "name": "tasks-runtime (ci-macos-node26)",
+        "url": "https://github.com/stsepelin/checktrail/actions/runs/43635572499/job/132572668575",
+        "runAttempt": 1,
+        "conclusion": "success",
+        "startedAt": "2026-11-14T20:28:17Z",
+        "completedAt": "2026-11-14T20:42:35Z"
+      },
+      "originalLog": {
+        "bytes": 1455955,
+        "sha256": "3b07f51ed51cc2405414f8e33b9d9b706d7ae532c0c8fa56a9351521820240e5",
+        "jsonLine": 547,
+        "jsonPath": "$",
+        "jsonLineSha256": "3e1c6d661ae138c87e3f18dc9e000f96e18757c485a6a9d74ba7dd598b00518d"
+      },
+      "runtime": {
+        "slot": "ci-macos-node26",
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osRelease": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Mon Oct 12 00:39:04 PDT 2026; root:xnu-12377.161.15.701.48~2/RELEASE_ARM64_VMAPPLE",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "macos26",
+        "imageVersion": "20261102.0473.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "nodeExecutableSha256": "8bebc3d846767864093af8619b1a6dc2ff01dea4f643b8bdb5e8cbd51bf6756d",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "ci-macos-node26",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "osFamily": "macOS 26",
+        "node": "26.9.0",
+        "exactOsImageIdentityRequired": true
+      },
+      "source": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "profileEvidenceSha256": "d2357b2f29e0b7a5063e515644f4eb1e623d9168e626dff606f5eccb97aeca10",
+        "ledgerSha256": "b1b0d9df0dcd88d5605952c0209b2e656584c4a4797d6454da49af188ebc1e21"
+      },
+      "freshInstalled": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "runtimeReceiptRequired": 9,
+        "runtimeReceiptPassed": 9,
+        "runtimeReceiptComplete": true,
+        "profileEvidenceSha256": "3df32c61c4d97020f663e07fffe701965d5491fd7990941ded3064fc72f4676a",
+        "runtimeLedgerSha256": "cb6176f5e3309d838b12e78670f6c72d6777e702148ad0aae60da54457292ce5",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "reportedTarballSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+        "reportedProductionDependencyLockSha256": "d29826e1c5895125504f738fefef66c401f7197de98e4189165eb3c355aeac39",
+        "externalSdkDependencyMatchedRecordedLock": true
+      },
+      "caseFileBeforeAfterMatched": true,
+      "sourceAndInstalledRuntimeAndEngineMatched": true
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "job": {
+        "id": 132572668517,
+        "name": "tasks-runtime-arm64",
+        "url": "https://github.com/stsepelin/checktrail/actions/runs/43635572499/job/132572668517",
+        "runAttempt": 1,
+        "conclusion": "success",
+        "startedAt": "2026-11-14T21:07:36Z",
+        "completedAt": "2026-11-14T21:22:30Z"
+      },
+      "originalLog": {
+        "bytes": 1484494,
+        "sha256": "05beed37b4fdc6b1a6e570104bce7c9bc25123202d8e8c84c0561085e1bd1919",
+        "jsonLine": 500,
+        "jsonPath": "$.evaluationRuntime",
+        "jsonLineSha256": "39ab4733306bc913fc8ff764700487cdb7bde5c8293e7c5c36e6102506ecb03f"
+      },
+      "runtime": {
+        "slot": "native-linux-arm64-node22",
+        "node": "22.23.2",
+        "platform": "linux",
+        "architecture": "arm64",
+        "osRelease": "7.0.0-1017-azure",
+        "osVersion": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 19:06:39 UTC 2026",
+        "distributionId": "alpine",
+        "distributionVersion": "3.24.1",
+        "distributionSha256": "3365ce31cddce87a228f1e7f17595960f836727ab68868663eb8cc06249004c9",
+        "imageOS": null,
+        "imageVersion": null,
+        "containerReference": "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+        "containerImageId": "sha256:828963118f6838ebdaf6b01b9b24d10c5dffe2f4aaf3ebca33d0d3f74366833e",
+        "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+        "systemPowerShellSha256": null,
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "native-linux-arm64-node22",
+        "platform": "linux",
+        "architecture": "arm64",
+        "node": "22.23.2",
+        "exactOsImageIdentityRequired": true
+      },
+      "source": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "profileEvidenceSha256": "3efecbee0eb7479e324a31b29cff21d2c7b12df911a083afbc09d525adf82351",
+        "ledgerSha256": "1cdae74c7f2ab53e5db7949e17a7d4993a45f26da07bc24b1cdaba381372ca31"
+      },
+      "freshInstalled": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "runtimeReceiptRequired": 9,
+        "runtimeReceiptPassed": 9,
+        "runtimeReceiptComplete": true,
+        "profileEvidenceSha256": "a2eacd045a9749c3a37aeae80b4aa80039f95ff9040a022def9e8834fba3c73c",
+        "runtimeLedgerSha256": "7ed43f4bf996177b230aae6a8e42cfa7d8ea20547da66a6e8186734a4804b3fb",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "reportedTarballSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+        "reportedProductionDependencyLockSha256": "d80fd43bfa88284dd8bd0152797bc570893539d8d0d8cbf94393abbaa66bdbdf",
+        "externalSdkDependencyMatchedRecordedLock": true
+      },
+      "caseFileBeforeAfterMatched": true,
+      "sourceAndInstalledRuntimeAndEngineMatched": true
+    },
+    {
+      "slot": "windows-node22",
+      "job": {
+        "id": 132572668570,
+        "name": "tasks-runtime (windows-node22)",
+        "url": "https://github.com/stsepelin/checktrail/actions/runs/43635572499/job/132572668570",
+        "runAttempt": 1,
+        "conclusion": "success",
+        "startedAt": "2026-11-14T20:18:57Z",
+        "completedAt": "2026-11-14T20:52:17Z"
+      },
+      "originalLog": {
+        "bytes": 1433020,
+        "sha256": "387ad1500b2d047b4cdad1042d1429f9d1f0d997a1cca563f528f07fadd7455c",
+        "jsonLine": 498,
+        "jsonPath": "$",
+        "jsonLineSha256": "93959eac83c8a69f3be49856a7ff4220bb05c71efb3b1bbe0c5747461b415ffe"
+      },
+      "runtime": {
+        "slot": "windows-node22",
+        "node": "22.23.3",
+        "platform": "win32",
+        "architecture": "x64",
+        "osRelease": "10.0.26100",
+        "osVersion": "Windows Server 2025 Datacenter",
+        "distributionId": null,
+        "distributionVersion": null,
+        "distributionSha256": null,
+        "imageOS": "win25-vs2026",
+        "imageVersion": "20261103.298.1",
+        "containerReference": null,
+        "containerImageId": null,
+        "nodeExecutableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+        "systemPowerShellSha256": "41796f1f3d81f921fdb4030c865f9dcf5032a2a1b49dde148bbc99e8d10f6e8c",
+        "hostedImageMetadataAttested": false,
+        "containerImageMetadataAttested": false
+      },
+      "selectedRuntime": {
+        "id": "windows-node22",
+        "platform": "win32",
+        "architecture": "x64",
+        "osFamily": "Windows Server 2025",
+        "node": "22.23.3",
+        "exactOsImageIdentityRequired": true
+      },
+      "source": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "profileEvidenceSha256": "a3a4540020b3212d56f251b2f30bf1bf52a95b4ead8ae5ac4b367e82573e57f2",
+        "ledgerSha256": "6603cfac1f3af7817d27080e212a14d3f29b74d9d8cfcff8d3bd5369a379d6a1"
+      },
+      "freshInstalled": {
+        "required": 9,
+        "passed": 9,
+        "complete": true,
+        "runtimeReceiptRequired": 9,
+        "runtimeReceiptPassed": 9,
+        "runtimeReceiptComplete": true,
+        "profileEvidenceSha256": "afce19c0f7b186e5212284980d46bd2d8428a537c7c81358ac15ec99a7959297",
+        "runtimeLedgerSha256": "96119c4ff46636806e4339fc9713879e734a875c66d4103bb7cbbb8ddf5fad8b",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "harnessOutsideInstalledPackage": true,
+        "reportedTarballSha256": "162dcb186670f481c5111f04207a47fc874395bd215bfbe8503fbccb63bd2b31",
+        "reportedProductionDependencyLockSha256": "52cf61bf98dd100a72568c2bc82d62add8e60b11587f8ea951ae2f5f084a77d9",
+        "externalSdkDependencyMatchedRecordedLock": true
+      },
+      "caseFileBeforeAfterMatched": true,
+      "sourceAndInstalledRuntimeAndEngineMatched": true
+    }
+  ],
+  "sourceAndInstalledNamedCasesEach": 9,
+  "sourceNamedCasesReconciled": 72,
+  "freshInstalledNamedCasesReconciled": 72,
+  "requiredCasesSkipped": 0,
+  "negativeControls": [
+    {
+      "slot": "ci-linux-node22",
+      "case": "source skipped terminal",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node22",
+      "case": "source foreign file identity",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node22",
+      "case": "source missing named case",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node22",
+      "case": "installed selected runtime swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node22",
+      "case": "installed engine swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node24",
+      "case": "source skipped terminal",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node24",
+      "case": "source foreign file identity",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node24",
+      "case": "source missing named case",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node24",
+      "case": "installed selected runtime swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node24",
+      "case": "installed engine swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node26",
+      "case": "source skipped terminal",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node26",
+      "case": "source foreign file identity",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node26",
+      "case": "source missing named case",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node26",
+      "case": "installed selected runtime swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-linux-node26",
+      "case": "installed engine swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node22",
+      "case": "source skipped terminal",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node22",
+      "case": "source foreign file identity",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node22",
+      "case": "source missing named case",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node22",
+      "case": "installed selected runtime swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node22",
+      "case": "installed engine swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node24",
+      "case": "source skipped terminal",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node24",
+      "case": "source foreign file identity",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node24",
+      "case": "source missing named case",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node24",
+      "case": "installed selected runtime swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node24",
+      "case": "installed engine swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node26",
+      "case": "source skipped terminal",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node26",
+      "case": "source foreign file identity",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node26",
+      "case": "source missing named case",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node26",
+      "case": "installed selected runtime swap",
+      "rejected": true
+    },
+    {
+      "slot": "ci-macos-node26",
+      "case": "installed engine swap",
+      "rejected": true
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "case": "source skipped terminal",
+      "rejected": true
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "case": "source foreign file identity",
+      "rejected": true
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "case": "source missing named case",
+      "rejected": true
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "case": "installed selected runtime swap",
+      "rejected": true
+    },
+    {
+      "slot": "native-linux-arm64-node22",
+      "case": "installed engine swap",
+      "rejected": true
+    },
+    {
+      "slot": "windows-node22",
+      "case": "source skipped terminal",
+      "rejected": true
+    },
+    {
+      "slot": "windows-node22",
+      "case": "source foreign file identity",
+      "rejected": true
+    },
+    {
+      "slot": "windows-node22",
+      "case": "source missing named case",
+      "rejected": true
+    },
+    {
+      "slot": "windows-node22",
+      "case": "installed selected runtime swap",
+      "rejected": true
+    },
+    {
+      "slot": "windows-node22",
+      "case": "installed engine swap",
+      "rejected": true
+    }
+  ],
+  "verificationRecipeSourceCommit": "6809bf39c3aba1f1b582742c741051667461754e",
+  "verificationRecipeSourceFiles": [
+    {
+      "file": "scripts/evaluation-runtime-evidence.mjs",
+      "sha256": "a6acf620f840a3e3cf237d229f6d4872734679e9d302092fdcc003e78c6d27ac"
+    },
+    {
+      "file": "scripts/attempt-output-evidence.mjs",
+      "sha256": "9d1d3bdf945dddbbcbc1290125cd41a6ee37dc0939b2a3998599eb6c5ee66bea"
+    },
+    {
+      "file": "scripts/compiled-engine-evidence.mjs",
+      "sha256": "d25ec3cbceeafac15bd995e6461024fbda1f7b06b03b50f60d43ff8fdca3cf32"
+    },
+    {
+      "file": "scripts/consumer-native-acceptance-frame.mjs",
+      "sha256": "9f079ef9fc951cbbade8216367b68482ba4f7da230c1e0592fe72631d8ab40fb"
+    }
+  ],
+  "verificationRecipeSha256": "877e38f366e13d33d7c859fc653d1883d4b00e77b5279435cff68f77cef7f05d",
+  "verificationRecipeSha256Algorithm": "SHA-256 of UTF-8 JSON.stringify(verificationRecipeSourceFiles), preserving array and object property order.",
+  "evidenceRetention": {
+    "source": "Original completed GitHub Actions job-log JSON, not consumer-runtime receipt ZIPs.",
+    "jsonLineEncoding": "Exact UTF-8 JSON-containing log line after removal of the GitHub timestamp prefix, retaining an original CR before the final LF where present. ARM64 retains the outer foundation packet; jsonPath selects its evaluationRuntime member.",
+    "projectionOnly": true,
+    "originalPacketBodiesIncluded": false,
+    "consumerReceiptZipIncludesThisCohort": false,
+    "dedicatedEvaluationArtifactUploadConfigured": false,
+    "separateWindowsConsumerLane": {
+      "jobId": 132572668487,
+      "jobName": "tasks-runtime (windows-consumer-node22)",
+      "independentStep": "skipped; not selected in the consumer-only lane",
+      "qualifiedWindowsProducerJobId": 132572668570
+    },
+    "reportedPackageTarballsIndependentlyReconstructed": false
+  },
+  "reinspection": {
+    "trustedCurrentValidatorsReplayed": true,
+    "sourceBeforeAfterUnchanged": true,
+    "recordedSourceRecompiledForByteComparison": true,
+    "nativeJobsRerun": false,
+    "downloadedCodeExecuted": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "privateProspectivePolicyReboundByThisMeasurement": false,
+  "hostAttestationPerformed": false,
+  "wholeUpstreamClosureVerified": false,
+  "qualifiesNewerSource": false,
+  "wholeGateAMatrixComplete": false,
+  "gateAComplete": false
+}

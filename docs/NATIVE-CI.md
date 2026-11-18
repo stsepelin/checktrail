@@ -1,5 +1,50 @@
 # Required native CI evidence
 
+## Current Linux runner selection
+
+Current Linux workflow placements use explicit `ubuntu-26.04` for x64 and
+`ubuntu-26.04-arm` for ARM64, including Linux matrix rows and host-baseline
+conditions. Existing macOS/Windows selections, Node/tool pins, check cohorts,
+trigger boundaries and native command limits remain unchanged. Older dated
+measurements retain their original runner identities; they do not qualify this
+new selection.
+
+The existing actionlint job now checks this repository's actual workflow files
+with the pinned checker, explicit label configuration, read-only repository mount
+and disabled container network before its existing synthetic adapter acceptance.
+The exact Ubuntu 26.04 labels are declared for the pinned linter whose built-in
+label table predates them. Unknown adjacent labels remain invalid.
+
+The planning job checks selected parser-runtime coherence immediately after the
+locked installation and metadata preflight, before the expensive matrix is
+planned. It reads known literal source pins and hashes installed data without
+importing the parser runtime or compiling WASM. Version-only runtime bumps fail
+there with the coordinated-upgrade requirement; the later grammar audit and native
+attestation checks remain mandatory.
+
+Checks that execute a nonempty affected shared selection prepare the same pinned
+Go SDK and analyzers as full verification. A shared file can activate native Go
+cases even when a dedicated Go owner job is not selected. Missing analyzers and
+skipped native cases are not accepted as dependency compatibility results. An
+empty shared selection still fails its existing required-test admission.
+
+The Go workspace ARM job retains Python `3.13.5`. Its official SDK was built for
+Ubuntu 24.04; the publisher's manifest has no 26.04 asset for that patch. A scoped
+preparation step verifies the original archive and interpreter digests, validates
+its complete install paths, and seeds the standard hosted tool cache before the
+unchanged `setup-python` action. It executes neither the upstream installer nor
+its unpinned pip upgrade. Completion is withheld until the exact interpreter and
+selected native standard-library controls succeed on the Ubuntu 26.04 ARM host.
+The preparation receipt records SDK producer OS and current host OS separately;
+it establishes no publisher support declaration or upstream build reproduction.
+Source and fresh-installed Python acceptance callbacks remain required.
+
+The separate manual `prebuilt-gcc.yml` workflow exercises installed GNU C/C++
+compilers with small positive and broken controls within a ten-minute job bound.
+It does not establish upstream source-build closure or replace required adapter
+or source/fresh-installed native acceptance. A prepared workflow or green local
+contract test is not a hosted platform pass.
+
 ## Workflow scheduling
 
 The Windows consumer impact installed callback has a twenty-minute enclosing
@@ -12,34 +57,51 @@ sanitized failure diagnostic without forwarding process paths or raw messages.
 
 Independent jobs and the OS/Node matrix are allowed to run in parallel. GitHub's
 account and runner capacity decides when queued jobs receive a runner. Steps
-within an individual job remain ordered. Separate host-validation jobs in the
-OS/Node matrix run the unchanged mutation and fresh-package command sets
-with at most two concurrent command workers inside one runner. Mutations run
-serially on a private copy of tracked/unignored source and compiled files. The
-other worker starts the package queue on the unchanged checkout. After all
-mutations finish and the copy's source bytes and inventory are restored, the
-mutation worker can take remaining package commands against that restored copy.
-Each command has its own temporary namespace and indexed log/receipt. Prepared
-dependencies and caches are reused; test results are not cached. Every package
-controller still performs its original fresh-install verification.
+within an individual job remain ordered. The host-validation and additional
+full-suite matrices each admit at most eight jobs; they share the account's
+twenty-runner capacity with every other job and workflow.
 
-Within required full-suite execution, the complete physical JavaScript extension
-test file runs in an exclusive process after the shared file wave. Its loader,
-linter, build, lifecycle and fresh-install callbacks still run, including callbacks
-outside the selected required profiles. It receives a private temporary namespace
-that is removed after execution. Adjacent filenames stay in the parallel wave;
-file and callback deadlines are unchanged. This scheduling boundary avoids
-competition with other full-suite files without weakening native cleanup checks.
+Full verification partitions the complete physical test-file inventory into three
+closed shards for each original OS/Node variant. `checks` owns shard zero and
+`full-suite-shards` owns shards one and two. The source and compiled test inventories
+must match; stale compiled files and missing source files cannot supply a shard.
+Every requested required profile is validated before execution, and the partition
+must contain each complete file exactly once. Relative scheduling weights spread
+the known expensive files; these hints are not duration guarantees or longer
+timeouts.
 
-The controller waits for both workers, rejects changed original inputs, and
-requires restoration of mutation input bytes and inventory. The original command
-inventory is retained in a fixture and checked by the full suite. Output is
-bounded per command and retained in grouped CI logs. A failed command stops new
-admission while already-running peers finish; failed and unrun indices remain
-explicit. Cancellation and the unchanged 45-minute aggregate deadline stop owned
-descendants; incomplete or failed commands cannot yield
-a completed receipt. On the full verification path, the four matrix variants, full-suite command,
-native jobs, callback assertions and 75-minute job limit are unchanged.
+Each shard keeps the original bounded parallel file wave and then runs its
+process-sensitive files serially with private temporary namespaces. Required and
+unlisted callbacks within an assigned file still execute. Test and engine bytes
+must remain unchanged, and each terminal file ledger must match its inventoried
+bytes. A fragment explicitly cannot qualify the whole suite. `ci-complete`
+requires all original `checks` variants and all full-suite peer rows before
+claiming full verification. Scoped changes retain the original checks matrix;
+the extra full-suite rows are skipped, not passing evidence. Local `npm run check`
+still runs the complete unpartitioned suite.
+
+Host validation partitions its original mutation and fresh-package command sets
+into three closed roles on every existing OS/Node variant. The frozen full-command
+keys include arguments and environment; missing, duplicated, moved or changed
+commands fail admission before any worker starts. Each role retains at most two
+command workers. Mutations run serially on a private source/compiled copy while
+the independent package worker uses the original checkout. Only after the
+mutation copy's bytes and inventory are restored may that worker consume remaining
+package commands. Every controller retains its original fresh-install checks,
+private namespaces, failure/unrun accounting, cancellation and cleanup bounds.
+No installed directory or test result is reused as passing evidence.
+
+The current-root JavaScript reporter and separate consumer proof execute once per
+host on role zero. Linux packaged review and task-storage proofs are retained
+once on their assigned full-suite peer; only their preparation is repeated where
+needed. Each partial host receipt reports assigned completion separately and never
+claims the complete command cohort. The closed workflow matrix and completion
+gate require all roles. All original native jobs and callback requirements remain;
+existing per-command deadlines and the shared jobs' limits are unchanged.
+
+Sharding duplicates some setup and adds queue waves. Hosted command and file timing
+hints must be used to tune the partitions; a smaller per-job workload is not proof
+that the complete workflow meets its duration target.
 
 The package lane also requires the bounded attempt-output source controller and
 its fresh locked offline installed-package controller on every existing host
@@ -631,7 +693,7 @@ The main CI matrix prepares and requires `core`, `javascript`, `python`,
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
 Dedicated JVM jobs require `checkstyle`, `maven` and `gradle`, including offline
 installed CLI/MCP profiles. The .NET job also prepares original public dependency artifacts and requires `dotnet-build`, `dotnet-test`, `dotnet-format`, `dotnet-generated` and `dotnet-method` against source and an offline production install; its newly configured hosted run remains unverified. Ruby and Swift have dedicated required-native jobs. The new `swift-tools`
-job uses `ubuntu-24.04-arm`, prepares pinned runtime/release artifacts and requires
+job uses `ubuntu-26.04-arm`, prepares pinned runtime/release artifacts and requires
 the native profile against both source and a fresh offline production install.
 Its local acceptance is recorded in SWIFT-TOOLS.md; hosted execution of the new
 job remains unverified. The new `cpp-tools` ARM64 job prepares checksum-pinned

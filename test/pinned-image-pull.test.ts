@@ -445,3 +445,167 @@ test("pinned image delivery admits the verified official mirror indexes and refu
     }
   }
 });
+
+const completedLayerTimeout = () =>
+  Object.assign(new Error("Synthetic reaped Docker pull timeout"), {
+    code: "ETIMEDOUT",
+    syscall: "spawnSync docker",
+    path: "docker",
+    spawnargs: ["pull", reference],
+    pid: 12345,
+    status: 143,
+    signal: null,
+    stderr: "",
+    stdout:
+      `${reference}: Pulling from docker/library/node\n` +
+      "012345abcdef: Pulling fs layer\n" +
+      "012345abcdef: Verifying Checksum\n" +
+      "012345abcdef: Download complete\n",
+  });
+
+test("pinned image delivery resumes a reaped pull timeout using the same digest and the remaining original wall budget", async () => {
+  let clock = 0;
+  const calls: { image: string; remaining: number }[] = [],
+    waits: number[] = [],
+    events: { attempt: number; waitMs: number }[] = [];
+  const result = await pullPinnedImage(reference, {
+    nowImpl: () => clock,
+    runImpl: async (image: string, remaining: number) => {
+      calls.push({ image, remaining });
+      if (calls.length === 1) {
+        clock = 120000;
+        throw completedLayerTimeout();
+      }
+      clock = 180000;
+    },
+    delayImpl: async (ms: number) => {
+      waits.push(ms);
+      clock += ms;
+    },
+    onRetry: async (event: { attempt: number; waitMs: number }) => {
+      events.push(event);
+    },
+  });
+  assert.deepEqual(calls, [
+    { image: reference, remaining: 180000 },
+    { image: reference, remaining: 58000 },
+  ]);
+  assert.deepEqual(waits, [2000]);
+  assert.deepEqual(events, [{ attempt: 1, waitMs: 2000 }]);
+  assert.deepEqual(result, { reference, attempts: 2, deliveryComplete: true });
+});
+
+test("pinned image pull timeout continuation cannot reset its deadline or survive cancellation", async () => {
+  for (const elapsed of [178000, 180000]) {
+    let clock = 0,
+      calls = 0,
+      waits = 0;
+    await assert.rejects(
+      pullPinnedImage(reference, {
+        nowImpl: () => clock,
+        runImpl: async () => {
+          calls++;
+          clock = elapsed;
+          throw completedLayerTimeout();
+        },
+        delayImpl: async () => {
+          waits++;
+        },
+        onRetry: async () => {},
+      }),
+      /wall limit exhausted/,
+    );
+    assert.equal(calls, 1);
+    assert.equal(waits, 0);
+  }
+  let clock = 0;
+  const remaining: number[] = [];
+  await assert.rejects(
+    pullPinnedImage(reference, {
+      nowImpl: () => clock,
+      runImpl: async (_image: string, budget: number) => {
+        remaining.push(budget);
+        if (remaining.length === 1) {
+          clock = 120000;
+          throw completedLayerTimeout();
+        }
+        clock = 180001;
+      },
+      delayImpl: async (ms: number) => {
+        clock += ms;
+      },
+      onRetry: async () => {},
+    }),
+    /wall limit exhausted/,
+  );
+  assert.deepEqual(remaining, [180000, 58000]);
+  const controller = new AbortController(),
+    cancelled = Error("Synthetic pull cancellation");
+  let calls = 0,
+    waits = 0;
+  await assert.rejects(
+    pullPinnedImage(reference, {
+      signal: controller.signal,
+      runImpl: async () => {
+        calls++;
+        controller.abort(cancelled);
+        throw completedLayerTimeout();
+      },
+      delayImpl: async () => {
+        waits++;
+      },
+      onRetry: async () => {},
+    }),
+    (error: unknown) => error === cancelled,
+  );
+  assert.equal(calls, 1);
+  assert.equal(waits, 0);
+});
+
+test("pinned image pull timeout continuation refuses unproven cleanup malformed transport and adjacent hard failures", async () => {
+  const valid = completedLayerTimeout();
+  for (const change of [
+    { syscall: "spawnSync other" },
+    { path: "other" },
+    { spawnargs: ["pull", reference + "0"] },
+    { spawnargs: ["pull", reference, "other"] },
+    { spawnargs: null },
+    { pid: 0 },
+    { pid: null },
+    { pid: 0.5 },
+    { status: null },
+    { status: 1 },
+    { signal: "SIGTERM" },
+    { code: "ABORT_ERR" },
+    { stderr: "manifest unknown" },
+    { stderr: "failed to verify checksum" },
+    { stdout: valid.stdout.replace(reference, reference + "0") },
+    {
+      stdout: valid.stdout.replace("docker/library/node", "other/library/node"),
+    },
+    { stdout: valid.stdout.replace("Download complete", "Waiting") },
+    { stdout: valid.stdout + "012345abcdef: failed to verify checksum\n" },
+    { stdout: valid.stdout + "manifest unknown\n" },
+    { stdout: valid.stdout.replaceAll("012345abcdef", "012345abcdef0") },
+    { stdout: Buffer.from(valid.stdout) },
+  ]) {
+    const failure = Object.assign(completedLayerTimeout(), change);
+    let calls = 0,
+      waits = 0;
+    await assert.rejects(
+      pullPinnedImage(reference, {
+        runImpl: async () => {
+          calls++;
+          throw failure;
+        },
+        delayImpl: async () => {
+          waits++;
+        },
+        onRetry: async () => {},
+      }),
+      (error: unknown) => error === failure,
+    );
+    assert.equal(calls, 1, JSON.stringify(change));
+    assert.equal(waits, 0, JSON.stringify(change));
+  }
+});
