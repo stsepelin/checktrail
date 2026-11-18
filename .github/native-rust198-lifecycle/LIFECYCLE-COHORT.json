@@ -1,0 +1,12 @@
+[
+  {
+    "bytes": 16108,
+    "file": "process_supervisor.py",
+    "sha256": "1135c3cc07c374d0dafce6083691f1f63948c94772181de4e513f38a9a925a57"
+  },
+  {
+    "bytes": 18142,
+    "file": "test_process_lifecycle.py",
+    "sha256": "38c7bb09cb1d31952422eacdf2226b22ef917ec04f88b9db5e1fb769a90241ce"
+  }
+]
