@@ -1,0 +1,21 @@
+{
+  "files": [
+    {
+      "bytes": 4891,
+      "path": "protected_control_worker.py",
+      "sha256": "df31ce87ea7bf2a19ab411c37c42710bd1df1ca931d73e0f3c54be248760a2d9"
+    },
+    {
+      "bytes": 16695,
+      "path": "target_protected_controls.py",
+      "sha256": "7208a312f2bc4864adb6fe549b7456ebd1a0a8869230e480f3447068f7dffe8a"
+    },
+    {
+      "bytes": 10066,
+      "path": "test_protected_control_target.py",
+      "sha256": "32330522e82e04d4dfdcbd59a167d29a9286c08eee03aed6012f3aa2d57af033"
+    }
+  ],
+  "firstPartyControlsOnly": true,
+  "schemaVersion": 1
+}
