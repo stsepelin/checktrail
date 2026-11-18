@@ -249,21 +249,78 @@ FORMAT_MAP = {'dvilualatex': {'configuredEngine': 'luatex',
          'sourceConfigSha256': '2aac945fee9cf297b50cb58d6150e31a251d88333bc609bfa75acf46b50875b5'}}
 
 
+def empty_mapping_shape():
+    return {'state':'unobserved','layout':'unobserved','separatorScope':'document-and-complete-record-boundaries','sourceBound':False,'stdoutSha256':None,'layoutCompatible':None,
+            **{key:None for key in ['totalLines','blankLines','headerLines','prefixLines','bodyLines','boundaryBlankLines',
+                                   'documentBlankLines','misplacedBlankLines','unknownLines','recognizedRecords','unknownRecords','duplicateRecords',
+                                   'missingRecords','semanticMismatchRecords','separatorBoundaries']}}
+
+
+def mapping_fields(block):
+    if len(block)!=3:return None,None,None
+    return (re.fullmatch(r'([A-Za-z0-9_-]+) \(engine=([A-Za-z0-9_-]+)\) (enabled|disabled)',block[0]),
+            re.fullmatch(r'  hyphen=(.*), args=(.*)',block[1]),
+            re.fullmatch(r'  origin=(/[^\0\r\n]+)',block[2]))
+
+
+def mapping_layout(raw):
+    """Local parser blocks plus CLOSED shape counts; never export the blocks.
+
+    Only exact empty lines at the document boundary after the unique header
+    or AFTER a complete three-line record are separators.
+    Unknown nonempty lines and blank lines within fields are never discarded.
+    Config/code identity remains the responsibility of parse_mapping below.
+    """
+    require(type(raw) is bytes and len(raw)<=STDOUT_BYTES,'Bounded native fmtutil listing required')
+    shape=empty_mapping_shape();shape.update(stdoutSha256=hashlib.sha256(raw).hexdigest(),layout='unsupported',layoutCompatible=False)
+    try:lines=raw.decode().splitlines()
+    except UnicodeDecodeError:shape['state']='invalid';return [],shape
+    headers=[i for i,line in enumerate(lines) if line=='List of all formats:']
+    shape.update(state='observed',totalLines=len(lines),blankLines=sum(line=='' for line in lines),headerLines=len(headers))
+    if len(headers)!=1:return [],shape
+    body=lines[headers[0]+1:];blocks=[];seen=set();boundary=False;document=True;gap=0
+    shape.update(prefixLines=headers[0],bodyLines=len(body),boundaryBlankLines=0,documentBlankLines=0,misplacedBlankLines=0,unknownLines=0,
+                 recognizedRecords=0,unknownRecords=0,duplicateRecords=0,missingRecords=len(FORMAT_MAP),semanticMismatchRecords=0,separatorBoundaries=0)
+    offset=0
+    while offset<len(body):
+        if body[offset]=='':
+            shape['documentBlankLines' if document else 'boundaryBlankLines' if boundary else 'misplacedBlankLines']+=1
+            if boundary:gap+=1
+            offset+=1;continue
+        document=False
+        block=body[offset:offset+3];header,details,origin=mapping_fields(block)
+        if header is not None and details is not None and origin is not None:
+            if blocks and gap:shape['separatorBoundaries']+=1
+            blocks.append(block);name,engine,status=header.groups()
+            if name in seen:shape['duplicateRecords']+=1
+            seen.add(name)
+            if name in FORMAT_MAP:
+                shape['recognizedRecords']+=1;expected=FORMAT_MAP[name]
+                if not (engine==expected['configuredEngine'] and status=='enabled' and details[1]==expected['hyphenInput'] and details[2].split()==expected['generatorArguments']):shape['semanticMismatchRecords']+=1
+            else:shape['unknownRecords']+=1
+            boundary=True;gap=0;offset+=3
+        else:
+            shape['unknownLines']+=1;boundary=False;gap=0;offset+=1
+    shape['missingRecords']=len(set(FORMAT_MAP)-seen)
+    require(3*len(blocks)+shape['boundaryBlankLines']+shape['documentBlankLines']+shape['misplacedBlankLines']+shape['unknownLines']==len(body),'Native fmtutil shape counts do not reconcile')
+    shape['layoutCompatible']=shape['misplacedBlankLines']==shape['unknownLines']==0
+    if shape['layoutCompatible']:
+        separated=shape['separatorBoundaries'];shape['layout']='compact' if not separated else 'separated' if separated==len(blocks)-1 else 'mixed'
+    return blocks,shape
+
+
 def parse_mapping(raw,expected_rows):
     for entry in FORMAT_MAP.values():
         path=entry['sourceConfigPath'];row=expected_rows.get(path)
         require(row is not None and row['kind']=='file' and row['sha256']==entry['sourceConfigSha256'],
                 'Pinned original format configuration identity differs')
         require(file_pin(Path(path))==row,'Physical original format configuration differs')
-    lines=raw.decode().splitlines();headers=[i for i,line in enumerate(lines) if line=='List of all formats:']
-    require(len(headers)==1,'Exact native fmtutil mapping header required')
-    body=lines[headers[0]+1:]
-    while body and not body[-1]:body.pop()
-    require(len(body)==3*len(FORMAT_MAP),'Complete13-format native mapping required')
+    blocks,shape=mapping_layout(raw)
+    require(shape['headerLines']==1,'Exact native fmtutil mapping header required')
+    require(shape['layoutCompatible'] and len(blocks)==len(FORMAT_MAP),'Complete13-format native mapping required')
     result={}
-    for offset in range(0,len(body),3):
-        header=re.fullmatch(r'([A-Za-z0-9_-]+) \(engine=([A-Za-z0-9_-]+)\) (enabled|disabled)',body[offset])
-        details=re.fullmatch(r'  hyphen=(.*), args=(.*)',body[offset+1]);origin=re.fullmatch(r'  origin=(/[^\0\r\n]+)',body[offset+2])
+    for block in blocks:
+        header,details,origin=mapping_fields(block)
         require(header is not None and details is not None and origin is not None,'Unsupported native fmtutil mapping entry')
         name,engine,status=header.groups();require(name in FORMAT_MAP and name not in result,'Unknown/duplicate original format')
         expected=FORMAT_MAP[name]

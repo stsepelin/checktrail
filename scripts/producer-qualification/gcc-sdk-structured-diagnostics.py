@@ -54,6 +54,7 @@ def empty():
       'hashes':{name:None for name in FILES},
       'journal':{'state':'unobserved','expectedSlots':74,'requested':None,'terminals':None,'terminalZero':None,
                  'terminalNonzero':None,'terminalUnknown':None,'lastRequested':None,'lastTerminal':None},
+      'mapping':d.empty_mapping_shape(),
       'sdk':{'state':'unobserved','packagesMatch':None,'entries':None,'counts':None,'materialProjectionMatches':None,'generatedComplete':None},
       'generation':{'state':'unobserved','toolIdentities':None,'removedOutputs':None,'completedGenerators':None,'freshFormats':None,'errorSha256':None},
       'validation':{'state':'unobserved','completedValidators':None,'finalGeneratedOutputs':None,'errorSha256':None}}
@@ -62,7 +63,7 @@ def validate(value):
     prototype=empty();need(type(value) is dict and set(value)==set(prototype))
     need(type(value['schemaVersion']) is int and value['schemaVersion']==1 and value['state'] in {'unobserved','observed','incomplete','invalid'} and value['errorId'] in ERRORS and value['cause'] in CAUSES)
     need(value['sdkQualifiedByProjection'] is False and value['underlyingRootCauseAssessed'] is False and value['unjournaledCollectionAndNormalizationTerminals']=='unobserved')
-    for name in ['hashes','journal','sdk','generation','validation']:need(type(value[name]) is dict and set(value[name])==set(prototype[name]))
+    for name in ['hashes','journal','mapping','sdk','generation','validation']:need(type(value[name]) is dict and set(value[name])==set(prototype[name]))
     need(all(hash_value(v) for v in value['hashes'].values()))
     j=value['journal'];need(j['state'] in JOURNAL_STATES and type(j['expectedSlots']) is int and j['expectedSlots']==74)
     for key in ['requested','terminals','terminalZero','terminalNonzero','terminalUnknown']:need(j[key] is None or integer(j[key],74))
@@ -78,6 +79,27 @@ def validate(value):
             need((row['exitCode'] is not None)+(row['signal'] is not None)==int(row['terminalObserved']))
             need(row['stdoutComplete'] is None or type(row['stdoutComplete']) is bool)
             need(hash_value(row['stdoutSha256']) and hash_value(row['errorSha256']))
+    mapping=value['mapping'];prototype_mapping=d.empty_mapping_shape()
+    need(mapping['separatorScope']=='document-and-complete-record-boundaries')
+    need(mapping['state'] in {'unobserved','observed','invalid'} and mapping['layout'] in {'unobserved','unsupported','compact','separated','mixed'} and type(mapping['sourceBound']) is bool and hash_value(mapping['stdoutSha256']))
+    if not mapping['sourceBound']:need(mapping==prototype_mapping)
+    else:
+        need(mapping['state'] in {'observed','invalid'} and type(mapping['stdoutSha256']) is str and type(mapping['layoutCompatible']) is bool)
+        fields=set(prototype_mapping)-{'state','layout','separatorScope','sourceBound','stdoutSha256','layoutCompatible'}
+        for field in fields:need(mapping[field] is None or integer(mapping[field],d.STDOUT_BYTES))
+        if mapping['state']=='observed':
+            need(all(type(mapping[key]) is int for key in ['totalLines','blankLines','headerLines']))
+            need(mapping['blankLines']<=mapping['totalLines'])
+            if mapping['headerLines']==1:
+                need(all(type(mapping[key]) is int for key in fields))
+                need(mapping['prefixLines']+1+mapping['bodyLines']==mapping['totalLines'])
+                count=mapping['recognizedRecords']+mapping['unknownRecords']
+                need(3*count+mapping['boundaryBlankLines']+mapping['documentBlankLines']+mapping['misplacedBlankLines']+mapping['unknownLines']==mapping['bodyLines'])
+                need(mapping['semanticMismatchRecords']<=mapping['recognizedRecords'] and mapping['duplicateRecords']<=count and mapping['missingRecords']<=13)
+                need(mapping['separatorBoundaries']<=max(0,count-1) and mapping['separatorBoundaries']<=mapping['boundaryBlankLines'])
+                need(mapping['documentBlankLines']+mapping['boundaryBlankLines']+mapping['misplacedBlankLines']<=mapping['blankLines'])
+        if mapping['layoutCompatible']:need(mapping['headerLines']==1 and mapping['misplacedBlankLines']==mapping['unknownLines']==0 and mapping['layout'] in {'compact','separated','mixed'})
+        else:need(mapping['layout']=='unsupported')
     s=value['sdk'];need(s['state'] in SDK_STATES)
     for key in ['packagesMatch','materialProjectionMatches','generatedComplete']:need(s[key] is None or type(s[key]) is bool)
     need(s['entries'] is None or integer(s['entries']))
@@ -216,6 +238,11 @@ def collect(output,environment,read_json,file_pin):
                 need(type(record['toolIdentities']) is dict and set(record['toolIdentities'])<=set(d.KNOWN_PROGRAMS))
                 need(type(record['newlyGeneratedOutputs']) is dict and set(record['newlyGeneratedOutputs'])<=set(row['outputPath'] for row in d.FORMAT_MAP.values()))
                 removed=record['removedOwnedFreshOutputs'];need(type(removed) is list and (not removed or removed==list(d.d.KNOWN_MODES)))
+                if 'effectiveMappingNativeOutput' in record or 'effectiveMappingCommand' in record:
+                    need(type(record.get('effectiveMappingNativeOutput')) is str and record.get('effectiveMappingCommand')==terminal.get(19) and 19 in terminal)
+                    witness=terminal[19];raw=record['effectiveMappingNativeOutput'].encode()
+                    need(witness['exitCode']==0 and witness['terminalObserved'] is True and witness['stdoutComplete'] is True and len(raw)==witness['stdoutBytesRetained'] and digest(raw)==witness['stdoutSha256'])
+                    _,shape=d.mapping_layout(raw);shape['sourceBound']=True;value['mapping']=shape
                 value[key]={'state':record['state'],'toolIdentities':len(record['toolIdentities']),'removedOutputs':len(removed),'completedGenerators':len(completed),'freshFormats':len(record['newlyGeneratedOutputs']),'errorSha256':error_hash(record.get('error'))}
             else:
                 need(record['state'] in VALIDATION_STATES-{'unobserved'});events=record['validators'];need(type(events) is list and len(events)<=37)

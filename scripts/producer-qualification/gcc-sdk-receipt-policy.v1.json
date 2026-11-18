@@ -41,8 +41,8 @@
     },
     {
       "path": "scripts/producer-qualification/gcc-sdk-derived-run.py",
-      "bytes": 28274,
-      "sha256": "510ea2a015bab84b8fb3694d9728d972ada3dc71a2826457ee79e715d1a5af27",
+      "bytes": 31889,
+      "sha256": "15d0e02fd3ce2bcee95aadd00e8a0bfe277464ee25f1022e60e3742ab7f7ae00",
       "mode": 420
     },
     {
@@ -147,5 +147,7 @@
   "cacheWrites": 0,
   "native05Authorized": false,
   "offHostRawCustody": false,
-  "gateAComplete": false
+  "gateAComplete": false,
+  "revision": "fmtutil-document-and-record-boundary-separators-v2",
+  "previousPolicySha256": "6f4b1a0d3ec3b509be871938118371d5a4d4a7a3b43ffb89f8221c799d02079b"
 }
