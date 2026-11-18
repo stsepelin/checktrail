@@ -183,6 +183,135 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
             root,code,_,value,_=self.run_entry(lambda _:self.facts())
             self.assertEqual(code,1);self.assertEqual(value['errorId'],'runtime-refused')
 
+    def test_closed_failure_stage_follows_actual_fixed_work_calls_without_running_any_sdk_command(self):
+        for stop,expected in [('image-acquisition','image-acquisition'),('common-input-acquisition','common-input-acquisition'),
+                              ('gcc-input-acquisition','gcc-input-acquisition'),('legacy-sdk-capture','legacy-sdk-capture'),
+                              ('none','complete')]:
+            with self.subTest(stop=stop):
+                root=self.folder();private=root/'private';private.mkdir()
+                calls=[]
+                def current():return m.read_json(private/'CLOSED-STAGE.json')['stage']
+                def run(command,**kwargs):
+                    stage=current();calls.append(stage)
+                    return types.SimpleNamespace(returncode=1 if stop==stage else 0)
+                def legacy_main():
+                    calls.append(current())
+                    if stop=='legacy-sdk-capture':raise ValueError('SDK reconstruction host/scratch capacity unavailable')
+                legacy=types.SimpleNamespace(__file__='fixed-sdk.py',main=legacy_main,codec=types.SimpleNamespace(IMAGE='fixed-image'),
+                  h=types.SimpleNamespace(verify_repository=lambda *args:None,admit_host_node=lambda *args:{'path':'/fixed/node'}))
+                def verify(*args):calls.append(current());return self.facts()
+                env={'RUNNER_TEMP':str(root),'GITHUB_WORKSPACE':str(ROOT),'GITHUB_SHA':HEAD,'CHECKTRAIL_HOST_NODE':'{}'}
+                with mock.patch.dict(os.environ,env),mock.patch.object(m.os,'getuid',return_value=0),\
+                     mock.patch.object(m,'load',side_effect=lambda name:legacy if name=='gcc-hosted-sdk.py' else object()),\
+                     mock.patch.object(m.subprocess,'run',side_effect=run),mock.patch.object(m,'verify_on_host',side_effect=verify):
+                    value=m.guarded(lambda:m.fixed_work(private),private,HEAD)
+                self.assertEqual(value['diagnostics']['stage'],expected)
+                ordered=['image-acquisition','common-input-acquisition','gcc-input-acquisition','legacy-sdk-capture','independent-verification']
+                self.assertEqual(calls,ordered if stop=='none' else ordered[:ordered.index(stop)+1])
+                self.assertEqual(value['sdkVerifiedOnHost'],stop=='none')
+                if stop=='legacy-sdk-capture':
+                    self.assertEqual(value['diagnostics']['refusalId'],'sdk-host-capacity')
+                    self.assertEqual(value['diagnostics']['exceptionType'],'value-error')
+                    self.assertIsNone(value['sdkContainerExitCode'])
+
+    def test_exact_known_refusals_are_whole_literals_and_cannot_be_borrowed_by_suffix_prefix_or_subclass(self):
+        class SyntheticValueError(ValueError):pass
+        message='SDK reconstruction host/scratch capacity unavailable'
+        for error,expected,kind in [(ValueError(message),'sdk-host-capacity','value-error'),
+                                    (ValueError(message+' '+RAW),'unclassified','value-error'),
+                                    (ValueError(RAW+' '+message),'unclassified','value-error'),
+                                    (ValueError(message.lower()),'unclassified','value-error'),
+                                    (SyntheticValueError(message),'unclassified','other')]:
+            with self.subTest(expected=expected,kind=kind):
+                def fail(private):
+                    m.record_stage(private,'legacy-sdk-capture')
+                    try:raise error
+                    except BaseException as cause:raise m.Refusal('sdk-incomplete') from cause
+                _,code,_,value,body=self.run_entry(fail)
+                self.assertEqual(code,1);self.assertFalse(value['sdkVerifiedOnHost'])
+                self.assertEqual(value['diagnostics']['refusalId'],expected)
+                self.assertEqual(value['diagnostics']['exceptionType'],kind)
+                self.assertEqual(value['diagnostics']['errorSha256'],m.hashlib.sha256(str(error).encode()).hexdigest())
+                self.assertNotIn(message.encode(),body);self.assertNotIn(type(error).__name__.encode(),body)
+                self.assertIsNone(value['sdkContainerExitCode']);self.assertIsNone(value['sdkContainerSeconds'])
+
+    def test_all_exported_refusal_identifiers_are_grounded_in_exact_current_firstparty_guard_literals(self):
+        literals=set()
+        for filename in ['gcc-hosted-sdk.py','gcc-hosted-carrier.py','gcc-hosted-capacity.py']:
+            tree=ast.parse((ROOT/'scripts/producer-qualification'/filename).read_bytes())
+            for node in ast.walk(tree):
+                if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=='require' and len(node.args)>1:
+                    argument=node.args[1]
+                    if isinstance(argument,ast.Constant) and type(argument.value) is str:literals.add(argument.value)
+        self.assertTrue(m.REFUSALS);self.assertLessEqual(set(m.REFUSALS),literals)
+        self.assertEqual(len(m.REFUSALS),len(set(m.REFUSALS.values())))
+
+    def test_last_legacy_milestone_is_only_a_recorded_fact_and_never_original_terminal_or_execution_credit(self):
+        fields=[({},'not-observed'),({'source':{}},'source-recorded'),({'source':{},'predecessorCache':{}},'predecessor-cache-recorded'),
+                ({'source':{},'readOnlyKeyring':{}},'keyring-recorded'),({'image':{}},'image-recorded'),
+                ({'image':{},'ownedSeedCleanup':'removed'},'seed-cleanup-recorded'),
+                ({'state':'sdk-material-reconstruction-observed-no-gcc-target-run'},'material-reconstruction-recorded')]
+        for carrier,expected in fields:
+            with self.subTest(expected=expected):
+                def fail(private):
+                    m.record_stage(private,'legacy-sdk-capture')
+                    output=private.parent/'gcc-sdk-reconstruction';output.mkdir()
+                    (output/'SDK-CARRIER.json').write_bytes(m.canonical({**carrier,'error':RAW,'cleanupError':RAW2}))
+                    raise m.Refusal('sdk-incomplete')
+                _,code,_,value,body=self.run_entry(fail)
+                self.assertEqual(code,1);self.assertEqual(value['diagnostics']['lastLegacyMilestone'],expected)
+                self.assertFalse(value['sdkVerifiedOnHost']);self.assertFalse(value['sdkContainerQuiescent'])
+                self.assertIsNone(value['sdkContainerExitCode']);self.assertIsNone(value['sdkContainerSeconds'])
+                self.assertNotIn(b'cleanupError',body)
+
+    def test_unknown_broken_and_oversized_exception_messages_remain_closed_and_never_echo_class_or_raw_body(self):
+        class RawNamedError(Exception):
+            def __str__(self):raise RuntimeError(RAW)
+        for error in [RawNamedError(),RuntimeError(RAW+' /original/private/path'),RuntimeError(RAW*70000)]:
+            with self.subTest(kind=type(error).__name__):
+                def fail(private):raise error
+                _,code,_,value,body=self.run_entry(fail)
+                self.assertEqual(code,1);self.assertFalse(value['sdkVerifiedOnHost'])
+                self.assertEqual(value['diagnostics']['refusalId'],'unclassified')
+                if type(error) is RawNamedError:self.assertEqual(value['diagnostics']['exceptionType'],'other')
+                if type(error) is RawNamedError or len(str(error))>65536:self.assertIsNone(value['diagnostics']['errorSha256'])
+                self.assertNotIn(b'RawNamedError',body);self.assertNotIn(b'/original/private/path',body)
+
+    def test_unknown_raw_or_corrupt_stage_and_legacy_witness_cannot_escape_or_grant_completion(self):
+        for kind in ['unknown-stage','extra-stage-field','raw-carrier','non-dict-carrier','symlink-carrier']:
+            with self.subTest(kind=kind):
+                def fail(private):
+                    if kind in ['unknown-stage','extra-stage-field']:
+                        (private/'CLOSED-STAGE.json').write_bytes(m.canonical({'stage':RAW} if kind=='unknown-stage' else {'stage':'legacy-sdk-capture','raw':RAW2}))
+                    else:
+                        m.record_stage(private,'legacy-sdk-capture');output=private.parent/'gcc-sdk-reconstruction';output.mkdir()
+                        path=output/'SDK-CARRIER.json'
+                        if kind=='raw-carrier':path.write_text(RAW)
+                        elif kind=='non-dict-carrier':path.write_bytes(m.canonical([RAW]))
+                        else:
+                            target=private/'synthetic-carrier';target.write_bytes(m.canonical({'source':{}}));path.symlink_to(target)
+                    raise m.Refusal('sdk-incomplete')
+                _,code,_,value,_=self.run_entry(fail)
+                self.assertEqual(code,1);self.assertFalse(value['sdkVerifiedOnHost'])
+                name='stage' if kind in ['unknown-stage','extra-stage-field'] else 'lastLegacyMilestone'
+                self.assertEqual(value['diagnostics'][name],'unavailable')
+                self.assertIsNone(value['sdkContainerExitCode'])
+
+    def test_closed_diagnostic_schema_rejects_unknown_extra_boolean_and_raw_fields_without_success_near_match(self):
+        _,_,_,good,_=self.run_entry(self.noisy)
+        for key,bad in [('stage',RAW),('stage',True),('lastLegacyMilestone',RAW),('exceptionType',RAW),
+                        ('refusalId',RAW),('errorSha256','/original/'+RAW)]:
+            with self.subTest(key=key):
+                value=copy.deepcopy(good);value['diagnostics'][key]=bad
+                with self.assertRaises((m.Refusal,TypeError)):m.validate_receipt(value)
+        def fail(private):raise RuntimeError(RAW)
+        _,_,_,failed,_=self.run_entry(fail)
+        for original in [good,failed]:
+            value=copy.deepcopy(original);value['diagnostics']['raw']=RAW
+            with self.assertRaises(m.Refusal):m.validate_receipt(value)
+        value=copy.deepcopy(good);value['diagnostics']['stage']='legacy-sdk-capture'
+        with self.assertRaises(m.Refusal):m.validate_receipt(value)
+
     def sdk_data(self):
         root=self.folder();values=list(fixture.fixture(root));packages=b'synthetic-a\t1\tamd64\nsynthetic-b\t1\tall\n'
         digest=m.hashlib.sha256(packages).hexdigest();values[2]['binding']['packageInventorySha256']=digest
@@ -246,6 +375,92 @@ def values_command():
             'Acquire::AllowDowngradeToInsecureRepositories=false','-o','Acquire::Check-Valid-Until=true','-o',
             'Dir::Cache::archives=/var/cache/apt/archives/gcc-12','--yes','--no-download','--no-install-recommends','build-dep',
             '/inputs/gcc-12/gcc-12_12.2.0-14+deb12u1.dsc']
+
+
+class Composition(unittest.TestCase):
+ def test_previous_receipt_job_refuses_actual_legacy_context_after_real_argparse_accepts_rebound_argv(self):
+  self.check_entry('gcc-sdk-onhost','Wrong fixed carrier job')
+ def test_exact_original_job_is_valid_near_miss_that_reaches_next_real_host_guard_not_an_sdk_success(self):
+  self.check_entry('gcc-staged-first','Native Linux AMD64 host required')
+ def check_entry(self,job,expected):
+  legacy=load(ROOT/'scripts/producer-qualification/gcc-hosted-sdk.py')
+  with tempfile.TemporaryDirectory(prefix='gcc-real-entry-synthetic-') as name:
+   root=Path(name).resolve();private=root/'private';private.mkdir();(private/'opaque-wrapper-output.log').write_bytes(b'')
+   env={'GITHUB_ACTIONS':'true','RUNNER_ENVIRONMENT':'github-hosted','RUNNER_OS':'Linux','RUNNER_ARCH':'X64',
+    'GITHUB_EVENT_NAME':'workflow_dispatch','GITHUB_REPOSITORY':'stsepelin/checktrail',
+    'GITHUB_REF':'refs/heads/diagnostic/gcc-phase0-original-1117','GITHUB_SHA':'a'*40,'GITHUB_RUN_ID':'1',
+    'GITHUB_RUN_ATTEMPT':'1','GITHUB_JOB':job,'RUNNER_TEMP':str(root),'GITHUB_WORKSPACE':str(ROOT),'CHECKTRAIL_HOST_NODE':'{}'}
+   outer=['outer-receipt','qualify-on-host','--operator-trust-execution']
+   with mock.patch.dict(os.environ,env),mock.patch.object(sys,'argv',outer.copy()),mock.patch.object(m.os,'getuid',return_value=0),\
+        mock.patch.object(m,'load',side_effect=lambda name:legacy if name=='gcc-hosted-sdk.py' else object()),\
+        mock.patch.object(legacy.h,'verify_repository',return_value={}),\
+        mock.patch.object(legacy.h,'admit_host_node',return_value={'path':'/fixed/synthetic-node'}),\
+        mock.patch.object(legacy.h.capacity.base.platform,'system',return_value='SyntheticHost'),\
+        mock.patch.object(legacy.h,'docker',side_effect=AssertionError('Docker reached')) as docker,\
+        mock.patch.object(m.subprocess,'run',return_value=types.SimpleNamespace(returncode=0)) as commands:
+    with self.assertRaises(m.Refusal) as caught:m.fixed_work(private)
+    self.assertEqual(caught.exception.identifier,'sdk-incomplete')
+    self.assertIs(type(caught.exception.__cause__),ValueError);self.assertEqual(str(caught.exception.__cause__),expected)
+    self.assertEqual(sys.argv,outer);self.assertEqual(commands.call_count,3);docker.assert_not_called()
+   carrier=json.loads((root/'gcc-sdk-reconstruction/SDK-CARRIER.json').read_bytes())
+   self.assertEqual(carrier['error'],expected);self.assertNotIn('source',carrier);self.assertNotIn('observed',carrier)
+   actual=json.loads((private/'OWNED-SDK-ATTEMPT.json').read_bytes())
+   self.assertIsNone(actual['sdkContainerExitCode']);self.assertIsNone(actual['sdkContainerSeconds'])
+   self.assertFalse(actual['sdkContainerQuiescent'])
+ def service_data(self):
+  capacity=load(ROOT/'scripts/producer-qualification/gcc-hosted-capacity.py')
+  env={'GITHUB_ACTIONS':'true','RUNNER_ENVIRONMENT':'github-hosted','RUNNER_OS':'Linux','RUNNER_ARCH':'X64',
+   'GITHUB_EVENT_NAME':'workflow_dispatch','GITHUB_REPOSITORY':'stsepelin/checktrail',
+   'GITHUB_REF':'refs/heads/diagnostic/gcc-phase0-original-1117','GITHUB_SHA':'a'*40,'GITHUB_RUN_ID':'1',
+   'GITHUB_RUN_ATTEMPT':'1','GITHUB_JOB':'gcc-staged-first'}
+  selected=capacity.context(env);repository={'full_name':'stsepelin/checktrail','private':False}
+  run={'id':1,'run_attempt':1,'head_sha':'a'*40,'event':'workflow_dispatch','workflow_id':363121286,
+       'head_branch':'diagnostic/gcc-phase0-original-1117'}
+  jobs={'total_count':1,'jobs':[{'id':2,'name':'gcc-staged-first','status':'in_progress','conclusion':None,
+    'run_id':1,'labels':['ubuntu-26.04'],'started_at':'2026-11-18T10:00:00Z'}]}
+  capture={'serviceDate':'2026-11-18T10:00:10+00:00','requestSeconds':0.25}
+  return capacity,env,selected,repository,run,jobs,capture
+ def test_current_workflow_key_and_implicit_display_name_pass_entire_original_context_and_service_clock_contract(self):
+  path=ROOT/'ci-sdk-onhost-receipt.yml';workflow=(path if path.exists() else ROOT/'.github/workflows/ci.yml').read_text()
+  jobs_body=workflow.split('jobs:\n',1)[1]
+  self.assertEqual([line for line in jobs_body.splitlines() if m.re.fullmatch(r'  [A-Za-z0-9_-]+:',line)],['  gcc-staged-first:'])
+  self.assertFalse(any(line.startswith('    name:') for line in jobs_body.splitlines()))
+  capacity,env,selected,repository,run,jobs,capture=self.service_data()
+  self.assertEqual(env['GITHUB_JOB'],capacity.JOB);self.assertEqual(jobs['jobs'][0]['name'],capacity.JOB)
+  result=capacity.service_clock(selected,repository,run,jobs,capture)
+  self.assertEqual(result['jobId'],2);self.assertEqual(result['remainingSeconds'],21600-12.25)
+  self.assertTrue(result['includesCheckoutPreparationCaptureUploadFinalization'])
+ def test_every_original_context_and_service_clock_guard_refuses_causal_wrong_job_source_runner_and_clock_near_misses(self):
+  capacity,env,selected,repository,run,jobs,capture=self.service_data()
+  for kind,expected in [('job','Wrong fixed carrier job'),('fixed-context','Wrong fixed public hosted context'),
+      ('ref','Native continuation requires an explicit diagnostic branch'),('head','Invalid reviewed checkout SHA'),
+      ('attempt','Invalid source run/attempt')]:
+   bad=dict(env)
+   if kind=='job':bad['GITHUB_JOB']='gcc-sdk-onhost'
+   elif kind=='fixed-context':bad['GITHUB_REPOSITORY']='other/checktrail'
+   elif kind=='ref':bad['GITHUB_REF']='refs/heads/main'
+   elif kind=='head':bad['GITHUB_SHA']='a'*39
+   else:bad['GITHUB_RUN_ATTEMPT']='0'
+   with self.subTest(context=kind),self.assertRaisesRegex(ValueError,'^'+m.re.escape(expected)+'$'):capacity.context(bad)
+  for kind,expected in [('configuration','Invalid configured source-job timeout'),
+      ('repository','Paid/private source repository not admitted'),('run','Service run differs from reviewed manual diagnostic checkout'),
+      ('inventory','Incomplete service job inventory'),('job-name','Ambiguous carrier job identity'),
+      ('job-suffix','Ambiguous carrier job identity'),('duplicate','Ambiguous carrier job identity'),
+      ('runner','Unknown stock Ubuntu 26.04 service job'),('job-run','Unknown stock Ubuntu 26.04 service job'),
+      ('clock','Source hosted job deadline exhausted or in future')]:
+   r,j,c=copy.deepcopy(repository),copy.deepcopy(jobs),copy.deepcopy(capture);source=copy.deepcopy(run);seconds=21600
+   if kind=='configuration':seconds=21601
+   elif kind=='repository':r['private']=True
+   elif kind=='run':source['workflow_id']=363121287
+   elif kind=='inventory':j['total_count']=0
+   elif kind=='job-name':j['jobs'][0]['name']='gcc-sdk-onhost'
+   elif kind=='job-suffix':j['jobs'][0]['name']='gcc-staged-first-suffix'
+   elif kind=='duplicate':j['jobs'].append(copy.deepcopy(j['jobs'][0]));j['total_count']=2
+   elif kind=='runner':j['jobs'][0]['labels']=['ubuntu-24.04']
+   elif kind=='job-run':j['jobs'][0]['run_id']=2
+   else:c['serviceDate']='2026-11-18T09:59:00+00:00'
+   with self.subTest(service=kind),self.assertRaisesRegex(ValueError,'^'+m.re.escape(expected)+'$'):
+    capacity.service_clock(selected,r,source,j,c,configured_job_seconds=seconds)
 
 
 if __name__=='__main__':unittest.main()

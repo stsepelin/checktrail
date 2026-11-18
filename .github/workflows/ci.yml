@@ -10,7 +10,7 @@ concurrency:
   group: gcc-hosted-configure-checkpoint
   cancel-in-progress: false
 jobs:
-  gcc-sdk-onhost:
+  gcc-staged-first:
     if: github.repository == 'stsepelin/checktrail' && github.ref == 'refs/heads/diagnostic/gcc-phase0-original-1117'
     runs-on: ubuntu-26.04
     timeout-minutes: 360

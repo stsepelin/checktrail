@@ -30,6 +30,107 @@ ERRORS={'none','operator-required','runtime-refused','source-refused','input-ref
 LIMITATIONS={'offHostRawCustody':False,'artifactUploads':0,'cacheWrites':0,'native05Invoked':False,
              'hostCapacityQualifiedForNative05':False,'fullServiceClockAccountingQualifiedForNative05':False,'gateAComplete':False}
 
+# Only fixed first-party milestones and exact whole refusal literals leave the
+# runner. A last recorded milestone does not identify the failing instruction,
+# prove a native command began, or prove an unobserved command never began.
+STAGES={'entry','runtime-source-validation','image-acquisition','common-input-acquisition','gcc-input-acquisition',
+        'legacy-sdk-capture','independent-verification','complete','unavailable'}
+MILESTONES={'not-observed','source-recorded','predecessor-cache-recorded','keyring-recorded','image-recorded',
+            'seed-cleanup-recorded','material-reconstruction-recorded','unavailable'}
+EXCEPTION_TYPES={ValueError:'value-error',KeyError:'key-error',TypeError:'type-error',FileNotFoundError:'file-not-found',
+                 PermissionError:'permission-error',OSError:'os-error',RuntimeError:'runtime-error',
+                 subprocess.TimeoutExpired:'timeout-expired',subprocess.CalledProcessError:'called-process-error',
+                 json.JSONDecodeError:'json-decode-error',SystemExit:'system-exit',KeyboardInterrupt:'keyboard-interrupt'}
+REFUSALS={
+ 'Wrong fixed carrier job':'service-job-context',
+ 'Ambiguous carrier job identity':'service-job-identity',
+ 'Wrong fixed public hosted context':'service-context',
+ 'Service run differs from reviewed manual diagnostic checkout':'service-run-context',
+ 'Incomplete service job inventory':'service-job-inventory',
+ 'SDK reconstruction host/scratch capacity unavailable':'sdk-host-capacity',
+ 'SDK source clock/free-included storage unavailable':'sdk-service-capacity',
+ 'Predecessor cache requires the same diagnostic branch':'predecessor-ref',
+ 'Exact predecessor cache action did not hit':'predecessor-cache-miss',
+ 'Bounded predecessor cache inventory missing':'predecessor-cache-inventory',
+ 'Original predecessor cache identity differs':'predecessor-cache-identity',
+ 'Exact predecessor transport members required':'predecessor-members',
+ 'Predecessor typed root/source binding differs':'predecessor-binding',
+ 'Physical original configure stamp missing':'predecessor-stamp',
+ 'Predecessor cannot skip or replace an original phase':'predecessor-ledger',
+ 'Physical predecessor configuration differs':'predecessor-configuration',
+ 'Original producer catalog differs':'producer-catalog',
+ 'Original SDK image/environment differs':'sdk-image-environment',
+ 'Authenticated old SDK inventory missing before read-only input preparation':'predecessor-sdk-inventory',
+ 'Original read-only keyring bytes differ':'keyring-bytes',
+ 'Read-only keyring preparation changed bytes/ownership/mode':'keyring-replay',
+ 'Wrong native Docker daemon CPU/architecture/memory':'docker-host-capacity',
+ 'Remote/rootless daemon cannot use measured local capacity':'docker-locality',
+ 'Actual Docker memory/CPU/PID enforcement unavailable':'docker-enforcement',
+ 'Unknown seed ownership':'seed-ownership',
+ 'SDK container ownership differs':'sdk-container-ownership',
+ 'Fixed SDK command/environment differs':'sdk-command-environment',
+ 'SDK limits or pre-start lifecycle differs':'sdk-container-admission',
+ 'Unknown/duplicate SDK mount':'sdk-duplicate-mount',
+ 'SDK read-only predecessor/scratch mount map differs':'sdk-mounts',
+ 'SDK provisioning modified the immutable predecessor':'predecessor-modified',
+ 'SDK source body did not prove material reconstruction':'sdk-material-proof',
+ 'Unknown SDK cleanup ownership':'sdk-cleanup-ownership',
+ 'Native Linux AMD64 host required':'stock-host-architecture',
+ 'Wrong stock Linux release':'stock-host-release',
+ 'Missing bounded operator GitHub token':'service-token-missing',
+ 'Unexpected GitHub service response':'service-response',
+ 'Oversized service response':'service-response-bound',
+ 'Unpaid repository cache ceiling is absent or exceeds 10 GB':'service-cache-policy',
+ 'Complete cache inventory unavailable':'service-cache-inventory',
+ 'Unknown stock Ubuntu 26.04 service job':'service-job-runner',
+ 'Source hosted job deadline exhausted or in future':'service-job-clock'}
+DIAGNOSTIC_KEYS={'stage','lastLegacyMilestone','exceptionType','refusalId','errorSha256'}
+
+
+def empty_diagnostics():
+    return {'stage':'entry','lastLegacyMilestone':'not-observed','exceptionType':'none','refusalId':'none','errorSha256':None}
+
+
+def record_stage(private,stage):
+    require(stage in STAGES and stage not in {'unavailable','complete'},'sdk-proof-refused')
+    (private/'CLOSED-STAGE.json').write_bytes(canonical({'stage':stage}))
+
+
+def failure_diagnostics(private,error):
+    value=empty_diagnostics()
+    try:
+        if private is not None and (private/'CLOSED-STAGE.json').exists():
+            stage=read_json(private/'CLOSED-STAGE.json',4096)
+            require(type(stage) is dict and set(stage)=={'stage'} and stage['stage'] in STAGES,'sdk-proof-refused')
+            value['stage']=stage['stage']
+    except BaseException:value['stage']='unavailable'
+    # This freshly fixed legacy output path is never read from a caller value.
+    # Inspect only fixed key presence/value; never project any raw nested row.
+    if value['stage']=='legacy-sdk-capture':
+        try:
+            path=Path(os.environ['RUNNER_TEMP'])/'gcc-sdk-reconstruction/SDK-CARRIER.json'
+            carrier=read_json(path) if path.is_file() else {}
+            require(type(carrier) is dict,'sdk-proof-refused')
+            for key,label in [('source','source-recorded'),('predecessorCache','predecessor-cache-recorded'),
+                              ('readOnlyKeyring','keyring-recorded'),('image','image-recorded')]:
+                if type(carrier.get(key)) is dict:value['lastLegacyMilestone']=label
+            if carrier.get('ownedSeedCleanup')=='removed':value['lastLegacyMilestone']='seed-cleanup-recorded'
+            if carrier.get('state')=='sdk-material-reconstruction-observed-no-gcc-target-run':
+                value['lastLegacyMilestone']='material-reconstruction-recorded'
+        except BaseException:value['lastLegacyMilestone']='unavailable'
+    underlying=error.__cause__ if type(error) is Refusal and error.identifier=='sdk-incomplete' and error.__cause__ is not None else error
+    value['exceptionType']='wrapper-refusal' if type(underlying) is Refusal else EXCEPTION_TYPES.get(type(underlying),'other')
+    value['refusalId']='unclassified'
+    try:
+        message=str(underlying)
+        if type(message) is str and len(message)<=65536:
+            value['errorSha256']=hashlib.sha256(message.encode('utf-8',errors='replace')).hexdigest()
+            # h.require raises EXACT ValueError. Subclasses and decorated or
+            # partial strings cannot borrow a first-party refusal identity.
+            if type(underlying) is ValueError:value['refusalId']=REFUSALS.get(message,'unclassified')
+    except BaseException:pass
+    return value
+
 
 class Refusal(Exception):
     def __init__(self,identifier):
@@ -73,7 +174,7 @@ def read_json(path,maximum=2*1024**2):
 
 def validate_receipt(value):
     keys={'schemaVersion','kind','sourceHead','sourcePolicySha256','errorId','sdkVerifiedOnHost','sdkContainerExitCode',
-          'sdkContainerQuiescent','ownedSdkCleanupObserved','sdkContainerSeconds','helperSeconds','counts','hashes',*LIMITATIONS}
+          'sdkContainerQuiescent','ownedSdkCleanupObserved','sdkContainerSeconds','helperSeconds','counts','hashes','diagnostics',*LIMITATIONS}
     require(type(value) is dict and set(value)==keys and type(value['schemaVersion']) is int and value['schemaVersion']==1 and value['kind']=='gcc-sdk-onhost-receipt-v1','sdk-proof-refused')
     require(type(value['sourceHead']) is str and re.fullmatch('[a-f0-9]{40}',value['sourceHead']) and
             value['sourcePolicySha256']==POLICY_SHA256 and value['errorId'] in ERRORS,'sdk-proof-refused')
@@ -87,9 +188,17 @@ def validate_receipt(value):
             all(type(v) is int and 0<=v<=10000000 for v in value['counts'].values()),'sdk-proof-refused')
     require(type(value['hashes']) is dict and set(value['hashes'])==HASHES and
             all(v is None or type(v) is str and re.fullmatch('[a-f0-9]{64}',v) for v in value['hashes'].values()),'sdk-proof-refused')
+    diagnostics=value['diagnostics']
+    require(type(diagnostics) is dict and set(diagnostics)==DIAGNOSTIC_KEYS and diagnostics['stage'] in STAGES and
+            diagnostics['lastLegacyMilestone'] in MILESTONES and
+            diagnostics['exceptionType'] in {'none','other','wrapper-refusal',*EXCEPTION_TYPES.values()} and
+            diagnostics['refusalId'] in {'none','unclassified',*REFUSALS.values()} and
+            (diagnostics['errorSha256'] is None or type(diagnostics['errorSha256']) is str and
+             re.fullmatch('[a-f0-9]{64}',diagnostics['errorSha256'])),'sdk-proof-refused')
     if value['sdkVerifiedOnHost']:
         require(value['errorId']=='none' and value['sdkContainerExitCode']==0 and value['sdkContainerQuiescent'] and
-                value['ownedSdkCleanupObserved'] and value['sdkContainerSeconds'] is not None and all(value['hashes'].values()) and value['counts']['packages']>0 and
+                value['ownedSdkCleanupObserved'] and value['sdkContainerSeconds'] is not None and
+                diagnostics=={**empty_diagnostics(),'stage':'complete'} and all(value['hashes'].values()) and value['counts']['packages']>0 and
                 value['counts']['generatedOutputs']==51 and value['counts']['formats']==13,'sdk-proof-refused')
     else:require(value['errorId']!='none','sdk-proof-refused')
     require(len(PREFIX)+len(canonical(value))<=MAX_RECEIPT,'local-output-limit')
@@ -101,11 +210,12 @@ def empty_receipt(head):
             'sourcePolicySha256':POLICY_SHA256,'errorId':'unexpected-failure','sdkVerifiedOnHost':False,
             'sdkContainerExitCode':None,'sdkContainerQuiescent':False,'ownedSdkCleanupObserved':False,
             'sdkContainerSeconds':None,'helperSeconds':0,'counts':{k:0 for k in sorted(COUNTS)},
-            'hashes':{k:None for k in sorted(HASHES)},**LIMITATIONS}
+            'hashes':{k:None for k in sorted(HASHES)},'diagnostics':empty_diagnostics(),**LIMITATIONS}
 
 
 def failed_receipt(previous,identifier,elapsed):
     value=empty_receipt(previous['sourceHead']);value.update(errorId=identifier,helperSeconds=elapsed)
+    value['diagnostics']=previous['diagnostics']
     observed={k:previous[k] for k in ['sdkContainerExitCode','sdkContainerQuiescent','ownedSdkCleanupObserved','sdkContainerSeconds']}
     try:return validate_receipt({**value,**observed})
     except BaseException:return validate_receipt(value)
@@ -138,11 +248,12 @@ def guarded(work,private,head):
         try:
             facts=work();require(type(facts) is dict and set(facts)=={'counts','hashes','sdkContainerExitCode','sdkContainerQuiescent','ownedSdkCleanupObserved','sdkContainerSeconds'},'sdk-proof-refused')
             require(time.monotonic()-started<=6600,'runtime-refused')
-            value.update(facts,sdkVerifiedOnHost=True,errorId='none')
+            value.update(facts,sdkVerifiedOnHost=True,errorId='none',diagnostics={**empty_diagnostics(),'stage':'complete'})
         except BaseException as error:
             traceback.print_exc()  # original exception and traceback stay LOCAL
             value=empty_receipt(head)
             value['errorId']=error.identifier if isinstance(error,Refusal) else 'input-refused' if isinstance(error,subprocess.TimeoutExpired) else 'unexpected-failure'
+            value['diagnostics']=failure_diagnostics(private,error)
             attempt=private/'OWNED-SDK-ATTEMPT.json'
             if attempt.exists():
                 try:
@@ -162,6 +273,7 @@ def guarded(work,private,head):
 
 
 def fixed_work(private):
+    record_stage(private,'runtime-source-validation')
     policy_path=Path(__file__).with_name('gcc-sdk-receipt-policy.v1.json')
     require(file_pin(policy_path,65536)['sha256']==POLICY_SHA256,'source-refused');policy=read_json(policy_path)
     repository=Path(os.environ['GITHUB_WORKSPACE']);temporary=Path(os.environ['RUNNER_TEMP'])
@@ -178,7 +290,8 @@ def fixed_work(private):
               [node,str(repository/'scripts/acquire-binutils-inputs.mjs'),'--output',str(temporary/'gcc-common-inputs'),'--operator-trust-execution'],
               [node,str(repository/'scripts/acquire-c-producer-inputs.mjs'),'--profile','gcc-12','--common-inputs',str(temporary/'gcc-common-inputs/bundle'),'--output',str(temporary/'gcc-inputs')]]
     input_start=time.monotonic()
-    for command in commands:
+    for stage,command in zip(['image-acquisition','common-input-acquisition','gcc-input-acquisition'],commands):
+        record_stage(private,stage)
         remaining=policy['inputPreparationSeconds']-(time.monotonic()-input_start);require(remaining>0,'input-refused')
         # Output inherits the already-private FDs. Original fixed acquisition
         # programs/commands remain unchanged; no exception is printed publicly.
@@ -187,6 +300,7 @@ def fixed_work(private):
         require((private/'opaque-wrapper-output.log').stat().st_size<=MAX_OPAQUE,'local-output-limit')
     output=temporary/'gcc-sdk-reconstruction';require(not os.path.lexists(output),'runtime-refused');saved=sys.argv
     try:
+        record_stage(private,'legacy-sdk-capture')
         sys.argv=[str(Path(legacy.__file__)), '--repository',str(repository),'--inputs',str(temporary/'gcc-inputs/bundle'),
                   '--output',str(output),'--operator-trust-execution']
         legacy.main()  # capture ONLY. Never invoke the rejected export mode.
@@ -197,6 +311,7 @@ def fixed_work(private):
         # A later metadata/cleanup failure cannot reset observed elapsed time or
         # replace a genuine container exit with the outer helper's exit code.
         retain_attempt(output,private)
+    record_stage(private,'independent-verification')
     return verify_on_host(output,private,policy,independent)
 
 
@@ -259,6 +374,7 @@ def main():
     except BaseException as error:
         # Even entry/admission failures have no raw exception or traceback channel.
         value=empty_receipt(head);value['errorId']=error.identifier if isinstance(error,Refusal) else 'runtime-refused'
+        value['diagnostics']=failure_diagnostics(None,error)
     os.write(1,PREFIX+canonical(validate_receipt(value)))
     return 0 if value['sdkVerifiedOnHost'] else 1
 
