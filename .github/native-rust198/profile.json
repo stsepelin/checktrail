@@ -1,0 +1,154 @@
+{
+  "bootstrapCacheDate": "2026-07-16",
+  "bounds": {
+    "admissionFreeBytes": 25769803776,
+    "captureBytes": 8589934592,
+    "captureFiles": 100000,
+    "cleanupSeconds": 30,
+    "configureSeconds": 600,
+    "logBytes": 268435456,
+    "materializationDecodedBytes": 8589934592,
+    "materializationIndexBytes": 268435456,
+    "materializationMembersPerPass": 500000,
+    "materializationFileAndIndexBytes": 8589934592,
+    "materializationSeconds": 900,
+    "minimumFreeBytes": 8589934592,
+    "nativeSeconds": 18000,
+    "prepareAttemptSeconds": 1200,
+    "sampledRssBytes": 6442450944,
+    "wholeSeconds": 21000
+  },
+  "buildStage": 2,
+  "cargoCommit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+  "configure": [
+    "./configure",
+    "--enable-full-tools",
+    "--enable-sanitizers",
+    "--enable-profiler",
+    "--set",
+    "rust.jemalloc",
+    "--set",
+    "llvm.link-shared=true",
+    "--set",
+    "rust.lto=thin",
+    "--set",
+    "rust.codegen-units=1",
+    "--set",
+    "build.print-step-timings",
+    "--enable-verbose-tests",
+    "--set",
+    "build.metrics",
+    "--enable-verbose-configure",
+    "--enable-sccache",
+    "--disable-manage-submodules",
+    "--enable-locked-deps",
+    "--enable-cargo-native-static",
+    "--set",
+    "rust.codegen-units-std=1",
+    "--set",
+    "dist.compression-profile=balanced",
+    "--dist-compression-formats=xz",
+    "--set",
+    "rust.lld=true",
+    "--set",
+    "build.optimized-compiler-builtins",
+    "--disable-dist-src",
+    "--release-channel=stable",
+    "--enable-llvm-static-stdcpp",
+    "--debuginfo-level-std=1",
+    "--set",
+    "rust.codegen-backends=llvm,cranelift"
+  ],
+  "configuredCodegenBackends": [
+    "llvm",
+    "cranelift"
+  ],
+  "deploymentTarget": "11.0",
+  "developerDir": "/Applications/Xcode_26.2.app/Contents/Developer",
+  "dist": [
+    "./x.py",
+    "dist",
+    "bootstrap",
+    "enzyme",
+    "--include-default-paths",
+    "--host=aarch64-apple-darwin",
+    "--target=aarch64-apple-darwin"
+  ],
+  "host": "aarch64-apple-darwin",
+  "inputs": [
+    {
+      "bytes": 244440040,
+      "id": "rustc-source198",
+      "originalURL": "https://static.rust-lang.org/dist/2026-08-20/rustc-1.98.0-src.tar.xz",
+      "prefix": "rustc-1.98.0-src",
+      "sha256": "271fa73d8174f53d713c46a8310da7bf7cfdcfb8b7cfd1c2b74b84a83ae9fb1e",
+      "url": "https://static.rust-lang.org/dist/2026-08-20/rustc-1.98.0-src.tar.xz"
+    },
+    {
+      "bytes": 68127952,
+      "id": "stage0-rustc1971",
+      "originalURL": "https://static.rust-lang.org/dist/2026-07-16/rustc-1.97.1-aarch64-apple-darwin.tar.xz",
+      "prefix": "rustc-1.97.1-aarch64-apple-darwin",
+      "sha256": "6076cad38ccabaa24325f26a74080a363a2633a9cd34c473a8977255d8a593cb",
+      "url": "https://static.rust-lang.org/dist/2026-07-16/rustc-1.97.1-aarch64-apple-darwin.tar.xz"
+    },
+    {
+      "bytes": 8876992,
+      "id": "stage0-cargo1971",
+      "originalURL": "https://static.rust-lang.org/dist/2026-07-16/cargo-1.97.1-aarch64-apple-darwin.tar.xz",
+      "prefix": "cargo-1.97.1-aarch64-apple-darwin",
+      "sha256": "2d84a74e9558192a7de674aca6aa3ab7464bed2df97e0377156ddb7e09a0fd7a",
+      "url": "https://static.rust-lang.org/dist/2026-07-16/cargo-1.97.1-aarch64-apple-darwin.tar.xz"
+    },
+    {
+      "bytes": 29286636,
+      "id": "stage0-std1971",
+      "originalURL": "https://static.rust-lang.org/dist/2026-07-16/rust-std-1.97.1-aarch64-apple-darwin.tar.xz",
+      "prefix": "rust-std-1.97.1-aarch64-apple-darwin",
+      "sha256": "a4895f5c6995e83cab8687e46b14324592398049def71ce75ca308c981cf200d",
+      "url": "https://static.rust-lang.org/dist/2026-07-16/rust-std-1.97.1-aarch64-apple-darwin.tar.xz"
+    }
+  ],
+  "memoryDiskTimeAndCaptureFitQualified": false,
+  "minimumSDKArtifactNames": [
+    "rustc-1.98.0-aarch64-apple-darwin.tar.xz",
+    "cargo-1.98.0-aarch64-apple-darwin.tar.xz",
+    "rust-std-1.98.0-aarch64-apple-darwin.tar.xz"
+  ],
+  "minimumSDKArtifactNamesDoNotClaimAllDefaultComponentCoverage": true,
+  "nativeAdmissionGranted": false,
+  "originalDefaultComponentsRequireRootPostBuildReview": true,
+  "originalFeaturesTargetsOrDefaultComponentsReduced": false,
+  "originalSccache": {
+    "architectureDeclaredByOriginalArtifactFilename": "x86_64",
+    "bytes": 15340648,
+    "custodySourceNoticeRuntimeRosettaAndIPCEvidenceQualified": false,
+    "sha256": null,
+    "url": "https://ci-mirrors.rust-lang.org/rustc/2025-02-24-sccache-v0.10.0-x86_64-apple-darwin",
+    "version": "0.10.0"
+  },
+  "originalSourceProfileProof": {
+    "originalBuilderConfigSHA256": "623c5a3cd758050033937e606fea007cadfaaedcc42e73641dcffa0105f63f2a",
+    "sha256": "d86581c6fc8baffcc8e80e37e7a7825abb0319d3ad7af72904774ff10273adab",
+    "upstreamJobPath": "src/ci/github-actions/jobs.yml",
+    "upstreamJobSHA256": "ea1842b795ed8cfc793282f570a8af9327d145d6d8f7dcd2610aedbfd5f5602c"
+  },
+  "prepare": [
+    "make",
+    "prepare"
+  ],
+  "prepareAttempts": 5,
+  "prepareBackoffSeconds": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "profile": "dist",
+  "schemaVersion": 1,
+  "selection": "rust-1.98.0-original-aarch64-apple-darwin",
+  "sourceBuildHistoricalPublisherEqualityOrGateAClaimed": false,
+  "sourceCommit": "88d9e12ae178fab0fb5cc050a94da85685d449ea",
+  "sourceVersion": "1.98.0",
+  "target": "aarch64-apple-darwin"
+}
