@@ -119,6 +119,23 @@ log differences remain visible. Unknown material differences refuse the next
 compiler target and retain their complete metadata for review. This does not
 claim an identical full container root or completion of the GCC producer.
 
+The generated-state contract enumerates the selected font caches, loader auxiliary
+cache, TeX formats, logs and indexes by exact path, file type, owner and mode.
+Their historical hashes remain visible; their historical bodies are not retained
+or copied. They require fresh physical regeneration using the original pinned
+packages, tool identities and effective format-to-engine configuration. Missing,
+unknown or partial outputs refuse qualification. All other software, font, script,
+header, library and configuration bytes remain exact.
+
+The diagnostic preflights every owned fresh generated output before removing any,
+observes their absence, and records the fixed generators' actual terminal outcomes.
+Every selected format must appear anew at its exact path. Matching ordinary input
+timestamps are normalized before regeneration and again before the final
+validators. Font enumeration may repair its own caches and runs before the cache
+readers; such mutations are recorded. No timestamp write follows final validation,
+and each validator's final generated-file identity must match the retained final
+inventory. A data comparison or zero exit alone never proves this contract.
+
 This diagnostic records SDK preparation separately and leaves the original
 phase ledger unchanged. The next original target remains `stamps/05-build-stamp`
 through the reviewed outer-rules proxy. Its compiler, scratch, archive, transport

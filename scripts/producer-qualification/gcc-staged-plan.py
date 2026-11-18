@@ -14,6 +14,7 @@ checkpoint = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(ch
 require, canonical, sha = checkpoint.require, checkpoint.canonical, checkpoint.sha
 PROFILE = checkpoint.PROFILE
 RETENTION_FAILED = 'retention-failed'
+TERMINAL_INCOMPLETE = 'terminal-incomplete'
 RULES = {
  'debian/rules': 'e99bd407df7ea7d0b26428416c048c482a30e55aa581781f842292b7182fdaf9',
  'debian/rules.defs': 'deb0936094dbb29e48ce0b35828abc91ebaec50eadef8440306e12896c581a84',
@@ -128,14 +129,16 @@ def validate_ledger(ledger, configuration):
     rows = ledger['attempts']; require(isinstance(rows, list) and len(rows) <= 64, 'Invalid attempt history')
     previous = None; native_seconds = 0; completed = 0; last_checkpoint = None
     for index, row in enumerate(rows):
+        require(index==0 or rows[index-1]['quiescenceObserved'] is True, 'Unresolved original process family inhibits every continuation')
+        require(type(row['terminalObserved']) is bool and type(row['quiescenceObserved']) is bool, 'Typed original terminal/process-family observations required')
         require(completed < len(selected['phases']), 'Unexpected attempt after package completion')
         expected = selected['phases'][completed]
         require(row['phase'] == expected['phase'] and row['command'] == expected['command'] and row['attempt'] == index and row['sequence'] == completed, 'Skipped/reordered/changed original phase')
         require(row['predecessorSha256'] == previous, 'Wrong phase predecessor')
         require(type(row['nativeSeconds']) in [int, float] and 0 <= row['nativeSeconds'] <= 14440, 'Invalid phase duration')
-        require(row['outcome'] in ['completed','failed','timeout-incomplete','retention-failed'], 'Unknown phase outcome')
+        require(row['outcome'] in ['completed','failed','timeout-incomplete','retention-failed',TERMINAL_INCOMPLETE], 'Unknown phase outcome')
         if row['outcome'] == 'completed':
-            require(type(row['exitCode']) is int and row['exitCode'] == 0 and row['terminalObserved'] is True and row['quiescenceObserved'] is True, 'Incomplete original phase terminal/process family')
+            require(type(row['exitCode']) is int and row['exitCode'] == 0 and row.get('signal') is None and row['terminalObserved'] is True and row['quiescenceObserved'] is True, 'Incomplete original phase terminal/process family')
             require(isinstance(row['checkpointSha256'], str) and checkpoint.re.fullmatch('[a-f0-9]{64}',row['checkpointSha256']), 'Missing validated checkpoint')
             require(row['requiredStamps'] == expected['requiredStamps'], 'Wrong required phase stamp inventory')
             require(row['stampIdentities'] == expected['requiredStamps'], 'Missing physical original phase stamps')
@@ -149,18 +152,30 @@ def validate_ledger(ledger, configuration):
         else:
             require(row['checkpointSha256'] is None, 'Failed or interrupted native tree cannot become a completed checkpoint')
             if row['outcome'] == 'retention-failed':
-                require(type(row['exitCode']) is int and row['exitCode'] == 0 and row['terminalObserved'] is True and row['quiescenceObserved'] is True, 'Retention failure changed genuine native terminal/process family')
+                require(type(row['exitCode']) is int and row['exitCode'] == 0 and row.get('signal') is None and row['terminalObserved'] is True and row['quiescenceObserved'] is True, 'Retention failure changed genuine native terminal/process family')
                 require(row['retentionStage'] in ['capture','archive-verification','physical-restore','transport-admission','transport','cleanup'], 'Unknown retention failure stage')
                 require(isinstance(row['retentionFailure'],str) and 0 < len(row['retentionFailure'].encode()) <= 2048, 'Missing bounded retention failure evidence')
+            elif row['outcome'] == TERMINAL_INCOMPLETE:
+                require(type(row['exitCode']) is int and row['exitCode']==0 and row.get('signal') is None and
+                        row['terminalObserved'] is True and row['quiescenceObserved'] is False,
+                        'Terminal-incomplete changed genuine zero or unconfirmed process family')
+                require(row['incompleteStage'] in ['capture','archive-verification','physical-restore','transport-admission','transport','cleanup'], 'Unknown terminal-incomplete stage')
+                require(isinstance(row['incompleteReason'],str) and 0<len(row['incompleteReason'].encode())<=2048, 'Missing bounded unresolved family evidence')
             elif row['outcome'] == 'timeout-incomplete':
-                require(row['exitCode'] is None and row['terminalObserved'] is False, 'Timeout invented a native original terminal')
-            else: require(type(row['exitCode']) is int and row['exitCode'] != 0 and row['terminalObserved'] is True, 'Failed phase lacks a real nonzero terminal')
+                require(row['exitCode'] is None and row.get('signal') is None and row['terminalObserved'] is False, 'Timeout invented a native original terminal')
+            else:
+                code,native_signal=row['exitCode'],row.get('signal')
+                require(row['terminalObserved'] is True and
+                        ((type(code) is int and 0<code<=255 and native_signal is None) or
+                         (code is None and type(native_signal) is int and 0<native_signal<128)),
+                        'Failed phase lacks a real nonzero exit or signal terminal')
         native_seconds += row['nativeSeconds']; previous = sha(canonical(row))
     require(native_seconds <= 43200, 'Aggregate native allowance exhausted')
     return selected, previous, native_seconds, completed, last_checkpoint
 
 def next_phase(ledger, configuration, job):
     selected, previous, spent, completed, last_checkpoint = validate_ledger(ledger, configuration)
+    require(not ledger['attempts'] or ledger['attempts'][-1]['quiescenceObserved'] is True, 'Unresolved original process family inhibits every continuation')
     require(len(ledger['attempts']) < 64 and completed < len(selected['phases']), 'No continuation attempt remains')
     require(job['runnerLabel'] == 'ubuntu-26.04' and job['architecture'] == 'x86_64' and job['cpus'] >= 4 and job['memoryBytes'] >= 12 * 1024**3, 'Insufficient standard hosted runtime')
     require(job['sourceAndImagePinsVerified'] is True and job['packageInventoryUnchanged'] is True and job['restoredPhysicalTreeVerified'] is True, 'Unverified restored producer inputs')
@@ -191,7 +206,8 @@ def append_attempt(ledger, configuration, observed):
 
 def completion(ledger, configuration):
     selected, _, spent, completed, last = validate_ledger(ledger, configuration)
-    return {'allSelectedPhasesReported':completed == len(selected['phases']),
+    return {'continuationInhibitedByUnresolvedFamily':bool(ledger['attempts']) and ledger['attempts'][-1]['quiescenceObserved'] is False,
+            'allSelectedPhasesReported':completed == len(selected['phases']),
             'reportedCompletedPhases':completed,'requiredPhases':len(selected['phases']),
             'allAttemptNativeSeconds':spent,'lastCheckpointSha256':last,
             'nativeEvidenceOriginAssessed':False,'uninterruptedOriginalCommandCompleted':False,

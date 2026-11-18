@@ -3,7 +3,12 @@ import { spawnSync } from "node:child_process";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
-for (const file of ["gcc-sdk-material-cases.py", "gcc-sdk-hosted-cases.py"]) {
+for (const file of [
+  "gcc-sdk-material-cases.py",
+  "gcc-sdk-hosted-cases.py",
+  "gcc-sdk-derived-cases.py",
+  "gcc-sdk-derived-run-cases.py",
+]) {
   test("GCC SDK reconstruction synthetic controls: " + file, (t) => {
     if (process.platform === "win32") {
       t.skip("The selected original hosted GCC SDK requires POSIX");

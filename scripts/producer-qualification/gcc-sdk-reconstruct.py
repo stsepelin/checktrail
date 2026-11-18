@@ -22,6 +22,8 @@ HERE=Path(__file__).resolve().parent
 stage=load(HERE/'gcc-hosted-stage.py')
 material=load(HERE/'gcc-sdk-material.py')
 codec=load(HERE/'gcc-staged-checkpoint.py')
+derived=load(HERE/'gcc-sdk-derived.py')
+derived_run=load(HERE/'gcc-sdk-derived-run.py')
 
 
 def compressed_json(path, value):
@@ -35,7 +37,7 @@ def compressed_json(path, value):
             'expandedBytes':len(raw),'expandedSha256':hashlib.sha256(raw).hexdigest()}
 
 
-def normalize_verified_timestamps(expected, observed, comparison):
+def normalize_verified_timestamps(expected, observed, comparison, comparison_fn=None):
     stage.require(comparison['materialProjectionMatches'], 'Unresolved SDK material cannot be normalized')
     expected_rows=material.inventory(expected)
     # Match a fresh physical inventory immediately before any timestamp write.
@@ -44,7 +46,7 @@ def normalize_verified_timestamps(expected, observed, comparison):
     for row in sorted(rows,key=lambda item:len(Path(item['path']).parts),reverse=True):
         codec.set_metadata(Path(row['path']),expected_rows[row['path']])
     after=stage.external_inventory()
-    final=material.compare(expected,after,comparison['expectedPackageInventorySha256'],
+    final=(comparison_fn or material.compare)(expected,after,comparison['expectedPackageInventorySha256'],
                            comparison['observedPackageInventorySha256'])
     stage.require(final['materialProjectionMatches'] and not final['categories']['timestampOnlyMaterial'],
                   'SDK material did not physically match after timestamp normalization')
@@ -84,7 +86,7 @@ def main():
         subprocess.run(['dpkg-query','-W','-f=${Package}\t${Version}\t${Architecture}\n'],stdout=sink,check=True)
     observed_packages=hashlib.sha256(package_path.read_bytes()).hexdigest()
     observed=stage.external_inventory()
-    comparison=material.compare(expected,observed,expected_packages,observed_packages)
+    comparison=derived.compare_software(expected,observed,expected_packages,observed_packages)
     comparison.update(expectedPackageInventorySha256=expected_packages,observedPackageInventorySha256=observed_packages)
     before_pin=compressed_json(output/'sdk-observed-before.json.gz',observed)
     comparison_pin=compressed_json(output/'sdk-comparison-before.json.gz',comparison)
@@ -95,12 +97,33 @@ def main():
             'wholeRootIdentityClaimed':False,'fullCompilerSdkBootstrapClosureVerified':False,'gateAComplete':False}
     (output/'SDK-RECONSTRUCTION.json').write_bytes(stage.canonical(result)+b'\n')
     stage.require(comparison['materialProjectionMatches'], 'SDK material differences require explicit review; no GCC target allowed')
-    after,final=normalize_verified_timestamps(expected,observed,comparison)
+    # Only ordinary matching input times are normalized. The51 generated
+    # artifacts keep their current identities and need real production witnesses.
+    normalized,normalized_comparison=normalize_verified_timestamps(expected,observed,comparison,derived.compare_software)
+    generation=derived_run.generate(expected,packages,output,records)
+    generated=stage.external_inventory()
+    generated_comparison=derived.compare_software(expected,generated,expected_packages,observed_packages)
+    generated_comparison.update(expectedPackageInventorySha256=expected_packages,observedPackageInventorySha256=observed_packages)
+    result['generatedInventory']=compressed_json(output/'sdk-observed-generated.json.gz',generated)
+    result['generatedComparison']=compressed_json(output/'sdk-comparison-generated.json.gz',generated_comparison)
+    # Finish ALL timestamp writes before final validators. If validators later
+    # change ordinary inputs/times, refuse rather than rewrite validated state.
+    normalized_after,normalized_comparison=normalize_verified_timestamps(expected,generated,generated_comparison,derived.compare_software)
+    validation=derived_run.validate(expected,generation,output,records)
+    after=stage.external_inventory()
+    final=derived.compare_software(expected,after,expected_packages,observed_packages)
+    final.update(expectedPackageInventorySha256=expected_packages,observedPackageInventorySha256=observed_packages)
+    stage.require(final['materialProjectionMatches'] and not final['categories']['timestampOnlyMaterial'],
+                  'Final validators changed an original software input or timestamp')
+    final_witness=derived_run.verify_final_inventory(after,validation)
     after_pin=compressed_json(output/'sdk-observed-after.json.gz',after)
     final_pin=compressed_json(output/'sdk-comparison-after.json.gz',final)
     result.update(state='sdk-material-reconstructed-and-physically-verified',observedAfter=after_pin,comparisonAfter=final_pin,
                   normalizedTimestampPaths=[r['path'] for r in comparison['categories']['timestampOnlyMaterial']],
-                  sdkMaterialReconstructionObserved=True)
+                  normalizedAfterGenerationPaths=[r['path'] for r in generated_comparison['categories']['timestampOnlyMaterial']],
+                  sdkMaterialReconstructionObserved=True,softwareAndGeneratedStateContract=derived.POLICY,
+                  generatedStatePhysicallyValidated=True,finalValidatedStateWitness=final_witness,
+                  allTimestampWritesPrecededFinalValidators=True,historicalCacheBodyEqualityClaimed=False)
     (output/'SDK-RECONSTRUCTION.json').write_bytes(stage.canonical(result)+b'\n')
 
 

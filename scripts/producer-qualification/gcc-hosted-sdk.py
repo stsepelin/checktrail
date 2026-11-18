@@ -41,7 +41,8 @@ PREDECESSOR={
  'configurationSha256':'0c08604bb36390d97a8697dda36f8468f6a7cd90b3fd3ed00c9ee285325b9a35',
  'externalSdkSha256':'248633f163abe316ed8e475bf86a8d56ae2d7c9fb21f7b9abe8abf1867caea46'}
 BODY=['/usr/bin/python3','-I','-B','/controller/gcc-sdk-reconstruct.py','sdk-reconstruct']
-CONTROLS=['gcc-hosted-stage.py','gcc-sdk-material.py','gcc-sdk-reconstruct.py','gcc-staged-checkpoint.py']
+CONTROLS=['gcc-hosted-stage.py','gcc-sdk-material.py','gcc-sdk-reconstruct.py','gcc-staged-checkpoint.py',
+          'gcc-sdk-derived.py','gcc-sdk-derived-run.py']
 
 
 def verify_cache_identity(api, policy=PREDECESSOR):
@@ -203,7 +204,8 @@ def export(output):
     if stdout['complete']:sources.append(output/'sdk-native.log.gz')
     sources += [p for p in (output/'observations').glob('*') if p.name in
                 ['SDK-RECONSTRUCTION.json','installed-package-identities.txt','sdk-commands.jsonl',
-                 'sdk-observed-before.json.gz','sdk-comparison-before.json.gz','sdk-observed-after.json.gz','sdk-comparison-after.json.gz']]
+                 'sdk-observed-before.json.gz','sdk-comparison-before.json.gz','sdk-observed-after.json.gz','sdk-comparison-after.json.gz',
+                 'SDK-DERIVED-GENERATION.json','SDK-DERIVED-VALIDATION.json','sdk-observed-generated.json.gz','sdk-comparison-generated.json.gz']]
     for folder in output.glob('service-*'):
         if folder.is_dir() and not folder.is_symlink():sources.extend(folder.glob('*.json'))
     total=0;pins=[]
