@@ -24,11 +24,200 @@
       "hash": "135ad47388cd915fb8f51702e663edbd038df026"
     },
     {
+      "path": ".github/treesitter027-producer/COHORT.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "0af4701234083294d4b9aedec93dbb107510d53f"
+    },
+    {
+      "path": ".github/treesitter027-producer/admit.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "b6e81245bf50546ceda07750e3a2b70fdd6da464"
+    },
+    {
+      "path": ".github/treesitter027-producer/curate-native-inputs.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "793f501172c0a7742454587ca4f7b0f001da88fc"
+    },
+    {
+      "path": ".github/treesitter027-producer/custody-budget.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "9e62359e60b7bf77b6089441c77099bfdee6bd33"
+    },
+    {
+      "path": ".github/treesitter027-producer/encrypted-capture.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "a2c55f75c9c2d8ed41cd5fe8cd7fcdb4477e480a"
+    },
+    {
+      "path": ".github/treesitter027-producer/git_source_root_proof.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f0e3560432d1f5f99cd6daddb15aaa7c7206f2d5"
+    },
+    {
+      "path": ".github/treesitter027-producer/materialize-native-inputs.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "fbcfbc67b5f6471b5df23aeef8eae25023eba1e6"
+    },
+    {
+      "path": ".github/treesitter027-producer/native-controller.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "a6683c28c920e661923e0e971a0dcf1cbab79190"
+    },
+    {
+      "path": ".github/treesitter027-producer/native-inputs.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "c25043f8d3e8e67a100dedf05ad648feff11af31"
+    },
+    {
+      "path": ".github/treesitter027-producer/original-npm-cache.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "803dbb498ea90f178cc335a406605d8c33a8f5a8"
+    },
+    {
+      "path": ".github/treesitter027-producer/original-stage-driver.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "d2e9f27b8d1d5ea5e8213d8711b4ec8302067f9e"
+    },
+    {
+      "path": ".github/treesitter027-producer/recipient-public.json",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f3049f10460131c0f5831a48e52e0d83ba9ea881"
+    },
+    {
+      "path": ".github/treesitter027-producer/recover-private-capture.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "1064d86bd9b43820948041bdeba069191bb76527"
+    },
+    {
+      "path": ".github/treesitter027-producer/reused-native-v5/capsule.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "74e5f24ea7893e7fdbcfc04ec3574fb1750b4098"
+    },
+    {
+      "path": ".github/treesitter027-producer/reused-native-v5/controller.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "74b0a6068f42d9b09238d79f9646de6c2143d594"
+    },
+    {
+      "path": ".github/treesitter027-producer/reused-sdk-crypto/common.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "2294f1771718a2f10ee9fa82b419bebad45239fc"
+    },
+    {
+      "path": ".github/treesitter027-producer/reused-sdk-crypto/crypto_bridge.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "2638992133c6290f0cb2dbac22b13a87346a7c88"
+    },
+    {
+      "path": ".github/treesitter027-producer/reused-sdk-crypto/envelope.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "f6da61bebf22dc2a639daa5babc44e25744e6609"
+    },
+    {
+      "path": ".github/treesitter027-producer/test-common-lifecycle-regression.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "0557ab059d5541ce45dc5edc523357fc3260ab68"
+    },
+    {
+      "path": ".github/treesitter027-producer/test-common-lifecycle.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "c183c75e438b8f3af47ff0e453a42882de981dd9"
+    },
+    {
+      "path": ".github/treesitter027-producer/test-encrypted-capture.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "b9bd5642823529227c02743a7240e04e03f86e0f"
+    },
+    {
+      "path": ".github/treesitter027-producer/test-lifecycle-regression.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "ecfd1efbfb77cb9c3b4f31dfb3687398eefcd64b"
+    },
+    {
+      "path": ".github/treesitter027-producer/test-lifecycle.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "56ffc6bd90fa7f2a6fd4c0d2eabec8babe2fd7fc"
+    },
+    {
+      "path": ".github/treesitter027-producer/test-materializer.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "1580036bffad5e516269dc19fc291b4fb78c9beb"
+    },
+    {
+      "path": ".github/treesitter027-producer/test-native-controller.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "da3ba5a20785da8db253a449f081495189f738ee"
+    },
+    {
+      "path": ".github/treesitter027-producer/validate-capture.py",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "9cb5451dd6b7f6f9bd602b5c638e3be8dd8cd3e7"
+    },
+    {
       "path": ".github/workflows/ci.yml",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "95926fe895f80236df026cb77e1788d311a7eebe"
+    },
+    {
+      "path": ".github/workflows/native-tree027-producer.yml",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "7a5ab9ad7938e9d790c673927fe8f65cfa0acbe2"
     },
     {
       "path": ".github/workflows/prebuilt-gcc.yml",
@@ -98,7 +287,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "fbd1430bd3a9d8964488e007f67d7c4c82d57b47"
+      "hash": "c5ba996e3bb579cee09e69afa26970f0e18ccb90"
     },
     {
       "path": "AGENTS.md",
@@ -815,6 +1004,13 @@
       "hash": "036905f86b9a3fbf6bb8768b19174870a13e09fa"
     },
     {
+      "path": "docs/GATE-A-CLOSURE-PLAN.md",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "224dbf6f51d11d5764782f40c766468b842dc3b9"
+    },
+    {
       "path": "docs/GO-BUILD.md",
       "mode": "100644",
       "type": "blob",
@@ -1197,7 +1393,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "22e3c9b6cda680243b85e4aeffa5cf6c0c543eca"
+      "hash": "425c9341e7de81769082adb87612cc26e1f46faa"
     },
     {
       "path": "docs/PLAYWRIGHT.md",
@@ -1302,7 +1498,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "641870cfb73ce5b7c72114a4874d64e8176365df"
+      "hash": "24b75419c8b8fe03c08b1e6fed0e420064acbaa9"
     },
     {
       "path": "docs/REVIEW-BEHAVIOR.md",
@@ -1568,7 +1764,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "3256b41edeb1da6e72dff7055cc303e100998d1f"
+      "hash": "c9fdebe84a6655c5c72037b471bc69d6f543145c"
     },
     {
       "path": "docs/RUBY-EXTENSIONS.md",
@@ -6853,14 +7049,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "protected-lock-sha256",
-      "hash": "446459962d552db191b7afe3af6457170a3df7add17aa40ea9fe7ef9420782eb"
+      "hash": "8153aaec9c095ce0048c4810b48fd174df2a02a92bdfd40b59f8aac250cd0af6"
     },
     {
       "path": "package.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "root-manifest-sha256",
-      "hash": "87e9cb9107917361c66eab6a5a9c470a0c543c5f742ea9da219b56c3826e7361"
+      "hash": "53f8614f50dd3c8fd85f97a86d2a430c447f7d1a7214a3563d1b1619b964baf0"
     },
     {
       "path": "packs/actionlint.json",
@@ -9849,7 +10045,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "96554a561b229b186488b02bccef9c684b6b4d95"
+      "hash": "a2137c873940f7994d6f7b56ebf902ef755d2636"
     },
     {
       "path": "scripts/prepare-playwright-tools.mjs",
@@ -16709,7 +16905,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "740a305827de75c857e9ab68f92a15fd85722859"
+      "hash": "5514da4cc5dd3e65724f859653b5e3942cbfe429"
     },
     {
       "path": "test/ci-impact.test.ts",
@@ -19425,7 +19621,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "8030d9a1d1a57195b78abe31634b50a1770d4704"
+      "hash": "3332173788f4aea2ffe169138960a770bf16618e"
     },
     {
       "path": "test/prepare-ubuntu-mirrors.test.ts",
@@ -20966,6 +21162,13 @@
       "type": "blob",
       "fingerprint": "git-blob-sha1",
       "hash": "2e5fc4fadb75f5003db1c826f4e23994e6629d47"
+    },
+    {
+      "path": "test/tree-producer-controls.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "70e793756ffb218e18862ff7492ca94447842226"
     },
     {
       "path": "test/typescript-build.test.ts",
