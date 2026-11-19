@@ -197,6 +197,75 @@ test("scoped mirror preparation retains every original byte and restores source,
   }
 });
 
+test("AWS mirror preparation retains original priorities and restores every original byte and mode", async () => {
+  const f = await fixture();
+  const awsOriginal = original.replace(
+    "http://azure.archive.ubuntu.com/ubuntu/",
+    "http://us-east-2.ec2.archive.ubuntu.com/ubuntu/\tpriority:1",
+  );
+  let session;
+  try {
+    await fs.writeFile(f.physical(main), awsOriginal);
+    const before = await fs.stat(f.physical(main));
+    session = await prepare(f.io, context);
+    assert.equal(session.metadata.state, "prepared");
+    assert.equal(session.metadata.changedCount, 1);
+    const prepared = mirrors.ubuntuMirrorCandidate + "\n" + awsOriginal;
+    assert.equal(await f.read(main), prepared);
+    assert.deepEqual(session.metadata.hashes, [
+      { original: digest(awsOriginal), prepared: digest(prepared) },
+    ]);
+    const restored = await session.restore();
+    assert.equal(restored.state, "restored");
+    assert.equal(restored.restoredCount, 1);
+    assert.equal(await f.read(main), awsOriginal);
+    const after = await fs.stat(f.physical(main));
+    assert.deepEqual(
+      [after.mode, after.uid, after.gid],
+      [before.mode, before.uid, before.gid],
+    );
+    assert.equal(await f.read(mirrors.ubuntuMirrorSource), sourceFor());
+    assert.equal(f.handles, 0);
+  } finally {
+    await session?.restore();
+    await f.cleanup();
+  }
+});
+
+for (const address of [
+  "http://prefix.us-east-2.ec2.archive.ubuntu.com/ubuntu/",
+  "http://us-east-2.ec2.archive.ubuntu.com.invalid/ubuntu/",
+  "http://us-east-1.ec2.archive.ubuntu.com/ubuntu/",
+  "http://operator@us-east-2.ec2.archive.ubuntu.com/ubuntu/",
+  "http://us-east-2.ec2.archive.ubuntu.com:8080/ubuntu/",
+  "http://us-east-2.ec2.archive.ubuntu.com/ubuntu.invalid/",
+])
+  test(
+    "AWS mirror near miss is refused without writes: " + address,
+    async () => {
+      const f = await fixture();
+      const rejected = original.replace(
+        "http://azure.archive.ubuntu.com/ubuntu/",
+        address,
+      );
+      try {
+        await fs.writeFile(f.physical(main), rejected);
+        const session = await prepare(f.io, context);
+        assert.equal(session.metadata.state, "unsupported");
+        assert.equal(session.metadata.reason, "unsupported-layout");
+        assert.equal(session.metadata.changedCount, 0);
+        assert.equal(await f.read(main), rejected);
+        assert.equal(await f.read(mirrors.ubuntuMirrorSource), sourceFor());
+        assert.ok(
+          !f.actions.some((a) => a.kind === "write" || a.kind === "rename"),
+        );
+        assert.equal(f.handles, 0);
+      } finally {
+        await f.cleanup();
+      }
+    },
+  );
+
 test("priority0 and idempotence retain existing canonical priorities and avoid duplicate candidate entries", async () => {
   const f = await fixture();
   let first, second;

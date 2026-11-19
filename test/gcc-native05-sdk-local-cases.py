@@ -96,9 +96,22 @@ class LocalSdk(unittest.TestCase):
   family=self.family();p=family[1]/'observations/SDK-DERIVED-GENERATION.json';p.unlink()
   with self.assertRaises(Exception):self.verify(family)
   row=json.loads((family[1]/'SDK-FOR-MAIN.json').read_bytes());self.assertEqual(row['observed']['containerState']['ExitCode'],0)
+ def test_current_policy_links_exact_prior_revision_and_preserves_original_limits(self):
+  policy=m.source_policy(ROOT)
+  self.assertEqual(policy['revision'],'sdk-primary-error-and-cleanup-accounting-v5')
+  self.assertEqual(policy['previousPolicySha256'],'d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58')
+  self.assertEqual(policy['sdkBodySeconds'],1200);self.assertEqual(policy['sourceJobSeconds'],21600)
+  self.assertEqual(policy['artifactUploads'],0);self.assertEqual(policy['cacheWrites'],0)
+  self.assertTrue(policy['freshApprovalReviewRequired']);self.assertFalse(policy['native05Authorized']);self.assertFalse(policy['gateAComplete'])
+
  def test_unchanged_approved_sdk_source_policy_is_a_real_byte_guard(self):
   with tempfile.TemporaryDirectory(prefix='sdk-policy-counterfactual-') as directory:
-   copy=Path(directory).resolve()/'copy';shutil.copytree(ROOT,copy)
+   copy=Path(directory).resolve()/'copy';copy.mkdir()
+   policy_path='scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json'
+   policy=json.loads((ROOT/policy_path).read_bytes())
+   for name in [policy_path,*[row['path'] for row in policy['runtimeFiles']]]:
+    target=copy/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/name,target)
+   m.source_policy(copy)
    p=copy/'scripts/producer-qualification/gcc-staged-plan.py';body=p.read_bytes();p.write_bytes(body[:-1]+(b' ' if body[-1:]!=b' ' else b'\n'))
    with self.assertRaisesRegex(ValueError,'R3 SDK runtime source changed'):m.source_policy(copy)
  def test_no_phase_command_or_execution_boolean_parameter_can_supply_authority(self):

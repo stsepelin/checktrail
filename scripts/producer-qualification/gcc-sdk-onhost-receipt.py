@@ -19,7 +19,7 @@ import sys
 import time
 import traceback
 
-POLICY_SHA256='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
+POLICY_SHA256='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
 PREFIX=b'CHECKTRAIL_SDK_RECEIPT_V1 '
 MAX_RECEIPT=16384
 MAX_OPAQUE=16*1024**2
@@ -176,11 +176,19 @@ def read_json(path,maximum=2*1024**2):
 
 
 def validate_receipt(value):
+    return _validate_receipt(value,POLICY_SHA256)
+
+
+def validate_historical_v4_receipt(value):
+    return _validate_receipt(value,'d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58')
+
+
+def _validate_receipt(value,expected_policy):
     keys={'schemaVersion','kind','sourceHead','sourcePolicySha256','errorId','sdkVerifiedOnHost','sdkContainerExitCode',
           'sdkContainerQuiescent','ownedSdkCleanupObserved','sdkContainerSeconds','helperSeconds','counts','hashes','diagnostics','structuredSdk',*LIMITATIONS}
     require(type(value) is dict and set(value)==keys and type(value['schemaVersion']) is int and value['schemaVersion']==1 and value['kind']=='gcc-sdk-onhost-receipt-v1','sdk-proof-refused')
     require(type(value['sourceHead']) is str and re.fullmatch('[a-f0-9]{40}',value['sourceHead']) and
-            value['sourcePolicySha256']==POLICY_SHA256 and value['errorId'] in ERRORS,'sdk-proof-refused')
+            value['sourcePolicySha256']==expected_policy and value['errorId'] in ERRORS,'sdk-proof-refused')
     require(all(type(value[k]) is bool for k in ['sdkVerifiedOnHost','sdkContainerQuiescent','ownedSdkCleanupObserved']) and
             all(type(value[k]) is type(v) and value[k]==v for k,v in LIMITATIONS.items()),'sdk-proof-refused')
     require(value['sdkContainerExitCode'] is None or type(value['sdkContainerExitCode']) is int and 0<=value['sdkContainerExitCode']<=255,'sdk-proof-refused')

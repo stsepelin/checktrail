@@ -31,9 +31,17 @@ test("GCC SDK synthetic controls execute every declared case module", (t) => {
       maxBuffer: 1024 * 1024,
     },
   );
-  assert.equal(result.error, undefined);
-  assert.equal(result.signal, null);
-  assert.equal(result.status, 0, result.stderr);
+  const failureStart = result.stderr?.search(/\n(?:FAIL|ERROR):/u) ?? -1;
+  const failureOutput =
+    failureStart >= 0
+      ? result.stderr.slice(failureStart, failureStart + 8192)
+      : JSON.stringify({
+          stdoutTail: result.stdout?.slice(-4096),
+          stderrTail: result.stderr?.slice(-8192),
+        });
+  assert.equal(result.error, undefined, failureOutput);
+  assert.equal(result.signal, null, failureOutput);
+  assert.equal(result.status, 0, failureOutput);
   assert.ok(
     result.stdout.trim().length > 0,
     "SDK case counter receipt missing",

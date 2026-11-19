@@ -139,17 +139,38 @@ class Metadata(unittest.TestCase):
 
 
 class NativeBoundary(unittest.TestCase):
-    def invoke(self,script,expect_error=None,stdout_limit=None,seconds=2):
+    def invoke(self,script,expect_error=None,stdout_limit=None,seconds=2,*,prestarted=False,signal_failure=False):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup);root=Path(temp.name).resolve();records=root/'commands'
         real_popen=subprocess.Popen;children=[]
+        def cleanup_children():
+            for child in children:
+                if child.returncode is None:
+                    try:os.killpg(child.pid,signal.SIGKILL)
+                    except ProcessLookupError:pass
+                    finally:child.wait(timeout=5)
+        self.addCleanup(cleanup_children)
+        if prestarted:
+            # Establish an exited but unreaped leader BEFORE the measured window.
+            # Its real descendant still holds stdout; no scheduler-speed assumption.
+            child=real_popen([sys.executable,'-I','-B','-c',script],cwd=root,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
+            children.append(child)
+            ready_by=time.monotonic()+5
+            while time.monotonic()<ready_by:
+                observed=subprocess.run(['ps','-o','stat=','-p',str(child.pid)],capture_output=True,text=True,timeout=2)
+                if observed.stdout.strip().startswith('Z'):break
+                time.sleep(0.01)
+            self.assertTrue(observed.stdout.strip().startswith('Z'),'Synthetic leader did not reach exited-unreaped state')
+            self.assertIsNone(child.returncode)
         def synthetic_popen(command,**kwargs):
             # Executes this test's own synthetic Python program, never the named SDK command.
             self.assertEqual(command,['/usr/bin/fc-list','synthetic-test'])
+            if prestarted:return children[0]
             child=real_popen([sys.executable,'-I','-B','-c',script],cwd=root,stdout=kwargs['stdout'],stderr=kwargs['stderr'],start_new_session=True)
             children.append(child);return child
         stream=types.SimpleNamespace(buffer=io.BytesIO())
         with mock.patch.object(m.subprocess,'Popen',side_effect=synthetic_popen),mock.patch.object(m.sys,'stdout',stream),\
-             mock.patch.object(m,'COMMAND_SECONDS',seconds),mock.patch.object(m,'STDOUT_BYTES',stdout_limit or m.STDOUT_BYTES):
+             mock.patch.object(m,'COMMAND_SECONDS',seconds),mock.patch.object(m,'STDOUT_BYTES',stdout_limit or m.STDOUT_BYTES),\
+             mock.patch.object(m.os,'killpg',side_effect=PermissionError(1,'Synthetic denied group signal') if signal_failure else m.os.killpg):
             if expect_error:
                 with self.assertRaisesRegex(ValueError,expect_error):m.run(['/usr/bin/fc-list','synthetic-test'],'synthetic',records,time.monotonic()+3)
                 value=None
@@ -173,6 +194,45 @@ class NativeBoundary(unittest.TestCase):
         _,_,row,_=self.invoke('import time;time.sleep(10)','timeout',seconds=0.05)
         self.assertFalse(row['stdoutComplete']);self.assertEqual(row['signal'],signal.SIGKILL);self.assertIsNone(row['exitCode'])
 
+    def test_signal_denial_keeps_original_overflow_and_genuine_terminal_in_receipt(self):
+        _,_,row,_=self.invoke("print('Synthetic overflowing output')",'stdout retention bound',stdout_limit=3,signal_failure=True)
+        self.assertEqual(row['exitCode'],0);self.assertTrue(row['terminalObserved']);self.assertFalse(row['stdoutComplete'])
+        self.assertTrue(row['error'].startswith('SDK tool stdout retention bound; cleanup='))
+        self.assertEqual(json.loads(row['error'].split('; cleanup=',1)[1]),[{'operation':'signal-group','kind':'PermissionError','errno':1}])
+
+    def test_signal_and_wait_refusal_keep_original_failure_and_unknown_terminal(self):
+        with tempfile.TemporaryDirectory() as name:
+            records=Path(name)/'records';reader,writer=os.pipe()
+            os.write(writer,b'Synthetic overflowing output');os.close(writer)
+            stream=os.fdopen(reader,'rb',buffering=0)
+            child=types.SimpleNamespace(pid=12345,returncode=None,stdout=stream,wait=mock.Mock(side_effect=subprocess.TimeoutExpired('synthetic',5)))
+            try:
+                with mock.patch.object(m.subprocess,'Popen',return_value=child),mock.patch.object(m.os,'killpg',side_effect=PermissionError(1,'Synthetic denied signal')),mock.patch.object(m,'STDOUT_BYTES',3):
+                    with self.assertRaisesRegex(ValueError,'stdout retention bound'):m.run(['/usr/bin/fc-list'],'synthetic',records,time.monotonic()+3)
+                row=json.loads(records.read_bytes().splitlines()[-1])
+                self.assertFalse(row['terminalObserved']);self.assertIsNone(row['exitCode']);self.assertIsNone(row['signal']);self.assertFalse(row['stdoutComplete'])
+                self.assertTrue(row['error'].startswith('SDK tool stdout retention bound; cleanup='))
+                self.assertEqual(json.loads(row['error'].split('; cleanup=',1)[1]),[{'operation':'signal-group','kind':'PermissionError','errno':1},{'operation':'wait-child','kind':'TimeoutExpired','errno':None}])
+                child.wait.assert_called_once_with(timeout=5)
+            finally:stream.close()
+
+    def test_late_zero_cannot_signal_a_reaped_leader_or_reused_group(self):
+        with tempfile.TemporaryDirectory() as name:
+            records=Path(name)/'records';reader,writer=os.pipe();os.close(writer)
+            stream=os.fdopen(reader,'rb',buffering=0)
+            child=types.SimpleNamespace(pid=12345,returncode=None,stdout=stream)
+            def reaped(**kwargs):child.returncode=0;return 0
+            child.wait=mock.Mock(side_effect=reaped)
+            try:
+                with mock.patch.object(m.subprocess,'Popen',return_value=child),mock.patch.object(m.os,'killpg') as kill,\
+                     mock.patch.object(m.time,'monotonic',side_effect=[1000,1000,1000,1000,1000,1000,1003,1003]):
+                    with self.assertRaisesRegex(ValueError,'SDK tool timeout'):m.run(['/usr/bin/fc-list'],'synthetic',records,1002)
+                kill.assert_not_called();child.wait.assert_called_once_with(timeout=2)
+                row=json.loads(records.read_bytes().splitlines()[-1])
+                self.assertEqual(row['exitCode'],0);self.assertTrue(row['terminalObserved']);self.assertFalse(row['stdoutComplete'])
+                self.assertEqual(json.loads(row['error'].split('; cleanup=',1)[1]),[{'operation':'signal-group','kind':'LeaderAlreadyReaped','errno':None}])
+            finally:stream.close()
+
     def test_pipe_eof_does_not_reset_the_remaining_process_or_whole_operation_budget(self):
         script="import os,time;open('eof-marker','w').write('Synthetic closed pipe');os.close(1);os.close(2);time.sleep(3)"
         root,_,row,_=self.invoke(script,'timeout',seconds=0.3)
@@ -182,7 +242,7 @@ class NativeBoundary(unittest.TestCase):
 
     def test_zero_exited_wrapper_descendant_holding_pipe_is_killed_not_mistaken_for_success(self):
         script="import subprocess,sys;child=subprocess.Popen([sys.executable,'-c','import time;time.sleep(20)']);print(child.pid,flush=True)"
-        _,_,row,raw=self.invoke(script,'timeout',seconds=0.1)
+        _,_,row,raw=self.invoke(script,'timeout',seconds=0.1,prestarted=True)
         self.assertEqual(row['exitCode'],0);self.assertFalse(row['stdoutComplete']);pid=int(raw.strip())
         deadline=time.monotonic()+2
         while time.monotonic()<deadline:

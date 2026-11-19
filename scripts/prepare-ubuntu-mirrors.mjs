@@ -183,6 +183,7 @@ function prependMirror(bytes) {
       !["http:", "https:"].includes(url.protocol) ||
       ![
         "azure.archive.ubuntu.com",
+        "us-east-2.ec2.archive.ubuntu.com",
         "archive.ubuntu.com",
         "security.ubuntu.com",
       ].includes(url.hostname) ||

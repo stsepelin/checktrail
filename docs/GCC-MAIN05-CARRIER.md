@@ -72,12 +72,15 @@ failure remains a charged retention failure with no promoted checkpoint.
 Partial, stale, wrong-container, wrapper-only or missing observations cannot
 supply an original terminal result.
 
-The fixed `gcc-native05-gcc-only-checkpoint-v2` profile retains the complete
+The current `gcc-native05-gcc-only-checkpoint-v3` profile retains the complete
 compiler state, three GCC evidence files and its historical configure baseline.
 New SDK stdout and metadata remain on the build host. A bounded descriptor
 records the verified pre-build SDK subaction and hashes of excluded SDK files.
 Its exact-file comparisons do not establish universal information-flow isolation.
-The historical v1 reader still requires its full SDK/main evidence family.
+The historical v2 decoder remains bound to SDK policy v4; current v3 admission
+requires SDK policy v5, which retains primary errors and cleanup diagnostics.
+Receipts from v4 do not qualify the new controller revision. The historical v1
+reader still requires its full SDK/main evidence family.
 
 The fixed data-only exporter includes GCC diagnostics and complete compressed
 GCC stdout with a compression round-trip witness. Its diagnostic bundle excludes

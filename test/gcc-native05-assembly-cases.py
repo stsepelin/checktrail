@@ -140,16 +140,30 @@ class FixedComposition(unittest.TestCase):
    path.write_bytes(original)
    self.assertTrue(V.validate_checkpoint(args[0]/'state',root,deadline=time.monotonic()+30)['threeGccEvidenceFilesPhysicallyVerified'])
 
- def test_native_v2_policy_does_not_follow_a_replaced_generic_sdk_policy(self):
+ def test_current_native_policy_does_not_follow_a_replaced_generic_sdk_policy(self):
   with tempfile.TemporaryDirectory() as td:
    args,scope,result,root=captured(Path(td).resolve());descriptor=copy.deepcopy(root['native05Evidence'])
    self.assertEqual(V.validate_descriptor(descriptor,HEAD)['historicalSdkSubaction']['receipt']['sourcePolicySha256'],V.SDK_POLICY_SHA256)
    future='e'*64;descriptor['historicalSdkSubaction']['receipt']['sourcePolicySha256']=future
    with mock.patch.object(V.receipt,'POLICY_SHA256',future):
     # The generic SDK decoder alone admits this internally coherent candidate;
-    # the frozen native-v2 decoder must still reject it.
+    # the frozen current native decoder must still reject it.
     V.receipt.validate_receipt(descriptor['historicalSdkSubaction']['receipt'])
     with self.assertRaisesRegex(ValueError,'explicit profile/version decoder'):V.validate_descriptor(descriptor,HEAD)
+
+ def test_historical_v2_keeps_v4_policy_and_cross_version_bindings_refuse(self):
+  with tempfile.TemporaryDirectory() as td:
+   args,scope,result,root=captured(Path(td).resolve())
+   old=copy.deepcopy(root);old['native05EvidenceProfile']=V.V2_PROFILE
+   old['native05Evidence']['profile']=V.V2_PROFILE
+   old['native05Evidence']['historicalSdkSubaction']['receipt']['sourcePolicySha256']=V.V2_SDK_POLICY_SHA256
+   self.assertEqual(V.validate_checkpoint(args[0]/'state',old,deadline=time.monotonic()+30)['profile'],V.V2_PROFILE)
+   with self.assertRaises(V.receipt.Refusal):V.receipt.validate_receipt(old['native05Evidence']['historicalSdkSubaction']['receipt'])
+   for outer,inner,policy in [(V.PROFILE,V.V2_PROFILE,V.V2_SDK_POLICY_SHA256),(V.V2_PROFILE,V.PROFILE,V.SDK_POLICY_SHA256),(V.V2_PROFILE,V.V2_PROFILE,V.SDK_POLICY_SHA256),(V.PROFILE,V.PROFILE,V.V2_SDK_POLICY_SHA256)]:
+    value=copy.deepcopy(old);value['native05EvidenceProfile']=outer;value['native05Evidence']['profile']=inner
+    value['native05Evidence']['historicalSdkSubaction']['receipt']['sourcePolicySha256']=policy
+    with self.subTest(outer=outer,inner=inner,policy=policy),self.assertRaises((ValueError,V.receipt.Refusal)):
+     V.validate_checkpoint(args[0]/'state',value,deadline=time.monotonic()+30)
 
  def test_policy_mismatch_refuses_before_original_constructor_or_owned_directory_creation(self):
   for mismatch in ['decoder','local-source']:
