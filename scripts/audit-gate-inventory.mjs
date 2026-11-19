@@ -20,6 +20,22 @@ const obligations = [
   ...Array.from({ length: 8 }, (_, i) => "R" + (i + 1)),
   ...Array.from({ length: 17 }, (_, i) => "E" + (i + 1)),
 ];
+// These selected cases use separate controllers in their existing manifest profile.
+// Pin the whole address: matching a name elsewhere is not a binding.
+const alternateAcceptanceFiles = {
+  "cpp-extensions": {
+    privacy: "dist/test/cpp-extensions-surfaces.test.js",
+    lifecycle: "dist/test/cpp-extensions-cancel.test.js",
+  },
+  "terraform-extensions": {
+    privacy: "dist/test/terraform-extensions-surfaces.test.js",
+    lifecycle: "dist/test/terraform-extensions-lifecycle.test.js",
+  },
+  "helm-extensions": {
+    privacy: "dist/test/helm-extensions-surfaces.test.js",
+    lifecycle: "dist/test/helm-extensions-lifecycle.test.js",
+  },
+};
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const canonical = (value) =>
   JSON.stringify(value, (_key, item) =>
@@ -320,6 +336,36 @@ try {
     casesInSharedManifest + casesOutsideSharedManifest,
     selectedCases,
   );
+  const alternateBindings = [];
+  const unresolvedBindings = [];
+  let declaredFileBindings = 0;
+  for (const profile of inventory.extensionProfiles) {
+    for (const entry of profile.acceptanceCases) {
+      const alternate = alternateAcceptanceFiles[profile.id]?.[entry.id];
+      const file = alternate ?? profile.acceptanceFile;
+      const binding = {
+        profile: profile.id,
+        caseId: entry.id,
+        file,
+        name: entry.name,
+      };
+      if (alternate) {
+        const matches = (current[profile.id] ?? []).filter(
+          (row) => row.name === entry.name,
+        );
+        if (matches.length === 1 && matches[0].file === file)
+          alternateBindings.push(binding);
+        else unresolvedBindings.push(binding);
+      } else if (sharedCases.has(canonical([file, entry.name]))) {
+        declaredFileBindings++;
+      } else unresolvedBindings.push(binding);
+    }
+  }
+  assert.equal(
+    declaredFileBindings + alternateBindings.length + unresolvedBindings.length,
+    selectedCases,
+    "Every selected case must have one binding disposition",
+  );
   process.stdout.write(
     JSON.stringify({
       schemaVersion: 1,
@@ -348,6 +394,15 @@ try {
         alternateControllersAssessed: false,
         nativeExecutionAssessed: false,
       },
+      controllerCaseBindings: {
+        plannedCases: selectedCases,
+        declaredFileBindings,
+        alternateFileBindings: alternateBindings.length,
+        unresolvedCases: unresolvedBindings.length,
+        alternateBindings,
+        unresolvedBindings,
+        nativeExecutionAssessed: false,
+      },
       unresolvedFreezeDecisions: inventory.unresolvedFreezeDecisions.length,
       frozen: inventory.frozen,
       implementationAcceptanceAssessed: false,
@@ -355,7 +410,10 @@ try {
       qualityAssessed: false,
     }) + "\n",
   );
-  if (process.argv[3] === "--require-frozen" && !inventory.frozen)
+  if (
+    process.argv[3] === "--require-frozen" &&
+    (!inventory.frozen || unresolvedBindings.length > 0)
+  )
     process.exitCode = 2;
 } catch (error) {
   process.stderr.write(

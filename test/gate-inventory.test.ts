@@ -241,3 +241,132 @@ test("finite inventory reports shared-manifest visibility without treating alter
     );
   }
 });
+
+const alternateBindings = [
+  ["cpp-extensions", "privacy", "cpp-extensions-surfaces"],
+  ["cpp-extensions", "lifecycle", "cpp-extensions-cancel"],
+  ["terraform-extensions", "privacy", "terraform-extensions-surfaces"],
+  ["terraform-extensions", "lifecycle", "terraform-extensions-lifecycle"],
+  ["helm-extensions", "privacy", "helm-extensions-surfaces"],
+  ["helm-extensions", "lifecycle", "helm-extensions-lifecycle"],
+] as const;
+
+test("finite inventory resolves every separate privacy and lifecycle controller without asserting execution", async (t) => {
+  const root = await source(t);
+  const result = await audit(root);
+  assert.equal(result.code, 0, result.stderr);
+  const report = JSON.parse(result.stdout);
+  const bindings = report.controllerCaseBindings;
+  assert.deepEqual(
+    bindings.alternateBindings,
+    alternateBindings.map(([profile, caseId, file]) => ({
+      profile,
+      caseId,
+      file: `dist/test/${file}.test.js`,
+      name: `${profile} ${caseId} acceptance`,
+    })),
+  );
+  assert.equal(bindings.alternateFileBindings, alternateBindings.length);
+  assert.equal(
+    bindings.declaredFileBindings + bindings.alternateFileBindings,
+    bindings.plannedCases,
+  );
+  assert.equal(bindings.plannedCases, report.plannedExtensionCases);
+  assert.equal(bindings.unresolvedCases, 0);
+  assert.deepEqual(bindings.unresolvedBindings, []);
+  assert.equal(bindings.nativeExecutionAssessed, false);
+  assert.equal(report.gateAComplete, false);
+  // An unrelated adjacent name must not make an exact existing binding ambiguous.
+  await alter<RequiredNative>(root, files[2]!, (rows) => {
+    for (const [profile, caseId, file] of alternateBindings)
+      rows[profile]!.push({
+        file: `dist/test/${file}.test.js`,
+        name: `${profile} ${caseId} acceptance adjacent`,
+      });
+  });
+  assert.deepEqual(
+    JSON.parse((await audit(root)).stdout).controllerCaseBindings,
+    bindings,
+  );
+});
+
+for (const [profile, caseId, file] of alternateBindings) {
+  test(`finite inventory refuses foreign or ambiguous ${profile} ${caseId} binding`, async (t) => {
+    for (const mode of [
+      "missing",
+      "wrong-file",
+      "default-file",
+      "wrong-profile",
+      "renamed",
+      "duplicate",
+      "ambiguous-file",
+    ]) {
+      const root = await source(t);
+      const name = `${profile} ${caseId} acceptance`;
+      await alter<RequiredNative>(root, files[2]!, (rows) => {
+        const index = rows[profile]!.findIndex((row) => row.name === name);
+        assert.ok(index >= 0);
+        const row = rows[profile]![index]!;
+        if (mode === "wrong-file") row.file = "dist/test/foreign.test.js";
+        else if (mode === "default-file")
+          row.file = `dist/test/gate-${profile}.test.js`;
+        else if (mode === "renamed") row.name += " suffix";
+        else if (mode === "duplicate") rows[profile]!.push({ ...row });
+        else if (mode === "ambiguous-file")
+          rows[profile]!.push({ ...row, file: "dist/test/foreign.test.js" });
+        else {
+          rows[profile]!.splice(index, 1);
+          if (mode === "wrong-profile") rows["foreign-profile"] = [row];
+        }
+      });
+      const result = await audit(root);
+      assert.equal(result.code, 0, result.stderr);
+      const report = JSON.parse(result.stdout);
+      const bindings = report.controllerCaseBindings;
+      assert.equal(bindings.unresolvedCases, 1, mode);
+      assert.equal(
+        bindings.alternateFileBindings,
+        alternateBindings.length - 1,
+        mode,
+      );
+      assert.equal(
+        bindings.declaredFileBindings +
+          bindings.alternateFileBindings +
+          bindings.unresolvedCases,
+        bindings.plannedCases,
+        mode,
+      );
+      assert.deepEqual(
+        bindings.unresolvedBindings,
+        [{ profile, caseId, file: `dist/test/${file}.test.js`, name }],
+        mode,
+      );
+      assert.equal(report.gateAComplete, false);
+    }
+  });
+}
+
+test("finite inventory strict freeze refuses unresolved case bindings even when selection freeze is declared", async (t) => {
+  const root = await source(t);
+  await alter<SelectedInventory & { unresolvedFreezeDecisions: unknown[] }>(
+    root,
+    files[0]!,
+    (value) => {
+      value.frozen = true;
+      value.unresolvedFreezeDecisions = [];
+    },
+  );
+  const complete = await audit(root, true);
+  assert.equal(complete.code, 0, complete.stderr);
+  assert.equal(JSON.parse(complete.stdout).gateAComplete, false);
+  for (const profile of ["tasks-matrix", "cpp-extensions"]) {
+    await alter<RequiredNative>(root, files[2]!, (rows) => {
+      delete rows[profile];
+    });
+    const incomplete = await audit(root, true);
+    assert.equal(incomplete.code, 2);
+    assert.ok(
+      JSON.parse(incomplete.stdout).controllerCaseBindings.unresolvedCases > 0,
+    );
+  }
+});

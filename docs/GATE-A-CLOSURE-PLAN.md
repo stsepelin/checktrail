@@ -39,11 +39,13 @@ overall completion percentage.
 | Unresolved freeze decisions | 2             | `expanded-native-artifact-closures` and `matrix-and-acceptance-bindings`.                               |
 | Selected runtime slots      | 8             | Exact versions/platforms are in the inventory, not inferred from runner labels.                         |
 
-The six cases outside the shared manifest belong to `cpp-extensions`,
-`terraform-extensions` and `helm-extensions`, two each. Locate their actual
-controller bindings and outcomes before adding or changing anything. The audit
-does not assess those controllers, so this count alone proves neither missing
-implementation nor acceptance.
+The six cases outside the default-file-only manifest lookup belong to
+`cpp-extensions`, `terraform-extensions` and `helm-extensions`, two each.
+[Their existing controller addresses](GATE-A-CASE-BINDINGS.md) are now explicitly
+reconciled against the same required manifest profiles. The audit reports this
+separately in `controllerCaseBindings`; the earlier default-file visibility count
+is preserved for compatibility. Historical source/installed outcomes remain at
+their original identities and do not certify current native acceptance.
 
 Current application checks and controller tests qualify their recorded inputs.
 They do not close an upstream producer. Prepared GCC and .NET SDK continuations
