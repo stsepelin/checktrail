@@ -1,0 +1,32 @@
+[
+  {
+    "bytes": 24608,
+    "file": "notice_custody.py",
+    "sha256": "5ba6d691f8787ccc4784c449815813608cf2b1ba577e0ea3a638f4b512e77b9e"
+  },
+  {
+    "bytes": 544,
+    "file": "recipient-public.json",
+    "sha256": "0afe6615ed29e10849c9b3bda20ba8ce657e7688a6db2a85eb51bdd297313a67"
+  },
+  {
+    "bytes": 15876,
+    "file": "reused-crypto/common.py",
+    "sha256": "9076ed5affee0a7ef61c5988cbf947caf6c99901f4cf3b483eeac75065fc4914"
+  },
+  {
+    "bytes": 1908,
+    "file": "reused-crypto/crypto_bridge.py",
+    "sha256": "39bba5b8b24e96f3c7982d0d9af1869f12e0990fcea5932831d33e5438f350ce"
+  },
+  {
+    "bytes": 9905,
+    "file": "reused-crypto/envelope.mjs",
+    "sha256": "ef5234172c894d8df88fbe58ae1507cb222facae95d3823bc3bbfee941ee26ef"
+  },
+  {
+    "bytes": 29764,
+    "file": "test_notice_custody.py",
+    "sha256": "4e04231919de273b854b8fa95bae0e095d7ce0629605d6f7642406b6ce0037ff"
+  }
+]

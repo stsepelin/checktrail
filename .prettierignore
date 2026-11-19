@@ -12,3 +12,10 @@ docs/measurements/tasks-runtime-matrix-2026-10-21/receipts/*.json
 
 # Preserve the byte-pinned original Moby seccomp profile.
 scripts/producer-qualification/moby-28.0.4/default.json
+
+# Preserve exact first-party producer cohort bytes checked by producer-controls.test.ts.
+.github/native-rust198/profile.json
+.github/native-rust198-notices/recipient-public.json
+.github/native-rust198-notices/reused-crypto/envelope.mjs
+scripts/producer-sdk10/envelope.mjs
+scripts/producer-sdk10/test_crypto.mjs
