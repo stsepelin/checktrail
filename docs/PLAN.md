@@ -1,5 +1,9 @@
 # Checktrail implementation plan
 
+For the remaining Gate A work, follow the [Gate A closure plan](GATE-A-CLOSURE-PLAN.md).
+It fixes the execution queue, dependencies and closure evidence for the existing
+requirements; it does not reduce their scope.
+
 Status: working foundation implemented; native adapters and later milestones are in progress.
 See EXECUTION.md for the implementation ledger and [ACCEPTANCE.md](ACCEPTANCE.md)
 for milestone evidence, remaining work and external verification gates.
