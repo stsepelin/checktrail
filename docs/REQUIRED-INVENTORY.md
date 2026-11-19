@@ -6,6 +6,9 @@ below. Current-source native acceptance and the remaining freeze decisions stay
 open, so Gate A's inventory is not yet frozen. No new field evaluation is authorized here.
 A required integration stays pending when its toolchain is unavailable.
 
+The [Gate A closure plan](GATE-A-CLOSURE-PLAN.md) supplies the ordered execution
+ledger, producer coverage and final acceptance procedure for this inventory.
+
 ## Selected profile candidate
 
 [gate-a-profiles.v1.json](gate-a-profiles.v1.json) selects finite extension

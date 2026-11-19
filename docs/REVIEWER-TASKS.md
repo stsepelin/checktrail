@@ -15,6 +15,11 @@ open evaluation.
 
 ## Current critical path
 
+Follow the [Gate A closure plan](GATE-A-CLOSURE-PLAN.md) for the fixed execution
+queue and evidence required to close the remaining work. The profile inventory
+and its current acceptance bindings govern scope; broad historical summaries
+below do not replace them.
+
 Use the finite profiles in gate-a-profiles.v1.json and their linked acceptance
 records to distinguish implemented behavior from outstanding qualification. The
 broad family summaries below do not erase the later scoped implementations.
