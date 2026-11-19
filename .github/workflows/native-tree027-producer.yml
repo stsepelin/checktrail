@@ -1,0 +1,123 @@
+name: Tree-sitter027 original native source producer
+on:
+  workflow_dispatch:
+    inputs:
+      nonce:
+        description: Fresh reviewed private capture context, 8 to 40 lowercase letters, digits or hyphens
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: treesitter027-original-native-producer
+  cancel-in-progress: false
+jobs:
+  producer:
+    runs-on: macos-15
+    timeout-minutes: 84
+    env:
+      TREE_SCRIPT_ROOT: .github/treesitter027-producer
+      CAPTURE_NONCE: ${{ inputs.nonce }}
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        timeout-minutes: 2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Install the exact frozen first-party controller as root-owned data
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo -n /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_SHA="$GITHUB_SHA" GITHUB_WORKSPACE="$GITHUB_WORKSPACE" /usr/bin/python3 -I -S -B - <<'PY_INSTALL'
+          import hashlib,json,os,pathlib,re,stat
+          run=os.environ['GITHUB_RUN_ID'];attempt=os.environ['GITHUB_RUN_ATTEMPT'];head=os.environ['GITHUB_SHA']
+          assert re.fullmatch('[0-9]+',run) and re.fullmatch('[0-9]+',attempt) and re.fullmatch('[a-f0-9]{40}',head)
+          source=pathlib.Path(os.environ['GITHUB_WORKSPACE']).resolve()/'.github/treesitter027-producer'
+          raw=(source/'COHORT.json').read_bytes();assert hashlib.sha256(raw).hexdigest()=='571a83b4202afcd971204ef1b8716bfe2570c9ca003d43199893eaa323b0d9ba'
+          rows=json.loads(raw);assert len(rows)==25 and len({r['file'] for r in rows})==25
+          expected={r['file'] for r in rows}|{'COHORT.json'}
+          assert {p.relative_to(source).as_posix() for p in source.rglob('*') if not p.is_dir()}==expected
+          validated=[];total=0
+          for row in rows:
+              name=row['file'];assert re.fullmatch(r'((reused-native-v5|reused-sdk-crypto)/)?[a-z][a-z0-9_.-]+\.(py|mjs|json)',name)
+              p=source/name;s=p.lstat();assert p==p.resolve() and stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_size==row['bytes']<=1024*1024
+              body=p.read_bytes();assert hashlib.sha256(body).hexdigest()==row['sha256'];total+=len(body);assert total<=4*1024*1024;validated.append((name,body))
+          destination=pathlib.Path('/private/tmp')/('checktrail-tree027-controller-'+run+'-'+attempt)
+          assert not os.path.lexists(destination);destination.mkdir(mode=0o755);destination.chmod(0o755)
+          for name,body in validated+[('COHORT.json',raw)]:
+              p=destination/name;p.parent.mkdir(mode=0o755,parents=True,exist_ok=True)
+              with p.open('xb') as f:f.write(body)
+              p.chmod(0o444)
+          (destination/'ROOT-RECEIPT.json').write_text(json.dumps({'run':run,'attempt':attempt,'head':head,'cohortSHA256':'571a83b4202afcd971204ef1b8716bfe2570c9ca003d43199893eaa323b0d9ba'})+'\n')
+          (destination/'ROOT-RECEIPT.json').chmod(0o444)
+          for p in destination.rglob('*'):
+              if p.is_dir():p.chmod(0o555)
+          destination.chmod(0o555)
+          PY_INSTALL
+      - name: Run the first-party synthetic controls without any upstream SDK execution
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="/private/tmp/checktrail-tree027-controller-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          /usr/bin/python3 -I -S -B "$root/test-native-controller.py"
+          /usr/bin/python3 -I -S -B "$root/test-materializer.py"
+          /usr/bin/python3 -I -S -B "$root/test-encrypted-capture.py"
+          /usr/bin/python3 -I -S -B "$root/test-lifecycle.py"
+          /usr/bin/python3 -I -S -B "$root/test-common-lifecycle.py"
+          /usr/bin/python3 -I -S -B "$root/test-lifecycle-regression.py"
+          /usr/bin/python3 -I -S -B "$root/test-common-lifecycle-regression.py"
+      - name: Observe only the reviewed original 6070 producer and exact pinned SDK profile
+        timeout-minutes: 61
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="/private/tmp/checktrail-tree027-controller-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          sudo -n /usr/bin/env -i \
+            PATH=/usr/bin:/bin:/usr/sbin:/sbin GITHUB_ACTIONS="$GITHUB_ACTIONS" \
+            GITHUB_EVENT_NAME="$GITHUB_EVENT_NAME" RUNNER_ENVIRONMENT="$RUNNER_ENVIRONMENT" \
+            RUNNER_OS="$RUNNER_OS" RUNNER_ARCH="$RUNNER_ARCH" \
+            CHECKTRAIL_CONTROLLER_UID="$(/usr/bin/id -u)" \
+            GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            GITHUB_SHA="$GITHUB_SHA" GITHUB_REPOSITORY="$GITHUB_REPOSITORY" \
+            GITHUB_REF="$GITHUB_REF" GITHUB_WORKFLOW_REF="$GITHUB_WORKFLOW_REF" \
+            GITHUB_JOB="$GITHUB_JOB" ImageOS="${ImageOS:-}" ImageVersion="${ImageVersion:-}" \
+            /usr/bin/python3 -I -S -B "$root/native-controller.py" observe "$root/native-inputs.json" --sha256 13e5c329bcf4d31c226e9ce606c369d0fcb015302fef729d195ccace8d013231
+      - name: Encrypt the bounded quiescent capture to the private local recipient
+        if: always()
+        timeout-minutes: 8
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="/private/tmp/checktrail-tree027-controller-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          sudo -n /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_ACTIONS=true GITHUB_EVENT_NAME=workflow_dispatch RUNNER_ENVIRONMENT=github-hosted GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_SHA="$GITHUB_SHA" GITHUB_REPOSITORY="$GITHUB_REPOSITORY" CHECKTRAIL_CONTROLLER_UID="$(/usr/bin/id -u)" /usr/bin/python3 -I -S -B "$root/encrypted-capture.py" --work "/private/tmp/checktrail-tree027-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --nonce "$CAPTURE_NONCE"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        timeout-minutes: 5
+        with:
+          name: treesitter027-native6070-private-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /private/tmp/checktrail-tree027-${{ github.run_id }}-${{ github.run_attempt }}/encrypted-upload
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+      - name: Remove only the bound quiescent private producer and first-party controller
+        if: always()
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="/private/tmp/checktrail-tree027-controller-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          sudo -n /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_ACTIONS=true GITHUB_EVENT_NAME=workflow_dispatch RUNNER_ENVIRONMENT=github-hosted GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_SHA="$GITHUB_SHA" GITHUB_REPOSITORY="$GITHUB_REPOSITORY" /usr/bin/python3 -I -S -B "$root/native-controller.py" cleanup "/private/tmp/checktrail-tree027-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          sudo -n /usr/bin/env -i PATH=/usr/bin:/bin GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_SHA="$GITHUB_SHA" /usr/bin/python3 -I -S -B - <<'PY_CLEAN'
+          import json,os,pathlib,re,shutil,stat
+          run=os.environ['GITHUB_RUN_ID'];attempt=os.environ['GITHUB_RUN_ATTEMPT'];assert re.fullmatch('[0-9]+',run) and re.fullmatch('[0-9]+',attempt)
+          root=pathlib.Path('/private/tmp')/('checktrail-tree027-controller-'+run+'-'+attempt)
+          if os.path.lexists(root):
+              assert root==root.resolve() and root.stat().st_uid==0
+              receipt=root/'ROOT-RECEIPT.json';assert not receipt.is_symlink() and receipt.stat().st_uid==0
+              value=json.loads(receipt.read_bytes());assert value=={'run':run,'attempt':attempt,'head':os.environ['GITHUB_SHA'],'cohortSHA256':'571a83b4202afcd971204ef1b8716bfe2570c9ca003d43199893eaa323b0d9ba'}
+              shutil.rmtree(root);assert not root.exists()
+          PY_CLEAN

@@ -12,3 +12,8 @@ docs/measurements/tasks-runtime-matrix-2026-10-21/receipts/*.json
 
 # Preserve the byte-pinned original Moby seccomp profile.
 scripts/producer-qualification/moby-28.0.4/default.json
+
+# Exact producer input and control bytes; verified by the carrier cohort tests.
+.github/treesitter027-producer/native-inputs.json
+.github/treesitter027-producer/recipient-public.json
+.github/treesitter027-producer/reused-sdk-crypto/envelope.mjs

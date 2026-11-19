@@ -8,7 +8,7 @@ type Job = {
   steps: { run?: string; "timeout-minutes"?: number }[];
   strategy?: { matrix?: { include?: { os?: string }[] } };
 };
-type Workflow = { jobs: Record<string, Job> };
+type Workflow = { on?: Record<string, unknown>; jobs: Record<string, Job> };
 const directory = new URL("../../.github/workflows/", import.meta.url);
 const workflows = new Map<string, Workflow>(
   await Promise.all(
@@ -27,7 +27,7 @@ const allowed = new Set([
   "macos-26",
   "windows-2025",
 ]);
-function verifyLabels(workflow: Workflow) {
+function verifyLabels(workflow: Workflow, filename?: string) {
   for (const [id, job] of Object.entries(workflow.jobs)) {
     const runner = job["runs-on"];
     const labels =
@@ -37,7 +37,11 @@ function verifyLabels(workflow: Workflow) {
     assert.ok(labels?.length, `${id} must declare its runner labels`);
     for (const label of labels)
       assert.ok(
-        label !== undefined && allowed.has(label),
+        label !== undefined &&
+          (allowed.has(label) ||
+            (filename === "native-tree027-producer.yml" &&
+              id === "producer" &&
+              label === "macos-15")),
         `${id} has an unselected runner: ${label}`,
       );
   }
@@ -45,7 +49,8 @@ function verifyLabels(workflow: Workflow) {
 
 test("every workflow selects the explicit Ubuntu 26.04 hosted labels", () => {
   assert.ok(workflows.size > 0);
-  for (const workflow of workflows.values()) verifyLabels(workflow);
+  for (const [filename, workflow] of workflows)
+    verifyLabels(workflow, filename);
   const original = workflows.get("ci.yml")!;
   for (const label of [
     "ubuntu-latest",
@@ -60,6 +65,40 @@ test("every workflow selects the explicit Ubuntu 26.04 hosted labels", () => {
     const matrix = structuredClone(original);
     matrix.jobs.checks!.strategy!.matrix!.include![0]!.os = label;
     assert.throws(() => verifyLabels(matrix), /unselected runner/u);
+  }
+});
+
+test("Tree-sitter original producer alone retains its selected macOS 15 runner", () => {
+  const filename = "native-tree027-producer.yml";
+  const workflow = workflows.get(filename)!;
+  assert.deepEqual(Object.keys(workflow.on ?? {}), ["workflow_dispatch"]);
+  assert.deepEqual(Object.keys(workflow.jobs), ["producer"]);
+  assert.equal(workflow.jobs.producer!["runs-on"], "macos-15");
+  verifyLabels(workflow, filename);
+  for (const wrongName of [
+    undefined,
+    "ci.yml",
+    filename + ".extra",
+    "prefix-" + filename,
+  ]) {
+    assert.throws(
+      () => verifyLabels(workflow, wrongName),
+      /unselected runner/u,
+    );
+  }
+  const wrongJob = structuredClone(workflow);
+  wrongJob.jobs.other = wrongJob.jobs.producer!;
+  delete wrongJob.jobs.producer;
+  assert.throws(() => verifyLabels(wrongJob, filename), /unselected runner/u);
+  for (const label of [
+    "macos-15-intel",
+    "macos-15-large",
+    "macos-150",
+    "macos-15-extra",
+  ]) {
+    const changed = structuredClone(workflow);
+    changed.jobs.producer!["runs-on"] = label;
+    assert.throws(() => verifyLabels(changed, filename), /unselected runner/u);
   }
 });
 
