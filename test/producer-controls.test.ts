@@ -2,7 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,21 +21,50 @@ const posix = {
       : false,
 };
 
-function python(args: string[]) {
+function python(args: string[], temporaryRoot?: string) {
   const result = spawnSync("python3", ["-I", "-S", "-B", ...args], {
     cwd: repository,
+    env: temporaryRoot
+      ? {
+          ...process.env,
+          TMPDIR: temporaryRoot,
+          TMP: temporaryRoot,
+          TEMP: temporaryRoot,
+        }
+      : process.env,
     encoding: "utf8",
     timeout: 240_000,
     maxBuffer: 4 * 1024 * 1024,
   });
-  assert.equal(result.error, undefined, String(result.error));
-  assert.equal(result.signal, null, result.stderr);
-  assert.equal(result.status, 0, result.stderr);
+  // CI retains only the beginning of a problem message. Put terminal failures
+  // before verbose unittest progress, and keep incomplete-process diagnostics.
+  let failures = "";
+  try {
+    const report = JSON.parse(result.stdout);
+    failures = Array.isArray(report.problems)
+      ? report.problems
+          .map(
+            (problem: { test: string; detail: string }) =>
+              `${problem.test}: ${problem.detail}`,
+          )
+          .join("\n")
+      : "";
+  } catch {
+    // A spawn failure or early Python assertion may have no JSON result.
+  }
+  const diagnostic = failures || result.stderr.slice(-4000);
+  assert.equal(
+    result.error,
+    undefined,
+    `${String(result.error)}\n${diagnostic}`,
+  );
+  assert.equal(result.signal, null, diagnostic);
+  assert.equal(result.status, 0, diagnostic);
   return JSON.parse(result.stdout);
 }
 
 const syntheticDiscovery = `
-import contextlib, json, pathlib, sys, unittest
+import contextlib, json, pathlib, re, sys, unittest
 folder = pathlib.Path(sys.argv[1]).resolve()
 expected = json.loads(sys.argv[2])
 actual = sorted(p.stem for p in folder.glob("test_*.py"))
@@ -46,10 +81,16 @@ with contextlib.redirect_stdout(sys.stderr):
     modules = sorted(set(case.__class__.__module__ for case in cases))
     assert modules == expected, "Every declared module must contribute executable cases"
     result = unittest.TextTestRunner(verbosity=2).run(suite)
+def failure_detail(trace):
+    lines = trace.strip().splitlines()
+    headline = next((line for line in reversed(lines) if re.match(r"^[A-Za-z_][a-zA-Z0-9_.]*: ", line)), lines[-1])
+    return headline[:450] + (" | " + lines[-1][-240:] if lines[-1] != headline else "")
 row = {"tests": result.testsRun, "expectedCases": len(cases), "modules": modules,
        "failures": len(result.failures), "errors": len(result.errors),
        "skipped": len(result.skipped), "unexpectedSuccesses": len(result.unexpectedSuccesses),
-       "expectedFailures": len(result.expectedFailures)}
+       "expectedFailures": len(result.expectedFailures),
+       "problems": [{"test": case.id(), "detail": failure_detail(trace)}
+                    for case, trace in [*result.failures, *result.errors]]}
 print(json.dumps(row))
 sys.exit(0 if result.wasSuccessful() and result.testsRun > 0 and not result.skipped
          and not result.expectedFailures and result.testsRun == len(cases) else 1)
@@ -72,12 +113,21 @@ function syntheticModules(folder: string, modules: string[]) {
     );
   }
   const expected = [...modules].sort();
-  const counts = python([
-    "-c",
-    syntheticDiscovery,
-    folder,
-    JSON.stringify(expected),
-  ]);
+  // The notice controls intentionally detect directory timestamp changes.
+  // Keep their real filesystem fixtures out of shared system temporary roots,
+  // where unrelated test workers legitimately create and remove siblings.
+  const scratchParent = path.join(repository, ".checktrail");
+  mkdirSync(scratchParent, { recursive: true });
+  const scratch = mkdtempSync(path.join(scratchParent, "producer-controls-"));
+  let counts;
+  try {
+    counts = python(
+      ["-c", syntheticDiscovery, folder, JSON.stringify(expected)],
+      scratch,
+    );
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
   assert.deepEqual(counts.modules, expected);
   assert.ok(counts.tests > 0);
   assert.equal(counts.tests, counts.expectedCases);
@@ -91,6 +141,47 @@ function syntheticModules(folder: string, modules: string[]) {
     assert.equal(counts[key], 0, key);
   }
 }
+
+test(
+  "Synthetic Python failures retain their cause before verbose progress",
+  posix,
+  () => {
+    const temporary = mkdtempSync(
+      path.join(tmpdir(), "checktrail-diagnostic-controls-"),
+    );
+    try {
+      writeFileSync(
+        path.join(temporary, "test_diagnostic.py"),
+        `
+import unittest
+class Diagnostics(unittest.TestCase):
+    def test_z_failure(self):
+        self.assertEqual({"expected": "x" * 200}, {"actual": "y" * 200}, "causal-diagnostic-marker")
+for index in range(40):
+    setattr(Diagnostics, "test_progress_%03d" % index, lambda self: self.assertTrue(True))
+`,
+      );
+      assert.throws(
+        () =>
+          python([
+            "-c",
+            syntheticDiscovery,
+            temporary,
+            JSON.stringify(["test_diagnostic"]),
+          ]),
+        (error: unknown) => {
+          const retained = String(error).slice(0, 1000);
+          assert.match(retained, /test_diagnostic.Diagnostics.test_z_failure/);
+          assert.match(retained, /AssertionError:/);
+          assert.match(retained, /causal-diagnostic-marker/);
+          return true;
+        },
+      );
+    } finally {
+      rmSync(temporary, { recursive: true, force: true });
+    }
+  },
+);
 
 test(
   "SDK10 producer synthetic controls and authenticated envelope round trips",

@@ -6,10 +6,13 @@ from unittest import mock
 import placement as P
 class Placement(unittest.TestCase):
  def setUp(self):
-  self.tmp=tempfile.TemporaryDirectory(dir='/private/tmp');self.root=Path(self.tmp.name).resolve();self.root.chmod(0o755);self.parent=self.root/'parent';self.parent.mkdir(mode=0o755);self.parent.chmod(0o755);self.context={'GITHUB_RUN_ID':'123','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40};self.identity={'uid':os.getuid()+1000000,'gid':20,'groups':[20]};self.real_status=P.status
+  self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name).resolve();self.root.chmod(0o755);self.parent=self.root/'parent';self.parent.mkdir(mode=0o755);self.parent.chmod(0o755);self.context={'GITHUB_RUN_ID':'123','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40};self.identity={'uid':os.getuid()+1000000,'gid':20,'groups':[20]};self.real_status=P.status
  def tearDown(self):self.tmp.cleanup()
  def root_view(self,path):
-  s=self.real_status(path);return SimpleNamespace(st_uid=0,st_mode=s.st_mode)
+  # This explicit synthetic provider models the stock root-owned traversable
+  # ancestors; fixture-owned modes remain real so their mutations still fail.
+  s=self.real_status(path);mode=stat.S_IFDIR|0o755 if path in self.root.parents else s.st_mode
+  return SimpleNamespace(st_uid=0,st_mode=mode)
  def layout(self):
   paths=P.paths(self.context,self.parent);paths['base'].mkdir(mode=0o755);paths['base'].chmod(0o755);paths['controller'].mkdir(mode=0o755);(paths['controller']/'reused_admission.py').write_bytes(b'# SYNTHETIC first-party metadata script\n');(paths['controller']/'reused_admission.py').chmod(0o444);paths['controller'].chmod(0o555);paths['host'].mkdir(mode=0o700);paths['host'].chmod(0o700);return paths
  def fake_module(self):

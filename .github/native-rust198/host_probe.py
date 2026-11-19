@@ -77,7 +77,8 @@ def classify_inner_failure(stdout,stderr,script,python_aliases):
    if stderr==expected:return {'kind':'stock-python-cannot-open-firstparty-controller-permission-refusal','reasonIdentifier':None,'osErrno':number}
  if stderr.startswith(b'Traceback (most recent call last):\n') and stderr.count(b'Traceback (most recent call last):\n')==1:
   for reason in sorted(INNER_NEED_IDS):
-   suffix=rb'  File "'+re.escape(encoded)+rb'", line [1-9][0-9]{0,6}, in need\n    if not value:raise ValueError\(message\)\nValueError: '+re.escape(reason.encode())+rb'\n\Z'
+   # CPython 3.11+ may underline this exact selected raise statement.
+   suffix=rb'  File "'+re.escape(encoded)+rb'", line [1-9][0-9]{0,6}, in need\n    if not value:raise ValueError\(message\)\n(?: {17}\^{25}\n)?ValueError: '+re.escape(reason.encode())+rb'\n\Z'
    if re.search(suffix,stderr) is not None:return {'kind':'closed-firstparty-inner-need-refusal','reasonIdentifier':reason}
  return {'kind':'unknown-inner-failure','reasonIdentifier':None}
 

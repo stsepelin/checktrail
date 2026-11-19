@@ -234,6 +234,48 @@ class DataControls(Fixture):
             with self.assertRaises(OSError):
                 os.fstat(fd)
 
+    def test_unrelated_system_tmp_churn_preserves_owned_fixture_read(self):
+        # The public test wrapper supplies an isolated, repository-owned TMPDIR.
+        # /tmp is shared by unrelated workers, unlike the selected stock tree.
+        shared = Path('/tmp').resolve()
+        self.assertNotIn(shared, self.app.parents)
+        file = self.app / SMALL[0][0]
+        original = os.read
+        changed = []
+        def reading(fd, size):
+            body = original(fd, size)
+            if body and not changed:
+                changed.append(tempfile.TemporaryDirectory(dir=shared))
+            return body
+        try:
+            with mock.patch.object(N.os, 'read', side_effect=reading):
+                body, row = N.physical_read(file, SMALL[0][1], N.Budget(5), SMALL[0][1])
+            self.assertEqual(1, len(changed))
+            self.assertEqual(b'A' * SMALL[0][1], body)
+            self.assertEqual({'bytes': len(body), 'sha256': hashlib.sha256(body).hexdigest()}, row)
+        finally:
+            for directory in changed:
+                directory.cleanup()
+
+    def test_selected_ancestor_sibling_churn_still_refuses(self):
+        file = self.app / SMALL[0][0]
+        original = os.read
+        sibling = file.parent / 'unselected-sibling'
+        changed = []
+        def reading(fd, size):
+            body = original(fd, size)
+            if body and not changed:
+                sibling.mkdir(); changed.append(True)
+            return body
+        try:
+            with mock.patch.object(N.os, 'read', side_effect=reading):
+                with self.assertRaisesRegex(Refusal, '^notice-ancestor-read-changed$'):
+                    N.physical_read(file, SMALL[0][1], N.Budget(5), SMALL[0][1])
+            self.assertEqual([True], changed)
+        finally:
+            if sibling.exists():
+                sibling.rmdir()
+
     def test_same_size_body_change_during_read_is_not_accepted(self):
         file = self.app / SMALL[0][0]
         original = os.read

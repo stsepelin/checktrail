@@ -5,9 +5,9 @@
     "sha256": "7c1e07d63128ba32aedaa8f261d488585fddab820a8d75cdb42d75997920468c"
   },
   {
-    "bytes": 18851,
+    "bytes": 18939,
     "file": "host_probe.py",
-    "sha256": "d154b7760300b96b373e7e8f8c87c66905757b5b2e514312efe6c1ef9b241440"
+    "sha256": "704a269d8f558b2573e287f4119c3271d24c5cc1ac6d339988408cbfd9853912"
   },
   {
     "bytes": 2779,
@@ -80,9 +80,9 @@
     "sha256": "8b3256fce02ac377db96268da78acc54574da3f8016f69a76aec81d3efcebfb4"
   },
   {
-    "bytes": 17930,
+    "bytes": 19008,
     "file": "test_inner_failure_observation.py",
-    "sha256": "bd1d61cf5c82b22b74d2f19a50490cd1c709e260191e739fa9296700b3112c7f"
+    "sha256": "8f4951a5e141376bf0f793e1cf64e272123fe4796a87333b98c0b007218cd718"
   },
   {
     "bytes": 6348,
@@ -90,9 +90,9 @@
     "sha256": "e6db6f546d5b09479ee13be0448823c496342ced82e2cc7d5f31c839b6a61584"
   },
   {
-    "bytes": 15805,
+    "bytes": 16007,
     "file": "test_placement.py",
-    "sha256": "08aedbb30f693a73685a35b4645b0d436384f9aeb50146ae653e8544a9ca28d2"
+    "sha256": "ebab627e116ab6007864164aa60a302a12088ea4e27e788ca21fc4268898c2d2"
   },
   {
     "bytes": 22202,

@@ -26,6 +26,21 @@ class InnerFailure(unittest.TestCase):
   for reason in sorted(H.INNER_NEED_IDS):
    with self.subTest(reason=reason):
     stderr=self.trace(reason);r=self.failed(subprocess.CompletedProcess([],1,b'',stderr));self.assertEqual({'kind':'closed-firstparty-inner-need-refusal','reasonIdentifier':reason},r['classification']);self.assertEqual(1,r['exitCode']);self.assertEqual(len(stderr),r['stderr']['bytes']);self.assertEqual(hashlib.sha256(stderr).hexdigest(),r['stderr']['sha256']);self.assertNotIn(str(HERE),json.dumps(r));self.assertNotIn('Traceback',json.dumps(r));self.assertFalse(r['descendantQuiescenceProven'])
+ def test_exact_selected_raise_pointer_is_classified_without_emitting_it(self):
+  pointer=b' '*17+b'^'*25+b'\n'
+  for reason in sorted(H.INNER_NEED_IDS):
+   with self.subTest(reason=reason):
+    raw=self.trace(reason).replace(b'ValueError: ',pointer+b'ValueError: ')
+    result=self.failed(subprocess.CompletedProcess([],1,b'',raw))
+    self.assertEqual({'kind':'closed-firstparty-inner-need-refusal','reasonIdentifier':reason},result['classification'])
+    self.assertNotIn('^',json.dumps(result));self.assertNotIn(str(HERE),json.dumps(result))
+ def test_unselected_pointer_content_width_indent_or_repetition_stays_unknown(self):
+  good=b' '*17+b'^'*25+b'\n'
+  for pointer in [b' '*16+b'^'*25+b'\n',b' '*17+b'^'*24+b'\n',b' '*17+b'^'*26+b'\n',b' '*17+b'~'*25+b'\n',good+good,b'UNSELECTED\n']:
+   with self.subTest(pointer=pointer):
+    raw=self.trace('root-request-required').replace(b'ValueError: ',pointer+b'ValueError: ')
+    result=self.failed(subprocess.CompletedProcess([],1,b'',raw))
+    self.assertEqual({'kind':'unknown-inner-failure','reasonIdentifier':None},result['classification'])
  def test_real_pinned_firstparty_need_trace_matches_classifier_without_sdk_execution(self):
   file=HERE/'reused_admission.py';code="import importlib.util;spec=importlib.util.spec_from_file_location('firstparty_permission_fixture',"+repr(str(file))+");module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);module.need(False,'root-request-required')"
   actual=subprocess.run([sys.executable,'-I','-B','-c',code],stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=5);self.assertEqual(1,actual.returncode);self.assertEqual(b'',actual.stdout);self.assertLess(len(actual.stderr),65536);r=self.failed(actual);self.assertEqual({'kind':'closed-firstparty-inner-need-refusal','reasonIdentifier':'root-request-required'},r['classification'])
@@ -84,7 +99,7 @@ class InnerFailure(unittest.TestCase):
   text=out.getvalue();r=json.loads(text);self.assertEqual(1,code);self.assertLess(len(text),4096);self.assertFalse(r['nativeAdmissionGranted']);self.assertFalse(r['metadataObserved']);self.assertFalse(r['originalSDKOrSLABodyEmitted']);self.assertNotIn('SOURCE-BODY',text);self.assertNotIn('/private/',text)
  def summary_with_synthetic_original_sla(self,sla):
   result={'platform':'Darwin','arch':'arm64','macOS':'synthetic','CPUs':3,'RAMBytes':7*1024**3,'scratchFreeBytes':123,'xcodeVersion':'26.2','xcodeBuild':'synthetic','SDKVersionObservedNotHistoricalPublisherPin':'26.2','missingTools':[],'originalSLA':sla,'selectedFrame':{'bytes':12,'sha256':'b'*64,'entries':2,'hashReadBytes':34},'permissionObservation':{'failureCount':0},'controllerProtected':True,'sdkAndToolsProtectedFromBuildUid':True};environment={'GITHUB_ACTIONS':'true','RUNNER_ENVIRONMENT':'github-hosted','GITHUB_RUN_ID':'1','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40};out=io.StringIO()
-  with tempfile.TemporaryDirectory(dir='/private/tmp') as directory:
+  with tempfile.TemporaryDirectory() as directory:
    with mock.patch.dict(os.environ,environment),mock.patch.object(H.os,'getuid',return_value=0),mock.patch.object(H.platform,'system',return_value='Darwin'),mock.patch.object(H.platform,'machine',return_value='arm64'),mock.patch.object(H,'collect_metadata',return_value=result) as collected,mock.patch.object(sys,'argv',['host_probe',directory]),redirect_stdout(out):code=H.main()
    collected.assert_called_once();retained=json.loads((Path(directory)/'HOST-OBSERVATION.json').read_bytes());self.assertEqual(sla,retained['originalSLA'])
   return code,json.loads(out.getvalue()),out.getvalue()
