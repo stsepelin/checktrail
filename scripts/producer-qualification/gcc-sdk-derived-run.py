@@ -92,7 +92,7 @@ def run(command,label,records,deadline):
     remaining=deadline-time.monotonic();require(remaining>0,'Generated SDK operation deadline')
     started=time.monotonic();request={'label':label,'command':command,'cwd':'/work','state':'requested'}
     with records.open('ab') as sink:sink.write(canonical(request)+b'\n');sink.flush();os.fsync(sink.fileno())
-    child=None;selector=None;limit=min(COMMAND_SECONDS,remaining);output=bytearray();error=None;code=None
+    child=None;selector=None;limit=min(COMMAND_SECONDS,remaining);output=bytearray();error=None;code=None;cleanup_errors=[]
     try:
         child=subprocess.Popen(command,cwd='/work',stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
         selector=selectors.DefaultSelector();selector.register(child.stdout,selectors.EVENT_READ)
@@ -115,15 +115,27 @@ def run(command,label,records,deadline):
         if child is not None:
             # A zero-exited wrapper may leave descendants holding its pipe.
             # Terminate the owned group even when the direct child exited.
-            try:os.killpg(child.pid,signal.SIGKILL)
-            except ProcessLookupError:pass
-            code=child.wait(timeout=5)
+            if child.returncode is None:
+                # The retained unreaped Popen child reserves this session leader PID.
+                try:os.killpg(child.pid,signal.SIGKILL)
+                except ProcessLookupError:pass
+                except OSError as cleanup_error:
+                    cleanup_errors.append({'operation':'signal-group','kind':type(cleanup_error).__name__,'errno':cleanup_error.errno})
+                try:code=child.wait(timeout=5)
+                except (OSError,subprocess.TimeoutExpired) as cleanup_error:
+                    cleanup_errors.append({'operation':'wait-child','kind':type(cleanup_error).__name__,'errno':getattr(cleanup_error,'errno',None)})
+            else:
+                # A late deadline refusal after wait must not signal a reused PID/PGID.
+                code=child.returncode
+                cleanup_errors.append({'operation':'signal-group','kind':'LeaderAlreadyReaped','errno':None})
+
     finally:
         if selector is not None:selector.close()
         if child is not None and child.stdout is not None:child.stdout.close()
     terminal={**request,'state':'terminal','elapsedSeconds':time.monotonic()-started,'exitCode':code if code is not None and code>=0 else None,
               'signal':-code if code is not None and code<0 else None,'terminalObserved':code is not None,'stdoutBytesRetained':len(output),
               'stdoutSha256':hashlib.sha256(output).hexdigest(),'stdoutComplete':error is None,'error':str(error)[:1000] if error else None}
+    if cleanup_errors:terminal['error']=str(error)[:500]+'; cleanup='+canonical(cleanup_errors).decode()[:480]
     with records.open('ab') as sink:sink.write(canonical(terminal)+b'\n');sink.flush();os.fsync(sink.fileno())
     if error is not None:raise error
     require(code==0,'SDK generator/validator failed: '+label)
