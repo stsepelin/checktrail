@@ -139,7 +139,8 @@ class Metadata(unittest.TestCase):
 
 
 class NativeBoundary(unittest.TestCase):
-    def invoke(self,script,expect_error=None,stdout_limit=None,seconds=2,*,prestarted=False,signal_failure=False):
+    def invoke(self,script,expect_error=None,stdout_limit=None,seconds=2,*,prestarted=False,signal_failure=False,eof_skew=None):
+        self.wait_timeouts=[]
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup);root=Path(temp.name).resolve();records=root/'commands'
         real_popen=subprocess.Popen;children=[]
         def cleanup_children():
@@ -155,7 +156,10 @@ class NativeBoundary(unittest.TestCase):
             # True means an exited but unreaped leader whose descendant still holds
             # stdout; a callable is a custom readiness predicate over the work root.
             child=real_popen([sys.executable,'-I','-B','-c',script],cwd=root,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
-            children.append(child)
+            children.append(child);real_wait=child.wait
+            def recorded_wait(*args,**kwargs):
+                self.wait_timeouts.append(kwargs.get('timeout',args[0] if args else None));return real_wait(*args,**kwargs)
+            child.wait=recorded_wait
             def leader_exited_unreaped(_root):
                 observed=subprocess.run(['ps','-o','stat=','-p',str(child.pid)],capture_output=True,text=True,timeout=2)
                 return observed.stdout.strip().startswith('Z')
@@ -171,9 +175,23 @@ class NativeBoundary(unittest.TestCase):
             child=real_popen([sys.executable,'-I','-B','-c',script],cwd=root,stdout=kwargs['stdout'],stderr=kwargs['stderr'],start_new_session=True)
             children.append(child);return child
         stream=types.SimpleNamespace(buffer=io.BytesIO())
-        with mock.patch.object(m.subprocess,'Popen',side_effect=synthetic_popen),mock.patch.object(m.sys,'stdout',stream),\
-             mock.patch.object(m,'COMMAND_SECONDS',seconds),mock.patch.object(m,'STDOUT_BYTES',stdout_limit or m.STDOUT_BYTES),\
-             mock.patch.object(m.os,'killpg',side_effect=PermissionError(1,'Synthetic denied group signal') if signal_failure else m.os.killpg):
+        with contextlib.ExitStack() as patches:
+            if eof_skew is not None:
+                # The module's clock jumps by eof_skew when its pipe read returns EOF,
+                # charging a known span of the budget before the post-EOF wait.
+                real_clock=time.monotonic;skew=[0.0]
+                class EofClockedOS:
+                    def __getattr__(self,name):return getattr(os,name)
+                    def read(self,fd,size):
+                        chunk=os.read(fd,size)
+                        if not chunk:skew[0]=eof_skew
+                        return chunk
+                patches.enter_context(mock.patch.object(m,'time',types.SimpleNamespace(monotonic=lambda:real_clock()+skew[0])))
+                patches.enter_context(mock.patch.object(m,'os',EofClockedOS()))
+            for patch in (mock.patch.object(m.subprocess,'Popen',side_effect=synthetic_popen),mock.patch.object(m.sys,'stdout',stream),
+                          mock.patch.object(m,'COMMAND_SECONDS',seconds),mock.patch.object(m,'STDOUT_BYTES',stdout_limit or m.STDOUT_BYTES)):
+                patches.enter_context(patch)
+            patches.enter_context(mock.patch.object(m.os,'killpg',side_effect=PermissionError(1,'Synthetic denied group signal') if signal_failure else m.os.killpg))
             if expect_error:
                 with self.assertRaisesRegex(ValueError,expect_error):m.run(['/usr/bin/fc-list','synthetic-test'],'synthetic',records,time.monotonic()+3)
                 value=None
@@ -239,12 +257,16 @@ class NativeBoundary(unittest.TestCase):
     def test_pipe_eof_does_not_reset_the_remaining_process_or_whole_operation_budget(self):
         # The marker is published atomically only after both pipe ends are closed,
         # so its presence proves the measured run starts from an already-EOF pipe
-        # held by a live leader.
+        # held by a live leader. With 0.7s of a 1s command budget charged at EOF,
+        # the wait may receive only the 0.3s remainder; a fresh command budget
+        # would be 1s and the whole-operation remainder about 2.3s.
         script="import os,time;os.close(1);os.close(2);open('eof-marker.tmp','w').write('Synthetic closed pipe');os.replace('eof-marker.tmp','eof-marker');time.sleep(30)"
-        root,_,row,_=self.invoke(script,'timeout',seconds=0.3,prestarted=lambda root:(root/'eof-marker').exists())
+        root,_,row,_=self.invoke(script,'timeout',seconds=1,prestarted=lambda root:(root/'eof-marker').exists(),eof_skew=0.7)
         self.assertEqual((root/'eof-marker').read_text(),'Synthetic closed pipe')
+        granted=self.wait_timeouts[0]
+        self.assertGreater(granted,0);self.assertLessEqual(granted,0.3+1e-9)
         self.assertFalse(row['stdoutComplete']);self.assertEqual(row['signal'],signal.SIGKILL)
-        self.assertIsNone(row['exitCode']);self.assertLess(row['elapsedSeconds'],2)
+        self.assertIsNone(row['exitCode']);self.assertGreaterEqual(row['elapsedSeconds'],0.7);self.assertLess(row['elapsedSeconds'],2)
 
     def test_zero_exited_wrapper_descendant_holding_pipe_is_killed_not_mistaken_for_success(self):
         script="import subprocess,sys;child=subprocess.Popen([sys.executable,'-c','import time;time.sleep(20)']);print(child.pid,flush=True)"
