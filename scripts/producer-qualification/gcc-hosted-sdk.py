@@ -253,7 +253,9 @@ def main():
         result['predecessorCache']=verify_cache_identity(api)
         transport=Path(os.environ['RUNNER_TEMP']).resolve()/'gcc-phase0-transport'
         predecessor,expected=verify_predecessor(transport,output)
-        controls=repository/'scripts/producer-qualification';raw=(controls/'c-producer-profiles.v1.json').read_bytes()
+        # Controls come from this module's own directory: the checkout when run
+        # directly, the private verified copy when the on-host receipt runs it.
+        controls=HERE;raw=(controls/'c-producer-profiles.v1.json').read_bytes()
         require(hashlib.sha256(raw).hexdigest()==codec.CATALOG,'Original producer catalog differs')
         catalog=json.loads(raw);profile=catalog['profiles']['gcc-12']
         require(catalog['image']==codec.IMAGE and catalog['platform']=='linux/amd64' and

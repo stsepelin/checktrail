@@ -118,7 +118,9 @@ class LocalSdk(unittest.TestCase):
   # previous revision, and the rows that revision did not pin at all.
   self.assertEqual(approval['changedRuntimeFiles'],[CARRIER,SDK,PHASE0_CAPACITY,DERIVED_RUN])
   self.assertEqual(approval['addedRuntimeFiles'],[STRUCTURED,IMAGE_IDENTITY,*['scripts/producer-qualification/'+name for name in
-                   ['binutils-acquisition-plan.mjs','binutils-retention-observer.mjs','c-producer-profile.mjs']],'scripts/qualify-binutils-producer.mjs'])
+                   ['binutils-acquisition-plan.mjs','binutils-retention-observer.mjs','c-producer-profile.mjs']],'scripts/qualify-binutils-producer.mjs',
+                   *['scripts/producer-qualification/'+name for name in ['binutils.v1.json','binutils-apt-index-preparation.v1.json',
+                     'binutils-prepare-inputs.py','binutils-expectations.v1.json','gcc-local-12h-policy.v1.json','gcc-local-wall-policy.v1.json']]])
   paths=[row['path'] for row in policy['runtimeFiles']]
   self.assertEqual(len(paths),len(set(paths)));self.assertLessEqual({*approval['changedRuntimeFiles'],*approval['addedRuntimeFiles']},set(paths))
   self.assertTrue(any('LIVE_VANISHED_CEILING' in line for line in approval['scope']))
@@ -128,7 +130,8 @@ class LocalSdk(unittest.TestCase):
   further=[line for line in approval['scope'] if line.startswith('Further changes approved by the operator on 2026-11-24')]
   self.assertEqual(len(further),1)
   for path in [CARRIER,PHASE0_CAPACITY,DERIVED_RUN]:self.assertIn(Path(path).name,further[0])
-  for topic in ['Restore capacity','Bounded native waits','Descriptor walk','Not-started generator','Git configuration']:
+  self.assertIn('gcc-hosted-sdk.py',further[0])
+  for topic in ['Restore capacity','Bounded native waits','Descriptor walk','Not-started generator','Git configuration','Verified execution']:
    self.assertEqual(sum(line.startswith(topic+':') for line in approval['scope']),1,topic)
 
  def counterfactual(self,directory):

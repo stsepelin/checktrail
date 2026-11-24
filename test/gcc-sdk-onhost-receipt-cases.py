@@ -1,4 +1,5 @@
 """Synthetic SDK DATA and real FD/child-output barriers; no SDK/native effects."""
+import contextlib
 import copy
 import ast
 import hashlib
@@ -27,6 +28,14 @@ def load(path):
 m=load(ROOT/'scripts/producer-qualification/gcc-sdk-onhost-receipt.py')
 fixture=load(ROOT/'test/gcc-main05-sdk-cases.py')
 HEAD='b'*40
+
+
+@contextlib.contextmanager
+def private_staging(root):
+    """Stage verified runtime files under this test's own directory and remove them after."""
+    with mock.patch.object(m,'STAGING_PARENT',str(root)),mock.patch.dict(m.VERIFIED):
+        try:yield
+        finally:m.remove_staged()
 RAW='RAW_SYNTHETIC_SDK_BODY_DO_NOT_EXPORT_17'
 RAW2='RAW_SYNTHETIC_SDK_BODY_DO_NOT_EXPORT_29'
 
@@ -176,14 +185,14 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
 
     def test_each_receipt_decoder_admits_only_its_own_exact_policy_revision(self):
         root,_,_,good,_=self.run_entry(self.noisy)
-        current='1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6'
+        current='df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f'
         v5='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
         v4='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
         self.assertEqual(m.POLICY_SHA256,current);self.assertEqual(good['sourcePolicySha256'],current)
         decoders={current:m.validate_receipt,v5:m.validate_historical_v5_receipt,v4:m.validate_historical_v4_receipt}
         # Earlier v6 amendments never authorized a run, so no receipt or
         # checkpoint carries their digests and no decoder keeps them.
-        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923','30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261']
+        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923','30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261','1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6']
         self.assertNotIn(current,retired)
         for digest in retired:
             for decode in decoders.values():
@@ -231,7 +240,8 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
                 with mock.patch.dict(os.environ,env),mock.patch.object(m.os,'getuid',return_value=0),\
                      mock.patch.object(m,'load',side_effect=lambda name:legacy if name=='gcc-hosted-sdk.py' else object()),\
                      mock.patch.object(m,'verify_checkout'),mock.patch.dict(m.ADMISSION),\
-                     mock.patch.object(m.subprocess,'run',side_effect=run),mock.patch.object(m,'verify_on_host',side_effect=verify):
+                     mock.patch.object(m.subprocess,'run',side_effect=run),mock.patch.object(m,'verify_on_host',side_effect=verify),\
+                     private_staging(root):
                     value=m.guarded(lambda:m.fixed_work(private),private,HEAD)
                 self.assertEqual(value['diagnostics']['stage'],expected)
                 ordered=['image-acquisition','common-input-acquisition','gcc-input-acquisition','legacy-sdk-capture','independent-verification']
@@ -425,7 +435,7 @@ class Composition(unittest.TestCase):
         mock.patch.object(legacy.h,'admit_host_node',return_value={'path':'/fixed/synthetic-node'}),\
         mock.patch.object(legacy.h.capacity.base.platform,'system',return_value='SyntheticHost'),\
         mock.patch.object(legacy.h,'docker',side_effect=AssertionError('Docker reached')) as docker,\
-        mock.patch.object(m.subprocess,'run',return_value=types.SimpleNamespace(returncode=0)) as commands:
+        mock.patch.object(m.subprocess,'run',return_value=types.SimpleNamespace(returncode=0)) as commands,private_staging(root):
     with self.assertRaises(m.Refusal) as caught:m.fixed_work(private)
     self.assertEqual(caught.exception.identifier,'sdk-incomplete')
     self.assertIs(type(caught.exception.__cause__),ValueError);self.assertEqual(str(caught.exception.__cause__),expected)
@@ -609,6 +619,20 @@ class SiblingAdmission(unittest.TestCase):
   for expected in ['scripts/producer-qualification/gcc-sdk-structured-diagnostics.py','scripts/producer-qualification/binutils-image-identity.mjs',
                    'scripts/qualify-binutils-producer.mjs','scripts/producer-qualification/c-producer-profile.mjs']:
    self.assertIn(expected,closure)
+ def test_every_file_the_staged_node_code_names_beside_itself_is_pinned(self):
+  # The acquisition runs from the private verified copy, so any sibling file it
+  # reads, copies or executes by a relative name must have been verified too.
+  policy=json.loads((ROOT/'scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json').read_bytes())
+  pinned={row['path'] for row in policy['runtimeFiles']};named=set()
+  for relative in sorted(path for path in pinned if path.endswith('.mjs')):
+   path=ROOT/relative
+   for literal in re.findall(r"""["'`]([A-Za-z0-9_./-]+\.(?:json|py|sh|mjs|mk|txt|js))["'`]""",path.read_text()):
+    if literal.startswith('/'):continue
+    for folder in [path.parent,path.parent/'producer-qualification']:
+     candidate=(folder/literal).resolve()
+     if candidate.is_file() and ROOT in candidate.parents:named.add(candidate.relative_to(ROOT).as_posix())
+  self.assertIn('scripts/producer-qualification/binutils-prepare-inputs.py',named)
+  self.assertEqual(sorted(named-pinned),[],'Staged Node code names an unpinned sibling file')
  def test_closure_scan_follows_relative_es_imports_and_ignores_bare_packages(self):
   pattern=r"""(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)["'](\.{1,2}/[^"']+)["']"""
   source='import a from "./synthetic-a-137.mjs";\nimport { b } from \'../synthetic-b.mjs\';\nawait import("./synthetic-c.mjs");\nimport fs from "node:fs";\nimport "./synthetic-side-effect.mjs";\n'
@@ -624,6 +648,118 @@ class SiblingAdmission(unittest.TestCase):
   with self.assertRaises(decoder.Bad):m.validate_structured(confused)
   observed=m.unobserved_structured();observed['state']='invalid';observed['errorId']='record-unavailable'
   self.assertEqual(m.validate_structured(observed)['state'],'invalid')
+
+SWAP_DRIVER='''import importlib.util,json,os,pathlib,subprocess,sys,types
+spec=importlib.util.spec_from_file_location('copied_receipt',sys.argv[1]);m=importlib.util.module_from_spec(spec)
+spec.loader.exec_module(m)
+os.getuid=lambda:0
+config=json.loads(os.environ['SYNTHETIC_SWAP_CONFIG']);m.STAGING_PARENT=config['stagingParent']
+report={'opened':[],'node':[],'policyOpens':0};armed=[False]
+policy_path=os.path.normpath(os.path.join(os.path.dirname(sys.argv[1]),'gcc-sdk-receipt-policy.v1.json'))
+def audit(event,args):
+ if event=='open' and isinstance(args[0],(str,bytes,os.PathLike)):
+  path=os.path.normpath(os.fsdecode(args[0]))
+  if path==policy_path and not armed[0]:report['policyOpens']+=1
+  if armed[0]:report['opened'].append(path)
+sys.addaudithook(audit)
+real_verify=m.verify_runtime_files
+def verify(repository,policy):
+ value=real_verify(repository,policy)
+ for relative,body in config['swap'].items():(repository/relative).write_bytes(body.encode())
+ armed[0]=True;return value
+m.verify_runtime_files=verify
+real_run=subprocess.run
+def run(command,**kwargs):
+ if command[0]=='/usr/bin/docker':return types.SimpleNamespace(returncode=0)
+ if str(command[1]).endswith('.mjs'):
+  # Load the entry point and its whole import graph without its arguments:
+  # the entry refuses its usage after every import has been evaluated.
+  done=real_run([command[0],command[1]],cwd=kwargs.get('cwd'),capture_output=True,timeout=120)
+  report['node'].append({'script':command[1],'cwd':str(kwargs.get('cwd')),'code':done.returncode,'stderr':done.stderr.decode()[-400:]})
+  return types.SimpleNamespace(returncode=1)
+ return real_run(command,**kwargs)
+subprocess.run=run
+sys.argv=['helper','qualify-on-host','--operator-trust-execution'];code=m.entry()
+armed[0]=False;pathlib.Path(config['report']).write_text(json.dumps(report));raise SystemExit(code)
+'''
+NODE_MARKER_CODE='\nimport {{ writeFileSync as synthetic137Write }} from "node:fs";\nsynthetic137Write({marker!r}, "node-import-ran-137");\n'
+
+
+class VerifiedExecution(unittest.TestCase):
+ """After admission the entry runs only the bytes it verified, never the checkout again."""
+ PYTHON='scripts/producer-qualification/gcc-hosted-carrier.py'
+ NODE='scripts/producer-qualification/binutils-image-identity.mjs'
+ POLICY='scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json'
+ RECEIPT='scripts/producer-qualification/gcc-sdk-onhost-receipt.py'
+ def checkout(self,pinned_markers=False):
+  temporary=tempfile.TemporaryDirectory(prefix='gcc-receipt-verified-');self.addCleanup(temporary.cleanup)
+  base=Path(temporary.name).resolve();copy=base/'checkout';markers={'python':base/'python-helper-ran.marker','node':base/'node-import-ran.marker'}
+  policy=json.loads((ROOT/self.POLICY).read_bytes())
+  for name in [self.POLICY,self.RECEIPT,*[row['path'] for row in policy['runtimeFiles']]]:
+   target=copy/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/name,target)
+  if pinned_markers:
+   # The valid near miss: marker code that the operator pinned does run, from
+   # the verified copy, which proves this harness observes both runtimes.
+   for relative,code in [(self.PYTHON,MARKER_CODE.format(marker=str(markers['python']))),(self.NODE,NODE_MARKER_CODE.format(marker=str(markers['node'])))]:
+    path=copy/relative;path.write_bytes(path.read_bytes()+code.encode())
+    row=next(row for row in policy['runtimeFiles'] if row['path']==relative);body=path.read_bytes()
+    row.update(bytes=len(body),sha256=hashlib.sha256(body).hexdigest())
+   raw=json.dumps(policy,indent=2,sort_keys=True).encode()+b'\n';(copy/self.POLICY).write_bytes(raw)
+   source=(copy/self.RECEIPT).read_text();(copy/self.RECEIPT).write_text(source.replace(m.POLICY_SHA256,hashlib.sha256(raw).hexdigest()))
+  env={'HOME':str(base),'GIT_CONFIG_NOSYSTEM':'1','PATH':'/usr/bin:/bin'}
+  git=['/usr/bin/git','-c','user.name=synthetic','-c','user.email=synthetic@invalid','-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false']
+  for command in [['init','-q'],['add','-A'],['commit','-q','-m','synthetic checkout']]:
+   subprocess.run([*git,*command],cwd=copy,env=env,check=True,capture_output=True,timeout=60)
+  head=subprocess.run([*git,'rev-parse','HEAD'],cwd=copy,env=env,check=True,capture_output=True,timeout=10).stdout.decode().strip()
+  return base,copy,markers,head
+ def entry(self,base,copy,head,swap):
+  temp=base/'runner-temp';temp.mkdir();staging=base/'staging';staging.mkdir(mode=0o700);report=base/'report.json'
+  node=Path(shutil.which('node')).resolve(strict=True)
+  record={'path':str(node),'sha256':hashlib.sha256(node.read_bytes()).hexdigest(),
+          'version':subprocess.run([str(node),'--version'],capture_output=True,check=True,timeout=30).stdout.decode().strip()}
+  env={'RUNNER_TEMP':str(temp),'GITHUB_WORKSPACE':str(copy),'GITHUB_SHA':head,'CHECKTRAIL_HOST_NODE':json.dumps(record),'PATH':'/usr/bin:/bin',
+       'SYNTHETIC_SWAP_CONFIG':json.dumps({'swap':swap,'stagingParent':str(staging),'report':str(report)})}
+  completed=subprocess.run([sys.executable,'-I','-B','-c',SWAP_DRIVER,str(copy/self.RECEIPT)],env=env,capture_output=True,timeout=300)
+  self.assertEqual(completed.stderr,b'');self.assertTrue(completed.stdout.startswith(m.PREFIX),completed.stdout[:200])
+  value=json.loads(completed.stdout[len(m.PREFIX):]);observed=json.loads(report.read_text())
+  # The run reached the first Node acquisition step and stopped there.
+  self.assertEqual((value['errorId'],value['diagnostics']['stage']),('input-refused','common-input-acquisition'))
+  self.assertEqual(len(observed['node']),1);self.assertEqual(list(staging.iterdir()),[],'The private verified copy was not removed')
+  return value,observed
+ def swaps(self,base,markers):
+  helper=(ROOT/self.PYTHON).read_text()+MARKER_CODE.format(marker=str(markers['python']))
+  imported=(ROOT/self.NODE).read_text()+NODE_MARKER_CODE.format(marker=str(markers['node']))
+  return {self.PYTHON:helper,self.NODE:imported,self.POLICY:'{"synthetic":"policy swapped after verification 137"}\n'}
+ def swapped_run(self,kind):
+  base,copy,markers,head=self.checkout();swap=self.swaps(base,markers)[kind]
+  value,observed=self.entry(base,copy,head,{kind:swap})
+  # Every pinned file and the policy; the running entry's own source may still
+  # be read for a local traceback, which executes nothing.
+  pinned={str(copy/row['path']) for row in json.loads((ROOT/self.POLICY).read_bytes())['runtimeFiles']}|{str(copy/self.POLICY)}
+  self.assertIn(str(copy/kind),pinned)
+  run=observed['node'][0];self.assertEqual(run['code'],2,run);self.assertIn('AssertionError',run['stderr'])
+  def not_reopened():
+   self.assertFalse(run['script'].startswith(str(copy)+'/'),run)
+   self.assertEqual([path for path in observed['opened'] if os.path.normpath(path) in pinned],[],'A verified file was reopened from the checkout')
+  return markers,not_reopened
+ def test_python_helper_swapped_after_verification_never_runs(self):
+  markers,not_reopened=self.swapped_run(self.PYTHON)
+  self.assertFalse(markers['python'].exists(),'A Python helper swapped after verification ran');not_reopened()
+ def test_node_import_swapped_after_verification_never_runs(self):
+  markers,not_reopened=self.swapped_run(self.NODE)
+  self.assertFalse(markers['node'].exists(),'A Node import swapped after verification ran');not_reopened()
+ def test_policy_swapped_after_verification_is_never_reopened(self):
+  _,not_reopened=self.swapped_run(self.POLICY);not_reopened()
+ def test_policy_is_opened_once_and_the_checked_bytes_are_parsed(self):
+  base,copy,markers,head=self.checkout();_,observed=self.entry(base,copy,head,{})
+  self.assertEqual(observed['policyOpens'],1)
+ def test_pinned_marker_code_runs_from_the_verified_copy(self):
+  base,copy,markers,head=self.checkout(pinned_markers=True)
+  value,observed=self.entry(base,copy,head,{})
+  self.assertEqual(markers['python'].read_text(),'sibling-module-code-ran-137')
+  self.assertEqual(markers['node'].read_text(),'node-import-ran-137')
+  self.assertEqual(observed['node'][0]['code'],2)
+
 
 class CheckoutGitConfig(unittest.TestCase):
  """The stdlib-only checkout check refuses a repository whose own config

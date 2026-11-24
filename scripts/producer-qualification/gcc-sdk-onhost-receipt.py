@@ -14,12 +14,14 @@ import os
 from pathlib import Path
 import re
 import stat
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import traceback
 
-POLICY_SHA256='1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6'
+POLICY_SHA256='df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f'
 PREFIX=b'CHECKTRAIL_SDK_RECEIPT_V1 '
 MAX_RECEIPT=16384
 MAX_OPAQUE=16*1024**2
@@ -160,11 +162,18 @@ RUNTIME_SIBLINGS=['scripts/producer-qualification/'+name for name in [
  'binutils-image-identity.mjs','binutils-acquisition-plan.mjs','binutils-retention-observer.mjs','c-producer-profile.mjs']]+[
  'scripts/acquire-binutils-inputs.mjs','scripts/acquire-c-producer-inputs.mjs','scripts/qualify-binutils-producer.mjs']
 SIBLINGS={}
+# After admission every first-party file runs from a private copy of the
+# verified bytes, never from the runner-owned checkout, which can change
+# while this root process runs. The copy lives in a fresh root directory
+# under a sticky parent, so the runner user can neither edit nor rename it.
+STAGING_PARENT='/tmp'
+VERIFIED={}
 
 
 def sibling(name):
-    require(not ADMISSION['entry'] or ADMISSION['runtimeFilesVerified'],'source-refused')
-    path=Path(__file__).with_name(name);spec=importlib.util.spec_from_file_location(path.stem.replace('-','_'),path)
+    require(not ADMISSION['entry'] or ADMISSION['runtimeFilesVerified'] and 'root' in VERIFIED,'source-refused')
+    folder=VERIFIED['root']/'scripts/producer-qualification' if 'root' in VERIFIED else Path(__file__).parent
+    path=folder/name;spec=importlib.util.spec_from_file_location(path.stem.replace('-','_'),path)
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 
 
@@ -459,23 +468,57 @@ def verify_checkout(repository,head):
     require(clean.returncode==0,'source-refused')
 
 
+def pinned_bytes(path,maximum):
+    """(bytes, mode) of one bounded regular file, read once through a no-follow descriptor."""
+    with os.fdopen(os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK|getattr(os,'O_CLOEXEC',0)),'rb') as source:
+        opened=os.fstat(source.fileno());require(stat.S_ISREG(opened.st_mode) and opened.st_size<=maximum,'source-refused')
+        body=source.read(maximum+1)
+    require(len(body)==opened.st_size,'source-refused');return body,stat.S_IMODE(opened.st_mode)
+
+
 def verify_runtime_files(repository,policy):
-    rows=policy['runtimeFiles'];require(type(rows) is list and rows,'source-refused')
+    """The pinned bytes and mode of every runtimeFiles row, keyed by relative path."""
+    rows=policy['runtimeFiles'];require(type(rows) is list and rows,'source-refused');verified={}
     for row in rows:
         require(type(row) is dict and type(row.get('path')) is str and not row['path'].startswith('/') and
-                all(part not in ['','.','..'] for part in row['path'].split('/')),'source-refused')
-        path=repository/row['path']
+                all(part not in ['','.','..'] for part in row['path'].split('/')) and row['path'] not in verified,'source-refused')
         # A grown, shrunk or special file is the same source refusal as a changed one.
-        try:observed=file_pin(path,row['bytes'])
-        except (Refusal,OSError):observed=None
-        require(observed=={k:row[k] for k in ['bytes','sha256']} and stat.S_IMODE(path.lstat().st_mode)==row['mode'],'source-refused')
-    return {row['path'] for row in rows}
+        try:body,mode=pinned_bytes(repository/row['path'],row['bytes'])
+        except (Refusal,OSError):body,mode=None,None
+        require(body is not None and len(body)==row['bytes'] and hashlib.sha256(body).hexdigest()==row['sha256'] and mode==row['mode'],'source-refused')
+        verified[row['path']]=(body,mode)
+    return verified
+
+
+def stage_verified(files):
+    """Write the verified files into a fresh private tree: files 0444 (0555 when
+    pinned executable), directories 0555, the root itself 0700."""
+    parent=Path(os.path.realpath(STAGING_PARENT));info=parent.lstat()
+    require(stat.S_ISDIR(info.st_mode) and info.st_uid in (0,os.geteuid()) and
+            (info.st_mode&stat.S_ISVTX or not info.st_mode&0o022),'runtime-refused')
+    root=Path(tempfile.mkdtemp(prefix='checktrail-gcc-sdk-verified-',dir=parent));VERIFIED['root']=root
+    for relative,(body,mode) in sorted(files.items()):
+        target=root/relative;target.parent.mkdir(mode=0o700,parents=True,exist_ok=True)
+        with os.fdopen(os.open(target,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600),'wb') as sink:sink.write(body)
+        os.chmod(target,0o555 if mode&0o111 else 0o444)
+    for directory in sorted({folder for relative in files for folder in (root/relative).parents if root in folder.parents},
+                            key=lambda folder:len(folder.parts),reverse=True):os.chmod(directory,0o555)
+    return root
+
+
+def remove_staged():
+    root=VERIFIED.pop('root',None)
+    if root is None:return
+    for folder,_,_ in os.walk(root):os.chmod(folder,0o700)
+    shutil.rmtree(root)
 
 
 def fixed_work(private):
     record_stage(private,'runtime-source-validation')
-    policy_path=Path(__file__).with_name('gcc-sdk-receipt-policy.v1.json')
-    require(file_pin(policy_path,65536)['sha256']==POLICY_SHA256,'source-refused');policy=read_json(policy_path)
+    policy_relative='scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json'
+    # The policy is read once; these bytes are both checked and parsed.
+    policy_raw,policy_mode=pinned_bytes(Path(__file__).with_name('gcc-sdk-receipt-policy.v1.json'),65536)
+    require(hashlib.sha256(policy_raw).hexdigest()==POLICY_SHA256,'source-refused');policy=json.loads(policy_raw)
     repository=Path(os.environ['GITHUB_WORKSPACE']);temporary=Path(os.environ['RUNNER_TEMP'])
     require(os.getuid()==0 and repository.is_absolute() and repository==repository.resolve() and
             temporary.is_absolute() and temporary==temporary.resolve(),'runtime-refused')
@@ -483,22 +526,23 @@ def fixed_work(private):
     # checkout location whose bytes the policy rows pin.
     require(Path(__file__).resolve().parent==repository/'scripts/producer-qualification','source-refused')
     verify_checkout(repository,os.environ['GITHUB_SHA'])
-    pinned=verify_runtime_files(repository,policy)
-    require(set(RUNTIME_SIBLINGS)<=pinned,'source-refused')
+    verified=verify_runtime_files(repository,policy)
+    require(set(RUNTIME_SIBLINGS)<=set(verified) and policy_relative not in verified,'source-refused')
+    staged=stage_verified({**verified,policy_relative:(policy_raw,policy_mode)})
     ADMISSION['runtimeFilesVerified']=True
     legacy=load('gcc-hosted-sdk.py');independent=load('gcc-main05-sdk.py');structured_diagnostics()
     runtime=legacy.h.admit_host_node(json.loads(os.environ['CHECKTRAIL_HOST_NODE']),private)
     node=runtime['path'] if 'path' in runtime else json.loads(os.environ['CHECKTRAIL_HOST_NODE'])['path']
     commands=[['/usr/bin/docker','pull','--platform','linux/amd64',legacy.codec.IMAGE],
-              [node,str(repository/'scripts/acquire-binutils-inputs.mjs'),'--output',str(temporary/'gcc-common-inputs'),'--operator-trust-execution'],
-              [node,str(repository/'scripts/acquire-c-producer-inputs.mjs'),'--profile','gcc-12','--common-inputs',str(temporary/'gcc-common-inputs/bundle'),'--output',str(temporary/'gcc-inputs')]]
+              [node,str(staged/'scripts/acquire-binutils-inputs.mjs'),'--output',str(temporary/'gcc-common-inputs'),'--operator-trust-execution'],
+              [node,str(staged/'scripts/acquire-c-producer-inputs.mjs'),'--profile','gcc-12','--common-inputs',str(temporary/'gcc-common-inputs/bundle'),'--output',str(temporary/'gcc-inputs')]]
     input_start=time.monotonic()
     for stage,command in zip(['image-acquisition','common-input-acquisition','gcc-input-acquisition'],commands):
         record_stage(private,stage)
         remaining=policy['inputPreparationSeconds']-(time.monotonic()-input_start);require(remaining>0,'input-refused')
         # Output inherits the already-private FDs. Original fixed acquisition
         # programs/commands remain unchanged; no exception is printed publicly.
-        completed=subprocess.run(command,cwd=repository,timeout=remaining,stdin=subprocess.DEVNULL,check=False)
+        completed=subprocess.run(command,cwd=staged,timeout=remaining,stdin=subprocess.DEVNULL,check=False)
         require(completed.returncode==0,'input-refused')
         require((private/'opaque-wrapper-output.log').stat().st_size<=MAX_OPAQUE,'local-output-limit')
     output=temporary/'gcc-sdk-reconstruction';require(not os.path.lexists(output),'runtime-refused');saved=sys.argv
@@ -592,7 +636,8 @@ def main():
         # Even entry/admission failures have no raw exception or traceback channel.
         value=empty_receipt(head);value['errorId']=error.identifier if isinstance(error,Refusal) else 'runtime-refused'
         value['diagnostics']=failure_diagnostics(None,error)
-    os.write(1,PREFIX+canonical(validate_receipt(value)))
+    try:os.write(1,PREFIX+canonical(validate_receipt(value)))
+    finally:remove_staged()
     return 0 if value['sdkVerifiedOnHost'] else 1
 
 

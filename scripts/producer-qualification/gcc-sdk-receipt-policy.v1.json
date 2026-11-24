@@ -37,7 +37,13 @@
       "scripts/producer-qualification/binutils-acquisition-plan.mjs",
       "scripts/producer-qualification/binutils-retention-observer.mjs",
       "scripts/producer-qualification/c-producer-profile.mjs",
-      "scripts/qualify-binutils-producer.mjs"
+      "scripts/qualify-binutils-producer.mjs",
+      "scripts/producer-qualification/binutils.v1.json",
+      "scripts/producer-qualification/binutils-apt-index-preparation.v1.json",
+      "scripts/producer-qualification/binutils-prepare-inputs.py",
+      "scripts/producer-qualification/binutils-expectations.v1.json",
+      "scripts/producer-qualification/gcc-local-12h-policy.v1.json",
+      "scripts/producer-qualification/gcc-local-wall-policy.v1.json"
     ],
     "approvedBy": "operator",
     "approvedOn": "2026-11-24",
@@ -56,7 +62,8 @@
       "Descriptor walk: gcc-hosted-carrier.py measures state from directory descriptors opened with O_NOFOLLOW and O_DIRECTORY, reads each directory one name at a time under the sample deadline and resolves every name relative to the directory that listed it, so a directory replaced by a symlink is never entered; live samples count such an entry within LIVE_VANISHED_CEILING, stopped scans refuse it and any measured directory no longer at its name, and a walk deeper than 256 levels is refused.",
       "Not-started generator: gcc-sdk-derived-run.py re-reads the command and whole-operation budget after journaling a request and records a not-started terminal instead of starting a generator once that budget is spent.",
       "Git configuration: gcc-hosted-carrier.py runs git with no system or global configuration, no outside attribute files, no hooks, no textconv or external diff and no fetch of a missing object, and refuses a checkout whose own configuration, found as git finds it, names a filter, diff, fsmonitor, hooks or include program before git starts.",
-      "Further changes approved by the operator on 2026-11-24: gcc-hosted-phase0-capacity.py, gcc-hosted-carrier.py and gcc-sdk-derived-run.py, as listed above. No command, image or other runtime file changes; the limit changes are the restore-tree term of the phase-0 scratch budget and the state depth ceiling."
+      "Verified execution: the on-host receipt reads the policy once and parses the bytes it checked, keeps the bytes of every runtimeFiles row it verified, writes them into a fresh private directory under a sticky parent (files 0444 or 0555, directories 0555) and from then on loads Python helpers, reads the policy and runs the Node acquisition entry points and their imports only from that copy; gcc-hosted-sdk.py takes its controls from its own directory, and every file the staged acquisition code reads beside itself is pinned as a runtimeFiles row.",
+      "Further changes approved by the operator on 2026-11-24: gcc-hosted-phase0-capacity.py, gcc-hosted-carrier.py, gcc-sdk-derived-run.py and gcc-hosted-sdk.py, as listed above, and the added rows binutils.v1.json, binutils-apt-index-preparation.v1.json, binutils-prepare-inputs.py, binutils-expectations.v1.json, gcc-local-12h-policy.v1.json and gcc-local-wall-policy.v1.json. No command, image or other runtime file changes; the limit changes are the restore-tree term of the phase-0 scratch budget and the state depth ceiling."
     ]
   },
   "runtimeFiles": [
@@ -79,10 +86,10 @@
       "sha256": "ee1192ba5e30b1697cf25fdcc05bf28142a89644a04186c612f1298c81d9a720"
     },
     {
-      "bytes": 22696,
+      "bytes": 22817,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-hosted-sdk.py",
-      "sha256": "79fc453d348831623c7eed15ba0ffdfe9741d04849bd3c253e27e13a7f62ecf6"
+      "sha256": "f3e99f01d173b8622ddff4f2559265867012164bc0db3e7e1207eccb6e432c1f"
     },
     {
       "bytes": 10473,
@@ -209,6 +216,42 @@
       "mode": 420,
       "path": "scripts/qualify-binutils-producer.mjs",
       "sha256": "dad2118b97a6273a5a43313d081517f2ccf4192f12d60097c60ddc023bd00fbd"
+    },
+    {
+      "bytes": 163560,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils.v1.json",
+      "sha256": "767cd256f71d7bda5c1f839f7ffb4ca8fb945a5013f4515490ec34f005a91c3c"
+    },
+    {
+      "bytes": 10197,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-apt-index-preparation.v1.json",
+      "sha256": "115447b661ca13d2850429a550e42508cc705cd5a5b8eea4892f4a79e9513e40"
+    },
+    {
+      "bytes": 9467,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-prepare-inputs.py",
+      "sha256": "4d76563525654a6cbffbc84a38e862332270ab914a576d22041145c19d2797a3"
+    },
+    {
+      "bytes": 5509,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-expectations.v1.json",
+      "sha256": "57a74cda3865fd9271176f52bb115033d88f54547a00cf9e581fa2e9226c5ee7"
+    },
+    {
+      "bytes": 1289,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-local-12h-policy.v1.json",
+      "sha256": "1964d3ca86505c6fc12791cd1b58d67cbb5013f20de87300371f7a4652efc3cf"
+    },
+    {
+      "bytes": 1289,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-local-wall-policy.v1.json",
+      "sha256": "9356abbf7cf21ec34646c56a95158414d2832e4402797a77e5dfce0866129bd8"
     }
   ],
   "schemaVersion": 1,

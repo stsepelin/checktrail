@@ -147,10 +147,10 @@ class Daemon:
         if verb=='rm':
             # Docker semantics: a tag reference only untags unless it was the
             # last tag; an ID with several tags is refused without --force.
-            target=self.image_ref(args[2]);self.effects.append(('image-rm',target));row=self.images[target]
-            if args[2]!=target:
-                row['RepoTags']=[tag for tag in row['RepoTags'] if tag!=args[2]]
-                if row['RepoTags']:return 'Untagged: '+args[2]+'\n'
+            reference=args[-1];target=self.image_ref(reference);self.effects.append(('image-rm',target));row=self.images[target]
+            if reference!=target:
+                row['RepoTags']=[tag for tag in row['RepoTags'] if tag!=reference]
+                if row['RepoTags']:return 'Untagged: '+reference+'\n'
             elif len(row['RepoTags'])>1:raise Refused('image is referenced in multiple repositories')
             del self.images[target];return 'Deleted: '+target+'\n'
         raise AssertionError('Unplanned image operation '+repr(args))

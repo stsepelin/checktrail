@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import importlib.util
 import json
 import re
@@ -110,11 +111,14 @@ class ImageTable:
 
     `image rm <tag>` only untags while another tag holds the image and deletes
     it with its last tag; `image rm <id>` deletes an image that has at most one
-    tag (taking that tag with it) and refuses one with several. `races` maps a
+    tag (taking that tag with it) and refuses one with several. A deleted image
+    also reports the chain ID of its top layer, as the classic store does, and
+    without --no-prune an untagged `Parent` image is deleted after it (always,
+    when `prune_always` models a daemon that ignores the flag). `races` maps a
     call (as a tuple) to a mutation applied by another client right before it.
     """
     def __init__(self):
-        self.images={};self.tags={};self.calls=[];self.races={}
+        self.images={};self.tags={};self.calls=[];self.races={};self.prune_always=False
 
     def bind(self,tag,image):self.tags[tag]=image
 
@@ -135,14 +139,21 @@ class ImageTable:
         if args[:2]==['image','inspect']:return json.dumps([self.view(self.resolve(args[2]))]).encode()
         if args[0]=='tag':self.resolve(args[1]);self.bind(args[2],self.resolve(args[1]));return b''
         if args[:2]==['image','rm']:
-            reference=args[2];image=self.resolve(reference);held=self.view(image)['RepoTags']
+            reference=args[-1];image=self.resolve(reference);held=self.view(image)['RepoTags']
             if reference==image:
                 if len(held)>1:raise ValueError('Fixed Docker operation failed: image is referenced in multiple repositories')
                 for tag in held:del self.tags[tag]
             else:
                 del self.tags[reference]
                 if len(held)>1:return ('Untagged: '+reference+'\n').encode()
-            del self.images[image];return ('Deleted: '+image+'\n').encode()
+            lines=[]
+            while image is not None:
+                row=self.images.pop(image);lines+=['Deleted: '+image,'Deleted: '+m.chain_ids(row['RootFS']['Layers'])[-1]]
+                parent=row.get('Parent')
+                prune=self.prune_always or '--no-prune' not in args
+                image=parent if prune and parent in self.images and not self.view(parent)['RepoTags'] and \
+                    not any(other.get('Parent')==parent for other in self.images.values()) else None
+            return ('\n'.join(lines)+'\n').encode()
         raise AssertionError(args)
 
 
@@ -169,7 +180,7 @@ class FailedSnapshotCleanup(unittest.TestCase):
             self.assertIn(IMAGE,table.images);self.assertTrue((output/'SDK-LOCAL-SNAPSHOT-COMMAND.json').exists())
             self.assertFalse((output/'SDK-LOCAL-IMAGE.json').exists())
             result=m.cleanup_owned(output,docker);self.assertTrue(result['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
-            self.assertEqual(self.removals(table),[['image','rm',TAG]])
+            self.assertEqual(self.removals(table),[['image','rm','--no-prune',TAG]])
             self.assertFalse(result['unrelatedTagsRemoved']);self.assertFalse(result['imagePrunePerformed'])
 
     def test_ambiguous_local_commit_recovers_only_from_exact_request_tag_and_independent_owner(self):
@@ -239,7 +250,7 @@ class FailedSnapshotCleanup(unittest.TestCase):
                 output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure')
                 if alias:table.bind(FOREIGN_TAG,IMAGE)
                 def rebind(store):store.images[FOREIGN_IMAGE]=dict(store.images[IMAGE],Id=FOREIGN_IMAGE);store.bind(TAG,FOREIGN_IMAGE)
-                table.races[('image','rm',TAG)]=rebind
+                table.races[('image','rm','--no-prune',TAG)]=rebind
                 with self.assertRaisesRegex(ValueError,'deleted an image other than the observed one'):m.cleanup_owned(output,docker)
                 self.assertNotIn(FOREIGN_IMAGE,table.images,'Synthetic race did not reach the foreign image')
                 self.assertIn(IMAGE,table.images);self.assertEqual(table.view(IMAGE)['RepoTags'],[FOREIGN_TAG] if alias else [])
@@ -250,7 +261,7 @@ class FailedSnapshotCleanup(unittest.TestCase):
             output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure')
             def swap(store):
                 store.images[FOREIGN_IMAGE]=dict(store.images[IMAGE],Id=FOREIGN_IMAGE);store.bind(TAG,FOREIGN_IMAGE);del store.images[IMAGE]
-            table.races[('image','rm',TAG)]=swap
+            table.races[('image','rm','--no-prune',TAG)]=swap
             with self.assertRaisesRegex(ValueError,'did not delete the observed image'):m.cleanup_owned(output,docker)
 
     def test_image_that_already_carries_a_foreign_alias_loses_only_the_owned_tag(self):
@@ -259,7 +270,37 @@ class FailedSnapshotCleanup(unittest.TestCase):
             result=m.cleanup_owned(output,docker)
             self.assertTrue(result['ownedImageCleanupComplete']);self.assertEqual(result['unrelatedRemainingAliasesProtected'],[FOREIGN_TAG])
             self.assertIn(IMAGE,table.images);self.assertEqual(table.view(IMAGE)['RepoTags'],[FOREIGN_TAG])
-            self.assertEqual(self.removals(table),[['image','rm',TAG]])
+            self.assertEqual(self.removals(table),[['image','rm','--no-prune',TAG]])
+
+    def untagged_parent(self,table):
+        parent='sha256:'+'a7'*32
+        table.images[parent]={'Id':parent,'RootFS':{'Type':'layers','Layers':table.images[IMAGE]['RootFS']['Layers'][:1]}}
+        table.images[IMAGE]['Parent']=parent;return parent
+
+    def test_untagged_parent_image_is_never_pruned_by_the_owned_removal(self):
+        for detach in [False,True]:
+            with self.subTest(returned_untagged=detach),tempfile.TemporaryDirectory() as name:
+                output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');parent=self.untagged_parent(table)
+                if detach:del table.tags[TAG]
+                result=m.cleanup_owned(output,docker)
+                self.assertTrue(result['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
+                self.assertIn(parent,table.images,'An untagged parent image was pruned')
+                self.assertTrue(all('--no-prune' in call for call in table.calls if call[:2]==['image','rm']))
+
+    def test_removal_response_that_deletes_another_image_is_refused(self):
+        # A daemon that prunes anyway, or any extra image in the response, is
+        # reported rather than accepted as the owned image's removal.
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');parent=self.untagged_parent(table)
+            table.prune_always=True
+            with self.assertRaisesRegex(ValueError,'deleted an image other than the observed one'):m.cleanup_owned(output,docker)
+            self.assertNotIn(parent,table.images,'Synthetic daemon did not prune')
+            self.assertFalse(json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())['ownedImageCleanupComplete'])
+
+    def test_released_layers_of_the_owned_image_are_accepted_in_the_response(self):
+        layers=['sha256:'+'5'*64,'sha256:'+'6'*64]
+        top='sha256:'+hashlib.sha256(('sha256:'+'5'*64+' '+'sha256:'+'6'*64).encode()).hexdigest()
+        self.assertEqual(m.chain_ids(layers),['sha256:'+'5'*64,top])
 
     def test_returned_untagged_image_is_removed_through_the_owned_tag_not_its_id(self):
         with tempfile.TemporaryDirectory() as name:
@@ -268,7 +309,7 @@ class FailedSnapshotCleanup(unittest.TestCase):
             self.assertTrue(result['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
             (verb,source,spare),removal=self.removals(table)
             self.assertEqual((verb,source),('tag',IMAGE));self.assertRegex(spare,'^'+re.escape(TAG)+'-removal-[0-9a-f]{32}$')
-            self.assertEqual(removal,['image','rm',spare]);self.assertNotIn(spare,table.tags)
+            self.assertEqual(removal,['image','rm','--no-prune',spare]);self.assertNotIn(spare,table.tags)
 
     def test_owned_tag_claimed_by_another_client_during_recovery_is_never_rebound(self):
         # `docker tag` replaces an existing binding: recovery must not use the

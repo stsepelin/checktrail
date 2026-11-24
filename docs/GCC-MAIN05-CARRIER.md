@@ -58,10 +58,11 @@ physical ownership and exact identity; a rebound tag, unproven resource or
 ambiguous result cannot authorize broad cleanup. The local SDK image is
 removed only through its exact owned tag, re-read immediately before removal,
 so Docker deletes it only while no other tag holds it; an image that keeps a
-foreign tag is reported, never removed. Docker has no compare-and-delete, so a
+foreign tag is reported, never removed. Removal passes `--no-prune`, so an
+untagged parent image is kept. Docker has no compare-and-delete, so a
 rebind in the instant before removal cannot be prevented; a removal response
-that deleted any other image, or an owned image left untagged, keeps cleanup
-unqualified. An untagged owned image is recovered through a fresh
+that deleted any image other than the owned one and its own released layers,
+or an owned image left untagged, keeps cleanup unqualified. An untagged owned image is recovered through a fresh
 unpredictable tag, never by ID and never by rebinding the owned tag. Actual SDK/native elapsed
 time remains charged when later checks or retention fail. A genuine zero with
 an unconfirmed family creates a charged `terminal-incomplete` row with no
@@ -105,7 +106,14 @@ that reconciliation removes the ID it observed. The on-host receipt entry checks
 its policy, the checkout and every `runtimeFiles` pin with the standard library
 before it loads any sibling, so a changed helper's module code never runs before
 its mismatch is refused; it also reads no adjacent bytecode cache, so the
-pinned source is what runs. The same amended v6 also pins
+pinned source is what runs. It reads the policy once and parses the bytes it
+checked, then writes every verified `runtimeFiles` row and the policy into a
+fresh private directory under a sticky parent and loads its Python helpers,
+reads the policy and runs the Node acquisition entry points and their imports
+only from there, so a checkout change after verification is never executed.
+Every file that staged acquisition code names beside itself is a `runtimeFiles`
+row, and `gcc-hosted-sdk.py` takes its controls from its own directory. The
+same amended v6 also pins
 `gcc-hosted-phase0-capacity.py` and `gcc-sdk-derived-run.py` at changed bytes.
 Phase-0 admission budgets the second uncompressed tree the carrier restores
 beside the original tree and the checkpoint. Every live capacity sample,

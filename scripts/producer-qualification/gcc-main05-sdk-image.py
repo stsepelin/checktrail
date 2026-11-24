@@ -111,7 +111,16 @@ def commit_prepared(name,identifier,base,proof,output,docker=h.docker):
     (output/'SDK-LOCAL-IMAGE.json').write_bytes(codec.canonical(record));return record
 
 
-def remove_owned_tag(tag,observed,docker,result):
+def chain_ids(layers):
+    """Layer chain IDs of an image's RootFS diff IDs, as Docker names released layers."""
+    chain=[];current=None
+    for layer in layers:
+        current=layer if current is None else 'sha256:'+hashlib.sha256((current+' '+layer).encode()).hexdigest()
+        chain.append(current)
+    return chain
+
+
+def remove_owned_tag(tag,observed,layers,docker,result):
     """Remove the exact owned tag reference, never an image ID.
 
     Docker deletes the image only when no other tag still holds it, so an
@@ -120,11 +129,13 @@ def remove_owned_tag(tag,observed,docker,result):
     in the instant between that read and the removal cannot be prevented; it
     is detected from the removal's own response, which may delete only the
     observed image, and from the observed image afterwards, which must carry
-    no owned tag and be either gone or held only by foreign tags.
+    no owned tag and be either gone or held only by foreign tags. --no-prune
+    keeps untagged parent images, and a response that deletes anything but
+    the observed image and its own released layers is refused.
     """
     listed=docker(['image','ls','--no-trunc','--quiet',tag]).decode().splitlines()
     require(listed==[observed],'Owned SDK tag no longer names the observed image; refuse removal')
-    response=docker(['image','rm',tag],timeout=30).decode().splitlines()
+    response=docker(['image','rm','--no-prune',tag],timeout=30).decode().splitlines()
     deleted=[line[len('Deleted: '):].strip() for line in response if line.startswith('Deleted: ')]
     require(not docker(['image','ls','--no-trunc','--quiet',tag]).strip(),'Exact owned SDK tag remains after removal')
     present=set(docker(['image','ls','--all','--no-trunc','--quiet']).decode().splitlines())
@@ -137,6 +148,7 @@ def remove_owned_tag(tag,observed,docker,result):
         result['unrelatedRemainingAliasesProtected']=aliases
     else:
         require(deleted[:1]==[observed],'Owned SDK tag removal did not delete the observed image')
+        require(set(deleted[1:])<=set(chain_ids(layers)),'Removing the owned SDK tag deleted an image other than the observed one')
 
 
 def cleanup_owned(output,docker=h.docker):
@@ -182,7 +194,7 @@ def cleanup_owned(output,docker=h.docker):
             if returned is not None:require(observed==returned,'Owned tag was rebound to a different image; refuse deletion')
             else:require((actual['Config'].get('Labels') or {}).get('io.checktrail.gcc-staged-owner')==name,
                          'Ambiguous commit output lacks independent observed owner label')
-            remove_owned_tag(tag,observed,docker,result)
+            remove_owned_tag(tag,observed,actual['RootFS']['Layers'],docker,result)
             result.update(state='local-sdk-owned-tag-removed',ownedImageCleanupComplete=True,observedLocalImageId=observed)
         elif returned is not None:
             # The tag may have been removed before a prior cleanup response was
@@ -199,7 +211,7 @@ def cleanup_owned(output,docker=h.docker):
                     # other client can hold, and only that tag is removed.
                     spare=tag+'-removal-'+uuid.uuid4().hex
                     docker(['tag',returned,spare],timeout=30)
-                    remove_owned_tag(spare,returned,docker,result)
+                    remove_owned_tag(spare,returned,actual['RootFS']['Layers'],docker,result)
                 else:result['unrelatedRemainingAliasesProtected']=actual['RepoTags']
             result.update(state='local-sdk-owned-tag-absent-returned-image-reconciled',ownedImageCleanupComplete=True)
         else:
