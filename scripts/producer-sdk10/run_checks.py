@@ -5,6 +5,8 @@ standard library: the directory is not on sys.path, and isolated mode (-I)
 keeps the interpreter from adding it as the script directory.
 """
 import sys
+# A cache written beside the verified files would itself be an unreviewed entry.
+sys.dont_write_bytecode=True
 if __name__=='__main__' and not sys.flags.isolated:raise SystemExit('run_checks.py must run isolated (python3 -I) so its directory is not importable before verification')
 import argparse,hashlib,json,os,pathlib,resource,subprocess,time,unittest
 HERE=pathlib.Path(__file__).resolve().parent

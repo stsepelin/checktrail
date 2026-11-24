@@ -191,4 +191,18 @@ class ObserverControls(unittest.TestCase):
   with contextlib.ExitStack() as stack:row,path=self.phases(build,tests)
   self.assertEqual([x['finalObservation'] for x in row['candidates']],['not-found-in-incomplete-final-inventory']);self.assertFalse(row['finalOutputInventoryComplete']);self.assertEqual(row['buildOutputsAbsentOrReplacedAtFinalObservation'],[]);self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved'])
 
+ def test_unobservable_sdk_output_tree_still_lets_the_test_phase_start(self):
+  # A matching name that is a symlink is refused by the inventory; the record
+  # must say so and the test-report snapshot must still be taken.
+  for linked in [True,False]:
+   with self.subTest(linked=linked):
+    base=Path(tempfile.mkdtemp(dir=self.root));evidence=base/'evidence';staging=base/'staging';source=base/'source'
+    for folder in [evidence,staging,source]:folder.mkdir()
+    archive=self.sdk(path=staging/'dotnet-sdk-10.0.401-linux-musl-arm64.tar.gz')
+    if linked:(staging/'dotnet-sdk-latest-6627.tar.gz').symlink_to(archive)
+    common.freeze(evidence/'original-build-TERMINAL.json',common.encoded({'originalCodeExecuted':True,'exitCode':0,'stopReason':None}))
+    with mock.patch.object(observer,'SDK_OUTPUT_ROOTS',[str(staging)]),mock.patch.object(observer,'SOURCE_ROOT',str(source)):observer.phase('before-test',{'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'},evidence,time.monotonic()+10)
+    record=common.read_json(evidence/'POST-BUILD-SDK-OUTPUTS.json');self.assertTrue((evidence/'PRE-TEST-OUTPUT-IDENTITIES.json').exists())
+    self.assertEqual(record['outputInventoryComplete'],not linked);self.assertEqual([x['path'] for x in record['candidates']],[] if linked else [str(archive)])
+
 if __name__=='__main__':unittest.main(verbosity=2)

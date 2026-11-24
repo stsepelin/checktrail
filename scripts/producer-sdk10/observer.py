@@ -208,7 +208,11 @@ def post_build_sdks(roots,profile,deadline,evidence):
  directories, so the final tree cannot tell which archive the build produced.
  The evidence directory is never mounted into either original command.
  """
- evidence=pathlib.Path(evidence);value={**fresh_sdks(roots,profile,deadline,optional_json(evidence/'PRE-BUILD-OUTPUT-IDENTITIES.json'),optional_json(evidence/'original-build-TERMINAL.json')),'observedAfterBuildStoppedBeforeTestPhase':True}
+ evidence=pathlib.Path(evidence)
+ # An unobservable output tree is recorded as an incomplete observation
+ # without build credit; it must not keep the original tests from starting.
+ try:value={**fresh_sdks(roots,profile,deadline,optional_json(evidence/'PRE-BUILD-OUTPUT-IDENTITIES.json'),optional_json(evidence/'original-build-TERMINAL.json')),'observedAfterBuildStoppedBeforeTestPhase':True}
+ except (Refusal,OSError,ValueError) as error:value={'candidates':[],'outputInventoryComplete':False,'selectedSDKArchiveMetadataAndAttributionObserved':False,'productOrBuildQualificationClaimed':False,'observedAfterBuildStoppedBeforeTestPhase':True,'state':'INCOMPLETE post-build SDK output observation','errorType':type(error).__name__}
  freeze(evidence/'POST-BUILD-SDK-OUTPUTS.json',encoded(value));return value
 def build_sdk_outputs(roots,profile,deadline,evidence):
  """Report build SDK output from the post-build record, never the final tree.

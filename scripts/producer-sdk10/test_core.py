@@ -159,14 +159,22 @@ class Controls(unittest.TestCase):
    if protected:(bundle/'PROTECTED-CONTROLS.json').write_bytes(common.encoded({'schemaVersion':1,'firstPartyControlsOnly':True,'files':rows(['test_protected_marker.py'])}))
    raw=common.encoded({'schemaVersion':1,'files':rows(['run_checks.py','common.py','test_listed_marker.py']+(['PROTECTED-CONTROLS.json'] if manifest_protected else []))});(bundle/'MANIFEST.json').write_bytes(raw);return hashlib.sha256(raw).hexdigest()
   return bundle,markers,control,pin
- def control_worker(self,bundle,pin):
-  out=pathlib.Path(tempfile.mkdtemp(dir=self.root,prefix='out-'))
-  done=subprocess.run([sys.executable,'-I','-S','-B',str(bundle/'run_checks.py'),'--python-worker','--out',str(out),'--manifest-sha256',pin],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60)
+ def control_worker(self,bundle,pin,write_bytecode=False):
+  out=pathlib.Path(tempfile.mkdtemp(dir=self.root,prefix='out-'));args=[str(bundle/'run_checks.py'),'--python-worker','--out',str(out),'--manifest-sha256',pin]
+  # Some interpreter builds never write bytecode; the wrapper turns it on so
+  # only run_checks.py itself can keep a cache out of the verified directory.
+  command=[sys.executable,'-I','-S','-c','import runpy,sys;sys.dont_write_bytecode=False;sys.argv=sys.argv[1:];runpy.run_path(sys.argv[0],run_name="__main__")',*args] if write_bytecode else [sys.executable,'-I','-S','-B',*args]
+  done=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60)
   return done.returncode,done.stdout.decode('utf8','replace'),out
  def test_reviewed_control_set_runs_listed_and_protected_controls(self):
   bundle,markers,control,pin=self.control_bundle();code,log,out=self.control_worker(bundle,pin())
   self.assertEqual(code,0,log);self.assertEqual(json.loads((out/'PYTHON.json').read_bytes())['tests'],2)
   self.assertEqual(sorted(x.name for x in markers.iterdir()),['listed','protected']);self.assertIn('test_protected',log)
+ def test_repeated_runs_without_bytecode_flag_leave_no_cache_to_refuse(self):
+  bundle,markers,control,pin=self.control_bundle();value=pin()
+  for attempt in range(2):
+   code,log,out=self.control_worker(bundle,value,True);self.assertEqual(code,0,(attempt,log));self.assertIn('test_listed',log)
+  self.assertEqual(sorted(x.name for x in bundle.iterdir()),sorted(['MANIFEST.json','PROTECTED-CONTROLS.json','common.py','run_checks.py','test_listed_marker.py','test_protected_marker.py']))
  def test_unreviewed_directory_entry_is_refused_before_any_control_import(self):
   # An unlisted helper is importable by name just like an unlisted test, and
   # a stale bytecode cache can stand in for a pinned module.
