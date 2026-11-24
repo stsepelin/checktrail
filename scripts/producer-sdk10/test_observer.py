@@ -354,11 +354,13 @@ class SnapshotIndex(unittest.TestCase):
   with mock.patch.object(observer,'prior_identities',wraps=observer.prior_identities) as index:row=observer.fresh_sdks([self.root],{'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'},time.monotonic()+30,before,None)
   self.assertEqual(index.call_count,1);self.assertEqual(len(row['candidates']),5);self.assertTrue(all(x['changedSinceProtectedPreBuildSnapshot'] for x in row['candidates']))
 
+class ObserverHung(BaseException):pass
 @contextlib.contextmanager
 def watchdog(seconds=5):
  # A blocking open of a FIFO never returns on its own; the alarm turns that
- # hang into a test error instead of a stalled control run.
- def expired(signum,frame):raise TimeoutError('observer blocked on a non-regular endpoint')
+ # hang into a test error instead of a stalled control run. It is not an
+ # Exception, so no observer error handler can absorb it as a rejection.
+ def expired(signum,frame):raise ObserverHung('observer blocked on a non-regular endpoint')
  previous=signal.signal(signal.SIGALRM,expired);signal.alarm(seconds)
  try:yield
  finally:signal.alarm(0);signal.signal(signal.SIGALRM,previous)
@@ -385,6 +387,13 @@ class NonRegularEndpoints(unittest.TestCase):
   before=self.tracked(b'tracked-4417\n');target=self.source/'src-4417.txt';decoy=self.root/'decoy-4417.txt';decoy.write_bytes(b'tracked-4417\n');target.unlink();os.mkfifo(target);real=Path.lstat
   # The lstat still describes the regular file the endpoint was a moment before.
   with watchdog(),mock.patch.object(observer.pathlib.Path,'lstat',lambda path:real(decoy) if path==target else real(path)),self.assertRaisesRegex(common.Refusal,'observed physical regular file'):observer.tracked_after(str(self.source),before,time.monotonic()+30)
+ def test_endpoint_renamed_over_during_its_hash_is_refused(self):
+  target=self.source/'build-4417'/'CMakeCache.txt';target.write_bytes(b'CMAKE_C_COMPILER:FILEPATH=/old-4417\n');other=self.root/'replacement-4417';other.write_bytes(b'CMAKE_C_COMPILER:FILEPATH=/new-4417\n');real=os.read;swapped=[]
+  def read(fd,n):
+   if not swapped:swapped.append(True);os.replace(other,target)
+   return real(fd,n)
+  with watchdog(),mock.patch.object(observer.os,'read',side_effect=read),self.assertRaisesRegex(common.Refusal,'observed file changed during hash'):observer.cmake_records(str(self.source),time.monotonic()+30)
+  self.assertEqual(swapped,[True])
  def test_unchanged_tracked_regular_endpoint_is_hashed_through_its_descriptor(self):
   before=self.tracked(b'tracked-4417\n')
   with watchdog():row=observer.tracked_after(str(self.source),before,time.monotonic()+30)

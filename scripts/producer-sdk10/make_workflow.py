@@ -10,11 +10,12 @@ ENTRY='python3 -I -S -B scripts/producer-sdk10/run_checks.py --manifest-sha256 "
 # run_checks.py is the code that checks the pin, so nothing it runs can check
 # run_checks.py itself. Each step therefore first compares its bytes with the
 # SHA256 taken at generation, in an isolated interpreter that imports only the
-# standard library and reads only that file, and runs it only on a match.
+# standard library and reads only that file. A mismatch exits the whole shell,
+# so a later line of a multi-line step cannot turn the step green.
 LAUNCHER='scripts/producer-sdk10/run_checks.py'
 def launcher_check(folder):
  pin=hashlib.sha256((pathlib.Path(folder)/'run_checks.py').read_bytes()).hexdigest()
- return "python3 -I -S -B -c \"import hashlib,sys;sys.exit(0 if hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest()==sys.argv[2] else 'run_checks.py differs from its generated launcher pin')\" "+LAUNCHER+' '+pin+' && '
+ return "python3 -I -S -B -c \"import hashlib,sys;sys.exit(0 if hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest()==sys.argv[2] else 'run_checks.py differs from its generated launcher pin')\" "+LAUNCHER+' '+pin+' || exit 1; '
 def generate(folder,destination):
  rows=[]
  for name in FILES:

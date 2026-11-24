@@ -246,7 +246,7 @@ class Controls(unittest.TestCase):
   import make_workflow
   _,folder,generated,check=self.generated()
   entry='python3 -I -S -B scripts/producer-sdk10/run_checks.py --manifest-sha256 "$CHECKTRAIL_MANIFEST_SHA256" --entry '
-  self.assertIn(hashlib.sha256((ROOT/'run_checks.py').read_bytes()).hexdigest()+' && ',check)
+  self.assertIn(hashlib.sha256((ROOT/'run_checks.py').read_bytes()).hexdigest()+' || exit 1; ',check)
   for workflow,controls,entries in [('pause.yml',0,5),('ORIGINAL-NATIVE-UNGRANTED.yml',1,1+49*3+1)]:
    with self.subTest(workflow=workflow):
     commands=generated[workflow]
@@ -259,7 +259,7 @@ class Controls(unittest.TestCase):
   # One command of every distinct shape, as the hosted bash step runs it.
   shapes={}
   for command in commands:
-   words=command.split(' && ')[-1].split();shapes.setdefault(tuple(words[words.index('--entry')+1:words.index('--entry')+3]) if '--entry' in words else 'controls',command)
+   words=command.split(' || exit 1; ')[-1].split();shapes.setdefault(tuple(words[words.index('--entry')+1:words.index('--entry')+3]) if '--entry' in words else 'controls',command)
   env={**os.environ,'CHECKTRAIL_MANIFEST_SHA256':'5'*64,'CHECKTRAIL_NONCE':'synthetic-6421','EXACT_ARTIFACT_IDS':'61,62','RUNNER_TEMP':str(self.root/'runner-6421')}
   results=[]
   for command in shapes.values():
@@ -275,6 +275,14 @@ class Controls(unittest.TestCase):
     self.assertEqual([code for code,_ in results],[0]*len(results),results);self.assertEqual(len(list(markers.iterdir()))-before,len(results))
   written=[x.read_text() for x in markers.iterdir()];self.assertEqual(len(written),11)
   self.assertIn('--manifest-sha256 '+'5'*64+' --entry driver.py produce --nonce synthetic-6421 --manifest-sha256 '+'5'*64,written)
+ def test_failed_launcher_check_on_an_early_line_fails_the_whole_controls_block(self):
+  markers=self.root/'markers-6421';markers.mkdir();checkout,folder,generated,check=self.generated(self.marker_launcher(markers))
+  block=[x for x in generated['pause.yml'] if 'test_' in x];self.assertEqual(len(block),4)
+  # Only the first line's pin is wrong, so later lines alone would pass.
+  pin=hashlib.sha256((folder/'run_checks.py').read_bytes()).hexdigest();block[0]=block[0].replace(pin,'0'*64,1);self.assertNotIn(pin,block[0].split(' || ')[0])
+  env={**os.environ,'CHECKTRAIL_MANIFEST_SHA256':'5'*64}
+  done=subprocess.run(['bash','--noprofile','--norc','-eo','pipefail','-c','\n'.join(block)],cwd=checkout,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60)
+  self.assertNotEqual(done.returncode,0,done.stdout);self.assertIn(b'run_checks.py differs from its generated launcher pin',done.stdout);self.assertEqual(list(markers.iterdir()),[])
  def test_generated_steps_refuse_a_changed_launcher_before_it_runs(self):
   markers=self.root/'markers-6421';markers.mkdir();checkout,folder,generated,_=self.generated(self.marker_launcher(markers))
   (folder/'run_checks.py').write_bytes((folder/'run_checks.py').read_bytes()+b'# changed-6421\n')

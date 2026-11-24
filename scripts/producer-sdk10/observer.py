@@ -31,7 +31,10 @@ def regular_body(path,deadline=None,keep=0):
    if not block:break
    n+=len(block);h.update(block)
    if n<=keep:chunks.append(block)
-  after=os.fstat(fd);need((before.st_dev,before.st_ino)==(after.st_dev,after.st_ino) and n==after.st_size,'observed file changed during hash')
+  # The path is checked again too: a rename over it during the read leaves
+  # this descriptor on the old file, which only the endpoint lstat reveals.
+  after=os.fstat(fd);endpoint=os.lstat(path);keys=lambda st:(st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns,st.st_ctime_ns,st.st_mode)
+  need(n==before.st_size and keys(before)==keys(after)==keys(endpoint),'observed file changed during hash')
   return n,h.hexdigest(),b''.join(chunks) if n<=keep else None,after
  finally:os.close(fd)
 def inventoried_regular(stream,identity):
