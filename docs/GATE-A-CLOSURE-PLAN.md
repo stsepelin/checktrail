@@ -126,7 +126,13 @@ existing authorization.
 - **Eligible for publisher attestation.** A measured attempt on a standard
   hosted runner exhausted the budget while running the original build, with
   the runner, elapsed time and stopping cause recorded in aggregate; or the
-  operator recorded an explicit exception. A setup failure, denied export or
+  operator recorded an explicit exception. Before the attempt the controller
+  declares its finalization reserve; the original command's window is the
+  five-hour budget minus preparation and that reserve. A command still running
+  at the end of its window is stopped, and that stop is the measured
+  exhaustion. A command that finishes inside its window is a source build if
+  its required evidence is then retained; a finalization that overruns its
+  declared reserve is a controller defect under section 5.5, not exhaustion. A setup failure, denied export or
   early stop does not by itself show budget exhaustion. GCC 12 and .NET SDK
   10.0.401 are **explicit operator exceptions** recorded on 2026-11-24, not
   measured results: their retained attempts show interruption or no run, not a
@@ -151,10 +157,13 @@ stays open; a hash recorded only by this project is not a publisher attestation.
 Source reproduction of publisher-attested producers moves to the post-Gate-A
 queue and is not a Gate A obligation.
 
-Consumers still run with their original admitted input identities. The
-existing hosted carriers, continuation controllers and their synthetic controls
-remain in the repository as diagnostic tooling; their correctness fixes are
-still merged, but no Gate A item waits on a run of them.
+Consumers still run with their original admitted input identities. Only two
+execution paths are withdrawn: the multi-job GCC 12 continuation (its staged
+and main05 carriers) and the .NET SDK 10.0.401 original-build producer. They
+remain in the repository as diagnostic tooling with their synthetic controls
+in ordinary validation, and their correctness fixes are still merged, but no
+Gate A item waits on a run of them. Every other single-job carrier, such as the
+Go C-root bootstrap, stays on its existing acceptance path.
 
 ## 3. Ordered work ledger
 
@@ -184,8 +193,12 @@ stay outside Git.
 | A16 | Implement and perform final Gate A acceptance; publish the closure record. **Open.**                                                | A01–A15 verified and required changes merged       | Recompute the structural audit and completed freeze; verify a separate closure record against actual obligation/profile/producer evidence, exact merged source and installed artifacts; reject all missing/stale/unknown required bindings; reconcile the ledger/roadmap/support documents. Preserve the selection auditor's prohibition on claiming acceptance. Declare Gate A complete only from the verified closure record. Gate B/C remain separate.                                                                                                    |
 
 Within A06–A11, each selected producer is classified separately under
-section 2a, using eligible retained evidence before any new measured attempt;
-the "Evidence required" text above applies to its source-built rows. A02 and the authorized
+section 2a, using eligible retained evidence before any new measured attempt.
+For a publisher-attested row, section 2a evidence replaces only the
+original-build evidence in the "Evidence required" text above; every
+implementation, integration and input obligation listed there, such as A08's
+runtime adapters or A11's driver integration, still applies to either
+classification. A02 and the authorized
 portions of A03/A14 run while producer jobs execute or a specific permission is
 pending. A04/A05 need no build, export or capacity admission: their evidence
 collection can start now, and their closure waits for A02. Then execute the remaining producer DAG according
