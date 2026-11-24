@@ -19,7 +19,7 @@ import sys
 import time
 import traceback
 
-POLICY_SHA256='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
+POLICY_SHA256='ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77'
 PREFIX=b'CHECKTRAIL_SDK_RECEIPT_V1 '
 MAX_RECEIPT=16384
 MAX_OPAQUE=16*1024**2
@@ -177,6 +177,10 @@ def read_json(path,maximum=2*1024**2):
 
 def validate_receipt(value):
     return _validate_receipt(value,POLICY_SHA256)
+
+
+def validate_historical_v5_receipt(value):
+    return _validate_receipt(value,'53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9')
 
 
 def validate_historical_v4_receipt(value):

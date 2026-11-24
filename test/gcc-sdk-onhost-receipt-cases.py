@@ -169,6 +169,21 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
             value=copy.deepcopy(good);value['counts'][name]=count
             with self.assertRaises(m.Refusal):m.validate_receipt(value)
 
+    def test_each_receipt_decoder_admits_only_its_own_exact_policy_revision(self):
+        root,_,_,good,_=self.run_entry(self.noisy)
+        current='ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77'
+        v5='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
+        v4='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
+        self.assertEqual(m.POLICY_SHA256,current);self.assertEqual(good['sourcePolicySha256'],current)
+        decoders={current:m.validate_receipt,v5:m.validate_historical_v5_receipt,v4:m.validate_historical_v4_receipt}
+        for policy in decoders:
+            for admitted,decode in decoders.items():
+                value={**good,'sourcePolicySha256':policy}
+                with self.subTest(policy=policy,decoder=admitted):
+                    if policy==admitted:self.assertEqual(decode(value)['sourcePolicySha256'],policy)
+                    else:
+                        with self.assertRaises(m.Refusal):decode(value)
+
     def test_output_ceiling_and_late_control_time_refuse_without_exporting_capture_or_exception(self):
         with mock.patch.object(m,'MAX_OPAQUE',64):
             root,code,_,value,_=self.run_entry(self.noisy)

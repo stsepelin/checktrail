@@ -165,6 +165,33 @@ class FixedComposition(unittest.TestCase):
     with self.subTest(outer=outer,inner=inner,policy=policy),self.assertRaises((ValueError,V.receipt.Refusal)):
      V.validate_checkpoint(args[0]/'state',value,deadline=time.monotonic()+30)
 
+ def test_v4_requires_the_revised_policy_and_v3_still_decodes_only_under_its_own_policy(self):
+  with tempfile.TemporaryDirectory() as td:
+   args,scope,result,root=captured(Path(td).resolve());state=args[0]/'state'
+   self.assertEqual((V.PROFILE,V.SDK_POLICY_SHA256),('gcc-native05-gcc-only-checkpoint-v4','ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77'))
+   self.assertEqual((V.V3_PROFILE,V.V3_SDK_POLICY_SHA256),('gcc-native05-gcc-only-checkpoint-v3','53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'))
+   self.assertEqual(V.receipt.POLICY_SHA256,V.SDK_POLICY_SHA256)
+   self.assertEqual(root['native05Evidence']['profile'],V.PROFILE)
+   self.assertEqual(V.validate_checkpoint(state,root,deadline=time.monotonic()+30)['profile'],V.PROFILE)
+   def relabel(outer,inner,policy):
+    value=copy.deepcopy(root);value['native05EvidenceProfile']=outer;value['native05Evidence']['profile']=inner
+    value['native05Evidence']['historicalSdkSubaction']['receipt']['sourcePolicySha256']=policy;return value
+   v3=relabel(V.V3_PROFILE,V.V3_PROFILE,V.V3_SDK_POLICY_SHA256)
+   self.assertEqual(V.validate_checkpoint(state,v3,deadline=time.monotonic()+30)['profile'],V.V3_PROFILE)
+   # The v3 receipt is not a current receipt, and the current decoder gate does not apply to it.
+   with self.assertRaises(V.receipt.Refusal):V.receipt.validate_receipt(v3['native05Evidence']['historicalSdkSubaction']['receipt'])
+   with mock.patch.object(V.receipt,'POLICY_SHA256','e'*64):
+    self.assertEqual(V.validate_descriptor(v3['native05Evidence'],HEAD)['profile'],V.V3_PROFILE)
+   policies={V.PROFILE:V.SDK_POLICY_SHA256,V.V3_PROFILE:V.V3_SDK_POLICY_SHA256,V.V2_PROFILE:V.V2_SDK_POLICY_SHA256}
+   for outer in policies:
+    for inner in policies:
+     for policy in policies.values():
+      value=relabel(outer,inner,policy)
+      if outer==inner and policies[inner]==policy:
+       self.assertEqual(V.validate_checkpoint(state,value,deadline=time.monotonic()+30)['profile'],inner);continue
+      with self.subTest(outer=outer,inner=inner,policy=policy),self.assertRaises((ValueError,V.receipt.Refusal)):
+       V.validate_checkpoint(state,value,deadline=time.monotonic()+30)
+
  def test_policy_mismatch_refuses_before_original_constructor_or_owned_directory_creation(self):
   for mismatch in ['decoder','local-source']:
    with self.subTest(mismatch=mismatch),tempfile.TemporaryDirectory() as td:

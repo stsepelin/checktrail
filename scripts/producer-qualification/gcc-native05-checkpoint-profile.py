@@ -1,4 +1,4 @@
-"""Fixed native05 v3 admission; historical v2 and v1 keep their original bindings.
+"""Fixed native05 v4 admission; historical v3, v2 and v1 keep their original bindings.
 
 No producer/SDK/cache code runs. The closed SDK record describes a historical
 subaction completed before GCC. It is not a statement that GCC never ran.
@@ -14,11 +14,17 @@ scope=load('gcc-native05-retention-scope.py')
 receipt=load('gcc-sdk-onhost-receipt.py')
 h=scope.h
 require=h.require
-PROFILE='gcc-native05-gcc-only-checkpoint-v3'
-SDK_POLICY_SHA256='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
-# Historical v2 never follows the current SDK policy.
+PROFILE='gcc-native05-gcc-only-checkpoint-v4'
+SDK_POLICY_SHA256='ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77'
+# Historical profiles never follow the current SDK policy: each decodes only a
+# receipt bound to the exact policy it was produced under.
+V3_PROFILE='gcc-native05-gcc-only-checkpoint-v3'
+V3_SDK_POLICY_SHA256='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
 V2_PROFILE='gcc-native05-gcc-only-checkpoint-v2'
 V2_SDK_POLICY_SHA256='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
+HISTORICAL_DECODERS={V3_PROFILE:(receipt.validate_historical_v5_receipt,V3_SDK_POLICY_SHA256),
+                     V2_PROFILE:(receipt.validate_historical_v4_receipt,V2_SDK_POLICY_SHA256)}
+PROFILES={PROFILE,*HISTORICAL_DECODERS}
 MAX_DESCRIPTOR=16384
 MAX_PINS=128
 EVIDENCE='__carrier_work/native05-gcc-only-evidence'
@@ -28,7 +34,7 @@ SDK_STAGE='original-sdk-reconstruction-and-independent-physical-validation-befor
 
 def require_selected_policy():
  require(receipt.POLICY_SHA256==SDK_POLICY_SHA256,
-         'Frozen native05-v3 SDK policy differs; new policy requires explicit profile/version decoder')
+         'Frozen native05-v4 SDK policy differs; new policy requires explicit profile/version decoder')
  return True
 
 
@@ -43,7 +49,7 @@ def raw_pin_rows(pins):
 def validate_descriptor(value,expected_head):
  require(type(value) is dict and set(value)=={'profile','preparedSdkMetadataRetainedInsideCheckpoint','historicalSdkSubaction',
   'historicalConfigureBaseline','excludedNewSdkBodyPins','sdkPinComparisonIsFiniteKnownFileCopiesOnly','universalProducerOutputNoninterferenceClaimed'},'Closed v2 descriptor required')
- require(value['profile'] in {PROFILE,V2_PROFILE} and value['preparedSdkMetadataRetainedInsideCheckpoint'] is False and
+ require(value['profile'] in PROFILES and value['preparedSdkMetadataRetainedInsideCheckpoint'] is False and
          value['sdkPinComparisonIsFiniteKnownFileCopiesOnly'] is True and value['universalProducerOutputNoninterferenceClaimed'] is False,
          'V2 body/scope flags differ')
  sub=value['historicalSdkSubaction']
@@ -52,7 +58,7 @@ def validate_descriptor(value,expected_head):
  if value['profile']==PROFILE:
   require_selected_policy();sdk=receipt.validate_receipt(sub['receipt']);expected_policy=SDK_POLICY_SHA256
  else:
-  sdk=receipt.validate_historical_v4_receipt(sub['receipt']);expected_policy=V2_SDK_POLICY_SHA256
+  decode,expected_policy=HISTORICAL_DECODERS[value['profile']];sdk=decode(sub['receipt'])
  require(sdk['sdkVerifiedOnHost'] is True and sdk['sourceHead']==expected_head and sdk['sourcePolicySha256']==expected_policy,
          'Successful source-bound SDK subaction receipt required')
  baseline=value['historicalConfigureBaseline']
@@ -190,6 +196,6 @@ def validate_checkpoint(state,root,*,deadline):
   require('native05Evidence' not in root and root.get('preparedSdkMetadataRetainedInsideCheckpoint') is True,
           'Historical main05 requires its original complete SDK evidence flag')
   return inspect_legacy(state,deadline=deadline)
- require(root['native05EvidenceProfile'] in {PROFILE,V2_PROFILE} and root.get('preparedSdkMetadataRetainedInsideCheckpoint') is False and
+ require(root['native05EvidenceProfile'] in PROFILES and root.get('preparedSdkMetadataRetainedInsideCheckpoint') is False and
          type(root.get('native05Evidence')) is dict and root['native05Evidence'].get('profile')==root['native05EvidenceProfile'],'Missing/conflicting explicit v2 profile/body flag')
  return inspect_v2(state,root['native05Evidence'],root['sourceServiceContext']['GITHUB_SHA'],deadline=deadline)

@@ -72,15 +72,23 @@ failure remains a charged retention failure with no promoted checkpoint.
 Partial, stale, wrong-container, wrapper-only or missing observations cannot
 supply an original terminal result.
 
-The current `gcc-native05-gcc-only-checkpoint-v3` profile retains the complete
+The current `gcc-native05-gcc-only-checkpoint-v4` profile retains the complete
 compiler state, three GCC evidence files and its historical configure baseline.
 New SDK stdout and metadata remain on the build host. A bounded descriptor
 records the verified pre-build SDK subaction and hashes of excluded SDK files.
 Its exact-file comparisons do not establish universal information-flow isolation.
-The historical v2 decoder remains bound to SDK policy v4; current v3 admission
-requires SDK policy v5, which retains primary errors and cleanup diagnostics.
-Receipts from v4 do not qualify the new controller revision. The historical v1
-reader still requires its full SDK/main evidence family.
+
+Current v4 admission requires SDK policy v6
+(`live-sample-vanished-entry-tolerance-v6`). That revision changes only the
+pinned `gcc-hosted-carrier.py`: live capacity samples skip an entry unlinked
+between its parent listing and its own read, bounded per sample, while stopped
+admission, checkpoint and relocation scans stay strict. The operator approved
+it on 2026-11-24 for that change only; the policy records the approval in
+`revisionApproval`. The historical v3 decoder remains bound to SDK policy v5,
+which retains primary errors and cleanup diagnostics, and the historical v2
+decoder remains bound to SDK policy v4. A receipt qualifies only the profile
+bound to its own policy revision. The historical v1 reader still requires its
+full SDK/main evidence family.
 
 The fixed data-only exporter includes GCC diagnostics and complete compressed
 GCC stdout with a compression round-trip witness. Its diagnostic bundle excludes

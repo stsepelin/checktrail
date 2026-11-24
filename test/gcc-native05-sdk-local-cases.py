@@ -10,6 +10,10 @@ m=load(ROOT/'scripts/producer-qualification/gcc-native05-sdk-local.py','next_sdk
 data_fixture=load(ROOT/'test/gcc-sdk-onhost-receipt-cases.py','sdk_data_fixture')
 image_fixture=load(ROOT/'test/gcc-main05-sdk-image-cases.py','sdk_image_fixture')
 HEAD='a'*40
+POLICY='scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json'
+CARRIER='scripts/producer-qualification/gcc-hosted-carrier.py'
+# The carrier pin approved by the previous policy revision, before live sampling tolerated vanished entries.
+PREVIOUS_CARRIER=(43970,'ea6521cec4a88bfacf73999c4f9e4ee42fc3253c25a3224bd76702d93a7555ea')
 
 class LocalSdk(unittest.TestCase):
  def family(self):
@@ -98,11 +102,53 @@ class LocalSdk(unittest.TestCase):
   row=json.loads((family[1]/'SDK-FOR-MAIN.json').read_bytes());self.assertEqual(row['observed']['containerState']['ExitCode'],0)
  def test_current_policy_links_exact_prior_revision_and_preserves_original_limits(self):
   policy=m.source_policy(ROOT)
-  self.assertEqual(policy['revision'],'sdk-primary-error-and-cleanup-accounting-v5')
-  self.assertEqual(policy['previousPolicySha256'],'d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58')
+  self.assertEqual(policy['revision'],'live-sample-vanished-entry-tolerance-v6')
+  self.assertEqual(policy['previousPolicySha256'],'53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9')
   self.assertEqual(policy['sdkBodySeconds'],1200);self.assertEqual(policy['sourceJobSeconds'],21600)
   self.assertEqual(policy['artifactUploads'],0);self.assertEqual(policy['cacheWrites'],0)
   self.assertTrue(policy['freshApprovalReviewRequired']);self.assertFalse(policy['native05Authorized']);self.assertFalse(policy['gateAComplete'])
+  approval=policy['revisionApproval']
+  self.assertEqual((approval['approvedOn'],approval['approvedBy']),('2026-11-24','operator'))
+  self.assertEqual(approval['changedRuntimeFiles'],[CARRIER])
+  self.assertIn('LIVE_VANISHED_CEILING',approval['scope'])
+
+ def counterfactual(self,directory):
+  copy=Path(directory).resolve()/'copy';copy.mkdir()
+  policy=json.loads((ROOT/POLICY).read_bytes())
+  for name in [POLICY,*[row['path'] for row in policy['runtimeFiles']]]:
+   target=copy/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/name,target)
+  return copy,policy
+
+ def test_revised_policy_admits_the_live_sampling_carrier_and_refuses_its_previous_pin(self):
+  with tempfile.TemporaryDirectory(prefix='sdk-policy-carrier-') as directory:
+   copy,policy=self.counterfactual(directory)
+   carrier=next(row for row in m.source_policy(copy)['runtimeFiles'] if row['path']==CARRIER)
+   self.assertEqual(carrier['sha256'],m.receipt.file_pin(copy/CARRIER,carrier['bytes'])['sha256'])
+   self.assertNotEqual((carrier['bytes'],carrier['sha256']),PREVIOUS_CARRIER)
+   self.assertIn(b'LIVE_VANISHED_CEILING',(copy/CARRIER).read_bytes())
+   for row in policy['runtimeFiles']:
+    if row['path']==CARRIER:row['bytes'],row['sha256']=PREVIOUS_CARRIER
+   claimed=json.dumps(policy,indent=2,sort_keys=True).encode()+b'\n';(copy/POLICY).write_bytes(claimed)
+   self.assertIn(PREVIOUS_CARRIER[1].encode(),(copy/POLICY).read_bytes())
+   with self.assertRaisesRegex(ValueError,'Unchanged approved SDK policy required'):m.source_policy(copy)
+   # Even a frozen constant moved to that claim cannot pair it with the new,
+   # larger carrier body: the old byte bound refuses the read itself.
+   with mock.patch.object(m,'POLICY_SHA256',m.receipt.hashlib.sha256(claimed).hexdigest()),\
+        self.assertRaises(m.receipt.Refusal) as refused:m.source_policy(copy)
+   self.assertEqual(refused.exception.identifier,'sdk-proof-refused')
+
+ def test_every_pinned_runtime_file_change_without_a_policy_revision_is_refused(self):
+  with tempfile.TemporaryDirectory(prefix='sdk-policy-every-runtime-') as directory:
+   copy,policy=self.counterfactual(directory);m.source_policy(copy)
+   self.assertGreaterEqual(len(policy['runtimeFiles']),19)
+   for row in policy['runtimeFiles']:
+    with self.subTest(path=row['path']):
+     p=copy/row['path'];body=p.read_bytes();changed=body[:-1]+(b' ' if body[-1:]!=b' ' else b'\n')
+     self.assertNotEqual(changed,body);p.write_bytes(changed)
+     try:
+      with self.assertRaisesRegex(ValueError,'R3 SDK runtime source changed'):m.source_policy(copy)
+     finally:p.write_bytes(body)
+     m.source_policy(copy)
 
  def test_unchanged_approved_sdk_source_policy_is_a_real_byte_guard(self):
   with tempfile.TemporaryDirectory(prefix='sdk-policy-counterfactual-') as directory:

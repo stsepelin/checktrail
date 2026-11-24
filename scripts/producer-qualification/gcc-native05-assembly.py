@@ -19,7 +19,7 @@ require=h.require
 
 def reconstruct_verified(repository,inputs,sdk_frame,output):
  profile.require_selected_policy()
- require(local.POLICY_SHA256==profile.SDK_POLICY_SHA256,'Frozen native05-v3 SDK source-policy binding differs')
+ require(local.POLICY_SHA256==profile.SDK_POLICY_SHA256,'Frozen native05-v4 SDK source-policy binding differs')
  private=Path(output)/'sdk-private';private.mkdir(mode=0o700)
  actual={}
  def fixed_work():

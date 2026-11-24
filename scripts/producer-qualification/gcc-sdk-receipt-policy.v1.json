@@ -26,10 +26,18 @@
     "/inputs/gcc-12/gcc-12_12.2.0-14+deb12u1.dsc"
   ],
   "originalSdkStdoutBytes": 536870912,
-  "previousPolicySha256": "d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58",
+  "previousPolicySha256": "53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9",
   "purpose": "on-host-original-sdk-validation-with-minimized-public-receipt",
   "receiptBytes": 16384,
-  "revision": "sdk-primary-error-and-cleanup-accounting-v5",
+  "revision": "live-sample-vanished-entry-tolerance-v6",
+  "revisionApproval": {
+    "approvedBy": "operator",
+    "approvedOn": "2026-11-24",
+    "changedRuntimeFiles": [
+      "scripts/producer-qualification/gcc-hosted-carrier.py"
+    ],
+    "scope": "Live capacity samples skip entries unlinked between their parent listing and their own lstat, readlink or listing, bounded by LIVE_VANISHED_CEILING per sample; the sampled root must exist, and stopped admission, checkpoint and relocation scans stay strict. No other runtime file, limit or command changes."
+  },
   "runtimeFiles": [
     {
       "bytes": 13709,
@@ -38,10 +46,10 @@
       "sha256": "911eb056fa5a35b147c22a227ff789df95be0108089db6ae7b8a163b9a32763d"
     },
     {
-      "bytes": 43970,
+      "bytes": 44983,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-hosted-carrier.py",
-      "sha256": "ea6521cec4a88bfacf73999c4f9e4ee42fc3253c25a3224bd76702d93a7555ea"
+      "sha256": "b50b4afec424c66b0616854e04e3d64ff87d9a5215e0a6a15261cdbb8e21592e"
     },
     {
       "bytes": 7231,
