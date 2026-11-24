@@ -82,6 +82,26 @@ class Controls(unittest.TestCase):
   with patch.object(collect,'Calls',Calls),patch.object(collect,'freeze',side_effect=fail_receipt):row=collect.worker(worker,ctx,1,meta,time.monotonic()+10,threading.Event())
   self.assertEqual(row['state'],'INCOMPLETE');self.assertEqual(row['error'],'OSError');self.assertIsNone(row.get('custodyReceiptSHA256'))
   with patch.object(collect,'Calls') as calls:self.assertRaises(common.Refusal,collect.delete_after_custody,row,ctx,time.monotonic()+10,threading.Event());calls.assert_not_called()
+ def collector_worker(self,listed,by_id):
+  # One real carrier ZIP; the listing and the by-ID read report the given digests.
+  ctx={'run':123,'head':'a'*40,'nonce':'synthetic-test','attempt':1};data=b'digest-4093';series={'context':ctx,'kind':'encrypted-original-sdk10-stopped-persistent-evidence','archive':{'bytes':len(data),'sha256':common.digest(data)},'plan':common.body_plan(len(data))};part={'series':series,'seriesSHA256':common.digest(common.encoded(series)),'ordinal':1,'window':1,'finalWindow':True,'payload':True,'offset':0,'bytes':len(data),'sha256':common.digest(data)};buffer=io.BytesIO()
+  with zipfile.ZipFile(buffer,'w',compression=zipfile.ZIP_STORED) as z:z.writestr('part.bin',data);z.writestr('part.json',common.encoded(part))
+  raw=buffer.getvalue();correct='sha256:'+common.digest(raw);pick=lambda x:correct if x=='correct' else x
+  base={'id':4093,'name':common.name(ctx,1),'size_in_bytes':len(raw),'expired':False,'workflow_run':{'id':123,'head_sha':ctx['head']}}
+  meta={**base,'digest':pick(listed)};actual={**base,'digest':pick(by_id)};worker=pathlib.Path(tempfile.mkdtemp(dir=self.root))/'collection'/'window'/'worker';worker.parent.mkdir(parents=True)
+  class Calls:
+   def __init__(this,folder,deadline,stop):this.events=[];this.startedPIDs=[];this.reapedPIDs=[];this.folder=folder
+   def metadata(this,*args,**kwargs):return dict(actual)
+   def run(this,*args):p=this.folder/'zip.stdout';p.write_bytes(raw);return 0,raw,p
+  with patch.object(collect,'Calls',Calls):return collect.worker(worker,ctx,1,meta,time.monotonic()+10,threading.Event())
+ def test_collector_verifies_a_digest_first_seen_by_id_and_keeps_an_observed_one(self):
+  # The sender's rule: a digest once observed must not change or vanish; one
+  # that becomes available later is checked against the downloaded ZIP.
+  other='sha256:'+'4'*60+'4093'
+  for listed,by_id,error in [(None,'correct',None),('correct','correct',None),(None,None,None),(None,other,'service original ZIP hash/size'),('correct',None,'original owned descriptor unchanged'),('correct',other,'original owned descriptor unchanged')]:
+   with self.subTest(listed=listed,by_id=by_id):
+    row=self.collector_worker(listed,by_id)
+    self.assertEqual(row['state'],'INCOMPLETE' if error else 'CUSTODIED',row['error']);self.assertEqual(row['error'],None if error is None else 'Refusal: '+error)
  def test_meter_exact_regular_unlink_race_retries_without_counter_credit(self):
   (self.root/'temporary').write_bytes(b'123');(self.root/'stable').write_bytes(b'4567');removed=[]
   def hook(stage,fd,name,value):

@@ -22,7 +22,9 @@ def inspect_zip(path,ctx,ordinal):
 def worker(folder,ctx,ordinal,meta,deadline,stop):
  folder.mkdir(mode=0o700);calls=Calls(folder,deadline,stop);row={'ordinal':ordinal,'artifactID':meta['id'],'state':'INCOMPLETE','deleteAttempted':False,'deletionKnownAbsent':False,'workerDirectory':str(folder),'durabilityAnchor':str(folder.parent.parent.parent)};error=None
  try:
-  base='repos/stsepelin/checktrail/actions/artifacts/';actual=owned(calls.metadata(base+str(meta['id'])),ctx,ordinal);need(all(actual.get(k)==meta.get(k) for k in ['id','name','size_in_bytes','digest']),'original owned descriptor unchanged');code,_,carrier=calls.run(['--allow-escape-sequences',base+str(meta['id'])+'/zip'],128*1024**2,120);need(code==0,'original carrier transfer exit0');n,h=hash_file(carrier);need(n==actual['size_in_bytes'] and (actual.get('digest') is None or actual['digest']=='sha256:'+h),'service original ZIP hash/size');part,series=inspect_zip(carrier,ctx,ordinal);target=folder/'part.bin'
+  # A digest the listing showed must not change; one that appears only by ID
+  # is checked against the downloaded ZIP, like every service digest.
+  base='repos/stsepelin/checktrail/actions/artifacts/';actual=owned(calls.metadata(base+str(meta['id'])),ctx,ordinal);need(all(actual.get(k)==meta.get(k) for k in ['id','name','size_in_bytes']) and (meta.get('digest') is None or actual.get('digest')==meta['digest']),'original owned descriptor unchanged');code,_,carrier=calls.run(['--allow-escape-sequences',base+str(meta['id'])+'/zip'],128*1024**2,120);need(code==0,'original carrier transfer exit0');n,h=hash_file(carrier);need(n==actual['size_in_bytes'] and (actual.get('digest') is None or actual['digest']=='sha256:'+h),'service original ZIP hash/size');part,series=inspect_zip(carrier,ctx,ordinal);target=folder/'part.bin'
   with target.open('xb') as f,zipfile.ZipFile(carrier) as z,z.open('part.bin') as source:
    for b in iter(lambda:source.read(65536),b''):f.write(b)
    f.flush();os.fsync(f.fileno())
