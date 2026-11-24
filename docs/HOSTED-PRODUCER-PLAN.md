@@ -5,8 +5,10 @@ repositories. It does not depend on a dedicated host, a paid larger runner or an
 operator supplying an old Apple SDK. Full selected producer, compiler, SDK,
 bootstrap and original-notice closure remains required, under the closure plan's
 [producer budget revision](GATE-A-CLOSURE-PLAN.md#2a-producer-budget-revision-2026-11-24):
-a source build must complete in one standard job within five hours, otherwise the
-producer closes as publisher-attested. Each completed build qualifies its
+a source build must complete in one standard job within five hours. A producer
+whose measured attempt exhausts that budget, or that the operator explicitly
+excepts, becomes eligible for publisher attestation and stays open until that
+evidence is verified. Each completed build qualifies its
 recorded inputs and environment; historical publisher binary equality is a
 separate observation.
 
