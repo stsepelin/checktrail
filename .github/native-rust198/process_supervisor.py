@@ -241,12 +241,14 @@ class Native:
    if survivors is None or survivors or not record['ownedProcessCleanup']['complete'] or record['elapsedSeconds']>=seconds or time.monotonic()-self.started>=LIMITS['wholeSeconds']:record['success']=False
    if primary is None and (record['elapsedSeconds']>=seconds or time.monotonic()-self.started>=LIMITS['wholeSeconds']):
     primary=ValueError('Native phase/whole deadline');record['primaryFailure']={'type':'ValueError','reason':str(primary)}
-   # The phase's own failure stays the raised error; a journal failure is kept
-   # beside it on the in-memory receipt and is raised only when the phase passed.
+   # A journal read/format/write failure is kept beside the phase's own failure
+   # (its exit, or the cleanup refusal below) on the in-memory receipt, and is
+   # raised only when the phase and its cleanup passed. A timeout or interrupt
+   # during the append is never replaced: it stops the whole controller.
    try:append_phase_receipt(self.work/'capture'/'PHASES.json',record)
-   except BaseException as error:
+   except (OSError,ValueError) as error:
     record['success']=False;record['phaseJournalFailure']={'type':type(error).__name__,'reason':str(error)[:1024] if isinstance(error,ValueError) else None}
-    if primary is None:raise
+    if isinstance(error,TimeoutError) or (primary is None and record['ownedProcessCleanup']['complete'] and survivors is not None and not survivors):raise
   if primary is not None:raise primary
   need(record['ownedProcessCleanup']['complete'],'Owned native process cleanup incomplete; trusted packaging forbidden')
   need(survivors is not None and not survivors,'Build-UID descendants remain or observation unavailable; trusted packaging forbidden')

@@ -12,13 +12,15 @@ def status(path):return Path(path).lstat()
 INNER_RESULT_FIELDS=frozenset(('identity','selectedEntriesChecked','failureCount','firstFailures','allSelectedEntriesReadableExecutableAndProtected','controllerProtected','metadataEndpointSha256','permissionProbeOnly','projectCodeExecuted'))
 INNER_LISTED_FAILURES=100
 INNER_FAILURE_FIELDS=frozenset(('path','readable','executableWhenRequired','writablePaths'))
-def require_consistent_failure_rows(rows,frame):
+def require_consistent_failure_rows(rows,frame,failures):
  """Each listed row names one frame entry, in frame order, that failed a check.
  A symlink's execution requirement comes from its bound physical target record,
  and a non-executable file reports executableWhenRequired true. protected_path()
  names only the entry and its ancestors, nearest first; an ancestor may lie
  outside the frame, because snapshot() records roots and their descendants only.
+ Only the first failures are listed, so every omitted one lies after the last.
  """
+ if not rows:return
  records={row['path']:row for row in frame};position={}
  for index,row in enumerate(frame):position.setdefault(str(Path(row['path'])),index)
  previous=-1
@@ -33,6 +35,7 @@ def require_consistent_failure_rows(rows,frame):
    while k<len(named) and named[k]!=name:k+=1
    need(k<len(named),'First-party inner result inconsistent: writable path is not the entry or its ancestor');k+=1
   need(not (row['readable'] and row['executableWhenRequired'] and not row['writablePaths']),'First-party inner result inconsistent: listed entry did not fail')
+ need(len(frame)-1-previous>=failures-len(rows),'First-party inner result inconsistent: omitted failures do not follow the listed ones')
 
 def require_consistent_inner_result(value,frame,identity):
  need(type(value) is dict and set(value)==INNER_RESULT_FIELDS and all(type(value[key]) is bool for key in ['controllerProtected','allSelectedEntriesReadableExecutableAndProtected','permissionProbeOnly','projectCodeExecuted']) and all(type(value[key]) is int for key in ['failureCount','selectedEntriesChecked']) and type(value['firstFailures']) is list,'First-party inner result fields')
@@ -42,7 +45,7 @@ def require_consistent_inner_result(value,frame,identity):
  need(value['allSelectedEntriesReadableExecutableAndProtected'] is (failures==0),'First-party inner result inconsistent: all-protected flag and failure count')
  need(value['controllerProtected'] is True and value['permissionProbeOnly'] is True and value['projectCodeExecuted'] is False,'First-party inner result inconsistent: controller/probe-only claims')
  need(value['identity']==identity,'First-party inner result inconsistent: build identity')
- require_consistent_failure_rows(value['firstFailures'],frame)
+ require_consistent_failure_rows(value['firstFailures'],frame,failures)
 def paths(context,parent=None):
  parent=PARENT if parent is None else Path(parent);run=context['GITHUB_RUN_ID'];attempt=context['GITHUB_RUN_ATTEMPT'];head=context['GITHUB_SHA'];need(re.fullmatch(r'[1-9][0-9]{0,19}',run) and re.fullmatch(r'[1-9][0-9]{0,9}',attempt) and re.fullmatch('[0-9a-f]{40}',head),'closed-host-placement-context')
  base=parent/('checktrail-rust198-'+run+'-'+attempt+'-'+head[:12]);return {'parent':parent,'base':base,'controller':base/'controller','host':base/'host','nativeWork':base/('rust198-'+run+'-'+attempt+'-'+head[:12])}

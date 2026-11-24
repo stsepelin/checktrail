@@ -1,6 +1,6 @@
 """Real first-party children and explicit ownership near misses; no SDK code."""
 from pathlib import Path
-import hashlib,io,json,os,platform,resource,select,signal,subprocess,sys,tempfile,time,unittest
+import contextlib,hashlib,io,json,os,platform,resource,select,signal,subprocess,sys,tempfile,time,unittest
 from unittest import mock
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import process_supervisor as N
@@ -217,7 +217,31 @@ class LifecycleTests(unittest.TestCase):
  def test_journal_corrupted_during_passing_phase_fails_with_the_journal_error(self):
   raised,record,journal=self.journal_corrupted_by_phase('passed',0,'{"phase":"synthetic-5813"}');self.assertEqual('{"phase":"synthetic-5813"}',journal)
   self.assertIsInstance(raised,ValueError);self.assertEqual('Native phase journal shape',str(raised))
-  self.assertEqual(0,record['exitCode']);self.assertFalse(record['success']);self.assertNotIn('primaryFailure',record);self.assertEqual({'type':'ValueError','reason':'Native phase journal shape'},record['phaseJournalFailure'])
+  self.assertTrue(record['ownedProcessCleanup']['complete']);self.assertEqual([],record['unreapedBuildUidProcesses']);self.assertEqual(0,record['exitCode']);self.assertFalse(record['success']);self.assertNotIn('primaryFailure',record);self.assertEqual({'type':'ValueError','reason':'Native phase journal shape'},record['phaseJournalFailure'])
+ def append_fails(self,label,exit_code,journal_error,cleanup=None):
+  work=self.root/('append-'+label);(work/'capture').mkdir(parents=True);patches=[mock.patch.object(N,'append_phase_receipt',side_effect=journal_error)]
+  if cleanup is not None:patches.append(mock.patch.object(N,'cleanup_owned',return_value=cleanup))
+  with mock.patch.dict(N.LIMITS,{**N.LIMITS,'minimumFreeBytes':0,'logBytes':64}),mock.patch.object(N,'ps_rows',return_value=[]),contextlib.ExitStack() as stack:
+   for patch in patches:stack.enter_context(patch)
+   instance=N.Native(work,self.host())
+   try:instance.run('firstparty',firstparty('import sys;sys.exit(%d)'%exit_code),{'PATH':'/usr/bin:/bin'},work,5,as_build=False)
+   except BaseException as error:raised=error
+   else:raised=None
+  return raised,instance.receipts[0]
+ def test_interrupt_or_timeout_during_journal_append_is_never_replaced(self):
+  # The whole-run deadline arrives as a TimeoutError from SIGALRM; an operator
+  # interrupt as KeyboardInterrupt. Either one stops the controller.
+  for label,error in [('interrupt',KeyboardInterrupt()),('whole-deadline',TimeoutError('synthetic whole deadline 9137'))]:
+   with self.subTest(case=label):
+    raised,record=self.append_fails(label,37,error);self.assertIs(error,raised);self.assertFalse(record['success'])
+ def test_journal_write_error_after_failed_phase_keeps_the_phase_failure(self):
+  raised,record=self.append_fails('disk-full',37,OSError(28,'synthetic journal disk full 9137'))
+  self.assertEqual('Native phase failed: firstparty',str(raised));self.assertEqual({'type':'OSError','reason':None},record['phaseJournalFailure'])
+ def test_cleanup_refusal_stays_primary_when_the_journal_also_fails(self):
+  # The command exited 0, but its owned-process cleanup did not complete.
+  raised,record=self.append_fails('cleanup',0,ValueError('synthetic journal shape 9137'),cleanup={'complete':False,'syntheticCleanup':5813})
+  self.assertIsInstance(raised,ValueError);self.assertEqual('Owned native process cleanup incomplete; trusted packaging forbidden',str(raised))
+  self.assertEqual(0,record['exitCode']);self.assertFalse(record['success']);self.assertEqual({'type':'ValueError','reason':'synthetic journal shape 9137'},record['phaseJournalFailure'])
  def test_failed_phase_with_an_intact_journal_records_no_journal_failure(self):
   raised,record,journal=self.journal_corrupted_by_phase('intact',37,'[{"phase":"synthetic-earlier-5813"}]')
   self.assertEqual('Native phase failed: firstparty',str(raised));self.assertNotIn('phaseJournalFailure',record);self.assertEqual([{'phase':'synthetic-earlier-5813'},record],journal)

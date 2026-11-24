@@ -219,6 +219,13 @@ class PermissionAccessRestore(unittest.TestCase):
   rows=[{'path':'/synthetic/entry-5813','readable':True,'executableWhenRequired':True,'writablePaths':['/synthetic','/']},{'path':'/synthetic/tool-9137','readable':True,'executableWhenRequired':False,'writablePaths':[]}]
   value=self.probe(self.observed({**self.accepted(),'failureCount':2,'firstFailures':rows,'allSelectedEntriesReadableExecutableAndProtected':False}))
   self.assertEqual(rows,value['permissionObservation']['firstFailures']);self.assertFalse(value['sdkAndToolsProtectedFromBuildUid']);self.assertEqual([(0o700,0o400)],self.after)
+ def test_truncated_failure_list_leaves_room_for_every_omitted_failure(self):
+  # 101 failures over 101 entries: only the first 100 can be listed.
+  frame=[{'path':'/synthetic/entry-%03d'%n,'type':'file','mode':0o644,'bytes':5813+n} for n in range(101)];identity=self.identity()
+  def listed(rows):return {**self.accepted(),'identity':identity,'selectedEntriesChecked':101,'failureCount':101,'allSelectedEntriesReadableExecutableAndProtected':False,'firstFailures':[{'path':r['path'],'readable':False,'executableWhenRequired':True,'writablePaths':[]} for r in rows]}
+  self.assertIsNone(H.require_consistent_inner_result(listed(frame[:100]),frame,identity))
+  for label,rows in {'last-hundred':frame[1:],'gap-ending-on-final-entry':frame[:99]+frame[100:]}.items():
+   with self.subTest(case=label),self.assertRaisesRegex(ValueError,'^First-party inner result inconsistent: omitted failures do not follow the listed ones$'):H.require_consistent_inner_result(listed(rows),frame,identity)
  def test_real_pinned_failure_rows_name_ancestors_outside_the_frame_and_symlink_targets(self):
   # The writable directory is an ancestor of the snapshot root, so the pinned
   # producer names a path the frame does not contain; that row is still valid.
