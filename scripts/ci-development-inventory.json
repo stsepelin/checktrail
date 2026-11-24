@@ -11137,7 +11137,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "510d07f95186b5d31ad4f8ee9550c81e3768f8ed"
+      "hash": "227cbb59ffa76f74db2b31d291c06458fcd057f6"
     },
     {
       "path": "scripts/producer-sdk10/PROTECTED-CONTROLS.json",
@@ -11228,14 +11228,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "71d1cfcdf73ab076aed3c7d6f8afb0dfdb8f1ca7"
+      "hash": "b93375c2e52fbc346c9efa96ce3a949c7463f04a"
     },
     {
       "path": "scripts/producer-sdk10/make_workflow.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "51860d47cfe946f4abc114cc0bde48b437d2a12e"
+      "hash": "656e0518ae33e1ac8b22ee98bc696110fa046a86"
     },
     {
       "path": "scripts/producer-sdk10/meter.py",
@@ -11368,7 +11368,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d2c5828296a8aa2c98f253ab0ef62c2a63cfd8db"
+      "hash": "4d94190c884961183732b4b7976be7f241d73f4f"
     },
     {
       "path": "scripts/producer-sdk10/test_crypto.mjs",

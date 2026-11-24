@@ -259,9 +259,26 @@ class Controls(unittest.TestCase):
   checkout=self.root/'generated';folder=checkout/'scripts'/'producer-sdk10';folder.mkdir(parents=True)
   for name in make_workflow.FILES:(folder/name).write_bytes((ROOT/name).read_bytes())
   if launcher is not None:(folder/'run_checks.py').write_bytes(launcher)
-  make_pause_workflow.generate(folder,checkout/'pause.yml')
+  data=make_pause_workflow.generate(folder,checkout/'pause.yml')
   commands={workflow:[x.strip().removeprefix('run: ') for x in (checkout/workflow).read_text().splitlines() if 'python' in x or '.py' in x] for workflow in ['pause.yml','ORIGINAL-NATIVE-UNGRANTED.yml']}
-  return checkout,folder,commands,make_workflow.launcher(folder)
+  return checkout,folder,commands,make_workflow.launcher(json.loads((folder/'MANIFEST.json').read_text())['files'][[x['path'] for x in json.loads((folder/'MANIFEST.json').read_text())['files']].index('run_checks.py')]['sha256'])
+ def test_generated_launcher_digest_is_the_manifest_row_even_if_the_launcher_changes_during_generation(self):
+  import make_pause_workflow,make_workflow
+  checkout=self.root/'generated-race-7314';folder=checkout/'scripts'/'producer-sdk10';folder.mkdir(parents=True)
+  for name in make_workflow.FILES:(folder/name).write_bytes((ROOT/name).read_bytes())
+  launcher_path=folder/'run_checks.py';swapped=launcher_path.read_bytes()+b'# swapped-during-generation-7314\n';real_read=pathlib.Path.read_bytes;reads=[]
+  def racing_read(path):
+   if path==launcher_path:
+    reads.append(path)
+    if len(reads)>1:return swapped
+   return real_read(path)
+  with patch.object(pathlib.Path,'read_bytes',racing_read):make_pause_workflow.generate(folder,checkout/'pause.yml')
+  manifest=json.loads((folder/'MANIFEST.json').read_text());row=[x for x in manifest['files'] if x['path']=='run_checks.py'][0]
+  self.assertNotEqual(row['sha256'],hashlib.sha256(swapped).hexdigest())
+  for workflow in ['pause.yml','ORIGINAL-NATIVE-UNGRANTED.yml']:
+   with self.subTest(workflow=workflow):
+    text=(checkout/workflow).read_text()
+    self.assertIn(make_workflow.LAUNCHER+' '+row['sha256']+' ',text);self.assertNotIn(hashlib.sha256(swapped).hexdigest(),text)
  def test_every_generated_first_party_step_enters_through_the_pinned_verifier(self):
   import make_workflow
   _,folder,generated,boot=self.generated()

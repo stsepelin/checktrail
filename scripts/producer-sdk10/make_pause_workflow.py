@@ -11,7 +11,7 @@ def generate(folder, destination):
     # local proposal and is never the controls-only remote entry point.
     inert = destination.with_name('ORIGINAL-NATIVE-UNGRANTED.yml')
     data = generate_native(folder, inert)
-    pin = data['manifestSHA256']; entry = launcher(folder) + ENTRY_ARGS
+    pin = data['manifestSHA256']; entry = launcher(data['launcherSHA256']) + ENTRY_ARGS
     lines = ['# FIRST-PARTY CONTROLS ONLY. No original SDK/source/key/export execution.',
              'name: SDK10 owned pause controls', 'on:', '  workflow_dispatch:', '    inputs:',
              '      nonce:', '        description: Exact reviewed fresh controls-only nonce',
