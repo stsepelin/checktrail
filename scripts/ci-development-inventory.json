@@ -49,14 +49,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "dc9b3afdabc2b22c234abb24500a1c0738fc9f0e"
+      "hash": "643eaff039e0faa60e2f2b81ba24dc3427202df0"
     },
     {
       "path": ".github/native-rust198-notices/reused-crypto/crypto_bridge.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "f09b159abd89b2299dda38e572a0cbcd97c6001f"
+      "hash": "2638992133c6290f0cb2dbac22b13a87346a7c88"
     },
     {
       "path": ".github/native-rust198-notices/reused-crypto/envelope.mjs",
