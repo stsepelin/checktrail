@@ -2,7 +2,15 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { readFile, readdir, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  readFile,
+  readdir,
+  rename,
+  rm,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 import { test, type TestContext } from "node:test";
 import { fileURLToPath } from "node:url";
@@ -2359,6 +2367,49 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
     JSON.parse(outsideResult.stdout).controllerAdmission.fullSuiteListProblems,
     ["file-outside-test-inventory:gate-inventory"],
   );
+  for (const [label, place] of [
+    [
+      "a test source replaced by a directory",
+      async (root: string) => {
+        await rm(path.join(root, "test/gate-inventory.test.ts"));
+        await mkdir(path.join(root, "test/gate-inventory.test.ts"));
+      },
+    ],
+    [
+      "a test source replaced by a symlink",
+      async (root: string) => {
+        await rm(path.join(root, "test/gate-inventory.test.ts"));
+        await writeFile(path.join(root, "linked-source-6620.ts"), "");
+        await symlink(
+          path.join(root, "linked-source-6620.ts"),
+          path.join(root, "test/gate-inventory.test.ts"),
+        );
+      },
+    ],
+    [
+      "the test directory replaced by a symlink",
+      async (root: string) => {
+        await rename(
+          path.join(root, "test"),
+          path.join(root, "real-tests-6620"),
+        );
+        await symlink(
+          path.join(root, "real-tests-6620"),
+          path.join(root, "test"),
+        );
+      },
+    ],
+  ] as const) {
+    const root = await frozen(t);
+    await place(root);
+    const result = await audit(root, true);
+    assert.equal(result.code, 2, label + ": " + result.stderr);
+    assert.equal(
+      JSON.parse(result.stdout).controllerAdmission.fullSuiteListAdmitted,
+      false,
+      label,
+    );
+  }
   const empty = await frozen(t);
   await alter<{ profiles: string[] }>(empty, files[3]!, (value) => {
     value.profiles = [];

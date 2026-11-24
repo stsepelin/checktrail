@@ -1126,12 +1126,18 @@ try {
   // The same whole-list checks selectFullSuiteRequirements makes, in order;
   // the shard inventory is the test/*.test.ts sources it compiles from.
   const fullSuiteTestFiles = new Set();
-  const testDirectory = path.join(root, "test");
-  if (lstatSync(testDirectory, { throwIfNoEntry: false })?.isDirectory())
-    for (const name of readdirSync(testDirectory))
-      if (name.endsWith(".test.ts"))
-        fullSuiteTestFiles.add("dist/test/" + name.replace(/\.ts$/u, ".js"));
   const fullSuiteListProblems = [];
+  const testDirectory = path.join(root, "test");
+  const testDirectoryStat = lstatSync(testDirectory, { throwIfNoEntry: false });
+  if (!testDirectoryStat?.isDirectory())
+    fullSuiteListProblems.push("test-sources-not-a-physical-directory");
+  else
+    for (const name of readdirSync(testDirectory))
+      if (name.endsWith(".test.ts")) {
+        if (!lstatSync(path.join(testDirectory, name)).isFile())
+          fullSuiteListProblems.push("test-source-not-a-regular-file:" + name);
+        fullSuiteTestFiles.add("dist/test/" + name.replace(/\.ts$/u, ".js"));
+      }
   const fullSuiteList = fullSuite.profiles;
   if (fullSuiteList.length === 0 || fullSuiteList.length > 256)
     fullSuiteListProblems.push("list-size");
