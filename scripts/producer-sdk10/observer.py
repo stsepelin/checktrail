@@ -269,7 +269,7 @@ def fresh_sdks(roots,profile,deadline,before=None,original_build=None):
       if name.endswith('/.version'):
        need(item.size<=4096,'embedded SDK version metadata size');body=t.extractfile(item).read(4097);row['versionFiles'].append({'path':name,'sha256':hashlib.sha256(body).hexdigest(),'lines':body.decode().splitlines()})
       # The host runs dotnet directly, so a non-executable one is not the selected SDK entry point.
-      if name=='dotnet':row['dotnetMode']=oct(item.mode&0o7777);row['targetDotnetARM64MuslELFMetadataMatched']=item.mode&0o111==0o111 and arm64_musl_elf(t.extractfile(item),item.size)
+      if name=='dotnet':row['dotnetMode']=oct(item.mode&0o7777);row['dotnetExecutable']=item.mode&0o111==0o111;row['targetDotnetARM64MuslELFMetadataMatched']=arm64_musl_elf(t.extractfile(item),item.size)
       if item.size>0:
        if re.fullmatch(r'host/fxr/[^/]+/libhostfxr\.so',name):layout.add('hostfxr')
        if re.fullmatch(r'shared/Microsoft\.NETCore\.App/[^/]+/libcoreclr\.so',name):layout.add('coreclr')
@@ -277,7 +277,7 @@ def fresh_sdks(roots,profile,deadline,before=None,original_build=None):
        if name=='sdk/10.0.401/dotnet.dll':layout.add('sdk-entry-assembly')
     while reader.read(65536):pass
    need(file_identity(p,2*1024**3,deadline)==identity,'selected SDK archive changed during metadata validation');row['fullGzipStreamIntegrityVerified']=True
-   versions=[x for x in row['versionFiles'] if x['path']=='sdk/10.0.401/.version'];row['requiredProductLayoutMetadataObserved']=layout=={'hostfxr','coreclr','corelib','sdk-entry-assembly'};row['selectedSDKArchiveMetadataAndAttributionMatched']=len(versions)==1 and all(x in versions[0]['lines'] for x in [profile['source']['commit'],'10.0.401',profile['targetRID']]) and row['targetDotnetARM64MuslELFMetadataMatched'] and row['requiredProductLayoutMetadataObserved'] and row['changedSinceProtectedPreBuildSnapshot'] and command_passed
+   versions=[x for x in row['versionFiles'] if x['path']=='sdk/10.0.401/.version'];row['requiredProductLayoutMetadataObserved']=layout=={'hostfxr','coreclr','corelib','sdk-entry-assembly'};row['selectedSDKArchiveMetadataAndAttributionMatched']=len(versions)==1 and all(x in versions[0]['lines'] for x in [profile['source']['commit'],'10.0.401',profile['targetRID']]) and row['targetDotnetARM64MuslELFMetadataMatched'] and row.get('dotnetExecutable') is True and row['requiredProductLayoutMetadataObserved'] and row['changedSinceProtectedPreBuildSnapshot'] and command_passed
   except (ValueError,tarfile.TarError,Refusal,struct.error,OSError,EOFError,zlib.error):row['selectedSDKArchiveMetadataAndAttributionMatched']=False
   rows.append(row)
  return {'candidates':rows,'outputInventoryComplete':inventory['snapshotComplete'],'selectedSDKArchiveMetadataAndAttributionObserved':any(x.get('selectedSDKArchiveMetadataAndAttributionMatched') for x in rows),'productOrBuildQualificationClaimed':False,'metadataLayoutAndAttributionAreNotProductExecutionOrReproducibility':True,'bootstrapDotnetAndInputArchivesSearched':False,'historicalPublisherBinaryEqualityClaimed':False}

@@ -88,12 +88,14 @@ class ObserverControls(unittest.TestCase):
   self.sdk();row=self.fresh();self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertFalse(row['productOrBuildQualificationClaimed']);self.assertFalse(row['historicalPublisherBinaryEqualityClaimed'])
  def test_dotnet_entry_point_must_be_executable(self):
   # The same ELF bytes with only the mode changed: executable for everyone
-  # is credited, a mode without every execute bit is not.
+  # is credited, a mode without every execute bit is not, and the ELF match is
+  # reported apart from the mode.
   for mode,credited in [(0o755,True),(0o644,False),(0o744,False)]:
    with self.subTest(mode=oct(mode)):
     for x in self.root.glob('*.tar.gz'):x.unlink()
     self.sdk(dotnet_mode=mode);row=self.fresh();candidate=row['candidates'][0]
-    self.assertEqual(candidate['dotnetMode'],oct(mode));self.assertIs(candidate['targetDotnetARM64MuslELFMetadataMatched'],credited);self.assertIs(row['selectedSDKArchiveMetadataAndAttributionObserved'],credited)
+    self.assertEqual(candidate['dotnetMode'],oct(mode));self.assertIs(candidate['dotnetExecutable'],credited);self.assertTrue(candidate['targetDotnetARM64MuslELFMetadataMatched'])
+    self.assertIs(candidate['selectedSDKArchiveMetadataAndAttributionMatched'],credited);self.assertIs(row['selectedSDKArchiveMetadataAndAttributionObserved'],credited)
  def test_single_dot_prefix_preserves_valid_package_layout_and_full_gzip_integrity(self):
   self.sdk(prefix='./');row=self.fresh();self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertTrue(row['candidates'][0]['fullGzipStreamIntegrityVerified'])
  def test_seed_arch_wrong_rid_version_source_and_missing_runtime_layout_no_credit(self):

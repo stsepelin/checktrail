@@ -41,19 +41,23 @@ class Controls(unittest.TestCase):
   self.assertEqual(trace,[folder,folder.parent,folder.parent.parent,self.root])
  def test_capture_full_bytes_duplicate_aliases_modes_and_symlink(self):
   source=self.root/'source';source.mkdir();(source/'a').write_bytes(b'first-party synthetic body');(source/'b').write_bytes((source/'a').read_bytes());(source/'b').chmod(0o751);(source/'link').symlink_to('a');os.mkfifo(source/'pipe');archive=self.root/'snapshot.tar.gz';summary=capture.capture({'work':source},archive,time.monotonic()+10,1024**2);self.assertTrue(summary['archiveRoundtripVerified']);self.assertEqual(summary['persistentRegularPaths'],2);self.assertGreater(summary['provenDuplicateBodyBytesStoredByReference'],0);self.assertEqual(summary['IPCMetadataOnlyPaths'],1)
- def test_roundtrip_requires_only_bounded_zero_padding_after_the_tar_end(self):
-  # A captured archive is re-compressed with changed bytes after the tar end
-  # marker: inside the record tarfile has already read ahead, or appended.
+ def test_roundtrip_requires_a_zero_end_marker_and_only_bounded_zero_padding(self):
+  # A captured archive is re-compressed with changed bytes from the aligned
+  # end of its last member: inside the record tarfile has already read ahead,
+  # appended, in a damaged or missing end marker, or at the padding bound.
   source=self.root/'source-6619';source.mkdir();(source/'a').write_bytes(b'first-party synthetic body 6619');archive=self.root/'snapshot-6619.tar.gz'
   self.assertTrue(capture.capture({'work':source},archive,time.monotonic()+10,1024**2)['archiveRoundtripVerified'])
-  raw=gzip.decompress(archive.read_bytes());self.assertEqual(raw[-1024:],bytes(1024))
-  cases={'buffered-nonzero':raw[:-7]+b'6619\x00\x00\x00','appended-nonzero':raw+b'appended-6619','appended-zero':raw+bytes(6619),'unchanged':raw}
-  for case,body in cases.items():
+  raw=gzip.decompress(archive.read_bytes())
+  with tarfile.open(fileobj=io.BytesIO(raw)) as t:t.getmembers();end=t.offset
+  self.assertEqual(raw[end:],bytes(len(raw)-end));self.assertGreaterEqual(len(raw)-end,1024)
+  cases={'buffered-nonzero':(raw[:-7]+b'6619\x00\x00\x00',False),'appended-nonzero':(raw+b'appended-6619',False),'damaged-marker':(raw[:end]+b'6619'*128+raw[end+512:],False),'missing-marker':(raw[:end],False),'one-end-block':(raw[:end]+bytes(512),False),
+   'over-the-bound':(raw[:end]+bytes(1024+capture.PADDING+1),False),'at-the-bound':(raw[:end]+bytes(1024+capture.PADDING),True),'appended-zero':(raw+bytes(6619),True),'unchanged':(raw,True)}
+  for case,(body,accepted) in cases.items():
    with self.subTest(case=case):
     changed=self.root/(case+'.tar.gz');changed.write_bytes(gzip.compress(body))
-    if case.endswith('nonzero'):
-     with self.assertRaisesRegex(common.Refusal,'bounded zero tar trailing padding'):capture.roundtrip(changed,time.monotonic()+10,1024**2)
-    else:self.assertTrue(capture.roundtrip(changed,time.monotonic()+10,1024**2)['internalMemberMapSHA256'])
+    if accepted:self.assertTrue(capture.roundtrip(changed,time.monotonic()+10,1024**2)['internalMemberMapSHA256'])
+    else:
+     with self.assertRaisesRegex(common.Refusal,'zero tar end marker and bounded zero padding'):capture.roundtrip(changed,time.monotonic()+10,1024**2)
  def test_duplicate_internal_member_map_rejected(self):
   archive=self.root/'dup.tar.gz'
   with tarfile.open(archive,'w:gz') as t:
@@ -209,19 +213,27 @@ class Controls(unittest.TestCase):
   self.assertEqual(sorted(x.name for x in markers.iterdir()),['listed','protected']);self.assertIn('test_protected',log)
  def test_every_pinned_module_needs_a_passing_case_and_no_expected_failure_counts(self):
   # Each extra module sits beside the two passing ones, so only a per-module
-  # or per-outcome check can notice it.
-  bodies={'empty':'import unittest\nclass Empty(unittest.TestCase):pass\n',
-   'expected-failure':'import unittest\nclass Expected(unittest.TestCase):\n @unittest.expectedFailure\n def test_expected_8817(self):self.assertEqual(8817,0)\n',
-   'unexpected-success':'import unittest\nclass Unexpected(unittest.TestCase):\n @unittest.expectedFailure\n def test_unexpected_8817(self):self.assertEqual(8817,8817)\n'}
-  for case,body in bodies.items():
+  # or per-outcome check can notice it. The expected-failure modules also
+  # pass a case of their own, so only the outcome check refuses them.
+  passing=' def test_passing_8817(self):self.assertEqual(8817,8817)\n'
+  bodies={'empty':('import unittest\nclass Empty(unittest.TestCase):pass\n',(['test_extra_marker'],0,0)),
+   'expected-failure':('import unittest\nclass Expected(unittest.TestCase):\n @unittest.expectedFailure\n def test_expected_8817(self):self.assertEqual(8817,0)\n'+passing,([],1,0)),
+   'unexpected-success':('import unittest\nclass Unexpected(unittest.TestCase):\n @unittest.expectedFailure\n def test_unexpected_8817(self):self.assertEqual(8817,8817)\n'+passing,([],0,1))}
+  for case,(body,expected) in bodies.items():
    with self.subTest(case=case):
     bundle,markers,control,pin=self.control_bundle();(bundle/'test_extra_marker.py').write_text(body)
     code,log,out=self.control_worker(bundle,pin(extra=['test_extra_marker.py']));row=json.loads((out/'PYTHON.json').read_bytes())
     self.assertNotEqual(code,0,log);self.assertEqual((row['failures'],row['errors'],row['skipped']),(0,0,0))
-    self.assertEqual((row['modulesWithoutPassingTests'],row['expectedFailures'],row['unexpectedSuccesses']),{'empty':(['test_extra_marker'],0,0),'expected-failure':(['test_extra_marker'],1,0),'unexpected-success':(['test_extra_marker'],0,1)}[case])
-  bundle,markers,control,pin=self.control_bundle();control('test_extra_marker.py','extra')
-  code,log,out=self.control_worker(bundle,pin(extra=['test_extra_marker.py']));row=json.loads((out/'PYTHON.json').read_bytes())
-  self.assertEqual(code,0,log);self.assertEqual((row['tests'],row['modulesWithoutPassingTests'],row['expectedFailures'],row['unexpectedSuccesses']),(3,[],0,0))
+    self.assertEqual((row['modulesWithoutPassingTests'],row['expectedFailures'],row['unexpectedSuccesses']),expected)
+  # A passing case a module supplies through load_tests, even as another
+  # test type, is credited to that module.
+  for case,body in {'plain':None,'load-tests':'import unittest\ndef load_tests(loader,tests,pattern):return unittest.TestSuite([unittest.FunctionTestCase(lambda:None)])\n'}.items():
+   with self.subTest(near_miss=case):
+    bundle,markers,control,pin=self.control_bundle()
+    if body is None:control('test_extra_marker.py','extra')
+    else:(bundle/'test_extra_marker.py').write_text(body)
+    code,log,out=self.control_worker(bundle,pin(extra=['test_extra_marker.py']));row=json.loads((out/'PYTHON.json').read_bytes())
+    self.assertEqual(code,0,log);self.assertEqual((row['tests'],row['modulesWithoutPassingTests'],row['expectedFailures'],row['unexpectedSuccesses']),(3,[],0,0))
  def test_repeated_runs_without_bytecode_flag_leave_no_cache_to_refuse(self):
   bundle,markers,control,pin=self.control_bundle();value=pin()
   for attempt in range(2):

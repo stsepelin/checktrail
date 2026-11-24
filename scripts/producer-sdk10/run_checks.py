@@ -181,11 +181,18 @@ def worker(out,pin,given=None):
  files=load(pin,given);names=bound_tests(files);Bundle(HERE,files,pin).install()
  import unittest
  from common import encoded,freeze
- passed={}
+ # Each case is credited to the pinned module whose suite supplied it, so a
+ # module that runs no passing case cannot hide behind the others.
+ suites={x:unittest.defaultTestLoader.loadTestsFromName(x) for x in names};owner={};passed={}
+ def leaves(node):
+  for child in node:
+   if isinstance(child,unittest.TestSuite):yield from leaves(child)
+   else:yield child
+ for name,loaded in suites.items():
+  for case in leaves(loaded):owner[id(case)]=name
  class Counted(unittest.TextTestResult):
-  # A pinned module that runs no passing case would otherwise hide behind the others.
-  def addSuccess(self,test):super().addSuccess(test);passed[type(test).__module__]=passed.get(type(test).__module__,0)+1
- suite=unittest.defaultTestLoader.loadTestsFromNames(names)
+  def addSuccess(self,test):super().addSuccess(test);passed[owner.get(id(test))]=passed.get(owner.get(id(test)),0)+1
+ suite=unittest.TestSuite(list(suites.values()))
  result=unittest.TextTestRunner(verbosity=2,resultclass=Counted).run(suite)
  # unittest counts an expected failure as success; neither it nor an unexpected success is a passing control.
  row={'tests':result.testsRun,'failures':len(result.failures),'errors':len(result.errors),'skipped':len(result.skipped),'expectedFailures':len(result.expectedFailures),'unexpectedSuccesses':len(result.unexpectedSuccesses),'modulesWithoutPassingTests':[x for x in names if not passed.get(x)],'originalSourceDockerSdkOrNetworkExecuted':False}

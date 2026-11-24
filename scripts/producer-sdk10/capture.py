@@ -22,10 +22,22 @@ def scan(root,prefix,deadline,maximum_members=2000000):
  return rows
 def stable(row):
  p=pathlib.Path(row['physical']);s=p.lstat();need((s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns,s.st_ctime_ns)==tuple(row[k] for k in ['dev','inode','bytes','mtimeNS','ctimeNS']),'stopped evidence changed after enumeration');return p,s
+PADDING=1024**2
+class Tail:
+ """The decompressed tar stream, keeping its last bytes and their offset.
+
+ tarfile stops at an invalid or empty header without saying so, and has
+ already consumed that block, so the end marker is checked from these bytes.
+ """
+ def __init__(self,stream,keep):self.stream=stream;self.keep=keep;self.window=bytearray();self.start=0
+ def read(self,n=-1):
+  block=self.stream.read(n);self.window+=block
+  if len(self.window)>self.keep:drop=len(self.window)-self.keep;del self.window[:drop];self.start+=drop
+  return block
 def roundtrip(path,deadline,maximum_bytes,maximum_members=2000000):
- observed={};archive_names=set();manifest=None;manifest_hash=None;total=0;stream=gzip.open(path,'rb')
+ observed={};archive_names=set();manifest=None;manifest_hash=None;total=0;stream=gzip.open(path,'rb');tail=Tail(stream,2*PADDING)
  try:
-  with tarfile.open(fileobj=stream,mode='r|') as t:
+  with tarfile.open(fileobj=tail,mode='r|') as t:
    for item in t:
     need(time.monotonic()<deadline,'capture independent roundtrip deadline');name=safe_relative(item.name);need(name not in archive_names and len(archive_names)<maximum_members+1,'unique bounded archive member set');archive_names.add(name);need(manifest is None,'internal member map must be unique final archive member')
     if name==MEMBER_MAP:
@@ -44,13 +56,14 @@ def roundtrip(path,deadline,maximum_bytes,maximum_members=2000000):
      for block in iter(lambda:f.read(1048576),b''):need(time.monotonic()<deadline,'capture decoded-byte roundtrip deadline');n+=len(block);total+=len(block);need(n<=item.size and total<=maximum_bytes,'capture decoded-byte accounting');h.update(block)
      need(n==item.size,'complete archived regular body');row.update(bytes=n,sha256=h.hexdigest())
     observed[name]=row
-   # Everything after the end marker, read through tarfile's own read-ahead
-   # buffer to the gzip footer (which checks the CRC), must be bounded zeros.
-   trailing=0
+   # From the aligned end of the last member to the gzip footer (which checks
+   # the CRC): the two zero end blocks, then at most PADDING zero bytes.
+   end=t.offset
    while True:
-    need(time.monotonic()<deadline,'capture gzip footer deadline');block=t.fileobj.read(1048576)
+    need(time.monotonic()<deadline,'capture gzip footer deadline');block=t.fileobj.read(65536)
+    need(tail.start+len(tail.window)-end<=1024+PADDING,'zero tar end marker and bounded zero padding')
     if not block:break
-    trailing+=len(block);need(trailing<=1024**2 and not any(block),'bounded zero tar trailing padding')
+   need(end>=tail.start and tail.start+len(tail.window)-end>=1024 and not any(tail.window[end-tail.start:]),'zero tar end marker and bounded zero padding')
   need(stream.read(1)==b'','complete gzip stream consumed')
  finally:stream.close()
  need(manifest is not None,'internal complete member inventory present');seen=set();regular_paths=0
