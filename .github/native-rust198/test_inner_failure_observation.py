@@ -220,7 +220,7 @@ class PermissionAccessRestore(unittest.TestCase):
   def instrumented(path,value):
    body=json.dumps(value).encode();fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o444)
    with os.fdopen(fd,'wb') as f:
-    f.write(body[:len(body)//2]);f.flush();partial.append((self.mode(self.output),self.mode(path),path.stat().st_size));f.write(body[len(body)//2:])
+    os.fchmod(f.fileno(),0o444);f.write(body[:len(body)//2]);f.flush();partial.append((self.mode(self.output),self.mode(path),path.stat().st_size));f.write(body[len(body)//2:])
   self.module=SimpleNamespace(**{**vars(self.module),'write_json':instrumented})
   self.probe(self.observed(self.accepted()))
   self.assertEqual(1,len(partial));self.assertEqual((0o700,0o444),partial[0][:2]);self.assertGreater(partial[0][2],0)
@@ -229,7 +229,7 @@ class PermissionAccessRestore(unittest.TestCase):
   partial=[]
   def interrupted(path,value):
    fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o444)
-   with os.fdopen(fd,'wb') as f:f.write(b'{"frame":');f.flush();partial.append(self.mode(self.output))
+   with os.fdopen(fd,'wb') as f:os.fchmod(f.fileno(),0o444);f.write(b'{"frame":');f.flush();partial.append(self.mode(self.output))
    raise OSError(28,'synthetic request write interrupted 5813')
   self.module=SimpleNamespace(**{**vars(self.module),'write_json':interrupted})
   with self.assertRaisesRegex(OSError,'5813'):self.probe(self.observed(self.accepted()))

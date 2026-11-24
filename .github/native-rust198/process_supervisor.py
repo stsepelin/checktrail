@@ -175,13 +175,15 @@ def child_limits():
  resource.setrlimit(resource.RLIMIT_CPU,(21600,21600))
 
 
+def phase_journal(journal):
+ if not os.path.lexists(journal):return []
+ s=journal.lstat();need(stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_uid==os.getuid(),'Controller-owned native phase journal');prior=json.loads(journal.read_bytes());need(isinstance(prior,list) and all(isinstance(r,dict) for r in prior),'Native phase journal shape');return prior
+
+
 def append_phase_receipt(journal,record):
  """Volume, source and detach phases use separate Native instances on one work
  directory; every completed phase record is appended in completion order."""
- prior=[]
- if os.path.lexists(journal):
-  s=journal.lstat();need(stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_uid==os.getuid(),'Controller-owned native phase journal');prior=json.loads(journal.read_bytes());need(isinstance(prior,list) and all(isinstance(r,dict) for r in prior),'Native phase journal shape')
- atomic_json(journal,[*prior,record])
+ atomic_json(journal,[*phase_journal(journal),record])
 
 
 class Native:
@@ -191,6 +193,8 @@ class Native:
  def run(self,name,args,env,cwd,seconds,as_build=True):
   need(re.fullmatch('[a-z][a-z0-9-]{0,95}',name) and seconds>0,'Fixed native phase name and positive deadline');need(not os.path.lexists(self.work/'capture'/(name+'.log')),'Fresh native phase log')
   need(time.monotonic()-self.started<LIMITS['wholeSeconds'] and shutil.disk_usage(self.work).free>=LIMITS['minimumFreeBytes'],'Native whole/capacity admission exhausted')
+  # A phase whose receipt could not be journaled is never started.
+  phase_journal(self.work/'capture'/'PHASES.json')
   if as_build:
    need(self.host['buildUser']=='nobody','Unexpected build account')
    args=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/env','-i',*[k+'='+v for k,v in sorted(env.items())],'/usr/bin/sandbox-exec','-p',self.host['qualifiedNetworkProfile'],*args]

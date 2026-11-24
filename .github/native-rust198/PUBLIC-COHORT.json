@@ -25,14 +25,14 @@
     "sha256": "6d81759c68b4e5d671e4dccbd1cfff363acd3f747c936babcae13394077742a3"
   },
   {
-    "bytes": 16662,
+    "bytes": 16842,
     "file": "process_supervisor.py",
-    "sha256": "f4ac2dada5af0fe614f697986cb4e6f6f796607f9e0f9bf1dc7df131b5debc3f"
+    "sha256": "39753d3ab2c0461a1325486f8a12c389b185286c22dc3248ca08d06c46ce463c"
   },
   {
-    "bytes": 23887,
+    "bytes": 24190,
     "file": "producer.py",
-    "sha256": "94991188097d490bdcc38465d73a6276231e8f7d1372d31c9122fda9cdd6945b"
+    "sha256": "7f7a82fdccc70624c9c6b70f116cdcc7f8f3ce4865c401fd74012ae484dd0ef2"
   },
   {
     "bytes": 5257,
@@ -75,14 +75,14 @@
     "sha256": "c415de7356e9232818dae9cb6a3230a127c08fe21f2d82b7ddf4093111413159"
   },
   {
-    "bytes": 54001,
+    "bytes": 54341,
     "file": "test_controller.py",
-    "sha256": "49fc4cdef43995d4116522cb07c82b078d4a95950892922cb38ab642ff67d376"
+    "sha256": "7a7e22ee2bac1a08d09d14ae56791c2a85de653c05fdc25da1adce77c4215a37"
   },
   {
-    "bytes": 30093,
+    "bytes": 30149,
     "file": "test_inner_failure_observation.py",
-    "sha256": "70baef5de4f50bd0cd6c9caf519a2015cbd30073dbae7bb957742d326189fa20"
+    "sha256": "33c48a96b73d721d0dea667443a3758805f737cda1404ced404b75c5b22a5f3e"
   },
   {
     "bytes": 6348,
@@ -95,9 +95,9 @@
     "sha256": "ebab627e116ab6007864164aa60a302a12088ea4e27e788ca21fc4268898c2d2"
   },
   {
-    "bytes": 25013,
+    "bytes": 25181,
     "file": "test_process_lifecycle.py",
-    "sha256": "511e7b1deb7e8de7a1427ccb1d26c6dc3503be8221e92150f57b614e829e9b1e"
+    "sha256": "71ead7cd011504e249a31b1b85f3cc585dce7144cfe7691f61ff5b5ec1d071dc"
   },
   {
     "bytes": 12947,

@@ -75,7 +75,11 @@ def read_child_report(file,p):
  failure=value.get('failure');need(type(value.get('originalCommandsComplete')) is bool and (failure is None or (isinstance(failure,dict) and isinstance(failure.get('type'),str) and isinstance(failure.get('reason'),str))),'Child completion/failure shape')
  # sequence.py marks a report complete only with no failure and a clean cache shutdown.
  need(value['originalCommandsComplete'] is False or (failure is None and type(value.get('cacheStopExitCode')) is int and value['cacheStopExitCode']==0),'Complete child report with failure or cache shutdown exit')
- need(possible_history(value['phases'],value['originalCommandsComplete']),'Child phase history impossible');return value
+ need(possible_history(value['phases'],value['originalCommandsComplete']),'Child phase history impossible')
+ # Every nonzero command exit records a failure, so none is left only by a run
+ # whose commands all passed and that reached its deadline during shutdown.
+ need(value['failure'] is not None or possible_history(value['phases'],True),'Child report without failure after an unsuccessful command history')
+ return value
 
 def retain_generated_configuration(source,capture):
  # Original bootstrap.py1346..1361 selects bootstrap.toml before config.toml.

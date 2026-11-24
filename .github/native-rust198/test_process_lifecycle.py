@@ -194,9 +194,9 @@ class LifecycleTests(unittest.TestCase):
   for label,body in [('object','{"phase":"synthetic-5813"}'),('scalar-row','[5813]')]:
    with self.subTest(case=label):
     work=self.root/('bad-journal-'+label);(work/'capture').mkdir(parents=True);journal=work/'capture/PHASES.json';journal.write_text(body)
-    with mock.patch.dict(N.LIMITS,{**N.LIMITS,'minimumFreeBytes':0,'logBytes':64}),mock.patch.object(N,'ps_rows',return_value=[]):
+    with mock.patch.dict(N.LIMITS,{**N.LIMITS,'minimumFreeBytes':0,'logBytes':64}),mock.patch.object(N,'ps_rows',return_value=[]),mock.patch.object(N.subprocess,'Popen',side_effect=AssertionError('phase started without a usable journal')):
      with self.assertRaisesRegex(ValueError,'phase journal shape'):N.Native(work,self.host()).run('firstparty',firstparty("print('synthetic')"),{'PATH':'/usr/bin:/bin'},work,5,as_build=False)
-    self.assertEqual(body,journal.read_text())
+    self.assertEqual(body,journal.read_text());self.assertFalse((work/'capture/firstparty.log').exists())
  def test_capture_nonzero_exit_and_output_limit_keep_original_contract(self):
   work=self.root/'nonzero';work.mkdir();code,stdout,stderr=N.capture_control_query(work,'firstparty',firstparty('import sys;sys.exit(7)'),{'PATH':'/usr/bin:/bin'},5);self.assertEqual(7,code);self.assertEqual(b'',stdout);self.assertEqual(b'',stderr)
   r=self.query("import os;os.write(1,b'x'*70000)",'output limit');self.assertGreaterEqual(r['streams'][0]['bytes'],65536);self.assertIsNotNone(r['primaryFailure'])

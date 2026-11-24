@@ -336,7 +336,7 @@ class ProducerEvidenceTests(unittest.TestCase):
       self.assert_refused(json.dumps(body).encode(),'argv differs from validated profile command',failed_exit)
  def test_failed_report_without_failure_or_cache_shutdown_fields_is_refused(self):
   rows=[('configure',0),('prepare-attempt-1',0),('original-dist',137)];failure={'type':'ValueError','reason':'Original full default dist failed 5813'}
-  cases={'both-absent':(('failure','cacheStopExitCode'),{},'fields absent'),'failure-absent':(('failure',),{},'fields absent'),'cache-absent':(('cacheStopExitCode',),{},'fields absent'),'null-failure-null-cache':((),{'failure':None,'cacheStopExitCode':None},'unclean cache shutdown'),'null-failure-failed-cache':((),{'failure':None,'cacheStopExitCode':41},'unclean cache shutdown'),'string-cache':((),{'cacheStopExitCode':'0'},'cache shutdown exit shape'),'cache-beyond-status-byte':((),{'cacheStopExitCode':256},'cache shutdown exit shape')}
+  cases={'both-absent':(('failure','cacheStopExitCode'),{},'fields absent'),'failure-absent':(('failure',),{},'fields absent'),'cache-absent':(('cacheStopExitCode',),{},'fields absent'),'null-failure-null-cache':((),{'failure':None,'cacheStopExitCode':None},'unclean cache shutdown'),'null-failure-failed-cache':((),{'failure':None,'cacheStopExitCode':41},'unclean cache shutdown'),'string-cache':((),{'cacheStopExitCode':'0'},'cache shutdown exit shape'),'cache-beyond-status-byte':((),{'cacheStopExitCode':256},'cache shutdown exit shape'),'null-failure-clean-stop-failed-dist':((),{'failure':None,'cacheStopExitCode':0},'unsuccessful command history')}
   for label,(dropped,changed,message) in cases.items():
    with self.subTest(case=label):
     body=json.loads(self.report(rows,failure=failure))
@@ -349,8 +349,9 @@ class ProducerEvidenceTests(unittest.TestCase):
   for label,changed in {'failure-and-clean-stop':{},'failure-and-stop-without-exit':{'cacheStopExitCode':None},'failure-and-failed-stop':{'cacheStopExitCode':41},'late-without-failure':{'failure':None,'cacheStopExitCode':0}}.items():
    with self.subTest(case=label):
     body=json.loads(self.report(rows,failure=failure));body.update(changed)
+    if label=='late-without-failure':body['phases'][-1].update(exitCode=0,status='command-passed')
     ops=SyntheticProducerOps(self.p,self.h,json.dumps(body).encode(),self.artifacts(),exit_failure='Native phase failed: original-source-producer');result,lifecycle=self.observe(ops)
-    self.assertEqual({'accepted':True},result['failurePathChildReport']);self.assertEqual({'status':'command-failed','exitCode':137},result['phaseAccounting']['original-dist']);self.assertIn('Native phase failed',result['failure']['reason']);self.assertFalse(result['originalCommandBuildWitnessComplete'])
+    self.assertEqual({'accepted':True},result['failurePathChildReport']);self.assertEqual({'status':'incomplete','exitCode':0,'reason':'outer completion/quiescence not qualified'} if label=='late-without-failure' else {'status':'command-failed','exitCode':137},result['phaseAccounting']['original-dist']);self.assertIn('Native phase failed',result['failure']['reason']);self.assertFalse(result['originalCommandBuildWitnessComplete'])
     self.assertEqual(failure if body['failure'] else None,result['childFailure'])
  def test_real_sequence_failure_reports_are_accepted_by_the_reader(self):
   # Each report is written by sequence.py itself, so the reader's required
