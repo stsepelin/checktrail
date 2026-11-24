@@ -4,16 +4,39 @@ HERE=pathlib.Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE))
 from common import need,encoded,freeze,hash_file
 
-def worker(out):
- suite=unittest.defaultTestLoader.discover(str(HERE),pattern='test_*.py')
+def bound_tests(folder,pin):
+ """Return the test modules of an exactly reviewed control directory.
+
+ The directory is first on sys.path while the controls run, so any entry in it
+ can be imported by name, not only test_*.py files. Every entry must therefore
+ be pinned: MANIFEST.json by the operator pin, its rows by MANIFEST.json, and
+ the protected-control files by PROTECTED-CONTROLS.json, which is itself a
+ MANIFEST.json row. Nothing in the directory is imported here.
+ """
+ raw=(folder/'MANIFEST.json').read_bytes();need(hashlib.sha256(raw).hexdigest()==pin,'operator-reviewed first-party bundle manifest')
+ def frozen(rows):
+  need(type(rows) is list and rows,'nonempty pinned control file list')
+  for row in rows:
+   name=row.get('path') if type(row) is dict else None;need(type(name) is str and name not in ['','.','..','MANIFEST.json'] and '/' not in name and '\\' not in name,'direct first-party control file name')
+   p=folder/name;need(not p.is_symlink() and p.is_file() and hash_file(p)==(row.get('bytes'),row.get('sha256')),'frozen first-party control file changed: '+name)
+  return [row['path'] for row in rows]
+ rows=json.loads(raw)['files'];names=frozen(rows)
+ if 'PROTECTED-CONTROLS.json' in names:
+  protected=(folder/'PROTECTED-CONTROLS.json').read_bytes();row=[x for x in rows if x['path']=='PROTECTED-CONTROLS.json'][0];need((len(protected),hashlib.sha256(protected).hexdigest())==(row['bytes'],row['sha256']),'frozen first-party control file changed: PROTECTED-CONTROLS.json')
+  names+=frozen(json.loads(protected)['files'])
+ need(len(names)==len(set(names)),'each control file pinned once')
+ unexpected=sorted(set(os.listdir(folder))-set(names)-{'MANIFEST.json'});need(not unexpected,'unreviewed entry in executed control directory: '+', '.join(unexpected[:8]))
+ tests=sorted(x[:-3] for x in names if x.startswith('test_') and x.endswith('.py'));need(tests,'nonempty reviewed Python controls');return tests
+
+def worker(out,pin):
+ suite=unittest.defaultTestLoader.loadTestsFromNames(bound_tests(HERE,pin))
  result=unittest.TextTestRunner(verbosity=2).run(suite)
  row={'tests':result.testsRun,'failures':len(result.failures),'errors':len(result.errors),'skipped':len(result.skipped),'originalSourceDockerSdkOrNetworkExecuted':False}
  freeze(out/'PYTHON.json',encoded(row));return 0 if result.wasSuccessful() and result.testsRun>0 and not result.skipped else 1
 
 def run(out,pin):
- from driver import manifest_check
- manifest_check(pin);need(not out.exists(),'fresh private synthetic output root');out.mkdir(mode=0o700);rows=[]
- for name,args in [('python',[sys.executable,'-I','-S','-B',str(HERE/'run_checks.py'),'--python-worker','--out',str(out)]),('crypto',['node',str(HERE/'test_crypto.mjs'),str(out/'crypto-test-only')])]:
+ bound_tests(HERE,pin);need(not out.exists(),'fresh private synthetic output root');out.mkdir(mode=0o700);rows=[]
+ for name,args in [('python',[sys.executable,'-I','-S','-B',str(HERE/'run_checks.py'),'--python-worker','--out',str(out),'--manifest-sha256',pin]),('crypto',['node',str(HERE/'test_crypto.mjs'),str(out/'crypto-test-only')])]:
   started=time.monotonic();log=out/(name+'.log')
   def limit():resource.setrlimit(resource.RLIMIT_FSIZE,(4*1024**2,4*1024**2))
   with log.open('xb') as stream:process=subprocess.run(args,stdout=stream,stderr=subprocess.STDOUT,timeout=180,preexec_fn=limit,check=False)
@@ -25,5 +48,6 @@ def run(out,pin):
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--out',type=pathlib.Path,required=True);p.add_argument('--manifest-sha256');p.add_argument('--python-worker',action='store_true');a=p.parse_args()
- if a.python_worker:raise SystemExit(worker(a.out))
- need(a.manifest_sha256,'reviewed first-party manifest pin required');raise SystemExit(run(a.out,a.manifest_sha256))
+ need(a.manifest_sha256,'reviewed first-party manifest pin required')
+ if a.python_worker:raise SystemExit(worker(a.out,a.manifest_sha256))
+ raise SystemExit(run(a.out,a.manifest_sha256))

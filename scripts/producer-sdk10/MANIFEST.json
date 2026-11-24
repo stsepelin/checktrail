@@ -76,19 +76,19 @@
       "sha256": "0be5a03bec857fbed4796d49a2784057718998da79e7dafd94c4f7fe613f5452"
     },
     {
-      "bytes": 6669,
+      "bytes": 6696,
       "path": "make_workflow.py",
-      "sha256": "18c056319c83a6efd60c12d0e53ff02ec7a48a965ae57f3157179df89e96b624"
+      "sha256": "2842cde73961b37d1946e86fc653beefaf2a85c020fe43737ba34b7891c9f475"
     },
     {
-      "bytes": 2696,
+      "bytes": 4646,
       "path": "run_checks.py",
-      "sha256": "e3b8294b3531ec80e6ae95d92b34e89115d7f2575b407e6c25a0783140edb183"
+      "sha256": "da1d70cb4fbbc74b5b1607400fc8246e0e534ded764ee6bebaa4f4b6248f8943"
     },
     {
-      "bytes": 18240,
+      "bytes": 22973,
       "path": "test_core.py",
-      "sha256": "7bb8f879a6e0ebdee9e254908fecd933231d251a89d255e08f5e163d97174ce5"
+      "sha256": "dcd1fe4a0cb7037bb1615e24a7b9df828dad33125eb9abe447ba8679bce247c5"
     },
     {
       "bytes": 11696,
@@ -224,6 +224,11 @@
       "bytes": 8230,
       "path": "test_capacity_admission.py",
       "sha256": "66c984445dd5b7101d1c395e368dd4fdb5213b46b74ff35e191322a5e6182cd9"
+    },
+    {
+      "bytes": 570,
+      "path": "PROTECTED-CONTROLS.json",
+      "sha256": "3d6150382c1a12078fe0817418a27dab9b645dec87a7f24ca87f425dfaf48993"
     }
   ],
   "firstPartyCodeOnly": true,

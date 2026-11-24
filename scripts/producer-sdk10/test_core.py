@@ -1,4 +1,4 @@
-import contextlib,hashlib,io,json,os,pathlib,sys,tarfile,tempfile,time,unittest
+import contextlib,hashlib,io,json,os,pathlib,subprocess,sys,tarfile,tempfile,time,unittest
 from unittest.mock import patch
 sys.dont_write_bytecode=True
 ROOT=pathlib.Path(__file__).resolve().parent;sys.path.insert(0,str(ROOT))
@@ -145,5 +145,52 @@ class Controls(unittest.TestCase):
   class API(git_ack.AckAPI):
    def call(this,suffix,method='GET',payload=None):calls.append(method);return {'ref':'refs/'+channel['ref'],'object':{'type':'commit','sha':'c'*40}}
   api=API(self.root/'ack',time.monotonic()+10,channel,ctx,True);self.assertRaises(common.Refusal,api.publish,{'synthetic':True});self.assertEqual(calls,['GET'])
+
+ def control_bundle(self):
+  # Real run_checks.py/common.py beside synthetic controls. Each control's
+  # import writes a marker, so an absent marker proves it was never imported.
+  base=pathlib.Path(tempfile.mkdtemp(dir=self.root,prefix='controls-'));bundle=base/'bundle';bundle.mkdir();markers=base/'markers';markers.mkdir()
+  for name in ['run_checks.py','common.py']:(bundle/name).write_bytes((ROOT/name).read_bytes())
+  def control(name,label):
+   (bundle/name).write_text('import pathlib,unittest\npathlib.Path('+repr(str(markers/label))+').write_text("imported-7319")\nclass Synthetic(unittest.TestCase):\n def test_'+label.replace('-','_')+'(self):self.assertEqual(7319,7319)\n')
+  control('test_listed_marker.py','listed');control('test_protected_marker.py','protected')
+  def rows(names):return [{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in names]
+  def pin(protected=True,manifest_protected=True):
+   if protected:(bundle/'PROTECTED-CONTROLS.json').write_bytes(common.encoded({'schemaVersion':1,'firstPartyControlsOnly':True,'files':rows(['test_protected_marker.py'])}))
+   raw=common.encoded({'schemaVersion':1,'files':rows(['run_checks.py','common.py','test_listed_marker.py']+(['PROTECTED-CONTROLS.json'] if manifest_protected else []))});(bundle/'MANIFEST.json').write_bytes(raw);return hashlib.sha256(raw).hexdigest()
+  return bundle,markers,control,pin
+ def control_worker(self,bundle,pin):
+  out=pathlib.Path(tempfile.mkdtemp(dir=self.root,prefix='out-'))
+  done=subprocess.run([sys.executable,'-I','-S','-B',str(bundle/'run_checks.py'),'--python-worker','--out',str(out),'--manifest-sha256',pin],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60)
+  return done.returncode,done.stdout.decode('utf8','replace'),out
+ def test_reviewed_control_set_runs_listed_and_protected_controls(self):
+  bundle,markers,control,pin=self.control_bundle();code,log,out=self.control_worker(bundle,pin())
+  self.assertEqual(code,0,log);self.assertEqual(json.loads((out/'PYTHON.json').read_bytes())['tests'],2)
+  self.assertEqual(sorted(x.name for x in markers.iterdir()),['listed','protected']);self.assertIn('test_protected',log)
+ def test_unreviewed_directory_entry_is_refused_before_any_control_import(self):
+  # An unlisted helper is importable by name just like an unlisted test, and
+  # a stale bytecode cache can stand in for a pinned module.
+  for extra in ['test_unlisted_marker.py','unlisted_helper.py','__pycache__']:
+   with self.subTest(extra=extra):
+    bundle,markers,control,pin=self.control_bundle();value=pin()
+    if extra=='__pycache__':(bundle/extra).mkdir()
+    else:control(extra,'unlisted')
+    code,log,out=self.control_worker(bundle,value)
+    self.assertNotEqual(code,0);self.assertIn('unreviewed entry in executed control directory: '+extra,log);self.assertEqual(list(markers.iterdir()),[]);self.assertFalse((out/'PYTHON.json').exists())
+ def test_changed_listed_or_protected_control_or_unpinned_protected_manifest_is_refused(self):
+  for case in ['listed','protected','protected-manifest-unpinned','protected-manifest-changed']:
+   with self.subTest(case=case):
+    bundle,markers,control,pin=self.control_bundle();value=pin(manifest_protected=case!='protected-manifest-unpinned')
+    if case in ['listed','protected']:target=bundle/('test_'+case+'_marker.py');target.write_bytes(target.read_bytes()+b'# foreign-7319\n');expected='frozen first-party control file changed: test_'+case+'_marker.py'
+    elif case=='protected-manifest-changed':target=bundle/'PROTECTED-CONTROLS.json';target.write_bytes(target.read_bytes()+b' ');expected='frozen first-party control file changed: PROTECTED-CONTROLS.json'
+    else:expected='unreviewed entry in executed control directory: PROTECTED-CONTROLS.json, test_protected_marker.py'
+    code,log,out=self.control_worker(bundle,value)
+    self.assertNotEqual(code,0);self.assertIn(expected,log);self.assertEqual(list(markers.iterdir()),[])
+ def test_controller_refuses_unreviewed_entry_before_creating_output_or_children(self):
+  import run_checks
+  bundle,markers,control,pin=self.control_bundle();value=pin();control('test_unlisted_marker.py','unlisted');out=self.root/'controller-out'
+  with patch.object(run_checks,'HERE',bundle),patch.object(run_checks.subprocess,'run') as child,self.assertRaisesRegex(common.Refusal,'unreviewed entry in executed control directory: test_unlisted_marker.py'):run_checks.run(out,value)
+  child.assert_not_called();self.assertFalse(out.exists());self.assertEqual(list(markers.iterdir()),[])
+  (bundle/'test_unlisted_marker.py').unlink();self.assertEqual(run_checks.bound_tests(bundle,value),['test_listed_marker','test_protected_marker'])
 if __name__=='__main__':
  result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Controls));print(json.dumps({'testsRun':result.testsRun,'failures':len(result.failures),'errors':len(result.errors),'skips':len(result.skipped),'nativeUpstreamDockerNetworkActions':0}));sys.exit(not result.wasSuccessful())
