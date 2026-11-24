@@ -156,7 +156,8 @@ class PermissionAccessRestore(unittest.TestCase):
  def tearDown(self):self.temp.cleanup()
  def fresh(self,label):self.output=self.root/label;self.output.mkdir(mode=0o700);self.output.chmod(0o700);self.during=[];self.after=[]
  def endpoint_after_inner(self,frame):self.after.append((self.mode(self.output),self.mode(self.output/'permission-request.json')));return frame
- def accepted(self):return {'metadataEndpointSha256':self.endpoint,'controllerProtected':True,'allSelectedEntriesReadableExecutableAndProtected':True,'failureCount':0}
+ def identity(self):return {'uid':os.getuid()+1,'gid':20,'groups':[20]}
+ def accepted(self):return {'identity':self.identity(),'selectedEntriesChecked':len(self.frame),'failureCount':0,'firstFailures':[],'allSelectedEntriesReadableExecutableAndProtected':True,'controllerProtected':True,'metadataEndpointSha256':self.endpoint,'permissionProbeOnly':True,'projectCodeExecuted':False}
  def mode(self,path):return path.lstat().st_mode&0o777
  def observed(self,result):
   def inner(module,argv,env,receipts,timeout):
@@ -165,7 +166,7 @@ class PermissionAccessRestore(unittest.TestCase):
    return result
   return inner
  def probe(self,inner):
-  account=SimpleNamespace(pw_uid=os.getuid()+1,pw_gid=20)
+  account=SimpleNamespace(pw_uid=self.identity()['uid'],pw_gid=self.identity()['gid'])
   with mock.patch.object(H,'guard',return_value=self.module),mock.patch.object(H.pwd,'getpwnam',return_value=account),mock.patch.dict(os.environ,{'CHECKTRAIL_CONTROLLER_UID':str(os.getuid())}),mock.patch.object(H.PL,'access_canary',return_value={'firstPartyOnlyNonemptyAccessCanaryObserved':True,'payloadReadBytesVerifiedByLegacyHashCheck':1,'SDKFrameOrNativeAdmissionCredit':False}),mock.patch.object(H,'observe_inner',side_effect=inner),redirect_stdout(io.StringIO()):
    return H.permission_observation(self.root/'Developer',self.root/'SDK',self.root/'Toolchain',{},self.output,{'synthetic':True})
  def test_every_failure_kind_restores_private_output_and_keeps_request_root_only(self):
@@ -183,5 +184,55 @@ class PermissionAccessRestore(unittest.TestCase):
   self.assertEqual([(0o755,0o444)],self.during);self.assertEqual([(0o700,0o400)],self.after);self.assertEqual(0o700,self.mode(self.output));self.assertFalse(os.path.lexists(self.output/'permission-request.json'))
   frame=Path(value['selectedFrame']['file']);self.assertEqual(0o400,self.mode(frame));self.assertEqual(1,value['selectedFrame']['entries']);self.assertEqual(5813,value['selectedFrame']['hashReadBytes']);self.assertTrue(value['controllerProtected'])
   import gzip;self.assertEqual(self.frame,json.loads(gzip.decompress(frame.read_bytes())))
+
+ def assert_refused_privately(self,result,message):
+  with self.assertRaisesRegex(ValueError,message):self.probe(self.observed(result))
+  self.assertEqual([(0o755,0o444)],self.during);self.assertEqual([],self.after);self.assertEqual(0o700,self.mode(self.output));self.assertEqual(0o400,self.mode(self.output/'permission-request.json'))
+ def test_contradictory_inner_results_are_refused(self):
+  failure_row={'path':'/synthetic/entry-5813','readable':False,'executableWhenRequired':True,'writablePaths':[]}
+  cases={'one-failure-all-protected-none-checked':({'failureCount':1,'selectedEntriesChecked':0},'entries checked'),'one-failure-all-protected':({'failureCount':1,'firstFailures':[failure_row]},'all-protected flag'),'no-failure-not-all-protected':({'allSelectedEntriesReadableExecutableAndProtected':False},'all-protected flag'),'none-checked-all-protected':({'selectedEntriesChecked':0},'entries checked'),'more-checked-than-requested':({'selectedEntriesChecked':2},'entries checked'),'more-failures-than-checked':({'failureCount':2,'firstFailures':[failure_row,failure_row],'allSelectedEntriesReadableExecutableAndProtected':False},'failure count'),'negative-failures':({'failureCount':-1,'allSelectedEntriesReadableExecutableAndProtected':False},'failure count'),'failure-without-listed-row':({'failureCount':1,'allSelectedEntriesReadableExecutableAndProtected':False},'failure count'),'listed-row-without-failure':({'firstFailures':[failure_row]},'failure count'),'controller-unprotected':({'controllerProtected':False},'controller/probe-only'),'not-probe-only':({'permissionProbeOnly':False},'controller/probe-only'),'project-code-executed':({'projectCodeExecuted':True},'controller/probe-only'),'other-identity':({'identity':{'uid':5813,'gid':20,'groups':[20]}},'build identity'),'boolean-failure-count':({'failureCount':False},'inner result fields'),'listed-failures-not-list':({'firstFailures':{}},'inner result fields'),'unknown-extra-field':({'nativeAdmissionGranted':True},'inner result fields')}
+  for label,(changed,message) in cases.items():
+   with self.subTest(case=label):
+    self.fresh(label);self.assert_refused_privately({**self.accepted(),**changed},message)
+  for label in ['firstFailures','selectedEntriesChecked','permissionProbeOnly']:
+   with self.subTest(missing=label):
+    self.fresh('missing-'+label);result=self.accepted();del result[label];self.assert_refused_privately(result,'inner result fields')
+ def test_consistent_inner_result_with_failures_is_accepted_and_not_protected(self):
+  row={'path':'/synthetic/entry-5813','readable':False,'executableWhenRequired':True,'writablePaths':[]}
+  value=self.probe(self.observed({**self.accepted(),'failureCount':1,'firstFailures':[row],'allSelectedEntriesReadableExecutableAndProtected':False}))
+  self.assertFalse(value['sdkAndToolsProtectedFromBuildUid']);self.assertTrue(value['controllerProtected']);self.assertEqual(1,value['permissionObservation']['failureCount']);self.assertEqual([(0o700,0o400)],self.after)
+ def test_real_pinned_inner_results_satisfy_the_consistency_rules(self):
+  # The pinned producer, not a fixture, decides which result shapes are reachable.
+  module=H.guard();controller=next((Path(c) for c in ['/usr/bin/true','/bin/true'] if os.path.isfile(c) and Path(c).resolve(strict=True)==Path(c) and os.stat(c).st_uid==0),None)
+  self.assertIsNotNone(controller,'a root-owned regular controller stand-in is required')
+  tree=self.root/'selected-5813';tree.mkdir()
+  for n in range(103):(tree/('entry-%03d'%n)).write_bytes(b'synthetic selected entry %d' % (5813+n))
+  frame=module.snapshot([tree],module.Bounds());identity={'uid':os.getuid()+1,'gid':20,'groups':[20]};request={'file':str(controller),'sha256':module.digest(controller.read_bytes()),'uid':os.getuid()}
+  for label,denied,count in [('all-protected',lambda p:False,0),('one-unreadable',lambda p:p.name=='entry-057',1),('over-listed-cap',lambda p:p.name.startswith('entry-'),103)]:
+   with self.subTest(case=label):
+    def access(path,mode):return mode!=os.W_OK and not (mode==os.R_OK and denied(Path(path)))
+    value=module.inspect_as_build(frame,request,identity,access=access,identity=identity)
+    self.assertEqual(count,value['failureCount']);self.assertEqual(min(count,100),len(value['firstFailures']));self.assertEqual(104,value['selectedEntriesChecked'])
+    self.assertIsNone(H.require_consistent_inner_result(value,frame,identity))
+    with self.assertRaisesRegex(ValueError,'entries checked'):H.require_consistent_inner_result(value,frame[:-1],identity)
+ def test_request_is_complete_before_the_build_account_can_traverse_the_output(self):
+  partial=[]
+  def instrumented(path,value):
+   body=json.dumps(value).encode();fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o444)
+   with os.fdopen(fd,'wb') as f:
+    f.write(body[:len(body)//2]);f.flush();partial.append((self.mode(self.output),self.mode(path),path.stat().st_size));f.write(body[len(body)//2:])
+  self.module=SimpleNamespace(**{**vars(self.module),'write_json':instrumented})
+  self.probe(self.observed(self.accepted()))
+  self.assertEqual(1,len(partial));self.assertEqual((0o700,0o444),partial[0][:2]);self.assertGreater(partial[0][2],0)
+  self.assertEqual([(0o755,0o444)],self.during);self.assertEqual(0o700,self.mode(self.output))
+ def test_interrupted_request_write_never_opens_the_output(self):
+  partial=[]
+  def interrupted(path,value):
+   fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o444)
+   with os.fdopen(fd,'wb') as f:f.write(b'{"frame":');f.flush();partial.append(self.mode(self.output))
+   raise OSError(28,'synthetic request write interrupted 5813')
+  self.module=SimpleNamespace(**{**vars(self.module),'write_json':interrupted})
+  with self.assertRaisesRegex(OSError,'5813'):self.probe(self.observed(self.accepted()))
+  self.assertEqual([0o700],partial);self.assertEqual([],self.during);self.assertEqual(0o700,self.mode(self.output));self.assertEqual(0o400,self.mode(self.output/'permission-request.json'))
 
 if __name__=='__main__':unittest.main()

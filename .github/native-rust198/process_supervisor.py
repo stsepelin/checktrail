@@ -175,6 +175,15 @@ def child_limits():
  resource.setrlimit(resource.RLIMIT_CPU,(21600,21600))
 
 
+def append_phase_receipt(journal,record):
+ """Volume, source and detach phases use separate Native instances on one work
+ directory; every completed phase record is appended in completion order."""
+ prior=[]
+ if os.path.lexists(journal):
+  s=journal.lstat();need(stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_uid==os.getuid(),'Controller-owned native phase journal');prior=json.loads(journal.read_bytes());need(isinstance(prior,list) and all(isinstance(r,dict) for r in prior),'Native phase journal shape')
+ atomic_json(journal,[*prior,record])
+
+
 class Native:
  def __init__(self,work,host):
   need(host.get('operatorQualifiedNetworkProfileSHA256')==hashlib.sha256(host.get('qualifiedNetworkProfile','').encode()).hexdigest() and host.get('networkIPCProbeQualified') is True,'Qualified operator network/owned-cache IPC profile required');self.work=work;self.host=host;self.started=time.monotonic();self.spent=0;self.receipts=[]
@@ -228,7 +237,7 @@ class Native:
    if survivors is None or survivors or not record['ownedProcessCleanup']['complete'] or record['elapsedSeconds']>=seconds or time.monotonic()-self.started>=LIMITS['wholeSeconds']:record['success']=False
    if primary is None and (record['elapsedSeconds']>=seconds or time.monotonic()-self.started>=LIMITS['wholeSeconds']):
     primary=ValueError('Native phase/whole deadline');record['primaryFailure']={'type':'ValueError','reason':str(primary)}
-   atomic_json(self.work/'capture'/'PHASES.json',self.receipts)
+   append_phase_receipt(self.work/'capture'/'PHASES.json',record)
   if primary is not None:raise primary
   need(record['ownedProcessCleanup']['complete'],'Owned native process cleanup incomplete; trusted packaging forbidden')
   need(survivors is not None and not survivors,'Build-UID descendants remain or observation unavailable; trusted packaging forbidden')

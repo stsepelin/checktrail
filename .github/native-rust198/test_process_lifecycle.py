@@ -168,6 +168,35 @@ class LifecycleTests(unittest.TestCase):
    instance=N.Native(work,self.host())
    with self.assertRaisesRegex(ValueError,'log ceiling'):instance.run('firstparty',firstparty("print('x'*1000)"),{'PATH':'/usr/bin:/bin'},work,5,as_build=False)
   r=json.loads((work/'capture/PHASES.json').read_bytes())[0];self.assertEqual('OSError',r['buildUidObservationError']['type']);self.assertIsNone(r['unreapedBuildUidProcesses']);self.assertFalse(r['success']);self.assertIn('log ceiling',r['primaryFailure']['reason'])
+ def lifecycle_journal(self,operations):
+  work=self.root/('journal-'+str(len(operations)));(work/'capture').mkdir(parents=True);instances=[]
+  with mock.patch.dict(N.LIMITS,{**N.LIMITS,'minimumFreeBytes':0,'logBytes':4096,'sampledRssBytes':1024**3,'wholeSeconds':30}),mock.patch.object(N,'ps_rows',return_value=[]):
+   for phases in operations:
+    instance=N.Native(work,self.host());instances.append(instance)
+    for name,code in phases:
+     if code:
+      with self.assertRaisesRegex(ValueError,'Native phase failed: '+name):instance.run(name,firstparty('import sys;sys.exit(%d)'%code),{'PATH':'/usr/bin:/bin'},work,5,as_build=False)
+     else:instance.run(name,firstparty("print('synthetic %s')"%name),{'PATH':'/usr/bin:/bin'},work,5,as_build=False)
+  return json.loads((work/'capture/PHASES.json').read_bytes()),instances
+ def test_volume_source_and_detach_instances_share_one_ordered_phase_journal(self):
+  # Mirrors Operations.volume(), the source build and Operations.detach(): one
+  # Native instance each on the same work directory, retained before detach.
+  operations=[[('owned-volume-0',0),('owned-volume-1',0),('owned-volume-1-identity',0)],[('original-source-producer',37)],[('owned-volume-detach-identity',0),('owned-volume-detach',0),('owned-volume-post-detach-identity',0)]]
+  journal,instances=self.lifecycle_journal(operations)
+  self.assertEqual([name for phases in operations for name,_ in phases],[r['phase'] for r in journal])
+  self.assertEqual([r for i in instances for r in i.receipts],journal)
+  source=journal[3];self.assertEqual(37,source['exitCode']);self.assertFalse(source['success']);self.assertIn('original-source-producer',source['primaryFailure']['reason'])
+  self.assertTrue(all(r['success'] for r in journal if r['phase']!='original-source-producer'))
+ def test_single_native_operation_journal_is_exactly_its_own_receipts(self):
+  journal,instances=self.lifecycle_journal([[('owned-volume-0',0),('owned-volume-0-identity',0)]])
+  self.assertEqual(['owned-volume-0','owned-volume-0-identity'],[r['phase'] for r in journal]);self.assertEqual(instances[0].receipts,journal)
+ def test_foreign_or_malformed_phase_journal_is_not_extended(self):
+  for label,body in [('object','{"phase":"synthetic-5813"}'),('scalar-row','[5813]')]:
+   with self.subTest(case=label):
+    work=self.root/('bad-journal-'+label);(work/'capture').mkdir(parents=True);journal=work/'capture/PHASES.json';journal.write_text(body)
+    with mock.patch.dict(N.LIMITS,{**N.LIMITS,'minimumFreeBytes':0,'logBytes':64}),mock.patch.object(N,'ps_rows',return_value=[]):
+     with self.assertRaisesRegex(ValueError,'phase journal shape'):N.Native(work,self.host()).run('firstparty',firstparty("print('synthetic')"),{'PATH':'/usr/bin:/bin'},work,5,as_build=False)
+    self.assertEqual(body,journal.read_text())
  def test_capture_nonzero_exit_and_output_limit_keep_original_contract(self):
   work=self.root/'nonzero';work.mkdir();code,stdout,stderr=N.capture_control_query(work,'firstparty',firstparty('import sys;sys.exit(7)'),{'PATH':'/usr/bin:/bin'},5);self.assertEqual(7,code);self.assertEqual(b'',stdout);self.assertEqual(b'',stderr)
   r=self.query("import os;os.write(1,b'x'*70000)",'output limit');self.assertGreaterEqual(r['streams'][0]['bytes'],65536);self.assertIsNotNone(r['primaryFailure'])

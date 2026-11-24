@@ -109,6 +109,19 @@ def observe_inner(module,argv,env,receipts,timeout):
   observation['classification']={'kind':'unknown-firstparty-inner-result-format','reasonIdentifier':None};raise InnerPermissionProbeRefusal(observation) from None
  return value
 
+# Exactly the result reused_admission.inspect_as_build() returns: it raises unless
+# the controller is protected, checks every request frame entry once, and sets the
+# all-protected flag from a zero failure count with at most 100 listed failures.
+INNER_RESULT_FIELDS=frozenset(('identity','selectedEntriesChecked','failureCount','firstFailures','allSelectedEntriesReadableExecutableAndProtected','controllerProtected','metadataEndpointSha256','permissionProbeOnly','projectCodeExecuted'))
+INNER_LISTED_FAILURES=100
+def require_consistent_inner_result(value,frame,identity):
+ D.need(set(value)==INNER_RESULT_FIELDS and all(type(value[key]) is bool for key in ['controllerProtected','allSelectedEntriesReadableExecutableAndProtected','permissionProbeOnly','projectCodeExecuted']) and all(type(value[key]) is int for key in ['failureCount','selectedEntriesChecked']) and type(value['firstFailures']) is list,'First-party inner result fields')
+ checked=value['selectedEntriesChecked'];failures=value['failureCount']
+ D.need(frame and checked==len(frame),'First-party inner result inconsistent: entries checked differ from request frame')
+ D.need(0<=failures<=checked and len(value['firstFailures'])==min(failures,INNER_LISTED_FAILURES),'First-party inner result inconsistent: failure count')
+ D.need(value['allSelectedEntriesReadableExecutableAndProtected'] is (failures==0),'First-party inner result inconsistent: all-protected flag and failure count')
+ D.need(value['controllerProtected'] is True and value['permissionProbeOnly'] is True and value['projectCodeExecuted'] is False,'First-party inner result inconsistent: controller/probe-only claims')
+ D.need(value['identity']==identity,'First-party inner result inconsistent: build identity')
 
 def permission_observation(developer,sdk,toolchain,tools,output,context):
  """Read/hash and actual build-UID access probes only. Never chmod stock trees."""
@@ -131,14 +144,15 @@ def permission_observation(developer,sdk,toolchain,tools,output,context):
  # inner probe runs. Every exit restores private access; a request whose result
  # was not fully assembled stays behind as root-only evidence of what was probed.
  try:
-  output.chmod(0o755);module.write_json(request,{'frame':frame,'controller':{'file':str(HERE/'reused_admission.py'),'sha256':module.digest((HERE/'reused_admission.py').read_bytes()),'uid':int(os.environ['CHECKTRAIL_CONTROLLER_UID'])},'identity':identity});request.chmod(0o444)
+  # The request is complete and read-only before the directory admits the build account.
+  module.write_json(request,{'frame':frame,'controller':{'file':str(HERE/'reused_admission.py'),'sha256':module.digest((HERE/'reused_admission.py').read_bytes()),'uid':int(os.environ['CHECKTRAIL_CONTROLLER_UID'])},'identity':identity});request.chmod(0o444);output.chmod(0o755)
   command=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/env','-i','PATH=/usr/bin:/bin:/usr/sbin:/sbin','LC_ALL=C','/usr/bin/python3','-I','-S','-B',str(HERE/'reused_admission.py'),'--inner',str(request)]
   # The inner invocation is reviewed first-party metadata code, not an SDK producer.
   try:value=observe_inner(module,command,clean,receipts,timeout=min(300,bounds.deadline-bounds.clock()))
   finally:
    try:request.chmod(0o400)
    finally:output.chmod(0o700)
-  D.need(all(type(value.get(key)) is bool for key in ['controllerProtected','allSelectedEntriesReadableExecutableAndProtected']) and type(value.get('failureCount')) is int,'First-party inner result fields');end=module.current_endpoint(frame);D.need(value['metadataEndpointSha256']==module.digest(module.encoded(end)),'Physical frame endpoint changed');compressed=output/'selected-sdk-tool-controller-frame.json.gz'
+  require_consistent_inner_result(value,frame,identity);end=module.current_endpoint(frame);D.need(value['metadataEndpointSha256']==module.digest(module.encoded(end)),'Physical frame endpoint changed');compressed=output/'selected-sdk-tool-controller-frame.json.gz'
   with compressed.open('xb') as f:
    os.fchmod(f.fileno(),0o400)
    with gzip.GzipFile(filename='',fileobj=module.LimitedCarrier(f,module.MAX_CAPTURE_BYTES),mode='wb',mtime=0) as z:z.write(encoded)

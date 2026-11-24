@@ -143,7 +143,7 @@ class ControlTests(unittest.TestCase):
       (cwd/'bootstrap.toml').write_text("profile='dist'\n# synthetic configuration only\n");dist=cwd/'build/dist';dist.mkdir(parents=True)
       for filename in p['minimumSDKArtifactNames']:(dist/filename).write_bytes(b'synthetic output, no SDK executed')
       if outer.mode=='source-mutant':(cwd/'original.txt').write_bytes(b'mutant')
-      Path(argv[-1]).write_text(json.dumps({'originalCommandsComplete':True,'failure':None,'cacheStopExitCode':0,'phases':[{'phase':name,'status':'command-passed','exitCode':0} for name in ['configure','prepare-attempt-1','original-dist']]}))
+      Path(argv[-1]).write_text(json.dumps({'originalCommandsComplete':True,'failure':None,'cacheStopExitCode':0,'phases':[{'phase':name,'argv':P.phase_command(p,name),'status':'command-passed','exitCode':0} for name in ['configure','prepare-attempt-1','original-dist']]}))
     return SyntheticNative()
    def source_matches(self,source,records):return P.M.original_frame_matches(source,records)
    def detach(self,record,ctx,host,work):
@@ -249,7 +249,7 @@ class ProducerEvidenceTests(unittest.TestCase):
  context={'GITHUB_RUN_ID':'1','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40}
  def setUp(self):self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.p=profile();self.h=qualified(self.p);self.count=0
  def tearDown(self):self.temp.cleanup()
- def report(self,rows,complete=False,failure=None,cache=0):return json.dumps({'originalCommandsComplete':complete,'phases':[{'phase':n,'argv':['synthetic'],'exitCode':c,'status':'command-passed' if c==0 else 'command-failed'} for n,c in rows],'failure':failure if complete or failure else {'type':'ValueError','reason':'synthetic'},'cacheStopExitCode':cache}).encode()
+ def report(self,rows,complete=False,failure=None,cache=0,argv=None):return json.dumps({'originalCommandsComplete':complete,'phases':[{'phase':n,'argv':(argv or {}).get(n,P.phase_command(self.p,n)),'exitCode':c,'status':'command-passed' if c==0 else 'command-failed'} for n,c in rows],'failure':failure if complete or failure else {'type':'ValueError','reason':'synthetic'},'cacheStopExitCode':cache}).encode()
  def artifacts(self,empty=None):return {name:(b'' if name==empty else ('synthetic archive %d for %s' % (4096+i,name)).encode()) for i,name in enumerate(self.p['minimumSDKArtifactNames'])}
  def observe(self,ops):
   self.count+=1;work=self.root/('rust198-1-1-synthetic-evidence-'+str(self.count));old_umask=os.umask(0o077)
@@ -306,6 +306,65 @@ class ProducerEvidenceTests(unittest.TestCase):
     ops=SyntheticProducerOps(self.p,self.h,self.report([('configure',0),('prepare-attempt-1',0),('original-dist',0)],complete=True),self.artifacts(empty));result,lifecycle=self.observe(ops)
     self.assertFalse(result['originalCommandBuildWitnessComplete']);self.assertIn('outputs empty',result['failure']['reason']);self.assertFalse(lifecycle['controllerLifecycleComplete'])
     self.assertEqual(1,sum(1 for body in self.artifacts(empty).values() if body==b''))
+
+ def expected_argv(self,name):return {'configure':self.p['configure'],'original-dist':self.p['dist']}.get(name,self.p['prepare'])
+ def assert_refused(self,body,message,failed_exit):
+  ops=SyntheticProducerOps(self.p,self.h,body,self.artifacts(),exit_failure='Native phase failed: original-source-producer' if failed_exit else None);result,lifecycle=self.observe(ops)
+  self.assertFalse(result['originalCommandBuildWitnessComplete']);self.assertFalse(lifecycle['controllerLifecycleComplete'])
+  self.assertEqual({name:{'status':'incomplete','reason':'not-established'} for name in ['configure','prepare','original-dist']},result['phaseAccounting']);self.assertIsNone(result['childFailure'])
+  # A refused success-path read leaves no accepted child, so the report is read
+  # once more after quiescence and refused there too.
+  self.assertFalse(result['failurePathChildReport']['accepted']);self.assertIn(message,result['failurePathChildReport']['reason'])
+  self.assertIn('Native phase failed: original-source-producer' if failed_exit else message,result['failure']['reason'])
+ def test_phase_rows_carry_exactly_the_validated_profile_commands(self):
+  self.assertEqual(37,len(self.p['configure']));rows=[('configure',0),('prepare-attempt-1',29),('prepare-attempt-2',0),('original-dist',0)]
+  for name,_ in rows:self.assertEqual(self.expected_argv(name),P.phase_command(self.p,name))
+  self.assertEqual(self.p['configure'],json.loads(self.report(rows))['phases'][0]['argv'])
+  ops=SyntheticProducerOps(self.p,self.h,self.report(rows,complete=True),self.artifacts());result,lifecycle=self.observe(ops)
+  self.assertTrue(result['originalCommandBuildWitnessComplete']);self.assertEqual({'status':'command-passed','exitCode':0},result['phaseAccounting']['configure']);self.assertTrue(lifecycle['controllerLifecycleComplete'])
+ def test_forged_phase_argv_is_refused_on_success_and_failure_paths(self):
+  forged={'appended-flag':lambda n:[*self.expected_argv(n),'--synthetic-forged-5813'],'other-phase-command':lambda n:self.p['dist'] if n=='configure' else self.p['configure'],'dropped-last-argument':lambda n:self.expected_argv(n)[:-1],'string-not-list':lambda n:' '.join(self.expected_argv(n)),'absent':lambda n:None}
+  paths={'success':([('configure',0),('prepare-attempt-1',0),('original-dist',0)],True,False),'failure':([('configure',0),('prepare-attempt-1',0),('original-dist',137)],False,True)}
+  for path,(rows,complete,failed_exit) in paths.items():
+   for target in ['configure','prepare-attempt-1','original-dist']:
+    for label,make in forged.items():
+     with self.subTest(path=path,phase=target,forgery=label):
+      body=json.loads(self.report(rows,complete=complete));row=next(r for r in body['phases'] if r['phase']==target)
+      if label=='absent':del row['argv']
+      else:row['argv']=make(target)
+      self.assertNotEqual(self.expected_argv(target),row.get('argv'))
+      self.assert_refused(json.dumps(body).encode(),'argv differs from validated profile command',failed_exit)
+ def test_failed_report_without_failure_or_cache_shutdown_fields_is_refused(self):
+  rows=[('configure',0),('prepare-attempt-1',0),('original-dist',137)];failure={'type':'ValueError','reason':'Original full default dist failed 5813'}
+  cases={'both-absent':(('failure','cacheStopExitCode'),{},'fields absent'),'failure-absent':(('failure',),{},'fields absent'),'cache-absent':(('cacheStopExitCode',),{},'fields absent'),'null-failure-null-cache':((),{'failure':None,'cacheStopExitCode':None},'unclean cache shutdown'),'null-failure-failed-cache':((),{'failure':None,'cacheStopExitCode':41},'unclean cache shutdown'),'string-cache':((),{'cacheStopExitCode':'0'},'cache shutdown exit shape'),'cache-beyond-status-byte':((),{'cacheStopExitCode':256},'cache shutdown exit shape')}
+  for label,(dropped,changed,message) in cases.items():
+   with self.subTest(case=label):
+    body=json.loads(self.report(rows,failure=failure))
+    for key in dropped:del body[key]
+    body.update(changed);self.assert_refused(json.dumps(body).encode(),message,True)
+ def test_failed_report_fields_the_real_child_writes_are_still_accepted(self):
+  rows=[('configure',0),('prepare-attempt-1',0),('original-dist',137)];failure={'type':'ValueError','reason':'Original full default dist failed 5813'}
+  # A stop that raised leaves no exit code; a phase that finished just before the
+  # deadline leaves no failure beside a clean stop. sequence.py writes both shapes.
+  for label,changed in {'failure-and-clean-stop':{},'failure-and-stop-without-exit':{'cacheStopExitCode':None},'failure-and-failed-stop':{'cacheStopExitCode':41},'late-without-failure':{'failure':None,'cacheStopExitCode':0}}.items():
+   with self.subTest(case=label):
+    body=json.loads(self.report(rows,failure=failure));body.update(changed)
+    ops=SyntheticProducerOps(self.p,self.h,json.dumps(body).encode(),self.artifacts(),exit_failure='Native phase failed: original-source-producer');result,lifecycle=self.observe(ops)
+    self.assertEqual({'accepted':True},result['failurePathChildReport']);self.assertEqual({'status':'command-failed','exitCode':137},result['phaseAccounting']['original-dist']);self.assertIn('Native phase failed',result['failure']['reason']);self.assertFalse(result['originalCommandBuildWitnessComplete'])
+    self.assertEqual(failure if body['failure'] else None,result['childFailure'])
+ def test_real_sequence_failure_reports_are_accepted_by_the_reader(self):
+  # Each report is written by sequence.py itself, so the reader's required
+  # fields and argv equality are pinned to what the real child produces.
+  failing={'configure':lambda a:23 if a==self.p['configure'] else 0,'prepare':lambda a:19 if a==self.p['prepare'] else 0,'dist':lambda a:137 if a==self.p['dist'] else 0,'cache':lambda a:41 if a[-1]=='--stop-server' else 0}
+  for label,code in failing.items():
+   with self.subTest(case=label):
+    report=self.root/('sequence-'+label+'.json');S.run_sequence(self.p,self.root,'/synthetic/sccache',report,lambda argv,cwd,seconds:code(argv),sleep=lambda _:None)
+    value=P.read_child_report(report,self.p);self.assertFalse(value['originalCommandsComplete']);self.assertIsNotNone(value['failure'])
+  def raising(argv,cwd,seconds):
+   if argv[-1]=='--stop-server':raise TimeoutError('synthetic cache stop 5813')
+   return 0
+  report=self.root/'sequence-stop-raised.json';S.run_sequence(self.p,self.root,'/synthetic/sccache',report,raising,sleep=lambda _:None);value=P.read_child_report(report,self.p);self.assertIsNone(value['cacheStopExitCode']);self.assertEqual('TimeoutError',value['failure']['type'])
+  report=self.root/'sequence-pass.json';S.run_sequence(self.p,self.root,'/synthetic/sccache',report,lambda *_:0,sleep=lambda _:None);self.assertTrue(P.read_child_report(report,self.p)['originalCommandsComplete'])
 
 class RetentionTraversalTests(unittest.TestCase):
  limits={'captureBytes':2*1024**2,'captureFiles':16}
