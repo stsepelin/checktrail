@@ -129,6 +129,7 @@ const dedicatedSelectors = {
 // - `outsideFile`: no cohort row is filed in this test file;
 // - `preserved`: the cohort holds exactly its preserved baseline rows, which
 //   the .NET shard manifest partitions;
+// - `files`: every cohort row is filed in one of these test files;
 // - `sha256`: the cohort's ordered file/name list has this canonical digest,
 //   the exact list the controller's foundation module compares against.
 const companionCohorts = [
@@ -219,6 +220,28 @@ const companionCohorts = [
     cohort: ["nuxt"],
     rows: 7,
   },
+  // The lifecycle controller runs its platform's foundation batch, whose files
+  // must belong to lifecycleHarnessFiles in lifecycle-runtime-evidence.mjs.
+  ...[
+    ["posix-cleanup", "posix-owner"],
+    ["windows-process", "physical-process-output"],
+  ].map((cohort) => ({
+    profile: "lifecycle-platforms",
+    controller: "scripts/verify-lifecycle-platforms.mjs",
+    cohort,
+    files: [
+      "gate-lifecycle-platforms",
+      "process-tree",
+      "posix-owner",
+      "runner",
+      "process-output",
+      "windows-contract",
+      "windows-process",
+      "windows-resource",
+      "windows-workspace",
+      "windows-resource-native",
+    ].map((name) => "dist/test/" + name + ".test.js"),
+  })),
 ];
 const contextFamilies = [
   "python",
@@ -239,16 +262,19 @@ const contextFamilies = [
   "yaml",
 ];
 // selectConsumerWitnessRequirements reads the broken, fixed and near-miss rows
-// of every consumer witness family from these profiles, and the controller of
-// each of them calls it. One family's missing row refuses all of them.
+// of every consumer witness family from `profiles`. The controller of each of
+// them calls it, and so does the selected Clang consumer acceptance that the
+// C++ controller dispatches. One family's missing row refuses every dependent.
+const witnessProfiles = [
+  "consumer-impact",
+  "javascript-extensions",
+  ...contextFamilies.map((family) => "context-" + family),
+];
 const sharedWitnessSelector = {
   controller: "scripts/consumer-witness-evidence.mjs",
   cases: ["broken", "fixed", "near-miss"],
-  profiles: [
-    "consumer-impact",
-    "javascript-extensions",
-    ...contextFamilies.map((family) => "context-" + family),
-  ],
+  profiles: witnessProfiles,
+  dependents: [...witnessProfiles, "cpp-extensions"],
 };
 // These controllers run a profile through the generic runner, which admits any
 // row set, then require exactly `rows` required callbacks from it. An extra
@@ -325,8 +351,9 @@ const rowCountControllers = Object.fromEntries(
   ].map(([controller, profiles]) => [controller, { rows: 9, profiles }]),
 );
 // resolveRequirements in required-test-evidence.mjs runs a profile only when it
-// holds 1 to 256 rows.
+// holds 1 to 256 rows, each with a file path of at most 4096 characters.
 const maxProfileRows = 256;
+const maxFileCharacters = 4096;
 const genericRunner = "scripts/required-test-evidence.mjs";
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const canonical = (value) =>
@@ -686,6 +713,7 @@ try {
     Array.isArray(rows) &&
     rows.length > 0 &&
     rows.length <= limit &&
+    rows.every((row) => row.file.length <= maxFileCharacters) &&
     new Set(rows.map(address)).size === rows.length;
   const cohortAdmitted = (entry) => {
     const lists = entry.cohort.map((owner) => current[owner]);
@@ -695,6 +723,8 @@ try {
     if (entry.rows !== undefined && distinct.size !== entry.rows) return false;
     if (entry.disjoint && distinct.size !== rows.length) return false;
     if (rows.some((row) => row.file === entry.outsideFile)) return false;
+    if (entry.files && rows.some((row) => !entry.files.includes(row.file)))
+      return false;
     if (
       entry.preserved &&
       canonical([...distinct].sort()) !==
@@ -730,6 +760,8 @@ try {
       refuse(genericRunner, "duplicate-address");
     if (rows.length === 0 || rows.length > maxProfileRows)
       refuse(genericRunner, "row-limit");
+    if (rows.some((row) => row.file.length > maxFileCharacters))
+      refuse(genericRunner, "address-limit");
     const selector = dedicatedSelectors[owner];
     if (selector) {
       const selection = selector.selection ?? owner;
@@ -757,7 +789,7 @@ try {
     for (const entry of companionCohorts)
       if (entry.profile === owner && !cohortAdmitted(entry))
         refuse(entry.controller, "companion-cohort-differs");
-    if (!witnessRowsPresent && sharedWitnessSelector.profiles.includes(owner))
+    if (!witnessRowsPresent && sharedWitnessSelector.dependents.includes(owner))
       refuse(sharedWitnessSelector.controller, "shared-selector-rows-differ");
     for (const [controller, rule] of Object.entries(rowCountControllers))
       if (rule.profiles.includes(owner) && rows.length !== rule.rows)
@@ -808,12 +840,14 @@ try {
           {
             controller: sharedWitnessSelector.controller,
             profiles: sharedWitnessSelector.profiles,
+            dependents: sharedWitnessSelector.dependents,
           },
         ],
         rowCountControllers: Object.entries(rowCountControllers).map(
           ([controller, rule]) => ({ controller, ...rule }),
         ),
         maxProfileRows,
+        maxFileCharacters,
         refusedProfiles: new Set(admissionRefusals.map((row) => row.profile))
           .size,
         refusals: admissionRefusals,

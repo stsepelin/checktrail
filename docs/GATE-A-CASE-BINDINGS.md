@@ -45,19 +45,20 @@ when:
 - any file and name pair repeats within that profile (`duplicate-address`),
   which the native runner rejects for the whole profile. The same pair in a
   different profile, or in the `mutation-runners` aggregate, stays valid;
-- it holds no rows or more than 256 (`row-limit`), the bound
-  `resolveRequirements` in `required-test-evidence.mjs` applies to every
-  profile it runs;
+- it holds no rows or more than 256 (`row-limit`), or a row whose file path
+  exceeds 4096 characters (`address-limit`), the bounds `resolveRequirements`
+  in `required-test-evidence.mjs` applies to every profile it runs;
 - its dedicated selector would reject the rows (`selector-rows-differ`). These
   profiles do not use the generic verifier: `cpp-extensions`,
   `dotnet-generator-extensions`, `scala-extensions`, `ruby-extensions`,
   `consumer-impact`, `multi-candidate-workflow`, `confidence-provenance`,
   `attempt-archives`, `lifecycle-platforms`, `tasks-matrix`,
-  `native-license-provenance`, `resource-release-readiness`,
-  `independent-evaluation-protocol` and the four mutation cohorts, which
-  `verify-mutation-container.mjs` compares with the `mutation-runners`
-  selection. Each selector requires exactly the selected cases at their bound
-  files. The C++ selector also requires the unselected
+  `native-license-provenance`, `resource-release-readiness` and
+  `independent-evaluation-protocol`. The four mutation cohorts do run through
+  the generic verifier, but `verify-mutation-container.mjs` then compares each
+  with the `mutation-runners` selection and rejects its receipts, so a
+  mismatched cohort runs and still fails. Each selector requires exactly the
+  selected cases at their bound files. The C++ selector also requires the unselected
   `cpp-extensions compiler formatter analyzer acceptance` row. It ignores row
   order but compares each row's JSON text, so `file` must precede `name`.
   The .NET generator selector ignores order. The others require the selected
@@ -81,11 +82,16 @@ when:
     profiles 39, `laravel-cache-runtime-bindings` 1, `laravel` with
     `laravel-cache` 9 sharing no pair, `frameworks` 8 and `nuxt` 7. A batch
     counts a pair filed in two of its profiles once;
+  - the lifecycle controller runs its platform's foundation batch,
+    `posix-cleanup` with `posix-owner` or `windows-process` with
+    `physical-process-output`, and requires every row's file to belong to
+    `lifecycleHarnessFiles`;
 - a shared selector it calls would reject another profile
   (`shared-selector-rows-differ`). `selectConsumerWitnessRequirements` reads the
   broken, fixed and near-miss rows of `consumer-impact`,
   `javascript-extensions` and the 16 `context-*` profiles, and each of their
-  controllers calls it. One missing row there refuses all 18;
+  controllers calls it, as does the selected Clang consumer acceptance the
+  C++ controller dispatches. One missing row there refuses all 19;
 - a controller requires an exact number of required callbacks after running
   the profile through the generic runner (`row-count-differs`). The runner
   admits extra rows, so an unselected row in, for example, `context-go` passes
@@ -102,10 +108,15 @@ audit's tables or in a short list of scripts whose rule concerns only profiles
 no selected case runs under. A new selector outside both fails that test.
 `--require-frozen` exits 2 on any admission refusal.
 
-Rules the audit does not yet model: controllers that compare a batch's required
-count with the sum of its profile lengths, such as the confidence-provenance
-review baseline and the Swift tools baseline, also refuse a pair filed in two of
-those profiles.
+Rules the audit does not yet model:
+
+- controllers that compare a batch's required count with the sum of its profile
+  lengths, such as the confidence-provenance review baseline and the Swift tools
+  baseline, refuse a pair filed in two of those profiles; baseline batches
+  without an exact count also refuse a repeated pair within one profile;
+- the selected acceptance files' installed callbacks, for example in
+  `test/gate-go-extensions.test.ts`, require exactly nine passes from their
+  whole copied profile, so an extra row in `go-extensions` fails there.
 
 The existing Terraform and Helm extension container controllers select these
 manifest profiles through `verify-required-native-tests.mjs`. The C++ container

@@ -704,18 +704,24 @@ interface CompanionCohort {
   outsideFile?: string;
   preserved?: boolean;
   sha256?: string;
+  files?: string[];
 }
 interface Admission {
   controllerProfiles: number;
   dedicatedSelectorProfiles: string[];
   companionCohorts: CompanionCohort[];
-  sharedSelectors: { controller: string; profiles: string[] }[];
+  sharedSelectors: {
+    controller: string;
+    profiles: string[];
+    dependents: string[];
+  }[];
   rowCountControllers: {
     controller: string;
     rows: number;
     profiles: string[];
   }[];
   maxProfileRows: number;
+  maxFileCharacters: number;
   refusals: AdmissionRefusal[];
 }
 const admission = (stdout: string) =>
@@ -844,7 +850,19 @@ const controllerSelectors: Record<
   },
   "lifecycle-platforms": {
     controller: "scripts/verify-lifecycle-platforms.mjs",
-    select: inlineSelector("lifecycle-platforms"),
+    select: async (root, rows, scope) => {
+      await inlineSelector("lifecycle-platforms")(root, rows, scope);
+      const { lifecycleFoundationSelection, lifecycleHarnessFiles } =
+        await scriptModule("lifecycle-runtime-evidence.mjs");
+      for (const platform of platforms)
+        for (const profile of lifecycleFoundationSelection(platform)) {
+          const list = rows[profile];
+          assert.ok(Array.isArray(list) && list.length > 0);
+          for (const row of list)
+            assert.ok(lifecycleHarnessFiles.includes(row.file));
+          assert.ok(runnable(list));
+        }
+    },
   },
   // The Tasks runtime runs on every platform, and Windows adds harness rows.
   "tasks-matrix": {
@@ -903,6 +921,10 @@ const foundationSelectors: Record<string, (rows: RequiredNative) => unknown> = {
     for (const platform of platforms) selectAttemptFoundation(rows, platform);
   },
 };
+const lifecycleFoundation = `        assert.ok(
+          Array.isArray(profiles[profile]) && profiles[profile].length > 0,
+          "Missing lifecycle platform foundation",
+        );`;
 const resolveSelection = `  assert.ok(
     Array.isArray(requirements) &&
       requirements.length > 0 &&
@@ -912,6 +934,7 @@ const runnable = (rows: NativeCase[] | undefined, limit = 256) =>
   Array.isArray(rows) &&
   rows.length > 0 &&
   rows.length <= limit &&
+  rows.every((row) => row.file.length <= 4096) &&
   new Set(rows.map(canonicalRow)).size === rows.length;
 // A copy of the count a container asserts on a runner batch over its cohort.
 const cohortCountAdmits = (entry: CompanionCohort, rows: RequiredNative) => {
@@ -961,6 +984,11 @@ test("finite inventory pins the controller rules its admission copies from sourc
       "const MAX_REQUIREMENTS = 256;",
       resolveSelection,
     ],
+    [
+      "scripts/verify-lifecycle-platforms.mjs",
+      "const foundationSelection = lifecycleFoundationSelection();",
+      lifecycleFoundation,
+    ],
   ] as const) {
     const source = await readScript(script);
     assert.equal(source.split(key).length, 2, script);
@@ -968,6 +996,37 @@ test("finite inventory pins the controller rules its admission copies from sourc
   }
   const report = admission((await audit(await source(t))).stdout);
   assert.equal(report.maxProfileRows, 256);
+  assert.equal(report.maxFileCharacters, 4096);
+  assert.equal(
+    (await readScript("scripts/required-test-evidence.mjs")).split(
+      "file.length <= 4096 &&",
+    ).length,
+    2,
+  );
+  assert.equal(
+    (await readScript("scripts/verify-lifecycle-platforms.mjs")).split(
+      "lifecycleHarnessFiles.includes(row.file),",
+    ).length,
+    2,
+  );
+  const lifecycle = await scriptModule("lifecycle-runtime-evidence.mjs");
+  const foundations = report.companionCohorts.filter(
+    (row) => row.profile === "lifecycle-platforms",
+  );
+  assert.deepEqual(
+    foundations.map((row) => row.cohort),
+    [
+      lifecycle.lifecycleFoundationSelection("linux"),
+      lifecycle.lifecycleFoundationSelection("win32"),
+    ],
+  );
+  for (const row of foundations)
+    assert.deepEqual(
+      row.files,
+      (lifecycle.lifecycleHarnessFiles as string[]).filter((file) =>
+        /^dist\/test\/[a-z0-9-]+\.test\.js$/u.test(file),
+      ),
+    );
   assert.deepEqual(
     (await readScript("scripts/verify-mutation-container.mjs")).match(
       /\["vitest", "jest", "pytest", "phpunit"\]/gu,
@@ -1058,34 +1117,42 @@ test("finite inventory strict freeze refuses .NET generator baseline companions 
   }
 });
 
+// Terraform's controllers count its rows relative to the manifest, so only the
+// runner's own bounds can refuse a longer profile.
 test("finite inventory strict freeze refuses a controller profile outside the native runner's row limit", async (t) => {
-  for (const [size, expected] of [
-    [256, []],
-    [
-      257,
-      [
-        {
-          profile: "go-extensions",
-          controller: genericRunner,
-          reason: "row-limit",
-        },
-      ],
-    ],
-  ] as const) {
-    const root = await frozen(t);
-    await alter<RequiredNative>(root, files[2]!, (rows) => {
-      const list = rows["go-extensions"]!;
-      for (let index = list.length; index < size; index++)
-        list.push({
-          file: "dist/test/gate-go-extensions.test.js",
-          name: "go-extensions padded row " + (8311 + index),
-        });
-      assert.equal(list.length, size);
+  const limit = (reason: string) => [
+    { profile: "terraform-extensions", controller: genericRunner, reason },
+  ];
+  const pad = (size: number) => (rows: RequiredNative) => {
+    const list = rows["terraform-extensions"]!;
+    while (list.length < size)
+      list.push({
+        file: "dist/test/gate-terraform-extensions.test.js",
+        name: "terraform-extensions padded row " + (8311 + list.length),
+      });
+    assert.equal(list.length, size);
+  };
+  const longFile = (length: number) => (rows: RequiredNative) => {
+    rows["terraform-extensions"]!.push({
+      file: "dist/test/" + "t".repeat(length - 18) + ".test.js",
+      name: "terraform-extensions long address 7019",
     });
+    assert.equal(rows["terraform-extensions"]!.at(-1)!.file.length, length);
+  };
+  const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
+    [
+      ["256 rows", pad(256), []],
+      ["257 rows", pad(257), limit("row-limit")],
+      ["a 4096-character file", longFile(4096), []],
+      ["a 4097-character file", longFile(4097), limit("address-limit")],
+    ];
+  for (const [label, edit, expected] of cases) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
     const result = await audit(root, true);
-    assert.equal(result.code, expected.length ? 2 : 0, String(size));
-    assert.deepEqual(unresolvedAddresses(result.stdout), [], String(size));
-    assert.deepEqual(admissionRefusals(result.stdout), expected, String(size));
+    assert.equal(result.code, expected.length ? 2 : 0, label);
+    assert.deepEqual(unresolvedAddresses(result.stdout), [], label);
+    assert.deepEqual(admissionRefusals(result.stdout), expected, label);
   }
 });
 
@@ -1094,6 +1161,7 @@ test("finite inventory strict freeze refuses every profile whose controller call
     .sharedSelectors[0]!;
   assert.equal(shared.controller, "scripts/consumer-witness-evidence.mjs");
   assert.equal(shared.profiles.length, 18);
+  assert.deepEqual(shared.dependents, [...shared.profiles, "cpp-extensions"]);
   const broken = await frozen(t);
   await alter<RequiredNative>(broken, files[2]!, (rows) => {
     rows["context-python"] = rows["context-python"]!.filter(
@@ -1108,7 +1176,7 @@ test("finite inventory strict freeze refuses every profile whose controller call
   ]);
   assert.deepEqual(
     admissionRefusals(refused.stdout),
-    [...shared.profiles].sort().flatMap((profile) => [
+    [...shared.dependents].sort().flatMap((profile) => [
       {
         profile,
         controller: shared.controller,
@@ -1254,6 +1322,23 @@ test("finite inventory strict freeze refuses companion cohorts a controller requ
         [companion("attempt-archives", "attempt-foundation-evidence.mjs")],
       ],
       [
+        "the posix-owner foundation removed",
+        (rows) => {
+          delete rows["posix-owner"];
+        },
+        [companion("lifecycle-platforms", "verify-lifecycle-platforms.mjs")],
+      ],
+      [
+        "a Windows foundation row outside the lifecycle harness",
+        (rows) => {
+          rows["physical-process-output"]!.push({
+            file: "dist/test/foreign-foundation.test.js",
+            name: "physical-process-output foreign row 3391",
+          });
+        },
+        [companion("lifecycle-platforms", "verify-lifecycle-platforms.mjs")],
+      ],
+      [
         "a laravel row also filed under laravel-cache",
         (rows) => {
           rows["laravel-cache"]!.push({ ...rows.laravel![1]! });
@@ -1262,9 +1347,10 @@ test("finite inventory strict freeze refuses companion cohorts a controller requ
       ],
       // A runner batch counts an address shared by two of its profiles once.
       [
-        "a php-review row also filed under php-tools, frameworks reordered",
+        "a php-review row also filed under php-tools, a posix-owner row under posix-cleanup",
         (rows) => {
           rows["php-tools"]!.push({ ...rows["php-review"]![3]! });
+          rows["posix-cleanup"]!.push({ ...rows["posix-owner"]![2]! });
           rows.frameworks!.reverse();
         },
         [],
@@ -1465,7 +1551,7 @@ test("finite inventory selector admission agrees with every dedicated controller
               )
             : !cohortCountAdmits(entry, rows),
       })),
-    ...shared.profiles.map((profile) => ({
+    ...shared.dependents.map((profile) => ({
       rule: shared.controller,
       profile,
       controller: shared.controller,
@@ -1499,13 +1585,23 @@ test("finite inventory selector admission agrees with every dedicated controller
         return list.length === 0 || list.length > shape.maxProfileRows;
       },
     })),
+    ...admissionProfileIds(scope).map((profile) => ({
+      rule: "address-limit",
+      profile,
+      controller: genericRunner,
+      reasons: ["address-limit"],
+      refuses: async (_root: string, rows: RequiredNative) =>
+        (rows[profile] ?? []).some(
+          (row) => row.file.length > shape.maxFileCharacters,
+        ),
+    })),
   ];
   const pad = (size: number) => (rows: RequiredNative) => {
-    const list = rows["go-extensions"]!;
+    const list = rows["terraform-extensions"]!;
     while (list.length < size)
       list.push({
-        file: "dist/test/gate-go-extensions.test.js",
-        name: "go-extensions padded row " + (8311 + list.length),
+        file: "dist/test/gate-terraform-extensions.test.js",
+        name: "terraform-extensions padded row " + (8311 + list.length),
       });
   };
   const variants: [string, (rows: RequiredNative) => void][] = [
@@ -1576,6 +1672,24 @@ test("finite inventory selector admission agrees with every dedicated controller
     ],
     ["at the row limit", pad(256)],
     ["past the row limit", pad(257)],
+    [
+      "file address past its limit",
+      (rows) => {
+        rows["terraform-extensions"]!.push({
+          file: "dist/test/" + "t".repeat(4080) + ".test.js",
+          name: "terraform-extensions long address 7019",
+        });
+      },
+    ],
+    [
+      "foundation file outside the lifecycle harness",
+      (rows) => {
+        rows["physical-process-output"]!.push({
+          file: "dist/test/foreign-foundation.test.js",
+          name: "physical-process-output foreign row 3391",
+        });
+      },
+    ],
   ];
   const outcomes = new Map<string, Set<boolean>>();
   for (const [label, edit] of variants) {
@@ -1631,7 +1745,7 @@ const unmodelledRowSelectors: Record<string, string> = {
 const manifestReads =
   /required-native-tests\.json|verify-required-native-tests\.mjs|verify-consumer-witness-profile\.mjs|runRequiredTests|runRequiredProfiles/u;
 const exactRowRules = [
-  /\.(?:required|passed),\s*[1-9]\d*\s*\)/u,
+  /\.(?:required|passed),\s*[1-9]\d*\s*[,)]/u,
   /\b(?:required|passed)\s*===\s*[1-9]\d*/u,
   /(?:\]|\brequirements)\.length(?:\s*===\s*|,\s*)[1-9]\d*/u,
   /\brequirements\.length,\s*[A-Za-z_$][\w$]*\.length/u,
@@ -1691,6 +1805,10 @@ test("finite inventory admission models every controller that selects manifest r
     [
       "verify-zig-extensions-container.mjs",
       'const source = JSON.parse(run(["node", "scripts/verify-required-native-tests.mjs", "zig-extensions"]));\nassert.equal(source.required, 9);\n',
+    ],
+    [
+      "verify-nim-extensions-container.mjs",
+      'const source = JSON.parse(run(["node", "scripts/verify-required-native-tests.mjs", "nim-extensions"]));\nassert.equal(source.required, 9, "incomplete Nim profile");\n',
     ],
     [
       "zig-runtime-evidence.mjs",
