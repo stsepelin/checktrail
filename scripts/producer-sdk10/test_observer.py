@@ -260,6 +260,14 @@ class ObserverControls(unittest.TestCase):
     row=self.after_reports(fresh,baseline)
     self.assertEqual([(Path(x['path']).name,x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in row['reports']],[('fresh-5527.trx',False if baseline else None,baseline)])
     self.assertIs(row['allCreditedFreshTestsPassed'],baseline);self.assertIs(row['trackedSourceBaselineAvailable'],baseline)
+ def test_report_with_an_unknown_xml_encoding_is_unparsed_without_credit_and_capture_continues(self):
+  def unknown(results,tracked):
+   (results/'codec-4419.trx').write_bytes(b'<?xml version="1.0" encoding="unknown-codec-4419"?>'+tracked.read_bytes().replace(b'<UnitTestResult outcome="Passed"/>',b'<UnitTestResult testName="codec-4419" outcome="Passed"/>'))
+   (results/'fresh-4419.trx').write_bytes(tracked.read_bytes().replace(b'<UnitTestResult outcome="Passed"/>',b'<UnitTestResult testName="fresh-4419" outcome="Passed"/>'))
+  row=self.after_reports(unknown)
+  self.assertEqual(sorted((Path(x['path']).name,x['naturalReportParsed']) for x in row['reports']),[('codec-4419.trx',False),('fresh-4419.trx',True)])
+  self.assertFalse(row['allCreditedFreshTestsPassed'])
+  self.assertIn('buildOutputObservation',common.read_json(self.root/'evidence/FRESH-SELECTED-SDK-OUTPUTS.json'))
  def test_unobservable_report_tree_is_recorded_incomplete_and_the_sdk_record_still_frozen(self):
   def linked(results,tracked):(results/'linked-6203.trx').symlink_to(tracked)
   row=self.after_reports(linked)

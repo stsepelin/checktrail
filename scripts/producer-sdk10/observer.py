@@ -159,7 +159,8 @@ def reports(source,deadline,tracked_paths=(),test_started_wall=None,before=None,
  for path,identity in inventory['entries'].items():
   p=pathlib.Path(path);relative=p.relative_to(source).as_posix();row={'path':path,'identity':identity,'bytes':identity['bytes'],'sha256':identity['sha256'],'duplicateBody':False,'preexistingTrackedFixture':relative in tracked_paths,'matchesTrackedSourceContent':None if tracked_contents is None else (identity['bytes'],identity['sha256']) in tracked_contents,'changedSinceProtectedPreTestSnapshot':newly_attributed(path,identity,before,'test-reports',[source]),'originalTestCommandPositivelyPassed':command_passed}
   try:row.update(natural=natural_report(read_observed(p,identity,32*1024**2)),naturalReportParsed=True)
-  except (ValueError,ET.ParseError,Refusal,OSError):row['naturalReportParsed']=False
+  # LookupError: a report declaring an XML encoding this interpreter lacks.
+  except (ValueError,LookupError,ET.ParseError,Refusal,OSError):row['naturalReportParsed']=False
   row['eligibleForPassingCredit']=not row['preexistingTrackedFixture'] and row['matchesTrackedSourceContent'] is False and row['changedSinceProtectedPreTestSnapshot'] and command_passed
   if row['eligibleForPassingCredit']:row['duplicateBody']=identity['sha256'] in seen;seen.add(identity['sha256'])
   rows.append(row)
@@ -282,7 +283,7 @@ def after(profile,evidence,deadline,test_started_wall=None):
  if before is not None and tracked_content_identities(before) is None:before=None;baseline_error='malformed tracked baseline'
  def observe(name,build):
   try:value=build()
-  except UNOBSERVABLE+(ET.ParseError,) as error:value={'state':'INCOMPLETE after-test observation','errorType':type(error).__name__,'passingCredit':False}
+  except UNOBSERVABLE+(ET.ParseError,LookupError) as error:value={'state':'INCOMPLETE after-test observation','errorType':type(error).__name__,'passingCredit':False}
   freeze(evidence/name,encoded(value))
  observe('SOURCE-ENDPOINT-CHANGES.json',lambda:tracked_after(SOURCE_ROOT,before,deadline) if before is not None else {'state':'INCOMPLETE original materialization; no valid tracked baseline','baselineError':baseline_error,'passingCredit':False})
  observe('ACTUAL-CMAKE-COMPILER-SELECTION.json',lambda:{'records':cmake_records(SOURCE_ROOT,deadline),'packageLabelsAloneAreExecutionEvidence':False})
