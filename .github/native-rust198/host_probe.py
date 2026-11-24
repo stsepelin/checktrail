@@ -134,7 +134,11 @@ def permission_observation(developer,sdk,toolchain,tools,output,context):
   output.chmod(0o755);module.write_json(request,{'frame':frame,'controller':{'file':str(HERE/'reused_admission.py'),'sha256':module.digest((HERE/'reused_admission.py').read_bytes()),'uid':int(os.environ['CHECKTRAIL_CONTROLLER_UID'])},'identity':identity});request.chmod(0o444)
   command=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/env','-i','PATH=/usr/bin:/bin:/usr/sbin:/sbin','LC_ALL=C','/usr/bin/python3','-I','-S','-B',str(HERE/'reused_admission.py'),'--inner',str(request)]
   # The inner invocation is reviewed first-party metadata code, not an SDK producer.
-  value=observe_inner(module,command,clean,receipts,timeout=min(300,bounds.deadline-bounds.clock()));end=module.current_endpoint(frame);D.need(value['metadataEndpointSha256']==module.digest(module.encoded(end)),'Physical frame endpoint changed');compressed=output/'selected-sdk-tool-controller-frame.json.gz'
+  try:value=observe_inner(module,command,clean,receipts,timeout=min(300,bounds.deadline-bounds.clock()))
+  finally:
+   try:request.chmod(0o400)
+   finally:output.chmod(0o700)
+  D.need(all(type(value.get(key)) is bool for key in ['controllerProtected','allSelectedEntriesReadableExecutableAndProtected']) and type(value.get('failureCount')) is int,'First-party inner result fields');end=module.current_endpoint(frame);D.need(value['metadataEndpointSha256']==module.digest(module.encoded(end)),'Physical frame endpoint changed');compressed=output/'selected-sdk-tool-controller-frame.json.gz'
   with compressed.open('xb') as f:
    os.fchmod(f.fileno(),0o400)
    with gzip.GzipFile(filename='',fileobj=module.LimitedCarrier(f,module.MAX_CAPTURE_BYTES),mode='wb',mtime=0) as z:z.write(encoded)

@@ -143,7 +143,7 @@ class ControlTests(unittest.TestCase):
       (cwd/'bootstrap.toml').write_text("profile='dist'\n# synthetic configuration only\n");dist=cwd/'build/dist';dist.mkdir(parents=True)
       for filename in p['minimumSDKArtifactNames']:(dist/filename).write_bytes(b'synthetic output, no SDK executed')
       if outer.mode=='source-mutant':(cwd/'original.txt').write_bytes(b'mutant')
-      Path(argv[-1]).write_text(json.dumps({'originalCommandsComplete':True,'phases':[{'phase':name,'status':'command-passed','exitCode':0} for name in ['configure','prepare-attempt-1','original-dist']]}))
+      Path(argv[-1]).write_text(json.dumps({'originalCommandsComplete':True,'failure':None,'cacheStopExitCode':0,'phases':[{'phase':name,'status':'command-passed','exitCode':0} for name in ['configure','prepare-attempt-1','original-dist']]}))
     return SyntheticNative()
    def source_matches(self,source,records):return P.M.original_frame_matches(source,records)
    def detach(self,record,ctx,host,work):
@@ -249,7 +249,7 @@ class ProducerEvidenceTests(unittest.TestCase):
  context={'GITHUB_RUN_ID':'1','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40}
  def setUp(self):self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.p=profile();self.h=qualified(self.p);self.count=0
  def tearDown(self):self.temp.cleanup()
- def report(self,rows,complete=False,failure=None):return json.dumps({'originalCommandsComplete':complete,'phases':[{'phase':n,'argv':['synthetic'],'exitCode':c,'status':'command-passed' if c==0 else 'command-failed'} for n,c in rows],'failure':None if complete else (failure or {'type':'ValueError','reason':'synthetic'})}).encode()
+ def report(self,rows,complete=False,failure=None,cache=0):return json.dumps({'originalCommandsComplete':complete,'phases':[{'phase':n,'argv':['synthetic'],'exitCode':c,'status':'command-passed' if c==0 else 'command-failed'} for n,c in rows],'failure':failure if complete or failure else {'type':'ValueError','reason':'synthetic'},'cacheStopExitCode':cache}).encode()
  def artifacts(self,empty=None):return {name:(b'' if name==empty else ('synthetic archive %d for %s' % (4096+i,name)).encode()) for i,name in enumerate(self.p['minimumSDKArtifactNames'])}
  def observe(self,ops):
   self.count+=1;work=self.root/('rust198-1-1-synthetic-evidence-'+str(self.count));old_umask=os.umask(0o077)
@@ -257,7 +257,7 @@ class ProducerEvidenceTests(unittest.TestCase):
   finally:os.umask(old_umask)
   return result,P.finish_private(self.p,result,work,self.context,self.h,ops)
  def test_failed_sequence_keeps_actual_command_exit_and_stays_failed(self):
-  for rows,failed,code in [([('configure',0),('prepare-attempt-1',0),('original-dist',137)],'original-dist',137),([('configure',23)],'configure',23)]:
+  for rows,failed,code in [([('configure',0),('prepare-attempt-1',0),('original-dist',137)],'original-dist',137),([('configure',23)],'configure',23),([('configure',0),('prepare-attempt-1',0),('original-dist',-9)],'original-dist',-9)]:
    with self.subTest(failed=failed):
     ops=SyntheticProducerOps(self.p,self.h,self.report(rows),self.artifacts(),exit_failure='Native phase failed: original-source-producer');result,lifecycle=self.observe(ops);phases=result['phaseAccounting']
     self.assertEqual({'status':'command-failed','exitCode':code},phases[failed]);self.assertEqual({'accepted':True},result['failurePathChildReport'])
@@ -268,7 +268,7 @@ class ProducerEvidenceTests(unittest.TestCase):
     if failed=='configure':self.assertEqual({'status':'incomplete','reason':'not-established'},phases['original-dist'])
  def test_failure_path_report_refused_when_malformed_oversized_forged_or_not_quiescent(self):
   valid=self.report([('configure',0),('prepare-attempt-1',0),('original-dist',137)]);padding=P.CHILD_REPORT_BYTES+1-len(valid)
-  cases={'malformed':(b'{"phases":[{"phase":"original-dist"',False),'oversized':(valid[:-1]+b',"padding":"'+b'x'*(padding-13)+b'"}',False),'string-exit':(valid.replace(b'"exitCode": 137',b'"exitCode": "137"'),False),'pass-with-failed-exit':(valid.replace(b'"command-failed"',b'"command-passed"'),False),'unknown-phase':(valid.replace(b'original-dist',b'synthetic-extra'),False),'dist-after-failed-configure':(self.report([('configure',23),('original-dist',137)]),False),'dist-before-any-prepare':(self.report([('configure',0),('original-dist',137)]),False),'skipped-prepare-attempt':(self.report([('configure',0),('prepare-attempt-2',0),('original-dist',137)]),False),'build-uid-still-live':(valid,True)}
+  cases={'malformed':(b'{"phases":[{"phase":"original-dist"',False),'oversized':(valid[:-1]+b',"padding":"'+b'x'*(padding-13)+b'"}',False),'string-exit':(valid.replace(b'"exitCode": 137',b'"exitCode": "137"'),False),'pass-with-failed-exit':(valid.replace(b'"command-failed"',b'"command-passed"'),False),'unknown-phase':(valid.replace(b'original-dist',b'synthetic-extra'),False),'dist-after-failed-configure':(self.report([('configure',23),('original-dist',137)]),False),'dist-before-any-prepare':(self.report([('configure',0),('original-dist',137)]),False),'skipped-prepare-attempt':(self.report([('configure',0),('prepare-attempt-2',0),('original-dist',137)]),False),'exit-beyond-status-byte':(self.report([('configure',256)]),False),'build-uid-still-live':(valid,True)}
   self.assertGreater(len(cases['oversized'][0]),P.CHILD_REPORT_BYTES);self.assertIn(b'"exitCode": "137"',cases['string-exit'][0]);self.assertIn(b'"exitCode": 137',valid)
   for label,(body,survivor) in cases.items():
    with self.subTest(case=label):
@@ -285,18 +285,21 @@ class ProducerEvidenceTests(unittest.TestCase):
     self.assertEqual({'status':'command-failed','exitCode':37,'attempt':len(rows)-1,'laterAttemptWithoutExitCode':later},result['phaseAccounting']['prepare']);self.assertEqual(timeout,result['childFailure'])
     self.assertEqual({'status':'incomplete','reason':'not-established'},result['phaseAccounting']['original-dist']);self.assertFalse(result['originalCommandBuildWitnessComplete']);self.assertFalse(lifecycle['controllerLifecycleComplete'])
  def test_complete_report_without_every_passing_phase_is_refused(self):
-  for label,rows in [('no-rows',[]),('no-dist',[('configure',0),('prepare-attempt-1',0)]),('failed-dist',[('configure',0),('prepare-attempt-1',0),('original-dist',137)])]:
+  passed=[('configure',0),('prepare-attempt-1',0),('original-dist',0)];shutdown={'type':'ValueError','reason':'Owned cache shutdown failed'}
+  for label,body,message in [('no-rows',self.report([],complete=True),'history impossible'),('no-dist',self.report(passed[:2],complete=True),'history impossible'),('failed-dist',self.report([*passed[:2],('original-dist',137)],complete=True),'history impossible'),('cache-shutdown-failed',self.report(passed,complete=True,failure=shutdown,cache=1),'cache shutdown'),('cache-exit-only',self.report(passed,complete=True,cache=1),'cache shutdown')]:
    with self.subTest(case=label):
-    ops=SyntheticProducerOps(self.p,self.h,self.report(rows,complete=True),self.artifacts());result,lifecycle=self.observe(ops)
-    self.assertFalse(result['originalCommandBuildWitnessComplete']);self.assertIn('history impossible',result['failure']['reason']);self.assertFalse(lifecycle['controllerLifecycleComplete']);self.assertNotIn('command-passed',[row['status'] for row in result['phaseAccounting'].values()])
+    ops=SyntheticProducerOps(self.p,self.h,body,self.artifacts());result,lifecycle=self.observe(ops)
+    self.assertFalse(result['originalCommandBuildWitnessComplete']);self.assertIn(message,result['failure']['reason']);self.assertFalse(lifecycle['controllerLifecycleComplete']);self.assertNotIn('command-passed',[row['status'] for row in result['phaseAccounting'].values()])
  def test_failure_path_report_at_exact_byte_bound_is_still_read(self):
   valid=self.report([('configure',0),('prepare-attempt-1',0),('original-dist',137)]);body=valid[:-1]+b',"padding":"'+b'x'*(P.CHILD_REPORT_BYTES-len(valid)-13)+b'"}';self.assertEqual(P.CHILD_REPORT_BYTES,len(body))
   ops=SyntheticProducerOps(self.p,self.h,body,self.artifacts(),exit_failure='Native phase failed: original-source-producer');result,lifecycle=self.observe(ops)
   self.assertEqual({'status':'command-failed','exitCode':137},result['phaseAccounting']['original-dist']);self.assertFalse(result['originalCommandBuildWitnessComplete']);self.assertFalse(lifecycle['controllerLifecycleComplete'])
  def test_successful_sequence_records_passes_without_failure_path_read(self):
-  ops=SyntheticProducerOps(self.p,self.h,self.report([('configure',0),('prepare-attempt-1',0),('original-dist',0)],complete=True),self.artifacts());result,lifecycle=self.observe(ops)
-  self.assertTrue(result['originalCommandBuildWitnessComplete']);self.assertIsNone(result['failure']);self.assertIsNone(result['failurePathChildReport']);self.assertIsNone(result['childFailure']);self.assertEqual({name:{'status':'command-passed','exitCode':0} for name in ['configure','prepare','original-dist']},result['phaseAccounting']);self.assertTrue(lifecycle['controllerLifecycleComplete'])
-  self.assertEqual(sorted(len(body) for body in self.artifacts().values()),sorted(r['bytes'] for r in result['producedDistInventory']))
+  for label,rows in [('first-prepare',[('configure',0),('prepare-attempt-1',0),('original-dist',0)]),('retried-prepare',[('configure',0),('prepare-attempt-1',2),('prepare-attempt-2',2),('prepare-attempt-3',0),('original-dist',0)])]:
+   with self.subTest(case=label):
+    ops=SyntheticProducerOps(self.p,self.h,self.report(rows,complete=True),self.artifacts());result,lifecycle=self.observe(ops)
+    self.assertTrue(result['originalCommandBuildWitnessComplete']);self.assertIsNone(result['failure']);self.assertIsNone(result['failurePathChildReport']);self.assertIsNone(result['childFailure']);self.assertEqual({name:{'status':'command-passed','exitCode':0} for name in ['configure','prepare','original-dist']},result['phaseAccounting']);self.assertTrue(lifecycle['controllerLifecycleComplete'])
+    self.assertEqual(sorted(len(body) for body in self.artifacts().values()),sorted(r['bytes'] for r in result['producedDistInventory']))
  def test_empty_required_archive_beside_nonempty_siblings_is_not_a_witness(self):
   for empty in self.p['minimumSDKArtifactNames']:
    with self.subTest(empty=empty):

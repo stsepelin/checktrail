@@ -63,8 +63,10 @@ def read_child_report(file):
  with os.fdopen(fd,'rb') as stream:
   opened=os.fstat(stream.fileno());need((opened.st_dev,opened.st_ino)==(before.st_dev,before.st_ino),'Opened child phase report endpoint');body=stream.read(CHILD_REPORT_BYTES+1)
  need(len(body)==before.st_size,'Child phase report changed while reading');value=json.loads(body);need(isinstance(value,dict) and isinstance(value.get('phases'),list) and len(value['phases'])<=len(CHILD_PHASES),'Child phase report shape')
- for row in value['phases']:need(isinstance(row,dict) and row.get('phase') in CHILD_PHASES and type(row.get('exitCode')) is int and row.get('status')==('command-passed' if row['exitCode']==0 else 'command-failed'),'Child phase row shape')
+ for row in value['phases']:need(isinstance(row,dict) and row.get('phase') in CHILD_PHASES and type(row.get('exitCode')) is int and -signal.NSIG<row['exitCode']<=255 and row.get('status')==('command-passed' if row['exitCode']==0 else 'command-failed'),'Child phase row shape')
  failure=value.get('failure');need(type(value.get('originalCommandsComplete')) is bool and (failure is None or (isinstance(failure,dict) and isinstance(failure.get('type'),str) and isinstance(failure.get('reason'),str))),'Child completion/failure shape')
+ # sequence.py marks a report complete only with no failure and a clean cache shutdown.
+ need(value['originalCommandsComplete'] is False or (failure is None and type(value.get('cacheStopExitCode')) is int and value['cacheStopExitCode']==0),'Complete child report with failure or cache shutdown exit')
  need(possible_history(value['phases'],value['originalCommandsComplete']),'Child phase history impossible');return value
 
 def retain_generated_configuration(source,capture):

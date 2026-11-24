@@ -151,10 +151,12 @@ class PermissionAccessRestore(unittest.TestCase):
    if argv[0]=='/bin/ps':return subprocess.CompletedProcess(argv,0,b'',b'')
    raise AssertionError('unexpected synthetic command')
   encoded=lambda value:json.dumps(value).encode();digest=lambda value:hashlib.sha256(value).hexdigest()
-  self.module=SimpleNamespace(Bounds=Bounds,command=command,group_id=int,sudo_denial=lambda value:True,snapshot=lambda roots,bounds:self.frame,encoded=encoded,digest=digest,current_endpoint=lambda frame:frame,LimitedCarrier=H.guard().LimitedCarrier,MAX_CAPTURE_BYTES=32*1024**2,MAX_DECODED_METADATA=128*1024**2,MAX_COMMAND_BYTES=1024**2,write_json=lambda path,value:path.write_text(json.dumps(value)))
+  self.module=SimpleNamespace(Bounds=Bounds,command=command,group_id=int,sudo_denial=lambda value:True,snapshot=lambda roots,bounds:self.frame,encoded=encoded,digest=digest,current_endpoint=self.endpoint_after_inner,LimitedCarrier=H.guard().LimitedCarrier,MAX_CAPTURE_BYTES=32*1024**2,MAX_DECODED_METADATA=128*1024**2,MAX_COMMAND_BYTES=1024**2,write_json=lambda path,value:path.write_text(json.dumps(value)))
   self.endpoint=digest(encoded(self.frame))
  def tearDown(self):self.temp.cleanup()
- def fresh(self,label):self.output=self.root/label;self.output.mkdir(mode=0o700);self.output.chmod(0o700);self.during=[]
+ def fresh(self,label):self.output=self.root/label;self.output.mkdir(mode=0o700);self.output.chmod(0o700);self.during=[];self.after=[]
+ def endpoint_after_inner(self,frame):self.after.append((self.mode(self.output),self.mode(self.output/'permission-request.json')));return frame
+ def accepted(self):return {'metadataEndpointSha256':self.endpoint,'controllerProtected':True,'allSelectedEntriesReadableExecutableAndProtected':True,'failureCount':0}
  def mode(self,path):return path.lstat().st_mode&0o777
  def observed(self,result):
   def inner(module,argv,env,receipts,timeout):
@@ -169,7 +171,7 @@ class PermissionAccessRestore(unittest.TestCase):
  def test_every_failure_kind_restores_private_output_and_keeps_request_root_only(self):
   refusal=H.InnerPermissionProbeRefusal({'stage':'synthetic-inner-refusal','exitCode':77})
   small=SimpleNamespace(**{**vars(self.module),'MAX_CAPTURE_BYTES':7})
-  cases=[('inner-refusal',refusal,self.module,H.InnerPermissionProbeRefusal,'inner permission'),('endpoint-mismatch',{'metadataEndpointSha256':'0'*64},self.module,ValueError,'endpoint changed'),('compression-bound',{'metadataEndpointSha256':self.endpoint},small,ValueError,'metadata-carrier-byte-bound'),('result-shape',{'metadataEndpointSha256':self.endpoint},self.module,KeyError,'controllerProtected')]
+  cases=[('inner-refusal',refusal,self.module,H.InnerPermissionProbeRefusal,'inner permission'),('endpoint-mismatch',{**self.accepted(),'metadataEndpointSha256':'0'*64},self.module,ValueError,'endpoint changed'),('compression-bound',self.accepted(),small,ValueError,'metadata-carrier-byte-bound'),('result-without-protection',{'metadataEndpointSha256':self.endpoint},self.module,ValueError,'inner result fields'),('result-without-failure-count',{'metadataEndpointSha256':self.endpoint,'controllerProtected':True,'allSelectedEntriesReadableExecutableAndProtected':True},self.module,ValueError,'inner result fields')]
   for label,result,module,kind,message in cases:
    with self.subTest(case=label):
     self.fresh(label);self.module=module
@@ -177,8 +179,8 @@ class PermissionAccessRestore(unittest.TestCase):
     self.assertEqual([(0o755,0o444)],self.during);self.assertEqual(0o700,self.mode(self.output))
     request=self.output/'permission-request.json';self.assertEqual(0o400,self.mode(request));self.assertEqual(self.frame,json.loads(request.read_bytes())['frame'])
  def test_success_removes_request_and_restores_private_output(self):
-  value=self.probe(self.observed({'metadataEndpointSha256':self.endpoint,'controllerProtected':True,'allSelectedEntriesReadableExecutableAndProtected':True,'failureCount':0}))
-  self.assertEqual([(0o755,0o444)],self.during);self.assertEqual(0o700,self.mode(self.output));self.assertFalse(os.path.lexists(self.output/'permission-request.json'))
+  value=self.probe(self.observed(self.accepted()))
+  self.assertEqual([(0o755,0o444)],self.during);self.assertEqual([(0o700,0o400)],self.after);self.assertEqual(0o700,self.mode(self.output));self.assertFalse(os.path.lexists(self.output/'permission-request.json'))
   frame=Path(value['selectedFrame']['file']);self.assertEqual(0o400,self.mode(frame));self.assertEqual(1,value['selectedFrame']['entries']);self.assertEqual(5813,value['selectedFrame']['hashReadBytes']);self.assertTrue(value['controllerProtected'])
   import gzip;self.assertEqual(self.frame,json.loads(gzip.decompress(frame.read_bytes())))
 
