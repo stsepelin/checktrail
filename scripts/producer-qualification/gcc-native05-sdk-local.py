@@ -15,7 +15,7 @@ sdk=load('gcc-main05-sdk.py')
 image=load('gcc-main05-sdk-image.py')
 h=image.h
 require=h.require
-POLICY_SHA256='ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77'
+POLICY_SHA256='d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089'
 
 def source_policy(repository):
  repository=h.physical(Path(repository))

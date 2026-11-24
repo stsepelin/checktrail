@@ -29,14 +29,24 @@
   "previousPolicySha256": "53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9",
   "purpose": "on-host-original-sdk-validation-with-minimized-public-receipt",
   "receiptBytes": 16384,
-  "revision": "live-sample-vanished-entry-tolerance-v6",
+  "revision": "live-sample-tolerance-and-container-id-v6",
   "revisionApproval": {
+    "addedRuntimeFiles": [
+      "scripts/producer-qualification/gcc-sdk-structured-diagnostics.py",
+      "scripts/producer-qualification/binutils-image-identity.mjs"
+    ],
     "approvedBy": "operator",
     "approvedOn": "2026-11-24",
     "changedRuntimeFiles": [
-      "scripts/producer-qualification/gcc-hosted-carrier.py"
+      "scripts/producer-qualification/gcc-hosted-carrier.py",
+      "scripts/producer-qualification/gcc-hosted-sdk.py"
     ],
-    "scope": "Live capacity samples skip entries unlinked between their parent listing and their own lstat, readlink or listing, bounded by LIVE_VANISHED_CEILING per sample; the sampled root must exist, and stopped admission, checkpoint and relocation scans stay strict. No other runtime file, limit or command changes."
+    "scope": [
+      "Live sampling: live capacity samples skip entries unlinked between their parent listing and their own lstat, readlink or listing, bounded by LIVE_VANISHED_CEILING per sample; the sampled root must exist, and stopped admission, checkpoint and relocation scans stay strict.",
+      "Container identity: once a create returns its container ID, every start, attach, signal, copy, terminal inspection and removal in the hosted configure carrier and the SDK reconstruction addresses that ID; a name is read only to admit the created container or to reconcile a create that returned no ID, and that reconciliation removes the ID it observed.",
+      "Import order: the on-host receipt entry verifies its policy, the checkout and every runtimeFiles pin with the standard library before loading any sibling, and the structured diagnostics module and the image identity helper it loads or executes are pinned as runtimeFiles.",
+      "No limit, command, image or other runtime file changes."
+    ]
   },
   "runtimeFiles": [
     {
@@ -46,10 +56,10 @@
       "sha256": "911eb056fa5a35b147c22a227ff789df95be0108089db6ae7b8a163b9a32763d"
     },
     {
-      "bytes": 44983,
+      "bytes": 46157,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-hosted-carrier.py",
-      "sha256": "b50b4afec424c66b0616854e04e3d64ff87d9a5215e0a6a15261cdbb8e21592e"
+      "sha256": "45c32c28d0772c4d4ca5c3c9609d6cd52936b7b3d21d2c68731428950a2c12da"
     },
     {
       "bytes": 7231,
@@ -58,10 +68,10 @@
       "sha256": "df30328a8be4cabd05d1765abdb46f996ce79db7100147b77ba9d9135eac0a2d"
     },
     {
-      "bytes": 22232,
+      "bytes": 22696,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-hosted-sdk.py",
-      "sha256": "d8003939d68fd9a3ccff4d2157c609a97ca0e8b28d31b26f2d4323a59be48dec"
+      "sha256": "79fc453d348831623c7eed15ba0ffdfe9741d04849bd3c253e27e13a7f62ecf6"
     },
     {
       "bytes": 10473,
@@ -152,6 +162,18 @@
       "mode": 420,
       "path": "scripts/producer-qualification/binutils-image-identity.v1.json",
       "sha256": "780c503c94b0e504b57cdd363ec0739d576f5a84c1ba2a608cfb454075b51bb2"
+    },
+    {
+      "bytes": 32052,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-sdk-structured-diagnostics.py",
+      "sha256": "5147df0d9c14d2d48d534d289a4946f6d0fe06dff18a2b80c2b63f48f24a2f73"
+    },
+    {
+      "bytes": 3639,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-image-identity.mjs",
+      "sha256": "6288522acb54d96b69d45d9cb636150a511232e81764d8ae93a5c238fb31eb9a"
     }
   ],
   "schemaVersion": 1,

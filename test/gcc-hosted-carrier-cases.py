@@ -21,6 +21,7 @@ def load(path):
     spec=importlib.util.spec_from_file_location(path.stem.replace('-','_'),path)
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 h=load(MODULE/'gcc-hosted-carrier.py');s=load(MODULE/'gcc-hosted-stage.py')
+SYNTHETIC_ID='7c'*32
 existing=load(ROOT/'test/gcc-staged-cases.py')
 
 
@@ -333,12 +334,12 @@ class Host(unittest.TestCase):
         state={'Running':running,'Pid':10 if running else 0,'Status':'running' if running else 'exited','ExitCode':0,'OOMKilled':oom,'Error':''}
         def docker(arguments,**kwargs):
             calls.append(arguments)
-            return json.dumps([{'State':state}]).encode() if arguments[0]=='inspect' else b''
+            return json.dumps([{'Id':SYNTHETIC_ID,'State':state}]).encode() if arguments[0]=='inspect' else b''
         service={'remainingSeconds':20000,'capturedMonotonic':0 if clock else h.time.monotonic()}
         with mock.patch.object(h.subprocess,'Popen',return_value=process),mock.patch.object(h,'docker',side_effect=docker),mock.patch.object(h.time,'sleep'):
             if clock:
-                with mock.patch.object(h.time,'monotonic',side_effect=clock):return h.native_observation(output,'synthetic-owner',maximum,service,scope=scope),calls
-            return h.native_observation(output,'synthetic-owner',maximum,service,scope=scope),calls
+                with mock.patch.object(h.time,'monotonic',side_effect=clock):return h.native_observation(output,SYNTHETIC_ID,maximum,service,scope=scope),calls
+            return h.native_observation(output,SYNTHETIC_ID,maximum,service,scope=scope),calls
 
     def test_sdk_observer_scope_retains_true_body_terminal_without_claiming_a_gcc_phase(self):
         with tempfile.TemporaryDirectory(prefix='gcc-sdk-observe-synthetic-') as name:
@@ -351,7 +352,7 @@ class Host(unittest.TestCase):
             self.assertIsNone(attempt['nativeOriginalCommandExitCode'])
         with mock.patch.object(h.subprocess,'Popen') as start:
             with self.assertRaisesRegex(ValueError,'Unknown fixed hosted observation scope'):
-                h.native_observation(Path('/not-created'),'synthetic-owner',60,{},scope='arbitrary-target')
+                h.native_observation(Path('/not-created'),SYNTHETIC_ID,60,{},scope='arbitrary-target')
             start.assert_not_called()
 
     def test_attach_zero_is_insufficient_without_clean_container_and_absent_native_family(self):

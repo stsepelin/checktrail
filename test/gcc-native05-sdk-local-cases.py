@@ -12,6 +12,9 @@ image_fixture=load(ROOT/'test/gcc-main05-sdk-image-cases.py','sdk_image_fixture'
 HEAD='a'*40
 POLICY='scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json'
 CARRIER='scripts/producer-qualification/gcc-hosted-carrier.py'
+SDK='scripts/producer-qualification/gcc-hosted-sdk.py'
+STRUCTURED='scripts/producer-qualification/gcc-sdk-structured-diagnostics.py'
+IMAGE_IDENTITY='scripts/producer-qualification/binutils-image-identity.mjs'
 # The carrier pin approved by the previous policy revision, before live sampling tolerated vanished entries.
 PREVIOUS_CARRIER=(43970,'ea6521cec4a88bfacf73999c4f9e4ee42fc3253c25a3224bd76702d93a7555ea')
 
@@ -28,9 +31,9 @@ class LocalSdk(unittest.TestCase):
   (output/'observations/SDK-RECONSTRUCTION.json').write_bytes(m.image.codec.canonical(proof))
   calls=[]
   def constructor(args,**kwargs):
-   if args==['inspect','--size',image_fixture.NAME]:return json.dumps([owner]).encode()
+   if args==['inspect','--size',image_fixture.CONTAINER]:return json.dumps([owner]).encode()
    if args==['image','ls','--no-trunc','--quiet',image_fixture.TAG]:return b''
-   if args==['commit','--pause=true',image_fixture.NAME,image_fixture.TAG]:return image_fixture.IMAGE.encode()
+   if args==['commit','--pause=true',image_fixture.CONTAINER,image_fixture.TAG]:return image_fixture.IMAGE.encode()
    if args==['image','inspect',image_fixture.IMAGE]:return json.dumps([image]).encode()
    raise AssertionError(args)
   local=image_fixture.m.commit_prepared(image_fixture.NAME,image_fixture.CONTAINER,base,proof,output,constructor)
@@ -102,15 +105,22 @@ class LocalSdk(unittest.TestCase):
   row=json.loads((family[1]/'SDK-FOR-MAIN.json').read_bytes());self.assertEqual(row['observed']['containerState']['ExitCode'],0)
  def test_current_policy_links_exact_prior_revision_and_preserves_original_limits(self):
   policy=m.source_policy(ROOT)
-  self.assertEqual(policy['revision'],'live-sample-vanished-entry-tolerance-v6')
+  self.assertEqual(policy['revision'],'live-sample-tolerance-and-container-id-v6')
   self.assertEqual(policy['previousPolicySha256'],'53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9')
   self.assertEqual(policy['sdkBodySeconds'],1200);self.assertEqual(policy['sourceJobSeconds'],21600)
   self.assertEqual(policy['artifactUploads'],0);self.assertEqual(policy['cacheWrites'],0)
   self.assertTrue(policy['freshApprovalReviewRequired']);self.assertFalse(policy['native05Authorized']);self.assertFalse(policy['gateAComplete'])
   approval=policy['revisionApproval']
   self.assertEqual((approval['approvedOn'],approval['approvedBy']),('2026-11-24','operator'))
-  self.assertEqual(approval['changedRuntimeFiles'],[CARRIER])
-  self.assertIn('LIVE_VANISHED_CEILING',approval['scope'])
+  # The approval names exactly the runtime rows whose bytes differ from the
+  # previous revision, and the rows that revision did not pin at all.
+  self.assertEqual(approval['changedRuntimeFiles'],[CARRIER,SDK])
+  self.assertEqual(approval['addedRuntimeFiles'],[STRUCTURED,IMAGE_IDENTITY])
+  paths=[row['path'] for row in policy['runtimeFiles']]
+  self.assertEqual(len(paths),len(set(paths)));self.assertLessEqual({*approval['changedRuntimeFiles'],*approval['addedRuntimeFiles']},set(paths))
+  self.assertTrue(any('LIVE_VANISHED_CEILING' in line for line in approval['scope']))
+  self.assertTrue(any('container ID' in line for line in approval['scope']))
+  self.assertTrue(any('standard library before loading any sibling' in line for line in approval['scope']))
 
  def counterfactual(self,directory):
   copy=Path(directory).resolve()/'copy';copy.mkdir()

@@ -76,35 +76,50 @@ def cleanup_native(native):
     h.digest_file(request_path,maximum=1024**2);request=json.loads(request_path.read_bytes());name=request['name']
     require(re.fullmatch('checktrail-gcc-native05-[a-f0-9]{32}',name) and request['sameNameWasAbsentObserved'] is True,
             'Exact new native container ownership reservation required')
-    listed=h.docker(['ps','--all','--no-trunc','--quiet','--filter','name=^/'+name+'$']).decode().splitlines()
-    require(len(listed)<=1,'Native owned-name lookup is ambiguous')
-    if not listed:return {'state':'exact-owned-native-container-absent','ownedNativeCleanupComplete':True}
-    owner=json.loads(h.docker(['inspect',name]))[0]
-    (native/'NATIVE-CLEANUP-OBSERVED.json').write_bytes(codec.canonical(owner))
-    require(re.fullmatch('[a-f0-9]{64}',owner['Id']) and owner['Id']==listed[0] and owner['Config']['Labels']['io.checktrail.gcc-staged-owner']==name,
-            'Exact native cleanup ownership differs')
     returned=None;response_path=native/'NATIVE-CREATION-RESPONSE.json'
     if os.path.lexists(response_path):
         h.digest_file(response_path,maximum=65536);response=json.loads(response_path.read_bytes())
         require(response['name']==name,'Native creation response namespace differs')
         value=response['returnedContainerId']
         if isinstance(value,str) and re.fullmatch('[a-f0-9]{64}',value):returned=value
+    def holders():
+        return h.docker(['ps','--all','--no-trunc','--quiet','--filter','name=^/'+name+'$']).decode().split()
     if returned is not None:
+        # The returned ID is the owned resource: a rename moves it away from
+        # the name without changing it, and a container that later takes the
+        # name is not ours. The name is never consulted to find or remove it.
+        listed=h.docker(['ps','--all','--no-trunc','--quiet','--filter','id='+returned]).decode().split()
+        require(listed in ([],[returned]),'Native owned-ID lookup is ambiguous')
+        if not listed:
+            result={'state':'exact-owned-native-container-absent','ownedNativeCleanupComplete':True,
+                    'unrelatedContainerRemoved':False,'ownedNameReboundTo':holders()}
+            (native/'NATIVE-CLEANUP.json').write_bytes(codec.canonical(result));return result
+        owner=json.loads(h.docker(['inspect',returned]))[0]
+        (native/'NATIVE-CLEANUP-OBSERVED.json').write_bytes(codec.canonical(owner))
         # A malformed runtime configuration remains OUR created resource when
         # its independent returned ID and exact owner match. Preserve the bad
         # metadata, remove it, and never turn that cleanup into native readiness.
-        require(owner['Id']==returned,'Native name rebound to another container; refuse deletion')
+        require(owner['Id']==returned and owner['Config']['Labels']['io.checktrail.gcc-staged-owner']==name,
+                'Exact native cleanup ownership differs')
     else:
+        # Only a create with no returned ID is reconciled by name, and only
+        # when the observed command/image prove the holder is that create.
+        listed=holders()
+        require(len(listed)<=1,'Native owned-name lookup is ambiguous')
+        if not listed:return {'state':'exact-owned-native-container-absent','ownedNativeCleanupComplete':True}
+        owner=json.loads(h.docker(['inspect',listed[0]]))[0]
+        (native/'NATIVE-CLEANUP-OBSERVED.json').write_bytes(codec.canonical(owner))
+        require(re.fullmatch('[a-f0-9]{64}',owner['Id']) and owner['Id']==listed[0] and owner['Config']['Labels']['io.checktrail.gcc-staged-owner']==name,
+                'Exact native cleanup ownership differs')
         require(owner['Config']['Image']==request['localImageId'] and
                 owner['Config']['Cmd']==['-i',*[key+'='+value for key,value in sdk.stage.FIXED_ENVIRONMENT.items()],*observer.BODY],
                 'Ambiguous native create lacks matching observed command/image')
-    # The name can be rebound after inspection; only the verified ID is removed.
     h.docker(['rm','--force',owner['Id']],timeout=30)
     require(not h.docker(['ps','--all','--no-trunc','--quiet','--filter','id='+owner['Id']]).strip(),
             'Owned native container remains after removal')
     # A container now holding the name is not ours: report it, never remove it,
     # and withhold the quiescence credit that owned removal would otherwise give.
-    rebound=h.docker(['ps','--all','--no-trunc','--quiet','--filter','name=^/'+name+'$']).decode().split()
+    rebound=holders()
     result={'state':'exact-owned-native-container-removed','ownedNativeCleanupComplete':True,'removedContainerId':owner['Id'],
             'unrelatedContainerRemoved':False,'ownedNameReboundTo':rebound,
             'quiescenceAfterOwnedRemovalObserved':not rebound}

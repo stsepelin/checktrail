@@ -32,9 +32,9 @@ class LocalSdkImage(unittest.TestCase):
         owner,proof,base,image=fixture();calls=[]
         def docker(args,**kw):
             calls.append((args,kw))
-            if args==['inspect','--size',NAME]:return json.dumps([owner]).encode()
+            if args==['inspect','--size',CONTAINER]:return json.dumps([owner]).encode()
             if args==['image','ls','--no-trunc','--quiet',TAG]:return b''
-            if args==['commit','--pause=true',NAME,TAG]:return (IMAGE+'\n').encode()
+            if args==['commit','--pause=true',CONTAINER,TAG]:return (IMAGE+'\n').encode()
             if args==['image','inspect',IMAGE]:return json.dumps([image]).encode()
             raise AssertionError(args)
         with tempfile.TemporaryDirectory() as d:
@@ -42,7 +42,7 @@ class LocalSdkImage(unittest.TestCase):
             self.assertEqual(record['localImageId'],IMAGE);self.assertEqual(record['originalRootfsLayers'],base['RootFS']['Layers'])
             self.assertFalse(record['registryPublicationPerformed']);self.assertFalse(record['native05Executed'])
             self.assertTrue(record['ephemeralLocalImageCleanupRequired'])
-            self.assertEqual(len(calls),4);self.assertEqual(calls[2],(['commit','--pause=true',NAME,TAG],{'timeout':300}))
+            self.assertEqual(len(calls),4);self.assertEqual(calls[2],(['commit','--pause=true',CONTAINER,TAG],{'timeout':300}))
             self.assertEqual(json.loads((output/'SDK-STOPPED-FOR-SNAPSHOT.json').read_bytes()),owner)
 
     def test_each_process_ownership_exit_and_measured_layer_axis(self):
@@ -106,15 +106,15 @@ class FailedSnapshotCleanup(unittest.TestCase):
         if mode=='validation-failure':image['Architecture']='arm64'
         def docker(args,**kw):
             calls.append(args)
-            if args==['inspect','--size',NAME]:return json.dumps([owner]).encode()
+            if args==['inspect','--size',CONTAINER]:return json.dumps([owner]).encode()
             if args==['image','ls','--no-trunc','--quiet',TAG]:return (image['Id']+'\n').encode() if state['tag'] else b''
-            if args==['commit','--pause=true',NAME,TAG]:
+            if args==['commit','--pause=true',CONTAINER,TAG]:
                 self.assertTrue((output/'SDK-LOCAL-SNAPSHOT-REQUEST.json').is_file())
                 state.update(created=True,tag=True)
                 if mode.startswith('ambiguous'):raise ValueError('Synthetic commit response lost after actual image creation')
                 return (IMAGE+'\n').encode()
             if args==['image','inspect',IMAGE] or args==['image','inspect',TAG]:return json.dumps([image]).encode()
-            if args==['image','rm',TAG]:state.update(created=False,tag=False);return b'Synthetic exact owned tag removed'
+            if args==['image','rm',IMAGE]:state.update(created=False,tag=False);return b'Synthetic exact owned tag removed'
             if args==['image','ls','--all','--no-trunc','--quiet']:return (IMAGE+'\n').encode() if state['created'] else b''
             raise AssertionError(args)
         with self.assertRaises(ValueError):m.commit_prepared(NAME,CONTAINER,base,proof,output,docker)
@@ -126,7 +126,7 @@ class FailedSnapshotCleanup(unittest.TestCase):
             self.assertTrue(state['created']);self.assertTrue((output/'SDK-LOCAL-SNAPSHOT-COMMAND.json').exists())
             self.assertFalse((output/'SDK-LOCAL-IMAGE.json').exists())
             result=m.cleanup_owned(output,docker);self.assertTrue(result['ownedImageCleanupComplete']);self.assertFalse(state['created'])
-            self.assertEqual([call for call in calls if call[:2]==['image','rm']],[['image','rm',TAG]])
+            self.assertEqual([call for call in calls if call[:2]==['image','rm']],[['image','rm',IMAGE]])
             self.assertFalse(result['unrelatedTagsRemoved']);self.assertFalse(result['imagePrunePerformed'])
 
     def test_ambiguous_local_commit_recovers_only_from_exact_request_tag_and_independent_owner(self):

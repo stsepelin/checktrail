@@ -1,10 +1,12 @@
 """Synthetic SDK DATA and real FD/child-output barriers; no SDK/native effects."""
 import copy
 import ast
+import hashlib
 import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -45,7 +47,7 @@ class Receipt(unittest.TestCase):
                 sys.stdout.flush();sys.stderr.flush();os.dup2(stdout.fileno(),1);os.dup2(stderr.fileno(),2)
                 with mock.patch.dict(os.environ,{'RUNNER_TEMP':str(root),'GITHUB_SHA':HEAD}),\
                      mock.patch.object(sys,'argv',arguments or ['fixed-helper','qualify-on-host','--operator-trust-execution']),\
-                     mock.patch.object(m,'fixed_work',side_effect=work) as called:
+                     mock.patch.object(m,'fixed_work',side_effect=work) as called,mock.patch.dict(m.ADMISSION):
                     code=m.main();calls=called.call_count
                 sys.stdout.flush();sys.stderr.flush()
             finally:
@@ -171,7 +173,7 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
 
     def test_each_receipt_decoder_admits_only_its_own_exact_policy_revision(self):
         root,_,_,good,_=self.run_entry(self.noisy)
-        current='ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77'
+        current='d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089'
         v5='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
         v4='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
         self.assertEqual(m.POLICY_SHA256,current);self.assertEqual(good['sourcePolicySha256'],current)
@@ -218,6 +220,7 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
                 env={'RUNNER_TEMP':str(root),'GITHUB_WORKSPACE':str(ROOT),'GITHUB_SHA':HEAD,'CHECKTRAIL_HOST_NODE':'{}'}
                 with mock.patch.dict(os.environ,env),mock.patch.object(m.os,'getuid',return_value=0),\
                      mock.patch.object(m,'load',side_effect=lambda name:legacy if name=='gcc-hosted-sdk.py' else object()),\
+                     mock.patch.object(m,'verify_checkout'),mock.patch.dict(m.ADMISSION),\
                      mock.patch.object(m.subprocess,'run',side_effect=run),mock.patch.object(m,'verify_on_host',side_effect=verify):
                     value=m.guarded(lambda:m.fixed_work(private),private,HEAD)
                 self.assertEqual(value['diagnostics']['stage'],expected)
@@ -408,7 +411,7 @@ class Composition(unittest.TestCase):
    outer=['outer-receipt','qualify-on-host','--operator-trust-execution']
    with mock.patch.dict(os.environ,env),mock.patch.object(sys,'argv',outer.copy()),mock.patch.object(m.os,'getuid',return_value=0),\
         mock.patch.object(m,'load',side_effect=lambda name:legacy if name=='gcc-hosted-sdk.py' else object()),\
-        mock.patch.object(legacy.h,'verify_repository',return_value={}),\
+        mock.patch.object(m,'verify_checkout'),mock.patch.dict(m.ADMISSION),mock.patch.object(legacy.h,'verify_repository',return_value={}),\
         mock.patch.object(legacy.h,'admit_host_node',return_value={'path':'/fixed/synthetic-node'}),\
         mock.patch.object(legacy.h.capacity.base.platform,'system',return_value='SyntheticHost'),\
         mock.patch.object(legacy.h,'docker',side_effect=AssertionError('Docker reached')) as docker,\
@@ -477,5 +480,105 @@ class Composition(unittest.TestCase):
    with self.subTest(service=kind),self.assertRaisesRegex(ValueError,'^'+m.re.escape(expected)+'$'):
     capacity.service_clock(selected,r,source,j,c,configured_job_seconds=seconds)
 
+
+
+MARKER_CODE="\nimport pathlib as _synthetic_pathlib\n_synthetic_pathlib.Path({marker!r}).write_text('sibling-module-code-ran-137')\n"
+DRIVER='''import importlib.util,os,sys
+spec=importlib.util.spec_from_file_location('copied_receipt',sys.argv[1]);m=importlib.util.module_from_spec(spec)
+spec.loader.exec_module(m)
+os.getuid=lambda:0
+sys.argv=['helper','qualify-on-host','--operator-trust-execution'];raise SystemExit(m.entry())
+'''
+
+
+class SiblingAdmission(unittest.TestCase):
+ """The operator entry runs no sibling module code before its pin is checked."""
+ def checkout(self,sibling,*,pinned):
+  """pinned: True re-pins the changed bytes; 'stale-hash' pins only their new size."""
+  temporary=tempfile.TemporaryDirectory(prefix='gcc-receipt-admission-');self.addCleanup(temporary.cleanup)
+  base=Path(temporary.name).resolve();copy=base/'checkout';marker=base/'sibling-imported.marker'
+  policy_rel='scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json';receipt_rel='scripts/producer-qualification/gcc-sdk-onhost-receipt.py'
+  policy=json.loads((ROOT/policy_rel).read_bytes())
+  for name in [policy_rel,receipt_rel,*[row['path'] for row in policy['runtimeFiles']]]:
+   target=copy/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/name,target)
+  changed=copy/'scripts/producer-qualification'/sibling;before=changed.read_bytes()
+  changed.write_bytes(before+MARKER_CODE.format(marker=str(marker)).encode());self.assertNotEqual(changed.read_bytes(),before)
+  if pinned:
+   # The valid near miss: the operator re-pins exactly these bytes and freezes that policy.
+   row=next(row for row in policy['runtimeFiles'] if row['path'].endswith('/'+sibling))
+   body=changed.read_bytes();row.update(bytes=len(body))
+   if pinned is True:row.update(sha256=hashlib.sha256(body).hexdigest())
+   raw=json.dumps(policy,indent=2,sort_keys=True).encode()+b'\n';(copy/policy_rel).write_bytes(raw)
+   source=(copy/receipt_rel).read_text();updated=source.replace(m.POLICY_SHA256,hashlib.sha256(raw).hexdigest())
+   self.assertNotEqual(updated,source);(copy/receipt_rel).write_text(updated)
+  env={'HOME':str(base),'GIT_CONFIG_NOSYSTEM':'1','PATH':'/usr/bin:/bin'}
+  git=['/usr/bin/git','-c','user.name=synthetic','-c','user.email=synthetic@invalid','-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false']
+  for command in [['init','-q'],['add','-A'],['commit','-q','-m','synthetic checkout']]:
+   subprocess.run([*git,*command],cwd=copy,env=env,check=True,capture_output=True,timeout=60)
+  head=subprocess.run([*git,'rev-parse','HEAD'],cwd=copy,env=env,check=True,capture_output=True,timeout=10).stdout.decode().strip()
+  return base,copy,marker,head
+ def entry(self,base,copy,head):
+  temp=base/'runner-temp';temp.mkdir()
+  env={'RUNNER_TEMP':str(temp),'GITHUB_WORKSPACE':str(copy),'GITHUB_SHA':head,'CHECKTRAIL_HOST_NODE':'{}','PATH':'/usr/bin:/bin'}
+  completed=subprocess.run([sys.executable,'-I','-B','-c',DRIVER,str(copy/'scripts/producer-qualification/gcc-sdk-onhost-receipt.py')],
+                           env=env,capture_output=True,timeout=120)
+  self.assertEqual(completed.stderr,b'');self.assertTrue(completed.stdout.startswith(m.PREFIX),completed.stdout[:200])
+  return completed.returncode,json.loads(completed.stdout[len(m.PREFIX):])
+ def test_changed_sibling_is_refused_before_any_of_its_module_code_runs(self):
+  # Direct (diagnostics) and transitive (carrier, loaded by the SDK helper) imports.
+  for sibling,pinned in [('gcc-sdk-structured-diagnostics.py',False),('gcc-hosted-carrier.py',False),
+                         ('gcc-sdk-structured-diagnostics.py','stale-hash'),('gcc-hosted-carrier.py','stale-hash')]:
+   with self.subTest(sibling=sibling,pinned=pinned):
+    base,copy,marker,head=self.checkout(sibling,pinned=pinned)
+    code,value=self.entry(base,copy,head)
+    self.assertEqual((code,value['errorId']),(1,'source-refused'));self.assertEqual(value['diagnostics']['stage'],'runtime-source-validation')
+    self.assertFalse(marker.exists(),'Sibling module code ran before its pin was checked')
+ def test_exactly_pinned_sibling_bytes_are_admitted_and_then_imported(self):
+  for sibling in ['gcc-sdk-structured-diagnostics.py','gcc-hosted-carrier.py']:
+   with self.subTest(sibling=sibling):
+    base,copy,marker,head=self.checkout(sibling,pinned=True)
+    code,value=self.entry(base,copy,head)
+    self.assertEqual(code,1);self.assertNotEqual(value['errorId'],'source-refused')
+    self.assertEqual(marker.read_text(),'sibling-module-code-ran-137')
+ def test_dirty_or_different_checkout_is_refused_before_any_sibling_loads(self):
+  for kind in ['dirty','other-head']:
+   with self.subTest(kind=kind):
+    base,copy,marker,head=self.checkout('gcc-hosted-carrier.py',pinned=True)
+    if kind=='dirty':
+     path=copy/'scripts/producer-qualification/gcc-staged-plan.py';path.write_bytes(path.read_bytes()+b'# synthetic-dirty-137\n')
+    code,value=self.entry(base,copy,head if kind=='dirty' else 'c'*40)
+    self.assertEqual(value['errorId'],'source-refused');self.assertFalse(marker.exists())
+ def test_every_loaded_or_executed_sibling_is_a_runtime_file_row(self):
+  def references(path):
+   tree=ast.parse(path.read_bytes());found=set()
+   for node in ast.walk(tree):
+    if isinstance(node,ast.Constant) and type(node.value) is str and node.value.endswith(('.py','.mjs')) and '/' not in node.value:
+     if (path.parent/node.value).is_file():found.add(node.value)
+   return found
+  modules=ROOT/'scripts/producer-qualification'
+  # Only sibling loads count: the controller copies into the container are data.
+  closure=set();pending=['gcc-sdk-onhost-receipt.py']
+  while pending:
+   name=pending.pop()
+   for found in references(modules/name)-closure-{'gcc-sdk-onhost-receipt.py'}:
+    closure.add(found)
+    if found.endswith('.py'):pending.append(found)
+  pinned={row['path'] for row in json.loads((modules/'gcc-sdk-receipt-policy.v1.json').read_bytes())['runtimeFiles']}
+  declared={path.rsplit('/',1)[1] for path in m.RUNTIME_SIBLINGS}
+  self.assertEqual(len(declared),len(m.RUNTIME_SIBLINGS))
+  self.assertLessEqual(closure,{path.rsplit('/',1)[1] for path in pinned},'A loaded or executed sibling has no runtimeFiles pin')
+  self.assertLessEqual(declared,closure);self.assertLessEqual(set(m.RUNTIME_SIBLINGS),pinned)
+  self.assertIn('gcc-sdk-structured-diagnostics.py',declared);self.assertIn('binutils-image-identity.mjs',declared)
+ def test_unobserved_structured_twin_is_the_decoder_empty_value_and_not_a_type_confusable_shortcut(self):
+  decoder=m.structured_diagnostics()
+  self.assertEqual(m.canonical(m.UNOBSERVED_STRUCTURED_SDK),m.canonical(decoder.empty()))
+  self.assertEqual(decoder.validate(m.unobserved_structured()),m.UNOBSERVED_STRUCTURED_SDK)
+  self.assertEqual(m.validate_structured(m.unobserved_structured()),m.UNOBSERVED_STRUCTURED_SDK)
+  # 0 == False in Python; a value equal under == must still meet the full decoder.
+  confused=m.unobserved_structured();confused['sdkQualifiedByProjection']=0
+  self.assertEqual(confused,m.UNOBSERVED_STRUCTURED_SDK)
+  with self.assertRaises(decoder.Bad):m.validate_structured(confused)
+  observed=m.unobserved_structured();observed['state']='invalid';observed['errorId']='record-unavailable'
+  self.assertEqual(m.validate_structured(observed)['state'],'invalid')
 
 if __name__=='__main__':unittest.main()

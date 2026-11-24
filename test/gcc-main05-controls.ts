@@ -7,6 +7,7 @@ const groups = {
   core: [
     "attempt",
     "capacity",
+    "container_identity",
     "driver",
     "export",
     "history",

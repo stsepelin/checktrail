@@ -273,21 +273,25 @@ def main():
         daemon=json.loads(h.docker(['info','--format','{{json .}}']))
         (output/'DOCKER-OBSERVATION.json').write_bytes(codec.canonical(daemon))
         resources=h.validate_daemon(daemon,h.capacity.stock_resources(output),output);admit(resources,service)
-        seed=name+'-seed'
+        # Seed and SDK effects address the IDs their creates returned. A name is
+        # read only to admit, or to reconcile a create that returned no ID.
+        seed=name+'-seed';seed_identifier=None
         try:
-            h.docker(['create','--pull=never','--network','none','--name',seed,'--label','io.checktrail.gcc-sdk-seed='+name,'--entrypoint','/bin/true',codec.IMAGE])
+            seed_identifier=h.container_id(h.docker(['create','--pull=never','--network','none','--name',seed,'--label','io.checktrail.gcc-sdk-seed='+name,'--entrypoint','/bin/true',codec.IMAGE]).decode().strip())
             for relative in ['__carrier_tmp','__carrier_var_tmp','__carrier_run']:
-                h.docker(['cp','-a',seed+':'+h.MUTABLE_MOUNTS[relative],str(state/relative)],timeout=120)
+                h.docker(['cp','-a',seed_identifier+':'+h.MUTABLE_MOUNTS[relative],str(state/relative)],timeout=120)
         finally:
-            owner=json.loads(h.docker(['inspect',seed]))[0];require(owner['Config']['Labels']['io.checktrail.gcc-sdk-seed']==name,'Unknown seed ownership')
-            h.docker(['rm',seed]);result['ownedSeedCleanup']='removed'
-        requested=True;identifier=h.docker(arguments(catalog,output,name),timeout=60).decode().strip()
+            owner=json.loads(h.docker(['inspect',seed_identifier or seed]))[0]
+            require((owner['Id']==seed_identifier if seed_identifier else h.is_container_id(owner['Id'])) and
+                    owner['Config']['Labels']['io.checktrail.gcc-sdk-seed']==name,'Unknown seed ownership')
+            h.docker(['rm',owner['Id']]);result['ownedSeedCleanup']='removed'
+        requested=True;identifier=h.container_id(h.docker(arguments(catalog,output,name),timeout=60).decode().strip())
         owner=json.loads(h.docker(['inspect',name]))[0];witness=validate_container(owner,identifier,name,catalog,output)
         before_source=codec.snapshot(predecessor,codec.Budget({'treeBytes':8*h.GIB,'seconds':180}))
         service=h.capacity.capture_service(api,resources['context']);policy=admit(h.capacity.stock_resources(output),service)
         (output/'ADMISSION.json').write_bytes(codec.canonical({'resources':resources,'service':service,'policy':policy,'container':witness,
                                                             'operatorTrustedSdkCode':True,'projectCodeSandboxed':False}))
-        observed=h.native_observation(output,name,1200,service['clock'],scope='sdk-reconstruction')
+        observed=h.native_observation(output,identifier,1200,service['clock'],scope='sdk-reconstruction')
         after_source=codec.snapshot(predecessor,codec.Budget({'treeBytes':8*h.GIB,'seconds':180}))
         require(after_source==before_source,'SDK provisioning modified the immutable predecessor')
         (output/'PREDECESSOR-AFTER-SDK.json').write_bytes(codec.canonical({
@@ -305,11 +309,11 @@ def main():
         cleanup_error=None
         if requested:
             try:
-                owner=json.loads(h.docker(['inspect',name]))[0]
+                owner=json.loads(h.docker(['inspect',identifier or name]))[0]
                 require(owner['Config']['Labels']['io.checktrail.gcc-staged-owner']==name and
-                        (identifier is None or owner['Id']==identifier),'Unknown SDK cleanup ownership')
-                if owner['State']['Running']:h.docker(['kill',name])
-                h.docker(['rm',name]);result['ownedContainerCleanup']='removed'
+                        (owner['Id']==identifier if identifier else h.is_container_id(owner['Id'])),'Unknown SDK cleanup ownership')
+                if owner['State']['Running']:h.docker(['kill',owner['Id']])
+                h.docker(['rm',owner['Id']]);result['ownedContainerCleanup']='removed'
             except BaseException as error:
                 cleanup_error=error
                 result.update(state='sdk-cleanup-incomplete',ownedContainerCleanup='unavailable',cleanupError=str(error)[:1000])

@@ -20,7 +20,7 @@ def load(name):
     path=ROOT/'scripts/producer-qualification'/name
     spec=importlib.util.spec_from_file_location(path.stem.replace('-','_'),path);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 
-h=load('gcc-sdk-onhost-receipt.py');m=h.structured
+h=load('gcc-sdk-onhost-receipt.py');m=h.structured_diagnostics()
 
 class Structured(unittest.TestCase):
     def folder(self):
@@ -311,7 +311,7 @@ class Structured(unittest.TestCase):
                     output=private/'synthetic-sdk';output.mkdir()
                     (output/'SDK-CARRIER.json').write_bytes(self.canonical({'ownedContainerCleanup':'removed','ownedSeedCleanup':'removed','observed':{'nativeSeconds':91.5,'containerState':{'Running':False,'Pid':0,'Status':'exited','ExitCode':code}}}))
                     h.retain_attempt(output,private)
-                    with mock.patch.object(h.structured,'collect',return_value={**m.empty(),'state':'invalid','errorId':'record-unavailable'}):h.retain_structured(output,private)
+                    with mock.patch.object(h.structured_diagnostics(),'collect',return_value={**m.empty(),'state':'invalid','errorId':'record-unavailable'}):h.retain_structured(output,private)
                     raise h.Refusal('sdk-incomplete')
                 value=h.guarded(fail,private,'a'*40);self.assertEqual(value['sdkContainerExitCode'],code);self.assertEqual(value['sdkContainerSeconds'],91.5)
                 self.assertEqual(value['structuredSdk']['state'],'invalid');self.assertFalse(value['sdkVerifiedOnHost']);self.assertLessEqual(len(h.PREFIX+h.canonical(value)),16384)

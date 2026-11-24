@@ -87,6 +87,15 @@ def copy_pinned(source, output, pin):
     require(digest_file(output) == {key: pin[key] for key in ['bytes', 'sha256']}, 'Physical copied input differs')
 
 
+def is_container_id(value):
+    return type(value) is str and len(value) == 64 and all(ch in '0123456789abcdef' for ch in value)
+
+
+def container_id(value):
+    require(is_container_id(value), 'Invalid owned container identity')
+    return value
+
+
 def docker(arguments, *, timeout=30, maximum=2 * 1024 ** 2):
     result = subprocess.run(['/usr/bin/docker', *arguments], env=HOST_ENV, capture_output=True, timeout=timeout)
     require(len(result.stdout) + len(result.stderr) <= maximum, 'Docker metadata response bound')
@@ -274,10 +283,16 @@ def admit_state(resources, service, measured):
     return capacity.admit(resources, service, state_bytes=measured['allocatedBytes'], state_ceiling_bytes=STATE_CEILING)
 
 
-def native_observation(output, name, maximum_seconds, service_clock, *, scope='configure'):
+def native_observation(output, identifier, maximum_seconds, service_clock, *, scope='configure'):
+    """Start, signal and inspect only the admitted container ID.
+
+    The caller admitted `identifier` from its own create response. Its name can
+    be rebound at any later moment, so no effect here resolves a name.
+    """
     require(scope in ['configure', 'sdk-reconstruction'], 'Unknown fixed hosted observation scope')
+    container_id(identifier)
     start = time.monotonic()
-    process = subprocess.Popen(['/usr/bin/docker', 'start', '--attach', name], env=HOST_ENV,
+    process = subprocess.Popen(['/usr/bin/docker', 'start', '--attach', identifier], env=HOST_ENV,
                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
     selector = selectors.DefaultSelector()
     selector.register(process.stdout, selectors.EVENT_READ)
@@ -316,12 +331,12 @@ def native_observation(output, name, maximum_seconds, service_clock, *, scope='c
         failure = error
         # Whole owned container, not only its attach process, is stopped.
         try:
-            docker(['kill', '--signal', 'TERM', name])
+            docker(['kill', '--signal', 'TERM', identifier])
         except BaseException:
             pass
         time.sleep(1)
         try:
-            docker(['kill', '--signal', 'KILL', name])
+            docker(['kill', '--signal', 'KILL', identifier])
         except BaseException:
             pass
         if process.poll() is None:
@@ -332,7 +347,9 @@ def native_observation(output, name, maximum_seconds, service_clock, *, scope='c
         process.stdout.close()
         (output / 'resource-samples.json').write_bytes(canonical({'samples': samples, 'quotaEnforced': False,
                                                                  'physicalHighWaterProven': False}) + b'\n')
-    state = json.loads(docker(['inspect', name]))[0]['State']
+    terminal = json.loads(docker(['inspect', identifier]))[0]
+    require(terminal['Id'] == identifier, 'Owned native terminal identity changed')
+    state = terminal['State']
     attempt = {'schemaVersion': 1, 'elapsedSeconds': time.monotonic() - start,
                'nativePhase': scope, 'sourceJobSecondsRemaining': service_clock['remainingSeconds'] -
                     (time.monotonic() - service_clock['capturedMonotonic']),
@@ -569,18 +586,24 @@ def main():
         # Preserve original image contents at the mutable temporary/run paths
         # before their mounted replacements are admitted. A pristine sibling
         # is data-only: docker cp reads it without executing its entrypoint.
+        # Every seed effect addresses the ID its create returned; the name is
+        # read only when an interrupted create returned none.
         seed = name + '-seed'
+        seed_identifier = None
         try:
-            docker(['create', '--pull=never', '--network', 'none', '--name', seed,
-                    '--label', 'io.checktrail.gcc-staged-seed-owner=' + name, '--entrypoint', '/bin/true', codec.IMAGE])
+            seed_identifier = container_id(docker([
+                'create', '--pull=never', '--network', 'none', '--name', seed,
+                '--label', 'io.checktrail.gcc-staged-seed-owner=' + name, '--entrypoint', '/bin/true',
+                codec.IMAGE]).decode().strip())
             for relative in ['__carrier_tmp', '__carrier_var_tmp', '__carrier_run']:
-                docker(['cp', '-a', seed + ':' + MUTABLE_MOUNTS[relative], str(state / relative)], timeout=120)
+                docker(['cp', '-a', seed_identifier + ':' + MUTABLE_MOUNTS[relative], str(state / relative)], timeout=120)
         finally:
             try:
-                seed_owner = json.loads(docker(['inspect', seed]))[0]
-                require(seed_owner['Config']['Labels']['io.checktrail.gcc-staged-seed-owner'] == name,
+                seed_owner = json.loads(docker(['inspect', seed_identifier or seed]))[0]
+                require((seed_owner['Id'] == seed_identifier if seed_identifier else is_container_id(seed_owner['Id'])) and
+                        seed_owner['Config']['Labels']['io.checktrail.gcc-staged-seed-owner'] == name,
                         'Seed cleanup ownership unavailable')
-                docker(['rm', seed])
+                docker(['rm', seed_owner['Id']])
                 outcome['ownedSeedCleanup'] = 'removed'
             except BaseException as error:
                 outcome.update(ownedSeedCleanup='unavailable', seedCleanupError=str(error)[:1000])
@@ -594,9 +617,8 @@ def main():
         # Track the owned request before invoking Docker: an interrupted create
         # may have provisioned the namespace before its response was retained.
         created = True
-        response_identifier = docker(arguments).decode().strip()
-        require(len(response_identifier) == 64 and all(ch in '0123456789abcdef' for ch in response_identifier), 'Invalid owned container identity')
-        identifier = response_identifier
+        identifier = container_id(docker(arguments).decode().strip())
+        # The name lookup only admits: validate_container requires the created ID.
         owner = json.loads(docker(['inspect', name]))[0]
         container_witness = validate_container(owner, identifier, name, catalog, output)
         (output / 'ADMISSION.json').write_bytes(canonical({'resources': resources, 'service': service,
@@ -605,7 +627,7 @@ def main():
             'command': arguments, 'mounts': {'/build': '.', **{target: relative for relative, target in MUTABLE_MOUNTS.items()}},
             'nativeSourceTrustedAtOperatorLevel': True, 'projectCodeSandboxed': False,
             'quotaEnforced': False, 'cacheReservationGuaranteed': False}) + b'\n')
-        observed = native_observation(output, name, admitted['maximumNativeSeconds'], service['clock'])
+        observed = native_observation(output, identifier, admitted['maximumNativeSeconds'], service['clock'])
         work = state / '__carrier_work'
         body = json.loads((work / 'FIRST-STAGE.json').read_bytes())
         require(body['state'] == 'native-configure-terminal-and-selected-configuration-observed' and
@@ -624,10 +646,10 @@ def main():
                     'Physical original stamp missing')
         # Close the entire native namespace before physical capture. The bind
         # state remains owned; no source process can mutate it during hashing.
-        owner = json.loads(docker(['inspect', name]))[0]
+        owner = json.loads(docker(['inspect', identifier]))[0]
         require(owner['Id'] == identifier and owner['Config']['Labels']['io.checktrail.gcc-staged-owner'] == name and
                 owner['State']['Running'] is False and owner['State']['Pid'] == 0, 'Native cleanup ownership changed')
-        docker(['rm', name], timeout=60)
+        docker(['rm', identifier], timeout=60)
         created = False
         outcome['ownedContainerCleanup'] = 'removed'
         # Preserve the COMPLETE original stdout and resource/terminal records
@@ -698,10 +720,12 @@ def main():
     finally:
         if created:
             try:
-                owner = json.loads(docker(['inspect', name]))[0]
+                # Only a create that returned no ID is reconciled by name, and
+                # even then the removal targets the ID that lookup observed.
+                owner = json.loads(docker(['inspect', identifier or name]))[0]
                 require(owner['Config']['Labels']['io.checktrail.gcc-staged-owner'] == name and
-                        (identifier is None or owner['Id'] == identifier), 'Cleanup ownership changed')
-                docker(['rm', '--force', name], timeout=60)
+                        (owner['Id'] == identifier if identifier else is_container_id(owner['Id'])), 'Cleanup ownership changed')
+                docker(['rm', '--force', owner['Id']], timeout=60)
                 outcome['ownedContainerCleanup'] = 'removed'
             except BaseException as error:
                 outcome['ownedContainerCleanup'] = 'unavailable'

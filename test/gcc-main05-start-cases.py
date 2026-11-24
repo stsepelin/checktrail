@@ -101,6 +101,8 @@ class RuntimePreparation(unittest.TestCase):
    self.assertIn('failed before GCC start',result['error']);self.assertIn(b'Synthetic original failure',(output/'sdk-private/opaque-wrapper-output.log').read_bytes());self.assertIn('cleanup unavailable',result['imageCleanupError']);self.assertFalse(result['nativeStarted'])
 
  def test_exact_native_recovery_removes_own_invalid_runtime_but_never_a_rebound_or_unproven_name(self):
+  # 'rebound-id': the returned container is gone and another holds the name;
+  # cleanup is complete for what we own and the holder is reported, not removed.
   foreign='f'*64
   for mode in ['known-invalid-command','ambiguous-valid-command','rebound-id','ambiguous-wrong-command','rebound-after-inspect']:
    with self.subTest(mode=mode),tempfile.TemporaryDirectory() as name:
@@ -120,7 +122,7 @@ class RuntimePreparation(unittest.TestCase):
       if selector=='name=^/'+NAME+'$':matched=[key for key,value in containers.items() if value==NAME]
       else:self.assertTrue(selector.startswith('id='));matched=[key for key in containers if key==selector[3:]]
       return ''.join(key+'\n' for key in matched).encode()
-     if args==['inspect',NAME]:return json.dumps([owner]).encode()
+     if args[0]=='inspect':self.assertEqual(args,['inspect',owner['Id']]);self.assertIn(args[1],containers);return json.dumps([owner]).encode()
      self.assertEqual(args[:2],['rm','--force'])
      if mode=='rebound-after-inspect' and containers.get(IDENTIFIER)==NAME:containers[IDENTIFIER]='synthetic-renamed-137';containers[foreign]=NAME
      target=args[2] if args[2] in containers else next(key for key,value in containers.items() if value==args[2])
@@ -136,10 +138,15 @@ class RuntimePreparation(unittest.TestCase):
        self.assertFalse(result['quiescenceAfterOwnedRemovalObserved'])
       else:
        self.assertEqual(containers,{});self.assertEqual(result['ownedNameReboundTo'],[]);self.assertTrue(result['quiescenceAfterOwnedRemovalObserved'])
+     elif mode=='rebound-id':
+      result=m.cleanup_native(frame);self.assertTrue(result['ownedNativeCleanupComplete'])
+      self.assertEqual(result['state'],'exact-owned-native-container-absent');self.assertEqual(result['ownedNameReboundTo'],['e'*64])
+      self.assertNotIn('quiescenceAfterOwnedRemovalObserved',result)
+      self.assertEqual(containers,{'e'*64:NAME});self.assertFalse(any(call[0] in ['rm','inspect'] for call in calls))
      else:
       with self.assertRaises(ValueError):m.cleanup_native(frame)
       self.assertEqual(containers,{owner['Id']:NAME});self.assertFalse(any(call[0]=='rm' for call in calls))
-    self.assertTrue((frame/'NATIVE-CLEANUP-OBSERVED.json').exists())
+    self.assertEqual((frame/'NATIVE-CLEANUP-OBSERVED.json').exists(),mode!='rebound-id')
 
  def journal_fixture(self,root):
   output=root/'gcc-main05';sdk=output/'sdk-frame';native=output/'native-frame';(sdk/'controls').mkdir(parents=True);(sdk/'predecessor').mkdir()

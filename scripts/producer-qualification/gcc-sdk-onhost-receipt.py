@@ -19,7 +19,7 @@ import sys
 import time
 import traceback
 
-POLICY_SHA256='ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77'
+POLICY_SHA256='d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089'
 PREFIX=b'CHECKTRAIL_SDK_RECEIPT_V1 '
 MAX_RECEIPT=16384
 MAX_OPAQUE=16*1024**2
@@ -145,12 +145,67 @@ def require(value,identifier):
 def canonical(value):return (json.dumps(value,sort_keys=True,separators=(',',':'))+'\n').encode()
 
 
-def load(name):
+# The operator entry loads no sibling until fixed_work() has pinned the policy,
+# the checkout and every policy runtimeFiles byte. Startup verification is
+# therefore stdlib-only: a stale sibling's module code never runs as root
+# before its mismatch is refused. Offline readers that import this module
+# without main() keep the ordinary lazy load.
+ADMISSION={'entry':False,'runtimeFilesVerified':False}
+# Every first-party file the fixed work loads or executes, transitively. Each
+# must be a policy runtimeFiles row before ADMISSION allows the first load.
+RUNTIME_SIBLINGS=['scripts/producer-qualification/'+name for name in [
+ 'gcc-sdk-structured-diagnostics.py','gcc-hosted-sdk.py','gcc-main05-sdk.py','gcc-hosted-carrier.py',
+ 'gcc-hosted-phase0-capacity.py','gcc-hosted-capacity.py','gcc-phase0-transport.py','gcc-hosted-stage.py',
+ 'gcc-staged-checkpoint.py','gcc-staged-plan.py','gcc-sdk-material.py','gcc-sdk-derived.py','gcc-sdk-derived-run.py',
+ 'binutils-image-identity.mjs']]
+SIBLINGS={}
+
+
+def sibling(name):
+    require(not ADMISSION['entry'] or ADMISSION['runtimeFilesVerified'],'source-refused')
     path=Path(__file__).with_name(name);spec=importlib.util.spec_from_file_location(path.stem.replace('-','_'),path)
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 
 
-structured=load('gcc-sdk-structured-diagnostics.py')
+def load(name):return sibling(name)
+
+
+def structured_diagnostics():
+    if 'structured' not in SIBLINGS:SIBLINGS['structured']=sibling('gcc-sdk-structured-diagnostics.py')
+    return SIBLINGS['structured']
+
+
+# Byte-for-byte canonical twin of structured_diagnostics().empty(), so a receipt
+# emitted before any sibling may load still carries the closed unobserved value.
+UNOBSERVED_STRUCTURED_SDK={
+ 'schemaVersion':1,'state':'unobserved','errorId':'none','cause':'unestablished',
+ 'sdkQualifiedByProjection':False,'underlyingRootCauseAssessed':False,
+ 'unjournaledCollectionAndNormalizationTerminals':'unobserved',
+ 'hashes':{'journal':None,'sdk':None,'generation':None,'validation':None,'comparison':None},
+ 'journal':{'state':'unobserved','expectedSlots':74,'requested':None,'terminals':None,'terminalZero':None,
+            'terminalNonzero':None,'terminalUnknown':None,'lastRequested':None,'lastTerminal':None},
+ 'mapping':{'state':'unobserved','layout':'unobserved','separatorScope':'document-and-complete-record-boundaries',
+            'sourceBound':False,'stdoutSha256':None,'layoutCompatible':None,'totalLines':None,'blankLines':None,
+            'headerLines':None,'prefixLines':None,'bodyLines':None,'recognizedRecords':None,'unknownRecords':None,
+            'duplicateRecords':None,'missingRecords':None,'semanticMismatchRecords':None,'boundaryBlankLines':None,
+            'documentBlankLines':None,'misplacedBlankLines':None,'unknownLines':None,'status0TrailerLines':None,
+            'misplacedStatus0TrailerLines':None,'separatorBoundaries':None},
+ 'nonRecordMappingRows':{'state':'unobserved','sourceBound':False,'stdoutSha256':None,'totalRows':None,
+                         'retainedRows':None,'omittedRows':None,'categoryCounts':None,'rows':[]},
+ 'sdk':{'state':'unobserved','packagesMatch':None,'entries':None,'counts':None,'materialProjectionMatches':None,'generatedComplete':None},
+ 'generation':{'state':'unobserved','toolIdentities':None,'removedOutputs':None,'completedGenerators':None,'freshFormats':None,'errorSha256':None},
+ 'validation':{'state':'unobserved','completedValidators':None,'finalGeneratedOutputs':None,'errorSha256':None}}
+
+
+def unobserved_structured():
+    return json.loads(canonical(UNOBSERVED_STRUCTURED_SDK))
+
+
+def validate_structured(value):
+    # Canonical bytes, not ==: 0 and False compare equal in Python, so only the
+    # exact JSON-typed unobserved value skips the full closed decoder.
+    if canonical(value)==canonical(UNOBSERVED_STRUCTURED_SDK):return value
+    return structured_diagnostics().validate(value)
 
 
 def file_pin(path,maximum):
@@ -203,7 +258,7 @@ def _validate_receipt(value,expected_policy):
             all(type(v) is int and 0<=v<=10000000 for v in value['counts'].values()),'sdk-proof-refused')
     require(type(value['hashes']) is dict and set(value['hashes'])==HASHES and
             all(v is None or type(v) is str and re.fullmatch('[a-f0-9]{64}',v) for v in value['hashes'].values()),'sdk-proof-refused')
-    try:structured.validate(value['structuredSdk'])
+    try:validate_structured(value['structuredSdk'])
     except BaseException:require(False,'sdk-proof-refused')
     diagnostics=value['diagnostics']
     require(type(diagnostics) is dict and set(diagnostics)==DIAGNOSTIC_KEYS and diagnostics['stage'] in STAGES and
@@ -227,7 +282,7 @@ def empty_receipt(head):
             'sourcePolicySha256':POLICY_SHA256,'errorId':'unexpected-failure','sdkVerifiedOnHost':False,
             'sdkContainerExitCode':None,'sdkContainerQuiescent':False,'ownedSdkCleanupObserved':False,
             'sdkContainerSeconds':None,'helperSeconds':0,'counts':{k:0 for k in sorted(COUNTS)},
-            'hashes':{k:None for k in sorted(HASHES)},'diagnostics':empty_diagnostics(),'structuredSdk':structured.empty(),**LIMITATIONS}
+            'hashes':{k:None for k in sorted(HASHES)},'diagnostics':empty_diagnostics(),'structuredSdk':unobserved_structured(),**LIMITATIONS}
 
 
 def failed_receipt(previous,identifier,elapsed):
@@ -280,9 +335,9 @@ def guarded(work,private,head):
                 except BaseException:traceback.print_exc()
         projection=private/'OWNED-STRUCTURED-SDK.json'
         if projection.exists():
-            try:value['structuredSdk']=structured.validate(read_json(projection,8192))
+            try:value['structuredSdk']=validate_structured(read_json(projection,8192))
             except BaseException:
-                value['structuredSdk']=structured.empty();value['structuredSdk'].update(state='invalid',errorId='record-unavailable')
+                value['structuredSdk']=unobserved_structured();value['structuredSdk'].update(state='invalid',errorId='record-unavailable')
     value['helperSeconds']=time.monotonic()-started
     try:value['hashes']['wrapperOutput']=file_pin(log,MAX_OPAQUE)['sha256']
     except BaseException:
@@ -294,18 +349,49 @@ def guarded(work,private,head):
         return failed_receipt(value,'sdk-proof-refused',time.monotonic()-started)
 
 
+CHECKOUT_ENV={'PATH':'/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'}
+
+
+def verify_checkout(repository,head):
+    """Stdlib-only checkout identity: only /usr/bin/git runs, never project code."""
+    require(type(head) is str and re.fullmatch('[a-f0-9]{40}',head),'source-refused')
+    git=['/usr/bin/git','-c','core.fsmonitor=false','-c','safe.directory='+str(repository),'--no-optional-locks']
+    observed=subprocess.run([*git,'rev-parse','HEAD'],cwd=repository,env=CHECKOUT_ENV,stdin=subprocess.DEVNULL,
+                            capture_output=True,timeout=10,check=False)
+    require(observed.returncode==0 and observed.stdout.decode(errors='replace').strip()==head,'source-refused')
+    clean=subprocess.run([*git,'diff','--no-ext-diff','--quiet','HEAD','--'],cwd=repository,env=CHECKOUT_ENV,
+                         stdin=subprocess.DEVNULL,capture_output=True,timeout=10,check=False)
+    require(clean.returncode==0,'source-refused')
+
+
+def verify_runtime_files(repository,policy):
+    rows=policy['runtimeFiles'];require(type(rows) is list and rows,'source-refused')
+    for row in rows:
+        require(type(row) is dict and type(row.get('path')) is str and not row['path'].startswith('/') and
+                all(part not in ['','.','..'] for part in row['path'].split('/')),'source-refused')
+        path=repository/row['path']
+        # A grown, shrunk or special file is the same source refusal as a changed one.
+        try:observed=file_pin(path,row['bytes'])
+        except (Refusal,OSError):observed=None
+        require(observed=={k:row[k] for k in ['bytes','sha256']} and stat.S_IMODE(path.lstat().st_mode)==row['mode'],'source-refused')
+    return {row['path'] for row in rows}
+
+
 def fixed_work(private):
     record_stage(private,'runtime-source-validation')
     policy_path=Path(__file__).with_name('gcc-sdk-receipt-policy.v1.json')
     require(file_pin(policy_path,65536)['sha256']==POLICY_SHA256,'source-refused');policy=read_json(policy_path)
     repository=Path(os.environ['GITHUB_WORKSPACE']);temporary=Path(os.environ['RUNNER_TEMP'])
-    legacy=load('gcc-hosted-sdk.py');independent=load('gcc-main05-sdk.py')
     require(os.getuid()==0 and repository.is_absolute() and repository==repository.resolve() and
             temporary.is_absolute() and temporary==temporary.resolve(),'runtime-refused')
-    legacy.h.verify_repository(repository,{'GITHUB_SHA':os.environ['GITHUB_SHA']})
-    for row in policy['runtimeFiles']:
-        path=repository/row['path'];require(file_pin(path,row['bytes'])=={k:row[k] for k in ['bytes','sha256']} and
-                                            stat.S_IMODE(path.lstat().st_mode)==row['mode'],'source-refused')
+    # Siblings load from this file's own directory, so it must be the exact
+    # checkout location whose bytes the policy rows pin.
+    require(Path(__file__).resolve().parent==repository/'scripts/producer-qualification','source-refused')
+    verify_checkout(repository,os.environ['GITHUB_SHA'])
+    pinned=verify_runtime_files(repository,policy)
+    require(set(RUNTIME_SIBLINGS)<=pinned,'source-refused')
+    ADMISSION['runtimeFilesVerified']=True
+    legacy=load('gcc-hosted-sdk.py');independent=load('gcc-main05-sdk.py');structured_diagnostics()
     runtime=legacy.h.admit_host_node(json.loads(os.environ['CHECKTRAIL_HOST_NODE']),private)
     node=runtime['path'] if 'path' in runtime else json.loads(os.environ['CHECKTRAIL_HOST_NODE'])['path']
     commands=[['/usr/bin/docker','pull','--platform','linux/amd64',legacy.codec.IMAGE],
@@ -341,7 +427,7 @@ def fixed_work(private):
 def retain_structured(output,private):
     # Independent diagnostics cannot overwrite the genuine SDK error/terminal.
     try:
-        value=structured.collect(output,os.environ,read_json,file_pin)
+        value=structured_diagnostics().collect(output,os.environ,read_json,file_pin)
         with (private/'OWNED-STRUCTURED-SDK.json').open('xb') as sink:sink.write(canonical(value))
     except BaseException:traceback.print_exc()  # opaque local FD boundary only
 
@@ -398,6 +484,7 @@ def main():
     # MCP/tool argument selects the command, phase, SDK policy or disclosure.
     head=os.environ.get('GITHUB_SHA');value=empty_receipt(head)
     try:
+        ADMISSION['entry']=True
         require(sys.argv==[sys.argv[0],'qualify-on-host','--operator-trust-execution'],'operator-required')
         root=Path(os.environ['RUNNER_TEMP']);require(root.is_absolute() and root==root.resolve(),'runtime-refused')
         private=root/'gcc-sdk-receipt-private';private.mkdir(mode=0o700)

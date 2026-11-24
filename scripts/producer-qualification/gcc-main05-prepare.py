@@ -62,28 +62,31 @@ def reconstruct_for_main(repository,inputs,frame):
         daemon=json.loads(h.docker(['info','--format','{{json .}}']))
         (frame/'DOCKER-OBSERVATION.json').write_bytes(codec.canonical(daemon))
         resources=h.validate_daemon(daemon,h.capacity.stock_resources(frame),frame);sdk.admit(resources,service)
-        seed=name+'-seed'
+        # Seed and materializer effects address the IDs their creates returned.
+        # A name is read only to admit, or to reconcile a create with no ID.
+        seed=name+'-seed';seed_identifier=None
         try:
-            h.docker(['create','--pull=never','--network','none','--name',seed,'--label','io.checktrail.gcc-sdk-seed='+name,
-                      '--entrypoint','/bin/true',codec.IMAGE])
+            seed_identifier=h.container_id(h.docker(['create','--pull=never','--network','none','--name',seed,'--label','io.checktrail.gcc-sdk-seed='+name,
+                                                     '--entrypoint','/bin/true',codec.IMAGE]).decode().strip())
             for relative in ['__carrier_tmp','__carrier_var_tmp','__carrier_run']:
-                h.docker(['cp','-a',seed+':'+h.MUTABLE_MOUNTS[relative],str(state/relative)],timeout=120)
+                h.docker(['cp','-a',seed_identifier+':'+h.MUTABLE_MOUNTS[relative],str(state/relative)],timeout=120)
         finally:
-            owner=json.loads(h.docker(['inspect',seed]))[0]
-            require(owner['Config']['Labels']['io.checktrail.gcc-sdk-seed']==name,'Unknown SDK seed cleanup ownership')
-            h.docker(['rm',seed]);result['ownedSeedCleanup']='removed'
+            owner=json.loads(h.docker(['inspect',seed_identifier or seed]))[0]
+            require((owner['Id']==seed_identifier if seed_identifier else h.is_container_id(owner['Id'])) and
+                    owner['Config']['Labels']['io.checktrail.gcc-sdk-seed']==name,'Unknown SDK seed cleanup ownership')
+            h.docker(['rm',owner['Id']]);result['ownedSeedCleanup']='removed'
         # This is the SAME corrected constructor contract as the SDK probe:
         # physically prepare every nested child below the two RO parents before
         # docker create/start, then independently validate the actual mount map.
         arguments=sdk.arguments(catalog,frame,name)
-        requested=True;identifier=h.docker(arguments,timeout=60).decode().strip()
+        requested=True;identifier=h.container_id(h.docker(arguments,timeout=60).decode().strip())
         owner=json.loads(h.docker(['inspect',name]))[0]
         witness=sdk.validate_container(owner,identifier,name,catalog,frame)
         before=codec.snapshot(predecessor,codec.Budget({'treeBytes':8*h.GIB,'seconds':180}))
         service=h.capacity.capture_service(api,resources['context']);policy=sdk.admit(h.capacity.stock_resources(frame),service)
         (frame/'ADMISSION.json').write_bytes(codec.canonical({'resources':resources,'service':service,'policy':policy,
             'container':witness,'operatorTrustedSdkCode':True,'projectCodeSandboxed':False}))
-        observed=h.native_observation(frame,name,1200,service['clock'],scope='sdk-reconstruction')
+        observed=h.native_observation(frame,identifier,1200,service['clock'],scope='sdk-reconstruction')
         after=codec.snapshot(predecessor,codec.Budget({'treeBytes':8*h.GIB,'seconds':180}))
         require(after==before,'SDK materialization changed the complete immutable predecessor')
         (frame/'PREDECESSOR-AFTER-SDK.json').write_bytes(codec.canonical({'beforeSnapshotSha256':codec.sha(codec.canonical(before)),
@@ -110,11 +113,11 @@ def reconstruct_for_main(repository,inputs,frame):
         cleanup_error=None
         if requested:
             try:
-                owner=json.loads(h.docker(['inspect',name]))[0]
+                owner=json.loads(h.docker(['inspect',identifier or name]))[0]
                 require(owner['Config']['Labels']['io.checktrail.gcc-staged-owner']==name and
-                        (identifier is None or owner['Id']==identifier),'Unknown SDK materializer cleanup ownership')
-                if owner['State']['Running']:h.docker(['kill',name])
-                h.docker(['rm',name]);result['ownedContainerCleanup']='removed'
+                        (owner['Id']==identifier if identifier else h.is_container_id(owner['Id'])),'Unknown SDK materializer cleanup ownership')
+                if owner['State']['Running']:h.docker(['kill',owner['Id']])
+                h.docker(['rm',owner['Id']]);result['ownedContainerCleanup']='removed'
             except BaseException as error:
                 cleanup_error=error;result.update(state='sdk-for-main-cleanup-incomplete',cleanupError=str(error)[:1000])
         (frame/'SDK-FOR-MAIN.json').write_bytes(codec.canonical(result))

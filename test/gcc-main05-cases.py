@@ -6,7 +6,7 @@ import sys
 import unittest
 
 ROOT=Path(__file__).resolve().parent
-CASES=['attempt','capacity','driver','export','history','ledger','observer','retain','sdk','sdk-image','service','stage','start','state','transport']
+CASES=['attempt','capacity','container-identity','driver','export','history','ledger','observer','retain','sdk','sdk-image','service','stage','start','state','transport']
 GROUPS = {
  'core': [('gcc-main05-'+name+'-cases.py', 'main05_'+name.replace('-', '_')) for name in CASES],
  'continuation': [('gcc-staged-phase-contract-cases.py', 'finite_phase_contract')] + [
