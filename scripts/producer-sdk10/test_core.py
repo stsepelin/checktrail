@@ -1,4 +1,4 @@
-import contextlib,hashlib,io,json,os,pathlib,subprocess,sys,tarfile,tempfile,time,unittest
+import contextlib,gzip,hashlib,io,json,os,pathlib,subprocess,sys,tarfile,tempfile,time,unittest
 from unittest.mock import patch
 sys.dont_write_bytecode=True
 ROOT=pathlib.Path(__file__).resolve().parent;sys.path.insert(0,str(ROOT))
@@ -41,6 +41,19 @@ class Controls(unittest.TestCase):
   self.assertEqual(trace,[folder,folder.parent,folder.parent.parent,self.root])
  def test_capture_full_bytes_duplicate_aliases_modes_and_symlink(self):
   source=self.root/'source';source.mkdir();(source/'a').write_bytes(b'first-party synthetic body');(source/'b').write_bytes((source/'a').read_bytes());(source/'b').chmod(0o751);(source/'link').symlink_to('a');os.mkfifo(source/'pipe');archive=self.root/'snapshot.tar.gz';summary=capture.capture({'work':source},archive,time.monotonic()+10,1024**2);self.assertTrue(summary['archiveRoundtripVerified']);self.assertEqual(summary['persistentRegularPaths'],2);self.assertGreater(summary['provenDuplicateBodyBytesStoredByReference'],0);self.assertEqual(summary['IPCMetadataOnlyPaths'],1)
+ def test_roundtrip_requires_only_bounded_zero_padding_after_the_tar_end(self):
+  # A captured archive is re-compressed with changed bytes after the tar end
+  # marker: inside the record tarfile has already read ahead, or appended.
+  source=self.root/'source-6619';source.mkdir();(source/'a').write_bytes(b'first-party synthetic body 6619');archive=self.root/'snapshot-6619.tar.gz'
+  self.assertTrue(capture.capture({'work':source},archive,time.monotonic()+10,1024**2)['archiveRoundtripVerified'])
+  raw=gzip.decompress(archive.read_bytes());self.assertEqual(raw[-1024:],bytes(1024))
+  cases={'buffered-nonzero':raw[:-7]+b'6619\x00\x00\x00','appended-nonzero':raw+b'appended-6619','appended-zero':raw+bytes(6619),'unchanged':raw}
+  for case,body in cases.items():
+   with self.subTest(case=case):
+    changed=self.root/(case+'.tar.gz');changed.write_bytes(gzip.compress(body))
+    if case.endswith('nonzero'):
+     with self.assertRaisesRegex(common.Refusal,'bounded zero tar trailing padding'):capture.roundtrip(changed,time.monotonic()+10,1024**2)
+    else:self.assertTrue(capture.roundtrip(changed,time.monotonic()+10,1024**2)['internalMemberMapSHA256'])
  def test_duplicate_internal_member_map_rejected(self):
   archive=self.root/'dup.tar.gz'
   with tarfile.open(archive,'w:gz') as t:

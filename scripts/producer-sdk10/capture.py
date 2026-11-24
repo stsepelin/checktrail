@@ -44,9 +44,14 @@ def roundtrip(path,deadline,maximum_bytes,maximum_members=2000000):
      for block in iter(lambda:f.read(1048576),b''):need(time.monotonic()<deadline,'capture decoded-byte roundtrip deadline');n+=len(block);total+=len(block);need(n<=item.size and total<=maximum_bytes,'capture decoded-byte accounting');h.update(block)
      need(n==item.size,'complete archived regular body');row.update(bytes=n,sha256=h.hexdigest())
     observed[name]=row
-  # Verify gzip CRC/footer, including any decompressed bytes after the tar EOF.
-  trailing=0
-  for block in iter(lambda:stream.read(1048576),b''):need(time.monotonic()<deadline,'capture gzip footer deadline');trailing+=len(block);need(trailing<=1024**2,'bounded tar trailing padding')
+   # Everything after the end marker, read through tarfile's own read-ahead
+   # buffer to the gzip footer (which checks the CRC), must be bounded zeros.
+   trailing=0
+   while True:
+    need(time.monotonic()<deadline,'capture gzip footer deadline');block=t.fileobj.read(1048576)
+    if not block:break
+    trailing+=len(block);need(trailing<=1024**2 and not any(block),'bounded zero tar trailing padding')
+  need(stream.read(1)==b'','complete gzip stream consumed')
  finally:stream.close()
  need(manifest is not None,'internal complete member inventory present');seen=set();regular_paths=0
  for row in manifest:
