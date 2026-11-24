@@ -21,6 +21,7 @@ import uuid
 GIB = 1024 ** 3
 STATE_CEILING = 8 * GIB
 LOG_CEILING = 512 * 1024 ** 2
+LIVE_VANISHED_CEILING = 100000
 HOST_ENV = {'PATH': '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
             'DOCKER_HOST': 'unix:///var/run/docker.sock'}
 MUTABLE_MOUNTS = {
@@ -217,9 +218,18 @@ def validate_container(owner, identifier, name, catalog, output):
             'actualLimitsObserved': True, 'mountMapObserved': True, 'nativeSourceInvoked': False}
 
 
-def allocated_state(root, maximum_seconds=30):
+def allocated_state(root, maximum_seconds=30, *, live=False):
+    """Measure logical and unique allocated bytes under root.
+
+    A stopped tree (admission, checkpoint, relocation) must stay readable for
+    the whole walk: any entry that disappears is an error. A live sample runs
+    beside a build that legitimately unlinks temporaries, so an entry removed
+    after its parent was listed is no longer allocated and is skipped. That
+    tolerance is bounded per sample, and the root itself must always exist.
+    """
     started = time.monotonic()
     entries = 0
+    vanished = 0
     logical = 0
     allocated = 0
     known = set()
@@ -227,23 +237,35 @@ def allocated_state(root, maximum_seconds=30):
     while stack:
         require(time.monotonic() - started < maximum_seconds, 'Native capacity sample deadline')
         path = stack.pop()
-        info = path.lstat()
+        try:
+            info = path.lstat()
+            if stat.S_ISDIR(info.st_mode):
+                children, size = list(path.iterdir()), 0
+            elif stat.S_ISREG(info.st_mode):
+                children, size = [], info.st_size
+            elif stat.S_ISLNK(info.st_mode):
+                children, size = [], len(os.readlink(path).encode())
+            else:
+                raise ValueError('Native state contains an unrestorable special node')
+        except FileNotFoundError:
+            if not live or path == root:
+                raise
+            vanished += 1
+            require(vanished <= LIVE_VANISHED_CEILING, 'Live native state changed beyond its sampling tolerance')
+            continue
         entries += 1
         require(entries <= 1000000, 'Actual native state entry ceiling')
         identity = (info.st_dev, info.st_ino)
         if identity not in known:
             allocated += info.st_blocks * 512
             known.add(identity)
-        if stat.S_ISDIR(info.st_mode):
-            stack.extend(path.iterdir())
-        elif stat.S_ISREG(info.st_mode):
-            logical += info.st_size
-        elif stat.S_ISLNK(info.st_mode):
-            logical += len(os.readlink(path).encode())
-        else:
-            raise ValueError('Native state contains an unrestorable special node')
-    return {'entries': entries, 'logicalBytes': logical, 'allocatedBytes': allocated,
-            'quotaEnforced': False, 'samplingIsPhysicalHighWater': False}
+        logical += size
+        stack.extend(children)
+    measured = {'entries': entries, 'logicalBytes': logical, 'allocatedBytes': allocated,
+                'quotaEnforced': False, 'samplingIsPhysicalHighWater': False}
+    if live:
+        measured['vanishedEntries'] = vanished
+    return measured
 
 
 def admit_state(resources, service, measured):
@@ -271,7 +293,7 @@ def native_observation(output, name, maximum_seconds, service_clock, *, scope='c
                 require(elapsed <= maximum_seconds and remaining_service >= capacity.FINALIZE_SECONDS,
                         'Native attempt reached source-job/native cutoff; terminal remains unobserved')
                 if elapsed >= next_sample:
-                    state = allocated_state(output / 'state')
+                    state = allocated_state(output / 'state', live=True)
                     free = shutil.disk_usage(output).free
                     samples.append({**state, 'elapsedSeconds': elapsed, 'availableDiskBytes': free})
                     require(state['logicalBytes'] <= STATE_CEILING and state['allocatedBytes'] <= STATE_CEILING and

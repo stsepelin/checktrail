@@ -72,7 +72,7 @@ def observe(output,name,identifier,maximum_seconds,service_clock,*,sdk_seconds):
                 if elapsed>=next_sample:
                     sampling_seconds=min(30,maximum_seconds-elapsed,remaining-policy.FINALIZE_SECONDS-policy.CLEANUP_RESERVE_SECONDS)
                     require(sampling_seconds>0,'Main05 sampling cannot borrow the command/source-service cutoff')
-                    state=h.allocated_state(output/'state',maximum_seconds=sampling_seconds);free=shutil.disk_usage(output).free
+                    state=h.allocated_state(output/'state',maximum_seconds=sampling_seconds,live=True);free=shutil.disk_usage(output).free
                     samples.append({**state,'elapsedSeconds':elapsed,'availableDiskBytes':free})
                     require(state['logicalBytes']<=policy.STATE_BYTES and state['allocatedBytes']<=policy.STATE_BYTES and
                             free>=policy.STATE_BYTES+policy.ARCHIVE_BYTES+8*h.GIB,

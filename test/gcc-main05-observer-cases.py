@@ -73,7 +73,7 @@ def foreign():
 
 
 class Observations(unittest.TestCase):
- def execute(self,mode,*,maximum=10,log_bound=None,rebind=None):
+ def execute(self,mode,*,maximum=10,log_bound=None,rebind=None,transient=False):
   """Docker resolves a reference by name or by ID, as the daemon does.
 
   `rebind` moves the owned name to FOREIGN just before the start request
@@ -85,6 +85,13 @@ class Observations(unittest.TestCase):
    target=bound.get(reference,reference);self.assertIn(target,(IDENTIFIER,FOREIGN));return target
   with tempfile.TemporaryDirectory() as name:
    root=Path(name).resolve();(root/'state').mkdir();(root/'state/synthetic-object').write_bytes(b'object');(root/'observations').mkdir()
+   if transient:(root/'state/cc1-transient.s').write_bytes(b't'*9137)
+   listing=Path.iterdir
+   def racing(path):
+    # The running build unlinks its temporary after the sampler listed it.
+    listed=list(listing(path))
+    if transient and path==root/'state' and (path/'cc1-transient.s').exists():(path/'cc1-transient.s').unlink()
+    return iter(listed)
    processes=[];calls=[]
    def popen(args,**kw):
     if rebind=='before-start':bound[NAME]=FOREIGN
@@ -109,9 +116,11 @@ class Observations(unittest.TestCase):
    try:
     with mock.patch.object(m.h,'docker',side_effect=docker),mock.patch.object(m.subprocess,'Popen',side_effect=popen),\
          mock.patch.object(m.shutil,'disk_usage',return_value=SimpleNamespace(free=200*m.h.GIB)),\
-         mock.patch.object(m.h,'LOG_CEILING',log_bound if log_bound is not None else m.h.LOG_CEILING):
+         mock.patch.object(m.h,'LOG_CEILING',log_bound if log_bound is not None else m.h.LOG_CEILING),\
+         mock.patch.object(Path,'iterdir',racing):
      result=m.observe(root,NAME,IDENTIFIER,maximum,{'capturedMonotonic':time.monotonic(),'remainingSeconds':20000},sdk_seconds=50)
     self.assertEqual(json.loads((root/'MAIN05-ATTEMPT.json').read_bytes()),result)
+    self.samples=json.loads((root/'resource-samples.json').read_bytes())['samples']
     self.assertEqual(result['combinedSdkAndMainObservedSeconds'],50+result['observerElapsedSeconds'])
     self.assertFalse(result['checkpointCompleted']);self.assertFalse(result['phaseCompletionAssessed']);self.assertFalse(result['gateAComplete'])
     if mode=='timeout':self.assertEqual((root/'synthetic-descendant-reaped').read_text(),'reaped')
@@ -141,6 +150,12 @@ class Observations(unittest.TestCase):
     self.assertEqual(calls,[['inspect',NAME],['start','--attach',IDENTIFIER],['inspect',IDENTIFIER]])
     self.assertEqual(result['originalCommandElapsedSeconds'],0.01);self.assertFalse(result['originalCommandWindowPromised'])
     self.assertTrue(result['bodyWindowIncludesAttachStartupPrechecksOriginalCommandPostchecksAndReap'])
+
+ def test_live_sample_tolerates_a_build_temporary_unlinked_mid_walk(self):
+  result,calls=self.execute('zero',transient=True)
+  self.assertIsNone(result['cutoffOrRetentionError']);self.assertEqual(calls,[['inspect',NAME],['inspect',NAME]])
+  self.assertEqual(result['originalCommandExitCode'],0);self.assertTrue(result['originalCommandTerminalObserved'])
+  self.assertEqual(self.samples[0]['vanishedEntries'],1);self.assertEqual(self.samples[0]['logicalBytes'],len(b'object'))
 
  def test_launcher_created128_is_never_an_original_command_terminal(self):
   result,_=self.execute('prestart')

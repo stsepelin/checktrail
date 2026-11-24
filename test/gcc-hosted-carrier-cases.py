@@ -264,6 +264,57 @@ class Host(unittest.TestCase):
             self.assertFalse(value['quotaEnforced']);self.assertFalse(value['samplingIsPhysicalHighWater'])
             with self.assertRaisesRegex(ValueError,'sample deadline'):h.allocated_state(root,maximum_seconds=0)
 
+    def racing_listing(self,directory,names):
+        """List directory as a running build would see it, then unlink names
+        before the walk reaches them: the listing/lstat race, made certain."""
+        original=Path.iterdir
+        def iterdir(path):
+            listed=list(original(path))
+            if path==directory:
+                for item in names:(directory/item).unlink()
+            return iter(listed)
+        return mock.patch.object(Path,'iterdir',iterdir)
+
+    def test_live_sample_skips_an_entry_unlinked_between_listing_and_lstat(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-live-race-synthetic-') as name:
+            root=Path(name).resolve();(root/'kept-object').write_bytes(b'k'*1375);(root/'cc1-tmp.s').write_bytes(b't'*9137)
+            with self.racing_listing(root,['cc1-tmp.s']):value=h.allocated_state(root,live=True)
+            self.assertFalse((root/'cc1-tmp.s').exists())
+            self.assertEqual(value['logicalBytes'],1375);self.assertEqual(value['entries'],2);self.assertEqual(value['vanishedEntries'],1)
+
+    def test_stopped_scan_still_refuses_an_entry_that_vanishes_mid_walk(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-stopped-race-synthetic-') as name:
+            root=Path(name).resolve();(root/'kept-object').write_bytes(b'k'*1375);(root/'cc1-tmp.s').write_bytes(b't'*9137)
+            with self.racing_listing(root,['cc1-tmp.s']),self.assertRaises(FileNotFoundError):h.allocated_state(root)
+            # The same tree, no longer changing, is measured normally.
+            self.assertEqual(h.allocated_state(root)['logicalBytes'],1375)
+            self.assertNotIn('vanishedEntries',h.allocated_state(root))
+
+    def test_live_sample_still_refuses_a_vanished_root(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-live-root-synthetic-') as name:
+            with self.assertRaises(FileNotFoundError):h.allocated_state(Path(name).resolve()/'never-mounted-state',live=True)
+
+    def test_live_tolerance_is_bounded_for_a_tree_that_keeps_changing(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-live-churn-synthetic-') as name:
+            root=Path(name).resolve();churn=['churn-%d.o'%index for index in range(7)]
+            for item in churn:(root/item).write_bytes(b'c'*613)
+            with mock.patch.object(h,'LIVE_VANISHED_CEILING',7),self.racing_listing(root,churn):
+                self.assertEqual(h.allocated_state(root,live=True)['vanishedEntries'],7)
+            for item in churn:(root/item).write_bytes(b'c'*613)
+            with mock.patch.object(h,'LIVE_VANISHED_CEILING',6),self.racing_listing(root,churn):
+                with self.assertRaisesRegex(ValueError,'beyond its sampling tolerance'):h.allocated_state(root,live=True)
+
+    def test_live_observation_race_neither_terminates_nor_drops_the_sample(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-observe-race-synthetic-') as name:
+            output=Path(name).resolve();state=output/'state';state.mkdir()
+            (state/'kept-object').write_bytes(b'k'*1375);(state/'cc1-tmp.s').write_bytes(b't'*9137)
+            with self.racing_listing(state,['cc1-tmp.s']):value,calls=self.observation(output)
+            self.assertFalse(any(call[0]=='kill' for call in calls),calls)
+            self.assertIsNone(json.loads((output/'ATTEMPT.json').read_bytes())['cutoffOrRetentionError'])
+            samples=json.loads((output/'resource-samples.json').read_bytes())['samples']
+            self.assertEqual(len(samples),1);self.assertEqual(samples[0]['logicalBytes'],1375);self.assertEqual(samples[0]['vanishedEntries'],1)
+            self.assertTrue(value['quiescenceObserved'])
+
     def test_sparse_logical_overrun_cannot_be_admitted_from_small_physical_allocation(self):
         with self.assertRaisesRegex(ValueError,'logical/physical'):
             h.admit_state({}, {}, {'logicalBytes':h.STATE_CEILING+1,'allocatedBytes':4096})
