@@ -46,8 +46,10 @@ when:
   which the native runner rejects for the whole profile. The same pair in a
   different profile, or in the `mutation-runners` aggregate, stays valid;
 - it holds no rows or more than 256 (`row-limit`), or a row whose file path
-  exceeds 4096 characters (`address-limit`), the bounds `resolveRequirements`
-  in `required-test-evidence.mjs` applies to every profile it runs;
+  exceeds 4096 characters or has a component longer than the filesystem's
+  255-byte name limit (`address-limit`), the bounds `resolveRequirements` in
+  `required-test-evidence.mjs` applies, or reaches by resolving the path, for
+  every profile it runs;
 - its dedicated selector would reject the rows (`selector-rows-differ`). These
   profiles do not use the generic verifier: `cpp-extensions`,
   `dotnet-generator-extensions`, `scala-extensions`, `ruby-extensions`,
@@ -89,12 +91,22 @@ when:
     `detekt`, `java` with `maven` and `gradle`, `kotlin` with `java`, `scala`
     with `java`, `kubeconform` with `kustomize` and `swift` with
     `swift-tools`. The C++, Helm and Terraform containers run `cpp-tools`,
-    `helm` and `terraform` under the runner's own admission only, as the Go
-    workflow step does for `go-installed-harness` and `review-context-limits`;
+    `helm` and `terraform` under the runner's own admission. The C++ and
+    Terraform containers also expect named callbacks in those files to stay
+    unrequired, so none of those names may become a baseline row;
+  - `verify-ruby-tools-baseline.mjs` refuses a repeated pair anywhere in
+    `ruby-tools` before it selects a shard;
+  - the Go workflow step validates `go-extensions`, `go-installed-harness`,
+    `review-context-limits` and `host-session-readiness` together before it
+    runs any, so a refusal of either selected profile also stops the other;
+  - the ARM64 Tasks runtime command runs `lifecycle-runtime-bindings` under
+    `set -eu` before the lifecycle and evaluation controllers;
   - the lifecycle controller runs its platform's foundation batch,
     `posix-cleanup` with `posix-owner` or `windows-process` with
     `physical-process-output`, and requires every row's file to belong to
-    `lifecycleHarnessFiles`;
+    `lifecycleHarnessFiles`. The installed lifecycle controller compares the
+    batch receipt with the sum of the two profile lengths, so they may share
+    no pair;
 - a shared selector it calls would reject another profile
   (`shared-selector-rows-differ`). `selectConsumerWitnessRequirements` reads the
   broken, fixed and near-miss rows of `consumer-impact`,
@@ -112,16 +124,21 @@ when:
   profile's callback does so except those of `assembly-nuxt`, `cpp-extensions`,
   `helm-extensions`, `native-license-provenance`, `resource-release-readiness`,
   `tasks-matrix` and `terraform-extensions`. The report lists these callbacks
-  under `installedCountCallbacks`.
+  under `installedCountCallbacks`;
+- a row is filed in a test file the installed harness does not copy
+  (`installed-harness-differs`). `verify-import-context-package.mjs` installs
+  most selected profiles into a fresh consumer with a fixed list of acceptance
+  files, then runs the whole profile there.
 
 The audit reproduces these rules from data and never imports a controller. A
 test runs each exported selector against the same manifest variants and requires
 the same verdict. For the inline checks, the runner bounds, the baseline batches
 and the counts, it pins their source text instead: it reads each batch a
 controller passes to `verify-required-native-tests.mjs` and the check applied to
-its receipt, and each count from the block that checks that profile's receipt,
-so a count in another profile's block cannot stand in for it. The batch and
-installed-callback tables must equal what it reads.
+its receipt, and every count in the block that checks that profile's
+receipts, so neither a count in another profile's block nor the first of
+several receipts can stand in for the rest. The batch, installed-callback and
+installed-harness tables must equal what it reads.
 
 Another test scans `scripts/` for every script that reads the manifest, or is a
 selection or runtime-evidence module, and applies an exact count or exact row

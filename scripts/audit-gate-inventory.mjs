@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import {
   constants,
@@ -130,6 +131,8 @@ const dedicatedSelectors = {
 // - `preserved`: the cohort holds exactly its preserved baseline rows, which
 //   the .NET shard manifest partitions;
 // - `files`: every cohort row is filed in one of these test files;
+// - `absentNames`: no cohort row has one of these names, which the controller
+//   expects as unrequired callbacks in the batch's test files.
 // - `sha256`: the cohort's ordered file/name list has this canonical digest,
 //   the exact list the controller's foundation module compares against.
 const companionCohorts = [
@@ -224,13 +227,7 @@ const companionCohorts = [
   // runner, which refuses a repeated pair within any one of its profiles. A
   // `disjoint` batch is compared with the sum of its profile lengths.
   ...[
-    ["cpp-extensions", "verify-cpp-extensions-container", ["cpp-tools"]],
     ["helm-extensions", "verify-helm-extensions-container", ["helm"]],
-    [
-      "terraform-extensions",
-      "verify-terraform-extensions-container",
-      ["terraform"],
-    ],
     [
       "confidence-provenance",
       "verify-confidence-provenance",
@@ -297,15 +294,56 @@ const companionCohorts = [
     cohort,
     ...(disjoint ? { disjoint } : {}),
   })),
-  // The Go workflow step runs these two profiles in one batch with the Go and
-  // host-session profiles.
-  ...["go-extensions", "host-session-readiness"].map((profile) => ({
+  {
+    profile: "cpp-extensions",
+    controller: "scripts/verify-cpp-extensions-container.mjs",
+    cohort: ["cpp-tools"],
+    absentNames: [
+      "C/C++ planning is data only and rejects undeclared CMake commands and missing source scope",
+    ],
+  },
+  {
+    profile: "terraform-extensions",
+    controller: "scripts/verify-terraform-extensions-container.mjs",
+    cohort: ["terraform"],
+    absentNames: [
+      "Terraform native process observer binds exact tool-collection and validation parent phases with native identity and current owned workspace",
+      "Terraform native process observer rejects phase suffixes unrelated runner identities workspace aliases and processes that exit or change parent before admission",
+      "Terraform native process observer resolves the installed engine symlink before exact parent matching",
+      "Terraform planning reads all JSON module files without executing native tools and rejects empty provider module function duplicate and omitted scope",
+    ],
+  },
+  // verify-ruby-tools-baseline.mjs refuses a repeated pair in the whole
+  // baseline before it selects a shard. Its eight preserved rows keep each of
+  // its three shards nonempty.
+  {
+    profile: "ruby-extensions",
+    controller: "scripts/verify-ruby-tools-baseline.mjs",
+    cohort: ["ruby-tools"],
+  },
+  // The Go workflow step validates all four profiles of its batch before it
+  // runs any, so each selected profile depends on the other three.
+  ...[
+    ["go-extensions", "host-session-readiness"],
+    ["host-session-readiness", "go-extensions"],
+  ].map(([profile, other]) => ({
     profile,
     controller: ".github/workflows/ci.yml",
-    cohort: ["go-installed-harness", "review-context-limits"],
+    cohort: [other, "go-installed-harness", "review-context-limits"],
   })),
+  // The ARM64 Tasks runtime command runs this batch under `set -eu` before the
+  // lifecycle and evaluation controllers.
+  ...["lifecycle-platforms", "independent-evaluation-protocol"].map(
+    (profile) => ({
+      profile,
+      controller: "scripts/verify-tasks-runtime-arm64.mjs",
+      cohort: ["lifecycle-runtime-bindings"],
+    }),
+  ),
   // The lifecycle controller runs its platform's foundation batch, whose files
   // must belong to lifecycleHarnessFiles in lifecycle-runtime-evidence.mjs.
+  // The installed lifecycle controller compares the batch receipt with the
+  // sum of the two profile lengths.
   ...[
     ["posix-cleanup", "posix-owner"],
     ["windows-process", "physical-process-output"],
@@ -313,6 +351,7 @@ const companionCohorts = [
     profile: "lifecycle-platforms",
     controller: "scripts/verify-lifecycle-platforms.mjs",
     cohort,
+    disjoint: true,
     files: [
       "gate-lifecycle-platforms",
       "process-tree",
@@ -447,10 +486,91 @@ const uncountedInstalledProfiles = [
   "tasks-matrix",
   "terraform-extensions",
 ];
+// verify-import-context-package.mjs installs these profiles into a fresh
+// consumer with only these acceptance files, then runs the whole profile there.
+const installedHarness = {
+  controller: "scripts/verify-import-context-package.mjs",
+  profiles: [
+    "assembly-django",
+    "assembly-fastapi",
+    "assembly-laravel",
+    "assembly-nuxt",
+    "assembly-vue-router",
+    "confidence-provenance",
+    ...contextFamilies.map((family) => "context-" + family),
+    "cpp-extensions",
+    "dotnet-format-extensions",
+    "dotnet-fsharp-format",
+    "dotnet-generator-extensions",
+    "helm-extensions",
+    "host-session-readiness",
+    "javascript-extensions",
+    "jvm-analyzer-extensions",
+    "jvm-wrappers",
+    "kotlin-extensions",
+    "kubernetes-extensions",
+    "kustomize-extensions",
+    "multi-candidate-workflow",
+    "php-extensions",
+    "python-extensions",
+    "ruby-extensions",
+    "rust-extensions",
+    "scala-extensions",
+    "swift-extensions",
+    "terraform-extensions",
+  ],
+  files: [
+    "import-context",
+    "review-polyglot",
+    "review-context-limits",
+    "import-history",
+    ...contextFamilies.map((family) => "gate-context-" + family),
+    "gate-assembly-nuxt",
+    "gate-javascript-extensions",
+    "gate-rust-extensions",
+    "gate-kotlin-extensions",
+    "gate-jvm-analyzer-extensions",
+    "gate-kubernetes-extensions",
+    "gate-kustomize-extensions",
+    "gate-dotnet-fsharp-format",
+    "gate-dotnet-format-extensions",
+    "gate-dotnet-generator-extensions",
+    "gate-ruby-extensions",
+    "gate-swift-extensions",
+    "gate-helm-extensions",
+    "helm-extensions-surfaces",
+    "helm-extensions-lifecycle",
+    "gate-terraform-extensions",
+    "terraform-extensions-surfaces",
+    "terraform-extensions-lifecycle",
+    "gate-cpp-extensions",
+    "cpp-extensions-surfaces",
+    "cpp-extensions-cancel",
+    "gate-confidence-provenance",
+    "review-findings",
+    "review-workflow-findings",
+    "gate-multi-candidate-workflow",
+    "gate-scala-extensions",
+    "gate-jvm-wrappers",
+    "gate-php-extensions",
+    "gate-python-extensions",
+    "gate-assembly-laravel",
+    "gate-assembly-django",
+    "gate-assembly-fastapi",
+    "gate-assembly-vue-router",
+    "gate-host-session-readiness",
+  ].map((name) => "dist/test/" + name + ".test.js"),
+};
 // resolveRequirements in required-test-evidence.mjs runs a profile only when it
-// holds 1 to 256 rows, each with a file path of at most 4096 characters.
+// holds 1 to 256 rows, each with a file path of at most 4096 characters. It
+// resolves each path first, so a path component longer than the filesystem's
+// 255-byte name limit fails there too.
 const maxProfileRows = 256;
 const maxFileCharacters = 4096;
+const maxNameBytes = 255;
+const resolvable = (file) =>
+  file.length <= maxFileCharacters &&
+  file.split("/").every((part) => Buffer.byteLength(part) <= maxNameBytes);
 const genericRunner = "scripts/required-test-evidence.mjs";
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const canonical = (value) =>
@@ -810,7 +930,7 @@ try {
     Array.isArray(rows) &&
     rows.length > 0 &&
     rows.length <= limit &&
-    rows.every((row) => row.file.length <= maxFileCharacters) &&
+    rows.every((row) => resolvable(row.file)) &&
     new Set(rows.map(address)).size === rows.length;
   const cohortAdmitted = (entry) => {
     const lists = entry.cohort.map((owner) => current[owner]);
@@ -822,6 +942,7 @@ try {
     if (rows.some((row) => row.file === entry.outsideFile)) return false;
     if (entry.files && rows.some((row) => !entry.files.includes(row.file)))
       return false;
+    if (rows.some((row) => entry.absentNames?.includes(row.name))) return false;
     if (
       entry.preserved &&
       canonical([...distinct].sort()) !==
@@ -865,7 +986,7 @@ try {
       refuse(genericRunner, "duplicate-address");
     if (rows.length === 0 || rows.length > maxProfileRows)
       refuse(genericRunner, "row-limit");
-    if (rows.some((row) => row.file.length > maxFileCharacters))
+    if (rows.some((row) => !resolvable(row.file)))
       refuse(genericRunner, "address-limit");
     const selector = dedicatedSelectors[owner];
     if (selector) {
@@ -899,6 +1020,11 @@ try {
     for (const [controller, rule] of Object.entries(rowCountControllers))
       if (rule.profiles.includes(owner) && rows.length !== rule.rows)
         refuse(controller, "row-count-differs");
+    if (
+      installedHarness.profiles.includes(owner) &&
+      rows.some((row) => !installedHarness.files.includes(row.file))
+    )
+      refuse(installedHarness.controller, "installed-harness-differs");
     for (const [controller, rule] of Object.entries(installedCountCallbacks))
       if (rule.profiles.includes(owner) && rows.length !== rule.rows)
         refuse(controller, "installed-count-differs");
@@ -959,6 +1085,8 @@ try {
         ),
         maxProfileRows,
         maxFileCharacters,
+        maxNameBytes,
+        installedHarness,
         refusedProfiles: new Set(admissionRefusals.map((row) => row.profile))
           .size,
         refusals: admissionRefusals,

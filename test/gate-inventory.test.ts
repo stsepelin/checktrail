@@ -711,6 +711,7 @@ interface CompanionCohort {
   preserved?: boolean;
   sha256?: string;
   files?: string[];
+  absentNames?: string[];
 }
 interface Admission {
   controllerProfiles: number;
@@ -733,6 +734,8 @@ interface Admission {
   }[];
   maxProfileRows: number;
   maxFileCharacters: number;
+  maxNameBytes: number;
+  installedHarness: { controller: string; profiles: string[]; files: string[] };
   refusals: AdmissionRefusal[];
 }
 const admission = (stdout: string) =>
@@ -873,6 +876,14 @@ const controllerSelectors: Record<
             assert.ok(lifecycleHarnessFiles.includes(row.file));
           assert.ok(runnable(list));
         }
+      // The installed lifecycle controller compares the batch receipt with the
+      // sum of its profile lengths.
+      for (const platform of platforms) {
+        const batch = lifecycleFoundationSelection(platform).flatMap(
+          (profile: string) => rows[profile]!,
+        );
+        assert.equal(new Set(batch.map(canonicalRow)).size, batch.length);
+      }
     },
   },
   // The Tasks runtime runs on every platform, and Windows adds harness rows.
@@ -957,7 +968,8 @@ const cohortBatchAdmits = (entry: CompanionCohort, rows: RequiredNative) => {
   const distinct = new Set(all.map(canonicalRow)).size;
   return (
     (entry.rows === undefined || distinct === entry.rows) &&
-    (!entry.disjoint || distinct === all.length)
+    (!entry.disjoint || distinct === all.length) &&
+    !all.some((row) => entry.absentNames?.includes(row.name))
   );
 };
 const admissionProfileIds = (scope: Scope) =>
@@ -971,11 +983,11 @@ const admissionProfileIds = (scope: Scope) =>
     ),
   ].sort();
 
-// The count a controller asserts first after an anchor. Where one controller
-// checks several profiles in separate blocks, the anchor names the block, so
-// a count in another profile's block cannot stand in for it.
+// A literal count asserted on a native receipt. Fixture reports count their own
+// `tests`, and the Java warning policy receipt counts the one callback its
+// package check names itself; neither comes from a manifest profile.
 const assertedCount =
-  /(?<!\btests[!?]?)\.(?:required|passed)(?:,\s*|\s*===\s*)([1-9]\d*)\s*[,)]|\brequirements\.length,\s*([1-9]\d*)\s*[,)]/u;
+  /(?<!\btests[!?]?|WarningPolicy\.acceptance)\.(?:required|passed)(?:,\s*|\s*===\s*)([1-9]\d*)\s*[,)]|\brequirements\.length,\s*([1-9]\d*)\s*[,)]/u;
 const countAnchors: Record<string, Record<string, string>> = {
   "scripts/verify-tasks-runtime-arm64.mjs": {
     "confidence-provenance": "confidenceProvenance.installedEvidence.profile,",
@@ -983,8 +995,12 @@ const countAnchors: Record<string, Record<string, string>> = {
       "for (const evidence of [lifecycleSource, lifecycleInstalled.evidence])",
   },
 };
-function pinnedCount(text: string, controller: string, profile: string) {
-  // By default the block starts where the controller runs the profile.
+// Every count asserted in the block that checks a profile's receipts. The block
+// runs from where the controller runs the profile, or from the profile's
+// anchor, to the next runner batch or anchor, so each later receipt check in
+// the block must agree as well as the first.
+function pinnedCounts(text: string, controller: string, profile: string) {
+  const anchors = Object.values(countAnchors[controller] ?? {});
   const at =
     countAnchors[controller]?.[profile] !== undefined
       ? text.indexOf(countAnchors[controller][profile])
@@ -999,8 +1015,16 @@ function pinnedCount(text: string, controller: string, profile: string) {
           .find((index) => index >= 0) ??
         -1);
   assert.ok(at >= 0, controller + " never names " + profile);
-  const match = assertedCount.exec(text.slice(at));
-  return match ? Number(match[1] ?? match[2]) : undefined;
+  const end = Math.min(
+    ...[
+      ...runnerBatches(text).map((batch) => batch.at),
+      ...anchors.map((anchor) => text.indexOf(anchor)),
+    ].filter((index) => index > at),
+    text.length,
+  );
+  return [
+    ...text.slice(at, end).matchAll(new RegExp(assertedCount.source, "gu")),
+  ].map((match) => Number(match[1] ?? match[2]));
 }
 // Runner batches a controller starts, read from its source: the profiles
 // passed to verify-required-native-tests.mjs as array items, a spread of a
@@ -1044,6 +1068,34 @@ function runnerBatches(text: string) {
   }
   return batches;
 }
+const attributedProfiles = (report: Admission) => {
+  const attributed: Record<string, string[]> = {};
+  for (const row of [
+    ...report.companionCohorts,
+    ...report.rowCountControllers.flatMap((entry) =>
+      entry.profiles.map((profile) => ({
+        profile,
+        controller: entry.controller,
+      })),
+    ),
+    ...Object.entries(controllerSelectors).map(([profile, entry]) => ({
+      profile,
+      controller: entry.controller,
+    })),
+  ])
+    if (!(row.controller in attributed)) attributed[row.controller] = [];
+  for (const row of report.companionCohorts)
+    attributed[row.controller]!.push(row.profile);
+  for (const entry of report.rowCountControllers)
+    if (attributed[entry.controller]!.length === 0)
+      attributed[entry.controller]!.push(...entry.profiles);
+  return Object.fromEntries(
+    Object.entries(attributed).map(([controller, profiles]) => [
+      controller,
+      [...new Set(profiles)],
+    ]),
+  );
+};
 interface BatchCohort {
   profile: string;
   controller: string;
@@ -1055,14 +1107,20 @@ const batchRule = (row: BatchCohort) =>
   JSON.stringify([
     row.profile,
     row.controller,
-    row.cohort,
+    [...row.cohort].sort(),
     row.rows ?? null,
     row.disjoint ?? false,
   ]);
 // Every batch of other profiles a controller of a selected profile runs, with
 // the check it applies to the batch receipt: an exact count, a comparison with
 // the sum of the profile lengths, or only the runner's own admission.
-async function deriveBatchCohorts(root: string, admitted: string[]) {
+// A controller whose batches name no selected profile, such as one that runs
+// them from a command template, serves the profiles `attributed` gives it.
+async function deriveBatchCohorts(
+  root: string,
+  admitted: string[],
+  attributed: Record<string, string[]>,
+) {
   const sources = [
     ...(await readdir(path.join(root, "scripts")))
       .filter((name) => name.endsWith(".mjs"))
@@ -1080,8 +1138,7 @@ async function deriveBatchCohorts(root: string, admitted: string[]) {
     )?.[1];
     const unread = batches.find((batch) => batch.unresolved);
     batches.forEach((batch, index) => {
-      const cohort = batch.profiles.filter((p) => !admitted.includes(p));
-      const served = controller.endsWith(".yml")
+      const derived = controller.endsWith(".yml")
         ? batch.profiles.filter((p) => admitted.includes(p))
         : [
             ...new Set([
@@ -1091,9 +1148,14 @@ async function deriveBatchCohorts(root: string, admitted: string[]) {
               ...(named && admitted.includes(named) ? [named] : []),
             ]),
           ];
+      // A workflow step names its selected profiles in each batch.
+      const served =
+        derived.length > 0 || controller.endsWith(".yml")
+          ? derived
+          : (attributed[controller] ?? []);
       if (served.length > 0)
         assert.equal(unread?.unresolved, undefined, controller);
-      if (cohort.length === 0 || served.length === 0) return;
+      if (served.length === 0) return;
       const window = text.slice(
         batch.at,
         batches[index + 1]?.at ?? batch.at + 1500,
@@ -1105,11 +1167,43 @@ async function deriveBatchCohorts(root: string, admitted: string[]) {
       if (check && /^\s*\d+\s*$/u.test(check)) rule.rows = Number(check);
       else if (check && /\.length/u.test(check) && /\+|reduce\(/u.test(check))
         rule.disjoint = true;
-      for (const profile of served)
-        found.push({ profile, controller, cohort, ...rule });
+      for (const profile of served) {
+        // A batch validates every profile before running any, so the other
+        // profiles in it are this profile's cohort.
+        const cohort = batch.profiles.filter((p) => p !== profile);
+        if (cohort.length > 0 && cohort.length === batch.profiles.length - 1)
+          found.push({ profile, controller, cohort, ...rule });
+        else if (!batch.profiles.includes(profile) && batch.profiles.length > 0)
+          found.push({ profile, controller, cohort: batch.profiles, ...rule });
+      }
     });
   }
   return found;
+}
+// The acceptance files verify-import-context-package.mjs copies into its fresh
+// consumer, and the selected profiles some controller installs through it.
+async function deriveInstalledHarness(root: string, admitted: string[]) {
+  const controller = "scripts/verify-import-context-package.mjs";
+  const text = await readFile(path.join(root, controller), "utf8");
+  const start = text.indexOf('await mkdir(path.join(consumer, "dist/test")');
+  assert.ok(start >= 0);
+  const list = /for \(const file of \[([^\]]*)\]\)/u.exec(text.slice(start));
+  assert.ok(list);
+  const files = [...list[1]!.matchAll(/"([a-z0-9-]+\.test\.js)"/gu)].map(
+    (match) => "dist/test/" + match[1],
+  );
+  const profiles = new Set<string>();
+  for (const directory of ["scripts", "test"])
+    for (const name of (await readdir(path.join(root, directory))).filter(
+      (file) => /\.(?:mjs|ts)$/u.test(file),
+    )) {
+      const source = await readFile(path.join(root, directory, name), "utf8");
+      for (const match of source.matchAll(
+        /CHECKTRAIL_IMPORT_CONTEXT_PROFILE[:=] ?"?([a-z0-9-]+)/gu,
+      ))
+        if (admitted.includes(match[1]!)) profiles.add(match[1]!);
+    }
+  return { controller, profiles: [...profiles].sort(), files };
 }
 // The exact counts the selected acceptance files assert: inside the installed
 // acceptance callback, or anywhere else, which the audit does not model.
@@ -1195,9 +1289,18 @@ test("finite inventory pins the controller rules its admission copies from sourc
     ).length,
     2,
   );
+  const lifecyclePackage = await readScript(
+    "scripts/verify-lifecycle-platforms-package.mjs",
+  );
+  for (const text of [
+    "const foundationRequired = foundationProfiles.reduce(",
+    "(total, profile) => total + definitions[profile].length,",
+    "assert.equal(evidence.foundation.required, foundationRequired);",
+  ])
+    assert.equal(lifecyclePackage.split(text).length, 2, text);
   const lifecycle = await scriptModule("lifecycle-runtime-evidence.mjs");
   const foundations = report.companionCohorts.filter(
-    (row) => row.profile === "lifecycle-platforms",
+    (row) => row.controller === "scripts/verify-lifecycle-platforms.mjs",
   );
   assert.deepEqual(
     foundations.map((row) => row.cohort),
@@ -1243,20 +1346,41 @@ test("finite inventory pins the controller rules its admission copies from sourc
   ] as const) {
     assert.notEqual(text, original, label);
     assert.match(text, /evidence\.required, 9\)/u, label);
-    assert.equal(pinnedCount(text, arm64, "confidence-provenance"), 9, label);
-    assert.notEqual(pinnedCount(text, arm64, "lifecycle-platforms"), 9, label);
+    assert.ok(
+      pinnedCounts(text, arm64, "confidence-provenance").every((n) => n === 9),
+      label,
+    );
+    const lifecycle = pinnedCounts(text, arm64, "lifecycle-platforms");
+    assert.ok(lifecycle.length === 0 || lifecycle.some((n) => n !== 9), label);
   }
+  // A later receipt in the same block counts as much as the first.
+  const vue = "scripts/verify-vue-router-assembly-container.mjs";
+  const vueText = await readScript(vue);
+  assert.deepEqual(pinnedCounts(vueText, vue, "assembly-vue-router"), [9, 9]);
+  const installedLowered = vueText.replace(
+    "installed.profile.passed, 9);",
+    "installed.profile.passed, 8);",
+  );
+  assert.notEqual(installedLowered, vueText);
+  assert.deepEqual(
+    pinnedCounts(installedLowered, vue, "assembly-vue-router"),
+    [9, 8],
+  );
   for (const entry of report.rowCountControllers) {
     const text = await readScript(entry.controller);
     for (const profile of entry.profiles)
-      assert.equal(
-        pinnedCount(text, entry.controller, profile),
-        entry.rows,
+      assert.deepEqual(
+        [...new Set(pinnedCounts(text, entry.controller, profile))],
+        [entry.rows],
         entry.controller + " " + profile,
       );
   }
   const admitted = admissionProfileIds(await readScope());
-  const derived = await deriveBatchCohorts(repository, admitted);
+  const derived = await deriveBatchCohorts(
+    repository,
+    admitted,
+    attributedProfiles(report),
+  );
   const batchControllers = new Set(derived.map((row) => row.controller));
   assert.deepEqual(
     report.companionCohorts
@@ -1264,6 +1388,47 @@ test("finite inventory pins the controller rules its admission copies from sourc
       .map(batchRule)
       .sort(),
     derived.map(batchRule).sort(),
+  );
+  for (const entry of report.companionCohorts)
+    for (const name of entry.absentNames ?? [])
+      assert.equal(
+        (await readScript(entry.controller)).split(JSON.stringify(name)).length,
+        2,
+        entry.controller + " " + name,
+      );
+  const ruby = await readScript("scripts/verify-ruby-tools-baseline.mjs");
+  for (const text of [
+    ')["ruby-tools"];',
+    '(_, i) => shard === "all" || i % 3 === Number(shard) - 1,',
+    "assert.ok(selected.length > 0);",
+  ])
+    assert.equal(ruby.split(text).length, 2, text);
+  assert.deepEqual(
+    report.companionCohorts.find((row) => row.cohort.includes("ruby-tools")),
+    {
+      profile: "ruby-extensions",
+      controller: "scripts/verify-ruby-tools-baseline.mjs",
+      cohort: ["ruby-tools"],
+    },
+  );
+  // The preserved Ruby tools rows keep each of the baseline's three shards
+  // nonempty, so the audit checks only their uniqueness.
+  assert.ok(
+    (
+      JSON.parse(
+        await readFile(path.join(repository, files[1]!), "utf8"),
+      ) as RequiredNative
+    )["ruby-tools"]!.length >= 3,
+  );
+  const harness = await deriveInstalledHarness(repository, admitted);
+  assert.equal(report.installedHarness.controller, harness.controller);
+  assert.deepEqual(
+    [...report.installedHarness.profiles].sort(),
+    harness.profiles,
+  );
+  assert.deepEqual(
+    [...report.installedHarness.files].sort(),
+    [...harness.files].sort(),
   );
   assert.deepEqual(
     report.installedCountCallbacks.map((row) => JSON.stringify(row)).sort(),
@@ -1348,19 +1513,45 @@ test("finite inventory strict freeze refuses a controller profile outside the na
       });
     assert.equal(list.length, size);
   };
-  const longFile = (length: number) => (rows: RequiredNative) => {
-    rows["terraform-extensions"]!.push({
-      file: "dist/test/" + "t".repeat(length - 18) + ".test.js",
-      name: "terraform-extensions long address 7019",
-    });
-    assert.equal(rows["terraform-extensions"]!.at(-1)!.file.length, length);
-  };
+  // Terraform installs only its harness files, so an unlisted long file name
+  // there is also an installed-harness refusal. The Helm baseline batch runs
+  // under the runner's admission alone.
+  const longName =
+    (profile: string, bytes: number) => (rows: RequiredNative) => {
+      rows[profile]!.push({
+        file: "dist/test/" + "t".repeat(bytes - 8) + ".test.js",
+        name: profile + " long address 7019",
+      });
+      assert.equal(path.basename(rows[profile]!.at(-1)!.file).length, bytes);
+    };
   const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
     [
       ["256 rows", pad(256), []],
       ["257 rows", pad(257), limit("row-limit")],
-      ["a 4096-character file", longFile(4096), []],
-      ["a 4097-character file", longFile(4097), limit("address-limit")],
+      ["a 255-byte Helm baseline file name", longName("helm", 255), []],
+      [
+        "a 256-byte Helm baseline file name",
+        longName("helm", 256),
+        [
+          {
+            profile: "helm-extensions",
+            controller: "scripts/verify-helm-extensions-container.mjs",
+            reason: "companion-cohort-differs",
+          },
+        ],
+      ],
+      [
+        "a 256-byte Terraform file name",
+        longName("terraform-extensions", 256),
+        [
+          ...limit("address-limit"),
+          {
+            profile: "terraform-extensions",
+            controller: "scripts/verify-import-context-package.mjs",
+            reason: "installed-harness-differs",
+          },
+        ],
+      ],
     ];
   for (const [label, edit, expected] of cases) {
     const root = await frozen(t);
@@ -1566,10 +1757,68 @@ test("finite inventory strict freeze refuses companion cohorts a controller requ
       ],
       // A runner batch counts an address shared by two of its profiles once.
       [
-        "a php-review row also filed under php-tools, a posix-owner row under posix-cleanup",
+        "a posix-owner row also filed under posix-cleanup",
+        (rows) => {
+          rows["posix-cleanup"]!.push({ ...rows["posix-owner"]![2]! });
+        },
+        [companion("lifecycle-platforms", "verify-lifecycle-platforms.mjs")],
+      ],
+      [
+        "a required C++ tools extra",
+        (rows) => {
+          rows["cpp-tools"]!.push({
+            file: "dist/test/cpp-tools.test.js",
+            name: "C/C++ planning is data only and rejects undeclared CMake commands and missing source scope",
+          });
+        },
+        [companion("cpp-extensions", "verify-cpp-extensions-container.mjs")],
+      ],
+      [
+        "a Ruby tools row repeated",
+        (rows) => {
+          rows["ruby-tools"]!.push({ ...rows["ruby-tools"]![5]! });
+        },
+        [companion("ruby-extensions", "verify-ruby-tools-baseline.mjs")],
+      ],
+      [
+        "a lifecycle runtime bindings row repeated",
+        (rows) => {
+          rows["lifecycle-runtime-bindings"]!.push({
+            ...rows["lifecycle-runtime-bindings"]![0]!,
+          });
+        },
+        [
+          companion(
+            "independent-evaluation-protocol",
+            "verify-tasks-runtime-arm64.mjs",
+          ),
+          companion("lifecycle-platforms", "verify-tasks-runtime-arm64.mjs"),
+        ],
+      ],
+      [
+        "a Terraform row in a file the installed harness omits",
+        (rows) => {
+          rows["terraform-extensions"]!.push({
+            file: "dist/test/gate-inventory.test.js",
+            name: "terraform-extensions uninstalled row 5147",
+          });
+        },
+        [
+          {
+            profile: "terraform-extensions",
+            controller: "scripts/verify-import-context-package.mjs",
+            reason: "installed-harness-differs",
+          },
+        ],
+      ],
+      [
+        "a php-review row also filed under php-tools, a Terraform row in its surfaces file",
         (rows) => {
           rows["php-tools"]!.push({ ...rows["php-review"]![3]! });
-          rows["posix-cleanup"]!.push({ ...rows["posix-owner"]![2]! });
+          rows["terraform-extensions"]!.push({
+            file: "dist/test/terraform-extensions-surfaces.test.js",
+            name: "terraform-extensions installed harness row 5147",
+          });
           rows.frameworks!.reverse();
         },
         [],
@@ -1583,6 +1832,32 @@ test("finite inventory strict freeze refuses companion cohorts a controller requ
     assert.deepEqual(unresolvedAddresses(result.stdout), [], label);
     assert.deepEqual(admissionRefusals(result.stdout), expected, label);
   }
+  // The Go workflow step validates its whole batch first, so a repeated row in
+  // one selected profile also stops the other.
+  const batched = await frozen(t);
+  await alter<RequiredNative>(batched, files[2]!, (rows) => {
+    rows["host-session-readiness"]!.push({
+      ...rows["host-session-readiness"]![0]!,
+    });
+  });
+  const refused = await audit(batched, true);
+  assert.equal(refused.code, 2);
+  assert.deepEqual(unresolvedAddresses(refused.stdout), [
+    "host-session-readiness/broken",
+  ]);
+  assert.deepEqual(admissionRefusals(refused.stdout), [
+    {
+      profile: "go-extensions",
+      controller: ".github/workflows/ci.yml",
+      reason: "companion-cohort-differs",
+    },
+    {
+      profile: "host-session-readiness",
+      controller: genericRunner,
+      reason: "duplicate-address",
+    },
+    installedCount("host-session-readiness"),
+  ]);
 });
 
 // The installed acceptance callback in a selected test file runs its whole
@@ -1857,9 +2132,13 @@ test("finite inventory selector admission agrees with every dedicated controller
   );
   const shared = shape.sharedSelectors[0]!;
   const batchControllers = new Set(
-    (await deriveBatchCohorts(repository, admissionProfileIds(scope))).map(
-      (row) => row.controller,
-    ),
+    (
+      await deriveBatchCohorts(
+        repository,
+        admissionProfileIds(scope),
+        attributedProfiles(shape),
+      )
+    ).map((row) => row.controller),
   );
   const counted = [
     ...new Set(
@@ -1907,7 +2186,8 @@ test("finite inventory selector admission agrees with every dedicated controller
         assert.ok(
           entry.controller in foundationSelectors ||
             batchControllers.has(entry.controller) ||
-            entry.rows !== undefined,
+            entry.rows !== undefined ||
+            entry.cohort.includes("ruby-tools"),
           entry.controller,
         );
         return entry;
@@ -1948,6 +2228,16 @@ test("finite inventory selector admission agrees with every dedicated controller
           rows[profile]!.length !== entry.rows,
       })),
     ),
+    ...shape.installedHarness.profiles.map((profile) => ({
+      rule: shape.installedHarness.controller,
+      profile,
+      controller: shape.installedHarness.controller,
+      reasons: ["installed-harness-differs"],
+      refuses: async (_root: string, rows: RequiredNative) =>
+        rows[profile]!.some(
+          (row) => !shape.installedHarness.files.includes(row.file),
+        ),
+    })),
     ...shape.installedCountCallbacks.flatMap((entry) =>
       entry.profiles.map((profile) => ({
         rule: entry.controller,
@@ -2067,6 +2357,24 @@ test("finite inventory selector admission agrees with every dedicated controller
         rows["terraform-extensions"]!.push({
           file: "dist/test/" + "t".repeat(4080) + ".test.js",
           name: "terraform-extensions long address 7019",
+        });
+      },
+    ],
+    [
+      "a row outside the installed harness",
+      (rows) => {
+        rows["terraform-extensions"]!.push({
+          file: "dist/test/gate-inventory.test.js",
+          name: "terraform-extensions uninstalled row 5147",
+        });
+      },
+    ],
+    [
+      "baseline extras required",
+      (rows) => {
+        rows["cpp-tools"]!.push({
+          file: "dist/test/cpp-tools.test.js",
+          name: "C/C++ planning is data only and rejects undeclared CMake commands and missing source scope",
         });
       },
     ],
@@ -2196,7 +2504,7 @@ test("finite inventory admission models every controller that selects manifest r
     ),
   };
   const unmodelledBatches = async (root: string) =>
-    (await deriveBatchCohorts(root, admitted))
+    (await deriveBatchCohorts(root, admitted, attributedProfiles(shape)))
       .filter((row) => !audited.batches.has(batchRule(row)))
       .map((row) => row.controller + " " + row.cohort.join(","));
   const unmodelledInstalled = async (root: string) => {
