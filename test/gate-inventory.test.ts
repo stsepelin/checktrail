@@ -2484,6 +2484,32 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
     JSON.parse(helperResult.stdout).controllerAdmission.fullSuiteListProblems,
     ["compiled-test-file-count"],
   );
+  // A helper linked into test/ from elsewhere is still compiled into
+  // dist/test under its link name.
+  const linked = await frozen(t);
+  await Promise.all(
+    Array.from({ length: 2048 - sources }, (_, index) =>
+      writeFile(
+        path.join(linked, "test", "compiled-6620-" + index + ".test.ts"),
+        "",
+      ),
+    ),
+  );
+  await mkdir(path.join(linked, "outside-6620"));
+  await writeFile(
+    path.join(linked, "outside-6620", "helper.ts"),
+    "export const linked6620 = 6620;\n",
+  );
+  await symlink(
+    path.join(linked, "outside-6620", "helper.ts"),
+    path.join(linked, "test", "linked-helper-6620.ts"),
+  );
+  const linkedResult = await audit(linked, true);
+  assert.equal(linkedResult.code, 2, linkedResult.stderr);
+  assert.deepEqual(
+    JSON.parse(linkedResult.stdout).controllerAdmission.fullSuiteListProblems,
+    ["compiled-test-file-count"],
+  );
   const named = await frozen(t);
   await writeFile(path.join(named, "test/extra-6620.test.ts"), "");
   const namedResult = await audit(named, true);

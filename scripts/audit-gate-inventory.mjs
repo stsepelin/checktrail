@@ -1170,23 +1170,26 @@ try {
         rootNames: parsed.fileNames,
         options: parsed.options,
       });
-      const testRoot = realpathSync(testDirectory) + path.sep;
-      let outputs = 0;
+      // Outputs are counted by where they land, so a source reached through
+      // a link or an import from anywhere still counts once per output path.
+      const compiledRoot = path.resolve(root, "dist", "test") + path.sep;
+      const emitted = new Set();
       for (const source of program.getSourceFiles()) {
         if (source.isDeclarationFile) continue;
-        const resolved = realpathSync(source.fileName);
-        if (!resolved.startsWith(testRoot)) continue;
         // getOutputFileNames names outputs only for root names; an imported
-        // helper is resolved but not a root, so it is asked about as one.
+        // source is resolved but not a root, so it is asked about as one.
         const asRoot = parsed.fileNames.includes(source.fileName)
           ? parsed
           : { ...parsed, fileNames: [...parsed.fileNames, source.fileName] };
-        outputs += ts.getOutputFileNames(
+        for (const output of ts.getOutputFileNames(
           asRoot,
           source.fileName,
           !ts.sys.useCaseSensitiveFileNames,
-        ).length;
+        ))
+          if (path.resolve(output).startsWith(compiledRoot))
+            emitted.add(path.resolve(output));
       }
+      const outputs = emitted.size;
       if (outputs > 4096)
         fullSuiteListProblems.push("compiled-test-file-count");
     }
