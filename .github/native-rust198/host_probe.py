@@ -10,7 +10,7 @@ import placement as PL
 REUSED_ADMISSION_SHA256='06bb9d23fc305375f8e7498caab3fb40cbe65e4e37f01d60ef6333c54c3fa49c'
 def guard():
  # The helper runs from the bytes that matched the pin, never from a reopened path.
- p=HERE/'reused_admission.py';body=D.read_once(p,1024**2,'Reviewed permission-frame helper changed')[0];D.need(hashlib.sha256(body).hexdigest()==REUSED_ADMISSION_SHA256,'Reviewed permission-frame helper changed');m=types.ModuleType('rust_metadata_permissions');m.__file__=str(p);exec(compile(body,str(p),'exec'),m.__dict__);return m
+ p=HERE/'reused_admission.py';body=D.read_once(p,1024**2,'Reviewed permission-frame helper changed')[0];D.need(hashlib.sha256(body).hexdigest()==REUSED_ADMISSION_SHA256,'Reviewed permission-frame helper changed');m=types.ModuleType('rust_metadata_permissions');m.__file__=str(p);exec(compile(body,str(p),'exec'),m.__dict__);m.verifiedSource=body;m.verifiedSHA256=REUSED_ADMISSION_SHA256;return m
 
 def bounded_read(file,limit):
  before=file.lstat();D.need(stat.S_ISREG(before.st_mode) and before.st_nlink>=1 and 0<before.st_size<=limit,'Bounded physical original host metadata');fd=os.open(file,os.O_RDONLY|os.O_NOFOLLOW)
@@ -87,6 +87,10 @@ def classify_inner_failure(stdout,stderr,script,python_aliases):
 def inner_failure_summary(error):
  return {'metadataObserved':False,'nativeAdmissionGranted':False,'innerPermissionObservation':error.observation,'SDKCompilerOrSourceExecuted':False,'originalSDKOrSLABodyEmitted':False,'stockSDKOrToolPermissionsChanged':False}
 
+def inner_helper(argv):
+ # placement.inner_command() puts the staged helper path after the bootstrap code.
+ D.need(len(argv)>=6 and argv[-6]=='-c' and argv[-2]=='--inner','First-party inner command shape');return Path(argv[-4])
+
 def observe_inner(module,argv,env,receipts,timeout):
  # Same exact command/cwd/input/env/timeout/capture and byte bound as command().
  # Only first-party permission code is invoked; output is never emitted raw.
@@ -103,7 +107,7 @@ def observe_inner(module,argv,env,receipts,timeout):
   observation['classification']={'kind':'original-command-output-bound-refused','reasonIdentifier':None};raise InnerPermissionProbeRefusal(observation) from None
  receipts.append({'argv':argv,'exitCode':response.returncode,'stdoutBytes':len(response.stdout),'stdoutSHA256':hashlib.sha256(response.stdout).hexdigest(),'stderrBytes':len(response.stderr),'stderrSHA256':hashlib.sha256(response.stderr).hexdigest()})
  if response.returncode!=0:
-  observation['classification']=classify_inner_failure(response.stdout,response.stderr,Path(HERE/'reused_admission.py'),('/usr/bin/python3',sys.executable));raise InnerPermissionProbeRefusal(observation) from None
+  observation['classification']=classify_inner_failure(response.stdout,response.stderr,inner_helper(argv),('/usr/bin/python3',sys.executable));raise InnerPermissionProbeRefusal(observation) from None
  try:
   value=json.loads(response.stdout)
   D.need(isinstance(value,dict) and isinstance(value.get('metadataEndpointSha256'),str),'First-party inner JSON shape')
@@ -132,14 +136,18 @@ def permission_observation(developer,sdk,toolchain,tools,output,context):
  for row in tools.values():
   file=Path(row['path'])
   if not covered(file):roots.append(file)
- frame=module.snapshot(roots,bounds);encoded=module.encoded(frame);D.need(len(encoded)<=module.MAX_DECODED_METADATA-module.MAX_COMMAND_BYTES-65536,'Permission metadata bound');request=output/'permission-request.json';accepted=False
+ request=output/'permission-request.json';accepted=False;helper=None
  # The build account may read the output directory and request only while the
  # inner probe runs. Every exit restores private access; a request whose result
  # was not fully assembled stays behind as root-only evidence of what was probed.
  try:
+  # The probe executes a staged copy of the verified helper. The frame and the request's
+  # controller name that copy, so the inner check covers the file that actually runs.
+  helper=PL.stage_inner_helper(module,output);roots.append(helper)
+  frame=module.snapshot(roots,bounds);encoded=module.encoded(frame);D.need(len(encoded)<=module.MAX_DECODED_METADATA-module.MAX_COMMAND_BYTES-65536,'Permission metadata bound')
   # The request is complete and read-only before the directory admits the build account.
-  module.write_json(request,{'frame':frame,'controller':{'file':str(HERE/'reused_admission.py'),'sha256':REUSED_ADMISSION_SHA256,'uid':int(os.environ['CHECKTRAIL_CONTROLLER_UID'])},'identity':identity});request.chmod(0o444);output.chmod(0o755)
-  command=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/env','-i','PATH=/usr/bin:/bin:/usr/sbin:/sbin','LC_ALL=C','/usr/bin/python3','-I','-S','-B',str(HERE/'reused_admission.py'),'--inner',str(request)]
+  module.write_json(request,{'frame':frame,'controller':{'file':str(helper),'sha256':module.verifiedSHA256,'uid':int(os.environ['CHECKTRAIL_CONTROLLER_UID'])},'identity':identity});request.chmod(0o444);output.chmod(0o755)
+  command=PL.inner_command(module,helper,request)
   # The inner invocation is reviewed first-party metadata code, not an SDK producer.
   try:value=observe_inner(module,command,clean,receipts,timeout=min(300,bounds.deadline-bounds.clock()))
   finally:
@@ -155,6 +163,7 @@ def permission_observation(developer,sdk,toolchain,tools,output,context):
   try:
    if accepted:request.unlink()
    elif os.path.lexists(request):request.chmod(0o400)
+   if helper is not None and os.path.lexists(helper):helper.unlink()
   finally:output.chmod(0o700)
  return result
 

@@ -7,8 +7,9 @@ from unittest import mock
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import host_probe as H
 HERE=Path(__file__).resolve().parent
+HELPER=b'# synthetic verified permission helper 3391\n'
 class InnerFailure(unittest.TestCase):
- def setUp(self):self.module=SimpleNamespace(MAX_COMMAND_BYTES=1024**2);self.argv=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/python3','-I','-S','-B',str(HERE/'reused_admission.py'),'--inner','/synthetic/request'];self.env={'PATH':'/usr/bin:/bin'};self.receipts=[]
+ def setUp(self):self.module=SimpleNamespace(MAX_COMMAND_BYTES=1024**2);self.argv=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/python3','-I','-S','-B','-c','# synthetic bootstrap',str(HERE/'reused_admission.py'),'a'*64,'--inner','/synthetic/request'];self.env={'PATH':'/usr/bin:/bin'};self.receipts=[]
  def failed(self,response):
   with mock.patch.object(H.subprocess,'run',return_value=response):
    with self.assertRaises(H.InnerPermissionProbeRefusal) as caught:H.observe_inner(self.module,self.argv,self.env,self.receipts,.25)
@@ -88,11 +89,11 @@ class InnerFailure(unittest.TestCase):
    if argv[:3]==['/usr/bin/sudo','-n','-l']:return subprocess.CompletedProcess(argv,1,b'synthetic-policy',b'')
    if argv[0]=='/bin/ps':return subprocess.CompletedProcess(argv,0,b'',b'')
    raise AssertionError('Failed inner must use bounded observation, not old opaque command')
-  module=SimpleNamespace(Bounds=Bounds,command=command,group_id=int,sudo_denial=lambda value:True,snapshot=lambda roots,bounds:[{'synthetic':'nonempty-firstparty-frame'}],encoded=lambda value:json.dumps(value).encode(),digest=lambda value:hashlib.sha256(value).hexdigest(),MAX_DECODED_METADATA=128*1024**2,MAX_COMMAND_BYTES=1024**2,write_json=lambda path,value:path.write_text(json.dumps(value)))
+  module=SimpleNamespace(Bounds=Bounds,command=command,group_id=int,sudo_denial=lambda value:True,snapshot=lambda roots,bounds:[{'synthetic':'nonempty-firstparty-frame'}],encoded=lambda value:json.dumps(value).encode(),digest=lambda value:hashlib.sha256(value).hexdigest(),MAX_DECODED_METADATA=128*1024**2,MAX_COMMAND_BYTES=1024**2,write_json=lambda path,value:path.write_text(json.dumps(value)),verifiedSource=HELPER,verifiedSHA256=hashlib.sha256(HELPER).hexdigest())
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory).resolve();account=SimpleNamespace(pw_uid=os.getuid()+1,pw_gid=20)
    with mock.patch.object(H,'guard',return_value=module),mock.patch.object(H.pwd,'getpwnam',return_value=account),mock.patch.dict(os.environ,{'CHECKTRAIL_CONTROLLER_UID':str(os.getuid())}),mock.patch.object(H.PL,'access_canary',return_value={'firstPartyOnlyNonemptyAccessCanaryObserved':True,'payloadReadBytesVerifiedByLegacyHashCheck':1,'SDKFrameOrNativeAdmissionCredit':False}),mock.patch.object(H,'observe_inner',side_effect=error) as observed,self.assertRaises(H.InnerPermissionProbeRefusal) as caught:H.permission_observation(root/'Developer',root/'SDK',root/'Toolchain',{},root,{})
-   self.assertIs(error,caught.exception);observed.assert_called_once();args,kwargs=observed.call_args;self.assertEqual(module,args[0]);self.assertEqual(str(HERE/'reused_admission.py'),args[1][-3]);self.assertEqual('--inner',args[1][-2]);self.assertGreater(kwargs['timeout'],0);self.assertLessEqual(kwargs['timeout'],300)
+   self.assertIs(error,caught.exception);observed.assert_called_once();args,kwargs=observed.call_args;self.assertEqual(module,args[0]);self.assertEqual(str(root/H.PL.INNER_HELPER),args[1][-4]);self.assertEqual(hashlib.sha256(HELPER).hexdigest(),args[1][-3]);self.assertEqual('--inner',args[1][-2]);self.assertGreater(kwargs['timeout'],0);self.assertLessEqual(kwargs['timeout'],300)
  def test_main_emits_only_bounded_closed_projection_and_refuses(self):
   observation=self.failed(subprocess.CompletedProcess([],1,b'SOURCE-BODY',b'/private/SLA-BODY'));error=H.InnerPermissionProbeRefusal(observation);out=io.StringIO();environment={'GITHUB_ACTIONS':'true','RUNNER_ENVIRONMENT':'github-hosted','GITHUB_RUN_ID':'1','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40}
   with mock.patch.dict(os.environ,environment),mock.patch.object(H.os,'getuid',return_value=0),mock.patch.object(H.platform,'system',return_value='Darwin'),mock.patch.object(H.platform,'machine',return_value='arm64'),mock.patch.object(H,'collect_metadata',side_effect=error),mock.patch.object(sys,'argv',['host_probe','/synthetic/out']),redirect_stdout(out):code=H.main()
@@ -151,7 +152,7 @@ class PermissionAccessRestore(unittest.TestCase):
    if argv[0]=='/bin/ps':return subprocess.CompletedProcess(argv,0,b'',b'')
    raise AssertionError('unexpected synthetic command')
   encoded=lambda value:json.dumps(value).encode();digest=lambda value:hashlib.sha256(value).hexdigest()
-  self.module=SimpleNamespace(Bounds=Bounds,command=command,group_id=int,sudo_denial=lambda value:True,snapshot=lambda roots,bounds:self.frame,encoded=encoded,digest=digest,current_endpoint=self.endpoint_after_inner,LimitedCarrier=H.guard().LimitedCarrier,MAX_CAPTURE_BYTES=32*1024**2,MAX_DECODED_METADATA=128*1024**2,MAX_COMMAND_BYTES=1024**2,write_json=lambda path,value:path.write_text(json.dumps(value)))
+  self.module=SimpleNamespace(Bounds=Bounds,command=command,group_id=int,sudo_denial=lambda value:True,snapshot=lambda roots,bounds:self.frame,encoded=encoded,digest=digest,current_endpoint=self.endpoint_after_inner,LimitedCarrier=H.guard().LimitedCarrier,MAX_CAPTURE_BYTES=32*1024**2,MAX_DECODED_METADATA=128*1024**2,MAX_COMMAND_BYTES=1024**2,write_json=lambda path,value:path.write_text(json.dumps(value)),verifiedSource=HELPER,verifiedSHA256=hashlib.sha256(HELPER).hexdigest())
   self.endpoint=digest(encoded(self.frame))
  def tearDown(self):self.temp.cleanup()
  def fresh(self,label):self.output=self.root/label;self.output.mkdir(mode=0o700);self.output.chmod(0o700);self.during=[];self.after=[]
@@ -179,6 +180,15 @@ class PermissionAccessRestore(unittest.TestCase):
     with self.assertRaisesRegex(kind,message):self.probe(self.observed(result))
     self.assertEqual([(0o755,0o444)],self.during);self.assertEqual(0o700,self.mode(self.output))
     request=self.output/'permission-request.json';self.assertEqual(0o400,self.mode(request));self.assertEqual(self.frame,json.loads(request.read_bytes())['frame'])
+ def test_sdk_probe_runs_and_names_the_staged_verified_helper(self):
+  seen=[]
+  def inner(module,argv,env,receipts,timeout):
+   helper=Path(argv[-4]);request=json.loads(Path(argv[-1]).read_bytes())
+   seen.append((helper,helper.read_bytes(),argv[-3],request['controller']['file'],request['controller']['sha256'],argv[argv.index('-c')+1]==H.PL.INNER_BOOTSTRAP))
+   return self.accepted()
+  self.probe(inner)
+  helper=self.output/H.PL.INNER_HELPER;sha=hashlib.sha256(HELPER).hexdigest()
+  self.assertEqual([(helper,HELPER,sha,str(helper),sha,True)],seen);self.assertFalse(os.path.lexists(helper))
  def test_success_removes_request_and_restores_private_output(self):
   value=self.probe(self.observed(self.accepted()))
   self.assertEqual([(0o755,0o444)],self.during);self.assertEqual([(0o700,0o400)],self.after);self.assertEqual(0o700,self.mode(self.output));self.assertFalse(os.path.lexists(self.output/'permission-request.json'))
@@ -274,5 +284,38 @@ class PermissionAccessRestore(unittest.TestCase):
   self.module=SimpleNamespace(**{**vars(self.module),'write_json':interrupted})
   with self.assertRaisesRegex(OSError,'5813'):self.probe(self.observed(self.accepted()))
   self.assertEqual([0o700],partial);self.assertEqual([],self.during);self.assertEqual(0o700,self.mode(self.output));self.assertEqual(0o400,self.mode(self.output/'permission-request.json'))
+
+class VerifiedHelperExecution(unittest.TestCase):
+ """The probe child runs exactly the helper bytes verified against their pin."""
+ def setUp(self):
+  self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.controller=self.root/'controller';self.controller.mkdir()
+  self.original=(HERE/'reused_admission.py').read_bytes();(self.controller/'reused_admission.py').write_bytes(self.original);self.marker=self.root/'replacement-ran-8273'
+  self.replacement=('import pathlib,sys\npathlib.Path(%r).write_text("replacement 8273")\nprint(\'{"replacement":8273}\')\n' % str(self.marker)).encode()
+ def tearDown(self):self.temp.cleanup()
+ def probe(self,module,replace_controller=False,replace_staged=False):
+  output=self.root/('output-%d' % len(list(self.root.iterdir())));output.mkdir();helper=H.PL.stage_inner_helper(module,output)
+  if replace_controller:(self.controller/'reused_admission.py').write_bytes(self.replacement)
+  if replace_staged:helper.chmod(0o644);helper.write_bytes(self.replacement)
+  stand_in=next(Path(c) for c in ['/usr/bin/true','/bin/true'] if os.path.isfile(c) and os.stat(c).st_uid==0)
+  tree=self.root/'selected-8273';tree.mkdir(exist_ok=True);(tree/'entry-8273').write_bytes(b'synthetic selected entry 8273')
+  frame=module.snapshot([tree],module.Bounds());identity={'uid':os.getuid(),'gid':os.getgid(),'groups':sorted({os.getgid(),*os.getgroups()})}
+  request=output/'request.json';request.write_text(json.dumps({'frame':frame,'controller':{'file':str(stand_in),'sha256':hashlib.sha256(stand_in.read_bytes()).hexdigest(),'uid':os.getuid()+1},'identity':identity}))
+  command=H.PL.inner_command(module,helper,request);child=[sys.executable,*command[command.index('/usr/bin/python3')+1:]]
+  return subprocess.run(child,cwd='/',input=b'',capture_output=True,env={'PATH':'/usr/bin:/bin','LC_ALL':'C'},timeout=60,check=False),helper
+ def verified(self):
+  with mock.patch.object(H,'HERE',self.controller):return H.guard()
+ def assert_verified_helper_ran(self,result,helper):
+  # This suite does not run as root, so the pinned helper's own first check refuses
+  # the fixture request; that refusal, raised from the staged copy, is the witness.
+  self.assertEqual((1,b''),(result.returncode,result.stdout),result.stderr[-400:])
+  self.assertEqual({'kind':'closed-firstparty-inner-need-refusal','reasonIdentifier':'root-request-required'},H.classify_inner_failure(result.stdout,result.stderr,helper,(sys.executable,)))
+  self.assertFalse(self.marker.exists())
+ def test_controller_file_replaced_after_verification_never_runs(self):
+  result,helper=self.probe(self.verified(),replace_controller=True);self.assert_verified_helper_ran(result,helper)
+ def test_unchanged_helper_runs_through_the_bootstrap(self):
+  result,helper=self.probe(self.verified());self.assert_verified_helper_ran(result,helper)
+ def test_staged_copy_replaced_before_the_child_reads_it_is_refused(self):
+  result,_=self.probe(self.verified(),replace_staged=True)
+  self.assertNotEqual(0,result.returncode);self.assertEqual(b'',result.stdout);self.assertTrue(result.stderr.endswith(b'permission-helper-sha256-differs\n'));self.assertFalse(self.marker.exists())
 
 if __name__=='__main__':unittest.main()

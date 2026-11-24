@@ -34,7 +34,8 @@ class Placement(unittest.TestCase):
    for row in frame:
     now=metadata(Path(row['path']));self.assertEqual(now,{k:row[k] for k in now});result.append({'path':row['path'],**now})
    return result
-  return SimpleNamespace(metadata=metadata,snapshot=snapshot,encoded=encoded,current_endpoint=current,digest=lambda b:hashlib.sha256(b).hexdigest()),Bounds()
+  helper=b'# SYNTHETIC verified permission helper 4729\n'
+  return SimpleNamespace(metadata=metadata,snapshot=snapshot,encoded=encoded,current_endpoint=current,digest=lambda b:hashlib.sha256(b).hexdigest(),verifiedSource=helper,verifiedSHA256=hashlib.sha256(helper).hexdigest()),Bounds()
  def observe(self,*,deny=False,blank=False,change_parent=False,changed=None):
   def run(module,argv,env,receipts,timeout):
    self.assertEqual('--inner',argv[-2]);self.assertEqual('/usr/bin/sudo',argv[0]);self.assertGreater(timeout,0);self.assertLessEqual(timeout,30);request=Path(argv[-1]);data=json.loads(request.read_text());body=Path(data['controller']['file']).read_bytes();self.assertGreater(len(body),0);self.assertLessEqual(len(body),4096);self.assertEqual({'firstPartyAccessCanary':1,'runContext':self.context},json.loads(body));self.assertEqual(hashlib.sha256(body).hexdigest(),data['controller']['sha256']);self.assertEqual(self.identity,data['identity']);self.assertFalse(any('/SDK' in r['path'] for r in data['frame']));self.assertTrue(any(r['type']=='directory' for r in data['frame']));receipts.append({'syntheticFirstPartyOnly':True})
@@ -103,6 +104,18 @@ class Placement(unittest.TestCase):
   p=self.layout();module,bounds=self.fake_module()
   with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view):r=P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),self.observe())
   self.assertTrue(r['firstPartyOnlyNonemptyAccessCanaryObserved']);self.assertGreater(r['payloadReadBytesVerifiedByLegacyHashCheck'],0);self.assertGreater(bounds.bytes,0);self.assertFalse(r['SDKFrameOrNativeAdmissionCredit']);self.assertEqual(0,r['SDKBytesReadByThisCanary']);self.assertEqual(0o700,stat.S_IMODE(p['host'].stat().st_mode));self.assertEqual([],list(p['host'].iterdir()))
+ def test_canary_probe_runs_the_staged_verified_helper_and_frames_it(self):
+  p=self.layout();module,bounds=self.fake_module();seen=[];base=self.observe()
+  def run(module,argv,env,receipts,timeout):
+   helper=Path(argv[-4]);frame=json.loads(Path(argv[-1]).read_text())['frame']
+   seen.append((helper,helper.read_bytes(),argv[-3],str(helper) in {r['path'] for r in frame},str(p['controller']/'reused_admission.py') in {r['path'] for r in frame}))
+   return base(module,argv,env,receipts,timeout)
+  with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view):P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),run)
+  self.assertEqual([(p['host']/P.INNER_HELPER,module.verifiedSource,module.verifiedSHA256,True,True)],seen);self.assertEqual([],list(p['host'].iterdir()))
+ def test_helper_bytes_that_do_not_match_their_pin_are_never_staged(self):
+  p=self.layout();module,bounds=self.fake_module();module.verifiedSource=b'# replaced helper 4729\n'
+  with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view),self.assertRaisesRegex(ValueError,'^verified-permission-helper-bytes$'):P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),self.observe())
+  self.assertEqual([],list(p['host'].iterdir()));self.assertEqual(0o700,stat.S_IMODE(p['host'].stat().st_mode))
  def test_empty_canary_is_not_a_passing_access_probe(self):
   p=self.layout();module,bounds=self.fake_module();module.encoded=lambda value:b''
   with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view),self.assertRaisesRegex(ValueError,'^nonempty-small-firstparty-canary$'):P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),self.observe())
