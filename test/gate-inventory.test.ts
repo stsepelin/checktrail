@@ -2315,6 +2315,16 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
       label,
     );
   }
+  const empty = await frozen(t);
+  await alter<{ profiles: string[] }>(empty, files[3]!, (value) => {
+    value.profiles = [];
+  });
+  const emptied = await audit(empty, true);
+  assert.equal(emptied.code, 2, emptied.stderr);
+  assert.equal(
+    JSON.parse(emptied.stdout).controllerAdmission.fullSuiteListAdmitted,
+    false,
+  );
   const root = await frozen(t);
   await alter<{ profiles: string[] }>(root, files[3]!, (value) => {
     value.profiles = [...value.profiles].reverse();
@@ -2324,6 +2334,10 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
   assert.deepEqual(
     JSON.parse(reordered.stdout).controllerAdmission.refusals,
     [],
+  );
+  assert.equal(
+    JSON.parse(reordered.stdout).controllerAdmission.fullSuiteListAdmitted,
+    true,
   );
 });
 

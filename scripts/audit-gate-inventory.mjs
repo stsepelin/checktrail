@@ -1118,12 +1118,14 @@ try {
   ];
   const admissionRefusals = [];
   // selectFullSuiteRequirements refuses the whole list before any shard runs
-  // when it is empty, longer than 256 or names a profile twice.
-  const fullSuiteAdmitted =
+  // when it is empty, longer than 256 or names a profile twice. That fails the
+  // full-suite job even when no selected profile is in the list, so strict
+  // freeze also refuses the list itself.
+  const fullSuiteListAdmitted =
     fullSuite.profiles.length > 0 &&
     fullSuite.profiles.length <= 256 &&
     new Set(fullSuite.profiles).size === fullSuite.profiles.length;
-  if (!fullSuiteAdmitted)
+  if (!fullSuiteListAdmitted)
     for (const owner of admissionProfiles.filter((profile) =>
       fullSuite.profiles.includes(profile),
     ))
@@ -1241,6 +1243,7 @@ try {
         maxFileCharacters,
         maxNameBytes,
         installedHarness,
+        fullSuiteListAdmitted,
         refusedProfiles: new Set(admissionRefusals.map((row) => row.profile))
           .size,
         refusals: admissionRefusals,
@@ -1257,7 +1260,8 @@ try {
     process.argv[3] === "--require-frozen" &&
     (!inventory.frozen ||
       unresolvedBindings.length > 0 ||
-      admissionRefusals.length > 0)
+      admissionRefusals.length > 0 ||
+      !fullSuiteListAdmitted)
   )
     process.exitCode = 2;
 } catch (error) {
