@@ -12,6 +12,7 @@ import {
   realpathSync,
 } from "node:fs";
 import path from "node:path";
+import ts from "typescript";
 import process from "node:process";
 const BASELINE =
   "04b2ba50cb1e4516d5472ff2412478b75ec5f5803de34d62fa4b78237a1d5568";
@@ -1146,29 +1147,49 @@ try {
   // partitionFullSuiteFiles needs between 3 and 4096 files for its shards.
   if (fullSuiteTestFiles.size < 3 || fullSuiteTestFiles.size > 4096)
     fullSuiteListProblems.push("test-source-count");
-  // The shard snapshots all of dist/test, which holds every output the
-  // compiler emits for test/**/*.ts, and captureCompiledEngine refuses more
-  // than 4096 files.
+  // The shard snapshots all of dist/test and captureCompiledEngine refuses
+  // more than 4096 files. The pinned compiler resolves the program from
+  // tsconfig.json and names every output it would emit for each source under
+  // test/, including imported helpers outside the include patterns. Sources
+  // are parsed and resolved, never executed.
   if (testDirectoryStat?.isDirectory()) {
-    const options = JSON.parse(
-      readFileSync(path.join(root, "tsconfig.json"), "utf8"),
-    ).compilerOptions;
-    const outputsPerSource =
-      1 +
-      (options.declaration === true ? 1 : 0) +
-      (options.sourceMap === true ? 1 : 0) +
-      (options.declarationMap === true ? 1 : 0);
-    let sources = 0;
-    const walk = (directory) => {
-      for (const entry of readdirSync(directory, { withFileTypes: true })) {
-        if (entry.isDirectory()) walk(path.join(directory, entry.name));
-        else if (entry.name.endsWith(".ts") && !entry.name.endsWith(".d.ts"))
-          sources++;
+    const configDiagnostics = [];
+    const parsed = ts.getParsedCommandLineOfConfigFile(
+      path.join(root, "tsconfig.json"),
+      {},
+      {
+        ...ts.sys,
+        onUnRecoverableConfigFileDiagnostic: (diagnostic) =>
+          configDiagnostics.push(diagnostic),
+      },
+    );
+    if (!parsed || configDiagnostics.length > 0)
+      fullSuiteListProblems.push("compiler-configuration-unreadable");
+    else {
+      const program = ts.createProgram({
+        rootNames: parsed.fileNames,
+        options: parsed.options,
+      });
+      const testRoot = realpathSync(testDirectory) + path.sep;
+      let outputs = 0;
+      for (const source of program.getSourceFiles()) {
+        if (source.isDeclarationFile) continue;
+        const resolved = realpathSync(source.fileName);
+        if (!resolved.startsWith(testRoot)) continue;
+        // getOutputFileNames names outputs only for root names; an imported
+        // helper is resolved but not a root, so it is asked about as one.
+        const asRoot = parsed.fileNames.includes(source.fileName)
+          ? parsed
+          : { ...parsed, fileNames: [...parsed.fileNames, source.fileName] };
+        outputs += ts.getOutputFileNames(
+          asRoot,
+          source.fileName,
+          !ts.sys.useCaseSensitiveFileNames,
+        ).length;
       }
-    };
-    walk(testDirectory);
-    if (sources * outputsPerSource > 4096)
-      fullSuiteListProblems.push("compiled-test-file-count");
+      if (outputs > 4096)
+        fullSuiteListProblems.push("compiled-test-file-count");
+    }
   }
   const fullSuiteList = fullSuite.profiles;
   if (fullSuiteList.length === 0 || fullSuiteList.length > 256)

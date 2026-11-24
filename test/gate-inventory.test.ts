@@ -2463,6 +2463,27 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
       label,
     );
   }
+  // An imported .mts helper lies outside the test/**/*.ts include pattern
+  // but the compiler still emits its .mjs and .d.mts beside the tests.
+  const helper = await frozen(t);
+  await Promise.all(
+    Array.from({ length: 2048 - sources }, (_, index) =>
+      writeFile(
+        path.join(helper, "test", "compiled-6620-" + index + ".test.ts"),
+        index === 0 ? 'import "./imported-helper-6620.mjs";\n' : "",
+      ),
+    ),
+  );
+  await writeFile(
+    path.join(helper, "test", "imported-helper-6620.mts"),
+    "export const helper6620 = 6620;\n",
+  );
+  const helperResult = await audit(helper, true);
+  assert.equal(helperResult.code, 2, helperResult.stderr);
+  assert.deepEqual(
+    JSON.parse(helperResult.stdout).controllerAdmission.fullSuiteListProblems,
+    ["compiled-test-file-count"],
+  );
   const named = await frozen(t);
   await writeFile(path.join(named, "test/extra-6620.test.ts"), "");
   const namedResult = await audit(named, true);
