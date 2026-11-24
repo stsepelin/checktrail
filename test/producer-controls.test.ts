@@ -6,6 +6,7 @@ import {
   copyFileSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   rmSync,
   symlinkSync,
@@ -247,6 +248,129 @@ test(
           ["crypto", 0],
         ],
       );
+    } finally {
+      rmSync(temporary, { recursive: true, force: true });
+    }
+  },
+);
+
+test(
+  "SDK10 controls worker runs a packed bundle without reading its emptied directory",
+  posix,
+  () => {
+    // A small marker bundle rather than the real controls, which would run
+    // this check again from inside the worker. The real launcher and common.py
+    // are packed with one control; every file is then deleted, so the worker
+    // can only run what it was given on stdin. A packed file that differs from
+    // the pin is refused before any control runs.
+    const temporary = mkdtempSync(
+      path.join(tmpdir(), "checktrail-sdk10-packed-"),
+    );
+    try {
+      const source = path.join(repository, "scripts/producer-sdk10");
+      const bundle = path.join(temporary, "bundle-6271");
+      mkdirSync(bundle);
+      const markers = path.join(temporary, "markers-6271");
+      mkdirSync(markers);
+      const files: Record<string, Buffer> = {
+        "run_checks.py": readFileSync(path.join(source, "run_checks.py")),
+        "common.py": readFileSync(path.join(source, "common.py")),
+        "test_packed_marker.py": Buffer.from(
+          "import pathlib,unittest\n" +
+            "import common\n" +
+            "class Packed(unittest.TestCase):\n" +
+            " def test_packed_6271(self):\n" +
+            "  pathlib.Path(" +
+            JSON.stringify(path.join(markers, "packed")) +
+            ").write_bytes(common.encoded({'packed':6271}))\n",
+        ),
+      };
+      const rows = Object.keys(files).map((name) => ({
+        path: name,
+        bytes: files[name]!.length,
+        sha256: createHash("sha256").update(files[name]!).digest("hex"),
+      }));
+      files["MANIFEST.json"] = Buffer.from(
+        JSON.stringify({ schemaVersion: 1, files: rows }),
+      );
+      const pin = createHash("sha256")
+        .update(files["MANIFEST.json"])
+        .digest("hex");
+      for (const [name, body] of Object.entries(files))
+        writeFileSync(path.join(bundle, name), body);
+      const bootstrap = spawnSync(
+        "python3",
+        [
+          "-I",
+          "-S",
+          "-B",
+          "-c",
+          "import sys;sys.path.insert(0,sys.argv[1]);import run_checks;sys.stdout.write(run_checks.BUNDLE_BOOTSTRAP)",
+          bundle,
+        ],
+        { encoding: "utf8" },
+      );
+      assert.equal(bootstrap.status, 0, bootstrap.stderr);
+      for (const name of readdirSync(bundle)) rmSync(path.join(bundle, name));
+      assert.deepEqual(readdirSync(bundle), []);
+      const packed = (changed: boolean) => {
+        const value: Record<string, string> = {};
+        for (const [name, body] of Object.entries(files))
+          value[name] = (
+            changed && name === "common.py"
+              ? Buffer.concat([body, Buffer.from("# changed-6271\n")])
+              : body
+          ).toString("latin1");
+        return JSON.stringify(value);
+      };
+      const worker = (label: string, changed: boolean) => {
+        const out = path.join(temporary, "out-" + label);
+        mkdirSync(out);
+        const result = spawnSync(
+          "python3",
+          [
+            "-I",
+            "-S",
+            "-B",
+            "-c",
+            bootstrap.stdout,
+            path.join(bundle, "run_checks.py"),
+            pin,
+            "--python-worker",
+            "--out",
+            out,
+            "--manifest-sha256",
+            pin,
+          ],
+          { input: packed(changed), encoding: "utf8", timeout: 60_000 },
+        );
+        return { out, result };
+      };
+      const refused = worker("changed", true);
+      assert.notEqual(refused.result.status, 0);
+      assert.match(
+        refused.result.stderr,
+        /frozen first-party control file changed: common\.py/,
+      );
+      assert.deepEqual(readdirSync(markers), []);
+      const { out, result } = worker("exact", false);
+      assert.equal(result.status, 0, result.stderr);
+      assert.match(result.stderr, /test_packed_6271/);
+      assert.deepEqual(
+        JSON.parse(readFileSync(path.join(out, "PYTHON.json"), "utf8")),
+        {
+          tests: 1,
+          failures: 0,
+          errors: 0,
+          skipped: 0,
+          originalSourceDockerSdkOrNetworkExecuted: false,
+        },
+      );
+      assert.equal(
+        readFileSync(path.join(markers, "packed"), "utf8"),
+        '{\n  "packed": 6271\n}\n',
+      );
+      assert.deepEqual(readdirSync(bundle), []);
     } finally {
       rmSync(temporary, { recursive: true, force: true });
     }
