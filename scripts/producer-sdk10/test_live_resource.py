@@ -56,6 +56,11 @@ class Controller:
         return None
     def save(self):
         pass
+    def observer(self):
+        self.calls.append(('observer',))
+        return self.root / 'observer-snapshot'
+    def observer_entry(self, script):
+        return ['/usr/bin/python3', '-I', '-S', '-B', '-c', 'synthetic-bootstrap', '/observer/run_checks.py', '--entry', script[0].rsplit('/', 1)[1], *script[1:]]
     def container_args(self, name, entry, *flags):
         self.calls.append(('containerArgs', name, entry, flags))
         return ['create', '--name', name]
@@ -127,6 +132,17 @@ class Resource(unittest.TestCase):
         self.assertFalse(result['complete'])
         self.assertTrue(result['meter']['samplingComplete'])
         self.assertEqual(result['guard'], 'attach')
+    def test_observer_snapshot_changed_during_the_sample_withholds_credit(self):
+        # The meter ran from the observer snapshot; one that no longer verifies
+        # after the attach gives the sample no credit. Unchanged, it completes.
+        def changed(c):
+            def observer():
+                c.calls.append(('observer',)); raise common.Refusal('observer snapshot matches the verified bundle: meter.py')
+            c.observer = observer
+        c, result, error, _ = self.run_observation(changed)
+        self.assertIsNotNone(error); self.assertEqual(result['guard'], 'observer-snapshot'); self.assertFalse(result['complete'])
+        c, result, error, _ = self.run_observation()
+        self.assertIsNone(error); self.assertTrue(result['complete']); self.assertIn(('observer',), c.calls)
     def test_incomplete_meter_never_credited(self):
         def setup(c):
             c.value = {**meter(), 'samplingComplete': False, 'incompleteCode': 'entry-vanished-during-sample'}

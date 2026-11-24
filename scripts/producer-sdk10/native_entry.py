@@ -1,7 +1,7 @@
 """Protected PID-namespace supervisor; original SDK10 argv is unchanged."""
 import argparse,json,os,pathlib,re,signal,subprocess,sys,time
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
-from common import need,freeze,encoded,digest,hash_file,deadline_receipt
+from common import need,freeze,encoded,digest,hash_file,deadline_receipt,bundle_bytes
 
 def clean_project_env(environment):
  return {k:v for k,v in environment.items() if not k.startswith(('GITHUB_','GH_','ACTIONS_')) and not re.search(r'TOKEN|PASSWORD|PASSWD|SECRET|CREDENTIAL|API_KEY|ACCESS_KEY',k,re.I)}
@@ -56,5 +56,5 @@ def protect_control(folder):
  folder=pathlib.Path(folder);need(folder.is_dir() and not folder.is_symlink(),'physical protected control directory');os.chown(folder,0,0);os.chmod(folder,0o700);need(not list(folder.iterdir()),'fresh root-owned protected control directory');return folder
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--profile',required=True);p.add_argument('--phase',choices=['build','test'],required=True);p.add_argument('--deadline',type=float,required=True);p.add_argument('--uid',type=int,required=True);p.add_argument('--gid',type=int,required=True);p.add_argument('--binding-json',required=True);p.add_argument('--control',default='/native-control');a=p.parse_args();need(os.geteuid()==0 and a.uid>0 and a.gid>=0,'root-only protected supervisor/nonroot child');folder=protect_control(a.control);raw=pathlib.Path(a.profile).read_bytes();profile=json.loads(raw);binding=json.loads(a.binding_json);binding.update(phase=a.phase,profileSHA256=digest(raw),supervisorSHA256=hash_file(__file__)[1]);result=supervise(profile['buildArgv' if a.phase=='build' else 'testArgv'],a.deadline,'/work/source',os.environ,folder,binding,a.uid,a.gid);return result['supervisorExitCode']
+ p=argparse.ArgumentParser();p.add_argument('--profile',required=True);p.add_argument('--phase',choices=['build','test'],required=True);p.add_argument('--deadline',type=float,required=True);p.add_argument('--uid',type=int,required=True);p.add_argument('--gid',type=int,required=True);p.add_argument('--binding-json',required=True);p.add_argument('--control',default='/native-control');a=p.parse_args();need(os.geteuid()==0 and a.uid>0 and a.gid>=0,'root-only protected supervisor/nonroot child');folder=protect_control(a.control);raw=bundle_bytes(a.profile);profile=json.loads(raw);binding=json.loads(a.binding_json);binding.update(phase=a.phase,profileSHA256=digest(raw),supervisorSHA256=digest(bundle_bytes(__file__)));result=supervise(profile['buildArgv' if a.phase=='build' else 'testArgv'],a.deadline,'/work/source',os.environ,folder,binding,a.uid,a.gid);return result['supervisorExitCode']
 if __name__=='__main__':sys.exit(main())

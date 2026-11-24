@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Manual-only original SDK10 producer controller. No work runs on import."""
-import argparse,gzip,hashlib,json,os,pathlib,re,shutil,signal,stat,subprocess,sys,tarfile,time,uuid
+import argparse,gzip,hashlib,json,os,pathlib,re,secrets,shutil,signal,stat,subprocess,sys,tarfile,time,uuid
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
 from common import *
 from owned_image import reserve_image_inputs, admit_pulled_image, cleanup_image_inputs
@@ -83,6 +83,35 @@ def manifest_check(pin):
  """The profile of the bundle the launcher verified against this same pin, from its verified bytes."""
  bundle=verified_bundle();need(bundle is not None and bundle.pin==pin and digest(bundle.files['MANIFEST.json'])==pin,'operator-reviewed first-party bundle manifest')
  return bundle_json(HERE/'profile.json')
+def publish_observer(root,bundle):
+ """Write the verified bundle into a fresh read-only directory, the only /observer a container mounts.
+
+ Containers once mounted the checkout, which can change after verification.
+ This copy is written from the bytes the launcher verified, under an
+ unpredictable name in the controller's own 0700 work root, with 0555 and
+ 0444 modes; a container cannot write its read-only mount, and the copy is
+ re-verified before every container start and after every run. Host
+ processes of the same user are the operator's own and stay trusted.
+ """
+ folder=pathlib.Path(os.path.realpath(root))/('observer-'+secrets.token_hex(16));folder.mkdir(mode=0o700)
+ for name,raw in sorted(bundle.files.items()):
+  fd=os.open(folder/name,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+  with os.fdopen(fd,'wb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
+  os.chmod(folder/name,0o444)
+ os.chmod(folder,0o555);syncdir(folder);syncdir(folder.parent);return verify_observer(folder,bundle)
+def verify_observer(folder,bundle):
+ """Refuse an observer snapshot that is not exactly the verified bundle, read-only."""
+ folder=pathlib.Path(folder);st=os.lstat(folder);need(stat.S_ISDIR(st.st_mode) and stat.S_IMODE(st.st_mode)==0o555,'read-only observer snapshot directory')
+ need(sorted(os.listdir(folder))==sorted(bundle.files),'observer snapshot holds exactly the verified bundle')
+ for name,raw in sorted(bundle.files.items()):
+  fd=os.open(folder/name,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+  try:
+   st=os.fstat(fd);need(stat.S_ISREG(st.st_mode) and stat.S_IMODE(st.st_mode)==0o444,'read-only observer snapshot file: '+name)
+   with open(fd,'rb',closefd=False) as f:data=f.read(len(raw)+1)
+  finally:os.close(fd)
+  need(data==raw,'observer snapshot matches the verified bundle: '+name)
+ return folder
+def runs(entry,script):return any(type(x) is str and pathlib.PurePosixPath(x).name==script for x in entry)
 NATIVE_CAP_ALIASES={name:canonical for canonical in ['CHOWN','SETUID','SETGID','KILL'] for name in [canonical,'CAP_'+canonical]}
 def native_identity_contract(obj):
  h=obj.get('HostConfig') or {};values=h.get('CapAdd');need(obj.get('Config',{}).get('User')=='0:0','protected root supervisor exact user');need(type(values) is list and len(values)==4 and all(type(v) is str and v in NATIVE_CAP_ALIASES for v in values),'finite exact native capability aliases');need({NATIVE_CAP_ALIASES[v] for v in values}=={'CHOWN','SETUID','SETGID','KILL'},'exact supervisor ownership/UID/GID/kill capabilities, no omitted or extra capability');return True
@@ -187,21 +216,31 @@ class Controller:
   need(gone,'owned container absence not observed');return gone
  def volume_owned(self,name=None):
   name=name or self.state['volume'];need(name in [self.state['volume'],self.state['tempVolume']],'registered owned persistent volume');obj=self.inspect('volume',name);need(obj is not None and obj['Name']==name and labels_match(obj.get('Labels'),self.ctx),'positive exact volume ownership');return obj
+ def publish_observer(self):
+  bundle=verified_bundle();need(bundle is not None,'first-party bundle verified by the launcher');need('observer' not in self.state,'one observer snapshot per controller')
+  self.state['observer']=str(publish_observer(self.root,bundle));self.save();return pathlib.Path(self.state['observer'])
+ def observer(self):
+  """The published /observer snapshot, re-verified against the launcher's bundle."""
+  bundle=verified_bundle();need(bundle is not None and type(self.state.get('observer')) is str,'published observer snapshot');return verify_observer(self.state['observer'],bundle)
+ def observer_entry(self,script_args):
+  """The container command that runs /observer/<script> from the verified bundle."""
+  bundle=verified_bundle();script=script_args[0];need(bundle is not None and type(script) is str and script.startswith('/observer/') and '/' not in script[len('/observer/'):],'first-party observer script')
+  return bundle.observer_argv('/observer',script[len('/observer/'):],list(script_args[1:]))
  def container_args(self,name,entry,read_only_work=False,helper=False,capture=False):
-  need(re.fullmatch('[a-z0-9-]+',name),'owned container namespace');p=self.profile;limit=p['limits'];sampler=helper and any(x.endswith('/meter_runner.py') for x in entry);memory=limit['samplerMemory'] if sampler else 4*1024**3 if helper else limit['nativeMemory'];args=['create','--name',name,'--platform','linux/amd64','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges:true','--cpuset-cpus','0-3','--cpus',('0.5' if sampler else '2' if helper else '4'),'--memory',str(memory),'--memory-swap',str(memory),'--pids-limit',str(64 if sampler else 512 if helper else limit['nativePIDs']),'--ulimit','nofile=65536:65536','--stop-timeout','20','--network',('none' if helper else 'bridge'),'--mount','type=volume,source='+self.state['volume']+',target=/work,volume-nocopy'+(',readonly' if read_only_work else '')]
+  need(re.fullmatch('[a-z0-9-]+',name),'owned container namespace');p=self.profile;limit=p['limits'];sampler=helper and runs(entry,'meter_runner.py');memory=limit['samplerMemory'] if sampler else 4*1024**3 if helper else limit['nativeMemory'];args=['create','--name',name,'--platform','linux/amd64','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges:true','--cpuset-cpus','0-3','--cpus',('0.5' if sampler else '2' if helper else '4'),'--memory',str(memory),'--memory-swap',str(memory),'--pids-limit',str(64 if sampler else 512 if helper else limit['nativePIDs']),'--ulimit','nofile=65536:65536','--stop-timeout','20','--network',('none' if helper else 'bridge'),'--mount','type=volume,source='+self.state['volume']+',target=/work,volume-nocopy'+(',readonly' if read_only_work else '')]
   for target in ['/tmp','/work/tmp']:args+=['--mount','type=volume,source='+self.state['tempVolume']+',target='+target+',volume-nocopy'+(',readonly' if read_only_work else '')]
   for k,v in owned_labels(self.ctx).items():args+=['--label',k+'='+v]
   # Protected root supervisor drops all source child groups/UID/capabilities.
   # Data helpers receive only DAC_READ_SEARCH/CHOWN and no source command.
   if helper:
-   destination=self.root/('materialization' if '/observer/input_prep.py' in entry and 'materialize' in entry else 'evidence');args+=['--user','0:0','--cap-add','DAC_READ_SEARCH','--cap-add','CHOWN','--mount','type=bind,source='+str(HERE)+',target=/observer,readonly','--mount','type=bind,source='+str(self.root/'inputs')+',target=/inputs,readonly','--mount','type=bind,source='+str(destination)+',target=/evidence'+(',readonly' if capture else '')]
-  else:args+=['--user','0:0','--cap-add','CHOWN','--cap-add','SETUID','--cap-add','SETGID','--cap-add','KILL','--mount','type=bind,source='+str(HERE)+',target=/observer,readonly','--mount','type=bind,source='+str(self.root/'protected'/name)+',target=/native-control']
+   destination=self.root/('materialization' if runs(entry,'input_prep.py') and 'materialize' in entry else 'evidence');args+=['--user','0:0','--cap-add','DAC_READ_SEARCH','--cap-add','CHOWN','--mount','type=bind,source='+str(self.observer())+',target=/observer,readonly','--mount','type=bind,source='+str(self.root/'inputs')+',target=/inputs,readonly','--mount','type=bind,source='+str(destination)+',target=/evidence'+(',readonly' if capture else '')]
+  else:args+=['--user','0:0','--cap-add','CHOWN','--cap-add','SETUID','--cap-add','SETGID','--cap-add','KILL','--mount','type=bind,source='+str(self.observer())+',target=/observer,readonly','--mount','type=bind,source='+str(self.root/'protected'/name)+',target=/native-control']
   if capture:args+=['--mount','type=bind,source='+str(self.root/'capture')+',target=/capture']
   env={'HOME':'/work/home','DOTNET_CLI_HOME':'/work/home/dotnet','NUGET_PACKAGES':'/work/cache/nuget','ROOTFS_DIR':'/crossrootfs/arm64','DOTNET_INSTALL_DIR':'/work/source/.dotnet','DOTNET_ROOT':'/work/source/.dotnet','DOTNET_CLI_TELEMETRY_OPTOUT':'1','DOTNET_NOLOGO':'1','DOTNET_MULTILEVEL_LOOKUP':'0','TZ':'UTC','TMPDIR':'/work/tmp','TMP':'/work/tmp','TEMP':'/work/tmp'};args+=fresh_env(env);args+=['--workdir','/' if helper else '/work/source','--entrypoint',entry[0],self.state['imageID'],*entry[1:]];return args
  def validate_container(self,obj,name,entry,read_only=False,helper=False,capture=False):
-  expected={'/work':('volume',self.state['volume'],not read_only),'/work/tmp':('volume',self.state['tempVolume'],not read_only),'/tmp':('volume',self.state['tempVolume'],not read_only),'/observer':('bind',str(HERE),False)}
+  expected={'/work':('volume',self.state['volume'],not read_only),'/work/tmp':('volume',self.state['tempVolume'],not read_only),'/tmp':('volume',self.state['tempVolume'],not read_only),'/observer':('bind',str(self.observer()),False)}
   if helper:
-   destination=self.root/('materialization' if '/observer/input_prep.py' in entry and 'materialize' in entry else 'evidence');expected.update({'/inputs':('bind',str(self.root/'inputs'),False),'/evidence':('bind',str(destination),not capture)})
+   destination=self.root/('materialization' if runs(entry,'input_prep.py') and 'materialize' in entry else 'evidence');expected.update({'/inputs':('bind',str(self.root/'inputs'),False),'/evidence':('bind',str(destination),not capture)})
   else:expected['/native-control']=('bind',str(self.root/'protected'/name),True)
   if capture:expected['/capture']=('bind',str(self.root/'capture'),True)
   mounts=obj.get('Mounts');need(type(mounts) is list and len(mounts)==len(expected) and len({x.get('Destination') for x in mounts})==len(mounts),'actual complete unique owned mount set')
@@ -213,7 +252,7 @@ class Controller:
   for m in volumes:need(m.get('Source')==targets[m['Target']] and (m.get('VolumeOptions') or {}).get('NoCopy') is True,'actual owned volume must disable image-directory copy-up')
   return True
  def helper(self,label,script_args,deadline,read_only=False,capture=False):
-  name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned helper name must start absent');self.state['containers'].append(name);self.save();args=self.container_args(name,['/usr/bin/python3','-I','-S','-B',*script_args],read_only,True,capture);obj=self.create_owned(name,args);container_id=obj['Id'];self.validate_container(obj,name,script_args,read_only,True,capture);row,p=self.cmd(['docker','start','-a',container_id],max(1,deadline-time.monotonic()),check=False);self.stop_owned(name);need(row['exitCode']==0 and row['reason'] is None,'first-party '+label+' incomplete');return row
+  name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned helper name must start absent');self.state['containers'].append(name);self.save();args=self.container_args(name,self.observer_entry(script_args),read_only,True,capture);obj=self.create_owned(name,args);container_id=obj['Id'];self.validate_container(obj,name,script_args,read_only,True,capture);row,p=self.cmd(['docker','start','-a',container_id],max(1,deadline-time.monotonic()),check=False);self.stop_owned(name);self.observer();need(row['exitCode']==0 and row['reason'] is None,'first-party '+label+' incomplete');return row
  def compiler_processes(self,container_id,seen,cache,file):
   row,p=self.docker(['top',container_id,'-eo','pid,ppid,comm,args'],seconds=5,check=False)
   if row['exitCode']!=0 or row.get('reason') is not None:return
@@ -259,8 +298,9 @@ class Controller:
     seen[key]=qualified
    except (OSError,Refusal,IndexError):continue
  def native(self,label,argv,deadline):
-  need(stat.S_IMODE(HERE.stat().st_mode)&0o005==0o005 and all(stat.S_IMODE((HERE/n).stat().st_mode)&0o004 for n in ['native_entry.py','common.py','profile.json']),'published first-party readonly supervisor bundle must be traversable/readable without DAC capabilities')
-  self.helper('before-'+label,['/observer/observer.py','before-build' if label=='original-build' else 'before-test','--profile','/observer/profile.json','--evidence','/evidence','--deadline',str(deadline),'--uid',str(self.state['uid']),'--gid',str(self.state['gid'])],deadline,True);need(time.monotonic()<deadline,'original command budget before container action');name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned original producer starts absent');self.state['containers'].append(name);self.save();phase='build' if label=='original-build' else 'test';binding={'context':self.ctx,'manifestSHA256':self.state['manifestSHA256']};protected=self.root/'protected'/name;protected.mkdir(mode=0o700);wrapped=['/usr/bin/python3','-I','-S','-B','/observer/native_entry.py','--profile','/observer/profile.json','--phase',phase,'--deadline',str(deadline),'--uid',str(self.state['uid']),'--gid',str(self.state['gid']),'--binding-json',json.dumps(binding,sort_keys=True)];obj=self.create_owned(name,self.container_args(name,wrapped));producer_binding=ProducerAPI.register(self,name,obj,{**binding,'phase':phase,'profileSHA256':digest(bundle_bytes(HERE/'profile.json')),'supervisorSHA256':digest(bundle_bytes(HERE/'native_entry.py'))},argv);retain_native_identity(self.root/'evidence',label,'admission',obj);native_identity_contract(obj);self.validate_container(obj,name,wrapped);need(obj['HostConfig'].get('PidMode') in ['',None] and obj['HostConfig'].get('Privileged') is False,'own private PID namespace and unprivileged original process');need(obj['HostConfig']['Memory']==self.profile['limits']['nativeMemory'],'exact native memory cap');logs=self.root/'evidence';stdout=logs/(label+'.stdout');stderr=logs/(label+'.stderr');observed=logs/(label+'-actual-compiler-processes.jsonl');started=time.monotonic();started_wall=time.time();reason=None;seen={};cache={};last_sample=started;resource_failure=None;previous_log_bytes=sum(p.stat().st_size for phase in ['original-build','original-tests'] for suffix in ['.stdout','.stderr'] for p in [logs/(phase+suffix)] if p.exists());remaining_log_bytes=self.profile['limits']['logBytes']-previous_log_bytes;need(remaining_log_bytes>0,'remaining cumulative original log budget')
+  # The 0555/0444 snapshot is traversable and readable without DAC capabilities.
+  self.observer()
+  self.helper('before-'+label,['/observer/observer.py','before-build' if label=='original-build' else 'before-test','--profile','/observer/profile.json','--evidence','/evidence','--deadline',str(deadline),'--uid',str(self.state['uid']),'--gid',str(self.state['gid'])],deadline,True);need(time.monotonic()<deadline,'original command budget before container action');name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned original producer starts absent');self.state['containers'].append(name);self.save();phase='build' if label=='original-build' else 'test';binding={'context':self.ctx,'manifestSHA256':self.state['manifestSHA256']};protected=self.root/'protected'/name;protected.mkdir(mode=0o700);wrapped=self.observer_entry(['/observer/native_entry.py','--profile','/observer/profile.json','--phase',phase,'--deadline',str(deadline),'--uid',str(self.state['uid']),'--gid',str(self.state['gid']),'--binding-json',json.dumps(binding,sort_keys=True)]);obj=self.create_owned(name,self.container_args(name,wrapped));producer_binding=ProducerAPI.register(self,name,obj,{**binding,'phase':phase,'profileSHA256':digest(bundle_bytes(HERE/'profile.json')),'supervisorSHA256':digest(bundle_bytes(HERE/'native_entry.py'))},argv);retain_native_identity(self.root/'evidence',label,'admission',obj);native_identity_contract(obj);self.validate_container(obj,name,wrapped);need(obj['HostConfig'].get('PidMode') in ['',None] and obj['HostConfig'].get('Privileged') is False,'own private PID namespace and unprivileged original process');need(obj['HostConfig']['Memory']==self.profile['limits']['nativeMemory'],'exact native memory cap');logs=self.root/'evidence';stdout=logs/(label+'.stdout');stderr=logs/(label+'.stderr');observed=logs/(label+'-actual-compiler-processes.jsonl');started=time.monotonic();started_wall=time.time();reason=None;seen={};cache={};last_sample=started;resource_failure=None;previous_log_bytes=sum(p.stat().st_size for phase in ['original-build','original-tests'] for suffix in ['.stdout','.stderr'] for p in [logs/(phase+suffix)] if p.exists());remaining_log_bytes=self.profile['limits']['logBytes']-previous_log_bytes;need(remaining_log_bytes>0,'remaining cumulative original log budget')
   need(time.monotonic()<deadline,'original remaining budget before Docker start')
   # From registration on, every Docker action of this phase names the captured
   # immutable ID: a container later given this name is never started, observed,
@@ -305,6 +345,9 @@ class Controller:
     else:need((value['originalCommandStarted'] and value.get('ownChildReaped') is True and type(value.get('originalExitCode')) is int) or (value['originalCommandStarted'] is False and value.get('originalExitCode') is None),'protected started/exit/reap consistency')
     controls[member]=value
    except BaseException as e:receipt_errors.append(member+':'+type(e).__name__)
+  # The supervisor ran from the snapshot; one changed during the run withholds credit.
+  try:self.observer()
+  except BaseException as e:receipt_errors.append('observer-snapshot:'+type(e).__name__)
   retain_protected_status(logs,label,observed_controls,receipt_errors,controls);native_identity_contract(terminal)
   control=controls.get('RESULT',{});start_control=controls.get('START',{});original_started=control.get('originalCommandStarted',start_control.get('originalCommandStarted'));original_exit=control.get('originalExitCode') if control.get('originalCommandStarted') is True else None
   if control.get('originalCommandStarted') is False and start_control:receipt_errors.append('contradictory protected start and terminal');original_started=True;original_exit=None
@@ -329,7 +372,7 @@ def prove_image(c):
 def produce(nonce,pin):
  profile=manifest_check(pin);mode=original_mode_configuration(profile);ctx=context(nonce);need(os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and os.environ.get('GITHUB_REPOSITORY')==profile['repository'] and os.environ.get('GITHUB_RUN_ATTEMPT')=='1','manual-only selected repository first attempt');need(os.environ.get('CHECKTRAIL_OPERATOR_ACK')=='sdk10-original-e34-240m-'+pin[:12],'concrete operator source-execution acknowledgement');root=root_path(nonce);need(not root.exists(),'new owned hosted root');root.mkdir(mode=0o700)
  for name in ['control','protected','materialization','evidence','capture','windows']:(root/name).mkdir(mode=0o700)
- started=time.monotonic();c=Controller(root,ctx,profile);c.state={'context':ctx,'started':started,'preparationDeadline':started+1800,'phaseDeadline':started+1800,'cleanupDeadline':started+21000,'volume':'ct-sdk10-'+str(ctx['run'])+'-'+nonce,'tempVolume':'ct-sdk10-'+str(ctx['run'])+'-'+nonce+'-tmp','prefix':'ct-sdk10-'+str(ctx['run'])+'-'+nonce,'imageAlias':'checktrail-sdk10-owned:'+str(ctx['run'])+'-'+nonce,'imageAliasCreated':False,'containers':[],'uid':os.getuid(),'gid':os.getgid(),'manifestSHA256':pin,'captureReady':False,'operatorFullRoundtripAcknowledged':False,'windows':{},'sourceCalledSandboxed':False};c.save();error=None
+ started=time.monotonic();c=Controller(root,ctx,profile);c.state={'context':ctx,'started':started,'preparationDeadline':started+1800,'phaseDeadline':started+1800,'cleanupDeadline':started+21000,'volume':'ct-sdk10-'+str(ctx['run'])+'-'+nonce,'tempVolume':'ct-sdk10-'+str(ctx['run'])+'-'+nonce+'-tmp','prefix':'ct-sdk10-'+str(ctx['run'])+'-'+nonce,'imageAlias':'checktrail-sdk10-owned:'+str(ctx['run'])+'-'+nonce,'imageAliasCreated':False,'containers':[],'uid':os.getuid(),'gid':os.getgid(),'manifestSHA256':pin,'captureReady':False,'operatorFullRoundtripAcknowledged':False,'windows':{},'sourceCalledSandboxed':False};c.save();c.publish_observer();error=None
  try:
   freeze(root/'evidence'/'ORIGINAL-MODE-CONFIGURATION.json',encoded(mode))
   api=GitHub(root/'control'/'api',c.state['preparationDeadline']);api.bind(ctx,profile['workflowPath']);recipient=json.loads(os.environ.get('CHECKTRAIL_RECIPIENT_JWK','null'));operation(root/'control'/'validate-recipient','validate-recipient',{'publicJWK':recipient},c.state['preparationDeadline']);channel={'ref':'heads/diagnostic/sdk10-recovery-'+nonce,'parent':os.environ.get('CHECKTRAIL_ACK_PARENT','')};ack_api=AckAPI(root/'control'/'ack-admission',c.state['preparationDeadline'],channel,ctx);need(ack_api.current()==channel['parent'],'existing original ACK ref parent before any source/input action');c.state['publicRecipientJWK']=recipient;c.state['recoveryACKChannel']=channel;c.save();c.state['capacityAdmission']=capacity(root,profile);c.save();freeze(root/'evidence'/'ACTUAL-CAPACITY-ADMISSION.json',encoded(c.state['capacityAdmission']));freeze(root/'evidence'/'PROFILE.json',encoded(profile));command,stdin=input_prep_command(root,c.state['preparationDeadline']);c.cmd(command,1800,stdin=stdin);need(time.monotonic()<c.state['preparationDeadline'],'input preparation30min budget');prove_image(c);need(c.inspect('volume',c.state['volume']) is None,'owned volume starts absent');labels=[v for k,vv in owned_labels(ctx).items() for v in ['--label',k+'='+vv]];

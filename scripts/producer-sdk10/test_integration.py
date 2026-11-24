@@ -11,7 +11,7 @@ class IntegrationControls(unittest.TestCase):
  def native(self,label='original-build',limit=32,body=b'synthetic output',prior=b'',cleanup=None,caps=None,terminal_caps=None,on_start=None,receipt_change=None,live_poll=None,deadline_seconds=60,owned_abort=False):
   bundle=self.root/'bundle';bundle.mkdir(mode=0o755);bundle.chmod(0o755)
   for name in ['native_entry.py','common.py','profile.json']:(bundle/name).write_bytes(b'first-party synthetic descriptor');(bundle/name).chmod(0o644)
-  c=object.__new__(driver.Controller);c.root=self.root;c.ctx=self.ctx;c.state={'prefix':'ct-sdk10-synthetic','uid':os.getuid(),'gid':os.getgid(),'manifestSHA256':'b'*64,'containers':[],'volume':'work','tempVolume':'temp','cleanupDeadline':time.monotonic()+100000,'phaseDeadline':time.monotonic()+100000};c.profile={'limits':{'nativeMemory':1024,'logBytes':limit,'freeReserve':0}};c.save=lambda:None
+  c=object.__new__(driver.Controller);c.root=self.root;c.ctx=self.ctx;c.state={'prefix':'ct-sdk10-synthetic','uid':os.getuid(),'gid':os.getgid(),'manifestSHA256':'b'*64,'containers':[],'volume':'work','tempVolume':'temp','cleanupDeadline':time.monotonic()+100000,'phaseDeadline':time.monotonic()+100000};c.profile={'limits':{'nativeMemory':1024,'logBytes':limit,'freeReserve':0}};c.save=lambda:None;c.publish_observer()
   self.last_controller=c
   evidence=self.root/'evidence';evidence.mkdir();(self.root/'protected').mkdir()
   if prior:(evidence/'original-build.stdout').write_bytes(prior)
@@ -108,6 +108,7 @@ class IntegrationControls(unittest.TestCase):
   class Controller:
    def __init__(inner,root,ctx,selected):inner.root=root;inner.ctx=ctx;inner.profile=selected;inner.state=None;instances.append(inner)
    def save(inner):pass
+   def publish_observer(inner):pass
    def inspect(inner,*args):return None
    def cmd(inner,*args,**kwargs):pass
    def docker(inner,*args):pass

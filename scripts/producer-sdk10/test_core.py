@@ -142,7 +142,7 @@ class Controls(unittest.TestCase):
   with patch.object(native_entry.os,'chown',side_effect=chown),patch.object(native_entry.os,'chmod',side_effect=lambda *a:trace.append('chmod')),patch.object(pathlib.Path,'iterdir',listing):native_entry.protect_control(self.root)
   self.assertEqual(trace,['chown','chmod','enumerate'])
  def test_actual_mount_identity_and_rw_guards_reject_wrong_temp(self):
-  c=object.__new__(driver.Controller);c.root=self.root;c.state={'volume':'owned-work','tempVolume':'owned-temp'};name='synthetic-native';obj={'Mounts':[{'Destination':'/work','Type':'volume','Name':'owned-work','RW':True},{'Destination':'/tmp','Type':'volume','Name':'owned-temp','RW':True},{'Destination':'/work/tmp','Type':'volume','Name':'owned-temp','RW':True},{'Destination':'/observer','Type':'bind','Source':str(driver.HERE),'RW':False},{'Destination':'/native-control','Type':'bind','Source':str(self.root/'protected'/name),'RW':True}],'HostConfig':{'ReadonlyRootfs':True,'Privileged':False,'PidMode':'','CpusetCpus':'0-3','NetworkMode':'bridge','CapDrop':['ALL'],'SecurityOpt':['no-new-privileges:true'],'Mounts':[{'Type':'volume','Source':'owned-work','Target':'/work','VolumeOptions':{'NoCopy':True}},{'Type':'volume','Source':'owned-temp','Target':'/tmp','VolumeOptions':{'NoCopy':True}},{'Type':'volume','Source':'owned-temp','Target':'/work/tmp','VolumeOptions':{'NoCopy':True}}]}};self.assertTrue(c.validate_container(obj,name,[]));obj['Mounts'][1]['Name']='wrong-unowned-temp';self.assertRaises(common.Refusal,c.validate_container,obj,name,[]);obj['Mounts'][1]['Name']='owned-temp';obj['Mounts'][3]['RW']=True;self.assertRaises(common.Refusal,c.validate_container,obj,name,[])
+  c=object.__new__(driver.Controller);c.root=self.root;c.save=lambda:None;c.state={'volume':'owned-work','tempVolume':'owned-temp'};observer=str(c.publish_observer());name='synthetic-native';obj={'Mounts':[{'Destination':'/work','Type':'volume','Name':'owned-work','RW':True},{'Destination':'/tmp','Type':'volume','Name':'owned-temp','RW':True},{'Destination':'/work/tmp','Type':'volume','Name':'owned-temp','RW':True},{'Destination':'/observer','Type':'bind','Source':observer,'RW':False},{'Destination':'/native-control','Type':'bind','Source':str(self.root/'protected'/name),'RW':True}],'HostConfig':{'ReadonlyRootfs':True,'Privileged':False,'PidMode':'','CpusetCpus':'0-3','NetworkMode':'bridge','CapDrop':['ALL'],'SecurityOpt':['no-new-privileges:true'],'Mounts':[{'Type':'volume','Source':'owned-work','Target':'/work','VolumeOptions':{'NoCopy':True}},{'Type':'volume','Source':'owned-temp','Target':'/tmp','VolumeOptions':{'NoCopy':True}},{'Type':'volume','Source':'owned-temp','Target':'/work/tmp','VolumeOptions':{'NoCopy':True}}]}};self.assertTrue(c.validate_container(obj,name,[]));obj['Mounts'][1]['Name']='wrong-unowned-temp';self.assertRaises(common.Refusal,c.validate_container,obj,name,[]);obj['Mounts'][1]['Name']='owned-temp';obj['Mounts'][3]['RW']=True;self.assertRaises(common.Refusal,c.validate_container,obj,name,[])
  def test_ack_transport_is_one_existing_ref_append_without_force(self):
   import base64
   ctx={'run':123,'head':'a'*40,'nonce':'synthetic-test','attempt':1};channel={'ref':'heads/diagnostic/sdk10-recovery-synthetic-test','parent':'b'*40};ack={'payload':{'context':ctx,'syntheticHashesOnly':True},'signature':'SYNTHETIC','algorithm':'RSA-PSS-SHA256-salt32'};raw=common.encoded(ack);sha=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest();events=[];tip=[channel['parent']]
@@ -333,6 +333,24 @@ class Controls(unittest.TestCase):
   self.assertEqual(code,7,log);self.assertEqual(count.read_text(),'[]')
   self.assertEqual(sorted(x.name for x in markers.iterdir()),['entry','helper']);self.assertEqual((markers/'helper').read_text(),'imported-4421')
   self.assertEqual((markers/'entry').read_text(),'finalize --nonce synthetic-5813 --exit-7|{"data":"verified-5813"}|absent,absent')
+ def test_container_command_runs_the_mounted_snapshot_only_after_verifying_it(self):
+  # The container command reads the mounted copy once through the launcher:
+  # an unchanged snapshot runs the entry with its arguments and exit status,
+  # one changed after publication is refused before any of it runs.
+  import run_checks
+  bundle,markers,pin=self.entry_bundle();verified=run_checks.Bundle(bundle,run_checks.reviewed_bundle(bundle,pin),pin)
+  for case in ['unchanged','changed']:
+   with self.subTest(case=case):
+    for x in markers.iterdir():x.unlink()
+    snapshot=driver.publish_observer(pathlib.Path(tempfile.mkdtemp(dir=self.root)),verified)
+    if case=='changed':
+     target=snapshot/'helper_marker.py';os.chmod(snapshot,0o755);os.chmod(target,0o644);target.write_bytes(self.swapped(markers,'helper'));os.chmod(target,0o444);os.chmod(snapshot,0o555)
+    argv=verified.observer_argv(str(snapshot),'entry_marker.py',['finalize','--nonce','synthetic-9157','--exit-7']);self.assertEqual(argv[0],'/usr/bin/python3');argv[0]=sys.executable
+    done=subprocess.run(argv,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60);log=done.stdout.decode('utf8','replace')
+    if case=='unchanged':
+     self.assertEqual(done.returncode,7,log);self.assertEqual((markers/'helper').read_text(),'imported-4421');self.assertEqual((markers/'entry').read_text(),'finalize --nonce synthetic-9157 --exit-7')
+    else:
+     self.assertNotEqual(done.returncode,0);self.assertIn('frozen first-party control file changed: helper_marker.py',log);self.assertEqual(list(markers.iterdir()),[])
  def test_crypto_operation_runs_a_private_copy_of_the_verified_envelope(self):
   # The checkout's envelope.mjs is replaced after verification; the operation
   # runs the verified bytes, copied into its own fresh folder.

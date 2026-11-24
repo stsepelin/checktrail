@@ -15,6 +15,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import common
 import target_pause_controls as t
+import driver
 import producer_adapter
 import pause_control_worker as worker
 import meter
@@ -63,7 +64,7 @@ class Target(unittest.TestCase):
         profile = common.bundle_json(Path(__file__).parent / 'profile.json'); root = self.root / 'refused-image'
         capacity = self.root / 'capacity-image'; capacity.write_text('"amd64" 4\n'); calls = []
         def make_controller(path, ctx, selected):
-            return SimpleNamespace(root=path, ctx=ctx, profile=selected, state=None, save=lambda:None, docker=lambda args, **kw:(calls.append(args) or GOOD, capacity))
+            return SimpleNamespace(root=path, ctx=ctx, profile=selected, state=None, save=lambda:None, publish_observer=lambda:None, docker=lambda args, **kw:(calls.append(args) or GOOD, capacity))
         env = {'RUNNER_OS':'Linux','RUNNER_ARCH':'X64','GITHUB_EVENT_NAME':'workflow_dispatch','GITHUB_REPOSITORY':profile['repository'],'GITHUB_RUN_ATTEMPT':'1','GITHUB_RUN_ID':'123','GITHUB_SHA':'a'*40}
         with patch.dict(os.environ, env), patch.object(t.sys,'platform','linux'), patch.object(t,'manifest_check',return_value=profile), patch.object(t,'Controller',side_effect=make_controller), patch.object(t,'prove_control_image',side_effect=common.Refusal('synthetic physical proof refusal')), patch.object(t.time,'monotonic',return_value=0), patch.object(t.platform,'machine',return_value='x86_64'), patch.object(Path,'stat',autospec=True,side_effect=lambda path,**kw:SimpleNamespace(st_size=32) if str(path)=='/etc/os-release' else os.stat(path,**kw)), patch.object(Path,'read_bytes',autospec=True,side_effect=lambda path:b'ID=ubuntu\nVERSION_ID="26.04"\n' if str(path)=='/etc/os-release' else path.open('rb').read()):
             self.assertEqual(t.run(root,'synthetic-target','b'*64),1)
@@ -77,7 +78,7 @@ class Target(unittest.TestCase):
                 calls.append(args)
                 if args[:2]==['volume','create']:raise TimeoutError('synthetic ambiguous create')
                 return GOOD,capacity
-            return SimpleNamespace(root=path,ctx=ctx,profile=selected,state=None,save=lambda:None,docker=docker,inspect=lambda kind,name:image if kind=='image' else None)
+            return SimpleNamespace(root=path,ctx=ctx,profile=selected,state=None,save=lambda:None,publish_observer=lambda:None,observer=lambda:None,docker=docker,inspect=lambda kind,name:image if kind=='image' else None)
         env={'RUNNER_OS':'Linux','RUNNER_ARCH':'X64','GITHUB_EVENT_NAME':'workflow_dispatch','GITHUB_REPOSITORY':profile['repository'],'GITHUB_RUN_ATTEMPT':'1','GITHUB_RUN_ID':'123','GITHUB_SHA':'a'*40}
         with patch.dict(os.environ,env),patch.object(t.sys,'platform','linux'),patch.object(t,'manifest_check',return_value=profile),patch.object(t,'Controller',side_effect=make_controller),patch.object(t.time,'monotonic',return_value=0),patch.object(t.platform,'machine',return_value='x86_64'),patch.object(Path,'stat',autospec=True,side_effect=lambda path,**kw:SimpleNamespace(st_size=32) if str(path)=='/etc/os-release' else os.stat(path,**kw)),patch.object(Path,'read_bytes',autospec=True,side_effect=lambda path:b'ID=ubuntu\nVERSION_ID="26.04"\n' if str(path)=='/etc/os-release' else path.open('rb').read()),patch.object(t,'prove_control_image',return_value={'actualRuntimeImageID':image['Id'],'originalConfigSHA256':profile['image']['configSHA256']}),patch.object(t,'remove_control_volume',side_effect=lambda c,name,deadline:cleanup.append(name) or True):
             self.assertEqual(t.run(root,'synthetic-target','b'*64),1)
@@ -111,6 +112,7 @@ class Target(unittest.TestCase):
         for name in ['protected','evidence','control']:(root/name).mkdir()
         prefix='ct-sdk10-synthetic-assembly-'+str(number);name=prefix+'-original-build';gid=os.getgid()
         c=SimpleNamespace(root=root,ctx=self.ctx,state={'prefix':prefix,'gid':gid,'containers':[],'imageAlias':'synthetic-pinned-image','imageID':'sha256:'+'9'*64,'volume':'inert-work','tempVolume':'inert-temp','phaseDeadline':100,'nativeDeadline':100,'cleanupDeadline':120},save=lambda:None,inspect=lambda *args:None)
+        snapshot=driver.publish_observer(root,common.verified_bundle());c.observer=lambda:driver.verify_observer(snapshot,common.verified_bundle());c.observer_entry=lambda args:driver.Controller.observer_entry(c,args)
         model={'calls':[],'declaredMounts':[],'obj':{'Id':'b'*64,'Name':'/'+name,'Config':{'Labels':common.owned_labels(self.ctx)},'State':{'Running':False,'Paused':False},'HostConfig':{'NetworkMode':'none','ReadonlyRootfs':True,'Privileged':False,'Memory':256*1024**2,'CapDrop':['ALL'],'GroupAdd':[str(gid)]}}};self.last_assembly=model
         def docker(args,**kwargs):
             model['calls'].append(args)
@@ -169,6 +171,7 @@ class Target(unittest.TestCase):
     def test_inert_writer_group_and_coord_mount_are_exact_and_guarded_before_start(self):
         (self.root/'protected').mkdir();prefix='ct-sdk10-synthetic-control';name=prefix+'-original-build';gid=os.getgid()
         self.c.state.update(prefix=prefix,gid=gid,containers=[],imageAlias='synthetic-pinned-image',imageID='sha256:'+'9'*64);self.c.save=lambda:None;self.c.inspect=lambda *args:None
+        snapshot=driver.publish_observer(self.root,common.verified_bundle());self.c.observer=lambda:driver.verify_observer(snapshot,common.verified_bundle());self.c.observer_entry=lambda args:driver.Controller.observer_entry(self.c,args)
         obj={'Id':'b'*64,'Name':'/'+name,'Config':{'Labels':common.owned_labels(self.ctx)},'State':{'Running':False,'Paused':False},'HostConfig':{'NetworkMode':'none','ReadonlyRootfs':True,'Privileged':False,'Memory':256*1024**2,'CapDrop':['ALL'],'GroupAdd':[str(gid)]}}
         self.c.own_container=lambda _:copy.deepcopy(obj);calls=[]
         self.c.create_owned=lambda name,args,seconds=60:(self.c.docker(args),copy.deepcopy(obj))[1]

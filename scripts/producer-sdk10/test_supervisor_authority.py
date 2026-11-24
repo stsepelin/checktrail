@@ -86,6 +86,7 @@ class SupervisorAuthority(unittest.TestCase):
         profile=driver.bundle_json(Path(driver.__file__).parent/'profile.json')
         c=driver.Controller(self.root,{'run':123,'attempt':1,'nonce':'inert','head':'a'*40},profile)
         c.state={'volume':'inert-work','tempVolume':'inert-tmp','imageAlias':'inert-alias','imageID':'sha256:'+'8'*64,'uid':10001,'gid':10001}
+        c.publish_observer()
         for helper in [False,True]:
             args=c.container_args('ct-sdk10-inert-original-build',['/usr/bin/python3','/observer/inert.py'],helper=helper)
             caps=[args[i+1] for i,x in enumerate(args) if x=='--cap-add']

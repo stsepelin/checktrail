@@ -1,19 +1,19 @@
 {
   "files": [
     {
-      "bytes": 4891,
+      "bytes": 5194,
       "path": "protected_control_worker.py",
-      "sha256": "df31ce87ea7bf2a19ab411c37c42710bd1df1ca931d73e0f3c54be248760a2d9"
+      "sha256": "de9f6596caa75e10e76d04bf7d1aef61c92dfe4198c7f8dad07dbf05edd0cae0"
     },
     {
-      "bytes": 16718,
+      "bytes": 16543,
       "path": "target_protected_controls.py",
-      "sha256": "c5f57a18de8ef387494340cfab040a303b63e57d13e36a5c4d929c9bfe70c954"
+      "sha256": "cae2d8eba05590fcb41a396f97ce45bb11a99fca81b3f3d6d1c6dab0fcdad0c7"
     },
     {
-      "bytes": 10066,
+      "bytes": 10340,
       "path": "test_protected_control_target.py",
-      "sha256": "32330522e82e04d4dfdcbd59a167d29a9286c08eee03aed6012f3aa2d57af033"
+      "sha256": "1bc7b089bcc2b423d7e1443cf5a1b6a7cf7e2264f09abbef666f17466e2f313b"
     }
   ],
   "firstPartyControlsOnly": true,

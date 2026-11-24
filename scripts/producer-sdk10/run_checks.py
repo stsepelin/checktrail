@@ -12,7 +12,8 @@ import sys
 # A cache written beside the verified files would itself be an unreviewed entry.
 sys.dont_write_bytecode=True
 if __name__=='__main__' and not sys.flags.isolated:raise SystemExit('run_checks.py must run isolated (python3 -I) so its directory is not importable before verification')
-import argparse,errno,hashlib,importlib.machinery,json,linecache,os,pathlib,resource,stat,subprocess,time,types,unittest
+# Containers start this file too, so only core modules are imported up front.
+import argparse,errno,hashlib,importlib.machinery,json,linecache,os,pathlib,stat,subprocess,time,types
 HERE=pathlib.Path(__file__).resolve().parent
 class Unreviewed(RuntimeError):pass
 # Every start of this file goes through this isolated bootstrap, run as
@@ -147,6 +148,16 @@ class Bundle:
  def child(self,argv):
   """The command and stdin that run one pinned script of this bundle in a new process."""
   return [sys.executable,'-I','-S','-B','-c',BUNDLE_BOOTSTRAP,self.path('run_checks.py'),self.pin,'--manifest-sha256',self.pin,'--entry',*argv],self.packed()
+ def observer_argv(self,mount,script,args):
+  """The container command that runs one pinned script of this bundle mounted at mount.
+
+  The container's interpreter starts through BOOTSTRAP, which reads the
+  mounted run_checks.py once and checks it against this bundle's bytes;
+  run_checks.py then reads and verifies the whole mount against the pin and
+  runs the script from those bytes, so even the mounted copy is never
+  executed from disk.
+  """
+  return ['/usr/bin/python3','-I','-S','-B','-c',BOOTSTRAP,mount+'/run_checks.py',hashlib.sha256(self.files['run_checks.py']).hexdigest(),'--manifest-sha256',self.pin,'--entry',script,*args]
 
 def load(pin,given=None):
  return reviewed_bundle(HERE,pin) if given is None else given_bundle(given,pin)
@@ -166,6 +177,7 @@ def verified_entry(pin,argv,given=None):
 
 def worker(out,pin,given=None):
  files=load(pin,given);names=bound_tests(files);Bundle(HERE,files,pin).install()
+ import unittest
  from common import encoded,freeze
  suite=unittest.defaultTestLoader.loadTestsFromNames(names)
  result=unittest.TextTestRunner(verbosity=2).run(suite)
@@ -173,6 +185,7 @@ def worker(out,pin,given=None):
  freeze(out/'PYTHON.json',encoded(row));return 0 if result.wasSuccessful() and result.testsRun>0 and not result.skipped else 1
 
 def run(out,pin):
+ import resource
  files=reviewed_bundle(HERE,pin);bound_tests(files);bundle=Bundle(HERE,files,pin);common=bundle.module('common')
  need(not out.exists(),'fresh private synthetic output root');out.mkdir(mode=0o700);rows=[]
  for name in ['python','crypto']:

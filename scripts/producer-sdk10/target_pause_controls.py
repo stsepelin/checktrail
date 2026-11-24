@@ -96,8 +96,8 @@ def create_producer(c, role, deadline):
     need(c.inspect('container', name) is None, 'fresh exact inert producer name')
     c.state['containers'].append(name); c.save()
     protected = c.root / 'protected' / name; protected.mkdir(mode=0o700)
-    argv = ['/usr/bin/python3', '-I', '-S', '-B', '/observer/pause_control_worker.py', 'writer', '--role', role, '--deadline', str(deadline)]
-    args = ['create', '--name', name, '--platform', 'linux/amd64', '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges:true', '--network', 'none', '--cpus', '1', '--memory', str(256 * 1024**2), '--memory-swap', str(256 * 1024**2), '--pids-limit', '32', '--user', '0:0', '--group-add', str(c.state['gid']), '--mount', 'type=volume,source=' + c.state['volume'] + ',target=/work,volume-nocopy', '--mount', 'type=bind,source=' + str(HERE) + ',target=/observer,readonly', '--mount', 'type=bind,source=' + str(c.root / 'evidence') + ',target=/coord', '--mount', 'type=bind,source=' + str(protected) + ',target=/native-control,readonly', '--entrypoint', argv[0]]
+    argv = c.observer_entry(['/observer/pause_control_worker.py', 'writer', '--role', role, '--deadline', str(deadline)])
+    args = ['create', '--name', name, '--platform', 'linux/amd64', '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges:true', '--network', 'none', '--cpus', '1', '--memory', str(256 * 1024**2), '--memory-swap', str(256 * 1024**2), '--pids-limit', '32', '--user', '0:0', '--group-add', str(c.state['gid']), '--mount', 'type=volume,source=' + c.state['volume'] + ',target=/work,volume-nocopy', '--mount', 'type=bind,source=' + str(c.observer()) + ',target=/observer,readonly', '--mount', 'type=bind,source=' + str(c.root / 'evidence') + ',target=/coord', '--mount', 'type=bind,source=' + str(protected) + ',target=/native-control,readonly', '--entrypoint', argv[0]]
     for key, value in owned_labels(c.ctx).items(): args.extend(['--label', key + '=' + value])
     obj = c.create_owned(name, [*args, c.state['imageID'], *argv[1:]], seconds=30)
     expected = {'context': c.ctx, 'purpose': 'first-party-inert-control-only', 'role': role}
@@ -105,7 +105,7 @@ def create_producer(c, role, deadline):
     h = obj['HostConfig']
     need(h['NetworkMode'] == 'none' and h['ReadonlyRootfs'] is True and h['Privileged'] is False and h['Memory'] == 256 * 1024**2 and h['CapDrop'] == ['ALL'] and h.get('GroupAdd') == [str(c.state['gid'])], 'actual finite first-party inert producer configuration')
     expected_mounts = {'/work': ('volume', c.state['volume'], True),
-                       '/observer': ('bind', str(HERE), False),
+                       '/observer': ('bind', str(c.observer()), False),
                        '/coord': ('bind', str(c.root / 'evidence'), True),
                        '/native-control': ('bind', str(protected), False)}
     mounts = obj.get('Mounts')
@@ -117,7 +117,7 @@ def create_producer(c, role, deadline):
         need(mount.get('Type') == kind and mount.get('Name' if kind == 'volume' else 'Source') == source and mount.get('RW') is rw, 'exact inert canary physical mount binding')
     # These are explicitly synthetic metadata, never original native receipts.
     freeze(protected / 'START.json', encoded({'schemaVersion': 2, 'binding': expected, 'originalArgv': argv, 'originalCommandStarted': False, 'syntheticControlOnly': True}))
-    row, _ = c.docker(['start', binding['id']], seconds=10, check=False); command_ok(row)
+    c.observer(); row, _ = c.docker(['start', binding['id']], seconds=10, check=False); command_ok(row)
     api = ProducerAPI(c, name); startup = wait_counter(api, min(deadline, time.monotonic() + 10))
     c.state.setdefault('inertWriterStarts', {})[name] = startup; c.save()
     return binding, api
@@ -185,6 +185,7 @@ def run(root, nonce, pin):
     c.state = {'prefix': prefix, 'uid': os.getuid(), 'gid': os.getgid(), 'containers': [], 'volume': prefix + '-work', 'tempVolume': prefix + '-tmp', 'imageAlias': 'checktrail-sdk10-controls-owned:' + str(ctx['run']) + '-' + nonce, 'imageAliasCreated': False, 'preparationDeadline': native_end, 'phaseDeadline': native_end, 'nativeDeadline': native_end, 'cleanupDeadline': end}
     c.save(); events = []; failure = None; cleanup_errors = []; created_volumes = []; observations = {}
     try:
+        c.publish_observer()
         need(Path('/etc/os-release').stat().st_size <= 4096, 'bounded target OS metadata file')
         os_release = Path('/etc/os-release').read_bytes()
         need(len(os_release) <= 4096, 'bounded target OS metadata')
@@ -243,6 +244,7 @@ def run(root, nonce, pin):
         terminal = protocol.run(terminal_binding, terminal_api, lambda: (_ for _ in ()).throw(ControlRefusal('terminal-producer-must-not-be-sampled')), native_end, min(native_end, time.monotonic() + 90))
         need(terminal['outcome'] == 'producer-terminal-no-sample' and terminal['pauseAttempted'] is False and terminal['samplingComplete'] is False, 'actual terminal race no sample credit')
         events.append({'case': 'actual-terminal-before-pause-no-sample', 'passed': True})
+        c.observer()  # Every control ran from this snapshot; a changed one fails the controls.
     except BaseException as error:
         failure = type(error).__name__  # No arbitrary exception/path/source output.
     finally:

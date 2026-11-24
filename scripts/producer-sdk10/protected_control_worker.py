@@ -9,7 +9,7 @@ import stat
 import sys
 import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import encoded, freeze, need
+from common import encoded, freeze, need, verified_bundle
 import native_entry
 
 CASES = {'natural-build': ('build', 0), 'natural-tests': ('test', 7),
@@ -21,9 +21,13 @@ def selected(case):
 
 def child_argv(case, binding, deadline):
     selected(case)
-    return ['/usr/bin/python3', '-I', '-S', '-B', '/observer/protected_control_worker.py',
-            'child', '--case', case, '--binding-json', json.dumps(binding, sort_keys=True),
-            '--deadline', str(deadline)]
+    # The host and the in-container supervisor build the same command from the
+    # same verified bundle, so the child also runs only verified bytes.
+    bundle = verified_bundle()
+    need(bundle is not None, 'first-party bundle verified by the launcher')
+    return bundle.observer_argv('/observer', 'protected_control_worker.py',
+                                ['child', '--case', case, '--binding-json', json.dumps(binding, sort_keys=True),
+                                 '--deadline', str(deadline)])
 
 def prepare(case, uid, gid):
     selected(case)

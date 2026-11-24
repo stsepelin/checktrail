@@ -31,8 +31,9 @@ class ProtectedTarget(unittest.TestCase):
             with self.subTest(name=name),self.assertRaises(common.Refusal):w.selected(name)
         for case in w.CASES:
             argv=w.child_argv(case,self.binding,90.0)
-            self.assertEqual(argv[:7],['/usr/bin/python3','-I','-S','-B','/observer/protected_control_worker.py','child','--case'])
-            self.assertEqual(argv[7],case);self.assertNotIn('./build.sh',argv)
+            # The child starts through the launcher bootstrap and runs from the verified bundle.
+            self.assertEqual(argv[:5],['/usr/bin/python3','-I','-S','-B','-c']);self.assertEqual(argv[6:8],['/observer/run_checks.py',hashlib.sha256(common.bundle_bytes(HERE/'run_checks.py')).hexdigest()])
+            self.assertEqual(argv[argv.index('--entry'):argv.index('--entry')+5],['--entry','protected_control_worker.py','child','--case',case]);self.assertNotIn('./build.sh',argv)
 
     def test_supervisor_protects_first_then_uses_real_candidate_supervisor_and_exact_canary_argv(self):
         events=[]

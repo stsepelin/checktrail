@@ -1,5 +1,6 @@
 """Concrete Controller bridge with synthetic Docker transports only."""
 import copy
+import hashlib
 import json
 import os
 import shutil
@@ -297,6 +298,7 @@ class DockerTable(unittest.TestCase):
         self.name = 'ct-sdk10-synthetic-table-original-tests'; self.id = '4' * 64; self.foreign = 'f' * 64
         c = object.__new__(driver.Controller); c.root = root; c.ctx = self.ctx; c.save = lambda: None
         c.state = {'prefix': 'ct-sdk10-synthetic-table', 'containers': [self.name], 'phaseDeadline': time.monotonic() + 600, 'cleanupDeadline': time.monotonic() + 600}
+        c.publish_observer()
         self.table = {}; self.effects = []; self.counter = 0; self.commands = []; self.created = []; self.receipts = None; self.on_create = None; self.create_output = None; self.unavailable_inspections = {}
         def find(key): return [x for x in self.table.values() if x['Id'] == key or x['Name'] == '/' + key]
         self.find = find
@@ -378,7 +380,7 @@ class DockerTable(unittest.TestCase):
         # command acts through it. The native phase does not even look it up.
         by_name = [x for x in after if any(self.name_under_test in y for y in x)]
         self.assertFalse([x for x in by_name if not name_lookups_allowed or x[:2] not in [['container', 'inspect'], ['container', 'ls']]], after)
-    def native_phase(self, case=None, labels=True):
+    def native_phase(self, case=None, labels=True, during=None):
         self.c.state.update(containers=[], nativeProducers={}, uid=4417, gid=4417, manifestSHA256='9' * 64, nativeDeadline=time.monotonic() + 600)
         self.table.clear(); self.rebound_at = None; self.name_under_test = self.name
         bundle = self.c.root / 'bundle'; bundle.mkdir(mode=0o755); bundle.chmod(0o755); (self.c.root / 'protected').mkdir()
@@ -398,6 +400,7 @@ class DockerTable(unittest.TestCase):
         class Client:
             def __init__(inner, args, stdout, stderr, **kwargs):
                 self.assertEqual(args[:3], ['docker', 'start', '-a']); table.commands.append(args[1:]); table.effects.append(('start', args[3]))
+                if during: during()
                 inner.found = table.find(args[3]); inner.polls = 0; inner.pid = 99999999
                 for x in inner.found: x['State']['Running'] = True
             def poll(inner):
@@ -444,6 +447,55 @@ class DockerTable(unittest.TestCase):
         self.assertEqual(row['exitCode'], 0); self.assertEqual(self.effects, [('start', helper), ('rm', helper)]); self.assertEqual(self.table, {})
         self.assertEqual(self.c.state['ownedContainerIDs'], {self.c.state['prefix'] + '-materialize': helper})
         self.assertEqual(self.commands[-2:], [['container', 'inspect', helper], ['container', 'ls', '-aq', '--no-trunc', '--filter', 'id=' + helper]])
+    def tamper(self, name='common.py'):
+        # Changes one snapshot file's bytes but restores the read-only modes,
+        # so only the content comparison can notice.
+        folder = Path(self.c.state['observer']); target = folder / name
+        os.chmod(folder, 0o755); os.chmod(target, 0o644); target.write_bytes(target.read_bytes() + b'\n# tampered-4417\n'); os.chmod(target, 0o444); os.chmod(folder, 0o555)
+    def snapshot_helper_phase(self, at_create=None, during=None):
+        # The real container_args and validate_container, over a daemon that
+        # reports exactly the mounts and options it was asked for.
+        helper = '7' * 64; self.table.clear(); self.rebound_at = None
+        self.c.state.update(volume='owned-work-4417', tempVolume='owned-temp-4417', imageID='sha256:' + '7' * 64, uid=4417, gid=4417); self.c.profile = {'limits': {}}
+        self.created.append((helper, self.c.state['prefix'] + '-materialize'))
+        def described(identity, name):
+            args = self.commands[-1]; self.create_args = list(args); x = self.table[identity]; x['Mounts'] = []; configured = []
+            for i, word in enumerate(args):
+                if word != '--mount': continue
+                spec = dict(part.split('=', 1) if '=' in part else (part, True) for part in args[i + 1].split(','))
+                x['Mounts'].append({'Destination': spec['target'], 'Type': spec['type'], ('Name' if spec['type'] == 'volume' else 'Source'): spec['source'], 'RW': 'readonly' not in spec})
+                if spec['type'] == 'volume': configured.append({'Type': 'volume', 'Source': spec['source'], 'Target': spec['target'], 'VolumeOptions': {'NoCopy': True}})
+            x['HostConfig'].update(ReadonlyRootfs=True, Privileged=False, PidMode='', CpusetCpus='0-3', NetworkMode='none', CapDrop=['ALL'], SecurityOpt=['no-new-privileges:true'], Mounts=configured)
+            if at_create: at_create(x)
+        self.on_create = described; real = self.c.cmd
+        def cmd(args, *rest, **kwargs):
+            if during and args[1] == 'start': during()
+            return real(args, *rest, **kwargs)
+        self.c.cmd = cmd
+        return self.c.helper('materialize', ['/observer/input_prep.py', 'materialize', '--profile', '/observer/profile.json'], time.monotonic() + 60), helper
+    def test_helper_mounts_the_verified_snapshot_read_only_and_starts_through_the_bundle_bootstrap(self):
+        row, helper = self.snapshot_helper_phase(); bundle = common.verified_bundle(); snapshot = self.c.state['observer']
+        self.assertEqual(row['exitCode'], 0); self.assertEqual(self.effects, [('start', helper), ('rm', helper)])
+        self.assertNotEqual(os.path.realpath(snapshot), os.path.realpath(driver.HERE)); self.assertEqual(Path(snapshot).parent, Path(os.path.realpath(self.c.root)))
+        self.assertIn('type=bind,source=' + snapshot + ',target=/observer,readonly', self.create_args)
+        self.assertEqual(oct(os.stat(snapshot).st_mode & 0o777), '0o555'); self.assertEqual(sorted(os.listdir(snapshot)), sorted(bundle.files))
+        self.assertEqual({oct(os.stat(Path(snapshot) / x).st_mode & 0o777) for x in os.listdir(snapshot)}, {'0o444'})
+        command = self.create_args[self.create_args.index(self.c.state['imageID']) + 1:]
+        self.assertEqual(self.create_args[self.create_args.index('--entrypoint') + 1], '/usr/bin/python3')
+        self.assertEqual(command, ['-I', '-S', '-B', '-c', bundle.observer_argv('/observer', 'x', [])[5], '/observer/run_checks.py', hashlib.sha256(bundle.files['run_checks.py']).hexdigest(), '--manifest-sha256', bundle.pin, '--entry', 'input_prep.py', 'materialize', '--profile', '/observer/profile.json'])
+    def test_snapshot_changed_or_replaced_by_the_checkout_before_start_is_never_started(self):
+        def checkout(x): next(m for m in x['Mounts'] if m['Destination'] == '/observer')['Source'] = str(driver.HERE)
+        for case, change, message in [('changed', lambda x: self.tamper(), 'observer snapshot matches the verified bundle: common.py'), ('checkout-mounted', checkout, 'actual work/temp/control/read-only mount binding')]:
+            with self.subTest(case=case):
+                self.setUp()
+                with self.assertRaisesRegex(common.Refusal, message): self.snapshot_helper_phase(at_create=change)
+                self.assertFalse([x for x in self.effects if x[0] == 'start'])
+    def test_snapshot_changed_during_a_helper_run_refuses_its_result(self):
+        with self.assertRaisesRegex(common.Refusal, 'observer snapshot matches the verified bundle: common.py'): self.snapshot_helper_phase(during=self.tamper)
+        self.assertEqual(self.effects, [('start', '7' * 64), ('rm', '7' * 64)])
+    def test_snapshot_changed_during_the_native_run_withholds_credit(self):
+        row = self.native_phase(during=self.tamper)
+        self.assertEqual(row['protectedReceiptErrors'], ['observer-snapshot:Refusal']); self.assertEqual(row['stopReason'], 'protected original receipt incomplete')
     def meter_phase(self, case=None, labels=True):
         import live_resource
         meter = '6' * 64; self.name_under_test = self.c.state['prefix'] + '-meter-4417'; self.rebound_at = None

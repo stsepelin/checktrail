@@ -76,7 +76,7 @@ def canary(c, case, deadline):
     c.state['containers'].append(name);c.save();protected=c.root/'protected'/name;protected.mkdir(mode=0o700)
     binding={'context':c.ctx,'case':case,'syntheticControlOnly':True,'originalSDKCommandStarted':False,'phase':phase,'profileSHA256':digest(bundle_bytes(HERE/'profile.json')),'supervisorSHA256':digest(bundle_bytes(HERE/'native_entry.py'))}
     argv=child_argv(case,binding,deadline)
-    wrapped=['/usr/bin/python3','-I','-S','-B','/observer/protected_control_worker.py','supervisor','--case',case,'--binding-json',json.dumps(binding,sort_keys=True),'--deadline',str(deadline),'--uid',str(c.state['uid']),'--gid',str(c.state['gid'])]
+    wrapped=c.observer_entry(['/observer/protected_control_worker.py','supervisor','--case',case,'--binding-json',json.dumps(binding,sort_keys=True),'--deadline',str(deadline),'--uid',str(c.state['uid']),'--gid',str(c.state['gid'])])
     args=c.container_args(name,wrapped)
     if case=='denied-kill-tests':
         # Deliberate negative admission, only for this inert first-party case.
@@ -111,6 +111,7 @@ def canary(c, case, deadline):
         need(result.get('originalExitCode')==-9 and result.get('supervisorExitCode')==130 and result.get('ownChildReaped') is True and result.get('supervisorSignalSent') is True and result.get('interrupted') is True and result.get('cleanupSignalErrorType') is None and result.get('cleanupWaitErrorType') is None, 'actual-cross-UID-supervisor-kill-and-child-reaping')
     else:
         need(result.get('originalExitCode') is None and result.get('ownChildReaped') is False and result.get('supervisorSignalSent') is False and result.get('supervisorExitCode')==130 and result.get('cleanupSignalErrorType')=='PermissionError' and result.get('cleanupWaitErrorType')=='TimeoutExpired', 'actual-missing-kill-refusal-retained-without-fake-zero-or-reaping')
+    c.observer()  # The canary ran from this snapshot; a changed one fails the case.
     summary={'case':case,'passed':True,'hostProtectedTraversalErrno':denied,'protectedRootUID':metadata.st_uid,'protectedRootMode':stat.S_IMODE(metadata.st_mode),'childUID':child['uid'],'childCapabilities':child['capabilities'],'childNoNewPrivs':child['NoNewPrivs'],'childCannotReadRootControlOrSignalOrSetuidRoot':True,'originalCanaryChildExit':result.get('originalExitCode'),'canarySupervisorExit':result.get('supervisorExitCode'),'canaryOwnChildReaped':result.get('ownChildReaped'),'canaryCleanupSignalErrorType':result.get('cleanupSignalErrorType'),'canaryCleanupWaitErrorType':result.get('cleanupWaitErrorType'),'daemonCopyBeforeHostChildInspection':True,'durableProtectedMembers':sorted(api.preservation['members']),'originalSDKStartExitOrGateACredit':False}
     c.stop_owned(name)
     need(api.inspect_id(captured['id'],min(deadline,time.monotonic()+5)) is None, 'exact-owned-canary-final-absence')
@@ -121,7 +122,6 @@ def run(root,nonce,pin,control_pin):
     need(sys.platform=='linux' and os.environ.get('RUNNER_OS')=='Linux' and os.environ.get('RUNNER_ARCH')=='X64' and platform.machine()=='x86_64', 'standard-Ubuntu26-X64-only')
     need(os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and os.environ.get('GITHUB_REPOSITORY')==profile['repository'] and os.environ.get('GITHUB_RUN_ATTEMPT')=='1', 'single-owned-first-party-manual-controls')
     need(os.geteuid()!=0 and os.getuid()==os.geteuid(), 'actual-host-nonroot-runner-for-DAC-negative')
-    need(stat.S_IMODE(HERE.stat().st_mode)&0o005==0o005 and all(stat.S_IMODE((HERE/name).stat().st_mode)&0o004 for name in ['native_entry.py','common.py','profile.json','protected_control_worker.py']), 'same-published-supervisor-bundle-readable-without-child-DAC-capabilities')
     ctx=context(nonce);need(not root.exists(), 'fresh-protected-controls-root');root.mkdir(mode=0o700)
     for name in ['control','protected','evidence','inputs','cases']:(root/name).mkdir(mode=0o700)
     started=time.monotonic();body_end=started+300;end=started+480
@@ -129,6 +129,7 @@ def run(root,nonce,pin,control_pin):
     parent.state={'prefix':prefix,'uid':os.getuid(),'gid':os.getgid(),'containers':[],'volume':prefix+'-work','tempVolume':prefix+'-tmp','imageAlias':'checktrail-sdk10-controls-owned:'+str(ctx['run'])+'-'+nonce,'imageAliasCreated':False,'preparationDeadline':body_end,'phaseDeadline':body_end,'nativeDeadline':body_end,'cleanupDeadline':end}
     parent.save();controllers=[];volumes=[];cases=[];observations={};failure=None;cleanup=[];stage='actual-host-admission'
     try:
+        parent.publish_observer()
         raw=Path('/etc/os-release').read_bytes();need(len(raw)<=4096, 'bounded-actual-OS-metadata')
         fields=dict(line.split('=',1) for line in raw.decode().splitlines() if '=' in line)
         need(fields.get('ID','').strip(chr(34))=='ubuntu' and fields.get('VERSION_ID','').strip(chr(34))=='26.04', 'actual-Ubuntu26-target')

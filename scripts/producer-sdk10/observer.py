@@ -1,7 +1,7 @@
 """First-party compiler/header and source-endpoint observations, never a review."""
 import argparse,gzip,hashlib,json,os,pathlib,posixpath,re,stat,struct,subprocess,sys,tarfile,time,zlib,xml.etree.ElementTree as ET,xml.parsers.expat as expat
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
-from common import Refusal,need,freeze,encoded,read_json,hash_file,git_blob,syncdir,safe_relative
+from common import Refusal,need,freeze,encoded,read_json,hash_file,git_blob,syncdir,safe_relative,bundle_json
 def file_identity(path,maximum=256*1024**2,deadline=None):
  p=pathlib.Path(path);fd=os.open(p,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
  try:
@@ -370,7 +370,7 @@ def phase(mode,profile,evidence,deadline,test_started_wall=None):
  elif mode=='before-test':post_build_sdks(SDK_OUTPUT_ROOTS,profile,deadline,evidence);freeze(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json',encoded(pre_test_reports(deadline)))
  else:need(mode=='after','known observer phase');after(profile,evidence,deadline,test_started_wall)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('mode',choices=['probe','before-build','before-test','after']);p.add_argument('--profile',required=True);p.add_argument('--evidence',required=True);p.add_argument('--deadline',type=float,required=True);p.add_argument('--uid',type=int,required=True);p.add_argument('--gid',type=int,required=True);p.add_argument('--test-start-wall',type=float);a=p.parse_args();profile=read_json(a.profile)
+ p=argparse.ArgumentParser();p.add_argument('mode',choices=['probe','before-build','before-test','after']);p.add_argument('--profile',required=True);p.add_argument('--evidence',required=True);p.add_argument('--deadline',type=float,required=True);p.add_argument('--uid',type=int,required=True);p.add_argument('--gid',type=int,required=True);p.add_argument('--test-start-wall',type=float);a=p.parse_args();profile=bundle_json(a.profile)
  os.chown(a.evidence,0,0)
  try:
   phase(a.mode,profile,a.evidence,a.deadline,a.test_start_wall)

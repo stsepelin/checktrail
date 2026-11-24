@@ -13,7 +13,7 @@ from capacity_admission import observe_space
 
 LIMITS = {'wholeSeconds': 90, 'startupSeconds': 30, 'attachSeconds': 30,
           'readbackSeconds': 10, 'reapSeconds': 30, 'sampleSeconds': 20, 'helperReapReserveSeconds': 10}
-GUARDS = {'startup', 'attach', 'readback', 'sampler-complete', 'sample-bounds', 'reap', 'whole-deadline', 'complete', 'producer-pause', 'producer-terminal', 'reserve-bounds'}
+GUARDS = {'startup', 'attach', 'readback', 'observer-snapshot', 'sampler-complete', 'sample-bounds', 'reap', 'whole-deadline', 'complete', 'producer-pause', 'producer-terminal', 'reserve-bounds'}
 TRANSPORT_REASONS = {'owned command deadline', 'owned command deadline exhausted before completion credit',
                      'owned command deadline expired before start', 'owned command start or supervision incomplete',
                      'owned command output bound', 'terminal command output bound'}
@@ -111,7 +111,7 @@ def observe(controller, label, native_deadline, clock=time.monotonic, producer_b
         registered = True
         c.save()
         script = ['/observer/meter_runner.py', '--uid', str(c.state['uid']), '--gid', str(c.state['gid'])]
-        entry = ['/usr/bin/python3', '-I', '-S', '-B', *script]
+        entry = c.observer_entry(script)
         obj = c.create_owned(name, c.container_args(name, entry, True, True, False), seconds=LIMITS['startupSeconds'])
         meter_id = obj['Id']
         c.validate_container(obj, name, script, True, True, False)
@@ -131,6 +131,9 @@ def observe(controller, label, native_deadline, clock=time.monotonic, producer_b
             need(clock() < c.state['phaseDeadline'], 'live readback deadline')
             record['guard'] = 'attach'
             need(type(row.get('exitCode')) is int and row['exitCode'] == 0 and row.get('reason') is None and row.get('ownedChildStarted') is True and row.get('ownedChildReaped') is True, 'live meter attach transport incomplete')
+            # The sampler ran from the observer snapshot; a changed one gives it no credit.
+            record['guard'] = 'observer-snapshot'
+            c.observer()
             record['guard'] = 'sampler-complete'
             need(record['meter'] is not None and record['meter'].get('samplingComplete') is True, 'live work sampler incomplete')
             record['guard'] = 'sample-bounds'
