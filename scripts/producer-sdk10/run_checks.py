@@ -12,6 +12,14 @@ if __name__=='__main__' and not sys.flags.isolated:raise SystemExit('run_checks.
 import argparse,hashlib,json,os,pathlib,resource,runpy,subprocess,time,unittest
 HERE=pathlib.Path(__file__).resolve().parent
 class Unreviewed(RuntimeError):pass
+# Every start of this file goes through this isolated bootstrap, run as
+# python3 -I -S -B -c BOOTSTRAP <run_checks.py> <sha256> <arguments...>. It
+# reads the file once, compares those bytes with the given SHA256 and
+# executes exactly those bytes as __main__, never reopening the file, so a
+# change after the comparison cannot run. Its exit status is the launcher's.
+BOOTSTRAP=("import hashlib,sys;p=sys.argv[1];f=open(p,'rb');b=f.read();f.close();"
+ "hashlib.sha256(b).hexdigest()==sys.argv[2] or sys.exit('run_checks.py differs from its pinned SHA256');"
+ "sys.argv=[p]+sys.argv[3:];exec(compile(b,p,'exec'),{'__name__':'__main__','__file__':p,'__spec__':None,'__loader__':None,'__package__':None,'__cached__':None})")
 def need(value,message):
  if not value:raise Unreviewed(message)
 def hash_file(path):
@@ -70,10 +78,15 @@ def worker(out,pin):
  row={'tests':result.testsRun,'failures':len(result.failures),'errors':len(result.errors),'skipped':len(result.skipped),'originalSourceDockerSdkOrNetworkExecuted':False}
  freeze(out/'PYTHON.json',encoded(row));return 0 if result.wasSuccessful() and result.testsRun>0 and not result.skipped else 1
 
+def pinned_digest(folder,pin,name):
+ """The SHA256 the operator-pinned manifest records for one bundle file."""
+ raw=(folder/'MANIFEST.json').read_bytes();need(hashlib.sha256(raw).hexdigest()==pin,'operator-reviewed first-party bundle manifest')
+ rows=[x for x in json.loads(raw)['files'] if type(x) is dict and x.get('path')==name];need(len(rows)==1,'one pinned manifest row: '+name);return rows[0]['sha256']
+
 def run(out,pin):
  bound_tests(HERE,pin);importable(HERE);from common import encoded,freeze
  need(not out.exists(),'fresh private synthetic output root');out.mkdir(mode=0o700);rows=[]
- for name,args in [('python',[sys.executable,'-I','-S','-B',str(HERE/'run_checks.py'),'--python-worker','--out',str(out),'--manifest-sha256',pin]),('crypto',['node',str(HERE/'test_crypto.mjs'),str(out/'crypto-test-only')])]:
+ for name,args in [('python',[sys.executable,'-I','-S','-B','-c',BOOTSTRAP,str(HERE/'run_checks.py'),pinned_digest(HERE,pin,'run_checks.py'),'--python-worker','--out',str(out),'--manifest-sha256',pin]),('crypto',['node',str(HERE/'test_crypto.mjs'),str(out/'crypto-test-only')])]:
   started=time.monotonic();log=out/(name+'.log')
   def limit():resource.setrlimit(resource.RLIMIT_FSIZE,(4*1024**2,4*1024**2))
   with log.open('xb') as stream:process=subprocess.run(args,stdout=stream,stderr=subprocess.STDOUT,timeout=180,preexec_fn=limit,check=False)

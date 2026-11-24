@@ -203,6 +203,26 @@ class Controls(unittest.TestCase):
   with patch.object(run_checks,'HERE',bundle),patch.object(run_checks.subprocess,'run') as child,self.assertRaisesRegex(run_checks.Unreviewed,'unreviewed entry in executed control directory: test_unlisted_marker.py'):run_checks.run(out,value)
   child.assert_not_called();self.assertFalse(out.exists());self.assertEqual(list(markers.iterdir()),[])
   (bundle/'test_unlisted_marker.py').unlink();self.assertEqual(run_checks.bound_tests(bundle,value),['test_listed_marker','test_protected_marker'])
+ def controller_run(self,swap=False):
+  import run_checks
+  bundle,markers,control,pin=self.control_bundle();value=pin();out=self.root/'controller-out-6421';real=subprocess.run;children=[]
+  class CryptoNotRun(BaseException):pass
+  def child(args,**kwargs):
+   if '--python-worker' not in args:raise CryptoNotRun()
+   # The launcher changes after the parent verified the bundle, before its worker starts.
+   if swap:(bundle/'run_checks.py').write_bytes(('import pathlib\npathlib.Path('+repr(str(markers/'swapped'))+').write_text("swapped-6421")\n').encode())
+   done=real(args,**kwargs);children.append(done.returncode);return done
+  with patch.object(run_checks,'HERE',bundle),patch.object(run_checks.subprocess,'run',side_effect=child):
+   try:run_checks.run(out,value);error=None
+   except (run_checks.Unreviewed,CryptoNotRun) as caught:error=caught
+  return out,markers,children,error,CryptoNotRun
+ def test_controls_worker_runs_the_verified_launcher_bytes(self):
+  out,markers,children,error,crypto=self.controller_run()
+  self.assertEqual(children,[0]);self.assertIsInstance(error,crypto);self.assertEqual(common.read_json(out/'PYTHON.json')['tests'],2);self.assertEqual(sorted(x.name for x in markers.iterdir()),['listed','protected'])
+ def test_controls_worker_refuses_a_launcher_changed_after_verification(self):
+  out,markers,children,error,_=self.controller_run(swap=True)
+  self.assertEqual(len(children),1);self.assertNotEqual(children[0],0);self.assertRegex(str(error),'synthetic control failed')
+  self.assertIn('run_checks.py differs from its pinned SHA256',(out/'python.log').read_text());self.assertEqual(list(markers.iterdir()),[])
  def entry_bundle(self,listed=True):
   # An entry script that, like driver.py, puts its directory on sys.path and
   # imports a sibling at module level; both imports write marker files.
@@ -283,7 +303,7 @@ class Controls(unittest.TestCase):
   pin=hashlib.sha256((folder/'run_checks.py').read_bytes()).hexdigest();block[0]=block[0].replace(pin,'0'*64,1);self.assertNotIn(pin,block[0])
   env={**os.environ,'CHECKTRAIL_MANIFEST_SHA256':'5'*64}
   done=subprocess.run(['bash','--noprofile','--norc','-eo','pipefail','-c','\n'.join(block)],cwd=checkout,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60)
-  self.assertNotEqual(done.returncode,0,done.stdout);self.assertIn(b'run_checks.py differs from its generated launcher pin',done.stdout);self.assertEqual(list(markers.iterdir()),[])
+  self.assertNotEqual(done.returncode,0,done.stdout);self.assertIn(b'run_checks.py differs from its pinned SHA256',done.stdout);self.assertEqual(list(markers.iterdir()),[])
  def bootstrap(self,launcher,pin,*argv,wrapper=''):
   import make_workflow
   code=wrapper+'exec('+repr(make_workflow.BOOTSTRAP)+')'
@@ -316,14 +336,14 @@ class Controls(unittest.TestCase):
  def test_bootstrap_refuses_a_changed_launcher_without_running_it(self):
   markers=self.root/'markers-6421';markers.mkdir();launcher=self.root/'run_checks.py';original=self.marker_launcher(markers);launcher.write_bytes(original+b'# changed-6421\n')
   code,log=self.bootstrap(launcher,hashlib.sha256(original).hexdigest(),'--entry','driver.py')
-  self.assertEqual(code,1);self.assertIn('run_checks.py differs from its generated launcher pin',log);self.assertEqual(list(markers.iterdir()),[])
+  self.assertEqual(code,1);self.assertIn('run_checks.py differs from its pinned SHA256',log);self.assertEqual(list(markers.iterdir()),[])
  def test_generated_steps_refuse_a_changed_launcher_before_it_runs(self):
   markers=self.root/'markers-6421';markers.mkdir();checkout,folder,generated,_=self.generated(self.marker_launcher(markers))
   (folder/'run_checks.py').write_bytes((folder/'run_checks.py').read_bytes()+b'# changed-6421\n')
   for workflow,commands in generated.items():
    with self.subTest(workflow=workflow):
     results=self.run_generated(checkout,commands,markers)
-    self.assertTrue(results);self.assertTrue(all(code!=0 and 'run_checks.py differs from its generated launcher pin' in log for code,log in results),results)
+    self.assertTrue(results);self.assertTrue(all(code!=0 and 'run_checks.py differs from its pinned SHA256' in log for code,log in results),results)
   self.assertEqual(list(markers.iterdir()),[])
 if __name__=='__main__':
  result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Controls));print(json.dumps({'testsRun':result.testsRun,'failures':len(result.failures),'errors':len(result.errors),'skips':len(result.skipped),'nativeUpstreamDockerNetworkActions':0}));sys.exit(not result.wasSuccessful())

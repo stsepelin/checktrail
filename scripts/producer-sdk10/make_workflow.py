@@ -1,5 +1,7 @@
 """Generate manual-only diagnostic proposal. Never publishes or dispatches."""
-import argparse,hashlib,json,pathlib,re
+import argparse,hashlib,json,pathlib,re,sys
+sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
+from run_checks import BOOTSTRAP
 FILES=['owned_image.py', 'profile.json', 'common.py', 'driver.py', 'native_entry.py', 'capture.py', 'collect.py', 'crypto_bridge.py', 'envelope.mjs', 'git_ack.py', 'transport_base.py', 'meter.py', 'meter_runner.py', 'observer.py', 'input_prep.py', 'make_workflow.py', 'run_checks.py', 'test_core.py', 'test_observer.py', 'test_integration.py', 'test_crypto.mjs', 'test_compilers.py', 'test_deadlines.py', 'test_volume_options.py', 'test_api_state.py', 'test_native_identity.py', 'test_artifact_consistency.py', 'test_receiver_metadata.py', 'test_mode_policy.py', 'live_resource.py', 'cleanup_owned.py', 'test_live_resource.py', 'test_cleanup_owned.py', 'producer_pause.py', 'producer_adapter.py', 'test_producer_pause.py', 'test_producer_adapter.py', 'target_pause_controls.py', 'pause_control_worker.py', 'test_target_pause_controls.py', 'make_pause_workflow.py', 'test_supervisor_authority.py', 'test_meter_allocation.py', 'capacity_admission.py', 'test_capacity_admission.py', 'PROTECTED-CONTROLS.json']
 CHECKOUT='3d3c42e5aac5ba805825da76410c181273ba90b1'
 UPLOAD='cf430e030ddbb5b0abf93d22962f4752f3646cd9'
@@ -8,16 +10,11 @@ UPLOAD='cf430e030ddbb5b0abf93d22962f4752f3646cd9'
 # module can be imported by the entry script.
 ENTRY_ARGS='--manifest-sha256 "$CHECKTRAIL_MANIFEST_SHA256" --entry '
 # run_checks.py is the code that checks the pin, so nothing it runs can check
-# run_checks.py itself. Each step therefore starts it through this bootstrap:
-# an isolated interpreter that imports only the standard library, reads the
-# file once, compares those bytes with the SHA256 taken at generation and
-# executes exactly those bytes as __main__. The file is never opened again, so
-# a change after the comparison cannot run. A mismatch or any failure exits
-# the whole shell, so a later line of a multi-line step cannot turn it green.
+# run_checks.py itself. Each step therefore starts it through its bootstrap
+# (run_checks.BOOTSTRAP) with the SHA256 taken at generation. A mismatch or
+# any failure exits the whole shell, so a later line of a multi-line step
+# cannot turn it green.
 LAUNCHER='scripts/producer-sdk10/run_checks.py'
-BOOTSTRAP=("import hashlib,sys;p=sys.argv[1];f=open(p,'rb');b=f.read();f.close();"
- "hashlib.sha256(b).hexdigest()==sys.argv[2] or sys.exit('run_checks.py differs from its generated launcher pin');"
- "sys.argv=[p]+sys.argv[3:];exec(compile(b,p,'exec'),{'__name__':'__main__','__file__':p,'__spec__':None,'__loader__':None,'__package__':None,'__cached__':None})")
 FAIL=' || exit 1'
 def launcher(folder):
  """The bootstrap command prefix; the launcher's own arguments follow it."""

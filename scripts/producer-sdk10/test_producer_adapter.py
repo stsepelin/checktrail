@@ -217,7 +217,7 @@ class Adapter(unittest.TestCase):
     def test_global_stop_owned_native_cleanup_cannot_bypass_failed_preservation(self):
         for role in ['build', 'tests']:
             name = 'ct-sdk10-synthetic-adapter-original-' + role
-            controller = object.__new__(driver.Controller); controller.state = {**self.c.state, 'containers': [name]}; controller.ctx = self.ctx
+            controller = object.__new__(driver.Controller); controller.state = {**self.c.state, 'containers': [name], 'nativeProducers': {name: {'synthetic': 'registered'}}}; controller.ctx = self.ctx
             controller.own_container = lambda _: self.obj
             calls = []; controller.docker = lambda *args, **kw: calls.append(args)
             fake = SimpleNamespace(binding={'id': 'b' * 64}, inspect_id=lambda *a: {**self.obj, 'State': {'Running': False, 'Paused': False}}, preserve_protected_metadata=lambda *a: False, force_remove_id=lambda *a: calls.append('removed'))
@@ -273,14 +273,14 @@ class DockerTable(unittest.TestCase):
         self.name = 'ct-sdk10-synthetic-table-original-tests'; self.id = '4' * 64; self.foreign = 'f' * 64
         c = object.__new__(driver.Controller); c.root = root; c.ctx = self.ctx; c.save = lambda: None
         c.state = {'prefix': 'ct-sdk10-synthetic-table', 'containers': [self.name], 'phaseDeadline': time.monotonic() + 600, 'cleanupDeadline': time.monotonic() + 600}
-        self.table = {}; self.effects = []; self.counter = 0; self.commands = []; self.created = []; self.receipts = None; self.on_create = None
+        self.table = {}; self.effects = []; self.counter = 0; self.commands = []; self.created = []; self.receipts = None; self.on_create = None; self.create_output = None; self.unavailable_inspections = {}
         def find(key): return [x for x in self.table.values() if x['Id'] == key or x['Name'] == '/' + key]
         self.find = find
         def cmd(args, seconds=60, check=True, cap=2 * 1024 ** 2):
             self.assertEqual(args[0], 'docker'); args = args[1:]; self.counter += 1; self.commands.append(list(args))
             out = root / ('transport-' + str(self.counter)); out.write_bytes(b''); row = copy.deepcopy(GOOD)
             if args[0] == 'create':
-                identity, name = self.created.pop(0); self.container(identity, name, running=False); out.write_bytes((identity + '\n').encode())
+                identity, name = self.created.pop(0); self.container(identity, name, running=False); out.write_bytes(self.create_output or (identity + '\n').encode())
                 if self.on_create is not None: self.on_create(identity, name)
             elif args[0] == 'start':
                 target = args[-1]; self.effects.append(('start', target)); found = find(target)
@@ -289,6 +289,8 @@ class DockerTable(unittest.TestCase):
                 if not found: row['exitCode'] = 1
             elif args[0] == 'top':
                 self.effects.append(('top', args[1])); row['exitCode'] = 1
+            elif args[:2] == ['container', 'inspect'] and self.unavailable_inspections.get(args[2]):
+                self.unavailable_inspections[args[2]] -= 1; row.update(exitCode=-9, reason='owned command deadline')
             elif args[:2] == ['container', 'inspect']:
                 found = find(args[2])
                 if found: out.write_bytes(common.encoded(copy.deepcopy(found)))
@@ -475,5 +477,22 @@ class DockerTable(unittest.TestCase):
                 self.setUp(); self.race_create(case, labels)
                 with self.assertRaisesRegex(common.Refusal, 'created container still holds its owned name and labels'): self.native_phase()
                 self.assertEqual(self.c.state['nativeProducers'], {}); self.assert_never_adopted(self.name, self.id)
+
+    def test_container_without_a_recorded_create_id_is_never_removed_by_name(self):
+        import live_resource
+        # docker create printed no usable ID; a container now holds the name and the owned labels.
+        for phase, name, created in [(self.helper_phase, 'materialize', '5' * 64), (self.meter_phase, 'meter-4417', '6' * 64)]:
+            with self.subTest(phase=name):
+                self.setUp(); self.create_output = b'Created-4417 container\n'
+                with self.assertRaises((common.Refusal, live_resource.ObservationIncomplete)): phase()
+                full = self.c.state['prefix'] + '-' + name; self.assertNotIn(full, self.c.state.get('ownedContainerIDs', {}))
+                with self.assertRaisesRegex(common.Refusal, 'owned container name still bound to its create ID'): self.c.stop_owned(full)
+                self.assertEqual(self.effects, []); self.assertTrue(self.table[created]['Name'].endswith(name))
+    def test_never_started_native_container_refused_at_creation_is_removed_by_its_create_id(self):
+        self.unavailable_inspections = {self.id: 1}
+        with self.assertRaisesRegex(common.Refusal, 'Docker inspect unavailable'): self.native_phase()
+        self.assertEqual(self.c.state['nativeProducers'], {}); self.assertEqual(self.c.state['ownedContainerIDs'][self.name], self.id)
+        self.assertIs(self.c.stop_owned(self.name), True)
+        self.assertEqual(self.effects, [('rm', self.id)]); self.assertNotIn(self.id, self.table)
 
 if __name__ == '__main__': unittest.main()

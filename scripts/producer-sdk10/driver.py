@@ -158,24 +158,27 @@ class Controller:
  def stop_owned(self,name):
   obj=self.own_container(name)
   native=name in [self.state['prefix']+'-original-build',self.state['prefix']+'-original-tests']
-  # A native producer refused before registration is tracked by its create ID like a helper.
-  helper_id=None if native and name in self.state.get('nativeProducers',{}) else self.state.get('ownedContainerIDs',{}).get(name)
+  # A native producer refused before registration never started; like a helper,
+  # it is owned only through the ID its docker create printed.
+  registered=native and name in self.state.get('nativeProducers',{})
+  helper_id=None if registered else self.state.get('ownedContainerIDs',{}).get(name)
   if obj is None:
    # A renamed producer leaves its name absent while its registered ID still
    # runs and writes the volume; only absence of that exact ID is quiescence.
-   if native and name in self.state.get('nativeProducers',{}):
+   if registered:
     api=ProducerAPI(self,name);need(api.inspect_id(api.binding['id'],min(self.state['phaseDeadline'],self.state['cleanupDeadline'])) is None,'registered native producer ID absence')
    if helper_id is not None:need(self.inspect_container_id(helper_id) is None,'registered owned helper ID absence')
    return True
-  if native:
+  if registered:
    api=ProducerAPI(self,name);actual=api.inspect_id(api.binding['id'],min(self.state['phaseDeadline'],self.state['cleanupDeadline']));need(actual is not None,'owned native immutable identity before stop')
    if actual['State'].get('Paused'):api.unpause_id(api.binding['id'],min(self.state['phaseDeadline'],time.monotonic()+5))
    if actual['State'].get('Running'):self.docker(['stop','--time','20',api.binding['id']],seconds=30,check=False)
    terminal=api.inspect_id(api.binding['id'],min(self.state['phaseDeadline'],self.state['cleanupDeadline']));need(terminal is not None and not terminal['State']['Running'],'native stopped before protected preservation');need(api.preserve_protected_metadata(api.binding,min(self.state['phaseDeadline'],time.monotonic()+10)),'protected native evidence before cleanup');api.force_remove_id(api.binding['id'],min(self.state['phaseDeadline'],time.monotonic()+30));gone=api.inspect_id(api.binding['id'],min(self.state['phaseDeadline'],self.state['cleanupDeadline'])) is None
   else:
-   # The name inspection above only found the container; every effect and the
-   # absence proof use its ID, so a name rebound in between is never touched.
-   container_id=obj.get('Id');need(re.fullmatch('[0-9a-f]{64}',str(container_id)) is not None and container_id==(helper_id or container_id),'owned helper name still bound to its registered ID')
+   # The name inspection above only found the container. Ownership is the ID
+   # recorded at creation; without one a container under this name is never
+   # touched, and every effect and the absence proof use that ID.
+   container_id=obj.get('Id');need(helper_id is not None and container_id==helper_id,'owned container name still bound to its create ID')
    if obj['State'].get('Running'):self.docker(['stop','--time','20',container_id],seconds=30,check=False)
    self.docker(['rm','-f',container_id],seconds=30,check=False);gone=self.inspect_container_id(container_id) is None
   need(gone,'owned container absence not observed');return gone
