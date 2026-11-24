@@ -49,12 +49,17 @@ const controllerProfiles = {
 // These controllers take a profile's manifest rows through a dedicated selector
 // rather than the generic native verifier. Each refuses the whole profile before
 // any callback runs unless its rows equal the selected cases at their bound
-// files, plus `extra` names in the default file. An `ordered` selector compares
-// the rows as written; the others compare them sorted. The .NET generator
-// compares against its shard manifest, whose source partitions are exactly the
-// selected cases. `companions` are other profiles the selector requires at an
-// exact duplicate-free size, none filed in this profile's default file. A
-// `serialized` selector compares each row's JSON text, so its key order counts.
+// files, plus `extra` names in the default file. `selection` names the selected
+// profile whose cases a per-family cohort must hold. An `ordered` selector
+// compares the rows as written; the others compare them sorted. The .NET
+// generator compares against its shard manifest, whose source partitions are
+// exactly the selected cases. A `serialized` selector compares each row's JSON
+// text, so its key order counts.
+const mutationCohort = {
+  controller: "scripts/verify-mutation-container.mjs",
+  ordered: true,
+  selection: "mutation-runners",
+};
 const dedicatedSelectors = {
   "cpp-extensions": {
     controller: "scripts/selected-clang-consumer-witness.mjs",
@@ -97,7 +102,6 @@ const dedicatedSelectors = {
   "tasks-matrix": {
     controller: "scripts/tasks-runtime-evidence.mjs",
     ordered: true,
-    companions: { "mcp-tasks": 10 },
   },
   "native-license-provenance": {
     controller: "scripts/native-provenance-runtime-evidence.mjs",
@@ -111,7 +115,219 @@ const dedicatedSelectors = {
     controller: "scripts/evaluation-runtime-evidence.mjs",
     ordered: true,
   },
+  "mutation-vitest": mutationCohort,
+  "mutation-jest": mutationCohort,
+  "mutation-pytest": mutationCohort,
+  "mutation-phpunit": mutationCohort,
 };
+// Other profiles a controller requires before it accepts the selected profile.
+// Every cohort profile must hold 1 to `maxRows` rows (256 by default) without
+// a repeated address. Then, by rule:
+// - `rows`: the cohort's distinct addresses number exactly this many, which is
+//   what a runner batch over those profiles reports as required;
+// - `disjoint`: no address appears in two cohort profiles;
+// - `outsideFile`: no cohort row is filed in this test file;
+// - `preserved`: the cohort holds exactly its preserved baseline rows, which
+//   the .NET shard manifest partitions;
+// - `sha256`: the cohort's ordered file/name list has this canonical digest,
+//   the exact list the controller's foundation module compares against.
+const companionCohorts = [
+  {
+    profile: "tasks-matrix",
+    controller: "scripts/tasks-runtime-evidence.mjs",
+    cohort: ["mcp-tasks"],
+    rows: 10,
+    outsideFile: "dist/test/gate-tasks-matrix.test.js",
+  },
+  {
+    profile: "dotnet-generator-extensions",
+    controller: "scripts/dotnet-generator-shards.mjs",
+    cohort: [
+      "dotnet-build",
+      "dotnet-test",
+      "dotnet-generated",
+      "dotnet-method",
+    ],
+    maxRows: 128,
+    disjoint: true,
+    preserved: true,
+  },
+  {
+    profile: "consumer-impact",
+    controller: "scripts/consumer-foundation-evidence.mjs",
+    cohort: ["consumer-impact-foundation"],
+    sha256: "e15c204ed472bffdc3feb1b29a4ab0a865f9863b40862266a3bd83c80876e2db",
+  },
+  {
+    profile: "attempt-archives",
+    controller: "scripts/attempt-foundation-evidence.mjs",
+    cohort: ["attempt-journal-foundation"],
+    sha256: "9e3bee327fd5dc23bd80b6feec2e94067c6103893f2dbf9e43054a921ed56539",
+  },
+  {
+    profile: "attempt-archives",
+    controller: "scripts/attempt-foundation-evidence.mjs",
+    cohort: ["attempt-output-foundation"],
+    sha256: "1ff71872718b3e140bec7a74563b9d67c73c6898943dbcacc58324e080b984f4",
+  },
+  {
+    profile: "python-extensions",
+    controller: "scripts/verify-python-extensions-container.mjs",
+    cohort: ["python"],
+    rows: 5,
+  },
+  {
+    profile: "php-extensions",
+    controller: "scripts/verify-php-extensions-container.mjs",
+    cohort: ["php-tools", "php-review"],
+    rows: 14,
+  },
+  {
+    profile: "rust-extensions",
+    controller: "scripts/verify-rust-extensions-container.mjs",
+    cohort: ["rust", "rust-format", "clippy", "rust-tests", "rust-workspace"],
+    rows: 39,
+  },
+  {
+    profile: "assembly-laravel",
+    controller: "scripts/verify-laravel-assembly-container.mjs",
+    cohort: ["laravel-cache-runtime-bindings"],
+    rows: 1,
+  },
+  {
+    profile: "assembly-laravel",
+    controller: "scripts/laravel-cache-runtime-evidence.mjs",
+    cohort: ["laravel", "laravel-cache"],
+    rows: 9,
+    disjoint: true,
+  },
+  {
+    profile: "assembly-django",
+    controller: "scripts/verify-django-assembly-container.mjs",
+    cohort: ["frameworks"],
+    rows: 8,
+  },
+  {
+    profile: "assembly-fastapi",
+    controller: "scripts/verify-fastapi-assembly-container.mjs",
+    cohort: ["frameworks"],
+    rows: 8,
+  },
+  {
+    profile: "assembly-nuxt",
+    controller: "scripts/verify-nuxt-assembly-container.mjs",
+    cohort: ["nuxt"],
+    rows: 7,
+  },
+];
+const contextFamilies = [
+  "python",
+  "go",
+  "php",
+  "rust",
+  "java",
+  "kotlin",
+  "scala",
+  "csharp",
+  "fsharp",
+  "vb",
+  "ruby",
+  "swift",
+  "c",
+  "cpp",
+  "hcl",
+  "yaml",
+];
+// selectConsumerWitnessRequirements reads the broken, fixed and near-miss rows
+// of every consumer witness family from these profiles, and the controller of
+// each of them calls it. One family's missing row refuses all of them.
+const sharedWitnessSelector = {
+  controller: "scripts/consumer-witness-evidence.mjs",
+  cases: ["broken", "fixed", "near-miss"],
+  profiles: [
+    "consumer-impact",
+    "javascript-extensions",
+    ...contextFamilies.map((family) => "context-" + family),
+  ],
+};
+// These controllers run a profile through the generic runner, which admits any
+// row set, then require exactly `rows` required callbacks from it. An extra
+// unselected row passes the runner but fails the count after running.
+const rowCountControllers = Object.fromEntries(
+  [
+    [
+      "scripts/verify-consumer-witness-profile.mjs",
+      contextFamilies.map((family) => "context-" + family),
+    ],
+    ...contextFamilies
+      .filter((family) => !["python", "go"].includes(family))
+      .map((family) => [
+        "scripts/verify-" + family + "-context-container.mjs",
+        ["context-" + family],
+      ]),
+    [
+      "scripts/verify-javascript-extensions-container.mjs",
+      ["javascript-extensions"],
+    ],
+    ["scripts/verify-consumer-project-profile.mjs", ["javascript-extensions"]],
+    ["scripts/verify-python-extensions-container.mjs", ["python-extensions"]],
+    ["scripts/verify-php-extensions-container.mjs", ["php-extensions"]],
+    ["scripts/verify-rust-extensions-container.mjs", ["rust-extensions"]],
+    ["scripts/verify-jvm-wrappers-container.mjs", ["jvm-wrappers"]],
+    ["scripts/verify-kotlin-extensions-container.mjs", ["kotlin-extensions"]],
+    ["scripts/verify-scala-extensions-container.mjs", ["scala-extensions"]],
+    [
+      "scripts/verify-jvm-analyzer-extensions-container.mjs",
+      ["jvm-analyzer-extensions"],
+    ],
+    [
+      "scripts/verify-dotnet-format-extensions-container.mjs",
+      ["dotnet-format-extensions"],
+    ],
+    ["scripts/verify-fsharp-format-container.mjs", ["dotnet-fsharp-format"]],
+    ["scripts/verify-swift-extensions-container.mjs", ["swift-extensions"]],
+    [
+      "scripts/verify-kustomize-extensions-container.mjs",
+      ["kustomize-extensions"],
+    ],
+    [
+      "scripts/verify-kubernetes-extensions-container.mjs",
+      ["kubernetes-extensions"],
+    ],
+    ["scripts/verify-laravel-assembly-container.mjs", ["assembly-laravel"]],
+    ["scripts/verify-django-assembly-container.mjs", ["assembly-django"]],
+    ["scripts/verify-fastapi-assembly-container.mjs", ["assembly-fastapi"]],
+    ["scripts/verify-nuxt-assembly-container.mjs", ["assembly-nuxt"]],
+    [
+      "scripts/verify-vue-router-assembly-container.mjs",
+      ["assembly-vue-router"],
+    ],
+    ["scripts/verify-confidence-provenance.mjs", ["confidence-provenance"]],
+    [
+      "scripts/verify-review-runtime-package.mjs",
+      ["multi-candidate-workflow", "confidence-provenance"],
+    ],
+    [
+      "scripts/verify-tasks-runtime-arm64.mjs",
+      ["confidence-provenance", "lifecycle-platforms"],
+    ],
+    ["scripts/verify-consumer-impact-whole-package.mjs", ["consumer-impact"]],
+    ["scripts/verify-lifecycle-platforms-package.mjs", ["lifecycle-platforms"]],
+    [
+      "scripts/verify-mutation-package.mjs",
+      [
+        "mutation-vitest",
+        "mutation-jest",
+        "mutation-pytest",
+        "mutation-phpunit",
+      ],
+    ],
+  ].map(([controller, profiles]) => [controller, { rows: 9, profiles }]),
+);
+// resolveRequirements in required-test-evidence.mjs runs a profile only when it
+// holds 1 to 256 rows.
+const maxProfileRows = 256;
+const genericRunner = "scripts/required-test-evidence.mjs";
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const canonical = (value) =>
   JSON.stringify(value, (_key, item) =>
@@ -463,59 +679,89 @@ try {
       ),
     ),
   ].sort();
+  const address = (row) => canonical([row.file, row.name]);
+  // The generic runner's own admission: 1 to `limit` rows, no repeated
+  // file/name pair. The same pair in another profile is a separate requirement.
+  const runnable = (rows, limit = maxProfileRows) =>
+    Array.isArray(rows) &&
+    rows.length > 0 &&
+    rows.length <= limit &&
+    new Set(rows.map(address)).size === rows.length;
+  const cohortAdmitted = (entry) => {
+    const lists = entry.cohort.map((owner) => current[owner]);
+    if (!lists.every((rows) => runnable(rows, entry.maxRows))) return false;
+    const rows = lists.flat();
+    const distinct = new Set(rows.map(address));
+    if (entry.rows !== undefined && distinct.size !== entry.rows) return false;
+    if (entry.disjoint && distinct.size !== rows.length) return false;
+    if (rows.some((row) => row.file === entry.outsideFile)) return false;
+    if (
+      entry.preserved &&
+      canonical([...distinct].sort()) !==
+        canonical(
+          entry.cohort
+            .flatMap((owner) => baseline.value[owner])
+            .map(address)
+            .sort(),
+        )
+    )
+      return false;
+    return (
+      entry.sha256 === undefined ||
+      digest(canonical(rows.map((row) => [row.file, row.name]))) ===
+        entry.sha256
+    );
+  };
+  const witnessRowsPresent = sharedWitnessSelector.profiles.every((owner) => {
+    const profile = inventory.extensionProfiles.find((p) => p.id === owner);
+    return sharedWitnessSelector.cases.every((id) => {
+      const entry = profile.acceptanceCases.find((row) => row.id === id);
+      return (current[owner] ?? []).some(
+        (row) => row.file === profile.acceptanceFile && row.name === entry.name,
+      );
+    });
+  });
   const admissionRefusals = [];
   for (const owner of admissionProfiles) {
     const rows = current[owner] ?? [];
-    const addresses = rows.map((row) => canonical([row.file, row.name]));
-    // resolveRequirements in required-test-evidence.mjs refuses a profile
-    // that repeats any file/name pair; the same pair in another profile is
-    // a separate requirement.
-    if (new Set(addresses).size !== addresses.length)
-      admissionRefusals.push({
-        profile: owner,
-        controller: "scripts/required-test-evidence.mjs",
-        reason: "duplicate-address",
-      });
+    const refuse = (controller, reason) =>
+      admissionRefusals.push({ profile: owner, controller, reason });
+    if (new Set(rows.map(address)).size !== rows.length)
+      refuse(genericRunner, "duplicate-address");
+    if (rows.length === 0 || rows.length > maxProfileRows)
+      refuse(genericRunner, "row-limit");
     const selector = dedicatedSelectors[owner];
-    if (!selector) continue;
-    const profile = inventory.extensionProfiles.find((p) => p.id === owner);
-    const key = selector.serialized
-      ? (row) => JSON.stringify(row)
-      : (row) => canonical([row.file, row.name]);
-    const expected = [
-      ...profile.acceptanceCases.map((entry) =>
-        key({
-          file:
-            alternateAcceptanceFiles[owner]?.[entry.id] ??
-            profile.acceptanceFile,
-          name: entry.name,
-        }),
-      ),
-      ...(selector.extra ?? []).map((name) =>
-        key({ file: profile.acceptanceFile, name }),
-      ),
-    ];
-    const arranged = (list) => (selector.ordered ? list : [...list].sort());
-    if (canonical(arranged(rows.map(key))) !== canonical(arranged(expected)))
-      admissionRefusals.push({
-        profile: owner,
-        controller: selector.controller,
-        reason: "selector-rows-differ",
-      });
-    for (const [companion, size] of Object.entries(selector.companions ?? {})) {
-      const companionRows = current[companion] ?? [];
-      if (
-        companionRows.length !== size ||
-        new Set(companionRows.map((row) => canonical([row.file, row.name])))
-          .size !== size ||
-        companionRows.some((row) => row.file === profile.acceptanceFile)
-      )
-        admissionRefusals.push({
-          profile: owner,
-          controller: selector.controller,
-          reason: "companion-cohort-differs",
-        });
+    if (selector) {
+      const selection = selector.selection ?? owner;
+      const profile = inventory.extensionProfiles.find(
+        (p) => p.id === selection,
+      );
+      const key = selector.serialized ? (row) => JSON.stringify(row) : address;
+      const expected = [
+        ...profile.acceptanceCases.map((entry) =>
+          key({
+            file:
+              alternateAcceptanceFiles[selection]?.[entry.id] ??
+              profile.acceptanceFile,
+            name: entry.name,
+          }),
+        ),
+        ...(selector.extra ?? []).map((name) =>
+          key({ file: profile.acceptanceFile, name }),
+        ),
+      ];
+      const arranged = (list) => (selector.ordered ? list : [...list].sort());
+      if (canonical(arranged(rows.map(key))) !== canonical(arranged(expected)))
+        refuse(selector.controller, "selector-rows-differ");
     }
+    for (const entry of companionCohorts)
+      if (entry.profile === owner && !cohortAdmitted(entry))
+        refuse(entry.controller, "companion-cohort-differs");
+    if (!witnessRowsPresent && sharedWitnessSelector.profiles.includes(owner))
+      refuse(sharedWitnessSelector.controller, "shared-selector-rows-differ");
+    for (const [controller, rule] of Object.entries(rowCountControllers))
+      if (rule.profiles.includes(owner) && rows.length !== rule.rows)
+        refuse(controller, "row-count-differs");
   }
   process.stdout.write(
     JSON.stringify({
@@ -557,6 +803,17 @@ try {
       controllerAdmission: {
         controllerProfiles: admissionProfiles.length,
         dedicatedSelectorProfiles: Object.keys(dedicatedSelectors).sort(),
+        companionCohorts,
+        sharedSelectors: [
+          {
+            controller: sharedWitnessSelector.controller,
+            profiles: sharedWitnessSelector.profiles,
+          },
+        ],
+        rowCountControllers: Object.entries(rowCountControllers).map(
+          ([controller, rule]) => ({ controller, ...rule }),
+        ),
+        maxProfileRows,
         refusedProfiles: new Set(admissionRefusals.map((row) => row.profile))
           .size,
         refusals: admissionRefusals,

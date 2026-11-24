@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { test, type TestContext } from "node:test";
 import { fileURLToPath } from "node:url";
@@ -694,10 +694,45 @@ interface ScopeProfile {
 interface Scope {
   extensionProfiles: ScopeProfile[];
 }
+interface CompanionCohort {
+  profile: string;
+  controller: string;
+  cohort: string[];
+  rows?: number;
+  maxRows?: number;
+  disjoint?: boolean;
+  outsideFile?: string;
+  preserved?: boolean;
+  sha256?: string;
+}
+interface Admission {
+  controllerProfiles: number;
+  dedicatedSelectorProfiles: string[];
+  companionCohorts: CompanionCohort[];
+  sharedSelectors: { controller: string; profiles: string[] }[];
+  rowCountControllers: {
+    controller: string;
+    rows: number;
+    profiles: string[];
+  }[];
+  maxProfileRows: number;
+  refusals: AdmissionRefusal[];
+}
+const admission = (stdout: string) =>
+  JSON.parse(stdout).controllerAdmission as Admission;
 const scriptModule = (name: string) =>
   import(new URL("../../scripts/" + name, import.meta.url).href);
-// Two controllers check their rows inline at the top of a script that runs
-// native tests on import, so their rule is pinned by its source text instead.
+const readScript = (name: string) =>
+  readFile(path.join(repository, name), "utf8");
+const readScope = async () =>
+  JSON.parse(await readFile(path.join(repository, files[0]!), "utf8")) as Scope;
+type Selector = (
+  root: string,
+  rows: RequiredNative,
+  scope: Scope,
+) => Promise<unknown> | void;
+// Three controllers check their rows inline in a script that runs native tests
+// on import, so their rule is pinned by its source text instead.
 const inlineSelection = `assert.deepEqual(
   requirements,
   selection.acceptanceCases.map((item) => ({
@@ -706,7 +741,8 @@ const inlineSelection = `assert.deepEqual(
   })),
 );`;
 const inlineSelector =
-  (id: string) => (_root: string, rows: RequiredNative, scope: Scope) => {
+  (id: string): Selector =>
+  (_root, rows, scope) => {
     const selected = scope.extensionProfiles.find((row) => row.id === id)!;
     assert.deepEqual(
       rows[id],
@@ -716,97 +752,649 @@ const inlineSelector =
       })),
     );
   };
+const mutationSelection = `  assert.deepEqual(
+    inventory["mutation-" + family],
+    frozen.acceptanceCases.map((c) => ({
+      file: frozen.acceptanceFile,
+      name: c.name,
+    })),
+  );`;
+const mutationSelector =
+  (family: string): Selector =>
+  (_root, rows, scope) => {
+    const frozen = scope.extensionProfiles.find(
+      (row) => row.id === "mutation-runners",
+    )!;
+    assert.deepEqual(
+      rows["mutation-" + family],
+      frozen.acceptanceCases.map((c) => ({
+        file: frozen.acceptanceFile,
+        name: c.name,
+      })),
+    );
+  };
+const platforms = ["darwin", "linux", "win32"] as const;
+const mutationFamilies = ["vitest", "jest", "pytest", "phpunit"];
 const controllerSelectors: Record<
   string,
-  (root: string, rows: RequiredNative, scope: Scope) => Promise<unknown> | void
+  { controller: string; select: Selector }
 > = {
-  "cpp-extensions": async (root) =>
-    (
-      await scriptModule("selected-clang-consumer-witness.mjs")
-    ).selectSelectedClangRequirements(root),
-  "dotnet-generator-extensions": async (_root, rows) =>
-    (
-      await scriptModule("dotnet-generator-shards.mjs")
-    ).validateGeneratorShardManifest(
-      JSON.parse(
-        await readFile(
-          path.join(repository, "scripts/dotnet-generator-shards.v1.json"),
-          "utf8",
-        ),
+  "cpp-extensions": {
+    controller: "scripts/selected-clang-consumer-witness.mjs",
+    select: async (root) =>
+      (
+        await scriptModule("selected-clang-consumer-witness.mjs")
+      ).selectSelectedClangRequirements(root),
+  },
+  "dotnet-generator-extensions": {
+    controller: "scripts/dotnet-generator-shards.mjs",
+    select: async (_root, rows) =>
+      (
+        await scriptModule("dotnet-generator-shards.mjs")
+      ).validateGeneratorShardManifest(
+        JSON.parse(await readScript("scripts/dotnet-generator-shards.v1.json")),
+        rows,
       ),
-      rows,
-    ),
-  "scala-extensions": async (_root, rows) =>
-    (
-      await scriptModule("scala-native-ci-phases.mjs")
-    ).selectScalaExtensionSourceRequirements(rows["scala-extensions"]),
-  "ruby-extensions": async (_root, rows) =>
-    (
-      await scriptModule("ruby-extensions-acceptance-selection.mjs")
-    ).selectRubyExtensionAcceptance(rows["ruby-extensions"], "source", "all"),
-  "consumer-impact": async (_root, rows, scope) =>
-    (
-      await scriptModule("consumer-runtime-evidence.mjs")
-    ).selectConsumerRuntimeRequirements(rows, scope),
-  "multi-candidate-workflow": async (_root, rows, scope) =>
-    (
-      await scriptModule("review-runtime-evidence.mjs")
-    ).selectReviewRuntimeRequirements(rows, scope, "multi-candidate-workflow"),
-  "confidence-provenance": async (_root, rows, scope) =>
-    (
-      await scriptModule("review-runtime-evidence.mjs")
-    ).selectReviewRuntimeRequirements(rows, scope, "confidence-provenance"),
-  "attempt-archives": async (_root, rows, scope) =>
-    (
-      await scriptModule("attempt-whole-evidence.mjs")
-    ).selectAttemptWholeRequirements(rows, scope),
-  "lifecycle-platforms": inlineSelector("lifecycle-platforms"),
-  "tasks-matrix": async (_root, rows, scope) =>
-    (
-      await scriptModule("tasks-runtime-evidence.mjs")
-    ).selectTasksRuntimeRequirements(
-      rows,
-      scope.extensionProfiles.find((row) => row.id === "tasks-matrix"),
-      "linux",
-    ),
-  "native-license-provenance": async (_root, rows, scope) =>
-    (
-      await scriptModule("native-provenance-runtime-evidence.mjs")
-    ).selectProvenanceRuntimeRequirements(rows, scope),
-  "resource-release-readiness": inlineSelector("resource-release-readiness"),
-  "independent-evaluation-protocol": async (_root, rows, scope) =>
-    (
-      await scriptModule("evaluation-runtime-evidence.mjs")
-    ).selectEvaluationRuntimeRequirements(rows, scope),
+  },
+  "scala-extensions": {
+    controller: "scripts/scala-native-ci-phases.mjs",
+    select: async (_root, rows) =>
+      (
+        await scriptModule("scala-native-ci-phases.mjs")
+      ).selectScalaExtensionSourceRequirements(rows["scala-extensions"]),
+  },
+  "ruby-extensions": {
+    controller: "scripts/ruby-extensions-acceptance-selection.mjs",
+    select: async (_root, rows) =>
+      (
+        await scriptModule("ruby-extensions-acceptance-selection.mjs")
+      ).selectRubyExtensionAcceptance(rows["ruby-extensions"], "source", "all"),
+  },
+  "consumer-impact": {
+    controller: "scripts/consumer-runtime-evidence.mjs",
+    select: async (_root, rows, scope) =>
+      (
+        await scriptModule("consumer-runtime-evidence.mjs")
+      ).selectConsumerRuntimeRequirements(rows, scope),
+  },
+  "multi-candidate-workflow": {
+    controller: "scripts/review-runtime-evidence.mjs",
+    select: async (_root, rows, scope) =>
+      (
+        await scriptModule("review-runtime-evidence.mjs")
+      ).selectReviewRuntimeRequirements(
+        rows,
+        scope,
+        "multi-candidate-workflow",
+      ),
+  },
+  "confidence-provenance": {
+    controller: "scripts/review-runtime-evidence.mjs",
+    select: async (_root, rows, scope) =>
+      (
+        await scriptModule("review-runtime-evidence.mjs")
+      ).selectReviewRuntimeRequirements(rows, scope, "confidence-provenance"),
+  },
+  "attempt-archives": {
+    controller: "scripts/attempt-whole-evidence.mjs",
+    select: async (_root, rows, scope) =>
+      (
+        await scriptModule("attempt-whole-evidence.mjs")
+      ).selectAttemptWholeRequirements(rows, scope),
+  },
+  "lifecycle-platforms": {
+    controller: "scripts/verify-lifecycle-platforms.mjs",
+    select: inlineSelector("lifecycle-platforms"),
+  },
+  // The Tasks runtime runs on every platform, and Windows adds harness rows.
+  "tasks-matrix": {
+    controller: "scripts/tasks-runtime-evidence.mjs",
+    select: async (_root, rows, scope) => {
+      const { selectTasksRuntimeRequirements } = await scriptModule(
+        "tasks-runtime-evidence.mjs",
+      );
+      for (const platform of platforms)
+        selectTasksRuntimeRequirements(
+          rows,
+          scope.extensionProfiles.find((row) => row.id === "tasks-matrix"),
+          platform,
+        );
+    },
+  },
+  "native-license-provenance": {
+    controller: "scripts/native-provenance-runtime-evidence.mjs",
+    select: async (_root, rows, scope) =>
+      (
+        await scriptModule("native-provenance-runtime-evidence.mjs")
+      ).selectProvenanceRuntimeRequirements(rows, scope),
+  },
+  "resource-release-readiness": {
+    controller: "scripts/verify-resource-release-readiness.mjs",
+    select: inlineSelector("resource-release-readiness"),
+  },
+  "independent-evaluation-protocol": {
+    controller: "scripts/evaluation-runtime-evidence.mjs",
+    select: async (_root, rows, scope) =>
+      (
+        await scriptModule("evaluation-runtime-evidence.mjs")
+      ).selectEvaluationRuntimeRequirements(rows, scope),
+  },
+  ...Object.fromEntries(
+    mutationFamilies.map((family) => [
+      "mutation-" + family,
+      {
+        controller: "scripts/verify-mutation-container.mjs",
+        select: mutationSelector(family),
+      },
+    ]),
+  ),
 };
+// Foundation modules export the exact companion lists their controllers
+// compare before running.
+const foundationSelectors: Record<string, (rows: RequiredNative) => unknown> = {
+  "scripts/consumer-foundation-evidence.mjs": async (rows) =>
+    (
+      await scriptModule("consumer-foundation-evidence.mjs")
+    ).selectConsumerFoundation(rows),
+  "scripts/attempt-foundation-evidence.mjs": async (rows) => {
+    const { selectAttemptFoundation } = await scriptModule(
+      "attempt-foundation-evidence.mjs",
+    );
+    for (const platform of platforms) selectAttemptFoundation(rows, platform);
+  },
+};
+const resolveSelection = `  assert.ok(
+    Array.isArray(requirements) &&
+      requirements.length > 0 &&
+      requirements.length <= MAX_REQUIREMENTS,
+  );`;
+const runnable = (rows: NativeCase[] | undefined, limit = 256) =>
+  Array.isArray(rows) &&
+  rows.length > 0 &&
+  rows.length <= limit &&
+  new Set(rows.map(canonicalRow)).size === rows.length;
+// A copy of the count a container asserts on a runner batch over its cohort.
+const cohortCountAdmits = (entry: CompanionCohort, rows: RequiredNative) => {
+  const lists = entry.cohort.map((owner) => rows[owner]);
+  if (!lists.every((list) => runnable(list))) return false;
+  const all = lists.flat() as NativeCase[];
+  const distinct = new Set(all.map(canonicalRow)).size;
+  return (
+    distinct === entry.rows && (!entry.disjoint || distinct === all.length)
+  );
+};
+const admissionProfileIds = (scope: Scope) =>
+  [
+    ...new Set(
+      scope.extensionProfiles.flatMap((row) =>
+        row.id === "mutation-runners"
+          ? mutationFamilies.map((family) => "mutation-" + family)
+          : [row.id],
+      ),
+    ),
+  ].sort();
+const countPattern = (rows: number) =>
+  new RegExp(
+    `\\.(?:required|passed|length)(?:,\\s*|\\s*===\\s*)${rows}(?!\\d)`,
+    "u",
+  );
 
-// Each variant edits every dedicated profile at once; the audit must refuse
-// exactly the profiles whose real selector throws on the same manifest.
-test("finite inventory selector admission agrees with every dedicated controller selector", async (t) => {
-  for (const [script, key] of [
-    ["verify-lifecycle-platforms.mjs", 'profiles["lifecycle-platforms"];'],
+test("finite inventory pins the controller rules its admission copies from source text", async (t) => {
+  for (const [script, key, text] of [
     [
-      "verify-resource-release-readiness.mjs",
+      "scripts/verify-lifecycle-platforms.mjs",
+      'profiles["lifecycle-platforms"];',
+      inlineSelection,
+    ],
+    [
+      "scripts/verify-resource-release-readiness.mjs",
       ')["resource-release-readiness"];',
+      inlineSelection,
+    ],
+    [
+      "scripts/verify-mutation-container.mjs",
+      '.extensionProfiles.find((p) => p.id === "mutation-runners");',
+      mutationSelection,
+    ],
+    [
+      "scripts/required-test-evidence.mjs",
+      "const MAX_REQUIREMENTS = 256;",
+      resolveSelection,
     ],
   ] as const) {
-    const text = await readFile(
-      path.join(repository, "scripts", script),
-      "utf8",
-    );
-    assert.equal(text.split(key).length, 2, script);
-    assert.equal(text.split(inlineSelection).length, 2, script);
+    const source = await readScript(script);
+    assert.equal(source.split(key).length, 2, script);
+    assert.equal(source.split(text).length, 2, script);
   }
-  const scope = JSON.parse(
-    await readFile(path.join(repository, files[0]!), "utf8"),
-  ) as Scope;
+  const report = admission((await audit(await source(t))).stdout);
+  assert.equal(report.maxProfileRows, 256);
+  assert.deepEqual(
+    (await readScript("scripts/verify-mutation-container.mjs")).match(
+      /\["vitest", "jest", "pytest", "phpunit"\]/gu,
+    )?.length,
+    1,
+  );
+  // Each modelled count appears in its controller with the profiles it runs.
+  for (const entry of report.rowCountControllers) {
+    const text = await readScript(entry.controller);
+    assert.ok(countPattern(entry.rows).test(text), entry.controller);
+    for (const profile of entry.profiles)
+      assert.ok(
+        text.includes(profile) ||
+          text.includes(JSON.stringify(profile.replace(/^mutation-/u, ""))),
+        entry.controller + " " + profile,
+      );
+  }
+  for (const entry of report.companionCohorts.filter(
+    (row) => row.rows !== undefined && !(row.controller in foundationSelectors),
+  )) {
+    const text = await readScript(entry.controller);
+    assert.ok(countPattern(entry.rows!).test(text), entry.controller);
+    for (const profile of entry.cohort)
+      assert.ok(
+        text.includes(JSON.stringify(profile)),
+        entry.controller + " " + profile,
+      );
+  }
+});
+
+// The .NET generator shard manifest partitions the preserved baseline rows of
+// its four baseline profiles, so the audit can compare against the baseline.
+test("finite inventory strict freeze refuses .NET generator baseline companions its shard selector rejects", async (t) => {
+  const shards = JSON.parse(
+    await readScript("scripts/dotnet-generator-shards.v1.json"),
+  ) as { baselineProfiles: string[]; shards: { baseline: NativeCase[] }[] };
+  const preserved = JSON.parse(
+    await readFile(path.join(repository, files[1]!), "utf8"),
+  ) as RequiredNative;
+  assert.deepEqual(
+    shards.shards.flatMap((row) => row.baseline.map(canonicalRow)).sort(),
+    shards.baselineProfiles
+      .flatMap((profile) => preserved[profile]!.map(canonicalRow))
+      .sort(),
+  );
+  const refused = [
+    {
+      profile: "dotnet-generator-extensions",
+      controller: "scripts/dotnet-generator-shards.mjs",
+      reason: "companion-cohort-differs",
+    },
+  ];
+  const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
+    [
+      [
+        "an unpartitioned dotnet-build row",
+        (rows) => {
+          rows["dotnet-build"]!.push({
+            file: "dist/test/dotnet-build-surfaces.test.js",
+            name: "dotnet-build unpartitioned companion 7243",
+          });
+        },
+        refused,
+      ],
+      [
+        "a dotnet-test row also filed under dotnet-method",
+        (rows) => {
+          rows["dotnet-method"]!.push({ ...rows["dotnet-test"]![2]! });
+        },
+        refused,
+      ],
+      [
+        "baseline profiles reordered",
+        (rows) => {
+          rows["dotnet-build"]!.reverse();
+          rows["dotnet-generated"]!.reverse();
+        },
+        [],
+      ],
+    ];
+  for (const [label, edit, expected] of cases) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
+    const result = await audit(root, true);
+    assert.equal(result.code, expected.length ? 2 : 0, label + result.stderr);
+    assert.deepEqual(unresolvedAddresses(result.stdout), [], label);
+    assert.deepEqual(admissionRefusals(result.stdout), expected, label);
+  }
+});
+
+test("finite inventory strict freeze refuses a controller profile outside the native runner's row limit", async (t) => {
+  for (const [size, expected] of [
+    [256, []],
+    [
+      257,
+      [
+        {
+          profile: "go-extensions",
+          controller: genericRunner,
+          reason: "row-limit",
+        },
+      ],
+    ],
+  ] as const) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, (rows) => {
+      const list = rows["go-extensions"]!;
+      for (let index = list.length; index < size; index++)
+        list.push({
+          file: "dist/test/gate-go-extensions.test.js",
+          name: "go-extensions padded row " + (8311 + index),
+        });
+      assert.equal(list.length, size);
+    });
+    const result = await audit(root, true);
+    assert.equal(result.code, expected.length ? 2 : 0, String(size));
+    assert.deepEqual(unresolvedAddresses(result.stdout), [], String(size));
+    assert.deepEqual(admissionRefusals(result.stdout), expected, String(size));
+  }
+});
+
+test("finite inventory strict freeze refuses every profile whose controller calls a shared selector one profile breaks", async (t) => {
+  const shared = admission((await audit(await frozen(t))).stdout)
+    .sharedSelectors[0]!;
+  assert.equal(shared.controller, "scripts/consumer-witness-evidence.mjs");
+  assert.equal(shared.profiles.length, 18);
+  const broken = await frozen(t);
+  await alter<RequiredNative>(broken, files[2]!, (rows) => {
+    rows["context-python"] = rows["context-python"]!.filter(
+      (row) => row.name !== "context-python near-miss acceptance",
+    );
+    assert.equal(rows["context-python"].length, 8);
+  });
+  const refused = await audit(broken, true);
+  assert.equal(refused.code, 2);
+  assert.deepEqual(unresolvedAddresses(refused.stdout), [
+    "context-python/near-miss",
+  ]);
+  assert.deepEqual(
+    admissionRefusals(refused.stdout),
+    [...shared.profiles].sort().flatMap((profile) => [
+      {
+        profile,
+        controller: shared.controller,
+        reason: "shared-selector-rows-differ",
+      },
+      ...(profile === "context-python"
+        ? [
+            {
+              profile,
+              controller: "scripts/verify-consumer-witness-profile.mjs",
+              reason: "row-count-differs",
+            },
+          ]
+        : []),
+    ]),
+  );
+  // The shared selector looks rows up by address, so their order is free.
+  const near = await frozen(t);
+  await alter<RequiredNative>(near, files[2]!, (rows) => {
+    for (const profile of shared.profiles)
+      if (profile.startsWith("context-")) rows[profile]!.reverse();
+  });
+  const admitted = await audit(near, true);
+  assert.equal(admitted.code, 0, admitted.stdout);
+  assert.deepEqual(admissionRefusals(admitted.stdout), []);
+});
+
+test("finite inventory strict freeze refuses an unselected row a controller's post-run count rejects", async (t) => {
+  const adjacent = (profile: string) => (rows: RequiredNative) => {
+    rows[profile]!.push({
+      file: `dist/test/gate-${profile}.test.js`,
+      name: `${profile} unselected acceptance 5821`,
+    });
+  };
+  const counted = (profile: string, ...controllers: string[]) =>
+    controllers.map((controller) => ({
+      profile,
+      controller: "scripts/" + controller,
+      reason: "row-count-differs",
+    }));
+  const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
+    [
+      [
+        "an extra context-go row",
+        adjacent("context-go"),
+        counted("context-go", "verify-consumer-witness-profile.mjs"),
+      ],
+      [
+        "an extra context-c row",
+        adjacent("context-c"),
+        counted(
+          "context-c",
+          "verify-consumer-witness-profile.mjs",
+          "verify-c-context-container.mjs",
+        ),
+      ],
+      [
+        "an extra python-extensions row",
+        adjacent("python-extensions"),
+        counted("python-extensions", "verify-python-extensions-container.mjs"),
+      ],
+      [
+        "an extra confidence-provenance row",
+        adjacent("confidence-provenance"),
+        [
+          {
+            profile: "confidence-provenance",
+            controller: "scripts/review-runtime-evidence.mjs",
+            reason: "selector-rows-differ",
+          },
+          ...counted(
+            "confidence-provenance",
+            "verify-confidence-provenance.mjs",
+            "verify-review-runtime-package.mjs",
+            "verify-tasks-runtime-arm64.mjs",
+          ),
+        ],
+      ],
+      [
+        "context-go and python-extensions rows reordered",
+        (rows) => {
+          rows["context-go"]!.reverse();
+          rows["python-extensions"]!.reverse();
+        },
+        [],
+      ],
+    ];
+  for (const [label, edit, expected] of cases) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
+    const result = await audit(root, true);
+    assert.equal(result.code, expected.length ? 2 : 0, label);
+    assert.deepEqual(unresolvedAddresses(result.stdout), [], label);
+    assert.deepEqual(admissionRefusals(result.stdout), expected, label);
+  }
+});
+
+test("finite inventory strict freeze refuses companion cohorts a controller requires before it runs", async (t) => {
+  const companion = (profile: string, controller: string) => ({
+    profile,
+    controller: "scripts/" + controller,
+    reason: "companion-cohort-differs",
+  });
+  const grow = (profile: string) => (rows: RequiredNative) => {
+    rows[profile]!.push({
+      file: rows[profile]![0]!.file,
+      name: `${profile} companion row 6203`,
+    });
+  };
+  const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
+    [
+      [
+        "the python baseline grown",
+        grow("python"),
+        [
+          companion(
+            "python-extensions",
+            "verify-python-extensions-container.mjs",
+          ),
+        ],
+      ],
+      [
+        "the frameworks baseline grown",
+        grow("frameworks"),
+        [
+          companion("assembly-django", "verify-django-assembly-container.mjs"),
+          companion(
+            "assembly-fastapi",
+            "verify-fastapi-assembly-container.mjs",
+          ),
+        ],
+      ],
+      [
+        "the consumer foundation reordered",
+        (rows) => {
+          rows["consumer-impact-foundation"]!.reverse();
+        },
+        [companion("consumer-impact", "consumer-foundation-evidence.mjs")],
+      ],
+      [
+        "the attempt output foundation grown",
+        grow("attempt-output-foundation"),
+        [companion("attempt-archives", "attempt-foundation-evidence.mjs")],
+      ],
+      [
+        "a laravel row also filed under laravel-cache",
+        (rows) => {
+          rows["laravel-cache"]!.push({ ...rows.laravel![1]! });
+        },
+        [companion("assembly-laravel", "laravel-cache-runtime-evidence.mjs")],
+      ],
+      // A runner batch counts an address shared by two of its profiles once.
+      [
+        "a php-review row also filed under php-tools, frameworks reordered",
+        (rows) => {
+          rows["php-tools"]!.push({ ...rows["php-review"]![3]! });
+          rows.frameworks!.reverse();
+        },
+        [],
+      ],
+    ];
+  for (const [label, edit, expected] of cases) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
+    const result = await audit(root, true);
+    assert.equal(result.code, expected.length ? 2 : 0, label);
+    assert.deepEqual(unresolvedAddresses(result.stdout), [], label);
+    assert.deepEqual(admissionRefusals(result.stdout), expected, label);
+  }
+});
+
+test("finite inventory strict freeze refuses a mutation cohort its container selector rejects", async (t) => {
+  const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
+    [
+      [
+        "pytest cohort reordered",
+        (rows) => {
+          rows["mutation-pytest"]!.reverse();
+        },
+        [
+          {
+            profile: "mutation-pytest",
+            controller: "scripts/verify-mutation-container.mjs",
+            reason: "selector-rows-differ",
+          },
+        ],
+      ],
+      [
+        "pytest row fields reordered",
+        (rows) => {
+          const { file, name } = rows["mutation-pytest"]![5]!;
+          rows["mutation-pytest"]![5] = { name, file };
+        },
+        [],
+      ],
+    ];
+  for (const [label, edit, expected] of cases) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
+    const result = await audit(root, true);
+    assert.equal(result.code, expected.length ? 2 : 0, label);
+    assert.deepEqual(admissionRefusals(result.stdout), expected, label);
+  }
+});
+
+// The Tasks selector refuses an mcp-tasks row equal to one of its harness rows.
+// The audit needs no separate rule: mcp-tasks must keep its ten preserved
+// baseline rows and hold exactly ten, so a harness row can only replace a
+// preserved one or make an eleventh.
+test("finite inventory refuses every Tasks harness row filed in the preserved MCP Tasks cohort", async (t) => {
+  const scope = await readScope();
+  const manifest = JSON.parse(
+    await readFile(path.join(repository, files[2]!), "utf8"),
+  ) as RequiredNative;
+  const preserved = (
+    JSON.parse(
+      await readFile(path.join(repository, files[1]!), "utf8"),
+    ) as RequiredNative
+  )["mcp-tasks"]!;
+  const tasks = scope.extensionProfiles.find(
+    (row) => row.id === "tasks-matrix",
+  )!;
+  const { selectTasksRuntimeRequirements } = await scriptModule(
+    "tasks-runtime-evidence.mjs",
+  );
+  const own = new Set(
+    [...preserved, ...manifest["tasks-matrix"]!].map(canonicalRow),
+  );
+  const harness = platforms.flatMap((platform) =>
+    (
+      selectTasksRuntimeRequirements(manifest, tasks, platform) as NativeCase[]
+    ).filter((row) => !own.has(canonicalRow(row))),
+  );
+  assert.equal(new Set(harness.map(canonicalRow)).size, 10);
+  const cohort = admission(
+    (await audit(await source(t))).stdout,
+  ).companionCohorts.find((row) => row.cohort.includes("mcp-tasks"))!;
+  assert.equal(new Set(preserved.map(canonicalRow)).size, cohort.rows);
+  const collision = harness.at(-1)!;
+  assert.equal(collision.file, "dist/test/windows-task-access.test.js");
+  for (const mode of ["replaced", "added"]) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, (rows) => {
+      if (mode === "replaced") rows["mcp-tasks"]![4] = { ...collision };
+      else rows["mcp-tasks"]!.push({ ...collision });
+    });
+    const rows = JSON.parse(
+      await readFile(path.join(root, files[2]!), "utf8"),
+    ) as RequiredNative;
+    assert.throws(
+      () => selectTasksRuntimeRequirements(rows, tasks, "win32"),
+      mode,
+    );
+    const result = await audit(root, true);
+    assert.equal(result.code, 2, mode);
+    if (mode === "replaced")
+      assert.match(result.stderr, /callback was removed or renamed/);
+    else
+      assert.deepEqual(admissionRefusals(result.stdout), [
+        {
+          profile: "tasks-matrix",
+          controller: "scripts/tasks-runtime-evidence.mjs",
+          reason: "companion-cohort-differs",
+        },
+      ]);
+  }
+});
+
+// Each variant edits many profiles at once; for every modelled rule the audit
+// must refuse exactly the profiles whose real selector, or pinned copy of an
+// inline rule, refuses the same manifest.
+test("finite inventory selector admission agrees with every dedicated controller selector", async (t) => {
+  const scope = await readScope();
+  const witnessManifest = JSON.parse(
+    await readScript("docs/gate-a-consumer-witnesses.v1.json"),
+  );
+  const { selectConsumerWitnessRequirements } = await scriptModule(
+    "consumer-witness-evidence.mjs",
+  );
+  const shape = admission((await audit(await source(t))).stdout);
+  const ids = Object.keys(controllerSelectors).sort();
+  assert.deepEqual(shape.dedicatedSelectorProfiles, ids);
   // The .NET generator selector compares against its shard partitions; the
   // audit models it with the selected cases, so the two must stay equal.
   const shards = JSON.parse(
-    await readFile(
-      path.join(repository, "scripts/dotnet-generator-shards.v1.json"),
-      "utf8",
-    ),
+    await readScript("scripts/dotnet-generator-shards.v1.json"),
   ) as { shards: { source: NativeCase[] }[] };
   const generator = scope.extensionProfiles.find(
     (row) => row.id === "dotnet-generator-extensions",
@@ -819,19 +1407,120 @@ test("finite inventory selector admission agrees with every dedicated controller
       )
       .sort(),
   );
-  const ids = Object.keys(controllerSelectors).sort();
+  const shared = shape.sharedSelectors[0]!;
+  const counted = [
+    ...new Set(shape.rowCountControllers.flatMap((row) => row.profiles)),
+  ];
+  const cohortProfiles = [
+    ...new Set(shape.companionCohorts.flatMap((row) => row.cohort)),
+  ];
+  interface Check {
+    rule: string;
+    profile: string;
+    controller: string;
+    reasons: string[];
+    refuses: (root: string, rows: RequiredNative) => Promise<boolean>;
+  }
+  const throws = async (run: () => unknown) => {
+    try {
+      await run();
+      return false;
+    } catch {
+      return true;
+    }
+  };
+  const checks: Check[] = [
+    ...ids.map((id) => ({
+      rule: id,
+      profile: id,
+      controller: controllerSelectors[id]!.controller,
+      reasons: ["selector-rows-differ", "companion-cohort-differs"],
+      refuses: (root: string, rows: RequiredNative) =>
+        throws(() =>
+          controllerSelectors[id]!.select(root, structuredClone(rows), scope),
+        ),
+    })),
+    // A cohort checked by the profile's own dedicated selector is covered above.
+    ...shape.companionCohorts
+      .filter(
+        (row) =>
+          controllerSelectors[row.profile]?.controller !== row.controller,
+      )
+      .map((entry) => {
+        assert.ok(
+          entry.controller in foundationSelectors || entry.rows !== undefined,
+          entry.controller,
+        );
+        return entry;
+      })
+      .map((entry) => ({
+        rule: entry.controller + " " + entry.cohort.join(","),
+        profile: entry.profile,
+        controller: entry.controller,
+        reasons: ["companion-cohort-differs"],
+        refuses: async (_root: string, rows: RequiredNative) =>
+          entry.controller in foundationSelectors
+            ? throws(() =>
+                foundationSelectors[entry.controller]!(structuredClone(rows)),
+              )
+            : !cohortCountAdmits(entry, rows),
+      })),
+    ...shared.profiles.map((profile) => ({
+      rule: shared.controller,
+      profile,
+      controller: shared.controller,
+      reasons: ["shared-selector-rows-differ"],
+      refuses: (_root: string, rows: RequiredNative) =>
+        throws(() =>
+          selectConsumerWitnessRequirements(
+            witnessManifest,
+            scope,
+            structuredClone(rows),
+          ),
+        ),
+    })),
+    ...shape.rowCountControllers.flatMap((entry) =>
+      entry.profiles.map((profile) => ({
+        rule: entry.controller,
+        profile,
+        controller: entry.controller,
+        reasons: ["row-count-differs"],
+        refuses: async (_root: string, rows: RequiredNative) =>
+          rows[profile]!.length !== entry.rows,
+      })),
+    ),
+    ...admissionProfileIds(scope).map((profile) => ({
+      rule: "row-limit",
+      profile,
+      controller: genericRunner,
+      reasons: ["row-limit"],
+      refuses: async (_root: string, rows: RequiredNative) => {
+        const list = rows[profile] ?? [];
+        return list.length === 0 || list.length > shape.maxProfileRows;
+      },
+    })),
+  ];
+  const pad = (size: number) => (rows: RequiredNative) => {
+    const list = rows["go-extensions"]!;
+    while (list.length < size)
+      list.push({
+        file: "dist/test/gate-go-extensions.test.js",
+        name: "go-extensions padded row " + (8311 + list.length),
+      });
+  };
   const variants: [string, (rows: RequiredNative) => void][] = [
     ["as written", () => {}],
     [
       "reversed",
       (rows) => {
-        for (const id of ids) rows[id]!.reverse();
+        for (const id of new Set([...ids, ...shared.profiles]))
+          rows[id]!.reverse();
       },
     ],
     [
       "adjacent row",
       (rows) => {
-        for (const id of ids)
+        for (const id of new Set([...ids, ...counted]))
           rows[id]!.push({
             file: rows[id]![0]!.file,
             name: id + " adjacent acceptance 9157",
@@ -854,16 +1543,41 @@ test("finite inventory selector admission agrees with every dedicated controller
       },
     ],
     [
-      "companion cohort grown",
+      "companion cohorts grown",
       (rows) => {
-        rows["mcp-tasks"]!.push({
-          file: "dist/test/mcp-validation-tasks.test.js",
-          name: "MCP Tasks companion row 6203",
-        });
+        for (const id of cohortProfiles)
+          rows[id]!.push({
+            file: rows[id]![0]!.file,
+            name: id + " companion row 6203",
+          });
       },
     ],
+    [
+      "companion cohorts reordered",
+      (rows) => {
+        for (const id of cohortProfiles) rows[id]!.reverse();
+      },
+    ],
+    [
+      "companion cohorts overlap",
+      (rows) => {
+        for (const entry of shape.companionCohorts)
+          if (entry.cohort.length > 1)
+            rows[entry.cohort[0]!]!.push({ ...rows[entry.cohort[1]!]![0]! });
+      },
+    ],
+    [
+      "witness row removed",
+      (rows) => {
+        rows["context-go"] = rows["context-go"]!.filter(
+          (row) => row.name !== "context-go near-miss acceptance",
+        );
+      },
+    ],
+    ["at the row limit", pad(256)],
+    ["past the row limit", pad(257)],
   ];
-  const outcomes = new Map(ids.map((id) => [id, new Set<boolean>()]));
+  const outcomes = new Map<string, Set<boolean>>();
   for (const [label, edit] of variants) {
     const root = await source(t);
     await alter<RequiredNative>(root, files[2]!, edit);
@@ -872,26 +1586,123 @@ test("finite inventory selector admission agrees with every dedicated controller
     ) as RequiredNative;
     const result = await audit(root);
     assert.equal(result.code, 0, label + ": " + result.stderr);
-    const report = JSON.parse(result.stdout);
-    assert.deepEqual(
-      report.controllerAdmission.dedicatedSelectorProfiles,
-      ids,
-      label,
-    );
-    for (const id of ids) {
-      let controllerRefused = false;
-      try {
-        await controllerSelectors[id]!(root, structuredClone(rows), scope);
-      } catch {
-        controllerRefused = true;
-      }
-      const auditRefused = (
-        report.controllerAdmission.refusals as AdmissionRefusal[]
-      ).some((row) => row.profile === id && row.controller !== genericRunner);
-      assert.equal(auditRefused, controllerRefused, label + ": " + id);
-      outcomes.get(id)!.add(controllerRefused);
+    const report = admission(result.stdout);
+    for (const check of checks) {
+      const refused = await check.refuses(root, rows);
+      const auditRefused = report.refusals.some(
+        (row) =>
+          row.profile === check.profile &&
+          row.controller === check.controller &&
+          check.reasons.includes(row.reason),
+      );
+      assert.equal(
+        auditRefused,
+        refused,
+        `${label}: ${check.rule} ${check.profile}`,
+      );
+      if (!outcomes.has(check.rule)) outcomes.set(check.rule, new Set());
+      outcomes.get(check.rule)!.add(refused);
     }
   }
-  for (const [id, seen] of outcomes)
-    assert.deepEqual([...seen].sort(), [false, true], id);
+  for (const [rule, seen] of outcomes)
+    assert.deepEqual([...seen].sort(), [false, true], rule);
+});
+
+// A controller script that selects manifest rows with an exact count or an
+// exact row set must be modelled by the admission audit. Scripts listed here
+// carry such a rule for a profile no selected case runs under.
+const unmodelledRowSelectors: Record<string, string> = {
+  "scripts/ci-full-suite-shards.mjs":
+    "partitions every manifest profile into CI full-suite shards",
+  "scripts/task-archive-evidence.mjs":
+    "counts the Task archive callbacks it reads from their test files",
+  "scripts/verify-attempt-outputs.mjs":
+    "counts the attempt output foundation, whose exact list attempt-foundation-evidence.mjs already pins",
+  "scripts/verify-attempt-outputs-package.mjs":
+    "counts the attempt output foundation, whose exact list attempt-foundation-evidence.mjs already pins",
+  "scripts/verify-consumer-impact-package.mjs":
+    "counts the consumer impact foundation, whose exact list consumer-foundation-evidence.mjs already pins",
+  "scripts/verify-context-runtime-proof-ci.mjs":
+    "counts the context-runtime-proof profile",
+  "scripts/verify-jvm-java-warning-package.mjs":
+    "runs one callback it names itself, not manifest rows",
+  "scripts/verify-pyright-package.mjs": "counts the pyright profile",
+};
+const manifestReads =
+  /required-native-tests\.json|verify-required-native-tests\.mjs|verify-consumer-witness-profile\.mjs|runRequiredTests|runRequiredProfiles/u;
+const exactRowRules = [
+  /\.(?:required|passed),\s*[1-9]\d*\s*\)/u,
+  /\b(?:required|passed)\s*===\s*[1-9]\d*/u,
+  /(?:\]|\brequirements)\.length(?:\s*===\s*|,\s*)[1-9]\d*/u,
+  /\brequirements\.length,\s*[A-Za-z_$][\w$]*\.length/u,
+  /\b(?:deepEqual|exactUnion)\(\s*(?:\w+\(\s*)?(?:requirements|profiles|inventory|rows|definitions|allSource)\b/u,
+];
+async function discoverRowSelectors(root: string) {
+  const found: string[] = [];
+  for (const name of (await readdir(path.join(root, "scripts"))).sort()) {
+    if (!name.endsWith(".mjs") || name === "audit-gate-inventory.mjs") continue;
+    const text = await readFile(path.join(root, "scripts", name), "utf8");
+    if (
+      (manifestReads.test(text) || /selection|runtime-evidence/u.test(name)) &&
+      exactRowRules.some((rule) => rule.test(text))
+    )
+      found.push("scripts/" + name);
+  }
+  return found;
+}
+test("finite inventory admission models every controller that selects manifest rows by an exact rule", async (t) => {
+  const shape = admission((await audit(await source(t))).stdout);
+  const modelled = new Set([
+    ...Object.values(controllerSelectors).map((row) => row.controller),
+    ...shape.companionCohorts.map((row) => row.controller),
+    ...shape.rowCountControllers.map((row) => row.controller),
+  ]);
+  const unmodelled = (found: string[]) =>
+    found.filter(
+      (name) => !modelled.has(name) && !(name in unmodelledRowSelectors),
+    );
+  const found = await discoverRowSelectors(repository);
+  assert.deepEqual(unmodelled(found), []);
+  // The discovery reaches every modelled controller, and no listed exception
+  // is stale.
+  assert.deepEqual(
+    [...modelled].filter((name) => !found.includes(name)),
+    [],
+  );
+  assert.deepEqual(
+    Object.keys(unmodelledRowSelectors).filter((name) => !found.includes(name)),
+    [],
+  );
+  const names = (await readdir(path.join(repository, "scripts"))).filter(
+    (name) => name.endsWith(".mjs"),
+  );
+  const copy = await fixture(
+    t,
+    Object.fromEntries(
+      await Promise.all(
+        names.map(async (name) => [
+          "scripts/" + name,
+          await readScript("scripts/" + name),
+        ]),
+      ),
+    ),
+  );
+  for (const [name, body] of [
+    [
+      "verify-zig-extensions-container.mjs",
+      'const source = JSON.parse(run(["node", "scripts/verify-required-native-tests.mjs", "zig-extensions"]));\nassert.equal(source.required, 9);\n',
+    ],
+    [
+      "zig-runtime-evidence.mjs",
+      'export function selectZig(profiles, frozen) {\n  assert.deepEqual(\n    profiles["zig-extensions"],\n    frozen,\n  );\n}\n',
+    ],
+  ] as const) {
+    await writeFile(path.join(copy, "scripts", name), body);
+    assert.deepEqual(
+      unmodelled(await discoverRowSelectors(copy)),
+      ["scripts/" + name],
+      name,
+    );
+    await writeFile(path.join(copy, "scripts", name), "export {};\n");
+  }
 });

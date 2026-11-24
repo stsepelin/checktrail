@@ -45,25 +45,67 @@ when:
 - any file and name pair repeats within that profile (`duplicate-address`),
   which the native runner rejects for the whole profile. The same pair in a
   different profile, or in the `mutation-runners` aggregate, stays valid;
+- it holds no rows or more than 256 (`row-limit`), the bound
+  `resolveRequirements` in `required-test-evidence.mjs` applies to every
+  profile it runs;
 - its dedicated selector would reject the rows (`selector-rows-differ`). These
   profiles do not use the generic verifier: `cpp-extensions`,
   `dotnet-generator-extensions`, `scala-extensions`, `ruby-extensions`,
   `consumer-impact`, `multi-candidate-workflow`, `confidence-provenance`,
   `attempt-archives`, `lifecycle-platforms`, `tasks-matrix`,
-  `native-license-provenance`, `resource-release-readiness` and
-  `independent-evaluation-protocol`. Each selector requires exactly the selected
-  cases at their bound files. The C++ selector also requires the unselected
+  `native-license-provenance`, `resource-release-readiness`,
+  `independent-evaluation-protocol` and the four mutation cohorts, which
+  `verify-mutation-container.mjs` compares with the `mutation-runners`
+  selection. Each selector requires exactly the selected cases at their bound
+  files. The C++ selector also requires the unselected
   `cpp-extensions compiler formatter analyzer acceptance` row. It ignores row
   order but compares each row's JSON text, so `file` must precede `name`.
   The .NET generator selector ignores order. The others require the selected
   order;
-- the Tasks selector's preserved `mcp-tasks` cohort is not exactly 10 distinct
-  rows outside the Tasks acceptance file (`companion-cohort-differs`).
+- another profile the controller requires differs (`companion-cohort-differs`).
+  Each cohort profile must hold 1 to 256 rows without a repeated pair, then:
+  - the Tasks selector needs exactly 10 distinct `mcp-tasks` rows outside the
+    Tasks acceptance file. Ten preserved rows fill that cohort, so a Tasks
+    harness row can enter it only by replacing a preserved row, which the
+    audit rejects, or as an eleventh row, which this rule refuses;
+  - the .NET generator selector partitions `dotnet-build`, `dotnet-test`,
+    `dotnet-generated` and `dotnet-method` across its shards. Each holds at
+    most 128 rows, none shares a pair with another, and together they hold
+    exactly their preserved baseline rows;
+  - `consumer-foundation-evidence.mjs` and `attempt-foundation-evidence.mjs`
+    compare `consumer-impact-foundation`, `attempt-journal-foundation` and
+    `attempt-output-foundation` with exact ordered lists, pinned by digest;
+  - the Python, PHP, Rust, Laravel, Django, FastAPI and Nuxt extension
+    containers first run a baseline batch and require an exact count from it:
+    `python` 5, `php-tools` with `php-review` 14, the five Rust baseline
+    profiles 39, `laravel-cache-runtime-bindings` 1, `laravel` with
+    `laravel-cache` 9 sharing no pair, `frameworks` 8 and `nuxt` 7. A batch
+    counts a pair filed in two of its profiles once;
+- a shared selector it calls would reject another profile
+  (`shared-selector-rows-differ`). `selectConsumerWitnessRequirements` reads the
+  broken, fixed and near-miss rows of `consumer-impact`,
+  `javascript-extensions` and the 16 `context-*` profiles, and each of their
+  controllers calls it. One missing row there refuses all 18;
+- a controller requires an exact number of required callbacks after running
+  the profile through the generic runner (`row-count-differs`). The runner
+  admits extra rows, so an unselected row in, for example, `context-go` passes
+  it and fails `verify-consumer-witness-profile.mjs`, which expects 9. The
+  report lists these controllers under `rowCountControllers`.
 
-The audit reproduces these rules from data and never imports a controller. A test
-runs each exported selector against the same manifest variants and requires the
-same verdict. For the two inline checks it pins the source text instead.
+The audit reproduces these rules from data and never imports a controller. A
+test runs each exported selector against the same manifest variants and requires
+the same verdict. For the inline checks, the runner bound and the container
+counts, it pins their source text instead. Another test scans `scripts/` for
+every script that reads the manifest, or is a selection or runtime-evidence
+module, and applies an exact count or exact row set. Each must appear in the
+audit's tables or in a short list of scripts whose rule concerns only profiles
+no selected case runs under. A new selector outside both fails that test.
 `--require-frozen` exits 2 on any admission refusal.
+
+Rules the audit does not yet model: controllers that compare a batch's required
+count with the sum of its profile lengths, such as the confidence-provenance
+review baseline and the Swift tools baseline, also refuse a pair filed in two of
+those profiles.
 
 The existing Terraform and Helm extension container controllers select these
 manifest profiles through `verify-required-native-tests.mjs`. The C++ container
