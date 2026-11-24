@@ -81,14 +81,14 @@
       "sha256": "4d7820d9cbd9735af08d29e1c3378e5efff5b1fbb7eecd8b161824fd6cc7a762"
     },
     {
-      "bytes": 15105,
+      "bytes": 15823,
       "path": "run_checks.py",
-      "sha256": "987d277f83a61901125dba504af7e32c535548bb6cf3ecb6f4f9c88392a8556a"
+      "sha256": "977e2f155496c7b1b8f57f287721ad7841e42f002d47d04d7f5569a298cfb126"
     },
     {
-      "bytes": 52598,
+      "bytes": 54273,
       "path": "test_core.py",
-      "sha256": "1d568d60d383e6cc543f0ec4a7389e86dbe697a2e8f5cbd297d06df88931af06"
+      "sha256": "895d6b610c7c5a4f43ba2b938b2523cdc5123240d05f2f3870e7eded1d0c6de7"
     },
     {
       "bytes": 52976,

@@ -229,8 +229,15 @@ test(
       ]);
       assert.equal(result.complete, true);
       assert.ok(result.python.tests > 0);
-      for (const key of ["failures", "errors", "skipped"])
+      for (const key of [
+        "failures",
+        "errors",
+        "skipped",
+        "expectedFailures",
+        "unexpectedSuccesses",
+      ])
         assert.equal(result.python[key], 0);
+      assert.deepEqual(result.python.modulesWithoutPassingTests, []);
       assert.ok(result.cryptoControls > 0);
       assert.equal(result.cryptoSkips, 0);
       assert.equal(result.upstreamSourceSdkDockerOrNetworkExecuted, false);
@@ -363,6 +370,9 @@ test(
           failures: 0,
           errors: 0,
           skipped: 0,
+          expectedFailures: 0,
+          unexpectedSuccesses: 0,
+          modulesWithoutPassingTests: [],
           originalSourceDockerSdkOrNetworkExecuted: false,
         },
       );

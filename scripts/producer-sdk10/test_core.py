@@ -192,9 +192,9 @@ class Controls(unittest.TestCase):
   (bundle/'envelope.mjs').write_text("export const label='verified-5813';\n")
   (bundle/'test_crypto.mjs').write_text("import fs from 'node:fs';import path from 'node:path';import {label} from './envelope.mjs';const root=process.argv[2];fs.mkdirSync(root,{mode:0o700});fs.writeFileSync("+json.dumps(str(markers/'crypto'))+",label);fs.writeFileSync(path.join(root,'RESULT.json'),JSON.stringify({controls:[{name:label,passed:true}],skips:0}));\n")
   def rows(names):return [{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in names]
-  def pin(protected=True,manifest_protected=True):
+  def pin(protected=True,manifest_protected=True,extra=()):
    if protected:(bundle/'PROTECTED-CONTROLS.json').write_bytes(common.encoded({'schemaVersion':1,'firstPartyControlsOnly':True,'files':rows(['test_protected_marker.py'])}))
-   raw=common.encoded({'schemaVersion':1,'files':rows(['run_checks.py','common.py','test_listed_marker.py','test_crypto.mjs','envelope.mjs']+(['PROTECTED-CONTROLS.json'] if manifest_protected else []))});(bundle/'MANIFEST.json').write_bytes(raw);return hashlib.sha256(raw).hexdigest()
+   raw=common.encoded({'schemaVersion':1,'files':rows(['run_checks.py','common.py','test_listed_marker.py','test_crypto.mjs','envelope.mjs']+list(extra)+(['PROTECTED-CONTROLS.json'] if manifest_protected else []))});(bundle/'MANIFEST.json').write_bytes(raw);return hashlib.sha256(raw).hexdigest()
   return bundle,markers,control,pin
  def control_worker(self,bundle,pin,write_bytecode=False):
   out=pathlib.Path(tempfile.mkdtemp(dir=self.root,prefix='out-'));args=[str(bundle/'run_checks.py'),'--python-worker','--out',str(out),'--manifest-sha256',pin]
@@ -207,6 +207,21 @@ class Controls(unittest.TestCase):
   bundle,markers,control,pin=self.control_bundle();code,log,out=self.control_worker(bundle,pin())
   self.assertEqual(code,0,log);self.assertEqual(json.loads((out/'PYTHON.json').read_bytes())['tests'],2)
   self.assertEqual(sorted(x.name for x in markers.iterdir()),['listed','protected']);self.assertIn('test_protected',log)
+ def test_every_pinned_module_needs_a_passing_case_and_no_expected_failure_counts(self):
+  # Each extra module sits beside the two passing ones, so only a per-module
+  # or per-outcome check can notice it.
+  bodies={'empty':'import unittest\nclass Empty(unittest.TestCase):pass\n',
+   'expected-failure':'import unittest\nclass Expected(unittest.TestCase):\n @unittest.expectedFailure\n def test_expected_8817(self):self.assertEqual(8817,0)\n',
+   'unexpected-success':'import unittest\nclass Unexpected(unittest.TestCase):\n @unittest.expectedFailure\n def test_unexpected_8817(self):self.assertEqual(8817,8817)\n'}
+  for case,body in bodies.items():
+   with self.subTest(case=case):
+    bundle,markers,control,pin=self.control_bundle();(bundle/'test_extra_marker.py').write_text(body)
+    code,log,out=self.control_worker(bundle,pin(extra=['test_extra_marker.py']));row=json.loads((out/'PYTHON.json').read_bytes())
+    self.assertNotEqual(code,0,log);self.assertEqual((row['failures'],row['errors'],row['skipped']),(0,0,0))
+    self.assertEqual((row['modulesWithoutPassingTests'],row['expectedFailures'],row['unexpectedSuccesses']),{'empty':(['test_extra_marker'],0,0),'expected-failure':(['test_extra_marker'],1,0),'unexpected-success':(['test_extra_marker'],0,1)}[case])
+  bundle,markers,control,pin=self.control_bundle();control('test_extra_marker.py','extra')
+  code,log,out=self.control_worker(bundle,pin(extra=['test_extra_marker.py']));row=json.loads((out/'PYTHON.json').read_bytes())
+  self.assertEqual(code,0,log);self.assertEqual((row['tests'],row['modulesWithoutPassingTests'],row['expectedFailures'],row['unexpectedSuccesses']),(3,[],0,0))
  def test_repeated_runs_without_bytecode_flag_leave_no_cache_to_refuse(self):
   bundle,markers,control,pin=self.control_bundle();value=pin()
   for attempt in range(2):

@@ -181,10 +181,15 @@ def worker(out,pin,given=None):
  files=load(pin,given);names=bound_tests(files);Bundle(HERE,files,pin).install()
  import unittest
  from common import encoded,freeze
+ passed={}
+ class Counted(unittest.TextTestResult):
+  # A pinned module that runs no passing case would otherwise hide behind the others.
+  def addSuccess(self,test):super().addSuccess(test);passed[type(test).__module__]=passed.get(type(test).__module__,0)+1
  suite=unittest.defaultTestLoader.loadTestsFromNames(names)
- result=unittest.TextTestRunner(verbosity=2).run(suite)
- row={'tests':result.testsRun,'failures':len(result.failures),'errors':len(result.errors),'skipped':len(result.skipped),'originalSourceDockerSdkOrNetworkExecuted':False}
- freeze(out/'PYTHON.json',encoded(row));return 0 if result.wasSuccessful() and result.testsRun>0 and not result.skipped else 1
+ result=unittest.TextTestRunner(verbosity=2,resultclass=Counted).run(suite)
+ # unittest counts an expected failure as success; neither it nor an unexpected success is a passing control.
+ row={'tests':result.testsRun,'failures':len(result.failures),'errors':len(result.errors),'skipped':len(result.skipped),'expectedFailures':len(result.expectedFailures),'unexpectedSuccesses':len(result.unexpectedSuccesses),'modulesWithoutPassingTests':[x for x in names if not passed.get(x)],'originalSourceDockerSdkOrNetworkExecuted':False}
+ freeze(out/'PYTHON.json',encoded(row));return 0 if result.wasSuccessful() and result.testsRun>0 and not any(row[k] for k in ['skipped','expectedFailures','unexpectedSuccesses','modulesWithoutPassingTests']) else 1
 
 def run(out,pin):
  import resource
@@ -202,7 +207,7 @@ def run(out,pin):
   with log.open('xb') as stream:process=subprocess.run(args,stdout=stream,stderr=subprocess.STDOUT,input=stdin,timeout=180,preexec_fn=limit,check=False)
   rows.append({'name':name,'exitCode':process.returncode,'elapsedSeconds':time.monotonic()-started,'logBytes':log.stat().st_size,'logSHA256':hash_file(log)[1]})
   need(process.returncode==0,'synthetic control failed; retain private logs')
- python=json.loads((out/'PYTHON.json').read_bytes());crypto=json.loads((out/'crypto-test-only/RESULT.json').read_bytes());need(python['tests']>0 and not any(python[k] for k in ['failures','errors','skipped']),'nonempty Python controls without skips');need(crypto['controls'] and all(x['passed'] is True for x in crypto['controls']) and crypto['skips']==0,'nonempty crypto controls without skips')
+ python=json.loads((out/'PYTHON.json').read_bytes());crypto=json.loads((out/'crypto-test-only/RESULT.json').read_bytes());need(python['tests']>0 and not any(python[k] for k in ['failures','errors','skipped','expectedFailures','unexpectedSuccesses','modulesWithoutPassingTests']),'nonempty Python controls without skips');need(crypto['controls'] and all(x['passed'] is True for x in crypto['controls']) and crypto['skips']==0,'nonempty crypto controls without skips')
  value={'complete':True,'python':python,'cryptoControls':len(crypto['controls']),'cryptoSkips':crypto['skips'],'processes':rows,'testOnlyKeysNeverUsedForOperatorCaptureOrUploaded':True,'upstreamSourceSdkDockerOrNetworkExecuted':False}
  common.freeze(out/'RESULT.json',common.encoded(value));print(json.dumps(value));return 0
 
