@@ -98,11 +98,16 @@ def cleanup_native(native):
         require(owner['Config']['Image']==request['localImageId'] and
                 owner['Config']['Cmd']==['-i',*[key+'='+value for key,value in sdk.stage.FIXED_ENVIRONMENT.items()],*observer.BODY],
                 'Ambiguous native create lacks matching observed command/image')
-    h.docker(['rm','--force',name],timeout=30)
-    require(not h.docker(['ps','--all','--no-trunc','--quiet','--filter','name=^/'+name+'$']).strip(),
+    # The name can be rebound after inspection; only the verified ID is removed.
+    h.docker(['rm','--force',owner['Id']],timeout=30)
+    require(not h.docker(['ps','--all','--no-trunc','--quiet','--filter','id='+owner['Id']]).strip(),
             'Owned native container remains after removal')
+    # A container now holding the name is not ours: report it, never remove it,
+    # and withhold the quiescence credit that owned removal would otherwise give.
+    rebound=h.docker(['ps','--all','--no-trunc','--quiet','--filter','name=^/'+name+'$']).decode().split()
     result={'state':'exact-owned-native-container-removed','ownedNativeCleanupComplete':True,'removedContainerId':owner['Id'],
-            'unrelatedContainerRemoved':False,'quiescenceAfterOwnedRemovalObserved':True}
+            'unrelatedContainerRemoved':False,'ownedNameReboundTo':rebound,
+            'quiescenceAfterOwnedRemovalObserved':not rebound}
     (native/'NATIVE-CLEANUP.json').write_bytes(codec.canonical(result));return result
 
 

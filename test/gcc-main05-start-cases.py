@@ -101,26 +101,44 @@ class RuntimePreparation(unittest.TestCase):
    self.assertIn('failed before GCC start',result['error']);self.assertIn(b'Synthetic original failure',(output/'sdk-private/opaque-wrapper-output.log').read_bytes());self.assertIn('cleanup unavailable',result['imageCleanupError']);self.assertFalse(result['nativeStarted'])
 
  def test_exact_native_recovery_removes_own_invalid_runtime_but_never_a_rebound_or_unproven_name(self):
-  for mode in ['known-invalid-command','ambiguous-valid-command','rebound-id','ambiguous-wrong-command']:
+  foreign='f'*64
+  for mode in ['known-invalid-command','ambiguous-valid-command','rebound-id','ambiguous-wrong-command','rebound-after-inspect']:
    with self.subTest(mode=mode),tempfile.TemporaryDirectory() as name:
-    frame=self.frame(Path(name).resolve());owner=self.owner(frame);exists=[True];calls=[]
+    frame=self.frame(Path(name).resolve());owner=self.owner(frame);calls=[]
     (frame/'NATIVE-CREATION-REQUEST.json').write_text(json.dumps({'name':NAME,'localImageId':LOCAL_IMAGE,'sameNameWasAbsentObserved':True}))
-    if mode in ['known-invalid-command','rebound-id']:
+    if mode in ['known-invalid-command','rebound-id','rebound-after-inspect']:
      (frame/'NATIVE-CREATION-RESPONSE.json').write_text(json.dumps({'name':NAME,'returnedContainerId':IDENTIFIER}))
     if mode in ['known-invalid-command','ambiguous-wrong-command']:owner['Config']['Cmd']=['Synthetic invalid native command']
     if mode=='rebound-id':owner['Id']='e'*64
+    # Synthetic daemon table: container ID -> current name. The race mode renames
+    # the owned container away and binds a foreign one to the name before rm runs.
+    containers={owner['Id']:NAME}
     def docker(args,**kw):
      calls.append(args)
-     if args[0]=='ps':return (owner['Id']+'\n').encode() if exists[0] else b''
+     if args[:5]==['ps','--all','--no-trunc','--quiet','--filter']:
+      selector=args[5]
+      if selector=='name=^/'+NAME+'$':matched=[key for key,value in containers.items() if value==NAME]
+      else:self.assertTrue(selector.startswith('id='));matched=[key for key in containers if key==selector[3:]]
+      return ''.join(key+'\n' for key in matched).encode()
      if args==['inspect',NAME]:return json.dumps([owner]).encode()
-     self.assertEqual(args,['rm','--force',NAME]);exists[0]=False;return b'Synthetic exact owned removal'
+     self.assertEqual(args[:2],['rm','--force'])
+     if mode=='rebound-after-inspect' and containers.get(IDENTIFIER)==NAME:containers[IDENTIFIER]='synthetic-renamed-137';containers[foreign]=NAME
+     target=args[2] if args[2] in containers else next(key for key,value in containers.items() if value==args[2])
+     del containers[target];return b'Synthetic exact removal'
     with mock.patch.object(m.h,'docker',side_effect=docker):
-     if mode in ['known-invalid-command','ambiguous-valid-command']:
-      result=m.cleanup_native(frame);self.assertTrue(result['ownedNativeCleanupComplete']);self.assertFalse(exists[0])
-      self.assertEqual([call for call in calls if call[0]=='rm'],[['rm','--force',NAME]])
+     if mode in ['known-invalid-command','ambiguous-valid-command','rebound-after-inspect']:
+      result=m.cleanup_native(frame);self.assertTrue(result['ownedNativeCleanupComplete'])
+      self.assertEqual([call for call in calls if call[0]=='rm'],[['rm','--force',IDENTIFIER]])
+      self.assertEqual(result['removedContainerId'],IDENTIFIER);self.assertNotIn(IDENTIFIER,containers)
+      self.assertEqual(json.loads((frame/'NATIVE-CLEANUP.json').read_bytes()),result)
+      if mode=='rebound-after-inspect':
+       self.assertEqual(containers,{foreign:NAME});self.assertEqual(result['ownedNameReboundTo'],[foreign])
+       self.assertFalse(result['quiescenceAfterOwnedRemovalObserved'])
+      else:
+       self.assertEqual(containers,{});self.assertEqual(result['ownedNameReboundTo'],[]);self.assertTrue(result['quiescenceAfterOwnedRemovalObserved'])
      else:
       with self.assertRaises(ValueError):m.cleanup_native(frame)
-      self.assertTrue(exists[0]);self.assertFalse(any(call[0]=='rm' for call in calls))
+      self.assertEqual(containers,{owner['Id']:NAME});self.assertFalse(any(call[0]=='rm' for call in calls))
     self.assertTrue((frame/'NATIVE-CLEANUP-OBSERVED.json').exists())
 
  def journal_fixture(self,root):
