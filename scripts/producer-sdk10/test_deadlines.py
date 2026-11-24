@@ -118,4 +118,62 @@ class CollectorRecoveryBudget(unittest.TestCase):
   # Waiting for the producer job to finish after recovery keeps the whole bound.
   self.assertEqual(requests[-1][1],28790)
 
+class CollectorLingeringDeletion(unittest.TestCase):
+ """Real window-listing validation over scripted run listings; no CLI or network."""
+ def setUp(self):self.temp=tempfile.TemporaryDirectory(prefix='sdk10-collector-lingering-');self.root=Path(self.temp.name);self.clock=[0.0]
+ def tearDown(self):self.temp.cleanup()
+ def artifact(self,ctx,ordinal,identifier=None):
+  return {'id':identifier or 7300+ordinal,'name':common.name(ctx,ordinal),'size_in_bytes':4093,'expired':False,'workflow_run':{'id':ctx['run'],'head_sha':ctx['head']},'digest':None}
+ def collect(self,second_window):
+  # Window 1 is listed, custodied and deleted; second_window(n) then gives the
+  # artifacts of the n-th run listing made while waiting for window 2.
+  clock=self.clock;ctx={'run':7300,'attempt':1,'head':'a'*40,'nonce':'synthetic-7300'};series={'plan':{'windows':2},'context':ctx};state={'phase':1,'second':0,'recovered':False};listings=[]
+  key=self.root/'operator-key-7300';key.write_bytes(b'synthetic');key.chmod(0o600)
+  args=SimpleNamespace(nonce=ctx['nonce'],run=ctx['run'],head=ctx['head'],out=self.root/'collection',private_key=key,workflow='.github/workflows/sdk10-7300.yml',seconds=28800,stop=threading.Event())
+  test=self
+  class Calls:
+   def __init__(inner,out,deadline,stop=None):inner.deadline=deadline;inner.seq=0;inner.events=[]
+   def metadata(inner,path,missing=False):
+    common.need(clock[0]<inner.deadline-1,'original metadata deadline before request');inner.seq+=1;clock[0]+=0.5
+    if path.endswith('/artifacts?per_page=100'):
+     if state['recovered']:items=[]
+     elif state['phase']==1:items=[test.artifact(ctx,1),test.artifact(ctx,2)]
+     else:state['second']+=1;items=second_window(state['second'])
+     listings.append((state['phase'],[x['id'] for x in items]));return {'total_count':len(items),'artifacts':items}
+    if path.endswith('/jobs?per_page=100'):return {'total_count':1,'jobs':[{'head_sha':ctx['head'],'name':'sdk10-original','id':7300}]}
+    return {'head_sha':ctx['head'],'event':'workflow_dispatch','run_attempt':1,'path':args.workflow,'status':'completed' if state['recovered'] else 'in_progress'}
+   def run(inner,tail,cap,seconds):
+    line='CHECKTRAIL_SDK10_TERMINAL='+json.dumps({'context':ctx,'cleanup':{'synthetic':7300},'state':'synthetic-complete-7300'});path=self.root/'job-log-7300';path.write_text(line);return 0,line.encode(),path
+  def worker(folder,ctx,ordinal,meta,deadline,stop):return {'ordinal':ordinal,'artifactID':meta['id'],'state':'CUSTODIED','error':None,'ownedChildrenReaped':True,'series':series,'part':{'ordinal':ordinal}}
+  def deleted(row,ctx,deadline,stop,final=False):
+   # The real delete returns only after the exact per-artifact 404.
+   row['deletionKnownAbsent']=True
+   if row['ordinal']==2:state['phase']=2
+   if final:state['recovered']=True
+   return row
+  def sleep(seconds):clock[0]+=seconds
+  with mock.patch.object(collect,'Calls',Calls),mock.patch.object(collect,'context',return_value=ctx),mock.patch.object(collect.shutil,'disk_usage',return_value=SimpleNamespace(free=10**14)),mock.patch.object(collect,'handshake',side_effect=lambda jobs,ctx,window:{'window':window}),mock.patch.object(collect,'worker',side_effect=worker),mock.patch.object(collect,'validate_meta',return_value=series),mock.patch.object(collect,'archive_roundtrip',return_value={'synthetic':7300}),mock.patch.object(collect,'publish_recovery_ack',return_value={'synthetic':7300}),mock.patch.object(collect,'delete_after_custody',side_effect=deleted),mock.patch.object(collect.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(collect.time,'sleep',side_effect=sleep),mock.patch('builtins.print'):
+   try:collect.collect(args);code=0
+   except SystemExit as exit:code=exit.code
+  return code,common.read_json(args.out/'RESULT.json'),listings,ctx
+ def test_deleted_member_still_listed_is_waited_out_and_recovery_continues(self):
+  ctx={'run':7300,'head':'a'*40,'nonce':'synthetic-7300','attempt':1}
+  def second(n):return ([self.artifact(ctx,1)] if n<=3 else [])+[self.artifact(ctx,3),self.artifact(ctx,4)]
+  code,result,listings,_=self.collect(second)
+  self.assertEqual(code,0,result.get('error'));self.assertEqual(result['completedWindows'],[1,2]);self.assertEqual([x['artifactID'] for x in result['parts']],[7301,7302,7303,7304])
+  self.assertEqual([ids for phase,ids in listings if phase==2][:4],[[7301,7303,7304]]*3+[[7303,7304]])
+  self.assertEqual(len(list((self.root/'collection'/'window-02').glob('INCOMPLETE-LISTING-*.json'))),3)
+ def test_unrelated_artifact_beside_a_lingering_deleted_member_is_refused(self):
+  ctx={'run':7300,'head':'a'*40,'nonce':'synthetic-7300','attempt':1}
+  for label,extra in [('reused-name-new-id',self.artifact(ctx,1,7399)),('foreign-name',self.artifact(ctx,5)),('deleted-id-other-name',{**self.artifact(ctx,1),'name':common.name(ctx,6)})]:
+   with self.subTest(label=label):
+    self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-collector-lingering-');self.root=Path(self.temp.name);self.clock[0]=0.0
+    code,result,listings,_=self.collect(lambda n:[self.artifact(ctx,2),extra])
+    self.assertEqual(code,1);self.assertIn('no unexpected current-window artifact',result['error']);self.assertEqual(result['completedWindows'],[1])
+ def test_deleted_member_listed_past_the_recovery_budget_is_refused(self):
+  ctx={'run':7300,'head':'a'*40,'nonce':'synthetic-7300','attempt':1}
+  code,result,listings,_=self.collect(lambda n:[self.artifact(ctx,2),self.artifact(ctx,3),self.artifact(ctx,4)])
+  self.assertEqual(code,1);self.assertIn('bounded source window availability wait',result['error']);self.assertEqual(result['completedWindows'],[1])
+  self.assertGreater(len([1 for phase,ids in listings if phase==2]),100);self.assertLessEqual(self.clock[0],4500+10)
+
 if __name__=='__main__':unittest.main(verbosity=2)

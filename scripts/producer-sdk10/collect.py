@@ -64,8 +64,18 @@ def archive_roundtrip(out,rows,series,deadline,private_key):
 
 def publish_recovery_ack(out,rows,series,ctx,deadline,private_key):
  ledger={'context':ctx,'seriesSHA256':digest(encoded(series)),'parts':[{'ordinal':r['ordinal'],'artifactID':r['artifactID'],'carrierSHA256':r['carrierSHA256'],'physicalPartSHA256':r['part']['sha256'],'custodyReceiptSHA256':r['custodyReceiptSHA256']} for r in sorted(rows,key=lambda r:r['ordinal'])]};freeze(out/'DURABLE-CUSTODY-LEDGER.json',encoded(ledger));sync_chain(out,out.parent);payload=ack_payload(series,hash_file(out/'INDEPENDENT-ARCHIVE-ROUNDTRIP.json')[1],hash_file(out/'DURABLE-CUSTODY-LEDGER.json')[1]);ack=operation(out/'sign-recovery-ack','sign-ack',{'payload':payload,'privateKey':str(private_key)},deadline);freeze(out/'SIGNED-RECOVERY-ACK.json',encoded(ack));sync_chain(out,out.parent);api=AckAPI(out/'ack-publication',deadline,series['recoveryACKChannel'],ctx,write=True);proof=api.publish(ack);freeze(out/'PUBLISHED-RECOVERY-ACK.json',encoded(proof));sync_chain(out,out.parent);return proof
+def without_deleted(listing,deleted):
+ """The run listing without members whose exact 404 was already observed, and how many it still showed.
+
+ The run listing can trail the per-artifact endpoint, so a deleted member may
+ stay listed for a while. Only the same ID under the same name qualifies;
+ anything else stays in the listing and is judged like any other entry.
+ """
+ items=listing.get('artifacts');total=listing.get('total_count');need(type(items) is list and type(total) is int,'bounded two-slot listing schema')
+ lingering=[x for x in items if type(x) is dict and x.get('id') in deleted and x.get('name')==deleted[x['id']]]
+ return {**listing,'total_count':total-len(lingering),'artifacts':[x for x in items if x not in lingering]},len(lingering)
 def collect(a):
- ctx=context(a.nonce,a.run,a.head);key_stat=a.private_key.lstat();need(stat.S_ISREG(key_stat.st_mode) and not a.private_key.is_symlink() and stat.S_IMODE(key_stat.st_mode)&0o077==0,'local-only protected operator private key file');need(not a.out.exists(),'fresh private operator collection root');need(shutil.disk_usage(a.out.parent).free>=3*12*1024**3+10*1024**3+2*128*1024**2,'private ZIP/parts/full-archive independent capacity admission');a.out.mkdir(mode=0o700);control=a.out/'control';control.mkdir(mode=0o700);start=time.monotonic();whole=start+a.seconds-10;calls=Calls(control,whole,a.stop);rows=[];windows=[];series=None;error=None;result={'schemaVersion':1,'state':'INCOMPLETE','context':ctx,'sourceOrNativeExecutedLocally':False,'GateAClosureClaimed':False};executor=concurrent.futures.ThreadPoolExecutor(max_workers=2,thread_name_prefix='sdk10-owned-part');window=1;recovery_deadline=None;last_run_status=start
+ ctx=context(a.nonce,a.run,a.head);key_stat=a.private_key.lstat();need(stat.S_ISREG(key_stat.st_mode) and not a.private_key.is_symlink() and stat.S_IMODE(key_stat.st_mode)&0o077==0,'local-only protected operator private key file');need(not a.out.exists(),'fresh private operator collection root');need(shutil.disk_usage(a.out.parent).free>=3*12*1024**3+10*1024**3+2*128*1024**2,'private ZIP/parts/full-archive independent capacity admission');a.out.mkdir(mode=0o700);control=a.out/'control';control.mkdir(mode=0o700);start=time.monotonic();whole=start+a.seconds-10;calls=Calls(control,whole,a.stop);rows=[];windows=[];series=None;error=None;result={'schemaVersion':1,'state':'INCOMPLETE','context':ctx,'sourceOrNativeExecutedLocally':False,'GateAClosureClaimed':False};executor=concurrent.futures.ThreadPoolExecutor(max_workers=2,thread_name_prefix='sdk10-owned-part');window=1;recovery_deadline=None;last_run_status=start;deleted={}
  try:
   run=calls.metadata('repos/stsepelin/checktrail/actions/runs/'+str(ctx['run']));need(run.get('head_sha')==ctx['head'] and run.get('event')=='workflow_dispatch' and run.get('run_attempt')==1 and run.get('path')==a.workflow,'exact source producer workflow/run/head');freeze(a.out/'RUN-BINDING.json',encoded(run))
   while series is None or window<=series['plan']['windows']:
@@ -75,7 +85,9 @@ def collect(a):
    limit=whole if recovery_deadline is None else recovery_deadline;calls.deadline=limit
    need(not a.stop.is_set() and time.monotonic()<limit-2,'operator finite whole waiting bound' if recovery_deadline is None else 'original recovery budget before next window');ordinals=[window*2-1,window*2];folder=a.out/('window-'+str(window).zfill(2));folder.mkdir(mode=0o700);members=None
    while members is None:
-    listing=calls.metadata('repos/stsepelin/checktrail/actions/runs/'+str(ctx['run'])+'/artifacts?per_page=100');members=validate_window_listing(listing,ctx,ordinals)
+    # A member deleted earlier may still be listed; the next pair is admitted only once none is.
+    listing=calls.metadata('repos/stsepelin/checktrail/actions/runs/'+str(ctx['run'])+'/artifacts?per_page=100');current,lingering=without_deleted(listing,deleted);members=validate_window_listing(current,ctx,ordinals)
+    if lingering:members=None
     if members is None:
      if time.monotonic()-last_run_status>=60:
       latest=calls.metadata('repos/stsepelin/checktrail/actions/runs/'+str(ctx['run']));need(latest.get('head_sha')==ctx['head'] and latest.get('run_attempt')==1,'same original run while waiting');last_run_status=time.monotonic();need(latest.get('status')!='completed','original producer completed without the complete next owned window; preserve incomplete evidence')
@@ -93,7 +105,9 @@ def collect(a):
     need(row['series']==series and validate_meta(row['part'],ctx,row['ordinal'])==series,'same complete immutable original capture series across all carriers')
    final=window==series['plan']['windows']
    if final:result['independentArchiveRoundtrip']=archive_roundtrip(a.out,rows,series,deadline,a.private_key);result['signedRecoveryACK']=publish_recovery_ack(a.out,rows,series,ctx,deadline,a.private_key)
-   for row in pair:delete_after_custody(row,ctx,deadline,a.stop,final)
+   for row in pair:
+    delete_after_custody(row,ctx,deadline,a.stop,final)
+    if row.get('deletionKnownAbsent') is True:deleted[row['artifactID']]=name(ctx,row['ordinal'])
    freeze(folder/'WINDOW-RESULT.json',encoded({'window':window,'handshake':hand,'allTwoOriginalPartsCustodiedBeforeExactDelete':True,'fullArchiveRoundtripBeforeFinalDelete':final,'ownedIDs':[x['artifactID'] for x in pair]}));windows.append(window);window+=1
   # The finalizer emits only bounded first-party metadata to the workflow log.
   # It executes AFTER the final independent-custody404 acknowledgement. Waiting

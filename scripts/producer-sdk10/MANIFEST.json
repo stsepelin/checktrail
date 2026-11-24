@@ -31,9 +31,9 @@
       "sha256": "43c695a5e08d5c88e9ba979eb1cbce177f8a9fa7454d7504e4451e61f10228ef"
     },
     {
-      "bytes": 19496,
+      "bytes": 20543,
       "path": "collect.py",
-      "sha256": "75e408953c9d4213d00e523e2296eacca560257d8d9421db5dd2f75bbcc734a2"
+      "sha256": "ae004a5e6287627e419cbcaf5f21dbe5b2c488b5e88fd090d62402961cdabdef"
     },
     {
       "bytes": 1986,
@@ -111,9 +111,9 @@
       "sha256": "89e8e2fd92e67be592dcde1425c3a774fa9e8ce85dd8d631d0ef7d837c04b12e"
     },
     {
-      "bytes": 12582,
+      "bytes": 18356,
       "path": "test_deadlines.py",
-      "sha256": "83a5252080d3bf67f1326261706395be1cc9cd468ec21825f90a53579cd44aad"
+      "sha256": "042f07344a529f60e7c3a16201a5d29c97236728ed80fe0452113339303aad24"
     },
     {
       "bytes": 3105,
